@@ -2,8 +2,15 @@ package ForseeAtomPos;
 
 use strict;
 use warnings;
-
+use Machine::Epsilon;
 # ------------------------------- Linear algebra ------------------------------ #
+
+#
+# Constants
+#
+
+my $PI = 4 * atan2(1, 1);
+my $EPSILON = machine_epsilon();
 
 #
 # Description. Creates local reference frame for any three given atoms.
@@ -53,5 +60,41 @@ sub create_ref_frame{
 # Output: alpha, beta, gamma angles in radians.
 #
 
-sub find_euler_angles{}
+sub find_euler_angles{
+    my ( $mid_atom_x,  $mid_atom_y,  $mid_atom_z,
+         $up_atom_x,   $up_atom_y,   $up_atom_z,
+         $side_atom_x, $side_atom_y, $side_atom_z ) = @_;
+
+    my $alpha_rad;
+    my $beta_rad;
+    my $gamma_rad;
+
+    my $z_axis_in_xy_plane;
+
+    my @local_ref_frame = 
+        create_ref_frame( $mid_atom_x, $mid_atom_y,   $mid_atom_z,
+                          $up_atom_x, $up_atom_y,     $up_atom_z,
+                          $side_atom_x, $side_atom_y, $side_atom_z );
+
+    # Projects local z-axis to global xy-plane.
+    $z_axis_in_xy_plane = 
+        sqrt( $local_ref_frame[2][0] * $local_ref_frame[2][0] 
+            + $local_ref_frame[2][1] * $local_ref_frame[2][1] );
+
+    if( $z_axis_in_xy_plane > $EPSILON ){
+        $alpha_rad = 
+            atan2( $local_ref_frame[1][0] * $local_ref_frame[2][1]
+                 - $local_ref_frame[1][1] * $local_ref_frame[2][0],
+                   $local_ref_frame[0][0] * $local_ref_frame[2][1]
+                 - $local_ref_frame[0][1] * $local_ref_frame[2][0] );
+        $beta_rad = atan2( $z_axis_in_xy_plane, $local_ref_frame[2][2] );
+        $gamma_rad = - atan2( - $local_ref_frame[2][0], $local_ref_frame[2][1] );
+    } else {
+        $alpha_rad = 0.;
+        $beta_rad = ( $local_ref_frame[2][2] > 0. ) ? 0. : $PI;
+        $gamma_rad = - atan2( $local_ref_frame[0][1], $local_ref_frame[0][0] );
+    }
+    return $alpha_rad, $beta_rad, $gamma_rad;
+}
+
 1;
