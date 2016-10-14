@@ -100,6 +100,7 @@ sub find_euler_angles{
         $beta_rad = ( $local_ref_frame[2][2] > 0. ) ? 0. : $PI;
         $gamma_rad = - atan2( $local_ref_frame[0][1], $local_ref_frame[0][0] );
     }
+
     return $alpha_rad, $beta_rad, $gamma_rad;
 }
 
