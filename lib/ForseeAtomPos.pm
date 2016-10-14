@@ -1,4 +1,4 @@
-package forseeAtomPos;
+package ForseeAtomPos;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ use warnings;
 #         corresponding x-axis, y-axis, z-axis of local frame of reference.
 #
 
-sub createRefFrame{
+sub create_ref_frame{
     my ($up_atom_x,   $up_atom_y,   $up_atom_z,
         $side_atom_x, $side_atom_y, $side_atom_z,
         $mid_atom_x,  $mid_atom_y,  $mid_atom_z) = @_;
