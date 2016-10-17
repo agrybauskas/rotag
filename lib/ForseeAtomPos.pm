@@ -10,7 +10,7 @@ use Machine::Epsilon;
 #
 
 my $PI = 4 * atan2( 1, 1 );
-my $EPSILON = machine_epsilon();
+my $EPSILON = 1.0 / ( 2**52 ); # Machine accuracy for 64-bit float numbers.
 
 #
 # Description. Creates local reference frame for any three given atoms.
