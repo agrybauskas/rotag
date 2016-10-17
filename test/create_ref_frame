@@ -8,13 +8,11 @@ use ForseeAtomPos;
 my @atom_coord;
 
 while( <> ){
-    push( @atom_coord, split( /\s+|#.+/, $_ ) );
+    push( @atom_coord, grep( /\S/, split( /#.+|\s+/, $_ ) ) );
 }
 
-foreach( @atom_coord ){
-    print $_ . "\n";
-}
-                  # mid-atom      # up-atom       # side-atom
-#ForseeAtomPos::create_ref_frame( $atom_coord[0], $atom_coord[1], $atom_coord[2],   # x-axis
-#                                 $atom_coord[3], $atom_coord[4], $atom_coord[5],   # y-axis
-#                                 $atom_coord[6], $atom_coord[7], $atom_coord[8] ); # z-axis
+    # mid-atom      # up-atom       # side-atom
+ForseeAtomPos::create_ref_frame( 
+    $atom_coord[0], $atom_coord[1], $atom_coord[2],   # x-axis
+    $atom_coord[3], $atom_coord[4], $atom_coord[5],   # y-axis
+    $atom_coord[6], $atom_coord[7], $atom_coord[8] ); # z-axis
