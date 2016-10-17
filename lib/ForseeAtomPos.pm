@@ -26,7 +26,7 @@ sub create_ref_frame{
          $up_atom_x,   $up_atom_y,   $up_atom_z,
          $side_atom_x, $side_atom_y, $side_atom_z ) = @_;
 
-    my @local_ref;
+    my @local_ref_frame;
 
     # Let local z-axis be colinear to bond between mid and up atoms.
     $local_ref_frame[2][0] = $up_atom_x - $mid_atom_x;
