@@ -2,7 +2,7 @@ package ForseeAtomPos;
 
 use strict;
 use warnings;
-use Machine::Epsilon;
+
 # ------------------------------- Linear algebra ------------------------------ #
 
 #
