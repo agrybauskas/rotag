@@ -10,7 +10,8 @@ use Machine::Epsilon;
 #
 
 my $PI = 4 * atan2( 1, 1 );
-my $EPSILON = 1.0 / ( 2**52 ); # Machine accuracy for 64-bit float numbers.
+my $EPSILON = 1.0 / ( 2**52 ); # Machine accuracy for 64-bit floating point
+                               # numbers.
 
 #
 # Description. Creates local reference frame for any three given atoms.
@@ -78,9 +79,9 @@ sub find_euler_angles{
     my $z_axis_in_xy_plane;
 
     my @local_ref_frame = 
-        create_ref_frame( $mid_atom_x, $mid_atom_y,   $mid_atom_z,
-                          $up_atom_x, $up_atom_y,     $up_atom_z,
-                          $side_atom_x, $side_atom_y, $side_atom_z );
+        create_ref_frame( $mid_atom_x,  $mid_atom_y,   $mid_atom_z,
+                          $up_atom_x,   $up_atom_y,    $up_atom_z,
+                          $side_atom_x, $side_atom_y,  $side_atom_z );
 
     # Projects local z-axis to global xy-plane.
     $z_axis_in_xy_plane = 
