@@ -9,8 +9,7 @@ TEST_DIFF=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${TEST_OUT_DIR}/%.diff}
 test: ${TEST_DIFF} 
 
 ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.dat
-	@./$< > $@
-	@diff -w $@ $(basename $@).dat; \
+	@./$< | diff -w $(basename $@).dat -; \
 	if [ $$? -eq 0 ]; \
 	then echo $<"\t[OK]"; \
 	else echo $<"\t[FALSE]"; \
