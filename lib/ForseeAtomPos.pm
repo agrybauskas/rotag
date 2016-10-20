@@ -10,8 +10,8 @@ use warnings;
 #
 
 my $PI = 4 * atan2( 1, 1 );
-my $EPSILON = 1.0 / ( 2**52 ); # Machine accuracy for 64-bit floating point
-                               # numbers.
+my $EPSILON = 1.0 / ( 2 ** 52 ); # Machine accuracy for 64-bit floating point
+                                 # numbers.
 
 #
 # Description. Creates local reference frame for any three given atoms.
@@ -105,24 +105,37 @@ sub find_euler_angles{
     return $alpha_rad, $beta_rad, $gamma_rad;
 }
 
-# --------------------- Computer algebra software bridges --------------------- #
+# ----------------------------- Amino acid models ----------------------------- #
+
+#
+# General description for all functions in the block "Amino acid models".
+# Input: atom coordinates of desired amino acid in array form.
+# Output: List of arrays representing matrices and strings indicating symbolic 
+#         variables that will be passed to wrapper functions.
+# Difference: input coordinates and number of rotational transformations 
+#             performed by dihedral angle(s) chi.
+#
+
+sub serine_model{}
+
+# --------------------- Computer algebra software wrappers -------------------- #
 
 #
 # Because Perl (v5.14.2) is not capable of performing symbolic algebra these
 # functions act as bridges/wrappers between Perl and programs or modules that
 # can perform symbolic computations, such as Maxima, GNU Octave, GiNaC 
 # (C++ package) and etc.
-# 
-
-# Description. A wrapper function for Maxima 5.24.0. Takes argument from amino 
-# acid model function and performs symbolic matrix multiplications with unknown 
-# variables, such as bond dihedral chi angles, and simplifies the expression.
+#
 # Example of rotation along z-axis by chi angle in radians:
 #
 #      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
 #      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
 #      \    0         0     1 /   \ z /   \              0              /
-#
+# 
+
+# Description. A wrapper function for Maxima 5.24.0. Takes argument from amino 
+# acid model function and performs symbolic matrix multiplications with unknown 
+# variables, such as bond dihedral chi angles, and simplifies the expression.
 # Input: List of arrays representing matrices and strings indicating symbolic 
 #        variables. The input comes from output of amino acid model functions. 
 # Output: Simplified version of list of arrays representing matrices and 
