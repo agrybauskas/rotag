@@ -105,4 +105,30 @@ sub find_euler_angles{
     return $alpha_rad, $beta_rad, $gamma_rad;
 }
 
+# --------------------- Computer algebra software bridges --------------------- #
+
+#
+# Because Perl (v5.14.2) is not capable of performing symbolic algebra these
+# functions act as bridges/wrappers between Perl and programs or modules that
+# can perform symbolic computations, such as Maxima, GNU Octave, GiNaC 
+# (C++ package) and etc.
+# 
+
+# Description. A wrapper function for Maxima 5.24.0. Takes argument from amino 
+# acid model function and performs symbolic matrix multiplications with unknown 
+# variables, such as bond dihedral chi angles, and simplifies the expression.
+# Example of rotation along z-axis by chi angle in radians:
+#
+#      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
+#      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
+#      \    0         0     1 /   \ z /   \              0              /
+#
+# Input: List of arrays representing matrices and strings indicating symbolic 
+#        variables. The input comes from output of amino acid model functions. 
+# Output: Simplified version of list of arrays representing matrices and 
+#         strings indicating symbolic variables.
+#
+
+sub simplify_maxima{}
+
 1;
