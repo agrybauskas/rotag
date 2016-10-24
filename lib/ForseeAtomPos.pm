@@ -105,21 +105,6 @@ sub find_euler_angles{
     return $alpha_rad, $beta_rad, $gamma_rad;
 }
 
-# ----------------------------- Amino acid models ----------------------------- #
-
-#
-# General description for all functions in the block "Amino acid models".
-# Input: atom coordinates of desired amino acid in hash form.
-# Output: List of arrays representing matrices and strings indicating symbolic 
-#         variables that will be passed to wrapper functions.
-# Difference: input coordinates and number of rotational transformations 
-#             performed by dihedral angle(s) chi.
-#
-
-sub serine_model{
-    %serine_coord = ();
-}
-
 # --------------------- Computer algebra software wrappers -------------------- #
 
 #
