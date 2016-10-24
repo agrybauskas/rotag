@@ -3,6 +3,29 @@ package ForseeAtomPos;
 use strict;
 use warnings;
 
+# ------------------------------ PDBx/mmCIF parser ---------------------------- #
+
+sub cif_to_hash{
+    my %cif_hash;
+    my @cif_table;
+    my $read_atom_site = 0;
+
+    foreach( @_ ){
+
+        # Creating placeholder-hash, where information will be transfered soon.
+        if( $_ =~ /_atom_site.(.+)\n$/ ){
+            $cif_hash{ $1 } = "";
+            $read_atom_site = 1;
+        } elsif( $read_atom_site == 1 ){
+            push( @cif_table, split( /\s+/, $_ ) );
+            print  join( "\n", split( /\s+/, $_ ) );
+        } elsif( $read_atom_site == 1 && $_ =~ /[^_]/ ){
+            last;
+        }
+    }    
+
+}
+
 # ------------------------------- Linear algebra ------------------------------ #
 
 #
