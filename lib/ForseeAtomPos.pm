@@ -7,23 +7,23 @@ use warnings;
 
 sub cif_to_hash{
     my %cif_hash;
-    my @cif_table;
-    my $read_atom_site = 0;
+    my $read_atom_site = 0;  
+    my @cif_table;  
+    my $cif_line_counter = 0;
 
     foreach( @_ ){
-
-        # Creating placeholder-hash, where information will be transfered soon.
         if( $_ =~ /_atom_site.(.+)\n$/ ){
-            $cif_hash{ $1 } = "";
+            $cif_hash{ $_ }{ $cif_line_counter } = "";
             $read_atom_site = 1;
+            $cif_line_counter += 1;
         } elsif( $read_atom_site == 1 ){
             push( @cif_table, split( /\s+/, $_ ) );
-            print  join( "\n", split( /\s+/, $_ ) );
         } elsif( $read_atom_site == 1 && $_ =~ /[^_]/ ){
             last;
         }
-    }    
+    }
 
+    
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
@@ -142,7 +142,7 @@ sub find_euler_angles{
 #      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
 #      \    0         0     1 /   \ z /   \              0              /
 # 
-
+#
 # Description. A wrapper function for Maxima 5.24.0. Takes argument from amino 
 # acid model function and performs symbolic matrix multiplications with unknown 
 # variables, such as bond dihedral chi angles, and simplifies the expression.
