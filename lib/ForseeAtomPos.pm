@@ -6,14 +6,14 @@ use warnings;
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
 sub cif_to_hash{
-    my %cif_hash;
+    my @cif_category;
     my $read_atom_site = 0;  
     my @cif_table;  
     my $cif_line_counter = 0;
 
     foreach( @_ ){
         if( $_ =~ /_atom_site.(.+)\n$/ ){
-            $cif_hash{ $_ }{ $cif_line_counter } = "";
+            push( @cif_category, $1, [] );
             $read_atom_site = 1;
             $cif_line_counter += 1;
         } elsif( $read_atom_site == 1 ){
@@ -23,7 +23,12 @@ sub cif_to_hash{
         }
     }
 
-    
+    my $len_cif_category = scalar( @cif_category ) / 2;
+
+    for( my $cif_entry = 0; $cif_entry < $len_cif_category; $cif_entry++ ){
+        push( $cif_category[( $cif_entry % $len_cif_category +1 )], 
+              $cif_table[$cif_entry] );
+    }
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
