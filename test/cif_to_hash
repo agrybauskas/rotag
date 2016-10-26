@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib";
+use ForseeAtomPos;
+
+my $cif_hash = ForseeAtomPos::cif_to_hash( <> );
+
