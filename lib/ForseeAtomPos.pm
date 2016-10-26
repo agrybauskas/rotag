@@ -10,25 +10,31 @@ sub cif_to_hash{
     my $read_atom_site = 0;  
     my @cif_table;  
     my $cif_line_counter = 0;
+    my %cif_hash;
 
     foreach( @_ ){
         if( $_ =~ /_atom_site.(.+)\n$/ ){
             push( @cif_category, $1, [] );
             $read_atom_site = 1;
             $cif_line_counter += 1;
-        } elsif( $read_atom_site == 1 ){
+        }elsif( $read_atom_site == 1 ){
             push( @cif_table, split( /\s+/, $_ ) );
-        } elsif( $read_atom_site == 1 && $_ =~ /[^_]/ ){
+        }elsif( $read_atom_site == 1 && $_ =~ /[^_]/ ){
             last;
         }
     }
 
-    my $len_cif_category = scalar( @cif_category ) / 2;
+    my $cif_table_size = scalar( @cif_table );
+    my $category_size = scalar( @cif_category ) / 2;
 
-    for( my $cif_entry = 0; $cif_entry < $len_cif_category; $cif_entry++ ){
-        push( $cif_category[( $cif_entry % $len_cif_category +1 )], 
-              $cif_table[$cif_entry] );
+    for( my $cif_entry = 0; $cif_entry < $cif_table_size; $cif_entry++ ){
+        my $push_to_category =  $cif_entry % $category_size * 2 + 1;
+        push @{ $cif_category[$push_to_category] }, $cif_table[$cif_entry];
     }
+
+    %cif_hash = @cif_category;
+
+    return \%cif_hash;
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
@@ -124,7 +130,7 @@ sub find_euler_angles{
                  - $local_ref_frame[0][1] * $local_ref_frame[2][0] );
         $beta_rad = atan2( $z_axis_in_xy_plane, $local_ref_frame[2][2] );
         $gamma_rad = - atan2( - $local_ref_frame[2][0], $local_ref_frame[2][1] );
-    } else {
+    }else{
         $alpha_rad = 0.;
         $beta_rad = ( $local_ref_frame[2][2] > 0. ) ? 0. : $PI;
         $gamma_rad = - atan2( $local_ref_frame[0][1], $local_ref_frame[0][0] );
