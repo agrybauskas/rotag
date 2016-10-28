@@ -48,11 +48,7 @@ my $EPSILON = 1.0 / ( 2 ** 52 ); # Machine accuracy for 64-bit floating point
                                  # numbers.
 
 #
-# Description. Creates local reference frame for any three given atoms.
-# Input: 3x3 array, where each row represents x, y, z coordinates of one of three
-#        atoms.
-# Output: 3x3 array, where each row represents x, y, z coordinates of 
-#         corresponding x-axis, y-axis, z-axis of local frame of reference.
+# Creates local reference frame for any three given atoms.
 #
 
 sub create_ref_frame{
@@ -94,11 +90,8 @@ sub create_ref_frame{
 }
 
 #
-# Description. Function calculates Euler rotational angles (alpha, beta, gamma)
-# that are used to transform global reference frame to chosen one.
-# Input: 3x3 array, where each row represents vectors of x-axis, y-axis and 
-#        z-axis accordingly.
-# Output: alpha, beta, gamma angles in radians.
+# Function calculates Euler rotational angles (alpha, beta, gamma) that are used
+# to transform global reference frame to chosen one.
 #
 
 sub find_euler_angles{
@@ -157,10 +150,6 @@ sub find_euler_angles{
 # Description. A wrapper function for Maxima 5.24.0. Takes argument from amino 
 # acid model function and performs symbolic matrix multiplications with unknown 
 # variables, such as bond dihedral chi angles, and simplifies the expression.
-# Input: List of arrays representing matrices and strings indicating symbolic 
-#        variables. The input comes from output of amino acid model functions. 
-# Output: Simplified version of list of arrays representing matrices and 
-#         strings indicating symbolic variables.
 #
 
 sub simplify_maxima{}
