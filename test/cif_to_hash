@@ -6,5 +6,7 @@ use warnings;
 use lib "../../lib";
 use ForseeAtomPos;
 
-my $cif_hash = ForseeAtomPos::cif_to_hash( <> );
+my $cif_hash_ref = ForseeAtomPos::cif_to_hash( <> );
+my %cif_hash = %$cif_hash_ref;
+
 
