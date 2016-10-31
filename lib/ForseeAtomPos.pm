@@ -6,42 +6,30 @@ use warnings;
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
 #
-# Converts cif format to hash table, that it is more convenient to work with.
-# Only reads _atom_site category and its items with data in it.
+# From mmCIF file, obtains data only from _atom_site category and outputs 1x2
+# array of attribute names and attribute data respectively.
 #
 
-sub cif_to_hash{
-    my @atom_site;       # List of all data items and data itself in 
-                         # _atom_site category.
-    my @atom_site_table;     # Temporary table for storing actual data-item data.
-
-    my %atom_site_hash;  # It is basically an @atom_site_table converted to hash.
-
-    my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
+sub obtain_atom_site{
+    my @attribute_names;
+    my @attribute_data;
+    my @atom_site;     # 1x2 array that will store both attribute names and data.
+    my $is_reading_lines = 0;      # Starts/stops reading lines at certain flags.
 
     foreach( @_ ){
-        if( $_ =~ /_atom_site.(.+)\n$/ ){ # Creates pre-hash (place holder) list 
-            push( @atom_site, $1, [] );   # for %atom_site_hash.
+        if( $_ =~ /_atom_site\.(.+)\n$/ ){ 
+            push( @attribute_names, $1 );  
             $is_reading_lines = 1;
-        }elsif( $is_reading_lines == 1 ){                 # Pushes item data
-            push( @atom_site_table, split( /\s+/, $_ ) ); # to separate table.
-        }elsif( $is_reading_lines == 1 && $_ =~ /[^_]/ ){ 
+        }elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_/ ){ 
             last;
+        }elsif( $is_reading_lines == 1 ){      
+            push( @attribute_data, split( /\s+/, $_ ) );
         }
     }
 
-    # Matches atom_site_table data to atom_site (pre-hash list) and transfers
-    # the data.
-    for( my $i = 0; $i <= $#atom_site_table; $i++ ){
-        # This formula makes pushing each item to every second item, that is a
-        # list, possible.
-        my $to_category = ( $i % ( ( $#atom_site + 1 ) / 2 ) ) * 2 + 1;
-        push @{ $atom_site[$to_category] }, $atom_site_table[$i];
-    }
+    push( @atom_site, \@attribute_names, \@attribute_data );
 
-    %atom_site_hash = @atom_site;
-
-    return \%atom_site_hash;
+    return \@atom_site;
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
