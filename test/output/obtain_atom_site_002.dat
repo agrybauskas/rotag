@@ -1,3 +1,30 @@
+loop_
+_atom_site.group_PDB 
+_atom_site.id 
+_atom_site.type_symbol 
+_atom_site.label_atom_id 
+_atom_site.label_alt_id 
+_atom_site.label_comp_id 
+_atom_site.label_asym_id 
+_atom_site.label_entity_id 
+_atom_site.label_seq_id 
+_atom_site.pdbx_PDB_ins_code 
+_atom_site.Cartn_x 
+_atom_site.Cartn_y 
+_atom_site.Cartn_z 
+_atom_site.occupancy 
+_atom_site.B_iso_or_equiv 
+_atom_site.Cartn_x_esd 
+_atom_site.Cartn_y_esd 
+_atom_site.Cartn_z_esd 
+_atom_site.occupancy_esd 
+_atom_site.B_iso_or_equiv_esd 
+_atom_site.pdbx_formal_charge 
+_atom_site.auth_seq_id 
+_atom_site.auth_comp_id 
+_atom_site.auth_asym_id 
+_atom_site.auth_atom_id 
+_atom_site.pdbx_PDB_model_num 
 ATOM   1    N N   . GLN A 1 5   ? 29.387  3.534   66.356  1.00 75.98  ? ? ? ? ? ? 50  GLN A N   1 
 ATOM   2    C CA  . GLN A 1 5   ? 27.956  3.819   66.294  1.00 70.38  ? ? ? ? ? ? 50  GLN A CA  1 
 ATOM   3    C C   . GLN A 1 5   ? 27.172  2.619   66.782  1.00 69.76  ? ? ? ? ? ? 50  GLN A C   1 
@@ -9183,4 +9210,4 @@ HETATM 9182 O O   . HOH D 2 .   ? 3.634   22.764  49.771  1.00 72.37  ? ? ? ? ? 
 HETATM 9183 O O   . HOH D 2 .   ? -1.405  27.967  54.606  1.00 65.05  ? ? ? ? ? ? 784 HOH B O   1 
 HETATM 9184 O O   . HOH D 2 .   ? -1.037  41.507  44.355  1.00 68.12  ? ? ? ? ? ? 785 HOH B O   1 
 HETATM 9185 O O   . HOH D 2 .   ? -1.484  32.237  55.851  1.00 59.90  ? ? ? ? ? ? 786 HOH B O   1 
-HETATM 9186 O O   . HOH D 2 .   ? -3.655  40.956  45.146  1.00 64.97  ? ? ? ? ? ? 787 HOH B O   1 
+HETATM 9186 O O   . HOH D 2 .   ? -3.655  40.956  45.146  1.00 64.97  ? ? ? ? ? ? 787 HOH B O   1
