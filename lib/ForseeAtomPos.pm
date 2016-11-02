@@ -27,9 +27,20 @@ sub obtain_atom_site{
         }
     }
 
-    push( @atom_site, \@attribute_names, \@attribute_data );
+    return \@attribute_names, \@attribute_data;
+}
 
-    return \@atom_site;
+sub filter_atoms{
+    my %atom_specifiers = @{ $_[0] };
+
+    my @atom_site = obtain_atom_site( @{ $_[1] } );
+    my @attribute_names = @{ $atom_site[0] };
+    my @attribute_data  = @{ $atom_site[1] };
+
+    my $attribute_pos;
+
+    for my $attribute ( keys %atom_specifiers ){
+    }
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
