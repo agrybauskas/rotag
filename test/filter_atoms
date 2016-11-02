@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib";
+use ForseeAtomPos;
+
+ForseeAtomPos::filter_atoms( [ "label_atom_id" => [ "C", "CA", "CB", "OG" ] ],
+                             [ <> ] );
