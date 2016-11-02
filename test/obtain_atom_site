@@ -11,7 +11,7 @@ use ForseeAtomPos;
 # if all data was correctly obtained.
 #
 
-my @atom_site = @{ ForseeAtomPos::obtain_atom_site( <> ) };
+my @atom_site = ForseeAtomPos::obtain_atom_site( <> );
 my @attribute_names = @{ $atom_site[0] };
 my @attribute_data =  @{ $atom_site[1] };
 

@@ -13,7 +13,6 @@ use warnings;
 sub obtain_atom_site{
     my @attribute_names;
     my @attribute_data;
-    my @atom_site;     # 1x2 array that will store both attribute names and data.
     my $is_reading_lines = 0;      # Starts/stops reading lines at certain flags.
 
     foreach( @_ ){
@@ -28,7 +27,7 @@ sub obtain_atom_site{
     }
 
     return \@attribute_names, \@attribute_data;
-}
+} 
 
 sub filter_atoms{
     my %atom_specifiers = @{ $_[0] };
