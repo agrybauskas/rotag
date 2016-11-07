@@ -24,7 +24,7 @@ sub obtain_atom_site{
         }elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_/ ){ 
             last;
         }elsif( $is_reading_lines == 1 ){      
-            push( @attribute_data, split( /\s+/, $_ ) );
+            push( @attribute_data, split( " ", $_ ) );
         }
     }
 
@@ -38,32 +38,29 @@ sub filter_atoms{
     my @attribute_names = @{ $atom_site[0] };
     my @attribute_data  = @{ $atom_site[1] };
 
-    my $attribute_pos;
+    my @attribute_pos;
 
     for my $attribute ( keys %atom_specifiers ){
         if( $attribute ~~ @attribute_names ){
-            $attribute_pos = first_index{ $_ eq $attribute } @attribute_names;
-
-            for( my $pos = $attribute_pos; 
-                    $pos < $#attribute_data; 
-                    $pos += $#attribute_names + 1 ){
-
-                if( $attribute_data[$pos] ~~ $atom_specifiers{$attribute} ){
-                    my $start_pos = 
-                          ( int( $pos / ( $#attribute_names + 1 ) ) ) 
-                        * ( $#attribute_names + 1 );
-
-                    my $end_pos = 
-                            $start_pos 
-                        + ( $#attribute_names );
-
-                    my @row = @attribute_data[$start_pos..$end_pos];
-
-                    print( join( " ", @row ), "\n" );
-                }
-            }
+            push( @attribute_pos, 
+                  first_index{ $_ eq $attribute } @attribute_names );
         }
     }
+
+    my @atom_site_clean;
+
+    for( my $pos  = 0; 
+            $pos  < $#attribute_data; 
+            $pos += $#attribute_names + 1 ){
+
+        push( @atom_site_clean, join( "\t", @attribute_data[$pos..$pos + $#attribute_names] ) . "\n" );
+    }
+
+    my @final_atoms = grep {$_->[3] ~~ ["CA", "CB", "C"]} map {[split]} grep /^ATOM/, @atom_site_clean;
+
+    $, = "\t";
+
+    foreach( @final_atoms ){print @$_}    
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
