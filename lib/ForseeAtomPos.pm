@@ -53,14 +53,15 @@ sub filter_atoms{
             $pos  < $#attribute_data; 
             $pos += $#attribute_names + 1 ){
 
-        push( @atom_site_clean, join( "\t", @attribute_data[$pos..$pos + $#attribute_names] ) . "\n" );
+        push( @atom_site_clean, 
+              join( "\t", 
+                    @attribute_data[$pos..$pos + $#attribute_names] ) . "\n" );
     }
 
-    my @final_atoms = grep {$_->[3] ~~ ["CA", "CB", "C"]} map {[split]} grep /^ATOM/, @atom_site_clean;
+    my @final_atoms = grep {$_->[3] ~~ ["CA", "CB", "C"]} map {[split]} 
+                      grep /^ATOM/, @atom_site_clean;
 
-    $, = "\t";
-
-    foreach( @final_atoms ){print @$_}    
+    return \@attribute_names, \@attribute_data
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
