@@ -60,8 +60,12 @@ sub filter_atoms{
     }
 
     my @filtered_atoms = map {@$_} 
-                         grep {$_->[3] ~~ ["CA", "CB"]} map {[split]} 
-                         grep /^ATOM/, split( "\n", $atom_site_clean );
+# TODO: make grep controllable by %atom_specifiers hash argument.
+#                                   v           v
+                         grep {$_->[3] ~~ ["CA", "CB"]} 
+                         map {[split]} 
+                         grep /^ATOM/, 
+                         split( "\n", $atom_site_clean );
 
     return \@attribute_names, \@filtered_atoms;
 }
