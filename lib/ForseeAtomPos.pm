@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use List::MoreUtils qw(first_index);
+use List::MoreUtils qw(zip);
 
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
@@ -47,21 +48,23 @@ sub filter_atoms{
         }
     }
 
-    my @atom_site_clean;
+    my $atom_site_clean;
 
     for( my $pos  = 0; 
             $pos  < $#attribute_data; 
             $pos += $#attribute_names + 1 ){
 
-        push( @atom_site_clean, 
-              join( "\t", 
-                    @attribute_data[$pos..$pos + $#attribute_names] ) . "\n" );
+        $atom_site_clean .=
+            join( "\t", 
+                  @attribute_data[$pos..$pos + $#attribute_names] ) . "\n";
     }
 
-    my @final_atoms = grep {$_->[3] ~~ ["CA", "CB", "C"]} map {[split]} 
-                      grep /^ATOM/, @atom_site_clean;
+    my @final_atoms = grep {$_->[3] ~~ ["CA", "CB"]} map {[split]} 
+                      grep /^ATOM/, split( "\n", $atom_site_clean );
 
-    return \@attribute_names, \@attribute_data
+    my @filtered_atoms = map {@$_} @final_atoms;
+
+    return \@attribute_names, \@filtered_atoms;
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
