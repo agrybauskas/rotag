@@ -6,5 +6,21 @@ use warnings;
 use lib "../../lib";
 use ForseeAtomPos;
 
-ForseeAtomPos::filter_atoms( [ "label_atom_id" => [ "C", "CA", "CB", "OG" ] ],
-                             [ <> ] );
+my @filtered_atoms = ForseeAtomPos::filter_atoms( [ "label_atom_id" => [ "CA", "CB"]],
+                                                  [ <> ] );
+my @attribute_names = @{ $filtered_atoms[0] };
+my @attribute_data =  @{ $filtered_atoms[1] };
+
+print "loop_\n";
+
+foreach( @attribute_names ){
+    print "_atom_site." . $_ . "\n";
+}
+
+for( my $i = 0; $i < $#attribute_data + 1; $i++ ){
+    if( $i % ( $#attribute_names + 1) != 0 ){
+        print " ", $attribute_data[$i], " ";
+    }else{
+        print "\n", $attribute_data[$i];
+    }
+}
