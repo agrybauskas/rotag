@@ -48,24 +48,21 @@ sub filter_atoms{
         }
     }
 
-    my $atom_site_clean;
+    my @filtered_atoms;
+    my @attribute_line;
+    my @attribute_selected;
+    my @attribute_in_hash;
 
-    for( my $pos  = 0; 
-            $pos  < $#attribute_data; 
-            $pos += $#attribute_names + 1 ){
+    for( my $pos  = 0; $pos < $#attribute_data; $pos += $#attribute_names + 1){
+        @attribute_line = @{ attribute_data[$pos..$pos + $#attribute_names] };
+        @attribute_selected = map { $attribute_line[$_] } @attribute_pos;
+        @attribute_in_hash  = map { $atom_specifiers{$_} } 
+                              map { $attribute_names[$_] } @attribute_pos;
 
-        $atom_site_clean .=
-            join( "\t", 
-                  @attribute_data[$pos..$pos + $#attribute_names] ) . "\n";
+        if( @attribute_selected ~~ @attribute_in_hash ){
+            push( @filtered_atoms, @attribute_line );
+        }
     }
-
-    my @filtered_atoms = map {@$_} 
-# TODO: make grep controllable by %atom_specifiers hash argument.
-#                                   v           v
-                         grep {$_->[3] ~~ ["CA", "CB"]} 
-                         map {[split]} 
-                         grep /^ATOM/, 
-                         split( "\n", $atom_site_clean );
 
     return \@attribute_names, \@filtered_atoms;
 }
