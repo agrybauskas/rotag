@@ -11,62 +11,78 @@ use Data::Dumper;
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
 #
+# In this block of code, functions extract, filter and select atom entries of 
+# PDBx/mmCIF files. "Attribute" coresponds to atom characteristics, such as
+# atom or residues id, amino acid type and etc. Term "attribute" is used in CIF
+# and mmCIF documentation.
+#
+
+#
 # From mmCIF file, obtains data only from _atom_site category and outputs 1x2
 # array of attribute names and attribute data respectively.
 #
 
 sub obtain_atom_site{
-    my @attribute_names;
-    my @attribute_data;
+    my @atom_attributes;
+    my @atom_data;
     my $is_reading_lines = 0;      # Starts/stops reading lines at certain flags.
 
     foreach( @_ ){
         if( $_ =~ /_atom_site\.(.+)\n$/ ){ 
-            push( @attribute_names, split( " ", $1 ) );  
+            push( @atom_attributes, split( " ", $1 ) );  
             $is_reading_lines = 1;
         }elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_/ ){ 
             last;
         }elsif( $is_reading_lines == 1 ){      
-            push( @attribute_data, split( " ", $_ ) );
+            push( @atom_data, split( " ", $_ ) );
         }
     }
 
-    return \@attribute_names, \@attribute_data;
+    return \@atom_attributes, \@atom_data;
 } 
 
+#
+# From mmCIF file, extracts atoms with specified criteria, such as, atom type,
+# residue id, chain id and etc.
+#
+
 sub filter_atoms{
-    my %atom_specifiers = @{ $_[0] };
+    # Criteria for desirable atoms. Example: [ "label_atom_id" => ["SER"], 
+    #                                          "label_atom_id" => ["CA", "CB"] ].
+    my %atom_specifiers = @{ $_[0] }; 
 
     my @atom_site = obtain_atom_site( @{ $_[1] } );
-    my @attribute_names = @{ $atom_site[0] };
-    my @attribute_data  = @{ $atom_site[1] };
+    my @atom_attributes = @{ $atom_site[0] };
+    my @atom_data  = @{ $atom_site[1] };
 
-    my @attribute_pos;
+    my @attribute_pos; # The position of specified atom attributes in actual
+                       # list of attributes of CIF file.
 
     for my $attribute ( keys %atom_specifiers ){
-        if( $attribute ~~ @attribute_names ){
+        if( $attribute ~~ @atom_attributes ){
             push( @attribute_pos, 
-                  first_index{ $_ eq $attribute } @attribute_names );
+                  first_index{ $_ eq $attribute } @atom_attributes );
         }
     }
 
     my @filtered_atoms;
-    my @attribute_line;
-    my @attribute_selected;
-    my @attribute_in_hash;
 
-    for( my $pos  = 0; $pos < $#attribute_data; $pos += $#attribute_names + 1){
-        @attribute_line = @{ attribute_data[$pos..$pos + $#attribute_names] };
-        @attribute_selected = map { $attribute_line[$_] } @attribute_pos;
-        @attribute_in_hash  = map { $atom_specifiers{$_} } 
-                              map { $attribute_names[$_] } @attribute_pos;
-      
-        if( @attribute_selected ~~ @attribute_in_hash ){
-            push( @filtered_atoms, @attribute_line );
+    my @atom_data_row;
+    my @spec_attributes;
+    my @specified_data;
+
+    for( my $pos  = 0; $pos < $#atom_data; $pos += $#atom_attributes + 1){
+        @atom_data_row = @{ atom_data[$pos..$pos + $#atom_attributes] };
+        @spec_attributes = map { $atom_data_row[$_] } @attribute_pos;
+        @specified_data  = map { $atom_specifiers{$_} } 
+                           map { $atom_attributes[$_] } @attribute_pos;
+
+        if( @spec_attributes ~~ @specified_data ){
+            push( @filtered_atoms, @atom_data_row );
         }
     }
 
-    return \@attribute_names, \@filtered_atoms;
+    return \@atom_attributes, \@filtered_atoms;
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
@@ -168,17 +184,17 @@ sub find_euler_angles{
 # --------------------- Computer algebra software wrappers -------------------- #
 
 #
-# Because Perl (v5.14.2) is not capable of performing symbolic algebra these
-# functions act as bridges/wrappers between Perl and programs or modules that
-# can perform symbolic computations, such as Maxima, GNU Octave, GiNaC 
-# (C++ package) and etc.
+# Functions in this block of code act as bridges/wrappers between Perl and 
+# programs or modules that can perform symbolic computations, such as Maxima,
+# GNU Octave, GiNaC (C++ package) and etc.
 #
 # Example of rotation along z-axis by chi angle in radians:
 #
 #      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
 #      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
 #      \    0         0     1 /   \ z /   \              0              /
-# 
+#
+
 #
 # A wrapper function for Maxima 5.24.0. Takes argument from amino acid
 # model function and performs symbolic matrix multiplications with unknown 
