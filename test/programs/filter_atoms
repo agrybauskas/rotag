@@ -6,8 +6,9 @@ use warnings;
 use lib "../../lib";
 use ForseeAtomPos;
 
-my @filtered_atoms = ForseeAtomPos::filter_atoms( [ "label_atom_id" => [ "CA", "CB"]],
+my @filtered_atoms = ForseeAtomPos::filter_atoms( [ "label_atom_id" => [ "CA", "CB"] ],
                                                   [ <> ] );
+
 my @attribute_names = @{ $filtered_atoms[0] };
 my @attribute_data =  @{ $filtered_atoms[1] };
 

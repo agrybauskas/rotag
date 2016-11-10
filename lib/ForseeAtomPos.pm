@@ -6,6 +6,8 @@ use warnings;
 use List::MoreUtils qw(first_index);
 use List::MoreUtils qw(zip);
 
+use Data::Dumper;
+
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
 #
@@ -20,7 +22,7 @@ sub obtain_atom_site{
 
     foreach( @_ ){
         if( $_ =~ /_atom_site\.(.+)\n$/ ){ 
-            push( @attribute_names, $1 );  
+            push( @attribute_names, split( " ", $1 ) );  
             $is_reading_lines = 1;
         }elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_/ ){ 
             last;
@@ -58,7 +60,7 @@ sub filter_atoms{
         @attribute_selected = map { $attribute_line[$_] } @attribute_pos;
         @attribute_in_hash  = map { $atom_specifiers{$_} } 
                               map { $attribute_names[$_] } @attribute_pos;
-
+      
         if( @attribute_selected ~~ @attribute_in_hash ){
             push( @filtered_atoms, @attribute_line );
         }
