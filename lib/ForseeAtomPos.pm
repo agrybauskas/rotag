@@ -3,15 +3,15 @@ package ForseeAtomPos;
 use strict;
 use warnings;
 
-use List::MoreUtils qw(first_index);
-use List::MoreUtils qw(zip);
+use List::MoreUtils qw( first_index );
+use List::MoreUtils qw( zip );
 
 use Data::Dumper;
 
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
 #
-# In this block of code, functions extract, filter and select atom entries of 
+# In this block of code, functions extract, filter and select atom entries of
 # PDBx/mmCIF files. "Attribute" coresponds to atom characteristics, such as
 # atom or residues id, amino acid type and etc. Term "attribute" is used in CIF
 # and mmCIF documentation.
@@ -22,34 +22,36 @@ use Data::Dumper;
 # array of attribute names and attribute data respectively.
 #
 
-sub obtain_atom_site{
+sub obtain_atom_site
+{
     my @atom_attributes;
     my @atom_data;
     my $is_reading_lines = 0;      # Starts/stops reading lines at certain flags.
 
-    foreach( @_ ){
-        if( $_ =~ /_atom_site\.(.+)\n$/ ){ 
-            push( @atom_attributes, split( " ", $1 ) );  
+    foreach( @_ ) {
+        if( $_ =~ /_atom_site\.(.+)\n$/ ) {
+            push( @atom_attributes, split( " ", $1 ) );
             $is_reading_lines = 1;
-        }elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_/ ){ 
+        } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_/ ) {
             last;
-        }elsif( $is_reading_lines == 1 ){      
+        } elsif( $is_reading_lines == 1 ) {
             push( @atom_data, split( " ", $_ ) );
         }
     }
 
     return \@atom_attributes, \@atom_data;
-} 
+}
 
 #
 # From mmCIF file, extracts atoms with specified criteria, such as, atom type,
 # residue id, chain id and etc.
 #
 
-sub filter_atoms{
-    # Criteria for desirable atoms. Example: [ "label_atom_id" => ["SER"], 
+sub filter_atoms
+{
+    # Criteria for desirable atoms. Example: [ "label_atom_id" => ["SER"],
     #                                          "label_atom_id" => ["CA", "CB"] ].
-    my %atom_specifiers = @{ $_[0] }; 
+    my %atom_specifiers = @{ $_[0] };
 
     my @atom_site = obtain_atom_site( @{ $_[1] } );
     my @atom_attributes = @{ $atom_site[0] };
@@ -58,9 +60,9 @@ sub filter_atoms{
     my @attribute_pos; # The position of specified atom attributes in actual
                        # list of attributes of CIF file.
 
-    for my $attribute ( keys %atom_specifiers ){
-        if( $attribute ~~ @atom_attributes ){
-            push( @attribute_pos, 
+    for my $attribute ( keys %atom_specifiers ) {
+        if( $attribute ~~ @atom_attributes ) {
+            push( @attribute_pos,
                   first_index{ $_ eq $attribute } @atom_attributes );
         }
     }
@@ -71,13 +73,13 @@ sub filter_atoms{
     my @spec_attributes;
     my @specified_data;
 
-    for( my $pos  = 0; $pos < $#atom_data; $pos += $#atom_attributes + 1){
+    for( my $pos  = 0; $pos < $#atom_data; $pos += $#atom_attributes + 1) {
         @atom_data_row = @{ atom_data[$pos..$pos + $#atom_attributes] };
         @spec_attributes = map { $atom_data_row[$_] } @attribute_pos;
-        @specified_data  = map { $atom_specifiers{$_} } 
+        @specified_data  = map { $atom_specifiers{$_} }
                            map { $atom_attributes[$_] } @attribute_pos;
 
-        if( @spec_attributes ~~ @specified_data ){
+        if( @spec_attributes ~~ @specified_data ) {
             push( @filtered_atoms, @atom_data_row );
         }
     }
@@ -100,7 +102,8 @@ my $EPSILON = 1.0 / ( 2 ** 52 ); # Machine accuracy for 64-bit floating point
 # coordinate system.
 #
 
-sub create_ref_frame{
+sub create_ref_frame
+{
     my ( $mid_atom_x,  $mid_atom_y,  $mid_atom_z,
          $up_atom_x,   $up_atom_y,   $up_atom_z,
          $side_atom_x, $side_atom_y, $side_atom_z ) = @_;
@@ -114,24 +117,24 @@ sub create_ref_frame{
 
     # Let local x-axis be perpendicular to bonds between mid, up and mid, side
     # atoms.
-    $local_ref_frame[0][0] = 
+    $local_ref_frame[0][0] =
         ( $side_atom_y - $mid_atom_y ) * $local_ref_frame[2][2]
       - ( $side_atom_z - $mid_atom_z ) * $local_ref_frame[2][1];
-    $local_ref_frame[0][1] = 
+    $local_ref_frame[0][1] =
       - ( $side_atom_x - $mid_atom_x ) * $local_ref_frame[2][2]
       + ( $side_atom_z - $mid_atom_z ) * $local_ref_frame[2][0];
-    $local_ref_frame[0][2] = 
+    $local_ref_frame[0][2] =
         ( $side_atom_x - $mid_atom_x ) * $local_ref_frame[2][1]
       - ( $side_atom_y - $mid_atom_y ) * $local_ref_frame[2][0];
 
     # Let local y-axis be in the same plane as mid-up and mid-side bonds.
-    $local_ref_frame[1][0] = 
+    $local_ref_frame[1][0] =
         $local_ref_frame[2][1] * $local_ref_frame[0][2]
       - $local_ref_frame[2][2] * $local_ref_frame[0][1];
     $local_ref_frame[1][1] =
       - $local_ref_frame[2][0] * $local_ref_frame[0][2]
       + $local_ref_frame[2][2] * $local_ref_frame[0][0];
-    $local_ref_frame[1][2] = 
+    $local_ref_frame[1][2] =
         $local_ref_frame[2][0] * $local_ref_frame[0][1]
       - $local_ref_frame[2][1] * $local_ref_frame[0][0];
 
@@ -143,7 +146,8 @@ sub create_ref_frame{
 # to transform global reference frame to chosen one.
 #
 
-sub find_euler_angles{
+sub find_euler_angles
+{
     my ( $mid_atom_x,  $mid_atom_y,  $mid_atom_z,
          $up_atom_x,   $up_atom_y,   $up_atom_z,
          $side_atom_x, $side_atom_y, $side_atom_z ) = @_;
@@ -154,25 +158,25 @@ sub find_euler_angles{
 
     my $z_axis_in_xy_plane;
 
-    my @local_ref_frame = 
+    my @local_ref_frame =
         create_ref_frame( $mid_atom_x,  $mid_atom_y,   $mid_atom_z,
                           $up_atom_x,   $up_atom_y,    $up_atom_z,
                           $side_atom_x, $side_atom_y,  $side_atom_z );
 
     # Projects local z-axis to global xy-plane.
-    $z_axis_in_xy_plane = 
-        sqrt( $local_ref_frame[2][0] * $local_ref_frame[2][0] 
+    $z_axis_in_xy_plane =
+        sqrt( $local_ref_frame[2][0] * $local_ref_frame[2][0]
             + $local_ref_frame[2][1] * $local_ref_frame[2][1] );
 
-    if( $z_axis_in_xy_plane > $EPSILON ){
-        $alpha_rad = 
+    if( $z_axis_in_xy_plane > $EPSILON ) {
+        $alpha_rad =
             atan2( $local_ref_frame[1][0] * $local_ref_frame[2][1]
                  - $local_ref_frame[1][1] * $local_ref_frame[2][0],
                    $local_ref_frame[0][0] * $local_ref_frame[2][1]
                  - $local_ref_frame[0][1] * $local_ref_frame[2][0] );
         $beta_rad = atan2( $z_axis_in_xy_plane, $local_ref_frame[2][2] );
         $gamma_rad = - atan2( - $local_ref_frame[2][0], $local_ref_frame[2][1] );
-    }else{
+    } else {
         $alpha_rad = 0.;
         $beta_rad = ( $local_ref_frame[2][2] > 0. ) ? 0. : $PI;
         $gamma_rad = - atan2( $local_ref_frame[0][1], $local_ref_frame[0][0] );
@@ -184,7 +188,7 @@ sub find_euler_angles{
 # --------------------- Computer algebra software wrappers -------------------- #
 
 #
-# Functions in this block of code act as bridges/wrappers between Perl and 
+# Functions in this block of code act as bridges/wrappers between Perl and
 # programs or modules that can perform symbolic computations, such as Maxima,
 # GNU Octave, GiNaC (C++ package) and etc.
 #
@@ -197,7 +201,7 @@ sub find_euler_angles{
 
 #
 # A wrapper function for Maxima 5.24.0. Takes argument from amino acid
-# model function and performs symbolic matrix multiplications with unknown 
+# model function and performs symbolic matrix multiplications with unknown
 # variables, such as bond dihedral chi angles, and simplifies the expression.
 #
 
