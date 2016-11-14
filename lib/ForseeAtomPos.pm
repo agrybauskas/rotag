@@ -101,8 +101,11 @@ sub select_atom_data
 
     %atom_specifier = @{ $_[0] };
     @data_specifier = $_[1];
-    @atom_data = $_[2];
-    
+    @atom_data      = $_[2];
+
+    my ( @atom_attributes, @filtered_atoms ) = 
+        obtain_atom_site( %atom_specifier, @atom_data );
+
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
