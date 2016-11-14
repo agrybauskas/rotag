@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib";
+use ForseeAtomPos;
+
+my @spec_atom_data = ForseeAtomPos::select_atom_data( [ "label_atom_id" => [ "CA", "CB"] ],
+                                                      [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+                                                      [ <> ] );
+
+
+# my @attribute_names = @{ $filtered_atoms[0] };
+# my @attribute_data =  @{ $filtered_atoms[1] };
+
+# print "loop_\n";
+
+# foreach( @attribute_names ){
+#     print "_atom_site." . $_ . "\n";
+# }
+
+# for( my $i = 0; $i < $#attribute_data + 1; $i++ ){
+#     if( $i % ( $#attribute_names + 1) != 0 ){
+#         print " ", $attribute_data[$i], " ";
+#     }else{
+#         print "\n", $attribute_data[$i];
+#     }
+# }
