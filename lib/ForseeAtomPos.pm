@@ -26,6 +26,7 @@ sub obtain_atom_site
 {
     my @atom_attributes;
     my @atom_data;
+
     my $is_reading_lines = 0;      # Starts/stops reading lines at certain flags.
 
     foreach( @_ ) {
@@ -53,7 +54,7 @@ sub filter_atoms
     #                                          "label_atom_id" => ["CA", "CB"] ].
     my %atom_specifiers = @{ $_[0] };
 
-    my @atom_site = obtain_atom_site( @{ $_[1] } );
+    my @atom_site = obtain_atom_site( @{ $_[1] } ); # Accepts mmCIF format stdin.
     my @atom_attributes = @{ $atom_site[0] };
     my @atom_data  = @{ $atom_site[1] };
 
@@ -85,6 +86,23 @@ sub filter_atoms
     }
 
     return \@atom_attributes, \@filtered_atoms;
+}
+
+#
+# Returns specified attribute data.
+#
+sub select_atom_data
+{
+    my %atom_specifier; # Acts like a atom filter. Example:
+                        #                   [ "label_atom_id" => [ "CA", "CB"] ].
+    my @data_specifier; # Extract only the data user wants. Example:
+                        #                   [ "Cartn_x", "Cartn_y", "Cartn_z" ].
+    my @atom_data;      # mmCIF type data.
+
+    %atom_specifier = @{ $_[0] };
+    @data_specifier = $_[1];
+    @atom_data = $_[2];
+    
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
