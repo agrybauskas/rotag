@@ -3,8 +3,8 @@ package ForseeAtomPos;
 use strict;
 use warnings;
 
-use List::MoreUtils qw( first_index );
-use List::MoreUtils qw( zip );
+use List::MoreUtils qw( first_index ); # TODO: remove and replace dependency.
+no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 
 use Data::Dumper;
 
@@ -33,7 +33,7 @@ sub obtain_atom_site
         if( $_ =~ /_atom_site\.(.+)\n$/ ) {
             push( @atom_attributes, split( " ", $1 ) );
             $is_reading_lines = 1;
-        } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_/ ) {
+        } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
             last;
         } elsif( $is_reading_lines == 1 ) {
             push( @atom_data, split( " ", $_ ) );
