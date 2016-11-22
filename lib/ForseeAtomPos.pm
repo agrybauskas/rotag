@@ -95,17 +95,38 @@ sub filter_atoms
 #
 # Returns specified attribute data.
 #
+
 sub select_atom_data
 {
     my $atom_specifiers = shift;
+    my %atom_specifiers = @$atom_specifiers;
     my @data_specifier  = shift;   # Extract only the data user wants. 
                                    # E.g. [ "Cartn_x", "Cartn_y", "Cartn_z" ].
     my @mmcif_stdin = @_; # mmCIF type data.
 
-    my ( @atom_attributes, @atom_data ) = 
-	filter_atoms( $atom_specifiers, @mmcif_stdin );
+    my @filtered_atoms = filter_atoms( $atom_specifiers, @mmcif_stdin );
+    my @attribute_data = @{ $filtered_atoms[0] };
+    my @atom_data = @{ $filtered_atoms[1] };
 
-    # TODO: continue
+    my @attribute_pos;
+
+    for my $attribute ( @{ $data_specifier[0] } ) {
+        if( $attribute ~~ @attribute_data ) {
+            push( @attribute_pos,
+                  first_index{ $_ eq $attribute } @attribute_data );
+        }
+    }
+
+    my @atom_data_row;
+    my @selected_atom_data;
+
+    for( my $pos  = 0; $pos < $#atom_data; $pos += $#attribute_data + 1) {
+	@atom_data_row = @{ atom_data[$pos..$pos + $#attribute_data] };
+	push( @selected_atom_data,
+	      [ map { $atom_data_row[$_] } @attribute_pos ] );
+    }
+
+    return \@selected_atom_data;
 }
 
 # ------------------------------- Linear algebra ------------------------------ #

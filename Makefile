@@ -11,8 +11,8 @@ test: ${TEST_DIFF}
 ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.dat
 	@./$< | diff -B -w $(basename $@).dat - > $@; \
 	if [ $$? -eq 0 ]; \
-	then echo -e "$<\t[OK]"; \
-	else echo -e "$<\t[FALSE]"; \
+	then printf "$<%15s\n" "[OK]"; \
+	else printf "$<%15s\n" "[FALSE]"; \
 	fi
 
 clean distclean:
