@@ -3,10 +3,11 @@ package ForseeAtomPos;
 use strict;
 use warnings;
 
-use List::MoreUtils qw( first_index ); # TODO: remove and replace dependency.
-no if $] >= 5.017011, warnings => 'experimental::smartmatch';
-
+use List::MoreUtils qw( first_index );     # TODO: remove and replace dependency.
 use Data::Dumper;
+
+no if $] >= 5.017011,                       # WARNING: in newer versions of Perl,
+    warnings => 'experimental::smartmatch'; # smartmach became experimental.
 
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
@@ -50,13 +51,16 @@ sub obtain_atom_site
 
 sub filter_atoms
 {
-    # Criteria for desirable atoms. Example: [ "label_atom_id" => ["SER"],
-    #                                          "label_atom_id" => ["CA", "CB"] ].
-    my %atom_specifiers = @{ $_[0] };
+    # Criteria for desirable atoms. 
+    # E.g. [ "label_atom_id" => ["SER"], 
+    #        "label_atom_id" => ["CA", "CB"] ].
+    my $atom_specifiers = shift;
+    my %atom_specifiers = @$atom_specifiers;
+    my @mmcif_stdin     = @_;
 
-    my @atom_site = obtain_atom_site( @{ $_[1] } ); # Accepts mmCIF format stdin.
+    my @atom_site = obtain_atom_site( @mmcif_stdin );
     my @atom_attributes = @{ $atom_site[0] };
-    my @atom_data  = @{ $atom_site[1] };
+    my @atom_data = @{ $atom_site[1] };
 
     my @attribute_pos; # The position of specified atom attributes in actual
                        # list of attributes of CIF file.
@@ -93,19 +97,15 @@ sub filter_atoms
 #
 sub select_atom_data
 {
-    my %atom_specifier; # Acts like a atom filter. Example:
-                        #                   [ "label_atom_id" => [ "CA", "CB"] ].
-    my @data_specifier; # Extract only the data user wants. Example:
-                        #                   [ "Cartn_x", "Cartn_y", "Cartn_z" ].
-    my @atom_data;      # mmCIF type data.
+    my $atom_specifiers = shift;
+    my @data_specifier  = shift;   # Extract only the data user wants. 
+                                   # E.g. [ "Cartn_x", "Cartn_y", "Cartn_z" ].
+    my @mmcif_stdin = @_; # mmCIF type data.
 
-    %atom_specifier = @{ $_[0] };
-    @data_specifier = $_[1];
-    @atom_data      = $_[2];
+    my ( @atom_attributes, @atom_data ) = 
+	filter_atoms( $atom_specifiers, @mmcif_stdin );
 
-    my ( @atom_attributes, @filtered_atoms ) = 
-        obtain_atom_site( %atom_specifier, @atom_data );
-
+    # TODO: continue
 }
 
 # ------------------------------- Linear algebra ------------------------------ #
