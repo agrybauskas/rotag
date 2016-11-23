@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use ForseeAtomPos;
+use CifParser;
 
 #
 # Test program, as argv, uses both attribute information and mmCIF. In order
@@ -27,7 +27,7 @@ my @attribute_selector = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                            map { [ split( " ", $_ ) ] }
                            split( "&", $attribute_selector ) ];
 
-my @filtered_atoms = ForseeAtomPos::filter_atoms( @attribute_selector, <> );
+my @filtered_atoms = CifParser::filter_atoms( @attribute_selector, <> );
 
 my @attribute_names = @{ $filtered_atoms[0] };
 my @attribute_data =  @{ $filtered_atoms[1] };

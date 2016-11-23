@@ -4,14 +4,14 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use ForseeAtomPos;
+use CifParser;
 
 #
 # Creates standard mmcif output with only _atom_site category and checks,
 # if all data was correctly obtained.
 #
 
-my @atom_site = ForseeAtomPos::obtain_atom_site( <> );
+my @atom_site = CifParser::obtain_atom_site( <> );
 my @attribute_names = @{ $atom_site[0] };
 my @attribute_data =  @{ $atom_site[1] };
 

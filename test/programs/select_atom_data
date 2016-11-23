@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use ForseeAtomPos;
+use CifParser;
 
 #
 # Test program, as argv, uses both attribute filter, attribute data selection
@@ -34,9 +34,9 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
 
-my @selected_atom_data = @{ ForseeAtomPos::select_atom_data( @attribute_filter,
-							     @attribute_select,
-							     <> ) };
+my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
+							 @attribute_select,
+							 <> ) };
 
 for( my $i = 0; $i <= $#selected_atom_data; $i++ ) {
     print( join( " ", @{ $selected_atom_data[$i] } ), "\n" );
