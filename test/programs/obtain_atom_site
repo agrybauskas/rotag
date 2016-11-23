@@ -17,16 +17,14 @@ my @attribute_data =  @{ $atom_site[1] };
 
 print "loop_\n";
 
-foreach( @attribute_names ){
+foreach( @attribute_names ) {
     print "_atom_site." . $_ . "\n";
 }
 
-for( my $i = 0; $i < $#attribute_data + 1; $i++ ){
-    if( $i % ( $#attribute_names + 1) != 0 ){
+for( my $i = 0; $i < $#attribute_data + 1; $i++ ) {
+    if( $i % ( $#attribute_names + 1) != 0 ) {
         print " ", $attribute_data[$i], " ";
-    }else{
+    } else {
         print "\n", $attribute_data[$i];
     }
 }
-
-print( "\n" );

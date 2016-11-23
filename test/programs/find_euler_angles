@@ -13,7 +13,7 @@ while( <> ){
 }
 
     # mid-atom      # up-atom       # side-atom
-my @euler_angles = ForseeAtomPos::find_euler_angles( 
+my @euler_angles = ForseeAtomPos::find_euler_angles(
     $atom_coord[0], $atom_coord[1], $atom_coord[2],   # x-axis
     $atom_coord[3], $atom_coord[4], $atom_coord[5],   # y-axis
     $atom_coord[6], $atom_coord[7], $atom_coord[8] ); # z-axis
