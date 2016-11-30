@@ -4,7 +4,9 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
+use lib "../../lib/cpp";
 use CifParser;
+use ConnectAtoms;
 
 #
 # Test program, as argv, uses both attribute filter, attribute data selection
@@ -38,6 +40,4 @@ my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
 							 @attribute_select,
 							 <> ) };
 
-for( my $i = 0; $i <= $#selected_atom_data; $i++ ) {
-    print( join( " ", @{ $selected_atom_data[$i] } ), "\n" );
-}
+ConnectAtoms::cpp_integration_test();
