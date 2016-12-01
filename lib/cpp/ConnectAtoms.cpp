@@ -1,11 +1,11 @@
-#include "ConnectAtoms.h"
 #include <iostream>
 #include <cmath>
 
+#include "ConnectAtoms.h"
+
 using namespace std;
 
-void cpp_integration_test()
+void connect_atoms()
 {
-  cout << "C++ was integrated correctly." << endl;
-}
 
+}

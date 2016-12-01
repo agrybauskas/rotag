@@ -1,7 +1,7 @@
 %module ConnectAtoms
 
 %{
-    void cpp_integration_test();
+    void connect_atoms();
 %}
 
-void cpp_integration_test();
+void connect_atoms();
