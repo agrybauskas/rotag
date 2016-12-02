@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use lib "../../lib/cpp";
 use CifParser;
 use ConnectAtoms;
 
@@ -39,3 +38,5 @@ my @attribute_select = [ split( ",", $attribute_select ) ];
 my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
 							 @attribute_select,
 							 <> ) };
+
+ConnectAtoms::create_box( @selected_atom_data );
