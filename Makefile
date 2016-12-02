@@ -1,35 +1,4 @@
 #
-# C++ library build and implementation to Perl5 using SWIG
-#
-
-CXX=g++
-SRC=lib/cpp
-
-CPP=${wildcard ${SRC}/*.cpp}
-SWIG=${wildcard ${SRC}/*.i}
-
-PERL_OBJS=${CPP:%.cpp=%.pm}
-SHARED_OBJS=${CPP:%.cpp=%.so}
-
-all: ${SHARED_OBJS} ${PERL_OBJS}
-
-%.pm %_wrap.cxx: %.i
-	swig -c++ -perl $<
-
-%.o: %.cpp
-	g++ -c $< -o $@
-
-%_wrap.o: %_wrap.cxx
-	g++ -c $< `perl -MConfig \
-			-e 'print join(" ", \
-				       @Config{qw(ccflags optimize cccdlflags)},\
-				       "-I$$Config{archlib}/CORE")'` \
-	    -o $@
-
-%.so: %.o %_wrap.o
-	g++ -shared $^ -o $@
-
-#
 # Unit tests
 #
 
