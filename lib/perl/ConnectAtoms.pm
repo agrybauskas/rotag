@@ -1,6 +1,6 @@
 package ConnectAtoms;
 
-use Data::Dumper;
+use List::Util qw(min max);
 
 #
 # Returns lowest and highest number of given sequence of numbers.
@@ -10,17 +10,8 @@ sub min_max
 {
     my @seq_of_numbers = @_;
 
-    my $min_number;
-    my $max_number;
-
-    foreach( @seq_of_numbers ) {
-	if( $_ < $min_number ) {
-	    $min_number = $_;
-	}
-	elsif( $_ > $max_number ) {
-	    $max_number = $_;
-	}
-    }
+    my $min_number = min( @seq_of_numbers );
+    my $max_number = max( @seq_of_numbers );
 
     return $min_number, $max_number;
 }
