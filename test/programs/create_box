@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use Data::Dumper;
 
 use lib "../../lib/perl";
 use CifParser;
@@ -21,7 +22,7 @@ use ConnectAtoms;
 #
 # Attribute data is selected in such form:
 #
-# "Cartn_x,Cartn_y,Cartn_z"
+# "Cartn_x, Cartn_y, Cartn_z"
 #
 # The third argument is mmCIF format stdin.
 #
@@ -39,4 +40,5 @@ my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
 							 @attribute_select,
 							 <> ) };
 
-ConnectAtoms::create_box( @selected_atom_data );
+my @atom_coordinates = ConnectAtoms::create_box( @selected_atom_data );
+
