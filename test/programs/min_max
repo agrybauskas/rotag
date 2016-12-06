@@ -2,7 +2,6 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 use lib "../../lib/perl";
 use ConnectAtoms;
@@ -10,9 +9,6 @@ use ConnectAtoms;
 my @seq_of_numbers = map { split } 
                      grep { ! /\#/ } <>;
 
-print Dumper \@seq_of_numbers;
-
-my ( $min_number, $max_number ) =
-    @{ ConnectAtoms::min_max( \@seq_of_numbers ) };
+my ( $min_number, $max_number ) = ConnectAtoms::min_max( @seq_of_numbers );
 
 print( join( " ", ( $min_number, $max_number ) ) . "\n" );
