@@ -38,10 +38,3 @@ my @attribute_select = [ split( ",", $attribute_select ) ];
 my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
 							 @attribute_select,
 							 <> ) };
-
-my @box_boundaries = ConnectAtoms::create_box( @selected_atom_data );
-
-print map { ( $_ % 2 ) == 0
-		        ? $box_boundaries[$_-1] . "\n"
-			: $box_boundaries[$_-1] . "\t" }
-      ( 1..$#box_boundaries + 1 )

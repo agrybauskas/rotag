@@ -14,6 +14,7 @@ use Data::Dumper;
 sub create_box
 {
     my @atom_coord = @_;
+
     my @atom_coord_x = map { $_->[0] } @atom_coord;
     my @atom_coord_y = map { $_->[1] } @atom_coord;
     my @atom_coord_z = map { $_->[2] } @atom_coord;
@@ -44,7 +45,9 @@ sub create_box
 
 sub divide_box
 {
-
+    my $bond_length = shift;
+    my $atom_coord  = @_;
+    
 }
 
 1;
