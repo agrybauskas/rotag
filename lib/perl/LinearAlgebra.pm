@@ -12,10 +12,14 @@ use warnings;
 my $PI = 4 * atan2( 1, 1 );
 my $EPSILON = 1.0 / ( 2 ** 52 ); # Machine accuracy for 64-bit floating point
                                  # numbers.
+                                 # TODO: make machine accuracy dependent on the
+                                 # machine.
 
 #
 # Creates local reference frame for any three given atoms positions in cartesian
 # coordinate system.
+# Input( 1 arg  ): array of three atom coordinates in x, y, z form.
+# Output( 1 arg ): array of reference frame coordinates in x, y, z form.
 #
 
 sub create_ref_frame
@@ -60,6 +64,8 @@ sub create_ref_frame
 #
 # Function calculates Euler rotational angles (alpha, beta, gamma) that are used
 # to transform global reference frame to chosen one.
+# Input( 1 arg  ): array of three atom coordinates in x, y, z form.
+# Output( 3 arg ): euler angles (alpha, beta, gamma) in radians.
 #
 
 sub find_euler_angles
@@ -101,12 +107,8 @@ sub find_euler_angles
     return $alpha_rad, $beta_rad, $gamma_rad;
 }
 
-# --------------------- Computer algebra software wrappers -------------------- #
+# ---------------------------- Symbolic linear algebra ------------------------ #
 
-#
-# Functions in this block of code act as bridges/wrappers between Perl and
-# programs or modules that can perform symbolic computations, such as Maxima,
-# GNU Octave, GiNaC (C++ package) and etc.
 #
 # Example of rotation along z-axis by chi angle in radians:
 #
@@ -114,13 +116,5 @@ sub find_euler_angles
 #      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
 #      \    0         0     1 /   \ z /   \              0              /
 #
-
-#
-# A wrapper function for Maxima 5.24.0. Takes argument from amino acid
-# model function and performs symbolic matrix multiplications with unknown
-# variables, such as bond dihedral chi angles, and simplifies the expression.
-#
-
-sub simplify_maxima{}
 
 1;
