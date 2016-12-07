@@ -1,3 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-../programs/create_ref_frame < ../input/three_atom_coord_001.dat
+
+atom_coord=../input/three_atom_coord_001.dat
+
+../programs/create_ref_frame < ${atom_coord}

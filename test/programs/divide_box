@@ -38,3 +38,4 @@ my @attribute_select = [ split( ",", $attribute_select ) ];
 my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
 							 @attribute_select,
 							 <> ) };
+

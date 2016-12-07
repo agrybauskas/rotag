@@ -1,3 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-../programs/obtain_atom_site < ../input/serine_001.cif
+
+cif_file=../input/serine_001.cif
+
+../programs/obtain_atom_site < ${cif_file}

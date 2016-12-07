@@ -1,3 +1,8 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-../programs/select_atom_data "label_atom_id CA,C,CB,OG" "Cartn_x,Cartn_y,Cartn_z" < ../input/serine_001.cif
+
+cif_file=../input/serine_001.cif
+atom_specifier="label_atom_id CA,C,CB,OG"
+data_specifier="Cartn_x,Cartn_y,Cartn_z"
+
+../programs/select_atom_data "${atom_specifier}" "${data_specifier}" < ${cif_file}
