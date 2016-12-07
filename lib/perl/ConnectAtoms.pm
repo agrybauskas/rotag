@@ -5,6 +5,7 @@ use warnings;
 
 use List::Util qw(min max);
 use POSIX qw(ceil);
+use List::MoreUtils qw(zip);
 use Data::Dumper;
 
 #
@@ -51,20 +52,35 @@ sub create_box
 sub connect_atoms
 {
     my $bond_length = shift;
-    my @atom_coord  = @_;
+    my @all_atom_coord  = @_;
 
     # Create smallest box that contain all atoms.
-    my @boundary_box = create_box( @atom_coord );
+    my @boundary_box = create_box( @all_atom_coord );
 
     # Divide box into cells, edges of which has length of bond.
-    my $cell_number_x = ceil( ( $boundary_box[1] - $boundary_box[0] ) / $bond_length );
-    my $cell_number_y = ceil( ( $boundary_box[3] - $boundary_box[2] ) / $bond_length );
-    my $cell_number_z = ceil( ( $boundary_box[5] - $boundary_box[4] ) / $bond_length );
+    my $cell_number_x =
+	ceil( ( $boundary_box[1] - $boundary_box[0] ) / $bond_length );
+    my $cell_number_y =
+	ceil( ( $boundary_box[3] - $boundary_box[2] ) / $bond_length );
+    my $cell_number_z =
+	ceil( ( $boundary_box[5] - $boundary_box[4] ) / $bond_length );
 
     my @grid_box;
 
-    
-    
+    foreach my $idx_x ( ( 1..$cell_number_x ) ) {
+	foreach my $idx_y ( ( 1..$cell_number_y ) ) {
+	    foreach my $idx_z ( ( 1..$cell_number_z ) ) {
+		push( @grid_box, [ $idx_x, $idx_y, $idx_z ] => [] );
+	    }
+	}
+    }
+
+    # Assign atoms to cells in grid_box.
+    foreach my $atom_coord ( @all_atom_coord ) {
+	foreach my $cell ( @grid_box ) {
+	}
+    }
+
 }
 
 1;
