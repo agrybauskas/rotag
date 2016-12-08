@@ -26,5 +26,4 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.dat
 #
 
 clean distclean:
-	rm -f ${SHARED_OBJS} ${PERL_OBJS}
 	rm -f ${TEST_DIFF}

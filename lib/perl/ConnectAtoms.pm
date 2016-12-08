@@ -4,8 +4,6 @@ use strict;
 use warnings;
 
 use List::Util qw(min max);
-use POSIX qw(ceil);
-use List::MoreUtils qw(zip);
 use Data::Dumper;
 
 #
@@ -59,28 +57,64 @@ sub connect_atoms
 
     # Divide box into cells, edges of which has length of bond.
     my $cell_number_x =
-	ceil( ( $boundary_box[1] - $boundary_box[0] ) / $bond_length );
+	( ( $boundary_box[1] - $boundary_box[0] ) / $bond_length ) + 1;
     my $cell_number_y =
-	ceil( ( $boundary_box[3] - $boundary_box[2] ) / $bond_length );
+	( ( $boundary_box[3] - $boundary_box[2] ) / $bond_length ) + 1;
     my $cell_number_z =
-	ceil( ( $boundary_box[5] - $boundary_box[4] ) / $bond_length );
+	( ( $boundary_box[5] - $boundary_box[4] ) / $bond_length ) + 1;
 
     my @grid_box;
 
     foreach my $idx_x ( ( 1..$cell_number_x ) ) {
 	foreach my $idx_y ( ( 1..$cell_number_y ) ) {
 	    foreach my $idx_z ( ( 1..$cell_number_z ) ) {
-		push( @grid_box, [ $idx_x, $idx_y, $idx_z ] => [] );
+		push( @grid_box, [ $idx_x, $idx_y, $idx_z ], [] );
 	    }
 	}
     }
 
-    # Assign atoms to cells in grid_box.
+    # Assign atoms to cells in grid box.
     foreach my $atom_coord ( @all_atom_coord ) {
-	foreach my $cell ( @grid_box ) {
+	for( my $cell = 0; $cell < $#grid_box; $cell += 2 ) {
+	    if( $atom_coord->[0] >=
+		$boundary_box[0] + ( $grid_box[$cell]->[0] - 1 ) * $bond_length
+	     && $atom_coord->[0] <
+		$boundary_box[0] +   $grid_box[$cell]->[0] * $bond_length
+	     &&	$atom_coord->[1] >=
+		$boundary_box[2] + ( $grid_box[$cell]->[1] - 1 ) * $bond_length
+	     && $atom_coord->[1] <
+		$boundary_box[2] +   $grid_box[$cell]->[1] * $bond_length
+	     &&	$atom_coord->[2] >=
+		$boundary_box[4] + ( $grid_box[$cell]->[2] - 1 ) * $bond_length
+	     && $atom_coord->[2] <
+		$boundary_box[4] +   $grid_box[$cell]->[2] * $bond_length ) {
+		push( @{ $grid_box[$cell+1] }, [ @$atom_coord ] );
+	    }
 	}
     }
 
+    # Remove cells which are empty/
+    # print Dumper @grid_box;
+    # print "\n";
+    # print Dumper @boundary_box;
+    # print "\n";
+
+    # foreach my $atom_coord ( @all_atom_coord ) {
+    # 	print $atom_coord->[0], "\t", $atom_coord->[1], "\t", $atom_coord->[2], "\n";
+    # }
+
+    # print "\n";
+
+    # for( my $cell = 0; $cell < $#grid_box / 2; $cell += 2 ) {
+    # 	print join( ",", @{$grid_box[$cell]} ) . "\n";
+    # 	print $boundary_box[0] + ( $grid_box[$cell]->[0] - 1 ) * $bond_length, 
+    # 	"\t", $boundary_box[0] +   $grid_box[$cell]->[0] * $bond_length . "\n";
+    # 	print $boundary_box[2] + ( $grid_box[$cell]->[1] - 1 ) * $bond_length, 
+    # 	"\t", $boundary_box[2] +   $grid_box[$cell]->[1] * $bond_length . "\n";
+    # 	print $boundary_box[4] + ( $grid_box[$cell]->[2] - 1 ) * $bond_length, 
+    # 	"\t", $boundary_box[4] +   $grid_box[$cell]->[2] * $bond_length . "\n";
+    # 	print "\n";
+    # }
 }
 
 1;
