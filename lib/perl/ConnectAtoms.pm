@@ -52,10 +52,10 @@ sub connect_atoms
     my $bond_length = shift;
     my @all_atom_coord  = @_;
 
-    # Create smallest box that contain all atoms.
+    # Creates smallest box that contain all atoms.
     my @boundary_box = create_box( @all_atom_coord );
 
-    # Divide box into cells, edges of which has length of bond.
+    # Divides box into cells, edges of which has length of bond.
     my $cell_number_x =
 	( ( $boundary_box[1] - $boundary_box[0] ) / $bond_length ) + 1;
     my $cell_number_y =
@@ -73,7 +73,7 @@ sub connect_atoms
 	}
     }
 
-    # Assign atoms to cells in grid box.
+    # Assigns atoms to cells in grid box.
     foreach my $atom_coord ( @all_atom_coord ) {
 	for( my $cell = 0; $cell < $#grid_box; $cell += 2 ) {
 	    if( $atom_coord->[0] >=
@@ -93,28 +93,14 @@ sub connect_atoms
 	}
     }
 
-    # Remove cells which are empty/
-    print Dumper @grid_box;
-    print "\n";
-    print Dumper @boundary_box;
-    print "\n";
+    # Removes empty cells.
+    my @grid_box_full; # Without empty cells.
 
-    # foreach my $atom_coord ( @all_atom_coord ) {
-    # 	print $atom_coord->[0], "\t", $atom_coord->[1], "\t", $atom_coord->[2], "\n";
-    # }
-
-    # print "\n";
-
-    # for( my $cell = 0; $cell < $#grid_box / 2; $cell += 2 ) {
-    # 	print join( ",", @{$grid_box[$cell]} ) . "\n";
-    # 	print $boundary_box[0] + ( $grid_box[$cell]->[0] - 1 ) * $bond_length, 
-    # 	"\t", $boundary_box[0] +   $grid_box[$cell]->[0] * $bond_length . "\n";
-    # 	print $boundary_box[2] + ( $grid_box[$cell]->[1] - 1 ) * $bond_length, 
-    # 	"\t", $boundary_box[2] +   $grid_box[$cell]->[1] * $bond_length . "\n";
-    # 	print $boundary_box[4] + ( $grid_box[$cell]->[2] - 1 ) * $bond_length, 
-    # 	"\t", $boundary_box[4] +   $grid_box[$cell]->[2] * $bond_length . "\n";
-    # 	print "\n";
-    # }
+    for( my $cell = 0; $cell < $#grid_box; $cell += 2 ) {
+        if( $#{ $grid_box[$cell+1] } != -1 ){
+            push( @grid_box_full, ( $grid_box[$cell], $grid_box[$cell+1] ) );
+        }
+    }
 }
 
 1;

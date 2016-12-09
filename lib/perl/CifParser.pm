@@ -120,7 +120,7 @@ sub select_atom_data
     for my $attribute ( @{ $data_specifier[0] } ) {
         if( $attribute ~~ @attribute_data ) {
             push( @attribute_pos,
-                  first_index{ $_ eq $attribute } @attribute_data );
+                  first_index { $_ eq $attribute } @attribute_data );
         }
     }
 
