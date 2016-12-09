@@ -94,10 +94,10 @@ sub connect_atoms
     }
 
     # Remove cells which are empty/
-    # print Dumper @grid_box;
-    # print "\n";
-    # print Dumper @boundary_box;
-    # print "\n";
+    print Dumper @grid_box;
+    print "\n";
+    print Dumper @boundary_box;
+    print "\n";
 
     # foreach my $atom_coord ( @all_atom_coord ) {
     # 	print $atom_coord->[0], "\t", $atom_coord->[1], "\t", $atom_coord->[2], "\n";
