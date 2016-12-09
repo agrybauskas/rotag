@@ -97,10 +97,12 @@ sub connect_atoms
     my @grid_box_full; # Without empty cells.
 
     for( my $cell = 0; $cell < $#grid_box; $cell += 2 ) {
-        if( $#{ $grid_box[$cell+1] } != -1 ){
+        if( $#{ $grid_box[$cell+1] } != -1 ) {
             push( @grid_box_full, ( $grid_box[$cell], $grid_box[$cell+1] ) );
         }
     }
+
+    foreach( @grid_box_full ) {}
 }
 
 1;
