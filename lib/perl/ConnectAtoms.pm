@@ -95,14 +95,52 @@ sub connect_atoms
 
     # Removes empty cells.
     my @grid_box_full; # Without empty cells.
+    my %grid_box_full; # Hash version of the same array. Will be esier to find
+                       # neighbouring cells.
 
     for( my $cell = 0; $cell < $#grid_box; $cell += 2 ) {
         if( $#{ $grid_box[$cell+1] } != -1 ) {
-            push( @grid_box_full, ( $grid_box[$cell], $grid_box[$cell+1] ) );
+            push( @grid_box_full, 
+		  join( ",", @{ $grid_box[$cell] } ), ( $grid_box[$cell+1] ) );
         }
     }
 
-    foreach( @grid_box_full ) {}
+    %grid_box_full = @grid_box_full;
+
+    my @cell_idx;
+
+    # For each cell, checks neighbouring cells.
+    foreach my $cell ( keys %grid_box_full ) {
+	@cell_idx = split( ",", $cell );
+
+	my @neighbour_cells; # The array will contain all atoms of the neighbouring
+	                     # 26 cells.
+
+	# $i represents x, $j - y, $k - z coordinates.
+	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
+	    for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
+		for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {      
+		    if ( exists $grid_box_full{"$i,$j,$k"} ) {
+			push( @neighbour_cells, @{ $grid_box_full{"$i,$j,$k"} } );
+		    }
+		}
+	    }
+	}
+
+	# Checks distance between neighbouring atoms by formula:
+	# x^2+y^2+z^2 < (bond_length)^2
+	# TODO: remember to add atoms inside the center cell.
+    	foreach my $cell_atom_coord ( @{ $grid_box_full{$cell} } ) {
+    	    foreach my $neighbour_atom ( @neighbour_cells ) {
+		if( ( ( $neighbour_atom->[0] - $cell_atom_coord->[0] ) ** 2
+		    + ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
+		    + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2 ) 
+		    < $bond_length ** 2 ) {
+		    print "Bond\n";
+		}
+    	    }
+    	}
+    }
 }
 
 1;
