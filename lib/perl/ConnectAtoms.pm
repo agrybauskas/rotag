@@ -6,6 +6,8 @@ use warnings;
 use List::Util qw(min max);
 use Data::Dumper;
 
+use Math::Round;
+
 #
 # Given the cartesian coordinates (x, y, z) of atoms, function returns the
 # dimensions of smallest possible box that contains all atoms.
@@ -116,6 +118,8 @@ sub connect_atoms
 	my @neighbour_cells; # The array will contain all atoms of the neighbouring
 	                     # 26 cells.
 
+	# TODO: maybe introduce regular expression instead of looking for every
+	# possible cell.
 	# $i represents x, $j - y, $k - z coordinates.
 	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
 	    for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
@@ -129,17 +133,26 @@ sub connect_atoms
 
 	# Checks distance between neighbouring atoms by formula:
 	# x^2+y^2+z^2 < (bond_length)^2
-	# TODO: remember to add atoms inside the center cell.
+	my $distance_btw_atoms;
+
+	# TODO: add atoms that are in the center cell.
     	foreach my $cell_atom_coord ( @{ $grid_box_full{$cell} } ) {
     	    foreach my $neighbour_atom ( @neighbour_cells ) {
-		if( ( ( $neighbour_atom->[0] - $cell_atom_coord->[0] ) ** 2
+		$distance_btw_atoms =  
+		      ( $neighbour_atom->[0] - $cell_atom_coord->[0] ) ** 2
 		    + ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
-		    + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2 ) 
-		    < $bond_length ** 2 ) {
-		    print "Bond\n";
+		    + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2;
+
+		# TODO: deal with approximate distances in mmCif.
+		if( ( $distance_btw_atoms >
+		      ( $bond_length - 0.1 * $bond_length ) ** 2 )
+		 && ( $distance_btw_atoms <
+		      ( $bond_length + 0.1 * $bond_length ) ** 2 ) ) {
+		    print sqrt( $distance_btw_atoms ) . "\n";
 		}
-    	    }
-    	}
+    	
+	    }
+	}
     }
 }
 
