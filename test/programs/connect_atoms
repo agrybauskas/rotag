@@ -41,4 +41,4 @@ my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
 
                           # Bond length in angstrom. TODO: find more accurate
                           # C-C, C-N, C-O, C=C, C=N values.
-ConnectAtoms::connect_atoms( 1.52, @selected_atom_data );
+ConnectAtoms::connect_atoms( 1.52, 0.15, @selected_atom_data );

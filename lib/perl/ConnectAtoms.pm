@@ -6,8 +6,6 @@ use warnings;
 use List::Util qw(min max);
 use Data::Dumper;
 
-use Math::Round;
-
 #
 # Given the cartesian coordinates (x, y, z) of atoms, function returns the
 # dimensions of smallest possible box that contains all atoms.
@@ -52,6 +50,7 @@ sub create_box
 sub connect_atoms
 {
     my $bond_length = shift;
+    my $length_error = shift; # Shows, how bond length might vary.
     my @all_atom_coord  = @_;
 
     # Creates smallest box that contain all atoms.
@@ -62,6 +61,8 @@ sub connect_atoms
     my $cell_index_x;
     my $cell_index_y;
     my $cell_index_z;
+
+    my %connected_atoms;
 
     # Assign atoms to cells in grid box.
     foreach my $atom_coord ( @all_atom_coord ) {
@@ -93,36 +94,48 @@ sub connect_atoms
 	# $i represents x, $j - y, $k - z coordinates.
 	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
 	    for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
-		for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {      
-		    if ( exists $grid_box{"$i,$j,$k"} ) {
+		for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
+		    if( exists $grid_box{"$i,$j,$k"} ) {
 			push( @neighbour_cells, @{ $grid_box{"$i,$j,$k"} } );
 		    }
 		}
 	    }
 	}
 
-	# Checks distance between neighbouring atoms by formula:
-	# x^2+y^2+z^2 < (bond_length)^2
-	my $distance_btw_atoms;
-
 	# TODO: add atoms that are in the center cell.
-    	foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {
+    	foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {	    
     	    foreach my $neighbour_atom ( @neighbour_cells ) {
-	    	$distance_btw_atoms =  
+		# Checks distance between neighbouring atoms by formula:
+		# x^2+y^2+z^2 < (bond_length)^2
+		my $distance_btw_atoms;
+
+	    	$distance_btw_atoms =
 		    ( $neighbour_atom->[0] - $cell_atom_coord->[0] ) ** 2
 	    	  + ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
 	    	  + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2;
 
-		# TODO: deal with approximate distances in mmCif.
 		if( ( $distance_btw_atoms >
-		      ( $bond_length - 0.1 * $bond_length ) ** 2 )
+		      ( $bond_length - $length_error ) ** 2 )
 		 && ( $distance_btw_atoms <
-		      ( $bond_length + 0.1 * $bond_length ) ** 2 ) ) {
-		    print sqrt( $distance_btw_atoms ) . "\n";
-		}    	
+		      ( $bond_length + $length_error ) ** 2 ) ) {
+
+		    if( exists $connected_atoms{
+			join( ",", @$cell_atom_coord ) } ) {
+			push( @{ $connected_atoms{
+			    join( ",", @$cell_atom_coord )} },
+			      join( ",", @$neighbour_atom ) );
+		    } else {
+			$connected_atoms{ 
+			    join( ",", @$cell_atom_coord )} =
+				[ join( ",", @$neighbour_atom ) ]
+		    }
+
+		}
 	    }
 	}
     }
+
+    return \%connected_atoms;
 }
 
 1;
