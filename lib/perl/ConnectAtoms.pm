@@ -59,11 +59,11 @@ sub connect_atoms
 
     # Divides box into cells, edges of which has length of bond.
     my $cell_number_x =
-    	( ( $boundary_box[1] - $boundary_box[0] ) / $bond_length ) + 1;
+    	int( ( $boundary_box[1] - $boundary_box[0] ) / $bond_length ) + 1;
     my $cell_number_y =
-    	( ( $boundary_box[3] - $boundary_box[2] ) / $bond_length ) + 1;
+    	int( ( $boundary_box[3] - $boundary_box[2] ) / $bond_length ) + 1;
     my $cell_number_z =
-    	( ( $boundary_box[5] - $boundary_box[4] ) / $bond_length ) + 1;
+    	int( ( $boundary_box[5] - $boundary_box[4] ) / $bond_length ) + 1;
 
     my @grid_box;
 
@@ -76,24 +76,39 @@ sub connect_atoms
     }
 
     # Assigns atoms to cells in grid box.
-    foreach my $atom_coord ( @all_atom_coord ) {
-    	for( my $cell = 0; $cell < $#grid_box; $cell += 2 ) {
-    	    if( $atom_coord->[0] >=
-    		$boundary_box[0] + ( $grid_box[$cell]->[0] - 1 ) * $bond_length
-    	     && $atom_coord->[0] <
-    		$boundary_box[0] +   $grid_box[$cell]->[0] * $bond_length
-    	     &&	$atom_coord->[1] >=
-    		$boundary_box[2] + ( $grid_box[$cell]->[1] - 1 ) * $bond_length
-    	     && $atom_coord->[1] <
-    		$boundary_box[2] +   $grid_box[$cell]->[1] * $bond_length
-    	     &&	$atom_coord->[2] >=
-    		$boundary_box[4] + ( $grid_box[$cell]->[2] - 1 ) * $bond_length
-    	     && $atom_coord->[2] <
-    		$boundary_box[4] +   $grid_box[$cell]->[2] * $bond_length ) {
-    		push( @{ $grid_box[$cell+1] }, [ @$atom_coord ] );
-    	    }
-    	}
-    }
+    # foreach my $atom_coord ( @all_atom_coord ) {
+    # 	for( my $cell = 0; $cell < $#grid_box; $cell += 2 ) {
+    # 	    if( $atom_coord->[0] <
+    # 		$boundary_box[0] + ( $grid_box[$cell]->[0] - 1 ) * $bond_length ) {
+    # 		next;
+    # 	    }
+
+    # 	    if( $atom_coord->[0] >=
+    # 		$boundary_box[0] +   $grid_box[$cell]->[0] * $bond_length ) {
+    # 		next;
+    # 	    }
+
+    # 	    if( $atom_coord->[1] <
+    # 		$boundary_box[2] + ( $grid_box[$cell]->[1] - 1 ) * $bond_length ) {
+    # 		next;
+    # 	    }
+
+    # 	    if( $atom_coord->[1] >=
+    # 		$boundary_box[2] +   $grid_box[$cell]->[1] * $bond_length ) {
+    # 		next;
+    # 	    }
+
+    # 	    if(	$atom_coord->[2] <
+    # 		$boundary_box[4] + ( $grid_box[$cell]->[2] - 1 ) * $bond_length ) {
+    # 		next;
+    # 	    }
+
+    # 	    if( $atom_coord->[2] >=
+    # 		$boundary_box[4] +   $grid_box[$cell]->[2] * $bond_length ) {
+    # 		push( @{ $grid_box[$cell+1] }, [ @$atom_coord ] );
+    # 	    }
+    # 	}
+    # }
 
     # Removes empty cells.
     # my @grid_box_full; # Without empty cells.
