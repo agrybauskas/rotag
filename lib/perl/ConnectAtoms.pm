@@ -45,6 +45,8 @@ sub create_box
 # Divides box into grid of cubes that has length of the desired bond. If box
 # is not perfectly divisible, then the boundaries are extended accordingly.
 # Input (2 args): bond length in angstroms, coordinates of atoms (x, y, z).
+# Output (1 arg): hash of atom coordinates (x, y, z) as keys and atom
+#                 coordinates that are connected to as values.
 #
 
 sub connect_atoms

@@ -48,8 +48,8 @@ sub obtain_atom_site
 #
 # From mmCIF file, extracts atoms with specified criteria, such as, atom type,
 # residue id, chain id and etc.
-# Input( 2 args ): array of hashes: atom specifier => values, mmCIF file.
-# Output( 1 arg ): array of atom attributes, array of atom data.
+# Input( 2 args  ): array of hashes: atom specifier => values, mmCIF file.
+# Output( 2 args ): array of atom attributes, array of atom data.
 #
 
 sub filter_atoms
