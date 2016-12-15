@@ -16,7 +16,6 @@ use ConnectAtoms;
 ## Example: ./connect_atoms 1.51 0.15 < example.cif
 ##
 
-# TODO: implement SOptions instead of ARGV.
 my $bond_length       = shift; # In angstroms.
 my $bond_length_error = shift; # In angstroms.
 my @cif_file;                  # mmcif format file.
@@ -25,9 +24,38 @@ while( <> ) {
     push( @cif_file, $_ );
 }
 
-my @atom_coord = CifParser::obtain_atom_site( @cif_file );
+my $all_atom_coord =
+    CifParser::select_atom_data( [],
+				 [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+				 @cif_file );
+my %connected_atoms =
+    %{ ConnectAtoms::connect_atoms( $bond_length,
+				    $bond_length_error,
+				    @$all_atom_coord ) };
+my @atom_coord;
+my $atom_data;
 
-# my $connected_atoms =
-#     ConnectAtoms::connect_atoms( $bond_length,
-#                                  $bond_length_error,
-#                                  @atom_coord );
+foreach( keys %connected_atoms ) {
+    @atom_coord = split( ",", $_ );
+
+    ( undef, $atom_data ) =
+	CifParser::filter_atoms( [ "Cartn_x" => $atom_coord[0],
+				   "Cartn_y" => $atom_coord[1],
+				   "Cartn_z" => $atom_coord[2] ],
+				 @cif_file );
+    print "$atom_data->[3]$atom_data->[1]:";
+
+    foreach( @{ $connected_atoms{$_} } ) {
+	@atom_coord = split( ",", $_ );
+
+	( undef, $atom_data ) =
+	    CifParser::filter_atoms( [ "Cartn_x" => $atom_coord[0],
+				       "Cartn_y" => $atom_coord[1],
+				       "Cartn_z" => $atom_coord[2] ],
+				     @cif_file );
+
+	print "$atom_data->[3]$atom_data->[1]:";
+    }
+
+    print "\n";
+}
