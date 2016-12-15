@@ -1,0 +1,42 @@
+data_serine
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+ATOM   1850 N N   . TRP A 1 276 ? 41.817  -11.416 41.202  1.00 35.78  ? ? ? ? ? ? 321 TRP A N   1 
+ATOM   1851 C CA  . TRP A 1 276 ? 42.322  -12.728 40.820  1.00 41.40  ? ? ? ? ? ? 321 TRP A CA  1 
+ATOM   1852 C C   . TRP A 1 276 ? 43.857  -12.726 40.819  1.00 48.96  ? ? ? ? ? ? 321 TRP A C   1 
+ATOM   1853 O O   . TRP A 1 276 ? 44.473  -13.655 41.350  1.00 47.94  ? ? ? ? ? ? 321 TRP A O   1 
+ATOM   1854 C CB  . TRP A 1 276 ? 41.807  -13.174 39.446  1.00 41.59  ? ? ? ? ? ? 321 TRP A CB  1 
+ATOM   1855 C CG  . TRP A 1 276 ? 42.524  -14.431 38.994  1.00 47.77  ? ? ? ? ? ? 321 TRP A CG  1 
+ATOM   1856 C CD1 . TRP A 1 276 ? 43.721  -14.507 38.322  1.00 49.10  ? ? ? ? ? ? 321 TRP A CD1 1 
+ATOM   1857 C CD2 . TRP A 1 276 ? 42.102  -15.790 39.213  1.00 43.47  ? ? ? ? ? ? 321 TRP A CD2 1 
+ATOM   1858 N NE1 . TRP A 1 276 ? 44.069  -15.825 38.118  1.00 45.66  ? ? ? ? ? ? 321 TRP A NE1 1 
+ATOM   1859 C CE2 . TRP A 1 276 ? 43.092  -16.630 38.643  1.00 45.87  ? ? ? ? ? ? 321 TRP A CE2 1 
+ATOM   1860 C CE3 . TRP A 1 276 ? 40.982  -16.375 39.831  1.00 39.18  ? ? ? ? ? ? 321 TRP A CE3 1 
+ATOM   1861 C CZ2 . TRP A 1 276 ? 43.002  -18.020 38.675  1.00 42.24  ? ? ? ? ? ? 321 TRP A CZ2 1 
+ATOM   1862 C CZ3 . TRP A 1 276 ? 40.894  -17.759 39.870  1.00 44.62  ? ? ? ? ? ? 321 TRP A CZ3 1 
+ATOM   1863 C CH2 . TRP A 1 276 ? 41.903  -18.570 39.286  1.00 42.24  ? ? ? ? ? ? 321 TRP A CH2 1 

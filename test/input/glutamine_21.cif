@@ -1,0 +1,37 @@
+data_serine
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+ATOM   1    N N   . GLN A 1 5   ? 29.387  3.534   66.356  1.00 75.98  ? ? ? ? ? ? 50  GLN A N   1 
+ATOM   2    C CA  . GLN A 1 5   ? 27.956  3.819   66.294  1.00 70.38  ? ? ? ? ? ? 50  GLN A CA  1 
+ATOM   3    C C   . GLN A 1 5   ? 27.172  2.619   66.782  1.00 69.76  ? ? ? ? ? ? 50  GLN A C   1 
+ATOM   4    O O   . GLN A 1 5   ? 26.210  2.228   66.146  1.00 80.38  ? ? ? ? ? ? 50  GLN A O   1 
+ATOM   5    C CB  . GLN A 1 5   ? 27.529  4.185   64.864  1.00 76.33  ? ? ? ? ? ? 50  GLN A CB  1 
+ATOM   6    C CG  . GLN A 1 5   ? 28.426  5.232   64.165  1.00 89.91  ? ? ? ? ? ? 50  GLN A CG  1 
+ATOM   7    C CD  . GLN A 1 5   ? 29.206  4.679   62.955  1.00 90.81  ? ? ? ? ? ? 50  GLN A CD  1 
+ATOM   8    O OE1 . GLN A 1 5   ? 28.618  4.166   61.995  1.00 78.39  ? ? ? ? ? ? 50  GLN A OE1 1 
+ATOM   9    N NE2 . GLN A 1 5   ? 30.536  4.801   62.999  1.00 88.68  ? ? ? ? ? ? 50  GLN A NE2 1 
