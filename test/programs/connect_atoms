@@ -35,13 +35,28 @@ my %connected_atoms =
 				    @$all_atom_coord ) };
 
 my @atom_coord;
+my $parent_atom;
+my $child_atom;
 
 foreach( keys %connected_atoms ) {
     @atom_coord = split( ",", $_ );
-}
+    ( undef, $parent_atom ) =
+	CifParser::filter_atoms( [ "Cartn_x" => $atom_coord[0],
+				   "Cartn_y" => $atom_coord[1],
+				   "Cartn_z" => $atom_coord[2] ],
+				 @cif_file );
 
-# ( undef, $atom_data ) =
-# 	CifParser::filter_atoms( [ "Cartn_x" => $atom_coord[0],
-# 				   "Cartn_y" => $atom_coord[1],
-# 				   "Cartn_z" => $atom_coord[2] ],
-# 				 @cif_file );
+    foreach( @{ $connected_atoms{$_} } ) {
+	@atom_coord = split( ",", $_ );
+	( undef, $child_atom ) =
+	    CifParser::filter_atoms( [ "Cartn_x" => $atom_coord[0],
+				       "Cartn_y" => $atom_coord[1],
+				       "Cartn_z" => $atom_coord[2] ],
+				     @cif_file );
+
+	print( $parent_atom->[1] . " " . $parent_atom->[3] . ":"
+	     . $child_atom->[1]  . " " . $child_atom->[3]  . "\n" );
+
+    }
+
+}
