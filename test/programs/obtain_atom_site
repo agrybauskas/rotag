@@ -6,10 +6,14 @@ use warnings;
 use lib "../../lib/perl";
 use CifParser;
 
-#
-# Creates standard mmcif output with only _atom_site category and checks,
-# if all data was correctly obtained.
-#
+##
+## Unit test: obtain_atom_site
+##
+## Creates standard mmcif output with only _atom_site category and checks,
+## if all data was correctly obtained.
+##
+## Example: ./obtain_atom_site < example.cif
+##
 
 my @atom_site = CifParser::obtain_atom_site( <> );
 my @attribute_names = @{ $atom_site[0] };
