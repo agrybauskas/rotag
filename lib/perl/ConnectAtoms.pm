@@ -131,7 +131,6 @@ sub connect_atoms
 			    join( ",", @$cell_atom_coord )} =
 				[ join( ",", @$neighbour_atom ) ]
 		    }
-
 		}
 	    }
 	}
