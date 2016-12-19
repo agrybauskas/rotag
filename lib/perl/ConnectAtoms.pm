@@ -18,9 +18,9 @@ sub create_box
 {
     my @atom_coord = @_;
 
-    my @atom_coord_x = map { $_->[0] } @atom_coord;
-    my @atom_coord_y = map { $_->[1] } @atom_coord;
-    my @atom_coord_z = map { $_->[2] } @atom_coord;
+    my @atom_coord_x = map { $_->[3] } @atom_coord;
+    my @atom_coord_y = map { $_->[4] } @atom_coord;
+    my @atom_coord_z = map { $_->[5] } @atom_coord;
 
     # Directions are adapted to right-handed Cartesian coordinate system.
     # Looking for leftmost and rightmost coordinates of X-axis.
@@ -69,11 +69,11 @@ sub connect_atoms
     # Assign atoms to cells in grid box.
     foreach my $atom_coord ( @all_atom_coord ) {
 	$cell_index_x =
-	    int( ( $atom_coord->[0] - $boundary_box[0] ) / $bond_length ) + 1;
+	    int( ( $atom_coord->[3] - $boundary_box[0] ) / $bond_length ) + 1;
 	$cell_index_y =
-	    int( ( $atom_coord->[1] - $boundary_box[2] ) / $bond_length ) + 1;
+	    int( ( $atom_coord->[4] - $boundary_box[2] ) / $bond_length ) + 1;
 	$cell_index_z =
-	    int( ( $atom_coord->[2] - $boundary_box[4] ) / $bond_length ) + 1;
+	    int( ( $atom_coord->[5] - $boundary_box[4] ) / $bond_length ) + 1;
 
 	if( exists $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} ) {
 	    push( @{ $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} },
@@ -112,9 +112,9 @@ sub connect_atoms
 		my $distance_btw_atoms;
 
 	    	$distance_btw_atoms =
-		    ( $neighbour_atom->[0] - $cell_atom_coord->[0] ) ** 2
-	    	  + ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
-	    	  + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2;
+		    ( $neighbour_atom->[3] - $cell_atom_coord->[3] ) ** 2
+	    	  + ( $neighbour_atom->[4] - $cell_atom_coord->[4] ) ** 2
+	    	  + ( $neighbour_atom->[5] - $cell_atom_coord->[5] ) ** 2;
 
 		if( ( $distance_btw_atoms >
 		      ( $bond_length - $length_error ) ** 2 )
