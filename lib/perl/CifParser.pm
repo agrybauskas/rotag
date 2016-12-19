@@ -3,7 +3,7 @@ package CifParser;
 use strict;
 use warnings;
 
-use List::MoreUtils qw( first_index );     # TODO: remove and replace dependency.
+use List::MoreUtils qw( first_index ); # TODO: remove and replace dependency.
 
 no if $] >= 5.017011,                       # WARNING: in newer versions of Perl,
     warnings => 'experimental::smartmatch'; # smartmach became experimental.
@@ -20,8 +20,8 @@ no if $] >= 5.017011,                       # WARNING: in newer versions of Perl
 #
 # From mmCIF file, obtains data only from _atom_site category and outputs 1x2
 # array of attribute names and attribute data respectively.
-# Input( 1 arg   ): mmCIF file.
-# Output( 2 args ): array of atom attributes, array of atom data.
+# Input   ( 1 arg ): mmCIF file.
+# Output ( 2 args ): array of atom attributes, array of atom data.
 #
 
 sub obtain_atom_site
@@ -29,7 +29,7 @@ sub obtain_atom_site
     my @atom_attributes;
     my @atom_data;
 
-    my $is_reading_lines = 0;      # Starts/stops reading lines at certain flags.
+    my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
     foreach( @_ ) {
         if( $_ =~ /_atom_site\.(.+)\n$/ ) {
@@ -48,25 +48,25 @@ sub obtain_atom_site
 #
 # From mmCIF file, extracts atoms with specified criteria, such as, atom type,
 # residue id, chain id and etc.
-# Input( 2 args  ): array of hashes: atom specifier => values, mmCIF file.
-# Output( 2 args ): array of atom attributes, array of atom data.
+# Input  ( 2 args ): array of hashes: atom specifier => value, mmCIF file.
+# Output ( 2 args ): array of atom attributes, array of atom data.
 #
 
 sub filter_atoms
 {
-    # Criteria for desirable atoms. 
-    # E.g. [ "label_atom_id" => ["SER"], 
+    # Criteria for desirable atoms using hash.
+    # E.g. [ "label_atom_id" => ["SER"],
     #        "label_atom_id" => ["CA", "CB"] ].
     my $atom_specifiers = shift;
     my %atom_specifiers = @$atom_specifiers;
-    my @mmcif_stdin     = @_;
+    my @mmcif_stdin = @_;
 
     my @atom_site = obtain_atom_site( @mmcif_stdin );
     my @atom_attributes = @{ $atom_site[0] };
     my @atom_data = @{ $atom_site[1] };
 
     my @attribute_pos; # The position of specified atom attributes in actual
-                       # list of attributes of CIF file.
+                       # list of attributes of mmCIF file.
 
     for my $attribute ( keys %atom_specifiers ) {
         if( $attribute ~~ @atom_attributes ) {
@@ -97,18 +97,18 @@ sub filter_atoms
 
 #
 # Returns specified attribute data.
-# Input( 3 args ): array of hashes: atom specifier => values,
-#                  array of desired atom parameters,
-#                  mmCIF file.
-# Output( 1 arg ): array of specified values of atom data.
+# Input  ( 3 args ): array of hashes: atom specifier => values,
+#                    array of desired atom parameters,
+#                    mmCIF file.
+# Output  ( 1 arg ): array of specified values of atom data.
 #
 
 sub select_atom_data
 {
     my $atom_specifiers = shift;
     my %atom_specifiers = @$atom_specifiers;
-    my @data_specifier  = shift;   # Extract only the data user wants.
-                                   # E.g. [ "Cartn_x", "Cartn_y", "Cartn_z" ].
+    my @data_specifier  = shift; # Extract only the data user wants.
+                                 # E.g. [ "Cartn_x", "Cartn_y", "Cartn_z" ].
     my @mmcif_stdin = @_; # mmCIF type data.
 
     my @filtered_atoms = filter_atoms( $atom_specifiers, @mmcif_stdin );
