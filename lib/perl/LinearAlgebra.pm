@@ -18,8 +18,8 @@ my $EPSILON = 1.0 / ( 2 ** 52 ); # Machine accuracy for 64-bit floating point
 #
 # Creates local reference frame for any three given atoms positions in cartesian
 # coordinate system.
-# Input( 1 arg  ): array of three atom coordinates in x, y, z form.
-# Output( 1 arg ): array of reference frame coordinates in x, y, z form.
+# Input  (1 arg): array of three atom coordinates in x, y, z form.
+# Output (1 arg): array of reference frame coordinates in x, y, z form.
 #
 
 sub create_ref_frame
@@ -64,8 +64,8 @@ sub create_ref_frame
 #
 # Function calculates Euler rotational angles (alpha, beta, gamma) that are used
 # to transform global reference frame to chosen one.
-# Input( 1 arg  ): array of three atom coordinates in x, y, z form.
-# Output( 3 arg ): euler angles (alpha, beta, gamma) in radians.
+# Input  (1 arg): array of three atom coordinates in x, y, z form.
+# Output (3 arg): euler angles (alpha, beta, gamma) in radians.
 #
 
 sub find_euler_angles

@@ -20,8 +20,8 @@ no if $] >= 5.017011,                       # WARNING: in newer versions of Perl
 #
 # From mmCIF file, obtains data only from _atom_site category and outputs 1x2
 # array of attribute names and attribute data respectively.
-# Input   ( 1 arg ): mmCIF file.
-# Output ( 2 args ): array of atom attributes, array of atom data.
+# Input  (1 arg): mmCIF file.
+# Output (2 arg): array of atom attributes, array of atom data.
 #
 
 sub obtain_atom_site
@@ -48,8 +48,8 @@ sub obtain_atom_site
 #
 # From mmCIF file, extracts atoms with specified criteria, such as, atom type,
 # residue id, chain id and etc.
-# Input  ( 2 args ): array of hashes: atom specifier => value, mmCIF file.
-# Output ( 2 args ): array of atom attributes, array of atom data.
+# Input  (2 arg): array of hashes: atom specifier => value, mmCIF file.
+# Output (2 arg): array of atom attributes, array of atom data.
 #
 
 sub filter_atoms
@@ -97,10 +97,10 @@ sub filter_atoms
 
 #
 # Returns specified attribute data.
-# Input  ( 3 args ): array of hashes: atom specifier => values,
+# Input  (3 arg): array of hashes: atom specifier => values,
 #                    array of desired atom parameters,
 #                    mmCIF file.
-# Output  ( 1 arg ): array of specified values of atom data.
+# Output (1 arg): array of specified values of atom data.
 #
 
 sub select_atom_data

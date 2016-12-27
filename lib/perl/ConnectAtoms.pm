@@ -9,8 +9,8 @@ use Data::Dumper;
 #
 # Given the cartesian coordinates (x, y, z) of atoms, function returns the
 # dimensions of smallest possible box that contains all atoms.
-# Input   (1 arg): atom coordinates in x, y, z form.
-# Output (6 args): coordinates of min and max x, y, z box boundaries in which
+# Input  (1 arg): atom coordinates in x, y, z form.
+# Output (6 arg): coordinates of min and max x, y, z box boundaries in which
 #                  all given atoms are contained.
 #
 
@@ -44,7 +44,7 @@ sub create_box
 #
 # Divides box into grid of cubes that has length of the desired bond. If box
 # is not perfectly divisible, then the boundaries are extended accordingly.
-# Input (2 args): bond length in angstroms, coordinates of atoms (x, y, z).
+# Input  (2 arg): bond length in angstroms, coordinates of atoms (x, y, z).
 # Output (1 arg): hash of atom coordinates (x, y, z) as keys and atom
 #                 coordinates that are connected to as values.
 #
