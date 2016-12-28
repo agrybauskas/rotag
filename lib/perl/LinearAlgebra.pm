@@ -134,16 +134,17 @@ sub dot_product
     my $symbols = shift;
     my @matrices = @_;
 
-    # my $chi;
-    eval( "\$chi = 25;" );
-
-    print $chi;
-    
     # Preparing variables for symbolic math manipulation.
-    # my $assign_to_symbols = 
-    # 	qq( \( ) . "\$" . join( ", \$", @$symbols ) . " )" . " = " 
-    # 	 . "symbols( qw( " . join( ", ",   @$symbols ) . " ) )";
+    # HACK: look, how to get rid of the global variable or do it properly.
+    #       It might be a source of many bugs.
+    my @declare_var = map { "\$" . $_ } @{ $symbols };
+    my $var_to_symbols =
+    	"( \$" . join( ", \$", @$symbols ) . " ) = symbols( qw( "
+	       . join( ", ",   @$symbols ) . " ) )";
 
+    # eval { map { use vars @declare_var } };
+    # $chi = 1;
+    # eval { undef( $declare_var ) };
     # print $assign_to_symbols;
     # my @dot_product_matrix;
 
