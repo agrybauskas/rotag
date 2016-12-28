@@ -3,6 +3,8 @@ package LinearAlgebra;
 use strict;
 use warnings;
 
+use Math::Algebra::Symbols;
+
 # ------------------------------- Linear algebra ------------------------------ #
 
 #
@@ -123,7 +125,9 @@ sub find_euler_angles
 
 sub dot_product
 {
+    my $matrices = @_;
 
+    
 }
 
 1;

@@ -1,1 +1,3 @@
-# It is a placeholder for output data of the test.
+x*cos($chi)+y*sin($chi)
+x*sin($chi)+y*cos($chi)
+0
