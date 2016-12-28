@@ -3,6 +3,21 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use lib "../../lib/perl";
 use LinearAlgebra;
 
+no warnings "experimental::autoderef";
+
+my @matrices = ( [] );
+
+while( <> ) {
+    if( $_ =~ /^\n$/ ) {
+	push( @matrices, [] );
+    } else {
+	push( $matrices[-1], [ split( " ", $_ ) ] );
+    }
+}
+
+LinearAlgebra::dot_product( @matrices );

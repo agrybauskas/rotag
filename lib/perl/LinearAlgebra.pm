@@ -2,6 +2,7 @@ package LinearAlgebra;
 
 use strict;
 use warnings;
+use Data::Dumper;
 
 use Math::Algebra::Symbols;
 
@@ -119,15 +120,18 @@ sub find_euler_angles
 #      \    0         0     1 /   \ z /   \              0              /
 #
 
-# Calculates dot product of given matrices recursively from right to left.
+# Calculates dot product of given matrices recursively from right to left. All
+# matrices has to be in correct size in order to be multiplied correctly.
 # Input  (1 to n arg): arrays of arrays representing n x n matrices. 
 # Output      (1 arg): array representing correctly calculated dot product.
 
 sub dot_product
 {
-    my $matrices = @_;
+    my @matrices = @_;
 
-    
+    if( scalar( @matrices ) == 2 ) {
+	print Dumper @matrices;
+    }
 }
 
 1;
