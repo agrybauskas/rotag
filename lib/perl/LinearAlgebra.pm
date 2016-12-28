@@ -118,7 +118,7 @@ sub find_euler_angles
 #
 
 # Calculates dot product of given matrices recursively from right to left.
-# Input  (1 to n arg): arrays of arrays representing nxn matrices. 
+# Input  (1 to n arg): arrays of arrays representing n x n matrices. 
 # Output      (1 arg): array representing correctly calculated dot product.
 
 sub dot_product
