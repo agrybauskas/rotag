@@ -10,6 +10,8 @@ use LinearAlgebra;
 
 no warnings "experimental::autoderef";
 
+my $symbols = shift;
+my @symbols = [ split( ",", $symbols ) ];
 my @matrices = ( [] );
 
 while( <> ) {
@@ -20,4 +22,5 @@ while( <> ) {
     }
 }
 
-LinearAlgebra::dot_product( @matrices );
+LinearAlgebra::dot_product( @symbols, @matrices );
+

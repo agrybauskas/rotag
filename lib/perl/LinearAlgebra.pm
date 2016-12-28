@@ -120,18 +120,50 @@ sub find_euler_angles
 #      \    0         0     1 /   \ z /   \              0              /
 #
 
+#
 # Calculates dot product of given matrices recursively from right to left. All
 # matrices has to be in correct size in order to be multiplied correctly.
-# Input  (1 to n arg): arrays of arrays representing n x n matrices. 
+# Input  (2 to n arg): first argument - symbols that identify strings as
+#                      symbols for mathematical manipulation, others - any
+#                      number of arrays of arrays representing n x n matrices. 
 # Output      (1 arg): array representing correctly calculated dot product.
+#
 
 sub dot_product
 {
+    my $symbols = shift;
     my @matrices = @_;
 
-    if( scalar( @matrices ) == 2 ) {
-	print Dumper @matrices;
-    }
+    # my $chi;
+    eval( "\$chi = 25;" );
+
+    print $chi;
+    
+    # Preparing variables for symbolic math manipulation.
+    # my $assign_to_symbols = 
+    # 	qq( \( ) . "\$" . join( ", \$", @$symbols ) . " )" . " = " 
+    # 	 . "symbols( qw( " . join( ", ",   @$symbols ) . " ) )";
+
+    # print $assign_to_symbols;
+    # my @dot_product_matrix;
+
+    # if( scalar( @matrices ) == 2 ) {
+    # 	for( my $row_num = 0;
+    # 	     $row_num <= $#{ $matrices[0] };
+    # 	     $row_num++ ) {
+    # 	    for( my $col_num = 0;
+    # 		 $col_num <= $#{ $matrices[0][$row_num] };
+    # 		 $col_num++ ) {
+    # 		print $matrices[0][$row_num][$col_num] . "\n";
+    # 	    }
+    # 	}
+    # }
+    
+}
+
+sub transpose
+{
+
 }
 
 1;
