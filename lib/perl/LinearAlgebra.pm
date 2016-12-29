@@ -131,35 +131,17 @@ sub find_euler_angles
 
 sub dot_product
 {
-    my $symbols = shift;
-    my @matrices = @_;
+    my ( $symbols, $matrices ) = @_;
 
     # Preparing variables for symbolic math manipulation.
-    # HACK: look, how to get rid of the global variable or do it properly.
-    #       It might be a source of many bugs.
-    my @declare_var = map { "\$" . $_ } @{ $symbols };
-    my $var_to_symbols =
-    	"( \$" . join( ", \$", @$symbols ) . " ) = symbols( qw( "
-	       . join( ", ",   @$symbols ) . " ) )";
+    my %symbols; # Hash that prepares symbols for algebraic manipulation.
 
-    # eval { map { use vars @declare_var } };
-    # $chi = 1;
-    # eval { undef( $declare_var ) };
-    # print $assign_to_symbols;
-    # my @dot_product_matrix;
+    foreach( @$symbols ) {
+	$symbols{$_} = &symbols( $_ );
+    }
 
-    # if( scalar( @matrices ) == 2 ) {
-    # 	for( my $row_num = 0;
-    # 	     $row_num <= $#{ $matrices[0] };
-    # 	     $row_num++ ) {
-    # 	    for( my $col_num = 0;
-    # 		 $col_num <= $#{ $matrices[0][$row_num] };
-    # 		 $col_num++ ) {
-    # 		print $matrices[0][$row_num][$col_num] . "\n";
-    # 	    }
-    # 	}
-    # }
-    
+    print $symbols{chi} + $symbols{chi};
+
 }
 
 sub transpose
