@@ -8,8 +8,6 @@ use Data::Dumper;
 use lib "../../lib/perl";
 use LinearAlgebra;
 
-no warnings "experimental::autoderef";
-
 my $symbols = shift;
 my @symbols = [ split( ",", $symbols ) ];
 my @matrices = ( [] );
@@ -18,7 +16,7 @@ while( <> ) {
     if( $_ =~ /^\n$/ ) {
 	push( @matrices, [] );
     } else {
-	push( $matrices[-1], [ split( " ", $_ ) ] );
+	push( @{ $matrices[-1] }, [ split( " ", $_ ) ] );
     }
 }
 
