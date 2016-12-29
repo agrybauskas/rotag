@@ -22,5 +22,5 @@ while( <> ) {
     }
 }
 
-LinearAlgebra::dot_product( @symbols, @matrices );
+print LinearAlgebra::dot_product( @symbols, @matrices );
 

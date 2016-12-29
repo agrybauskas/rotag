@@ -133,15 +133,19 @@ sub dot_product
 {
     my ( $symbols, $matrices ) = @_;
 
-    # Preparing variables for symbolic math manipulation.
+    my @matrices = @$matrices;
     my %symbols; # Hash that prepares symbols for algebraic manipulation.
 
     foreach( @$symbols ) {
 	$symbols{$_} = &symbols( $_ );
     }
 
-    print $symbols{chi} + $symbols{chi};
+    my @dot_product;
 
+    for( my $id = $#matrices; $id >= 1; $id-- ) {
+	# Performs dot product operation for each pair of matrices from right
+	# to left. $i stands for row, $j - column of the matrix.
+    }
 }
 
 sub transpose

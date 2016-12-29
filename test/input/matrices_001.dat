@@ -1,6 +1,6 @@
-cos($chi) -sin($chi) 0
-sin($chi)  cos($chi) 0
-0          0         1
+1 0 0
+0 2 0
+0 0 3
 
 x
 y
