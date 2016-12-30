@@ -145,9 +145,14 @@ sub dot_product
     for( my $id = $#matrices; $id >= 1; $id-- ) {
     	# Performs dot product operation for each pair of matrices from right
     	# to left. $i stands for row, $j - column of the matrix.
-	for( my $i = 0; $i <= $#{ $matrices[$id] }; $i++ ) {
-	    for( my $j = 0; $j <= $#{ $matrices[$id][$i] }; $j++ ) {
+	if( $id == 1 ) {
+	    for( my $i = 0; $i <= $#{ $matrices[$id] }; $i++ ) {
+		for( my $j = 0; $j <= $#{ $matrices[$id][$i] }; $j++ ) {
+		}
 	    }
+
+	} else {
+	    
 	}
     }
 }
