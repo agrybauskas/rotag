@@ -9,7 +9,7 @@ use lib "../../lib/perl";
 use LinearAlgebra;
 
 my $symbols = shift;
-my @symbols = [ split( ",", $symbols ) ];
+my @symbols = split( ",", $symbols );
 my @matrices = ( [] );
 
 while( <> ) {
@@ -20,5 +20,5 @@ while( <> ) {
     }
 }
 
-print LinearAlgebra::dot_product( @symbols, @matrices );
+print LinearAlgebra::dot_product( \@symbols, \@matrices );
 
