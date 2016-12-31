@@ -110,6 +110,23 @@ sub find_euler_angles
     return $alpha_rad, $beta_rad, $gamma_rad;
 }
 
+# Calculates dot product of two matrices.
+# Input:  (2 arg): 2 arrays that is correctly paired.
+# Output: (1 arg): dot product.
+
+sub dot_product
+{
+
+}
+
+# Transposes matrix.
+# Input:  (1 arg): array representing matrix.
+# Output: (1 arg): transposed matrix.
+sub transpose
+{
+
+}
+
 # ---------------------------- Symbolic linear algebra ------------------------ #
 
 #
@@ -129,37 +146,18 @@ sub find_euler_angles
 # Output      (1 arg): array representing correctly calculated dot product.
 #
 
-sub dot_product
-{
-    my ( $symbols, $matrices ) = @_;
+# sub symbolic_dot_product
+# {
+#     my ( $symbols, $matrices ) = @_;
 
-    my @matrices = @$matrices;
-    my %symbols; # Hash that prepares symbols for algebraic manipulation.
+#     my @matrices = @$matrices;
+#     my %symbols; # Hash that prepares symbols for algebraic manipulation.
 
-    foreach( @$symbols ) {
-	$symbols{$_} = &symbols( $_ );
-    }
+#     foreach( @$symbols ) {
+# 	$symbols{$_} = &symbols( $_ );
+#     }
 
-    my @dot_product;
-
-    for( my $id = $#matrices; $id >= 1; $id-- ) {
-    	# Performs dot product operation for each pair of matrices from right
-    	# to left. $i stands for row, $j - column of the matrix.
-	if( $id == 1 ) {
-	    for( my $i = 0; $i <= $#{ $matrices[$id] }; $i++ ) {
-		for( my $j = 0; $j <= $#{ $matrices[$id][$i] }; $j++ ) {
-		}
-	    }
-
-	} else {
-	    
-	}
-    }
-}
-
-sub transpose
-{
-
-}
+#     my @dot_product;
+# }
 
 1;

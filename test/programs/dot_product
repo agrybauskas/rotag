@@ -8,8 +8,6 @@ use Data::Dumper;
 use lib "../../lib/perl";
 use LinearAlgebra;
 
-my $symbols = shift;
-my @symbols = split( ",", $symbols );
 my @matrices = ( [] );
 
 while( <> ) {
@@ -20,5 +18,4 @@ while( <> ) {
     }
 }
 
-print LinearAlgebra::dot_product( \@symbols, \@matrices );
-
+LinearAlgebra::dot_product( $matrices[0], $matrices[1] );
