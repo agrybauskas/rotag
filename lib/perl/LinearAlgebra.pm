@@ -111,11 +111,32 @@ sub find_euler_angles
 }
 
 # Calculates dot product of two matrices.
-# Input:  (2 arg): 2 arrays that is correctly paired.
+# Input:  (2 arg): 2 arrays that are correctly paired.
 # Output: (1 arg): dot product.
 
 sub dot_product
 {
+    my ( $matrix_left, $matrix_right ) = @_;
+
+    my @dot_product;
+    my $rows = scalar( @$matrix_left );
+    my $columns = scalar( @{ $matrix_right->[0] } );
+
+    # Makes placeholder items for dot_product array.
+    for( my $i = 0; $i < $rows; $i++ ) {
+	for( my $j = 0; $j < $columns; $j++ ) {
+	    $dot_product[$i][$j] = 0;
+	}
+    }
+
+    # Calculates dot product.
+    for( my $i = 0; $i < scalar( @dot_product ); $i++ ) {
+	for( my $j = 0; $j < scalar( @{ $dot_product[$i]} ); $j++ ) {
+	    $dot_product[$i][$j] += 1;
+	}
+    }
+
+    print Dumper @dot_product;
 
 }
 
