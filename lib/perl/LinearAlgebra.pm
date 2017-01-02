@@ -116,28 +116,42 @@ sub find_euler_angles
 
 sub dot_product
 {
-    my ( $matrix_left, $matrix_right ) = @_;
+    my ( $left_matrix, $right_matrix ) = @_;
 
     my @dot_product;
-    my $rows = scalar( @$matrix_left );
-    my $columns = scalar( @{ $matrix_right->[0] } );
+
+    # TODO: make error notification, when the column number of left matrix
+    #       does not equal row number of right matrix.
 
     # Makes placeholder items for dot_product array.
-    for( my $i = 0; $i < $rows; $i++ ) {
-	for( my $j = 0; $j < $columns; $j++ ) {
-	    $dot_product[$i][$j] = 0;
+    for( my $dot_row = 0; 
+	 $dot_row < scalar( @$left_matrix ); 
+	 $dot_row++ ) {
+	for( my $dot_col = 0; 
+	     $dot_col < scalar( @{ $right_matrix->[0] } ); 
+	     $dot_col++ ) {
+	    $dot_product[$dot_row][$dot_col] = 0;
 	}
     }
 
     # Calculates dot product.
-    for( my $i = 0; $i < scalar( @dot_product ); $i++ ) {
-	for( my $j = 0; $j < scalar( @{ $dot_product[$i]} ); $j++ ) {
-	    $dot_product[$i][$j] += 1;
+    for( my $dot_row = 0;
+	 $dot_row < scalar( @dot_product );
+	 $dot_row++ ) {
+	for( my $dot_col = 0;
+	     $dot_col < scalar( @{ $dot_product[$dot_row] } );
+	     $dot_col++ ) {
+	    for( my $left_col = 0;
+		 $left_col < scalar( @{ $left_matrix->[$dot_col] } );
+		 $left_col++ ) {
+		$dot_product[$dot_row][$dot_col] += 
+		    eval( $left_matrix->[$dot_row]->[$left_col] ) 
+		  * eval( $right_matrix->[$left_col]->[$dot_col] );
+	    }
 	}
     }
 
-    print Dumper @dot_product;
-
+    return \@dot_product;
 }
 
 # Transposes matrix.
