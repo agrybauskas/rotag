@@ -1,0 +1,15 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use LinearAlgebra;
+
+my @matrix;
+
+while( <> ) {
+    push( @matrix, [ split( " ", $_ ) ] );
+}
+
+LinearAlgebra::transpose( \@matrix );
