@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use LinearAlgebra;
+
+my @symb_matrices = ( [] );
+
+while( <> ) {
+    if( $_ =~ /^\n$/ ) {
+	push( @symb_matrices, [] );
+    } else {
+	push( @{ $symb_matrices[-1] }, [ split( " ", $_ ) ] );
+    }
+}
+
+my $symb_dot_product =
+    LinearAlgebra::symb_dot_product( $symb_matrices[0], $symb_matrices[1] );
+
+foreach ( @$symb_dot_product ) {
+    print( join( "\t", @$_ ) . "\n" );
+}

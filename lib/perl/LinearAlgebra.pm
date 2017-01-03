@@ -199,18 +199,18 @@ sub transpose
 # Output      (1 arg): array representing correctly calculated dot product.
 #
 
-# sub symbolic_dot_product
-# {
-#     my ( $symbols, $matrices ) = @_;
+sub symb_dot_product
+{
+    my ( $symbols, $matrices ) = @_;
 
-#     my @matrices = @$matrices;
-#     my %symbols; # Hash that prepares symbols for algebraic manipulation.
+    my @matrices = @$matrices;
+    my %symbols; # Hash that prepares symbols for algebraic manipulation.
 
-#     foreach( @$symbols ) {
-# 	$symbols{$_} = &symbols( $_ );
-#     }
+    foreach( @$symbols ) {
+	$symbols{$_} = &symbols( $_ );
+    }
 
-#     my @dot_product;
-# }
+    my @dot_product;
+}
 
 1;
