@@ -12,4 +12,9 @@ while( <> ) {
     push( @matrix, [ split( " ", $_ ) ] );
 }
 
-LinearAlgebra::transpose( \@matrix );
+my $transposed_matrix =
+    LinearAlgebra::transpose( \@matrix );
+
+foreach( @$transposed_matrix ) {
+    print( join( "\t", @$_ ), "\n" );
+}

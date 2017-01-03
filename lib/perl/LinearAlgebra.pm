@@ -2,7 +2,9 @@ package LinearAlgebra;
 
 use strict;
 use warnings;
+
 use Data::Dumper;
+use feature qw( say );
 
 use Math::Algebra::Symbols;
 
@@ -110,9 +112,11 @@ sub find_euler_angles
     return $alpha_rad, $beta_rad, $gamma_rad;
 }
 
+#
 # Calculates dot product of two matrices.
 # Input:  (2 arg): 2 arrays that are correctly paired.
 # Output: (1 arg): dot product.
+#
 
 sub dot_product
 {
@@ -154,12 +158,26 @@ sub dot_product
     return \@dot_product;
 }
 
+#
 # Transposes matrix.
 # Input:  (1 arg): array representing matrix.
 # Output: (1 arg): transposed matrix.
+#
+
 sub transpose
 {
+    my $matrix = shift;
+    my @matrix = @$matrix;
 
+    my @transposed_matrix;
+
+    for my $row ( 0..$#matrix ) {
+	for my $col ( 0..$#{ $matrix[$row] } ) {
+	    $transposed_matrix[$col][$row] = $matrix[$row][$col];
+	}
+    }
+
+    return \@transposed_matrix;
 }
 
 # ---------------------------- Symbolic linear algebra ------------------------ #
