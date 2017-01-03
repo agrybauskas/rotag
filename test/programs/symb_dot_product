@@ -3,9 +3,13 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use lib "../../lib/perl";
 use LinearAlgebra;
 
+my $symbols = shift;
+my @symbols = [ split( ",", $symbols ) ];
 my @symb_matrices = ( [] );
 
 while( <> ) {
@@ -14,11 +18,6 @@ while( <> ) {
     } else {
 	push( @{ $symb_matrices[-1] }, [ split( " ", $_ ) ] );
     }
-}
+} 
 
-my $symb_dot_product =
-    LinearAlgebra::symb_dot_product( $symb_matrices[0], $symb_matrices[1] );
-
-foreach ( @$symb_dot_product ) {
-    print( join( "\t", @$_ ) . "\n" );
-}
+LinearAlgebra::symb_dot_product( @symbols, @symb_matrices );

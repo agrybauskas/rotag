@@ -201,16 +201,15 @@ sub transpose
 
 sub symb_dot_product
 {
-    my ( $symbols, $matrices ) = @_;
+    my ( $symbols, $symb_matrices ) = @_;
 
-    my @matrices = @$matrices;
+    my @symb_matrices = @$symb_matrices;
     my %symbols; # Hash that prepares symbols for algebraic manipulation.
 
     foreach( @$symbols ) {
-	$symbols{$_} = &symbols( $_ );
+    	$symbols{$_} = symbols( $_ );
     }
-
-    my @dot_product;
+    
 }
 
 1;
