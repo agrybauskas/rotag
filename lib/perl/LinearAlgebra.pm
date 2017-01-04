@@ -201,15 +201,21 @@ sub transpose
 
 sub symb_dot_product
 {
-    my ( $symbols, $symb_matrices ) = @_;
+    my ( $symbol, $symb_matrices ) = @_;
 
     my @symb_matrices = @$symb_matrices;
-    my %symbols; # Hash that prepares symbols for algebraic manipulation.
+    my %symbol; # Hash that prepares symbols for algebraic manipulation.
 
-    foreach( @$symbols ) {
-    	$symbols{$_} = symbols( $_ );
+    # Initiates perception of symbols.
+    foreach( @$symbol ) {
+    	$symbol{$_} = symbols( $_ );
     }
     
+    # Performs recursive matrix multiplication (dot product).
+    for( my $id = $#symb_matrices; $id > 0; $id-- ) {
+	dot_product( $symb_matrices[$id-1], $symb_matrices[$id] );
+    }
+
 }
 
 1;
