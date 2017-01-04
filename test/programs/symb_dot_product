@@ -20,4 +20,6 @@ while( <> ) {
     }
 } 
 
-LinearAlgebra::symb_dot_product( @symbols, \@symb_matrices );
+LinearAlgebra::symb_dot_product( @symbols,
+				 $symb_matrices[0],
+				 $symb_matrices[1] );

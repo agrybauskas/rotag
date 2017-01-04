@@ -113,16 +113,56 @@ sub find_euler_angles
 }
 
 #
-# Calculates dot product of two matrices.
-# Input:  (2 arg): 2 arrays that are correctly paired.
+# Transposes matrix.
+# Input:  (1 arg): array representing matrix.
+# Output: (1 arg): transposed matrix.
+#
+
+sub transpose
+{
+    my $matrix = shift;
+    my @matrix = @$matrix;
+
+    my @transposed_matrix;
+
+    for my $row ( 0..$#matrix ) {
+	for my $col ( 0..$#{ $matrix[$row] } ) {
+	    $transposed_matrix[$col][$row] = $matrix[$row][$col];
+	}
+    }
+
+    return \@transposed_matrix;
+}
+
+# ---------------------------- Symbolic linear algebra ------------------------ #
+
+#
+# Example of rotation along z-axis by chi angle in radians:
+#
+#      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
+#      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
+#      \    0         0     1 /   \ z /   \              0              /
+#
+
+#
+# Calculates dot product of two matrices that might have symbolic variables.
+# Input:  (3 arg): first argument - symbols that identify strings as
+#                  symbols for mathematical manipulation, second and third - 2
+#                  arrays that are correctly paired.
 # Output: (1 arg): dot product.
 #
 
-sub dot_product
+sub symb_dot_product
 {
-    my ( $left_matrix, $right_matrix ) = @_;
+    my ( $symbols, $left_matrix, $right_matrix ) = @_;
 
+    my %symbols; # Hash that prepares symbols for algebraic manipulation.
     my @dot_product;
+
+    # Initiates perception of symbols.
+    foreach( @$symbols ) {
+    	$symbols{$_} = symbols( $_ );
+    }
 
     # TODO: make error notification, when the column number of left matrix
     #       does not equal row number of right matrix.
@@ -156,66 +196,6 @@ sub dot_product
     }
 
     return \@dot_product;
-}
-
-#
-# Transposes matrix.
-# Input:  (1 arg): array representing matrix.
-# Output: (1 arg): transposed matrix.
-#
-
-sub transpose
-{
-    my $matrix = shift;
-    my @matrix = @$matrix;
-
-    my @transposed_matrix;
-
-    for my $row ( 0..$#matrix ) {
-	for my $col ( 0..$#{ $matrix[$row] } ) {
-	    $transposed_matrix[$col][$row] = $matrix[$row][$col];
-	}
-    }
-
-    return \@transposed_matrix;
-}
-
-# ---------------------------- Symbolic linear algebra ------------------------ #
-
-#
-# Example of rotation along z-axis by chi angle in radians:
-#
-#      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
-#      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
-#      \    0         0     1 /   \ z /   \              0              /
-#
-
-#
-# Calculates dot product of given matrices recursively from right to left. All
-# matrices has to be in correct size in order to be multiplied correctly.
-# Input  (2 to n arg): first argument - symbols that identify strings as
-#                      symbols for mathematical manipulation, others - any
-#                      number of arrays of arrays representing n x n matrices. 
-# Output      (1 arg): array representing correctly calculated dot product.
-#
-
-sub symb_dot_product
-{
-    my ( $symbol, $symb_matrices ) = @_;
-
-    my @symb_matrices = @$symb_matrices;
-    my %symbol; # Hash that prepares symbols for algebraic manipulation.
-
-    # Initiates perception of symbols.
-    foreach( @$symbol ) {
-    	$symbol{$_} = symbols( $_ );
-    }
-    
-    # Performs recursive matrix multiplication (dot product).
-    for( my $id = $#symb_matrices; $id > 0; $id-- ) {
-	dot_product( $symb_matrices[$id-1], $symb_matrices[$id] );
-    }
-
 }
 
 1;
