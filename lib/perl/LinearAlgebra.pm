@@ -164,8 +164,12 @@ sub symb_dot_product
     	$symbols{$_} = symbols( $_ );
     }
 
-    # TODO: make error notification, when the column number of left matrix
-    #       does not equal row number of right matrix.
+    # Notifies error, when the column number of left matrix does not equal the
+    # row number of the right matrix.
+    if( scalar( @$left_matrix ) == scalar( @{ transpose( $right_matrix ) } ) ) {
+    	die( "A row number of a left matrix is NOT equal to the column\n" .
+    	     "number of the right matrix.\n" )
+    }
 
     # Makes placeholder items for dot_product array.
     for( my $dot_row = 0; 
