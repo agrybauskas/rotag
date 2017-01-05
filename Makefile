@@ -5,7 +5,7 @@
 TEST_CASES_DIR=test/case
 TEST_OUT_DIR=test/output
 
-TEST_CASES=${wildcard ${TEST_CASES_DIR}/*.sh}
+TEST_CASES=${sort ${wildcard ${TEST_CASES_DIR}/*.sh}}
 TEST_DIFF=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${TEST_OUT_DIR}/%.diff}
 
 .PHONY: clean distclean all

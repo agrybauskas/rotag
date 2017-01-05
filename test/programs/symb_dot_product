@@ -9,6 +9,7 @@ use lib "../../lib/perl";
 use LinearAlgebra;
 
 my $symbols = shift;
+   $symbols //= ",";
 my @symbols = [ split( ",", $symbols ) ];
 my @symb_matrices = ( [] );
 
@@ -20,6 +21,10 @@ while( <> ) {
     }
 } 
 
-LinearAlgebra::symb_dot_product( @symbols,
-				 $symb_matrices[0],
-				 $symb_matrices[1] );
+my $symb_dot_product = LinearAlgebra::symb_dot_product( @symbols,
+							$symb_matrices[0],
+							$symb_matrices[1] );
+
+foreach( @$symb_dot_product ) {
+    print( join( "\t", @$_ ), "\n" );
+}

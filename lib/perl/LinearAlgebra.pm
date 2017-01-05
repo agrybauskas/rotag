@@ -189,7 +189,7 @@ sub symb_dot_product
 		 $left_col < scalar( @{ $left_matrix->[$dot_col] } );
 		 $left_col++ ) {
 		$dot_product[$dot_row][$dot_col] += 
-		    eval( $left_matrix->[$dot_row]->[$left_col] ) 
+		    eval( $left_matrix->[$dot_row]->[$left_col] )
 		  * eval( $right_matrix->[$left_col]->[$dot_col] );
 	    }
 	}
