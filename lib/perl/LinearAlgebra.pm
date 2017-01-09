@@ -202,4 +202,8 @@ sub symb_dot_product
     return \@dot_product;
 }
 
+sub rec_symb_dot_product
+{
+
+}
 1;
