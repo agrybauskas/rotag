@@ -204,6 +204,18 @@ sub symb_dot_product
 
 sub rec_symb_dot_product
 {
+    my $symbols = shift;
+    my @matrices = @_;
+    
+    if( scalar( @matrices ) == 2 ) {
+	return symb_dot_product( $symbols, [ $matrices[0], $matrices[1] ] );
+    } else {
+	return symb_dot_product( $symbols,
+				 [ $matrices[0],
+				   symb_dot_product(
+				       $symbols,
+				       $matrices[1..$#matrices] ) ] );
+    }
 
 }
 1;
