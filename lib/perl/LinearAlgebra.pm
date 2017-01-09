@@ -162,9 +162,9 @@ sub symb_dot_product
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
     die( "A row number of a left matrix is NOT equal to the column\n" .
-	 "number of the right matrix.\n" )
-	unless( scalar( @$left_matrix ) ==
-		scalar( @{ transpose( $right_matrix ) } ) );
+    	 "number of the right matrix.\n" )
+    	unless( scalar( @{ transpose( $left_matrix ) } ) ==
+    		scalar( @$right_matrix ) );
 
     # Initiates perception of symbols.
     foreach( @$symbols ) {
