@@ -206,16 +206,22 @@ sub rec_symb_dot_product
 {
     my $symbols = shift;
     my @matrices = @_;
-    
-    if( scalar( @matrices ) == 2 ) {
-	return symb_dot_product( $symbols, [ $matrices[0], $matrices[1] ] );
-    } else {
-	return symb_dot_product( $symbols,
-				 [ $matrices[0],
-				   symb_dot_product(
-				       $symbols,
-				       $matrices[1..$#matrices] ) ] );
+
+    my @dot_product;
+
+    for( my $id = $#matrices; $id >= 1; $id-- ) {
+	if( $id == $#matrices ) {
+	    @dot_product = symb_dot_product( $symbols,
+					     $matrices[$id-1],
+					     $matrices[$id] );
+	} else {
+	    @dot_product = symb_dot_product( $symbols,
+					     $matrices[$id-1],
+					     \@dot_product );
+	}
     }
 
+    return \@dot_product;
 }
+
 1;

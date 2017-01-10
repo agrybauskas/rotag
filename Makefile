@@ -13,7 +13,7 @@ TEST_DIFF=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${TEST_OUT_DIR}/%.diff}
 test: ${TEST_DIFF}
 
 ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.dat
-	@./$< | diff -B -w $(basename $@).dat - > $@; \
+	@./$< 2>&1 | diff -B -w $(basename $@).dat - > $@; \
 	if [ $$? -eq 0 ]; \
 	then echo "$<" \
 	     | awk '{ printf "%-40s \033[1m[OK]\033[m\n",    $$1 }'; \
