@@ -192,18 +192,18 @@ sub symb_dot_product
 	    for( my $left_col = 0;
 		 $left_col < scalar( @{ $left_matrix->[$dot_col] } );
 		 $left_col++ ) {
-		$dot_product[$dot_row][$dot_col] += 
-		    eval( $left_matrix->[$dot_row]->[$left_col] )
-		  * eval( $right_matrix->[$left_col]->[$dot_col] );
-	    }
-	}
-    }
+		my $left_number;
+		my $right_number;
 
-    # Convert symbolic variables to symbolic hash entry: $x -> $symbols{x}.
-    for( my $i = 0; $i < scalar( @dot_product ); $i++ ) {
-	for( my $j = 0; $j < scalar( @{ $dot_product[$i] } ); $j++ ) {
-	    $dot_product[$i][$j] = eval( '$dot_product[$i][$j]' );
-	    $dot_product[$i][$j] =~ s/\$(\w+)/\$symbols{$1}/g
+		$left_number = $left_matrix->[$dot_row]->[$left_col];
+		$left_number =~ s/\$(\w+)/\$symbols{$1}/g;
+		$right_number = $right_matrix->[$left_col]->[$dot_col];
+		$right_number =~ s/\$(\w+)/\$symbols{$1}/g;
+
+	    	$dot_product[$dot_row][$dot_col] +=
+	    	    eval( $left_number )
+	    	  * eval( $right_number );
+	    }
 	}
     }
 

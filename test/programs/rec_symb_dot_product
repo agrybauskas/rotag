@@ -21,10 +21,10 @@ while( <> ) {
     }
 } 
 
-#my $symb_dot_product = 
-LinearAlgebra::rec_symb_dot_product( @symbols,
-				     @symb_matrices );
+my $symb_dot_product = 
+    LinearAlgebra::rec_symb_dot_product( @symbols,
+					 @symb_matrices );
 
-# foreach( @$symb_dot_product ) {
-#     print( join( "\t", @$_ ), "\n" );
-# }
+foreach( @$symb_dot_product ) {
+    print( join( "\t", @$_ ), "\n" );
+}

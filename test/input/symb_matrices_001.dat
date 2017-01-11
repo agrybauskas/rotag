@@ -2,6 +2,6 @@
 0 2 0
 0 0 3
 
-$symbols{x}
-$symbols{y}
-$symbols{z}
+$x
+$y
+$z
