@@ -60,3 +60,7 @@ foreach( @symbols ) {
 print( $theta + $lambda, "\n" );
 
 print( "-" x 80, "\n" );
+
+print Dumper $chi*$chi;
+
+print( "-" x 80, "\n" );

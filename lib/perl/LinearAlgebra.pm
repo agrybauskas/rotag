@@ -199,6 +199,14 @@ sub symb_dot_product
 	}
     }
 
+    # Convert symbolic variables to symbolic hash entry: $x -> $symbols{x}.
+    for( my $i = 0; $i < scalar( @dot_product ); $i++ ) {
+	for( my $j = 0; $j < scalar( @{ $dot_product[$i] } ); $j++ ) {
+	    $dot_product[$i][$j] = eval( '$dot_product[$i][$j]' );
+	    $dot_product[$i][$j] =~ s/\$(\w+)/\$symbols{$1}/g
+	}
+    }
+
     return \@dot_product;
 }
 
@@ -207,21 +215,21 @@ sub rec_symb_dot_product
     my $symbols = shift;
     my @matrices = @_;
 
-    my @dot_product;
+    my $dot_product;
 
     for( my $id = $#matrices; $id >= 1; $id-- ) {
 	if( $id == $#matrices ) {
-	    @dot_product = symb_dot_product( $symbols,
-					     $matrices[$id-1],
-					     $matrices[$id] );
-	} else {
-	    @dot_product = symb_dot_product( $symbols,
-					     $matrices[$id-1],
-					     \@dot_product );
-	}
+    	    $dot_product = symb_dot_product( $symbols,
+    					     $matrices[$id-1],
+    					     $matrices[$id] );
+    	} else {
+    	    $dot_product = symb_dot_product( $symbols,
+    					     $matrices[$id-1],
+    					     $dot_product );
+    	}
     }
 
-    return \@dot_product;
+    return $dot_product;
 }
 
 1;
