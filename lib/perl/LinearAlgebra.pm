@@ -152,12 +152,12 @@ sub transpose
 # Output: (1 arg): dot product.
 #
 
-sub symb_dot_product
+sub two_matrix_product
 {
     my ( $symbols, $left_matrix, $right_matrix ) = @_;
 
     my %symbols; # Hash that prepares symbols for algebraic manipulation.
-    my @dot_product;
+    my @matrix_product;
 
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
@@ -171,65 +171,65 @@ sub symb_dot_product
     	$symbols{$_} = symbols( $_ );
     }
 
-    # Makes placeholder items for dot_product array.
-    for( my $dot_row = 0; 
-	 $dot_row < scalar( @$left_matrix ); 
-	 $dot_row++ ) {
-	for( my $dot_col = 0; 
-	     $dot_col < scalar( @{ $right_matrix->[0] } ); 
-	     $dot_col++ ) {
-	    $dot_product[$dot_row][$dot_col] = 0;
+    # Makes placeholder items for matrix_product array.
+    for( my $product_row = 0; 
+	 $product_row < scalar( @$left_matrix ); 
+	 $product_row++ ) {
+	for( my $product_col = 0; 
+	     $product_col < scalar( @{ $right_matrix->[0] } ); 
+	     $product_col++ ) {
+	    $matrix_product[$product_row][$product_col] = 0;
 	}
     }
 
     # Calculates dot product.
-    for( my $dot_row = 0;
-	 $dot_row < scalar( @dot_product );
-	 $dot_row++ ) {
-	for( my $dot_col = 0;
-	     $dot_col < scalar( @{ $dot_product[$dot_row] } );
-	     $dot_col++ ) {
+    for( my $product_row = 0;
+	 $product_row < scalar( @matrix_product );
+	 $product_row++ ) {
+	for( my $product_col = 0;
+	     $product_col < scalar( @{ $matrix_product[$product_row] } );
+	     $product_col++ ) {
 	    for( my $left_col = 0;
-		 $left_col < scalar( @{ $left_matrix->[$dot_col] } );
+		 $left_col < scalar( @{ $left_matrix->[$product_col] } );
 		 $left_col++ ) {
 		my $left_number;
 		my $right_number;
 
-		$left_number = $left_matrix->[$dot_row]->[$left_col];
+		$left_number = $left_matrix->[$product_row]->[$left_col];
 		$left_number =~ s/\$(\w+)/\$symbols{$1}/g;
-		$right_number = $right_matrix->[$left_col]->[$dot_col];
+		$right_number = $right_matrix->[$left_col]->[$product_col];
 		$right_number =~ s/\$(\w+)/\$symbols{$1}/g;
 
-	    	$dot_product[$dot_row][$dot_col] +=
+	    	$matrix_product[$product_row][$product_col] +=
 	    	    eval( $left_number )
 	    	  * eval( $right_number );
 	    }
 	}
     }
 
-    return \@dot_product;
+    return \@matrix_product;
 }
 
-sub rec_symb_dot_product
+sub mult_matrix_product
 {
     my $symbols = shift;
     my @matrices = @_;
 
-    my $dot_product;
+    my $mult_matrix_product;
 
     for( my $id = $#matrices; $id >= 1; $id-- ) {
 	if( $id == $#matrices ) {
-    	    $dot_product = symb_dot_product( $symbols,
-    					     $matrices[$id-1],
-    					     $matrices[$id] );
+    	    $mult_matrix_product = two_matrix_product( $symbols,
+						       $matrices[$id-1],
+						       $matrices[$id] );
     	} else {
-    	    $dot_product = symb_dot_product( $symbols,
-    					     $matrices[$id-1],
-    					     $dot_product );
+    	    $mult_matrix_product = two_matrix_product( $symbols,
+						       $matrices[$id-1],
+						       $mult_matrix_product );
     	}
     }
 
-    return $dot_product;
+    return $mult_matrix_product;
 }
 
 1;

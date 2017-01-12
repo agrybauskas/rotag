@@ -21,9 +21,9 @@ while( <> ) {
     }
 } 
 
-my $symb_dot_product = LinearAlgebra::symb_dot_product( @symbols,
-							$symb_matrices[0],
-							$symb_matrices[1] );
+my $symb_dot_product = LinearAlgebra::two_matrix_product( @symbols,
+							  $symb_matrices[0],
+							  $symb_matrices[1] );
 
 foreach( @$symb_dot_product ) {
     print( join( "\t", @$_ ), "\n" );
