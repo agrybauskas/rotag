@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#
+# Runs simple Maxima one-liners.
+#
+
+expression=$1 # Reads expression from stdin.
+
+maxima --very-quiet --run-string $expression \
+    | grep -v 'done' # Deals with/removes unnecessary "done" notification.
