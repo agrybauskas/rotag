@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use List::Util qw(min max);
-use Data::Dumper;
 
 #
 # Given the cartesian coordinates (x, y, z) of atoms, function returns the
@@ -18,6 +17,8 @@ sub create_box
 {
     my @atom_coord = @_;
 
+    # TODO: start mapping from 0, not from 3. Do not forget to change other
+    #       functions accordingly.
     my @atom_coord_x = map { $_->[3] } @atom_coord;
     my @atom_coord_y = map { $_->[4] } @atom_coord;
     my @atom_coord_z = map { $_->[5] } @atom_coord;
@@ -105,7 +106,7 @@ sub connect_atoms
 	}
 
 	# TODO: add atoms that are in the center cell.
-    	foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {	    
+    	foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {
     	    foreach my $neighbour_atom ( @neighbour_cells ) {
 		# Checks distance between neighbouring atoms by formula:
 		# x^2+y^2+z^2 < (bond_length)^2
@@ -127,7 +128,7 @@ sub connect_atoms
 			    join( ",", @$cell_atom_coord )} },
 			      join( ",", @$neighbour_atom ) );
 		    } else {
-			$connected_atoms{ 
+			$connected_atoms{
 			    join( ",", @$cell_atom_coord )} =
 				[ join( ",", @$neighbour_atom ) ]
 		    }

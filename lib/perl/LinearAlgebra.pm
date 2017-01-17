@@ -3,12 +3,10 @@ package LinearAlgebra;
 use strict;
 use warnings;
 
-use Data::Dumper;
-use feature qw( say );
-
 use Math::Algebra::Symbols;
 
 # Describes path to Maxima interpreter tool.
+# TODO: look, how to do declare path variable properly.
 my $maxima_path = "../../tools";
 
 # ------------------------------- Linear algebra ------------------------------ #
@@ -18,10 +16,14 @@ my $maxima_path = "../../tools";
 #
 
 my $PI = 4 * atan2( 1, 1 );
-my $EPSILON = 1.0 / ( 2 ** 52 ); # Machine accuracy for 64-bit floating point
-                                 # numbers.
-                                 # TODO: make machine accuracy dependent on the
-                                 # machine.
+my $EPSILON = 1.0; # Machine accuracy for floating point numbers which is
+                   # calculated in above block. 
+
+{
+    while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
+	$EPSILON = 0.5 * $EPSILON;
+    }
+}
 
 #
 # Creates local reference frame for any three given atoms positions in cartesian

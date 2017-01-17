@@ -21,7 +21,7 @@ no if $] >= 5.017011,                       # WARNING: in newer versions of Perl
 # From mmCIF file, obtains data only from _atom_site category and outputs 1x2
 # array of attribute names and attribute data respectively.
 # Input  (1 arg): mmCIF file.
-# Output (2 arg): array of atom attributes, array of atom data.
+# Output (2 arg): array of atom attributes and array of atom data.
 #
 
 sub obtain_atom_site
