@@ -144,7 +144,7 @@ sub transpose
 #
 #      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
 #      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
-#      \    0         0     1 /   \ z /   \              0              /
+#      \    0         0     1 /   \ z /   \              z              /
 #
 
 #
@@ -208,6 +208,10 @@ sub two_matrix_product
 
     return \@matrix_product;
 }
+
+#
+# TODO: write full discription about a function.
+#
 
 sub mult_matrix_product
 {

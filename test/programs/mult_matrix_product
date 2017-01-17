@@ -22,5 +22,5 @@ my $symb_dot_product =
     LinearAlgebra::mult_matrix_product( @symb_matrices );
 
 foreach( @$symb_dot_product ) {
-    print( join( "\t", @$_ ), "\n" );
+    print( join( "\t", @$_ ), "" );
 }

@@ -1,7 +1,7 @@
-(cos($chi)**2) 0 0
-0 (cos($psi)**2) 0
-0 0 (cos($theta)**2)
+cos(chi) -sin(chi) 0
+sin(chi)  cos(chi) 0
+0         0        1
 
-sin($chi)**2
-sin($psi)**2
-sin($theta)**2
+x
+y
+z
