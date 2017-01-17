@@ -180,8 +180,6 @@ sub two_matrix_product
     }
 
     # Calculates dot product.
-    my @symbols;
-
     for( my $product_row = 0;
     	 $product_row < scalar( @matrix_product );
     	 $product_row++ ) {
@@ -193,49 +191,41 @@ sub two_matrix_product
     		 $left_col++ ) {
     		my $left_number;
     		my $right_number;
+		my $dot_command;
 
 		$left_number = $left_matrix->[$product_row]->[$left_col];
 		$right_number = $right_matrix->[$left_col]->[$product_col];
 
-		# push( @symbols,
-		#       map { ( grep( /$_/, @symbols ) ) ? $_ : $_}
-		#       grep { $_ =~ s/\$(\w+)/$1/g }
-		#       ( $left_number, $right_number ) );
+		$dot_command = 
+		      "$maxima_path/maxima_listener \"fortran(("
+		      . "$matrix_product[$product_row][$product_col]"
+		      . ")+($left_number)*($right_number));\"";
 
-		# $left_number =~ s/\$(\w+)/$1/g;
-    		# $right_number =~ s/\$(\w+)/$1/g;
-		# my $current_state = $matrix_product[$product_row][$product_col];
-
-		# $matrix_product[$product_row][$product_col] =
-	        #     qx( $maxima_path/maxima_listener "fortran(($left_number)*($right_number));");
+		$matrix_product[$product_row][$product_col] = qx( $dot_command );
 	    }
     	}
     }
 
-    # print Dumper @matrix_product;
     return \@matrix_product;
 }
 
-# sub mult_matrix_product
-# {
-#     my $symbols = shift;
-#     my @matrices = @_;
+sub mult_matrix_product
+{
+    my @matrices = @_;
 
-#     my $mult_matrix_product;
+    my $mult_matrix_product;
 
-#     for( my $id = $#matrices; $id >= 1; $id-- ) {
-# 	if( $id == $#matrices ) {
-#     	    $mult_matrix_product = two_matrix_product( $symbols,
-# 						       $matrices[$id-1],
-# 						       $matrices[$id] );
-#     	} else {
-#     	    $mult_matrix_product = two_matrix_product( $symbols,
-# 						       $matrices[$id-1],
-# 						       $mult_matrix_product );
-#     	}
-#     }
+    for( my $id = $#matrices; $id >= 1; $id-- ) {
+	if( $id == $#matrices ) {
+    	    $mult_matrix_product = two_matrix_product( $matrices[$id-1],
+						       $matrices[$id] );
+    	} else {
+    	    $mult_matrix_product = two_matrix_product( $matrices[$id-1],
+						       $mult_matrix_product );
+    	}
+    }
 
-#     return $mult_matrix_product;
-# }
+    return $mult_matrix_product;
+}
 
 1;

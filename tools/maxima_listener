@@ -4,7 +4,11 @@
 # Runs simple Maxima one-liners.
 #
 
-expression=$1 # Reads expression from stdin.
-
-maxima --very-quiet --run-string $expression \
-    | grep -v 'done' # Deals with/removes unnecessary "done" notification.
+# Runs Maxima in quiet mode, removes "done" warning that is produce during
+# initiation of fortran function and removes whitespaces, because
+# Maxima is whitespace-sensitive when it comes to input.
+echo $1 \
+    | sed 's/\s//g' \
+    | maxima --very-quiet \
+    | grep -v 'done' \
+    | sed 's/\s//g'

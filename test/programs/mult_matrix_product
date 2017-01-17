@@ -8,9 +8,6 @@ use Data::Dumper;
 use lib "../../lib/perl";
 use LinearAlgebra;
 
-my $symbols = shift;
-   $symbols //= ",";
-my @symbols = [ split( ",", $symbols ) ];
 my @symb_matrices = ( [] );
 
 while( <> ) {
@@ -22,8 +19,7 @@ while( <> ) {
 } 
 
 my $symb_dot_product = 
-    LinearAlgebra::mult_matrix_product( @symbols,
-					@symb_matrices );
+    LinearAlgebra::mult_matrix_product( @symb_matrices );
 
 foreach( @$symb_dot_product ) {
     print( join( "\t", @$_ ), "\n" );
