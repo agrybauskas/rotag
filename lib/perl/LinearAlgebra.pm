@@ -17,7 +17,7 @@ my $maxima_path = "../../tools";
 
 my $PI = 4 * atan2( 1, 1 );
 my $EPSILON = 1.0; # Machine accuracy for floating point numbers which is
-                   # calculated in above block. 
+                   # calculated in above block.
 
 {
     while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
@@ -119,8 +119,8 @@ sub find_euler_angles
 
 #
 # Transposes matrix.
-# Input:  (1 arg): array representing matrix.
-# Output: (1 arg): transposed matrix.
+# Input  (1 arg): array representing matrix.
+# Output (1 arg): transposed matrix.
 #
 
 sub transpose
@@ -142,7 +142,7 @@ sub transpose
 # ---------------------------- Symbolic linear algebra ------------------------ #
 
 #
-# Example of rotation along z-axis by chi angle in radians:
+# Example of rotation along z-axis by chi angle:
 #
 #      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
 #      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
@@ -150,11 +150,9 @@ sub transpose
 #
 
 #
-# Calculates dot product of two matrices that might have symbolic variables.
-# Input:  (3 arg): first argument - symbols that identify strings as
-#                  symbols for mathematical manipulation, second and third - 2
-#                  arrays that are correctly paired.
-# Output: (1 arg): dot product.
+# Calculates matrix product of two matrices that might have symbolic variables.
+# Input  (2 arg): 2 arrays that are correctly paired.
+# Output (1 arg): matrix product.
 #
 
 sub two_matrix_product
@@ -165,23 +163,26 @@ sub two_matrix_product
 
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
-    die( "A row number of a left matrix is NOT equal to the column\n" .
-    	 "number of the right matrix.\n" )
+    die(   "A row number of a left matrix is NOT equal to the column\n"
+         . "number of the right matrix.\n" )
     	unless( scalar( @{ transpose( $left_matrix ) } ) ==
     		scalar( @$right_matrix ) );
 
-    # Makes placeholder items for matrix_product array.
-    for( my $product_row = 0; 
-    	 $product_row < scalar( @$left_matrix ); 
+    # Makes placeholder items consisting zero values for matrix_product array.
+    for( my $product_row = 0;
+    	 $product_row < scalar( @$left_matrix );
     	 $product_row++ ) {
-    	for( my $product_col = 0; 
-    	     $product_col < scalar( @{ $right_matrix->[0] } ); 
+    	for( my $product_col = 0;
+    	     $product_col < scalar( @{ $right_matrix->[0] } );
     	     $product_col++ ) {
     	    $matrix_product[$product_row][$product_col] = 0;
     	}
     }
 
-    # Calculates dot product.
+    my $sys_command; # Command that will be run in command-line with
+                     # backticks.
+
+    # Calculates matrix product of two matrices.
     for( my $product_row = 0;
     	 $product_row < scalar( @matrix_product );
     	 $product_row++ ) {
@@ -191,19 +192,12 @@ sub two_matrix_product
     	    for( my $left_col = 0;
     		 $left_col < scalar( @{ $left_matrix->[$product_col] } );
     		 $left_col++ ) {
-    		my $left_number;
-    		my $right_number;
-		my $dot_command;
-
-		$left_number = $left_matrix->[$product_row]->[$left_col];
-		$right_number = $right_matrix->[$left_col]->[$product_col];
-
-		$dot_command = 
-		      "$maxima_path/maxima_listener \"fortran(("
-		      . "$matrix_product[$product_row][$product_col]"
-		      . ")+($left_number)*($right_number));\"";
-
-		$matrix_product[$product_row][$product_col] = qx( $dot_command );
+		$sys_command =
+		        "$maxima_path/maxima_listener \"fortran("
+		      . "($matrix_product[$product_row][$product_col])"
+		      . "+($left_matrix->[$product_row]->[$left_col])"
+		      . "*($right_matrix->[$left_col]->[$product_col]));\"";
+		$matrix_product[$product_row][$product_col] = qx( $sys_command );
 	    }
     	}
     }
@@ -212,7 +206,9 @@ sub two_matrix_product
 }
 
 #
-# TODO: write full discription about a function.
+# Calculates matrix product of list of any size of matrices.
+# Input  (n arg): any number of arrays representing matrices.
+# Output (1 arg): matrix product.
 #
 
 sub mult_matrix_product
@@ -221,6 +217,7 @@ sub mult_matrix_product
 
     my $mult_matrix_product;
 
+    # Multiplies matrices from left to right.
     for( my $id = $#matrices; $id >= 1; $id-- ) {
 	if( $id == $#matrices ) {
     	    $mult_matrix_product = two_matrix_product( $matrices[$id-1],
