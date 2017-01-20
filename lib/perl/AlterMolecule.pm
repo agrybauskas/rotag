@@ -24,10 +24,10 @@ sub rotate_bond
     # Transformations that transforms global reference frame to local.
     # Negative translation matrix. Places mid-atom to 
     my @neg_transl_matrix =
-	[ [ 1, 0, 0, ( -1 ) * $mid_atom_coord->[0] ],
+	( [ 1, 0, 0, ( -1 ) * $mid_atom_coord->[0] ],
 	  [ 0, 1, 0, ( -1 ) * $mid_atom_coord->[1] ],
 	  [ 0, 0, 1, ( -1 ) * $mid_atom_coord->[2] ],
-	  [ 0, 0, 0,                   1           ] ];
+	  [ 0, 0, 0,                   1           ] );
 
     # Positive translation matrix. Brings back to original mid-atom position.
     my @pos_transl_matrix =
@@ -51,13 +51,45 @@ sub rotate_bond
     my @rot_matrix_y = ( [ cos( $gamma ), 0, sin( $gamma ), 0 ],
 			 [ 0, 1, 0, 0 ],
 			 [ ( -1 ) * sin( $gamma ), 0, cos( $gamma ), 0 ],
-			 [ 0, 0, 0, 1 ]);
+			 [ 0, 0, 0, 1 ] );
 
     my @rot_matrix_z = ( [ cos( $alpha ), (-1) * sin( $alpha ), 0, 0 ],
 			 [ sin( $alpha ), cos( $alpha ), 0, 0 ],
 			 [ 0, 0, 1, 0 ],
 			 [ 0, 0, 0, 1 ] );
 
+    # Rotation matrix around the bond.
+    my @rot_matrix_bond = ( [ "cos(chi)", "-sin(chi)", 0, 0 ],
+			    [ "sin(chi)",  "cos(chi)", 0, 0 ],
+			    [ 0, 0, 1, 0 ],
+			    [ 0, 0, 0, 1 ] );;
+
+    # Converting target atom coordinates from 3x1 to 4x1 form so,
+    # it could be multiplied by 4x4 matrix.
+    # my @target_atom_coord;
+
+    # foreach( @$target_atom_coord ) {
+    # 	push( @target_atom_coord, [ $_ ] );
+    # }
+    # @target_atom_coord = [ @target_atom_coord ];
+
+    # Multiplying multiple matrices to get a final form.
+    my @rot_matrix;
+
+    @rot_matrix =
+    	LinearAlgebra::mult_matrix_product(
+    	    \@pos_transl_matrix,
+    	    &LinearAlgebra::transpose( 
+    		LinearAlgebra::mult_matrix_product( \@rot_matrix_x,
+    						    \@rot_matrix_y,
+    						    \@rot_matrix_z ),
+    	    ),
+	    \@rot_matrix_bond,
+	    \@rot_matrix_x,
+	    \@rot_matrix_y,
+	    \@rot_matrix_z );
+
+    print Dumper @rot_matrix;
 }
 
 #
