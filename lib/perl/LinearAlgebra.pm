@@ -3,8 +3,6 @@ package LinearAlgebra;
 use strict;
 use warnings;
 
-use Math::Algebra::Symbols;
-
 # Describes path to Maxima interpreter tool.
 # TODO: look, how to do declare path variable properly.
 my $maxima_path = "../../tools";

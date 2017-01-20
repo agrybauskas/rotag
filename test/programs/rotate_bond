@@ -4,8 +4,44 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
+use CifParser;
 use AlterMolecule;
 
+use Data::Dumper;
 
+#
+# Test program, as argv, uses both attribute filter, attribute data selection
+# info and mmCIF. In order test to be flexible, attribute information is
+# entered in string form:
+#
+# "label_atom_id CA,CB & id 147, 148"
+#
+# and then parsed to such form:
+#
+# [ "label_atom_id" => [ "CA",  "CB"  ],
+#   "id"            => [ "147", "148" ] ].
+#
+# Attribute data is selected in such form:
+#
+# "Cartn_x,Cartn_y,Cartn_z"
+#
+# The third argument is mmCIF format stdin.
+#
 
-AlterMolecule::rotate_bond();
+my $attribute_filter = shift;
+my $attribute_select = shift;
+
+# Parses selector argument from string  to proper array.
+my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
+                         map { [ split( " ", $_ ) ] }
+                         split( "&", $attribute_filter ) ];
+my @attribute_select = [ split( ",", $attribute_select ) ];
+
+my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
+							 @attribute_select,
+							 <> ) };
+
+AlterMolecule::rotate_bond( $selected_atom_data[0],
+			    $selected_atom_data[1],
+			    $selected_atom_data[2],
+			    $selected_atom_data[3] );
