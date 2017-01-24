@@ -29,3 +29,4 @@ my $symb_dot_product = LinearAlgebra::two_matrix_product( @symbols,
 foreach( @$symb_dot_product ) {
     print( join( "\t", @$_ ), "\n" );
 }
+

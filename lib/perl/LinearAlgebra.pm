@@ -3,6 +3,8 @@ package LinearAlgebra;
 use Math::Complex;
 use Math::Algebra::Symbols;
 
+use Data::Dumper;
+
 use strict;
 use warnings;
 
@@ -194,6 +196,7 @@ sub two_matrix_product
     		 $left_col++ ) {
 		my $left_number;
 		my $right_number;
+		my $number_mult;
 
 		$left_number = $left_matrix->[$product_row]->[$left_col];
 		$left_number =~ s/\$(\w+)/\$symbols{$1}/g;
