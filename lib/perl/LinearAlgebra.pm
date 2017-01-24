@@ -1,11 +1,10 @@
 package LinearAlgebra;
 
+use Math::Complex;
+use Math::Algebra::Symbols;
+
 use strict;
 use warnings;
-
-# Describes path to Maxima interpreter tool.
-# TODO: look, how to do declare path variable properly.
-my $maxima_path = "../../tools";
 
 # ------------------------------- Linear algebra ------------------------------ #
 
@@ -155,8 +154,9 @@ sub transpose
 
 sub two_matrix_product
 {
-    my ( $left_matrix, $right_matrix ) = @_;
+    my ( $symbols, $left_matrix, $right_matrix ) = @_;
 
+    my %symbols; # Hash that prepares symbols for algebraic manipulation
     my @matrix_product;
 
     # Notifies error, when the column number of left matrix does not equal the
@@ -177,8 +177,10 @@ sub two_matrix_product
     	}
     }
 
-    my $sys_command; # Command that will be run in command-line with
-                     # backticks.
+    # Initiates perception of symbols.
+    foreach( @$symbols ) {
+	$symbols{$_} = symbols( $_ );
+    }
 
     # Calculates matrix product of two matrices.
     for( my $product_row = 0;
@@ -190,12 +192,17 @@ sub two_matrix_product
     	    for( my $left_col = 0;
     		 $left_col < scalar( @{ $left_matrix->[$product_col] } );
     		 $left_col++ ) {
-		$sys_command =
-		        "$maxima_path/maxima_listener \"fortran("
-		      . "($matrix_product[$product_row][$product_col])"
-		      . "+($left_matrix->[$product_row]->[$left_col])"
-		      . "*($right_matrix->[$left_col]->[$product_col]));\"";
-		$matrix_product[$product_row][$product_col] = qx( $sys_command );
+		my $left_number;
+		my $right_number;
+
+		$left_number = $left_matrix->[$product_row]->[$left_col];
+		$left_number =~ s/\$(\w+)/\$symbols{$1}/g;
+		$right_number = $right_matrix->[$left_col]->[$product_col];
+		$right_number =~ s/\$(\w+)/\$symbols{$1}/g;
+
+		$matrix_product[$product_row][$product_col] +=
+		    eval( $left_number )
+		  * eval( $right_number );
 	    }
     	}
     }
@@ -211,6 +218,7 @@ sub two_matrix_product
 
 sub mult_matrix_product
 {
+    my $symbols = shift;
     my @matrices = @_;
 
     my $mult_matrix_product;
@@ -218,10 +226,12 @@ sub mult_matrix_product
     # Multiplies matrices from left to right.
     for( my $id = $#matrices; $id >= 1; $id-- ) {
 	if( $id == $#matrices ) {
-    	    $mult_matrix_product = two_matrix_product( $matrices[$id-1],
+    	    $mult_matrix_product = two_matrix_product( $symbols,
+						       $matrices[$id-1],
 						       $matrices[$id] );
     	} else {
-    	    $mult_matrix_product = two_matrix_product( $matrices[$id-1],
+    	    $mult_matrix_product = two_matrix_product( $symbols,
+						       $matrices[$id-1],
 						       $mult_matrix_product );
     	}
     }
