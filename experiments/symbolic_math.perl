@@ -1,4 +1,5 @@
 use Math::Algebra::Symbols;
+use Math::Complex;
 use Data::Dumper;
   
 use strict;
@@ -12,10 +13,10 @@ print( "-" x 80, "\n" );
 
 my ( $chi ) = symbols( qw( chi ) );
 
-my $expression = ( cos($chi)**2 ) + ( sin($chi)**2 );
+my $expression = $chi**2;
 
-$chi = 4;
+$chi = 2;
 
-print( eval( '$expression' ), "\n" );
+print( eval( $expression ), "\n" );
 
 print( "-" x 80, "\n" );
