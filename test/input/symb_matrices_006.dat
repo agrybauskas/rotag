@@ -1,0 +1,9 @@
+1	2	2
+
+cos($chi) -sin($chi) 0
+sin($chi)  cos($chi) 0
+0         0        1
+
+$x
+$y
+$z

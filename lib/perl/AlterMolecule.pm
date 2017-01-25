@@ -80,23 +80,6 @@ sub rotate_bond
     # Multiplying multiple matrices to get a final form.
     my @rot_matrix;
 
-    # @rot_matrix =
-    	# LinearAlgebra::mult_matrix_product(
-	#     @symbols,
-    	#     \@pos_transl_matrix,
-    	    # &LinearAlgebra::transpose( 
-    	    # 	LinearAlgebra::mult_matrix_product( [ "chi" ],
-	    # 					    \@rot_matrix_x,
-    	    # 					    \@rot_matrix_y,
-    	    # 					    \@rot_matrix_z ),
-    	    # ),
-    	    # \@rot_matrix_bond,
-    	    # \@rot_matrix_x,
-    	    # \@rot_matrix_y,
-    	    # \@rot_matrix_z
-	    
-	# );
-
     # @rot_matrix = LinearAlgebra::two_matrix_product(
     # 	@symbols,
     # 	# \@pos_transl_matrix,
@@ -106,16 +89,9 @@ sub rotate_bond
     # 	# LinearAlgebra::transpose( \@rot_matrix_z ),
     # 	\@rot_matrix_x,
     # 	\@rot_matrix_y,
-    # 	\@rot_matrix_z 
-    # 	);
+    # 	\@rot_matrix_z,
+    #   \@rot_matrix_bond );
 
-
-    LinearAlgebra::mult_matrix_product(
-	@symbols,
-	@neg_transl_matrix,
-	@rot_matrix_bond
-	);
-    
 }
 
 #

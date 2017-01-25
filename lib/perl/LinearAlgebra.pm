@@ -1,9 +1,6 @@
 package LinearAlgebra;
 
-use Math::Complex;
 use Math::Algebra::Symbols;
-
-use Data::Dumper;
 
 use strict;
 use warnings;
@@ -196,16 +193,15 @@ sub two_matrix_product
     		 $left_col++ ) {
 		my $left_number;
 		my $right_number;
-		my $number_mult;
 
 		$left_number = $left_matrix->[$product_row]->[$left_col];
-		$left_number =~ s/\$(\w+)/\$symbols{$1}/g;
 		$right_number = $right_matrix->[$left_col]->[$product_col];
+
+		$left_number =~ s/\$(\w+)/\$symbols{$1}/g;
 		$right_number =~ s/\$(\w+)/\$symbols{$1}/g;
 
 		$matrix_product[$product_row][$product_col] +=
-		    eval( $left_number )
-		  * eval( $right_number );
+		    eval( $left_number ) * eval( $right_number );
 	    }
     	}
     }
