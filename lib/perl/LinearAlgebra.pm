@@ -2,6 +2,8 @@ package LinearAlgebra;
 
 use Math::Algebra::Symbols;
 
+use Data::Dumper;
+
 use strict;
 use warnings;
 
@@ -194,11 +196,20 @@ sub two_matrix_product
 		my $left_number;
 		my $right_number;
 
-		$left_number = $left_matrix->[$product_row]->[$left_col];
-		$right_number = $right_matrix->[$left_col]->[$product_col];
+		# Retrieves numbers that will be multiplied and added to
+		# matrix_product array.
+		$left_number = $left_matrix->[$product_row][$left_col];
+		$right_number = $right_matrix->[$left_col][$product_col];
 
+		# Changes "$" to hash reference (for symbols that are
+		# written in "$x" form).
 		$left_number =~ s/\$(\w+)/\$symbols{$1}/g;
 		$right_number =~ s/\$(\w+)/\$symbols{$1}/g;
+
+		# Changes "&" to hash reference (for symbols that are
+		# written in "&i" form, usually for Euler number).
+		$left_number =~ s/\&(\w+)/\$symbols{$1}/g;
+		$right_number =~ s/\&(\w+)/\$symbols{$1}/g;
 
 		$matrix_product[$product_row][$product_col] +=
 		    eval( $left_number ) * eval( $right_number );
