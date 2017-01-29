@@ -65,7 +65,8 @@ my $eval_expression;
 foreach( @$rotated_atom_coord ) {
     foreach( @$_ ) {
 	foreach( @$_ ) {
-	    $eval_expression = eval( $_ );
+	    $eval_expression = Re( eval( $_ ) ); # Takes only real part of
+	                                         # the complex number.
 	    printf( "%.3f\n", $eval_expression );
 	}
     }
