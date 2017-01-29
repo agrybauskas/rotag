@@ -5,6 +5,13 @@ use warnings;
 
 use List::Util qw(min max);
 
+# ------------------------------ Connect atoms ------------------------------- #
+
+#
+# Block of code contains functions that shows what atom is connected to what 
+# atom using only information about atom coordinates.
+#
+
 #
 # Given the cartesian coordinates (x, y, z) of atoms, function returns the
 # dimensions of smallest possible box that contains all atoms.

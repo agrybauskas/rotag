@@ -10,6 +10,11 @@ use warnings;
 # ------------------------------- Linear algebra ------------------------------ #
 
 #
+# Block of code contains functions that perform basic linear algebra operations
+# for matrices.
+#
+
+#
 # Constants
 #
 
@@ -139,6 +144,10 @@ sub transpose
 
 # ---------------------------- Symbolic linear algebra ------------------------ #
 
+#
+# Block of code contains functions that perform basic linear algebra on symbolic
+# expressions..
+#
 #
 # Example of rotation along z-axis by chi angle:
 #

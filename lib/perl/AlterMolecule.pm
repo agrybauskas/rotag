@@ -8,10 +8,19 @@ use LinearAlgebra;
 
 use Data::Dumper;
 
+# ------------------ Molecule structure alteration algorithms ----------------- #
+
+#
+# Block of code that has functions changing structure of molecules by rotating
+# along dihedral angles, changing length and angle of bonds.
+#
+
 #
 # Makes a rotational transformation matrix of the bond.
-# Input  ():
-# Output ():
+# Input  (4 arg): cartesian coordinates in array form that defines user-selected
+#                 mid, up, side and target atoms' coordinates.
+# Output (1 arg): matrix defining coordinates in symbolic mathematical form
+#                 (with undefined dihedral angle chi).
 #
 
 sub rotate_bond
