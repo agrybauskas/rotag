@@ -38,36 +38,59 @@ my $PI = 4 * atan( 1, 1 );
 
 my $attribute_filter = shift;
 my $attribute_select = shift;
-my $rotational_angle = shift;
+my $rotation_num = shift;
+my @cif = <>;
 
 # Parses selector argument from string  to proper array.
 my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          map { [ split( " ", $_ ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
-my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
-							 @attribute_select,
-							 <> ) };
+
+# Prints count of atoms and arbitrary word. Neccessary for Jmol.
+print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
+print( "testing\n" );
+
+# Prepares selected atom data for Jmol.
+map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+map { [ split( " ", $_ ) ] }
+grep { $_ =~ /ATOM/ }
+@cif;
+
+my @selected_atom_data =
+    @{ CifParser::select_atom_data( @attribute_filter,
+				    @attribute_select,
+				    @cif ) };
 
 # Rotates once along chi angle.
-my $rotated_atom_coord = AlterMolecule::rotate_bond( $selected_atom_data[0],
-						     $selected_atom_data[1],
-						     $selected_atom_data[2],
-						     $selected_atom_data[3] );
+my $rotated_atom_coord =
+    AlterMolecule::rotate_bond( $selected_atom_data[0],
+				$selected_atom_data[1],
+				$selected_atom_data[2],
+				$selected_atom_data[3] );
+
+# Calculates angles that will be rotated along.
+my $pi = $PI;
+my $chi;
+my $small_angle = 2 / $rotation_num;
+
+my @angles = map { $_ * $small_angle * $pi } ( 1..$rotation_num-1 );
 
 # Evaluates symbolic expression.
-my $pi = $PI;
-my $chi = eval( $rotational_angle );
 my $eval_expression;
 
-# Rotates again along chi angle. The result should match the initial
-# coordinates.
-foreach( @$rotated_atom_coord ) {
-    foreach( @$_ ) {
-	foreach( @$_ ) {
-	    $eval_expression = Re( eval( $_ ) ); # Takes only real part of
-	                                         # the complex number.
-	    printf( "%.3f\n", $eval_expression );
+# Rotates again along chi angle and creates Jmol readable struct file.
+foreach( @angles ) {
+    $chi = $_;
+    foreach( @$rotated_atom_coord ) {
+	print( "X\t" );
+	foreach( @$_[0..2] ) {
+	    foreach( @$_ ) {
+		$eval_expression = Re( eval( $_ ) ); # Takes only real
+		                                     # the complex number.
+		printf( "%.3f\t", $eval_expression );
+	    }
 	}
+	print( "\n" );
     }
 }
