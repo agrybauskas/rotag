@@ -92,13 +92,13 @@ sub rotate_bond
     @rot_matrix = LinearAlgebra::mult_matrix_product(
     	@symbols,
     	\@pos_transl_matrix,
-    	LinearAlgebra::transpose( \@rot_matrix_z ),
     	LinearAlgebra::transpose( \@rot_matrix_y ),
     	LinearAlgebra::transpose( \@rot_matrix_x ),
+    	LinearAlgebra::transpose( \@rot_matrix_z ),
 	\@rot_matrix_bond,
+    	\@rot_matrix_z,
     	\@rot_matrix_x,
     	\@rot_matrix_y,
-    	\@rot_matrix_z,
 	\@neg_transl_matrix,
     	\@target_atom_coord );
 
