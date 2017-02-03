@@ -21,9 +21,9 @@ use Data::Dumper;
 # Output (1 arg):
 #
 
-sub cf_serine # cf - abbreviation of constraint-free.
+sub cf_serine # cf - abbreviation for constraint-free.
 {
-    
+    my ( $serine_atom_data, $target_atom ) = @_;
 }
 
 1;
