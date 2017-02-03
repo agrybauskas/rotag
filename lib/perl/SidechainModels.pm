@@ -1,10 +1,10 @@
-package SidechainModels
+package SidechainModels;
 
 use strict;
 use warnings;
 
 use lib qw( ./ );
-use AlterMolecules;
+use AlterMolecule;
 
 use Data::Dumper;
 
@@ -25,3 +25,5 @@ sub cf_serine # cf - abbreviation of constraint-free.
 {
     
 }
+
+1;

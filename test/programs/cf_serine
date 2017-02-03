@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Data::Dumper;
+
+use lib "../../lib/perl";
+use CifParser;
+use SidechainModels;
+
+my $attribute_filter = shift;
+my @cif = <>;
+
+# Parses selector argument from string  to proper array.
+my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
+                         map { [ split( " ", $_ ) ] }
+                         split( "&", $attribute_filter ) ];
