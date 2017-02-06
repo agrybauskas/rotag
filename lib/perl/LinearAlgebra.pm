@@ -2,8 +2,6 @@ package LinearAlgebra;
 
 use Math::Algebra::Symbols;
 
-use Data::Dumper;
-
 use strict;
 use warnings;
 
