@@ -64,9 +64,9 @@ my @selected_atom_data =
 
 # Rotates once along chi angle.
 my $rotated_atom_coord =
-    AlterMolecule::rotate_bond( $selected_atom_data[0],
+    AlterMolecule::rotate_bond( $selected_atom_data[1],
 				$selected_atom_data[2],
-				$selected_atom_data[1],
+				$selected_atom_data[0],
 				$selected_atom_data[3] );
 
 # Calculates angles that will be rotated along.

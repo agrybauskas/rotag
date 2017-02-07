@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Data::Dumper;
+
+use Math::Complex;
+use Math::Algebra::Symbols;
+
+use lib "../../lib/perl";
+use CifParser;
+use AlterMolecule;
+
+#
+# Constants
+#
+
+my $PI = 4 * atan( 1, 1 );
+
+
+my $attribute_filter = shift;
+my $attribute_select = shift;
+my $rotation_num = shift;
+my @cif = <>;
+
+# Parses selector argument from string  to proper array.
+my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
+                         map { [ split( " ", $_ ) ] }
+                         split( "&", $attribute_filter ) ];
+my @attribute_select = [ split( ",", $attribute_select ) ];
+
+# Prints count of atoms and arbitrary word. Neccessary for Jmol.
+print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
+print( "testing\n" );
+
+# Prepares selected atom data for Jmol.
+map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+map { [ split( " ", $_ ) ] }
+grep { $_ =~ /ATOM/ }
+@cif;
+
+my @selected_atom_data =
+    @{ CifParser::select_atom_data( @attribute_filter,
+				    @attribute_select,
+				    @cif ) };
+
