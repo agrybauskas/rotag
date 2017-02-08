@@ -4,23 +4,12 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-use Math::Complex;
-use Math::Algebra::Symbols;
-
 use lib "../../lib/perl";
 use CifParser;
-use AlterMolecule;
-
-#
-# Constants
-#
-
-my $PI = 4 * atan( 1, 1 );
-
+use LinearAlgebra;
 
 my $attribute_filter = shift;
 my $attribute_select = shift;
-my $rotation_num = shift;
 my @cif = <>;
 
 # Parses selector argument from string  to proper array.
@@ -28,19 +17,62 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          map { [ split( " ", $_ ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
-
-# Prints count of atoms and arbitrary word. Neccessary for Jmol.
-print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
-print( "testing\n" );
-
-# Prepares selected atom data for Jmol.
-map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-map { [ split( " ", $_ ) ] }
-grep { $_ =~ /ATOM/ }
-@cif;
-
 my @selected_atom_data =
     @{ CifParser::select_atom_data( @attribute_filter,
 				    @attribute_select,
 				    @cif ) };
 
+# Prints count of atoms and arbitrary word. Neccessary for Jmol.
+print( scalar( grep { /ATOM/ } @cif ) + 3, "\n" );
+print( "testing\n" );
+
+# Prepares selected atom data for Jmol. First, brings atoms to the start (0,0,0)
+# of reference frame.
+map { print( $_->[2], "\t",
+	     $_->[10] - $selected_atom_data[1][0], "\t",
+	     $_->[11] - $selected_atom_data[1][1], "\t",
+	     $_->[12] - $selected_atom_data[1][2], "\n" ) }
+map { [ split( " ", $_ ) ] }
+grep { $_ =~ /ATOM/ }
+@cif;
+
+# Adds reference frame.
+my @mid_atom_coord =  ( $selected_atom_data[1][0],
+		        $selected_atom_data[1][1],
+			$selected_atom_data[1][2] );
+my @up_atom_coord =   ( $selected_atom_data[0][0],
+			$selected_atom_data[0][1],
+			$selected_atom_data[0][2] );
+my @side_atom_coord = ( $selected_atom_data[2][0],
+			$selected_atom_data[2][1],
+			$selected_atom_data[2][2] );
+my @ref_frame =
+    LinearAlgebra::create_ref_frame( @mid_atom_coord,
+				     @up_atom_coord,
+				     @side_atom_coord );
+
+# Rotation matrix to coordinating global reference frame properly.
+# Finding Euler angles necessary for rotation matrix.
+my ( $alpha, $beta, $gamma ) =
+    LinearAlgebra::find_euler_angles( @mid_atom_coord,
+				      @up_atom_coord,
+				      @side_atom_coord );
+
+my @rot_matrix_x = ( [ 1, 0, 0, 0 ],
+		     [ 0, cos( $beta ), - sin( $beta ), 0 ],
+		     [ 0, sin( $beta ),   cos( $beta ), 0 ],
+		     [ 0, 0, 0, 1 ] );
+
+my @rot_matrix_y = ( [   cos( $gamma ), 0, sin( $gamma ), 0 ],
+		     [ 0, 1, 0, 0 ],
+		     [ - sin( $gamma ), 0, cos( $gamma ), 0 ],
+		     [ 0, 0, 0, 1 ] );
+
+my @rot_matrix_z = ( [ cos( $alpha ), - sin( $alpha ), 0, 0 ],
+		     [ sin( $alpha ),   cos( $alpha ), 0, 0 ],
+		     [ 0, 0, 1, 0 ],
+		     [ 0, 0, 0, 1 ] );
+
+# print( "X\t$ref_frame[0][0],\t$ref_frame[0][1]\t$ref_frame[0][2]\n");
+# print( "X\t$ref_frame[1][0],\t$ref_frame[1][1]\t$ref_frame[1][2]\n");
+# print( "X\t$ref_frame[2][0],\t$ref_frame[2][1]\t$ref_frame[2][2]\n");
