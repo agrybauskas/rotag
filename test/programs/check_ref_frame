@@ -58,27 +58,18 @@ my ( $alpha, $beta, $gamma ) =
     LinearAlgebra::find_euler_angles( @mid_atom_coord,
 				      @up_atom_coord,
 				      @side_atom_coord );
-my @rot_matrix_x = ( [ cos( $gamma ), - sin( $gamma ), 0, 0 ],
+my @rot_matrix_z = ( [ cos( $gamma ), - sin( $gamma ), 0, 0 ],
 		     [ sin( $gamma ),   cos( $gamma ), 0, 0 ],
 		     [ 0, 0, 1, 0 ],
 		     [ 0, 0, 0, 1 ] );
-my @rot_matrix_y = ( [ 1, 0, 0, 0 ],
+my @rot_matrix_x = ( [ 1, 0, 0, 0 ],
 		     [ 0, cos( $beta ), - sin( $beta ), 0 ],
 		     [ 0, sin( $beta ),   cos( $beta ), 0 ],
 		     [ 0, 0, 0, 1 ] );
-# my @rot_matrix_z = ( [ 1, 0, 0, 0 ],
-# 		     [ 0, cos( $alpha ), - sin( $alpha ), 0 ],
-# 		     [ 0, sin( $alpha ),   cos( $alpha ), 0 ],
-# 		     [ 0, 0, 0, 1 ] );
-
-# my @rot_matrix_y = ( [   cos( $beta ), 0, sin( $beta ), 0 ],
-# 		     [ 0, 1, 0, 0 ],
-# 		     [ - sin( $beta ), 0, cos( $beta ), 0 ],
-# 		     [ 0, 0, 0, 1 ] );
-# my @rot_matrix_z = ( [ 1, 0, 0, 0 ],
-# 		     [ 0, cos( $alpha ), - sin( $alpha ), 0 ],
-# 		     [ 0, sin( $alpha ),   cos( $alpha ), 0 ],
-# 		     [ 0, 0, 0, 1 ] );
+my @rot_matrix_z_prime = ( [ cos( $alpha ), - sin( $alpha ), 0, 0 ],
+			   [ sin( $alpha ),   cos( $alpha ), 0, 0 ],
+			   [ 0, 0, 1, 0 ],
+			   [ 0, 0, 0, 1 ] );
 
 # Prepares reference frame coordinates for transformation.
 my @symbols = ( "i" );
@@ -113,21 +104,21 @@ push( @z_local_axis, 1 );
 # Performs transformation.
 @x_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					# \@rot_matrix_z,
-					\@rot_matrix_y,
+					\@rot_matrix_z_prime,
 					\@rot_matrix_x,
+					\@rot_matrix_z,
 					\@x_local_axis );
 @y_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					# \@rot_matrix_z,
-					\@rot_matrix_y,
+					\@rot_matrix_z_prime,
 					\@rot_matrix_x,
+					\@rot_matrix_z,
 					\@y_local_axis );
 @z_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					# \@rot_matrix_z,
-					\@rot_matrix_y,
+					\@rot_matrix_z_prime,
 					\@rot_matrix_x,
+					\@rot_matrix_z,
 					\@z_local_axis );
 
 # Draws atoms at the end of both local and global axes.
@@ -183,3 +174,4 @@ print( "hide bonds\n" );
 
 # Decreses size of atoms.
 print( "spacefill 0.1\n" );
+

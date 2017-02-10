@@ -1,0 +1,37 @@
+x_local_axis : matrix([-0.987716],
+	              [1.778554],
+		      [-0.521713],
+		      [1]);
+
+y_local_axis : matrix([-0.887188139000005],
+		      [-1.323149738],
+		      [-2.831064856],
+		      [1]);
+
+z_local_axis : matrix([-1.298],
+	              [-0.529],
+		      [0.654000000000003],
+		      [1]);
+
+alpha : -0.415233833959838;
+beta : 1.1342318797974;
+gamma : -1.95779439861806;
+
+rot_matrix_z: matrix([cos(gamma),-sin(gamma),0,0],
+		     [sin(gamma),cos(gamma),0,0],
+		     [0,0,1,0],
+		     [0,0,0,1]);
+
+rot_matrix_x : matrix([1,0,0,0],
+		      [0,cos(beta),-sin(beta),0],
+		      [0,sin(beta),cos(beta),0],
+		      [0,0,0,1]);
+
+rot_matrix_z_prime : matrix([cos(alpha),-sin(alpha),0,0],
+			    [sin(alpha),cos(alpha),0,0],
+			    [0,0,1,0],
+			    [0,0,0,1]);
+
+rot_matrix_z_prime . rot_matrix_x . rot_matrix_z . x_local_axis;
+rot_matrix_z_prime . rot_matrix_x . rot_matrix_z . y_local_axis;
+rot_matrix_z_prime . rot_matrix_x . rot_matrix_z . z_local_axis;
