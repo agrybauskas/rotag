@@ -22,20 +22,21 @@ my @selected_atom_data =
 				    @attribute_select,
 				    @cif ) };
 
-# Prints count of atoms and arbitrary word. Neccessary for Jmol.
-print( "data \"model\"\n" );
-print( scalar( grep { /ATOM/ } @cif ), "\n" );
-print( "testing\n" );
-
 # Prepares selected atom data for Jmol. First, brings atoms to the start (0,0,0)
-# of reference frame.
-map { print( $_->[2], " ",
-	     $_->[10] - $selected_atom_data[1][0], " ",
-	     $_->[11] - $selected_atom_data[1][1], " ",
-	     $_->[12] - $selected_atom_data[1][2], "\n" ) }
-map { [ split( " ", $_ ) ] }
-grep { $_ =~ /ATOM/ }
-@cif;
+# of reference frame and draws them.
+# print( "data \"model\"\n" );
+# print( scalar( grep { /ATOM/ } @cif ), "\n" );
+# print( "testing\n" );
+
+# map { print( $_->[2], " ",
+# 	     $_->[10] - $selected_atom_data[1][0], " ",
+# 	     $_->[11] - $selected_atom_data[1][1], " ",
+# 	     $_->[12] - $selected_atom_data[1][2], "\n" ) }
+# map { [ split( " ", $_ ) ] }
+# grep { $_ =~ /ATOM/ }
+# @cif;
+
+# print( "end \"model\"\n" );
 
 # Adds reference frame.
 my @mid_atom_coord =  ( $selected_atom_data[1][0],
@@ -52,26 +53,34 @@ my @local_ref_frame =
 				     @up_atom_coord,
 				     @side_atom_coord );
 
-# Rotation matrix to coordinating global reference frame properly.
-# Finding Euler angles necessary for rotation matrix.
+# Finds Euler angles necessary for rotation matrix.
 my ( $alpha, $beta, $gamma ) =
     LinearAlgebra::find_euler_angles( @mid_atom_coord,
 				      @up_atom_coord,
 				      @side_atom_coord );
-my @rot_matrix_z = ( [ cos( $gamma ), - sin( $gamma ), 0, 0 ],
+my @rot_matrix_x = ( [ cos( $gamma ), - sin( $gamma ), 0, 0 ],
 		     [ sin( $gamma ),   cos( $gamma ), 0, 0 ],
 		     [ 0, 0, 1, 0 ],
 		     [ 0, 0, 0, 1 ] );
-my @rot_matrix_x = ( [   cos( $beta ), 0, sin( $beta ), 0 ],
-		     [ 0, 1, 0, 0 ],
-		     [ - sin( $beta ), 0, cos( $beta ), 0 ],
-		     [ 0, 0, 0, 1 ] );
 my @rot_matrix_y = ( [ 1, 0, 0, 0 ],
-		     [ 0, cos( $alpha ), - sin( $alpha ), 0 ],
-		     [ 0, sin( $alpha ),   cos( $alpha ), 0 ],
+		     [ 0, cos( $beta ), - sin( $beta ), 0 ],
+		     [ 0, sin( $beta ),   cos( $beta ), 0 ],
 		     [ 0, 0, 0, 1 ] );
+# my @rot_matrix_z = ( [ 1, 0, 0, 0 ],
+# 		     [ 0, cos( $alpha ), - sin( $alpha ), 0 ],
+# 		     [ 0, sin( $alpha ),   cos( $alpha ), 0 ],
+# 		     [ 0, 0, 0, 1 ] );
 
-# Preparing reference frame coordinates for transformation.
+# my @rot_matrix_y = ( [   cos( $beta ), 0, sin( $beta ), 0 ],
+# 		     [ 0, 1, 0, 0 ],
+# 		     [ - sin( $beta ), 0, cos( $beta ), 0 ],
+# 		     [ 0, 0, 0, 1 ] );
+# my @rot_matrix_z = ( [ 1, 0, 0, 0 ],
+# 		     [ 0, cos( $alpha ), - sin( $alpha ), 0 ],
+# 		     [ 0, sin( $alpha ),   cos( $alpha ), 0 ],
+# 		     [ 0, 0, 0, 1 ] );
+
+# Prepares reference frame coordinates for transformation.
 my @symbols = ( "i" );
 
 my @x_local_axis = 
@@ -101,30 +110,47 @@ push( @z_local_axis, 1 );
     map { [ $_ ] }
     @z_local_axis;
 
-# Performing transformation.
+# Performs transformation.
 @x_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					\@rot_matrix_z,
+					# \@rot_matrix_z,
 					\@rot_matrix_y,
 					\@rot_matrix_x,
 					\@x_local_axis );
 @y_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					\@rot_matrix_z,
+					# \@rot_matrix_z,
 					\@rot_matrix_y,
 					\@rot_matrix_x,
 					\@y_local_axis );
 @z_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					\@rot_matrix_z,
+					# \@rot_matrix_z,
 					\@rot_matrix_y,
 					\@rot_matrix_x,
 					\@z_local_axis );
 
-print( "end \"model\"\n" );
+# Draws atoms at the end of both local and global axes.
+print( "data \"model\"\n"
+       . "8\n"
+       . "testing\n"
+       . "X 0 0 0\n"
+       . "O $x_local_axis[0][0][0] "
+       . "$x_local_axis[0][1][0] "
+       . "$x_local_axis[0][2][0]\n"
+       . "N $y_local_axis[0][0][0] "
+       . "$y_local_axis[0][1][0] "
+       . "$y_local_axis[0][2][0]\n"
+       . "MG $z_local_axis[0][0][0] "
+       . "$z_local_axis[0][1][0] "
+       . "$z_local_axis[0][2][0]\n"
+       . "X 0 0 0\n"
+       . "O 1 0 0\n"
+       . "N 0 1 0\n"
+       . "MG 0 0 1\n"
+       . "end \"model\"\n" );
 
-# Draws axes with vectors in Jmol.
-# Local axes.
+# Draws local axes.
 print( "draw x_axis vector "
        . "{0 0 0} "
        . "{$x_local_axis[0][0][0],"
@@ -141,7 +167,7 @@ print( "draw z_axis vector "
        . "$z_local_axis[0][1][0],"
        . "$z_local_axis[0][2][0]}\n" );
 
-# Global axes.
+# Draws global axes.
 print( "draw global_x_axis vector "
        . "{0 0 0} "
        . "{1 0 0}\n" );
@@ -151,3 +177,9 @@ print( "draw global_y_axis vector "
 print( "draw global_z_axis vector "
        . "{0 0 0} "
        . "{0 0 1}\n" );
+
+# Turns off bond visualization.
+print( "hide bonds\n" );
+
+# Decreses size of atoms.
+print( "spacefill 0.1\n" );
