@@ -150,9 +150,9 @@ sub rotate_y_axis
     my $angle = shift;
 
     my @rot_matrix_y =
-	( [   cos( $gamma ), 0, sin( $gamma ), 0 ],
+	( [   cos( $angle ), 0, sin( $angle ), 0 ],
 	  [ 0, 1, 0, 0 ],
-	  [ - sin( $gamma ), 0, cos( $gamma ), 0 ],
+	  [ - sin( $angle ), 0, cos( $angle ), 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     return \@rot_matrix_y;
@@ -170,8 +170,8 @@ sub rotate_z_axis
     my $angle = shift;
 
     my @rot_matrix_z =
-	( [ cos( $alpha ), - sin( $alpha ), 0, 0 ],
-	  [ sin( $alpha ),   cos( $alpha ), 0, 0 ],
+	( [ cos( $angle ), - sin( $angle ), 0, 0 ],
+	  [ sin( $angle ),   cos( $angle ), 0, 0 ],
 	  [ 0, 0, 1, 0 ],
 	  [ 0, 0, 0, 1 ] );
 
@@ -186,12 +186,12 @@ sub rotate_z_axis
 
 sub translate
 {
-    my $transl_coord = @_;
+    my @transl_coord = @_;
 
     my @transl_matrix =
-	( [ 1, 0, 0, $transl_coord->[0] ],
-	  [ 0, 1, 0, $transl_coord->[1] ],
-	  [ 0, 0, 1, $transl_coord->[2] ],
+	( [ 1, 0, 0, $transl_coord[0] ],
+	  [ 0, 1, 0, $transl_coord[1] ],
+	  [ 0, 0, 1, $transl_coord[2] ],
 	  [ 0, 0, 0, 1 ] );
 
     return \@transl_matrix;

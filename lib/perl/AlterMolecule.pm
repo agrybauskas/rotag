@@ -30,21 +30,6 @@ sub rotate_bond
 	 $side_atom_coord,
 	 $target_atom_coord ) = @_;
 
-    # Transformations that transforms global reference frame to local.
-    # Negative translation matrix. Places mid-atom to 
-    my @neg_transl_matrix =
-	( [ 1, 0, 0, - $mid_atom_coord->[0] ],
-	  [ 0, 1, 0, - $mid_atom_coord->[1] ],
-	  [ 0, 0, 1, - $mid_atom_coord->[2] ],
-	  [ 0, 0, 0,            1           ] );
-
-    # Positive translation matrix. Brings back to original mid-atom position.
-    my @pos_transl_matrix =
-	( [ 1, 0, 0, $mid_atom_coord->[0] ],
-	  [ 0, 1, 0, $mid_atom_coord->[1] ],
-	  [ 0, 0, 1, $mid_atom_coord->[2] ],
-	  [ 0, 0, 0, 1 ] );
-
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
     my ( $alpha, $beta, $gamma ) =
@@ -52,23 +37,8 @@ sub rotate_bond
 					  @$up_atom_coord,
 					  @$side_atom_coord );
 
-    my @rot_matrix_x = ( [ 1, 0, 0, 0 ],
-			 [ 0, cos( $beta ), - sin( $beta ), 0 ],
-			 [ 0, sin( $beta ),   cos( $beta ), 0 ],
-			 [ 0, 0, 0, 1 ] );
-
-    my @rot_matrix_y = ( [   cos( $gamma ), 0, sin( $gamma ), 0 ],
-			 [ 0, 1, 0, 0 ],
-			 [ - sin( $gamma ), 0, cos( $gamma ), 0 ],
-			 [ 0, 0, 0, 1 ] );
-
-    my @rot_matrix_z = ( [ cos( $alpha ), - sin( $alpha ), 0, 0 ],
-			 [ sin( $alpha ),   cos( $alpha ), 0, 0 ],
-			 [ 0, 0, 1, 0 ],
-			 [ 0, 0, 0, 1 ] );
-
     # Rotation matrix around the bond.
-    my @rot_matrix_bond = ( [ 'cos($chi)', '-sin($chi)', 0, 0 ],
+    my @bond_rot_matrix = ( [ 'cos($chi)', '-sin($chi)', 0, 0 ],
 			    [ 'sin($chi)',  'cos($chi)', 0, 0 ],
 			    [ 0, 0, 1, 0 ],
 			    [ 0, 0, 0, 1 ] );
@@ -87,20 +57,23 @@ sub rotate_bond
     my @symbols = [ "chi", "i" ];
 
     # Multiplying multiple matrices to get a final form.
-    my @rot_matrix;
-
-    @rot_matrix = LinearAlgebra::mult_matrix_product(
-    	@symbols,
-    	\@pos_transl_matrix,
-    	LinearAlgebra::transpose( \@rot_matrix_y ),
-    	LinearAlgebra::transpose( \@rot_matrix_x ),
-    	LinearAlgebra::transpose( \@rot_matrix_z ),
-	\@rot_matrix_bond,
-    	\@rot_matrix_z,
-    	\@rot_matrix_x,
-    	\@rot_matrix_y,
-	\@neg_transl_matrix,
-    	\@target_atom_coord );
+    my @rot_matrix =
+	LinearAlgebra::mult_matrix_product(
+	    @symbols,
+	    LinearAlgebra::translate( (   $mid_atom_coord->[0],
+					  $mid_atom_coord->[1],
+					  $mid_atom_coord->[2] ) ),
+	    LinearAlgebra::rotate_y_axis( - $gamma ),
+	    LinearAlgebra::rotate_x_axis( - $beta ),
+	    LinearAlgebra::rotate_z_axis( - $alpha ),
+	    \@bond_rot_matrix,
+	    LinearAlgebra::rotate_z_axis(   $alpha ),
+	    LinearAlgebra::rotate_x_axis(   $beta ),
+	    LinearAlgebra::rotate_y_axis(   $gamma ),
+	    LinearAlgebra::translate( ( - $mid_atom_coord->[0],
+					- $mid_atom_coord->[1],
+					- $mid_atom_coord->[2] ) ),
+	    \@target_atom_coord );
 
     return \@rot_matrix;
 }
