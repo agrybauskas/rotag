@@ -22,23 +22,7 @@ my @selected_atom_data =
 				    @attribute_select,
 				    @cif ) };
 
-# Prepares selected atom data for Jmol. First, brings atoms to the start (0,0,0)
-# of reference frame and draws them.
-# print( "data \"model\"\n" );
-# print( scalar( grep { /ATOM/ } @cif ), "\n" );
-# print( "testing\n" );
-
-# map { print( $_->[2], " ",
-# 	     $_->[10] - $selected_atom_data[1][0], " ",
-# 	     $_->[11] - $selected_atom_data[1][1], " ",
-# 	     $_->[12] - $selected_atom_data[1][2], "\n" ) }
-# map { [ split( " ", $_ ) ] }
-# grep { $_ =~ /ATOM/ }
-# @cif;
-
-# print( "end \"model\"\n" );
-
-# Adds reference frame.
+# Finds Euler angles and makes rotational matrices.
 my @mid_atom_coord =  ( $selected_atom_data[1][0],
 		        $selected_atom_data[1][1],
 			$selected_atom_data[1][2] );
@@ -48,124 +32,64 @@ my @up_atom_coord =   ( $selected_atom_data[2][0],
 my @side_atom_coord = ( $selected_atom_data[0][0],
 			$selected_atom_data[0][1],
 			$selected_atom_data[0][2] );
+
 my @local_ref_frame =
     LinearAlgebra::create_ref_frame( @mid_atom_coord,
 				     @up_atom_coord,
 				     @side_atom_coord );
 
-# Finds Euler angles and makes rotational matrices.
 my ( $alpha, $beta, $gamma ) =
     LinearAlgebra::find_euler_angles( @mid_atom_coord,
 				      @up_atom_coord,
 				      @side_atom_coord );
-my @rot_matrix_z =
-    LinearAlgebra::rotate_z_axis( $gamma );
-my @rot_matrix_x =
-    LinearAlgebra::rotate_x_axis( $beta );
-my @rot_matrix_z_prime =
-    LinearAlgebra::rotate_z_axis( $alpha );
 
-# # Prepares reference frame coordinates for transformation.
+# Transforms given atom coordinates and prepares data for Jmol.
+print( "data \"model\"\n" );
+print( scalar( grep { /ATOM/ } @cif ), "\n" );
+print( "testing\n" );
+
 my @symbols = ( "i" );
 
-my @x_local_axis = 
-    map { $_ }
-    map { @$_ }
-    $local_ref_frame[0];
-my @y_local_axis = 
-    map { $_ }
-    map { @$_ }
-    $local_ref_frame[1];
-my @z_local_axis = 
-    map { $_ }
-    map { @$_ }
-    $local_ref_frame[2];
+for my $cif_line ( grep( /^ATOM/, @cif ) ){
+    my @cif_data = split( " ", $cif_line );
 
-push( @x_local_axis, 1 );
-push( @y_local_axis, 1 );
-push( @z_local_axis, 1 );
+    my $atom_name = $cif_data[2];
+    my @atom_coord = ( [ $cif_data[10] ],
+		       [ $cif_data[11] ],
+		       [ $cif_data[12] ],
+		       [ 1 ] );
 
-@x_local_axis = 
-    map { [ $_ ] }
-    @x_local_axis;
-@y_local_axis = 
-    map { [ $_ ] }
-    @y_local_axis;
-@z_local_axis = 
-    map { [ $_ ] }
-    @z_local_axis;
+    my @tranf_atom_coord =
+	LinearAlgebra::mult_matrix_product(
+	    \@symbols,
+	    LinearAlgebra::rotate_z_axis( $alpha ),
+	    LinearAlgebra::rotate_x_axis( $beta ),
+	    LinearAlgebra::rotate_z_axis( $gamma ),
+	    LinearAlgebra::translate( ( - $mid_atom_coord[0],
+					- $mid_atom_coord[1],
+					- $mid_atom_coord[2] ) ),
+	    \@atom_coord );
 
-# Performs transformation.
-@x_local_axis =
-    LinearAlgebra::mult_matrix_product( \@symbols,
-					@rot_matrix_z_prime,
-					@rot_matrix_x,
-					@rot_matrix_z,
-					\@x_local_axis );
-@y_local_axis =
-    LinearAlgebra::mult_matrix_product( \@symbols,
-					@rot_matrix_z_prime,
-					@rot_matrix_x,
-					@rot_matrix_z,
-					\@y_local_axis );
-@z_local_axis =
-    LinearAlgebra::mult_matrix_product( \@symbols,
-					@rot_matrix_z_prime,
-					@rot_matrix_x,
-					@rot_matrix_z,
-					\@z_local_axis );
+    print( "$atom_name "
+    	   . "$tranf_atom_coord[0][0][0] "
+    	   . "$tranf_atom_coord[0][1][0] "
+    	   . "$tranf_atom_coord[0][2][0]\n" );
+}
 
-# Draws atoms at the end of both local and global axes.
-print( "data \"model\"\n"
-       . "8\n"
-       . "testing\n"
-       . "X 0 0 0\n"
-       . "O $x_local_axis[0][0][0] "
-       . "$x_local_axis[0][1][0] "
-       . "$x_local_axis[0][2][0]\n"
-       . "N $y_local_axis[0][0][0] "
-       . "$y_local_axis[0][1][0] "
-       . "$y_local_axis[0][2][0]\n"
-       . "MG $z_local_axis[0][0][0] "
-       . "$z_local_axis[0][1][0] "
-       . "$z_local_axis[0][2][0]\n"
-       . "X 0 0 0\n"
-       . "O 1 0 0\n"
-       . "N 0 1 0\n"
-       . "MG 0 0 1\n"
-       . "end \"model\"\n" );
-
-# Draws local axes.
-print( "draw x_axis vector "
-       . "{0 0 0} "
-       . "{$x_local_axis[0][0][0],"
-       . "$x_local_axis[0][1][0],"
-       . "$x_local_axis[0][2][0]}\n" );
-print( "draw y_axis vector "
-       . "{0 0 0} "
-       . "{$y_local_axis[0][0][0],"
-       . "$y_local_axis[0][1][0],"
-       . "$y_local_axis[0][2][0]}\n" );
-print( "draw z_axis vector "
-       . "{0 0 0} "
-       . "{$z_local_axis[0][0][0],"
-       . "$z_local_axis[0][1][0],"
-       . "$z_local_axis[0][2][0]}\n" );
+print( "end \"model\"\n" );
 
 # Draws global axes.
 print( "draw global_x_axis vector "
        . "{0 0 0} "
-       . "{1 0 0}\n" );
+       . "{2 0 0}\n" );
 print( "draw global_y_axis vector "
        . "{0 0 0} "
-       . "{0 1 0}\n" );
+       . "{0 2 0}\n" );
 print( "draw global_z_axis vector "
        . "{0 0 0} "
-       . "{0 0 1}\n" );
+       . "{0 0 2}\n" );
 
-# Turns off bond visualization.
-print( "hide bonds\n" );
-
-# Decreses size of atoms.
-print( "spacefill 0.1\n" );
-
+# Colors axes.
+print( "color \$global_x_axis red\n" );
+print( "color \$global_y_axis blue\n" );
+print( "color \$global_z_axis green\n" );
