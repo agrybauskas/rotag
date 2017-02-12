@@ -83,7 +83,7 @@ my $eval_expression;
 foreach( @angles ) {
     $chi = $_;
     foreach( @$rotated_atom_coord ) {
-	print( "X\t" );
+	print( "O\t" );
 	foreach( @$_[0..2] ) {
 	    foreach( @$_ ) {
 		$eval_expression = Re( eval( $_ ) ); # Takes only real
