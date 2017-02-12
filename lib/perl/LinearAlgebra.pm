@@ -119,6 +119,99 @@ sub find_euler_angles
 }
 
 #
+# Creates 4x4 matrix that can rotate 4x4 matrices around x-axis by making a
+# matrix product.
+# Input  (1 arg): angle of rotation in radians.
+# Output (1 arg): 4x4 matrix.
+#
+
+sub rotate_x_axis
+{
+    my $angle = shift;
+
+    my @rot_matrix_x =
+	( [ 1, 0, 0, 0 ],
+	  [ 0, cos( $angle ), - sin( $angle ), 0 ],
+	  [ 0, sin( $angle ),   cos( $angle ), 0 ],
+	  [ 0, 0, 0, 1 ] );
+
+    return \@rot_matrix_x;
+}
+
+#
+# Creates 4x4 matrix that can rotate 4x4 matrices around y-axis by making a
+# matrix product.
+# Input  (1 arg): angle of rotation in radians.
+# Output (1 arg): 4x4 matrix.
+#
+
+sub rotate_y_axis
+{
+    my $angle = shift;
+
+    my @rot_matrix_y =
+	( [   cos( $gamma ), 0, sin( $gamma ), 0 ],
+	  [ 0, 1, 0, 0 ],
+	  [ - sin( $gamma ), 0, cos( $gamma ), 0 ],
+	  [ 0, 0, 0, 1 ] );
+
+    return \@rot_matrix_y;
+}
+
+#
+# Creates 4x4 matrix that can rotate 4x4 matrices around z-axis by making a
+# matrix product.
+# Input  (1 arg): angle of rotation in radians.
+# Output (1 arg): 4x4 matrix.
+#
+
+sub rotate_z_axis
+{
+    my $angle = shift;
+
+    my @rot_matrix_z =
+	( [ cos( $alpha ), - sin( $alpha ), 0, 0 ],
+	  [ sin( $alpha ),   cos( $alpha ), 0, 0 ],
+	  [ 0, 0, 1, 0 ],
+	  [ 0, 0, 0, 1 ] );
+
+    return \@rot_matrix_z;
+}
+
+#
+# Creates 4x4 matrix that can translates 4x4 matrices
+# Input  (1 arg): 3x1 matrix of x, y, z coordinates that .
+# Output (1 arg): 4x4 matrix.
+#
+
+sub translate
+{
+    my $transl_coord = @_;
+
+    my @transl_matrix =
+	( [ 1, 0, 0, $transl_coord->[0] ],
+	  [ 0, 1, 0, $transl_coord->[1] ],
+	  [ 0, 0, 1, $transl_coord->[2] ],
+	  [ 0, 0, 0, 1 ] );
+
+    return \@transl_matrix;
+}
+
+# ---------------------------- Symbolic linear algebra ------------------------ #
+
+#
+# Block of code contains functions that perform basic linear algebra on symbolic
+# expressions..
+#
+#
+# Example of rotation along z-axis by chi angle:
+#
+#      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
+#      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
+#      \    0         0     1 /   \ z /   \              z              /
+#
+
+#
 # Transposes matrix.
 # Input  (1 arg): array representing matrix.
 # Output (1 arg): transposed matrix.
@@ -139,20 +232,6 @@ sub transpose
 
     return \@transposed_matrix;
 }
-
-# ---------------------------- Symbolic linear algebra ------------------------ #
-
-#
-# Block of code contains functions that perform basic linear algebra on symbolic
-# expressions..
-#
-#
-# Example of rotation along z-axis by chi angle:
-#
-#      / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
-#      | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
-#      \    0         0     1 /   \ z /   \              z              /
-#
 
 #
 # Calculates matrix product of two matrices that might have symbolic variables.
