@@ -53,25 +53,19 @@ my @local_ref_frame =
 				     @up_atom_coord,
 				     @side_atom_coord );
 
-# Finds Euler angles necessary for rotation matrix.
+# Finds Euler angles and makes rotational matrices.
 my ( $alpha, $beta, $gamma ) =
     LinearAlgebra::find_euler_angles( @mid_atom_coord,
 				      @up_atom_coord,
 				      @side_atom_coord );
-my @rot_matrix_z = ( [ cos( $gamma ), - sin( $gamma ), 0, 0 ],
-		     [ sin( $gamma ),   cos( $gamma ), 0, 0 ],
-		     [ 0, 0, 1, 0 ],
-		     [ 0, 0, 0, 1 ] );
-my @rot_matrix_x = ( [ 1, 0, 0, 0 ],
-		     [ 0, cos( $beta ), - sin( $beta ), 0 ],
-		     [ 0, sin( $beta ),   cos( $beta ), 0 ],
-		     [ 0, 0, 0, 1 ] );
-my @rot_matrix_z_prime = ( [ cos( $alpha ), - sin( $alpha ), 0, 0 ],
-			   [ sin( $alpha ),   cos( $alpha ), 0, 0 ],
-			   [ 0, 0, 1, 0 ],
-			   [ 0, 0, 0, 1 ] );
+my @rot_matrix_z =
+    LinearAlgebra::rotate_z_axis( $gamma );
+my @rot_matrix_x =
+    LinearAlgebra::rotate_x_axis( $beta );
+my @rot_matrix_z_prime =
+    LinearAlgebra::rotate_z_axis( $alpha );
 
-# Prepares reference frame coordinates for transformation.
+# # Prepares reference frame coordinates for transformation.
 my @symbols = ( "i" );
 
 my @x_local_axis = 
@@ -104,21 +98,21 @@ push( @z_local_axis, 1 );
 # Performs transformation.
 @x_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					\@rot_matrix_z_prime,
-					\@rot_matrix_x,
-					\@rot_matrix_z,
+					@rot_matrix_z_prime,
+					@rot_matrix_x,
+					@rot_matrix_z,
 					\@x_local_axis );
 @y_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					\@rot_matrix_z_prime,
-					\@rot_matrix_x,
-					\@rot_matrix_z,
+					@rot_matrix_z_prime,
+					@rot_matrix_x,
+					@rot_matrix_z,
 					\@y_local_axis );
 @z_local_axis =
     LinearAlgebra::mult_matrix_product( \@symbols,
-					\@rot_matrix_z_prime,
-					\@rot_matrix_x,
-					\@rot_matrix_z,
+					@rot_matrix_z_prime,
+					@rot_matrix_x,
+					@rot_matrix_z,
 					\@z_local_axis );
 
 # Draws atoms at the end of both local and global axes.
