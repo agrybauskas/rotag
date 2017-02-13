@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use CifParser;
+use LinearAlgebra;
+
+my $attribute_filter = shift;
+my $attribute_select = shift;
+my $displacement = shift;
+my @cif = <>;
+
+# Parses selector argument from string  to proper array.
+my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
+                         map { [ split( " ", $_ ) ] }
+                         split( "&", $attribute_filter ) ];
+my @attribute_select = [ split( ",", $attribute_select ) ];
+my @selected_atom_data =
+    @{ CifParser::select_atom_data( @attribute_filter,
+				    @attribute_select,
+				    @cif ) };
+
+# Translates coordinates by given displacement.
+my @transf_atom_data;
+
+foreach ( @selected_atom_data ) {
+    # Prepared atom coordinates to proper 4x1 matrix.
+    my @atom_coord;
+
+    foreach( @$_ ) {
+	push( @atom_coord, [ $_ ] );
+    }
+
+    push( @atom_coord, [ 1 ] );
+
+    # Makes actual rotation.
+    push( @transf_atom_data,
+	  LinearAlgebra::two_matrix_product(
+	      [ "i" ],
+	      LinearAlgebra::rotate_x_axis( $angle ),
+	      \@atom_coord ) );
+}
+
+# Prints out results.
+map { printf( "%.3f\t%.3f\t%.3f\n",
+	      $_->[0][0],
+	      $_->[1][0],
+	      $_->[2][0] ) }
+@transf_atom_data;
