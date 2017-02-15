@@ -3,13 +3,15 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use lib "../../lib/perl";
 use CifParser;
 use LinearAlgebra;
 
 my $attribute_filter = shift;
 my $attribute_select = shift;
-my $displacement = shift;
+my $transl_coord = shift;
 my @cif = <>;
 
 # Parses selector argument from string  to proper array.
@@ -21,6 +23,7 @@ my @selected_atom_data =
     @{ CifParser::select_atom_data( @attribute_filter,
 				    @attribute_select,
 				    @cif ) };
+my @transl_coord = split( ",", $transl_coord );
 
 # Translates coordinates by given displacement.
 my @transf_atom_data;
@@ -39,7 +42,7 @@ foreach ( @selected_atom_data ) {
     push( @transf_atom_data,
 	  LinearAlgebra::two_matrix_product(
 	      [ "i" ],
-	      LinearAlgebra::rotate_x_axis( $angle ),
+	      LinearAlgebra::translate( @transl_coord ),
 	      \@atom_coord ) );
 }
 
