@@ -11,34 +11,10 @@ use lib "../../lib/perl";
 use CifParser;
 use AlterMolecule;
 
-#
-# Constants
-#
-
-my $PI = 4 * atan( 1, 1 );
-
-#
-# Test program, as argv, uses both attribute filter, attribute data selection
-# info and mmCIF. In order test to be flexible, attribute information is
-# entered in string form:
-#
-# "label_atom_id CA,CB & id 147, 148"
-#
-# and then parsed to such form:
-#
-# [ "label_atom_id" => [ "CA",  "CB"  ],
-#   "id"            => [ "147", "148" ] ].
-#
-# Attribute data is selected in such form:
-#
-# "Cartn_x,Cartn_y,Cartn_z"
-#
-# The third argument is mmCIF format stdin.
-#
-
 my $attribute_filter = shift;
 my $attribute_select = shift;
-my $rotation_num = shift;
+my $bond_min_max = shift; # Amount of which bond will change.
+my $num_of_points = shift;
 my @cif = <>;
 
 # Parses selector argument from string  to proper array.
@@ -48,7 +24,7 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my @attribute_select = [ split( ",", $attribute_select ) ];
 
 # Prints count of atoms and arbitrary word. Neccessary for Jmol.
-print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
+print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
 print( "testing\n" );
 
 # Prepares selected atom data for Jmol.
@@ -62,27 +38,30 @@ my @selected_atom_data =
 				    @attribute_select,
 				    @cif ) };
 
-# Rotates once along chi angle.
-my $rotated_atom_coord =
-    AlterMolecule::rotate_bond( $selected_atom_data[1],
-				$selected_atom_data[2],
-				$selected_atom_data[0],
-				$selected_atom_data[3] );
+# Changes bond by certain distance.
+my $transl_atom_coord =
+    AlterMolecule::change_bond_len( $selected_atom_data[1],
+				    $selected_atom_data[2],
+				    $selected_atom_data[0],
+				    $selected_atom_data[3] );
+
+# Smallest change in bond length by given num_of_points and bond_min_max.
+my $smallest_length = $bond_min_max / $num_of_points;
 
 # Calculates angles that will be rotated along.
-my $pi = $PI;
-my $chi;
-my $small_angle = 2 / $rotation_num;
+my $len;
 
-my @angles = map { $_ * $small_angle * $pi } ( 1..$rotation_num-1 );
+my @delta_lengths =
+    map { $_ * $smallest_length, - ( $_ * $smallest_length ) }
+        ( 1..( $num_of_points - 1 ) / 2 );
 
 # Evaluates symbolic expression.
 my $eval_expression;
 
 # Rotates again along chi angle and creates Jmol readable struct file.
-foreach( @angles ) {
-    $chi = $_;
-    foreach( @$rotated_atom_coord ) {
+foreach( @delta_lengths ) {
+    $len = $_;
+    foreach( @$transl_atom_coord ) {
 	print( "X\t" );
 	foreach( @$_[0..2] ) {
 	    foreach( @$_ ) {
