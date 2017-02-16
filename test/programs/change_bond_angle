@@ -13,7 +13,7 @@ use AlterMolecule;
 
 my $attribute_filter = shift;
 my $attribute_select = shift;
-my $bond_min_max = shift; # Amount of which bond will change.
+my $angle_min_max = shift; # Amount of which bond will change.
 my $num_of_points = shift;
 my @cif = <>;
 
@@ -46,30 +46,31 @@ my $transl_atom_coord =
 				    $selected_atom_data[3] );
 
 # Smallest change in bond length by given num_of_points and bond_min_max.
-my $smallest_length = $bond_min_max / $num_of_points;
+my $smallest_angle = $bond_min_max / $num_of_points;
 
-# Calculates angles that will be rotated along.
-my $r;
+# # Calculates angles that will be rotated along.
+# my $theta;
+# my $psi;
 
-my @delta_lengths =
-    map { $_ * $smallest_length, - ( $_ * $smallest_length ) }
-        ( 1..( $num_of_points - 1 ) / 2 );
+# my @delta_lengths =
+#     map { $_ * $smallest_length, - ( $_ * $smallest_length ) }
+#         ( 1..( $num_of_points - 1 ) / 2 );
 
-# Evaluates symbolic expression.
-my $eval_expression;
+# # Evaluates symbolic expression.
+# my $eval_expression;
 
-# Rotates again along chi angle and creates Jmol readable struct file.
-foreach( @delta_lengths ) {
-    $r = $_;
-    foreach( @$transl_atom_coord ) {
-	print( "X\t" );
-	foreach( @$_[0..2] ) {
-	    foreach( @$_ ) {
-		$eval_expression = Re( eval( $_ ) ); # Takes only real
-		                                     # the complex number.
-		printf( "%.3f\t", $eval_expression );
-	    }
-	}
-	print( "\n" );
-    }
-}
+# # Rotates again along chi angle and creates Jmol readable struct file.
+# foreach( @delta_lengths ) {
+#     $r = $_;
+#     foreach( @$transl_atom_coord ) {
+# 	print( "X\t" );
+# 	foreach( @$_[0..2] ) {
+# 	    foreach( @$_ ) {
+# 		$eval_expression = Re( eval( $_ ) ); # Takes only real
+# 		                                     # the complex number.
+# 		printf( "%.3f\t", $eval_expression );
+# 	    }
+# 	}
+# 	print( "\n" );
+#     }
+# }
