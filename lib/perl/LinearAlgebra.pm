@@ -119,6 +119,53 @@ sub find_euler_angles
 }
 
 #
+# Switches between global and local reference frames.
+# Input
+#
+
+sub switch_ref_frame
+{
+    my ( $mid_atom_coord,
+	 $up_atom_coord,
+	 $side_atom_coord,
+	 $switch_to_local ) = @_;
+
+    # Rotation matrix to coordinating global reference frame properly.
+    # Finding Euler angles necessary for rotation matrix.
+    my ( $alpha, $beta, $gamma ) =
+	LinearAlgebra::find_euler_angles( @$mid_atom_coord,
+					  @$up_atom_coord,
+					  @$side_atom_coord );
+
+    # Depending on the option switch_to_local, 
+    my @switch_matrix;
+
+    if( $switch_to_local == 1 ) {
+	@switch_matrix =
+	    LinearAlgebra::mult_matrix_product(
+		LinearAlgebra::rotate_z_axis( $alpha ),
+		LinearAlgebra::rotate_x_axis( $beta ),
+		LinearAlgebra::rotate_z_axis( $gamma ),
+		LinearAlgebra::translate( ( - $mid_atom_coord->[0],
+					    - $mid_atom_coord->[1],
+					    - $mid_atom_coord->[2] ) ) )
+    } elsif( $switch_to_local == 0 ) {
+	@switch_matrix =
+	    LinearAlgebra::mult_matrix_product(
+		LinearAlgebra::rotate_z_axis( - $alpha ),
+		LinearAlgebra::rotate_x_axis( - $beta ),
+		LinearAlgebra::rotate_z_axis( - $gamma ),
+		LinearAlgebra::translate( ( $mid_atom_coord->[0],
+					    $mid_atom_coord->[1],
+					    $mid_atom_coord->[2] ) ) )
+    } else {
+	die "Must choose \$switch_to_global value between 0 and 1.\n"
+    }
+
+    return \@switch_matrix;
+}
+
+#
 # Creates 4x4 matrix that can rotate 4x4 matrices around x-axis by making a
 # matrix product.
 # Input  (1 arg): angle of rotation in radians.
