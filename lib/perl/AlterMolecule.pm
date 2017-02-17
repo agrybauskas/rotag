@@ -162,10 +162,14 @@ sub change_bond_angle
 					  @$up_atom_coord,
 					  @$side_atom_coord );
 
-    # Bond angle matrix.
-    my @bond_angle_matrix = ( [ 1, 0, 0, 0 ],
+    # Bond angle matrices.
+    my @bond_rot_x_matrix = ( [ 1, 0, 0, 0 ],
 			      [ 0, 'cos($theta)', '-sin($theta)', 0 ],
 			      [ 0, 'sin($theta)', 'cos($theta)', 0 ],
+			      [ 0, 0, 0, 1 ] );
+    my @bond_rot_y_matrix = ( [ 'cos($psi)', 0, 'sin($psi)', 0 ],
+			      [ 0, 1, 0, 0 ],
+			      [ '-sin($psi)', 0, 'cos($psi)', 0 ],
 			      [ 0, 0, 0, 1 ] );
 
     # Converting target atom coordinates from 3x1 to 4x1 form so,
@@ -180,7 +184,7 @@ sub change_bond_angle
 
     # Incorporating symbol for bond length - len.
     my @symbols = [ "theta", "psi", "i" ];
-    
+
     # Multiplying multiple matrices to get a final form.
     my @transl_matrix =
 	LinearAlgebra::mult_matrix_product(
@@ -191,7 +195,8 @@ sub change_bond_angle
 	    LinearAlgebra::rotate_z_axis( - $gamma ),
 	    LinearAlgebra::rotate_x_axis( - $beta ),
 	    LinearAlgebra::rotate_z_axis( - $alpha ),
-	    \@bond_angle_matrix,
+	    \@bond_rot_y_matrix,
+	    \@bond_rot_x_matrix,
 	    LinearAlgebra::rotate_z_axis(   $alpha ),
 	    LinearAlgebra::rotate_x_axis(   $beta ),
 	    LinearAlgebra::rotate_z_axis(   $gamma ),
@@ -201,7 +206,6 @@ sub change_bond_angle
 	    \@target_atom_coord );
 
     return \@transl_matrix;
-
 }
 
 1;

@@ -91,5 +91,5 @@ print( "draw global_z_axis vector "
 
 # Colors axes.
 print( "color \$global_x_axis red\n" );
-print( "color \$global_y_axis blue\n" );
-print( "color \$global_z_axis green\n" );
+print( "color \$global_y_axis green\n" );
+print( "color \$global_z_axis blue\n" );

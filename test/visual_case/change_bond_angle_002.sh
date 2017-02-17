@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-cif_file=../input/serine_001.cif
+cif_file=../input/serine_021.cif
 
 atom_specifier="label_atom_id CA,N,CB,OG"
 data_specifier="Cartn_x,Cartn_y,Cartn_z"
