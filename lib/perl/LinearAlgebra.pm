@@ -120,15 +120,16 @@ sub find_euler_angles
 
 #
 # Switches between global and local reference frames.
-# Input
+# Input  (2 arg): array of three atom coordinates in x, y, z form, that frame of
+#                 reference will be transformed to, and boolean that switches
+#                 frame of reference to local (if 1) and global (if 0).
+# Output (1 arg): 4x4 transformation matrix.
 #
 
 sub switch_ref_frame
 {
-    my ( $mid_atom_coord,
-	 $up_atom_coord,
-	 $side_atom_coord,
-	 $switch_to_local ) = @_;
+    my $switch_to_local = shift;
+    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) = @_;
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
@@ -139,19 +140,22 @@ sub switch_ref_frame
 
     # Depending on the option switch_to_local, 
     my @switch_matrix;
+    my @symbols = [ "i" ];
 
-    if( $switch_to_local == 1 ) {
+    if( $switch_to_local eq "to_local" ) {
 	@switch_matrix =
 	    LinearAlgebra::mult_matrix_product(
+		@symbols,
 		LinearAlgebra::rotate_z_axis( $alpha ),
 		LinearAlgebra::rotate_x_axis( $beta ),
 		LinearAlgebra::rotate_z_axis( $gamma ),
 		LinearAlgebra::translate( ( - $mid_atom_coord->[0],
 					    - $mid_atom_coord->[1],
 					    - $mid_atom_coord->[2] ) ) )
-    } elsif( $switch_to_local == 0 ) {
+    } elsif( $switch_to_local eq "to_global" ) {
 	@switch_matrix =
 	    LinearAlgebra::mult_matrix_product(
+		@symbols,
 		LinearAlgebra::rotate_z_axis( - $alpha ),
 		LinearAlgebra::rotate_x_axis( - $beta ),
 		LinearAlgebra::rotate_z_axis( - $gamma ),
@@ -159,7 +163,8 @@ sub switch_ref_frame
 					    $mid_atom_coord->[1],
 					    $mid_atom_coord->[2] ) ) )
     } else {
-	die "Must choose \$switch_to_global value between 0 and 1.\n"
+	die "Must choose \$switch_to_global value between \"to_local\" and"
+	    . "\"to_global\".\n"
     }
 
     return \@switch_matrix;
