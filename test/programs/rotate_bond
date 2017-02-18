@@ -62,7 +62,7 @@ my @selected_atom_data =
 				    @attribute_select,
 				    @cif ) };
 
-# Rotates once along chi angle.
+# # Rotates once along chi angle.
 my $rotated_atom_coord =
     AlterMolecule::rotate_bond( $selected_atom_data[1],
 				$selected_atom_data[2],

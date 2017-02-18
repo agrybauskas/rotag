@@ -142,7 +142,7 @@ sub switch_ref_frame
     my @switch_matrix;
     my @symbols = [ "i" ];
 
-    if( $switch_to_local eq "to_local" ) {
+    if( $switch_to_local eq "local" ) {
 	@switch_matrix =
 	    LinearAlgebra::mult_matrix_product(
 		@symbols,
@@ -151,20 +151,21 @@ sub switch_ref_frame
 		LinearAlgebra::rotate_z_axis( $gamma ),
 		LinearAlgebra::translate( ( - $mid_atom_coord->[0],
 					    - $mid_atom_coord->[1],
-					    - $mid_atom_coord->[2] ) ) )
-    } elsif( $switch_to_local eq "to_global" ) {
+					    - $mid_atom_coord->[2] ) ) );
+    } elsif( $switch_to_local eq "global" ) {
 	@switch_matrix =
 	    LinearAlgebra::mult_matrix_product(
 		@symbols,
-		LinearAlgebra::rotate_z_axis( - $alpha ),
-		LinearAlgebra::rotate_x_axis( - $beta ),
-		LinearAlgebra::rotate_z_axis( - $gamma ),
 		LinearAlgebra::translate( ( $mid_atom_coord->[0],
 					    $mid_atom_coord->[1],
-					    $mid_atom_coord->[2] ) ) )
+					    $mid_atom_coord->[2] ) ),
+		LinearAlgebra::rotate_z_axis( - $gamma ),
+		LinearAlgebra::rotate_x_axis( - $beta ),
+		LinearAlgebra::rotate_z_axis( - $alpha ) );
+
     } else {
-	die "Must choose \$switch_to_global value between \"to_local\" and"
-	    . "\"to_global\".\n"
+	die "Must choose \$switch_to_global value between \"local\" and"
+	    . "\"global\".\n"
     }
 
     return \@switch_matrix;

@@ -49,20 +49,22 @@ sub rotate_bond
     # Incorporating symbol for dihedral chi angle.
     my @symbols = [ "chi", "i" ];
 
+    # TODO: must look for arrays that have too much brackets like in example
+    # below.
     # Multiplying multiple matrices to get a final form.
     my @rot_matrix =
-	LinearAlgebra::mult_matrix_product(
-	    @symbols,
-	    LinearAlgebra::switch_ref_frame( "to_global",
-					     @$mid_atom_coord,
-					     @$up_atom_coord,
-					     @$side_atom_coord ),
-	    \@bond_rot_matrix,
-	    LinearAlgebra::switch_ref_frame( "to_local",
-					     @$mid_atom_coord,
-					     @$up_atom_coord,
-					     @$side_atom_coord),
-	    \@target_atom_coord );
+    	LinearAlgebra::mult_matrix_product(
+    	    @symbols,
+    	    LinearAlgebra::switch_ref_frame( "global",
+    	    				     $mid_atom_coord,
+    	    				     $up_atom_coord,
+    	    				     $side_atom_coord )->[0],
+    	    \@bond_rot_matrix,
+    	    LinearAlgebra::switch_ref_frame( "local",
+    	    				     $mid_atom_coord,
+    	    				     $up_atom_coord,
+    	    				     $side_atom_coord )->[0],
+    	    \@target_atom_coord );
 
     return \@rot_matrix;
 }
