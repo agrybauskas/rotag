@@ -34,9 +34,7 @@ my @switched_ref_frame =
 				     $selected_atom_data[0] );
 
 foreach( @switched_ref_frame ) {
-    foreach( @$_ ) {
 	foreach( @$_ ) {
 	    print( join( "\t", @$_ ), "\n" );
 	}
-    }
 }

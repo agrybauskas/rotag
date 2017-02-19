@@ -6,23 +6,23 @@ use warnings;
 use lib "../../lib/perl";
 use CifParser;
 
-##
-## Unit test: filter_atoms
-##
-## Test program, as argv, uses both attribute information and mmCIF. In order
-## test to be flexible, attribute information is entered in string form:
-##
-## "label_atom_id CA,CB & id 147, 148"
-##
-## and then parsed to such form:
-##
-## [ "label_atom_id" => [ "CA",  "CB"  ],
-##   "id"            => [ "147", "148" ] ].
-##
-## Second argument is mmCIF format stdin.
-##
-## Example: 
-##
+#
+# Unit test: filter_atoms
+#
+# Test program, as argv, uses both attribute information and mmCIF. In order
+# test to be flexible, attribute information is entered in string form:
+#
+# "label_atom_id CA,CB & id 147, 148"
+#
+# and then parsed to such form:
+#
+# [ "label_atom_id" => [ "CA",  "CB"  ],
+#   "id"            => [ "147", "148" ] ].
+#
+# Second argument is mmCIF format stdin.
+#
+# Example: 
+#
 
 my $attribute_selector = shift;
 

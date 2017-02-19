@@ -162,13 +162,12 @@ sub switch_ref_frame
 		LinearAlgebra::rotate_z_axis( - $gamma ),
 		LinearAlgebra::rotate_x_axis( - $beta ),
 		LinearAlgebra::rotate_z_axis( - $alpha ) );
-
     } else {
 	die "Must choose \$switch_to_global value between \"local\" and"
 	    . "\"global\".\n"
     }
 
-    return \@switch_matrix;
+    return @switch_matrix;
 }
 
 #

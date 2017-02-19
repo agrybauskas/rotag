@@ -58,12 +58,12 @@ sub rotate_bond
     	    LinearAlgebra::switch_ref_frame( "global",
     	    				     $mid_atom_coord,
     	    				     $up_atom_coord,
-    	    				     $side_atom_coord )->[0],
+    	    				     $side_atom_coord ),
     	    \@bond_rot_matrix,
     	    LinearAlgebra::switch_ref_frame( "local",
     	    				     $mid_atom_coord,
     	    				     $up_atom_coord,
-    	    				     $side_atom_coord )->[0],
+    	    				     $side_atom_coord ),
     	    \@target_atom_coord );
 
     return \@rot_matrix;
