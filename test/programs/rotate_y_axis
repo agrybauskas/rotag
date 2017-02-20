@@ -7,6 +7,16 @@ use lib "../../lib/perl";
 use CifParser;
 use LinearAlgebra;
 
+#
+# Unit test: LinearAlgebra::rotate_y_axis.
+#
+# Rotates along y-axis of the global frame of reference.
+#
+# Example: ./rotate_y_axis "label_atom_id CA,N,CB,OG" \
+#                          "Cartn_x,Cartn_y,Cartn_z" \
+#                          "1.571" < example.cif
+#
+
 my $attribute_filter = shift;
 my $attribute_select = shift;
 my $angle = shift;
@@ -17,6 +27,8 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          map { [ split( " ", $_ ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
+
+# Selects atoms for further analysis.
 my @selected_atom_data =
     @{ CifParser::select_atom_data( @attribute_filter,
 				    @attribute_select,

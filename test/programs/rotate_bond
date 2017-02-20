@@ -2,39 +2,28 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 use Math::Complex;
-use Math::Algebra::Symbols;
 
 use lib "../../lib/perl";
 use CifParser;
 use AlterMolecule;
 
 #
+# Unit test: AlterMolecule::rotate_bond.
+#
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after rotation along dihedral angle.
+#
+# Example: ./rotate_bond "label_atom_id CA,N,CB,OG" \
+#                        "Cartn_x,Cartn_y,Cartn_z" 27 < example.cif
+#
+
+#
 # Constants
 #
 
 my $PI = 4 * atan( 1, 1 );
-
-#
-# Test program, as argv, uses both attribute filter, attribute data selection
-# info and mmCIF. In order test to be flexible, attribute information is
-# entered in string form:
-#
-# "label_atom_id CA,CB & id 147, 148"
-#
-# and then parsed to such form:
-#
-# [ "label_atom_id" => [ "CA",  "CB"  ],
-#   "id"            => [ "147", "148" ] ].
-#
-# Attribute data is selected in such form:
-#
-# "Cartn_x,Cartn_y,Cartn_z"
-#
-# The third argument is mmCIF format stdin.
-#
 
 my $attribute_filter = shift;
 my $attribute_select = shift;
@@ -47,7 +36,13 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
 
-# Prints count of atoms and arbitrary word. Neccessary for Jmol.
+# Selects atoms for further analysis.
+my @selected_atom_data =
+    @{ CifParser::select_atom_data( @attribute_filter,
+				    @attribute_select,
+				    @cif ) };
+
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
 print( "testing\n" );
 
@@ -57,37 +52,31 @@ map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
 @cif;
 
-my @selected_atom_data =
-    @{ CifParser::select_atom_data( @attribute_filter,
-				    @attribute_select,
-				    @cif ) };
-
-# # Rotates once along chi angle.
+# Rotates once along chi angle.
 my $rotated_atom_coord =
     AlterMolecule::rotate_bond( $selected_atom_data[1],
 				$selected_atom_data[2],
 				$selected_atom_data[0],
 				$selected_atom_data[3] );
 
-# Calculates angles that will be rotated along.
+# Calculates angles that will be rotated along symbolically.
 my $pi = $PI;
 my $chi;
 my $small_angle = 2 / $rotation_num;
-
 my @angles = map { $_ * $small_angle * $pi } ( 1..$rotation_num-1 );
 
 # Evaluates symbolic expression.
 my $eval_expression;
 
-# Rotates again along chi angle and creates Jmol readable struct file.
+# Rotates along chi angle numerically and creates Jmol readable structure file.
 foreach( @angles ) {
     $chi = $_;
     foreach( @$rotated_atom_coord ) {
 	print( "X\t" );
 	foreach( @$_[0..2] ) {
 	    foreach( @$_ ) {
-		$eval_expression = Re( eval( $_ ) ); # Takes only real
-		                                     # the complex number.
+		$eval_expression = Re( eval( $_ ) ); # Takes only real part
+		                                     # of the complex number.
 		printf( "%.3f\t", $eval_expression );
 	    }
 	}

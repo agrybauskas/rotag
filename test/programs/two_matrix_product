@@ -3,10 +3,16 @@
 use strict;
 use warnings;
 
-use Data::Dumper;
-
 use lib "../../lib/perl";
 use LinearAlgebra;
+
+#
+# Unit test: LinearAlgebra::mult_matrix_product.
+#
+# Multiplies two matrices using symbolic algebra.
+#
+# Example: ./two_matrix_product "x,y,z" < example.dat
+#
 
 my $symbols = shift;
    $symbols //= ",";
@@ -29,4 +35,3 @@ my $symb_dot_product = LinearAlgebra::two_matrix_product( @symbols,
 foreach( @$symb_dot_product ) {
     print( join( "\t", @$_ ), "\n" );
 }
-

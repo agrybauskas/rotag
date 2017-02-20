@@ -2,11 +2,20 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 use lib "../../lib/perl";
 use CifParser;
 use LinearAlgebra;
+
+#
+# Unit test: LinearAlgebra::create_ref_frame
+#            LinearAlgebra::find_euler_angles.
+#
+# Bring molecule's local frame of reference to global.
+#
+# Example: ./check_ref_frame "label_atom_id CA,N,CB,OG" \
+#                            "Cartn_x,Cartn_y,Cartn_z" < example.cif
+#
 
 my $attribute_filter = shift;
 my $attribute_select = shift;
@@ -17,6 +26,8 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          map { [ split( " ", $_ ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
+
+# Selects atoms for further analysis.
 my @selected_atom_data =
     @{ CifParser::select_atom_data( @attribute_filter,
 				    @attribute_select,
@@ -52,13 +63,11 @@ my @symbols = ( "i" );
 
 for my $cif_line ( grep( /^ATOM/, @cif ) ){
     my @cif_data = split( " ", $cif_line );
-
     my $atom_name = $cif_data[2];
     my @atom_coord = ( [ $cif_data[10] ],
 		       [ $cif_data[11] ],
 		       [ $cif_data[12] ],
 		       [ 1 ] );
-
     my @tranf_atom_coord =
 	LinearAlgebra::mult_matrix_product(
 	    \@symbols,
@@ -69,7 +78,6 @@ for my $cif_line ( grep( /^ATOM/, @cif ) ){
 					- $mid_atom_coord[1],
 					- $mid_atom_coord[2] ) ),
 	    \@atom_coord );
-
     print( "$atom_name "
     	   . "$tranf_atom_coord[0][0][0] "
     	   . "$tranf_atom_coord[0][1][0] "

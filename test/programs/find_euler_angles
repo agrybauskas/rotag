@@ -6,6 +6,15 @@ use warnings;
 use lib "../../lib/perl";
 use LinearAlgebra;
 
+#
+# Unit test: LinearAlgebra::create_ref_frame.
+#
+# Calculates Euler angles needed to transform frame of references from three
+# given coordinates of the atom.
+#
+# Example: ./find_euler_angles < example.dat
+#
+
 my @atom_coord;
 
 while( <> ){

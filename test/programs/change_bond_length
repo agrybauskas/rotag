@@ -2,14 +2,23 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 use Math::Complex;
-use Math::Algebra::Symbols;
 
 use lib "../../lib/perl";
 use CifParser;
 use AlterMolecule;
+
+#
+# Unit test: AlterMolecule::change_bond_length.
+#
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after the resize of the bond.
+#
+# Example: ./change_bond_length "label_atom_id CA,N,CB,OG" \
+#                               "Cartn_x,Cartn_y,Cartn_z" \
+#                               2.0 10 < example.cif
+#
 
 my $attribute_filter = shift;
 my $attribute_select = shift;
@@ -23,7 +32,13 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
 
-# Prints count of atoms and arbitrary word. Neccessary for Jmol.
+# Selects atoms for further analysis.
+my @selected_atom_data =
+    @{ CifParser::select_atom_data( @attribute_filter,
+				    @attribute_select,
+				    @cif ) };
+
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
 print( "testing\n" );
 
@@ -32,11 +47,6 @@ map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
 map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
 @cif;
-
-my @selected_atom_data =
-    @{ CifParser::select_atom_data( @attribute_filter,
-				    @attribute_select,
-				    @cif ) };
 
 # Changes bond by certain distance.
 my $transl_atom_coord =
@@ -48,7 +58,7 @@ my $transl_atom_coord =
 # Smallest change in bond length by given num_of_points and bond_min_max.
 my $smallest_length = $bond_min_max / $num_of_points;
 
-# Calculates angles that will be rotated along.
+# Calculates the distance of the bond that will be translated along.
 my $r;
 
 my @delta_lengths =
@@ -58,15 +68,15 @@ my @delta_lengths =
 # Evaluates symbolic expression.
 my $eval_expression;
 
-# Rotates again along chi angle and creates Jmol readable struct file.
+# Translates along the bond and creates Jmol readable structure file.
 foreach( @delta_lengths ) {
     $r = $_;
     foreach( @$transl_atom_coord ) {
 	print( "X\t" );
 	foreach( @$_[0..2] ) {
 	    foreach( @$_ ) {
-		$eval_expression = Re( eval( $_ ) ); # Takes only real
-		                                     # the complex number.
+		$eval_expression = Re( eval( $_ ) ); # Takes only real part
+		                                     # of the complex number.
 		printf( "%.3f\t", $eval_expression );
 	    }
 	}

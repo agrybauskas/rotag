@@ -7,29 +7,21 @@ use lib "../../lib/perl";
 use CifParser;
 
 #
-# Unit test: filter_atoms
+# Unit test: CifParser::filter_atoms.
 #
-# Test program, as argv, uses both attribute information and mmCIF. In order
-# test to be flexible, attribute information is entered in string form:
+# Filters atoms by given attribute(s) name(s).
 #
-# "label_atom_id CA,CB & id 147, 148"
-#
-# and then parsed to such form:
-#
-# [ "label_atom_id" => [ "CA",  "CB"  ],
-#   "id"            => [ "147", "148" ] ].
-#
-# Second argument is mmCIF format stdin.
-#
-# Example: 
+# Example: ./filter_atoms "label_atom_id CA,N,CB,OG" < example.cif
 #
 
 my $attribute_selector = shift;
 
+# Parses selector argument from string  to proper array.
 my @attribute_selector = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                            map { [ split( " ", $_ ) ] }
                            split( "&", $attribute_selector ) ];
 
+# Performs filtering action.
 my @filtered_atoms = CifParser::filter_atoms( @attribute_selector, <> );
 
 my @attribute_names = @{ $filtered_atoms[0] };
@@ -37,10 +29,12 @@ my @attribute_data =  @{ $filtered_atoms[1] };
 
 print "loop_\n";
 
+# Prints necessary line for cif.
 foreach( @attribute_names ) {
     print "_atom_site." . $_ . "\n";
 }
 
+# Prints out atom data.
 for( my $i = 0; $i < $#attribute_data + 1; $i++ ) {
     if( $i % ( $#attribute_names + 1 ) != 0 ) {
         print " ", $attribute_data[$i], " ";

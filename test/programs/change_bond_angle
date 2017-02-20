@@ -2,20 +2,29 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 use Math::Complex;
-use Math::Algebra::Symbols;
 
 use lib "../../lib/perl";
 use CifParser;
 use AlterMolecule;
 
+#
+# Unit test: AlterMolecule::change_bond_angle.
+#
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after the change of the angle between atoms.
+#
+# Example: ./change_bond_angle "label_atom_id CA,N,CB,OG" \
+#                              "Cartn_x,Cartn_y,Cartn_z" \
+#                              1.0 27 < example.cif
+#
+
 my $attribute_filter = shift;
 my $attribute_select = shift;
-my $angle_min_max = shift; # Amount of which bond will change.
-my $num_of_points = shift;
-my @cif = <>;
+my $angle_min_max = shift; # Boundary of angles which bond will be changed by.
+my $num_of_points = shift; # Amount of pseudo-atoms that will be generated in
+my @cif = <>;              # Jmol.
 
 # Parses selector argument from string  to proper array.
 my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
@@ -23,7 +32,13 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
 
-# Prints count of atoms and arbitrary word. Neccessary for Jmol.
+# Selects atoms for further analysis.
+my @selected_atom_data =
+    @{ CifParser::select_atom_data( @attribute_filter,
+				    @attribute_select,
+				    @cif ) };
+
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
 print( "testing\n" );
 
@@ -33,11 +48,6 @@ map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
 @cif;
 
-my @selected_atom_data =
-    @{ CifParser::select_atom_data( @attribute_filter,
-				    @attribute_select,
-				    @cif ) };
-
 # Changes bond by certain distance.
 my $transl_atom_coord =
     AlterMolecule::change_bond_angle( $selected_atom_data[1],
@@ -46,9 +56,9 @@ my $transl_atom_coord =
 				      $selected_atom_data[3] );
 
 # Smallest change in bond length by given num_of_points and bond_min_max.
-my $smallest_angle = $angle_min_max / sqrt($num_of_points);
+my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
 
-# Calculates angles that will be rotated along.
+# Calculates angles that will be changed symbolically.
 my $theta;
 my $psi;
 
@@ -60,7 +70,8 @@ push( @delta_angles, 0 );
 # Evaluates symbolic expression.
 my $eval_expression;
 
-# Rotates again along chi angle and creates Jmol readable struct file.
+# Calculates the bend between atoms at theta and psi angles numerically and
+# creates Jmol readable structure file.
 foreach( @delta_angles ) {
     $theta = $_;
     foreach( @delta_angles ){
@@ -69,8 +80,8 @@ foreach( @delta_angles ) {
 	    print( "X\t" );
 	    foreach( @$_[0..2] ) {
 		foreach( @$_ ) {
-		    $eval_expression = Re( eval( $_ ) ); # Takes only real
-		                                         # the complex number.
+		    $eval_expression = Re( eval( $_ ) ); # Takes only real part
+		                                         # of the complex number.
 		    printf( "%.3f\t", $eval_expression );
 		}
 	    }

@@ -6,6 +6,14 @@ use warnings;
 use lib "../../lib/perl";
 use LinearAlgebra;
 
+#
+# Unit test: LinearAlgebra::mult_matrix_product.
+#
+# Multiplies multiple matrices using symbolic algebra.
+#
+# Example: ./mult_matrix_product "x,y,z" < example.dat
+#
+
 my $symbols = shift;
    $symbols //= ",";
 my @symbols = [ split( ",", $symbols ) ];

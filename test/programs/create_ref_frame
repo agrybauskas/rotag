@@ -6,6 +6,14 @@ use warnings;
 use lib "../../lib/perl";
 use LinearAlgebra;
 
+#
+# Unit test: LinearAlgebra::create_ref_frame.
+#
+# Creates the frame of reference from three given coordinates of the atom.
+#
+# Example: ./create_ref_frame < example.dat
+#
+
 my @atom_coord;
 
 while( <> ){
@@ -13,7 +21,7 @@ while( <> ){
 }
 
     # mid-atom      # up-atom       # side-atom
-my @local_ref_frame = LinearAlgebra::create_ref_frame( 
+my @local_ref_frame = LinearAlgebra::create_ref_frame(
     $atom_coord[0], $atom_coord[1], $atom_coord[2],   # x-axis
     $atom_coord[3], $atom_coord[4], $atom_coord[5],   # y-axis
     $atom_coord[6], $atom_coord[7], $atom_coord[8] ); # z-axis
@@ -22,6 +30,5 @@ for( my $i=0; $i < 3; $i++ ) {
     for( my $j=0; $j < 3; $j++ ) {
 	print( $local_ref_frame[$i][$j] . " " );
     }
-
     print( "\n" );
 }

@@ -2,19 +2,18 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 use lib "../../lib/perl";
 use CifParser;
 use ConnectAtoms;
 
-##
-## Unit test: connect_atoms
-##
-## Shows connections between atoms.
-##
-## Example: ./connect_atoms 1.51 0.15 < example.cif
-##
+#
+# Unit test: ConnectAtoms::connect_atoms
+#
+# Shows connections between atoms.
+#
+# Example: ./connect_atoms 1.51 0.15 < example.cif
+#
 
 my $bond_length       = shift; # In angstroms.
 my $bond_length_error = shift; # In angstroms.
@@ -45,7 +44,6 @@ my @child_atom;
 
 foreach( keys %connected_atoms ) {
     @parent_atom = split( ",", $_ );
-
     foreach( @{ $connected_atoms{$_} } ) {
         @child_atom = split( ",", $_ );
         print( "$parent_atom[0] $parent_atom[1]:" );

@@ -77,7 +77,7 @@ sub rotate_bond
 #                 (with undefined bond length variable: bond_length).
 #
 
-sub change_bond_len
+sub change_bond_length
 {
     my ( $mid_atom_coord,
 	 $up_atom_coord,

@@ -7,22 +7,12 @@ use lib "../../lib/perl";
 use CifParser;
 
 #
-# Test program, as argv, uses both attribute filter, attribute data selection
-# info and mmCIF. In order test to be flexible, attribute information is
-# entered in string form:
+# Unit test: CifParser::select_atom_data.
 #
-# "label_atom_id CA,CB & id 147, 148"
+# Selects atom data by given attributes.
 #
-# and then parsed to such form:
-#
-# [ "label_atom_id" => [ "CA",  "CB"  ],
-#   "id"            => [ "147", "148" ] ].
-#
-# Attribute data is selected in such form:
-#
-# "Cartn_x,Cartn_y,Cartn_z"
-#
-# The third argument is mmCIF format stdin.
+# Example: ./select_atom_data "label_atom_id CA,N,CB,OG" \
+#                             "Cartn_x,Cartn_y,Cartn_z" < example.cif
 #
 
 my $attribute_filter = shift;
@@ -34,6 +24,7 @@ my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
                          split( "&", $attribute_filter ) ];
 my @attribute_select = [ split( ",", $attribute_select ) ];
 
+# Selects atoms for further analysis.
 my @selected_atom_data = @{ CifParser::select_atom_data( @attribute_filter,
 							 @attribute_select,
 							 <> ) };
