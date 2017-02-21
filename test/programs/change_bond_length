@@ -50,10 +50,10 @@ grep { $_ =~ /ATOM/ }
 
 # Changes bond by certain distance.
 my $transl_atom_coord =
-    AlterMolecule::change_bond_len( $selected_atom_data[1],
-				    $selected_atom_data[2],
-				    $selected_atom_data[0],
-				    $selected_atom_data[3] );
+    AlterMolecule::change_bond_length( $selected_atom_data[1],
+				       $selected_atom_data[2],
+				       $selected_atom_data[0],
+				       $selected_atom_data[3] );
 
 # Smallest change in bond length by given num_of_points and bond_min_max.
 my $smallest_length = $bond_min_max / $num_of_points;

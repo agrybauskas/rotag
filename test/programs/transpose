@@ -6,6 +6,14 @@ use warnings;
 use lib "../../lib/perl";
 use LinearAlgebra;
 
+#
+# Unit test: LinearAlgebra::transpose
+#
+# Transposes matrix.
+#
+# Example: ./transpose < example.dat
+#
+
 my @matrix;
 
 while( <> ) {
