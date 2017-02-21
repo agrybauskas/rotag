@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use lib qw( ./ );
+use CifParser;
 use AlterMolecule;
 
 use Data::Dumper;

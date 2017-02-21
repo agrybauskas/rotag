@@ -61,7 +61,7 @@ sub create_box
 
 sub connect_atoms
 {
-    my $bond_length = shift;
+    my $bond_length = shift; # TODO: must be adjusted to variety of atoms.
     my $length_error = shift; # Shows, how bond length might vary.
     my @all_atom_coord  = @_;
 
