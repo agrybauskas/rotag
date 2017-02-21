@@ -6,13 +6,11 @@ use warnings;
 use lib qw( ./ );
 use LinearAlgebra;
 
-use Data::Dumper;
-
 # ------------------ Molecule structure alteration algorithms ----------------- #
 
 #
-# Block of code that has functions changing structure of molecules by rotating
-# along dihedral angles, changing length and angle of bonds.
+# Changes structure of the molecule by rotating along dihedral angles, changing
+# length and angle of the bonds.
 #
 
 #
@@ -36,8 +34,8 @@ sub rotate_bond
 			    [ 0, 0, 1, 0 ],
 			    [ 0, 0, 0, 1 ] );
 
-    # Converting target atom coordinates from 3x1 to 4x1 form so,
-    # it could be multiplied by 4x4 matrix.
+    # Converting target atom coordinates from 3x1 to 4x1 form so, it could be
+    # multiplied by 4x4 matrix.
     my @target_atom_coord;
 
     foreach( @$target_atom_coord ) {
@@ -47,14 +45,14 @@ sub rotate_bond
     push( @target_atom_coord, [ 1 ] );
 
     # Incorporating symbol for dihedral chi angle.
-    my @symbols = [ "chi", "i" ];
+    my @symbols = ( "chi", "i" );
 
     # TODO: must look for arrays that have too much brackets like in example
     # below.
     # Multiplying multiple matrices to get a final form.
     my @rot_matrix =
     	LinearAlgebra::mult_matrix_product(
-    	    @symbols,
+    	    \@symbols,
     	    LinearAlgebra::switch_ref_frame( "global",
     	    				     $mid_atom_coord,
     	    				     $up_atom_coord,
@@ -108,12 +106,12 @@ sub change_bond_length
     push( @target_atom_coord, [ 1 ] );
 
     # Incorporating symbol for bond length - len.
-    my @symbols = [ "r", "i" ];
+    my @symbols = ( "r", "i" );
 
     # Multiplying multiple matrices to get a final form.
     my @transl_matrix =
 	LinearAlgebra::mult_matrix_product(
-	    @symbols,
+	    \@symbols,
 	    LinearAlgebra::translate( (   $mid_atom_coord->[0],
 					  $mid_atom_coord->[1],
 					  $mid_atom_coord->[2] ) ),
@@ -154,14 +152,14 @@ sub change_bond_angle
 					  @$side_atom_coord );
 
     # Bond angle matrices.
-    my @bond_rot_x_matrix = ( [ 1, 0, 0, 0 ],
-			      [ 0, 'cos($theta)', '-sin($theta)', 0 ],
-			      [ 0, 'sin($theta)', 'cos($theta)', 0 ],
-			      [ 0, 0, 0, 1 ] );
-    my @bond_rot_y_matrix = ( [ 'cos($psi)', 0, 'sin($psi)', 0 ],
-			      [ 0, 1, 0, 0 ],
-			      [ '-sin($psi)', 0, 'cos($psi)', 0 ],
-			      [ 0, 0, 0, 1 ] );
+    my @rot_x_matrix = ( [ 1, 0, 0, 0 ],
+			 [ 0, 'cos($theta)', '-sin($theta)', 0 ],
+			 [ 0, 'sin($theta)', 'cos($theta)', 0 ],
+			 [ 0, 0, 0, 1 ] );
+    my @rot_y_matrix = ( [ 'cos($psi)', 0, 'sin($psi)', 0 ],
+			 [ 0, 1, 0, 0 ],
+			 [ '-sin($psi)', 0, 'cos($psi)', 0 ],
+			 [ 0, 0, 0, 1 ] );
 
     # Converting target atom coordinates from 3x1 to 4x1 form so,
     # it could be multiplied by 4x4 matrix.
@@ -174,20 +172,20 @@ sub change_bond_angle
     push( @target_atom_coord, [ 1 ] );
 
     # Incorporating symbol for bond length - len.
-    my @symbols = [ "theta", "psi", "i" ];
+    my @symbols = ( "theta", "psi", "i" );
 
     # Multiplying multiple matrices to get a final form.
     my @transl_matrix =
 	LinearAlgebra::mult_matrix_product(
-	    @symbols,
+	    \@symbols,
 	    LinearAlgebra::translate( (   $mid_atom_coord->[0],
 					  $mid_atom_coord->[1],
 					  $mid_atom_coord->[2] ) ),
 	    LinearAlgebra::rotate_z_axis( - $gamma ),
 	    LinearAlgebra::rotate_x_axis( - $beta ),
 	    LinearAlgebra::rotate_z_axis( - $alpha ),
-	    \@bond_rot_y_matrix,
-	    \@bond_rot_x_matrix,
+	    \@rot_y_matrix,
+	    \@rot_x_matrix,
 	    LinearAlgebra::rotate_z_axis(   $alpha ),
 	    LinearAlgebra::rotate_x_axis(   $beta ),
 	    LinearAlgebra::rotate_z_axis(   $gamma ),

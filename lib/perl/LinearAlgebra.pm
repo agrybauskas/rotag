@@ -8,8 +8,7 @@ use warnings;
 # ------------------------------- Linear algebra ------------------------------ #
 
 #
-# Block of code contains functions that perform basic linear algebra operations
-# for matrices.
+# Performs basic linear algebra operations for matrices.
 #
 
 #
@@ -17,9 +16,9 @@ use warnings;
 #
 
 my $PI = 4 * atan2( 1, 1 );
+
 my $EPSILON = 1.0; # Machine accuracy for floating point numbers which is
                    # calculated in above block.
-
 {
     while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
 	$EPSILON = 0.5 * $EPSILON;
@@ -119,10 +118,11 @@ sub find_euler_angles
 }
 
 #
-# Switches between global and local reference frames.
+# Switches between global and local frames of reference.
 # Input  (2 arg): array of three atom coordinates in x, y, z form, that frame of
 #                 reference will be transformed to, and boolean that switches
-#                 frame of reference to local (if 1) and global (if 0).
+#                 frame of reference to local (if "local") and global
+#                 (if "global").
 # Output (1 arg): 4x4 transformation matrix.
 #
 
@@ -138,7 +138,7 @@ sub switch_ref_frame
 					  @$up_atom_coord,
 					  @$side_atom_coord );
 
-    # Depending on the option switch_to_local, 
+    # Depending on the option switch_to_local,
     my @switch_matrix;
     my @symbols = [ "i" ];
 
@@ -231,8 +231,9 @@ sub rotate_z_axis
 }
 
 #
-# Creates 4x4 matrix that can translates 4x4 matrices
-# Input  (1 arg): 3x1 matrix of x, y, z coordinates that .
+# Creates 4x4 matrix that can translates 4x4 matrices by making a matrix product.
+# Input  (1 arg): 3x1 matrix of x, y, z coordinates of corresponding
+#                 displacement.
 # Output (1 arg): 4x4 matrix.
 #
 
@@ -252,9 +253,7 @@ sub translate
 # ---------------------------- Symbolic linear algebra ------------------------ #
 
 #
-# Block of code contains functions that perform basic linear algebra on symbolic
-# expressions..
-#
+# Performs basic linear algebra on symbolic expressions.
 #
 # Example of rotation along z-axis by chi angle:
 #

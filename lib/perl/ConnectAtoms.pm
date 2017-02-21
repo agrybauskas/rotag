@@ -8,8 +8,8 @@ use List::Util qw(min max);
 # ------------------------------ Connect atoms ------------------------------- #
 
 #
-# Block of code contains functions that shows what atom is connected to what 
-# atom using only information about atom coordinates.
+# Shows what atom is connected to what atom using only information about atom
+# coordinates.
 #
 
 #
@@ -52,6 +52,8 @@ sub create_box
 #
 # Divides box into grid of cubes that has length of the desired bond. If box
 # is not perfectly divisible, then the boundaries are extended accordingly.
+# Then, all atoms' distances are compared pairwisely in one box. If distance
+# is correspond to appropriate length, then connection is made by two atoms.
 # Input  (2 arg): bond length in angstroms, coordinates of atoms (x, y, z).
 # Output (1 arg): hash of atom coordinates (x, y, z) as keys and atom
 #                 coordinates that are connected to as values.

@@ -11,10 +11,9 @@ no if $] >= 5.017011,                       # WARNING: in newer versions of Perl
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
 #
-# In this block of code, functions extract, filter and select atom entries of
-# PDBx/mmCIF files. "Attribute" coresponds to atom characteristics, such as
-# atom or residues id, amino acid type and etc. Term "attribute" is used in CIF
-# and mmCIF documentation.
+# Extracts, filters and selects atom entries of PDBx/mmCIF files. "Attribute"
+# coresponds to atom characteristics, such as atom or residues id, amino acid
+# type and etc. Term "attribute" is used in CIF and mmCIF documentation.
 #
 
 #
