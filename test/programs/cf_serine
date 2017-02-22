@@ -7,6 +7,8 @@ use lib "../../lib/perl";
 use CifParser;
 use SidechainModels;
 
+use Data::Dumper;
+
 my $attribute_filter = shift;
 my @cif = <>;
 
@@ -14,14 +16,18 @@ my @cif = <>;
 my @attribute_filter = map { $_->[0] => [ split( ",", @$_[1] ) ] }
                        map { [ split( " ", $_ ) ] }
                        split( "&", $attribute_filter );
-
-my @attribute_select = ();
+my @attribute_select = ( "id",
+			 "label_atom_id",
+			 "label_comp_id",
+			 "Cartn_x",
+			 "Cartn_y",
+			 "Cartn_z" );
 
 # Selects atoms for further analysis.
-my @selected_atom_data =
-    @{ CifParser::select_atom_data( \@attribute_filter,
-				    \@attribute_select,
-				    @cif ) };
+my $selected_atom_data =
+    CifParser::select_atom_data( \@attribute_filter,
+				 \@attribute_select,
+				 @cif );
 
 # Applies molecule alterations.
-SidechainModels::cf_serine( @attribute_filter );
+SidechainModels::cf_serine( @$selected_atom_data );
