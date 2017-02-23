@@ -4,30 +4,25 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser;
 use SidechainModels;
+
+use lib "../lib";
+use Utils;
 
 use Data::Dumper;
 
 my $attribute_filter = shift;
 my @cif = <>;
 
-# Parses selector argument from string  to proper array.
-my @attribute_filter = map { $_->[0] => [ split( ",", @$_[1] ) ] }
-                       map { [ split( " ", $_ ) ] }
-                       split( "&", $attribute_filter );
-my @attribute_select = ( "id",
-			 "label_atom_id",
-			 "label_comp_id",
-			 "Cartn_x",
-			 "Cartn_y",
-			 "Cartn_z" );
-
-# Selects atoms for further analysis.
 my $selected_atom_data =
-    CifParser::select_atom_data( \@attribute_filter,
-				 \@attribute_select,
-				 @cif );
+    Utils::select_atom_data( $attribute_filter,
+			     [ "id",
+			       "label_atom_id",
+			       "label_comp_id",
+			       "Cartn_x",
+			       "Cartn_y",
+			       "Cartn_z" ],
+			     @cif );
 
 # Applies molecule alterations.
-SidechainModels::cf_serine( @$selected_atom_data );
+SidechainModels::cf_serine( $selected_atom_data );
