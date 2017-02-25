@@ -4,16 +4,17 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra;
+use Measure;
 
 use lib "../lib";
 use Utils;
 
 #
-# Unit test:
+# Unit test: Measure::bond_length
 #
+# Measure the length of the bond between two atoms in angstroms.
 #
-# Example: ./rotate_x_axis "id 1,2" "Cartn_x,Cartn_y,Cartn_z" < example.cif
+# Example: ./bond_length "id 1,2" "Cartn_x,Cartn_y,Cartn_z" < example.cif
 #
 
 my $attribute_filter = shift;
@@ -28,3 +29,4 @@ my $selected_atom_data =
 			     @cif );
 
 # Prints out length of the bond in angstroms.
+printf( "%.3f\n", Measure::bond_length( @$selected_atom_data ) );

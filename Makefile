@@ -41,5 +41,4 @@ ${VISUAL_TEST_OUT_DIR}/%.jmol: ${VISUAL_TEST_CASES_DIR}/%.sh
 #
 
 clean distclean:
-	rm -f ${TEST_DIFF}
-	rm -f ${VISUAL_TEST_JMOL}
+	rm -f ${TEST_DIFF} ${VISUAL_TEST_JMOL}
