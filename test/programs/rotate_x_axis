@@ -24,6 +24,7 @@ my $attribute_select = shift;
 my $angle = shift;
 my @cif = <>;
 
+# Selects atom's data for further analysis.
 my $selected_atom_data =
     Utils::select_atom_data( $attribute_filter,
 			     $attribute_select,

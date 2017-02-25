@@ -6,8 +6,10 @@ use warnings;
 use Math::Complex;
 
 use lib "../../lib/perl";
-use CifParser;
 use AlterMolecule;
+
+use lib "../lib";
+use Utils;
 
 #
 # Unit test: LinearAlgebra::switch_ref_frame.
@@ -24,23 +26,17 @@ my $attribute_select = shift;
 my $ref_frame = shift;
 my @cif = <>;
 
-# Parses selector argument from string  to proper array.
-my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
-                         map { [ split( " ", $_ ) ] }
-                         split( "&", $attribute_filter ) ];
-my @attribute_select = [ split( ",", $attribute_select ) ];
-
-# Selects atoms for further analysis.
-my @selected_atom_data =
-    @{ CifParser::select_atom_data( @attribute_filter,
-				    @attribute_select,
-				    @cif ) };
+# Selects atom's data for further analysis.
+my $selected_atom_data =
+    Utils::select_atom_data( $attribute_filter,
+			     $attribute_select,
+			     @cif );
 
 my @switched_ref_frame =
     LinearAlgebra::switch_ref_frame( $ref_frame,
-				     $selected_atom_data[1],
-				     $selected_atom_data[2],
-				     $selected_atom_data[0] );
+				     $selected_atom_data->[1],
+				     $selected_atom_data->[2],
+				     $selected_atom_data->[0] );
 
 foreach( @switched_ref_frame ) {
 	foreach( @$_ ) {

@@ -4,8 +4,10 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser;
 use LinearAlgebra;
+
+use lib "../lib";
+use Utils;
 
 #
 # Unit test: LinearAlgebra::rotate_y_axis.
@@ -22,22 +24,16 @@ my $attribute_select = shift;
 my $angle = shift;
 my @cif = <>;
 
-# Parses selector argument from string  to proper array.
-my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
-                         map { [ split( " ", $_ ) ] }
-                         split( "&", $attribute_filter ) ];
-my @attribute_select = [ split( ",", $attribute_select ) ];
-
-# Selects atoms for further analysis.
-my @selected_atom_data =
-    @{ CifParser::select_atom_data( @attribute_filter,
-				    @attribute_select,
-				    @cif ) };
+# Selects atom's data for further analysis.
+my $selected_atom_data =
+    Utils::select_atom_data( $attribute_filter,
+			     $attribute_select,
+			     @cif );
 
 # Rotates all atoms along y-axis by given angle.
 my @transf_atom_data;
 
-foreach ( @selected_atom_data ) {
+foreach ( @$selected_atom_data ) {
     # Prepared atom coordinates to proper 4x1 matrix.
     my @atom_coord;
 

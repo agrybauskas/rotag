@@ -26,9 +26,9 @@ while( <> ) {
     } else {
 	push( @{ $symb_matrices[-1] }, [ split( " ", $_ ) ] );
     }
-} 
+}
 
-my $symb_dot_product = 
+my $symb_dot_product =
     LinearAlgebra::mult_matrix_product( @symbols,
 					@symb_matrices );
 

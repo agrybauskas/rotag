@@ -28,8 +28,8 @@ my $all_atom_coord =
 				 [ "id",
                                    "label_atom_id",
                                    "label_comp_id",
-                                   "Cartn_x", 
-                                   "Cartn_y", 
+                                   "Cartn_x",
+                                   "Cartn_y",
                                    "Cartn_z" ],
 				 @cif_file );
 

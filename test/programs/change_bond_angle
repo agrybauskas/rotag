@@ -28,6 +28,7 @@ my $angle_min_max = shift; # Boundary of angles which bond will be changed by.
 my $num_of_points = shift; # Amount of pseudo-atoms that will be generated in
 my @cif = <>;              # Jmol.
 
+# Selects atom's data for further analysis.
 my $selected_atom_data =
     Utils::select_atom_data( $attribute_filter,
 			     $attribute_select,

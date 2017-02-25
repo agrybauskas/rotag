@@ -4,8 +4,10 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser;
 use LinearAlgebra;
+
+use lib "../lib";
+use Utils;
 
 #
 # Unit test: LinearAlgebra::create_ref_frame
@@ -21,28 +23,22 @@ my $attribute_filter = shift;
 my $attribute_select = shift;
 my @cif = <>;
 
-# Parses selector argument from string  to proper array.
-my @attribute_filter = [ map { $_->[0] => [ split( ",", @$_[1] ) ] }
-                         map { [ split( " ", $_ ) ] }
-                         split( "&", $attribute_filter ) ];
-my @attribute_select = [ split( ",", $attribute_select ) ];
-
-# Selects atoms for further analysis.
-my @selected_atom_data =
-    @{ CifParser::select_atom_data( @attribute_filter,
-				    @attribute_select,
-				    @cif ) };
+# Selects atom's data for further analysis.
+my $selected_atom_data =
+    Utils::select_atom_data( $attribute_filter,
+			     $attribute_select,
+			     @cif );
 
 # Finds Euler angles and makes rotational matrices.
-my @mid_atom_coord =  ( $selected_atom_data[1][0],
-		        $selected_atom_data[1][1],
-			$selected_atom_data[1][2] );
-my @up_atom_coord =   ( $selected_atom_data[2][0],
-			$selected_atom_data[2][1],
-			$selected_atom_data[2][2] );
-my @side_atom_coord = ( $selected_atom_data[0][0],
-			$selected_atom_data[0][1],
-			$selected_atom_data[0][2] );
+my @mid_atom_coord =  ( $selected_atom_data->[1][0],
+		        $selected_atom_data->[1][1],
+			$selected_atom_data->[1][2] );
+my @up_atom_coord =   ( $selected_atom_data->[2][0],
+			$selected_atom_data->[2][1],
+			$selected_atom_data->[2][2] );
+my @side_atom_coord = ( $selected_atom_data->[0][0],
+			$selected_atom_data->[0][1],
+			$selected_atom_data->[0][2] );
 
 my @local_ref_frame =
     LinearAlgebra::create_ref_frame( @mid_atom_coord,
