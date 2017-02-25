@@ -11,7 +11,7 @@ use warnings;
 #
 
 #
-# 
+# Calculates bond length of given two atoms.
 # Input  (2 arg): matrices of x,y,z coordinates of two atoms.
 # Output (1 arg): length of the bond in angstroms.
 #
@@ -29,31 +29,33 @@ sub bond_length
 }
 
 #
-# 
-# Input  (3  arg): 
-# Output (  arg): 
-#
-
-sub dihedral_angle
-{
-    
-}
-
-#
-# 
-# Input  (  arg): 
-# Output (  arg): 
+# Calculates angle between three atoms.
+# Input  (3 arg): matrices of x,y,z coordinates of three atoms.
+# Output (1 arg): angle in radians.
 #
 
 sub bond_angle
 {
-    
+    my @atom_coord = @_;
+
+    # my $bond_angle
 }
 
 #
-# 
-# Input  (  arg): 
-# Output (  arg): 
+#
+# Input  (3  arg):
+# Output (  arg):
+#
+
+sub dihedral_angle
+{
+
+}
+
+#
+#
+# Input  (  arg):
+# Output (  arg):
 #
 
 sub rmsd
