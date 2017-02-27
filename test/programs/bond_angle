@@ -9,6 +9,8 @@ use Measure;
 use lib "../lib";
 use Utils;
 
+use Data::Dumper;
+
 #
 # Unit test: Measure::bond_angle
 #
@@ -29,4 +31,4 @@ my $selected_atom_data =
 			     @cif );
 
 # Prints out length of the bond in angstroms.
-printf( "%.3f\n", Measure::bond_angle( @$selected_atom_data ) );
+printf( "%.3f\n", Measure::bond_angle( $selected_atom_data ) );
