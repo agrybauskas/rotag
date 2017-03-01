@@ -56,17 +56,17 @@ sub bond_angle
     # This formula is applied to atoms where vectors are the substraction of
     # coordinates of two atoms. Suppose, one of the side atom is A, B - middle
     # and C - remaining atom. Order of side atoms is irrelevant.
-    my @vector_ab = ( $atom_coord[1][0] - $atom_coord[0][0],
-		      $atom_coord[1][1] - $atom_coord[0][1],
-		      $atom_coord[1][2] - $atom_coord[0][2] );
+    my @vector_ab = ( $atom_coord[0][0] - $atom_coord[1][0],
+		      $atom_coord[0][1] - $atom_coord[1][1],
+		      $atom_coord[0][2] - $atom_coord[1][2] );
     my @vector_bc = ( $atom_coord[2][0] - $atom_coord[1][0],
 		      $atom_coord[2][1] - $atom_coord[1][1],
 		      $atom_coord[2][2] - $atom_coord[1][2] );
 
     # TODO: prove/disprove the correctness of the expression.
-    my $vector_product = $vector_ab[2] * $vector_bc[0] +
+    my $vector_product = $vector_ab[0] * $vector_bc[0] +
 	               + $vector_ab[1] * $vector_bc[1]
-	               + $vector_ab[0] * $vector_bc[2];
+	               + $vector_ab[2] * $vector_bc[2];
 
     my $length_ab = sqrt( $vector_ab[0]**2
 			+ $vector_ab[1]**2
