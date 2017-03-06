@@ -2,10 +2,10 @@
 # Unit tests
 #
 
-TEST_CASES_DIR=test/case
-TEST_OUT_DIR=test/output
-VISUAL_TEST_CASES_DIR=test/visual_case
-VISUAL_TEST_OUT_DIR=test/output
+TEST_CASES_DIR=tests/cases
+TEST_OUT_DIR=tests/outputs
+VISUAL_TEST_CASES_DIR=tests/cases_visual
+VISUAL_TEST_OUT_DIR=tests/outputs
 
 TEST_CASES=${sort ${wildcard ${TEST_CASES_DIR}/*.sh}}
 TEST_DIFF=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${TEST_OUT_DIR}/%.diff}
@@ -16,10 +16,10 @@ VISUAL_TEST_JMOL=${VISUAL_TEST_CASES:${VISUAL_TEST_CASES_DIR}/%.sh=${VISUAL_TEST
 
 test: ${TEST_DIFF}
 
-visual_test: ${VISUAL_TEST_JMOL}
+test_visual: ${VISUAL_TEST_JMOL}
 
-${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.dat
-	@./$< 2>&1 | diff -B -w $(basename $@).dat - > $@; \
+${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
+	@./$< 2>&1 | diff -B -w $(basename $@).out - > $@; \
 	if [ $$? -eq 0 ]; \
 	then echo "$<" \
 	     | awk '{ printf "%-40s \033[1m[OK]\033[m\n",    $$1 }'; \
