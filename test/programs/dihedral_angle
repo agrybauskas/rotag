@@ -10,11 +10,11 @@ use lib "../lib";
 use Utils;
 
 #
-# Unit test: Measure::bond_angle
+# Unit test: Measure::dihedral_angle
 #
-# Measure the angle between three atoms in radians.
+# Measure the dihedral angle of four atoms in radians.
 #
-# Example: ./bond_angle "id 1,2,3" "Cartn_x,Cartn_y,Cartn_z" < example.cif
+# Example: ./dihedral_angle "id 1,2,3,4" "Cartn_x,Cartn_y,Cartn_z" < example.cif
 #
 
 my $attribute_filter = shift;
@@ -29,4 +29,5 @@ my $selected_atom_data =
 			     @cif );
 
 # Prints out length of the bond in angstroms.
-printf( "%.3f\n", Measure::bond_angle( $selected_atom_data ) );
+# printf( "%.3f\n", Measure::bond_angle( $selected_atom_data ) );
+Measure::dihedral_angle( $selected_atom_data );

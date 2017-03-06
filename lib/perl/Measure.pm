@@ -63,7 +63,6 @@ sub bond_angle
 		      $atom_coord[2][1] - $atom_coord[1][1],
 		      $atom_coord[2][2] - $atom_coord[1][2] );
 
-    # TODO: prove/disprove the correctness of the expression.
     my $vector_product = $vector_ab[0] * $vector_bc[0] +
 	               + $vector_ab[1] * $vector_bc[1]
 	               + $vector_ab[2] * $vector_bc[2];
@@ -81,14 +80,17 @@ sub bond_angle
 }
 
 #
-#
-# Input  (3  arg):
-# Output (  arg):
+# Calculates dihedral angle of four given atoms.
+# Input  (4 arg): matrices of x,y,z coordinates of four atoms.
+# Output (1 arg): dihedral angle in radians.
 #
 
 sub dihedral_angle
 {
+    my $atom_coord = shift;
+    my @atom_coord = @$atom_coord;
 
+    my $dihedral_angle;    
 }
 
 #
