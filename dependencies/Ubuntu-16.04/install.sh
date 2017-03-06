@@ -1,4 +1,4 @@
 #!/bin/sh
 
-# Maxima Maxima 5.37.2
-sudo apt-get install maxima
+$(dirname $0)/build.sh
+$(dirname $0)/install-cpan.sh
