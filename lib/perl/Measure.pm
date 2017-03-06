@@ -90,7 +90,27 @@ sub dihedral_angle
     my $atom_coord = shift;
     my @atom_coord = @$atom_coord;
 
-    my $dihedral_angle;    
+    my $dihedral_angle;
+
+    # Dihedral angle is calculated by, first, calculating vectors that
+    # lie on the surface described by three points using equation of the
+    # plane:
+    #
+    #                          ax * by * cy = d
+    #
+    # where x, y and z are values for cartesian coordinates and a, b, c
+    # d - constants describing plane orientation in space.
+    #
+    # Dihedral angle is calculated by using constants a, b and c, that
+    # describes two planes:
+    #
+    # psi = arccos( a_1 * a_2 + b_1 * b_2 + c_1 * c_2
+    #             / sqrt( a_1^2 + b_1^2 + c_1^2 )
+    #             * sqrt( a_2^2 + b_2^2 + c_2^2 ) )
+    #
+
+    # Calculates coefficients for both normal vectors to the surfaces
+    # described by three atom-coordinates each and sharing two.
 }
 
 #
