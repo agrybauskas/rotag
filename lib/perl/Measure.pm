@@ -92,59 +92,41 @@ sub dihedral_angle
 
     my $dihedral_angle;
 
-    # Dihedral angle is calculated by, first, calculating vectors that
-    # lie on the surface described by three points using equation of the
-    # plane:
-    #
-    #                          ax * by * cy = d
-    #
-    # where x, y and z are values for cartesian coordinates and a, b, c
-    # d - constants describing plane orientation in space.
-    #
-    # Dihedral angle is calculated by using constants a, b and c, that
-    # describes two planes (plane_left, plane_right):
-    #
-    # psi = arccos( a_1 * a_2 + b_1 * b_2 + c_1 * c_2
-    #             / sqrt( a_1^2 + b_1^2 + c_1^2 )
-    #             * sqrt( a_2^2 + b_2^2 + c_2^2 ) )
-    #
+    #                  -> ->    ->
+    # Creates vectors: a, b and c, that are translated to global reference frame.
+    # Picture of vectors:
+    #                                   ->  O ->
+    #                                   b  /  c
+    #                              -> CA---C
+    #                              a /
+    #                               N
+    my @vector_a =
+    	map { $atom_coord[1][$_] - $atom_coord[0][$_] }
+            ( 0..$#{ $atom_coord[0] } );
+    my @vector_b =
+    	map { $atom_coord[2][$_] - $atom_coord[1][$_] }
+            ( 0..$#{ $atom_coord[1] } );
+    my @vector_c =
+    	map { $atom_coord[3][$_] - $atom_coord[2][$_] }
+            ( 0..$#{ $atom_coord[2] } );
 
-    # Calculates coefficients (a, b, c) for both normal vectors to the surfaces
-    # described by three atom-coordinates each and sharing two.
-    my @vector_left = map { $atom_coord[0][$_] - $atom_coord[1][$_] }
-                          ( 0..$#{ $atom_coord[0] } );
+    #                                               ->    -> ->    ->
+    # Creates normal vectors from the vector pairs: a and b, b and c.
+    my @normal_vector_ab =
+	( ( $vector_a[1] * $vector_b[2] )
+	- ( $vector_a[2] * $vector_b[1] ),
+	- ( $vector_a[0] * $vector_b[2] )
+	+ ( $vector_a[2] * $vector_b[0] ),
+	  ( $vector_a[0] * $vector_b[1] )
+	- ( $vector_a[1] * $vector_b[0] ) );
+    my @normal_vector_bc =
+	( ( $vector_b[1] * $vector_c[2] )
+	- ( $vector_b[2] * $vector_c[1] ),
+	- ( $vector_b[0] * $vector_c[2] )
+	+ ( $vector_b[2] * $vector_c[0] ),
+	  ( $vector_b[0] * $vector_c[1] )
+	- ( $vector_b[1] * $vector_c[0] ) );
 
-    my @vector_right = map { $atom_coord[2][$_] - $atom_coord[1][$_] }
-                           ( 0..$#{ $atom_coord[0] } );
-
-    my ( $a_1, $b_1, $c_1) =
-	( $vector_left[1] * $vector_right[2]
-	- $vector_left[2] * $vector_right[1],
-        - $vector_left[0] * $vector_right[2]
-	+ $vector_left[2] * $vector_right[0],
-	  $vector_left[1] * $vector_right[2]
-	- $vector_left[2] * $vector_right[1] );
-
-    @vector_left = map { $atom_coord[1][$_] - $atom_coord[2][$_] }
-                       ( 0..$#{ $atom_coord[2] } );
-
-    @vector_right = map { $atom_coord[3][$_] - $atom_coord[2][$_] }
-                        ( 0..$#{ $atom_coord[2] } );
-
-    my ( $a_2, $b_2, $c_2) =
-	( $vector_left[1] * $vector_right[2]
-	- $vector_left[2] * $vector_right[1],
-        - $vector_left[0] * $vector_right[2]
-	+ $vector_left[2] * $vector_right[0],
-	  $vector_left[1] * $vector_right[2]
-	- $vector_left[2] * $vector_right[1] );
-
-    # Calculates dihedral angle in radians.
-    $dihedral_angle = acos( ( $a_1 * $a_2 + $b_1 * $b_2 + $c_1 * $c_2 )
-			    / ( sqrt( $a_1**2 + $b_1**2 + $c_1**2 )
-			      * sqrt( $a_2**2 + $b_2**2 + $c_2**2 ) ) );
-
-    return $dihedral_angle;
 }
 
 #
