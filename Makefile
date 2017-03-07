@@ -25,6 +25,7 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	     | awk '{ printf "%-40s \033[1m[OK]\033[m\n",    $$1 }'; \
 	else echo "$<" \
 	     | awk '{ printf "%-40s \033[1m[ERROR]\033[m\n", $$1 }'; \
+	       cat $@; \
 	fi
 
 ${VISUAL_TEST_OUT_DIR}/%.jmol: ${VISUAL_TEST_CASES_DIR}/%.sh
@@ -34,6 +35,7 @@ ${VISUAL_TEST_OUT_DIR}/%.jmol: ${VISUAL_TEST_CASES_DIR}/%.sh
 	     | awk '{ printf "%-40s \033[1m[DONE]\033[m\n",  $$1 }'; \
 	else echo "$<" \
 	     | awk '{ printf "%-40s \033[1m[ERROR]\033[m\n", $$1 }'; \
+	       cat $@; \
 	fi
 
 #

@@ -102,15 +102,49 @@ sub dihedral_angle
     # d - constants describing plane orientation in space.
     #
     # Dihedral angle is calculated by using constants a, b and c, that
-    # describes two planes:
+    # describes two planes (plane_left, plane_right):
     #
     # psi = arccos( a_1 * a_2 + b_1 * b_2 + c_1 * c_2
     #             / sqrt( a_1^2 + b_1^2 + c_1^2 )
     #             * sqrt( a_2^2 + b_2^2 + c_2^2 ) )
     #
 
-    # Calculates coefficients for both normal vectors to the surfaces
+    # Calculates coefficients (a, b, c) for both normal vectors to the surfaces
     # described by three atom-coordinates each and sharing two.
+    my @vector_left = map { $atom_coord[0][$_] - $atom_coord[1][$_] }
+                          ( 0..$#{ $atom_coord[0] } );
+
+    my @vector_right = map { $atom_coord[2][$_] - $atom_coord[1][$_] }
+                           ( 0..$#{ $atom_coord[0] } );
+
+    my ( $a_1, $b_1, $c_1) =
+	( $vector_left[1] * $vector_right[2]
+	- $vector_left[2] * $vector_right[1],
+        - $vector_left[0] * $vector_right[2]
+	+ $vector_left[2] * $vector_right[0],
+	  $vector_left[1] * $vector_right[2]
+	- $vector_left[2] * $vector_right[1] );
+
+    @vector_left = map { $atom_coord[1][$_] - $atom_coord[2][$_] }
+                       ( 0..$#{ $atom_coord[2] } );
+
+    @vector_right = map { $atom_coord[3][$_] - $atom_coord[2][$_] }
+                        ( 0..$#{ $atom_coord[2] } );
+
+    my ( $a_2, $b_2, $c_2) =
+	( $vector_left[1] * $vector_right[2]
+	- $vector_left[2] * $vector_right[1],
+        - $vector_left[0] * $vector_right[2]
+	+ $vector_left[2] * $vector_right[0],
+	  $vector_left[1] * $vector_right[2]
+	- $vector_left[2] * $vector_right[1] );
+
+    # Calculates dihedral angle in radians.
+    $dihedral_angle = acos( ( $a_1 * $a_2 + $b_1 * $b_2 + $c_1 * $c_2 )
+			    / ( sqrt( $a_1**2 + $b_1**2 + $c_1**2 )
+			      * sqrt( $a_2**2 + $b_2**2 + $c_2**2 ) ) );
+
+    return $dihedral_angle;
 }
 
 #
