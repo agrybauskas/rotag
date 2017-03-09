@@ -264,7 +264,7 @@ sub vector_cross
 
     my @cross_product =
 	( $left_matrix->[1] * $right_matrix->[2]
-	- $left_matrix->[2] * $right_matrix->[1], 
+	- $left_matrix->[2] * $right_matrix->[1],
 	- $left_matrix->[0] * $right_matrix->[2]
 	+ $left_matrix->[2] * $right_matrix->[0],
 	  $left_matrix->[0] * $right_matrix->[1]
@@ -274,14 +274,25 @@ sub vector_cross
 }
 
 #
-# Adds to matrices.
+# Adds two matrices.
 # Input  (2 arg): two matrices.
 # Output (1 arg): sum of matrices.
 #
 
 sub matrix_sum
 {
+    my ( $left_matrix, $right_matrix ) = @_;
 
+    my @matrix_sum;
+
+    for my $i ( 0..$#{ $left_matrix } ) {
+    	for my $j ( 0..$#{ $left_matrix->[$i] } ) {
+	    $matrix_sum[$i][$j] =
+		$left_matrix->[$i][$j] + $right_matrix->[$i][$j];
+	}
+    }
+
+    return \@matrix_sum;
 }
 
 #
@@ -292,7 +303,18 @@ sub matrix_sum
 
 sub matrix_sub
 {
+    my ( $left_matrix, $right_matrix ) = @_;
 
+    my @matrix_sub;
+
+    for my $i ( 0..$#{ $left_matrix } ) {
+    	for my $j ( 0..$#{ $left_matrix->[$i] } ) {
+	    $matrix_sub[$i][$j] =
+		$left_matrix->[$i][$j] - $right_matrix->[$i][$j];
+	}
+    }
+
+    return \@matrix_sub;
 }
 
 # ---------------------------- Symbolic linear algebra ------------------------ #

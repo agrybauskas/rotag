@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use LinearAlgebra;
+
+use Data::Dumper;
+
+#
+# Unit test: LinearAlgebra::matrix_sub.
+#
+# Substitutes one matrix from another..
+#
+# Example: ./matrix_sub < example.dat
+#
+
+my @matrices = ( [] );
+
+while( <> ) {
+    if( $_ =~ /^\n$/ ) {
+	push( @matrices, [] );
+    } else {
+	push( @{ $matrices[-1] }, [ split( " ", $_ ) ] );
+    }
+}
+
+my @left_matrix = @{ $matrices[0] };
+my @right_matrix = @{ $matrices[1] };
+
+my $matrix_sub =
+    LinearAlgebra::matrix_sub( \@left_matrix, \@right_matrix );
+
+foreach( @$matrix_sub ) {
+    print( join( "\t", @$_ ), "\n" );
+}
