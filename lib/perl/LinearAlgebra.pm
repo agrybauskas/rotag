@@ -5,6 +5,8 @@ use Math::Algebra::Symbols;
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 # ------------------------------- Linear algebra ------------------------------ #
 
 #
@@ -248,6 +250,49 @@ sub translate
 	  [ 0, 0, 0, 1 ] );
 
     return \@transl_matrix;
+}
+
+#
+# Produces cross product of two 3D vectors.
+# Input  (2 arg): two arrays representing 3D vectors where units are i, j, k.
+# Output (1 arg): cross product.
+#
+
+sub vector_cross
+{
+    my ( $left_matrix, $right_matrix ) = @_;
+
+    my @cross_product =
+	( $left_matrix->[1] * $right_matrix->[2]
+	- $left_matrix->[2] * $right_matrix->[1], 
+	- $left_matrix->[0] * $right_matrix->[2]
+	+ $left_matrix->[2] * $right_matrix->[0],
+	  $left_matrix->[0] * $right_matrix->[1]
+	- $left_matrix->[1] * $right_matrix->[0] );
+
+    return \@cross_product;
+}
+
+#
+# Adds to matrices.
+# Input  (2 arg): two matrices.
+# Output (1 arg): sum of matrices.
+#
+
+sub matrix_sum
+{
+
+}
+
+#
+# Substracts one matrix from another.
+# Input  (2 arg): two matrices.
+# Output (1 arg): difference of matrices.
+#
+
+sub matrix_sub
+{
+
 }
 
 # ---------------------------- Symbolic linear algebra ------------------------ #
