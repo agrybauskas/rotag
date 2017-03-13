@@ -100,33 +100,31 @@ sub dihedral_angle
     #                              -> CA---C
     #                              a /
     #                               N
-    my @vector_a =
-    	map { $atom_coord[1][$_] - $atom_coord[0][$_] }
-            ( 0..$#{ $atom_coord[0] } );
-    my @vector_b =
-    	map { $atom_coord[2][$_] - $atom_coord[1][$_] }
-            ( 0..$#{ $atom_coord[1] } );
-    my @vector_c =
-    	map { $atom_coord[3][$_] - $atom_coord[2][$_] }
-            ( 0..$#{ $atom_coord[2] } );
+    my $vector_a =
+    	LinearAlgebra::matrix_sub( [ $atom_coord[1] ], [ $atom_coord[0] ] );
+    my $vector_b =
+    	LinearAlgebra::matrix_sub( [ $atom_coord[2] ], [ $atom_coord[1] ] );
+    my $vector_c =
+    	LinearAlgebra::matrix_sub( [ $atom_coord[3] ], [ $atom_coord[2] ] );
 
     #                                               ->    -> ->    ->
     # Creates normal vectors from the vector pairs: a and b, b and c.
-    my @normal_vector_ab =
-	( ( $vector_a[1] * $vector_b[2] )
-	- ( $vector_a[2] * $vector_b[1] ),
-	- ( $vector_a[0] * $vector_b[2] )
-	+ ( $vector_a[2] * $vector_b[0] ),
-	  ( $vector_a[0] * $vector_b[1] )
-	- ( $vector_a[1] * $vector_b[0] ) );
-    my @normal_vector_bc =
-	( ( $vector_b[1] * $vector_c[2] )
-	- ( $vector_b[2] * $vector_c[1] ),
-	- ( $vector_b[0] * $vector_c[2] )
-	+ ( $vector_b[2] * $vector_c[0] ),
-	  ( $vector_b[0] * $vector_c[1] )
-	- ( $vector_b[1] * $vector_c[0] ) );
+    my $vector_cross_ab =
+    	LinearAlgebra::vector_cross( @$vector_a, @$vector_b );
+    my $vector_cross_bc =
+    	LinearAlgebra::vector_cross( @$vector_b, @$vector_c );
 
+    # Calculates length for each cross product.
+    my $vector_length_ab = sqrt( $vector_cross_ab->[0]**2
+			       + $vector_cross_ab->[1]**2
+			       + $vector_cross_ab->[2]**2 );
+    my $vector_length_bc = sqrt( $vector_cross_bc->[0]**2
+			       + $vector_cross_bc->[1]**2
+			       + $vector_cross_bc->[2]**2 );
+
+    # Calculates normal vectors for each cross product of two vectors.
+    my @normal_vector_ab = map { $_ / $vector_length_ab } @$vector_cross_ab;
+    my @normal_vector_bc = map { $_ / $vector_length_bc } @$vector_cross_bc;
 }
 
 #
