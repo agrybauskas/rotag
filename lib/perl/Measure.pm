@@ -125,6 +125,29 @@ sub dihedral_angle
     # Calculates normal vectors for each cross product of two vectors.
     my @normal_vector_ab = map { $_ / $vector_length_ab } @$vector_cross_ab;
     my @normal_vector_bc = map { $_ / $vector_length_bc } @$vector_cross_bc;
+
+    # Finishes orthonormal frame from normal vector ab, vector b and its cross
+    # product.
+    my $vector_length_b = sqrt( $vector_b->[0][0]**2
+    			      + $vector_b->[0][1]**2
+    			      + $vector_b->[0][2]**2 );
+    my @normal_vector_b = map { $_ / $vector_length_b } @{ $vector_b->[0] };
+
+    my @orthonormal_cross =
+    	LinearAlgebra::vector_cross( \@normal_vector_ab, \@normal_vector_b );
+
+    # Using orthonormal frame, projections from vector a and c are
+    # generated and angle calculated.
+    # TODO: check, if angle sign is properly assigned.
+    $dihedral_angle =
+	- atan2( $orthonormal_cross[0][0] * $normal_vector_bc[0]
+	       + $orthonormal_cross[0][1] * $normal_vector_bc[1]
+	       + $orthonormal_cross[0][2] * $normal_vector_bc[2],
+	         $normal_vector_ab[0] * $normal_vector_bc[0]
+	       + $normal_vector_ab[1] * $normal_vector_bc[1]
+	       + $normal_vector_ab[2] * $normal_vector_bc[2] );
+
+    return $dihedral_angle;
 }
 
 #

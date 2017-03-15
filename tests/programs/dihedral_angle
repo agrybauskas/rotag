@@ -29,5 +29,4 @@ my $selected_atom_data =
 			     @cif );
 
 # Prints out length of the bond in angstroms.
-# printf( "%.3f\n", Measure::dihedral_angle( $selected_atom_data ) );
-Measure::dihedral_angle( $selected_atom_data );
+printf( "%.3f\n", Measure::dihedral_angle( $selected_atom_data ) );
