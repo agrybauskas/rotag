@@ -151,14 +151,28 @@ sub dihedral_angle
 }
 
 #
-#
-# Input  (  arg):
-# Output (  arg):
+# Calculates root-mean-square deviation of two same-length sets.
+# Input  (2 arg): two equal by length sets of cartesian coordinates of points.
+# Output (1 arg): root-mean-square deviation.
 #
 
 sub rmsd
 {
+    my ( $first_set, $second_set ) = @_; # Order of set is not important.
 
+    my $rmsd = 0; # TODO: check, if 0 will produce future bugs.
+
+    # Sums up sqaured differences of coordinates.
+    for( my $i = 0; $i <= $#{ $first_set }; $i++ ) {
+    	$rmsd += ( $first_set->[$i][0] - $second_set->[$i][0] )**2
+    	       + ( $first_set->[$i][1] - $second_set->[$i][1] )**2
+    	       + ( $first_set->[$i][2] - $second_set->[$i][2] )**2;
+    }
+
+    # Devides by the number of member of the set.
+    $rmsd = $rmsd / scalar( @$first_set );
+
+    return sqrt( $rmsd ); # Takes square root.
 }
 
 1;

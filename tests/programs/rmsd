@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use Measure;
+
+use lib "../lib";
+use Utils;
+use Data::Dumper;
+#
+# Unit test: Measure::rmsd
+#
+# Measure root-mean-square deviation of two same-length sets.
+#
+# Example: ./dihedral_angle < example_set.cif
+#
+
+my @coord_sets = ( [] );
+
+while( <> ) {
+    if( $_ =~ /^\n$/ ) {
+	push( @coord_sets, [] );
+    } else {
+	push( @{ $coord_sets[-1] }, [ split( " ", $_ ) ] );
+    }
+}
+
+# Prints out rmsd of given two sets.
+printf( "%.3f\n", Measure::rmsd( @coord_sets ) );
