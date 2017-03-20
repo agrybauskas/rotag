@@ -27,10 +27,11 @@ sub cf_serine # cf - abbreviation for constraint-free.
 {
     my @amino_acid_data = @_;
 
-    my @atom_connections =
-	ConnectAtoms::connect_atoms( 1.51, # HACK: approximate bond-length
-				     0.15, # HACK: approximate bond-length-error
-				     @amino_acid_data );    
+    my %atom_connections =
+	%{ ConnectAtoms::connect_atoms( 1.51, # HACK: approximate bond-length
+					0.15, # HACK: approximate bond-length-error
+					@amino_acid_data ) };
+
 }
 
 1;

@@ -15,14 +15,14 @@ my $attribute_filter = shift;
 my @cif = <>;
 
 my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     [ "id",
-			       "label_atom_id",
-			       "label_comp_id",
-			       "Cartn_x",
-			       "Cartn_y",
-			       "Cartn_z" ],
-			     @cif );
+    CifParser::select_atom_data( [],
+				 [ "id",
+                                   "label_atom_id",
+                                   "label_comp_id",
+                                   "Cartn_x",
+                                   "Cartn_y",
+                                   "Cartn_z" ],
+				 @cif );
 
 # Applies molecule alterations.
-SidechainModels::cf_serine( $selected_atom_data );
+SidechainModels::cf_serine( @$selected_atom_data );
