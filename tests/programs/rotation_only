@@ -25,4 +25,4 @@ my $selected_atom_data =
 				 @cif );
 
 # Applies molecule alterations.
-SidechainModels::cf_serine( @$selected_atom_data );
+SidechainModels::rotation_only( @$selected_atom_data );
