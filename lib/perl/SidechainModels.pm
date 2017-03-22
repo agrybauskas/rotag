@@ -18,6 +18,19 @@ use Data::Dumper;
 #
 
 #
+# Recursive function that follows the connections of bonds and returns pairs of
+# atom pairs.
+# Input   (1 arg):
+# Output  (1 arg):
+#
+
+sub find_flex_bonds # flex - flexible
+{
+    my %atom_connections = @_;
+
+}
+
+#
 # Model that uses only rotation around single bonds.
 # Input  (1 arg): array of arrays containing amino acid data, such as id,
 #                 type_symbol, label_alt_id, label_comp_id, Cartn_x, Cartn_y,
@@ -38,6 +51,8 @@ sub rotation_only
 
     # Picks any atom in atom_connections hash and start to go through
     # connections.
+    follow_bond( %atom_connections );
+
 }
 
 1;

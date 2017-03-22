@@ -440,13 +440,15 @@ sub mult_matrix_product
     # Multiplies matrices from left to right.
     for( my $id = $#matrices; $id >= 1; $id-- ) {
 	if( $id == $#matrices ) {
-    	    $mult_matrix_product = two_matrix_product( $symbols,
-						       $matrices[$id-1],
-						       $matrices[$id] );
+    	    $mult_matrix_product =
+		two_matrix_product( $symbols,
+				    $matrices[$id-1],
+				    $matrices[$id] );
     	} else {
-    	    $mult_matrix_product = two_matrix_product( $symbols,
-						       $matrices[$id-1],
-						       $mult_matrix_product );
+    	    $mult_matrix_product =
+		two_matrix_product( $symbols,
+				    $matrices[$id-1],
+				    $mult_matrix_product );
     	}
     }
 
