@@ -24,10 +24,21 @@ use Data::Dumper;
 # Output  (1 arg):
 #
 
-sub find_flex_bonds # flex - flexible
+sub find_flex_bonds # flex - flexible.
 {
     my %atom_connections = @_;
 
+    my @visited_atoms;
+    my @flexible_bonds;
+
+    # First, deletes atom connections where atom is connected to only one
+    # counterpart. There cannot be meaningful rotation around this type of bond.
+    # Also, algorithm always starts from CA. There must be direction of bonds,
+    # because matrix product is not commutative.
+    for my $atom ( keys %atom_connections ) {
+	if( scalar( @{ $atom_connections{$atom} } ) == 1 ) {
+	}
+    }
 }
 
 #
@@ -51,8 +62,7 @@ sub rotation_only
 
     # Picks any atom in atom_connections hash and start to go through
     # connections.
-    follow_bond( %atom_connections );
-
+    find_flex_bonds( %atom_connections );
 }
 
 1;
