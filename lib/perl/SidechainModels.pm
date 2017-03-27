@@ -17,6 +17,61 @@ use Data::Dumper;
 # These models are idealistic and more developmental than final.
 #
 
+{
+my @visited_atoms;
+
+sub follow_bonds
+{
+    my ( $atom_connections, $connection_template ) = @_;
+    my %atom_connections = %$atom_connections;
+    my %connection_template; # Used for tracking connections during recursion.
+
+    if( ! $connection_template ) {
+	%connection_template = %$atom_connections;
+    }
+
+    # print "....................\n";
+    # print Dumper @visited_atoms;
+    # print "-------------------\n";
+    # print Dumper \%atom_connections;
+    for my $atom ( keys %atom_connections ) {
+    	if( ! grep { $atom eq $_ } @visited_atoms ) {
+    	    push( @visited_atoms, $atom );
+
+    	    if( scalar( @{ $atom_connections{$atom} } ) > 1 ) {
+
+    		# Follows bond by creating new hash table from values of the
+    		# current key.
+    		my %current_connections;
+
+    		foreach( @{ $connection_template{$atom} } ) {
+    		    $current_connections{$_} = $connection_template{$_};
+    		}
+
+    		return follow_bonds( \%current_connections,
+    				     \%connection_template );
+    	    } elsif( scalar( @{ $atom_connections{$atom} } ) == 1 ) {
+    		if( ! grep { $connection_template{$atom} } @visited_atoms ){
+    		    push( @visited_atoms, $atom_connections{$atom}->[0] );
+
+    		    my %current_connections;
+
+    		    foreach( @{ $connection_template{$atom} } ) {
+    			$current_connections{$_} = $connection_template{$_};
+    		    }
+
+    		    return follow_bonds( \%current_connections,
+    					 \%connection_template );
+    		}
+    	    }
+    	}
+    }
+    return @visited_atoms;
+}
+    # print "....................\n";
+    # print Dumper @visited_atoms;
+}
+
 #
 # Recursive function that follows the connections of bonds and returns pairs of
 # atom pairs.
@@ -31,14 +86,7 @@ sub find_flex_bonds # flex - flexible.
     my @visited_atoms;
     my @flexible_bonds;
 
-    # First, deletes atom connections where atom is connected to only one
-    # counterpart. There cannot be meaningful rotation around this type of bond.
-    # Also, algorithm always starts from CA. There must be direction of bonds,
-    # because matrix product is not commutative.
-    for my $atom ( keys %atom_connections ) {
-	if( scalar( @{ $atom_connections{$atom} } ) == 1 ) {
-	}
-    }
+
 }
 
 #
@@ -62,7 +110,7 @@ sub rotation_only
 
     # Picks any atom in atom_connections hash and start to go through
     # connections.
-    find_flex_bonds( %atom_connections );
+    follow_bonds( \%atom_connections );
 }
 
 1;
