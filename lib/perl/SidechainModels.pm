@@ -10,7 +10,29 @@ use AlterMolecule;
 
 use Data::Dumper;
 
+my $parameter_file = "../../parameters/rotatable_bonds.tsv";
+
 # ------------------------ Idealistic sidechain models ------------------------ #
+
+#
+# Parameters
+#
+
+#
+# Converts parameter file that identifies rotatable side-chain bonds to array of
+# arrays. Ex. ( [ "SER", "N",  "CA", "no" ],
+#               [ "SER", "CA", "C",  "no" ],
+#               [ "SER", "C",  "O",  "no" ],
+#               [ "SER", "CA", "CB", "yes"],
+#               [ "SER", "CB", "OG", "no" ] )
+#
+
+my @ROTABLE_BONDS;
+
+{
+    open( my $fh, "<", $parameter_file )
+	or die "Can't open < rotatable_bonds.tsv: $!";
+}
 
 #
 # Discribes sidechain models that are not restrained by van der Waals radius.
@@ -36,9 +58,7 @@ sub rotation_only
 					0.15, # HACK: bond-length-error
 					@amino_acid_data ) };
 
-    # Picks any atom in atom_connections hash and start to go through
-    # connections.
-    follow_bonds( \%atom_connections );
+
 }
 
 1;
