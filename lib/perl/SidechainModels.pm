@@ -32,6 +32,8 @@ my @ROTATABLE_BONDS;
 {
     open( my $fh, "<", $parameter_file )
 	or die "Can't open < rotatable_bonds.tsv: $!";
+    # TODO: instead of list of lists, make hash of lists. Might be more effective
+    #       method to search.
     foreach( map { [ split(" ", $_) ] }
 	     grep { /^\w+\s+\w+\s+\w+\s+(yes|no)$/ } <$fh> ) {
 	push( @ROTATABLE_BONDS, $_ )
@@ -63,7 +65,8 @@ sub rotation_only
 					0.15, # HACK: bond-length-error
 					@amino_acid_data ) };
 
-
+    for my $amino_acid ( @ROTATABLE_BONDS ) {
+    }
 }
 
 1;
