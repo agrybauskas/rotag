@@ -27,11 +27,16 @@ my $parameter_file = "../../parameters/rotatable_bonds.tsv";
 #               [ "SER", "CB", "OG", "no" ] )
 #
 
-my @ROTABLE_BONDS;
+my @ROTATABLE_BONDS;
 
 {
     open( my $fh, "<", $parameter_file )
 	or die "Can't open < rotatable_bonds.tsv: $!";
+    foreach( map { [ split(" ", $_) ] }
+	     grep { /^\w+\s+\w+\s+\w+\s+(yes|no)$/ } <$fh> ) {
+	push( @ROTATABLE_BONDS, $_ )
+    }
+    close( $fh );
 }
 
 #
