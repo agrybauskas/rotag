@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use List::MoreUtils qw( first_index ); # TODO: remove and replace dependency.
-
+use Data::Dumper;
 no if $] >= 5.017011,                       # WARNING: in newer versions of Perl,
     warnings => 'experimental::smartmatch'; # smartmach became experimental.
 
@@ -25,14 +25,17 @@ no if $] >= 5.017011,                       # WARNING: in newer versions of Perl
 
 sub obtain_atom_site
 {
-    my @atom_attributes;
-    my @atom_data;
+    my %atom_site;
+    $atom_site{"attributes"} = [];
+    $atom_site{"data"} = {};
+    my @atom_data; # Will be used for temporary storing of atom data.
 
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
+    # Appends raw data to two keys in hash: attributes and data.
     foreach( @_ ) {
         if( $_ =~ /_atom_site\.(.+)\n$/ ) {
-            push( @atom_attributes, split( " ", $1 ) );
+	    push( @{ $atom_site{"attributes"} }, split( " ", $1 ) );
             $is_reading_lines = 1;
         } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
             last;
@@ -41,7 +44,27 @@ sub obtain_atom_site
         }
     }
 
-    return \@atom_attributes, \@atom_data;
+    # Converts atom_site data value from list to hash of hashes, that contain
+    # attribute data assign to actual values. ID attribute is used as key
+    # accessing previously mentioned hashes.
+    my @atom_data_row;
+    my %atom_data_row;
+
+    for( my $pos  = 0;
+    	 $pos < $#atom_data;
+    	 $pos += $#{ $atom_site{"attributes"} } + 1 ) {
+	@atom_data_row =
+	    @{ atom_data[$pos..$pos + $#{ $atom_site{"attributes"} }] };
+	%atom_data_row = ();
+	for( my $col = 0; $col <= $#atom_data_row; $col++ ) {
+	    $atom_data_row{$atom_site{"attributes"}[$col]} =
+		$atom_data_row[$col];
+	}
+	$atom_site{"data"}{$atom_data_row[1]} =
+	    { %atom_data_row };
+    }
+
+    return \%atom_site;
 }
 
 #
@@ -54,8 +77,8 @@ sub obtain_atom_site
 sub filter_atoms
 {
     # Criteria for desirable atoms using hash.
-    # E.g. [ "label_atom_id" => ["SER"],
-    #        "label_atom_id" => ["CA", "CB"] ].
+    # E.g. ( "label_atom_id" => ["SER"],
+    #        "label_atom_id" => ["CA", "CB"] ).
     my $atom_specifiers = shift;
     my %atom_specifiers = @$atom_specifiers;
     my @mmcif_stdin = @_;

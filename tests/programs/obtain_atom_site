@@ -15,9 +15,10 @@ use CifParser;
 # Example: ./obtain_atom_site < example.cif
 #
 
-my @atom_site = CifParser::obtain_atom_site( <> );
-my @attribute_names = @{ $atom_site[0] };
-my @attribute_data =  @{ $atom_site[1] };
+my $atom_site =
+    CifParser::obtain_atom_site( <> );
+my $attribute_names = $atom_site->{"attributes"};
+my @attribute_names = @$attribute_names;
 
 print "loop_\n";
 
@@ -25,10 +26,14 @@ foreach( @attribute_names ) {
     print "_atom_site." . $_ . "\n";
 }
 
-for( my $i = 0; $i < $#attribute_data + 1; $i++ ) {
-    if( $i % ( $#attribute_names + 1) != 0 ) {
-        print " ", $attribute_data[$i], " ";
-    } else {
-        print "\n", $attribute_data[$i];
+for my $id ( sort { $a <=> $b } keys( %{ $atom_site->{"data"} } ) ) {
+    for( my $i = 0; $i <= $#attribute_names; $i++ ) {
+	if( $i % ( $#attribute_names + 1) != 0 ) {
+	    print( " ", $atom_site->{"data"}{$id}{$attribute_names[$i]}, " " );
+	} else {
+	    print( "\n", $atom_site->{"data"}{$id}{$attribute_names[$i]} );
+	}
     }
 }
+
+print( "\n" );

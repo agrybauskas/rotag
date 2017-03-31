@@ -8,8 +8,6 @@ use Math::Trig;
 use lib "./";
 use LinearAlgebra;
 
-use Data::Dumper;
-
 # ----------------------------- Molecule parameters --------------------------- #
 
 #
