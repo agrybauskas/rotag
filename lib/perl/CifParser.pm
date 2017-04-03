@@ -5,8 +5,6 @@ use warnings;
 
 use List::MoreUtils qw( first_index ); # TODO: remove and replace dependency.
 use Data::Dumper;
-no if $] >= 5.017011,                       # WARNING: in newer versions of Perl,
-    warnings => 'experimental::smartmatch'; # smartmach became experimental.
 
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
@@ -17,10 +15,19 @@ no if $] >= 5.017011,                       # WARNING: in newer versions of Perl
 #
 
 #
-# From mmCIF file, obtains data only from _atom_site category and outputs 1x2
-# array of attribute names and attribute data respectively.
+# From mmCIF file, obtains data only from _atom_site category and outputs hash
+# of compound data that represents attribute names and actual atom data.
+# attribute names.
 # Input  (1 arg): mmCIF file.
-# Output (2 arg): array of atom attributes and array of atom data.
+# Output (1 arg): hash of compound data structure.
+#                 Ex.: { "attributes" => [ "group_id",
+#                                          "id",
+#                                          ...
+#                                        ]
+#                        "data" => { 1 => { "group_id" => "ATOM",
+#                                           "id" => 1,
+#                                           ...
+#                                         }}}
 #
 
 sub obtain_atom_site
@@ -28,7 +35,7 @@ sub obtain_atom_site
     my %atom_site;
     $atom_site{"attributes"} = [];
     $atom_site{"data"} = {};
-    my @atom_data; # Will be used for temporary storing of atom data.
+    my @atom_data; # Will be used for storing of atom data temporarily.
 
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
@@ -45,7 +52,7 @@ sub obtain_atom_site
     }
 
     # Converts atom_site data value from list to hash of hashes, that contain
-    # attribute data assign to actual values. ID attribute is used as key
+    # attribute data assigned to actual values. ID attribute is used as key
     # accessing previously mentioned hashes.
     my @atom_data_row;
     my %atom_data_row;
@@ -68,94 +75,87 @@ sub obtain_atom_site
 }
 
 #
-# From mmCIF file, extracts atoms with specified criteria, such as, atom type,
+# From mmCIF, extracts atoms with specified criteria, such as, atom type,
 # residue id, chain id and etc.
-# Input  (2 arg): array of hashes: atom specifier => value, mmCIF file.
-# Output (2 arg): array of atom attributes, array of atom data.
+# Input  (2 arg): array of hashes: atom specifier => value, mmCIF file converted
+#                 to compound data using obtain_atom_site function.
+# Output (1 arg): compound data, same as, obtain_atom_site output.
 #
 
 sub filter_atoms
 {
-    # Criteria for desirable atoms using hash.
-    # E.g. ( "label_atom_id" => ["SER"],
-    #        "label_atom_id" => ["CA", "CB"] ).
-    my $atom_specifiers = shift;
-    my %atom_specifiers = @$atom_specifiers;
-    my @mmcif_stdin = @_;
+    # Criteria for $atom_specifier:
+    # ( "label_atom_id" => [ "SER" ],
+    #   "label_comp_id" => [ "CA", "CB" ] ).
+    my ( $atom_specifier, $atom_site ) = @_;
 
-    my @atom_site = obtain_atom_site( @mmcif_stdin );
-    my @atom_attributes = @{ $atom_site[0] };
-    my @atom_data = @{ $atom_site[1] };
+    my %filtered_atom_site;
 
-    my @attribute_pos; # The position of specified atom attributes in actual
-                       # list of attributes of mmCIF file.
+    # Inherits list of attribute names from input.
+    $filtered_atom_site{"attributes"} = $atom_site->{"attributes"};
 
-    for my $attribute ( keys %atom_specifiers ) {
-        if( $attribute ~~ @atom_attributes ) {
-            push( @attribute_pos,
-                  first_index{ $_ eq $attribute } @atom_attributes );
-        }
+    # Iterates through each atom in atom site and checks if atom specifiers
+    # match up.
+    my $match_counter; # Tracks if all matches occured.
+
+    for my $atom ( keys %{ $atom_site->{"data"} } ) {
+	$match_counter = 0;
+	for my $attribute ( keys %$atom_specifier ) {
+	    if( grep { $atom_site->{"data"}{$atom}{$attribute} eq $_ }
+		@{ $atom_specifier->{$attribute} } ) {
+		$match_counter += 1;
+	    } else {
+		last; # Terminates early if no match is found in any specifier.
+	    }
+
+	    if( $match_counter eq scalar( keys( %$atom_specifier ) ) ) {
+		$filtered_atom_site{"data"}{$atom} = $atom_site->{"data"}{$atom};
+	    }
+	}
     }
 
-    my @filtered_atoms;
-
-    my @atom_data_row;
-    my @spec_attributes;
-    my @specified_data;
-
-    for( my $pos  = 0; $pos < $#atom_data; $pos += $#atom_attributes + 1) {
-        @atom_data_row = @{ atom_data[$pos..$pos + $#atom_attributes] };
-        @spec_attributes = map { $atom_data_row[$_] } @attribute_pos;
-        @specified_data  = map { $atom_specifiers{$_} }
-                           map { $atom_attributes[$_] } @attribute_pos;
-
-        if( @spec_attributes ~~ @specified_data ) {
-            push( @filtered_atoms, @atom_data_row );
-        }
-    }
-
-    return \@atom_attributes, \@filtered_atoms;
+    return \%filtered_atom_site;
 }
 
 #
-# Returns specified attribute data.
+# Returns specified attribute data in compound data form.
 # Input  (3 arg): array of hashes: atom specifier => values,
-#                    array of desired atom parameters,
-#                    mmCIF file.
-# Output (1 arg): array of specified values of atom data.
+#                 array of desired atom parameters,
+#                 mmCIF file.
+# Output (1 arg): compound data, same as, obtain_atom_site output.
 #
 
 sub select_atom_data
 {
-    my $atom_specifiers = shift;
-    my %atom_specifiers = @$atom_specifiers;
-    my @data_specifier  = shift; # Extract only the data user wants.
-                                 # E.g. [ "Cartn_x", "Cartn_y", "Cartn_z" ].
-    my @mmcif_stdin = @_; # mmCIF type data.
+    # my $atom_specifiers = shift;
+    # my %atom_specifiers = @$atom_specifiers;
+    # my @data_specifier  = shift; # Extract only the data user wants.
+    #                              # E.g. ( "Cartn_x", "Cartn_y", "Cartn_z" ).
+    # my @mmcif_stdin = @_; # mmCIF type data.
 
-    my @filtered_atoms = filter_atoms( $atom_specifiers, @mmcif_stdin );
-    my @attribute_data = @{ $filtered_atoms[0] };
-    my @atom_data = @{ $filtered_atoms[1] };
+    # my @filtered_atoms = filter_atoms( $atom_specifiers, @mmcif_stdin );
+    # my @attribute_data = @{ $filtered_atoms[0] };
+    # my @atom_data = @{ $filtered_atoms[1] };
 
-    my @attribute_pos;
+    # my @attribute_pos;
 
-    for my $attribute ( @{ $data_specifier[0] } ) {
-        if( $attribute ~~ @attribute_data ) {
-            push( @attribute_pos,
-                  first_index { $_ eq $attribute } @attribute_data );
-        }
-    }
+    # for my $attribute ( @{ $data_specifier[0] } ) {
+    #     if( $attribute ~~ @attribute_data ) {
+    #         push( @attribute_pos,
+    #               first_index { $_ eq $attribute } @attribute_data );
+    #     }
+    # }
 
-    my @atom_data_row;
-    my @selected_atom_data;
+    # my @atom_data_row;
+    # my @selected_atom_data;
 
-    for( my $pos  = 0; $pos < $#atom_data; $pos += $#attribute_data + 1) {
-	@atom_data_row = @{ atom_data[$pos..$pos + $#attribute_data] };
-	push( @selected_atom_data,
-	      [ map { $atom_data_row[$_] } @attribute_pos ] );
-    }
+    # for( my $pos  = 0; $pos < $#atom_data; $pos += $#attribute_data + 1) {
+    # 	@atom_data_row = @{ atom_data[$pos..$pos + $#attribute_data] };
+    # 	push( @selected_atom_data,
+    # 	      [ map { $atom_data_row[$_] } @attribute_pos ] );
+    # }
 
-    return \@selected_atom_data;
+    # return \@selected_atom_data;
 }
 
 1;
