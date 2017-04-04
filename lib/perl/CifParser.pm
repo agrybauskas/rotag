@@ -3,9 +3,6 @@ package CifParser;
 use strict;
 use warnings;
 
-use List::MoreUtils qw( first_index ); # TODO: remove and replace dependency.
-use Data::Dumper;
-
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
 #
@@ -119,43 +116,27 @@ sub filter_atoms
 
 #
 # Returns specified attribute data in compound data form.
-# Input  (3 arg): array of hashes: atom specifier => values,
-#                 array of desired atom parameters,
-#                 mmCIF file.
+# Input  (2 arg): array of desired atom parameters, mmCIF file converted to
+#                 compound data using obtain_atom_site function.
 # Output (1 arg): compound data, same as, obtain_atom_site output.
 #
 
 sub select_atom_data
 {
-    # my $atom_specifiers = shift;
-    # my %atom_specifiers = @$atom_specifiers;
-    # my @data_specifier  = shift; # Extract only the data user wants.
-    #                              # E.g. ( "Cartn_x", "Cartn_y", "Cartn_z" ).
-    # my @mmcif_stdin = @_; # mmCIF type data.
+    # Extract only the data user wants.
+    # E.g. of $data_specifier: ( "Cartn_x", "Cartn_y", "Cartn_z" ).
+    my ( $data_specifier, $atom_site )  = @_;
 
-    # my @filtered_atoms = filter_atoms( $atom_specifiers, @mmcif_stdin );
-    # my @attribute_data = @{ $filtered_atoms[0] };
-    # my @atom_data = @{ $filtered_atoms[1] };
+    my @selected_atom_data;
 
-    # my @attribute_pos;
+    # Simply iterates through atom site keys and extracts data using data
+    # specifier.
+    for my $atom ( keys %{ $atom_site->{"data"} } ) {
+	push( @selected_atom_data,
+	      [ map { $atom_site->{"data"}{$atom}{$_} } @$data_specifier ] );
+    }
 
-    # for my $attribute ( @{ $data_specifier[0] } ) {
-    #     if( $attribute ~~ @attribute_data ) {
-    #         push( @attribute_pos,
-    #               first_index { $_ eq $attribute } @attribute_data );
-    #     }
-    # }
-
-    # my @atom_data_row;
-    # my @selected_atom_data;
-
-    # for( my $pos  = 0; $pos < $#atom_data; $pos += $#attribute_data + 1) {
-    # 	@atom_data_row = @{ atom_data[$pos..$pos + $#attribute_data] };
-    # 	push( @selected_atom_data,
-    # 	      [ map { $atom_data_row[$_] } @attribute_pos ] );
-    # }
-
-    # return \@selected_atom_data;
+    return \@selected_atom_data;
 }
 
 1;

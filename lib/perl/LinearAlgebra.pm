@@ -5,8 +5,6 @@ use Math::Algebra::Symbols;
 use strict;
 use warnings;
 
-use Data::Dumper;
-
 # ------------------------------- Linear algebra ------------------------------ #
 
 #
