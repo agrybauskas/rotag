@@ -7,5 +7,5 @@ data_specifier="Cartn_x,Cartn_y,Cartn_z"
 
 ../programs/select_atom_data "${atom_specifier}" \
 			     "${data_specifier}" \
-			     < ${cif_file} \
-| sort
+			     < ${cif_file}
+

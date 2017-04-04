@@ -131,7 +131,7 @@ sub select_atom_data
 
     # Simply iterates through atom site keys and extracts data using data
     # specifier.
-    for my $atom ( keys %{ $atom_site->{"data"} } ) {
+    for my $atom ( sort { $a <=> $b } keys( %{ $atom_site->{"data"} } ) ) {
 	push( @selected_atom_data,
 	      [ map { $atom_site->{"data"}{$atom}{$_} } @$data_specifier ] );
     }
