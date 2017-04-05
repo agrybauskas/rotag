@@ -26,9 +26,9 @@ sub create_box
 
     # TODO: start mapping from 0, not from 3. Do not forget to change other
     #       functions accordingly.
-    my @atom_coord_x = map { $_->[3] } @atom_coord;
-    my @atom_coord_y = map { $_->[4] } @atom_coord;
-    my @atom_coord_z = map { $_->[5] } @atom_coord;
+    my @atom_coord_x = map { $_->[0] } @atom_coord;
+    my @atom_coord_y = map { $_->[1] } @atom_coord;
+    my @atom_coord_z = map { $_->[2] } @atom_coord;
 
     # Directions are adapted to right-handed Cartesian coordinate system.
     # Looking for leftmost and rightmost coordinates of X-axis.

@@ -8,28 +8,27 @@ use ConnectAtoms;
 
 use lib "../lib";
 use Utils;
-
+use Data::Dumper;
 #
 # Unit test: ConnectAtoms::create_box.
 #
 # Creates smallest possible box that surrounds all selected atoms.
 #
-# Example: ./create_box "label_atom_id CA,C,CB,OG" \
-#          "id,label_atom_id,label_comp_id,Cartn_x,Cartn_y,Cartn_z" < example.cif
+# Example: ./create_box < example.cif
 #
 
-my $attribute_filter = shift;
-my $attribute_select = shift;
+my $attribute_selector = shift;
 my @cif = <>;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     $attribute_select,
+    Utils::select_atom_data( $attribute_selector,
+			     "Cartn_x,Cartn_y,Cartn_z",
 			     @cif );
 
 # Creates and prints out the boundaries of the box.
-my @box_boundaries = ConnectAtoms::create_box( @$selected_atom_data );
+my @box_boundaries =
+    ConnectAtoms::create_box( @$selected_atom_data );
 
 print( map { ( $_ % 2 ) == 0
 		        ? $box_boundaries[$_-1] . "\n"
