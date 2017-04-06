@@ -2,10 +2,11 @@ package ConnectAtoms;
 
 use strict;
 use warnings;
-use Data::Dumper;
+
+use List::Util qw(min max);
+
 use lib qw( ./ );
 use CifParser;
-use List::Util qw(min max);
 
 # ------------------------------ Connect atoms ------------------------------- #
 
@@ -123,6 +124,7 @@ sub connect_atoms
 
     	# TODO: add atoms that are in the center cell.
     	foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {
+	    $connected_atoms{"data"}{$cell_atom_coord->[0]}{"connections"} = [];
     	    foreach my $neighbour_atom ( @neighbour_cells ) {
     		# Checks distance between neighbouring atoms by formula:
     		# x^2+y^2+z^2 < (bond_length)^2
@@ -132,28 +134,20 @@ sub connect_atoms
     		    ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
     	    	  + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2
     	    	  + ( $neighbour_atom->[3] - $cell_atom_coord->[3] ) ** 2;
-
     		if( ( $distance_btw_atoms >
     		      ( $bond_length - $length_error ) ** 2 )
     		 && ( $distance_btw_atoms <
     		      ( $bond_length + $length_error ) ** 2 ) ) {
-
-    		    # if( exists $conn_atoms{
-    		    # 	$cell_atom_coord->[0] } ) {
-    		    # 	push( @{ $conn_atoms{
-    		    # 	    $cell_atom_coord->[0] } },
-    		    # 	      $neighbour_atom->[0] );
-    		    # } else {
-    		    # 	$conn_atoms{
-    		    # 	    $cell_atom_coord->[0] } =
-    		    # 		[ $neighbour_atom->[0] ]
-    		    # }
+		    push( @{ $connected_atoms{"data"}
+			                     {$cell_atom_coord->[0]}
+			                     {"connections"} },
+			  $neighbour_atom->[0] );
     		}
     	    }
     	}
     }
 
-    # return \%connected_atoms;
+    return \%connected_atoms;
 }
 
 1;

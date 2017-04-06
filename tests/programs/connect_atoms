@@ -23,21 +23,20 @@ my @cif = <>;
 my $atom_site =
     CifParser::obtain_atom_site( @cif );
 
-# my %connected_atoms =
-#     %{ 
-ConnectAtoms::connect_atoms( $bond_length,
-			     $bond_length_error,
-			     $atom_site );# };
+my %connected_atoms =
+    %{ ConnectAtoms::connect_atoms( $bond_length,
+				    $bond_length_error,
+				    $atom_site ) };
 
-# my @atom_coord;
-# my @parent_atom;
-# my @child_atom;
+my @atom_coord;
+my @parent_atom;
+my @child_atom;
 
-# foreach( keys %connected_atoms ) {
-#     @parent_atom = split( ",", $_ );
-#     foreach( @{ $connected_atoms{$_} } ) {
-#         @child_atom = split( ",", $_ );
-#         print( "$parent_atom[0] $parent_atom[1]:" );
-#         print( "$child_atom[0] $child_atom[1]\n" );
-#     }
-# }
+foreach( keys %{ $connected_atoms{"data"} } ) {
+    @parent_atom = ( $_, $connected_atoms{"data"}{$_}{"label_atom_id"} );
+    foreach( @{ $connected_atoms{"data"}{$_}{"connections"} } ) {
+        @child_atom = ( $_, $connected_atoms{"data"}{$_}{"label_atom_id"} );
+        print( "$parent_atom[0] $parent_atom[1]:" );
+        print( "$child_atom[0] $child_atom[1]\n" );
+    }
+}
