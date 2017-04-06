@@ -2,7 +2,9 @@ package ConnectAtoms;
 
 use strict;
 use warnings;
-
+use Data::Dumper;
+use lib qw( ./ );
+use CifParser;
 use List::Util qw(min max);
 
 # ------------------------------ Connect atoms ------------------------------- #
@@ -54,19 +56,24 @@ sub create_box
 # is not perfectly divisible, then the boundaries are extended accordingly.
 # Then, all atoms' distances are compared pairwisely in one box. If distance
 # is correspond to appropriate length, then connection is made by two atoms.
-# Input  (2 arg): bond length in angstroms, coordinates of atoms (x, y, z).
-# Output (1 arg): hash of atom coordinates (x, y, z) as keys and atom
-#                 coordinates that are connected to as values.
+# Input  (2 arg): bond length in angstroms, bond length error and atom data
+#                 in cif data structure form (look at CifParser.pm).
+# Output (1 arg): atom data in cif data structure form that has additional
+#                 data for each atom - hash of atom coordinates (x, y, z) as
+#                 keys and atom coordinates that are connected to as values.
 #
 
 sub connect_atoms
 {
-    my $bond_length = shift; # TODO: must be adjusted to variety of atoms.
-    my $length_error = shift; # Shows, how bond length might vary.
-    my @all_atom_coord  = @_;
+    # TODO: bond length and error must be adjusted to variety of atoms.
+    my ( $bond_length, $length_error, $atom_site ) = @_;
+
+    my $all_atom_coord =
+	CifParser::select_atom_data( [ "id", "Cartn_x", "Cartn_y", "Cartn_z" ],
+				     $atom_site );
 
     # Creates smallest box that contain all atoms.
-    my @boundary_box = create_box( @all_atom_coord );
+    my @boundary_box = create_box( @$all_atom_coord );
 
     my %grid_box;
 
@@ -74,24 +81,24 @@ sub connect_atoms
     my $cell_index_y;
     my $cell_index_z;
 
-    my %connected_atoms;
+    my %connected_atoms = %$atom_site;
 
     # Assign atoms to cells in grid box.
-    foreach my $atom_coord ( @all_atom_coord ) {
-	$cell_index_x =
-	    int( ( $atom_coord->[3] - $boundary_box[0] ) / $bond_length ) + 1;
-	$cell_index_y =
-	    int( ( $atom_coord->[4] - $boundary_box[2] ) / $bond_length ) + 1;
-	$cell_index_z =
-	    int( ( $atom_coord->[5] - $boundary_box[4] ) / $bond_length ) + 1;
+    foreach my $atom_coord ( @$all_atom_coord ) {
+    	$cell_index_x =
+    	    int( ( $atom_coord->[1] - $boundary_box[0] ) / $bond_length ) + 1;
+    	$cell_index_y =
+    	    int( ( $atom_coord->[2] - $boundary_box[2] ) / $bond_length ) + 1;
+    	$cell_index_z =
+    	    int( ( $atom_coord->[3] - $boundary_box[4] ) / $bond_length ) + 1;
 
-	if( exists $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} ) {
-	    push( @{ $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} },
-		  $atom_coord );
-	} else {
-	          $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} =
-		  [ $atom_coord ];
-	}
+    	if( exists $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} ) {
+    	    push( @{ $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} },
+    		  $atom_coord );
+    	} else {
+    	          $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} =
+    		  [ $atom_coord ];
+    	}
     }
 
     my @cell_idx;
@@ -103,50 +110,50 @@ sub connect_atoms
     	my @neighbour_cells; # The array will contain all atoms of the
                              # neighbouring 26 cells.
 
-	# $i represents x, $j - y, $k - z coordinates.
-	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
-	    for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
-		for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
-		    if( exists $grid_box{"$i,$j,$k"} ) {
-			push( @neighbour_cells, @{ $grid_box{"$i,$j,$k"} } );
-		    }
-		}
-	    }
-	}
+    	# $i represents x, $j - y, $k - z coordinates.
+    	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
+    	    for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
+    		for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
+    		    if( exists $grid_box{"$i,$j,$k"} ) {
+    			push( @neighbour_cells, @{ $grid_box{"$i,$j,$k"} } );
+    		    }
+    		}
+    	    }
+    	}
 
-	# TODO: add atoms that are in the center cell.
+    	# TODO: add atoms that are in the center cell.
     	foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {
     	    foreach my $neighbour_atom ( @neighbour_cells ) {
-		# Checks distance between neighbouring atoms by formula:
-		# x^2+y^2+z^2 < (bond_length)^2
-		my $distance_btw_atoms;
+    		# Checks distance between neighbouring atoms by formula:
+    		# x^2+y^2+z^2 < (bond_length)^2
+    		my $distance_btw_atoms;
 
-	    	$distance_btw_atoms =
-		    ( $neighbour_atom->[3] - $cell_atom_coord->[3] ) ** 2
-	    	  + ( $neighbour_atom->[4] - $cell_atom_coord->[4] ) ** 2
-	    	  + ( $neighbour_atom->[5] - $cell_atom_coord->[5] ) ** 2;
+    	    	$distance_btw_atoms =
+    		    ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
+    	    	  + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2
+    	    	  + ( $neighbour_atom->[3] - $cell_atom_coord->[3] ) ** 2;
 
-		if( ( $distance_btw_atoms >
-		      ( $bond_length - $length_error ) ** 2 )
-		 && ( $distance_btw_atoms <
-		      ( $bond_length + $length_error ) ** 2 ) ) {
+    		if( ( $distance_btw_atoms >
+    		      ( $bond_length - $length_error ) ** 2 )
+    		 && ( $distance_btw_atoms <
+    		      ( $bond_length + $length_error ) ** 2 ) ) {
 
-		    if( exists $connected_atoms{
-			join( ",", @$cell_atom_coord ) } ) {
-			push( @{ $connected_atoms{
-			    join( ",", @$cell_atom_coord )} },
-			      join( ",", @$neighbour_atom ) );
-		    } else {
-			$connected_atoms{
-			    join( ",", @$cell_atom_coord )} =
-				[ join( ",", @$neighbour_atom ) ]
-		    }
-		}
-	    }
-	}
+    		    # if( exists $conn_atoms{
+    		    # 	$cell_atom_coord->[0] } ) {
+    		    # 	push( @{ $conn_atoms{
+    		    # 	    $cell_atom_coord->[0] } },
+    		    # 	      $neighbour_atom->[0] );
+    		    # } else {
+    		    # 	$conn_atoms{
+    		    # 	    $cell_atom_coord->[0] } =
+    		    # 		[ $neighbour_atom->[0] ]
+    		    # }
+    		}
+    	    }
+    	}
     }
 
-    return \%connected_atoms;
+    # return \%connected_atoms;
 }
 
 1;

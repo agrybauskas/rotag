@@ -6,7 +6,7 @@ use warnings;
 use lib "../../lib/perl";
 use CifParser;
 use ConnectAtoms;
-
+use Data::Dumper;
 #
 # Unit test: ConnectAtoms::connect_atoms
 #
@@ -17,36 +17,27 @@ use ConnectAtoms;
 
 my $bond_length       = shift; # In angstroms.
 my $bond_length_error = shift; # In angstroms.
-my @cif_file;                  # mmcif format file.
+my @cif = <>;
 
-while( <> ) {
-    push( @cif_file, $_ );
-}
+# Selects atom's data for further analysis.
+my $atom_site =
+    CifParser::obtain_atom_site( @cif );
 
-my $all_atom_coord =
-    CifParser::select_atom_data( [],
-				 [ "id",
-                                   "label_atom_id",
-                                   "label_comp_id",
-                                   "Cartn_x",
-                                   "Cartn_y",
-                                   "Cartn_z" ],
-				 @cif_file );
+# my %connected_atoms =
+#     %{ 
+ConnectAtoms::connect_atoms( $bond_length,
+			     $bond_length_error,
+			     $atom_site );# };
 
-my %connected_atoms =
-    %{ ConnectAtoms::connect_atoms( $bond_length,
-				    $bond_length_error,
-				    @$all_atom_coord ) };
+# my @atom_coord;
+# my @parent_atom;
+# my @child_atom;
 
-my @atom_coord;
-my @parent_atom;
-my @child_atom;
-
-foreach( keys %connected_atoms ) {
-    @parent_atom = split( ",", $_ );
-    foreach( @{ $connected_atoms{$_} } ) {
-        @child_atom = split( ",", $_ );
-        print( "$parent_atom[0] $parent_atom[1]:" );
-        print( "$child_atom[0] $child_atom[1]\n" );
-    }
-}
+# foreach( keys %connected_atoms ) {
+#     @parent_atom = split( ",", $_ );
+#     foreach( @{ $connected_atoms{$_} } ) {
+#         @child_atom = split( ",", $_ );
+#         print( "$parent_atom[0] $parent_atom[1]:" );
+#         print( "$child_atom[0] $child_atom[1]\n" );
+#     }
+# }

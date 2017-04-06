@@ -8,7 +8,7 @@ use ConnectAtoms;
 
 use lib "../lib";
 use Utils;
-use Data::Dumper;
+
 #
 # Unit test: ConnectAtoms::create_box.
 #
