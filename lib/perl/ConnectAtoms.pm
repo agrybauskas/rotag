@@ -27,8 +27,6 @@ sub create_box
 {
     my @atom_coord = @_;
 
-    # TODO: start mapping from 0, not from 3. Do not forget to change other
-    #       functions accordingly.
     my @atom_coord_x = map { $_->[0] } @atom_coord;
     my @atom_coord_y = map { $_->[1] } @atom_coord;
     my @atom_coord_z = map { $_->[2] } @atom_coord;
@@ -74,7 +72,10 @@ sub connect_atoms
 				     $atom_site );
 
     # Creates smallest box that contain all atoms.
-    my @boundary_box = create_box( @$all_atom_coord );
+    my $only_atom_coord =
+	CifParser::select_atom_data( [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+				     $atom_site );
+    my @boundary_box = create_box( @$only_atom_coord );
 
     my %grid_box;
 
