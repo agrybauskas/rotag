@@ -11,18 +11,18 @@ use Utils;
 
 use Data::Dumper;
 
-my $attribute_filter = shift;
-my @cif = <>;
+my $attribute_selector = shift;
 
-my $selected_atom_data =
-    CifParser::select_atom_data( [],
-				 [ "id",
-                                   "label_atom_id",
-                                   "label_comp_id",
-                                   "Cartn_x",
-                                   "Cartn_y",
-                                   "Cartn_z" ],
-				 @cif );
+# Parses selector argument from string  to proper array.
+my %attribute_selector = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+                           map { [ split( " ", $_ ) ] }
+                           split( "&", $attribute_selector ) );
 
-# Applies molecule alterations.
-SidechainModels::rotation_only( @$selected_atom_data );
+# Selects atom's data for further analysis.
+my $filtered_atoms =
+    CifParser::filter_atoms( \%attribute_selector,
+			     &CifParser::obtain_atom_site( <> ) );
+
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after rotation along dihedral angle.
+SidechainModels::rotation_only( $filtered_atoms );

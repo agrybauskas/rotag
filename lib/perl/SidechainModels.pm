@@ -58,15 +58,13 @@ my @ROTATABLE_BONDS;
 
 sub rotation_only
 {
-    my @amino_acid_data = @_;
+    my $atom_site = shift;
 
-    my %atom_connections =
-	%{ ConnectAtoms::connect_atoms( 1.51, # HACK: approximate bond-length
-					0.15, # HACK: bond-length-error
-					@amino_acid_data ) };
-
-    for my $amino_acid ( @ROTATABLE_BONDS ) {
-    }
+    # Connects atoms.
+    my $connected_atoms =
+	ConnectAtoms::connect_atoms( 1.592, # HACK: empirical bond length.
+				     0.404, # HACK: empirical bond length error.
+				     $atom_site );
 }
 
 1;
