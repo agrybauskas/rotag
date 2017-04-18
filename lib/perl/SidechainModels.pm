@@ -19,26 +19,65 @@ my $parameter_file = "../../parameters/rotatable_bonds.tsv";
 #
 
 #
-# Converts parameter file that identifies rotatable side-chain bonds to array of
-# arrays. Ex. ( [ "SER", "N",  "CA", "no" ],
-#               [ "SER", "CA", "C",  "no" ],
-#               [ "SER", "C",  "O",  "no" ],
-#               [ "SER", "CA", "CB", "yes"],
-#               [ "SER", "CB", "OG", "no" ] )
+# Converts parameter file that identifies rotatable side-chain bonds to hash of
+# hashes.
+# Ex. residue  rotatable? 1st atom  2nd atom
+# {
+#     "SER" => {
+# 	         "yes" => {
+# 	                    "CA" => [ "CB" ],
+# 	                    "CB" => [ "CA" ]
+# 	       },
+# 	         "no"  => {
+# 		            "N"  => [ "CA" ],
+# 		            "CA" => [ "N", "C" ],
+# 		            "C"  => [ "CA", "O" ],
+# 		            "O"  => [ "C" ],
+# 		            "CB" => [ "OG" ],
+# 		            "OG" => [ "CB" ]
+# 	                  }
+#              }
+# }
 #
 
-my @ROTATABLE_BONDS;
+my %ROTATABLE_BONDS;
 
 {
     open( my $fh, "<", $parameter_file )
-	or die "Can't open < rotatable_bonds.tsv: $!";
-    # TODO: instead of list of lists, make hash of lists. Might be more effective
-    #       method to search.
+    	or die "Can't open < rotatable_bonds.tsv: $!";
+
+    # Checks, if first or second atom is as hash key. If not, adds key and list
+    # of connected atoms. If yes, pushes to list of connected atoms.
     foreach( map { [ split(" ", $_) ] }
-	     grep { /^\w+\s+\w+\s+\w+\s+(yes|no)$/ } <$fh> ) {
-	push( @ROTATABLE_BONDS, $_ )
+    	     grep { /^\w+\s+\w+\s+\w+\s+(yes|no)$/ } <$fh> ) {
+	# Checks, if first atom is in the hash as key.
+	if( ! exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} ) {
+	    $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} = [ $_->[2] ];
+	} else {
+	    if( exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} ) {
+	        push( @{ $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} },
+		      $_->[2] );
+	    }
+	    if( exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} ) {
+		push( @{ $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} },
+		      $_->[1] );
+	    }
+	}
+
+	# Checks, if second atom is in the hash as key.
+	if ( ! exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} ) {
+	    $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} = [ $_->[1] ];
+	} else {
+	    if( exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} ) {
+	        push( @{ $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} },
+		      $_->[2] );
+	    }
+	    if( exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} ) {
+		push( @{ $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} },
+		      $_->[1] );
+	    }
+	}
     }
-    close( $fh );
 }
 
 #
