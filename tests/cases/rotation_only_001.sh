@@ -2,6 +2,6 @@
 cd "$(dirname "$0")"
 
 cif_file=../inputs/serine_001.cif
-atom_specifier="label_seq_id 18"
+target_atom="label_atom_id OG"
 
-../programs/rotation_only "${atom_specifier}" < ${cif_file}
+../programs/rotation_only "${target_atom}" < ${cif_file}

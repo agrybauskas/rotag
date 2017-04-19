@@ -87,23 +87,34 @@ my %ROTATABLE_BONDS;
 
 #
 # Model that uses only rotation around single bonds.
-# Input  (1 arg): array of arrays containing amino acid data, such as id,
-#                 type_symbol, label_alt_id, label_comp_id, Cartn_x, Cartn_y,
-#                 Cartn_z:
-#                 Ex.: ( [ 151, "CB", "SER", -54.506, -111.705, -5.149 ],
-#                        [ 152, "OG", "SER", -54.962, -111.220, -3.896 ] )
+# Input  (1 arg):
 # Output (1 arg):
 #
 
 sub rotation_only
 {
-    my $atom_site = shift;
+    my ( $atom_site, $atom_specifier ) = @_;
 
     # Connects atoms.
     my $connected_atoms =
-	ConnectAtoms::connect_atoms( 1.592, # HACK: empirical bond length.
-				     0.404, # HACK: empirical bond length error.
-				     $atom_site );
+    	&ConnectAtoms::connect_atoms( 1.592, # HACK: empirical bond length.
+				      0.404, # HACK: empirical bond length error.
+				      $atom_site );
+
+    # Selects specified atom(s) id(s).
+    my $target_atom_id =
+	&CifParser::select_atom_data( [ "id" ],
+				      &CifParser::filter_atoms(
+					  $atom_specifier,
+					  $connected_atoms ) );
+
+    # Iterates through target atom(s) and assigns conformational equations which
+    # can produce pseudo-atoms later.
+    my @rotatable_path; # All rotatable bonds from target atom to CA.
+
+    for my $id ( @$target_atom_id ) {
+	@rotatable_path = [];
+    }
 }
 
 1;
