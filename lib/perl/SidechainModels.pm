@@ -8,6 +8,7 @@ use CifParser;
 use ConnectAtoms;
 use AlterMolecule;
 
+use feature qw( current_sub );
 use Data::Dumper;
 
 my $parameter_file = "../../parameters/rotatable_bonds.tsv";
@@ -112,8 +113,25 @@ sub rotation_only
     # can produce pseudo-atoms later.
     my @rotatable_path; # All rotatable bonds from target atom to CA.
 
+    # Recursive anonymous function for following bonds.
+    my @visited_atoms;
+    my @following_atoms;
+    my $follow_bonds =
+	sub { my ( $atom_ids ) = @_;
+	      @visited_atoms = ();
+
+	      for my $id ( @$atom_ids ) {
+		  @following_atoms = @{ $connected_atoms->{"data"}{$id}{"connections"} };
+		  if( scalar( @following_atoms ) == 1
+		      && ! grep( @following_atoms, @visited_atoms ) 
+		      && $connected_atoms->{"data"}{$id}{"label_atom_id"} eq "CA" ) {
+		      push( @visited_atoms, $id );
+		  } else {
+		  }}};
+
     for my $id ( @$target_atom_id ) {
-	@rotatable_path = [];
+    	@rotatable_path = ();
+    	$follow_bonds->( $connected_atoms->{"data"}{"@$id"}{"connections"} );
     }
 }
 
