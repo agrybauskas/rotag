@@ -7,11 +7,12 @@ use lib qw( ./ );
 use CifParser;
 use ConnectAtoms;
 use AlterMolecule;
+use LinearAlgebra;
 
 use feature qw( current_sub );
 use Data::Dumper;
 
-my $parameter_file = "../../parameters/rotatable_bonds.tsv";
+my $parameter_file = "../../parameters/rotatable_bonds.csv";
 
 # ------------------------ Idealistic sidechain models ------------------------ #
 
@@ -21,23 +22,9 @@ my $parameter_file = "../../parameters/rotatable_bonds.tsv";
 
 #
 # Converts parameter file that identifies rotatable side-chain bonds to hash of
-# hashes.
-# Ex. residue  rotatable? 1st atom  2nd atom
+# hashes. Ex.:
 # {
-#     "SER" => {
-# 	         "yes" => {
-# 	                    "CA" => [ "CB" ],
-# 	                    "CB" => [ "CA" ]
-# 	       },
-# 	         "no"  => {
-# 		            "N"  => [ "CA" ],
-# 		            "CA" => [ "N", "C" ],
-# 		            "C"  => [ "CA", "O" ],
-# 		            "O"  => [ "C" ],
-# 		            "CB" => [ "OG" ],
-# 		            "OG" => [ "CB" ]
-# 	                  }
-#              }
+#   "SER" => { OG => [ [ "CA", "CB" ] ] }
 # }
 #
 
@@ -45,45 +32,21 @@ my %ROTATABLE_BONDS;
 
 {
     open( my $fh, "<", $parameter_file )
-    	or die "Can't open < rotatable_bonds.tsv: $!";
+    	or die "Can't open < rotatable_bonds.csv: $!";
 
-    # Checks, if first or second atom is as hash key. If not, adds key and list
-    # of connected atoms. If yes, pushes to list of connected atoms.
-    foreach( map { [ split(" ", $_) ] }
-    	     grep { /^\w+\s+\w+\s+\w+\s+(yes|no)$/ } <$fh> ) {
-	# Checks, if first atom is in the hash as key.
-	if( ! exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} ) {
-	    $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} = [ $_->[2] ];
-	} else {
-	    if( exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} ) {
-	        push( @{ $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} },
-		      $_->[2] );
-	    }
-	    if( exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} ) {
-		push( @{ $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} },
-		      $_->[1] );
-	    }
-	}
-
-	# Checks, if second atom is in the hash as key.
-	if ( ! exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} ) {
-	    $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} = [ $_->[1] ];
-	} else {
-	    if( exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} ) {
-	        push( @{ $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[1]} },
-		      $_->[2] );
-	    }
-	    if( exists $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} ) {
-		push( @{ $ROTATABLE_BONDS{$_->[0]}{$_->[3]}{$_->[2]} },
-		      $_->[1] );
-	    }
+    for my $data_row ( map { [ split( ",", $_ ) ] } <$fh> ) {
+	$ROTATABLE_BONDS{$data_row->[0]}{$data_row->[1]} = [];
+	for my $bond ( @{ $data_row }[2..$#{ $data_row }] ) {
+	    push( @{ $ROTATABLE_BONDS{$data_row->[0]}{$data_row->[1]} },
+		  [ split( ":", $bond ) ] );
 	}
     }
 }
 
 #
 # Discribes sidechain models that are not restrained by van der Waals radius.
-# These models are idealistic and more developmental than final.
+# These models are idealistic and more developmental than final. One model per
+# residue.
 #
 
 #
@@ -96,42 +59,21 @@ sub rotation_only
 {
     my ( $atom_site, $atom_specifier ) = @_;
 
-    # Connects atoms.
-    my $connected_atoms =
-    	&ConnectAtoms::connect_atoms( 1.592, # HACK: empirical bond length.
-				      0.404, # HACK: empirical bond length error.
-				      $atom_site );
-
     # Selects specified atom(s) id(s).
     my $target_atom_id =
 	&CifParser::select_atom_data( [ "id" ],
-				      &CifParser::filter_atoms(
-					  $atom_specifier,
-					  $connected_atoms ) );
+				      &CifParser::filter_atoms( $atom_specifier,
+								$atom_site ) );
 
     # Iterates through target atom(s) and assigns conformational equations which
     # can produce pseudo-atoms later.
-    my @rotatable_path; # All rotatable bonds from target atom to CA.
-
-    # Recursive anonymous function for following bonds.
-    my @visited_atoms;
-    my @following_atoms;
-    my $follow_bonds =
-	sub { my ( $atom_ids ) = @_;
-	      @visited_atoms = ();
-
-	      for my $id ( @$atom_ids ) {
-		  @following_atoms = @{ $connected_atoms->{"data"}{$id}{"connections"} };
-		  if( scalar( @following_atoms ) == 1
-		      && ! grep( @following_atoms, @visited_atoms ) 
-		      && $connected_atoms->{"data"}{$id}{"label_atom_id"} eq "CA" ) {
-		      push( @visited_atoms, $id );
-		  } else {
-		  }}};
+    my @rotatable_bonds;
 
     for my $id ( @$target_atom_id ) {
-    	@rotatable_path = ();
-    	$follow_bonds->( $connected_atoms->{"data"}{"@$id"}{"connections"} );
+	@rotatable_bonds = @{ $ROTATABLE_BONDS{"SER"}{"OG"} };
+	# Creates matrices for atom alterations.
+	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
+	}
     }
 }
 
