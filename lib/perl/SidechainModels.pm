@@ -67,12 +67,61 @@ sub rotation_only
 
     # Iterates through target atom(s) and assigns conformational equations which
     # can produce pseudo-atoms later.
+    my $residue_name;
+    my $atom_type;
     my @rotatable_bonds;
+    my $mid_atom_type;
+    my $up_atom_type;
+    my $side_atom_type;
+    my $mid_atom_coord;
+    my $up_atom_coord;
+    my $side_atom_coord;
 
     for my $id ( @$target_atom_id ) {
-	@rotatable_bonds = @{ $ROTATABLE_BONDS{"SER"}{"OG"} };
+	$residue_name = $atom_site->{"data"}{"@$id"}{"label_comp_id"};
+	$atom_type = $atom_site->{"data"}{"@$id"}{"label_atom_id"};
+	@rotatable_bonds = @{ $ROTATABLE_BONDS{$residue_name}{$atom_type} };
+
 	# Creates matrices for atom alterations.
 	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
+	    $mid_atom_type = $rotatable_bonds[$i][0];
+	    $up_atom_type = $rotatable_bonds[$i][1];
+
+	    # Information about side atom is stored in rotatable bonds array,
+	    # except for CA atom.
+	    if( $mid_atom_type eq "CA" ) {
+		$side_atom_coord =
+		    &CifParser::select_atom_data(
+		    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+		    &CifParser::filter_atoms(
+			{ "label_atom_id" => [ "N" ] },
+			$atom_site ) );
+	    } else {
+		$side_atom_coord =
+		    &CifParser::select_atom_data(
+		    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+		    &CifParser::filter_atoms(
+			{ "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] },
+			$atom_site ) );
+	    }
+
+	    $mid_atom_coord =
+		&CifParser::select_atom_data(
+		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+		&CifParser::filter_atoms(
+		    { "label_atom_id" => [ $rotatable_bonds[$i][0] ] },
+		    $atom_site ) );
+
+	    $up_atom_coord =
+		&CifParser::select_atom_data(
+		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+		&CifParser::filter_atoms(
+		    { "label_atom_id" => [ $rotatable_bonds[$i][1] ] },
+		    $atom_site ) );
+	    
+	    # Creates and appends matrices to a list of matrices that later
+	    # will be multiplied.
+	     
 	}
     }
 }

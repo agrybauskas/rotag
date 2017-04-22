@@ -82,8 +82,8 @@ sub obtain_atom_site
 sub filter_atoms
 {
     # Criteria for $atom_specifier:
-    # ( "label_atom_id" => [ "SER" ],
-    #   "label_comp_id" => [ "CA", "CB" ] ).
+    # { "label_atom_id" => [ "SER" ],
+    #   "label_comp_id" => [ "CA", "CB" ] }.
     my ( $atom_specifier, $atom_site ) = @_;
 
     my %filtered_atom_site;

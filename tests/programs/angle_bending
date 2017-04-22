@@ -1,0 +1,88 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Math::Complex;
+
+use lib "../../lib/perl";
+use AlterMolecule;
+use LinearAlgebra;
+
+use lib "../lib";
+use Utils;
+use Data::Dumper;
+#
+# Unit test: AlterMolecule::angle_bending.
+#
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after the change of the angle between atoms.
+#
+# Example: ./change_bond_angle "label_atom_id CA,N,CB,OG" \
+#                              "Cartn_x,Cartn_y,Cartn_z" \
+#                              1.0 27 < example.cif
+#
+
+my $attribute_filter = shift;
+my $attribute_select = shift;
+my $angle_min_max = shift; # Boundary of angles which bond will be changed by.
+my $num_of_points = shift; # Amount of pseudo-atoms that will be generated in
+my @cif = <>;              # Jmol.
+
+# Selects atom's data for further analysis.
+my $selected_atom_data =
+    Utils::select_atom_data( $attribute_filter,
+			     $attribute_select,
+			     @cif );
+
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
+print( "testing\n" );
+
+# Prepares selected atom data for Jmol.
+map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+map { [ split( " ", $_ ) ] }
+grep { $_ =~ /ATOM/ }
+@cif;
+
+# Changes bond by certain distance.
+my $transl_atom_coord =
+	&AlterMolecule::angle_bending( $selected_atom_data->[1],
+				       $selected_atom_data->[2],
+				       $selected_atom_data->[0] ); # $selected_atom_data->[3]
+
+print Dumper $transl_atom_coord;
+# # Smallest change in bond length by given num_of_points and bond_min_max.
+# my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
+
+# # Calculates angles that will be changed symbolically.
+# my $theta;
+# my $psi;
+
+# my @delta_angles =
+#     map { $_ * $smallest_angle, - ( $_ * $smallest_angle ) }
+#         ( 1..(sqrt($num_of_points) / 2) );
+# push( @delta_angles, 0 );
+
+# # Evaluates symbolic expression.
+# my $eval_expression;
+
+# # Calculates the bend between atoms at theta and psi angles numerically and
+# # creates Jmol readable structure file.
+# foreach( @delta_angles ) {
+#     $theta = $_;
+#     foreach( @delta_angles ){
+# 	$psi = $_;
+# 	foreach( @$transl_atom_coord ) {
+# 	    print( "X\t" );
+# 	    foreach( @$_[0..2] ) {
+# 		foreach( @$_ ) {
+# 		    $eval_expression = Re( eval( $_ ) ); # Takes only real part
+# 		                                         # of the complex number.
+# 		    printf( "%.3f\t", $eval_expression );
+# 		}
+# 	    }
+# 	    print( "\n" );
+# 	}
+#     }
+# }

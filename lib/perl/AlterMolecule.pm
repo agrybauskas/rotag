@@ -15,18 +15,17 @@ use LinearAlgebra;
 
 #
 # Makes a rotational transformation matrix of the bond.
-# Input  (4 arg): cartesian coordinates in array form that defines user-selected
-#                 mid, up, side and target atoms' coordinates.
+# Input  (3 arg): cartesian coordinates in array form that defines user-selected
+#                 mid, up, side.
 # Output (1 arg): matrix defining coordinates in symbolic mathematical form
 #                 (with undefined dihedral angle chi).
 #
 
-sub rotate_bond
+sub bond_torsion
 {
     my ( $mid_atom_coord,
 	 $up_atom_coord,
-	 $side_atom_coord,
-	 $target_atom_coord ) = @_;
+	 $side_atom_coord ) = @_;
 
     # Rotation matrix around the bond.
     my @bond_rot_matrix = ( [ 'cos($chi)', '-sin($chi)', 0, 0 ],
@@ -34,21 +33,9 @@ sub rotate_bond
 			    [ 0, 0, 1, 0 ],
 			    [ 0, 0, 0, 1 ] );
 
-    # Converting target atom coordinates from 3x1 to 4x1 form so, it could be
-    # multiplied by 4x4 matrix.
-    my @target_atom_coord;
-
-    foreach( @$target_atom_coord ) {
-    	push( @target_atom_coord, [ $_ ] );
-    }
-
-    push( @target_atom_coord, [ 1 ] );
-
     # Incorporating symbol for dihedral chi angle.
     my @symbols = ( "chi", "i" );
 
-    # TODO: must look for arrays that have too much brackets like in example
-    # below.
     # Multiplying multiple matrices to get a final form.
     my @rot_matrix =
     	LinearAlgebra::mult_matrix_product(
@@ -61,26 +48,24 @@ sub rotate_bond
     	    LinearAlgebra::switch_ref_frame( "local",
     	    				     $mid_atom_coord,
     	    				     $up_atom_coord,
-    	    				     $side_atom_coord ),
-    	    \@target_atom_coord );
+    	    				     $side_atom_coord ) );
 
     return \@rot_matrix;
 }
 
 #
 # Changes the length of the bond.
-# Input  (4 arg): cartesian coordinates in array form that defines user-selected
-#                 mid, up, side and target atoms' coordinates.
+# Input  (3 arg): cartesian coordinates in array form that defines user-selected
+#                 mid, up, side.
 # Output (1 arg): matrix defining coordinates in symbolic mathematical form
 #                 (with undefined bond length variable: bond_length).
 #
 
-sub change_bond_length
+sub bond_streching
 {
     my ( $mid_atom_coord,
 	 $up_atom_coord,
-	 $side_atom_coord,
-	 $target_atom_coord ) = @_;
+	 $side_atom_coord ) = @_;
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
@@ -95,16 +80,6 @@ sub change_bond_length
 			    [ 0, 0, 1, '$r' ],
 			    [ 0, 0, 0, 1 ] );
 
-    # Converting target atom coordinates from 3x1 to 4x1 form so,
-    # it could be multiplied by 4x4 matrix.
-    my @target_atom_coord;
-
-    foreach( @$target_atom_coord ) {
-    	push( @target_atom_coord, [ $_ ] );
-    }
-
-    push( @target_atom_coord, [ 1 ] );
-
     # Incorporating symbol for bond length - len.
     my @symbols = ( "r", "i" );
 
@@ -112,37 +87,31 @@ sub change_bond_length
     my @transl_matrix =
 	LinearAlgebra::mult_matrix_product(
 	    \@symbols,
-	    LinearAlgebra::translate( (   $mid_atom_coord->[0],
-					  $mid_atom_coord->[1],
-					  $mid_atom_coord->[2] ) ),
-	    LinearAlgebra::rotate_z_axis( - $gamma ),
-	    LinearAlgebra::rotate_x_axis( - $beta ),
-	    LinearAlgebra::rotate_z_axis( - $alpha ),
+	    LinearAlgebra::switch_ref_frame( "global",
+    	    				     $mid_atom_coord,
+    	    				     $up_atom_coord,
+    	    				     $side_atom_coord ),
 	    \@bond_len_matrix,
-	    LinearAlgebra::rotate_z_axis(   $alpha ),
-	    LinearAlgebra::rotate_x_axis(   $beta ),
-	    LinearAlgebra::rotate_z_axis(   $gamma ),
-	    LinearAlgebra::translate( ( - $mid_atom_coord->[0],
-					- $mid_atom_coord->[1],
-					- $mid_atom_coord->[2] ) ),
-	    \@target_atom_coord );
+	    LinearAlgebra::switch_ref_frame( "local",
+    	    				     $mid_atom_coord,
+    	    				     $up_atom_coord,
+    	    				     $side_atom_coord ) );
 
     return \@transl_matrix;
 }
 
 #
 # Changes the length of the bond.
-# Input  (4 arg): cartesian coordinates in array form that defines user-selected
-#                 mid, up, side and target atoms' coordinates.
+# Input  (3 arg): cartesian coordinates in array form that defines user-selected
+#                 mid, up, side.
 # Output (1 arg): matrix defining coordinates in symbolic mathematical form
 #                 (with undefined bond angle variables: theta and psi).
 
-sub change_bond_angle
+sub angle_bending
 {
     my ( $mid_atom_coord,
 	 $up_atom_coord,
-	 $side_atom_coord,
-	 $target_atom_coord ) = @_;
+	 $side_atom_coord ) = @_;
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
@@ -161,40 +130,25 @@ sub change_bond_angle
 			 [ '-sin($psi)', 0, 'cos($psi)', 0 ],
 			 [ 0, 0, 0, 1 ] );
 
-    # Converting target atom coordinates from 3x1 to 4x1 form so,
-    # it could be multiplied by 4x4 matrix.
-    my @target_atom_coord;
-
-    foreach( @$target_atom_coord ) {
-    	push( @target_atom_coord, [ $_ ] );
-    }
-
-    push( @target_atom_coord, [ 1 ] );
-
     # Incorporating symbol for bond length - len.
     my @symbols = ( "theta", "psi", "i" );
 
     # Multiplying multiple matrices to get a final form.
-    my @transl_matrix =
+    my @angle_matrix =
 	LinearAlgebra::mult_matrix_product(
 	    \@symbols,
-	    LinearAlgebra::translate( (   $mid_atom_coord->[0],
-					  $mid_atom_coord->[1],
-					  $mid_atom_coord->[2] ) ),
-	    LinearAlgebra::rotate_z_axis( - $gamma ),
-	    LinearAlgebra::rotate_x_axis( - $beta ),
-	    LinearAlgebra::rotate_z_axis( - $alpha ),
+	    LinearAlgebra::switch_ref_frame( "global",
+    	    				     $mid_atom_coord,
+    	    				     $up_atom_coord,
+    	    				     $side_atom_coord ),
 	    \@rot_y_matrix,
 	    \@rot_x_matrix,
-	    LinearAlgebra::rotate_z_axis(   $alpha ),
-	    LinearAlgebra::rotate_x_axis(   $beta ),
-	    LinearAlgebra::rotate_z_axis(   $gamma ),
-	    LinearAlgebra::translate( ( - $mid_atom_coord->[0],
-					- $mid_atom_coord->[1],
-					- $mid_atom_coord->[2] ) ),
-	    \@target_atom_coord );
+	    LinearAlgebra::switch_ref_frame( "local",
+    	    				     $mid_atom_coord,
+    	    				     $up_atom_coord,
+    	    				     $side_atom_coord ) );
 
-    return \@transl_matrix;
+    return \@angle_matrix;
 }
 
 1;
