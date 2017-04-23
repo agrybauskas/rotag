@@ -35,58 +35,59 @@ my $selected_atom_data =
 			     $attribute_select,
 			     @cif );
 
-# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-# print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
-# print( "testing\n" );
+my @target_atom_data = map { [ $_ ] } ( @{ $selected_atom_data->[3] }, 1 );
 
-# # Prepares selected atom data for Jmol.
-# map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-# map { [ split( " ", $_ ) ] }
-# grep { $_ =~ /ATOM/ }
-# @cif;
-my @atom_data = ( [1], [2], [3], [1] );
-my @symbols = ( "theta", "psi", "i" );
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
+print( "testing\n" );
+
+# Prepares selected atom data for Jmol.
+map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+map { [ split( " ", $_ ) ] }
+grep { $_ =~ /ATOM/ }
+@cif;
+
 # Changes bond by certain distance.
-my $transl_atom_coord =
-    LinearAlgebra::two_matrix_product(
+my @symbols = ( "theta", "psi", "i" );
+my $bent_atom_coord =
+    &LinearAlgebra::two_matrix_product(
 	\@symbols,
 	@{ AlterMolecule::angle_bending( $selected_atom_data->[1],
 					 $selected_atom_data->[2],
 					 $selected_atom_data->[0] ) },
-	\@atom_data );
+	\@target_atom_data );
 
-print Dumper $transl_atom_coord;
-# # Smallest change in bond length by given num_of_points and bond_min_max.
-# my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
+# Smallest change in bond length by given num_of_points and bond_min_max.
+my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
 
-# # Calculates angles that will be changed symbolically.
-# my $theta;
-# my $psi;
+# Calculates angles that will be changed symbolically.
+my $theta;
+my $psi;
 
-# my @delta_angles =
-#     map { $_ * $smallest_angle, - ( $_ * $smallest_angle ) }
-#         ( 1..(sqrt($num_of_points) / 2) );
-# push( @delta_angles, 0 );
+my @delta_angles =
+    map { $_ * $smallest_angle, - ( $_ * $smallest_angle ) }
+        ( 1..(sqrt($num_of_points) / 2) );
+push( @delta_angles, 0 );
 
-# # Evaluates symbolic expression.
-# my $eval_expression;
+# Evaluates symbolic expression.
+my $eval_expression;
 
-# # Calculates the bend between atoms at theta and psi angles numerically and
-# # creates Jmol readable structure file.
-# foreach( @delta_angles ) {
-#     $theta = $_;
-#     foreach( @delta_angles ){
-# 	$psi = $_;
-# 	foreach( @$transl_atom_coord ) {
-# 	    print( "X\t" );
-# 	    foreach( @$_[0..2] ) {
-# 		foreach( @$_ ) {
-# 		    $eval_expression = Re( eval( $_ ) ); # Takes only real part
-# 		                                         # of the complex number.
-# 		    printf( "%.3f\t", $eval_expression );
-# 		}
-# 	    }
-# 	    print( "\n" );
-# 	}
-#     }
-# }
+# Calculates the bend between atoms at theta and psi angles numerically and
+# creates Jmol readable structure file.
+foreach( @delta_angles ) {
+    $theta = $_;
+    foreach( @delta_angles ){
+	$psi = $_;
+	foreach( $bent_atom_coord ) {
+	    print( "X\t" );
+	    foreach( @$_[0..2] ) {
+	    	foreach( @$_ ) {		    
+	    	    $eval_expression = eval( $_ ); # Takes only real part
+	    	                                   # of the complex number.
+	    	    printf( "%.3f\t", $eval_expression );
+	    	}
+	    }
+	    print( "\n" );
+	}
+    }
+}
