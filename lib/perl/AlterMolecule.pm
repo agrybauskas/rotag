@@ -61,7 +61,7 @@ sub bond_torsion
 #                 (with undefined bond length variable: bond_length).
 #
 
-sub bond_streching
+sub bond_stretching
 {
     my ( $mid_atom_coord,
 	 $up_atom_coord,
