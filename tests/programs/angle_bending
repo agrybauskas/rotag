@@ -35,23 +35,22 @@ my $selected_atom_data =
 			     $attribute_select,
 			     @cif );
 
-# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
-print( "testing\n" );
+# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+# print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
+# print( "testing\n" );
 
-# Prepares selected atom data for Jmol.
-map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-map { [ split( " ", $_ ) ] }
-grep { $_ =~ /ATOM/ }
-@cif;
+# # Prepares selected atom data for Jmol.
+# map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+# map { [ split( " ", $_ ) ] }
+# grep { $_ =~ /ATOM/ }
+# @cif;
 
 # Changes bond by certain distance.
 my $transl_atom_coord =
-	&AlterMolecule::angle_bending( $selected_atom_data->[1],
-				       $selected_atom_data->[2],
-				       $selected_atom_data->[0] ); # $selected_atom_data->[3]
+	    AlterMolecule::angle_bending( $selected_atom_data->[1],
+					  $selected_atom_data->[2],
+					  $selected_atom_data->[0] );
 
-print Dumper $transl_atom_coord;
 # # Smallest change in bond length by given num_of_points and bond_min_max.
 # my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
 
