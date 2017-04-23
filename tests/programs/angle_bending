@@ -44,13 +44,18 @@ my $selected_atom_data =
 # map { [ split( " ", $_ ) ] }
 # grep { $_ =~ /ATOM/ }
 # @cif;
-
+my @atom_data = ( [1], [2], [3], [1] );
+my @symbols = ( "theta", "psi", "i" );
 # Changes bond by certain distance.
 my $transl_atom_coord =
-	    AlterMolecule::angle_bending( $selected_atom_data->[1],
-					  $selected_atom_data->[2],
-					  $selected_atom_data->[0] );
+    LinearAlgebra::two_matrix_product(
+	\@symbols,
+	@{ AlterMolecule::angle_bending( $selected_atom_data->[1],
+					 $selected_atom_data->[2],
+					 $selected_atom_data->[0] ) },
+	\@atom_data );
 
+print Dumper $transl_atom_coord;
 # # Smallest change in bond length by given num_of_points and bond_min_max.
 # my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
 
