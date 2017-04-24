@@ -1,3 +1,0 @@
-1/2*$x*exp(&i*$chi)+1/2*$x*exp(-&i*$chi)+1/2*&i*$y*exp(&i*$chi)-1/2*&i*$y*exp(-&i*$chi)
--1/2*&i*$x*exp(&i*$chi)+1/2*&i*$x*exp(-&i*$chi)+1/2*$y*exp(&i*$chi)+1/2*$y*exp(-&i*$chi)
-$z

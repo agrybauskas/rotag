@@ -1,11 +1,9 @@
 package LinearAlgebra;
 
-use Math::Algebra::Symbols;
-
 use strict;
 use warnings;
-
-# ------------------------------- Linear algebra ------------------------------ #
+use Data::Dumper;
+# --------------------------- Numeric linear algebra -------------------------- #
 
 #
 # Performs basic linear algebra operations for matrices.
@@ -318,7 +316,8 @@ sub matrix_sub
 # ---------------------------- Symbolic linear algebra ------------------------ #
 
 #
-# Performs basic linear algebra on symbolic expressions.
+# Performs basic linear algebra on symbolic expressions. Uses GiNaC for
+# calculations.
 #
 # Example of rotation along z-axis by chi angle:
 #
@@ -335,7 +334,7 @@ sub matrix_sub
 
 sub transpose
 {
-    my $matrix = shift;
+    my ( $matrix ) = @_;
     my @matrix = @$matrix;
 
     my @transposed_matrix;
@@ -350,107 +349,71 @@ sub transpose
 }
 
 #
-# Calculates matrix product of two matrices that might have symbolic variables.
-# Input  (2 arg): 2 arrays that are correctly paired.
+# Calculates matrix product of list of any size of matrices.
+# Input  (n arg): any number of arrays representing matrices.
 # Output (1 arg): matrix product.
 #
 
-sub two_matrix_product
+sub matrix_product
 {
-    my ( $symbols, $left_matrix, $right_matrix ) = @_;
+    my ( $matrices ) = @_;
 
-    my %symbols; # Hash that prepares symbols for algebraic manipulation
+    # Converts matrices to GiNaC readable input.
+    my $matrix_equation_ginac =
+	join( "*",
+	map { "[" . join( ",",
+	map { "[" . join( ",",
+	@$_ ) . "]" }
+        @$_ ) . "]" }
+	@$matrices );
+
+    # Converts perl power symbol ** to GiNaC's ^.
+    $matrix_equation_ginac =~ s/\*\*/^/g;
+
+    # Runs GiNaC.
+    my $matrix_product_ginac =
+	qx/ echo "evalm( ${matrix_equation_ginac} );" | ginsh /
+	|| die( "A row number of a left matrix is NOT equal to the column\n" .
+		"number of the right matrix.\n" );
+
+    # Returns matrices in perl array form.
     my @matrix_product;
 
-    # Notifies error, when the column number of left matrix does not equal the
-    # row number of the right matrix.
-    die(   "A row number of a left matrix is NOT equal to the column\n"
-         . "number of the right matrix.\n" )
-    	unless( scalar( @{ transpose( $left_matrix ) } ) ==
-    		scalar( @$right_matrix ) );
-
-    # Makes placeholder items consisting zero values for matrix_product array.
-    for( my $product_row = 0;
-    	 $product_row < scalar( @$left_matrix );
-    	 $product_row++ ) {
-    	for( my $product_col = 0;
-    	     $product_col < scalar( @{ $right_matrix->[0] } );
-    	     $product_col++ ) {
-    	    $matrix_product[$product_row][$product_col] = 0;
-    	}
-    }
-
-    # Initiates perception of symbols.
-    foreach( @$symbols ) {
-	$symbols{$_} = symbols( $_ );
-    }
-
-    # Calculates matrix product of two matrices.
-    for( my $product_row = 0;
-    	 $product_row < scalar( @matrix_product );
-    	 $product_row++ ) {
-    	for( my $product_col = 0;
-    	     $product_col < scalar( @{ $matrix_product[$product_row] } );
-    	     $product_col++ ) {
-    	    for( my $left_col = 0;
-    		 $left_col < scalar( @{ $left_matrix->[$product_col] } );
-    		 $left_col++ ) {
-		my $left_number;
-		my $right_number;
-
-		# Retrieves numbers that will be multiplied and added to
-		# matrix_product array.
-		$left_number = $left_matrix->[$product_row][$left_col];
-		$right_number = $right_matrix->[$left_col][$product_col];
-
-		# Changes "$" to hash reference (for symbols that are
-		# written in "$x" form).
-		$left_number =~ s/\$(\w+)/\$symbols{$1}/g;
-		$right_number =~ s/\$(\w+)/\$symbols{$1}/g;
-
-		# Changes "&" to hash reference (for symbols that are
-		# written in "&i" form, usually for Euler number).
-		$left_number =~ s/\&(\w+)/\$symbols{$1}/g;
-		$right_number =~ s/\&(\w+)/\$symbols{$1}/g;
-
-		$matrix_product[$product_row][$product_col] +=
-		    eval( $left_number ) * eval( $right_number );
-	    }
-    	}
+    for my $row ( split( ",\\[", $matrix_product_ginac ) ) {
+	$row =~ s/\n//g; # Remove newline.
+	$row =~ s/]//g; # Removes unnecessary GiNaC matrix symbols.
+	$row =~ s/\[//g; # Removes unnecessary GiNaC matrix symbols.
+	$row =~ s/\^/\*\*/g; # Brings back perl power symbol **.
+	push( @matrix_product, [ split( ",", $row ) ] );
     }
 
     return \@matrix_product;
 }
 
 #
-# Calculates matrix product of list of any size of matrices.
-# Input  (n arg): any number of arrays representing matrices.
-# Output (1 arg): matrix product.
+# Evaluates symbolic variables.
+# Input  (1 arg): matrix with variables as symbols.
+# Output (1 arg): evaluated matrix.
 #
 
-sub mult_matrix_product
-{
-    my $symbols = shift;
-    my @matrices = @_;
+sub evaluate {
+    my ( $symbols, $matrix_ginac ) = @_;
+    my %symbols = %$symbols;
 
-    my $mult_matrix_product;
+    my @eval_matrix;
 
-    # Multiplies matrices from left to right.
-    for( my $id = $#matrices; $id >= 1; $id-- ) {
-	if( $id == $#matrices ) {
-    	    $mult_matrix_product =
-		two_matrix_product( $symbols,
-				    $matrices[$id-1],
-				    $matrices[$id] );
-    	} else {
-    	    $mult_matrix_product =
-		two_matrix_product( $symbols,
-				    $matrices[$id-1],
-				    $mult_matrix_product );
-    	}
+    # Adds $ sign to given symbols and then runs eval() function.
+    for my $row ( @$matrix_ginac ) {
+	push( @eval_matrix, [] );
+	for my $value ( @$row ) {
+	    for my $symbol ( keys %$symbols ) {
+		$value =~ s/(${symbol})/\$symbols{$1}/g; # TODO: must catch only symbols.
+	    }
+	    push( @{ $eval_matrix[-1] }, eval( $value ) );
+	}
     }
 
-    return $mult_matrix_product;
+    return \@eval_matrix;
 }
 
 1;

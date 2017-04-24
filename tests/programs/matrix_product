@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use LinearAlgebra;
+use Data::Dumper;
+#
+# Unit test: LinearAlgebra::matrix_product.
+#
+# Multiplies multiple matrices using symbolic algebra.
+#
+# Example: ./matrix_product < example.dat
+#
+
+my @matrices = ( [] );
+
+while( <> ) {
+    if( $_ =~ /^\n$/ ) {
+	push( @matrices, [] );
+    } else {
+	push( @{ $matrices[-1] }, [ split( " ", $_ ) ] );
+    }
+}
+
+my $matrix_product =
+    LinearAlgebra::evaluate( { "x" => 4, "y" => 5, "z" => 6 },
+			     LinearAlgebra::matrix_product( \@matrices ) );
+
+foreach( @$matrix_product ) {
+    print( join( "\t", @$_ ), "\n" );
+}
