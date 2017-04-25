@@ -14,6 +14,14 @@ use Data::Dumper;
 # Example: ./matrix_product < example.dat
 #
 
+my $variable_values = shift;
+
+# Parses argument from argvar that describes values of the unknown variables.
+my %variable_values = ( map { $_->[0] => $_->[1] }
+			map { [ split( "=", $_ ) ] }
+			split( ",", $variable_values ) );
+
+# Evaluates matrices.
 my @matrices = ( [] );
 
 while( <> ) {
@@ -25,7 +33,7 @@ while( <> ) {
 }
 
 my $matrix_product =
-    LinearAlgebra::evaluate( { "x" => 4, "y" => 5, "z" => 6 },
+    LinearAlgebra::evaluate( \%variable_values,
 			     LinearAlgebra::matrix_product( \@matrices ) );
 
 foreach( @$matrix_product ) {

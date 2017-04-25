@@ -1,8 +1,23 @@
 package LinearAlgebra;
 
+use Exporter qw( import );
+@EXPORT_OK = qw( create_ref_frame
+                 find_euler_angles
+                 switch_ref_frame
+                 x_axis_rotation
+                 y_axis_rotation
+                 z_axis_rotation
+                 translation
+                 vector_cross
+                 matrix_sum
+                 matrix_sub
+                 transpose
+                 matrix_product
+                 evaluate_matrix );
+
 use strict;
 use warnings;
-use Data::Dumper;
+
 # --------------------------- Numeric linear algebra -------------------------- #
 
 #
@@ -66,7 +81,7 @@ sub create_ref_frame
         $local_ref_frame[2][0] * $local_ref_frame[0][1]
       - $local_ref_frame[2][1] * $local_ref_frame[0][0];
 
-    return @local_ref_frame;
+    return @local_ref_frame; # TODO: return to reference.
 }
 
 #
@@ -126,46 +141,42 @@ sub find_euler_angles
 
 sub switch_ref_frame
 {
-    my $switch_to_local = shift;
-    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) = @_;
+    my ( $switch_to_local,
+	 $mid_atom_coord,
+	 $up_atom_coord,
+	 $side_atom_coord ) = @_;
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
-    my ( $alpha, $beta, $gamma ) =
-	LinearAlgebra::find_euler_angles( @$mid_atom_coord,
-					  @$up_atom_coord,
-					  @$side_atom_coord );
+    my ( $alpha, $beta, $gamma ) = find_euler_angles( @$mid_atom_coord,
+						      @$up_atom_coord,
+						      @$side_atom_coord );
 
     # Depending on the option switch_to_local,
     my @switch_matrix;
-    my @symbols = [ "i" ];
 
     if( $switch_to_local eq "local" ) {
 	@switch_matrix =
-	    LinearAlgebra::mult_matrix_product(
-		@symbols,
-		LinearAlgebra::rotate_z_axis( $alpha ),
-		LinearAlgebra::rotate_x_axis( $beta ),
-		LinearAlgebra::rotate_z_axis( $gamma ),
-		LinearAlgebra::translate( ( - $mid_atom_coord->[0],
-					    - $mid_atom_coord->[1],
-					    - $mid_atom_coord->[2] ) ) );
+	    matrix_product( z_axis_rotation( $alpha ),
+			    x_axis_rotation( $beta ),
+			    z_axis_rotation( $gamma ),
+			    translation( ( -$mid_atom_coord->[0],
+					   -$mid_atom_coord->[1],
+					   -$mid_atom_coord->[2] ) ) );
     } elsif( $switch_to_local eq "global" ) {
 	@switch_matrix =
-	    LinearAlgebra::mult_matrix_product(
-		@symbols,
-		LinearAlgebra::translate( ( $mid_atom_coord->[0],
-					    $mid_atom_coord->[1],
-					    $mid_atom_coord->[2] ) ),
-		LinearAlgebra::rotate_z_axis( - $gamma ),
-		LinearAlgebra::rotate_x_axis( - $beta ),
-		LinearAlgebra::rotate_z_axis( - $alpha ) );
+	    matrix_product( translation( ( $mid_atom_coord->[0],
+					   $mid_atom_coord->[1],
+					   $mid_atom_coord->[2] ) ),
+			    z_axis_rotation( -$gamma ),
+			    x_axis_rotation( -$beta ),
+			    z_axis_rotation( -$alpha ) );
     } else {
 	die "Must choose \$switch_to_global value between \"local\" and"
 	    . "\"global\".\n"
     }
 
-    return @switch_matrix;
+    return @switch_matrix; # TODO: return reference.
 }
 
 #
@@ -175,14 +186,14 @@ sub switch_ref_frame
 # Output (1 arg): 4x4 matrix.
 #
 
-sub rotate_x_axis
+sub x_axis_rotation
 {
-    my $angle = shift;
+    my ( $angle ) = @_;
 
     my @rot_matrix_x =
 	( [ 1, 0, 0, 0 ],
-	  [ 0, cos( $angle ), - sin( $angle ), 0 ],
-	  [ 0, sin( $angle ),   cos( $angle ), 0 ],
+	  [ 0, cos( $angle ), -sin( $angle ), 0 ],
+	  [ 0, sin( $angle ),  cos( $angle ), 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     return \@rot_matrix_x;
@@ -195,14 +206,14 @@ sub rotate_x_axis
 # Output (1 arg): 4x4 matrix.
 #
 
-sub rotate_y_axis
+sub y_axis_rotation
 {
-    my $angle = shift;
+    my ( $angle ) = @_;
 
     my @rot_matrix_y =
-	( [   cos( $angle ), 0, sin( $angle ), 0 ],
+	( [  cos( $angle ), 0, sin( $angle ), 0 ],
 	  [ 0, 1, 0, 0 ],
-	  [ - sin( $angle ), 0, cos( $angle ), 0 ],
+	  [ -sin( $angle ), 0, cos( $angle ), 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     return \@rot_matrix_y;
@@ -215,13 +226,13 @@ sub rotate_y_axis
 # Output (1 arg): 4x4 matrix.
 #
 
-sub rotate_z_axis
+sub z_axis_rotation
 {
-    my $angle = shift;
+    my $angle = @_;
 
     my @rot_matrix_z =
-	( [ cos( $angle ), - sin( $angle ), 0, 0 ],
-	  [ sin( $angle ),   cos( $angle ), 0, 0 ],
+	( [ cos( $angle ), -sin( $angle ), 0, 0 ],
+	  [ sin( $angle ),  cos( $angle ), 0, 0 ],
 	  [ 0, 0, 1, 0 ],
 	  [ 0, 0, 0, 1 ] );
 
@@ -235,7 +246,7 @@ sub rotate_z_axis
 # Output (1 arg): 4x4 matrix.
 #
 
-sub translate
+sub translation
 {
     my @transl_coord = @_;
 
@@ -260,11 +271,11 @@ sub vector_cross
 
     my @cross_product =
 	( $left_matrix->[1] * $right_matrix->[2]
-	- $left_matrix->[2] * $right_matrix->[1],
-	- $left_matrix->[0] * $right_matrix->[2]
-	+ $left_matrix->[2] * $right_matrix->[0],
+	 -$left_matrix->[2] * $right_matrix->[1],
+	 -$left_matrix->[0] * $right_matrix->[2]
+	 +$left_matrix->[2] * $right_matrix->[0],
 	  $left_matrix->[0] * $right_matrix->[1]
-	- $left_matrix->[1] * $right_matrix->[0] );
+	 -$left_matrix->[1] * $right_matrix->[0] );
 
     return \@cross_product;
 }
@@ -396,7 +407,7 @@ sub matrix_product
 # Output (1 arg): evaluated matrix.
 #
 
-sub evaluate {
+sub evaluate_matrix {
     my ( $symbols, $matrix_ginac ) = @_;
     my %symbols = %$symbols;
 
@@ -407,7 +418,7 @@ sub evaluate {
 	push( @eval_matrix, [] );
 	for my $value ( @$row ) {
 	    for my $symbol ( keys %$symbols ) {
-		$value =~ s/(${symbol})/\$symbols{$1}/g; # TODO: must catch only symbols.
+		$value =~ s/\b(${symbol})\b/\$symbols{$1}/g;
 	    }
 	    push( @{ $eval_matrix[-1] }, eval( $value ) );
 	}

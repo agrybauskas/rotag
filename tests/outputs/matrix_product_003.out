@@ -1,1 +1,3 @@
-2*z+(2*sin(chi)+cos(chi))*x-y*(sin(chi)-2*cos(chi))
+matrix::mul(): incompatible matrices
+A row number of a left matrix is NOT equal to the column
+number of the right matrix.
