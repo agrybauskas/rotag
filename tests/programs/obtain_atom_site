@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser;
+use CifParser qw( obtain_atom_site );
 
 #
 # Unit test: obtain_atom_site
@@ -15,8 +15,7 @@ use CifParser;
 # Example: ./obtain_atom_site < example.cif
 #
 
-my $atom_site =
-    CifParser::obtain_atom_site( <> );
+my $atom_site = obtain_atom_site( <> );
 my $attribute_names = $atom_site->{"attributes"};
 my @attribute_names = @$attribute_names;
 

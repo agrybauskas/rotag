@@ -1,12 +1,19 @@
 package Measure;
 
+use Exporter qw( import );
+@EXPORT_OK = qw( bond_length
+                 bond_angle
+                 dihedral_angle
+                 rmsd );
+
 use strict;
 use warnings;
 
 use Math::Trig;
 
 use lib "./";
-use LinearAlgebra;
+use LinearAlgebra qw( matrix_sub
+                      vector_cross );
 
 # ----------------------------- Molecule parameters --------------------------- #
 
@@ -98,19 +105,14 @@ sub dihedral_angle
     #                              -> CA---C
     #                              a /
     #                               N
-    my $vector_a =
-    	LinearAlgebra::matrix_sub( [ $atom_coord[1] ], [ $atom_coord[0] ] );
-    my $vector_b =
-    	LinearAlgebra::matrix_sub( [ $atom_coord[2] ], [ $atom_coord[1] ] );
-    my $vector_c =
-    	LinearAlgebra::matrix_sub( [ $atom_coord[3] ], [ $atom_coord[2] ] );
+    my $vector_a = matrix_sub( [ $atom_coord[1] ], [ $atom_coord[0] ] );
+    my $vector_b = matrix_sub( [ $atom_coord[2] ], [ $atom_coord[1] ] );
+    my $vector_c = matrix_sub( [ $atom_coord[3] ], [ $atom_coord[2] ] );
 
     #                                               ->    -> ->    ->
     # Creates normal vectors from the vector pairs: a and b, b and c.
-    my $vector_cross_ab =
-    	LinearAlgebra::vector_cross( @$vector_a, @$vector_b );
-    my $vector_cross_bc =
-    	LinearAlgebra::vector_cross( @$vector_b, @$vector_c );
+    my $vector_cross_ab = vector_cross( @$vector_a, @$vector_b );
+    my $vector_cross_bc = vector_cross( @$vector_b, @$vector_c );
 
     # Calculates length for each cross product.
     my $vector_length_ab = sqrt( $vector_cross_ab->[0]**2
@@ -131,8 +133,7 @@ sub dihedral_angle
     			      + $vector_b->[0][2]**2 );
     my @normal_vector_b = map { $_ / $vector_length_b } @{ $vector_b->[0] };
 
-    my @orthonormal_cross =
-    	LinearAlgebra::vector_cross( \@normal_vector_ab, \@normal_vector_b );
+    my @orthonormal_cross = vector_cross( \@normal_vector_ab, \@normal_vector_b );
 
     # Using orthonormal frame, projections from vector a and c are
     # generated and angle calculated.

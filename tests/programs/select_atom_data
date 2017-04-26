@@ -4,7 +4,9 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser;
+use CifParser qw( select_atom_data
+                  filter_atoms
+                  obtain_atom_site );
 
 #
 # Unit test: CifParser::select_atom_data.

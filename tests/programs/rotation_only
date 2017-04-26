@@ -4,12 +4,8 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use SidechainModels;
-
-use lib "../lib";
-use Utils;
-
-use Data::Dumper;
+use CifParser qw( obtain_atom_site );
+use SidechainModels qw( rotation_only );
 
 my $atom_specifier = shift;
 
@@ -19,9 +15,8 @@ my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 		    split( "&", $atom_specifier ) );
 
 # Selects atom's data for further analysis.
-my $atom_site =
-    CifParser::obtain_atom_site( <> );
+my $atom_site = obtain_atom_site( <> );
 
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
-SidechainModels::rotation_only( $atom_site, \%atom_specifier );
+rotation_only( $atom_site, \%atom_specifier );

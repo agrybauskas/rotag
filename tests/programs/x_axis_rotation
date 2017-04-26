@@ -4,17 +4,17 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra;
+use LinearAlgebra qw( x_axis_rotation matrix_product );
 
 use lib "../lib";
-use Utils;
+use Utils qw( select_atom_data );
 
 #
-# Unit test: LinearAlgebra::rotate_y_axis.
+# Unit test: LinearAlgebra::rotate_x_axis.
 #
-# Rotates along y-axis of the global frame of reference.
+# Rotates along x-axis of the global frame of reference.
 #
-# Example: ./rotate_y_axis "label_atom_id CA,N,CB,OG" \
+# Example: ./rotate_x_axis "label_atom_id CA,N,CB,OG" \
 #                          "Cartn_x,Cartn_y,Cartn_z" \
 #                          "1.571" < example.cif
 #
@@ -25,16 +25,15 @@ my $angle = shift;
 my @cif = <>;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     $attribute_select,
-			     @cif );
+my $selected_atom_data = select_atom_data( $attribute_filter,
+					   $attribute_select,
+					   @cif );
 
-# Rotates all atoms along y-axis by given angle.
+# Rotates all atoms along x-axis by given angle.
 my @transf_atom_data;
 
 foreach ( @$selected_atom_data ) {
-    # Prepared atom coordinates to proper 4x1 matrix.
+    # Prepares atom coordinates to proper 4x1 matrix.
     my @atom_coord;
 
     foreach( @$_ ) {
@@ -45,9 +44,8 @@ foreach ( @$selected_atom_data ) {
 
     # Makes actual rotation.
     push( @transf_atom_data,
-	  LinearAlgebra::two_matrix_product(
-	      [ "i" ],
-	      LinearAlgebra::rotate_y_axis( $angle ),
+	  matrix_product(
+	      x_axis_rotation( $angle ),
 	      \@atom_coord ) );
 }
 

@@ -2,6 +2,10 @@ package CifParser;
 
 use strict;
 use warnings;
+use Exporter qw( import );
+our @EXPORT_OK = qw( obtain_atom_site
+                     filter_atoms
+                     select_atom_data );
 
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #
 
@@ -54,7 +58,7 @@ sub obtain_atom_site
     my @atom_data_row;
     my %atom_data_row;
 
-    for( my $pos  = 0;
+    for( my $pos = 0;
     	 $pos < $#atom_data;
     	 $pos += $#{ $atom_site{"attributes"} } + 1 ) {
 	@atom_data_row =

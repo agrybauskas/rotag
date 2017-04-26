@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use ConnectAtoms;
+use ConnectAtoms qw( create_box );
 
 use lib "../lib";
-use Utils;
+use Utils qw( select_atom_data );
 
 #
 # Unit test: ConnectAtoms::create_box.
@@ -21,14 +21,12 @@ my $attribute_selector = shift;
 my @cif = <>;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data =
-    Utils::select_atom_data( $attribute_selector,
-			     "Cartn_x,Cartn_y,Cartn_z",
-			     @cif );
+my $selected_atom_data = select_atom_data( $attribute_selector,
+					   "Cartn_x,Cartn_y,Cartn_z",
+					   @cif );
 
 # Creates and prints out the boundaries of the box.
-my @box_boundaries =
-    ConnectAtoms::create_box( @$selected_atom_data );
+my @box_boundaries = create_box( @$selected_atom_data );
 
 print( map { ( $_ % 2 ) == 0
 		        ? $box_boundaries[$_-1] . "\n"

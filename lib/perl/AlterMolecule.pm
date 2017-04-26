@@ -1,10 +1,17 @@
 package AlterMolecule;
 
+use Exporter qw( import );
+@EXPORT_OK = qw( bond_torsion
+                 bond_stretching
+                 angle_bending );
+
 use strict;
 use warnings;
 
 use lib qw( ./ );
-use LinearAlgebra;
+use LinearAlgebra qw( matrix_product
+                      switch_ref_frame
+                      find_euler_angles );
 
 # ------------------ Molecule structure alteration algorithms ----------------- #
 
@@ -28,27 +35,22 @@ sub bond_torsion
 	 $side_atom_coord ) = @_;
 
     # Rotation matrix around the bond.
-    my @bond_rot_matrix = ( [ 'cos($chi)', '-sin($chi)', 0, 0 ],
-			    [ 'sin($chi)',  'cos($chi)', 0, 0 ],
+    my @bond_rot_matrix = ( [ 'cos(chi)', '-sin(chi)', 0, 0 ],
+			    [ 'sin(chi)',  'cos(chi)', 0, 0 ],
 			    [ 0, 0, 1, 0 ],
 			    [ 0, 0, 0, 1 ] );
 
-    # Incorporating symbol for dihedral chi angle.
-    my @symbols = ( "chi", "i" );
-
     # Multiplying multiple matrices to get a final form.
     my @rot_matrix =
-    	LinearAlgebra::mult_matrix_product(
-    	    \@symbols,
-    	    LinearAlgebra::switch_ref_frame( "global",
-    	    				     $mid_atom_coord,
-    	    				     $up_atom_coord,
-    	    				     $side_atom_coord ),
-    	    \@bond_rot_matrix,
-    	    LinearAlgebra::switch_ref_frame( "local",
-    	    				     $mid_atom_coord,
-    	    				     $up_atom_coord,
-    	    				     $side_atom_coord ) );
+    	matrix_product( switch_ref_frame( "global",
+					  $mid_atom_coord,
+					  $up_atom_coord,
+					  $side_atom_coord ),
+			\@bond_rot_matrix,
+			switch_ref_frame( "local",
+					  $mid_atom_coord,
+					  $up_atom_coord,
+					  $side_atom_coord ) );
 
     return \@rot_matrix;
 }
@@ -70,32 +72,27 @@ sub bond_stretching
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
     my ( $alpha, $beta, $gamma ) =
-	LinearAlgebra::find_euler_angles( @$mid_atom_coord,
-					  @$up_atom_coord,
-					  @$side_atom_coord );
+	find_euler_angles( @$mid_atom_coord,
+			   @$up_atom_coord,
+			   @$side_atom_coord );
 
     # Translation of the bond.
     my @bond_len_matrix = ( [ 1, 0, 0, 0 ],
 			    [ 0, 1, 0, 0 ],
-			    [ 0, 0, 1, '$r' ],
+			    [ 0, 0, 1, 'r' ],
 			    [ 0, 0, 0, 1 ] );
-
-    # Incorporating symbol for bond length - len.
-    my @symbols = ( "r", "i" );
 
     # Multiplying multiple matrices to get a final form.
     my @transl_matrix =
-	LinearAlgebra::mult_matrix_product(
-	    \@symbols,
-	    LinearAlgebra::switch_ref_frame( "global",
-    	    				     $mid_atom_coord,
-    	    				     $up_atom_coord,
-    	    				     $side_atom_coord ),
-	    \@bond_len_matrix,
-	    LinearAlgebra::switch_ref_frame( "local",
-    	    				     $mid_atom_coord,
-    	    				     $up_atom_coord,
-    	    				     $side_atom_coord ) );
+	matrix_product( switch_ref_frame( "global",
+					  $mid_atom_coord,
+					  $up_atom_coord,
+					  $side_atom_coord ),
+			\@bond_len_matrix,
+			switch_ref_frame( "local",
+					  $mid_atom_coord,
+					  $up_atom_coord,
+					  $side_atom_coord ) );
 
     return \@transl_matrix;
 }
@@ -116,37 +113,32 @@ sub angle_bending
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
     my ( $alpha, $beta, $gamma ) =
-	LinearAlgebra::find_euler_angles( @$mid_atom_coord,
-					  @$up_atom_coord,
-					  @$side_atom_coord );
+	find_euler_angles( @$mid_atom_coord,
+			   @$up_atom_coord,
+			   @$side_atom_coord );
 
     # Bond angle matrices.
     my @rot_x_matrix = ( [ 1, 0, 0, 0 ],
-			 [ 0, 'cos($theta)', '-sin($theta)', 0 ],
-			 [ 0, 'sin($theta)', 'cos($theta)', 0 ],
+			 [ 0, 'cos(theta)', '-sin(theta)', 0 ],
+			 [ 0, 'sin(theta)', 'cos(theta)', 0 ],
 			 [ 0, 0, 0, 1 ] );
-    my @rot_y_matrix = ( [ 'cos($psi)', 0, 'sin($psi)', 0 ],
+    my @rot_y_matrix = ( [ 'cos(psi)', 0, 'sin(psi)', 0 ],
 			 [ 0, 1, 0, 0 ],
-			 [ '-sin($psi)', 0, 'cos($psi)', 0 ],
+			 [ '-sin(psi)', 0, 'cos(psi)', 0 ],
 			 [ 0, 0, 0, 1 ] );
-
-    # Incorporating symbol for bond length - len.
-    my @symbols = ( "theta", "psi", "i" );
 
     # Multiplying multiple matrices to get a final form.
     my @angle_matrix =
-	LinearAlgebra::mult_matrix_product(
-	    \@symbols,
-	    LinearAlgebra::switch_ref_frame( "global",
-    	    				     $mid_atom_coord,
-    	    				     $up_atom_coord,
-    	    				     $side_atom_coord ),
-	    \@rot_y_matrix,
-	    \@rot_x_matrix,
-	    LinearAlgebra::switch_ref_frame( "local",
-    	    				     $mid_atom_coord,
-    	    				     $up_atom_coord,
-    	    				     $side_atom_coord ) );
+	matrix_product( switch_ref_frame( "global",
+					  $mid_atom_coord,
+					  $up_atom_coord,
+					  $side_atom_coord ),
+			\@rot_y_matrix,
+			\@rot_x_matrix,
+			switch_ref_frame( "local",
+					  $mid_atom_coord,
+					  $up_atom_coord,
+					  $side_atom_coord ) );
 
     return \@angle_matrix;
 }

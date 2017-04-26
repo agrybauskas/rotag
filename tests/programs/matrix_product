@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra;
-use Data::Dumper;
+use LinearAlgebra qw( evaluate_matrix matrix_product );
+
 #
 # Unit test: LinearAlgebra::matrix_product.
 #
@@ -32,9 +32,8 @@ while( <> ) {
     }
 }
 
-my $matrix_product =
-    LinearAlgebra::evaluate( \%variable_values,
-			     LinearAlgebra::matrix_product( \@matrices ) );
+my $matrix_product = evaluate_matrix( \%variable_values,
+				      matrix_product( \@matrices ) );
 
 foreach( @$matrix_product ) {
     print( join( "\t", @$_ ), "\n" );

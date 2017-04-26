@@ -1,10 +1,14 @@
 package Utils;
 
+use Exporter qw( import );
+@EXPORT_OK = qw( select_atom_data );
+
 use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser;
+use CifParser qw( filter_atoms
+                  obtain_atom_site );
 
 sub select_atom_data
 {
@@ -22,9 +26,9 @@ sub select_atom_data
     my @selected_atom_data =
 	@{ CifParser::select_atom_data(
 	       \@data_selector,
-	       &CifParser::filter_atoms(
+	       &filter_atoms(
 		   \%attribute_selector,
-		   &CifParser::obtain_atom_site( @_ ) ) ) };
+		   &obtain_atom_site( @_ ) ) ) };
 
     return \@selected_atom_data;
 }

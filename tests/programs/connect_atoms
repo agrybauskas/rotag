@@ -4,9 +4,9 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser;
-use ConnectAtoms;
-use Data::Dumper;
+use CifParser qw( obtain_atom_site );
+use ConnectAtoms qw( connect_atoms );
+
 #
 # Unit test: ConnectAtoms::connect_atoms
 #
@@ -20,13 +20,11 @@ my $bond_length_error = shift; # In angstroms.
 my @cif = <>;
 
 # Selects atom's data for further analysis.
-my $atom_site =
-    CifParser::obtain_atom_site( @cif );
+my $atom_site = obtain_atom_site( @cif );
 
-my %connected_atoms =
-    %{ ConnectAtoms::connect_atoms( $bond_length,
-				    $bond_length_error,
-				    $atom_site ) };
+my %connected_atoms = %{ connect_atoms( $bond_length,
+					$bond_length_error,
+					$atom_site ) };
 
 my @atom_coord;
 my @parent_atom;

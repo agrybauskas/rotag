@@ -1,10 +1,13 @@
 package SidechainModels;
 
+use Exporter qw( import );
+@EXPORT_OK = qw( rotation_only );
+
 use strict;
 use warnings;
 
 use lib qw( ./ );
-use CifParser;
+use CifParser qw( select_atom_data filter_atoms );
 use ConnectAtoms;
 use AlterMolecule;
 use LinearAlgebra;
@@ -61,9 +64,9 @@ sub rotation_only
 
     # Selects specified atom(s) id(s).
     my $target_atom_id =
-	&CifParser::select_atom_data( [ "id" ],
-				      &CifParser::filter_atoms( $atom_specifier,
-								$atom_site ) );
+	&select_atom_data( [ "id" ],
+			   &filter_atoms( $atom_specifier,
+					  $atom_site ) );
 
     # Iterates through target atom(s) and assigns conformational equations which
     # can produce pseudo-atoms later.
@@ -91,37 +94,37 @@ sub rotation_only
 	    # except for CA atom.
 	    if( $mid_atom_type eq "CA" ) {
 		$side_atom_coord =
-		    &CifParser::select_atom_data(
+		    &select_atom_data(
 		    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-		    &CifParser::filter_atoms(
+		    &filter_atoms(
 			{ "label_atom_id" => [ "N" ] },
 			$atom_site ) );
 	    } else {
 		$side_atom_coord =
-		    &CifParser::select_atom_data(
+		    &select_atom_data(
 		    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-		    &CifParser::filter_atoms(
+		    &filter_atoms(
 			{ "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] },
 			$atom_site ) );
 	    }
 
 	    $mid_atom_coord =
-		&CifParser::select_atom_data(
+		&select_atom_data(
 		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
-		&CifParser::filter_atoms(
+		&filter_atoms(
 		    { "label_atom_id" => [ $rotatable_bonds[$i][0] ] },
 		    $atom_site ) );
 
 	    $up_atom_coord =
-		&CifParser::select_atom_data(
+		&select_atom_data(
 		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
-		&CifParser::filter_atoms(
+		&filter_atoms(
 		    { "label_atom_id" => [ $rotatable_bonds[$i][1] ] },
 		    $atom_site ) );
-	    
+
 	    # Creates and appends matrices to a list of matrices that later
 	    # will be multiplied.
-	     
+
 	}
     }
 }

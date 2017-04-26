@@ -3,13 +3,11 @@
 use strict;
 use warnings;
 
-use Math::Complex;
-
 use lib "../../lib/perl";
-use AlterMolecule;
+use LinearAlgebra qw( switch_ref_frame );
 
 use lib "../lib";
-use Utils;
+use Utils qw( select_atom_data );
 
 #
 # Unit test: LinearAlgebra::switch_ref_frame.
@@ -27,16 +25,14 @@ my $ref_frame = shift;
 my @cif = <>;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     $attribute_select,
-			     @cif );
+my $selected_atom_data = select_atom_data( $attribute_filter,
+					   $attribute_select,
+					   @cif );
 
-my @switched_ref_frame =
-    LinearAlgebra::switch_ref_frame( $ref_frame,
-				     $selected_atom_data->[1],
-				     $selected_atom_data->[2],
-				     $selected_atom_data->[0] );
+my @switched_ref_frame = switch_ref_frame( $ref_frame,
+					   $selected_atom_data->[1],
+					   $selected_atom_data->[2],
+					   $selected_atom_data->[0] );
 
 foreach( @switched_ref_frame ) {
 	foreach( @$_ ) {

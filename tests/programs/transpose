@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra;
+use LinearAlgebra qw( transpose );
 
 #
 # Unit test: LinearAlgebra::transpose
@@ -20,8 +20,7 @@ while( <> ) {
     push( @matrix, [ split( " ", $_ ) ] );
 }
 
-my $transposed_matrix =
-    LinearAlgebra::transpose( \@matrix );
+my $transposed_matrix = transpose( \@matrix );
 
 foreach( @$transposed_matrix ) {
     print( join( "\t", @$_ ), "\n" );

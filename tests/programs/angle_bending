@@ -3,15 +3,13 @@
 use strict;
 use warnings;
 
-use Math::Complex;
-
 use lib "../../lib/perl";
-use AlterMolecule;
-use LinearAlgebra;
+use AlterMolecule qw( angle_bending );
+use LinearAlgebra qw( matrix_product );
 
 use lib "../lib";
-use Utils;
-use Data::Dumper;
+use Utils qw( select_atom_data );
+
 #
 # Unit test: AlterMolecule::angle_bending.
 #
@@ -31,9 +29,9 @@ my @cif = <>;              # Jmol.
 
 # Selects atom's data for further analysis.
 my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     $attribute_select,
-			     @cif );
+    select_atom_data( $attribute_filter,
+		      $attribute_select,
+		      @cif );
 
 my @target_atom_data = map { [ $_ ] } ( @{ $selected_atom_data->[3] }, 1 );
 
@@ -48,14 +46,13 @@ grep { $_ =~ /ATOM/ }
 @cif;
 
 # Changes bond by certain distance.
-my @symbols = ( "theta", "psi", "i" );
+my @symbols = ( "theta", "psi" );
 my $bent_atom_coord =
-    &LinearAlgebra::two_matrix_product(
-	\@symbols,
-	@{ AlterMolecule::angle_bending( $selected_atom_data->[1],
-					 $selected_atom_data->[2],
-					 $selected_atom_data->[0] ) },
-	\@target_atom_data );
+    &matrix_product( \@symbols,
+		     @{ angle_bending( $selected_atom_data->[1],
+				       $selected_atom_data->[2],
+				       $selected_atom_data->[0] ) },
+		     \@target_atom_data );
 
 # Smallest change in bond length by given num_of_points and bond_min_max.
 my $smallest_angle = $angle_min_max / sqrt( $num_of_points );

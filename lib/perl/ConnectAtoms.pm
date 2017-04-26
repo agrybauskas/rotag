@@ -1,12 +1,16 @@
 package ConnectAtoms;
 
+use Exporter qw( import );
+@EXPORT_OK = qw( create_box
+                 connect_atoms );
+
 use strict;
 use warnings;
 
-use List::Util qw(min max);
+use List::Util qw( min max );
 
 use lib qw( ./ );
-use CifParser;
+use CifParser qw( select_atom_data );
 
 # ------------------------------ Connect atoms ------------------------------- #
 
@@ -68,13 +72,13 @@ sub connect_atoms
     my ( $bond_length, $length_error, $atom_site ) = @_;
 
     my $all_atom_coord =
-	CifParser::select_atom_data( [ "id", "Cartn_x", "Cartn_y", "Cartn_z" ],
-				     $atom_site );
+	select_atom_data( [ "id", "Cartn_x", "Cartn_y", "Cartn_z" ],
+			  $atom_site );
 
     # Creates smallest box that contain all atoms.
     my $only_atom_coord =
-	CifParser::select_atom_data( [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-				     $atom_site );
+	select_atom_data( [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+			  $atom_site );
     my @boundary_box = create_box( @$only_atom_coord );
 
     my %grid_box;

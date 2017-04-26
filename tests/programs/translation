@@ -4,33 +4,33 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra;
+use LinearAlgebra qw( translation matrix_product);
 
 use lib "../lib";
-use Utils;
+use Utils qw( select_atom_data );
 
 #
-# Unit test: LinearAlgebra::rotate_z_axis.
+# Unit test: LinearAlgebra::translate
 #
-# Rotates along z-axis of the global frame of reference.
+# Translates atom by a given displacement.
 #
-# Example: ./rotate_z_axis "label_atom_id CA,N,CB,OG" \
-#                          "Cartn_x,Cartn_y,Cartn_z" \
-#                          "1.571" < example.cif
+# Example: ./translate "label_atom_id CA,N,CB,OG" \
+#                      "Cartn_x,Cartn_y,Cartn_z" \
+#                      "1.000,1.000,1.000" < example.cif
 #
 
 my $attribute_filter = shift;
 my $attribute_select = shift;
-my $angle = shift;
+my $transl_coord = shift;
 my @cif = <>;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     $attribute_select,
-			     @cif );
+my $selected_atom_data = select_atom_data( $attribute_filter,
+					   $attribute_select,
+					   @cif );
 
-# Rotates all atoms along z-axis by given angle.
+# Translates coordinates by given displacement.
+my @transl_coord = split( ",", $transl_coord );
 my @transf_atom_data;
 
 foreach ( @$selected_atom_data ) {
@@ -45,9 +45,8 @@ foreach ( @$selected_atom_data ) {
 
     # Makes actual rotation.
     push( @transf_atom_data,
-	  LinearAlgebra::two_matrix_product(
-	      [ "i" ],
-	      LinearAlgebra::rotate_z_axis( $angle ),
+	  matrix_product(
+	      translation( @transl_coord ),
 	      \@atom_coord ) );
 }
 

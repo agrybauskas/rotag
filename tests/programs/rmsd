@@ -4,11 +4,11 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use Measure;
+use Measure qw( rmsd );
 
 use lib "../lib";
 use Utils;
-use Data::Dumper;
+
 #
 # Unit test: Measure::rmsd
 #
@@ -28,4 +28,4 @@ while( <> ) {
 }
 
 # Prints out rmsd of given two sets.
-printf( "%.3f\n", Measure::rmsd( @coord_sets ) );
+printf( "%.3f\n", rmsd( @coord_sets ) );

@@ -4,10 +4,14 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra;
+use LinearAlgebra qw( create_ref_frame
+                      find_euler_angles
+                      z_axis_rotation
+                      x_axis_rotation 
+                      translation );
 
 use lib "../lib";
-use Utils;
+use Utils qw( select_atom_data );
 
 #
 # Unit test: LinearAlgebra::create_ref_frame
@@ -24,10 +28,9 @@ my $attribute_select = shift;
 my @cif = <>;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     $attribute_select,
-			     @cif );
+my $selected_atom_data = select_atom_data( $attribute_filter,
+					   $attribute_select,
+					   @cif );
 
 # Finds Euler angles and makes rotational matrices.
 my @mid_atom_coord =  ( $selected_atom_data->[1][0],
@@ -40,22 +43,18 @@ my @side_atom_coord = ( $selected_atom_data->[0][0],
 			$selected_atom_data->[0][1],
 			$selected_atom_data->[0][2] );
 
-my @local_ref_frame =
-    LinearAlgebra::create_ref_frame( @mid_atom_coord,
-				     @up_atom_coord,
-				     @side_atom_coord );
+my @local_ref_frame = create_ref_frame( @mid_atom_coord,
+					@up_atom_coord,
+					@side_atom_coord );
 
-my ( $alpha, $beta, $gamma ) =
-    LinearAlgebra::find_euler_angles( @mid_atom_coord,
-				      @up_atom_coord,
-				      @side_atom_coord );
+my ( $alpha, $beta, $gamma ) = find_euler_angles( @mid_atom_coord,
+						  @up_atom_coord,
+						  @side_atom_coord );
 
 # Transforms given atom coordinates and prepares data for Jmol.
 print( "data \"model\"\n" );
 print( scalar( grep { /ATOM/ } @cif ), "\n" );
 print( "testing\n" );
-
-my @symbols = ( "i" );
 
 for my $cif_line ( grep( /^ATOM/, @cif ) ){
     my @cif_data = split( " ", $cif_line );
@@ -65,14 +64,13 @@ for my $cif_line ( grep( /^ATOM/, @cif ) ){
 		       [ $cif_data[12] ],
 		       [ 1 ] );
     my @tranf_atom_coord =
-	LinearAlgebra::mult_matrix_product(
-	    \@symbols,
-	    LinearAlgebra::rotate_z_axis( $alpha ),
-	    LinearAlgebra::rotate_x_axis( $beta ),
-	    LinearAlgebra::rotate_z_axis( $gamma ),
-	    LinearAlgebra::translate( ( - $mid_atom_coord[0],
-					- $mid_atom_coord[1],
-					- $mid_atom_coord[2] ) ),
+	matrix_product( 
+	    z_axis_rotation( $alpha ),
+	    x_axis_rotation( $beta ),
+	    z_axis_rotation( $gamma ),
+	    translation( ( - $mid_atom_coord[0],
+			   - $mid_atom_coord[1],
+			   - $mid_atom_coord[2] ) ),
 	    \@atom_coord );
     print( "$atom_name "
     	   . "$tranf_atom_coord[0][0][0] "

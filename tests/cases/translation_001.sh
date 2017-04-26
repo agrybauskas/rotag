@@ -5,7 +5,7 @@ cif_file=../inputs/serine_001.cif
 
 atom_specifier="label_atom_id CA,N,CB,OG"
 data_specifier="Cartn_x,Cartn_y,Cartn_z"
-angle="1.5708" # In radians.
+transl_coord="1.000,1.000,1.000"
 
-../programs/rotate_y_axis "${atom_specifier}" "${data_specifier}" \
-			  "${angle}" < ${cif_file}
+../programs/translation "${atom_specifier}" "${data_specifier}" \
+			"${transl_coord}" < ${cif_file}

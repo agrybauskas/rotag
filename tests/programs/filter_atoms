@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser;
+use CifParser qw( filter_atoms );
 
 #
 # Unit test: CifParser::filter_atoms.
@@ -22,9 +22,8 @@ my %attribute_selector = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
                            split( "&", $attribute_selector ) );
 
 # Performs filtering.
-my $filtered_atoms =
-    CifParser::filter_atoms( \%attribute_selector,
-			     &CifParser::obtain_atom_site( <> ) );
+my $filtered_atoms = filter_atoms( \%attribute_selector,
+				   &CifParser::obtain_atom_site( <> ) );
 my $attribute_names = $filtered_atoms->{"attributes"};
 my @attribute_names = @$attribute_names;
 my %filtered_atoms = %$filtered_atoms;

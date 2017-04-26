@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use Measure;
+use Measure qw( bond_length );
 
 use lib "../lib";
-use Utils;
+use Utils qw( select_atom_data );
 
 #
 # Unit test: Measure::bond_length
@@ -23,10 +23,9 @@ my $angle = shift;
 my @cif = <>;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     $attribute_select,
-			     @cif );
+my $selected_atom_data = select_atom_data( $attribute_filter,
+					   $attribute_select,
+					   @cif );
 
 # Prints out length of the bond in angstroms.
-printf( "%.3f\n", Measure::bond_length( @$selected_atom_data ) );
+printf( "%.3f\n", bond_length( @$selected_atom_data ) );

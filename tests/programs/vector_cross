@@ -4,9 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra;
-
-use Data::Dumper;
+use LinearAlgebra qw( vector_cross );
 
 #
 # Unit test: LinearAlgebra::vector_cross.
@@ -19,7 +17,6 @@ use Data::Dumper;
 my ( $left_matrix, $right_matrix ) =
     map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } <>;
 
-my $cross_product =
-    LinearAlgebra::vector_cross( $left_matrix, $right_matrix );
+my $cross_product = vector_cross( $left_matrix, $right_matrix );
 
 print( join( "\t", @$cross_product ) );
