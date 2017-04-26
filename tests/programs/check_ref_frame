@@ -8,7 +8,8 @@ use LinearAlgebra qw( create_ref_frame
                       find_euler_angles
                       z_axis_rotation
                       x_axis_rotation 
-                      translation );
+                      translation 
+                      matrix_product );
 
 use lib "../lib";
 use Utils qw( select_atom_data );

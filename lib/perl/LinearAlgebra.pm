@@ -17,7 +17,7 @@ use Exporter qw( import );
 
 use strict;
 use warnings;
-
+use Data::Dumper;
 # --------------------------- Numeric linear algebra -------------------------- #
 
 #
@@ -151,32 +151,31 @@ sub switch_ref_frame
     my ( $alpha, $beta, $gamma ) = find_euler_angles( @$mid_atom_coord,
 						      @$up_atom_coord,
 						      @$side_atom_coord );
-
     # Depending on the option switch_to_local,
     my @switch_matrix;
 
     if( $switch_to_local eq "local" ) {
-	@switch_matrix =
-	    matrix_product( z_axis_rotation( $alpha ),
-			    x_axis_rotation( $beta ),
-			    z_axis_rotation( $gamma ),
-			    translation( ( -$mid_atom_coord->[0],
-					   -$mid_atom_coord->[1],
-					   -$mid_atom_coord->[2] ) ) );
+    	@switch_matrix =
+    	    matrix_product( &z_axis_rotation( $alpha ),
+    			    &x_axis_rotation( $beta ),
+    			    &z_axis_rotation( $gamma ),
+    			    &translation( ( -$mid_atom_coord->[0],
+					    -$mid_atom_coord->[1],
+					    -$mid_atom_coord->[2] ) ) );
     } elsif( $switch_to_local eq "global" ) {
-	@switch_matrix =
-	    matrix_product( translation( ( $mid_atom_coord->[0],
-					   $mid_atom_coord->[1],
-					   $mid_atom_coord->[2] ) ),
-			    z_axis_rotation( -$gamma ),
-			    x_axis_rotation( -$beta ),
-			    z_axis_rotation( -$alpha ) );
+    	@switch_matrix =
+    	    matrix_product( &translation( ( $mid_atom_coord->[0],
+					    $mid_atom_coord->[1],
+					    $mid_atom_coord->[2] ) ),
+    			    &z_axis_rotation( -$gamma ),
+    			    &x_axis_rotation( -$beta ),
+    			    &z_axis_rotation( -$alpha ) );
     } else {
-	die "Must choose \$switch_to_global value between \"local\" and"
-	    . "\"global\".\n"
+    	die "Must choose \$switch_to_global value between \"local\" and"
+    	    . "\"global\".\n"
     }
 
-    return @switch_matrix; # TODO: return reference.
+    return @switch_matrix;
 }
 
 #
@@ -367,7 +366,7 @@ sub transpose
 
 sub matrix_product
 {
-    my ( $matrices ) = @_;
+    my ( @matrices ) = @_;
 
     # Converts matrices to GiNaC readable input.
     my $matrix_equation_ginac =
@@ -376,7 +375,7 @@ sub matrix_product
 	map { "[" . join( ",",
 	@$_ ) . "]" }
         @$_ ) . "]" }
-	@$matrices );
+	@matrices );
 
     # Converts perl power symbol ** to GiNaC's ^.
     $matrix_equation_ginac =~ s/\*\*/^/g;

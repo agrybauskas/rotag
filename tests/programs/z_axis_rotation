@@ -45,9 +45,7 @@ foreach ( @$selected_atom_data ) {
 
     # Makes actual rotation.
     push( @transf_atom_data,
-	  matrix_product(
-	      z_axis_rotation( $angle ),
-	      \@atom_coord ) );
+	  matrix_product( &z_axis_rotation( $angle ), \@atom_coord ) );
 }
 
 # Prints out results.
