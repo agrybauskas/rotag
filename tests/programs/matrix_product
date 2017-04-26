@@ -33,7 +33,7 @@ while( <> ) {
 }
 
 my $matrix_product = evaluate_matrix( \%variable_values,
-				      matrix_product( \@matrices ) );
+				      &matrix_product( @matrices ) );
 
 foreach( @$matrix_product ) {
     print( join( "\t", @$_ ), "\n" );

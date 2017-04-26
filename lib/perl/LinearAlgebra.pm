@@ -227,7 +227,7 @@ sub y_axis_rotation
 
 sub z_axis_rotation
 {
-    my $angle = @_;
+    my ( $angle ) = @_;
 
     my @rot_matrix_z =
 	( [ cos( $angle ), -sin( $angle ), 0, 0 ],
@@ -366,7 +366,7 @@ sub transpose
 
 sub matrix_product
 {
-    my ( @matrices ) = @_;
+    my @matrices = @_;
 
     # Converts matrices to GiNaC readable input.
     my $matrix_equation_ginac =
