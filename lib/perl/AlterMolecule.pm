@@ -1,12 +1,12 @@
 package AlterMolecule;
 
-use Exporter qw( import );
-@EXPORT_OK = qw( bond_torsion
-                 bond_stretching
-                 angle_bending );
-
 use strict;
 use warnings;
+
+use Exporter qw( import );
+our @EXPORT_OK = qw( bond_torsion
+                     bond_stretching
+                     angle_bending );
 
 use lib qw( ./ );
 use LinearAlgebra qw( matrix_product
@@ -41,18 +41,18 @@ sub bond_torsion
 			    [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
-    my @rot_matrix =
-    	matrix_product( switch_ref_frame( "global",
-					  $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord ),
-			\@bond_rot_matrix,
-			switch_ref_frame( "local",
-					  $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord ) );
+    my $rot_matrix =
+    	&matrix_product( &switch_ref_frame( "global",
+					    $mid_atom_coord,
+					    $up_atom_coord,
+					    $side_atom_coord ),
+			 \@bond_rot_matrix,
+			 &switch_ref_frame( "local",
+					    $mid_atom_coord,
+					    $up_atom_coord,
+					    $side_atom_coord ) );
 
-    return \@rot_matrix;
+    return $rot_matrix;
 }
 
 #
@@ -83,18 +83,18 @@ sub bond_stretching
 			    [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
-    my @transl_matrix =
-	matrix_product( switch_ref_frame( "global",
-					  $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord ),
+    my $transl_matrix =
+	matrix_product( &switch_ref_frame( "global",
+					   $mid_atom_coord,
+					   $up_atom_coord,
+					   $side_atom_coord ),
 			\@bond_len_matrix,
-			switch_ref_frame( "local",
-					  $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord ) );
+			&switch_ref_frame( "local",
+					   $mid_atom_coord,
+					   $up_atom_coord,
+					   $side_atom_coord ) );
 
-    return \@transl_matrix;
+    return $transl_matrix;
 }
 
 #
@@ -128,19 +128,19 @@ sub angle_bending
 			 [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
-    my @angle_matrix =
-	matrix_product( switch_ref_frame( "global",
-					  $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord ),
+    my $angle_matrix =
+	matrix_product( &switch_ref_frame( "global",
+					   $mid_atom_coord,
+					   $up_atom_coord,
+					   $side_atom_coord ),
 			\@rot_y_matrix,
 			\@rot_x_matrix,
-			switch_ref_frame( "local",
-					  $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord ) );
+			&switch_ref_frame( "local",
+					   $mid_atom_coord,
+					   $up_atom_coord,
+					   $side_atom_coord ) );
 
-    return \@angle_matrix;
+    return $angle_matrix;
 }
 
 1;

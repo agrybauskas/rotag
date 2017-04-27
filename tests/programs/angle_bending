@@ -5,11 +5,11 @@ use warnings;
 
 use lib "../../lib/perl";
 use AlterMolecule qw( angle_bending );
-use LinearAlgebra qw( matrix_product );
+use LinearAlgebra qw( vectorize matrix_product evaluate_matrix );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-
+use Data::Dumper;
 #
 # Unit test: AlterMolecule::angle_bending.
 #
@@ -28,12 +28,9 @@ my $num_of_points = shift; # Amount of pseudo-atoms that will be generated in
 my @cif = <>;              # Jmol.
 
 # Selects atom's data for further analysis.
-my $selected_atom_data =
-    select_atom_data( $attribute_filter,
-		      $attribute_select,
-		      @cif );
-
-my @target_atom_data = map { [ $_ ] } ( @{ $selected_atom_data->[3] }, 1 );
+my $selected_atom_data = select_atom_data( $attribute_filter,
+					   $attribute_select,
+					   @cif );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
@@ -46,13 +43,11 @@ grep { $_ =~ /ATOM/ }
 @cif;
 
 # Changes bond by certain distance.
-my @symbols = ( "theta", "psi" );
 my $bent_atom_coord =
-    &matrix_product( \@symbols,
-		     @{ angle_bending( $selected_atom_data->[1],
-				       $selected_atom_data->[2],
-				       $selected_atom_data->[0] ) },
-		     \@target_atom_data );
+    &matrix_product( &angle_bending( $selected_atom_data->[1],
+				     $selected_atom_data->[2],
+				     $selected_atom_data->[0] ),
+		     &vectorize( $selected_atom_data->[3]) );
 
 # Smallest change in bond length by given num_of_points and bond_min_max.
 my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
@@ -66,23 +61,24 @@ my @delta_angles =
         ( 1..(sqrt($num_of_points) / 2) );
 push( @delta_angles, 0 );
 
-# Evaluates symbolic expression.
-my $eval_expression;
-
 # Calculates the bend between atoms at theta and psi angles numerically and
 # creates Jmol readable structure file.
-foreach( @delta_angles ) {
-    $theta = $_;
-    foreach( @delta_angles ){
-	$psi = $_;
-	foreach( $bent_atom_coord ) {
+my %symbols;
+my $evaluated_matrix;
+
+for my $delta ( @delta_angles ) {
+    $theta = $delta;
+    for my $delta ( @delta_angles ){
+	$psi = $delta;
+	%symbols = ( "theta" => "$theta", "psi" => "$psi" );
+	$evaluated_matrix =
+	    evaluate_matrix( \%symbols,
+			     &matrix_product( $bent_atom_coord ) );
+
+	for my $row ( $evaluated_matrix ) {
 	    print( "X\t" );
-	    foreach( @$_[0..2] ) {
-	    	foreach( @$_ ) {		    
-	    	    $eval_expression = eval( $_ ); # Takes only real part
-	    	                                   # of the complex number.
-	    	    printf( "%.3f\t", $eval_expression );
-	    	}
+	    for my $item ( @$row[0..2] ) {
+		printf( "%.3f\t", @$item );
 	    }
 	    print( "\n" );
 	}

@@ -5,7 +5,7 @@ use warnings;
 
 use lib "../../lib/perl";
 use LinearAlgebra qw( evaluate_matrix matrix_product );
-use Data::Dumper;
+
 #
 # Unit test: LinearAlgebra::matrix_product.
 #

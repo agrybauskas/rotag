@@ -8,6 +8,7 @@ use Exporter qw( import );
                  y_axis_rotation
                  z_axis_rotation
                  translation
+                 vectorize
                  vector_cross
                  matrix_sum
                  matrix_sub
@@ -256,6 +257,25 @@ sub translation
 	  [ 0, 0, 0, 1 ] );
 
     return \@transl_matrix;
+}
+
+#
+# Takes simple array of 3 items and turns to 4x1 matrix.
+# Input  (2 arg): array of 3 items.
+# Output (1 arg): 4x1 matrix.
+#
+
+sub vectorize
+{
+    my ( $array ) = @_;
+    my @matrix;
+
+    for my $row ( @{ $array } ) {
+	push( @matrix, [ $row ] );
+    }
+    push( @matrix, [ 1 ] );
+
+    return \@matrix;
 }
 
 #

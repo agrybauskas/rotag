@@ -5,10 +5,11 @@ use warnings;
 
 use lib "../../lib/perl";
 use AlterMolecule qw( bond_stretching );
+use LinearAlgebra qw( vectorize evaluate_matrix matrix_product );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-
+use Data::Dumper;
 #
 # Unit test: AlterMolecule::bond_stretching.
 #
@@ -42,10 +43,12 @@ grep { $_ =~ /ATOM/ }
 @cif;
 
 # Changes bond by certain distance.
-my $transl_atom_coord = bond_stretching( $selected_atom_data->[1],
-					 $selected_atom_data->[2],
-					 $selected_atom_data->[0],
-					 $selected_atom_data->[3] );
+my $transl_atom_coord =
+    matrix_product(
+	&bond_stretching( $selected_atom_data->[1],
+			  $selected_atom_data->[2],
+			  $selected_atom_data->[0] ),
+	&vectorize( $selected_atom_data->[3] ) );
 
 # Smallest change in bond length by given num_of_points and bond_min_max.
 my $smallest_length = $bond_min_max / $num_of_points;
@@ -61,16 +64,19 @@ my @delta_lengths =
 my $eval_expression;
 
 # Translates along the bond and creates Jmol readable structure file.
-foreach( @delta_lengths ) {
-    $r = $_;
-    foreach( @$transl_atom_coord ) {
+my %symbols;
+my $evaluated_matrix;
+
+for my $delta ( @delta_lengths ) {
+    $symbols{"r"} = "$delta";
+    $evaluated_matrix =
+	evaluate_matrix( \%symbols,
+			 &matrix_product( $transl_atom_coord ) );
+
+    for my $row ( $evaluated_matrix ) {
 	print( "X\t" );
-	foreach( @$_[0..2] ) {
-	    foreach( @$_ ) {
-		$eval_expression = Re( eval( $_ ) ); # Takes only real part
-		                                     # of the complex number.
-		printf( "%.3f\t", $eval_expression );
-	    }
+	for my $item ( @$row[0..2] ) {
+	    printf( "%.3f\t", @$item );
 	}
 	print( "\n" );
     }

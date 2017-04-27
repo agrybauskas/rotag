@@ -3,16 +3,17 @@
 use strict;
 use warnings;
 
-use Math::Complex;
+use Math::Trig;
 
 use lib "../../lib/perl";
-use AlterMolecule;
+use AlterMolecule qw( bond_torsion );
+use LinearAlgebra qw( matrix_product evaluate_matrix vectorize);
 
 use lib "../lib";
-use Utils;
-
+use Utils qw( select_atom_data );
+use Data::Dumper;
 #
-# Unit test: AlterMolecule::rotate_bond.
+# Unit test: AlterMolecule::bond_torsion.
 #
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
@@ -33,10 +34,9 @@ my $rotation_num = shift;
 my @cif = <>;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data =
-    Utils::select_atom_data( $attribute_filter,
-			     $attribute_select,
-			     @cif );
+my $selected_atom_data = select_atom_data( $attribute_filter,
+					   $attribute_select,
+					   @cif );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
@@ -50,10 +50,10 @@ grep { $_ =~ /ATOM/ }
 
 # Rotates once along chi angle.
 my $rotated_atom_coord =
-    AlterMolecule::rotate_bond( $selected_atom_data->[1],
-				$selected_atom_data->[2],
-				$selected_atom_data->[0],
-				$selected_atom_data->[3] );
+    &matrix_product( &bond_torsion( $selected_atom_data->[1],
+				    $selected_atom_data->[2],
+				    $selected_atom_data->[0] ),
+		     &vectorize( $selected_atom_data->[3] ) );
 
 # Calculates angles that will be rotated along symbolically.
 my $pi = $PI;
@@ -62,20 +62,23 @@ my $small_angle = 2 / $rotation_num;
 my @angles = map { $_ * $small_angle * $pi } ( 1..$rotation_num-1 );
 
 # Evaluates symbolic expression.
-my $eval_expression;
+my $evaluated_matrix;
 
 # Rotates along chi angle numerically and creates Jmol readable structure file.
+my %symbols;
+
 foreach( @angles ) {
     $chi = $_;
-    foreach( @$rotated_atom_coord ) {
-	print( "X\t" );
-	foreach( @$_[0..2] ) {
-	    foreach( @$_ ) {
-		$eval_expression = Re( eval( $_ ) ); # Takes only real part
-		                                     # of the complex number.
-		printf( "%.3f\t", $eval_expression );
-	    }
-	}
-	print( "\n" );
+    $symbols{"chi"} = $chi;
+    $evaluated_matrix = # TODO: find out, why it does not work without
+	                #       matrix_product function.
+    	&evaluate_matrix( \%symbols,
+    			  &matrix_product( $rotated_atom_coord ) );
+    for my $row ( $evaluated_matrix ) {
+    	print( "X\t" );
+    	for my $item ( @$row[0..2] ) {
+    	    printf( "%.3f\t", @$item );
+    	}
+    	print( "\n" );
     }
 }
