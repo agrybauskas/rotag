@@ -1,16 +1,16 @@
 package SidechainModels;
 
-use Exporter qw( import );
-@EXPORT_OK = qw( rotation_only );
-
 use strict;
 use warnings;
+
+use Exporter qw( import );
+our @EXPORT_OK = qw( rotation_only );
 
 use lib qw( ./ );
 use CifParser qw( select_atom_data filter_atoms );
 use ConnectAtoms;
-use AlterMolecule;
-use LinearAlgebra;
+use AlterMolecule qw( bond_torsion );
+use LinearAlgebra qw( vectorize switch_ref_frame evaluate_matrix );
 
 use feature qw( current_sub );
 use Data::Dumper;
@@ -72,18 +72,24 @@ sub rotation_only
     # can produce pseudo-atoms later.
     my $residue_name;
     my $atom_type;
+
     my @rotatable_bonds;
+
     my $mid_atom_type;
     my $up_atom_type;
     my $side_atom_type;
+
     my $mid_atom_coord;
     my $up_atom_coord;
     my $side_atom_coord;
+
+    my @transf_matrices; # Matrices for transforming atom coordinates.
 
     for my $id ( @$target_atom_id ) {
 	$residue_name = $atom_site->{"data"}{"@$id"}{"label_comp_id"};
 	$atom_type = $atom_site->{"data"}{"@$id"}{"label_atom_id"};
 	@rotatable_bonds = @{ $ROTATABLE_BONDS{$residue_name}{$atom_type} };
+	@transf_matrices = ();
 
 	# Creates matrices for atom alterations.
 	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
@@ -124,7 +130,18 @@ sub rotation_only
 
 	    # Creates and appends matrices to a list of matrices that later
 	    # will be multiplied.
-
+	    push( @transf_matrices,
+	    	  switch_ref_frame( "local",
+				    @$mid_atom_coord,
+				    @$up_atom_coord,
+				    @$side_atom_coord ),
+		  bond_torsion( @$mid_atom_coord,
+				@$up_atom_coord,
+				@$side_atom_coord ),
+	    	  switch_ref_frame( "global",
+				    @$mid_atom_coord,
+				    @$up_atom_coord,
+				    @$side_atom_coord ) );
 	}
     }
 }
