@@ -4,14 +4,14 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( bond_torsion
-                     bond_stretching
-                     angle_bending );
+our @EXPORT_OK = qw( angle_bending
+                     bond_stretching                 
+                     bond_torsion );
 
 use lib qw( ./ );
-use LinearAlgebra qw( matrix_product
-                      switch_ref_frame
-                      find_euler_angles );
+use LinearAlgebra qw( find_euler_angles
+                      matrix_product
+                      switch_ref_frame );
 
 # ------------------ Molecule structure alteration algorithms ----------------- #
 

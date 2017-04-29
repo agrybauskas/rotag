@@ -139,17 +139,9 @@ sub rotation_only
 	    # Creates and appends matrices to a list of matrices that later
 	    # will be multiplied.
 	    push( @transf_matrices,
-	    	  switch_ref_frame( "local",
-				    @$mid_atom_coord,
-				    @$up_atom_coord,
-				    @$side_atom_coord ),
 		  bond_torsion( @$mid_atom_coord,
 				@$up_atom_coord,
-				@$side_atom_coord ),
-	    	  switch_ref_frame( "global",
-				    @$mid_atom_coord,
-				    @$up_atom_coord,
-				    @$side_atom_coord ) );
+				@$side_atom_coord ) );
 	}
 
     	$atom_site->{"data"}{"@$id"}{"conformation"} =
