@@ -10,7 +10,10 @@ use lib qw( ./ );
 use CifParser qw( select_atom_data filter_atoms );
 use ConnectAtoms;
 use AlterMolecule qw( bond_torsion );
-use LinearAlgebra qw( vectorize switch_ref_frame evaluate_matrix );
+use LinearAlgebra qw( vectorize
+                      switch_ref_frame
+                      evaluate_matrix
+                      matrix_product );
 
 use feature qw( current_sub );
 use Data::Dumper;
@@ -143,7 +146,12 @@ sub rotation_only
 				    @$up_atom_coord,
 				    @$side_atom_coord ) );
 	}
+
+	$atom_site->{"data"}{"@$id"}{"conformation"} =
+	    matrix_product( @transf_matrices );
     }
+
+    return $atom_site;
 }
 
 1;

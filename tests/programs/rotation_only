@@ -3,20 +3,53 @@
 use strict;
 use warnings;
 
+use Math::Trig;
+
 use lib "../../lib/perl";
 use CifParser qw( obtain_atom_site );
 use SidechainModels qw( rotation_only );
-
+use LinearAlgebra qw( matrix_product evaluate_matrix );
+use Data::Dumper;
 my $atom_specifier = shift;
+my $rotation_num = shift;
+my @cif = <>;
 
 # Parses selector argument from string  to proper array.
 my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-		    map { [ split( " ", $_ ) ] }
-		    split( "&", $atom_specifier ) );
+		       map { [ split( " ", $_ ) ] }
+		       split( "&", $atom_specifier ) );
 
 # Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( <> );
+my $atom_site = obtain_atom_site( @cif );
+
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
+print( "testing\n" );
+
+# Prepares selected atom data for Jmol.
+map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+map { [ split( " ", $_ ) ] }
+grep { $_ =~ /ATOM/ }
+@cif;
+
+# Calculates angles that will be rotated along symbolically.
+my $pi = 4 * atan( 1, 1 );
+my $chi;
+my $small_angle = 2 / $rotation_num;
+my @angles = map { $_ * $small_angle * $pi } ( 1..$rotation_num - 1 );
 
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
-rotation_only( $atom_site, \%atom_specifier );
+my %symbols;
+my @evaluated_matrix;
+
+for my $angle ( @angles ) {
+    $chi = $angle;
+    $symbols{"chi"} = $chi;
+    print Dumper rotation_only( $atom_site, \%atom_specifier );
+    # @evaluated_matrix =
+    # 	evaluate_matrix( \%symbols,
+    # 			 rotation_only( $atom_site, \%atom_specifier ) );
+}
+
+
