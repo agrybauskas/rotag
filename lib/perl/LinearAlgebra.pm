@@ -1,24 +1,24 @@
 package LinearAlgebra;
 
-use Exporter qw( import );
-@EXPORT_OK = qw( create_ref_frame
-                 find_euler_angles
-                 switch_ref_frame
-                 x_axis_rotation
-                 y_axis_rotation
-                 z_axis_rotation
-                 translation
-                 vectorize
-                 vector_cross
-                 matrix_sum
-                 matrix_sub
-                 transpose
-                 matrix_product
-                 evaluate_matrix );
-
 use strict;
 use warnings;
-use Data::Dumper;
+
+use Exporter qw( import );
+our @EXPORT_OK = qw( create_ref_frame
+                     find_euler_angles
+                     switch_ref_frame
+                     x_axis_rotation
+                     y_axis_rotation
+                     z_axis_rotation
+                     translation
+                     vectorize
+                     vector_cross
+                     matrix_sum
+                     matrix_sub
+                     transpose
+                     matrix_product
+                     evaluate_matrix );
+
 # --------------------------- Numeric linear algebra -------------------------- #
 
 #

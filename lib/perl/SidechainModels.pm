@@ -85,6 +85,7 @@ sub rotation_only
     my $mid_atom_coord;
     my $up_atom_coord;
     my $side_atom_coord;
+    my $target_atom_coord;
 
     my @transf_matrices; # Matrices for transforming atom coordinates.
 
@@ -93,6 +94,10 @@ sub rotation_only
 	$atom_type = $atom_site->{"data"}{"@$id"}{"label_atom_id"};
 	@rotatable_bonds = @{ $ROTATABLE_BONDS{$residue_name}{$atom_type} };
 	@transf_matrices = ();
+	$target_atom_coord =
+	    &select_atom_data( [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+			       &filter_atoms( $atom_specifier,
+					      $atom_site ) );
 
 	# Creates matrices for atom alterations.
 	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
@@ -121,14 +126,14 @@ sub rotation_only
 		&select_atom_data(
 		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
 		&filter_atoms(
-		    { "label_atom_id" => [ $rotatable_bonds[$i][0] ] },
+		    { "label_atom_id" => [ $mid_atom_type ] },
 		    $atom_site ) );
 
 	    $up_atom_coord =
 		&select_atom_data(
 		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
 		&filter_atoms(
-		    { "label_atom_id" => [ $rotatable_bonds[$i][1] ] },
+		    { "label_atom_id" => [ $up_atom_type ] },
 		    $atom_site ) );
 
 	    # Creates and appends matrices to a list of matrices that later
@@ -147,8 +152,9 @@ sub rotation_only
 				    @$side_atom_coord ) );
 	}
 
-	$atom_site->{"data"}{"@$id"}{"conformation"} =
-	    matrix_product( @transf_matrices );
+    	$atom_site->{"data"}{"@$id"}{"conformation"} =
+    	    matrix_product( @transf_matrices,
+			    vectorize( @{ $target_atom_coord } ) );
     }
 
     return $atom_site;
