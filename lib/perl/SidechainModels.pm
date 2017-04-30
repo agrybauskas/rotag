@@ -80,7 +80,6 @@ sub rotation_only
 
     my $mid_atom_type;
     my $up_atom_type;
-    my $side_atom_type;
 
     my $mid_atom_coord;
     my $up_atom_coord;
@@ -90,63 +89,65 @@ sub rotation_only
     my @transf_matrices; # Matrices for transforming atom coordinates.
 
     for my $id ( @$target_atom_id ) {
-	$residue_name = $atom_site->{"data"}{"@$id"}{"label_comp_id"};
-	$atom_type = $atom_site->{"data"}{"@$id"}{"label_atom_id"};
-	@rotatable_bonds = @{ $ROTATABLE_BONDS{$residue_name}{$atom_type} };
-	@transf_matrices = ();
-	$target_atom_coord =
-	    &select_atom_data( [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-			       &filter_atoms( $atom_specifier,
-					      $atom_site ) );
+    	$residue_name = $atom_site->{"data"}{"@$id"}{"label_comp_id"};
+    	$atom_type = $atom_site->{"data"}{"@$id"}{"label_atom_id"};
+    	@rotatable_bonds = @{ $ROTATABLE_BONDS{$residue_name}{$atom_type} };
+    	@transf_matrices = ();
+    	$target_atom_coord =
+    	    &select_atom_data( [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    			       &filter_atoms( $atom_specifier,
+    					      $atom_site ) );
 
-	# Creates matrices for atom alterations.
-	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
-	    $mid_atom_type = $rotatable_bonds[$i][0];
+    	# Creates matrices for atom alterations.
+    	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
+    	    $mid_atom_type = $rotatable_bonds[$i][0];
+	    $mid_atom_type =~ s/\s//g;
 	    $up_atom_type = $rotatable_bonds[$i][1];
+	    $up_atom_type =~ s/\s//g;
 
-	    # Information about side atom is stored in rotatable bonds array,
-	    # except for CA atom.
-	    if( $mid_atom_type eq "CA" ) {
-		$side_atom_coord =
-		    &select_atom_data(
-		    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-		    &filter_atoms(
-			{ "label_atom_id" => [ "N" ] },
-			$atom_site ) );
-	    } else {
-		$side_atom_coord =
-		    &select_atom_data(
-		    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-		    &filter_atoms(
-			{ "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] },
-			$atom_site ) );
-	    }
+    	    # Information about side atom is stored in rotatable bonds array,
+    	    # except for CA atom.
+    	    if( $mid_atom_type eq "CA" ) {
+    		$side_atom_coord =
+    		    &select_atom_data(
+    		    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    		    &filter_atoms(
+    			{ "label_atom_id" => [ "N" ] },
+    			$atom_site ) );
+    	    } else {
+    		$side_atom_coord =
+    		    &select_atom_data(
+    		    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    		    &filter_atoms(
+    			{ "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] },
+    			$atom_site ) );
+    	    }
 
-	    $mid_atom_coord =
-		&select_atom_data(
-		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
-		&filter_atoms(
-		    { "label_atom_id" => [ $mid_atom_type ] },
-		    $atom_site ) );
+    	    $mid_atom_coord =
+    		&select_atom_data(
+    		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    		&filter_atoms(
+    		    { "label_atom_id" => [ $mid_atom_type ] },
+    		    $atom_site ) );
 
-	    $up_atom_coord =
-		&select_atom_data(
-		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
-		&filter_atoms(
-		    { "label_atom_id" => [ $up_atom_type ] },
-		    $atom_site ) );
+    	    $up_atom_coord =
+    		&select_atom_data(
+    		[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    		&filter_atoms(
+    		    { "label_atom_id" => [ $up_atom_type ] },
+    		    $atom_site ) );
 
-	    # Creates and appends matrices to a list of matrices that later
-	    # will be multiplied.
-	    push( @transf_matrices,
-		  bond_torsion( @$mid_atom_coord,
-				@$up_atom_coord,
-				@$side_atom_coord ) );
-	}
+    	    # Creates and appends matrices to a list of matrices that later
+    	    # will be multiplied.
+    	    push( @transf_matrices,
+    		  bond_torsion( @$mid_atom_coord,
+    				@$up_atom_coord,
+    				@$side_atom_coord ) );
+    	}
 
     	$atom_site->{"data"}{"@$id"}{"conformation"} =
     	    matrix_product( @transf_matrices,
-			    vectorize( @{ $target_atom_coord } ) );
+    			    vectorize( @{ $target_atom_coord } ) );
     }
 
     return $atom_site;
