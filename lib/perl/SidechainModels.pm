@@ -99,7 +99,12 @@ sub rotation_only
     					      $atom_site ) );
 
     	# Creates matrices for atom alterations.
+	my $angle_symbol; # Because side chain might have multiple
+	                  # rotatable bonds, there must be distinct
+	                  # symbols for different dihedral angles.
+
     	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
+	    $angle_symbol = "chi${i}";
     	    $mid_atom_type = $rotatable_bonds[$i][0];
 	    $mid_atom_type =~ s/\s//g;
 	    $up_atom_type = $rotatable_bonds[$i][1];
@@ -140,7 +145,8 @@ sub rotation_only
     	    # Creates and appends matrices to a list of matrices that later
     	    # will be multiplied.
     	    push( @transf_matrices,
-    		  bond_torsion( @$mid_atom_coord,
+    		  bond_torsion( $angle_symbol,
+				@$mid_atom_coord,
     				@$up_atom_coord,
     				@$side_atom_coord ) );
     	}

@@ -56,7 +56,7 @@ my $evaluated_matrix;
 
 for my $angle ( @angles ) {
     $chi = $angle;
-    $symbols{"chi"} = $chi;
+    $symbols{"chi0"} = $chi;
     $evaluated_matrix =
 	&evaluate_matrix( \%symbols, matrix_product( $transf_atom_coord ) );
     printf( "X\t%.3f\t%.3f\t%.3f\n",

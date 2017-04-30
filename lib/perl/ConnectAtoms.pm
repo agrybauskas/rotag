@@ -1,13 +1,13 @@
 package ConnectAtoms;
 
-use Exporter qw( import );
-@EXPORT_OK = qw( create_box
-                 connect_atoms );
-
 use strict;
 use warnings;
 
-use List::Util qw( min max );
+use Exporter qw( import );
+our @EXPORT_OK = qw( connect_atoms
+                     create_box );
+
+use List::Util qw( max min );
 
 use lib qw( ./ );
 use CifParser qw( select_atom_data );

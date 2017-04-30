@@ -1,13 +1,13 @@
 package Measure;
 
-use Exporter qw( import );
-@EXPORT_OK = qw( bond_length
-                 bond_angle
-                 dihedral_angle
-                 rmsd );
-
 use strict;
 use warnings;
+
+use Exporter qw( import );
+our @EXPORT_OK = qw( bond_angle
+                     bond_length
+                     dihedral_angle
+                     rmsd );
 
 use Math::Trig;
 

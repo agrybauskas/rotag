@@ -44,7 +44,9 @@ grep { $_ =~ /ATOM/ }
 
 # Changes bond by certain distance.
 my $bent_atom_coord =
-    &matrix_product( &angle_bending( $selected_atom_data->[1],
+    &matrix_product( &angle_bending( "theta",
+				     "psi",
+				     $selected_atom_data->[1],
 				     $selected_atom_data->[2],
 				     $selected_atom_data->[0] ),
 		     &vectorize( $selected_atom_data->[3]) );

@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( angle_bending
-                     bond_stretching                 
+                     bond_stretching
                      bond_torsion );
 
 use lib qw( ./ );
@@ -22,23 +22,25 @@ use LinearAlgebra qw( find_euler_angles
 
 #
 # Makes a rotational transformation matrix of the bond.
-# Input  (3 arg): cartesian coordinates in array form that defines user-selected
-#                 mid, up, side.
+# Input  (4 arg): cartesian coordinates in array form that defines user-selected
+#                 mid, up, side and symbol describing dihedral angle.
 # Output (1 arg): matrix defining coordinates in symbolic mathematical form
-#                 (with undefined dihedral angle chi).
+#                 (with undefined dihedral angle).
 #
 
 sub bond_torsion
 {
-    my ( $mid_atom_coord,
+    my ( $angle_symbol,
+	 $mid_atom_coord,
 	 $up_atom_coord,
 	 $side_atom_coord ) = @_;
 
     # Rotation matrix around the bond.
-    my @bond_rot_matrix = ( [ 'cos(chi)', '-sin(chi)', 0, 0 ],
-			    [ 'sin(chi)',  'cos(chi)', 0, 0 ],
-			    [ 0, 0, 1, 0 ],
-			    [ 0, 0, 0, 1 ] );
+    my @bond_rot_matrix =
+	( [ "cos(${angle_symbol})", "-sin(${angle_symbol})", 0, 0 ],
+	  [ "sin(${angle_symbol})",  "cos(${angle_symbol})", 0, 0 ],
+	  [ 0, 0, 1, 0 ],
+	  [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
     my $rot_matrix =
@@ -57,15 +59,16 @@ sub bond_torsion
 
 #
 # Changes the length of the bond.
-# Input  (3 arg): cartesian coordinates in array form that defines user-selected
-#                 mid, up, side.
+# Input  (4 arg): cartesian coordinates in array form that defines user-selected
+#                 mid, up, side and symbol for bond length.
 # Output (1 arg): matrix defining coordinates in symbolic mathematical form
 #                 (with undefined bond length variable: bond_length).
 #
 
 sub bond_stretching
 {
-    my ( $mid_atom_coord,
+    my ( $length_symbol,
+	 $mid_atom_coord,
 	 $up_atom_coord,
 	 $side_atom_coord ) = @_;
 
@@ -79,7 +82,7 @@ sub bond_stretching
     # Translation of the bond.
     my @bond_len_matrix = ( [ 1, 0, 0, 0 ],
 			    [ 0, 1, 0, 0 ],
-			    [ 0, 0, 1, 'r' ],
+			    [ 0, 0, 1, "${length_symbol}" ],
 			    [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
@@ -106,7 +109,9 @@ sub bond_stretching
 
 sub angle_bending
 {
-    my ( $mid_atom_coord,
+    my ( $first_angle_symbol,
+	 $second_angle_symbol,
+	 $mid_atom_coord,
 	 $up_atom_coord,
 	 $side_atom_coord ) = @_;
 
@@ -118,14 +123,16 @@ sub angle_bending
 			   @$side_atom_coord );
 
     # Bond angle matrices.
-    my @rot_x_matrix = ( [ 1, 0, 0, 0 ],
-			 [ 0, 'cos(theta)', '-sin(theta)', 0 ],
-			 [ 0, 'sin(theta)', 'cos(theta)', 0 ],
-			 [ 0, 0, 0, 1 ] );
-    my @rot_y_matrix = ( [ 'cos(psi)', 0, 'sin(psi)', 0 ],
-			 [ 0, 1, 0, 0 ],
-			 [ '-sin(psi)', 0, 'cos(psi)', 0 ],
-			 [ 0, 0, 0, 1 ] );
+    my @rot_x_matrix =
+	( [ 1, 0, 0, 0 ],
+	  [ 0, "cos(${first_angle_symbol})", "-sin(${first_angle_symbol})", 0 ],
+	  [ 0, "sin(${first_angle_symbol})", "cos(${first_angle_symbol})", 0 ],
+	  [ 0, 0, 0, 1 ] );
+    my @rot_y_matrix =
+	( [ "cos(${second_angle_symbol})", 0, "sin(${second_angle_symbol})", 0 ],
+	  [ 0, 1, 0, 0 ],
+	  [ "-sin(${second_angle_symbol})", 0, "cos(${second_angle_symbol})", 0 ],
+	  [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
     my $angle_matrix =

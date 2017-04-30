@@ -5,19 +5,19 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_ref_frame
+                     evaluate_matrix
                      find_euler_angles
-                     switch_ref_frame
-                     x_axis_rotation
-                     y_axis_rotation
-                     z_axis_rotation
-                     translation
-                     vectorize
-                     vector_cross
+                     matrix_product
                      matrix_sum
                      matrix_sub
+                     switch_ref_frame
+                     translation
                      transpose
-                     matrix_product
-                     evaluate_matrix );
+                     vector_cross
+                     vectorize
+                     x_axis_rotation
+                     y_axis_rotation
+                     z_axis_rotation );
 
 # --------------------------- Numeric linear algebra -------------------------- #
 
@@ -172,8 +172,8 @@ sub switch_ref_frame
     			    &x_axis_rotation( -$beta ),
     			    &z_axis_rotation( -$alpha ) );
     } else {
-    	die "Must choose \$switch_to_global value between \"local\" and"
-    	    . "\"global\".\n"
+    	die "Must choose \$switch_to_global value between \"local\" and" .
+	    "\"global\".\n"
     }
 
     return @switch_matrix;

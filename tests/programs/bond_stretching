@@ -45,7 +45,8 @@ grep { $_ =~ /ATOM/ }
 # Changes bond by certain distance.
 my $transl_atom_coord =
     matrix_product(
-	&bond_stretching( $selected_atom_data->[1],
+	&bond_stretching( "r",
+			  $selected_atom_data->[1],
 			  $selected_atom_data->[2],
 			  $selected_atom_data->[0] ),
 	&vectorize( $selected_atom_data->[3] ) );

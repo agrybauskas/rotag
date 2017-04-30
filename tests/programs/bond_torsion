@@ -7,11 +7,13 @@ use Math::Trig;
 
 use lib "../../lib/perl";
 use AlterMolecule qw( bond_torsion );
-use LinearAlgebra qw( matrix_product evaluate_matrix vectorize);
+use LinearAlgebra qw( evaluate_matrix
+                      matrix_product
+                      vectorize);
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-use Data::Dumper;
+
 #
 # Unit test: AlterMolecule::bond_torsion.
 #
@@ -50,7 +52,8 @@ grep { $_ =~ /ATOM/ }
 
 # Rotates once along chi angle.
 my $rotated_atom_coord =
-    &matrix_product( &bond_torsion( $selected_atom_data->[1],
+    &matrix_product( &bond_torsion( "chi",
+				    $selected_atom_data->[1],
 				    $selected_atom_data->[2],
 				    $selected_atom_data->[0] ),
 		     &vectorize( $selected_atom_data->[3] ) );
