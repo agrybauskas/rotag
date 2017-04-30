@@ -47,21 +47,20 @@ my @angles = map { $_ * $small_angle * $pi } ( 1..$rotation_num - 1 );
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
 my %symbols;
-my $transf_atom_coord;
+my $transf_atom_coord =
+    ${ rotation_only( $atom_site,
+		      \%atom_specifier ) }{"data"}
+                                          {"$target_atom_id"}
+	                                  {"conformation"};
+my $evaluated_matrix;
 
 for my $angle ( @angles ) {
     $chi = $angle;
     $symbols{"chi"} = $chi;
-    $transf_atom_coord =
-	&evaluate_matrix(
-	    \%symbols,
-	    ${ rotation_only(
-		   $atom_site,
-		   \%atom_specifier ) }{"data"}
-	                               {"$target_atom_id"}
-	                               {"conformation"} );
+    $evaluated_matrix =
+	&evaluate_matrix( \%symbols, matrix_product( $transf_atom_coord ) );
     printf( "X\t%.3f\t%.3f\t%.3f\n",
-    	    $transf_atom_coord->[0][0],
-    	    $transf_atom_coord->[1][0],
-    	    $transf_atom_coord->[2][0] );
+    	    $evaluated_matrix->[0][0],
+    	    $evaluated_matrix->[1][0],
+    	    $evaluated_matrix->[2][0] );
 }
