@@ -8,14 +8,12 @@ our @EXPORT_OK = qw( rotation_only );
 
 use lib qw( ./ );
 use CifParser qw( select_atom_data filter_atoms );
-use ConnectAtoms;
 use AlterMolecule qw( bond_torsion );
-use LinearAlgebra qw( vectorize
+use LinearAlgebra qw( evaluate_matrix
+                      matrix_product
                       switch_ref_frame
-                      evaluate_matrix
-                      matrix_product );
+                      vectorize );
 
-use feature qw( current_sub );
 use Data::Dumper;
 
 my $parameter_file = "../../parameters/rotatable_bonds.csv";

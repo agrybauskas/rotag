@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( obtain_atom_site
-                     filter_atoms
+our @EXPORT_OK = qw( filter_atoms
+                     obtain_atom_site
                      select_atom_data );
 
 # ------------------------------ PDBx/mmCIF parser ---------------------------- #

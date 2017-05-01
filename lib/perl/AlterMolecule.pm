@@ -102,8 +102,8 @@ sub bond_stretching
 
 #
 # Changes the length of the bond.
-# Input  (3 arg): cartesian coordinates in array form that defines user-selected
-#                 mid, up, side.
+# Input  (5 arg): cartesian coordinates in array form that defines user-selected
+#                 mid, up, side and two angle symbols.
 # Output (1 arg): matrix defining coordinates in symbolic mathematical form
 #                 (with undefined bond angle variables: theta and psi).
 
