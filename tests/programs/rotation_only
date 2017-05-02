@@ -6,61 +6,101 @@ use warnings;
 use Math::Trig;
 
 use lib "../../lib/perl";
-use CifParser qw( obtain_atom_site filter_atoms );
+use CifParser qw( filter_atoms obtain_atom_site );
 use SidechainModels qw( rotation_only );
-use LinearAlgebra qw( matrix_product evaluate_matrix );
+use LinearAlgebra qw( evaluate_matrix matrix_product );
 
 use lib "../lib";
-use Utils qw( select_atom_data );
+use Utils qw( angle_permutation select_atom_data );
 
 use Data::Dumper;
 my $atom_specifier = shift;
-my $rotation_num = shift;
+my $angle_ranges = shift;
+my $num_of_points = shift;
 my @cif = <>;
-
-# Parses selector argument from string  to proper array.
-my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-		       map { [ split( " ", $_ ) ] }
-		       split( "&", $atom_specifier ) );
 
 # Selects atom's data for further analysis.
 my $atom_site = obtain_atom_site( @cif );
 my $target_atom_id = select_atom_data( $atom_specifier, "id", @cif );
 $target_atom_id = $target_atom_id->[0][0];
 
-# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
-print( "testing\n" );
+# Parses selector argument from string  to proper array.
+my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+		       map { [ split( " ", $_ ) ] }
+		       split( "&", $atom_specifier ) );
 
-# Prepares selected atom data for Jmol.
-map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-map { [ split( " ", $_ ) ] }
-grep { $_ =~ /ATOM/ }
-@cif;
+# Parses angle ranges for
+my %angle_ranges = ( map { $_->[0] => [ split( "-", @$_[1] ) ] }
+		     map { [ split( " ", $_ ) ] }
+		     split( "&", $angle_ranges ) );
+
+# Number of angle increments is calculated by taking an n-th root of number of
+# desired points, where n - number of rotatable bonds.
+my $angle_states =
+    int( $num_of_points ** ( 1 / scalar( keys( %angle_ranges ) ) ) );
+
+# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+# print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 1, "\n" );
+# print( "testing\n" );
+
+# # Prepares selected atom data for Jmol.
+# map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+# map { [ split( " ", $_ ) ] }
+# grep { $_ =~ /ATOM/ }
+# @cif;
 
 # Calculates angles that will be rotated along symbolically.
 my $pi = 4 * atan( 1, 1 );
-my $chi;
-my $small_angle = 2 / $rotation_num;
-my @angles = map { $_ * $small_angle * $pi } ( 1..$rotation_num - 1 );
+
+my $min_angle;
+my $max_angle;
+my %numeric_angle_range;
+my $small_angle; # Change of angle in each rotation step.
+
+for my $dihedral_angle ( sort keys %angle_ranges ) {
+    $min_angle = $angle_ranges{"$dihedral_angle"}[0];
+    $max_angle = $angle_ranges{"$dihedral_angle"}[1];
+    $min_angle =~ s/pi/\$pi/g;
+    $max_angle =~ s/pi/\$pi/g;
+    $min_angle = eval( $min_angle );
+    $max_angle = eval( $max_angle );
+    $small_angle = ( $max_angle - $min_angle ) / $angle_states;
+    for( my $angle = $min_angle;
+	 $angle <= $max_angle;
+	 $angle = $angle + $small_angle ) {
+	if( defined $numeric_angle_range{"$dihedral_angle"} ) {
+	    push( @{ $numeric_angle_range{"$dihedral_angle"} }, $angle );
+	} else {
+	    $numeric_angle_range{"$dihedral_angle"} = [ $angle ];
+	}
+    }
+}
+
+# Generates all combinations of possible angles of rotatable bonds.
+
 
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
-my %symbols;
+
+# Creates analytical equation for conformational space.
 my $transf_atom_coord =
     ${ rotation_only( $atom_site,
 		      \%atom_specifier ) }{"data"}
                                           {"$target_atom_id"}
 	                                  {"conformation"};
+
+
 my $evaluated_matrix;
 
-for my $angle ( @angles ) {
-    $chi = $angle;
-    $symbols{"chi0"} = $chi;
-    $evaluated_matrix =
-	&evaluate_matrix( \%symbols, matrix_product( $transf_atom_coord ) );
-    printf( "X\t%.3f\t%.3f\t%.3f\n",
-    	    $evaluated_matrix->[0][0],
-    	    $evaluated_matrix->[1][0],
-    	    $evaluated_matrix->[2][0] );
-}
+angle_permutation( %numeric_angle_range );
+
+# for my $angle ( @angles ) {
+#     $chi = $angle;
+#     $symbols{"chi0"} = $chi;
+#     $evaluated_matrix =
+# 	&evaluate_matrix( \%symbols, matrix_product( $transf_atom_coord ) );
+#     printf( "X\t%.3f\t%.3f\t%.3f\n",
+#     	    $evaluated_matrix->[0][0],
+#     	    $evaluated_matrix->[1][0],
+#     	    $evaluated_matrix->[2][0] );
+# }
