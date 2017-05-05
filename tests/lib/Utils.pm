@@ -1,7 +1,7 @@
 package Utils;
 
 use Exporter qw( import );
-@EXPORT_OK = qw( angle_permutation select_atom_data );
+@EXPORT_OK = qw( select_atom_data );
 
 use strict;
 use warnings;
@@ -31,10 +31,6 @@ sub select_atom_data
 		   &obtain_atom_site( @_ ) ) ) };
 
     return \@selected_atom_data;
-}
-
-sub angle_permutation {
-    my %angle = @_;
 }
 
 1;
