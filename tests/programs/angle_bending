@@ -9,7 +9,7 @@ use LinearAlgebra qw( vectorize matrix_product evaluate_matrix );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-use Data::Dumper;
+
 #
 # Unit test: AlterMolecule::angle_bending.
 #
@@ -21,68 +21,68 @@ use Data::Dumper;
 #                              1.0 27 < example.cif
 #
 
-my $attribute_filter = shift;
-my $attribute_select = shift;
-my $angle_min_max = shift; # Boundary of angles which bond will be changed by.
-my $num_of_points = shift; # Amount of pseudo-atoms that will be generated in
-my @cif = <>;              # Jmol.
+my ( $attribute_filter,
+     $attribute_select,
+     $angle_min_max, # Boundary of angles which bond will be changed by.
+     $num_of_points, # Amount of pseudo-atoms that will be generated in Jmol.
+     $cif_file ) = @_;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_filter,
 					   $attribute_select,
-					   @cif );
+					   $cif_file );
 
-# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
-print( "testing\n" );
+# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+# print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
+# print( "testing\n" );
 
-# Prepares selected atom data for Jmol.
-map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-map { [ split( " ", $_ ) ] }
-grep { $_ =~ /ATOM/ }
-@cif;
+# # Prepares selected atom data for Jmol.
+# map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+# map { [ split( " ", $_ ) ] }
+# grep { $_ =~ /ATOM/ }
+# @cif;
 
-# Changes bond by certain distance.
-my $bent_atom_coord =
-    &matrix_product( &angle_bending( "theta",
-				     "psi",
-				     $selected_atom_data->[1],
-				     $selected_atom_data->[2],
-				     $selected_atom_data->[0] ),
-		     &vectorize( $selected_atom_data->[3]) );
+# # Changes bond by certain distance.
+# my $bent_atom_coord =
+#     &matrix_product( &angle_bending( "theta",
+# 				     "psi",
+# 				     $selected_atom_data->[1],
+# 				     $selected_atom_data->[2],
+# 				     $selected_atom_data->[0] ),
+# 		     &vectorize( $selected_atom_data->[3]) );
 
-# Smallest change in bond length by given num_of_points and bond_min_max.
-my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
+# # Smallest change in bond length by given num_of_points and bond_min_max.
+# my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
 
-# Calculates angles that will be changed symbolically.
-my $theta;
-my $psi;
+# # Calculates angles that will be changed symbolically.
+# my $theta;
+# my $psi;
 
-my @delta_angles =
-    map { $_ * $smallest_angle, - ( $_ * $smallest_angle ) }
-        ( 1..(sqrt($num_of_points) / 2) );
-push( @delta_angles, 0 );
+# my @delta_angles =
+#     map { $_ * $smallest_angle, - ( $_ * $smallest_angle ) }
+#         ( 1..(sqrt($num_of_points) / 2) );
+# push( @delta_angles, 0 );
 
-# Calculates the bend between atoms at theta and psi angles numerically and
-# creates Jmol readable structure file.
-my %symbols;
-my $evaluated_matrix;
+# # Calculates the bend between atoms at theta and psi angles numerically and
+# # creates Jmol readable structure file.
+# my %symbols;
+# my $evaluated_matrix;
 
-for my $delta ( @delta_angles ) {
-    $theta = $delta;
-    for my $delta ( @delta_angles ){
-	$psi = $delta;
-	%symbols = ( "theta" => "$theta", "psi" => "$psi" );
-	$evaluated_matrix =
-	    evaluate_matrix( \%symbols,
-			     &matrix_product( $bent_atom_coord ) );
+# for my $delta ( @delta_angles ) {
+#     $theta = $delta;
+#     for my $delta ( @delta_angles ){
+# 	$psi = $delta;
+# 	%symbols = ( "theta" => "$theta", "psi" => "$psi" );
+# 	$evaluated_matrix =
+# 	    evaluate_matrix( \%symbols,
+# 			     &matrix_product( $bent_atom_coord ) );
 
-	for my $row ( $evaluated_matrix ) {
-	    print( "X\t" );
-	    for my $item ( @$row[0..2] ) {
-		printf( "%.3f\t", @$item );
-	    }
-	    print( "\n" );
-	}
-    }
-}
+# 	for my $row ( $evaluated_matrix ) {
+# 	    print( "X\t" );
+# 	    for my $item ( @$row[0..2] ) {
+# 		printf( "%.3f\t", @$item );
+# 	    }
+# 	    print( "\n" );
+# 	}
+#     }
+# }

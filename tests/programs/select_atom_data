@@ -17,22 +17,21 @@ use CifParser qw( select_atom_data
 #                             "Cartn_x,Cartn_y,Cartn_z" < example.cif
 #
 
-my $attribute_selector = shift;
-my $data_selector = shift;
+@ARGV = ( "-" ) unless @ARGV;
+my ( $attribute_selector, $data_selector, $cif_file ) = @ARGV;
 
 # Parses selector argument from string  to proper array.
 my %attribute_selector = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
                            map { [ split( " ", $_ ) ] }
                            split( "&", $attribute_selector ) );
+
 my @data_selector = split( ",", $data_selector );
 
 # Selects atoms for further analysis.
 my @selected_atom_data =
-    @{ CifParser::select_atom_data(
-	   \@data_selector,
-	   &CifParser::filter_atoms(
-	       \%attribute_selector,
-	       &CifParser::obtain_atom_site( <> ) ) ) };
+    @{ select_atom_data( \@data_selector,
+			 &filter_atoms( \%attribute_selector,
+					&obtain_atom_site( $cif_file ) ) ) };
 
 for( my $i = 0; $i <= $#selected_atom_data; $i++ ) {
     print( join( " ", @{ $selected_atom_data[$i] } ), "\n" );

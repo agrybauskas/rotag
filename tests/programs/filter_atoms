@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser qw( filter_atoms );
+use CifParser qw( filter_atoms
+                  obtain_atom_site );
 
 #
 # Unit test: CifParser::filter_atoms.
@@ -14,7 +15,8 @@ use CifParser qw( filter_atoms );
 # Example: ./filter_atoms "label_atom_id CA,N,CB,OG" < example.cif
 #
 
-my $attribute_selector = shift;
+@ARGV = ( "-" ) unless @ARGV;
+my ( $attribute_selector, $cif_file ) = @ARGV;
 
 # Parses selector argument from string  to proper array.
 my %attribute_selector = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
@@ -22,11 +24,10 @@ my %attribute_selector = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
                            split( "&", $attribute_selector ) );
 
 # Performs filtering.
-my $filtered_atoms = filter_atoms( \%attribute_selector,
-				   &CifParser::obtain_atom_site( <> ) );
-my $attribute_names = $filtered_atoms->{"attributes"};
-my @attribute_names = @$attribute_names;
-my %filtered_atoms = %$filtered_atoms;
+my %filtered_atoms = %{ filter_atoms( \%attribute_selector,
+				      &obtain_atom_site( $cif_file ) ) };
+
+my @attribute_names = @{ $filtered_atoms{"attributes"} };
 
 # Prints out output.
 print "loop_\n";
@@ -35,12 +36,15 @@ foreach( @attribute_names ) {
     print "_atom_site." . $_ . "\n";
 }
 
-for my $id ( sort { $a <=> $b } keys( %{ $filtered_atoms->{"data"} } ) ) {
+for my $id ( sort { $a <=> $b } keys( %{ $filtered_atoms{"data"} } ) ) {
     for( my $i = 0; $i <= $#attribute_names; $i++ ) {
-	if( $i % ( $#attribute_names + 1) != 0 ) {
-	    print( " ", $filtered_atoms->{"data"}{$id}{$attribute_names[$i]}, " " );
+	if( $i % ( $#attribute_names + 1 ) != 0 ) {
+	    print( " ",
+		   $filtered_atoms{"data"}{$id}{$attribute_names[$i]},
+		   " " );
 	} else {
-	    print( "\n", $filtered_atoms->{"data"}{$id}{$attribute_names[$i]} );
+	    print( "\n",
+		   $filtered_atoms{"data"}{$id}{$attribute_names[$i]} );
 	}
     }
 }

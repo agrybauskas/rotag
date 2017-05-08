@@ -7,7 +7,7 @@ use lib "../../lib/perl";
 use CifParser qw( obtain_atom_site );
 
 #
-# Unit test: obtain_atom_site
+# Unit test: CifParser::obtain_atom_site
 #
 # Creates standard mmcif output with only _atom_site category and checks,
 # if all data was correctly obtained.
@@ -15,24 +15,32 @@ use CifParser qw( obtain_atom_site );
 # Example: ./obtain_atom_site < example.cif
 #
 
-my $atom_site = obtain_atom_site( <> );
-my $attribute_names = $atom_site->{"attributes"};
-my @attribute_names = @$attribute_names;
+@ARGV = ( "-" ) unless @ARGV;
 
-print "loop_\n";
+foreach my $file ( @ARGV ) {
 
-foreach( @attribute_names ) {
-    print "_atom_site." . $_ . "\n";
-}
+    my $atom_site = obtain_atom_site( $file );
+    my $attribute_names = $atom_site->{"attributes"};
+    my @attribute_names = @$attribute_names;
 
-for my $id ( sort { $a <=> $b } keys( %{ $atom_site->{"data"} } ) ) {
-    for( my $i = 0; $i <= $#attribute_names; $i++ ) {
-	if( $i % ( $#attribute_names + 1) != 0 ) {
-	    print( " ", $atom_site->{"data"}{$id}{$attribute_names[$i]}, " " );
-	} else {
-	    print( "\n", $atom_site->{"data"}{$id}{$attribute_names[$i]} );
-	}
+    print "loop_\n";
+
+    foreach( @attribute_names ) {
+    	print "_atom_site." . $_ . "\n";
     }
-}
 
-print( "\n" );
+    for my $id ( sort { $a <=> $b } keys( %{ $atom_site->{"data"} } ) ) {
+    	for( my $i = 0; $i <= $#attribute_names; $i++ ) {
+    	    if( $i % ( $#attribute_names + 1) != 0 ) {
+    		print( " ",
+    		       $atom_site->{"data"}{$id}{$attribute_names[$i]},
+    		       " " );
+    	    } else {
+    		print( "\n",
+    		       $atom_site->{"data"}{$id}{$attribute_names[$i]} );
+    	    }
+    	}
+    }
+
+    print( "\n" );
+}

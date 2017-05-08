@@ -10,4 +10,5 @@ angle_min_max=1.0 # +- value that will change in bond length.
 num_of_points=27 # Number of points that will be generated.
 
 ../programs/angle_bending "${atom_specifier}" "${data_specifier}" \
-			  "${angle_min_max}" "${num_of_points}" < ${cif_file}
+			  "${angle_min_max}" "${num_of_points}" \
+			  ${cif_file}

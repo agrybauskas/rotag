@@ -4,4 +4,4 @@ cd "$(dirname "$0")"
 cif_file=../inputs/5svd_002.cif
 atom_specifier="label_atom_id CA,CB"
 
-../programs/filter_atoms "${atom_specifier}" < ${cif_file}
+../programs/filter_atoms "${atom_specifier}" ${cif_file}
