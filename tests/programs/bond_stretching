@@ -5,11 +5,11 @@ use warnings;
 
 use lib "../../lib/perl";
 use AlterMolecule qw( bond_stretching );
-use LinearAlgebra qw( vectorize evaluate_matrix matrix_product );
+use LinearAlgebra qw( evaluate_matrix matrix_product vectorize );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-use Data::Dumper;
+
 #
 # Unit test: AlterMolecule::bond_stretching.
 #
@@ -18,29 +18,33 @@ use Data::Dumper;
 #
 # Example: ./change_bond_length "label_atom_id CA,N,CB,OG" \
 #                               "Cartn_x,Cartn_y,Cartn_z" \
-#                               2.0 10 < example.cif
+#                               2.0 10 example.cif
 #
 
-my $attribute_filter = shift;
-my $attribute_select = shift;
-my $bond_min_max = shift; # Amount of which bond will change.
-my $num_of_points = shift;
-my @cif = <>;
+my ( $attribute_filter,
+     $attribute_select,
+     $bond_min_max,
+     $num_of_points,
+     $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_filter,
 					   $attribute_select,
-					   @cif );
+					   $cif_file );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
+open( my $fh, "<", $cif_file );
+chomp( my @cif_lines = <$fh> );
+close($fh);
+
+print( scalar( grep { /ATOM/ } @cif_lines ) + $num_of_points - 2, "\n" );
 print( "testing\n" );
 
 # Prepares selected atom data for Jmol.
 map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
 map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
-@cif;
+@cif_lines;
 
 # Changes bond by certain distance.
 my $transl_atom_coord =

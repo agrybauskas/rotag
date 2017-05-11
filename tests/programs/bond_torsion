@@ -21,7 +21,7 @@ use Utils qw( select_atom_data );
 # after rotation along dihedral angle.
 #
 # Example: ./rotate_bond "label_atom_id CA,N,CB,OG" \
-#                        "Cartn_x,Cartn_y,Cartn_z" 27 < example.cif
+#                        "Cartn_x,Cartn_y,Cartn_z" 27 example.cif
 #
 
 #
@@ -30,25 +30,26 @@ use Utils qw( select_atom_data );
 
 my $PI = 4 * atan( 1, 1 );
 
-my $attribute_filter = shift;
-my $attribute_select = shift;
-my $rotation_num = shift;
-my @cif = <>;
+my ( $attribute_filter, $attribute_select, $rotation_num, $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_filter,
 					   $attribute_select,
-					   @cif );
+					   $cif_file );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( grep { /ATOM/ } @cif ) + $rotation_num - 1, "\n" );
+open( my $fh, "<", $cif_file );
+chomp( my @cif_lines = <$fh> );
+close( $fh );
+
+print( scalar( grep { /ATOM/ } @cif_lines ) + $rotation_num - 1, "\n" );
 print( "testing\n" );
 
 # Prepares selected atom data for Jmol.
 map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
 map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
-@cif;
+@cif_lines;
 
 # Rotates once along chi angle.
 my $rotated_atom_coord =

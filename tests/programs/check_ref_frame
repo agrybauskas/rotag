@@ -7,8 +7,8 @@ use lib "../../lib/perl";
 use LinearAlgebra qw( create_ref_frame
                       find_euler_angles
                       z_axis_rotation
-                      x_axis_rotation 
-                      translation 
+                      x_axis_rotation
+                      translation
                       matrix_product );
 
 use lib "../lib";
@@ -21,17 +21,15 @@ use Utils qw( select_atom_data );
 # Bring molecule's local frame of reference to global.
 #
 # Example: ./check_ref_frame "label_atom_id CA,N,CB,OG" \
-#                            "Cartn_x,Cartn_y,Cartn_z" < example.cif
+#                            "Cartn_x,Cartn_y,Cartn_z" example.cif
 #
 
-my $attribute_filter = shift;
-my $attribute_select = shift;
-my @cif = <>;
+my ( $attribute_filter, $attribute_select, $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_filter,
 					   $attribute_select,
-					   @cif );
+					   $cif_file );
 
 # Finds Euler angles and makes rotational matrices.
 my @mid_atom_coord =  ( $selected_atom_data->[1][0],
@@ -53,11 +51,15 @@ my ( $alpha, $beta, $gamma ) = find_euler_angles( @mid_atom_coord,
 						  @side_atom_coord );
 
 # Transforms given atom coordinates and prepares data for Jmol.
+open( my $fh, "<", $cif_file );
+chomp( my @cif_lines = <$fh> );
+close( $fh );
+
 print( "data \"model\"\n" );
-print( scalar( grep { /ATOM/ } @cif ), "\n" );
+print( scalar( grep { /ATOM/ } @cif_lines ), "\n" );
 print( "testing\n" );
 
-for my $cif_line ( grep( /^ATOM/, @cif ) ){
+for my $cif_line ( grep( /^ATOM/, @cif_lines ) ){
     my @cif_data = split( " ", $cif_line );
     my $atom_name = $cif_data[2];
     my @atom_coord = ( [ $cif_data[10] ],
@@ -65,7 +67,7 @@ for my $cif_line ( grep( /^ATOM/, @cif ) ){
 		       [ $cif_data[12] ],
 		       [ 1 ] );
     my @tranf_atom_coord =
-	matrix_product( 
+	matrix_product(
 	    z_axis_rotation( $alpha ),
 	    x_axis_rotation( $beta ),
 	    z_axis_rotation( $gamma ),

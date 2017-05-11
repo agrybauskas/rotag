@@ -5,7 +5,9 @@ use warnings;
 
 use lib "../../lib/perl";
 use AlterMolecule qw( angle_bending );
-use LinearAlgebra qw( vectorize matrix_product evaluate_matrix );
+use LinearAlgebra qw( evaluate_matrix
+                      matrix_product
+                      vectorize );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -18,71 +20,75 @@ use Utils qw( select_atom_data );
 #
 # Example: ./change_bond_angle "label_atom_id CA,N,CB,OG" \
 #                              "Cartn_x,Cartn_y,Cartn_z" \
-#                              1.0 27 < example.cif
+#                              1.0 27 example.cif
 #
 
 my ( $attribute_filter,
      $attribute_select,
      $angle_min_max, # Boundary of angles which bond will be changed by.
      $num_of_points, # Amount of pseudo-atoms that will be generated in Jmol.
-     $cif_file ) = @_;
+     $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_filter,
 					   $attribute_select,
 					   $cif_file );
 
-# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-# print( scalar( grep { /ATOM/ } @cif ) + $num_of_points - 2, "\n" );
-# print( "testing\n" );
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+open( my $fh, "<", $cif_file );
+chomp( my @cif_lines = <$fh> );
+close( $fh );
 
-# # Prepares selected atom data for Jmol.
-# map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-# map { [ split( " ", $_ ) ] }
-# grep { $_ =~ /ATOM/ }
-# @cif;
+print( scalar( grep { /ATOM/ } @cif_lines ) + $num_of_points - 2, "\n" );
+print( "testing\n" );
 
-# # Changes bond by certain distance.
-# my $bent_atom_coord =
-#     &matrix_product( &angle_bending( "theta",
-# 				     "psi",
-# 				     $selected_atom_data->[1],
-# 				     $selected_atom_data->[2],
-# 				     $selected_atom_data->[0] ),
-# 		     &vectorize( $selected_atom_data->[3]) );
+# Prepares selected atom data for Jmol.
+map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+map { [ split( " ", $_ ) ] }
+grep { $_ =~ /ATOM/ }
+@cif_lines;
 
-# # Smallest change in bond length by given num_of_points and bond_min_max.
-# my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
+# Changes bond by certain distance.
+my $bent_atom_coord =
+    &matrix_product( &angle_bending( "theta",
+				     "psi",
+				     $selected_atom_data->[1],
+				     $selected_atom_data->[2],
+				     $selected_atom_data->[0] ),
+		     &vectorize( $selected_atom_data->[3]) );
 
-# # Calculates angles that will be changed symbolically.
-# my $theta;
-# my $psi;
+# Smallest change in bond length by given num_of_points and bond_min_max.
+my $smallest_angle = $angle_min_max / sqrt( $num_of_points );
 
-# my @delta_angles =
-#     map { $_ * $smallest_angle, - ( $_ * $smallest_angle ) }
-#         ( 1..(sqrt($num_of_points) / 2) );
-# push( @delta_angles, 0 );
+# Calculates angles that will be changed symbolically.
+my $theta;
+my $psi;
 
-# # Calculates the bend between atoms at theta and psi angles numerically and
-# # creates Jmol readable structure file.
-# my %symbols;
-# my $evaluated_matrix;
+my @delta_angles =
+    map { $_ * $smallest_angle, - ( $_ * $smallest_angle ) }
+        ( 1..(sqrt($num_of_points) / 2) );
+push( @delta_angles, 0 );
 
-# for my $delta ( @delta_angles ) {
-#     $theta = $delta;
-#     for my $delta ( @delta_angles ){
-# 	$psi = $delta;
-# 	%symbols = ( "theta" => "$theta", "psi" => "$psi" );
-# 	$evaluated_matrix =
-# 	    evaluate_matrix( \%symbols,
-# 			     &matrix_product( $bent_atom_coord ) );
+# Calculates the bend between atoms at theta and psi angles numerically and
+# creates Jmol readable structure file.
+my %symbols;
+my $evaluated_matrix;
 
-# 	for my $row ( $evaluated_matrix ) {
-# 	    print( "X\t" );
-# 	    for my $item ( @$row[0..2] ) {
-# 		printf( "%.3f\t", @$item );
-# 	    }
-# 	    print( "\n" );
-# 	}
-#     }
-# }
+for my $delta ( @delta_angles ) {
+    $theta = $delta;
+    for my $delta ( @delta_angles ){
+	$psi = $delta;
+	%symbols = ( "theta" => "$theta", "psi" => "$psi" );
+	$evaluated_matrix =
+	    evaluate_matrix( \%symbols,
+			     &matrix_product( $bent_atom_coord ) );
+
+	for my $row ( $evaluated_matrix ) {
+	    print( "X\t" );
+	    for my $item ( @$row[0..2] ) {
+		printf( "%.3f\t", @$item );
+	    }
+	    print( "\n" );
+	}
+    }
+}

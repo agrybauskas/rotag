@@ -23,10 +23,10 @@ sub select_atom_data
 
     # Selects atoms for further analysis.
     my @selected_atom_data =
-	@{ CifParser::select_atom_data(
-	       \@data_selector,
-	       &filter_atoms( \%attribute_selector,
-			      &obtain_atom_site( $cif_file ) ) ) };
+    	@{ CifParser::select_atom_data(
+    	       \@data_selector,
+    	       &filter_atoms( \%attribute_selector,
+    			      &obtain_atom_site( $cif_file ) ) ) };
 
     return \@selected_atom_data;
 }

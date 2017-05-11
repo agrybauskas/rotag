@@ -10,4 +10,5 @@ bond_min_max=2.0 # +- value that will change in bond length.
 num_of_points=10 # Number of points that will be generated.
 
 ../programs/bond_stretching "${atom_specifier}" "${data_specifier}" \
-			    "${bond_min_max}" "${num_of_points}" < ${cif_file}
+			    "${bond_min_max}" "${num_of_points}" \
+			    ${cif_file}
