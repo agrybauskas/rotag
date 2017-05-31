@@ -11,14 +11,17 @@ use LinearAlgebra qw( create_ref_frame );
 #
 # Creates the frame of reference from three given coordinates of the atom.
 #
-# Example: ./create_ref_frame < example.dat
+# Example: ./create_ref_frame example.dat
 #
 
+my ( $cif_file ) = @ARGV;
 my @atom_coord;
 
-while( <> ){
+open( my $fh, "<", $cif_file );
+while( <$fh> ){
     push( @atom_coord, grep( /\S/, split( /#.+|\s+/, $_ ) ) );
 }
+close( $fh );
 
     # mid-atom      # up-atom       # side-atom
 my @local_ref_frame = create_ref_frame(

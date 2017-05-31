@@ -8,4 +8,4 @@ data_specifier="Cartn_x,Cartn_y,Cartn_z"
 ref_frame="global"
 
 ../programs/switch_ref_frame "${atom_specifier}" "${data_specifier}" \
-			     "${ref_frame}" < ${cif_file}
+			     "${ref_frame}" ${cif_file}

@@ -3,4 +3,4 @@ cd "$(dirname "$0")"
 
 matrix=../inputs/matrix_001.dat
 
-../programs/transpose < ${matrix}
+../programs/transpose ${matrix}

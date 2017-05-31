@@ -8,4 +8,4 @@ data_specifier="Cartn_x,Cartn_y,Cartn_z"
 transl_coord="1.000,1.000,1.000"
 
 ../programs/translation "${atom_specifier}" "${data_specifier}" \
-			"${transl_coord}" < ${cif_file}
+			"${transl_coord}" ${cif_file}

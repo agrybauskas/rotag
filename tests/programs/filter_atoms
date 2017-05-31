@@ -12,7 +12,7 @@ use CifParser qw( filter_atoms
 #
 # Filters atoms by given attribute(s) name(s).
 #
-# Example: ./filter_atoms "label_atom_id CA,N,CB,OG" < example.cif
+# Example: ./filter_atoms "label_atom_id CA,N,CB,OG" example.cif
 #
 
 @ARGV = ( "-" ) unless @ARGV;

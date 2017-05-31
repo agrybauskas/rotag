@@ -14,18 +14,15 @@ use Utils qw( select_atom_data );
 #
 # Measure the dihedral angle of four atoms in radians.
 #
-# Example: ./dihedral_angle "id 1,2,3,4" "Cartn_x,Cartn_y,Cartn_z" < example.cif
+# Example: ./dihedral_angle "id 1,2,3,4" "Cartn_x,Cartn_y,Cartn_z" example.cif
 #
 
-my $attribute_filter = shift;
-my $attribute_select = shift;
-my $angle = shift;
-my @cif = <>;
+my ( $attribute_filter, $attribute_select, $cif ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_filter,
 					   $attribute_select,
-					   @cif );
+					   $cif );
 
 # Prints out length of the bond in angstroms.
 printf( "%.3f\n", dihedral_angle( $selected_atom_data ) );

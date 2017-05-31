@@ -15,12 +15,11 @@ use ConnectAtoms qw( connect_atoms );
 # Example: ./connect_atoms 1.51 0.15 < example.cif
 #
 
-my $bond_length       = shift; # In angstroms.
-my $bond_length_error = shift; # In angstroms.
-my @cif = <>;
+#    In angstroms  In angstroms
+my ( $bond_length, $bond_length_error, $cif ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( @cif );
+my $atom_site = obtain_atom_site( $cif );
 
 my %connected_atoms = %{ connect_atoms( $bond_length,
 					$bond_length_error,

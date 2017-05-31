@@ -11,18 +11,22 @@ use LinearAlgebra qw( matrix_sum );
 #
 # Adds two matrices.
 #
-# Example: ./matrix_sum < example.dat
+# Example: ./matrix_sum example.dat
 #
+
+my ( $cif_file ) = @ARGV;
 
 my @matrices = ( [] );
 
-while( <> ) {
+open( my $fh, "<", $cif_file );
+while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
 	push( @matrices, [] );
     } else {
 	push( @{ $matrices[-1] }, [ split( " ", $_ ) ] );
     }
 }
+close( $fh );
 
 my @left_matrix = @{ $matrices[0] };
 my @right_matrix = @{ $matrices[1] };

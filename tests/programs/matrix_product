@@ -11,10 +11,10 @@ use LinearAlgebra qw( evaluate_matrix matrix_product );
 #
 # Multiplies multiple matrices using symbolic algebra.
 #
-# Example: ./matrix_product < example.dat
+# Example: ./matrix_product example.dat
 #
 
-my $variable_values = shift;
+my ( $variable_values, $cif_file ) = @ARGV;
 
 # Parses argument from argvar that describes values of the unknown variables.
 my %variable_values = ( map { $_->[0] => $_->[1] }
@@ -24,13 +24,15 @@ my %variable_values = ( map { $_->[0] => $_->[1] }
 # Evaluates matrices.
 my @matrices = ( [] );
 
-while( <> ) {
+open( my $fh, "<", $cif_file );
+while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
 	push( @matrices, [] );
     } else {
 	push( @{ $matrices[-1] }, [ split( " ", $_ ) ] );
     }
 }
+close( $fh );
 
 my $matrix_product = evaluate_matrix( \%variable_values,
 				      &matrix_product( @matrices ) );

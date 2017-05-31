@@ -12,14 +12,17 @@ use LinearAlgebra qw( find_euler_angles );
 # Calculates Euler angles needed to transform frame of references from three
 # given coordinates of the atom.
 #
-# Example: ./find_euler_angles < example.dat
+# Example: ./find_euler_angles example.dat
 #
 
+my ( $cif_file ) = @ARGV;
 my @atom_coord;
 
-while( <> ){
+open( my $fh, "<", $cif_file );
+while( <$fh> ){
     push( @atom_coord, grep( /\S/, split( /#.+|\s+/, $_ ) ) );
 }
+close( $fh );
 
     # mid-atom      # up-atom       # side-atom
 my @euler_angles = find_euler_angles(

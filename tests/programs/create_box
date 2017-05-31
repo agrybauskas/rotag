@@ -17,13 +17,12 @@ use Utils qw( select_atom_data );
 # Example: ./create_box < example.cif
 #
 
-my $attribute_selector = shift;
-my @cif = <>;
+my ( $attribute_selector, $cif ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_selector,
 					   "Cartn_x,Cartn_y,Cartn_z",
-					   @cif );
+					   $cif );
 
 # Creates and prints out the boundaries of the box.
 my @box_boundaries = create_box( @$selected_atom_data );
