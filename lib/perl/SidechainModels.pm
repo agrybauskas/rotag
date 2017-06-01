@@ -14,14 +14,12 @@ use LinearAlgebra qw( evaluate_matrix
                       switch_ref_frame
                       vectorize );
 
-use Data::Dumper;
-
 my $parameter_file = "../../parameters/rotatable_bonds.csv";
 
 # ------------------------ Idealistic sidechain models ------------------------ #
 
 #
-# Parameters
+# Parameters.
 #
 
 #
