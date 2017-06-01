@@ -5,17 +5,23 @@ use warnings;
 
 use lib "../../lib/perl";
 use LinearAlgebra qw( vector_cross );
-
+use Data::Dumper;
 #
 # Unit test: LinearAlgebra::vector_cross.
 #
 # Calculates cross product of two 3D vectors.
 #
-# Example: ./vector_cross < example.dat
+# Example: ./vector_cross example.dat
 #
 
+my ( $matrix_file ) = @ARGV;
+
+open( my $fh, "<", $matrix_file );
+my @matrix_lines = <$fh>;
+close( $fh );
+
 my ( $left_matrix, $right_matrix ) =
-    map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } <>;
+    map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } @matrix_lines;
 
 my $cross_product = vector_cross( $left_matrix, $right_matrix );
 

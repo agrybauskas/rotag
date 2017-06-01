@@ -16,18 +16,15 @@ use Utils qw( select_atom_data );
 #
 # Example: ./rotate_x_axis "label_atom_id CA,N,CB,OG" \
 #                          "Cartn_x,Cartn_y,Cartn_z" \
-#                          "1.571" < example.cif
+#                          "1.571" example.cif
 #
 
-my $attribute_filter = shift;
-my $attribute_select = shift;
-my $angle = shift;
-my @cif = <>;
+my ( $attribute_filter, $attribute_select, $angle, $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_filter,
 					   $attribute_select,
-					   @cif );
+					   $cif_file );
 
 # Rotates all atoms along x-axis by given angle.
 my @transf_atom_data;

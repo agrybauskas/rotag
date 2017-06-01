@@ -13,15 +13,11 @@ use LinearAlgebra qw( evaluate_matrix matrix_product );
 use lib "../lib";
 use Utils qw( select_atom_data );
 
-use Data::Dumper;
-my $atom_specifier = shift;
-my $angle_ranges = shift;
-my $num_of_points = shift;
-my @cif = <>;
+my ( $atom_specifier, $angle_ranges, $num_of_points, $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( @cif );
-my $target_atom_id = select_atom_data( $atom_specifier, "id", @cif );
+my $atom_site = obtain_atom_site( $cif_file );
+my $target_atom_id = select_atom_data( $atom_specifier, "id", $cif_file );
 $target_atom_id = $target_atom_id->[0][0];
 
 # Parses selector argument from string  to proper array.
@@ -68,6 +64,9 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
 
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
+open( my $fh, "<", $cif_file );
+chomp( my @cif_lines = <$fh> );
+close( $fh );
 
 # Calculates all atoms that will be produced for Jmol.
 my $atom_quantity = 1;
@@ -75,7 +74,8 @@ my $atom_quantity = 1;
 foreach( keys %numeric_angle_range ) {
     $atom_quantity *= scalar( @{ $numeric_angle_range{$_} } );
 }
-$atom_quantity += scalar( grep { /ATOM/ } @cif );
+
+$atom_quantity += scalar( grep { /ATOM/ } @cif_lines );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( $atom_quantity, "\n" );
@@ -85,7 +85,7 @@ print( "testing\n" );
 map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
 map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
-@cif;
+@cif_lines;
 
 # Creates analytical equation for conformational space.
 my $transf_atom_coord =

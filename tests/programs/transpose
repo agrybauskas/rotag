@@ -11,14 +11,19 @@ use LinearAlgebra qw( transpose );
 #
 # Transposes matrix.
 #
-# Example: ./transpose < example.dat
+# Example: ./transpose example.dat
 #
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $cif_file ) = @ARGV;
 
 my @matrix;
 
-while( <> ) {
+open( my $fh, "<", $cif_file );
+while( <$fh> ) {
     push( @matrix, [ split( " ", $_ ) ] );
 }
+close( $fh );
 
 my $transposed_matrix = transpose( \@matrix );
 

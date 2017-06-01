@@ -16,18 +16,15 @@ use Utils qw( select_atom_data );
 #
 # Example: ./switch_ref_frame "label_atom_id CA,N,CB,OG" \
 #                             "Cartn_x,Cartn_y,Cartn_z" \
-#                             "global" < example.cif
+#                             "global" example.cif
 #
 
-my $attribute_filter = shift;
-my $attribute_select = shift;
-my $ref_frame = shift;
-my @cif = <>;
+my ( $attribute_filter, $attribute_select, $ref_frame, $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $selected_atom_data = select_atom_data( $attribute_filter,
 					   $attribute_select,
-					   @cif );
+					   $cif_file );
 
 my @switched_ref_frame = switch_ref_frame( $ref_frame,
 					   $selected_atom_data->[1],
