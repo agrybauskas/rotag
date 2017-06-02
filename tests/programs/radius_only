@@ -7,94 +7,96 @@ use Math::Trig;
 
 use lib "../../lib/perl";
 use AtomClashes qw( radius_only );
-# use CifParser qw( filter_atoms obtain_atom_site );
-# use SidechainModels qw( rotation_only );
+use CifParser qw( obtain_atom_site );
+use SidechainModels qw( rotation_only );
 # use LinearAlgebra qw( evaluate_matrix matrix_product );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-# use Data::Dumper;
+use Data::Dumper;
 my ( $atom_specifier, $angle_ranges, $num_of_points, $cif_file ) = @ARGV;
 
-# # Selects atom's data for further analysis.
-# my $atom_site = obtain_atom_site( $cif_file );
-# my $target_atom_id = select_atom_data( $atom_specifier, "id", $cif_file );
-# $target_atom_id = $target_atom_id->[0][0];
+# Selects atom's data for further analysis.
+my $atom_site = obtain_atom_site( $cif_file );
+my $target_atom_id = select_atom_data( $atom_specifier, "id", $cif_file );
+$target_atom_id = $target_atom_id->[0][0];
 
-# # Parses selector argument from string  to proper array.
-# my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-# 		       map { [ split( " ", $_ ) ] }
-# 		       split( "&", $atom_specifier ) );
+# Parses selector argument from string  to proper array.
+my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+		       map { [ split( " ", $_ ) ] }
+		       split( "&", $atom_specifier ) );
 
-# # Parses angle ranges for
-# my %angle_ranges = ( map { $_->[0] => [ split( "-", @$_[1] ) ] }
-# 		     map { [ split( " ", $_ ) ] }
-# 		     split( "&", $angle_ranges ) );
+# Parses angle ranges for
+my %angle_ranges = ( map { $_->[0] => [ split( "-", @$_[1] ) ] }
+		     map { [ split( " ", $_ ) ] }
+		     split( "&", $angle_ranges ) );
 
-# # Number of angle increments is calculated by taking an n-th root of number of
-# # desired points, where n - number of rotatable bonds.
-# my $angle_states =
-#     int( $num_of_points ** ( 1 / scalar( keys( %angle_ranges ) ) ) );
+# Number of angle increments is calculated by taking an n-th root of number of
+# desired points, where n - number of rotatable bonds.
+my $angle_states =
+    int( $num_of_points ** ( 1 / scalar( keys( %angle_ranges ) ) ) );
 
-# # Calculates angles that will be rotated along symbolically.
-# my $pi = 4 * atan( 1, 1 );
+# Calculates angles that will be rotated along symbolically.
+my $pi = 4 * atan( 1, 1 );
 
-# my $min_angle;
-# my $max_angle;
-# my %numeric_angle_range;
-# my $small_angle; # Change of angle in each rotation step.
+my $min_angle;
+my $max_angle;
+my %numeric_angle_range;
+my $small_angle; # Change of angle in each rotation step.
 
-# for my $dihedral_angle ( sort keys %angle_ranges ) {
-#     $min_angle = $angle_ranges{"$dihedral_angle"}[0];
-#     $max_angle = $angle_ranges{"$dihedral_angle"}[1];
-#     $min_angle =~ s/pi/\$pi/g;
-#     $max_angle =~ s/pi/\$pi/g;
-#     $min_angle = eval( $min_angle );
-#     $max_angle = eval( $max_angle );
-#     $small_angle = ( $max_angle - $min_angle ) / $angle_states;
-#     for( my $angle = $min_angle;
-# 	 $angle <= $max_angle;
-# 	 $angle = $angle + $small_angle ) {
-# 	if( defined $numeric_angle_range{"$dihedral_angle"} ) {
-# 	    push( @{ $numeric_angle_range{"$dihedral_angle"} }, $angle );
-# 	} else {
-# 	    $numeric_angle_range{"$dihedral_angle"} = [ $angle ];
-# 	}
-#     }
-# }
+for my $dihedral_angle ( sort keys %angle_ranges ) {
+    $min_angle = $angle_ranges{"$dihedral_angle"}[0];
+    $max_angle = $angle_ranges{"$dihedral_angle"}[1];
+    $min_angle =~ s/pi/\$pi/g;
+    $max_angle =~ s/pi/\$pi/g;
+    $min_angle = eval( $min_angle );
+    $max_angle = eval( $max_angle );
+    $small_angle = ( $max_angle - $min_angle ) / $angle_states;
+    for( my $angle = $min_angle;
+	 $angle <= $max_angle;
+	 $angle = $angle + $small_angle ) {
+	if( defined $numeric_angle_range{"$dihedral_angle"} ) {
+	    push( @{ $numeric_angle_range{"$dihedral_angle"} }, $angle );
+	} else {
+	    $numeric_angle_range{"$dihedral_angle"} = [ $angle ];
+	}
+    }
+}
 
-# # In Jmol, generates pseudo-atoms which represent positions of atom
-# # after rotation along dihedral angle.
-# open( my $fh, "<", $cif_file );
-# chomp( my @cif_lines = <$fh> );
-# close( $fh );
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after rotation along dihedral angle.
+open( my $fh, "<", $cif_file );
+chomp( my @cif_lines = <$fh> );
+close( $fh );
 
-# # Calculates all atoms that will be produced for Jmol.
-# my $atom_quantity = 1;
+# Calculates all atoms that will be produced for Jmol.
+my $atom_quantity = 1;
 
-# foreach( keys %numeric_angle_range ) {
-#     $atom_quantity *= scalar( @{ $numeric_angle_range{$_} } );
-# }
+foreach( keys %numeric_angle_range ) {
+    $atom_quantity *= scalar( @{ $numeric_angle_range{$_} } );
+}
 
-# $atom_quantity += scalar( grep { /ATOM/ } @cif_lines );
+$atom_quantity += scalar( grep { /ATOM/ } @cif_lines );
 
-# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-# print( $atom_quantity, "\n" );
-# print( "testing\n" );
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+print( $atom_quantity, "\n" );
+print( "testing\n" );
 
-# # Prepares selected atom data for Jmol.
-# map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-# map { [ split( " ", $_ ) ] }
-# grep { $_ =~ /ATOM/ }
-# @cif_lines;
+# Prepares selected atom data for Jmol.
+map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
+map { [ split( " ", $_ ) ] }
+grep { $_ =~ /ATOM/ }
+@cif_lines;
 
-# # Creates analytical equation for conformational space.
+# Creates analytical equation for conformational space.
 # my $transf_atom_coord =
 #     ${ rotation_only( $atom_site,
 # 		      \%atom_specifier ) }{"data"}
 #                                           {"$target_atom_id"}
 # 	                                  {"conformation"};
-
+my $transf_atom_coord =
+    ${ rotation_only( $atom_site, \%atom_specifier ) }{"data"};
+print Dumper $transf_atom_coord;
 # # Depending on the quantity of the rotatable bonds, permutations (rotations) are
 # # evaluated.
 # my $evaluated_matrix;

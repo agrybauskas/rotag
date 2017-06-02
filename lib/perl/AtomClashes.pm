@@ -8,9 +8,13 @@ our @EXPORT_OK = qw( radius_only );
 
 use lib qw( ./ );
 
-my $parameter_file = "../../parameters/van_der_waals_radii.csv";
+my $parameter_file = "../../parameters/vdw_radii.csv";
 
 # --------------------------- Detection of atom clashes ----------------------- #
+
+#
+# Checks if atoms have clashes with other atoms and removes if they do.
+#
 
 #
 # Parameters.
@@ -20,11 +24,12 @@ my $parameter_file = "../../parameters/van_der_waals_radii.csv";
 # Converts parameter file that identifies rotatable side-chain bonds to hash of
 # hashes. Ex.:
 # {
-#   "SER" => { OG => [ [ "CA", "CB" ] ] }
+#   "N" => 1.66,
+#   "C" => 1.77
 # }
 #
 
-my %WAALS_RADII;
+my %VDW_RADII;
 my $atom_name;
 my $atom_radius;
 
@@ -34,14 +39,10 @@ my $atom_radius;
     foreach( <$fh> ) {
 	chomp( $_ );
 	( $atom_name, $atom_radius ) = split( ",", );
-	$WAALS_RADII{"$atom_name"} = $atom_radius;
+	$VDW_RADII{"$atom_name"} = $atom_radius;
     }
     close($fh);
 }
-
-#
-# Checks if atoms have clashes with other atoms and removes if they do.
-#
 
 #
 # Simplest function for determining atoms clashes. Only radius of atoms are
