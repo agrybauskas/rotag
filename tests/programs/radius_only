@@ -96,7 +96,7 @@ grep { $_ =~ /ATOM/ }
 # 	                                  {"conformation"};
 my $transf_atom_coord =
     ${ rotation_only( $atom_site, \%atom_specifier ) }{"data"};
-print Dumper $transf_atom_coord;
+
 # # Depending on the quantity of the rotatable bonds, permutations (rotations) are
 # # evaluated.
 # my $evaluated_matrix;
