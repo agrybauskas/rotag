@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use Combinatorics qw( permutation );
+use Data::Dumper;
+#
+# Unit test: Combinatorics::permutation
+#
+# Carries out permutation for array of arrays.
+#
+# Example: ./permutation example.dat
+#
+
+# my ( $cif_file ) = @ARGV;
+# my @coord_sets = ( [] );
+
+# open( my $fh, "<", $cif_file );
+# while( <$fh> ) {
+#     if( $_ =~ /^\n$/ ) {
+# 	push( @coord_sets, [] );
+#     } else {
+# 	push( @{ $coord_sets[-1] }, [ split( " ", $_ ) ] );
+#     }
+# }
+# close( $fh );
+
+# # Prints out rmsd of given two sets.
+# printf( "%.3f\n", rmsd( @coord_sets ) );
+
+my @permutation_list = ( [ "a", "b" ], [ "A", "B" ], [ 1, 2, 3 ] );
+my $a = permutation( 3, [], \@permutation_list );
+
+print Dumper @$a;

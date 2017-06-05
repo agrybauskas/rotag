@@ -44,7 +44,9 @@ sub generate_pseudo
     my @target_atom_ids = map { $_->[0] } @{ $target_atom_ids };
 
     for my $id ( @target_atom_ids ) {
-	
+	for my $angles ( sort { $a cmp $b } keys %{ $defined_angles } ) {
+
+	}
     }
 }
 
