@@ -5,7 +5,7 @@ use warnings;
 
 use lib "../../lib/perl";
 use Combinatorics qw( permutation );
-use Data::Dumper;
+
 #
 # Unit test: Combinatorics::permutation
 #
@@ -14,23 +14,22 @@ use Data::Dumper;
 # Example: ./permutation example.dat
 #
 
-# my ( $cif_file ) = @ARGV;
-# my @coord_sets = ( [] );
+my ( $set_file ) = @ARGV;
+my @angles = ( [] );
 
-# open( my $fh, "<", $cif_file );
-# while( <$fh> ) {
-#     if( $_ =~ /^\n$/ ) {
-# 	push( @coord_sets, [] );
-#     } else {
-# 	push( @{ $coord_sets[-1] }, [ split( " ", $_ ) ] );
-#     }
-# }
-# close( $fh );
+open( my $fh, "<", $set_file );
+while( <$fh> ) {
+    if( $_ =~ /^\n$/ ) {
+	push( @angles, [] );
+    } else {
+	push( @{ $angles[-1] }, [ split( " ", $_ ) ] );
+    }
+}
+close( $fh );
 
-# # Prints out rmsd of given two sets.
-# printf( "%.3f\n", rmsd( @coord_sets ) );
+@angles = map { $_->[0] } @angles;
 
-my @permutation_list = ( [ "a", "b" ], [ "A", "B" ], [ 1, 2, 3 ] );
-my $a = permutation( 3, [], \@permutation_list );
+# Prints out all possible combinations of angles of list of sets.
+my $permuted_list = permutation( 3, [], \@angles );
 
-print Dumper @$a;
+print( join( " ", @{ $_ } ), "\n" ) for @{ $permuted_list }
