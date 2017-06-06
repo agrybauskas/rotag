@@ -12,6 +12,7 @@ use Data::Dumper;
 # Carries out permutation for list of arrays.
 #
 
+# TODO: move global variable inside function.
 my @permuted_list;
 
 sub permutation
