@@ -81,12 +81,6 @@ $atom_quantity += scalar( grep { /ATOM/ } @cif_lines );
 print( $atom_quantity, "\n" );
 print( "testing\n" );
 
-# Prepares selected atom data for Jmol.
-map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-map { [ split( " ", $_ ) ] }
-grep { $_ =~ /ATOM/ }
-@cif_lines;
-
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
 my $pseudo_atom_site =
@@ -96,11 +90,9 @@ my $pseudo_atom_site =
 
 # Prints out pseudo-atom coordinates.
 for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
-    if( $pseudo_atom_site->{"data"}{$id}{"is_pseudo_atom"} = 1 ) {
-    	printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
-		"\t%.3f\t%.3f\t%.3f\n",
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
-    }
+    printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
+	    "\t%.3f\t%.3f\t%.3f\n",
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
 }
