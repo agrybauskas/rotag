@@ -71,7 +71,7 @@ sub generate_pseudo
 
 	    # Adds generated pseudo-atom to $atom_site.
 	    $last_atom_id++;
-	    $atom_site->{"data"}{$last_atom_id} = $atom_site->{"data"}{$id};
+	    %{ $atom_site->{"data"}{$last_atom_id} } = %{ $atom_site->{"data"}{$id} };
 	    # Overwrites atom id.
 	    $atom_site->{"data"}{$last_atom_id}{"id"} =
 	    	$last_atom_id;
