@@ -150,6 +150,18 @@ sub dihedral_angle
 }
 
 #
+# Calculates dihedral angle of four given atoms.
+# Input  (1 arg): matrices of x,y,z coordinates of four atoms.
+# Output (1 arg): dihedral angle in radians.
+#
+
+sub all_dihedral_angles
+{
+
+}
+
+
+#
 # Calculates root-mean-square deviation of two same-length sets.
 # Input  (2 arg): two equal by length sets of cartesian coordinates of points.
 # Output (1 arg): root-mean-square deviation.

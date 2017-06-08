@@ -43,25 +43,25 @@ my $max_angle;
 my %numeric_angle_range;
 my $small_angle; # Change of angle in each rotation step.
 
-for my $dihedral_angle ( sort keys %angle_ranges ) {
-    $min_angle = $angle_ranges{"$dihedral_angle"}[0];
-    $max_angle = $angle_ranges{"$dihedral_angle"}[1];
-    $min_angle =~ s/pi/\$pi/g;
-    $max_angle =~ s/pi/\$pi/g;
-    $min_angle = eval( $min_angle );
-    $max_angle = eval( $max_angle );
-    $small_angle = ( $max_angle - $min_angle ) / $angle_states;
-    for( my $angle = $min_angle;
-	 $angle <= $max_angle;
-	 $angle = $angle + $small_angle ) {
-	if( defined $numeric_angle_range{"$dihedral_angle"} ) {
-	    push( @{ $numeric_angle_range{"$dihedral_angle"} }, $angle );
-	} else {
-	    $numeric_angle_range{"$dihedral_angle"} = [ $angle ];
-	}
-    }
-}
-
+# for my $dihedral_angle ( sort keys %angle_ranges ) {
+#     $min_angle = $angle_ranges{"$dihedral_angle"}[0];
+#     $max_angle = $angle_ranges{"$dihedral_angle"}[1];
+#     $min_angle =~ s/pi/\$pi/g;
+#     $max_angle =~ s/pi/\$pi/g;
+#     $min_angle = eval( $min_angle );
+#     $max_angle = eval( $max_angle );
+#     $small_angle = ( $max_angle - $min_angle ) / $angle_states;
+#     for( my $angle = $min_angle;
+# 	 $angle <= $max_angle;
+# 	 $angle = $angle + $small_angle ) {
+# 	if( defined $numeric_angle_range{"$dihedral_angle"} ) {
+# 	    push( @{ $numeric_angle_range{"$dihedral_angle"} }, $angle );
+# 	} else {
+# 	    $numeric_angle_range{"$dihedral_angle"} = [ $angle ];
+# 	}
+#     }
+# }
+$numeric_angle_range{"chi0"} = [ 0 ];
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
 open( my $fh, "<", $cif_file );
