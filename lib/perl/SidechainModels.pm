@@ -13,6 +13,7 @@ use LinearAlgebra qw( evaluate_matrix
                       matrix_product
                       switch_ref_frame
                       vectorize );
+use LoadParams qw( rotatable_bonds );
 
 my $parameter_file = "../../parameters/rotatable_bonds.csv";
 
@@ -22,28 +23,7 @@ my $parameter_file = "../../parameters/rotatable_bonds.csv";
 # Parameters.
 #
 
-#
-# Converts parameter file that identifies rotatable side-chain bonds to hash of
-# hashes. Ex.:
-# {
-#   "SER" => { OG => [ [ "CA", "CB" ] ] }
-# }
-#
-
-my %ROTATABLE_BONDS;
-
-{
-    open( my $fh, "<", $parameter_file )
-    	or die "Can't open < rotatable_bonds.csv: $!";
-
-    for my $data_row ( map { [ split( ",", $_ ) ] } <$fh> ) {
-	$ROTATABLE_BONDS{$data_row->[0]}{$data_row->[1]} = [];
-	for my $bond ( @{ $data_row }[2..$#{ $data_row }] ) {
-	    push( @{ $ROTATABLE_BONDS{$data_row->[0]}{$data_row->[1]} },
-		  [ split( ":", $bond ) ] );
-	}
-    }
-}
+my %ROTATABLE_BONDS = %{ rotatable_bonds( $parameter_file ) };
 
 #
 # Discribes sidechain models that are not restrained by van der Waals radius.

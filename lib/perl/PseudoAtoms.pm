@@ -10,9 +10,19 @@ use lib qw( ./ );
 use CifParser qw( filter_atoms select_atom_data );
 use Combinatorics qw( permutation );
 use LinearAlgebra qw( evaluate_matrix matrix_product );
+use LoadParams qw( rotatable_bonds );
 use SidechainModels qw( rotation_only );
+use Data::Dumper;
+
+my $parameter_file = "../../parameters/rotatable_bonds.csv";
 
 # --------------------------- Generation of pseudo-atoms ---------------------- #
+
+#
+# Parameters.
+#
+
+my %ROTATABLE_BONDS = %{ rotatable_bonds( $parameter_file ) };
 
 #
 # Generates pseudo-atoms from side chain models that are written in equation
@@ -49,6 +59,10 @@ sub generate_pseudo
 	my @angle_values = (); # Temprorary sets of angles that angle
 	                       # permutations will be generated from.
 
+	# Calculates current dihedral angles of rotatable bonds. Will be used
+	# for reseting dihedral angles to 0 degree angle.
+	my $current_angle;
+
 	for my $angle_name ( @angle_names ) {
 	    push( @angle_values, $defined_angles->{"$angle_name"} );
 	}
@@ -71,7 +85,8 @@ sub generate_pseudo
 
 	    # Adds generated pseudo-atom to $atom_site.
 	    $last_atom_id++;
-	    %{ $atom_site->{"data"}{$last_atom_id} } = %{ $atom_site->{"data"}{$id} };
+	    %{ $atom_site->{"data"}{$last_atom_id} } =
+		%{ $atom_site->{"data"}{$id} };
 	    # Overwrites atom id.
 	    $atom_site->{"data"}{$last_atom_id}{"id"} =
 	    	$last_atom_id;
