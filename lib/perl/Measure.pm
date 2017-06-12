@@ -4,18 +4,31 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( bond_angle
+our @EXPORT_OK = qw( all_dihedral
+                     bond_angle
                      bond_length
                      dihedral_angle
                      rmsd );
 
 use Math::Trig;
+use List::MoreUtils qw(uniq);
 
 use lib "./";
+use CifParser qw( filter_atoms
+                  select_atom_data );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
+use LoadParams qw( rotatable_bonds );
 
+my $parameter_file = "../../parameters/rotatable_bonds.csv";
+use Data::Dumper;
 # ----------------------------- Molecule parameters --------------------------- #
+
+#
+# Parameters.
+#
+
+my %ROTATABLE_BONDS = %{ rotatable_bonds( $parameter_file ) };
 
 #
 # Calculates various parameters that describe molecule or atoms, such as, bond
@@ -150,14 +163,87 @@ sub dihedral_angle
 }
 
 #
-# Calculates dihedral angle of four given atoms.
-# Input  (1 arg): matrices of x,y,z coordinates of four atoms.
-# Output (1 arg): dihedral angle in radians.
+# Calculates dihedral angles for all given atoms that are described in atom site
+# data structure (produced by obtain_atom_site or functions that uses it).
+# Input  (1 arg): atom site data structure.
+# Output (1 arg): list of lists of dihedral angles.
 #
 
-sub all_dihedral_angles
+sub all_dihedral
 {
+    my ( $atom_site ) = @_;
 
+
+    # Selects specified residue(s) id(s).
+    # TODO: code is similar to rotation_only in SidechainModels package. Possible
+    # duplication.
+    my $target_resi_id =
+	&select_atom_data( [ "label_seq_id" ], $atom_site );
+    my @target_resi_id = map { $_->[0] } @{ $target_resi_id };
+
+    my @target_atom_id;
+
+    my $residue_name;
+
+    my $atom_type;
+    my $mid_atom_type;
+    my $up_atom_type;
+
+    my $mid_atom_coord;
+    my $up_atom_coord;
+    my $side_atom_coord;
+
+    my @rotatable_bonds;
+
+    for my $resi_id ( uniq( @target_resi_id ) ) {
+
+	print Dumper $ROTATABLE_BONDS{"SER"};
+
+	    # my $angle_symbol; # Because side chain might have multiple
+	    #                   # rotatable bonds, there must be distinct
+	    #                   # symbols for different dihedral angles.
+
+	    # for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
+	    # 	$angle_symbol = "chi${i}";
+	    # 	$mid_atom_type = $rotatable_bonds[$i][0];
+	    # 	$mid_atom_type =~ s/\s//g;
+	    # 	$up_atom_type = $rotatable_bonds[$i][1];
+	    # 	$up_atom_type =~ s/\s//g;
+
+    	#     # Information about side atom is stored in rotatable bonds array,
+    	#     # except for CA atom.
+    	#     if( $mid_atom_type eq "CA" ) {
+    	# 	$side_atom_coord =
+    	# 	    &select_atom_data(
+    	# 	    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	# 	    &filter_atoms(
+    	# 		{ "label_atom_id" => [ "N" ] },
+    	# 		$atom_site ) );
+    	#     } else {
+    	# 	$side_atom_coord =
+    	# 	    &select_atom_data(
+    	# 	    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	# 	    &filter_atoms(
+    	# 		{ "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] },
+    	# 		$atom_site ) );
+    	#     }
+
+    	#     $mid_atom_coord =
+    	# 	&select_atom_data(
+    	# 	[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	# 	&filter_atoms(
+    	# 	    { "label_atom_id" => [ $mid_atom_type ] },
+    	# 	    $atom_site ) );
+
+    	#     $up_atom_coord =
+    	# 	&select_atom_data(
+    	# 	[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	# 	&filter_atoms(
+    	# 	    { "label_atom_id" => [ $up_atom_type ] },
+    	# 	    $atom_site ) );
+
+	    # }
+    }
 }
 
 

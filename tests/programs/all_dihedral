@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Math::Trig;
+
+use lib "../../lib/perl";
+use CifParser qw( filter_atoms
+                  obtain_atom_site );
+use Measure qw( all_dihedral );
+
+use lib "../lib";
+use Data::Dumper;
+my ( $resi_specifier, $cif_file ) = @ARGV;
+
+# Parses selector argument from string  to proper array.
+my %resi_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+			  map { [ split( " ", $_ ) ] }
+			  split( "&", $resi_specifier ) );
+
+# Calculates all angles of given sidechains.
+my $target_resi =
+    filter_atoms( \%resi_specifier, obtain_atom_site( $cif_file ) );
+
+all_dihedral( $target_resi );
