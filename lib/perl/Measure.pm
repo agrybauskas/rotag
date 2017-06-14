@@ -188,13 +188,17 @@ sub all_dihedral
 
     my $angle_symbol;
 
-    my $atom_type;
-    my $mid_atom_type;
-    my $up_atom_type;
+    my $first_atom_type;
+    my $second_atom_type;
+    my $third_atom_type;
+    my $fourth_atom_type;
 
-    my $mid_atom_coord;
-    my $up_atom_coord;
-    my $side_atom_coord;
+    my $first_atom_coord;
+    my $second_atom_coord;
+    my $third_atom_coord;
+    my $fourth_atom_coord;
+
+    my %residue_angles;
 
     # TODO: look if can redefine data structure of atom site so, it could be
     # easier to select atoms by residue id.
@@ -203,6 +207,7 @@ sub all_dihedral
 	    filter_atoms( { "label_seq_id" => [ $resi_id ] }, $atom_site );
 	$residue_name =
 	    select_atom_data( [ "label_comp_id" ], $residue_site )->[0][0];
+	undef( %residue_angles );
 
 	# HACK: chooses atom that is dependent on the greatest quantity of
 	# rotatable bonds. Would not work on modified amino acids.
@@ -216,50 +221,57 @@ sub all_dihedral
 	    }
 	}
 
-	# Calculates every dihedral angle of
-	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
-	    # $angle_symbol = "chi${i}";
-	    # $mid_atom_type = $rotatable_bonds[$i][0];
-	    # $mid_atom_type =~ s/\s//g;
-	    # $up_atom_type = $rotatable_bonds[$i][1];
-	    # $up_atom_type =~ s/\s//g;
+	# Calculates every dihedral angle.
+	for( my $i = 0; $i < scalar( @rotatable_bonds ) - 1; $i++ ) {
+	    $angle_symbol = "chi${i}";
+	    $second_atom_type = $rotatable_bonds[$i][0];
+	    $second_atom_type =~ s/\s//g;
+	    $third_atom_type = $rotatable_bonds[$i][1];
+	    $third_atom_type =~ s/\s//g;
+	    $fourth_atom_type = $rotatable_bonds[$i+1][1];
+	    $fourth_atom_type =~ s/\s//g;
 
-	    # # Extracts coordinates for dihedral angle calculations.
-
-	    # # Information about side atom is stored in rotatable bonds array,
-    	    # # except for CA atom.
-    	    # if( $mid_atom_type eq "CA" ) {
-    	    # 	$side_atom_coord =
-    	    # 	    &select_atom_data(
-    	    # 	    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-    	    # 	    &filter_atoms(
-    	    # 		{ "label_atom_id" => [ "N" ] },
-    	    # 		$atom_site ) );
-    	    # } else {
-    	    # 	$side_atom_coord =
-    	    # 	    &select_atom_data(
-    	    # 	    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-    	    # 	    &filter_atoms(
-    	    # 		{ "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] },
-    	    # 		$atom_site ) );
-    	    # }
-
-    	    # $mid_atom_coord =
-    	    # 	&select_atom_data(
-    	    # 	[ "Cartn_x", "Cartn_y", "Cartn_z" ],
-    	    # 	&filter_atoms(
-    	    # 	    { "label_atom_id" => [ $mid_atom_type ] },
-    	    # 	    $atom_site ) );
-
-    	    # $up_atom_coord =
-    	    # 	&select_atom_data(
-    	    # 	[ "Cartn_x", "Cartn_y", "Cartn_z" ],
-    	    # 	&filter_atoms(
-    	    # 	    { "label_atom_id" => [ $up_atom_type ] },
-    	    # 	    $atom_site ) );
-	    # dihedral_angle( [ @{ $mid_atom_coord },
-	    # 		      @{ $side_atom_coord },
-	    # 		      @{ $up_atom_coord } ] );
+	    # Extracts coordinates for dihedral angle calculations.
+	    # Information about side atom is stored in rotatable bonds array,
+    	    # except for CA atom.
+    	    if( $second_atom_type eq "CA" ) {
+    	    	$first_atom_coord =
+    	    	    &select_atom_data(
+    	    	    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	    	    &filter_atoms(
+    	    		{ "label_atom_id" => [ "N" ] },
+    	    		$residue_site ) );
+    	    } else {
+    	    	$first_atom_coord =
+    	    	    &select_atom_data(
+    	    	    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	    	    &filter_atoms(
+    	    		{ "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] },
+    	    		$residue_site ) );
+    	    }
+    	    $second_atom_coord =
+    	    	&select_atom_data(
+    	    	[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	    	&filter_atoms(
+    	    	    { "label_atom_id" => [ $second_atom_type ] },
+    	    	    $residue_site ) );
+    	    $third_atom_coord =
+    	    	&select_atom_data(
+    	    	[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	    	&filter_atoms(
+    	    	    { "label_atom_id" => [ $third_atom_type ] },
+    	    	    $residue_site ) );
+    	    $fourth_atom_coord =
+    	    	&select_atom_data(
+    	    	[ "Cartn_x", "Cartn_y", "Cartn_z" ],
+    	    	&filter_atoms(
+    	    	    { "label_atom_id" => [ $fourth_atom_type ] },
+    	    	    $residue_site ) );
+	     $residue_angles{$angle_symbol} =
+		 dihedral_angle( [ @{ $first_atom_coord },
+				   @{ $second_atom_coord },
+				   @{ $third_atom_coord },
+				   @{ $fourth_atom_coord } ] );
 	}
     }
 }
