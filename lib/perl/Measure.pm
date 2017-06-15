@@ -21,7 +21,7 @@ use LinearAlgebra qw( matrix_sub
 use LoadParams qw( rotatable_bonds );
 
 my $parameter_file = "../../parameters/rotatable_bonds.csv";
-use Data::Dumper;
+
 # ----------------------------- Molecule parameters --------------------------- #
 
 #
@@ -166,7 +166,10 @@ sub dihedral_angle
 # Calculates dihedral angles for all given atoms that are described in atom site
 # data structure (produced by obtain_atom_site or functions that uses it).
 # Input  (1 arg): atom site data structure.
-# Output (1 arg): list of lists of dihedral angles.
+# Output (1 arg): hash of hash of dihedral angles.
+# Ex.:
+#   resi_id, angle_name, angle value
+# { 18 => { 'chi0' => '-3.14' } }
 #
 
 sub all_dihedral
@@ -198,6 +201,7 @@ sub all_dihedral
     my $third_atom_coord;
     my $fourth_atom_coord;
 
+    my %angle_values;
     my %residue_angles;
 
     # TODO: look if can redefine data structure of atom site so, it could be
@@ -207,7 +211,7 @@ sub all_dihedral
 	    filter_atoms( { "label_seq_id" => [ $resi_id ] }, $atom_site );
 	$residue_name =
 	    select_atom_data( [ "label_comp_id" ], $residue_site )->[0][0];
-	undef( %residue_angles );
+	undef( %angle_values );
 
 	# HACK: chooses atom that is dependent on the greatest quantity of
 	# rotatable bonds. Would not work on modified amino acids.
@@ -267,15 +271,17 @@ sub all_dihedral
     	    	&filter_atoms(
     	    	    { "label_atom_id" => [ $fourth_atom_type ] },
     	    	    $residue_site ) );
-	     $residue_angles{$angle_symbol} =
+	     $angle_values{$angle_symbol} =
 		 dihedral_angle( [ @{ $first_atom_coord },
 				   @{ $second_atom_coord },
 				   @{ $third_atom_coord },
 				   @{ $fourth_atom_coord } ] );
 	}
+	%{ $residue_angles{$resi_id} } = %angle_values;
     }
-}
 
+    return \%residue_angles;
+}
 
 #
 # Calculates root-mean-square deviation of two same-length sets.

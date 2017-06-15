@@ -8,10 +8,9 @@ use Math::Trig;
 use lib "../../lib/perl";
 use CifParser qw( filter_atoms
                   obtain_atom_site );
+use LinearAlgebra qw( $PI );
 use Measure qw( all_dihedral );
 
-use lib "../lib";
-use Data::Dumper;
 my ( $resi_specifier, $cif_file ) = @ARGV;
 
 # Parses selector argument from string  to proper array.
@@ -23,4 +22,13 @@ my %resi_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my $target_resi =
     filter_atoms( \%resi_specifier, obtain_atom_site( $cif_file ) );
 
-all_dihedral( $target_resi );
+# Calculates and prints out every dihedral angle for each residue.
+my $dihedral_angles = all_dihedral( $target_resi );
+
+for my $residue ( keys %{ $dihedral_angles } ) {
+    for my $angle ( keys %{ $dihedral_angles->{$residue} } ) {
+	print( $residue, "\t",
+	       $angle, "\t",
+	       $dihedral_angles->{$residue}{$angle} * 180 / $PI, "\n" );
+    }
+}

@@ -10,6 +10,8 @@ our @EXPORT_OK = qw( create_ref_frame
                      matrix_product
                      matrix_sum
                      matrix_sub
+                     $PI
+                     $EPSILON
                      switch_ref_frame
                      translation
                      transpose
@@ -29,9 +31,9 @@ our @EXPORT_OK = qw( create_ref_frame
 # Constants
 #
 
-my $PI = 4 * atan2( 1, 1 );
+our $PI = 4 * atan2( 1, 1 );
 
-my $EPSILON = 1.0; # Machine accuracy for floating point numbers which is
+our  $EPSILON = 1.0; # Machine accuracy for floating point numbers which is
                    # calculated in above block.
 {
     while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
