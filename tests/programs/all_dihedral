@@ -3,8 +3,6 @@
 use strict;
 use warnings;
 
-use Math::Trig;
-
 use lib "../../lib/perl";
 use CifParser qw( filter_atoms
                   obtain_atom_site );
@@ -26,9 +24,8 @@ my $target_resi =
 my $dihedral_angles = all_dihedral( $target_resi );
 
 for my $residue ( keys %{ $dihedral_angles } ) {
-    for my $angle ( keys %{ $dihedral_angles->{$residue} } ) {
-	print( $residue, "\t",
-	       $angle, "\t",
-	       $dihedral_angles->{$residue}{$angle} * 180 / $PI, "\n" );
+    for my $angle ( sort { $a cmp $b } keys %{ $dihedral_angles->{$residue} } ) {
+	print( $residue, "\t", $angle, "\t" );
+	printf( "%.1f\n", $dihedral_angles->{$residue}{$angle} * 180 / $PI );
     }
 }
