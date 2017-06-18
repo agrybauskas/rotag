@@ -11,6 +11,7 @@ use CifParser qw( filter_atoms select_atom_data );
 use Combinatorics qw( permutation );
 use LinearAlgebra qw( evaluate_matrix matrix_product );
 use LoadParams qw( rotatable_bonds );
+use Measure qw( all_dihedral );
 use SidechainModels qw( rotation_only );
 use Data::Dumper;
 
@@ -61,51 +62,60 @@ sub generate_pseudo
 
 	# Calculates current dihedral angles of rotatable bonds. Will be used
 	# for reseting dihedral angles to 0 degree angle.
-	my $current_angle;
+	my $current_resi_id = $atom_site->{"data"}{"$id"}{"label_seq_id"};
+	my %current_angles =
+	    %{ all_dihedral( filter_atoms(
+				 { "label_seq_id" => [ $current_resi_id ] },
+				 $atom_site ) ) };
 
+	# Iterates through combinations of angles and evaluates conformational
+	# model.
 	for my $angle_name ( @angle_names ) {
-	    push( @angle_values, $defined_angles->{"$angle_name"} );
+	    push( @angle_values,
+		  [ map
+		    { $_ - $current_angles{"$current_resi_id"}{"$angle_name"} }
+		    @{ $defined_angles->{"$angle_name"} } ] );
 	}
 
 	my $angle_set_size = scalar( @angle_names );
 
-	# Iterates through combinations of angles and evaluates conformational
-	# model.
 	my %angle_values;
 	my $conf_model = $atom_site->{"data"}{"$id"}{"conformation"};
+	print Dumper $conf_model;
 	my $transf_atom_coord;
 
 	for my $angle_comb (
 	    @{ permutation( $angle_set_size, [], \@angle_values ) } ) {
 	    %angle_values =
 		map { $angle_names[$_], $angle_comb->[$_] } 0..$#angle_names;
-	    # TODO: get rid of matrix_product function.
+	    # # TODO: get rid of matrix_product function.
 	    $transf_atom_coord =
-		evaluate_matrix( \%angle_values, matrix_product( $conf_model ) );
-
+	    	evaluate_matrix( \%angle_values, matrix_product( $conf_model ) );
 	    # Adds generated pseudo-atom to $atom_site.
 	    $last_atom_id++;
 	    %{ $atom_site->{"data"}{$last_atom_id} } =
-		%{ $atom_site->{"data"}{$id} };
+	    	%{ $atom_site->{"data"}{$id} };
 	    # Overwrites atom id.
 	    $atom_site->{"data"}{$last_atom_id}{"id"} =
 	    	$last_atom_id;
+	    print Dumper \%angle_values;;
 	    # Overwrites exsisting coordinate values.
-	    $atom_site->{"data"}{$last_atom_id}{"Cartn_x"} =
-	    	$transf_atom_coord->[0][0];
-	    $atom_site->{"data"}{$last_atom_id}{"Cartn_y"} =
-	    	$transf_atom_coord->[1][0];
-	    $atom_site->{"data"}{$last_atom_id}{"Cartn_z"} =
-	    	$transf_atom_coord->[2][0];
-	    # Adds information about used dihedral angles.
-	    $atom_site->{"data"}{$last_atom_id}{"dihedral_angles"} =
-	    	\%angle_values;
-	    # Adds additional pseudo-atom flag for future filtering.
-	    $atom_site->{"data"}{$last_atom_id}{"is_pseudo_atom"} = 1;
+	    # $atom_site->{"data"}{$last_atom_id}{"Cartn_x"} =
+	    # 	$transf_atom_coord->[0][0];
+	    # $atom_site->{"data"}{$last_atom_id}{"Cartn_y"} =
+	    # 	$transf_atom_coord->[1][0];
+	    # $atom_site->{"data"}{$last_atom_id}{"Cartn_z"} =
+	    # 	$transf_atom_coord->[2][0];
+	    # # Adds information about used dihedral angles.
+	    # $atom_site->{"data"}{$last_atom_id}{"dihedral_angles"} =
+	    # 	\%angle_values;
+	    # # Adds additional pseudo-atom flag for future filtering.
+	    # $atom_site->{"data"}{$last_atom_id}{"is_pseudo_atom"} = 1;
 	}
     }
 
-    return $atom_site;
+    # print Dumper $atom_site;
+    # return $atom_site;
 }
 
 1;
