@@ -19,7 +19,7 @@ use CifParser qw( filter_atoms
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use LoadParams qw( rotatable_bonds );
-
+use Data::Dumper;
 my $parameter_file = "../../parameters/rotatable_bonds.csv";
 
 # ----------------------------- Molecule parameters --------------------------- #
@@ -239,18 +239,20 @@ sub all_dihedral
 	    # Information about side atom is stored in rotatable bonds array,
     	    # except for CA atom.
     	    if( $second_atom_type eq "CA" ) {
+		$first_atom_type = "N";
     	    	$first_atom_coord =
     	    	    &select_atom_data(
     	    	    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
     	    	    &filter_atoms(
-    	    		{ "label_atom_id" => [ "N" ] },
+    	    		{ "label_atom_id" => [ $first_atom_type ] },
     	    		$residue_site ) );
     	    } else {
+		$first_atom_type = $rotatable_bonds[$i-1][0];
     	    	$first_atom_coord =
     	    	    &select_atom_data(
     	    	    [ "Cartn_x", "Cartn_y", "Cartn_z" ],
     	    	    &filter_atoms(
-    	    		{ "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] },
+    	    		{ "label_atom_id" => [ $first_atom_type ] },
     	    		$residue_site ) );
     	    }
     	    $second_atom_coord =
@@ -272,10 +274,10 @@ sub all_dihedral
     	    	    { "label_atom_id" => [ $fourth_atom_type ] },
     	    	    $residue_site ) );
 	     $angle_values{$angle_symbol} =
-		 dihedral_angle( [ @{ $first_atom_coord },
-				   @{ $second_atom_coord },
-				   @{ $third_atom_coord },
-				   @{ $fourth_atom_coord } ] );
+	     	 dihedral_angle( [ @{ $first_atom_coord },
+	     			   @{ $second_atom_coord },
+	     			   @{ $third_atom_coord },
+	     			   @{ $fourth_atom_coord } ] );
 	}
 	%{ $residue_angles{$resi_id} } = %angle_values;
     }
