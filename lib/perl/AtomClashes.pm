@@ -28,7 +28,7 @@ my %VDW_RADII = %{ vdw_radius( $parameter_file ) };
 # considered.
 #
 
-sub radius_only
-{
-
-}
+# sub radius_only
+# {
+#     my $atom_site
+# }

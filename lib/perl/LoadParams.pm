@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( rotatable_bonds
-                     vdw_radius );
+                     vdw_radii );
 
 #
 # Converts parameter file that identifies rotatable side-chain bonds to hash of
@@ -50,20 +50,20 @@ sub rotatable_bonds
 # }
 #
 
-sub vdw_radius
+sub vdw_radii
 {
-    my $parameter_file;
+    my ( $parameter_file ) = @_;
 
     my %VDW_RADII;
     my $atom_name;
     my $atom_radius;
 
     open( my $fh, "<", $parameter_file )
-    	or die "Can't open < van_der_waals_radii.csv: $!";
+    	or die "Can't open < vdw_radii.csv: $!";
     foreach( <$fh> ) {
-	chomp( $_ );
-	( $atom_name, $atom_radius ) = split( ",", );
-	$VDW_RADII{"$atom_name"} = $atom_radius;
+    	chomp( $_ );
+    	( $atom_name, $atom_radius ) = split( ",", );
+    	$VDW_RADII{"$atom_name"} = $atom_radius;
     }
     close($fh);
 

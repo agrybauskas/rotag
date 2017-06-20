@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use LoadParams qw( vdw_radii );
+
+@ARGV = ( "-" ) unless @ARGV;
+
+foreach my $parameter_file ( @ARGV ) {
+    vdw_radii( $parameter_file );
+}
