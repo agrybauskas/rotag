@@ -7,8 +7,8 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( radius_only );
 
 use lib qw( ./ );
-use LoadParams qw( vdw_radius );
-
+use LoadParams qw( vdw_radii );
+use Data::Dumper;
 my $parameter_file = "../../parameters/vdw_radii.csv";
 
 # --------------------------- Detection of atom clashes ----------------------- #
@@ -21,14 +21,18 @@ my $parameter_file = "../../parameters/vdw_radii.csv";
 # Parameters.
 #
 
-my %VDW_RADII = %{ vdw_radius( $parameter_file ) };
+my %VDW_RADII = %{ vdw_radii( $parameter_file ) };
 
 #
 # Simplest function for determining atoms clashes. Only radius of atoms are
 # considered.
 #
 
-# sub radius_only
-# {
-#     my $atom_site
-# }
+sub radius_only
+{
+    my ( $atom_site ) = @_;
+
+    print Dumper $atom_site;
+}
+
+1;
