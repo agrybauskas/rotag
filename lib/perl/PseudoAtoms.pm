@@ -81,7 +81,7 @@ sub generate_pseudo
 
 	my %angle_values;
 	my $conf_model = $atom_site->{"data"}{"$id"}{"conformation"};
-	print Dumper $conf_model;
+
 	my $transf_atom_coord;
 
 	for my $angle_comb (
@@ -98,24 +98,22 @@ sub generate_pseudo
 	    # Overwrites atom id.
 	    $atom_site->{"data"}{$last_atom_id}{"id"} =
 	    	$last_atom_id;
-	    print Dumper \%angle_values;;
 	    # Overwrites exsisting coordinate values.
-	    # $atom_site->{"data"}{$last_atom_id}{"Cartn_x"} =
-	    # 	$transf_atom_coord->[0][0];
-	    # $atom_site->{"data"}{$last_atom_id}{"Cartn_y"} =
-	    # 	$transf_atom_coord->[1][0];
-	    # $atom_site->{"data"}{$last_atom_id}{"Cartn_z"} =
-	    # 	$transf_atom_coord->[2][0];
-	    # # Adds information about used dihedral angles.
-	    # $atom_site->{"data"}{$last_atom_id}{"dihedral_angles"} =
-	    # 	\%angle_values;
-	    # # Adds additional pseudo-atom flag for future filtering.
-	    # $atom_site->{"data"}{$last_atom_id}{"is_pseudo_atom"} = 1;
+	    $atom_site->{"data"}{$last_atom_id}{"Cartn_x"} =
+	    	$transf_atom_coord->[0][0];
+	    $atom_site->{"data"}{$last_atom_id}{"Cartn_y"} =
+	    	$transf_atom_coord->[1][0];
+	    $atom_site->{"data"}{$last_atom_id}{"Cartn_z"} =
+	    	$transf_atom_coord->[2][0];
+	    # Adds information about used dihedral angles.
+	    $atom_site->{"data"}{$last_atom_id}{"dihedral_angles"} =
+	    	\%angle_values;
+	    # Adds additional pseudo-atom flag for future filtering.
+	    $atom_site->{"data"}{$last_atom_id}{"is_pseudo_atom"} = 1;
 	}
     }
 
-    # print Dumper $atom_site;
-    # return $atom_site;
+    return $atom_site;
 }
 
 1;

@@ -61,7 +61,7 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
 	}
     }
 }
-$numeric_angle_range{"chi0"} = [ 0 ];
+
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
 open( my $fh, "<", $cif_file );
@@ -83,16 +83,16 @@ print( "testing\n" );
 
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
-# my $pseudo_atom_site =
+my $pseudo_atom_site =
     generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
 		     \%atom_specifier,
 		     \%numeric_angle_range );
 
-# # Prints out pseudo-atom coordinates.
-# for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
-#     printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
-# 	    "\t%.3f\t%.3f\t%.3f\n",
-# 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
-# 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
-# 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
-# }
+# Prints out pseudo-atom coordinates.
+for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
+    printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
+	    "\t%.3f\t%.3f\t%.3f\n",
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
+}

@@ -79,7 +79,7 @@ sub rotation_only
 	                  # rotatable bonds, there must be distinct
 	                  # symbols for different dihedral angles.
 
-    	for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
+    	for( my $i = 0; $i < scalar( @rotatable_bonds ) - 1; $i++ ) {
 	    $angle_symbol = "chi${i}";
     	    $mid_atom_type = $rotatable_bonds[$i][0];
 	    $mid_atom_type =~ s/\s//g;
