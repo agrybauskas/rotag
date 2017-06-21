@@ -30,9 +30,11 @@ my %VDW_RADII = %{ vdw_radii( $parameter_file ) };
 
 sub radius_only
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $atom_specifier ) = @_;
 
-    print Dumper $atom_site;
+    # Clashes of all atoms analyzed, if no specific atoms are selected.
+
+
 }
 
 1;

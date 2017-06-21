@@ -11,8 +11,17 @@ use List::Util qw( max min );
 
 use lib qw( ./ );
 use CifParser qw( select_atom_data );
+use LoadParams qw( covalent_radii );
+
+$parameter_file = "../../parameters/covalent_radii.csv";
 
 # ------------------------------ Connect atoms ------------------------------- #
+
+#
+# Parameters
+#
+
+my %COVALENT_RADII = covalent_radii( $parameter_file );
 
 #
 # Shows what atom is connected to what atom using only information about atom

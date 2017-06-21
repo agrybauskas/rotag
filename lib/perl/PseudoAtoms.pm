@@ -13,7 +13,6 @@ use LinearAlgebra qw( evaluate_matrix matrix_product );
 use LoadParams qw( rotatable_bonds );
 use Measure qw( all_dihedral );
 use SidechainModels qw( rotation_only );
-use Data::Dumper;
 
 my $parameter_file = "../../parameters/rotatable_bonds.csv";
 
