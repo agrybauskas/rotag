@@ -2,7 +2,7 @@ package LoadParams;
 
 use strict;
 use warnings;
-
+use Data::Dumper;
 use Exporter qw( import );
 our @EXPORT_OK = qw( covalent_radii
                      rotatable_bonds
@@ -79,10 +79,8 @@ sub vdw_radii
 # Output (1 arg): data structure describing bond lengths.
 # Ex.:
 # {
-#   "C" => {
-#            "C" => "length" => [ 1.513, 1.455 ],
-#                   "error"  => [ 0.014, 0.011 ]
-#          }
+#   "C" => "length" => [ 1.513, 1.455 ],
+#          "error"  => [ 0.014, 0.011 ]
 # }
 #
 
@@ -90,10 +88,8 @@ sub covalent_radii
 {
     my ( $parameter_file ) = @_;
 
-    # TODO: change bond length notation to covalent radii.
     my %COVALENT_RADII;
-    my $first_atom_name;
-    my $second_atom_name;
+    my $atom_name;
     my $bond_length;
     my $length_error;
 
@@ -101,18 +97,16 @@ sub covalent_radii
     	or die "Can't open < vdw_radii.csv: $!";
     foreach( <$fh> ) {
     	chomp( $_ );
-	( $first_atom_name, $second_atom_name, $bond_length, $length_error ) =
+	( $atom_name, $bond_length, $length_error ) =
 	    split( ",", $_ );
-	if( exists $COVALENT_RADII{$first_atom_name}{$second_atom_name} ) {
-	    push( @{ $COVALENT_RADII{$first_atom_name}
-		     {$second_atom_name}{"bond_length"} }, $bond_length );
-	    push( @{ $COVALENT_RADII{$first_atom_name}
-		     {$second_atom_name}{"length_error"} }, $length_error );
+	if( exists $COVALENT_RADII{$atom_name} ) {
+	    push( @{ $COVALENT_RADII{$atom_name}{"bond_length"} },
+		  $bond_length );
+	    push( @{ $COVALENT_RADII{$atom_name}{"length_error"} },
+		  $length_error );
 	} else {
-	    $COVALENT_RADII{$first_atom_name}{$second_atom_name}{"bond_length"} =
-		[ $bond_length ];
-	    $COVALENT_RADII{$first_atom_name}{$second_atom_name}{"length_error"}=
-		[ $length_error ];
+	    $COVALENT_RADII{$atom_name}{"bond_length"} = [ $bond_length ];
+	    $COVALENT_RADII{$atom_name}{"length_error"} = [ $length_error ];
 	}
     }
     close($fh);
