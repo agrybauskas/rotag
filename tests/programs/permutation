@@ -30,6 +30,6 @@ close( $fh );
 @angles = map { $_->[0] } @angles;
 
 # Prints out all possible combinations of angles of list of sets.
-my $permuted_list = permutation( 3, [], \@angles );
+my $permuted_list = permutation( 3, [], \@angles, [] );
 
 print( join( " ", @{ $_ } ), "\n" ) for @{ $permuted_list }

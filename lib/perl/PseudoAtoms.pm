@@ -84,7 +84,7 @@ sub generate_pseudo
 	my $transf_atom_coord;
 
 	for my $angle_comb (
-	    @{ permutation( $angle_set_size, [], \@angle_values ) } ) {
+	    @{ permutation( $angle_set_size, [], \@angle_values, [] ) } ) {
 	    %angle_values =
 		map { $angle_names[$_], $angle_comb->[$_] } 0..$#angle_names;
 	    # # TODO: get rid of matrix_product function.

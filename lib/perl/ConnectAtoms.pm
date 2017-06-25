@@ -173,36 +173,37 @@ sub connect_atoms
 			2,
 			[],
 			[ $COVALENT_RADII{$cell_atom_type}{"bond_length"},
-			  $COVALENT_RADII{$neighbour_type}{"bond_length"} ] );
-
+			  $COVALENT_RADII{$neighbour_type}{"bond_length"} ],
+			[] );
 		$length_error_comb =
 		    permutation(
 			2,
 			[],
 			[ $COVALENT_RADII{$cell_atom_type}{"length_error"},
-			  $COVALENT_RADII{$neighbour_type}{"length_error"} ] );
+			  $COVALENT_RADII{$neighbour_type}{"length_error"} ],
+			[] );
 
     	    	$distance_btw_atoms =
     		    ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
     	    	  + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2
     	    	  + ( $neighbour_atom->[3] - $cell_atom_coord->[3] ) ** 2;
 
-		for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
-		    $bond_length =
+    		for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
+    		    $bond_length =
 			$bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
-		    $length_error = $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
-
-		    if( ( $distance_btw_atoms >
-		          ( $bond_length - $length_error ) ** 2 )
-		     && ( $distance_btw_atoms <
-		          ( $bond_length + $length_error ) ** 2 ) ) {
-		        push( @{ $connected_atoms{"data"}
-				 {$cell_atom_coord->[0]}
-				 {"connections"} },
-			      $neighbour_atom->[0] );
-			last;
-		    }
-		}
+    		    $length_error =
+			$length_error_comb->[$i][0] + $length_error_comb->[$i][1];
+    		    if( ( $distance_btw_atoms >
+    		          ( $bond_length - $length_error ) ** 2 )
+    		     && ( $distance_btw_atoms <
+    		          ( $bond_length + $length_error ) ** 2 ) ) {
+    		        push( @{ $connected_atoms{"data"}
+    		    		 {$cell_atom_coord->[0]}
+    		    		 {"connections"} },
+    		    	      $neighbour_atom->[0] );
+    		    	last;
+    		    }
+    		}
     	    }
     	}
     }
