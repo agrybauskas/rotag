@@ -174,13 +174,13 @@ sub connect_atoms
 			[],
 			[ $COVALENT_RADII{$cell_atom_type}{"bond_length"},
 			  $COVALENT_RADII{$neighbour_type}{"bond_length"} ] );
-		# TODO: remove global variable from permutation function.
-		# $length_error_comb =
-		#     permutation(
-		# 	2,
-		# 	[],
-		# 	[ $COVALENT_RADII{$cell_atom_type}{"length_error"},
-		# 	  $COVALENT_RADII{$neighbour_type}{"length_error"} ] );
+
+		$length_error_comb =
+		    permutation(
+			2,
+			[],
+			[ $COVALENT_RADII{$cell_atom_type}{"length_error"},
+			  $COVALENT_RADII{$neighbour_type}{"length_error"} ] );
 
     	    	$distance_btw_atoms =
     		    ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
@@ -190,9 +190,8 @@ sub connect_atoms
 		for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
 		    $bond_length =
 			$bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
-		    # HACK: hardcoded value is until permutation function is
-		    # fixed.
-		    $length_error = 0.1;
+		    $length_error = $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
+
 		    if( ( $distance_btw_atoms >
 		          ( $bond_length - $length_error ) ** 2 )
 		     && ( $distance_btw_atoms <
