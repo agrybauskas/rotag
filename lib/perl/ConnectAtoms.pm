@@ -153,9 +153,10 @@ sub connect_atoms
 	my $cell_atom_type;
 	my $neighbour_type;
 	my $bond_length_comb;
+	my $length_error_comb;
 	my $distance_btw_atoms;
-	my @bond_length;
-	my @length_error;
+	my $bond_length;
+	my $length_error;
 
     	foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {
     	    $connected_atoms{"data"}{$cell_atom_coord->[0]}{"connections"} = [];
@@ -166,33 +167,48 @@ sub connect_atoms
 		    $atom_site->{"data"}{$cell_atom_coord->[0]}{"type_symbol"};
 		$neighbour_type =
 		    $atom_site->{"data"}{$neighbour_atom->[0]}{"type_symbol"};
+
 		$bond_length_comb =
 		    permutation(
 			2,
 			[],
 			[ $COVALENT_RADII{$cell_atom_type}{"bond_length"},
 			  $COVALENT_RADII{$neighbour_type}{"bond_length"} ] );
-		# print Dumper \@bond_length;
-    	    	# $distance_btw_atoms =
-    		#     ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
-    	    	#   + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2
-    	    	#   + ( $neighbour_atom->[3] - $cell_atom_coord->[3] ) ** 2;
+		# TODO: remove global variable from permutation function.
+		# $length_error_comb =
+		#     permutation(
+		# 	2,
+		# 	[],
+		# 	[ $COVALENT_RADII{$cell_atom_type}{"length_error"},
+		# 	  $COVALENT_RADII{$neighbour_type}{"length_error"} ] );
 
-    		# if( ( $distance_btw_atoms >
-    		#       ( $bond_length - $length_error ) ** 2 )
-    		#  && ( $distance_btw_atoms <
-    		#       ( $bond_length + $length_error ) ** 2 ) ) {
-    		#     push( @{ $connected_atoms{"data"}
-    		# 	                     {$cell_atom_coord->[0]}
-    		# 	                     {"connections"} },
-    		# 	  $neighbour_atom->[0] );
-    		# }
+    	    	$distance_btw_atoms =
+    		    ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
+    	    	  + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2
+    	    	  + ( $neighbour_atom->[3] - $cell_atom_coord->[3] ) ** 2;
 
+		for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
+		    $bond_length =
+			$bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
+		    # HACK: hardcoded value is until permutation function is
+		    # fixed.
+		    $length_error = 0.1;
+		    if( ( $distance_btw_atoms >
+		          ( $bond_length - $length_error ) ** 2 )
+		     && ( $distance_btw_atoms <
+		          ( $bond_length + $length_error ) ** 2 ) ) {
+		        push( @{ $connected_atoms{"data"}
+				 {$cell_atom_coord->[0]}
+				 {"connections"} },
+			      $neighbour_atom->[0] );
+			last;
+		    }
+		}
     	    }
     	}
     }
 
-    # return \%connected_atoms;
+    return \%connected_atoms;
 }
 
 1;
