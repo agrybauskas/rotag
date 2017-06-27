@@ -25,6 +25,10 @@ my $parameter_file = "../../parameters/covalent_radii.csv";
 
 my %COVALENT_RADII = %{ covalent_radii( $parameter_file ) };
 
+my $MAX_BOND_LENGTH =
+    max( map { $COVALENT_RADII{$_}{"bond_length"} }
+	 keys( %COVALENT_RADII ) ) * 2;
+
 #
 # Shows what atom is connected to what atom using only information about atom
 # coordinates.
@@ -68,10 +72,10 @@ sub create_box
 #
 # Divides box into grid of cubes that has length of the desired bond. If box
 # is not perfectly divisible, then the boundaries are extended accordingly.
-# Then, all atoms' distances are compared pairwisely in one box. If distance
-# is correspond to appropriate length, then connection is made by two atoms.
-# Input  (2 arg): bond length in angstroms, bond length error and atom data
-#                 in cif data structure form (look at CifParser.pm).
+# Then, all atoms' distances are compared pairwisely in one box + 26 surrounding
+# boxes. If distance is correspond to appropriate length, then connection is
+# made by two atoms.
+# Input  (1 arg): cif data structure form (look at CifParser.pm).
 # Output (1 arg): atom data in cif data structure form that has additional
 #                 data for each atom - hash of atom coordinates (x, y, z) as
 #                 keys and atom coordinates that are connected to as values.
@@ -86,39 +90,27 @@ sub connect_atoms
     			  $atom_site );
 
     # Creates smallest box that contain all atoms.
-    my $only_atom_coord =
-    	select_atom_data( [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-    			  $atom_site );
-    my @boundary_box = create_box( @$only_atom_coord );
+    my @boundary_box =
+	create_box( @{ select_atom_data( [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+					 $atom_site ) } );
 
-    my %grid_box;
-
+    # Assign atoms to cells in grid box.
+    my %grid_box; # Box with cells with edge length of largest covalent radii
+                  # in parameter file.
     my $cell_index_x;
     my $cell_index_y;
     my $cell_index_z;
 
-    my %connected_atoms = %$atom_site;
-
-    # Determines longest bond out of the covalent_radii parameter file.
-    my @bond_lengths;
-    for my $atom_type ( keys %COVALENT_RADII ) {
-	@bond_lengths =
-	    ( @bond_lengths, @{ $COVALENT_RADII{"$atom_type"}{"bond_length"} } );
-    }
-
-    my $max_bond_length = max( @bond_lengths ) * 2; # TODO: maybe only add organic atoms.
-
-    # Assign atoms to cells in grid box.
-    foreach my $atom_coord ( @$all_atom_coord ) {
+    foreach my $atom_coord ( @{ $all_atom_coord } ) {
     	$cell_index_x =
     	    int( ( $atom_coord->[1] - $boundary_box[0] )
-		 / $max_bond_length ) + 1;
+		 / $MAX_BOND_LENGTH ) + 1;
     	$cell_index_y =
     	    int( ( $atom_coord->[2] - $boundary_box[2] )
-		 / $max_bond_length ) + 1;
+		 / $MAX_BOND_LENGTH ) + 1;
     	$cell_index_z =
     	    int( ( $atom_coord->[3] - $boundary_box[4] )
-		 / $max_bond_length ) + 1;
+		 / $MAX_BOND_LENGTH ) + 1;
 
     	if( exists $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} ) {
     	    push( @{ $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} },
@@ -129,75 +121,78 @@ sub connect_atoms
     	}
     }
 
+    # For each cell, checks neighbouring cells.
+    my %connected_atoms = %{ $atom_site };
     my @cell_idx;
 
-    # For each cell, checks neighbouring cells.
     foreach my $cell ( keys %grid_box ) {
     	@cell_idx = split( ",", $cell );
-
     	my @neighbour_cells; # The array will contain all atoms of the
                              # neighbouring 26 cells.
 
     	# $i represents x, $j - y, $k - z coordinates.
     	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
-    	    for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
-    		for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
-    		    if( exists $grid_box{"$i,$j,$k"} ) {
-    			push( @neighbour_cells, @{ $grid_box{"$i,$j,$k"} } );
-    		    }
-    		}
-    	    }
-    	}
+    	for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
+    	for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
+	if( exists $grid_box{"$i,$j,$k"} ) {
+	    push( @neighbour_cells, @{ $grid_box{"$i,$j,$k"} } ); } } } }
 
-	my $cell_atom_type;
+	# Checks, if there are connections between atoms.
+	my $atom_type;
 	my $neighbour_type;
-	my $bond_length_comb;
-	my $length_error_comb;
-	my $distance_btw_atoms;
-	my $bond_length;
-	my $length_error;
 
-    	foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {
-    	    $connected_atoms{"data"}{$cell_atom_coord->[0]}{"connections"} = [];
-	    $cell_atom_type =
-		$atom_site->{"data"}{$cell_atom_coord->[0]}{"type_symbol"};
+	my $bond_length_comb;
+	my $bond_length;
+	my $length_error_comb;
+	my $length_error;
+	my $distance_btw_atoms;
+
+        # Atoms that have been already checked for connections.
+	my @checked_atoms;
+
+    	foreach my $atom_coord ( @{ $grid_box{$cell} } ) {
+    	    $connected_atoms{"data"}{$atom_coord->[0]}{"connections"} = [];
+	    push( @checked_atoms, $atom_coord->[0] ); # Marks as visited atom.
+	    $atom_type =
+		$atom_site->{"data"}{$atom_coord->[0]}{"type_symbol"};
     	    foreach my $neighbour_atom ( @neighbour_cells ) {
     		# Checks distance between neighbouring atoms by formula:
     		# x^2+y^2+z^2 < (bond_length)^2.
 		$neighbour_type =
 		    $atom_site->{"data"}{$neighbour_atom->[0]}{"type_symbol"};
-
 		$bond_length_comb =
 		    permutation(
 			2,
 			[],
-			[ $COVALENT_RADII{$cell_atom_type}{"bond_length"},
+			[ $COVALENT_RADII{$atom_type}{"bond_length"},
 			  $COVALENT_RADII{$neighbour_type}{"bond_length"} ],
 			[] );
 		$length_error_comb =
 		    permutation(
 			2,
 			[],
-			[ $COVALENT_RADII{$cell_atom_type}{"length_error"},
+			[ $COVALENT_RADII{$atom_type}{"length_error"},
 			  $COVALENT_RADII{$neighbour_type}{"length_error"} ],
 			[] );
 
     	    	$distance_btw_atoms =
-    		    ( $neighbour_atom->[1] - $cell_atom_coord->[1] ) ** 2
-    	    	  + ( $neighbour_atom->[2] - $cell_atom_coord->[2] ) ** 2
-    	    	  + ( $neighbour_atom->[3] - $cell_atom_coord->[3] ) ** 2;
+    		    ( $neighbour_atom->[1] - $atom_coord->[1] ) ** 2
+    	    	  + ( $neighbour_atom->[2] - $atom_coord->[2] ) ** 2
+    	    	  + ( $neighbour_atom->[3] - $atom_coord->[3] ) ** 2;
 
     		for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
     		    $bond_length =
-			$bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
+			$bond_length_comb->[$i][0]
+		      + $bond_length_comb->[$i][1];
     		    $length_error =
-			$length_error_comb->[$i][0] + $length_error_comb->[$i][1];
+			$length_error_comb->[$i][0]
+		      + $length_error_comb->[$i][1];
     		    if( ( $distance_btw_atoms >
     		          ( $bond_length - $length_error ) ** 2 )
     		     && ( $distance_btw_atoms <
     		          ( $bond_length + $length_error ) ** 2 ) ) {
     		        push( @{ $connected_atoms{"data"}
-    		    		 {$cell_atom_coord->[0]}
+    		    		 {$atom_coord->[0]}
     		    		 {"connections"} },
     		    	      $neighbour_atom->[0] );
     		    	last;
@@ -205,47 +200,52 @@ sub connect_atoms
     		}
     	    }
 
-	    my $second_atom_type;
+	    my $cell_atom_type;
 
-	    # Chekcs for connections inside cell atom's grid box.
-	    foreach my $second_atom_coord ( @{ $grid_box{$cell} } ) {
-		if( $cell_atom_coord->[0] != $second_atom_coord->[0] ) {
-		    $second_atom_type =
-			$atom_site->{"data"}{$second_atom_coord->[0]}{"type_symbol"};
+	    # Chekcs for connections inside current cell in grid box.
+	    foreach my $cell_atom_coord ( @{ $grid_box{$cell} } ) {
+		if( $atom_coord->[0] != $cell_atom_coord->[0]
+		    && ! grep { $atom_coord->[0] } @checked_atoms ) {
+		    $cell_atom_type =
+			$atom_site->{"data"}
+		                    {$cell_atom_coord->[0]}
+		                    {"type_symbol"};
 
 		    $bond_length_comb =
 			permutation(
 			    2,
 			    [],
-			    [ $COVALENT_RADII{$cell_atom_type}{"bond_length"},
-			      $COVALENT_RADII{$second_atom_type}{"bond_length"} ],
+			    [ $COVALENT_RADII{$atom_type}{"bond_length"},
+			      $COVALENT_RADII{$cell_atom_type}{"bond_length"} ],
 			    [] );
 		    $length_error_comb =
 			permutation(
 			    2,
 			    [],
-			    [ $COVALENT_RADII{$cell_atom_type}{"length_error"},
-			      $COVALENT_RADII{$second_atom_type}{"length_error"} ],
+			    [ $COVALENT_RADII{$atom_type}{"length_error"},
+			      $COVALENT_RADII{$cell_atom_type}{"length_error"} ],
 			    [] );
 
 		    $distance_btw_atoms =
-			  ( $second_atom_coord->[1] - $cell_atom_coord->[1] ) ** 2
-			+ ( $second_atom_coord->[2] - $cell_atom_coord->[2] ) ** 2
-			+ ( $second_atom_coord->[3] - $cell_atom_coord->[3] ) ** 2;
+			  ( $cell_atom_coord->[1] - $atom_coord->[1] ) ** 2
+			+ ( $cell_atom_coord->[2] - $atom_coord->[2] ) ** 2
+			+ ( $cell_atom_coord->[3] - $atom_coord->[3] ) ** 2;
 
 		    for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
 			$bond_length =
-			    $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
+			    $bond_length_comb->[$i][0]
+			  + $bond_length_comb->[$i][1];
 			$length_error =
-			    $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
+			    $length_error_comb->[$i][0]
+			  + $length_error_comb->[$i][1];
 			if( ( $distance_btw_atoms >
 			      ( $bond_length - $length_error ) ** 2 )
 			    && ( $distance_btw_atoms <
 				 ( $bond_length + $length_error ) ** 2 ) ) {
 			    push( @{ $connected_atoms{"data"}
-				     {$cell_atom_coord->[0]}
+				     {$atom_coord->[0]}
 				     {"connections"} },
-				  $second_atom_coord->[0] );
+				  $cell_atom_coord->[0] );
 			    last;
 			}
 		    }
