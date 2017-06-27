@@ -33,7 +33,7 @@ sub radius_only
     my ( $atom_site, $atom_specifier ) = @_;
 
     # Clashes of all atoms analyzed, if no specific atoms are selected.
-
+    $atom_specifier = { "group_pdb" => [ "ATOM" ] } unless $atom_specifier;
 
 }
 
