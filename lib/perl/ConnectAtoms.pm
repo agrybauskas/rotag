@@ -110,50 +110,57 @@ sub grid_box
     return \%grid_box;
 }
 
-# sub check_distance
-# {
+#
+# Returns "clash", "connected", "far".
+#
 
-#     $bond_length_comb =
-# 	permutation(
-# 	    2,
-# 	    [],
-# 	    [ $COVALENT_RADII{$atom_type}{"bond_length"},
-# 	      $COVALENT_RADII{$neighbour_type}{"bond_length"} ],
-# 	    [] );
-#     $length_error_comb =
-# 	permutation(
-# 	    2,
-# 	    [],
-# 	    [ $COVALENT_RADII{$atom_type}{"length_error"},
-# 	      $COVALENT_RADII{$neighbour_type}{"length_error"} ],
-# 	    [] );
+sub check_distance
+{
+    my ( $target_atom, $neighbour_atom ) = @_;
 
-#     $distance_btw_atoms =
-# 	( $neighbour_atom->[1] - $atom_coord->[1] ) ** 2
-# 	+ ( $neighbour_atom->[2] - $atom_coord->[2] ) ** 2
-# 	+ ( $neighbour_atom->[3] - $atom_coord->[3] ) ** 2;
+    my $bond_length_comb =
+	permutation( 2,
+		     [],
+		     [ $COVALENT_RADII{$target_atom->{"type_symbol"}}
+		       {"bond_length"},
+		       $COVALENT_RADII{$neighbour_atom->{"type_symbol"}}
+		                      {"bond_length"}],
+		     [] );
 
-#     for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
-# 	$bond_length =
-# 	    $bond_length_comb->[$i][0]
-# 	    + $bond_length_comb->[$i][1];
-# 	$length_error =
-# 	    $length_error_comb->[$i][0]
-# 	    + $length_error_comb->[$i][1];
-# 	if( ( $distance_btw_atoms >
-# 	      ( $bond_length - $length_error ) ** 2 )
-# 	    && ( $distance_btw_atoms <
-# 		 ( $bond_length + $length_error ) ** 2 ) ) {
-# 	    push( @{ $connected_atoms{"data"}
-# 		     {$atom_coord->[0]}
-# 		     {"connections"} },
-# 		  $neighbour_atom->[0] );
-# 	    last;
-# 	}
-#     }
-# }
+    my $length_error_comb =
+	permutation( 2,
+		     [],
+		     [ $COVALENT_RADII{$target_atom->{"type_symbol"}}
+		                      {"length_error"},
+		       $COVALENT_RADII{$neighbour_atom->{"type_symbol"}}
+	                              {"length_error"}],
+		     [] );
 
-# }
+    my $distance_btw_atoms =
+	( $neighbour_atom->{"Cartn_x"} - $atom_coord->{"Cartn_x"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_y"} - $atom_coord->{"Cartn_y"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_z"} - $atom_coord->{"Cartn_z"} ) ** 2;
+
+    my $bond_length;
+    my $length_error;
+
+    for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
+	$bond_length =
+	    $bond_length_comb->[$i][0]
+	  + $bond_length_comb->[$i][1];
+	$length_error =
+	    $length_error_comb->[$i][0]
+	  + $length_error_comb->[$i][1];
+	if( ( $distance_btw_atoms > ( $bond_length - $length_error ) ** 2 )
+	 && ( $distance_btw_atoms < ( $bond_length + $length_error ) ** 2 ) ) {
+	    push( @{ $connected_atoms{"data"}
+		     {$atom_coord->{"id"}}
+		     {"connections"} },
+		  $neighbour_atom->{"id"} );
+	    last;
+	}
+    }
+}
 
 #
 # Divides box into grid of cubes that has length of the desired bond. If box
@@ -192,19 +199,10 @@ sub connect_atoms
 	if( exists $grid_box->{"$i,$j,$k"} ) {
 	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-	# Checks, if there are connections between atoms.
-	my $atom_type;
-	my $neighbour_type;
-
-	my $bond_length_comb;
-	my $bond_length;
-	my $length_error_comb;
-	my $length_error;
-	my $distance_btw_atoms;
-
         # Atoms that have been already checked for connections.
 	my @checked_atoms;
 
+	# Checks, if there are connections between atoms.
     	foreach my $atom_coord ( @{ $grid_box->{$cell} } ) {
     	    $connected_atoms{"data"}{$atom_coord->[0]}{"connections"} = [];
 	    push( @checked_atoms, $atom_coord->[0] ); # Marks as visited atom.
