@@ -140,6 +140,8 @@ sub check_distance
     my $bond_length;
     my $length_error;
 
+    my $interaction_state;
+    
     for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
     	$bond_length =
     	    $bond_length_comb->[$i][0]
@@ -149,9 +151,14 @@ sub check_distance
            + $length_error_comb->[$i][1];
 	if( ( $distance >= ( $bond_length - $length_error ) ** 2 )
 	 && ( $distance <= ( $bond_length + $length_error ) ** 2 ) ) {
-	    return "connected";
+	    $interaction_state =  "connected";
+	    last;
+	} elsif( $distance < ( $bond_length - $length_error ) ** 2 ) {
+	    $interaction_state = "clash";
 	}
     }
+
+    return $interaction_state;
 }
 
 #
