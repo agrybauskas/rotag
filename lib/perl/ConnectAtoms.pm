@@ -4,11 +4,12 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( connect_atoms
-                     create_box );
+our @EXPORT_OK = qw( check_distance
+                     connect_atoms
+                     create_box 
+                     grid_box );
 
 use List::Util qw( max min );
-use Data::Dumper;
 
 use lib qw( ./ );
 use CifParser qw( select_atom_data );
@@ -16,7 +17,7 @@ use Combinatorics qw( permutation );
 use LoadParams qw( covalent_radii );
 
 my $covalent_file = "../../parameters/covalent_radii.csv";
-
+use Data::Dumper;
 # ------------------------------ Connect atoms ------------------------------- #
 
 #
@@ -26,7 +27,7 @@ my $covalent_file = "../../parameters/covalent_radii.csv";
 my %COVALENT_RADII = %{ covalent_radii( $covalent_file ) };
 
 my $MAX_BOND_LENGTH =
-    max( map { $COVALENT_RADII{$_}{"bond_length"} }
+    max( map { @{ $COVALENT_RADII{$_}{"bond_length"} } }
 	 keys( %COVALENT_RADII ) ) * 2;
 
 #
@@ -207,7 +208,9 @@ sub connect_atoms
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
 	    push( @checked_atoms, $atom_id ); # Marks as visited atom.
     	    foreach my $neighbour_id ( @neighbour_cells ) {
-		if( check_distance($atom_site->{"data"}{"$atom_id"}, $atom_site->{"data"}{"$neighbour_id"} ) eq "connected" ) {
+		if( check_distance($atom_site->{"data"}{"$atom_id"},
+				   $atom_site->{"data"}{"$neighbour_id"} )
+		    eq "connected" ) {
 		    push( @{ $connected_atoms{"data"}
 			                     {$atom_id}
 			                     {"connections"} },

@@ -95,7 +95,7 @@ my $transf_atom_coord =
                                           {"$target_atom_id"}
 	                                  {"conformation"};
 $transf_atom_coord =
-    ${ rotation_only( $atom_site, \%atom_specifier ) }{"data"};
+    rotation_only( $atom_site, \%atom_specifier );
 
 radius_only( $transf_atom_coord );
 # # Depending on the quantity of the rotatable bonds, permutations (rotations) are
