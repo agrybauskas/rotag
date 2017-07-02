@@ -155,6 +155,8 @@ sub check_distance
 	    last;
 	} elsif( $distance < ( $bond_length - $length_error ) ** 2 ) {
 	    $interaction_state = "clash";
+	} else {
+	    $interaction_state = $distance;
 	}
     }
 
@@ -205,10 +207,7 @@ sub connect_atoms
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
 	    push( @checked_atoms, $atom_id ); # Marks as visited atom.
     	    foreach my $neighbour_id ( @neighbour_cells ) {
-		if( check_distance(
-			$atom_site->{"data"}{"$atom_id"},
-			$atom_site->{"data"}{"$neighbour_id"} )
-		    eq "connected" ) {
+		if( check_distance($atom_site->{"data"}{"$atom_id"}, $atom_site->{"data"}{"$neighbour_id"} ) eq "connected" ) {
 		    push( @{ $connected_atoms{"data"}
 			                     {$atom_id}
 			                     {"connections"} },
