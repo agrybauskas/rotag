@@ -78,99 +78,22 @@ foreach( keys %numeric_angle_range ) {
 
 $atom_quantity += scalar( grep { /ATOM/ } @cif_lines );
 
-# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-# print( $atom_quantity, "\n" );
-# print( "testing\n" );
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+print( $atom_quantity, "\n" );
+print( "testing\n" );
 
-# # Prepares selected atom data for Jmol.
-# map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-# map { [ split( " ", $_ ) ] }
-# grep { $_ =~ /ATOM/ }
-# @cif_lines;
+# Creates pseudo-atoms for given analytical equation that describes conformation
+# of atom.
+my $pseudo_atom_site =
+    generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
+		     \%atom_specifier,
+		     \%numeric_angle_range );
 
-# Creates analytical equation for conformational space.
-my $transf_atom_coord =
-    ${ rotation_only( $atom_site,
-		      \%atom_specifier ) }{"data"}
-                                          {"$target_atom_id"}
-	                                  {"conformation"};
-$transf_atom_coord =
-    rotation_only( $atom_site, \%atom_specifier );
-
-radius_only( $transf_atom_coord );
-# # Depending on the quantity of the rotatable bonds, permutations (rotations) are
-# # evaluated.
-# my $evaluated_matrix;
-# my $number_of_bonds = scalar( keys %numeric_angle_range );
-# my %symbols;
-
-# # TODO: must remove multiple if statements and write permutation algorithm.
-# if( $number_of_bonds == 1 ) {
-#     for my $chi0 ( @{ $numeric_angle_range{"chi0"} } ) {
-# 	$symbols{"chi0"} = $chi0;
-# 	$evaluated_matrix =
-# 	    &evaluate_matrix( \%symbols,
-# 			      matrix_product( $transf_atom_coord ) );
-# 	printf( "X\t%.3f\t%.3f\t%.3f\n",
-# 		$evaluated_matrix->[0][0],
-# 		$evaluated_matrix->[1][0],
-# 		$evaluated_matrix->[2][0] );
-#     }
-
-# } elsif( $number_of_bonds == 2 ) {
-#     for my $chi0 ( @{ $numeric_angle_range{"chi0"} } ) {
-# 	for my $chi1 ( @{ $numeric_angle_range{"chi1"} } ) {
-# 	    $symbols{"chi0"} = $chi0;
-# 	    $symbols{"chi1"} = $chi1;
-# 	    $evaluated_matrix =
-# 		&evaluate_matrix( \%symbols,
-# 				  matrix_product( $transf_atom_coord ) );
-# 	    printf( "X\t%.3f\t%.3f\t%.3f\n",
-# 		    $evaluated_matrix->[0][0],
-# 		    $evaluated_matrix->[1][0],
-# 		    $evaluated_matrix->[2][0] );
-# 	}
-#     }
-
-# } elsif( $number_of_bonds == 3 ) {
-#     for my $chi0 ( @{ $numeric_angle_range{"chi0"} } ) {
-# 	for my $chi1 ( @{ $numeric_angle_range{"chi1"} } ) {
-# 	    for my $chi2 ( @{ $numeric_angle_range{"chi2"} } ) {
-# 		$symbols{"chi0"} = $chi0;
-# 		$symbols{"chi1"} = $chi1;
-# 		$symbols{"chi2"} = $chi2;
-# 		$evaluated_matrix =
-# 		    &evaluate_matrix( \%symbols,
-# 				      matrix_product( $transf_atom_coord ) );
-# 		printf( "X\t%.3f\t%.3f\t%.3f\n",
-# 			$evaluated_matrix->[0][0],
-# 			$evaluated_matrix->[1][0],
-# 			$evaluated_matrix->[2][0] );
-# 	    }
-# 	}
-#     }
-
-# } elsif( $number_of_bonds == 4 ) {
-#     for my $chi0 ( @{ $numeric_angle_range{"chi0"} } ) {
-# 	for my $chi1 ( @{ $numeric_angle_range{"chi1"} } ) {
-# 	    for my $chi2 ( @{ $numeric_angle_range{"chi2"} } ) {
-# 		for my $chi3 ( @{ $numeric_angle_range{"chi3"} } ) {
-# 		    $symbols{"chi0"} = $chi0;
-# 		    $symbols{"chi1"} = $chi1;
-# 		    $symbols{"chi2"} = $chi2;
-# 		    $symbols{"chi3"} = $chi3;
-# 		    $evaluated_matrix =
-# 			&evaluate_matrix( \%symbols,
-# 					  matrix_product( $transf_atom_coord ) );
-# 		    printf( "X\t%.3f\t%.3f\t%.3f\n",
-# 			    $evaluated_matrix->[0][0],
-# 			    $evaluated_matrix->[1][0],
-# 			    $evaluated_matrix->[2][0] );
-# 		}
-# 	    }
-# 	}
-#     }
-
-# } else {
-#     die "Too many degrees of freedom."
-# }
+# Prints out pseudo-atom coordinates.
+for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
+    printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
+	    "\t%.3f\t%.3f\t%.3f\n",
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
+}

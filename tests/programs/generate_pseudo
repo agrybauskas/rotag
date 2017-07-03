@@ -12,7 +12,7 @@ use SidechainModels qw( rotation_only );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-use Data::Dumper;
+
 my ( $atom_specifier, $angle_ranges, $num_of_points, $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
@@ -68,25 +68,16 @@ open( my $fh, "<", $cif_file );
 chomp( my @cif_lines = <$fh> );
 close( $fh );
 
-# Calculates all atoms that will be produced for Jmol.
-my $atom_quantity = 1;
-
-foreach( keys %numeric_angle_range ) {
-    $atom_quantity *= scalar( @{ $numeric_angle_range{$_} } );
-}
-
-$atom_quantity += scalar( grep { /ATOM/ } @cif_lines );
-
-# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( $atom_quantity, "\n" );
-print( "testing\n" );
-
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
 my $pseudo_atom_site =
     generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
 		     \%atom_specifier,
 		     \%numeric_angle_range );
+
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+print( scalar( keys %{ $pseudo_atom_site->{"data"} } ), "\n" );
+print( "testing\n" );
 
 # Prints out pseudo-atom coordinates.
 for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
