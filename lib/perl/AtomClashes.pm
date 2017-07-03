@@ -9,10 +9,10 @@ our @EXPORT_OK = qw( radius_only );
 use List::Util qw( max );
 
 use lib qw( ./ );
-use ConnectAtoms qw( grid_box );
+use ConnectAtoms qw( check_distance
+                     grid_box );
 use LoadParams qw( covalent_radii
                    vdw_radii );
-use Data::Dumper;
 
 my $covalent_file = "../../parameters/covalent_radii.csv";
 
@@ -54,40 +54,40 @@ sub radius_only
     my $grid_box =
     	grid_box( $atom_site, $MAX_BOND_LENGTH );
 
-    # # Checks for neighbouring cells for each cell.
-    # foreach my $cell ( keys %{ $grid_box } ) {
-    # 	@cell_idx = split( ",", $cell );
-    # 	my @neighbour_cells; # The array will contain all atoms of the
-    #                          # neighbouring 26 cells.
+    # Checks for neighbouring cells for each cell.
+    foreach my $cell ( keys %{ $grid_box } ) {
+    	@cell_idx = split( ",", $cell );
+    	my @neighbour_cells; # The array will contain all atoms of the
+                             # neighbouring 26 cells.
 
-    # 	# $i represents x, $j - y, $k - z coordinates.
-    # 	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
-    # 	for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
-    # 	for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
-    # 	if( exists $grid_box->{"$i,$j,$k"} ) {
-    # 	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+    	# $i represents x, $j - y, $k - z coordinates.
+    	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
+    	for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
+    	for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
+    	if( exists $grid_box->{"$i,$j,$k"} ) {
+    	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-    #     # Atoms that have been already checked for connections.
-    # 	my @checked_atoms;
+        # Atoms that have been already checked for connections.
+    	my @checked_atoms;
 
-    # 	# Checks, if there are clashes between atoms.
-    # 	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    # 	    push( @checked_atoms, $atom_id ); # Marks as visited atom.
-    # 	    foreach my $neighbour_id ( @neighbour_cells ) {
-    # 		if( check_distance($atom_site->{"data"}{"$atom_id"},
-    # 				   $atom_site->{"data"}{"$neighbour_id"} )
-    # 		    eq "clash" ) {
-    # 		    push( @{ $atom_clashes{"data"}
-    # 			                  {$atom_id}
-    # 			                  {"connections"} },
-    # 		          $neighbour_id );
-    # 		}
-    # 	    }
-    # 	}
-    # }
+    	# Checks, if there are clashes between atoms.
+    	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+    	    push( @checked_atoms, $atom_id ); # Marks as visited atom.
+    	    foreach my $neighbour_id ( @neighbour_cells ) {
+    		if( check_distance(
+			$atom_site->{"data"}{"$atom_id"},
+			$atom_site->{"data"}{"$neighbour_id"} ) eq "clash"
+		 && $atom_id != $neighbour_id ) {
+    		    push( @{ $atom_clashes{"data"}
+    			                  {$atom_id}
+    			                  {"clashes"} },
+    		          $neighbour_id );
+    		}
+    	    }
+    	}
+    }
 
-    # return \%atom_clashes;
-
+    return \%atom_clashes;
 }
 
 1;
