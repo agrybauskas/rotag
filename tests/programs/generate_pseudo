@@ -13,7 +13,7 @@ use SidechainModels qw( rotation_only );
 use lib "../lib";
 use Utils qw( select_atom_data );
 
-my ( $atom_specifier, $angle_ranges, $num_of_points, $cif_file ) = @ARGV;
+my ( $atom_specifier, $angle_ranges, $num_of_angles, $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $atom_site = obtain_atom_site( $cif_file );
@@ -30,18 +30,18 @@ my %angle_ranges = ( map { $_->[0] => [ split( "-", @$_[1] ) ] }
 		     map { [ split( " ", $_ ) ] }
 		     split( "&", $angle_ranges ) );
 
-# Number of angle increments is calculated by taking an n-th root of number of
-# desired points, where n - number of rotatable bonds.
-my $angle_states =
-    int( $num_of_points ** ( 1 / scalar( keys( %angle_ranges ) ) ) );
+# Parsed number of rotations that will be done for each dihedral angle.
+my %num_of_angles = ( map { $_->[0] => $_->[1] }
+		      map { [ split( " ", $_ ) ] }
+		      split( "&", $num_of_angles ) );
 
-# Calculates angles that will be rotated along symbolically.
+# Calculates angles that will be rotated along.
 my $pi = 4 * atan( 1, 1 );
 
 my $min_angle;
 my $max_angle;
-my %numeric_angle_range;
-my $small_angle; # Change of angle in each rotation step.
+my %num_angle_values;
+my $small_change; # Change of angle in each rotation step.
 
 for my $dihedral_angle ( sort keys %angle_ranges ) {
     $min_angle = $angle_ranges{"$dihedral_angle"}[0];
@@ -50,14 +50,20 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     $max_angle =~ s/pi/\$pi/g;
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
-    $small_angle = ( $max_angle - $min_angle ) / $angle_states;
-    for( my $angle = $min_angle;
-	 $angle <= $max_angle;
-	 $angle = $angle + $small_angle ) {
-	if( defined $numeric_angle_range{"$dihedral_angle"} ) {
-	    push( @{ $numeric_angle_range{"$dihedral_angle"} }, $angle );
-	} else {
-	    $numeric_angle_range{"$dihedral_angle"} = [ $angle ];
+    if( $max_angle - $min_angle eq 0 ) {
+	$small_change = 0;
+	$num_angle_values{"$dihedral_angle"} = [ $min_angle ];
+    } else {
+	$small_change =
+	    ( $max_angle - $min_angle ) / $num_of_angles{"$dihedral_angle"};
+	for( my $angle = $min_angle;
+	     $angle < $max_angle;
+	     $angle = $angle + $small_change ) {
+	    if( defined $num_angle_values{"$dihedral_angle"} ) {
+		push( @{ $num_angle_values{"$dihedral_angle"} }, $angle );
+	    } else {
+		$num_angle_values{"$dihedral_angle"} = [ $angle ];
+	    }
 	}
     }
 }
@@ -73,7 +79,7 @@ close( $fh );
 my $pseudo_atom_site =
     generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
 		     \%atom_specifier,
-		     \%numeric_angle_range );
+		     \%num_angle_values );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $pseudo_atom_site->{"data"} } ), "\n" );
