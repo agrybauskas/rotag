@@ -9,11 +9,13 @@ our @EXPORT_OK = qw( radius_only );
 use List::Util qw( max );
 
 use lib qw( ./ );
+use CifParser qw( filter_atoms
+                  select_atom_data );
 use ConnectAtoms qw( check_distance
                      grid_box );
 use LoadParams qw( covalent_radii
                    vdw_radii );
-
+use Data::Dumper;
 my $covalent_file = "../../parameters/covalent_radii.csv";
 
 # --------------------------- Detection of atom clashes ----------------------- #
@@ -43,6 +45,10 @@ sub radius_only
 
     # Clashes of all atoms analyzed, if no specific atoms are selected.
     $atom_specifier = { "group_pdb" => [ "ATOM" ] } unless $atom_specifier;
+    my @spec_atom_ids = # Atom ids selected by $atom_specifier.
+    	map { $_->[0] }
+        @{ select_atom_data( [ "id" ],
+    			     filter_atoms( $atom_specifier, $atom_site ) ) };
 
     # Identifies atoms that are in a clash with other atoms.
 
@@ -67,23 +73,23 @@ sub radius_only
     	if( exists $grid_box->{"$i,$j,$k"} ) {
     	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-        # Atoms that have been already checked for connections.
-    	my @checked_atoms;
-
     	# Checks, if there are clashes between atoms.
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    	    push( @checked_atoms, $atom_id ); # Marks as visited atom.
-    	    foreach my $neighbour_id ( @neighbour_cells ) {
-    		if( check_distance(
-			$atom_site->{"data"}{"$atom_id"},
-			$atom_site->{"data"}{"$neighbour_id"} ) eq "clash"
-		 && $atom_id != $neighbour_id ) {
-    		    push( @{ $atom_clashes{"data"}
-    			                  {$atom_id}
-    			                  {"clashes"} },
-    		          $neighbour_id );
-    		}
-    	    }
+	    if( $atom_id ~~ @spec_atom_ids ) {
+		foreach my $neighbour_id ( @neighbour_cells ) {
+		    if( not $neighbour_id ~~ @spec_atom_ids ) {
+			if( check_distance(
+				$atom_site->{"data"}{"$atom_id"},
+				$atom_site->{"data"}{"$neighbour_id"} ) eq "clash"
+			    && $atom_id != $neighbour_id ) {
+			    push( @{ $atom_clashes{"data"}
+				     {$atom_id}
+				     {"clashes"} },
+				  $neighbour_id );
+			}
+		    }
+		}
+	    }
     	}
     }
 

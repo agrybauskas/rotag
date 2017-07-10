@@ -6,7 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( check_distance
                      connect_atoms
-                     create_box 
+                     create_box
                      grid_box );
 
 use List::Util qw( max min );
@@ -142,7 +142,7 @@ sub check_distance
     my $length_error;
 
     my $interaction_state;
-    
+
     for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
     	$bond_length =
     	    $bond_length_comb->[$i][0]
@@ -202,7 +202,7 @@ sub connect_atoms
 	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
         # Atoms that have been already checked for connections.
-	my @checked_atoms;
+	my @checked_atoms; # TODO: should consider removing unused variable.
 
 	# Checks, if there are connections between atoms.
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {

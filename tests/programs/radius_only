@@ -14,7 +14,12 @@ use SidechainModels qw( rotation_only );
 use lib "../lib";
 use Utils qw( select_atom_data );
 use Data::Dumper;
-my ( $atom_specifier, $angle_ranges, $num_of_angles, $cif_file ) = @ARGV;
+my ( $atom_specifier,
+     $clash_specifier, # Selects atoms that will be filtered out, if clashes are
+                       # detected.
+     $angle_ranges,
+     $num_of_angles,
+     $cif_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $atom_site = obtain_atom_site( $cif_file );
@@ -25,6 +30,12 @@ $target_atom_id = $target_atom_id->[0][0];
 my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 		       map { [ split( " ", $_ ) ] }
 		       split( "&", $atom_specifier ) );
+
+
+# Parses selector argument from string  to proper array.
+my %clash_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+		       map { [ split( " ", $_ ) ] }
+		       split( "&", $clash_specifier ) );
 
 # Parses angle ranges for
 my %angle_ranges = ( map { $_->[0] => [ split( "-", @$_[1] ) ] }
@@ -80,7 +91,7 @@ close( $fh );
 my $pseudo_atom_site =
     radius_only( generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
 				  \%atom_specifier,
-				  \%num_angle_values ) );
+				  \%num_angle_values ), \%clash_specifier );
 
 # Remove atoms that are flagged with clashes.
 print Dumper $pseudo_atom_site;
