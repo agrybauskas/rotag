@@ -13,10 +13,9 @@ use CifParser qw( filter_atoms
                   select_atom_data );
 use ConnectAtoms qw( check_distance
                      grid_box );
-use LoadParams qw( covalent_radii
-                   vdw_radii );
+use LoadParams qw( vdw_radii );
 use Data::Dumper;
-my $covalent_file = "../../parameters/covalent_radii.csv";
+my $vdw_file = "../../parameters/vdw_radii.csv";
 
 # --------------------------- Detection of atom clashes ----------------------- #
 
@@ -24,11 +23,11 @@ my $covalent_file = "../../parameters/covalent_radii.csv";
 # Parameters.
 #
 
-my %COVALENT_RADII = %{ covalent_radii( $covalent_file ) };
+my %VDW_RADII = %{ vdw_radii( $vdw_file ) };
 
 my $MAX_BOND_LENGTH =
-    max( map { @{ $COVALENT_RADII{$_}{"bond_length"} } }
-	 keys( %COVALENT_RADII ) ) * 2;
+    max( map { $VDW_RADII{$_} }
+	 keys( %VDW_RADII ) ) * 2;
 
 #
 # Checks if atoms have clashes with other atoms and removes if they do.
@@ -78,6 +77,7 @@ sub radius_only
 	    if( $atom_id ~~ @spec_atom_ids ) {
 		foreach my $neighbour_id ( @neighbour_cells ) {
 		    if( not $neighbour_id ~~ @spec_atom_ids ) {
+			# TODO: make check_distance dependent on parameters.
 			if( check_distance(
 				$atom_site->{"data"}{"$atom_id"},
 				$atom_site->{"data"}{"$neighbour_id"} ) eq "clash"
