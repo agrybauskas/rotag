@@ -4,20 +4,21 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( check_distance
-                     connect_atoms
+our @EXPORT_OK = qw( connect_atoms
                      create_box
-                     grid_box );
+                     grid_box
+                     is_connected );
 
 use List::Util qw( max min );
 
 use lib qw( ./ );
 use CifParser qw( select_atom_data );
 use Combinatorics qw( permutation );
-use LoadParams qw( covalent_radii );
+use LoadParams qw( covalent_radii
+                   vdw_radii );
 
 my $covalent_file = "../../parameters/covalent_radii.csv";
-use Data::Dumper;
+
 # ------------------------------ Connect atoms ------------------------------- #
 
 #
@@ -25,8 +26,7 @@ use Data::Dumper;
 #
 
 my %COVALENT_RADII = %{ covalent_radii( $covalent_file ) };
-
-my $MAX_BOND_LENGTH =
+my $MAX_COV_LENGTH =
     max( map { @{ $COVALENT_RADII{$_}{"bond_length"} } }
 	 keys( %COVALENT_RADII ) ) * 2;
 
@@ -111,15 +111,16 @@ sub grid_box
     return \%grid_box;
 }
 
-sub check_distance
+sub is_connected
 {
     my ( $target_atom, $neighbour_atom ) = @_;
 
+    # Generates all possible combinations of covalent distances.
     my $bond_length_comb =
     	permutation( 2,
     		     [],
     		     [ $COVALENT_RADII{$target_atom->{"type_symbol"}}
-    		       {"bond_length"},
+    		                      {"bond_length"},
     		       $COVALENT_RADII{$neighbour_atom->{"type_symbol"}}
     		                      {"bond_length"}],
     		     [] );
@@ -133,15 +134,17 @@ sub check_distance
     	                              {"length_error"}],
     		     [] );
 
+    # Precalculates distance between atom pairs.
     my $distance =
     	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
       + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
       + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
 
+    # Checks, if distance between atom pairs is in one of the combinations.
     my $bond_length;
     my $length_error;
 
-    my $interaction_state;
+    my $is_connected;
 
     for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
     	$bond_length =
@@ -152,16 +155,14 @@ sub check_distance
            + $length_error_comb->[$i][1];
 	if( ( $distance >= ( $bond_length - $length_error ) ** 2 )
 	 && ( $distance <= ( $bond_length + $length_error ) ** 2 ) ) {
-	    $interaction_state =  "connected";
+	    $is_connected = 1;
 	    last;
-	} elsif( $distance < ( $bond_length - $length_error ) ** 2 ) {
-	    $interaction_state = "clash";
 	} else {
-	    $interaction_state = $distance;
+	    $is_connected = 0;
 	}
     }
 
-    return $interaction_state;
+    return $is_connected;
 }
 
 #
@@ -186,7 +187,7 @@ sub connect_atoms
 
     # Creates box around atoms, makes grid with edge length of max covalent radii
     # of the parameter file.
-    my $grid_box = grid_box( $atom_site, $MAX_BOND_LENGTH );
+    my $grid_box = grid_box( $atom_site, $MAX_COV_LENGTH );
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
@@ -208,12 +209,9 @@ sub connect_atoms
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
 	    push( @checked_atoms, $atom_id ); # Marks as visited atom.
     	    foreach my $neighbour_id ( @neighbour_cells ) {
-		if( check_distance($atom_site->{"data"}{"$atom_id"},
-				   $atom_site->{"data"}{"$neighbour_id"} )
-		    eq "connected" ) {
-		    push( @{ $connected_atoms{"data"}
-			                     {$atom_id}
-			                     {"connections"} },
+		if( is_connected( $atom_site->{"data"}{"$atom_id"},
+				  $atom_site->{"data"}{"$neighbour_id"} ) ) {
+		    push( @{ $connected_atoms{"data"}{$atom_id}{"connections"} },
 		          $neighbour_id );
 		}
     	    }
