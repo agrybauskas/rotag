@@ -6,7 +6,8 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( radius_only );
 
-use List::Util qw( max );
+use List::Util qw( any
+                   max );
 
 use lib qw( ./ );
 use CifParser qw( filter_atoms
@@ -75,49 +76,49 @@ sub radius_only
         @{ select_atom_data( [ "id" ],
     			     filter_atoms( $atom_specifier, $atom_site ) ) };
 
-    # # Identifies atoms that are in a clash with other atoms.
+    # Identifies atoms that are in a clash with other atoms.
 
-    # # For each cell, checks neighbouring cells.
-    # my %atom_clashes = %{ $atom_site };
-    # my @cell_idx;
+    # For each cell, checks neighbouring cells.
+    my %atom_clashes = %{ $atom_site };
+    my @cell_idx;
 
-    # # Creates box around atoms, makes grid with edge length of max covalent radii.
-    # my $grid_box =
-    # 	grid_box( $atom_site, $MAX_VDW_RADIUS );
+    # Creates box around atoms, makes grid with edge length of max covalent radii.
+    my $grid_box =
+    	grid_box( $atom_site, $MAX_VDW_RADIUS );
 
-    # # Checks for neighbouring cells for each cell.
-    # foreach my $cell ( keys %{ $grid_box } ) {
-    # 	@cell_idx = split( ",", $cell );
-    # 	my @neighbour_cells; # The array will contain all atoms of the
-    #                          # neighbouring 26 cells.
+    # Checks for neighbouring cells for each cell.
+    foreach my $cell ( keys %{ $grid_box } ) {
+    	@cell_idx = split( ",", $cell );
+    	my @neighbour_cells; # The array will contain all atoms of the
+                             # neighbouring 26 cells.
 
-    # 	# $i represents x, $j - y, $k - z coordinates.
-    # 	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
-    # 	for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
-    # 	for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
-    # 	if( exists $grid_box->{"$i,$j,$k"} ) {
-    # 	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+    	# $i represents x, $j - y, $k - z coordinates.
+    	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
+    	for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
+    	for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
+    	if( exists $grid_box->{"$i,$j,$k"} ) {
+    	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-    # 	# Checks, if there are clashes between atoms.
-    # 	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    # 	    if( ! grep { $atom_id } @spec_atom_ids ) {
-    # 		foreach my $neighbour_id ( @neighbour_cells ) {
-    # 		    if( ! grep { $neighbour_id } @spec_atom_ids ) {
-    # 			if( is_colliding( $atom_site->{"data"}{"$atom_id"},
-    # 					  $atom_site->{"data"}{"$neighbour_id"} )
-    # 			    && $atom_id != $neighbour_id ) {
-    # 			    push( @{ $atom_clashes{"data"}
-    # 				     {$atom_id}
-    # 				     {"clashes"} },
-    # 				  $neighbour_id );
-    # 			}
-    # 		    }
-    # 		}
-    # 	    }
-    # 	}
-    # }
+    	# Checks, if there are clashes between atoms.
+    	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+    	    if( any { $atom_id eq $_ } @spec_atom_ids ) {
+    		foreach my $neighbour_id ( @neighbour_cells ) {
+    		    if( not any { $neighbour_id eq $_ } @spec_atom_ids ) {
+    			if( is_colliding( $atom_site->{"data"}{"$atom_id"},
+    					  $atom_site->{"data"}{"$neighbour_id"} )
+    			    && $atom_id ne $neighbour_id ) {
+    			    push( @{ $atom_clashes{"data"}
+    				     {$atom_id}
+    				     {"clashes"} },
+    				  $neighbour_id );
+    			}
+    		    }
+    		}
+    	    }
+    	}
+    }
 
-    # return \%atom_clashes;
+    return \%atom_clashes;
 }
 
 1;

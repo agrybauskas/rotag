@@ -110,7 +110,8 @@ sub filter_atoms
     for my $atom ( keys %{ $atom_site->{"data"} } ) {
 	$match_counter = 0;
 	for my $attribute ( keys %$atom_specifier ) {
-	    if( grep { $atom_site->{"data"}{$atom}{$attribute} eq $_ }
+	    if( exists $atom_site->{"data"}{$atom}{$attribute}
+	     && grep { $atom_site->{"data"}{$atom}{$attribute} eq $_ }
 		@{ $atom_specifier->{$attribute} } ) {
 		$match_counter += 1;
 	    } else {
