@@ -116,6 +116,15 @@ sub radius_only
     		}
     	    }
     	}
+
+	# Removes clashes, if there are more than two.
+	# TODO: look at this restriction more carefully.
+	foreach my $atom_id ( keys %{ $atom_clashes{"data"} } ) {
+	    if( exists $atom_clashes{"data"}{$atom_id}{"clashes"}
+	     && scalar( @{ $atom_clashes{"data"}{$atom_id}{"clashes"} } ) > 2 ) {
+		delete $atom_clashes{"data"}{$atom_id};
+	    }
+	}
     }
 
     return \%atom_clashes;

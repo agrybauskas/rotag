@@ -101,18 +101,9 @@ print( "testing\n" );
 
 # Prints out pseudo-atom coordinates.
 for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
-    if( exists $pseudo_atom_site->{"data"}{$id}{"clashes"}
-     && scalar( @{ $pseudo_atom_site->{"data"}{$id}{"clashes"} } ) <= 2 ) {
-	printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
-		"\t%.3f\t%.3f\t%.3f\n",
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
-    } elsif( not exists $pseudo_atom_site->{"data"}{$id}{"clashes"} ) {
-	printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
-		"\t%.3f\t%.3f\t%.3f\n",
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
-		$pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
-    }
+    printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
+	    "\t%.3f\t%.3f\t%.3f\n",
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
+	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
 }
