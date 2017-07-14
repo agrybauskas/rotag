@@ -6,16 +6,15 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( radius_only );
 
-use List::Util qw( any
-                   max );
+use List::Util qw( any max );
 
 use lib qw( ./ );
-use CifParser qw( filter_atoms
-                  select_atom_data );
-use ConnectAtoms qw( is_connected
-                     grid_box );
-use LoadParams qw( vdw_radii );
+use CifParser qw( filter_atoms select_atom_data );
+use ConnectAtoms qw( connect_atoms grid_box );
+use LoadParams qw( rotatable_bonds vdw_radii );
 use Data::Dumper;
+
+my $rot_bonds_file = "../../parameters/rotatable_bonds.csv";
 my $vdw_file = "../../parameters/vdw_radii.csv";
 
 # --------------------------- Detection of atom clashes ----------------------- #
@@ -27,6 +26,8 @@ my $vdw_file = "../../parameters/vdw_radii.csv";
 #
 # Parameters.
 #
+
+my %ROTATABLE_BONDS = %{ rotatable_bonds( $rot_bonds_file ) };
 
 my %VDW_RADII = %{ vdw_radii( $vdw_file ) };
 
@@ -50,8 +51,7 @@ sub is_colliding
     # Checks, if distance between atom pairs is in one of the combinations.
     my $is_colliding;
 
-    if( ! ( is_connected( $target_atom, $neighbour_atom ) )
-     && ! ( $distance > $vdw_length ** 2 ) ) {
+    if( $distance < $vdw_length ** 2 ) {
 	$is_colliding = 1;
     } else {
 	$is_colliding = 0;
@@ -79,7 +79,7 @@ sub radius_only
     # Identifies atoms that are in a clash with other atoms.
 
     # For each cell, checks neighbouring cells.
-    my %atom_clashes = %{ $atom_site };
+    my %atom_clashes = %{ connect_atoms( $atom_site ) };
     my @cell_idx;
 
     # Creates box around atoms, makes grid with edge length of max covalent radii.
@@ -118,16 +118,44 @@ sub radius_only
     	}
 
 	# Removes clashes, if there are more than two.
-	# TODO: look at this restriction more carefully.
+	my $res_id;
+	my $clash_res_id;
+	my $atom_name;
+	my $clash_name;
+	my $second_neighbour;
+
 	foreach my $atom_id ( keys %{ $atom_clashes{"data"} } ) {
-	    if( exists $atom_clashes{"data"}{$atom_id}{"clashes"}
-	     && scalar( @{ $atom_clashes{"data"}{$atom_id}{"clashes"} } ) > 2 ) {
-		delete $atom_clashes{"data"}{$atom_id};
+	    $res_id = $atom_clashes{"data"}{$atom_id}{"label_seq_id"};
+	    $atom_name = $atom_clashes{"data"}{$atom_id}{"label_atom_id"};
+	    foreach my $clash_id (
+		@{ $atom_clashes{"data"}{$atom_id}{"clashes"} } ) {
+		$clash_res_id = $atom_clashes{"data"}{$clash_id}{"label_seq_id"};
+		$clash_name = $atom_clashes{"data"}{$clash_id}{"label_atom_id"};
+		if( $clash_res_id eq $res_id ) {
+		    # Checks if clashing atom is not second after atom that
+		    # currently is connected to.
+		    for my $i (
+			@{ $atom_clashes{"data"}{$atom_id}{"connections"} } ) {
+		    for my $j (
+			@{ $atom_clashes{"data"}{$i}{"connections"} } ) {
+		        if( $clash_name eq
+			    $atom_clashes{"data"}{$j}{"label_atom_id"} ) {
+			    last;
+			}
+		    } last }
+		    # $clash_name = $atom_clashes{"data"}{$clash_id}{"label_seq_id"};
+		}
 	    }
 	}
+    # 	foreach my $atom_id ( keys %{ $atom_clashes{"data"} } ) {
+    # 	    if( exists $atom_clashes{"data"}{$atom_id}{"clashes"}
+    # 	     && scalar( @{ $atom_clashes{"data"}{$atom_id}{"clashes"} } ) > 3 ) {
+    # 		delete $atom_clashes{"data"}{$atom_id};
+    # 	    }
+    # 	}
     }
 
-    return \%atom_clashes;
+    # return \%atom_clashes;
 }
 
 1;
