@@ -7,7 +7,8 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( connect_atoms
                      create_box
                      grid_box
-                     is_connected );
+                     is_connected
+                     is_second_neighbour );
 
 use List::Util qw( max min );
 
@@ -163,6 +164,25 @@ sub is_connected
     }
 
     return $is_connected;
+}
+
+sub is_second_neighbour
+{
+    my ( $atom_site, $target_atom_id, $sec_neighbour_id ) = @_;
+
+    my $is_sec_neighbour = 0;
+
+    foreach my $i (
+	@{ $atom_site->{"data"}{"$target_atom_id"}{"connections"} } ) {
+    foreach my $j (
+	@{ $atom_site->{"data"}{$i}{"connections"} } ) {
+	if( "$sec_neighbour_id" eq "$j" ) {
+	    $is_sec_neighbour = 1;
+	    last;
+	}
+    } last if $is_sec_neighbour == 1; }
+
+    return $is_sec_neighbour;
 }
 
 #
