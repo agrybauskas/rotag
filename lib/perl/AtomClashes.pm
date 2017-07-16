@@ -10,7 +10,7 @@ use List::Util qw( any max );
 
 use lib qw( ./ );
 use CifParser qw( filter_atoms select_atom_data );
-use ConnectAtoms qw( connect_atoms grid_box );
+use ConnectAtoms qw( connect_atoms grid_box is_connected );
 use LoadParams qw( rotatable_bonds vdw_radii );
 use Data::Dumper;
 
@@ -106,7 +106,10 @@ sub radius_only
     		    if( not any { $neighbour_id eq $_ } @spec_atom_ids ) {
     			if( is_colliding( $atom_site->{"data"}{"$atom_id"},
     					  $atom_site->{"data"}{"$neighbour_id"} )
-    			    && $atom_id ne $neighbour_id ) {
+    			    && $atom_id ne $neighbour_id
+			    && not is_connected(
+				$atom_site->{"data"}{"$atom_id"},
+				$atom_site->{"data"}{"$neighbour_id"} ) ) {
     			    push( @{ $atom_clashes{"data"}
     				     {$atom_id}
     				     {"clashes"} },
@@ -117,45 +120,55 @@ sub radius_only
     	    }
     	}
 
-	# Removes clashes, if there are more than two.
+	# Removes clashes, if these clashes is due to atom bonding proximity.
 	my $res_id;
 	my $clash_res_id;
 	my $atom_name;
 	my $clash_name;
-	my $second_neighbour;
+	my @clash_list;
+	my $is_sec_neighbour;
 
 	foreach my $atom_id ( keys %{ $atom_clashes{"data"} } ) {
 	    $res_id = $atom_clashes{"data"}{$atom_id}{"label_seq_id"};
 	    $atom_name = $atom_clashes{"data"}{$atom_id}{"label_atom_id"};
+	    @clash_list =
+		@{ $atom_clashes{"data"}{$atom_id}{"clashes"} }
+	        if exists $atom_clashes{"data"}{$atom_id}{"clashes"};
 	    foreach my $clash_id (
-		@{ $atom_clashes{"data"}{$atom_id}{"clashes"} } ) {
-		$clash_res_id = $atom_clashes{"data"}{$clash_id}{"label_seq_id"};
-		$clash_name = $atom_clashes{"data"}{$clash_id}{"label_atom_id"};
-		if( $clash_res_id eq $res_id ) {
-		    # Checks if clashing atom is not second after atom that
-		    # currently is connected to.
-		    for my $i (
-			@{ $atom_clashes{"data"}{$atom_id}{"connections"} } ) {
-		    for my $j (
-			@{ $atom_clashes{"data"}{$i}{"connections"} } ) {
-		        if( $clash_name eq
-			    $atom_clashes{"data"}{$j}{"label_atom_id"} ) {
-			    last;
-			}
-		    } last }
-		    # $clash_name = $atom_clashes{"data"}{$clash_id}{"label_seq_id"};
-		}
+	    	@{ $atom_clashes{"data"}{$atom_id}{"clashes"} } ) {
+	    	$clash_res_id = $atom_clashes{"data"}{$clash_id}{"label_seq_id"};
+	    	$clash_name = $atom_clashes{"data"}{$clash_id}{"label_atom_id"};
+		$is_sec_neighbour = 0;
+	    	if( $clash_res_id eq $res_id ) {
+	    	    for my $i (
+	    	    	@{ $atom_clashes{"data"}{$atom_id}{"connections"} } ) {
+	    	    for my $j (
+	    	    	@{ $atom_clashes{"data"}{$i}{"connections"} } ) {
+	    	        if( $clash_name eq
+	    	    	    $atom_clashes{"data"}{$j}{"label_atom_id"} ) {
+	    		    map { splice( @{ $atom_clashes{"data"}
+					                  {$atom_id}
+					                  {"clashes"} },
+					  $_,
+					  1 ) }
+			    $#clash_list;
+	    	    	    $is_sec_neighbour = 1;
+	    	    	    last;
+	    	    	}
+	    	    }
+	    	    last if $is_sec_neighbour == 1; }
+	    	}
 	    }
 	}
-    # 	foreach my $atom_id ( keys %{ $atom_clashes{"data"} } ) {
-    # 	    if( exists $atom_clashes{"data"}{$atom_id}{"clashes"}
-    # 	     && scalar( @{ $atom_clashes{"data"}{$atom_id}{"clashes"} } ) > 3 ) {
-    # 		delete $atom_clashes{"data"}{$atom_id};
-    # 	    }
-    # 	}
     }
 
-    # return \%atom_clashes;
+    # Removes atoms with any clashes.
+    foreach my $atom_id ( keys %{ $atom_clashes{"data"} } ) {
+	delete $atom_clashes{"data"}{$atom_id}
+	if scalar( @{ $atom_clashes{"data"}{$atom_id}{"clashes"} } ) > 0;
+    }
+
+    return \%atom_clashes;
 }
 
 1;
