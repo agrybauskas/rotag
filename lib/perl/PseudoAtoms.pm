@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( generate_pseudo );
+our @EXPORT_OK = qw( generate_pseudo generate_rotamer);
 
 use lib qw( ./ );
 use CifParser qw( filter_atoms select_atom_data );
@@ -113,6 +113,14 @@ sub generate_pseudo
     }
 
     return $atom_site;
+}
+
+sub generate_rotamer
+{
+    my ( $atom_site, $angles ) = @_;
+    # my %angles = %{ $angles };
+
+    
 }
 
 1;

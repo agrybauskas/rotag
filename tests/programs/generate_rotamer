@@ -1,0 +1,61 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Math::Trig;
+
+use lib "../../lib/perl";
+use CifParser qw( obtain_atom_site );
+use PseudoAtoms qw( generate_rotamer );
+use SidechainModels qw( rotation_only );
+
+use lib "../lib";
+use Utils qw( select_atom_data );
+use Data::Dumper;
+my ( $atom_specifier, $angle_ranges, $cif_file ) = @ARGV;
+
+# Selects atom's data for further analysis.
+my $atom_site = obtain_atom_site( $cif_file );
+my $target_atom_id = select_atom_data( $atom_specifier, "id", $cif_file );
+$target_atom_id = $target_atom_id->[0][0];
+
+# Parses selector argument from string  to proper array.
+my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+		       map { [ split( " ", $_ ) ] }
+		       split( "&", $atom_specifier ) );
+
+# Parses angle ranges for
+my %angle_ranges = ( map { $_->[0] => [ split( "-", @$_[1] ) ] }
+		     map { [ split( " ", $_ ) ] }
+		     split( "&", $angle_ranges ) );
+
+# Calculates angles that will be rotated along.
+my $pi = 4 * atan( 1, 1 );
+
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after rotation along dihedral angle.
+open( my $fh, "<", $cif_file );
+chomp( my @cif_lines = <$fh> );
+close( $fh );
+
+# Creates pseudo-atoms for given analytical equation that describes conformation
+# of atom.
+print Dumper \%atom_specifier;
+# rotation_only( $atom_site, \%atom_specifier );
+# my $pseudo_rotamer =
+#     generate_rotamer( rotation_only( $atom_site, \%atom_specifier ),
+# 		      \%angle_ranges );
+
+# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+# print( scalar( keys %{ $pseudo_atom_site->{"data"} } ), "\n" );
+# print( "testing\n" );
+
+# # Prints out pseudo-atom coordinates.
+# for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
+#     printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
+# 	    "\t%.3f\t%.3f\t%.3f\n",
+# 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
+# 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
+# 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
+# }
