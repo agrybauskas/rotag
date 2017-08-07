@@ -13,7 +13,7 @@ use LinearAlgebra qw( evaluate_matrix matrix_product );
 use LoadParams qw( rotatable_bonds );
 use Measure qw( all_dihedral );
 use SidechainModels qw( rotation_only );
-
+use Data::Dumper;
 my $parameter_file = "../../parameters/rotatable_bonds.csv";
 
 # --------------------------- Generation of pseudo-atoms ---------------------- #
@@ -118,9 +118,43 @@ sub generate_pseudo
 sub generate_rotamer
 {
     my ( $atom_site, $angles ) = @_;
-    # my %angles = %{ $angles };
 
-    
+    # Extracts residue name from residue id. Only one ID can be parsed.
+    # TODO: maybe should consider generating rotamers for multiple residues.
+    my @resi_id = keys %{ $angles };
+    my $resi_id = $resi_id[0];
+
+    my $resi_name =
+	select_atom_data( [ "label_comp_id" ],
+			  filter_atoms( { "label_seq_id" => [ $resi_id ] },
+					$atom_site ) );
+    $resi_name = $resi_name->[0][0];
+
+    my $atom_labels =
+    	select_atom_data( [ "label_atom_id" ],
+    			  filter_atoms( { "label_seq_id" => [ $resi_id ] },
+    					$atom_site ) );
+    my @atom_labels = map { $_->[0] } @{ $atom_labels };
+
+    # Iterates through every atom of certain residue name and rotates to
+    # specified dihedral angle.
+    my %generated_rotamers = %{ $atom_site };
+    my %current_angles;
+
+    for my $label ( @atom_labels ) {
+    	# Defines dihedral angles by %ROTATABLE_BONDS description and specified
+    	# angles in $angles.
+	undef %current_angles;
+    	if( defined $ROTATABLE_BONDS{"$resi_name"}{"$label"} ) {
+    	    for my $angle_id ( 0..scalar( @{ $ROTATABLE_BONDS{"$resi_name"}{"$label"} } ) - 2 ) {
+    		$current_angles{"chi$angle_id"} =
+		    $angles->{"$resi_id"}{"chi$angle_id"};
+    	    }
+	    generate_pseudo(  );
+    	}
+    }
+
+    # return \%generated_rotamers;
 }
 
 1;
