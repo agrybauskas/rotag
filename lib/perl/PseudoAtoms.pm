@@ -139,6 +139,7 @@ sub generate_rotamer
     # Iterates through every atom of certain residue name and rotates to
     # specified dihedral angle.
     my %generated_rotamers = %{ $atom_site };
+    my $atom_id;
     my %current_angles;
 
     for my $label ( @atom_labels ) {
@@ -146,15 +147,31 @@ sub generate_rotamer
     	# angles in $angles.
 	undef %current_angles;
     	if( defined $ROTATABLE_BONDS{"$resi_name"}{"$label"} ) {
-    	    for my $angle_id ( 0..scalar( @{ $ROTATABLE_BONDS{"$resi_name"}{"$label"} } ) - 2 ) {
-    		$current_angles{"chi$angle_id"} =
-		    $angles->{"$resi_id"}{"chi$angle_id"};
-    	    }
-	    generate_pseudo(  );
+	    $atom_id =
+		select_atom_data(
+		    [ "id" ],
+		    filter_atoms( { "label_atom_id" => [ $label ] },
+				  $atom_site ) );
+	    $atom_id = $atom_id->[0][0];
+
+    	    for my $angle_id
+		( 0..scalar( @{ $ROTATABLE_BONDS{"$resi_name"}{"$label"} } ) - 2 ) {
+		    $current_angles{"chi$angle_id"} =
+			[ $angles->{"$resi_id"}{"chi$angle_id"} ];
+	    }
+	    # TODO: remove redundant rotation_only function. Should be only
+	    # inside generate_pseudo function. Also, should try to work on
+	    # code readability.
+	    %generated_rotamers =
+		%{ generate_pseudo(
+		       rotation_only( \%generated_rotamers,
+				      { "id" => [ $atom_id ] } ),
+		       { "id" => [ $atom_id ] },
+		       \%current_angles ) };
     	}
     }
 
-    # return \%generated_rotamers;
+    return \%generated_rotamers;
 }
 
 1;
