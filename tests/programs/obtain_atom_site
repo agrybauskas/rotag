@@ -4,43 +4,23 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser qw( obtain_atom_site );
+use PDBxParser qw( obtain_atom_site to_pdbx );
 
 #
-# Unit test: CifParser::obtain_atom_site
+# Unit test: PDBxParser::obtain_atom_site
 #
-# Creates standard mmcif output with only _atom_site category and checks,
-# if all data was correctly obtained.
+# Creates standard PDBx output with only _atom_site category and checks if all
+# data was correctly obtained.
 #
-# Example: ./obtain_atom_site < example.cif
+# Example: ./obtain_atom_site example.cif
 #
 
 @ARGV = ( "-" ) unless @ARGV;
 
-foreach my $file ( @ARGV ) {
+my $atom_site;
 
-    my $atom_site = obtain_atom_site( $file );
-    my $attribute_names = $atom_site->{"attributes"};
-    my @attribute_names = @$attribute_names;
+foreach my $pdbx_file ( @ARGV ) {
+    $atom_site = obtain_atom_site( $pdbx_file );
 
-    print "loop_\n";
-
-    foreach( @attribute_names ) {
-    	print "_atom_site." . $_ . "\n";
-    }
-
-    for my $id ( sort { $a <=> $b } keys( %{ $atom_site->{"data"} } ) ) {
-    	for( my $i = 0; $i <= $#attribute_names; $i++ ) {
-    	    if( $i % ( $#attribute_names + 1) != 0 ) {
-    		print( " ",
-    		       $atom_site->{"data"}{$id}{$attribute_names[$i]},
-    		       " " );
-    	    } else {
-    		print( "\n",
-    		       $atom_site->{"data"}{$id}{$attribute_names[$i]} );
-    	    }
-    	}
-    }
-
-    print( "\n" );
+    to_pdbx( $atom_site );
 }
