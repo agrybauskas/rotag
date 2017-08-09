@@ -23,19 +23,16 @@ use Data::Dumper;
 # Input:
 #     $pdbx_file - PDBx file.
 # Output:
-#     $atom_site - special data structure.
+#     %atom_site - special data structure.
 #     Ex.: { 1 => { "group_id" => "ATOM",
 #                   "id"       => 1,
-#                   ...
-#                 }
-#          }
+#                   ... } }
 #
 
 sub obtain_atom_site
 {
     my ( $pdbx_file ) = @_;
 
-    my %atom_site;
     my @atom_attributes;
     my @atom_data; # Will be used for storing atom data temporarily.
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
@@ -56,6 +53,7 @@ sub obtain_atom_site
 
     # Creates special data structure for describing atom site where atom id is
     # key in hash and hash value is hash describing atom data.
+    my %atom_site;
     my @atom_data_row;
     my %atom_data_row;
 
@@ -80,44 +78,53 @@ sub obtain_atom_site
 #
 # From PDBx, extracts atoms with specified criteria, such as, atom type,
 # residue id, chain id and etc.
-# Input  (2 arg): array of hashes: atom specifier => value, mmCIF file converted
-#                 to compound data using obtain_atom_site function.
-#                 Criteria for $atom_specifier:
-#                     { "label_atom_id" => [ "SER" ],
-#                       "label_comp_id" => [ "CA", "CB" ] }.
-# Output (1 arg): compound data, same as, output of obtain_atom_site function.
+# Input:
+#     $atom_site - special data structure.
+#     $atom_specifier - compound data structure for specifying desirable atoms.
+#     Ex. { "label_atom_id" => [ "SER" ],
+#           "label_comp_id" => [ "CA", "CB" ] }
+# Output:
+#     %filtered_atoms - filtered special data structure.
 #
 
 sub filter_atoms
 {
-    my ( $atom_specifier, $atom_site ) = @_;
+    my ( $atom_site, $atom_specifier ) = @_;
 
-    my %filtered_atom_site;
+    # Produces attribute list from subroutine input - $atom_site, by catching all
+    # mentioned attributes.
+    my @atom_attributes;
 
-    # Inherits list of attribute names from input.
-    $filtered_atom_site{"attributes"} = $atom_site->{"attributes"};
-
-    # Iterates through each atom in atom site and checks if atom specifiers
-    # match up.
-    my $match_counter; # Tracks if all matches occured.
-
-    for my $atom ( keys %{ $atom_site->{"data"} } ) {
-	$match_counter = 0;
-	for my $attribute ( keys %$atom_specifier ) {
-	    if( exists $atom_site->{"data"}{$atom}{$attribute}
-	     && grep { $atom_site->{"data"}{$atom}{$attribute} eq $_ }
-		@{ $atom_specifier->{$attribute} } ) {
-		$match_counter += 1;
-	    } else {
-		last; # Terminates early if no match is found in any specifier.
-	    }
-	    if( $match_counter eq scalar( keys( %$atom_specifier ) ) ) {
-		$filtered_atom_site{"data"}{$atom} = $atom_site->{"data"}{$atom};
+    for my $atom_id ( keys %{ $atom_site } ) {
+	for my $attribute ( keys $atom_site{$atom_id} ) {
+	    foreach ( @atom_attributes ) { # Checks, if attribute was already
 	    }
 	}
     }
 
-    return \%filtered_atom_site;
+    # $filtered_atom_site{"attributes"} = $atom_site->{"attributes"};
+    # my %filtered_atoms;
+    # # Iterates through each atom in atom site and checks if atom specifiers
+    # # match up.
+    # my $match_counter; # Tracks if all matches occured.
+
+    # for my $atom ( keys %{ $atom_site->{"data"} } ) {
+    # 	$match_counter = 0;
+    # 	for my $attribute ( keys %$atom_specifier ) {
+    # 	    if( exists $atom_site->{"data"}{$atom}{$attribute}
+    # 	     && grep { $atom_site->{"data"}{$atom}{$attribute} eq $_ }
+    # 		@{ $atom_specifier->{$attribute} } ) {
+    # 		$match_counter += 1;
+    # 	    } else {
+    # 		last; # Terminates early if no match is found in any specifier.
+    # 	    }
+    # 	    if( $match_counter eq scalar( keys( %$atom_specifier ) ) ) {
+    # 		$filtered_atom_site{"data"}{$atom} = $atom_site->{"data"}{$atom};
+    # 	    }
+    # 	}
+    # }
+
+    # return \%filtered_atom_site;
 }
 
 #

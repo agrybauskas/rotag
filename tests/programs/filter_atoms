@@ -4,49 +4,25 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser qw( filter_atoms
-                  obtain_atom_site );
+use PDBxParser qw( filter_atoms obtain_atom_site to_pdbx );
 
 #
 # Unit test: CifParser::filter_atoms.
 #
-# Filters atoms by given attribute(s) name(s).
+# Filters atoms by given attribute name and their values.
 #
-# Example: ./filter_atoms "label_atom_id CA,N,CB,OG" example.cif
+# Example: ./filter_atoms "label_comp_id SER & label_atom_id CA,N,CB,OG" \
+#          example.cif
 #
 
 @ARGV = ( "-" ) unless @ARGV;
-my ( $attribute_selector, $cif_file ) = @ARGV;
+
+my ( $atom_specifier, $pdbx_file ) = @ARGV;
 
 # Parses selector argument from string  to proper array.
-my %attribute_selector = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-                           map { [ split( " ", $_ ) ] }
-                           split( "&", $attribute_selector ) );
+my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+		       map { [ split( " ", $_ ) ] }
+		       split( "&", $atom_specifier ) );
 
-# Performs filtering.
-my %filtered_atoms = %{ filter_atoms( \%attribute_selector,
-				      &obtain_atom_site( $cif_file ) ) };
-
-my @attribute_names = @{ $filtered_atoms{"attributes"} };
-
-# Prints out output.
-print "loop_\n";
-
-foreach( @attribute_names ) {
-    print "_atom_site." . $_ . "\n";
-}
-
-for my $id ( sort { $a <=> $b } keys( %{ $filtered_atoms{"data"} } ) ) {
-    for( my $i = 0; $i <= $#attribute_names; $i++ ) {
-	if( $i % ( $#attribute_names + 1 ) != 0 ) {
-	    print( " ",
-		   $filtered_atoms{"data"}{$id}{$attribute_names[$i]},
-		   " " );
-	} else {
-	    print( "\n",
-		   $filtered_atoms{"data"}{$id}{$attribute_names[$i]} );
-	}
-    }
-}
-
-print( "\n" );
+my $filtered_atoms = filter_atoms( obtain_atom_site( $pdbx_file ),
+				   \%atom_specifier);
