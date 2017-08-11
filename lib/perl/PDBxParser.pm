@@ -91,40 +91,28 @@ sub filter_atoms
 {
     my ( $atom_site, $atom_specifier ) = @_;
 
-    # Produces attribute list from subroutine input - $atom_site, by catching all
-    # mentioned attributes.
-    my @atom_attributes;
+    # Iterates through each atom in $atom_site and checks if atom specifiers
+    # match up.
+    my %filtered_atoms;
+    my $match_counter; # Tracks if all matches occured.
 
     for my $atom_id ( keys %{ $atom_site } ) {
-	for my $attribute ( keys $atom_site{$atom_id} ) {
-	    foreach ( @atom_attributes ) { # Checks, if attribute was already
-	    }
-	}
+    	$match_counter = 0;
+    	for my $attribute ( keys %{ $atom_specifier } ) {
+    	    if( exists $atom_site->{$atom_id}{$attribute}
+    	     && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
+    		@{ $atom_specifier->{$attribute} } ) {
+    		$match_counter += 1;
+    	    } else {
+    		last; # Terminates early if no match is found in any specifier.
+    	    }
+    	    if( $match_counter == scalar( keys %{ $atom_specifier } ) ) {
+    		$filtered_atoms{$atom_id} = $atom_site->{$atom_id};
+    	    }
+    	}
     }
 
-    # $filtered_atom_site{"attributes"} = $atom_site->{"attributes"};
-    # my %filtered_atoms;
-    # # Iterates through each atom in atom site and checks if atom specifiers
-    # # match up.
-    # my $match_counter; # Tracks if all matches occured.
-
-    # for my $atom ( keys %{ $atom_site->{"data"} } ) {
-    # 	$match_counter = 0;
-    # 	for my $attribute ( keys %$atom_specifier ) {
-    # 	    if( exists $atom_site->{"data"}{$atom}{$attribute}
-    # 	     && grep { $atom_site->{"data"}{$atom}{$attribute} eq $_ }
-    # 		@{ $atom_specifier->{$attribute} } ) {
-    # 		$match_counter += 1;
-    # 	    } else {
-    # 		last; # Terminates early if no match is found in any specifier.
-    # 	    }
-    # 	    if( $match_counter eq scalar( keys( %$atom_specifier ) ) ) {
-    # 		$filtered_atom_site{"data"}{$atom} = $atom_site->{"data"}{$atom};
-    # 	    }
-    # 	}
-    # }
-
-    # return \%filtered_atom_site;
+    return \%filtered_atoms;
 }
 
 #

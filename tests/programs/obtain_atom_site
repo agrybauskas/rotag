@@ -21,6 +21,5 @@ my $atom_site;
 
 foreach my $pdbx_file ( @ARGV ) {
     $atom_site = obtain_atom_site( $pdbx_file );
-
     to_pdbx( $atom_site );
 }

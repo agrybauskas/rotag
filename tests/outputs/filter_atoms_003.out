@@ -1,3 +1,4 @@
+data_testing
 loop_
 _atom_site.group_PDB
 _atom_site.id
@@ -25,4 +26,5 @@ _atom_site.auth_comp_id
 _atom_site.auth_asym_id
 _atom_site.auth_atom_id
 _atom_site.pdbx_PDB_model_num
-ATOM 361  O  OE1  .  GLU  A  1  47  ?  3.060  6.003  69.486  1.00  61.03  ?  ?  ?  ?  ?  ?  92  GLU  A  OE1  1
+
+ATOM 361  O  OE1  .  GLU  A  1  47  ?  3.060  6.003  69.486  1.00  61.03  ?  ?  ?  ?  ?  ?  92  GLU  A  OE1  1 

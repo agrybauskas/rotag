@@ -26,3 +26,4 @@ my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 
 my $filtered_atoms = filter_atoms( obtain_atom_site( $pdbx_file ),
 				   \%atom_specifier);
+to_pdbx( $filtered_atoms );
