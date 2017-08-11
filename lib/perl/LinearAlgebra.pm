@@ -10,8 +10,8 @@ our @EXPORT_OK = qw( create_ref_frame
                      matrix_product
                      matrix_sum
                      matrix_sub
-                     $PI
-                     $EPSILON
+                     pi
+                     epsilon
                      switch_ref_frame
                      translation
                      transpose
@@ -21,25 +21,49 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
+# --------------------------------- Constants --------------------------------- #
+
+#
+# Generates constants that are useful for other functions.
+#
+
+#
+# Returns PI value.
+#
+# Input:
+#     none.
+# Output:
+#     PI value.
+
+sub pi
+{
+    return 4 * atan2( 1, 1 );
+}
+
+#
+# Returns machine accuracy for floating point numbers.
+# Input:
+#     none.
+# Output:
+#     $EPSILON - machine accuracy value.
+#
+
+sub epsilon
+{
+    my $EPSILON = 1.0;
+
+    while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
+	$EPSILON = 0.5 * $EPSILON;
+    }
+
+    return $EPSILON;
+}
+
 # --------------------------- Numeric linear algebra -------------------------- #
 
 #
 # Performs basic linear algebra operations for matrices.
 #
-
-#
-# Constants
-#
-
-our $PI = 4 * atan2( 1, 1 );
-
-our  $EPSILON = 1.0; # Machine accuracy for floating point numbers which is
-                   # calculated in above block.
-{
-    while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
-	$EPSILON = 0.5 * $EPSILON;
-    }
-}
 
 #
 # Creates local reference frame for any three given atoms positions in cartesian
