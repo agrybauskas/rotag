@@ -4,35 +4,30 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser qw( select_atom_data
-                  filter_atoms
-                  obtain_atom_site );
+use PDBxParser qw( filter_atoms select_atom_data obtain_atom_site to_pdbx );
 
 #
-# Unit test: CifParser::select_atom_data.
+# Unit test: PDBxParser::select_atom_data.
 #
 # Selects atom data by given attributes.
 #
 # Example: ./select_atom_data "label_atom_id CA,N,CB,OG" \
-#                             "Cartn_x,Cartn_y,Cartn_z" < example.cif
+#                             "Cartn_x,Cartn_y,Cartn_z" example.cif
 #
 
 @ARGV = ( "-" ) unless @ARGV;
-my ( $attribute_selector, $data_selector, $cif_file ) = @ARGV;
+my ( $atom_specifier, $data_specifier, $pdbx_file ) = @ARGV;
 
-# Parses selector argument from string  to proper array.
-my %attribute_selector = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-                           map { [ split( " ", $_ ) ] }
-                           split( "&", $attribute_selector ) );
+my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+		       map { [ split( " ", $_ ) ] }
+		       split( "&", $atom_specifier ) );
+my @data_specifier = split( ",", $data_specifier );
 
-my @data_selector = split( ",", $data_selector );
+my @atom_data =
+    @{ select_atom_data( filter_atoms( obtain_atom_site( $pdbx_file ),
+				       \%atom_specifier ),
+			 \@data_specifier ) };
 
-# Selects atoms for further analysis.
-my @selected_atom_data =
-    @{ select_atom_data( \@data_selector,
-			 &filter_atoms( \%attribute_selector,
-					&obtain_atom_site( $cif_file ) ) ) };
-
-for( my $i = 0; $i <= $#selected_atom_data; $i++ ) {
-    print( join( " ", @{ $selected_atom_data[$i] } ), "\n" );
+for( my $i = 0; $i <= $#atom_data; $i++ ) {
+    print( join( " ", @{ $atom_data[$i] } ), "\n" );
 }

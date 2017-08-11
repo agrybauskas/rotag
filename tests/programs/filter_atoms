@@ -7,7 +7,7 @@ use lib "../../lib/perl";
 use PDBxParser qw( filter_atoms obtain_atom_site to_pdbx );
 
 #
-# Unit test: CifParser::filter_atoms.
+# Unit test: PDBxParser::filter_atoms.
 #
 # Filters atoms by given attribute name and their values.
 #
@@ -19,7 +19,6 @@ use PDBxParser qw( filter_atoms obtain_atom_site to_pdbx );
 
 my ( $atom_specifier, $pdbx_file ) = @ARGV;
 
-# Parses selector argument from string  to proper array.
 my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 		       map { [ split( " ", $_ ) ] }
 		       split( "&", $atom_specifier ) );

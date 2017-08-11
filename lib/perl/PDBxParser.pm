@@ -4,11 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( filter_atoms
-                     obtain_atom_site
-                     select_atom_data
-                     to_pdbx );
-use Data::Dumper;
+our @EXPORT_OK = qw( filter_atoms obtain_atom_site select_atom_data to_pdbx );
+
 # --------------------------------- PDBx parser ------------------------------- #
 
 #
@@ -81,8 +78,8 @@ sub obtain_atom_site
 # Input:
 #     $atom_site - special data structure.
 #     $atom_specifier - compound data structure for specifying desirable atoms.
-#     Ex. { "label_atom_id" => [ "SER" ],
-#           "label_comp_id" => [ "CA", "CB" ] }
+#     Ex.: { "label_atom_id" => [ "SER" ],
+#            "label_comp_id" => [ "CA", "CB" ] }
 # Output:
 #     %filtered_atoms - filtered special data structure.
 #
@@ -116,29 +113,31 @@ sub filter_atoms
 }
 
 #
-# Returns specified attribute data in compound data form.
-# Input  (2 arg): array of desired atom parameters, mmCIF/PDBx file converted to
-#                 compound data using obtain_atom_site function.
-#                 E.g. of $data_specifier:
-#                    ( "Cartn_x", "Cartn_y", "Cartn_z" ).
-# Output (1 arg): compound data, same as, obtain_atom_site output.
+# Returns atom data according to specified attribute values.
+# Input:
+#     $atom_site - special data structure.
+#     $data_specifier - list of desired attribute values.
+#     Eg.: [ "Cartn_x", "Cartn_y", "Cartn_z" ].
+# Output:
+#     @atom_data - list of arrays containing specified attribute data.
+#     Eg.: [ [ 3.0, 4.0, 2.0 ],
+#            [ 3.4, 4.9, 2.5 ] ]
 #
 
 sub select_atom_data
 {
-    # Extract only the data user wants.
-    my ( $data_specifier, $atom_site )  = @_;
+    my ( $atom_site, $data_specifier )  = @_;
 
-    my @selected_atom_data;
+    my @atom_data;
 
-    # Simply iterates through atom site keys and extracts data using data
+    # Simply iterates through $atom_site keys and extracts data using data
     # specifier.
-    for my $atom ( sort { $a <=> $b } keys( %{ $atom_site->{"data"} } ) ) {
-	push( @selected_atom_data,
-	      [ map { $atom_site->{"data"}{$atom}{$_} } @{ $data_specifier } ] );
+    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+    	push( @atom_data,
+    	      [ map { $atom_site->{$atom_id}{$_} } @{ $data_specifier } ] );
     }
 
-    return \@selected_atom_data;
+    return \@atom_data;
 }
 
 # --------------------------- Data structure to STDOUT ------------------------ #
