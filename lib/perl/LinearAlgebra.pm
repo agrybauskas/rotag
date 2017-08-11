@@ -131,31 +131,33 @@ sub find_euler_angles
 
     my $z_axis_in_xy_plane;
 
-    my @local_ref_frame =
+    my $local_ref_frame =
         create_ref_frame( $mid_atom_x,  $mid_atom_y,   $mid_atom_z,
                           $up_atom_x,   $up_atom_y,    $up_atom_z,
                           $side_atom_x, $side_atom_y,  $side_atom_z );
 
     # Projects local z-axis to global xy-plane.
     $z_axis_in_xy_plane =
-        sqrt( $local_ref_frame[2][0] * $local_ref_frame[2][0]
-            + $local_ref_frame[2][1] * $local_ref_frame[2][1] );
+        sqrt( $local_ref_frame->[2][0] * $local_ref_frame->[2][0]
+            + $local_ref_frame->[2][1] * $local_ref_frame->[2][1] );
 
     if( $z_axis_in_xy_plane > epsilon() ) {
         $alpha_rad =
-            atan2( $local_ref_frame[1][0] * $local_ref_frame[2][1]
-                 - $local_ref_frame[1][1] * $local_ref_frame[2][0],
-                   $local_ref_frame[0][0] * $local_ref_frame[2][1]
-                 - $local_ref_frame[0][1] * $local_ref_frame[2][0] );
-        $beta_rad = atan2( $z_axis_in_xy_plane, $local_ref_frame[2][2] );
-        $gamma_rad = - atan2( - $local_ref_frame[2][0], $local_ref_frame[2][1] );
+            atan2( $local_ref_frame->[1][0] * $local_ref_frame->[2][1]
+                 - $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
+                   $local_ref_frame->[0][0] * $local_ref_frame->[2][1]
+                 - $local_ref_frame->[0][1] * $local_ref_frame->[2][0] );
+        $beta_rad = atan2( $z_axis_in_xy_plane, $local_ref_frame->[2][2] );
+        $gamma_rad =
+	    - atan2( - $local_ref_frame->[2][0], $local_ref_frame->[2][1] );
     } else {
         $alpha_rad = 0.;
-        $beta_rad = ( $local_ref_frame[2][2] > 0. ) ? 0. : pi();
-        $gamma_rad = - atan2( $local_ref_frame[0][1], $local_ref_frame[0][0] );
+        $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : pi();
+        $gamma_rad =
+	    - atan2( $local_ref_frame->[0][1], $local_ref_frame->[0][0] );
     }
 
-    return $alpha_rad, $beta_rad, $gamma_rad;
+    return [ $alpha_rad, $beta_rad, $gamma_rad ];
 }
 
 #

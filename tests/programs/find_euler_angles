@@ -7,7 +7,7 @@ use lib "../../lib/perl";
 use LinearAlgebra qw( find_euler_angles );
 
 #
-# Unit test: LinearAlgebra::create_ref_frame.
+# Unit test: LinearAlgebra::find_euler_angles.
 #
 # Calculates Euler angles needed to transform frame of references from three
 # given coordinates of the atom.
@@ -25,9 +25,9 @@ while( <$fh> ){
 close( $fh );
 
     # mid-atom      # up-atom       # side-atom
-my @euler_angles = find_euler_angles(
+my $euler_angles = find_euler_angles(
     $atom_coord[0], $atom_coord[1], $atom_coord[2],   # x-axis
     $atom_coord[3], $atom_coord[4], $atom_coord[5],   # y-axis
     $atom_coord[6], $atom_coord[7], $atom_coord[8] ); # z-axis
 
-print( join( " ", @euler_angles ) . "\n" );
+print( join( " ", map { sprintf( "%.3f", $_ ) } @{ $euler_angles } ) . "\n" );
