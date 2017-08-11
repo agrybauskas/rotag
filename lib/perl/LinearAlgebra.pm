@@ -68,8 +68,10 @@ sub epsilon
 #
 # Creates local reference frame for any three given atoms positions in cartesian
 # coordinate system.
-# Input  (1 arg): array of three atom coordinates in x, y, z form.
-# Output (1 arg): array of reference frame coordinates in x, y, z form.
+# Input:
+#     ${mid,up,side}_atom_{x,y,z} - Cartesian coordinates of three atoms.
+# Output:
+#     @local_ref_frame - Cartesian coordinates of points on x, y and z axis.
 #
 
 sub create_ref_frame
@@ -85,8 +87,7 @@ sub create_ref_frame
     $local_ref_frame[2][1] = $up_atom_y - $mid_atom_y;
     $local_ref_frame[2][2] = $up_atom_z - $mid_atom_z;
 
-    # Let local x-axis be perpendicular to bonds between mid, up and mid, side
-    # atoms.
+    # Let local x-axis be perpendicular to mid-up and mid-side bonds.
     $local_ref_frame[0][0] =
         ( $side_atom_y - $mid_atom_y ) * $local_ref_frame[2][2]
       - ( $side_atom_z - $mid_atom_z ) * $local_ref_frame[2][1];
@@ -108,7 +109,7 @@ sub create_ref_frame
         $local_ref_frame[2][0] * $local_ref_frame[0][1]
       - $local_ref_frame[2][1] * $local_ref_frame[0][0];
 
-    return @local_ref_frame; # TODO: return to reference.
+    return \@local_ref_frame;
 }
 
 #
@@ -140,7 +141,7 @@ sub find_euler_angles
         sqrt( $local_ref_frame[2][0] * $local_ref_frame[2][0]
             + $local_ref_frame[2][1] * $local_ref_frame[2][1] );
 
-    if( $z_axis_in_xy_plane > $EPSILON ) {
+    if( $z_axis_in_xy_plane > epsilon() ) {
         $alpha_rad =
             atan2( $local_ref_frame[1][0] * $local_ref_frame[2][1]
                  - $local_ref_frame[1][1] * $local_ref_frame[2][0],
@@ -150,7 +151,7 @@ sub find_euler_angles
         $gamma_rad = - atan2( - $local_ref_frame[2][0], $local_ref_frame[2][1] );
     } else {
         $alpha_rad = 0.;
-        $beta_rad = ( $local_ref_frame[2][2] > 0. ) ? 0. : $PI;
+        $beta_rad = ( $local_ref_frame[2][2] > 0. ) ? 0. : pi();
         $gamma_rad = - atan2( $local_ref_frame[0][1], $local_ref_frame[0][0] );
     }
 
