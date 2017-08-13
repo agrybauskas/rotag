@@ -8,7 +8,7 @@ use LinearAlgebra qw( switch_ref_frame );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-
+use Data::Dumper;
 #
 # Unit test: LinearAlgebra::switch_ref_frame.
 #
@@ -19,20 +19,22 @@ use Utils qw( select_atom_data );
 #                             "global" example.cif
 #
 
-my ( $attribute_filter, $attribute_select, $ref_frame, $cif_file ) = @ARGV;
+my ( $atom_specifier, $data_specifier, $ref_frame, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data = select_atom_data( $attribute_filter,
-					   $attribute_select,
-					   $cif_file );
+my $atom_data = 
+    select_atom_data( $pdbx_file,
+		      $atom_specifier,
+		      $data_specifier );
 
-my @switched_ref_frame = switch_ref_frame( $ref_frame,
-					   $selected_atom_data->[1],
-					   $selected_atom_data->[2],
-					   $selected_atom_data->[0] );
+# my $ref_frame_coord = 
+    switch_ref_frame( $ref_frame,
+					$atom_data->[1],
+					$atom_data->[2],
+					$atom_data->[0] );
 
-foreach( @switched_ref_frame ) {
-	foreach( @$_ ) {
-	    print( join( "\t", @$_ ), "\n" );
-	}
-}
+# foreach( @{ $ref_frame_coord } ) {
+#     foreach( @$_ ) {
+# 	print( join( "\t", @$_ ), "\n" );
+#     }
+# }
