@@ -14,15 +14,15 @@ use LinearAlgebra qw( vector_cross );
 # Example: ./vector_cross example.dat
 #
 
-my ( $matrix_file ) = @ARGV;
+my ( $vector_file ) = @ARGV;
 
-open( my $fh, "<", $matrix_file );
-my @matrix_lines = <$fh>;
+open( my $fh, "<", $vector_file );
+my @vector = <$fh>;
 close( $fh );
 
 my ( $left_matrix, $right_matrix ) =
-    map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } @matrix_lines;
+    map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } @vector;
 
 my $cross_product = vector_cross( $left_matrix, $right_matrix );
 
-print( join( "\t", @$cross_product ) );
+print( join( "\t", @{ $cross_product } ), "\n" );

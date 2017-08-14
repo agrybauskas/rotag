@@ -4,30 +4,29 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra qw( x_axis_rotation matrix_product );
+use LinearAlgebra qw( matrix_product x_axis_rotation );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
 
 #
-# Unit test: LinearAlgebra::rotate_x_axis.
+# Unit test: LinearAlgebra::x_axis_rotation.
 #
 # Rotates along x-axis of the global frame of reference.
 #
-# Example: ./rotate_x_axis "label_atom_id CA,N,CB,OG" \
-#                          "Cartn_x,Cartn_y,Cartn_z" \
-#                          "1.571" example.cif
+# Example: ./x_axis_rotation "label_atom_id CA,N,CB,OG" \
+#                            "Cartn_x,Cartn_y,Cartn_z" \
+#                            "1.571" example.cif
 #
 
-my ( $attribute_filter, $attribute_select, $angle, $cif_file ) = @ARGV;
+my ( $atom_specifier, $data_specifier, $angle, $pdbx_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $selected_atom_data = select_atom_data( $attribute_filter,
-					   $attribute_select,
-					   $cif_file );
+my $atom_data = select_atom_data( $pdbx_file,
+				  $atom_specifier,
+				  $data_specifier );
 
 # Rotates all atoms along x-axis by given angle.
-my @transf_atom_data;
+my @transf_atom_coord;
 
 foreach ( @$selected_atom_data ) {
     # Prepares atom coordinates to proper 4x1 matrix.

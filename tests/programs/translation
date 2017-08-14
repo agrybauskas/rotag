@@ -4,27 +4,25 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use LinearAlgebra qw( translation matrix_product);
+use LinearAlgebra qw( matrix_product translation );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
 
 #
-# Unit test: LinearAlgebra::translate
+# Unit test: LinearAlgebra::translation.
 #
 # Translates atom by a given displacement.
 #
-# Example: ./translate "label_atom_id CA,N,CB,OG" \
-#                      "Cartn_x,Cartn_y,Cartn_z" \
-#                      "1.000,1.000,1.000" example.cif
+# Example: ./translation "label_atom_id CA,N,CB,OG" "Cartn_x,Cartn_y,Cartn_z" \
+#                        "1.000,1.000,1.000" example.cif
 #
 
-my ( $attribute_filter, $attribute_select, $transl_coord, $cif_file ) = @ARGV;
+my ( $atom_specifier, $data_specifier, $transl_coord, $pdbx_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $selected_atom_data = select_atom_data( $attribute_filter,
-					   $attribute_select,
-					   $cif_file );
+my $atom_data = select_atom_data( $pdbx_file,
+				  $atom_specifier,
+				  $data_specifier );
 
 # Translates coordinates by given displacement.
 my @transl_coord = split( ",", $transl_coord );

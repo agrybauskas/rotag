@@ -15,11 +15,11 @@ use LinearAlgebra qw( transpose );
 #
 
 @ARGV = ( "-" ) unless @ARGV;
-my ( $cif_file ) = @ARGV;
+my ( $matrix_file ) = @ARGV;
 
 my @matrix;
 
-open( my $fh, "<", $cif_file );
+open( my $fh, "<", $matrix_file );
 while( <$fh> ) {
     push( @matrix, [ split( " ", $_ ) ] );
 }
@@ -27,6 +27,6 @@ close( $fh );
 
 my $transposed_matrix = transpose( \@matrix );
 
-foreach( @$transposed_matrix ) {
-    print( join( "\t", @$_ ), "\n" );
+for my $row ( @{ $transposed_matrix } ) {
+    print( join( "\t", @{ $row } ), "\n" );
 }

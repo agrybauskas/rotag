@@ -184,10 +184,10 @@ sub switch_ref_frame
 			      @{ $side_atom_coord } ) };
 
     # Depending on the option switch_to_local,
-    my @switch_matrix;
+    my @switched_ref_frame;
 
     # if( $switch_to_local eq "local" ) {
-    # 	@switch_matrix =
+    # 	@switched_ref_frame =
     # 	    matrix_product( &z_axis_rotation( $alpha ),
     # 			    &x_axis_rotation( $beta ),
     # 			    &z_axis_rotation( $gamma ),
@@ -195,7 +195,7 @@ sub switch_ref_frame
     # 					    -$mid_atom_coord->[1],
     # 					    -$mid_atom_coord->[2] ) ) );
     # } elsif( $switch_to_local eq "global" ) {
-    # 	@switch_matrix =
+    # 	@switched_ref_frame =
     # 	    matrix_product( &translation( ( $mid_atom_coord->[0],
     # 					    $mid_atom_coord->[1],
     # 					    $mid_atom_coord->[2] ) ),
@@ -211,10 +211,11 @@ sub switch_ref_frame
 }
 
 #
-# Creates 4x4 matrix that can rotate 4x4 matrices around x-axis by making a
-# matrix product.
-# Input  (1 arg): angle of rotation in radians.
-# Output (1 arg): 4x4 matrix.
+# Creates 4x4 matrix that can rotate 4x4 matrices around x-axis.
+# Input:
+#     $angle - angle of rotation in radians.
+# Output:
+#     @rot_matrix_x - 4x4 matrix.
 #
 
 sub x_axis_rotation
@@ -223,18 +224,19 @@ sub x_axis_rotation
 
     my @rot_matrix_x =
 	( [ 1, 0, 0, 0 ],
-	  [ 0, cos( $angle ), -sin( $angle ), 0 ],
-	  [ 0, sin( $angle ),  cos( $angle ), 0 ],
+	  [ 0, cos( $angle ), - sin( $angle ), 0 ],
+	  [ 0, sin( $angle ), cos( $angle ), 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     return \@rot_matrix_x;
 }
 
 #
-# Creates 4x4 matrix that can rotate 4x4 matrices around y-axis by making a
-# matrix product.
-# Input  (1 arg): angle of rotation in radians.
-# Output (1 arg): 4x4 matrix.
+# Creates 4x4 matrix that can rotate 4x4 matrices around y-axis.
+# Input:
+#     $angle - angle of rotation in radians.
+# Output:
+#     @rot_matrix_y - 4x4 matrix.
 #
 
 sub y_axis_rotation
@@ -242,19 +244,20 @@ sub y_axis_rotation
     my ( $angle ) = @_;
 
     my @rot_matrix_y =
-	( [  cos( $angle ), 0, sin( $angle ), 0 ],
+	( [ cos( $angle ), 0, sin( $angle ), 0 ],
 	  [ 0, 1, 0, 0 ],
-	  [ -sin( $angle ), 0, cos( $angle ), 0 ],
+	  [ - sin( $angle ), 0, cos( $angle ), 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     return \@rot_matrix_y;
 }
 
 #
-# Creates 4x4 matrix that can rotate 4x4 matrices around z-axis by making a
-# matrix product.
-# Input  (1 arg): angle of rotation in radians.
-# Output (1 arg): 4x4 matrix.
+# Creates 4x4 matrix that can rotate 4x4 matrices around z-axis.
+# Input:
+#     $angle - angle of rotation in radians.
+# Output:
+#     @rot_matrix_z - 4x4 matrix.
 #
 
 sub z_axis_rotation
@@ -262,8 +265,8 @@ sub z_axis_rotation
     my ( $angle ) = @_;
 
     my @rot_matrix_z =
-	( [ cos( $angle ), -sin( $angle ), 0, 0 ],
-	  [ sin( $angle ),  cos( $angle ), 0, 0 ],
+	( [ cos( $angle ), - sin( $angle ), 0, 0 ],
+	  [ sin( $angle ), cos( $angle ), 0, 0 ],
 	  [ 0, 0, 1, 0 ],
 	  [ 0, 0, 0, 1 ] );
 
@@ -271,10 +274,12 @@ sub z_axis_rotation
 }
 
 #
-# Creates 4x4 matrix that can translates 4x4 matrices by making a matrix product.
-# Input  (1 arg): 3x1 matrix of x, y, z coordinates of corresponding
-#                 displacement.
-# Output (1 arg): 4x4 matrix.
+# Creates 4x4 matrix that can translate 4x4 matrices.
+# Input:
+#     @transl_coord - 3x1 matrix of x, y, z coordinates for corresponding
+#     displacement.
+# Output:
+#     @transl_matrix - 4x4 matrix.
 #
 
 sub translation
@@ -291,9 +296,11 @@ sub translation
 }
 
 #
-# Takes simple array of 3 items and turns to 4x1 matrix.
-# Input  (2 arg): array of 3 items.
-# Output (1 arg): 4x1 matrix.
+# Takes simple array of 3 items and turns into 4x1 matrix.
+# Input:
+#     array of 3 items.
+# Output:
+#     @matrix - 4x1 matrix.
 #
 
 sub vectorize
@@ -301,8 +308,8 @@ sub vectorize
     my ( $array ) = @_;
     my @matrix;
 
-    for my $row ( @{ $array } ) {
-	push( @matrix, [ $row ] );
+    for my $item ( @{ $array } ) {
+	push( @matrix, [ $item ] );
     }
     push( @matrix, [ 1 ] );
 
@@ -311,8 +318,11 @@ sub vectorize
 
 #
 # Produces cross product of two 3D vectors.
-# Input  (2 arg): two arrays representing 3D vectors where units are i, j, k.
-# Output (1 arg): cross product.
+# Input:
+#     $left_matrix - left 3D vector where units are i, j, k.
+#     $right_matrix - right 3D vector where units are i, j, k.
+# Output:
+#     @cross_product - cross product.
 #
 
 sub vector_cross
@@ -332,8 +342,11 @@ sub vector_cross
 
 #
 # Adds two matrices.
-# Input  (2 arg): two matrices.
-# Output (1 arg): sum of matrices.
+# Input:
+#     $left_matrix - left matrix.
+#     $right_matrix - left matrix.
+# Output:
+#     $matrix_sum - sum of matrices (order of input variables is unimportant).
 #
 
 sub matrix_sum
@@ -353,9 +366,13 @@ sub matrix_sum
 }
 
 #
-# Substracts one matrix from another.
-# Input  (2 arg): two matrices.
-# Output (1 arg): difference of matrices.
+# Subtracts two matrices.
+# Input:
+#     $left_matrix - left matrix.
+#     $right_matrix - left matrix.
+# Output:
+#     $matrix_sub - subtraction of matrices (order of input variables is
+#     unimportant).
 #
 
 sub matrix_sub
@@ -389,14 +406,16 @@ sub matrix_sub
 
 #
 # Transposes matrix.
-# Input  (1 arg): array representing matrix.
-# Output (1 arg): transposed matrix.
+# Input:
+#     $matrix - array representing matrix.
+# Output:
+#     @transposed_matrix - transposed matrix.
 #
 
 sub transpose
 {
     my ( $matrix ) = @_;
-    my @matrix = @$matrix;
+    my @matrix = @{ $matrix };
 
     my @transposed_matrix;
 
@@ -411,8 +430,10 @@ sub transpose
 
 #
 # Calculates matrix product of list of any size of matrices.
-# Input  (n arg): any number of arrays representing matrices.
-# Output (1 arg): matrix product.
+# Input:
+#     @matrices - any number of arrays representing matrices.
+# Output:
+#     @matrix_product - matrix product.
 #
 
 sub matrix_product
@@ -420,7 +441,7 @@ sub matrix_product
     my @matrices = @_;
 
     # Converts matrices to GiNaC readable input.
-    my $matrix_equation_ginac =
+    my $matrix_equation =
 	join( "*",
 	map { "[" . join( ",",
 	map { "[" . join( ",",
@@ -429,18 +450,18 @@ sub matrix_product
 	@matrices );
 
     # Converts perl power symbol ** to GiNaC's ^.
-    $matrix_equation_ginac =~ s/\*\*/^/g;
+    $matrix_equation =~ s/\*\*/^/g;
 
     # Runs GiNaC.
-    my $matrix_product_ginac =
-	qx/ echo "evalm( ${matrix_equation_ginac} );" | ginsh /
+    my $matrix_product =
+	qx/ echo "evalm( ${matrix_equation} );" | ginsh /
 	|| die( "A row number of a left matrix is NOT equal to the column\n" .
 		"number of the right matrix.\n" );
 
     # Returns matrices in perl array form.
     my @matrix_product;
 
-    for my $row ( split( ",\\[", $matrix_product_ginac ) ) {
+    for my $row ( split( ",\\[", $matrix_product ) ) {
 	$row =~ s/\n//g; # Remove newline.
 	$row =~ s/]//g; # Removes unnecessary GiNaC matrix symbols.
 	$row =~ s/\[//g; # Removes unnecessary GiNaC matrix symbols.
@@ -452,25 +473,27 @@ sub matrix_product
 }
 
 #
-# Evaluates symbolic variables.
-# Input  (1 arg): matrix with variables as symbols.
-# Output (1 arg): evaluated matrix.
+# Evaluates symbolic variables in analytical equation.
+# Input:
+#     $matrix_ginac - matrix symbolic variables.
+# Output:
+#     @eval_matrix - evaluated matrix.
 #
 
 sub evaluate_matrix {
-    my ( $symbols, $matrix_ginac ) = @_;
-    my %symbols = %$symbols;
+    my ( $matrix_ginac, $symbols ) = @_;
+    my %symbols = %{ $symbols };
 
     my @eval_matrix;
 
     # Adds $ sign to given symbols and then runs eval() function.
-    for my $row ( @$matrix_ginac ) {
+    for my $row ( @{ $matrix_ginac } ) {
 	push( @eval_matrix, [] );
-	for my $value ( @$row ) {
-	    for my $symbol ( keys %$symbols ) {
-		$value =~ s/\b(${symbol})\b/\$symbols{$1}/g;
+	for my $item_value ( @{ $row } ) {
+	    for my $symbol ( keys %{ $symbols } ) {
+		$item_value =~ s/\b(${symbol})\b/\$symbols{$1}/g;
 	    }
-	    push( @{ $eval_matrix[-1] }, eval( $value ) );
+	    push( @{ $eval_matrix[-1] }, eval( $item_value ) );
 	}
     }
 

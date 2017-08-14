@@ -9,12 +9,12 @@ use LinearAlgebra qw( evaluate_matrix matrix_product );
 #
 # Unit test: LinearAlgebra::matrix_product.
 #
-# Multiplies multiple matrices using symbolic algebra.
+# Multiplies multiple matrices analytically.
 #
 # Example: ./matrix_product example.dat
 #
 
-my ( $variable_values, $cif_file ) = @ARGV;
+my ( $variable_values, $matrix_file ) = @ARGV;
 
 # Parses argument from argvar that describes values of the unknown variables.
 my %variable_values = ( map { $_->[0] => $_->[1] }
@@ -24,7 +24,7 @@ my %variable_values = ( map { $_->[0] => $_->[1] }
 # Evaluates matrices.
 my @matrices = ( [] );
 
-open( my $fh, "<", $cif_file );
+open( my $fh, "<", $matrix_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
 	push( @matrices, [] );
@@ -34,9 +34,9 @@ while( <$fh> ) {
 }
 close( $fh );
 
-my $matrix_product = evaluate_matrix( \%variable_values,
-				      &matrix_product( @matrices ) );
+my $matrix_product = evaluate_matrix( matrix_product( @matrices ),
+				      \%variable_values );
 
-foreach( @$matrix_product ) {
-    print( join( "\t", @$_ ), "\n" );
+for my $row ( @{ $matrix_product } ) {
+    print( join( "\t", @{ $row } ), "\n" );
 }

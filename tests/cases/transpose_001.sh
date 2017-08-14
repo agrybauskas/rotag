@@ -1,6 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-matrix=../inputs/matrix_001.dat
+matrix_file=../inputs/matrix_001.dat
 
-../programs/transpose ${matrix}
+../programs/transpose ${matrix_file}

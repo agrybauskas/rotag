@@ -9,15 +9,15 @@ use LinearAlgebra qw( matrix_sub );
 #
 # Unit test: LinearAlgebra::matrix_sub.
 #
-# Substitutes one matrix from another..
+# Substitutes one matrix from another.
 #
 # Example: ./matrix_sub example.dat
 #
 
-my ( $cif_file ) = @ARGV;
+my ( $matrix_file ) = @ARGV;
 my @matrices = ( [] );
 
-open( my $fh, "<", $cif_file );
+open( my $fh, "<", $matrix_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
 	push( @matrices, [] );
@@ -32,6 +32,6 @@ my @right_matrix = @{ $matrices[1] };
 
 my $matrix_sub = matrix_sub( \@left_matrix, \@right_matrix );
 
-foreach( @$matrix_sub ) {
-    print( join( "\t", @$_ ), "\n" );
+for my $row ( @{ $matrix_sub } ) {
+    print( join( "\t", @{ $row } ), "\n" );
 }
