@@ -162,19 +162,21 @@ sub find_euler_angles
 
 #
 # Switches between global and local frames of reference.
-# Input  (2 arg): array of three atom coordinates in x, y, z form, that frame of
-#                 reference will be transformed to, and boolean that switches
-#                 frame of reference to local (if "local") and global
-#                 (if "global").
-# Output (1 arg): 4x4 transformation matrix.
+# Input:
+#     ${mid,up,side}_atom_coord - array of three atom coordinates in x, y, z
+#     form, that frame of reference will be transformed to.
+#     $switch_to_local - boolean that switches frame of reference to local (if
+#     "local") and global (if "global").
+# Output:
+#     $ref_frame_switch - 4x4 transformation matrix.
 #
 
 sub switch_ref_frame
 {
-    my ( $switch_to_local,
-	 $mid_atom_coord,
+    my ( $mid_atom_coord,
 	 $up_atom_coord,
-	 $side_atom_coord ) = @_;
+	 $side_atom_coord,
+	 $switch_to_local ) = @_;
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
@@ -184,30 +186,30 @@ sub switch_ref_frame
 			      @{ $side_atom_coord } ) };
 
     # Depending on the option switch_to_local,
-    my @switched_ref_frame;
+    my $ref_frame_switch;
 
-    # if( $switch_to_local eq "local" ) {
-    # 	@switched_ref_frame =
-    # 	    matrix_product( &z_axis_rotation( $alpha ),
-    # 			    &x_axis_rotation( $beta ),
-    # 			    &z_axis_rotation( $gamma ),
-    # 			    &translation( ( -$mid_atom_coord->[0],
-    # 					    -$mid_atom_coord->[1],
-    # 					    -$mid_atom_coord->[2] ) ) );
-    # } elsif( $switch_to_local eq "global" ) {
-    # 	@switched_ref_frame =
-    # 	    matrix_product( &translation( ( $mid_atom_coord->[0],
-    # 					    $mid_atom_coord->[1],
-    # 					    $mid_atom_coord->[2] ) ),
-    # 			    &z_axis_rotation( -$gamma ),
-    # 			    &x_axis_rotation( -$beta ),
-    # 			    &z_axis_rotation( -$alpha ) );
-    # } else {
-    # 	die "Must choose \$switch_to_global value between \"local\" and" .
-    # 	    "\"global\".\n"
-    # }
+    if( $switch_to_local eq "local" ) {
+	$ref_frame_switch =
+    	    matrix_product( z_axis_rotation( $alpha ),
+    			    x_axis_rotation( $beta ),
+    			    z_axis_rotation( $gamma ),
+    			    translation( ( - $mid_atom_coord->[0],
+					   - $mid_atom_coord->[1],
+					   - $mid_atom_coord->[2] ) ) );
+    } elsif( $switch_to_local eq "global" ) {
+    	$ref_frame_switch =
+    	    matrix_product( translation( ( $mid_atom_coord->[0],
+					   $mid_atom_coord->[1],
+					   $mid_atom_coord->[2] ) ),
+    			    z_axis_rotation( - $gamma ),
+    			    x_axis_rotation( - $beta ),
+    			    z_axis_rotation( - $alpha ) );
+    } else {
+    	die "Must choose \$switch_to_global value between \"local\" and" .
+    	    "\"global\".\n"
+    }
 
-    # return @switch_matrix;
+    return $ref_frame_switch;
 }
 
 #
@@ -298,7 +300,7 @@ sub translation
 #
 # Takes simple array of 3 items and turns into 4x1 matrix.
 # Input:
-#     array of 3 items.
+#     $array - array of 3 items.
 # Output:
 #     @matrix - 4x1 matrix.
 #

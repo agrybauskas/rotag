@@ -26,28 +26,17 @@ my $atom_data = select_atom_data( $pdbx_file,
 				  $data_specifier );
 
 # Rotates all atoms along y-axis by given angle.
-my @transf_atom_data;
+my $transf_atom_coord;
 
-foreach ( @$selected_atom_data ) {
-    # Prepared atom coordinates to proper 4x1 matrix.
-    my @atom_coord;
-
-    foreach( @$_ ) {
-	push( @atom_coord, [ $_ ] );
-    }
-
-    push( @atom_coord, [ 1 ] );
-
-    # Makes actual rotation.
-    push( @transf_atom_data,
-	  matrix_product(
-	      y_axis_rotation( $angle ),
-	      \@atom_coord ) );
+for my $atom_coord ( @{ $atom_data } ) {
+    $transf_atom_coord =
+	matrix_product( y_axis_rotation( $angle ),
+			[ [ $atom_coord->[0] ],
+			  [ $atom_coord->[1] ],
+			  [ $atom_coord->[2] ],
+			  [ 1 ] ] );
+    printf( "%.3f\t%.3f\t%.3f\n",
+	    $transf_atom_coord->[0][0],
+	    $transf_atom_coord->[1][0],
+	    $transf_atom_coord->[2][0] );
 }
-
-# Prints out results.
-map { printf( "%.3f\t%.3f\t%.3f\n",
-	      $_->[0][0],
-	      $_->[1][0],
-	      $_->[2][0] ) }
-@transf_atom_data;
