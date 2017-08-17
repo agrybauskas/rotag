@@ -7,9 +7,7 @@ use Math::Trig;
 
 use lib "../../lib/perl";
 use AlterMolecule qw( bond_torsion );
-use LinearAlgebra qw( evaluate_matrix
-                      matrix_product
-                      vectorize);
+use LinearAlgebra qw( evaluate_matrix matrix_product vectorize);
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -20,69 +18,54 @@ use Utils qw( select_atom_data );
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
 #
-# Example: ./rotate_bond "label_atom_id CA,N,CB,OG" \
-#                        "Cartn_x,Cartn_y,Cartn_z" 27 example.cif
+# Example: ./rotate_bond "label_atom_id CA,N,CB,OG" "Cartn_x,Cartn_y,Cartn_z"
+#                        27 example.cif
 #
 
-#
-# Constants
-#
-
-my $PI = 4 * atan( 1, 1 );
-
-my ( $attribute_filter, $attribute_select, $rotation_num, $cif_file ) = @ARGV;
+my ( $atom_specifier, $data_specifier, $number_of_atoms, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data = select_atom_data( $attribute_filter,
-					   $attribute_select,
-					   $cif_file );
+my $atom_coord = select_atom_data( $pdbx_file,
+				   $atom_specifier,
+				   $data_specifier );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-open( my $fh, "<", $cif_file );
-chomp( my @cif_lines = <$fh> );
+open( my $fh, "<", $pdbx_file );
+chomp( my @pdbx_lines = <$fh> );
 close( $fh );
 
-print( scalar( grep { /ATOM/ } @cif_lines ) + $rotation_num - 1, "\n" );
+print( scalar( grep { /ATOM/ } @pdbx_lines ) + $number_of_atoms - 1, "\n" );
 print( "testing\n" );
 
 # Prepares selected atom data for Jmol.
 map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
 map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
-@cif_lines;
+@pdbx_lines;
 
 # Rotates once along chi angle.
-my $rotated_atom_coord =
-    &matrix_product( &bond_torsion( "chi",
-				    $selected_atom_data->[1],
-				    $selected_atom_data->[2],
-				    $selected_atom_data->[0] ),
-		     &vectorize( $selected_atom_data->[3] ) );
+my $rot_atom_coord =
+    matrix_product( bond_torsion( $atom_coord->[1],
+				  $atom_coord->[2],
+				  $atom_coord->[0],
+				  "chi"),
+		    vectorize( $atom_coord->[3] ) );
 
 # Calculates angles that will be rotated along symbolically.
-my $pi = $PI;
-my $chi;
-my $small_angle = 2 / $rotation_num;
-my @angles = map { $_ * $small_angle * $pi } ( 1..$rotation_num-1 );
-
-# Evaluates symbolic expression.
-my $evaluated_matrix;
+my $small_angle = 2 / $number_of_atoms;
+my @angles = map { $_ * $small_angle * pi() } ( 1..$number_of_atoms-1 );
 
 # Rotates along chi angle numerically and creates Jmol readable structure file.
 my %symbols;
+my $eval_matrix;
 
-foreach( @angles ) {
-    $chi = $_;
+for my $chi ( @angles ) {
     $symbols{"chi"} = $chi;
-    $evaluated_matrix = # TODO: find out, why it does not work without
-	                #       matrix_product function.
-    	&evaluate_matrix( \%symbols,
-    			  &matrix_product( $rotated_atom_coord ) );
-    for my $row ( $evaluated_matrix ) {
-    	print( "X\t" );
-    	for my $item ( @$row[0..2] ) {
-    	    printf( "%.3f\t", @$item );
-    	}
-    	print( "\n" );
-    }
+    $eval_matrix =
+    	evaluate_matrix( matrix_product( $rot_atom_coord ),
+    			 \%symbols );
+    printf( "X\t%.3f\t%.3f\t%.3f\n",
+    	    $eval_matrix->[0][0],
+	    $eval_matrix->[1][0],
+	    $eval_matrix->[2][0] );
 }

@@ -176,7 +176,7 @@ sub switch_ref_frame
     my ( $mid_atom_coord,
 	 $up_atom_coord,
 	 $side_atom_coord,
-	 $switch_to_local ) = @_;
+	 $switch_ref_to ) = @_;
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
@@ -188,7 +188,7 @@ sub switch_ref_frame
     # Depending on the option switch_to_local,
     my $ref_frame_switch;
 
-    if( $switch_to_local eq "local" ) {
+    if( $switch_ref_to eq "local" ) {
 	$ref_frame_switch =
     	    matrix_product( z_axis_rotation( $alpha ),
     			    x_axis_rotation( $beta ),
@@ -196,7 +196,7 @@ sub switch_ref_frame
     			    translation( ( - $mid_atom_coord->[0],
 					   - $mid_atom_coord->[1],
 					   - $mid_atom_coord->[2] ) ) );
-    } elsif( $switch_to_local eq "global" ) {
+    } elsif( $switch_ref_to eq "global" ) {
     	$ref_frame_switch =
     	    matrix_product( translation( ( $mid_atom_coord->[0],
 					   $mid_atom_coord->[1],
