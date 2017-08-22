@@ -8,6 +8,6 @@ use LoadParams qw( rotatable_bonds );
 
 @ARGV = ( "-" ) unless @ARGV;
 
-foreach my $parameter_file ( @ARGV ) {
+for my $parameter_file ( @ARGV ) {
     rotatable_bonds( $parameter_file );
 }

@@ -8,6 +8,6 @@ use LoadParams qw( vdw_radii );
 
 @ARGV = ( "-" ) unless @ARGV;
 
-foreach my $parameter_file ( @ARGV ) {
+for my $parameter_file ( @ARGV ) {
     vdw_radii( $parameter_file );
 }

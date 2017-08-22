@@ -8,6 +8,6 @@ use LoadParams qw( covalent_radii );
 
 @ARGV = ( "-" ) unless @ARGV;
 
-foreach my $parameter_file ( @ARGV ) {
+for my $parameter_file ( @ARGV ) {
     covalent_radii( $parameter_file );
 }
