@@ -20,7 +20,7 @@ use Data::Dumper;
 # Makes a rotational transformation matrix of the bond.
 # Input:
 #     ${mid,up,side}_atom_coord - Cartesian coordinates in array form that define
-#     user-selected mid, up, side.
+#     user-selected mid, up, side atoms.
 #     $angle_symbol - symbol describing dihedral angle.
 # Output:
 #     $rot_matrix - matrix defining coordinates in symbolic mathematical form
@@ -60,7 +60,7 @@ sub bond_torsion
 # Makes a translational transformation matrix of the bond.
 # Input:
 #     ${mid,up,side}_atom_coord - Cartesian coordinates in array form that define
-#     user-selected mid, up, side.
+#     user-selected mid, up, side atoms.
 #     $angle_symbol - symbol describing bond length.
 # Output:
 #     $transl_matrix - matrix defining coordinates in symbolic mathematical form
@@ -96,51 +96,51 @@ sub bond_stretching
 }
 
 #
-# Changes the length of the bond.
-# Input  (5 arg): cartesian coordinates in array form that defines user-selected
-#                 mid, up, side and two angle symbols.
-# Output (1 arg): matrix defining coordinates in symbolic mathematical form
-#                 (with undefined bond angle variables: theta and psi).
+# Makes a transformation matrix for changing angles between two bonds.
+# Input:
+#     ${mid,up,side}_atom_coord - Cartesian coordinates in array form that define
+#     user-selected mid, up, side atoms.
+#     $angle_symbol_x - symbol describing bond angle that will be rotated in
+#     x-axis.
+#     $angle_symbol_y - symbol describing bond angle that will be rotated in
+#     y-axis.
+# Output:
+#     $angle_matrix - matrix defining coordinates in symbolic mathematical form
+#     (with undefined angle variables).
+#
 
 sub angle_bending
 {
-    my ( $first_angle_symbol,
-	 $second_angle_symbol,
-	 $mid_atom_coord,
+    my ( $mid_atom_coord,
 	 $up_atom_coord,
-	 $side_atom_coord ) = @_;
+	 $side_atom_coord,
+	 $angle_symbol_x,
+	 $angle_symbol_y, ) = @_;
 
-    # Rotation matrix to coordinating global reference frame properly.
-    # Finding Euler angles necessary for rotation matrix.
-    my ( $alpha, $beta, $gamma ) =
-	find_euler_angles( @$mid_atom_coord,
-			   @$up_atom_coord,
-			   @$side_atom_coord );
-
-    # Bond angle matrices.
-    my @rot_x_matrix =
+    # Bond angle matrices that rotates along x and y axes.
+    my @rot_matrix_x =
 	( [ 1, 0, 0, 0 ],
-	  [ 0, "cos(${first_angle_symbol})", "-sin(${first_angle_symbol})", 0 ],
-	  [ 0, "sin(${first_angle_symbol})", "cos(${first_angle_symbol})", 0 ],
+	  [ 0, "cos(${angle_symbol_x})", "-sin(${angle_symbol_x})", 0 ],
+	  [ 0, "sin(${angle_symbol_x})", "cos(${angle_symbol_x})", 0 ],
 	  [ 0, 0, 0, 1 ] );
-    my @rot_y_matrix =
-	( [ "cos(${second_angle_symbol})", 0, "sin(${second_angle_symbol})", 0 ],
+    my @rot_matrix_y =
+	( [ "cos(${angle_symbol_y})", 0, "sin(${angle_symbol_y})", 0 ],
 	  [ 0, 1, 0, 0 ],
-	  [ "-sin(${second_angle_symbol})", 0, "cos(${second_angle_symbol})", 0 ],
+	  [ "-sin(${angle_symbol_y})", 0, "cos(${angle_symbol_y})", 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
     my $angle_matrix =
-	matrix_product( &switch_ref_frame( "global",
-					   $mid_atom_coord,
-					   $up_atom_coord,
-					   $side_atom_coord ),
-			\@rot_y_matrix,
-			\@rot_x_matrix,
-			&switch_ref_frame( "local",
-					   $mid_atom_coord,
-					   $up_atom_coord,
-					   $side_atom_coord ) );
+	matrix_product( switch_ref_frame( $mid_atom_coord,
+					  $up_atom_coord,
+					  $side_atom_coord,
+					  "global" ),
+			\@rot_matrix_y,
+			\@rot_matrix_x,
+			switch_ref_frame( $mid_atom_coord,
+					  $up_atom_coord,
+					  $side_atom_coord,
+					  "local" ) );
 
     return $angle_matrix;
 }

@@ -3,11 +3,9 @@
 use strict;
 use warnings;
 
-use Math::Trig;
-
 use lib "../../lib/perl";
 use AlterMolecule qw( bond_torsion );
-use LinearAlgebra qw( evaluate_matrix matrix_product vectorize);
+use LinearAlgebra qw( evaluate_matrix matrix_product pi vectorize);
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -43,26 +41,26 @@ map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
 @pdbx_lines;
 
-# Rotates once along chi angle.
-my $rot_atom_coord =
+# Creates transformation matrix that describes rotation along one chi angle.
+my $transf_matrix =
     matrix_product( bond_torsion( $atom_coord->[1],
 				  $atom_coord->[2],
 				  $atom_coord->[0],
 				  "chi"),
 		    vectorize( $atom_coord->[3] ) );
 
-# Calculates angles that will be rotated along symbolically.
+# Calculates angles that will be rotated along the bond.
 my $small_angle = 2 / $number_of_atoms;
 my @angles = map { $_ * $small_angle * pi() } ( 1..$number_of_atoms-1 );
 
-# Rotates along chi angle numerically and creates Jmol readable structure file.
+# Rotates along the bond by chi angle numerically and creates Jmol readable file.
 my %symbols;
 my $eval_matrix;
 
 for my $chi ( @angles ) {
     $symbols{"chi"} = $chi;
     $eval_matrix =
-    	evaluate_matrix( matrix_product( $rot_atom_coord ),
+    	evaluate_matrix( matrix_product( $transf_matrix ),
     			 \%symbols );
     printf( "X\t%.3f\t%.3f\t%.3f\n",
     	    $eval_matrix->[0][0],

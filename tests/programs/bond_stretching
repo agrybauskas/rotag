@@ -37,7 +37,7 @@ open( my $fh, "<", $pdbx_file );
 chomp( my @pdbx_lines = <$fh> );
 close( $fh );
 
-print( scalar( grep { /ATOM/ } @pdbx_lines ) + $num_of_atoms - 1, "\n" );
+print( scalar( grep { /ATOM/ } @pdbx_lines ) + $num_of_atoms - 2, "\n" );
 print( "testing\n" );
 
 # Prepares selected atom data for Jmol.
@@ -46,42 +46,32 @@ map { [ split( " ", $_ ) ] }
 grep { $_ =~ /ATOM/ }
 @pdbx_lines;
 
-# # Changes bond by certain distance.
-# my $transl_atom_coord =
-#     matrix_product( bond_stretching( $atom_coord->[1],
-# 				     $atom_coord->[2],
-# 				     $atom_coord->[0],
-# 				     "r" ),
-# 		    vectorize( $atom_coord->[3] ) );
+# Creates transformation matrix that describes translation along the bond by
+# distance r.
+my $transf_matrix =
+    matrix_product( bond_stretching( $atom_coord->[1],
+				     $atom_coord->[2],
+				     $atom_coord->[0],
+				     "r" ),
+		    vectorize( $atom_coord->[3] ) );
 
-# # Smallest change in bond length by given num_of_points and bond_min_max.
-# my $smallest_length = $bond_min_max / $num_of_points;
+# Calculates lengths that will be translated along the bond.
+my $small_length = $bond_min_max / $num_of_atoms;
+my @lengths =
+    map { $_ * $small_length, - ( $_ * $small_length ) }
+        ( 1..($num_of_atoms-1)/2 );
 
-# # Calculates the distance of the bond that will be translated along.
-# my $r;
+# Translates the bond by length r numerically and creates Jmol readable file.
+my %symbols;
+my $eval_matrix;
 
-# my @delta_lengths =
-#     map { $_ * $smallest_length, - ( $_ * $smallest_length ) }
-#         ( 1..( $num_of_points - 1 ) / 2 );
-
-# # Evaluates symbolic expression.
-# my $eval_expression;
-
-# # Translates along the bond and creates Jmol readable structure file.
-# my %symbols;
-# my $evaluated_matrix;
-
-# for my $delta ( @delta_lengths ) {
-#     $symbols{"r"} = "$delta";
-#     $evaluated_matrix =
-# 	evaluate_matrix( \%symbols,
-# 			 &matrix_product( $transl_atom_coord ) );
-
-#     for my $row ( $evaluated_matrix ) {
-# 	print( "X\t" );
-# 	for my $item ( @$row[0..2] ) {
-# 	    printf( "%.3f\t", @$item );
-# 	}
-# 	print( "\n" );
-#     }
-# }
+for my $r ( @lengths ) {
+    $symbols{"r"} = $r;
+    $eval_matrix =
+    	evaluate_matrix( matrix_product( $transf_matrix ),
+    			 \%symbols );
+    printf( "X\t%.3f\t%.3f\t%.3f\n",
+    	    $eval_matrix->[0][0],
+	    $eval_matrix->[1][0],
+	    $eval_matrix->[2][0] );
+}
