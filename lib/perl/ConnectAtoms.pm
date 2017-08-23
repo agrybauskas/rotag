@@ -15,8 +15,7 @@ use List::Util qw( max min );
 use lib qw( ./ );
 use CifParser qw( select_atom_data );
 use Combinatorics qw( permutation );
-use LoadParams qw( covalent_radii
-                   vdw_radii );
+use LoadParams qw( covalent_radii );
 
 my $covalent_file = "../../parameters/covalent_radii.csv";
 

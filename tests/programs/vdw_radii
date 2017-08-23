@@ -6,8 +6,4 @@ use warnings;
 use lib "../../lib/perl";
 use LoadParams qw( vdw_radii );
 
-@ARGV = ( "-" ) unless @ARGV;
-
-for my $parameter_file ( @ARGV ) {
-    vdw_radii( $parameter_file );
-}
+vdw_radii();

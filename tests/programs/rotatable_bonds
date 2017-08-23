@@ -6,8 +6,4 @@ use warnings;
 use lib "../../lib/perl";
 use LoadParams qw( rotatable_bonds );
 
-@ARGV = ( "-" ) unless @ARGV;
-
-for my $parameter_file ( @ARGV ) {
-    rotatable_bonds( $parameter_file );
-}
+rotatable_bonds();

@@ -6,8 +6,4 @@ use warnings;
 use lib "../../lib/perl";
 use LoadParams qw( covalent_radii );
 
-@ARGV = ( "-" ) unless @ARGV;
-
-for my $parameter_file ( @ARGV ) {
-    covalent_radii( $parameter_file );
-}
+covalent_radii();
