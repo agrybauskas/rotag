@@ -1,6 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-cif_file=../inputs/tyrosine_017.cif
+pdbx_file=../inputs/tyrosine_017.cif
 
-../programs/connect_atoms ${cif_file} | sort -k 1 -n
+../programs/connect_atoms ${pdbx_file} | sort -k 1 -n

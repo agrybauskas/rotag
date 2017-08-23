@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser qw( obtain_atom_site );
+use PDBxParser qw( obtain_atom_site );
 use ConnectAtoms qw( connect_atoms );
 
 #
@@ -15,11 +15,10 @@ use ConnectAtoms qw( connect_atoms );
 # Example: ./connect_atoms example.cif
 #
 
-#    In angstroms  In angstroms
-my ( $cif_file ) = @ARGV;
+my ( $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( $cif_file );
+my $atom_site = obtain_atom_site( $pdbx_file );
 
 my %connected_atoms = %{ connect_atoms( $atom_site ) };
 
@@ -27,10 +26,11 @@ my @atom_coord;
 my @parent_atom;
 my @child_atom;
 
-foreach( keys %{ $connected_atoms{"data"} } ) {
-    @parent_atom = ( $_, $connected_atoms{"data"}{$_}{"label_atom_id"} );
-    foreach( @{ $connected_atoms{"data"}{$_}{"connections"} } ) {
-        @child_atom = ( $_, $connected_atoms{"data"}{$_}{"label_atom_id"} );
+for my $parent_id ( keys %connected_atoms ) {
+    @parent_atom = ( $parent_id, $connected_atoms{$parent_id}{"label_atom_id"} );
+    for my $child_id ( @{ $connected_atoms{$parent_id}{"connections"} } ) {
+        @child_atom =
+    	    ( $child_id, $connected_atoms{$child_id}{"label_atom_id"} );
         print( "$parent_atom[0] $parent_atom[1]:" );
         print( "$child_atom[0] $child_atom[1]\n" );
     }

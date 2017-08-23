@@ -14,20 +14,19 @@ use Utils qw( select_atom_data );
 #
 # Creates smallest possible box that surrounds all selected atoms.
 #
-# Example: ./create_box < example.cif
+# Example: ./create_box example.cif
 #
 
-my ( $attribute_selector, $cif ) = @ARGV;
+my ( $atom_specifier, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data = select_atom_data( $attribute_selector,
-					   "Cartn_x,Cartn_y,Cartn_z",
-					   $cif );
+my $atom_data = select_atom_data( $pdbx_file,
+				  $atom_specifier,
+				  "Cartn_x,Cartn_y,Cartn_z" );
 
 # Creates and prints out the boundaries of the box.
-my @box_boundaries = create_box( @$selected_atom_data );
+my $boundary_box = create_box( $atom_data );
 
-print( map { ( $_ % 2 ) == 0
-		        ? $box_boundaries[$_-1] . "\n"
-			: $box_boundaries[$_-1] . "\t" }
-       ( 1..$#box_boundaries + 1 ) )
+print( "$boundary_box->[0]\t$boundary_box->[1]\n" .
+       "$boundary_box->[2]\t$boundary_box->[3]\n" .
+       "$boundary_box->[4]\t$boundary_box->[5]\n" );
