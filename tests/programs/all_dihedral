@@ -4,28 +4,27 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use CifParser qw( filter_atoms
-                  obtain_atom_site );
-use LinearAlgebra qw( $PI );
+use PDBxParser qw( filter_atoms obtain_atom_site );
+use LinearAlgebra qw( pi );
 use Measure qw( all_dihedral );
 
-my ( $resi_specifier, $cif_file ) = @ARGV;
+my ( $resi_specifier, $pdbx_file ) = @ARGV;
 
-# Parses selector argument from string  to proper array.
+# Parses selector argument from string to proper array.
 my %resi_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-			  map { [ split( " ", $_ ) ] }
-			  split( "&", $resi_specifier ) );
+		       map { [ split( " ", $_ ) ] }
+		       split( "&", $resi_specifier ) );
 
 # Calculates all angles of given sidechains.
-my $target_resi =
-    filter_atoms( \%resi_specifier, obtain_atom_site( $cif_file ) );
+my $atom_data =
+    filter_atoms( obtain_atom_site( $pdbx_file ), \%resi_specifier );
 
 # Calculates and prints out every dihedral angle for each residue.
-my $dihedral_angles = all_dihedral( $target_resi );
+my $dihedral_angles = all_dihedral( $atom_data );
 
 for my $residue ( keys %{ $dihedral_angles } ) {
     for my $angle ( sort { $a cmp $b } keys %{ $dihedral_angles->{$residue} } ) {
 	print( $residue, "\t", $angle, "\t" );
-	printf( "%.1f\n", $dihedral_angles->{$residue}{$angle} * 180 / $PI );
+	printf( "%.1f\n", $dihedral_angles->{$residue}{$angle} * 180 / pi() );
     }
 }

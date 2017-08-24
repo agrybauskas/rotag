@@ -17,10 +17,10 @@ use Utils;
 # Example: ./dihedral_angle example_set.cif
 #
 
-my ( $cif_file ) = @ARGV;
+my ( $pdbx_file ) = @ARGV;
 my @coord_sets = ( [] );
 
-open( my $fh, "<", $cif_file );
+open( my $fh, "<", $pdbx_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
 	push( @coord_sets, [] );

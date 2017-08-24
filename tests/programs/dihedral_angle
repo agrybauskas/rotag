@@ -17,12 +17,10 @@ use Utils qw( select_atom_data );
 # Example: ./dihedral_angle "id 1,2,3,4" "Cartn_x,Cartn_y,Cartn_z" example.cif
 #
 
-my ( $attribute_filter, $attribute_select, $cif ) = @ARGV;
+my ( $atom_specifier, $data_specifier, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data = select_atom_data( $attribute_filter,
-					   $attribute_select,
-					   $cif );
+my $atom_data = select_atom_data( $pdbx_file, $atom_specifier, $data_specifier );
 
 # Prints out length of the bond in angstroms.
-printf( "%.3f\n", dihedral_angle( $selected_atom_data ) );
+printf( "%.3f\n", dihedral_angle( $atom_data ) );
