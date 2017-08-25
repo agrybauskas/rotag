@@ -183,6 +183,7 @@ sub is_connected
 #
 # Checks if two atoms are separated by one atom.
 # Input:
+#     $atom_site - atom data structure.
 #     $target_atom_id - id of first atom.
 #     $sec_neighbour_id - id of second atom.
 # Output:
@@ -216,9 +217,10 @@ sub is_second_neighbour
 # made by two atoms.
 # Input:
 #     $atom_site - atom data structure.
-# Output: atom data in cif data structure form that has additional
-#                 data for each atom - hash of atom coordinates (x, y, z) as
-#                 keys and atom coordinates that are connected to as values.
+# Output:
+#     %connected_atoms -atom data in pbdx data structure form that has additional
+#     data for each atom - hash of atom coordinates (x, y, z) as keys and atom
+#     coordinates that are connected to as values.
 #
 
 sub connect_atoms

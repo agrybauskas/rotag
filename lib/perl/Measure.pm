@@ -13,7 +13,7 @@ use lib "./";
 use PDBxParser qw( filter_atoms select_atom_data );
 use LinearAlgebra qw( matrix_sub vector_cross );
 use LoadParams qw( rotatable_bonds );
-use Data::Dumper;
+
 # ----------------------------- Molecule parameters --------------------------- #
 
 #

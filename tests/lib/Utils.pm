@@ -9,7 +9,7 @@ our @EXPORT_OK = qw( select_atom_data );
 use lib "../../lib/perl";
 use PDBxParser qw( filter_atoms obtain_atom_site );
 
-# ================================ PDBx parsing ============================== #
+# -------------------------------- PDBx parsing ------------------------------- #
 
 #
 # Helps to shorten the code required to use PDBxParser subroutines.

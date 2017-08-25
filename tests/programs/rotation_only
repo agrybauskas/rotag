@@ -3,24 +3,24 @@
 use strict;
 use warnings;
 
-use Math::Trig;
+# use Math::Trig;
 
 use lib "../../lib/perl";
-use CifParser qw( filter_atoms obtain_atom_site );
+use PDBxParser qw( filter_atoms obtain_atom_site );
 use Combinatorics qw( permutation );
 use SidechainModels qw( rotation_only );
-use LinearAlgebra qw( evaluate_matrix matrix_product );
-use PseudoAtoms qw( generate_pseudo );
+use LinearAlgebra qw( evaluate_matrix matrix_product pi );
+# use PseudoAtoms qw( generate_pseudo );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
 
-my ( $atom_specifier, $angle_ranges, $num_of_angles, $cif_file ) = @ARGV;
+my ( $atom_specifier, $angle_ranges, $num_of_angles, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( $cif_file );
-my $target_atom_id = select_atom_data( $atom_specifier, "id", $cif_file );
-$target_atom_id = $target_atom_id->[0][0];
+my $atom_site = obtain_atom_site( $pdbx_file );
+my $target_atom_id =
+    select_atom_data( $pdbx_file, $atom_specifier, "id" )->[0][0];
 
 # Parses selector argument from string  to proper array.
 my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
@@ -38,7 +38,7 @@ my %num_of_angles = ( map { $_->[0] => $_->[1] }
 		      split( "&", $num_of_angles ) );
 
 # Calculates angles that will be rotated along.
-my $pi = 4 * atan( 1, 1 );
+my $pi = pi();
 
 my $min_angle;
 my $max_angle;
@@ -76,22 +76,22 @@ open( my $fh, "<", $cif_file );
 chomp( my @cif_lines = <$fh> );
 close( $fh );
 
-# Creates pseudo-atoms for given analytical equation that describes conformation
-# of atom.
-my $pseudo_atom_site =
-    generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
-		     \%atom_specifier,
-		     \%num_angle_values );
+# # Creates pseudo-atoms for given analytical equation that describes conformation
+# # of atom.
+# my $pseudo_atom_site =
+#     generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
+# 		     \%atom_specifier,
+# 		     \%num_angle_values );
 
-# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( keys %{ $pseudo_atom_site->{"data"} } ), "\n" );
-print( "testing\n" );
+# # # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+# # print( scalar( keys %{ $pseudo_atom_site->{"data"} } ), "\n" );
+# # print( "testing\n" );
 
-# Prints out pseudo-atom coordinates.
-for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
-    printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
-	    "\t%.3f\t%.3f\t%.3f\n",
-	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
-	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
-	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
-}
+# # # Prints out pseudo-atom coordinates.
+# # for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
+# #     printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
+# # 	    "\t%.3f\t%.3f\t%.3f\n",
+# # 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
+# # 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
+# # 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
+# # }

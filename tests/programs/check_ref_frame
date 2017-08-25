@@ -6,10 +6,10 @@ use warnings;
 use lib "../../lib/perl";
 use LinearAlgebra qw( create_ref_frame
                       find_euler_angles
-                      z_axis_rotation
-                      x_axis_rotation
+                      matrix_product
                       translation
-                      matrix_product );
+                      x_axis_rotation
+                      z_axis_rotation );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -24,61 +24,61 @@ use Utils qw( select_atom_data );
 #                            "Cartn_x,Cartn_y,Cartn_z" example.cif
 #
 
-my ( $attribute_filter, $attribute_select, $cif_file ) = @ARGV;
+my ( $atom_specifier, $data_specifier, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
-my $selected_atom_data = select_atom_data( $attribute_filter,
-					   $attribute_select,
-					   $cif_file );
+my $atom_data = select_atom_data( $pdbx_file,
+				  $atom_specifier,
+				  $data_specifier );
 
 # Finds Euler angles and makes rotational matrices.
-my @mid_atom_coord =  ( $selected_atom_data->[1][0],
-		        $selected_atom_data->[1][1],
-			$selected_atom_data->[1][2] );
-my @up_atom_coord =   ( $selected_atom_data->[2][0],
-			$selected_atom_data->[2][1],
-			$selected_atom_data->[2][2] );
-my @side_atom_coord = ( $selected_atom_data->[0][0],
-			$selected_atom_data->[0][1],
-			$selected_atom_data->[0][2] );
+my @mid_atom_coord =  ( $atom_data->[1][0],
+		        $atom_data->[1][1],
+			$atom_data->[1][2] );
+my @up_atom_coord =   ( $atom_data->[2][0],
+			$atom_data->[2][1],
+			$atom_data->[2][2] );
+my @side_atom_coord = ( $atom_data->[0][0],
+			$atom_data->[0][1],
+			$atom_data->[0][2] );
 
-my @local_ref_frame = create_ref_frame( @mid_atom_coord,
+my $local_ref_frame = create_ref_frame( @mid_atom_coord,
 					@up_atom_coord,
 					@side_atom_coord );
 
-my ( $alpha, $beta, $gamma ) = find_euler_angles( @mid_atom_coord,
-						  @up_atom_coord,
-						  @side_atom_coord );
+my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( @mid_atom_coord,
+						     @up_atom_coord,
+						     @side_atom_coord ) };
 
 # Transforms given atom coordinates and prepares data for Jmol.
-open( my $fh, "<", $cif_file );
-chomp( my @cif_lines = <$fh> );
+open( my $fh, "<", $pdbx_file );
+chomp( my @pdbx_lines = <$fh> );
 close( $fh );
 
 print( "data \"model\"\n" );
-print( scalar( grep { /ATOM/ } @cif_lines ), "\n" );
+print( scalar( grep { /ATOM/ } @pdbx_lines ), "\n" );
 print( "testing\n" );
 
-for my $cif_line ( grep( /^ATOM/, @cif_lines ) ){
-    my @cif_data = split( " ", $cif_line );
-    my $atom_name = $cif_data[2];
-    my @atom_coord = ( [ $cif_data[10] ],
-		       [ $cif_data[11] ],
-		       [ $cif_data[12] ],
+for my $pdbx_line ( grep( /^ATOM/, @pdbx_lines ) ){
+    my @atom_data = split( " ", $pdbx_line );
+    my $atom_name = $atom_data[2];
+    my @atom_coord = ( [ $atom_data[10] ],
+		       [ $atom_data[11] ],
+		       [ $atom_data[12] ],
 		       [ 1 ] );
     my @tranf_atom_coord =
-	matrix_product(
-	    z_axis_rotation( $alpha ),
-	    x_axis_rotation( $beta ),
-	    z_axis_rotation( $gamma ),
-	    translation( ( - $mid_atom_coord[0],
-			   - $mid_atom_coord[1],
-			   - $mid_atom_coord[2] ) ),
-	    \@atom_coord );
-    print( "$atom_name "
-    	   . "$tranf_atom_coord[0][0][0] "
-    	   . "$tranf_atom_coord[0][1][0] "
-    	   . "$tranf_atom_coord[0][2][0]\n" );
+    	matrix_product(
+    	    z_axis_rotation( $alpha ),
+    	    x_axis_rotation( $beta ),
+    	    z_axis_rotation( $gamma ),
+    	    translation( ( - $mid_atom_coord[0],
+    	    		   - $mid_atom_coord[1],
+    	    		   - $mid_atom_coord[2] ) ),
+    	    \@atom_coord );
+    print( "$atom_name " .
+    	   "$tranf_atom_coord[0][0][0] " .
+    	   "$tranf_atom_coord[0][1][0] " .
+    	   "$tranf_atom_coord[0][2][0]\n" );
 }
 
 print( "end \"model\"\n" );
