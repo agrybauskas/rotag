@@ -32,7 +32,7 @@ my %angle_ranges = ( map { $_->[0] => [ split( "-", @$_[1] ) ] }
 		     map { [ split( " ", $_ ) ] }
 		     split( "&", $angle_ranges ) );
 
-# Parsed number of rotations that will be done for each dihedral angle.
+# Parses number of rotations that will be done for each dihedral angle.
 my %num_of_angles = ( map { $_->[0] => $_->[1] }
 		      map { [ split( " ", $_ ) ] }
 		      split( "&", $num_of_angles ) );
