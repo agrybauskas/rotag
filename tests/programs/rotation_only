@@ -6,12 +6,13 @@ use warnings;
 # use Math::Trig;
 
 use lib "../../lib/perl";
-use PDBxParser qw( filter_atoms obtain_atom_site );
 use Combinatorics qw( permutation );
-use SidechainModels qw( rotation_only );
 use LinearAlgebra qw( evaluate_matrix matrix_product pi );
+use PDBxParser qw( filter_atoms obtain_atom_site );
+use Sampling qw( sample_angles );
+use SidechainModels qw( rotation_only );
 # use PseudoAtoms qw( generate_pseudo );
-
+use Data::Dumper;
 use lib "../lib";
 use Utils qw( select_atom_data );
 
@@ -28,7 +29,7 @@ my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 		       split( "&", $atom_specifier ) );
 
 # Parses angle ranges for dihedral angle of side-chain.
-my %angle_ranges = ( map { $_->[0] => [ split( "-", @$_[1] ) ] }
+my %angle_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 		     map { [ split( " ", $_ ) ] }
 		     split( "&", $angle_ranges ) );
 
@@ -42,8 +43,8 @@ my $pi = pi();
 
 my $min_angle;
 my $max_angle;
-my %num_angle_values;
-my $small_change; # Change of angle in each rotation step.
+my %num_angle_values; # Numeric angle values.
+my $small_angle; # Change of angle in each rotation step.
 
 for my $dihedral_angle ( sort keys %angle_ranges ) {
     $min_angle = $angle_ranges{"$dihedral_angle"}[0];
@@ -52,29 +53,18 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     $max_angle =~ s/pi/\$pi/g;
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
-    if( $max_angle - $min_angle eq 0 ) {
-	$small_change = 0;
-	$num_angle_values{"$dihedral_angle"} = [ $min_angle ];
-    } else {
-	$small_change =
-	    ( $max_angle - $min_angle ) / $num_of_angles{"$dihedral_angle"};
-	for( my $angle = $min_angle;
-	     $angle < $max_angle;
-	     $angle = $angle + $small_change ) {
-	    if( defined $num_angle_values{"$dihedral_angle"} ) {
-		push( @{ $num_angle_values{"$dihedral_angle"} }, $angle );
-	    } else {
-		$num_angle_values{"$dihedral_angle"} = [ $angle ];
-	    }
-	}
-    }
+    $small_angle =
+	abs( $max_angle - $min_angle ) / $num_of_angles{$dihedral_angle};
+    $num_angle_values{"$dihedral_angle"} =
+	sample_angles( [ [ $min_angle, $max_angle ] ],
+		       sprintf( "%.3f", $small_angle ) );
 }
 
-# In Jmol, generates pseudo-atoms which represent positions of atom
-# after rotation along dihedral angle.
-open( my $fh, "<", $cif_file );
-chomp( my @cif_lines = <$fh> );
-close( $fh );
+# # In Jmol, generates pseudo-atoms which represent positions of atom
+# # after rotation along dihedral angle.
+# open( my $fh, "<", $pdbx_file );
+# chomp( my @pdbx_lines = <$fh> );
+# close( $fh );
 
 # # Creates pseudo-atoms for given analytical equation that describes conformation
 # # of atom.
