@@ -11,7 +11,7 @@ use LinearAlgebra qw( evaluate_matrix matrix_product pi );
 use PDBxParser qw( filter_atoms obtain_atom_site );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
-# use PseudoAtoms qw( generate_pseudo );
+use PseudoAtoms qw( generate_pseudo );
 use Data::Dumper;
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -54,24 +54,23 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
     $small_angle =
-	abs( $max_angle - $min_angle ) / $num_of_angles{$dihedral_angle};
+	2 * pi() / $num_of_angles{$dihedral_angle};
     $num_angle_values{"$dihedral_angle"} =
-	sample_angles( [ [ $min_angle, $max_angle ] ],
-		       sprintf( "%.3f", $small_angle ) );
+	sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle );
 }
 
-# # In Jmol, generates pseudo-atoms which represent positions of atom
-# # after rotation along dihedral angle.
-# open( my $fh, "<", $pdbx_file );
-# chomp( my @pdbx_lines = <$fh> );
-# close( $fh );
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after rotation along dihedral angle.
+open( my $fh, "<", $pdbx_file );
+chomp( my @pdbx_lines = <$fh> );
+close( $fh );
 
-# # Creates pseudo-atoms for given analytical equation that describes conformation
-# # of atom.
+# Creates pseudo-atoms for given analytical equation that describes conformation
+# of atom.
 # my $pseudo_atom_site =
-#     generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
-# 		     \%atom_specifier,
-# 		     \%num_angle_values );
+generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
+		 \%atom_specifier,
+		 \%num_angle_values );
 
 # # # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 # # print( scalar( keys %{ $pseudo_atom_site->{"data"} } ), "\n" );
