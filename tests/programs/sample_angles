@@ -23,5 +23,5 @@ my @angle_ranges = ( map { [ $_->[0],  $_->[1] ] }
 my $sample_angles = sample_angles(  \@angle_ranges, $small_angle );
 
 for my $angle ( @{ $sample_angles } ) {
-    printf( "%.2f\n", $angle );
+    printf( "%.3f\n", $angle );
 }

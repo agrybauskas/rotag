@@ -6,9 +6,11 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( sample_angles );
 
-use lib "./";
-use LinearAlgebra qw( epsilon );
+use POSIX;
 
+use lib "./";
+use LinearAlgebra qw( pi );
+use Data::Dumper;
 # ---------------------------------- Sampling --------------------------------- #
 
 #
@@ -32,35 +34,27 @@ sub sample_angles
     my @angles;
     my $min_angle;
     my $max_angle;
-    my $center_angle;
-    my $current_angle;
 
-    for my $angle_range ( @{ $angle_ranges } ) {
-	# Because $angle_range might be smaller than $small_angle or is not
-	# devisable by $small_angle, additional angles have to be added outside
-	# the range so, boundary conditions could be tested.
+    # Devides full circle (2*pi) into even intervals by $small_angle value.
+    $small_angle = # Adjusts angle so, it could be devided evenly.
+	2 * pi() / floor( 2 * pi() / $small_angle );
+    my @small_angles =
+    	map { $_ * $small_angle } 0..( floor( 2 * pi() / $small_angle ) - 1 );
 
-	# Finds center of the range and starts incrementing angles by
-	# $small_angle.
-	$min_angle = $angle_range->[0];
-	$max_angle = $angle_range->[1];
-	$center_angle = ( $min_angle + $max_angle ) / 2;
-	push( @angles, $center_angle ); # Center point is added to array of
-	                                # angles.
+    # Iterates around the circle and adds evenly spaced angles, if they are
+    # inside intervals ($angle_ranges).
 
-	# Increases angles  positively.
-	$current_angle = $center_angle;
-	while( $current_angle < $max_angle ) {
-	    $current_angle += $small_angle;
-	    push( @angles, $current_angle );
-	}
-
-	# Increases angles  negatively.
-	$current_angle = $center_angle - $small_angle;
-	while( $current_angle > $min_angle ) {
-	    $current_angle -= $small_angle;
-	    push( @angles, $current_angle );
-	}
+    for my $angle ( @small_angles ) {
+	# TODO: might speed up calculation by eliminating previous elements
+	# from $angle_ranges array.
+    	for my $angle_range ( @{ $angle_ranges } ) {
+    	    $min_angle = $angle_range->[0];
+    	    $max_angle = $angle_range->[1];
+    	    if( $angle >= $min_angle && $angle <= $max_angle ) {
+    		push( @angles, $angle );
+		last;
+    	    }
+    	}
     }
 
     return \@angles;
