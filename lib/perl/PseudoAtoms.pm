@@ -32,7 +32,7 @@ use Data::Dumper;
 #     Ex.: { "chi0" => [ 0, pi, 1.5 * $pi, 2 * $pi ],
 #            "chi1" => [ 0, 2 * $pi ] }
 # Output:
-#     $atom_atom site data structure with additional pseudo-atoms.
+#     $atom_site - atom site data structure with additional pseudo-atoms.
 #
 
 sub generate_pseudo
@@ -85,7 +85,7 @@ sub generate_pseudo
     	my $transf_atom_coord;
 
     	for my $angle_comb (
-    	    @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ) {
+    	    @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ){
     	    %angle_values =
     		map { $angle_names[$_], $angle_comb->[$_] } 0..$#angle_names;
 	    # Converts matrices to GiNaC compatable format and evaluates them.
@@ -110,25 +110,33 @@ sub generate_pseudo
     return $atom_site;
 }
 
+#
+# Generates rotamers according to given angle values.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser).
+#     $angle_values - name and value of angles in hash form.
+# Output:
+#     %generated_rotamers - atom site data structure with additional
+#     rotamer data.
+#
+
 sub generate_rotamer
 {
-    my ( $atom_site, $angles ) = @_;
+    my ( $atom_site, $angle_values ) = @_;
 
     # Extracts residue name from residue id. Only one ID can be parsed.
     # TODO: maybe should consider generating rotamers for multiple residues.
-    my @resi_id = keys %{ $angles };
-    my $resi_id = $resi_id[0];
-
+    my @resi_ids = keys %{ $angle_values };
+    my $resi_id = $resi_ids[0];
     my $resi_name =
-	select_atom_data( [ "label_comp_id" ],
-			  filter_atoms( { "label_seq_id" => [ $resi_id ] },
-					$atom_site ) );
-    $resi_name = $resi_name->[0][0];
+    	select_atom_data(
+	    filter_atoms( $atom_site,
+	    { "label_seq_id" => [ $resi_id ] } ), [ "label_comp_id" ] )->[0][0];
 
     my $atom_labels =
-    	select_atom_data( [ "label_atom_id" ],
-    			  filter_atoms( { "label_seq_id" => [ $resi_id ] },
-    					$atom_site ) );
+    	select_atom_data(
+	    filter_atoms( $atom_site,
+	    { "label_seq_id" => [ $resi_id ] } ), [ "label_atom_id" ] );
     my @atom_labels = map { $_->[0] } @{ $atom_labels };
 
     # Iterates through every atom of certain residue name and rotates to
@@ -137,38 +145,36 @@ sub generate_rotamer
     my $atom_id;
     my %current_angles;
 
-    for my $label ( @atom_labels ) {
+    for my $atom_label ( @atom_labels ) {
     	# Defines dihedral angles by %ROTATABLE_BONDS description and specified
     	# angles in $angles.
-	undef %current_angles;
-    	if( defined rotatable_bonds()->{"$resi_name"}{"$label"} ) {
-	    $atom_id =
-		select_atom_data(
-		    [ "id" ],
-		    filter_atoms( { "label_atom_id" => [ $label ] },
-				  $atom_site ) );
-	    $atom_id = $atom_id->[0][0];
+    	undef %current_angles;
+    	if( defined rotatable_bonds()->{"$resi_name"}{"$atom_label"} ) {
+    	    $atom_id =
+    	    	select_atom_data(
+		    filter_atoms( $atom_site,
+                    { "label_atom_id" => [ $atom_label ] } ),
+    	    	    [ "id" ] )->[0][0];
 
     	    for my $angle_id
-		( 0..scalar( @{ rotatable_bonds()->{"$resi_name"}
-				                   {"$label"} } ) - 2 ) {
-		    $current_angles{"chi$angle_id"} =
-			[ $angles->{"$resi_id"}{"chi$angle_id"} ];
-	    }
+    		( 0..scalar( @{ rotatable_bonds()->{"$resi_name"}
+    				                   {"$atom_label"} } ) - 2 ) {
+    		    $current_angles{"chi$angle_id"} =
+    			[ $angle_values->{"$resi_id"}{"chi$angle_id"} ];
+    	    }
 
-	    # TODO: remove redundant rotation_only function. Should be only
-	    # inside generate_pseudo function. Also, should try to work on
-	    # code readability.
-	    %generated_rotamers =
-		%{ generate_pseudo(
-		       rotation_only( \%generated_rotamers,
-				      { "id" => [ $atom_id ] } ),
-		       { "id" => [ $atom_id ] },
-		       \%current_angles ) };
+    	    # TODO: remove redundant rotation_only function. Should be only
+    	    # inside generate_pseudo function. Also, should try to work on
+    	    # code readability.
+	    # %generated_rotamers =
+	    # 	%{ generate_pseudo( rotation_only( \%generated_rotamers ), { "id" => [ $atom_id ] }, \%current_angles ) };
+	    print Dumper \%current_angles;
+    	    # %generated_rotamers =
+    	    # 	%{ generate_pseudo( rotation_only( \%generated_rotamers ), { "id" => [ $atom_id ] }, \%current_angles );
     	}
     }
 
-    return \%generated_rotamers;
+    # return \%generated_rotamers;
 }
 
 1;
