@@ -53,7 +53,9 @@ sub sample_angles
     	    if( $angle >= $min_angle && $angle <= $max_angle ) {
     		push( @angles, $angle );
 		last;
-    	    }
+    	    } elsif( $min_angle == $max_angle ) {
+		push( @angles, $min_angle );
+	    }
     	}
     }
 

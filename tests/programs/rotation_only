@@ -3,8 +3,6 @@
 use strict;
 use warnings;
 
-# use Math::Trig;
-
 use lib "../../lib/perl";
 use Combinatorics qw( permutation );
 use LinearAlgebra qw( evaluate_matrix matrix_product pi );
@@ -12,7 +10,7 @@ use PDBxParser qw( filter_atoms obtain_atom_site );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
 use PseudoAtoms qw( generate_pseudo );
-use Data::Dumper;
+
 use lib "../lib";
 use Utils qw( select_atom_data );
 
@@ -67,20 +65,20 @@ close( $fh );
 
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
-# my $pseudo_atom_site =
-generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
-		 \%atom_specifier,
-		 \%num_angle_values );
+my $pseudo_atom_site =
+    generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
+		     \%atom_specifier,
+		     \%num_angle_values );
 
-# # # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-# # print( scalar( keys %{ $pseudo_atom_site->{"data"} } ), "\n" );
-# # print( "testing\n" );
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+print( scalar( keys %{ $pseudo_atom_site } ), "\n" );
+print( "testing\n" );
 
-# # # Prints out pseudo-atom coordinates.
-# # for my $id ( sort { $a <=> $b } keys %{ $pseudo_atom_site->{"data"} } ) {
-# #     printf( "$pseudo_atom_site->{\"data\"}{$id}{\"type_symbol\"}" .
-# # 	    "\t%.3f\t%.3f\t%.3f\n",
-# # 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_x"},
-# # 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_y"},
-# # 	    $pseudo_atom_site->{"data"}{$id}{"Cartn_z"} );
-# # }
+# Prints out pseudo-atom coordinates.
+for my $atom_id ( sort { $a <=> $b } keys %{ $pseudo_atom_site } ) {
+    printf( "$pseudo_atom_site->{$atom_id}{\"type_symbol\"}" .
+	    "\t%.3f\t%.3f\t%.3f\n",
+	    $pseudo_atom_site->{$atom_id}{"Cartn_x"},
+	    $pseudo_atom_site->{$atom_id}{"Cartn_y"},
+	    $pseudo_atom_site->{$atom_id}{"Cartn_z"} );
+}
