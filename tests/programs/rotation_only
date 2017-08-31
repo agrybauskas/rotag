@@ -66,9 +66,7 @@ close( $fh );
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
 my $pseudo_atom_site =
-    generate_pseudo( rotation_only( $atom_site, \%atom_specifier ),
-		     \%atom_specifier,
-		     \%num_angle_values );
+    generate_pseudo( $atom_site, \%atom_specifier, \%num_angle_values );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $pseudo_atom_site } ), "\n" );

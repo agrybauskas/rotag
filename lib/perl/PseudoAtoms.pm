@@ -45,7 +45,7 @@ sub generate_pseudo
     my $last_atom_id = max( sort { $a <=> $b } map { $_->[0] } @{ $atom_ids } );
 
     # Generates model for selected atoms.
-    $atom_site = rotation_only( $atom_site );
+    $atom_site = rotation_only( $atom_site, $atom_specifier );
 
     my @target_atom_ids =
 	map { $_->[0]->[0] }
@@ -155,7 +155,6 @@ sub generate_rotamer
 		    filter_atoms( $atom_site,
                     { "label_atom_id" => [ $atom_label ] } ),
     	    	    [ "id" ] )->[0][0];
-
     	    for my $angle_id
     		( 0..scalar( @{ rotatable_bonds()->{"$resi_name"}
     				                   {"$atom_label"} } ) - 2 ) {
@@ -163,18 +162,14 @@ sub generate_rotamer
     			[ $angle_values->{"$resi_id"}{"chi$angle_id"} ];
     	    }
 
-    	    # TODO: remove redundant rotation_only function. Should be only
-    	    # inside generate_pseudo function. Also, should try to work on
-    	    # code readability.
-	    # %generated_rotamers =
-	    # 	%{ generate_pseudo( rotation_only( \%generated_rotamers ), { "id" => [ $atom_id ] }, \%current_angles ) };
-	    print Dumper \%current_angles;
-    	    # %generated_rotamers =
-    	    # 	%{ generate_pseudo( rotation_only( \%generated_rotamers ), { "id" => [ $atom_id ] }, \%current_angles );
+	    %generated_rotamers =
+		%{ generate_pseudo( \%generated_rotamers,
+				    { "id" => [ $atom_id ] },
+				    \%current_angles ) };
     	}
     }
 
-    # return \%generated_rotamers;
+    return \%generated_rotamers;
 }
 
 1;

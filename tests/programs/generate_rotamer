@@ -33,19 +33,18 @@ close( $fh );
 
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
-# my $pseudo_rotamer =
-    generate_rotamer( $atom_site,
-		      { $resi_specifier => \%angle_values } );
+my $pseudo_rotamer =
+    generate_rotamer( $atom_site, { $resi_specifier => \%angle_values } );
 
-# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-# print( scalar( keys %{ $pseudo_rotamer->{"data"} } ), "\n" );
-# print( "testing\n" );
+# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+print( scalar( keys %{ $pseudo_rotamer } ), "\n" );
+print( "testing\n" );
 
-# # Prints out pseudo-atom coordinates.
-# for my $id ( sort { $a <=> $b } keys %{ $pseudo_rotamer->{"data"} } ) {
-#     printf( "$pseudo_rotamer->{\"data\"}{$id}{\"type_symbol\"}" .
-# 	    "\t%.3f\t%.3f\t%.3f\n",
-# 	    $pseudo_rotamer->{"data"}{$id}{"Cartn_x"},
-# 	    $pseudo_rotamer->{"data"}{$id}{"Cartn_y"},
-# 	    $pseudo_rotamer->{"data"}{$id}{"Cartn_z"} );
-# }
+# Prints out pseudo-atom coordinates.
+for my $atom_id ( sort { $a <=> $b } keys %{ $pseudo_rotamer } ) {
+    printf( "$pseudo_rotamer->{$atom_id}{\"type_symbol\"}" .
+	    "\t%.3f\t%.3f\t%.3f\n",
+	    $pseudo_rotamer->{$atom_id}{"Cartn_x"},
+	    $pseudo_rotamer->{$atom_id}{"Cartn_y"},
+	    $pseudo_rotamer->{$atom_id}{"Cartn_z"} );
+}
