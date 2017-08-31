@@ -16,8 +16,6 @@ use LoadParams qw( rotatable_bonds );
 use Measure qw( all_dihedral );
 use SidechainModels qw( rotation_only );
 
-use Data::Dumper;
-
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -91,12 +89,15 @@ sub generate_pseudo
 	    # Converts matrices to GiNaC compatable format and evaluates them.
     	    $transf_atom_coord =
     	    	evaluate_matrix( matrix_product( $conf_model ), \%angle_values );
+	    # TODO: decide what data should be copied and what data should be
+	    # with ? or . symbols in $atom_site for pseudo-atoms.
     	    # Adds generated pseudo-atom to $atom_site.
     	    $last_atom_id++;
-    	    %{ $atom_site->{$last_atom_id} } = %{ $atom_site->{$atom_id} };
-    	    # Overwrites atom id.
     	    $atom_site->{$last_atom_id}{"id"} = $last_atom_id;
-    	    # Overwrites exsisting coordinate values.
+	    # Adds atom type.
+	    $atom_site->{$last_atom_id}{"type_symbol"} =
+		$atom_site->{$atom_id}{"type_symbol"};
+    	    # Adds coordinate values.
     	    $atom_site->{$last_atom_id}{"Cartn_x"} = $transf_atom_coord->[0][0];
     	    $atom_site->{$last_atom_id}{"Cartn_y"} = $transf_atom_coord->[1][0];
     	    $atom_site->{$last_atom_id}{"Cartn_z"} = $transf_atom_coord->[2][0];
@@ -152,18 +153,18 @@ sub generate_rotamer
     	if( defined rotatable_bonds()->{"$resi_name"}{"$atom_label"} ) {
     	    $atom_id =
     	    	select_atom_data(
-		    filter_atoms( $atom_site,
-                    { "label_atom_id" => [ $atom_label ] } ),
-    	    	    [ "id" ] )->[0][0];
+		filter_atoms( $atom_site,
+		{ "label_atom_id" => [ $atom_label ] } ),
+    	    	[ "id" ] )->[0][0];
     	    for my $angle_id
     		( 0..scalar( @{ rotatable_bonds()->{"$resi_name"}
     				                   {"$atom_label"} } ) - 2 ) {
     		    $current_angles{"chi$angle_id"} =
     			[ $angle_values->{"$resi_id"}{"chi$angle_id"} ];
-    	    }
+	    }
 
 	    %generated_rotamers =
-		%{ generate_pseudo( \%generated_rotamers,
+	    	%{ generate_pseudo( \%generated_rotamers,
 				    { "id" => [ $atom_id ] },
 				    \%current_angles ) };
     	}

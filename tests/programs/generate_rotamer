@@ -11,19 +11,23 @@ use SidechainModels qw( rotation_only );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-use Data::Dumper;
+
 my ( $resi_specifier, $angle_values, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $atom_site = obtain_atom_site( $pdbx_file );
 
 # Parses angles for pseudo-rotamers.
+my $pi = pi();
 my %angle_values = ( map { $_->[0] => $_->[1] }
 		     map { [ split( " ", $_ ) ] }
 		     split( "&", $angle_values ) );
+for my $angle_value ( keys %angle_values ) {
+    $angle_values{$angle_value} =~ s/pi/\$pi/g;
+    $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
+}
 
 # Calculates angles that will be rotated along.
-my $pi = pi();
 
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.
