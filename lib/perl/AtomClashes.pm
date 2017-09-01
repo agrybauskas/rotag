@@ -9,13 +9,9 @@ our @EXPORT_OK = qw( radius_only );
 use List::Util qw( any max );
 
 use lib qw( ./ );
-use CifParser qw( filter_atoms select_atom_data );
+use PDBxParser qw( filter_atoms select_atom_data );
 use ConnectAtoms qw( connect_atoms grid_box is_connected is_second_neighbour );
 use LoadParams qw( rotatable_bonds vdw_radii );
-use Data::Dumper;
-
-my $rot_bonds_file = "../../parameters/rotatable_bonds.csv";
-my $vdw_file = "../../parameters/vdw_radii.csv";
 
 # --------------------------- Detection of atom clashes ----------------------- #
 
@@ -27,21 +23,25 @@ my $vdw_file = "../../parameters/vdw_radii.csv";
 # Parameters.
 #
 
-my %ROTATABLE_BONDS = %{ rotatable_bonds( $rot_bonds_file ) };
-
-my %VDW_RADII = %{ vdw_radii( $vdw_file ) };
-
 my $MAX_VDW_RADIUS =
-    max( map { $VDW_RADII{$_} }
-	 keys( %VDW_RADII ) ) * 2;
+    max( map { vdw_radii()->{$_} }
+	 keys( %{ vdw_radii() } ) ) * 2;
+
+#
+# Checks, if two atoms are colliding.
+# Input:
+#     $target_atom, $neighbour_atom - atom data structure (see PDBxParser.pm).
+# Output:
+#          $is_colliding - boolean of two values: 0 (as false) and 1 (as true).
+#
 
 sub is_colliding
 {
     my ( $target_atom, $neighbour_atom ) = @_;
 
     my $vdw_length =
-	$VDW_RADII{$target_atom->{"type_symbol"}}
-      + $VDW_RADII{$neighbour_atom->{"type_symbol"}};
+	vdw_radii()->{$target_atom->{"type_symbol"}}
+      + vdw_radii()->{$neighbour_atom->{"type_symbol"}};
 
     my $distance =
     	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
@@ -63,6 +63,13 @@ sub is_colliding
 #
 # Simplest function for determining atoms clashes. Only radius of atoms are
 # considered.
+# Input:
+#     $atom_site - atom data structure.
+#     $atom_specifier - compound data structure for specifying desirable atoms
+#     (see PDBxParser.pm).
+# Output:
+#     %atom_clashes - modified $atom_site with added information about atom
+#     clashes of specified atoms.
 #
 
 sub radius_only
@@ -71,48 +78,48 @@ sub radius_only
 
     # Clashes of all atoms analyzed, if no specific atoms are selected.
     $atom_specifier = { "group_pdb" => [ "ATOM" ] } unless $atom_specifier;
-    my @spec_atom_ids = # Atom ids selected by $atom_specifier.
+    my @atom_ids = # Atom ids selected by $atom_specifier.
     	map { $_->[0] }
-        @{ select_atom_data( [ "id" ],
-    			     filter_atoms( $atom_specifier, $atom_site ) ) };
+        @{ select_atom_data( filter_atoms( $atom_site, $atom_specifier ),
+			     [ "id" ] ) };
 
     # Identifies atoms that are in a clash with other atoms.
 
     # For each cell, checks neighbouring cells.
     my %atom_clashes = %{ connect_atoms( $atom_site ) };
-    my @cell_idx;
+    my @cell_indexes;
 
-    # Creates box around atoms, makes grid with edge length of max covalent radii.
-    my $grid_box =
-    	grid_box( $atom_site, $MAX_VDW_RADIUS );
+    # Creates box around atoms, makes grid with edge length of max covalent
+    # radii.
+    my $grid_box = grid_box( $atom_site, $MAX_VDW_RADIUS );
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
-    	@cell_idx = split( ",", $cell );
+    	@cell_indexes = split( ",", $cell );
     	my @neighbour_cells; # The array will contain all atoms of the
                              # neighbouring 26 cells.
 
     	# $i represents x, $j - y, $k - z coordinates.
-    	for my $i ( ( $cell_idx[0] - 1..$cell_idx[0] + 1 ) ) {
-    	for my $j ( ( $cell_idx[1] - 1..$cell_idx[1] + 1 ) ) {
-    	for my $k ( ( $cell_idx[2] - 1..$cell_idx[2] + 1 ) ) {
+    	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
+    	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
+    	for my $k ( ( $cell_indexes[2] - 1..$cell_indexes[2] + 1 ) ) {
     	if( exists $grid_box->{"$i,$j,$k"} ) {
     	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
     	# Checks, if there are clashes between atoms.
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    	    if( any { $atom_id eq $_ } @spec_atom_ids ) {
+    	    if( any { $atom_id eq $_ } @atom_ids ) {
     		foreach my $neighbour_id ( @neighbour_cells ) {
-    		    if( not any { $neighbour_id eq $_ } @spec_atom_ids ) {
-    		    	if( is_colliding( $atom_site->{"data"}{"$atom_id"},
-    		    			  $atom_site->{"data"}{"$neighbour_id"} )
+    		    if( not any { $neighbour_id eq $_ } @atom_ids ) {
+    		    	if( is_colliding( $atom_site->{"$atom_id"},
+    		    			  $atom_site->{"$neighbour_id"} )
     		    	    && $atom_id ne $neighbour_id
-		    	    && ( not is_connected(
-				     $atom_site->{"data"}{"$atom_id"},
-				     $atom_site->{"data"}{"$neighbour_id"} ) )
-		    	    && ( not is_second_neighbour(
-				     $atom_site, $atom_id, $neighbour_id ) ) ) {
-    		    	    push( @{ $atom_clashes{"data"}
+    		    	    && ( not is_connected(
+    				     $atom_site->{"$atom_id"},
+    				     $atom_site->{"$neighbour_id"} ) )
+    		    	    && ( not is_second_neighbour(
+    				     $atom_site, $atom_id, $neighbour_id ) ) ) {
+    		    	    push( @{ $atom_clashes
     		    		     {$atom_id}
     		    		     {"clashes"} },
     		    		  $neighbour_id );
@@ -124,9 +131,9 @@ sub radius_only
     }
 
     # Removes atoms with any clashes.
-    foreach my $atom_id ( keys %{ $atom_clashes{"data"} } ) {
-    	delete $atom_clashes{"data"}{$atom_id}
-    	if exists $atom_clashes{"data"}{$atom_id}{"clashes"};
+    foreach my $atom_id ( keys %atom_clashes ) {
+    	delete $atom_clashes{$atom_id}
+    	if exists $atom_clashes{$atom_id}{"clashes"};
     }
 
     return \%atom_clashes;

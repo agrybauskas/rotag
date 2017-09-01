@@ -10,7 +10,7 @@ use POSIX;
 
 use lib "./";
 use LinearAlgebra qw( pi );
-use Data::Dumper;
+
 # ---------------------------------- Sampling --------------------------------- #
 
 #

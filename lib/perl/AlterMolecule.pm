@@ -8,7 +8,7 @@ our @EXPORT_OK = qw( angle_bending bond_stretching bond_torsion );
 
 use lib qw( ./ );
 use LinearAlgebra qw( find_euler_angles matrix_product switch_ref_frame );
-use Data::Dumper;
+
 # ------------------ Molecule structure alteration algorithms ----------------- #
 
 #
