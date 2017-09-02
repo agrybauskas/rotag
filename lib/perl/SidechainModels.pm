@@ -68,7 +68,6 @@ sub rotation_only
     	    select_atom_data( filter_atoms( $atom_site, $atom_specifier ),
 			      [ "Cartn_x", "Cartn_y", "Cartn_z" ] );
 
-
     	# Creates matrices for atom alterations.
     	my $angle_symbol; # Because side chain might have multiple
     	                  # rotatable bonds, there must be distinct
