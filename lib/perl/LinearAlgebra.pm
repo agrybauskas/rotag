@@ -477,19 +477,19 @@ sub matrix_product
 #
 # Evaluates symbolic variables in analytical equation.
 # Input:
-#     $matrix_ginac - matrix symbolic variables.
+#     $matrix - matrix symbolic variables.
 # Output:
 #     @eval_matrix - evaluated matrix.
 #
 
 sub evaluate_matrix {
-    my ( $matrix_ginac, $symbols ) = @_;
+    my ( $matrix, $symbols ) = @_;
     my %symbols = %{ $symbols };
 
     my @eval_matrix;
 
     # Adds $ sign to given symbols and then runs eval() function.
-    for my $row ( @{ $matrix_ginac } ) {
+    for my $row ( @{ $matrix } ) {
 	push( @eval_matrix, [] );
 	for my $item_value ( @{ $row } ) {
 	    for my $symbol ( keys %{ $symbols } ) {
