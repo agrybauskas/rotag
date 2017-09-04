@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( generate_pseudo generate_rotamer);
+our @EXPORT_OK = qw( generate_library generate_pseudo generate_rotamer );
 
 use List::Util qw( max );
 
@@ -15,7 +15,7 @@ use LinearAlgebra qw( evaluate_matrix matrix_product );
 use LoadParams qw( rotatable_bonds );
 use Measure qw( all_dihedral );
 use SidechainModels qw( rotation_only );
-
+use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -178,7 +178,7 @@ sub generate_rotamer
 # movements and interactions between atoms.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser).
-#     $resi_specifier - array of residue ids.
+#     $residue_ids - array of residue ids.
 #     $movements - possible sidechain movements described by sidechain modeling
 #     functions in SidechainModels.pm.
 #     $interactions - interaction models described by functions in
@@ -191,11 +191,10 @@ sub generate_library
 {
     my ( $args ) = @_;
     my $atom_site = $args->{"atom_site"};
-    my $resi_specifier = $args->{"residue_id"};
+    my $residue_ids = $args->{"residue_ids"};
     my $movements = $args->{"movements"};
     my $interactions = $args->{"interactions"};
 
-    
 }
 
 1;
