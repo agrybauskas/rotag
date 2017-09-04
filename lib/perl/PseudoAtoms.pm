@@ -173,4 +173,29 @@ sub generate_rotamer
     return \%generated_rotamers;
 }
 
+#
+# Generates rotamer libraries by specified arguments that include atom
+# movements and interactions between atoms.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser).
+#     $resi_specifier - array of residue ids.
+#     $movements - possible sidechain movements described by sidechain modeling
+#     functions in SidechainModels.pm.
+#     $interactions - interaction models described by functions in
+#     AtomInteractions.pm
+# Output:
+#     %generated_library - atom site data structure with additional data 
+#
+
+sub generate_library
+{
+    my ( $args ) = @_;
+    my $atom_site = $args->{"atom_site"};
+    my $resi_specifier = $args->{"residue_id"};
+    my $movements = $args->{"movements"};
+    my $interactions = $args->{"interactions"};
+
+    
+}
+
 1;
