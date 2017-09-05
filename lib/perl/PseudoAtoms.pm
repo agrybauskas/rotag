@@ -11,9 +11,10 @@ use List::Util qw( max );
 use lib qw( ./ );
 use PDBxParser qw( filter_atoms select_atom_data );
 use Combinatorics qw( permutation );
-use LinearAlgebra qw( evaluate_matrix matrix_product );
+use LinearAlgebra qw( evaluate_matrix matrix_product pi );
 use LoadParams qw( rotatable_bonds );
 use Measure qw( all_dihedral );
+use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
 use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
@@ -184,7 +185,7 @@ sub generate_rotamer
 #     $interactions - interaction models described by functions in
 #     AtomInteractions.pm
 # Output:
-#     %generated_library - atom site data structure with additional data 
+#     %generated_library - atom site data structure with additional data
 #
 
 sub generate_library
@@ -192,8 +193,33 @@ sub generate_library
     my ( $args ) = @_;
     my $atom_site = $args->{"atom_site"};
     my $residue_ids = $args->{"residue_ids"};
+    my $small_angle = $args->{"small_angle"};
     my $movements = $args->{"movements"};
     my $interactions = $args->{"interactions"};
+
+    my %generated_library = %{ $atom_site };
+
+    my $resi_site; # Atom site data structure for residue.
+    my $resi_name; # Residue name, such as, SER, GLU and etc.
+    my @sorted_names; # Sorted atom names according to the quantity of rotatable
+                     # bonds.
+    my $sampled_angles = sample_angles( [ [ 0, 2 * pi() ] ], $small_angle );
+    my %current_angles;
+
+    for my $residue_id ( @{ $residue_ids } ) {
+	$resi_site =
+	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
+	$resi_name =
+	    select_atom_data( $resi_site, [ "label_comp_id" ] )->[0][0];
+	# Sorts atom names by the quantity of rotatable bonds described in
+	# rotatable_bonds.csv parameter file.
+	@sorted_names =
+	    sort{ scalar( @{ rotatable_bonds->{"$resi_name"}{$a} } )
+	      cmp scalar( @{ rotatable_bonds->{"$resi_name"}{$b} } ) }
+	    keys %{ rotatable_bonds->{"$resi_name"} };
+	# Iterates through sorted atoms and tries to detect iteractions.
+
+    }
 
 }
 

@@ -20,8 +20,8 @@ my @angle_ranges = ( map { [ $_->[0],  $_->[1] ] }
 		     map { [ split( "-", $_ ) ] }
 		     split( ",", $angle_ranges ) );
 
-my $sample_angles = sample_angles(  \@angle_ranges, $small_angle );
+my $sampled_angles = sample_angles(  \@angle_ranges, $small_angle );
 
-for my $angle ( @{ $sample_angles } ) {
+for my $angle ( @{ $sampled_angles } ) {
     printf( "%.3f\n", $angle );
 }
