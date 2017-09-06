@@ -28,8 +28,8 @@ use Data::Dumper;
 #     PDBxParser).
 #     $angle_values - hash of arrays that describe possible values of dihedral
 #     angles.
-#     Ex.: { "chi0" => [ 0, pi, 1.5 * $pi, 2 * $pi ],
-#            "chi1" => [ 0, 2 * $pi ] }
+#     Ex.: { "chi0" => [ 0, 0.4, 1.5, 2.0 ],
+#            "chi1" => [ 0, 2 ] }
 # Output:
 #     $atom_site - atom site data structure with additional pseudo-atoms.
 #
@@ -44,6 +44,7 @@ sub generate_pseudo
     my $last_atom_id = max( sort { $a <=> $b } map { $_->[0] } @{ $atom_ids } );
 
     # Generates model for selected atoms.
+    # TODO: should be aplicable not only to rotation_only model.
     $atom_site = rotation_only( $atom_site, $atom_specifier );
 
     my @target_atom_ids =
@@ -201,9 +202,14 @@ sub generate_library
 
     my $resi_site; # Atom site data structure for residue.
     my $resi_name; # Residue name, such as, SER, GLU and etc.
+    my $current_atom; # Atom site data structure, but for one atom.
+    my $current_atom_id;
     my @sorted_names; # Sorted atom names according to the quantity of rotatable
                      # bonds.
     my $sampled_angles = sample_angles( [ [ 0, 2 * pi() ] ], $small_angle );
+    my @angle_names;
+    my %all_current_angles;
+    my @current_angles;
     my %current_angles;
 
     for my $residue_id ( @{ $residue_ids } ) {
@@ -211,14 +217,47 @@ sub generate_library
 	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
 	$resi_name =
 	    select_atom_data( $resi_site, [ "label_comp_id" ] )->[0][0];
+
 	# Sorts atom names by the quantity of rotatable bonds described in
 	# rotatable_bonds.csv parameter file.
 	@sorted_names =
 	    sort{ scalar( @{ rotatable_bonds->{"$resi_name"}{$a} } )
 	      cmp scalar( @{ rotatable_bonds->{"$resi_name"}{$b} } ) }
 	    keys %{ rotatable_bonds->{"$resi_name"} };
-	# Iterates through sorted atoms and tries to detect iteractions.
 
+	# Iterates through sorted atoms and tries to detect iteractions.
+	undef %current_angles; # Resets angles for each new residue.
+
+	for my $atom_name ( @sorted_names ) {
+	    $current_atom =
+		filter_atoms( $resi_site,
+			      { "label_atom_id" => [ "$atom_name" ] } );
+	    $current_atom_id =
+	    	select_atom_data( $current_atom, [ "id" ] )->[0][0];
+	    @angle_names =
+		map { "chi$_" }
+	        ( 0..scalar( @{ rotatable_bonds()->{"$resi_name"}
+		                    		   {"$atom_name"} } ) - 2 );
+
+	    # Checks for previously checked angles.
+	    for my $angle_name ( @angle_names ) {
+		if( not defined $all_current_angles{"$angle_name"} ) {
+		    $all_current_angles{"$angle_name"} = $sampled_angles;
+		}
+	    }
+
+	    # Generates combinations of available angles.
+	    @current_angles =
+		map { $all_current_angles{$_} } keys %all_current_angles;
+	    for my $angle_comb ( @{ permutation( scalar( @angle_names ), [],
+						 \@current_angles, [] ) } ){
+		# TODO: should be aplicable not only to rotation_only model. See
+		# generate_pseudo function.
+		# Checks for clashes/interactions.
+		%current_angles =
+		    map { $angle_names[$_], $angle_comb->[$_] } 0..$#angle_names;
+	    }
+	}
     }
 
 }
