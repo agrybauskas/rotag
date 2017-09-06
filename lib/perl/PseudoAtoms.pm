@@ -251,11 +251,12 @@ sub generate_library
 		map { $all_current_angles{$_} } keys %all_current_angles;
 	    for my $angle_comb ( @{ permutation( scalar( @angle_names ), [],
 						 \@current_angles, [] ) } ){
-		# TODO: should be aplicable not only to rotation_only model. See
+		# TODO: should be applicable not only to rotation_only model. See
 		# generate_pseudo function.
 		# Checks for clashes/interactions.
 		%current_angles =
-		    map { $angle_names[$_], $angle_comb->[$_] } 0..$#angle_names;
+		    map { $angle_names[$_], [ $angle_comb->[$_] ] }
+		    0..$#angle_names;
 	    }
 	}
     }
