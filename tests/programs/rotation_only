@@ -64,19 +64,20 @@ chomp( my @pdbx_lines = <$fh> );
 close( $fh );
 
 # Creates pseudo-atoms for given analytical equation that describes conformation
-# of atom.
-my $pseudo_atom_site =
-    generate_pseudo( $atom_site, \%atom_specifier, \%num_angle_values );
+# of atom and adds to existing atom data structure.
+%{ $atom_site } =
+    ( %{ $atom_site },
+      %{ generate_pseudo( $atom_site, \%atom_specifier, \%num_angle_values ) } );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( keys %{ $pseudo_atom_site } ), "\n" );
+print( scalar( keys %{ $atom_site } ), "\n" );
 print( "testing\n" );
 
 # Prints out pseudo-atom coordinates.
-for my $atom_id ( sort { $a <=> $b } keys %{ $pseudo_atom_site } ) {
-    printf( "$pseudo_atom_site->{$atom_id}{\"type_symbol\"}" .
+for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+    printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
 	    "\t%.3f\t%.3f\t%.3f\n",
-	    $pseudo_atom_site->{$atom_id}{"Cartn_x"},
-	    $pseudo_atom_site->{$atom_id}{"Cartn_y"},
-	    $pseudo_atom_site->{$atom_id}{"Cartn_z"} );
+	    $atom_site->{$atom_id}{"Cartn_x"},
+	    $atom_site->{$atom_id}{"Cartn_y"},
+	    $atom_site->{$atom_id}{"Cartn_z"} );
 }

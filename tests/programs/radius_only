@@ -13,7 +13,7 @@ use SidechainModels qw( rotation_only );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-use Data::Dumper;
+
 my ( $atom_specifier,
      $clash_specifier, # Selects atoms that will be filtered out, if clashes are
                        # detected.
@@ -74,24 +74,27 @@ open( my $fh, "<", $pdbx_file );
 chomp( my @pdbx_lines = <$fh> );
 close( $fh );
 
-# # Creates pseudo-atoms for given analytical equation that describes conformation
-# # of atom. Atom clashes are flagged.
-my $pseudo_atom_site =
+# Creates pseudo-atoms for given analytical equation that describes conformation
+# of atom. Atom clashes are flagged.
+$atom_site =
     radius_only(
-	generate_pseudo( $atom_site, \%atom_specifier, \%num_angle_values ),
+	{ %{ $atom_site },
+	  %{ generate_pseudo( $atom_site,
+			      \%atom_specifier,
+			      \%num_angle_values ) } },
 	\%clash_specifier );
 
 # Remove atoms that are flagged with clashes.
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( keys %{ $pseudo_atom_site } ), "\n" );
+print( scalar( keys %{ $atom_site } ), "\n" );
 print( "testing\n" );
 
 # Prints out pseudo-atom coordinates.
-for my $atom_id ( sort { $a <=> $b } keys %{ $pseudo_atom_site } ) {
-    printf( "$pseudo_atom_site->{$atom_id}{\"type_symbol\"}" .
+for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+    printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
 	    "\t%.3f\t%.3f\t%.3f\n",
-	    $pseudo_atom_site->{$atom_id}{"Cartn_x"},
-	    $pseudo_atom_site->{$atom_id}{"Cartn_y"},
-	    $pseudo_atom_site->{$atom_id}{"Cartn_z"} );
+	    $atom_site->{$atom_id}{"Cartn_x"},
+	    $atom_site->{$atom_id}{"Cartn_y"},
+	    $atom_site->{$atom_id}{"Cartn_z"} );
 }

@@ -31,7 +31,7 @@ use Data::Dumper;
 #     Ex.: { "chi0" => [ 0, 0.4, 1.5, 2.0 ],
 #            "chi1" => [ 0, 2 ] }
 # Output:
-#     $atom_site - atom site data structure with additional pseudo-atoms.
+#     $pseudo_site - atom site data structure for pseudo-atoms.
 #
 
 sub generate_pseudo
@@ -58,6 +58,8 @@ sub generate_pseudo
     my @angle_names;
     my $current_resi_id;
     my %current_angles;
+
+    my %pseudo_site;
 
     for my $atom_id ( @target_atom_ids ) {
     	@angle_names = sort( { $a cmp $b } keys %{ $angle_values } );
@@ -95,22 +97,22 @@ sub generate_pseudo
 	    # with ? or . symbols in $atom_site for pseudo-atoms.
     	    # Adds generated pseudo-atom to $atom_site.
     	    $last_atom_id++;
-    	    $atom_site->{$last_atom_id}{"id"} = $last_atom_id;
+    	    $pseudo_site{$last_atom_id}{"id"} = $last_atom_id;
 	    # Adds atom type.
-	    $atom_site->{$last_atom_id}{"type_symbol"} =
+	    $pseudo_site{$last_atom_id}{"type_symbol"} =
 		$atom_site->{$atom_id}{"type_symbol"};
     	    # Adds coordinate values.
-    	    $atom_site->{$last_atom_id}{"Cartn_x"} = $transf_atom_coord->[0][0];
-    	    $atom_site->{$last_atom_id}{"Cartn_y"} = $transf_atom_coord->[1][0];
-    	    $atom_site->{$last_atom_id}{"Cartn_z"} = $transf_atom_coord->[2][0];
+    	    $pseudo_site{$last_atom_id}{"Cartn_x"} = $transf_atom_coord->[0][0];
+    	    $pseudo_site{$last_atom_id}{"Cartn_y"} = $transf_atom_coord->[1][0];
+    	    $pseudo_site{$last_atom_id}{"Cartn_z"} = $transf_atom_coord->[2][0];
     	    # Adds information about used dihedral angles.
-    	    $atom_site->{$last_atom_id}{"dihedral_angles"} = \%angle_values;
+    	    $pseudo_site{$last_atom_id}{"dihedral_angles"} = \%angle_values;
     	    # Adds additional pseudo-atom flag for future filtering.
-    	    $atom_site->{$last_atom_id}{"is_pseudo_atom"} = 1;
+    	    $pseudo_site{$last_atom_id}{"is_pseudo_atom"} = 1;
     	}
     }
 
-    return $atom_site;
+    return \%pseudo_site;
 }
 
 #
@@ -166,9 +168,10 @@ sub generate_rotamer
 	    }
 
 	    %generated_rotamers =
-	    	%{ generate_pseudo( \%generated_rotamers,
-				    { "id" => [ $atom_id ] },
-				    \%current_angles ) };
+		( %generated_rotamers,
+		  %{ generate_pseudo( \%generated_rotamers,
+				      { "id" => [ $atom_id ] },
+				      \%current_angles ) } );
     	}
     }
 
@@ -205,12 +208,16 @@ sub generate_library
     my $current_atom; # Atom site data structure, but for one atom.
     my $current_atom_id;
     my @sorted_names; # Sorted atom names according to the quantity of rotatable
-                     # bonds.
+                      # bonds.
+
+    my $pseudo_id;
+    my $pseudo_site;
+
     my $sampled_angles = sample_angles( [ [ 0, 2 * pi() ] ], $small_angle );
     my @angle_names;
-    my %all_current_angles;
-    my @current_angles;
-    my %current_angles;
+    my %all_current_angles; # TODO: change variable name.
+    my @current_angles; # TODO: change variable name.
+    my %current_angles; # TODO: change variable name.
 
     for my $residue_id ( @{ $residue_ids } ) {
 	$resi_site =
@@ -225,7 +232,7 @@ sub generate_library
 	      cmp scalar( @{ rotatable_bonds->{"$resi_name"}{$b} } ) }
 	    keys %{ rotatable_bonds->{"$resi_name"} };
 
-	# Iterates through sorted atoms and tries to detect iteractions.
+	# Iterates through sorted atoms and tries to detect interactions.
 	undef %current_angles; # Resets angles for each new residue.
 
 	for my $atom_name ( @sorted_names ) {
@@ -239,28 +246,37 @@ sub generate_library
 	        ( 0..scalar( @{ rotatable_bonds()->{"$resi_name"}
 		                    		   {"$atom_name"} } ) - 2 );
 
-	    # Checks for previously checked angles.
+	    # Checks for previously checked angles. If not asigned, adds all
+	    # possible angles.
 	    for my $angle_name ( @angle_names ) {
-		if( not defined $all_current_angles{"$angle_name"} ) {
-		    $all_current_angles{"$angle_name"} = $sampled_angles;
-		}
+	    	if( not defined $all_current_angles{"$angle_name"} ) {
+	    	    $all_current_angles{"$angle_name"} = $sampled_angles;
+	    	}
 	    }
 
 	    # Generates combinations of available angles.
 	    @current_angles =
-		map { $all_current_angles{$_} } keys %all_current_angles;
+	    	map { $all_current_angles{$_} } keys %all_current_angles;
+
 	    for my $angle_comb ( @{ permutation( scalar( @angle_names ), [],
-						 \@current_angles, [] ) } ){
+	    					 \@current_angles, [] ) } ) {
+	    	%current_angles =
+	    	    map { $angle_names[$_], [ $angle_comb->[$_] ] }
+	    	    0..$#angle_names;
+
+		# Checks for clashes/interactions. If any detected, removes angle
+		# from %all_current_angles.
 		# TODO: should be applicable not only to rotation_only model. See
 		# generate_pseudo function.
-		# Checks for clashes/interactions.
-		%current_angles =
-		    map { $angle_names[$_], [ $angle_comb->[$_] ] }
-		    0..$#angle_names;
+		$pseudo_site =
+		    generate_pseudo( \%generated_library,
+				     { "id" => [ "$current_atom_id" ] },
+				     \%current_angles );
+		$pseudo_id = select_atom_data( $pseudo_site, [ "id" ] )->[0][0];
+
 	    }
 	}
     }
-
 }
 
 1;
