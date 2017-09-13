@@ -79,12 +79,10 @@ close( $fh );
 $atom_site =
     radius_only(
 	{ %{ $atom_site },
-	  %{ generate_pseudo( $atom_site,
+	  %{ generate_pseudo( rotation_only( $atom_site ),
 			      \%atom_specifier,
 			      \%num_angle_values ) } },
 	\%clash_specifier );
-
-# Remove atoms that are flagged with clashes.
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $atom_site } ), "\n" );

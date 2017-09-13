@@ -83,11 +83,8 @@ sub radius_only
         @{ select_atom_data( filter_atoms( $atom_site, $atom_specifier ),
 			     [ "id" ] ) };
 
-    # Identifies atoms that are in a clash with other atoms.
-
-    # For each cell, checks neighbouring cells.
-    my %atom_clashes = %{ connect_atoms( $atom_site ) };
-    my @cell_indexes;
+    # Checks for connecting atoms that will be excluded from clash list.
+    connect_atoms( $atom_site );
 
     # Creates box around atoms, makes grid with edge length of max covalent
     # radii.
@@ -95,7 +92,7 @@ sub radius_only
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
-    	@cell_indexes = split( ",", $cell );
+    	my @cell_indexes = split( ",", $cell );
     	my @neighbour_cells; # The array will contain all atoms of the
                              # neighbouring 26 cells.
 
@@ -119,9 +116,7 @@ sub radius_only
     				     $atom_site->{"$neighbour_id"} ) )
     		    	    && ( not is_second_neighbour(
     				     $atom_site, $atom_id, $neighbour_id ) ) ) {
-    		    	    push( @{ $atom_clashes
-    		    		     {$atom_id}
-    		    		     {"clashes"} },
+    		    	    push( @{ $atom_site->{$atom_id}{"clashes"} },
     		    		  $neighbour_id );
     		    	}
     		    }
@@ -131,12 +126,12 @@ sub radius_only
     }
 
     # Removes atoms with any clashes.
-    foreach my $atom_id ( keys %atom_clashes ) {
-    	delete $atom_clashes{$atom_id}
-    	if exists $atom_clashes{$atom_id}{"clashes"};
+    foreach my $atom_id ( keys %{ $atom_site } ) {
+    	delete $atom_site->{$atom_id}
+    	if exists $atom_site->{$atom_id}{"clashes"};
     }
 
-    return \%atom_clashes;
+    return $atom_site;
 }
 
 1;

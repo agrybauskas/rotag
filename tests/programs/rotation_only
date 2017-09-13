@@ -13,7 +13,7 @@ use PseudoAtoms qw( generate_pseudo );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-use Data::Dumper;
+
 my ( $atom_specifier, $angle_ranges, $num_of_angles, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.

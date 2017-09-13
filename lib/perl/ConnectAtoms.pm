@@ -187,7 +187,7 @@ sub is_connected
 #     $target_atom_id - id of first atom.
 #     $sec_neighbour_id - id of second atom.
 # Output:
-#     $is_connected - boolean of two values: 0 (as false) and 1 (as true).
+#     $is_sec_neighbour - boolean of two values: 0 (as false) and 1 (as true).
 #
 
 sub is_second_neighbour
@@ -218,9 +218,9 @@ sub is_second_neighbour
 # Input:
 #     $atom_site - atom data structure.
 # Output:
-#     %connected_atoms -atom data in pbdx data structure form that has additional
-#     data for each atom - hash of atom coordinates (x, y, z) as keys and atom
-#     coordinates that are connected to as values.
+#     %connected_atoms - atom data in pbdx data structure form that has
+#     additional data for each atom - hash of atom coordinates (x, y, z) as keys
+#     and atom coordinates that are connected to as values.
 #
 
 sub connect_atoms
@@ -234,14 +234,12 @@ sub connect_atoms
     # Creates box around atoms, makes grid with edge length of max covalent radii
     # of the parameter file.
     my $grid_box = grid_box( $atom_site, $MAX_COV_LENGTH );
-    my @neighbour_cells; # The array will contain all atoms of the
-                         # neighbouring 26 cells.
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
     	@cell_indexes = split( ",", $cell );
-	undef @neighbour_cells;
-
+	my @neighbour_cells; # The array will contain all atoms of the
+	                     # neighbouring 26 cells.
     	# $i represents x, $j - y, $k - z coordinates.
     	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
     	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
@@ -255,7 +253,7 @@ sub connect_atoms
     		if( is_connected( $atom_site->{"$atom_id"},
     				  $atom_site->{"$neighbour_id"} ) ) {
     		    push( @{ $connected_atoms{$atom_id}{"connections"} },
-    		          $neighbour_id );
+    		          "$neighbour_id" );
     		}
     	    }
     	}

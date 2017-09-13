@@ -15,7 +15,7 @@ use LinearAlgebra qw( evaluate_matrix matrix_product pi );
 use LoadParams qw( rotatable_bonds );
 use Measure qw( all_dihedral );
 use Sampling qw( sample_angles );
-use SidechainModels qw( rotation_only );
+
 use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
@@ -173,7 +173,8 @@ sub generate_rotamer
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser).
 #     $residue_ids - array of residue ids.
-#     $movements - possible sidechain movements described by sidechain modeling
+#     $small_angle - angle by which rotation is made.
+#     $conformations - possible sidechain movements described by sidechain modeling
 #     functions in SidechainModels.pm.
 #     $interactions - interaction models described by functions in
 #     AtomInteractions.pm
@@ -187,85 +188,80 @@ sub generate_library
     my $atom_site = $args->{"atom_site"};
     my $residue_ids = $args->{"residue_ids"};
     my $small_angle = $args->{"small_angle"};
-    my $movements = $args->{"movements"};
+    my $conformations = $args->{"conformations"};
     my $interactions = $args->{"interactions"};
 
-    my %generated_library = %{ $atom_site };
-
-    my $resi_site; # Atom site data structure for residue.
-    my $resi_name; # Residue name, such as, SER, GLU and etc.
-    my $current_atom; # Atom site data structure, but for one atom.
-    my $current_atom_id;
-    my @sorted_names; # Sorted atom names according to the quantity of rotatable
-                      # bonds.
-
-    my $pseudo_id;
-    my $pseudo_site;
+    # Generates comformational models before checking for clashes/interactions.
+    $conformations->( $atom_site );
 
     my $sampled_angles = sample_angles( [ [ 0, 2 * pi() ] ], $small_angle );
-    my @angle_names;
-    my %all_current_angles; # TODO: change variable name.
-    my @current_angles; # TODO: change variable name.
-    my %current_angles; # TODO: change variable name.
 
     for my $residue_id ( @{ $residue_ids } ) {
-	$resi_site =
-	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
-	$resi_name =
-	    select_atom_data( $resi_site, [ "label_comp_id" ] )->[0][0];
+    	my $residue_site =
+    	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
+    	my $residue_name =
+    	    select_atom_data( $residue_site, [ "label_comp_id" ] )->[0][0];
 
-	# Sorts atom names by the quantity of rotatable bonds described in
-	# rotatable_bonds.csv parameter file.
-	@sorted_names =
-	    sort{ scalar( @{ rotatable_bonds->{"$resi_name"}{$a} } )
-	      cmp scalar( @{ rotatable_bonds->{"$resi_name"}{$b} } ) }
-	    keys %{ rotatable_bonds->{"$resi_name"} };
+    	# Sorts atom names by the quantity of rotatable bonds described in
+    	# rotatable_bonds.csv parameter file.
+    	my @sorted_names =
+    	    sort{ scalar( @{ rotatable_bonds->{"$residue_name"}{$a} } )
+    	      cmp scalar( @{ rotatable_bonds->{"$residue_name"}{$b} } ) }
+    	    keys %{ rotatable_bonds->{"$residue_name"} };
 
-	# Iterates through sorted atoms and tries to detect interactions.
-	undef %current_angles; # Resets angles for each new residue.
+    	# Iterates through sorted atoms and tries to detect interactions.
+	my %all_possible_angles;
+    	my %current_angles;
+    	for my $atom_name ( @sorted_names ) {
+    	    my $current_atom_site =
+    		filter_atoms( $residue_site,
+    			      { "label_atom_id" => [ "$atom_name" ] } );
+    	    my $current_atom_id =
+    	    	select_atom_data( $current_atom_site, [ "id" ] )->[0][0];
 
-	for my $atom_name ( @sorted_names ) {
-	    $current_atom =
-		filter_atoms( $resi_site,
-			      { "label_atom_id" => [ "$atom_name" ] } );
-	    $current_atom_id =
-	    	select_atom_data( $current_atom, [ "id" ] )->[0][0];
-	    @angle_names =
-		map { "chi$_" }
-	        ( 0..scalar( @{ rotatable_bonds()->{"$resi_name"}
-		                    		   {"$atom_name"} } ) - 2 );
-
-	    # Checks for previously checked angles. If not asigned, adds all
+    	    # Checks for previously checked angles. If not asigned, adds all
 	    # possible angles.
-	    for my $angle_name ( @angle_names ) {
-	    	if( not defined $all_current_angles{"$angle_name"} ) {
-	    	    $all_current_angles{"$angle_name"} = $sampled_angles;
-	    	}
+	    my @angle_names =
+    		map { "chi$_" }
+    	        ( 0..scalar( @{ rotatable_bonds()->{"$residue_name"}
+    		                    		   {"$atom_name"} } ) - 2 );
+    	    for my $angle_name ( @angle_names ) {
+    	    	if( not defined $all_possible_angles{"$angle_name"} ) {
+    	    	    $all_possible_angles{"$angle_name"} = $sampled_angles;
+    	    	}
+    	    }
+
+    	    # Generates combinations of available angles.
+    	    my @current_angles =
+    	    	map { $all_possible_angles{$_} } keys %all_possible_angles;
+
+    	    for my $angle_comb # Abbreviation for angle combinations.
+		( @{ permutation( scalar( @angle_names ), [],
+				  \@current_angles, [] ) } ) {
+    	    	%current_angles =
+    	    	    map { $angle_names[$_], [ $angle_comb->[$_] ] }
+    	    	    0..$#angle_names;
+
+    		# Checks for clashes/interactions. If any detected, removes angle
+    		# from %all_possible_angles.
+    		my $pseudo_atom_site =
+    		    generate_pseudo( $atom_site,
+    				     { "id" => [ "$current_atom_id" ] },
+    				     \%current_angles );
+    		my $pseudo_atom_id =
+		    select_atom_data( $pseudo_atom_site, [ "id" ] )->[0][0];
+		
+		$interactions->( { %{ $atom_site },
+				   %{ $pseudo_atom_site } },
+				 { "id" => [ $pseudo_atom_id ] } );
+		if( not exists $pseudo_atom_site->{"$pseudo_atom_id"}{"clashes"} ) {
+		    print Dumper $pseudo_atom_site->{"$pseudo_atom_id"};
+		}
 	    }
-
-	    # Generates combinations of available angles.
-	    @current_angles =
-	    	map { $all_current_angles{$_} } keys %all_current_angles;
-
-	    for my $angle_comb ( @{ permutation( scalar( @angle_names ), [],
-	    					 \@current_angles, [] ) } ) {
-	    	%current_angles =
-	    	    map { $angle_names[$_], [ $angle_comb->[$_] ] }
-	    	    0..$#angle_names;
-
-		# Checks for clashes/interactions. If any detected, removes angle
-		# from %all_current_angles.
-		# TODO: should be applicable not only to rotation_only model. See
-		# generate_pseudo function.
-		$pseudo_site =
-		    generate_pseudo( \%generated_library,
-				     { "id" => [ "$current_atom_id" ] },
-				     \%current_angles );
-		$pseudo_id = select_atom_data( $pseudo_site, [ "id" ] )->[0][0];
-
-	    }
-	}
+    	}
     }
+
+    # return $atom_site;
 }
 
 1;

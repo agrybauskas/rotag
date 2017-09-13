@@ -9,15 +9,15 @@ use LinearAlgebra qw( pi );
 use PDBxParser qw( obtain_atom_site );
 use PseudoAtoms qw( generate_library );
 use SidechainModels qw( rotation_only );
-
+use Data::Dumper;
 my ( $residue_id, $small_angle, $pdbx_file ) = @ARGV;
 
 my $atom_site = obtain_atom_site( $pdbx_file );
 $small_angle =~ s/pi/pi\(\)/g;
 
 # Parses angles for pseudo-rotamers.
-generate_library( { "atom_site"    => $atom_site,
-		    "residue_ids"  => [ $residue_id ],
-		    "small_angle"  => eval( $small_angle ),
-		    "movements"    => \&rotation_only,
-		    "interactions" => \&radius_only } );
+generate_library( { "atom_site"     => $atom_site,
+		    "residue_ids"   => [ $residue_id ],
+		    "small_angle"   => eval( $small_angle ),
+		    "conformations" => \&rotation_only,
+		    "interactions"  => \&radius_only } );
