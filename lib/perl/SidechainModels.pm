@@ -14,7 +14,7 @@ use LinearAlgebra qw( evaluate_matrix
                       vectorize );
 use LoadParams qw( rotatable_bonds );
 use PDBxParser qw( filter_atoms select_atom_data );
-
+use Data::Dumper;
 # ------------------------ Idealistic sidechain models ------------------------ #
 
 #
@@ -27,7 +27,8 @@ use PDBxParser qw( filter_atoms select_atom_data );
 # Model that uses only rotation around single bonds.
 # Input:
 #     $atom_site - atom data structure.
-#     $atom_specifier - data structure that specifies atom (see PDBxParser.pm)
+#     $atom_specifier - data structure that specifies atom (see PDBxParser.pm).
+#     If not specified, all side chain and rotatable atoms are included.
 # Output:
 #     $atom_site - modified $atom_site with added equation describing
 #     conformational space.
@@ -35,79 +36,69 @@ use PDBxParser qw( filter_atoms select_atom_data );
 
 sub rotation_only
 {
-    my ( $atom_site, $atom_specifier ) = @_;
+    my ( $atom_site ) = @_;
 
-    # Selects specified atom(s) id(s).
-    my $target_atom_id =
-	select_atom_data( filter_atoms( $atom_site, $atom_specifier ),
-			  [ "id" ] );
-
-    # Iterates through target atom(s) and assigns conformational equations which
+    # iterates through target atom(s) and assigns conformational equations which
     # can produce pseudo-atoms later.
-    my $residue_name;
-    my $atom_type;
+    for my $id ( keys %{ $atom_site } ) {
+	my $residue_id =   $atom_site->{"$id"}{"label_seq_id"};
+    	my $residue_name = $atom_site->{"$id"}{"label_comp_id"};
+    	my $atom_type =    $atom_site->{"$id"}{"label_atom_id"};
+	my @atom_coord = ( $atom_site->{"$id"}{"Cartn_x"},
+			   $atom_site->{"$id"}{"Cartn_y"},
+			   $atom_site->{"$id"}{"Cartn_z"} );
 
-    my @rotatable_bonds;
+	# Checks, if according to residue name and atom type, conformational
+	# model can be applied.
+	my @rotatable_bonds;
+	if( exists rotatable_bonds->{$residue_name}{$atom_type} ) {
+	    @rotatable_bonds =
+		@{ rotatable_bonds->{$residue_name}{$atom_type} };
+	} else {
+	    next;
+	}
 
-    my $mid_atom_type;
-    my $up_atom_type;
-
-    my $mid_atom_coord;
-    my $up_atom_coord;
-    my $side_atom_coord;
-    my $target_atom_coord;
-
-    my @transf_matrices; # Matrices for transforming atom coordinates.
-
-    for my $id ( @{ $target_atom_id } ) {
-    	$residue_name = $atom_site->{"@$id"}{"label_comp_id"};
-    	$atom_type = $atom_site->{"@$id"}{"label_atom_id"};
-    	@rotatable_bonds = @{ rotatable_bonds->{$residue_name}{$atom_type} };
-    	undef @transf_matrices;
-    	$target_atom_coord =
-    	    select_atom_data( filter_atoms( $atom_site, $atom_specifier ),
-			      [ "Cartn_x", "Cartn_y", "Cartn_z" ] );
-
-    	# Creates matrices for atom alterations.
-    	my $angle_symbol; # Because side chain might have multiple
-    	                  # rotatable bonds, there must be distinct
-    	                  # symbols for different dihedral angles.
+    	my @transf_matrices; # Matrices for transforming atom coordinates.
 
     	for( my $i = 0; $i < scalar( @rotatable_bonds ) - 1; $i++ ) {
-    	    $angle_symbol = "chi${i}";
-    	    $mid_atom_type = $rotatable_bonds[$i][0];
-    	    $mid_atom_type =~ s/\s//g;
-    	    $up_atom_type = $rotatable_bonds[$i][1];
+    	    my $mid_atom_type = $rotatable_bonds[$i][0];
+    	    my $up_atom_type = $rotatable_bonds[$i][1];
+	    $mid_atom_type =~ s/\s//g;
     	    $up_atom_type =~ s/\s//g;
+
+    	    my $angle_symbol = "chi${i}";
 
     	    # Information about side atom is stored in rotatable bonds array,
     	    # except for CA atom.
+	    my $side_atom_coord;
     	    if( $mid_atom_type eq "CA" ) {
-    		$side_atom_coord =
-    		    select_atom_data(
-		    filter_atoms( $atom_site,
-		    { "label_atom_id" => [ "N" ] } ),
-		    [ "Cartn_x", "Cartn_y", "Cartn_z" ] );
-
+    	    	$side_atom_coord =
+    	    	    select_atom_data(
+    	    	    filter_atoms( $atom_site,
+    	    	    { "label_seq_id"  => [ "$residue_id" ],
+		      "label_atom_id" => [ "N" ] } ),
+    	    	    [ "Cartn_x", "Cartn_y", "Cartn_z" ] );
     	    } else {
     		$side_atom_coord =
     		    select_atom_data(
-		    filter_atoms( $atom_site,
-		    { "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] } ),
-		    [ "Cartn_x", "Cartn_y", "Cartn_z" ] );
+    		    filter_atoms( $atom_site,
+    		    { "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] } ),
+    		    [ "Cartn_x", "Cartn_y", "Cartn_z" ] );
     	    }
 
-    	    $mid_atom_coord =
-		select_atom_data(
-		filter_atoms( $atom_site,
-		{ "label_atom_id" => [ $mid_atom_type ] } ),
-		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
+    	    my $mid_atom_coord =
+    		select_atom_data(
+    		filter_atoms( $atom_site,
+    		{ "label_atom_id" => [ $mid_atom_type ],
+		  "label_seq_id"  => [ "$residue_id" ] } ),
+    		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
 
-    	    $up_atom_coord =
-		select_atom_data(
-		filter_atoms( $atom_site,
-		{ "label_atom_id" => [ $up_atom_type ] } ),
-		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
+    	    my $up_atom_coord =
+    		select_atom_data(
+    		filter_atoms( $atom_site,
+    		{ "label_atom_id" => [ $up_atom_type ],
+		  "label_seq_id"  => [ "$residue_id" ] } ),
+    		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
 
     	    # Creates and appends matrices to a list of matrices that later
     	    # will be multiplied.
@@ -115,12 +106,12 @@ sub rotation_only
     		  bond_torsion( @{ $mid_atom_coord },
     				@{ $up_atom_coord },
     				@{ $side_atom_coord },
-				$angle_symbol ) );
+    				$angle_symbol ) );
     	}
 
-    	$atom_site->{"@$id"}{"conformation"} =
+    	$atom_site->{"$id"}{"conformation"} =
     	    matrix_product( @transf_matrices,
-    			    vectorize( @{ $target_atom_coord } ) );
+    			    vectorize( \@atom_coord ) );
     }
 
     return $atom_site;
