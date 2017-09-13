@@ -23,7 +23,8 @@ use Data::Dumper;
 # Generates pseudo-atoms from side chain models that are written in equation
 # form.
 # Input:
-#     $atom_site - atom site data structure (see PDBxParser).
+#     $atom_site - atom site data structure (see PDBxParser). Must have any
+#     sidechain model function applied to it (see SidechainModels.pm).
 #     $atom_specifier - hash of hashes for selecting atoms by attributes (see
 #     PDBxParser).
 #     $angle_values - hash of arrays that describe possible values of dihedral
@@ -31,88 +32,75 @@ use Data::Dumper;
 #     Ex.: { "chi0" => [ 0, 0.4, 1.5, 2.0 ],
 #            "chi1" => [ 0, 2 ] }
 # Output:
-#     $pseudo_site - atom site data structure for pseudo-atoms.
+#     $pseudo_atom_site - atom site data structure for pseudo-atoms.
 #
 
 sub generate_pseudo
 {
     my ( $atom_site, $atom_specifier, $angle_values ) = @_;
 
-    # Determines last id from set of atoms. It will be used for attaching id's
-    # to generated pseudo-atoms.
-    my $atom_ids = select_atom_data( $atom_site, [ "id" ] );
-    my $last_atom_id = max( sort { $a <=> $b } map { $_->[0] } @{ $atom_ids } );
+    my %pseudo_atom_site;
 
-    # Generates model for selected atoms.
-    # TODO: should be aplicable not only to rotation_only model.
-    $atom_site = rotation_only( $atom_site, $atom_specifier );
-
-    my @target_atom_ids =
-	map { $_->[0]->[0] }
-	select_atom_data(
-	filter_atoms( $atom_site, $atom_specifier ),
+    my @atom_ids =
+    	map { $_->[0]->[0] }
+    	select_atom_data(
+    	filter_atoms( $atom_site, $atom_specifier ),
 	[ "id" ] );
+    my $last_atom_id = max( keys %{ $atom_site } );
 
-    my @angle_values;  # Will be used for temporarily storing sets of angles that
-                       # angle permutations will be generated from.
-    my @angle_names;
-    my $current_resi_id;
-    my %current_angles;
-
-    my %pseudo_site;
-
-    for my $atom_id ( @target_atom_ids ) {
-    	@angle_names = sort( { $a cmp $b } keys %{ $angle_values } );
-    	undef @angle_values;
-
+    for my $atom_id ( @atom_ids ) {
     	# Calculates current dihedral angles of rotatable bonds. Will be used
     	# for reseting dihedral angles to 0 degree angle.
-	$current_resi_id = $atom_site->{"$atom_id"}{"label_seq_id"};
-    	%current_angles =
+    	my $residue_id = $atom_site->{"$atom_id"}{"label_seq_id"};
+    	my %angles =
     	    %{ all_dihedral(
 	       filter_atoms( $atom_site,
-			     { "label_seq_id" => [ $current_resi_id ] } ) ) };
+			     { "label_seq_id" => [ $residue_id ] } ) ) };
 
     	# Iterates through combinations of angles and evaluates conformational
     	# model.
+	my @angle_names = sort( { $a cmp $b } keys %{ $angle_values } );
+	my @angle_values;
     	for my $angle_name ( @angle_names ) {
     	    push( @angle_values,
     		  [ map
-    		    { $_ - $current_angles{"$current_resi_id"}{"$angle_name"} }
+    		    { $_ - $angles{"$residue_id"}{"$angle_name"} }
     		    @{ $angle_values->{"$angle_name"} } ] );
     	}
 
-    	my %angle_values;
-    	my $conf_model = $atom_site->{"$atom_id"}{"conformation"};
-    	my $transf_atom_coord;
-
-    	for my $angle_comb (
+    	my $conformation = $atom_site->{"$atom_id"}{"conformation"};
+    	for my $angle_comb ( # Abreviation of angle combinations.
     	    @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ){
-    	    %angle_values =
+    	    my %angle_values =
     		map { $angle_names[$_], $angle_comb->[$_] } 0..$#angle_names;
-	    # Converts matrices to GiNaC compatable format and evaluates them.
-    	    $transf_atom_coord =
-    	    	evaluate_matrix( matrix_product( $conf_model ), \%angle_values );
-	    # TODO: decide what data should be copied and what data should be
-	    # with ? or . symbols in $atom_site for pseudo-atoms.
+    	    # Converts matrices to GiNaC compatable format and evaluates them.
+    	    my $transf_atom_coord =
+    	    	evaluate_matrix( matrix_product( $conformation ),
+				 \%angle_values );
+    	    # TODO: decide what data should be copied and what data should be
+    	    # with ? or . symbols in $atom_site for pseudo-atoms.
     	    # Adds generated pseudo-atom to $atom_site.
     	    $last_atom_id++;
-    	    $pseudo_site{$last_atom_id}{"id"} = $last_atom_id;
-	    # Adds atom type.
-	    $pseudo_site{$last_atom_id}{"type_symbol"} =
+    	    $pseudo_atom_site{$last_atom_id}{"id"} = $last_atom_id;
+    	    # Adds atom type.
+    	    $pseudo_atom_site{$last_atom_id}{"type_symbol"} =
 		$atom_site->{$atom_id}{"type_symbol"};
     	    # Adds coordinate values.
-    	    $pseudo_site{$last_atom_id}{"Cartn_x"} = $transf_atom_coord->[0][0];
-    	    $pseudo_site{$last_atom_id}{"Cartn_y"} = $transf_atom_coord->[1][0];
-    	    $pseudo_site{$last_atom_id}{"Cartn_z"} = $transf_atom_coord->[2][0];
+    	    $pseudo_atom_site{$last_atom_id}{"Cartn_x"} =
+		$transf_atom_coord->[0][0];
+    	    $pseudo_atom_site{$last_atom_id}{"Cartn_y"} =
+		$transf_atom_coord->[1][0];
+    	    $pseudo_atom_site{$last_atom_id}{"Cartn_z"} =
+		$transf_atom_coord->[2][0];
     	    # Adds information about used dihedral angles.
-    	    $pseudo_site{$last_atom_id}{"dihedral_angles"} = \%angle_values;
+    	    $pseudo_atom_site{$last_atom_id}{"dihedral_angles"} =
+		\%angle_values;
     	    # Adds additional pseudo-atom flag for future filtering.
-    	    $pseudo_site{$last_atom_id}{"is_pseudo_atom"} = 1;
+    	    $pseudo_atom_site{$last_atom_id}{"is_pseudo_atom"} = 1;
     	}
     }
 
-    return \%pseudo_site;
+    return \%pseudo_atom_site;
 }
 
 #

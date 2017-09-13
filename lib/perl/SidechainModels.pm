@@ -14,7 +14,7 @@ use LinearAlgebra qw( evaluate_matrix
                       vectorize );
 use LoadParams qw( rotatable_bonds );
 use PDBxParser qw( filter_atoms select_atom_data );
-use Data::Dumper;
+
 # ------------------------ Idealistic sidechain models ------------------------ #
 
 #
@@ -27,8 +27,6 @@ use Data::Dumper;
 # Model that uses only rotation around single bonds.
 # Input:
 #     $atom_site - atom data structure.
-#     $atom_specifier - data structure that specifies atom (see PDBxParser.pm).
-#     If not specified, all side chain and rotatable atoms are included.
 # Output:
 #     $atom_site - modified $atom_site with added equation describing
 #     conformational space.

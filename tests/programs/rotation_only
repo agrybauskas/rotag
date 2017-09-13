@@ -13,7 +13,7 @@ use PseudoAtoms qw( generate_pseudo );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-
+use Data::Dumper;
 my ( $atom_specifier, $angle_ranges, $num_of_angles, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
@@ -67,7 +67,9 @@ close( $fh );
 # of atom and adds to existing atom data structure.
 %{ $atom_site } =
     ( %{ $atom_site },
-      %{ generate_pseudo( $atom_site, \%atom_specifier, \%num_angle_values ) } );
+      %{ generate_pseudo( rotation_only( $atom_site ),
+			  \%atom_specifier,
+			  \%num_angle_values ) } );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $atom_site } ), "\n" );
