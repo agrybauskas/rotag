@@ -38,7 +38,8 @@ close( $fh );
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
 my $pseudo_rotamer =
-    generate_rotamer( $atom_site, { $resi_specifier => \%angle_values } );
+    generate_rotamer( rotation_only( $atom_site ),
+		      { $resi_specifier => \%angle_values } );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $pseudo_rotamer } ), "\n" );

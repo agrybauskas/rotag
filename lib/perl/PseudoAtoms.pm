@@ -106,7 +106,7 @@ sub generate_pseudo
 #
 # Generates rotamers according to given angle values.
 # Input:
-#     $atom_site - atom site data structure (see PDBxParser).
+#     $residue_atom_site - atom site data structure (see PDBxParser).
 #     $angle_values - name and value of angles in hash form.
 # Output:
 #     %generated_rotamers - atom site data structure with additional
@@ -119,47 +119,48 @@ sub generate_rotamer
 
     # Extracts residue name from residue id. Only one ID can be parsed.
     # TODO: maybe should consider generating rotamers for multiple residues.
-    my @resi_ids = keys %{ $angle_values };
-    my $resi_id = $resi_ids[0];
-    my $resi_name =
+    my @residue_ids = keys %{ $angle_values };
+    my $residue_id = $residue_ids[0];
+    my $residue_name =
     	select_atom_data(
-	    filter_atoms( $atom_site,
-	    { "label_seq_id" => [ $resi_id ] } ), [ "label_comp_id" ] )->[0][0];
+	filter_atoms( $atom_site,
+	{ "label_seq_id" => [ $residue_id ] } ),
+	[ "label_comp_id" ] )->[0][0];
 
-    my $atom_labels =
+    my $atom_names =
     	select_atom_data(
-	    filter_atoms( $atom_site,
-	    { "label_seq_id" => [ $resi_id ] } ), [ "label_atom_id" ] );
-    my @atom_labels = map { $_->[0] } @{ $atom_labels };
+    	filter_atoms( $atom_site,
+    	{ "label_seq_id" => [ $residue_id ] } ),
+	[ "label_atom_id" ] );
+    my @atom_names = map { $_->[0] } @{ $atom_names };
 
     # Iterates through every atom of certain residue name and rotates to
     # specified dihedral angle.
+    # my %pseudo_rotamers;
     my %generated_rotamers = %{ $atom_site };
-    my $atom_id;
-    my %current_angles;
 
-    for my $atom_label ( @atom_labels ) {
+    for my $atom_name ( @atom_names ) {
     	# Defines dihedral angles by %ROTATABLE_BONDS description and specified
     	# angles in $angles.
-    	undef %current_angles;
-    	if( defined rotatable_bonds()->{"$resi_name"}{"$atom_label"} ) {
-    	    $atom_id =
+    	my %angles;
+    	if( defined rotatable_bonds()->{"$residue_name"}{"$atom_name"} ) {
+    	    my $atom_id =
     	    	select_atom_data(
-		filter_atoms( $atom_site,
-		{ "label_atom_id" => [ $atom_label ] } ),
+    		filter_atoms( $atom_site,
+    		{ "label_atom_id" => [ $atom_name ] } ),
     	    	[ "id" ] )->[0][0];
     	    for my $angle_id
-    		( 0..scalar( @{ rotatable_bonds()->{"$resi_name"}
-    				                   {"$atom_label"} } ) - 2 ) {
-    		    $current_angles{"chi$angle_id"} =
-    			[ $angle_values->{"$resi_id"}{"chi$angle_id"} ];
-	    }
+    		( 0..scalar( @{ rotatable_bonds()->{"$residue_name"}
+    				                   {"$atom_name"} } ) - 2 ) {
+    		    $angles{"chi$angle_id"} =
+    			[ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
+    	    }
 
-	    %generated_rotamers =
-		( %generated_rotamers,
-		  %{ generate_pseudo( \%generated_rotamers,
-				      { "id" => [ $atom_id ] },
-				      \%current_angles ) } );
+    	    %generated_rotamers =
+    		( %generated_rotamers,
+    		  %{ generate_pseudo( \%generated_rotamers,
+    				      { "id" => [ $atom_id ] },
+    				      \%angles ) } );
     	}
     }
 
