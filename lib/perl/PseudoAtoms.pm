@@ -210,57 +210,74 @@ sub generate_library
     	    keys %{ rotatable_bonds->{"$residue_name"} };
 
     	# Iterates through sorted atoms and tries to detect interactions.
-	my %all_possible_angles;
-    	my %current_angles;
+	my %allowed_angles;
+
+    	# my %current_angles;
     	for my $atom_name ( @sorted_names ) {
+	    print Dumper \%allowed_angles;
     	    my $current_atom_site =
-    		filter_atoms( $residue_site,
-    			      { "label_atom_id" => [ "$atom_name" ] } );
+    	    	filter_atoms( $residue_site,
+    	    		      { "label_atom_id" => [ "$atom_name" ] } );
     	    my $current_atom_id =
     	    	select_atom_data( $current_atom_site, [ "id" ] )->[0][0];
 
     	    # Checks for previously checked angles. If not asigned, adds all
 	    # possible angles.
 	    my @angle_names =
-    		map { "chi$_" }
+    	    	map { "chi$_" }
     	        ( 0..scalar( @{ rotatable_bonds()->{"$residue_name"}
-    		                    		   {"$atom_name"} } ) - 2 );
-    	    for my $angle_name ( @angle_names ) {
-    	    	if( not defined $all_possible_angles{"$angle_name"} ) {
-    	    	    $all_possible_angles{"$angle_name"} = $sampled_angles;
-    	    	}
-    	    }
+	    			                   {"$atom_name"} } ) - 2 );
 
-    	    # Generates combinations of available angles.
-    	    my @current_angles =
-    	    	map { $all_possible_angles{$_} } keys %all_possible_angles;
-
-    	    for my $angle_comb # Abbreviation for angle combinations.
-		( @{ permutation( scalar( @angle_names ), [],
-				  \@current_angles, [] ) } ) {
-    	    	%current_angles =
-    	    	    map { $angle_names[$_], [ $angle_comb->[$_] ] }
-    	    	    0..$#angle_names;
-
-    		# Checks for clashes/interactions. If any detected, removes angle
-    		# from %all_possible_angles.
-    		my $pseudo_atom_site =
-    		    generate_pseudo( $atom_site,
-    				     { "id" => [ "$current_atom_id" ] },
-    				     \%current_angles );
-    		my $pseudo_atom_id =
-		    select_atom_data( $pseudo_atom_site, [ "id" ] )->[0][0];
-		
-		$interactions->( { %{ $atom_site },
-				   %{ $pseudo_atom_site } },
-				 { "id" => [ $pseudo_atom_id ] } );
-		if( not exists $pseudo_atom_site->{"$pseudo_atom_id"}{"clashes"} ) {
-		    print Dumper $pseudo_atom_site->{"$pseudo_atom_id"};
+	    my $angle_quantity = scalar( @angle_names );
+	    my @angle_comb;
+	    if( exists $allowed_angles{$angle_quantity} ) {
+	    	@angle_comb = @{ $allowed_angles{$angle_quantity} };
+	    	@angle_comb = map { [ $_ ] } @angle_comb;
+	    } else {
+		if( $angle_quantity == 1 ) {
+		    @angle_comb = map { [ $_ ] } @{ $sampled_angles };
+		} else {
+		    @angle_comb =
+		    	permutation(
+		    	    2,
+		    	    [],
+		    	    [ $allowed_angles{max( keys %allowed_angles )},
+		    	      $sampled_angles ],
+		    	    [] );
+		    # Flattens nested lists.
+		    @angle_comb =
+		    	map { exists $_->[0] ? @{ $_ } : $_ } @angle_comb;
 		}
 	    }
-    	}
-    }
 
+    	    for my $angles ( @angle_comb ) {
+    	    	my %current_angles =
+    	    	    map { $angle_names[$_], [ $angles->[$_] ] }
+		    0..$#angle_names;
+    	    	# Checks for clashes/interactions. If any detected, removes angle
+    	    	# from %all_possible_angles.
+    	    	my $pseudo_atom_site =
+    	    	    generate_pseudo( $atom_site,
+    	    			     { "id" => [ "$current_atom_id" ] },
+    	    			     \%current_angles );
+    	    	my $pseudo_atom_id =
+	    	    select_atom_data( $pseudo_atom_site, [ "id" ] )->[0][0];
+
+	    	$interactions->( { %{ $atom_site },
+	    			   %{ $pseudo_atom_site } },
+	    			 { "id" => [ $pseudo_atom_id ] } );
+
+	    	if( not exists $pseudo_atom_site->{"$pseudo_atom_id"}
+		                                  {"clashes"} ) {
+		    if( exists $allowed_angles{$angle_quantity} ) {
+			push( @{ $allowed_angles{$angle_quantity} }, $angles );
+		    } else {
+			$allowed_angles{$angle_quantity} = [ $angles ];
+		    }
+	    	}
+	    }
+	}
+    }
     # return $atom_site;
 }
 
