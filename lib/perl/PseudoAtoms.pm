@@ -237,7 +237,7 @@ sub generate_library
 		} else {
 		    @current_angles =
 		    	@{ permutation( 2, [], [ \@allowed_angles,
-		    				 \@sampled_angles ], [ ] ) };		    
+		    				 \@sampled_angles ], [ ] ) };
 		    # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
 		    @current_angles =
 		    	map { [ @{ $_->[0] }, @{ $_->[1] } ] } @current_angles;
@@ -250,28 +250,24 @@ sub generate_library
 	    # Iterates through allowed angles, checks clashes and returns
 	    # unhindered angles to @allowed_angle_comb.
 	    for my $angles ( @current_angles ) {
-		print Dumper $angles;
 		my %angles =
-		    map { ( "chi$_" => [ $angles->[$_], $angles->[$_] ] ) } 0..$angle_count;
-
+		    map { ( "chi$_" => [ $angles->[$_] ] ) } 0..$angle_count;
+		print Dumper \%angles;
 		my $pseudo_atom_site =
 		    generate_pseudo( $atom_site,
 				     { "id" => [ "$current_atom_id" ] },
 				     \%angles );
 		my $pseudo_atom_id =
 		    select_atom_data( $pseudo_atom_site, [ "id" ] )->[0][0];
-		print $pseudo_atom_id;
-		# LAST:
-		# $interactions->( { %{ $atom_site }, %{ $pseudo_atom_site } },
-		# 		 { "id" => [ $pseudo_atom_id ] } );
-		print Dumper $pseudo_atom_site;
+
+		$interactions->( { %{ $atom_site }, %{ $pseudo_atom_site } },
+				 { "id" => [ $pseudo_atom_id ] } );
+		# print Dumper $pseudo_atom_site;
 		if( ! exists $pseudo_atom_site->{"$pseudo_atom_id"}{"clashes"} ){
 		    push( @allowed_angles, $angles );
-		} else {
-		    # print Dumper $pseudo_atom_site;
 		}
 	    }
-	    print Dumper \@allowed_angles;
+	    # print Dumper \@allowed_angles;
 	    die "No possible rotamer solutions were detected."
 		if scalar( @allowed_angles ) == 0;
 	}
