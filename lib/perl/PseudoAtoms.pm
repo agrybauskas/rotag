@@ -187,7 +187,7 @@ sub generate_rotamer
 #     $interactions - interaction models described by functions in
 #     AtomInteractions.pm
 # Output:
-#     %generated_library - atom site data structure with additional data
+#     %library_atom_site - atom site data structure with additional data
 #
 
 sub generate_library
@@ -295,9 +295,22 @@ sub generate_library
 	    die "No possible rotamer solutions were detected."
 		if scalar( @allowed_angles ) == 0;
 	}
+
+	# Generates final rotamers.
+	for my $angles ( @allowed_angles ) {
+	    my %angles =
+		( "$residue_id" => { map { ( "chi$_" => [ $angles->[$_] ] ) }
+				     ( 0..$#{ $angles } ) } );
+	    # TODO: do not forget to check clashes among atoms inside rotamer.
+	    %library_atom_site =
+		( %library_atom_site,
+		  %{ generate_rotamer( { %library_atom_site,
+					 %{ $atom_site } },
+				       \%angles ) } );
+	}
     }
 
-    # return $atom_site;
+    return \%library_atom_site;
 }
 
 1;
