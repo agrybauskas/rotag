@@ -55,7 +55,8 @@ sub generate_pseudo
     	my %angles =
     	    %{ all_dihedral(
 	       filter_atoms( $atom_site,
-			     { "label_seq_id" => [ $residue_id ] } ) ) };
+			     { "label_seq_id" => [ $residue_id ],
+			       "label_alt_id" => [ "." ]} ) ) };
 
     	# Iterates through combinations of angles and evaluates conformational
     	# model.
@@ -77,15 +78,23 @@ sub generate_pseudo
     	    my $transf_atom_coord =
     	    	evaluate_matrix( matrix_product( $conformation ),
 				 \%angle_values );
-    	    # TODO: decide what data should be copied and what data should be
-    	    # with ? or . symbols in $atom_site for pseudo-atoms.
-    	    # Adds generated pseudo-atom to $atom_site.
+
+	    # Adds necessary PDBx entries to pseudo atom.
     	    $last_atom_id++;
+	    $pseudo_atom_site{$last_atom_id}{"group_PDB"} = "ATOM";
     	    $pseudo_atom_site{$last_atom_id}{"id"} = $last_atom_id;
-    	    # Adds atom type.
     	    $pseudo_atom_site{$last_atom_id}{"type_symbol"} =
 		$atom_site->{$atom_id}{"type_symbol"};
-    	    # Adds coordinate values.
+	    $pseudo_atom_site{$last_atom_id}{"label_atom_id"} =
+		$atom_site->{$atom_id}{"label_atom_id"}; # Default value.
+	    $pseudo_atom_site{$last_atom_id}{"label_alt_id"} = "1";
+	    $pseudo_atom_site{$last_atom_id}{"label_comp_id"} =
+		$atom_site->{$atom_id}{"label_comp_id"};
+	    $pseudo_atom_site{$last_atom_id}{"label_asym_id"} =
+		$atom_site->{$atom_id}{"label_asym_id"};
+	    $pseudo_atom_site{$last_atom_id}{"label_entity_id"} =
+		$atom_site->{$atom_id}{"label_entity_id"};
+	    $pseudo_atom_site{$last_atom_id}{"label_seq_id"} = $residue_id;
     	    $pseudo_atom_site{$last_atom_id}{"Cartn_x"} =
 		$transf_atom_coord->[0][0];
     	    $pseudo_atom_site{$last_atom_id}{"Cartn_y"} =

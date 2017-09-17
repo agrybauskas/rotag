@@ -37,9 +37,6 @@ close( $fh );
 
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
-# my $pseudo_rotamer =
-#     generate_rotamer( rotation_only( $atom_site ),
-# 		      { $resi_specifier => \%angle_values } );
 %{ $atom_site } =
     ( %{ $atom_site },
       %{ generate_rotamer( rotation_only( $atom_site ),
