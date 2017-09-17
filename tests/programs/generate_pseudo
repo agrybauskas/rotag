@@ -66,7 +66,7 @@ close( $fh );
 # of atom and adds to existin atom_site data structure.
 %{ $atom_site } =
     ( %{ $atom_site },
-      %{ generate_pseudo( rotation_only( $atom_site),
+      %{ generate_pseudo( rotation_only( $atom_site ),
 			  \%atom_specifier,
 			  \%num_angle_values ) } );
 

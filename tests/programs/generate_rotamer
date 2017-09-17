@@ -37,19 +37,23 @@ close( $fh );
 
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
-my $pseudo_rotamer =
-    generate_rotamer( rotation_only( $atom_site ),
-		      { $resi_specifier => \%angle_values } );
+# my $pseudo_rotamer =
+#     generate_rotamer( rotation_only( $atom_site ),
+# 		      { $resi_specifier => \%angle_values } );
+%{ $atom_site } =
+    ( %{ $atom_site },
+      %{ generate_rotamer( rotation_only( $atom_site ),
+			   { $resi_specifier => \%angle_values } ) } );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( keys %{ $pseudo_rotamer } ), "\n" );
+print( scalar( keys %{ $atom_site } ), "\n" );
 print( "testing\n" );
 
 # Prints out pseudo-atom coordinates.
-for my $atom_id ( sort { $a <=> $b } keys %{ $pseudo_rotamer } ) {
-    printf( "$pseudo_rotamer->{$atom_id}{\"type_symbol\"}" .
+for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+    printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
 	    "\t%.3f\t%.3f\t%.3f\n",
-	    $pseudo_rotamer->{$atom_id}{"Cartn_x"},
-	    $pseudo_rotamer->{$atom_id}{"Cartn_y"},
-	    $pseudo_rotamer->{$atom_id}{"Cartn_z"} );
+	    $atom_site->{$atom_id}{"Cartn_x"},
+	    $atom_site->{$atom_id}{"Cartn_y"},
+	    $atom_site->{$atom_id}{"Cartn_z"} );
 }

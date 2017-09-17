@@ -136,8 +136,7 @@ sub generate_rotamer
 
     # Iterates through every atom of certain residue name and rotates to
     # specified dihedral angle.
-    # my %pseudo_rotamers;
-    my %generated_rotamers = %{ $atom_site };
+    my %rotamer_atom_site;
 
     for my $atom_name ( @atom_names ) {
     	# Defines dihedral angles by %ROTATABLE_BONDS description and specified
@@ -156,15 +155,15 @@ sub generate_rotamer
     			[ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
     	    }
 
-    	    %generated_rotamers =
-    		( %generated_rotamers,
-    		  %{ generate_pseudo( \%generated_rotamers,
+    	    %rotamer_atom_site =
+    		( %rotamer_atom_site,
+    		  %{ generate_pseudo( { %{ $atom_site }, %rotamer_atom_site },
     				      { "id" => [ $atom_id ] },
     				      \%angles ) } );
     	}
     }
 
-    return \%generated_rotamers;
+    return \%rotamer_atom_site;
 }
 
 #
