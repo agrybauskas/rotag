@@ -199,6 +199,8 @@ sub generate_library
     my $conformations = $args->{"conformations"};
     my $interactions = $args->{"interactions"};
 
+    my %library_atom_site;
+
     # Generates comformational models before checking for clashes/interactions.
     $conformations->( $atom_site );
 
@@ -216,7 +218,20 @@ sub generate_library
     	my @sorted_names =
     	    sort{ scalar( @{ rotatable_bonds->{"$residue_name"}{$a} } )
     	      cmp scalar( @{ rotatable_bonds->{"$residue_name"}{$b} } ) }
-    	    keys %{ rotatable_bonds->{"$residue_name"} };
+	    keys %{ rotatable_bonds->{"$residue_name"} };
+
+	# Ignores movable side chain atoms so, iteractions between pseudo atoms
+	# and backbone could be analyzed properly.
+	my %interaction_site = %{ $atom_site };
+	my @removable_atom_ids =
+	    map { $_->[0] }
+	    @{ select_atom_data(
+	       filter_atoms( $residue_site,
+	       { "label_atom_id" => \@sorted_names } ),
+	       [ "id" ] ) };
+	for my $atom_id ( @removable_atom_ids ) {
+	    delete $interaction_site{"$atom_id"}
+	}
 
     	# Iterates through sorted atoms and tries to detect interactions.
 	my @allowed_angles; # comb - combinations.
@@ -260,7 +275,7 @@ sub generate_library
 	    for my $angles ( @current_angles ) {
 		my %angles =
 		    map { ( "chi$_" => [ $angles->[$_] ] ) } 0..$angle_count;
-		print Dumper \%angles;
+
 		my $pseudo_atom_site =
 		    generate_pseudo( $atom_site,
 				     { "id" => [ "$current_atom_id" ] },
@@ -268,14 +283,15 @@ sub generate_library
 		my $pseudo_atom_id =
 		    select_atom_data( $pseudo_atom_site, [ "id" ] )->[0][0];
 
-		$interactions->( { %{ $atom_site }, %{ $pseudo_atom_site } },
+		$interactions->( { %interaction_site,
+				   %{ $pseudo_atom_site } },
 				 { "id" => [ $pseudo_atom_id ] } );
-		# print Dumper $pseudo_atom_site;
+
 		if( ! exists $pseudo_atom_site->{"$pseudo_atom_id"}{"clashes"} ){
 		    push( @allowed_angles, $angles );
 		}
 	    }
-	    # print Dumper \@allowed_angles;
+
 	    die "No possible rotamer solutions were detected."
 		if scalar( @allowed_angles ) == 0;
 	}
