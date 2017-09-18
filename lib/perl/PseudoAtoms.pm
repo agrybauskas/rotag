@@ -139,7 +139,8 @@ sub generate_rotamer
     my $atom_names =
     	select_atom_data(
     	filter_atoms( $atom_site,
-    	{ "label_seq_id" => [ $residue_id ] } ),
+    	{ "label_seq_id" => [ $residue_id ],
+	  "label_alt_id" => [ "." ] } ),
 	[ "label_atom_id" ] );
     my @atom_names = map { $_->[0] } @{ $atom_names };
 
@@ -155,8 +156,10 @@ sub generate_rotamer
     	    my $atom_id =
     	    	select_atom_data(
     		filter_atoms( $atom_site,
-    		{ "label_atom_id" => [ $atom_name ] } ),
+    		{ "label_atom_id" => [ $atom_name ],
+		  "label_alt_id"  => [ "." ] } ),
     	    	[ "id" ] )->[0][0];
+
     	    for my $angle_id
     		( 0..scalar( @{ rotatable_bonds()->{"$residue_name"}
     				                   {"$atom_name"} } ) - 2 ) {
@@ -299,14 +302,14 @@ sub generate_library
 	# Generates final rotamers.
 	for my $angles ( @allowed_angles ) {
 	    my %angles =
-		( "$residue_id" => { map { ( "chi$_" => [ $angles->[$_] ] ) }
+		( "$residue_id" => { map { ( "chi$_" => $angles->[$_] ) }
 				     ( 0..$#{ $angles } ) } );
 	    # TODO: do not forget to check clashes among atoms inside rotamer.
 	    %library_atom_site =
-		( %library_atom_site,
-		  %{ generate_rotamer( { %library_atom_site,
-					 %{ $atom_site } },
-				       \%angles ) } );
+	    	( %library_atom_site,
+	    	  %{ generate_rotamer( { %library_atom_site,
+	    				 %{ $atom_site } },
+	    			       \%angles ) } );
 	}
     }
 
