@@ -11,7 +11,9 @@ use List::Util qw( any max );
 use lib qw( ./ );
 use PDBxParser qw( filter_atoms select_atom_data );
 use ConnectAtoms qw( connect_atoms grid_box is_connected is_second_neighbour );
-use LoadParams qw( rotatable_bonds vdw_radii );
+use AtomProperties qw( %ATOMS );
+use LoadParams qw( rotatable_bonds );
+# vdw_radii );
 
 # --------------------------- Detection of atom clashes ----------------------- #
 
@@ -24,8 +26,7 @@ use LoadParams qw( rotatable_bonds vdw_radii );
 #
 
 my $MAX_VDW_RADIUS =
-    max( map { vdw_radii()->{$_} }
-	 keys( %{ vdw_radii() } ) ) * 2;
+    max( map { $ATOMS{$_}{"vdw_radius"} } keys %ATOMS ) * 2;
 
 #
 # Checks, if two atoms are colliding.
@@ -40,8 +41,8 @@ sub is_colliding
     my ( $target_atom, $neighbour_atom ) = @_;
 
     my $vdw_length =
-	vdw_radii()->{$target_atom->{"type_symbol"}}
-      + vdw_radii()->{$neighbour_atom->{"type_symbol"}};
+	$ATOMS{$target_atom->{"type_symbol"}}{"vdw_radius"}
+      + $ATOMS{$neighbour_atom->{"type_symbol"}}{"vdw_radius"};
 
     my $distance =
     	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2

@@ -16,7 +16,6 @@ use LoadParams qw( rotatable_bonds );
 use Measure qw( all_dihedral );
 use Sampling qw( sample_angles );
 
-use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #

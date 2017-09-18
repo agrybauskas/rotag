@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( ATOMS );
+our @EXPORT_OK = qw( %ATOMS );
 
 # ------------------------------- Atom properties ----------------------------- #
 
@@ -56,6 +56,6 @@ our %ATOMS = (
 				  },
 	     "vdw_radius" => 1.9
            }
-    )
+    );
 
 1;
