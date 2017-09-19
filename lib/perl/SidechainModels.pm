@@ -12,7 +12,7 @@ use LinearAlgebra qw( evaluate_matrix
                       matrix_product
                       switch_ref_frame
                       vectorize );
-use LoadParams qw( rotatable_bonds );
+use MoleculeProperties qw( %ROTATABLE_BONDS );
 use PDBxParser qw( filter_atoms select_atom_data );
 
 # ------------------------ Idealistic sidechain models ------------------------ #
@@ -49,9 +49,9 @@ sub rotation_only
 	# Checks, if according to residue name and atom type, conformational
 	# model can be applied.
 	my @rotatable_bonds;
-	if( exists rotatable_bonds->{$residue_name}{$atom_type} ) {
+	if( exists $ROTATABLE_BONDS{$residue_name}{$atom_type} ) {
 	    @rotatable_bonds =
-		@{ rotatable_bonds->{$residue_name}{$atom_type} };
+		@{ $ROTATABLE_BONDS{$residue_name}{$atom_type} };
 	} else {
 	    next;
 	}

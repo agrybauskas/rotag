@@ -13,9 +13,9 @@ our @EXPORT_OK = qw( connect_atoms
 use List::Util qw( max min );
 
 use lib qw( ./ );
+use AtomProperties qw( %ATOMS );
 use PDBxParser qw( select_atom_data );
 use Combinatorics qw( permutation );
-use LoadParams qw( covalent_radii );
 
 # ------------------------------ Connect atoms ------------------------------- #
 
@@ -23,8 +23,10 @@ use LoadParams qw( covalent_radii );
 # Parameters.
 #
 
-my $MAX_COV_LENGTH = max( map { @{ covalent_radii()->{$_}{"bond_length"} } }
-			  keys( %{ covalent_radii() } ) ) * 2;
+# Maximum value of all given covalent lengths. Used for determining length of the
+# box grid edges.
+my $MAX_COV_LENGTH =
+    max( map { @{ $ATOMS{$_}{"covalent_radius"}{"length"} } } keys %ATOMS ) * 2;
 
 #
 # Shows what atom is connected to what atom using only information about atom
@@ -136,19 +138,23 @@ sub is_connected
     my $bond_length_comb =
     	permutation( 2,
     		     [],
-    		     [ covalent_radii()->{$target_atom->{"type_symbol"}}
-    		                         {"bond_length"},
-    		       covalent_radii()->{$neighbour_atom->{"type_symbol"}}
-    		                         {"bond_length"}],
+    		     [ $ATOMS{$target_atom->{"type_symbol"}}
+		             {"covalent_radius"}
+		             {"length"},
+		       $ATOMS{$neighbour_atom->{"type_symbol"}}
+		             {"covalent_radius"}
+		             {"length"} ],
     		     [] );
 
     my $length_error_comb =
     	permutation( 2,
     		     [],
-    		     [ covalent_radii()->{$target_atom->{"type_symbol"}}
-    		                         {"length_error"},
-    		       covalent_radii()->{$neighbour_atom->{"type_symbol"}}
-    	                                 {"length_error"}],
+    		     [ $ATOMS{$target_atom->{"type_symbol"}}
+		             {"covalent_radius"}
+		             {"error"},
+		       $ATOMS{$neighbour_atom->{"type_symbol"}}
+		             {"covalent_radius"}
+		             {"error"} ],
     		     [] );
 
     # Precalculates distance between atom pairs.

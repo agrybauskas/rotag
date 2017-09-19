@@ -9,11 +9,11 @@ our @EXPORT_OK = qw( generate_library generate_pseudo generate_rotamer );
 use List::Util qw( max );
 
 use lib qw( ./ );
-use PDBxParser qw( filter_atoms select_atom_data );
 use Combinatorics qw( permutation );
 use LinearAlgebra qw( evaluate_matrix matrix_product pi );
-use LoadParams qw( rotatable_bonds );
 use Measure qw( all_dihedral );
+use MoleculeProperties qw( %ROTATABLE_BONDS );
+use PDBxParser qw( filter_atoms select_atom_data );
 use Sampling qw( sample_angles );
 
 # --------------------------- Generation of pseudo-atoms ---------------------- #
@@ -151,7 +151,7 @@ sub generate_rotamer
     	# Defines dihedral angles by %ROTATABLE_BONDS description and specified
     	# angles in $angles.
     	my %angles;
-    	if( defined rotatable_bonds()->{"$residue_name"}{"$atom_name"} ) {
+    	if( defined $ROTATABLE_BONDS{"$residue_name"}{"$atom_name"} ) {
     	    my $atom_id =
     	    	select_atom_data(
     		filter_atoms( $atom_site,
@@ -160,8 +160,8 @@ sub generate_rotamer
     	    	[ "id" ] )->[0][0];
 
     	    for my $angle_id
-    		( 0..scalar( @{ rotatable_bonds()->{"$residue_name"}
-    				                   {"$atom_name"} } ) - 2 ) {
+    		( 0..scalar( @{ $ROTATABLE_BONDS{"$residue_name"}
+    				                {"$atom_name"} } ) - 2 ) {
     		    $angles{"chi$angle_id"} =
     			[ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
     	    }
@@ -216,11 +216,11 @@ sub generate_library
     	    select_atom_data( $residue_site, [ "label_comp_id" ] )->[0][0];
 
     	# Sorts atom names by the quantity of rotatable bonds described in
-    	# rotatable_bonds.csv parameter file.
+    	# ROTATABLE_BONDS.
     	my @sorted_names =
-    	    sort{ scalar( @{ rotatable_bonds->{"$residue_name"}{$a} } )
-    	      cmp scalar( @{ rotatable_bonds->{"$residue_name"}{$b} } ) }
-	    keys %{ rotatable_bonds->{"$residue_name"} };
+    	    sort{ scalar( @{ $ROTATABLE_BONDS{"$residue_name"}{$a} } )
+    	      cmp scalar( @{ $ROTATABLE_BONDS{"$residue_name"}{$b} } ) }
+	    keys %{ $ROTATABLE_BONDS{"$residue_name"} };
 
 	# Ignores movable side chain atoms so, iteractions between pseudo atoms
 	# and backbone could be analyzed properly.
@@ -247,8 +247,8 @@ sub generate_library
     	    	select_atom_data( $current_atom_site, [ "id" ] )->[0][0];
 
 	    my $angle_count =
-		scalar( @{ rotatable_bonds->{"$residue_name"}
-			                    {"$atom_name"} } ) - 2;
+		scalar( @{ $ROTATABLE_BONDS{"$residue_name"}
+			                   {"$atom_name"} } ) - 2;
 
 	    # TODO: look for cases, when all atoms produce clashes.
 	    my @current_angles;

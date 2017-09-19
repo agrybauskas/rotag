@@ -11,8 +11,8 @@ use List::MoreUtils qw(uniq);
 
 use lib "./";
 use PDBxParser qw( filter_atoms select_atom_data );
+use MoleculeProperties qw( %ROTATABLE_BONDS );
 use LinearAlgebra qw( matrix_sub vector_cross );
-use LoadParams qw( rotatable_bonds );
 
 # ----------------------------- Molecule parameters --------------------------- #
 
@@ -194,13 +194,13 @@ sub all_dihedral
 
     	# HACK: chooses atom that is dependent on the greatest quantity of
     	# rotatable bonds. Would not work on modified amino acids.
-    	foreach( keys %{ rotatable_bonds->{$residue_name} } ) {
-    	    if( scalar( @{ rotatable_bonds->{$residue_name}{$_} } )
+    	foreach( keys %{ $ROTATABLE_BONDS{$residue_name} } ) {
+    	    if( scalar( @{ $ROTATABLE_BONDS{$residue_name}{$_} } )
     		> $num_of_bonds ) {
     		$num_of_bonds =
-    		    scalar( @{ rotatable_bonds->{$residue_name}{$_} } );
+    		    scalar( @{ $ROTATABLE_BONDS{$residue_name}{$_} } );
     		@rotatable_bonds =
-    		    @{ rotatable_bonds->{$residue_name}{$_} };
+    		    @{ $ROTATABLE_BONDS{$residue_name}{$_} };
     	    }
     	}
 

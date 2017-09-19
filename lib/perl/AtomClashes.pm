@@ -9,10 +9,9 @@ our @EXPORT_OK = qw( radius_only );
 use List::Util qw( any max );
 
 use lib qw( ./ );
+use AtomProperties qw( %ATOMS );
 use PDBxParser qw( filter_atoms select_atom_data );
 use ConnectAtoms qw( connect_atoms grid_box is_connected is_second_neighbour );
-use AtomProperties qw( %ATOMS );
-use LoadParams qw( rotatable_bonds );
 
 # --------------------------- Detection of atom clashes ----------------------- #
 

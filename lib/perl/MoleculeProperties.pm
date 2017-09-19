@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( ROTATABLE_BONDS );
+our @EXPORT_OK = qw( %ROTATABLE_BONDS );
 
 # ------------------------------- Molecule properties ------------------------- #
 
@@ -19,7 +19,7 @@ our %ROTATABLE_BONDS = (
                      'CD1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD1' ] ],
                      'CZ'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD1' ] ],
                      'CE1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD1' ] ],
-                     'CG'  =>  [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ]
+                     'CG'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ]
                    },
           'TRP' => {
                      'CE3' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CD1' ] ],
@@ -30,7 +30,7 @@ our %ROTATABLE_BONDS = (
                      'CZ2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CD1' ] ],
                      'CZ3' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CD1' ] ],
                      'NE1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CD1' ] ],
-                     'CG'  =>  [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ]
+                     'CG'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ]
                    },
           'TYR' => {
                      'CD1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CD1' ] ],
@@ -114,6 +114,6 @@ our %ROTATABLE_BONDS = (
                      'NZ'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'CE' ], [ 'CE', 'NZ' ] ]
                    }
 
-    )
+    );
 
 1;
