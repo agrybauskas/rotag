@@ -1,10 +1,10 @@
-package AtomClashes;
+package AtomInteractions;
 
 use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( radius_only );
+our @EXPORT_OK = qw( hard_sphere );
 
 use List::Util qw( any max );
 
@@ -13,7 +13,7 @@ use AtomProperties qw( %ATOMS );
 use PDBxParser qw( filter_atoms select_atom_data );
 use ConnectAtoms qw( connect_atoms grid_box is_connected is_second_neighbour );
 
-# --------------------------- Detection of atom clashes ----------------------- #
+# ------------------------ Detection of atom interactions --------------------- #
 
 #
 # Checks if atoms have clashes with other atoms and removes if they do.
@@ -71,7 +71,7 @@ sub is_colliding
 #     clashes of specified atoms.
 #
 
-sub radius_only
+sub hard_sphere
 {
     my ( $atom_site, $atom_specifier ) = @_;
 
