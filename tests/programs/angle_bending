@@ -70,9 +70,7 @@ my $eval_matrix;
 for my $theta ( @angles ) {
     for my $psi ( @angles ) {
 	%symbols = ( "theta" => $theta, "psi" => $psi );
-	$eval_matrix =
-	    evaluate_matrix( matrix_product( $transf_matrix ),
-			     \%symbols );
+	$eval_matrix = evaluate_matrix( $transf_matrix, \%symbols );
 	printf( "X\t%.3f\t%.3f\t%.3f\n",
 		$eval_matrix->[0][0],
 		$eval_matrix->[1][0],

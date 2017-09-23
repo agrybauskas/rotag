@@ -75,8 +75,7 @@ sub generate_pseudo
     		map { $angle_names[$_], $angle_comb->[$_] } 0..$#angle_names;
     	    # Converts matrices to GiNaC compatable format and evaluates them.
     	    my $transf_atom_coord =
-    	    	evaluate_matrix( matrix_product( $conformation ),
-				 \%angle_values );
+		evaluate_matrix( $conformation, \%angle_values );
 
 	    # Adds necessary PDBx entries to pseudo atom.
     	    $last_atom_id++;

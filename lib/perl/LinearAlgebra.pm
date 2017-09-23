@@ -488,15 +488,16 @@ sub evaluate_matrix {
 
     my @eval_matrix;
 
-    # Adds $ sign to given symbols and then runs eval() function.
+    # # Adds $ sign to given symbols and then runs eval() function.
     for my $row ( @{ $matrix } ) {
-	push( @eval_matrix, [] );
-	for my $item_value ( @{ $row } ) {
-	    for my $symbol ( keys %{ $symbols } ) {
-		$item_value =~ s/\b(${symbol})\b/\$symbols{$1}/g;
-	    }
-	    push( @{ $eval_matrix[-1] }, eval( $item_value ) );
-	}
+    	push( @eval_matrix, [] );
+    	for my $element ( @{ $row } ) {
+	    my $element = $element;
+    	    for my $symbol ( keys %{ $symbols } ) {
+		$element =~ s/\b(${symbol})\b/\$symbols{$1}/g;
+    	    }
+    	    push( @{ $eval_matrix[-1] }, eval( $element ) );
+    	}
     }
 
     return \@eval_matrix;
