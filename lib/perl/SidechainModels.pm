@@ -8,8 +8,7 @@ our @EXPORT_OK = qw( rotation_only );
 
 use lib qw( ./ );
 use AlterMolecule qw( bond_torsion );
-use LinearAlgebra qw( evaluate_matrix
-                      matrix_product
+use LinearAlgebra qw( matrix_product
                       switch_ref_frame
                       vectorize );
 use MoleculeProperties qw( %ROTATABLE_BONDS );
@@ -108,8 +107,7 @@ sub rotation_only
     	}
 
     	$atom_site->{"$id"}{"conformation"} =
-    	    matrix_product( @transf_matrices,
-    			    vectorize( \@atom_coord ) );
+	    matrix_product( @transf_matrices, vectorize( \@atom_coord ) );
     }
 
     return $atom_site;

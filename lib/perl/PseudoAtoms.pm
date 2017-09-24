@@ -10,7 +10,7 @@ use List::Util qw( max );
 
 use lib qw( ./ );
 use Combinatorics qw( permutation );
-use LinearAlgebra qw( evaluate_matrix matrix_product pi );
+use LinearAlgebra qw( evaluate_matrix pi );
 use Measure qw( all_dihedral );
 use MoleculeProperties qw( %ROTATABLE_BONDS );
 use PDBxParser qw( filter_atoms select_atom_data );
