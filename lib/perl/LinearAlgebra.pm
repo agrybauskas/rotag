@@ -456,7 +456,7 @@ sub matrix_product
 
     # Runs GiNaC.
     my $matrix_product =
-	qx/ echo "evalm( ${matrix_equation} );" | ginsh /
+	qx/ echo "expand( evalm( ${matrix_equation} ) );" | ginsh /
 	|| die( "A row number of a left matrix is NOT equal to the column\n" .
 		"number of the right matrix.\n" );
 
