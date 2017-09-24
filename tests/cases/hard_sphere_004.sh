@@ -9,5 +9,5 @@ num_of_angles="chi0 2 & chi1 2 & chi2 2 & chi3 2" # Number of angles witll be
                                                   # generated for each dihedral
                                                   # angle.
 
-../programs/radius_only "${target_atom}" "${clash_specifier}" "${angle_range}" \
+../programs/hard_sphere "${target_atom}" "${clash_specifier}" "${angle_range}" \
 			"${num_of_angles}" ${pdbx_file}
