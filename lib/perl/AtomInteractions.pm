@@ -12,7 +12,7 @@ use lib qw( ./ );
 use AtomProperties qw( %ATOMS );
 use PDBxParser qw( filter_atoms select_atom_data );
 use ConnectAtoms qw( connect_atoms grid_box is_connected is_second_neighbour );
-use Data::Dumper;
+
 # ------------------------ Detection of atom interactions --------------------- #
 
 #
@@ -89,77 +89,48 @@ sub hard_sphere
     # radii.
     my $grid_box = grid_box( $atom_site, $MAX_VDW_RADIUS );
 
-    # Marks the location of atoms.
-    my %atom_location;
-    for my $cell ( keys %{ $grid_box } ) {
-    	for my $atom_id ( @{ $grid_box->{$cell} } ) {
-    	    $atom_location{$atom_id} = $cell;
-    	}
-    }
-
-    for my $atom_id ( @atom_ids ) {
-    	my @cell_indexes = split( ",", $atom_location{$atom_id} );
-	my @neighbour_ids; # The array will contain all atoms of the
-	                   # neighbouring 26 cells.
+    # Checks for neighbouring cells for each cell.
+    foreach my $cell ( keys %{ $grid_box } ) {
+    	my @cell_indexes = split( ",", $cell );
+    	my @neighbour_cells; # The array will contain all atoms of the
+                             # neighbouring 26 cells.
 
     	# $i represents x, $j - y, $k - z coordinates.
     	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
-        for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
-	for my $k ( ( $cell_indexes[2] - 1..$cell_indexes[2] + 1 ) ) {
-	    if( exists $grid_box->{"$i,$j,$k"} ) {
-		push( @neighbour_ids, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+    	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
+    	for my $k ( ( $cell_indexes[2] - 1..$cell_indexes[2] + 1 ) ) {
+    	if( exists $grid_box->{"$i,$j,$k"} ) {
+    	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-	# Selects atoms first inside current cell and then surrounding ones.
-	my @surround_atom_ids;
-
-	# @{ $grid_box->{$atom_location{$atom_id}} }
-
-	# Checks, if there are clashes between atoms inside and around target
-	# cell.
+    	# Checks, if there are clashes between atoms.
+    	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+    	    if( any { $atom_id eq $_ } @atom_ids ) {
+    		foreach my $neighbour_id ( @neighbour_cells ) {
+    		    if( not any { $neighbour_id eq $_ } @atom_ids ) {
+    		    	if( is_colliding( $atom_site->{"$atom_id"},
+    		    			  $atom_site->{"$neighbour_id"} )
+    		    	    && $atom_id ne $neighbour_id
+    		    	    && ( not is_connected(
+    				     $atom_site->{"$atom_id"},
+    				     $atom_site->{"$neighbour_id"} ) )
+    		    	    && ( not is_second_neighbour(
+    				     $atom_site, $atom_id, $neighbour_id ) ) ) {
+    		    	    push( @{ $atom_site->{$atom_id}{"clashes"} },
+    		    		  $neighbour_id );
+    		    	}
+    		    }
+    		}
+    	    }
+    	}
     }
 
-    # # Checks for neighbouring cells for each cell.
-    # foreach my $cell ( keys %{ $grid_box } ) {
-    # 	my @cell_indexes = split( ",", $cell );
-    # 	my @neighbour_cells; # The array will contain all atoms of the
-    #                          # neighbouring 26 cells.
+    # Removes atoms with any clashes.
+    foreach my $atom_id ( keys %{ $atom_site } ) {
+    	delete $atom_site->{$atom_id}
+    	if exists $atom_site->{$atom_id}{"clashes"};
+    }
 
-    # 	# $i represents x, $j - y, $k - z coordinates.
-    # 	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
-    # 	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
-    # 	for my $k ( ( $cell_indexes[2] - 1..$cell_indexes[2] + 1 ) ) {
-    # 	if( exists $grid_box->{"$i,$j,$k"} ) {
-    # 	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
-
-    # 	# Checks, if there are clashes between atoms.
-    # 	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    # 	    if( any { $atom_id eq $_ } @atom_ids ) {
-    # 		foreach my $neighbour_id ( @neighbour_cells ) {
-    # 		    if( not any { $neighbour_id eq $_ } @atom_ids ) {
-    # 		    	if( is_colliding( $atom_site->{"$atom_id"},
-    # 		    			  $atom_site->{"$neighbour_id"} )
-    # 		    	    && $atom_id ne $neighbour_id
-    # 		    	    && ( not is_connected(
-    # 				     $atom_site->{"$atom_id"},
-    # 				     $atom_site->{"$neighbour_id"} ) )
-    # 		    	    && ( not is_second_neighbour(
-    # 				     $atom_site, $atom_id, $neighbour_id ) ) ) {
-    # 		    	    push( @{ $atom_site->{$atom_id}{"clashes"} },
-    # 		    		  $neighbour_id );
-    # 		    	}
-    # 		    }
-    # 		}
-    # 	    }
-    # 	}
-    # }
-
-    # # Removes atoms with any clashes.
-    # foreach my $atom_id ( keys %{ $atom_site } ) {
-    # 	delete $atom_site->{$atom_id}
-    # 	if exists $atom_site->{$atom_id}{"clashes"};
-    # }
-
-    # return $atom_site;
+    return $atom_site;
 }
 
 1;
