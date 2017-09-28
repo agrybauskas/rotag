@@ -79,16 +79,17 @@ sub create_box
 #     %grid_box - hash where key is string representing cell id and value -
 #     atom id.
 #
-
+use Data::Dumper;
 sub grid_box
 {
     my ( $atom_site, $edge_length ) = @_;
 
     # Determines boundary box around all atoms.
-    my $all_atom_coord =
+    my $atom_data =
 	select_atom_data( $atom_site,
 			  [ "id", "Cartn_x", "Cartn_y", "Cartn_z" ] );
-    my $boundary_box = create_box( $all_atom_coord );
+    my @atom_coordinates = map { [ $_->[1], $_->[2], $_->[3] ] } @{ $atom_data };
+    my $boundary_box = create_box( \@atom_coordinates );
 
     # Creates box with cells with edge length of given variable in angstroms.
     my %grid_box;
@@ -97,7 +98,7 @@ sub grid_box
     my $cell_index_z;
 
     # Iterates through atoms and determines in which cell these atoms are.
-    foreach my $atom_coord ( @{ $all_atom_coord } ) {
+    foreach my $atom_coord ( @{ $atom_data } ) {
     	$cell_index_x =
     	    int( ( $atom_coord->[1] - $boundary_box->[0] )
     		 / $edge_length ) + 1;
