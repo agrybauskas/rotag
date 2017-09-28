@@ -5,6 +5,7 @@ use warnings;
 
 use lib "../../lib/perl";
 use ConnectAtoms qw( create_box );
+use PDBxParser qw( obtain_atom_site );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -19,14 +20,62 @@ use Utils qw( select_atom_data );
 
 my ( $atom_specifier, $pdbx_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_data = select_atom_data( $pdbx_file,
-				  $atom_specifier,
-				  "Cartn_x,Cartn_y,Cartn_z" );
+my $atom_site = obtain_atom_site( $pdbx_file );
 
-# Creates and prints out the boundaries of the box.
+# In Jmol, prints out atom coordinates.
+print( "data \"model\"\n" );
+print( scalar( keys %{ $atom_site } ), "\n" );
+print( "testing\n" );
+
+for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+    printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
+	    "\t%.3f\t%.3f\t%.3f\n",
+	    $atom_site->{$atom_id}{"Cartn_x"},
+	    $atom_site->{$atom_id}{"Cartn_y"},
+	    $atom_site->{$atom_id}{"Cartn_z"} );
+}
+
+print( "end \"model\"\n" );
+
+# In Jmol, generates box around the molecule.
+my $atom_data =
+    select_atom_data( $pdbx_file, $atom_specifier, "Cartn_x,Cartn_y,Cartn_z" );
+
 my $boundary_box = create_box( $atom_data );
 
-print( "$boundary_box->[0]\t$boundary_box->[1]\n" .
-       "$boundary_box->[2]\t$boundary_box->[3]\n" .
-       "$boundary_box->[4]\t$boundary_box->[5]\n" );
+print( "draw line1",
+       "{$boundary_box->[1], $boundary_box->[2], $boundary_box->[5]}",
+       "{$boundary_box->[1], $boundary_box->[2], $boundary_box->[4]};",
+       "draw line2",
+       "{$boundary_box->[1], $boundary_box->[2], $boundary_box->[5]}",
+       "{$boundary_box->[1], $boundary_box->[3], $boundary_box->[5]};",
+       "draw line3",
+       "{$boundary_box->[1], $boundary_box->[2], $boundary_box->[5]}",
+       "{$boundary_box->[0], $boundary_box->[2], $boundary_box->[5]};",
+       "draw line4",
+       "{$boundary_box->[0], $boundary_box->[3], $boundary_box->[5]}",
+       "{$boundary_box->[0], $boundary_box->[3], $boundary_box->[4]};",
+       "draw line5",
+       "{$boundary_box->[0], $boundary_box->[3], $boundary_box->[5]}",
+       "{$boundary_box->[0], $boundary_box->[2], $boundary_box->[5]};",
+       "draw line6",
+       "{$boundary_box->[0], $boundary_box->[3], $boundary_box->[5]}",
+       "{$boundary_box->[1], $boundary_box->[3], $boundary_box->[5]};",
+       "draw line7",
+       "{$boundary_box->[0], $boundary_box->[2], $boundary_box->[4]}",
+       "{$boundary_box->[0], $boundary_box->[2], $boundary_box->[5]};",
+       "draw line8",
+       "{$boundary_box->[0], $boundary_box->[2], $boundary_box->[4]}",
+       "{$boundary_box->[0], $boundary_box->[3], $boundary_box->[4]};",
+       "draw line9",
+       "{$boundary_box->[0], $boundary_box->[2], $boundary_box->[4]}",
+       "{$boundary_box->[1], $boundary_box->[2], $boundary_box->[4]};",
+       "draw line10",
+       "{$boundary_box->[1], $boundary_box->[3], $boundary_box->[4]}",
+       "{$boundary_box->[1], $boundary_box->[3], $boundary_box->[5]};",
+       "draw line11",
+       "{$boundary_box->[1], $boundary_box->[3], $boundary_box->[4]}",
+       "{$boundary_box->[1], $boundary_box->[2], $boundary_box->[4]};",
+       "draw line12",
+       "{$boundary_box->[1], $boundary_box->[3], $boundary_box->[4]}",
+       "{$boundary_box->[0], $boundary_box->[3], $boundary_box->[4]};" );
