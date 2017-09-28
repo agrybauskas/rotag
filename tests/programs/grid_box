@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use List::Util qw( max );
+
+use lib "../../lib/perl";
+use AtomProperties qw( %ATOMS );
+use ConnectAtoms qw( grid_box );
+use PDBxParser qw( obtain_atom_site );
+
+use lib "../lib";
+use Utils qw( select_atom_data );
+
+#
+# Unit test: ConnectAtoms::create_box.
+#
+# Creates smallest possible box that surrounds all selected atoms.
+#
+# Example: ./grid_box example.cif
+#
+
+my ( $atom_specifier, $pdbx_file ) = @ARGV;
+
+my $atom_site = obtain_atom_site( $pdbx_file );
+
+# In Jmol, prints out atom coordinates.
+print( "data \"model\"\n" );
+print( scalar( keys %{ $atom_site } ), "\n" );
+print( "testing\n" );
+
+for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+    printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
+	    "\t%.3f\t%.3f\t%.3f\n",
+	    $atom_site->{$atom_id}{"Cartn_x"},
+	    $atom_site->{$atom_id}{"Cartn_y"},
+	    $atom_site->{$atom_id}{"Cartn_z"} );
+}
+
+print( "end \"model\"\n" );
+
+# In Jmol, generates box around the molecule.
+my $MAX_COV_LENGTH =
+    max( map { @{ $ATOMS{$_}{"covalent_radius"}{"length"} } } keys %ATOMS ) * 2;
+
+my $grid_box = grid_box( $atom_site, $MAX_COV_LENGTH );
