@@ -79,7 +79,7 @@ sub create_box
 #     %grid_box - hash where key is string representing cell id and value -
 #     atom id.
 #
-use Data::Dumper;
+
 sub grid_box
 {
     my ( $atom_site, $edge_length ) = @_;

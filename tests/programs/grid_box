@@ -12,7 +12,7 @@ use PDBxParser qw( obtain_atom_site );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
-use Data::Dumper;
+
 #
 # Unit test: ConnectAtoms::create_box.
 #
