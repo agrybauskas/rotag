@@ -4,90 +4,55 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( hard_sphere );
+our @EXPORT_OK = qw( potential );
 
 use List::Util qw( any max );
 
 use lib qw( ./ );
 use AtomProperties qw( %ATOMS );
-use PDBxParser qw( filter_atoms select_atom_data );
-use ConnectAtoms qw( connect_atoms grid_box is_connected is_second_neighbour );
+use ConnectAtoms qw( connect_atoms
+                     grid_box
+                     is_connected
+                     is_second_neighbour );
+use PDBxParser qw( filter_atoms
+                   select_atom_data );
 
-# ------------------------ Detection of atom interactions --------------------- #
-
-#
-# Checks if atoms have clashes with other atoms and removes if they do.
-#
-
-#
-# Parameters.
-#
-
-my $MAX_VDW_RADIUS =
-    max( map { $ATOMS{$_}{"vdw_radius"} } keys %ATOMS ) * 2;
+# ---------------------------- General potential ------------------------------ #
 
 #
-# Checks, if two atoms are colliding.
-# Input:
-#     $target_atom, $neighbour_atom - atom data structure (see PDBxParser.pm).
-# Output:
-#          $is_colliding - boolean of two values: 0 (as false) and 1 (as true).
-#
-
-sub is_colliding
-{
-    my ( $target_atom, $neighbour_atom ) = @_;
-
-    my $vdw_length =
-	$ATOMS{$target_atom->{"type_symbol"}}{"vdw_radius"}
-      + $ATOMS{$neighbour_atom->{"type_symbol"}}{"vdw_radius"};
-
-    my $distance =
-    	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
-      + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
-      + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
-
-    # Checks, if distance between atom pairs is in one of the combinations.
-    my $is_colliding;
-
-    if( $distance < $vdw_length ** 2 ) {
-	$is_colliding = 1;
-    } else {
-	$is_colliding = 0;
-    }
-
-    return $is_colliding;
-}
-
-#
-# Simplest function for determining atoms clashes. Only radius of atoms are
-# considered.
+# General potential function that inherits other potential functions. Its purpose
+# is to calculate attractive/repulsive forces.
 # Input:
 #     $atom_site - atom data structure.
+#     $potential - potential function that is used in calculation of forces.
+#     $cutoff - value of potential where placement of pseudo atom is not
+#     considered.
 #     $atom_specifier - compound data structure for specifying desirable atoms
 #     (see PDBxParser.pm).
 # Output:
-#     %atom_clashes - modified $atom_site with added information about atom
-#     clashes of specified atoms.
+#     %atom_site - modified $atom_site with added information about atom
+#     energy value.
 #
 
-sub hard_sphere
+sub potential
 {
-    my ( $atom_site, $atom_specifier ) = @_;
+    my ( $atom_site, $potential, $cutoff, $atom_specifier ) = @_;
 
-    # Clashes of all atoms analyzed, if no specific atoms are selected.
+    # Interactions of all atoms analyzed, if no specific atoms are selected.
     $atom_specifier = { "group_pdb" => [ "ATOM" ] } unless $atom_specifier;
     my @atom_ids = # Atom ids selected by $atom_specifier.
     	map { $_->[0] }
         @{ select_atom_data( filter_atoms( $atom_site, $atom_specifier ),
-			     [ "id" ] ) };
+    			     [ "id" ] ) };
+
+    # Selection of potential function.
+    my $potential_function = \&hard_sphere if $potential eq "hard_sphere";
 
     # Checks for connecting atoms that will be excluded from clash list.
     connect_atoms( $atom_site );
 
-    # Creates box around atoms, makes grid with edge length of max covalent
-    # radii.
-    my $grid_box = grid_box( $atom_site, $MAX_VDW_RADIUS );
+    # Makes grid with edge length of max covalent radii.
+    my $grid_box = grid_box( $atom_site );
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
@@ -102,35 +67,69 @@ sub hard_sphere
     	if( exists $grid_box->{"$i,$j,$k"} ) {
     	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-    	# Checks, if there are clashes between atoms.
+    	# Calculates pair interactions of two atoms. First and second neighbours
+	# are not included in the analysis.
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    	    if( any { $atom_id eq $_ } @atom_ids ) {
-    		foreach my $neighbour_id ( @neighbour_cells ) {
-    		    if( not any { $neighbour_id eq $_ } @atom_ids ) {
-    		    	if( is_colliding( $atom_site->{"$atom_id"},
-    		    			  $atom_site->{"$neighbour_id"} )
-    		    	    && $atom_id ne $neighbour_id
-    		    	    && ( not is_connected(
-    				     $atom_site->{"$atom_id"},
-    				     $atom_site->{"$neighbour_id"} ) )
-    		    	    && ( not is_second_neighbour(
-    				     $atom_site, $atom_id, $neighbour_id ) ) ) {
-    		    	    push( @{ $atom_site->{$atom_id}{"clashes"} },
-    		    		  $neighbour_id );
-    		    	}
-    		    }
-    		}
-    	    }
-    	}
-    }
+	    $atom_site->{$atom_id}{"potential_energy"} = 0;
+	    if( any { $atom_id eq $_ } @atom_ids ) {
+	foreach my $neighbour_id ( @neighbour_cells ) {
+	    if( not any { $neighbour_id eq $_ } @atom_ids ) {
+	    if( $atom_id ne $neighbour_id
+		&& ( not is_connected( $atom_site->{"$atom_id"},
+				       $atom_site->{"$neighbour_id"} ) )
+		&& ( not is_second_neighbour( $atom_site,
+					      $atom_id,
+					      $neighbour_id ) ) ) {
+		$atom_site->{$atom_id}{"potential_energy"} +=
+		    $potential_function->( $atom_site->{"$atom_id"},
+					   $atom_site->{"$neighbour_id"} );
+		last if $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
+	} } } } } }
 
     # Removes atoms with any clashes.
     foreach my $atom_id ( keys %{ $atom_site } ) {
     	delete $atom_site->{$atom_id}
-    	if exists $atom_site->{$atom_id}{"clashes"};
+    	if exists $atom_site->{$atom_id}{"potential_energy"}
+	&& $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
     }
 
     return $atom_site;
+}
+
+# ------------------------- Various potential functions ----------------------- #
+
+#
+# Hard sphere potential function. Described as:
+#     0,   r_{ij} >= vdw_{i} + vdw_{j}
+#     Inf, r_{ij} <  vdw_{i} + vdw_{j}
+#
+#     where: r - distance between center of atoms;
+#            vdw - Van der Waals radius;
+#            Inf - infinity;
+# Input:
+#     $target_atom, $neighbour_atom - atom data structure (see PDBxParser.pm).
+# Output:
+#     two values: 0 or "Inf" (infinity).
+#
+
+sub hard_sphere
+{
+    my ( $target_atom, $neighbour_atom ) = @_;
+
+    my $vdw_length =
+	$ATOMS{$target_atom->{"type_symbol"}}{"vdw_radius"}
+      + $ATOMS{$neighbour_atom->{"type_symbol"}}{"vdw_radius"};
+
+    my $distance =
+    	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
+
+    if( $distance < $vdw_length ** 2 ) {
+	return "Inf";
+    } else {
+	return 0;
+    }
 }
 
 1;

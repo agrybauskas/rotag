@@ -14,19 +14,10 @@ use List::Util qw( max min );
 
 use lib qw( ./ );
 use AtomProperties qw( %ATOMS );
-use PDBxParser qw( select_atom_data );
 use Combinatorics qw( permutation );
+use PDBxParser qw( select_atom_data );
 
 # ------------------------------ Connect atoms ------------------------------- #
-
-#
-# Parameters.
-#
-
-# Maximum value of all given covalent lengths. Used for determining length of the
-# box grid edges.
-my $MAX_COV_LENGTH =
-    max( map { @{ $ATOMS{$_}{"covalent_radius"}{"length"} } } keys %ATOMS ) * 2;
 
 #
 # Shows what atom is connected to what atom using only information about atom
@@ -83,6 +74,12 @@ sub create_box
 sub grid_box
 {
     my ( $atom_site, $edge_length ) = @_;
+
+    # Default value for edge length is two times greater than the largest
+    # covalent radius.
+    $edge_length //=
+	max( map { @{ $ATOMS{$_}{"covalent_radius"}{"length"} } }
+	     keys %ATOMS ) * 2;
 
     # Determines boundary box around all atoms.
     my $atom_data =
@@ -240,7 +237,7 @@ sub connect_atoms
 
     # Creates box around atoms, makes grid with edge length of max covalent radii
     # of the parameter file.
-    my $grid_box = grid_box( $atom_site, $MAX_COV_LENGTH );
+    my $grid_box = grid_box( $atom_site );
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {

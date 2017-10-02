@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use lib "../../lib/perl";
-use AtomInteractions qw( hard_sphere );
 use LinearAlgebra qw( pi );
 use PDBxParser qw( obtain_atom_site );
 use PseudoAtoms qw( generate_library );
@@ -29,7 +28,8 @@ close( $fh );
 			     "residue_ids"   => [ $residue_id ],
 			     "small_angle"   => eval( $small_angle ),
 			     "conformations" => \&rotation_only,
-			     "interactions"  => \&hard_sphere } ) } );
+			     "interactions"  => "hard_sphere",
+			     "cutoff"        => 0  } ) } );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $atom_site } ), "\n" );

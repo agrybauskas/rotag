@@ -4,16 +4,21 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( generate_library generate_pseudo generate_rotamer );
+our @EXPORT_OK = qw( generate_library
+                     generate_pseudo
+                     generate_rotamer );
 
 use List::Util qw( max );
 
 use lib qw( ./ );
+use AtomInteractions qw( potential );
 use Combinatorics qw( permutation );
-use LinearAlgebra qw( evaluate_matrix pi );
+use LinearAlgebra qw( evaluate_matrix
+                      pi );
 use Measure qw( all_dihedral );
 use MoleculeProperties qw( %ROTATABLE_BONDS );
-use PDBxParser qw( filter_atoms select_atom_data );
+use PDBxParser qw( filter_atoms
+                   select_atom_data );
 use Sampling qw( sample_angles );
 
 # --------------------------- Generation of pseudo-atoms ---------------------- #
@@ -199,6 +204,7 @@ sub generate_library
     my $small_angle = $args->{"small_angle"};
     my $conformations = $args->{"conformations"};
     my $interactions = $args->{"interactions"};
+    my $cutoff = $args->{"cutoff"};
 
     my %library_atom_site;
 
@@ -284,17 +290,20 @@ sub generate_library
 		my $pseudo_atom_id =
 		    select_atom_data( $pseudo_atom_site, [ "id" ] )->[0][0];
 
-		$interactions->( { %interaction_site,
-				   %{ $pseudo_atom_site } },
-				 { "id" => [ $pseudo_atom_id ] } );
+		potential( { %interaction_site,
+			     %{ $pseudo_atom_site } },
+			   $interactions,
+			   $cutoff,
+			   { "id" => [ $pseudo_atom_id ] } );
 
-		if( ! exists $pseudo_atom_site->{"$pseudo_atom_id"}{"clashes"} ){
+		if( $pseudo_atom_site->{"$pseudo_atom_id"}
+		                       {"potential_energy"} <= $cutoff ) {
 		    push( @allowed_angles, $angles );
 		}
 	    }
 
 	    die "No possible rotamer solutions were detected."
-		if scalar( @allowed_angles ) == 0;
+	    	if scalar( @allowed_angles ) == 0;
 	}
 
 	# Generates final rotamers.
