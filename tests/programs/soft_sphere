@@ -83,7 +83,7 @@ $atom_site =
 	  %{ generate_pseudo( rotation_only( $atom_site ),
 			      \%atom_specifier,
 			      \%num_angle_values ) } },
-	"hard_sphere",
+	"soft_sphere",
 	$cutoff,
 	\%interact_specifier );
 
