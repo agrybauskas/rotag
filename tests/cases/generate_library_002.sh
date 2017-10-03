@@ -2,8 +2,8 @@
 cd "$(dirname "$0")"
 
 pdbx_file=../inputs/serine_001.cif
-potential="hard_sphere"
-cutoff=0
+potential="soft_sphere"
+cutoff=7
 target_resi="18"
 small_angle="0.1*pi"
 

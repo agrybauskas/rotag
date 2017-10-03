@@ -9,7 +9,7 @@ use PDBxParser qw( obtain_atom_site );
 use PseudoAtoms qw( generate_library );
 use SidechainModels qw( rotation_only );
 
-my ( $residue_id, $small_angle, $pdbx_file ) = @ARGV;
+my ( $potential, $cutoff, $residue_id, $small_angle, $pdbx_file ) = @ARGV;
 
 my $atom_site = obtain_atom_site( $pdbx_file );
 $small_angle =~ s/pi/pi\(\)/g;
@@ -28,8 +28,8 @@ close( $fh );
 			     "residue_ids"   => [ $residue_id ],
 			     "small_angle"   => eval( $small_angle ),
 			     "conformations" => \&rotation_only,
-			     "interactions"  => "hard_sphere",
-			     "cutoff"        => 0  } ) } );
+			     "interactions"  => $potential,
+			     "cutoff"        => $cutoff  } ) } );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $atom_site } ), "\n" );
