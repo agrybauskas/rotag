@@ -49,6 +49,7 @@ sub potential
     my $potential_function;
     $potential_function = \&hard_sphere if $potential eq "hard_sphere";
     $potential_function = \&soft_sphere if $potential eq "soft_sphere";
+    $potential_function = \&exponential if $potential eq "exponential";
 
     # Checks for connecting atoms that will be excluded from clash list.
     connect_atoms( $atom_site );
@@ -167,6 +168,45 @@ sub soft_sphere
 
     if( $distance <= $vdw_length ** 2 ) {
 	return $epsilon * ( $vdw_length / sqrt( $distance ) )**$n;
+    } else {
+	return 0;
+    }
+}
+
+
+#
+# Exponential potential function. Described as:
+#     epsilon * exp( - ( r_{ij} / vdw_{i} + vdw_{j} ) ) ** m ,
+#        r_{ij} <= vdw_{i} + vdw_{j}
+#     0, r_{ij} >  vdw_{i} + vdw_{j}
+#
+#     where: r - distance between center of atoms;
+#            vdw - Van der Waals radius;
+#            epsilon - energy coefficient; TODO: should study more about it.
+# Input:
+#     $target_atom, $neighbour_atom - atom data structure (see PDBxParser.pm).
+# Output:
+#     value, calculated by soft sphere potential.
+#
+
+sub exponential
+{
+    my ( $target_atom, $neighbour_atom, $epsilon, $m ) = @_;
+
+    $epsilon //= 1.0;
+    $m //= 1.0;
+
+    my $vdw_length =
+	$ATOMS{$target_atom->{"type_symbol"}}{"vdw_radius"}
+      + $ATOMS{$neighbour_atom->{"type_symbol"}}{"vdw_radius"};
+
+    my $distance =
+    	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
+
+    if( $distance <= $vdw_length ** 2 ) {
+	return $epsilon * exp( - ( sqrt( $distance ) / $vdw_length ) ** $m );
     } else {
 	return 0;
     }
