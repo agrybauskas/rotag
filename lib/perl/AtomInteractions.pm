@@ -23,24 +23,27 @@ use PDBxParser qw( filter_atoms
 # General potential function that inherits other potential functions. Its purpose
 # is to calculate attractive/repulsive forces.
 # Input:
-#     $atom_site, $target_atom_site - atom data structure.
-#     $potential - string variable that selects function for the calculation of
-#     potentials.
+#     $atom_site - atom data structure.
+#     $potential - potential function that is used in calculation of forces.
 #     $cutoff - value of potential where placement of pseudo atom is not
 #     considered.
+#     $atom_specifier - compound data structure for specifying desirable atoms
 #     (see PDBxParser.pm).
 # Output:
-#     %target_atom_site - modified $target_atom_site with added information about
-#     atom energy value.
+#     %atom_site - modified $atom_site with added information about atom
+#     energy value.
 #
 
 sub potential
 {
-    my ( $atom_site, $target_atom_site, $potential, $cutoff ) = @_;
+    my ( $atom_site, $potential, $cutoff, $atom_specifier ) = @_;
 
-    my %all_atom_site = ( %{ $atom_site }, %{ $target_atom_site } );
-
-    my @target_atom_ids = keys %{ $target_atom_site };
+    # Interactions of all atoms analyzed, if no specific atoms are selected.
+    $atom_specifier = { "group_pdb" => [ "ATOM" ] } unless $atom_specifier;
+    my @atom_ids = # Atom ids selected by $atom_specifier.
+    	map { $_->[0] }
+        @{ select_atom_data( filter_atoms( $atom_site, $atom_specifier ),
+    			     [ "id" ] ) };
 
     # Selection of potential function.
     my $potential_function;
@@ -49,10 +52,10 @@ sub potential
     $potential_function = \&exponential if $potential eq "exponential";
 
     # Checks for connecting atoms that will be excluded from clash list.
-    connect_atoms( \%all_atom_site );
+    connect_atoms( $atom_site );
 
     # Makes grid with edge length of max covalent radii.
-    my $grid_box = grid_box( \%all_atom_site );
+    my $grid_box = grid_box( $atom_site );
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
@@ -68,32 +71,32 @@ sub potential
     	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
     	# Calculates pair interactions of two atoms. First and second neighbours
-    	# are not included in the analysis.
+	# are not included in the analysis.
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    	    $atom_site->{$atom_id}{"potential_energy"} = 0;
-    	    if( any { $atom_id eq $_ } @target_atom_ids ) {
-    	foreach my $neighbour_id ( @neighbour_cells ) {
-    	    if( not any { $neighbour_id eq $_ } @target_atom_ids ) {
-    	    if( $atom_id ne $neighbour_id
-    		&& ( not is_connected( $target_atom_site->{"$atom_id"},
-    				       $atom_site->{"$neighbour_id"} ) )
-    		&& ( not is_second_neighbour( \%all_atom_site,
-    					      $atom_id,
-    					      $neighbour_id ) ) ) {
-    		$target_atom_site->{$atom_id}{"potential_energy"} +=
-    		    $potential_function->( $target_atom_site->{"$atom_id"},
-    					   $atom_site->{"$neighbour_id"} );
-    		last if $target_atom_site->{$atom_id}{"potential_energy"} > $cutoff;
-    	} } } } } }
+	    $atom_site->{$atom_id}{"potential_energy"} = 0;
+	    if( any { $atom_id eq $_ } @atom_ids ) {
+	foreach my $neighbour_id ( @neighbour_cells ) {
+	    if( not any { $neighbour_id eq $_ } @atom_ids ) {
+	    if( $atom_id ne $neighbour_id
+		&& ( not is_connected( $atom_site->{"$atom_id"},
+				       $atom_site->{"$neighbour_id"} ) )
+		&& ( not is_second_neighbour( $atom_site,
+					      $atom_id,
+					      $neighbour_id ) ) ) {
+		$atom_site->{$atom_id}{"potential_energy"} +=
+		    $potential_function->( $atom_site->{"$atom_id"},
+					   $atom_site->{"$neighbour_id"} );
+		last if $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
+	} } } } } }
 
     # Removes atoms with any clashes.
-    foreach my $atom_id ( keys %{ $target_atom_site } ) {
-    	delete $target_atom_site->{$atom_id}
-    	if exists $target_atom_site->{$atom_id}{"potential_energy"}
-    	&& $target_atom_site->{$atom_id}{"potential_energy"} > $cutoff;
+    foreach my $atom_id ( keys %{ $atom_site } ) {
+    	delete $atom_site->{$atom_id}
+    	if exists $atom_site->{$atom_id}{"potential_energy"}
+	&& $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
     }
 
-    return $target_atom_site;
+    return $atom_site;
 }
 
 # ------------------------- Various potential functions ----------------------- #
