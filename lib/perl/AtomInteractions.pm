@@ -16,7 +16,7 @@ use ConnectAtoms qw( connect_atoms
                      is_second_neighbour );
 use PDBxParser qw( filter_atoms
                    select_atom_data );
-
+use Data::Dumper;
 # ---------------------------- General potential ------------------------------ #
 
 #
@@ -27,8 +27,8 @@ use PDBxParser qw( filter_atoms
 #     $potential - potential function that is used in calculation of forces.
 #     $cutoff - value of potential where placement of pseudo atom is not
 #     considered.
-#     $atom_specifier - compound data structure for specifying desirable atoms
-#     (see PDBxParser.pm).
+#     $target_atoms, $visible_atoms - compound data structure for specifying
+#     desirable atoms (see PDBxParser.pm).
 # Output:
 #     %atom_site - modified $atom_site with added information about atom
 #     energy value.
@@ -36,14 +36,21 @@ use PDBxParser qw( filter_atoms
 
 sub potential
 {
-    my ( $atom_site, $potential, $cutoff, $atom_specifier ) = @_;
+    my ( $atom_site, $potential, $cutoff, $target_atoms, $visible_atoms ) = @_;
 
     # Interactions of all atoms analyzed, if no specific atoms are selected.
-    $atom_specifier = { "group_pdb" => [ "ATOM" ] } unless $atom_specifier;
-    my @atom_ids = # Atom ids selected by $atom_specifier.
+    $target_atoms =  { "group_pdb" => [ "ATOM" ] } unless $target_atoms;
+    $visible_atoms = { "group_pdb" => [ "ATOM" ] } unless $visible_atoms;
+    my @target_atom_ids = # Atom ids selected by $atom_specifier.
     	map { $_->[0] }
-        @{ select_atom_data( filter_atoms( $atom_site, $atom_specifier ),
-    			     [ "id" ] ) };
+        @{ select_atom_data(
+	   filter_atoms( $atom_site, $target_atoms ),
+	   [ "id" ] ) };
+    my @visible_atom_ids = # Atom ids selected by $atom_specifier.
+    	map { $_->[0] }
+        @{ select_atom_data(
+	   filter_atoms( $atom_site, $visible_atoms ),
+	   [ "id" ] ) };
 
     # Selection of potential function.
     my $potential_function;
@@ -71,29 +78,29 @@ sub potential
     	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
     	# Calculates pair interactions of two atoms. First and second neighbours
-	# are not included in the analysis.
+    	# are not included in the analysis.
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-	    $atom_site->{$atom_id}{"potential_energy"} = 0;
-	    if( any { $atom_id eq $_ } @atom_ids ) {
-	foreach my $neighbour_id ( @neighbour_cells ) {
-	    if( not any { $neighbour_id eq $_ } @atom_ids ) {
-	    if( $atom_id ne $neighbour_id
-		&& ( not is_connected( $atom_site->{"$atom_id"},
-				       $atom_site->{"$neighbour_id"} ) )
-		&& ( not is_second_neighbour( $atom_site,
-					      $atom_id,
-					      $neighbour_id ) ) ) {
-		$atom_site->{$atom_id}{"potential_energy"} +=
-		    $potential_function->( $atom_site->{"$atom_id"},
-					   $atom_site->{"$neighbour_id"} );
-		last if $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
-	} } } } } }
+    	    $atom_site->{$atom_id}{"potential_energy"} = 0;
+    	    if( any { $atom_id eq $_ } @target_atom_ids ) {
+    	foreach my $neighbour_id ( @neighbour_cells ) {
+    	    if( any { $neighbour_id eq $_ } @visible_atom_ids ) {
+    	    if( $atom_id ne $neighbour_id
+    		&& ( not is_connected( $atom_site->{"$atom_id"},
+    				       $atom_site->{"$neighbour_id"} ) )
+    		&& ( not is_second_neighbour( $atom_site,
+    					      $atom_id,
+    					      $neighbour_id ) ) ) {
+    		$atom_site->{$atom_id}{"potential_energy"} +=
+    		    $potential_function->( $atom_site->{"$atom_id"},
+    					   $atom_site->{"$neighbour_id"} );
+    		last if $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
+    	} } } } } }
 
     # Removes atoms with any clashes.
     foreach my $atom_id ( keys %{ $atom_site } ) {
     	delete $atom_site->{$atom_id}
     	if exists $atom_site->{$atom_id}{"potential_energy"}
-	&& $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
+    	&& $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
     }
 
     return $atom_site;

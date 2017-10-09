@@ -294,7 +294,8 @@ sub generate_library
 			     %{ $pseudo_atom_site } },
 			   $interactions,
 			   $cutoff,
-			   { "id" => [ $pseudo_atom_id ] } );
+			   { "id" => [ $pseudo_atom_id ] },
+			   { "label_atom_id" => [ "N", "CA", "C", "O" ] } );
 
 		if( $pseudo_atom_site->{"$pseudo_atom_id"}
 		                       {"potential_energy"} <= $cutoff ) {

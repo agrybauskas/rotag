@@ -85,7 +85,8 @@ $atom_site =
 			      \%num_angle_values ) } },
 	"exponential",
 	$cutoff,
-	\%interact_specifier );
+	\%interact_specifier,
+	{ "label_atom_id" => [ "N", "CA", "C", "O" ] } );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $atom_site } ), "\n" );
