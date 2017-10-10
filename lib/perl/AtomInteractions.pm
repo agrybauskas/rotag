@@ -54,9 +54,10 @@ sub potential
 
     # Selection of potential function.
     my $potential_function;
-    $potential_function = \&hard_sphere if $potential eq "hard_sphere";
-    $potential_function = \&soft_sphere if $potential eq "soft_sphere";
-    $potential_function = \&exponential if $potential eq "exponential";
+    $potential_function = \&hard_sphere   if $potential eq "hard_sphere";
+    $potential_function = \&soft_sphere   if $potential eq "soft_sphere";
+    $potential_function = \&exponential   if $potential eq "exponential";
+    $potential_function = \&leonard_jones if $potential eq "leonard_jones";
 
     # Checks for connecting atoms that will be excluded from clash list.
     connect_atoms( $atom_site );
@@ -193,7 +194,7 @@ sub soft_sphere
 # Input:
 #     $target_atom, $neighbour_atom - atom data structure (see PDBxParser.pm).
 # Output:
-#     value, calculated by soft sphere potential.
+#     value, calculated by exponential potential.
 #
 
 sub exponential
@@ -219,5 +220,40 @@ sub exponential
     }
 }
 
+#
+# Leonard-Jones potential function. Described as:
+#
+# 4 * epsilon * [ ( sigma / r ) ** 12 - ( sigma / r ) ** 6 ]
+#
+#     where: r - distance between center of atoms;
+#            epsilon - energy coefficient;  TODO: should study more about it.
+#            sigma - sum of Van der Waals radii of two atoms.
+# Input:
+#     $target_atom, $neighbour_atom - atom data structure (see PDBxParser.pm).
+# Output:
+#     value, calculated by Leonard-Jones potential.
+#
+
+sub leonard_jones
+{
+    my ( $target_atom, $neighbour_atom, $epsilon ) = @_;
+
+    $epsilon //= -1.0;
+
+    my $sigma =
+	$ATOMS{$target_atom->{"type_symbol"}}{"vdw_radius"}
+      + $ATOMS{$neighbour_atom->{"type_symbol"}}{"vdw_radius"};
+
+    my $r =
+    	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
+
+    if( $r <= ( $sigma ** 2.5 ) ** 2 ) { # TODO:should smoothen function cutoff.
+	return 4 * $epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
+    } else {
+	return 0;
+    }
+}
 
 1;
