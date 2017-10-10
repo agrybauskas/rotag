@@ -199,9 +199,17 @@ sub to_pdbx
     for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
     	for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
     	    if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
-    		print( " ", $atom_site->{$id}{$atom_attributes->[$i]}, " " );
+		if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
+		    print( " ", $atom_site->{$id}{$atom_attributes->[$i]}, " " );
+		} else {
+		    print( " . " );
+		}
     	    } else {
-    		print( "\n", $atom_site->{$id}{$atom_attributes->[$i]} );
+		if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
+		    print( "\n", $atom_site->{$id}{$atom_attributes->[$i]} );
+		} else {
+		    print( "\n." );
+		}
     	    }
     	}
     }

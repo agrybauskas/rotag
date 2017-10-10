@@ -16,7 +16,7 @@ use ConnectAtoms qw( connect_atoms
                      is_second_neighbour );
 use PDBxParser qw( filter_atoms
                    select_atom_data );
-use Data::Dumper;
+
 # ---------------------------- General potential ------------------------------ #
 
 #

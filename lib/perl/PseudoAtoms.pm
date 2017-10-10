@@ -99,11 +99,11 @@ sub generate_pseudo
 		$atom_site->{$atom_id}{"label_entity_id"};
 	    $pseudo_atom_site{$last_atom_id}{"label_seq_id"} = $residue_id;
     	    $pseudo_atom_site{$last_atom_id}{"Cartn_x"} =
-		$transf_atom_coord->[0][0];
+		sprintf( "%.3f", $transf_atom_coord->[0][0] );
     	    $pseudo_atom_site{$last_atom_id}{"Cartn_y"} =
-		$transf_atom_coord->[1][0];
+		sprintf( "%.3f", $transf_atom_coord->[1][0] );
     	    $pseudo_atom_site{$last_atom_id}{"Cartn_z"} =
-		$transf_atom_coord->[2][0];
+		sprintf( "%.3f", $transf_atom_coord->[2][0] );
     	    # Adds information about used dihedral angles.
     	    $pseudo_atom_site{$last_atom_id}{"dihedral_angles"} =
 		\%angle_values;
