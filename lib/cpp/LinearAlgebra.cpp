@@ -19,17 +19,21 @@ using namespace std;
       local_ref_frame - Cartesian coordinates of points on x, y and z axis.
 */
 
-double create_ref_frame( double mid_atom_x,
-			 double mid_atom_y,
-			 double mid_atom_z,
-			 double up_atom_x,
-			 double up_atom_y,
-			 double up_atom_z,
-			 double side_atom_x,
-			 double side_atom_y,
-			 double side_atom_z )
+double** create_ref_frame( double mid_atom_x,
+			   double mid_atom_y,
+			   double mid_atom_z,
+			   double up_atom_x,
+			   double up_atom_y,
+			   double up_atom_z,
+			   double side_atom_x,
+			   double side_atom_y,
+			   double side_atom_z )
 {
-  double local_ref_frame[3][3];
+  /* Initializes 2D array. */
+  double** local_ref_frame = new double*[3];
+  for( int i = 0; i < 3; i++ ) {
+    local_ref_frame[i] = new double[3];
+  }
 
   /* Let local z-axis be colinear to bond between mid and up atoms. */
   local_ref_frame[2][0] = up_atom_x - mid_atom_x;
@@ -57,9 +61,6 @@ double create_ref_frame( double mid_atom_x,
   local_ref_frame[1][2] =
     local_ref_frame[2][0] * local_ref_frame[0][1]
   - local_ref_frame[2][1] * local_ref_frame[0][0];
-}
 
-main()
-{
-  return 0;
+  return local_ref_frame;
 }
