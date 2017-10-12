@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cmath>
 #include <vector>
 
 using namespace std;
@@ -19,20 +18,21 @@ using namespace std;
       local_ref_frame - Cartesian coordinates of points on x, y and z axis.
 */
 
-double** create_ref_frame( double mid_atom_x,
-			   double mid_atom_y,
-			   double mid_atom_z,
-			   double up_atom_x,
-			   double up_atom_y,
-			   double up_atom_z,
-			   double side_atom_x,
-			   double side_atom_y,
-			   double side_atom_z )
+vector< vector<double> > create_ref_frame( double mid_atom_x,
+					   double mid_atom_y,
+					   double mid_atom_z,
+					   double up_atom_x,
+					   double up_atom_y,
+					   double up_atom_z,
+					   double side_atom_x,
+					   double side_atom_y,
+					   double side_atom_z )
 {
   /* Initializes 2D array. */
-  double** local_ref_frame = new double*[3];
-  for( int i = 0; i < 3; i++ ) {
-    local_ref_frame[i] = new double[3];
+  vector< vector<double> > local_ref_frame;
+  local_ref_frame.resize(3);
+  for (int i = 0; i < 3; ++i) {
+    local_ref_frame[i].resize(3);
   }
 
   /* Let local z-axis be colinear to bond between mid and up atoms. */
