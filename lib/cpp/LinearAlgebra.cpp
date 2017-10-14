@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 
+#include "LinearAlgebra.h"
+
 using namespace std;
 
 /* ------------------------- Numeric linear algebra -------------------------- */
