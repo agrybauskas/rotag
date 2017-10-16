@@ -1,3 +1,3 @@
 #!/bin/sh
 
-sudo apt-get install ginac-tools
+sudo apt-get install ginac-tools libginac-dev swig

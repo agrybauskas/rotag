@@ -26,6 +26,15 @@ build: ${SHARED_OBJ} ${PM_FILE}
 	g++ -shared $^ -o $@
 
 #
+# Instalation of dependencies.
+#
+
+.PHONY: dependencies
+
+dependencies:
+	./dependencies/$$(lsb_release -is)-$$(lsb_release -rs)/install.sh
+
+#
 # Unit tests.
 #
 
@@ -53,5 +62,5 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 .PHONY: clean distclean
 
 clean distclean:
-	rm -f ${TEST_DIFF} ${VISUAL_TEST_JMOL} ${PM_FILE} ${SHARED_OBJ} \
-	      ${CPP_OBJ} ${WRAP_FILE}
+	rm -f ${TEST_DIFF} ${VISUAL_TEST_JMOL} ${PM_FILE} ${SHARED_OBJ}
+	rm -f ${CPP_OBJ} ${WRAP_FILE}
