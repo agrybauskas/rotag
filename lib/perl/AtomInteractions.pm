@@ -16,6 +16,7 @@ use ConnectAtoms qw( connect_atoms
                      is_second_neighbour );
 use PDBxParser qw( filter_atoms
                    select_atom_data );
+use LinearAlgebra qw( pi );
 
 # ---------------------------- General potential ------------------------------ #
 
@@ -58,6 +59,7 @@ sub potential
     $potential_function = \&soft_sphere   if $potential eq "soft_sphere";
     $potential_function = \&exponential   if $potential eq "exponential";
     $potential_function = \&leonard_jones if $potential eq "leonard_jones";
+    $potential_function = \&combined if $potential eq "combined";
 
     # Checks for connecting atoms that will be excluded from clash list.
     connect_atoms( $atom_site );
@@ -251,6 +253,74 @@ sub leonard_jones
 
     if( $r <= ( $sigma ** 2.5 ) ** 2 ) { # TODO:should smoothen function cutoff.
 	return 4 * $epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
+    } else {
+	return 0;
+    }
+}
+
+sub combined
+{
+    my ( $target_atom,
+	 $neighbour_atom,
+	 $lj_epsilon,
+	 $coulomb_epsilon,
+	 $h_bond_epsilon,
+	 $cutoff_start,
+	 $cutoff_end ) = @_;
+
+    # TODO: must check, how combined potential looks in graph.
+    $lj_epsilon //= 1.0;
+    $coulomb_epsilon //= 1.0;
+    $h_bond_epsilon //= 1.0;
+    $cutoff_start //= 2.0; # times VdW distance.
+    $cutoff_end //= 2.5; # times VdW distance.
+
+    # Calculates Van der Waals distance of given atoms.
+    my $sigma =
+	$ATOMS{$target_atom->{"type_symbol"}}{"vdw_radius"}
+      + $ATOMS{$neighbour_atom->{"type_symbol"}}{"vdw_radius"};
+
+    # Calculates distance between two atoms.
+    my $r =
+    	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
+
+    # Extracts partial charges.
+    my $target_partial =
+	$ATOMS{$target_atom->{"type_symbol"}}{"partial_charge"};
+    my $neighbour_partial =
+	$ATOMS{$neighbour_atom->{"type_symbol"}}{"partial_charge"};
+
+    my $total_potential;
+    my $leonard_jones;
+    my $coulomb;
+    my $hbond; # TODO: hbond will be added, when there will be functions adding
+               # hydrogens to atoms.
+
+    if( $r <= $cutoff_start * $sigma**2 ) {
+	$leonard_jones =
+	    4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
+	$coulomb =
+	    ( $target_partial * $neighbour_partial )
+	    / ( 4 * $coulomb_epsilon * pi() * sqrt($r) );
+	$total_potential = $leonard_jones + $coulomb;
+	return $total_potential;
+
+    } elsif( $r > $cutoff_start * $sigma**2 && $r < $cutoff_end * $sigma**2 ) {
+	$leonard_jones =
+	    4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
+	$coulomb =
+	    ( $target_partial * $neighbour_partial )
+	    / ( 4 * $coulomb_epsilon * pi() * sqrt( $r ) );
+	$total_potential =
+	  ( ( 1.0 / 2.0 )
+	  - ( 1.0 / 2.0 )
+	  * sin( ( pi() * ( sqrt( $r ) - ( $cutoff_start + $cutoff_end ) / 2 ) )
+		 / ( abs( $cutoff_start - $cutoff_end ) ) ) )
+	  * ( $leonard_jones + $coulomb );
+	return $total_potential;
+
     } else {
 	return 0;
     }
