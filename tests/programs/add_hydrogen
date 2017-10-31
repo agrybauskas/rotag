@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use PDBxParser qw( obtain_atom_site );
+use PseudoAtoms qw( add_hydrogen );
+
+use lib "../lib";
+use Utils qw( select_atom_data );
+
+my ( $pdbx_file ) = @ARGV;
+
+my $atom_site = obtain_atom_site( $pdbx_file );
+
+add_hydrogen( $atom_site );
+
+# # In Jmol, prints out atom coordinates.
+# print( scalar( keys %{ $atom_site } ), "\n" );
+# print( "testing\n" );
+
+# for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+#     printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
+# 	    "\t%.3f\t%.3f\t%.3f\n",
+# 	    $atom_site->{$atom_id}{"Cartn_x"},
+# 	    $atom_site->{$atom_id}{"Cartn_y"},
+# 	    $atom_site->{$atom_id}{"Cartn_z"} );
+# }

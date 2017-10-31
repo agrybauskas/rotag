@@ -28,7 +28,11 @@ our %ATOMS = (
 				    "error"  => [ 0.03, 0.06, 0.03 ]
 				  },
 	     "vdw_radius" => 1.77,
-             "partial_charge" => 0.12
+             "partial_charge" => 0.12,
+	     "hybridization" => {
+		                  "CA" => "sp3",
+	                          "C"  => "sp2"
+                                }
            },
     "N" => {
 	     "covalent_radius" => {
@@ -44,7 +48,10 @@ our %ATOMS = (
 				    "error"  => [ 0.06, 0.06 ]
 				  },
 	     "vdw_radius" => 1.5,
-             "partial_charge" => -0.57
+             "partial_charge" => -0.57,
+	     "hybridization" => {
+				  "OG" => "sp3"
+                                }
            },
     "S" => {
 	     "covalent_radius" => {

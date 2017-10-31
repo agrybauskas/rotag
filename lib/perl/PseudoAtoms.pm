@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( generate_library
+our @EXPORT_OK = qw( add_hydrogen
+                     generate_library
                      generate_pseudo
                      generate_rotamer );
 
@@ -322,6 +323,17 @@ sub generate_library
     }
 
     return \%library_atom_site;
+}
+
+sub add_hydrogen
+{
+    my ( $atom_site ) = @_;
+
+    my %hydrogen_site;
+
+    for my $atom_id ( keys %{ $atom_site } ) {
+
+    }
 }
 
 1;
