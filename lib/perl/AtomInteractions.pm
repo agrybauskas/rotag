@@ -262,67 +262,63 @@ sub combined
 {
     my ( $target_atom,
 	 $neighbour_atom,
-	 $lj_epsilon,
+	 $ljones_epsilon,
 	 $coulomb_epsilon,
 	 $h_bond_epsilon,
 	 $cutoff_start,
 	 $cutoff_end ) = @_;
 
     # TODO: must check, how combined potential looks in graph.
-    $lj_epsilon //= 1.0;
-    $coulomb_epsilon //= 1.0;
+    $ljones_epsilon //= 1.0;
+    $coulomb_epsilon //= 0.01;
     $h_bond_epsilon //= 1.0;
-    $cutoff_start //= 2.0; # times VdW distance.
-    $cutoff_end //= 2.5; # times VdW distance.
+    $cutoff_start //= 2.5; # times VdW distance.
+    $cutoff_end //= 5; # times VdW distance.
 
     # Calculates Van der Waals distance of given atoms.
     my $sigma =
-	$ATOMS{$target_atom->{"type_symbol"}}{"vdw_radius"}
+    	$ATOMS{$target_atom->{"type_symbol"}}{"vdw_radius"}
       + $ATOMS{$neighbour_atom->{"type_symbol"}}{"vdw_radius"};
 
-    # Calculates distance between two atoms.
-    my $r =
+    # Calculates squared distance between two atoms.
+    my $squared_r =
     	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
       + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
       + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
 
     # Extracts partial charges.
     my $target_partial =
-	$ATOMS{$target_atom->{"type_symbol"}}{"partial_charge"};
+    	$ATOMS{$target_atom->{"type_symbol"}}{"partial_charge"};
     my $neighbour_partial =
-	$ATOMS{$neighbour_atom->{"type_symbol"}}{"partial_charge"};
+    	$ATOMS{$neighbour_atom->{"type_symbol"}}{"partial_charge"};
 
-    my $total_potential;
-    my $leonard_jones;
-    my $coulomb;
     my $hbond; # TODO: hbond will be added, when there will be functions adding
                # hydrogens to atoms.
 
-    if( $r <= $cutoff_start * $sigma**2 ) {
-	$leonard_jones =
-	    4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
-	$coulomb =
-	    ( $target_partial * $neighbour_partial )
-	    / ( 4 * $coulomb_epsilon * pi() * sqrt($r) );
-	$total_potential = $leonard_jones + $coulomb;
-	return $total_potential;
-
-    } elsif( $r > $cutoff_start * $sigma**2 && $r < $cutoff_end * $sigma**2 ) {
-	$leonard_jones =
-	    4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
-	$coulomb =
-	    ( $target_partial * $neighbour_partial )
-	    / ( 4 * $coulomb_epsilon * pi() * sqrt( $r ) );
-	$total_potential =
-	  ( ( 1.0 / 2.0 )
-	  - ( 1.0 / 2.0 )
-	  * sin( ( pi() * ( sqrt( $r ) - ( $cutoff_start + $cutoff_end ) / 2 ) )
-		 / ( abs( $cutoff_start - $cutoff_end ) ) ) )
-	  * ( $leonard_jones + $coulomb );
-	return $total_potential;
-
+    if( $squared_r < $cutoff_start * $sigma ) {
+	my $leonard_jones =
+	    4 * $ljones_epsilon
+	      * ( ( ( $sigma / sqrt( $squared_r ) ) ** 12 )
+	        - ( ( $sigma / sqrt( $squared_r ) ) ** 6 ) );
+	my $coulomb =
+	    ( $target_partial * $neighbour_partial ) /
+	    ( 4 * $coulomb_epsilon * pi() * sqrt( $squared_r ) );
+        return $leonard_jones + $coulomb;
+    } elsif( ( $squared_r >= $cutoff_start * $sigma )
+	  && ( $squared_r <= $cutoff_end * $sigma ) ) {
+	my $leonard_jones =
+	    4 * $ljones_epsilon
+	      * ( ( ( $sigma / sqrt( $squared_r ) ) ** 12 )
+	        - ( ( $sigma / sqrt( $squared_r ) ) ** 6 ) );
+	my $coulomb =
+	    ( $target_partial * $neighbour_partial ) /
+	    ( 4 * $coulomb_epsilon * pi() * sqrt( $squared_r ) );
+	my $cutoff_function =
+	    cos( ( pi() * ( sqrt( $squared_r ) - $cutoff_start * $sigma ) ) /
+		 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
+	return ( $leonard_jones + $coulomb ) * $cutoff_function;
     } else {
-	return 0;
+    	return 0;
     }
 }
 
