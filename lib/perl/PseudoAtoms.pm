@@ -110,6 +110,8 @@ sub generate_pseudo
 		\%angle_values;
     	    # Adds additional pseudo-atom flag for future filtering.
     	    $pseudo_atom_site{$last_atom_id}{"is_pseudo_atom"} = 1;
+	    # Adds atom id that pseudo atoms was made of.
+    	    $pseudo_atom_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
     	}
     }
 

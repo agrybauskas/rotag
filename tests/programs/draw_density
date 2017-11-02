@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib/perl";
+use LinearAlgebra qw( pi );
+use PDBxParser qw( obtain_atom_site to_pdbx );
+use PseudoAtoms qw( generate_library );
+use SidechainModels qw( rotation_only );
+
+my ( $potential, $cutoff, $residue_id, $small_angle, $pdbx_file ) = @ARGV;
+
+my $atom_site = obtain_atom_site( $pdbx_file );
+$small_angle =~ s/pi/pi\(\)/g;
+
+# In Jmol, generates pseudo-atoms which represent positions of atom
+# after rotation along dihedral angle.
+open( my $fh, "<", $pdbx_file );
+chomp( my @pdbx_lines = <$fh> );
+close( $fh );
+
+# Creates pseudo-atoms for given analytical equation that describes conformation
+# of atom.
+%{ $atom_site } =
+    ( %{ $atom_site },
+      %{ generate_library( { "atom_site"     => $atom_site,
+			     "residue_ids"   => [ $residue_id ],
+			     "small_angle"   => eval( $small_angle ),
+			     "conformations" => \&rotation_only,
+			     "interactions"  => $potential,
+			     "cutoff"        => $cutoff  } ) } );
+
+# Loads PDBx as Jmol script.
+print( "data \"model\"\n" );
+to_pdbx( $atom_site );
+print("end \"model\"\n");
+
+# Selects pseudo-atoms according to their origin atoms and color them
+# differently.
