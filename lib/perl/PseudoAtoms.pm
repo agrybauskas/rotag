@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( add_hydrogen
+our @EXPORT_OK = qw( add_hydrogens
                      generate_library
                      generate_pseudo
                      generate_rotamer );
@@ -14,14 +14,16 @@ use List::Util qw( max );
 use lib qw( ./ );
 use AtomInteractions qw( potential );
 use Combinatorics qw( permutation );
+use ConnectAtoms qw( connect_atoms );
 use LinearAlgebra qw( evaluate_matrix
                       pi );
 use Measure qw( all_dihedral );
-use MoleculeProperties qw( %ROTATABLE_BONDS );
+use MoleculeProperties qw( %ROTATABLE_BONDS
+                           %HYBRIDIZATION );
 use PDBxParser qw( filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
-
+use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -320,21 +322,29 @@ sub generate_library
 	    	( %library_atom_site,
 	    	  %{ generate_rotamer( { %library_atom_site,
 	    				 %{ $atom_site } },
-	    			       \%angles ) } );
+				       \%angles ) } );
 	}
     }
 
     return \%library_atom_site;
 }
 
-sub add_hydrogen
+sub add_hydrogens
 {
     my ( $atom_site ) = @_;
 
-    my %hydrogen_site;
+    my %atom_site = %{ $atom_site };
+    connect_atoms( \%atom_site );
 
-    for my $atom_id ( keys %{ $atom_site } ) {
+    for my $atom_id ( keys %atom_site ) {
+	my $residue_name = $atom_site{$atom_id}{"label_comp_id"};
+	my $atom_type = $atom_site{$atom_id}{"type_symbol"};
+	my $atom_name = $atom_site{$atom_id}{"label_atom_id"};
+	my @connection_ids = @{ $atom_site{"$atom_id"}{"connections"} };
+	my $hybridization = $HYBRIDIZATION{$residue_name}{$atom_name};
+	for my $connection_id ( @connection_ids ) {
 
+	}
     }
 }
 

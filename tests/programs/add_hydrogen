@@ -5,7 +5,7 @@ use warnings;
 
 use lib "../../lib/perl";
 use PDBxParser qw( obtain_atom_site );
-use PseudoAtoms qw( add_hydrogen );
+use PseudoAtoms qw( add_hydrogens );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -14,7 +14,7 @@ my ( $pdbx_file ) = @ARGV;
 
 my $atom_site = obtain_atom_site( $pdbx_file );
 
-add_hydrogen( $atom_site );
+add_hydrogens( $atom_site );
 
 # # In Jmol, prints out atom coordinates.
 # print( scalar( keys %{ $atom_site } ), "\n" );
