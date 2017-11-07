@@ -13,6 +13,7 @@ use List::Util qw( max );
 
 use lib qw( ./ );
 use AtomInteractions qw( potential );
+use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms );
 use LinearAlgebra qw( evaluate_matrix
@@ -342,8 +343,28 @@ sub add_hydrogens
 	my $atom_name = $atom_site{$atom_id}{"label_atom_id"};
 	my @connection_ids = @{ $atom_site{"$atom_id"}{"connections"} };
 	my $hybridization = $HYBRIDIZATION{$residue_name}{$atom_name};
-	for my $connection_id ( @connection_ids ) {
 
+	if( $hybridization eq "sp3" ) {
+	    my $hydrogen_count =
+		4 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
+	    for my $hydrogen_id ( 1..$hydrogen_count ) {
+		( my $hydrogen_name = $atom_name ) =~
+		    s/$atom_type(.?)/H$1$hydrogen_id/;
+	    }
+	} elsif( $hybridization eq "sp2" ) {
+	    my $hydrogen_count =
+		3 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
+	    for my $hydrogen_id ( 1..$hydrogen_count ) {
+		( my $hydrogen_name = $atom_name ) =~
+		    s/$atom_type(.?)/H$1$hydrogen_id/;
+	    }
+	} elsif( $hybridization eq "sp" ) {
+	    my $hydrogen_count =
+		2 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
+	    for my $hydrogen_id ( 1..$hydrogen_count ) {
+		( my $hydrogen_name = $atom_name ) =~
+		    s/$atom_type(.?)/H$1$hydrogen_id/;
+	    }
 	}
     }
 }
