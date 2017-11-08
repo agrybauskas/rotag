@@ -17,7 +17,13 @@ use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms );
 use LinearAlgebra qw( evaluate_matrix
-                      pi );
+                      matrix_product
+                      pi
+                      translation
+                      vectorize
+                      x_axis_rotation
+                      y_axis_rotation
+                      z_axis_rotation );
 use Measure qw( all_dihedral );
 use MoleculeProperties qw( %ROTATABLE_BONDS
                            %HYBRIDIZATION );
@@ -344,12 +350,22 @@ sub add_hydrogens
 	my @connection_ids = @{ $atom_site{"$atom_id"}{"connections"} };
 	my $hybridization = $HYBRIDIZATION{$residue_name}{$atom_name};
 
+	# TODO: in the future, should adjust sp3, sp2 angles according to
+	# experimental angles, not model.
 	if( $hybridization eq "sp3" ) {
 	    my $hydrogen_count =
 		4 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
 	    for my $hydrogen_id ( 1..$hydrogen_count ) {
 		( my $hydrogen_name = $atom_name ) =~
 		    s/$atom_type(.?)/H$1$hydrogen_id/;
+		# If there is only one bond, draws unit vector colinear to bond
+		# and rotates bond so, it would be 109.5 deg.
+		if( scalar( @connection_ids ) == 1 ) {
+		    my $atom_coord =
+			vectorize( [ $atom_site{$atom_id}{"Cartn_x"},
+				     $atom_site{$atom_id}{"Cartn_y"},
+				     $atom_site{$atom_id}{"Cartn_z"} ] );
+		}
 	    }
 	} elsif( $hybridization eq "sp2" ) {
 	    my $hydrogen_count =
