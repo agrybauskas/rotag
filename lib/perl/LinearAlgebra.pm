@@ -16,6 +16,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      translation
                      transpose
                      vector_cross
+                     vector_length
                      vectorize
                      x_axis_rotation
                      y_axis_rotation
@@ -316,6 +317,26 @@ sub vectorize
     push( @matrix, [ 1 ] );
 
     return \@matrix;
+}
+
+#
+# Calculates vector length.
+# Input:
+#     $vector - 3x1 (if 4x1, last row is ignored) matrix.
+# Output:
+#     $vector_length - vector length.
+#
+
+sub vector_length
+{
+    my ( $vector ) = @_;
+
+    my $vector_length =
+    	sqrt( $vector->[0][0] ** 2
+	    + $vector->[1][0] ** 2
+	    + $vector->[2][0] ** 2 );
+
+    return $vector_length;
 }
 
 #
