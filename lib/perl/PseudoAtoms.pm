@@ -18,13 +18,16 @@ use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms );
 use LinearAlgebra qw( evaluate_matrix
                       matrix_product
+                      matrix_sum
                       pi
+                      scalar_multipl
                       translation
                       vectorize
                       x_axis_rotation
                       y_axis_rotation
                       z_axis_rotation );
-use Measure qw( all_dihedral );
+use Measure qw( all_dihedral
+                bond_length );
 use MoleculeProperties qw( %ROTATABLE_BONDS
                            %HYBRIDIZATION );
 use PDBxParser qw( filter_atoms
@@ -365,6 +368,36 @@ sub add_hydrogens
 			vectorize( [ $atom_site{$atom_id}{"Cartn_x"},
 				     $atom_site{$atom_id}{"Cartn_y"},
 				     $atom_site{$atom_id}{"Cartn_z"} ] );
+
+		    my $bond_length = bond_length(
+		    	[ [ $atom_site{$connection_ids[0]}{"Cartn_x"},
+		    	    $atom_site{$connection_ids[0]}{"Cartn_y"},
+		    	    $atom_site{$connection_ids[0]}{"Cartn_z"} ],
+		    	  [ $atom_site{$atom_id}{"Cartn_x"},
+		    	    $atom_site{$atom_id}{"Cartn_y"},
+		    	    $atom_site{$atom_id}{"Cartn_z"} ] ] );
+
+		    my $transl_negative =
+			translation(
+			    - $atom_site{$connection_ids[0]}{"Cartn_x"},
+			    - $atom_site{$connection_ids[0]}{"Cartn_y"},
+			    - $atom_site{$connection_ids[0]}{"Cartn_z"} );
+		    my $transl_positive =
+			translation(
+			    $atom_site{$connection_ids[0]}{"Cartn_x"},
+			    $atom_site{$connection_ids[0]}{"Cartn_y"},
+			    $atom_site{$connection_ids[0]}{"Cartn_z"} );
+
+		    my $hydrogen_pos =
+		        scalar_multipl(
+			    matrix_product( $transl_negative,
+					    $atom_coord ),
+			    ( $ATOMS{"H"}{"vdw_radius"}
+			    + $ATOMS{$atom_name}{"vdw_radius"} )
+			    / $bond_length );
+		    $hydrogen_pos->[3][0] = 1;
+		    $hydrogen_pos =
+			matrix_product( $transl_positive, $hydrogen_pos );
 		}
 	    }
 	} elsif( $hybridization eq "sp2" ) {
