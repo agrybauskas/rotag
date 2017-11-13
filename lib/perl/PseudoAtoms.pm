@@ -353,53 +353,15 @@ sub add_hydrogens
 	my @connection_ids = @{ $atom_site{"$atom_id"}{"connections"} };
 	my $hybridization = $HYBRIDIZATION{$residue_name}{$atom_name};
 
-	# TODO: in the future, should adjust sp3, sp2 angles according to
-	# experimental angles, not model.
 	if( $hybridization eq "sp3" ) {
 	    my $hydrogen_count =
 		4 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
 	    for my $hydrogen_id ( 1..$hydrogen_count ) {
 		( my $hydrogen_name = $atom_name ) =~
 		    s/$atom_type(.?)/H$1$hydrogen_id/;
-		# If there is only one bond, draws unit vector colinear to bond
-		# and rotates bond so, it would be 109.5 deg.
-		if( scalar( @connection_ids ) == 1 ) {
-		    my $atom_coord =
-			vectorize( [ $atom_site{$atom_id}{"Cartn_x"},
-				     $atom_site{$atom_id}{"Cartn_y"},
-				     $atom_site{$atom_id}{"Cartn_z"} ] );
-
-		    my $bond_length = bond_length(
-		    	[ [ $atom_site{$connection_ids[0]}{"Cartn_x"},
-		    	    $atom_site{$connection_ids[0]}{"Cartn_y"},
-		    	    $atom_site{$connection_ids[0]}{"Cartn_z"} ],
-		    	  [ $atom_site{$atom_id}{"Cartn_x"},
-		    	    $atom_site{$atom_id}{"Cartn_y"},
-		    	    $atom_site{$atom_id}{"Cartn_z"} ] ] );
-
-		    my $transl_negative =
-			translation(
-			    - $atom_site{$connection_ids[0]}{"Cartn_x"},
-			    - $atom_site{$connection_ids[0]}{"Cartn_y"},
-			    - $atom_site{$connection_ids[0]}{"Cartn_z"} );
-		    my $transl_positive =
-			translation(
-			    $atom_site{$connection_ids[0]}{"Cartn_x"},
-			    $atom_site{$connection_ids[0]}{"Cartn_y"},
-			    $atom_site{$connection_ids[0]}{"Cartn_z"} );
-
-		    my $hydrogen_pos =
-		        scalar_multipl(
-			    matrix_product( $transl_negative,
-					    $atom_coord ),
-			    ( $ATOMS{"H"}{"vdw_radius"}
-			    + $ATOMS{$atom_name}{"vdw_radius"} )
-			    / $bond_length );
-		    $hydrogen_pos->[3][0] = 1;
-		    $hydrogen_pos =
-			matrix_product( $transl_positive, $hydrogen_pos );
-		}
 	    }
+	    sp3_tetrahedron( "N", "H", "H", "C" );
+	    last;
 	} elsif( $hybridization eq "sp2" ) {
 	    my $hydrogen_count =
 		3 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
@@ -416,6 +378,64 @@ sub add_hydrogens
 	    }
 	}
     }
+}
+
+#                                       Up(2)
+# z                                     |
+# |_y                                   C(1) __ Right(3)
+# /                                    / \
+# x                               Left(4) Back(5)
+
+
+sub sp3_tetrahedron
+{
+    my ( @atom_names ) = @_;
+
+    # Places first atom in the origin of the global frame of reference.
+    my @atom_coord = ( [ 0, 0, 0 ] );
+
+    # Places second atom on z-axis by the length of the bond.
+    my $bond_length_c_up =
+	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
+      + $ATOMS{$atom_names[1]}{"covalent_radius"}{"length"}[0];
+    push( @atom_coord, [ 0, 0, $bond_length_c_up ] );
+
+    # Places third atom in yz-plane that has 109.5 deg angle between 2-1-3 atoms
+    # TODO: in the future, should adjust sp3 angles according to
+    # experimental angles, not model.
+    my $bond_length_c_right =
+	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
+      + $ATOMS{$atom_names[2]}{"covalent_radius"}{"length"}[0];
+    push( @atom_coord,
+	  [ 0,
+	    $bond_length_c_right * sin( 109.5 * pi() / 180 ),
+	    $bond_length_c_right * cos( 109.5 * pi() / 180 ) ] );
+    # print( "3\n" );
+    # print( "testing\n" );
+    # printf( "X\t%.3f\t%.3f\t%.3f\n",
+    # 	    $atom_coord[0][0],
+    # 	    $atom_coord[0][1],
+    # 	    $atom_coord[0][2] );
+    # printf( "X\t%.3f\t%.3f\t%.3f\n",
+    # 	    $atom_coord[1][0],
+    # 	    $atom_coord[1][1],
+    # 	    $atom_coord[1][2] );
+    # printf( "X\t%.3f\t%.3f\t%.3f\n",
+    # 	    $atom_coord[2][0],
+    # 	    $atom_coord[2][1],
+    # 	    $atom_coord[2][2] );
+}
+
+sub sp2_triangle
+{
+    # TODO: in the future, should adjust sp2 angles according to
+    # experimental angles, not model.
+
+}
+
+sub sp_line
+{
+
 }
 
 1;
