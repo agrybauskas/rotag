@@ -360,7 +360,7 @@ sub add_hydrogens
 		( my $hydrogen_name = $atom_name ) =~
 		    s/$atom_type(.?)/H$1$hydrogen_id/;
 	    }
-	    sp3_tetrahedron( "N", "H", "H", "C" );
+	    sp3_tetrahedron( "C", "H", "H", "H", "H" );
 	    last;
 	} elsif( $hybridization eq "sp2" ) {
 	    my $hydrogen_count =
@@ -386,7 +386,6 @@ sub add_hydrogens
 # /                                    / \
 # x                               Left(4) Back(5)
 
-
 sub sp3_tetrahedron
 {
     my ( @atom_names ) = @_;
@@ -400,30 +399,41 @@ sub sp3_tetrahedron
       + $ATOMS{$atom_names[1]}{"covalent_radius"}{"length"}[0];
     push( @atom_coord, [ 0, 0, $bond_length_c_up ] );
 
-    # Places third atom in yz-plane that has 109.5 deg angle between 2-1-3 atoms
+    # Places third atom in xz-plane that has 109.5 deg angle between 2-1-3 atoms.
     # TODO: in the future, should adjust sp3 angles according to
     # experimental angles, not model.
     my $bond_length_c_right =
 	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
       + $ATOMS{$atom_names[2]}{"covalent_radius"}{"length"}[0];
     push( @atom_coord,
-	  [ 0,
-	    $bond_length_c_right * sin( 109.5 * pi() / 180 ),
+	  [ $bond_length_c_right * sin( 109.5 * pi() / 180 ),
+	    0,
 	    $bond_length_c_right * cos( 109.5 * pi() / 180 ) ] );
-    # print( "3\n" );
-    # print( "testing\n" );
-    # printf( "X\t%.3f\t%.3f\t%.3f\n",
-    # 	    $atom_coord[0][0],
-    # 	    $atom_coord[0][1],
-    # 	    $atom_coord[0][2] );
-    # printf( "X\t%.3f\t%.3f\t%.3f\n",
-    # 	    $atom_coord[1][0],
-    # 	    $atom_coord[1][1],
-    # 	    $atom_coord[1][2] );
-    # printf( "X\t%.3f\t%.3f\t%.3f\n",
-    # 	    $atom_coord[2][0],
-    # 	    $atom_coord[2][1],
-    # 	    $atom_coord[2][2] );
+
+    # Places fourth atom in a position of third atom and rotates 109.5 deg.
+    my $bond_length_c_left =
+    	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
+      + $ATOMS{$atom_names[3]}{"covalent_radius"}{"length"}[0];
+    push( @atom_coord,
+    	  [   $bond_length_c_left * cos( 120 * pi() / 180 ) * sin( 109.5 * pi() / 180 ),
+    	      $bond_length_c_left * sin( 120 * pi() / 180 ) * sin( 109.5 * pi() / 180 ),
+    	      $bond_length_c_left * cos( 109.5 * pi() / 180 ) ] );
+
+    # Places fifth atom in a position of third atom and rotates 109.5 deg.
+    my $bond_length_c_back =
+    	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
+      + $ATOMS{$atom_names[3]}{"covalent_radius"}{"length"}[0];
+    push( @atom_coord,
+    	  [   $bond_length_c_back
+	    * cos( 240 * pi() / 180 )
+	    * sin( 109.5 * pi() / 180 ),
+              $bond_length_c_back
+	    * sin( 240 * pi() / 180 )
+	    * sin( 109.5 * pi() / 180 ),
+              $bond_length_c_back
+	    * cos( 109.5 * pi() / 180 ) ] );
+
+    return \@atom_coord;
 }
 
 sub sp2_triangle
