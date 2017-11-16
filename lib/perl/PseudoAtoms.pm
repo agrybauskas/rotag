@@ -17,10 +17,12 @@ use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms );
 use LinearAlgebra qw( evaluate_matrix
+                      find_euler_angles
                       matrix_product
                       matrix_sum
                       pi
                       scalar_multipl
+                      switch_ref_frame
                       translation
                       vectorize
                       x_axis_rotation
@@ -346,35 +348,70 @@ sub add_hydrogens
     my %atom_site = %{ $atom_site };
     connect_atoms( \%atom_site );
 
+    # TODO: might not work with single atoms. Look into it. Also, would be faster
+    # if heavy atoms without any possible addition of hydrogens are ignored.
     for my $atom_id ( keys %atom_site ) {
 	my $residue_name = $atom_site{$atom_id}{"label_comp_id"};
 	my $atom_type = $atom_site{$atom_id}{"type_symbol"};
 	my $atom_name = $atom_site{$atom_id}{"label_atom_id"};
+
 	my @connection_ids = @{ $atom_site{"$atom_id"}{"connections"} };
+	my @connection_atoms =
+	    map { $atom_site{"$_"}{"type_symbol"} } @connection_ids;
+
 	my $hybridization = $HYBRIDIZATION{$residue_name}{$atom_name};
+	my $lone_pair_count = $ATOMS{$atom_type}{"lone_pairs"};
+	my @lone_pair_types =
+	    map { "." } 1..$lone_pair_count if $lone_pair_count > 0;
+
+	my $hydrogen_count = 4 - scalar( @connection_ids ) - $lone_pair_count;
+	my @hydrogen_types =
+	    map { "H" } 1..$hydrogen_count if $hydrogen_count > 0;
+	my @hydrogen_names;
+	for my $hydrogen_id ( 1..$hydrogen_count ) {
+	    ( my $hydrogen_name = $atom_name ) =~
+		s/$atom_type(.?)/H$1$hydrogen_id/;
+	    push( @hydrogen_names, $hydrogen_name );
+	}
 
 	if( $hybridization eq "sp3" ) {
-	    my $hydrogen_count =
-		4 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
-	    for my $hydrogen_id ( 1..$hydrogen_count ) {
-		( my $hydrogen_name = $atom_name ) =~
-		    s/$atom_type(.?)/H$1$hydrogen_id/;
-	    }
-	} elsif( $hybridization eq "sp2" ) {
-	    my $hydrogen_count =
-		3 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
-	    for my $hydrogen_id ( 1..$hydrogen_count ) {
-		( my $hydrogen_name = $atom_name ) =~
-		    s/$atom_type(.?)/H$1$hydrogen_id/;
-	    }
-	} elsif( $hybridization eq "sp" ) {
-	    my $hydrogen_count =
-		2 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
-	    for my $hydrogen_id ( 1..$hydrogen_count ) {
-		( my $hydrogen_name = $atom_name ) =~
-		    s/$atom_type(.?)/H$1$hydrogen_id/;
+	    my $tetrahedron_coord =
+		sp3_tetrahedron( $atom_type,
+				 @connection_atoms,
+				 @hydrogen_types,
+				 @lone_pair_types );
+	    # Deals with sp3 hybrized atoms that has only one connection with
+	    # another heavy atom.
+	    if( scalar( @connection_ids ) == 1 ) {
+		my $transf_matrix =
+		    switch_ref_frame(
+			[ $atom_site->{$atom_id}{"Cartn_x"},
+			  $atom_site->{$atom_id}{"Cartn_y"},
+			  $atom_site->{$atom_id}{"Cartn_z"} ],
+			[ $atom_site->{$connection_ids[0]}{"Cartn_x"},
+			  $atom_site->{$connection_ids[0]}{"Cartn_y"},
+			  $atom_site->{$connection_ids[0]}{"Cartn_z"} ],
+			[ $atom_site->{$atom_id}{"Cartn_x"} + 1,   # Arbitrary
+			  $atom_site->{$atom_id}{"Cartn_y"} + 1,   # point.
+			  $atom_site->{$atom_id}{"Cartn_z"} + 1 ], #
+			"local" );
 	    }
 	}
+	# } elsif( $hybridization eq "sp2" ) {
+	#     my $hydrogen_count =
+	# 	3 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
+	#     for my $hydrogen_id ( 1..$hydrogen_count ) {
+	# 	( my $hydrogen_name = $atom_name ) =~
+	# 	    s/$atom_type(.?)/H$1$hydrogen_id/;
+	#     }
+	# } elsif( $hybridization eq "sp" ) {
+	#     my $hydrogen_count =
+	# 	2 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
+	#     for my $hydrogen_id ( 1..$hydrogen_count ) {
+	# 	( my $hydrogen_name = $atom_name ) =~
+	# 	    s/$atom_type(.?)/H$1$hydrogen_id/;
+	#     }
+	# }
     }
 }
 

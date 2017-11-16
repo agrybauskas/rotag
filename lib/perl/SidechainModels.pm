@@ -9,7 +9,6 @@ our @EXPORT_OK = qw( rotation_only );
 use lib qw( ./ );
 use AlterMolecule qw( bond_torsion );
 use LinearAlgebra qw( matrix_product
-                      switch_ref_frame
                       vectorize );
 use MoleculeProperties qw( %ROTATABLE_BONDS );
 use PDBxParser qw( filter_atoms select_atom_data );

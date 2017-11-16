@@ -14,6 +14,16 @@ our @EXPORT_OK = qw( %ATOMS );
 #
 
 our %ATOMS = (
+    "." => { # Placeholder atom, point in space.
+	     "covalent_radius" => {
+		                    "length"    => [ 1 ],
+				    "error"     => [ 1 ]
+				  },
+	     "lone_pairs" => 0,
+	     "vdw_radius" => 1,
+             "valence" => 1,
+             "partial_charge" => 0
+           },
     "H" => {
 	     "covalent_radius" => {
 		                    "length"    => [ 0.31 ],
