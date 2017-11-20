@@ -32,7 +32,8 @@ use Measure qw( all_dihedral
                 bond_length );
 use MoleculeProperties qw( %ROTATABLE_BONDS
                            %HYBRIDIZATION );
-use PDBxParser qw( filter_atoms
+use PDBxParser qw( create_pdbx_entry
+                   filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
 
@@ -97,28 +98,21 @@ sub generate_pseudo
     	    my $transf_atom_coord =
 		evaluate_matrix( $conformation, \%angle_values );
 
-	    # Adds necessary PDBx entries to pseudo atom.
+	    # Adds necessary PDBx entries to pseudo atom site.
     	    $last_atom_id++;
-	    $pseudo_atom_site{$last_atom_id}{"group_PDB"} = "ATOM";
-    	    $pseudo_atom_site{$last_atom_id}{"id"} = $last_atom_id;
-    	    $pseudo_atom_site{$last_atom_id}{"type_symbol"} =
-		$atom_site->{$atom_id}{"type_symbol"};
-	    $pseudo_atom_site{$last_atom_id}{"label_atom_id"} =
-		$atom_site->{$atom_id}{"label_atom_id"}; # Default value.
-	    $pseudo_atom_site{$last_atom_id}{"label_alt_id"} = "1";
-	    $pseudo_atom_site{$last_atom_id}{"label_comp_id"} =
-		$atom_site->{$atom_id}{"label_comp_id"};
-	    $pseudo_atom_site{$last_atom_id}{"label_asym_id"} =
-		$atom_site->{$atom_id}{"label_asym_id"};
-	    $pseudo_atom_site{$last_atom_id}{"label_entity_id"} =
-		$atom_site->{$atom_id}{"label_entity_id"};
-	    $pseudo_atom_site{$last_atom_id}{"label_seq_id"} = $residue_id;
-    	    $pseudo_atom_site{$last_atom_id}{"Cartn_x"} =
-		sprintf( "%.3f", $transf_atom_coord->[0][0] );
-    	    $pseudo_atom_site{$last_atom_id}{"Cartn_y"} =
-		sprintf( "%.3f", $transf_atom_coord->[1][0] );
-    	    $pseudo_atom_site{$last_atom_id}{"Cartn_z"} =
-		sprintf( "%.3f", $transf_atom_coord->[2][0] );
+	    create_pdbx_entry(
+		{ "atom_site" => \%pseudo_atom_site,
+		  "id" => $last_atom_id,
+		  "type_symbol" => $atom_site->{$atom_id}{"type_symbol"},
+		  "label_atom_id" => $atom_site->{$atom_id}{"label_atom_id"},
+		  "label_alt_id" => "1",
+		  "label_comp_id" => $atom_site->{$atom_id}{"label_comp_id"},
+		  "label_asym_id" => $atom_site->{$atom_id}{"label_asym_id"},
+		  "label_entity_id" => $atom_site->{$atom_id}{"label_entity_id"},
+		  "label_seq_id" => $residue_id,
+		  "cartn_x" => sprintf( "%.3f", $transf_atom_coord->[0][0] ),
+		  "cartn_y" => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
+		  "cartn_z" => sprintf( "%.3f", $transf_atom_coord->[2][0] ) } );
     	    # Adds information about used dihedral angles.
     	    $pseudo_atom_site{$last_atom_id}{"dihedral_angles"} =
 		\%angle_values;
@@ -409,26 +403,26 @@ sub add_hydrogens
 
 		    # Adds necessary PDBx entries to pseudo atom.
 		    $last_atom_id++;
-		    $hydrogen_site{$last_atom_id}{"group_PDB"} = "ATOM";
-		    $hydrogen_site{$last_atom_id}{"id"} = $last_atom_id;
-		    $hydrogen_site{$last_atom_id}{"type_symbol"} = "H";
-		    $hydrogen_site{$last_atom_id}{"label_atom_id"} =
-		    	$hydrogen_names[$hydrogen_idx];
-		    $hydrogen_site{$last_atom_id}{"label_alt_id"} = ".";
-		    $hydrogen_site{$last_atom_id}{"label_comp_id"} =
-			$atom_site->{$atom_id}{"label_comp_id"};
-		    $hydrogen_site{$last_atom_id}{"label_asym_id"} =
-			$atom_site->{$atom_id}{"label_asym_id"};
-		    $hydrogen_site{$last_atom_id}{"label_entity_id"} =
-			$atom_site->{$atom_id}{"label_entity_id"};
-		    $hydrogen_site{$last_atom_id}{"label_seq_id"} =
-			$atom_site->{$atom_id}{"label_seq_id"};
-		    $hydrogen_site{$last_atom_id}{"Cartn_x"} =
-		    	sprintf( "%.3f", $transf_atom_coord->[0][0] );
-		    $hydrogen_site{$last_atom_id}{"Cartn_y"} =
-		    	sprintf( "%.3f", $transf_atom_coord->[1][0] );
-		    $hydrogen_site{$last_atom_id}{"Cartn_z"} =
-		    	sprintf( "%.3f", $transf_atom_coord->[2][0] );
+		    create_pdbx_entry(
+			{ "atom_site" => \%hydrogen_site,
+			  "id" => $last_atom_id,
+			  "type_symbol" => "H",
+			  "label_atom_id" => $hydrogen_names[$hydrogen_idx],
+			  "label_alt_id" => ".",
+			  "label_comp_id" =>
+			      $atom_site->{$atom_id}{"label_comp_id"},
+			  "label_asym_id" =>
+			      $atom_site->{$atom_id}{"label_asym_id"},
+			  "label_entity_id" =>
+			      $atom_site->{$atom_id}{"label_entity_id"},
+			  "label_seq_id" =>
+			      $atom_site->{$atom_id}{"label_seq_id"},
+			  "cartn_x" =>
+			      sprintf( "%.3f", $transf_atom_coord->[0][0] ),
+			  "cartn_y" =>
+			      sprintf( "%.3f", $transf_atom_coord->[1][0] ),
+			  "cartn_z" =>
+			      sprintf( "%.3f", $transf_atom_coord->[2][0] ) } );
 		    # Adds additional pseudo-atom flag for future filtering.
 		    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
 		    # Adds atom id that pseudo atoms was made of.

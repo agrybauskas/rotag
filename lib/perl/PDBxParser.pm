@@ -4,7 +4,11 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( filter_atoms obtain_atom_site select_atom_data to_pdbx );
+our @EXPORT_OK = qw( create_pdbx_entry
+                     filter_atoms
+                     obtain_atom_site
+                     select_atom_data
+                     to_pdbx );
 
 # --------------------------------- PDBx parser ------------------------------- #
 
@@ -138,6 +142,38 @@ sub select_atom_data
     }
 
     return \@atom_data;
+}
+
+sub create_pdbx_entry
+{
+    my ( $args ) = @_;
+    my $atom_site = $args->{"atom_site"};
+    my $atom_id = $args->{"id"};
+    my $type_symbol = $args->{"type_symbol"};
+    my $label_atom_id = $args->{"label_atom_id"};
+    my $label_alt_id = $args->{"label_alt_id"};
+    $label_alt_id //= ".";
+    my $label_comp_id = $args->{"label_comp_id"};
+    my $label_asym_id = $args->{"label_asym_id"};
+    my $label_entity_id = $args->{"label_entity_id"};
+    $label_entity_id //= "?";
+    my $label_seq_id = $args->{"label_seq_id"};
+    my $cartn_x = $args->{"cartn_x"};
+    my $cartn_y = $args->{"cartn_y"};
+    my $cartn_z = $args->{"cartn_z"};
+
+    $atom_site->{$atom_id}{"group_PDB"} = "ATOM";
+    $atom_site->{$atom_id}{"id"} = $atom_id;
+    $atom_site->{$atom_id}{"type_symbol"} = $type_symbol;
+    $atom_site->{$atom_id}{"label_atom_id"} = $label_atom_id;
+    $atom_site->{$atom_id}{"label_alt_id"} = $label_alt_id;
+    $atom_site->{$atom_id}{"label_comp_id"} = $label_comp_id;
+    $atom_site->{$atom_id}{"label_asym_id"} = $label_asym_id;
+    $atom_site->{$atom_id}{"label_entity_id"} = $label_entity_id;
+    $atom_site->{$atom_id}{"label_seq_id"} = $label_seq_id;
+    $atom_site->{$atom_id}{"Cartn_x"} = $cartn_x;
+    $atom_site->{$atom_id}{"Cartn_y"} = $cartn_y;
+    $atom_site->{$atom_id}{"Cartn_z"} = $cartn_z;
 }
 
 # --------------------------- Data structure to STDOUT ------------------------ #
