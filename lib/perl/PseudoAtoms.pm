@@ -35,7 +35,7 @@ use MoleculeProperties qw( %ROTATABLE_BONDS
 use PDBxParser qw( filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
-use Data::Dumper;
+
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -350,6 +350,9 @@ sub add_hydrogens
 
     # TODO: might not work with single atoms. Look into it. Also, would be faster
     # if heavy atoms without any possible addition of hydrogens are ignored.
+    my %hydrogen_site;
+    my $last_atom_id = max( keys %{ $atom_site } );
+
     for my $atom_id ( keys %atom_site ) {
 	my $residue_name = $atom_site{$atom_id}{"label_comp_id"};
 	my $atom_type = $atom_site{$atom_id}{"type_symbol"};
@@ -380,6 +383,7 @@ sub add_hydrogens
 				 @connection_atoms,
 				 @hydrogen_types,
 				 @lone_pair_types );
+
 	    # Deals with sp3 hybrized atoms that has only one connection with
 	    # another heavy atom.
 	    if( scalar( @connection_ids ) == 1 ) {
@@ -394,7 +398,42 @@ sub add_hydrogens
 			[ $atom_site->{$atom_id}{"Cartn_x"} + 1,   # Arbitrary
 			  $atom_site->{$atom_id}{"Cartn_y"} + 1,   # point.
 			  $atom_site->{$atom_id}{"Cartn_z"} + 1 ], #
-			"local" );
+			"global" );
+
+		# Adds hydrogens.
+		for my $hydrogen_idx ( 0..$hydrogen_count-1 ) {
+		    my $transf_atom_coord =
+			matrix_product(
+			    $transf_matrix,
+			    vectorize( $tetrahedron_coord->[2+$hydrogen_idx] ) );
+
+		    # Adds necessary PDBx entries to pseudo atom.
+		    $last_atom_id++;
+		    $hydrogen_site{$last_atom_id}{"group_PDB"} = "ATOM";
+		    $hydrogen_site{$last_atom_id}{"id"} = $last_atom_id;
+		    $hydrogen_site{$last_atom_id}{"type_symbol"} = "H";
+		    $hydrogen_site{$last_atom_id}{"label_atom_id"} =
+		    	$hydrogen_names[$hydrogen_idx];
+		    $hydrogen_site{$last_atom_id}{"label_alt_id"} = ".";
+		    $hydrogen_site{$last_atom_id}{"label_comp_id"} =
+			$atom_site->{$atom_id}{"label_comp_id"};
+		    $hydrogen_site{$last_atom_id}{"label_asym_id"} =
+			$atom_site->{$atom_id}{"label_asym_id"};
+		    $hydrogen_site{$last_atom_id}{"label_entity_id"} =
+			$atom_site->{$atom_id}{"label_entity_id"};
+		    $hydrogen_site{$last_atom_id}{"label_seq_id"} =
+			$atom_site->{$atom_id}{"label_seq_id"};
+		    $hydrogen_site{$last_atom_id}{"Cartn_x"} =
+		    	sprintf( "%.3f", $transf_atom_coord->[0][0] );
+		    $hydrogen_site{$last_atom_id}{"Cartn_y"} =
+		    	sprintf( "%.3f", $transf_atom_coord->[1][0] );
+		    $hydrogen_site{$last_atom_id}{"Cartn_z"} =
+		    	sprintf( "%.3f", $transf_atom_coord->[2][0] );
+		    # Adds additional pseudo-atom flag for future filtering.
+		    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
+		    # Adds atom id that pseudo atoms was made of.
+		    $hydrogen_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
+		}
 	    }
 	}
 	# } elsif( $hybridization eq "sp2" ) {
@@ -413,6 +452,8 @@ sub add_hydrogens
 	#     }
 	# }
     }
+
+    return \%hydrogen_site;
 }
 
 #                                       Up(2)
