@@ -536,7 +536,7 @@ sub evaluate_matrix {
 
     my @eval_matrix;
 
-    # # Adds $ sign to given symbols and then runs eval() function.
+    # Adds $ sign to given symbols and then runs eval() function.
     for my $row ( @{ $matrix } ) {
     	push( @eval_matrix, [] );
     	for my $element ( @{ $row } ) {

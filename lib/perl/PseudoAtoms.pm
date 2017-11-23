@@ -36,7 +36,7 @@ use PDBxParser qw( create_pdbx_entry
                    filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
-
+use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -93,7 +93,7 @@ sub generate_pseudo
     	for my $angle_comb ( # Abreviation of angle combinations.
     	    @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ){
     	    my %angle_values =
-    		map { $angle_names[$_], $angle_comb->[$_] } 0..$#angle_names;
+    		map { ( $angle_names[$_] => $angle_comb->[$_] ) } 0..$#angle_names;
     	    # Converts matrices to GiNaC compatable format and evaluates them.
     	    my $transf_atom_coord =
 		evaluate_matrix( $conformation, \%angle_values );
@@ -268,7 +268,7 @@ sub generate_library
 
 	    # TODO: look for cases, when all atoms produce clashes.
 	    my @current_angles;
-	    if( not @allowed_angles ) {
+	    if( ! @allowed_angles ) {
 		# If no angles are present, allows all angles.
 		@current_angles = @sampled_angles;
 	    } else {
@@ -342,8 +342,6 @@ sub add_hydrogens
     my %atom_site = %{ $atom_site };
     connect_atoms( \%atom_site );
 
-    # TODO: might not work with single atoms. Look into it. Also, would be faster
-    # if heavy atoms without any possible addition of hydrogens are ignored.
     my %hydrogen_site;
     my $last_atom_id = max( keys %{ $atom_site } );
 
@@ -358,12 +356,13 @@ sub add_hydrogens
 
 	my $hybridization = $HYBRIDIZATION{$residue_name}{$atom_name};
 	my $lone_pair_count = $ATOMS{$atom_type}{"lone_pairs"};
-	my @lone_pair_types =
-	    map { "." } 1..$lone_pair_count if $lone_pair_count > 0;
 
 	my $hydrogen_count = 4 - scalar( @connection_ids ) - $lone_pair_count;
-	my @hydrogen_types =
-	    map { "H" } 1..$hydrogen_count if $hydrogen_count > 0;
+
+	# Skips hydrogen addition if there are no hydrogens to add.
+	if( $hydrogen_count == 0 ) { next; };
+
+	# Generates name according to the name of heavy atom.
 	my @hydrogen_names;
 	for my $hydrogen_id ( 1..$hydrogen_count ) {
 	    ( my $hydrogen_name = $atom_name ) =~
@@ -371,80 +370,11 @@ sub add_hydrogens
 	    push( @hydrogen_names, $hydrogen_name );
 	}
 
-	if( $hybridization eq "sp3" ) {
-	    my $tetrahedron_coord =
-		sp3_tetrahedron( $atom_type,
-				 @connection_atoms,
-				 @hydrogen_types,
-				 @lone_pair_types );
+	# Generates vector that is aligned to the bond of two heavy atoms, one of
+	# with hydrogen will be added to. Generates for all three types of
+	# hybridization: sp3, sp2, sp.
+	my $placement_vector;
 
-	    # Deals with sp3 hybrized atoms that has only one connection with
-	    # another heavy atom.
-	    if( scalar( @connection_ids ) == 1 ) {
-		my $transf_matrix =
-		    switch_ref_frame(
-			[ $atom_site->{$atom_id}{"Cartn_x"},
-			  $atom_site->{$atom_id}{"Cartn_y"},
-			  $atom_site->{$atom_id}{"Cartn_z"} ],
-			[ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-			  $atom_site->{$connection_ids[0]}{"Cartn_y"},
-			  $atom_site->{$connection_ids[0]}{"Cartn_z"} ],
-			[ $atom_site->{$atom_id}{"Cartn_x"} + 1,   # Arbitrary
-			  $atom_site->{$atom_id}{"Cartn_y"} + 1,   # point.
-			  $atom_site->{$atom_id}{"Cartn_z"} + 1 ], #
-			"global" );
-
-		# Adds hydrogens.
-		for my $hydrogen_idx ( 0..$hydrogen_count-1 ) {
-		    my $transf_atom_coord =
-			matrix_product(
-			    $transf_matrix,
-			    vectorize( $tetrahedron_coord->[2+$hydrogen_idx] ) );
-
-		    # Adds necessary PDBx entries to pseudo atom.
-		    $last_atom_id++;
-		    create_pdbx_entry(
-			{ "atom_site" => \%hydrogen_site,
-			  "id" => $last_atom_id,
-			  "type_symbol" => "H",
-			  "label_atom_id" => $hydrogen_names[$hydrogen_idx],
-			  "label_alt_id" => ".",
-			  "label_comp_id" =>
-			      $atom_site->{$atom_id}{"label_comp_id"},
-			  "label_asym_id" =>
-			      $atom_site->{$atom_id}{"label_asym_id"},
-			  "label_entity_id" =>
-			      $atom_site->{$atom_id}{"label_entity_id"},
-			  "label_seq_id" =>
-			      $atom_site->{$atom_id}{"label_seq_id"},
-			  "cartn_x" =>
-			      sprintf( "%.3f", $transf_atom_coord->[0][0] ),
-			  "cartn_y" =>
-			      sprintf( "%.3f", $transf_atom_coord->[1][0] ),
-			  "cartn_z" =>
-			      sprintf( "%.3f", $transf_atom_coord->[2][0] ) } );
-		    # Adds additional pseudo-atom flag for future filtering.
-		    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
-		    # Adds atom id that pseudo atoms was made of.
-		    $hydrogen_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
-		}
-	    }
-	}
-	# } elsif( $hybridization eq "sp2" ) {
-	#     my $hydrogen_count =
-	# 	3 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
-	#     for my $hydrogen_id ( 1..$hydrogen_count ) {
-	# 	( my $hydrogen_name = $atom_name ) =~
-	# 	    s/$atom_type(.?)/H$1$hydrogen_id/;
-	#     }
-	# } elsif( $hybridization eq "sp" ) {
-	#     my $hydrogen_count =
-	# 	2 - scalar( @connection_ids ) - $ATOMS{$atom_type}{"lone_pairs"};
-	#     for my $hydrogen_id ( 1..$hydrogen_count ) {
-	# 	( my $hydrogen_name = $atom_name ) =~
-	# 	    s/$atom_type(.?)/H$1$hydrogen_id/;
-	#     }
-	# }
     }
 
     return \%hydrogen_site;
@@ -550,7 +480,6 @@ sub sp2_triangle
 	    $bond_length_c_left * cos( 240 * pi() / 180 ) ] );
 
     return \@atom_coord;
-
 }
 
 #                                       Up(2)

@@ -88,9 +88,9 @@ sub potential
     	foreach my $neighbour_id ( @neighbour_cells ) {
     	    if( any { $neighbour_id eq $_ } @visible_atom_ids ) {
     	    if( $atom_id ne $neighbour_id
-    		&& ( not is_connected( $atom_site->{"$atom_id"},
+    		&& ( ! is_connected( $atom_site->{"$atom_id"},
     				       $atom_site->{"$neighbour_id"} ) )
-    		&& ( not is_second_neighbour( $atom_site,
+    		&& ( ! is_second_neighbour( $atom_site,
     					      $atom_id,
     					      $neighbour_id ) ) ) {
     		$atom_site->{$atom_id}{"potential_energy"} +=
