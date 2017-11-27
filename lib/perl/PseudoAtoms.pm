@@ -370,145 +370,109 @@ sub add_hydrogens
 	    push( @hydrogen_names, $hydrogen_name );
 	}
 
+	#            sp3                       sp2               sp
+	#
+	#            Up(2)                     Up(2)	         Up(2)
+	# z          |		               |	         |
+	# |_y        C(1) __ Right(3)          C(1)	         C(1)
+	# /         / \		              / \	         |
+	# x    Left(4) Back(5)	         Left(4) Right(3)        Down(3)
+	#
 	# Generates vector that is aligned to the bond of two heavy atoms, one of
 	# with hydrogen will be added to. Generates for all three types of
 	# hybridization: sp3, sp2, sp.
-	my $placement_vector;
+	my $up_bond_length =
+	    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+          + $ATOMS{$connection_ids[0]}{"covalent_radius"}{"length"}[0];
+	my @up_atom_coord = ( [ 0 ], [ 0 ], [ $up_bond_length ], [ 1 ] );
 
+	# Depending on hybridization and present bond connections, adds missing
+	# hydrogens.
+	# TODO: in the future, should adjust sp3, sp2 angles according to
+	# experimental data, not model.
+	if( $hybridization == "sp3" ) {
+	    if( $hydrogen_count == 3 ) {
+		# Calculates length of bonds.
+		my $right_bond_length =
+		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+		my $left_bond_length =
+		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+	          + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+		my $back_bond_length =
+		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+
+		# Creates coordinates for hydrogen atoms where the center point
+		# is (0, 0, 0).
+		my @right_atom_coord =
+		    ( [ $right_bond_length * sin( 109.5 * pi() / 180 ) ],
+		      [ 0 ],
+		      [ $right_bond_length * cos( 109.5 * pi() / 180 ) ],
+		      [ 1 ] );
+		my @left_atom_coord =
+		    ( [ $left_bond_length
+		      * cos( 120 * pi() / 180 )
+		      * sin( 109.5 * pi() / 180 ) ],
+		      [ $left_bond_length
+		      * sin( 120 * pi() / 180 )
+		      * sin( 109.5 * pi() / 180 )],
+		      [ $left_bond_length
+		      * cos( 109.5 * pi() / 180 )],
+		      [ 1 ] );
+		my @back_atom_coord =
+		    ( [ $back_bond_length
+		      * cos( 240 * pi() / 180 )
+		      * sin( 109.5 * pi() / 180 ) ],
+		      [ $back_bond_length
+		      * sin( 240 * pi() / 180 )
+		      * sin( 109.5 * pi() / 180 ) ],
+		      [ $back_bond_length
+		      * cos( 109.5 * pi() / 180 ) ],
+		      [ 1 ] );
+	    }
+
+	} elsif( $hybridization == "sp2" ) {
+	    if( $hydrogen_count == 2 ) {
+		# Calculates length of bonds.
+		my $right_bond_length =
+		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+		my $left_bond_length =
+		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+	          + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+
+		# Creates coordinates for hydrogen atoms where the center point
+		# is (0, 0, 0).
+		my @right_atom_coord =
+		    ( [ $right_bond_length * sin( 120 * pi() / 180 ) ],
+		      [ 0 ],
+		      [ $right_bond_length * cos( 120 * pi() / 180 ) ],
+		      [ 1 ] );
+		my @left_atom_coord =
+		    ( [ $left_bond_length * sin( 240 * pi() / 180 ) ],
+		      [ 0 ],
+		      [ $left_bond_length * cos( 240 * pi() / 180 ) ],
+		      [ 1 ] );
+	    }
+
+	} elsif( $hybridization == "sp" ) {
+	    # Calculates length of bonds.
+	    my $down_bond_length =
+		$ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+
+	    # Creates coordinates for hydrogen atoms where the center point
+	    # is (0, 0, 0).
+	    my @down_atom_coord =
+		( [ 0 ],
+		  [ 0 ],
+		  [ - $down_bond_length ],
+		  [ 1 ] );
+	}
     }
 
     return \%hydrogen_site;
-}
-
-#                                       Up(2)
-# z                                     |
-# |_y                                   C(1) __ Right(3)
-# /                                    / \
-# x                               Left(4) Back(5)
-
-sub sp3_tetrahedron
-{
-    my ( @atom_names ) = @_;
-
-    # Places first atom in the origin of the global frame of reference.
-    my @atom_coord = ( [ 0, 0, 0 ] );
-
-    # Places second atom on z-axis by the length of the bond.
-    my $bond_length_c_up =
-	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[1]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord, [ 0, 0, $bond_length_c_up ] );
-
-    # Places third atom in xz-plane that has 109.5 deg angle between 2-1-3 atoms.
-    # TODO: in the future, should adjust sp3 angles according to experimental
-    # angles, not model.
-    my $bond_length_c_right =
-	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[2]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord,
-	  [ $bond_length_c_right * sin( 109.5 * pi() / 180 ),
-	    0,
-	    $bond_length_c_right * cos( 109.5 * pi() / 180 ) ] );
-
-    # Places fourth atom in a position of third atom and rotates 109.5 deg.
-    my $bond_length_c_left =
-    	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[3]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord,
-    	  [   $bond_length_c_left
-	    * cos( 120 * pi() / 180 )
-	    * sin( 109.5 * pi() / 180 ),
-    	      $bond_length_c_left
-	    * sin( 120 * pi() / 180 ) * sin( 109.5 * pi() / 180 ),
-    	      $bond_length_c_left
-	    * cos( 109.5 * pi() / 180 ) ] );
-
-    # Places fifth atom in a position of third atom and rotates 109.5 deg.
-    my $bond_length_c_back =
-    	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[3]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord,
-    	  [   $bond_length_c_back
-	    * cos( 240 * pi() / 180 )
-	    * sin( 109.5 * pi() / 180 ),
-              $bond_length_c_back
-	    * sin( 240 * pi() / 180 )
-	    * sin( 109.5 * pi() / 180 ),
-              $bond_length_c_back
-	    * cos( 109.5 * pi() / 180 ) ] );
-
-    return \@atom_coord;
-}
-
-#                                       Up(2)
-# z                                     |
-# |_y                                   C(1)
-# /                                    / \
-# x                               Left(4) Right(3)
-
-sub sp2_triangle
-{
-    my ( @atom_names ) = @_;
-
-    # Places first atom in the origin of the global frame of reference.
-    my @atom_coord = ( [ 0, 0, 0 ] );
-
-    # Places second atom on z-axis by the length of the bond.
-    my $bond_length_c_up =
-	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[1]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord, [ 0, 0, $bond_length_c_up ] );
-
-    # TODO: in the future, should adjust sp2 angles according to experimental
-    # angles, not model.
-    # Places third atom in xz-plane that has 120 deg angle between 2-1-3 atoms.
-    my $bond_length_c_right =
-	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[2]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord,
-	  [ $bond_length_c_right * sin( 120 * pi() / 180 ),
-	    0,
-	    $bond_length_c_right * cos( 120 * pi() / 180 ) ] );
-
-    # Places fourth atom in xz-plane that has 120 deg angle between 2-1-4 atoms.
-    my $bond_length_c_left =
-	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[2]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord,
-	  [ $bond_length_c_left * sin( 240 * pi() / 180 ),
-	    0,
-	    $bond_length_c_left * cos( 240 * pi() / 180 ) ] );
-
-    return \@atom_coord;
-}
-
-#                                       Up(2)
-# z                                     |
-# |_y                                   C(1)
-# /                                     |
-# x                                     Down(3)
-
-sub sp_line
-{
-    my ( @atom_names ) = @_;
-
-    # Places first atom in the origin of the global frame of reference.
-    my @atom_coord = ( [ 0, 0, 0 ] );
-
-    # Places second atom on z-axis by the length of the bond.
-    my $bond_length_c_up =
-	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[1]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord, [ 0, 0, $bond_length_c_up ] );
-
-    # Places third atom on z-axis by the length of the bond in the opposite
-    # direction.
-    my $bond_length_c_down =
-	$ATOMS{$atom_names[0]}{"covalent_radius"}{"length"}[0]
-      + $ATOMS{$atom_names[1]}{"covalent_radius"}{"length"}[0];
-    push( @atom_coord, [ 0, 0, - $bond_length_c_down ] );
-
-    return \@atom_coord;
 }
 
 1;
