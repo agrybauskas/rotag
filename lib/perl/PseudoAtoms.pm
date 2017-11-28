@@ -29,6 +29,7 @@ use LinearAlgebra qw( evaluate_matrix
                       y_axis_rotation
                       z_axis_rotation );
 use Measure qw( all_dihedral
+                bond_angle
                 bond_length );
 use MoleculeProperties qw( %ROTATABLE_BONDS
                            %HYBRIDIZATION );
@@ -378,18 +379,11 @@ sub add_hydrogens
 	# /         / \		              / \	         |
 	# x    Left(4) Back(5)	         Left(4) Right(3)        Down(3)
 	#
-	# Generates vector that is aligned to the bond of two heavy atoms, one of
-	# with hydrogen will be added to. Generates for all three types of
-	# hybridization: sp3, sp2, sp.
-	my $up_bond_length =
-	    $ATOMS{$atom_type}{"covalent_radius"}{"length"}[0]
-	  + $ATOMS{$connection_atoms[0]}{"covalent_radius"}{"length"}[0];
-    	my @up_atom_coord = ( [ 0 ], [ 0 ], [ $up_bond_length ], [ 1 ] );
-
     	# Depending on hybridization and present bond connections, adds missing
     	# hydrogens.
     	# TODO: in the future, should adjust sp3, sp2 angles according to
     	# experimental data, not model.
+	# Up atom is a heavy atom that current atom is connected to.
     	if( $hybridization eq "sp3" ) {
     	    if( $hydrogen_count == 3 ) {
     		# Calculates length of bonds.
@@ -416,9 +410,9 @@ sub add_hydrogens
     		      * sin( 109.5 * pi() / 180 ) ],
     		      [ $left_bond_length
     		      * sin( 120 * pi() / 180 )
-    		      * sin( 109.5 * pi() / 180 )],
+    		      * sin( 109.5 * pi() / 180 ) ],
     		      [ $left_bond_length
-    		      * cos( 109.5 * pi() / 180 )],
+    		      * cos( 109.5 * pi() / 180 ) ],
     		      [ 1 ] );
     		my @back_atom_coord =
     		    ( [ $back_bond_length
@@ -430,7 +424,57 @@ sub add_hydrogens
     		      [ $back_bond_length
     		      * cos( 109.5 * pi() / 180 ) ],
     		      [ 1 ] );
-    	    }
+    	    } elsif( $hydrogen_count == 2 ) {
+		# Decreases bond angle, if lone pairs are present.
+		my $right_bond_angle;
+		if( $lone_pair_count > 0 ) {
+		    $right_bond_angle =
+			( 109.5 - $lone_pair_count * 2.5 ) * pi() / 180;
+		} else {
+		    $right_bond_angle =
+			bond_angle(
+			    [ [ $atom_site{$connection_ids[0]}{"Cartn_x"},
+				$atom_site{$connection_ids[0]}{"Cartn_y"},
+				$atom_site{$connection_ids[0]}{"Cartn_z"} ],
+			      [ $atom_site{$atom_id}{"Cartn_x"},
+				$atom_site{$atom_id}{"Cartn_y"},
+				$atom_site{$atom_id}{"Cartn_z"} ],
+			      [ $atom_site{$connection_ids[1]}{"Cartn_x"},
+				$atom_site{$connection_ids[1]}{"Cartn_y"},
+				$atom_site{$connection_ids[1]}{"Cartn_z"} ] ] );
+		}
+    	    # 	my @left_atom_coord =
+    	    # 	    ( [ $left_bond_length
+    	    # 	      * cos( 120 * pi() / 180 )
+    	    # 	      * sin( 109.5 * pi() / 180 ) ],
+    	    # 	      [ $left_bond_length
+    	    # 	      * sin( 120 * pi() / 180 )
+    	    # 	      * sin( 109.5 * pi() / 180 )],
+    	    # 	      [ $left_bond_length
+    	    # 	      * cos( 109.5 * pi() / 180 )],
+    	    # 	      [ 1 ] );
+    	    # 	my @back_atom_coord =
+    	    # 	    ( [ $back_bond_length
+    	    # 	      * cos( 240 * pi() / 180 )
+    	    # 	      * sin( 109.5 * pi() / 180 ) ],
+    	    # 	      [ $back_bond_length
+    	    # 	      * sin( 240 * pi() / 180 )
+    	    # 	      * sin( 109.5 * pi() / 180 ) ],
+    	    # 	      [ $back_bond_length
+    	    # 	      * cos( 109.5 * pi() / 180 ) ],
+    	    # 	      [ 1 ] );
+	    } elsif( $hydrogen_count == 1 ) {
+    	    # 	my @back_atom_coord =
+    	    # 	    ( [ $back_bond_length
+    	    # 	      * cos( 240 * pi() / 180 )
+    	    # 	      * sin( 109.5 * pi() / 180 ) ],
+    	    # 	      [ $back_bond_length
+    	    # 	      * sin( 240 * pi() / 180 )
+    	    # 	      * sin( 109.5 * pi() / 180 ) ],
+    	    # 	      [ $back_bond_length
+    	    # 	      * cos( 109.5 * pi() / 180 ) ],
+    	    # 	      [ 1 ] );
+	    }
 
     	} elsif( $hybridization eq "sp2" ) {
     	    if( $hydrogen_count == 2 ) {
