@@ -382,94 +382,94 @@ sub add_hydrogens
 	# with hydrogen will be added to. Generates for all three types of
 	# hybridization: sp3, sp2, sp.
 	my $up_bond_length =
-	    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-          + $ATOMS{$connection_ids[0]}{"covalent_radius"}{"length"}[0];
-	my @up_atom_coord = ( [ 0 ], [ 0 ], [ $up_bond_length ], [ 1 ] );
+	    $ATOMS{$atom_type}{"covalent_radius"}{"length"}[0]
+	  + $ATOMS{$connection_atoms[0]}{"covalent_radius"}{"length"}[0];
+    	my @up_atom_coord = ( [ 0 ], [ 0 ], [ $up_bond_length ], [ 1 ] );
 
-	# Depending on hybridization and present bond connections, adds missing
-	# hydrogens.
-	# TODO: in the future, should adjust sp3, sp2 angles according to
-	# experimental data, not model.
-	if( $hybridization == "sp3" ) {
-	    if( $hydrogen_count == 3 ) {
-		# Calculates length of bonds.
-		my $right_bond_length =
-		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
-		my $left_bond_length =
-		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-	          + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
-		my $back_bond_length =
-		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    	# Depending on hybridization and present bond connections, adds missing
+    	# hydrogens.
+    	# TODO: in the future, should adjust sp3, sp2 angles according to
+    	# experimental data, not model.
+    	if( $hybridization eq "sp3" ) {
+    	    if( $hydrogen_count == 3 ) {
+    		# Calculates length of bonds.
+    		my $right_bond_length =
+    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    		my $left_bond_length =
+    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    	          + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    		my $back_bond_length =
+    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
-		# Creates coordinates for hydrogen atoms where the center point
-		# is (0, 0, 0).
-		my @right_atom_coord =
-		    ( [ $right_bond_length * sin( 109.5 * pi() / 180 ) ],
-		      [ 0 ],
-		      [ $right_bond_length * cos( 109.5 * pi() / 180 ) ],
-		      [ 1 ] );
-		my @left_atom_coord =
-		    ( [ $left_bond_length
-		      * cos( 120 * pi() / 180 )
-		      * sin( 109.5 * pi() / 180 ) ],
-		      [ $left_bond_length
-		      * sin( 120 * pi() / 180 )
-		      * sin( 109.5 * pi() / 180 )],
-		      [ $left_bond_length
-		      * cos( 109.5 * pi() / 180 )],
-		      [ 1 ] );
-		my @back_atom_coord =
-		    ( [ $back_bond_length
-		      * cos( 240 * pi() / 180 )
-		      * sin( 109.5 * pi() / 180 ) ],
-		      [ $back_bond_length
-		      * sin( 240 * pi() / 180 )
-		      * sin( 109.5 * pi() / 180 ) ],
-		      [ $back_bond_length
-		      * cos( 109.5 * pi() / 180 ) ],
-		      [ 1 ] );
-	    }
+    		# Creates coordinates for hydrogen atoms where the center point
+    		# is (0, 0, 0).
+    		my @right_atom_coord =
+    		    ( [ $right_bond_length * sin( 109.5 * pi() / 180 ) ],
+    		      [ 0 ],
+    		      [ $right_bond_length * cos( 109.5 * pi() / 180 ) ],
+    		      [ 1 ] );
+    		my @left_atom_coord =
+    		    ( [ $left_bond_length
+    		      * cos( 120 * pi() / 180 )
+    		      * sin( 109.5 * pi() / 180 ) ],
+    		      [ $left_bond_length
+    		      * sin( 120 * pi() / 180 )
+    		      * sin( 109.5 * pi() / 180 )],
+    		      [ $left_bond_length
+    		      * cos( 109.5 * pi() / 180 )],
+    		      [ 1 ] );
+    		my @back_atom_coord =
+    		    ( [ $back_bond_length
+    		      * cos( 240 * pi() / 180 )
+    		      * sin( 109.5 * pi() / 180 ) ],
+    		      [ $back_bond_length
+    		      * sin( 240 * pi() / 180 )
+    		      * sin( 109.5 * pi() / 180 ) ],
+    		      [ $back_bond_length
+    		      * cos( 109.5 * pi() / 180 ) ],
+    		      [ 1 ] );
+    	    }
 
-	} elsif( $hybridization == "sp2" ) {
-	    if( $hydrogen_count == 2 ) {
-		# Calculates length of bonds.
-		my $right_bond_length =
-		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
-		my $left_bond_length =
-		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-	          + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    	} elsif( $hybridization eq "sp2" ) {
+    	    if( $hydrogen_count == 2 ) {
+    		# Calculates length of bonds.
+    		my $right_bond_length =
+    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    		my $left_bond_length =
+    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    	          + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
-		# Creates coordinates for hydrogen atoms where the center point
-		# is (0, 0, 0).
-		my @right_atom_coord =
-		    ( [ $right_bond_length * sin( 120 * pi() / 180 ) ],
-		      [ 0 ],
-		      [ $right_bond_length * cos( 120 * pi() / 180 ) ],
-		      [ 1 ] );
-		my @left_atom_coord =
-		    ( [ $left_bond_length * sin( 240 * pi() / 180 ) ],
-		      [ 0 ],
-		      [ $left_bond_length * cos( 240 * pi() / 180 ) ],
-		      [ 1 ] );
-	    }
+    		# Creates coordinates for hydrogen atoms where the center point
+    		# is (0, 0, 0).
+    		my @right_atom_coord =
+    		    ( [ $right_bond_length * sin( 120 * pi() / 180 ) ],
+    		      [ 0 ],
+    		      [ $right_bond_length * cos( 120 * pi() / 180 ) ],
+    		      [ 1 ] );
+    		my @left_atom_coord =
+    		    ( [ $left_bond_length * sin( 240 * pi() / 180 ) ],
+    		      [ 0 ],
+    		      [ $left_bond_length * cos( 240 * pi() / 180 ) ],
+    		      [ 1 ] );
+    	    }
 
-	} elsif( $hybridization == "sp" ) {
-	    # Calculates length of bonds.
-	    my $down_bond_length =
-		$ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    	} elsif( $hybridization eq "sp" ) {
+    	    # Calculates length of bonds.
+    	    my $down_bond_length =
+    		$ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
-	    # Creates coordinates for hydrogen atoms where the center point
-	    # is (0, 0, 0).
-	    my @down_atom_coord =
-		( [ 0 ],
-		  [ 0 ],
-		  [ - $down_bond_length ],
-		  [ 1 ] );
-	}
+    	    # Creates coordinates for hydrogen atoms where the center point
+    	    # is (0, 0, 0).
+    	    my @down_atom_coord =
+    		( [ 0 ],
+    		  [ 0 ],
+    		  [ - $down_bond_length ],
+    		  [ 1 ] );
+    	}
     }
 
     return \%hydrogen_site;
