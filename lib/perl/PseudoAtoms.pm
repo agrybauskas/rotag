@@ -24,6 +24,8 @@ use LinearAlgebra qw( evaluate_matrix
                       scalar_multipl
                       switch_ref_frame
                       translation
+                      vector_cross
+                      vector_length
                       vectorize
                       x_axis_rotation
                       y_axis_rotation
@@ -384,135 +386,176 @@ sub add_hydrogens
     	# TODO: in the future, should adjust sp3, sp2 angles according to
     	# experimental data, not model.
 	# Up atom is a heavy atom that current atom is connected to.
-    	if( $hybridization eq "sp3" ) {
-    	    if( $hydrogen_count == 3 ) {
-    		# Calculates length of bonds.
-    		my $right_bond_length =
-    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-    		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
-    		my $left_bond_length =
-    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-    	          + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
-    		my $back_bond_length =
-    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-    		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+	my %hydrogen_coord = map { $_ => undef } @hydrogen_names;
 
-    		# Creates coordinates for hydrogen atoms where the center point
-    		# is (0, 0, 0).
-    		my @right_atom_coord =
-    		    ( [ $right_bond_length * sin( 109.5 * pi() / 180 ) ],
-    		      [ 0 ],
-    		      [ $right_bond_length * cos( 109.5 * pi() / 180 ) ],
-    		      [ 1 ] );
-    		my @left_atom_coord =
-    		    ( [ $left_bond_length
-    		      * cos( 120 * pi() / 180 )
-    		      * sin( 109.5 * pi() / 180 ) ],
-    		      [ $left_bond_length
-    		      * sin( 120 * pi() / 180 )
-    		      * sin( 109.5 * pi() / 180 ) ],
-    		      [ $left_bond_length
-    		      * cos( 109.5 * pi() / 180 ) ],
-    		      [ 1 ] );
-    		my @back_atom_coord =
-    		    ( [ $back_bond_length
-    		      * cos( 240 * pi() / 180 )
-    		      * sin( 109.5 * pi() / 180 ) ],
-    		      [ $back_bond_length
-    		      * sin( 240 * pi() / 180 )
-    		      * sin( 109.5 * pi() / 180 ) ],
-    		      [ $back_bond_length
-    		      * cos( 109.5 * pi() / 180 ) ],
-    		      [ 1 ] );
-    	    } elsif( $hydrogen_count == 2 ) {
-		# Decreases bond angle, if lone pairs are present.
-		my $right_bond_angle;
-		if( $lone_pair_count > 0 ) {
-		    $right_bond_angle =
-			( 109.5 - $lone_pair_count * 2.5 ) * pi() / 180;
-		} else {
-		    $right_bond_angle =
-			bond_angle(
-			    [ [ $atom_site{$connection_ids[0]}{"Cartn_x"},
-				$atom_site{$connection_ids[0]}{"Cartn_y"},
-				$atom_site{$connection_ids[0]}{"Cartn_z"} ],
-			      [ $atom_site{$atom_id}{"Cartn_x"},
-				$atom_site{$atom_id}{"Cartn_y"},
-				$atom_site{$atom_id}{"Cartn_z"} ],
-			      [ $atom_site{$connection_ids[1]}{"Cartn_x"},
-				$atom_site{$connection_ids[1]}{"Cartn_y"},
-				$atom_site{$connection_ids[1]}{"Cartn_z"} ] ] );
-		}
-    	    # 	my @left_atom_coord =
-    	    # 	    ( [ $left_bond_length
-    	    # 	      * cos( 120 * pi() / 180 )
-    	    # 	      * sin( 109.5 * pi() / 180 ) ],
-    	    # 	      [ $left_bond_length
-    	    # 	      * sin( 120 * pi() / 180 )
-    	    # 	      * sin( 109.5 * pi() / 180 )],
-    	    # 	      [ $left_bond_length
-    	    # 	      * cos( 109.5 * pi() / 180 )],
-    	    # 	      [ 1 ] );
-    	    # 	my @back_atom_coord =
-    	    # 	    ( [ $back_bond_length
-    	    # 	      * cos( 240 * pi() / 180 )
-    	    # 	      * sin( 109.5 * pi() / 180 ) ],
-    	    # 	      [ $back_bond_length
-    	    # 	      * sin( 240 * pi() / 180 )
-    	    # 	      * sin( 109.5 * pi() / 180 ) ],
-    	    # 	      [ $back_bond_length
-    	    # 	      * cos( 109.5 * pi() / 180 ) ],
-    	    # 	      [ 1 ] );
-	    } elsif( $hydrogen_count == 1 ) {
-    	    # 	my @back_atom_coord =
-    	    # 	    ( [ $back_bond_length
-    	    # 	      * cos( 240 * pi() / 180 )
-    	    # 	      * sin( 109.5 * pi() / 180 ) ],
-    	    # 	      [ $back_bond_length
-    	    # 	      * sin( 240 * pi() / 180 )
-    	    # 	      * sin( 109.5 * pi() / 180 ) ],
-    	    # 	      [ $back_bond_length
-    	    # 	      * cos( 109.5 * pi() / 180 ) ],
-    	    # 	      [ 1 ] );
+    	if( $hybridization eq "sp3" ) {
+    	    if( scalar( @connection_ids ) == 3 ) {
+		my $back_bond_length =
+		    $ATOMS{$atom_type}{"covalent_radius"}{"length"}[0]
+		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+
+		# Finds vector that is perpendicular to three atoms that are
+		# connected to target atom.
+		my @left_up_vector =
+		    ( $atom_site{$connection_ids[0]}{"Cartn_x"}
+		    - $atom_site{$connection_ids[1]}{"Cartn_x"},
+		      $atom_site{$connection_ids[0]}{"Cartn_y"}
+		    - $atom_site{$connection_ids[1]}{"Cartn_y"},
+		      $atom_site{$connection_ids[0]}{"Cartn_z"}
+		    - $atom_site{$connection_ids[1]}{"Cartn_z"} );
+		my @left_right_vector =
+		    ( $atom_site{$connection_ids[2]}{"Cartn_x"}
+		    - $atom_site{$connection_ids[1]}{"Cartn_x"},
+		      $atom_site{$connection_ids[2]}{"Cartn_y"}
+		    - $atom_site{$connection_ids[1]}{"Cartn_y"},
+		      $atom_site{$connection_ids[2]}{"Cartn_z"}
+		    - $atom_site{$connection_ids[1]}{"Cartn_z"} );
+		my $perpendicular_vector =
+		    vectorize( vector_cross( \@left_up_vector,
+					     \@left_right_vector ) );
+
+		# Normalizes vector, multiplies by scalar that has a value of
+		# hydrogen bond and adds to hydrogen_coord hash table.
+		$hydrogen_coord{$hydrogen_names[0]} =
+		    scalar_multipl( $perpendicular_vector,
+				    ( $back_bond_length
+				    / vector_length( $perpendicular_vector ) ) );
+		$hydrogen_coord{$hydrogen_names[0]}[3] = [ 1 ]; # Resets last
+		                                                # row to 1.
+
+    	    } elsif( scalar( @connection_ids ) == 2 ) {
+    		# # Calculates length of bonds.
+    		# my $right_bond_length =
+    		#     $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    		#   + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    		# my $left_bond_length =
+    		#     $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    	        #   + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    		# my $back_bond_length =
+    		#     $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    		#   + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+
+    		# # Creates coordinates for hydrogen atoms where the center point
+    		# # is (0, 0, 0).
+    		# $hydrogen_coord{$hydrogen_names[0]} =
+    		#     [ [ $right_bond_length * sin( 109.5 * pi() / 180 ) ],
+    		#       [ 0 ],
+    		#       [ $right_bond_length * cos( 109.5 * pi() / 180 ) ],
+    		#       [ 1 ] ];
+		# shift @hydrogen_names;
+    		# $hydrogen_coord{$hydrogen_names[0]} =
+    		#     [ [ $left_bond_length
+    		#       * cos( 120 * pi() / 180 )
+    		#       * sin( 109.5 * pi() / 180 ) ],
+    		#       [ $left_bond_length
+    		#       * sin( 120 * pi() / 180 )
+    		#       * sin( 109.5 * pi() / 180 ) ],
+    		#       [ $left_bond_length
+    		#       * cos( 109.5 * pi() / 180 ) ],
+    		#       [ 1 ] ];
+		# shift @hydrogen_names;
+    		# $hydrogen_coord{$hydrogen_names[0]} =
+    		#     [ [ $back_bond_length
+    		#       * cos( 240 * pi() / 180 )
+    		#       * sin( 109.5 * pi() / 180 ) ],
+    		#       [ $back_bond_length
+    		#       * sin( 240 * pi() / 180 )
+    		#       * sin( 109.5 * pi() / 180 ) ],
+    		#       [ $back_bond_length
+    		#       * cos( 109.5 * pi() / 180 ) ],
+    		#       [ 1 ] ];
+		# shift @hydrogen_names;
+
+		# # Decreases bond angle, if lone pairs are present.
+		# my $right_bond_angle;
+		# if( $lone_pair_count > 0 ) {
+		#     $right_bond_angle =
+		# 	( 109.5 - $lone_pair_count * 2.5 ) * pi() / 180;
+		# } else {
+		#     $right_bond_angle =
+		# 	bond_angle(
+		# 	    [ [ $atom_site{$connection_ids[0]}{"Cartn_x"},
+		# 		$atom_site{$connection_ids[0]}{"Cartn_y"},
+		# 		$atom_site{$connection_ids[0]}{"Cartn_z"} ],
+		# 	      [ $atom_site{$atom_id}{"Cartn_x"},
+		# 		$atom_site{$atom_id}{"Cartn_y"},
+		# 		$atom_site{$atom_id}{"Cartn_z"} ],
+		# 	      [ $atom_site{$connection_ids[1]}{"Cartn_x"},
+		# 		$atom_site{$connection_ids[1]}{"Cartn_y"},
+		# 		$atom_site{$connection_ids[1]}{"Cartn_z"} ] ] );
+		# }
+
+    		# my $left_bond_length =
+    		#     $ATOMS{$atom_type}{"covalent_radius"}{"length"}[0]
+    	        #   + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    		# my $back_bond_length =
+    		#     $ATOMS{$atom_type}{"covalent_radius"}{"length"}[0]
+    		#   + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+
+    	    	# $hydrogen_coord{$hydrogen_names[0]} =
+    	    	#     [ [ $left_bond_length
+    	    	#       * cos( 120 * pi() / 180 )
+    	    	#       * sin( $right_bond_angle * pi() / 180 ) ],
+    	    	#       [ $left_bond_length
+    	    	#       * sin( 120 * pi() / 180 )
+    	    	#       * sin( $right_bond_angle * pi() / 180 )],
+    	    	#       [ $left_bond_length
+    	    	#       * cos( $right_bond_angle * pi() / 180 )],
+    	    	#       [ 1 ] ];
+		# shift @hydrogen_names;
+    	    	# $hydrogen_coord{$hydrogen_names[0]} =
+    	    	#     [ [ $back_bond_length
+    	    	#       * cos( 240 * pi() / 180 )
+    	    	#       * sin( $right_bond_angle * pi() / 180 ) ],
+    	    	#       [ $back_bond_length
+    	    	#       * sin( 240 * pi() / 180 )
+    	    	#       * sin( $right_bond_angle * pi() / 180 ) ],
+    	    	#       [ $back_bond_length
+    	    	#       * cos( $right_bond_angle * pi() / 180 ) ],
+    	    	#       [ 1 ] ];
+		# shift @hydrogen_names;
+
+	    } elsif( scalar( @connection_ids ) == 1 ) {
+
 	    }
 
     	} elsif( $hybridization eq "sp2" ) {
-    	    if( $hydrogen_count == 2 ) {
-    		# Calculates length of bonds.
-    		my $right_bond_length =
-    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-    		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
-    		my $left_bond_length =
-    		    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-    	          + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    	    # if( $hydrogen_count == 2 ) {
+    	    # 	# Calculates length of bonds.
+    	    # 	my $right_bond_length =
+    	    # 	    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    	    # 	  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    	    # 	my $left_bond_length =
+    	    # 	    $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    	    #       + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
-    		# Creates coordinates for hydrogen atoms where the center point
-    		# is (0, 0, 0).
-    		my @right_atom_coord =
-    		    ( [ $right_bond_length * sin( 120 * pi() / 180 ) ],
-    		      [ 0 ],
-    		      [ $right_bond_length * cos( 120 * pi() / 180 ) ],
-    		      [ 1 ] );
-    		my @left_atom_coord =
-    		    ( [ $left_bond_length * sin( 240 * pi() / 180 ) ],
-    		      [ 0 ],
-    		      [ $left_bond_length * cos( 240 * pi() / 180 ) ],
-    		      [ 1 ] );
-    	    }
+    	    # 	# Creates coordinates for hydrogen atoms where the center point
+    	    # 	# is (0, 0, 0).
+    	    # 	my @right_atom_coord =
+    	    # 	    ( [ $right_bond_length * sin( 120 * pi() / 180 ) ],
+    	    # 	      [ 0 ],
+    	    # 	      [ $right_bond_length * cos( 120 * pi() / 180 ) ],
+    	    # 	      [ 1 ] );
+    	    # 	my @left_atom_coord =
+    	    # 	    ( [ $left_bond_length * sin( 240 * pi() / 180 ) ],
+    	    # 	      [ 0 ],
+    	    # 	      [ $left_bond_length * cos( 240 * pi() / 180 ) ],
+    	    # 	      [ 1 ] );
+    	    # }
 
     	} elsif( $hybridization eq "sp" ) {
-    	    # Calculates length of bonds.
-    	    my $down_bond_length =
-    		$ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
-    	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    	    # # Calculates length of bonds.
+    	    # my $down_bond_length =
+    	    # 	$ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
+    	    #   + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
-    	    # Creates coordinates for hydrogen atoms where the center point
-    	    # is (0, 0, 0).
-    	    my @down_atom_coord =
-    		( [ 0 ],
-    		  [ 0 ],
-    		  [ - $down_bond_length ],
-    		  [ 1 ] );
+    	    # # Creates coordinates for hydrogen atoms where the center point
+    	    # # is (0, 0, 0).
+    	    # my @down_atom_coord =
+    	    # 	( [ 0 ],
+    	    # 	  [ 0 ],
+    	    # 	  [ - $down_bond_length ],
+    	    # 	  [ 1 ] );
     	}
     }
 
