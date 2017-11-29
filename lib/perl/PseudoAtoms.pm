@@ -425,27 +425,9 @@ sub add_hydrogens
 		$hydrogen_coord{$hydrogen_names[0]}[3] = [ 1 ]; # Resets last
 		                                                # row to 1.
 
-		# Determines transformation matrix.
-		$transf_matrix =
-		    switch_ref_frame(
-			[ $atom_site->{$atom_id}{"Cartn_x"},
-			  $atom_site->{$atom_id}{"Cartn_y"},
-			  $atom_site->{$atom_id}{"Cartn_z"} ],
-			[ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-			  $atom_site->{$connection_ids[0]}{"Cartn_y"},
-			  $atom_site->{$connection_ids[0]}{"Cartn_z"} ],
-			[ $atom_site->{$connection_ids[1]}{"Cartn_x"},
-			  $atom_site->{$connection_ids[1]}{"Cartn_y"},
-			  $atom_site->{$connection_ids[1]}{"Cartn_z"} ],
-			"global" );
-
 		# Each coordinate of atoms is transformed by transformation
 		# matrix and added to %hydrogen_site.
 		for my $hydrogen_name ( keys %hydrogen_coord ) {
-		    my $transf_atom_coord =
-			matrix_product( $transf_matrix,
-					$hydrogen_coord{$hydrogen_name} );
-
 		    # Adds necessary PDBx entries to pseudo atom.
 		    $last_atom_id++;
 		    $hydrogen_site{$last_atom_id}{"group_PDB"} = "ATOM";
@@ -463,11 +445,14 @@ sub add_hydrogens
 		    $hydrogen_site{$last_atom_id}{"label_seq_id"} =
 			$atom_site->{$atom_id}{"label_seq_id"};
 		    $hydrogen_site{$last_atom_id}{"Cartn_x"} =
-			sprintf( "%.3f", $transf_atom_coord->[0][0] );
+			sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[0][0]
+				       + $atom_site->{$atom_id}{"Cartn_x"} );
 		    $hydrogen_site{$last_atom_id}{"Cartn_y"} =
-			sprintf( "%.3f", $transf_atom_coord->[1][0] );
+			sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[1][0]
+				       + $atom_site->{$atom_id}{"Cartn_y"} );
 		    $hydrogen_site{$last_atom_id}{"Cartn_z"} =
-			sprintf( "%.3f", $transf_atom_coord->[2][0] );
+			sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[2][0]
+				       + $atom_site->{$atom_id}{"Cartn_z"} );
 		    # Adds additional pseudo-atom flag for future filtering.
 		    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
 		    # Adds atom id that pseudo atoms was made of.
