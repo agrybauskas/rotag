@@ -202,7 +202,8 @@ sub generate_rotamer
 #     $atom_site - atom site data structure (see PDBxParser).
 #     $residue_ids - array of residue ids.
 #     $small_angle - angle by which rotation is made.
-#     $conformations - possible sidechain movements described by sidechain modeling
+#     $conformations - possible sidechain movements described by sidechain
+#     modeling
 #     functions in SidechainModels.pm.
 #     $interactions - interaction models described by functions in
 #     AtomInteractions.pm
@@ -387,6 +388,7 @@ sub add_hydrogens
     	# experimental data, not model.
 	# Up atom is a heavy atom that current atom is connected to.
 	my %hydrogen_coord = map { $_ => undef } @hydrogen_names;
+	my $transf_matrix;
 
     	if( $hybridization eq "sp3" ) {
     	    if( scalar( @connection_ids ) == 3 ) {
@@ -422,6 +424,55 @@ sub add_hydrogens
 				    / vector_length( $perpendicular_vector ) ) );
 		$hydrogen_coord{$hydrogen_names[0]}[3] = [ 1 ]; # Resets last
 		                                                # row to 1.
+
+		# Determines transformation matrix.
+		$transf_matrix =
+		    switch_ref_frame(
+			[ $atom_site->{$atom_id}{"Cartn_x"},
+			  $atom_site->{$atom_id}{"Cartn_y"},
+			  $atom_site->{$atom_id}{"Cartn_z"} ],
+			[ $atom_site->{$connection_ids[0]}{"Cartn_x"},
+			  $atom_site->{$connection_ids[0]}{"Cartn_y"},
+			  $atom_site->{$connection_ids[0]}{"Cartn_z"} ],
+			[ $atom_site->{$connection_ids[1]}{"Cartn_x"},
+			  $atom_site->{$connection_ids[1]}{"Cartn_y"},
+			  $atom_site->{$connection_ids[1]}{"Cartn_z"} ],
+			"global" );
+
+		# Each coordinate of atoms is transformed by transformation
+		# matrix and added to %hydrogen_site.
+		for my $hydrogen_name ( keys %hydrogen_coord ) {
+		    my $transf_atom_coord =
+			matrix_product( $transf_matrix,
+					$hydrogen_coord{$hydrogen_name} );
+
+		    # Adds necessary PDBx entries to pseudo atom.
+		    $last_atom_id++;
+		    $hydrogen_site{$last_atom_id}{"group_PDB"} = "ATOM";
+		    $hydrogen_site{$last_atom_id}{"id"} = $last_atom_id;
+		    $hydrogen_site{$last_atom_id}{"type_symbol"} = "H";
+		    $hydrogen_site{$last_atom_id}{"label_atom_id"} =
+			$hydrogen_name;
+		    $hydrogen_site{$last_atom_id}{"label_alt_id"} = ".";
+		    $hydrogen_site{$last_atom_id}{"label_comp_id"} =
+			$atom_site->{$atom_id}{"label_comp_id"};
+		    $hydrogen_site{$last_atom_id}{"label_asym_id"} =
+			$atom_site->{$atom_id}{"label_asym_id"};
+		    $hydrogen_site{$last_atom_id}{"label_entity_id"} =
+			$atom_site->{$atom_id}{"label_entity_id"};
+		    $hydrogen_site{$last_atom_id}{"label_seq_id"} =
+			$atom_site->{$atom_id}{"label_seq_id"};
+		    $hydrogen_site{$last_atom_id}{"Cartn_x"} =
+			sprintf( "%.3f", $transf_atom_coord->[0][0] );
+		    $hydrogen_site{$last_atom_id}{"Cartn_y"} =
+			sprintf( "%.3f", $transf_atom_coord->[1][0] );
+		    $hydrogen_site{$last_atom_id}{"Cartn_z"} =
+			sprintf( "%.3f", $transf_atom_coord->[2][0] );
+		    # Adds additional pseudo-atom flag for future filtering.
+		    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
+		    # Adds atom id that pseudo atoms was made of.
+		    $hydrogen_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
+		}
 
     	    } elsif( scalar( @connection_ids ) == 2 ) {
     		# # Calculates length of bonds.
