@@ -433,9 +433,9 @@ sub add_hydrogens
 				  [ $atom_site->{$atom_id}{"Cartn_z"} ],
 				  [ 0 ] ] );
 
-		# If angle between created vector and any of two vectors
-		# (left_up or left_right) is less than 90 deg, then 180 deg
-		# rotation along x and y axes is applied.
+		# If angle between created atom and any of two atoms that is
+		# connected to is less than 90 deg, then bond direction is
+		# reversed.
 		my $angle_between_vectors =
 		    bond_angle( [ [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
 				    $atom_site->{$connection_ids[0]}{"Cartn_y"},
@@ -449,11 +449,19 @@ sub add_hydrogens
 				  ] ] );
 		if( $angle_between_vectors < ( pi() / 2 ) ) {
 		    $hydrogen_coord{$hydrogen_names[0]} =
-			matrix_sum( $hydrogen_coord{$hydrogen_names[0]},
-				    [ [ 1 ],
-				      [ 1 ],
-				      [ 1 ],
-				      [ 0 ] ] );
+			matrix_sum(
+			    [ [ $atom_site->{$atom_id}{"Cartn_x"} ],
+			      [ $atom_site->{$atom_id}{"Cartn_y"} ],
+			      [ $atom_site->{$atom_id}{"Cartn_z"} ],
+			      [ 0 ] ],
+			scalar_multipl(
+			matrix_sum(
+			    $hydrogen_coord{$hydrogen_names[0]},
+			    [ [ - $atom_site->{$atom_id}{"Cartn_x"} ],
+			      [ - $atom_site->{$atom_id}{"Cartn_y"} ],
+			      [ - $atom_site->{$atom_id}{"Cartn_z"} ],
+			      [ 0 ] ] ),
+			    -1 ) );
 		}
 
 		# Each coordinate of atoms is transformed by transformation
