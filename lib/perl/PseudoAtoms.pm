@@ -425,6 +425,37 @@ sub add_hydrogens
 		$hydrogen_coord{$hydrogen_names[0]}[3] = [ 1 ]; # Resets last
 		                                                # row to 1.
 
+		# Translates hydrogen coordinates back near target atom.
+		$hydrogen_coord{$hydrogen_names[0]} =
+		    matrix_sum( $hydrogen_coord{$hydrogen_names[0]},
+				[ [ $atom_site->{$atom_id}{"Cartn_x"} ],
+				  [ $atom_site->{$atom_id}{"Cartn_y"} ],
+				  [ $atom_site->{$atom_id}{"Cartn_z"} ],
+				  [ 0 ] ] );
+
+		# If angle between created vector and any of two vectors
+		# (left_up or left_right) is less than 90 deg, then 180 deg
+		# rotation along x and y axes is applied.
+		my $angle_between_vectors =
+		    bond_angle( [ [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
+				    $atom_site->{$connection_ids[0]}{"Cartn_y"},
+				    $atom_site->{$connection_ids[0]}{"Cartn_z"}],
+				  [ $atom_site->{$atom_id}{"Cartn_x"},
+				    $atom_site->{$atom_id}{"Cartn_y"},
+				    $atom_site->{$atom_id}{"Cartn_z"} ],
+				  [ $hydrogen_coord{$hydrogen_names[0]}->[0][0],
+				    $hydrogen_coord{$hydrogen_names[0]}->[1][0],
+				    $hydrogen_coord{$hydrogen_names[0]}->[2][0]
+				  ] ] );
+		if( $angle_between_vectors < ( pi() / 2 ) ) {
+		    $hydrogen_coord{$hydrogen_names[0]} =
+			matrix_sum( $hydrogen_coord{$hydrogen_names[0]},
+				    [ [ 1 ],
+				      [ 1 ],
+				      [ 1 ],
+				      [ 0 ] ] );
+		}
+
 		# Each coordinate of atoms is transformed by transformation
 		# matrix and added to %hydrogen_site.
 		for my $hydrogen_name ( keys %hydrogen_coord ) {
@@ -445,14 +476,14 @@ sub add_hydrogens
 		    $hydrogen_site{$last_atom_id}{"label_seq_id"} =
 			$atom_site->{$atom_id}{"label_seq_id"};
 		    $hydrogen_site{$last_atom_id}{"Cartn_x"} =
-			sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[0][0]
-				       + $atom_site->{$atom_id}{"Cartn_x"} );
+			sprintf( "%.3f",
+				 $hydrogen_coord{$hydrogen_name}->[0][0] );
 		    $hydrogen_site{$last_atom_id}{"Cartn_y"} =
-			sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[1][0]
-				       + $atom_site->{$atom_id}{"Cartn_y"} );
+			sprintf( "%.3f",
+				 $hydrogen_coord{$hydrogen_name}->[1][0]);
 		    $hydrogen_site{$last_atom_id}{"Cartn_z"} =
-			sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[2][0]
-				       + $atom_site->{$atom_id}{"Cartn_z"} );
+			sprintf( "%.3f",
+				 $hydrogen_coord{$hydrogen_name}->[2][0]);
 		    # Adds additional pseudo-atom flag for future filtering.
 		    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
 		    # Adds atom id that pseudo atoms was made of.

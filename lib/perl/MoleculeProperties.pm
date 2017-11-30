@@ -131,6 +131,15 @@ our %HYBRIDIZATION = (
 	'OXT'=> 'sp3',
 	'CB' => 'sp3',
 	'OG' => 'sp3'
-    } );
+    },
+    'ALA' => {
+	'N'  => 'sp3',
+	'CA' => 'sp3',
+	'C'  => 'sp2',
+	'O'  => 'sp2',
+	'OXT'=> 'sp3',
+	'CB' => 'sp3',
+    }
+ );
 
 1;
