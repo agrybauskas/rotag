@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( add_hydrogens
                      generate_rotamer );
 
 use List::Util qw( max );
+use Math::Trig qw( acos );
 
 use lib qw( ./ );
 use AtomInteractions qw( potential );
@@ -391,11 +392,11 @@ sub add_hydrogens
 	my $transf_matrix;
 
     	if( $hybridization eq "sp3" ) {
-    	    if( scalar( @connection_ids ) == 3 ) {
-		my $back_bond_length =
-		    $ATOMS{$atom_type}{"covalent_radius"}{"length"}[0]
-		  + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+	    my $bond_length =
+		$ATOMS{$atom_type}{"covalent_radius"}{"length"}[0]
+		+ $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
+    	    if( scalar( @connection_ids ) == 3 ) {
 		# Finds vector that is perpendicular to three atoms that are
 		# connected to target atom.
 		my @left_up_vector =
@@ -420,7 +421,7 @@ sub add_hydrogens
 		# hydrogen bond and adds to hydrogen_coord hash table.
 		$hydrogen_coord{$hydrogen_names[0]} =
 		    scalar_multipl( $perpendicular_vector,
-				    ( $back_bond_length
+				    ( $bond_length
 				    / vector_length( $perpendicular_vector ) ) );
 		$hydrogen_coord{$hydrogen_names[0]}[3] = [ 1 ]; # Resets last
 		                                                # row to 1.
@@ -464,41 +465,100 @@ sub add_hydrogens
 			    -1 ) );
 		}
 
-		# Each coordinate of atoms is transformed by transformation
-		# matrix and added to %hydrogen_site.
-		for my $hydrogen_name ( keys %hydrogen_coord ) {
-		    # Adds necessary PDBx entries to pseudo atom.
-		    $last_atom_id++;
-		    $hydrogen_site{$last_atom_id}{"group_PDB"} = "ATOM";
-		    $hydrogen_site{$last_atom_id}{"id"} = $last_atom_id;
-		    $hydrogen_site{$last_atom_id}{"type_symbol"} = "H";
-		    $hydrogen_site{$last_atom_id}{"label_atom_id"} =
-			$hydrogen_name;
-		    $hydrogen_site{$last_atom_id}{"label_alt_id"} = ".";
-		    $hydrogen_site{$last_atom_id}{"label_comp_id"} =
-			$atom_site->{$atom_id}{"label_comp_id"};
-		    $hydrogen_site{$last_atom_id}{"label_asym_id"} =
-			$atom_site->{$atom_id}{"label_asym_id"};
-		    $hydrogen_site{$last_atom_id}{"label_entity_id"} =
-			$atom_site->{$atom_id}{"label_entity_id"};
-		    $hydrogen_site{$last_atom_id}{"label_seq_id"} =
-			$atom_site->{$atom_id}{"label_seq_id"};
-		    $hydrogen_site{$last_atom_id}{"Cartn_x"} =
-			sprintf( "%.3f",
-				 $hydrogen_coord{$hydrogen_name}->[0][0] );
-		    $hydrogen_site{$last_atom_id}{"Cartn_y"} =
-			sprintf( "%.3f",
-				 $hydrogen_coord{$hydrogen_name}->[1][0]);
-		    $hydrogen_site{$last_atom_id}{"Cartn_z"} =
-			sprintf( "%.3f",
-				 $hydrogen_coord{$hydrogen_name}->[2][0]);
-		    # Adds additional pseudo-atom flag for future filtering.
-		    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
-		    # Adds atom id that pseudo atoms was made of.
-		    $hydrogen_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
-		}
+		# # Each coordinate of atoms is transformed by transformation
+		# # matrix and added to %hydrogen_site.
+		# for my $hydrogen_name ( keys %hydrogen_coord ) {
+		#     # Adds necessary PDBx entries to pseudo atom.
+		#     $last_atom_id++;
+		#     $hydrogen_site{$last_atom_id}{"group_PDB"} = "ATOM";
+		#     $hydrogen_site{$last_atom_id}{"id"} = $last_atom_id;
+		#     $hydrogen_site{$last_atom_id}{"type_symbol"} = "H";
+		#     $hydrogen_site{$last_atom_id}{"label_atom_id"} =
+		# 	$hydrogen_name;
+		#     $hydrogen_site{$last_atom_id}{"label_alt_id"} = ".";
+		#     $hydrogen_site{$last_atom_id}{"label_comp_id"} =
+		# 	$atom_site->{$atom_id}{"label_comp_id"};
+		#     $hydrogen_site{$last_atom_id}{"label_asym_id"} =
+		# 	$atom_site->{$atom_id}{"label_asym_id"};
+		#     $hydrogen_site{$last_atom_id}{"label_entity_id"} =
+		# 	$atom_site->{$atom_id}{"label_entity_id"};
+		#     $hydrogen_site{$last_atom_id}{"label_seq_id"} =
+		# 	$atom_site->{$atom_id}{"label_seq_id"};
+		#     $hydrogen_site{$last_atom_id}{"Cartn_x"} =
+		# 	sprintf( "%.3f",
+		# 		 $hydrogen_coord{$hydrogen_name}->[0][0] );
+		#     $hydrogen_site{$last_atom_id}{"Cartn_y"} =
+		# 	sprintf( "%.3f",
+		# 		 $hydrogen_coord{$hydrogen_name}->[1][0]);
+		#     $hydrogen_site{$last_atom_id}{"Cartn_z"} =
+		# 	sprintf( "%.3f",
+		# 		 $hydrogen_coord{$hydrogen_name}->[2][0]);
+		#     # Adds additional pseudo-atom flag for future filtering.
+		#     $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
+		#     # Adds atom id that pseudo atoms was made of.
+		#     $hydrogen_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
+		# }
 
     	    } elsif( scalar( @connection_ids ) == 2 ) {
+		# Calculates current angle between atoms that are connected to
+		# target atom.
+		my $bond_angle =
+		    bond_angle(
+			[ [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
+			    $atom_site->{$connection_ids[0]}{"Cartn_y"},
+			    $atom_site->{$connection_ids[0]}{"Cartn_z"} ],
+			  [ $atom_site->{$atom_id}{"Cartn_x"},
+			    $atom_site->{$atom_id}{"Cartn_y"},
+			    $atom_site->{$atom_id}{"Cartn_z"} ],
+			  [ $atom_site->{$connection_ids[1]}{"Cartn_x"},
+			    $atom_site->{$connection_ids[1]}{"Cartn_y"},
+			    $atom_site->{$connection_ids[1]}{"Cartn_z"} ] ] );
+
+		# Theoretically optimal angles should be so, the distance of
+		# atoms would be furthest from each other. This strategy could
+		# be achieved by imagining each bond as vector of the length 1.
+		# Then the sum of all vectors would be 0, if angles are equal.
+		#
+		#                        ->  ->  ->  ->
+		#                        A + B + C + D = 0
+		#
+		# In that case, the square of sum also should be equal 0.
+		#
+		#                        ->  ->  ->  ->
+		#                      ( A + B + C + D ) ^ 2 = 0
+		#
+		#       ->  ->      ->  ->      ->  ->      ->  ->      ->  ->
+		#   2 * A * B + 2 * A * C + 2 * A * D + 2 * B * C + 2 * B * D +
+		#       ->  ->   ->      ->      ->      ->
+		# + 2 * C + D  + A ^ 2 + B ^ 2 + C ^ 2 + D ^ 2 += 0
+		#
+		# Because length of each vector is equal to 1, then dot product
+		# is equal to cos(alpha), where all angles between bonds are
+		# equal. If there were no given angles, alpha should be 109.5
+		# degrees.
+		#
+		#                   alpha = arccos( - 1 / 3 )
+		#
+		# However, there is a restriction of given angle. And the
+		# calculation changes:
+		#
+		#        alpha = arccos( ( - 4 - 2 * cos( beta ) ) / 10 )
+		#
+		# where beta is the given angle.
+
+		my $hydrogen_angle =
+		    acos( ( - 4 - 2 * cos( $bond_angle ) ) / 10 );
+
+		# Adds hydrogen first to both atoms that have 0 or 1 electron
+		# pairs.
+		if( $lone_pair_count >= 0 ) {
+		}
+		# Additional hydrogen is added only to the atom that has no
+		# electron pairs.
+		elsif( $lone_pair_count > 0 ) {
+		}
+
+	    } elsif( scalar( @connection_ids ) == 1 ) {
     		# # Calculates length of bonds.
     		# my $right_bond_length =
     		#     $ATOMS{$atom_name}{"covalent_radius"}{"length"}[0]
@@ -589,9 +649,6 @@ sub add_hydrogens
     	    	#       * cos( $right_bond_angle * pi() / 180 ) ],
     	    	#       [ 1 ] ];
 		# shift @hydrogen_names;
-
-	    } elsif( scalar( @connection_ids ) == 1 ) {
-
 	    }
 
     	} elsif( $hybridization eq "sp2" ) {
