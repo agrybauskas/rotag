@@ -116,6 +116,20 @@ our %ROTATABLE_BONDS = (
     } );
 
 our %HYBRIDIZATION = (
+    'PHE' => {
+	'N'   => 'sp3',
+	'CA'  => 'sp3',
+	'C'   => 'sp2',
+	'O'   => 'sp2',
+	'OXT' => 'sp3',
+	'CB'  => 'sp3',
+	'CG'  => 'sp2',
+	'CD2' => 'sp2',
+	'CE2' => 'sp2',
+	'CD1' => 'sp2',
+	'CZ'  => 'sp2',
+	'CE1' => 'sp2'
+    },
     'GLY' => {
 	'N'  => 'sp3',
 	'CA' => 'sp3',
@@ -140,7 +154,21 @@ our %HYBRIDIZATION = (
 	'OXT'=> 'sp3',
 	'CB' => 'sp3',
     },
-    'PHE' => {
+    'ARG' => {
+	'N'   => 'sp3',
+	'CA'  => 'sp3',
+	'C'   => 'sp2',
+	'O'   => 'sp2',
+	'OXT' => 'sp3',
+	'CB'  => 'sp3',
+	'CG'  => 'sp3',
+	'CD'  => 'sp3',
+	'NE'  => 'sp2',
+	'CZ'  => 'sp2',
+	'NH1' => 'sp2',
+	'NH2' => 'sp2'
+    },
+    'HIS' => {
 	'N'   => 'sp3',
 	'CA'  => 'sp3',
 	'C'   => 'sp2',
@@ -148,11 +176,33 @@ our %HYBRIDIZATION = (
 	'OXT' => 'sp3',
 	'CB'  => 'sp3',
 	'CG'  => 'sp2',
+	'ND1' => 'sp2',
 	'CD2' => 'sp2',
-	'CE2' => 'sp2',
-	'CD1' => 'sp2',
-	'CZ'  => 'sp2',
-	'CE1' => 'sp2'
+	'CE1' => 'sp2',
+	'NE2' => 'sp2'
+    },
+    'LYS' => {
+	'N'   => 'sp3',
+	'CA'  => 'sp3',
+	'C'   => 'sp2',
+	'O'   => 'sp2',
+	'OXT' => 'sp3',
+	'CB'  => 'sp3',
+	'CD'  => 'sp3',
+	'CG'  => 'sp3',
+	'CE'  => 'sp3',
+	'NZ'  => 'sp3'
+    },
+    'ASP' => {
+	'N'   => 'sp3',
+	'CA'  => 'sp3',
+	'C'   => 'sp2',
+	'O'   => 'sp2',
+	'OXT' => 'sp3',
+	'CB'  => 'sp3',
+	'CG'  => 'sp2',
+	'OD1' => 'sp2',
+	'OD2' => 'sp2'
     }
  );
 
