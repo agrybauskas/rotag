@@ -139,6 +139,20 @@ our %HYBRIDIZATION = (
 	'O'  => 'sp2',
 	'OXT'=> 'sp3',
 	'CB' => 'sp3',
+    },
+    'PHE' => {
+	'N'   => 'sp3',
+	'CA'  => 'sp3',
+	'C'   => 'sp2',
+	'O'   => 'sp2',
+	'OXT' => 'sp3',
+	'CB'  => 'sp3',
+	'CG'  => 'sp2',
+	'CD2' => 'sp2',
+	'CE2' => 'sp2',
+	'CD1' => 'sp2',
+	'CZ'  => 'sp2',
+	'CE1' => 'sp2'
     }
  );
 
