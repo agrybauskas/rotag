@@ -24,7 +24,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      x_axis_rotation
                      y_axis_rotation
                      z_axis_rotation );
-use Data::Dumper;
+
 # --------------------------------- Constants --------------------------------- #
 
 #
@@ -353,6 +353,18 @@ sub reshape
 sub flatten
 {
     my ( $matrices ) = @_;
+
+    my @element_list;
+    my @dimensions;
+
+    for my $matrix ( @{ $matrices } ) {
+	push( @dimensions, scalar( @{ $matrix } ), scalar( @{ $matrix->[0] } ) );
+    for my $row ( @{ $matrix } ) {
+    for my $element ( @{ $row } ) {
+	push( @element_list, $element );
+    } } };
+
+    return \@element_list, \@dimensions;
 }
 
 #
