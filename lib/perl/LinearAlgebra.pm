@@ -7,10 +7,12 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_ref_frame
                      evaluate_matrix
                      find_euler_angles
+                     flatten
                      matrix_product
                      matrix_sum
                      matrix_sub
                      pi
+                     reshape
                      epsilon
                      scalar_multipl
                      switch_ref_frame
@@ -22,7 +24,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      x_axis_rotation
                      y_axis_rotation
                      z_axis_rotation );
-
+use Data::Dumper;
 # --------------------------------- Constants --------------------------------- #
 
 #
@@ -297,6 +299,60 @@ sub translation
 	  [ 0, 0, 0, 1 ] );
 
     return \@transl_matrix;
+}
+
+#
+# Reshapes matrices according to given matrix dimensions.
+# Input:
+#     $element_list - array of all elements in matrix or matrices.
+#     $dimensions - desired dimensions (m x n) of matrix or matrices in an array
+#     form.
+# Output:
+#     @reshaped_matrices - array of matrix or matrices of desired dimensions.
+#
+
+sub reshape
+{
+    my ( $element_list, $dimensions ) = @_;
+
+    # Checks, if there are enough elements for given list of dimensions.
+    my $length_by_dimensions = 0;
+    for( my $i = 0; $i < scalar( @{ $dimensions } ); $i += 2 ) {
+	$length_by_dimensions += $dimensions->[$i] * $dimensions->[$i+1];
+    }
+
+    die "There are not enough elements or dimensions."
+    	if( scalar( @{ $element_list } ) != $length_by_dimensions );
+
+    # Generates matrices.
+    my @matrices;
+    for( my $i = 0; $i < scalar( @{ $dimensions } ); $i += 2 ) {
+	my $rows = $dimensions->[$i];
+	my $columns = $dimensions->[$i+1];
+
+	push( @matrices, [] );
+
+	foreach( 0..$rows-1) {
+	    push( @{ $matrices[$#matrices] },
+		  [ splice( @{ $element_list }, 0, $columns ) ] );
+	}
+    }
+
+    return \@matrices;
+}
+
+#
+# Flattens all matrices to a list of elements.
+# Input:
+#     $matrices - array of matrix or matrices.
+# Output:
+#     @element_list - array of all elements in matrix or matrices.
+#     @dimensions - dimensions of matrix or matrices in an array form.
+#
+
+sub flatten
+{
+    my ( $matrices ) = @_;
 }
 
 #
