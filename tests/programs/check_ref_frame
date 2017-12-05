@@ -56,7 +56,7 @@ chomp( my @pdbx_lines = <$fh> );
 close( $fh );
 
 print( "data \"model\"\n" );
-print( scalar( grep { /ATOM/ } @pdbx_lines ), "\n" );
+print( scalar( grep { /ATOM/ } @pdbx_lines ) + 3, "\n" );
 print( "testing\n" );
 
 for my $pdbx_line ( grep( /^ATOM/, @pdbx_lines ) ){
@@ -75,11 +75,15 @@ for my $pdbx_line ( grep( /^ATOM/, @pdbx_lines ) ){
     	    		   - $mid_atom_coord[1],
     	    		   - $mid_atom_coord[2] ) ),
     	    \@atom_coord );
-    print( "$atom_name " .
-    	   "$tranf_atom_coord[0][0][0] " .
-    	   "$tranf_atom_coord[0][1][0] " .
-    	   "$tranf_atom_coord[0][2][0]\n" );
+    printf( "%s %.3f %.3f %.3f\n",
+	    $atom_name,
+	    $tranf_atom_coord[0][0][0],
+	    $tranf_atom_coord[0][1][0],
+	    $tranf_atom_coord[0][2][0] );
 }
+
+# Draws atoms on the end of axes.
+print( "X 2 0 0\nX 0 2 0\nX 0 0 2" );
 
 print( "end \"model\"\n" );
 
