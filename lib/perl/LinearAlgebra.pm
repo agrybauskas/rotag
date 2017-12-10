@@ -85,6 +85,7 @@ sub create_ref_frame
          $side_atom_x, $side_atom_y, $side_atom_z ) = @_;
 
     my @local_ref_frame;
+    my $vector_length;
 
     # Let local z-axis be colinear to bond between mid and up atoms.
     $local_ref_frame[2][0] = $up_atom_x - $mid_atom_x;
@@ -112,6 +113,29 @@ sub create_ref_frame
     $local_ref_frame[1][2] =
         $local_ref_frame[2][0] * $local_ref_frame[0][1]
       - $local_ref_frame[2][1] * $local_ref_frame[0][0];
+
+    # Normalizes all vectors to unit vectors.
+    $vector_length =
+	vector_length( [ [ $local_ref_frame[2][0] ],
+			 [ $local_ref_frame[2][1] ],
+			 [ $local_ref_frame[2][2] ] ] );
+    $local_ref_frame[2][0] = $local_ref_frame[2][0] / $vector_length;
+    $local_ref_frame[2][1] = $local_ref_frame[2][1] / $vector_length;
+    $local_ref_frame[2][2] = $local_ref_frame[2][2] / $vector_length;
+    $vector_length =
+    	vector_length( [ [ $local_ref_frame[0][0] ],
+    			 [ $local_ref_frame[0][1] ],
+    			 [ $local_ref_frame[0][2] ] ] );
+    $local_ref_frame[0][0] = $local_ref_frame[0][0] / $vector_length;
+    $local_ref_frame[0][1] = $local_ref_frame[0][1] / $vector_length;
+    $local_ref_frame[0][2] = $local_ref_frame[0][2] / $vector_length;
+    $vector_length =
+    	vector_length( [ [ $local_ref_frame[1][0] ],
+    			 [ $local_ref_frame[1][1] ],
+    			 [ $local_ref_frame[1][2] ] ] );
+    $local_ref_frame[1][0] = $local_ref_frame[1][0] / $vector_length;
+    $local_ref_frame[1][1] = $local_ref_frame[1][1] / $vector_length;
+    $local_ref_frame[1][2] = $local_ref_frame[1][2] / $vector_length;
 
     return \@local_ref_frame;
 }

@@ -83,7 +83,7 @@ for my $pdbx_line ( grep( /^ATOM/, @pdbx_lines ) ){
 }
 
 # Draws atoms on the end of axes.
-print( "X 2 0 0\nX 0 2 0\nX 0 0 2" );
+print( "X 2 0 0\nX 0 2 0\nX 0 0 2\n" );
 
 print( "end \"model\"\n" );
 
