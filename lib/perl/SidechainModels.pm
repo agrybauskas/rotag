@@ -78,7 +78,7 @@ sub rotation_only
     		$side_atom_coord =
     		    select_atom_data(
     		    filter_atoms( $atom_site,
-    		    { "label_atom_id" => [ $rotatable_bonds[$i-1][1] ] } ),
+    		    { "label_atom_id" => [ $rotatable_bonds[$i-1][0] ] } ),
     		    [ "Cartn_x", "Cartn_y", "Cartn_z" ] );
     	    }
 
