@@ -8,7 +8,6 @@ our @EXPORT_OK = qw( potential );
 
 use List::Util qw( any max );
 
-use lib qw( ./ );
 use AtomProperties qw( %ATOMS );
 use ConnectAtoms qw( connect_atoms
                      grid_box

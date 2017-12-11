@@ -6,7 +6,6 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( rotation_only );
 
-use lib qw( ./ );
 use AlterMolecule qw( bond_torsion );
 use LinearAlgebra qw( matrix_product
                       vectorize );

@@ -12,7 +12,6 @@ our @EXPORT_OK = qw( connect_atoms
 
 use List::Util qw( max min );
 
-use lib qw( ./ );
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use PDBxParser qw( select_atom_data );

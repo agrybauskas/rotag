@@ -8,7 +8,6 @@ our @EXPORT_OK = qw( sample_angles );
 
 use POSIX;
 
-use lib "./";
 use LinearAlgebra qw( pi );
 
 # ---------------------------------- Sampling --------------------------------- #

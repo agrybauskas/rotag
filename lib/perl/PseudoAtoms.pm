@@ -12,7 +12,6 @@ our @EXPORT_OK = qw( add_hydrogens
 use List::Util qw( max );
 use Math::Trig qw( acos );
 
-use lib qw( ./ );
 use AtomInteractions qw( potential );
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
