@@ -223,11 +223,11 @@ sub all_dihedral
     	for( my $i = 0; $i < scalar( @rotatable_bonds ) - 1; $i++ ) {
     	    $angle_symbol = "chi${i}";
     	    $second_atom_type = $rotatable_bonds[$i][0];
-    	    $second_atom_type =~ s/\s//g;
+    	    $second_atom_type =~ s/\s//gx;
     	    $third_atom_type = $rotatable_bonds[$i][1];
-    	    $third_atom_type =~ s/\s//g;
+    	    $third_atom_type =~ s/\s//gx;
     	    $fourth_atom_type = $rotatable_bonds[$i+1][1];
-    	    $fourth_atom_type =~ s/\s//g;
+    	    $fourth_atom_type =~ s/\s//gx;
 
     	    # Extracts coordinates for dihedral angle calculations.
     	    # Information about side atom is stored in rotatable bonds array,

@@ -234,7 +234,7 @@ sub switch_ref_frame
     			    z_axis_rotation( - $alpha ) );
     } else {
     	die "Must choose \$switch_to_global value between \"local\" and" .
-    	    "\"global\".\n"
+    	    "\"global\".\n";
     }
 
     return $ref_frame_switch;
@@ -357,7 +357,7 @@ sub reshape
 	push( @matrices, [] );
 
 	foreach( 0..$rows-1) {
-	    push( @{ $matrices[$#matrices] },
+	    push( @{ $matrices[-1] },
 		  [ splice( @{ $element_list }, 0, $columns ) ] );
 	}
     }
@@ -592,7 +592,7 @@ sub matrix_product
 	@matrices );
 
     # Converts perl power symbol ** to GiNaC's ^.
-    $matrix_equation =~ s/\*\*/^/g;
+    $matrix_equation =~ s/\*\*/^/gx;
 
     # Runs GiNaC.
     my $matrix_product =
@@ -604,10 +604,10 @@ sub matrix_product
     my @matrix_product;
 
     for my $row ( split( ",\\[", $matrix_product ) ) {
-	$row =~ s/\n//g; # Remove newline.
-	$row =~ s/]//g; # Removes unnecessary GiNaC matrix symbols.
-	$row =~ s/\[//g; # Removes unnecessary GiNaC matrix symbols.
-	$row =~ s/\^/\*\*/g; # Brings back perl power symbol **.
+	$row =~ s/\n//gx; # Remove newline.
+	$row =~ s/]//gx; # Removes unnecessary GiNaC matrix symbols.
+	$row =~ s/\[//gx; # Removes unnecessary GiNaC matrix symbols.
+	$row =~ s/\^/\*\*/gx; # Brings back perl power symbol **.
 	push( @matrix_product, [ split( ",", $row ) ] );
     }
 
@@ -634,7 +634,7 @@ sub evaluate_matrix {
     	for my $element ( @{ $row } ) {
 	    my $element = $element;
     	    for my $symbol ( keys %{ $symbols } ) {
-		$element =~ s/\b(${symbol})\b/\$symbols{$1}/g;
+		$element =~ s/\b(${symbol})\b/\$symbols{$1}/gx;
     	    }
     	    push( @{ $eval_matrix[-1] }, eval( $element ) );
     	}

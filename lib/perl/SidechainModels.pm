@@ -58,8 +58,8 @@ sub rotation_only
     	for( my $i = 0; $i < scalar( @rotatable_bonds ) - 1; $i++ ) {
     	    my $mid_atom_type = $rotatable_bonds[$i][0];
     	    my $up_atom_type = $rotatable_bonds[$i][1];
-	    $mid_atom_type =~ s/\s//g;
-    	    $up_atom_type =~ s/\s//g;
+	    $mid_atom_type =~ s/\s//gx;
+    	    $up_atom_type =~ s/\s//gx;
 
     	    my $angle_symbol = "chi${i}";
 

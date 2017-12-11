@@ -382,7 +382,7 @@ sub add_hydrogens
 	my @hydrogen_names;
 	for my $hydrogen_id ( 1..$hydrogen_count ) {
 	    ( my $hydrogen_name = $atom_name ) =~
-		s/$atom_type(\w?)\d?/H$1$hydrogen_id/g;
+		s/$atom_type(\w?)\d?/H$1$hydrogen_id/gx;
 	    push( @hydrogen_names, $hydrogen_name );
 	}
 

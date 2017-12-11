@@ -39,9 +39,9 @@ sub obtain_atom_site
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
     # Finds atom data in PDBx and assigns to corresponding variables.
-    open( my $fh, $pdbx_file );
-    foreach( <$fh> ) {
-        if( $_ =~ /_atom_site\.(.+)\n$/ ) {
+    open( my $fh, "<", $pdbx_file );
+    while( <$fh> ) {
+        if( $_ =~ /_atom_site\.(.+)\n$/x ) {
     	    push( @atom_attributes, split( " ", $1 ) );
             $is_reading_lines = 1;
         } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
