@@ -374,11 +374,7 @@ sub add_hydrogens
 	$hydrogen_count -=
 	    scalar( @connection_ids ) + 2 if $hybridization eq "sp";
 	$hydrogen_count -= $lone_pair_count;
-	# print $atom_name, "\n";
-	# print scalar @connection_ids, "\n";
-	# print $hybridization, "\n";
-	# print $lone_pair_count, "\n";
-	# print $hydrogen_count, "\n";
+
 	# Skips hydrogen addition if there are no hydrogens to add.
 	if( $hydrogen_count == 0 ) { next; };
 
@@ -590,9 +586,9 @@ sub add_hydrogens
 		      $atom_site->{$atom_id}{"Cartn_y"},
 		      $atom_site->{$atom_id}{"Cartn_z"} ];
 		my $side_coord =
-		    [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-		      $atom_site->{$connection_ids[0]}{"Cartn_y"} + 1,
-		      $atom_site->{$connection_ids[0]}{"Cartn_z"} ];
+		    [ $atom_site->{$atom_id}{"Cartn_x"},
+		      $atom_site->{$atom_id}{"Cartn_y"} + 1,
+		      $atom_site->{$atom_id}{"Cartn_z"} ];
 
 		my $transf_matrix =
 		    switch_ref_frame( $mid_atom_coord,
@@ -717,9 +713,9 @@ sub add_hydrogens
 		      $atom_site->{$atom_id}{"Cartn_y"},
 		      $atom_site->{$atom_id}{"Cartn_z"} ];
 		my $side_coord =
-		    [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-		      $atom_site->{$connection_ids[0]}{"Cartn_y"},
-		      $atom_site->{$connection_ids[0]}{"Cartn_z"} ];
+		    [ $atom_site->{$atom_id}{"Cartn_x"},
+		      $atom_site->{$atom_id}{"Cartn_y"} + 1,
+		      $atom_site->{$atom_id}{"Cartn_z"} ];
 
 		my $transf_matrix =
 		    switch_ref_frame( $mid_atom_coord,
@@ -774,9 +770,9 @@ sub add_hydrogens
 		  $atom_site->{$atom_id}{"Cartn_y"},
 		  $atom_site->{$atom_id}{"Cartn_z"} ];
 	    my $side_atom_coord =
-		[ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-		  $atom_site->{$connection_ids[0]}{"Cartn_y"} + 1,
-		  $atom_site->{$connection_ids[0]}{"Cartn_z"} ];
+		[ $atom_site->{$atom_id}{"Cartn_x"},
+		  $atom_site->{$atom_id}{"Cartn_y"} + 1,
+		  $atom_site->{$atom_id}{"Cartn_z"} ];
 
 	    my $transf_matrix =
 		switch_ref_frame( $mid_atom_coord,
