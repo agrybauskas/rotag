@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib "../../lib/perl";
+use lib "../../lib";
 use PDBxParser qw( filter_atoms select_atom_data obtain_atom_site to_pdbx );
 
 #

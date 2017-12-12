@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib "../../lib/perl";
+use lib "../../lib";
 use AlterMolecule qw( bond_stretching );
 use LinearAlgebra qw( evaluate_matrix matrix_product vectorize );
 

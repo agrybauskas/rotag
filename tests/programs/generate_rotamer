@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib "../../lib/perl";
+use lib "../../lib";
 use LinearAlgebra qw( pi );
 use PDBxParser qw( obtain_atom_site );
 use PseudoAtoms qw( generate_rotamer );

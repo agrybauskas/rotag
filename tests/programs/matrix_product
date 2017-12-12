@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib "../../lib/perl";
+use lib "../../lib";
 use LinearAlgebra qw( evaluate_matrix matrix_product );
 
 #
@@ -34,9 +34,11 @@ while( <$fh> ) {
 }
 close( $fh );
 
-my $matrix_product = evaluate_matrix( matrix_product( @matrices ),
-				      \%variable_values );
+matrix_product( @matrices );
 
-for my $row ( @{ $matrix_product } ) {
-    print( join( "\t", @{ $row } ), "\n" );
-}
+# my $matrix_product = evaluate_matrix( matrix_product( @matrices ),
+# 				      \%variable_values );
+
+# for my $row ( @{ $matrix_product } ) {
+#     print( join( "\t", @{ $row } ), "\n" );
+# }

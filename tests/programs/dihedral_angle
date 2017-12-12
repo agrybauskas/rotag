@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib "../../lib/perl";
+use lib "../../lib";
 use Measure qw( dihedral_angle );
 
 use lib "../lib";

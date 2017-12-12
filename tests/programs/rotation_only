@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib "../../lib/perl";
+use lib "../../lib";
 use Combinatorics qw( permutation );
 use LinearAlgebra qw( evaluate_matrix matrix_product pi );
 use PDBxParser qw( filter_atoms obtain_atom_site );

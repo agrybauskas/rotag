@@ -2,7 +2,7 @@
 # Compiling CPP and linking to Perl5 with SWIG.
 #
 
-CPP_DIR=lib/cpp
+CPP_DIR=lib
 CPP_OBJ=${SWIG_FILE:%.i=%.o}
 SWIG_FILE=${wildcard ${CPP_DIR}/*.i}
 PM_FILE=${SWIG_FILE:%.i=%.pm}

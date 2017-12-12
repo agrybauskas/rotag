@@ -5,7 +5,7 @@ use warnings;
 
 use List::Util qw( max );
 
-use lib "../../lib/perl";
+use lib "../../lib";
 use AtomProperties qw( %ATOMS );
 use ConnectAtoms qw( create_box grid_box );
 use PDBxParser qw( obtain_atom_site );
