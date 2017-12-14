@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      find_euler_angles
                      flatten
                      matrix_product
+                     mult_matrix_product
                      matrix_sum
                      matrix_sub
                      pi
@@ -25,6 +26,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
+use Data::Dumper;
 # --------------------------------- Constants --------------------------------- #
 
 #
@@ -218,20 +220,20 @@ sub switch_ref_frame
 
     if( $switch_ref_to eq "local" ) {
 	$ref_frame_switch =
-    	    matrix_product( z_axis_rotation( $alpha ),
-    			    x_axis_rotation( $beta ),
-    			    z_axis_rotation( $gamma ),
-    			    translation( ( - $mid_atom_coord->[0],
-					   - $mid_atom_coord->[1],
-					   - $mid_atom_coord->[2] ) ) );
+    	    mult_matrix_product( [ z_axis_rotation( $alpha ),
+				   x_axis_rotation( $beta ),
+				   z_axis_rotation( $gamma ),
+				   translation( ( - $mid_atom_coord->[0],
+						  - $mid_atom_coord->[1],
+						  - $mid_atom_coord->[2] ) ) ] );
     } elsif( $switch_ref_to eq "global" ) {
     	$ref_frame_switch =
-    	    matrix_product( translation( ( $mid_atom_coord->[0],
-					   $mid_atom_coord->[1],
-					   $mid_atom_coord->[2] ) ),
-    			    z_axis_rotation( - $gamma ),
-    			    x_axis_rotation( - $beta ),
-    			    z_axis_rotation( - $alpha ) );
+    	    mult_matrix_product( [ translation( ( $mid_atom_coord->[0],
+						  $mid_atom_coord->[1],
+						  $mid_atom_coord->[2] ) ),
+				   z_axis_rotation( - $gamma ),
+				   x_axis_rotation( - $beta ),
+				   z_axis_rotation( - $alpha ) ] );
     } else {
     	die "Must choose \$switch_to_global value between \"local\" and" .
     	    "\"global\".\n";
@@ -573,74 +575,109 @@ sub transpose
 #
 # Calculates matrix product of list of any size of matrices.
 # Input:
-#     @matrices - any number of arrays representing matrices.
+#     $matrices - any number of arrays representing matrices.
 # Output:
 #     @matrix_product - matrix product.
 #
 
 sub matrix_product
 {
-    my @matrices = @_;
+    my ( $left_matrix, $right_matrix, $symbol_values ) = @_;
 
-    # Converts matrices to GiNaC readable input.
-    my $matrix_equation =
-    	join( "*",
-    	map { "[" . join( ",",
-    	map { "[" . join( ",",
-    	@$_ ) . "]" }
-        @$_ ) . "]" }
-    	@matrices );
+    my %symbol_values = %{ $symbol_values } if defined $symbol_values;
 
-    # Converts perl power symbol ** to GiNaC's ^.
-    $matrix_equation =~ s/\*\*/^/gx;
+    # Notifies error, when the column number of left matrix does not equal the
+    # row number of the right matrix.
+    die( "A row number of a left matrix is NOT equal to the column\n" .
+	 "number of the right matrix.\n" )
+	unless( scalar( @{ transpose( $left_matrix ) } ) ==
+		scalar( @{ $right_matrix } ) );
 
-    # Runs GiNaC.
-    my $matrix_product =
-    	qx/ echo "expand( evalm( ${matrix_equation} ) );" | ginsh /
-    	|| die( "A row number of a left matrix is NOT equal to the column\n" .
-    		"number of the right matrix.\n" );
-
-    # Returns matrices in perl array form.
+    # Makes placeholder items consisting zero values for matrix_product array.
     my @matrix_product;
+    for( my $product_row = 0;
+	 $product_row < scalar( @$left_matrix );
+	 $product_row++ ) {
+	for( my $product_col = 0;
+	     $product_col < scalar( @{ $right_matrix->[0] } );
+	     $product_col++ ) {
+	    $matrix_product[$product_row][$product_col] = 0;
+	}
+    }
 
-    for my $row ( split( ",\\[", $matrix_product ) ) {
-    	$row =~ s/\n//gx; # Remove newline.
-    	$row =~ s/]//gx; # Removes unnecessary GiNaC matrix symbols.
-    	$row =~ s/\[//gx; # Removes unnecessary GiNaC matrix symbols.
-    	$row =~ s/\^/\*\*/gx; # Brings back perl power symbol **.
-    	push( @matrix_product, [ split( ",", $row ) ] );
+    # Calculates matrix product of two matrices.
+    for( my $product_row = 0;
+	 $product_row < scalar( @matrix_product );
+	 $product_row++ ) {
+	for( my $product_col = 0;
+	     $product_col < scalar( @{ $matrix_product[$product_row] } );
+	     $product_col++ ) {
+	    for( my $left_col = 0;
+		 $left_col < scalar( @{ $left_matrix->[$product_col] } );
+		 $left_col++ ) {
+		my $left_element;
+		my $right_element;
+
+		# Retrieves numbers that will be multiplied and added to
+		# matrix_product array.
+		$left_element = $left_matrix->[$product_row][$left_col];
+		$right_element = $right_matrix->[$left_col][$product_col];
+
+		# Changes "$" to hash reference (for symbols that are
+		# written in "$x" form).
+		if( %symbol_values ) {
+		    $left_element =~ s/\$(\w+)/\$symbol_values{$1}/gx;
+		    $right_element =~ s/\$(\w+)/\$symbol_values{$1}/gx;
+		}
+
+		eval {
+		    $left_element = eval( $left_element );
+		    1;
+		} or do {
+		    die "Not all elements in left matrix are defined";
+		};
+
+		eval {
+		    $right_element = eval( $right_element );
+		    1;
+		} or do {
+		    die "Not all elements in right matrix are defined";
+		};
+
+		# Evaluates multiplication.
+		$matrix_product[$product_row][$product_col] +=
+		    $left_element * $right_element;
+
+	    }
+	}
     }
 
     return \@matrix_product;
 }
 
-#
-# Evaluates symbolic variables in analytical equation.
-# Input:
-#     $matrix - matrix symbolic variables.
-# Output:
-#     @eval_matrix - evaluated matrix.
-#
+sub mult_matrix_product {
+    my ( $matrices, $symbol_values ) = @_;
 
-sub evaluate_matrix {
-    my ( $matrix, $symbols ) = @_;
-    my %symbols = %{ $symbols };
+    my @matrices = @{ $matrices };
 
-    my @eval_matrix;
+    # Multiplies matrices from left to right.
+    my $mult_matrix_product;
 
-    # Adds $ sign to given symbols and then runs eval() function.
-    for my $row ( @{ $matrix } ) {
-    	push( @eval_matrix, [] );
-    	for my $element ( @{ $row } ) {
-	    my $element = $element;
-    	    for my $symbol ( keys %{ $symbols } ) {
-		$element =~ s/\b(${symbol})\b/\$symbols{$1}/gx;
-    	    }
-    	    push( @{ $eval_matrix[-1] }, eval( $element ) );
+    for( my $id = $#matrices; $id >= 1; $id-- ) {
+    	if( $id == $#matrices ) {
+    	    $mult_matrix_product =
+    		matrix_product( $matrices[$id-1],
+    				$matrices[$id],
+    				$symbol_values );
+    	} else {
+    	    $mult_matrix_product =
+    		matrix_product( $matrices[$id-1],
+    				$mult_matrix_product,
+    				$symbol_values );
     	}
     }
 
-    return \@eval_matrix;
+    return $mult_matrix_product;
 }
 
 1;

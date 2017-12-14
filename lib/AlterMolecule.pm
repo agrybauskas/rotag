@@ -8,7 +8,7 @@ our @EXPORT_OK = qw( angle_bending
                      bond_stretching
                      bond_torsion );
 
-use LinearAlgebra qw( matrix_product
+use LinearAlgebra qw( mult_matrix_product
                       switch_ref_frame );
 
 # ------------------ Molecule structure alteration algorithms ----------------- #

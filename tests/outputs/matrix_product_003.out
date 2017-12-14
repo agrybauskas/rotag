@@ -1,4 +1,2 @@
-matrix::mul(): incompatible matrices
-syntax error, unexpected ')' at )
 A row number of a left matrix is NOT equal to the column
 number of the right matrix.

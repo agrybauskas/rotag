@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use LinearAlgebra qw( matrix_product z_axis_rotation );
+use LinearAlgebra qw( mult_matrix_product
+                      z_axis_rotation );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -30,11 +31,11 @@ my $transf_atom_coord;
 
 for my $atom_coord ( @{ $atom_data } ) {
     $transf_atom_coord =
-	matrix_product( z_axis_rotation( $angle ),
-			[ [ $atom_coord->[0] ],
-			  [ $atom_coord->[1] ],
-			  [ $atom_coord->[2] ],
-			  [ 1 ] ] );
+	mult_matrix_product( [ z_axis_rotation( $angle ),
+			       [ [ $atom_coord->[0] ],
+				 [ $atom_coord->[1] ],
+				 [ $atom_coord->[2] ],
+				 [ 1 ] ] ] );
     printf( "%.3f\t%.3f\t%.3f\n",
 	    $transf_atom_coord->[0][0],
 	    $transf_atom_coord->[1][0],
