@@ -25,8 +25,6 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
-use GinacAlgebra qw( matrix_product_ginac );
-use Data::Dumper;
 # --------------------------------- Constants --------------------------------- #
 
 #
@@ -584,41 +582,36 @@ sub matrix_product
 {
     my @matrices = @_;
 
-    # Matrices are flattened for easy connection to C++ function that uses GiNaC.
-    my ( $flat_matrices, $dimensions ) = flatten( \@matrices );
+    # Converts matrices to GiNaC readable input.
+    my $matrix_equation =
+    	join( "*",
+    	map { "[" . join( ",",
+    	map { "[" . join( ",",
+    	@$_ ) . "]" }
+        @$_ ) . "]" }
+    	@matrices );
+
+    # Converts perl power symbol ** to GiNaC's ^.
+    $matrix_equation =~ s/\*\*/^/gx;
 
     # Runs GiNaC.
-    matrix_product_ginac( $flat_matrices, $flat_matrices );
-    # # Converts matrices to GiNaC readable input.
-    # my $matrix_equation =
-    # 	join( "*",
-    # 	map { "[" . join( ",",
-    # 	map { "[" . join( ",",
-    # 	@$_ ) . "]" }
-    #     @$_ ) . "]" }
-    # 	@matrices );
+    my $matrix_product =
+    	qx/ echo "expand( evalm( ${matrix_equation} ) );" | ginsh /
+    	|| die( "A row number of a left matrix is NOT equal to the column\n" .
+    		"number of the right matrix.\n" );
 
-    # # Converts perl power symbol ** to GiNaC's ^.
-    # $matrix_equation =~ s/\*\*/^/gx;
+    # Returns matrices in perl array form.
+    my @matrix_product;
 
-    # # Runs GiNaC.
-    # my $matrix_product =
-    # 	qx/ echo "expand( evalm( ${matrix_equation} ) );" | ginsh /
-    # 	|| die( "A row number of a left matrix is NOT equal to the column\n" .
-    # 		"number of the right matrix.\n" );
+    for my $row ( split( ",\\[", $matrix_product ) ) {
+    	$row =~ s/\n//gx; # Remove newline.
+    	$row =~ s/]//gx; # Removes unnecessary GiNaC matrix symbols.
+    	$row =~ s/\[//gx; # Removes unnecessary GiNaC matrix symbols.
+    	$row =~ s/\^/\*\*/gx; # Brings back perl power symbol **.
+    	push( @matrix_product, [ split( ",", $row ) ] );
+    }
 
-    # # Returns matrices in perl array form.
-    # my @matrix_product;
-
-    # for my $row ( split( ",\\[", $matrix_product ) ) {
-    # 	$row =~ s/\n//gx; # Remove newline.
-    # 	$row =~ s/]//gx; # Removes unnecessary GiNaC matrix symbols.
-    # 	$row =~ s/\[//gx; # Removes unnecessary GiNaC matrix symbols.
-    # 	$row =~ s/\^/\*\*/gx; # Brings back perl power symbol **.
-    # 	push( @matrix_product, [ split( ",", $row ) ] );
-    # }
-
-    # return \@matrix_product;
+    return \@matrix_product;
 }
 
 #

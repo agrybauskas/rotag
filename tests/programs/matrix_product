@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use LinearAlgebra qw( evaluate_matrix matrix_product );
+use LinearAlgebra qw( evaluate_matrix
+                      matrix_product );
 
 #
 # Unit test: LinearAlgebra::matrix_product.
@@ -34,11 +35,9 @@ while( <$fh> ) {
 }
 close( $fh );
 
-matrix_product( @matrices );
+my $matrix_product = evaluate_matrix( matrix_product( @matrices ),
+				      \%variable_values );
 
-# my $matrix_product = evaluate_matrix( matrix_product( @matrices ),
-# 				      \%variable_values );
-
-# for my $row ( @{ $matrix_product } ) {
-#     print( join( "\t", @{ $row } ), "\n" );
-# }
+for my $row ( @{ $matrix_product } ) {
+    print( join( "\t", @{ $row } ), "\n" );
+}

@@ -10,21 +10,6 @@ WRAP_FILE=${SWIG_FILE:%.i=%_wrap.cxx}
 WRAP_OBJ=${WRAP_FILE:%.cxx=%.o}
 SHARED_OBJ=${CPP_OBJ:%.o=%.so}
 
-build: ${SHARED_OBJ} ${PM_FILE}
-
-%.pm %_wrap.cxx: %.i
-	swig -c++ -perl $<
-
-%.o: %.cpp
-	g++ -c -fPIC $< -o $@
-
-%_wrap.o: %_wrap.cxx
-	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
-	    -o $@
-
-%.so: %_wrap.o %.o
-	g++ -shared $^ -o $@
-
 #
 # Instalation of dependencies.
 #
