@@ -26,7 +26,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
-use Data::Dumper;
+
 # --------------------------------- Constants --------------------------------- #
 
 #
@@ -630,24 +630,19 @@ sub matrix_product
 		    $right_element =~ s/\$(\w+)/\$symbol_values{$1}/gx;
 		}
 
-		eval {
-		    $left_element = eval( $left_element );
-		    1;
-		} or do {
-		    die "Not all elements in left matrix are defined";
-		};
+		# Evaluates left and right elements.
+		$left_element = eval( $left_element );
+		$right_element = eval( $right_element );
 
-		eval {
-		    $right_element = eval( $right_element );
-		    1;
-		} or do {
-		    die "Not all elements in right matrix are defined";
-		};
+		# Throws error if one of the elements are undefined.
+		die "Left element contains undefined variable"
+		    unless defined $left_element;
+		die "Right element contains undefined variable"
+		    unless defined $right_element;
 
-		# Evaluates multiplication.
+		# Evaluates multiplication if no exceptions are thrown.
 		$matrix_product[$product_row][$product_col] +=
 		    $left_element * $right_element;
-
 	    }
 	}
     }
@@ -665,15 +660,24 @@ sub mult_matrix_product {
 
     for( my $id = $#matrices; $id >= 1; $id-- ) {
     	if( $id == $#matrices ) {
-    	    $mult_matrix_product =
-    		matrix_product( $matrices[$id-1],
-    				$matrices[$id],
-    				$symbol_values );
+	    eval {
+		$mult_matrix_product =
+		    matrix_product( $matrices[$id-1],
+				    $matrices[$id],
+				    $symbol_values );
+	    } or do {
+		next;
+	    };
+
     	} else {
-    	    $mult_matrix_product =
-    		matrix_product( $matrices[$id-1],
-    				$mult_matrix_product,
-    				$symbol_values );
+	    eval {
+		$mult_matrix_product =
+		    matrix_product( $matrices[$id-1],
+				    $mult_matrix_product,
+				    $symbol_values );
+	    } or do {
+		next;
+	    };
     	}
     }
 
