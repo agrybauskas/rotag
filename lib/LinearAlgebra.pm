@@ -26,7 +26,6 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
-
 # --------------------------------- Constants --------------------------------- #
 
 #
@@ -656,32 +655,36 @@ sub mult_matrix_product {
     my @matrices = @{ $matrices };
 
     # Multiplies matrices from left to right.
-    my $mult_matrix_product;
+    my @mult_matrix_product;
 
     for( my $id = $#matrices; $id >= 1; $id-- ) {
     	if( $id == $#matrices ) {
-	    eval {
-		$mult_matrix_product =
-		    matrix_product( $matrices[$id-1],
-				    $matrices[$id],
-				    $symbol_values );
-	    } or do {
-		next;
-	    };
+    	    eval {
+		push( @mult_matrix_product,
+		      matrix_product( $matrices[$id-1],
+				      $matrices[$id],
+				      $symbol_values ) );
+    	    } or do {
+		push( @mult_matrix_product,
+		      $matrices[$id-1],
+		      $matrices[$id] );
+    	    };
 
-    	} else {
+	} else {
 	    eval {
-		$mult_matrix_product =
-		    matrix_product( $matrices[$id-1],
-				    $mult_matrix_product,
-				    $symbol_values );
+		unshift( @mult_matrix_product,
+			 matrix_product( $matrices[$id-1],
+					 $mult_matrix_product[0],
+					 $symbol_values ) );
 	    } or do {
-		next;
+		unshift( @mult_matrix_product,
+			 $matrices[$id-1],
+			 $mult_matrix_product[0] );
 	    };
-    	}
+	}
     }
 
-    return $mult_matrix_product;
+    # return \@mult_matrix_product;
 }
 
 1;

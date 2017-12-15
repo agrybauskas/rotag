@@ -35,9 +35,10 @@ while( <$fh> ) {
     }
 }
 close( $fh );
+mult_matrix_product( \@matrices, \%symbol_values );
+# my $matrix_product = mult_matrix_product( \@matrices, # \%symbol_values
+#     );
 
-my $matrix_product = mult_matrix_product( \@matrices, \%symbol_values );
-
-for my $row ( @{ $matrix_product } ) {
-    print( join( "\t", @{ $row } ), "\n" );
-}
+# for my $row ( @{ $matrix_product } ) {
+#     print( join( "\t", @{ $row } ), "\n" );
+# }
