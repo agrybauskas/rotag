@@ -4,9 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use LinearAlgebra qw( evaluate_matrix
-                      matrix_product
-                      mult_matrix_product );
+use LinearAlgebra qw( mult_matrix_product );
 
 #
 # Unit test: LinearAlgebra::matrix_product.

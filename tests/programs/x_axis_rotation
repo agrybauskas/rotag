@@ -27,10 +27,8 @@ my $atom_data = select_atom_data( $pdbx_file,
 				  $data_specifier );
 
 # Rotates all atoms along x-axis by given angle.
-my $transf_atom_coord;
-
 for my $atom_coord ( @{ $atom_data } ) {
-    $transf_atom_coord =
+    my ( $transf_atom_coord ) =
 	mult_matrix_product( [ x_axis_rotation( $angle ),
 			       [ [ $atom_coord->[0] ],
 				 [ $atom_coord->[1] ],

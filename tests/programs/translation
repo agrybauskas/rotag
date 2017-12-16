@@ -27,10 +27,8 @@ my $atom_data = select_atom_data( $pdbx_file,
 my @transl_coord = split( ",", $transl_coord );
 
 # Translates coordinates by given displacement.
-my $transf_atom_coord;
-
 for my $atom_coord ( @{ $atom_data } ) {
-    $transf_atom_coord =
+    my ( $transf_atom_coord ) =
 	mult_matrix_product( [ translation( @transl_coord ),
 			       [ [ $atom_coord->[0] ],
 				 [ $atom_coord->[1] ],
