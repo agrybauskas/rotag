@@ -676,15 +676,17 @@ sub mult_matrix_product {
 			 matrix_product( $matrices[$id-1],
 					 $mult_matrix_product[0],
 					 $symbol_values ) );
+		splice( @mult_matrix_product, 1, 1 );
 	    } or do {
 		unshift( @mult_matrix_product,
 			 $matrices[$id-1],
 			 $mult_matrix_product[0] );
+		splice( @mult_matrix_product, 1, 1 );
 	    };
 	}
     }
 
-    # return \@mult_matrix_product;
+    return \@mult_matrix_product;
 }
 
 1;

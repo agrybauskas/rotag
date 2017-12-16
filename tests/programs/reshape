@@ -5,7 +5,7 @@ use warnings;
 
 use lib "../../lib";
 use LinearAlgebra qw( reshape );
-use Data::Dumper;
+
 #
 # Unit test: LinearAlgebra::reshape.
 #
