@@ -686,7 +686,7 @@ sub mult_matrix_product {
 	}
     }
 
-    return \@mult_matrix_product;
+    return @mult_matrix_product;
 }
 
 1;
