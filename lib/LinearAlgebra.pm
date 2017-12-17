@@ -5,7 +5,6 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_ref_frame
-                     evaluate_matrix
                      find_euler_angles
                      flatten
                      matrix_product
@@ -26,6 +25,8 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
+use Error;
+use Data::Dumper;
 # --------------------------------- Constants --------------------------------- #
 
 #
@@ -587,8 +588,10 @@ sub matrix_product
 
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
-    die( "A row number of a left matrix is NOT equal to the column\n" .
-	 "number of the right matrix.\n" )
+    die( Error->new(
+	     type => "DimensionError",
+	     message => "A row number of a left matrix is NOT equal " .
+	                "to the column\nnumber of the right matrix.\n" ) )
 	unless( scalar( @{ transpose( $left_matrix ) } ) ==
 		scalar( @{ $right_matrix } ) );
 
@@ -634,9 +637,13 @@ sub matrix_product
 		$right_element = eval( $right_element );
 
 		# Throws error if one of the elements are undefined.
-		die "Left element contains undefined variable"
+		die( Error->new(
+			 type => "UndifinedError",
+			 message => "Left element contains undefined variable"))
 		    unless defined $left_element;
-		die "Right element contains undefined variable"
+		die( Error->new(
+			 type => "UndifinedError",
+			 message => "Right element contains undefined variable"))
 		    unless defined $right_element;
 
 		# Evaluates multiplication if no exceptions are thrown.
@@ -649,7 +656,8 @@ sub matrix_product
     return \@matrix_product;
 }
 
-sub mult_matrix_product {
+sub mult_matrix_product
+{
     my ( $matrices, $symbol_values ) = @_;
 
     my @matrices = @{ $matrices };
@@ -657,36 +665,61 @@ sub mult_matrix_product {
     # Multiplies matrices from left to right.
     my @mult_matrix_product;
 
-    for( my $id = $#matrices; $id >= 1; $id-- ) {
-    	if( $id == $#matrices ) {
-    	    eval {
-		push( @mult_matrix_product,
-		      matrix_product( $matrices[$id-1],
-				      $matrices[$id],
-				      $symbol_values ) );
-    	    } or do {
-		push( @mult_matrix_product,
-		      $matrices[$id-1],
-		      $matrices[$id] );
-    	    };
+    # Only evaluates variables if there is only one matrix in @matrices.
+    if( scalar( @matrices ) == 1 ) {
+	push( @mult_matrix_product, [] );
+	my @matrix = @{ $matrices[0] };
+	for my $row ( @matrix ) {
+	    push( @{ $mult_matrix_product[-1] }, [] );
+	    for my $element ( @{ $row } ) {
+		$element =~ s/\$(\w+)/\$symbol_values{$1}/gx;
+		$element = eval( $element );
+		push( @{ $mult_matrix_product[-1][-1] },
+		      $element );
+	    }
+	}
 
-	} else {
-	    eval {
-		unshift( @mult_matrix_product,
-			 matrix_product( $matrices[$id-1],
-					 $mult_matrix_product[0],
-					 $symbol_values ) );
-		splice( @mult_matrix_product, 1, 1 );
-	    } or do {
-		unshift( @mult_matrix_product,
-			 $matrices[$id-1],
-			 $mult_matrix_product[0] );
-		splice( @mult_matrix_product, 1, 1 );
-	    };
+    } else {
+
+	for( my $id = $#matrices; $id >= 1; $id-- ) {
+	    if( $id == $#matrices ) {
+		eval {
+		    push( @mult_matrix_product,
+			  matrix_product( $matrices[$id-1],
+					  $matrices[$id],
+					  $symbol_values ) );
+		} or do {
+		    if( $@->{type} eq "UndifinedError" ) {
+			push( @mult_matrix_product,
+			      $matrices[$id-1],
+			      $matrices[$id] );
+		    } else {
+			die( $@->{message} );
+		    }
+		};
+
+	    } else {
+		eval {
+		    unshift( @mult_matrix_product,
+			     matrix_product( $matrices[$id-1],
+					     $mult_matrix_product[0],
+					     $symbol_values ) );
+		    splice( @mult_matrix_product, 1, 1 );
+		} or do {
+		    if( $@->{type} eq "UndifinedError" ) {
+			unshift( @mult_matrix_product,
+				 $matrices[$id-1],
+				 $mult_matrix_product[0] );
+			splice( @mult_matrix_product, 1, 1 );
+		    } else {
+			die( $@->{message} );
+		    }
+		};
+	    }
 	}
     }
 
-    return @mult_matrix_product;
+    return \@mult_matrix_product;
 }
 
 1;

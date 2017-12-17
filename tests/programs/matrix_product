@@ -34,11 +34,12 @@ while( <$fh> ) {
 }
 close( $fh );
 
-my @matrix_product = mult_matrix_product( \@matrices, \%symbol_values);
+my $matrix_product =
+    mult_matrix_product( mult_matrix_product( \@matrices ), \%symbol_values );
 
-for my $matrix_id ( 0..$#matrix_product ) {
-    for my $row ( @{ $matrix_product[$matrix_id] } ) {
+for my $matrix_id ( 0..$#{ $matrix_product } ) {
+    for my $row ( @{ $matrix_product->[$matrix_id] } ) {
 	print( join( "\t", @{ $row } ), "\n" );
     }
-    print( "\n" ) if $matrix_id != $#matrix_product;
+    print( "\n" ) if $matrix_id != $#{ $matrix_product };
 }

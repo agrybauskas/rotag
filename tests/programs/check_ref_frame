@@ -66,20 +66,20 @@ for my $pdbx_line ( grep( /^ATOM/, @pdbx_lines ) ){
 		       [ $atom_data[11] ],
 		       [ $atom_data[12] ],
 		       [ 1 ] );
-    my @tranf_atom_coord =
-    	mult_matrix_product(
-    	    [ z_axis_rotation( $alpha ),
-	      x_axis_rotation( $beta ),
-	      z_axis_rotation( $gamma ),
-	      translation( ( - $mid_atom_coord[0],
-			     - $mid_atom_coord[1],
-			     - $mid_atom_coord[2] ) ),
-	      \@atom_coord ] );
+    my ( $tranf_atom_coord ) =
+    	@{ mult_matrix_product(
+	       [ z_axis_rotation( $alpha ),
+		 x_axis_rotation( $beta ),
+		 z_axis_rotation( $gamma ),
+		 translation( ( - $mid_atom_coord[0],
+				- $mid_atom_coord[1],
+				- $mid_atom_coord[2] ) ),
+		 \@atom_coord ] ) };
     printf( "%s %.3f %.3f %.3f\n",
 	    $atom_name,
-	    $tranf_atom_coord[0][0][0],
-	    $tranf_atom_coord[0][1][0],
-	    $tranf_atom_coord[0][2][0] );
+	    $tranf_atom_coord->[0][0],
+	    $tranf_atom_coord->[1][0],
+	    $tranf_atom_coord->[2][0] );
 }
 
 # Draws atoms on the end of axes.

@@ -27,11 +27,11 @@ my $atom_data =
 		      $atom_specifier,
 		      $data_specifier );
 
-my $ref_frame_coord =
-    switch_ref_frame( $atom_data->[1],
-		      $atom_data->[2],
-		      $atom_data->[0],
-		      $ref_frame );
+my ( $ref_frame_coord ) =
+    @{ switch_ref_frame( $atom_data->[1],
+			 $atom_data->[2],
+			 $atom_data->[0],
+			 $ref_frame ) };
 
 for my $row ( @{ $ref_frame_coord } ) {
     print( join( "\t", @{ $row } ), "\n" );

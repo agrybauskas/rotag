@@ -29,11 +29,11 @@ my $atom_data = select_atom_data( $pdbx_file,
 # Rotates all atoms along x-axis by given angle.
 for my $atom_coord ( @{ $atom_data } ) {
     my ( $transf_atom_coord ) =
-	mult_matrix_product( [ x_axis_rotation( $angle ),
-			       [ [ $atom_coord->[0] ],
-				 [ $atom_coord->[1] ],
-				 [ $atom_coord->[2] ],
-				 [ 1 ] ] ] );
+	@{ mult_matrix_product( [ x_axis_rotation( $angle ),
+				  [ [ $atom_coord->[0] ],
+				    [ $atom_coord->[1] ],
+				    [ $atom_coord->[2] ],
+				    [ 1 ] ] ] ) };
     printf( "%.3f\t%.3f\t%.3f\n",
 	    $transf_atom_coord->[0][0],
 	    $transf_atom_coord->[1][0],

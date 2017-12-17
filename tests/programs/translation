@@ -29,11 +29,11 @@ my @transl_coord = split( ",", $transl_coord );
 # Translates coordinates by given displacement.
 for my $atom_coord ( @{ $atom_data } ) {
     my ( $transf_atom_coord ) =
-	mult_matrix_product( [ translation( @transl_coord ),
-			       [ [ $atom_coord->[0] ],
-				 [ $atom_coord->[1] ],
-				 [ $atom_coord->[2] ],
-				 [ 1 ] ] ] );
+	@{ mult_matrix_product( [ translation( @transl_coord ),
+				  [ [ $atom_coord->[0] ],
+				    [ $atom_coord->[1] ],
+				    [ $atom_coord->[2] ],
+				    [ 1 ] ] ] ) };
     printf( "%.3f\t%.3f\t%.3f\n",
 	    $transf_atom_coord->[0][0],
 	    $transf_atom_coord->[1][0],
