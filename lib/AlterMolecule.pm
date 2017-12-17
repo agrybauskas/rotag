@@ -38,22 +38,22 @@ sub bond_torsion
 
     # Rotation matrix around the bond.
     my @rot_matrix =
-	( [ "cos(${angle_symbol})", "-sin(${angle_symbol})", 0, 0 ],
-	  [ "sin(${angle_symbol})",  "cos(${angle_symbol})", 0, 0 ],
+	( [ "cos(\$${angle_symbol})", "-sin(\$${angle_symbol})", 0, 0 ],
+	  [ "sin(\$${angle_symbol})",  "cos(\$${angle_symbol})", 0, 0 ],
 	  [ 0, 0, 1, 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
     my $rot_matrix =
-    	matrix_product( switch_ref_frame( $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord,
-					  "global" ),
-			\@rot_matrix,
-			switch_ref_frame( $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord,
-					  "local" ) );
+    	mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
+    						    $up_atom_coord,
+    						    $side_atom_coord,
+    						    "global" ) },
+    			       \@rot_matrix,
+    			       @{ switch_ref_frame( $mid_atom_coord,
+    						    $up_atom_coord,
+    						    $side_atom_coord,
+    						    "local" ) } ] );
 
     return $rot_matrix;
 }
@@ -79,20 +79,20 @@ sub bond_stretching
     # Translation of the coordinates of the bond.
     my @transl_matrix = ( [ 1, 0, 0, 0 ],
 			  [ 0, 1, 0, 0 ],
-			  [ 0, 0, 1, "${length_symbol}" ],
+			  [ 0, 0, 1, "\$${length_symbol}" ],
 			  [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
     my $transl_matrix =
-    	matrix_product( switch_ref_frame( $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord,
-					  "global" ),
-    			\@transl_matrix,
-    			switch_ref_frame( $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord,
-					  "local" ) );
+    	mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
+						    $up_atom_coord,
+						    $side_atom_coord,
+						    "global" ) },
+			       \@transl_matrix,
+			       @{ switch_ref_frame( $mid_atom_coord,
+						    $up_atom_coord,
+						    $side_atom_coord,
+						    "local" ) } ] );
 
     return $transl_matrix;
 }
@@ -122,27 +122,27 @@ sub angle_bending
     # Bond angle matrices that rotates along x and y axes.
     my @rot_matrix_x =
 	( [ 1, 0, 0, 0 ],
-	  [ 0, "cos(${angle_symbol_x})", "-sin(${angle_symbol_x})", 0 ],
-	  [ 0, "sin(${angle_symbol_x})", "cos(${angle_symbol_x})", 0 ],
+	  [ 0, "cos(\$${angle_symbol_x})", "-sin(\$${angle_symbol_x})", 0 ],
+	  [ 0, "sin(\$${angle_symbol_x})", "cos(\$${angle_symbol_x})", 0 ],
 	  [ 0, 0, 0, 1 ] );
     my @rot_matrix_y =
-	( [ "cos(${angle_symbol_y})", 0, "sin(${angle_symbol_y})", 0 ],
+	( [ "cos(\$${angle_symbol_y})", 0, "sin(\$${angle_symbol_y})", 0 ],
 	  [ 0, 1, 0, 0 ],
-	  [ "-sin(${angle_symbol_y})", 0, "cos(${angle_symbol_y})", 0 ],
+	  [ "-sin(\$${angle_symbol_y})", 0, "cos(\$${angle_symbol_y})", 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
     my $angle_matrix =
-	matrix_product( switch_ref_frame( $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord,
-					  "global" ),
-			\@rot_matrix_y,
-			\@rot_matrix_x,
-			switch_ref_frame( $mid_atom_coord,
-					  $up_atom_coord,
-					  $side_atom_coord,
-					  "local" ) );
+	mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
+						    $up_atom_coord,
+						    $side_atom_coord,
+						    "global" ) },
+			       \@rot_matrix_y,
+			       \@rot_matrix_x,
+			       @{ switch_ref_frame( $mid_atom_coord,
+						    $up_atom_coord,
+						    $side_atom_coord,
+						    "local" ) } ] );
 
     return $angle_matrix;
 }

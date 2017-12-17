@@ -26,7 +26,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      z_axis_rotation );
 
 use Error;
-use Data::Dumper;
+
 # --------------------------------- Constants --------------------------------- #
 
 #

@@ -5,7 +5,9 @@ use warnings;
 
 use lib "../../lib";
 use AlterMolecule qw( bond_torsion );
-use LinearAlgebra qw( evaluate_matrix matrix_product pi vectorize);
+use LinearAlgebra qw( mult_matrix_product
+                      pi
+                      vectorize );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -43,11 +45,11 @@ grep { $_ =~ /ATOM/ }
 
 # Creates transformation matrix that describes rotation along one chi angle.
 my $transf_matrix =
-    matrix_product( bond_torsion( $atom_coord->[1],
-				  $atom_coord->[2],
-				  $atom_coord->[0],
-				  "chi"),
-		    vectorize( $atom_coord->[3] ) );
+    mult_matrix_product( [ @{ bond_torsion( $atom_coord->[1],
+					    $atom_coord->[2],
+					    $atom_coord->[0],
+					    "chi") },
+    			   vectorize( $atom_coord->[3] ) ] );
 
 # Calculates angles that will be rotated along the bond.
 my $small_angle = 2 / $number_of_atoms;
@@ -59,9 +61,9 @@ my $eval_matrix;
 
 for my $chi ( @angles ) {
     $symbols{"chi"} = $chi;
-    $eval_matrix = evaluate_matrix( $transf_matrix, \%symbols );
+    ( $eval_matrix ) = @{ mult_matrix_product( $transf_matrix, \%symbols ) };
     printf( "X\t%.3f\t%.3f\t%.3f\n",
     	    $eval_matrix->[0][0],
-	    $eval_matrix->[1][0],
-	    $eval_matrix->[2][0] );
+    	    $eval_matrix->[1][0],
+    	    $eval_matrix->[2][0] );
 }

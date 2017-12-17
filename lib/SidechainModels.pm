@@ -7,7 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( rotation_only );
 
 use AlterMolecule qw( bond_torsion );
-use LinearAlgebra qw( matrix_product
+use LinearAlgebra qw( mult_matrix_product
                       vectorize );
 use MoleculeProperties qw( %ROTATABLE_BONDS );
 use PDBxParser qw( filter_atoms select_atom_data );
@@ -98,14 +98,15 @@ sub rotation_only
     	    # Creates and appends matrices to a list of matrices that later
     	    # will be multiplied.
     	    push( @transf_matrices,
-    		  bond_torsion( @{ $mid_atom_coord },
-    				@{ $up_atom_coord },
-    				@{ $side_atom_coord },
-    				$angle_symbol ) );
+    	    	  @{ bond_torsion( @{ $mid_atom_coord },
+				   @{ $up_atom_coord },
+				   @{ $side_atom_coord },
+				   $angle_symbol ) } );
     	}
 
     	$atom_site->{"$id"}{"conformation"} =
-	    matrix_product( @transf_matrices, vectorize( \@atom_coord ) );
+	    mult_matrix_product( [ @transf_matrices,
+				      vectorize( \@atom_coord ) ] );
     }
 
     return $atom_site;

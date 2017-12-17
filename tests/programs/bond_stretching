@@ -5,7 +5,8 @@ use warnings;
 
 use lib "../../lib";
 use AlterMolecule qw( bond_stretching );
-use LinearAlgebra qw( evaluate_matrix matrix_product vectorize );
+use LinearAlgebra qw( mult_matrix_product
+                      vectorize );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -49,11 +50,11 @@ grep { $_ =~ /ATOM/ }
 # Creates transformation matrix that describes translation along the bond by
 # distance r.
 my $transf_matrix =
-    matrix_product( bond_stretching( $atom_coord->[1],
-				     $atom_coord->[2],
-				     $atom_coord->[0],
-				     "r" ),
-		    vectorize( $atom_coord->[3] ) );
+    mult_matrix_product( [ @{ bond_stretching( $atom_coord->[1],
+					       $atom_coord->[2],
+					       $atom_coord->[0],
+					       "r" ) },
+			   vectorize( $atom_coord->[3] ) ] );
 
 # Calculates lengths that will be translated along the bond.
 my $small_length = $bond_min_max / $num_of_atoms;
@@ -67,7 +68,7 @@ my $eval_matrix;
 
 for my $r ( @lengths ) {
     $symbols{"r"} = $r;
-    $eval_matrix = evaluate_matrix( $transf_matrix, \%symbols );
+    ( $eval_matrix ) = @{ mult_matrix_product( $transf_matrix, \%symbols ) };
     printf( "X\t%.3f\t%.3f\t%.3f\n",
     	    $eval_matrix->[0][0],
 	    $eval_matrix->[1][0],

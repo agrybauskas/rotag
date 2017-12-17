@@ -5,7 +5,8 @@ use warnings;
 
 use lib "../../lib";
 use AlterMolecule qw( angle_bending );
-use LinearAlgebra qw( evaluate_matrix matrix_product vectorize );
+use LinearAlgebra qw( mult_matrix_product
+                      vectorize );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -48,12 +49,12 @@ grep { $_ =~ /ATOM/ }
 
 # Creates transformation matrix that describes angle bending between two atoms.
 my $transf_matrix =
-    matrix_product( angle_bending( $atom_coord->[1],
-				   $atom_coord->[2],
-				   $atom_coord->[0],
-				   "theta",
-				   "psi" ),
-		    vectorize( $atom_coord->[3] ) );
+    mult_matrix_product( [ @{ angle_bending( $atom_coord->[1],
+					     $atom_coord->[2],
+					     $atom_coord->[0],
+					     "theta",
+					     "psi" ) },
+			   vectorize( $atom_coord->[3] ) ] );
 
 # Calculates angles that will be gradually changed.
 my $small_angle = $angle_min_max / sqrt( $num_of_atoms );
@@ -70,7 +71,7 @@ my $eval_matrix;
 for my $theta ( @angles ) {
     for my $psi ( @angles ) {
 	%symbols = ( "theta" => $theta, "psi" => $psi );
-	$eval_matrix = evaluate_matrix( $transf_matrix, \%symbols );
+	( $eval_matrix ) = @{ mult_matrix_product( $transf_matrix, \%symbols ) };
 	printf( "X\t%.3f\t%.3f\t%.3f\n",
 		$eval_matrix->[0][0],
 		$eval_matrix->[1][0],

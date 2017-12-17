@@ -5,8 +5,10 @@ use warnings;
 
 use lib "../../lib";
 use Combinatorics qw( permutation );
-use LinearAlgebra qw( evaluate_matrix matrix_product pi );
-use PDBxParser qw( filter_atoms obtain_atom_site );
+use LinearAlgebra qw( mult_matrix_product
+                      pi );
+use PDBxParser qw( filter_atoms
+                   obtain_atom_site );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
 use PseudoAtoms qw( generate_pseudo );
