@@ -25,8 +25,6 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
-use Error;
-
 # --------------------------------- Constants --------------------------------- #
 
 #
@@ -588,10 +586,9 @@ sub matrix_product
 
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
-    die( Error->new(
-	     type => "DimensionError",
-	     message => "A row number of a left matrix is NOT equal " .
-	                "to the column\nnumber of the right matrix.\n" ) )
+    die( { type => "DimensionError",
+	   message => "A row number of a left matrix is NOT equal " .
+	       "to the column\nnumber of the right matrix.\n" } )
 	unless( scalar( @{ transpose( $left_matrix ) } ) ==
 		scalar( @{ $right_matrix } ) );
 
@@ -637,13 +634,11 @@ sub matrix_product
 		$right_element = eval( $right_element );
 
 		# Throws error if one of the elements are undefined.
-		die( Error->new(
-			 type => "UndifinedError",
-			 message => "Left element contains undefined variable"))
+		die( { type => "UndifinedError",
+		       message => "Left element contains undefined variable" } )
 		    unless defined $left_element;
-		die( Error->new(
-			 type => "UndifinedError",
-			 message => "Right element contains undefined variable"))
+		die( { type => "UndifinedError",
+		       message => "Right element contains undefined variable" } )
 		    unless defined $right_element;
 
 		# Evaluates multiplication if no exceptions are thrown.
