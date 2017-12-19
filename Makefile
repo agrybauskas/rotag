@@ -1,16 +1,4 @@
 #
-# Compiling CPP and linking to Perl5 with SWIG.
-#
-
-CPP_DIR=lib
-CPP_OBJ=${SWIG_FILE:%.i=%.o}
-SWIG_FILE=${wildcard ${CPP_DIR}/*.i}
-PM_FILE=${SWIG_FILE:%.i=%.pm}
-WRAP_FILE=${SWIG_FILE:%.i=%_wrap.cxx}
-WRAP_OBJ=${WRAP_FILE:%.cxx=%.o}
-SHARED_OBJ=${CPP_OBJ:%.o=%.so}
-
-#
 # Instalation of dependencies.
 #
 
@@ -27,6 +15,8 @@ TEST_CASES_DIR=tests/cases
 TEST_OUT_DIR=tests/outputs
 TEST_CASES=${sort ${wildcard ${TEST_CASES_DIR}/*.sh}}
 TEST_DIFF=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${TEST_OUT_DIR}/%.diff}
+
+.PHONY: test
 
 test: ${TEST_DIFF}
 

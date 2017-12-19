@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( %HYBRIDIZATION
+                     %HYDROGEN_NAMES
                      %ROTATABLE_BONDS );
 
 # ------------------------------- Molecule properties ------------------------- #
@@ -116,6 +117,15 @@ our %ROTATABLE_BONDS = (
     } );
 
 our %HYBRIDIZATION = (
+    'SER' => {
+	'N'  => 'sp3',
+	'CA' => 'sp3',
+	'C'  => 'sp2',
+	'O'  => 'sp2',
+	'OXT'=> 'sp3',
+	'CB' => 'sp3',
+	'OG' => 'sp3'
+    },
     'PHE' => {
 	'N'   => 'sp3',
 	'CA'  => 'sp3',
@@ -136,15 +146,6 @@ our %HYBRIDIZATION = (
 	'C'  => 'sp2',
 	'O'  => 'sp2',
 	'OXT'=> 'sp3'
-    },
-    'SER' => {
-	'N'  => 'sp3',
-	'CA' => 'sp3',
-	'C'  => 'sp2',
-	'O'  => 'sp2',
-	'OXT'=> 'sp3',
-	'CB' => 'sp3',
-	'OG' => 'sp3'
     },
     'ALA' => {
 	'N'  => 'sp3',
@@ -204,6 +205,16 @@ our %HYBRIDIZATION = (
 	'OD1' => 'sp2',
 	'OD2' => 'sp2'
     }
- );
+);
+
+our %HYDROGEN_NAMES = (
+    'SER' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'OG'  => [ 'HG' ]
+    }
+);
 
 1;
