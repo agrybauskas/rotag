@@ -126,6 +126,20 @@ our %HYBRIDIZATION = (
 	'CB' => 'sp3',
 	'OG' => 'sp3'
     },
+    'ARG' => {
+	'N'   => 'sp3',
+	'CA'  => 'sp3',
+	'C'   => 'sp2',
+	'O'   => 'sp2',
+	'OXT' => 'sp3',
+	'CB'  => 'sp3',
+	'CG'  => 'sp3',
+	'CD'  => 'sp3',
+	'NE'  => 'sp2',
+	'CZ'  => 'sp2',
+	'NH1' => 'sp2',
+	'NH2' => 'sp2'
+    },
     'PHE' => {
 	'N'   => 'sp3',
 	'CA'  => 'sp3',
@@ -154,20 +168,6 @@ our %HYBRIDIZATION = (
 	'O'  => 'sp2',
 	'OXT'=> 'sp3',
 	'CB' => 'sp3',
-    },
-    'ARG' => {
-	'N'   => 'sp3',
-	'CA'  => 'sp3',
-	'C'   => 'sp2',
-	'O'   => 'sp2',
-	'OXT' => 'sp3',
-	'CB'  => 'sp3',
-	'CG'  => 'sp3',
-	'CD'  => 'sp3',
-	'NE'  => 'sp2',
-	'CZ'  => 'sp2',
-	'NH1' => 'sp2',
-	'NH2' => 'sp2'
     },
     'HIS' => {
 	'N'   => 'sp3',
@@ -214,7 +214,18 @@ our %HYDROGEN_NAMES = (
 	'OXT' => [ 'HXT' ],
 	'CB'  => [ 'HB2', 'HB3' ],
 	'OG'  => [ 'HG' ]
-    }
+    },
+    'ARG' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CG'  => [ 'HG2', 'HG3' ],
+	'CD'  => [ 'HD2', 'HD3' ],
+	'NE'  => [ 'HE' ],
+	'NH1' => [ 'HH11', 'HH12' ],
+	'NH2' => [ 'HH21', 'HH22' ]
+    },
 );
 
 1;

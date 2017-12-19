@@ -39,7 +39,7 @@ use PDBxParser qw( create_pdbx_entry
                    filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
-use Data::Dumper;
+
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -643,7 +643,7 @@ sub add_hydrogens
     	} elsif( $hybridization eq "sp2" ) {
     	    my $bond_length =
     		$ATOMS{$atom_type}{"covalent_radius"}{"length"}[1]
-    		+ $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+  	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
     	    # Depending on quantity of atoms connections, adds hydrogens.
     	    if( scalar( @connection_ids ) == 2 ) {
@@ -703,10 +703,32 @@ sub add_hydrogens
     		    [ $atom_site->{$atom_id}{"Cartn_x"},
     		      $atom_site->{$atom_id}{"Cartn_y"},
     		      $atom_site->{$atom_id}{"Cartn_z"} ];
-    		my $side_coord =
-    		    [ $atom_site->{$atom_id}{"Cartn_x"},
-    		      $atom_site->{$atom_id}{"Cartn_y"} + 1,
-    		      $atom_site->{$atom_id}{"Cartn_z"} ];
+		my $side_coord =
+		    [ $atom_site->{$atom_id}{"Cartn_x"},
+		      $atom_site->{$atom_id}{"Cartn_y"} + 1,
+		      $atom_site->{$atom_id}{"Cartn_z"} ];
+
+		# If terminal atom belongs to conjugated system, hydrogens are
+		# added not to violate rule where atoms should be in one plain.
+		my @second_neighbours =
+		    grep { ! /$atom_id/ }
+		    map { @{ $atom_site->{$_}{"connections"} } }
+		    @connection_ids;
+
+		for my $second_neighbour ( @second_neighbours ) {
+		    my $second_hybridization =
+			$HYBRIDIZATION{$residue_name}
+		                      {$atom_site->{$second_neighbour}
+				                   {"label_atom_id"}};
+		    if( $second_hybridization eq "sp2"
+		     || $second_hybridization eq "sp" ) {
+			$side_coord =
+			    [ $atom_site->{$second_neighbour}{"Cartn_x"},
+			      $atom_site->{$second_neighbour}{"Cartn_y"},
+			      $atom_site->{$second_neighbour}{"Cartn_z"} ];
+			last;
+		    }
+		}
 
     		my ( $transf_matrix ) =
     		    @{ switch_ref_frame( $mid_atom_coord,
