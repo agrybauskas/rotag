@@ -8,7 +8,7 @@ our @EXPORT_OK = qw( rotation_only );
 
 use AlterMolecule qw( bond_torsion );
 use LinearAlgebra qw( mult_matrix_product
-                      vectorize );
+                      reshape );
 use MoleculeProperties qw( %ROTATABLE_BONDS );
 use PDBxParser qw( filter_atoms select_atom_data );
 
@@ -105,8 +105,9 @@ sub rotation_only
     	}
 
     	$atom_site->{"$id"}{"conformation"} =
-	    mult_matrix_product( [ @transf_matrices,
-				      vectorize( \@atom_coord ) ] );
+	    mult_matrix_product(
+		[ @transf_matrices,
+		  @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
     }
 
     return $atom_site;

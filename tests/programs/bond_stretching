@@ -6,7 +6,7 @@ use warnings;
 use lib "../../lib";
 use AlterMolecule qw( bond_stretching );
 use LinearAlgebra qw( mult_matrix_product
-                      vectorize );
+                      reshape );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -17,9 +17,9 @@ use Utils qw( select_atom_data );
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after the resize of the bond.
 #
-# Example: ./change_bond_length "label_atom_id CA,N,CB,OG" \
-#                               "Cartn_x,Cartn_y,Cartn_z" \
-#                               2.0 10 example.cif
+# Example: ./bond_stretching "label_atom_id CA,N,CB,OG" \
+#                            "Cartn_x,Cartn_y,Cartn_z" \
+#                            2.0 10 example.cif
 #
 
 my ( $atom_specifier,
@@ -54,7 +54,8 @@ my $transf_matrix =
 					       $atom_coord->[2],
 					       $atom_coord->[0],
 					       "r" ) },
-			   vectorize( $atom_coord->[3] ) ] );
+			   @{ reshape( [ @{ $atom_coord->[3] }, 1 ],
+				       [ 4, 1 ] ) } ] );
 
 # Calculates lengths that will be translated along the bond.
 my $small_length = $bond_min_max / $num_of_atoms;

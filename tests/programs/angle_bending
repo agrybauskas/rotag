@@ -6,7 +6,7 @@ use warnings;
 use lib "../../lib";
 use AlterMolecule qw( angle_bending );
 use LinearAlgebra qw( mult_matrix_product
-                      vectorize );
+                      reshape );
 
 use lib "../lib";
 use Utils qw( select_atom_data );
@@ -17,9 +17,9 @@ use Utils qw( select_atom_data );
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after the change of the angle between atoms.
 #
-# Example: ./change_bond_angle "label_atom_id CA,N,CB,OG" \
-#                              "Cartn_x,Cartn_y,Cartn_z" \
-#                              1.0 27 example.cif
+# Example: ./angle_bending "label_atom_id CA,N,CB,OG" \
+#                          "Cartn_x,Cartn_y,Cartn_z" \
+#                          1.0 27 example.cif
 #
 
 my ( $atom_specifier,
@@ -54,7 +54,8 @@ my $transf_matrix =
 					     $atom_coord->[0],
 					     "theta",
 					     "psi" ) },
-			   vectorize( $atom_coord->[3] ) ] );
+			   @{ reshape( [ @{ $atom_coord->[3] }, 1 ],
+				       [ 4, 1 ] ) } ] );
 
 # Calculates angles that will be gradually changed.
 my $small_angle = $angle_min_max / sqrt( $num_of_atoms );

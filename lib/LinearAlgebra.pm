@@ -20,7 +20,6 @@ our @EXPORT_OK = qw( create_ref_frame
                      transpose
                      vector_cross
                      vector_length
-                     vectorize
                      x_axis_rotation
                      y_axis_rotation
                      z_axis_rotation );
@@ -389,27 +388,6 @@ sub flatten
     } } };
 
     return \@element_list, \@dimensions;
-}
-
-#
-# Takes simple array of 3 items and turns into 4x1 matrix.
-# Input:
-#     $array - array of 3 items.
-# Output:
-#     @matrix - 4x1 matrix.
-#
-
-sub vectorize
-{
-    my ( $array ) = @_;
-    my @matrix;
-
-    for my $item ( @{ $array } ) {
-	push( @matrix, [ $item ] );
-    }
-    push( @matrix, [ 1 ] );
-
-    return \@matrix;
 }
 
 #
