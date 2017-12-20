@@ -29,11 +29,6 @@ while( <$fh> ) {
 }
 close( $fh );
 
-my ( $element_list, $dimensions ) = flatten( \@matrices );
+my $element_list = flatten( \@matrices );
 
-# First prints out list and then dimensions separated by whitespace.
 print( join( " ", @{ $element_list } ), "\n" );
-for( my $i = 0; $i < scalar( @{ $dimensions } ); $i += 2 ) {
-    print( "$dimensions->[$i],$dimensions->[$i+1] " );
-}
-print( "\n" );

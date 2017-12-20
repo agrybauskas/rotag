@@ -14,10 +14,10 @@ use Utils qw( select_atom_data );
 my ( $pdbx_file ) = @ARGV;
 
 my $atom_site = obtain_atom_site( $pdbx_file );
+add_hydrogens( $atom_site );
+# %{ $atom_site } =
+#     ( %{ $atom_site },
+#       %{ add_hydrogens( $atom_site ) } );
 
-%{ $atom_site } =
-    ( %{ $atom_site },
-      %{ add_hydrogens( $atom_site ) } );
-
-# Prints out PDBx format file.
-to_pdbx( $atom_site );
+# # Prints out PDBx format file.
+# to_pdbx( $atom_site );

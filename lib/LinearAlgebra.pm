@@ -370,7 +370,6 @@ sub reshape
 #     $matrices - array of matrix or matrices.
 # Output:
 #     @element_list - array of all elements in matrix or matrices.
-#     @dimensions - dimensions of matrix or matrices in an array form.
 #
 
 sub flatten
@@ -378,16 +377,14 @@ sub flatten
     my ( $matrices ) = @_;
 
     my @element_list;
-    my @dimensions;
 
     for my $matrix ( @{ $matrices } ) {
-	push( @dimensions, scalar( @{ $matrix } ), scalar( @{ $matrix->[0] } ) );
     for my $row ( @{ $matrix } ) {
     for my $element ( @{ $row } ) {
 	push( @element_list, $element );
     } } };
 
-    return \@element_list, \@dimensions;
+    return \@element_list;
 }
 
 #
