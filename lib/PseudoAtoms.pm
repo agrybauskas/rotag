@@ -37,7 +37,8 @@ use Measure qw( all_dihedral
 use MoleculeProperties qw( %ROTATABLE_BONDS
                            %HYBRIDIZATION
                            %HYDROGEN_NAMES );
-use PDBxParser qw( create_pdbx_entry
+use PDBxParser qw( atom_data_with_id
+                   create_pdbx_entry
                    filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
@@ -354,7 +355,15 @@ sub add_hydrogens
     for my $atom_id ( keys %atom_site ) {
     	my $atom_type = $atom_site{$atom_id}{"type_symbol"};
     	my $atom_name = $atom_site{$atom_id}{"label_atom_id"};
+
 	my $residue_name = $atom_site{$atom_id}{"label_comp_id"};
+	my $residue_id = $atom_site{$atom_id}{"label_seq_id"};
+	my $residue_site =
+	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
+	my %residue_coord =
+	    %{ atom_data_with_id( $residue_site,
+				  [ "Cartn_x", "Cartn_y", "Cartn_z" ] ) };
+
     	my $hydrogen_names = $HYDROGEN_NAMES{$residue_name}{$atom_name};
 
     	if( ! $hydrogen_names ) { next; }; # Exits early if there should be no
@@ -407,14 +416,10 @@ sub add_hydrogens
 		     $mid_atom_coord,
 		     $left_atom_coord,
 		     $right_atom_coord ) =
-			 @{ select_atom_data(
-			    filter_atoms(
-			    $atom_site,
-			    { "id" => [ $connection_ids[0],
-					$atom_id,
-					$connection_ids[1],
-					$connection_ids[2] ] } ),
-			    [ "Cartn_x", "Cartn_y", "Cartn_z" ] ) };
+			 ( $residue_coord{$connection_ids[0]},
+			   $residue_coord{$atom_id},
+			   $residue_coord{$connection_ids[1]},
+			   $residue_coord{$connection_ids[2]} );
 
     	    	# First, creates coplanar vector that will split angle between
     	    	# up and right atoms into equal parts.
@@ -462,22 +467,22 @@ sub add_hydrogens
 		  ? ( 2 * pi() - $bond_angle ) / 2
 		  : $bond_angle / 2;
 
-    	    	# Places atom in right position.
+    	    	# Places atom in proper position.
     	    	my ( $transf_matrix ) =
     	    	    @{ switch_ref_frame(
 			   $mid_atom_coord,
-			   [ @{ flatten( [ $coplanar_coord ] )}[0..2] ],
+			   [ @{ flatten( [ $coplanar_coord ] ) }[0..2] ],
 			   $left_atom_coord,
-			   'global' ) };
+			   "global" ) };
 
     	    	( $hydrogen_coord{$missing_hydrogens[0]} ) =
     	    	    @{ mult_matrix_product(
     	    		   [ $transf_matrix,
     	    		     [ [ $bond_length
-    	    			* cos( - 90 * pi() / 180 )
+    	    			* cos( -90 * pi() / 180 )
     	    		        * sin( $bond_angle ) ],
     	    		       [ $bond_length
-    	    		        * sin( - 90 * pi() / 180 )
+    	    		        * sin( -90 * pi() / 180 )
     	    		        * sin( $bond_angle ) ],
     	    		       [ $bond_length
     	    		        * cos( $bond_angle ) ],

@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( create_pdbx_entry
+our @EXPORT_OK = qw( atom_data_with_id
+                     create_pdbx_entry
                      filter_atoms
                      obtain_atom_site
                      select_atom_data
@@ -142,6 +143,22 @@ sub select_atom_data
     }
 
     return \@atom_data;
+}
+
+sub atom_data_with_id
+{
+    my ( $atom_site, $data_specifier )  = @_;
+
+    my %atom_data_with_id;
+
+    # Simply iterates through $atom_site keys and extracts data using data
+    # specifier and is asigned to atom id.
+    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+	$atom_data_with_id{$atom_id} =
+	    [ map { $atom_site->{$atom_id}{$_} } @{ $data_specifier } ];
+    }
+
+    return \%atom_data_with_id;
 }
 
 sub create_pdbx_entry
