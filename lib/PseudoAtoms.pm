@@ -421,57 +421,69 @@ sub add_hydrogens
 			   $residue_coord{$connection_ids[1]},
 			   $residue_coord{$connection_ids[2]} );
 
-    	    	# First, creates coplanar vector that will split angle between
-    	    	# up and right atoms into equal parts.
-		my $mid_up_vector =
-		    matrix_sub(
-			@{ reshape( [ @{ $up_atom_coord }, 1 ], [ 4, 1 ] ) },
-			@{ reshape( [ @{ $mid_atom_coord }, 0 ], [ 4, 1 ] ) } );
-		my $mid_right_vector =
-		    matrix_sub(
-			@{ reshape( [ @{ $right_atom_coord }, 1  ], [ 4, 1 ] ) },
-			@{ reshape( [ @{ $mid_atom_coord }, 0 ], [ 4, 1 ] ) } );
+    	    	# Theoretically optimal angles should be so, the distance of
+    	    	# atoms would be furthest from each other. This strategy could
+    	    	# be achieved by imagining each bond as vector of the length 1.
+    	    	# Then the sum of all vectors would be 0, if angles are equal.
+    	    	#
+    	    	#                        ->  ->  ->  ->
+    	    	#                        A + B + C + D = 0
+    	    	#
+    	    	# In that case, the square of sum also should be equal 0.
+    	    	#
+    	    	#                        ->  ->  ->  ->
+    	    	#                      ( A + B + C + D ) ^ 2 = 0
+    	    	#
+    	    	#       ->  ->      ->  ->      ->  ->      ->  ->      ->  ->
+    	    	#   2 * A * B + 2 * A * C + 2 * A * D + 2 * B * C + 2 * B * D +
+    	    	#       ->  ->   ->      ->      ->      ->
+    	    	# + 2 * C + D  + A ^ 2 + B ^ 2 + C ^ 2 + D ^ 2 = 0
+    	    	#
+    	    	# Because length of each vector is equal to 1, then dot product
+    	    	# is equal to cos(alpha), where all angles between bonds are
+    	    	# equal. If there were no given angles, alpha should be 109.5
+    	    	# degrees.
+    	    	#
+    	    	#                   alpha = arccos( - 1 / 3 )
+    	    	#
+    	    	# However, there is a restriction of given angle. And the
+    	    	# calculation changes:
+    	    	#
+    	    	#        alpha = arccos( ( - 4 - 2 * cos( beta )
+		#                              - 2 * cos( gamma )
+		#                              - 2 * cos( delta ) ) / 6 )
+    	    	#
+    	    	# where beta is the given angle.
 
-    	    	my $mid_up_length = vector_length( $mid_up_vector );
-    	    	my $mid_right_length = vector_length( $mid_right_vector );
+		# Calculates all bond angles between atoms connected to the
+		# middle atom.
+		my $up_mid_right_angle =
+		    bond_angle( [ $up_atom_coord,
+				  $mid_atom_coord,
+				  $right_atom_coord ] );
+		my $up_mid_left_angle =
+		    bond_angle( [ $up_atom_coord,
+				  $mid_atom_coord,
+				  $left_atom_coord ] );
+		my $right_mid_left_angle =
+		    bond_angle( [ $up_atom_coord,
+				  $mid_atom_coord,
+				  $left_atom_coord ] );
 
-    	    	$mid_up_vector =
-    	    	    scalar_multipl( $mid_up_vector, 1 / $mid_up_length );
-    	    	$mid_right_vector =
-    	    	    scalar_multipl( $mid_right_vector, 1 / $mid_right_length );
+		# Calculates what common angle between hydrogen and rest of the
+		# atoms should be.
+		my $hydrogen_angle =
+		    acos( ( - 4
+			    - 2 * cos( $up_mid_right_angle )
+			    - 2 * cos( $up_mid_left_angle )
+			    - 2 * cos( $right_mid_left_angle ) )
+			  / 6 );
 
-    	    	my $coplanar_vector =
-    	    	    matrix_sum( $mid_up_vector, $mid_right_vector );
-    	    	my $coplanar_length = vector_length( $coplanar_vector );
-    	    	$coplanar_vector =
-    	    	    scalar_multipl( $coplanar_vector, 1 / $coplanar_length );
-    	    	$coplanar_vector->[3] = [ 1 ];
-
-    	    	my $coplanar_coord =
-    	    	    matrix_sum( $coplanar_vector,
-    	    			@{ reshape( [ @{ $mid_atom_coord }, 0 ],
-					    [ 4, 1 ] ) } );
-
-    	    	# Angle between coplanar vector and left atom is calculated
-    	    	# and divided by half.
-    	    	my $bond_angle =
-    	    	    bond_angle(
-    	    		[ [ @{ flatten( [ $coplanar_coord ] )}[0..2] ],
-			  $mid_atom_coord,
-			  $left_atom_coord ] );
-
-    	    	# If angle is less than 180 deg, then 360 is subtrated by the
-    	    	# angle and the result is used for transformations.
-    	    	$bond_angle =
-		    $bond_angle < pi()
-		  ? ( 2 * pi() - $bond_angle ) / 2
-		  : $bond_angle / 2;
-
-    	    	# Places atom in proper position.
+		# Places hydrogen according to previously calculated angles.
     	    	my ( $transf_matrix ) =
     	    	    @{ switch_ref_frame(
 			   $mid_atom_coord,
-			   [ @{ flatten( [ $coplanar_coord ] ) }[0..2] ],
+			   $up_atom_coord,
 			   $left_atom_coord,
 			   "global" ) };
 
@@ -479,47 +491,16 @@ sub add_hydrogens
     	    	    @{ mult_matrix_product(
     	    		   [ $transf_matrix,
     	    		     [ [ $bond_length
-    	    			* cos( -90 * pi() / 180 )
-    	    		        * sin( $bond_angle ) ],
+    	    			* cos( 0 )
+    	    		        * sin( $hydrogen_angle ) ],
     	    		       [ $bond_length
-    	    		        * sin( -90 * pi() / 180 )
-    	    		        * sin( $bond_angle ) ],
+    	    		        * sin( 0 )
+    	    		        * sin( $hydrogen_angle ) ],
     	    		       [ $bond_length
-    	    		        * cos( $bond_angle ) ],
+    	    		        * cos( $hydrogen_angle ) ],
     	    		       [ 1 ] ] ] ) };
-
-    	    # 	# If angle between created atom and any of two atoms that is
-    	    # 	# connected to is less than 90 deg, then bond direction is
-    	    # 	# reversed.
-    	    # 	my $angle_between_vectors =
-    	    # 	    bond_angle(
-    	    # 		[ [ $atom_site->{$connection_ids[1]}{"Cartn_x"},
-    	    # 		    $atom_site->{$connection_ids[1]}{"Cartn_y"},
-    	    # 		    $atom_site->{$connection_ids[1]}{"Cartn_z"}],
-    	    # 		  [ $atom_site->{$atom_id}{"Cartn_x"},
-    	    # 		    $atom_site->{$atom_id}{"Cartn_y"},
-    	    # 		    $atom_site->{$atom_id}{"Cartn_z"} ],
-    	    # 		  [ $hydrogen_coord{$missing_hydrogens[0]}->[0][0],
-    	    # 		    $hydrogen_coord{$missing_hydrogens[0]}->[1][0],
-    	    # 		    $hydrogen_coord{$missing_hydrogens[0]}->[2][0] ] ] );
-    	    # 	if( $angle_between_vectors < ( pi() / 2 ) ) {
-    	    # 	    # $hydrogen_coord{$missing_hydrogens[0]} =
-    	    # 	    # 	matrix_sum(
-    	    # 	    # 	    [ [ $atom_site->{$atom_id}{"Cartn_x"} ],
-    	    # 	    # 	      [ $atom_site->{$atom_id}{"Cartn_y"} ],
-    	    # 	    # 	      [ $atom_site->{$atom_id}{"Cartn_z"} ],
-    	    # 	    # 	      [ 0 ] ],
-    	    # 	    # 	scalar_multipl(
-    	    # 	    # 	matrix_sum(
-    	    # 	    # 	    $hydrogen_coord{$missing_hydrogens[0]},
-    	    # 	    # 	    [ [ - $atom_site->{$atom_id}{"Cartn_x"} ],
-    	    # 	    # 	      [ - $atom_site->{$atom_id}{"Cartn_y"} ],
-    	    # 	    # 	      [ - $atom_site->{$atom_id}{"Cartn_z"} ],
-    	    # 	    # 	      [ 0 ] ] ),
-    	    # 	    # 	    -1 ) );
-    	    # 	}
-
     	    }
+
 # elsif( scalar( @connection_ids ) == 2 ) {
     	    # 	# Calculates current angle between atoms that are connected to
     	    # 	# target atom.
@@ -540,37 +521,6 @@ sub add_hydrogens
     	    # 			  $mid_atom_coord,
     	    # 			  $side_atom_coord ] );
 
-    	    # 	# Theoretically optimal angles should be so, the distance of
-    	    # 	# atoms would be furthest from each other. This strategy could
-    	    # 	# be achieved by imagining each bond as vector of the length 1.
-    	    # 	# Then the sum of all vectors would be 0, if angles are equal.
-    	    # 	#
-    	    # 	#                        ->  ->  ->  ->
-    	    # 	#                        A + B + C + D = 0
-    	    # 	#
-    	    # 	# In that case, the square of sum also should be equal 0.
-    	    # 	#
-    	    # 	#                        ->  ->  ->  ->
-    	    # 	#                      ( A + B + C + D ) ^ 2 = 0
-    	    # 	#
-    	    # 	#       ->  ->      ->  ->      ->  ->      ->  ->      ->  ->
-    	    # 	#   2 * A * B + 2 * A * C + 2 * A * D + 2 * B * C + 2 * B * D +
-    	    # 	#       ->  ->   ->      ->      ->      ->
-    	    # 	# + 2 * C + D  + A ^ 2 + B ^ 2 + C ^ 2 + D ^ 2 = 0
-    	    # 	#
-    	    # 	# Because length of each vector is equal to 1, then dot product
-    	    # 	# is equal to cos(alpha), where all angles between bonds are
-    	    # 	# equal. If there were no given angles, alpha should be 109.5
-    	    # 	# degrees.
-    	    # 	#
-    	    # 	#                   alpha = arccos( - 1 / 3 )
-    	    # 	#
-    	    # 	# However, there is a restriction of given angle. And the
-    	    # 	# calculation changes:
-    	    # 	#
-    	    # 	#        alpha = arccos( ( - 4 - 2 * cos( beta ) ) / 10 )
-    	    # 	#
-    	    # 	# where beta is the given angle.
 
     	    # 	my $hydrogen_angle =
     	    # 	    acos( ( - 4 - 2 * cos( $bond_angle ) ) / 10 );
