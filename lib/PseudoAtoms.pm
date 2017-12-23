@@ -43,7 +43,7 @@ use PDBxParser qw( atom_data_with_id
                    filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
-use Data::Dumper;
+
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -353,7 +353,7 @@ sub add_hydrogens
     my %hydrogen_site;
     my $last_atom_id = max( keys %{ $atom_site } );
 
-    for my $atom_id ( keys %atom_site ) {
+    for my $atom_id ( sort { $a <=> $b } keys %atom_site ) {
     	my $atom_type = $atom_site{$atom_id}{"type_symbol"};
     	my $atom_name = $atom_site{$atom_id}{"label_atom_id"};
 
@@ -609,6 +609,8 @@ sub add_hydrogens
     	    				 'global' ) };
 
     	    	# Decreases bond angle, if lone pairs are present.
+		# TODO: check if angle reduction is relevant in amino acid
+		# structures.
     	    	my $bond_angle;
     	    	if( $lone_pair_count > 0 ) {
     	    	    $bond_angle =
@@ -819,7 +821,7 @@ sub add_hydrogens
 
     	# Each coordinate of atoms is transformed by transformation
     	# matrix and added to %hydrogen_site.
-    	for my $hydrogen_name ( keys %hydrogen_coord ) {
+    	for my $hydrogen_name ( sort { $a cmp $b } keys %hydrogen_coord ) {
 	    if( $hydrogen_coord{$hydrogen_name} ) {
 		# Adds necessary PDBx entries to pseudo atom.
 		$last_atom_id++;
