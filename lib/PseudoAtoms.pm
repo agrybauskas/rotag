@@ -32,6 +32,7 @@ use LinearAlgebra qw( find_euler_angles
                       y_axis_rotation
                       z_axis_rotation );
 use Measure qw( all_dihedral
+                dihedral_angle
                 bond_angle
                 bond_length );
 use MoleculeProperties qw( %ROTATABLE_BONDS
@@ -479,6 +480,27 @@ sub add_hydrogens
 			    - 2 * cos( $right_mid_left_angle ) )
 			  / 6 );
 
+		# Determines dihedral angle between left and right atoms. Then
+		# splits rest of the 2 * pi angle into two equal parts.
+		my $dihedral_angle =
+		    dihedral_angle( [ $left_atom_coord,
+				      $up_atom_coord,
+				      $mid_atom_coord,
+				      $right_atom_coord ] );
+		if( abs( $dihedral_angle ) < ( 3 * pi() / 4 ) ) {
+		    if( $dihedral_angle < 0 ) {
+			$dihedral_angle = ( 2 * pi() + $dihedral_angle ) / 2;
+		    } else {
+			$dihedral_angle = - ( 2 * pi() - $dihedral_angle ) / 2;
+		    }
+		} else {
+		    if( $dihedral_angle < 0 ) {
+			$dihedral_angle = $dihedral_angle / 2;
+		    } else {
+			$dihedral_angle = - $dihedral_angle / 2;
+		    }
+		}
+
 		# Places hydrogen according to previously calculated angles.
     	    	my ( $transf_matrix ) =
     	    	    @{ switch_ref_frame(
@@ -491,320 +513,309 @@ sub add_hydrogens
     	    	    @{ mult_matrix_product(
     	    		   [ $transf_matrix,
     	    		     [ [ $bond_length
-    	    			* cos( 0 )
+    	    			* cos( pi() / 2 - $dihedral_angle )
     	    		        * sin( $hydrogen_angle ) ],
     	    		       [ $bond_length
-    	    		        * sin( 0 )
+    	    		        * sin( pi() / 2 - $dihedral_angle )
     	    		        * sin( $hydrogen_angle ) ],
     	    		       [ $bond_length
     	    		        * cos( $hydrogen_angle ) ],
     	    		       [ 1 ] ] ] ) };
+    	    } elsif( scalar( @connection_ids ) == 2 ) {
+    	    	# Calculates current angle between atoms that are connected to
+    	    	# target atom.
+		my ( $up_atom_coord,
+		     $mid_atom_coord,
+		     $left_atom_coord ) =
+			 ( $residue_coord{$connection_ids[0]},
+			   $residue_coord{$atom_id},
+			   $residue_coord{$connection_ids[1]} );
+
+    	    	my $bond_angle =
+    	    	    bond_angle( [ $up_atom_coord,
+    	    			  $mid_atom_coord,
+    	    			  $left_atom_coord ] );
+
+    	    	# This time is only one defined angle. And the calculation
+		# changes:
+    	    	#
+		#       acos( ( - 4 - 2 * cos( $bond_angle ) ) / 10 )
+		#
+    	    	my $hydrogen_angle =
+    	    	    acos( ( - 4 - 2 * cos( $bond_angle ) ) / 10 );
+
+    	    	# Generates transformation matrix for transfering atoms to local
+    	    	# reference frame.
+    	    	my ( $transf_matrix ) =
+    	    	    @{ switch_ref_frame( $mid_atom_coord,
+    	    				 $up_atom_coord,
+    	    				 $left_atom_coord,
+    	    				 'global' ) };
+
+    	    	# Adds hydrogen first to both atoms that have 0 or 1 electron
+    	    	# pairs.
+    	    	if( scalar( @missing_hydrogens ) >= 1 ) {
+    	    	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
+    	    		@{ mult_matrix_product(
+    	    		       [ $transf_matrix,
+    	    			 [ [ $bond_length
+    	    			   * cos( 7 * pi() / 6 )
+    	    			   * sin( $hydrogen_angle ) ],
+    	    			   [ $bond_length
+    	    		           * sin( 7 * pi() / 6 )
+    	    		           * sin( $hydrogen_angle )],
+    	    			   [ $bond_length
+    	    		           * cos( $hydrogen_angle )],
+    	    			   [ 1 ] ] ] ) };
+    	    	    shift @missing_hydrogens;
+    	    	}
+
+    	    	# Additional hydrogen is added only to the atom that has no
+    	    	# electron pairs.
+    	    	if( scalar( @missing_hydrogens ) == 1 ) {
+    	    	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
+    	    		@{ mult_matrix_product(
+    	    		       [ $transf_matrix,
+    	    			 [ [ $bond_length
+    	    			   * cos( - 1 * pi() / 6 )
+    	    			   * sin( $hydrogen_angle ) ],
+    	    			   [ $bond_length
+    	    		           * sin( - 1 * pi() / 6 )
+    	    		           * sin( $hydrogen_angle ) ],
+    	    			   [ $bond_length
+    	    		           * cos( $hydrogen_angle ) ],
+    	    			   [ 1 ] ] ] ) };
+    	    	}
+
+    	    } elsif( scalar( @connection_ids ) == 1 ) {
+    	    	# Calculates current angle between atoms that are connected to
+    	    	# target atom.
+		my ( $up_atom_coord,
+		     $mid_atom_coord,
+		     $side_coord ) = # Coordinate that only will be used for
+			             # defining a local reference frame.
+			 ( $residue_coord{$connection_ids[0]},
+			   $residue_coord{$atom_id},
+			   [ $atom_site->{$atom_id}{"Cartn_x"},
+			     $atom_site->{$atom_id}{"Cartn_y"} + 1,
+			     $atom_site->{$atom_id}{"Cartn_z"} ] );
+
+    	    	# Generates transformation matrix for transfering atoms to local
+    	    	# reference frame.
+    	    	my ( $transf_matrix ) =
+    	    	    @{ switch_ref_frame( $mid_atom_coord,
+    	    				 $up_atom_coord,
+    	    				 $side_coord,
+    	    				 'global' ) };
+
+    	    	# Decreases bond angle, if lone pairs are present.
+    	    	my $bond_angle;
+    	    	if( $lone_pair_count > 0 ) {
+    	    	    $bond_angle =
+    	    		( 109.5 - $lone_pair_count * 2.5 ) * pi() / 180;
+    	    	} else {
+    	    	    $bond_angle = 109.5 * pi() / 180;
+    	    	}
+
+    	    	# Adds hydrogens according to the quantity of lone pairs.
+    	    	if( scalar( @missing_hydrogens ) >= 3 ) {
+    	    	    ( $hydrogen_coord{$missing_hydrogens[0]} )=
+    	    		@{ mult_matrix_product(
+    	    		       [ $transf_matrix,
+    	    			 [ [ $bond_length * sin( $bond_angle ) ],
+    	    			   [ 0 ],
+    	    			   [ $bond_length * cos( $bond_angle ) ],
+    	    			   [ 1 ] ] ] ) };
+    	    	    shift @missing_hydrogens;
+    	    	}
+
+    	    	if( scalar( @missing_hydrogens ) >= 2 ) {
+    	    	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
+    	    		@{ mult_matrix_product(
+    	    		       [ $transf_matrix,
+    	    			 [ [ $bond_length
+    	    			   * cos( 2 * pi() / 3 )
+    	    		           * sin( $bond_angle ) ],
+    	    			   [ $bond_length
+    	    		           * sin( 2 * pi() / 3 )
+    	    		           * sin( $bond_angle ) ],
+    	    			   [ $bond_length
+    	    		           * cos( $bond_angle ) ],
+    	    			   [ 1 ] ] ] ) };
+    	    	    shift @missing_hydrogens;
+    	    	}
+
+    	    	if( scalar( @missing_hydrogens ) == 1 ) {
+    	    	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
+    	    		@{ mult_matrix_product(
+    	    		       [ $transf_matrix,
+    	    			 [ [ $bond_length
+    	    			   * cos( 4 * pi() / 3 )
+    	    			   * sin( $bond_angle ) ],
+    	    			   [ $bond_length
+    	    		           * sin( 4 * pi() / 3 )
+    	    		           * sin( $bond_angle ) ],
+    	    			   [ $bond_length
+    	    		           * cos( $bond_angle ) ],
+    	    			   [ 1 ] ] ] ) };
+    	    	}
     	    }
 
-# elsif( scalar( @connection_ids ) == 2 ) {
-    	    # 	# Calculates current angle between atoms that are connected to
-    	    # 	# target atom.
-    	    # 	my $up_atom_coord =
-    	    # 	    [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-    	    # 	      $atom_site->{$connection_ids[0]}{"Cartn_y"},
-    	    # 	      $atom_site->{$connection_ids[0]}{"Cartn_z"} ];
-    	    # 	my $mid_atom_coord =
-    	    # 	    [ $atom_site->{$atom_id}{"Cartn_x"},
-    	    # 	      $atom_site->{$atom_id}{"Cartn_y"},
-    	    # 	      $atom_site->{$atom_id}{"Cartn_z"} ];
-    	    # 	my $side_atom_coord =
-    	    # 	    [ $atom_site->{$connection_ids[1]}{"Cartn_x"},
-    	    # 	      $atom_site->{$connection_ids[1]}{"Cartn_y"},
-    	    # 	      $atom_site->{$connection_ids[1]}{"Cartn_z"} ];
-    	    # 	my $bond_angle =
-    	    # 	    bond_angle( [ $up_atom_coord,
-    	    # 			  $mid_atom_coord,
-    	    # 			  $side_atom_coord ] );
+    	} elsif( $hybridization eq "sp2" ) {
+    	    my $bond_length =
+    		$ATOMS{$atom_type}{"covalent_radius"}{"length"}[1]
+    	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
+    	    # Depending on quantity of atoms connections, adds hydrogens.
+    	    if( scalar( @connection_ids ) == 2 ) {
+    	    	# Calculates current angle between atoms that are connected to
+    	    	# target atom.
+		my ( $up_atom_coord,
+		     $mid_atom_coord,
+		     $left_atom_coord ) =
+			 ( $residue_coord{$connection_ids[0]},
+			   $residue_coord{$atom_id},
+			   $residue_coord{$connection_ids[1]} );
 
-    	    # 	my $hydrogen_angle =
-    	    # 	    acos( ( - 4 - 2 * cos( $bond_angle ) ) / 10 );
+    	    	# Generates transformation matrix for transfering atoms to local
+    	    	# reference frame.
+    		my ( $transf_matrix ) =
+    		    @{ switch_ref_frame( $mid_atom_coord,
+    					 $up_atom_coord,
+    					 $left_atom_coord,
+    					 'global' ) };
 
-    	    # 	# Generates transformation matrix for transfering atoms to local
-    	    # 	# reference frame.
-    	    # 	my ( $transf_matrix ) =
-    	    # 	    @{ switch_ref_frame( $mid_atom_coord,
-    	    # 				 $up_atom_coord,
-    	    # 				 $side_atom_coord,
-    	    # 				 'global' ) };
+    		# Calculates angle between two bonds where target atom takes
+    		# part. Then desirable hydrogen angle should be calculated by
+    		# formula:
+    		#
+    		# angle = ( 360 - beta ) / 2
+    		#
+    		# where beta is angle between two given bonds.
+    		my $bond_angle =
+    		    ( 2 * pi() - bond_angle( [ $up_atom_coord,
+    					       $mid_atom_coord,
+    					       $left_atom_coord ] ) )
+    		    / 2;
 
-    	    # 	# Adds hydrogen first to both atoms that have 0 or 1 electron
-    	    # 	# pairs.
-    	    # 	if( scalar( @missing_hydrogens ) >= 1 ) {
-    	    # 	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
-    	    # 		@{ mult_matrix_product(
-    	    # 		       [ $transf_matrix,
-    	    # 			 [ [ $bond_length
-    	    # 			   * cos( 210 * pi() / 180 )
-    	    # 			   * sin( $hydrogen_angle ) ],
-    	    # 			   [ $bond_length
-    	    # 		           * sin( 210 * pi() / 180 )
-    	    # 		           * sin( $hydrogen_angle )],
-    	    # 			   [ $bond_length
-    	    # 		           * cos( $hydrogen_angle )],
-    	    # 			   [ 1 ] ] ] ) };
-    	    # 	    shift @missing_hydrogens;
-    	    # 	}
+    		# Hydrogen is placed by placing hydrogen colinearly and then
+    		# rotating according to bond angle.
+    		( $hydrogen_coord{$missing_hydrogens[0]} ) =
+    		    @{ mult_matrix_product(
+    			   [ $transf_matrix,
+    			     [ [ $bond_length
+    			       * cos( - 0.5 * pi() )
+    			       * sin( $bond_angle ) ],
+    			       [ $bond_length
+    			       * sin( - 0.5 * pi() )
+    			       * sin( $bond_angle ) ],
+    			       [ $bond_length
+    			       * cos( $bond_angle ) ],
+    			       [ 1 ] ] ] ) };
 
-    	    # 	# Additional hydrogen is added only to the atom that has no
-    	    # 	# electron pairs.
-    	    # 	if( scalar( @missing_hydrogens ) == 1 ) {
-    	    # 	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
-    	    # 		@{ mult_matrix_product(
-    	    # 		       [ $transf_matrix,
-    	    # 			 [ [ $bond_length
-    	    # 			   * cos( -30 * pi() / 180 )
-    	    # 			   * sin( $hydrogen_angle ) ],
-    	    # 			   [ $bond_length
-    	    # 		           * sin( -30 * pi() / 180 )
-    	    # 		           * sin( $hydrogen_angle ) ],
-    	    # 			   [ $bond_length
-    	    # 		           * cos( $hydrogen_angle ) ],
-    	    # 			   [ 1 ] ] ] ) };
-    	    # 	}
+    	    } elsif( scalar( @connection_ids ) == 1 ) {
+		my ( $up_atom_coord,
+		     $mid_atom_coord,
+		     $side_coord ) =
+			 ( $residue_coord{$connection_ids[0]},
+			   $residue_coord{$atom_id},
+			   [ $atom_site->{$atom_id}{"Cartn_x"},
+			     $atom_site->{$atom_id}{"Cartn_y"} + 1,
+			     $atom_site->{$atom_id}{"Cartn_z"} ] );
 
-    	    # } elsif( scalar( @connection_ids ) == 1 ) {
-    	    # 	# Calculates current angle between atoms that are connected to
-    	    # 	# target atom.
-    	    # 	my $up_atom_coord =
-    	    # 	    [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-    	    # 	      $atom_site->{$connection_ids[0]}{"Cartn_y"},
-    	    # 	      $atom_site->{$connection_ids[0]}{"Cartn_z"} ];
-    	    # 	my $mid_atom_coord =
-    	    # 	    [ $atom_site->{$atom_id}{"Cartn_x"},
-    	    # 	      $atom_site->{$atom_id}{"Cartn_y"},
-    	    # 	      $atom_site->{$atom_id}{"Cartn_z"} ];
-    	    # 	my $side_coord =
-    	    # 	    [ $atom_site->{$atom_id}{"Cartn_x"},
-    	    # 	      $atom_site->{$atom_id}{"Cartn_y"} + 1,
-    	    # 	      $atom_site->{$atom_id}{"Cartn_z"} ];
+    		# If terminal atom belongs to conjugated system, hydrogens are
+    		# added not to violate rule where atoms should be in one plain.
+    		my @second_neighbours =
+    		    grep { ! /$atom_id/ }
+    		    map { @{ $atom_site->{$_}{"connections"} } }
+    		    @connection_ids;
 
-    	    # 	my ( $transf_matrix ) =
-    	    # 	    @{ switch_ref_frame( $mid_atom_coord,
-    	    # 				 $up_atom_coord,
-    	    # 				 $side_coord,
-    	    # 				 'global' ) };
+    		for my $second_neighbour ( @second_neighbours ) {
+    		    my $second_hybridization =
+    			$HYBRIDIZATION{$residue_name}
+    		                      {$atom_site->{$second_neighbour}
+    				                   {"label_atom_id"}};
+    		    if( $second_hybridization eq "sp2"
+    		     || $second_hybridization eq "sp" ) {
+    			$side_coord =
+    			    [ $atom_site->{$second_neighbour}{"Cartn_x"},
+    			      $atom_site->{$second_neighbour}{"Cartn_y"},
+    			      $atom_site->{$second_neighbour}{"Cartn_z"} ];
+    			last;
+    		    }
+    		}
 
-    	    # 	# Decreases bond angle, if lone pairs are present.
-    	    # 	my $bond_angle;
-    	    # 	if( $lone_pair_count > 0 ) {
-    	    # 	    $bond_angle =
-    	    # 		( 109.5 - $lone_pair_count * 2.5 ) * pi() / 180;
-    	    # 	} else {
-    	    # 	    $bond_angle = 109.5 * pi() / 180;
-    	    # 	}
+    	    	# Generates transformation matrix for transfering atoms to local
+    	    	# reference frame.
+    		my ( $transf_matrix ) =
+    		    @{ switch_ref_frame( $mid_atom_coord,
+    					 $up_atom_coord,
+    					 $side_coord,
+    					 'global' ) };
 
-    	    # 	# Adds hydrogens according to the quantity of lone pairs.
-    	    # 	if( scalar( @missing_hydrogens ) >= 3 ) {
-    	    # 	    ( $hydrogen_coord{$missing_hydrogens[0]} )=
-    	    # 		@{ mult_matrix_product(
-    	    # 		       [ $transf_matrix,
-    	    # 			 [ [ $bond_length * sin( $bond_angle ) ],
-    	    # 			   [ 0 ],
-    	    # 			   [ $bond_length * cos( $bond_angle ) ],
-    	    # 			   [ 1 ] ] ] ) };
-    	    # 	    shift @missing_hydrogens;
-    	    # 	}
+    		if( scalar( @missing_hydrogens ) >= 1 ) {
+    		    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
+    			@{ mult_matrix_product(
+    			       [ $transf_matrix,
+    				 [ [ $bond_length
+    				   * cos( -0.5 * pi() )
+    				   * sin( 120 * pi() / 180 ) ],
+    				   [ $bond_length
+    			           * sin( -0.5 * pi() )
+    			           * sin( 120 * pi() / 180 ) ],
+    				   [ $bond_length
+    			           * cos( 120 * pi() / 180 ) ],
+    				   [ 1 ] ] ] ) };
+    		    shift @missing_hydrogens;
+    		}
 
-    	    # 	if( scalar( @missing_hydrogens ) >= 2 ) {
-    	    # 	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
-    	    # 		@{ mult_matrix_product(
-    	    # 		       [ $transf_matrix,
-    	    # 			 [ [ $bond_length
-    	    # 			   * cos( 120 * pi() / 180 )
-    	    # 		           * sin( $bond_angle ) ],
-    	    # 			   [ $bond_length
-    	    # 		           * sin( 120 * pi() / 180 )
-    	    # 		           * sin( $bond_angle ) ],
-    	    # 			   [ $bond_length
-    	    # 		           * cos( $bond_angle ) ],
-    	    # 			   [ 1 ] ] ] ) };
-    	    # 	    shift @missing_hydrogens;
-    	    # 	}
+    		if( scalar( @missing_hydrogens ) == 1 ) {
+    		    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
+    			@{ mult_matrix_product(
+    			       [ $transf_matrix,
+    				 [ [ $bond_length
+    				   * cos( 0.5 * pi() )
+    				   * sin( 120 * pi() / 180 ) ],
+    				   [ $bond_length
+    			           * sin( 0.5 * pi() )
+    			           * sin( 120 * pi() / 180 ) ],
+    				   [ $bond_length
+    			           * cos( 120 * pi() / 180 ) ],
+    				   [ 1 ] ] ] ) };
+    		}
+    	    }
 
-    	    # 	if( scalar( @missing_hydrogens ) == 1 ) {
-    	    # 	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
-    	    # 		@{ mult_matrix_product(
-    	    # 		       [ $transf_matrix,
-    	    # 			 [ [ $bond_length
-    	    # 			   * cos( 240 * pi() / 180 )
-    	    # 			   * sin( $bond_angle ) ],
-    	    # 			   [ $bond_length
-    	    # 		           * sin( 240 * pi() / 180 )
-    	    # 		           * sin( $bond_angle ) ],
-    	    # 			   [ $bond_length
-    	    # 		           * cos( $bond_angle ) ],
-    	    # 			   [ 1 ] ] ] ) };
-    	    # 	}
-    	    # }
+    	} elsif( $hybridization eq "sp" ) {
+    	    # Calculates length of bonds.
+    	    my $bond_length =
+    	    	$ATOMS{$atom_name}{"covalent_radius"}{"length"}[2]
+    	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
 
+	    my ( $up_atom_coord,
+		 $mid_atom_coord,
+		 $side_coord ) =
+		     ( $residue_coord{$connection_ids[0]},
+		       $residue_coord{$atom_id},
+		       [ $atom_site->{$atom_id}{"Cartn_x"},
+			 $atom_site->{$atom_id}{"Cartn_y"} + 1,
+			 $atom_site->{$atom_id}{"Cartn_z"} ] );
+
+	    # Generates transformation matrix for transfering atoms to local
+	    # reference frame.
+    	    my ( $transf_matrix ) =
+    		@{ switch_ref_frame( $mid_atom_coord,
+    				     $up_atom_coord,
+    				     $side_coord,
+    				     'global' ) };
+
+    	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
+    		@{ matrix_product(
+    		       [ $transf_matrix,
+    			 [ [ 0 ],
+    			   [ 0 ],
+    			   [ - $bond_length ],
+    			   [ 1 ] ] ] ) };
     	}
-# elsif( $hybridization eq "sp2" ) {
-    # 	    my $bond_length =
-    # 		$ATOMS{$atom_type}{"covalent_radius"}{"length"}[1]
-    # 	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
-
-    # 	    # Depending on quantity of atoms connections, adds hydrogens.
-    # 	    if( scalar( @connection_ids ) == 2 ) {
-    # 		my $up_atom_coord =
-    # 		    [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-    # 		      $atom_site->{$connection_ids[0]}{"Cartn_y"},
-    # 		      $atom_site->{$connection_ids[0]}{"Cartn_z"} ];
-    # 		my $mid_atom_coord =
-    # 		    [ $atom_site->{$atom_id}{"Cartn_x"},
-    # 		      $atom_site->{$atom_id}{"Cartn_y"},
-    # 		      $atom_site->{$atom_id}{"Cartn_z"} ];
-    # 		my $side_atom_coord =
-    # 		    [ $atom_site->{$connection_ids[1]}{"Cartn_x"},
-    # 		      $atom_site->{$connection_ids[1]}{"Cartn_y"},
-    # 		      $atom_site->{$connection_ids[1]}{"Cartn_z"} ];
-
-    # 		my ( $transf_matrix ) =
-    # 		    @{ switch_ref_frame( $mid_atom_coord,
-    # 					 $up_atom_coord,
-    # 					 $side_atom_coord,
-    # 					 'global' ) };
-
-    # 		# Calculates angle between two bonds where target atom takes
-    # 		# part. Then desirable hydrogen angle should be calculated by
-    # 		# formula:
-    # 		#
-    # 		# angle = ( 360 - beta ) / 2
-    # 		#
-    # 		# where beta is angle between two given bonds.
-    # 		my $bond_angle =
-    # 		    ( 2 * pi() - bond_angle( [ $up_atom_coord,
-    # 					       $mid_atom_coord,
-    # 					       $side_atom_coord ] ) )
-    # 		    / 2;
-
-    # 		# Hydrogen is placed by placing hydrogen colinearly and then
-    # 		# rotating according to bond angle.
-    # 		( $hydrogen_coord{$missing_hydrogens[0]} ) =
-    # 		    @{ mult_matrix_product(
-    # 			   [ $transf_matrix,
-    # 			     [ [ $bond_length
-    # 			       * cos( -0.5 * pi() )
-    # 			       * sin( $bond_angle ) ],
-    # 			       [ $bond_length
-    # 			       * sin( -0.5 * pi() )
-    # 			       * sin( $bond_angle ) ],
-    # 			       [ $bond_length
-    # 			       * cos( $bond_angle ) ],
-    # 			       [ 1 ] ] ] ) };
-
-    # 	    } elsif( scalar( @connection_ids ) == 1 ) {
-    # 		my $up_atom_coord =
-    # 		    [ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-    # 		      $atom_site->{$connection_ids[0]}{"Cartn_y"},
-    # 		      $atom_site->{$connection_ids[0]}{"Cartn_z"} ];
-    # 		my $mid_atom_coord =
-    # 		    [ $atom_site->{$atom_id}{"Cartn_x"},
-    # 		      $atom_site->{$atom_id}{"Cartn_y"},
-    # 		      $atom_site->{$atom_id}{"Cartn_z"} ];
-    # 		my $side_coord =
-    # 		    [ $atom_site->{$atom_id}{"Cartn_x"},
-    # 		      $atom_site->{$atom_id}{"Cartn_y"} + 1,
-    # 		      $atom_site->{$atom_id}{"Cartn_z"} ];
-
-    # 		# If terminal atom belongs to conjugated system, hydrogens are
-    # 		# added not to violate rule where atoms should be in one plain.
-    # 		my @second_neighbours =
-    # 		    grep { ! /$atom_id/ }
-    # 		    map { @{ $atom_site->{$_}{"connections"} } }
-    # 		    @connection_ids;
-
-    # 		for my $second_neighbour ( @second_neighbours ) {
-    # 		    my $second_hybridization =
-    # 			$HYBRIDIZATION{$residue_name}
-    # 		                      {$atom_site->{$second_neighbour}
-    # 				                   {"label_atom_id"}};
-    # 		    if( $second_hybridization eq "sp2"
-    # 		     || $second_hybridization eq "sp" ) {
-    # 			$side_coord =
-    # 			    [ $atom_site->{$second_neighbour}{"Cartn_x"},
-    # 			      $atom_site->{$second_neighbour}{"Cartn_y"},
-    # 			      $atom_site->{$second_neighbour}{"Cartn_z"} ];
-    # 			last;
-    # 		    }
-    # 		}
-
-    # 		my ( $transf_matrix ) =
-    # 		    @{ switch_ref_frame( $mid_atom_coord,
-    # 					 $up_atom_coord,
-    # 					 $side_coord,
-    # 					 'global' ) };
-
-    # 		if( scalar( @missing_hydrogens ) >= 1 ) {
-    # 		    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
-    # 			@{ mult_matrix_product(
-    # 			       [ $transf_matrix,
-    # 				 [ [ $bond_length
-    # 				   * cos( -0.5 * pi() )
-    # 				   * sin( 120 * pi() / 180 ) ],
-    # 				   [ $bond_length
-    # 			           * sin( -0.5 * pi() )
-    # 			           * sin( 120 * pi() / 180 ) ],
-    # 				   [ $bond_length
-    # 			           * cos( 120 * pi() / 180 ) ],
-    # 				   [ 1 ] ] ] ) };
-    # 		    shift @missing_hydrogens;
-    # 		}
-
-    # 		if( scalar( @missing_hydrogens ) == 1 ) {
-    # 		    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
-    # 			@{ mult_matrix_product(
-    # 			       [ $transf_matrix,
-    # 				 [ [ $bond_length
-    # 				   * cos( 0.5 * pi() )
-    # 				   * sin( 120 * pi() / 180 ) ],
-    # 				   [ $bond_length
-    # 			           * sin( 0.5 * pi() )
-    # 			           * sin( 120 * pi() / 180 ) ],
-    # 				   [ $bond_length
-    # 			           * cos( 120 * pi() / 180 ) ],
-    # 				   [ 1 ] ] ] ) };
-    # 		}
-    # 	    }
-
-    # 	} elsif( $hybridization eq "sp" ) {
-    # 	    # Calculates length of bonds.
-    # 	    my $bond_length =
-    # 	    	$ATOMS{$atom_name}{"covalent_radius"}{"length"}[2]
-    # 	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
-
-    # 	    my $up_atom_coord =
-    # 		[ $atom_site->{$connection_ids[0]}{"Cartn_x"},
-    # 		  $atom_site->{$connection_ids[0]}{"Cartn_y"},
-    # 		  $atom_site->{$connection_ids[0]}{"Cartn_z"} ];
-    # 	    my $mid_atom_coord =
-    # 		[ $atom_site->{$atom_id}{"Cartn_x"},
-    # 		  $atom_site->{$atom_id}{"Cartn_y"},
-    # 		  $atom_site->{$atom_id}{"Cartn_z"} ];
-    # 	    my $side_atom_coord =
-    # 		[ $atom_site->{$atom_id}{"Cartn_x"},
-    # 		  $atom_site->{$atom_id}{"Cartn_y"} + 1,
-    # 		  $atom_site->{$atom_id}{"Cartn_z"} ];
-
-    # 	    my ( $transf_matrix ) =
-    # 		@{ switch_ref_frame( $mid_atom_coord,
-    # 				     $up_atom_coord,
-    # 				     $side_atom_coord,
-    # 				     'global' ) };
-
-    # 	    ( $hydrogen_coord{$missing_hydrogens[0]} ) =
-    # 		@{ matrix_product(
-    # 		       [ $transf_matrix,
-    # 			 [ [ 0 ],
-    # 			   [ 0 ],
-    # 			   [ - $bond_length ],
-    # 			   [ 1 ] ] ] ) };
-    # 	}
 
     	# Each coordinate of atoms is transformed by transformation
     	# matrix and added to %hydrogen_site.
