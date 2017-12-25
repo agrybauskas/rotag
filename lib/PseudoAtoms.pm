@@ -238,13 +238,23 @@ sub generate_library
     	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
     	my $residue_name =
     	    select_atom_data( $residue_site, [ "label_comp_id" ] )->[0][0];
+	my $atom_names =
+	    select_atom_data( $residue_site, [ "label_atom_id" ] );
+
+	# Creates a list of atoms that depend on the rotation of bonds and also
+	# exist in current residue.
+	my @sorted_names;
+	for my $atom_name ( @{ $atom_names } ) {
+	    push( @sorted_names, $atom_name->[0] )
+		if exists $ROTATABLE_BONDS{"$residue_name"}{$atom_name->[0]};
+	}
 
     	# Sorts atom names by the quantity of rotatable bonds described in
     	# ROTATABLE_BONDS.
-    	my @sorted_names =
+    	@sorted_names =
     	    sort{ scalar( @{ $ROTATABLE_BONDS{"$residue_name"}{$a} } )
     	      cmp scalar( @{ $ROTATABLE_BONDS{"$residue_name"}{$b} } ) }
-	    keys %{ $ROTATABLE_BONDS{"$residue_name"} };
+	    @sorted_names;
 
 	# Ignores movable side chain atoms so, iteractions between pseudo atoms
 	# and backbone could be analyzed properly.

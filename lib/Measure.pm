@@ -198,7 +198,8 @@ sub all_dihedral
     	# HACK: chooses atom that is dependent on the greatest quantity of
     	# rotatable bonds. Would not work on modified amino acids.
     	foreach( keys %{ $ROTATABLE_BONDS{$residue_name} } ) {
-    	    if( scalar( @{ $ROTATABLE_BONDS{$residue_name}{$_} } )
+    	    if( %{ filter_atoms( $residue_site, { "label_atom_id" => [ $_ ] } ) }
+	     && scalar( @{ $ROTATABLE_BONDS{$residue_name}{$_} } )
     		> $num_of_bonds ) {
     		$num_of_bonds =
     		    scalar( @{ $ROTATABLE_BONDS{$residue_name}{$_} } );

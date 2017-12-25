@@ -15,6 +15,12 @@ our @EXPORT_OK = qw( %HYBRIDIZATION
 #
 
 our %ROTATABLE_BONDS = (
+    'SER' => {
+	'HB2'  => [ [ 'CA', 'CB' ], [ 'CB', 'HB2' ] ],
+	'HB3'  => [ [ 'CA', 'CB' ], [ 'CB', 'HB3' ] ],
+	'OG'   => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ] ],
+	'HG'   => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ], [ 'OG', 'HG' ] ]
+    },
     'PHE' => {
 	'CD2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD1' ] ],
 	'CE2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD1' ] ],
@@ -51,9 +57,6 @@ our %ROTATABLE_BONDS = (
 	'CD1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG1' ], [ 'CG1', 'CD1' ] ],
 	'CG1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG1' ] ],
 	'CG2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG1' ] ]
-    },
-    'SER' => {
-	'OG'  => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ] ]
     },
     'ARG' => {
 	'CG'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ],
