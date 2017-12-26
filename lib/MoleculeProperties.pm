@@ -16,10 +16,41 @@ our @EXPORT_OK = qw( %HYBRIDIZATION
 
 our %ROTATABLE_BONDS = (
     'SER' => {
-	'HB2'  => [ [ 'CA', 'CB' ], [ 'CB', 'HB2' ] ],
-	'HB3'  => [ [ 'CA', 'CB' ], [ 'CB', 'HB3' ] ],
-	'OG'   => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ] ],
-	'HG'   => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ], [ 'OG', 'HG' ] ]
+	'HB2' => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ] ],
+	'HB3' => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ] ],
+	'OG'  => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ] ],
+	'HG'  => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ], [ 'OG', 'HG' ] ]
+    },
+    'ARG' => {
+	'HB2' => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ] ],
+	'HB3' => [ [ 'CA', 'CB' ], [ 'CB', 'OG' ] ],
+	'CG'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ],
+	'HG2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ] ],
+	'HG3' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ] ],
+	'CD'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ] ],
+	'HD2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ] ],
+	'HD3' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ] ],
+	'NE'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ] ],
+	'HE'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ],
+	'CZ'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ],
+	'NH1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ],
+	'HH11'=> [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ],
+	'HH12'=> [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ],
+	'NH2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ],
+	'HH21'=> [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ]
+    },
+    'HIS' => {
+	'HB2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ],
+	'HB3' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ],
+	'CG'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ],
+	'HD1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
+	'ND1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
+	'HD2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
+	'CD2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
+	'HE1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
+	'CE1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
+	'HE2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
+	'NE2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ]
     },
     'PHE' => {
 	'CD2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD1' ] ],
@@ -57,14 +88,6 @@ our %ROTATABLE_BONDS = (
 	'CD1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG1' ], [ 'CG1', 'CD1' ] ],
 	'CG1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG1' ] ],
 	'CG2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG1' ] ]
-    },
-    'ARG' => {
-	'CG'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ],
-	'CZ'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ],
-	'NE'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ] ],
-	'CD'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ] ],
-	'NH1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ],
-	'NH2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'NE' ], [ 'NE', 'CZ' ] ]
     },
     'MET' => {
 	'CE'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'SD' ], [ 'SD', 'CE' ] ],
@@ -104,13 +127,6 @@ our %ROTATABLE_BONDS = (
     'VAL' => {
 	'CG2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG1' ] ],
 	'CG1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG1' ] ]
-    },
-    'HIS' => {
-	'ND1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
-	'CE1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
-	'CG'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ],
-	'NE2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ],
-	'CD2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'ND1' ] ]
     },
     'LYS' => {
 	'CG'  => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ] ],

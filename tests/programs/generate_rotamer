@@ -18,8 +18,9 @@ my ( $resi_specifier, $angle_values, $pdbx_file ) = @ARGV;
 # Selects atom's data for further analysis.
 my $atom_site = obtain_atom_site( $pdbx_file );
 my $main_chain =
-    filter_atoms( $atom_site,
-		  { "label_atom_id" => [ "N", "CA", "C", "O", "CB" ] } );
+    filter_atoms(
+	$atom_site,
+	{ "label_atom_id" => [ "H", "H2", "N", "HA", "CA", "C", "O", "CB" ] } );
 
 # Parses angles for pseudo-rotamers.
 my $pi = pi();
