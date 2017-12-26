@@ -5,7 +5,8 @@ use warnings;
 
 use lib "../../lib";
 use LinearAlgebra qw( pi );
-use PDBxParser qw( obtain_atom_site );
+use PDBxParser qw( obtain_atom_site
+                   filter_atoms );
 use PseudoAtoms qw( generate_rotamer );
 use SidechainModels qw( rotation_only );
 
@@ -16,6 +17,9 @@ my ( $resi_specifier, $angle_values, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $atom_site = obtain_atom_site( $pdbx_file );
+my $main_chain =
+    filter_atoms( $atom_site,
+		  { "label_atom_id" => [ "N", "CA", "C", "O", "CB" ] } );
 
 # Parses angles for pseudo-rotamers.
 my $pi = pi();
@@ -38,7 +42,7 @@ close( $fh );
 # Creates pseudo-atoms for given analytical equation that describes conformation
 # of atom.
 %{ $atom_site } =
-    ( %{ $atom_site },
+    ( %{ $main_chain },
       %{ generate_rotamer( rotation_only( $atom_site ),
 			   { $resi_specifier => \%angle_values } ) } );
 

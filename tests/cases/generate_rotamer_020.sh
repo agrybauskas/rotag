@@ -1,8 +1,8 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-pdbx_file=../inputs/histidine_004.cif
-target_resi="94"
-angles="chi0 0 & chi1 pi"
+pdbx_file=../inputs/asparagine_020.cif
+target_resi="135"
+angles="chi0 pi & chi1 0"
 
 ../programs/generate_rotamer "${target_resi}" "${angles}" ${pdbx_file}
