@@ -1,0 +1,50 @@
+data_testing
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+
+ATOM 1607  N  N  .  PHE  A  1  246  ?  46.863  -11.209  51.724  1.00  41.41  ?  ?  ?  ?  ?  ?  291  PHE  A  N  1 
+ATOM 1608  C  CA  .  PHE  A  1  246  ?  45.611  -11.319  50.999  1.00  42.34  ?  ?  ?  ?  ?  ?  291  PHE  A  CA  1 
+ATOM 1609  C  C  .  PHE  A  1  246  ?  45.219  -12.790  50.797  1.00  46.87  ?  ?  ?  ?  ?  ?  291  PHE  A  C  1 
+ATOM 1610  O  O  .  PHE  A  1  246  ?  44.029  -13.130  50.829  1.00  51.13  ?  ?  ?  ?  ?  ?  291  PHE  A  O  1 
+ATOM 1611  C  CB  .  PHE  A  1  246  ?  45.673  -10.611  49.656  1.00  39.45  ?  ?  ?  ?  ?  ?  291  PHE  A  CB  1 
+ATOM 1612  C  CG  .  PHE  A  1  246  ?  44.320  -10.410  49.060  1.00  46.56  ?  ?  ?  ?  ?  ?  291  PHE  A  CG  1 
+ATOM 1613  C  CD1  .  PHE  A  1  246  ?  43.433  -9.522  49.651  1.00  50.17  ?  ?  ?  ?  ?  ?  291  PHE  A  CD1  1 
+ATOM 1614  C  CD2  .  PHE  A  1  246  ?  43.906  -11.131  47.952  1.00  51.72  ?  ?  ?  ?  ?  ?  291  PHE  A  CD2  1 
+ATOM 1615  C  CE1  .  PHE  A  1  246  ?  42.167  -9.337  49.140  1.00  47.75  ?  ?  ?  ?  ?  ?  291  PHE  A  CE1  1 
+ATOM 1616  C  CE2  .  PHE  A  1  246  ?  42.632  -10.942  47.430  1.00  50.39  ?  ?  ?  ?  ?  ?  291  PHE  A  CE2  1 
+ATOM 1617  C  CZ  .  PHE  A  1  246  ?  41.766  -10.052  48.029  1.00  50.59  ?  ?  ?  ?  ?  ?  291  PHE  A  CZ  1 
+ATOM 1618  H  H  .  PHE  A  1  246  .  47.309  -10.344  51.419  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1619  H  H2  .  PHE  A  1  246  .  47.420  -12.029  51.483  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1620  H  HA  .  PHE  A  1  246  .  44.857  -10.841  51.589  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1621  H  HB2  .  PHE  A  1  246  .  46.255  -11.201  48.979  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1622  H  HB3  .  PHE  A  1  246  .  46.128  -9.652  49.790  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1623  H  HD1  .  PHE  A  1  246  .  43.728  -8.988  50.493  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1624  H  HD2  .  PHE  A  1  246  .  44.551  -11.816  47.509  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1625  H  HE1  .  PHE  A  1  246  .  41.516  -8.662  49.589  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1626  H  HE2  .  PHE  A  1  246  .  42.332  -11.472  46.587  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 1627  H  HZ  .  PHE  A  1  246  .  40.809  -9.919  47.643  .  .  .  .  .  .  .  .  .  .  .  .  . 

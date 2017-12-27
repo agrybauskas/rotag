@@ -1,0 +1,46 @@
+data_testing
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+
+ATOM 777  N  N  .  VAL  A  1  100  ?  18.644  -6.086  59.688  1.00  41.49  ?  ?  ?  ?  ?  ?  145  VAL  A  N  1 
+ATOM 778  C  CA  .  VAL  A  1  100  ?  17.670  -5.078  59.320  1.00  37.14  ?  ?  ?  ?  ?  ?  145  VAL  A  CA  1 
+ATOM 779  C  C  .  VAL  A  1  100  ?  18.134  -4.373  58.045  1.00  35.23  ?  ?  ?  ?  ?  ?  145  VAL  A  C  1 
+ATOM 780  O  O  .  VAL  A  1  100  ?  17.344  -4.202  57.114  1.00  35.69  ?  ?  ?  ?  ?  ?  145  VAL  A  O  1 
+ATOM 781  C  CB  .  VAL  A  1  100  ?  17.442  -4.057  60.447  1.00  46.45  ?  ?  ?  ?  ?  ?  145  VAL  A  CB  1 
+ATOM 782  C  CG1  .  VAL  A  1  100  ?  16.551  -2.913  59.956  1.00  43.21  ?  ?  ?  ?  ?  ?  145  VAL  A  CG1  1 
+ATOM 783  C  CG2  .  VAL  A  1  100  ?  16.837  -4.744  61.698  1.00  31.38  ?  ?  ?  ?  ?  ?  145  VAL  A  CG2  1 
+ATOM 784  H  H  .  VAL  A  1  100  .  19.566  -5.687  59.515  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 785  H  H2  .  VAL  A  1  100  .  18.467  -6.900  59.100  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 786  H  HA  .  VAL  A  1  100  .  16.737  -5.567  59.134  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 787  H  HB  .  VAL  A  1  100  .  18.390  -3.645  60.724  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 788  H  HG11  .  VAL  A  1  100  .  16.830  -2.646  58.958  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 789  H  HG12  .  VAL  A  1  100  .  16.671  -2.066  60.598  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 790  H  HG13  .  VAL  A  1  100  .  15.528  -3.227  59.968  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 791  H  HG21  .  VAL  A  1  100  .  15.790  -4.902  61.547  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 792  H  HG22  .  VAL  A  1  100  .  16.983  -4.119  62.554  .  .  .  .  .  .  .  .  .  .  .  .  . 
+ATOM 793  H  HG23  .  VAL  A  1  100  .  17.320  -5.685  61.857  .  .  .  .  .  .  .  .  .  .  .  .  . 
