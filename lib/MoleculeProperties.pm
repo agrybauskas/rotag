@@ -8,10 +8,13 @@ our @EXPORT_OK = qw( %HYBRIDIZATION
                      %HYDROGEN_NAMES
                      %ROTATABLE_BONDS );
 
+use AtomProperties qw( %ATOMS );
+
 # ------------------------------- Molecule properties ------------------------- #
 
 #
-# Stores molecule properties, such as rotatable bonds of certain sidechains.
+# Stores molecule properties, such as rotatable bonds of certain sidechains,
+# hybridization angles, hydrogen names for specific residues.
 #
 
 our %ROTATABLE_BONDS = (
@@ -222,6 +225,219 @@ our %ROTATABLE_BONDS = (
 	'NE2' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'OE1' ] ],
 	'OE1' => [ [ 'CA', 'CB' ], [ 'CB', 'CG' ], [ 'CG', 'CD' ], [ 'CD', 'OE1' ] ]
     },
+);
+
+our %BOND_TYPE = (
+    'single' => {
+	'H' => {
+	    'H' => {
+		'min_length' => 2 * ( $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+				    - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
+		'max_length' => 2 * ( $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+				    + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] )
+	    },
+	    'C' => {
+		'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
+	    },
+	    'N' => {
+		'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
+	    },
+	    'O' => {
+		'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
+	    },
+	    'S' => {
+		'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0]
+	    }
+	},
+	'C' => {
+	    'C' => {
+		'min_length' => 2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+				    - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
+		'max_length' => 2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+				    + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] )
+	    },
+	    'N' => {
+		'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
+	    },
+	    'O' => {
+		'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
+	    },
+	    'S' => {
+		'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0]
+	    }
+	},
+	'N' => {
+	    'N' => {
+		'min_length' => 2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+				    - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
+		'max_length' => 2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+				    + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] )
+	    },
+	    'O' => {
+		'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
+	    },
+	    'S' => {
+		'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0]
+	    }
+	},
+	'O' => {
+	    'O' => {
+		'min_length' => 2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+				    - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
+		'max_length' => 2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+				    + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] )
+	    },
+	    'S' => {
+		'min_length' => $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+		              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
+		              - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+		'max_length' => $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+		              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
+		              + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0]
+	    }
+	},
+	'S' => {
+	    'S' => {
+		'min_length' => 2 * ( $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+				    - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
+		'max_length' => 2 * ( $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
+				    + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0] )
+	    }
+	}
+    },
+
+    'double' => {
+	'C' => {
+	    'C' => {
+		'min_length' => 2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
+				    - $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
+		'max_length' => 2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
+				    + $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] )
+	    },
+	    'N' => {
+		'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
+		              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[1]
+		              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
+		'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[1]
+		              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[1]
+	    },
+	    'O' => {
+		'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
+		              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[1]
+		              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+		'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[1]
+		              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[1]
+	    }
+	},
+	'N' => {
+	    'N' => {
+		'min_length' => 2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
+				    - $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
+		'max_length' => 2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
+				    + $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] )
+	    },
+	    'O' => {
+		'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
+		              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[1]
+		              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+		'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
+		              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[1]
+		              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[1]
+	    }
+	},
+	'O' => {
+	    'O' => {
+		'min_length' => 2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
+				    - $ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
+		'max_length' => 2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
+				    + $ATOMS{'O'}{'covalent_radius'}{'error'}->[1] )
+	    }
+	}
+    },
+
+    'triple' => {
+	'C' => {
+	    'C' => {
+		'min_length' => 2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[2]
+				    - $ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
+		'max_length' => 2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[2]
+				    + $ATOMS{'C'}{'covalent_radius'}{'error'}->[2] )
+	    }
+	}
+    }
 );
 
 our %HYBRIDIZATION = (
