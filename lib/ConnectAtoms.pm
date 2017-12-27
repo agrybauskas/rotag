@@ -8,10 +8,13 @@ our @EXPORT_OK = qw( bond_type
                      connect_atoms
                      create_box
                      grid_box
+                     hybridization
                      is_connected
                      is_second_neighbour );
 
-use List::Util qw( max min );
+use List::Util qw( any
+                   max
+                   min );
 
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
@@ -221,7 +224,9 @@ sub bond_type
     my $target_atom_type = $target_atom->{"type_symbol"};
     my $neighbour_atom_type = $neighbour_atom->{"type_symbol"};
 
-    # Precalculates squared distance between atom pairs.
+    # Precalculates squared distance between atom pairs. Delocalized bonds are
+    # described by double or triple bond.
+    # TODO: investigate, if this delocalized bond simplification can be made.
     my $squared_distance =
     	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
       + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
@@ -258,6 +263,35 @@ sub bond_type
 	    }
 	}
     }
+}
+
+sub hybridization
+{
+    # Use connect_atoms before using hybridization function.
+    my ( $atom_site ) = @_;
+
+    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+	# Determines every type of connection.
+	my @bond_types;
+	for my $connection_id ( @{ $atom_site->{$atom_id}{"connections"} } ) {
+	    push( @bond_types,
+		  bond_type( $atom_site->{$atom_id},
+			     $atom_site->{$connection_id} ) );
+	}
+
+	# Depending on connections, assigns hybridization type.
+	# TODO: check more possibilities of different bonds and their
+	# combinations.
+	if( any { $_ eq "double" } @bond_types ) {
+	    $atom_site->{$atom_id}{"hybridization"} = "sp2";
+	} elsif( any { $_ eq "triple" } @bond_types ) {
+	    $atom_site->{$atom_id}{"hybridization"} = "sp";
+	} else {
+	    $atom_site->{$atom_id}{"hybridization"} = "sp3";
+	}
+    }
+
+    return $atom_site;
 }
 
 #

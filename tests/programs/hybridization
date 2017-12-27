@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib";
+use PDBxParser qw( obtain_atom_site );
+use ConnectAtoms qw( connect_atoms
+                     hybridization );
+
+#
+# Unit test: ConnectAtoms::hybridization
+#
+# Example: ./hybridization example.cif
+#
+
+my ( $pdbx_file ) = @ARGV;
+
+# Selects atom's data for further analysis.
+my $atom_site = obtain_atom_site( $pdbx_file );
+
+my %connected_atoms = %{ connect_atoms( $atom_site ) };
+hybridization( \%connected_atoms );
+
+for my $atom_id ( sort keys %connected_atoms ) {
+    print( $connected_atoms{$atom_id}{"label_atom_id"}, "\t",
+	   $connected_atoms{$atom_id}{"hybridization"}, "\n" );
+}
