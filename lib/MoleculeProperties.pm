@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( %HYBRIDIZATION
+our @EXPORT_OK = qw( %BOND_TYPES
+                     %HYBRIDIZATION
                      %HYDROGEN_NAMES
                      %ROTATABLE_BONDS );
 
@@ -227,7 +228,7 @@ our %ROTATABLE_BONDS = (
     },
 );
 
-our %BOND_TYPE = (
+our %BOND_TYPES = (
     'single' => {
 	'H' => {
 	    'H' => {
@@ -370,7 +371,6 @@ our %BOND_TYPE = (
 	    }
 	}
     },
-
     'double' => {
 	'C' => {
 	    'C' => {
@@ -427,7 +427,6 @@ our %BOND_TYPE = (
 	    }
 	}
     },
-
     'triple' => {
 	'C' => {
 	    'C' => {

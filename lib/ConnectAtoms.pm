@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( connect_atoms
+our @EXPORT_OK = qw( bond_type
+                     connect_atoms
                      create_box
                      grid_box
                      is_connected
@@ -15,6 +16,7 @@ use List::Util qw( max min );
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use PDBxParser qw( select_atom_data );
+use MoleculeProperties qw( %BOND_TYPES );
 
 # ------------------------------ Connect atoms ------------------------------- #
 
@@ -210,6 +212,52 @@ sub is_second_neighbour
     } last if $is_sec_neighbour == 1; }
 
     return $is_sec_neighbour;
+}
+
+sub bond_type
+{
+    my ( $target_atom, $neighbour_atom ) = @_;
+
+    my $target_atom_type = $target_atom->{"type_symbol"};
+    my $neighbour_atom_type = $neighbour_atom->{"type_symbol"};
+
+    # Precalculates squared distance between atom pairs.
+    my $squared_distance =
+    	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
+      + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
+
+    for my $bond_type ( keys %BOND_TYPES ) {
+	if( exists $BOND_TYPES{$bond_type}
+	                      {$target_atom_type}
+	                      {$neighbour_atom_type}
+	 || exists $BOND_TYPES{$bond_type}
+	                      {$neighbour_atom_type}
+	                      {$target_atom_type} ) {
+	    my $bond_length_min = $BOND_TYPES{$bond_type}
+	                                     {$target_atom_type}
+                                	     {$neighbour_atom_type}
+    	                                     {"min_length"}
+    	                       || $BOND_TYPES{$bond_type}
+                                 	     {$neighbour_atom_type}
+                                	     {$target_atom_type}
+    	                                     {"min_length"};
+	    my $bond_length_max = $BOND_TYPES{$bond_type}
+                                 	     {$target_atom_type}
+                                	     {$neighbour_atom_type}
+    	                                     {"max_length"}
+    	                       || $BOND_TYPES{$bond_type}
+                                 	     {$neighbour_atom_type}
+                                	     {$target_atom_type}
+    	                                     {"max_length"};
+
+	    if( ( $squared_distance >  $bond_length_min**2 )
+	     && ( $squared_distance <= $bond_length_max**2 ) ) {
+	    	return $bond_type;
+	    	last;
+	    }
+	}
+    }
 }
 
 #
