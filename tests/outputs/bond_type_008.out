@@ -1,0 +1,10 @@
+3010 N: 3012 CA: single
+3012 CA: 3010 N: single
+3012 CA: 3014 C: single
+3012 CA: 3018 CB: single
+3014 C: 3012 CA: single
+3014 C: 3016 O: double
+3016 O: 3014 C: double
+3018 CB: 3012 CA: single
+3018 CB: 3020 SG: single
+3020 SG: 3018 CB: single

@@ -1,0 +1,14 @@
+8481 N: 8482 CA: single
+8482 CA: 8481 N: single
+8482 CA: 8483 C: single
+8482 CA: 8485 CB: single
+8483 C: 8482 CA: single
+8483 C: 8484 O: double
+8484 O: 8483 C: double
+8485 CB: 8482 CA: single
+8485 CB: 8486 CG1: single
+8485 CB: 8487 CG2: single
+8486 CG1: 8485 CB: single
+8486 CG1: 8488 CD1: single
+8487 CG2: 8485 CB: single
+8488 CD1: 8486 CG1: single

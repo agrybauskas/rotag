@@ -1,0 +1,12 @@
+777 N: 778 CA: single
+778 CA: 777 N: single
+778 CA: 779 C: single
+778 CA: 781 CB: single
+779 C: 778 CA: single
+779 C: 780 O: double
+780 O: 779 C: double
+781 CB: 778 CA: single
+781 CB: 782 CG1: single
+781 CB: 783 CG2: single
+782 CG1: 781 CB: single
+783 CG2: 781 CB: single

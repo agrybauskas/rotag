@@ -1,0 +1,6 @@
+40 N: 41 CA: single
+41 CA: 40 N: single
+41 CA: 42 C: single
+42 C: 41 CA: single
+42 C: 43 O: double
+43 O: 42 C: double

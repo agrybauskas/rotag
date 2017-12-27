@@ -1,0 +1,8 @@
+154 N: 155 CA: single
+155 CA: 154 N: single
+155 CA: 156 C: single
+155 CA: 158 CB: single
+156 C: 155 CA: single
+156 C: 157 O: double
+157 O: 156 C: double
+158 CB: 155 CA: single

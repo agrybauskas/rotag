@@ -1,0 +1,16 @@
+8641 N: 8642 CA: single
+8642 CA: 8641 N: single
+8642 CA: 8643 C: single
+8642 CA: 8645 CB: single
+8643 C: 8642 CA: single
+8643 C: 8644 O: double
+8644 O: 8643 C: double
+8645 CB: 8642 CA: single
+8645 CB: 8646 CG: single
+8646 CG: 8645 CB: single
+8646 CG: 8647 CD: single
+8647 CD: 8646 CG: single
+8647 CD: 8648 CE: single
+8648 CE: 8647 CD: single
+8648 CE: 8649 NZ: single
+8649 NZ: 8648 CE: single

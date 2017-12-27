@@ -13,6 +13,7 @@ our @EXPORT_OK = qw( %ATOMS );
 # radii and bond length.
 #
 
+# TODO: should determine covalent radii by investigating amino acid structures.
 our %ATOMS = (
     "." => { # Placeholder atom, point in space.
 	     "covalent_radius" => {
@@ -27,7 +28,7 @@ our %ATOMS = (
     "H" => {
 	     "covalent_radius" => {
 		                    "length"    => [ 0.31 ],
-				    "error"     => [ 0.15 ]
+				    "error"     => [ 0.05 ]
 				  },
 	     "lone_pairs" => 0,
 	     "vdw_radius" => 1.2,
@@ -36,8 +37,8 @@ our %ATOMS = (
            },
     "C" => {
 	     "covalent_radius" => {
-		                    "length"    => [ 0.76, 0.73, 0.69 ],
-				    "error"     => [ 0.03, 0.06, 0.03 ]
+		                    "length"    => [ 0.76, 0.70, 0.64 ],
+				    "error"     => [ 0.03, 0.03, 0.03 ]
 				  },
 	     "lone_pairs" => 0,
 	     "vdw_radius" => 1.77,
@@ -46,8 +47,8 @@ our %ATOMS = (
            },
     "N" => {
 	     "covalent_radius" => {
-		                    "length"    => [ 0.71, 0.6 ],
-				    "error"     => [ 0.03, 0.03 ]
+		                    "length"    => [ 0.71, 0.60 ],
+				    "error"     => [ 0.02, 0.06 ]
 				  },
 	     "lone_pairs" => 1,
 	     "vdw_radius" => 1.66,
@@ -57,7 +58,7 @@ our %ATOMS = (
     "O" => {
 	     "covalent_radius" => {
 		                    "length"    => [ 0.66, 0.57 ],
-				    "error"     => [ 0.06, 0.06 ]
+				    "error"     => [ 0.02, 0.07 ]
 				  },
 	     "lone_pairs" => 2,
 	     "vdw_radius" => 1.5,
@@ -67,7 +68,7 @@ our %ATOMS = (
     "S" => {
 	     "covalent_radius" => {
 		                    "length"    => [ 1.05 ],
-				    "error"     => [ 0.09 ]
+				    "error"     => [ 0.03 ]
 				  },
 	     "lone_pairs" => 2,
 	     "vdw_radius" => 1.89,
@@ -77,7 +78,7 @@ our %ATOMS = (
     "P" => {
 	     "covalent_radius" => {
 		                    "length"    => [ 1.07 ],
-				    "error"     => [ 0.09 ]
+				    "error"     => [ 0.03 ]
 				  },
 	     "lone_pairs" => 0,
 	     "vdw_radius" => 1.9,

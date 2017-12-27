@@ -1,1 +1,10 @@
-# Placeholder for future data.
+147 N: 148 CA: single
+148 CA: 147 N: single
+148 CA: 149 C: single
+148 CA: 151 CB: single
+149 C: 148 CA: single
+149 C: 150 O: double
+150 O: 149 C: double
+151 CB: 148 CA: single
+151 CB: 152 OG: single
+152 OG: 151 CB: single

@@ -1,0 +1,14 @@
+3847 N: 3848 CA: single
+3848 CA: 3847 N: single
+3848 CA: 3849 C: single
+3848 CA: 3851 CB: single
+3849 C: 3848 CA: single
+3849 C: 3850 O: double
+3850 O: 3849 C: double
+3851 CB: 3848 CA: single
+3851 CB: 3852 CG: single
+3852 CG: 3851 CB: single
+3852 CG: 3853 SD: single
+3853 SD: 3852 CG: single
+3853 SD: 3854 CE: single
+3854 CE: 3853 SD: single

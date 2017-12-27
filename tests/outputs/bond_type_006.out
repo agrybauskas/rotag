@@ -1,0 +1,14 @@
+1408 N: 1409 CA: single
+1409 CA: 1408 N: single
+1409 CA: 1410 C: single
+1409 CA: 1412 CB: single
+1410 C: 1409 CA: single
+1410 C: 1411 O: double
+1411 O: 1410 C: double
+1412 CB: 1409 CA: single
+1412 CB: 1413 CG: single
+1413 CG: 1412 CB: single
+1413 CG: 1414 OD1: double
+1413 CG: 1415 OD2: double
+1414 OD1: 1413 CG: double
+1415 OD2: 1413 CG: double

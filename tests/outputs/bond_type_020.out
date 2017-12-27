@@ -1,0 +1,14 @@
+971 N: 972 CA: single
+972 CA: 971 N: single
+972 CA: 973 C: single
+972 CA: 975 CB: single
+973 C: 972 CA: single
+973 C: 974 O: double
+974 O: 973 C: double
+975 CB: 972 CA: single
+975 CB: 976 CG: single
+976 CG: 975 CB: single
+976 CG: 977 OD1: double
+976 CG: 978 ND2: double
+977 OD1: 976 CG: double
+978 ND2: 976 CG: double
