@@ -10,7 +10,8 @@ our @EXPORT_OK = qw( bond_type
                      grid_box
                      hybridization
                      is_connected
-                     is_second_neighbour );
+                     is_second_neighbour
+                     rotatable_bonds );
 
 use List::Util qw( any
                    max
@@ -19,8 +20,9 @@ use List::Util qw( any
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use PDBxParser qw( select_atom_data );
+use LinearAlgebra qw( flatten );
 use MoleculeProperties qw( %BOND_TYPES );
-
+use Data::Dumper;
 # ------------------------------ Connect atoms ------------------------------- #
 
 #
@@ -292,6 +294,12 @@ sub hybridization
     }
 
     return $atom_site;
+}
+
+sub rotatable_bonds
+{
+    my ( $atom_site, $start_atom_id ) = @_;
+
 }
 
 #

@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib";
+use PDBxParser qw( filter_atoms
+                   obtain_atom_site );
+use ConnectAtoms qw( connect_atoms
+                     hybridization
+                     rotatable_bonds );
+use LinearAlgebra qw( flatten );
+
+use lib "../lib";
+use Utils qw( select_atom_data );
+
+#
+# Unit test: ConnectAtoms::rotatable_bonds
+#
+# Example: ./rotatable_bonds example.cif "label_atom_id CA"
+#
+
+my ( $atom_specifier, $pdbx_file ) = @ARGV;
+
+# Selects atom's data for further analysis.
+my $atom_site = obtain_atom_site( $pdbx_file );
+
+my $atom_ids =
+    flatten( [ select_atom_data( $pdbx_file, "group_PDB ATOM", "id" ) ] );
+my $start_atom_id =
+    ( select_atom_data( $pdbx_file, $atom_specifier, "id" ) )->[0][0];
+my $main_chain_ids =
+    flatten( [ select_atom_data( $pdbx_file, "label_atom_id N,C,O", "id" ) ] );
+my @side_chain_ids;
+for my $atom_id ( @{ $atom_ids } ) {
+    push( @side_chain_ids, $atom_id )
+	if ! grep { $atom_id eq $_ } @{ $main_chain_ids };
+}
+
+my $side_chain_site =
+    filter_atoms( $atom_site, { "id" => \@side_chain_ids } );
+
+my %connected_atoms = %{ connect_atoms( $side_chain_site ) };
+
+hybridization( \%connected_atoms );
+
+rotatable_bonds( \%connected_atoms, $start_atom_id );
