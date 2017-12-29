@@ -302,23 +302,51 @@ sub rotatable_bonds
     $visited_atom_ids //= [];
     $rotatable_bonds //= {};
 
+    my $last_atom_id = $visited_atom_ids->[$#{ $visited_atom_ids }];
+
+    my $start_atom_name =
+	$atom_site->{$start_atom_id}{"label_atom_id"};
+    my $last_atom_name =
+	$atom_site->{$last_atom_id}{"label_atom_id"} if defined $last_atom_id;
+
     # Generates a list of atom connections.
     my @neighbour_ids = @{ $atom_site->{$start_atom_id}{"connections"} };
 
     # Iterates through atoms that target atom is connected to.
     for my $neighbour_id ( @neighbour_ids ) {
+	my $neighbour_name = $atom_site->{$start_atom_id}{"label_atom_id"};
 	# Because this function is recursive, it checks if neighbour of target
 	# atom was previously visited. If not, it jumps to neighbouring atom.
 	if( ! any { $neighbour_id eq $_ } @{ $visited_atom_ids } ) {
+	    # Checks if last visited atom is sp, sp2 or sp3. If it is sp or sp2,
+	    # then current atom inherits rotatable bonds from last visited atom.
+	    # If it is sp3, then it inherits and adds current bond as rotatable.
+	    if( $last_atom_id
+	     && $atom_site->{$last_atom_id}{"hybridization"} eq "sp3" ) {
+		$rotatable_bonds->{$start_atom_name} =
+		    $rotatable_bonds->{$last_atom_name};
+		push( @{ $rotatable_bonds->{$start_atom_name} },
+		      [ $last_atom_name, $start_atom_name ] );
+	    } elsif( $last_atom_id ) {
+		$rotatable_bonds->{$start_atom_name} =
+		    $rotatable_bonds->{$last_atom_name};
+	    }
+
+	    # print $atom_site->{$start_atom_id}{"label_atom_id"}, "--",
+	    # 	$atom_site->{$neighbour_id}{"label_atom_id"}, "\n";
+
 	    # Marks current (target) atom as visited.
 	    push( @{ $visited_atom_ids }, $start_atom_id );
 
 	    # Jumps to next atom.
 	    rotatable_bonds( $atom_site,
 			     $neighbour_id,
-			     $visited_atom_ids );
+			     $visited_atom_ids,
+			     $rotatable_bonds );
 	}
     }
+
+    return $rotatable_bonds;
 }
 
 #
