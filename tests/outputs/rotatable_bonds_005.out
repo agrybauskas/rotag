@@ -1,1 +1,5 @@
-# Placeholder for future data.
+CB: CA,CB 
+CD: CA,CB CB,CG CG,CD 
+CE: CA,CB CB,CG CG,CD CD,CE 
+CG: CA,CB CB,CG 
+NZ: CA,CB CB,CG CG,CD CD,CE CE,NZ 

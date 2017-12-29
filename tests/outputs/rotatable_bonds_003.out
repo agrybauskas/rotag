@@ -1,1 +1,7 @@
-# Placeholder for future data.
+CB: CA,CB 
+CD: CA,CB CB,CG CG,CD 
+CG: CA,CB CB,CG 
+CZ: CA,CB CB,CG CG,CD CD,NE 
+NE: CA,CB CB,CG CG,CD CD,NE 
+NH1: CA,CB CB,CG CG,CD CD,NE 
+NH2: CA,CB CB,CG CG,CD CD,NE 

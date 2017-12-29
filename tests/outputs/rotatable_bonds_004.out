@@ -1,1 +1,6 @@
-# Placeholder for future data.
+CB: CA,CB 
+CD2: CA,CB CB,CG 
+CE1: CA,CB CB,CG 
+CG: CA,CB CB,CG 
+ND1: CA,CB CB,CG 
+NE2: CA,CB CB,CG 
