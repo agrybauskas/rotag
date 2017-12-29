@@ -298,8 +298,27 @@ sub hybridization
 
 sub rotatable_bonds
 {
-    my ( $atom_site, $start_atom_id ) = @_;
+    my ( $atom_site, $start_atom_id, $visited_atom_ids, $rotatable_bonds ) = @_;
+    $visited_atom_ids //= [];
+    $rotatable_bonds //= {};
 
+    # Generates a list of atom connections.
+    my @neighbour_ids = @{ $atom_site->{$start_atom_id}{"connections"} };
+
+    # Iterates through atoms that target atom is connected to.
+    for my $neighbour_id ( @neighbour_ids ) {
+	# Because this function is recursive, it checks if neighbour of target
+	# atom was previously visited. If not, it jumps to neighbouring atom.
+	if( ! any { $neighbour_id eq $_ } @{ $visited_atom_ids } ) {
+	    # Marks current (target) atom as visited.
+	    push( @{ $visited_atom_ids }, $start_atom_id );
+
+	    # Jumps to next atom.
+	    rotatable_bonds( $atom_site,
+			     $neighbour_id,
+			     $visited_atom_ids );
+	}
+    }
 }
 
 #
