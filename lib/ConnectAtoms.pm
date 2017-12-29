@@ -13,6 +13,7 @@ our @EXPORT_OK = qw( bond_type
                      is_second_neighbour
                      rotatable_bonds );
 
+use List::MoreUtils qw( uniq );
 use List::Util qw( any
                    max
                    min );
@@ -298,55 +299,64 @@ sub hybridization
 
 sub rotatable_bonds
 {
-    my ( $atom_site, $start_atom_id, $visited_atom_ids, $rotatable_bonds ) = @_;
-    $visited_atom_ids //= [];
-    $rotatable_bonds //= {};
+    my ( $atom_site, $start_atom_id ) = @_;
 
-    my $last_atom_id = $visited_atom_ids->[$#{ $visited_atom_ids }];
+    my @visited_atom_ids;
+    my @next_atom_ids = ( $start_atom_id );
+    my %rotatable_bonds;
 
-    my $start_atom_name =
-	$atom_site->{$start_atom_id}{"label_atom_id"};
-    my $last_atom_name =
-	$atom_site->{$last_atom_id}{"label_atom_id"} if defined $last_atom_id;
+    # Exists if there are no atoms that is not already visited.
+    while( scalar( @next_atom_ids ) != 0 ) {
+	# If it is first atom, goes to the next one.
+	if( ! @visited_atom_ids ) {
+	    # Marks visited atom.
+	    push( @visited_atom_ids, $start_atom_id );
 
-    # Generates a list of atom connections.
-    my @neighbour_ids = @{ $atom_site->{$start_atom_id}{"connections"} };
+	    # Marks atoms that should be visited (atoms that current atom is
+	    # connected to).
+	    @next_atom_ids = @{ $atom_site->{$start_atom_id}{"connections"} };
+	} else {
+	    # Iterates through every neighbouring atom if it was not visited
+	    # before.
+	    my $last_atom_id = $visited_atom_ids[$#visited_atom_ids];
+	    my $last_atom_name = $atom_site->{$last_atom_id}{"label_atom_id"};
+	    my @neighbour_atom_ids;
 
-    # Iterates through atoms that target atom is connected to.
-    for my $neighbour_id ( @neighbour_ids ) {
-	my $neighbour_name = $atom_site->{$start_atom_id}{"label_atom_id"};
-	# Because this function is recursive, it checks if neighbour of target
-	# atom was previously visited. If not, it jumps to neighbouring atom.
-	if( ! any { $neighbour_id eq $_ } @{ $visited_atom_ids } ) {
-	    # Checks if last visited atom is sp, sp2 or sp3. If it is sp or sp2,
-	    # then current atom inherits rotatable bonds from last visited atom.
-	    # If it is sp3, then it inherits and adds current bond as rotatable.
-	    if( $last_atom_id
-	     && $atom_site->{$last_atom_id}{"hybridization"} eq "sp3" ) {
-		$rotatable_bonds->{$start_atom_name} =
-		    $rotatable_bonds->{$last_atom_name};
-		push( @{ $rotatable_bonds->{$start_atom_name} },
-		      [ $last_atom_name, $start_atom_name ] );
-	    } elsif( $last_atom_id ) {
-		$rotatable_bonds->{$start_atom_name} =
-		    $rotatable_bonds->{$last_atom_name};
+	    for my $atom_id ( @next_atom_ids ) {
+		my $atom_name = $atom_site->{$atom_id}{"label_atom_id"};
+
+		if( $atom_site->{$last_atom_id}{"hybridization"} eq "sp3" ) {
+		    # If last visited atom was sp3, then rotatable bonds from
+		    # previous atom are copied and the new one is appended.
+		    $rotatable_bonds{$atom_name} =
+			$rotatable_bonds{$last_atom_name};
+		    push( @{ $rotatable_bonds{$atom_name} },
+			  [ $last_atom_name, $atom_name ] );
+		} else {
+		    # If last visited atom is sp2 or sp, inherits its rotatable
+		    # bonds, because double or triple bonds do not rotate.
+		    $rotatable_bonds{$atom_name} =
+			$rotatable_bonds{$last_atom_name};
+		}
+
+		# Marks visited atoms.
+		push( @visited_atom_ids, $atom_id );
+
+		# Marks neighbouring atoms.
+		push( @neighbour_atom_ids,
+		      @{ $atom_site->{$atom_id}{"connections"} } );
 	    }
 
-	    # print $atom_site->{$start_atom_id}{"label_atom_id"}, "--",
-	    # 	$atom_site->{$neighbour_id}{"label_atom_id"}, "\n";
-
-	    # Marks current (target) atom as visited.
-	    push( @{ $visited_atom_ids }, $start_atom_id );
-
-	    # Jumps to next atom.
-	    rotatable_bonds( $atom_site,
-			     $neighbour_id,
-			     $visited_atom_ids,
-			     $rotatable_bonds );
+	    # Determines next atoms that should be visited.
+	    @next_atom_ids = (); # Resets value for the new ones to be appended.
+	    for my $atom_id ( uniq @neighbour_atom_ids ) {
+		push( @next_atom_ids, $atom_id )
+		    if ! grep { $atom_id eq $_ } @visited_atom_ids;
+	    }
 	}
     }
 
-    return $rotatable_bonds;
+    return \%rotatable_bonds;
 }
 
 #
