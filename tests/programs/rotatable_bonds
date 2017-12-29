@@ -44,4 +44,12 @@ my %connected_atoms = %{ connect_atoms( $side_chain_site ) };
 
 hybridization( \%connected_atoms );
 
-rotatable_bonds( \%connected_atoms, $start_atom_id );
+my %rotatable_bonds = %{ rotatable_bonds( \%connected_atoms, $start_atom_id ) };
+
+for my $atom_name ( sort { $a cmp $b } keys( %rotatable_bonds ) ) {
+    print( "$atom_name: " );
+    foreach( @{ $rotatable_bonds{$atom_name} } ) {
+	print( "$_->[0],$_->[1] " )
+    }
+    print( "\n" );
+}
