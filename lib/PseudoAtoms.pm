@@ -119,7 +119,8 @@ sub generate_pseudo
 	    	  "label_seq_id" => $residue_id,
 	    	  "cartn_x" => sprintf( "%.3f", $transf_atom_coord->[0][0] ),
 	    	  "cartn_y" => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
-	    	  "cartn_z" => sprintf( "%.3f", $transf_atom_coord->[2][0] ) } );
+	    	  "cartn_z" => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
+		  "auth_seq_id" => $atom_site->{$atom_id}{"auth_seq_id"} } );
     	    # Adds information about used dihedral angles.
     	    $pseudo_atom_site{$last_atom_id}{"dihedral_angles"} =
 	    	\%angle_values;
@@ -833,35 +834,30 @@ sub add_hydrogens
     	# matrix and added to %hydrogen_site.
     	for my $hydrogen_name ( sort { $a cmp $b } keys %hydrogen_coord ) {
 	    if( $hydrogen_coord{$hydrogen_name} ) {
-		# Adds necessary PDBx entries to pseudo atom.
-		$last_atom_id++;
-		$hydrogen_site{$last_atom_id}{"group_PDB"} = "ATOM";
-		$hydrogen_site{$last_atom_id}{"id"} = $last_atom_id;
-		$hydrogen_site{$last_atom_id}{"type_symbol"} = "H";
-		$hydrogen_site{$last_atom_id}{"label_atom_id"} =
-		    $hydrogen_name;
-		$hydrogen_site{$last_atom_id}{"label_alt_id"} = ".";
-		$hydrogen_site{$last_atom_id}{"label_comp_id"} =
-		    $atom_site->{$atom_id}{"label_comp_id"};
-		$hydrogen_site{$last_atom_id}{"label_asym_id"} =
-		    $atom_site->{$atom_id}{"label_asym_id"};
-		$hydrogen_site{$last_atom_id}{"label_entity_id"} =
-		    $atom_site->{$atom_id}{"label_entity_id"};
-		$hydrogen_site{$last_atom_id}{"label_seq_id"} =
-		    $atom_site->{$atom_id}{"label_seq_id"};
-		$hydrogen_site{$last_atom_id}{"Cartn_x"} =
-		    sprintf( "%.3f",
-			     $hydrogen_coord{$hydrogen_name}->[0][0] );
-		$hydrogen_site{$last_atom_id}{"Cartn_y"} =
-		    sprintf( "%.3f",
-			     $hydrogen_coord{$hydrogen_name}->[1][0]);
-		$hydrogen_site{$last_atom_id}{"Cartn_z"} =
-		    sprintf( "%.3f",
-			     $hydrogen_coord{$hydrogen_name}->[2][0]);
-		# Adds additional pseudo-atom flag for future filtering.
-		$hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
-		# Adds atom id that pseudo atoms was made of.
-		$hydrogen_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
+	    # Adds necessary PDBx entries to pseudo atom site.
+    	    $last_atom_id++;
+	    create_pdbx_entry(
+	    	{ "atom_site" => \%hydrogen_site,
+	    	  "id" => $last_atom_id,
+	    	  "type_symbol" => "H",
+	    	  "label_atom_id" => $hydrogen_name,
+	    	  "label_alt_id" => "1",
+	    	  "label_comp_id" => $atom_site->{$atom_id}{"label_comp_id"},
+	    	  "label_asym_id" => $atom_site->{$atom_id}{"label_asym_id"},
+	    	  "label_entity_id" => $atom_site->{$atom_id}{"label_entity_id"},
+	    	  "label_seq_id" => $residue_id,
+	    	  "cartn_x" =>
+		      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[0][0] ),
+	    	  "cartn_y" =>
+		      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[1][0] ),
+	    	  "cartn_z" =>
+		      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[2][0] ),
+		  "auth_seq_id" => $atom_site->{$atom_id}{"auth_seq_id"}
+		} );
+    	    # Adds additional pseudo-atom flag for future filtering.
+    	    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
+	    # Adds atom id that pseudo atoms was made of.
+    	    $hydrogen_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
 	    }
     	}
     }

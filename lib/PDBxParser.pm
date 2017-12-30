@@ -178,7 +178,7 @@ sub create_pdbx_entry
     my $cartn_x = $args->{"cartn_x"};
     my $cartn_y = $args->{"cartn_y"};
     my $cartn_z = $args->{"cartn_z"};
-    my $auth_seq_id = $label_seq_id;
+    my $auth_seq_id = $args->{"auth_seq_id"};
     my $auth_comp_id = $label_comp_id;
     my $auth_asym_id = $label_asym_id;
     my $auth_atom_id = $label_atom_id;
