@@ -326,26 +326,23 @@ sub rotatable_bonds
     	    # before.
     	    my @neighbour_atom_ids;
     	    for my $atom_id ( @next_atom_ids ) {
-		my $atom_name = $atom_site->{$atom_id}{"label_atom_id"};
 		my $parent_atom_id = $parent_atom_ids{$atom_id};
-		my $parent_atom_name =
-		    $atom_site->{$parent_atom_id}{"label_atom_id"};
 
     	    	if( $atom_site->{$parent_atom_id}{"hybridization"} eq "sp3"
     		 || $atom_site->{$atom_id}{"hybridization"} eq "sp3" ) {
     	    	    # If last visited atom was sp3, then rotatable bonds from
     	    	    # previous atom are copied and the new one is appended.
-    	    	    push( @{ $rotatable_bonds{$atom_name} },
-    	    	    	  [ $parent_atom_name, $atom_name ] );
-    		    unshift( @{ $rotatable_bonds{$atom_name} },
-    		    	     @{ $rotatable_bonds{$parent_atom_name} } )
-    			if exists $rotatable_bonds{$parent_atom_name};
+    	    	    push( @{ $rotatable_bonds{$atom_id} },
+    	    	    	  [ $parent_atom_id, $atom_id ] );
+    		    unshift( @{ $rotatable_bonds{$atom_id} },
+    		    	     @{ $rotatable_bonds{$parent_atom_id} } )
+    			if exists $rotatable_bonds{$parent_atom_id};
     	    	} else {
     	    	    # If last visited atom is sp2 or sp, inherits its rotatable
     	    	    # bonds, because double or triple bonds do not rotate.
-    		    unshift( @{ $rotatable_bonds{$atom_name} },
-    		    	     @{ $rotatable_bonds{$parent_atom_name} } )
-    			if exists $rotatable_bonds{$parent_atom_name};
+    		    unshift( @{ $rotatable_bonds{$atom_id} },
+    		    	     @{ $rotatable_bonds{$parent_atom_id} } )
+    			if exists $rotatable_bonds{$parent_atom_id};
     	    	}
 
     	    	# Marks visited atoms.
