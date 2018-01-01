@@ -11,7 +11,8 @@ our @EXPORT_OK = qw( bond_type
                      hybridization
                      is_connected
                      is_second_neighbour
-                     rotatable_bonds );
+                     rotatable_bonds
+                     sort_by_priority );
 
 use List::MoreUtils qw( uniq );
 use List::Util qw( any
@@ -23,7 +24,7 @@ use Combinatorics qw( permutation );
 use PDBxParser qw( select_atom_data );
 use LinearAlgebra qw( flatten );
 use MoleculeProperties qw( %BOND_TYPES );
-
+use Data::Dumper;
 # ------------------------------ Connect atoms ------------------------------- #
 
 #
@@ -295,6 +296,32 @@ sub hybridization
     }
 
     return $atom_site;
+}
+
+sub sort_by_priority
+{
+    my ( $atom_names ) = @_;
+
+    # First priority is decided by atom type: S > P > O > N > C > H.
+    # Second priority - by greek letter: A > B > G > D > E > Z > H.
+    # TODO: look for more greek letters that are in PDBx.
+    # Third priority - by numeration: 1 > 2 > 3 and etc.
+    # This priority is achieved by assinging first, second and third priorities
+    # to numbers. Then iteratively is sorted by priorities.
+    my %atom_type_priority =
+	( "H" => 1, "C" => 2, "N" => 3, "O" => 4, "P" => 5, "S" => 6 );
+    my %greek_letter_priority =
+	( "H" => 1, "Z" => 2, "E" => 3, "D" => 4, "G" => 5, "B" => 6, "A" => 7 );
+
+    # Decomposes each atom name by its components.
+    my %atom_names;
+    for my $atom_name ( @{ $atom_names } ) {
+	my ( $atom_type, $greek_letter, $number ) =
+	    $atom_name =~ /(^\w)(\w?)(\d?)/;
+	$atom_names{$atom_name}{"type"} = $atom_type;
+	$atom_names{$atom_name}{"greek_letter"} = $greek_letter;
+	$atom_names{$atom_name}{"number"} = $number;
+    }
 }
 
 sub rotatable_bonds

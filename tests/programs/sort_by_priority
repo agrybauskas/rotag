@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib";
+use ConnectAtoms qw( sort_by_priority );
+
+#
+# Unit test: ConnectAtoms::sort_by_priority.
+#
+# Example: ./sort_by_priority atom_names.dat
+#
+
+my ( $atom_names_file ) = @ARGV;
+
+open( my $fh, "<", $atom_names_file );
+my @atom_names = <$fh>;
+close( $fh );
+
+my ( $atom_names ) =
+    map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } @atom_names;
+sort_by_priority( $atom_names );
+# my $cross_product = vector_cross( $left_matrix, $right_matrix );
+
+# print( join( "\t", @{ $cross_product } ), "\n" );
