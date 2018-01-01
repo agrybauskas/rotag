@@ -301,6 +301,7 @@ sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id ) = @_;
 
+    my @atom_ids = keys %{ $atom_site };
     my @visited_atom_ids;
     my @next_atom_ids = ( $start_atom_id );
     my %parent_atom_ids;
@@ -315,8 +316,15 @@ sub rotatable_bonds
     	    push( @visited_atom_ids, $start_atom_id );
 
     	    # Marks atoms that should be visited (atoms that current atom is
-    	    # connected to).
-    	    @next_atom_ids = @{ $atom_site->{$start_atom_id}{"connections"} };
+    	    # connected to). Removes atom ids in @next_atom_ids if there are no
+	    # atoms in current atom site that are described in connections.
+	    @next_atom_ids = ();
+	    for my $next_atom_id (
+		@{ $atom_site->{$start_atom_id}{"connections"} } ) {
+		if( any { $next_atom_id eq $_ } @atom_ids ) {
+		    push( @next_atom_ids, $next_atom_id );
+		}
+	    }
 
 	    # Marks parent atom for next atom.
 	    $parent_atom_ids{$next_atom_ids[0]} = $start_atom_id;
@@ -365,8 +373,10 @@ sub rotatable_bonds
     	    # Determines next atoms that should be visited.
     	    @next_atom_ids = (); # Resets value for the new ones to be appended.
     	    for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-    	    	push( @next_atom_ids, $neighbour_atom_id )
-    	    	    if ! grep { $neighbour_atom_id eq $_ } @visited_atom_ids;
+		if( ( ! grep { $neighbour_atom_id eq $_ } @visited_atom_ids )
+		 && ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
+		    push( @next_atom_ids, $neighbour_atom_id );
+		}
     	    }
     	}
     }
