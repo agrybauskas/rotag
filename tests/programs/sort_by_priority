@@ -20,7 +20,7 @@ close( $fh );
 
 my ( $atom_names ) =
     map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } @atom_names;
-sort_by_priority( $atom_names );
-# my $cross_product = vector_cross( $left_matrix, $right_matrix );
 
-# print( join( "\t", @{ $cross_product } ), "\n" );
+my $sorted_names = sort_by_priority( $atom_names );
+
+print( join( " ", @{ $sorted_names } ), "\n" );

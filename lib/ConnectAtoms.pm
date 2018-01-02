@@ -24,7 +24,7 @@ use Combinatorics qw( permutation );
 use PDBxParser qw( select_atom_data );
 use LinearAlgebra qw( flatten );
 use MoleculeProperties qw( %BOND_TYPES );
-use Data::Dumper;
+
 # ------------------------------ Connect atoms ------------------------------- #
 
 #
@@ -311,17 +311,31 @@ sub sort_by_priority
     my %atom_type_priority =
 	( "H" => 1, "C" => 2, "N" => 3, "O" => 4, "P" => 5, "S" => 6 );
     my %greek_letter_priority =
-	( "H" => 1, "Z" => 2, "E" => 3, "D" => 4, "G" => 5, "B" => 6, "A" => 7 );
+	( "H" => 1, "Z" => 2, "E" => 3, "D" => 4, "G" => 5, "B" => 6,
+	  "A" => 7,  "" => 8 );
 
     # Decomposes each atom name by its components.
     my %atom_names;
     for my $atom_name ( @{ $atom_names } ) {
-	my ( $atom_type, $greek_letter, $number ) =
-	    $atom_name =~ /(^\w)(\w?)(\d?)/;
-	$atom_names{$atom_name}{"type"} = $atom_type;
-	$atom_names{$atom_name}{"greek_letter"} = $greek_letter;
+	my ( $atom_type ) = $atom_name =~ /(^[a-zA-z])[a-zA-z]?\d?/;
+	my ( $greek_letter ) = $atom_name =~ /^[a-zA-z]([a-zA-z]?)\d?/;
+	my ( $number ) = $atom_name =~ /^[a-zA-z][a-zA-z]?(\d?)/;
+	$atom_names{$atom_name}{"type"} =
+	    $atom_type_priority{$atom_type};
+	$atom_names{$atom_name}{"greek_letter"} =
+	    $greek_letter_priority{$greek_letter};
 	$atom_names{$atom_name}{"number"} = $number;
     }
+
+    # Sorts by rules of described in %atom_names.
+    my @sorted_names =
+    	sort {
+	    $atom_names{$b}{"type"} <=> $atom_names{$a}{"type"}
+	 || $atom_names{$b}{"greek_letter"} <=> $atom_names{$a}{"greek_letter"}
+         || $atom_names{$a}{"number"} cmp $atom_names{$b}{"number"}
+        } @{ $atom_names };
+
+    return \@sorted_names;
 }
 
 sub rotatable_bonds
