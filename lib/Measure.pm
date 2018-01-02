@@ -15,14 +15,15 @@ use List::MoreUtils qw( uniq );
 
 use ConnectAtoms qw( connect_atoms
                      hybridization
-                     rotatable_bonds );
+                     rotatable_bonds
+                     sort_by_priority );
 use PDBxParser qw( filter_atoms
                    select_atom_data );
 use MoleculeProperties qw( %ROTATABLE_BONDS );
 use LinearAlgebra qw( flatten
                       matrix_sub
                       vector_cross );
-use Data::Dumper;
+
 # ----------------------------- Molecule parameters --------------------------- #
 
 #
@@ -243,16 +244,7 @@ sub all_dihedral
 
     	# Calculates every dihedral angle.
 	my $angle_id = 0;
-
-    	# my $first_atom_id;
-    	# my $second_atom_id;
-    	# my $third_atom_id;
-    	# my $fourth_atom_id;
-
-    	# my $first_atom_coord;
-    	# my $second_atom_coord;
-    	# my $third_atom_coord;
-    	# my $fourth_atom_coord;
+	my %angle_values;
 
     	for my $rotatable_bond ( @rotatable_bonds) {
 	    # First, checks if rotatable bond has fourth atom produce dihedral
@@ -262,51 +254,68 @@ sub all_dihedral
 			                  {"connections"} } ) < 2 ){ next; }
 
     	    my $angle_symbol = "chi${angle_id}";
-    # 	    $second_atom_id = $rotatable_bonds[$i][0];
-    # 	    $third_atom_id = $rotatable_bonds[$i][1];
-    # 	    $fourth_atom_id = $rotatable_bonds[$i+1][1];
 
-    # 	    # Extracts coordinates for dihedral angle calculations.
-    # 	    # Information about side atom is stored in rotatable bonds array,
-    # 	    # except for CA atom.
-    # 	    if( $residue_site->{$second_atom_id}{"label_atom_id"} eq "CA" ) {
-    # 	    	$first_atom_coord =
-    # 	    	    select_atom_data(
-    # 		    filter_atoms(
-    # 		    $residue_site,
-    # 		    { "label_atom_id" => [ "N" ] } ),
-    # 	    	    [ "Cartn_x", "Cartn_y", "Cartn_z" ] );
-    # 	    } else {
-    # 		$first_atom_id = $rotatable_bonds[$i-1][0];
-    # 	    }
-    # 	    $second_atom_coord =
-    # 	    	select_atom_data(
-    # 	    	filter_atoms(
-    # 		$residue_site,
-    # 	    	{ "id" => [ $second_atom_id ] } ),
-    # 		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
-    # 	    $third_atom_coord =
-    # 	    	select_atom_data(
-    # 	    	filter_atoms(
-    # 		$residue_site,
-    # 	    	{ "id" => [ $third_atom_id ] } ),
-    # 		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
-    # 	    $fourth_atom_coord =
-    # 		select_atom_data(
-    # 	    	filter_atoms(
-    # 		$residue_site,
-    # 	    	{ "id" => [ $fourth_atom_id ] } ),
-    # 		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
-    # 	     $angle_values{$angle_symbol} =
-    # 	     	 dihedral_angle( [ @{ $first_atom_coord },
-    # 	     			   @{ $second_atom_coord },
-    # 	     			   @{ $third_atom_coord },
-    # 	     			   @{ $fourth_atom_coord } ] );
+	    # Chooses proper atom ids for calculating dihedral angles.
+    	    my $second_atom_id = $rotatable_bond->[0];
+    	    my $third_atom_id = $rotatable_bond->[1];
+	    my @first_connections = # First atom connections.
+		grep { $_ ne $third_atom_id }
+	        @{ $residue_site->{$second_atom_id}{"connections"} };
+	    my $first_atom_name =
+		sort_by_priority(
+		flatten(
+		[ select_atom_data(
+		  filter_atoms(
+		  $residue_site,
+	    	  { "id" => \@first_connections } ),
+		  [ "label_atom_id" ] ) ] ) )->[0];
+	    my @fourth_connections = # First atom connections.
+		grep { $_ ne $second_atom_id }
+	        @{ $residue_site->{$third_atom_id}{"connections"} };
+	    my $fourth_atom_name =
+		sort_by_priority(
+		flatten(
+		[ select_atom_data(
+		  filter_atoms(
+		  $residue_site,
+	    	  { "id" => \@fourth_connections } ),
+		  [ "label_atom_id" ] ) ] ) )->[0];
+
+    	    # Extracts coordinates for dihedral angle calculations.
+	    my $first_atom_coord =
+		select_atom_data(
+    		filter_atoms(
+    		$residue_site,
+    		{ "label_atom_id" => [ $first_atom_name ] } ),
+    	    	[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
+    	    my $second_atom_coord =
+		[ $residue_site->{$second_atom_id}{"Cartn_x"},
+		  $residue_site->{$second_atom_id}{"Cartn_y"},
+		  $residue_site->{$second_atom_id}{"Cartn_z"} ];
+    	    my $third_atom_coord =
+		[ $residue_site->{$third_atom_id}{"Cartn_x"},
+		  $residue_site->{$third_atom_id}{"Cartn_y"},
+		  $residue_site->{$third_atom_id}{"Cartn_z"} ];
+    	    my $fourth_atom_coord =
+    		select_atom_data(
+    	    	filter_atoms(
+    		$residue_site,
+    	    	{ "label_atom_id" => [ $fourth_atom_name ] } ),
+    		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
+
+    	     $angle_values{$angle_symbol} =
+    	     	 dihedral_angle( [ @{ $first_atom_coord },
+    	     			      $second_atom_coord,
+    	     			      $third_atom_coord,
+    	     			   @{ $fourth_atom_coord } ] );
+
+	    $angle_id++;
     	}
-    # 	%{ $residue_angles{$residue_id} } = %angle_values;
+
+    	%{ $residue_angles{$residue_id} } = %angle_values;
     }
 
-    # return \%residue_angles;
+    return \%residue_angles;
 }
 
 #
