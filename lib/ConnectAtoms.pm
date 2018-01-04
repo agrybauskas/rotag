@@ -466,10 +466,13 @@ sub connect_atoms
     	# Checks, if there are connections between atoms.
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
     	    foreach my $neighbour_id ( @neighbour_cells ) {
-    		if( is_connected( $atom_site->{"$atom_id"},
-    				  $atom_site->{"$neighbour_id"} ) ) {
-    		    push( @{ $connected_atoms{$atom_id}{"connections"} },
-    		          "$neighbour_id" );
+    		if( ( is_connected( $atom_site->{"$atom_id"},
+				    $atom_site->{"$neighbour_id"} ) )
+		 && ( ! exists $connected_atoms{$atom_id}{"connections"}
+		     || ! any { $_ eq $neighbour_id }
+		          @{ $connected_atoms{$atom_id}{"connections"} } ) ) {
+		    push( @{ $connected_atoms{$atom_id}{"connections"} },
+			  "$neighbour_id" );
     		}
     	    }
     	}
