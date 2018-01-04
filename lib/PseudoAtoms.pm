@@ -43,7 +43,7 @@ use PDBxParser qw( atom_data_with_id
                    filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
-
+use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -72,23 +72,24 @@ sub generate_pseudo
     	map { $_->[0]->[0] }
     	select_atom_data(
     	filter_atoms( $atom_site, $atom_specifier ),
-	[ "id" ] );
+    	[ "id" ] );
     my $last_atom_id = max( keys %{ $atom_site } );
 
     for my $atom_id ( @atom_ids ) {
     	# Calculates current dihedral angles of rotatable bonds. Will be used
     	# for reseting dihedral angles to 0 degree angle.
     	my $residue_id = $atom_site->{"$atom_id"}{"label_seq_id"};
+
     	my %angles =
-    	    %{ all_dihedral(
-	       filter_atoms( $atom_site,
-			     { "label_seq_id" => [ $residue_id ],
-			       "label_alt_id" => [ "." ]} ) ) };
+	    %{ all_dihedral(
+		   filter_atoms( $atom_site,
+				 { "label_seq_id" => [ $residue_id ],
+				   "label_alt_id" => [ "." ] } ) ) };
 
     	# Iterates through combinations of angles and evaluates conformational
     	# model.
-	my @angle_names = sort( { $a cmp $b } keys %{ $angle_values } );
-	my @angle_values;
+    	my @angle_names = sort( { $a cmp $b } keys %{ $angle_values } );
+    	my @angle_values;
     	for my $angle_name ( @angle_names ) {
     	    push( @angle_values,
     		  [ map
@@ -103,30 +104,30 @@ sub generate_pseudo
     		map { ( $angle_names[$_] => $angle_comb->[$_] ) } 0..$#angle_names;
     	    # Evaluates matrices.
     	    my ( $transf_atom_coord ) =
-		@{ mult_matrix_product( $conformation, \%angle_values ) };
+    		@{ mult_matrix_product( $conformation, \%angle_values ) };
 
-	    # Adds necessary PDBx entries to pseudo atom site.
+    	    # Adds necessary PDBx entries to pseudo atom site.
     	    $last_atom_id++;
-	    create_pdbx_entry(
-	    	{ "atom_site" => \%pseudo_atom_site,
-	    	  "id" => $last_atom_id,
-	    	  "type_symbol" => $atom_site->{$atom_id}{"type_symbol"},
-	    	  "label_atom_id" => $atom_site->{$atom_id}{"label_atom_id"},
-	    	  "label_alt_id" => "1",
-	    	  "label_comp_id" => $atom_site->{$atom_id}{"label_comp_id"},
-	    	  "label_asym_id" => $atom_site->{$atom_id}{"label_asym_id"},
-	    	  "label_entity_id" => $atom_site->{$atom_id}{"label_entity_id"},
-	    	  "label_seq_id" => $residue_id,
-	    	  "cartn_x" => sprintf( "%.3f", $transf_atom_coord->[0][0] ),
-	    	  "cartn_y" => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
-	    	  "cartn_z" => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
-		  "auth_seq_id" => $atom_site->{$atom_id}{"auth_seq_id"} } );
+    	    create_pdbx_entry(
+    	    	{ "atom_site" => \%pseudo_atom_site,
+    	    	  "id" => $last_atom_id,
+    	    	  "type_symbol" => $atom_site->{$atom_id}{"type_symbol"},
+    	    	  "label_atom_id" => $atom_site->{$atom_id}{"label_atom_id"},
+    	    	  "label_alt_id" => "1",
+    	    	  "label_comp_id" => $atom_site->{$atom_id}{"label_comp_id"},
+    	    	  "label_asym_id" => $atom_site->{$atom_id}{"label_asym_id"},
+    	    	  "label_entity_id" => $atom_site->{$atom_id}{"label_entity_id"},
+    	    	  "label_seq_id" => $residue_id,
+    	    	  "cartn_x" => sprintf( "%.3f", $transf_atom_coord->[0][0] ),
+    	    	  "cartn_y" => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
+    	    	  "cartn_z" => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
+    		  "auth_seq_id" => $atom_site->{$atom_id}{"auth_seq_id"} } );
     	    # Adds information about used dihedral angles.
     	    $pseudo_atom_site{$last_atom_id}{"dihedral_angles"} =
-	    	\%angle_values;
+    	    	\%angle_values;
     	    # Adds additional pseudo-atom flag for future filtering.
     	    $pseudo_atom_site{$last_atom_id}{"is_pseudo_atom"} = 1;
-	    # Adds atom id that pseudo atoms was made of.
+    	    # Adds atom id that pseudo atoms was made of.
     	    $pseudo_atom_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
     	}
     }
