@@ -19,7 +19,6 @@ use ConnectAtoms qw( connect_atoms
                      sort_by_priority );
 use PDBxParser qw( filter_atoms
                    select_atom_data );
-use MoleculeProperties qw( %ROTATABLE_BONDS );
 use LinearAlgebra qw( flatten
                       matrix_sub
                       vector_cross );
