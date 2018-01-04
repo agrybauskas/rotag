@@ -43,7 +43,7 @@ use PDBxParser qw( atom_data_with_id
                    filter_atoms
                    select_atom_data );
 use Sampling qw( sample_angles );
-use Data::Dumper;
+
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -104,8 +104,7 @@ sub generate_pseudo
     		map { ( $angle_names[$_] => $angle_comb->[$_] ) } 0..$#angle_names;
     	    # Evaluates matrices.
     	    my ( $transf_atom_coord ) =
-    		@{ mult_matrix_product( $conformation, \%angle_values ) };
-
+    	    	@{ mult_matrix_product( $conformation, \%angle_values ) };
     	    # Adds necessary PDBx entries to pseudo atom site.
     	    $last_atom_id++;
     	    create_pdbx_entry(

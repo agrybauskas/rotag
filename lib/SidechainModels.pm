@@ -92,15 +92,25 @@ sub rotation_only
 
 	    # Determines have one rotational bond and, also, part of it. Those
 	    # atoms are excluded from analysis.
+	    my $last_bond_idx = $#{ $rotatable_bonds->{$atom_id} };
 	    if( ( scalar(  @{ $rotatable_bonds->{$atom_id} } ) == 1 )
-	     && ( $atom_id == $rotatable_bonds->{$atom_id}->[0][0]
-	       || $atom_id == $rotatable_bonds->{$atom_id}->[0][1] ) ) { next; }
+	     && ( $atom_id == $rotatable_bonds->{$atom_id}
+                                              ->[$last_bond_idx][0]
+	       || $atom_id == $rotatable_bonds->{$atom_id}
+                                              ->[$last_bond_idx][1] ) ) {
+		next;
+	    } elsif( ( $atom_id == $rotatable_bonds->{$atom_id}
+                                                   ->[$last_bond_idx][0]
+		    || $atom_id == $rotatable_bonds->{$atom_id}
+                                                   ->[$last_bond_idx][1] ) ) {
+		pop( @{ $rotatable_bonds->{$atom_id} } );
+	    }
 
 	    my @rotatable_bonds = @{ $rotatable_bonds->{$atom_id} };
 
 	    my @transf_matrices; # Matrices for transforming atom coordinates.
 
-	    for( my $i = 0; $i < scalar( @rotatable_bonds ) - 1; $i++ ) {
+	    for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
 		my $mid_atom_id = $rotatable_bonds[$i][0];
 		my $up_atom_id  = $rotatable_bonds[$i][1];
 
