@@ -179,8 +179,8 @@ sub all_dihedral
 
     # Collects non-redundant ids of given amino acid residues.
     my @residue_ids =
-	uniq( map { $_->[0] }
-	      @{ select_atom_data( $atom_site, [ "label_seq_id" ] ) } );
+    	uniq( map { $_->[0] }
+    	      @{ select_atom_data( $atom_site, [ "label_seq_id" ] ) } );
 
     # TODO: try to figure out, where these functions that modify states should be
     # used during the run of functions (in the beginning of script or during
@@ -205,7 +205,7 @@ sub all_dihedral
     	    flatten(
     		[ select_atom_data(
     		  filter_atoms( $residue_site,
-    		  { "label_atom_id" => [ "N", "C", "O" ] } ),
+    		  { "label_atom_id" => [ "N", "C", "O", "H", "H2", "HA" ] } ),
     		  [ "id" ] ) ] );
     	my @side_chain_ids;
     	for my $atom_id ( @atom_ids ) {

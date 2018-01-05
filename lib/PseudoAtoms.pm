@@ -170,8 +170,8 @@ sub generate_rotamer
 	    	   [ select_atom_data(
 			 filter_atoms(
 			     $residue_site,
-			     { "label_atom_id" => [ "N", "C", "O", "OXT", "H", "H2",
-						    "H3", "HXT" ] } ),
+			     { "label_atom_id" => [ "N", "C", "O", "OXT", "H",
+						    "H2", "HA", "H3", "HXT" ]} ),
 			 [ "id" ] ) ] ) };
 	my @side_chain_ids;
 	for my $atom_id ( keys %{ $residue_site } ) {

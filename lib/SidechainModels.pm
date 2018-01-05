@@ -62,7 +62,7 @@ sub rotation_only
 	         filter_atoms(
 	         $residue_site,
 	         { "label_atom_id" => [ "N", "C", "O", "OXT", "H", "H2", "H3",
-					"HXT" ] } ),
+					"HA", "HXT" ] } ),
 	         [ "id" ] ) ] ) };
 	my @side_chain_ids;
 	for my $atom_id ( @atom_ids ) {
