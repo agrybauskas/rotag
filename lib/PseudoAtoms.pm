@@ -10,12 +10,15 @@ our @EXPORT_OK = qw( add_hydrogens
                      generate_rotamer );
 
 use List::Util qw( max );
+use List::MoreUtils qw( uniq );
 use Math::Trig qw( acos );
 
 use AtomInteractions qw( potential );
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( connect_atoms
+                     hybridization
+                     rotatable_bonds );
 use LinearAlgebra qw( find_euler_angles
                       flatten
                       mult_matrix_product
@@ -148,53 +151,80 @@ sub generate_rotamer
 {
     my ( $atom_site, $angle_values ) = @_;
 
-    # Extracts residue name from residue id. Only one ID can be parsed.
-    # TODO: maybe should consider generating rotamers for multiple residues.
     my @residue_ids = keys %{ $angle_values };
-    my $residue_id = $residue_ids[0];
-    my $residue_name =
-    	select_atom_data(
-	filter_atoms( $atom_site,
-	{ "label_seq_id" => [ $residue_id ] } ),
-	[ "label_comp_id" ] )->[0][0];
-
-    my $atom_names =
-    	select_atom_data(
-    	filter_atoms( $atom_site,
-    	{ "label_seq_id" => [ $residue_id ],
-	  "label_alt_id" => [ "." ] } ),
-	[ "label_atom_id" ] );
-    my @atom_names = map { $_->[0] } @{ $atom_names };
-
-    # Iterates through every atom of certain residue name and rotates to
-    # specified dihedral angle.
     my %rotamer_atom_site;
 
-    for my $atom_name ( @atom_names ) {
-    	# Defines dihedral angles by %ROTATABLE_BONDS description and specified
-    	# angles in $angles.
-    	my %angles;
-    	if( defined $ROTATABLE_BONDS{"$residue_name"}{"$atom_name"} ) {
-    	    my $atom_id =
-    	    	select_atom_data(
-    		filter_atoms( $atom_site,
-    		{ "label_atom_id" => [ $atom_name ],
-		  "label_alt_id"  => [ "." ] } ),
-    	    	[ "id" ] )->[0][0];
+    for my $residue_id ( @residue_ids ) {
+	my $residue_site =
+	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
 
-    	    for my $angle_id
-    		( 0..scalar( @{ $ROTATABLE_BONDS{"$residue_name"}
-    				                {"$atom_name"} } ) - 2 ) {
-    		    $angles{"chi$angle_id"} =
-    			[ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
+	# TODO: arguments for rotatable bonds is repeated few times in code.
+	# Should remove redundant code or simplify it.
+
+	# Determines sidechain atoms, CA atom and then finds rotatable bonds.
+	connect_atoms( $residue_site );
+	hybridization( $residue_site );
+
+	my @main_chain_ids = # Main chain atoms except for CA.
+	    @{ flatten(
+	    	   [ select_atom_data(
+			 filter_atoms(
+			     $residue_site,
+			     { "label_atom_id" => [ "N", "C", "O", "OXT", "H", "H2",
+						    "H3", "HXT" ] } ),
+			 [ "id" ] ) ] ) };
+	my @side_chain_ids;
+	for my $atom_id ( keys %{ $residue_site } ) {
+	    if( ! grep { $atom_id eq $_ } @main_chain_ids ) {
+		push( @side_chain_ids, $atom_id );
+	    }
+	}
+	my $ca_id =
+	    select_atom_data(
+	    	filter_atoms(
+		    $residue_site,
+		    { "label_atom_id" => [ "CA" ] } ),
+	    	[ "id" ] )->[0][0];
+
+	my $rotatable_bonds =
+	    rotatable_bonds(
+		filter_atoms( $residue_site, { "id" => \@side_chain_ids } ),
+		$ca_id );
+
+	for my $atom_id ( keys %{ $residue_site } ) {
+	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
+	    # Determines have one rotational bond and, also, part of it. Those
+	    # atoms are excluded from analysis.
+	    # TODO: also redundant code from SidechainModels should be
+	    # simplified.
+	    my $last_bond_idx = $#{ $rotatable_bonds->{$atom_id} };
+	    if( ( scalar(  @{ $rotatable_bonds->{$atom_id} } ) == 1 )
+	     && ( $atom_id == $rotatable_bonds->{$atom_id}
+                                              ->[$last_bond_idx][0]
+	       || $atom_id == $rotatable_bonds->{$atom_id}
+                                              ->[$last_bond_idx][1] ) ) {
+	    	next;
+	    } elsif( ( $atom_id == $rotatable_bonds->{$atom_id}
+                                                   ->[$last_bond_idx][0]
+	    	    || $atom_id == $rotatable_bonds->{$atom_id}
+                                                   ->[$last_bond_idx][1] ) ) {
+	    	pop( @{ $rotatable_bonds->{$atom_id} } );
+	    }
+
+	    my @rotatable_bonds = @{ $rotatable_bonds->{$atom_id} };
+
+	    my %angles;
+    	    for my $angle_id ( 0..$#rotatable_bonds) {
+		$angles{"chi$angle_id"} =
+		    [ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
     	    }
 
     	    %rotamer_atom_site =
-    		( %rotamer_atom_site,
-    		  %{ generate_pseudo( { %{ $atom_site }, %rotamer_atom_site },
-    				      { "id" => [ $atom_id ] },
-    				      \%angles ) } );
-    	}
+    	    	( %rotamer_atom_site,
+    	    	  %{ generate_pseudo( { %{ $atom_site }, %rotamer_atom_site },
+    	    			      { "id" => [ $atom_id ] },
+    	    			      \%angles ) } );
+	}
     }
 
     return \%rotamer_atom_site;
