@@ -20,32 +20,23 @@ use Utils qw( select_atom_data );
 # Example: ./rotatable_bonds example.cif "label_atom_id CA"
 #
 
-my ( $atom_specifier, $pdbx_file ) = @ARGV;
+my ( $start_atom_specifier, $next_atom_specifier, $pdbx_file ) = @ARGV;
 
 # Selects atom's data for further analysis.
 my $atom_site = obtain_atom_site( $pdbx_file );
 
-my $atom_ids =
-    flatten( [ select_atom_data( $pdbx_file, "group_PDB ATOM", "id" ) ] );
+# my $atom_ids =
+#     flatten( [ select_atom_data( $pdbx_file, "group_PDB ATOM", "id" ) ] );
 my $start_atom_id =
-    ( select_atom_data( $pdbx_file, $atom_specifier, "id" ) )->[0][0];
-my $main_chain_ids =
-    flatten( [ select_atom_data( $pdbx_file,
-				 "label_atom_id N,C,O,H,H2,HA", "id" ) ] );
-my @side_chain_ids;
-for my $atom_id ( @{ $atom_ids } ) {
-    push( @side_chain_ids, $atom_id )
-	if ! grep { $atom_id eq $_ } @{ $main_chain_ids };
-}
+    ( select_atom_data( $pdbx_file, $start_atom_specifier, "id" ) )->[0][0];
+my $next_atom_id =
+    ( select_atom_data( $pdbx_file, $next_atom_specifier, "id" ) )->[0][0];
 
-my $side_chain_site =
-    filter_atoms( $atom_site, { "id" => \@side_chain_ids } );
+connect_atoms( $atom_site );
+hybridization( $atom_site );
 
-my %connected_atoms = %{ connect_atoms( $side_chain_site ) };
-
-hybridization( \%connected_atoms );
-
-my %rotatable_bonds = %{ rotatable_bonds( \%connected_atoms, $start_atom_id ) };
+my %rotatable_bonds =
+    %{ rotatable_bonds( $atom_site, $start_atom_id, $next_atom_id ) };
 
 for my $atom_id ( sort { $a cmp $b } keys( %rotatable_bonds ) ) {
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
