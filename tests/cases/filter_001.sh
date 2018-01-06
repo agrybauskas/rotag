@@ -6,7 +6,7 @@ include_specifier="label_atom_id CA,C,CB,OG"
 exclude_specifier="label_atom_id CA"
 data_specifier="Cartn_x,Cartn_y,Cartn_z"
 
-../programs/filter_atom_data "${include_specifier}" \
-			     "${exclude_specifier}" \
-			     "${data_specifier}"    \
-			     ${pdbx_file}
+../programs/filter "${include_specifier}" \
+		   "${exclude_specifier}" \
+		   "${data_specifier}"    \
+		   ${pdbx_file}

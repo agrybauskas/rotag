@@ -7,7 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( atom_data_with_id
                      create_pdbx_entry
                      filter_atoms
-                     filter_atom_data
+                     filter
                      obtain_atom_site
                      select_atom_data
                      to_pdbx );
@@ -79,7 +79,7 @@ sub obtain_atom_site
     return \%atom_site;
 }
 
-sub filter_atom_data
+sub filter
 {
     my ( $args ) = @_;
     my $atom_site = $args->{"atom_site"};
@@ -87,6 +87,7 @@ sub filter_atom_data
     my $exclude = $args->{"exclude"};
     my $data = $args->{"data"};
     my $is_list = $args->{"is_list"};
+    my $data_with_id = $args->{"data_with_id"};
 
     # Iterates through each atom in $atom_site and checks if atom specifiers
     # match up.
@@ -133,16 +134,30 @@ sub filter_atom_data
 	# Simply iterates through $atom_site keys and extracts data using data
 	# specifier.
 	my @atom_data;
-	for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
-	    if( defined $is_list && $is_list ) {
-	    	push( @atom_data,
-	    	      map { $filtered_atoms{$atom_id}{$_} } @{ $data } );
-	    } else {
-	    	push( @atom_data,
-	    	      [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
+	if( defined $data_with_id ) {
+	    my %atom_data_with_id;
+
+	    # Simply iterates through $atom_site keys and extracts data using
+	    # data specifier and is asigned to atom id.
+	    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+		$atom_data_with_id{$atom_id} =
+		    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
 	    }
+
+	    return \%atom_data_with_id;
+	} else {
+	    for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
+		if( defined $is_list && $is_list ) {
+		    push( @atom_data,
+			  map { $filtered_atoms{$atom_id}{$_} } @{ $data } );
+		} else {
+		    push( @atom_data,
+			  [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
+		}
+	    }
+
+	    return \@atom_data;
 	}
-	return \@atom_data;
     }
 
     return \%filtered_atoms;
