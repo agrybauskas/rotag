@@ -1,0 +1,52 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib "../../lib";
+use PDBxParser qw( filter_atom_data
+                   obtain_atom_site
+                   to_pdbx );
+
+#
+# Unit test: PDBxParser::filter_atom_data.
+#
+# Selects atom data by given attributes.
+#
+# Example: ./filter_atom_data "label_atom_id CA,N,CB,OG" \
+#                             "label_atom_id CA" \
+#                             "Cartn_x,Cartn_y,Cartn_z" example.cif
+#
+#          ./filter_atom_data "label_atom_id CA,N,CB,OG" example.cif
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $include_specifier,
+     $exclude_specifier,
+     $data_specifier,
+     $pdbx_file ) = @ARGV;
+
+my %include_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+			  map { [ split( " ", $_ ) ] }
+			  split( "&", $include_specifier ) );
+my %exclude_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+			  map { [ split( " ", $_ ) ] }
+			  split( "&", $exclude_specifier ) );
+my @data_specifier = split( ",", $data_specifier );
+
+if( defined $data_specifier ) {
+    my @atom_data =
+	@{ filter_atom_data( { "atom_site" => obtain_atom_site( $pdbx_file ),
+			       "include"   => \%include_specifier,
+			       "exclude"   => \%exclude_specifier,
+			       "data"      => \@data_specifier } ) };
+
+    for( my $i = 0; $i <= $#atom_data; $i++ ) {
+    	print( join( " ", @{ $atom_data[$i] } ), "\n" );
+    }
+
+} else {
+    to_pdbx( filter_atom_data( { "atom_site" => obtain_atom_site( $pdbx_file ),
+				 "include"   => \%include_specifier,
+				 "exclude"   => \%exclude_specifier } ) );
+}

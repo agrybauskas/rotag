@@ -7,9 +7,11 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( atom_data_with_id
                      create_pdbx_entry
                      filter_atoms
+                     filter_atom_data
                      obtain_atom_site
                      select_atom_data
                      to_pdbx );
+
 
 # --------------------------------- PDBx parser ------------------------------- #
 
@@ -75,6 +77,75 @@ sub obtain_atom_site
     }
 
     return \%atom_site;
+}
+
+sub filter_atom_data
+{
+    my ( $args ) = @_;
+    my $atom_site = $args->{"atom_site"};
+    my $include = $args->{"include"};
+    my $exclude = $args->{"exclude"};
+    my $data = $args->{"data"};
+    my $is_list = $args->{"is_list"};
+
+    # Iterates through each atom in $atom_site and checks if atom specifiers
+    # match up.
+    my %filtered_atoms;
+    my $match_counter; # Tracks if all matches occured.
+
+    # First, filters atoms that are described in $include specifier.
+    if( defined $include ) {
+	for my $atom_id ( keys %{ $atom_site } ) {
+	    $match_counter = 0;
+	    for my $attribute ( %{ $include } ) {
+		if( exists $atom_site->{$atom_id}{$attribute}
+	         && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
+		    @{ $include->{$attribute} } ) {
+		    $match_counter += 1;
+		} else {
+		    last; # Terminates early if no match is found in specifier.
+		}
+		if( $match_counter == scalar( keys %{ $include } ) ) {
+		    $filtered_atoms{$atom_id} = $atom_site->{$atom_id};
+		}
+	    }
+	}
+    } else {
+    	%filtered_atoms = %{ $atom_site };
+    }
+
+    # Then filters out atoms that are in $exclude specifier.
+    if( defined $exclude ) {
+    	for my $atom_id ( keys %filtered_atoms ) {
+    	    for my $attribute ( keys %{ $exclude } ) {
+    	    	if( exists $atom_site->{$atom_id}{$attribute}
+    	         && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
+    	    	    @{ $exclude->{$attribute} } ) {
+    	    	    delete $filtered_atoms{$atom_id};
+		    last;
+    	    	}
+    	    }
+    	}
+    }
+
+    # Extracts specific data, if defined.
+    if( defined $data ) {
+	# Simply iterates through $atom_site keys and extracts data using data
+	# specifier.
+	my @atom_data;
+	for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
+	    if( defined $is_list && $is_list ) {
+	    	push( @atom_data,
+	    	      map { $filtered_atoms{$atom_id}{$_} } @{ $data } );
+	    } else {
+	    	push( @atom_data,
+	    	      [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
+	    }
+	}
+	return \@atom_data;
+    }
+
+    return \%filtered_atoms;
 }
 
 #
