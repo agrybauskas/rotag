@@ -3,15 +3,11 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( matrix_sub );
 
 #
 # Unit test: LinearAlgebra::matrix_sub.
-#
-# Substitutes one matrix from another.
-#
-# Example: ./matrix_sub example.dat
+# Example: ./matrix_sub matrices.dat
 #
 
 my ( $matrix_file ) = @ARGV;
@@ -31,7 +27,6 @@ my @left_matrix = @{ $matrices[0] };
 my @right_matrix = @{ $matrices[1] };
 
 my $matrix_sub = matrix_sub( \@left_matrix, \@right_matrix );
-
 for my $row ( @{ $matrix_sub } ) {
-    print( join( "\t", @{ $row } ), "\n" );
+    print( join( " ", @{ $row } ), "\n" );
 }

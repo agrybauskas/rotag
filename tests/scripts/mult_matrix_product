@@ -3,15 +3,11 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( mult_matrix_product );
 
 #
 # Unit test: LinearAlgebra::matrix_product.
-#
-# Multiplies multiple matrices analytically.
-#
-# Example: ./matrix_product example.dat
+# Example: ./matrix_product "x=3,t=2" matrices.dat
 #
 
 my ( $symbol_values, $matrix_file ) = @ARGV;
@@ -23,7 +19,6 @@ my %symbol_values = ( map { $_->[0] => $_->[1] }
 
 # Evaluates matrices.
 my @matrices = ( [] );
-
 open( my $fh, "<", $matrix_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
@@ -36,7 +31,6 @@ close( $fh );
 
 my $matrix_product =
     mult_matrix_product( mult_matrix_product( \@matrices ), \%symbol_values );
-
 for my $matrix_id ( 0..$#{ $matrix_product } ) {
     for my $row ( @{ $matrix_product->[$matrix_id] } ) {
 	print( join( "\t", @{ $row } ), "\n" );

@@ -3,21 +3,16 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( matrix_sum );
 
 #
 # Unit test: LinearAlgebra::matrix_sum.
-#
-# Adds two matrices.
-#
-# Example: ./matrix_sum example.dat
+# Example: ./matrix_sum matrices.dat
 #
 
 my ( $matrix_file ) = @ARGV;
 
 my @matrices = ( [] );
-
 open( my $fh, "<", $matrix_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
@@ -32,7 +27,6 @@ my @left_matrix = @{ $matrices[0] };
 my @right_matrix = @{ $matrices[1] };
 
 my $matrix_sum = matrix_sum( \@left_matrix, \@right_matrix );
-
 for my $row ( @{ $matrix_sum } ) {
-    print( join( "\t", @{ $row } ), "\n" );
+    print( join( " ", @{ $row } ), "\n" );
 }

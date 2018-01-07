@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-matrix_file=../inputs/two_matrices_001.dat
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/matrix_sum ${matrix_file}
+matrices_file=$(dirname "$0")/../inputs/matrices/matrices-007.dat
+
+$(dirname "$0")/../scripts/matrix_sum ${matrices_file}

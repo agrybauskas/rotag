@@ -3,22 +3,17 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( flatten );
 
 #
 # Unit test: LinearAlgebra::flatten.
-#
-# Multiplies multiple matrices analytically.
-#
-# Example: ./flatten example.dat
+# Example: ./flatten matrices.dat
 #
 
 my ( $matrix_file ) = @ARGV;
 
 # Evaluates matrices.
 my @matrices = ( [] );
-
 open( my $fh, "<", $matrix_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
@@ -30,5 +25,4 @@ while( <$fh> ) {
 close( $fh );
 
 my $element_list = flatten( \@matrices );
-
 print( join( " ", @{ $element_list } ), "\n" );

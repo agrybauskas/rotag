@@ -1,7 +1,8 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-element_file=../inputs/element_list_001.dat
+export PERL5LIB=$(dirname "$0")/../../lib
+
+element_list_file=$(dirname "$0")/../inputs/element-list-001.dat
 dimensions="2,3 2,2"
 
-../programs/reshape "${dimensions}" ${element_file}
+$(dirname "$0")/../scripts/reshape "${dimensions}" ${element_list_file}

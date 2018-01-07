@@ -3,22 +3,17 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( reshape );
 
 #
 # Unit test: LinearAlgebra::reshape.
-#
-# Multiplies multiple matrices analytically.
-#
-# Example: ./reshape "1,2 3,3" example.dat
+# Example: ./reshape "1,2 3,3" element-list.dat
 #
 
 my ( $dimensions, $element_file ) = @ARGV;
 
 # Evaluates matrices.
 my @elements;
-
 open( my $fh, "<", $element_file );
 while( <$fh> ) {
     push( @elements, split( " ", $_ ) );
@@ -30,7 +25,6 @@ my @dimensions = split( /[,\s]/, $dimensions );
 
 # Reshapes to given matrices and prints it.
 my $reshaped_matrices = reshape( \@elements, \@dimensions );
-
 for my $reshaped_matrix ( @{ $reshaped_matrices } ) {
     for my $row ( @{ $reshaped_matrix } ) {
         print( join( " ", @{ $row } ), "\n" );

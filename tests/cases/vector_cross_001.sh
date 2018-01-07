@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-vector_file=../inputs/two_3d_vectors_001.dat
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/vector_cross ${vector_file}
+vectors_3d_file=$(dirname "$0")/../inputs/matrices/vectors-3d-001.dat
+
+$(dirname "$0")/../scripts/vector_cross ${vectors_3d_file}

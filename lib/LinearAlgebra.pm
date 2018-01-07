@@ -233,7 +233,7 @@ sub switch_ref_frame
 				   z_axis_rotation( - $alpha ) ] );
     } else {
     	die "Must choose \$switch_to_global value between \"local\" and" .
-    	    "\"global\".\n";
+    	    "\"global\".";
     }
 
     return $ref_frame_switch;
@@ -563,7 +563,7 @@ sub matrix_product
     # row number of the right matrix.
     die( { type => "DimensionError",
 	   message => "A row number of a left matrix is NOT equal " .
-	       "to the column\nnumber of the right matrix.\n" } )
+	       "to the column\nnumber of the right matrix." } )
 	unless( scalar( @{ transpose( $left_matrix ) } ) ==
 		scalar( @{ $right_matrix } ) );
 

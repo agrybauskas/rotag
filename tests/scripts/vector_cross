@@ -3,15 +3,11 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( vector_cross );
 
 #
 # Unit test: LinearAlgebra::vector_cross.
-#
-# Calculates cross product of two 3D vectors.
-#
-# Example: ./vector_cross example.dat
+# Example: ./vector_cross vectors-3d.dat
 #
 
 my ( $vector_file ) = @ARGV;
@@ -22,7 +18,5 @@ close( $fh );
 
 my ( $left_matrix, $right_matrix ) =
     map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } @vector;
-
 my $cross_product = vector_cross( $left_matrix, $right_matrix );
-
-print( join( "\t", @{ $cross_product } ), "\n" );
+print( join( " ", @{ $cross_product } ), "\n" );
