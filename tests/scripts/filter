@@ -3,28 +3,23 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use PDBxParser qw( filter
-                   obtain_atom_site
                    to_pdbx );
 
 #
 # Unit test: PDBxParser::filter.
-#
-# Selects atom data by given attributes.
-#
 # Example: ./filter "label_atom_id CA,N,CB,OG" \
 #                   "label_atom_id CA" \
-#                   "Cartn_x,Cartn_y,Cartn_z" example.cif
-#
-#          ./filter "label_atom_id CA,N,CB,OG" example.cif
+#                   "Cartn_x,Cartn_y,Cartn_z" \
+#                   structure.dump
+#          ./filter "label_atom_id CA,N,CB,OG" "" "" structure.dump
 #
 
 @ARGV = ( "-" ) unless @ARGV;
 my ( $include_specifier,
      $exclude_specifier,
      $data_specifier,
-     $pdbx_file ) = @ARGV;
+     $pdbx_dump_file ) = @ARGV;
 
 my %include_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 			  map { [ split( " ", $_ ) ] }
@@ -34,19 +29,25 @@ my %exclude_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 			  split( "&", $exclude_specifier ) );
 my @data_specifier = split( ",", $data_specifier );
 
-if( defined $data_specifier ) {
-    my @atom_data =
-	@{ filter( { "atom_site" => obtain_atom_site( $pdbx_file ),
-		     "include"   => \%include_specifier,
-		     "exclude"   => \%exclude_specifier,
-		     "data"      => \@data_specifier } ) };
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
 
+if( $data_specifier ) {
+    my @atom_data =
+	@{ filter( { "atom_site"    => $atom_site,
+		     "include"      => \%include_specifier,
+		     "exclude"      => \%exclude_specifier,
+		     "data"         => \@data_specifier } ) };
     for( my $i = 0; $i <= $#atom_data; $i++ ) {
     	print( join( " ", @{ $atom_data[$i] } ), "\n" );
     }
-
 } else {
-    to_pdbx( filter( { "atom_site" => obtain_atom_site( $pdbx_file ),
+    to_pdbx( filter( { "atom_site" => $atom_site,
 		       "include"   => \%include_specifier,
 		       "exclude"   => \%exclude_specifier } ) );
 }

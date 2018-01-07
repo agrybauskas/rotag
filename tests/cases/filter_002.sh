@@ -2,7 +2,7 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-001.dump
 include_specifier=
 exclude_specifier=
 data_specifier=

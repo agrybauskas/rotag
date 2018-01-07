@@ -1,0 +1,4 @@
+readline() on closed filehandle $fh at ./cases/../scripts/filter line 34.
+Use of uninitialized value $atom_site in eval "string" at ./cases/../scripts/filter line 38.
+No PDBx data structure was loaded  at cases/../../lib/PDBxParser.pm line 92.
+

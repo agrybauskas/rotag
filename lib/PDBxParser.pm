@@ -89,13 +89,15 @@ sub filter
     my $is_list = $args->{"is_list"};
     my $data_with_id = $args->{"data_with_id"};
 
+    die( "No PDBx data structure was loaded " ) if ! defined $atom_site;
+
     # Iterates through each atom in $atom_site and checks if atom specifiers
     # match up.
     my %filtered_atoms;
     my $match_counter; # Tracks if all matches occured.
 
     # First, filters atoms that are described in $include specifier.
-    if( defined $include ) {
+    if( defined $include && %{ $include } ) {
 	for my $atom_id ( keys %{ $atom_site } ) {
 	    $match_counter = 0;
 	    for my $attribute ( %{ $include } ) {
@@ -116,7 +118,7 @@ sub filter
     }
 
     # Then filters out atoms that are in $exclude specifier.
-    if( defined $exclude ) {
+    if( defined $exclude && %{ $exclude } ) {
     	for my $atom_id ( keys %filtered_atoms ) {
     	    for my $attribute ( keys %{ $exclude } ) {
     	    	if( exists $atom_site->{$atom_id}{$attribute}
@@ -130,21 +132,20 @@ sub filter
     }
 
     # Extracts specific data, if defined.
-    if( defined $data ) {
+    if( defined $data && @{ $data } ) {
 	# Simply iterates through $atom_site keys and extracts data using data
 	# specifier.
 	my @atom_data;
-	if( defined $data_with_id ) {
+	if( defined $data_with_id && $data_with_id ) {
 	    my %atom_data_with_id;
-
 	    # Simply iterates through $atom_site keys and extracts data using
 	    # data specifier and is asigned to atom id.
 	    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
 		$atom_data_with_id{$atom_id} =
 		    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
 	    }
-
 	    return \%atom_data_with_id;
+
 	} else {
 	    for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
 		if( defined $is_list && $is_list ) {
@@ -155,7 +156,6 @@ sub filter
 			  [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
 		}
 	    }
-
 	    return \@atom_data;
 	}
     }

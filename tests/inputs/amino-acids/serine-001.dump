@@ -1,4 +1,4 @@
-$VAR1 = {
+{
           '152' => {
                      'pdbx_formal_charge' => '?',
                      'B_iso_or_equiv' => '36.96',
@@ -167,4 +167,4 @@ $VAR1 = {
                      'label_seq_id' => '18',
                      'group_PDB' => 'ATOM'
                    }
-        };
+}
