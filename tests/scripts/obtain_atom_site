@@ -4,14 +4,11 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use PDBxParser qw( obtain_atom_site to_pdbx );
+use PDBxParser qw( obtain_atom_site
+                   to_pdbx );
 
 #
 # Unit test: PDBxParser::obtain_atom_site
-#
-# Creates standard PDBx output with only _atom_site category and checks if all
-# data was correctly obtained.
-#
 # Example: ./obtain_atom_site example.cif
 #
 
