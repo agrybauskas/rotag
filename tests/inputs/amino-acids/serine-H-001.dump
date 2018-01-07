@@ -1,4 +1,4 @@
-$VAR1 = {
+{
           '148' => {
                      'Cartn_z_esd' => '?',
                      'auth_seq_id' => '18',
@@ -335,4 +335,4 @@ $VAR1 = {
                      'label_asym_id' => 'A',
                      'label_seq_id' => '18'
                    }
-        };
+}

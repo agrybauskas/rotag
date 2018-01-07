@@ -1,4 +1,4 @@
-$VAR1 = {
+{
           '323' => {
                      'Cartn_x_esd' => '?',
                      'pdbx_PDB_ins_code' => '?',
@@ -167,4 +167,4 @@ $VAR1 = {
                      'label_comp_id' => 'SER',
                      'id' => '324'
                    }
-        };
+}
