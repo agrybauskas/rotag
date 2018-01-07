@@ -3,39 +3,20 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
-use LinearAlgebra qw( mult_matrix_product
-                      y_axis_rotation );
-
-use lib "../lib";
-use Utils qw( select_atom_data );
+use LinearAlgebra qw( y_axis_rotation );
 
 #
 # Unit test: LinearAlgebra::y_axis_rotation.
-#
-# Rotates along y-axis of the global frame of reference.
-#
-# Example: ./y_axis_rotation "label_atom_id CA,N,CB,OG" \
-#                            "Cartn_x,Cartn_y,Cartn_z" \
-#                            "1.571" example.cif
+# Example: ./y_axis_rotation 1.50 # angle in radians.
 #
 
-my ( $atom_specifier, $data_specifier, $angle, $pdbx_file ) = @ARGV;
+my ( $angle ) = @ARGV;
 
-my $atom_data = select_atom_data( $pdbx_file,
-				  $atom_specifier,
-				  $data_specifier );
+my $y_axis_rotation = y_axis_rotation( $angle );
 
-# Rotates all atoms along y-axis by given angle.
-for my $atom_coord ( @{ $atom_data } ) {
-    my ( $transf_atom_coord ) =
-	@{ mult_matrix_product( [ y_axis_rotation( $angle ),
-				  [ [ $atom_coord->[0] ],
-				    [ $atom_coord->[1] ],
-				    [ $atom_coord->[2] ],
-				    [ 1 ] ] ] ) };
-    printf( "%.3f\t%.3f\t%.3f\n",
-	    $transf_atom_coord->[0][0],
-	    $transf_atom_coord->[1][0],
-	    $transf_atom_coord->[2][0] );
+for( my $i=0; $i < 4; $i++ ) {
+    for( my $j=0; $j < 4; $j++ ) {
+	printf( "%.3f ", $y_axis_rotation->[$i][$j] );
+    }
+    print( "\n" );
 }

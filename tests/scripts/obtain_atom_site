@@ -3,13 +3,12 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use PDBxParser qw( obtain_atom_site
                    to_pdbx );
 
 #
 # Unit test: PDBxParser::obtain_atom_site
-# Example: ./obtain_atom_site example.cif
+# Example: ./obtain_atom_site structure.cif
 #
 
 @ARGV = ( "-" ) unless @ARGV;

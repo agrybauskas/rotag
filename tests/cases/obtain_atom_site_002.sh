@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/5svd_002.cif
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/obtain_atom_site ${pdbx_file}
+pdbx_file=$(dirname "$0")/../inputs/5svd.cif
+
+$(dirname "$0")/../scripts/obtain_atom_site ${pdbx_file}

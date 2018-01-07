@@ -3,39 +3,20 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
-use LinearAlgebra qw( mult_matrix_product
-                      translation );
-
-use lib "../lib";
-use Utils qw( select_atom_data );
+use LinearAlgebra qw( translation );
 
 #
 # Unit test: LinearAlgebra::translation.
-#
-# Translates atom by a given displacement.
-#
-# Example: ./translation "label_atom_id CA,N,CB,OG" "Cartn_x,Cartn_y,Cartn_z" \
-#                        "1.000,1.000,1.000" example.cif
+# Example: ./translation 1.50 1.50 1.50 # distance in Angstroms.
 #
 
-my ( $atom_specifier, $data_specifier, $transl_coord, $pdbx_file ) = @ARGV;
+my ( $x_distance, $y_distance, $z_distance ) = @ARGV;
 
-my $atom_data = select_atom_data( $pdbx_file,
-				  $atom_specifier,
-				  $data_specifier );
-my @transl_coord = split( ",", $transl_coord );
+my $translation = translation( $x_distance, $y_distance, $z_distance );
 
-# Translates coordinates by given displacement.
-for my $atom_coord ( @{ $atom_data } ) {
-    my ( $transf_atom_coord ) =
-	@{ mult_matrix_product( [ translation( @transl_coord ),
-				  [ [ $atom_coord->[0] ],
-				    [ $atom_coord->[1] ],
-				    [ $atom_coord->[2] ],
-				    [ 1 ] ] ] ) };
-    printf( "%.3f\t%.3f\t%.3f\n",
-	    $transf_atom_coord->[0][0],
-	    $transf_atom_coord->[1][0],
-	    $transf_atom_coord->[2][0] );
+for( my $i=0; $i < 4; $i++ ) {
+    for( my $j=0; $j < 4; $j++ ) {
+	printf( "%.3f ", $translation->[$i][$j] );
+    }
+    print( "\n" );
 }

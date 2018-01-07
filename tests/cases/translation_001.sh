@@ -1,10 +1,9 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/serine_001.cif
-atom_specifier="label_atom_id CA,N,CB,OG"
-data_specifier="Cartn_x,Cartn_y,Cartn_z"
-transl_coord="1.000,1.000,1.000"
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/translation "${atom_specifier}" "${data_specifier}" \
-			"${transl_coord}" ${pdbx_file}
+x_distance="2.0" # In Angstrom.
+y_distance="2.0" # In Angstrom.
+z_distance="2.0" # In Angstrom.
+
+$(dirname "$0")/../scripts/translation ${x_distance} ${y_distance} ${z_distance}

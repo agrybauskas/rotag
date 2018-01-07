@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/serine_001.cif
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/obtain_atom_site ${pdbx_file}
+pdbx_file=$(dirname "$0")/../inputs/amino-acids/serine-001.cif
+
+$(dirname "$0")/../scripts/obtain_atom_site ${pdbx_file}
