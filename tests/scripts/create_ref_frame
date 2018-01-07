@@ -3,21 +3,17 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( create_ref_frame );
 
 #
 # Unit test: LinearAlgebra::create_ref_frame.
-#
-# Creates the frame of reference from three given coordinates of the atom.
-#
-# Example: ./create_ref_frame example.dat
+# Example: ./create_ref_frame atom-coord.dat
 #
 
-my ( $cif_file ) = @ARGV;
+my ( $atom_coord_file ) = @ARGV;
 my @atom_coord;
 
-open( my $fh, "<", $cif_file );
+open( my $fh, "<", $atom_coord_file );
 while( <$fh> ){
     push( @atom_coord, grep( /\S/, split( /#.+|\s+/, $_ ) ) );
 }

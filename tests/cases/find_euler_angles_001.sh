@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-atom_coord=../inputs/three_atom_coord_001.dat
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/find_euler_angles ${atom_coord}
+atom_coord=$(dirname "$0")/../inputs/atom-coord-001.dat
+
+$(dirname "$0")/../scripts/find_euler_angles ${atom_coord}

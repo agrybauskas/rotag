@@ -3,22 +3,17 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( find_euler_angles );
 
 #
 # Unit test: LinearAlgebra::find_euler_angles.
-#
-# Calculates Euler angles needed to transform frame of references from three
-# given coordinates of the atom.
-#
-# Example: ./find_euler_angles example.dat
+# Example: ./find_euler_angles atom-coord.dat
 #
 
-my ( $cif_file ) = @ARGV;
+my ( $atom_coord_file ) = @ARGV;
 my @atom_coord;
 
-open( my $fh, "<", $cif_file );
+open( my $fh, "<", $atom_coord_file );
 while( <$fh> ){
     push( @atom_coord, grep( /\S/, split( /#.+|\s+/, $_ ) ) );
 }

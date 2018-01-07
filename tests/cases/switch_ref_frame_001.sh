@@ -1,10 +1,8 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/serine_001.cif
-atom_specifier="label_atom_id CA,N,CB,OG"
-data_specifier="Cartn_x,Cartn_y,Cartn_z"
+export PERL5LIB=$(dirname "$0")/../../lib
+
+atom_coords_file="$(dirname "$0")"/../inputs/atom-coords-001.dat
 ref_frame="local"
 
-../programs/switch_ref_frame "${atom_specifier}" "${data_specifier}" \
-			     "${ref_frame}" ${pdbx_file}
+"$(dirname "$0")"/../scripts/switch_ref_frame ${atom_coords_file} ${ref_frame}

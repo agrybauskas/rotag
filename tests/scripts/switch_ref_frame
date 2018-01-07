@@ -3,36 +3,34 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( switch_ref_frame );
-
-use lib "../lib";
-use Utils qw( select_atom_data );
 
 #
 # Unit test: LinearAlgebra::switch_ref_frame.
-#
-# Changes frame of reference from global to local or vice versa.
-#
-# Example: ./switch_ref_frame "label_atom_id CA,N,CB,OG" \
-#                             "Cartn_x,Cartn_y,Cartn_z" \
-#                             "global" example.cif
+# Example: ./switch_ref_frame atom-coords.dat local
+#          ./switch_ref_frame atom-coords.dat global
 #
 
-my ( $atom_specifier, $data_specifier, $ref_frame, $pdbx_file ) = @ARGV;
+my ( $atom_coords_file, $ref_frame ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_data =
-    select_atom_data( $pdbx_file,
-		      $atom_specifier,
-		      $data_specifier );
+my @atom_coords = ( [] );
+
+open( my $fh, "<", $atom_coords_file );
+while( <$fh> ) {
+    if( $_ =~ /^\n$/ ) {
+	push( @atom_coords, [] );
+    } else {
+	push( @{ $atom_coords[-1] }, split( " ", $_ ) );
+    }
+}
+close( $fh );
 
 my ( $ref_frame_coord ) =
-    @{ switch_ref_frame( $atom_data->[1],
-			 $atom_data->[2],
-			 $atom_data->[0],
+    @{ switch_ref_frame( $atom_coords[0],
+			 $atom_coords[1],
+			 $atom_coords[2],
 			 $ref_frame ) };
 
 for my $row ( @{ $ref_frame_coord } ) {
-    print( join( "\t", @{ $row } ), "\n" );
+    print( join( "\t", map { sprintf( "%.3f", $_ ) } @{ $row } ), "\n" );
 }
