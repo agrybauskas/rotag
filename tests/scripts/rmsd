@@ -3,32 +3,24 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use Measure qw( rmsd );
-
-use lib "../lib";
-use Utils;
 
 #
 # Unit test: Measure::rmsd
-#
-# Measure root-mean-square deviation of two same-length sets.
-#
-# Example: ./dihedral_angle example_set.cif
+# Example: ./rmsd atom-coords.dat
 #
 
-my ( $pdbx_file ) = @ARGV;
-my @coord_sets = ( [] );
+my ( $atom_coords_file ) = @ARGV;
+my @atom_coords = ( [] );
 
-open( my $fh, "<", $pdbx_file );
+open( my $fh, "<", $atom_coords_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
-	push( @coord_sets, [] );
+	push( @atom_coords, [] );
     } else {
-	push( @{ $coord_sets[-1] }, [ split( " ", $_ ) ] );
+	push( @{ $atom_coords[-1] }, [ split( " ", $_ ) ] );
     }
 }
 close( $fh );
 
-# Prints out rmsd of given two sets.
-printf( "%.3f\n", rmsd( @coord_sets ) );
+printf( "%.3f\n", rmsd( @atom_coords ) );

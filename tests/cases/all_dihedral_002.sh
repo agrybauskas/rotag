@@ -1,7 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/aspartic_acid_006.cif
-target_residue="label_seq_id 219"
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/all_dihedral "${target_residue}" ${pdbx_file}
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/aspartic-acid-001.dump
+
+$(dirname "$0")/../scripts/all_dihedral ${pdbx_dump_file}

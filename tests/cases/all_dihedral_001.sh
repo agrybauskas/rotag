@@ -1,7 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/serine_001.cif
-target_residue="label_seq_id 18"
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/all_dihedral "${target_residue}" ${pdbx_file}
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-001.dump
+
+$(dirname "$0")/../scripts/all_dihedral ${pdbx_dump_file}

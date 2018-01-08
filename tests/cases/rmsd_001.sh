@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-two_coord_sets=../inputs/two_coord_sets_001.dat
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/rmsd ${two_coord_sets}
+atom_coords_file=$(dirname "$0")/../inputs/atom-coords-002.dat
+
+$(dirname "$0")/../scripts/rmsd ${atom_coords_file}

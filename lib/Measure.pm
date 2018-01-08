@@ -17,8 +17,7 @@ use ConnectAtoms qw( connect_atoms
                      hybridization
                      rotatable_bonds
                      sort_by_priority );
-use PDBxParser qw( filter_atoms
-                   select_atom_data );
+use PDBxParser qw( filter );
 use LinearAlgebra qw( flatten
                       matrix_sub
                       vector_cross );
@@ -179,8 +178,9 @@ sub all_dihedral
 
     # Collects non-redundant ids of given amino acid residues.
     my @residue_ids =
-    	uniq( map { $_->[0] }
-    	      @{ select_atom_data( $atom_site, [ "label_seq_id" ] ) } );
+	uniq( @{ filter( { "atom_site" => $atom_site,
+			   "data" => [ "label_seq_id" ],
+			   "is_list" => 1 } ) } );
 
     # TODO: try to figure out, where these functions that modify states should be
     # used during the run of functions (in the beginning of script or during
@@ -196,34 +196,26 @@ sub all_dihedral
 
     for my $residue_id ( @residue_ids ) {
     	my $residue_site =
-    	    filter_atoms( \%dihedral_site,
-    			  { "label_seq_id" => [ $residue_id ] } );
-
-    	# Extracts atom site for side-chain atoms.
-    	my @atom_ids = keys %{ $residue_site };
-    	my $main_chain_ids =
-    	    flatten(
-    		[ select_atom_data(
-    		  filter_atoms( $residue_site,
-    		  { "label_atom_id" => [ "N", "C", "O", "H", "H2", "HA" ] } ),
-    		  [ "id" ] ) ] );
-    	my @side_chain_ids;
-    	for my $atom_id ( @atom_ids ) {
-    	    if( ! grep { $atom_id eq $_ } @{ $main_chain_ids } ) {
-    		push( @side_chain_ids, $atom_id );
-    	    }
-    	}
-    	my $side_chain_site =
-    	    filter_atoms( $residue_site, { "id" => \@side_chain_ids } );
+	    filter( { "atom_site" => \%dihedral_site,
+		      "label_seq_id" => [ $residue_id ] } );
+	my $side_chain_site =
+	    filter( { "atom_site" => $residue_site,
+		      "exclude" => { "label_atom_id" =>
+				       [ "N", "C", "O", "H", "H2", "HA" ] } } ) ;
 
     	# Determines rotatable bonds.
-    	my $ca_id =
-    	    ( flatten(
-    		  [ select_atom_data(
-    		    filter_atoms( $side_chain_site,
-    		    { "label_atom_id" => [ "CA" ] } ),
-    		    [ "id" ] ) ] ) )->[0];
-    	my $rotatable_bonds = rotatable_bonds( $side_chain_site, $ca_id );
+	my $ca_id =
+	    filter( { "atom_site" => $side_chain_site,
+		      "label_atom_id" => [ "CA" ],
+		      "data" => [ "id" ],
+		      "is_list" => 1 } );
+	my $cb_id =
+	    filter( { "atom_site" => $side_chain_site,
+		      "label_atom_id" => [ "CB" ],
+		      "data" => [ "id" ],
+		      "is_list" => 1 } );
+    	my $rotatable_bonds =
+	    rotatable_bonds( $side_chain_site, @{ $ca_id }, @{ $cb_id } );
 
     	# Assigns names to unique rotatable bond angles. For example, CA-CB is
     	# named chi0 and CB-CG - chi1.
@@ -260,33 +252,29 @@ sub all_dihedral
     	    my @second_connections = # Second atom connections, except third.
     		grep { $_ ne $third_atom_id }
     	        @{ $residue_site->{$second_atom_id}{"connections"} };
-    	    my $first_atom_name =
-    		sort_by_priority(
-    		flatten(
-    		[ select_atom_data(
-    		  filter_atoms(
-    		  $residue_site,
-    	    	  { "id" => \@second_connections } ),
-    		  [ "label_atom_id" ] ) ] ) )->[0];
+	    my $first_atom_name =
+		sort_by_priority(
+		filter( { "atom_site" => $residue_site,
+			  "include" => { "id" => \@second_connections },
+			  "data" => [ "label_atom_id" ],
+			  "is_list" => 1 } ) )->[0];
     	    my @third_connections = # Third atom connections, except second.
     		grep { $_ ne $second_atom_id }
     	        @{ $residue_site->{$third_atom_id}{"connections"} };
     	    my $fourth_atom_name =
-    		sort_by_priority(
-    		flatten(
-    		[ select_atom_data(
-    		  filter_atoms(
-    		  $residue_site,
-    	    	  { "id" => \@third_connections } ),
-    		  [ "label_atom_id" ] ) ] ) )->[0];
+		sort_by_priority(
+		filter( { "atom_site" => $residue_site,
+			  "include" => { "id" => \@third_connections },
+			  "data" => [ "label_atom_id" ],
+			  "is_list" => 1 } ) )->[0];
 
     	    # Extracts coordinates for dihedral angle calculations.
     	    my $first_atom_coord =
-    		select_atom_data(
-    		filter_atoms(
-    		$residue_site,
-    		{ "label_atom_id" => [ $first_atom_name ] } ),
-    	    	[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
+		filter(
+		    { "atom_site" => $residue_site,
+		      "include" => { "label_atom_id" => [ $first_atom_name ] },
+		      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+		      "is_list" => 1 } );
     	    my $second_atom_coord =
     		[ $residue_site->{$second_atom_id}{"Cartn_x"},
     		  $residue_site->{$second_atom_id}{"Cartn_y"},
@@ -296,17 +284,17 @@ sub all_dihedral
     		  $residue_site->{$third_atom_id}{"Cartn_y"},
     		  $residue_site->{$third_atom_id}{"Cartn_z"} ];
     	    my $fourth_atom_coord =
-    		select_atom_data(
-    	    	filter_atoms(
-    		$residue_site,
-    	    	{ "label_atom_id" => [ $fourth_atom_name ] } ),
-    		[ "Cartn_x", "Cartn_y", "Cartn_z" ] );
+		filter(
+		    { "atom_site" => $residue_site,
+		      "include" => { "label_atom_id" => [ $fourth_atom_name ] },
+		      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+		      "is_list" => 1 } );
 
-    	     $angle_values{$angle_symbol} =
-    	     	 dihedral_angle( [ @{ $first_atom_coord },
-    	     			      $second_atom_coord,
-    	     			      $third_atom_coord,
-    	     			   @{ $fourth_atom_coord } ] );
+	    $angle_values{$angle_symbol} =
+		dihedral_angle( [ $first_atom_coord,
+				  $second_atom_coord,
+				  $third_atom_coord,
+				  $fourth_atom_coord ] );
 
     	    $angle_id++;
     	}
