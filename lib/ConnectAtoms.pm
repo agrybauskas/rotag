@@ -21,7 +21,7 @@ use List::Util qw( any
 
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
-use PDBxParser qw( select_atom_data );
+use PDBxParser qw( filter );
 use LinearAlgebra qw( flatten );
 use MoleculeProperties qw( %BOND_TYPES );
 
@@ -91,8 +91,8 @@ sub grid_box
 
     # Determines boundary box around all atoms.
     my $atom_data =
-	select_atom_data( $atom_site,
-			  [ "id", "Cartn_x", "Cartn_y", "Cartn_z" ] );
+	filter( { "atom_site" => $atom_site,
+		  "data" => [ "id", "Cartn_x", "Cartn_y", "Cartn_z" ] } );
     my @atom_coordinates = map { [ $_->[1], $_->[2], $_->[3] ] } @{ $atom_data };
     my $boundary_box = create_box( \@atom_coordinates );
 

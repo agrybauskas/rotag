@@ -3,22 +3,22 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
-use PDBxParser qw( obtain_atom_site );
 use ConnectAtoms qw( connect_atoms );
 
 #
 # Unit test: ConnectAtoms::connect_atoms
-#
-# Shows connections between atoms.
-#
-# Example: ./connect_atoms example.cif
+# Example: ./connect_atoms structure.dump
 #
 
-my ( $pdbx_file ) = @ARGV;
+my ( $pdbx_dump_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( $pdbx_file );
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
 
 my %connected_atoms = %{ connect_atoms( $atom_site ) };
 

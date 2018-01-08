@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/threonine_019.cif
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/connect_atoms ${pdbx_file} | sort -k 1 -n
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/tyrosine-001.dump
+
+$(dirname "$0")/../scripts/connect_atoms ${pdbx_dump_file} | sort -k 1 -n
