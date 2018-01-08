@@ -1,8 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/serine_021.cif
-atom_specifier="label_atom_id C,O,CB,OG"
-data_specifier="Cartn_x,Cartn_y,Cartn_z"
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/dihedral_angle "${atom_specifier}" "${data_specifier}" ${pdbx_file}
+atom_coords_file=$(dirname "$0")/../inputs/atom-coords-006.dat
+
+$(dirname "$0")/../scripts/dihedral_angle ${atom_coords_file}

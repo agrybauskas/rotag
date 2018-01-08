@@ -3,24 +3,20 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use Measure qw( dihedral_angle );
-
-use lib "../lib";
-use Utils qw( select_atom_data );
 
 #
 # Unit test: Measure::dihedral_angle
-#
-# Measure the dihedral angle of four atoms in radians.
-#
-# Example: ./dihedral_angle "id 1,2,3,4" "Cartn_x,Cartn_y,Cartn_z" example.cif
+# Example: ./dihedral_angle atom-coords.dat
 #
 
-my ( $atom_specifier, $data_specifier, $pdbx_file ) = @ARGV;
+my ( $atom_coords_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_data = select_atom_data( $pdbx_file, $atom_specifier, $data_specifier );
+my @atom_coords;
+open( my $fh, "<", $atom_coords_file );
+while( <$fh> ){
+    push( @atom_coords, [ grep( /\S/, split( /#.+|\s+/, $_ ) ) ] );
+}
+close( $fh );
 
-# Prints out length of the bond in angstroms.
-printf( "%.3f\n", dihedral_angle( $atom_data ) );
+printf( "%.3f\n", dihedral_angle( \@atom_coords ) );
