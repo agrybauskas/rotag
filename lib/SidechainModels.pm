@@ -16,16 +16,9 @@ use ConnectAtoms qw( connect_atoms
 use LinearAlgebra qw( flatten
                       mult_matrix_product
                       reshape );
-use PDBxParser qw( filter_atoms
-                   select_atom_data );
+use PDBxParser qw( filter );
 
 # ------------------------ Idealistic sidechain models ------------------------ #
-
-#
-# Discribes sidechain models that are not restrained by van der Waals radius.
-# These models are idealistic and more developmental than final. One model per
-# residue.
-#
 
 #
 # Model that uses only rotation around single bonds.
@@ -42,124 +35,133 @@ sub rotation_only
 
     # Determines all residue ids present in atom site.
     my @residue_ids =
-	uniq( @{ flatten( [ select_atom_data( $atom_site,
-					      [ "label_seq_id" ] ) ] ) } );
+	uniq( @{ filter( { "atom_site" => $atom_site,
+			   "data" => [ "label_seq_id" ],
+			   "is_list" => 1 } ) } );
 
     # Iterates through target residues and their atom ids and assigns
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_id ( @residue_ids ) {
-	my $residue_site =
-	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
-	my @atom_ids = keys %{ $residue_site };
+    	my $residue_site =
+	    filter( { "atom_site" => $atom_site,
+		      "include" => { "label_seq_id" => [ $residue_id ] } } );
+	my $side_chain_site =
+	    filter( { "atom_site" => $residue_site,
+		      "exclude" => { "label_atom_id" =>
+				       [ "N", "C", "O", "H", "H2", "HA" ] } } ) ;
 
-	# Determines sidechain atoms, CA atom and then finds rotatable bonds.
-	connect_atoms( $residue_site );
-	hybridization( $residue_site );
+    	# Determines sidechain atoms, CA atom and then finds rotatable bonds.
+    	connect_atoms( $residue_site );
+    	hybridization( $residue_site );
 
-	my @main_chain_ids = # Main chain atoms except for CA.
-	    @{ flatten(
-	       [ select_atom_data(
-	         filter_atoms(
-	         $residue_site,
-	         { "label_atom_id" => [ "N", "C", "O", "OXT", "H", "H2", "H3",
-					"HA", "HXT" ] } ),
-	         [ "id" ] ) ] ) };
-	my @side_chain_ids;
-	for my $atom_id ( @atom_ids ) {
-	    if( ! grep { $atom_id eq $_ } @main_chain_ids ) {
-		push( @side_chain_ids, $atom_id );
+    	# Determines rotatable bonds.
+	my $ca_id =
+	    filter( { "atom_site" => $side_chain_site,
+		      "label_atom_id" => [ "CA" ],
+		      "data" => [ "id" ],
+		      "is_list" => 1 } );
+	my $cb_id =
+	    filter( { "atom_site" => $side_chain_site,
+		      "label_atom_id" => [ "CB" ],
+		      "data" => [ "id" ],
+		      "is_list" => 1 } );
+    	my $rotatable_bonds =
+	    rotatable_bonds( $side_chain_site, @{ $ca_id }, @{ $cb_id } );
+
+	# Assigns names to rotatable bond angles.
+	# TODO: check if later names of rotation_only dihedral angles match
+	# all_dihedral values.
+	my @rotatable_bonds;
+	my %rot_bond_names;
+	my $angle_id = 0;
+	for my $atom_id (
+	    sort { scalar @{ $rotatable_bonds->{$a} }
+	       <=> scalar @{ $rotatable_bonds->{$a} } }
+	         keys %{ $rotatable_bonds } ) {
+    	    # Filters out redundant rotatable bonds.
+    	    for my $rotatable_bond ( @{ $rotatable_bonds->{$atom_id} } ) {
+    		if( ! grep { $rotatable_bond->[0] eq $_->[0]
+    			  && $rotatable_bond->[1] eq $_->[1]} @rotatable_bonds ){
+    		    push( @rotatable_bonds, $rotatable_bond );
+		    $rot_bond_names{"$rotatable_bond->[0],$rotatable_bond->[1]"}=
+			"chi${angle_id}";
+		    $angle_id++;
+    		}
 	    }
 	}
-	my $ca_id =
-	    select_atom_data(
-	    filter_atoms(
-	    $residue_site,
-	    { "label_atom_id" => [ "CA" ] } ),
-	    [ "id" ] )->[0][0];
 
-	my $rotatable_bonds =
-	    rotatable_bonds(
-		filter_atoms( $residue_site,
-			      { "id" => \@side_chain_ids } ),
-		$ca_id );
+    	for my $atom_id ( keys %{ $residue_site }  ) {
+    	    my @atom_coord = ( $atom_site->{"$atom_id"}{"Cartn_x"},
+    			       $atom_site->{"$atom_id"}{"Cartn_y"},
+    			       $atom_site->{"$atom_id"}{"Cartn_z"} );
 
-	for my $atom_id ( @atom_ids ) {
-	    my @atom_coord = ( $atom_site->{"$atom_id"}{"Cartn_x"},
-			       $atom_site->{"$atom_id"}{"Cartn_y"},
-			       $atom_site->{"$atom_id"}{"Cartn_z"} );
+    	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
-	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
+    	    my @transf_matrices; # Matrices for transforming atom coordinates.
 
-	    # Determines have one rotational bond and, also, part of it. Those
-	    # atoms are excluded from analysis.
-	    my $last_bond_idx = $#{ $rotatable_bonds->{$atom_id} };
-	    if( ( scalar(  @{ $rotatable_bonds->{$atom_id} } ) == 1 )
-	     && ( $atom_id == $rotatable_bonds->{$atom_id}
-                                              ->[$last_bond_idx][0]
-	       || $atom_id == $rotatable_bonds->{$atom_id}
-                                              ->[$last_bond_idx][1] ) ) {
-		next;
-	    } elsif( ( $atom_id == $rotatable_bonds->{$atom_id}
-                                                   ->[$last_bond_idx][0]
-		    || $atom_id == $rotatable_bonds->{$atom_id}
-                                                   ->[$last_bond_idx][1] ) ) {
-		pop( @{ $rotatable_bonds->{$atom_id} } );
-	    }
+    	    for my $rotatable_bond ( @{ $rotatable_bonds->{$atom_id} } ) {
+		# First, checks if rotatable bond has fourth atom produce
+		# dihedral angle. It is done by looking at atom connections - if
+		# rotatable bond ends with terminal atom, then this bond is
+		# excluded.
+		if( scalar( @{ $residue_site->{$rotatable_bond->[1]}
+			       {"connections"} } ) < 2 ){ next; }
 
-	    my @rotatable_bonds = @{ $rotatable_bonds->{$atom_id} };
+    		my $mid_atom_id = $rotatable_bond->[0];
+    		my $up_atom_id  = $rotatable_bond->[1];
+    		my @mid_connections = # Excludes up atom.
+    		    grep { $_ ne $up_atom_id }
+    		    @{ $residue_site->{$mid_atom_id}{"connections"} };
+    		my @mid_connection_names = # Excludes up atom.
+    		    map { $residue_site->{$_}{"label_atom_id"} }
+    		    @mid_connections;
+    		my $side_atom_name =
+    		    sort_by_priority( \@mid_connection_names )->[0];
+    		my $side_atom_id =
+		    filter( { "atom_site" => $residue_site,
+			      "include" =>
+			    { "label_atom_id" => [ $side_atom_name ] },
+			      "data" => [ "id" ],
+			      "is_list" => 1 } )->[0];
 
-	    my @transf_matrices; # Matrices for transforming atom coordinates.
+		my $angle_symbol;
+		if( exists $rot_bond_names{"$mid_atom_id,$up_atom_id"} ) {
+		    $angle_symbol =
+			$rot_bond_names{"$mid_atom_id,$up_atom_id"};
+		} elsif( exists $rot_bond_names{"$up_atom_id,$mid_atom_id"} ) {
+		    $angle_symbol =
+			$rot_bond_names{"$up_atom_id,$mid_atom_id"};
+		} else {
+		    die( "No corresponding angle names were found" );
+		}
 
-	    for( my $i = 0; $i < scalar( @rotatable_bonds ); $i++ ) {
-		my $mid_atom_id = $rotatable_bonds[$i][0];
-		my $up_atom_id  = $rotatable_bonds[$i][1];
-
-		my @mid_connections = # Excludes up atom.
-		    grep { $_ ne $up_atom_id }
-		    @{ $residue_site->{$mid_atom_id}{"connections"} };
-		my @mid_connection_names = # Excludes up atom.
-		    map { $residue_site->{$_}{"label_atom_id"} }
-		    @mid_connections;
-		my $side_atom_name =
-		    sort_by_priority( \@mid_connection_names )->[0];
-		my $side_atom_id =
-		    select_atom_data(
-		    filter_atoms(
-		    $residue_site,
-		    { "label_atom_id" => [ $side_atom_name ] } ),
-		    [ "id" ] )->[0][0];
-
-		# TODO: check if angle names do not change due to different
-		# ordering of atom ids.
-		my $angle_symbol = "chi${i}";
-
-		my $mid_atom_coord =
-		    [ $residue_site->{$mid_atom_id}{"Cartn_x"},
-		      $residue_site->{$mid_atom_id}{"Cartn_y"},
-		      $residue_site->{$mid_atom_id}{"Cartn_z"} ];
-		my $up_atom_coord =
-		    [ $residue_site->{$up_atom_id}{"Cartn_x"},
-		      $residue_site->{$up_atom_id}{"Cartn_y"},
-		      $residue_site->{$up_atom_id}{"Cartn_z"} ];
-		my $side_atom_coord =
-		    [ $residue_site->{$side_atom_id}{"Cartn_x"},
-		      $residue_site->{$side_atom_id}{"Cartn_y"},
-		      $residue_site->{$side_atom_id}{"Cartn_z"} ];
+    		my $mid_atom_coord =
+    		    [ $residue_site->{$mid_atom_id}{"Cartn_x"},
+    		      $residue_site->{$mid_atom_id}{"Cartn_y"},
+    		      $residue_site->{$mid_atom_id}{"Cartn_z"} ];
+    		my $up_atom_coord =
+    		    [ $residue_site->{$up_atom_id}{"Cartn_x"},
+    		      $residue_site->{$up_atom_id}{"Cartn_y"},
+    		      $residue_site->{$up_atom_id}{"Cartn_z"} ];
+    		my $side_atom_coord =
+    		    [ $residue_site->{$side_atom_id}{"Cartn_x"},
+    		      $residue_site->{$side_atom_id}{"Cartn_y"},
+    		      $residue_site->{$side_atom_id}{"Cartn_z"} ];
 
     	    # Creates and appends matrices to a list of matrices that later
     	    # will be multiplied.
     	    push( @transf_matrices,
     	    	  @{ bond_torsion( $mid_atom_coord,
-				   $up_atom_coord,
-				   $side_atom_coord,
-				   $angle_symbol ) } );
-	    }
+    				   $up_atom_coord,
+    				   $side_atom_coord,
+    				   $angle_symbol ) } );
+    	    }
 
-	    $atom_site->{$atom_id}{"conformation"} =
-		mult_matrix_product(
-		    [ @transf_matrices,
-		      @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
-	}
+    	    $atom_site->{$atom_id}{"conformation"} =
+    		mult_matrix_product(
+    		    [ @transf_matrices,
+    		      @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
+    	}
     }
 
     return $atom_site;

@@ -3,85 +3,37 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
-use Combinatorics qw( permutation );
-use LinearAlgebra qw( mult_matrix_product
-                      pi );
-use PDBxParser qw( filter_atoms
-                   obtain_atom_site );
-use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
-use PseudoAtoms qw( generate_pseudo );
 
-use lib "../lib";
-use Utils qw( select_atom_data );
+#
+# Unit test: SidechainModels::rotation_only
+#                          atom_id
+# Example: ./rotation_only 12 structure.dump
+#
 
-my ( $atom_specifier, $angle_ranges, $num_of_angles, $pdbx_file ) = @ARGV;
+my ( $atom_id, $pdbx_dump_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( $pdbx_file );
-my $target_atom_id =
-    select_atom_data( $pdbx_file, $atom_specifier, "id" )->[0][0];
-
-# Parses selector argument from string  to proper array.
-my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-		       map { [ split( " ", $_ ) ] }
-		       split( "&", $atom_specifier ) );
-
-# Parses angle ranges for dihedral angle of side-chain.
-my %angle_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-		     map { [ split( " ", $_ ) ] }
-		     split( "&", $angle_ranges ) );
-
-# Parses number of rotations that will be done for each dihedral angle.
-my %num_of_angles = ( map { $_->[0] => $_->[1] }
-		      map { [ split( " ", $_ ) ] }
-		      split( "&", $num_of_angles ) );
-
-# Calculates angles that will be rotated along.
-my $pi = pi();
-
-my $min_angle;
-my $max_angle;
-my %num_angle_values; # Numeric angle values.
-my $small_angle; # Change of angle in each rotation step.
-
-for my $dihedral_angle ( sort keys %angle_ranges ) {
-    $min_angle = $angle_ranges{"$dihedral_angle"}[0];
-    $max_angle = $angle_ranges{"$dihedral_angle"}[1];
-    $min_angle =~ s/pi/\$pi/g;
-    $max_angle =~ s/pi/\$pi/g;
-    $min_angle = eval( $min_angle );
-    $max_angle = eval( $max_angle );
-    $small_angle =
-	2 * pi() / $num_of_angles{$dihedral_angle};
-    $num_angle_values{"$dihedral_angle"} =
-	sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle );
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
 }
-
-# In Jmol, generates pseudo-atoms which represent positions of atom
-# after rotation along dihedral angle.
-open( my $fh, "<", $pdbx_file );
-chomp( my @pdbx_lines = <$fh> );
 close( $fh );
+$atom_site = eval( $atom_site );
 
-# Creates pseudo-atoms for given analytical equation that describes conformation
-# of atom and adds to existing atom data structure.
-%{ $atom_site } =
-    ( %{ $atom_site },
-      %{ generate_pseudo( rotation_only( $atom_site ),
-			  \%atom_specifier,
-			  \%num_angle_values ) } );
+my $conformation = rotation_only( $atom_site )->{$atom_id}{"conformation"};
 
-# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( keys %{ $atom_site } ), "\n" );
-print( "testing\n" );
-
-# Prints out pseudo-atom coordinates.
-for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-    printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
-	    "\t%.3f\t%.3f\t%.3f\n",
-	    $atom_site->{$atom_id}{"Cartn_x"},
-	    $atom_site->{$atom_id}{"Cartn_y"},
-	    $atom_site->{$atom_id}{"Cartn_z"} );
+for my $matrix_id ( 0..$#{ $conformation } ) {
+    for my $row ( @{ $conformation->[$matrix_id] } ) {
+	for my $item ( @{ $row } ) {
+	    if( $item =~ m/^[+-]?\d+[.]?\d+$/ ) {
+	    	printf( "%.3f", $item );
+	    } else {
+	    	print( $item );
+	    }
+	    print( " " );
+	}
+	print( "\n" );
+    }
+    print( "\n" ) if $matrix_id != $#{ $conformation };
 }
