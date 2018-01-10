@@ -3,59 +3,47 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( pi );
-use PDBxParser qw( obtain_atom_site
-                   filter_atoms );
 use PseudoAtoms qw( generate_rotamer );
-use SidechainModels qw( rotation_only );
 
-use lib "../lib";
-use Utils qw( select_atom_data );
+#
+# Unit test: PseudoAtoms::generate_rotamer
+#                    residue_id angle_value
+# Example: ./generate_pseudo 12 "chi0 0" structure.dump
+#
 
-my ( $resi_specifier, $angle_values, $pdbx_file ) = @ARGV;
+my ( $residue_id, $angle_values, $pdbx_dump_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( $pdbx_file );
-my $main_chain =
-    filter_atoms(
-	$atom_site,
-	{ "label_atom_id" => [ "H", "H2", "N", "HA", "CA", "C", "O", "CB" ] } );
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
 
 # Parses angles for pseudo-rotamers.
-my $pi = pi();
 my %angle_values = ( map { $_->[0] => $_->[1] }
 		     map { [ split( " ", $_ ) ] }
 		     split( "&", $angle_values ) );
 for my $angle_value ( keys %angle_values ) {
-    $angle_values{$angle_value} =~ s/pi/\$pi/g;
+    $angle_values{$angle_value} =~ s/pi/pi()/g;
     $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
 }
+generate_rotamer( $atom_site, \%angle_values );
+# %{ $atom_site } =
+#     ( %{ $atom_site },
+#       %{ generate_rotamer( $atom_site, \%angle_values ) } );
 
-# Calculates angles that will be rotated along.
+# # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
+# print( scalar( keys %{ $atom_site } ), "\n" );
+# print( "testing\n" );
 
-# In Jmol, generates pseudo-atoms which represent positions of atom
-# after rotation along dihedral angle.
-open( my $fh, "<", $pdbx_file );
-chomp( my @pdbx_lines = <$fh> );
-close( $fh );
-
-# Creates pseudo-atoms for given analytical equation that describes conformation
-# of atom.
-%{ $atom_site } =
-    ( %{ $main_chain },
-      %{ generate_rotamer( rotation_only( $atom_site ),
-			   { $resi_specifier => \%angle_values } ) } );
-
-# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-print( scalar( keys %{ $atom_site } ), "\n" );
-print( "testing\n" );
-
-# Prints out pseudo-atom coordinates.
-for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-    printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
-	    "\t%.3f\t%.3f\t%.3f\n",
-	    $atom_site->{$atom_id}{"Cartn_x"},
-	    $atom_site->{$atom_id}{"Cartn_y"},
-	    $atom_site->{$atom_id}{"Cartn_z"} );
-}
+# # Prints out pseudo-atom coordinates.
+# for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+#     printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
+# 	    "\t%.3f\t%.3f\t%.3f\n",
+# 	    $atom_site->{$atom_id}{"Cartn_x"},
+# 	    $atom_site->{$atom_id}{"Cartn_y"},
+# 	    $atom_site->{$atom_id}{"Cartn_z"} );
+# }

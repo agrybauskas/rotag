@@ -44,7 +44,7 @@ use MoleculeProperties qw( %ROTATABLE_BONDS
 use PDBxParser qw( create_pdbx_entry
                    filter );
 use Sampling qw( sample_angles );
-
+use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -150,83 +150,76 @@ sub generate_rotamer
 {
     my ( $atom_site, $angle_values ) = @_;
 
-    my @residue_ids = keys %{ $angle_values };
     my %rotamer_atom_site;
 
-    for my $residue_id ( @residue_ids ) {
-	my $residue_site =
-	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
+    for my $residue_id ( keys %{ $angle_values } ) {
+    	my $residue_site =
+	    filter( { "atom_site" => $atom_site,
+		      "include" => { "label_seq_id" => [ $residue_id ] } } );
+	my $side_chain_site =
+	    filter( { "atom_site" => $residue_site,
+		      "exclude" => { "label_atom_id" =>
+				       [ "N", "C", "O", "H", "H2", "HA" ] } } ) ;
 
-	# TODO: arguments for rotatable bonds is repeated few times in code.
-	# Should remove redundant code or simplify it.
+    	# TODO: arguments for rotatable bonds is repeated few times in code.
+    	# Should remove redundant code or simplify it.
 
-	# Determines sidechain atoms, CA atom and then finds rotatable bonds.
-	connect_atoms( $residue_site );
-	hybridization( $residue_site );
+    	# Determines sidechain atoms, CA atom and then finds rotatable bonds.
+    	connect_atoms( $residue_site );
+    	hybridization( $residue_site );
 
-	my @main_chain_ids = # Main chain atoms except for CA.
-	    @{ flatten(
-	    	   [ select_atom_data(
-			 filter_atoms(
-			     $residue_site,
-			     { "label_atom_id" => [ "N", "C", "O", "OXT", "H",
-						    "H2", "HA", "H3", "HXT" ]} ),
-			 [ "id" ] ) ] ) };
-	my @side_chain_ids;
-	for my $atom_id ( keys %{ $residue_site } ) {
-	    if( ! grep { $atom_id eq $_ } @main_chain_ids ) {
-		push( @side_chain_ids, $atom_id );
-	    }
-	}
+    	# Determines rotatable bonds.
 	my $ca_id =
-	    select_atom_data(
-	    	filter_atoms(
-		    $residue_site,
-		    { "label_atom_id" => [ "CA" ] } ),
-	    	[ "id" ] )->[0][0];
+	    filter( { "atom_site" => $side_chain_site,
+		      "label_atom_id" => [ "CA" ],
+		      "data" => [ "id" ],
+		      "is_list" => 1 } );
+	my $cb_id =
+	    filter( { "atom_site" => $side_chain_site,
+		      "label_atom_id" => [ "CB" ],
+		      "data" => [ "id" ],
+		      "is_list" => 1 } );
 
-	my $rotatable_bonds =
-	    rotatable_bonds(
-		filter_atoms( $residue_site, { "id" => \@side_chain_ids } ),
-		$ca_id );
+    	# my $rotatable_bonds =
+	#     rotatable_bonds( $side_chain_site, @{ $ca_id }, @{ $cb_id } );
 
-	for my $atom_id ( keys %{ $residue_site } ) {
-	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
-	    # Determines have one rotational bond and, also, part of it. Those
-	    # atoms are excluded from analysis.
-	    # TODO: also redundant code from SidechainModels should be
-	    # simplified.
-	    my $last_bond_idx = $#{ $rotatable_bonds->{$atom_id} };
-	    if( ( scalar(  @{ $rotatable_bonds->{$atom_id} } ) == 1 )
-	     && ( $atom_id == $rotatable_bonds->{$atom_id}
-                                              ->[$last_bond_idx][0]
-	       || $atom_id == $rotatable_bonds->{$atom_id}
-                                              ->[$last_bond_idx][1] ) ) {
-	    	next;
-	    } elsif( ( $atom_id == $rotatable_bonds->{$atom_id}
-                                                   ->[$last_bond_idx][0]
-	    	    || $atom_id == $rotatable_bonds->{$atom_id}
-                                                   ->[$last_bond_idx][1] ) ) {
-	    	pop( @{ $rotatable_bonds->{$atom_id} } );
-	    }
+    # 	for my $atom_id ( keys %{ $residue_site } ) {
+    # 	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
+    # 	    # Determines have one rotational bond and, also, part of it. Those
+    # 	    # atoms are excluded from analysis.
+    # 	    # TODO: also redundant code from SidechainModels should be
+    # 	    # simplified.
+    # 	    my $last_bond_idx = $#{ $rotatable_bonds->{$atom_id} };
+    # 	    if( ( scalar(  @{ $rotatable_bonds->{$atom_id} } ) == 1 )
+    # 	     && ( $atom_id == $rotatable_bonds->{$atom_id}
+    #                                           ->[$last_bond_idx][0]
+    # 	       || $atom_id == $rotatable_bonds->{$atom_id}
+    #                                           ->[$last_bond_idx][1] ) ) {
+    # 	    	next;
+    # 	    } elsif( ( $atom_id == $rotatable_bonds->{$atom_id}
+    #                                                ->[$last_bond_idx][0]
+    # 	    	    || $atom_id == $rotatable_bonds->{$atom_id}
+    #                                                ->[$last_bond_idx][1] ) ) {
+    # 	    	pop( @{ $rotatable_bonds->{$atom_id} } );
+    # 	    }
 
-	    my @rotatable_bonds = @{ $rotatable_bonds->{$atom_id} };
+    # 	    my @rotatable_bonds = @{ $rotatable_bonds->{$atom_id} };
 
-	    my %angles;
-    	    for my $angle_id ( 0..$#rotatable_bonds) {
-		$angles{"chi$angle_id"} =
-		    [ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
-    	    }
+    # 	    my %angles;
+    # 	    for my $angle_id ( 0..$#rotatable_bonds) {
+    # 		$angles{"chi$angle_id"} =
+    # 		    [ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
+    # 	    }
 
-    	    %rotamer_atom_site =
-    	    	( %rotamer_atom_site,
-    	    	  %{ generate_pseudo( { %{ $atom_site }, %rotamer_atom_site },
-    	    			      { "id" => [ $atom_id ] },
-    	    			      \%angles ) } );
-	}
+    # 	    %rotamer_atom_site =
+    # 	    	( %rotamer_atom_site,
+    # 	    	  %{ generate_pseudo( { %{ $atom_site }, %rotamer_atom_site },
+    # 	    			      { "id" => [ $atom_id ] },
+    # 	    			      \%angles ) } );
+    # 	}
     }
 
-    return \%rotamer_atom_site;
+    # return \%rotamer_atom_site;
 }
 
 #
