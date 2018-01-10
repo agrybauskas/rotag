@@ -4,14 +4,10 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( atom_data_with_id
-                     create_pdbx_entry
-                     filter_atoms
+our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      obtain_atom_site
-                     select_atom_data
                      to_pdbx );
-
 
 # --------------------------------- PDBx parser ------------------------------- #
 
@@ -94,25 +90,24 @@ sub filter
     # Iterates through each atom in $atom_site and checks if atom specifiers
     # match up.
     my %filtered_atoms;
-    my $match_counter; # Tracks if all matches occured.
 
     # First, filters atoms that are described in $include specifier.
     if( defined $include && %{ $include } ) {
-	for my $atom_id ( keys %{ $atom_site } ) {
-	    $match_counter = 0;
-	    for my $attribute ( %{ $include } ) {
-		if( exists $atom_site->{$atom_id}{$attribute}
-	         && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
-		    @{ $include->{$attribute} } ) {
-		    $match_counter += 1;
-		} else {
-		    last; # Terminates early if no match is found in specifier.
-		}
-		if( $match_counter == scalar( keys %{ $include } ) ) {
-		    $filtered_atoms{$atom_id} = $atom_site->{$atom_id};
-		}
+    	for my $atom_id ( keys %{ $atom_site } ) {
+    	    my $match_counter = 0; # Tracks if all matches occured.
+    	    for my $attribute ( keys %{ $include } ) {
+    		if( exists $atom_site->{$atom_id}{$attribute}
+    	         && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
+    		    @{ $include->{$attribute} } ) {
+    		    $match_counter += 1;
+    		} else {
+    		    last; # Terminates early if no match is found in specifier.
+    		}
+    	    }
+	    if( $match_counter == scalar( keys %{ $include } ) ) {
+	    	$filtered_atoms{$atom_id} = $atom_site->{$atom_id};
 	    }
-	}
+    	}
     } else {
     	%filtered_atoms = %{ $atom_site };
     }
@@ -125,7 +120,7 @@ sub filter
     	         && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
     	    	    @{ $exclude->{$attribute} } ) {
     	    	    delete $filtered_atoms{$atom_id};
-		    last;
+    		    last;
     	    	}
     	    }
     	}
@@ -133,118 +128,34 @@ sub filter
 
     # Extracts specific data, if defined.
     if( defined $data && @{ $data } ) {
-	# Simply iterates through $atom_site keys and extracts data using data
-	# specifier.
-	my @atom_data;
-	if( defined $data_with_id && $data_with_id ) {
-	    my %atom_data_with_id;
-	    # Simply iterates through $atom_site keys and extracts data using
-	    # data specifier and is asigned to atom id.
-	    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-		$atom_data_with_id{$atom_id} =
-		    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
-	    }
-	    return \%atom_data_with_id;
-
-	} else {
-	    for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
-		if( defined $is_list && $is_list ) {
-		    push( @atom_data,
-			  map { $filtered_atoms{$atom_id}{$_} } @{ $data } );
-		} else {
-		    push( @atom_data,
-			  [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
-		}
-	    }
-	    return \@atom_data;
-	}
-    }
-
-    return \%filtered_atoms;
-}
-
-#
-# From PDBx, extracts atoms with specified criteria, such as, atom type,
-# residue id, chain id and etc.
-# Input:
-#     $atom_site - special data structure.
-#     $atom_specifier - compound data structure for specifying desirable atoms.
-#     Ex.: { "label_atom_id" => [ "SER" ],
-#            "label_comp_id" => [ "CA", "CB" ] }
-# Output:
-#     %filtered_atoms - filtered special data structure.
-#
-
-sub filter_atoms
-{
-    my ( $atom_site, $atom_specifier ) = @_;
-
-    # Iterates through each atom in $atom_site and checks if atom specifiers
-    # match up.
-    my %filtered_atoms;
-    my $match_counter; # Tracks if all matches occured.
-
-    for my $atom_id ( keys %{ $atom_site } ) {
-    	$match_counter = 0;
-    	for my $attribute ( keys %{ $atom_specifier } ) {
-    	    if( exists $atom_site->{$atom_id}{$attribute}
-    	     && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
-    		@{ $atom_specifier->{$attribute} } ) {
-    		$match_counter += 1;
-    	    } else {
-    		last; # Terminates early if no match is found in any specifier.
+    	# Simply iterates through $atom_site keys and extracts data using data
+    	# specifier.
+    	my @atom_data;
+    	if( defined $data_with_id && $data_with_id ) {
+    	    my %atom_data_with_id;
+    	    # Simply iterates through $atom_site keys and extracts data using
+    	    # data specifier and is asigned to atom id.
+    	    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+    		$atom_data_with_id{$atom_id} =
+    		    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
     	    }
-    	    if( $match_counter == scalar( keys %{ $atom_specifier } ) ) {
-    		$filtered_atoms{$atom_id} = $atom_site->{$atom_id};
+    	    return \%atom_data_with_id;
+
+    	} else {
+    	    for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
+    		if( defined $is_list && $is_list ) {
+    		    push( @atom_data,
+    			  map { $filtered_atoms{$atom_id}{$_} } @{ $data } );
+    		} else {
+    		    push( @atom_data,
+    			  [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
+    		}
     	    }
+    	    return \@atom_data;
     	}
     }
 
     return \%filtered_atoms;
-}
-
-#
-# Returns atom data according to specified attribute values.
-# Input:
-#     $atom_site - special data structure.
-#     $data_specifier - list of desired attribute values.
-#     Eg.: [ "Cartn_x", "Cartn_y", "Cartn_z" ].
-# Output:
-#     @atom_data - list of arrays containing specified attribute data.
-#     Eg.: [ [ 3.0, 4.0, 2.0 ],
-#            [ 3.4, 4.9, 2.5 ] ]
-#
-
-sub select_atom_data
-{
-    my ( $atom_site, $data_specifier )  = @_;
-
-    my @atom_data;
-
-    # Simply iterates through $atom_site keys and extracts data using data
-    # specifier.
-    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-    	push( @atom_data,
-    	      [ map { $atom_site->{$atom_id}{$_} } @{ $data_specifier } ] );
-    }
-
-    return \@atom_data;
-}
-
-sub atom_data_with_id
-{
-    my ( $atom_site, $data_specifier )  = @_;
-
-    my %atom_data_with_id;
-
-    # Simply iterates through $atom_site keys and extracts data using data
-    # specifier and is asigned to atom id.
-    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-	$atom_data_with_id{$atom_id} =
-	    [ map { $atom_site->{$atom_id}{$_} } @{ $data_specifier } ];
-    }
-
-    return \%atom_data_with_id;
 }
 
 sub create_pdbx_entry
