@@ -1,11 +1,13 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/serine_001.cif
-target_atom="label_atom_id OG"
-angle_range="chi0 1*pi,1*pi"
-num_of_angles="chi0 1" # Number of angles will be generated for each dihedral
-                       # angle.
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/generate_pseudo "${target_atom}" "${angle_range}" \
-			    "${num_of_angles}" ${pdbx_file}
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.dump
+atom_id=152
+angle_ranges="chi0 0,2*pi"
+num_of_angles="chi0 20"
+
+$(dirname "$0")/../scripts/generate_pseudo "${atom_id}" \
+	                                   "${angle_ranges}" \
+	                                   "${num_of_angles}" \
+					   ${pdbx_dump_file}

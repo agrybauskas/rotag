@@ -13,7 +13,7 @@ use List::Util qw( max );
 use List::MoreUtils qw( uniq );
 use Math::Trig qw( acos );
 
-use AtomInteractions qw( potential );
+# use AtomInteractions qw( potential );
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
@@ -41,10 +41,8 @@ use Measure qw( all_dihedral
 use MoleculeProperties qw( %ROTATABLE_BONDS
                            %HYBRIDIZATION
                            %HYDROGEN_NAMES );
-use PDBxParser qw( atom_data_with_id
-                   create_pdbx_entry
-                   filter_atoms
-                   select_atom_data );
+use PDBxParser qw( create_pdbx_entry
+                   filter );
 use Sampling qw( sample_angles );
 
 # --------------------------- Generation of pseudo-atoms ---------------------- #
@@ -72,10 +70,10 @@ sub generate_pseudo
     my %pseudo_atom_site;
 
     my @atom_ids =
-    	map { $_->[0]->[0] }
-    	select_atom_data(
-    	filter_atoms( $atom_site, $atom_specifier ),
-    	[ "id" ] );
+	@{ filter( { "atom_site" => $atom_site,
+		     "include" => $atom_specifier,
+		     "data" => [ "id" ],
+		     "is_list" => 1 } ) };
     my $last_atom_id = max( keys %{ $atom_site } );
 
     for my $atom_id ( @atom_ids ) {
@@ -85,9 +83,9 @@ sub generate_pseudo
 
     	my %angles =
 	    %{ all_dihedral(
-		   filter_atoms( $atom_site,
-				 { "label_seq_id" => [ $residue_id ],
-				   "label_alt_id" => [ "." ] } ) ) };
+		   filter( { "atom_site" => $atom_site,
+			     "include" => { "label_seq_id" => [ $residue_id ],
+					    "label_alt_id" => [ "." ] } } ) ) };
 
     	# Iterates through combinations of angles and evaluates conformational
     	# model.
@@ -104,7 +102,8 @@ sub generate_pseudo
     	for my $angle_comb ( # Abreviation of angle combinations.
     	    @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ){
     	    my %angle_values =
-    		map { ( $angle_names[$_] => $angle_comb->[$_] ) } 0..$#angle_names;
+    		map { ( $angle_names[$_] => $angle_comb->[$_] ) }
+	        0..$#angle_names;
     	    # Evaluates matrices.
     	    my ( $transf_atom_coord ) =
     	    	@{ mult_matrix_product( $conformation, \%angle_values ) };
