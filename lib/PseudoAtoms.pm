@@ -44,7 +44,7 @@ use MoleculeProperties qw( %ROTATABLE_BONDS
 use PDBxParser qw( create_pdbx_entry
                    filter );
 use Sampling qw( sample_angles );
-use Data::Dumper;
+
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -123,9 +123,12 @@ sub generate_pseudo
     	    	  "cartn_y" => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
     	    	  "cartn_z" => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
     		  "auth_seq_id" => $atom_site->{$atom_id}{"auth_seq_id"} } );
-    	    # Adds information about used dihedral angles.
+    	    # Adds information about used dihedral angle values and names.
+	    $pseudo_atom_site{$last_atom_id}{"dihedral_names"} = \@angle_names;
     	    $pseudo_atom_site{$last_atom_id}{"dihedral_angles"} =
-    	    	\%angle_values;
+    	    	{ map { ( $_ => $angle_values{$_}
+	    		      + $angles{"$residue_id"}{$_} ) }
+	    	  @angle_names };
     	    # Adds additional pseudo-atom flag for future filtering.
     	    $pseudo_atom_site{$last_atom_id}{"is_pseudo_atom"} = 1;
     	    # Adds atom id that pseudo atoms was made of.
@@ -161,9 +164,6 @@ sub generate_rotamer
 		      "exclude" => { "label_atom_id" =>
 				       [ "N", "C", "O", "H", "H2", "HA" ] } } ) ;
 
-    	# TODO: arguments for rotatable bonds is repeated few times in code.
-    	# Should remove redundant code or simplify it.
-
     	# Determines sidechain atoms, CA atom and then finds rotatable bonds.
     	connect_atoms( $residue_site );
     	hybridization( $residue_site );
@@ -180,46 +180,29 @@ sub generate_rotamer
 		      "data" => [ "id" ],
 		      "is_list" => 1 } );
 
-    	# my $rotatable_bonds =
-	#     rotatable_bonds( $side_chain_site, @{ $ca_id }, @{ $cb_id } );
+    	my $rotatable_bonds =
+	    rotatable_bonds( $side_chain_site, @{ $ca_id }, @{ $cb_id } );
 
-    # 	for my $atom_id ( keys %{ $residue_site } ) {
-    # 	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
-    # 	    # Determines have one rotational bond and, also, part of it. Those
-    # 	    # atoms are excluded from analysis.
-    # 	    # TODO: also redundant code from SidechainModels should be
-    # 	    # simplified.
-    # 	    my $last_bond_idx = $#{ $rotatable_bonds->{$atom_id} };
-    # 	    if( ( scalar(  @{ $rotatable_bonds->{$atom_id} } ) == 1 )
-    # 	     && ( $atom_id == $rotatable_bonds->{$atom_id}
-    #                                           ->[$last_bond_idx][0]
-    # 	       || $atom_id == $rotatable_bonds->{$atom_id}
-    #                                           ->[$last_bond_idx][1] ) ) {
-    # 	    	next;
-    # 	    } elsif( ( $atom_id == $rotatable_bonds->{$atom_id}
-    #                                                ->[$last_bond_idx][0]
-    # 	    	    || $atom_id == $rotatable_bonds->{$atom_id}
-    #                                                ->[$last_bond_idx][1] ) ) {
-    # 	    	pop( @{ $rotatable_bonds->{$atom_id} } );
-    # 	    }
+    	for my $atom_id ( keys %{ $residue_site } ) {
+    	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
-    # 	    my @rotatable_bonds = @{ $rotatable_bonds->{$atom_id} };
+    	    my @rotatable_bonds = @{ $rotatable_bonds->{$atom_id} };
 
-    # 	    my %angles;
-    # 	    for my $angle_id ( 0..$#rotatable_bonds) {
-    # 		$angles{"chi$angle_id"} =
-    # 		    [ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
-    # 	    }
+    	    my %angles;
+    	    for my $angle_id ( 0..$#rotatable_bonds) {
+    		$angles{"chi$angle_id"} =
+    		    [ $angle_values->{"$residue_id"}{"chi$angle_id"} ];
+    	    }
 
-    # 	    %rotamer_atom_site =
-    # 	    	( %rotamer_atom_site,
-    # 	    	  %{ generate_pseudo( { %{ $atom_site }, %rotamer_atom_site },
-    # 	    			      { "id" => [ $atom_id ] },
-    # 	    			      \%angles ) } );
-    # 	}
+    	    %rotamer_atom_site =
+    	    	( %rotamer_atom_site,
+    	    	  %{ generate_pseudo( { %{ $atom_site }, %rotamer_atom_site },
+    	    			      { "id" => [ $atom_id ] },
+    	    			      \%angles ) } );
+    	}
     }
 
-    # return \%rotamer_atom_site;
+    return \%rotamer_atom_site;
 }
 
 #
