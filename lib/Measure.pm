@@ -197,7 +197,7 @@ sub all_dihedral
     for my $residue_id ( @residue_ids ) {
     	my $residue_site =
 	    filter( { "atom_site" => \%dihedral_site,
-		      "label_seq_id" => [ $residue_id ] } );
+		      "include" => { "label_seq_id" => [ $residue_id ] } } );
 	my $side_chain_site =
 	    filter( { "atom_site" => $residue_site,
 		      "exclude" => { "label_atom_id" =>
@@ -206,12 +206,12 @@ sub all_dihedral
     	# Determines rotatable bonds.
 	my $ca_id =
 	    filter( { "atom_site" => $side_chain_site,
-		      "label_atom_id" => [ "CA" ],
+		      "include" => { "label_atom_id" => [ "CA" ] },
 		      "data" => [ "id" ],
 		      "is_list" => 1 } );
 	my $cb_id =
 	    filter( { "atom_site" => $side_chain_site,
-		      "label_atom_id" => [ "CB" ],
+		      "include" => { "label_atom_id" => [ "CB" ] },
 		      "data" => [ "id" ],
 		      "is_list" => 1 } );
     	my $rotatable_bonds =
