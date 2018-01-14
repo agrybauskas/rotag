@@ -379,7 +379,9 @@ sub add_hydrogens
     my ( $atom_site ) = @_;
 
     my %atom_site = %{ $atom_site };
+
     connect_atoms( \%atom_site );
+    hybridization( \%atom_site );
 
     my %hydrogen_site;
     my $last_atom_id = max( keys %{ $atom_site } );
@@ -391,10 +393,12 @@ sub add_hydrogens
 	my $residue_name = $atom_site{$atom_id}{"label_comp_id"};
 	my $residue_id = $atom_site{$atom_id}{"label_seq_id"};
 	my $residue_site =
-	    filter_atoms( $atom_site, { "label_seq_id" => [ $residue_id ] } );
+	    filter( { "atom_site" => $atom_site,
+		      "include" => { "label_seq_id" => [ $residue_id ] } } );
 	my %residue_coord =
-	    %{ atom_data_with_id( $residue_site,
-				  [ "Cartn_x", "Cartn_y", "Cartn_z" ] ) };
+	    %{ filter( { "atom_site" => $residue_site,
+			 "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ],
+			 "data_with_id" => 1 } ) };
 
     	my $hydrogen_names = $HYDROGEN_NAMES{$residue_name}{$atom_name};
 
@@ -405,7 +409,7 @@ sub add_hydrogens
     	my @connection_names =
     	    map { $atom_site{"$_"}{"label_atom_id"} } @connection_ids;
 
-    	my $hybridization = $HYBRIDIZATION{$residue_name}{$atom_name};
+    	my $hybridization = $residue_site->{$atom_id}{"hybridization"};
     	my $lone_pair_count = $ATOMS{$atom_type}{"lone_pairs"};
 
     	# Decides how many and what hydrogens should be added according to the
@@ -765,9 +769,7 @@ sub add_hydrogens
 
     		for my $second_neighbour ( @second_neighbours ) {
     		    my $second_hybridization =
-    			$HYBRIDIZATION{$residue_name}
-    		                      {$atom_site->{$second_neighbour}
-    				                   {"label_atom_id"}};
+			$residue_site->{$second_neighbour}{"hybridization"};
     		    if( $second_hybridization eq "sp2"
     		     || $second_hybridization eq "sp" ) {
     			$side_coord =

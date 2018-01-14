@@ -3,17 +3,18 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
-use PDBxParser qw( obtain_atom_site
-                   to_pdbx );
+use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( add_hydrogens );
 
-use lib "../lib";
-use Utils qw( select_atom_data );
+my ( $pdbx_dump_file ) = @ARGV;
 
-my ( $pdbx_file ) = @ARGV;
-
-my $atom_site = obtain_atom_site( $pdbx_file );
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
 
 %{ $atom_site } =
     ( %{ $atom_site },
