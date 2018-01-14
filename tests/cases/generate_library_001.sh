@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 export PERL5LIB=$(dirname "$0")/../../lib
 
 pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.dump

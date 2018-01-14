@@ -1,11 +1,17 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/serine_001.cif
+export PERL5LIB=$(dirname "$0")/../../lib
+
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.dump
+conf_model="rotation_only"
 potential="exponential"
 cutoff=0.45
-target_resi="18"
+residue_id="18"
 small_angle="0.1*pi"
 
-../programs/generate_library "${potential}" "${cutoff}" "${target_resi}" \
-			     "${small_angle}" ${pdbx_file}
+$(dirname "$0")/../scripts/generate_library ${residue_id} \
+                              	            ${conf_model} \
+	                                    ${small_angle} \
+	                                    ${potential} \
+					    ${cutoff} \
+					    ${pdbx_dump_file}
