@@ -3,33 +3,42 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( pi );
-use PDBxParser qw( obtain_atom_site to_pdbx );
+use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_library );
-use SidechainModels qw( rotation_only );
 
-my ( $potential, $cutoff, $residue_id, $small_angle, $pdbx_file ) = @ARGV;
+my ( $residue_id,
+     $conf_model,
+     $small_angle,
+     $potential,
+     $cutoff,
+     $pdbx_dump_file ) = @ARGV;
 
-my $atom_site = obtain_atom_site( $pdbx_file );
-$small_angle =~ s/pi/pi\(\)/g;
-
-# In Jmol, generates pseudo-atoms which represent positions of atom
-# after rotation along dihedral angle.
-open( my $fh, "<", $pdbx_file );
-chomp( my @pdbx_lines = <$fh> );
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
 close( $fh );
+$atom_site = eval( $atom_site );
 
-# Creates pseudo-atoms for given analytical equation that describes conformation
-# of atom.
-%{ $atom_site } =
-    ( %{ $atom_site },
-      %{ generate_library( { "atom_site"     => $atom_site,
-			     "residue_ids"   => [ $residue_id ],
-			     "small_angle"   => eval( $small_angle ),
-			     "conformations" => \&rotation_only,
-			     "interactions"  => $potential,
-			     "cutoff"        => $cutoff  } ) } );
+$small_angle =~ s/pi/pi\(\)/g;
+generate_library( { "atom_site"     => $atom_site,
+		    "residue_ids"   => [ $residue_id ],
+		    "small_angle"   => eval( $small_angle ),
+		    "conf_model"    => $conf_model,
+		    "interactions"  => $potential,
+		    "cutoff"        => $cutoff  } );
+# # Creates pseudo-atoms for given analytical equation that describes conformation
+# # of atom.
+# %{ $atom_site } =
+#     ( %{ $atom_site },
+#       %{ generate_library( { "atom_site"     => $atom_site,
+# 			     "residue_ids"   => [ $residue_id ],
+# 			     "small_angle"   => eval( $small_angle ),
+# 			     "conformations" => $conf_model,
+# 			     "interactions"  => $potential,
+# 			     "cutoff"        => $cutoff  } ) } );
 
-# Prints out PDBx format file.
-to_pdbx( $atom_site );
+# # Prints out PDBx format file.
+# to_pdbx( $atom_site );

@@ -13,8 +13,7 @@ use ConnectAtoms qw( connect_atoms
                      grid_box
                      is_connected
                      is_second_neighbour );
-use PDBxParser qw( filter_atoms
-                   select_atom_data );
+use PDBxParser qw( filter );
 use LinearAlgebra qw( pi );
 
 # ---------------------------- General potential ------------------------------ #
@@ -42,15 +41,15 @@ sub potential
     $target_atoms =  { "group_pdb" => [ "ATOM" ] } unless $target_atoms;
     $visible_atoms = { "group_pdb" => [ "ATOM" ] } unless $visible_atoms;
     my @target_atom_ids = # Atom ids selected by $atom_specifier.
-    	map { $_->[0] }
-        @{ select_atom_data(
-	   filter_atoms( $atom_site, $target_atoms ),
-	   [ "id" ] ) };
+    	@{ filter( { "atom_site" => $atom_site,
+    		     "include" => $target_atoms,
+    		     "data" => [ "id" ],
+    		     "is_list" => 1 } ) };
     my @visible_atom_ids = # Atom ids selected by $atom_specifier.
-    	map { $_->[0] }
-        @{ select_atom_data(
-	   filter_atoms( $atom_site, $visible_atoms ),
-	   [ "id" ] ) };
+    	@{ filter( { "atom_site" => $atom_site,
+    		     "include" => $visible_atoms,
+    		     "data" => [ "id" ],
+    		     "is_list" => 1 } ) };
 
     # Selection of potential function.
     my $potential_function;
