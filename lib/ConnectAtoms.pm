@@ -463,9 +463,9 @@ sub connect_atoms
     	    foreach my $neighbour_id ( @neighbour_cells ) {
     		if( ( is_connected( $atom_site->{"$atom_id"},
 				    $atom_site->{"$neighbour_id"} ) )
-		 && ( ! exists $connected_atoms{$atom_id}{"connections"}
-		     || ! any { $_ eq $neighbour_id }
-		          @{ $connected_atoms{$atom_id}{"connections"} } ) ) {
+		    # TODO: definitely try to exclude connections, if they are
+		    # not present. Might use ! any {}?
+		 && ( ! exists $connected_atoms{$atom_id}{"connections"} ) ) {
 		    push( @{ $connected_atoms{$atom_id}{"connections"} },
 			  "$neighbour_id" );
     		}

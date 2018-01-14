@@ -45,7 +45,7 @@ use PDBxParser qw( create_pdbx_entry
                    filter );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
-use Data::Dumper;
+
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -340,38 +340,38 @@ sub generate_library
 			      "data" => [ "id" ],
 			      "is_list" => 1 } )->[0];
 
-    		# potential( { %interaction_site,
-    		# 	     %{ $pseudo_atom_site } },
-    		# 	   $interactions,
-    		# 	   $cutoff,
-    		# 	   { "id" => [ $pseudo_atom_id ] },
-    		# 	   { "label_atom_id" => [ "N", "CA", "C", "O" ] } );
+    		potential( { %interaction_site,
+    			     %{ $pseudo_atom_site } },
+    			   $interactions,
+    			   $cutoff,
+    			   { "id" => [ $pseudo_atom_id ] },
+    			   { "label_atom_id" => [ "N", "CA", "C", "O" ] } );
 
-    		# if( $pseudo_atom_site->{"$pseudo_atom_id"}
-    		#                        {"potential_energy"} <= $cutoff ) {
-    		#     push( @allowed_angles, $angles );
-    		# }
+    		if( $pseudo_atom_site->{"$pseudo_atom_id"}
+    		                       {"potential_energy"} <= $cutoff ) {
+    		    push( @allowed_angles, $angles );
+    		}
     	    }
 
-    	    # die "No possible rotamer solutions were detected."
-    	    # 	if scalar( @allowed_angles ) == 0;
+    	    die "No possible rotamer solutions were detected."
+    	    	if scalar( @allowed_angles ) == 0;
     	}
 
-    	# # Generates final rotamers.
-    	# for my $angles ( @allowed_angles ) {
-    	#     my %angles =
-    	# 	( "$residue_id" => { map { ( "chi$_" => $angles->[$_] ) }
-    	# 			     ( 0..$#{ $angles } ) } );
-    	#     # TODO: do not forget to check clashes among atoms inside rotamer.
-    	#     %library_atom_site =
-    	#     	( %library_atom_site,
-    	#     	  %{ generate_rotamer( { %library_atom_site,
-    	#     				 %{ $atom_site } },
-    	# 			       \%angles ) } );
-    	# }
+    	# Generates final rotamers.
+    	for my $angles ( @allowed_angles ) {
+    	    my %angles =
+    		( "$residue_id" => { map { ( "chi$_" => $angles->[$_] ) }
+    				     ( 0..$#{ $angles } ) } );
+    	    # TODO: do not forget to check clashes among atoms inside rotamer.
+    	    %library_atom_site =
+    	    	( %library_atom_site,
+    	    	  %{ generate_rotamer( { %library_atom_site,
+    	    				 %{ $atom_site } },
+    				       \%angles ) } );
+    	}
     }
 
-    # return \%library_atom_site;
+    return \%library_atom_site;
 }
 
 sub add_hydrogens
