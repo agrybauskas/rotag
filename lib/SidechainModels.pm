@@ -24,14 +24,13 @@ use PDBxParser qw( filter );
 # Model that uses only rotation around single bonds.
 # Input:
 #     $atom_site - atom data structure.
-# Output:
-#     $atom_site - modified $atom_site with added equation describing
-#     conformational space.
 #
 
 sub rotation_only
 {
     my ( $atom_site ) = @_;
+
+    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
     # Determines all residue ids present in atom site.
     my @residue_ids =
@@ -43,30 +42,10 @@ sub rotation_only
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_id ( @residue_ids ) {
     	my $residue_site =
-	    filter( { "atom_site" => $atom_site,
+	    filter( { "atom_site" => \%atom_site,
 		      "include" => { "label_seq_id" => [ $residue_id ] } } );
-	my $side_chain_site =
-	    filter( { "atom_site" => $residue_site,
-		      "exclude" => { "label_atom_id" =>
-				       [ "N", "C", "O", "H", "H2", "HA" ] } } ) ;
 
-    	# Determines sidechain atoms, CA atom and then finds rotatable bonds.
-    	connect_atoms( $residue_site );
-    	hybridization( $residue_site );
-
-    	# Determines rotatable bonds.
-	my $ca_id =
-	    filter( { "atom_site" => $side_chain_site,
-		      "label_atom_id" => [ "CA" ],
-		      "data" => [ "id" ],
-		      "is_list" => 1 } );
-	my $cb_id =
-	    filter( { "atom_site" => $side_chain_site,
-		      "label_atom_id" => [ "CB" ],
-		      "data" => [ "id" ],
-		      "is_list" => 1 } );
-    	my $rotatable_bonds =
-	    rotatable_bonds( $side_chain_site, @{ $ca_id }, @{ $cb_id } );
+    	my $rotatable_bonds = rotatable_bonds( $residue_site );
 
 	# Assigns names to rotatable bond angles.
 	# TODO: check if later names of rotation_only dihedral angles match
@@ -91,9 +70,9 @@ sub rotation_only
 	}
 
     	for my $atom_id ( keys %{ $residue_site }  ) {
-    	    my @atom_coord = ( $atom_site->{"$atom_id"}{"Cartn_x"},
-    			       $atom_site->{"$atom_id"}{"Cartn_y"},
-    			       $atom_site->{"$atom_id"}{"Cartn_z"} );
+    	    my @atom_coord = ( $atom_site{"$atom_id"}{"Cartn_x"},
+    			       $atom_site{"$atom_id"}{"Cartn_y"},
+    			       $atom_site{"$atom_id"}{"Cartn_z"} );
 
     	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
@@ -163,8 +142,6 @@ sub rotation_only
     		      @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
     	}
     }
-
-    return $atom_site;
 }
 
 1;

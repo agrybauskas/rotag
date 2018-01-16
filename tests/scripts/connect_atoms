@@ -20,17 +20,17 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my %connected_atoms = %{ connect_atoms( $atom_site ) };
+connect_atoms( $atom_site );
 
 my @atom_coord;
 my @parent_atom;
 my @child_atom;
 
-for my $parent_id ( keys %connected_atoms ) {
-    @parent_atom = ( $parent_id, $connected_atoms{$parent_id}{"label_atom_id"} );
-    for my $child_id ( @{ $connected_atoms{$parent_id}{"connections"} } ) {
+for my $parent_id ( keys %{ $atom_site } ) {
+    @parent_atom = ( $parent_id, $atom_site->{$parent_id}{"label_atom_id"} );
+    for my $child_id ( @{ $atom_site->{$parent_id}{"connections"} } ) {
         @child_atom =
-    	    ( $child_id, $connected_atoms{$child_id}{"label_atom_id"} );
+    	    ( $child_id, $atom_site->{$child_id}{"label_atom_id"} );
         print( "$parent_atom[0] $parent_atom[1]:" );
         print( "$child_atom[0] $child_atom[1]\n" );
     }

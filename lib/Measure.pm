@@ -14,12 +14,10 @@ use Math::Trig;
 use List::MoreUtils qw( uniq );
 
 use ConnectAtoms qw( connect_atoms
-                     hybridization
                      rotatable_bonds
                      sort_by_priority );
 use PDBxParser qw( filter );
-use LinearAlgebra qw( flatten
-                      matrix_sub
+use LinearAlgebra qw( matrix_sub
                       vector_cross );
 
 # ----------------------------- Molecule parameters --------------------------- #
@@ -186,9 +184,9 @@ sub all_dihedral
     # used during the run of functions (in the beginning of script or during
     # every execute of the function that needs the result of the previously
     # mentioned functions).
-    my %dihedral_site = %{ $atom_site };
-    connect_atoms( \%dihedral_site );
-    hybridization( \%dihedral_site );
+    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
+
+    connect_atoms( \%atom_site );
 
     # Iterates through residue ids and, according to the parameter file,
     # calculates dihedral angles of each rotatable bond.
@@ -196,26 +194,10 @@ sub all_dihedral
 
     for my $residue_id ( @residue_ids ) {
     	my $residue_site =
-	    filter( { "atom_site" => \%dihedral_site,
+	    filter( { "atom_site" => \%atom_site,
 		      "include" => { "label_seq_id" => [ $residue_id ] } } );
-	my $side_chain_site =
-	    filter( { "atom_site" => $residue_site,
-		      "exclude" => { "label_atom_id" =>
-				       [ "N", "C", "O", "H", "H2", "HA" ] } } ) ;
 
-    	# Determines rotatable bonds.
-	my $ca_id =
-	    filter( { "atom_site" => $side_chain_site,
-		      "include" => { "label_atom_id" => [ "CA" ] },
-		      "data" => [ "id" ],
-		      "is_list" => 1 } );
-	my $cb_id =
-	    filter( { "atom_site" => $side_chain_site,
-		      "include" => { "label_atom_id" => [ "CB" ] },
-		      "data" => [ "id" ],
-		      "is_list" => 1 } );
-    	my $rotatable_bonds =
-	    rotatable_bonds( $side_chain_site, @{ $ca_id }, @{ $cb_id } );
+    	my $rotatable_bonds = rotatable_bonds( $residue_site );
 
 	# Assigns names to unique rotatable bond angles. Firstly, atoms with
 	# largest number of degrees of freedom are append to @rotatable_bonds

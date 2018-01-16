@@ -3,40 +3,25 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
-use PDBxParser qw( filter_atoms
-                   obtain_atom_site );
-use ConnectAtoms qw( connect_atoms
-                     hybridization
-                     rotatable_bonds );
-use LinearAlgebra qw( flatten );
-
-use lib "../lib";
-use Utils qw( select_atom_data );
+use ConnectAtoms qw( rotatable_bonds );
 
 #
 # Unit test: ConnectAtoms::rotatable_bonds
+# Example: ./rotatable_bonds structure.dump
 #
-# Example: ./rotatable_bonds example.cif "label_atom_id CA"
-#
 
-my ( $start_atom_specifier, $next_atom_specifier, $pdbx_file ) = @ARGV;
+my ( $pdbx_dump_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( $pdbx_file );
-
-# my $atom_ids =
-#     flatten( [ select_atom_data( $pdbx_file, "group_PDB ATOM", "id" ) ] );
-my $start_atom_id =
-    ( select_atom_data( $pdbx_file, $start_atom_specifier, "id" ) )->[0][0];
-my $next_atom_id =
-    ( select_atom_data( $pdbx_file, $next_atom_specifier, "id" ) )->[0][0];
-
-connect_atoms( $atom_site );
-hybridization( $atom_site );
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
 
 my %rotatable_bonds =
-    %{ rotatable_bonds( $atom_site, $start_atom_id, $next_atom_id ) };
+    %{ rotatable_bonds( $atom_site ) };
 
 for my $atom_id ( sort { $a cmp $b } keys( %rotatable_bonds ) ) {
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
