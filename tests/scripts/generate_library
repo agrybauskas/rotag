@@ -23,7 +23,12 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 $small_angle =~ s/pi/pi\(\)/g;
-
+generate_library( { "atom_site"     => $atom_site,
+		    "residue_ids"   => [ $residue_id ],
+		    "small_angle"   => eval( $small_angle ),
+		    "conf_model" => $conf_model,
+		    "interactions"  => $potential,
+		    "cutoff"        => $cutoff  } );
 # # Creates pseudo-atoms for given analytical equation that describes conformation
 # # of atom.
 # %{ $atom_site } =

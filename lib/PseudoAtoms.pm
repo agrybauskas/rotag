@@ -29,10 +29,11 @@ use Measure qw( all_dihedral
                 bond_length );
 use MoleculeProperties qw( %HYDROGEN_NAMES );
 use PDBxParser qw( create_pdbx_entry
-                   filter );
+                   filter
+                   to_pdbx );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
-
+use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -206,118 +207,118 @@ sub generate_library
 
     my %library_atom_site;
 
-    # # Generates comformational models before checking for clashes/interactions.
-    # rotation_only( $atom_site ) if $conf_model eq "rotation_only";
+    # Generates comformational models before checking for clashes/interactions.
+    rotation_only( \%atom_site ) if $conf_model eq "rotation_only";
 
-    # my @sampled_angles =
-    # 	map { [ $_ ] } @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
+    my @sampled_angles =
+    	map { [ $_ ] } @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
 
-    # for my $residue_id ( @{ $residue_ids } ) {
-    # 	my $residue_site =
-    # 	    filter( { "atom_site" => \%atom_site,
-    # 		      "include" => { "label_seq_id" => [ $residue_id ] } } );
+    for my $residue_id ( @{ $residue_ids } ) {
+    	my $residue_site =
+    	    filter( { "atom_site" => \%atom_site,
+    		      "include" => { "label_seq_id" => [ $residue_id ] } } );
 
-    # 	my $rotatable_bonds = rotatable_bonds( \%atom_site );
+    	my $rotatable_bonds = rotatable_bonds( \%atom_site );
 
-    # 	# Creates a list of atoms that depend on the rotation of bonds and also
-    # 	# exist in current residue.
-    # 	my @sorted_atom_ids =
-    # 	    sort{ scalar( @{ $rotatable_bonds->{$_}{$a} } )
-    # 	      cmp scalar( @{ $rotatable_bonds->{$_}{$b} } ) }
-    # 	    keys %{ $rotatable_bonds };
+    	# Creates a list of atoms that depend on the rotation of bonds and also
+    	# exist in current residue.
+    	my @sorted_atom_ids =
+    	    sort{ scalar( @{ $rotatable_bonds->{$_}{$a} } )
+    	      cmp scalar( @{ $rotatable_bonds->{$_}{$b} } ) }
+    	    keys %{ $rotatable_bonds };
 
-    # 	# Ignores movable side chain atoms so, iteractions between pseudo atoms
-    # 	# and backbone could be analyzed properly.
-    # 	# TODO: should look how to just use filter() and do not create
-    # 	# @removable_atom_ids variable.
-    # 	my %interaction_site = %atom_site;
-    # 	my @removable_atom_ids =
-    # 	    @{ filter( { "atom_site" => $residue_site,
-    # 			 "include" => { "id" => \@sorted_atom_ids },
-    # 			 "data" => [ "id" ],
-    # 			 "is_list" => 1 } ) };
-    # 	for my $atom_id ( @removable_atom_ids ) {
-    # 	    delete $interaction_site{"$atom_id"}
-    # 	}
+    	# Ignores movable side chain atoms so, iteractions between pseudo atoms
+    	# and backbone could be analyzed properly.
+    	# TODO: should look how to just use filter() and do not create
+    	# @removable_atom_ids variable.
+    	my %interaction_site = %atom_site;
+    	my @removable_atom_ids =
+    	    @{ filter( { "atom_site" => $residue_site,
+    			 "include" => { "id" => \@sorted_atom_ids },
+    			 "data" => [ "id" ],
+    			 "is_list" => 1 } ) };
+    	for my $atom_id ( @removable_atom_ids ) {
+    	    delete $interaction_site{"$atom_id"}
+    	}
 
-    # 	# Iterates through sorted atoms and tries to detect interactions.
-    # 	my @allowed_angles;
+    	# Iterates through sorted atoms and tries to detect interactions.
+    	my @allowed_angles;
 
-    # 	my %current_angles;
-    # 	for my $atom_id ( @sorted_atom_ids ) {
-    # 	    my $current_atom_site =
-    # 	    	filter( { "atom_site" => $residue_site,
-    # 			  "include" => { "id" => [ $atom_id ] } } );
+    	my %current_angles;
+    	for my $atom_id ( @sorted_atom_ids ) {
+    	    my $current_atom_site =
+    	    	filter( { "atom_site" => $residue_site,
+    			  "include" => { "id" => [ $atom_id ] } } );
 
-    # 	    my $angle_count = scalar( @{ $rotatable_bonds->{$atom_id} } );
+    	    my $angle_count = scalar( @{ $rotatable_bonds->{$atom_id} } );
 
-    # 	    # TODO: look for cases, when all atoms produce clashes.
-    # 	    my @current_angles;
-    # 	    if( ! @allowed_angles ) {
-    # 		# If no angles are present, allows all angles.
-    # 		@current_angles = @sampled_angles;
-    # 	    } else {
-    # 		my $allowed_angle_count = scalar( $allowed_angles[0] );
-    # 		if( $angle_count == $allowed_angle_count ) {
-    # 		    @current_angles = @allowed_angles;
-    # 		} else {
-    # 		    @current_angles =
-    # 		    	@{ permutation( 2, [], [ \@allowed_angles,
-    # 		    				 \@sampled_angles ], [ ] ) };
-    # 		    # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-    # 		    @current_angles =
-    # 		    	map { [ @{ $_->[0] }, @{ $_->[1] } ] } @current_angles;
-    # 		}
-    # 	    }
+    	    # TODO: look for cases, when all atoms produce clashes.
+    	    my @current_angles;
+    	    if( ! @allowed_angles ) {
+    		# If no angles are present, allows all angles.
+    		@current_angles = @sampled_angles;
+    	    } else {
+    		my $allowed_angle_count = scalar( $allowed_angles[0] );
+    		if( $angle_count == $allowed_angle_count ) {
+    		    @current_angles = @allowed_angles;
+    		} else {
+    		    @current_angles =
+    		    	@{ permutation( 2, [], [ \@allowed_angles,
+    		    				 \@sampled_angles ], [ ] ) };
+    		    # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+    		    @current_angles =
+    		    	map { [ @{ $_->[0] }, @{ $_->[1] } ] } @current_angles;
+    		}
+    	    }
 
-    # 	    undef @allowed_angles; # Undefying to store increasing dihedral
-    # 	                           # angles.
+    	    undef @allowed_angles; # Undefying to store increasing dihedral
+    	                           # angles.
 
-    # 	    # Iterates through allowed angles, checks clashes and returns
-    # 	    # unhindered angles to @allowed_angle_comb.
-    # 	    for my $angles ( @current_angles ) {
-    # 		my %angles =
-    # 		    map { ( "chi$_" => [ $angles->[$_] ] ) } 0..$angle_count - 1;
+    	    # Iterates through allowed angles, checks clashes and returns
+    	    # unhindered angles to @allowed_angle_comb.
+    	    for my $angles ( @current_angles ) {
+    		my %angles =
+    		    map { ( "chi$_" => [ $angles->[$_] ] ) } 0..$angle_count - 1;
 
-    # 		my $pseudo_atom_site =
-    # 		    generate_pseudo( \%atom_site,
-    # 				     { "id" => [ "$atom_id" ] },
-    # 				     \%angles );
-    # 		my $pseudo_atom_id =
-    # 		    filter( { "atom_site" => $pseudo_atom_site,
-    # 			      "data" => [ "id" ],
-    # 			      "is_list" => 1 } )->[0];
+    		my $pseudo_atom_site =
+    		    generate_pseudo( \%atom_site,
+    				     { "id" => [ "$atom_id" ] },
+    				     \%angles );
+    		my $pseudo_atom_id =
+    		    filter( { "atom_site" => $pseudo_atom_site,
+    			      "data" => [ "id" ],
+    			      "is_list" => 1 } )->[0];
 
-    # 		potential( { %interaction_site,
-    # 			     %{ $pseudo_atom_site } },
-    # 			   $interactions,
-    # 			   $cutoff,
-    # 			   { "id" => [ $pseudo_atom_id ] },
-    # 			   { "label_atom_id" => [ "N", "CA", "C", "O" ] } );
+    		potential( { %interaction_site,
+    			     %{ $pseudo_atom_site } },
+    			   $interactions,
+    			   $cutoff,
+    			   { "id" => [ $pseudo_atom_id ] },
+    			   { "label_atom_id" => [ "N", "CA", "C", "O" ] });
 
-    # 		if( $pseudo_atom_site->{"$pseudo_atom_id"}
-    # 		                       {"potential_energy"} <= $cutoff ) {
-    # 		    push( @allowed_angles, $angles );
-    # 		}
-    # 	    }
+    		if( $pseudo_atom_site->{"$pseudo_atom_id"}
+    		                       {"potential_energy"} <= $cutoff ) {
+    		    push( @allowed_angles, $angles );
+    		}
+    	    }
 
-    # 	    die "No possible rotamer solutions were detected."
-    # 	    	if scalar( @allowed_angles ) == 0;
-    # 	}
+    	    # die "No possible rotamer solutions were detected."
+    	    # 	if scalar( @allowed_angles ) == 0;
+    	}
 
-    # 	# Generates final rotamers.
-    # 	for my $angles ( @allowed_angles ) {
-    # 	    my %angles =
-    # 		( "$residue_id" => { map { ( "chi$_" => $angles->[$_] ) }
-    # 				     ( 0..$#{ $angles } ) } );
-    # 	    # TODO: do not forget to check clashes among atoms inside rotamer.
-    # 	    %library_atom_site =
-    # 	    	( %library_atom_site,
-    # 	    	  %{ generate_rotamer( { %library_atom_site,
-    # 	    				 %atom_site },
-    # 				       \%angles ) } );
-    # 	}
-    # }
+    	# # Generates final rotamers.
+    	# for my $angles ( @allowed_angles ) {
+    	#     my %angles =
+    	# 	( "$residue_id" => { map { ( "chi$_" => $angles->[$_] ) }
+    	# 			     ( 0..$#{ $angles } ) } );
+    	#     # TODO: do not forget to check clashes among atoms inside rotamer.
+    	#     %library_atom_site =
+    	#     	( %library_atom_site,
+    	#     	  %{ generate_rotamer( { %library_atom_site,
+    	#     				 %atom_site },
+    	# 			       \%angles ) } );
+    	# }
+    }
 
     # return \%library_atom_site;
 }

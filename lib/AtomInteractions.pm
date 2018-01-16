@@ -37,16 +37,18 @@ sub potential
 {
     my ( $atom_site, $potential, $cutoff, $target_atoms, $visible_atoms ) = @_;
 
+    my %atom_site = %{ $atom_site };
+
     # Interactions of all atoms analyzed, if no specific atoms are selected.
     $target_atoms =  { "group_pdb" => [ "ATOM" ] } unless $target_atoms;
     $visible_atoms = { "group_pdb" => [ "ATOM" ] } unless $visible_atoms;
     my @target_atom_ids = # Atom ids selected by $atom_specifier.
-    	@{ filter( { "atom_site" => $atom_site,
+    	@{ filter( { "atom_site" => \%atom_site,
     		     "include" => $target_atoms,
     		     "data" => [ "id" ],
     		     "is_list" => 1 } ) };
     my @visible_atom_ids = # Atom ids selected by $atom_specifier.
-    	@{ filter( { "atom_site" => $atom_site,
+    	@{ filter( { "atom_site" => \%atom_site,
     		     "include" => $visible_atoms,
     		     "data" => [ "id" ],
     		     "is_list" => 1 } ) };
@@ -59,11 +61,8 @@ sub potential
     $potential_function = \&leonard_jones if $potential eq "leonard_jones";
     $potential_function = \&combined if $potential eq "combined";
 
-    # Checks for connecting atoms that will be excluded from clash list.
-    connect_atoms( $atom_site );
-
     # Makes grid with edge length of max covalent radii.
-    my $grid_box = grid_box( $atom_site );
+    my $grid_box = grid_box( \%atom_site );
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
@@ -86,11 +85,11 @@ sub potential
     	foreach my $neighbour_id ( @neighbour_cells ) {
     	    if( any { $neighbour_id eq $_ } @visible_atom_ids ) {
     	    if( $atom_id ne $neighbour_id
-    		&& ( ! is_connected( $atom_site->{"$atom_id"},
-    				       $atom_site->{"$neighbour_id"} ) )
-    		&& ( ! is_second_neighbour( $atom_site,
-    					      $atom_id,
-    					      $neighbour_id ) ) ) {
+    		&& ( ! is_connected( $atom_site{"$atom_id"},
+				     $atom_site{"$neighbour_id"} ) )
+    		&& ( ! is_second_neighbour( \%atom_site,
+					    $atom_id,
+					    $neighbour_id ) ) ) {
     		$atom_site->{$atom_id}{"potential_energy"} +=
     		    $potential_function->( $atom_site->{"$atom_id"},
     					   $atom_site->{"$neighbour_id"} );
@@ -103,8 +102,6 @@ sub potential
     	if exists $atom_site->{$atom_id}{"potential_energy"}
     	&& $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
     }
-
-    return $atom_site;
 }
 
 # ------------------------- Various potential functions ----------------------- #

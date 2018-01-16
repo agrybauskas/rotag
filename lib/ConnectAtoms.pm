@@ -445,7 +445,14 @@ sub rotatable_bonds
 
 sub connect_atoms
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $reset ) = @_;
+
+    # If $reset has value, then all connections are removed from $atom_site.
+    if( $reset ) {
+	for my $atom_id ( keys %{ $atom_site } ) {
+	    delete $atom_site->{$atom_id}{"connections"};
+	}
+    }
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
@@ -473,7 +480,7 @@ sub connect_atoms
 		   || ( ! any { $neighbour_id eq $_ }
 			     @{ $atom_site->{$atom_id}{"connections"} } ) )){
 		    push( @{ $atom_site->{$atom_id}{"connections"} },
-			  $neighbour_id );
+			  "$neighbour_id" );
     		}
     	    }
     	}
