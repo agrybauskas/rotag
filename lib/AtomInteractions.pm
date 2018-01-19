@@ -53,6 +53,8 @@ sub potential
     		     "data" => [ "id" ],
     		     "is_list" => 1 } ) };
 
+    connect_atoms( \%atom_site );
+
     # Selection of potential function.
     my $potential_function;
     $potential_function = \&hard_sphere   if $potential eq "hard_sphere";

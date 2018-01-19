@@ -445,13 +445,12 @@ sub rotatable_bonds
 
 sub connect_atoms
 {
-    my ( $atom_site, $reset ) = @_;
+    my ( $atom_site ) = @_;
 
-    # If $reset has value, then all connections are removed from $atom_site.
-    if( $reset ) {
-	for my $atom_id ( keys %{ $atom_site } ) {
-	    delete $atom_site->{$atom_id}{"connections"};
-	}
+    # Removes all previously described connections.
+    for my $atom_id ( keys %{ $atom_site } ) {
+	delete $atom_site->{$atom_id}{"connections"}
+	    if exists $atom_site->{$atom_id}{"connections"};
     }
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
