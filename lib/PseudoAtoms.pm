@@ -10,13 +10,15 @@ our @EXPORT_OK = qw( add_hydrogens
                      generate_rotamer );
 
 use List::Util qw( max );
-use List::MoreUtils qw( uniq );
+use List::MoreUtils qw( any
+                        uniq );
 use Math::Trig qw( acos );
 
 use AtomInteractions qw( potential );
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
+                     grid_box
                      hybridization
                      rotatable_bonds );
 use LinearAlgebra qw( find_euler_angles
@@ -33,7 +35,7 @@ use PDBxParser qw( create_pdbx_entry
                    to_pdbx );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
-
+use Data::Dumper;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -207,123 +209,124 @@ sub generate_library
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
-    my %library_atom_site;
+    # Generates conformational models before checking for clashes/interactions
+    # for given residues.
+    if( $conf_model eq "rotation_only" ) {
+	rotation_only( filter( { "atom_site" => \%atom_site,
+				 "include" =>
+				     { "label_seq_id" => $residue_ids } } ) );
+    } else {
+	die "Conformational model was not defined.";
+    }
 
-    # Generates comformational models before checking for clashes/interactions.
-    rotation_only( \%atom_site ) if $conf_model eq "rotation_only";
+    # Creates the grid box that has edge length of sum of all bonds of the
+    # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
+    # * (C=N) + (N-H).
+    # TODO: should consider using shorter distances, because bonds have limits
+    # on maximum bending and having shorter edge length reduces calculation time.
+    my $grid_box =
+	grid_box( \%atom_site,
+		  7 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[0]
+		+ 2 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[0]
+	        + 3 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[1]
+		+ 3 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[1]
+		+     $ATOMS{"H"}{"covalent_radius"}{"length"}->[0] );
 
-    my @sampled_angles =
-    	map { [ $_ ] } @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
+    # Converts grid_box values from atom id to residue ids. It will be more
+    # convenient then dealing with atom ids.
+    for my $cell_idx ( keys %{ $grid_box } ) {
+	my @residue_ids;
+	foreach( @{ $grid_box->{$cell_idx} } ) {
+	    push( @residue_ids, $atom_site{$_}{"label_seq_id"} );
+	}
+	$grid_box->{$cell_idx} = [ uniq( @residue_ids ) ];
+    }
 
-    for my $residue_id ( @{ $residue_ids } ) {
-    	my $residue_site =
-    	    filter( { "atom_site" => \%atom_site,
-    		      "include" => { "label_seq_id" => [ $residue_id ] } } );
-
-    	my $rotatable_bonds = rotatable_bonds( \%atom_site );
-
-    	# Creates a list of atoms that depend on the rotation of bonds and also
-    	# exist in current residue.
-    	my @sorted_atom_ids =
-    	    sort{ scalar( @{ $rotatable_bonds->{$_}{$a} } )
-    	      cmp scalar( @{ $rotatable_bonds->{$_}{$b} } ) }
-    	    keys %{ $rotatable_bonds };
-
-    	# Ignores movable side chain atoms so, iteractions between pseudo atoms
-    	# and backbone could be analyzed properly.
-    	# TODO: should look how to just use filter() and do not create
-    	# @removable_atom_ids variable.
-    	my %interaction_site = %atom_site;
-    	my @removable_atom_ids =
-    	    @{ filter( { "atom_site" => $residue_site,
-    			 "include" => { "id" => \@sorted_atom_ids },
-    			 "data" => [ "id" ],
-    			 "is_list" => 1 } ) };
-    	for my $atom_id ( @removable_atom_ids ) {
-    	    delete $interaction_site{"$atom_id"}
-    	}
-
-    	# Iterates through sorted atoms and tries to detect interactions.
-    	my @allowed_angles;
-
-    	my %current_angles;
-    	for my $atom_id ( @sorted_atom_ids ) {
-    	    my $current_atom_site =
-    	    	filter( { "atom_site" => $residue_site,
-    			  "include" => { "id" => [ $atom_id ] } } );
-
-    	    my $angle_count = scalar( @{ $rotatable_bonds->{$atom_id} } );
-
-    	    # TODO: look for cases, when all atoms produce clashes.
-    	    my @current_angles;
-    	    if( ! @allowed_angles ) {
-    		# If no angles are present, allows all angles.
-    		@current_angles = @sampled_angles;
-    	    } else {
-    		my $allowed_angle_count = scalar( $allowed_angles[0] );
-    		if( $angle_count == $allowed_angle_count ) {
-    		    @current_angles = @allowed_angles;
-    		} else {
-    		    @current_angles =
-    		    	@{ permutation( 2, [], [ \@allowed_angles,
-    		    				 \@sampled_angles ], [ ] ) };
-    		    # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-    		    @current_angles =
-    		    	map { [ @{ $_->[0] }, @{ $_->[1] } ] } @current_angles;
-    		}
-    	    }
-
-    	    undef @allowed_angles; # Undefying to store increasing dihedral
-    	                           # angles.
-
-    	    # Iterates through allowed angles, checks clashes and returns
-    	    # unhindered angles to @allowed_angle_comb.
-    	    for my $angles ( @current_angles ) {
-    		my %angles =
-    		    map { ( "chi$_" => [ $angles->[$_] ] ) } 0..$angle_count - 1;
-
-    		my $pseudo_atom_site =
-    		    generate_pseudo( \%atom_site,
-    				     { "id" => [ "$atom_id" ] },
-    				     \%angles );
-    		my $pseudo_atom_id =
-    		    filter( { "atom_site" => $pseudo_atom_site,
-    			      "data" => [ "id" ],
-    			      "is_list" => 1 } )->[0];
-
-    		potential( { %interaction_site,
-    			     %{ $pseudo_atom_site } },
-    			   $interactions,
-    			   $cutoff,
-    			   { "id" => [ $pseudo_atom_id ] },
-    			   { "label_atom_id" => [ "N", "CA", "CB", "C", "O" ] });
-
-    		if( $pseudo_atom_site->{"$pseudo_atom_id"}
-    		                       {"potential_energy"} <= $cutoff ) {
-    		    push( @allowed_angles, $angles );
-    		}
-    	    }
-
-    	    die "No possible rotamer solutions were detected."
-    	    	if scalar( @allowed_angles ) == 0;
-    	}
-
-    	# Generates final rotamers.
-	for my $angles ( @allowed_angles ) {
-	    my $last_atom_id =
-		max( keys( %{ { %atom_site, %library_atom_site } } ) );
-    	    my %angles =
-    	    	( "$residue_id" => { map { ( "chi$_" => $angles->[$_] ) }
-    	    			     ( 0..$#{ $angles } ) } );
-	    %library_atom_site =
-		( %library_atom_site,
-		  %{ generate_rotamer( \%atom_site,
-				       \%angles,
-				       $last_atom_id ) } );
+    # Finds cells where target residues are.
+    my @target_cell_idxs;
+    for my $cell_idxs ( keys %{ $grid_box } ) {
+	for my $residue_id ( @{ $grid_box->{$cell_idxs} } ) {
+	    if( any { $residue_id eq $_ } @{ $residue_ids } ) {
+		push( @target_cell_idxs, $cell_idxs );
+		last;
+	    }
 	}
     }
 
-    return \%library_atom_site;
+    for my $cell_idxs ( @target_cell_idxs ) {
+	my @cell_idxs = split( ",", $cell_idxs );
+	my @neighbour_residues; # The array will contain all residues of the
+                                # neighbouring 26 cells.
+    	# $i represents x, $j - y, $k - z coordinates.
+    	for my $i ( ( $cell_idxs[0] - 1..$cell_idxs[0] + 1 ) ) {
+    	for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
+    	for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
+    	if( exists $grid_box->{"$i,$j,$k"} ) {
+    	    push( @neighbour_residues, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+
+	for my $residue_id ( @{ $grid_box->{$cell_idxs} } ) {
+	    my $residue_site =
+		filter( { "atom_site" => \%atom_site,
+			  "include" => { "label_seq_id" => [ $residue_id ] } } );
+
+	    my $rotatable_bonds = rotatable_bonds( $residue_site );
+
+	    if( ! %{ $rotatable_bonds } ) { next; }
+
+	    # Because the change of side-chain position might impact the
+	    # surrounding, iteraction site consists of only main chain atoms.
+	    my %interaction_site =
+		%{ filter( { "atom_site" => \%atom_site,
+			     "include" =>
+			         { "label_seq_id" => \@neighbour_residues,
+				   "label_atom_id" => [ "N", "CA", "C", "O",
+							"OXT", "CB", "H", "H2",
+							"HA2", "HA3", "HB1",
+							"HB2", "HB3", "HXT"
+				                      ] } } ) };
+
+	    # Goes through each atom in side chain and calculates interaction
+	    # potential with surrounding atoms. CA and CB are non-movable atoms
+	    # so, they are marked as starting atoms.
+	    my @sampled_angles =
+	        @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
+	    my @visited_atom_ids =
+		( filter( { "atom_site" => $residue_site,
+			    "include" => { "label_atom_id" => [ "CA" ] },
+			    "data" => [ "id" ] } )->[0][0] );
+	    my @next_atom_ids =
+		( filter( { "atom_site" => $residue_site,
+			    "include" => { "label_atom_id" => [ "CB" ] },
+			    "data" => [ "id" ] } )->[0][0] );
+
+	    my @allowed_angles;
+	    while( scalar( @next_atom_ids ) != 0 ) {
+		my @neighbour_atom_ids;
+		for my $atom_id ( @next_atom_ids ) {
+		    # Adds more angle combinations if there are more than one
+		    # rotatable bonds.
+
+		    # Marks visited atoms.
+		    push( @visited_atom_ids, $atom_id );
+
+		    # Marks neighbouring atoms.
+		    push( @neighbour_atom_ids,
+			  @{ $atom_site{$atom_id}{"connections"} } );
+
+		}
+
+		# Determines next atoms that should be visited.
+		@next_atom_ids = (); # Resets value for the new ones to be
+              	                     # appended.
+		for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+		    if( ( ! grep { $neighbour_atom_id eq $_ }
+			    @visited_atom_ids ) ) {
+			push( @next_atom_ids, $neighbour_atom_id );
+		    }
+		}
+	    }
+	}
+    }
 }
 
 sub add_hydrogens
