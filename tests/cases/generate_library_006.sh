@@ -2,12 +2,12 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/aspartic-acid-001.dump
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/glutamic-acid-001.dump
 conf_model="rotation_only"
 potential="leonard_jones"
 cutoff=0.04
-residue_id="219"
-small_angle="0.25*pi"
+residue_id="14"
+small_angle="0.5*pi"
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
                               	            ${conf_model} \

@@ -290,40 +290,50 @@ sub generate_library
 	    # so, they are marked as starting atoms.
 	    my @sampled_angles =
 	        @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
-	    my @visited_atom_ids =
-		( filter( { "atom_site" => $residue_site,
-			    "include" => { "label_atom_id" => [ "CA" ] },
-			    "data" => [ "id" ] } )->[0][0] );
+
+	    my $ca_atom_id =
+		filter( { "atom_site" => $residue_site,
+			  "include" => { "label_atom_id" => [ "CA" ] },
+			  "data" => [ "id" ] } )->[0][0];
+	    my $cb_atom_id =
+		filter( { "atom_site" => $residue_site,
+			  "include" => { "label_atom_id" => [ "CB" ] },
+			  "data" => [ "id" ] } )->[0][0];
+	    my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
 	    my @next_atom_ids =
-		( filter( { "atom_site" => $residue_site,
-			    "include" => { "label_atom_id" => [ "CB" ] },
-			    "data" => [ "id" ] } )->[0][0] );
+		grep { $_ ne $ca_atom_id }
+		@{ $residue_site->{$cb_atom_id}{"connections"} };
 
-	    my @allowed_angles;
+	    my @allowed_angles = [ @sampled_angles ];
 	    while( scalar( @next_atom_ids ) != 0 ) {
-		my @neighbour_atom_ids;
-		for my $atom_id ( @next_atom_ids ) {
-		    # Adds more angle combinations if there are more than one
-		    # rotatable bonds.
+	    	my @neighbour_atom_ids;
+	    	for my $atom_id ( @next_atom_ids ) {
+	    	    # Adds more angle combinations if there are more than one
+	    	    # rotatable bonds.
+	    	    if( scalar( @allowed_angles )
+		      < scalar( @{ $rotatable_bonds->{$atom_id} } ) ) {
+	    	    	@allowed_angles =
+	    	    	    @{ permutation( 2, [], [ @allowed_angles,
+	    	    				     \@sampled_angles ], [] ) };
+	    	    }
 
-		    # Marks visited atoms.
-		    push( @visited_atom_ids, $atom_id );
+	    	    # Marks visited atoms.
+	    	    push( @visited_atom_ids, $atom_id );
 
-		    # Marks neighbouring atoms.
-		    push( @neighbour_atom_ids,
-			  @{ $atom_site{$atom_id}{"connections"} } );
+	    	    # Marks neighbouring atoms.
+	    	    push( @neighbour_atom_ids,
+	    		  @{ $atom_site{$atom_id}{"connections"} } );
+	    	}
 
-		}
-
-		# Determines next atoms that should be visited.
-		@next_atom_ids = (); # Resets value for the new ones to be
+	    	# Determines next atoms that should be visited.
+	    	@next_atom_ids = (); # Resets value for the new ones to be
               	                     # appended.
-		for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-		    if( ( ! grep { $neighbour_atom_id eq $_ }
-			    @visited_atom_ids ) ) {
-			push( @next_atom_ids, $neighbour_atom_id );
-		    }
-		}
+	    	for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+	    	    if( ( ! grep { $neighbour_atom_id eq $_ }
+	    		    @visited_atom_ids ) ) {
+	    		push( @next_atom_ids, $neighbour_atom_id );
+	    	    }
+	    	}
 	    }
 	}
     }
