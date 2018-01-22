@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use LinearAlgebra qw( pi );
-use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_library );
 
 my ( $residue_id,
@@ -23,22 +22,27 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 $small_angle =~ s/pi/pi\(\)/g;
-generate_library( { "atom_site"     => $atom_site,
-		    "residue_ids"   => [ $residue_id ],
-		    "small_angle"   => eval( $small_angle ),
-		    "conf_model" => $conf_model,
-		    "interactions"  => $potential,
-		    "cutoff"        => $cutoff  } );
-# # Creates pseudo-atoms for given analytical equation that describes conformation
-# # of atom.
-# %{ $atom_site } =
-#     ( %{ $atom_site },
-#       %{ generate_library( { "atom_site"     => $atom_site,
-# 			     "residue_ids"   => [ $residue_id ],
-# 			     "small_angle"   => eval( $small_angle ),
-# 			     "conf_model" => $conf_model,
-# 			     "interactions"  => $potential,
-# 			     "cutoff"        => $cutoff  } ) } );
 
-# # Prints out PDBx format file.
-# to_pdbx( $atom_site );
+my $rotamer_library =
+    generate_library( { "atom_site"     => $atom_site,
+			"residue_ids"   => [ $residue_id ],
+			"small_angle"   => eval( $small_angle ),
+			"conf_model" => $conf_model,
+			"interactions"  => $potential,
+			"cutoff"        => $cutoff  } );
+
+print( "#residue_id,chi0,chi1,chi2,chi3,chi4\n" );
+for my $residue_id ( keys %{ $rotamer_library } ) {
+    for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
+	my @rotamer_entry = ( $residue_id );
+	for my $angle_name ( sort { $a cmp $b }
+			     keys %{ $rotamer } ) {
+	    push( @rotamer_entry,
+	    	  sprintf( "%.1f", 180 * $rotamer->{"$angle_name"} / pi() ) );
+	}
+	for my $na ( 0..4-scalar( keys( %{ $rotamer } ) ) ) {
+	    push( @rotamer_entry, "" );
+	}
+	print( join( ",", @rotamer_entry ), "\n" );
+    }
+}
