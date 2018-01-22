@@ -3,75 +3,28 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use AlterMolecule qw( bond_stretching );
-use LinearAlgebra qw( mult_matrix_product
-                      reshape );
-
-use lib "../lib";
-use Utils qw( select_atom_data );
 
 #
 # Unit test: AlterMolecule::bond_stretching.
-#
-# In Jmol, generates pseudo-atoms which represent positions of atom
-# after the resize of the bond.
-#
-# Example: ./bond_stretching "label_atom_id CA,N,CB,OG" \
-#                            "Cartn_x,Cartn_y,Cartn_z" \
-#                            2.0 10 example.cif
+# Example: ./bond_stretching atom-coords.dat
 #
 
-my ( $atom_specifier,
-     $data_specifier,
-     $bond_min_max,
-     $num_of_atoms,
-     $pdbx_file ) = @ARGV;
+my ( $atom_coords_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_coord = select_atom_data( $pdbx_file,
-				   $atom_specifier,
-				   $data_specifier );
-
-# Prints out count of atoms and arbitrary word that are neccessary for Jmol.
-open( my $fh, "<", $pdbx_file );
-chomp( my @pdbx_lines = <$fh> );
+my @atom_coords;
+open( my $fh, "<", $atom_coords_file );
+while( <$fh> ){
+    push( @atom_coords, [ grep( /\S/, split( /#.+|\s+/, $_ ) ) ] );
+}
 close( $fh );
 
-print( scalar( grep { /ATOM/ } @pdbx_lines ) + $num_of_atoms - 2, "\n" );
-print( "testing\n" );
+my $bond_stretching_matrix =
+    bond_stretching( $atom_coords[0], $atom_coords[1], $atom_coords[2], "r");
 
-# Prepares selected atom data for Jmol.
-map { print( $_->[2], "\t", $_->[10], "\t", $_->[11], "\t", $_->[12], "\n" ) }
-map { [ split( " ", $_ ) ] }
-grep { $_ =~ /ATOM/ }
-@pdbx_lines;
-
-# Creates transformation matrix that describes translation along the bond by
-# distance r.
-my $transf_matrix =
-    mult_matrix_product( [ @{ bond_stretching( $atom_coord->[1],
-					       $atom_coord->[2],
-					       $atom_coord->[0],
-					       "r" ) },
-			   @{ reshape( [ @{ $atom_coord->[3] }, 1 ],
-				       [ 4, 1 ] ) } ] );
-
-# Calculates lengths that will be translated along the bond.
-my $small_length = $bond_min_max / $num_of_atoms;
-my @lengths =
-    map { $_ * $small_length, - ( $_ * $small_length ) }
-        ( 1..($num_of_atoms-1)/2 );
-
-# Translates the bond by length r numerically and creates Jmol readable file.
-my %symbols;
-my $eval_matrix;
-
-for my $r ( @lengths ) {
-    $symbols{"r"} = $r;
-    ( $eval_matrix ) = @{ mult_matrix_product( $transf_matrix, \%symbols ) };
-    printf( "X\t%.3f\t%.3f\t%.3f\n",
-    	    $eval_matrix->[0][0],
-	    $eval_matrix->[1][0],
-	    $eval_matrix->[2][0] );
+for my $matrix_id ( 0..$#{ $bond_stretching_matrix } ) {
+    for my $row ( @{ $bond_stretching_matrix->[$matrix_id] } ) {
+	print( join( "\t", @{ $row } ), "\n" );
+    }
+    print( "\n" ) if $matrix_id != $#{ $bond_stretching_matrix };
 }
