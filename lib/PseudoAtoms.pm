@@ -22,6 +22,7 @@ use ConnectAtoms qw( connect_atoms
                      hybridization
                      rotatable_bonds );
 use LinearAlgebra qw( find_euler_angles
+                      flatten
                       mult_matrix_product
                       pi
                       switch_ref_frame );
@@ -288,9 +289,6 @@ sub generate_library
 	    # Goes through each atom in side chain and calculates interaction
 	    # potential with surrounding atoms. CA and CB are non-movable atoms
 	    # so, they are marked as starting atoms.
-	    my @sampled_angles =
-	        @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
-
 	    my $ca_atom_id =
 		filter( { "atom_site" => $residue_site,
 			  "include" => { "label_atom_id" => [ "CA" ] },
@@ -304,17 +302,25 @@ sub generate_library
 		grep { $_ ne $ca_atom_id }
 		@{ $residue_site->{$cb_atom_id}{"connections"} };
 
-	    my @allowed_angles = [ @sampled_angles ];
+	    my @sampled_angles =
+		map { [ $_ ] }
+	        @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
+	    my @allowed_angles = @sampled_angles;
+
 	    while( scalar( @next_atom_ids ) != 0 ) {
 	    	my @neighbour_atom_ids;
 	    	for my $atom_id ( @next_atom_ids ) {
 	    	    # Adds more angle combinations if there are more than one
 	    	    # rotatable bonds.
-	    	    if( scalar( @allowed_angles )
-		      < scalar( @{ $rotatable_bonds->{$atom_id} } ) ) {
+	    	    if( scalar( @{ $allowed_angles[0] } )
+	    	      < scalar( @{ $rotatable_bonds->{$atom_id} } ) ) {
 	    	    	@allowed_angles =
-	    	    	    @{ permutation( 2, [], [ @allowed_angles,
+	    	    	    @{ permutation( 2, [], [ \@allowed_angles,
 	    	    				     \@sampled_angles ], [] ) };
+	    		# Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+	    		@allowed_angles =
+			    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
+			    @allowed_angles;
 	    	    }
 
 	    	    # Marks visited atoms.
