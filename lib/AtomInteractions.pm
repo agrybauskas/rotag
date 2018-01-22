@@ -4,7 +4,11 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( potential );
+our @EXPORT_OK = qw( hard_sphere
+                     soft_sphere
+                     exponential
+                     leonard_jones
+                     combined );
 
 use List::Util qw( any max );
 

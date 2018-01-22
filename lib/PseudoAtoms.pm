@@ -14,15 +14,20 @@ use List::MoreUtils qw( any
                         uniq );
 use Math::Trig qw( acos );
 
-use AtomInteractions qw( potential );
+use AtomInteractions qw( hard_sphere
+                     soft_sphere
+                     exponential
+                     leonard_jones
+                     combined );
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      grid_box
                      hybridization
+                     is_neighbour
+                     is_second_neighbour
                      rotatable_bonds );
 use LinearAlgebra qw( find_euler_angles
-                      flatten
                       mult_matrix_product
                       pi
                       switch_ref_frame );
@@ -220,6 +225,14 @@ sub generate_library
 	die "Conformational model was not defined.";
     }
 
+    # Selection of potential function.
+    my $potential_function;
+    $potential_function = \&hard_sphere   if $interactions eq "hard_sphere";
+    $potential_function = \&soft_sphere   if $interactions eq "soft_sphere";
+    $potential_function = \&exponential   if $interactions eq "exponential";
+    $potential_function = \&leonard_jones if $interactions eq "leonard_jones";
+    $potential_function = \&combined      if $interactions eq "combined";
+
     # Creates the grid box that has edge length of sum of all bonds of the
     # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
     # * (C=N) + (N-H).
@@ -329,6 +342,39 @@ sub generate_library
 	    	    # Marks neighbouring atoms.
 	    	    push( @neighbour_atom_ids,
 	    		  @{ $atom_site{$atom_id}{"connections"} } );
+
+		    # Starts calculating potential energy.
+		    my @next_allowed_angles;
+		    for my $angles ( @allowed_angles ) {
+			my %angles =
+			    map { ( "chi$_" => [ $angles->[$_] ] ) }
+			    0..$#{ $angles };
+			my $pseudo_atom_site =
+			    generate_pseudo( \%atom_site,
+					     { "id" => [ "$atom_id" ] },
+					     \%angles );
+			my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
+			my $pseudo_origin_id =
+			    $pseudo_atom_site->{$pseudo_atom_id}
+                                               {"origin_atom_id"};
+
+			my $potential_energy = 0;
+			foreach my $neighbour_id ( keys %interaction_site ) {
+			    if( ( ! is_neighbour( \%atom_site,
+						  $pseudo_origin_id,
+						  $neighbour_id ) )
+			     && ( ! is_second_neighbour( \%atom_site,
+			     				 $pseudo_origin_id,
+			     				 $neighbour_id ) )
+				) {
+				$potential_energy +=
+				    $potential_function->(
+					$pseudo_atom_site->{$pseudo_atom_id},
+					$atom_site{$neighbour_id} );
+				last if $potential_energy > $cutoff;
+			    }
+			}
+		    }
 	    	}
 
 	    	# Determines next atoms that should be visited.

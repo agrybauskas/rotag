@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( bond_type
                      grid_box
                      hybridization
                      is_connected
+                     is_neighbour
                      is_second_neighbour
                      rotatable_bonds
                      sort_by_priority );
@@ -191,6 +192,20 @@ sub is_connected
     return $is_connected;
 }
 
+sub is_neighbour
+{
+    my ( $atom_site, $target_atom_id, $neighbour_id ) = @_;
+
+    my $is_neighbour = 0;
+    foreach my $i ( @{ $atom_site->{"$target_atom_id"}{"connections"} } ) {
+	if( "$neighbour_id" eq "$i" ) {
+	    $is_neighbour = 1;
+	    last;
+	}
+    }
+
+    return $is_neighbour;
+}
 
 #
 # Checks if two atoms are separated by one atom.
