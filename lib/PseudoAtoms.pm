@@ -41,7 +41,7 @@ use PDBxParser qw( create_pdbx_entry
                    to_pdbx );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
-use Data::Dumper;
+
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -215,6 +215,8 @@ sub generate_library
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
+    my %rotamer_library;
+
     # Generates conformational models before checking for clashes/interactions
     # for given residues.
     if( $conf_model eq "rotation_only" ) {
@@ -374,8 +376,20 @@ sub generate_library
 				last if $potential_energy > $cutoff;
 			    }
 			}
+
+			# Writes allowed angles to @next_allowed_angles that will
+			# be passed to more global @allowed_angles.
+			if( $potential_energy <= $cutoff) {
+			    push( @next_allowed_angles, $angles );
+			}
 		    }
-	    	}
+
+		    if( scalar( @allowed_angles ) > 0 ) {
+			@allowed_angles = @next_allowed_angles;
+		    } else {
+			die "No possible rotamer solutions were detected.";
+		    }
+		}
 
 	    	# Determines next atoms that should be visited.
 	    	@next_atom_ids = (); # Resets value for the new ones to be
@@ -387,8 +401,18 @@ sub generate_library
 	    	    }
 	    	}
 	    }
+
+	    # TODO: remember to add check on inter-atom clashing inside
+	    # side-chain itself.
+	    for my $angles ( @allowed_angles ) {
+		push( @{ $rotamer_library{"$residue_id"} },
+		      { map { ( "chi$_" => $angles->[$_] ) }
+			( 0..$#{ $angles } ) } );
+	    }
 	}
     }
+
+    return \%rotamer_library;
 }
 
 sub add_hydrogens
