@@ -3,36 +3,35 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
-use PDBxParser qw( obtain_atom_site );
-use ConnectAtoms qw( bond_type
-                     connect_atoms );
+use ConnectAtoms qw( bond_type );
 
 #
 # Unit test: ConnectAtoms::bond_type
+# Example: ./bond_type structure.dump
 #
-# Example: ./bond_type example.cif
-#
 
-my ( $pdbx_file ) = @ARGV;
+my ( $pdbx_dump_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( $pdbx_file );
-
-my %connected_atoms = %{ connect_atoms( $atom_site ) };
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
 
 my @atom_coord;
 my @parent_atom;
 my @child_atom;
 
-for my $parent_id ( keys %connected_atoms ) {
-    @parent_atom = ( $parent_id, $connected_atoms{$parent_id}{"label_atom_id"} );
-    for my $child_id ( @{ $connected_atoms{$parent_id}{"connections"} } ) {
+for my $parent_id ( keys %{ $atom_site } ) {
+    @parent_atom = ( $parent_id, $atom_site->{$parent_id}{"label_atom_id"} );
+    for my $child_id ( @{ $atom_site->{$parent_id}{"connections"} } ) {
 	my $bond_type =
-	    bond_type( $connected_atoms{$parent_id},
-		       $connected_atoms{$child_id} );
+	    bond_type( $atom_site->{$parent_id},
+		       $atom_site->{$child_id} );
         @child_atom =
-    	    ( $child_id, $connected_atoms{$child_id}{"label_atom_id"} );
+    	    ( $child_id, $atom_site->{$child_id}{"label_atom_id"} );
         print( "$parent_atom[0] $parent_atom[1]: " );
         print( "$child_atom[0] $child_atom[1]: " );
 	print( "$bond_type\n" );
