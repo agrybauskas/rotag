@@ -1,12 +1,119 @@
-10
-testing
-N	7.318	28.972	58.662
-C	8.688	29.233	59.109
-C	9.372	30.320	58.273
-O	10.237	30.014	57.450
-C	9.502	27.943	59.054
-C	9.222	26.986	60.191
-C	9.975	25.693	59.978
-C	10.073	24.904	61.264
-N	10.746	25.690	62.333
-N	11.866	25.511	61.830
+data_testing
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+
+ATOM 8641  N  N  .  LYS  B  1  572  ?  7.318  28.972  58.662  1.00  59.59  ?  ?  ?  ?  ?  ?  617  LYS  B  N  1 
+ATOM 8642  C  CA  .  LYS  B  1  572  ?  8.688  29.233  59.109  1.00  56.54  ?  ?  ?  ?  ?  ?  617  LYS  B  CA  1 
+ATOM 8643  C  C  .  LYS  B  1  572  ?  9.372  30.320  58.273  1.00  47.68  ?  ?  ?  ?  ?  ?  617  LYS  B  C  1 
+ATOM 8644  O  O  .  LYS  B  1  572  ?  10.237  30.014  57.450  1.00  47.02  ?  ?  ?  ?  ?  ?  617  LYS  B  O  1 
+ATOM 8645  C  CB  .  LYS  B  1  572  ?  9.502  27.943  59.054  1.00  57.61  ?  ?  ?  ?  ?  ?  617  LYS  B  CB  1 
+ATOM 8646  C  CG  .  LYS  B  1  572  ?  9.222  26.986  60.191  1.00  54.96  ?  ?  ?  ?  ?  ?  617  LYS  B  CG  1 
+ATOM 8647  C  CD  .  LYS  B  1  572  ?  9.975  25.693  59.978  1.00  65.85  ?  ?  ?  ?  ?  ?  617  LYS  B  CD  1 
+ATOM 8648  C  CE  .  LYS  B  1  572  ?  10.073  24.904  61.264  1.00  75.43  ?  ?  ?  ?  ?  ?  617  LYS  B  CE  1 
+ATOM 8649  N  NZ  .  LYS  B  1  572  ?  10.746  25.690  62.333  1.00  81.59  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8650  N  NZ  1  LYS  B  1  572  ?  8.315  29.267  59.011  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8651  N  NZ  1  LYS  B  1  572  ?  6.657  29.324  57.277  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8652  N  NZ  1  LYS  B  1  572  ?  6.016  28.824  59.535  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8653  N  NZ  1  LYS  B  1  572  ?  8.137  26.291  56.077  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8654  N  NZ  1  LYS  B  1  572  ?  5.842  25.913  56.665  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8655  N  NZ  1  LYS  B  1  572  ?  6.585  28.121  56.091  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8656  N  NZ  1  LYS  B  1  572  ?  7.020  25.418  60.012  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8657  N  NZ  1  LYS  B  1  572  ?  5.492  27.267  59.939  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8658  N  NZ  1  LYS  B  1  572  ?  5.390  25.560  58.256  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8659  N  NZ  1  LYS  B  1  572  ?  10.825  28.103  57.876  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8660  N  NZ  1  LYS  B  1  572  ?  11.809  26.137  56.916  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8661  N  NZ  1  LYS  B  1  572  ?  10.436  27.572  55.569  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8662  N  NZ  1  LYS  B  1  572  ?  9.478  24.278  58.901  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8663  N  NZ  1  LYS  B  1  572  ?  9.119  23.831  56.571  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8664  N  NZ  1  LYS  B  1  572  ?  11.264  24.590  57.330  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8665  N  NZ  1  LYS  B  1  572  ?  7.084  26.779  56.553  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8666  N  NZ  1  LYS  B  1  572  ?  8.924  27.036  55.034  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8667  N  NZ  1  LYS  B  1  572  ?  8.151  24.842  55.621  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8668  N  NZ  1  LYS  B  1  572  ?  10.026  27.479  60.689  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8669  N  NZ  1  LYS  B  1  572  ?  8.592  26.131  62.062  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8670  N  NZ  1  LYS  B  1  572  ?  10.606  25.197  61.151  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8671  N  NZ  1  LYS  B  1  572  ?  6.302  26.168  59.308  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8672  N  NZ  1  LYS  B  1  572  ?  6.964  23.915  59.801  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8673  N  NZ  1  LYS  B  1  572  ?  7.086  25.601  61.503  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8674  N  NZ  1  LYS  B  1  572  ?  9.813  24.540  57.721  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8675  N  NZ  1  LYS  B  1  572  ?  10.520  24.009  59.951  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8676  N  NZ  1  LYS  B  1  572  ?  8.384  23.257  59.159  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8677  N  NZ  1  LYS  B  1  572  ?  8.768  29.557  58.913  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8678  N  NZ  1  LYS  B  1  572  ?  10.172  31.484  58.640  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8679  N  NZ  1  LYS  B  1  572  ?  8.824  30.712  56.811  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8680  N  NZ  1  LYS  B  1  572  ?  12.932  29.203  58.739  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8681  N  NZ  1  LYS  B  1  572  ?  12.897  30.366  56.640  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8682  N  NZ  1  LYS  B  1  572  ?  11.855  31.341  58.569  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8683  N  NZ  1  LYS  B  1  572  ?  10.584  27.857  55.550  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8684  N  NZ  1  LYS  B  1  572  ?  9.559  30.024  55.451  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8685  N  NZ  1  LYS  B  1  572  ?  11.947  29.822  55.351  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8686  N  NZ  1  LYS  B  1  572  ?  10.198  27.589  60.652  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8687  N  NZ  1  LYS  B  1  572  ?  12.124  26.169  60.825  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8688  N  NZ  1  LYS  B  1  572  ?  12.324  28.520  61.258  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8689  N  NZ  1  LYS  B  1  572  ?  11.984  25.930  57.253  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8690  N  NZ  1  LYS  B  1  572  ?  14.071  26.898  57.934  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8691  N  NZ  1  LYS  B  1  572  ?  12.846  25.498  59.450  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8692  N  NZ  1  LYS  B  1  572  ?  12.333  30.029  58.009  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8693  N  NZ  1  LYS  B  1  572  ?  13.188  29.507  60.190  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8694  N  NZ  1  LYS  B  1  572  ?  14.212  28.555  58.240  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8695  N  NZ  1  LYS  B  1  572  ?  8.519  26.627  58.373  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8696  N  NZ  1  LYS  B  1  572  ?  8.449  26.299  55.997  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8697  N  NZ  1  LYS  B  1  572  ?  9.596  24.720  57.392  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8698  N  NZ  1  LYS  B  1  572  ?  10.688  29.087  55.777  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8699  N  NZ  1  LYS  B  1  572  ?  11.718  27.126  54.853  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8700  N  NZ  1  LYS  B  1  572  ?  9.326  27.294  54.947  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8701  N  NZ  1  LYS  B  1  572  ?  12.688  26.334  58.209  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8702  N  NZ  1  LYS  B  1  572  ?  11.282  24.602  57.326  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8703  N  NZ  1  LYS  B  1  572  ?  12.526  26.013  55.837  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8704  N  NZ  1  LYS  B  1  572  ?  8.622  29.443  59.427  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8705  N  NZ  1  LYS  B  1  572  ?  7.485  29.665  61.528  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8706  N  NZ  1  LYS  B  1  572  ?  9.473  30.938  61.100  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8707  N  NZ  1  LYS  B  1  572  ?  8.677  26.368  62.262  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8708  N  NZ  1  LYS  B  1  572  ?  9.527  27.931  63.873  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8709  N  NZ  1  LYS  B  1  572  ?  7.507  28.422  62.675  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8710  N  NZ  1  LYS  B  1  572  ?  12.143  28.587  61.516  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8711  N  NZ  1  LYS  B  1  572  ?  10.897  30.592  61.945  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8712  N  NZ  1  LYS  B  1  572  ?  10.928  28.828  63.571  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8713  N  NZ  1  LYS  B  1  572  ?  8.463  26.583  58.568  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8714  N  NZ  1  LYS  B  1  572  ?  9.107  24.338  59.115  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8715  N  NZ  1  LYS  B  1  572  ?  7.246  25.359  60.233  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8716  N  NZ  1  LYS  B  1  572  ?  11.988  25.787  60.674  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8717  N  NZ  1  LYS  B  1  572  ?  10.693  24.580  62.294  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8718  N  NZ  1  LYS  B  1  572  ?  10.532  24.016  59.967  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8719  N  NZ  1  LYS  B  1  572  ?  8.744  27.568  62.623  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8720  N  NZ  1  LYS  B  1  572  ?  7.359  25.757  61.874  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8721  N  NZ  1  LYS  B  1  572  ?  9.381  25.300  63.082  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8722  N  NZ  1  LYS  B  1  572  ?  10.941  28.170  58.034  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8723  N  NZ  1  LYS  B  1  572  ?  12.965  29.021  59.002  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8724  N  NZ  1  LYS  B  1  572  ?  12.838  26.726  58.312  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8725  N  NZ  1  LYS  B  1  572  ?  11.171  29.121  62.101  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8726  N  NZ  1  LYS  B  1  572  ?  13.062  27.657  62.289  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8727  N  NZ  1  LYS  B  1  572  ?  13.058  29.406  60.646  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8728  N  NZ  1  LYS  B  1  572  ?  10.949  25.121  60.898  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8729  N  NZ  1  LYS  B  1  572  ?  12.841  25.494  59.470  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 
+ATOM 8730  N  NZ  1  LYS  B  1  572  ?  12.972  26.039  61.803  ?  ?  ?  ?  ?  ?  ?  ?  617  LYS  B  NZ  1 

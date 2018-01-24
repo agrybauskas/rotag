@@ -1,10 +1,13 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/aspartic_acid_006.cif
-target_atom="label_atom_id OD1"
-angle_range="chi0 0,0 & chi1 0,0"
-num_of_angles="chi0 1 & chi1 1" # Number of angles will be generated for each dihedral
-                                # angle.
-../programs/generate_pseudo "${target_atom}" "${angle_range}" \
-			    "${num_of_angles}" ${pdbx_file}
+export PERL5LIB=$(dirname "$0")/../../lib
+
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/aspartic-acid-rotation-only-001.dump
+atom_id=1414
+angle_ranges="chi0 0,2*pi & chi1 0,2*pi"
+num_of_angles="chi0 4 & chi1 4"
+
+$(dirname "$0")/../scripts/generate_pseudo "${atom_id}" \
+	                                   "${angle_ranges}" \
+	                                   "${num_of_angles}" \
+					   ${pdbx_dump_file}
