@@ -26,9 +26,9 @@ _atom_site.auth_comp_id
 _atom_site.auth_asym_id
 _atom_site.auth_atom_id
 _atom_site.pdbx_PDB_model_num
-ATOM   3010 N N   A CYS A 1 419 ? 23.608  -50.599 43.715  0.50 38.26  ? ? ? ? ? ? 464 CYS A N   1 
-ATOM   3012 C CA  A CYS A 1 419 ? 23.817  -49.169 43.570  0.50 37.19  ? ? ? ? ? ? 464 CYS A CA  1 
-ATOM   3014 C C   A CYS A 1 419 ? 22.860  -48.310 44.426  0.50 38.07  ? ? ? ? ? ? 464 CYS A C   1 
-ATOM   3016 O O   A CYS A 1 419 ? 23.240  -47.223 44.862  0.50 37.29  ? ? ? ? ? ? 464 CYS A O   1 
-ATOM   3018 C CB  A CYS A 1 419 ? 23.728  -48.802 42.094  0.50 37.89  ? ? ? ? ? ? 464 CYS A CB  1 
-ATOM   3020 S SG  A CYS A 1 419 ? 23.917  -47.082 41.790  0.50 53.83  ? ? ? ? ? ? 464 CYS A SG  1 
+ATOM   3010 N N   . CYS A 1 419 ? 23.608  -50.599 43.715  0.50 38.26  ? ? ? ? ? ? 464 CYS A N   1
+ATOM   3012 C CA  . CYS A 1 419 ? 23.817  -49.169 43.570  0.50 37.19  ? ? ? ? ? ? 464 CYS A CA  1
+ATOM   3014 C C   . CYS A 1 419 ? 22.860  -48.310 44.426  0.50 38.07  ? ? ? ? ? ? 464 CYS A C   1
+ATOM   3016 O O   . CYS A 1 419 ? 23.240  -47.223 44.862  0.50 37.29  ? ? ? ? ? ? 464 CYS A O   1
+ATOM   3018 C CB  . CYS A 1 419 ? 23.728  -48.802 42.094  0.50 37.89  ? ? ? ? ? ? 464 CYS A CB  1
+ATOM   3020 S SG  . CYS A 1 419 ? 23.917  -47.082 41.790  0.50 53.83  ? ? ? ? ? ? 464 CYS A SG  1

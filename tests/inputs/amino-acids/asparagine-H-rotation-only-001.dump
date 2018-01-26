@@ -1,0 +1,1179 @@
+{
+          '974' => {
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '?',
+                     'label_seq_id' => '135',
+                     'connections' => [
+                                        '973'
+                                      ],
+                     'pdbx_formal_charge' => '?',
+                     'Cartn_y_esd' => '?',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_y' => '8.883',
+                     'label_asym_id' => 'A',
+                     'label_entity_id' => '1',
+                     'B_iso_or_equiv_esd' => '?',
+                     'Cartn_x' => '21.534',
+                     'auth_asym_id' => 'A',
+                     'auth_atom_id' => 'O',
+                     'pdbx_PDB_ins_code' => '?',
+                     'Cartn_z' => '47.145',
+                     'hybridization' => 'sp2',
+                     'B_iso_or_equiv' => '60.99',
+                     'type_symbol' => 'O',
+                     'occupancy_esd' => '?',
+                     'auth_comp_id' => 'ASN',
+                     'Cartn_z_esd' => '?',
+                     'id' => '974',
+                     'pdbx_PDB_model_num' => '1',
+                     'label_atom_id' => 'O',
+                     'auth_seq_id' => '180',
+                     'occupancy' => '1.00',
+                     'label_alt_id' => '.'
+                   },
+          '982' => {
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '.',
+                     'Cartn_y_esd' => '.',
+                     'pdbx_formal_charge' => '.',
+                     'label_seq_id' => '135',
+                     'connections' => [
+                                        '975'
+                                      ],
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '10.959',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_x' => '20.358',
+                     'B_iso_or_equiv_esd' => '.',
+                     'label_entity_id' => '1',
+                     'auth_asym_id' => '.',
+                     'auth_atom_id' => '.',
+                     'Cartn_z' => '45.491',
+                     'pdbx_PDB_ins_code' => '.',
+                     'hybridization' => 'sp3',
+                     'B_iso_or_equiv' => '.',
+                     'type_symbol' => 'H',
+                     'id' => '982',
+                     'occupancy_esd' => '.',
+                     'Cartn_z_esd' => '.',
+                     'auth_comp_id' => '.',
+                     'conformation' => [
+                                         [
+                                           [
+                                             '0.526238767676634',
+                                             '-0.79302537012856',
+                                             '-0.306893339332475',
+                                             '20.266'
+                                           ],
+                                           [
+                                             '0.0245361256917775',
+                                             '-0.346596686963685',
+                                             '0.937693294804775',
+                                             '8.863'
+                                           ],
+                                           [
+                                             '-0.849982786843484',
+                                             '-0.500980537464539',
+                                             '-0.162934843270331',
+                                             '45.114'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi0)',
+                                             '-sin($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi0)',
+                                             'cos($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '-0.22060182456373'
+                                           ],
+                                           [
+                                             '-0.988294652551886'
+                                           ],
+                                           [
+                                             '1.87574452277931'
+                                           ],
+                                           [
+                                             1
+                                           ]
+                                         ]
+                                       ],
+                     'pdbx_PDB_model_num' => '.',
+                     'label_atom_id' => 'HB2',
+                     'auth_seq_id' => '.',
+                     'occupancy' => '.',
+                     'label_alt_id' => '.'
+                   },
+          '975' => {
+                     'occupancy' => '1.00',
+                     'label_alt_id' => '.',
+                     'label_atom_id' => 'CB',
+                     'pdbx_PDB_model_num' => '1',
+                     'auth_seq_id' => '180',
+                     'type_symbol' => 'C',
+                     'id' => '975',
+                     'Cartn_z_esd' => '?',
+                     'occupancy_esd' => '?',
+                     'auth_comp_id' => 'ASN',
+                     'hybridization' => 'sp3',
+                     'B_iso_or_equiv' => '84.44',
+                     'auth_asym_id' => 'A',
+                     'pdbx_PDB_ins_code' => '?',
+                     'Cartn_z' => '44.865',
+                     'auth_atom_id' => 'CB',
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '10.296',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_x' => '19.797',
+                     'B_iso_or_equiv_esd' => '?',
+                     'label_entity_id' => '1',
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '?',
+                     'Cartn_y_esd' => '?',
+                     'pdbx_formal_charge' => '?',
+                     'label_seq_id' => '135',
+                     'connections' => [
+                                        '972',
+                                        '976',
+                                        '982',
+                                        '983'
+                                      ]
+                   },
+          '973' => {
+                     'pdbx_PDB_model_num' => '1',
+                     'label_atom_id' => 'C',
+                     'auth_seq_id' => '180',
+                     'occupancy' => '1.00',
+                     'label_alt_id' => '.',
+                     'type_symbol' => 'C',
+                     'id' => '973',
+                     'auth_comp_id' => 'ASN',
+                     'Cartn_z_esd' => '?',
+                     'occupancy_esd' => '?',
+                     'auth_asym_id' => 'A',
+                     'pdbx_PDB_ins_code' => '?',
+                     'Cartn_z' => '46.594',
+                     'auth_atom_id' => 'C',
+                     'hybridization' => 'sp2',
+                     'B_iso_or_equiv' => '60.41',
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '?',
+                     'Cartn_y_esd' => '?',
+                     'pdbx_formal_charge' => '?',
+                     'label_seq_id' => '135',
+                     'connections' => [
+                                        '972',
+                                        '974'
+                                      ],
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '8.617',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_x' => '20.461',
+                     'B_iso_or_equiv_esd' => '?',
+                     'label_entity_id' => '1'
+                   },
+          '978' => {
+                     'type_symbol' => 'N',
+                     'Cartn_z_esd' => '?',
+                     'occupancy_esd' => '?',
+                     'auth_comp_id' => 'ASN',
+                     'id' => '978',
+                     'label_alt_id' => '.',
+                     'occupancy' => '1.00',
+                     'conformation' => [
+                                         [
+                                           [
+                                             '0.526238767676634',
+                                             '-0.79302537012856',
+                                             '-0.306893339332475',
+                                             '20.266'
+                                           ],
+                                           [
+                                             '0.0245361256917775',
+                                             '-0.346596686963685',
+                                             '0.937693294804775',
+                                             '8.863'
+                                           ],
+                                           [
+                                             '-0.849982786843484',
+                                             '-0.500980537464539',
+                                             '-0.162934843270331',
+                                             '45.114'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi0)',
+                                             '-sin($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi0)',
+                                             'cos($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '0.299337533621876',
+                                             '0.359903388280077',
+                                             '0.883666561588528',
+                                             '4.9737991503207e-14'
+                                           ],
+                                           [
+                                             '-0.954147284733951',
+                                             '0.112909814148823',
+                                             '0.277226140368664',
+                                             '-4.2632564145606e-14'
+                                           ],
+                                           [
+                                             '4.57966997657877e-16',
+                                             '-0.926132239463348',
+                                             '0.377198985982998',
+                                             '1.52821824357649'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi1)',
+                                             '-sin($chi1)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi1)',
+                                             'cos($chi1)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '-1.18816078221967'
+                                           ],
+                                           [
+                                             '0.00661495217955554'
+                                           ],
+                                           [
+                                             '2.1146300380924'
+                                           ],
+                                           [
+                                             1
+                                           ]
+                                         ]
+                                       ],
+                     'pdbx_PDB_model_num' => '1',
+                     'label_atom_id' => 'ND2',
+                     'auth_seq_id' => '180',
+                     'group_PDB' => 'ATOM',
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '10.479',
+                     'B_iso_or_equiv_esd' => '?',
+                     'label_entity_id' => '1',
+                     'Cartn_x' => '18.987',
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '?',
+                     'label_seq_id' => '135',
+                     'connections' => [
+                                        '976',
+                                        '984',
+                                        '985'
+                                      ],
+                     'pdbx_formal_charge' => '?',
+                     'Cartn_y_esd' => '?',
+                     'hybridization' => 'sp2',
+                     'B_iso_or_equiv' => '102.81',
+                     'auth_asym_id' => 'A',
+                     'auth_atom_id' => 'ND2',
+                     'pdbx_PDB_ins_code' => '?',
+                     'Cartn_z' => '42.586'
+                   },
+          '979' => {
+                     'auth_seq_id' => '.',
+                     'pdbx_PDB_model_num' => '.',
+                     'label_atom_id' => 'H',
+                     'label_alt_id' => '.',
+                     'occupancy' => '.',
+                     'auth_comp_id' => '.',
+                     'occupancy_esd' => '.',
+                     'Cartn_z_esd' => '.',
+                     'id' => '979',
+                     'type_symbol' => 'H',
+                     'auth_atom_id' => '.',
+                     'pdbx_PDB_ins_code' => '.',
+                     'Cartn_z' => '44.499',
+                     'auth_asym_id' => '.',
+                     'B_iso_or_equiv' => '.',
+                     'hybridization' => 'sp3',
+                     'connections' => [
+                                        '971'
+                                      ],
+                     'label_seq_id' => '135',
+                     'Cartn_y_esd' => '.',
+                     'pdbx_formal_charge' => '.',
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '.',
+                     'B_iso_or_equiv_esd' => '.',
+                     'label_entity_id' => '1',
+                     'Cartn_x' => '18.421',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_y' => '8.370',
+                     'label_asym_id' => 'A'
+                   },
+          '977' => {
+                     'type_symbol' => 'O',
+                     'id' => '977',
+                     'occupancy_esd' => '?',
+                     'auth_comp_id' => 'ASN',
+                     'Cartn_z_esd' => '?',
+                     'label_atom_id' => 'OD1',
+                     'conformation' => [
+                                         [
+                                           [
+                                             '0.526238767676634',
+                                             '-0.79302537012856',
+                                             '-0.306893339332475',
+                                             '20.266'
+                                           ],
+                                           [
+                                             '0.0245361256917775',
+                                             '-0.346596686963685',
+                                             '0.937693294804775',
+                                             '8.863'
+                                           ],
+                                           [
+                                             '-0.849982786843484',
+                                             '-0.500980537464539',
+                                             '-0.162934843270331',
+                                             '45.114'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi0)',
+                                             '-sin($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi0)',
+                                             'cos($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '0.299337533621876',
+                                             '0.359903388280077',
+                                             '0.883666561588528',
+                                             '4.9737991503207e-14'
+                                           ],
+                                           [
+                                             '-0.954147284733951',
+                                             '0.112909814148823',
+                                             '0.277226140368664',
+                                             '-4.2632564145606e-14'
+                                           ],
+                                           [
+                                             '4.57966997657877e-16',
+                                             '-0.926132239463348',
+                                             '0.377198985982998',
+                                             '1.52821824357649'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi1)',
+                                             '-sin($chi1)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi1)',
+                                             'cos($chi1)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '1.0579499125532'
+                                           ],
+                                           [
+                                             '0.0156555898163742'
+                                           ],
+                                           [
+                                             '2.13908435669003'
+                                           ],
+                                           [
+                                             1
+                                           ]
+                                         ]
+                                       ],
+                     'pdbx_PDB_model_num' => '1',
+                     'auth_seq_id' => '180',
+                     'label_alt_id' => '.',
+                     'occupancy' => '1.00',
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '?',
+                     'pdbx_formal_charge' => '?',
+                     'Cartn_y_esd' => '?',
+                     'connections' => [
+                                        '976'
+                                      ],
+                     'label_seq_id' => '135',
+                     'Cartn_y' => '11.237',
+                     'label_asym_id' => 'A',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_x' => '21.047',
+                     'B_iso_or_equiv_esd' => '?',
+                     'label_entity_id' => '1',
+                     'auth_asym_id' => 'A',
+                     'Cartn_z' => '43.063',
+                     'auth_atom_id' => 'OD1',
+                     'pdbx_PDB_ins_code' => '?',
+                     'hybridization' => 'sp2',
+                     'B_iso_or_equiv' => '102.47'
+                   },
+          '981' => {
+                     'occupancy' => '.',
+                     'label_alt_id' => '.',
+                     'auth_seq_id' => '.',
+                     'pdbx_PDB_model_num' => '.',
+                     'label_atom_id' => 'HA',
+                     'id' => '981',
+                     'auth_comp_id' => '.',
+                     'occupancy_esd' => '.',
+                     'Cartn_z_esd' => '.',
+                     'type_symbol' => 'H',
+                     'B_iso_or_equiv' => '.',
+                     'hybridization' => 'sp3',
+                     'auth_atom_id' => '.',
+                     'Cartn_z' => '44.636',
+                     'pdbx_PDB_ins_code' => '.',
+                     'auth_asym_id' => '.',
+                     'Cartn_x' => '21.213',
+                     'B_iso_or_equiv_esd' => '.',
+                     'label_entity_id' => '1',
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '8.725',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_y_esd' => '.',
+                     'pdbx_formal_charge' => '.',
+                     'connections' => [
+                                        '972'
+                                      ],
+                     'label_seq_id' => '135',
+                     'Cartn_x_esd' => '.',
+                     'label_comp_id' => 'ASN'
+                   },
+          '971' => {
+                     'label_alt_id' => '.',
+                     'occupancy' => '1.00',
+                     'label_atom_id' => 'N',
+                     'pdbx_PDB_model_num' => '1',
+                     'auth_seq_id' => '180',
+                     'type_symbol' => 'N',
+                     'id' => '971',
+                     'occupancy_esd' => '?',
+                     'Cartn_z_esd' => '?',
+                     'auth_comp_id' => 'ASN',
+                     'hybridization' => 'sp3',
+                     'B_iso_or_equiv' => '61.66',
+                     'auth_asym_id' => 'A',
+                     'Cartn_z' => '44.511',
+                     'auth_atom_id' => 'N',
+                     'pdbx_PDB_ins_code' => '?',
+                     'Cartn_y' => '7.920',
+                     'label_asym_id' => 'A',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_x' => '19.336',
+                     'B_iso_or_equiv_esd' => '?',
+                     'label_entity_id' => '1',
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '?',
+                     'pdbx_formal_charge' => '?',
+                     'Cartn_y_esd' => '?',
+                     'connections' => [
+                                        '972',
+                                        '979',
+                                        '980'
+                                      ],
+                     'label_seq_id' => '135'
+                   },
+          '985' => {
+                     'auth_asym_id' => '.',
+                     'auth_atom_id' => '.',
+                     'pdbx_PDB_ins_code' => '.',
+                     'Cartn_z' => '41.707',
+                     'hybridization' => 'sp3',
+                     'B_iso_or_equiv' => '.',
+                     'Cartn_x_esd' => '.',
+                     'label_comp_id' => 'ASN',
+                     'connections' => [
+                                        '978'
+                                      ],
+                     'label_seq_id' => '135',
+                     'Cartn_y_esd' => '.',
+                     'pdbx_formal_charge' => '.',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_y' => '10.701',
+                     'label_asym_id' => 'A',
+                     'B_iso_or_equiv_esd' => '.',
+                     'label_entity_id' => '1',
+                     'Cartn_x' => '19.064',
+                     'label_atom_id' => 'HD22',
+                     'conformation' => [
+                                         [
+                                           [
+                                             '0.526238767676634',
+                                             '-0.79302537012856',
+                                             '-0.306893339332475',
+                                             '20.266'
+                                           ],
+                                           [
+                                             '0.0245361256917775',
+                                             '-0.346596686963685',
+                                             '0.937693294804775',
+                                             '8.863'
+                                           ],
+                                           [
+                                             '-0.849982786843484',
+                                             '-0.500980537464539',
+                                             '-0.162934843270331',
+                                             '45.114'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi0)',
+                                             '-sin($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi0)',
+                                             'cos($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '0.299337533621876',
+                                             '0.359903388280077',
+                                             '0.883666561588528',
+                                             '4.9737991503207e-14'
+                                           ],
+                                           [
+                                             '-0.954147284733951',
+                                             '0.112909814148823',
+                                             '0.277226140368664',
+                                             '-4.2632564145606e-14'
+                                           ],
+                                           [
+                                             '4.57966997657877e-16',
+                                             '-0.926132239463348',
+                                             '0.377198985982998',
+                                             '1.52821824357649'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi1)',
+                                             '-sin($chi1)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi1)',
+                                             'cos($chi1)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '-1.23924620421625'
+                                           ],
+                                           [
+                                             '0.0226477486652694'
+                                           ],
+                                           [
+                                             '3.02291811414332'
+                                           ],
+                                           [
+                                             1
+                                           ]
+                                         ]
+                                       ],
+                     'pdbx_PDB_model_num' => '.',
+                     'auth_seq_id' => '.',
+                     'occupancy' => '.',
+                     'label_alt_id' => '.',
+                     'type_symbol' => 'H',
+                     'Cartn_z_esd' => '.',
+                     'occupancy_esd' => '.',
+                     'auth_comp_id' => '.',
+                     'id' => '985'
+                   },
+          '983' => {
+                     'hybridization' => 'sp3',
+                     'B_iso_or_equiv' => '.',
+                     'auth_asym_id' => '.',
+                     'Cartn_z' => '45.099',
+                     'pdbx_PDB_ins_code' => '.',
+                     'auth_atom_id' => '.',
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '10.366',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_x' => '18.755',
+                     'B_iso_or_equiv_esd' => '.',
+                     'label_entity_id' => '1',
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '.',
+                     'Cartn_y_esd' => '.',
+                     'pdbx_formal_charge' => '.',
+                     'connections' => [
+                                        '975'
+                                      ],
+                     'label_seq_id' => '135',
+                     'occupancy' => '.',
+                     'label_alt_id' => '.',
+                     'conformation' => [
+                                         [
+                                           [
+                                             '0.526238767676634',
+                                             '-0.79302537012856',
+                                             '-0.306893339332475',
+                                             '20.266'
+                                           ],
+                                           [
+                                             '0.0245361256917775',
+                                             '-0.346596686963685',
+                                             '0.937693294804775',
+                                             '8.863'
+                                           ],
+                                           [
+                                             '-0.849982786843484',
+                                             '-0.500980537464539',
+                                             '-0.162934843270331',
+                                             '45.114'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi0)',
+                                             '-sin($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi0)',
+                                             'cos($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '-0.745519239241951'
+                                           ],
+                                           [
+                                             '0.684841221819759'
+                                           ],
+                                           [
+                                             '1.875512880472'
+                                           ],
+                                           [
+                                             1
+                                           ]
+                                         ]
+                                       ],
+                     'label_atom_id' => 'HB3',
+                     'pdbx_PDB_model_num' => '.',
+                     'auth_seq_id' => '.',
+                     'type_symbol' => 'H',
+                     'id' => '983',
+                     'occupancy_esd' => '.',
+                     'auth_comp_id' => '.',
+                     'Cartn_z_esd' => '.'
+                   },
+          '984' => {
+                     'label_entity_id' => '1',
+                     'B_iso_or_equiv_esd' => '.',
+                     'Cartn_x' => '18.222',
+                     'group_PDB' => 'ATOM',
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '10.093',
+                     'connections' => [
+                                        '978'
+                                      ],
+                     'label_seq_id' => '135',
+                     'pdbx_formal_charge' => '.',
+                     'Cartn_y_esd' => '.',
+                     'Cartn_x_esd' => '.',
+                     'label_comp_id' => 'ASN',
+                     'B_iso_or_equiv' => '.',
+                     'hybridization' => 'sp3',
+                     'Cartn_z' => '42.892',
+                     'pdbx_PDB_ins_code' => '.',
+                     'auth_atom_id' => '.',
+                     'auth_asym_id' => '.',
+                     'Cartn_z_esd' => '.',
+                     'auth_comp_id' => '.',
+                     'occupancy_esd' => '.',
+                     'id' => '984',
+                     'type_symbol' => 'H',
+                     'label_alt_id' => '.',
+                     'occupancy' => '.',
+                     'auth_seq_id' => '.',
+                     'conformation' => [
+                                         [
+                                           [
+                                             '0.526238767676634',
+                                             '-0.79302537012856',
+                                             '-0.306893339332475',
+                                             '20.266'
+                                           ],
+                                           [
+                                             '0.0245361256917775',
+                                             '-0.346596686963685',
+                                             '0.937693294804775',
+                                             '8.863'
+                                           ],
+                                           [
+                                             '-0.849982786843484',
+                                             '-0.500980537464539',
+                                             '-0.162934843270331',
+                                             '45.114'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi0)',
+                                             '-sin($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi0)',
+                                             'cos($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '0.299337533621876',
+                                             '0.359903388280077',
+                                             '0.883666561588528',
+                                             '4.9737991503207e-14'
+                                           ],
+                                           [
+                                             '-0.954147284733951',
+                                             '0.112909814148823',
+                                             '0.277226140368664',
+                                             '-4.2632564145606e-14'
+                                           ],
+                                           [
+                                             '4.57966997657877e-16',
+                                             '-0.926132239463348',
+                                             '0.377198985982998',
+                                             '1.52821824357649'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi1)',
+                                             '-sin($chi1)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi1)',
+                                             'cos($chi1)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '-1.94958524522208'
+                                           ],
+                                           [
+                                             '-0.00503769288027911'
+                                           ],
+                                           [
+                                             '1.61668023840915'
+                                           ],
+                                           [
+                                             1
+                                           ]
+                                         ]
+                                       ],
+                     'pdbx_PDB_model_num' => '.',
+                     'label_atom_id' => 'HD21'
+                   },
+          '976' => {
+                     'hybridization' => 'sp2',
+                     'B_iso_or_equiv' => '99.22',
+                     'auth_asym_id' => 'A',
+                     'auth_atom_id' => 'CG',
+                     'pdbx_PDB_ins_code' => '?',
+                     'Cartn_z' => '43.424',
+                     'group_PDB' => 'ATOM',
+                     'Cartn_y' => '10.719',
+                     'label_asym_id' => 'A',
+                     'label_entity_id' => '1',
+                     'B_iso_or_equiv_esd' => '?',
+                     'Cartn_x' => '19.993',
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '?',
+                     'connections' => [
+                                        '978',
+                                        '975',
+                                        '977'
+                                      ],
+                     'label_seq_id' => '135',
+                     'Cartn_y_esd' => '?',
+                     'pdbx_formal_charge' => '?',
+                     'label_alt_id' => '.',
+                     'occupancy' => '1.00',
+                     'pdbx_PDB_model_num' => '1',
+                     'conformation' => [
+                                         [
+                                           [
+                                             '0.526238767676634',
+                                             '-0.79302537012856',
+                                             '-0.306893339332475',
+                                             '20.266'
+                                           ],
+                                           [
+                                             '0.0245361256917775',
+                                             '-0.346596686963685',
+                                             '0.937693294804775',
+                                             '8.863'
+                                           ],
+                                           [
+                                             '-0.849982786843484',
+                                             '-0.500980537464539',
+                                             '-0.162934843270331',
+                                             '45.114'
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             'cos($chi0)',
+                                             '-sin($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             'sin($chi0)',
+                                             'cos($chi0)',
+                                             0,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             1,
+                                             0
+                                           ],
+                                           [
+                                             0,
+                                             0,
+                                             0,
+                                             1
+                                           ]
+                                         ],
+                                         [
+                                           [
+                                             '1.33834677547375'
+                                           ],
+                                           [
+                                             '0.419869583355528'
+                                           ],
+                                           [
+                                             '2.09950052192229'
+                                           ],
+                                           [
+                                             1
+                                           ]
+                                         ]
+                                       ],
+                     'label_atom_id' => 'CG',
+                     'auth_seq_id' => '180',
+                     'type_symbol' => 'C',
+                     'Cartn_z_esd' => '?',
+                     'occupancy_esd' => '?',
+                     'auth_comp_id' => 'ASN',
+                     'id' => '976'
+                   },
+          '972' => {
+                     'label_seq_id' => '135',
+                     'connections' => [
+                                        '971',
+                                        '975',
+                                        '981',
+                                        '973'
+                                      ],
+                     'Cartn_y_esd' => '?',
+                     'pdbx_formal_charge' => '?',
+                     'Cartn_x_esd' => '?',
+                     'label_comp_id' => 'ASN',
+                     'B_iso_or_equiv_esd' => '?',
+                     'label_entity_id' => '1',
+                     'Cartn_x' => '20.266',
+                     'group_PDB' => 'ATOM',
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '8.863',
+                     'Cartn_z' => '45.114',
+                     'pdbx_PDB_ins_code' => '?',
+                     'auth_atom_id' => 'CA',
+                     'auth_asym_id' => 'A',
+                     'B_iso_or_equiv' => '64.85',
+                     'hybridization' => 'sp3',
+                     'occupancy_esd' => '?',
+                     'Cartn_z_esd' => '?',
+                     'auth_comp_id' => 'ASN',
+                     'id' => '972',
+                     'type_symbol' => 'C',
+                     'auth_seq_id' => '180',
+                     'label_atom_id' => 'CA',
+                     'pdbx_PDB_model_num' => '1',
+                     'label_alt_id' => '.',
+                     'occupancy' => '1.00'
+                   },
+          '980' => {
+                     'Cartn_x' => '19.339',
+                     'B_iso_or_equiv_esd' => '.',
+                     'label_entity_id' => '1',
+                     'label_asym_id' => 'A',
+                     'Cartn_y' => '7.083',
+                     'group_PDB' => 'ATOM',
+                     'pdbx_formal_charge' => '.',
+                     'Cartn_y_esd' => '.',
+                     'label_seq_id' => '135',
+                     'connections' => [
+                                        '971'
+                                      ],
+                     'label_comp_id' => 'ASN',
+                     'Cartn_x_esd' => '.',
+                     'B_iso_or_equiv' => '.',
+                     'hybridization' => 'sp3',
+                     'auth_atom_id' => '.',
+                     'pdbx_PDB_ins_code' => '.',
+                     'Cartn_z' => '45.094',
+                     'auth_asym_id' => '.',
+                     'id' => '980',
+                     'occupancy_esd' => '.',
+                     'auth_comp_id' => '.',
+                     'Cartn_z_esd' => '.',
+                     'type_symbol' => 'H',
+                     'label_alt_id' => '.',
+                     'occupancy' => '.',
+                     'auth_seq_id' => '.',
+                     'label_atom_id' => 'H2',
+                     'pdbx_PDB_model_num' => '.'
+                   }
+}

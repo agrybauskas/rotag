@@ -22,7 +22,7 @@
                       'group_PDB' => 'ATOM',
                       'Cartn_z' => '42.094',
                       'auth_asym_id' => 'A',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'auth_comp_id' => 'CYS',
                       'label_asym_id' => 'A',
                       'auth_seq_id' => '464',
@@ -50,7 +50,7 @@
                       'Cartn_z_esd' => '?',
                       'auth_asym_id' => 'A',
                       'auth_comp_id' => 'CYS',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'label_asym_id' => 'A',
                       'type_symbol' => 'S',
                       'label_atom_id' => 'SG',
@@ -74,7 +74,7 @@
                       'label_atom_id' => 'N',
                       'label_asym_id' => 'A',
                       'auth_comp_id' => 'CYS',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'auth_asym_id' => 'A',
                       'B_iso_or_equiv_esd' => '?',
                       'Cartn_z_esd' => '?',
@@ -118,7 +118,7 @@
                       'Cartn_z' => '43.570',
                       'auth_asym_id' => 'A',
                       'auth_comp_id' => 'CYS',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'label_asym_id' => 'A',
                       'auth_seq_id' => '464',
                       'Cartn_x_esd' => '?',
@@ -155,7 +155,7 @@
                       'group_PDB' => 'ATOM',
                       'auth_asym_id' => 'A',
                       'auth_comp_id' => 'CYS',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'label_asym_id' => 'A'
                     },
           '3016' => {
@@ -186,7 +186,7 @@
                       'group_PDB' => 'ATOM',
                       'auth_asym_id' => 'A',
                       'label_asym_id' => 'A',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'auth_comp_id' => 'CYS'
                     }
 }

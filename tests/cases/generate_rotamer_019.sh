@@ -1,8 +1,11 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/threonine_019.cif
-target_resi="340"
-angles="chi0 pi"
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/generate_rotamer "${target_resi}" "${angles}" ${pdbx_file}
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/tyrosine-rotation-only-001.dump
+residue_id="536"
+angle_values="chi0 0 & chi1 pi"
+
+$(dirname "$0")/../scripts/generate_rotamer "${residue_id}" \
+	                                    "${angle_values}" \
+					    ${pdbx_dump_file}

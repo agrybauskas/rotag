@@ -1,8 +1,11 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/serine_022.cif
-target_resi="18"
-angles="chi0 -0.5*pi & chi1 0"
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/generate_rotamer "${target_resi}" "${angles}" ${pdbx_file}
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/arginine-H-rotation-only-001.dump
+residue_id="315"
+angle_values="chi0 0 & chi1 pi & chi2 0 & chi3 pi"
+
+$(dirname "$0")/../scripts/generate_rotamer "${residue_id}" \
+	                                    "${angle_values}" \
+					    ${pdbx_dump_file}

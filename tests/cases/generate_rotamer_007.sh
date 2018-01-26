@@ -1,8 +1,11 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/glutamic_acid_007.cif
-target_resi="14"
-angles="chi0 0.5*pi & chi1 pi & chi2 1.5*pi"
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/generate_rotamer "${target_resi}" "${angles}" ${pdbx_file}
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/glutamine-rotation-only-001.dump
+residue_id="5"
+angle_values="chi0 0 & chi1 pi & chi2 0"
+
+$(dirname "$0")/../scripts/generate_rotamer "${residue_id}" \
+	                                    "${angle_values}" \
+					    ${pdbx_dump_file}

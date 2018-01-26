@@ -56,7 +56,7 @@
                       'Cartn_y_esd' => '.'
                     },
           '3016' => {
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'label_comp_id' => 'CYS',
                       'id' => '3016',
                       'group_PDB' => 'ATOM',
@@ -159,7 +159,7 @@
                       'B_iso_or_equiv' => '38.26',
                       'Cartn_y' => '-50.599',
                       'type_symbol' => 'N',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'label_comp_id' => 'CYS',
                       'id' => '3010',
                       'group_PDB' => 'ATOM',
@@ -192,7 +192,7 @@
                       'Cartn_x_esd' => '?',
                       'pdbx_PDB_ins_code' => '?',
                       'auth_asym_id' => 'A',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'label_comp_id' => 'CYS'
                     },
           '3012' => {
@@ -201,7 +201,7 @@
                       'Cartn_x_esd' => '?',
                       'pdbx_PDB_ins_code' => '?',
                       'group_PDB' => 'ATOM',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'label_comp_id' => 'CYS',
                       'B_iso_or_equiv' => '37.19',
                       'Cartn_y' => '-49.169',
@@ -268,7 +268,7 @@
                       'auth_seq_id' => '464',
                       'Cartn_y_esd' => '?',
                       'label_comp_id' => 'CYS',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'pdbx_PDB_ins_code' => '?',
                       'auth_asym_id' => 'A',
                       'Cartn_x_esd' => '?',
@@ -328,7 +328,7 @@
                       'pdbx_PDB_ins_code' => '?',
                       'auth_asym_id' => 'A',
                       'group_PDB' => 'ATOM',
-                      'label_alt_id' => 'A',
+                      'label_alt_id' => '.',
                       'label_comp_id' => 'CYS',
                       'B_iso_or_equiv' => '38.07',
                       'Cartn_y' => '-48.310',
