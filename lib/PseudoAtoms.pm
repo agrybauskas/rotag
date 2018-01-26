@@ -181,6 +181,7 @@ sub generate_rotamer
     	    			      { "id" => [ $atom_id ] },
     	    			      \%angles,
 				      $last_atom_id ) } );
+	    $last_atom_id++;
     	}
     }
 
