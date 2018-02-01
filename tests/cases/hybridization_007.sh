@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/glutamic_acid_007.cif
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/hybridization ${pdbx_file}
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/glutamine-connected-001.dump
+
+$(dirname "$0")/../scripts/hybridization ${pdbx_dump_file}

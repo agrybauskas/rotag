@@ -4,25 +4,26 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use PDBxParser qw( obtain_atom_site );
-use ConnectAtoms qw( connect_atoms
-                     hybridization );
+use ConnectAtoms qw( hybridization );
 
 #
 # Unit test: ConnectAtoms::hybridization
+# Example: ./hybridization structure.dump
 #
-# Example: ./hybridization example.cif
-#
 
-my ( $pdbx_file ) = @ARGV;
+my ( $pdbx_dump_file ) = @ARGV;
 
-# Selects atom's data for further analysis.
-my $atom_site = obtain_atom_site( $pdbx_file );
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
 
-my %connected_atoms = %{ connect_atoms( $atom_site ) };
-hybridization( \%connected_atoms );
+hybridization( $atom_site );
 
-for my $atom_id ( sort keys %connected_atoms ) {
-    print( $connected_atoms{$atom_id}{"label_atom_id"}, "\t",
-	   $connected_atoms{$atom_id}{"hybridization"}, "\n" );
+for my $atom_id ( sort keys %{ $atom_site } ) {
+    print( $atom_site->{$atom_id}{"label_atom_id"}, "\t",
+	   $atom_site->{$atom_id}{"hybridization"}, "\n" );
 }
