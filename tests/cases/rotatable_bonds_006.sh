@@ -1,8 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-pdbx_file=../inputs/aspartic_acid_006.cif
-start_atom="label_atom_id CA"
-next_atom="label_atom_id CB"
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/rotatable_bonds "${start_atom}" "${next_atom}" ${pdbx_file}
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/glutamic-acid-001.dump
+
+"$(dirname "$0")"/../scripts/rotatable_bonds ${pdbx_dump_file}
