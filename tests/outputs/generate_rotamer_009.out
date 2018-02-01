@@ -1,0 +1,44 @@
+data_testing
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+
+ATOM 725  N  N  .  HIS  A  1  94  ?  26.424  -4.327  63.571  1.00  46.75  ?  ?  ?  ?  ?  ?  139  HIS  A  N  1 
+ATOM 726  C  CA  .  HIS  A  1  94  ?  25.591  -4.709  64.716  1.00  33.56  ?  ?  ?  ?  ?  ?  139  HIS  A  CA  1 
+ATOM 727  C  C  .  HIS  A  1  94  ?  24.964  -6.065  64.533  1.00  34.49  ?  ?  ?  ?  ?  ?  139  HIS  A  C  1 
+ATOM 728  O  O  .  HIS  A  1  94  ?  24.454  -6.380  63.466  1.00  44.38  ?  ?  ?  ?  ?  ?  139  HIS  A  O  1 
+ATOM 729  C  CB  .  HIS  A  1  94  ?  24.493  -3.665  64.938  1.00  39.05  ?  ?  ?  ?  ?  ?  139  HIS  A  CB  1 
+ATOM 730  C  CG  .  HIS  A  1  94  ?  23.809  -3.792  66.257  1.00  42.82  ?  ?  ?  ?  ?  ?  139  HIS  A  CG  1 
+ATOM 731  N  ND1  .  HIS  A  1  94  ?  22.794  -4.699  66.485  1.00  41.85  ?  ?  ?  ?  ?  ?  139  HIS  A  ND1  1 
+ATOM 732  C  CD2  .  HIS  A  1  94  ?  23.977  -3.115  67.417  1.00  43.06  ?  ?  ?  ?  ?  ?  139  HIS  A  CD2  1 
+ATOM 733  C  CE1  .  HIS  A  1  94  ?  22.381  -4.587  67.733  1.00  41.15  ?  ?  ?  ?  ?  ?  139  HIS  A  CE1  1 
+ATOM 734  N  NE2  .  HIS  A  1  94  ?  23.077  -3.629  68.317  1.00  49.35  ?  ?  ?  ?  ?  ?  139  HIS  A  NE2  1 
+ATOM 735  C  CE1  1  HIS  A  1  94  ?  23.911  -0.654  63.010  ?  ?  ?  ?  ?  ?  ?  ?  139  HIS  A  CE1  1 
+ATOM 736  C  CG  1  HIS  A  1  94  ?  24.535  -2.540  63.960  ?  ?  ?  ?  ?  ?  ?  ?  139  HIS  A  CG  1 
+ATOM 737  N  ND1  1  HIS  A  1  94  ?  23.633  -1.496  63.987  ?  ?  ?  ?  ?  ?  ?  ?  139  HIS  A  ND1  1 
+ATOM 738  N  NE2  1  HIS  A  1  94  ?  24.947  -1.122  62.339  ?  ?  ?  ?  ?  ?  ?  ?  139  HIS  A  NE2  1 
+ATOM 739  C  CD2  1  HIS  A  1  94  ?  25.357  -2.300  62.912  ?  ?  ?  ?  ?  ?  ?  ?  139  HIS  A  CD2  1 
