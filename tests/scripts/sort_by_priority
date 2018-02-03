@@ -3,12 +3,10 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use ConnectAtoms qw( sort_by_priority );
 
 #
 # Unit test: ConnectAtoms::sort_by_priority.
-#
 # Example: ./sort_by_priority atom_names.dat
 #
 

@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-set_file=../inputs/set_of_angles_001.dat
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/permutation ${set_file}
+set_file=$(dirname "$0")/../inputs/sets-of-angles-001.dat
+
+$(dirname "$0")/../scripts/permutation ${set_file}

@@ -3,14 +3,10 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use Sampling qw( sample_angles );
 
 #
 # Unit test: Sampling::sample_angles
-#
-# Samples angles according to angle range and size of increment.
-#
 # Example: ./sample_angles "0-1,3-4" 0.5
 #
 

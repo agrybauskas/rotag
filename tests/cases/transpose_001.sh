@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-matrix_file=../inputs/matrix_001.dat
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/transpose ${matrix_file}
+matrix_file=$(dirname "$0")/../inputs/matrices/matrix-001.dat
+
+$(dirname "$0")/../scripts/transpose ${matrix_file}

@@ -1,6 +1,7 @@
 #!/bin/bash
-cd "$(dirname "$0")"
 
-atom_names_file=../inputs/atom_names_001.dat
+export PERL5LIB=$(dirname "$0")/../../lib
 
-../programs/sort_by_priority ${atom_names_file}
+atom_names_file=$(dirname "$0")/../inputs/atom-names-001.dat
+
+$(dirname "$0")/../scripts/sort_by_priority ${atom_names_file}

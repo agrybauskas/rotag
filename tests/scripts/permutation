@@ -3,15 +3,11 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use Combinatorics qw( permutation );
 
 #
 # Unit test: Combinatorics::permutation
-#
-# Carries out permutation for array of arrays.
-#
-# Example: ./permutation example.dat
+# Example: ./permutation set.dat
 #
 
 my ( $set_file ) = @ARGV;

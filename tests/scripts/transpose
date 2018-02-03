@@ -3,14 +3,10 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use LinearAlgebra qw( transpose );
 
 #
 # Unit test: LinearAlgebra::transpose
-#
-# Transposes matrix.
-#
 # Example: ./transpose example.dat
 #
 
@@ -28,5 +24,5 @@ close( $fh );
 my $transposed_matrix = transpose( \@matrix );
 
 for my $row ( @{ $transposed_matrix } ) {
-    print( join( "\t", @{ $row } ), "\n" );
+    print( join( " ", @{ $row } ), "\n" );
 }
