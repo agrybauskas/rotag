@@ -25,7 +25,7 @@ use Combinatorics qw( permutation );
 use PDBxParser qw( filter );
 use LinearAlgebra qw( flatten );
 use MoleculeProperties qw( %BOND_TYPES );
-
+use Data::Dumper;
 # ------------------------------ Connect atoms ------------------------------- #
 
 #
@@ -357,13 +357,13 @@ sub rotatable_bonds
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { "atom_site" => $atom_site,
-				 "include" => { "label_atom_id" => [ "CA" ] },
-				 "data" => [ "id" ],
-				 "is_list" => 1 } )->[0];
+    				 "include" => { "label_atom_id" => [ "CA" ] },
+    				 "data" => [ "id" ],
+    				 "is_list" => 1 } )->[0];
     $next_atom_id //=  filter( { "atom_site" => $atom_site,
-				 "include" => { "label_atom_id" => [ "CB" ] },
-				 "data" => [ "id" ],
-				 "is_list" => 1 } )->[0];
+    				 "include" => { "label_atom_id" => [ "CB" ] },
+    				 "data" => [ "id" ],
+    				 "is_list" => 1 } )->[0];
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
@@ -424,7 +424,25 @@ sub rotatable_bonds
 
     	# Determines next atoms that should be visited.
     	@next_atom_ids = (); # Resets value for the new ones to be appended.
-    	for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+
+	# Sorts neighbouring atom ids by name.
+	my @neighbour_names =
+	    @{ sort_by_priority(
+		   filter( { "atom_site" => \%atom_site,
+			     "include" => { "id" => \@neighbour_atom_ids },
+			     "data" => [ "label_atom_id" ],
+			     "is_list" => 1 } ) ) };
+	my @neighbour_ids_sorted;
+	for my $neighbour_name( @neighbour_names ) {
+	    push( @neighbour_ids_sorted,
+		  keys(
+		      %{ filter( { "atom_site" => \%atom_site,
+				   "include" =>
+				       { "label_atom_id" =>
+					     [ $neighbour_name ] } } ) } ) );
+	}
+
+    	for my $neighbour_atom_id ( uniq @neighbour_ids_sorted ) {
     	    if( ( ! grep { $neighbour_atom_id eq $_ } @visited_atom_ids )
     		&& ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
     		push( @next_atom_ids, $neighbour_atom_id );
