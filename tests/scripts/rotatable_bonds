@@ -19,15 +19,15 @@ while( <$fh> ) {
 }
 close( $fh );
 $atom_site = eval( $atom_site );
-rotatable_bonds( $atom_site );
-# my %rotatable_bonds =
-#     %{ rotatable_bonds( $atom_site ) };
 
-# for my $atom_id ( sort { $a cmp $b } keys( %rotatable_bonds ) ) {
-#     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
-#     foreach( @{ $rotatable_bonds{$atom_id} } ) {
-# 	print( "$atom_site->{$_->[0]}{\"label_atom_id\"}," .
-# 	       "$atom_site->{$_->[1]}{\"label_atom_id\"} " )
-#     }
-#     print( "\n" );
-# }
+my %rotatable_bonds =
+    %{ rotatable_bonds( $atom_site ) };
+
+for my $atom_id ( sort { $a cmp $b } keys( %rotatable_bonds ) ) {
+    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
+    foreach( @{ $rotatable_bonds{$atom_id} } ) {
+	print( "$atom_site->{$_->[0]}{\"label_atom_id\"}," .
+	       "$atom_site->{$_->[1]}{\"label_atom_id\"} " )
+    }
+    print( "\n" );
+}

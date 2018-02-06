@@ -19,7 +19,7 @@ use ConnectAtoms qw( connect_atoms
 use PDBxParser qw( filter );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
-
+use Data::Dumper;
 # ----------------------------- Molecule parameters --------------------------- #
 
 #
@@ -194,47 +194,34 @@ sub all_dihedral
 
     for my $residue_id ( @residue_ids ) {
     	my $residue_site =
-	    filter( { "atom_site" => \%atom_site,
-		      "include" => { "label_seq_id" => [ $residue_id ] } } );
+    	    filter( { "atom_site" => \%atom_site,
+    		      "include" => { "label_seq_id" => [ $residue_id ] } } );
 
     	my $rotatable_bonds = rotatable_bonds( $residue_site );
-
-	# Assigns names to unique rotatable bond angles. Firstly, atoms with
-	# largest number of degrees of freedom are append to @rotatable_bonds
-	# list and those angles have highest priority.
-	# TODO: if both atoms have same number of degrees of freedom, then
-	# priority can be determined by sort_by_priority. Should try to apply
-	# this strategy.
-	my @rotatable_bonds;
-	for my $atom_id (
-	    sort { scalar @{ $rotatable_bonds->{$a} }
-	       <=> scalar @{ $rotatable_bonds->{$a} } }
-	         keys %{ $rotatable_bonds } ) {
-    	    # Filters out redundant rotatable bonds.
-    	    for my $rotatable_bond ( @{ $rotatable_bonds->{$atom_id} } ) {
-    		if( ! grep { $rotatable_bond->[0] eq $_->[0]
-    			  && $rotatable_bond->[1] eq $_->[1]} @rotatable_bonds ){
-    		    push( @rotatable_bonds, $rotatable_bond );
-    		}
+	my %uniq_rotatable_bonds; # Unique rotatable bonds.
+	for my $atom_id ( keys %{ $rotatable_bonds } ) {
+	    for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
+		if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
+		    $uniq_rotatable_bonds{"$angle_name"} =
+			$rotatable_bonds->{"$atom_id"}{"$angle_name"};
+		}
 	    }
 	}
 
     	# Calculates every dihedral angle.
-    	my $angle_id = 0;
     	my %angle_values;
 
-    	for my $rotatable_bond ( @rotatable_bonds ) {
-    	    # First, checks if rotatable bond has fourth atom produce dihedral
-    	    # angle. It is done by looking at atom connections - if rotatable
-    	    # bond ends with terminal atom, then this bond is excluded.
-    	    if( scalar( @{ $residue_site->{$rotatable_bond->[1]}
-    			                  {"connections"} } ) < 2 ){ next; }
-
-    	    my $angle_symbol = "chi${angle_id}";
+    	for my $angle_name ( keys %uniq_rotatable_bonds ) {
+    # 	    # First, checks if rotatable bond has fourth atom produce dihedral
+    # 	    # angle. It is done by looking at atom connections - if rotatable
+    # 	    # bond ends with terminal atom, then this bond is excluded.
+    	    if( scalar( @{ $residue_site->
+			       {$uniq_rotatable_bonds{$angle_name}->[1]}
+			       {"connections"} } ) < 2 ){ next; }
 
     	    # Chooses proper atom ids for calculating dihedral angles.
-    	    my $second_atom_id = $rotatable_bond->[0];
-    	    my $third_atom_id = $rotatable_bond->[1];
+    	    my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
+    	    my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
     	    my @second_connections = # Second atom connections, except third.
     		grep { $_ ne $third_atom_id }
     	        @{ $residue_site->{$second_atom_id}{"connections"} };
@@ -276,13 +263,11 @@ sub all_dihedral
     		      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ],
     		      "is_list" => 1 } );
 
-    	    $angle_values{$angle_symbol} =
+    	    $angle_values{$angle_name} =
     		dihedral_angle( [ $first_atom_coord,
     				  $second_atom_coord,
     				  $third_atom_coord,
     				  $fourth_atom_coord ] );
-
-    	    $angle_id++;
     	}
 
     	%{ $residue_angles{$residue_id} } = %angle_values;

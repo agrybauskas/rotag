@@ -497,7 +497,7 @@ sub rotatable_bonds
     	}
     }
 
-    return \%rotatable_bonds;
+    return \%named_rotatable_bonds;
 }
 
 #
