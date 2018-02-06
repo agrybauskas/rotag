@@ -19,7 +19,7 @@ use ConnectAtoms qw( connect_atoms
 use PDBxParser qw( filter );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
-use Data::Dumper;
+
 # ----------------------------- Molecule parameters --------------------------- #
 
 #
@@ -212,9 +212,9 @@ sub all_dihedral
     	my %angle_values;
 
     	for my $angle_name ( keys %uniq_rotatable_bonds ) {
-    # 	    # First, checks if rotatable bond has fourth atom produce dihedral
-    # 	    # angle. It is done by looking at atom connections - if rotatable
-    # 	    # bond ends with terminal atom, then this bond is excluded.
+    	    # First, checks if rotatable bond has fourth atom produce dihedral
+    	    # angle. It is done by looking at atom connections - if rotatable
+    	    # bond ends with terminal atom, then this bond is excluded.
     	    if( scalar( @{ $residue_site->
 			       {$uniq_rotatable_bonds{$angle_name}->[1]}
 			       {"connections"} } ) < 2 ){ next; }
