@@ -164,12 +164,11 @@ sub generate_rotamer
 
     	my $rotatable_bonds = rotatable_bonds( \%atom_site );
 
-    	for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
+    	for my $atom_id ( keys %{ $residue_site } ) {
     	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
     	    my %angles;
-    	    for my $angle_name ( sort { $a cmp $b }
-				 keys %{ $rotatable_bonds->{$atom_id} } ) {
+    	    for my $angle_name ( keys %{ $rotatable_bonds->{$atom_id} } ) {
     	    	$angles{$angle_name} =
 		    [ $angle_values->{"$residue_id"}{$angle_name} ];
     	    }
@@ -328,7 +327,7 @@ sub generate_library
 	    	    # Adds more angle combinations if there are more than one
 	    	    # rotatable bonds.
 	    	    if( scalar( @{ $allowed_angles[0] } )
-	    	      < scalar( @{ $rotatable_bonds->{$atom_id} } ) ) {
+	    	      < scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
 	    	    	@allowed_angles =
 	    	    	    @{ permutation( 2, [], [ \@allowed_angles,
 	    	    				     \@sampled_angles ], [] ) };
