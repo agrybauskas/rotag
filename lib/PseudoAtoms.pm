@@ -164,38 +164,14 @@ sub generate_rotamer
 
     	my $rotatable_bonds = rotatable_bonds( \%atom_site );
 
-	# Assigns names to rotatable bond angles.
-	# TODO: check if later names of rotation_only dihedral angles match
-	# all_dihedral values. Also, maybe should remove same redundant code from
-	# PseudoAtoms, Measure and SidechainModels by creating a function.
-	my @rotatable_bonds;
-	my %rot_bond_names;
-	my $angle_id = 0;
-	for my $atom_id (
-	    sort { scalar @{ $rotatable_bonds->{$a} }
-	       <=> scalar @{ $rotatable_bonds->{$a} } }
-	         keys %{ $rotatable_bonds } ) {
-    	    # Filters out redundant rotatable bonds.
-    	    for my $rotatable_bond ( @{ $rotatable_bonds->{$atom_id} } ) {
-    		if( ! grep { $rotatable_bond->[0] eq $_->[0]
-    			  && $rotatable_bond->[1] eq $_->[1]} @rotatable_bonds ){
-    		    push( @rotatable_bonds, $rotatable_bond );
-		    $rot_bond_names{"$rotatable_bond->[0],$rotatable_bond->[1]"}=
-			"chi${angle_id}";
-		    $angle_id++;
-    		}
-	    }
-	}
-
     	for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
     	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
     	    my %angles;
-    	    for my $rotatable_bond ( @{ $rotatable_bonds->{$atom_id} } ) {
-		my $bond_atom_ids = "$rotatable_bond->[0],$rotatable_bond->[1]";
-    	    	$angles{$rot_bond_names{$bond_atom_ids}} =
-    	    	    [ $angle_values->{"$residue_id"}
-		                     {$rot_bond_names{$bond_atom_ids}} ];
+    	    for my $angle_name ( sort { $a cmp $b }
+				 keys %{ $rotatable_bonds->{$atom_id} } ) {
+    	    	$angles{$angle_name} =
+		    [ $angle_values->{"$residue_id"}{$angle_name} ];
     	    }
 
     	    %rotamer_atom_site =
@@ -203,7 +179,7 @@ sub generate_rotamer
     	    	  %{ generate_pseudo( { %atom_site, %rotamer_atom_site },
     	    			      { "id" => [ $atom_id ] },
     	    			      \%angles,
-    				      $last_atom_id ) } );
+    	    			      $last_atom_id ) } );
     	    $last_atom_id++;
     	}
     }
