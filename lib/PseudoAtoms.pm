@@ -164,7 +164,7 @@ sub generate_rotamer
 
     	my $rotatable_bonds = rotatable_bonds( \%atom_site );
 
-    	for my $atom_id ( keys %{ $residue_site } ) {
+    	for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
     	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
     	    my %angles;
