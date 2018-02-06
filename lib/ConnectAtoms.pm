@@ -25,7 +25,7 @@ use Combinatorics qw( permutation );
 use PDBxParser qw( filter );
 use LinearAlgebra qw( flatten );
 use MoleculeProperties qw( %BOND_TYPES );
-use Data::Dumper;
+
 # ------------------------------ Connect atoms ------------------------------- #
 
 #
@@ -313,7 +313,8 @@ sub hybridization
 
 sub sort_by_priority
 {
-    my ( $atom_names ) = @_;
+    my ( $atom_names, $sort_type ) = @_;
+    $sort_type //= "tgn";
 
     # First priority is decided by atom type: S > P > O > N > C > H.
     # Second priority - by greek letter: A > B > G > D > E > Z > H.
@@ -341,12 +342,21 @@ sub sort_by_priority
     }
 
     # Sorts by rules of described in %atom_names.
-    my @sorted_names =
-    	sort {
-	    $atom_names{$b}{"type"} <=> $atom_names{$a}{"type"}
-	 || $atom_names{$b}{"greek_letter"} <=> $atom_names{$a}{"greek_letter"}
-         || $atom_names{$a}{"number"} cmp $atom_names{$b}{"number"}
-        } @{ $atom_names };
+    my @sorted_names;
+    if( $sort_type eq "tgn") { # By type, then greek letter and then number.
+	@sorted_names =
+	  sort {
+	      $atom_names{$b}{"type"} <=> $atom_names{$a}{"type"}
+	   || $atom_names{$b}{"greek_letter"} <=> $atom_names{$a}{"greek_letter"}
+           || $atom_names{$a}{"number"} cmp $atom_names{$b}{"number"} }
+	      @{ $atom_names };
+    } elsif( $sort_type eq "gn" ) { # By greek letter and then number.
+	@sorted_names =
+	  sort {
+	      $atom_names{$b}{"greek_letter"} <=> $atom_names{$a}{"greek_letter"}
+           || $atom_names{$a}{"number"} cmp $atom_names{$b}{"number"} }
+	      @{ $atom_names };
+    }
 
     return \@sorted_names;
 }
@@ -424,25 +434,7 @@ sub rotatable_bonds
 
     	# Determines next atoms that should be visited.
     	@next_atom_ids = (); # Resets value for the new ones to be appended.
-
-	# Sorts neighbouring atom ids by name.
-	my @neighbour_names =
-	    @{ sort_by_priority(
-		   filter( { "atom_site" => \%atom_site,
-			     "include" => { "id" => \@neighbour_atom_ids },
-			     "data" => [ "label_atom_id" ],
-			     "is_list" => 1 } ) ) };
-	my @neighbour_ids_sorted;
-	for my $neighbour_name( @neighbour_names ) {
-	    push( @neighbour_ids_sorted,
-		  keys(
-		      %{ filter( { "atom_site" => \%atom_site,
-				   "include" =>
-				       { "label_atom_id" =>
-					     [ $neighbour_name ] } } ) } ) );
-	}
-
-    	for my $neighbour_atom_id ( uniq @neighbour_ids_sorted ) {
+    	for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
     	    if( ( ! grep { $neighbour_atom_id eq $_ } @visited_atom_ids )
     		&& ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
     		push( @next_atom_ids, $neighbour_atom_id );
@@ -460,6 +452,48 @@ sub rotatable_bonds
     	}
     	if( ! @{ $rotatable_bonds{$atom_id} } ) {
     	    delete $rotatable_bonds{$atom_id};
+    	}
+    }
+
+    # Asigns names for rotatables bonds by first filtering out redundant bonds.
+    # TODO: the whole process of naming bonds might be implemented in the while
+    # loop above.
+    my @unique_bonds;
+    for my $bond ( map { @{ $rotatable_bonds{$_} } } keys %rotatable_bonds ) {
+	if( ! grep { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
+	           @unique_bonds ){
+	    push( @unique_bonds, $bond );
+	}
+    }
+
+    # Sorts bonds by naming priority.
+    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
+                                                         # bond.
+    my @second_names_sorted =
+    	@{ sort_by_priority(
+    	       filter( { "atom_site" => \%atom_site,
+    			 "include" => { "id" => \@bond_second_ids },
+    			 "data" => [ "label_atom_id" ],
+    			 "is_list" => 1 } ), "gn" ) };
+
+    my %bond_names; # Names by second atom priority.
+    my $bond_name_id = 0;
+    for my $second_name ( @second_names_sorted ) {
+	my $second_atom_id =
+	    filter( { "atom_site" => \%atom_site,
+		      "include" => { "label_atom_id" => [ $second_name ] },
+		      "data" => [ "id" ],
+		      "is_list" => 1 } )->[0];
+	$bond_names{"$second_atom_id"} = "chi$bond_name_id";
+	$bond_name_id++;
+    }
+
+    # Iterates through rotatable bonds and assigns names by second atom.
+    my %named_rotatable_bonds;
+    for my $atom_id ( keys %rotatable_bonds ) {
+    	for my $bond ( @{ $rotatable_bonds{"$atom_id"} } ) {
+    	    my $bond_name = $bond_names{"$bond->[1]"};
+    	    $named_rotatable_bonds{"$atom_id"}{"$bond_name"} = $bond;
     	}
     }
 
