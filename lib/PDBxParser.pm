@@ -198,6 +198,8 @@ sub create_pdbx_entry
     $atom_site->{$atom_id}{"auth_asym_id"} = $auth_asym_id;
     $atom_site->{$atom_id}{"auth_atom_id"} = $auth_atom_id;
     $atom_site->{$atom_id}{"pdbx_PDB_model_num"} = $pdbx_PDB_model_num;
+
+    return;
 }
 
 # --------------------------- Data structure to STDOUT ------------------------ #
@@ -274,6 +276,8 @@ sub to_pdbx
     	}
     }
     print( "\n" );
+
+    return;
 }
 
 1;

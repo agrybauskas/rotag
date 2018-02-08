@@ -278,10 +278,11 @@ sub bond_type
 	    if( ( $squared_distance >  $bond_length_min**2 )
 	     && ( $squared_distance <= $bond_length_max**2 ) ) {
 	    	return $bond_type;
-	    	last;
 	    }
 	}
     }
+
+    return;
 }
 
 sub hybridization
@@ -309,6 +310,8 @@ sub hybridization
 	    $atom_site->{$atom_id}{"hybridization"} = "sp3";
 	}
     }
+
+    return;
 }
 
 sub sort_by_priority
@@ -551,6 +554,8 @@ sub connect_atoms
     	    }
     	}
     }
+
+    return;
 }
 
 1;

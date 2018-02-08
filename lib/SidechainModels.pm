@@ -111,6 +111,8 @@ sub rotation_only
     		      @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
     	}
     }
+
+    return;
 }
 
 1;

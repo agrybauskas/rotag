@@ -108,6 +108,8 @@ sub potential
     	if exists $atom_site->{$atom_id}{"potential_energy"}
     	&& $atom_site->{$atom_id}{"potential_energy"} > $cutoff;
     }
+
+    return;
 }
 
 # ------------------------- Various potential functions ----------------------- #
