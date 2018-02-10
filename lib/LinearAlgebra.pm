@@ -207,7 +207,7 @@ sub switch_ref_frame
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
-    my ( $alpha, $beta, $gamma ) =
+    my ( $alpha_rad, $beta_rad, $gamma_rad ) =
 	@{ find_euler_angles( @{ $mid_atom_coord },
 			      @{ $up_atom_coord },
 			      @{ $side_atom_coord } ) };
@@ -217,9 +217,9 @@ sub switch_ref_frame
 
     if( $switch_ref_to eq "local" ) {
 	$ref_frame_switch =
-    	    mult_matrix_product( [ z_axis_rotation( $alpha ),
-				   x_axis_rotation( $beta ),
-				   z_axis_rotation( $gamma ),
+    	    mult_matrix_product( [ z_axis_rotation( $alpha_rad ),
+				   x_axis_rotation( $beta_rad ),
+				   z_axis_rotation( $gamma_rad ),
 				   translation( ( - $mid_atom_coord->[0],
 						  - $mid_atom_coord->[1],
 						  - $mid_atom_coord->[2] ) ) ] );
@@ -228,9 +228,9 @@ sub switch_ref_frame
     	    mult_matrix_product( [ translation( ( $mid_atom_coord->[0],
 						  $mid_atom_coord->[1],
 						  $mid_atom_coord->[2] ) ),
-				   z_axis_rotation( - $gamma ),
-				   x_axis_rotation( - $beta ),
-				   z_axis_rotation( - $alpha ) ] );
+				   z_axis_rotation( - $gamma_rad ),
+				   x_axis_rotation( - $beta_rad ),
+				   z_axis_rotation( - $alpha_rad ) ] );
     } else {
     	die "Must choose \$switch_to_global value between \"local\" and" .
     	    "\"global\".";
