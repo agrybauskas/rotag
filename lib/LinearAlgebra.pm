@@ -24,11 +24,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
-# --------------------------------- Constants --------------------------------- #
-
-#
-# Generates constants that are useful for other functions.
-#
+# -------------------------------- Constants ---------------------------------- #
 
 #
 # Returns PI value.
@@ -62,11 +58,7 @@ sub epsilon
     return $EPSILON;
 }
 
-# --------------------------- Numeric linear algebra -------------------------- #
-
-#
-# Performs basic linear algebra operations for matrices.
-#
+# -------------------------- Numeric linear algebra --------------------------- #
 
 #
 # Creates local reference frame for any three given atoms positions in cartesian
@@ -242,19 +234,19 @@ sub switch_ref_frame
 #
 # Creates 4x4 matrix that can rotate 4x4 matrices around x-axis.
 # Input:
-#     $angle - angle of rotation in radians.
+#     $angle_rad - angle of rotation in radians.
 # Output:
 #     @rot_matrix_x - 4x4 matrix.
 #
 
 sub x_axis_rotation
 {
-    my ( $angle ) = @_;
+    my ( $angle_rad ) = @_;
 
     my @rot_matrix_x =
 	( [ 1, 0, 0, 0 ],
-	  [ 0, cos( $angle ), - sin( $angle ), 0 ],
-	  [ 0, sin( $angle ), cos( $angle ), 0 ],
+	  [ 0, cos( $angle_rad ), - sin( $angle_rad ), 0 ],
+	  [ 0, sin( $angle_rad ), cos( $angle_rad ), 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     return \@rot_matrix_x;
@@ -263,19 +255,19 @@ sub x_axis_rotation
 #
 # Creates 4x4 matrix that can rotate 4x4 matrices around y-axis.
 # Input:
-#     $angle - angle of rotation in radians.
+#     $angle_rad - angle of rotation in radians.
 # Output:
 #     @rot_matrix_y - 4x4 matrix.
 #
 
 sub y_axis_rotation
 {
-    my ( $angle ) = @_;
+    my ( $angle_rad ) = @_;
 
     my @rot_matrix_y =
-	( [ cos( $angle ), 0, sin( $angle ), 0 ],
+	( [ cos( $angle_rad ), 0, sin( $angle_rad ), 0 ],
 	  [ 0, 1, 0, 0 ],
-	  [ - sin( $angle ), 0, cos( $angle ), 0 ],
+	  [ - sin( $angle_rad ), 0, cos( $angle_rad ), 0 ],
 	  [ 0, 0, 0, 1 ] );
 
     return \@rot_matrix_y;
@@ -284,18 +276,18 @@ sub y_axis_rotation
 #
 # Creates 4x4 matrix that can rotate 4x4 matrices around z-axis.
 # Input:
-#     $angle - angle of rotation in radians.
+#     $angle_rad - angle of rotation in radians.
 # Output:
 #     @rot_matrix_z - 4x4 matrix.
 #
 
 sub z_axis_rotation
 {
-    my ( $angle ) = @_;
+    my ( $angle_rad ) = @_;
 
     my @rot_matrix_z =
-	( [ cos( $angle ), - sin( $angle ), 0, 0 ],
-	  [ sin( $angle ), cos( $angle ), 0, 0 ],
+	( [ cos( $angle_rad ), - sin( $angle_rad ), 0, 0 ],
+	  [ sin( $angle_rad ), cos( $angle_rad ), 0, 0 ],
 	  [ 0, 0, 1, 0 ],
 	  [ 0, 0, 0, 1 ] );
 
@@ -351,13 +343,13 @@ sub reshape
     my @matrices;
     for( my $i = 0; $i < scalar( @{ $dimensions } ); $i += 2 ) {
 	my $rows = $dimensions->[$i];
-	my $columns = $dimensions->[$i+1];
+	my $cols = $dimensions->[$i+1];
 
 	push( @matrices, [] );
 
 	foreach( 0..$rows-1) {
 	    push( @{ $matrices[-1] },
-		  [ splice( @{ $element_list }, 0, $columns ) ] );
+		  [ splice( @{ $element_list }, 0, $cols ) ] );
 	}
     }
 
@@ -507,8 +499,7 @@ sub scalar_multipl
     return \@matrix_multipl;
 }
 
-
-# ---------------------------- Symbolic linear algebra ------------------------ #
+# ------------------------- Symbolic linear algebra --------------------------- #
 
 #
 # Performs basic linear algebra on symbolic expressions. Uses GiNaC for
@@ -546,9 +537,10 @@ sub transpose
 }
 
 #
-# Calculates matrix product of list of any size of matrices.
+# Calculates matrix product of two matrices.
 # Input:
-#     $matrices - any number of arrays representing matrices.
+#     ${left, right}_matrix - matrices.
+#     $symbol_values - values of the unknown variable(-s).
 # Output:
 #     @matrix_product - matrix product.
 #
@@ -626,6 +618,15 @@ sub matrix_product
     return \@matrix_product;
 }
 
+#
+# Calculates matrix product of list of any size of matrices.
+# Input:
+#     $matrices - list of matrices.
+#     $symbol_values - values of the unknown variable(-s).
+# Output:
+#     @mult_matrix_product - matrix product.
+#
+
 sub mult_matrix_product
 {
     my ( $matrices, $symbol_values ) = @_;
@@ -644,20 +645,17 @@ sub mult_matrix_product
 	    for my $element ( @{ $row } ) {
 		$element =~ s/\$(\w+)/\$symbol_values{$1}/gx;
 		$element = eval( $element );
-		push( @{ $mult_matrix_product[-1][-1] },
-		      $element );
+		push( @{ $mult_matrix_product[-1][-1] }, $element );
 	    }
 	}
 
     } else {
-
 	for( my $id = $#matrices; $id >= 1; $id-- ) {
 	    if( $id == $#matrices ) {
-		eval {
-		    push( @mult_matrix_product,
-			  matrix_product( $matrices[$id-1],
-					  $matrices[$id],
-					  $symbol_values ) );
+		eval { push( @mult_matrix_product,
+			     matrix_product( $matrices[$id-1],
+					     $matrices[$id],
+					     $symbol_values ) );
 		} or do {
 		    if( $@->{type} eq "UndifinedError" ) {
 			push( @mult_matrix_product,
