@@ -6,8 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( permutation );
 
-# ---------------------------------- Combinatorics ---------------------------- #
-
+# ------------------------------ Combinatorics -------------------------------- #
 #
 # Carries out permutation for list of arrays (recursive function).
 # Input:

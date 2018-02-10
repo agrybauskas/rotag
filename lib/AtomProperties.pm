@@ -6,12 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( %ATOMS );
 
-# ------------------------------- Atom properties ----------------------------- #
-
-#
-# Stores atom properties, parameters, such as, Van der Waals radii, covalent
-# radii and bond length.
-#
+# -----------------------------	Atom properties ------------------------------- #
 
 # TODO: should determine covalent radii by investigating amino acid structures.
 our %ATOMS = (

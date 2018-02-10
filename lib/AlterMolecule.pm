@@ -58,7 +58,7 @@ sub bond_torsion
 # Input:
 #     ${mid,up,side}_atom_coord - Cartesian coordinates in array form that define
 #     user-selected mid, up, side atoms.
-#     $angle_name - name of the bond length variable.
+#     $length_name - name of the bond length variable.
 # Output:
 #     $transl_matrix - matrix defining coordinates in symbolic mathematical form
 #     (with undefined bond length variable).
@@ -100,7 +100,7 @@ sub bond_stretching
 #     $angle_name_x - name of the bond angle that will be rotated in x-axis.
 #     $angle_name_y - name of the bond angle that will be rotated in y-axis.
 # Output:
-#     $angle_matrix - matrix defining coordinates in symbolic mathematical form
+#     $rot_matrix - matrix defining coordinates in symbolic mathematical form
 #     (with undefined angle variables).
 #
 
@@ -125,7 +125,7 @@ sub angle_bending
 	  [ 0, 0, 0, 1 ] );
 
     # Multiplying multiple matrices to get a final form.
-    my $angle_matrix =
+    my $rot_matrix =
 	mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
 						    $up_atom_coord,
 						    $side_atom_coord,
@@ -137,7 +137,7 @@ sub angle_bending
 						    $side_atom_coord,
 						    "local" ) } ] );
 
-    return $angle_matrix;
+    return $rot_matrix;
 }
 
 1;
