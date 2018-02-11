@@ -10,20 +10,21 @@ use List::MoreUtils qw( uniq );
 
 use AlterMolecule qw( bond_torsion );
 use ConnectAtoms qw( connect_atoms
-                     hybridization
                      rotatable_bonds
                      sort_by_priority );
-use LinearAlgebra qw( flatten
-                      mult_matrix_product
+use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( filter );
 
-# ------------------------ Idealistic sidechain models ------------------------ #
+# ----------------------- Idealistic sidechain models ------------------------- #
 
 #
 # Model that uses only rotation around single bonds.
 # Input:
 #     $atom_site - atom data structure.
+# Output:
+#     adds conformation variable for each atom as list of transformation
+#     matrices.
 #
 
 sub rotation_only
@@ -59,15 +60,14 @@ sub rotation_only
     	    for my $angle_name ( sort { $a cmp $b }
 				 keys %{ $rotatable_bonds->{$atom_id} } ) {
     		# First, checks if rotatable bond has fourth atom produce
-    		# dihedral angle. It is done by looking at atom connections - if
+    		# dihedral angle. It is done by looking at atom connections: if
     		# rotatable bond ends with terminal atom, then this bond is
     		# excluded.
-    		if( scalar( @{ $residue_site->{$rotatable_bonds->{$atom_id}
-					                         {$angle_name}[1]}
-    			                      {"connections"} } ) < 2 ){ next; }
+    		my $up_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[1];
+    		if( scalar( @{ $residue_site->{$up_atom_id}
+			                      {"connections"} } ) < 2 ){ next; }
 
     		my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
-    		my $up_atom_id  = $rotatable_bonds->{$atom_id}{$angle_name}[1];
     		my @mid_connections = # Excludes up atom.
     		    grep { $_ ne $up_atom_id }
     		    @{ $residue_site->{$mid_atom_id}{"connections"} };

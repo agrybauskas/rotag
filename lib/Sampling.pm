@@ -10,17 +10,12 @@ use POSIX;
 
 use LinearAlgebra qw( pi );
 
-# ---------------------------------- Sampling --------------------------------- #
-
-#
-# Generates intervals of values that might be restricted by boundary values.
-#
+# --------------------------------- Sampling ---------------------------------- #
 
 # Produces angle values that are separated by even intervals.
 # Input:
 #     $angle_ranges - boundary between which angles can be sampled.
 #     $small_angle - smallest angle increment.
-#     Input has to be in hash form.
 # Output:
 #     @angles - sampled angles.
 #
@@ -42,7 +37,6 @@ sub sample_angles
 
     # Iterates around the circle and adds evenly spaced angles, if they are
     # inside intervals ($angle_ranges).
-
     for my $angle ( @small_angles ) {
 	# TODO: might speed up calculation by eliminating previous elements
 	# from $angle_ranges array.
