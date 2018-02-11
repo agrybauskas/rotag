@@ -3,10 +3,10 @@
 use strict;
 use warnings;
 
-use ConnectAtoms qw( rotatable_bonds );
+use MoleculeProperties qw( rotatable_bonds );
 
 #
-# Unit test: ConnectAtoms::rotatable_bonds
+# Unit test: MoleculeProperties::rotatable_bonds
 # Example: ./rotatable_bonds structure.dump
 #
 

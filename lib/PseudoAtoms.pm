@@ -19,14 +19,13 @@ use AtomInteractions qw( hard_sphere
                      exponential
                      leonard_jones
                      combined );
-use AtomProperties qw( %ATOMS );
+use AtomProperties qw( %ATOMS
+                       %HYDROGEN_NAMES );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      grid_box
-                     hybridization
                      is_neighbour
-                     is_second_neighbour
-                     rotatable_bonds );
+                     is_second_neighbour );
 use LinearAlgebra qw( find_euler_angles
                       mult_matrix_product
                       pi
@@ -35,7 +34,8 @@ use Measure qw( all_dihedral
                 dihedral_angle
                 bond_angle
                 bond_length );
-use MoleculeProperties qw( %HYDROGEN_NAMES );
+use MoleculeProperties qw( hybridization
+                           rotatable_bonds );
 use PDBxParser qw( create_pdbx_entry
                    filter
                    to_pdbx );

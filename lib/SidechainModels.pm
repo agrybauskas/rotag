@@ -9,11 +9,11 @@ our @EXPORT_OK = qw( rotation_only );
 use List::MoreUtils qw( uniq );
 
 use AlterMolecule qw( bond_torsion );
-use ConnectAtoms qw( connect_atoms
-                     rotatable_bonds
-                     sort_by_priority );
+use AtomProperties qw( sort_atom_names );
+use ConnectAtoms qw( connect_atoms );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
+use MoleculeProperties qw( rotatable_bonds );
 use PDBxParser qw( filter );
 
 # ----------------------- Idealistic sidechain models ------------------------- #
@@ -75,7 +75,7 @@ sub rotation_only
     		    map { $residue_site->{$_}{"label_atom_id"} }
     		    @mid_connections;
     		my $side_atom_name =
-    		    sort_by_priority( \@mid_connection_names )->[0];
+    		    sort_atom_names( \@mid_connection_names )->[0];
     		my $side_atom_id =
     		    filter( { "atom_site" => $residue_site,
     			      "include" =>

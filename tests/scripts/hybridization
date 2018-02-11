@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use ConnectAtoms qw( hybridization );
+use MoleculeProperties qw( hybridization );
 
 #
-# Unit test: ConnectAtoms::hybridization
+# Unit test: MoleculeProperties::hybridization
 # Example: ./hybridization structure.dump
 #
 

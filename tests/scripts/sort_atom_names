@@ -3,10 +3,10 @@
 use strict;
 use warnings;
 
-use ConnectAtoms qw( sort_by_priority );
+use AtomProperties qw( sort_atom_names );
 
 #
-# Unit test: ConnectAtoms::sort_by_priority.
+# Unit test: AtomProperties::sort_atom_names.
 # Example: ./sort_by_priority atom_names.dat
 #
 
@@ -19,6 +19,6 @@ close( $fh );
 my ( $atom_names ) =
     map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } @atom_names;
 
-my $sorted_names = sort_by_priority( $atom_names );
+my $sorted_names = sort_atom_names( $atom_names );
 
 print( join( " ", @{ $sorted_names } ), "\n" );

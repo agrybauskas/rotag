@@ -3,10 +3,10 @@
 use strict;
 use warnings;
 
-use ConnectAtoms qw( bond_type );
+use MoleculeProperties qw( bond_type );
 
 #
-# Unit test: ConnectAtoms::bond_type
+# Unit test: MoleculeProperties::bond_type
 # Example: ./bond_type structure.dump
 #
 

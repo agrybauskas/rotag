@@ -13,12 +13,12 @@ our @EXPORT_OK = qw( all_dihedral
 use Math::Trig;
 use List::MoreUtils qw( uniq );
 
-use ConnectAtoms qw( connect_atoms
-                     rotatable_bonds
-                     sort_by_priority );
+use AtomProperties qw( sort_atom_names );
+use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
+use MoleculeProperties qw( rotatable_bonds );
 
 # ----------------------------- Molecule parameters --------------------------- #
 
@@ -226,7 +226,7 @@ sub all_dihedral
     		grep { $_ ne $third_atom_id }
     	        @{ $residue_site->{$second_atom_id}{"connections"} };
     	    my $first_atom_name =
-    		sort_by_priority(
+    		sort_atom_names(
     		filter( { "atom_site" => $residue_site,
     			  "include" => { "id" => \@second_connections },
     			  "data" => [ "label_atom_id" ],
@@ -235,7 +235,7 @@ sub all_dihedral
     		grep { $_ ne $second_atom_id }
     	        @{ $residue_site->{$third_atom_id}{"connections"} };
     	    my $fourth_atom_name =
-    		sort_by_priority(
+    		sort_atom_names(
     		filter( { "atom_site" => $residue_site,
     			  "include" => { "id" => \@third_connections },
     			  "data" => [ "label_atom_id" ],

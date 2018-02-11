@@ -4,7 +4,9 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( %ATOMS );
+our @EXPORT_OK = qw( %ATOMS
+                     %HYDROGEN_NAMES
+                     sort_atom_names );
 
 # -----------------------------	Atom properties ------------------------------- #
 
@@ -81,5 +83,229 @@ our %ATOMS = (
              "partial_charge" => 0
            }
     );
+
+our %HYDROGEN_NAMES = (
+    'SER' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'OG'  => [ 'HG' ]
+    },
+    'ARG' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CG'  => [ 'HG2', 'HG3' ],
+	'CD'  => [ 'HD2', 'HD3' ],
+	'NE'  => [ 'HE' ],
+	'NH1' => [ 'HH11', 'HH12' ],
+	'NH2' => [ 'HH21', 'HH22' ]
+    },
+    'HIS' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'ND1' => [ 'HD1' ],
+	'CD2' => [ 'HD2' ],
+	'CE1' => [ 'HE1' ],
+	'NE2' => [ 'HE2' ]
+    },
+    'LYS' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CG'  => [ 'HG2', 'HG3' ],
+	'CD'  => [ 'HD2', 'HD3' ],
+	'CE'  => [ 'HE2', 'HE3' ],
+	'NZ'  => [ 'HZ1', 'HZ2' ]
+    },
+    'ASP' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'OD2' => [ 'HD2' ]
+    },
+    'GLU' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CG'  => [ 'HG2', 'HG3' ],
+	'OE2' => [ 'HE2' ]
+    },
+    'CYS' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'SG'  => [ 'HG' ]
+    },
+    'GLY' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA2', 'HA3' ],
+	'OXT' => [ 'HXT' ]
+    },
+    'PRO' => {
+	'N'   => [ 'H' ],
+	'CA'  => [ 'HA' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CG'  => [ 'HG2', 'HG3' ],
+	'CD'  => [ 'HD2', 'HD3' ]
+    },
+    'ALA' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB1', 'HB2', 'HB3' ]
+    },
+    'VAL' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB' ],
+	'CG1' => [ 'HG11', 'HG12', 'HG13' ],
+	'CG2' => [ 'HG21', 'HG22', 'HG23' ]
+    },
+    'ILE' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB' ],
+	'CG1' => [ 'HG12', 'HG13' ],
+	'CG2' => [ 'HG21', 'HG22', 'HG23' ],
+	'CD1' => [ 'HD11', 'HD12', 'HD13' ]
+    },
+    'LEU' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CG'  => [ 'HG' ],
+	'CD1' => [ 'HD11', 'HD12', 'HD13' ],
+	'CD2' => [ 'HD21', 'HD22', 'HD23' ]
+    },
+    'MET' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CG'  => [ 'HG2', 'HG3' ],
+	'CE'  => [ 'HE1', 'HE2', 'HE3' ]
+    },
+    'PHE' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CD1' => [ 'HD1' ],
+	'CD2' => [ 'HD2' ],
+	'CE1' => [ 'HE1' ],
+	'CE2' => [ 'HE2' ],
+	'CZ'  => [ 'HZ' ]
+    },
+    'TYR' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CD1' => [ 'HD1' ],
+	'CD2' => [ 'HD2' ],
+	'CE1' => [ 'HE1' ],
+	'CE2' => [ 'HE2' ],
+	'OH'  => [ 'HH' ]
+    },
+    'TRP' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CD1' => [ 'HD1' ],
+	'NE1' => [ 'HE1' ],
+	'CE3' => [ 'HE3' ],
+	'CZ2' => [ 'HZ2' ],
+	'CZ3' => [ 'HZ3' ],
+	'CH2' => [ 'HH2' ]
+    },
+    'THR' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB' ],
+	'OG1' => [ 'HG1' ],
+	'CG2' => [ 'HG21', 'HG22', 'HG23' ]
+    },
+    'ASN' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'ND2' => [ 'HD21', 'HD22' ]
+    },
+    'GLN' => {
+	'N'   => [ 'H', 'H2' ],
+	'CA'  => [ 'HA' ],
+	'OXT' => [ 'HXT' ],
+	'CB'  => [ 'HB2', 'HB3' ],
+	'CG'  => [ 'HG2', 'HG3' ],
+	'NE2' => [ 'HE21', 'HE22' ]
+    }
+);
+
+# -------------------------- Atom related functions --------------------------- #
+
+sub sort_atom_names
+{
+    my ( $atom_names, $sort_type ) = @_;
+    $sort_type //= "tgn";
+
+    # First priority is decided by atom type: S > P > O > N > C > H.
+    # Second priority - by greek letter: A > B > G > D > E > Z > H.
+    # TODO: look for more greek letters that are in PDBx.
+    # Third priority - by numeration: 1 > 2 > 3 and etc.
+    # This priority is achieved by assinging first, second and third priorities
+    # to numbers. Then iteratively is sorted by priorities.
+    my %atom_type_priority =
+	( "H" => 1, "C" => 2, "N" => 3, "O" => 4, "P" => 5, "S" => 6 );
+    my %greek_letter_priority =
+	( "H" => 1, "Z" => 2, "E" => 3, "D" => 4, "G" => 5, "B" => 6,
+	  "A" => 7,  "" => 8 );
+
+    # Decomposes each atom name by its components.
+    my %atom_names;
+    for my $atom_name ( @{ $atom_names } ) {
+	my ( $atom_type ) = $atom_name =~ /(^[a-zA-z])[a-zA-z]?\d?/;
+	my ( $greek_letter ) = $atom_name =~ /^[a-zA-z]([a-zA-z]?)\d?/;
+	my ( $number ) = $atom_name =~ /^[a-zA-z][a-zA-z]?(\d?)/;
+	$atom_names{$atom_name}{"type"} =
+	    $atom_type_priority{$atom_type};
+	$atom_names{$atom_name}{"greek_letter"} =
+	    $greek_letter_priority{$greek_letter};
+	$atom_names{$atom_name}{"number"} = $number;
+    }
+
+    # Sorts by rules of described in %atom_names.
+    my @sorted_names;
+    if( $sort_type eq "tgn") { # By type, then greek letter and then number.
+	@sorted_names =
+	  sort {
+	      $atom_names{$b}{"type"} <=> $atom_names{$a}{"type"}
+	   || $atom_names{$b}{"greek_letter"} <=> $atom_names{$a}{"greek_letter"}
+           || $atom_names{$a}{"number"} cmp $atom_names{$b}{"number"} }
+	      @{ $atom_names };
+    } elsif( $sort_type eq "gn" ) { # By greek letter and then number.
+	@sorted_names =
+	  sort {
+	      $atom_names{$b}{"greek_letter"} <=> $atom_names{$a}{"greek_letter"}
+           || $atom_names{$a}{"number"} cmp $atom_names{$b}{"number"} }
+	      @{ $atom_names };
+    }
+
+    return \@sorted_names;
+}
 
 1;
