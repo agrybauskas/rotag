@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+#*rota-generate
+#*    generates rotamer library.
+#*
+#*USAGE:
+#*    rota-generate
+#*
+#*OPTIONS:
+#*    -i, --input, <STDIN>
+#*        PDBx file.
+#*    -h, --help
+#*        prints out help message.
+
+my $pdbx_file;
+my $help = 0;
+
+GetOptions( "input=s" => \$pdbx_file,
+	    "help" => sub { open( my $fh, "<", $0 );
+			    while( <$fh> ) {
+				my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+				$help_message =~ s/^\*$/ /g if $help_message;
+				$help_message =~ s/^\*//g if $help_message;
+				print( $help_message, "\n" ) if $help_message; }
+			    close( $fh ) } )
+    or die "Error in command line argument";
