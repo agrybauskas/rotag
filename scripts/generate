@@ -5,11 +5,11 @@ use warnings;
 
 use Getopt::Long;
 
-#*rota-generate
+#*generate
 #*    generates rotamer library.
 #*
 #*USAGE:
-#*    rota-generate
+#*    generate ...
 #*
 #*OPTIONS:
 #*    -i, --input, <STDIN>
