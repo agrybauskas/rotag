@@ -38,18 +38,31 @@ sub obtain_atom_site
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
     # Finds atom data in PDBx and assigns to corresponding variables.
-    open( my $fh, "<", $pdbx_file );
-    while( <$fh> ) {
-        if( $_ =~ /_atom_site\.(.+)\n$/x ) {
-    	    push( @atom_attributes, split( " ", $1 ) );
-            $is_reading_lines = 1;
-        } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
-            last;
-        } elsif( $is_reading_lines == 1 ) {
-            push( @atom_data, split( " ", $_ ) );
-        }
+    if( -t STDIN && $pdbx_file ) {
+	open( my $fh, "<", $pdbx_file );
+	while( <$fh> ) {
+	    if( $_ =~ /_atom_site\.(.+)\n$/x ) {
+		push( @atom_attributes, split( " ", $1 ) );
+		$is_reading_lines = 1;
+	    } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
+		last;
+	    } elsif( $is_reading_lines == 1 ) {
+		push( @atom_data, split( " ", $_ ) );
+	    }
+	}
+	close( $fh );
+    } else {
+	while( <> ) {
+	    if( $_ =~ /_atom_site\.(.+)\n$/x ) {
+		push( @atom_attributes, split( " ", $1 ) );
+		$is_reading_lines = 1;
+	    } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
+		last;
+	    } elsif( $is_reading_lines == 1 ) {
+		push( @atom_data, split( " ", $_ ) );
+	    }
+	}
     }
-    close( $fh );
 
     # Creates special data structure for describing atom site where atom id is
     # key in hash and hash value is hash describing atom data.

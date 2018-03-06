@@ -4,8 +4,12 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use FindBin;
 
-#*generate
+use lib "$FindBin::Bin/../lib";
+use PDBxParser qw( obtain_atom_site );
+
+#*generate-rotamer
 #*    generates rotamer library.
 #*
 #*USAGE:
@@ -16,6 +20,8 @@ use Getopt::Long;
 #*        PDBx file.
 #*    -h, --help
 #*        prints out help message.
+
+# --------------------------------- Options ----------------------------------- #
 
 my $pdbx_file;
 my $help = 0;
@@ -28,4 +34,13 @@ GetOptions( "input=s" => \$pdbx_file,
 				$help_message =~ s/^\*//g if $help_message;
 				print( $help_message, "\n" ) if $help_message; }
 			    close( $fh ) } )
-    or die "Error in command line argument";
+or die "Error in command line argument.";
+
+# ----------------------------------- Main ------------------------------------ #
+
+my $atom_site;
+if( -t STDIN ) {
+    $atom_site = obtain_atom_site( $pdbx_file );
+} else {
+    $atom_site = obtain_atom_site(); # Reads STDIN.
+}
