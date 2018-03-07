@@ -37,30 +37,16 @@ sub obtain_atom_site
     my @atom_data; # Will be used for storing atom data temporarily.
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
-    # Finds atom data in PDBx and assigns to corresponding variables.
-    if( -t STDIN && $pdbx_file ) {
-	open( my $fh, "<", $pdbx_file );
-	while( <$fh> ) {
-	    if( $_ =~ /_atom_site\.(.+)\n$/x ) {
-		push( @atom_attributes, split( " ", $1 ) );
-		$is_reading_lines = 1;
-	    } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
-		last;
-	    } elsif( $is_reading_lines == 1 ) {
-		push( @atom_data, split( " ", $_ ) );
-	    }
-	}
-	close( $fh );
-    } else {
-	while( <> ) {
-	    if( $_ =~ /_atom_site\.(.+)\n$/x ) {
-		push( @atom_attributes, split( " ", $1 ) );
-		$is_reading_lines = 1;
-	    } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
-		last;
-	    } elsif( $is_reading_lines == 1 ) {
-		push( @atom_data, split( " ", $_ ) );
-	    }
+    # HACK: not sure how to read both stdin, stdout with working getopts.
+    @ARGV = $pdbx_file ? ( $pdbx_file ) : ( "-" );
+    while( <> ) {
+	if( $_ =~ /_atom_site\.(.+)\n$/x ) {
+	    push( @atom_attributes, split( " ", $1 ) );
+	    $is_reading_lines = 1;
+	} elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
+	    last;
+	} elsif( $is_reading_lines == 1 ) {
+	    push( @atom_data, split( " ", $_ ) );
 	}
     }
 
