@@ -37,8 +37,7 @@ sub obtain_atom_site
     my @atom_data; # Will be used for storing atom data temporarily.
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
-    # HACK: not sure how to read both stdin, stdout with working getopts.
-    @ARGV = $pdbx_file ? ( $pdbx_file ) : ( "-" );
+    @ARGV = ( $pdbx_file );
     while( <> ) {
 	if( $_ =~ /_atom_site\.(.+)\n$/x ) {
 	    push( @atom_attributes, split( " ", $1 ) );

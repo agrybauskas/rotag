@@ -36,4 +36,10 @@ GetOptions( "input=s" => \$pdbx_file,
 
 # ----------------------------------- Main ------------------------------------ #
 
-my $atom_site = obtain_atom_site( $pdbx_file );
+# Reads file path, stdin and "-" operator;
+my $atom_site;
+if( $pdbx_file ) {
+    $atom_site = obtain_atom_site( $pdbx_file );
+} elsif( ! defined $pdbx_file ) {
+    $atom_site = obtain_atom_site( '-' );
+}
