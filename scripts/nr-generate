@@ -11,35 +11,42 @@ use PDBxParser qw( obtain_atom_site );
 #*    generates rotamer library.
 #*
 #*USAGE:
-#*    nr-generate ...
+#*    nr-generate -i input.cif > output.cif
 #*
 #*OPTIONS:
-#*    -i, --input, <STDIN>
+#*    -i, --input <file> | <stdin>
 #*        PDBx file.
+#*    -v, --version
+#*        prints out version
 #*    -h, --help
 #*        prints out help message.
 
 # --------------------------------- Options ----------------------------------- #
 
-my $pdbx_file;
-my $help = 0;
+my %options;
 
-GetOptions( "input=s" => \$pdbx_file,
-	    "help" => sub { open( my $fh, "<", $0 );
-			    while( <$fh> ) {
-				my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-				$help_message =~ s/^\*$/ /g if $help_message;
-				$help_message =~ s/^\*//g if $help_message;
-				print( $help_message, "\n" ) if $help_message; }
-			    close( $fh ) } )
+my $version = "1.0.0";
+
+GetOptions(
+    "input=s" => \$options{"pdbx_file"},
+    "help" => sub { open( my $fh, "<", $0 );
+		    while( <$fh> ) {
+			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+			$help_message =~ s/^\*$/ /g if $help_message;
+			$help_message =~ s/^\*//g if $help_message;
+			print( $help_message, "\n" ) if $help_message; }
+		    close( $fh );
+		    exit; },
+    "version" => sub { print $version, "\n";
+		       exit; } )
     or die "Error in command line argument.";
 
 # ----------------------------------- Main ------------------------------------ #
 
-# Reads file path, stdin and "-" operator;
+# Reads file path, stdin and "-" operator.
 my $atom_site;
-if( $pdbx_file ) {
-    $atom_site = obtain_atom_site( $pdbx_file );
-} elsif( ! defined $pdbx_file ) {
+if( $options{"pdbx_file"} ) {
+    $atom_site = obtain_atom_site( $options{"pdbx_file"} );
+} elsif( ! defined $options{"pdbx_file"} ) {
     $atom_site = obtain_atom_site( '-' );
 }
