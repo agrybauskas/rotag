@@ -47,6 +47,8 @@ GetOptions(
 my $atom_site;
 if( $options{"pdbx_file"} ) {
     $atom_site = obtain_atom_site( $options{"pdbx_file"} );
-} elsif( ! defined $options{"pdbx_file"} ) {
+} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
+} else {
+    die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
 }
