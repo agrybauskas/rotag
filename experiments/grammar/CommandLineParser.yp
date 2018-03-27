@@ -1,0 +1,35 @@
+%{
+    use strict;
+    use warnings;
+
+    use PDBxParser qw( filter );
+}%
+
+%token NUM = /([0-9]+(?:\.[0-9]+)?)/
+%token VAR = /([A-Za-z][A-Za-z0-9_]*)/
+
+%right '\s'
+%left ','
+%left '-'
+%left '&'
+%left '|'
+%left '!'
+
+%%
+input: #empty
+    | input line
+;
+
+line: exp
+;
+
+exp: $NUM { $NUM }
+   | $VAR { $VAR }
+   | VAR ' ' exp
+   | exp ',' exp
+   | exp '-' exp
+   | exp '&' exp
+   | exp '|' exp
+   | '!' exp
+   | '(' exp ')'
+;
