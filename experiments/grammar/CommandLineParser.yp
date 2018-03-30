@@ -2,6 +2,9 @@
     use warnings;
 
     use PDBxParser qw( filter );
+
+    my %include = ( 'resid'   => [], 'atoid'   => [], 'symbol' => [],
+                    'atoname' => [], 'resname' => [], 'chain'  => [] );
 %}
 
 %right '&' '|' '!'
@@ -17,19 +20,67 @@ exp: exp
    | exp '&' exp
    | exp '|' exp
    | '!' exp
-   | '(' exp ')'
-   | 'resid' ope
-   | 'atoid' ope
-   | 'symbol' ope
-   | 'atoname' ope
-   | 'resname' ope
-   | 'chain' ope
+   | '(' exp ')' { $_[1]; }
+   | 'resid'   ope
+   | 'atoid'   ope
+   | 'symbol'  ope { push @{ $include{'symbol'}}, $_[1]; }
+   | 'atoname' ope { push @{ $include{'atoname'}}, $_[1]; }
+   | 'resname' ope { push @{ $include{'resname'}}, $_[1]; }
+   | 'chain'   ope { push @{ $include{'chain'}}, $_[1]; }
 ;
 
-ope: ope ',' ope
-   | ope '-' ope
+ope: #empty
+   | ope ',' ope { ( $_[1], $[2] ); }
+   | ope '-' ope { ( $_[1]..$[2] ); }
    | num
    | str
 ;
 
 %%
+
+sub lexer
+{
+    my( $parser )=shift;
+
+    $parser->YYData->{INPUT} or return( '',undef );
+    $parser->YYData->{INPUT} = ~s/^[ \t]//;
+
+    # Returns tokens to parser.
+    for( $parser->YYData->{INPUT} ){
+        s/^(&)//  and return ( '&', $1 );
+        s/^(|)//  and return ( '|', $1 );
+        s/^(!))// and return ( '!', $1 );
+        s/^(\()// and return ( '(', $1 );
+        s/^(\))// and return ( ')', $1 );
+        s/^(resid)//   and return ( 'resid', $1 );
+        s/^(atoid)//   and return ( 'atoid', $1 );
+        s/^(symbol)//  and return ( 'symbol', $1 );
+        s/^(atoname)// and return ( 'atoname', $1 );
+        s/^(resname)// and return ( 'symbol', $1 );
+        s/^(chain)//   and return ( 'symbol', $1 );
+    }
+}
+
+sub debugger
+{
+    exists $_[0]->YYData->{ERRMSG}
+
+    and do {
+        print $_[0]->YYData->{ERRMSG};
+        return;
+    };
+
+    print "Syntax error\n";
+}
+
+sub parser
+{
+    my ( $self, $input ) = @_;
+
+    $self->YYData->{INPUT} = $input;
+    my $result = $self->YYParse( yylex => \&Lexer,
+                                 yyerror => \&Error,
+				 yydebug=>0x1F );
+
+    return $result;
+}
