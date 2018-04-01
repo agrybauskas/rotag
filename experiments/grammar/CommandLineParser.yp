@@ -5,11 +5,19 @@
     use PDBxParser qw( filter );
 %}
 
+%left ','
+%left '-'
+
 %%
 
 exp
-    : 'resid' NUM { $_[2] }
-    | 'resname' STR { $_[0]->{'resname'} = $_[2] }
+    : 'resid' ope     { push @{ $_[0]->{'include'}{'resid'} }, @{ $_[2] }; }
+;
+
+ope
+    : ope ',' ope { [ @{ $_[1] }, @{ $_[3] } ] }
+    | ope '-' ope { [ $_[1]->[0]..$_[3]->[0] ] }
+    | NUM         { [ int( $_[1] ) ] }
 ;
 
 %%
@@ -25,12 +33,12 @@ sub lexer
     for( $parser->YYData->{INPUT} ){
         if( s/^(resid)// ) {
             return ( 'resid', $1 );
-        } elsif( s/^(resname)// ) {
-            return ( 'resname', $1 );
         } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
-	} elsif( s/^(\w+)// ) {
-            return ( 'STR', $1 );
+	} elsif( s/^(,)// ) {
+            return ( ',', $1 );
+	} elsif( s/^(-)// ) {
+            return ( '-', $1 );
 	}
     }
 }
