@@ -7,9 +7,9 @@ use Data::Dumper;
 
 use CommandLineParser;
 
-my $input = "resid 10";
+my $input = 'resname ASP,ASN';
 
 my $parser = new CommandLineParser();
 $parser->parser( $input );
 
-print Dumper $parser->{'include'}{'resid'};
+print Dumper $parser->{'include'}{'resname'};
