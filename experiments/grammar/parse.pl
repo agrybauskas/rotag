@@ -7,7 +7,7 @@ use Data::Dumper;
 
 use CommandLineParser;
 
-my $input = 'resid 20 | resname ASP,ASN | resid 2-10,1';
+my $input = '! resid 20 | resname ASP,ASN | resid 2-10,1';
 
 my $parser = new CommandLineParser();
 $parser->parser( $input );
