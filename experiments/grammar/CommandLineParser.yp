@@ -7,11 +7,13 @@
 
 %left ','
 %left '-'
+%left '|'
 
 %%
 
 exp
-    : 'resid'   num_ope { push @{ $_[0]->{'include'}{'resid'} }, @{ $_[2] }; }
+    : exp '|' exp
+    | 'resid'   num_ope { push @{ $_[0]->{'include'}{'resid'} }, @{ $_[2] }; }
     | 'resname' str_ope { push @{ $_[0]->{'include'}{'resname'} }, @{ $_[2] }; }
 ;
 
@@ -49,6 +51,8 @@ sub lexer
             return ( ',', $1 );
 	} elsif( s/^(-)// ) {
             return ( '-', $1 );
+	} elsif( s/^(\|)// ) {
+            return ( '|', $1 );
 	}
     }
 }
