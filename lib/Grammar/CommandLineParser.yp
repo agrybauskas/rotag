@@ -2,6 +2,9 @@
 %{
     use warnings;
 
+    use List::MoreUtils qw( uniq );
+    use List::Util qw( any );
+
     use PDBxParser qw( filter );
 %}
 
@@ -9,20 +12,59 @@
 %left '-'
 %left '!'
 %left '|'
+%left '&'
 
 %%
 
 exp
-    : exp '|' exp
-    | '(' exp ')'
-    | '!' exp
-    | 'resid'   num_ope
+    : exp '&' exp
         {
-
+	    my @joint_ids;
+	    for my $id ( @{ $_[1] } ) {
+		push( @joint_ids, $id ) if any { $id eq $_ } @{ $_[3] };
+	    }
+	    return \@joint_ids;
+        }
+    | exp '|' exp
+        {
+	    [ uniq( @{ $_[1] }, @{ $_[3] } ) ];
+        }
+    | '(' exp ')' { $_[2] }
+    | '!' exp
+    | 'resid' num_ope
+        {
+	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+		      'include' => { 'label_seq_id' => $_[2] },
+		      'data' => [ 'id' ],
+		      'is_list' => 1 } );
         }
     | 'resname' str_ope
         {
-
+	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+		      'include' => { 'label_comp_id' => $_[2] },
+		      'data' => [ 'id' ],
+		      'is_list' => 1 } );
+        }
+    | 'atoid' num_ope
+        {
+	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+		      'include' => { 'id' => $_[2] },
+		      'data' => [ 'id' ],
+		      'is_list' => 1 } );
+        }
+    | 'atoname' str_ope
+        {
+	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+		      'include' => { 'label_atom_id' => $_[2] },
+		      'data' => [ 'id' ],
+		      'is_list' => 1 } );
+        }
+    | 'atotype' str_ope
+        {
+	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+		      'include' => { 'type_symbol' => $_[2] },
+		      'data' => [ 'id' ],
+		      'is_list' => 1 } );
         }
 ;
 
@@ -52,6 +94,12 @@ sub lexer
             return ( 'resid', $1 );
 	} elsif(s/^(resname)//) {
             return ( 'resname', $1 );
+        } elsif(s/^(atoid)//) {
+            return ( 'atoid', $1 );
+        } elsif(s/^(atoname)//) {
+            return ( 'atoname', $1 );
+        } elsif(s/^(atotype)//) {
+            return ( 'atotype', $1 );
         } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
 	} elsif( s/^(\w+)// ) {
@@ -62,6 +110,8 @@ sub lexer
             return ( '-', $1 );
 	} elsif( s/^(\|)// ) {
             return ( '|', $1 );
+	} elsif( s/^(&)// ) {
+            return ( '&', $1 );
 	} elsif( s/^(\()// ) {
             return ( '(', $1 );
 	} elsif( s/^(\))// ) {
@@ -90,9 +140,10 @@ sub parser
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
-    my $result = $self->YYParse( yylex => \&lexer,
-                                 yyerror => \&debugger,
-				 yydebug=>0x00 );
-
-    return $result;
+    my $selected_ids = $self->YYParse( yylex => \&lexer,
+				       yyerror => \&debugger,
+				       yydebug=>0x00 );
+    my $selected_atom_site = filter( { "atom_site" => $atom_site,
+				       "include" => { "id" => $selected_ids } });
+    return $selected_atom_site;
 }

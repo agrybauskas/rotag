@@ -6,6 +6,7 @@ use warnings;
 use Getopt::Long;
 
 use PDBxParser qw( obtain_atom_site );
+use Grammar::CommandLineParser;
 
 #*nr-generate
 #*    generates rotamer library.
@@ -16,8 +17,15 @@ use PDBxParser qw( obtain_atom_site );
 #*OPTIONS:
 #*    -i, --input <file> | <stdin>
 #*        PDBx file.
+#*    -s, --select <str>
+#*        commands describing the selection of atoms.
+#*        Selection keywords (equivalent PDBx category data items in parentheses):
+#*            resid - residue id number (_atom_site.label_seq_id);
+#*            resname - residue name    (_atom_site.label_comp_id);
+#*            atoid - atom id number    (_atom_site.id);
+#*            atoname - atom name       (_atom_site.label_atom_id);
 #*    -v, --version
-#*        prints out version
+#*        prints out version.
 #*    -h, --help
 #*        prints out help message.
 
@@ -29,6 +37,7 @@ my $version = "1.0.0";
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
+    "select=s" => \$options{"command_line_arg"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -52,3 +61,8 @@ if( $options{"pdbx_file"} ) {
 } else {
     die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
 }
+
+# Parses command line argument to select certain atoms in PDBx.
+my $command_line_parser = new CommandLineParser();
+my $selected_atom_site =
+    $command_line_parser->parser( $options{"command_line_arg"}, $atom_site );
