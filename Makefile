@@ -1,5 +1,5 @@
 #
-# Main build.
+# Grammar compilation.
 #
 
 YAPP_DIR=lib/Grammar
@@ -15,9 +15,9 @@ all: ${GRAMMAR_MODULES}
 # Instalation of dependencies.
 #
 
-.PHONY: dependencies
+.PHONY: build
 
-dependencies:
+build:
 	./dependencies/$$(lsb_release -is)-$$(lsb_release -rs)/install.sh
 
 #
