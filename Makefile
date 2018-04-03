@@ -1,14 +1,12 @@
-.PHONY: all
-
-all: ${GRAMMAR_MODULES}
-
 #
-# Grammar build.
+# Main build.
 #
 
 YAPP_DIR=lib/Grammar
 YAPP_FILES=${wildcard ${YAPP_DIR}/*.yp}
-GRAMMAR_MODULES=${YAPP_FILE:%.yp=%.pm}
+GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
+
+all: ${GRAMMAR_MODULES}
 
 %.pm: %.yp
 	yapp -o $@ $<
@@ -49,7 +47,10 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 # Utilities.
 #
 
-.PHONY: clean distclean
+.PHONY: clean cleanAll distclean
 
-clean distclean:
-	rm -f ${TEST_DIFF} ${VISUAL_TEST_JMOL} ${PM_FILE} ${SHARED_OBJ}
+clean:
+	rm -f ${TEST_DIFF}
+
+cleanAll distclean: clean
+	rm -f ${GRAMMAR_MODULES}
