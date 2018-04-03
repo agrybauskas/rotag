@@ -1,3 +1,18 @@
+.PHONY: all
+
+all: ${GRAMMAR_MODULES}
+
+#
+# Grammar build.
+#
+
+YAPP_DIR=lib/Grammar
+YAPP_FILES=${wildcard ${YAPP_DIR}/*.yp}
+GRAMMAR_MODULES=${YAPP_FILE:%.yp=%.pm}
+
+%.pm: %.yp
+	yapp -o $@ $<
+
 #
 # Instalation of dependencies.
 #
