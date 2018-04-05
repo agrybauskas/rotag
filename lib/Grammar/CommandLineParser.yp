@@ -16,6 +16,17 @@
 
 %%
 
+line
+    : exp
+        {
+            if( $_[1]->[0] eq '!' ) {
+		return [];
+	    } else {
+		return $_[1];
+	    }
+        }
+;
+
 exp
     : exp '&' exp
         {
@@ -29,8 +40,21 @@ exp
         {
 	    [ uniq( @{ $_[1] }, @{ $_[3] } ) ];
         }
-    | '(' exp ')' { $_[2] }
+    | '(' exp ')'
+        {
+            $_[2];
+        }
     | '!' exp
+        {
+	    my @ids = @{ $_[2] };
+            if( $ids[0] eq '!' ) {
+		shift( @ids );
+		return \@ids;
+	    } else {
+		unshift( @ids, '!' );
+		return \@ids;
+	    }
+        }
     | 'resid' num_ope
         {
 	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
@@ -145,5 +169,5 @@ sub parser
 				       yydebug=>0x00 );
     my $selected_atom_site = filter( { "atom_site" => $atom_site,
 				       "include" => { "id" => $selected_ids } });
-    return $selected_atom_site;
+    return $selected_ids;
 }
