@@ -19,6 +19,8 @@
 line
     : exp
         {
+	    if( ! $_[1]->[0] ) { return []; }
+
             if( $_[1]->[0] eq '!' ) {
 		return [];
 	    } else {
@@ -31,14 +33,45 @@ exp
     : exp '&' exp
         {
 	    my @joint_ids;
-	    for my $id ( @{ $_[1] } ) {
-		push( @joint_ids, $id ) if any { $id eq $_ } @{ $_[3] };
+
+	    if( ! $_[1] || ! $_[3] ) { return []; }
+
+	    my @first_ids = @{ $_[1] };
+	    my @second_ids = @{ $_[3] };
+
+	    if( $first_ids[0] ne '!' && $second_ids[0] ne '!' ) {
+		for my $id ( @first_ids ) {
+		    push( @joint_ids, $id ) if any { $id eq $_ } @second_ids;
+		}
+		return \@joint_ids;
+	    } elsif( $first_ids[0] ne '!' && $second_ids[0] eq '!' ) {
+		for my $id ( @first_ids ) {
+		    push( @joint_ids, $id ) if ! any { $id eq $_ } @second_ids;
+		}
+		return \@joint_ids;
+	    } elsif( $first_ids[0] eq '!' && $second_ids[0] ne '!' ) {
+		for my $id ( @second_ids ) {
+		    push( @joint_ids, $id ) if ! any { $id eq $_ } @first_ids;
+		}
+		return \@joint_ids;
+	    } else {
+		shift( @first_ids );
+		shift( @second_ids );
+		return [ '!', uniq( @first_ids, @second_ids ) ];
 	    }
-	    return \@joint_ids;
         }
     | exp '|' exp
         {
-	    [ uniq( @{ $_[1] }, @{ $_[3] } ) ];
+	    if( ! $_[1] || ! $_[3] ) {
+	    	return [ @{ $_[1] }, @{ $_[3] } ];
+	    }
+
+	    if( $_[1]->[0] ne '!' && $_[3]->[0] ne '!' ) {
+		return [ uniq( @{ $_[1] }, @{ $_[3] } ) ];
+	    } else {
+		die( 'Negation (!) with or operator (|) has no valuable ' .
+		     'meaning when selecting atoms' );
+	    }
         }
     | '(' exp ')'
         {
