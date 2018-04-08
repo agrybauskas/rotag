@@ -65,4 +65,6 @@ if( $options{"pdbx_file"} ) {
 # Parses command line argument to select certain atoms in PDBx.
 my $command_line_parser = new CommandLineParser();
 my $selected_atom_site =
-    $command_line_parser->parser( $options{"command_line_arg"}, $atom_site );
+    $command_line_parser->parser( $atom_site,
+				  $options{"command_line_arg"},
+				  "id" );
