@@ -5,7 +5,8 @@ use warnings;
 
 use Getopt::Long;
 
-use PDBxParser qw( obtain_atom_site );
+use PDBxParser qw( obtain_atom_site
+                   to_pdbx );
 use Grammar::CommandLineParser;
 
 #*nr-generate
@@ -17,13 +18,21 @@ use Grammar::CommandLineParser;
 #*OPTIONS:
 #*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    -s, --select <str>
-#*        commands describing the selection of atoms.
+#*    -t, --target <str>
+#*        commands describing the selection of atoms of interest.
 #*        Selection keywords (equivalent PDBx category data items in parentheses):
 #*            resid - residue id number (_atom_site.label_seq_id);
 #*            resname - residue name    (_atom_site.label_comp_id);
 #*            atoid - atom id number    (_atom_site.id);
 #*            atoname - atom name       (_atom_site.label_atom_id);
+#*            atotype - atom symbol     (_atom_site.type_symbol).
+#*        Logical operators:
+#*            & - and operator;
+#*            | - or operator;
+#*            ! - negation operator;
+#*            () - parentheses.
+#*    -n, --neighbour <str>
+#*        commands describing the selection of neighbouring atoms.
 #*    -v, --version
 #*        prints out version.
 #*    -h, --help
@@ -37,8 +46,9 @@ my $version = "1.0.0";
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
-    "select=s" => \$options{"command_line_arg"},
-    "help" => sub { open( my $fh, "<", $0 );
+    "target=s" => \$options{"target_cl"}, # Abrevation for: target command line.
+    "neighbour=s" => \$options{"neighbour_cl"}, # Abrevation for: neigbour
+    "help" => sub { open( my $fh, "<", $0 );    # command line.
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
 			$help_message =~ s/^\*$/ /g if $help_message;
@@ -64,7 +74,11 @@ if( $options{"pdbx_file"} ) {
 
 # Parses command line argument to select certain atoms in PDBx.
 my $command_line_parser = new CommandLineParser();
-my $selected_atom_site =
+my $target_atom_site =
     $command_line_parser->parser( $atom_site,
-				  $options{"command_line_arg"},
+				  $options{"target_cl"},
+				  "label_seq_id" );
+my $neighbour_atom_site =
+    $command_line_parser->parser( $atom_site,
+				  $options{"neighbour_cl"},
 				  "id" );
