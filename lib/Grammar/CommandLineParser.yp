@@ -11,9 +11,9 @@
 
 %left ','
 %left '-'
+%left 'around'
 %left '!'
-%left '|'
-%left '&'
+%left '|' '&'
 
 %%
 
