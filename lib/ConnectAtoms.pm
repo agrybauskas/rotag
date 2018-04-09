@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( connect_atoms
+our @EXPORT_OK = qw( around_distance
+                     connect_atoms
                      create_box
                      grid_box
                      is_connected
@@ -251,24 +252,24 @@ sub around_distance
 {
     my ( $atom_site, $atom_specifier, $distance ) = @_;
 
-    my @atom_ids = filter( { "atom_site" => $atom_site,
-			     "include" => $atom_specifier,
-			     "data" => [ "id" ],
-			     "is_list" => 1 } );
+    my @atom_ids = @{ filter( { "atom_site" => $atom_site,
+				"include" => $atom_specifier,
+				"data" => [ "id" ],
+				"is_list" => 1 } ) };
 
     # TODO: it looks like code is redundant and very similar to connect_atoms.
     # Maybe should refactor.
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
     my @cell_indexes;
-    my $grid_box = grid_box( $atom_site, $distance );
+    my $grid_box = grid_box( $atom_site, $distance * 2 );
 
     # Checks for neighbouring cells for each cell.
     my %around_atom_site;
     foreach my $cell ( keys %{ $grid_box } ) {
     	@cell_indexes = split( ",", $cell );
-	my @neighbour_cells; # The array will contain all atoms of the
-	                     # neighbouring 26 cells.
+    	my @neighbour_cells; # The array will contain all atoms of the
+    	                     # neighbouring 26 cells.
     	# $i represents x, $j - y, $k - z coordinates.
     	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
     	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
@@ -278,15 +279,16 @@ sub around_distance
 
     	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
     	    foreach my $neighbour_id ( @neighbour_cells ) {
-		if(   any { $atom_id eq $_ } @atom_ids
-	         && ! any { $neighbour_id eq $_} @atom_ids
-		 && distance_squared(
+    		if( ( any { $atom_id eq $_ } @atom_ids )
+		 && ( ! any { $neighbour_id eq $_ } @atom_ids )
+		 && ( distance_squared(
 			  $atom_site->{$atom_id},
-			  $atom_site->{$neighbour_id} ) <= $distance ** 2 ) {
-		    $around_atom_site{$neighbour_id} = $atom_site{$neighbour_id};
+			  $atom_site->{$neighbour_id} ) <= $distance ** 2 ) ) {
+		    $around_atom_site{$neighbour_id} =
+		    	$atom_site->{$neighbour_id};
 		}
-	    }
-	}
+    	    }
+    	}
     }
 
     return \%around_atom_site;
