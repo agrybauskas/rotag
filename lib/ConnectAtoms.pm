@@ -235,6 +235,63 @@ sub is_second_neighbour
     return $is_sec_neighbour;
 }
 
+sub distance_squared
+{
+    my ( $atom_i, $atom_j ) = @_;
+
+    my $distance_squared =
+	( $atom_j->{"Cartn_x"} - $atom_i->{"Cartn_x"} ) ** 2
+      + ( $atom_j->{"Cartn_y"} - $atom_i->{"Cartn_y"} ) ** 2
+      + ( $atom_j->{"Cartn_z"} - $atom_i->{"Cartn_z"} ) ** 2;
+
+    return $distance_squared;
+}
+
+sub around_distance
+{
+    my ( $atom_site, $atom_specifier, $distance ) = @_;
+
+    my @atom_ids = filter( { "atom_site" => $atom_site,
+			     "include" => $atom_specifier,
+			     "data" => [ "id" ],
+			     "is_list" => 1 } );
+
+    # TODO: it looks like code is redundant and very similar to connect_atoms.
+    # Maybe should refactor.
+    # For each cell, checks neighbouring cells. Creates box around atoms, makes
+    # grid with edge length of max covalent radii of the parameter file.
+    my @cell_indexes;
+    my $grid_box = grid_box( $atom_site, $distance );
+
+    # Checks for neighbouring cells for each cell.
+    my %around_atom_site;
+    foreach my $cell ( keys %{ $grid_box } ) {
+    	@cell_indexes = split( ",", $cell );
+	my @neighbour_cells; # The array will contain all atoms of the
+	                     # neighbouring 26 cells.
+    	# $i represents x, $j - y, $k - z coordinates.
+    	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
+    	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
+    	for my $k ( ( $cell_indexes[2] - 1..$cell_indexes[2] + 1 ) ) {
+    	if( exists $grid_box->{"$i,$j,$k"} ) {
+    	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+
+    	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+    	    foreach my $neighbour_id ( @neighbour_cells ) {
+		if(   any { $atom_id eq $_ } @atom_ids
+	         && ! any { $neighbour_id eq $_} @atom_ids
+		 && distance_squared(
+			  $atom_site->{$atom_id},
+			  $atom_site->{$neighbour_id} ) <= $distance ** 2 ) {
+		    $around_atom_site{$neighbour_id} = $atom_site{$neighbour_id};
+		}
+	    }
+	}
+    }
+
+    return \%around_atom_site;
+}
+
 #
 # Divides box into grid of cubes that has length of the desired bond. If box
 # is not perfectly divisible, then the boundaries are extended accordingly.
