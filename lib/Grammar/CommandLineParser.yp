@@ -5,6 +5,7 @@
     use List::MoreUtils qw( uniq );
     use List::Util qw( any );
 
+    use ConnectAtoms qw( around_distance );
     use PDBxParser qw( filter );
 %}
 
@@ -88,6 +89,25 @@ exp
 		return \@ids;
 	    }
         }
+    | exp 'around' NUM
+        {
+	    my @ids = @{ $_[1] };
+	    my $around_atom_site;
+	    my $atom_specifier;
+            if( $ids[0] eq '!' ) {
+	    # 	shift( @ids );
+	    # 	return \@ids;
+	    } else {
+	    	unshift( @ids, '!' );
+		$around_atom_site =
+		    around_distance( $_[0]->{USER}{ATOM_SITE},
+				     { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
+				     $_[3] );
+		return filter( { 'atom_site' => $around_atom_site,
+				 'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+				 'is_list' => 1 } );
+	    }
+        }
     | 'resid' num_ope
         {
 	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
@@ -157,7 +177,9 @@ sub lexer
             return ( 'atoname', $1 );
         } elsif(s/^(atotype)//) {
             return ( 'atotype', $1 );
-        } elsif( s/^([0-9]+)// ) {
+        } elsif(s/^(around)//) {
+            return ( 'around', $1 );
+	} elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
 	} elsif( s/^(\w+)// ) {
             return ( 'STR', $1 );
