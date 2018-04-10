@@ -71,7 +71,8 @@ sub create_box
 
 sub grid_box
 {
-    my ( $atom_site, $edge_length ) = @_;
+    my ( $atom_site, $edge_length, $atom_ids ) = @_; # TODO: maybe should
+                                                     # take out $atom_ids.
 
     # Default value for edge length is two times greater than the largest
     # covalent radius.
@@ -88,6 +89,7 @@ sub grid_box
 
     # Creates box with cells with edge length of given variable in angstroms.
     my %grid_box;
+    my %atom_cell_pos;
     my $cell_index_x;
     my $cell_index_y;
     my $cell_index_z;
@@ -112,9 +114,18 @@ sub grid_box
     	    $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} =
     		[ $atom_coord->[0] ];
     	}
+
+	# Identifies what cells do atoms occupy, if they are in the list.
+	next unless $atom_ids;
+	for( my $id = 0; $id <= $#{ $atom_ids }; $id++ ) {
+	    if( $atom_coord->[0] eq $atom_ids->[$id] ) {
+		push( @{ $atom_cell_pos{"$cell_index_x,$cell_index_y,$cell_index_z"} },
+		      $atom_coord->[0] );
+	    }
+	}
     }
 
-    return \%grid_box;
+    return \%grid_box, \%atom_cell_pos;
 }
 
 #
@@ -262,11 +273,12 @@ sub around_distance
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
     my @cell_indexes;
-    my $grid_box = grid_box( $atom_site, $distance * 2 );
+    my ( $grid_box, $atom_cell_pos ) =
+	grid_box( $atom_site, $distance * 2, \@atom_ids );
 
     # Checks for neighbouring cells for each cell.
     my %around_atom_site;
-    foreach my $cell ( keys %{ $grid_box } ) {
+    foreach my $cell ( keys %{ $atom_cell_pos } ) {
     	@cell_indexes = split( ",", $cell );
     	my @neighbour_cells; # The array will contain all atoms of the
     	                     # neighbouring 26 cells.
@@ -277,10 +289,9 @@ sub around_distance
     	if( exists $grid_box->{"$i,$j,$k"} ) {
     	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-    	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+    	foreach my $atom_id ( @{ $atom_cell_pos->{$cell} } ) {
     	    foreach my $neighbour_id ( @neighbour_cells ) {
-    		if( ( any { $atom_id eq $_ } @atom_ids )
-		 && ( ! any { $neighbour_id eq $_ } @atom_ids )
+    		if( ( ! any { $neighbour_id eq $_ } @atom_ids )
 		 && ( distance_squared(
 			  $atom_site->{$atom_id},
 			  $atom_site->{$neighbour_id} ) <= $distance ** 2 ) ) {
@@ -320,7 +331,7 @@ sub connect_atoms
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
     my @cell_indexes;
-    my $grid_box = grid_box( $atom_site );
+    my ( $grid_box, undef ) = grid_box( $atom_site );
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {

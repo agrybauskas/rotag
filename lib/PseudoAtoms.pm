@@ -239,7 +239,7 @@ sub generate_library
     # * (C=N) + (N-H).
     # TODO: should consider using shorter distances, because bonds have limits
     # on maximum bending and having shorter edge length reduces calculation time.
-    my $grid_box =
+    my ( $grid_box, undef ) =
 	grid_box( \%atom_site,
 		  7 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[0]
 		+ 2 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[0]
