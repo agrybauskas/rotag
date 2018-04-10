@@ -18,8 +18,8 @@ use Grammar::CommandLineParser;
 #*OPTIONS:
 #*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    -t, --target <str>
-#*        commands describing the selection of atoms of interest.
+#*    -s, --select <str>
+#*        command describing the selection of atoms of interest.
 #*        Selection keywords (equivalent PDBx category data items in parentheses):
 #*            resid - residue id number (_atom_site.label_seq_id);
 #*            resname - residue name    (_atom_site.label_comp_id);
@@ -31,8 +31,9 @@ use Grammar::CommandLineParser;
 #*            | - or operator;
 #*            ! - negation operator;
 #*            () - parentheses.
-#*    -n, --neighbour <str>
-#*        commands describing the selection of neighbouring atoms.
+#*    -c, --compare-to <str>
+#*        command (same as --select) describing the atoms where potential
+#*        energies are calculated against with residues of interest.
 #*    -v, --version
 #*        prints out version.
 #*    -h, --help
@@ -46,9 +47,9 @@ my $version = "1.0.0";
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
-    "target=s" => \$options{"target_cl"}, # Abrevation for: target command line.
-    "neighbour=s" => \$options{"neighbour_cl"}, # Abrevation for: neigbour
-    "help" => sub { open( my $fh, "<", $0 );    # command line.
+    "select=s" => \$options{"select_cl"},
+    "compare-to=s" => \$options{"compare_to_cl"},
+    "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
 			$help_message =~ s/^\*$/ /g if $help_message;
@@ -72,13 +73,13 @@ if( $options{"pdbx_file"} ) {
     die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
 }
 
-# Parses command line argument to select certain atoms in PDBx.
+# Parses command line arguments to select certain atoms in PDBx.
 my $command_line_parser = new CommandLineParser();
 my $target_atom_site =
     $command_line_parser->parser( $atom_site,
-				  $options{"target_cl"},
+				  $options{"select_cl"},
 				  "label_seq_id" );
 my $neighbour_atom_site =
     $command_line_parser->parser( $atom_site,
-				  $options{"neighbour_cl"},
+				  $options{"compare_to_cl"},
 				  "id" );
