@@ -7,6 +7,7 @@ use Getopt::Long;
 
 use PDBxParser qw( obtain_atom_site
                    to_pdbx );
+use PseudoAtoms qw( generate_library );
 use Grammar::CommandLineParser;
 
 #*nr-generate
@@ -16,9 +17,9 @@ use Grammar::CommandLineParser;
 #*    nr-generate -i input.cif > output.cif
 #*
 #*OPTIONS:
-#*    -i, --input <file> | <stdin>
+#*    --input <file> | <stdin>
 #*        PDBx file.
-#*    -s, --select <str>
+#*    --select  <str>
 #*        command describing the selection of atoms of interest.
 #*        Selection keywords (equivalent PDBx category data items in parentheses):
 #*            resid - residue id number (_atom_site.label_seq_id);
@@ -31,12 +32,18 @@ use Grammar::CommandLineParser;
 #*            | - or operator;
 #*            ! - negation operator;
 #*            () - parentheses.
-#*    -c, --compare-to <str>
+#*    --compare-to <str>
 #*        command (same as --select) describing the atoms where potential
 #*        energies are calculated against with residues of interest.
-#*    -v, --version
+#*    --potential (default: combined | hard_sphere | soft_sphere |
+#*                 exponential | leonard_jones)
+#*        uses potential energy function for determining interactions between
+#*        selected residues and atoms that are reachable or described.
+#*    --angle-step <float> (default: 0.1) (in radians)
+#*        angle that each dihedral angle is turned by.
+#*    --version
 #*        prints out version.
-#*    -h, --help
+#*    --help
 #*        prints out help message.
 
 # --------------------------------- Options ----------------------------------- #
@@ -83,3 +90,6 @@ my $neighbour_atom_site =
     $command_line_parser->parser( $atom_site,
 				  $options{"compare_to_cl"},
 				  "id" );
+
+# Starts generating rotamer library.
+generate_library( $target_atom_site )
