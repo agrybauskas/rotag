@@ -10,7 +10,8 @@ use LinearAlgebra qw( pi );
 use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
-use PseudoAtoms qw( generate_library );
+use PseudoAtoms qw( generate_library
+                    library_to_csv );
 use Grammar::CommandLineParser;
 
 #*nr-generate
@@ -70,6 +71,7 @@ GetOptions(
     "potential=s" => \$options{"interactions"},
     "angle-step=s" => \$options{"small_angle"},
     "cutoff=s" => \$options{"cutoff"},
+    "out-fmt=s" => \$options{"out_format"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -87,6 +89,7 @@ $options{"conf_model"} = "rotation_only" unless $options{"conf_model"};
 $options{"interactions"} = "leonard_jones" unless $options{"interactions"};
 $options{"small_angle"} = 0.1 unless $options{"small_angle"};
 $options{"cutoff"} = 0.4 unless $options{"cutoff"};
+$options{"out_format"} = "csv_degrees" unless $options{"out_format"};
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -130,3 +133,8 @@ my $rotamer_library =
 			"conf_model" => $options{"conf_model"},
 			"interactions" => $options{"interactions"},
 			"cutoff" => $options{"cutoff"} } );
+
+# Outputs results to STDOUT.
+if( $options{"out_format"} eq "csv_degrees" ) {
+    library_to_csv( $rotamer_library, "degrees" );
+}
