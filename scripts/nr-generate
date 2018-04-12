@@ -4,8 +4,11 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use List::MoreUtils qw( uniq );
 
-use PDBxParser qw( obtain_atom_site
+use LinearAlgebra qw( pi );
+use PDBxParser qw( filter
+                   obtain_atom_site
                    to_pdbx );
 use PseudoAtoms qw( generate_library );
 use Grammar::CommandLineParser;
@@ -35,12 +38,19 @@ use Grammar::CommandLineParser;
 #*    --compare-to <str>
 #*        command (same as --select) describing the atoms where potential
 #*        energies are calculated against with residues of interest.
-#*    --potential (default: combined | hard_sphere | soft_sphere |
-#*                 exponential | leonard_jones)
-#*        uses potential energy function for determining interactions between
-#*        selected residues and atoms that are reachable or described.
+#*    --model <str> (default: rotation_only)
+#*        rules (model) that will be used to move side-chains.
 #*    --angle-step <float> (default: 0.1) (in radians)
 #*        angle that each dihedral angle is turned by.
+#*    --potential (default: leonard_jones | hard_sphere | soft_sphere |
+#*                 exponential | combined)
+#*        uses potential energy function for determining interactions between
+#*        selected residues and atoms that are reachable or described.
+#*    --cutoff <float> (default: 0.4)
+#*        the maximum value of energy potential that allows for further rotamer
+#*        search.
+#*    --out-fmt (default: csv)
+#*        output format.
 #*    --version
 #*        prints out version.
 #*    --help
@@ -56,6 +66,10 @@ GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "select=s" => \$options{"select_cl"},
     "compare-to=s" => \$options{"compare_to_cl"},
+    "model=s" => \$options{"conf_model"},
+    "potential=s" => \$options{"interactions"},
+    "angle-step=s" => \$options{"small_angle"},
+    "cutoff=s" => \$options{"cutoff"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -67,6 +81,12 @@ GetOptions(
     "version" => sub { print $version, "\n";
 		       exit; } )
     or die "Error in command line argument.";
+
+# Default options. # TODO: should make defaults according to selected potentials.
+$options{"conf_model"} = "rotation_only" unless $options{"conf_model"};
+$options{"interactions"} = "leonard_jones" unless $options{"interactions"};
+$options{"small_angle"} = 0.1 unless $options{"small_angle"};
+$options{"cutoff"} = 0.4 unless $options{"cutoff"};
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -82,14 +102,31 @@ if( $options{"pdbx_file"} ) {
 
 # Parses command line arguments to select certain atoms in PDBx.
 my $command_line_parser = new CommandLineParser();
-my $target_atom_site =
-    $command_line_parser->parser( $atom_site,
-				  $options{"select_cl"},
-				  "label_seq_id" );
-my $neighbour_atom_site =
-    $command_line_parser->parser( $atom_site,
-				  $options{"compare_to_cl"},
-				  "id" );
+my @residue_ids =
+    uniq(
+ @{ filter( { "atom_site" => $command_line_parser->parser( $atom_site,
+							   $options{"select_cl"},
+							   "label_seq_id" ),
+	      "data" => [ "label_seq_id" ],
+	      "is_list" => 1 } ) } );
+
+my %active_atom_site; # Active means that it will be used in calculations.
+if( defined $options{"compare_to_cl"} ) {
+    %active_atom_site =
+	( %{ filter( { "atom_site" => $atom_site,
+		       "include" => { "label_seq_id" => \@residue_ids } } ) },
+	  %{ $command_line_parser->parser( $atom_site,
+					   $options{"compare_to_cl"},
+					   "id" ) } );
+} else {
+    %active_atom_site = %{ $atom_site };
+}
 
 # Starts generating rotamer library.
-generate_library( $target_atom_site )
+my $rotamer_library =
+    generate_library( { "atom_site" => \%active_atom_site,
+			"residue_ids" => \@residue_ids,
+			"small_angle" => $options{"small_angle"} * pi(),
+			"conf_model" => $options{"conf_model"},
+			"interactions" => $options{"interactions"},
+			"cutoff" => $options{"cutoff"} } );
