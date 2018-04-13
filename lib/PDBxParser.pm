@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      obtain_atom_site
+                     obtain_category_data
                      to_pdbx );
 
 # --------------------------------- PDBx parser ------------------------------- #
@@ -16,6 +17,35 @@ our @EXPORT_OK = qw( create_pdbx_entry
 # coresponds to atom characteristics, such as atom or residue id, amino acid type
 # and etc. Term "attribute" is used in PDBx documentation.
 #
+
+sub obtain_category_data
+{
+    my ( $pdbx_file, $categories ) = @_;
+
+    my @category_groups;
+    my @categories;
+    my @attributes;
+
+    my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
+    my $is_loop = 0;
+    my $is_multiline = 0;
+
+    my $regexp_pattern = join( "|", @{ $categories } );
+
+    @ARGV = ( $pdbx_file );
+    while( <> ) {
+	if( $_ =~ /($regexp_pattern)\.(.+)\n$/x ) {
+
+	}
+	#     push( @atom_attributes, split( " ", $1 ) );
+	#     $is_reading_lines = 1;
+	# } elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
+	#     last;
+	# } elsif( $is_reading_lines == 1 ) {
+	#     push( @atom_data, split( " ", $_ ) );
+	# }
+    }
+}
 
 #
 # From PDBx file, obtains data only from _atom_site category and outputs special

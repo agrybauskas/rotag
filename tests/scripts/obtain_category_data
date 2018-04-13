@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( obtain_category_data
+                   to_pdbx );
+
+#
+# Unit test: PDBxParser::obtain_category
+# Example: ./obtain_category structure.cif
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my @categories = split( ",", $ARGV[0] );
+
+foreach my $pdbx_file ( @ARGV[1..$#ARGV] ) {
+    # my $atom_site =
+    obtain_category_data( $pdbx_file, \@categories );
+    # to_pdbx( $atom_site );
+}
