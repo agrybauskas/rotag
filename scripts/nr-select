@@ -10,7 +10,7 @@ use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
 use Grammar::CommandLineParser;
-use Data::Dumper;
+
 #*nr-select
 #*    select and mark atoms of interest by adding selection state [T|S|I] to
 #*    _atom_site category in PDBx.
@@ -39,7 +39,7 @@ use Data::Dumper;
 #*        command (same as --target) describing the atoms that will be marked as
 #*        selected (S).
 #*    --version
-#*        prints version.
+#*        print version.
 
 # --------------------------------- Options ----------------------------------- #
 
