@@ -1,0 +1,102 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+use List::MoreUtils qw( uniq );
+
+use PDBxParser qw( filter
+                   obtain_atom_site
+                   to_pdbx );
+use Grammar::CommandLineParser;
+use Data::Dumper;
+#*nr-select
+#*    select and mark atoms of interest by adding selection state [T|S|I] to
+#*    _atom_site category in PDBx.
+#*
+#*USAGE:
+#*    nr-select --input input.cif --target 'resname ASP' --select 'resid 1-10' \
+#*              > output.cif
+#*
+#*OPTIONS:
+#*    --input <file> | <stdin>
+#*        PDBx file.
+#*    --target  <str>
+#*        command describing the residues that will be marked as target (T).
+#*        Selection keywords (equivalent PDBx category data items in parentheses):
+#*            resid - residue id number (_atom_site.label_seq_id);
+#*            resname - residue name    (_atom_site.label_comp_id);
+#*            atoid - atom id number    (_atom_site.id);
+#*            atoname - atom name       (_atom_site.label_atom_id);
+#*            atotype - atom symbol     (_atom_site.type_symbol).
+#*        Logical operators:
+#*            & - and operator;
+#*            | - or operator;
+#*            ! - negation operator;
+#*            () - parentheses.
+#*    --select <str>
+#*        command (same as --target) describing the atoms that will be marked as
+#*        selected (S).
+#*    --version
+#*        prints version.
+
+# --------------------------------- Options ----------------------------------- #
+
+my %options;
+
+my $version = "1.0.0";
+
+GetOptions(
+    "input=s" => \$options{"pdbx_file"},
+    "target=s" => \$options{"target_cl"},
+    "select=s" => \$options{"select_cl"},
+    "help" => sub { open( my $fh, "<", $0 );
+		    while( <$fh> ) {
+			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+			$help_message =~ s/^\*$/ /g if $help_message;
+			$help_message =~ s/^\*//g if $help_message;
+			print( $help_message, "\n" ) if $help_message; }
+		    close( $fh );
+		    exit; },
+    "version" => sub { print $version, "\n";
+		       exit; } )
+    or die "Error in command line argument.";
+
+# ----------------------------------- Main ------------------------------------ #
+
+# Reads file path, stdin and "-" operator.
+my $atom_site;
+if( $options{"pdbx_file"} ) {
+    $atom_site = obtain_atom_site( $options{"pdbx_file"} );
+} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+    $atom_site = obtain_atom_site( '-' );
+} else {
+    die( "Use command \"nr-select --help\" in order to see the manual.\n" );
+}
+
+# Parses command line arguments to select certain atoms in PDBx.
+my $command_line_parser = new CommandLineParser();
+my @target_residue_ids =
+    uniq(
+	@{ filter( { "atom_site" =>
+			 $command_line_parser->parser( $atom_site,
+						       $options{"target_cl"},
+						       "label_seq_id" ),
+		     "data" => [ "id" ],
+		     "is_list" => 1 } ) } );
+
+my @selected_atom_ids;
+if( defined $options{"select_cl"} ) {
+    @selected_atom_ids =
+	@{ filter( { "atom_site" =>
+			 $command_line_parser->parser( $atom_site,
+						       $options{"select_cl"},
+						       "id" ),
+		     "data" => [ "id" ],
+		     "is_list" => 1 } ) };
+} else {
+    @selected_atom_ids = keys %{ $atom_site };
+}
+
+# Modifies PDBx entries by adding and/or changing selection states for atoms.

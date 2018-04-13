@@ -1,0 +1,28 @@
+data_test
+
+loop_
+_[local]_rotamer_angle.id
+_[local]_rotamer_angle.rotamer_id
+_[local]_rotamer_angle.residue_id
+_[local]_rotamer_angle.residue_type
+_[local]_rotamer_angle.type
+_[local]_rotamer_angle.value
+_[local]_rotamer_angle.atom_1_id
+_[local]_rotamer_angle.atom_2_id
+_[local]_rotamer_angle.atom_3_id
+_[local]_rotamer_angle.atom_4_id
+1 16 5 ASP chi1 1.402 5 6 7 8
+2 16 5 ASP chi2 3.020 6 7 8 9
+
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.calculation_method_details (optional, constants, epsilon...)
+_[local]_rotamer_energy.value
+1 16 leonard_jones ? 0.0125
+
+# Add to _atom_site.
+_[local]_atom_site.selection_state [S (selected)| T (target) | I (ignored)]
+
+
