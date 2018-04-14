@@ -3,6 +3,6 @@
 export PERL5LIB=$(dirname "$0")/../../lib
 
 pdbx_file=$(dirname "$0")/../inputs/5svd.cif
-categories="_atom_site,_citation"
+categories="_atom_site,_citation,_entity_poly"
 
 $(dirname "$0")/../scripts/obtain_category_data ${categories} ${pdbx_file}
