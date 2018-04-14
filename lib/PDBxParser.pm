@@ -34,11 +34,11 @@ sub obtain_category_data
     @ARGV = ( $pdbx_file );
     while( <> ) {
 	if( $_ =~ /($regexp_pattern)\.(\w+)\s*\n$/x ) {
-	    push( @{ $category_data{$1} }, $2 );
+	    $category_data{$1}{$2} = [];
 	    $last_category = $1;
 	} elsif( $_ =~ /($regexp_pattern)\.(\w+)\s+(.+)\s+\n$/x ) {
-	    push( @{ $category_data{$1} }, $2 );
-	    # $category_data{$1}[$#{$category_data{$1}}] = [ $3 ];
+	    $category_data{$1}{$2} = $3;
+	    # $category_data{$1}[$#{$category_data{$1}}] = { $2 => $3 };
 	    # $last_category = $1;
 	}
 	# } elsif( $_ =~ /^loop_$/x ) {
