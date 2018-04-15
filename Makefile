@@ -31,7 +31,7 @@ TEST_DIFF=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${TEST_OUT_DIR}/%.diff}
 
 .PHONY: test
 
-test: ${TEST_DIFF}
+test: ${GRAMMAR_MODULES} | ${TEST_DIFF}
 
 ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	@./$< 2>&1 | diff -a -B -w $(basename $@).out - > $@; \

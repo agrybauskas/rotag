@@ -17,6 +17,29 @@ our @EXPORT_OK = qw( create_pdbx_entry
 # and etc. Term "attribute" is used in PDBx documentation.
 #
 
+sub obtain_pdbx_loop
+{
+    my ( $pdbx_file, $category ) = @_;
+
+    my @attributes;
+    my @data; # Will be used for storing atom data temporarily.
+    my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
+
+    @ARGV = ( $pdbx_file );
+    while( <> ) {
+	if( $_ =~ /$category\.(.+)\n$/x ) {
+	    push( @attributes, split( " ", $1 ) );
+	    $is_reading_lines = 1;
+	} elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
+	    last;
+	} elsif( $is_reading_lines == 1 ) {
+	    push( @data, split( " ", $_ ) );
+	}
+    }
+
+    return \@attributes, \@data;
+}
+
 #
 # From PDBx file, obtains data only from _atom_site category and outputs special
 # data structure that represents atom data.
@@ -33,21 +56,10 @@ sub obtain_atom_site
 {
     my ( $pdbx_file ) = @_;
 
-    my @atom_attributes;
-    my @atom_data; # Will be used for storing atom data temporarily.
-    my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
-
-    @ARGV = ( $pdbx_file );
-    while( <> ) {
-	if( $_ =~ /_atom_site\.(.+)\n$/x ) {
-	    push( @atom_attributes, split( " ", $1 ) );
-	    $is_reading_lines = 1;
-	} elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
-	    last;
-	} elsif( $is_reading_lines == 1 ) {
-	    push( @atom_data, split( " ", $_ ) );
-	}
-    }
+    my ( $atom_attributes, $atom_data ) =
+	obtain_pdbx_loop( $pdbx_file, "_atom_site" );
+    my @atom_attributes = @{ $atom_attributes };
+    my @atom_data = @{ $atom_data };
 
     # Creates special data structure for describing atom site where atom id is
     # key in hash and hash value is hash describing atom data.
