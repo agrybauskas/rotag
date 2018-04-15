@@ -7,9 +7,8 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      obtain_atom_site
-                     obtain_category_data
                      to_pdbx );
-use Data::Dumper;
+
 # --------------------------------- PDBx parser ------------------------------- #
 
 #
@@ -17,72 +16,6 @@ use Data::Dumper;
 # coresponds to atom characteristics, such as atom or residue id, amino acid type
 # and etc. Term "attribute" is used in PDBx documentation.
 #
-
-sub obtain_category_data
-{
-    my ( $pdbx_file, $categories ) = @_;
-
-    my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
-    my $is_loop = 0;
-    my $is_multiline = 0;
-
-    my $regexp_pattern = join( "|", @{ $categories } );
-
-    # my %category_data;
-    my @categories;
-    my @attributes;
-    my @data;
-    my $last_category;
-
-    @ARGV = ( $pdbx_file );
-    while( <> ) {
-	if( $_ =~ s/($regexp_pattern)\./\./x ) { # Detects category.
-	    if( ! @categories || $categories[$#categories] ne $1 ) {
-		push( @categories, $1 );
-		push( @attributes, [] );
-		push( @data, [] );
-		$last_category = $1;
-		$is_reading_lines = 1;
-	    }
-	    if( $_ =~ s/.(\w+)\s*//x ) { # Detects attribute.
-		push( @{ $attributes[$#attributes] }, $1 )
-	    }
-	    if( $_ =~ s/^\s*(.+)\s*$//x ) { # Detects one-liner cif data entry.
-		push( @{ $data[$#data] }, $1 )
-	    }
-
-	} elsif( $is_reading_lines ) { # Turns on/off flags that will determine
-	    if( $_ =~ /^_(\w+)\./ ) {  # the writing data to @data.
-		$is_loop = 0;
-	    	$is_reading_lines = 0;
-		next;
-	    } elsif( $_ =~ /loop_/ ) {
-		$is_loop = 1;
-		$is_reading_lines = 0;
-		next;
-	    } elsif( ! $is_multiline && $_ =~ s/;//x ) {
-		$is_multiline = 1;
-	    } elsif( $is_multiline && $_ =~ s/;//x ) {
-		$is_multiline = 0;
-	    }
-
-	    if( ! $_ =~ /^\s*$|^#/ ) { # Pushing data to @data.
-	    	if( $is_loop ) {
-	    	    # TODO: figure out, how to push items ignoring quotation
-	    	    # marks.
-	    	    push( @{ $data[$#data] }, split( ' ', $_ ) );
-	    	} elsif( $is_multiline ) {
-	    	    if( scalar( @{ $data[$#data] } ) == 0 ) {
-	    		push( @{ $data[$#data] }, $1 )
-	    	    }
-		}
-	    }
-	}
-    }
-    print Dumper \@categories;
-    print Dumper \@attributes;
-    print Dumper \@data;
-}
 
 #
 # From PDBx file, obtains data only from _atom_site category and outputs special
