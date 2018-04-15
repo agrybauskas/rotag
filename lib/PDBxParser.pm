@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      obtain_atom_site
+                     obtain_pdbx_line
                      to_pdbx );
 
 # --------------------------------- PDBx parser ------------------------------- #
@@ -17,6 +18,30 @@ our @EXPORT_OK = qw( create_pdbx_entry
 # and etc. Term "attribute" is used in PDBx documentation.
 #
 
+# TODO: should make subroutine to parse multiline inputs and inputs that start
+# from the next line, but are not loops.
+sub obtain_pdbx_line
+{
+    my ( $pdbx_file, $items ) = @_;
+
+    my %item_data;
+    my $item_re = join( "|", @{ $items } );
+
+    @ARGV = ( $pdbx_file );
+    while( <> ) {
+    	if( $_ =~ /($item_re)\s*(.+)/) {
+	    my $item = $1;
+	    my $data = $2;
+	    $data =~ s/\s+$//x;
+	    $item_data{$item} = $data;
+    	}
+    }
+
+    return \%item_data;
+}
+
+# TODO: should make subroutine to parse multiple categories per one read of the
+# file.
 sub obtain_pdbx_loop
 {
     my ( $pdbx_file, $category ) = @_;

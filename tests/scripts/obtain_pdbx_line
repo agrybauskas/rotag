@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( obtain_pdbx_line );
+
+#
+# Unit test: PDBxParser::obtain_pdbx_line
+# Example: ./obtain_pdbx_line '_entry.id' structure.cif
+#
+
+my ( $item_specifier, $pdbx_file ) = @ARGV;
+my @item_specifier = split( ",", $item_specifier );
+
+my $item_data = obtain_pdbx_line( $pdbx_file, \@item_specifier );
+
+for my $item ( sort { $a cmp $b } keys %{ $item_data } ) {
+    print( $item, "\t", $item_data->{$item}, "\n" );
+}
