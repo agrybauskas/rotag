@@ -1,9 +1,0 @@
-#!/usr/bin/perl
-
-use strict;
-use warnings;
-
-use lib "../../lib/perl";
-use LoadParams qw( covalent_radii );
-
-covalent_radii();
