@@ -5,6 +5,7 @@ use warnings;
 
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
+use List::Util qw( any );
 
 use PDBxParser qw( filter
                    obtain_atom_site
@@ -77,14 +78,13 @@ if( $options{"pdbx_file"} ) {
 
 # Parses command line arguments to select certain atoms in PDBx.
 my $command_line_parser = new CommandLineParser();
-my @target_residue_ids =
-    uniq(
+my @target_atom_ids = # Comes from selecting residue ids.
 	@{ filter( { "atom_site" =>
 			 $command_line_parser->parser( $atom_site,
 						       $options{"target_cl"},
-						       "label_seq_id" ),
+						       "id" ),
 		     "data" => [ "id" ],
-		     "is_list" => 1 } ) } );
+		     "is_list" => 1 } ) };
 
 my @selected_atom_ids;
 if( defined $options{"select_cl"} ) {
@@ -100,3 +100,16 @@ if( defined $options{"select_cl"} ) {
 }
 
 # Modifies PDBx entries by adding and/or changing selection states for atoms.
+for my $atom_id ( keys %{ $atom_site } ) {
+    if( any { $atom_id eq $_  } @target_atom_ids ) {
+	$atom_site->{$atom_id}{"selection_state"} = "T";
+    } elsif( any { $atom_id eq $_  } @selected_atom_ids ) {
+	$atom_site->{$atom_id}{"selection_state"} = "S";
+    } else {
+	$atom_site->{$atom_id}{"selection_state"} = "I";
+    }
+}
+
+# Prints out the PDBx.
+# TODO: undef should be changed to something significant.
+to_pdbx( $atom_site, undef, undef, [ "selection_state" ] );

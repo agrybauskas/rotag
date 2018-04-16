@@ -253,7 +253,7 @@ sub create_pdbx_entry
 
 sub to_pdbx
 {
-    my ( $atom_site, $data_name, $atom_attributes ) = @_;
+    my ( $atom_site, $data_name, $atom_attributes, $add_attributes ) = @_;
 
     # Assigns default data name and attributes if $atom_attributes variables are
     # undefined.
@@ -284,6 +284,8 @@ sub to_pdbx
 			   "auth_asym_id",
 			   "auth_atom_id",
 			   "pdbx_PDB_model_num" ];
+    push( @{ $atom_attributes },
+	  @{ $add_attributes } ) if defined $add_attributes;
 
     # Sends PDBx to STDOUT.
     print "data_$data_name\n";

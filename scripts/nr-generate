@@ -77,9 +77,6 @@ if( $options{"pdbx_file"} ) {
     die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
 }
 
-# Parses command line arguments to select certain atoms in PDBx.
-my $command_line_parser = new CommandLineParser();
-
 # # Starts generating rotamer library.
 # my $rotamer_library =
 #     generate_library( { "atom_site" => \%active_atom_site,
