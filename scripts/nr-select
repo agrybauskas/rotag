@@ -39,6 +39,8 @@ use Grammar::CommandLineParser;
 #*    --select <str>
 #*        command (same as --target) describing the atoms that will be marked as
 #*        selected (S).
+#*    --remove-ignored
+#*        removes ignored atoms.
 #*    --version
 #*        print version.
 
@@ -47,11 +49,13 @@ use Grammar::CommandLineParser;
 my %options;
 
 my $version = "1.0.0";
+my $remove_ignored = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "target=s" => \$options{"target_cl"},
     "select=s" => \$options{"select_cl"},
+    "remove-ignored" => sub { $remove_ignored = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -82,10 +86,15 @@ my @target_atom_ids = # Comes from selecting residue ids.
 	@{ filter( { "atom_site" =>
 			 $command_line_parser->parser( $atom_site,
 						       $options{"target_cl"},
-						       "id" ),
+						       "id",
+						       "residue" ),
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
 
+# TODO: should modified selection parsing so, if first token is around, it would
+# append target command.
+# TODO: should consider having 'contains' or other operator that would select,
+# for example, residues that contain CA atom.
 my @selected_atom_ids;
 if( defined $options{"select_cl"} ) {
     @selected_atom_ids =
@@ -108,6 +117,11 @@ for my $atom_id ( keys %{ $atom_site } ) {
     } else {
 	$atom_site->{$atom_id}{"selection_state"} = "I";
     }
+}
+
+if( $remove_ignored ) {
+    $atom_site = filter( { "atom_site" => $atom_site,
+			   "exclude" => { "selection_state" => [ "I" ] } } );
 }
 
 # Prints out the PDBx.

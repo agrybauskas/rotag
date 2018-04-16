@@ -108,6 +108,13 @@ exp
 				 'is_list' => 1 } );
 	    }
         }
+    | 'chain' str_ope
+        {
+	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+		      'include' => { 'label_asym_id' => $_[2] },
+		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+		      'is_list' => 1 } );
+        }
     | 'resid' num_ope
         {
 	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
@@ -158,7 +165,7 @@ str_ope
 
 %%
 
-sub lexer
+sub lexer # Universal lexer.
 {
     my( $parser ) = shift;
 
@@ -169,7 +176,9 @@ sub lexer
     for( $parser->YYData->{INPUT} ){
         if( s/^(resid)// ) {
             return ( 'resid', $1 );
-	} elsif(s/^(resname)//) {
+	} elsif(s/^(chain)//) {
+            return ( 'chain', $1 );
+        } elsif(s/^(resname)//) {
             return ( 'resname', $1 );
         } elsif(s/^(atoid)//) {
             return ( 'atoid', $1 );
@@ -177,6 +186,45 @@ sub lexer
             return ( 'atoname', $1 );
         } elsif(s/^(atotype)//) {
             return ( 'atotype', $1 );
+        } elsif(s/^(around)//) {
+            return ( 'around', $1 );
+	} elsif( s/^([0-9]+)// ) {
+            return ( 'NUM', $1 );
+	} elsif( s/^(\w+)// ) {
+            return ( 'STR', $1 );
+	} elsif( s/^(,)// ) {
+            return ( ',', $1 );
+	} elsif( s/^(-)// ) {
+            return ( '-', $1 );
+	} elsif( s/^(\|)// ) {
+            return ( '|', $1 );
+	} elsif( s/^(&)// ) {
+            return ( '&', $1 );
+	} elsif( s/^(\()// ) {
+            return ( '(', $1 );
+	} elsif( s/^(\))// ) {
+            return ( ')', $1 );
+	} elsif( s/^(\!)// ) {
+            return ( '!', $1 );
+	}
+    }
+}
+
+sub lexer_residue # Only for residue data.
+{
+    my( $parser ) = shift;
+
+    $parser->YYData->{INPUT} || return( '',undef );
+    $parser->YYData->{INPUT} =~ s/^[ \t]//;
+
+    # Returns tokens to parser.
+    for( $parser->YYData->{INPUT} ){
+        if( s/^(resid)// ) {
+            return ( 'resid', $1 );
+	} elsif(s/^(chain)//) {
+            return ( 'chain', $1 );
+	} elsif(s/^(resname)//) {
+            return ( 'resname', $1 );
         } elsif(s/^(around)//) {
             return ( 'around', $1 );
 	} elsif( s/^([0-9]+)// ) {
@@ -215,18 +263,26 @@ sub debugger
 
 sub parser
 {
-    my ( $self, $atom_site, $input, $by_attribute ) = @_;
+    my ( $self, $atom_site, $input, $by_attribute, $lexer ) = @_;
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
     $self->YYData->{BY_ATTRIBUTE} = $by_attribute;
 
-    my $selected_atom_data = $self->YYParse( yylex => \&lexer,
-					     yyerror => \&debugger,
-					     yydebug=>0x00 );
+    my $selected_atom_data;
+    if( $lexer && $lexer eq "residue"  ) {
+	$selected_atom_data = $self->YYParse( yylex => \&lexer_residue,
+					      yyerror => \&debugger,
+					      yydebug=>0x00 );
+    } else {
+	$selected_atom_data = $self->YYParse( yylex => \&lexer,
+					      yyerror => \&debugger,
+					      yydebug=>0x00 );
+    }
+
     my $selected_atom_site =
 	filter( { "atom_site" => $atom_site,
-		  "include" => { $by_attribute => $selected_atom_data } });
+		  "include" => { $by_attribute => $selected_atom_data } } );
 
     return $selected_atom_site;
 }
