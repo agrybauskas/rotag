@@ -77,11 +77,21 @@ if( $options{"pdbx_file"} ) {
     die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
 }
 
-# # Starts generating rotamer library.
-# my $rotamer_library =
-#     generate_library( { "atom_site" => \%active_atom_site,
-# 			"residue_ids" => \@residue_ids,
-# 			"small_angle" => $options{"small_angle"} * pi(),
-# 			"conf_model" => $options{"conf_model"},
-# 			"interactions" => $options{"interactions"},
-# 			"cutoff" => $options{"cutoff"} } );
+my $selected_atom_site =
+    filter( { "atom_site" => $atom_site,
+	      "include" => { "selection_state" => [ "T", "S" ] } } );
+my @residue_ids =
+    uniq(
+	@{ filter( { "atom_site" => $selected_atom_site,
+		     "include" => { "selection_state" => [ "T" ] },
+		     "data" => [ "label_seq_id" ],
+		     "is_list" => 1 } ) } );
+
+# Starts generating rotamer library.
+my $rotamer_library =
+    generate_library( { "atom_site" => $selected_atom_site,
+			"residue_ids" => \@residue_ids,
+			"small_angle" => $options{"small_angle"} * pi(),
+			"conf_model" => $options{"conf_model"},
+			"interactions" => $options{"interactions"},
+			"cutoff" => $options{"cutoff"} } );
