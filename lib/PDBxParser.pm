@@ -253,11 +253,18 @@ sub create_pdbx_entry
 
 sub to_pdbx
 {
-    my ( $atom_site, $data_name, $atom_attributes, $add_attributes ) = @_;
+    # TODO: make hash ARGV.
+    my ( $atom_site,
+	 $data_name,
+	 $category_name,
+	 $atom_attributes,
+	 $add_attributes,
+	 $no_data_tag ) = @_;
 
     # Assigns default data name and attributes if $atom_attributes variables are
     # undefined.
     $data_name //= "testing";
+    $category_name //= "_atom_site";
     $atom_attributes //= [ "group_PDB",
 			   "id",
 			   "type_symbol",
@@ -288,11 +295,12 @@ sub to_pdbx
 	  @{ $add_attributes } ) if defined $add_attributes;
 
     # Sends PDBx to STDOUT.
-    print "data_$data_name\n";
+    # TODO: remove empty lines after attribute list.
+    $no_data_tag ? print "" : print "data_$data_name\n" ;
     print "loop_\n";
 
     for my $attribute ( @{ $atom_attributes } ) {
-    	print "_atom_site.$attribute\n";
+    	print "$category_name.$attribute\n";
     }
 
     for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {

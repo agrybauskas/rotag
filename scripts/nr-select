@@ -126,4 +126,4 @@ if( $remove_ignored ) {
 
 # Prints out the PDBx.
 # TODO: undef should be changed to something significant.
-to_pdbx( $atom_site, undef, undef, [ "selection_state" ] );
+to_pdbx( $atom_site, undef, undef, undef, [ "selection_state" ] );

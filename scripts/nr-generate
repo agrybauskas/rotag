@@ -8,7 +8,9 @@ use List::MoreUtils qw( uniq );
 
 use LinearAlgebra qw( pi );
 use PDBxParser qw( filter
-                   obtain_atom_site );
+                   obtain_atom_site
+                   to_pdbx );
+
 use PseudoAtoms qw( generate_library );
 use Grammar::CommandLineParser;
 
@@ -95,3 +97,37 @@ my $rotamer_library =
 			"conf_model" => $options{"conf_model"},
 			"interactions" => $options{"interactions"},
 			"cutoff" => $options{"cutoff"} } );
+
+my %rotamer_angle; # Data structure that is similar to atom_site's
+
+my $id = 1;
+my $rotamer_id = 1;
+
+# TODO: should not forget adding atoms that make up dihedral angles and energy
+# entry.
+for my $residue_id ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
+    my @residue_name =
+	uniq( @{ filter( { "atom_site" => $selected_atom_site,
+			   "data" => [ "label_comp_id" ],
+			   "is_list" => 1 } ) } );
+    for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
+	for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer } ) {
+	    my $angle_value = $rotamer->{$angle_name};
+	    $rotamer_angle{$id}{"id"} = $id;
+	    $rotamer_angle{$id}{"rotamer_id"} = $rotamer_id;
+	    $rotamer_angle{$id}{"residue_id"} = $residue_id;
+	    $rotamer_angle{$id}{"residue_type"} = $residue_name[0];
+	    $rotamer_angle{$id}{"type"} = $angle_name;
+	    $rotamer_angle{$id}{"angle_value"} = sprintf( "%.3f", $angle_value );
+	    $id++;
+	}
+	$rotamer_id++;
+    }
+}
+
+to_pdbx( $selected_atom_site );
+print( "#\n" );
+to_pdbx( \%rotamer_angle, undef, "_[local]_rotamer_angle",
+	 [ "id", "rotamer_id", "residue_id",
+	   "residue_type", "type", "angle_value" ],
+	 undef, 1 );
