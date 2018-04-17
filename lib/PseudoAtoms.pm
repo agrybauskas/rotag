@@ -361,18 +361,18 @@ sub generate_library
                                                {"origin_atom_id"};
 
 			my $potential_energy = 0;
-			foreach my $neighbour_id ( keys %interaction_site ) {
+			foreach my $interaction_id ( keys %interaction_site ) {
 			    if( ( ! is_neighbour( \%atom_site,
 						  $pseudo_origin_id,
-						  $neighbour_id ) )
+						  $interaction_id ) )
 			     && ( ! is_second_neighbour( \%atom_site,
 			     				 $pseudo_origin_id,
-			     				 $neighbour_id ) )
+			     				 $interaction_id ) )
 				) {
 				$potential_energy +=
 				    $potential_function->(
 					$pseudo_atom_site->{$pseudo_atom_id},
-					$atom_site{$neighbour_id} );
+					$atom_site{$interaction_id} );
 				last if $potential_energy > $cutoff;
 			    }
 			}
@@ -406,8 +406,10 @@ sub generate_library
 	    # side-chain itself.
 	    for my $angles ( @allowed_angles ) {
 		push( @{ $rotamer_library{"$residue_id"} },
-		      { map { ( "chi$_" => $angles->[$_] ) }
-			( 0..$#{ $angles } ) } );
+		      { "angles" => { map { ( "chi$_" => $angles->[$_] ) }
+			( 0..$#{ $angles } ) },
+			"potential" => $interactions,
+			"potential_energy_value" => 0 } );
 	    }
 	}
     }

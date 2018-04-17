@@ -36,11 +36,12 @@ for my $residue_id ( keys %{ $rotamer_library } ) {
     for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
 	my @rotamer_entry = ( $residue_id );
 	for my $angle_name ( sort { $a cmp $b }
-			     keys %{ $rotamer } ) {
+			     keys %{ $rotamer->{"angles"} } ) {
 	    push( @rotamer_entry,
-	    	  sprintf( "%.1f", 180 * $rotamer->{"$angle_name"} / pi() ) );
+	    	  sprintf( "%.1f",
+			   180 * $rotamer->{"angles"}{"$angle_name"} / pi() ) );
 	}
-	for my $na ( 0..4-scalar( keys( %{ $rotamer } ) ) ) {
+	for my $na ( 0..4-scalar( keys( %{ $rotamer->{"angles"} } ) ) ) {
 	    push( @rotamer_entry, "" );
 	}
 	print( join( ",", @rotamer_entry ), "\n" );
