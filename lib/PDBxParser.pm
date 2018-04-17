@@ -329,6 +329,7 @@ sub to_pdbx
 		} else {
 		    print( " ? " );
 		}
+
 	    } else {
 		if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
 		    print( "\n", $atom_site->{$id}{$atom_attributes->[$i]} );
@@ -337,7 +338,6 @@ sub to_pdbx
 		}
 	    }
 	} }
-
 	print( "\n" )
     }
 
@@ -349,7 +349,6 @@ sub to_pdbx
     	    foreach( @{ $pdbx_loops->{$category}{"attributes"} } ) {
     		print( "$category.$_\n" )
     	    }
-
     	    my $attribute_array_length =
 		$#{ $pdbx_loops->{$category}{"attributes"} };
     	    my $data_array_length =
