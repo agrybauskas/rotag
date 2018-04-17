@@ -23,7 +23,8 @@ sub obtain_pdbx_line
 {
     my ( $pdbx_file, $items ) = @_;
 
-    my %line_data;
+    my %pdbx_line_data;
+    my %current_line_data;
     my $item_regexp = join( "|", @{ $items } );
 
     $/ = "";
@@ -31,10 +32,16 @@ sub obtain_pdbx_line
     while( <> ) {
 	my %single_line_matches = ( m/($item_regexp)\s+(?!;)(\S.+\S)/g );
 	my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/g );
-	%line_data = ( %single_line_matches, %multi_line_matches );
+	%current_line_data = ( %single_line_matches, %multi_line_matches );
     }
 
-    return \%line_data;
+    for my $key ( sort { $a cmp $b } keys %current_line_data ) {
+    	my ( $category, $attribute ) = split( "\\.", $key );
+    	$pdbx_line_data{$category}{$attribute} =
+    	    $current_line_data{$key};
+    }
+
+    return \%pdbx_line_data;
 }
 
 sub obtain_pdbx_loop
@@ -67,13 +74,13 @@ sub obtain_pdbx_loop
     }
 
     # Generates hash from three lists.
-    my %loop_data;
+    my %pdbx_loop_data;
     for( my $i = 0; $i <= $#categories; $i++ ) {
-	$loop_data{$categories[$i]}{"attributes"} = $attributes[$i];
-	$loop_data{$categories[$i]}{"data"} = $data[$i];
+	$pdbx_loop_data{$categories[$i]}{"attributes"} = $attributes[$i];
+	$pdbx_loop_data{$categories[$i]}{"data"} = $data[$i];
     }
 
-    return \%loop_data;
+    return \%pdbx_loop_data;
 }
 
 #
@@ -253,84 +260,110 @@ sub create_pdbx_entry
 # Converts special atom site data structure back to PDBx, XYZ (for Jmol) and etc.
 #
 
-#
-# Converts to truncated PDBx format file.
-# Input:
-#     $atom_site - special data structure.
-#     $atom_attributes - list of attributes
-# Output:
-#     STDOUT - PDBx file.
-
 sub to_pdbx
 {
-    # TODO: make hash ARGV.
-    my ( $atom_site,
-	 $data_name,
-	 $category_name,
-	 $atom_attributes,
-	 $add_attributes,
-	 $no_data_tag ) = @_;
+    my ( $args ) = @_;
+    my $data_name = $args->{"data_name"};
+    my $pdbx_lines = $args->{"pdbx_lines"};
+    my $pdbx_loops = $args->{"pdbx_loops"};
+    my $atom_site = $args->{"atom_site"};
+    my $atom_attributes = $args->{"atom_attributes"};
+    my $add_atom_attributes = $args->{"add_atom_attributes"};
 
-    # Assigns default data name and attributes if $atom_attributes variables are
-    # undefined.
     $data_name //= "testing";
-    $category_name //= "_atom_site";
-    $atom_attributes //= [ "group_PDB",
-			   "id",
-			   "type_symbol",
-			   "label_atom_id",
-			   "label_alt_id",
-			   "label_comp_id",
-			   "label_asym_id",
-			   "label_entity_id",
-			   "label_seq_id",
-			   "pdbx_PDB_ins_code",
-			   "Cartn_x",
-			   "Cartn_y",
-			   "Cartn_z",
-			   "occupancy",
-			   "B_iso_or_equiv",
-			   "Cartn_x_esd",
-			   "Cartn_y_esd",
-			   "Cartn_z_esd",
-			   "occupancy_esd",
-			   "B_iso_or_equiv_esd",
-			   "pdbx_formal_charge",
-			   "auth_seq_id",
-			   "auth_comp_id",
-			   "auth_asym_id",
-			   "auth_atom_id",
-			   "pdbx_PDB_model_num" ];
-    push( @{ $atom_attributes },
-	  @{ $add_attributes } ) if defined $add_attributes;
 
-    # Sends PDBx to STDOUT.
+    print( "data_$data_name\n#\n" );
+
+    # Prints out pdbx lines if they are present.
+    if( defined $pdbx_lines ) {
+    for my $category  ( sort { $a cmp $b } keys %{ $pdbx_lines } ) {
+    for my $attribute ( sort { $a cmp $b } keys %{ $pdbx_lines->{$category} } ) {
+	printf( "%s.%s %s\n", $category, $attribute,
+		$pdbx_lines->{$category}{$attribute} );
+    } print( "#\n" ); } }
+
+    # Prints out atom site structure if they are present.
     # TODO: remove empty lines after attribute list.
-    $no_data_tag ? print "" : print "data_$data_name\n" ;
-    print "loop_\n";
+    if( defined $atom_site ) {
+	$atom_attributes //= [ "group_PDB",
+			       "id",
+			       "type_symbol",
+			       "label_atom_id",
+			       "label_alt_id",
+			       "label_comp_id",
+			       "label_asym_id",
+			       "label_entity_id",
+			       "label_seq_id",
+			       "pdbx_PDB_ins_code",
+			       "Cartn_x",
+			       "Cartn_y",
+			       "Cartn_z",
+			       "occupancy",
+			       "B_iso_or_equiv",
+			       "Cartn_x_esd",
+			       "Cartn_y_esd",
+			       "Cartn_z_esd",
+			       "occupancy_esd",
+			       "B_iso_or_equiv_esd",
+			       "pdbx_formal_charge",
+			       "auth_seq_id",
+			       "auth_comp_id",
+			       "auth_asym_id",
+			       "auth_atom_id",
+			       "pdbx_PDB_model_num" ];
 
-    for my $attribute ( @{ $atom_attributes } ) {
-    	print "$category_name.$attribute\n";
-    }
+	push( @{ $atom_attributes }, @{ $add_atom_attributes } )
+	    if defined $add_atom_attributes;
 
-    for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-    	for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
-    	    if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
+	print "loop_\n";
+
+	for my $attribute ( @{ $atom_attributes } ) {
+	    print "_atom_site.$attribute\n";
+	}
+
+	for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+	for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
+	    if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
 		if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
 		    print( " ", $atom_site->{$id}{$atom_attributes->[$i]}, " " );
 		} else {
 		    print( " ? " );
 		}
-    	    } else {
+	    } else {
 		if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
 		    print( "\n", $atom_site->{$id}{$atom_attributes->[$i]} );
 		} else {
-		    print( "\n." );
+		    print( "\n" );
 		}
+	    }
+	} }
+
+	print( "\n" )
+    }
+
+    # Prints out pdbx loops if they are present.
+    if( defined $pdbx_loops ) {
+    	for my $category ( sort keys %{ $pdbx_loops } ) {
+    	    print( "loop_\n" );
+
+    	    foreach( @{ $pdbx_loops->{$category}{"attributes"} } ) {
+    		print( "$category.$_\n" )
     	    }
+
+    	    my $attribute_array_length =
+		$#{ $pdbx_loops->{$category}{"attributes"} };
+    	    my $data_array_length =
+		$#{ $pdbx_loops->{$category}{"data"} };
+    	    for( my $i = 0;
+		 $i <= $data_array_length;
+		 $i += $attribute_array_length + 1 ){
+    		print( join( " ", @{ $pdbx_loops->{$category}{"data"} }
+    			     [$i..$i+$attribute_array_length] ), "\n" );
+    	    }
+
+    	    print( "#\n" );
     	}
     }
-    print( "\n" );
 
     return;
 }
