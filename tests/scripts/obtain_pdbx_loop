@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( obtain_pdbx_loop );
+
+#
+# Unit test: PDBxParser::obtain_pdbx_loop
+# Example: ./obtain_pdbx_loop '_atom_site' structure.cif
+#
+
+my ( $category_specifier, $pdbx_file ) = @ARGV;
+my @category_specifier = split( ",", $category_specifier );
+
+my $pdbx_data =
+    obtain_pdbx_loop( $pdbx_file, \@category_specifier );
+
+for my $category ( sort keys %{ $pdbx_data } ) {
+    print( "loop_\n" );
+
+    foreach( @{ $pdbx_data->{$category}{"attributes"} } ) {
+	print( "$category.$_\n" )
+    };
+
+    my $attribute_array_length = $#{ $pdbx_data->{$category}{"attributes"} };
+    my $data_array_length = $#{ $pdbx_data->{$category}{"data"} };
+    for( my $i = 0; $i <= $data_array_length; $i += $attribute_array_length + 1 ){
+	print( join( " ", @{ $pdbx_data->{$category}{"data"} }
+		     [$i..$i+$attribute_array_length] ), "\n" );
+    }
+
+    print( "#\n" );
+}

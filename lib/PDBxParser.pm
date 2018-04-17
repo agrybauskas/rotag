@@ -8,6 +8,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      obtain_atom_site
                      obtain_pdbx_line
+                     obtain_pdbx_loop
                      to_pdbx );
 
 # --------------------------------- PDBx parser ------------------------------- #
@@ -22,7 +23,7 @@ sub obtain_pdbx_line
 {
     my ( $pdbx_file, $items ) = @_;
 
-    my %item_data;
+    my %line_data;
     my $item_regexp = join( "|", @{ $items } );
 
     $/ = "";
@@ -30,35 +31,49 @@ sub obtain_pdbx_line
     while( <> ) {
 	my %single_line_matches = ( m/($item_regexp)\s+(?!;)(\S.+\S)/g );
 	my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/g );
-	%item_data = ( %single_line_matches, %multi_line_matches );
+	%line_data = ( %single_line_matches, %multi_line_matches );
     }
 
-    return \%item_data;
+    return \%line_data;
 }
 
-# TODO: should make subroutine to parse multiple categories per one read of the
-# file.
 sub obtain_pdbx_loop
 {
-    my ( $pdbx_file, $category ) = @_;
+    my ( $pdbx_file, $categories ) = @_;
 
+    my @categories;
     my @attributes;
     my @data; # Will be used for storing atom data temporarily.
+
+    my $category_regexp = join( "|", @{ $categories } );
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
     @ARGV = ( $pdbx_file );
     while( <> ) {
-	if( $_ =~ /$category\.(.+)\n$/x ) {
-	    push( @attributes, split( " ", $1 ) );
-	    $is_reading_lines = 1;
-	} elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
-	    last;
-	} elsif( $is_reading_lines == 1 ) {
-	    push( @data, split( " ", $_ ) );
-	}
+    	if( $_ =~ /($category_regexp)\.(.+)\n$/x ) {
+	    if( ! @categories || $categories[$#categories] ne $1 ) {
+		push( @categories, $1 );
+		push( @attributes, [] );
+		push( @data, [] );
+	    }
+    	    push( @{ $attributes[$#attributes] }, split( " ", $2 ) );
+    	    $is_reading_lines = 1;
+    	} elsif( $is_reading_lines == 1 && $_ =~ /^_|loop_|#/ ) {
+	    if( $#categories eq $#{ $categories } ) { last; }
+    	    $is_reading_lines = 0;
+    	} elsif( $is_reading_lines == 1 ) {
+    	    push( @{ $data[$#data] }, split( " ", $_ ) );
+    	}
     }
 
-    return \@attributes, \@data;
+    # Generates hash from three lists.
+    my %loop_data;
+    for( my $i = 0; $i <= $#categories; $i++ ) {
+	$loop_data{$categories[$i]}{"attributes"} = $attributes[$i];
+	$loop_data{$categories[$i]}{"data"} = $data[$i];
+    }
+
+    return \%loop_data;
 }
 
 #
@@ -77,10 +92,9 @@ sub obtain_atom_site
 {
     my ( $pdbx_file ) = @_;
 
-    my ( $atom_attributes, $atom_data ) =
-	obtain_pdbx_loop( $pdbx_file, "_atom_site" );
-    my @atom_attributes = @{ $atom_attributes };
-    my @atom_data = @{ $atom_data };
+    my $pdbx_data = obtain_pdbx_loop( $pdbx_file, [ "_atom_site" ] );
+    my @atom_attributes = @{ $pdbx_data->{"_atom_site"}{"attributes"} };
+    my @atom_data = @{ $pdbx_data->{"_atom_site"}{"data"} };
 
     # Creates special data structure for describing atom site where atom id is
     # key in hash and hash value is hash describing atom data.
