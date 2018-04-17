@@ -36,7 +36,7 @@ close( $fh );
 
 # Loads PDBx as Jmol script.
 print( "data \"model\"\n" );
-to_pdbx( $atom_site );
+to_pdbx( { "atom_site" => $atom_site } );
 print( "end \"model\"\n" );
 
 # Selects non-pseudo-atoms and disconnects all non-selected atoms, changes their

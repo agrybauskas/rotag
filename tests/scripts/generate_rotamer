@@ -36,4 +36,4 @@ for my $angle_value ( keys %angle_values ) {
     ( %{ $atom_site },
       %{ generate_rotamer( $atom_site, { $residue_id => \%angle_values } ) } );
 
-to_pdbx( $atom_site );
+to_pdbx( { "atom_site" => $atom_site } );

@@ -29,4 +29,4 @@ my $selected_atom_site = $command_line_parser->parser( $atom_site,
 						       $selection_command,
 						       "id" );
 
-to_pdbx( $selected_atom_site );
+to_pdbx( { "atom_site" => $selected_atom_site } );

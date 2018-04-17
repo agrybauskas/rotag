@@ -21,4 +21,4 @@ $atom_site = eval( $atom_site );
       %{ add_hydrogens( $atom_site ) } );
 
 # Prints out PDBx format file.
-to_pdbx( $atom_site );
+to_pdbx( { "atom_site" => $atom_site } );
