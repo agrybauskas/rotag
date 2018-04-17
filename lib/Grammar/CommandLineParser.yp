@@ -12,6 +12,7 @@
 %left ','
 %left '-'
 %left 'around'
+%right 'byres'
 %left '!'
 %left '|' '&'
 
@@ -31,7 +32,27 @@ line
 ;
 
 exp
-    : exp '&' exp
+    : 'byres' exp
+        {
+	    my @residue_ids =
+		uniq(
+	        @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+			     'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
+			     'data' => [ 'label_seq_id' ],
+			     'is_list' => 1 } ) } );
+	    my @chains = # TODO: look, if states might make problems.
+		uniq(
+	        @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+			     'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
+			     'data' => [ 'label_asym_id' ],
+			     'is_list' => 1 } ) } );
+	    return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+	    		     'include' => { 'label_seq_id' => \@residue_ids,
+					    'label_asym_id' => \@chains },
+	    		     'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+	    		     'is_list' => 1 } );
+        }
+    | exp '&' exp
         {
 	    my @joint_ids;
 
@@ -178,6 +199,8 @@ sub lexer # Universal lexer.
             return ( 'resid', $1 );
 	} elsif(s/^(chain)//) {
             return ( 'chain', $1 );
+        } elsif(s/^(byres)//) {
+            return ( 'byres', $1 );
         } elsif(s/^(resname)//) {
             return ( 'resname', $1 );
         } elsif(s/^(atoid)//) {
