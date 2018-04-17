@@ -18,23 +18,19 @@ our @EXPORT_OK = qw( create_pdbx_entry
 # and etc. Term "attribute" is used in PDBx documentation.
 #
 
-# TODO: should make subroutine to parse multiline inputs and inputs that start
-# from the next line, but are not loops.
 sub obtain_pdbx_line
 {
     my ( $pdbx_file, $items ) = @_;
 
     my %item_data;
-    my $item_re = join( "|", @{ $items } );
+    my $item_regexp = join( "|", @{ $items } );
 
+    $/ = "";
     @ARGV = ( $pdbx_file );
     while( <> ) {
-    	if( $_ =~ /($item_re)\s*(.+)/) {
-	    my $item = $1;
-	    my $data = $2;
-	    $data =~ s/\s+$//x;
-	    $item_data{$item} = $data;
-    	}
+	my %single_line_matches = ( m/($item_regexp)\s+(?!;)(\S.+\S)/g );
+	my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/g );
+	%item_data = ( %single_line_matches, %multi_line_matches );
     }
 
     return \%item_data;
