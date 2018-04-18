@@ -12,7 +12,7 @@
 %left ','
 %left '-'
 %left 'around'
-%right 'byres' 'main' 'side'
+%right 'byresid' 'mainchain' 'sidechain'
 %left '!'
 %left '|' '&'
 
@@ -30,7 +30,7 @@ line
 	    }
         }
 ;
-# TODO: main and side should be written as exp maine exp, exp side exp.
+# TODO: main and side should be written as exp mainchain exp, exp sidechain exp.
 exp
     : 'all'
         {
@@ -38,7 +38,7 @@ exp
 	    		     'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
 	    		     'is_list' => 1 } );
         }
-    | 'main' exp
+    | 'mainchain' exp
         {
 	    return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
 			     'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
@@ -49,7 +49,7 @@ exp
 			     'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
 			     'is_list' => 1 } );
         }
-    | 'side' exp
+    | 'sidechain' exp
         {
 	    return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
 			     'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
@@ -77,7 +77,7 @@ exp
 			     'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
 			     'is_list' => 1 } );
         }
-    | 'byres' exp
+    | 'byresid' exp
         {
 	    my @residue_ids =
 		uniq(
@@ -196,21 +196,21 @@ exp
 		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
 		      'is_list' => 1 } );
         }
-    | 'atoid' num_ope
+    | 'atomid' num_ope
         {
 	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
 		      'include' => { 'id' => $_[2] },
 		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
 		      'is_list' => 1 } );
         }
-    | 'atoname' str_ope
+    | 'atomname' str_ope
         {
 	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
 		      'include' => { 'label_atom_id' => $_[2] },
 		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
 		      'is_list' => 1 } );
         }
-    | 'atotype' str_ope
+    | 'atomtype' str_ope
         {
 	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
 		      'include' => { 'type_symbol' => $_[2] },
@@ -242,26 +242,26 @@ sub lexer # Universal lexer.
     # Returns tokens to parser.
     for( $parser->YYData->{INPUT} ){
         if( s/^(resid)// ) {
-            return ( 'resid', $1 );
-	} elsif(s/^(chain)//) {
-            return ( 'chain', $1 );
-        } elsif(s/^(all)//) {
+            return ( 'resid|ri', $1 );
+	} elsif(s/^(chain|cn)//) {
+            return ( 'chain|cn', $1 );
+        } elsif(s/^(all|\*)//) {
             return ( 'all', $1 );
-        } elsif(s/^(main)//) {
-            return ( 'main', $1 );
-        } elsif(s/^(side)//) {
-            return ( 'side', $1 );
-        } elsif(s/^(byres)//) {
-            return ( 'byres', $1 );
-        } elsif(s/^(resname)//) {
+        } elsif(s/^(mainchain|mc)//) {
+            return ( 'mainchain', $1 );
+        } elsif(s/^(sidechain|sc)//) {
+            return ( 'sidechain', $1 );
+        } elsif(s/^(byresid|b\.)//) {
+            return ( 'byresid', $1 );
+        } elsif(s/^(resname|rn)//) {
             return ( 'resname', $1 );
-        } elsif(s/^(atoid)//) {
-            return ( 'atoid', $1 );
-        } elsif(s/^(atoname)//) {
-            return ( 'atoname', $1 );
-        } elsif(s/^(atotype)//) {
-            return ( 'atotype', $1 );
-        } elsif(s/^(around)//) {
+        } elsif(s/^(atomid|ai)//) {
+            return ( 'atomid', $1 );
+        } elsif(s/^(atomname|an)//) {
+            return ( 'atomname', $1 );
+        } elsif(s/^(atomtype|at)//) {
+            return ( 'atomtype', $1 );
+        } elsif(s/^(around|a\.)//) {
             return ( 'around', $1 );
 	} elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
@@ -271,15 +271,15 @@ sub lexer # Universal lexer.
             return ( ',', $1 );
 	} elsif( s/^(-)// ) {
             return ( '-', $1 );
-	} elsif( s/^(\|)// ) {
+	} elsif( s/^(\||or)// ) {
             return ( '|', $1 );
-	} elsif( s/^(&)// ) {
+	} elsif( s/^(&|and)// ) {
             return ( '&', $1 );
 	} elsif( s/^(\()// ) {
             return ( '(', $1 );
 	} elsif( s/^(\))// ) {
             return ( ')', $1 );
-	} elsif( s/^(\!)// ) {
+	} elsif( s/^(\!|not)// ) {
             return ( '!', $1 );
 	}
     }
@@ -294,19 +294,19 @@ sub lexer_residue # Only for residue data.
 
     # Returns tokens to parser.
     for( $parser->YYData->{INPUT} ){
-        if( s/^(resid)// ) {
+        if( s/^(resid|ri)// ) {
             return ( 'resid', $1 );
-	} elsif(s/^(all)//) {
+	} elsif(s/^(all|\*)//) {
             return ( 'all', $1 );
-        } elsif(s/^(main)//) {
-            return ( 'main', $1 );
-        } elsif(s/^(side)//) {
-            return ( 'side', $1 );
-        } elsif(s/^(chain)//) {
+        } elsif(s/^(mainchain|mc)//) {
+            return ( 'mainchain', $1 );
+        } elsif(s/^(sidechain|sc)//) {
+            return ( 'sidechain', $1 );
+        } elsif(s/^(chain|cn)//) {
             return ( 'chain', $1 );
-	} elsif(s/^(resname)//) {
+	} elsif(s/^(resname|rn)//) {
             return ( 'resname', $1 );
-        } elsif(s/^(around)//) {
+        } elsif(s/^(around|a\.)//) {
             return ( 'around', $1 );
 	} elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
@@ -316,15 +316,15 @@ sub lexer_residue # Only for residue data.
             return ( ',', $1 );
 	} elsif( s/^(-)// ) {
             return ( '-', $1 );
-	} elsif( s/^(\|)// ) {
+	} elsif( s/^(\||or)// ) {
             return ( '|', $1 );
-	} elsif( s/^(&)// ) {
+	} elsif( s/^(&|and)// ) {
             return ( '&', $1 );
 	} elsif( s/^(\()// ) {
             return ( '(', $1 );
 	} elsif( s/^(\))// ) {
             return ( ')', $1 );
-	} elsif( s/^(\!)// ) {
+	} elsif( s/^(\!|not)// ) {
             return ( '!', $1 );
 	}
     }
