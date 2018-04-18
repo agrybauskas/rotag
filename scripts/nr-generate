@@ -98,26 +98,29 @@ my $rotamer_library =
 			"interactions" => $options{"interactions"},
 			"cutoff" => $options{"cutoff"} } );
 
+# Collects residue angle and energy data.
+# TODO: should not forget adding atoms that make up dihedral angles.
 my %pdbx_loops; # PDBx loop data structure (see PDBxParser.pm to_pdbx)
 
-# Collects residue angle data.
-# TODO: should not forget adding atoms that make up dihedral angles and energy
-# entry.
-my $id = 1;
-my $rotamer_id = 1;
 $pdbx_loops{"_[local]_rotamer_angle"}{"attributes"} =
     [ "id", "rotamer_id", "residue_id", "residue_type", "type", "value" ];
+$pdbx_loops{"_[local]_rotamer_energy"}{"attributes"} =
+    [ "id", "rotamer_id", "calculation_method", "value"];
 
+my $angle_id = 1;
+my $energy_id = 1;
+my $rotamer_id = 1;
 for my $residue_id ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
     my @residue_name =
     	uniq( @{ filter( { "atom_site" => $selected_atom_site,
     			   "data" => [ "label_comp_id" ],
     			   "is_list" => 1 } ) } );
     for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
+	# Colects rotamer angle data.
     	for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer->{"angles"} } ){
     	    my $angle_value = $rotamer->{"angles"}{$angle_name};
     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-    		  $id );
+    		  $angle_id );
     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
     		  $rotamer_id );
     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
@@ -128,12 +131,25 @@ for my $residue_id ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
     		  $angle_name );
     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
     		  sprintf( "%.3f", $angle_value ) );
-    	    $id++;
+    	    $angle_id++;
     	}
+
+	# Colects rotamer energy data.
+	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
+	      $energy_id );
+	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
+	      $rotamer_id );
+	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
+	      $rotamer->{"potential"} );
+	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
+	      $rotamer->{"potential_energy_value"} );
+
+	$energy_id++;
     	$rotamer_id++;
     }
 }
 
+# Prints out cif.
 to_pdbx( { "atom_site" => $selected_atom_site,
 	   "add_atom_attributes" => [ "[local]_selection_state" ],
 	   "pdbx_loops" => \%pdbx_loops } );
