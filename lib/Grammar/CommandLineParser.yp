@@ -32,7 +32,13 @@ line
 ;
 
 exp
-    : 'byres' exp
+    : 'all'
+        {
+	    return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+	    		     'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+	    		     'is_list' => 1 } );
+        }
+    | 'byres' exp
         {
 	    my @residue_ids =
 		uniq(
@@ -116,6 +122,7 @@ exp
 	    my $around_atom_site;
 	    my $atom_specifier;
             if( $ids[0] eq '!' ) {
+	    #   # TODO: should look how to deal with negations.
 	    # 	shift( @ids );
 	    # 	return \@ids;
 	    } else {
@@ -199,6 +206,8 @@ sub lexer # Universal lexer.
             return ( 'resid', $1 );
 	} elsif(s/^(chain)//) {
             return ( 'chain', $1 );
+        } elsif(s/^(all)//) {
+            return ( 'all', $1 );
         } elsif(s/^(byres)//) {
             return ( 'byres', $1 );
         } elsif(s/^(resname)//) {
@@ -244,7 +253,9 @@ sub lexer_residue # Only for residue data.
     for( $parser->YYData->{INPUT} ){
         if( s/^(resid)// ) {
             return ( 'resid', $1 );
-	} elsif(s/^(chain)//) {
+	} elsif(s/^(all)//) {
+            return ( 'all', $1 );
+        } elsif(s/^(chain)//) {
             return ( 'chain', $1 );
 	} elsif(s/^(resname)//) {
             return ( 'resname', $1 );

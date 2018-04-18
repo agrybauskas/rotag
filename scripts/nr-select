@@ -36,7 +36,7 @@ use Grammar::CommandLineParser;
 #*            | - or operator;
 #*            ! - negation operator;
 #*            () - parentheses.
-#*    --select <str>
+#*    --select <str> [default:target around 5]
 #*        command (same as --target) describing the atoms that will be marked as
 #*        selected (S).
 #*    --remove-ignored
@@ -68,6 +68,10 @@ GetOptions(
 		       exit; } )
     or die "Error in command line argument.";
 
+# Defaults.
+$options{"select_cl"} //= "target around 5";
+$options{"select_cl"} = "all" if $options{"target_cl"} =~ m/^\s*all\s$/;
+
 # ----------------------------------- Main ------------------------------------ #
 
 # Reads file path, stdin and "-" operator.
@@ -91,11 +95,8 @@ my @target_atom_ids = # Comes from selecting residue ids.
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
 
-# TODO: should modified selection parsing so, if first token is around, it would
-# append target command.
-# TODO: should consider having 'contains' or other operator that would select,
-# for example, residues that contain CA atom.
 my @selected_atom_ids;
+$options{"select_cl"} =~ s/target/$options{"target_cl"}/g;
 if( defined $options{"select_cl"} ) {
     @selected_atom_ids =
 	@{ filter( { "atom_site" =>
@@ -105,7 +106,13 @@ if( defined $options{"select_cl"} ) {
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
 } else {
-    @selected_atom_ids = keys %{ $atom_site };
+    @selected_atom_ids =
+	@{ filter( { "atom_site" =>
+			 $command_line_parser->parser( $atom_site,
+						       $options{"select_cl"},
+						       "id" ),
+		     "data" => [ "id" ],
+		     "is_list" => 1 } ) };
 }
 
 # Modifies PDBx entries by adding and/or changing selection states for atoms.
