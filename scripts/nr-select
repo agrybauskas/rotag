@@ -118,19 +118,20 @@ if( defined $options{"select_cl"} ) {
 # Modifies PDBx entries by adding and/or changing selection states for atoms.
 for my $atom_id ( keys %{ $atom_site } ) {
     if( any { $atom_id eq $_  } @target_atom_ids ) {
-	$atom_site->{$atom_id}{"selection_state"} = "T";
+	$atom_site->{$atom_id}{"[local]_selection_state"} = "T";
     } elsif( any { $atom_id eq $_  } @selected_atom_ids ) {
-	$atom_site->{$atom_id}{"selection_state"} = "S";
+	$atom_site->{$atom_id}{"[local]_selection_state"} = "S";
     } else {
-	$atom_site->{$atom_id}{"selection_state"} = "I";
+	$atom_site->{$atom_id}{"[local]_selection_state"} = "I";
     }
 }
 
 if( ! $keep_ignored ) {
-    $atom_site = filter( { "atom_site" => $atom_site,
-			   "exclude" => { "selection_state" => [ "I" ] } } );
+    $atom_site =
+	filter( { "atom_site" => $atom_site,
+		  "exclude" => { "[local]_selection_state" => [ "I" ] } } );
 }
 
 # Prints out the PDBx.
 to_pdbx( { "atom_site" => $atom_site,
-	   "add_atom_attributes" => [ "selection_state" ] } );
+	   "add_atom_attributes" => [ "[local]_selection_state" ] } );
