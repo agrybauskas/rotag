@@ -44,7 +44,7 @@ use Grammar::CommandLineParser;
 #*            or  (|) - or operator;
 #*            not (!) - negation operator;
 #*            () - parentheses.
-#*    --select <str> [default: target around 5]
+#*    --select <str> [default: target]
 #*        command (same as --target) describing the atoms that will be marked as
 #*        selected (S).
 #*    --keep-ignored
@@ -104,7 +104,7 @@ my @target_atom_ids = # Comes from selecting residue ids.
 		     "is_list" => 1 } ) };
 
 my @selected_atom_ids;
-$options{"select_cl"} =~ s/target/$options{"target_cl"}/g;
+$options{"select_cl"} =~ s/(target|tt)/$options{"target_cl"}/g;
 if( defined $options{"select_cl"} ) {
     @selected_atom_ids =
 	@{ filter( { "atom_site" =>
