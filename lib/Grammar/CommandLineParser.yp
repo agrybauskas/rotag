@@ -241,8 +241,8 @@ sub lexer # Universal lexer.
 
     # Returns tokens to parser.
     for( $parser->YYData->{INPUT} ){
-        if( s/^(resid)// ) {
-            return ( 'resid|ri', $1 );
+        if( s/^(resid|ri)// ) {
+            return ( 'resid', $1 );
 	} elsif(s/^(chain|cn)//) {
             return ( 'chain|cn', $1 );
         } elsif(s/^(all|\*)//) {
