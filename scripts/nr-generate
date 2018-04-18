@@ -81,11 +81,11 @@ if( $options{"pdbx_file"} ) {
 
 my $selected_atom_site =
     filter( { "atom_site" => $atom_site,
-	      "include" => { "selection_state" => [ "T", "S" ] } } );
+	      "include" => { "[local]_selection_state" => [ "T", "S" ] } } );
 my @residue_ids =
     uniq(
 	@{ filter( { "atom_site" => $selected_atom_site,
-		     "include" => { "selection_state" => [ "T" ] },
+		     "include" => { "[local]_selection_state" => [ "T" ] },
 		     "data" => [ "label_seq_id" ],
 		     "is_list" => 1 } ) } );
 
@@ -107,27 +107,20 @@ my $rotamer_id = 1;
 # entry.
 for my $residue_id ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
     my @residue_name =
-	uniq( @{ filter( { "atom_site" => $selected_atom_site,
-			   "data" => [ "label_comp_id" ],
-			   "is_list" => 1 } ) } );
+    	uniq( @{ filter( { "atom_site" => $selected_atom_site,
+    			   "data" => [ "label_comp_id" ],
+    			   "is_list" => 1 } ) } );
     for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
-	for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer } ) {
-	    my $angle_value = $rotamer->{$angle_name};
-	    $rotamer_angle{$id}{"id"} = $id;
-	    $rotamer_angle{$id}{"rotamer_id"} = $rotamer_id;
-	    $rotamer_angle{$id}{"residue_id"} = $residue_id;
-	    $rotamer_angle{$id}{"residue_type"} = $residue_name[0];
-	    $rotamer_angle{$id}{"type"} = $angle_name;
-	    $rotamer_angle{$id}{"angle_value"} = sprintf( "%.3f", $angle_value );
-	    $id++;
-	}
-	$rotamer_id++;
+    	for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer->{"angles"} } ){
+    	    my $angle_value = $rotamer->{"angles"}{$angle_name};
+    	    $rotamer_angle{$id}{"id"} = $id;
+    	    $rotamer_angle{$id}{"rotamer_id"} = $rotamer_id;
+    	    $rotamer_angle{$id}{"residue_id"} = $residue_id;
+    	    $rotamer_angle{$id}{"residue_type"} = $residue_name[0];
+    	    $rotamer_angle{$id}{"type"} = $angle_name;
+    	    $rotamer_angle{$id}{"angle_value"} = sprintf( "%.3f", $angle_value );
+    	    $id++;
+    	}
+    	$rotamer_id++;
     }
 }
-
-to_pdbx( $selected_atom_site );
-print( "#\n" );
-to_pdbx( \%rotamer_angle, undef, "_[local]_rotamer_angle",
-	 [ "id", "rotamer_id", "residue_id",
-	   "residue_type", "type", "angle_value" ],
-	 undef, 1 );
