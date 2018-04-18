@@ -338,7 +338,7 @@ sub to_pdbx
 		}
 	    }
 	} }
-	print( "\n" )
+	print( "\n#\n" )
     }
 
     # Prints out pdbx loops if they are present.
