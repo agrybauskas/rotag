@@ -26,15 +26,23 @@ use Grammar::CommandLineParser;
 #*    --target  <str>
 #*        command describing the residues that will be marked as target (T).
 #*        Selection keywords (equivalent PDBx category data items in parentheses):
-#*            resid - residue id number (_atom_site.label_seq_id);
-#*            resname - residue name    (_atom_site.label_comp_id);
-#*            atoid - atom id number    (_atom_site.id);
-#*            atoname - atom name       (_atom_site.label_atom_id);
-#*            atotype - atom symbol     (_atom_site.type_symbol).
+#*            all       (*)  - all atoms;
+#*            atomid    (ai) - atom id number         (_atom_site.id);
+#*            atomname  (an) - atom name              (_atom_site.label_atom_id);
+#*            atomtype  (at) - atom symbol            (_atom_site.type_symbol);
+#*            resid     (ri) - residue id number      (_atom_site.label_seq_id);
+#*            resname   (rn) - residue name           (_atom_site.label_comp_id);
+#*            chain     (cn) - chain name             (_atom_site.label_asym_id);
+#*            mainchain (mc) - mainchain atoms;
+#*            sidechain (sc) - sidechain atoms;
+#*            target    (tt) - target atoms (only for --select).
+#*        Selection operators:
+#*            around  (a.) - atoms around <int> angstroms;
+#*            byresid (b.) - expands to residues.
 #*        Logical operators:
-#*            & - and operator;
-#*            | - or operator;
-#*            ! - negation operator;
+#*            and (&) - and operator;
+#*            or  (|) - or operator;
+#*            not (!) - negation operator;
 #*            () - parentheses.
 #*    --select <str> [default: target around 5]
 #*        command (same as --target) describing the atoms that will be marked as
