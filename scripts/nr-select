@@ -26,23 +26,23 @@ use Grammar::CommandLineParser;
 #*    --target  <str>
 #*        command describing the residues that will be marked as target (T).
 #*        Selection keywords (equivalent PDBx category data items in parentheses):
-#*            all       (*)  - all atoms;
-#*            atomid    (ai) - atom id number         (_atom_site.id);
-#*            atomname  (an) - atom name              (_atom_site.label_atom_id);
-#*            atomtype  (at) - atom symbol            (_atom_site.type_symbol);
-#*            resid     (ri) - residue id number      (_atom_site.label_seq_id);
-#*            resname   (rn) - residue name           (_atom_site.label_comp_id);
-#*            chain     (cn) - chain name             (_atom_site.label_asym_id);
-#*            mainchain (mc) - mainchain atoms;
-#*            sidechain (sc) - sidechain atoms;
-#*            target    (tt) - target atoms (only for --select).
+#*            all       - all atoms;
+#*            atomid    - atom id number    (_atom_site.id);
+#*            atomname  - atom name         (_atom_site.label_atom_id);
+#*            atomtype  - atom symbol       (_atom_site.type_symbol);
+#*            resid     - residue id number (_atom_site.label_seq_id);
+#*            resname   - residue name      (_atom_site.label_comp_id);
+#*            chain     - chain name        (_atom_site.label_asym_id);
+#*            mainchain - mainchain atoms;
+#*            sidechain - sidechain atoms;
+#*            target    - target atoms (only for --select).
 #*        Selection operators:
-#*            around  (a.) - atoms around <int> angstroms;
-#*            byresid (b.) - expands to residues.
+#*            around  - atoms around <int> angstroms;
+#*            byresid - expands to residues.
 #*        Logical operators:
-#*            and (&) - and operator;
-#*            or  (|) - or operator;
-#*            not (!) - negation operator;
+#*            &  - and operator;
+#*            |  - or operator;
+#*            !  - negation operator;
 #*            () - parentheses.
 #*    --select <str> [default: target]
 #*        command (same as --target) describing the atoms that will be marked as
@@ -104,7 +104,8 @@ my @target_atom_ids = # Comes from selecting residue ids.
 		     "is_list" => 1 } ) };
 
 my @selected_atom_ids;
-$options{"select_cl"} =~ s/(target|tt)/$options{"target_cl"}/g;
+$options{"select_cl"} =~ s/(target)/$options{"target_cl"}/g;
+
 if( defined $options{"select_cl"} ) {
     @selected_atom_ids =
 	@{ filter( { "atom_site" =>
