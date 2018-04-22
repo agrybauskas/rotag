@@ -261,7 +261,7 @@ sub generate_library
 	}
     }
 
-    for my $cell_idxs ( sort keys %target_cell_idxs ) {
+    for my $cell_idxs ( sort { $a cmp $b } keys %target_cell_idxs ) {
     	my @cell_idxs = split( ",", $cell_idxs );
     	my @neighbour_atom_ids; # The array will contain all atoms of the
                                 # neighbouring 26 cells.
@@ -283,6 +283,7 @@ sub generate_library
 
     	    # Because the change of side-chain position might impact the
     	    # surrounding, iteraction site consists of only main chain atoms.
+	    # TODO: decide, if interactions should be controlled by command line.
     	    my %interaction_site =
     		%{ filter( { "atom_site" => \%atom_site,
     			     "include" =>
@@ -297,20 +298,20 @@ sub generate_library
     	    # potential with surrounding atoms. CA and CB are non-movable atoms
     	    # so, they are marked as starting atoms.
     	    my $ca_atom_id =
-    		filter( { "atom_site" => $residue_site,
-    			  "include" => { "label_atom_id" => [ "CA" ] },
-    			  "data" => [ "id" ] } )->[0][0];
+    	    	filter( { "atom_site" => $residue_site,
+    	    		  "include" => { "label_atom_id" => [ "CA" ] },
+    	    		  "data" => [ "id" ] } )->[0][0];
     	    my $cb_atom_id =
-    		filter( { "atom_site" => $residue_site,
-    			  "include" => { "label_atom_id" => [ "CB" ] },
-    			  "data" => [ "id" ] } )->[0][0];
+    	    	filter( { "atom_site" => $residue_site,
+    	    		  "include" => { "label_atom_id" => [ "CB" ] },
+    	    		  "data" => [ "id" ] } )->[0][0];
     	    my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     	    my @next_atom_ids =
-    		grep { $_ ne $ca_atom_id }
-    		@{ $residue_site->{$cb_atom_id}{"connections"} };
+    	    	grep { $_ ne $ca_atom_id }
+    	    	@{ $residue_site->{$cb_atom_id}{"connections"} };
 
     	    my @sampled_angles =
-    		map { [ $_ ] }
+    	    	map { [ $_ ] }
     	        @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
     	    my @allowed_angles = @sampled_angles;
 
@@ -326,8 +327,8 @@ sub generate_library
     	    	    				     \@sampled_angles ], [] ) };
     	    		# Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
     	    		@allowed_angles =
-    			    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
-    			    @allowed_angles;
+    	    		    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
+    	    		    @allowed_angles;
     	    	    }
 
     	    	    # Marks visited atoms.
@@ -337,51 +338,60 @@ sub generate_library
     	    	    push( @neighbour_atom_ids,
     	    		  @{ $atom_site{$atom_id}{"connections"} } );
 
-    		    # Starts calculating potential energy.
-    		    my @next_allowed_angles;
-    		    for my $angles ( @allowed_angles ) {
-    			my %angles =
-    			    map { ( "chi$_" => [ $angles->[$_] ] ) }
-    			    0..$#{ $angles };
-    			my $pseudo_atom_site =
-    			    generate_pseudo( \%atom_site,
-    					     { "id" => [ "$atom_id" ] },
-    					     \%angles );
-    			my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
-    			my $pseudo_origin_id =
-    			    $pseudo_atom_site->{$pseudo_atom_id}
+    	    	    # Starts calculating potential energy.
+    	    	    my @next_allowed_angles;
+    	    	    for my $angles ( @allowed_angles ) {
+    	    		my %angles =
+    	    		    map { ( "chi$_" => [ $angles->[$_] ] ) }
+    	    		    0..$#{ $angles };
+    	    		my $pseudo_atom_site =
+    	    		    generate_pseudo( \%atom_site,
+    	    				     { "id" => [ "$atom_id" ] },
+    	    				     \%angles );
+    	    		my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
+    	    		my $pseudo_origin_id =
+    	    		    $pseudo_atom_site->{$pseudo_atom_id}
                                                {"origin_atom_id"};
 
-    			my $potential_energy = 0;
-    			foreach my $interaction_id ( keys %interaction_site ) {
-    			    if( ( ! is_neighbour( \%atom_site,
-    						  $pseudo_origin_id,
-    						  $interaction_id ) )
-    			     && ( ! is_second_neighbour( \%atom_site,
-    			     				 $pseudo_origin_id,
-    			     				 $interaction_id ) )
-    				) {
-    				$potential_energy +=
-    				    $potential_function->(
-    					$pseudo_atom_site->{$pseudo_atom_id},
-    					$atom_site{$interaction_id} );
-    				last if $potential_energy > $cutoff;
-    			    }
-    			}
+			# TODO: decide, if choosing that each interaction should
+			# not reach certain boundaries will be suitable for the
+			# model. Otherwise, there might be interactions that
+			# outweight the clashes and depending on the order of
+			# calculations might produce different results. Or maybe,
+			# the sum of potential should be calculated.
+			my $potential_energy;
+    	    		foreach my $interaction_id ( keys %interaction_site ) {
+    	    		    if( ( ! is_neighbour( \%atom_site,
+    	    					  $pseudo_origin_id,
+    	    					  $interaction_id ) )
+    	    		     && ( ! is_second_neighbour( \%atom_site,
+    	    		     				 $pseudo_origin_id,
+    	    		     				 $interaction_id ) )
+    	    			) {
+    	    			$potential_energy =
+    	    			    $potential_function->(
+    	    				$pseudo_atom_site->{$pseudo_atom_id},
+    	    				$atom_site{$interaction_id} );
+    	    			last if $potential_energy > $cutoff;
+    	    		    }
+    	    		}
 
-    			# Writes allowed angles to @next_allowed_angles that will
-    			# be passed to more global @allowed_angles.
-    			if( $potential_energy <= $cutoff) {
-    			    push( @next_allowed_angles, $angles );
-    			}
-    		    }
+    	    		# Writes allowed angles to @next_allowed_angles that will
+    	    		# be passed to more global @allowed_angles. Checks the
+			# last calculated potential. If potential was greater
+			# than the cutoff, then calculation was halted, but the
+			# value remained.
+    	    		if( $potential_energy <= $cutoff ) {
+    	    		    push( @next_allowed_angles, $angles );
+    	    		}
+    	    	    }
 
-    		    if( scalar( @allowed_angles ) > 0 ) {
-    			@allowed_angles = @next_allowed_angles;
-    		    } else {
-    			die "No possible rotamer solutions were detected.";
-    		    }
-    		}
+    	    	    if( scalar( @allowed_angles ) > 0 ) {
+    	    		@allowed_angles = @next_allowed_angles;
+    	    	    } else {
+    	    		die "No possible rotamer solutions were detected.";
+    	    	    }
+    	    	}
 
     	    	# Determines next atoms that should be visited.
     	    	@next_atom_ids = (); # Resets value for the new ones to be
@@ -397,11 +407,11 @@ sub generate_library
     	    # TODO: remember to add check on inter-atom clashing inside
     	    # side-chain itself.
     	    for my $angles ( @allowed_angles ) {
-    		push( @{ $rotamer_library{"$residue_id"} },
-    		      { "angles" => { map { ( "chi$_" => $angles->[$_] ) }
-    			( 0..$#{ $angles } ) },
-    			"potential" => $interactions,
-    			"potential_energy_value" => 0 } );
+    	    	push( @{ $rotamer_library{"$residue_id"} },
+    	    	      { "angles" => { map { ( "chi$_" => $angles->[$_] ) }
+    	    		( 0..$#{ $angles } ) },
+    	    		"potential" => $interactions,
+    	    		"potential_energy_value" => 0 } );
     	    }
     	}
     }
