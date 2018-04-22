@@ -10,7 +10,7 @@ use PDBxParser qw( filter
                    obtain_atom_site
                    obtain_pdbx_loop
                    to_pdbx );
-
+use PseudoAtoms qw( generate_rotamer );
 use Grammar::CommandLineParser;
 
 #*nr-add
@@ -33,9 +33,11 @@ use Grammar::CommandLineParser;
 my %options;
 
 my $version = "1.0.0";
+my $add_rotamer = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
+    "rotamer" => sub { $add_rotamer = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -60,75 +62,27 @@ if( $options{"pdbx_file"} ) {
     die( "Use command \"nr-add --help\" in order to see the manual.\n" );
 }
 
-# my $selected_atom_site =
-#     filter( { "atom_site" => $atom_site,
-# 	      "include" => { "[local]_selection_state" => [ "T", "S" ] } } );
-# my @residue_ids =
-#     uniq(
-# 	@{ filter( { "atom_site" => $selected_atom_site,
-# 		     "include" => { "[local]_selection_state" => [ "T" ] },
-# 		     "data" => [ "label_seq_id" ],
-# 		     "is_list" => 1 } ) } );
+if( $add_rotamer ) {
+    # Extracts rotamer angle data that will used to generate atom coordinates.
+    my $pdbx_loop_data;
+    if( $options{"pdbx_file"} ) {
+	$pdbx_loop_data =
+	    obtain_pdbx_loop( $options{"pdbx_file"}, [ "_rotamer_angle" ] );
+    } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+	$pdbx_loop_data =
+	    obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
+    } else {
+	die( "No library was detected. Generate library with 'nr-rotamer'." );
+    }
 
-# # Starts generating rotamer library.
-# my $rotamer_library =
-#     generate_library( { "atom_site" => $selected_atom_site,
-# 			"residue_ids" => \@residue_ids,
-# 			"small_angle" => $options{"small_angle"} * pi(),
-# 			"conf_model" => $options{"conf_model"},
-# 			"interactions" => $options{"interactions"},
-# 			"cutoff" => $options{"cutoff"} } );
-
-# # Collects residue angle and energy data.
-# # TODO: should not forget adding atoms that make up dihedral angles.
-# my %pdbx_loops; # PDBx loop data structure (see PDBxParser.pm to_pdbx)
-
-# $pdbx_loops{"_[local]_rotamer_angle"}{"attributes"} =
-#     [ "id", "rotamer_id", "residue_id", "residue_type", "type", "value" ];
-# $pdbx_loops{"_[local]_rotamer_energy"}{"attributes"} =
-#     [ "id", "rotamer_id", "calculation_method", "value"];
-
-# my $angle_id = 1;
-# my $energy_id = 1;
-# my $rotamer_id = 1;
-# for my $residue_id ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
-#     my @residue_name =
-#     	uniq( @{ filter( { "atom_site" => $selected_atom_site,
-#     			   "data" => [ "label_comp_id" ],
-#     			   "is_list" => 1 } ) } );
-#     for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
-# 	# Colects rotamer angle data.
-#     	for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer->{"angles"} } ){
-#     	    my $angle_value = $rotamer->{"angles"}{$angle_name};
-#     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-#     		  $angle_id );
-#     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-#     		  $rotamer_id );
-#     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-#     		  $residue_id );
-#     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-#     		  $residue_name[0] );
-#     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-#     		  $angle_name );
-#     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-#     		  sprintf( "%.3f", $angle_value ) );
-#     	    $angle_id++;
-#     	}
-
-# 	# Colects rotamer energy data.
-# 	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-# 	      $energy_id );
-# 	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-# 	      $rotamer_id );
-# 	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-# 	      $rotamer->{"potential"} );
-# 	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-# 	      $rotamer->{"potential_energy_value"} );
-
-# 	$energy_id++;
-#     	$rotamer_id++;
-#     }
-# }
+    # Generates actual pseudo atoms from rotamer angles.
+    my @residue_ids =
+	uniq(
+	    @{ filter( { "atom_site" => $atom_site,
+			 "include" => { "[local]_selection_state" => [ "T" ] },
+			 "data" => [ "label_seq_id" ],
+			 "is_list" => 1 } ) } );
+}
 
 # # Prints out cif.
 # to_pdbx( { "atom_site" => $selected_atom_site,
