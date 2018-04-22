@@ -14,12 +14,12 @@ use PDBxParser qw( filter
 use PseudoAtoms qw( generate_library );
 use Grammar::CommandLineParser;
 
-#*nr-library
+#*nr-rotamer
 #*    generate rotamer library.
 #*
 #*USAGE:
-#*    nr-library --input input.cif --target 'resid 5' > output.cif
-#*    nr-library --input input.cif \
+#*    nr-rotamer --input input.cif --target 'resid 5' > output.cif
+#*    nr-rotamer --input input.cif \
 #*               --target 'resid 12' \
 #*               --select 'target around 5' \
 #*               > output.cif
