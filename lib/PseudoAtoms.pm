@@ -286,7 +286,7 @@ sub generate_library
     	    my %interaction_site =
     		%{ filter( { "atom_site" => \%atom_site,
     			     "include" =>
-    			         { "label_seq_id" => \@neighbour_atom_ids,
+    			         { "id" => \@neighbour_atom_ids,
     				   "label_atom_id" => [ "N", "CA", "C", "O",
     							"OXT", "CB", "H", "H2",
     							"HA2", "HA3", "HB1",
