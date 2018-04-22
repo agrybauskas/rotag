@@ -117,6 +117,7 @@ my $rotamer_id = 1;
 for my $residue_id ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
     my @residue_name =
     	uniq( @{ filter( { "atom_site" => $selected_atom_site,
+			   "include" => { "label_seq_id" => [ $residue_id ] },
     			   "data" => [ "label_comp_id" ],
     			   "is_list" => 1 } ) } );
     for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
