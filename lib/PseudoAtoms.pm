@@ -248,46 +248,37 @@ sub generate_library
 		+ 3 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[1]
 		+     $ATOMS{"H"}{"covalent_radius"}{"length"}->[0] );
 
-    # Converts grid_box values from atom id to residue ids. It will be more
-    # convenient then dealing with atom ids.
+    # Finds where CA of target residues are.
+    my %target_cell_idxs;
     for my $cell_idx ( keys %{ $grid_box } ) {
-	my @residue_ids;
-	foreach( @{ $grid_box->{$cell_idx} } ) {
-	    push( @residue_ids, $atom_site{$_}{"label_seq_id"} );
-	}
-	$grid_box->{$cell_idx} = [ uniq( @residue_ids ) ];
-    }
-
-    # Finds cells where target residues are.
-    my @target_cell_idxs;
-    for my $cell_idxs ( keys %{ $grid_box } ) {
-	for my $residue_id ( @{ $grid_box->{$cell_idxs} } ) {
-	    if( any { $residue_id eq $_ } @{ $residue_ids } ) {
-		push( @target_cell_idxs, $cell_idxs );
-		last;
+	for my $atom_id ( @{ $grid_box->{"$cell_idx"} } ) {
+	    my $residue_id = $atom_site->{$atom_id}{"label_seq_id"};
+	    my $atom_name = $atom_site->{$atom_id}{"label_atom_id"};
+	    if( $atom_name eq 'CA'
+	     && any { $residue_id eq $_ } @{ $residue_ids } ) {
+		push( @{ $target_cell_idxs{$cell_idx} }, $residue_id );
 	    }
 	}
     }
 
-    for my $cell_idxs ( @target_cell_idxs ) {
+    for my $cell_idxs ( sort keys %target_cell_idxs ) {
     	my @cell_idxs = split( ",", $cell_idxs );
-    	my @neighbour_residues; # The array will contain all residues of the
+    	my @neighbour_atom_ids; # The array will contain all atoms of the
                                 # neighbouring 26 cells.
+
     	# $i represents x, $j - y, $k - z coordinates.
     	for my $i ( ( $cell_idxs[0] - 1..$cell_idxs[0] + 1 ) ) {
     	for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
     	for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
     	if( exists $grid_box->{"$i,$j,$k"} ) {
-    	    push( @neighbour_residues, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+    	    push( @neighbour_atom_ids, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-    	for my $residue_id ( @{ $grid_box->{$cell_idxs} } ) {
-	    if( ! any { $residue_id eq $_ } @{ $residue_ids } ) { next; }
+    	for my $residue_id ( @{ $target_cell_idxs{$cell_idxs} } ) {
     	    my $residue_site =
     		filter( { "atom_site" => \%atom_site,
     			  "include" => { "label_seq_id" => [ $residue_id ] } } );
 
     	    my $rotatable_bonds = rotatable_bonds( $residue_site );
-
     	    if( ! %{ $rotatable_bonds } ) { next; }
 
     	    # Because the change of side-chain position might impact the
@@ -295,7 +286,7 @@ sub generate_library
     	    my %interaction_site =
     		%{ filter( { "atom_site" => \%atom_site,
     			     "include" =>
-    			         { "label_seq_id" => \@neighbour_residues,
+    			         { "label_seq_id" => \@neighbour_atom_ids,
     				   "label_atom_id" => [ "N", "CA", "C", "O",
     							"OXT", "CB", "H", "H2",
     							"HA2", "HA3", "HB1",
