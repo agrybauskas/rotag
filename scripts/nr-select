@@ -9,6 +9,7 @@ use List::Util qw( any );
 
 use PDBxParser qw( filter
                    obtain_atom_site
+                   obtain_pdbx_loop
                    to_pdbx );
 use Grammar::CommandLineParser;
 
@@ -140,6 +141,18 @@ if( ! $keep_ignored ) {
 		  "exclude" => { "[local]_selection_state" => [ "I" ] } } );
 }
 
+# Extracts rotamer angle data that will used to generate atom coordinates if
+# available.
+my $pdbx_loops;
+if( $options{"pdbx_file"} ) {
+    $pdbx_loops =
+	obtain_pdbx_loop( $options{"pdbx_file"}, [ "_rotamer_angle" ] );
+} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+    $pdbx_loops =
+	obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
+}
+
 # Prints out the PDBx.
 to_pdbx( { "atom_site" => $atom_site,
+	   $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
 	   "add_atom_attributes" => [ "[local]_selection_state" ] } );
