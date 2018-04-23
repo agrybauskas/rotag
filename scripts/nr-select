@@ -98,8 +98,7 @@ my @target_atom_ids = # Comes from selecting residue ids.
 	@{ filter( { "atom_site" =>
 			 $command_line_parser->parser( $atom_site,
 						       $options{"target_cl"},
-						       "id",
-						       "residue" ),
+						       "id" ),
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
 

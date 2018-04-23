@@ -72,16 +72,16 @@ if( $add_rotamer ) {
 	$pdbx_loop_data =
 	    obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
     } else {
-	die( "No library was detected. Generate library with 'nr-rotamer'." );
+	die( "No library was detected. Generate library with 'nr-rotamer' " .
+	     "program." );
     }
 
     # Generates actual pseudo atoms from rotamer angles.
-    my @residue_ids =
-	uniq(
-	    @{ filter( { "atom_site" => $atom_site,
-			 "include" => { "[local]_selection_state" => [ "T" ] },
-			 "data" => [ "label_seq_id" ],
-			 "is_list" => 1 } ) } );
+    my $target_atom_ids =
+    	filter( { "atom_site" => $atom_site,
+    		  "include" => { "[local]_selection_state" => [ "T" ] },
+    		  "data" => [ "id" ],
+    		  "is_list" => 1 } );
 }
 
 # # Prints out cif.
