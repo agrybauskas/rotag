@@ -144,8 +144,6 @@ sub generate_pseudo
 # Input:
 #     $residue_atom_site - atom site data structure (see PDBxParser).
 #     $angle_values - name and value of angles in hash form.
-#     $options - additional options, such as atoms that should be generated
-#     during rotamer movements.
 # Output:
 #     %generated_rotamers - atom site data structure with additional
 #     rotamer data.
@@ -153,9 +151,7 @@ sub generate_pseudo
 
 sub generate_rotamer
 {
-    my ( $atom_site, $angle_values, $options ) = @_;
-    my ( $last_atom_id, $target_atom_ids ) =
-	( $options->{"last_atom_id"}, $options->{"target_atom_ids"} ) ;
+    my ( $atom_site, $angle_values, $last_atom_id ) = @_;
 
     $last_atom_id //= max( keys %{ $atom_site } );
 
@@ -170,15 +166,6 @@ sub generate_rotamer
     	my $rotatable_bonds = rotatable_bonds( \%atom_site );
 
     	for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
-	    # If target_atom_ids are defined, then only certain atoms are
-	    # modeled.
-	    # TODO: look, if this cannot be optimized better - not iterating
-	    # each atom through target atom list.
-	    if( exists $target_atom_ids->{$residue_id} ) {
-		if( ! grep { $atom_id eq $_ }
-		    @{ $target_atom_ids->{$residue_id} } ) { next; }
-	    }
-
     	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
     	    my %angles;

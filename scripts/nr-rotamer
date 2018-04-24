@@ -18,11 +18,8 @@ use Grammar::CommandLineParser;
 #*    generate rotamer library.
 #*
 #*USAGE:
-#*    nr-rotamer --input input.cif --target 'resid 5' > output.cif
-#*    nr-rotamer --input input.cif \
-#*               --target 'resid 12' \
-#*               --select 'target around 5' \
-#*               > output.cif
+#*    nr-rotamer --input input.cif --potential combined > output.cif
+#*    nr-rotamer --input input.cif --cutoff 0.005 > output.cif
 #*
 #*OPTIONS:
 #*    --input <file> | <stdin>
