@@ -12,7 +12,6 @@ use PDBxParser qw( filter
                    to_pdbx );
 
 use PseudoAtoms qw( generate_library );
-use Grammar::CommandLineParser;
 
 #*nr-rotamer
 #*    generate rotamer library.

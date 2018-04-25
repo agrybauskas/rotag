@@ -11,7 +11,7 @@ use PDBxParser qw( filter
                    obtain_atom_site
                    obtain_pdbx_loop
                    to_pdbx );
-use Grammar::CommandLineParser;
+use Grammar::SelectionParser;
 
 #*nr-select
 #*    select and mark atoms of interest by adding selection state [T|S|I] to
@@ -94,12 +94,12 @@ if( $options{"pdbx_file"} ) {
 }
 
 # Parses command line arguments to select certain atoms in PDBx.
-my $command_line_parser = new CommandLineParser();
+my $selection_parser = new SelectionParser();
 my @target_atom_ids = # Comes from selecting residue ids.
 	@{ filter( { "atom_site" =>
-			 $command_line_parser->parser( $atom_site,
-						       $options{"target_cl"},
-						       "id" ),
+			 $selection_parser->parser( $atom_site,
+						    $options{"target_cl"},
+						    "id" ),
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
 
@@ -109,17 +109,17 @@ $options{"select_cl"} =~ s/(target)/$options{"target_cl"}/g;
 if( defined $options{"select_cl"} ) {
     @selected_atom_ids =
 	@{ filter( { "atom_site" =>
-			 $command_line_parser->parser( $atom_site,
-						       $options{"select_cl"},
-						       "id" ),
+			 $selection_parser->parser( $atom_site,
+						    $options{"select_cl"},
+						    "id" ),
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
 } else {
     @selected_atom_ids =
 	@{ filter( { "atom_site" =>
-			 $command_line_parser->parser( $atom_site,
-						       $options{"select_cl"},
-						       "id" ),
+			 $selection_parser->parser( $atom_site,
+						    $options{"select_cl"},
+						    "id" ),
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
 }

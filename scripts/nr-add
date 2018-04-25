@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Getopt::Long;
-use List::MoreUtils qw( uniq );
 use List::Util qw( max );
 
 use PDBxParser qw( filter
@@ -12,7 +11,6 @@ use PDBxParser qw( filter
                    obtain_pdbx_loop
                    to_pdbx );
 use PseudoAtoms qw( generate_pseudo );
-use Grammar::CommandLineParser;
 use SidechainModels qw( rotation_only  );
 
 #*nr-add

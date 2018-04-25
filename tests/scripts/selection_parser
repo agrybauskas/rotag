@@ -5,11 +5,11 @@ use warnings;
 
 use PDBxParser qw( filter
                    to_pdbx );
-use Grammar::CommandLineParser;
+use Grammar::SelectionParser;
 
 #
-# Unit test: Grammar::CommandLineParser.
-# Example: ./command_line_parser 'resname ASP & atoname CA' structure.dump
+# Unit test: Grammar::SelectionParser.
+# Example: ./selection_parser 'resname ASP & atoname CA' structure.dump
 #
 
 @ARGV = ( "-" ) unless @ARGV;
@@ -24,9 +24,9 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $command_line_parser = new CommandLineParser();
-my $selected_atom_site = $command_line_parser->parser( $atom_site,
-						       $selection_command,
-						       "id" );
+my $selection_parser = new SelectionParser();
+my $selected_atom_site = $selection_parser->parser( $atom_site,
+						    $selection_command,
+						    "id" );
 
 to_pdbx( { "atom_site" => $selected_atom_site } );
