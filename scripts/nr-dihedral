@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+use Measure qw( all_dihedral
+                dihedral_angle );
+use PDBxParser qw( filter
+                   obtain_atom_site );
+
+#*nr-dihedral
+#*    calculates dihedral angles selected atoms or residues.
+#*
+#*USAGE:
+#*    nr-dihedral --atoms --input input.cif > output.cif
+#*    nr-dihedral --residues --input input.cif > output.cif
+#*
+#*OPTIONS:
+#*    --input <file> | <stdin>
+#*        PDBx file.
+#*    --atoms
+#*        calculates dihedral angle from the four coordinates of the selected
+#*        atoms (nr-select should be used for residue selection).
+#*    --residues
+#*        calculates all dihedral angles of selected residue(-s)
+#*        (nr-select should be used for residue selection).
+#*    --version
+#*        print version.
+
+# --------------------------------- Options ----------------------------------- #
+
+my %options;
+
+my $version = "1.0.0";
+
+GetOptions(
+    "input=s" => \$options{"pdbx_file"},
+    "help" => sub { open( my $fh, "<", $0 );
+		    while( <$fh> ) {
+			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+			$help_message =~ s/^\*$/ /g if $help_message;
+			$help_message =~ s/^\*//g if $help_message;
+			print( $help_message, "\n" ) if $help_message; }
+		    close( $fh );
+		    exit; },
+    "version" => sub { print $version, "\n";
+		       exit; } )
+    or die "Error in command line argument.";
+
+# Default options.
+
+# ----------------------------------- Main ------------------------------------ #
+
+# Reads file path, stdin and "-" operator.
+my $atom_site;
+if( $options{"pdbx_file"} ) {
+    $atom_site = obtain_atom_site( $options{"pdbx_file"} );
+} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+    $atom_site = obtain_atom_site( '-' );
+} else {
+    die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
+}
+
+# # Prints out cif.
+# to_pdbx( { "atom_site" => $selected_atom_site,
+# 	   "add_atom_attributes" => [ "[local]_selection_state" ],
+# 	   "pdbx_loops" => \%pdbx_loops } );
