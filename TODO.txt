@@ -1,0 +1,2 @@
+-- Add new SelectionParser.yp feature so, it could return also order of
+   selection.
