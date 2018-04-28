@@ -80,6 +80,7 @@ GetOptions(
 # Defaults.
 $options{"select_cl"} //= "target";
 $options{"select_cl"} = "all" if $options{"target_cl"} =~ m/^\s*all\s$/;
+$options{"select_cl"} =~ s/(target)/$options{"target_cl"}/g;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -102,27 +103,12 @@ my @target_atom_ids = # Comes from selecting residue ids.
 						    "id" ),
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
-
-my @selected_atom_ids;
-$options{"select_cl"} =~ s/(target)/$options{"target_cl"}/g;
-
-if( defined $options{"select_cl"} ) {
-    @selected_atom_ids =
-	@{ filter( { "atom_site" =>
-			 $selection_parser->parser( $atom_site,
-						    $options{"select_cl"},
-						    "id" ),
-		     "data" => [ "id" ],
-		     "is_list" => 1 } ) };
-} else {
-    @selected_atom_ids =
-	@{ filter( { "atom_site" =>
-			 $selection_parser->parser( $atom_site,
-						    $options{"select_cl"},
-						    "id" ),
-		     "data" => [ "id" ],
-		     "is_list" => 1 } ) };
-}
+my @selected_atom_ids =
+    @{ filter( { "atom_site" => $selection_parser->parser( $atom_site,
+							   $options{"select_cl"},
+							   "id" ),
+		 "data" => [ "id" ],
+		 "is_list" => 1 } ) };
 
 # Modifies PDBx entries by adding and/or changing selection states for atoms.
 for my $atom_id ( keys %{ $atom_site } ) {
