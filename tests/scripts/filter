@@ -53,7 +53,7 @@ if( $data_specifier ) {
 } elsif( $order_specifier ) {
     to_pdbx( { "atom_site" => filter( { "atom_site" => $atom_site,
 					"order"   => \%order_specifier } ),
-	       "add_attributes" => [ "[local]_selection_order" ] } );
+	       "add_atom_attributes" => [ "[local]_selection_order" ] } );
 } else {
     to_pdbx( { "atom_site" => filter( { "atom_site" => $atom_site,
 					"include"   => \%include_specifier,

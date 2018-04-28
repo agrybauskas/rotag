@@ -1,2 +1,2 @@
-+- Add new PDBxParser::filter option so, it could return also the order of
+++ Add new PDBxParser::filter option so, it could return also the order of
    selection.
