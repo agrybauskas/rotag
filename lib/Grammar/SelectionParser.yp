@@ -232,7 +232,7 @@ str_ope
 
 %%
 
-sub lexer # Universal lexer.
+sub lexer
 {
     my( $parser ) = shift;
 
@@ -285,51 +285,6 @@ sub lexer # Universal lexer.
     }
 }
 
-sub lexer_residue # Only for residue data.
-{
-    my( $parser ) = shift;
-
-    $parser->YYData->{INPUT} || return( '',undef );
-    $parser->YYData->{INPUT} =~ s/^[ \t]//;
-
-    # Returns tokens to parser.
-    for( $parser->YYData->{INPUT} ){
-        if( s/^(resid)// ) {
-            return ( 'resid', $1 );
-	} elsif(s/^(all)//) {
-            return ( 'all', $1 );
-        } elsif(s/^(mainchain)//) {
-            return ( 'mainchain', $1 );
-        } elsif(s/^(sidechain)//) {
-            return ( 'sidechain', $1 );
-        } elsif(s/^(chain)//) {
-            return ( 'chain', $1 );
-	} elsif(s/^(resname)//) {
-            return ( 'resname', $1 );
-        } elsif(s/^(around)//) {
-            return ( 'around', $1 );
-	} elsif( s/^([0-9]+)// ) {
-            return ( 'NUM', $1 );
-	} elsif( s/^(\w+)// ) {
-            return ( 'STR', $1 );
-	} elsif( s/^(,)// ) {
-            return ( ',', $1 );
-	} elsif( s/^(-)// ) {
-            return ( '-', $1 );
-	} elsif( s/^(\|)// ) {
-            return ( '|', $1 );
-	} elsif( s/^(&)// ) {
-            return ( '&', $1 );
-	} elsif( s/^(\()// ) {
-            return ( '(', $1 );
-	} elsif( s/^(\))// ) {
-            return ( ')', $1 );
-	} elsif( s/^(\!)// ) {
-            return ( '!', $1 );
-	}
-    }
-}
-
 sub debugger
 {
     exists $_[0]->YYData->{ERRMSG}
@@ -344,22 +299,15 @@ sub debugger
 
 sub parser
 {
-    my ( $self, $atom_site, $input, $by_attribute, $lexer ) = @_;
+    my ( $self, $atom_site, $input, $by_attribute ) = @_;
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
     $self->YYData->{BY_ATTRIBUTE} = $by_attribute;
 
-    my $selected_atom_data;
-    if( $lexer && $lexer eq "residue"  ) {
-	$selected_atom_data = $self->YYParse( yylex => \&lexer_residue,
-					      yyerror => \&debugger,
-					      yydebug=>0x00 );
-    } else {
-	$selected_atom_data = $self->YYParse( yylex => \&lexer,
-					      yyerror => \&debugger,
-					      yydebug=>0x00 );
-    }
+    my $selected_atom_data = $self->YYParse( yylex => \&lexer,
+					     yyerror => \&debugger,
+					     yydebug=>0x00 );
 
     my $selected_atom_site =
 	filter( { "atom_site" => $atom_site,
