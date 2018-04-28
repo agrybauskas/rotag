@@ -30,7 +30,8 @@ my %exclude_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 			  split( "&", $exclude_specifier ) );
 my %order_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 			map { [ split( " ", $_ ) ] }
-			split( "&", $order_specifier ) );
+			split( "&", $order_specifier ) )
+                      if defined $order_specifier;
 my @data_specifier = split( ",", $data_specifier );
 
 my $atom_site;
