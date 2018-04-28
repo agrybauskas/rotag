@@ -135,7 +135,7 @@ sub filter
     my $exclude = $args->{"exclude"};
     my $data = $args->{"data"};
     my $is_list = $args->{"is_list"};
-    my $order = $args->{"order"}; # { "id => [ 5,6,8,10 ] " }.
+    my $order = $args->{"order"}; # { "id" => [ 5,6,8,10 ] }.
     my $data_with_id = $args->{"data_with_id"};
 
     die( "No PDBx data structure was loaded " ) if ! defined $atom_site;

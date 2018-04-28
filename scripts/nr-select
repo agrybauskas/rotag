@@ -48,6 +48,9 @@ use Grammar::SelectionParser;
 #*    --select <str> [default: target]
 #*        command (same as --target) describing the atoms that will be marked as
 #*        selected (S).
+#*    --ordered
+#*        marks order of selection in [local]_selection_order attribute. Only
+#*        --target is affected.
 #*    --keep-ignored
 #*        keeps ignored atoms.
 #*    --version
@@ -58,12 +61,14 @@ use Grammar::SelectionParser;
 my %options;
 
 my $version = "1.0.0";
+my $is_ordered = 0;
 my $keep_ignored = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "target=s" => \$options{"target_cl"},
     "select=s" => \$options{"select_cl"},
+    "ordered" => sub { $is_ordered = 1 },
     "keep-ignored" => sub { $keep_ignored = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
@@ -96,13 +101,27 @@ if( $options{"pdbx_file"} ) {
 
 # Parses command line arguments to select certain atoms in PDBx.
 my $selection_parser = new SelectionParser();
-my @target_atom_ids = # Comes from selecting residue ids.
+
+my @target_atom_ids;
+if( $is_ordered ) {
+    @target_atom_ids =
+	@{ filter( { "atom_site" =>
+			 $selection_parser->parser( $atom_site,
+						    $options{"target_cl"},
+						    "id",
+						    1 ),
+		     "data" => [ "id" ],
+		     "is_list" => 1 } ) };
+} else {
+    @target_atom_ids =
 	@{ filter( { "atom_site" =>
 			 $selection_parser->parser( $atom_site,
 						    $options{"target_cl"},
 						    "id" ),
 		     "data" => [ "id" ],
 		     "is_list" => 1 } ) };
+}
+
 my @selected_atom_ids =
     @{ filter( { "atom_site" => $selection_parser->parser( $atom_site,
 							   $options{"select_cl"},
@@ -141,4 +160,5 @@ if( $options{"pdbx_file"} ) {
 # Prints out the PDBx.
 to_pdbx( { "atom_site" => $atom_site,
 	   $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
-	   "add_atom_attributes" => [ "[local]_selection_state" ] } );
+	   "add_atom_attributes" => [ "[local]_selection_state",
+				      "[local]_selection_order" ] } );

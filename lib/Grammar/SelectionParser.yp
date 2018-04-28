@@ -299,7 +299,7 @@ sub debugger
 
 sub parser
 {
-    my ( $self, $atom_site, $input, $by_attribute ) = @_;
+    my ( $self, $atom_site, $input, $by_attribute, $is_ordered ) = @_;
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
@@ -309,9 +309,16 @@ sub parser
 					     yyerror => \&debugger,
 					     yydebug=>0x00 );
 
-    my $selected_atom_site =
-	filter( { "atom_site" => $atom_site,
-		  "include" => { $by_attribute => $selected_atom_data } } );
+    my $selected_atom_site;
+    if( defined $is_ordered && $is_ordered ) {
+	$selected_atom_site =
+	    filter( { "atom_site" => $atom_site,
+		      "order" => { $by_attribute => $selected_atom_data } } );
+    } else {
+	$selected_atom_site =
+	    filter( { "atom_site" => $atom_site,
+		      "include" => { $by_attribute => $selected_atom_data } } );
+    }
 
     return $selected_atom_site;
 }
