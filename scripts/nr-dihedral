@@ -5,6 +5,7 @@ use warnings;
 
 use Getopt::Long;
 
+use LinearAlgebra qw( pi );
 use Measure qw( all_dihedral
                 dihedral_angle );
 use PDBxParser qw( filter
@@ -26,6 +27,8 @@ use PDBxParser qw( filter
 #*    --residues
 #*        calculates all dihedral angles of selected residue(-s)
 #*        (nr-select should be used for residue selection).
+#*    --degrees
+#*        angles are in degrees (default ).
 #*    --version
 #*        print version.
 
@@ -36,11 +39,13 @@ my %options;
 my $version = "1.0.0";
 my $atom_dihedral = 0;
 my $residue_dihedral = 0;
+my $in_degrees = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "atoms" => sub { $atom_dihedral = 1 },
     "residues" => sub { $residue_dihedral = 1 },
+    "degrees" => sub { $in_degrees = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -52,8 +57,6 @@ GetOptions(
     "version" => sub { print $version, "\n";
 		       exit; } )
     or die "Error in command line argument.";
-
-# Default options.
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -98,12 +101,10 @@ if( $atom_dihedral ) {
 		    $dihedral_site->{"$fourth_atom_id"}{"Cartn_y"},
 		    $dihedral_site->{"$fourth_atom_id"}{"Cartn_z"} ] ] );
 
-	if(  ) {
-
-	} elsif() {
-
+	if( $in_degrees ) {
+	    printf( "%.3f", $dihedral_angle * 180 / pi() );
 	} else {
-
+	    printf( "%.3f", $dihedral_angle );
 	}
     }
 
