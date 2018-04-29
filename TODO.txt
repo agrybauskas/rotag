@@ -1,2 +1,6 @@
 ++ Add new PDBxParser::filter option so, it could return also the order of
    selection.
+-- Find _[local]_ cif loops and add chain identifiers, because residue ids are
+   not unique by themselves.
+-- Decide how to handle dihedral angle calculations on residues without
+   rotatable bonds.

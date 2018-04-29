@@ -4,12 +4,14 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use List::MoreUtils qw( uniq );
 
 use LinearAlgebra qw( pi );
 use Measure qw( all_dihedral
                 dihedral_angle );
 use PDBxParser qw( filter
-                   obtain_atom_site );
+                   obtain_atom_site
+                   to_pdbx );
 
 #*nr-dihedral
 #*    calculates dihedral angles selected atoms or residues.
@@ -70,7 +72,9 @@ if( $options{"pdbx_file"} ) {
     die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
 }
 
-# Calculates dihedral angles.
+# Calculates dihedral angles
+my %pdbx_loops;
+
 if( $atom_dihedral ) {
     my $dihedral_site =
 	filter( { "atom_site" => $atom_site,
@@ -109,5 +113,33 @@ if( $atom_dihedral ) {
     }
 
 } elsif( $residue_dihedral ) {
+    $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
+	[ "id", "residue_id", "residue_type", "type", "value" ];
 
+    my $dihedral_site =
+	filter( { "atom_site" => $atom_site,
+		  "include" => { "[local]_selection_state" => [ "T" ] } } );
+    my $dihedral_angles = all_dihedral( $dihedral_site );
+
+    my $dihedral_id = 1;
+    for my $residue_id ( sort keys %{ $dihedral_angles } ) {
+	my $residue_name = uniq( @{ filter( { "atom_site" => $dihedral_site,
+					      "data" => [ "label_comp_id" ],
+					      "is_list" => 1 } ) } );
+
+	for my $angle_name ( sort keys %{ $dihedral_angles->{$residue_id} } ) {
+	    push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
+		  $dihedral_id, $residue_id, $residue_name, $angle_name,
+		  ( $in_degrees ? sprintf( "%.3f",
+					   $dihedral_angles->
+					       {$residue_id}{$angle_name}
+					   * 180 / pi() )
+		                : sprintf( "%.3f",
+					   $dihedral_angles->
+					       {$residue_id}{$angle_name} ) ) );
+	    $dihedral_id++;
+	}
+    }
+
+    to_pdbx( { "pdbx_loops" => \%pdbx_loops } );
 }
