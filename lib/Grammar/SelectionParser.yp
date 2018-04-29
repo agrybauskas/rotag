@@ -198,10 +198,7 @@ exp
         }
     | 'atomid' num_ope
         {
-	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-		      'include' => { 'id' => $_[2] },
-		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-		      'is_list' => 1 } );
+	    return $_[2];
         }
     | 'atomname' str_ope
         {
