@@ -76,6 +76,10 @@ if( $options{"pdbx_file"} ) {
 my %pdbx_loops;
 
 if( $atom_dihedral ) {
+    $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
+	[ "id", "first_atom_id", "second_atom_id", "third_atom_id",
+	  "fourth_atom_id", "value" ];
+
     my $dihedral_site =
 	filter( { "atom_site" => $atom_site,
 		  "include" => { "[local]_selection_state" => [ "T" ] },
@@ -85,6 +89,7 @@ if( $atom_dihedral ) {
 	   <=> $dihedral_site->{"$b"}{"[local]_selection_order"} }
         keys %{ $dihedral_site };
 
+    my $dihedral_id = 1;
     for( my $i = 0; $i <= $#dihedral_atom_ids; $i = $i + 4 ) {
     	my $first_atom_id = $dihedral_atom_ids[$i];
     	my $second_atom_id = $dihedral_atom_ids[$i+1];
@@ -105,11 +110,12 @@ if( $atom_dihedral ) {
 		    $dihedral_site->{"$fourth_atom_id"}{"Cartn_y"},
 		    $dihedral_site->{"$fourth_atom_id"}{"Cartn_z"} ] ] );
 
-	if( $in_degrees ) {
-	    printf( "%.3f", $dihedral_angle * 180 / pi() );
-	} else {
-	    printf( "%.3f", $dihedral_angle );
-	}
+	push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
+	      $dihedral_id, $first_atom_id, $second_atom_id, $third_atom_id,
+	      $fourth_atom_id,
+	      ( $in_degrees ? sprintf( "%.3f", $dihedral_angle * 180 / pi() )
+		            : sprintf( "%.3f", $dihedral_angle ) ) );
+	$dihedral_id++;
     }
 
 } elsif( $residue_dihedral ) {
@@ -140,6 +146,6 @@ if( $atom_dihedral ) {
 	    $dihedral_id++;
 	}
     }
-
-    to_pdbx( { "pdbx_loops" => \%pdbx_loops } );
 }
+
+to_pdbx( { "pdbx_loops" => \%pdbx_loops } );
