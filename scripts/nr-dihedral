@@ -34,13 +34,13 @@ use PDBxParser qw( filter
 my %options;
 
 my $version = "1.0.0";
-my $are_atoms = 0;
-my $are_residues = 0;
+my $atom_dihedral = 0;
+my $residue_dihedral = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
-    "atoms" => sub { $are_atoms = 1 },
-    "residues" => sub { $are_residues = 1 },
+    "atoms" => sub { $atom_dihedral = 1 },
+    "residues" => sub { $residue_dihedral = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -68,8 +68,45 @@ if( $options{"pdbx_file"} ) {
 }
 
 # Calculates dihedral angles.
-if( $are_atoms ) {
+if( $atom_dihedral ) {
+    my $dihedral_site =
+	filter( { "atom_site" => $atom_site,
+		  "include" => { "[local]_selection_state" => [ "T" ] },
+		  "exclude" => { "[local]_selection_order" => [ "?" ] } } );
+    my @dihedral_atom_ids =
+	sort { $dihedral_site->{"$a"}{"[local]_selection_order"}
+	   <=> $dihedral_site->{"$b"}{"[local]_selection_order"} }
+        keys %{ $dihedral_site };
 
-} elsif( $are_residues ) {
+    for( my $i = 0; $i <= $#dihedral_atom_ids; $i = $i + 4 ) {
+    	my $first_atom_id = $dihedral_atom_ids[$i];
+    	my $second_atom_id = $dihedral_atom_ids[$i+1];
+    	my $third_atom_id = $dihedral_atom_ids[$i+2];
+    	my $fourth_atom_id = $dihedral_atom_ids[$i+3];
+	my $dihedral_angle =
+	    dihedral_angle(
+		[ [ $dihedral_site->{"$first_atom_id"}{"Cartn_x"},
+		    $dihedral_site->{"$first_atom_id"}{"Cartn_y"},
+		    $dihedral_site->{"$first_atom_id"}{"Cartn_z"} ],
+		  [ $dihedral_site->{"$second_atom_id"}{"Cartn_x"},
+		    $dihedral_site->{"$second_atom_id"}{"Cartn_y"},
+		    $dihedral_site->{"$second_atom_id"}{"Cartn_z"} ],
+		  [ $dihedral_site->{"$third_atom_id"}{"Cartn_x"},
+		    $dihedral_site->{"$third_atom_id"}{"Cartn_y"},
+		    $dihedral_site->{"$third_atom_id"}{"Cartn_z"} ],
+		  [ $dihedral_site->{"$fourth_atom_id"}{"Cartn_x"},
+		    $dihedral_site->{"$fourth_atom_id"}{"Cartn_y"},
+		    $dihedral_site->{"$fourth_atom_id"}{"Cartn_z"} ] ] );
+
+	if(  ) {
+
+	} elsif() {
+
+	} else {
+
+	}
+    }
+
+} elsif( $residue_dihedral ) {
 
 }
