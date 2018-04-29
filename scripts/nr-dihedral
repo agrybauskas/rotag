@@ -34,9 +34,13 @@ use PDBxParser qw( filter
 my %options;
 
 my $version = "1.0.0";
+my $are_atoms = 0;
+my $are_residues = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
+    "atoms" => sub { $are_atoms = 1 },
+    "residues" => sub { $are_residues = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -63,7 +67,9 @@ if( $options{"pdbx_file"} ) {
     die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
 }
 
-# # Prints out cif.
-# to_pdbx( { "atom_site" => $selected_atom_site,
-# 	   "add_atom_attributes" => [ "[local]_selection_state" ],
-# 	   "pdbx_loops" => \%pdbx_loops } );
+# Calculates dihedral angles.
+if( $are_atoms ) {
+
+} elsif( $are_residues ) {
+
+}
