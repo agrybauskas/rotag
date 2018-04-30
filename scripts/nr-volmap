@@ -1,0 +1,65 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+use PDBxParser qw( filter
+                   obtain_atom_site );
+
+#*nr-volmap
+#*    generate volumetric map MRC/CCP4 from atom coordinates.
+#*
+#*USAGE:
+#*    nr-volmap --input input.cif > output.cif
+#*
+#*OPTIONS:
+#*    --input <file> | <stdin>
+#*        PDBx file.
+#*    --version
+#*        print version.
+
+# --------------------------------- Options ----------------------------------- #
+
+my %options;
+$options{"interactions"} = "leonard_jones";
+
+my $version = "1.0.0";
+
+GetOptions(
+    "input=s" => \$options{"pdbx_file"},
+    "help" => sub { open( my $fh, "<", $0 );
+		    while( <$fh> ) {
+			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+			$help_message =~ s/^\*$/ /g if $help_message;
+			$help_message =~ s/^\*//g if $help_message;
+			print( $help_message, "\n" ) if $help_message; }
+		    close( $fh );
+		    exit; },
+    "version" => sub { print $version, "\n";
+		       exit; } )
+    or die "Error in command line argument.";
+
+# ----------------------------------- Main ------------------------------------ #
+
+# Reads file path, stdin and "-" operator.
+my $atom_site;
+if( $options{"pdbx_file"} ) {
+    $atom_site = obtain_atom_site( $options{"pdbx_file"} );
+} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+    $atom_site = obtain_atom_site( '-' );
+} else {
+    die( "Use command \"nr-volmap --help\" in order to see the manual.\n" );
+}
+
+# Generates MRC map.
+my $target_atom_coords =
+    filter( { "atom_site" => $atom_site,
+	      "include" => { "[local]_selection_state" => [ "T" ] },
+	      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } );
+
+for my $atom_coords ( @{ $target_atom_coords } ) {
+    printf( "%.3f\t%.3f\t%.3f\n",
+	    $atom_coords->[0], $atom_coords->[1], $atom_coords->[2] );
+}

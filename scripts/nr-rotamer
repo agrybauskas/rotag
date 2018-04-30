@@ -76,7 +76,7 @@ if( $options{"pdbx_file"} ) {
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
 } else {
-    die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
+    die( "Use command \"nr-rotamer --help\" in order to see the manual.\n" );
 }
 
 my $selected_atom_site =

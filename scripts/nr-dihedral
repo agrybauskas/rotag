@@ -69,7 +69,7 @@ if( $options{"pdbx_file"} ) {
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
 } else {
-    die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
+    die( "Use command \"nr-dihedral --help\" in order to see the manual.\n" );
 }
 
 # Calculates dihedral angles
