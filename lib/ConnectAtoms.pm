@@ -330,18 +330,17 @@ sub connect_atoms
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
-    my @cell_indexes;
     my ( $grid_box, undef ) = grid_box( $atom_site );
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
-    	@cell_indexes = split( ",", $cell );
+    	my @cell_idxs = split( ",", $cell );
 	my @neighbour_cells; # The array will contain all atoms of the
 	                     # neighbouring 26 cells.
     	# $i represents x, $j - y, $k - z coordinates.
-    	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
-    	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
-    	for my $k ( ( $cell_indexes[2] - 1..$cell_indexes[2] + 1 ) ) {
+    	for my $i ( ( $cell_idxs[0] - 1..$cell_idxs[0] + 1 ) ) {
+    	for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
+    	for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
     	if( exists $grid_box->{"$i,$j,$k"} ) {
     	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
