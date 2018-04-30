@@ -4,3 +4,5 @@
    _[local]_ cif, because residue ids are not unique by themselves.
 -- Decide how to handle dihedral angle calculations on residues without
    rotatable bonds.
+-- Make rotamers show properly in Jmol by assigning label_alt_id different
+   labels.

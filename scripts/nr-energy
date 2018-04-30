@@ -22,20 +22,15 @@ use AtomInteractions qw( hard_sphere
                          combined );
 
 #*nr-energy
-#*    calculates potential energy of selected atoms or residues.
+#*    calculates potential energy of selected atoms.
 #*
 #*USAGE:
-#*    nr-energy --atoms --input input.cif > output.cif
-#*    nr-energy --atoms --potential hard_sphere --input input.cif > output.cif
-#*    nr-energy --residues --input input.cif > output.cif
+#*    nr-energy --input input.cif > output.cif
+#*    nr-energy --potential hard_sphere --input input.cif > output.cif
 #*
 #*OPTIONS:
 #*    --input <file> | <stdin>
 #*        PDBx file.
-#*    --atoms
-#*        calculates energy of selected atoms.
-#*    --residues
-#*        calculates energy of selected residues.
 #*    --potential (default: leonard_jones | hard_sphere | soft_sphere |
 #*                 exponential | combined)
 #*        uses potential energy function for determining interactions between
@@ -49,13 +44,9 @@ my %options;
 $options{"interactions"} = "leonard_jones";
 
 my $version = "1.0.0";
-my $calc_atom_energy = 0;
-my $calc_residue_energy = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
-    "atoms" => sub { $calc_atom_energy = 1 },
-    "residues" => sub { $calc_residue_energy = 1 },
     "potential" => \$options{"interactions"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
@@ -125,8 +116,10 @@ $potential_function = \&combined if $options{"interactions"} eq "combined";
 
 my %pdbx_loops;
 my $calculation_id = 1;
+
 $pdbx_loops{"_[local]_energy"}{"attributes"} =
-    [ "id", "atom_id", "calculation_method", "value"];
+    [ "id", "atom_id", "residue_id", "chain", "model_num", "calculation_method",
+      "value" ];
 
 for my $cell_idxs ( sort { $a cmp $b } keys %target_cell_idxs ) {
     my @cell_idxs = split( ",", $cell_idxs );
@@ -141,6 +134,9 @@ for my $cell_idxs ( sort { $a cmp $b } keys %target_cell_idxs ) {
 	    push( @neighbour_atom_ids, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
     for my $atom_id ( @{ $target_cell_idxs{$cell_idxs} } ) {
+	my $residue_id = $selected_atom_site->{"$atom_id"}{"label_seq_id"};
+	my $chain = $selected_atom_site->{"$atom_id"}{"label_asym_id"};
+	my $model_num = $selected_atom_site->{"$atom_id"}{"pdbx_PDB_model_num"};
 	# Change neighbour name, because it might be misinterpreted as connected
 	# atoms.
 	my $potential_energy = 0; # TODO: should here be 0 or undef?
@@ -161,8 +157,9 @@ for my $cell_idxs ( sort { $a cmp $b } keys %target_cell_idxs ) {
 	}
 
 	push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
-	      $calculation_id, $atom_id, $options{"interactions"},
-	      sprintf( "%.3f", $potential_energy ) );
+	      $calculation_id, $atom_id, $residue_id, $chain, $model_num,
+	      $options{"interactions"}, sprintf( "%.3f", $potential_energy ) );
+	$calculation_id++;
     }
 }
 
