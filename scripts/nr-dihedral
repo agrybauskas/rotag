@@ -39,14 +39,14 @@ use PDBxParser qw( filter
 my %options;
 
 my $version = "1.0.0";
-my $atom_dihedral = 0;
-my $residue_dihedral = 0;
+my $calc_atom_angles = 0;
+my $calc_residue_angles = 0;
 my $in_degrees = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
-    "atoms" => sub { $atom_dihedral = 1 },
-    "residues" => sub { $residue_dihedral = 1 },
+    "atoms" => sub { $calc_atom_angles = 1 },
+    "residues" => sub { $calc_residue_angles = 1 },
     "degrees" => sub { $in_degrees = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
@@ -75,7 +75,7 @@ if( $options{"pdbx_file"} ) {
 # Calculates dihedral angles
 my %pdbx_loops;
 
-if( $atom_dihedral ) {
+if( $calc_atom_angles ) {
     $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
 	[ "id", "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id", "value" ];
 
@@ -117,7 +117,7 @@ if( $atom_dihedral ) {
 	$dihedral_id++;
     }
 
-} elsif( $residue_dihedral ) {
+} elsif( $calc_residue_angles ) {
     # TODO: add atom_1_id, atom_2_id, ...
     $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
 	[ "id", "residue_id", "residue_type", "type", "value" ];

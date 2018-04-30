@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+use PDBxParser qw( filter
+                   obtain_atom_site
+                   to_pdbx );
+
+#*nr-energy
+#*    calculates potential energy of selected atoms or residues.
+#*
+#*USAGE:
+#*    nr-energy --atoms --input input.cif > output.cif
+#*    nr-energy --atoms --potential hard_sphere --input input.cif > output.cif
+#*    nr-energy --residues --input input.cif > output.cif
+#*
+#*OPTIONS:
+#*    --input <file> | <stdin>
+#*        PDBx file.
+#*    --atoms
+#*        calculates energy of selected atoms.
+#*    --residues
+#*        calculates energy of selected residues.
+#*    --potential (default: leonard_jones | hard_sphere | soft_sphere |
+#*                 exponential | combined)
+#*        uses potential energy function for determining interactions between
+#*        selected residues and atoms that are reachable or described.
+#*    --version
+#*        print version.
+
+# --------------------------------- Options ----------------------------------- #
+
+my %options;
+
+my $version = "1.0.0";
+my $calc_atom_energy = 0;
+my $calc_residue_energy = 0;
+
+GetOptions(
+    "input=s" => \$options{"pdbx_file"},
+    "atoms" => sub { $calc_atom_energy = 1 },
+    "residues" => sub { $calc_residue_energy = 1 },
+    "potential" => \$options{"interactions"},
+    "help" => sub { open( my $fh, "<", $0 );
+		    while( <$fh> ) {
+			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+			$help_message =~ s/^\*$/ /g if $help_message;
+			$help_message =~ s/^\*//g if $help_message;
+			print( $help_message, "\n" ) if $help_message; }
+		    close( $fh );
+		    exit; },
+    "version" => sub { print $version, "\n";
+		       exit; } )
+    or die "Error in command line argument.";
+
+# ----------------------------------- Main ------------------------------------ #
+
+# Reads file path, stdin and "-" operator.
+my $atom_site;
+if( $options{"pdbx_file"} ) {
+    $atom_site = obtain_atom_site( $options{"pdbx_file"} );
+} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+    $atom_site = obtain_atom_site( '-' );
+} else {
+    die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
+}
