@@ -77,8 +77,7 @@ my %pdbx_loops;
 
 if( $atom_dihedral ) {
     $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
-	[ "id", "first_atom_id", "second_atom_id", "third_atom_id",
-	  "fourth_atom_id", "value" ];
+	[ "id", "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id", "value" ];
 
     my $dihedral_site =
 	filter( { "atom_site" => $atom_site,
@@ -119,6 +118,7 @@ if( $atom_dihedral ) {
     }
 
 } elsif( $residue_dihedral ) {
+    # TODO: add atom_1_id, atom_2_id, ...
     $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
 	[ "id", "residue_id", "residue_type", "type", "value" ];
 
