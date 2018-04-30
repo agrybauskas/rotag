@@ -8,7 +8,8 @@ use List::MoreUtils qw( any
                         uniq );
 
 use AtomProperties qw( %ATOMS );
-use ConnectAtoms qw( grid_box
+use ConnectAtoms qw( connect_atoms
+                     grid_box
                      is_neighbour
                      is_second_neighbour );
 use PDBxParser qw( filter
@@ -19,6 +20,7 @@ use AtomInteractions qw( hard_sphere
                          exponential
                          leonard_jones
                          combined );
+
 #*nr-energy
 #*    calculates potential energy of selected atoms or residues.
 #*
@@ -88,6 +90,9 @@ my $target_atom_ids =
 	      "include" => { "[local]_selection_state" => [ "T" ] },
 	      "data" => [ "id" ],
 	      "is_list" => 1 } );
+
+# TODO: look, how it will behave when pseudo atoms are introduced.
+connect_atoms( $selected_atom_site );
 
 # TODO: decide the maximum length of cell. It should be corresponding to
 # PseudoAtoms::generate_library() and the cutoff of potential functions.
