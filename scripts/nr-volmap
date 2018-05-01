@@ -7,9 +7,9 @@ use Getopt::Long;
 
 use PDBxParser qw( filter
                    obtain_atom_site );
-use Data::Dumper;
+
 #*nr-volmap
-#*    generate volumetric map MRC/CCP4 (MRC2014) from atom coordinates.
+#*    generate volumetric map (DSN6) from atom coordinates.
 #*
 #*USAGE:
 #*    nr-volmap --input input.cif > output.cif
@@ -42,79 +42,16 @@ GetOptions(
 
 # ----------------------------------- Main ------------------------------------ #
 
-#
-# MRC/CCP4 2014 file format
-# Cited from: http://www.ccpem.ac.uk/mrc_format/mrc2014.php#note3
-#
-# Main header
-#
-# Word     Bytes     Name          Description
-# 1        1-4       NX            number of columns in 3D data array (fast axis)
-# 2        5-8       NY            number of rows in 3D data array (medium axis)
-# 3        9-12      NZ            number of sections in 3D data array (slow axis)
-# 4        13-16     MODE          0 (8-bit sign int),
-#                                  1 (16-bit sign int),
-#                                  2 (32-bit sign real),
-#                                  3 (transform: complex 16-bit int),
-#                                  4 (transform: complex 32-bit reals),
-#                                  6 (16-bit unsigned int)
-# 5        17-20     NXSTART       location of first column in unit cell
-# 6        21-24     NYSTART       location of first row in unit cel
-# 7        25-28     NZSTART       location of first section in unit cell
-# 8        29-32     MX            sampling along X axis of unit cell
-# 9        33-36     MY            sampling along Y axis of unit cell
-# 10       37-40     MZ            sampling along Z axis of unit cell
-# 11-13    41-52     CELLA         cell dimensions in angstroms
-# 14-16    53-64     CELLB         cell angles in degrees
-# 17       65-68     MAPC          axis corresp to cols (1,2,3 for X,Y,Z)
-# 18       69-72     MAPR          axis corresp to rows (1,2,3 for X,Y,Z)
-# 19       73-76     MAPR          axis corresp to sections (1,2,3 for X,Y,Z)
-# 20       77-80     DMIN          minimum density value
-# 21       81-84     DMAX          maximum density value
-# 22       85-88     DMEAN         mean density value
-# 23       89-92     ISPG          space group number
-# 24       93-96     NSYMBT        size of extended header (which follows main
-#                                  header) in bytes
-# 25-49    97-196    EXTRA         extra space used for anything - 0 by default
-# 27       105       EXTTYP        code for the type of extended header
-# 28       109       NVERSION      version of the MRC format
-# 50-52    197-208   ORIGIN        phase origin (pixels) or origin of subvolume (A)
-# 53       209-212   MAP           character string 'MAP' to identify file type
-# 54       213-216   MACHST        machine stamp encoding byte ordering of data
-# 55       217-220   RMS           rms deviation of map from mean density
-# 56       221-224   NLABL         number of labels being used
-# 57-256   225-1024  LABEL(20,10)  10 80-character text labels
-#
-# Extended header
-#
-# Holds space group symmetry records stored as text as in International Tables.
-#
-# Data block
-#
-# List of data values representing the image/map/volume itself. Data type is
-# defined by MODE. The data items form a 3-dimensional grid, organised into
-# columns, rows and sections (NX, NY, NZ). The orientation is set by MAPC, MAPR,
-# MAPS in the main header.
-#
-
-sub atom_site_to_cpp4
+sub atom_site_to_dsn6
 {
     my ( $args ) = @_;
-    my ( $atom_site,
-	 $nx, $ny, $nz ) = ( $args->{"atom_site"},
-			     $args->{"nx"}, $args->{"ny"}, $args->{"nz"} );
+    my ( $atom_site ) = ( $args->{"atom_site"} );
 
-    {
-	open( my $fh, '>-' ) || die "Can't print to stdout: $!";
-	binmode( $fh );
+    open( my $fh, '>-' ) || die "Can't print to stdout: $!";
+    binmode( $fh );
 
-	print $fh sprintf( '%.16b', $nx ); # NX
-	print $fh sprintf( '%.16b', $ny ); # NY
-	print $fh sprintf( '%.16b', $nz ); # NZ
-
-	close( $fh );
-	return;
-    }
+    close( $fh );
+    return;
 }
 
 # Reads file path, stdin and "-" operator.
@@ -133,5 +70,4 @@ my $target_atom_site =
     filter( { "atom_site" => $atom_site,
 	      "include" => { "[local]_selection_state" => [ "T" ] } } );
 
-atom_site_to_cpp4( { "atom_site" => $target_atom_site,
-		     "nx" => 10, "ny" => 10, "nz" => 10 } );
+atom_site_to_dsn6( { "atom_site" => $target_atom_site } );
