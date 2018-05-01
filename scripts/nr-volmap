@@ -42,6 +42,27 @@ GetOptions(
 
 # ----------------------------------- Main ------------------------------------ #
 
+# DSN6 header.
+# (1)  x start
+# (2)  y start
+# (3)  z start
+# (4)  x extent
+# (5)  y extent
+# (6)  z extent
+# (7)  x sampling rate
+# (8)  y sampling rate
+# (9)  z sampling rate
+# (10) Header(18) * A Cell Edge
+# (11) Header(18) * B Cell Edge
+# (12) Header(18) * C Cell Edge
+# (13) Header(18) * alpha
+# (14) Header(18) * beta
+# (15) Header(18) * gamma
+# (16) Header(19) * (253-3) / (ro_max - ro_min)
+# (17) (3 * ro_max - 253 * ro_min) / (ro_max - ro_min)
+# (18) Cell Constant Scaling Factor
+# (19) 100
+
 sub atom_site_to_dsn6
 {
     my ( $args ) = @_;
