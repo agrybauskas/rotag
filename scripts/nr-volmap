@@ -69,8 +69,13 @@ sub atom_site_to_dsn6
 {
     my ( $args ) = @_;
     # Resolution - length of the cell in Angstroms.
-    my ( $atom_site, $resolution ) = ( $args->{"atom_site"} );
-
+    my ( $atom_site, $scaling_factor, $alpha, $beta, $gamma ) =
+	( $args->{"atom_site"}, $args->{"alpha"}, $args->{"beta"},
+	  $args->{"gamma"}, $args->{"scaling_factor"} );
+    $alpha //= 90.00;
+    $beta //= 90.00;
+    $gamma //= 90.00;
+    $scaling_factor //= 100; # TODO: should find a way to choose proper factor.
     my $boundary_box =
 	create_box( filter( { "atom_site" => $atom_site,
 			      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } ));
@@ -83,9 +88,20 @@ sub atom_site_to_dsn6
     my $y_extent = ceil( $boundary_box->[3] ) - $y_start;
     my $z_extent = ceil( $boundary_box->[5] ) - $z_start;
 
-    my $x_sampling_rate;
-    my $y_sampling_rate;
-    my $z_sampling_rate;
+    my $x_sampling_rate = $x_extent * 8;
+    my $y_sampling_rate = $y_extent * 8;
+    my $z_sampling_rate = $z_extent * 8;
+
+    my $a_scaled = sprintf( "%.2f", $boundary_box->[1] - $boundary_box->[0] )
+	         * $scaling_factor;
+    my $b_scaled = sprintf( "%.2f", $boundary_box->[3] - $boundary_box->[2] )
+	         * $scaling_factor;
+    my $c_scaled = sprintf( "%.2f", $boundary_box->[5] - $boundary_box->[4] )
+	* $scaling_factor;
+
+    my $alpha_scaled = $alpha * $scaling_factor;
+    my $beta_scaled = $beta * $scaling_factor;
+    my $gamma_scaled = $gamma * $scaling_factor;
 
     # open( my $fh, '>-' ) || die "Can't print to stdout: $!";
     # binmode( $fh );
