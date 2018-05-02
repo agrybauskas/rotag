@@ -4,10 +4,12 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use POSIX;
 
+use ConnectAtoms qw( create_box );
 use PDBxParser qw( filter
                    obtain_atom_site );
-
+use Data::Dumper;
 #*nr-volmap
 #*    generate volumetric map (DSN6) from atom coordinates.
 #*
@@ -66,13 +68,29 @@ GetOptions(
 sub atom_site_to_dsn6
 {
     my ( $args ) = @_;
-    my ( $atom_site ) = ( $args->{"atom_site"} );
+    # Resolution - length of the cell in Angstroms.
+    my ( $atom_site, $resolution ) = ( $args->{"atom_site"} );
 
-    open( my $fh, '>-' ) || die "Can't print to stdout: $!";
-    binmode( $fh );
+    my $boundary_box =
+	create_box( filter( { "atom_site" => $atom_site,
+			      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } ));
 
-    close( $fh );
-    return;
+    my $x_start = floor( $boundary_box->[0] );
+    my $y_start = floor( $boundary_box->[2] );
+    my $z_start = floor( $boundary_box->[4] );
+
+    my $x_extent = ceil( $boundary_box->[1] ) - $x_start;
+    my $y_extent = ceil( $boundary_box->[3] ) - $y_start;
+    my $z_extent = ceil( $boundary_box->[5] ) - $z_start;
+
+    my $x_sampling_rate;
+    my $y_sampling_rate;
+    my $z_sampling_rate;
+
+    # open( my $fh, '>-' ) || die "Can't print to stdout: $!";
+    # binmode( $fh );
+    # close( $fh );
+    # return;
 }
 
 # Reads file path, stdin and "-" operator.
