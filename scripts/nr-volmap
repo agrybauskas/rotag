@@ -9,7 +9,7 @@ use POSIX;
 use ConnectAtoms qw( create_box );
 use PDBxParser qw( filter
                    obtain_atom_site );
-use Data::Dumper;
+
 #*nr-volmap
 #*    generate volumetric map (DSN6) from atom coordinates.
 #*
@@ -69,13 +69,16 @@ sub atom_site_to_dsn6
 {
     my ( $args ) = @_;
     # Resolution - length of the cell in Angstroms.
-    my ( $atom_site, $scaling_factor, $alpha, $beta, $gamma ) =
+    my ( $atom_site, $scaling_factor, $alpha, $beta, $gamma, $ro_min, $ro_max ) =
 	( $args->{"atom_site"}, $args->{"alpha"}, $args->{"beta"},
-	  $args->{"gamma"}, $args->{"scaling_factor"} );
+	  $args->{"gamma"}, $args->{"scaling_factor"}, $args->{"ro_min"}, $args->{"ro_max"} );
     $alpha //= 90.00;
     $beta //= 90.00;
     $gamma //= 90.00;
     $scaling_factor //= 100; # TODO: should find a way to choose proper factor.
+    $ro_min //= 1;
+    $ro_max //= 2;
+
     my $boundary_box =
 	create_box( filter( { "atom_site" => $atom_site,
 			      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } ));
@@ -103,10 +106,25 @@ sub atom_site_to_dsn6
     my $beta_scaled = $beta * $scaling_factor;
     my $gamma_scaled = $gamma * $scaling_factor;
 
-    # open( my $fh, '>-' ) || die "Can't print to stdout: $!";
-    # binmode( $fh );
-    # close( $fh );
-    # return;
+    # Density value modifiers - Header 16, 17.
+    my $density_modifier_1 = ( 100 * 250 ) / ( $ro_max - $ro_min );
+    my $density_modifier_2 = ( 3 * $ro_max - 253 * $ro_min )
+	                   / ( $ro_max - $ro_min );
+
+    # Writes to stdout.
+    open( my $fh, '>-' ) || die "Can't print to stdout: $!";
+    binmode( $fh );
+    print $fh pack( "(s>)19",
+		    $x_start, $y_start, $z_start,
+		    $x_extent, $y_extent, $z_extent,
+		    $x_sampling_rate, $y_sampling_rate, $z_sampling_rate,
+		    $a_scaled, $b_scaled, $c_scaled,
+		    $alpha_scaled, $beta_scaled, $gamma_scaled,
+		    $density_modifier_1, $density_modifier_2,
+		    $scaling_factor, 100 );
+    close( $fh );
+
+    return;
 }
 
 # Reads file path, stdin and "-" operator.
