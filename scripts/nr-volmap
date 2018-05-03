@@ -115,13 +115,14 @@ sub atom_site_to_dsn6
     open( my $fh, '>-' ) || die "Can't print to stdout: $!";
     binmode( $fh );
     print $fh pack( "(s>)19",
-		    $x_start, $y_start, $z_start,
-		    $x_extent, $y_extent, $z_extent,
-		    $x_sampling_rate, $y_sampling_rate, $z_sampling_rate,
-		    $a_scaled, $b_scaled, $c_scaled,
-		    $alpha_scaled, $beta_scaled, $gamma_scaled,
-		    $density_modifier_1, $density_modifier_2,
-		    $scaling_factor, 100 );
+		    # TODO: try to figure out what units they are calculated in.
+    		    $x_start * 10, $y_start * 10, $z_start * 10,
+    		    $x_extent * 10, $y_extent * 10, $z_extent * 10,
+    		    $x_sampling_rate, $y_sampling_rate, $z_sampling_rate,
+    		    $a_scaled, $b_scaled, $c_scaled,
+    		    $alpha_scaled, $beta_scaled, $gamma_scaled,
+    		    $density_modifier_1, $density_modifier_2,
+    		    $scaling_factor, 100 );
     close( $fh );
 
     return;
