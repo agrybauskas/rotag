@@ -69,9 +69,17 @@ sub atom_site_to_dsn6
 {
     my ( $args ) = @_;
     # Resolution - length of the cell in Angstroms.
-    my ( $atom_site, $scaling_factor, $alpha, $beta, $gamma, $ro_min, $ro_max ) =
-	( $args->{"atom_site"}, $args->{"alpha"}, $args->{"beta"},
-	  $args->{"gamma"}, $args->{"scaling_factor"}, $args->{"ro_min"}, $args->{"ro_max"} );
+    my ( $atom_site,
+	 $resolution,
+	 $scaling_factor,
+	 $alpha, $beta, $gamma,
+	 $ro_min, $ro_max ) =
+	( $args->{"atom_site"},
+	  $args->{"resolution"},
+	  $args->{"alpha"}, $args->{"beta"}, $args->{"gamma"},
+	  $args->{"scaling_factor"},
+	  $args->{"ro_min"}, $args->{"ro_max"} );
+    $resolution //= 0.1;
     $alpha //= 90.00;
     $beta //= 90.00;
     $gamma //= 90.00;
@@ -83,17 +91,29 @@ sub atom_site_to_dsn6
 	create_box( filter( { "atom_site" => $atom_site,
 			      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } ));
 
-    my $x_start = floor( $boundary_box->[0] );
-    my $y_start = floor( $boundary_box->[2] );
-    my $z_start = floor( $boundary_box->[4] );
+    my $x_start = sprintf( "%.0f", $boundary_box->[0] / $resolution );
+    my $y_start = sprintf( "%.0f", $boundary_box->[2] / $resolution );
+    my $z_start = sprintf( "%.0f", $boundary_box->[4] / $resolution );
 
-    my $x_extent = ceil( $boundary_box->[1] ) - $x_start;
-    my $y_extent = ceil( $boundary_box->[3] ) - $y_start;
-    my $z_extent = ceil( $boundary_box->[5] ) - $z_start;
+    my $x_extent =
+	sprintf( "%.0f", ( $boundary_box->[1] - $boundary_box->[0] )
+		         / $resolution );
+    my $y_extent =
+	sprintf( "%.0f", ( $boundary_box->[3] - $boundary_box->[2] )
+		         / $resolution );
+    my $z_extent =
+	sprintf( "%.0f", ( $boundary_box->[5] - $boundary_box->[4] )
+		         / $resolution );
 
-    my $x_sampling_rate = $x_extent * 8;
-    my $y_sampling_rate = $y_extent * 8;
-    my $z_sampling_rate = $z_extent * 8;
+    my $x_sampling_rate =
+	sprintf( "%.0f", ( $boundary_box->[1] - $boundary_box->[0] )
+		         / $resolution );
+    my $y_sampling_rate =
+	sprintf( "%.0f", ( $boundary_box->[3] - $boundary_box->[2] )
+		         / $resolution );
+    my $z_sampling_rate =
+	sprintf( "%.0f", ( $boundary_box->[5] - $boundary_box->[4] )
+		         / $resolution );
 
     my $a_scaled = sprintf( "%.2f", $boundary_box->[1] - $boundary_box->[0] )
 	         * $scaling_factor;
@@ -116,8 +136,8 @@ sub atom_site_to_dsn6
     binmode( $fh );
     print $fh pack( "(s>)19",
 		    # TODO: try to figure out what units they are calculated in.
-    		    $x_start * 10, $y_start * 10, $z_start * 10,
-    		    $x_extent * 10, $y_extent * 10, $z_extent * 10,
+    		    $x_start, $y_start, $z_start,
+    		    $x_extent, $y_extent, $z_extent,
     		    $x_sampling_rate, $y_sampling_rate, $z_sampling_rate,
     		    $a_scaled, $b_scaled, $c_scaled,
     		    $alpha_scaled, $beta_scaled, $gamma_scaled,
