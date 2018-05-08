@@ -91,36 +91,25 @@ sub atom_site_to_dsn6
 	create_box( filter( { "atom_site" => $atom_site,
 			      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } ));
 
+    my $a_edge_length = $boundary_box->[1] - $boundary_box->[0];
+    my $b_edge_length = $boundary_box->[3] - $boundary_box->[2];
+    my $c_edge_length = $boundary_box->[5] - $boundary_box->[4];
+
     my $x_start = sprintf( "%.0f", $boundary_box->[0] / $resolution );
     my $y_start = sprintf( "%.0f", $boundary_box->[2] / $resolution );
     my $z_start = sprintf( "%.0f", $boundary_box->[4] / $resolution );
 
-    my $x_extent =
-	sprintf( "%.0f", ( $boundary_box->[1] - $boundary_box->[0] )
-		         / $resolution );
-    my $y_extent =
-	sprintf( "%.0f", ( $boundary_box->[3] - $boundary_box->[2] )
-		         / $resolution );
-    my $z_extent =
-	sprintf( "%.0f", ( $boundary_box->[5] - $boundary_box->[4] )
-		         / $resolution );
+    my $x_extent = sprintf( "%.0f", $a_edge_length / $resolution ) + 1;
+    my $y_extent = sprintf( "%.0f", $b_edge_length / $resolution ) + 1;
+    my $z_extent = sprintf( "%.0f", $c_edge_length / $resolution ) + 1;
 
-    my $x_sampling_rate =
-	sprintf( "%.0f", ( $boundary_box->[1] - $boundary_box->[0] )
-		         / $resolution );
-    my $y_sampling_rate =
-	sprintf( "%.0f", ( $boundary_box->[3] - $boundary_box->[2] )
-		         / $resolution );
-    my $z_sampling_rate =
-	sprintf( "%.0f", ( $boundary_box->[5] - $boundary_box->[4] )
-		         / $resolution );
+    my $x_sampling_rate = sprintf( "%.0f", $a_edge_length / $resolution );
+    my $y_sampling_rate = sprintf( "%.0f", $b_edge_length / $resolution );
+    my $z_sampling_rate = sprintf( "%.0f", $c_edge_length / $resolution );
 
-    my $a_scaled = sprintf( "%.2f", $boundary_box->[1] - $boundary_box->[0] )
-	         * $scaling_factor;
-    my $b_scaled = sprintf( "%.2f", $boundary_box->[3] - $boundary_box->[2] )
-	         * $scaling_factor;
-    my $c_scaled = sprintf( "%.2f", $boundary_box->[5] - $boundary_box->[4] )
-	* $scaling_factor;
+    my $a_scaled = $a_edge_length * $scaling_factor;
+    my $b_scaled = $b_edge_length * $scaling_factor;
+    my $c_scaled = $c_edge_length * $scaling_factor;
 
     my $alpha_scaled = $alpha * $scaling_factor;
     my $beta_scaled = $beta * $scaling_factor;
