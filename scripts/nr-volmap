@@ -91,13 +91,13 @@ sub atom_site_to_dsn6
 	create_box( filter( { "atom_site" => $atom_site,
 			      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } ));
 
-    my $a_edge_length = $boundary_box->[1] - $boundary_box->[0];
-    my $b_edge_length = $boundary_box->[3] - $boundary_box->[2];
-    my $c_edge_length = $boundary_box->[5] - $boundary_box->[4];
+    my $a_edge_length = $boundary_box->[1] - $boundary_box->[0] + 1.0;
+    my $b_edge_length = $boundary_box->[3] - $boundary_box->[2] + 1.0;
+    my $c_edge_length = $boundary_box->[5] - $boundary_box->[4] + 1.0;
 
-    my $x_start = sprintf( "%.0f", $boundary_box->[0] / $resolution );
-    my $y_start = sprintf( "%.0f", $boundary_box->[2] / $resolution );
-    my $z_start = sprintf( "%.0f", $boundary_box->[4] / $resolution );
+    my $x_start = sprintf( "%.0f", ( $boundary_box->[0] - 0.5 ) / $resolution );
+    my $y_start = sprintf( "%.0f", ( $boundary_box->[2] - 0.5 ) / $resolution );
+    my $z_start = sprintf( "%.0f", ( $boundary_box->[4] - 0.5 ) / $resolution );
 
     my $x_extent = sprintf( "%.0f", $a_edge_length / $resolution ) + 1;
     my $y_extent = sprintf( "%.0f", $b_edge_length / $resolution ) + 1;
@@ -132,7 +132,7 @@ sub atom_site_to_dsn6
     		    $alpha_scaled, $beta_scaled, $gamma_scaled,
     		    $density_modifier_1, $density_modifier_2,
     		    $scaling_factor, 100 );
-    foreach( 0..$x_extent*$y_extent*$z_extent*2 ) { print $fh pack( "s", 0 );}
+    foreach( 0..$x_extent*$y_extent*$z_extent*2 ) { print $fh pack( "s", 0 ); }
     close( $fh );
 
     return;
