@@ -132,6 +132,8 @@ sub atom_site_to_dsn6
     		    $alpha_scaled, $beta_scaled, $gamma_scaled,
     		    $density_modifier_1, $density_modifier_2,
     		    $scaling_factor, 100 );
+    foreach( 0..488*100 ) { print $fh pack( "s", 0 ); }
+    foreach( 0..511 ) { print $fh pack( "s", 55 ); }
     foreach( 0..$x_extent*$y_extent*$z_extent*2 ) { print $fh pack( "s", 0 ); }
     close( $fh );
 
