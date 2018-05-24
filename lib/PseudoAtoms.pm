@@ -315,6 +315,11 @@ sub generate_library
     	        @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
     	    my @allowed_angles = @sampled_angles;
 
+            # @zero_energies is a helper variable for permutation() in order to
+            # mimick the permutated angles and match their values correctly.
+    	    my @zero_energies = map { [ 0 ] } @sampled_angles;
+            my @allowed_energies = @zero_energies;
+
     	    while( scalar( @next_atom_ids ) != 0 ) {
     	    	my @neighbour_atom_ids;
     	    	for my $atom_id ( @next_atom_ids ) {
@@ -325,10 +330,16 @@ sub generate_library
     	    	    	@allowed_angles =
     	    	    	    @{ permutation( 2, [], [ \@allowed_angles,
     	    	    				     \@sampled_angles ], [] ) };
+    	    	    	@allowed_energies =
+    	    	    	    @{ permutation( 2, [], [ \@allowed_energies,
+    	    	    				     \@zero_energies ], [] ) };
     	    		# Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
     	    		@allowed_angles =
     	    		    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
     	    		    @allowed_angles;
+    	    		@allowed_energies =
+    	    		    map { [ @{ $_->[0] } + @{ $_->[1] } ] }
+    	    		    @allowed_energies;
     	    	    }
 
     	    	    # Marks visited atoms.
@@ -340,7 +351,10 @@ sub generate_library
 
     	    	    # Starts calculating potential energy.
     	    	    my @next_allowed_angles;
-    	    	    for my $angles ( @allowed_angles ) {
+    	    	    my @next_allowed_energies;
+                    for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
+                        my $angles = $allowed_angles[$i];
+                        my $energies = $allowed_energies[$i]->[0];
     	    		my %angles =
     	    		    map { ( "chi$_" => [ $angles->[$_] ] ) }
     	    		    0..$#{ $angles };
@@ -383,11 +397,14 @@ sub generate_library
 			# value remained.
     	    		if( $potential_energy <= $cutoff ) {
     	    		    push( @next_allowed_angles, $angles );
+    	    		    push( @next_allowed_energies,
+                                  [ $energies + $potential_energy ] );
     	    		}
     	    	    }
 
     	    	    if( scalar( @allowed_angles ) > 0 ) {
     	    		@allowed_angles = @next_allowed_angles;
+    	    		@allowed_energies = @next_allowed_energies;
     	    	    } else {
     	    		die "No possible rotamer solutions were detected.";
     	    	    }
@@ -406,12 +423,14 @@ sub generate_library
 
     	    # TODO: remember to add check on inter-atom clashing inside
     	    # side-chain itself.
-    	    for my $angles ( @allowed_angles ) {
-    	    	push( @{ $rotamer_library{"$residue_id"} },
+            for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
+    	    	my $angles = $allowed_angles[$i];
+                my $energies = $allowed_energies[$i]->[0];
+                push( @{ $rotamer_library{"$residue_id"} },
     	    	      { "angles" => { map { ( "chi$_" => $angles->[$_] ) }
     	    		( 0..$#{ $angles } ) },
     	    		"potential" => $interactions,
-    	    		"potential_energy_value" => 0 } );
+    	    		"potential_energy_value" => $energies } );
     	    }
     	}
     }

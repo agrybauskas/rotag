@@ -47,7 +47,7 @@ my $version = "1.0.0";
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
-    "potential" => \$options{"interactions"},
+    "potential=s" => \$options{"interactions"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
