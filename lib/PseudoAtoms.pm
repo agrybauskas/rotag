@@ -338,7 +338,7 @@ sub generate_library
     	    		    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
     	    		    @allowed_angles;
     	    		@allowed_energies =
-    	    		    map { [ @{ $_->[0] } + @{ $_->[1] } ] }
+    	    		    map { [ $_->[0][0] ] }
     	    		    @allowed_energies;
     	    	    }
 
@@ -374,6 +374,7 @@ sub generate_library
 			# calculations might produce different results. Or maybe,
 			# the sum of potential should be calculated.
 			my $potential_energy;
+                        my $potential_sum;
     	    		foreach my $interaction_id ( keys %interaction_site ) {
     	    		    if( ( ! is_neighbour( \%atom_site,
     	    					  $pseudo_origin_id,
@@ -386,6 +387,7 @@ sub generate_library
     	    			    $potential_function->(
     	    				$pseudo_atom_site->{$pseudo_atom_id},
     	    				$atom_site{$interaction_id} );
+                                $potential_sum += $potential_energy;
     	    			last if $potential_energy > $cutoff;
     	    		    }
     	    		}
@@ -398,7 +400,7 @@ sub generate_library
     	    		if( $potential_energy <= $cutoff ) {
     	    		    push( @next_allowed_angles, $angles );
     	    		    push( @next_allowed_energies,
-                                  [ $energies + $potential_energy ] );
+                                  [ $energies + $potential_sum ] );
     	    		}
     	    	    }
 
