@@ -25,17 +25,20 @@ $atom_site = eval( $atom_site );
 $small_angle =~ s/pi/pi\(\)/g;
 
 my $rotamer_library =
-    generate_library( { "atom_site"     => $atom_site,
-			"residue_ids"   => [ $residue_id ],
-			"small_angle"   => eval( $small_angle ),
+    generate_library( { "atom_site" => $atom_site,
+			"residue_ids" => [ $residue_id ],
+			"small_angle" => eval( $small_angle ),
 			"conf_model" => $conf_model,
 			"interactions"  => $potential,
-			"energy_cutoff_atom"        => $energy_cutoff_atom  } );
+			"energy_cutoff_atom" => $energy_cutoff_atom,
+  			"energy_cutoff_summed" => $energy_cutoff_summed } );
 
-print( "#residue_id,chi0,chi1,chi2,chi3,chi4\n" );
+print( "#residue_id,potential_energy_value,chi0,chi1,chi2,chi3,chi4\n" );
 for my $residue_id ( keys %{ $rotamer_library } ) {
     for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
-	my @rotamer_entry = ( $residue_id );
+	my @rotamer_entry =
+            ( $residue_id,
+              sprintf( "%.3f",$rotamer->{"potential_energy_value"} ) );
 	for my $angle_name ( sort { $a cmp $b }
 			     keys %{ $rotamer->{"angles"} } ) {
 	    push( @rotamer_entry,

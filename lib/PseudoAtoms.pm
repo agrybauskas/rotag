@@ -400,8 +400,7 @@ sub generate_library
 			# last calculated potential. If potential was greater
 			# than the cutoff, then calculation was halted, but the
 			# value remained.
-    	    		if( $potential_energy <= $energy_cutoff_atom
-                         && $potential_energy <= $energy_cutoff_summed ) {
+    	    		if( $potential_energy <= $energy_cutoff_atom ) {
     	    		    push( @next_allowed_angles, $angles );
     	    		    push( @next_allowed_energies,
                                   [ $energies + $potential_sum ] );
@@ -432,11 +431,13 @@ sub generate_library
             for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
     	    	my $angles = $allowed_angles[$i];
                 my $energies = $allowed_energies[$i]->[0];
-                push( @{ $rotamer_library{"$residue_id"} },
-    	    	      { "angles" => { map { ( "chi$_" => $angles->[$_] ) }
-    	    		( 0..$#{ $angles } ) },
-    	    		"potential" => $interactions,
-    	    		"potential_energy_value" => $energies } );
+                if( $energies <= $energy_cutoff_summed ) {
+                    push( @{ $rotamer_library{"$residue_id"} },
+                          { "angles" => { map { ( "chi$_" => $angles->[$_] ) }
+                                              ( 0..$#{ $angles } ) },
+                            "potential" => $interactions,
+                            "potential_energy_value" => $energies } );
+                }
     	    }
     	}
     }
