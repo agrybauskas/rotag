@@ -10,7 +10,8 @@ my ( $residue_id,
      $conf_model,
      $small_angle,
      $potential,
-     $cutoff,
+     $energy_cutoff_atom,
+     $energy_cutoff_summed,
      $pdbx_dump_file ) = @ARGV;
 
 my $atom_site;
@@ -29,7 +30,7 @@ my $rotamer_library =
 			"small_angle"   => eval( $small_angle ),
 			"conf_model" => $conf_model,
 			"interactions"  => $potential,
-			"cutoff"        => $cutoff  } );
+			"energy_cutoff_atom"        => $energy_cutoff_atom  } );
 
 print( "#residue_id,chi0,chi1,chi2,chi3,chi4\n" );
 for my $residue_id ( keys %{ $rotamer_library } ) {

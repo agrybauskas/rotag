@@ -211,7 +211,10 @@ sub generate_library
     my $small_angle = $args->{"small_angle"};
     my $conf_model = $args->{"conf_model"};
     my $interactions = $args->{"interactions"};
-    my $cutoff = $args->{"cutoff"};
+    my $energy_cutoff_atom = $args->{"energy_cutoff_atom"};
+    my $energy_cutoff_summed = $args->{"energy_cutoff_summed"};
+
+    $energy_cutoff_summed //= "Inf";
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -388,7 +391,7 @@ sub generate_library
     	    				$pseudo_atom_site->{$pseudo_atom_id},
     	    				$atom_site{$interaction_id} );
                                 $potential_sum += $potential_energy;
-    	    			last if $potential_energy > $cutoff;
+    	    			last if $potential_energy > $energy_cutoff_atom;
     	    		    }
     	    		}
 
@@ -397,7 +400,8 @@ sub generate_library
 			# last calculated potential. If potential was greater
 			# than the cutoff, then calculation was halted, but the
 			# value remained.
-    	    		if( $potential_energy <= $cutoff ) {
+    	    		if( $potential_energy <= $energy_cutoff_atom
+                         && $potential_energy <= $energy_cutoff_summed ) {
     	    		    push( @next_allowed_angles, $angles );
     	    		    push( @next_allowed_energies,
                                   [ $energies + $potential_sum ] );
