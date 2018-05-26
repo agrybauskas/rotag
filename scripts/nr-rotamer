@@ -31,9 +31,15 @@ use PseudoAtoms qw( generate_library );
 #*                 exponential | combined)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
-#*    --cutoff <float> (default: 0.4)
-#*        the maximum value of energy potential that allows for further rotamer
-#*        search.
+#*    --cutoff-atom <float> (default: 0.4)
+#*        the maximum value of energy potential for each atom that allows for
+#*        further rotamer search.
+# TODO: the greater quantity of atoms introduces the greater chance for the
+# residue to interact with atoms. Decide, what the default value should be.
+# Maybe, should try to take top n-th lowest energy structures.
+#*    --cutoff-residue <float> (default: 1.0)
+#*        filters out rotamers which has the potential energy greater than the
+#*        cutoff value.
 #*    --version
 #*        print version.
 
@@ -48,7 +54,8 @@ GetOptions(
     "model=s" => \$options{"conf_model"},
     "potential=s" => \$options{"interactions"},
     "angle-step=s" => \$options{"small_angle"},
-    "cutoff=s" => \$options{"cutoff"},
+    "cutoff-atom=s" => \$options{"energy_cutoff_atom"},
+    "cutoff-residue=s" => \$options{"energy_cutoff_residue"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -65,7 +72,8 @@ GetOptions(
 $options{"conf_model"} = "rotation_only" unless $options{"conf_model"};
 $options{"interactions"} = "leonard_jones" unless $options{"interactions"};
 $options{"small_angle"} = 0.1 unless $options{"small_angle"};
-$options{"cutoff"} = 0.4 unless $options{"cutoff"};
+$options{"energy_cutoff_atom"} = 0.4 unless $options{"energy_cutoff_atom"};
+$options{"energy_cutoff_residue"} = 1.0 unless $options{"energy_cutoff_residue"};
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -91,12 +99,15 @@ my @residue_ids =
 
 # Starts generating rotamer library.
 my $rotamer_library =
-    generate_library( { "atom_site" => $selected_atom_site,
-			"residue_ids" => \@residue_ids,
-			"small_angle" => $options{"small_angle"} * pi(),
-			"conf_model" => $options{"conf_model"},
-			"interactions" => $options{"interactions"},
-			"cutoff" => $options{"cutoff"} } );
+    generate_library(
+        { "atom_site" => $selected_atom_site,
+          "residue_ids" => \@residue_ids,
+          "small_angle" => $options{"small_angle"} * pi(),
+          "conf_model" => $options{"conf_model"},
+          "interactions" => $options{"interactions"},
+          "energy_cutoff_atom" => $options{"energy_cutoff_atom"},
+          "energy_cutoff_residue" => $options{"energy_cutoff_residue"}
+        } );
 
 # Collects residue angle and energy data.
 # TODO: should not forget adding atoms that make up dihedral angles.

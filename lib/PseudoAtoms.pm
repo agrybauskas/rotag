@@ -212,9 +212,9 @@ sub generate_library
     my $conf_model = $args->{"conf_model"};
     my $interactions = $args->{"interactions"};
     my $energy_cutoff_atom = $args->{"energy_cutoff_atom"};
-    my $energy_cutoff_summed = $args->{"energy_cutoff_summed"};
+    my $energy_cutoff_residue = $args->{"energy_cutoff_residue"};
 
-    $energy_cutoff_summed //= "Inf";
+    $energy_cutoff_residue //= "Inf";
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -431,7 +431,7 @@ sub generate_library
             for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
     	    	my $angles = $allowed_angles[$i];
                 my $energies = $allowed_energies[$i]->[0];
-                if( $energies <= $energy_cutoff_summed ) {
+                if( $energies <= $energy_cutoff_residue ) {
                     push( @{ $rotamer_library{"$residue_id"} },
                           { "angles" => { map { ( "chi$_" => $angles->[$_] ) }
                                               ( 0..$#{ $angles } ) },

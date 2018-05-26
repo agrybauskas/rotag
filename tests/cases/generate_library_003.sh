@@ -6,7 +6,7 @@ pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.du
 conf_model="rotation_only"
 potential="exponential"
 energy_cutoff_atom=0.45
-energy_cutoff_summed="Inf"
+energy_cutoff_residue="Inf"
 residue_id="18"
 small_angle="0.1*pi"
 
@@ -15,5 +15,5 @@ $(dirname "$0")/../scripts/generate_library ${residue_id} \
 	                                    ${small_angle} \
 	                                    ${potential} \
 					    ${energy_cutoff_atom} \
-					    ${energy_cutoff_summed} \
+					    ${energy_cutoff_residue} \
 					    ${pdbx_dump_file}
