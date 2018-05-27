@@ -136,6 +136,7 @@ sub filter
     my $data = $args->{"data"};
     my $is_list = $args->{"is_list"};
     my $order = $args->{"order"}; # { "id" => [ 5,6,8,10 ] }.
+    my $groups = $args->{"groups"}; # { "id" => [ [ 5,6,8 ], [10] ] }.
     my $data_with_id = $args->{"data_with_id"};
 
     die( "No PDBx data structure was loaded " ) if ! defined $atom_site;
@@ -199,6 +200,27 @@ sub filter
 		    $filtered_atoms{"$data_atom_id"}{"[local]_selection_order"} =
 			$order_counter;
 		    $order_counter++;
+		}
+    	    }
+    	}
+    }
+
+    # Adds group variable as described by $groups. Only one key can be in
+    # %$groups.
+    # TODO: looks like repetitive code as in $order parsing.
+    if( defined $groups ) {
+	my $group_counter = 1;
+	for my $attribute ( keys %{ $groups } ) {
+    	    for my $data ( @{ $groups->{"$attribute"} } ) {
+		my @data_atom_ids =
+		    @{ filter( { "atom_site" => \%filtered_atoms,
+				 "include" => { "$attribute" => $data },
+				 "data" => [ "id" ],
+				 "is_list" => 1 } ) };
+		for my $data_atom_id ( @data_atom_ids ) {
+		    $filtered_atoms{"$data_atom_id"}{"[local]_selection_group"} =
+			$group_counter;
+		    $group_counter++;
 		}
     	    }
     	}
