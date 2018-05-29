@@ -20,7 +20,8 @@ my ( $include_specifier,
      $exclude_specifier,
      $data_specifier,
      $pdbx_dump_file,
-     $order_specifier ) = @ARGV;
+     $order_specifier,
+     $group_specifier ) = @ARGV;
 
 my %include_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 			  map { [ split( " ", $_ ) ] }
@@ -32,6 +33,10 @@ my %order_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 			map { [ split( " ", $_ ) ] }
 			split( "&", $order_specifier ) )
                       if defined $order_specifier;
+my %group_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+			map { [ split( " ", $_ ) ] }
+			split( "&", $group_specifier ) )
+                      if defined $group_specifier;
 my @data_specifier = split( ",", $data_specifier );
 
 my $atom_site;
@@ -55,6 +60,10 @@ if( $data_specifier ) {
     to_pdbx( { "atom_site" => filter( { "atom_site" => $atom_site,
 					"order"   => \%order_specifier } ),
 	       "add_atom_attributes" => [ "[local]_selection_order" ] } );
+} elsif( $group_specifier ) {
+    to_pdbx( { "atom_site" => filter( { "atom_site" => $atom_site,
+                                        "groups" => \%group_specifier } ),
+	       "add_atom_attributes" => [ "[local]_selection_group" ] } );
 } else {
     to_pdbx( { "atom_site" => filter( { "atom_site" => $atom_site,
 					"include"   => \%include_specifier,
