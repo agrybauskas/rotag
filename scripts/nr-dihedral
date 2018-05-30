@@ -30,7 +30,7 @@ use PDBxParser qw( filter
 #*        calculates all dihedral angles of selected residue(-s)
 #*        (nr-select should be used for residue selection).
 #*    --degrees
-#*        angles are in degrees (default ).
+#*        angles are in degrees (default).
 #*    --version
 #*        print version.
 
