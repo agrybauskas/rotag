@@ -220,8 +220,8 @@ sub filter
 		for my $data_atom_id ( @data_atom_ids ) {
 		    $filtered_atoms{"$data_atom_id"}{"[local]_selection_group"} =
 			$group_counter;
-                    $group_counter++;
 		}
+                $group_counter++;
     	    }
     	}
     }

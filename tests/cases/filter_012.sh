@@ -7,7 +7,7 @@ include_specifier=""
 exclude_specifier=""
 data_specifier=""
 order_specifier=
-group_specifier="id 150,148,152,151"
+group_specifier="type_symbol C,N,O"
 
 "$(dirname "$0")"/../scripts/filter "${include_specifier}" \
 		                    "${exclude_specifier}" \
