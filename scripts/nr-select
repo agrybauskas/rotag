@@ -44,13 +44,11 @@ use Grammar::SelectionParser;
 #*            &  - and operator;
 #*            |  - or operator;
 #*            !  - negation operator;
-#*            () - parentheses.
+#*            () - parentheses;
+#*            ;  - group/order selection separator.
 #*    --select <str> [default: target]
 #*        command (same as --target) describing the atoms that will be marked as
 #*        selected (S).
-#*    --grouped
-#*        groups selected atoms by [local]_selection_group attribute description.
-#*        Only --target is affected.
 #*    --keep-ignored
 #*        keeps ignored atoms.
 #*    --version
@@ -61,14 +59,12 @@ use Grammar::SelectionParser;
 my %options;
 
 my $version = "1.0.0";
-my $is_grouped = 0;
 my $keep_ignored = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "target=s" => \$options{"target_cl"},
     "select=s" => \$options{"select_cl"},
-    "grouped" => sub { $is_grouped = 1 },
     "keep-ignored" => sub { $keep_ignored = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
@@ -102,12 +98,31 @@ if( $options{"pdbx_file"} ) {
 # Parses command line arguments to select certain atoms in PDBx.
 my $selection_parser = new SelectionParser();
 
-my @target_atom_ids =
-    @{ filter( { "atom_site" => $selection_parser->parser( $atom_site,
-							   $options{"target_cl"},
-							   "id" ),
-		 "data" => [ "id" ],
-		 "is_list" => 1 } ) };
+my @target_cls = split( ";", $options{"target_cl"} );
+
+my @target_atom_ids;
+if( scalar( @target_cls ) > 1 ) {
+    my $group_id = 1;
+    for my $target_cl ( @target_cls ) {
+	push( @target_atom_ids,
+	      @{ filter( { "atom_site" =>
+			       $selection_parser->parser( $atom_site,
+							  $target_cl,
+							  "id" ),
+			   "data" => [ "id" ],
+			   "is_list" => 1,
+			   "group_id" => $group_id } ) } );
+	$group_id++;
+    }
+} else {
+    @target_atom_ids =
+	@{ filter( { "atom_site" =>
+			 $selection_parser->parser( $atom_site,
+						    $options{"target_cl"},
+						    "id" ),
+		     "data" => [ "id" ],
+		     "is_list" => 1 } ) };
+}
 
 my @selected_atom_ids =
     @{ filter( { "atom_site" => $selection_parser->parser( $atom_site,
@@ -148,4 +163,4 @@ if( $options{"pdbx_file"} ) {
 to_pdbx( { "atom_site" => $atom_site,
 	   $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
 	   "add_atom_attributes" => [ "[local]_selection_state",
-				      "[local]_selection_order" ] } );
+				      "[local]_selection_group" ] } );
