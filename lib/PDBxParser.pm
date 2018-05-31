@@ -136,6 +136,7 @@ sub filter
     my $data = $args->{"data"};
     my $is_list = $args->{"is_list"};
     my $data_with_id = $args->{"data_with_id"};
+    my $group_id = $args->{"group_id"};
 
     die( "No PDBx data structure was loaded " ) if ! defined $atom_site;
 
@@ -176,6 +177,14 @@ sub filter
     	    	}
     	    }
     	}
+    }
+
+    # TODO: again another iteration through atom data structure. Should look into
+    # it how to reduce the quantity of iterations.
+    if( defined $group_id ) {
+	for my $atom_id ( keys %filtered_atoms ) {
+	    $filtered_atoms{$atom_id}{'[local]_selection_group'} = $group_id;
+	}
     }
 
     # Extracts specific data, if defined.
