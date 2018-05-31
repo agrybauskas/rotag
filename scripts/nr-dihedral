@@ -82,10 +82,10 @@ if( $calc_atom_angles ) {
     my $dihedral_site =
 	filter( { "atom_site" => $atom_site,
 		  "include" => { "[local]_selection_state" => [ "T" ] },
-		  "exclude" => { "[local]_selection_order" => [ "?" ] } } );
+		  "exclude" => { "[local]_selection_group" => [ "?" ] } } );
     my @dihedral_atom_ids =
-	sort { $dihedral_site->{"$a"}{"[local]_selection_order"}
-	   <=> $dihedral_site->{"$b"}{"[local]_selection_order"} }
+	sort { $dihedral_site->{"$a"}{"[local]_selection_group"}
+	   <=> $dihedral_site->{"$b"}{"[local]_selection_group"} }
         keys %{ $dihedral_site };
 
     my $dihedral_id = 1;
