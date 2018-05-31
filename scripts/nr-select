@@ -101,8 +101,8 @@ my $selection_parser = new SelectionParser();
 my @target_cls = split( ";", $options{"target_cl"} );
 
 my @target_atom_ids;
+my $group_id = 1;
 if( scalar( @target_cls ) > 1 ) {
-    my $group_id = 1;
     for my $target_cl ( @target_cls ) {
 	push( @target_atom_ids,
 	      @{ filter( { "atom_site" =>
@@ -121,7 +121,8 @@ if( scalar( @target_cls ) > 1 ) {
 						    $options{"target_cl"},
 						    "id" ),
 		     "data" => [ "id" ],
-		     "is_list" => 1 } ) };
+		     "is_list" => 1,
+		     "group_id" => $group_id } ) };
 }
 
 my @selected_atom_ids =
