@@ -89,11 +89,31 @@ if( $is_strict ) {
                           { "[local]_selection_group" => [ $group_ids[$i+1] ] },
                             "data" => [ "label_atom_id",
                                         "Cartn_x", "Cartn_y", "Cartn_z" ] } );
-        # Sorts by residue name.
+        # Checks the length of the atom sets.
+        # HACK: error message is duplicated in Measure::rmsd().
+        die( "Comparing different sizes of sets of the atoms is not allowed." )
+            if scalar(@{ $first_group_data }) ne scalar(@{ $second_group_data });
+
+        # Sorts by residue name first by checking if their residue names are
+        # correct.
         $first_group_data =
             [ sort { $a->[0] cmp $b->[0] } @{ $first_group_data } ];
         $second_group_data =
             [ sort { $a->[0] cmp $b->[0] } @{ $second_group_data } ];
+        my @first_group_coord;
+        my @second_group_coord;
+        for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
+            if( $first_group_data->[$i][0] ne $second_group_data->[$i][0] ) {
+                die( "Atom names do not match: $first_group_data->[$i][0] and " .
+                     "$second_group_data->[$i][0]." );
+            } else {
+                push( @first_group_coord,
+                      [ (@{ $first_group_data->[$i] })[1..3] ] );
+                push( @second_group_coord,
+                      [ (@{ $second_group_data->[$i] })[1..3] ] );
+            }
+        }
+        push( @rmsd, rmsd( \@first_group_coord, \@second_group_coord ) );
     }
 
 } else {
@@ -116,6 +136,3 @@ if( $is_strict ) {
 foreach( @rmsd ) {
     printf( "%.3f\n", $_ );
 }
-
-# my %pdbx_loops;
-# to_pdbx( { "pdbx_loops" => \%pdbx_loops } );
