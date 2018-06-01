@@ -10,11 +10,11 @@ use ConnectAtoms qw( create_box );
 use PDBxParser qw( filter
                    obtain_atom_site );
 
-#*nr-volmap
+#*rotag-volmap
 #*    generate volumetric map (DSN6) from atom coordinates.
 #*
 #*USAGE:
-#*    nr-volmap --input input.cif > output.cif
+#*    rotag-volmap --input input.cif > output.cif
 #*
 #*OPTIONS:
 #*    --input <file> | <stdin>
@@ -147,7 +147,7 @@ if( $options{"pdbx_file"} ) {
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
 } else {
-    die( "Use command \"nr-volmap --help\" in order to see the manual.\n" );
+    die( "Use command \"rotag-volmap --help\" in order to see the manual.\n" );
 }
 
 # ----------------------------------------------------------------------------- #

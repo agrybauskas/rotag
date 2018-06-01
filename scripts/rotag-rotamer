@@ -13,12 +13,12 @@ use PDBxParser qw( filter
 
 use PseudoAtoms qw( generate_library );
 
-#*nr-rotamer
+#*rotag-rotamer
 #*    generate rotamer library.
 #*
 #*USAGE:
-#*    nr-rotamer --input input.cif --potential combined > output.cif
-#*    nr-rotamer --input input.cif --cutoff 0.005 > output.cif
+#*    rotag-rotamer --input input.cif --potential combined > output.cif
+#*    rotag-rotamer --input input.cif --cutoff 0.005 > output.cif
 #*
 #*OPTIONS:
 #*    --input <file> | <stdin>
@@ -84,7 +84,7 @@ if( $options{"pdbx_file"} ) {
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
 } else {
-    die( "Use command \"nr-rotamer --help\" in order to see the manual.\n" );
+    die( "Use command \"rotag-rotamer --help\" in order to see the manual.\n" );
 }
 
 my $selected_atom_site =

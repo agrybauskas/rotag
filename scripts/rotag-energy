@@ -21,12 +21,12 @@ use AtomInteractions qw( hard_sphere
                          leonard_jones
                          combined );
 
-#*nr-energy
+#*rotag-energy
 #*    calculates potential energy of selected atoms.
 #*
 #*USAGE:
-#*    nr-energy --input input.cif > output.cif
-#*    nr-energy --potential hard_sphere --input input.cif > output.cif
+#*    rotag-energy --input input.cif > output.cif
+#*    rotag-energy --potential hard_sphere --input input.cif > output.cif
 #*
 #*OPTIONS:
 #*    --input <file> | <stdin>
@@ -69,7 +69,7 @@ if( $options{"pdbx_file"} ) {
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
 } else {
-    die( "Use command \"nr-generate --help\" in order to see the manual.\n" );
+    die( "Use command \"rotag-energy --help\" in order to see the manual.\n" );
 }
 
 # Calculates potential energy.

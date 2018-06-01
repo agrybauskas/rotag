@@ -13,22 +13,22 @@ use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
 
-#*nr-dihedral
+#*rotag-dihedral
 #*    calculates dihedral angles selected atoms or residues.
 #*
 #*USAGE:
-#*    nr-dihedral --atoms --input input.cif > output.cif
-#*    nr-dihedral --residues --input input.cif > output.cif
+#*    rotag-dihedral --atoms --input input.cif > output.cif
+#*    rotag-dihedral --residues --input input.cif > output.cif
 #*
 #*OPTIONS:
 #*    --input <file> | <stdin>
 #*        PDBx file.
 #*    --atoms
 #*        calculates dihedral angle from the four coordinates of the selected
-#*        atoms (nr-select should be used for residue selection).
+#*        atoms (rotag-select should be used for residue selection).
 #*    --residues
 #*        calculates all dihedral angles of selected residue(-s)
-#*        (nr-select should be used for residue selection).
+#*        (rotag-select should be used for residue selection).
 #*    --degrees
 #*        angles are in degrees (default).
 #*    --version
@@ -69,7 +69,7 @@ if( $options{"pdbx_file"} ) {
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
 } else {
-    die( "Use command \"nr-dihedral --help\" in order to see the manual.\n" );
+    die( "Use command \"rotag-dihedral --help\" in order to see the manual.\n" );
 }
 
 # Calculates dihedral angles
