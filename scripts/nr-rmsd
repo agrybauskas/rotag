@@ -4,10 +4,12 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use List::MoreUtils qw( uniq );
 
 use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
+use Measure qw( rmsd );
 
 #*nr-rmsd
 #*    calculates rmsd between two groups of atoms.
@@ -18,6 +20,9 @@ use PDBxParser qw( filter
 #*OPTIONS:
 #*    --input <file> | <stdin>
 #*        PDBx file.
+#*    --strict
+#*        uses atom names to validate the pairs of atoms. Otherwise, only
+#*        coordinates are used and correct pairing is up to the PDBx file.
 #*    --version
 #*        print version.
 
@@ -26,9 +31,11 @@ use PDBxParser qw( filter
 my %options;
 
 my $version = "1.0.0";
+my $is_strict = 0;
 
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
+    "strict" => sub { $is_strict = 1 },
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -53,7 +60,62 @@ if( $options{"pdbx_file"} ) {
     die( "Use command \"nr-dihedral --help\" in order to see the manual.\n" );
 }
 
-# Calculates dihedral angles
+# Calculates RMSD.
 my %pdbx_loops;
+$pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
+    [ "id", "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id", "value" ];
 
-to_pdbx( { "pdbx_loops" => \%pdbx_loops } );
+my $rmsd_atom_site =
+    filter( { "atom_site" => $atom_site,
+              "include" => { "[local]_selection_state" => [ "T" ] },
+              "exclude" => { "[local]_selection_group" => [ "?" ] } } );
+my @group_ids =
+    uniq( @{ filter( { "atom_site" => $rmsd_atom_site,
+                       "data" => [ "[local]_selection_group" ],
+                       "is_list" => 1 } ) } );
+
+my @rmsd;
+if( $is_strict ) {
+    for( my $i = 0; $i <= $#group_ids; $i = $i + 2 ) {
+        my $first_group_data =
+            filter( { "atom_site" => $rmsd_atom_site,
+                      "include" =>
+                          { "[local]_selection_group" => [ $group_ids[$i] ] },
+                      "data" => [ "label_atom_id",
+                                  "Cartn_x", "Cartn_y", "Cartn_z" ] } );
+        my $second_group_data =
+            filter( { "atom_site" => $rmsd_atom_site,
+                      "include" =>
+                          { "[local]_selection_group" => [ $group_ids[$i+1] ] },
+                            "data" => [ "label_atom_id",
+                                        "Cartn_x", "Cartn_y", "Cartn_z" ] } );
+        # Sorts by residue name.
+        $first_group_data =
+            [ sort { $a->[0] cmp $b->[0] } @{ $first_group_data } ];
+        $second_group_data =
+            [ sort { $a->[0] cmp $b->[0] } @{ $second_group_data } ];
+    }
+
+} else {
+    for( my $i = 0; $i <= $#group_ids; $i = $i + 2 ) {
+        my $first_group_coord =
+            filter( { "atom_site" => $rmsd_atom_site,
+                      "include" =>
+                          { "[local]_selection_group" => [ $group_ids[$i] ] },
+                      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } );
+        my $second_group_coord =
+            filter( { "atom_site" => $rmsd_atom_site,
+                      "include" =>
+                          { "[local]_selection_group" => [ $group_ids[$i+1] ] },
+                      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } );
+        push( @rmsd, rmsd( $first_group_coord, $second_group_coord ) );
+    }
+}
+
+# TODO: change to cif format.
+foreach( @rmsd ) {
+    printf( "%.3f\n", $_ );
+}
+
+# my %pdbx_loops;
+# to_pdbx( { "pdbx_loops" => \%pdbx_loops } );

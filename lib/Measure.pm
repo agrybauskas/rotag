@@ -291,11 +291,16 @@ sub rmsd
 
     my $rmsd = 0;
 
+    # Gives the error if the size of the sets are different.
+    if( scalar( @{ $first_set } ) != scalar( @{ $second_set } ) ) {
+        die( "Comparing different sizes of sets of the atoms is not allowed." ) ;
+    }
+
     # Sums up sqaured differences of coordinates.
     for( my $i = 0; $i <= $#{ $first_set }; $i++ ) {
     	$rmsd += ( $first_set->[$i][0] - $second_set->[$i][0] )**2
     	       + ( $first_set->[$i][1] - $second_set->[$i][1] )**2
-    	       + ( $first_set->[$i][2] - $second_set->[$i][2] )**2;
+    	       + ( $first_set->[$i][2] - $second_set->[$i][2] )**2
     }
 
     # Devides by the number of member of the set.
