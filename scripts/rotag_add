@@ -13,18 +13,18 @@ use PDBxParser qw( filter
 use PseudoAtoms qw( generate_pseudo );
 use SidechainModels qw( rotation_only  );
 
-#*rotag-add
+#*rotag_add
 #*    adds pseudo atoms.
 #*
 #*USAGE:
-#*    rotag-add --rotamer --input input.cif > output.cif
+#*    rotag_add --rotamer --input input.cif > output.cif
 #*
 #*OPTIONS:
 #*    --input <file> | <stdin>
 #*        PDBx file.
 #*    --rotamer-atoms
 #*        adds pseudo atoms of defined rotamers. Input .cif has to contain
-#*        _[local]_rotamer_angle category (can be produced with rotag-rotamer).
+#*        _[local]_rotamer_angle category (can be produced with rotag_rotamer).
 #*    --version
 #*        print version.
 
@@ -59,7 +59,7 @@ if( $options{"pdbx_file"} ) {
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
 } else {
-    die( "Use command \"rotag-add --help\" in order to see the manual.\n" );
+    die( "Use command \"rotag_add --help\" in order to see the manual.\n" );
 }
 
 if( $add_rotamer_atoms ) {
@@ -72,7 +72,7 @@ if( $add_rotamer_atoms ) {
 	$pdbx_loops =
 	    obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
     } else {
-	die( "No library was detected. Generate library with 'rotag-rotamer' " .
+	die( "No library was detected. Generate library with 'rotag_rotamer' " .
 	     "program." );
     }
 

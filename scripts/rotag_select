@@ -13,12 +13,12 @@ use PDBxParser qw( filter
                    to_pdbx );
 use Grammar::SelectionParser;
 
-#*rotag-select
+#*rotag_select
 #*    select and mark atoms of interest by adding selection state [T|S|I] to
 #*    _atom_site category in PDBx.
 #*
 #*USAGE:
-#*    rotag-select --input input.cif --target 'resname ASP' --select 'resid 1-10' \
+#*    rotag_select --input input.cif --target 'resname ASP' --select 'resid 1-10' \
 #*              > output.cif
 #*
 #*OPTIONS:
@@ -92,7 +92,7 @@ if( $options{"pdbx_file"} ) {
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $atom_site = obtain_atom_site( '-' );
 } else {
-    die( "Use command \"rotag-select --help\" in order to see the manual.\n" );
+    die( "Use command \"rotag_select --help\" in order to see the manual.\n" );
 }
 
 # Parses command line arguments to select certain atoms in PDBx.
