@@ -63,9 +63,14 @@ use SidechainModels qw( rotation_only );
 
 sub generate_pseudo
 {
-    my ( $atom_site, $atom_specifier, $angle_values, $last_atom_id ) = @_;
+    my ( $atom_site,
+	 $atom_specifier,
+	 $angle_values,
+	 $last_atom_id,
+	 $alt_group_id ) = @_;
 
     $last_atom_id //= max( keys %{ $atom_site } );
+    $alt_group_id //= 1;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
     my %pseudo_atom_site;
@@ -114,7 +119,7 @@ sub generate_pseudo
     	    	  "id" => $last_atom_id,
     	    	  "type_symbol" => $atom_site{$atom_id}{"type_symbol"},
     	    	  "label_atom_id" => $atom_site{$atom_id}{"label_atom_id"},
-    	    	  "label_alt_id" => "1",
+    	    	  "label_alt_id" => $alt_group_id,
     	    	  "label_comp_id" => $atom_site{$atom_id}{"label_comp_id"},
     	    	  "label_asym_id" => $atom_site{$atom_id}{"label_asym_id"},
     	    	  "label_entity_id" => $atom_site{$atom_id}{"label_entity_id"},
@@ -151,9 +156,10 @@ sub generate_pseudo
 
 sub generate_rotamer
 {
-    my ( $atom_site, $angle_values, $last_atom_id ) = @_;
+    my ( $atom_site, $angle_values, $last_atom_id, $alt_group_id ) = @_;
 
     $last_atom_id //= max( keys %{ $atom_site } );
+    $alt_group_id //= 1;
 
     my %atom_site = %{ $atom_site };
     my %rotamer_atom_site;
@@ -179,7 +185,8 @@ sub generate_rotamer
     	    	  %{ generate_pseudo( { %atom_site, %rotamer_atom_site },
     	    			      { "id" => [ $atom_id ] },
     	    			      \%angles,
-    	    			      $last_atom_id ) } );
+    	    			      $last_atom_id,
+				      $alt_group_id ) } );
     	    $last_atom_id++;
     	}
     }

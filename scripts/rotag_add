@@ -117,6 +117,7 @@ if( $add_rotamer_atoms ) {
     my %rotamer_atom_site;
     for my $atom_id ( @{ $target_atom_ids } ) {
     	my $residue_id = $selected_atom_site->{$atom_id}{"label_seq_id"};
+	my $alt_group_id = 1;
     	for my $rotamer_id ( sort keys %{ $rotamer_angles{$residue_id} } ) {
     	    my $rotamer_angles = $rotamer_angles{$residue_id}{$rotamer_id};
     	    %rotamer_atom_site =
@@ -124,8 +125,10 @@ if( $add_rotamer_atoms ) {
     	    	  %{ generate_pseudo( $selected_atom_site,
     	    			      { "id" => [ $atom_id ] },
     	    			      $rotamer_angles,
-    	    			      $last_atom_id ) } );
+    	    			      $last_atom_id,
+				      $alt_group_id ) } );
     	    $last_atom_id++;
+	    $alt_group_id++;
     	}
     }
 
