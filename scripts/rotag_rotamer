@@ -34,9 +34,6 @@ use PseudoAtoms qw( generate_library );
 #*    --cutoff-atom <float> (default: 0.4)
 #*        the maximum value of energy potential for each atom that allows for
 #*        further rotamer search.
-# TODO: the greater quantity of atoms introduces the greater chance for the
-# residue to interact with atoms. Decide, what the default value should be.
-# Maybe, should try to take top n-th lowest energy structures.
 #*    --cutoff-residue <float> (default: 1.0)
 #*        filters out rotamers which has the potential energy greater than the
 #*        cutoff value.
@@ -68,7 +65,7 @@ GetOptions(
 		       exit; } )
     or die "Error in command line argument.";
 
-# Default options. # TODO: should make defaults according to selected potentials.
+# Default options.
 $options{"conf_model"} = "rotation_only" unless $options{"conf_model"};
 $options{"interactions"} = "leonard_jones" unless $options{"interactions"};
 $options{"small_angle"} = 0.1 unless $options{"small_angle"};

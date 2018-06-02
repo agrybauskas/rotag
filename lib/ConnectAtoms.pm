@@ -71,8 +71,7 @@ sub create_box
 
 sub grid_box
 {
-    my ( $atom_site, $edge_length, $atom_ids ) = @_; # TODO: maybe should
-                                                     # take out $atom_ids.
+    my ( $atom_site, $edge_length, $atom_ids ) = @_;
 
     # Default value for edge length is two times greater than the largest
     # covalent radius.

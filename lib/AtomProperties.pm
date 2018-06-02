@@ -10,7 +10,6 @@ our @EXPORT_OK = qw( %ATOMS
 
 # -----------------------------	Atom properties ------------------------------- #
 
-# TODO: should determine covalent radii by investigating amino acid structures.
 our %ATOMS = (
     "." => { # Placeholder atom, point in space.
 	     "covalent_radius" => {

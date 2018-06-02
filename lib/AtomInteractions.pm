@@ -63,7 +63,7 @@ sub hard_sphere
 #
 #     where: r - distance between center of atoms;
 #            vdw - Van der Waals radius;
-#            epsilon - energy coefficient; TODO: should study more about it.
+#            epsilon - energy coefficient;
 #            n - number increases the slope of potential.
 # Input:
 #     $atom_i, $atom_j - atom data structure (see PDBxParser.pm).
@@ -103,7 +103,7 @@ sub soft_sphere
 #
 #     where: r - distance between center of atoms;
 #            vdw - Van der Waals radius;
-#            epsilon - energy coefficient; TODO: should study more about it.
+#            epsilon - energy coefficient;
 # Input:
 #     $atom_i, $atom_j - atom data structure (see PDBxParser.pm).
 # Output:
@@ -139,7 +139,7 @@ sub exponential
 # 4 * epsilon * [ ( sigma / r ) ** 12 - ( sigma / r ) ** 6 ]
 #
 #     where: r - distance between center of atoms;
-#            epsilon - energy coefficient;  TODO: should study more about it.
+#            epsilon - energy coefficient;
 #            sigma - sum of Van der Waals radii of two atoms.
 # Input:
 #     $atom_i, $atom_j - atom data structure (see PDBxParser.pm).
@@ -179,7 +179,6 @@ sub combined
 	 $cutoff_start,
 	 $cutoff_end ) = @_;
 
-    # TODO: must fit to actual structure data.
     $ljones_epsilon //= 1.0;
     $coulomb_epsilon //= 0.01;
     $h_bond_epsilon //= 1.0;

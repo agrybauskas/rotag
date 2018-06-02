@@ -4,8 +4,9 @@
    _[local]_ cif, because residue ids are not unique by themselves.
 -- Decide how to handle dihedral angle calculations on residues without
    rotatable bonds.
--- Make rotamers show properly in Jmol by assigning label_alt_id different
+++ Make rotamers show properly in Jmol by assigning label_alt_id different
    labels.
--- Maybe nr-select could filter also by residue or atom ids, because when parsing
-   files and using pipes some of the [local] data might be lost or not needed.
--- Order maybe should be changed to group only.
+-- Maybe rotag-select could filter also by residue or atom ids, because when
+   parsing files and using pipes some of the [local] data might be lost or not
+   needed.
+++ Order maybe should be changed to group only.

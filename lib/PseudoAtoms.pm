@@ -377,12 +377,6 @@ sub generate_library
     	    		    $pseudo_atom_site->{$pseudo_atom_id}
                                                {"origin_atom_id"};
 
-			# TODO: decide, if choosing that each interaction should
-			# not reach certain boundaries will be suitable for the
-			# model. Otherwise, there might be interactions that
-			# outweight the clashes and depending on the order of
-			# calculations might produce different results. Or maybe,
-			# the sum of potential should be calculated.
 			my $potential_energy;
                         my $potential_sum;
     	    		foreach my $interaction_id ( keys %interaction_site ) {
@@ -513,10 +507,7 @@ sub add_hydrogens
     	#
     	# Depending on hybridization and present bond connections, adds missing
     	# hydrogens.
-    	# TODO: in the future, should adjust sp3, sp2 angles according to
-    	# experimental data, not model.
     	my %hydrogen_coord = map { $_ => undef } @missing_hydrogens;
-    	# my $transf_matrix;
 
     	if( $hybridization eq "sp3" ) {
 	    # Because bond length depends on hybridization of atoms, bond length

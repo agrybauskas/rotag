@@ -180,10 +180,6 @@ sub all_dihedral
 			   "data" => [ "label_seq_id" ],
 			   "is_list" => 1 } ) } );
 
-    # TODO: try to figure out, where these functions that modify states should be
-    # used during the run of functions (in the beginning of script or during
-    # every execute of the function that needs the result of the previously
-    # mentioned functions).
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
     connect_atoms( \%atom_site );
