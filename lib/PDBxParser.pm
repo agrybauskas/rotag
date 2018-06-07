@@ -327,16 +327,18 @@ sub to_pdbx
 	print "loop_\n";
 
 	for my $attribute ( @{ $atom_attributes } ) {
-	    print "_atom_site.$attribute\n";
+	    $attribute eq $atom_attributes->[$#{ $atom_attributes }] ?
+                print "_atom_site.$attribute" :
+                print "_atom_site.$attribute\n";
 	}
 
 	for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
 	for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
 	    if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
 		if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-		    print( " ", $atom_site->{$id}{$atom_attributes->[$i]}, " " );
+		    print( " ", $atom_site->{$id}{$atom_attributes->[$i]} );
 		} else {
-		    print( " ? " );
+		    print( " ?" );
 		}
 
 	    } else {
