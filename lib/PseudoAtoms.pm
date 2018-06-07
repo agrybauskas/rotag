@@ -288,14 +288,15 @@ sub generate_library
 
     	for my $residue_id ( @{ $target_cell_idxs{$cell_idxs} } ) {
 	    %rotamer_library =
-		%{ _generate_library( \%atom_site,
-				      $residue_id,
-				      $small_angle,
-				      $interactions,
-				      $potential_function,
-				      $energy_cutoff_atom,
-				      $energy_cutoff_residue,
-				      \@neighbour_atom_ids ) };
+		%{ threads->create( \&_generate_library,
+				    \%atom_site,
+				    $residue_id,
+				    $small_angle,
+				    $interactions,
+				    $potential_function,
+				    $energy_cutoff_atom,
+				    $energy_cutoff_residue,
+				    \@neighbour_atom_ids )->join() };
     	}
     }
 
