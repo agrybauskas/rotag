@@ -116,11 +116,11 @@ sub grid_box
 
 	# Identifies what cells do atoms occupy, if they are in the list.
 	next unless $atom_ids;
-	for( my $id = 0; $id <= $#{ $atom_ids }; $id++ ) {
-	    if( $atom_coord->[0] eq $atom_ids->[$id] ) {
-		push( @{ $atom_cell_pos{"$cell_index_x,$cell_index_y,$cell_index_z"} },
+	for my $atom_id ( @{ $atom_ids } ) {
+            if( $atom_coord->[0] eq $atom_id ) {
+                push( @{ $atom_cell_pos{"$cell_index_x,$cell_index_y,$cell_index_z"} },
 		      $atom_coord->[0] );
-	    }
+            }
 	}
     }
 
