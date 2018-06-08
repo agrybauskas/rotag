@@ -12,7 +12,8 @@ my ( $residue_id,
      $potential,
      $energy_cutoff_atom,
      $energy_cutoff_residue,
-     $pdbx_dump_file ) = @ARGV;
+     $pdbx_dump_file,
+     $threads ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -31,7 +32,8 @@ my $rotamer_library =
 			"conf_model" => $conf_model,
 			"interactions"  => $potential,
 			"energy_cutoff_atom" => $energy_cutoff_atom,
-  			"energy_cutoff_residue" => $energy_cutoff_residue } );
+  			"energy_cutoff_residue" => $energy_cutoff_residue,
+			"threads" => $threads } );
 
 print( "#residue_id,potential_energy_value,chi0,chi1,chi2,chi3,chi4\n" );
 for my $residue_id ( keys %{ $rotamer_library } ) {
