@@ -115,7 +115,7 @@ sub grid_box
     	}
 
 	# Identifies what cells do atoms occupy, if they are in the list.
-	next unless $atom_ids;
+	if( ! $atom_ids ) { next; }
 	for my $atom_id ( @{ $atom_ids } ) {
             if( $atom_coord->[0] eq $atom_id ) {
                 push( @{ $atom_cell_pos{"$cell_index_x,$cell_index_y,$cell_index_z"} },
@@ -323,8 +323,9 @@ sub connect_atoms
 
     # Removes all previously described connections.
     for my $atom_id ( keys %{ $atom_site } ) {
-	delete $atom_site->{$atom_id}{'connections'}
-	    if exists $atom_site->{$atom_id}{'connections'};
+	if( exists $atom_site->{$atom_id}{'connections'} ) {
+	    delete $atom_site->{$atom_id}{'connections'}
+	}
     }
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
