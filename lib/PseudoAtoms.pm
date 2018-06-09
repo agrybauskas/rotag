@@ -365,51 +365,58 @@ sub generate_library
     	    	    # Starts calculating potential energy.
     	    	    my @next_allowed_angles;
     	    	    my @next_allowed_energies;
-		    my ( $next_allowed_angles, $next_allowed_energies ) =
-			_check_angles( \%atom_site,
-				       $atom_id,
-				       \@allowed_angles,
-				       \@allowed_energies,
-				       \%interaction_site,
-				       $potential_function,
-				       $energy_cutoff_atom );
-		    push( @next_allowed_angles, @{ $next_allowed_angles } );
-		    push( @next_allowed_energies, @{ $next_allowed_energies } );
 
-		    # # Splits testable angle and energy lists into chunks passes
-		    # # to threads.
-		    # my @allowed_angle_chunks;
-		    # my @allowed_energy_chunks;
-		    # my $max_chunk_size = int( $#allowed_angles / $threads );
-		    # for my $i ( 0..$threads-1 ) {
-		    # 	if( $i ne $threads -1 ) {
-		    # 	    push( @allowed_angle_chunks,
-		    # 		  [ @allowed_angles[$i..$i+$max_chunk_size-1] ] );
-		    # 	    push( @allowed_energy_chunks,
-		    # 		  [ @allowed_energies[$i..$i+$max_chunk_size-1] ] );
-		    # 	} else {
-		    # 	    my $last_chunk_size =
-		    # 		$#allowed_angles - 3 * $max_chunk_size;
-		    # 	    push( @allowed_angle_chunks,
-		    # 		  [ @allowed_angles[$i..$i+$last_chunk_size-1] ] );
-		    # 	    push( @allowed_energy_chunks,
-		    # 		  [ @allowed_energies[$i..$i+$last_chunk_size-1] ] );
-		    # 	}
-		    # }
+		    # Splits testable angle and energy lists into blocks/chunks
+		    # passes to threads.
+		    my @allowed_angle_blocks;
+		    my @allowed_energy_blocks;
+		    my $max_block_size =
+			int( scalar( @allowed_angles ) / $threads );
 
-		    # for my $i ( 0..$threads-1 ) {
-		    # 	my $thread =
-		    # 	    threads->create( \&_check_angles,
-		    # 			     \%atom_site,
-		    # 			     $atom_id,
-		    # 			     $allowed_angle_chunks[$i],
-		    # 			     $allowed_energy_chunks[$i],
-		    # 			     \%interaction_site,
-		    # 			     $potential_function,
-		    # 			     $energy_cutoff_atom );
-		    # 	push( @next_allowed_angles, $thread->[0] } );
-		    # 	push( @next_allowed_energies, $thread->[1] } );
-		    # }
+		    # If block size is smaller that the number of threads, then
+		    # thread number is reduced.
+		    my $reduce_threads = 0;
+		    if( ! $max_block_size ) {
+			$reduce_threads = scalar( @allowed_angles );
+			$max_block_size = 1;
+		    }
+
+		    for my $i ( 0..$threads-$reduce_threads-1 ) {
+			my $block_start = $i * $max_block_size;
+			my $block_end = $block_start + $max_block_size - 1;
+		    	if( $i ne $threads-$reduce_threads-1 ) {
+		    	    push( @allowed_angle_blocks,
+		    	        [ @allowed_angles[$block_start..$block_end] ] );
+		    	    push( @allowed_energy_blocks,
+		    	    	[ @allowed_energies[$block_start..$block_end ]]);
+		    	} else {
+			    $block_end = $#allowed_angles;
+		    	    push( @allowed_angle_blocks,
+		    	    	[ @allowed_angles[$block_start..$block_end] ] );
+		    	    push( @allowed_energy_blocks,
+		    	    	[ @allowed_energies[$block_start..$block_end ]]);
+		    	}
+		    }
+
+		    my @block_results;
+		    for my $i ( 0..$threads-1 ) {
+		    	my $thread_task =
+		    	    threads->create( \&_check_angles,
+		    			     \%atom_site,
+		    			     $atom_id,
+		    			     $allowed_angle_blocks[$i],
+		    			     $allowed_energy_blocks[$i],
+		    			     \%interaction_site,
+		    			     $potential_function,
+		    			     $energy_cutoff_atom );
+			push( @block_results, $thread_task );
+		    }
+
+		    for my $block_result ( @block_results ) {
+			$block_result = $block_result->join();
+		    	push( @next_allowed_angles, @{ $block_result->[0] } );
+		    	push( @next_allowed_energies, @{ $block_result->[1] } );
+		    }
 
     	    	    if( scalar( @allowed_angles ) > 0 ) {
     	    	    	@allowed_angles = @next_allowed_angles;
@@ -506,7 +513,7 @@ sub _check_angles
     	}
     }
 
-    return \@next_allowed_angles, \@next_allowed_energies;
+    return [ \@next_allowed_angles, \@next_allowed_energies ];
 }
 
 sub add_hydrogens
