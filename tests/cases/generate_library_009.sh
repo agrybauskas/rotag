@@ -9,7 +9,7 @@ energy_cutoff_atom=0.04
 energy_cutoff_residue="Inf"
 residue_id="572"
 small_angle="1*pi"
-threads="4"
+threads="1"
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
                               	            ${conf_model} \

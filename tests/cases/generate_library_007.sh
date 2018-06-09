@@ -8,7 +8,7 @@ potential="leonard_jones"
 energy_cutoff_atom=0.04
 energy_cutoff_residue="Inf"
 residue_id="572"
-small_angle="0.5*pi"
+small_angle="1*pi"
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
                               	            ${conf_model} \
