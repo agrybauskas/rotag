@@ -37,7 +37,7 @@ use PseudoAtoms qw( generate_library );
 #*    --cutoff-residue <float> (default: 1.0)
 #*        filters out rotamers which has the potential energy greater than the
 #*        cutoff value.
-#*    --nthreads
+#*    --threads
 #*        number of threads.
 #*    --version
 #*        print version.
@@ -55,7 +55,7 @@ GetOptions(
     "angle-step=s" => \$options{"small_angle"},
     "cutoff-atom=s" => \$options{"energy_cutoff_atom"},
     "cutoff-residue=s" => \$options{"energy_cutoff_residue"},
-    "nthreads=s" => \$options{"nthreads"},
+    "threads=s" => \$options{"threads"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -74,7 +74,7 @@ $options{"interactions"} = "leonard_jones" unless $options{"interactions"};
 $options{"small_angle"} = 0.1 unless $options{"small_angle"};
 $options{"energy_cutoff_atom"} = 0.4 unless $options{"energy_cutoff_atom"};
 $options{"energy_cutoff_residue"} = 1.0 unless $options{"energy_cutoff_residue"};
-$options{"nthreads"} = 1 unless $options{"nthreads"};
+$options{"threads"} = 1 unless $options{"threads"};
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -108,7 +108,7 @@ my $rotamer_library =
           "interactions" => $options{"interactions"},
           "energy_cutoff_atom" => $options{"energy_cutoff_atom"},
           "energy_cutoff_residue" => $options{"energy_cutoff_residue"},
-	  "threads" => $options{"nthreads"}
+	  "threads" => $options{"threads"}
         } );
 
 # Collects residue angle and energy data.
