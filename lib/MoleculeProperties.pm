@@ -253,15 +253,15 @@ sub bond_type
 {
     my ( $target_atom, $neighbour_atom ) = @_;
 
-    my $target_atom_type = $target_atom->{"type_symbol"};
-    my $neighbour_atom_type = $neighbour_atom->{"type_symbol"};
+    my $target_atom_type = $target_atom->{'type_symbol'};
+    my $neighbour_atom_type = $neighbour_atom->{'type_symbol'};
 
     # Precalculates squared distance between atom pairs. Delocalized bonds are
     # described by double or triple bond.
     my $squared_distance =
-    	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
-      + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
-      + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
+    	( $neighbour_atom->{'Cartn_x'} - $target_atom->{'Cartn_x'} ) ** 2
+      + ( $neighbour_atom->{'Cartn_y'} - $target_atom->{'Cartn_y'} ) ** 2
+      + ( $neighbour_atom->{'Cartn_z'} - $target_atom->{'Cartn_z'} ) ** 2;
 
     for my $bond_type ( keys %BOND_TYPES ) {
 	if( exists $BOND_TYPES{$bond_type}
@@ -273,19 +273,19 @@ sub bond_type
 	    my $bond_length_min = $BOND_TYPES{$bond_type}
 	                                     {$target_atom_type}
                                 	     {$neighbour_atom_type}
-    	                                     {"min_length"}
+    	                                     {'min_length'}
     	                       || $BOND_TYPES{$bond_type}
                                  	     {$neighbour_atom_type}
                                 	     {$target_atom_type}
-    	                                     {"min_length"};
+    	                                     {'min_length'};
 	    my $bond_length_max = $BOND_TYPES{$bond_type}
                                  	     {$target_atom_type}
                                 	     {$neighbour_atom_type}
-    	                                     {"max_length"}
+    	                                     {'max_length'}
     	                       || $BOND_TYPES{$bond_type}
                                  	     {$neighbour_atom_type}
                                 	     {$target_atom_type}
-    	                                     {"max_length"};
+    	                                     {'max_length'};
 
 	    if( ( $squared_distance >  $bond_length_min**2 )
 	     && ( $squared_distance <= $bond_length_max**2 ) ) {
@@ -305,19 +305,19 @@ sub hybridization
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
 	# Determines every type of connection.
 	my @bond_types;
-	for my $connection_id ( @{ $atom_site->{$atom_id}{"connections"} } ) {
+	for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
 	    push( @bond_types,
 		  bond_type( $atom_site->{$atom_id},
 			     $atom_site->{$connection_id} ) );
 	}
 
 	# Depending on connections, assigns hybridization type.
-	if( any { $_ eq "double" } @bond_types ) {
-	    $atom_site->{$atom_id}{"hybridization"} = "sp2";
-	} elsif( any { $_ eq "triple" } @bond_types ) {
-	    $atom_site->{$atom_id}{"hybridization"} = "sp";
+	if( any { $_ eq 'double' } @bond_types ) {
+	    $atom_site->{$atom_id}{'hybridization'} = 'sp2';
+	} elsif( any { $_ eq 'triple' } @bond_types ) {
+	    $atom_site->{$atom_id}{'hybridization'} = 'sp';
 	} else {
-	    $atom_site->{$atom_id}{"hybridization"} = "sp3";
+	    $atom_site->{$atom_id}{'hybridization'} = 'sp3';
 	}
     }
 
@@ -329,14 +329,14 @@ sub rotatable_bonds
     my ( $atom_site, $start_atom_id, $next_atom_id ) = @_;
 
     # By default, CA is starting atom and CB next.
-    $start_atom_id //= filter( { "atom_site" => $atom_site,
-    				 "include" => { "label_atom_id" => [ "CA" ] },
-    				 "data" => [ "id" ],
-    				 "is_list" => 1 } )->[0];
-    $next_atom_id //=  filter( { "atom_site" => $atom_site,
-    				 "include" => { "label_atom_id" => [ "CB" ] },
-    				 "data" => [ "id" ],
-    				 "is_list" => 1 } )->[0];
+    $start_atom_id //= filter( { 'atom_site' => $atom_site,
+    				 'include' => { 'label_atom_id' => [ 'CA' ] },
+    				 'data' => [ 'id' ],
+    				 'is_list' => 1 } )->[0];
+    $next_atom_id //=  filter( { 'atom_site' => $atom_site,
+    				 'include' => { 'label_atom_id' => [ 'CB' ] },
+    				 'data' => [ 'id' ],
+    				 'is_list' => 1 } )->[0];
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
@@ -361,8 +361,8 @@ sub rotatable_bonds
     	for my $atom_id ( @next_atom_ids ) {
     	    my $parent_atom_id = $parent_atom_ids{$atom_id};
 
-    	    if( $atom_site{$parent_atom_id}{"hybridization"} eq "sp3"
-    		|| $atom_site{$atom_id}{"hybridization"} eq "sp3" ) {
+    	    if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3'
+    		|| $atom_site{$atom_id}{'hybridization'} eq 'sp3' ) {
     		# If last visited atom was sp3, then rotatable bonds from
     		# previous atom are copied and the new one is appended.
     		push( @{ $rotatable_bonds{$atom_id} },
@@ -383,7 +383,7 @@ sub rotatable_bonds
 
     	    # Marks neighbouring atoms.
     	    push( @neighbour_atom_ids,
-    		  @{ $atom_site{$atom_id}{"connections"} } );
+    		  @{ $atom_site{$atom_id}{'connections'} } );
 
     	    # Marks parent atoms for each neighbouring atom.
     	    for my $neighbour_atom_id ( @neighbour_atom_ids ) {
@@ -434,19 +434,19 @@ sub rotatable_bonds
                                                          # bond.
     my @second_names_sorted =
     	@{ sort_atom_names(
-    	       filter( { "atom_site" => \%atom_site,
-    			 "include" => { "id" => \@bond_second_ids },
-    			 "data" => [ "label_atom_id" ],
-    			 "is_list" => 1 } ), "gn" ) };
+    	       filter( { 'atom_site' => \%atom_site,
+    			 'include' => { 'id' => \@bond_second_ids },
+    			 'data' => [ 'label_atom_id' ],
+    			 'is_list' => 1 } ), 'gn' ) };
 
     my %bond_names; # Names by second atom priority.
     my $bond_name_id = 0;
     for my $second_name ( @second_names_sorted ) {
 	my $second_atom_id =
-	    filter( { "atom_site" => \%atom_site,
-		      "include" => { "label_atom_id" => [ $second_name ] },
-		      "data" => [ "id" ],
-		      "is_list" => 1 } )->[0];
+	    filter( { 'atom_site' => \%atom_site,
+		      'include' => { 'label_atom_id' => [ $second_name ] },
+		      'data' => [ 'id' ],
+		      'is_list' => 1 } )->[0];
 	$bond_names{"$second_atom_id"} = "chi$bond_name_id";
 	$bond_name_id++;
     }

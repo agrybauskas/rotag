@@ -176,9 +176,9 @@ sub all_dihedral
 
     # Collects non-redundant ids of given amino acid residues.
     my @residue_ids =
-	uniq( @{ filter( { "atom_site" => $atom_site,
-			   "data" => [ "label_seq_id" ],
-			   "is_list" => 1 } ) } );
+	uniq( @{ filter( { 'atom_site' => $atom_site,
+			   'data' => [ 'label_seq_id' ],
+			   'is_list' => 1 } ) } );
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -190,8 +190,8 @@ sub all_dihedral
 
     for my $residue_id ( @residue_ids ) {
     	my $residue_site =
-    	    filter( { "atom_site" => \%atom_site,
-    		      "include" => { "label_seq_id" => [ $residue_id ] } } );
+    	    filter( { 'atom_site' => \%atom_site,
+    		      'include' => { 'label_seq_id' => [ $residue_id ] } } );
 
     	my $rotatable_bonds = rotatable_bonds( $residue_site );
 	my %uniq_rotatable_bonds; # Unique rotatable bonds.
@@ -213,51 +213,51 @@ sub all_dihedral
     	    # bond ends with terminal atom, then this bond is excluded.
     	    if( scalar( @{ $residue_site->
 			       {$uniq_rotatable_bonds{$angle_name}->[1]}
-			       {"connections"} } ) < 2 ){ next; }
+			       {'connections'} } ) < 2 ){ next; }
 
     	    # Chooses proper atom ids for calculating dihedral angles.
     	    my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
     	    my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
     	    my @second_connections = # Second atom connections, except third.
     		grep { $_ ne $third_atom_id }
-    	        @{ $residue_site->{$second_atom_id}{"connections"} };
+    	        @{ $residue_site->{$second_atom_id}{'connections'} };
     	    my $first_atom_name =
     		sort_atom_names(
-    		filter( { "atom_site" => $residue_site,
-    			  "include" => { "id" => \@second_connections },
-    			  "data" => [ "label_atom_id" ],
-    			  "is_list" => 1 } ) )->[0];
+    		filter( { 'atom_site' => $residue_site,
+    			  'include' => { 'id' => \@second_connections },
+    			  'data' => [ 'label_atom_id' ],
+    			  'is_list' => 1 } ) )->[0];
     	    my @third_connections = # Third atom connections, except second.
     		grep { $_ ne $second_atom_id }
-    	        @{ $residue_site->{$third_atom_id}{"connections"} };
+    	        @{ $residue_site->{$third_atom_id}{'connections'} };
     	    my $fourth_atom_name =
     		sort_atom_names(
-    		filter( { "atom_site" => $residue_site,
-    			  "include" => { "id" => \@third_connections },
-    			  "data" => [ "label_atom_id" ],
-    			  "is_list" => 1 } ) )->[0];
+    		filter( { 'atom_site' => $residue_site,
+    			  'include' => { 'id' => \@third_connections },
+    			  'data' => [ 'label_atom_id' ],
+    			  'is_list' => 1 } ) )->[0];
 
     	    # Extracts coordinates for dihedral angle calculations.
     	    my $first_atom_coord =
     		filter(
-    		    { "atom_site" => $residue_site,
-    		      "include" => { "label_atom_id" => [ $first_atom_name ] },
-    		      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-    		      "is_list" => 1 } );
+    		    { 'atom_site' => $residue_site,
+    		      'include' => { 'label_atom_id' => [ $first_atom_name ] },
+    		      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+    		      'is_list' => 1 } );
     	    my $second_atom_coord =
-    		[ $residue_site->{$second_atom_id}{"Cartn_x"},
-    		  $residue_site->{$second_atom_id}{"Cartn_y"},
-    		  $residue_site->{$second_atom_id}{"Cartn_z"} ];
+    		[ $residue_site->{$second_atom_id}{'Cartn_x'},
+    		  $residue_site->{$second_atom_id}{'Cartn_y'},
+    		  $residue_site->{$second_atom_id}{'Cartn_z'} ];
     	    my $third_atom_coord =
-    		[ $residue_site->{$third_atom_id}{"Cartn_x"},
-    		  $residue_site->{$third_atom_id}{"Cartn_y"},
-    		  $residue_site->{$third_atom_id}{"Cartn_z"} ];
+    		[ $residue_site->{$third_atom_id}{'Cartn_x'},
+    		  $residue_site->{$third_atom_id}{'Cartn_y'},
+    		  $residue_site->{$third_atom_id}{'Cartn_z'} ];
     	    my $fourth_atom_coord =
     		filter(
-    		    { "atom_site" => $residue_site,
-    		      "include" => { "label_atom_id" => [ $fourth_atom_name ] },
-    		      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-    		      "is_list" => 1 } );
+    		    { 'atom_site' => $residue_site,
+    		      'include' => { 'label_atom_id' => [ $fourth_atom_name ] },
+    		      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+    		      'is_list' => 1 } );
 
     	    $angle_values{$angle_name} =
     		dihedral_angle( [ $first_atom_coord,
@@ -289,7 +289,7 @@ sub rmsd
 
     # Gives the error if the size of the sets are different.
     if( scalar( @{ $first_set } ) != scalar( @{ $second_set } ) ) {
-        die( "Comparing different sizes of sets of the atoms is not allowed." ) ;
+        die( 'Comparing different sizes of sets of the atoms is not allowed.' ) ;
     }
 
     # Sums up sqaured differences of coordinates.

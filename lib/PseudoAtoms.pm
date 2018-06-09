@@ -56,8 +56,8 @@ use SidechainModels qw( rotation_only );
 #     PDBxParser).
 #     $angle_values - hash of arrays that describe possible values of dihedral
 #     angles.
-#     Ex.: { "chi0" => [ 0, 0.4, 1.5, 2.0 ],
-#            "chi1" => [ 0, 2 ] }
+#     Ex.: { 'chi0' => [ 0, 0.4, 1.5, 2.0 ],
+#            'chi1' => [ 0, 2 ] }
 # Output:
 #     $pseudo_atom_site - atom site data structure for pseudo-atoms.
 #
@@ -77,21 +77,21 @@ sub generate_pseudo
     my %pseudo_atom_site;
 
     my @atom_ids =
-	@{ filter( { "atom_site" => \%atom_site,
-		     "include" => $atom_specifier,
-		     "data" => [ "id" ],
-		     "is_list" => 1 } ) };
+	@{ filter( { 'atom_site' => \%atom_site,
+		     'include' => $atom_specifier,
+		     'data' => [ 'id' ],
+		     'is_list' => 1 } ) };
 
     for my $atom_id ( @atom_ids ) {
     	# Calculates current dihedral angles of rotatable bonds. Will be used
     	# for reseting dihedral angles to 0 degree angle.
-    	my $residue_id = $atom_site{"$atom_id"}{"label_seq_id"};
+    	my $residue_id = $atom_site{"$atom_id"}{'label_seq_id'};
 
     	my %angles =
 	    %{ all_dihedral(
-		   filter( { "atom_site" => \%atom_site,
-			     "include" => { "label_seq_id" => [ $residue_id ],
-					    "label_alt_id" => [ "." ] } } ) ) };
+		   filter( { 'atom_site' => \%atom_site,
+			     'include' => { 'label_seq_id' => [ $residue_id ],
+					    'label_alt_id' => [ '.' ] } } ) ) };
 
     	# Iterates through combinations of angles and evaluates conformational
     	# model.
@@ -104,7 +104,7 @@ sub generate_pseudo
     		    @{ $angle_values->{"$angle_name"} } ] );
     	}
 
-    	my $conformation = $atom_site{"$atom_id"}{"conformation"};
+    	my $conformation = $atom_site{"$atom_id"}{'conformation'};
     	for my $angle_comb ( # Abreviation of angle combinations.
     	    @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ){
     	    my %angle_values =
@@ -116,29 +116,29 @@ sub generate_pseudo
     	    # Adds necessary PDBx entries to pseudo atom site.
     	    $last_atom_id++;
     	    create_pdbx_entry(
-    	    	{ "atom_site" => \%pseudo_atom_site,
-    	    	  "id" => $last_atom_id,
-    	    	  "type_symbol" => $atom_site{$atom_id}{"type_symbol"},
-    	    	  "label_atom_id" => $atom_site{$atom_id}{"label_atom_id"},
-    	    	  "label_alt_id" => $alt_group_id,
-    	    	  "label_comp_id" => $atom_site{$atom_id}{"label_comp_id"},
-    	    	  "label_asym_id" => $atom_site{$atom_id}{"label_asym_id"},
-    	    	  "label_entity_id" => $atom_site{$atom_id}{"label_entity_id"},
-    	    	  "label_seq_id" => $residue_id,
-    	    	  "cartn_x" => sprintf( "%.3f", $transf_atom_coord->[0][0] ),
-    	    	  "cartn_y" => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
-    	    	  "cartn_z" => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
-    		  "auth_seq_id" => $atom_site{$atom_id}{"auth_seq_id"} } );
+    	    	{ 'atom_site' => \%pseudo_atom_site,
+    	    	  'id' => $last_atom_id,
+    	    	  'type_symbol' => $atom_site{$atom_id}{'type_symbol'},
+    	    	  'label_atom_id' => $atom_site{$atom_id}{'label_atom_id'},
+    	    	  'label_alt_id' => $alt_group_id,
+    	    	  'label_comp_id' => $atom_site{$atom_id}{'label_comp_id'},
+    	    	  'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
+    	    	  'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
+    	    	  'label_seq_id' => $residue_id,
+    	    	  'cartn_x' => sprintf( "%.3f", $transf_atom_coord->[0][0] ),
+    	    	  'cartn_y' => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
+    	    	  'cartn_z' => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
+    		  'auth_seq_id' => $atom_site{$atom_id}{'auth_seq_id'} } );
     	    # Adds information about used dihedral angle values and names.
-	    $pseudo_atom_site{$last_atom_id}{"dihedral_names"} = \@angle_names;
-    	    $pseudo_atom_site{$last_atom_id}{"dihedral_angles"} =
+	    $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
+    	    $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
     	    	{ map { ( $_ => $angle_values{$_}
 	    		      + $angles{"$residue_id"}{$_} ) }
 	    	  @angle_names };
     	    # Adds additional pseudo-atom flag for future filtering.
-    	    $pseudo_atom_site{$last_atom_id}{"is_pseudo_atom"} = 1;
+    	    $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
     	    # Adds atom id that pseudo atoms was made of.
-    	    $pseudo_atom_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
+    	    $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
     	}
     }
 
@@ -167,8 +167,8 @@ sub generate_rotamer
 
     for my $residue_id ( keys %{ $angle_values } ) {
     	my $residue_site =
-    	    filter( { "atom_site" => \%atom_site,
-    		      "include" => { "label_seq_id" => [ $residue_id ] } } );
+    	    filter( { 'atom_site' => \%atom_site,
+    		      'include' => { 'label_seq_id' => [ $residue_id ] } } );
 
     	my $rotatable_bonds = rotatable_bonds( \%atom_site );
 
@@ -184,7 +184,7 @@ sub generate_rotamer
     	    %rotamer_atom_site =
     	    	( %rotamer_atom_site,
     	    	  %{ generate_pseudo( { %atom_site, %rotamer_atom_site },
-    	    			      { "id" => [ $atom_id ] },
+    	    			      { 'id' => [ $atom_id ] },
     	    			      \%angles,
     	    			      $last_atom_id,
 				      $alt_group_id ) } );
@@ -214,14 +214,14 @@ sub generate_rotamer
 sub generate_library
 {
     my ( $args ) = @_;
-    my $atom_site = $args->{"atom_site"};
-    my $residue_ids = $args->{"residue_ids"};
-    my $small_angle = $args->{"small_angle"};
-    my $conf_model = $args->{"conf_model"};
-    my $interactions = $args->{"interactions"};
-    my $energy_cutoff_atom = $args->{"energy_cutoff_atom"};
-    my $energy_cutoff_residue = $args->{"energy_cutoff_residue"};
-    my $threads = $args->{"threads"};
+    my $atom_site = $args->{'atom_site'};
+    my $residue_ids = $args->{'residue_ids'};
+    my $small_angle = $args->{'small_angle'};
+    my $conf_model = $args->{'conf_model'};
+    my $interactions = $args->{'interactions'};
+    my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
+    my $energy_cutoff_residue = $args->{'energy_cutoff_residue'};
+    my $threads = $args->{'threads'};
 
     $energy_cutoff_residue //= "Inf";
     $threads //= 1;
@@ -232,21 +232,21 @@ sub generate_library
 
     # Generates conformational models before checking for clashes/interactions
     # for given residues.
-    if( $conf_model eq "rotation_only" ) {
-	rotation_only( filter( { "atom_site" => \%atom_site,
-				 "include" =>
-				     { "label_seq_id" => $residue_ids } } ) );
+    if( $conf_model eq 'rotation_only' ) {
+	rotation_only( filter( { 'atom_site' => \%atom_site,
+				 'include' =>
+				     { 'label_seq_id' => $residue_ids } } ) );
     } else {
-	die "Conformational model was not defined.";
+	die 'Conformational model was not defined.';
     }
 
     # Selection of potential function.
     my $potential_function;
-    $potential_function = \&hard_sphere   if $interactions eq "hard_sphere";
-    $potential_function = \&soft_sphere   if $interactions eq "soft_sphere";
-    $potential_function = \&exponential   if $interactions eq "exponential";
-    $potential_function = \&leonard_jones if $interactions eq "leonard_jones";
-    $potential_function = \&combined      if $interactions eq "combined";
+    $potential_function = \&hard_sphere   if $interactions eq 'hard_sphere';
+    $potential_function = \&soft_sphere   if $interactions eq 'soft_sphere';
+    $potential_function = \&exponential   if $interactions eq 'exponential';
+    $potential_function = \&leonard_jones if $interactions eq 'leonard_jones';
+    $potential_function = \&combined      if $interactions eq 'combined';
 
     # Creates the grid box that has edge length of sum of all bonds of the
     # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
@@ -255,18 +255,18 @@ sub generate_library
     # on maximum bending and having shorter edge length reduces calculation time.
     my ( $grid_box, undef ) =
 	grid_box( \%atom_site,
-		  7 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[0]
-		+ 2 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[0]
-	        + 3 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[1]
-		+ 3 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[1]
-		+     $ATOMS{"H"}{"covalent_radius"}{"length"}->[0] );
+		  7 * $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+		+ 2 * $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+	        + 3 * $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
+		+ 3 * $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
+		+     $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] );
 
     # Finds where CA of target residues are.
     my %target_cell_idxs;
     for my $cell_idx ( keys %{ $grid_box } ) {
 	for my $atom_id ( @{ $grid_box->{"$cell_idx"} } ) {
-	    my $residue_id = $atom_site->{$atom_id}{"label_seq_id"};
-	    my $atom_name = $atom_site->{$atom_id}{"label_atom_id"};
+	    my $residue_id = $atom_site->{$atom_id}{'label_seq_id'};
+	    my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 	    if( $atom_name eq 'CA'
 	     && any { $residue_id eq $_ } @{ $residue_ids } ) {
 		push( @{ $target_cell_idxs{$cell_idx} }, $residue_id );
@@ -275,7 +275,7 @@ sub generate_library
     }
 
     for my $cell_idxs ( sort { $a cmp $b } keys %target_cell_idxs ) {
-    	my @cell_idxs = split( ",", $cell_idxs );
+    	my @cell_idxs = split( ',', $cell_idxs );
     	my @neighbour_atom_ids; # The array will contain all atoms of the
                                 # neighbouring 26 cells.
 
@@ -288,8 +288,8 @@ sub generate_library
 
     	for my $residue_id ( @{ $target_cell_idxs{$cell_idxs} } ) {
     	    my $residue_site =
-    		filter( { "atom_site" => \%atom_site,
-    			  "include" => { "label_seq_id" => [ $residue_id ] } } );
+    		filter( { 'atom_site' => \%atom_site,
+    			  'include' => { 'label_seq_id' => [ $residue_id ] } } );
 
     	    my $rotatable_bonds = rotatable_bonds( $residue_site );
     	    if( ! %{ $rotatable_bonds } ) { next; }
@@ -298,30 +298,30 @@ sub generate_library
     	    # surrounding, iteraction site consists of only main chain atoms.
 	    # TODO: decide, if interactions should be controlled by command line.
     	    my %interaction_site =
-    		%{ filter( { "atom_site" => \%atom_site,
-    			     "include" =>
-    			         { "id" => \@neighbour_atom_ids,
-    				   "label_atom_id" => [ "N", "CA", "C", "O",
-    							"OXT", "CB", "H", "H2",
-    							"HA2", "HA3", "HB1",
-    							"HB2", "HB3", "HXT"
+    		%{ filter( { 'atom_site' => \%atom_site,
+    			     'include' =>
+    			         { 'id' => \@neighbour_atom_ids,
+    				   'label_atom_id' => [ 'N', 'CA', 'C', 'O',
+    							'OXT', 'CB', 'H', 'H2',
+    							'HA2', 'HA3', 'HB1',
+    							'HB2', 'HB3', 'HXT'
     				                      ] } } ) };
 
     	    # Goes through each atom in side chain and calculates interaction
     	    # potential with surrounding atoms. CA and CB are non-movable atoms
     	    # so, they are marked as starting atoms.
     	    my $ca_atom_id =
-    	    	filter( { "atom_site" => $residue_site,
-    	    		  "include" => { "label_atom_id" => [ "CA" ] },
-    	    		  "data" => [ "id" ] } )->[0][0];
+    	    	filter( { 'atom_site' => $residue_site,
+    	    		  'include' => { 'label_atom_id' => [ 'CA' ] },
+    	    		  'data' => [ 'id' ] } )->[0][0];
     	    my $cb_atom_id =
-    	    	filter( { "atom_site" => $residue_site,
-    	    		  "include" => { "label_atom_id" => [ "CB" ] },
-    	    		  "data" => [ "id" ] } )->[0][0];
+    	    	filter( { 'atom_site' => $residue_site,
+    	    		  'include' => { 'label_atom_id' => [ 'CB' ] },
+    	    		  'data' => [ 'id' ] } )->[0][0];
     	    my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     	    my @next_atom_ids =
     	    	grep { $_ ne $ca_atom_id }
-    	    	@{ $residue_site->{$cb_atom_id}{"connections"} };
+    	    	@{ $residue_site->{$cb_atom_id}{'connections'} };
 
     	    my @sampled_angles =
     	    	map { [ $_ ] }
@@ -360,7 +360,7 @@ sub generate_library
 
     	    	    # Marks neighbouring atoms.
     	    	    push( @neighbour_atom_ids,
-    	    		  @{ $atom_site{$atom_id}{"connections"} } );
+    	    		  @{ $atom_site{$atom_id}{'connections'} } );
 
     	    	    # Starts calculating potential energy.
     	    	    my @next_allowed_angles;
@@ -422,7 +422,7 @@ sub generate_library
     	    	    	@allowed_angles = @next_allowed_angles;
     	    	    	@allowed_energies = @next_allowed_energies;
     	    	    } else {
-    	    	    	die "No possible rotamer solutions were detected.";
+    	    	    	die 'No possible rotamer solutions were detected.';
     	    	    }
     	    	}
 
@@ -444,10 +444,10 @@ sub generate_library
                 my $energies = $allowed_energies[$i]->[0];
                 if( $energies <= $energy_cutoff_residue ) {
                     push( @{ $rotamer_library{"$residue_id"} },
-                          { "angles" => { map { ( "chi$_" => $angles->[$_] ) }
+                          { 'angles' => { map { ( "chi$_" => $angles->[$_] ) }
                                               ( 0..$#{ $angles } ) },
-                            "potential" => $interactions,
-                            "potential_energy_value" => $energies } );
+                            'potential' => $interactions,
+                            'potential_energy_value' => $energies } );
                 }
     	    }
     	}
@@ -477,11 +477,11 @@ sub _check_angles
 
     	my $pseudo_atom_site =
     	    generate_pseudo( $atom_site,
-    			     { "id" => [ "$atom_id" ] },
+    			     { 'id' => [ "$atom_id" ] },
     			     \%angles );
     	my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
     	my $pseudo_origin_id =
-    	    $pseudo_atom_site->{$pseudo_atom_id}{"origin_atom_id"};
+    	    $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
 
     	my $potential_energy;
     	my $potential_sum;
@@ -529,30 +529,30 @@ sub add_hydrogens
     my $last_atom_id = max( keys %{ $atom_site } );
 
     for my $atom_id ( sort { $a <=> $b } keys %atom_site ) {
-    	my $atom_type = $atom_site{$atom_id}{"type_symbol"};
-    	my $atom_name = $atom_site{$atom_id}{"label_atom_id"};
+    	my $atom_type = $atom_site{$atom_id}{'type_symbol'};
+    	my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
 
-	my $residue_name = $atom_site{$atom_id}{"label_comp_id"};
-	my $residue_id = $atom_site{$atom_id}{"label_seq_id"};
+	my $residue_name = $atom_site{$atom_id}{'label_comp_id'};
+	my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
 	my $residue_site =
-	    filter( { "atom_site" => $atom_site,
-		      "include" => { "label_seq_id" => [ $residue_id ] } } );
+	    filter( { 'atom_site' => $atom_site,
+		      'include' => { 'label_seq_id' => [ $residue_id ] } } );
 	my %residue_coord =
-	    %{ filter( { "atom_site" => $residue_site,
-			 "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ],
-			 "data_with_id" => 1 } ) };
+	    %{ filter( { 'atom_site' => $residue_site,
+			 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+			 'data_with_id' => 1 } ) };
 
     	my $hydrogen_names = $HYDROGEN_NAMES{$residue_name}{$atom_name};
 
     	if( ! $hydrogen_names ) { next; }; # Exits early if there should be no
 	                                   # hydrogens connected to the atom.
 
-    	my @connection_ids = @{ $atom_site{"$atom_id"}{"connections"} };
+    	my @connection_ids = @{ $atom_site{"$atom_id"}{'connections'} };
     	my @connection_names =
-    	    map { $atom_site{"$_"}{"label_atom_id"} } @connection_ids;
+    	    map { $atom_site{"$_"}{'label_atom_id'} } @connection_ids;
 
-    	my $hybridization = $residue_site->{$atom_id}{"hybridization"};
-    	my $lone_pair_count = $ATOMS{$atom_type}{"lone_pairs"};
+    	my $hybridization = $residue_site->{$atom_id}{'hybridization'};
+    	my $lone_pair_count = $ATOMS{$atom_type}{'lone_pairs'};
 
     	# Decides how many and what hydrogens should be added according to the
     	# quantity of bonds and hydrogen atoms that should be connected to the
@@ -579,12 +579,12 @@ sub add_hydrogens
     	# hydrogens.
     	my %hydrogen_coord = map { $_ => undef } @missing_hydrogens;
 
-    	if( $hybridization eq "sp3" ) {
+    	if( $hybridization eq 'sp3' ) {
 	    # Because bond length depends on hybridization of atoms, bond length
 	    # is calculated for each differently hybridized atoms.
     	    my $bond_length =
-    		$ATOMS{$atom_type}{"covalent_radius"}{"length"}[0]
-    	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    		$ATOMS{$atom_type}{'covalent_radius'}{'length'}[0]
+    	      + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     	    if( scalar( @connection_ids ) == 3 ) {
 		my ( $up_atom_coord,
@@ -681,7 +681,7 @@ sub add_hydrogens
 			   $mid_atom_coord,
 			   $up_atom_coord,
 			   $left_atom_coord,
-			   "global" ) };
+			   'global' ) };
 
     	    	( $hydrogen_coord{$missing_hydrogens[0]} ) =
     	    	    @{ mult_matrix_product(
@@ -770,9 +770,9 @@ sub add_hydrogens
 			             # defining a local reference frame.
 			 ( $residue_coord{$connection_ids[0]},
 			   $residue_coord{$atom_id},
-			   [ $atom_site->{$atom_id}{"Cartn_x"},
-			     $atom_site->{$atom_id}{"Cartn_y"} + 1,
-			     $atom_site->{$atom_id}{"Cartn_z"} ] );
+			   [ $atom_site->{$atom_id}{'Cartn_x'},
+			     $atom_site->{$atom_id}{'Cartn_y'} + 1,
+			     $atom_site->{$atom_id}{'Cartn_z'} ] );
 
     	    	# Generates transformation matrix for transfering atoms to local
     	    	# reference frame.
@@ -837,10 +837,10 @@ sub add_hydrogens
     	    	}
     	    }
 
-    	} elsif( $hybridization eq "sp2" ) {
+    	} elsif( $hybridization eq 'sp2' ) {
     	    my $bond_length =
-    		$ATOMS{$atom_type}{"covalent_radius"}{"length"}[1]
-    	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    		$ATOMS{$atom_type}{'covalent_radius'}{'length'}[1]
+    	      + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     	    # Depending on quantity of atoms connections, adds hydrogens.
     	    if( scalar( @connection_ids ) == 2 ) {
@@ -895,26 +895,26 @@ sub add_hydrogens
 		     $side_coord ) =
 			 ( $residue_coord{$connection_ids[0]},
 			   $residue_coord{$atom_id},
-			   [ $atom_site->{$atom_id}{"Cartn_x"},
-			     $atom_site->{$atom_id}{"Cartn_y"} + 1,
-			     $atom_site->{$atom_id}{"Cartn_z"} ] );
+			   [ $atom_site->{$atom_id}{'Cartn_x'},
+			     $atom_site->{$atom_id}{'Cartn_y'} + 1,
+			     $atom_site->{$atom_id}{'Cartn_z'} ] );
 
     		# If terminal atom belongs to conjugated system, hydrogens are
     		# added not to violate rule where atoms should be in one plain.
     		my @second_neighbours =
     		    grep { ! /$atom_id/ }
-    		    map { @{ $atom_site->{$_}{"connections"} } }
+    		    map { @{ $atom_site->{$_}{'connections'} } }
     		    @connection_ids;
 
     		for my $second_neighbour ( @second_neighbours ) {
     		    my $second_hybridization =
-			$residue_site->{$second_neighbour}{"hybridization"};
-    		    if( $second_hybridization eq "sp2"
-    		     || $second_hybridization eq "sp" ) {
+			$residue_site->{$second_neighbour}{'hybridization'};
+    		    if( $second_hybridization eq 'sp2'
+    		     || $second_hybridization eq 'sp' ) {
     			$side_coord =
-    			    [ $atom_site->{$second_neighbour}{"Cartn_x"},
-    			      $atom_site->{$second_neighbour}{"Cartn_y"},
-    			      $atom_site->{$second_neighbour}{"Cartn_z"} ];
+    			    [ $atom_site->{$second_neighbour}{'Cartn_x'},
+    			      $atom_site->{$second_neighbour}{'Cartn_y'},
+    			      $atom_site->{$second_neighbour}{'Cartn_z'} ];
     			last;
     		    }
     		}
@@ -959,20 +959,20 @@ sub add_hydrogens
     		}
     	    }
 
-    	} elsif( $hybridization eq "sp" ) {
+    	} elsif( $hybridization eq 'sp' ) {
     	    # Calculates length of bonds.
     	    my $bond_length =
-    	    	$ATOMS{$atom_name}{"covalent_radius"}{"length"}[2]
-    	      + $ATOMS{"H"}{"covalent_radius"}{"length"}[0];
+    	    	$ATOMS{$atom_name}{'covalent_radius'}{'length'}[2]
+    	      + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
 	    my ( $up_atom_coord,
 		 $mid_atom_coord,
 		 $side_coord ) =
 		     ( $residue_coord{$connection_ids[0]},
 		       $residue_coord{$atom_id},
-		       [ $atom_site->{$atom_id}{"Cartn_x"},
-			 $atom_site->{$atom_id}{"Cartn_y"} + 1,
-			 $atom_site->{$atom_id}{"Cartn_z"} ] );
+		       [ $atom_site->{$atom_id}{'Cartn_x'},
+			 $atom_site->{$atom_id}{'Cartn_y'} + 1,
+			 $atom_site->{$atom_id}{'Cartn_z'} ] );
 
 	    # Generates transformation matrix for transfering atoms to local
 	    # reference frame.
@@ -998,27 +998,27 @@ sub add_hydrogens
 	    # Adds necessary PDBx entries to pseudo atom site.
     	    $last_atom_id++;
 	    create_pdbx_entry(
-	    	{ "atom_site" => \%hydrogen_site,
-	    	  "id" => $last_atom_id,
-	    	  "type_symbol" => "H",
-	    	  "label_atom_id" => $hydrogen_name,
-	    	  "label_alt_id" => "1",
-	    	  "label_comp_id" => $atom_site->{$atom_id}{"label_comp_id"},
-	    	  "label_asym_id" => $atom_site->{$atom_id}{"label_asym_id"},
-	    	  "label_entity_id" => $atom_site->{$atom_id}{"label_entity_id"},
-	    	  "label_seq_id" => $residue_id,
-	    	  "cartn_x" =>
+	    	{ 'atom_site' => \%hydrogen_site,
+	    	  'id' => $last_atom_id,
+	    	  'type_symbol' => 'H',
+	    	  'label_atom_id' => $hydrogen_name,
+	    	  'label_alt_id' => '1',
+	    	  'label_comp_id' => $atom_site->{$atom_id}{'label_comp_id'},
+	    	  'label_asym_id' => $atom_site->{$atom_id}{'label_asym_id'},
+	    	  'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},
+	    	  'label_seq_id' => $residue_id,
+	    	  'cartn_x' =>
 		      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[0][0] ),
-	    	  "cartn_y" =>
+	    	  'cartn_y' =>
 		      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[1][0] ),
-	    	  "cartn_z" =>
+	    	  'cartn_z' =>
 		      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[2][0] ),
-		  "auth_seq_id" => $atom_site->{$atom_id}{"auth_seq_id"}
+		  'auth_seq_id' => $atom_site->{$atom_id}{'auth_seq_id'}
 		} );
     	    # Adds additional pseudo-atom flag for future filtering.
-    	    $hydrogen_site{$last_atom_id}{"is_pseudo_atom"} = 1;
+    	    $hydrogen_site{$last_atom_id}{'is_pseudo_atom'} = 1;
 	    # Adds atom id that pseudo atoms was made of.
-    	    $hydrogen_site{$last_atom_id}{"origin_atom_id"} = $atom_id;
+    	    $hydrogen_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
 	    }
     	}
     }
@@ -1032,7 +1032,7 @@ sub library_to_csv
 {
     my ( $rotamer_library, $angle_units ) = @_;
 
-    $angle_units //= "radians";
+    $angle_units //= 'radians';
 
     print( "\"rotamer_id\",\"residue_id\",\"angle_name\",\"angle_value\"\n" );
 
@@ -1040,13 +1040,13 @@ sub library_to_csv
     for my $residue_id ( keys %{ $rotamer_library } ) {
 	for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
 	    for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer } ) {
-		if( $angle_units eq "radians" ) {
+		if( $angle_units eq 'radians' ) {
 		    printf( "%d,%d,\"%s\",%.3f\n",
 			    $rotamer_id,
 			    $residue_id,
 			    $angle_name,
 			    $rotamer->{$angle_name} );
-		} elsif( $angle_units eq "degrees" ) {
+		} elsif( $angle_units eq 'degrees' ) {
 		    printf( "%d,%d,\"%s\",%.2f\n",
 			    $rotamer_id,
 			    $residue_id,

@@ -76,13 +76,13 @@ sub grid_box
     # Default value for edge length is two times greater than the largest
     # covalent radius.
     $edge_length //=
-	max( map { @{ $ATOMS{$_}{"covalent_radius"}{"length"} } }
+	max( map { @{ $ATOMS{$_}{'covalent_radius'}{'length'} } }
 	     keys %ATOMS ) * 2;
 
     # Determines boundary box around all atoms.
     my $atom_data =
-	filter( { "atom_site" => $atom_site,
-		  "data" => [ "id", "Cartn_x", "Cartn_y", "Cartn_z" ] } );
+	filter( { 'atom_site' => $atom_site,
+		  'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
     my @atom_coordinates = map { [ $_->[1], $_->[2], $_->[3] ] } @{ $atom_data };
     my $boundary_box = create_box( \@atom_coordinates );
 
@@ -144,30 +144,30 @@ sub is_connected
     my $bond_length_comb =
     	permutation( 2,
     		     [],
-    		     [ $ATOMS{$target_atom->{"type_symbol"}}
-		             {"covalent_radius"}
-		             {"length"},
-		       $ATOMS{$neighbour_atom->{"type_symbol"}}
-		             {"covalent_radius"}
-		             {"length"} ],
+    		     [ $ATOMS{$target_atom->{'type_symbol'}}
+		             {'covalent_radius'}
+		             {'length'},
+		       $ATOMS{$neighbour_atom->{'type_symbol'}}
+		             {'covalent_radius'}
+		             {'length'} ],
     		     [] );
 
     my $length_error_comb =
     	permutation( 2,
     		     [],
-    		     [ $ATOMS{$target_atom->{"type_symbol"}}
-		             {"covalent_radius"}
-		             {"error"},
-		       $ATOMS{$neighbour_atom->{"type_symbol"}}
-		             {"covalent_radius"}
-		             {"error"} ],
+    		     [ $ATOMS{$target_atom->{'type_symbol'}}
+		             {'covalent_radius'}
+		             {'error'},
+		       $ATOMS{$neighbour_atom->{'type_symbol'}}
+		             {'covalent_radius'}
+		             {'error'} ],
     		     [] );
 
     # Precalculates distance between atom pairs.
     my $distance =
-    	( $neighbour_atom->{"Cartn_x"} - $target_atom->{"Cartn_x"} ) ** 2
-      + ( $neighbour_atom->{"Cartn_y"} - $target_atom->{"Cartn_y"} ) ** 2
-      + ( $neighbour_atom->{"Cartn_z"} - $target_atom->{"Cartn_z"} ) ** 2;
+    	( $neighbour_atom->{'Cartn_x'} - $target_atom->{'Cartn_x'} ) ** 2
+      + ( $neighbour_atom->{'Cartn_y'} - $target_atom->{'Cartn_y'} ) ** 2
+      + ( $neighbour_atom->{'Cartn_z'} - $target_atom->{'Cartn_z'} ) ** 2;
 
     # Checks, if distance between atom pairs is in one of the combinations.
     my $bond_length;
@@ -207,7 +207,7 @@ sub is_neighbour
     my ( $atom_site, $target_atom_id, $neighbour_id ) = @_;
 
     my $is_neighbour = 0;
-    foreach my $i ( @{ $atom_site->{"$target_atom_id"}{"connections"} } ) {
+    foreach my $i ( @{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
 	if( "$neighbour_id" eq "$i" ) {
 	    $is_neighbour = 1;
 	    last;
@@ -234,9 +234,9 @@ sub is_second_neighbour
     my $is_sec_neighbour = 0;
 
     foreach my $i (
-	@{ $atom_site->{"$target_atom_id"}{"connections"} } ) {
+	@{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
     foreach my $j (
-	@{ $atom_site->{$i}{"connections"} } ) {
+	@{ $atom_site->{$i}{'connections'} } ) {
 	if( "$sec_neighbour_id" eq "$j" ) {
 	    $is_sec_neighbour = 1;
 	    last;
@@ -251,9 +251,9 @@ sub distance_squared
     my ( $atom_i, $atom_j ) = @_;
 
     my $distance_squared =
-	( $atom_j->{"Cartn_x"} - $atom_i->{"Cartn_x"} ) ** 2
-      + ( $atom_j->{"Cartn_y"} - $atom_i->{"Cartn_y"} ) ** 2
-      + ( $atom_j->{"Cartn_z"} - $atom_i->{"Cartn_z"} ) ** 2;
+	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 
     return $distance_squared;
 }
@@ -262,10 +262,10 @@ sub around_distance
 {
     my ( $atom_site, $atom_specifier, $distance ) = @_;
 
-    my @atom_ids = @{ filter( { "atom_site" => $atom_site,
-				"include" => $atom_specifier,
-				"data" => [ "id" ],
-				"is_list" => 1 } ) };
+    my @atom_ids = @{ filter( { 'atom_site' => $atom_site,
+				'include' => $atom_specifier,
+				'data' => [ 'id' ],
+				'is_list' => 1 } ) };
 
     # TODO: it looks like code is redundant and very similar to connect_atoms.
     # Maybe should refactor.
@@ -278,7 +278,7 @@ sub around_distance
     # Checks for neighbouring cells for each cell.
     my %around_atom_site;
     foreach my $cell ( keys %{ $atom_cell_pos } ) {
-    	@cell_indexes = split( ",", $cell );
+    	@cell_indexes = split( ',', $cell );
     	my @neighbour_cells; # The array will contain all atoms of the
     	                     # neighbouring 26 cells.
     	# $i represents x, $j - y, $k - z coordinates.
@@ -323,8 +323,8 @@ sub connect_atoms
 
     # Removes all previously described connections.
     for my $atom_id ( keys %{ $atom_site } ) {
-	delete $atom_site->{$atom_id}{"connections"}
-	    if exists $atom_site->{$atom_id}{"connections"};
+	delete $atom_site->{$atom_id}{'connections'}
+	    if exists $atom_site->{$atom_id}{'connections'};
     }
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
@@ -333,7 +333,7 @@ sub connect_atoms
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
-    	my @cell_idxs = split( ",", $cell );
+    	my @cell_idxs = split( ',', $cell );
 	my @neighbour_cells; # The array will contain all atoms of the
 	                     # neighbouring 26 cells.
     	# $i represents x, $j - y, $k - z coordinates.
@@ -348,10 +348,10 @@ sub connect_atoms
     	    foreach my $neighbour_id ( @neighbour_cells ) {
     		if( ( is_connected( $atom_site->{"$atom_id"},
 				    $atom_site->{"$neighbour_id"} ) )
-		 && ( ( ! exists $atom_site->{$atom_id}{"connections"} )
+		 && ( ( ! exists $atom_site->{$atom_id}{'connections'} )
 		   || ( ! any { $neighbour_id eq $_ }
-			     @{ $atom_site->{$atom_id}{"connections"} } ) )){
-		    push( @{ $atom_site->{$atom_id}{"connections"} },
+			     @{ $atom_site->{$atom_id}{'connections'} } ) )){
+		    push( @{ $atom_site->{$atom_id}{'connections'} },
 			  "$neighbour_id" );
     		}
     	    }

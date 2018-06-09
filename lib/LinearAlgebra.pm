@@ -185,7 +185,7 @@ sub find_euler_angles
 #     ${mid,up,side}_atom_coord - array of three atom coordinates in x, y, z
 #     form, that frame of reference will be transformed to.
 #     $switch_to_local - boolean that switches frame of reference to local (if
-#     "local") and global (if "global").
+#     'local') and global (if 'global').
 # Output:
 #     $ref_frame_switch - 4x4 transformation matrix.
 #
@@ -207,7 +207,7 @@ sub switch_ref_frame
     # Depending on the option switch_to_local,
     my $ref_frame_switch;
 
-    if( $switch_ref_to eq "local" ) {
+    if( $switch_ref_to eq 'local' ) {
 	$ref_frame_switch =
     	    mult_matrix_product( [ z_axis_rotation( $alpha_rad ),
 				   x_axis_rotation( $beta_rad ),
@@ -215,7 +215,7 @@ sub switch_ref_frame
 				   translation( ( - $mid_atom_coord->[0],
 						  - $mid_atom_coord->[1],
 						  - $mid_atom_coord->[2] ) ) ] );
-    } elsif( $switch_ref_to eq "global" ) {
+    } elsif( $switch_ref_to eq 'global' ) {
     	$ref_frame_switch =
     	    mult_matrix_product( [ translation( ( $mid_atom_coord->[0],
 						  $mid_atom_coord->[1],
@@ -224,8 +224,8 @@ sub switch_ref_frame
 				   x_axis_rotation( - $beta_rad ),
 				   z_axis_rotation( - $alpha_rad ) ] );
     } else {
-    	die "Must choose \$switch_to_global value between \"local\" and" .
-    	    "\"global\".";
+    	die 'Must choose \$switch_to_global value between \'local\' and' .
+    	    '\'global\'.';
     }
 
     return $ref_frame_switch;
@@ -336,7 +336,7 @@ sub reshape
 	$length_by_dimensions += $dimensions->[$i] * $dimensions->[$i+1];
     }
 
-    die "There are not enough elements or dimensions."
+    die 'There are not enough elements or dimensions.'
     	if( scalar( @{ $element_list } ) != $length_by_dimensions );
 
     # Generates matrices.
@@ -553,7 +553,7 @@ sub matrix_product
 
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
-    die( { type => "DimensionError",
+    die( { type => 'DimensionError',
 	   message => "A row number of a left matrix is NOT equal " .
 	       "to the column\nnumber of the right matrix." } )
 	unless( scalar( @{ transpose( $left_matrix ) } ) ==
@@ -601,11 +601,11 @@ sub matrix_product
 		$right_element = eval( $right_element );
 
 		# Throws error if one of the elements are undefined.
-		die( { type => "UndifinedError",
-		       message => "Left element contains undefined variable" } )
+		die( { type => 'UndifinedError',
+		       message => 'Left element contains undefined variable' } )
 		    unless defined $left_element;
-		die( { type => "UndifinedError",
-		       message => "Right element contains undefined variable" } )
+		die( { type => 'UndifinedError',
+		       message => 'Right element contains undefined variable' } )
 		    unless defined $right_element;
 
 		# Evaluates multiplication if no exceptions are thrown.
@@ -657,7 +657,7 @@ sub mult_matrix_product
 					     $matrices[$id],
 					     $symbol_values ) );
 		} or do {
-		    if( $@->{type} eq "UndifinedError" ) {
+		    if( $@->{type} eq 'UndifinedError' ) {
 			push( @mult_matrix_product,
 			      $matrices[$id-1],
 			      $matrices[$id] );
@@ -674,7 +674,7 @@ sub mult_matrix_product
 					     $symbol_values ) );
 		    splice( @mult_matrix_product, 1, 1 );
 		} or do {
-		    if( $@->{type} eq "UndifinedError" ) {
+		    if( $@->{type} eq 'UndifinedError' ) {
 			unshift( @mult_matrix_product,
 				 $matrices[$id-1],
 				 $mult_matrix_product[0] );

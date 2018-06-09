@@ -35,23 +35,23 @@ sub rotation_only
 
     # Determines all residue ids present in atom site.
     my @residue_ids =
-    	uniq( @{ filter( { "atom_site" => $atom_site,
-    			   "data" => [ "label_seq_id" ],
-    			   "is_list" => 1 } ) } );
+    	uniq( @{ filter( { 'atom_site' => $atom_site,
+    			   'data' => [ 'label_seq_id' ],
+    			   'is_list' => 1 } ) } );
 
     # Iterates through target residues and their atom ids and assigns
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_id ( @residue_ids ) {
     	my $residue_site =
-    	    filter( { "atom_site" => \%atom_site,
-    		      "include" => { "label_seq_id" => [ $residue_id ] } } );
+    	    filter( { 'atom_site' => \%atom_site,
+    		      'include' => { 'label_seq_id' => [ $residue_id ] } } );
 
     	my $rotatable_bonds = rotatable_bonds( $residue_site );
 
     	for my $atom_id ( keys %{ $residue_site }  ) {
-    	    my @atom_coord = ( $atom_site{"$atom_id"}{"Cartn_x"},
-    			       $atom_site{"$atom_id"}{"Cartn_y"},
-    			       $atom_site{"$atom_id"}{"Cartn_z"} );
+    	    my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
+    			       $atom_site{"$atom_id"}{'Cartn_y'},
+    			       $atom_site{"$atom_id"}{'Cartn_z'} );
 
     	    if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
@@ -65,36 +65,36 @@ sub rotation_only
     		# excluded.
     		my $up_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[1];
     		if( scalar( @{ $residue_site->{$up_atom_id}
-			                      {"connections"} } ) < 2 ){ next; }
+			                      {'connections'} } ) < 2 ){ next; }
 
     		my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
     		my @mid_connections = # Excludes up atom.
     		    grep { $_ ne $up_atom_id }
-    		    @{ $residue_site->{$mid_atom_id}{"connections"} };
+    		    @{ $residue_site->{$mid_atom_id}{'connections'} };
     		my @mid_connection_names = # Excludes up atom.
-    		    map { $residue_site->{$_}{"label_atom_id"} }
+    		    map { $residue_site->{$_}{'label_atom_id'} }
     		    @mid_connections;
     		my $side_atom_name =
     		    sort_atom_names( \@mid_connection_names )->[0];
     		my $side_atom_id =
-    		    filter( { "atom_site" => $residue_site,
-    			      "include" =>
-    			    { "label_atom_id" => [ $side_atom_name ] },
-    			      "data" => [ "id" ],
-    			      "is_list" => 1 } )->[0];
+    		    filter( { 'atom_site' => $residue_site,
+    			      'include' =>
+    			    { 'label_atom_id' => [ $side_atom_name ] },
+    			      'data' => [ 'id' ],
+    			      'is_list' => 1 } )->[0];
 
     		my $mid_atom_coord =
-    		    [ $residue_site->{$mid_atom_id}{"Cartn_x"},
-    		      $residue_site->{$mid_atom_id}{"Cartn_y"},
-    		      $residue_site->{$mid_atom_id}{"Cartn_z"} ];
+    		    [ $residue_site->{$mid_atom_id}{'Cartn_x'},
+    		      $residue_site->{$mid_atom_id}{'Cartn_y'},
+    		      $residue_site->{$mid_atom_id}{'Cartn_z'} ];
     		my $up_atom_coord =
-    		    [ $residue_site->{$up_atom_id}{"Cartn_x"},
-    		      $residue_site->{$up_atom_id}{"Cartn_y"},
-    		      $residue_site->{$up_atom_id}{"Cartn_z"} ];
+    		    [ $residue_site->{$up_atom_id}{'Cartn_x'},
+    		      $residue_site->{$up_atom_id}{'Cartn_y'},
+    		      $residue_site->{$up_atom_id}{'Cartn_z'} ];
     		my $side_atom_coord =
-    		    [ $residue_site->{$side_atom_id}{"Cartn_x"},
-    		      $residue_site->{$side_atom_id}{"Cartn_y"},
-    		      $residue_site->{$side_atom_id}{"Cartn_z"} ];
+    		    [ $residue_site->{$side_atom_id}{'Cartn_x'},
+    		      $residue_site->{$side_atom_id}{'Cartn_y'},
+    		      $residue_site->{$side_atom_id}{'Cartn_z'} ];
 
     	    # Creates and appends matrices to a list of matrices that later
     	    # will be multiplied.
@@ -105,7 +105,7 @@ sub rotation_only
     				   $angle_name ) } );
     	    }
 
-    	    $atom_site->{$atom_id}{"conformation"} =
+    	    $atom_site->{$atom_id}{'conformation'} =
     		mult_matrix_product(
     		    [ @transf_matrices,
     		      @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );

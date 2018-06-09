@@ -41,13 +41,13 @@ sub hard_sphere
     my ( $atom_i, $atom_j ) = @_;
 
     my $vdw_distance =
-	$ATOMS{$atom_i->{"type_symbol"}}{"vdw_radius"}
-      + $ATOMS{$atom_j->{"type_symbol"}}{"vdw_radius"};
+	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+      + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     my $distance =
-    	( $atom_j->{"Cartn_x"} - $atom_i->{"Cartn_x"} ) ** 2
-      + ( $atom_j->{"Cartn_y"} - $atom_i->{"Cartn_y"} ) ** 2
-      + ( $atom_j->{"Cartn_z"} - $atom_i->{"Cartn_z"} ) ** 2;
+    	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 
     if( $distance < $vdw_distance ** 2 ) {
 	return "Inf";
@@ -79,13 +79,13 @@ sub soft_sphere
     $n //= 12;
 
     my $vdw_distance =
-	$ATOMS{$atom_i->{"type_symbol"}}{"vdw_radius"}
-      + $ATOMS{$atom_j->{"type_symbol"}}{"vdw_radius"};
+	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+      + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     my $distance =
-    	( $atom_j->{"Cartn_x"} - $atom_i->{"Cartn_x"} ) ** 2
-      + ( $atom_j->{"Cartn_y"} - $atom_i->{"Cartn_y"} ) ** 2
-      + ( $atom_j->{"Cartn_z"} - $atom_i->{"Cartn_z"} ) ** 2;
+    	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 
     if( $distance <= $vdw_distance ** 2 ) {
 	return $epsilon * ( $vdw_distance / sqrt( $distance ) )**$n;
@@ -118,13 +118,13 @@ sub exponential
     $m //= 1.0;
 
     my $vdw_distance =
-	$ATOMS{$atom_i->{"type_symbol"}}{"vdw_radius"}
-      + $ATOMS{$atom_j->{"type_symbol"}}{"vdw_radius"};
+	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+      + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     my $distance =
-    	( $atom_j->{"Cartn_x"} - $atom_i->{"Cartn_x"} ) ** 2
-      + ( $atom_j->{"Cartn_y"} - $atom_i->{"Cartn_y"} ) ** 2
-      + ( $atom_j->{"Cartn_z"} - $atom_i->{"Cartn_z"} ) ** 2;
+    	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 
     if( $distance <= $vdw_distance ** 2 ) {
 	return $epsilon * exp( - ( sqrt( $distance ) / $vdw_distance ) ** $m );
@@ -154,13 +154,13 @@ sub leonard_jones
     $epsilon //= -1.0;
 
     my $sigma = # Same as vdw distance.
-	$ATOMS{$atom_i->{"type_symbol"}}{"vdw_radius"}
-      + $ATOMS{$atom_j->{"type_symbol"}}{"vdw_radius"};
+	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+      + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     my $r = # Same as distance.
-    	( $atom_j->{"Cartn_x"} - $atom_i->{"Cartn_x"} ) ** 2
-      + ( $atom_j->{"Cartn_y"} - $atom_i->{"Cartn_y"} ) ** 2
-      + ( $atom_j->{"Cartn_z"} - $atom_i->{"Cartn_z"} ) ** 2;
+    	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 
     if( $r <= ( $sigma ** 2.5 ) ** 2 ) {
 	return 4 * $epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
@@ -187,20 +187,20 @@ sub combined
 
     # Calculates Van der Waals distance of given atoms.
     my $sigma =
-    	$ATOMS{$atom_i->{"type_symbol"}}{"vdw_radius"}
-      + $ATOMS{$atom_j->{"type_symbol"}}{"vdw_radius"};
+    	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+      + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     # Calculates squared distance between two atoms.
     my $squared_r =
-    	( $atom_j->{"Cartn_x"} - $atom_i->{"Cartn_x"} ) ** 2
-      + ( $atom_j->{"Cartn_y"} - $atom_i->{"Cartn_y"} ) ** 2
-      + ( $atom_j->{"Cartn_z"} - $atom_i->{"Cartn_z"} ) ** 2;
+    	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 
     # Extracts partial charges.
     my $partial_charge_i =
-    	$ATOMS{$atom_i->{"type_symbol"}}{"partial_charge"};
+    	$ATOMS{$atom_i->{'type_symbol'}}{'partial_charge'};
     my $partial_charge_j =
-    	$ATOMS{$atom_j->{"type_symbol"}}{"partial_charge"};
+    	$ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
 
     my $hbond; # TODO: hbond will be added, when there will be functions adding
                # hydrogens to atoms.

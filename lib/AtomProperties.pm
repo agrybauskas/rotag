@@ -11,75 +11,75 @@ our @EXPORT_OK = qw( %ATOMS
 # -----------------------------	Atom properties ------------------------------- #
 
 our %ATOMS = (
-    "." => { # Placeholder atom, point in space.
-	     "covalent_radius" => {
-		                    "length"    => [ 1 ],
-				    "error"     => [ 1 ]
+    '.' => { # Placeholder atom, point in space.
+	     'covalent_radius' => {
+		                    'length'    => [ 1 ],
+				    'error'     => [ 1 ]
 				  },
-	     "lone_pairs" => 0,
-	     "vdw_radius" => 1,
-             "valence" => 1,
-             "partial_charge" => 0
+	     'lone_pairs' => 0,
+	     'vdw_radius' => 1,
+             'valence' => 1,
+             'partial_charge' => 0
            },
-    "H" => {
-	     "covalent_radius" => {
-		                    "length"    => [ 0.31 ],
-				    "error"     => [ 0.05 ]
+    'H' => {
+	     'covalent_radius' => {
+		                    'length'    => [ 0.31 ],
+				    'error'     => [ 0.05 ]
 				  },
-	     "lone_pairs" => 0,
-	     "vdw_radius" => 1.2,
-             "valence" => 1,
-             "partial_charge" => 0.27
+	     'lone_pairs' => 0,
+	     'vdw_radius' => 1.2,
+             'valence' => 1,
+             'partial_charge' => 0.27
            },
-    "C" => {
-	     "covalent_radius" => {
-		                    "length"    => [ 0.76, 0.70, 0.64 ],
-				    "error"     => [ 0.03, 0.03, 0.03 ]
+    'C' => {
+	     'covalent_radius' => {
+		                    'length'    => [ 0.76, 0.70, 0.64 ],
+				    'error'     => [ 0.03, 0.03, 0.03 ]
 				  },
-	     "lone_pairs" => 0,
-	     "vdw_radius" => 1.77,
-             "valence" => 4,
-             "partial_charge" => 0.12,
+	     'lone_pairs' => 0,
+	     'vdw_radius' => 1.77,
+             'valence' => 4,
+             'partial_charge' => 0.12,
            },
-    "N" => {
-	     "covalent_radius" => {
-		                    "length"    => [ 0.71, 0.60 ],
-				    "error"     => [ 0.02, 0.06 ]
+    'N' => {
+	     'covalent_radius' => {
+		                    'length'    => [ 0.71, 0.60 ],
+				    'error'     => [ 0.02, 0.06 ]
 				  },
-	     "lone_pairs" => 1,
-	     "vdw_radius" => 1.66,
-             "valence" => 3,
-             "partial_charge" => -0.42
+	     'lone_pairs' => 1,
+	     'vdw_radius' => 1.66,
+             'valence' => 3,
+             'partial_charge' => -0.42
            },
-    "O" => {
-	     "covalent_radius" => {
-		                    "length"    => [ 0.66, 0.57 ],
-				    "error"     => [ 0.02, 0.07 ]
+    'O' => {
+	     'covalent_radius' => {
+		                    'length'    => [ 0.66, 0.57 ],
+				    'error'     => [ 0.02, 0.07 ]
 				  },
-	     "lone_pairs" => 2,
-	     "vdw_radius" => 1.5,
-             "valence" => 2,
-             "partial_charge" => -0.57,
+	     'lone_pairs' => 2,
+	     'vdw_radius' => 1.5,
+             'valence' => 2,
+             'partial_charge' => -0.57,
            },
-    "S" => {
-	     "covalent_radius" => {
-		                    "length"    => [ 1.05 ],
-				    "error"     => [ 0.03 ]
+    'S' => {
+	     'covalent_radius' => {
+		                    'length'    => [ 1.05 ],
+				    'error'     => [ 0.03 ]
 				  },
-	     "lone_pairs" => 2,
-	     "vdw_radius" => 1.89,
-             "valence" => 2,
-             "partial_charge" => 0
+	     'lone_pairs' => 2,
+	     'vdw_radius' => 1.89,
+             'valence' => 2,
+             'partial_charge' => 0
            },
-    "P" => {
-	     "covalent_radius" => {
-		                    "length"    => [ 1.07 ],
-				    "error"     => [ 0.03 ]
+    'P' => {
+	     'covalent_radius' => {
+		                    'length'    => [ 1.07 ],
+				    'error'     => [ 0.03 ]
 				  },
-	     "lone_pairs" => 0,
-	     "vdw_radius" => 1.9,
-             "valence" => 5,
-             "partial_charge" => 0
+	     'lone_pairs' => 0,
+	     'vdw_radius' => 1.9,
+             'valence' => 5,
+             'partial_charge' => 0
            }
     );
 
@@ -260,7 +260,7 @@ our %HYDROGEN_NAMES = (
 sub sort_atom_names
 {
     my ( $atom_names, $sort_type ) = @_;
-    $sort_type //= "tgn";
+    $sort_type //= 'tgn';
 
     # First priority is decided by atom type: S > P > O > N > C > H.
     # Second priority - by greek letter: A > B > G > D > E > Z > H.
@@ -269,10 +269,10 @@ sub sort_atom_names
     # This priority is achieved by assinging first, second and third priorities
     # to numbers. Then iteratively is sorted by priorities.
     my %atom_type_priority =
-	( "H" => 1, "C" => 2, "N" => 3, "O" => 4, "P" => 5, "S" => 6 );
+	( 'H' => 1, 'C' => 2, 'N' => 3, 'O' => 4, 'P' => 5, 'S' => 6 );
     my %greek_letter_priority =
-	( "H" => 1, "Z" => 2, "E" => 3, "D" => 4, "G" => 5, "B" => 6,
-	  "A" => 7,  "" => 8 );
+	( 'H' => 1, 'Z' => 2, 'E' => 3, 'D' => 4, 'G' => 5, 'B' => 6,
+	  'A' => 7,  '' => 8 );
 
     # Decomposes each atom name by its components.
     my %atom_names;
@@ -280,27 +280,27 @@ sub sort_atom_names
 	my ( $atom_type ) = $atom_name =~ /(^[a-zA-z])[a-zA-z]?\d?/;
 	my ( $greek_letter ) = $atom_name =~ /^[a-zA-z]([a-zA-z]?)\d?/;
 	my ( $number ) = $atom_name =~ /^[a-zA-z][a-zA-z]?(\d?)/;
-	$atom_names{$atom_name}{"type"} =
+	$atom_names{$atom_name}{'type'} =
 	    $atom_type_priority{$atom_type};
-	$atom_names{$atom_name}{"greek_letter"} =
+	$atom_names{$atom_name}{'greek_letter'} =
 	    $greek_letter_priority{$greek_letter};
-	$atom_names{$atom_name}{"number"} = $number;
+	$atom_names{$atom_name}{'number'} = $number;
     }
 
     # Sorts by rules of described in %atom_names.
     my @sorted_names;
-    if( $sort_type eq "tgn") { # By type, then greek letter and then number.
+    if( $sort_type eq 'tgn') { # By type, then greek letter and then number.
 	@sorted_names =
 	  sort {
-	      $atom_names{$b}{"type"} <=> $atom_names{$a}{"type"}
-	   || $atom_names{$b}{"greek_letter"} <=> $atom_names{$a}{"greek_letter"}
-           || $atom_names{$a}{"number"} cmp $atom_names{$b}{"number"} }
+	      $atom_names{$b}{'type'} <=> $atom_names{$a}{'type'}
+	   || $atom_names{$b}{'greek_letter'} <=> $atom_names{$a}{'greek_letter'}
+           || $atom_names{$a}{'number'} cmp $atom_names{$b}{'number'} }
 	      @{ $atom_names };
-    } elsif( $sort_type eq "gn" ) { # By greek letter and then number.
+    } elsif( $sort_type eq 'gn' ) { # By greek letter and then number.
 	@sorted_names =
 	  sort {
-	      $atom_names{$b}{"greek_letter"} <=> $atom_names{$a}{"greek_letter"}
-           || $atom_names{$a}{"number"} cmp $atom_names{$b}{"number"} }
+	      $atom_names{$b}{'greek_letter'} <=> $atom_names{$a}{'greek_letter'}
+           || $atom_names{$a}{'number'} cmp $atom_names{$b}{'number'} }
 	      @{ $atom_names };
     }
 

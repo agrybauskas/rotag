@@ -43,12 +43,12 @@ sub bond_torsion
     	mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
     						    $up_atom_coord,
     						    $side_atom_coord,
-    						    "global" ) },
+    						    'global' ) },
     			       \@rot_matrix,
     			       @{ switch_ref_frame( $mid_atom_coord,
     						    $up_atom_coord,
     						    $side_atom_coord,
-    						    "local" ) } ] );
+    						    'local' ) } ] );
 
     return $rot_matrix;
 }
@@ -82,12 +82,12 @@ sub bond_stretching
     	mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
 						    $up_atom_coord,
 						    $side_atom_coord,
-						    "global" ) },
+						    'global' ) },
 			       \@transl_matrix,
 			       @{ switch_ref_frame( $mid_atom_coord,
 						    $up_atom_coord,
 						    $side_atom_coord,
-						    "local" ) } ] );
+						    'local' ) } ] );
 
     return $transl_matrix;
 }
@@ -129,13 +129,13 @@ sub angle_bending
 	mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
 						    $up_atom_coord,
 						    $side_atom_coord,
-						    "global" ) },
+						    'global' ) },
 			       \@rot_matrix_y,
 			       \@rot_matrix_x,
 			       @{ switch_ref_frame( $mid_atom_coord,
 						    $up_atom_coord,
 						    $side_atom_coord,
-						    "local" ) } ] );
+						    'local' ) } ] );
 
     return $rot_matrix;
 }
