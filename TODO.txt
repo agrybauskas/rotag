@@ -10,3 +10,4 @@
    parsing files and using pipes some of the [local] data might be lost or not
    needed.
 ++ Order maybe should be changed to group only.
+-- Should properly track the quantity of significant digits.
