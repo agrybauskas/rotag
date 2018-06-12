@@ -11,3 +11,4 @@
    needed.
 ++ Order maybe should be changed to group only.
 -- Should properly track the quantity of significant digits.
+-- Should use lambda function instead of eval in LinearAlgebra.pm.
