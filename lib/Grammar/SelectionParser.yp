@@ -11,7 +11,7 @@
 
 %left ','
 %left '-'
-%left 'around'
+%left 'around' 'rand'
 %right 'byresid' 'mainchain' 'sidechain'
 %left '!'
 %left '|' '&'
@@ -22,7 +22,6 @@ line
     : exp
         {
 	    if( ! $_[1]->[0] ) { return []; }
-
             if( $_[1]->[0] eq '!' ) {
 		return [];
 	    } else {
@@ -100,12 +99,9 @@ exp
     | exp '&' exp
         {
 	    my @joint_ids;
-
 	    if( ! @{ $_[1] } || ! @{ $_[3] } ) { return []; }
-
 	    my @first_ids = @{ $_[1] };
 	    my @second_ids = @{ $_[3] };
-
 	    if( $first_ids[0] ne '!' && $second_ids[0] ne '!' ) {
 		for my $id ( @first_ids ) {
 		    push( @joint_ids, $id ) if any { $id eq $_ } @second_ids;
@@ -132,7 +128,6 @@ exp
 	    if( ! @{ $_[1] } || ! @{ $_[3] } ) {
 	    	return [ @{ $_[1] }, @{ $_[3] } ];
 	    }
-
 	    if( $_[1]->[0] ne '!' && $_[3]->[0] ne '!' ) {
 		return [ uniq( @{ $_[1] }, @{ $_[3] } ) ];
 	    } else {
@@ -174,6 +169,22 @@ exp
 				 'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
 				 'is_list' => 1 } );
 	    }
+        }
+    | exp 'rand' NUM
+        {
+	    srand( $_[0]->{USER}{SEED} );
+	    my @ids = @{ $_[1] };
+	    my @rand_ids;
+	    if( scalar( @ids ) < $_[3] ) {
+		die( "List of $#ids atoms is smaller than the request of " .
+		     "$_[3] atoms." );
+	    }
+	    foreach( 1..$_[3] ) {
+	    	my $rand_idx = rand( $#ids );
+	    	push( @rand_ids, $ids[$rand_idx] );
+		splice( @ids, $rand_idx, 1 );
+	    }
+	    return \@rand_ids;
         }
     | 'chain' str_ope
         {
@@ -263,6 +274,8 @@ sub lexer
             return ( 'atomtype', $1 );
         } elsif(s/^(around)//) {
             return ( 'around', $1 );
+	} elsif(s/^(rand)//) {
+            return ( 'rand', $1 );
 	} elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
 	} elsif( s/^(\w+)// ) {
@@ -299,11 +312,14 @@ sub debugger
 
 sub parser
 {
-    my ( $self, $atom_site, $input, $by_attribute ) = @_;
+    my ( $self, $atom_site, $input, $by_attribute, $options ) = @_;
+
+    my ( $seed ) = $options->{"seed"};
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
     $self->YYData->{BY_ATTRIBUTE} = $by_attribute;
+    $self->YYData->{SEED} = $seed;
 
     my $selected_atom_data = $self->YYParse( yylex => \&lexer,
 					     yyerror => \&debugger,

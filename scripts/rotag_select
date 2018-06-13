@@ -39,7 +39,8 @@ use Grammar::SelectionParser;
 #*            target    - target atoms (only for --select).
 #*        Selection operators:
 #*            around  - atoms around <int> angstroms;
-#*            byresid - expands to residues.
+#*            byresid - expands to residues;
+#*            rand    - selects <int> number of atoms randomly.
 #*        Logical operators:
 #*            &  - and operator;
 #*            |  - or operator;
@@ -51,6 +52,8 @@ use Grammar::SelectionParser;
 #*        selected (S).
 #*    --keep-ignored
 #*        keeps ignored atoms.
+#*    --seed <int>
+#*        sets a seed for random (rand) selection.
 #*    --version
 #*        print version.
 
@@ -66,6 +69,7 @@ GetOptions(
     "target=s" => \$options{"target_cl"},
     "select=s" => \$options{"select_cl"},
     "keep-ignored" => sub { $keep_ignored = 1 },
+    "seed=s" => \$options{"seed"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -82,6 +86,7 @@ GetOptions(
 $options{"select_cl"} //= "target";
 $options{"select_cl"} = "all" if $options{"target_cl"} =~ m/^\s*all\s$/;
 $options{"select_cl"} =~ s/(target)/$options{"target_cl"}/g;
+$options{"seed"} //= 23;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -108,7 +113,10 @@ if( scalar( @target_cls ) > 1 ) {
 	      @{ filter( { "atom_site" =>
 			       $selection_parser->parser( $atom_site,
 							  $target_cl,
-							  "id" ),
+							  "id",
+							  { "seed" =>
+								$options{"seed"}
+							  } ),
 			   "data" => [ "id" ],
 			   "is_list" => 1,
 			   "group_id" => $group_id } ) } );
@@ -119,7 +127,10 @@ if( scalar( @target_cls ) > 1 ) {
 	@{ filter( { "atom_site" =>
 			 $selection_parser->parser( $atom_site,
 						    $options{"target_cl"},
-						    "id" ),
+						    "id",
+						    { "seed" =>
+							  $options{"seed"}
+						    } ),
 		     "data" => [ "id" ],
 		     "is_list" => 1,
 		     "group_id" => $group_id } ) };
@@ -128,7 +139,10 @@ if( scalar( @target_cls ) > 1 ) {
 my @selected_atom_ids =
     @{ filter( { "atom_site" => $selection_parser->parser( $atom_site,
 							   $options{"select_cl"},
-							   "id" ),
+							   "id",
+							   { "seed" =>
+								 $options{"seed"}
+							   } ),
 		 "data" => [ "id" ],
 		 "is_list" => 1 } ) };
 
