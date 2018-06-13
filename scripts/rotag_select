@@ -69,7 +69,7 @@ GetOptions(
     "target=s" => \$options{"target_cl"},
     "select=s" => \$options{"select_cl"},
     "keep-ignored" => sub { $keep_ignored = 1 },
-    "seed=s" => \$options{"seed"},
+    "random-seed=s" => \$options{"seed"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
 			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
