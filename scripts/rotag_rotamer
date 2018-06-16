@@ -49,6 +49,9 @@ use PseudoAtoms qw( generate_library );
 #*    --cutoff-residue <float> (default: 1.0)
 #*        filters out rotamers which has the potential energy greater than the
 #*        cutoff value.
+#*    --top <int> | <float>
+#*        top rotamers according to the value of energies. If <int> is chosen,
+#*        then top ranking rotamers selected and if <float> - top ratio.
 #*    --threads
 #*        number of threads.
 #*    --version
@@ -68,6 +71,7 @@ GetOptions(
     "angle-step=s" => \$options{"small_angle"},
     "cutoff-atom=s" => \$options{"energy_cutoff_atom"},
     "cutoff-residue=s" => \$options{"energy_cutoff_residue"},
+    "top=s" => \$options{"top"},
     "threads=s" => \$options{"threads"},
     "help" => sub { open( my $fh, "<", $0 );
 		    while( <$fh> ) {
@@ -127,6 +131,7 @@ my $rotamer_library =
 	  "parameters" => $options{"parameters"},
           "energy_cutoff_atom" => $options{"energy_cutoff_atom"},
           "energy_cutoff_residue" => $options{"energy_cutoff_residue"},
+	  "top" => $options{"top"},
 	  "threads" => $options{"threads"}
         } );
 
