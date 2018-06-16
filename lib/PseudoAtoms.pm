@@ -219,6 +219,7 @@ sub generate_library
     my $small_angle = $args->{'small_angle'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
+    my $parameters = $args->{'parameters'};
     my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
     my $energy_cutoff_residue = $args->{'energy_cutoff_residue'};
     my $threads = $args->{'threads'};
@@ -408,7 +409,8 @@ sub generate_library
 		    			     $allowed_energy_blocks[$i],
 		    			     \%interaction_site,
 		    			     $potential_function,
-		    			     $energy_cutoff_atom );
+		    			     $energy_cutoff_atom,
+					     $parameters );
 			push( @block_results, $thread_task );
 		    }
 
@@ -464,7 +466,8 @@ sub _check_angles
 	 $allowed_energies,
 	 $interaction_site,
 	 $potential_function,
-	 $energy_cutoff_atom ) = @_;
+	 $energy_cutoff_atom,
+	 $parameters ) = @_;
 
     my @next_allowed_angles;
     my @next_allowed_energies;
@@ -496,7 +499,8 @@ sub _check_angles
     		$potential_energy =
     		    $potential_function->(
     			$pseudo_atom_site->{$pseudo_atom_id},
-    			$atom_site->{$interaction_id} );
+    			$atom_site->{$interaction_id},
+			$parameters );
     		$potential_sum += $potential_energy;
     		last if $potential_energy > $energy_cutoff_atom;
     	    }

@@ -31,6 +31,18 @@ use PseudoAtoms qw( generate_library );
 #*                 exponential | combined)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
+#*    --parameters <str>
+#*        parameters for potential energy functions:
+#*            soft_epsilon - soft sphere epsilon;
+#*            soft_n       - soft sphere n;
+#*            exp_epsilon  - exponential epsilon;
+#*            exp_m        - exponential n;
+#*            lj_epsilon   - Leonard-Jones epsilon;
+#*            c_epsilon    - Coulomb epsilon;
+#*            h_epsilon    - hydrogen bond epsilon;
+#*            cutoff_start - x VdW where energy starts to go to zero;
+#*            cutoff_end   - x VdW where energy is at zero.
+#*        Example: 'lj_epsilon 0.01;c_epsilon 0.4'.
 #*    --cutoff-atom <float> (default: 0.4)
 #*        the maximum value of energy potential for each atom that allows for
 #*        further rotamer search.
@@ -77,6 +89,12 @@ $options{"energy_cutoff_atom"} = 0.4 unless $options{"energy_cutoff_atom"};
 $options{"energy_cutoff_residue"} = 1.0 unless $options{"energy_cutoff_residue"};
 $options{"threads"} = 1 unless $options{"threads"};
 
+if( defined $options{"parameters"} ) {
+    $options{"parameters"} = { map { $_->[0] => $_->[1] }
+			       map { [ split( " ", $_ ) ] }
+			       split( ";", $options{"parameters"} ) };
+}
+
 # ----------------------------------- Main ------------------------------------ #
 
 # Reads file path, stdin and "-" operator.
@@ -106,6 +124,7 @@ my $rotamer_library =
           "small_angle" => $options{"small_angle"} * pi(),
           "conf_model" => $options{"conf_model"},
           "interactions" => $options{"interactions"},
+	  "parameters" => $options{"parameters"},
           "energy_cutoff_atom" => $options{"energy_cutoff_atom"},
           "energy_cutoff_residue" => $options{"energy_cutoff_residue"},
 	  "threads" => $options{"threads"}

@@ -75,8 +75,10 @@ sub soft_sphere
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my $epsilon = 1.0 unless $parameters->{'epsilon'};
-    my $n = 12 unless $parameters->{'n'};
+    my $epsilon =
+	$parameters->{'soft_epsilon'} ? $parameters->{'soft_epsilon'} : 1.0;
+    my $n =
+	$parameters->{'soft_n'} ? $parameters->{'soft_n'} : 12;
 
     my $vdw_distance =
 	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
@@ -114,8 +116,10 @@ sub exponential
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my $epsilon = 1.0 unless $parameters->{'epsilon'};
-    my $m = 1.0 unless $parameters->{'m'};
+    my $epsilon =
+	$parameters->{'exp_epsilon'} ? $parameters->{'exp_epsilon'} : 1.0;
+    my $m =
+	$parameters->{'exp_m'} ? $parameters->{'exp_m'} : 1.0;
 
     my $vdw_distance =
 	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
@@ -151,7 +155,8 @@ sub leonard_jones
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my $epsilon = -1.0 unless $parameters->{'epsilon'};
+    my $epsilon =
+	$parameters->{'lj_epsilon'} ? $parameters->{'lj_epsilon'} : -1.0;
 
     my $sigma = # Same as vdw distance.
 	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
@@ -173,11 +178,16 @@ sub combined
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my $ljones_epsilon = 1.0 unless $parameters->{'lj_epsilon'};
-    my $coulomb_epsilon = 0.01 unless $parameters->{'c_epsilon'};
-    my $h_bond_epsilon = 1.0 unless $parameters->{'h_epsilon'};
-    my $cutoff_start = 2.5 unless $parameters->{'cutoff_start'}; # * VdW distance.
-    my $cutoff_end = 5 unless $parameters->{'cutoff_end'}; # * VdW distance.
+    my $ljones_epsilon =
+	$parameters->{'lj_epsilon'} ? $parameters->{'lj_epsilon'} : 1.0;
+    my $coulomb_epsilon =
+	$parameters->{'c_epsilon'} ? $parameters->{'c_epsilon'} : 0.01;
+    my $h_bond_epsilon =
+	$parameters->{'h_epsilon'} ? $parameters->{'h_epsilon'} : 1.0;
+    my $cutoff_start = # * VdW distance.
+	$parameters->{'cutoff_start'} ? $parameters->{'cutoff_start'} : 2.5;
+    my $cutoff_end = # * VdW distance.
+	$parameters->{'cutoff_end'} ? $parameters->{'cutoff_end'} : 5;
 
     # Calculates Van der Waals distance of given atoms.
     my $sigma =
