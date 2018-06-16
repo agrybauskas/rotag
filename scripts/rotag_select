@@ -52,7 +52,7 @@ use Grammar::SelectionParser;
 #*        selected (S).
 #*    --keep-ignored
 #*        keeps ignored atoms.
-#*    --seed <int>
+#*    --rand-seed <int>
 #*        sets a seed for random (rand) selection.
 #*    --version
 #*        print version.

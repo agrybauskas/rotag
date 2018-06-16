@@ -52,6 +52,7 @@ GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "model=s" => \$options{"conf_model"},
     "potential=s" => \$options{"interactions"},
+    "parameters=s" => \$options{"parameters"},
     "angle-step=s" => \$options{"small_angle"},
     "cutoff-atom=s" => \$options{"energy_cutoff_atom"},
     "cutoff-residue=s" => \$options{"energy_cutoff_residue"},
@@ -92,11 +93,10 @@ my $selected_atom_site =
     filter( { "atom_site" => $atom_site,
 	      "include" => { "[local]_selection_state" => [ "T", "S" ] } } );
 my @residue_ids =
-    uniq(
-	@{ filter( { "atom_site" => $selected_atom_site,
-		     "include" => { "[local]_selection_state" => [ "T" ] },
-		     "data" => [ "label_seq_id" ],
-		     "is_list" => 1 } ) } );
+    uniq( @{ filter( { "atom_site" => $selected_atom_site,
+		       "include" => { "[local]_selection_state" => [ "T" ] },
+		       "data" => [ "label_seq_id" ],
+		       "is_list" => 1 } ) } );
 
 # Starts generating rotamer library.
 my $rotamer_library =

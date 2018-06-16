@@ -73,10 +73,10 @@ sub hard_sphere
 
 sub soft_sphere
 {
-    my ( $atom_i, $atom_j, $epsilon, $n ) = @_;
+    my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    $epsilon //= 1.0;
-    $n //= 12;
+    my $epsilon = 1.0 unless $parameters->{'epsilon'};
+    my $n = 12 unless $parameters->{'n'};
 
     my $vdw_distance =
 	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
@@ -112,10 +112,10 @@ sub soft_sphere
 
 sub exponential
 {
-    my ( $atom_i, $atom_j, $epsilon, $m ) = @_;
+    my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    $epsilon //= 1.0;
-    $m //= 1.0;
+    my $epsilon = 1.0 unless $parameters->{'epsilon'};
+    my $m = 1.0 unless $parameters->{'m'};
 
     my $vdw_distance =
 	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
@@ -149,9 +149,9 @@ sub exponential
 
 sub leonard_jones
 {
-    my ( $atom_i, $atom_j, $epsilon ) = @_;
+    my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    $epsilon //= -1.0;
+    my $epsilon = -1.0 unless $parameters->{'epsilon'};
 
     my $sigma = # Same as vdw distance.
 	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
@@ -171,19 +171,13 @@ sub leonard_jones
 
 sub combined
 {
-    my ( $atom_i,
-	 $atom_j,
-	 $ljones_epsilon,
-	 $coulomb_epsilon,
-	 $h_bond_epsilon,
-	 $cutoff_start,
-	 $cutoff_end ) = @_;
+    my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    $ljones_epsilon //= 1.0;
-    $coulomb_epsilon //= 0.01;
-    $h_bond_epsilon //= 1.0;
-    $cutoff_start //= 2.5; # * VdW distance.
-    $cutoff_end //= 5; # * VdW distance.
+    my $ljones_epsilon = 1.0 unless $parameters->{'lj_epsilon'};
+    my $coulomb_epsilon = 0.01 unless $parameters->{'c_epsilon'};
+    my $h_bond_epsilon = 1.0 unless $parameters->{'h_epsilon'};
+    my $cutoff_start = 2.5 unless $parameters->{'cutoff_start'}; # * VdW distance.
+    my $cutoff_end = 5 unless $parameters->{'cutoff_end'}; # * VdW distance.
 
     # Calculates Van der Waals distance of given atoms.
     my $sigma =
