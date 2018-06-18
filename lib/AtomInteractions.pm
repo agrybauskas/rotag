@@ -163,15 +163,11 @@ sub leonard_jones
       + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     my $r = # Same as distance.
-    	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
-      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
-      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
+      sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+          + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+          + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
 
-    if( $r <= ( $sigma ** 2.5 ) ** 2 ) {
-	return 4 * $epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
-    } else {
-	return 0;
-    }
+    return 4 * $epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
 }
 
 sub combined
