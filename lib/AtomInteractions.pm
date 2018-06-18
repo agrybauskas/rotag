@@ -170,6 +170,28 @@ sub leonard_jones
     return 4 * $epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
 }
 
+sub coloumb
+{
+    my ( $atom_i, $atom_j, $parameters ) = @_;
+
+    my $coloumb_epsilon =
+	$parameters->{'c_epsilon'} ? $parameters->{'c_epsilon'} : 0.1;
+
+    # Extracts partial charges.
+    my $partial_charge_i =
+    	$ATOMS{$atom_i->{'type_symbol'}}{'partial_charge'};
+    my $partial_charge_j =
+    	$ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
+
+    # Calculates squared distance between two atoms.
+    my $r = sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+                + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+	        + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+
+    return ( $partial_charge_i * $partial_charge_j ) /
+	   ( 4 * $coulomb_epsilon * pi() * $r );
+}
+
 sub composite
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
@@ -191,38 +213,21 @@ sub composite
       + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     # Calculates squared distance between two atoms.
-    my $squared_r =
-    	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
-      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
-      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
-
-    # Extracts partial charges.
-    my $partial_charge_i =
-    	$ATOMS{$atom_i->{'type_symbol'}}{'partial_charge'};
-    my $partial_charge_j =
-    	$ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
+    my $r = sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+                + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+	        + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
 
     my $hbond; # TODO: hbond will be added, when there will be functions adding
                # hydrogens to atoms.
 
     if( $squared_r < $cutoff_start * $sigma ) {
-	my $leonard_jones =
-	    4 * $ljones_epsilon
-	      * ( ( ( $sigma / sqrt( $squared_r ) ) ** 12 )
-	        - ( ( $sigma / sqrt( $squared_r ) ) ** 6 ) );
-	my $coulomb =
-	    ( $partial_charge_i * $partial_charge_j ) /
-	    ( 4 * $coulomb_epsilon * pi() * sqrt( $squared_r ) );
+	my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
+	my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
         return $leonard_jones + $coulomb;
     } elsif( ( $squared_r >= $cutoff_start * $sigma )
 	  && ( $squared_r <= $cutoff_end * $sigma ) ) {
-	my $leonard_jones =
-	    4 * $ljones_epsilon
-	      * ( ( ( $sigma / sqrt( $squared_r ) ) ** 12 )
-	        - ( ( $sigma / sqrt( $squared_r ) ) ** 6 ) );
-	my $coulomb =
-	    ( $partial_charge_i * $partial_charge_j ) /
-	    ( 4 * $coulomb_epsilon * pi() * sqrt( $squared_r ) );
+	my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
+	my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
 	my $cutoff_function =
 	    cos( ( pi() * ( sqrt( $squared_r ) - $cutoff_start * $sigma ) ) /
 		 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
