@@ -156,7 +156,7 @@ sub leonard_jones
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
     my $epsilon =
-	$parameters->{'lj_epsilon'} ? $parameters->{'lj_epsilon'} : -1.0;
+	$parameters->{'lj_epsilon'} ? $parameters->{'lj_epsilon'} : 1.0;
 
     my $sigma = # Same as vdw distance.
 	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
