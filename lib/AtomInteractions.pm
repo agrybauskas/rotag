@@ -8,7 +8,7 @@ our @EXPORT_OK = qw( hard_sphere
                      soft_sphere
                      exponential
                      leonard_jones
-                     combined );
+                     composite );
 
 use List::Util qw( any max );
 
@@ -170,7 +170,7 @@ sub leonard_jones
     return 4 * $epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
 }
 
-sub combined
+sub composite
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 

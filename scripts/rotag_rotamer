@@ -27,21 +27,19 @@ use PseudoAtoms qw( generate_library );
 #*        rules (model) that will be used to move side-chains.
 #*    --angle-step <float> (default: 0.1) (in radians)
 #*        angle that each dihedral angle is turned by.
-#*    --potential (default: leonard_jones | hard_sphere | soft_sphere |
-#*                 exponential | combined)
+#*    --potential (default: composite | hard_sphere | soft_sphere)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
 #*    --parameters <str>
-#*        parameters for potential energy functions:
-#*            soft_epsilon - soft sphere epsilon;
-#*            soft_n       - soft sphere n;
-#*            exp_epsilon  - exponential epsilon;
-#*            exp_m        - exponential n;
+#*        parameters for composite potential energy function:
 #*            lj_epsilon   - Leonard-Jones epsilon;
 #*            c_epsilon    - Coulomb epsilon;
 #*            h_epsilon    - hydrogen bond epsilon;
 #*            cutoff_start - x VdW where energy starts to go to zero;
 #*            cutoff_end   - x VdW where energy is at zero.
+#*        parameters for soft-sphere potential energy function:
+#*            soft_epsilon - soft sphere epsilon;
+#*            soft_n       - soft sphere n.
 #*        Example: 'lj_epsilon 0.01;c_epsilon 0.4'.
 #*    --cutoff-atom <float> (default: 0.4)
 #*        the maximum value of energy potential for each atom that allows for
@@ -89,7 +87,7 @@ GetOptions(
 
 # Default options.
 $options{"conf_model"} = "rotation_only" unless $options{"conf_model"};
-$options{"interactions"} = "leonard_jones" unless $options{"interactions"};
+$options{"interactions"} = "composite" unless $options{"interactions"};
 $options{"small_angle"} = 0.1 unless $options{"small_angle"};
 $options{"energy_cutoff_atom"} = 0.4 unless $options{"energy_cutoff_atom"};
 $options{"energy_cutoff_residue"} = 1.0 unless $options{"energy_cutoff_residue"};

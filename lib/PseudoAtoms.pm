@@ -20,7 +20,7 @@ use AtomInteractions qw( hard_sphere
                          soft_sphere
                          exponential
                          leonard_jones
-                         combined );
+                         composite );
 use AtomProperties qw( %ATOMS
                        %HYDROGEN_NAMES );
 use Combinatorics qw( permutation );
@@ -247,7 +247,7 @@ sub generate_library
     $potential_function = \&soft_sphere   if $interactions eq 'soft_sphere';
     $potential_function = \&exponential   if $interactions eq 'exponential';
     $potential_function = \&leonard_jones if $interactions eq 'leonard_jones';
-    $potential_function = \&combined      if $interactions eq 'combined';
+    $potential_function = \&composite      if $interactions eq 'composite';
 
     # Creates the grid box that has edge length of sum of all bonds of the
     # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
