@@ -96,8 +96,7 @@ sub soft_sphere
     }
 }
 
-
-#
+# TODO: deprecated. Probably, should remove in the future.
 # Exponential potential function. Described as:
 #     epsilon * exp( - ( r_{ij} / vdw_{i} + vdw_{j} ) ) ** m ,
 #        r_{ij} <= vdw_{i} + vdw_{j}
@@ -155,26 +154,34 @@ sub leonard_jones
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
+    my ( $r, $sigma ) = ( $parameters->{'r'}, $parameters->{'sigma'} );
+
     my $epsilon =
 	$parameters->{'lj_epsilon'} ? $parameters->{'lj_epsilon'} : 1.0;
 
-    my $sigma = # Same as vdw distance.
-	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-      + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    if( ! defined $sigma ) {
+        $sigma = # Same as vdw distance.
+            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+          + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    }
 
-    my $r = # Same as distance.
-      sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
-          + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
-          + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+    if( ! defined $r ) {
+        $r = # Same as distance.
+            sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+                + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+                + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+    }
 
     return 4 * $epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
 }
 
-sub coloumb
+sub coulomb
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my $coloumb_epsilon =
+    my ( $r ) = ( $parameters->{'r'} );
+
+    my $coulomb_epsilon =
 	$parameters->{'c_epsilon'} ? $parameters->{'c_epsilon'} : 0.1;
 
     # Extracts partial charges.
@@ -184,9 +191,11 @@ sub coloumb
     	$ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
 
     # Calculates squared distance between two atoms.
-    my $r = sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
-                + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
-	        + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+    if( ! defined $parameters ) {
+        $r = sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+                 + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+	         + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+    }
 
     return ( $partial_charge_i * $partial_charge_j ) /
 	   ( 4 * $coulomb_epsilon * pi() * $r );
@@ -197,15 +206,15 @@ sub composite
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
     my $ljones_epsilon =
-	$parameters->{'lj_epsilon'} ? $parameters->{'lj_epsilon'} : 1.0;
+        $parameters->{'lj_epsilon'} ? $parameters->{'lj_epsilon'} : 1.0;
     my $coulomb_epsilon =
-	$parameters->{'c_epsilon'} ? $parameters->{'c_epsilon'} : 0.01;
+        $parameters->{'c_epsilon'} ? $parameters->{'c_epsilon'} : 0.01;
     my $h_bond_epsilon =
-	$parameters->{'h_epsilon'} ? $parameters->{'h_epsilon'} : 1.0;
+        $parameters->{'h_epsilon'} ? $parameters->{'h_epsilon'} : 1.0;
     my $cutoff_start = # * VdW distance.
-	$parameters->{'cutoff_start'} ? $parameters->{'cutoff_start'} : 2.5;
+        $parameters->{'cutoff_start'} ? $parameters->{'cutoff_start'} : 2.5;
     my $cutoff_end = # * VdW distance.
-	$parameters->{'cutoff_end'} ? $parameters->{'cutoff_end'} : 5;
+        $parameters->{'cutoff_end'} ? $parameters->{'cutoff_end'} : 5;
 
     # Calculates Van der Waals distance of given atoms.
     my $sigma =
@@ -215,23 +224,25 @@ sub composite
     # Calculates squared distance between two atoms.
     my $r = sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
                 + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
-	        + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+                + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
 
-    my $hbond; # TODO: hbond will be added, when there will be functions adding
-               # hydrogens to atoms.
+    # For the sake of not repeating r and sigma calculations, they should be
+    # passed as the parameters.
+    $parameters->{'r'} = $r;
+    $parameters->{'sigma'} = $sigma;
 
-    if( $squared_r < $cutoff_start * $sigma ) {
-	my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
-	my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
+    if( $r < $cutoff_start * $sigma ) {
+        my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
+        my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
         return $leonard_jones + $coulomb;
-    } elsif( ( $squared_r >= $cutoff_start * $sigma )
-	  && ( $squared_r <= $cutoff_end * $sigma ) ) {
-	my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
-	my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
-	my $cutoff_function =
-	    cos( ( pi() * ( sqrt( $squared_r ) - $cutoff_start * $sigma ) ) /
-		 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
-	return ( $leonard_jones + $coulomb ) * $cutoff_function;
+    } elsif( ( $r >= $cutoff_start * $sigma )
+          && ( $r <= $cutoff_end * $sigma ) ) {
+        my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
+        my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
+        my $cutoff_function =
+            cos( ( pi() * ( $r - $cutoff_start * $sigma ) ) /
+        	 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
+        return ( $leonard_jones + $coulomb ) * $cutoff_function;
     } else {
     	return 0;
     }

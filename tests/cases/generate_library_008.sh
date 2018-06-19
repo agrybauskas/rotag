@@ -4,7 +4,7 @@ export PERL5LIB=$(dirname "$0")/../../lib
 
 pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.dump
 conf_model="rotation_only"
-potential="leonard_jones"
+potential="composite"
 energy_cutoff_atom=0.04
 energy_cutoff_residue=0.005
 residue_id="18"
