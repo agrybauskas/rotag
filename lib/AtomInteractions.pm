@@ -187,9 +187,43 @@ sub coulomb
 
 sub h_bond
 {
-    my ( $atom_i, $atom_j, $parameters ) = @_;
+    my ( $atom_i, $atom_j, $theta, $parameters ) = @_;
 
-    my ( $r, $r_h ) = ( $parameters->{'r'}, $parameters->{'r_h'} );
+    my ( $r, $sigma, $h_epsilon, $r_i_hydrogen, $r_j_hydrogen ) = (
+        $parameters->{'r'},
+        $parameters->{'sigma'},
+        $parameters->{'h_epsilon'},
+        $parameters->{'r_i_hydrogen'},
+        $parameters->{'r_j_hydrogen'},
+    );
+
+    # Calculates squared distance between two atoms.
+    if( ! defined $r ) {
+        $r = sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+                 + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
+                 + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+    }
+
+    # Calculates Van der Waals distance of given atoms.
+    if( ! defined $sigma ) {
+        $sigma =
+            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+          + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    }
+
+    if( ! defined $r_i_hydrogen ) {
+        $r_i_hydrogen =
+            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+          + $ATOMS{'H'}{'vdw_radius'};
+    }
+
+    if( ! defined $r_j_hydrogen ) {
+        $r_j_hydrogen =
+            $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'}
+          + $ATOMS{'H'}{'vdw_radius'};
+    }
+
+    $h_epsilon = 1.0 if( ! defined $h_epsilon );
 
     return 0;
 }
@@ -237,7 +271,7 @@ sub composite
     if( $r < $cutoff_start * $sigma ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
-        my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
+        my $h_bond = h_bond( $atom_i, $atom_j, 0, $parameters );
         return $leonard_jones + $coulomb + $h_bond;
     } elsif( ( $r >= $cutoff_start * $sigma )
           && ( $r <= $cutoff_end * $sigma ) ) {
