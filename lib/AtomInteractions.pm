@@ -6,8 +6,9 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( hard_sphere
                      soft_sphere
-                     exponential
                      leonard_jones
+                     coulomb
+                     h_bond
                      composite );
 
 use List::Util qw( any max );
@@ -96,46 +97,6 @@ sub soft_sphere
     }
 }
 
-# TODO: deprecated. Probably, should remove in the future.
-# Exponential potential function. Described as:
-#     epsilon * exp( - ( r_{ij} / vdw_{i} + vdw_{j} ) ) ** m ,
-#        r_{ij} <= vdw_{i} + vdw_{j}
-#     0, r_{ij} >  vdw_{i} + vdw_{j}
-#
-#     where: r - distance between center of atoms;
-#            vdw - Van der Waals radius;
-#            epsilon - energy coefficient;
-# Input:
-#     $atom_i, $atom_j - atom data structure (see PDBxParser.pm).
-# Output:
-#     value, calculated by exponential potential.
-#
-
-sub exponential
-{
-    my ( $atom_i, $atom_j, $parameters ) = @_;
-
-    my $epsilon =
-	$parameters->{'exp_epsilon'} ? $parameters->{'exp_epsilon'} : 1.0;
-    my $m =
-	$parameters->{'exp_m'} ? $parameters->{'exp_m'} : 1.0;
-
-    my $vdw_distance =
-	$ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-      + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-
-    my $distance =
-    	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
-      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
-      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
-
-    if( $distance <= $vdw_distance ** 2 ) {
-	return $epsilon * exp( - ( sqrt( $distance ) / $vdw_distance ) ** $m );
-    } else {
-	return 0;
-    }
-}
-
 #
 # Leonard-Jones potential function. Described as:
 #
@@ -199,6 +160,11 @@ sub coulomb
 
     return ( $partial_charge_i * $partial_charge_j ) /
 	   ( 4 * $coulomb_epsilon * pi() * $r );
+}
+
+sub h_bond
+{
+    return 0;
 }
 
 sub composite

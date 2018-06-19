@@ -18,7 +18,6 @@ use threads;
 
 use AtomInteractions qw( hard_sphere
                          soft_sphere
-                         exponential
                          leonard_jones
                          composite );
 use AtomProperties qw( %ATOMS
@@ -245,7 +244,6 @@ sub generate_library
     my $potential_function;
     $potential_function = \&hard_sphere   if $interactions eq 'hard_sphere';
     $potential_function = \&soft_sphere   if $interactions eq 'soft_sphere';
-    $potential_function = \&exponential   if $interactions eq 'exponential';
     $potential_function = \&leonard_jones if $interactions eq 'leonard_jones';
     $potential_function = \&composite      if $interactions eq 'composite';
 

@@ -17,8 +17,9 @@ use PDBxParser qw( filter
                    to_pdbx );
 use AtomInteractions qw( hard_sphere
                          soft_sphere
-                         exponential
                          leonard_jones
+                         coulomb
+                         hbond
                          combined );
 
 #*rotag_energy
@@ -31,8 +32,8 @@ use AtomInteractions qw( hard_sphere
 #*OPTIONS:
 #*    --input <file> | <stdin>
 #*        PDBx file.
-#*    --potential (default: leonard_jones | hard_sphere | soft_sphere |
-#*                 exponential | combined)
+#*    --potential (default: composite | hard_sphere | soft_sphere | leonard_jones
+#*                          | coulomb | h_bond)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
 #*    --version
@@ -107,12 +108,12 @@ for my $cell_idx ( keys %{ $grid_box } ) {
 
 # Calculates the sum of pairwise interactions.
 my $potential_function;
+$potential_function = \&combined if $options{"interactions"} eq "composite";
 $potential_function = \&hard_sphere if $options{"interactions"} eq "hard_sphere";
 $potential_function = \&soft_sphere if $options{"interactions"} eq "soft_sphere";
-$potential_function = \&exponential if $options{"interactions"} eq "exponential";
-$potential_function = \&leonard_jones
-    if $options{"interactions"} eq "leonard_jones";
-$potential_function = \&combined if $options{"interactions"} eq "combined";
+$potential_function = \&leonard_jones if $options{"interactions"} eq "leonard_jones";
+$potential_function = \&coulomb if $options{"interactions"} eq "coulomb";
+$potential_function = \&h_bond if $options{"interactions"} eq "h_bond";
 
 my %pdbx_loops;
 my $calculation_id = 1;
