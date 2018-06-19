@@ -7,6 +7,8 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( around_distance
                      connect_atoms
                      create_box
+                     distance
+                     distance_squared
                      grid_box
                      is_connected
                      is_neighbour
@@ -256,6 +258,13 @@ sub distance_squared
       + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 
     return $distance_squared;
+}
+
+sub distance
+{
+    my ( $atom_i, $atom_j ) = @_;
+
+    return sqrt( distance_squared( $atom_i, $atom_j ) );
 }
 
 sub around_distance
