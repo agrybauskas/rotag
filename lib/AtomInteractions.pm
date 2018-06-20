@@ -22,6 +22,7 @@ use ConnectAtoms qw( connect_atoms
                      is_second_neighbour );
 use PDBxParser qw( filter );
 use LinearAlgebra qw( pi );
+use Measure qw( bond_angle );
 
 # --------------------------- Potential functions ----------------------------- #
 
@@ -175,29 +176,27 @@ sub h_bond
 {
     my ( $atom_i, $atom_j, $atom_h, $parameters ) = @_;
 
-    my ( $r, $sigma, $h_epsilon, $r_i_hydrogen ) = (
+    my ( $r, $sigma, $h_epsilon ) = (
         $parameters->{'r'},
-        $parameters->{'sigma'},
         $parameters->{'h_epsilon'},
-        $parameters->{'r_i_hydrogen'},
-        $parameters->{'r_j_hydrogen'}
     );
 
-    if( ! defined $r ) { $r = distance( $atom_i, $atom_j ); }
-
-    if( ! defined $sigma ) {
-        $sigma = # Same as vdw distance.
-            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-          + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    }
-
-    if( ! defined $r_i_hydrogen ) {
-        $r_i_hydrogen = distance( $atom_i, $atom_h );
-    }
-
+    $r = distance( $atom_i, $atom_j ) if( ! defined $r );
     $h_epsilon = 1.0 if( ! defined $h_epsilon );
+    my $r_i_hydrogen = distance( $atom_i, $atom_h );
 
-    return 0;
+    my $theta = bond_angle(
+	[ $atom_i->{'Cartn_x'}, $atom_i->{'Cartn_y'}, $atom_i->{'Cartn_z'} ],
+	[ $atom_j->{'Cartn_x'}, $atom_j->{'Cartn_y'}, $atom_j->{'Cartn_z'} ],
+	[ $atom_h->{'Cartn_x'}, $atom_h->{'Cartn_y'}, $atom_h->{'Cartn_z'} ]
+    );
+
+    if( ( $theta >= 90 * pi() / 180 ) && ( $theta >= 270 * pi() / 180 ) ) {
+	return $h_epsilon
+	     * ( ( $r / $r_i_hydrogen )**12 - ( $r / $r_i_hydrogen )**10 );
+    } else {
+	return 0;
+    }
 }
 
 sub composite
