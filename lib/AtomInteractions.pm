@@ -174,29 +174,31 @@ sub coulomb
 
 sub h_bond
 {
-    my ( $atom_i, $atom_j, $atom_h, $parameters ) = @_;
+    my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $sigma, $h_epsilon ) = (
+    my ( $r, $h_epsilon ) = (
         $parameters->{'r'},
         $parameters->{'h_epsilon'},
     );
 
     $r = distance( $atom_i, $atom_j ) if( ! defined $r );
     $h_epsilon = 1.0 if( ! defined $h_epsilon );
-    my $r_i_hydrogen = distance( $atom_i, $atom_h );
+    my $r_i_hydrogen =
+        $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+      + $ATOMS{'H'}{'vdw_radius'};
 
-    my $theta = bond_angle(
-	[ $atom_i->{'Cartn_x'}, $atom_i->{'Cartn_y'}, $atom_i->{'Cartn_z'} ],
-	[ $atom_j->{'Cartn_x'}, $atom_j->{'Cartn_y'}, $atom_j->{'Cartn_z'} ],
-	[ $atom_h->{'Cartn_x'}, $atom_h->{'Cartn_y'}, $atom_h->{'Cartn_z'} ]
-    );
+    # my $theta = bond_angle(
+    #     [ $atom_i->{'Cartn_x'}, $atom_i->{'Cartn_y'}, $atom_i->{'Cartn_z'} ],
+    #     [ $atom_j->{'Cartn_x'}, $atom_j->{'Cartn_y'}, $atom_j->{'Cartn_z'} ],
+    #     [ $atom_h->{'Cartn_x'}, $atom_h->{'Cartn_y'}, $atom_h->{'Cartn_z'} ]
+    # );
 
-    if( ( $theta >= 90 * pi() / 180 ) && ( $theta >= 270 * pi() / 180 ) ) {
-	return $h_epsilon
-	     * ( ( $r / $r_i_hydrogen )**12 - ( $r / $r_i_hydrogen )**10 );
-    } else {
-	return 0;
-    }
+    # if( ( $theta >= 90 * pi() / 180 ) && ( $theta >= 270 * pi() / 180 ) ) {
+    #     return $h_epsilon
+    #          * ( ( $r / $r_i_hydrogen )**12 - ( $r / $r_i_hydrogen )**10 );
+    # } else {
+    #     return 0;
+    # }
 }
 
 sub composite
@@ -242,14 +244,14 @@ sub composite
     if( $r < $cutoff_start * $sigma ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
-        # my $h_bond = h_bond( $atom_i, $atom_j, $atom_h, $parameters );
+        # my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
         return $leonard_jones + $coulomb # + $h_bond
             ;
     } elsif( ( $r >= $cutoff_start * $sigma )
           && ( $r <= $cutoff_end * $sigma ) ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
-        # my $h_bond = h_bond( $atom_i, $atom_j, $atom_h, $parameters );
+        # my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
         my $cutoff_function =
             cos( ( pi() * ( $r - $cutoff_start * $sigma ) ) /
         	 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
