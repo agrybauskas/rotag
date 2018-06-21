@@ -24,7 +24,7 @@ use SidechainModels qw( rotation_only  );
 #*        PDBx file.
 #*    --rotamer-atoms
 #*        adds pseudo atoms of defined rotamers. Input .cif has to contain
-#*        _[local]_rotamer_angle category (can be produced with rotag_rotamer).
+#*        _[local]_rotamer_angle category (can be produced with rotag_library).
 #*    --version
 #*        print version.
 
@@ -72,7 +72,7 @@ if( $add_rotamer_atoms ) {
 	$pdbx_loops =
 	    obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
     } else {
-	die( "No library was detected. Generate library with 'rotag_rotamer' " .
+	die( "No library was detected. Generate library with 'rotag_library' " .
 	     "program." );
     }
 
