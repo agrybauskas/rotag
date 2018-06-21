@@ -83,6 +83,7 @@ GetOptions(
     or die "Error in command line argument.";
 
 # Defaults.
+$options{"target_cl"} //= "all";
 $options{"select_cl"} //= "target";
 $options{"select_cl"} = "all" if $options{"target_cl"} =~ m/^\s*all\s$/;
 $options{"select_cl"} =~ s/(target)/$options{"target_cl"}/g;
