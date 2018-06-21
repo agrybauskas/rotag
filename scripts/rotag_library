@@ -6,6 +6,7 @@ use warnings;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 
+use ConnectAtoms qw( connect_atoms );
 use LinearAlgebra qw( pi );
 use PDBxParser qw( filter
                    obtain_atom_site
@@ -93,10 +94,11 @@ $options{"energy_cutoff_atom"} = 0.4 unless $options{"energy_cutoff_atom"};
 $options{"energy_cutoff_residue"} = 1.0 unless $options{"energy_cutoff_residue"};
 $options{"threads"} = 1 unless $options{"threads"};
 
+my %parameters;
 if( defined $options{"parameters"} ) {
-    $options{"parameters"} = { map { $_->[0] => $_->[1] }
-			       map { [ split( " ", $_ ) ] }
-			       split( ";", $options{"parameters"} ) };
+    %parameters = ( map { $_->[0] => $_->[1] }
+		    map { [ split( " ", $_ ) ] }
+		    split( ";", $options{"parameters"} ) );
 }
 
 # ----------------------------------- Main ------------------------------------ #
@@ -119,6 +121,12 @@ my @residue_ids =
 		       "include" => { "[local]_selection_state" => [ "T" ] },
 		       "data" => [ "label_seq_id" ],
 		       "is_list" => 1 } ) } );
+
+connect_atoms( $atom_site );
+my %atom_connections =
+    map { $_ => $atom_site->{$_}{"connections"} }
+    keys %{ $atom_site };
+$parameters{"connections"} = \%atom_connections;
 
 # Starts generating rotamer library.
 my $rotamer_library =

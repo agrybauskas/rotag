@@ -176,9 +176,10 @@ sub h_bond
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $h_epsilon ) = (
+    my ( $r, $h_epsilon, $connections ) = (
         $parameters->{'r'},
         $parameters->{'h_epsilon'},
+        $parameters->{'connections'},
     );
 
     $r = distance( $atom_i, $atom_j ) if( ! defined $r );
@@ -199,6 +200,8 @@ sub h_bond
     # } else {
     #     return 0;
     # }
+
+    return 0;
 }
 
 sub composite
@@ -214,6 +217,7 @@ sub composite
         $parameters->{'h_epsilon'},
         $parameters->{'cutoff_start'}, # * VdW distance.
         $parameters->{'cutoff_end'}, #   * VdW distance.
+        $parameters->{'connections'}
     );
 
     $lj_epsilon = 1.0 if( ! defined $lj_epsilon );
@@ -244,19 +248,18 @@ sub composite
     if( $r < $cutoff_start * $sigma ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
-        # my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
-        return $leonard_jones + $coulomb # + $h_bond
+        my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
+        return $leonard_jones + $coulomb + $h_bond
             ;
     } elsif( ( $r >= $cutoff_start * $sigma )
           && ( $r <= $cutoff_end * $sigma ) ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
-        # my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
+        my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
         my $cutoff_function =
             cos( ( pi() * ( $r - $cutoff_start * $sigma ) ) /
         	 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
-        return ( $leonard_jones + $coulomb # + $h_bond
-            ) * $cutoff_function;
+        return ( $leonard_jones + $coulomb + $h_bond ) * $cutoff_function;
     } else {
     	return 0;
     }
