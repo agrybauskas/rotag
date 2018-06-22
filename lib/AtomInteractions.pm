@@ -51,15 +51,9 @@ sub hard_sphere
         $parameters->{'sigma'},
     );
 
-    if( ! defined $r_squared ) {
-        $r_squared = distance_squared( $atom_i, $atom_j );
-    }
-
-    if( ! defined $sigma ) {
-        $sigma =
-            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-          + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    }
+    $r_squared //= distance_squared( $atom_i, $atom_j );
+    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+             + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared < $sigma ** 2 ) {
 	return "Inf";
@@ -94,18 +88,11 @@ sub soft_sphere
         $parameters->{'soft_n'},
     );
 
-    if( ! defined $r_squared ) {
-        $r_squared = distance_squared( $atom_i, $atom_j );
-    }
-
-    if( ! defined $sigma ) {
-        $sigma = # Same as vdw distance.
-            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-          + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    }
-
-    $soft_epsilon = 1.0 if( ! defined $soft_epsilon );
-    $n = 12 if( ! defined $n );
+    $r_squared //= distance_squared( $atom_i, $atom_j );
+    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+             + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $soft_epsilon //= 1.0;
+    $n //= 12;
 
     if( $r_squared <= $sigma ** 2 ) {
 	return $soft_epsilon * ( $sigma / sqrt( $r_squared ) )**$n;
@@ -138,15 +125,10 @@ sub leonard_jones
         $parameters->{'lj_epsilon'}
     );
 
-    if( ! defined $r ) { $r = distance( $atom_i, $atom_j ); }
-
-    if( ! defined $sigma ) {
-        $sigma = # Same as vdw distance.
-            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-          + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    }
-
-    $lj_epsilon = 1.0 if( ! defined $lj_epsilon );
+    $r //= distance( $atom_i, $atom_j );
+    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+             + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $lj_epsilon //= 1.0;
 
     return 4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
 }
@@ -158,9 +140,8 @@ sub coulomb
     my ( $r, $coulomb_epsilon ) =
         ( $parameters->{'r'}, $parameters->{'c_epsilon'} );
 
-    $coulomb_epsilon = 0.1 if( ! defined $coulomb_epsilon );
-
-    if( ! defined $r ) { $r = distance( $atom_i, $atom_j ); }
+    $coulomb_epsilon //= 0.1;
+    $r //= distance( $atom_i, $atom_j );
 
     # Extracts partial charges.
     my $partial_charge_i =
@@ -182,11 +163,10 @@ sub h_bond
         $parameters->{'connections'},
     );
 
-    $r = distance( $atom_i, $atom_j ) if( ! defined $r );
-    $h_epsilon = 1.0 if( ! defined $h_epsilon );
-    my $r_i_hydrogen =
-        $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-      + $ATOMS{'H'}{'vdw_radius'};
+    $r //= distance( $atom_i, $atom_j );
+    $h_epsilon //= 1.0;
+    my $r_i_hydrogen = $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+                     + $ATOMS{'H'}{'vdw_radius'};
 
     # my $theta = bond_angle(
     #     [ $atom_i->{'Cartn_x'}, $atom_i->{'Cartn_y'}, $atom_i->{'Cartn_z'} ],
@@ -219,25 +199,20 @@ sub composite
         $parameters->{'cutoff_end'}, #   * VdW distance.
     );
 
-    $lj_epsilon = 1.0 if( ! defined $lj_epsilon );
-    $coulomb_epsilon = 0.1 if( ! defined $coulomb_epsilon );
-    $h_bond_epsilon = 1.0 if( ! defined $h_bond_epsilon );
-    $cutoff_start = 2.5 if( ! defined $cutoff_start );
-    $cutoff_end = 5.0 if( ! defined $cutoff_end );
+    $lj_epsilon //= 1.0;
+    $coulomb_epsilon //= 0.1;
+    $h_bond_epsilon //= 1.0;
+    $cutoff_start //= 2.5;
+    $cutoff_end //= 5.0;
 
     # Calculates squared distance between two atoms.
-    if( ! defined $r ) {
-        $r = sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
+    $r //= sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
                  + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
                  + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
-    }
 
     # Calculates Van der Waals distance of given atoms.
-    if( ! defined $sigma ) {
-        $sigma =
-            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-          + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    }
+    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+             + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     # For the sake of not repeating r and sigma calculations, they should be
     # passed as the parameters.
