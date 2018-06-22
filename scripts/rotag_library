@@ -179,29 +179,15 @@ for my $residue_id ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
     	for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer->{"angles"} } ){
     	    my $angle_value = $rotamer->{"angles"}{$angle_name};
     	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-    		  $angle_id );
-    	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-    		  $rotamer_id );
-    	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-    		  $residue_id );
-    	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-    		  $residue_name[0] );
-    	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-    		  $angle_name );
-    	    push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-    		  sprintf( "%.3f", $angle_value ) );
+    		  $angle_id, $rotamer_id, $residue_id, $residue_name[0],
+                  $angle_name, sprintf( "%.3f", $angle_value ) );
     	    $angle_id++;
     	}
 
 	# Colects rotamer energy data.
 	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-	      $energy_id );
-	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-	      $rotamer_id );
-	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-	      $rotamer->{"potential"} );
-	push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-	      $rotamer->{"potential_energy_value"} );
+              $energy_id, $rotamer_id, $rotamer->{"potential"},
+              $rotamer->{"potential_energy_value"} );
 
 	$energy_id++;
     	$rotamer_id++;
