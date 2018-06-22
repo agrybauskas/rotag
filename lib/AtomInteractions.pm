@@ -217,7 +217,6 @@ sub composite
         $parameters->{'h_epsilon'},
         $parameters->{'cutoff_start'}, # * VdW distance.
         $parameters->{'cutoff_end'}, #   * VdW distance.
-        $parameters->{'connections'}
     );
 
     $lj_epsilon = 1.0 if( ! defined $lj_epsilon );
@@ -237,7 +236,7 @@ sub composite
     if( ! defined $sigma ) {
         $sigma =
             $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-            + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+          + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
     }
 
     # For the sake of not repeating r and sigma calculations, they should be
@@ -249,8 +248,7 @@ sub composite
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
         my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
-        return $leonard_jones + $coulomb + $h_bond
-            ;
+        return $leonard_jones + $coulomb + $h_bond;
     } elsif( ( $r >= $cutoff_start * $sigma )
           && ( $r <= $cutoff_end * $sigma ) ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
