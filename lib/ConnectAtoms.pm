@@ -341,31 +341,47 @@ sub connect_atoms
     # grid with edge length of max covalent radii of the parameter file.
     my ( $grid_box, undef ) = grid_box( $atom_site );
 
+    _iterate_through_cells( $atom_site, $grid_box, \&_is_connected );
+
+    return;
+}
+
+sub _iterate_through_cells
+{
+    my ( $atom_site, $grid_box, $interaction ) = @_;
+
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
     	my @cell_idxs = split( ',', $cell );
 	my @neighbour_cells; # The array will contain all atoms of the
-	                     # neighbouring 26 cells.
+                             # neighbouring 26 cells.
     	# $i represents x, $j - y, $k - z coordinates.
     	for my $i ( ( $cell_idxs[0] - 1..$cell_idxs[0] + 1 ) ) {
-    	for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
-    	for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
-    	if( exists $grid_box->{"$i,$j,$k"} ) {
-    	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+        for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
+        for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
+            if( exists $grid_box->{"$i,$j,$k"} ) {
+                push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-    	# Checks, if there are connections between atoms.
-    	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    	    foreach my $neighbour_id ( @neighbour_cells ) {
-    		if( ( is_connected( $atom_site->{"$atom_id"},
-				    $atom_site->{"$neighbour_id"} ) )
-		 && ( ( ! exists $atom_site->{$atom_id}{'connections'} )
-		   || ( ! any { $neighbour_id eq $_ }
-			     @{ $atom_site->{$atom_id}{'connections'} } ) )){
-		    push( @{ $atom_site->{$atom_id}{'connections'} },
-			  "$neighbour_id" );
-    		}
-    	    }
-    	}
+        foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+            foreach my $neighbour_id ( @neighbour_cells ) {
+                $interaction->( $atom_site, $atom_id, $neighbour_id );
+            }
+        }
+    }
+
+    return;
+}
+
+sub _is_connected
+{
+    my ( $atom_site, $atom_id, $neighbour_id ) = @_;
+
+    if( ( is_connected( $atom_site->{"$atom_id"},
+                        $atom_site->{"$neighbour_id"} ) )
+        && ( ( ! exists $atom_site->{$atom_id}{'connections'} )
+          || ( ! any { $neighbour_id eq $_ }
+                    @{ $atom_site->{$atom_id}{'connections'} } ) )){
+        push( @{ $atom_site->{$atom_id}{'connections'} }, "$neighbour_id" );
     }
 
     return;
