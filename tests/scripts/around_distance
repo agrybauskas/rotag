@@ -19,8 +19,8 @@ my ( $include_specifier,
      $pdbx_dump_file ) = @ARGV;
 
 my %include_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-			  map { [ split( " ", $_ ) ] }
-			  split( "&", $include_specifier ) );
+                          map { [ split( " ", $_ ) ] }
+                          split( "&", $include_specifier ) );
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );

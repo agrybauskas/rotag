@@ -30,15 +30,15 @@ sub obtain_pdbx_line
     local $/ = '';
     local @ARGV = ( $pdbx_file );
     while( <> ) {
-	my %single_line_matches = ( m/($item_regexp)\s+(?!;)(\S.+\S)/gx );
-	my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/gx );
-	%current_line_data = ( %single_line_matches, %multi_line_matches );
+        my %single_line_matches = ( m/($item_regexp)\s+(?!;)(\S.+\S)/gx );
+        my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/gx );
+        %current_line_data = ( %single_line_matches, %multi_line_matches );
     }
 
     for my $key ( sort { $a cmp $b } keys %current_line_data ) {
-    	my ( $category, $attribute ) = split( "\\.", $key );
-    	$pdbx_line_data{$category}{$attribute} =
-    	    $current_line_data{$key};
+        my ( $category, $attribute ) = split( "\\.", $key );
+        $pdbx_line_data{$category}{$attribute} =
+            $current_line_data{$key};
     }
 
     return \%pdbx_line_data;
@@ -57,27 +57,27 @@ sub obtain_pdbx_loop
 
     local @ARGV = ( $pdbx_file );
     while( <> ) {
-    	if( /($category_regexp)\.(.+)\n$/x ) {
-	    if( ! @categories || $categories[$#categories] ne $1 ) {
-		push( @categories, $1 );
-		push( @attributes, [] );
-		push( @data, [] );
-	    }
-    	    push( @{ $attributes[$#attributes] }, split( ' ', $2 ) );
-    	    $is_reading_lines = 1;
-    	} elsif( $is_reading_lines == 1 && /^_|loop_|#/ ) {
-	    if( $#categories eq $#{ $categories } ) { last; }
-    	    $is_reading_lines = 0;
-    	} elsif( $is_reading_lines == 1 ) {
-    	    push( @{ $data[$#data] }, split( ' ', $_ ) );
-    	}
+        if( /($category_regexp)\.(.+)\n$/x ) {
+            if( ! @categories || $categories[$#categories] ne $1 ) {
+                push( @categories, $1 );
+                push( @attributes, [] );
+                push( @data, [] );
+            }
+            push( @{ $attributes[$#attributes] }, split( ' ', $2 ) );
+            $is_reading_lines = 1;
+        } elsif( $is_reading_lines == 1 && /^_|loop_|#/ ) {
+            if( $#categories eq $#{ $categories } ) { last; }
+            $is_reading_lines = 0;
+        } elsif( $is_reading_lines == 1 ) {
+            push( @{ $data[$#data] }, split( ' ', $_ ) );
+        }
     }
 
     # Generates hash from three lists.
     my %pdbx_loop_data;
     for( my $i = 0; $i <= $#categories; $i++ ) {
-	$pdbx_loop_data{$categories[$i]}{'attributes'} = $attributes[$i];
-	$pdbx_loop_data{$categories[$i]}{'data'} = $data[$i];
+        $pdbx_loop_data{$categories[$i]}{'attributes'} = $attributes[$i];
+        $pdbx_loop_data{$categories[$i]}{'data'} = $data[$i];
     }
 
     return \%pdbx_loop_data;
@@ -113,15 +113,15 @@ sub obtain_atom_site
     my $atom_data_count = scalar( @atom_data );
 
     for( my $pos = 0; $pos < $atom_data_count - 1; $pos += $attribute_count ) {
-    	@atom_data_row =
-    	    @{ atom_data[$pos..$pos+$attribute_count-1] };
-    	%atom_data_row = ();
-    	for( my $col = 0; $col <= $#atom_data_row; $col++ ) {
-    	    $atom_data_row{$atom_attributes[$col]} =
-    		$atom_data_row[$col];
-    	}
-    	$atom_site{$atom_data_row[1]} =
-    	    { %atom_data_row };
+        @atom_data_row =
+            @{ atom_data[$pos..$pos+$attribute_count-1] };
+        %atom_data_row = ();
+        for( my $col = 0; $col <= $#atom_data_row; $col++ ) {
+            $atom_data_row{$atom_attributes[$col]} =
+                $atom_data_row[$col];
+        }
+        $atom_site{$atom_data_row[1]} =
+            { %atom_data_row };
     }
 
     return \%atom_site;
@@ -146,74 +146,74 @@ sub filter
 
     # First, filters atoms that are described in $include specifier.
     if( defined $include && %{ $include } ) {
-    	for my $atom_id ( keys %{ $atom_site } ) {
-    	    my $match_counter = 0; # Tracks if all matches occured.
-    	    for my $attribute ( keys %{ $include } ) {
-    		if( exists $atom_site->{$atom_id}{$attribute}
-    	         && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
-    		    @{ $include->{$attribute} } ) {
-    		    $match_counter += 1;
-    		} else {
-    		    last; # Terminates early if no match is found in specifier.
-    		}
-    	    }
-	    if( $match_counter == scalar( keys %{ $include } ) ) {
-	    	$filtered_atoms{$atom_id} = $atom_site->{$atom_id};
-	    }
-    	}
+        for my $atom_id ( keys %{ $atom_site } ) {
+            my $match_counter = 0; # Tracks if all matches occured.
+            for my $attribute ( keys %{ $include } ) {
+                if( exists $atom_site->{$atom_id}{$attribute}
+                 && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
+                    @{ $include->{$attribute} } ) {
+                    $match_counter += 1;
+                } else {
+                    last; # Terminates early if no match is found in specifier.
+                }
+            }
+            if( $match_counter == scalar( keys %{ $include } ) ) {
+                $filtered_atoms{$atom_id} = $atom_site->{$atom_id};
+            }
+        }
     } else {
-    	%filtered_atoms = %{ $atom_site };
+        %filtered_atoms = %{ $atom_site };
     }
 
     # Then filters out atoms that are in $exclude specifier.
     if( defined $exclude && %{ $exclude } ) {
-    	for my $atom_id ( keys %filtered_atoms ) {
-    	    for my $attribute ( keys %{ $exclude } ) {
-    	    	if( exists $atom_site->{$atom_id}{$attribute}
-    	         && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
-    	    	    @{ $exclude->{$attribute} } ) {
-    	    	    delete $filtered_atoms{$atom_id};
-    		    last;
-    	    	}
-    	    }
-    	}
+        for my $atom_id ( keys %filtered_atoms ) {
+            for my $attribute ( keys %{ $exclude } ) {
+                if( exists $atom_site->{$atom_id}{$attribute}
+                 && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
+                    @{ $exclude->{$attribute} } ) {
+                    delete $filtered_atoms{$atom_id};
+                    last;
+                }
+            }
+        }
     }
 
     # TODO: again another iteration through atom data structure. Should look into
     # it how to reduce the quantity of iterations.
     if( defined $group_id ) {
-	for my $atom_id ( keys %filtered_atoms ) {
-	    $filtered_atoms{$atom_id}{'[local]_selection_group'} = $group_id;
-	}
+        for my $atom_id ( keys %filtered_atoms ) {
+            $filtered_atoms{$atom_id}{'[local]_selection_group'} = $group_id;
+        }
     }
 
     # Extracts specific data, if defined.
     if( defined $data && @{ $data } ) {
-    	# Simply iterates through $atom_site keys and extracts data using data
-    	# specifier.
-    	my @atom_data;
-    	if( defined $data_with_id && $data_with_id ) {
-    	    my %atom_data_with_id;
-    	    # Simply iterates through $atom_site keys and extracts data using
-    	    # data specifier and is asigned to atom id.
-    	    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-    		$atom_data_with_id{$atom_id} =
-    		    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
-    	    }
-    	    return \%atom_data_with_id;
+        # Simply iterates through $atom_site keys and extracts data using data
+        # specifier.
+        my @atom_data;
+        if( defined $data_with_id && $data_with_id ) {
+            my %atom_data_with_id;
+            # Simply iterates through $atom_site keys and extracts data using
+            # data specifier and is asigned to atom id.
+            for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+                $atom_data_with_id{$atom_id} =
+                    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
+            }
+            return \%atom_data_with_id;
 
-    	} else {
-    	    for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
-    		if( defined $is_list && $is_list ) {
-    		    push( @atom_data,
-    			  map { $filtered_atoms{$atom_id}{$_} } @{ $data } );
-    		} else {
-    		    push( @atom_data,
-    			  [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
-    		}
-    	    }
-    	    return \@atom_data;
-    	}
+        } else {
+            for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
+                if( defined $is_list && $is_list ) {
+                    push( @atom_data,
+                          map { $filtered_atoms{$atom_id}{$_} } @{ $data } );
+                } else {
+                    push( @atom_data,
+                          [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
+                }
+            }
+            return \@atom_data;
+        }
     }
 
     return \%filtered_atoms;
@@ -287,92 +287,92 @@ sub to_pdbx
     if( defined $pdbx_lines ) {
     for my $category  ( sort { $a cmp $b } keys %{ $pdbx_lines } ) {
     for my $attribute ( sort { $a cmp $b } keys %{ $pdbx_lines->{$category} } ) {
-	printf( "%s.%s %s\n", $category, $attribute,
-		$pdbx_lines->{$category}{$attribute} );
+        printf( "%s.%s %s\n", $category, $attribute,
+                $pdbx_lines->{$category}{$attribute} );
     } print( "#\n" ); } }
 
     # Prints out atom site structure if they are present.
     # TODO: remove empty lines after attribute list.
     if( defined $atom_site ) {
-	$atom_attributes //= [ 'group_PDB',
-			       'id',
-			       'type_symbol',
-			       'label_atom_id',
-			       'label_alt_id',
-			       'label_comp_id',
-			       'label_asym_id',
-			       'label_entity_id',
-			       'label_seq_id',
-			       'pdbx_PDB_ins_code',
-			       'Cartn_x',
-			       'Cartn_y',
-			       'Cartn_z',
-			       'occupancy',
-			       'B_iso_or_equiv',
-			       'Cartn_x_esd',
-			       'Cartn_y_esd',
-			       'Cartn_z_esd',
-			       'occupancy_esd',
-			       'B_iso_or_equiv_esd',
-			       'pdbx_formal_charge',
-			       'auth_seq_id',
-			       'auth_comp_id',
-			       'auth_asym_id',
-			       'auth_atom_id',
-			       'pdbx_PDB_model_num' ];
+        $atom_attributes //= [ 'group_PDB',
+                               'id',
+                               'type_symbol',
+                               'label_atom_id',
+                               'label_alt_id',
+                               'label_comp_id',
+                               'label_asym_id',
+                               'label_entity_id',
+                               'label_seq_id',
+                               'pdbx_PDB_ins_code',
+                               'Cartn_x',
+                               'Cartn_y',
+                               'Cartn_z',
+                               'occupancy',
+                               'B_iso_or_equiv',
+                               'Cartn_x_esd',
+                               'Cartn_y_esd',
+                               'Cartn_z_esd',
+                               'occupancy_esd',
+                               'B_iso_or_equiv_esd',
+                               'pdbx_formal_charge',
+                               'auth_seq_id',
+                               'auth_comp_id',
+                               'auth_asym_id',
+                               'auth_atom_id',
+                               'pdbx_PDB_model_num' ];
 
-	push( @{ $atom_attributes }, @{ $add_atom_attributes } )
-	    if defined $add_atom_attributes;
+        push( @{ $atom_attributes }, @{ $add_atom_attributes } )
+            if defined $add_atom_attributes;
 
-	print "loop_\n";
+        print "loop_\n";
 
-	for my $attribute ( @{ $atom_attributes } ) {
-	    $attribute eq $atom_attributes->[$#{ $atom_attributes }] ?
+        for my $attribute ( @{ $atom_attributes } ) {
+            $attribute eq $atom_attributes->[$#{ $atom_attributes }] ?
                 print( "_atom_site.$attribute" ):
                 print( "_atom_site.$attribute\n" );
-	}
+        }
 
-	for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-	for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
-	    if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
-		if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-		    print( ' ', $atom_site->{$id}{$atom_attributes->[$i]} );
-		} else {
-		    print( ' ?' );
-		}
+        for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+        for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
+            if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
+                if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
+                    print( ' ', $atom_site->{$id}{$atom_attributes->[$i]} );
+                } else {
+                    print( ' ?' );
+                }
 
-	    } else {
-		if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-		    print( "\n", $atom_site->{$id}{$atom_attributes->[$i]} );
-		} else {
-		    print( "\n" );
-		}
-	    }
-	} }
-	print( "\n#\n" )
+            } else {
+                if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
+                    print( "\n", $atom_site->{$id}{$atom_attributes->[$i]} );
+                } else {
+                    print( "\n" );
+                }
+            }
+        } }
+        print( "\n#\n" )
     }
 
     # Prints out pdbx loops if they are present.
     if( defined $pdbx_loops ) {
-    	for my $category ( sort keys %{ $pdbx_loops } ) {
-    	    print( "loop_\n" );
+        for my $category ( sort keys %{ $pdbx_loops } ) {
+            print( "loop_\n" );
 
-    	    foreach( @{ $pdbx_loops->{$category}{'attributes'} } ) {
-    		print( "$category.$_\n" )
-    	    }
-    	    my $attribute_array_length =
-		$#{ $pdbx_loops->{$category}{'attributes'} };
-    	    my $data_array_length =
-		$#{ $pdbx_loops->{$category}{'data'} };
-    	    for( my $i = 0;
-		 $i <= $data_array_length;
-		 $i += $attribute_array_length + 1 ){
-    		print( join( ' ', @{ $pdbx_loops->{$category}{'data'} }
-    			     [$i..$i+$attribute_array_length] ), "\n" );
-    	    }
+            foreach( @{ $pdbx_loops->{$category}{'attributes'} } ) {
+                print( "$category.$_\n" )
+            }
+            my $attribute_array_length =
+                $#{ $pdbx_loops->{$category}{'attributes'} };
+            my $data_array_length =
+                $#{ $pdbx_loops->{$category}{'data'} };
+            for( my $i = 0;
+                 $i <= $data_array_length;
+                 $i += $attribute_array_length + 1 ){
+                print( join( ' ', @{ $pdbx_loops->{$category}{'data'} }
+                             [$i..$i+$attribute_array_length] ), "\n" );
+            }
 
-    	    print( "#\n" );
-    	}
+            print( "#\n" );
+        }
     }
 
     return;

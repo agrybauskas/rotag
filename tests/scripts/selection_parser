@@ -26,7 +26,7 @@ $atom_site = eval( $atom_site );
 
 my $selection_parser = new SelectionParser();
 my $selected_atom_site = $selection_parser->parser( $atom_site,
-						    $selection_command,
-						    "id" );
+                                                    $selection_command,
+                                                    "id" );
 
 to_pdbx( { "atom_site" => $selected_atom_site } );

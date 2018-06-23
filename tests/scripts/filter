@@ -22,11 +22,11 @@ my ( $include_specifier,
      $pdbx_dump_file ) = @ARGV;
 
 my %include_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-			  map { [ split( " ", $_ ) ] }
-			  split( "&", $include_specifier ) );
+                          map { [ split( " ", $_ ) ] }
+                          split( "&", $include_specifier ) );
 my %exclude_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-			  map { [ split( " ", $_ ) ] }
-			  split( "&", $exclude_specifier ) );
+                          map { [ split( " ", $_ ) ] }
+                          split( "&", $exclude_specifier ) );
 my @data_specifier = split( ",", $data_specifier );
 
 my $atom_site;
@@ -39,15 +39,15 @@ $atom_site = eval( $atom_site );
 
 if( $data_specifier ) {
     my @atom_data =
-	@{ filter( { "atom_site"    => $atom_site,
-		     "include"      => \%include_specifier,
-		     "exclude"      => \%exclude_specifier,
-		     "data"         => \@data_specifier } ) };
+        @{ filter( { "atom_site"    => $atom_site,
+                     "include"      => \%include_specifier,
+                     "exclude"      => \%exclude_specifier,
+                     "data"         => \@data_specifier } ) };
     for( my $i = 0; $i <= $#atom_data; $i++ ) {
-    	print( join( " ", @{ $atom_data[$i] } ), "\n" );
+        print( join( " ", @{ $atom_data[$i] } ), "\n" );
     }
 } else {
     to_pdbx( { "atom_site" => filter( { "atom_site" => $atom_site,
-					"include"   => \%include_specifier,
-					"exclude"   => \%exclude_specifier } )});
+                                        "include"   => \%include_specifier,
+                                        "exclude"   => \%exclude_specifier } )});
 }

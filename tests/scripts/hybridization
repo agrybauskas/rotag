@@ -25,5 +25,5 @@ hybridization( $atom_site );
 
 for my $atom_id ( sort keys %{ $atom_site } ) {
     print( $atom_site->{$atom_id}{"label_atom_id"}, "\t",
-	   $atom_site->{$atom_id}{"hybridization"}, "\n" );
+           $atom_site->{$atom_id}{"hybridization"}, "\n" );
 }

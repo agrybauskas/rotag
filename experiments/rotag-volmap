@@ -31,15 +31,15 @@ my $version = "1.0.0";
 GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "help" => sub { open( my $fh, "<", $0 );
-		    while( <$fh> ) {
-			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-			$help_message =~ s/^\*$/ /g if $help_message;
-			$help_message =~ s/^\*//g if $help_message;
-			print( $help_message, "\n" ) if $help_message; }
-		    close( $fh );
-		    exit; },
+                    while( <$fh> ) {
+                        my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                        $help_message =~ s/^\*$/ /g if $help_message;
+                        $help_message =~ s/^\*//g if $help_message;
+                        print( $help_message, "\n" ) if $help_message; }
+                    close( $fh );
+                    exit; },
     "version" => sub { print $version, "\n";
-		       exit; } )
+                       exit; } )
     or die "Error in command line argument.";
 
 # ----------------------------------- Main ------------------------------------ #
@@ -70,15 +70,15 @@ sub atom_site_to_dsn6
     my ( $args ) = @_;
     # Resolution - length of the cell in Angstroms.
     my ( $atom_site,
-	 $resolution,
-	 $scaling_factor,
-	 $alpha, $beta, $gamma,
-	 $ro_min, $ro_max ) =
-	( $args->{"atom_site"},
-	  $args->{"resolution"},
-	  $args->{"alpha"}, $args->{"beta"}, $args->{"gamma"},
-	  $args->{"scaling_factor"},
-	  $args->{"ro_min"}, $args->{"ro_max"} );
+         $resolution,
+         $scaling_factor,
+         $alpha, $beta, $gamma,
+         $ro_min, $ro_max ) =
+        ( $args->{"atom_site"},
+          $args->{"resolution"},
+          $args->{"alpha"}, $args->{"beta"}, $args->{"gamma"},
+          $args->{"scaling_factor"},
+          $args->{"ro_min"}, $args->{"ro_max"} );
     $resolution //= 0.1;
     $alpha //= 90.00;
     $beta //= 90.00;
@@ -88,8 +88,8 @@ sub atom_site_to_dsn6
     $ro_max //= 2;
 
     my $boundary_box =
-	create_box( filter( { "atom_site" => $atom_site,
-			      "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } ));
+        create_box( filter( { "atom_site" => $atom_site,
+                              "data" => [ "Cartn_x", "Cartn_y", "Cartn_z" ] } ));
 
     my $a_edge_length = $boundary_box->[1] - $boundary_box->[0] + 1.0;
     my $b_edge_length = $boundary_box->[3] - $boundary_box->[2] + 1.0;
@@ -118,20 +118,20 @@ sub atom_site_to_dsn6
     # Density value modifiers - Header 16, 17.
     my $density_modifier_1 = ( 100 * 250 ) / ( $ro_max - $ro_min );
     my $density_modifier_2 = ( 3 * $ro_max - 253 * $ro_min )
-	                   / ( $ro_max - $ro_min );
+                           / ( $ro_max - $ro_min );
 
     # Writes to stdout.
     open( my $fh, '>-' ) || die "Can't print to stdout: $!";
     binmode( $fh );
     print $fh pack( "(s>)19",
-		    # TODO: try to figure out what units they are calculated in.
-    		    $x_start, $y_start, $z_start,
-    		    $x_extent, $y_extent, $z_extent,
-    		    $x_sampling_rate, $y_sampling_rate, $z_sampling_rate,
-    		    $a_scaled, $b_scaled, $c_scaled,
-    		    $alpha_scaled, $beta_scaled, $gamma_scaled,
-    		    $density_modifier_1, $density_modifier_2,
-    		    $scaling_factor, 100 );
+                    # TODO: try to figure out what units they are calculated in.
+                    $x_start, $y_start, $z_start,
+                    $x_extent, $y_extent, $z_extent,
+                    $x_sampling_rate, $y_sampling_rate, $z_sampling_rate,
+                    $a_scaled, $b_scaled, $c_scaled,
+                    $alpha_scaled, $beta_scaled, $gamma_scaled,
+                    $density_modifier_1, $density_modifier_2,
+                    $scaling_factor, 100 );
     foreach( 0..488*100 ) { print $fh pack( "s", 0 ); }
     foreach( 0..511 ) { print $fh pack( "s", 55 ); }
     foreach( 0..$x_extent*$y_extent*$z_extent*2 ) { print $fh pack( "s", 0 ); }
@@ -154,6 +154,6 @@ if( $options{"pdbx_file"} ) {
 
 my $target_atom_site =
     filter( { "atom_site" => $atom_site,
-	      "include" => { "[local]_selection_state" => [ "T" ] } } );
+              "include" => { "[local]_selection_state" => [ "T" ] } } );
 
 atom_site_to_dsn6( { "atom_site" => $target_atom_site } );

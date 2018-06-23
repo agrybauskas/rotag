@@ -25,8 +25,8 @@ $atom_site = eval( $atom_site );
 
 # Parses angles for pseudo-rotamers.
 my %angle_values = ( map { $_->[0] => $_->[1] }
-		     map { [ split( " ", $_ ) ] }
-		     split( "&", $angle_values ) );
+                     map { [ split( " ", $_ ) ] }
+                     split( "&", $angle_values ) );
 for my $angle_value ( keys %angle_values ) {
     $angle_values{$angle_value} =~ s/pi/pi()/g;
     $angle_values{$angle_value} = eval( $angle_values{$angle_value} );

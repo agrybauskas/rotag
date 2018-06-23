@@ -13,8 +13,8 @@ use Sampling qw( sample_angles );
 my ( $angle_ranges, $small_angle ) = @ARGV;
 
 my @angle_ranges = ( map { [ $_->[0],  $_->[1] ] }
-		     map { [ split( "-", $_ ) ] }
-		     split( ",", $angle_ranges ) );
+                     map { [ split( "-", $_ ) ] }
+                     split( ",", $angle_ranges ) );
 
 my $sampled_angles = sample_angles(  \@angle_ranges, $small_angle );
 

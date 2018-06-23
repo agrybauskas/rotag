@@ -21,119 +21,119 @@
 line
     : exp
         {
-	    if( ! $_[1]->[0] ) { return []; }
+            if( ! $_[1]->[0] ) { return []; }
             if( $_[1]->[0] eq '!' ) {
-		return [];
-	    } else {
-		return [ uniq( @{ $_[1] } ) ];
-	    }
+                return [];
+            } else {
+                return [ uniq( @{ $_[1] } ) ];
+            }
         }
 ;
 # TODO: main and side should be written as exp mainchain exp, exp sidechain exp.
 exp
     : 'all'
         {
-	    return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-	    		     'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-	    		     'is_list' => 1 } );
+            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                             'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                             'is_list' => 1 } );
         }
     | 'mainchain' exp
         {
-	    return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-			     'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
-					    "label_atom_id" =>
-						[ "N", "CA", "C", "O",
-						  "OXT", "H", "H2", "HA",,
-						  "HA2", "HA3", "HXT" ] },
-			     'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
-			     'is_list' => 1 } );
+            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
+                                            "label_atom_id" =>
+                                                [ "N", "CA", "C", "O",
+                                                  "OXT", "H", "H2", "HA",,
+                                                  "HA2", "HA3", "HXT" ] },
+                             'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
+                             'is_list' => 1 } );
         }
     | 'sidechain' exp
         {
-	    return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-			     'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
-					    "label_atom_id" =>
-						[ "CB", "CD",
-						  "CD1", "CD2", "CE", "CE1",
-						  "CE2", "CE3", "CG", "CG1",
-						  "CG2", "CH2", "CZ", "CZ2",
-						  "CZ3",  "HB", "HB1",
-						  "HB2", "HB3", "HD1", "HD11",
-						  "HD12", "HD13", "HD2", "HD21",
-						  "HD22", "HD23", "HD3", "HE",
-						  "HE1", "HE2", "HE21", "HE22",
-						  "HE3", "HG", "HG1", "HG11",
-						  "HG12", "HG13", "HG2", "HG21",
-						  "HG22", "HG23", "HG3", "HH",
-						  "HH11", "HH12", "HH2", "HH21",
-						  "HH22", "HZ", "HZ1",
-						  "HZ2", "HZ3", "ND1",
-						  "ND2", "NE", "NE1", "NE2",
-						  "NH1", "NH2", "NZ",
-						  "OD1", "OD2", "OE1", "OE2",
-						  "OG", "OG1", "OH",
-						  "SD", "SG" ] },
-			     'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
-			     'is_list' => 1 } );
+            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
+                                            "label_atom_id" =>
+                                                [ "CB", "CD",
+                                                  "CD1", "CD2", "CE", "CE1",
+                                                  "CE2", "CE3", "CG", "CG1",
+                                                  "CG2", "CH2", "CZ", "CZ2",
+                                                  "CZ3",  "HB", "HB1",
+                                                  "HB2", "HB3", "HD1", "HD11",
+                                                  "HD12", "HD13", "HD2", "HD21",
+                                                  "HD22", "HD23", "HD3", "HE",
+                                                  "HE1", "HE2", "HE21", "HE22",
+                                                  "HE3", "HG", "HG1", "HG11",
+                                                  "HG12", "HG13", "HG2", "HG21",
+                                                  "HG22", "HG23", "HG3", "HH",
+                                                  "HH11", "HH12", "HH2", "HH21",
+                                                  "HH22", "HZ", "HZ1",
+                                                  "HZ2", "HZ3", "ND1",
+                                                  "ND2", "NE", "NE1", "NE2",
+                                                  "NH1", "NH2", "NZ",
+                                                  "OD1", "OD2", "OE1", "OE2",
+                                                  "OG", "OG1", "OH",
+                                                  "SD", "SG" ] },
+                             'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
+                             'is_list' => 1 } );
         }
     | 'byresid' exp
         {
-	    my @residue_ids =
-		uniq(
-	        @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-			     'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-			     'data' => [ 'label_seq_id' ],
-			     'is_list' => 1 } ) } );
-	    my @chains = # TODO: look, if states might make problems.
-		uniq(
-	        @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-			     'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-			     'data' => [ 'label_asym_id' ],
-			     'is_list' => 1 } ) } );
-	    return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-	    		     'include' => { 'label_seq_id' => \@residue_ids,
-					    'label_asym_id' => \@chains },
-	    		     'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-	    		     'is_list' => 1 } );
+            my @residue_ids =
+                uniq(
+                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
+                             'data' => [ 'label_seq_id' ],
+                             'is_list' => 1 } ) } );
+            my @chains = # TODO: look, if states might make problems.
+                uniq(
+                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
+                             'data' => [ 'label_asym_id' ],
+                             'is_list' => 1 } ) } );
+            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                             'include' => { 'label_seq_id' => \@residue_ids,
+                                            'label_asym_id' => \@chains },
+                             'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                             'is_list' => 1 } );
         }
     | exp '&' exp
         {
-	    my @joint_ids;
-	    if( ! @{ $_[1] } || ! @{ $_[3] } ) { return []; }
-	    my @first_ids = @{ $_[1] };
-	    my @second_ids = @{ $_[3] };
-	    if( $first_ids[0] ne '!' && $second_ids[0] ne '!' ) {
-		for my $id ( @first_ids ) {
-		    push( @joint_ids, $id ) if any { $id eq $_ } @second_ids;
-		}
-		return \@joint_ids;
-	    } elsif( $first_ids[0] ne '!' && $second_ids[0] eq '!' ) {
-		for my $id ( @first_ids ) {
-		    push( @joint_ids, $id ) if ! any { $id eq $_ } @second_ids;
-		}
-		return \@joint_ids;
-	    } elsif( $first_ids[0] eq '!' && $second_ids[0] ne '!' ) {
-		for my $id ( @second_ids ) {
-		    push( @joint_ids, $id ) if ! any { $id eq $_ } @first_ids;
-		}
-		return \@joint_ids;
-	    } else {
-		shift( @first_ids );
-		shift( @second_ids );
-		return [ '!', uniq( @first_ids, @second_ids ) ];
-	    }
+            my @joint_ids;
+            if( ! @{ $_[1] } || ! @{ $_[3] } ) { return []; }
+            my @first_ids = @{ $_[1] };
+            my @second_ids = @{ $_[3] };
+            if( $first_ids[0] ne '!' && $second_ids[0] ne '!' ) {
+                for my $id ( @first_ids ) {
+                    push( @joint_ids, $id ) if any { $id eq $_ } @second_ids;
+                }
+                return \@joint_ids;
+            } elsif( $first_ids[0] ne '!' && $second_ids[0] eq '!' ) {
+                for my $id ( @first_ids ) {
+                    push( @joint_ids, $id ) if ! any { $id eq $_ } @second_ids;
+                }
+                return \@joint_ids;
+            } elsif( $first_ids[0] eq '!' && $second_ids[0] ne '!' ) {
+                for my $id ( @second_ids ) {
+                    push( @joint_ids, $id ) if ! any { $id eq $_ } @first_ids;
+                }
+                return \@joint_ids;
+            } else {
+                shift( @first_ids );
+                shift( @second_ids );
+                return [ '!', uniq( @first_ids, @second_ids ) ];
+            }
         }
     | exp '|' exp
         {
-	    if( ! @{ $_[1] } || ! @{ $_[3] } ) {
-	    	return [ @{ $_[1] }, @{ $_[3] } ];
-	    }
-	    if( $_[1]->[0] ne '!' && $_[3]->[0] ne '!' ) {
-		return [ uniq( @{ $_[1] }, @{ $_[3] } ) ];
-	    } else {
-		die( 'Negation (!) with or operator (|) has no valuable ' .
-		     'meaning when selecting atoms' );
-	    }
+            if( ! @{ $_[1] } || ! @{ $_[3] } ) {
+                return [ @{ $_[1] }, @{ $_[3] } ];
+            }
+            if( $_[1]->[0] ne '!' && $_[3]->[0] ne '!' ) {
+                return [ uniq( @{ $_[1] }, @{ $_[3] } ) ];
+            } else {
+                die( 'Negation (!) with or operator (|) has no valuable ' .
+                     'meaning when selecting atoms' );
+            }
         }
     | '(' exp ')'
         {
@@ -141,92 +141,92 @@ exp
         }
     | '!' exp
         {
-	    my @ids = @{ $_[2] };
+            my @ids = @{ $_[2] };
             if( $ids[0] eq '!' ) {
-		shift( @ids );
-		return \@ids;
-	    } else {
-		unshift( @ids, '!' );
-		return \@ids;
-	    }
+                shift( @ids );
+                return \@ids;
+            } else {
+                unshift( @ids, '!' );
+                return \@ids;
+            }
         }
     | exp 'around' NUM
         {
-	    my @ids = @{ $_[1] };
-	    my $around_atom_site;
-	    my $atom_specifier;
+            my @ids = @{ $_[1] };
+            my $around_atom_site;
+            my $atom_specifier;
             if( $ids[0] eq '!' ) {
-	    #   # TODO: should look how to deal with negations.
-	    # 	shift( @ids );
-	    # 	return \@ids;
-	    } else {
-	    	unshift( @ids, '!' );
-		$around_atom_site =
-		    around_distance( $_[0]->{USER}{ATOM_SITE},
-				     { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
-				     $_[3] );
-		return filter( { 'atom_site' => $around_atom_site,
-				 'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-				 'is_list' => 1 } );
-	    }
+            #   # TODO: should look how to deal with negations.
+            #   shift( @ids );
+            #   return \@ids;
+            } else {
+                unshift( @ids, '!' );
+                $around_atom_site =
+                    around_distance( $_[0]->{USER}{ATOM_SITE},
+                                     { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
+                                     $_[3] );
+                return filter( { 'atom_site' => $around_atom_site,
+                                 'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                                 'is_list' => 1 } );
+            }
         }
     | exp 'rand' NUM
         {
-	    srand( $_[0]->{USER}{SEED} );
-	    my @ids = @{ $_[1] };
-	    my @rand_ids;
-	    if( scalar( @ids ) < $_[3] ) {
-		die( "List of $#ids atoms is smaller than the request of " .
-		     "$_[3] atoms." );
-	    }
-	    foreach( 1..$_[3] ) {
-	    	my $rand_idx = rand( $#ids );
-	    	push( @rand_ids, $ids[$rand_idx] );
-		splice( @ids, $rand_idx, 1 );
-	    }
-	    return \@rand_ids;
+            srand( $_[0]->{USER}{SEED} );
+            my @ids = @{ $_[1] };
+            my @rand_ids;
+            if( scalar( @ids ) < $_[3] ) {
+                die( "List of $#ids atoms is smaller than the request of " .
+                     "$_[3] atoms." );
+            }
+            foreach( 1..$_[3] ) {
+                my $rand_idx = rand( $#ids );
+                push( @rand_ids, $ids[$rand_idx] );
+                splice( @ids, $rand_idx, 1 );
+            }
+            return \@rand_ids;
         }
     | 'chain' str_ope
         {
-	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-		      'include' => { 'label_asym_id' => $_[2] },
-		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-		      'is_list' => 1 } );
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'label_asym_id' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
         }
     | 'resid' num_ope
         {
-	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-		      'include' => { 'label_seq_id' => $_[2] },
-		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-		      'is_list' => 1 } );
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'label_seq_id' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
         }
     | 'resname' str_ope
         {
-	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-		      'include' => { 'label_comp_id' => $_[2] },
-		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-		      'is_list' => 1 } );
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'label_comp_id' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
         }
     | 'atomid' num_ope
         {
-	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-		      'include' => { 'id' => $_[2] },
-		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-		      'is_list' => 1 } );
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'id' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
         }
     | 'atomname' str_ope
         {
-	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-		      'include' => { 'label_atom_id' => $_[2] },
-		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-		      'is_list' => 1 } );
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'label_atom_id' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
         }
     | 'atomtype' str_ope
         {
-	    filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-		      'include' => { 'type_symbol' => $_[2] },
-		      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-		      'is_list' => 1 } );
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'type_symbol' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
         }
 ;
 
@@ -254,7 +254,7 @@ sub lexer
     for( $parser->YYData->{INPUT} ){
         if( s/^(resid)// ) {
             return ( 'resid', $1 );
-	} elsif(s/^(chain)//) {
+        } elsif(s/^(chain)//) {
             return ( 'chain', $1 );
         } elsif(s/^(all)//) {
             return ( 'all', $1 );
@@ -274,27 +274,27 @@ sub lexer
             return ( 'atomtype', $1 );
         } elsif(s/^(around)//) {
             return ( 'around', $1 );
-	} elsif(s/^(rand)//) {
+        } elsif(s/^(rand)//) {
             return ( 'rand', $1 );
-	} elsif( s/^([0-9]+)// ) {
+        } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
-	} elsif( s/^(\w+)// ) {
+        } elsif( s/^(\w+)// ) {
             return ( 'STR', $1 );
-	} elsif( s/^(,)// ) {
+        } elsif( s/^(,)// ) {
             return ( ',', $1 );
-	} elsif( s/^(-)// ) {
+        } elsif( s/^(-)// ) {
             return ( '-', $1 );
-	} elsif( s/^(\|)// ) {
+        } elsif( s/^(\|)// ) {
             return ( '|', $1 );
-	} elsif( s/^(&)// ) {
+        } elsif( s/^(&)// ) {
             return ( '&', $1 );
-	} elsif( s/^(\()// ) {
+        } elsif( s/^(\()// ) {
             return ( '(', $1 );
-	} elsif( s/^(\))// ) {
+        } elsif( s/^(\))// ) {
             return ( ')', $1 );
-	} elsif( s/^(\!)// ) {
+        } elsif( s/^(\!)// ) {
             return ( '!', $1 );
-	}
+        }
     }
 }
 
@@ -322,12 +322,12 @@ sub parser
     $self->YYData->{SEED} = $seed;
 
     my $selected_atom_data = $self->YYParse( yylex => \&lexer,
-					     yyerror => \&debugger,
-					     yydebug=>0x00 );
+                                             yyerror => \&debugger,
+                                             yydebug=>0x00 );
 
     my $selected_atom_site =
-	filter( { "atom_site" => $atom_site,
-		  "include" => { $by_attribute => $selected_atom_data } } );
+        filter( { "atom_site" => $atom_site,
+                  "include" => { $by_attribute => $selected_atom_data } } );
 
     return $selected_atom_site;
 }

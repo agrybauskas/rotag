@@ -40,9 +40,9 @@ sub bond_length
     my ( $atom_coord ) = @_;
 
     my $bond_length =
-	sqrt( ( $atom_coord->[1][0] - $atom_coord->[0][0] )**2
-	    + ( $atom_coord->[1][1] - $atom_coord->[0][1] )**2
-	    + ( $atom_coord->[1][2] - $atom_coord->[0][2] )**2 );
+        sqrt( ( $atom_coord->[1][0] - $atom_coord->[0][0] )**2
+            + ( $atom_coord->[1][1] - $atom_coord->[0][1] )**2
+            + ( $atom_coord->[1][2] - $atom_coord->[0][2] )**2 );
 
     return $bond_length;
 }
@@ -69,22 +69,22 @@ sub bond_angle
     # coordinates of two atoms. Suppose, one of the side atom is A, B - middle
     # and C - remaining atom. Order of side atoms is irrelevant.
     my @vector_ab = ( $atom_coord->[0][0] - $atom_coord->[1][0],
-		      $atom_coord->[0][1] - $atom_coord->[1][1],
-		      $atom_coord->[0][2] - $atom_coord->[1][2] );
+                      $atom_coord->[0][1] - $atom_coord->[1][1],
+                      $atom_coord->[0][2] - $atom_coord->[1][2] );
     my @vector_bc = ( $atom_coord->[2][0] - $atom_coord->[1][0],
-		      $atom_coord->[2][1] - $atom_coord->[1][1],
-		      $atom_coord->[2][2] - $atom_coord->[1][2] );
+                      $atom_coord->[2][1] - $atom_coord->[1][1],
+                      $atom_coord->[2][2] - $atom_coord->[1][2] );
 
     my $vector_product = $vector_ab[0] * $vector_bc[0] +
-	               + $vector_ab[1] * $vector_bc[1]
-	               + $vector_ab[2] * $vector_bc[2];
+                       + $vector_ab[1] * $vector_bc[1]
+                       + $vector_ab[2] * $vector_bc[2];
 
     my $length_ab = sqrt( $vector_ab[0]**2
-			+ $vector_ab[1]**2
-			+ $vector_ab[2]**2 );
+                        + $vector_ab[1]**2
+                        + $vector_ab[2]**2 );
     my $length_bc = sqrt( $vector_bc[0]**2
-			+ $vector_bc[1]**2
-			+ $vector_bc[2]**2 );
+                        + $vector_bc[1]**2
+                        + $vector_bc[2]**2 );
 
     my $bond_angle = acos( $vector_product / ( $length_ab * $length_bc ) );
 
@@ -123,11 +123,11 @@ sub dihedral_angle
 
     # Calculates length for each cross product.
     my $vector_length_ab = sqrt( $vector_cross_ab->[0]**2
-			       + $vector_cross_ab->[1]**2
-			       + $vector_cross_ab->[2]**2 );
+                               + $vector_cross_ab->[1]**2
+                               + $vector_cross_ab->[2]**2 );
     my $vector_length_bc = sqrt( $vector_cross_bc->[0]**2
-			       + $vector_cross_bc->[1]**2
-			       + $vector_cross_bc->[2]**2 );
+                               + $vector_cross_bc->[1]**2
+                               + $vector_cross_bc->[2]**2 );
 
     # Calculates normal vectors for each cross product of two vectors.
     my @normal_vector_ab = map { $_ / $vector_length_ab } @{ $vector_cross_ab };
@@ -136,22 +136,22 @@ sub dihedral_angle
     # Finishes orthonormal frame from normal vector ab, vector b and its cross
     # product.
     my $vector_length_b = sqrt( $vector_b->[0][0]**2
-    			      + $vector_b->[0][1]**2
-    			      + $vector_b->[0][2]**2 );
+                              + $vector_b->[0][1]**2
+                              + $vector_b->[0][2]**2 );
     my @normal_vector_b = map { $_ / $vector_length_b } @{ $vector_b->[0] };
 
     my @orthonormal_cross =
-	vector_cross( \@normal_vector_ab, \@normal_vector_b );
+        vector_cross( \@normal_vector_ab, \@normal_vector_b );
 
     # Using orthonormal frame, projections from vector a and c are
     # generated and angle calculated.
     my $dihedral_angle =
-	- atan2( $orthonormal_cross[0][0] * $normal_vector_bc[0]
-	       + $orthonormal_cross[0][1] * $normal_vector_bc[1]
-	       + $orthonormal_cross[0][2] * $normal_vector_bc[2],
-	         $normal_vector_ab[0] * $normal_vector_bc[0]
-	       + $normal_vector_ab[1] * $normal_vector_bc[1]
-	       + $normal_vector_ab[2] * $normal_vector_bc[2] );
+        - atan2( $orthonormal_cross[0][0] * $normal_vector_bc[0]
+               + $orthonormal_cross[0][1] * $normal_vector_bc[1]
+               + $orthonormal_cross[0][2] * $normal_vector_bc[2],
+                 $normal_vector_ab[0] * $normal_vector_bc[0]
+               + $normal_vector_ab[1] * $normal_vector_bc[1]
+               + $normal_vector_ab[2] * $normal_vector_bc[2] );
 
     return $dihedral_angle;
 }
@@ -176,9 +176,9 @@ sub all_dihedral
 
     # Collects non-redundant ids of given amino acid residues.
     my @residue_ids =
-	uniq( @{ filter( { 'atom_site' => $atom_site,
-			   'data' => [ 'label_seq_id' ],
-			   'is_list' => 1 } ) } );
+        uniq( @{ filter( { 'atom_site' => $atom_site,
+                           'data' => [ 'label_seq_id' ],
+                           'is_list' => 1 } ) } );
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -189,84 +189,84 @@ sub all_dihedral
     my %residue_angles;
 
     for my $residue_id ( @residue_ids ) {
-    	my $residue_site =
-    	    filter( { 'atom_site' => \%atom_site,
-    		      'include' => { 'label_seq_id' => [ $residue_id ] } } );
+        my $residue_site =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' => { 'label_seq_id' => [ $residue_id ] } } );
 
-    	my $rotatable_bonds = rotatable_bonds( $residue_site );
-	my %uniq_rotatable_bonds; # Unique rotatable bonds.
-	for my $atom_id ( keys %{ $rotatable_bonds } ) {
-	    for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
-		if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
-		    $uniq_rotatable_bonds{"$angle_name"} =
-			$rotatable_bonds->{"$atom_id"}{"$angle_name"};
-		}
-	    }
-	}
+        my $rotatable_bonds = rotatable_bonds( $residue_site );
+        my %uniq_rotatable_bonds; # Unique rotatable bonds.
+        for my $atom_id ( keys %{ $rotatable_bonds } ) {
+            for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
+                if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
+                    $uniq_rotatable_bonds{"$angle_name"} =
+                        $rotatable_bonds->{"$atom_id"}{"$angle_name"};
+                }
+            }
+        }
 
-    	# Calculates every dihedral angle.
-    	my %angle_values;
+        # Calculates every dihedral angle.
+        my %angle_values;
 
-    	for my $angle_name ( keys %uniq_rotatable_bonds ) {
-    	    # First, checks if rotatable bond has fourth atom produce dihedral
-    	    # angle. It is done by looking at atom connections - if rotatable
-    	    # bond ends with terminal atom, then this bond is excluded.
-    	    if( scalar( @{ $residue_site->
-			       {$uniq_rotatable_bonds{$angle_name}->[1]}
-			       {'connections'} } ) < 2 ){ next; }
+        for my $angle_name ( keys %uniq_rotatable_bonds ) {
+            # First, checks if rotatable bond has fourth atom produce dihedral
+            # angle. It is done by looking at atom connections - if rotatable
+            # bond ends with terminal atom, then this bond is excluded.
+            if( scalar( @{ $residue_site->
+                               {$uniq_rotatable_bonds{$angle_name}->[1]}
+                               {'connections'} } ) < 2 ){ next; }
 
-    	    # Chooses proper atom ids for calculating dihedral angles.
-    	    my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
-    	    my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
-    	    my @second_connections = # Second atom connections, except third.
-    		grep { $_ ne $third_atom_id }
-    	        @{ $residue_site->{$second_atom_id}{'connections'} };
-    	    my $first_atom_name =
-    		sort_atom_names(
-    		filter( { 'atom_site' => $residue_site,
-    			  'include' => { 'id' => \@second_connections },
-    			  'data' => [ 'label_atom_id' ],
-    			  'is_list' => 1 } ) )->[0];
-    	    my @third_connections = # Third atom connections, except second.
-    		grep { $_ ne $second_atom_id }
-    	        @{ $residue_site->{$third_atom_id}{'connections'} };
-    	    my $fourth_atom_name =
-    		sort_atom_names(
-    		filter( { 'atom_site' => $residue_site,
-    			  'include' => { 'id' => \@third_connections },
-    			  'data' => [ 'label_atom_id' ],
-    			  'is_list' => 1 } ) )->[0];
+            # Chooses proper atom ids for calculating dihedral angles.
+            my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
+            my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
+            my @second_connections = # Second atom connections, except third.
+                grep { $_ ne $third_atom_id }
+                @{ $residue_site->{$second_atom_id}{'connections'} };
+            my $first_atom_name =
+                sort_atom_names(
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'id' => \@second_connections },
+                          'data' => [ 'label_atom_id' ],
+                          'is_list' => 1 } ) )->[0];
+            my @third_connections = # Third atom connections, except second.
+                grep { $_ ne $second_atom_id }
+                @{ $residue_site->{$third_atom_id}{'connections'} };
+            my $fourth_atom_name =
+                sort_atom_names(
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'id' => \@third_connections },
+                          'data' => [ 'label_atom_id' ],
+                          'is_list' => 1 } ) )->[0];
 
-    	    # Extracts coordinates for dihedral angle calculations.
-    	    my $first_atom_coord =
-    		filter(
-    		    { 'atom_site' => $residue_site,
-    		      'include' => { 'label_atom_id' => [ $first_atom_name ] },
-    		      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-    		      'is_list' => 1 } );
-    	    my $second_atom_coord =
-    		[ $residue_site->{$second_atom_id}{'Cartn_x'},
-    		  $residue_site->{$second_atom_id}{'Cartn_y'},
-    		  $residue_site->{$second_atom_id}{'Cartn_z'} ];
-    	    my $third_atom_coord =
-    		[ $residue_site->{$third_atom_id}{'Cartn_x'},
-    		  $residue_site->{$third_atom_id}{'Cartn_y'},
-    		  $residue_site->{$third_atom_id}{'Cartn_z'} ];
-    	    my $fourth_atom_coord =
-    		filter(
-    		    { 'atom_site' => $residue_site,
-    		      'include' => { 'label_atom_id' => [ $fourth_atom_name ] },
-    		      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-    		      'is_list' => 1 } );
+            # Extracts coordinates for dihedral angle calculations.
+            my $first_atom_coord =
+                filter(
+                    { 'atom_site' => $residue_site,
+                      'include' => { 'label_atom_id' => [ $first_atom_name ] },
+                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                      'is_list' => 1 } );
+            my $second_atom_coord =
+                [ $residue_site->{$second_atom_id}{'Cartn_x'},
+                  $residue_site->{$second_atom_id}{'Cartn_y'},
+                  $residue_site->{$second_atom_id}{'Cartn_z'} ];
+            my $third_atom_coord =
+                [ $residue_site->{$third_atom_id}{'Cartn_x'},
+                  $residue_site->{$third_atom_id}{'Cartn_y'},
+                  $residue_site->{$third_atom_id}{'Cartn_z'} ];
+            my $fourth_atom_coord =
+                filter(
+                    { 'atom_site' => $residue_site,
+                      'include' => { 'label_atom_id' => [ $fourth_atom_name ] },
+                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                      'is_list' => 1 } );
 
-    	    $angle_values{$angle_name} =
-    		dihedral_angle( [ $first_atom_coord,
-    				  $second_atom_coord,
-    				  $third_atom_coord,
-    				  $fourth_atom_coord ] );
-    	}
+            $angle_values{$angle_name} =
+                dihedral_angle( [ $first_atom_coord,
+                                  $second_atom_coord,
+                                  $third_atom_coord,
+                                  $fourth_atom_coord ] );
+        }
 
-    	%{ $residue_angles{$residue_id} } = %angle_values;
+        %{ $residue_angles{$residue_id} } = %angle_values;
     }
 
     return \%residue_angles;
@@ -294,9 +294,9 @@ sub rmsd
 
     # Sums up sqaured differences of coordinates.
     for( my $i = 0; $i <= $#{ $first_set }; $i++ ) {
-    	$rmsd += ( $first_set->[$i][0] - $second_set->[$i][0] )**2
-    	       + ( $first_set->[$i][1] - $second_set->[$i][1] )**2
-    	       + ( $first_set->[$i][2] - $second_set->[$i][2] )**2
+        $rmsd += ( $first_set->[$i][0] - $second_set->[$i][0] )**2
+               + ( $first_set->[$i][1] - $second_set->[$i][1] )**2
+               + ( $first_set->[$i][2] - $second_set->[$i][2] )**2
     }
 
     # Devides by the number of member of the set.

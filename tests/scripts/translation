@@ -16,7 +16,7 @@ my $translation = translation( $x_distance, $y_distance, $z_distance );
 
 for( my $i=0; $i < 4; $i++ ) {
     for( my $j=0; $j < 4; $j++ ) {
-	printf( "%.3f ", $translation->[$i][$j] );
+        printf( "%.3f ", $translation->[$i][$j] );
     }
     print( "\n" );
 }

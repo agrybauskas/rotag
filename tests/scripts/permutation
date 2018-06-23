@@ -16,9 +16,9 @@ my @angles = ( [] );
 open( my $fh, "<", $set_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
-	push( @angles, [] );
+        push( @angles, [] );
     } else {
-	push( @{ $angles[-1] }, [ split( " ", $_ ) ] );
+        push( @{ $angles[-1] }, [ split( " ", $_ ) ] );
     }
 }
 close( $fh );

@@ -49,15 +49,15 @@ GetOptions(
     "residues" => sub { $calc_residue_angles = 1 },
     "degrees" => sub { $in_degrees = 1 },
     "help" => sub { open( my $fh, "<", $0 );
-		    while( <$fh> ) {
-			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-			$help_message =~ s/^\*$/ /g if $help_message;
-			$help_message =~ s/^\*//g if $help_message;
-			print( $help_message, "\n" ) if $help_message; }
-		    close( $fh );
-		    exit; },
+                    while( <$fh> ) {
+                        my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                        $help_message =~ s/^\*$/ /g if $help_message;
+                        $help_message =~ s/^\*//g if $help_message;
+                        print( $help_message, "\n" ) if $help_message; }
+                    close( $fh );
+                    exit; },
     "version" => sub { print $version, "\n";
-		       exit; } )
+                       exit; } )
     or die "Error in command line argument.";
 
 # ----------------------------------- Main ------------------------------------ #
@@ -77,74 +77,74 @@ my %pdbx_loops;
 
 if( $calc_atom_angles ) {
     $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
-	[ "id", "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id", "value" ];
+        [ "id", "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id", "value" ];
 
     my $dihedral_site =
-	filter( { "atom_site" => $atom_site,
-		  "include" => { "[local]_selection_state" => [ "T" ] },
-		  "exclude" => { "[local]_selection_group" => [ "?" ] } } );
+        filter( { "atom_site" => $atom_site,
+                  "include" => { "[local]_selection_state" => [ "T" ] },
+                  "exclude" => { "[local]_selection_group" => [ "?" ] } } );
     my @dihedral_atom_ids =
-	sort { $dihedral_site->{"$a"}{"[local]_selection_group"}
-	   <=> $dihedral_site->{"$b"}{"[local]_selection_group"} }
+        sort { $dihedral_site->{"$a"}{"[local]_selection_group"}
+           <=> $dihedral_site->{"$b"}{"[local]_selection_group"} }
         keys %{ $dihedral_site };
 
     my $dihedral_id = 1;
     for( my $i = 0; $i <= $#dihedral_atom_ids; $i = $i + 4 ) {
-    	my $first_atom_id = $dihedral_atom_ids[$i];
-    	my $second_atom_id = $dihedral_atom_ids[$i+1];
-    	my $third_atom_id = $dihedral_atom_ids[$i+2];
-    	my $fourth_atom_id = $dihedral_atom_ids[$i+3];
-	my $dihedral_angle =
-	    dihedral_angle(
-		[ [ $dihedral_site->{"$first_atom_id"}{"Cartn_x"},
-		    $dihedral_site->{"$first_atom_id"}{"Cartn_y"},
-		    $dihedral_site->{"$first_atom_id"}{"Cartn_z"} ],
-		  [ $dihedral_site->{"$second_atom_id"}{"Cartn_x"},
-		    $dihedral_site->{"$second_atom_id"}{"Cartn_y"},
-		    $dihedral_site->{"$second_atom_id"}{"Cartn_z"} ],
-		  [ $dihedral_site->{"$third_atom_id"}{"Cartn_x"},
-		    $dihedral_site->{"$third_atom_id"}{"Cartn_y"},
-		    $dihedral_site->{"$third_atom_id"}{"Cartn_z"} ],
-		  [ $dihedral_site->{"$fourth_atom_id"}{"Cartn_x"},
-		    $dihedral_site->{"$fourth_atom_id"}{"Cartn_y"},
-		    $dihedral_site->{"$fourth_atom_id"}{"Cartn_z"} ] ] );
+        my $first_atom_id = $dihedral_atom_ids[$i];
+        my $second_atom_id = $dihedral_atom_ids[$i+1];
+        my $third_atom_id = $dihedral_atom_ids[$i+2];
+        my $fourth_atom_id = $dihedral_atom_ids[$i+3];
+        my $dihedral_angle =
+            dihedral_angle(
+                [ [ $dihedral_site->{"$first_atom_id"}{"Cartn_x"},
+                    $dihedral_site->{"$first_atom_id"}{"Cartn_y"},
+                    $dihedral_site->{"$first_atom_id"}{"Cartn_z"} ],
+                  [ $dihedral_site->{"$second_atom_id"}{"Cartn_x"},
+                    $dihedral_site->{"$second_atom_id"}{"Cartn_y"},
+                    $dihedral_site->{"$second_atom_id"}{"Cartn_z"} ],
+                  [ $dihedral_site->{"$third_atom_id"}{"Cartn_x"},
+                    $dihedral_site->{"$third_atom_id"}{"Cartn_y"},
+                    $dihedral_site->{"$third_atom_id"}{"Cartn_z"} ],
+                  [ $dihedral_site->{"$fourth_atom_id"}{"Cartn_x"},
+                    $dihedral_site->{"$fourth_atom_id"}{"Cartn_y"},
+                    $dihedral_site->{"$fourth_atom_id"}{"Cartn_z"} ] ] );
 
-	push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
-	      $dihedral_id, $first_atom_id, $second_atom_id, $third_atom_id,
-	      $fourth_atom_id,
-	      ( $in_degrees ? sprintf( "%.3f", $dihedral_angle * 180 / pi() )
-		            : sprintf( "%.3f", $dihedral_angle ) ) );
-	$dihedral_id++;
+        push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
+              $dihedral_id, $first_atom_id, $second_atom_id, $third_atom_id,
+              $fourth_atom_id,
+              ( $in_degrees ? sprintf( "%.3f", $dihedral_angle * 180 / pi() )
+                            : sprintf( "%.3f", $dihedral_angle ) ) );
+        $dihedral_id++;
     }
 
 } elsif( $calc_residue_angles ) {
     # TODO: add atom_1_id, atom_2_id, ...
     $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
-	[ "id", "residue_id", "residue_type", "type", "value" ];
+        [ "id", "residue_id", "residue_type", "type", "value" ];
 
     my $dihedral_site =
-	filter( { "atom_site" => $atom_site,
-		  "include" => { "[local]_selection_state" => [ "T" ] } } );
+        filter( { "atom_site" => $atom_site,
+                  "include" => { "[local]_selection_state" => [ "T" ] } } );
     my $dihedral_angles = all_dihedral( $dihedral_site );
 
     my $dihedral_id = 1;
     for my $residue_id ( sort keys %{ $dihedral_angles } ) {
-	my $residue_name = uniq( @{ filter( { "atom_site" => $dihedral_site,
-					      "data" => [ "label_comp_id" ],
-					      "is_list" => 1 } ) } );
+        my $residue_name = uniq( @{ filter( { "atom_site" => $dihedral_site,
+                                              "data" => [ "label_comp_id" ],
+                                              "is_list" => 1 } ) } );
 
-	for my $angle_name ( sort keys %{ $dihedral_angles->{$residue_id} } ) {
-	    push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
-		  $dihedral_id, $residue_id, $residue_name, $angle_name,
-		  ( $in_degrees ? sprintf( "%.3f",
-					   $dihedral_angles->
-					       {$residue_id}{$angle_name}
-					   * 180 / pi() )
-		                : sprintf( "%.3f",
-					   $dihedral_angles->
-					       {$residue_id}{$angle_name} ) ) );
-	    $dihedral_id++;
-	}
+        for my $angle_name ( sort keys %{ $dihedral_angles->{$residue_id} } ) {
+            push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
+                  $dihedral_id, $residue_id, $residue_name, $angle_name,
+                  ( $in_degrees ? sprintf( "%.3f",
+                                           $dihedral_angles->
+                                               {$residue_id}{$angle_name}
+                                           * 180 / pi() )
+                                : sprintf( "%.3f",
+                                           $dihedral_angles->
+                                               {$residue_id}{$angle_name} ) ) );
+            $dihedral_id++;
+        }
     }
 }
 

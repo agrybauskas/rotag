@@ -24,7 +24,7 @@ my $bond_stretching_matrix =
 
 for my $matrix_id ( 0..$#{ $bond_stretching_matrix } ) {
     for my $row ( @{ $bond_stretching_matrix->[$matrix_id] } ) {
-	print( join( "\t", @{ $row } ), "\n" );
+        print( join( "\t", @{ $row } ), "\n" );
     }
     print( "\n" ) if $matrix_id != $#{ $bond_stretching_matrix };
 }

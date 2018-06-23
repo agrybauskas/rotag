@@ -32,10 +32,10 @@ print( "testing\n" );
 
 for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
     printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
-	    "\t%.3f\t%.3f\t%.3f\n",
-	    $atom_site->{$atom_id}{"Cartn_x"},
-	    $atom_site->{$atom_id}{"Cartn_y"},
-	    $atom_site->{$atom_id}{"Cartn_z"} );
+            "\t%.3f\t%.3f\t%.3f\n",
+            $atom_site->{$atom_id}{"Cartn_x"},
+            $atom_site->{$atom_id}{"Cartn_y"},
+            $atom_site->{$atom_id}{"Cartn_z"} );
 }
 
 print( "end \"model\"\n" );
@@ -53,99 +53,99 @@ my $line_counter = 0;
 for my $cell ( sort { $a cmp $b } keys %{ $grid_box } ) {
     my @cell_indexes = split( ",", $cell );
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-    	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-    	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-    	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-    	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-    	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-	    $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-	    $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
     $line_counter++;
     printf( "draw line$line_counter {%.3f %.3f %.3f} {%.3f %.3f %.3f}\n",
-	    $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-	    $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-	    $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-	    $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
+            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
+            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
+            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
     $line_counter++;
 }

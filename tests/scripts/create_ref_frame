@@ -27,7 +27,7 @@ my $local_ref_frame = create_ref_frame(
 
 for( my $i=0; $i < 3; $i++ ) {
     for( my $j=0; $j < 3; $j++ ) {
-	printf( "%.3f ", $local_ref_frame->[$i][$j] );
+        printf( "%.3f ", $local_ref_frame->[$i][$j] );
     }
     print( "\n" );
 }

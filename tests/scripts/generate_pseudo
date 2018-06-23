@@ -26,13 +26,13 @@ $atom_site = eval( $atom_site );
 
 # Parses angle ranges for
 my %angle_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-		     map { [ split( " ", $_ ) ] }
-		     split( "&", $angle_ranges ) );
+                     map { [ split( " ", $_ ) ] }
+                     split( "&", $angle_ranges ) );
 
 # Parsed number of rotations that will be done for each dihedral angle.
 my %num_of_angles = ( map { $_->[0] => $_->[1] }
-		      map { [ split( " ", $_ ) ] }
-		      split( "&", $num_of_angles ) );
+                      map { [ split( " ", $_ ) ] }
+                      split( "&", $num_of_angles ) );
 
 # Calculates angles that will be rotated along.
 my %num_angle_values; # Numeric angle values.
@@ -44,15 +44,15 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
     my $small_angle = # Change of angle in each rotation step.
-	2 * pi() / $num_of_angles{$dihedral_angle};
+        2 * pi() / $num_of_angles{$dihedral_angle};
     $num_angle_values{"$dihedral_angle"} =
-	sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle );
+        sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle );
 }
 
 %{ $atom_site } =
     ( %{ $atom_site },
       %{ generate_pseudo( $atom_site,
-			  { "id" => [ $atom_id ] },
-			  \%num_angle_values ) } );
+                          { "id" => [ $atom_id ] },
+                          \%num_angle_values ) } );
 
 to_pdbx( { "atom_site" => $atom_site } );

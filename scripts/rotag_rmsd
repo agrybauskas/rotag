@@ -37,15 +37,15 @@ GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "strict" => sub { $is_strict = 1 },
     "help" => sub { open( my $fh, "<", $0 );
-		    while( <$fh> ) {
-			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-			$help_message =~ s/^\*$/ /g if $help_message;
-			$help_message =~ s/^\*//g if $help_message;
-			print( $help_message, "\n" ) if $help_message; }
-		    close( $fh );
-		    exit; },
+                    while( <$fh> ) {
+                        my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                        $help_message =~ s/^\*$/ /g if $help_message;
+                        $help_message =~ s/^\*//g if $help_message;
+                        print( $help_message, "\n" ) if $help_message; }
+                    close( $fh );
+                    exit; },
     "version" => sub { print $version, "\n";
-		       exit; } )
+                       exit; } )
     or die "Error in command line argument.";
 
 # ----------------------------------- Main ------------------------------------ #

@@ -29,23 +29,23 @@ my $target_atom_id =
 
 # Parses selector argument from string  to proper array.
 my %atom_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-		       map { [ split( " ", $_ ) ] }
-		       split( "&", $atom_specifier ) );
+                       map { [ split( " ", $_ ) ] }
+                       split( "&", $atom_specifier ) );
 
 # Parses selector argument from string  to proper array.
 my %interact_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-		       map { [ split( " ", $_ ) ] }
-		       split( "&", $interact_specifier ) );
+                       map { [ split( " ", $_ ) ] }
+                       split( "&", $interact_specifier ) );
 
 # Parses angle ranges for
 my %angle_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
-		     map { [ split( " ", $_ ) ] }
-		     split( "&", $angle_ranges ) );
+                     map { [ split( " ", $_ ) ] }
+                     split( "&", $angle_ranges ) );
 
 # Parsed number of rotations that will be done for each dihedral angle.
 my %num_of_angles = ( map { $_->[0] => $_->[1] }
-		      map { [ split( " ", $_ ) ] }
-		      split( "&", $num_of_angles ) );
+                      map { [ split( " ", $_ ) ] }
+                      split( "&", $num_of_angles ) );
 
 # Calculates angles that will be rotated along.
 my $pi = pi();
@@ -63,9 +63,9 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
     $small_angle =
-	2 * pi() / $num_of_angles{$dihedral_angle};
+        2 * pi() / $num_of_angles{$dihedral_angle};
     $num_angle_values{"$dihedral_angle"} =
-	sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle );
+        sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle );
 }
 
 
@@ -79,14 +79,14 @@ close( $fh );
 # of atom. Atom clashes are flagged.
 $atom_site =
     potential(
-	{ %{ $atom_site },
-	  %{ generate_pseudo( rotation_only( $atom_site ),
-			      \%atom_specifier,
-			      \%num_angle_values ) } },
-	"soft_sphere",
-	$cutoff,
-	\%interact_specifier,
-	{ "label_atom_id" => [ "N", "CA", "C", "O" ] } );
+        { %{ $atom_site },
+          %{ generate_pseudo( rotation_only( $atom_site ),
+                              \%atom_specifier,
+                              \%num_angle_values ) } },
+        "soft_sphere",
+        $cutoff,
+        \%interact_specifier,
+        { "label_atom_id" => [ "N", "CA", "C", "O" ] } );
 
 # Prints out count of atoms and arbitrary word that are neccessary for Jmol.
 print( scalar( keys %{ $atom_site } ), "\n" );
@@ -95,8 +95,8 @@ print( "testing\n" );
 # Prints out pseudo-atom coordinates.
 for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
     printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
-	    "\t%.3f\t%.3f\t%.3f\n",
-	    $atom_site->{$atom_id}{"Cartn_x"},
-	    $atom_site->{$atom_id}{"Cartn_y"},
-	    $atom_site->{$atom_id}{"Cartn_z"} );
+            "\t%.3f\t%.3f\t%.3f\n",
+            $atom_site->{$atom_id}{"Cartn_x"},
+            $atom_site->{$atom_id}{"Cartn_y"},
+            $atom_site->{$atom_id}{"Cartn_z"} );
 }

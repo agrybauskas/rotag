@@ -71,15 +71,15 @@ GetOptions(
     "keep-ignored" => sub { $keep_ignored = 1 },
     "random-seed=s" => \$options{"seed"},
     "help" => sub { open( my $fh, "<", $0 );
-		    while( <$fh> ) {
-			my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-			$help_message =~ s/^\*$/ /g if $help_message;
-			$help_message =~ s/^\*//g if $help_message;
-			print( $help_message, "\n" ) if $help_message; }
-		    close( $fh );
-		    exit; },
+                    while( <$fh> ) {
+                        my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                        $help_message =~ s/^\*$/ /g if $help_message;
+                        $help_message =~ s/^\*//g if $help_message;
+                        print( $help_message, "\n" ) if $help_message; }
+                    close( $fh );
+                    exit; },
     "version" => sub { print $version, "\n";
-		       exit; } )
+                       exit; } )
     or die "Error in command line argument.";
 
 # Defaults.
@@ -110,58 +110,58 @@ my @target_atom_ids;
 my $group_id = 1;
 if( scalar( @target_cls ) > 1 ) {
     for my $target_cl ( @target_cls ) {
-	push( @target_atom_ids,
-	      @{ filter( { "atom_site" =>
-			       $selection_parser->parser( $atom_site,
-							  $target_cl,
-							  "id",
-							  { "seed" =>
-								$options{"seed"}
-							  } ),
-			   "data" => [ "id" ],
-			   "is_list" => 1,
-			   "group_id" => $group_id } ) } );
-	$group_id++;
+        push( @target_atom_ids,
+              @{ filter( { "atom_site" =>
+                               $selection_parser->parser( $atom_site,
+                                                          $target_cl,
+                                                          "id",
+                                                          { "seed" =>
+                                                                $options{"seed"}
+                                                          } ),
+                           "data" => [ "id" ],
+                           "is_list" => 1,
+                           "group_id" => $group_id } ) } );
+        $group_id++;
     }
 } else {
     @target_atom_ids =
-	@{ filter( { "atom_site" =>
-			 $selection_parser->parser( $atom_site,
-						    $options{"target_cl"},
-						    "id",
-						    { "seed" =>
-							  $options{"seed"}
-						    } ),
-		     "data" => [ "id" ],
-		     "is_list" => 1,
-		     "group_id" => $group_id } ) };
+        @{ filter( { "atom_site" =>
+                         $selection_parser->parser( $atom_site,
+                                                    $options{"target_cl"},
+                                                    "id",
+                                                    { "seed" =>
+                                                          $options{"seed"}
+                                                    } ),
+                     "data" => [ "id" ],
+                     "is_list" => 1,
+                     "group_id" => $group_id } ) };
 }
 
 my @selected_atom_ids =
     @{ filter( { "atom_site" => $selection_parser->parser( $atom_site,
-							   $options{"select_cl"},
-							   "id",
-							   { "seed" =>
-								 $options{"seed"}
-							   } ),
-		 "data" => [ "id" ],
-		 "is_list" => 1 } ) };
+                                                           $options{"select_cl"},
+                                                           "id",
+                                                           { "seed" =>
+                                                                 $options{"seed"}
+                                                           } ),
+                 "data" => [ "id" ],
+                 "is_list" => 1 } ) };
 
 # Modifies PDBx entries by adding and/or changing selection states for atoms.
 for my $atom_id ( keys %{ $atom_site } ) {
     if( any { $atom_id eq $_  } @target_atom_ids ) {
-	$atom_site->{$atom_id}{"[local]_selection_state"} = "T";
+        $atom_site->{$atom_id}{"[local]_selection_state"} = "T";
     } elsif( any { $atom_id eq $_  } @selected_atom_ids ) {
-	$atom_site->{$atom_id}{"[local]_selection_state"} = "S";
+        $atom_site->{$atom_id}{"[local]_selection_state"} = "S";
     } else {
-	$atom_site->{$atom_id}{"[local]_selection_state"} = "I";
+        $atom_site->{$atom_id}{"[local]_selection_state"} = "I";
     }
 }
 
 if( ! $keep_ignored ) {
     $atom_site =
-	filter( { "atom_site" => $atom_site,
-		  "exclude" => { "[local]_selection_state" => [ "I" ] } } );
+        filter( { "atom_site" => $atom_site,
+                  "exclude" => { "[local]_selection_state" => [ "I" ] } } );
 }
 
 # Extracts rotamer angle data that will used to generate atom coordinates if
@@ -169,14 +169,14 @@ if( ! $keep_ignored ) {
 my $pdbx_loops;
 if( $options{"pdbx_file"} ) {
     $pdbx_loops =
-	obtain_pdbx_loop( $options{"pdbx_file"}, [ "_rotamer_angle" ] );
+        obtain_pdbx_loop( $options{"pdbx_file"}, [ "_rotamer_angle" ] );
 } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
     $pdbx_loops =
-	obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
+        obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
 }
 
 # Prints out the PDBx.
 to_pdbx( { "atom_site" => $atom_site,
-	   $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
-	   "add_atom_attributes" => [ "[local]_selection_state",
-				      "[local]_selection_group" ] } );
+           $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
+           "add_atom_attributes" => [ "[local]_selection_state",
+                                      "[local]_selection_group" ] } );

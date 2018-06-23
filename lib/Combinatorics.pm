@@ -25,11 +25,11 @@ sub permutation
     my $base_size = scalar( @{ $base } );
 
     if( $base_size == $size ) {
-	push( @{ $permuted_list }, $base );
+        push( @{ $permuted_list }, $base );
     } else {
-	for my $i ( @{ $list->[$base_size] } ) {
-	    permutation( $size, [ @{ $base }, $i ], $list, $permuted_list );
-	}
+        for my $i ( @{ $list->[$base_size] } ) {
+            permutation( $size, [ @{ $base }, $i ], $list, $permuted_list );
+        }
     }
 
     return $permuted_list;

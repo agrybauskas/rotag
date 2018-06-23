@@ -31,25 +31,25 @@ sub sample_angles
 
     # Devides full circle (2*pi) into even intervals by $small_angle value.
     $small_angle = # Adjusts angle so, it could be devided evenly.
-	2 * pi() / floor( 2 * pi() / $small_angle );
+        2 * pi() / floor( 2 * pi() / $small_angle );
     my @small_angles =
-    	map { $_ * $small_angle } 0..( floor( 2 * pi() / $small_angle ) - 1 );
+        map { $_ * $small_angle } 0..( floor( 2 * pi() / $small_angle ) - 1 );
 
     # Iterates around the circle and adds evenly spaced angles, if they are
     # inside intervals ($angle_ranges).
     for my $angle ( @small_angles ) {
-	# TODO: might speed up calculation by eliminating previous elements
-	# from $angle_ranges array.
-    	for my $angle_range ( @{ $angle_ranges } ) {
-    	    $min_angle = $angle_range->[0];
-    	    $max_angle = $angle_range->[1];
-    	    if( $angle >= $min_angle && $angle <= $max_angle ) {
-    		push( @angles, $angle );
-		last;
-    	    } elsif( $min_angle == $max_angle ) {
-		push( @angles, $min_angle );
-	    }
-    	}
+        # TODO: might speed up calculation by eliminating previous elements
+        # from $angle_ranges array.
+        for my $angle_range ( @{ $angle_ranges } ) {
+            $min_angle = $angle_range->[0];
+            $max_angle = $angle_range->[1];
+            if( $angle >= $min_angle && $angle <= $max_angle ) {
+                push( @angles, $angle );
+                last;
+            } elsif( $min_angle == $max_angle ) {
+                push( @angles, $min_angle );
+            }
+        }
     }
 
     return \@angles;

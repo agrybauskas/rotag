@@ -56,9 +56,9 @@ sub hard_sphere
              + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared < $sigma ** 2 ) {
-	return "Inf";
+        return "Inf";
     } else {
-	return 0;
+        return 0;
     }
 }
 
@@ -95,9 +95,9 @@ sub soft_sphere
     $n //= 12;
 
     if( $r_squared <= $sigma ** 2 ) {
-	return $soft_epsilon * ( $sigma / sqrt( $r_squared ) )**$n;
+        return $soft_epsilon * ( $sigma / sqrt( $r_squared ) )**$n;
     } else {
-	return 0;
+        return 0;
     }
 }
 
@@ -145,12 +145,12 @@ sub coulomb
 
     # Extracts partial charges.
     my $partial_charge_i =
-    	$ATOMS{$atom_i->{'type_symbol'}}{'partial_charge'};
+        $ATOMS{$atom_i->{'type_symbol'}}{'partial_charge'};
     my $partial_charge_j =
-    	$ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
+        $ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
 
     return ( $partial_charge_i * $partial_charge_j ) /
-	   ( 4 * $coulomb_epsilon * pi() * $r );
+           ( 4 * $coulomb_epsilon * pi() * $r );
 }
 
 sub h_bond
@@ -231,10 +231,10 @@ sub composite
         my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
         my $cutoff_function =
             cos( ( pi() * ( $r - $cutoff_start * $sigma ) ) /
-        	 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
+                 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
         return ( $leonard_jones + $coulomb + $h_bond ) * $cutoff_function;
     } else {
-    	return 0;
+        return 0;
     }
 }
 

@@ -18,18 +18,18 @@ my @atom_coords = ( [] );
 open( my $fh, "<", $atom_coords_file );
 while( <$fh> ) {
     if( $_ =~ /^\n$/ ) {
-	push( @atom_coords, [] );
+        push( @atom_coords, [] );
     } else {
-	push( @{ $atom_coords[-1] }, split( " ", $_ ) );
+        push( @{ $atom_coords[-1] }, split( " ", $_ ) );
     }
 }
 close( $fh );
 
 my ( $ref_frame_coord ) =
     @{ switch_ref_frame( $atom_coords[0],
-			 $atom_coords[1],
-			 $atom_coords[2],
-			 $ref_frame ) };
+                         $atom_coords[1],
+                         $atom_coords[2],
+                         $ref_frame ) };
 
 for my $row ( @{ $ref_frame_coord } ) {
     print( join( "\t", map { sprintf( "%.3f", $_ ) } @{ $row } ), "\n" );

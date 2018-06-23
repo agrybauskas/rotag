@@ -21,14 +21,14 @@ close( $fh );
 
 my $angle_bending_matrix =
     angle_bending( $atom_coords[0],
-		   $atom_coords[1],
-		   $atom_coords[2],
-		   "psi",
-		   "theta" );
+                   $atom_coords[1],
+                   $atom_coords[2],
+                   "psi",
+                   "theta" );
 
 for my $matrix_id ( 0..$#{ $angle_bending_matrix } ) {
     for my $row ( @{ $angle_bending_matrix->[$matrix_id] } ) {
-	print( join( "\t", @{ $row } ), "\n" );
+        print( join( "\t", @{ $row } ), "\n" );
     }
     print( "\n" ) if $matrix_id != $#{ $angle_bending_matrix };
 }
