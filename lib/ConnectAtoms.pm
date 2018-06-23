@@ -5,18 +5,18 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( around_distance
-                     connect_atoms
-                     create_box
-                     distance
-                     distance_squared
-                     grid_box
-                     is_connected
-                     is_neighbour
-                     is_second_neighbour );
+		     connect_atoms
+		     create_box
+		     distance
+		     distance_squared
+		     grid_box
+		     is_connected
+		     is_neighbour
+		     is_second_neighbour );
 
 use List::Util qw( any
-                   max
-                   min );
+		   max
+		   min );
 
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
@@ -97,32 +97,32 @@ sub grid_box
 
     # Iterates through atoms and determines in which cell these atoms are.
     foreach my $atom_coord ( @{ $atom_data } ) {
-    	$cell_index_x =
-    	    int( ( $atom_coord->[1] - $boundary_box->[0] )
-    		 / $edge_length ) + 1;
-    	$cell_index_y =
-    	    int( ( $atom_coord->[2] - $boundary_box->[2] )
-    		 / $edge_length ) + 1;
-    	$cell_index_z =
-    	    int( ( $atom_coord->[3] - $boundary_box->[4] )
-    		 / $edge_length ) + 1;
+	$cell_index_x =
+	    int( ( $atom_coord->[1] - $boundary_box->[0] )
+		 / $edge_length ) + 1;
+	$cell_index_y =
+	    int( ( $atom_coord->[2] - $boundary_box->[2] )
+		 / $edge_length ) + 1;
+	$cell_index_z =
+	    int( ( $atom_coord->[3] - $boundary_box->[4] )
+		 / $edge_length ) + 1;
 
-    	# Checks if hash keys already  exist.
-    	if( exists $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} ) {
-    	    push( @{ $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} },
-    		  $atom_coord->[0] );
-    	} else {
-    	    $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} =
-    		[ $atom_coord->[0] ];
-    	}
+	# Checks if hash keys already  exist.
+	if( exists $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} ) {
+	    push( @{ $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} },
+		  $atom_coord->[0] );
+	} else {
+	    $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} =
+		[ $atom_coord->[0] ];
+	}
 
 	# Identifies what cells do atoms occupy, if they are in the list.
 	if( ! $atom_ids ) { next; }
 	for my $atom_id ( @{ $atom_ids } ) {
-            if( $atom_coord->[0] eq $atom_id ) {
-                push( @{ $atom_cell_pos{"$cell_index_x,$cell_index_y,$cell_index_z"} },
+	    if( $atom_coord->[0] eq $atom_id ) {
+		push( @{ $atom_cell_pos{"$cell_index_x,$cell_index_y,$cell_index_z"} },
 		      $atom_coord->[0] );
-            }
+	    }
 	}
     }
 
@@ -144,30 +144,30 @@ sub is_connected
 
     # Generates all possible combinations of covalent distances.
     my $bond_length_comb =
-    	permutation( 2,
-    		     [],
-    		     [ $ATOMS{$target_atom->{'type_symbol'}}
-		             {'covalent_radius'}
-		             {'length'},
+	permutation( 2,
+		     [],
+		     [ $ATOMS{$target_atom->{'type_symbol'}}
+			     {'covalent_radius'}
+			     {'length'},
 		       $ATOMS{$neighbour_atom->{'type_symbol'}}
-		             {'covalent_radius'}
-		             {'length'} ],
-    		     [] );
+			     {'covalent_radius'}
+			     {'length'} ],
+		     [] );
 
     my $length_error_comb =
-    	permutation( 2,
-    		     [],
-    		     [ $ATOMS{$target_atom->{'type_symbol'}}
-		             {'covalent_radius'}
-		             {'error'},
+	permutation( 2,
+		     [],
+		     [ $ATOMS{$target_atom->{'type_symbol'}}
+			     {'covalent_radius'}
+			     {'error'},
 		       $ATOMS{$neighbour_atom->{'type_symbol'}}
-		             {'covalent_radius'}
-		             {'error'} ],
-    		     [] );
+			     {'covalent_radius'}
+			     {'error'} ],
+		     [] );
 
     # Precalculates distance between atom pairs.
     my $distance =
-    	( $neighbour_atom->{'Cartn_x'} - $target_atom->{'Cartn_x'} ) ** 2
+	( $neighbour_atom->{'Cartn_x'} - $target_atom->{'Cartn_x'} ) ** 2
       + ( $neighbour_atom->{'Cartn_y'} - $target_atom->{'Cartn_y'} ) ** 2
       + ( $neighbour_atom->{'Cartn_z'} - $target_atom->{'Cartn_z'} ) ** 2;
 
@@ -177,10 +177,10 @@ sub is_connected
     my $is_connected;
 
     for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
-    	$bond_length =
-    	    $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
-    	$length_error =
-    	    $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
+	$bond_length =
+	    $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
+	$length_error =
+	    $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
 	if( ( $distance >= ( $bond_length - $length_error ) ** 2 )
 	 && ( $distance <= ( $bond_length + $length_error ) ** 2 ) ) {
 	    $is_connected = 1;
@@ -287,27 +287,27 @@ sub around_distance
     # Checks for neighbouring cells for each cell.
     my %around_atom_site;
     foreach my $cell ( keys %{ $atom_cell_pos } ) {
-    	@cell_indexes = split( ',', $cell );
-    	my @neighbour_cells; # The array will contain all atoms of the
-    	                     # neighbouring 26 cells.
-    	# $i represents x, $j - y, $k - z coordinates.
-    	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
-    	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
-    	for my $k ( ( $cell_indexes[2] - 1..$cell_indexes[2] + 1 ) ) {
-    	if( exists $grid_box->{"$i,$j,$k"} ) {
-    	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+	@cell_indexes = split( ',', $cell );
+	my @neighbour_cells; # The array will contain all atoms of the
+			     # neighbouring 26 cells.
+	# $i represents x, $j - y, $k - z coordinates.
+	for my $i ( ( $cell_indexes[0] - 1..$cell_indexes[0] + 1 ) ) {
+	for my $j ( ( $cell_indexes[1] - 1..$cell_indexes[1] + 1 ) ) {
+	for my $k ( ( $cell_indexes[2] - 1..$cell_indexes[2] + 1 ) ) {
+	if( exists $grid_box->{"$i,$j,$k"} ) {
+	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-    	foreach my $atom_id ( @{ $atom_cell_pos->{$cell} } ) {
-    	    foreach my $neighbour_id ( @neighbour_cells ) {
-    		if( ( ! any { $neighbour_id eq $_ } @atom_ids )
+	foreach my $atom_id ( @{ $atom_cell_pos->{$cell} } ) {
+	    foreach my $neighbour_id ( @neighbour_cells ) {
+		if( ( ! any { $neighbour_id eq $_ } @atom_ids )
 		 && ( distance_squared(
 			  $atom_site->{$atom_id},
 			  $atom_site->{$neighbour_id} ) <= $distance ** 2 ) ) {
 		    $around_atom_site{$neighbour_id} =
-		    	$atom_site->{$neighbour_id};
+			$atom_site->{$neighbour_id};
 		}
-    	    }
-    	}
+	    }
+	}
     }
 
     return \%around_atom_site;
@@ -343,29 +343,29 @@ sub connect_atoms
 
     # Checks for neighbouring cells for each cell.
     foreach my $cell ( keys %{ $grid_box } ) {
-    	my @cell_idxs = split( ',', $cell );
+	my @cell_idxs = split( ',', $cell );
 	my @neighbour_cells; # The array will contain all atoms of the
-	                     # neighbouring 26 cells.
-    	# $i represents x, $j - y, $k - z coordinates.
-    	for my $i ( ( $cell_idxs[0] - 1..$cell_idxs[0] + 1 ) ) {
-    	for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
-    	for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
-    	if( exists $grid_box->{"$i,$j,$k"} ) {
-    	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
+			     # neighbouring 26 cells.
+	# $i represents x, $j - y, $k - z coordinates.
+	for my $i ( ( $cell_idxs[0] - 1..$cell_idxs[0] + 1 ) ) {
+	for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
+	for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
+	if( exists $grid_box->{"$i,$j,$k"} ) {
+	    push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-    	# Checks, if there are connections between atoms.
-    	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-    	    foreach my $neighbour_id ( @neighbour_cells ) {
-    		if( ( is_connected( $atom_site->{"$atom_id"},
+	# Checks, if there are connections between atoms.
+	foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+	    foreach my $neighbour_id ( @neighbour_cells ) {
+		if( ( is_connected( $atom_site->{"$atom_id"},
 				    $atom_site->{"$neighbour_id"} ) )
 		 && ( ( ! exists $atom_site->{$atom_id}{'connections'} )
 		   || ( ! any { $neighbour_id eq $_ }
 			     @{ $atom_site->{$atom_id}{'connections'} } ) )){
 		    push( @{ $atom_site->{$atom_id}{'connections'} },
 			  "$neighbour_id" );
-    		}
-    	    }
-    	}
+		}
+	    }
+	}
     }
 
     return;
