@@ -9,10 +9,10 @@ our @EXPORT_OK = qw( %ATOMS
 
 # ---------------------------------- Moieties --------------------------------- #
 
-my %ATOMS = (
+our %ATOMS = (
     'H' => {
         1 => {
-            'group_PDB' = 'ATOM',
+            'group_PDB' => 'ATOM',
             'id' => 1,
             'type_symbol' => 'H',
             'label_atom_id' => undef,
@@ -29,13 +29,14 @@ my %ATOMS = (
             'auth_asym_id' => undef,
             'auth_atom_id' => undef,
             'pdbx_PDB_model_num' => undef,
+        }
     }
 );
 
-my %SIDECHAINS = (
+our %SIDECHAINS = (
     'SER' => {
         1 => {
-            'group_PDB' = 'ATOM',
+            'group_PDB' => 'ATOM',
             'id' => 2,
             'type_symbol' => 'C',
             'label_atom_id' => 'CB',
@@ -54,7 +55,7 @@ my %SIDECHAINS = (
             'pdbx_PDB_model_num' => undef,
         },
         2 => {
-            'group_PDB' = 'ATOM',
+            'group_PDB' => 'ATOM',
             'id' => 3,
             'type_symbol' => 'O',
             'label_atom_id' => 'OG',

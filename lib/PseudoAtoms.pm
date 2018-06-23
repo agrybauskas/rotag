@@ -1082,4 +1082,13 @@ sub add_hydrogens_sp
     return;
 }
 
+sub add_moiety
+{
+    my ( $atom_site, $moiety, $start_atom_id, $next_atom_id, $options ) = @_;
+    my ( $configuration ) = ( $options->{'configuration'} ); # R/S if available.
+
+    $next_atom_id //= 1;
+    $configuration //= 'R';
+}
+
 1;
