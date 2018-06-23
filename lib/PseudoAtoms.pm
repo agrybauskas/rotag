@@ -531,36 +531,23 @@ sub add_hydrogens
     my $last_atom_id = max( keys %{ $atom_site } );
 
     for my $atom_id ( sort { $a <=> $b } keys %atom_site ) {
-        # TODO: decide to remove $atom_type, $atom_name, $residue_name and
-        # those variables that duplicate in add_hydrogen_sp{3,2,1} functions.
-        my $atom_type = $atom_site{$atom_id}{'type_symbol'};
         my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
-
         my $residue_name = $atom_site{$atom_id}{'label_comp_id'};
         my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
-        my $residue_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' => { 'label_seq_id' => [ $residue_id ] } } );
-        my %residue_coord =
-            %{ filter( { 'atom_site' => $residue_site,
-                         'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                         'data_with_id' => 1 } ) };
 
         my $hydrogen_names = $HYDROGEN_NAMES{$residue_name}{$atom_name};
 
         if( ! $hydrogen_names ) { next; }; # Exits early if there should be no
                                            # hydrogens connected to the atom.
 
-        my @connection_ids = @{ $atom_site{"$atom_id"}{'connections'} };
-        my @connection_names =
-            map { $atom_site{"$_"}{'label_atom_id'} } @connection_ids;
-
-        my $hybridization = $residue_site->{$atom_id}{'hybridization'};
-        my $lone_pair_count = $ATOMS{$atom_type}{'lone_pairs'};
+        my $hybridization = $atom_site->{$atom_id}{'hybridization'};
 
         # Decides how many and what hydrogens should be added according to the
         # quantity of bonds and hydrogen atoms that should be connected to the
         # target atom.
+        my @connection_ids = @{ $atom_site{"$atom_id"}{'connections'} };
+        my @connection_names =
+            map { $atom_site{"$_"}{'label_atom_id'} } @connection_ids;
         my @missing_hydrogens;
         for my $hydrogen_name ( @{ $hydrogen_names } ) {
             if( ! grep { /$hydrogen_name/ } @connection_names ) {
