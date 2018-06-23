@@ -1028,39 +1028,4 @@ sub add_hydrogens
     return \%hydrogen_site;
 }
 
-# ------------------------------- Library to STDOUT --------------------------- #
-
-sub library_to_csv
-{
-    my ( $rotamer_library, $angle_units ) = @_;
-
-    $angle_units //= 'radians';
-
-    print( "\"rotamer_id\",\"residue_id\",\"angle_name\",\"angle_value\"\n" );
-
-    my $rotamer_id = 1;
-    for my $residue_id ( keys %{ $rotamer_library } ) {
-        for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
-            for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer } ) {
-                if( $angle_units eq 'radians' ) {
-                    printf( "%d,%d,\"%s\",%.3f\n",
-                            $rotamer_id,
-                            $residue_id,
-                            $angle_name,
-                            $rotamer->{$angle_name} );
-                } elsif( $angle_units eq 'degrees' ) {
-                    printf( "%d,%d,\"%s\",%.2f\n",
-                            $rotamer_id,
-                            $residue_id,
-                            $angle_name,
-                            $rotamer->{$angle_name} * 180 / pi() );
-                }
-            }
-            $rotamer_id++;
-        }
-    }
-
-    return;
-}
-
 1;
