@@ -4,34 +4,39 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( %SIDECHAINS );
+our @EXPORT_OK = qw( %ATOMS
+                     %SIDECHAINS );
 
 # ---------------------------------- Moieties --------------------------------- #
 
-my %SIDECHAINS = (
-    'SER' => {
-        'CA' => {
+my %ATOMS = (
+    'H' => {
+        1 => {
             'group_PDB' = 'ATOM',
-            'id' => undef,
-            'type_symbol' => 'C',
-            'label_atom_id' => 'CA',
+            'id' => 1,
+            'type_symbol' => 'H',
+            'label_atom_id' => undef,
             'label_alt_id' => '.',
-            'label_comp_id' => 'SER',
+            'label_comp_id' => undef,
             'label_asym_id' => undef,
             'label_entity_id' => undef,
             'label_seq_id' => undef,
-            'Cartn_x' => 0.009,
-            'Cartn_y' => 0.077,
-            'Cartn_z' => -0.688,
+            'Cartn_x' => 0.000,
+            'Cartn_y' => 0.000,
+            'Cartn_z' => 0.000,
             'auth_seq_id' => undef,
-            'auth_comp_id' => 'SER',
+            'auth_comp_id' => undef,
             'auth_asym_id' => undef,
-            'auth_atom_id' => 'CA',
+            'auth_atom_id' => undef,
             'pdbx_PDB_model_num' => undef,
-        },
-        'CB' => {
+    }
+);
+
+my %SIDECHAINS = (
+    'SER' => {
+        1 => {
             'group_PDB' = 'ATOM',
-            'id' => undef,
+            'id' => 2,
             'type_symbol' => 'C',
             'label_atom_id' => 'CB',
             'label_alt_id' => '.',
@@ -48,9 +53,9 @@ my %SIDECHAINS = (
             'auth_atom_id' => 'CB',
             'pdbx_PDB_model_num' => undef,
         },
-        'OG' => {
+        2 => {
             'group_PDB' = 'ATOM',
-            'id' => undef,
+            'id' => 3,
             'type_symbol' => 'O',
             'label_atom_id' => 'OG',
             'label_alt_id' => '.',
