@@ -362,11 +362,7 @@ sub _iterate_through_cells
             if( exists $grid_box->{"$i,$j,$k"} ) {
                 push( @neighbour_cells, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-        foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-            foreach my $neighbour_id ( @neighbour_cells ) {
-                $interaction->( $atom_site, $atom_id, $neighbour_id );
-            }
-        }
+	$interaction->( $atom_site, $grid_box, $cell, \@neighbour_cells );
     }
 
     return;
@@ -374,14 +370,19 @@ sub _iterate_through_cells
 
 sub _is_connected
 {
-    my ( $atom_site, $atom_id, $neighbour_id ) = @_;
+    my ( $atom_site, $grid_box, $cell, $neighbour_cells ) = @_;
 
-    if( ( is_connected( $atom_site->{"$atom_id"},
-                        $atom_site->{"$neighbour_id"} ) )
-        && ( ( ! exists $atom_site->{$atom_id}{'connections'} )
-          || ( ! any { $neighbour_id eq $_ }
-                    @{ $atom_site->{$atom_id}{'connections'} } ) )){
-        push( @{ $atom_site->{$atom_id}{'connections'} }, "$neighbour_id" );
+    foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+    	foreach my $neighbour_id ( @{ $neighbour_cells } ) {
+	    if( ( is_connected( $atom_site->{"$atom_id"},
+				$atom_site->{"$neighbour_id"} ) )
+             && ( ( ! exists $atom_site->{$atom_id}{'connections'} )
+	       || ( ! any { $neighbour_id eq $_ }
+		          @{ $atom_site->{$atom_id}{'connections'} } ) )){
+		push( @{ $atom_site->{$atom_id}{'connections'} },
+		      "$neighbour_id" );
+	    }
+    	}
     }
 
     return;
