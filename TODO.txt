@@ -12,3 +12,5 @@
 ++ Order maybe should be changed to group only.
 -- Should properly track the quantity of significant digits.
 -- Should use lambda function instead of eval in LinearAlgebra.pm.
+!! Write two functions determining configuration hierarchy: R or S (for sp3) and
+   cis (Z) or trans (E) (for sp2).
