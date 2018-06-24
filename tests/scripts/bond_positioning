@@ -16,13 +16,15 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print Dumper bond_positioning( 'mid_atom_coord' => [ -54.128, -110.543, -6.071 ],
-                  'up_atom_coord' => [ -54.506, -111.705, -5.149 ],
-                  'right_atom_coord' => [ -53.415, -111.063, -7.316 ],
-                  'left_atom_coord' => [ -55.320, -109.795, -6.452 ],
-                  'back_atom_coord' => undef,
-                  'add' => 'back_atom_coord',
-                  'bond_length' => 1 );
+print Dumper bond_positioning(
+    'mid_atom_coord' => [ -54.128, -110.543, -6.071 ],
+    'up_atom_coord' => [ -54.506, -111.705, -5.149 ],
+    'right_atom_coord' => [ -53.415, -111.063, -7.316 ],
+    'left_atom_coord' => [ -55.320, -109.795, -6.452 ],
+    'back_atom_coord' => undef,
+    'add' => 'back_atom_coord',
+    'bond_length' => 1
+);
 
 # %{ $atom_site } =
 #     ( %{ $atom_site },

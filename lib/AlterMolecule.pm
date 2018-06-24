@@ -157,7 +157,26 @@ sub angle_bending
 
 sub bond_positioning
 {
-    my ( %args ) = @_;
+    my ( $atom_coord ) = @_;
+
+    # # Generates transformation matrix for transfering atoms to local
+    # # reference frame.
+    # my ( $transf_matrix ) =
+    #     @{ switch_ref_frame( $mid_atom_coord,
+    #                          $up_atom_coord,
+    #                          $side_coord,
+    #                          'global' ) };
+
+    # [ $transf_matrix,
+    #   [ [ $bond_length
+    #       * cos( 2 * pi() / 3 )
+    #       * sin( $bond_angle ) ],
+    #     [ $bond_length
+    #       * sin( 2 * pi() / 3 )
+    #       * sin( $bond_angle ) ],
+    #     [ $bond_length
+    #       * cos( $bond_angle ) ],
+    #     [ 1 ] ] ] ) };
 }
 
 1;
