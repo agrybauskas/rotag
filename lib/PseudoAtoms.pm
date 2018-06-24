@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( add_hydrogens
+                     add_moiety
                      generate_library
                      generate_pseudo
                      generate_rotamer
@@ -1081,14 +1082,40 @@ sub add_hydrogens_sp
 
     return;
 }
-
+use Data::Dumper;
 sub add_moiety
 {
-    my ( $atom_site, $moiety, $start_atom_id, $next_atom_id, $options ) = @_;
-    my ( $configuration ) = ( $options->{'configuration'} ); # R/S if available.
+    my ( $atom_site, $moiety, $mid_atom_id, $side_atom_id,
+         $mid_moiety_id, $side_moiety_id ) = @_;
 
-    $next_atom_id //= 1;
-    $configuration //= 'R';
+    my $bring_to_origin =
+        switch_ref_frame( [ $moiety->{$mid_moiety_id}{'Cartn_x'},
+                            $moiety->{$mid_moiety_id}{'Cartn_y'},
+                            $moiety->{$mid_moiety_id}{'Cartn_z'} ],
+                          [ $moiety->{$mid_moiety_id}{'Cartn_x'},
+                            $moiety->{$mid_moiety_id}{'Cartn_y'},
+                            $moiety->{$mid_moiety_id}{'Cartn_z'} + 1 ],
+                          [ $moiety->{$side_moiety_id}{'Cartn_x'},
+                            $moiety->{$side_moiety_id}{'Cartn_y'},
+                            $moiety->{$side_moiety_id}{'Cartn_z'} ],
+                          'global' );
+
+    for my $moiety_id ( sort keys %{ $moiety } ) {
+        my $moiety_coord =
+            [ ];
+    }
+    # my $bring_near_atom_site =
+    #     switch_ref_frame( [ $atom_site->{$mid_atom_id}{'Cartn_x'},
+    #                         $atom_site->{$mid_atom_id}{'Cartn_y'},
+    #                         $atom_site->{$mid_atom_id}{'Cartn_z'} ],
+    #                       [ $atom_site->{$mid_atom_id}{'Cartn_x'},
+    #                         $atom_site->{$mid_atom_id}{'Cartn_y'},
+    #                         $atom_site->{$mid_atom_id}{'Cartn_z'} + 1 ],
+    #                       [ $atom_site->{$side_atom_id}{'Cartn_x'},
+    #                         $atom_site->{$side_atom_id}{'Cartn_y'},
+    #                         $atom_site->{$side_atom_id}{'Cartn_z'} ],
+    #                       'global' );
+
 }
 
 1;
