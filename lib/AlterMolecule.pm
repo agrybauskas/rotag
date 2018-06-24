@@ -5,7 +5,6 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( angle_bending
-                     bond_positioning
                      bond_stretching
                      bond_torsion );
 
@@ -143,40 +142,6 @@ sub angle_bending
                                                     'local' ) } ] );
 
     return $rot_matrix;
-}
-
-
-#            sp3                       sp2               sp
-#
-#            Up(2)                     Up(2)             Up(2)
-# z          |                         |                 |
-# |_y      Middle(1) __ Right(3)     Middle(1)         Middle(1)
-# /         / \                       / \                |
-# x    Left(4) Back(5)           Left(4) Right(3)        Down(3)
-#
-
-sub bond_positioning
-{
-    my ( $atom_coord ) = @_;
-
-    # # Generates transformation matrix for transfering atoms to local
-    # # reference frame.
-    # my ( $transf_matrix ) =
-    #     @{ switch_ref_frame( $mid_atom_coord,
-    #                          $up_atom_coord,
-    #                          $side_coord,
-    #                          'global' ) };
-
-    # [ $transf_matrix,
-    #   [ [ $bond_length
-    #       * cos( 2 * pi() / 3 )
-    #       * sin( $bond_angle ) ],
-    #     [ $bond_length
-    #       * sin( 2 * pi() / 3 )
-    #       * sin( $bond_angle ) ],
-    #     [ $bond_length
-    #       * cos( $bond_angle ) ],
-    #     [ 1 ] ] ] ) };
 }
 
 1;
