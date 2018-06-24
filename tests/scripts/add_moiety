@@ -16,7 +16,7 @@ while( <$fh> ) {
 }
 close( $fh );
 $atom_site = eval( $atom_site );
-add_moiety( $atom_site, $ATOMS{'H'}, 155, 154, 1, 2 );
+add_moiety( $atom_site, $ATOMS{'H'}, 155, 158, 1 );
 # %{ $atom_site } =
 #     ( %{ $atom_site },
 #       %{ add_hydrogens( $atom_site ) } );

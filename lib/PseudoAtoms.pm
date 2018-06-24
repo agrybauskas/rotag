@@ -1086,35 +1086,54 @@ use Data::Dumper;
 sub add_moiety
 {
     my ( $atom_site, $moiety, $mid_atom_id, $side_atom_id,
-         $mid_moiety_id, $side_moiety_id ) = @_;
+         $start_moiety_id ) = @_;
 
-    my $bring_to_origin =
-        switch_ref_frame( [ $moiety->{$mid_moiety_id}{'Cartn_x'},
-                            $moiety->{$mid_moiety_id}{'Cartn_y'},
-                            $moiety->{$mid_moiety_id}{'Cartn_z'} ],
-                          [ $moiety->{$mid_moiety_id}{'Cartn_x'},
-                            $moiety->{$mid_moiety_id}{'Cartn_y'},
-                            $moiety->{$mid_moiety_id}{'Cartn_z'} + 1 ],
-                          [ $moiety->{$side_moiety_id}{'Cartn_x'},
-                            $moiety->{$side_moiety_id}{'Cartn_y'},
-                            $moiety->{$side_moiety_id}{'Cartn_z'} ],
-                          'global' );
+    my ( $bring_to_origin ) =
+        @{ switch_ref_frame( [ $moiety->{$start_moiety_id}{'Cartn_x'},
+                               $moiety->{$start_moiety_id}{'Cartn_y'},
+                               $moiety->{$start_moiety_id}{'Cartn_z'} ],
+                             [ $moiety->{$start_moiety_id}{'Cartn_x'},
+                               $moiety->{$start_moiety_id}{'Cartn_y'},
+                               $moiety->{$start_moiety_id}{'Cartn_z'} + 1 ],
+                             [ $moiety->{$start_moiety_id}{'Cartn_x'},
+                               $moiety->{$start_moiety_id}{'Cartn_y'} + 1,
+                               $moiety->{$start_moiety_id}{'Cartn_z'} ],
+                             'local' ) };
+
+    my ( $bring_near_atom_site ) =
+        @{ switch_ref_frame( [ $atom_site->{$mid_atom_id}{'Cartn_x'},
+                               $atom_site->{$mid_atom_id}{'Cartn_y'},
+                               $atom_site->{$mid_atom_id}{'Cartn_z'} ],
+                             [ $atom_site->{$mid_atom_id}{'Cartn_x'},
+                               $atom_site->{$mid_atom_id}{'Cartn_y'},
+                               $atom_site->{$mid_atom_id}{'Cartn_z'} + 1 ],
+                             [ $atom_site->{$side_atom_id}{'Cartn_x'},
+                               $atom_site->{$side_atom_id}{'Cartn_y'},
+                               $atom_site->{$side_atom_id}{'Cartn_z'} ],
+                             'global' ) };
 
     for my $moiety_id ( sort keys %{ $moiety } ) {
+        my $bond_length =
+            $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
+          + $ATOMS{$atom_site->{$mid_atom_id}{'type_symbol'}}{'covalent_radius'}{'length'}->[0];
         my $moiety_coord =
-            [ ];
+            [ [ $moiety->{$moiety_id}{'Cartn_x'} ],
+              [ $moiety->{$moiety_id}{'Cartn_y'} ],
+              [ $moiety->{$moiety_id}{'Cartn_z'} ],
+              [ 1 ] ];
+        ( $moiety_coord ) =
+            @{ mult_matrix_product( [ $bring_near_atom_site,
+                                      $bring_to_origin,
+                                      $moiety_coord  ] ) };
+        $moiety->{$moiety_id}{'Cartn_x'} =
+            sprintf( "%.3f", $moiety_coord->[0][0] );
+        $moiety->{$moiety_id}{'Cartn_y'} =
+            sprintf( "%.3f", $moiety_coord->[1][0] );
+        $moiety->{$moiety_id}{'Cartn_z'} =
+            sprintf( "%.3f", $moiety_coord->[2][0] );
     }
-    # my $bring_near_atom_site =
-    #     switch_ref_frame( [ $atom_site->{$mid_atom_id}{'Cartn_x'},
-    #                         $atom_site->{$mid_atom_id}{'Cartn_y'},
-    #                         $atom_site->{$mid_atom_id}{'Cartn_z'} ],
-    #                       [ $atom_site->{$mid_atom_id}{'Cartn_x'},
-    #                         $atom_site->{$mid_atom_id}{'Cartn_y'},
-    #                         $atom_site->{$mid_atom_id}{'Cartn_z'} + 1 ],
-    #                       [ $atom_site->{$side_atom_id}{'Cartn_x'},
-    #                         $atom_site->{$side_atom_id}{'Cartn_y'},
-    #                         $atom_site->{$side_atom_id}{'Cartn_z'} ],
-    #                       'global' );
+
+    to_pdbx( { 'atom_site' => { %{ $atom_site }, %{ $moiety } } } );
 
 }
 
