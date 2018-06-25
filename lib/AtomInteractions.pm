@@ -157,10 +157,9 @@ sub h_bond
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $h_epsilon, $connections ) = (
+    my ( $r, $h_epsilon ) = (
         $parameters->{'r'},
         $parameters->{'h_epsilon'},
-        $parameters->{'connections'},
     );
 
     $r //= distance( $atom_i, $atom_j );
