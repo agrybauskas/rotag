@@ -5,7 +5,6 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( add_hydrogens
-                     add_moiety
                      generate_library
                      generate_pseudo
                      generate_rotamer
@@ -43,7 +42,7 @@ use PDBxParser qw( create_pdbx_entry
                    to_pdbx );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
-use Data::Dumper;
+
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
@@ -521,7 +520,14 @@ sub _check_angles
 
 sub add_hydrogens
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $options ) = @_;
+
+    my ( $add_sp3, $add_sp2, $add_sp ) = (
+        $options->{'add_sp3'}, $options->{'add_sp2'}, $options->{'add_sp'} );
+
+    $add_sp3 //= 1;
+    $add_sp2 //= 1;
+    $add_sp //= 1;
 
     my %atom_site = %{ $atom_site };
 
@@ -571,13 +577,13 @@ sub add_hydrogens
         # hydrogens.
         my %hydrogen_coord = map { $_ => undef } @missing_hydrogens;
 
-        if( $hybridization eq 'sp3' ) {
+        if( $hybridization eq 'sp3' && $add_sp3 ) {
             add_hydrogens_sp3( $atom_site, $atom_id,
                                \%hydrogen_coord, \@missing_hydrogens );
-        } elsif( $hybridization eq 'sp2' ) {
+        } elsif( $hybridization eq 'sp2' && $add_sp2) {
             add_hydrogens_sp2( $atom_site, $atom_id,
                                \%hydrogen_coord, \@missing_hydrogens );
-        } elsif( $hybridization eq 'sp' ) {
+        } elsif( $hybridization eq 'sp' && $add_sp ) {
             add_hydrogens_sp( $atom_site, $atom_id,
                               \%hydrogen_coord, \@missing_hydrogens );
         }
