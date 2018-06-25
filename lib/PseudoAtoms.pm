@@ -522,12 +522,8 @@ sub add_hydrogens
 {
     my ( $atom_site, $options ) = @_;
 
-    my ( $add_sp3, $add_sp2, $add_sp ) = (
-        $options->{'add_sp3'}, $options->{'add_sp2'}, $options->{'add_sp'} );
-
-    $add_sp3 //= 1;
-    $add_sp2 //= 1;
-    $add_sp //= 1;
+    my ($add_only_clear_positions) = ( $options->{'add_only_clear_positions'} );
+    $add_only_clear_positions //= 0;
 
     my %atom_site = %{ $atom_site };
 
@@ -577,13 +573,13 @@ sub add_hydrogens
         # hydrogens.
         my %hydrogen_coord = map { $_ => undef } @missing_hydrogens;
 
-        if( $hybridization eq 'sp3' && $add_sp3 ) {
+        if( $hybridization eq 'sp3' ) {
             add_hydrogens_sp3( $atom_site, $atom_id,
-                               \%hydrogen_coord, \@missing_hydrogens );
-        } elsif( $hybridization eq 'sp2' && $add_sp2) {
+                               \%hydrogen_coord, \@missing_hydrogens, $options );
+        } elsif( $hybridization eq 'sp2' ) {
             add_hydrogens_sp2( $atom_site, $atom_id,
-                               \%hydrogen_coord, \@missing_hydrogens );
-        } elsif( $hybridization eq 'sp' && $add_sp ) {
+                               \%hydrogen_coord, \@missing_hydrogens, $options );
+        } elsif( $hybridization eq 'sp' ) {
             add_hydrogens_sp( $atom_site, $atom_id,
                               \%hydrogen_coord, \@missing_hydrogens );
         }
@@ -625,7 +621,11 @@ sub add_hydrogens
 
 sub add_hydrogens_sp3
 {
-    my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens ) = @_;
+    my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens,
+         $options ) = @_;
+
+    my ($add_only_clear_positions) = ( $options->{'add_only_clear_positions'} );
+    $add_only_clear_positions //= 0;
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
     my $residue_id = $atom_site->{$atom_id}{'label_seq_id'};
@@ -902,7 +902,11 @@ sub add_hydrogens_sp3
 
 sub add_hydrogens_sp2
 {
-    my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens ) = @_;
+    my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens,
+         $options ) = @_;
+
+    my ($add_only_clear_positions) = ( $options->{'add_only_clear_positions'} );
+    $add_only_clear_positions //= 0;
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
     my $residue_id = $atom_site->{$atom_id}{'label_seq_id'};
