@@ -822,8 +822,7 @@ sub add_hydrogens_sp3
                            [ 1 ] ] ] ) };
         }
 
-    } elsif( scalar( @connection_ids ) == 1
-          && ! ( $add_only_clear_positions && $lone_pair_count > 0 ) ) {
+    } elsif( scalar( @connection_ids ) == 1 && ! ( $add_only_clear_positions ) ){
         # Calculates current angle between atoms that are connected to
         # target atom.
         my ( $up_atom_coord,
@@ -975,7 +974,7 @@ sub add_hydrogens_sp2
                        [ 1 ] ] ] ) };
 
     } elsif( scalar( @connection_ids ) == 1
-          && ! ( $add_only_clear_positions && $lone_pair_count > 0 ) ) {
+          && ! ( $add_only_clear_positions && $lone_pair_count > 1 ) ) {
         my ( $up_atom_coord,
              $mid_atom_coord,
              $side_coord ) =

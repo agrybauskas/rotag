@@ -27,10 +27,10 @@ _atom_site.auth_comp_id
 _atom_site.auth_asym_id
 _atom_site.auth_atom_id
 _atom_site.pdbx_PDB_model_num
-ATOM 154 N N . ALA A 1 22 ? 2.298 -4.331 69.172 1.00 34.33 ? ? ? ? ? ? 67 ALA A N 1
-ATOM 155 C CA . ALA A 1 22 ? 2.162 -4.007 67.755 1.00 36.08 ? ? ? ? ? ? 67 ALA A CA 1
-ATOM 156 C C . ALA A 1 22 ? 2.682 -5.159 66.907 1.00 42.70 ? ? ? ? ? ? 67 ALA A C 1
-ATOM 157 O O . ALA A 1 22 ? 2.067 -5.546 65.919 1.00 35.94 ? ? ? ? ? ? 67 ALA A O 1
-ATOM 158 C CB . ALA A 1 22 ? 2.890 -2.739 67.426 1.00 42.25 ? ? ? ? ? ? 67 ALA A CB 1
-ATOM 159 H HA 1 ALA A 1 22 ? 1.124 -3.861 67.539 ? ? ? ? ? ? ? ? 67 ALA A HA 1
+ATOM 40 N N . GLY A 1 9 ? 20.788 3.603 72.915 1.00 59.28 ? ? ? ? ? ? 54 GLY A N 1
+ATOM 41 C CA . GLY A 1 9 ? 19.868 3.682 74.033 1.00 56.68 ? ? ? ? ? ? 54 GLY A CA 1
+ATOM 42 C C . GLY A 1 9 ? 19.049 2.421 74.216 1.00 55.81 ? ? ? ? ? ? 54 GLY A C 1
+ATOM 43 O O . GLY A 1 9 ? 18.982 1.558 73.350 1.00 62.63 ? ? ? ? ? ? 54 GLY A O 1
+ATOM 44 H HA2 1 GLY A 1 9 ? 19.193 4.495 73.866 ? ? ? ? ? ? ? ? 54 GLY A HA2 1
+ATOM 45 H HA3 1 GLY A 1 9 ? 20.429 3.846 74.929 ? ? ? ? ? ? ? ? 54 GLY A HA3 1
 #
