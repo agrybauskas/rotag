@@ -755,7 +755,8 @@ sub add_hydrogens_sp3
                        [ $bond_length
                          * cos( $hydrogen_angle ) ],
                        [ 1 ] ] ] ) };
-    } elsif( scalar( @connection_ids ) == 2 ) {
+    } elsif( scalar( @connection_ids ) == 2
+          && ! ( $add_only_clear_positions && $lone_pair_count > 0 ) ) {
         # Calculates current angle between atoms that are connected to
         # target atom.
         my ( $up_atom_coord,
@@ -821,7 +822,8 @@ sub add_hydrogens_sp3
                            [ 1 ] ] ] ) };
         }
 
-    } elsif( scalar( @connection_ids ) == 1 ) {
+    } elsif( scalar( @connection_ids ) == 1
+          && ! ( $add_only_clear_positions && $lone_pair_count > 0 ) ) {
         # Calculates current angle between atoms that are connected to
         # target atom.
         my ( $up_atom_coord,
@@ -923,6 +925,7 @@ sub add_hydrogens_sp2
       + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $atom_site->{"$atom_id"}{'connections'} };
+    my $lone_pair_count = $ATOMS{$atom_type}{'lone_pairs'};
 
     # Depending on quantity of atoms connections, adds hydrogens.
     if( scalar( @connection_ids ) == 2 ) {
@@ -971,7 +974,8 @@ sub add_hydrogens_sp2
                          * cos( $bond_angle ) ],
                        [ 1 ] ] ] ) };
 
-    } elsif( scalar( @connection_ids ) == 1 ) {
+    } elsif( scalar( @connection_ids ) == 1
+          && ! ( $add_only_clear_positions && $lone_pair_count > 0 ) ) {
         my ( $up_atom_coord,
              $mid_atom_coord,
              $side_coord ) =

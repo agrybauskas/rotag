@@ -6,7 +6,7 @@ use warnings;
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( add_hydrogens );
 
-my ( $pdbx_dump_file ) = @ARGV;
+my ( $pdbx_dump_file, $add_only_clear_positions ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -18,7 +18,9 @@ $atom_site = eval( $atom_site );
 
 %{ $atom_site } =
     ( %{ $atom_site },
-      %{ add_hydrogens( $atom_site ) } );
+      %{ add_hydrogens(
+             $atom_site,
+             { 'add_only_clear_positions' => $add_only_clear_positions } ) } );
 
 # Prints out PDBx format file.
 to_pdbx( { "atom_site" => $atom_site } );
