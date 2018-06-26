@@ -164,11 +164,22 @@ sub h_bond
         $parameters->{'hybridizations'},
     );
 
+    # TODO: should not be hardcoded - maybe stored in AtomProperties or
+    # MoleculeProperties.
+    my @h_bond_heavy_atoms = ( 'N', 'O', 'F' );
+    if( ( grep { $atom_i->{'type_symbol'} ne $_ } @h_bond_heavy_atoms )
+     && ( grep { $atom_i->{'type_symbol'} ne $_ } @h_bond_heavy_atoms ) ) {
+        return 0;
+    }
+
     $r //= distance( $atom_i, $atom_j );
     $h_epsilon //= 1.0;
 
     my $r_i_hydrogen = $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
                      + $ATOMS{'H'}{'vdw_radius'};
+
+    # Calculates the angle between hydrogen acceptor, donor and the hydrogen
+    # with best possible position for the hydrogen bonding.
 
     # if( ( $theta >= 90 * pi() / 180 ) && ( $theta >= 270 * pi() / 180 ) ) {
     #     return $h_epsilon
