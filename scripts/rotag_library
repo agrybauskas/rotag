@@ -14,7 +14,8 @@ use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
 
-use PseudoAtoms qw( generate_library );
+use PseudoAtoms qw( add_hydrogens
+                    generate_library );
 
 #*rotag_library
 #*    generate rotamer library.
@@ -112,6 +113,18 @@ if( $@ ) {
                     'filename' => $options{"pdbx_file"},
                     'message' => $@ } );
 }
+
+# TODO: adding hydrogens to selected_atom_site should be more computationally
+# favourable. However, should be very careful not to add unnecessary hydrogens.
+my %hydrogen_site =
+    %{ add_hydrogens( $atom_site, { 'add_only_clear_positions' => 1 } ) };
+
+$atom_site = {
+    %{ $atom_site },
+    %{ add_hydrogens( $atom_site, { 'add_only_clear_positions' => 1 } ) }
+};
+
+connect_atoms( $atom_site );
 
 my $selected_atom_site =
     filter( { "atom_site" => $atom_site,
