@@ -7,6 +7,8 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 
 use ConnectAtoms qw( connect_atoms );
+use ErrorHandling qw( parse_errors
+                      parse_warnings );
 use LinearAlgebra qw( pi );
 use PDBxParser qw( filter
                    obtain_atom_site
@@ -98,12 +100,17 @@ $options{"threads"} = 1 unless $options{"threads"};
 
 # Reads file path, stdin and "-" operator.
 my $atom_site;
-if( $options{"pdbx_file"} ) {
-    $atom_site = obtain_atom_site( $options{"pdbx_file"} );
-} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
-    $atom_site = obtain_atom_site( '-' );
-} else {
-    die( "Use command \"rotag_library --help\" in order to see the manual.\n" );
+eval {
+    if( $options{"pdbx_file"} ) {
+        $atom_site = obtain_atom_site( $options{"pdbx_file"} );
+    } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+        $atom_site = obtain_atom_site( '-' );
+    }
+};
+if( $@ ) {
+    parse_errors( { 'program' => $0,
+                    'filename' => $options{"pdbx_file"},
+                    'message' => $@ } );
 }
 
 my $selected_atom_site =
