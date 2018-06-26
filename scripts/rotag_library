@@ -10,6 +10,7 @@ use ConnectAtoms qw( connect_atoms );
 use ErrorHandling qw( parse_errors
                       parse_warnings );
 use LinearAlgebra qw( pi );
+use MoleculeProperties qw( hybridization );
 use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
@@ -125,6 +126,15 @@ $atom_site = {
 };
 
 connect_atoms( $atom_site );
+
+my %connections;
+my %hybridizations;
+for my $atom_id ( keys %{ $atom_site } ) {
+    $connections{$atom_id} = $atom_site->{$atom_id}{'connections'};
+    $hybridizations{$atom_id} = $atom_site->{$atom_id}{'hybridization'};
+}
+$options{"parameters"}{"connections"} = \%connections;
+$options{"parameters"}{"hybridizations"} = \%hybridizations;
 
 my $selected_atom_site =
     filter( { "atom_site" => $atom_site,

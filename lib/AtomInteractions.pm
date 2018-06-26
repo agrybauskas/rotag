@@ -157,9 +157,11 @@ sub h_bond
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $h_epsilon ) = (
+    my ( $r, $h_epsilon, $connections, $hybridizations ) = (
         $parameters->{'r'},
         $parameters->{'h_epsilon'},
+        $parameters->{'connections'},
+        $parameters->{'hybridizations'},
     );
 
     $r //= distance( $atom_i, $atom_j );
@@ -212,11 +214,6 @@ sub composite
     # Calculates Van der Waals distance of given atoms.
     $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
              + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-
-    # For the sake of not repeating r and sigma calculations, they should be
-    # passed as the parameters.
-    $parameters->{'r'} = $r;
-    $parameters->{'sigma'} = $sigma;
 
     if( $r < $cutoff_start * $sigma ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
