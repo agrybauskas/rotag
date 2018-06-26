@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+
+use PDBxParser qw( obtain_atom_site );
+
+$Data::Dumper::Indent = 1;
+$Data::Dumper::Sortkeys = 1;
+
+
+#
+# Test tool: dump_cif_structure
+# Example: ./dump_cif_structure structure.cif
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+
+my $atom_site;
+
+foreach my $pdbx_file ( @ARGV ) {
+    $atom_site = obtain_atom_site( $pdbx_file );
+    my $cif_dump_structure = Dumper( $atom_site );
+    $cif_dump_structure =~ s/\$VAR[0..9]*.*=\s*//g;
+    $cif_dump_structure =~ s/};/}/g;
+    print( $cif_dump_structure );
+}
