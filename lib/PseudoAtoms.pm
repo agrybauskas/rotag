@@ -628,33 +628,30 @@ sub add_hydrogens_sp3
     $add_only_clear_positions //= 0;
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
-    my $residue_id = $atom_site->{$atom_id}{'label_seq_id'};
-    my $residue_site =
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_seq_id' => [ $residue_id ] } } );
-    my %residue_coord =
-        %{ filter( { 'atom_site' => $residue_site,
-                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'data_with_id' => 1 } ) };
 
-    # Because bond length depends on hybridization of atoms, bond length
-    # is calculated for each differently hybridized atoms.
     my $bond_length =
         $ATOMS{$atom_type}{'covalent_radius'}{'length'}[0]
       + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $atom_site->{"$atom_id"}{'connections'} };
+    my %atom_coord =
+        %{ filter( { 'atom_site' => $atom_site,
+                     'include' => { 'id' => \@connection_ids },
+                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'data_with_id' => 1 } ) };
+
     my $lone_pair_count = $ATOMS{$atom_type}{'lone_pairs'};
+
 
     if( scalar( @connection_ids ) == 3 ) {
         my ( $up_atom_coord,
              $mid_atom_coord,
              $left_atom_coord,
              $right_atom_coord ) =
-                 ( $residue_coord{$connection_ids[0]},
-                   $residue_coord{$atom_id},
-                   $residue_coord{$connection_ids[1]},
-                   $residue_coord{$connection_ids[2]} );
+                 ( $atom_coord{$connection_ids[0]},
+                   $atom_coord{$atom_id},
+                   $atom_coord{$connection_ids[1]},
+                   $atom_coord{$connection_ids[2]} );
 
         # Theoretically optimal angles should be so, the distance of
         # atoms would be furthest from each other. This strategy could
@@ -762,9 +759,9 @@ sub add_hydrogens_sp3
         my ( $up_atom_coord,
              $mid_atom_coord,
              $left_atom_coord ) =
-                 ( $residue_coord{$connection_ids[0]},
-                   $residue_coord{$atom_id},
-                   $residue_coord{$connection_ids[1]} );
+                 ( $atom_coord{$connection_ids[0]},
+                   $atom_coord{$atom_id},
+                   $atom_coord{$connection_ids[1]} );
 
         my $bond_angle =
             bond_angle( [ $up_atom_coord,
@@ -829,8 +826,8 @@ sub add_hydrogens_sp3
              $mid_atom_coord,
              $side_coord ) = # Coordinate that only will be used for
                  # defining a local reference frame.
-                 ( $residue_coord{$connection_ids[0]},
-                   $residue_coord{$atom_id},
+                 ( $atom_coord{$connection_ids[0]},
+                   $atom_coord{$atom_id},
                    [ $atom_site->{$atom_id}{'Cartn_x'},
                      $atom_site->{$atom_id}{'Cartn_y'} + 1,
                      $atom_site->{$atom_id}{'Cartn_z'} ] );
@@ -910,20 +907,18 @@ sub add_hydrogens_sp2
     $add_only_clear_positions //= 0;
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
-    my $residue_id = $atom_site->{$atom_id}{'label_seq_id'};
-    my $residue_site =
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_seq_id' => [ $residue_id ] } } );
-    my %residue_coord =
-        %{ filter( { 'atom_site' => $residue_site,
-                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'data_with_id' => 1 } ) };
 
     my $bond_length =
         $ATOMS{$atom_type}{'covalent_radius'}{'length'}[1]
       + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $atom_site->{"$atom_id"}{'connections'} };
+    my %atom_coord =
+        %{ filter( { 'atom_site' => $atom_site,
+                     'include' => { 'id' => \@connection_ids },
+                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'data_with_id' => 1 } ) };
+
     my $lone_pair_count = $ATOMS{$atom_type}{'lone_pairs'};
 
     # Depending on quantity of atoms connections, adds hydrogens.
@@ -933,9 +928,9 @@ sub add_hydrogens_sp2
         my ( $up_atom_coord,
              $mid_atom_coord,
              $left_atom_coord ) =
-                 ( $residue_coord{$connection_ids[0]},
-                   $residue_coord{$atom_id},
-                   $residue_coord{$connection_ids[1]} );
+                 ( $atom_coord{$connection_ids[0]},
+                   $atom_coord{$atom_id},
+                   $atom_coord{$connection_ids[1]} );
 
         # Generates transformation matrix for transfering atoms to local
         # reference frame.
@@ -978,8 +973,8 @@ sub add_hydrogens_sp2
         my ( $up_atom_coord,
              $mid_atom_coord,
              $side_coord ) =
-                 ( $residue_coord{$connection_ids[0]},
-                   $residue_coord{$atom_id},
+                 ( $atom_coord{$connection_ids[0]},
+                   $atom_coord{$atom_id},
                    [ $atom_site->{$atom_id}{'Cartn_x'},
                      $atom_site->{$atom_id}{'Cartn_y'} + 1,
                      $atom_site->{$atom_id}{'Cartn_z'} ] );
@@ -993,7 +988,7 @@ sub add_hydrogens_sp2
 
         for my $second_neighbour ( @second_neighbours ) {
             my $second_hybridization =
-                $residue_site->{$second_neighbour}{'hybridization'};
+                $atom_site->{$second_neighbour}{'hybridization'};
             if( $second_hybridization eq 'sp2'
              || $second_hybridization eq 'sp' ) {
                 $side_coord =
@@ -1052,27 +1047,23 @@ sub add_hydrogens_sp
     my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens ) = @_;
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
-    my $residue_id = $atom_site->{$atom_id}{'label_seq_id'};
-    my $residue_site =
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_seq_id' => [ $residue_id ] } } );
-    my %residue_coord =
-        %{ filter( { 'atom_site' => $residue_site,
-                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'data_with_id' => 1 } ) };
 
-    # Calculates length of bonds.
     my $bond_length =
-        $ATOMS{$atom_type}{'covalent_radius'}{'length'}[2]
+        $ATOMS{$atom_type}{'covalent_radius'}{'length'}[1]
       + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $atom_site->{"$atom_id"}{'connections'} };
+    my %atom_coord =
+        %{ filter( { 'atom_site' => $atom_site,
+                     'include' => { 'id' => \@connection_ids },
+                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'data_with_id' => 1 } ) };
 
     my ( $up_atom_coord,
          $mid_atom_coord,
          $side_coord ) =
-             ( $residue_coord{$connection_ids[0]},
-               $residue_coord{$atom_id},
+             ( $atom_coord{$connection_ids[0]},
+               $atom_coord{$atom_id},
                [ $atom_site->{$atom_id}{'Cartn_x'},
                  $atom_site->{$atom_id}{'Cartn_y'} + 1,
                  $atom_site->{$atom_id}{'Cartn_z'} ] );
