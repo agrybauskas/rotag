@@ -166,18 +166,15 @@ sub h_bond
 
     $r //= distance( $atom_i, $atom_j );
     $h_epsilon //= 1.0;
+
     my $r_i_hydrogen = $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
                      + $ATOMS{'H'}{'vdw_radius'};
 
-    # my $theta = bond_angle(
-    #     [ $atom_i->{'Cartn_x'}, $atom_i->{'Cartn_y'}, $atom_i->{'Cartn_z'} ],
-    #     [ $atom_j->{'Cartn_x'}, $atom_j->{'Cartn_y'}, $atom_j->{'Cartn_z'} ],
-    #     [ $atom_h->{'Cartn_x'}, $atom_h->{'Cartn_y'}, $atom_h->{'Cartn_z'} ]
-    # );
-
     # if( ( $theta >= 90 * pi() / 180 ) && ( $theta >= 270 * pi() / 180 ) ) {
     #     return $h_epsilon
-    #          * ( ( $r / $r_i_hydrogen )**12 - ( $r / $r_i_hydrogen )**10 );
+    #          * ( 5 * ( $r / $r_i_hydrogen )**12
+    #            - 6 * ( $r / $r_i_hydrogen )**10 )
+    #          * cos( $theta );
     # } else {
     #     return 0;
     # }
