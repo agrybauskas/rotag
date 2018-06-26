@@ -1,0 +1,107 @@
+data_testing
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 20 N N . TYR A 1 4 ? 20.739 9.284 48.920 1.00 23.20 ? ? ? ? ? ? 4 TYR A N 1 S ?
+ATOM 21 C CA . TYR A 1 4 ? 21.266 10.628 49.159 1.00 21.94 ? ? ? ? ? ? 4 TYR A CA 1 S ?
+ATOM 22 C C . TYR A 1 4 ? 21.782 10.780 50.583 1.00 20.98 ? ? ? ? ? ? 4 TYR A C 1 S ?
+ATOM 23 O O . TYR A 1 4 ? 21.020 10.678 51.545 1.00 22.93 ? ? ? ? ? ? 4 TYR A O 1 S ?
+ATOM 24 C CB . TYR A 1 4 ? 20.188 11.683 48.894 1.00 20.94 ? ? ? ? ? ? 4 TYR A CB 1 S ?
+ATOM 25 C CG . TYR A 1 4 ? 19.704 11.705 47.468 1.00 21.29 ? ? ? ? ? ? 4 TYR A CG 1 S ?
+ATOM 26 C CD1 . TYR A 1 4 ? 20.449 12.335 46.471 1.00 20.98 ? ? ? ? ? ? 4 TYR A CD1 1 S ?
+ATOM 27 C CD2 . TYR A 1 4 ? 18.504 11.094 47.112 1.00 23.66 ? ? ? ? ? ? 4 TYR A CD2 1 S ?
+ATOM 28 C CE1 . TYR A 1 4 ? 20.006 12.355 45.150 1.00 22.22 ? ? ? ? ? ? 4 TYR A CE1 1 S ?
+ATOM 29 C CE2 . TYR A 1 4 ? 18.051 11.108 45.795 1.00 21.88 ? ? ? ? ? ? 4 TYR A CE2 1 S ?
+ATOM 30 C CZ . TYR A 1 4 ? 18.808 11.739 44.821 1.00 22.79 ? ? ? ? ? ? 4 TYR A CZ 1 S ?
+ATOM 31 O OH . TYR A 1 4 ? 18.376 11.740 43.516 1.00 25.97 ? ? ? ? ? ? 4 TYR A OH 1 S ?
+ATOM 32 N N . THR A 1 5 ? 23.077 11.045 50.704 1.00 18.37 ? ? ? ? ? ? 5 THR A N 1 S ?
+ATOM 33 C CA . THR A 1 5 ? 23.713 11.218 52.004 1.00 20.83 ? ? ? ? ? ? 5 THR A CA 1 S ?
+ATOM 34 C C . THR A 1 5 ? 24.016 12.685 52.271 1.00 20.10 ? ? ? ? ? ? 5 THR A C 1 S ?
+ATOM 35 O O . THR A 1 5 ? 24.879 13.278 51.621 1.00 18.36 ? ? ? ? ? ? 5 THR A O 1 S ?
+ATOM 36 C CB . THR A 1 5 ? 25.026 10.400 52.109 1.00 21.02 ? ? ? ? ? ? 5 THR A CB 1 S ?
+ATOM 37 O OG1 . THR A 1 5 ? 24.742 9.010 51.893 1.00 24.96 ? ? ? ? ? ? 5 THR A OG1 1 S ?
+ATOM 38 C CG2 . THR A 1 5 ? 25.658 10.571 53.480 1.00 20.53 ? ? ? ? ? ? 5 THR A CG2 1 S ?
+ATOM 39 N N . CYS A 1 6 ? 23.276 13.264 53.213 1.00 19.16 ? ? ? ? ? ? 6 CYS A N 1 S ?
+ATOM 40 C CA . CYS A 1 6 ? 23.444 14.659 53.607 1.00 18.29 ? ? ? ? ? ? 6 CYS A CA 1 S ?
+ATOM 41 C C . CYS A 1 6 ? 24.057 14.640 55.000 1.00 18.12 ? ? ? ? ? ? 6 CYS A C 1 S ?
+ATOM 42 O O . CYS A 1 6 ? 23.342 14.541 55.999 1.00 16.40 ? ? ? ? ? ? 6 CYS A O 1 S ?
+ATOM 43 C CB . CYS A 1 6 ? 22.086 15.356 53.652 1.00 17.70 ? ? ? ? ? ? 6 CYS A CB 1 S ?
+ATOM 44 S SG . CYS A 1 6 ? 21.154 15.252 52.113 1.00 18.52 ? ? ? ? ? ? 6 CYS A SG 1 S ?
+ATOM 45 N N . GLY A 1 7 ? 25.381 14.745 55.066 1.00 22.23 ? ? ? ? ? ? 7 GLY A N 1 S ?
+ATOM 46 C CA . GLY A 1 7 ? 26.054 14.686 56.351 1.00 24.31 ? ? ? ? ? ? 7 GLY A CA 1 S ?
+ATOM 47 C C . GLY A 1 7 ? 25.877 13.263 56.850 1.00 25.37 ? ? ? ? ? ? 7 GLY A C 1 S ?
+ATOM 48 O O . GLY A 1 7 ? 26.382 12.323 56.240 1.00 28.55 ? ? ? ? ? ? 7 GLY A O 1 S ?
+ATOM 49 N N . SER A 1 8 ? 25.116 13.095 57.923 1.00 27.48 ? ? ? ? ? ? 8 SER A N 1 S ?
+ATOM 50 C CA . SER A 1 8 ? 24.858 11.767 58.468 1.00 28.30 ? ? ? ? ? ? 8 SER A CA 1 S ?
+ATOM 51 C C . SER A 1 8 ? 23.410 11.344 58.218 1.00 28.06 ? ? ? ? ? ? 8 SER A C 1 S ?
+ATOM 52 O O . SER A 1 8 ? 22.981 10.274 58.653 1.00 30.35 ? ? ? ? ? ? 8 SER A O 1 S ?
+ATOM 53 C CB . SER A 1 8 ? 25.198 11.722 59.962 1.00 30.27 ? ? ? ? ? ? 8 SER A CB 1 S ?
+ATOM 54 O OG . SER A 1 8 ? 24.608 12.808 60.654 1.00 38.30 ? ? ? ? ? ? 8 SER A OG 1 S ?
+ATOM 55 N N . ASN A 1 9 ? 22.652 12.200 57.535 1.00 24.51 ? ? ? ? ? ? 9 ASN A N 1 T 1
+ATOM 56 C CA . ASN A 1 9 ? 21.260 11.901 57.209 1.00 22.57 ? ? ? ? ? ? 9 ASN A CA 1 T 1
+ATOM 57 C C . ASN A 1 9 ? 21.222 11.129 55.904 1.00 23.07 ? ? ? ? ? ? 9 ASN A C 1 T 1
+ATOM 58 O O . ASN A 1 9 ? 21.881 11.498 54.929 1.00 24.37 ? ? ? ? ? ? 9 ASN A O 1 T 1
+ATOM 59 C CB . ASN A 1 9 ? 20.441 13.184 57.077 1.00 19.91 ? ? ? ? ? ? 9 ASN A CB 1 T 1
+ATOM 60 C CG . ASN A 1 9 ? 20.266 13.893 58.391 1.00 22.26 ? ? ? ? ? ? 9 ASN A CG 1 T 1
+ATOM 61 O OD1 . ASN A 1 9 ? 20.387 13.283 59.455 1.00 24.69 ? ? ? ? ? ? 9 ASN A OD1 1 T 1
+ATOM 62 N ND2 . ASN A 1 9 ? 19.969 15.185 58.335 1.00 17.85 ? ? ? ? ? ? 9 ASN A ND2 1 T 1
+ATOM 63 N N . CYS A 1 10 ? 20.456 10.045 55.902 1.00 24.20 ? ? ? ? ? ? 10 CYS A N 1 S ?
+ATOM 64 C CA . CYS A 1 10 ? 20.322 9.188 54.735 1.00 25.18 ? ? ? ? ? ? 10 CYS A CA 1 S ?
+ATOM 65 C C . CYS A 1 10 ? 18.892 9.251 54.190 1.00 23.06 ? ? ? ? ? ? 10 CYS A C 1 S ?
+ATOM 66 O O . CYS A 1 10 ? 17.929 8.998 54.914 1.00 23.88 ? ? ? ? ? ? 10 CYS A O 1 S ?
+ATOM 67 C CB . CYS A 1 10 ? 20.700 7.752 55.126 1.00 27.27 ? ? ? ? ? ? 10 CYS A CB 1 S ?
+ATOM 68 S SG . CYS A 1 10 ? 20.273 6.475 53.923 1.00 33.08 ? ? ? ? ? ? 10 CYS A SG 1 S ?
+ATOM 69 N N . TYR A 1 11 ? 18.760 9.607 52.915 1.00 20.82 ? ? ? ? ? ? 11 TYR A N 1 S ?
+ATOM 70 C CA . TYR A 1 11 ? 17.445 9.700 52.274 1.00 20.60 ? ? ? ? ? ? 11 TYR A CA 1 S ?
+ATOM 71 C C . TYR A 1 11 ? 17.342 8.801 51.048 1.00 19.05 ? ? ? ? ? ? 11 TYR A C 1 S ?
+ATOM 72 O O . TYR A 1 11 ? 18.256 8.750 50.222 1.00 20.53 ? ? ? ? ? ? 11 TYR A O 1 S ?
+ATOM 73 C CB . TYR A 1 11 ? 17.155 11.141 51.832 1.00 17.94 ? ? ? ? ? ? 11 TYR A CB 1 S ?
+ATOM 74 C CG . TYR A 1 11 ? 17.200 12.160 52.942 1.00 14.81 ? ? ? ? ? ? 11 TYR A CG 1 S ?
+ATOM 75 C CD1 . TYR A 1 11 ? 16.217 12.190 53.930 1.00 16.59 ? ? ? ? ? ? 11 TYR A CD1 1 S ?
+ATOM 76 C CD2 . TYR A 1 11 ? 18.220 13.103 52.998 1.00 17.45 ? ? ? ? ? ? 11 TYR A CD2 1 S ?
+ATOM 77 C CE1 . TYR A 1 11 ? 16.250 13.134 54.945 1.00 15.76 ? ? ? ? ? ? 11 TYR A CE1 1 S ?
+ATOM 78 C CE2 . TYR A 1 11 ? 18.262 14.054 54.011 1.00 17.27 ? ? ? ? ? ? 11 TYR A CE2 1 S ?
+ATOM 79 C CZ . TYR A 1 11 ? 17.276 14.064 54.979 1.00 15.65 ? ? ? ? ? ? 11 TYR A CZ 1 S ?
+ATOM 80 O OH . TYR A 1 11 ? 17.317 15.003 55.983 1.00 18.05 ? ? ? ? ? ? 11 TYR A OH 1 S ?
+ATOM 485 N N . SER A 1 63 ? 14.831 14.648 58.195 1.00 19.07 ? ? ? ? ? ? 63 SER A N 1 S ?
+ATOM 486 C CA . SER A 1 63 ? 15.382 13.329 58.516 1.00 23.26 ? ? ? ? ? ? 63 SER A CA 1 S ?
+ATOM 487 C C . SER A 1 63 ? 14.367 12.426 59.217 1.00 24.96 ? ? ? ? ? ? 63 SER A C 1 S ?
+ATOM 488 O O . SER A 1 63 ? 14.468 11.201 59.157 1.00 27.94 ? ? ? ? ? ? 63 SER A O 1 S ?
+ATOM 489 C CB . SER A 1 63 ? 16.633 13.472 59.385 1.00 22.75 ? ? ? ? ? ? 63 SER A CB 1 S ?
+ATOM 490 O OG . SER A 1 63 ? 16.333 14.130 60.602 1.00 23.80 ? ? ? ? ? ? 63 SER A OG 1 S ?
+ATOM 564 N N . ASP A 1 76 ? 19.087 20.170 55.527 1.00 12.58 ? ? ? ? ? ? 76 ASP A N 1 S ?
+ATOM 565 C CA . ASP A 1 76 ? 18.919 19.609 54.186 1.00 13.11 ? ? ? ? ? ? 76 ASP A CA 1 S ?
+ATOM 566 C C . ASP A 1 76 ? 17.779 20.168 53.346 1.00 11.98 ? ? ? ? ? ? 76 ASP A C 1 S ?
+ATOM 567 O O . ASP A 1 76 ? 16.706 20.479 53.868 1.00 11.19 ? ? ? ? ? ? 76 ASP A O 1 S ?
+ATOM 568 C CB . ASP A 1 76 ? 18.813 18.085 54.294 1.00 12.38 ? ? ? ? ? ? 76 ASP A CB 1 S ?
+ATOM 569 C CG . ASP A 1 76 ? 19.810 17.499 55.296 1.00 15.91 ? ? ? ? ? ? 76 ASP A CG 1 S ?
+ATOM 570 O OD1 . ASP A 1 76 ? 20.912 18.063 55.456 1.00 10.79 ? ? ? ? ? ? 76 ASP A OD1 1 S ?
+ATOM 571 O OD2 . ASP A 1 76 ? 19.486 16.480 55.936 1.00 16.75 ? ? ? ? ? ? 76 ASP A OD2 1 S ?
+#
