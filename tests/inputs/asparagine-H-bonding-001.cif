@@ -1,0 +1,42 @@
+data_testing
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 55 N N . ASN A 1 9 ? 22.652 12.200 57.535 1.00 24.51 ? ? ? ? ? ? 9 ASN A N 1 T 1
+ATOM 56 C CA . ASN A 1 9 ? 21.260 11.901 57.209 1.00 22.57 ? ? ? ? ? ? 9 ASN A CA 1 T 1
+ATOM 57 C C . ASN A 1 9 ? 21.222 11.129 55.904 1.00 23.07 ? ? ? ? ? ? 9 ASN A C 1 T 1
+ATOM 58 O O . ASN A 1 9 ? 21.881 11.498 54.929 1.00 24.37 ? ? ? ? ? ? 9 ASN A O 1 T 1
+ATOM 59 C CB . ASN A 1 9 ? 20.441 13.184 57.077 1.00 19.91 ? ? ? ? ? ? 9 ASN A CB 1 T 1
+ATOM 60 C CG . ASN A 1 9 ? 20.266 13.893 58.391 1.00 22.26 ? ? ? ? ? ? 9 ASN A CG 1 T 1
+ATOM 61 O OD1 . ASN A 1 9 ? 20.387 13.283 59.455 1.00 24.69 ? ? ? ? ? ? 9 ASN A OD1 1 T 1
+ATOM 62 N ND2 . ASN A 1 9 ? 19.969 15.185 58.335 1.00 17.85 ? ? ? ? ? ? 9 ASN A ND2 1 T 1
+ATOM 80 O O . TYR A 1 11 ? 17.317 15.003 55.983 1.00 18.05 ? ? ? ? ? ? 11 TYR A O 1 S ?
+ATOM 571 O O . ASP A 1 76 ? 19.486 16.480 55.936 1.00 16.75 ? ? ? ? ? ? 76 ASP A O 1 S ?
+#
