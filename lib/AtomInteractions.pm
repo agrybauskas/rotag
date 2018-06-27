@@ -157,11 +157,10 @@ sub h_bond
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $h_epsilon, $connections, $hybridizations ) = (
+    my ( $r, $h_epsilon, $atom_site ) = (
         $parameters->{'r'},
         $parameters->{'h_epsilon'},
-        $parameters->{'connections'},
-        $parameters->{'hybridizations'},
+        $parameters->{'atom_site'}
     );
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
@@ -193,11 +192,11 @@ sub h_bond
 
     my $h_bond_energy_sum = 0;
 
-    # Determines hybridization for each atom.
-    my ( $atom_i_hybridization, $atom_j_hybridization ) = (
-        $hybridizations->{$atom_i->{'id'}}{'hybridization'},
-        $hybridizations->{$atom_j->{'id'}}{'hybridization'}
-    );
+    my $atom_i_hybridization = $atom_site->{$atom_i->{'id'}}{'hybridization'};
+    my $atom_j_hybridization = $atom_site->{$atom_j->{'id'}}{'hybridization'};
+
+    my $atom_i_connections = $atom_site->{$atom_i->{'id'}}{'connections'};
+    my $atom_j_connections = $atom_site->{$atom_j->{'id'}}{'connections'};
 
     # Checks for missing hydrogens for each atom. If any missing hydrogen is
     # detected, that means clear positions of hydrogens were not predicted,
