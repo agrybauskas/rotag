@@ -12,6 +12,7 @@ our @EXPORT_OK = qw( hard_sphere
                      composite );
 
 use List::Util qw( any max );
+use Math::Trig;
 
 use AtomProperties qw( %ATOMS
                        %HYDROGEN_NAMES );
@@ -22,7 +23,7 @@ use ConnectAtoms qw( connect_atoms
                      is_connected
                      is_second_neighbour );
 use PDBxParser qw( filter );
-use LinearAlgebra qw( pi );
+# use LinearAlgebra qw( pi );
 use Measure qw( bond_angle );
 
 # --------------------------- Potential functions ----------------------------- #
@@ -166,17 +167,29 @@ sub h_bond
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # MoleculeProperties.
+    # TODO: read about the situations when there are hydrogen atom in the
+    # middle of two hydrogen acceptors.
     my @h_bond_heavy_atoms = ( 'N', 'O', 'F' );
+    my @atom_i_hydrogen_names =
+        defined $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
+                               {$atom_i->{'type_symbol'}} ?
+                $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
+                               {$atom_i->{'type_symbol'}} : ();
+    my @atom_j_hydrogen_names =
+        defined $HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
+                               {$atom_j->{'type_symbol'}} ?
+                $HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
+                               {$atom_j->{'type_symbol'}} : ();
+
+    # Exits early if there are no hydrogen bond donor-acceptor combinations.
     if( ! ( ( any { $atom_i->{'type_symbol'} eq $_ } @h_bond_heavy_atoms )
-         && ( any { $atom_j->{'type_symbol'} eq $_ } @h_bond_heavy_atoms ) ) ) {
+         && ( any { $atom_j->{'type_symbol'} eq $_ } @h_bond_heavy_atoms ) )
+     || ! ( @atom_i_hydrogen_names || @atom_j_hydrogen_names ) ) {
         return 0;
     }
 
     $r //= distance( $atom_i, $atom_j );
     $h_epsilon //= 1.0;
-
-    my $r_i_hydrogen = $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-                     + $ATOMS{'H'}{'vdw_radius'};
 
     # Calculates the angle (theta) between hydrogen acceptor, hydrogen and
     # hydrogen donor. If there is no information on the position of hydrogens
@@ -199,11 +212,9 @@ sub h_bond
 
     my $atom_i_connection_ids = $atom_site->{$atom_i->{'id'}}{'connections'};
     my $atom_j_connection_ids = $atom_site->{$atom_j->{'id'}}{'connections'};
-    my @connection_names_i =
-        map { $atom_site->{"$_"}{'label_atom_id'} } @{ $atom_i_connection_ids };
-    my @connection_names_j =
-        map { $atom_site->{"$_"}{'label_atom_id'} } @{ $atom_j_connection_ids };
 
+    # Because i and j atoms can be both hydrogen donors and acceptors, two
+    # possibilities are explored.
     my @atom_i_hydrogen_ids =
         map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
            @{ $atom_i_connection_ids };
@@ -211,42 +222,81 @@ sub h_bond
         map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
            @{ $atom_j_connection_ids };
 
-    # Checks for missing hydrogens for each atom. If any missing hydrogen is
-    # detected, that means clear positions of hydrogens were not predicted,
-    # because add_hydrogen() was run with $add_only_clear_positions => 1.
-    my $hydrogen_names_i =
-        $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}{$atom_i->{'type_symbol'}};
-    my $hydrogen_names_j =
-        $HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}{$atom_j->{'type_symbol'}};
+    my @atom_i_coord =
+        ( $atom_i->{'Cartn_x'}, $atom_i->{'Cartn_y'}, $atom_i->{'Cartn_z'} );
+    my @atom_j_coord =
+        ( $atom_j->{'Cartn_x'}, $atom_j->{'Cartn_y'}, $atom_j->{'Cartn_z'} );
 
-    my @missing_hydrogens_i;
-    for my $hydrogen_name ( @{ $hydrogen_names_i } ) {
-        if( ! grep { /$hydrogen_name/ } @connection_names_i ) {
-            push( @missing_hydrogens_i, $hydrogen_name );
-        }
-    }
-    my @missing_hydrogens_j;
-    for my $hydrogen_name ( @{ $hydrogen_names_j } ) {
-        if( ! grep { /$hydrogen_name/ } @connection_names_j ) {
-            push( @missing_hydrogens_j, $hydrogen_name );
-        }
-    }
-
-    # Because i and j atoms can be both hydrogen donors and acceptors, two
-    # possibilities are explored.
+    my @h_bonds; # List of hashes are used: ( { 'theta' => <float>,  } )
 
     # i-th atom is hydrogen donor and j-th atom - acceptor.
+    if( @atom_i_hydrogen_ids ) {
+        for my $atom_i_hydrogen_id ( @atom_i_hydrogen_ids ) {
+            my $theta = bond_angle(
+                [ \@atom_i_coord,
+                  [ $atom_site->{$atom_i_hydrogen_id}{'Cartn_x'},
+                    $atom_site->{$atom_i_hydrogen_id}{'Cartn_y'},
+                    $atom_site->{$atom_i_hydrogen_id}{'Cartn_z'} ],
+                  \@atom_j_coord ] );
+            my $r_i_hydrogen =
+                distance( $atom_i, $atom_site->{$atom_i_hydrogen_id} );
+            push( @h_bonds,
+                  { 'theta' => $theta, 'r_i_hydrogen' => $r_i_hydrogen } );
+        }
+    } elsif( @atom_i_hydrogen_names ) { # Hydrogens are generalized here. See
+        my $r_i_hydrogen =              # comments above.
+            $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+          + $ATOMS{'H'}{'vdw_radius'};
+
+        # Determines smallest and most favourable angle which theta will be
+        # calculated from. The smaller alpha angle, the greater theta is.
+        my $alpha;
+        if( $atom_i_hybridization eq 'sp3' ) {
+            $alpha = 109.5 * pi() / 180; # TODO: should consider electron pairs?
+        } elsif( $atom_i_hybridization eq 'sp2' ) {
+            $alpha = 120 * pi() / 180; # TODO: should be hardcoded?
+        } # sp hybridization is absent, because you can determine clear geometry.
+
+        # TODO: check if it is possible to be in this loop if there are hydrogens
+        # connected?
+        my $alpha_delta = 0; # Value that should be substracted from $alpha.
+        for my $atom_i_connection_id ( @{ $atom_i_connection_ids } ) {
+            my $alpha_delta_local =
+                bond_angle(
+                    [ \@atom_i_coord,
+                      \@atom_j_coord,
+                      [ $atom_site->{$atom_i_connection_id}{'Cartn_x'},
+                        $atom_site->{$atom_i_connection_id}{'Cartn_y'},
+                        $atom_site->{$atom_i_connection_id}{'Cartn_z'} ] ] );
+
+            # TODO: check if this statement below is actually true. For now,
+            # it seems like it.
+            if( $alpha_delta_local < $alpha_delta ) {
+                $alpha_delta = $alpha_delta_local;
+            }
+        }
+        $alpha = $alpha - $alpha_delta;
+
+        my $theta = acos(
+            ( $r_i_hydrogen - $r * cos( $alpha ) )
+          / sqrt( $r_i_hydrogen**2 + $r**2 - 2 * $r_i_hydrogen * $r * cos( $alpha ) )
+        );
+
+        push( @h_bonds, { 'theta' => $theta, 'r_i_hydrogen' => $r_i_hydrogen } );
+    }
 
     # j-th atom is hydrogen donor and i-th atom - acceptor.
 
-    # if( ( $theta >= 90 * pi() / 180 ) && ( $theta >= 270 * pi() / 180 ) ) {
-    #     return $h_epsilon
-    #          * ( 5 * ( $r / $r_i_hydrogen )**12
-    #            - 6 * ( $r / $r_i_hydrogen )**10 )
-    #          * cos( $theta );
-    # } else {
-    #     return 0;
-    # }
+    for my $h_bond ( @h_bonds ) {
+        if( ( $h_bond->{'theta'} >= 90 * pi() / 180 )
+         && ( $h_bond->{'theta'} >= 270 * pi() / 180 ) ) {
+            $h_bond_energy_sum =
+                $h_bond_energy_sum
+              + $h_epsilon * ( 5 * ( $r / $h_bond->{'r_i_hydrogen'} )**12
+                             - 6 * ( $r / $h_bond->{'r_i_hydrogen'} )**10 )
+                * cos( $h_bond->{'theta'} );
+        }
+    }
 
     return $h_bond_energy_sum;
 }

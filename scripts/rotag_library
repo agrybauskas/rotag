@@ -126,6 +126,7 @@ $atom_site = {
 };
 
 connect_atoms( $atom_site );
+hybridization( $atom_site );
 
 # Passes atom_site only for reading connection and hybridization values.
 $options{"parameters"}{"atom_site"} = $atom_site;
