@@ -13,7 +13,8 @@ our @EXPORT_OK = qw( hard_sphere
 
 use List::Util qw( any max );
 
-use AtomProperties qw( %ATOMS );
+use AtomProperties qw( %ATOMS
+                       %HYDROGEN_NAMES );
 use ConnectAtoms qw( connect_atoms
                      distance
                      distance_squared
@@ -191,21 +192,50 @@ sub h_bond
     #
     my $h_bond_energy_sum = 0;
 
+    # TODO: the code looks a bit redundant with i and j cases. Maybe could be
+    # refactored.
     my $atom_i_hybridization = $atom_site->{$atom_i->{'id'}}{'hybridization'};
     my $atom_j_hybridization = $atom_site->{$atom_j->{'id'}}{'hybridization'};
 
     my $atom_i_connection_ids = $atom_site->{$atom_i->{'id'}}{'connections'};
     my $atom_j_connection_ids = $atom_site->{$atom_j->{'id'}}{'connections'};
+    my @connection_names_i =
+        map { $atom_site->{"$_"}{'label_atom_id'} } @{ $atom_i_connection_ids };
+    my @connection_names_j =
+        map { $atom_site->{"$_"}{'label_atom_id'} } @{ $atom_j_connection_ids };
+
+    my @atom_i_hydrogen_ids =
+        map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
+           @{ $atom_i_connection_ids };
+    my @atom_j_hydrogen_ids =
+        map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
+           @{ $atom_j_connection_ids };
 
     # Checks for missing hydrogens for each atom. If any missing hydrogen is
     # detected, that means clear positions of hydrogens were not predicted,
     # because add_hydrogen() was run with $add_only_clear_positions => 1.
+    my $hydrogen_names_i =
+        $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}{$atom_i->{'type_symbol'}};
+    my $hydrogen_names_j =
+        $HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}{$atom_j->{'type_symbol'}};
+
+    my @missing_hydrogens_i;
+    for my $hydrogen_name ( @{ $hydrogen_names_i } ) {
+        if( ! grep { /$hydrogen_name/ } @connection_names_i ) {
+            push( @missing_hydrogens_i, $hydrogen_name );
+        }
+    }
+    my @missing_hydrogens_j;
+    for my $hydrogen_name ( @{ $hydrogen_names_j } ) {
+        if( ! grep { /$hydrogen_name/ } @connection_names_j ) {
+            push( @missing_hydrogens_j, $hydrogen_name );
+        }
+    }
 
     # Because i and j atoms can be both hydrogen donors and acceptors, two
     # possibilities are explored.
 
     # i-th atom is hydrogen donor and j-th atom - acceptor.
-
 
     # j-th atom is hydrogen donor and i-th atom - acceptor.
 
