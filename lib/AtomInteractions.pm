@@ -178,8 +178,18 @@ sub h_bond
     my $r_i_hydrogen = $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
                      + $ATOMS{'H'}{'vdw_radius'};
 
-    # Calculates the angle between hydrogen acceptor, donor and the hydrogen
-    # with best possible position for the hydrogen bonding.
+    # Calculates the angle (theta) between hydrogen acceptor, hydrogen and
+    # hydrogen donor. If there is no information on the position of hydrogens
+    # and cannot be determined by hybridization and the quantity of missing
+    # hydrogens, the smallest possible is determined by iterating through
+    # second neighbours of hydrogen donor and using information about
+    # hybridization assign the smallest possible alpha angle.
+    #                                    H
+    #                                   /_\theta
+    #                                  /   \
+    #                                 / alpha
+    #                      (H donor) O_) _ _ O (H acceptor)
+    #
 
     # if( ( $theta >= 90 * pi() / 180 ) && ( $theta >= 270 * pi() / 180 ) ) {
     #     return $h_epsilon
