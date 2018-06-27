@@ -166,8 +166,8 @@ sub h_bond
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # MoleculeProperties.
     my @h_bond_heavy_atoms = ( 'N', 'O', 'F' );
-    if( ( grep { $atom_i->{'type_symbol'} ne $_ } @h_bond_heavy_atoms )
-     && ( grep { $atom_i->{'type_symbol'} ne $_ } @h_bond_heavy_atoms ) ) {
+    if( ! ( ( any { $atom_i->{'type_symbol'} eq $_ } @h_bond_heavy_atoms )
+         && ( any { $atom_j->{'type_symbol'} eq $_ } @h_bond_heavy_atoms ) ) ) {
         return 0;
     }
 
@@ -189,24 +189,17 @@ sub h_bond
     #                                 / alpha
     #                      (H donor) O_) _ _ O (H acceptor)
     #
-
     my $h_bond_energy_sum = 0;
 
     my $atom_i_hybridization = $atom_site->{$atom_i->{'id'}}{'hybridization'};
     my $atom_j_hybridization = $atom_site->{$atom_j->{'id'}}{'hybridization'};
 
-    my $atom_i_connections = $atom_site->{$atom_i->{'id'}}{'connections'};
-    my $atom_j_connections = $atom_site->{$atom_j->{'id'}}{'connections'};
+    my $atom_i_connection_ids = $atom_site->{$atom_i->{'id'}}{'connections'};
+    my $atom_j_connection_ids = $atom_site->{$atom_j->{'id'}}{'connections'};
 
     # Checks for missing hydrogens for each atom. If any missing hydrogen is
     # detected, that means clear positions of hydrogens were not predicted,
     # because add_hydrogen() was run with $add_only_clear_positions => 1.
-
-    # for my $hydrogen_name ( @{ $hydrogen_names } ) {
-    #     if( ! grep { /$hydrogen_name/ } @connection_names ) {
-    #         push( @missing_hydrogens, $hydrogen_name );
-    #     }
-    # }
 
     # Because i and j atoms can be both hydrogen donors and acceptors, two
     # possibilities are explored.
