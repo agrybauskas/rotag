@@ -191,6 +191,32 @@ sub h_bond
     #                      (H donor) O_) _ _ O (H acceptor)
     #
 
+    my $h_bond_energy_sum = 0;
+
+    # Determines hybridization for each atom.
+    my ( $atom_i_hybridization, $atom_j_hybridization ) = (
+        $hybridizations->{$atom_i->{'id'}}{'hybridization'},
+        $hybridizations->{$atom_j->{'id'}}{'hybridization'}
+    );
+
+    # Checks for missing hydrogens for each atom. If any missing hydrogen is
+    # detected, that means clear positions of hydrogens were not predicted,
+    # because add_hydrogen() was run with $add_only_clear_positions => 1.
+
+    # for my $hydrogen_name ( @{ $hydrogen_names } ) {
+    #     if( ! grep { /$hydrogen_name/ } @connection_names ) {
+    #         push( @missing_hydrogens, $hydrogen_name );
+    #     }
+    # }
+
+    # Because i and j atoms can be both hydrogen donors and acceptors, two
+    # possibilities are explored.
+
+    # i-th atom is hydrogen donor and j-th atom - acceptor.
+
+
+    # j-th atom is hydrogen donor and i-th atom - acceptor.
+
     # if( ( $theta >= 90 * pi() / 180 ) && ( $theta >= 270 * pi() / 180 ) ) {
     #     return $h_epsilon
     #          * ( 5 * ( $r / $r_i_hydrogen )**12
@@ -200,7 +226,7 @@ sub h_bond
     #     return 0;
     # }
 
-    return 0;
+    return $h_bond_energy_sum;
 }
 
 sub composite
