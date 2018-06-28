@@ -189,7 +189,7 @@ sub h_bond
     }
 
     $r //= distance( $atom_i, $atom_j );
-    $h_epsilon //= 1.0;
+    $h_epsilon //= 1e-09;
 
     # Calculates the angle (theta) between hydrogen acceptor, hydrogen and
     # hydrogen donor. If there is no information on the position of hydrogens
@@ -209,7 +209,7 @@ sub h_bond
     # possibilities are explored.
     my @h_bonds; # List of hashes are used: ( { 'theta' => <float>,  } )
 
-    for my $atom_pair ( ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) ) {
+    for my $atom_pair ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) {
         my $donor_hybridization =
             $atom_site->{$atom_pair->[0]{'id'}}{'hybridization'};
         my $donor_connection_ids =
@@ -235,21 +235,31 @@ sub h_bond
         if( @donor_hydrogen_ids ) {
             for my $donor_hydrogen_id ( @donor_hydrogen_ids ) {
                 my $theta = bond_angle(
-                    [ \@donor_coord,
+                    [ \@acceptor_coord,
                       [ $atom_site->{$donor_hydrogen_id}{'Cartn_x'},
                         $atom_site->{$donor_hydrogen_id}{'Cartn_y'},
                         $atom_site->{$donor_hydrogen_id}{'Cartn_z'} ],
-                      \@acceptor_coord ] );
-                my $r_i_hydrogen =
+                      \@donor_coord ] );
+                my $r_donor_hydrogen =
                     distance( $atom_pair->[0],
                               $atom_site->{$donor_hydrogen_id} );
                 push( @h_bonds,
-                      { 'theta' => $theta, 'r_i_hydrogen' => $r_i_hydrogen } );
+                      { 'theta' => $theta,
+                        'r_donor_hydrogen' => $r_donor_hydrogen } );
             }
         } elsif( @donor_hydrogen_names ) { # Hydrogens are generalized here. See
+            my @hybridizations = ( 'sp3', 'sp2', 'sp' );
+            my $covalent_radius_idx;
+            for( my $i = 0; $i <= $#hybridizations; $i++ ) {
+                if( $hybridizations[$i] eq $donor_hybridization ) {
+                    $covalent_radius_idx = $i;
+                    last;
+                }
+            }
             my $r_donor_hydrogen =         # comments above.
-                $ATOMS{$atom_pair->[0]{'type_symbol'}}{'vdw_radius'}
-              + $ATOMS{'H'}{'vdw_radius'};
+                $ATOMS{$atom_pair->[0]{'type_symbol'}}
+                      {'covalent_radius'}{'length'}->[$covalent_radius_idx]
+              + $ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
 
             # Determines smallest and most favourable angle which theta will be
             # calculated from. The smaller alpha angle, the greater theta is.
@@ -262,19 +272,21 @@ sub h_bond
 
             # TODO: check if it is possible to be in this loop if there are
             # hydrogens connected?
-            my $alpha_delta = 0; # Value that should be substracted from $alpha.
+            my $alpha_delta;
             for my $donor_connection_id ( @{ $donor_connection_ids } ) {
                 my $alpha_delta_local =
                     bond_angle(
-                        [ \@donor_coord,
-                          \@acceptor_coord,
+                        [ \@acceptor_coord,
                           [ $atom_site->{$donor_connection_id}{'Cartn_x'},
                             $atom_site->{$donor_connection_id}{'Cartn_y'},
-                            $atom_site->{$donor_connection_id}{'Cartn_z'} ] ] );
+                            $atom_site->{$donor_connection_id}{'Cartn_z'} ],
+                          \@donor_coord ] );
 
                 # TODO: check if this statement below is actually true. For now,
                 # it seems like it.
-                if( $alpha_delta_local < $alpha_delta ) {
+                if( ! defined $alpha_delta ) {
+                    $alpha_delta = $alpha_delta_local
+                } elsif( $alpha_delta_local < $alpha_delta ) {
                     $alpha_delta = $alpha_delta_local;
                 }
             }
@@ -296,11 +308,10 @@ sub h_bond
     # Calculates the sum of all hydrogen bonds.
     for my $h_bond ( @h_bonds ) {
         if( ( $h_bond->{'theta'} >= 90 * pi() / 180 )
-         && ( $h_bond->{'theta'} >= 270 * pi() / 180 ) ) {
-            $h_bond_energy_sum =
-                $h_bond_energy_sum
-              + $h_epsilon * ( 5 * ( $r / $h_bond->{'r_i_hydrogen'} )**12
-                             - 6 * ( $r / $h_bond->{'r_i_hydrogen'} )**10 )
+         && ( $h_bond->{'theta'} <= 270 * pi() / 180 ) ) {
+            $h_bond_energy_sum +=
+                $h_epsilon * ( 5 * ( $r / $h_bond->{'r_donor_hydrogen'} )**12
+                             - 6 * ( $r / $h_bond->{'r_donor_hydrogen'} )**10 )
               * cos( $h_bond->{'theta'} );
         }
     }
