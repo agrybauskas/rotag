@@ -171,14 +171,14 @@ sub h_bond
     my @h_bond_heavy_atoms = ( 'N', 'O', 'F' );
     my @atom_i_hydrogen_names =
         defined $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
-                               {$atom_i->{'type_symbol'}} ?
+                               {$atom_i->{'label_atom_id'}} ?
              @{ $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
-                               {$atom_i->{'type_symbol'}} } : ();
+                               {$atom_i->{'label_atom_id'}} } : ();
     my @atom_j_hydrogen_names =
         defined $HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
-                               {$atom_j->{'type_symbol'}} ?
+                               {$atom_j->{'label_atom_id'}} ?
              @{ $HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
-                               {$atom_j->{'type_symbol'}} } : ();
+                               {$atom_j->{'label_atom_id'}} } : ();
 
     # Exits early if there are no hydrogen bond donor-acceptor combinations.
     if( ! ( ( any { $atom_i->{'type_symbol'} eq $_ } @h_bond_heavy_atoms )
