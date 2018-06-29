@@ -98,6 +98,15 @@ $options{"energy_cutoff_atom"} = 0.4 unless $options{"energy_cutoff_atom"};
 $options{"energy_cutoff_residue"} = 1.0 unless $options{"energy_cutoff_residue"};
 $options{"threads"} = 1 unless $options{"threads"};
 
+my $parameters = $options{"parameters"};
+delete $options{"parameters"};
+foreach ( split( ';', $parameters ) ) {
+    my ( $parameter, $value ) = split( ' ', $_ );
+    if( defined $parameter && defined $value ) {
+        $options{"parameters"}{$parameter} = $value;
+    }
+}
+
 # ----------------------------------- Main ------------------------------------ #
 
 # Reads file path, stdin and "-" operator.
