@@ -139,10 +139,9 @@ sub coulomb
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $coulomb_epsilon ) =
-        ( $parameters->{'r'}, $parameters->{'c_epsilon'} );
+    my ( $r, $coulomb_k ) = ( $parameters->{'r'}, $parameters->{'c_k'} );
 
-    $coulomb_epsilon //= 0.1;
+    $coulomb_k //= 1.0;
     $r //= distance( $atom_i, $atom_j );
 
     # Extracts partial charges.
@@ -151,8 +150,8 @@ sub coulomb
     my $partial_charge_j =
         $ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
 
-    return ( $partial_charge_i * $partial_charge_j ) /
-           ( 4 * $coulomb_epsilon * pi() * $r );
+    return $coulomb_k * ( $partial_charge_i * $partial_charge_j / $r**2 );
+
 }
 
 sub h_bond
@@ -328,20 +327,13 @@ sub composite
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $sigma, $lj_epsilon, $coulomb_epsilon,
-         $h_bond_epsilon, $cutoff_start, $cutoff_end ) = (
+    my ( $r, $sigma, $cutoff_start, $cutoff_end ) = (
         $parameters->{'r'},
         $parameters->{'sigma'},
-        $parameters->{'lj_epsilon'},
-        $parameters->{'c_epsilon'},
-        $parameters->{'h_epsilon'},
         $parameters->{'cutoff_start'}, # * VdW distance.
         $parameters->{'cutoff_end'}, #   * VdW distance.
     );
 
-    $lj_epsilon //= 1.0;
-    $coulomb_epsilon //= 0.1;
-    $h_bond_epsilon //= 1.0;
     $cutoff_start //= 2.5;
     $cutoff_end //= 5.0;
 
