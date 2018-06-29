@@ -151,7 +151,6 @@ sub coulomb
         $ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
 
     return $coulomb_k * ( $partial_charge_i * $partial_charge_j / $r**2 );
-
 }
 
 sub h_bond
@@ -188,7 +187,7 @@ sub h_bond
     }
 
     $r //= distance( $atom_i, $atom_j );
-    $h_epsilon //= 2.5e+05;
+    $h_epsilon //= -2.5e+05;
 
     # Calculates the angle (theta) between hydrogen acceptor, hydrogen and
     # hydrogen donor. If there is no information on the position of hydrogens
@@ -311,8 +310,8 @@ sub h_bond
     # Calculates the sum of all hydrogen bonds.
     # TODO: check if the range was chosen correctly.
     for my $h_bond ( @h_bonds ) {
-        if( ( $h_bond->{'theta'} >= -90 * pi() / 180 )
-         && ( $h_bond->{'theta'} <=  90 * pi() / 180 ) ) {
+        if( ( $h_bond->{'theta'} >=   90 * pi() / 180 )
+         && ( $h_bond->{'theta'} <=  270 * pi() / 180 ) ) {
             $h_bond_energy_sum +=
                 $h_epsilon * ( 5 * ( $h_bond->{'r_donor_hydrogen'} / $r )**12
                              - 6 * ( $h_bond->{'r_donor_hydrogen'} / $r )**10 )
