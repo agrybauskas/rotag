@@ -418,7 +418,7 @@ sub generate_library
                         push( @next_allowed_energies, @{ $block_result->[1] } );
                     }
 
-                    if( scalar( @allowed_angles ) > 0 ) {
+                    if( scalar( @next_allowed_angles ) > 0 ) {
                         @allowed_angles = @next_allowed_angles;
                         @allowed_energies = @next_allowed_energies;
                     } else {
