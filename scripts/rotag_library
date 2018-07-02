@@ -121,22 +121,6 @@ if( $@ ) {
                     'message' => $@ } );
 }
 
-# TODO: adding hydrogens to selected_atom_site should be more computationally
-# favourable. However, should be very careful not to add unnecessary hydrogens.
-my %hydrogen_site =
-    %{ add_hydrogens( $atom_site, { 'add_only_clear_positions' => 1 } ) };
-
-$atom_site = {
-    %{ $atom_site },
-    %{ add_hydrogens( $atom_site, { 'add_only_clear_positions' => 1 } ) }
-};
-
-connect_atoms( $atom_site );
-hybridization( $atom_site );
-
-# Passes atom_site only for reading connection and hybridization values.
-$options{"parameters"}{"atom_site"} = $atom_site;
-
 my $selected_atom_site =
     filter( { "atom_site" => $atom_site,
               "include" => { "[local]_selection_state" => [ "T", "S" ] } } );

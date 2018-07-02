@@ -128,6 +128,13 @@ sub generate_pseudo
                   'cartn_y' => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
                   'cartn_z' => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
                   'auth_seq_id' => $atom_site{$atom_id}{'auth_seq_id'} } );
+            # Adds atom id that pseudo atoms was made of.
+            $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
+            # Adds hybridization and connection data from origin atom.
+            $pseudo_atom_site{$last_atom_id}{'hybridization'} =
+                $atom_site{$atom_id}{'hybridization'};
+            $pseudo_atom_site{$last_atom_id}{'connections'} =
+                $atom_site{$atom_id}{'connections'};
             # Adds information about used dihedral angle values and names.
             $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
             $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
@@ -136,8 +143,6 @@ sub generate_pseudo
                   @angle_names };
             # Adds additional pseudo-atom flag for future filtering.
             $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
-            # Adds atom id that pseudo atoms was made of.
-            $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
         }
     }
 
@@ -245,7 +250,17 @@ sub generate_library
     $potential_function = \&hard_sphere   if $interactions eq 'hard_sphere';
     $potential_function = \&soft_sphere   if $interactions eq 'soft_sphere';
     $potential_function = \&leonard_jones if $interactions eq 'leonard_jones';
-    $potential_function = \&composite      if $interactions eq 'composite';
+    $potential_function = \&composite     if $interactions eq 'composite';
+
+    if( $interactions eq 'composite' ) {
+        my %atom_site_with_hydrogens =
+            ( %atom_site,
+              %{ add_hydrogens( \%atom_site,
+                                { 'add_only_clear_positions' => 1 } ) } );
+        connect_atoms( \%atom_site_with_hydrogens );
+        hybridization( \%atom_site_with_hydrogens );
+        $parameters->{'atom_site'} = \%atom_site_with_hydrogens;
+    }
 
     # Creates the grid box that has edge length of sum of all bonds of the
     # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
@@ -264,8 +279,8 @@ sub generate_library
     my %target_cell_idxs;
     for my $cell_idx ( keys %{ $grid_box } ) {
         for my $atom_id ( @{ $grid_box->{"$cell_idx"} } ) {
-            my $residue_id = $atom_site->{$atom_id}{'label_seq_id'};
-            my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+            my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
+            my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
             if( $atom_name eq 'CA'
              && any { $residue_id eq $_ } @{ $residue_ids } ) {
                 push( @{ $target_cell_idxs{$cell_idx} }, $residue_id );
