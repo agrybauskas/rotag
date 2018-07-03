@@ -19,8 +19,8 @@ use AtomInteractions qw( hard_sphere
                          soft_sphere
                          leonard_jones
                          coulomb
-                         hbond
-                         combined );
+                         h_bond
+                         composite );
 
 #*rotag_energy
 #*    calculates potential energy of selected atoms.
