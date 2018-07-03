@@ -11,14 +11,24 @@ our @EXPORT_OK = qw( %ATOMS
 # ----------------------------- Atom properties ------------------------------- #
 
 our %ATOMS = (
-    '.' => { # Placeholder atom, point in space.
+    '.' => { # Point in space.
              'covalent_radius' => {
-                                    'length'    => [ 1 ],
-                                    'error'     => [ 1 ]
+                                    'length'    => [ 0 ],
+                                    'error'     => [ 0 ]
                                   },
              'lone_pairs' => 0,
-             'vdw_radius' => 1,
-             'valence' => 1,
+             'vdw_radius' => 0,
+             'valence' => 0,
+             'partial_charge' => 0
+           },
+    'X' => { # Dummy atom.
+             'covalent_radius' => {
+                                    'length'    => [ 1, 0.5, 0.25 ],
+                                    'error'     => [ 0.05, 0.05, 0.05 ]
+                                  },
+             'lone_pairs' => 0,
+             'vdw_radius' => 0,
+             'valence' => 0,
              'partial_charge' => 0
            },
     'H' => {
@@ -269,7 +279,7 @@ sub sort_atom_names
     # This priority is achieved by assinging first, second and third priorities
     # to numbers. Then iteratively is sorted by priorities.
     my %atom_type_priority =
-        ( 'H' => 1, 'C' => 2, 'N' => 3, 'O' => 4, 'P' => 5, 'S' => 6 );
+        ( 'X' => 1, 'H' => 2, 'C' => 3, 'N' => 4, 'O' => 5, 'P' => 6, 'S' => 7 );
     my %greek_letter_priority =
         ( 'H' => 1, 'Z' => 2, 'E' => 3, 'D' => 4, 'G' => 5, 'B' => 6,
           'A' => 7,  '' => 8 );

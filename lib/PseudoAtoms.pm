@@ -318,7 +318,8 @@ sub generate_library
                                    'label_atom_id' => [ 'N', 'CA', 'C', 'O',
                                                         'OXT', 'CB', 'H', 'H2',
                                                         'HA2', 'HA3', 'HB1',
-                                                        'HB2', 'HB3', 'HXT'
+                                                        'HB2', 'HB3', 'HXT',
+                                                        'XA', 'XA2'
                                                       ] } } ) };
 
             # Goes through each atom in side chain and calculates interaction
