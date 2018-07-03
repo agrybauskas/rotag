@@ -318,8 +318,7 @@ sub generate_library
                                    'label_atom_id' => [ 'N', 'CA', 'C', 'O',
                                                         'OXT', 'CB', 'H', 'H2',
                                                         'HA2', 'HA3', 'HB1',
-                                                        'HB2', 'HB3', 'HXT',
-                                                        'XA', 'XA2'
+                                                        'HB2', 'HB3', 'HXT'
                                                       ] } } ) };
 
             # Goes through each atom in side chain and calculates interaction
@@ -500,8 +499,8 @@ sub _check_angles
         my $pseudo_origin_id =
             $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
 
-        my $potential_energy;
-        my $potential_sum;
+        my $potential_energy = 0; # TODO: look if here should be zeros.
+        my $potential_sum = 0;
         foreach my $interaction_id ( keys %{ $interaction_site } ) {
             if( ( ! is_neighbour( $atom_site,
                                   $pseudo_origin_id,
