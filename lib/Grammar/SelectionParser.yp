@@ -90,9 +90,16 @@ exp
                              'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
                              'data' => [ 'label_asym_id' ],
                              'is_list' => 1 } ) } );
+            my @entity =
+                uniq(
+                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
+                             'data' => [ 'label_entity_id' ],
+                             'is_list' => 1 } ) } );
             return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
                              'include' => { 'label_seq_id' => \@residue_ids,
-                                            'label_asym_id' => \@chains },
+                                            'label_asym_id' => \@chains,
+                                            'label_entity_id' => \@entity },
                              'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
                              'is_list' => 1 } );
         }
