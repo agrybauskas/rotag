@@ -12,7 +12,7 @@
 %left ','
 %left '-'
 %left 'around' 'rand'
-%right 'byresid' 'mainchain' 'sidechain'
+%right 'byres' 'mainchain' 'sidechain'
 %left '!'
 %left '|' '&'
 
@@ -76,7 +76,7 @@ exp
                              'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
                              'is_list' => 1 } );
         }
-    | 'byresid' exp
+    | 'byres' exp
         {
             my @residue_ids =
                 uniq(
@@ -269,8 +269,8 @@ sub lexer
             return ( 'mainchain', $1 );
         } elsif(s/^(sidechain)//) {
             return ( 'sidechain', $1 );
-        } elsif(s/^(byresid)//) {
-            return ( 'byresid', $1 );
+        } elsif(s/^(byres)//) {
+            return ( 'byres', $1 );
         } elsif(s/^(resname)//) {
             return ( 'resname', $1 );
         } elsif(s/^(atomid)//) {
