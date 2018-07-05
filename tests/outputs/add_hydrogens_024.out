@@ -10,32 +10,18 @@ _atom_site.label_comp_id
 _atom_site.label_asym_id
 _atom_site.label_entity_id
 _atom_site.label_seq_id
-_atom_site.pdbx_PDB_ins_code
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-_atom_site.occupancy
-_atom_site.B_iso_or_equiv
-_atom_site.Cartn_x_esd
-_atom_site.Cartn_y_esd
-_atom_site.Cartn_z_esd
-_atom_site.occupancy_esd
-_atom_site.B_iso_or_equiv_esd
-_atom_site.pdbx_formal_charge
-_atom_site.auth_seq_id
-_atom_site.auth_comp_id
-_atom_site.auth_asym_id
-_atom_site.auth_atom_id
-_atom_site.pdbx_PDB_model_num
-ATOM 1408 N N . ASP A 1 219 ? 33.629 1.247 41.706 1.00 52.74 ? ? ? ? ? ? 264 ASP A N 1
-ATOM 1409 C CA . ASP A 1 219 ? 34.297 2.104 42.669 1.00 49.78 ? ? ? ? ? ? 264 ASP A CA 1
-ATOM 1410 C C . ASP A 1 219 ? 34.468 1.397 44.005 1.00 46.70 ? ? ? ? ? ? 264 ASP A C 1
-ATOM 1411 O O . ASP A 1 219 ? 35.468 1.582 44.696 1.00 53.39 ? ? ? ? ? ? 264 ASP A O 1
-ATOM 1412 C CB . ASP A 1 219 ? 33.528 3.419 42.840 1.00 67.28 ? ? ? ? ? ? 264 ASP A CB 1
-ATOM 1413 C CG . ASP A 1 219 ? 34.379 4.518 43.459 1.00 85.88 ? ? ? ? ? ? 264 ASP A CG 1
-ATOM 1414 O OD1 . ASP A 1 219 ? 35.358 4.940 42.808 1.00 97.60 ? ? ? ? ? ? 264 ASP A OD1 1
-ATOM 1415 O OD2 . ASP A 1 219 ? 34.073 4.971 44.584 1.00 87.33 ? ? ? ? ? ? 264 ASP A OD2 1
-ATOM 1416 H HA 1 ASP A 1 219 ? 35.271 2.333 42.290 ? ? ? ? ? ? ? ? 264 ASP A HA 1
-ATOM 1417 H HB2 1 ASP A 1 219 ? 32.687 3.247 43.479 ? ? ? ? ? ? ? ? 264 ASP A HB2 1
-ATOM 1418 H HB3 1 ASP A 1 219 ? 33.197 3.753 41.879 ? ? ? ? ? ? ? ? 264 ASP A HB3 1
+ATOM 1408 N N . ASP A 1 219 33.629 1.247 41.706
+ATOM 1409 C CA . ASP A 1 219 34.297 2.104 42.669
+ATOM 1410 C C . ASP A 1 219 34.468 1.397 44.005
+ATOM 1411 O O . ASP A 1 219 35.468 1.582 44.696
+ATOM 1412 C CB . ASP A 1 219 33.528 3.419 42.840
+ATOM 1413 C CG . ASP A 1 219 34.379 4.518 43.459
+ATOM 1414 O OD1 . ASP A 1 219 35.358 4.940 42.808
+ATOM 1415 O OD2 . ASP A 1 219 34.073 4.971 44.584
+ATOM 1416 H HA 1 ASP A 1 219 35.271 2.333 42.290
+ATOM 1417 H HB2 1 ASP A 1 219 32.687 3.247 43.479
+ATOM 1418 H HB3 1 ASP A 1 219 33.197 3.753 41.879
 #

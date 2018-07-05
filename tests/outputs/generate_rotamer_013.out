@@ -10,33 +10,18 @@ _atom_site.label_comp_id
 _atom_site.label_asym_id
 _atom_site.label_entity_id
 _atom_site.label_seq_id
-_atom_site.pdbx_PDB_ins_code
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-_atom_site.occupancy
-_atom_site.B_iso_or_equiv
-_atom_site.Cartn_x_esd
-_atom_site.Cartn_y_esd
-_atom_site.Cartn_z_esd
-_atom_site.occupancy_esd
-_atom_site.B_iso_or_equiv_esd
-_atom_site.pdbx_formal_charge
-_atom_site.auth_seq_id
-_atom_site.auth_comp_id
-_atom_site.auth_asym_id
-_atom_site.auth_atom_id
-_atom_site.pdbx_PDB_model_num
-
-ATOM 3847  N  N  .  MET  A  1  523  ?  2.774  -42.358  35.000  1.00  28.06  ?  ?  ?  ?  ?  ?  568  MET  A  N  1 
-ATOM 3848  C  CA  .  MET  A  1  523  ?  1.615  -42.528  34.128  1.00  26.72  ?  ?  ?  ?  ?  ?  568  MET  A  CA  1 
-ATOM 3849  C  C  .  MET  A  1  523  ?  1.728  -41.622  32.926  1.00  29.82  ?  ?  ?  ?  ?  ?  568  MET  A  C  1 
-ATOM 3850  O  O  .  MET  A  1  523  ?  1.367  -42.016  31.816  1.00  26.64  ?  ?  ?  ?  ?  ?  568  MET  A  O  1 
-ATOM 3851  C  CB  .  MET  A  1  523  ?  0.290  -42.247  34.888  1.00  23.50  ?  ?  ?  ?  ?  ?  568  MET  A  CB  1 
-ATOM 3852  C  CG  .  MET  A  1  523  ?  0.047  -43.286  35.998  1.00  29.14  ?  ?  ?  ?  ?  ?  568  MET  A  CG  1 
-ATOM 3853  S  SD  .  MET  A  1  523  ?  0.109  -45.023  35.430  1.00  41.94  ?  ?  ?  ?  ?  ?  568  MET  A  SD  1 
-ATOM 3854  C  CE  .  MET  A  1  523  ?  -1.117  -44.972  34.121  1.00  42.02  ?  ?  ?  ?  ?  ?  568  MET  A  CE  1 
-ATOM 3855  C  CG  1  MET  A  1  523  ?  0.554  -41.865  36.356  ?  ?  ?  ?  ?  ?  ?  ?  568  MET  A  CG  1 
-ATOM 3856  S  SD  1  MET  A  1  523  ?  -0.956  -41.516  37.326  ?  ?  ?  ?  ?  ?  ?  ?  568  MET  A  SD  1 
-ATOM 3857  C  CE  1  MET  A  1  523  ?  -2.209  -41.785  36.070  ?  ?  ?  ?  ?  ?  ?  ?  568  MET  A  CE  1 
+ATOM 3847 N N . MET A 1 523 2.774 -42.358 35.000
+ATOM 3848 C CA . MET A 1 523 1.615 -42.528 34.128
+ATOM 3849 C C . MET A 1 523 1.728 -41.622 32.926
+ATOM 3850 O O . MET A 1 523 1.367 -42.016 31.816
+ATOM 3851 C CB . MET A 1 523 0.290 -42.247 34.888
+ATOM 3852 C CG . MET A 1 523 0.047 -43.286 35.998
+ATOM 3853 S SD . MET A 1 523 0.109 -45.023 35.430
+ATOM 3854 C CE . MET A 1 523 -1.117 -44.972 34.121
+ATOM 3855 C CG 1 MET A 1 523 0.554 -41.865 36.356
+ATOM 3856 S SD 1 MET A 1 523 -0.956 -41.516 37.326
+ATOM 3857 C CE 1 MET A 1 523 -2.209 -41.785 36.070
 #

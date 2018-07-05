@@ -10,80 +10,65 @@ _atom_site.label_comp_id
 _atom_site.label_asym_id
 _atom_site.label_entity_id
 _atom_site.label_seq_id
-_atom_site.pdbx_PDB_ins_code
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-_atom_site.occupancy
-_atom_site.B_iso_or_equiv
-_atom_site.Cartn_x_esd
-_atom_site.Cartn_y_esd
-_atom_site.Cartn_z_esd
-_atom_site.occupancy_esd
-_atom_site.B_iso_or_equiv_esd
-_atom_site.pdbx_formal_charge
-_atom_site.auth_seq_id
-_atom_site.auth_comp_id
-_atom_site.auth_asym_id
-_atom_site.auth_atom_id
-_atom_site.pdbx_PDB_model_num
-
-ATOM 60  C  CA  .  ASP  A  1  12  ?  11.897  1.891  78.225  1.00  35.70  ?  ?  ?  ?  ?  ?  57  ASP  A  CA  1
-ATOM 207  C  CA  .  ASP  A  1  29  ?  -2.830  -10.382  60.560  1.00  63.43  ?  ?  ?  ?  ?  ?  74  ASP  A  CA  1
-ATOM 558  C  CA  .  ASP  A  1  73  ?  4.823  1.910  51.276  1.00  57.15  ?  ?  ?  ?  ?  ?  118  ASP  A  CA  1
-ATOM 608  C  CA  .  ASP  A  1  79  ?  11.997  7.829  55.381  1.00  54.47  ?  ?  ?  ?  ?  ?  124  ASP  A  CA  1
-ATOM 1409  C  CA  .  ASP  A  1  219  ?  34.297  2.104  42.669  1.00  49.78  ?  ?  ?  ?  ?  ?  264  ASP  A  CA  1
-ATOM 1543  C  CA  .  ASP  A  1  237  ?  55.557  -2.802  44.002  1.00  99.65  ?  ?  ?  ?  ?  ?  282  ASP  A  CA  1
-ATOM 1664  C  CA  .  ASP  A  1  252  ?  39.545  -16.747  56.095  1.00  50.19  ?  ?  ?  ?  ?  ?  297  ASP  A  CA  1
-ATOM 1802  C  CA  .  ASP  A  1  270  ?  37.979  -5.144  34.908  1.00  58.11  ?  ?  ?  ?  ?  ?  315  ASP  A  CA  1
-ATOM 1815  C  CA  .  ASP  A  1  272  ?  42.807  -7.455  34.050  1.00  55.14  ?  ?  ?  ?  ?  ?  317  ASP  A  CA  1
-ATOM 1922  C  CA  .  ASP  A  1  284  ?  54.446  -18.680  32.790  1.00  61.46  ?  ?  ?  ?  ?  ?  329  ASP  A  CA  1
-ATOM 1948  C  CA  .  ASP  A  1  287  ?  56.730  -19.520  41.964  1.00  55.87  ?  ?  ?  ?  ?  ?  332  ASP  A  CA  1
-ATOM 2058  C  CA  .  ASP  A  1  300  ?  42.260  -27.794  52.856  1.00  38.84  ?  ?  ?  ?  ?  ?  345  ASP  A  CA  1
-ATOM 2301  C  CA  .  ASP  A  1  329  ?  51.288  -33.848  37.189  1.00  35.76  ?  ?  ?  ?  ?  ?  374  ASP  A  CA  1
-ATOM 2377  C  CA  .  ASP  A  1  338  ?  37.560  -36.709  48.715  1.00  34.20  ?  ?  ?  ?  ?  ?  383  ASP  A  CA  1
-ATOM 2519  C  CA  .  ASP  A  1  356  ?  42.959  -30.947  28.940  1.00  36.64  ?  ?  ?  ?  ?  ?  401  ASP  A  CA  1
-ATOM 2568  C  CA  .  ASP  A  1  362  ?  43.037  -40.548  30.901  1.00  33.78  ?  ?  ?  ?  ?  ?  407  ASP  A  CA  1
-ATOM 2679  C  CA  .  ASP  A  1  377  ?  29.256  -37.491  43.546  1.00  41.85  ?  ?  ?  ?  ?  ?  422  ASP  A  CA  1
-ATOM 2816  C  CA  .  ASP  A  1  395  ?  34.647  -49.044  27.199  1.00  43.30  ?  ?  ?  ?  ?  ?  440  ASP  A  CA  1
-ATOM 2824  C  CA  .  ASP  A  1  396  ?  36.831  -48.621  30.267  1.00  36.67  ?  ?  ?  ?  ?  ?  441  ASP  A  CA  1
-ATOM 2950  C  CA  .  ASP  A  1  411  ?  23.427  -64.871  40.381  1.00  72.67  ?  ?  ?  ?  ?  ?  456  ASP  A  CA  1
-ATOM 3103  C  CA  .  ASP  A  1  432  ?  7.254  -41.402  58.510  1.00  105.01  ?  ?  ?  ?  ?  ?  477  ASP  A  CA  1
-ATOM 3108  C  CA  .  ASP  A  1  433  ?  10.738  -41.657  57.028  1.00  86.70  ?  ?  ?  ?  ?  ?  478  ASP  A  CA  1
-ATOM 3266  C  CA  .  ASP  A  1  451  ?  21.898  -42.079  30.320  1.00  38.74  ?  ?  ?  ?  ?  ?  496  ASP  A  CA  1
-ATOM 3286  C  CA  .  ASP  A  1  453  ?  24.744  -46.460  27.876  1.00  33.88  ?  ?  ?  ?  ?  ?  498  ASP  A  CA  1
-ATOM 3294  C  CA  .  ASP  A  1  454  ?  21.836  -48.735  26.926  1.00  36.68  ?  ?  ?  ?  ?  ?  499  ASP  A  CA  1
-ATOM 3361  C  CA  .  ASP  A  1  462  ?  16.055  -56.355  34.339  1.00  36.75  ?  ?  ?  ?  ?  ?  507  ASP  A  CA  1
-ATOM 3628  C  CA  .  ASP  A  1  495  ?  12.724  -53.384  23.523  1.00  43.02  ?  ?  ?  ?  ?  ?  540  ASP  A  CA  1
-ATOM 3856  C  CA  .  ASP  A  1  524  ?  2.472  -39.511  31.997  1.00  29.26  ?  ?  ?  ?  ?  ?  569  ASP  A  CA  1
-ATOM 4307  C  CA  .  ASP  A  1  575  ?  -10.053  -38.567  17.059  1.00  36.18  ?  ?  ?  ?  ?  ?  620  ASP  A  CA  1
-ATOM 4503  C  CA  .  ASP  B  1  12  ?  -24.998  -10.410  4.237  1.00  95.18  ?  ?  ?  ?  ?  ?  57  ASP  B  CA  1
-ATOM 4646  C  CA  .  ASP  B  1  29  ?  -15.491  -0.078  26.500  1.00  80.10  ?  ?  ?  ?  ?  ?  74  ASP  B  CA  1
-ATOM 4997  C  CA  .  ASP  B  1  73  ?  -4.469  -12.674  23.549  1.00  82.97  ?  ?  ?  ?  ?  ?  118  ASP  B  CA  1
-ATOM 5047  C  CA  .  ASP  B  1  79  ?  -4.350  -18.023  15.010  1.00  71.21  ?  ?  ?  ?  ?  ?  124  ASP  B  CA  1
-ATOM 5769  C  CA  .  ASP  B  1  219  ?  17.769  -11.294  2.166  1.00  72.27  ?  ?  ?  ?  ?  ?  264  ASP  B  CA  1
-ATOM 5907  C  CA  .  ASP  B  1  237  ?  27.473  -4.578  -15.966  1.00  96.80  ?  ?  ?  ?  ?  ?  282  ASP  B  CA  1
-ATOM 6034  C  CA  .  ASP  B  1  252  ?  7.669  7.820  -7.928  1.00  47.89  ?  ?  ?  ?  ?  ?  297  ASP  B  CA  1
-ATOM 6168  C  CA  .  ASP  B  1  270  ?  26.440  -3.492  3.014  1.00  90.05  ?  ?  ?  ?  ?  ?  315  ASP  B  CA  1
-ATOM 6181  C  CA  .  ASP  B  1  272  ?  29.453  -0.612  -0.630  1.00  89.65  ?  ?  ?  ?  ?  ?  317  ASP  B  CA  1
-ATOM 6288  C  CA  .  ASP  B  1  284  ?  34.724  11.974  -10.355  1.00  85.90  ?  ?  ?  ?  ?  ?  329  ASP  B  CA  1
-ATOM 6314  C  CA  .  ASP  B  1  287  ?  27.693  12.567  -16.557  1.00  56.87  ?  ?  ?  ?  ?  ?  332  ASP  B  CA  1
-ATOM 6421  C  CA  .  ASP  B  1  300  ?  10.673  18.353  -8.194  1.00  41.05  ?  ?  ?  ?  ?  ?  345  ASP  B  CA  1
-ATOM 6664  C  CA  .  ASP  B  1  329  ?  28.043  26.714  -8.129  1.00  57.87  ?  ?  ?  ?  ?  ?  374  ASP  B  CA  1
-ATOM 6740  C  CA  .  ASP  B  1  338  ?  10.847  27.034  -1.618  1.00  56.26  ?  ?  ?  ?  ?  ?  383  ASP  B  CA  1
-ATOM 6882  C  CA  .  ASP  B  1  356  ?  31.276  23.517  2.800  1.00  64.49  ?  ?  ?  ?  ?  ?  401  ASP  B  CA  1
-ATOM 6931  C  CA  .  ASP  B  1  362  ?  28.346  32.814  2.681  1.00  56.69  ?  ?  ?  ?  ?  ?  407  ASP  B  CA  1
-ATOM 7042  C  CA  .  ASP  B  1  377  ?  11.179  27.429  8.327  1.00  54.45  ?  ?  ?  ?  ?  ?  422  ASP  B  CA  1
-ATOM 7179  C  CA  .  ASP  B  1  395  ?  26.598  40.516  12.369  1.00  90.37  ?  ?  ?  ?  ?  ?  440  ASP  B  CA  1
-ATOM 7187  C  CA  .  ASP  B  1  396  ?  25.320  40.157  8.801  1.00  102.01  ?  ?  ?  ?  ?  ?  441  ASP  B  CA  1
-ATOM 7313  C  CA  .  ASP  B  1  411  ?  9.467  54.811  16.236  1.00  123.39  ?  ?  ?  ?  ?  ?  456  ASP  B  CA  1
-ATOM 7469  C  CA  .  ASP  B  1  432  ?  -11.671  30.632  21.600  1.00  145.43  ?  ?  ?  ?  ?  ?  477  ASP  B  CA  1
-ATOM 7477  C  CA  .  ASP  B  1  433  ?  -10.379  29.716  18.136  1.00  133.12  ?  ?  ?  ?  ?  ?  478  ASP  B  CA  1
-ATOM 7632  C  CA  .  ASP  B  1  451  ?  18.728  32.493  21.619  1.00  75.49  ?  ?  ?  ?  ?  ?  496  ASP  B  CA  1
-ATOM 7652  C  CA  .  ASP  B  1  453  ?  21.790  37.017  20.419  1.00  67.94  ?  ?  ?  ?  ?  ?  498  ASP  B  CA  1
-ATOM 7660  C  CA  .  ASP  B  1  454  ?  20.941  39.062  23.501  1.00  66.51  ?  ?  ?  ?  ?  ?  499  ASP  B  CA  1
-ATOM 7727  C  CA  .  ASP  B  1  462  ?  11.393  46.009  25.075  1.00  58.99  ?  ?  ?  ?  ?  ?  507  ASP  B  CA  1
-ATOM 7994  C  CA  .  ASP  B  1  495  ?  19.519  43.295  33.241  1.00  62.59  ?  ?  ?  ?  ?  ?  540  ASP  B  CA  1
-ATOM 8222  C  CA  .  ASP  B  1  524  ?  7.298  28.910  38.415  1.00  61.44  ?  ?  ?  ?  ?  ?  569  ASP  B  CA  1
-ATOM 8673  C  CA  .  ASP  B  1  575  ?  13.773  29.619  56.783  1.00  41.19  ?  ?  ?  ?  ?  ?  620  ASP  B  CA  1
+ATOM 60 C CA . ASP A 1 12 11.897 1.891 78.225
+ATOM 207 C CA . ASP A 1 29 -2.830 -10.382 60.560
+ATOM 558 C CA . ASP A 1 73 4.823 1.910 51.276
+ATOM 608 C CA . ASP A 1 79 11.997 7.829 55.381
+ATOM 1409 C CA . ASP A 1 219 34.297 2.104 42.669
+ATOM 1543 C CA . ASP A 1 237 55.557 -2.802 44.002
+ATOM 1664 C CA . ASP A 1 252 39.545 -16.747 56.095
+ATOM 1802 C CA . ASP A 1 270 37.979 -5.144 34.908
+ATOM 1815 C CA . ASP A 1 272 42.807 -7.455 34.050
+ATOM 1922 C CA . ASP A 1 284 54.446 -18.680 32.790
+ATOM 1948 C CA . ASP A 1 287 56.730 -19.520 41.964
+ATOM 2058 C CA . ASP A 1 300 42.260 -27.794 52.856
+ATOM 2301 C CA . ASP A 1 329 51.288 -33.848 37.189
+ATOM 2377 C CA . ASP A 1 338 37.560 -36.709 48.715
+ATOM 2519 C CA . ASP A 1 356 42.959 -30.947 28.940
+ATOM 2568 C CA . ASP A 1 362 43.037 -40.548 30.901
+ATOM 2679 C CA . ASP A 1 377 29.256 -37.491 43.546
+ATOM 2816 C CA . ASP A 1 395 34.647 -49.044 27.199
+ATOM 2824 C CA . ASP A 1 396 36.831 -48.621 30.267
+ATOM 2950 C CA . ASP A 1 411 23.427 -64.871 40.381
+ATOM 3103 C CA . ASP A 1 432 7.254 -41.402 58.510
+ATOM 3108 C CA . ASP A 1 433 10.738 -41.657 57.028
+ATOM 3266 C CA . ASP A 1 451 21.898 -42.079 30.320
+ATOM 3286 C CA . ASP A 1 453 24.744 -46.460 27.876
+ATOM 3294 C CA . ASP A 1 454 21.836 -48.735 26.926
+ATOM 3361 C CA . ASP A 1 462 16.055 -56.355 34.339
+ATOM 3628 C CA . ASP A 1 495 12.724 -53.384 23.523
+ATOM 3856 C CA . ASP A 1 524 2.472 -39.511 31.997
+ATOM 4307 C CA . ASP A 1 575 -10.053 -38.567 17.059
+ATOM 4503 C CA . ASP B 1 12 -24.998 -10.410 4.237
+ATOM 4646 C CA . ASP B 1 29 -15.491 -0.078 26.500
+ATOM 4997 C CA . ASP B 1 73 -4.469 -12.674 23.549
+ATOM 5047 C CA . ASP B 1 79 -4.350 -18.023 15.010
+ATOM 5769 C CA . ASP B 1 219 17.769 -11.294 2.166
+ATOM 5907 C CA . ASP B 1 237 27.473 -4.578 -15.966
+ATOM 6034 C CA . ASP B 1 252 7.669 7.820 -7.928
+ATOM 6168 C CA . ASP B 1 270 26.440 -3.492 3.014
+ATOM 6181 C CA . ASP B 1 272 29.453 -0.612 -0.630
+ATOM 6288 C CA . ASP B 1 284 34.724 11.974 -10.355
+ATOM 6314 C CA . ASP B 1 287 27.693 12.567 -16.557
+ATOM 6421 C CA . ASP B 1 300 10.673 18.353 -8.194
+ATOM 6664 C CA . ASP B 1 329 28.043 26.714 -8.129
+ATOM 6740 C CA . ASP B 1 338 10.847 27.034 -1.618
+ATOM 6882 C CA . ASP B 1 356 31.276 23.517 2.800
+ATOM 6931 C CA . ASP B 1 362 28.346 32.814 2.681
+ATOM 7042 C CA . ASP B 1 377 11.179 27.429 8.327
+ATOM 7179 C CA . ASP B 1 395 26.598 40.516 12.369
+ATOM 7187 C CA . ASP B 1 396 25.320 40.157 8.801
+ATOM 7313 C CA . ASP B 1 411 9.467 54.811 16.236
+ATOM 7469 C CA . ASP B 1 432 -11.671 30.632 21.600
+ATOM 7477 C CA . ASP B 1 433 -10.379 29.716 18.136
+ATOM 7632 C CA . ASP B 1 451 18.728 32.493 21.619
+ATOM 7652 C CA . ASP B 1 453 21.790 37.017 20.419
+ATOM 7660 C CA . ASP B 1 454 20.941 39.062 23.501
+ATOM 7727 C CA . ASP B 1 462 11.393 46.009 25.075
+ATOM 7994 C CA . ASP B 1 495 19.519 43.295 33.241
+ATOM 8222 C CA . ASP B 1 524 7.298 28.910 38.415
+ATOM 8673 C CA . ASP B 1 575 13.773 29.619 56.783
 #

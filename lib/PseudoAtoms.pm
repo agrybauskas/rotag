@@ -127,7 +127,7 @@ sub generate_pseudo
                   'cartn_x' => sprintf( "%.3f", $transf_atom_coord->[0][0] ),
                   'cartn_y' => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
                   'cartn_z' => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
-                  'auth_seq_id' => $atom_site{$atom_id}{'auth_seq_id'} } );
+                } );
             # Adds atom id that pseudo atoms was made of.
             $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
             # Adds hybridization and connection data from origin atom.
@@ -621,7 +621,6 @@ sub add_hydrogens
                       sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[1][0] ),
                   'cartn_z' =>
                       sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[2][0] ),
-                  'auth_seq_id' => $atom_site->{$atom_id}{'auth_seq_id'}
                 } );
             # Adds additional pseudo-atom flag for future filtering.
             $hydrogen_site{$last_atom_id}{'is_pseudo_atom'} = 1;

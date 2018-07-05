@@ -10,54 +10,39 @@ _atom_site.label_comp_id
 _atom_site.label_asym_id
 _atom_site.label_entity_id
 _atom_site.label_seq_id
-_atom_site.pdbx_PDB_ins_code
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-_atom_site.occupancy
-_atom_site.B_iso_or_equiv
-_atom_site.Cartn_x_esd
-_atom_site.Cartn_y_esd
-_atom_site.Cartn_z_esd
-_atom_site.occupancy_esd
-_atom_site.B_iso_or_equiv_esd
-_atom_site.pdbx_formal_charge
-_atom_site.auth_seq_id
-_atom_site.auth_comp_id
-_atom_site.auth_asym_id
-_atom_site.auth_atom_id
-_atom_site.pdbx_PDB_model_num
-
-ATOM 8481  N  N  .  ILE  B  1  555  ?  -4.932  22.577  40.493  1.00  84.27  ?  ?  ?  ?  ?  ?  600  ILE  B  N  1 
-ATOM 8482  C  CA  .  ILE  B  1  555  ?  -3.875  21.585  40.348  1.00  84.09  ?  ?  ?  ?  ?  ?  600  ILE  B  CA  1 
-ATOM 8483  C  C  .  ILE  B  1  555  ?  -2.599  22.316  39.939  1.00  85.68  ?  ?  ?  ?  ?  ?  600  ILE  B  C  1 
-ATOM 8484  O  O  .  ILE  B  1  555  ?  -1.509  21.981  40.397  1.00  87.49  ?  ?  ?  ?  ?  ?  600  ILE  B  O  1 
-ATOM 8485  C  CB  .  ILE  B  1  555  ?  -4.236  20.467  39.318  1.00  83.17  ?  ?  ?  ?  ?  ?  600  ILE  B  CB  1 
-ATOM 8486  C  CG1  .  ILE  B  1  555  ?  -3.100  19.447  39.192  1.00  86.83  ?  ?  ?  ?  ?  ?  600  ILE  B  CG1  1 
-ATOM 8487  C  CG2  .  ILE  B  1  555  ?  -4.600  21.045  37.950  1.00  80.02  ?  ?  ?  ?  ?  ?  600  ILE  B  CG2  1 
-ATOM 8488  C  CD1  .  ILE  B  1  555  ?  -2.857  18.608  40.444  1.00  87.19  ?  ?  ?  ?  ?  ?  600  ILE  B  CD1  1 
-ATOM 8489  H  H  .  ILE  B  1  555  .  -4.512  23.399  40.928  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8490  H  H2  .  ILE  B  1  555  .  -5.652  22.161  41.084  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8491  H  HA  .  ILE  B  1  555  .  -3.724  21.102  41.291  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8492  H  HB  .  ILE  B  1  555  .  -5.100  19.958  39.691  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8493  H  HG12  .  ILE  B  1  555  .  -2.194  19.974  38.979  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8494  H  HG13  .  ILE  B  1  555  .  -3.337  18.773  38.396  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8495  H  HG21  .  ILE  B  1  555  .  -3.710  21.180  37.371  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8496  H  HG22  .  ILE  B  1  555  .  -5.087  21.989  38.079  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8497  H  HG23  .  ILE  B  1  555  .  -5.257  20.371  37.441  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8498  H  HD11  .  ILE  B  1  555  .  -3.790  18.412  40.929  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8499  H  HD12  .  ILE  B  1  555  .  -2.214  19.141  41.112  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8500  H  HD13  .  ILE  B  1  555  .  -2.397  17.682  40.170  .  .  .  .  .  .  .  .  .  .  .  .  . 
-ATOM 8501  C  CG1  1  ILE  B  1  555  ?  -5.625  20.701  38.716  ?  ?  ?  ?  ?  ?  ?  ?  600  ILE  B  CG1  1 
-ATOM 8502  C  CG2  1  ILE  B  1  555  ?  -4.140  19.070  39.932  ?  ?  ?  ?  ?  ?  ?  ?  600  ILE  B  CG2  1 
-ATOM 8503  C  CD1  1  ILE  B  1  555  ?  -6.061  19.652  37.696  ?  ?  ?  ?  ?  ?  ?  ?  600  ILE  B  CD1  1 
-ATOM 8504  H  HB  1  ILE  B  1  555  ?  -3.518  20.520  38.527  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HB  1 
-ATOM 8505  H  HG12  1  ILE  B  1  555  ?  -5.624  21.649  38.220  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HG12  1 
-ATOM 8506  H  HG13  1  ILE  B  1  555  ?  -6.343  20.694  39.509  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HG13  1 
-ATOM 8507  H  HG21  1  ILE  B  1  555  ?  -4.394  18.337  39.195  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HG21  1 
-ATOM 8508  H  HG22  1  ILE  B  1  555  ?  -4.817  18.995  40.757  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HG22  1 
-ATOM 8509  H  HG23  1  ILE  B  1  555  ?  -3.140  18.899  40.274  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HG23  1 
-ATOM 8510  H  HD11  1  ILE  B  1  555  ?  -7.036  19.894  37.330  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HD11  1 
-ATOM 8511  H  HD12  1  ILE  B  1  555  ?  -6.083  18.689  38.160  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HD12  1 
-ATOM 8512  H  HD13  1  ILE  B  1  555  ?  -5.369  19.638  36.880  ?  ?  ?  ?  ?  ?  ?  ?  .  ILE  B  HD13  1 
+ATOM 8481 N N . ILE B 1 555 -4.932 22.577 40.493
+ATOM 8482 C CA . ILE B 1 555 -3.875 21.585 40.348
+ATOM 8483 C C . ILE B 1 555 -2.599 22.316 39.939
+ATOM 8484 O O . ILE B 1 555 -1.509 21.981 40.397
+ATOM 8485 C CB . ILE B 1 555 -4.236 20.467 39.318
+ATOM 8486 C CG1 . ILE B 1 555 -3.100 19.447 39.192
+ATOM 8487 C CG2 . ILE B 1 555 -4.600 21.045 37.950
+ATOM 8488 C CD1 . ILE B 1 555 -2.857 18.608 40.444
+ATOM 8489 H H . ILE B 1 555 -4.512 23.399 40.928
+ATOM 8490 H H2 . ILE B 1 555 -5.652 22.161 41.084
+ATOM 8491 H HA . ILE B 1 555 -3.724 21.102 41.291
+ATOM 8492 H HB . ILE B 1 555 -5.100 19.958 39.691
+ATOM 8493 H HG12 . ILE B 1 555 -2.194 19.974 38.979
+ATOM 8494 H HG13 . ILE B 1 555 -3.337 18.773 38.396
+ATOM 8495 H HG21 . ILE B 1 555 -3.710 21.180 37.371
+ATOM 8496 H HG22 . ILE B 1 555 -5.087 21.989 38.079
+ATOM 8497 H HG23 . ILE B 1 555 -5.257 20.371 37.441
+ATOM 8498 H HD11 . ILE B 1 555 -3.790 18.412 40.929
+ATOM 8499 H HD12 . ILE B 1 555 -2.214 19.141 41.112
+ATOM 8500 H HD13 . ILE B 1 555 -2.397 17.682 40.170
+ATOM 8501 C CG1 1 ILE B 1 555 -5.625 20.701 38.716
+ATOM 8502 C CG2 1 ILE B 1 555 -4.140 19.070 39.932
+ATOM 8503 C CD1 1 ILE B 1 555 -6.061 19.652 37.696
+ATOM 8504 H HB 1 ILE B 1 555 -3.518 20.520 38.527
+ATOM 8505 H HG12 1 ILE B 1 555 -5.624 21.649 38.220
+ATOM 8506 H HG13 1 ILE B 1 555 -6.343 20.694 39.509
+ATOM 8507 H HG21 1 ILE B 1 555 -4.394 18.337 39.195
+ATOM 8508 H HG22 1 ILE B 1 555 -4.817 18.995 40.757
+ATOM 8509 H HG23 1 ILE B 1 555 -3.140 18.899 40.274
+ATOM 8510 H HD11 1 ILE B 1 555 -7.036 19.894 37.330
+ATOM 8511 H HD12 1 ILE B 1 555 -6.083 18.689 38.160
+ATOM 8512 H HD13 1 ILE B 1 555 -5.369 19.638 36.880
 #

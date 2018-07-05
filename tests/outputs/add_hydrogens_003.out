@@ -10,37 +10,22 @@ _atom_site.label_comp_id
 _atom_site.label_asym_id
 _atom_site.label_entity_id
 _atom_site.label_seq_id
-_atom_site.pdbx_PDB_ins_code
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-_atom_site.occupancy
-_atom_site.B_iso_or_equiv
-_atom_site.Cartn_x_esd
-_atom_site.Cartn_y_esd
-_atom_site.Cartn_z_esd
-_atom_site.occupancy_esd
-_atom_site.B_iso_or_equiv_esd
-_atom_site.pdbx_formal_charge
-_atom_site.auth_seq_id
-_atom_site.auth_comp_id
-_atom_site.auth_asym_id
-_atom_site.auth_atom_id
-_atom_site.pdbx_PDB_model_num
-
-ATOM 971  N  N  .  ASN  A  1  135  ?  19.336  7.920  44.511  1.00  61.66  ?  ?  ?  ?  ?  ?  180  ASN  A  N  1 
-ATOM 972  C  CA  .  ASN  A  1  135  ?  20.266  8.863  45.114  1.00  64.85  ?  ?  ?  ?  ?  ?  180  ASN  A  CA  1 
-ATOM 973  C  C  .  ASN  A  1  135  ?  20.461  8.617  46.594  1.00  60.41  ?  ?  ?  ?  ?  ?  180  ASN  A  C  1 
-ATOM 974  O  O  .  ASN  A  1  135  ?  21.534  8.883  47.145  1.00  60.99  ?  ?  ?  ?  ?  ?  180  ASN  A  O  1 
-ATOM 975  C  CB  .  ASN  A  1  135  ?  19.797  10.296  44.865  1.00  84.44  ?  ?  ?  ?  ?  ?  180  ASN  A  CB  1 
-ATOM 976  C  CG  .  ASN  A  1  135  ?  19.993  10.719  43.424  1.00  99.22  ?  ?  ?  ?  ?  ?  180  ASN  A  CG  1 
-ATOM 977  O  OD1  .  ASN  A  1  135  ?  21.047  11.237  43.063  1.00  102.47  ?  ?  ?  ?  ?  ?  180  ASN  A  OD1  1 
-ATOM 978  N  ND2  .  ASN  A  1  135  ?  18.987  10.479  42.586  1.00  102.81  ?  ?  ?  ?  ?  ?  180  ASN  A  ND2  1 
-ATOM 979  H  H  1  ASN  A  1  135  ?  18.421  8.370  44.499  ?  ?  ?  ?  ?  ?  ?  ?  180  ASN  A  H  1 
-ATOM 980  H  H2  1  ASN  A  1  135  ?  19.339  7.083  45.094  ?  ?  ?  ?  ?  ?  ?  ?  180  ASN  A  H2  1 
-ATOM 981  H  HA  1  ASN  A  1  135  ?  21.213  8.725  44.636  ?  ?  ?  ?  ?  ?  ?  ?  180  ASN  A  HA  1 
-ATOM 982  H  HB2  1  ASN  A  1  135  ?  20.358  10.959  45.491  ?  ?  ?  ?  ?  ?  ?  ?  180  ASN  A  HB2  1 
-ATOM 983  H  HB3  1  ASN  A  1  135  ?  18.755  10.366  45.099  ?  ?  ?  ?  ?  ?  ?  ?  180  ASN  A  HB3  1 
-ATOM 984  H  HD21  1  ASN  A  1  135  ?  18.222  10.093  42.892  ?  ?  ?  ?  ?  ?  ?  ?  180  ASN  A  HD21  1 
-ATOM 985  H  HD22  1  ASN  A  1  135  ?  19.064  10.701  41.707  ?  ?  ?  ?  ?  ?  ?  ?  180  ASN  A  HD22  1 
+ATOM 971 N N . ASN A 1 135 19.336 7.920 44.511
+ATOM 972 C CA . ASN A 1 135 20.266 8.863 45.114
+ATOM 973 C C . ASN A 1 135 20.461 8.617 46.594
+ATOM 974 O O . ASN A 1 135 21.534 8.883 47.145
+ATOM 975 C CB . ASN A 1 135 19.797 10.296 44.865
+ATOM 976 C CG . ASN A 1 135 19.993 10.719 43.424
+ATOM 977 O OD1 . ASN A 1 135 21.047 11.237 43.063
+ATOM 978 N ND2 . ASN A 1 135 18.987 10.479 42.586
+ATOM 979 H H 1 ASN A 1 135 18.421 8.370 44.499
+ATOM 980 H H2 1 ASN A 1 135 19.339 7.083 45.094
+ATOM 981 H HA 1 ASN A 1 135 21.213 8.725 44.636
+ATOM 982 H HB2 1 ASN A 1 135 20.358 10.959 45.491
+ATOM 983 H HB3 1 ASN A 1 135 18.755 10.366 45.099
+ATOM 984 H HD21 1 ASN A 1 135 18.222 10.093 42.892
+ATOM 985 H HD22 1 ASN A 1 135 19.064 10.701 41.707
 #

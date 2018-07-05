@@ -236,11 +236,6 @@ sub create_pdbx_entry
     my $cartn_x = $args->{'cartn_x'};
     my $cartn_y = $args->{'cartn_y'};
     my $cartn_z = $args->{'cartn_z'};
-    my $auth_seq_id = $args->{'auth_seq_id'};
-    my $auth_comp_id = $label_comp_id;
-    my $auth_asym_id = $label_asym_id;
-    my $auth_atom_id = $label_atom_id;
-    my $pdbx_PDB_model_num = $label_entity_id;
 
     $atom_site->{$atom_id}{'group_PDB'} = 'ATOM';
     $atom_site->{$atom_id}{'id'} = $atom_id;
@@ -254,11 +249,6 @@ sub create_pdbx_entry
     $atom_site->{$atom_id}{'Cartn_x'} = $cartn_x;
     $atom_site->{$atom_id}{'Cartn_y'} = $cartn_y;
     $atom_site->{$atom_id}{'Cartn_z'} = $cartn_z;
-    $atom_site->{$atom_id}{'auth_seq_id'} = $auth_seq_id;
-    $atom_site->{$atom_id}{'auth_comp_id'} = $auth_comp_id;
-    $atom_site->{$atom_id}{'auth_asym_id'} = $auth_asym_id;
-    $atom_site->{$atom_id}{'auth_atom_id'} = $auth_atom_id;
-    $atom_site->{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_PDB_model_num;
 
     return;
 }
@@ -303,23 +293,9 @@ sub to_pdbx
                                'label_asym_id',
                                'label_entity_id',
                                'label_seq_id',
-                               'pdbx_PDB_ins_code',
                                'Cartn_x',
                                'Cartn_y',
-                               'Cartn_z',
-                               'occupancy',
-                               'B_iso_or_equiv',
-                               'Cartn_x_esd',
-                               'Cartn_y_esd',
-                               'Cartn_z_esd',
-                               'occupancy_esd',
-                               'B_iso_or_equiv_esd',
-                               'pdbx_formal_charge',
-                               'auth_seq_id',
-                               'auth_comp_id',
-                               'auth_asym_id',
-                               'auth_atom_id',
-                               'pdbx_PDB_model_num' ];
+                               'Cartn_z' ];
 
         push( @{ $atom_attributes }, @{ $add_atom_attributes } )
             if defined $add_atom_attributes;

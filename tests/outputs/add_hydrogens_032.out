@@ -10,39 +10,25 @@ _atom_site.label_comp_id
 _atom_site.label_asym_id
 _atom_site.label_entity_id
 _atom_site.label_seq_id
-_atom_site.pdbx_PDB_ins_code
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-_atom_site.occupancy
-_atom_site.B_iso_or_equiv
-_atom_site.Cartn_x_esd
-_atom_site.Cartn_y_esd
-_atom_site.Cartn_z_esd
-_atom_site.occupancy_esd
-_atom_site.B_iso_or_equiv_esd
-_atom_site.pdbx_formal_charge
-_atom_site.auth_seq_id
-_atom_site.auth_comp_id
-_atom_site.auth_asym_id
-_atom_site.auth_atom_id
-_atom_site.pdbx_PDB_model_num
-ATOM 8641 N N . LYS B 1 572 ? 7.318 28.972 58.662 1.00 59.59 ? ? ? ? ? ? 617 LYS B N 1
-ATOM 8642 C CA . LYS B 1 572 ? 8.688 29.233 59.109 1.00 56.54 ? ? ? ? ? ? 617 LYS B CA 1
-ATOM 8643 C C . LYS B 1 572 ? 9.372 30.320 58.273 1.00 47.68 ? ? ? ? ? ? 617 LYS B C 1
-ATOM 8644 O O . LYS B 1 572 ? 10.237 30.014 57.450 1.00 47.02 ? ? ? ? ? ? 617 LYS B O 1
-ATOM 8645 C CB . LYS B 1 572 ? 9.502 27.943 59.054 1.00 57.61 ? ? ? ? ? ? 617 LYS B CB 1
-ATOM 8646 C CG . LYS B 1 572 ? 9.222 26.986 60.191 1.00 54.96 ? ? ? ? ? ? 617 LYS B CG 1
-ATOM 8647 C CD . LYS B 1 572 ? 9.975 25.693 59.978 1.00 65.85 ? ? ? ? ? ? 617 LYS B CD 1
-ATOM 8648 C CE . LYS B 1 572 ? 10.073 24.904 61.264 1.00 75.43 ? ? ? ? ? ? 617 LYS B CE 1
-ATOM 8649 N NZ . LYS B 1 572 ? 10.746 25.690 62.333 1.00 81.59 ? ? ? ? ? ? 617 LYS B NZ 1
-ATOM 8650 H HA 1 LYS B 1 572 ? 8.639 29.575 60.122 ? ? ? ? ? ? ? ? 617 LYS B HA 1
-ATOM 8651 H HB2 1 LYS B 1 572 ? 9.270 27.453 58.132 ? ? ? ? ? ? ? ? 617 LYS B HB2 1
-ATOM 8652 H HB3 1 LYS B 1 572 ? 10.537 28.212 59.083 ? ? ? ? ? ? ? ? 617 LYS B HB3 1
-ATOM 8653 H HG2 1 LYS B 1 572 ? 9.536 27.431 61.112 ? ? ? ? ? ? ? ? 617 LYS B HG2 1
-ATOM 8654 H HG3 1 LYS B 1 572 ? 8.172 26.783 60.230 ? ? ? ? ? ? ? ? 617 LYS B HG3 1
-ATOM 8655 H HD2 1 LYS B 1 572 ? 10.963 25.915 59.632 ? ? ? ? ? ? ? ? 617 LYS B HD2 1
-ATOM 8656 H HD3 1 LYS B 1 572 ? 9.460 25.103 59.249 ? ? ? ? ? ? ? ? 617 LYS B HD3 1
-ATOM 8657 H HE2 1 LYS B 1 572 ? 10.638 24.013 61.086 ? ? ? ? ? ? ? ? 617 LYS B HE2 1
-ATOM 8658 H HE3 1 LYS B 1 572 ? 9.088 24.649 61.594 ? ? ? ? ? ? ? ? 617 LYS B HE3 1
+ATOM 8641 N N . LYS B 1 572 7.318 28.972 58.662
+ATOM 8642 C CA . LYS B 1 572 8.688 29.233 59.109
+ATOM 8643 C C . LYS B 1 572 9.372 30.320 58.273
+ATOM 8644 O O . LYS B 1 572 10.237 30.014 57.450
+ATOM 8645 C CB . LYS B 1 572 9.502 27.943 59.054
+ATOM 8646 C CG . LYS B 1 572 9.222 26.986 60.191
+ATOM 8647 C CD . LYS B 1 572 9.975 25.693 59.978
+ATOM 8648 C CE . LYS B 1 572 10.073 24.904 61.264
+ATOM 8649 N NZ . LYS B 1 572 10.746 25.690 62.333
+ATOM 8650 H HA 1 LYS B 1 572 8.639 29.575 60.122
+ATOM 8651 H HB2 1 LYS B 1 572 9.270 27.453 58.132
+ATOM 8652 H HB3 1 LYS B 1 572 10.537 28.212 59.083
+ATOM 8653 H HG2 1 LYS B 1 572 9.536 27.431 61.112
+ATOM 8654 H HG3 1 LYS B 1 572 8.172 26.783 60.230
+ATOM 8655 H HD2 1 LYS B 1 572 10.963 25.915 59.632
+ATOM 8656 H HD3 1 LYS B 1 572 9.460 25.103 59.249
+ATOM 8657 H HE2 1 LYS B 1 572 10.638 24.013 61.086
+ATOM 8658 H HE3 1 LYS B 1 572 9.088 24.649 61.594
 #
