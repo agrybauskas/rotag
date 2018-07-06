@@ -1,0 +1,72 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+#*rotag_split
+#*    splits PDBx into smaller ones according to specified attribute.
+#*
+#*USAGE:
+#*    rotag_split --input input.cif --attribute 'resid' --basename 'output'
+#*
+#*OPTIONS:
+#*    --input <file> | <stdin>
+#*        PDBx file.
+#*    --target  <str>
+#*        command describing the residues that will be marked as target (T).
+#*        Selection keywords (equivalent PDBx category data items in parentheses):
+#*            atomid    - atom id number    (_atom_site.id);
+#*            atomname  - atom name         (_atom_site.label_atom_id);
+#*            atomtype  - atom symbol       (_atom_site.type_symbol);
+#*            resid     - residue id number (_atom_site.label_seq_id);
+#*            resname   - residue name      (_atom_site.label_comp_id);
+#*            chain     - chain name        (_atom_site.label_asym_id);
+#*    --version
+#*        print version.
+
+# # --------------------------------- Options ----------------------------------- #
+
+# my %options;
+
+# my $version = "1.0.0";
+# my $keep_ignored = 0;
+
+# GetOptions(
+#     "input=s" => \$options{"pdbx_file"},
+#     "target=s" => \$options{"target_cl"},
+#     "select=s" => \$options{"select_cl"},
+#     "keep-ignored" => sub { $keep_ignored = 1 },
+#     "random-seed=s" => \$options{"seed"},
+#     "help" => sub { open( my $fh, "<", $0 );
+#                     while( <$fh> ) {
+#                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+#                         $help_message =~ s/^\*$/ /g if $help_message;
+#                         $help_message =~ s/^\*//g if $help_message;
+#                         print( $help_message, "\n" ) if $help_message; }
+#                     close( $fh );
+#                     exit; },
+#     "version" => sub { print $version, "\n";
+#                        exit; } )
+#     or die "Error in command line argument.";
+
+# # Defaults.
+
+# # ----------------------------------- Main ------------------------------------ #
+
+# # Reads file path, stdin and "-" operator.
+# my $atom_site;
+# if( $options{"pdbx_file"} ) {
+#     $atom_site = obtain_atom_site( $options{"pdbx_file"} );
+# } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+#     $atom_site = obtain_atom_site( '-' );
+# } else {
+#     die( "Use command \"rotag_select --help\" in order to see the manual.\n" );
+# }
+
+# # Prints out the PDBx.
+# to_pdbx( { "atom_site" => $atom_site,
+#            $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
+#            "add_atom_attributes" => [ "[local]_selection_state",
+#                                       "[local]_selection_group" ] } );
