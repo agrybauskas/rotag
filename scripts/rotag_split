@@ -32,8 +32,10 @@ use PDBxParser qw( filter
 #*            alt       - disorder          (_atom_site.label_alt_id);
 #*            entity    - entity id         (_atom_site.label_entity_id);
 #*            group     - selection group   (_atom_site.[local]_selection_group).
-#*    --basename
+#*    --basename <str>
 #*        basename of the output file.
+#*    --extension <str> (default: cif)
+#*        extension for the file if basename is present.
 #*    --version
 #*        print version.
 
@@ -47,6 +49,7 @@ GetOptions(
     "input=s" => \$options{"pdbx_file"},
     "by=s" => \$options{"split_by"},
     "basename=s" => \$options{"basename"},
+    "extension=s" => \$options{"extension"},
     "help" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -61,6 +64,7 @@ GetOptions(
 
 # Defaults.
 $options{"split_by"} //= "entity";
+$options{"extension"} //= "cif";
 
 my %attribute_equivalent = (
     'atomid' => 'id', 'atomname' => 'label_atom_id', 'atomtype' => 'type_symbol',
@@ -103,12 +107,18 @@ for my $atom_id ( sort keys %{ $atom_site } ) {
     }
 }
 
+my $split_counter = 1;
 for my $split_group ( sort keys %split_groups ) {
     # Prints out the PDBx.
-    to_pdbx( { "atom_site" =>
-                   filter( { 'atom_site' => $atom_site,
-                             'include' => {'id' => $split_groups{$split_group}}}),
-               "add_atom_attributes" =>
-                   [ "[local]_selection_state",
-                     "[local]_selection_group" ] } );
+    if( $options{'basename'} ) {
+        my $file_name =
+            $options{'basename'} . '-' . $split_counter . $options{'extension'};
+    } else {
+        to_pdbx( { "atom_site" =>
+                       filter( { 'atom_site' => $atom_site,
+                                 'include' => { 'id' => $split_groups{$split_group} } } ),
+                       "add_atom_attributes" =>
+                           [ "[local]_selection_state",
+                             "[local]_selection_group" ] } );
+    }
 }
