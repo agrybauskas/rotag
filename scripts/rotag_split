@@ -5,7 +5,9 @@ use warnings;
 
 use Getopt::Long;
 
-use PDBxParser qw( obtain_atom_site );
+use PDBxParser qw( filter
+                   obtain_atom_site
+                   to_pdbx );
 
 #*rotag_split
 #*    splits PDBx into smaller ones according to the specified attribute or
@@ -60,6 +62,13 @@ GetOptions(
 # Defaults.
 $options{"split_by"} //= "entity";
 
+my %attribute_equivalent = (
+    'atomid' => 'id', 'atomname' => 'label_atom_id', 'atomtype' => 'type_symbol',
+    'resid' =>  'label_seq_id', 'resname' => 'label_comp_id',
+    'chain' => 'label_asym_id', 'alt' => 'label_alt_id',
+    'entity' => 'label_entity_id', 'group' => '[local]_selection_group'
+);
+
 # ----------------------------------- Main ------------------------------------ #
 
 # Reads file path, stdin and "-" operator.
@@ -75,9 +84,31 @@ if( $options{"pdbx_file"} ) {
 # Splits PDBx.
 my @split_by = map { split( " ", $_ ) }
                split( ",", $options{"split_by"} );
+@split_by = map { $attribute_equivalent{$_} } @split_by;
 
-# # Prints out the PDBx.
-# to_pdbx( { "atom_site" => $atom_site,
-#            $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
-#            "add_atom_attributes" => [ "[local]_selection_state",
-#                                       "[local]_selection_group" ] } );
+my %split_groups;
+for my $atom_id ( sort keys %{ $atom_site } ) {
+    # Creates group determining key that is used to sort atoms.
+    my @attribute_values;
+    for my $attribute ( @split_by ) {
+        push( @attribute_values, $atom_site->{$atom_id}{$attribute} );
+    }
+
+    my $group_key = join( ",", @attribute_values );
+
+    if( exists $split_groups{$group_key} ) {
+        push( @{ $split_groups{$group_key} }, $atom_id );
+    } else {
+        $split_groups{$group_key} = [ $atom_id ];
+    }
+}
+
+for my $split_group ( sort keys %split_groups ) {
+    # Prints out the PDBx.
+    to_pdbx( { "atom_site" =>
+                   filter( { 'atom_site' => $atom_site,
+                             'include' => {'id' => $split_groups{$split_group}}}),
+               "add_atom_attributes" =>
+                   [ "[local]_selection_state",
+                     "[local]_selection_group" ] } );
+}
