@@ -1,6 +1,6 @@
 ++ Add new PDBxParser::filter option so, it could return also the order of
    selection.
--- Combined residue id, chain and PDB model num could be unique identifier for
+++ Combined residue id, chain and PDB model num could be unique identifier for
    _[local]_ cif, because residue ids are not unique by themselves.
 -- Decide how to handle dihedral angle calculations on residues without
    rotatable bonds.
