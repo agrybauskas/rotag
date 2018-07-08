@@ -112,13 +112,26 @@ for my $split_group ( sort keys %split_groups ) {
     # Prints out the PDBx.
     if( $options{'basename'} ) {
         my $file_name =
-            $options{'basename'} . '-' . $split_counter . $options{'extension'};
+            $options{'basename'} . '-' . $split_counter . '.' .
+            $options{'extension'};
+        open( FH, '>', $file_name );
+        to_pdbx( { "atom_site" =>
+                       filter( { 'atom_site' => $atom_site,
+                                 'include' =>
+                                     { 'id' => $split_groups{$split_group} } } ),
+                   "add_atom_attributes" =>
+                       [ "[local]_selection_state",
+                         "[local]_selection_group" ],
+                   "fh" => \*FH } );
+        close( FH );
+        $split_counter++;
     } else {
         to_pdbx( { "atom_site" =>
                        filter( { 'atom_site' => $atom_site,
-                                 'include' => { 'id' => $split_groups{$split_group} } } ),
-                       "add_atom_attributes" =>
-                           [ "[local]_selection_state",
-                             "[local]_selection_group" ] } );
+                                 'include' =>
+                                     { 'id' => $split_groups{$split_group} } } ),
+                   "add_atom_attributes" =>
+                       [ "[local]_selection_state",
+                         "[local]_selection_group" ] } );
     }
 }

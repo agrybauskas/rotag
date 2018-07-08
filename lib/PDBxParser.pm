@@ -268,18 +268,20 @@ sub to_pdbx
     my $atom_site = $args->{'atom_site'};
     my $atom_attributes = $args->{'atom_attributes'};
     my $add_atom_attributes = $args->{'add_atom_attributes'};
+    my $fh = $args->{'fh'};
 
     $data_name //= 'testing';
+    $fh //= \*STDOUT;
 
-    print( "data_$data_name\n#\n" );
+    print $fh "data_$data_name\n#\n";
 
     # Prints out pdbx lines if they are present.
     if( defined $pdbx_lines ) {
     for my $category  ( sort { $a cmp $b } keys %{ $pdbx_lines } ) {
     for my $attribute ( sort { $a cmp $b } keys %{ $pdbx_lines->{$category} } ) {
-        printf( "%s.%s %s\n", $category, $attribute,
-                $pdbx_lines->{$category}{$attribute} );
-    } print( "#\n" ); } }
+        printf $fh "%s.%s %s\n", $category, $attribute,
+               $pdbx_lines->{$category}{$attribute};
+    } print $fh "#\n"; } }
 
     # Prints out atom site structure if they are present.
     # TODO: remove empty lines after attribute list.
@@ -300,41 +302,41 @@ sub to_pdbx
         push( @{ $atom_attributes }, @{ $add_atom_attributes } )
             if defined $add_atom_attributes;
 
-        print "loop_\n";
+        print $fh "loop_\n";
 
         for my $attribute ( @{ $atom_attributes } ) {
             $attribute eq $atom_attributes->[$#{ $atom_attributes }] ?
-                print( "_atom_site.$attribute" ):
-                print( "_atom_site.$attribute\n" );
+                print $fh "_atom_site.$attribute":
+                print $fh "_atom_site.$attribute\n";
         }
 
         for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
         for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
             if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
                 if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-                    print( ' ', $atom_site->{$id}{$atom_attributes->[$i]} );
+                    print $fh ' ', $atom_site->{$id}{$atom_attributes->[$i]};
                 } else {
-                    print( ' ?' );
+                    print $fh ' ?';
                 }
 
             } else {
                 if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-                    print( "\n", $atom_site->{$id}{$atom_attributes->[$i]} );
+                    print $fh "\n", $atom_site->{$id}{$atom_attributes->[$i]};
                 } else {
-                    print( "\n" );
+                    print $fh "\n";
                 }
             }
         } }
-        print( "\n#\n" )
+        print $fh "\n#\n";
     }
 
     # Prints out pdbx loops if they are present.
     if( defined $pdbx_loops ) {
         for my $category ( sort keys %{ $pdbx_loops } ) {
-            print( "loop_\n" );
+            print $fh "loop_\n";
 
             foreach( @{ $pdbx_loops->{$category}{'attributes'} } ) {
-                print( "$category.$_\n" )
+                print $fh "$category.$_\n";
             }
             my $attribute_array_length =
                 $#{ $pdbx_loops->{$category}{'attributes'} };
@@ -343,11 +345,11 @@ sub to_pdbx
             for( my $i = 0;
                  $i <= $data_array_length;
                  $i += $attribute_array_length + 1 ){
-                print( join( ' ', @{ $pdbx_loops->{$category}{'data'} }
-                             [$i..$i+$attribute_array_length] ), "\n" );
+                print $fh join( ' ', @{ $pdbx_loops->{$category}{'data'} }
+                                [$i..$i+$attribute_array_length] ), "\n" ;
             }
 
-            print( "#\n" );
+            print $fh "#\n";
         }
     }
 
