@@ -153,7 +153,8 @@ my $rotamer_library =
 my %pdbx_loops; # PDBx loop data structure (see PDBxParser.pm to_pdbx)
 
 $pdbx_loops{"_[local]_rotamer_angle"}{"attributes"} =
-    [ "id", "rotamer_id", "residue_id", "residue_type", "type", "value" ];
+    [ "id", "rotamer_id", "label_seq_id", "label_comp_id", "label_asym_id",
+      "label_entity_id", "label_alt_id", "type", "value" ];
 $pdbx_loops{"_[local]_rotamer_energy"}{"attributes"} =
     [ "id", "rotamer_id", "calculation_method", "value"];
 
@@ -204,7 +205,8 @@ for my $residue_unique_key ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
             my $angle_value = $rotamer->{"angles"}{$angle_name};
             push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
                   $angle_id, $rotamer_id, $residue_id, $residue_name[0],
-                  $angle_name, sprintf( "%.3f", $angle_value ) );
+                  $residue_chain, $residue_entity, $residue_alt, $angle_name,
+                  sprintf( "%.3f", $angle_value ) );
             $angle_id++;
         }
 
