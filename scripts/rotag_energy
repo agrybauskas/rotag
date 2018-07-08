@@ -108,7 +108,7 @@ for my $cell_idx ( keys %{ $grid_box } ) {
 
 # Calculates the sum of pairwise interactions.
 my $potential_function;
-$potential_function = \&combined if $options{"interactions"} eq "composite";
+$potential_function = \&composite if $options{"interactions"} eq "composite";
 $potential_function = \&hard_sphere if $options{"interactions"} eq "hard_sphere";
 $potential_function = \&soft_sphere if $options{"interactions"} eq "soft_sphere";
 $potential_function = \&leonard_jones if $options{"interactions"} eq "leonard_jones";
