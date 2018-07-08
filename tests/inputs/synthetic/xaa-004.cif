@@ -31,7 +31,7 @@ _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
 ATOM 1 C CA  . XAA A 1 18 ? -54.128 -110.543 -6.071 1.00 35.58 ? ? ? ? ? ? 18 XAA A CA  1 T 1
 ATOM 2 C CB  . XAA A 1 18 ? -54.506 -111.705 -5.149 1.00 36.19 ? ? ? ? ? ? 18 XAA A CB  1 T 1
-ATOM 3 O OG  . XAA A 1 18 ? -55.001 -111.179 -3.789 1.00 36.96 ? ? ? ? ? ? 18 XAA A OG  1 T 1
+ATOM 3 O OG  . XAA A 1 18 ? -54.991 -111.226 -3.906 1.00 36.96 ? ? ? ? ? ? 18 XAA A OG  1 T 1
 ATOM 4 X XA  . XAA A 1 18 ? -54.825 -110.501 -6.908 1.00 35.58 ? ? ? ? ? ? 18 XAA A XA  1 T 1
 ATOM 5 X XA2 . XAA A 1 18 ? -53.117 -110.694 -6.448 1.00 35.58 ? ? ? ? ? ? 18 XAA A XA2 1 T 1
 ATOM 6 O O   . XAA A 1 19 ? -55.721 -110.613 -1.930 1.00 35.58 ? ? ? ? ? ? 19 XAA A O   1 S 1
