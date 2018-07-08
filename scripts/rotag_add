@@ -92,8 +92,10 @@ if( $add_rotamer_atoms ) {
     my $attributes = $pdbx_loops->{"_rotamer_angle"}{"attributes"};
     my $data = $pdbx_loops->{"_rotamer_angle"}{"data"};
 
+    # TODO: should add chain, entity and alt attributes to make sure that
+    # unique residue is analysed.
     my ( $resid_attr_pos ) =
-        grep { $attributes->[$_] eq "residue_id" } 0..$#{ $attributes };
+        grep { $attributes->[$_] eq "label_seq_id" } 0..$#{ $attributes };
     my ( $rotid_attr_pos ) =
         grep { $attributes->[$_] eq "rotamer_id" } 0..$#{ $attributes };
     my ( $type_attr_pos ) =
