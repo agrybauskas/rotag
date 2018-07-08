@@ -219,7 +219,7 @@ sub generate_library
 {
     my ( $args ) = @_;
     my $atom_site = $args->{'atom_site'};
-    my $residue_ids = $args->{'residue_ids'};
+    my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $small_angle = $args->{'small_angle'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
@@ -238,9 +238,16 @@ sub generate_library
     # Generates conformational models before checking for clashes/interactions
     # for given residues.
     if( $conf_model eq 'rotation_only' ) {
-        rotation_only( filter( { 'atom_site' => \%atom_site,
-                                 'include' =>
-                                     { 'label_seq_id' => $residue_ids } } ) );
+        for my $residue_unique_key ( @{ $residue_unique_keys } ) {
+            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+                split( ',', $residue_unique_key );
+            rotation_only( filter( { 'atom_site' => \%atom_site,
+                                     'include' =>
+                                     { 'label_seq_id' => [ $residue_id ],
+                                       'label_asym_id' => [ $residue_chain ],
+                                       'label_alt_id' => [ $residue_alt ],
+                                       'label_entity_id' => [ $residue_entity ] } } ) );
+        }
     } else {
         die 'Conformational model was not defined.';
     }
@@ -279,11 +286,16 @@ sub generate_library
     my %target_cell_idxs;
     for my $cell_idx ( keys %{ $grid_box } ) {
         for my $atom_id ( @{ $grid_box->{"$cell_idx"} } ) {
-            my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
             my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
+            my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
+            my $residue_chain = $atom_site{$atom_id}{'label_asym_id'};
+            my $residue_alt = $atom_site{$atom_id}{'label_alt_id'};
+            my $residue_entity = $atom_site{$atom_id}{'label_entity_id'};
+            my $residue_unique_key =
+                "$residue_id,$residue_chain,$residue_entity,$residue_alt";
             if( $atom_name eq 'CA'
-             && any { $residue_id eq $_ } @{ $residue_ids } ) {
-                push( @{ $target_cell_idxs{$cell_idx} }, $residue_id );
+             && any { $residue_unique_key eq $_ } @{ $residue_unique_keys } ) {
+                push( @{ $target_cell_idxs{$cell_idx} }, $residue_unique_key );
             }
         }
     }
@@ -300,10 +312,15 @@ sub generate_library
         if( exists $grid_box->{"$i,$j,$k"} ) {
             push( @neighbour_atom_ids, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
 
-        for my $residue_id ( @{ $target_cell_idxs{$cell_idxs} } ) {
+        for my $residue_unique_key ( @{ $target_cell_idxs{$cell_idxs} } ) {
+            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+                split( ',', $residue_unique_key );
             my $residue_site =
                 filter( { 'atom_site' => \%atom_site,
-                          'include' => { 'label_seq_id' => [ $residue_id ] } } );
+                          'include' => { 'label_seq_id' => [ $residue_id ],
+                                         'label_asym_id' => [ $residue_chain ],
+                                         'label_alt_id' => [ $residue_alt ],
+                                         'label_entity_id' => [ $residue_entity ] } } );
 
             my $rotatable_bonds = rotatable_bonds( $residue_site );
             if( ! %{ $rotatable_bonds } ) { next; }
@@ -458,7 +475,7 @@ sub generate_library
                 my $angles = $allowed_angles[$i];
                 my $energies = $allowed_energies[$i]->[0];
                 if( $energies <= $energy_cutoff_residue ) {
-                    push( @{ $rotamer_library{"$residue_id"} },
+                    push( @{ $rotamer_library{"$residue_unique_key"} },
                           { 'angles' => { map { ( "chi$_" => $angles->[$_] ) }
                                               ( 0..$#{ $angles } ) },
                             'potential' => $interactions,

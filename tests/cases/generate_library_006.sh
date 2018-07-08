@@ -8,10 +8,16 @@ potential="composite"
 energy_cutoff_atom=1.0
 energy_cutoff_residue="Inf"
 residue_id="14"
+residue_chain="A"
+residue_entity="1"
+residue_alt="."
 small_angle="0.5*pi"
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
-                              	            ${conf_model} \
+                                            ${residue_chain} \
+                                            ${residue_entity} \
+                                            ${residue_alt} \
+                                            ${conf_model} \
 	                                    ${small_angle} \
 	                                    ${potential} \
 					    ${energy_cutoff_atom} \

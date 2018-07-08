@@ -7,6 +7,9 @@ use LinearAlgebra qw( pi );
 use PseudoAtoms qw( generate_library );
 
 my ( $residue_id,
+     $residue_chain,
+     $residue_entity,
+     $residue_alt,
      $conf_model,
      $small_angle,
      $potential,
@@ -27,7 +30,8 @@ $small_angle =~ s/pi/pi\(\)/g;
 
 my $rotamer_library =
     generate_library( { "atom_site" => $atom_site,
-                        "residue_ids" => [ $residue_id ],
+                        "residue_unique_keys" =>
+                            [ "$residue_id,$residue_chain,$residue_entity,$residue_alt" ],
                         "small_angle" => eval( $small_angle ),
                         "conf_model" => $conf_model,
                         "interactions"  => $potential,
@@ -36,8 +40,9 @@ my $rotamer_library =
                         "threads" => $threads } );
 
 print( "#residue_id,potential_energy_value,chi0,chi1,chi2,chi3,chi4\n" );
-for my $residue_id ( keys %{ $rotamer_library } ) {
-    for my $rotamer ( @{ $rotamer_library->{$residue_id} } ) {
+for my $residue_unique_key ( keys %{ $rotamer_library } ) {
+    my ( $residue_id ) = split( ",", $residue_unique_key );
+    for my $rotamer ( @{ $rotamer_library->{$residue_unique_key} } ) {
         my @rotamer_entry =
             ( $residue_id,
               sprintf( "%.3f",$rotamer->{"potential_energy_value"} ) );
