@@ -94,6 +94,11 @@ our %ATOMS = (
     );
 
 our %HYDROGEN_NAMES = (
+    'XAA' => { # Dummy side-chain.
+        'CA'  => [ 'HA' ],
+        'CB'  => [ 'HB2', 'HB3' ],
+        'OG'  => [ 'HG' ]
+    },
     'SER' => {
         'N'   => [ 'H', 'H2' ],
         'CA'  => [ 'HA' ],
