@@ -208,10 +208,8 @@ sub h_bond
     my @h_bonds; # List of hashes are used: ( { 'theta' => <float>,  } )
 
     for my $atom_pair ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) {
-        my $donor_hybridization =
-            $atom_site->{$atom_pair->[0]{'id'}}{'hybridization'};
-        my $donor_connection_ids =
-            $atom_site->{$atom_pair->[0]{'id'}}{'connections'};
+        my $donor_hybridization = $atom_pair->[0]{'hybridization'};
+        my $donor_connection_ids = $atom_pair->[0]{'connections'};
         my @donor_hydrogen_ids =
             map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
                @{ $donor_connection_ids };
