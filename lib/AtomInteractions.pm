@@ -217,9 +217,9 @@ sub h_bond
                @{ $donor_connection_ids };
         my @donor_hydrogen_names =
             defined $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-                                   {$atom_pair->[0]{'type_symbol'}} ?
+                                   {$atom_pair->[0]{'label_atom_id'}} ?
                  @{ $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-                                   {$atom_pair->[0]{'type_symbol'}}} : ();
+                                   {$atom_pair->[0]{'label_atom_id'}}} : ();
 
         my @donor_coord =
             ( $atom_pair->[0]{'Cartn_x'},
@@ -279,10 +279,10 @@ sub h_bond
                 my $alpha_delta_local =
                     bond_angle(
                         [ \@acceptor_coord,
+                          \@donor_coord,
                           [ $atom_site->{$donor_connection_id}{'Cartn_x'},
                             $atom_site->{$donor_connection_id}{'Cartn_y'},
-                            $atom_site->{$donor_connection_id}{'Cartn_z'} ],
-                          \@donor_coord ] );
+                            $atom_site->{$donor_connection_id}{'Cartn_z'} ] ] );
 
                 # TODO: check if this statement below is actually true. For now,
                 # it seems like it.
