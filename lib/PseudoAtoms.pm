@@ -219,6 +219,7 @@ sub generate_library
 {
     my ( $args ) = @_;
     my $atom_site = $args->{'atom_site'};
+    my $include_interactions = $args->{'include_interactions'};
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $small_angle = $args->{'small_angle'};
     my $conf_model = $args->{'conf_model'};
@@ -230,6 +231,12 @@ sub generate_library
 
     $energy_cutoff_residue //= "Inf";
     $threads //= 1;
+    $include_interactions //= {
+        'label_atom_id' => [ 'N', 'CA', 'C', 'O',
+                             'OXT', 'CB', 'H', 'H2',
+                             'HA2', 'HA3', 'HB1',
+                             'HB2', 'HB3', 'HXT' ]
+    };
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -327,16 +334,11 @@ sub generate_library
 
             # Because the change of side-chain position might impact the
             # surrounding, iteraction site consists of only main chain atoms.
-            # TODO: decide, if interactions should be controlled by command line.
             my %interaction_site =
                 %{ filter( { 'atom_site' => \%atom_site,
                              'include' =>
                                  { 'id' => \@neighbour_atom_ids,
-                                   'label_atom_id' => [ 'N', 'CA', 'C', 'O',
-                                                        'OXT', 'CB', 'H', 'H2',
-                                                        'HA2', 'HA3', 'HB1',
-                                                        'HB2', 'HB3', 'HXT'
-                                                      ] } } ) };
+                                   %{ $include_interactions } } } ) };
 
             # Goes through each atom in side chain and calculates interaction
             # potential with surrounding atoms. CA and CB are non-movable atoms
