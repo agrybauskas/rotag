@@ -364,11 +364,6 @@ sub generate_library
             my @zero_energies = map { [ 0 ] } @sampled_angles;
             my @allowed_energies = @zero_energies;
 
-            # Atoms that are generated with generate_pseudo are saved if the
-            # maximum energy criteria is satisfied.
-            my @empty_pseudo_atoms = map { [] } @sampled_angles;
-            my @allowed_pseudo_atoms = @empty_pseudo_atoms;
-
             while( scalar( @next_atom_ids ) != 0 ) {
                 my @neighbour_atom_ids;
                 for my $atom_id ( @next_atom_ids ) {
@@ -382,9 +377,6 @@ sub generate_library
                         @allowed_energies =
                             @{ permutation( 2, [], [ \@allowed_energies,
                                                      \@zero_energies ], [] ) };
-                        @allowed_pseudo_atoms =
-                            @{ permutation( 2, [], [ \@allowed_pseudo_atoms,
-                                                     \@empty_pseudo_atoms ], [] ) };
                         # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
                         @allowed_angles =
                             map { [ @{ $_->[0] }, @{ $_->[1] } ] }
@@ -404,13 +396,11 @@ sub generate_library
                     # Starts calculating potential energy.
                     my @next_allowed_angles;
                     my @next_allowed_energies;
-                    my @next_allowed_pseudo_atoms;
 
                     # Splits testable angle and energy lists into blocks/chunks
                     # passes to threads.
                     my @allowed_angle_blocks;
                     my @allowed_energy_blocks;
-                    my @allowed_pseudo_atoms_blocks;
                     my $max_block_size =
                         int( scalar( @allowed_angles ) / $threads );
 
@@ -430,16 +420,12 @@ sub generate_library
                                 [ @allowed_angles[$block_start..$block_end] ] );
                             push( @allowed_energy_blocks,
                                 [ @allowed_energies[$block_start..$block_end ]]);
-                            push( @allowed_pseudo_atoms_blocks,
-                                [ @allowed_pseudo_atoms[$block_start..$block_end ]]);
                         } else {
                             $block_end = $#allowed_angles;
                             push( @allowed_angle_blocks,
                                 [ @allowed_angles[$block_start..$block_end] ] );
                             push( @allowed_energy_blocks,
                                 [ @allowed_energies[$block_start..$block_end ]]);
-                            push( @allowed_pseudo_atoms_blocks,
-                                [ @allowed_pseudo_atoms[$block_start..$block_end ]]);
                         }
                     }
 
@@ -451,7 +437,6 @@ sub generate_library
                                              $atom_id,
                                              $allowed_angle_blocks[$i],
                                              $allowed_energy_blocks[$i],
-                                             $allowed_pseudo_atoms_blocks[$i],
                                              \%interaction_site,
                                              $potential_function,
                                              $energy_cutoff_atom,
@@ -463,13 +448,11 @@ sub generate_library
                         $block_result = $block_result->join();
                         push( @next_allowed_angles, @{ $block_result->[0] } );
                         push( @next_allowed_energies, @{ $block_result->[1] } );
-                        push( @next_allowed_pseudo_atoms, @{ $block_result->[2] } );
                     }
 
                     if( scalar( @next_allowed_angles ) > 0 ) {
                         @allowed_angles = @next_allowed_angles;
                         @allowed_energies = @next_allowed_energies;
-                        @allowed_pseudo_atoms = @next_allowed_pseudo_atoms;
                     } else {
                         die 'No possible rotamer solutions were detected.';
                     }
@@ -491,15 +474,12 @@ sub generate_library
             for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
                 my $angles = $allowed_angles[$i];
                 my $energies = $allowed_energies[$i]->[0];
-                my $side_chain_pseudo_atoms = $allowed_pseudo_atoms[$i];
                 if( $energies <= $energy_cutoff_residue ) {
                     push( @{ $rotamer_library{"$residue_unique_key"} },
                           { 'angles' => { map { ( "chi$_" => $angles->[$_] ) }
                                               ( 0..$#{ $angles } ) },
                             'potential' => $interactions,
-                            'potential_energy_value' => $energies,
-                            'side_chain_pseudo_atoms' =>
-                                $side_chain_pseudo_atoms } );
+                            'potential_energy_value' => $energies } );
                 }
             }
         }
@@ -514,7 +494,6 @@ sub _check_angles
          $atom_id,
          $allowed_angles,
          $allowed_energies,
-         $allowed_pseudo_atoms,
          $interaction_site,
          $potential_function,
          $energy_cutoff_atom,
@@ -522,7 +501,6 @@ sub _check_angles
 
     my @next_allowed_angles;
     my @next_allowed_energies;
-    my @next_allowed_pseudo_atoms;
     for( my $i = 0; $i <= $#{ $allowed_angles }; $i++ ) {
         my $angles = $allowed_angles->[$i];
         my $energies = $allowed_energies->[$i][0];
@@ -566,11 +544,10 @@ sub _check_angles
         if( $potential_energy <= $energy_cutoff_atom ) {
             push( @next_allowed_angles, $angles );
             push( @next_allowed_energies, [ $energies + $potential_sum ] );
-            push( @next_allowed_pseudo_atoms, $pseudo_atom_site->{$pseudo_atom_id} );
         }
     }
 
-    return [ \@next_allowed_angles, \@next_allowed_energies, \@next_allowed_pseudo_atoms ];
+    return [ \@next_allowed_angles, \@next_allowed_energies ];
 }
 
 sub add_hydrogens
