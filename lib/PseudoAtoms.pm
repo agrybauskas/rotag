@@ -24,9 +24,10 @@ use AtomProperties qw( %ATOMS
                        %HYDROGEN_NAMES );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
-                     grid_box
                      is_neighbour
                      is_second_neighbour );
+use Grid qw( grid_box
+             identify_neighbour_cells );
 use LinearAlgebra qw( find_euler_angles
                       mult_matrix_product
                       pi
@@ -307,19 +308,11 @@ sub generate_library
         }
     }
 
-    for my $cell_idxs ( sort { $a cmp $b } keys %target_cell_idxs ) {
-        my @cell_idxs = split( ',', $cell_idxs );
-        my @neighbour_atom_ids; # The array will contain all atoms of the
-                                # neighbouring 26 cells.
+    my $neighbour_cells =
+        identify_neighbour_cells( $grid_box, \%target_cell_idxs );
 
-        # $i represents x, $j - y, $k - z coordinates.
-        for my $i ( ( $cell_idxs[0] - 1..$cell_idxs[0] + 1 ) ) {
-        for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
-        for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
-        if( exists $grid_box->{"$i,$j,$k"} ) {
-            push( @neighbour_atom_ids, @{ $grid_box->{"$i,$j,$k"} } ); } } } }
-
-        for my $residue_unique_key ( @{ $target_cell_idxs{$cell_idxs} } ) {
+    for my $cell ( sort { $a cmp $b } keys %target_cell_idxs ) {
+        for my $residue_unique_key ( @{ $target_cell_idxs{$cell} } ) {
             my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
                 split( ',', $residue_unique_key );
             my $residue_site =
@@ -337,7 +330,7 @@ sub generate_library
             my %interaction_site =
                 %{ filter( { 'atom_site' => \%atom_site,
                              'include' =>
-                                 { 'id' => \@neighbour_atom_ids,
+                                 { 'id' => $neighbour_cells->{$cell},
                                    %{ $include_interactions } } } ) };
 
             # Goes through each atom in side chain and calculates interaction

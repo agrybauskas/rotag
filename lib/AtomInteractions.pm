@@ -19,9 +19,9 @@ use AtomProperties qw( %ATOMS
 use ConnectAtoms qw( connect_atoms
                      distance
                      distance_squared
-                     grid_box
                      is_connected
                      is_second_neighbour );
+use Grid qw( grid_box );
 use PDBxParser qw( filter );
 use LinearAlgebra qw( pi );
 use Measure qw( bond_angle );
