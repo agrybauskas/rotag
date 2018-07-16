@@ -20,3 +20,6 @@
    about transformed next atom. One of the solutions might be to have one more
    rule - calculate when H is present. Another one - make second step
    calculations they might be also necessary for intramolecular clashes.
+-- around_distance(), connect_atoms(), generate_library() and rotag_energy have
+   very similar interation through cells. It should be refactored and the
+   redundant code also should be removed.

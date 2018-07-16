@@ -86,12 +86,18 @@ sub generate_pseudo
         # Calculates current dihedral angles of rotatable bonds. Will be used
         # for reseting dihedral angles to 0 degree angle.
         my $residue_id = $atom_site{"$atom_id"}{'label_seq_id'};
+        my $residue_chain = $atom_site{$atom_id}{'label_asym_id'};
+        my $residue_entity = $atom_site{$atom_id}{'label_entity_id'};
+        my $residue_alt = $atom_site{$atom_id}{'label_alt_id'};
 
         my %angles =
             %{ all_dihedral(
                    filter( { 'atom_site' => \%atom_site,
-                             'include' => { 'label_seq_id' => [ $residue_id ],
-                                            'label_alt_id' => [ '.' ] } } ) ) };
+                             'include' =>
+                                 { 'label_seq_id' => [ $residue_id ],
+                                   'label_asym_id' => [ $residue_chain ],
+                                   'label_entity_id' => [ $residue_entity ],
+                                   'label_alt_id' => [ $residue_alt ] } } ) ) };
 
         # Iterates through combinations of angles and evaluates conformational
         # model.
@@ -297,8 +303,8 @@ sub generate_library
             my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
             my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
             my $residue_chain = $atom_site{$atom_id}{'label_asym_id'};
-            my $residue_alt = $atom_site{$atom_id}{'label_alt_id'};
             my $residue_entity = $atom_site{$atom_id}{'label_entity_id'};
+            my $residue_alt = $atom_site{$atom_id}{'label_alt_id'};
             my $residue_unique_key =
                 "$residue_id,$residue_chain,$residue_entity,$residue_alt";
             if( $atom_name eq 'CA'
