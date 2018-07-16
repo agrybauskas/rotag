@@ -176,10 +176,16 @@ sub generate_rotamer
     my %atom_site = %{ $atom_site };
     my %rotamer_atom_site;
 
-    for my $residue_id ( keys %{ $angle_values } ) {
+    for my $residue_unique_key ( keys %{ $angle_values } ) {
+        my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+            split( ',', $residue_unique_key );
         my $residue_site =
             filter( { 'atom_site' => \%atom_site,
-                      'include' => { 'label_seq_id' => [ $residue_id ] } } );
+                      'include' =>
+                          { 'label_seq_id' => [ $residue_id ],
+                            'label_asym_id' => [ $residue_chain ],
+                            'label_entity_id' => [ $residue_entity ],
+                            'label_alt_id' => [ $residue_alt ] } } );
 
         my $rotatable_bonds = rotatable_bonds( \%atom_site );
 
@@ -189,7 +195,7 @@ sub generate_rotamer
             my %angles;
             for my $angle_name ( keys %{ $rotatable_bonds->{$atom_id} } ) {
                 $angles{$angle_name} =
-                    [ $angle_values->{"$residue_id"}{$angle_name} ];
+                    [ $angle_values->{"$residue_unique_key"}{$angle_name} ];
             }
 
             %rotamer_atom_site =
@@ -259,8 +265,8 @@ sub generate_library
                                      'include' =>
                                      { 'label_seq_id' => [ $residue_id ],
                                        'label_asym_id' => [ $residue_chain ],
-                                       'label_alt_id' => [ $residue_alt ],
-                                       'label_entity_id' => [ $residue_entity ] } } ) );
+                                       'label_entity_id' => [ $residue_entity ],
+                                       'label_alt_id' => [ $residue_alt ] } } ) );
         }
     } else {
         die 'Conformational model was not defined.';
