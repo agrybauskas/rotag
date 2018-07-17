@@ -107,7 +107,9 @@ sub generate_pseudo
         for my $angle_name ( @angle_names ) {
             push( @angle_values,
                   [ map
-                    { $_ - $angles{"$residue_id"}{"$angle_name"} }
+                    { $_ - $angles{"$residue_id,$residue_chain," .
+                                   "$residue_entity,$residue_alt"}
+                                  {"$angle_name"} }
                     @{ $angle_values->{"$angle_name"} } ] );
         }
 
@@ -147,7 +149,8 @@ sub generate_pseudo
             $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
             $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
                 { map { ( $_ => $angle_values{$_}
-                              + $angles{"$residue_id"}{$_} ) }
+                              + $angles{"$residue_id,$residue_chain," .
+                                        "$residue_entity,$residue_alt"}{$_} ) }
                   @angle_names };
             # Adds additional pseudo-atom flag for future filtering.
             $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
