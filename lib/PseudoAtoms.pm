@@ -21,7 +21,8 @@ use AtomInteractions qw( hard_sphere
                          leonard_jones
                          composite );
 use AtomProperties qw( %ATOMS
-                       %HYDROGEN_NAMES );
+                       %HYDROGEN_NAMES
+                       @MAINCHAIN_NAMES );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
@@ -244,12 +245,7 @@ sub generate_library
 
     $energy_cutoff_residue //= "Inf";
     $threads //= 1;
-    $include_interactions //= {
-        'label_atom_id' => [ 'N', 'CA', 'C', 'O',
-                             'OXT', 'CB', 'H', 'H2',
-                             'HA2', 'HA3', 'HB1',
-                             'HB2', 'HB3', 'HXT' ]
-    };
+    $include_interactions //= { 'label_atom_id' => \@MAINCHAIN_NAMES };
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 

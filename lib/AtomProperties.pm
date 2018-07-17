@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( %ATOMS
                      %HYDROGEN_NAMES
+                     @MAINCHAIN_NAMES
                      sort_atom_names );
 
 # ----------------------------- Atom properties ------------------------------- #
@@ -268,6 +269,12 @@ our %HYDROGEN_NAMES = (
         'CG'  => [ 'HG2', 'HG3' ],
         'NE2' => [ 'HE21', 'HE22' ]
     }
+);
+
+# TODO: should include proline atoms.
+our @MAINCHAIN_NAMES = (
+    'N', 'CA', 'C', 'O', 'OXT', 'CB', 'H', 'H2',
+    'HA2', 'HA3', 'HB1', 'HB2', 'HB3', 'HXT'
 );
 
 # -------------------------- Atom related functions --------------------------- #
