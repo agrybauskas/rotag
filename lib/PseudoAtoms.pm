@@ -476,8 +476,26 @@ sub generate_library
                 }
             }
 
-            # TODO: remember to add check on inter-atom clashing inside
-            # side-chain itself.
+            # # Checks for inter-atom interactions and determines if energies
+            # # comply with cutoffs.
+            # # TODO: should be also multi-threaded.
+            # for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
+            #     my %angles =
+            #         map { ( "chi$_" => $allowed_angles[$i]->[$_] ) }
+            #             ( 0..$#{ $allowed_angles[$i] } );
+            #     my $rotamer_site =
+            #         generate_rotamer( $atom_site,
+            #                           { "$residue_unique_key" => \%angles } );
+            #     my @rotamer_atom_ids = sort keys %{ $rotamer_site };
+
+            #     my %rotamer_interaction_site =
+            #         ( %{ $rotamer_site }, %interaction_site );
+
+            #     connect_atoms( \%rotamer_interaction_site );
+
+            #     to_pdbx( { 'atom_site' => \%rotamer_interaction_site } );
+
+            # }
             for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
                 my $angles = $allowed_angles[$i];
                 my $energies = $allowed_energies[$i]->[0];
