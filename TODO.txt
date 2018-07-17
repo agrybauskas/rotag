@@ -23,3 +23,4 @@
 ++ around_distance(), connect_atoms(), generate_library() and rotag_energy have
    very similar interation through cells. It should be refactored and the
    redundant code also should be removed.
+-- Create functions that generate rotamer_energy and rotamer_angle cif loops.

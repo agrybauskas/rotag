@@ -284,7 +284,6 @@ sub to_pdbx
     } print $fh "#\n"; } }
 
     # Prints out atom site structure if they are present.
-    # TODO: remove empty lines after attribute list.
     if( defined $atom_site ) {
         $atom_attributes //= [ 'group_PDB',
                                'id',
