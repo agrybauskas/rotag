@@ -478,50 +478,52 @@ sub generate_library
 
             # Checks for inter-atom interactions and determines if energies
             # comply with cutoffs.
-            # # TODO: should be also multi-threaded.
-            # for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
-            #     my %angles =
-            #         map { ( "chi$_" => $allowed_angles[$i]->[$_] ) }
-            #             ( 0..$#{ $allowed_angles[$i] } );
-            #     my $rotamer_site =
-            #         generate_rotamer( $atom_site,
-            #                           { "$residue_unique_key" => \%angles } );
-            #     my @rotamer_atom_ids = sort keys %{ $rotamer_site };
-
-            #     my %rotamer_interaction_site =
-            #         ( %{ $rotamer_site }, %interaction_site );
-
-            #     connect_atoms( \%rotamer_interaction_site );
-
-            #     my $potential_energy = 0;
-            #     for my $rotamer_atom_id ( @rotamer_atom_ids ) {
-            #         for my $neighbour_atom_id ( sort keys %rotamer_interaction_site){
-            #             if( ( $rotamer_atom_id ne $neighbour_atom_id )
-            #                 && ( ! is_neighbour( \%rotamer_interaction_site,
-            #                                      $rotamer_atom_id,
-            #                                      $neighbour_atom_id ) )
-            #                 && ( ! is_second_neighbour( \%rotamer_interaction_site,
-            #                                             $rotamer_atom_id,
-            #                                             $neighbour_atom_id ) ) ){
-            #                 $potential_energy +=
-            #                     $potential_function->(
-            #                         $rotamer_interaction_site{$rotamer_atom_id},
-            #                         $rotamer_interaction_site{$neighbour_atom_id},
-            #                         $parameters );
-            #             }
-            #         }
-            #     }
-            #     to_pdbx( { 'atom_site' => \%rotamer_interaction_site } );
-            # }
+            # TODO: should be also multi-threaded.
+          ALLOWED_ANGLES:
             for( my $i = 0; $i <= $#allowed_angles; $i++ ) {
-                my $angles = $allowed_angles[$i];
-                my $energies = $allowed_energies[$i]->[0];
-                if( $energies <= $energy_cutoff_residue ) {
+                my %angles =
+                    map { ( "chi$_" => $allowed_angles[$i]->[$_] ) }
+                        ( 0..$#{ $allowed_angles[$i] } );
+                my $rotamer_site =
+                    generate_rotamer( $atom_site,
+                                      { "$residue_unique_key" => \%angles } );
+                my @rotamer_atom_ids = sort keys %{ $rotamer_site };
+
+                my %rotamer_interaction_site =
+                    ( %{ $rotamer_site }, %interaction_site );
+
+                connect_atoms( \%rotamer_interaction_site );
+
+                my $rotamer_energy_sum = 0;
+                for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+                    my $rotamer_atom_energy = 0;
+                    for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ){
+                        if( ( $rotamer_atom_id ne $neighbour_atom_id )
+                            && ( ! is_neighbour( \%rotamer_interaction_site,
+                                                 $rotamer_atom_id,
+                                                 $neighbour_atom_id ) )
+                            && ( ! is_second_neighbour( \%rotamer_interaction_site,
+                                                        $rotamer_atom_id,
+                                                        $neighbour_atom_id ) ) ){
+                            $rotamer_atom_energy +=
+                                $potential_function->(
+                                    $rotamer_interaction_site{$rotamer_atom_id},
+                                    $rotamer_interaction_site{$neighbour_atom_id},
+                                    $parameters );
+
+                            next ALLOWED_ANGLES
+                                if $rotamer_atom_energy > $energy_cutoff_atom;
+
+                            $rotamer_energy_sum += $rotamer_atom_energy;
+                        }
+                    }
+                }
+
+                if( $rotamer_energy_sum <= $energy_cutoff_residue ) {
                     push( @{ $rotamer_library{"$residue_unique_key"} },
-                          { 'angles' => { map { ( "chi$_" => $angles->[$_] ) }
-                                              ( 0..$#{ $angles } ) },
+                          { 'angles' => \%angles,
                             'potential' => $interactions,
-                            'potential_energy_value' => $energies } );
+                            'potential_energy_value' => $rotamer_energy_sum } );
                 }
             }
         }
