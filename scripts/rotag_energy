@@ -126,8 +126,8 @@ my %pdbx_loops;
 my $calculation_id = 1;
 
 $pdbx_loops{"_[local]_energy"}{"attributes"} =
-    [ "id", "atom_id", "residue_id", "chain", "entity", "calculation_method",
-      "value" ];
+    [ "id", "atom_id", "residue_id", "chain", "entity", "alt",
+      "calculation_method", "value" ];
 
 # Calculates the sum of pairwise interactions.
 for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
@@ -135,9 +135,8 @@ for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         my $residue_id = $selected_atom_site->{"$atom_id"}{"label_seq_id"};
         my $chain = $selected_atom_site->{"$atom_id"}{"label_asym_id"};
         my $entity = $selected_atom_site->{"$atom_id"}{"label_entity_id"};
-        # Change neighbour name, because it might be misinterpreted as connected
-        # atoms.
-        my $potential_energy = 0; # TODO: should here be 0 or undef?
+        my $alt = $selected_atom_site->{"$atom_id"}{"label_alt_id"};
+        my $potential_energy = 0;
         for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} } ) {
             # TODO: just in case, check if ignoring second neighbours are valid.
             if( ( $atom_id ne $neighbour_atom_id )
@@ -156,7 +155,7 @@ for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         }
 
         push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
-              $calculation_id, $atom_id, $residue_id, $chain, $entity,
+              $calculation_id, $atom_id, $residue_id, $chain, $entity, $alt,
               $options{"interactions"}, sprintf( "%.3f", $potential_energy ) );
         $calculation_id++;
     }
