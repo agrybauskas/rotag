@@ -165,17 +165,14 @@ for my $pdbx_file ( @ARGV ) {
     # Extracts rotamer angle data that will used to generate atom coordinates if
     # available.
     my $pdbx_loops;
-    if( $options{"pdbx_file"} ) {
+    if( $pdbx_file ) {
         $pdbx_loops =
-            obtain_pdbx_loop( $options{"pdbx_file"}, [ "_rotamer_angle" ] );
-    } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
-        $pdbx_loops =
-            obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
+            obtain_pdbx_loop( $pdbx_file, [ "_rotamer_angle" ] );
     }
 
     # Prints out the PDBx.
     to_pdbx( { "atom_site" => $atom_site,
-               # $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
+               $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
                "add_atom_attributes" => [ "[local]_selection_state",
                                           "[local]_selection_group" ] } );
 }

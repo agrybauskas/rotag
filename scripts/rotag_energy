@@ -25,16 +25,14 @@ use PDBxParser qw( filter
                    to_pdbx );
 use PseudoAtoms qw( add_hydrogens );
 
-#*rotag_energy
+#*rotag_energy [options] file1 [file2, ...]
 #*    calculates potential energy of selected atoms.
 #*
 #*USAGE:
-#*    rotag_energy --input input.cif > output.cif
-#*    rotag_energy --potential hard_sphere --input input.cif > output.cif
+#*    rotag_energy input.cif > output.cif
+#*    rotag_energy -u hard_sphere input.cif > output.cif
 #*
 #*OPTIONS:
-#*    -i, --input <file> | <stdin>
-#*        PDBx file.
 #*    -u, --potential (default: composite | hard_sphere | soft_sphere |
 #*                              leonard_jones | coulomb | h_bond)
 #*        uses potential energy function for determining interactions between
@@ -50,7 +48,6 @@ $options{"interactions"} = "composite";
 my $version = "1.0.0";
 
 GetOptions(
-    "input|i=s" => \$options{"pdbx_file"},
     "potential|p=s" => \$options{"interactions"},
     "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
@@ -66,99 +63,101 @@ GetOptions(
 
 # ----------------------------------- Main ------------------------------------ #
 
-# Reads file path, stdin and "-" operator.
-my $atom_site;
-if( $options{"pdbx_file"} ) {
-    $atom_site = obtain_atom_site( $options{"pdbx_file"} );
-} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
-    $atom_site = obtain_atom_site( '-' );
-} else {
-    die( "Use command \"rotag_energy --help\" in order to see the manual.\n" );
-}
+@ARGV = ( '-' ) unless @ARGV;
 
-# Adds hydrogens for calculations where h_bond might be present.
-my %parameters;
-if( $options{"interactions"} eq 'composite'
- || $options{"interactions"} eq 'h_bond' ) {
-    my %atom_site_with_hydrogens =
-        ( %{ $atom_site },
-          %{ add_hydrogens( $atom_site,
-                            { 'add_only_clear_positions' => 1 } ) } );
-    connect_atoms( \%atom_site_with_hydrogens );
-    hybridization( \%atom_site_with_hydrogens );
-    $parameters{'atom_site'} = \%atom_site_with_hydrogens;
-} else {
-    # TODO: look, how it will behave when pseudo atoms are introduced.
-    connect_atoms( $atom_site );
-}
-
-my $selected_atom_site =
-    filter( { "atom_site" => $atom_site,
-              "include" => { "[local]_selection_state" => [ "T", "S" ] } } );
-my $target_atom_ids =
-    filter( { "atom_site" => $selected_atom_site,
-              "include" => { "[local]_selection_state" => [ "T" ] },
-              "data" => [ "id" ],
-              "is_list" => 1 } );
-
-# TODO: decide the maximum length of cell. It should be corresponding to
-# PseudoAtoms::generate_library() and the cutoff of potential functions.
-my ( $grid_box, $target_cells ) =
-    grid_box( $selected_atom_site,
-                7 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[0]
-              + 2 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[0]
-              + 3 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[1]
-              + 3 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[1]
-              +     $ATOMS{"H"}{"covalent_radius"}{"length"}->[0],
-              $target_atom_ids );
-
-my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
-
-my $potential_function;
-$potential_function = \&composite if $options{"interactions"} eq "composite";
-$potential_function = \&hard_sphere if $options{"interactions"} eq "hard_sphere";
-$potential_function = \&soft_sphere if $options{"interactions"} eq "soft_sphere";
-$potential_function = \&leonard_jones if $options{"interactions"} eq "leonard_jones";
-$potential_function = \&coulomb if $options{"interactions"} eq "coulomb";
-$potential_function = \&h_bond if $options{"interactions"} eq "h_bond";
-
-my %pdbx_loops;
-my $calculation_id = 1;
-
-$pdbx_loops{"_[local]_energy"}{"attributes"} =
-    [ "id", "atom_id", "residue_id", "chain", "entity", "alt",
-      "calculation_method", "value" ];
-
-# Calculates the sum of pairwise interactions.
-for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
-    for my $atom_id ( @{ $target_cells->{$cell} } ) {
-        my $residue_id = $selected_atom_site->{"$atom_id"}{"label_seq_id"};
-        my $chain = $selected_atom_site->{"$atom_id"}{"label_asym_id"};
-        my $entity = $selected_atom_site->{"$atom_id"}{"label_entity_id"};
-        my $alt = $selected_atom_site->{"$atom_id"}{"label_alt_id"};
-        my $potential_energy = 0;
-        for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} } ) {
-            # TODO: just in case, check if ignoring second neighbours are valid.
-            if( ( $atom_id ne $neighbour_atom_id )
-             && ( ! is_neighbour( $selected_atom_site,
-                                  $atom_id,
-                                  $neighbour_atom_id ) )
-             && ( ! is_second_neighbour( $selected_atom_site,
-                                         $atom_id,
-                                         $neighbour_atom_id ) ) ) {
-                $potential_energy +=
-                    $potential_function->(
-                        $selected_atom_site->{$atom_id},
-                        $selected_atom_site->{$neighbour_atom_id},
-                        \%parameters );
-            }
-        }
-
-        push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
-              $calculation_id, $atom_id, $residue_id, $chain, $entity, $alt,
-              $options{"interactions"}, sprintf( "%.3f", $potential_energy ) );
-        $calculation_id++;
+for my $pdbx_file ( @ARGV ) {
+    # Reads file path, stdin and "-" operator.
+    my $atom_site;
+    if( $pdbx_file ) {
+        $atom_site = obtain_atom_site( $pdbx_file );
+    } else {
+        die( "Use command \"rotag_energy --help\" in order to see the manual.\n" );
     }
-}
 
-to_pdbx( { "pdbx_loops" => \%pdbx_loops } );
+    # Adds hydrogens for calculations where h_bond might be present.
+    my %parameters;
+    if( $options{"interactions"} eq 'composite'
+     || $options{"interactions"} eq 'h_bond' ) {
+        my %atom_site_with_hydrogens =
+            ( %{ $atom_site },
+              %{ add_hydrogens( $atom_site,
+                                { 'add_only_clear_positions' => 1 } ) } );
+        connect_atoms( \%atom_site_with_hydrogens );
+        hybridization( \%atom_site_with_hydrogens );
+        $parameters{'atom_site'} = \%atom_site_with_hydrogens;
+    } else {
+        # TODO: look, how it will behave when pseudo atoms are introduced.
+        connect_atoms( $atom_site );
+    }
+
+    my $selected_atom_site =
+        filter( { "atom_site" => $atom_site,
+                  "include" => { "[local]_selection_state" => [ "T", "S" ] } } );
+    my $target_atom_ids =
+        filter( { "atom_site" => $selected_atom_site,
+                  "include" => { "[local]_selection_state" => [ "T" ] },
+                  "data" => [ "id" ],
+                  "is_list" => 1 } );
+
+    # TODO: decide the maximum length of cell. It should be corresponding to
+    # PseudoAtoms::generate_library() and the cutoff of potential functions.
+    my ( $grid_box, $target_cells ) =
+        grid_box( $selected_atom_site,
+                  7 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[0]
+                + 2 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[0]
+                + 3 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[1]
+                + 3 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[1]
+                +     $ATOMS{"H"}{"covalent_radius"}{"length"}->[0],
+                  $target_atom_ids );
+
+    my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
+
+    my $potential_function;
+    $potential_function = \&composite if $options{"interactions"} eq "composite";
+    $potential_function = \&hard_sphere if $options{"interactions"} eq "hard_sphere";
+    $potential_function = \&soft_sphere if $options{"interactions"} eq "soft_sphere";
+    $potential_function = \&leonard_jones if $options{"interactions"} eq "leonard_jones";
+    $potential_function = \&coulomb if $options{"interactions"} eq "coulomb";
+    $potential_function = \&h_bond if $options{"interactions"} eq "h_bond";
+
+    my %pdbx_loops;
+    my $calculation_id = 1;
+
+    $pdbx_loops{"_[local]_energy"}{"attributes"} =
+        [ "id", "atom_id", "residue_id", "chain", "entity", "alt",
+          "calculation_method", "value" ];
+
+    # Calculates the sum of pairwise interactions.
+    for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
+        for my $atom_id ( @{ $target_cells->{$cell} } ) {
+            my $residue_id = $selected_atom_site->{"$atom_id"}{"label_seq_id"};
+            my $chain = $selected_atom_site->{"$atom_id"}{"label_asym_id"};
+            my $entity = $selected_atom_site->{"$atom_id"}{"label_entity_id"};
+            my $alt = $selected_atom_site->{"$atom_id"}{"label_alt_id"};
+            my $potential_energy = 0;
+            for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} } ) {
+                # TODO: just in case, check if ignoring second neighbours are valid.
+                if( ( $atom_id ne $neighbour_atom_id )
+                 && ( ! is_neighbour( $selected_atom_site,
+                                      $atom_id,
+                                      $neighbour_atom_id ) )
+                 && ( ! is_second_neighbour( $selected_atom_site,
+                                             $atom_id,
+                                             $neighbour_atom_id ) ) ) {
+                    $potential_energy +=
+                        $potential_function->(
+                            $selected_atom_site->{$atom_id},
+                            $selected_atom_site->{$neighbour_atom_id},
+                            \%parameters );
+                }
+            }
+
+            push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
+                  $calculation_id, $atom_id, $residue_id, $chain, $entity, $alt,
+                  $options{"interactions"}, sprintf( "%.3f", $potential_energy ) );
+            $calculation_id++;
+        }
+    }
+
+    to_pdbx( { "pdbx_loops" => \%pdbx_loops } );
+}
