@@ -176,11 +176,12 @@ sub all_dihedral
 
     # Collects non-redundant ids of given amino acid residues.
     my @residue_unique_keys =
-        uniq( @{ filter( { 'atom_site' => $atom_site,
-                           'data' => [ 'label_seq_id',
-                                       'label_asym_id',
-                                       'label_entity_id',
-                                       'label_alt_id' ] } ) } );
+        @{ filter( { 'atom_site' => $atom_site,
+                     'data' => [ 'label_seq_id',
+                                 'label_asym_id',
+                                 'label_entity_id',
+                                 'label_alt_id' ] } ) };
+    @residue_unique_keys = uniq map { join( ',', @{$_} ) } @residue_unique_keys;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -191,10 +192,8 @@ sub all_dihedral
     my %residue_angles;
 
     for my $residue_unique_key ( @residue_unique_keys ) {
-        my $residue_id = $residue_unique_key->[0];
-        my $residue_chain = $residue_unique_key->[1];
-        my $residue_entity = $residue_unique_key->[2];
-        my $residue_alt = $residue_unique_key->[3];
+        my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+            split( ',', $residue_unique_key );
         my $residue_site =
             filter( { 'atom_site' => \%atom_site,
                       'include' => { 'label_seq_id' => [ $residue_id ],
@@ -275,8 +274,7 @@ sub all_dihedral
                                   $fourth_atom_coord ] );
         }
 
-        %{ $residue_angles{"$residue_id,$residue_chain,$residue_entity,$residue_alt"} } =
-            %angle_values;
+        %{ $residue_angles{$residue_unique_key} } = %angle_values;
     }
 
     return \%residue_angles;
