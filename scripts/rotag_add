@@ -20,12 +20,12 @@ use SidechainModels qw( rotation_only  );
 #*    rotag_add --rotamer --input input.cif > output.cif
 #*
 #*OPTIONS:
-#*    --input <file> | <stdin>
+#*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    --rotamer-atoms
+#*    -r, --rotamer-atoms
 #*        adds pseudo atoms of defined rotamers. Input .cif has to contain
 #*        _[local]_rotamer_angle category (can be produced with rotag_library).
-#*    --version
+#*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -36,9 +36,9 @@ my $version = "1.0.0";
 my $add_rotamer_atoms = 0;
 
 GetOptions(
-    "input=s" => \$options{"pdbx_file"},
-    "rotamer-atoms" => sub { $add_rotamer_atoms = 1 },
-    "help" => sub { open( my $fh, "<", $0 );
+    "input|i=s" => \$options{"pdbx_file"},
+    "rotamer-atoms|r" => sub { $add_rotamer_atoms = 1 },
+    "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
@@ -46,7 +46,7 @@ GetOptions(
                         print( $help_message, "\n" ) if $help_message; }
                     close( $fh );
                     exit; },
-    "version" => sub { print $version, "\n";
+    "version|v" => sub { print $version, "\n";
                        exit; } )
     or die "Error in command line argument.";
 
@@ -117,7 +117,6 @@ if( $add_rotamer_atoms ) {
         }
     }
 
-    # TODO: maybe should add rotamer id's to atom_site for continuity.
     my %rotamer_angles;
     for( my $i = 0; $i <= $#{ $data }; $i = $i + $#{ $attributes } + 1 ) {
         my $residue_unique_key =

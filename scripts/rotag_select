@@ -22,9 +22,9 @@ use Grammar::SelectionParser;
 #*              > output.cif
 #*
 #*OPTIONS:
-#*    --input <file> | <stdin>
+#*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    --target  <str>
+#*    -t, --target  <str>
 #*        command describing the residues that will be marked as target (T).
 #*        Selection keywords (equivalent PDBx category data items in parentheses):
 #*            all       - all atoms;
@@ -47,14 +47,14 @@ use Grammar::SelectionParser;
 #*            !  - negation operator;
 #*            () - parentheses;
 #*            ;  - group/order selection separator.
-#*    --select <str> [default: target]
+#*    -s, --surrounding <str> (default: target)
 #*        command (same as --target) describing the atoms that will be marked as
 #*        selected (S).
-#*    --keep-ignored
+#*    -k, --keep-ignored
 #*        keeps ignored atoms.
-#*    --rand-seed <int>
+#*    -x, --rand-seed <int>
 #*        sets a seed for random (rand) selection.
-#*    --version
+#*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -65,12 +65,12 @@ my $version = "1.0.0";
 my $keep_ignored = 0;
 
 GetOptions(
-    "input=s" => \$options{"pdbx_file"},
-    "target=s" => \$options{"target_cl"},
-    "select=s" => \$options{"select_cl"},
-    "keep-ignored" => sub { $keep_ignored = 1 },
-    "random-seed=s" => \$options{"seed"},
-    "help" => sub { open( my $fh, "<", $0 );
+    "input|i=s" => \$options{"pdbx_file"},
+    "target|t=s" => \$options{"target_cl"},
+    "select|s=s" => \$options{"select_cl"},
+    "keep-ignored|k" => sub { $keep_ignored = 1 },
+    "random-seed|x=s" => \$options{"seed"},
+    "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
@@ -78,7 +78,7 @@ GetOptions(
                         print( $help_message, "\n" ) if $help_message; }
                     close( $fh );
                     exit; },
-    "version" => sub { print $version, "\n";
+    "version|v" => sub { print $version, "\n";
                        exit; } )
     or die "Error in command line argument.";
 

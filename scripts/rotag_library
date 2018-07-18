@@ -26,16 +26,16 @@ use PseudoAtoms qw( add_hydrogens
 #*    rotag_library --input input.cif --cutoff 0.005 > output.cif
 #*
 #*OPTIONS:
-#*    --input <file> | <stdin>
+#*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    --model <str> (default: rotation_only)
+#*    -m, --model <str> (default: rotation_only)
 #*        rules (model) that will be used to move side-chains.
-#*    --angle-step <float> (default: 0.1) (in radians)
+#*    -a, --angle-step <float> (default: 0.1) (in radians)
 #*        angle that each dihedral angle is turned by.
-#*    --potential (default: composite | hard_sphere | soft_sphere)
+#*    -u, --potential (default: composite | hard_sphere | soft_sphere)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
-#*    --parameters <str>
+#*    -p, --parameters <str>
 #*        parameters for composite potential energy function:
 #*            lj_epsilon   - Leonard-Jones epsilon;
 #*            c_epsilon    - Coulomb epsilon;
@@ -46,19 +46,19 @@ use PseudoAtoms qw( add_hydrogens
 #*            soft_epsilon - soft sphere epsilon;
 #*            soft_n       - soft sphere n.
 #*        Example: 'lj_epsilon 0.01;c_epsilon 0.4'.
-#*    --cutoff-atom <float> (default: 0.4)
+#*    -c, --cutoff-atom <float> (default: 0.4)
 #*        the maximum value of energy potential for each atom that allows for
 #*        further rotamer search.
-#*    --cutoff-residue <float> (default: 1.0)
+#*    -C, --cutoff-residue <float> (default: 1.0)
 #*        filters out rotamers which has the potential energy greater than the
 #*        cutoff value.
-#*    --top-rank <int>
+#*    -t, --top-rank <int>
 #*        top rotamers according to the value of energies.
-#*    --top-ratio <float>
+#*    -T, --top-ratio <float>
 #*        top rotamers according to the value of energies.
-#*    --threads
+#*    -n, --threads
 #*        number of threads.
-#*    --version
+#*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -68,17 +68,17 @@ my %options;
 my $version = "1.0.0";
 
 GetOptions(
-    "input=s" => \$options{"pdbx_file"},
-    "model=s" => \$options{"conf_model"},
-    "potential=s" => \$options{"interactions"},
-    "parameters=s" => \$options{"parameters"},
-    "angle-step=s" => \$options{"small_angle"},
-    "cutoff-atom=s" => \$options{"energy_cutoff_atom"},
-    "cutoff-residue=s" => \$options{"energy_cutoff_residue"},
-    "top-rank=s" => \$options{"top_rank"},
-    "top-ratio=s" => \$options{"top_ratio"},
-    "threads=s" => \$options{"threads"},
-    "help" => sub { open( my $fh, "<", $0 );
+    "input|i=s" => \$options{"pdbx_file"},
+    "model|m=s" => \$options{"conf_model"},
+    "potential|u=s" => \$options{"interactions"},
+    "parameters|p=s" => \$options{"parameters"},
+    "angle-step|a=s" => \$options{"small_angle"},
+    "cutoff-atom|c=s" => \$options{"energy_cutoff_atom"},
+    "cutoff-residue|C=s" => \$options{"energy_cutoff_residue"},
+    "top-rank|t=s" => \$options{"top_rank"},
+    "top-ratio|T=s" => \$options{"top_ratio"},
+    "threads|n=s" => \$options{"threads"},
+    "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
@@ -86,7 +86,7 @@ GetOptions(
                         print( $help_message, "\n" ) if $help_message; }
                     close( $fh );
                     exit; },
-    "version" => sub { print $version, "\n";
+    "version|v" => sub { print $version, "\n";
                        exit; } )
     or die "Error in command line argument.";
 

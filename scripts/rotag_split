@@ -18,9 +18,9 @@ use PDBxParser qw( filter
 #*    rotag_split --input input.cif --by 'resid,chain'
 #*
 #*OPTIONS:
-#*    --input <file> | <stdin>
+#*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    --by <str>
+#*    -b, --by <str>
 #*        attribute or attributes that will split PDBx into multiple files.
 #*        Available attributes:
 #*            atomid    - atom id number    (_atom_site.id);
@@ -32,11 +32,11 @@ use PDBxParser qw( filter
 #*            alt       - disorder          (_atom_site.label_alt_id);
 #*            entity    - entity id         (_atom_site.label_entity_id);
 #*            group     - selection group   (_atom_site.[local]_selection_group).
-#*    --basename <str>
+#*    -n, --basename <str>
 #*        basename of the output file.
-#*    --extension <str> (default: cif)
+#*    -e, --extension <str> (default: cif)
 #*        extension for the file if basename is present.
-#*    --version
+#*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -46,11 +46,11 @@ my %options;
 my $version = "1.0.0";
 
 GetOptions(
-    "input=s" => \$options{"pdbx_file"},
-    "by=s" => \$options{"split_by"},
-    "basename=s" => \$options{"basename"},
-    "extension=s" => \$options{"extension"},
-    "help" => sub { open( my $fh, "<", $0 );
+    "input|i=s" => \$options{"pdbx_file"},
+    "by|b=s" => \$options{"split_by"},
+    "basename|n=s" => \$options{"basename"},
+    "extension|e=s" => \$options{"extension"},
+    "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
@@ -58,7 +58,7 @@ GetOptions(
                         print( $help_message, "\n" ) if $help_message; }
                     close( $fh );
                     exit; },
-    "version" => sub { print $version, "\n";
+    "version|v" => sub { print $version, "\n";
                        exit; } )
     or die "Error in command line argument.";
 

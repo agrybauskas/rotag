@@ -33,13 +33,13 @@ use PseudoAtoms qw( add_hydrogens );
 #*    rotag_energy --potential hard_sphere --input input.cif > output.cif
 #*
 #*OPTIONS:
-#*    --input <file> | <stdin>
+#*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    --potential (default: composite | hard_sphere | soft_sphere | leonard_jones
-#*                          | coulomb | h_bond)
+#*    -u, --potential (default: composite | hard_sphere | soft_sphere |
+#*                              leonard_jones | coulomb | h_bond)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
-#*    --version
+#*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -50,9 +50,9 @@ $options{"interactions"} = "composite";
 my $version = "1.0.0";
 
 GetOptions(
-    "input=s" => \$options{"pdbx_file"},
-    "potential=s" => \$options{"interactions"},
-    "help" => sub { open( my $fh, "<", $0 );
+    "input|i=s" => \$options{"pdbx_file"},
+    "potential|p=s" => \$options{"interactions"},
+    "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
@@ -60,7 +60,7 @@ GetOptions(
                         print( $help_message, "\n" ) if $help_message; }
                     close( $fh );
                     exit; },
-    "version" => sub { print $version, "\n";
+    "version|v" => sub { print $version, "\n";
                        exit; } )
     or die "Error in command line argument.";
 

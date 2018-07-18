@@ -18,12 +18,12 @@ use Measure qw( rmsd );
 #*    rotag_rmsd --input input.cif > output.cif
 #*
 #*OPTIONS:
-#*    --input <file> | <stdin>
+#*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    --strict
+#*    -s, --strict
 #*        uses atom names to validate the pairs of atoms. Otherwise, only
 #*        coordinates are used and correct pairing is up to the PDBx file.
-#*    --version
+#*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -34,9 +34,9 @@ my $version = "1.0.0";
 my $is_strict = 0;
 
 GetOptions(
-    "input=s" => \$options{"pdbx_file"},
-    "strict" => sub { $is_strict = 1 },
-    "help" => sub { open( my $fh, "<", $0 );
+    "input|i=s" => \$options{"pdbx_file"},
+    "strict|S" => sub { $is_strict = 1 },
+    "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
@@ -44,7 +44,7 @@ GetOptions(
                         print( $help_message, "\n" ) if $help_message; }
                     close( $fh );
                     exit; },
-    "version" => sub { print $version, "\n";
+    "version|v" => sub { print $version, "\n";
                        exit; } )
     or die "Error in command line argument.";
 
@@ -89,6 +89,7 @@ if( $is_strict ) {
                           { "[local]_selection_group" => [ $group_ids[$i+1] ] },
                             "data" => [ "label_atom_id",
                                         "Cartn_x", "Cartn_y", "Cartn_z" ] } );
+
         # Checks the length of the atom sets.
         # HACK: error message is duplicated in Measure::rmsd().
         die( "Comparing different sizes of sets of the atoms is not allowed." )

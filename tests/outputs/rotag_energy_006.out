@@ -6,12 +6,13 @@ _[local]_energy.atom_id
 _[local]_energy.residue_id
 _[local]_energy.chain
 _[local]_energy.entity
+_[local]_energy.alt
 _[local]_energy.calculation_method
 _[local]_energy.value
-1 147 18 A 1 h_bond -15.544
-2 148 18 A 1 h_bond 0.000
-3 149 18 A 1 h_bond 0.000
-4 150 18 A 1 h_bond 0.000
-5 151 18 A 1 h_bond 0.000
-6 152 18 A 1 h_bond -92.689
+1 147 18 A 1 . h_bond -15.544
+2 148 18 A 1 . h_bond 0.000
+3 149 18 A 1 . h_bond 0.000
+4 150 18 A 1 . h_bond 0.000
+5 151 18 A 1 . h_bond 0.000
+6 152 18 A 1 . h_bond -92.689
 #

@@ -21,17 +21,17 @@ use PDBxParser qw( filter
 #*    rotag_dihedral --residues --input input.cif > output.cif
 #*
 #*OPTIONS:
-#*    --input <file> | <stdin>
+#*    -i, --input <file> | <stdin>
 #*        PDBx file.
-#*    --atoms
+#*    -a, --atoms
 #*        calculates dihedral angle from the four coordinates of the selected
 #*        atoms (rotag_select should be used for residue selection).
-#*    --residues
+#*    -r, --residues
 #*        calculates all dihedral angles of selected residue(-s)
 #*        (rotag_select should be used for residue selection).
-#*    --degrees
-#*        angles are in degrees (default).
-#*    --version
+#*    -d, --degrees
+#*        angles are in degrees (default: radians).
+#*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -44,11 +44,11 @@ my $calc_residue_angles = 0;
 my $in_degrees = 0;
 
 GetOptions(
-    "input=s" => \$options{"pdbx_file"},
-    "atoms" => sub { $calc_atom_angles = 1 },
-    "residues" => sub { $calc_residue_angles = 1 },
-    "degrees" => sub { $in_degrees = 1 },
-    "help" => sub { open( my $fh, "<", $0 );
+    "input|i=s" => \$options{"pdbx_file"},
+    "atoms|a" => sub { $calc_atom_angles = 1 },
+    "residues|r" => sub { $calc_residue_angles = 1 },
+    "degrees|d" => sub { $in_degrees = 1 },
+    "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
@@ -56,7 +56,7 @@ GetOptions(
                         print( $help_message, "\n" ) if $help_message; }
                     close( $fh );
                     exit; },
-    "version" => sub { print $version, "\n";
+    "version|v" => sub { print $version, "\n";
                        exit; } )
     or die "Error in command line argument.";
 
