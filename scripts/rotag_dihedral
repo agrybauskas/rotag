@@ -96,18 +96,11 @@ if( $calc_atom_angles ) {
         my $fourth_atom_id = $dihedral_atom_ids[$i+3];
         my $dihedral_angle =
             dihedral_angle(
-                [ [ $dihedral_site->{"$first_atom_id"}{"Cartn_x"},
-                    $dihedral_site->{"$first_atom_id"}{"Cartn_y"},
-                    $dihedral_site->{"$first_atom_id"}{"Cartn_z"} ],
-                  [ $dihedral_site->{"$second_atom_id"}{"Cartn_x"},
-                    $dihedral_site->{"$second_atom_id"}{"Cartn_y"},
-                    $dihedral_site->{"$second_atom_id"}{"Cartn_z"} ],
-                  [ $dihedral_site->{"$third_atom_id"}{"Cartn_x"},
-                    $dihedral_site->{"$third_atom_id"}{"Cartn_y"},
-                    $dihedral_site->{"$third_atom_id"}{"Cartn_z"} ],
-                  [ $dihedral_site->{"$fourth_atom_id"}{"Cartn_x"},
-                    $dihedral_site->{"$fourth_atom_id"}{"Cartn_y"},
-                    $dihedral_site->{"$fourth_atom_id"}{"Cartn_z"} ] ] );
+                [ map { [ $dihedral_site->{$_}{"Cartn_x"},
+                          $dihedral_site->{$_}{"Cartn_y"},
+                          $dihedral_site->{$_}{"Cartn_z"} ] }
+                  ( $first_atom_id, $second_atom_id,
+                    $third_atom_id, $fourth_atom_id ) ] );
 
         push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
               $dihedral_id, $first_atom_id, $second_atom_id, $third_atom_id,
@@ -120,7 +113,8 @@ if( $calc_atom_angles ) {
 } elsif( $calc_residue_angles ) {
     # TODO: add atom_1_id, atom_2_id, ...
     $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
-        [ "id", "residue_id", "residue_type", "type", "value" ];
+        [ "id", "residue_id", "chain", "entity", "alt", "residue_type", "type",
+          "value" ];
 
     my $dihedral_site =
         filter( { "atom_site" => $atom_site,
@@ -128,21 +122,22 @@ if( $calc_atom_angles ) {
     my $dihedral_angles = all_dihedral( $dihedral_site );
 
     my $dihedral_id = 1;
-    for my $residue_id ( sort keys %{ $dihedral_angles } ) {
+    for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
         my $residue_name = uniq( @{ filter( { "atom_site" => $dihedral_site,
                                               "data" => [ "label_comp_id" ],
                                               "is_list" => 1 } ) } );
 
-        for my $angle_name ( sort keys %{ $dihedral_angles->{$residue_id} } ) {
+        for my $angle_name ( sort keys %{ $dihedral_angles->{$residue_unique_key} } ) {
             push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
-                  $dihedral_id, $residue_id, $residue_name, $angle_name,
+                  $dihedral_id, split( ',', $residue_unique_key ), $residue_name,
+                  $angle_name,
                   ( $in_degrees ? sprintf( "%.3f",
                                            $dihedral_angles->
-                                               {$residue_id}{$angle_name}
+                                               {$residue_unique_key}{$angle_name}
                                            * 180 / pi() )
                                 : sprintf( "%.3f",
                                            $dihedral_angles->
-                                               {$residue_id}{$angle_name} ) ) );
+                                               {$residue_unique_key}{$angle_name} ) ) );
             $dihedral_id++;
         }
     }
