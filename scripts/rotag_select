@@ -13,17 +13,14 @@ use PDBxParser qw( filter
                    to_pdbx );
 use Grammar::SelectionParser;
 
-#*rotag_select
+#*rotag_select [options] file1 [file2, ...]
 #*    select and mark atoms of interest by adding selection state [T|S|I] to
 #*    _atom_site category in PDBx.
 #*
 #*USAGE:
-#*    rotag_select --input input.cif --target 'resname ASP' --select 'resid 1-10' \
-#*              > output.cif
+#*    rotag_select -t 'resname ASP' -s 'resid 1-10' input.cif > output.cif
 #*
 #*OPTIONS:
-#*    -i, --input <file> | <stdin>
-#*        PDBx file.
 #*    -t, --target  <str>
 #*        command describing the residues that will be marked as target (T).
 #*        Selection keywords (equivalent PDBx category data items in parentheses):
@@ -65,7 +62,6 @@ my $version = "1.0.0";
 my $keep_ignored = 0;
 
 GetOptions(
-    "input|i=s" => \$options{"pdbx_file"},
     "target|t=s" => \$options{"target_cl"},
     "select|s=s" => \$options{"select_cl"},
     "keep-ignored|k" => sub { $keep_ignored = 1 },
@@ -91,92 +87,95 @@ $options{"seed"} //= 23;
 
 # ----------------------------------- Main ------------------------------------ #
 
-# Reads file path, stdin and "-" operator.
-my $atom_site;
-if( $options{"pdbx_file"} ) {
-    $atom_site = obtain_atom_site( $options{"pdbx_file"} );
-} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
-    $atom_site = obtain_atom_site( '-' );
-} else {
-    die( "Use command \"rotag_select --help\" in order to see the manual.\n" );
-}
+@ARGV = ( '-' ) unless @ARGV;
 
-# Parses command line arguments to select certain atoms in PDBx.
-my $selection_parser = new SelectionParser();
-
-my @target_cls = split( ";", $options{"target_cl"} );
-
-my @target_atom_ids;
-my $group_id = 1;
-if( scalar( @target_cls ) > 1 ) {
-    for my $target_cl ( @target_cls ) {
-        push( @target_atom_ids,
-              @{ filter( { "atom_site" =>
-                               $selection_parser->parser( $atom_site,
-                                                          $target_cl,
-                                                          "id",
-                                                          { "seed" =>
-                                                                $options{"seed"}
-                                                          } ),
-                           "data" => [ "id" ],
-                           "is_list" => 1,
-                           "group_id" => $group_id } ) } );
-        $group_id++;
+for my $pdbx_file ( @ARGV ) {
+    # Reads file path, stdin and "-" operator.
+    my $atom_site;
+    if( $pdbx_file ) {
+        $atom_site = obtain_atom_site( $pdbx_file );
+    } else {
+        die( "Use command \"rotag_select --help\" in order to see the manual.\n" );
     }
-} else {
-    @target_atom_ids =
+
+    # Parses command line arguments to select certain atoms in PDBx.
+    my $selection_parser = new SelectionParser();
+
+    my @target_cls = split( ";", $options{"target_cl"} );
+
+    my @target_atom_ids;
+    my $group_id = 1;
+    if( scalar( @target_cls ) > 1 ) {
+        for my $target_cl ( @target_cls ) {
+            push( @target_atom_ids,
+                  @{ filter( { "atom_site" =>
+                                   $selection_parser->parser( $atom_site,
+                                                              $target_cl,
+                                                              "id",
+                                                              { "seed" =>
+                                                                    $options{"seed"}
+                                                              } ),
+                                   "data" => [ "id" ],
+                                   "is_list" => 1,
+                                   "group_id" => $group_id } ) } );
+            $group_id++;
+        }
+    } else {
+        @target_atom_ids =
+            @{ filter( { "atom_site" =>
+                             $selection_parser->parser( $atom_site,
+                                                        $options{"target_cl"},
+                                                        "id",
+                                                        { "seed" =>
+                                                              $options{"seed"}
+                                                        } ),
+                             "data" => [ "id" ],
+                             "is_list" => 1,
+                             "group_id" => $group_id } ) };
+    }
+
+    my @selected_atom_ids =
         @{ filter( { "atom_site" =>
                          $selection_parser->parser( $atom_site,
-                                                    $options{"target_cl"},
+                                                    $options{"select_cl"},
                                                     "id",
                                                     { "seed" =>
                                                           $options{"seed"}
                                                     } ),
                      "data" => [ "id" ],
-                     "is_list" => 1,
-                     "group_id" => $group_id } ) };
-}
+                     "is_list" => 1 } ) };
 
-my @selected_atom_ids =
-    @{ filter( { "atom_site" => $selection_parser->parser( $atom_site,
-                                                           $options{"select_cl"},
-                                                           "id",
-                                                           { "seed" =>
-                                                                 $options{"seed"}
-                                                           } ),
-                 "data" => [ "id" ],
-                 "is_list" => 1 } ) };
-
-# Modifies PDBx entries by adding and/or changing selection states for atoms.
-for my $atom_id ( keys %{ $atom_site } ) {
-    if( any { $atom_id eq $_  } @target_atom_ids ) {
-        $atom_site->{$atom_id}{"[local]_selection_state"} = "T";
-    } elsif( any { $atom_id eq $_  } @selected_atom_ids ) {
-        $atom_site->{$atom_id}{"[local]_selection_state"} = "S";
-    } else {
-        $atom_site->{$atom_id}{"[local]_selection_state"} = "I";
+    # Modifies PDBx entries by adding and/or changing selection states for atoms.
+    for my $atom_id ( keys %{ $atom_site } ) {
+        if( any { $atom_id eq $_  } @target_atom_ids ) {
+            $atom_site->{$atom_id}{"[local]_selection_state"} = "T";
+        } elsif( any { $atom_id eq $_  } @selected_atom_ids ) {
+            $atom_site->{$atom_id}{"[local]_selection_state"} = "S";
+        } else {
+            $atom_site->{$atom_id}{"[local]_selection_state"} = "I";
+        }
     }
-}
 
-if( ! $keep_ignored ) {
-    $atom_site =
-        filter( { "atom_site" => $atom_site,
-                  "exclude" => { "[local]_selection_state" => [ "I" ] } } );
-}
+    if( ! $keep_ignored ) {
+        $atom_site =
+            filter( { "atom_site" => $atom_site,
+                          "exclude" => { "[local]_selection_state" => [ "I" ] } } );
+    }
 
-# Extracts rotamer angle data that will used to generate atom coordinates if
-# available.
-my $pdbx_loops;
-if( $options{"pdbx_file"} ) {
-    $pdbx_loops =
-        obtain_pdbx_loop( $options{"pdbx_file"}, [ "_rotamer_angle" ] );
-} elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
-    $pdbx_loops =
-        obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
-}
+    # Extracts rotamer angle data that will used to generate atom coordinates if
+    # available.
+    my $pdbx_loops;
+    if( $options{"pdbx_file"} ) {
+        $pdbx_loops =
+            obtain_pdbx_loop( $options{"pdbx_file"}, [ "_rotamer_angle" ] );
+    } elsif( ! defined $options{"pdbx_file"} && ! -t STDIN ) {
+        $pdbx_loops =
+            obtain_pdbx_loop( '-', [ "_rotamer_angle" ] );
+    }
 
-# Prints out the PDBx.
-to_pdbx( { "atom_site" => $atom_site,
-           $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
-           "add_atom_attributes" => [ "[local]_selection_state",
-                                      "[local]_selection_group" ] } );
+    # Prints out the PDBx.
+    to_pdbx( { "atom_site" => $atom_site,
+               # $pdbx_loops ? ( "pdbx_loops", $pdbx_loops) : "",
+               "add_atom_attributes" => [ "[local]_selection_state",
+                                          "[local]_selection_group" ] } );
+}
