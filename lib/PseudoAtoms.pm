@@ -401,24 +401,16 @@ sub generate_library
 
                     # Starts calculating potential energy.
                     my ( $next_allowed_angles, $next_allowed_energies ) =
-                        @{ check_angles_multi_thread( \%atom_site,
-                                                      $atom_id,
-                                                      \%interaction_site,
-                                                      \@allowed_angles,
-                                                      \@allowed_energies,
-                                                      $potential_function,
-                                                      $threads,
-                                                      $energy_cutoff_atom,
-                                                      $parameters ) };
-
-                    # multi_threading( \&check_angles_new,
-                    #                  { 'atom_site' => \%atom_site,
-                    #                    'atom_id' => $atom_id,
-                    #                    'interaction_site' => \%interaction_site,
-                    #                    'energy_cutoff_atom' => $energy_cutoff_atom,
-                    #                    'parameters' => $parameters },
-                    #                  [ \@allowed_angles, \@allowed_energies ],
-                    #                  $threads );
+                        @{ multi_threading(
+                               \&check_angles_new,
+                               { 'atom_site' => \%atom_site,
+                                 'atom_id' => $atom_id,
+                                 'interaction_site' => \%interaction_site,
+                                 'energy_cutoff_atom' => $energy_cutoff_atom,
+                                 'potential_function' => $potential_function,
+                                 'parameters' => $parameters },
+                               [ \@allowed_angles, \@allowed_energies ],
+                               $threads ) };
 
                     if( scalar( @{ $next_allowed_angles } ) > 0 ) {
                         @allowed_angles = @{ $next_allowed_angles };
@@ -483,31 +475,31 @@ sub multi_threading
         my $thread_task =
             threads->create( $function,
                              $arguments,
-                             [ map { $allowed_array_blocks->[$_] }
-                                 $#{ $allowed_array_blocks } ] );
+                             [ map { $allowed_array_blocks->[$_][$i] }
+                                   0..$#{$allowed_array_blocks} ] );
         push( @block_results, $thread_task );
     }
 
-    # my @allowed_angles;
-    # my @energy_sums;
-    # for my $block_result ( @block_results ) {
-    #     $block_result = $block_result->join();
-    #     push( @allowed_angles, @{ $block_result->[0] } );
-    #     push( @energy_sums, @{ $block_result->[1] } );
-    # }
+    my @joined_block_results;
+    for my $block_result ( @block_results ) {
+        $block_result = $block_result->join();
+        for( my $i = 0; $i <= $#{ $block_result }; $i++ ) {
+            push( @{ $joined_block_results[$i] }, @{ $block_result->[$i] } );
+        }
+    }
 
-    # return [ \@allowed_angles, \@energy_sums ];
-
+    return \@joined_block_results;
 }
 
 sub check_angles_new
 {
     my ( $args, $array_blocks ) = @_;
-    my ( $atom_site, $atom_id, $interaction_site, $energy_cutoff_atom,
-         $parameters ) = (
+    my ( $atom_site, $atom_id, $interaction_site, $potential_function,
+         $energy_cutoff_atom, $parameters ) = (
         $args->{'atom_site'},
         $args->{'atom_id'},
         $args->{'interaction_site'},
+        $args->{'potential_function'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'}
     );
@@ -515,52 +507,52 @@ sub check_angles_new
     my @allowed_angles;
     my @allowed_energies;
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
-        my $angles = $array_blocks->[$i];
-        my $energies = $array_blocks->[$i][0];
+        my $angles = $array_blocks->[0][$i];
+        my $energies = $array_blocks->[1][$i][0];
         my %angles =
             map { ( "chi$_" => [ $angles->[$_] ] ) }
             0..$#{ $angles };
 
-        # my $pseudo_atom_site =
-        #     generate_pseudo( $atom_site,
-        #                      { 'id' => [ "$atom_id" ] },
-        #                      \%angles );
-        # my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
-        # my $pseudo_origin_id =
-        #     $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
+        my $pseudo_atom_site =
+            generate_pseudo( $atom_site,
+                             { 'id' => [ "$atom_id" ] },
+                             \%angles );
+        my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
+        my $pseudo_origin_id =
+            $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
 
-    #     my $potential_energy = 0; # TODO: look if here should be zeros.
-    #     my $potential_sum = 0;
-    #     foreach my $interaction_id ( keys %{ $interaction_site } ) {
-    #         if( ( ! is_neighbour( $atom_site,
-    #                               $pseudo_origin_id,
-    #                               $interaction_id ) )
-    #             && ( ! is_second_neighbour( $atom_site,
-    #                                         $pseudo_origin_id,
-    #                                         $interaction_id ) )
-    #             ) {
-    #             $potential_energy =
-    #                 $potential_function->(
-    #                     $pseudo_atom_site->{$pseudo_atom_id},
-    #                     $atom_site->{$interaction_id},
-    #                     $parameters );
-    #             $potential_sum += $potential_energy;
-    #             last if $potential_energy > $energy_cutoff_atom;
-    #         }
-    #     }
+        my $potential_energy = 0; # TODO: look if here should be zeros.
+        my $potential_sum = 0;
+        foreach my $interaction_id ( keys %{ $interaction_site } ) {
+            if( ( ! is_neighbour( $atom_site,
+                                  $pseudo_origin_id,
+                                  $interaction_id ) )
+                && ( ! is_second_neighbour( $atom_site,
+                                            $pseudo_origin_id,
+                                            $interaction_id ) )
+                ) {
+                $potential_energy =
+                    $potential_function->(
+                        $pseudo_atom_site->{$pseudo_atom_id},
+                        $atom_site->{$interaction_id},
+                        $parameters );
+                $potential_sum += $potential_energy;
+                last if $potential_energy > $energy_cutoff_atom;
+            }
+        }
 
-    #     # Writes allowed angles to @next_allowed_angles that will
-    #     # be passed to more global @allowed_angles. Checks the
-    #     # last calculated potential. If potential was greater
-    #     # than the cutoff, then calculation was halted, but the
-    #     # value remained.
-    #     if( $potential_energy <= $energy_cutoff_atom ) {
-    #         push( @allowed_angles, $angles );
-    #         push( @allowed_energies, [ $energies + $potential_sum ] );
-    #     }
+        # Writes allowed angles to @next_allowed_angles that will
+        # be passed to more global @allowed_angles. Checks the
+        # last calculated potential. If potential was greater
+        # than the cutoff, then calculation was halted, but the
+        # value remained.
+        if( $potential_energy <= $energy_cutoff_atom ) {
+            push( @allowed_angles, $angles );
+            push( @allowed_energies, [ $energies + $potential_sum ] );
+        }
     }
 
-    # return [ \@allowed_angles, \@allowed_energies ];
+    return [ \@allowed_angles, \@allowed_energies ];
 }
 
 sub check_energy_new
