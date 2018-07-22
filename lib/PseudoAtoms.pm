@@ -401,15 +401,15 @@ sub generate_library
 
                     # Starts calculating potential energy.
                     my ( $next_allowed_angles, $next_allowed_energies ) =
-                        @{ check_angles( \%atom_site,
-                                         $atom_id,
-                                         \%interaction_site,
-                                         \@allowed_angles,
-                                         \@allowed_energies,
-                                         $potential_function,
-                                         $threads,
-                                         $energy_cutoff_atom,
-                                         $parameters ) };
+                        @{ check_angles_multi_thread( \%atom_site,
+                                                      $atom_id,
+                                                      \%interaction_site,
+                                                      \@allowed_angles,
+                                                      \@allowed_energies,
+                                                      $potential_function,
+                                                      $threads,
+                                                      $energy_cutoff_atom,
+                                                      $parameters ) };
 
                     if( scalar( @{ $next_allowed_angles } ) > 0 ) {
                         @allowed_angles = @{ $next_allowed_angles };
@@ -486,7 +486,7 @@ sub generate_library
     return \%rotamer_library;
 }
 
-sub _divide_arrays_into_blocks
+sub divide_arrays_into_blocks
 {
     my ( $arrays, $threads ) = @_;
 
@@ -531,21 +531,21 @@ sub _divide_arrays_into_blocks
     return \@list_of_array_blocks;
 }
 
-sub check_angles
+sub check_angles_multi_thread
 {
     my ( $atom_site, $atom_id, $interaction_site, $allowed_angles,
          $allowed_energies, $potential_function, $threads,
          $energy_cutoff_atom, $parameters ) = @_;
 
     my ( $allowed_angle_blocks, $allowed_energy_blocks ) =
-        @{ _divide_arrays_into_blocks( [ $allowed_angles,
+        @{ divide_arrays_into_blocks( [ $allowed_angles,
                                          $allowed_energies ],
                                        $threads ) };
 
     my @block_results;
     for my $i ( 0..$threads-1 ) {
         my $thread_task =
-            threads->create( \&_check_angles,
+            threads->create( \&check_angles_single_thread,
                              $atom_site,
                              $atom_id,
                              $allowed_angle_blocks->[$i],
@@ -568,7 +568,7 @@ sub check_angles
     return [ \@allowed_angles, \@allowed_energies ];
 }
 
-sub _check_angles
+sub check_angles_single_thread
 {
     my ( $atom_site,
          $atom_id,
@@ -579,8 +579,8 @@ sub _check_angles
          $energy_cutoff_atom,
          $parameters ) = @_;
 
-    my @next_allowed_angles;
-    my @next_allowed_energies;
+    my @allowed_angles;
+    my @allowed_energies;
     for( my $i = 0; $i <= $#{ $allowed_angles }; $i++ ) {
         my $angles = $allowed_angles->[$i];
         my $energies = $allowed_energies->[$i][0];
@@ -622,12 +622,12 @@ sub _check_angles
         # than the cutoff, then calculation was halted, but the
         # value remained.
         if( $potential_energy <= $energy_cutoff_atom ) {
-            push( @next_allowed_angles, $angles );
-            push( @next_allowed_energies, [ $energies + $potential_sum ] );
+            push( @allowed_angles, $angles );
+            push( @allowed_energies, [ $energies + $potential_sum ] );
         }
     }
 
-    return [ \@next_allowed_angles, \@next_allowed_energies ];
+    return [ \@allowed_angles, \@allowed_energies ];
 }
 
 sub add_hydrogens
