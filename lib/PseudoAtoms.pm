@@ -403,37 +403,10 @@ sub generate_library
                     my @next_allowed_angles;
                     my @next_allowed_energies;
 
-                    # Splits testable angle and energy lists into blocks/chunks
-                    # passes to threads.
-                    my @allowed_angle_blocks;
-                    my @allowed_energy_blocks;
-                    my $max_block_size =
-                        int( scalar( @allowed_angles ) / $threads );
-
-                    # If block size is smaller that the number of threads, then
-                    # thread number is reduced.
-                    my $reduce_threads = 0;
-                    if( ! $max_block_size ) {
-                        $reduce_threads = scalar( @allowed_angles );
-                        $max_block_size = 1;
-                    }
-
-                    for my $i ( 0..$threads-$reduce_threads-1 ) {
-                        my $block_start = $i * $max_block_size;
-                        my $block_end = $block_start + $max_block_size - 1;
-                        if( $i ne $threads-$reduce_threads-1 ) {
-                            push( @allowed_angle_blocks,
-                                [ @allowed_angles[$block_start..$block_end] ] );
-                            push( @allowed_energy_blocks,
-                                [ @allowed_energies[$block_start..$block_end ]]);
-                        } else {
-                            $block_end = $#allowed_angles;
-                            push( @allowed_angle_blocks,
-                                [ @allowed_angles[$block_start..$block_end] ] );
-                            push( @allowed_energy_blocks,
-                                [ @allowed_energies[$block_start..$block_end ]]);
-                        }
-                    }
+                    my ( $allowed_angle_blocks, $allowed_energy_blocks ) =
+                        @{ _divide_arrays_into_blocks( [ \@allowed_angles,
+                                                         \@allowed_energies ],
+                                                       $threads ) };
 
                     my @block_results;
                     for my $i ( 0..$threads-1 ) {
@@ -441,8 +414,8 @@ sub generate_library
                             threads->create( \&_check_angles,
                                              \%atom_site,
                                              $atom_id,
-                                             $allowed_angle_blocks[$i],
-                                             $allowed_energy_blocks[$i],
+                                             $allowed_angle_blocks->[$i],
+                                             $allowed_energy_blocks->[$i],
                                              \%interaction_site,
                                              $potential_function,
                                              $energy_cutoff_atom,
@@ -529,6 +502,51 @@ sub generate_library
     }
 
     return \%rotamer_library;
+}
+
+sub _divide_arrays_into_blocks
+{
+    my ( $arrays, $threads ) = @_;
+
+    my $array_length;
+    my @list_of_array_blocks;
+    for my $array ( @{ $arrays } ) {
+        my @array = @{ $array };
+
+        # Arrays have to have equal lengths.
+        if( defined $array_length && scalar( @array ) ne $array_length ) {
+            die( "List of arrays have different lengths." );
+        }
+        $array_length =  scalar( @array );
+
+        # Splits the array into blocks/chunks.
+        my @array_blocks;
+        my $max_block_size =
+            int( scalar( @array ) / $threads );
+
+        # If block size is smaller that the number of threads, then
+        # thread number is reduced.
+        my $reduce_threads = 0;
+        if( ! $max_block_size ) {
+            $reduce_threads = scalar( @array );
+            $max_block_size = 1;
+        }
+
+        for my $i ( 0..$threads-$reduce_threads-1 ) {
+            my $block_start = $i * $max_block_size;
+            my $block_end = $block_start + $max_block_size - 1;
+            if( $i ne $threads-$reduce_threads-1 ) {
+                push( @array_blocks, [ @array[$block_start..$block_end] ] );
+            } else {
+                $block_end = $#array;
+                push( @array_blocks, [ @array[$block_start..$block_end] ] );
+            }
+        }
+
+        push( @list_of_array_blocks, \@array_blocks );
+    }
+
+    return \@list_of_array_blocks;
 }
 
 sub _check_angles
