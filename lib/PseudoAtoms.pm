@@ -400,38 +400,20 @@ sub generate_library
                           @{ $atom_site{$atom_id}{'connections'} } );
 
                     # Starts calculating potential energy.
-                    my @next_allowed_angles;
-                    my @next_allowed_energies;
+                    my ( $next_allowed_angles, $next_allowed_energies ) =
+                        @{ check_angles( \%atom_site,
+                                         $atom_id,
+                                         \%interaction_site,
+                                         \@allowed_angles,
+                                         \@allowed_energies,
+                                         $potential_function,
+                                         $threads,
+                                         $energy_cutoff_atom,
+                                         $parameters ) };
 
-                    my ( $allowed_angle_blocks, $allowed_energy_blocks ) =
-                        @{ _divide_arrays_into_blocks( [ \@allowed_angles,
-                                                         \@allowed_energies ],
-                                                       $threads ) };
-
-                    my @block_results;
-                    for my $i ( 0..$threads-1 ) {
-                        my $thread_task =
-                            threads->create( \&_check_angles,
-                                             \%atom_site,
-                                             $atom_id,
-                                             $allowed_angle_blocks->[$i],
-                                             $allowed_energy_blocks->[$i],
-                                             \%interaction_site,
-                                             $potential_function,
-                                             $energy_cutoff_atom,
-                                             $parameters );
-                        push( @block_results, $thread_task );
-                    }
-
-                    for my $block_result ( @block_results ) {
-                        $block_result = $block_result->join();
-                        push( @next_allowed_angles, @{ $block_result->[0] } );
-                        push( @next_allowed_energies, @{ $block_result->[1] } );
-                    }
-
-                    if( scalar( @next_allowed_angles ) > 0 ) {
-                        @allowed_angles = @next_allowed_angles;
-                        @allowed_energies = @next_allowed_energies;
+                    if( scalar( @{ $next_allowed_angles } ) > 0 ) {
+                        @allowed_angles = @{ $next_allowed_angles };
+                        @allowed_energies = @{ $next_allowed_energies };
                     } else {
                         die 'No possible rotamer solutions were detected.';
                     }
@@ -547,6 +529,43 @@ sub _divide_arrays_into_blocks
     }
 
     return \@list_of_array_blocks;
+}
+
+sub check_angles
+{
+    my ( $atom_site, $atom_id, $interaction_site, $allowed_angles,
+         $allowed_energies, $potential_function, $threads,
+         $energy_cutoff_atom, $parameters ) = @_;
+
+    my ( $allowed_angle_blocks, $allowed_energy_blocks ) =
+        @{ _divide_arrays_into_blocks( [ $allowed_angles,
+                                         $allowed_energies ],
+                                       $threads ) };
+
+    my @block_results;
+    for my $i ( 0..$threads-1 ) {
+        my $thread_task =
+            threads->create( \&_check_angles,
+                             $atom_site,
+                             $atom_id,
+                             $allowed_angle_blocks->[$i],
+                             $allowed_energy_blocks->[$i],
+                             $interaction_site,
+                             $potential_function,
+                             $energy_cutoff_atom,
+                             $parameters );
+        push( @block_results, $thread_task );
+    }
+
+    my @allowed_angles;
+    my @allowed_energies;
+    for my $block_result ( @block_results ) {
+        $block_result = $block_result->join();
+        push( @allowed_angles, @{ $block_result->[0] } );
+        push( @allowed_energies, @{ $block_result->[1] } );
+    }
+
+    return [ \@allowed_angles, \@allowed_energies ];
 }
 
 sub _check_angles
