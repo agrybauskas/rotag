@@ -37,18 +37,20 @@ use PseudoAtoms qw( add_hydrogens );
 #*                              leonard_jones | coulomb | h_bond)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
+#*    -n, --threads
+#*        number of threads.
 #*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
 
 my %options;
-$options{"interactions"} = "composite";
 
 my $version = "1.0.0";
 
 GetOptions(
     "potential|p=s" => \$options{"interactions"},
+    "threads|n=s" => \$options{"threads"},
     "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -60,6 +62,18 @@ GetOptions(
     "version|v" => sub { print $version, "\n";
                        exit; } )
     or die "Error in command line argument.";
+
+# Defaults.
+my %potential_functions = (
+    "composite" => \&composite,
+    "hard_sphere" => \&hard_sphere,
+    "soft_sphere" => \&soft_sphere,
+    "leonard_jones" => \&leonard_jones,
+    "coulomb" => \&coulomb,
+    "h_bond" => \&h_bond
+);
+$options{"interactions"} //= "composite";
+$options{"threads"} //= 1;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -112,13 +126,7 @@ for my $pdbx_file ( @ARGV ) {
 
     my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
 
-    my $potential_function;
-    $potential_function = \&composite if $options{"interactions"} eq "composite";
-    $potential_function = \&hard_sphere if $options{"interactions"} eq "hard_sphere";
-    $potential_function = \&soft_sphere if $options{"interactions"} eq "soft_sphere";
-    $potential_function = \&leonard_jones if $options{"interactions"} eq "leonard_jones";
-    $potential_function = \&coulomb if $options{"interactions"} eq "coulomb";
-    $potential_function = \&h_bond if $options{"interactions"} eq "h_bond";
+    my $potential_function = $potential_functions{$options{"interactions"}};
 
     my %pdbx_loops;
     my $calculation_id = 1;
