@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( around_distance
 		     connect_atoms
+                     connect_two_atoms
 		     distance
 		     distance_squared
 		     is_connected
@@ -231,6 +232,21 @@ sub connect_atoms
                 }
             }
         }
+    }
+
+    return;
+}
+
+sub connect_two_atoms
+{
+    my ( $atom_site, $first_atom_id, $second_atom_id ) = @_;
+
+    if( is_connected( $atom_site->{"$first_atom_id"},
+                      $atom_site->{"$second_atom_id"} ) ) {
+        push( @{ $atom_site->{$first_atom_id}{'connections'} },
+              "$second_atom_id" );
+        push( @{ $atom_site->{$second_atom_id}{'connections'} },
+              "$first_atom_id" );
     }
 
     return;
