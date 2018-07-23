@@ -402,7 +402,7 @@ sub generate_library
                     # Starts calculating potential energy.
                     my ( $next_allowed_angles, $next_allowed_energies ) =
                         @{ multi_threading(
-                               \&check_angles_new,
+                               \&check_angles,
                                { 'atom_site' => \%atom_site,
                                  'atom_id' => $atom_id,
                                  'interaction_site' => \%interaction_site,
@@ -431,42 +431,19 @@ sub generate_library
                 }
             }
 
-        #     # Checks for inter-atom interactions and determines if energies
-        #     # comply with cutoffs.
-        #     # my ( $allowed_angles, $energy_sums ) =
-        #     #     @{ multi_threading(
-        #     #            \&check_energy_new,
-        #     #            { 'atom_site' => \%atom_site,
-        #     #              'interaction_site' => \%interaction_site,
-        #     #              'residue_unique_key' => $residue_unique_key,
-        #     #              'potential_function' => $potential_function,
-        #     #              'energy_cutoff_atom' => $energy_cutoff_atom,
-        #     #              'parameters' => $parameters },
-        #     #            [ \@allowed_angles ],
-        #     #            $threads ) };
-        #     # my ( $allowed_angles_new, $energy_sums_new ) =
-        #     # @{
-        #         multi_threading_new(
-        #            \&check_energy_new,
-        #            { 'atom_site' => $atom_site,
-        #              'interaction_site' => \%interaction_site,
-        #              'residue_unique_key' => $residue_unique_key,
-        #              'potential_function' => $potential_function,
-        #              'energy_cutoff_atom' => $energy_cutoff_atom,
-        #              'parameters' => $parameters },
-        #            [ @allowed_angles ],
-        #            $threads ) # }
-        # ;
-
-             my ( $allowed_angles, $energy_sums ) =
-                @{ check_energy_multi_thread( $atom_site,
-                                              \%interaction_site,
-                                              $residue_unique_key,
-                                              \@allowed_angles,
-                                              $potential_function,
-                                              $energy_cutoff_atom,
-                                              $threads,
-                                              $parameters ) };
+            # Re-checks if each atom of the rotamer obey energy cutoffs, because
+            # previous calculations were for growing side-chain.
+            my ( $allowed_angles, $energy_sums ) =
+                @{ multi_threading(
+                       \&check_energy,
+                       { 'atom_site' => $atom_site,
+                         'interaction_site' => \%interaction_site,
+                         'residue_unique_key' => $residue_unique_key,
+                         'potential_function' => $potential_function,
+                         'energy_cutoff_atom' => $energy_cutoff_atom,
+                         'parameters' => $parameters },
+                       [ @allowed_angles ],
+                       $threads ) };
 
             for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                 my %angles =
@@ -485,34 +462,6 @@ sub generate_library
     }
 
     return \%rotamer_library;
-}
-
-sub multi_threading_new
-{
-    my ( $function, $arguments, $divisible_arrays, $threads ) = @_;
-
-    my $allowed_array_blocks =
-        divide_arrays_into_blocks( $divisible_arrays, $threads );
-
-    my @block_results;
-    for my $i ( 0..$threads-1 ) {
-        my $thread_task =
-            threads->create( $function,
-                             $arguments,
-                             [ map { $allowed_array_blocks->[$_][$i] }
-                                   0..$#{$allowed_array_blocks} ] );
-        push( @block_results, $thread_task );
-    }
-
-    my @joined_block_results;
-    for my $block_result ( @block_results ) {
-        $block_result = $block_result->join();
-        for( my $i = 0; $i <= $#{ $block_result }; $i++ ) {
-            push( @{ $joined_block_results[$i] }, @{ $block_result->[$i] } );
-        }
-    }
-
-    return \@joined_block_results;
 }
 
 sub multi_threading
@@ -543,7 +492,52 @@ sub multi_threading
     return \@joined_block_results;
 }
 
-sub check_angles_new
+sub divide_arrays_into_blocks
+{
+    my ( $arrays, $threads ) = @_;
+
+    my $array_length;
+    my @list_of_array_blocks;
+    for my $array ( @{ $arrays } ) {
+        my @array = @{ $array };
+
+        # Arrays have to have equal lengths.
+        if( defined $array_length && scalar( @array ) ne $array_length ) {
+            die( "List of arrays have different lengths." );
+        }
+        $array_length =  scalar( @array );
+
+        # Splits the array into blocks/chunks.
+        my @array_blocks;
+        my $max_block_size =
+            int( scalar( @array ) / $threads );
+
+        # If block size is smaller that the number of threads, then
+        # thread number is reduced.
+        my $reduce_threads = 0;
+        if( ! $max_block_size ) {
+            $reduce_threads = scalar( @array );
+            $max_block_size = 1;
+        }
+
+        for my $i ( 0..$threads-$reduce_threads-1 ) {
+            my $block_start = $i * $max_block_size;
+            my $block_end = $block_start + $max_block_size - 1;
+            if( $i ne $threads-$reduce_threads-1 ) {
+                push( @array_blocks, [ @array[$block_start..$block_end] ] );
+            } else {
+                $block_end = $#array;
+                push( @array_blocks, [ @array[$block_start..$block_end] ] );
+            }
+        }
+
+        push( @list_of_array_blocks, \@array_blocks );
+    }
+
+    return \@list_of_array_blocks;
+}
+
+sub check_angles
 {
     my ( $args, $array_blocks ) = @_;
     my ( $atom_site, $atom_id, $interaction_site, $potential_function,
@@ -607,7 +601,7 @@ sub check_angles_new
     return [ \@allowed_angles, \@allowed_energies ];
 }
 
-sub check_energy_new
+sub check_energy
 {
     my ( $args, $array_blocks ) = @_;
     my ( $atom_site, $interaction_site, $residue_unique_key,
@@ -665,245 +659,10 @@ sub check_energy_new
         }
 
         push( @allowed_angles, $array_blocks->[$i] );
-        push( @energy_sums, [ $rotamer_energy_sum ] );
-    }
-
-    return [ \@allowed_angles, \@energy_sums ] ;
-}
-
-sub check_energy_multi_thread
-{
-    my ( $atom_site, $interaction_site, $residue_unique_key,
-         $allowed_angles, $potential_function, $energy_cutoff_atom,
-         $threads, $parameters ) = @_;
-
-    my ( $allowed_angle_blocks ) =
-        @{ divide_arrays_into_blocks( [ $allowed_angles ], $threads ) };
-
-    my @block_results;
-    for my $i ( 0..$threads-1 ) {
-        my $thread_task =
-            threads->create( \&check_energy_single_thread,
-                             $atom_site,
-                             $interaction_site,
-                             $residue_unique_key,
-                             $allowed_angle_blocks->[$i],
-                             $potential_function,
-                             $energy_cutoff_atom,
-                             $parameters );
-        push( @block_results, $thread_task );
-    }
-
-    my @allowed_angles;
-    my @energy_sums;
-    for my $block_result ( @block_results ) {
-        $block_result = $block_result->join();
-        push( @allowed_angles, @{ $block_result->[0] } );
-        push( @energy_sums, @{ $block_result->[1] } );
-    }
-
-    return [ \@allowed_angles, \@energy_sums ];
-}
-
-sub check_energy_single_thread
-{
-    my ( $atom_site, $interaction_site, $residue_unique_key,
-         $allowed_angles, $potential_function, $energy_cutoff_atom,
-         $parameters ) = @_;
-
-    # Checks for inter-atom interactions and determines if energies
-    # comply with cutoffs.
-    my @allowed_angles;
-    my @energy_sums;
-  ALLOWED_ANGLES:
-    for( my $i = 0; $i <= $#{ $allowed_angles }; $i++ ) {
-        my %angles =
-            map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
-            ( 0..$#{ $allowed_angles->[$i] } );
-        my $rotamer_site =
-            generate_rotamer( $atom_site,
-                              { "$residue_unique_key" => \%angles } );
-        my @rotamer_atom_ids = sort keys %{ $rotamer_site };
-
-        my %rotamer_interaction_site =
-            ( %{ $rotamer_site }, %{ $interaction_site } );
-
-        connect_atoms( \%rotamer_interaction_site );
-
-        my $rotamer_energy_sum = 0;
-        for my $rotamer_atom_id ( @rotamer_atom_ids ) {
-            my $rotamer_atom_energy = 0;
-            for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
-                if( ( $rotamer_atom_id ne $neighbour_atom_id )
-                    && ( ! is_neighbour( \%rotamer_interaction_site,
-                                         $rotamer_atom_id,
-                                         $neighbour_atom_id ) )
-                    && ( ! is_second_neighbour( \%rotamer_interaction_site,
-                                                $rotamer_atom_id,
-                                                $neighbour_atom_id ) ) ){
-                    $rotamer_atom_energy +=
-                        $potential_function->(
-                            $rotamer_interaction_site{$rotamer_atom_id},
-                            $rotamer_interaction_site{$neighbour_atom_id},
-                            $parameters );
-
-                    next ALLOWED_ANGLES
-                        if $rotamer_atom_energy > $energy_cutoff_atom;
-
-                    $rotamer_energy_sum += $rotamer_atom_energy;
-                }
-            }
-        }
-
-        push( @allowed_angles, @{ $allowed_angles } );
         push( @energy_sums, $rotamer_energy_sum );
     }
 
     return [ \@allowed_angles, \@energy_sums ] ;
-}
-
-sub divide_arrays_into_blocks
-{
-    my ( $arrays, $threads ) = @_;
-
-    my $array_length;
-    my @list_of_array_blocks;
-    for my $array ( @{ $arrays } ) {
-        my @array = @{ $array };
-
-        # Arrays have to have equal lengths.
-        if( defined $array_length && scalar( @array ) ne $array_length ) {
-            die( "List of arrays have different lengths." );
-        }
-        $array_length =  scalar( @array );
-
-        # Splits the array into blocks/chunks.
-        my @array_blocks;
-        my $max_block_size =
-            int( scalar( @array ) / $threads );
-
-        # If block size is smaller that the number of threads, then
-        # thread number is reduced.
-        my $reduce_threads = 0;
-        if( ! $max_block_size ) {
-            $reduce_threads = scalar( @array );
-            $max_block_size = 1;
-        }
-
-        for my $i ( 0..$threads-$reduce_threads-1 ) {
-            my $block_start = $i * $max_block_size;
-            my $block_end = $block_start + $max_block_size - 1;
-            if( $i ne $threads-$reduce_threads-1 ) {
-                push( @array_blocks, [ @array[$block_start..$block_end] ] );
-            } else {
-                $block_end = $#array;
-                push( @array_blocks, [ @array[$block_start..$block_end] ] );
-            }
-        }
-
-        push( @list_of_array_blocks, \@array_blocks );
-    }
-
-    return \@list_of_array_blocks;
-}
-
-sub check_angles_multi_thread
-{
-    my ( $atom_site, $atom_id, $interaction_site, $allowed_angles,
-         $allowed_energies, $potential_function, $threads,
-         $energy_cutoff_atom, $parameters ) = @_;
-
-    my ( $allowed_angle_blocks, $allowed_energy_blocks ) =
-        @{ divide_arrays_into_blocks( [ $allowed_angles,
-                                         $allowed_energies ],
-                                       $threads ) };
-
-    my @block_results;
-    for my $i ( 0..$threads-1 ) {
-        my $thread_task =
-            threads->create( \&check_angles_single_thread,
-                             $atom_site,
-                             $atom_id,
-                             $allowed_angle_blocks->[$i],
-                             $allowed_energy_blocks->[$i],
-                             $interaction_site,
-                             $potential_function,
-                             $energy_cutoff_atom,
-                             $parameters );
-        push( @block_results, $thread_task );
-    }
-
-    my @allowed_angles;
-    my @allowed_energies;
-    for my $block_result ( @block_results ) {
-        $block_result = $block_result->join();
-        push( @allowed_angles, @{ $block_result->[0] } );
-        push( @allowed_energies, @{ $block_result->[1] } );
-    }
-
-    return [ \@allowed_angles, \@allowed_energies ];
-}
-
-sub check_angles_single_thread
-{
-    my ( $atom_site,
-         $atom_id,
-         $allowed_angles,
-         $allowed_energies,
-         $interaction_site,
-         $potential_function,
-         $energy_cutoff_atom,
-         $parameters ) = @_;
-
-    my @allowed_angles;
-    my @allowed_energies;
-    for( my $i = 0; $i <= $#{ $allowed_angles }; $i++ ) {
-        my $angles = $allowed_angles->[$i];
-        my $energies = $allowed_energies->[$i][0];
-        my %angles =
-            map { ( "chi$_" => [ $angles->[$_] ] ) }
-            0..$#{ $angles };
-
-        my $pseudo_atom_site =
-            generate_pseudo( $atom_site,
-                             { 'id' => [ "$atom_id" ] },
-                             \%angles );
-        my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
-        my $pseudo_origin_id =
-            $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
-
-        my $potential_energy = 0; # TODO: look if here should be zeros.
-        my $potential_sum = 0;
-        foreach my $interaction_id ( keys %{ $interaction_site } ) {
-            if( ( ! is_neighbour( $atom_site,
-                                  $pseudo_origin_id,
-                                  $interaction_id ) )
-                && ( ! is_second_neighbour( $atom_site,
-                                            $pseudo_origin_id,
-                                            $interaction_id ) )
-                ) {
-                $potential_energy =
-                    $potential_function->(
-                        $pseudo_atom_site->{$pseudo_atom_id},
-                        $atom_site->{$interaction_id},
-                        $parameters );
-                $potential_sum += $potential_energy;
-                last if $potential_energy > $energy_cutoff_atom;
-            }
-        }
-
-        # Writes allowed angles to @next_allowed_angles that will
-        # be passed to more global @allowed_angles. Checks the
-        # last calculated potential. If potential was greater
-        # than the cutoff, then calculation was halted, but the
-        # value remained.
-        if( $potential_energy <= $energy_cutoff_atom ) {
-            push( @allowed_angles, $angles );
-            push( @allowed_energies, [ $energies + $potential_sum ] );
-        }
-    }
-
-    return [ \@allowed_angles, \@allowed_energies ];
 }
 
 sub add_hydrogens
