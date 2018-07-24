@@ -205,13 +205,19 @@ sub around_distance
 
 sub connect_atoms
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $options ) = @_;
 
-    # Removes all previously described connections.
-    for my $atom_id ( keys %{ $atom_site } ) {
-	if( exists $atom_site->{$atom_id}{'connections'} ) {
-	    delete $atom_site->{$atom_id}{'connections'}
-	}
+    my ( $append_connections ) = ( $options->{'append_connections'} );
+
+    $append_connections //= 0;
+
+    # Removes all previously described connections if certain flags are not on.
+    if( ! $append_connections ) {
+        for my $atom_id ( keys %{ $atom_site } ) {
+            if( exists $atom_site->{$atom_id}{'connections'} ) {
+                delete $atom_site->{$atom_id}{'connections'}
+            }
+        }
     }
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
