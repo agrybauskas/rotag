@@ -247,6 +247,16 @@ sub generate_library
     my $energy_cutoff_residue = $args->{'energy_cutoff_residue'};
     my $threads = $args->{'threads'};
 
+    # Selection of potential function.
+    my %potential_functions = (
+        "composite" => \&composite,
+        "hard_sphere" => \&hard_sphere,
+        "soft_sphere" => \&soft_sphere,
+        "leonard_jones" => \&leonard_jones,
+    );
+
+    my $potential_function = $potential_functions{"$interactions"};
+
     $energy_cutoff_residue //= "Inf";
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => \@MAINCHAIN_NAMES };
@@ -271,13 +281,6 @@ sub generate_library
     } else {
         die 'Conformational model was not defined.';
     }
-
-    # Selection of potential function.
-    my $potential_function;
-    $potential_function = \&hard_sphere   if $interactions eq 'hard_sphere';
-    $potential_function = \&soft_sphere   if $interactions eq 'soft_sphere';
-    $potential_function = \&leonard_jones if $interactions eq 'leonard_jones';
-    $potential_function = \&composite     if $interactions eq 'composite';
 
     if( $interactions eq 'composite' ) {
         my %atom_site_with_hydrogens =
