@@ -740,15 +740,14 @@ sub add_hydrogens_sp3
         $ATOMS{$atom_type}{'covalent_radius'}{'length'}[0]
       + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
-    my @connection_ids = @{ $atom_site->{"$atom_id"}{'connections'} };
+    my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter( { 'atom_site' => $atom_site,
+        %{ filter( { 'atom_site' => $reference_atom_site,
                      'include' => { 'id' => \@connection_ids },
                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
                      'data_with_id' => 1 } ) };
 
     my $lone_pair_count = $ATOMS{$atom_type}{'lone_pairs'};
-
 
     if( scalar( @connection_ids ) == 3 ) {
         my ( $up_atom_coord,
@@ -1016,15 +1015,18 @@ sub add_hydrogens_sp2
         $options->{'reference_atom_site'}
     );
 
+    $add_only_clear_positions //= 0;
+    $reference_atom_site //= $atom_site;
+
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
         $ATOMS{$atom_type}{'covalent_radius'}{'length'}[1]
       + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
-    my @connection_ids = @{ $atom_site->{"$atom_id"}{'connections'} };
+    my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter( { 'atom_site' => $atom_site,
+        %{ filter( { 'atom_site' => $reference_atom_site,
                      'include' => { 'id' => \@connection_ids },
                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
                      'data_with_id' => 1 } ) };
@@ -1093,18 +1095,18 @@ sub add_hydrogens_sp2
         # added not to violate rule where atoms should be in one plain.
         my @second_neighbours =
             grep { ! /$atom_id/ }
-            map { @{ $atom_site->{$_}{'connections'} } }
+            map { @{ $reference_atom_site->{$_}{'connections'} } }
             @connection_ids;
 
         for my $second_neighbour ( @second_neighbours ) {
             my $second_hybridization =
-                $atom_site->{$second_neighbour}{'hybridization'};
+                $reference_atom_site->{$second_neighbour}{'hybridization'};
             if( $second_hybridization eq 'sp2'
              || $second_hybridization eq 'sp' ) {
                 $side_coord =
-                    [ $atom_site->{$second_neighbour}{'Cartn_x'},
-                      $atom_site->{$second_neighbour}{'Cartn_y'},
-                      $atom_site->{$second_neighbour}{'Cartn_z'} ];
+                    [ $reference_atom_site->{$second_neighbour}{'Cartn_x'},
+                      $reference_atom_site->{$second_neighbour}{'Cartn_y'},
+                      $reference_atom_site->{$second_neighbour}{'Cartn_z'} ];
                 last;
             }
         }
@@ -1156,8 +1158,9 @@ sub add_hydrogens_sp
 {
     my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens,
          $options ) = @_;
-
     my ( $reference_atom_site ) = ( $options->{'reference_atom_site'} );
+
+    $reference_atom_site //= $atom_site;
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
@@ -1165,9 +1168,9 @@ sub add_hydrogens_sp
         $ATOMS{$atom_type}{'covalent_radius'}{'length'}[1]
       + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
-    my @connection_ids = @{ $atom_site->{"$atom_id"}{'connections'} };
+    my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter( { 'atom_site' => $atom_site,
+        %{ filter( { 'atom_site' => $reference_atom_site,
                      'include' => { 'id' => \@connection_ids },
                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
                      'data_with_id' => 1 } ) };
