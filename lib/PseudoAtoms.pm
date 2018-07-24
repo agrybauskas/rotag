@@ -283,6 +283,10 @@ sub generate_library
     }
 
     if( $interactions eq 'composite' ) {
+        $parameters->{'atom_site'} = \%atom_site;
+    }
+
+    if( $interactions eq 'composite' ) {
         my %atom_site_with_hydrogens =
             ( %atom_site,
               %{ add_hydrogens( \%atom_site,
@@ -347,6 +351,13 @@ sub generate_library
                              'include' =>
                                  { 'id' => $neighbour_cells->{$cell},
                                    %{ $include_interactions } } } ) };
+            # %interaction_site =
+            #     ( %interaction_site,
+            #       %{ add_hydrogens( \%interaction_site,
+            #                         { 'add_only_clear_positions' => 1,
+            #                           'use_existing_connections' => 1,
+            #                           'use_existing_hybridizations' => 1 } ) } );
+            # to_pdbx( { 'atom_site' => \%interaction_site } );
 
             # Goes through each atom in side chain and calculates interaction
             # potential with surrounding atoms. CA and CB are non-movable atoms
@@ -602,14 +613,17 @@ sub add_hydrogens
 
     my ( $add_only_clear_positions,
          $use_existing_connections,
-         $use_existing_hybridizations ) = (
+         $use_existing_hybridizations,
+         $reference_atom_site ) = (
         $options->{'add_only_clear_positions'},
         $options->{'use_existing_connections'},
-        $options->{'use_existing_hybridizations'} );
-
+        $options->{'use_existing_hybridizations'},
+        $options->{'reference_atom_site'} ); # Useful when analyzing only parts
+                                             # of atom site.
     $add_only_clear_positions //= 0;
     $use_existing_connections //= 0;
     $use_existing_hybridizations //= 0;
+    $reference_atom_site //= $atom_site;
 
     my %atom_site = %{ $atom_site };
 
@@ -634,9 +648,11 @@ sub add_hydrogens
         # Decides how many and what hydrogens should be added according to the
         # quantity of bonds and hydrogen atoms that should be connected to the
         # target atom.
-        my @connection_ids = @{ $atom_site{"$atom_id"}{'connections'} };
+        my @connection_ids =
+            @{ $reference_atom_site->{"$atom_id"}{'connections'} };
         my @connection_names =
-            map { $atom_site{"$_"}{'label_atom_id'} } @connection_ids;
+            map { $reference_atom_site->{"$_"}{'label_atom_id'} }
+                @connection_ids;
         my @missing_hydrogens;
         for my $hydrogen_name ( @{ $hydrogen_names } ) {
             if( ! grep { /$hydrogen_name/ } @connection_names ) {
@@ -667,7 +683,7 @@ sub add_hydrogens
                                \%hydrogen_coord, \@missing_hydrogens, $options );
         } elsif( $hybridization eq 'sp' ) {
             add_hydrogens_sp( $atom_site, $atom_id,
-                              \%hydrogen_coord, \@missing_hydrogens );
+                              \%hydrogen_coord, \@missing_hydrogens, $options );
         }
 
         # Each coordinate of atoms is transformed by transformation
@@ -709,8 +725,14 @@ sub add_hydrogens_sp3
     my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens,
          $options ) = @_;
 
-    my ($add_only_clear_positions) = ( $options->{'add_only_clear_positions'} );
+    my ( $add_only_clear_positions,
+         $reference_atom_site ) = (
+        $options->{'add_only_clear_positions'},
+        $options->{'reference_atom_site'}
+    );
+
     $add_only_clear_positions //= 0;
+    $reference_atom_site //= $atom_site;
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
@@ -988,8 +1010,11 @@ sub add_hydrogens_sp2
     my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens,
          $options ) = @_;
 
-    my ($add_only_clear_positions) = ( $options->{'add_only_clear_positions'} );
-    $add_only_clear_positions //= 0;
+    my ( $add_only_clear_positions,
+         $reference_atom_site ) = (
+        $options->{'add_only_clear_positions'},
+        $options->{'reference_atom_site'}
+    );
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
@@ -1129,7 +1154,10 @@ sub add_hydrogens_sp2
 
 sub add_hydrogens_sp
 {
-    my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens ) = @_;
+    my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens,
+         $options ) = @_;
+
+    my ( $reference_atom_site ) = ( $options->{'reference_atom_site'} );
 
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
