@@ -600,13 +600,21 @@ sub add_hydrogens
 {
     my ( $atom_site, $options ) = @_;
 
-    my ($add_only_clear_positions) = ( $options->{'add_only_clear_positions'} );
+    my ( $add_only_clear_positions,
+         $use_existing_connections,
+         $use_existing_hybridizations ) = (
+        $options->{'add_only_clear_positions'},
+        $options->{'use_existing_connections'},
+        $options->{'use_existing_hybridizations'} );
+
     $add_only_clear_positions //= 0;
+    $use_existing_connections //= 0;
+    $use_existing_hybridizations //= 0;
 
     my %atom_site = %{ $atom_site };
 
-    connect_atoms( \%atom_site );
-    hybridization( \%atom_site );
+    if( ! $use_existing_connections ) { connect_atoms( \%atom_site ) };
+    if( ! $use_existing_hybridizations ) { hybridization( \%atom_site ) };
 
     my %hydrogen_site;
     my $last_atom_id = max( keys %{ $atom_site } );
