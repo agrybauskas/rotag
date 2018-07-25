@@ -282,9 +282,9 @@ sub generate_library
         die 'Conformational model was not defined.';
     }
 
-    if( $interactions eq 'composite' ) {
-        $parameters->{'atom_site'} = \%atom_site;
-    }
+    # if( $interactions eq 'composite' ) {
+    #     $parameters->{'atom_site'} = \%atom_site;
+    # }
 
     if( $interactions eq 'composite' ) {
         my %atom_site_with_hydrogens =
@@ -344,21 +344,6 @@ sub generate_library
             my $rotatable_bonds = rotatable_bonds( $residue_site );
             if( ! %{ $rotatable_bonds } ) { next; }
 
-            # Because the change of side-chain position might impact the
-            # surrounding, iteraction site consists of only main chain atoms.
-            my %interaction_site =
-                %{ filter( { 'atom_site' => \%atom_site,
-                             'include' =>
-                                 { 'id' => $neighbour_cells->{$cell},
-                                   %{ $include_interactions } } } ) };
-            # %interaction_site =
-            #     ( %interaction_site,
-            #       %{ add_hydrogens( \%interaction_site,
-            #                         { 'add_only_clear_positions' => 1,
-            #                           'use_existing_connections' => 1,
-            #                           'use_existing_hybridizations' => 1 } ) } );
-            # to_pdbx( { 'atom_site' => \%interaction_site } );
-
             # Goes through each atom in side chain and calculates interaction
             # potential with surrounding atoms. CA and CB are non-movable atoms
             # so, they are marked as starting atoms.
@@ -370,6 +355,31 @@ sub generate_library
                 filter( { 'atom_site' => $residue_site,
                           'include' => { 'label_atom_id' => [ 'CB' ] },
                           'data' => [ 'id' ] } )->[0][0];
+
+            # Because the change of side-chain position might impact the
+            # surrounding, iteraction site consists of only main chain atoms.
+            my %interaction_site =
+                %{ filter( { 'atom_site' => \%atom_site,
+                             'include' =>
+                                 { 'id' => $neighbour_cells->{$cell},
+                                   %{ $include_interactions } } } ) };
+
+            # # Appends predictable by geometry hydrogens, but does not add to
+            # # CB atom of current residue, because the hydrogens change the
+            # # position when rotating along dihedral angle.
+            # %interaction_site =
+            #     ( %interaction_site,
+            #       %{ add_hydrogens(
+            #              filter( { 'atom_site' => \%interaction_site,
+            #                        'exclude' => { 'id' => [ "$cb_atom_id" ] } } ),
+            #              { 'add_only_clear_positions' => 1,
+            #                'use_existing_connections' => 1,
+            #                'use_existing_hybridizations' => 1,
+            #                'reference_atom_site' => \%interaction_site } ) } );
+            # connect_atoms( \%interaction_site, { 'append_connections' => 1 } );
+            # hybridization( \%interaction_site );
+            # $parameters->{'atom_site'} = \%interaction_site;
+
             my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
             my @next_atom_ids =
                 grep { $_ ne $ca_atom_id }
