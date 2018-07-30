@@ -282,10 +282,6 @@ sub generate_library
         die 'Conformational model was not defined.';
     }
 
-    # if( $interactions eq 'composite' ) {
-    #     $parameters->{'atom_site'} = \%atom_site;
-    # }
-
     if( $interactions eq 'composite' ) {
         my %atom_site_with_hydrogens =
             ( %atom_site,
@@ -332,161 +328,174 @@ sub generate_library
 
     for my $cell ( sort { $a cmp $b } keys %target_cell_idxs ) {
         for my $residue_unique_key ( @{ $target_cell_idxs{$cell} } ) {
-            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-                split( ',', $residue_unique_key );
-            my $residue_site =
-                filter( { 'atom_site' => \%atom_site,
-                          'include' => { 'label_seq_id' => [ $residue_id ],
-                                         'label_asym_id' => [ $residue_chain ],
-                                         'label_alt_id' => [ $residue_alt ],
-                                         'label_entity_id' => [ $residue_entity ] } } );
-
-            my $rotatable_bonds = rotatable_bonds( $residue_site );
-            if( ! %{ $rotatable_bonds } ) { next; }
-
-            # Goes through each atom in side chain and calculates interaction
-            # potential with surrounding atoms. CA and CB are non-movable atoms
-            # so, they are marked as starting atoms.
-            my $ca_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'CA' ] },
-                          'data' => [ 'id' ] } )->[0][0];
-            my $cb_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'CB' ] },
-                          'data' => [ 'id' ] } )->[0][0];
-
-            # Because the change of side-chain position might impact the
-            # surrounding, iteraction site consists of only main chain atoms.
-            my %interaction_site =
-                %{ filter( { 'atom_site' => \%atom_site,
-                             'include' =>
-                                 { 'id' => $neighbour_cells->{$cell},
-                                   %{ $include_interactions } } } ) };
-
-            # # Appends predictable by geometry hydrogens, but does not add to
-            # # CB atom of current residue, because the hydrogens change the
-            # # position when rotating along dihedral angle.
-            # %interaction_site =
-            #     ( %interaction_site,
-            #       %{ add_hydrogens(
-            #              filter( { 'atom_site' => \%interaction_site,
-            #                        'exclude' => { 'id' => [ "$cb_atom_id" ] } } ),
-            #              { 'add_only_clear_positions' => 1,
-            #                'use_existing_connections' => 1,
-            #                'use_existing_hybridizations' => 1,
-            #                'reference_atom_site' => \%interaction_site } ) } );
-            # connect_atoms( \%interaction_site, { 'append_connections' => 1 } );
-            # hybridization( \%interaction_site );
-            # $parameters->{'atom_site'} = \%interaction_site;
-
-            my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
-            my @next_atom_ids =
-                grep { $_ ne $ca_atom_id }
-                @{ $residue_site->{$cb_atom_id}{'connections'} };
-
-            my @sampled_angles =
-                map { [ $_ ] }
-                @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
-            my @allowed_angles = @sampled_angles;
-
-            # @zero_energies is a helper variable for permutation() in order to
-            # mimick the permutated angles and match their values correctly.
-            my @zero_energies = map { [ 0 ] } @sampled_angles;
-            my @allowed_energies = @zero_energies;
-
-            while( scalar( @next_atom_ids ) != 0 ) {
-                my @neighbour_atom_ids;
-                for my $atom_id ( @next_atom_ids ) {
-                    # Adds more angle combinations if there are more than one
-                    # rotatable bonds.
-                    if( scalar( @{ $allowed_angles[0] } )
-                      < scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
-                        @allowed_angles =
-                            @{ permutation( 2, [], [ \@allowed_angles,
-                                                     \@sampled_angles ], [] ) };
-                        @allowed_energies =
-                            @{ permutation( 2, [], [ \@allowed_energies,
-                                                     \@zero_energies ], [] ) };
-                        # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-                        @allowed_angles =
-                            map { [ @{ $_->[0] }, @{ $_->[1] } ] }
-                            @allowed_angles;
-                        @allowed_energies =
-                            map { [ $_->[0][0] ] }
-                            @allowed_energies;
-                    }
-
-                    # Marks visited atoms.
-                    push( @visited_atom_ids, $atom_id );
-
-                    # Marks neighbouring atoms.
-                    push( @neighbour_atom_ids,
-                          @{ $atom_site{$atom_id}{'connections'} } );
-
-                    # Starts calculating potential energy.
-                    my ( $next_allowed_angles, $next_allowed_energies ) =
-                        @{ multithreading(
-                               \&check_angles,
-                               { 'atom_site' => \%atom_site,
-                                 'atom_id' => $atom_id,
-                                 'interaction_site' => \%interaction_site,
-                                 'energy_cutoff_atom' => $energy_cutoff_atom,
-                                 'potential_function' => $potential_function,
-                                 'parameters' => $parameters },
-                               [ \@allowed_angles, \@allowed_energies ],
-                               $threads ) };
-
-                    if( scalar( @{ $next_allowed_angles } ) > 0 ) {
-                        @allowed_angles = @{ $next_allowed_angles };
-                        @allowed_energies = @{ $next_allowed_energies };
-                    } else {
-                        die 'No possible rotamer solutions were detected.';
-                    }
-                }
-
-                # Determines next atoms that should be visited.
-                @next_atom_ids = (); # Resets value for the new ones to be
-                                     # appended.
-                for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-                    if( ( ! grep { $neighbour_atom_id eq $_ }
-                            @visited_atom_ids ) ) {
-                        push( @next_atom_ids, $neighbour_atom_id );
-                    }
-                }
-            }
-
-            # Re-checks if each atom of the rotamer obey energy cutoffs, because
-            # previous calculations were for growing side-chain.
-            my ( $allowed_angles, $energy_sums ) =
-                @{ multithreading(
-                       \&check_energy,
-                       { 'atom_site' => $atom_site,
-                         'interaction_site' => \%interaction_site,
+            my @allowed_angles =
+                @{ check_growing_side_chain_angles(
+                       { 'atom_site' => \%atom_site,
                          'residue_unique_key' => $residue_unique_key,
+                         'include_interactions' =>
+                             { 'id' => $neighbour_cells->{$cell},
+                               %{ $include_interactions } },
+                         'small_angle' => $small_angle,
                          'potential_function' => $potential_function,
                          'energy_cutoff_atom' => $energy_cutoff_atom,
-                         'parameters' => $parameters },
-                       [ @allowed_angles ],
-                       $threads ) };
+                         'parameters' => $parameters,
+                         'threads' => $threads } ) };
 
-            for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
-                my %angles =
-                    map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
-                        ( 0..$#{ $allowed_angles->[$i] } );
-                my $rotamer_energy_sum = $energy_sums->[$i];
-                if( defined $rotamer_energy_sum
-                 && $rotamer_energy_sum <= $energy_cutoff_residue ) {
-                    push( @{ $rotamer_library{"$residue_unique_key"} },
-                          { 'angles' => \%angles,
-                            'potential' => $interactions,
-                            'potential_energy_value' => $rotamer_energy_sum } );
-                }
-            }
+            # # Re-checks if each atom of the rotamer obey energy cutoffs, because
+            # # previous calculations were for growing side-chain.
+            # my ( $allowed_angles, $energy_sums ) =
+            #     @{ multithreading(
+            #            \&check_energy,
+            #            { 'atom_site' => $atom_site,
+            #              'interaction_site' => \%interaction_site,
+            #              'residue_unique_key' => $residue_unique_key,
+            #              'potential_function' => $potential_function,
+            #              'energy_cutoff_atom' => $energy_cutoff_atom,
+            #              'parameters' => $parameters },
+            #            [ @allowed_angles ],
+            #            $threads ) };
+
+            # for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+            #     my %angles =
+            #         map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
+            #             ( 0..$#{ $allowed_angles->[$i] } );
+            #     my $rotamer_energy_sum = $energy_sums->[$i];
+            #     if( defined $rotamer_energy_sum
+            #      && $rotamer_energy_sum <= $energy_cutoff_residue ) {
+            #         push( @{ $rotamer_library{"$residue_unique_key"} },
+            #               { 'angles' => \%angles,
+            #                 'potential' => $interactions,
+            #                 'potential_energy_value' => $rotamer_energy_sum } );
+            #     }
+            # }
         }
     }
 
     return \%rotamer_library;
+}
+
+sub check_growing_side_chain_angles
+{
+    my ( $args ) = @_;
+    my ( $atom_site, $residue_unique_key, $include_interactions, $small_angle,
+         $potential_function, $energy_cutoff_atom, $parameters, $threads )=(
+        $args>{'atom_site'},
+        $args->{'residue_unique_key'},
+        $args->{'include_interactions'},
+        $args->{'small_angle'},
+        $args->{'potential_function'},
+        $args->{'energy_cutoff_atom'},
+        $args->{'parameters'},
+        $args->{'threads'}
+    );
+
+    my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+        split( ',', $residue_unique_key );
+    my $residue_site =
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { 'label_seq_id' => [ $residue_id ],
+                                 'label_asym_id' => [ $residue_chain ],
+                                 'label_alt_id' => [ $residue_alt ],
+                                 'label_entity_id' => [ $residue_entity ] } } );
+
+    my $rotatable_bonds = rotatable_bonds( $residue_site );
+    if( ! %{ $rotatable_bonds } ) { next; }
+
+    # Goes through each atom in side chain and calculates interaction
+    # potential with surrounding atoms. CA and CB are non-movable atoms
+    # so, they are marked as starting atoms.
+    my $ca_atom_id =
+        filter( { 'atom_site' => $residue_site,
+                  'include' => { 'label_atom_id' => [ 'CA' ] },
+                  'data' => [ 'id' ] } )->[0][0];
+    my $cb_atom_id =
+        filter( { 'atom_site' => $residue_site,
+                  'include' => { 'label_atom_id' => [ 'CB' ] },
+                  'data' => [ 'id' ] } )->[0][0];
+
+    # Because the change of side-chain position might impact the
+    # surrounding, iteraction site consists of only main chain atoms.
+    my %interaction_site =
+        %{ filter( { 'atom_site' => $atom_site,
+                     'include' => $include_interactions } ) };
+
+    my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
+    my @next_atom_ids =
+        grep { $_ ne $ca_atom_id }
+        @{ $residue_site->{$cb_atom_id}{'connections'} };
+
+    my @sampled_angles =
+        map { [ $_ ] }
+        @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
+    my @allowed_angles = @sampled_angles;
+
+    # @zero_energies is a helper variable for permutation() in order to
+    # mimick the permutated angles and match their values correctly.
+    my @zero_energies = map { [ 0 ] } @sampled_angles;
+    my @allowed_energies = @zero_energies;
+
+    while( scalar( @next_atom_ids ) != 0 ) {
+        my @neighbour_atom_ids;
+        for my $atom_id ( @next_atom_ids ) {
+            # Adds more angle combinations if there are more than one
+            # rotatable bonds.
+            if( scalar( @{ $allowed_angles[0] } )
+              < scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
+                @allowed_angles =
+                    @{ permutation( 2, [], [ \@allowed_angles,
+                                             \@sampled_angles ], [] ) };
+                @allowed_energies =
+                    @{ permutation( 2, [], [ \@allowed_energies,
+                                             \@zero_energies ], [] ) };
+                # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+                @allowed_angles =
+                    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
+                    @allowed_angles;
+                @allowed_energies =
+                    map { [ $_->[0][0] ] }
+                    @allowed_energies;
+            }
+
+            # Marks visited atoms.
+            push( @visited_atom_ids, $atom_id );
+
+            # Marks neighbouring atoms.
+            push( @neighbour_atom_ids,
+                  @{ $atom_site->{$atom_id}{'connections'} } );
+
+            # Starts calculating potential energy.
+            my ( $next_allowed_angles, $next_allowed_energies ) =
+                @{ multithreading(
+                       \&check_angles,
+                       { 'atom_site' => $atom_site,
+                         'atom_id' => $atom_id,
+                         'interaction_site' => \%interaction_site,
+                         'energy_cutoff_atom' => $energy_cutoff_atom,
+                         'potential_function' => $potential_function,
+                         'parameters' => $parameters },
+                       [ \@allowed_angles, \@allowed_energies ],
+                       $threads ) };
+
+            if( scalar( @{ $next_allowed_angles } ) > 0 ) {
+                @allowed_angles = @{ $next_allowed_angles };
+                @allowed_energies = @{ $next_allowed_energies };
+            } else {
+                die 'No possible rotamer solutions were detected.';
+            }
+        }
+
+        # Determines next atoms that should be visited.
+        @next_atom_ids = (); # Resets value for the new ones to be
+                             # appended.
+        for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+            if( ( ! grep { $neighbour_atom_id eq $_ }
+                         @visited_atom_ids ) ) {
+                push( @next_atom_ids, $neighbour_atom_id );
+            }
+        }
+    }
+
+    return \@allowed_angles;
 }
 
 sub check_angles
