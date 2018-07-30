@@ -328,6 +328,8 @@ sub generate_library
 
     for my $cell ( sort { $a cmp $b } keys %target_cell_idxs ) {
         for my $residue_unique_key ( @{ $target_cell_idxs{$cell} } ) {
+            # First, checks angles by step-by-step adding atoms to sidechains.
+            # This is called growing side chain.
             my @allowed_angles =
                 @{ check_growing_side_chain_angles(
                        { 'atom_site' => \%atom_site,
@@ -341,8 +343,7 @@ sub generate_library
                          'parameters' => $parameters,
                          'threads' => $threads } ) };
 
-            # # Re-checks if each atom of the rotamer obey energy cutoffs, because
-            # # previous calculations were for growing side-chain.
+            # Then, re-checks if each atom of the rotamer obey energy cutoffs.
             # my ( $allowed_angles, $energy_sums ) =
             #     @{ multithreading(
             #            \&check_energy,
@@ -371,7 +372,7 @@ sub generate_library
         }
     }
 
-    return \%rotamer_library;
+    # return \%rotamer_library;
 }
 
 sub check_growing_side_chain_angles
@@ -379,7 +380,7 @@ sub check_growing_side_chain_angles
     my ( $args ) = @_;
     my ( $atom_site, $residue_unique_key, $include_interactions, $small_angle,
          $potential_function, $energy_cutoff_atom, $parameters, $threads )=(
-        $args>{'atom_site'},
+        $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'include_interactions'},
         $args->{'small_angle'},
