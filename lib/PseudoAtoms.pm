@@ -247,19 +247,16 @@ sub generate_library
     my $energy_cutoff_residue = $args->{'energy_cutoff_residue'};
     my $threads = $args->{'threads'};
 
-    # Selection of potential function.
-    my %potential_functions = (
-        "composite" => \&composite,
-        "hard_sphere" => \&hard_sphere,
-        "soft_sphere" => \&soft_sphere,
-        "leonard_jones" => \&leonard_jones,
-    );
-
-    my $potential_function = $potential_functions{"$interactions"};
-
     $energy_cutoff_residue //= "Inf";
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => \@MAINCHAIN_NAMES };
+
+    # Selection of potential function.
+    my %potential_functions = ( "composite" => \&composite,
+                                "hard_sphere" => \&hard_sphere,
+                                "soft_sphere" => \&soft_sphere,
+                                "leonard_jones" => \&leonard_jones );
+    my $potential_function = $potential_functions{"$interactions"};
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -309,11 +306,11 @@ sub generate_library
     my %target_cell_idxs;
     for my $cell_idx ( keys %{ $grid_box } ) {
         for my $atom_id ( @{ $grid_box->{"$cell_idx"} } ) {
-            my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
-            my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
-            my $residue_chain = $atom_site{$atom_id}{'label_asym_id'};
-            my $residue_entity = $atom_site{$atom_id}{'label_entity_id'};
-            my $residue_alt = $atom_site{$atom_id}{'label_alt_id'};
+            my ( $atom_name, $residue_id, $residue_chain, $residue_entity,
+                 $residue_alt ) = map { $atom_site->{$atom_id}{$_} }
+                                      ( 'label_atom_id', 'label_seq_id',
+                                        'label_asym_id', 'label_entity_id',
+                                        'label_alt_id' );
             my $residue_unique_key =
                 "$residue_id,$residue_chain,$residue_entity,$residue_alt";
             if( $atom_name eq 'CA'
