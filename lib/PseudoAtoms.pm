@@ -14,6 +14,7 @@ use List::Util qw( max );
 use List::MoreUtils qw( any
                         uniq );
 use Math::Trig qw( acos );
+use Sub::Identify qw( sub_name );
 use threads;
 
 use AtomInteractions qw( hard_sphere
@@ -279,16 +280,6 @@ sub generate_library
         die 'Conformational model was not defined.';
     }
 
-    if( $interactions eq 'composite' ) {
-        my %atom_site_with_hydrogens =
-            ( %atom_site,
-              %{ add_hydrogens( \%atom_site,
-                                { 'add_only_clear_positions' => 1 } ) } );
-        connect_atoms( \%atom_site_with_hydrogens );
-        hybridization( \%atom_site_with_hydrogens );
-        $parameters->{'atom_site'} = \%atom_site_with_hydrogens;
-    }
-
     # Creates the grid box that has edge length of sum of all bonds of the
     # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
     # * (C=N) + (N-H).
@@ -509,6 +500,23 @@ sub check_angles
         $args->{'parameters'}
     );
 
+    # Predetermines geometrically defined hydrogen positions if 'composite'
+    # potential function is used and adjusts to the geometry of rotamers.
+    my %interaction_site_with_hydrogens;
+    if( sub_name( $potential_function ) eq 'composite' ) {
+        %interaction_site_with_hydrogens =
+            ( %{ $interaction_site },
+              %{ add_hydrogens( $interaction_site,
+                                { 'add_only_clear_positions' => 1,
+                                  'use_existing_connections' => 1,
+                                  'use_existing_hybridizations' => 1,
+                                  'reference_atom_site' => $atom_site,
+                                  'exclude_by_atom_name' => [ 'CB' ] } ) } );
+        connect_atoms( \%interaction_site_with_hydrogens );
+        hybridization( \%interaction_site_with_hydrogens );
+        $parameters->{'atom_site'} = \%interaction_site_with_hydrogens;
+    }
+
     my @allowed_angles;
     my @allowed_energies;
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
@@ -631,16 +639,19 @@ sub add_hydrogens
     my ( $add_only_clear_positions,
          $use_existing_connections,
          $use_existing_hybridizations,
-         $reference_atom_site ) = (
+         $reference_atom_site,
+         $exclude_by_atom_name ) = ( # TODO: make more generalized solution.
         $options->{'add_only_clear_positions'},
         $options->{'use_existing_connections'},
         $options->{'use_existing_hybridizations'},
-        $options->{'reference_atom_site'} ); # Useful when analyzing only parts
-                                             # of atom site.
+        $options->{'reference_atom_site'},    # Useful when analyzing only parts
+        $options->{'exclude_by_atom_name'} ); # of atom site.
+
     $add_only_clear_positions //= 0;
     $use_existing_connections //= 0;
     $use_existing_hybridizations //= 0;
     $reference_atom_site //= $atom_site;
+    $exclude_by_atom_name //= [];
 
     my %atom_site = %{ $atom_site };
 
@@ -652,6 +663,8 @@ sub add_hydrogens
 
     for my $atom_id ( sort { $a <=> $b } keys %atom_site ) {
         my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
+        next if any { $_ eq $atom_name } @{ $exclude_by_atom_name };
+
         my $residue_name = $atom_site{$atom_id}{'label_comp_id'};
         my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
 
