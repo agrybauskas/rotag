@@ -14,7 +14,6 @@ use List::Util qw( max );
 use List::MoreUtils qw( any
                         uniq );
 use Math::Trig qw( acos );
-use Sub::Identify qw( sub_name );
 use threads;
 
 use AtomInteractions qw( hard_sphere
@@ -261,6 +260,18 @@ sub generate_library
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
+    # Predetermines geometrically clearly defined hydrogen positions if
+    # 'composite' potential function is used.
+    if( $interactions eq 'composite' ) {
+        my %atom_site_with_hydrogens =
+            ( %atom_site,
+              %{ add_hydrogens( \%atom_site,
+                                { 'add_only_clear_positions' => 1 } ) } );
+        connect_atoms( \%atom_site_with_hydrogens );
+        hybridization( \%atom_site_with_hydrogens );
+        $parameters->{'atom_site'} = \%atom_site_with_hydrogens;
+    }
+
     my %rotamer_library;
 
     # Generates conformational models before checking for clashes/interactions
@@ -316,15 +327,20 @@ sub generate_library
 
     for my $cell ( sort { $a cmp $b } keys %target_cell_idxs ) {
         for my $residue_unique_key ( @{ $target_cell_idxs{$cell} } ) {
+            # Because the change of side-chain position might impact the
+            # surrounding, iteraction site consists of only main chain atoms.
+            my %interaction_site =
+                %{ filter( { 'atom_site' => $atom_site,
+                             'include' => { 'id' => $neighbour_cells->{$cell},
+                                            %{ $include_interactions } } } ) };
+
             # First, checks angles by step-by-step adding atoms to sidechains.
             # This is called growing side chain.
             my @allowed_angles =
                 @{ check_growing_side_chain_angles(
                        { 'atom_site' => \%atom_site,
                          'residue_unique_key' => $residue_unique_key,
-                         'include_interactions' =>
-                             { 'id' => $neighbour_cells->{$cell},
-                               %{ $include_interactions } },
+                         'interaction_site' => \%interaction_site,
                          'small_angle' => $small_angle,
                          'potential_function' => $potential_function,
                          'energy_cutoff_atom' => $energy_cutoff_atom,
@@ -332,45 +348,45 @@ sub generate_library
                          'threads' => $threads } ) };
 
             # Then, re-checks if each atom of the rotamer obey energy cutoffs.
-            # my ( $allowed_angles, $energy_sums ) =
-            #     @{ multithreading(
-            #            \&check_energy,
-            #            { 'atom_site' => $atom_site,
-            #              'interaction_site' => \%interaction_site,
-            #              'residue_unique_key' => $residue_unique_key,
-            #              'potential_function' => $potential_function,
-            #              'energy_cutoff_atom' => $energy_cutoff_atom,
-            #              'parameters' => $parameters },
-            #            [ @allowed_angles ],
-            #            $threads ) };
+            my ( $allowed_angles, $energy_sums ) =
+                @{ multithreading(
+                       \&check_energy,
+                       { 'atom_site' => $atom_site,
+                         'interaction_site' => \%interaction_site,
+                         'residue_unique_key' => $residue_unique_key,
+                         'potential_function' => $potential_function,
+                         'energy_cutoff_atom' => $energy_cutoff_atom,
+                         'parameters' => $parameters },
+                       [ @allowed_angles ],
+                       $threads ) };
 
-            # for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
-            #     my %angles =
-            #         map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
-            #             ( 0..$#{ $allowed_angles->[$i] } );
-            #     my $rotamer_energy_sum = $energy_sums->[$i];
-            #     if( defined $rotamer_energy_sum
-            #      && $rotamer_energy_sum <= $energy_cutoff_residue ) {
-            #         push( @{ $rotamer_library{"$residue_unique_key"} },
-            #               { 'angles' => \%angles,
-            #                 'potential' => $interactions,
-            #                 'potential_energy_value' => $rotamer_energy_sum } );
-            #     }
-            # }
+            for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+                my %angles =
+                    map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
+                        ( 0..$#{ $allowed_angles->[$i] } );
+                my $rotamer_energy_sum = $energy_sums->[$i];
+                if( defined $rotamer_energy_sum
+                 && $rotamer_energy_sum <= $energy_cutoff_residue ) {
+                    push( @{ $rotamer_library{"$residue_unique_key"} },
+                          { 'angles' => \%angles,
+                            'potential' => $interactions,
+                            'potential_energy_value' => $rotamer_energy_sum } );
+                }
+            }
         }
     }
 
-    # return \%rotamer_library;
+    return \%rotamer_library;
 }
 
 sub check_growing_side_chain_angles
 {
     my ( $args ) = @_;
-    my ( $atom_site, $residue_unique_key, $include_interactions, $small_angle,
+    my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
          $potential_function, $energy_cutoff_atom, $parameters, $threads )=(
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
-        $args->{'include_interactions'},
+        $args->{'interaction_site'},
         $args->{'small_angle'},
         $args->{'potential_function'},
         $args->{'energy_cutoff_atom'},
@@ -401,12 +417,6 @@ sub check_growing_side_chain_angles
         filter( { 'atom_site' => $residue_site,
                   'include' => { 'label_atom_id' => [ 'CB' ] },
                   'data' => [ 'id' ] } )->[0][0];
-
-    # Because the change of side-chain position might impact the
-    # surrounding, iteraction site consists of only main chain atoms.
-    my %interaction_site =
-        %{ filter( { 'atom_site' => $atom_site,
-                     'include' => $include_interactions } ) };
 
     my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     my @next_atom_ids =
@@ -458,7 +468,7 @@ sub check_growing_side_chain_angles
                        \&check_angles,
                        { 'atom_site' => $atom_site,
                          'atom_id' => $atom_id,
-                         'interaction_site' => \%interaction_site,
+                         'interaction_site' => $interaction_site,
                          'energy_cutoff_atom' => $energy_cutoff_atom,
                          'potential_function' => $potential_function,
                          'parameters' => $parameters },
@@ -499,23 +509,6 @@ sub check_angles
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'}
     );
-
-    # Predetermines geometrically defined hydrogen positions if 'composite'
-    # potential function is used and adjusts to the geometry of rotamers.
-    my %interaction_site_with_hydrogens;
-    if( sub_name( $potential_function ) eq 'composite' ) {
-        %interaction_site_with_hydrogens =
-            ( %{ $interaction_site },
-              %{ add_hydrogens( $interaction_site,
-                                { 'add_only_clear_positions' => 1,
-                                  'use_existing_connections' => 1,
-                                  'use_existing_hybridizations' => 1,
-                                  'reference_atom_site' => $atom_site,
-                                  'exclude_by_atom_name' => [ 'CB' ] } ) } );
-        connect_atoms( \%interaction_site_with_hydrogens );
-        hybridization( \%interaction_site_with_hydrogens );
-        $parameters->{'atom_site'} = \%interaction_site_with_hydrogens;
-    }
 
     my @allowed_angles;
     my @allowed_energies;
