@@ -175,7 +175,8 @@ sub generate_pseudo
 sub generate_rotamer
 {
     my ( $atom_site, $angle_values, $last_atom_id, $alt_group_id, $options ) = @_;
-    my ( $set_missing_angles_to_zero ) = $options->{'set_missing_angles_to_zero'};
+    my ( $set_missing_angles_to_zero ) =
+        ( $options->{'set_missing_angles_to_zero'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -522,6 +523,8 @@ sub check_angles
         $args->{'parameters'}
     );
 
+    my %parameters = defined $parameters ? %{ $parameters } : ();
+
     my @allowed_angles;
     my @allowed_energies;
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
@@ -531,11 +534,28 @@ sub check_angles
             map { ( "chi$_" => [ $angles->[$_] ] ) }
             0..$#{ $angles };
 
-        my %parameters = %{ $parameters };
-        if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
-            my %atom_site_with_hydrogens = %{ $parameters{'atom_site'} };
+        # if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
+        #     my %atom_site_with_hydrogens = %{ $parameters{'atom_site'} };
+        #     my $residue_unique_key =
+        #         join( ',',
+        #               $atom_site->{"$atom_id"}{'label_seq_id'},
+        #               $atom_site->{"$atom_id"}{'label_asym_id'},
+        #               $atom_site->{"$atom_id"}{'label_entity_id'},
+        #               $atom_site->{"$atom_id"}{'label_alt_id'} );
 
-        }
+        #     # TODO: change angle values to standard format.
+        #     my %current_angles;
+        #     for my $angle_name ( sort keys %angles ) {
+        #         $current_angles{$angle_name} = $angles{$angle_name}->[0];
+        #     }
+
+        #     my $residue_site =
+        #         generate_rotamer( \%atom_site_with_hydrogens,
+        #                           { $residue_unique_key => \%current_angles  },
+        #                           undef, # TODO: move arguments to options.
+        #                           undef, #
+        #                           { 'set_missing_angles_to_zero' => 1 } );
+        # }
 
         my $pseudo_atom_site =
             generate_pseudo( $atom_site,
@@ -559,7 +579,7 @@ sub check_angles
                     $potential_function->(
                         $pseudo_atom_site->{$pseudo_atom_id},
                         $atom_site->{$interaction_id},
-                        \%parameters );
+                        $parameters );
                 $potential_sum += $potential_energy;
                 last if $potential_energy > $energy_cutoff_atom;
             }
