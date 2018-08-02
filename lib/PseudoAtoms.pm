@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( add_hydrogens
                      generate_rotamer
                      library_to_csv );
 
+use B qw( svref_2object );
 use List::Util qw( max );
 use List::MoreUtils qw( any
                         uniq );
@@ -173,10 +174,12 @@ sub generate_pseudo
 
 sub generate_rotamer
 {
-    my ( $atom_site, $angle_values, $last_atom_id, $alt_group_id ) = @_;
+    my ( $atom_site, $angle_values, $last_atom_id, $alt_group_id, $options ) = @_;
+    my ( $set_missing_angles_to_zero ) = $options->{'set_missing_angles_to_zero'};
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
+    $set_missing_angles_to_zero //= 0;
 
     my %atom_site = %{ $atom_site };
     my %rotamer_atom_site;
@@ -199,8 +202,17 @@ sub generate_rotamer
 
             my %angles;
             for my $angle_name ( keys %{ $rotatable_bonds->{$atom_id} } ) {
-                $angles{$angle_name} =
-                    [ $angle_values->{"$residue_unique_key"}{$angle_name} ];
+                if( exists $angle_values->{"$residue_unique_key"}{$angle_name}
+                 && defined $angle_values->{"$residue_unique_key"}{$angle_name} ) {
+                    $angles{$angle_name} =
+                        [ $angle_values->{"$residue_unique_key"}{$angle_name} ];
+                } else {
+                    if( $set_missing_angles_to_zero ) {
+                        $angles{$angle_name} = [ 0.0 ];
+                    } else {
+                        die( "No values for $angle_name were assigned." );
+                    }
+                }
             }
 
             %rotamer_atom_site =
@@ -519,6 +531,12 @@ sub check_angles
             map { ( "chi$_" => [ $angles->[$_] ] ) }
             0..$#{ $angles };
 
+        my %parameters = %{ $parameters };
+        if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
+            my %atom_site_with_hydrogens = %{ $parameters{'atom_site'} };
+
+        }
+
         my $pseudo_atom_site =
             generate_pseudo( $atom_site,
                              { 'id' => [ "$atom_id" ] },
@@ -541,7 +559,7 @@ sub check_angles
                     $potential_function->(
                         $pseudo_atom_site->{$pseudo_atom_id},
                         $atom_site->{$interaction_id},
-                        $parameters );
+                        \%parameters );
                 $potential_sum += $potential_energy;
                 last if $potential_energy > $energy_cutoff_atom;
             }
