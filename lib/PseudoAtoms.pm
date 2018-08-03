@@ -553,7 +553,7 @@ sub check_angles
         #         generate_rotamer( \%atom_site_with_hydrogens,
         #                           { $residue_unique_key => \%current_angles  },
         #                           undef, # TODO: move arguments to options.
-        #                           undef, #
+        #                           '.',
         #                           { 'set_missing_angles_to_zero' => 1 } );
         # }
 
@@ -671,18 +671,21 @@ sub add_hydrogens
          $use_existing_connections,
          $use_existing_hybridizations,
          $reference_atom_site,
-         $exclude_by_atom_name ) = ( # TODO: make more generalized solution.
+         $exclude_by_atom_name,
+         $alt_id ) = ( # TODO: make more generalized solution.
         $options->{'add_only_clear_positions'},
         $options->{'use_existing_connections'},
         $options->{'use_existing_hybridizations'},
         $options->{'reference_atom_site'},    # Useful when analyzing only parts
-        $options->{'exclude_by_atom_name'} ); # of atom site.
+        $options->{'exclude_by_atom_name'},
+        $options->{'alt_id'} ); # of atom site.
 
     $add_only_clear_positions //= 0;
     $use_existing_connections //= 0;
     $use_existing_hybridizations //= 0;
     $reference_atom_site //= $atom_site;
     $exclude_by_atom_name //= [];
+    $alt_id //= '1';
 
     my %atom_site = %{ $atom_site };
 
@@ -758,7 +761,7 @@ sub add_hydrogens
                   'id' => $last_atom_id,
                   'type_symbol' => 'H',
                   'label_atom_id' => $hydrogen_name,
-                  'label_alt_id' => '1',
+                  'label_alt_id' => $alt_id,
                   'label_comp_id' => $atom_site->{$atom_id}{'label_comp_id'},
                   'label_asym_id' => $atom_site->{$atom_id}{'label_asym_id'},
                   'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},
