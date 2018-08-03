@@ -274,7 +274,7 @@ our %HYDROGEN_NAMES = (
 # TODO: should include proline atoms.
 our @MAINCHAIN_NAMES = (
     'N', 'CA', 'C', 'O', 'OXT', 'CB', 'H', 'H2',
-    'HA2', 'HA3', 'HB1', 'HB2', 'HB3', 'HXT'
+    'HA2', 'HA3', 'HXT'
 );
 
 # -------------------------- Atom related functions --------------------------- #
