@@ -281,7 +281,9 @@ our @MAINCHAIN_NAMES = (
 
 sub sort_atom_names
 {
-    my ( $atom_names, $sort_type ) = @_;
+    my ( $atom_names, $options ) = @_;
+    my ( $sort_type ) = ( $options->{'sort_type'} );
+
     $sort_type //= 'tgn';
 
     # First priority is decided by atom type: S > P > O > N > C > H.

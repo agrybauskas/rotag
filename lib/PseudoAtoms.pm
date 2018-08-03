@@ -30,14 +30,12 @@ use ConnectAtoms qw( connect_atoms
                      is_second_neighbour );
 use Grid qw( grid_box
              identify_neighbour_cells );
-use LinearAlgebra qw( find_euler_angles
-                      mult_matrix_product
+use LinearAlgebra qw( mult_matrix_product
                       pi
                       switch_ref_frame );
 use Measure qw( all_dihedral
                 dihedral_angle
-                bond_angle
-                bond_length );
+                bond_angle );
 use MoleculeProperties qw( hybridization
                            rotatable_bonds );
 use Multithreading qw( multithreading );

@@ -11,18 +11,13 @@ our @EXPORT_OK = qw( hard_sphere
                      h_bond
                      composite );
 
-use List::Util qw( any max );
+use List::Util qw( any );
 use Math::Trig qw( acos );
 
 use AtomProperties qw( %ATOMS
                        %HYDROGEN_NAMES );
-use ConnectAtoms qw( connect_atoms
-                     distance
-                     distance_squared
-                     is_connected
-                     is_second_neighbour );
-use Grid qw( grid_box );
-use PDBxParser qw( filter );
+use ConnectAtoms qw( distance
+                     distance_squared );
 use LinearAlgebra qw( pi );
 use Measure qw( bond_angle );
 

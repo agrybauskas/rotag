@@ -10,7 +10,6 @@ use List::MoreUtils qw( uniq );
 
 use AlterMolecule qw( bond_torsion );
 use AtomProperties qw( sort_atom_names );
-use ConnectAtoms qw( connect_atoms );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use MoleculeProperties qw( rotatable_bonds );

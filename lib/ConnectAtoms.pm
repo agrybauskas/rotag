@@ -13,14 +13,11 @@ our @EXPORT_OK = qw( around_distance
 		     is_neighbour
 		     is_second_neighbour );
 
-use List::Util qw( any
-		   max
-		   min );
+use List::Util qw( any );
 
 use AtomProperties qw( %ATOMS );
 use Combinatorics qw( permutation );
-use Grid qw( create_box
-             identify_neighbour_cells
+use Grid qw( identify_neighbour_cells
              grid_box );
 use PDBxParser qw( filter );
 

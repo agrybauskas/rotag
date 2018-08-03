@@ -8,12 +8,8 @@ our @EXPORT_OK = qw( angle_bending
                      bond_stretching
                      bond_torsion );
 
-use Math::Trig;
-
 use LinearAlgebra qw( mult_matrix_product
                       switch_ref_frame );
-use Measure qw( bond_angle
-                dihedral_angle );
 
 # ----------------------- Molecule alteration matrices ------------------------ #
 

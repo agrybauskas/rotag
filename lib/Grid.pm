@@ -8,12 +8,10 @@ our @EXPORT_OK = qw( create_box
                      identify_neighbour_cells
 		     grid_box );
 
-use List::Util qw( any
-		   max
+use List::Util qw( max
 		   min );
 
 use AtomProperties qw( %ATOMS );
-use Combinatorics qw( permutation );
 use PDBxParser qw( filter );
 
 # ---------------------------------------------------------------------------- #

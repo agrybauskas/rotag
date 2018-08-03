@@ -437,7 +437,7 @@ sub rotatable_bonds
                filter( { 'atom_site' => \%atom_site,
                          'include' => { 'id' => \@bond_second_ids },
                          'data' => [ 'label_atom_id' ],
-                         'is_list' => 1 } ), 'gn' ) };
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
 
     my %bond_names; # Names by second atom priority.
     my $bond_name_id = 0;
