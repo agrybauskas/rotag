@@ -258,6 +258,7 @@ sub generate_library
     my $energy_cutoff_residue = $args->{'energy_cutoff_residue'};
     my $threads = $args->{'threads'};
 
+    $conf_model //= 'rotation_only';
     $energy_cutoff_residue //= "Inf";
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => \@MAINCHAIN_NAMES };
@@ -277,7 +278,8 @@ sub generate_library
         my %atom_site_with_hydrogens =
             ( %atom_site,
               %{ add_hydrogens( \%atom_site,
-                                { 'add_only_clear_positions' => 1 } ) } );
+                                { 'add_only_clear_positions' => 1,
+                                  'alt_id' => '.' } ) } );
         connect_atoms( \%atom_site_with_hydrogens );
         hybridization( \%atom_site_with_hydrogens );
         $parameters->{'atom_site'} = \%atom_site_with_hydrogens;
@@ -291,12 +293,22 @@ sub generate_library
         for my $residue_unique_key ( @{ $residue_unique_keys } ) {
             my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
                 split( ',', $residue_unique_key );
-            rotation_only( filter( { 'atom_site' => \%atom_site,
-                                     'include' =>
-                                     { 'label_seq_id' => [ $residue_id ],
-                                       'label_asym_id' => [ $residue_chain ],
-                                       'label_entity_id' => [ $residue_entity ],
-                                       'label_alt_id' => [ $residue_alt ] } } ) );
+            rotation_only(
+                filter( { 'atom_site' => \%atom_site,
+                          'include' =>
+                              { 'label_seq_id' => [ $residue_id ],
+                                'label_asym_id' => [ $residue_chain ],
+                                'label_entity_id' => [ $residue_entity ],
+                                'label_alt_id' => [ $residue_alt ] } } ) );
+            if( $interactions eq 'composite' ) {
+                rotation_only(
+                    filter( { 'atom_site' => $parameters->{'atom_site'},
+                              'include' =>
+                                  { 'label_seq_id' => [ $residue_id ],
+                                    'label_asym_id' => [ $residue_chain ],
+                                    'label_entity_id' => [ $residue_entity ],
+                                    'label_alt_id' => [ $residue_alt ] } } ) );
+            }
         }
     } else {
         die 'Conformational model was not defined.';
@@ -551,7 +563,7 @@ sub check_angles
         #         generate_rotamer( \%atom_site_with_hydrogens,
         #                           { $residue_unique_key => \%current_angles  },
         #                           undef, # TODO: move arguments to options.
-        #                           '.',
+        #                           undef,
         #                           { 'set_missing_angles_to_zero' => 1 } );
         # }
 
