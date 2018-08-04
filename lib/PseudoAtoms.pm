@@ -140,11 +140,13 @@ sub generate_pseudo
                 } );
             # Adds atom id that pseudo atoms was made of.
             $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
-            # Adds hybridization and connection data from origin atom.
+            # Adds hybridization, connection, conformation data from origin atom.
             $pseudo_atom_site{$last_atom_id}{'hybridization'} =
                 $atom_site{$atom_id}{'hybridization'};
             $pseudo_atom_site{$last_atom_id}{'connections'} =
                 $atom_site{$atom_id}{'connections'};
+            $pseudo_atom_site{$last_atom_id}{'conformation'} =
+                $atom_site{$atom_id}{'conformation'};
             # Adds information about used dihedral angle values and names.
             $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
             $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
@@ -220,8 +222,18 @@ sub generate_rotamer
                                       { 'id' => [ $atom_id ] },
                                       \%angles,
                                       $last_atom_id,
-                                      $alt_group_id ) } );
+                                      ( $alt_group_id ne '.' ?
+                                        $alt_group_id :
+                                        'X' ) ) } ); # Changes . to X, because
+                                                     # otherwise screws up
+                                                     # calculations.
             $last_atom_id++;
+        }
+    }
+
+    if( $alt_group_id eq '.' ) {
+        for my $atom_id ( keys %rotamer_atom_site ) {
+            $rotamer_atom_site{"$atom_id"}{'label_alt_id'} = '.';
         }
     }
 
@@ -563,8 +575,33 @@ sub check_angles
         #         generate_rotamer( \%atom_site_with_hydrogens,
         #                           { $residue_unique_key => \%current_angles  },
         #                           undef, # TODO: move arguments to options.
-        #                           undef,
+        #                           '.',
         #                           { 'set_missing_angles_to_zero' => 1 } );
+
+        #     # Replaces with modified atoms.
+        #     my $replacable_atom_ids =
+        #         filter( {'atom_site' => \%atom_site_with_hydrogens,
+        #                  'include' =>
+        #                      {'label_seq_id' =>
+        #                           [$atom_site->{"$atom_id"}{'label_seq_id'}],
+        #                       'label_asym_id' =>
+        #                           [$atom_site->{"$atom_id"}{'label_asym_id'}],
+        #                       'label_entity_id' =>
+        #                           [$atom_site->{"$atom_id"}{'label_entity_id'}],
+        #                       'label_alt_id' =>
+        #                           [$atom_site->{"$atom_id"}{'label_alt_id'}]},
+        #                  'exclude' => {'label_atom_id' => \@MAINCHAIN_NAMES },
+        #                  'data' => [ 'id' ],
+        #                  'is_list' => 1 } );
+        #     for my $replacable_atom_id ( @{ $replacable_atom_ids } ) {
+        #         delete $atom_site_with_hydrogens{"$replacable_atom_id"};
+        #     }
+
+        #     %atom_site_with_hydrogens = ( %atom_site_with_hydrogens,
+        #                                   %{ $residue_site } );
+
+        #     connect_atoms( \%atom_site_with_hydrogens,
+        #                    { 'use_existing_connections' => 1 } );
         # }
 
         my $pseudo_atom_site =
@@ -589,7 +626,7 @@ sub check_angles
                     $potential_function->(
                         $pseudo_atom_site->{$pseudo_atom_id},
                         $atom_site->{$interaction_id},
-                        $parameters );
+                        \%parameters );
                 $potential_sum += $potential_energy;
                 last if $potential_energy > $energy_cutoff_atom;
             }
