@@ -579,29 +579,17 @@ sub check_angles
         #                           { 'set_missing_angles_to_zero' => 1 } );
 
         #     # Replaces with modified atoms.
-        #     my $replacable_atom_ids =
-        #         filter( {'atom_site' => \%atom_site_with_hydrogens,
-        #                  'include' =>
-        #                      {'label_seq_id' =>
-        #                           [$atom_site->{"$atom_id"}{'label_seq_id'}],
-        #                       'label_asym_id' =>
-        #                           [$atom_site->{"$atom_id"}{'label_asym_id'}],
-        #                       'label_entity_id' =>
-        #                           [$atom_site->{"$atom_id"}{'label_entity_id'}],
-        #                       'label_alt_id' =>
-        #                           [$atom_site->{"$atom_id"}{'label_alt_id'}]},
-        #                  'exclude' => {'label_atom_id' => \@MAINCHAIN_NAMES },
-        #                  'data' => [ 'id' ],
-        #                  'is_list' => 1 } );
-        #     for my $replacable_atom_id ( @{ $replacable_atom_ids } ) {
-        #         delete $atom_site_with_hydrogens{"$replacable_atom_id"};
+        #     for my $residue_atom_id ( keys %{ $residue_site } ) {
+        #         my $residue_origin_atom_id =
+        #             $residue_site->{$residue_atom_id}{'origin_atom_id'};
+        #         $residue_site->{$residue_atom_id}{'id'} =
+        #             $residue_origin_atom_id;
+        #         $atom_site_with_hydrogens{$residue_origin_atom_id} =
+        #             $residue_site->{$residue_atom_id};
         #     }
 
-        #     %atom_site_with_hydrogens = ( %atom_site_with_hydrogens,
-        #                                   %{ $residue_site } );
-
         #     connect_atoms( \%atom_site_with_hydrogens,
-        #                    { 'use_existing_connections' => 1 } );
+        #                    { 'append_connections' => 1 } );
         # }
 
         my $pseudo_atom_site =
