@@ -11,6 +11,7 @@ our @EXPORT_OK = qw( add_hydrogens
                      library_to_csv );
 
 use B qw( svref_2object );
+use Clone qw( clone );
 use List::Util qw( max );
 use List::MoreUtils qw( any
                         uniq );
@@ -554,7 +555,7 @@ sub check_angles
             map { ( "chi$_" => [ $angles->[$_] ] ) }
             0..$#{ $angles };
 
-        my %parameters = defined $parameters ? %{ $parameters } : ();
+        my $parameters_clone = clone( $parameters );
         if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
             my $residue_unique_key =
                 join( ',',
@@ -569,7 +570,7 @@ sub check_angles
                 $current_angles{$angle_name} = $angles{$angle_name}->[0];
             }
 
-            replace_with_rotamer( $parameters{'atom_site'},
+            replace_with_rotamer( $parameters_clone->{'atom_site'},
                                   $residue_unique_key,
                                   { $residue_unique_key => \%current_angles } );
         }
@@ -596,7 +597,7 @@ sub check_angles
                     $potential_function->(
                         $pseudo_atom_site->{$pseudo_atom_id},
                         $atom_site->{$interaction_id},
-                        $parameters );
+                        $parameters_clone );
                 $potential_sum += $potential_energy;
                 last if $potential_energy > $energy_cutoff_atom;
             }
@@ -648,9 +649,9 @@ sub check_energy
 
         connect_atoms( \%rotamer_interaction_site );
 
-        my %parameters = defined $parameters ? %{ $parameters } : ();
+        my $parameters_clone = clone( $parameters );
         if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
-            replace_with_rotamer( $parameters{'atom_site'},
+            replace_with_rotamer( $parameters_clone->{'atom_site'},
                                   $residue_unique_key,
                                   \%angles );
         }
@@ -670,7 +671,7 @@ sub check_energy
                         $potential_function->(
                             $rotamer_interaction_site{$rotamer_atom_id},
                             $rotamer_interaction_site{$neighbour_atom_id},
-                            \%parameters );
+                            $parameters_clone );
 
                     next ALLOWED_ANGLES
                         if $rotamer_atom_energy > $energy_cutoff_atom;
