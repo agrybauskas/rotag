@@ -550,13 +550,12 @@ sub check_angles
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
         my $angles = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
-        my %parameters = defined $parameters ? %{ $parameters } : ();
         my %angles =
             map { ( "chi$_" => [ $angles->[$_] ] ) }
             0..$#{ $angles };
 
+        my %parameters = defined $parameters ? %{ $parameters } : ();
         if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
-            my %atom_site_with_hydrogens = %{ $parameters{'atom_site'} };
             my $residue_unique_key =
                 join( ',',
                       $atom_site->{"$atom_id"}{'label_seq_id'},
@@ -570,27 +569,9 @@ sub check_angles
                 $current_angles{$angle_name} = $angles{$angle_name}->[0];
             }
 
-            my $residue_site =
-                generate_rotamer( \%atom_site_with_hydrogens,
-                                  { $residue_unique_key => \%current_angles  },
-                                  undef, # TODO: move arguments to options.
-                                  '.',
-                                  { 'set_missing_angles_to_zero' => 1 } );
-
-            # Replaces with modified atoms.
-            for my $residue_atom_id ( keys %{ $residue_site } ) {
-                my $residue_origin_atom_id =
-                    $residue_site->{$residue_atom_id}{'origin_atom_id'};
-                $residue_site->{$residue_atom_id}{'id'} =
-                    $residue_origin_atom_id;
-                $residue_site->{$residue_atom_id}{'connections'} =
-                    $atom_site_with_hydrogens{$residue_origin_atom_id}
-                                             {'connections'};
-                $atom_site_with_hydrogens{$residue_origin_atom_id} =
-                    $residue_site->{$residue_atom_id};
-            }
-
-            $parameters{'atom_site'} = \%atom_site_with_hydrogens;
+            replace_with_rotamer( $parameters{'atom_site'},
+                                  $residue_unique_key,
+                                  { $residue_unique_key => \%current_angles } );
         }
 
         my $pseudo_atom_site =
@@ -615,7 +596,7 @@ sub check_angles
                     $potential_function->(
                         $pseudo_atom_site->{$pseudo_atom_id},
                         $atom_site->{$interaction_id},
-                        \%parameters );
+                        $parameters );
                 $potential_sum += $potential_energy;
                 last if $potential_energy > $energy_cutoff_atom;
             }
@@ -657,15 +638,22 @@ sub check_energy
         my %angles =
             map { ( "chi$_" => $array_blocks->[$i][$_] ) }
                 0..$#{ $array_blocks->[$i] };
+
         my $rotamer_site =
             generate_rotamer( $atom_site,
                               { "$residue_unique_key" => \%angles } );
         my @rotamer_atom_ids = sort keys %{ $rotamer_site };
-
         my %rotamer_interaction_site =
             ( %{ $rotamer_site }, %{ $interaction_site } );
 
         connect_atoms( \%rotamer_interaction_site );
+
+        my %parameters = defined $parameters ? %{ $parameters } : ();
+        if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
+            replace_with_rotamer( $parameters{'atom_site'},
+                                  $residue_unique_key,
+                                  \%angles );
+        }
 
         my $rotamer_energy_sum = 0;
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
@@ -682,7 +670,7 @@ sub check_energy
                         $potential_function->(
                             $rotamer_interaction_site{$rotamer_atom_id},
                             $rotamer_interaction_site{$neighbour_atom_id},
-                            $parameters );
+                            \%parameters );
 
                     next ALLOWED_ANGLES
                         if $rotamer_atom_energy > $energy_cutoff_atom;
@@ -697,6 +685,30 @@ sub check_energy
     }
 
     return [ \@allowed_angles, \@energy_sums ] ;
+}
+
+sub replace_with_rotamer
+{
+    my ( $atom_site, $residue_unique_key, $angles ) = @_;
+
+    my $residue_site =
+        generate_rotamer( $atom_site,
+                          { $residue_unique_key => $angles  },
+                          undef, # TODO: move arguments to options.
+                          '.',
+                          { 'set_missing_angles_to_zero' => 1 } );
+
+    for my $residue_atom_id ( keys %{ $residue_site } ) {
+        my $residue_origin_atom_id = $residue_site->{$residue_atom_id}
+                                                    {'origin_atom_id'};
+        $residue_site->{$residue_atom_id}{'id'} = $residue_origin_atom_id;
+        $residue_site->{$residue_atom_id}{'connections'} =
+            $atom_site->{$residue_origin_atom_id}{'connections'};
+        $atom_site->{$residue_origin_atom_id} =
+            $residue_site->{$residue_atom_id};
+    }
+
+    return;
 }
 
 sub add_hydrogens
