@@ -545,52 +545,53 @@ sub check_angles
         $args->{'parameters'}
     );
 
-    my %parameters = defined $parameters ? %{ $parameters } : ();
-
     my @allowed_angles;
     my @allowed_energies;
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
         my $angles = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
+        my %parameters = defined $parameters ? %{ $parameters } : ();
         my %angles =
             map { ( "chi$_" => [ $angles->[$_] ] ) }
             0..$#{ $angles };
 
-        # if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
-        #     my %atom_site_with_hydrogens = %{ $parameters{'atom_site'} };
-        #     my $residue_unique_key =
-        #         join( ',',
-        #               $atom_site->{"$atom_id"}{'label_seq_id'},
-        #               $atom_site->{"$atom_id"}{'label_asym_id'},
-        #               $atom_site->{"$atom_id"}{'label_entity_id'},
-        #               $atom_site->{"$atom_id"}{'label_alt_id'} );
+        if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
+            my %atom_site_with_hydrogens = %{ $parameters{'atom_site'} };
+            my $residue_unique_key =
+                join( ',',
+                      $atom_site->{"$atom_id"}{'label_seq_id'},
+                      $atom_site->{"$atom_id"}{'label_asym_id'},
+                      $atom_site->{"$atom_id"}{'label_entity_id'},
+                      $atom_site->{"$atom_id"}{'label_alt_id'} );
 
-        #     # TODO: change angle values to standard format.
-        #     my %current_angles;
-        #     for my $angle_name ( sort keys %angles ) {
-        #         $current_angles{$angle_name} = $angles{$angle_name}->[0];
-        #     }
+            # TODO: change angle values to standard format.
+            my %current_angles;
+            for my $angle_name ( sort keys %angles ) {
+                $current_angles{$angle_name} = $angles{$angle_name}->[0];
+            }
 
-        #     my $residue_site =
-        #         generate_rotamer( \%atom_site_with_hydrogens,
-        #                           { $residue_unique_key => \%current_angles  },
-        #                           undef, # TODO: move arguments to options.
-        #                           '.',
-        #                           { 'set_missing_angles_to_zero' => 1 } );
+            my $residue_site =
+                generate_rotamer( \%atom_site_with_hydrogens,
+                                  { $residue_unique_key => \%current_angles  },
+                                  undef, # TODO: move arguments to options.
+                                  '.',
+                                  { 'set_missing_angles_to_zero' => 1 } );
 
-        #     # Replaces with modified atoms.
-        #     for my $residue_atom_id ( keys %{ $residue_site } ) {
-        #         my $residue_origin_atom_id =
-        #             $residue_site->{$residue_atom_id}{'origin_atom_id'};
-        #         $residue_site->{$residue_atom_id}{'id'} =
-        #             $residue_origin_atom_id;
-        #         $atom_site_with_hydrogens{$residue_origin_atom_id} =
-        #             $residue_site->{$residue_atom_id};
-        #     }
+            # Replaces with modified atoms.
+            for my $residue_atom_id ( keys %{ $residue_site } ) {
+                my $residue_origin_atom_id =
+                    $residue_site->{$residue_atom_id}{'origin_atom_id'};
+                $residue_site->{$residue_atom_id}{'id'} =
+                    $residue_origin_atom_id;
+                $residue_site->{$residue_atom_id}{'connections'} =
+                    $atom_site_with_hydrogens{$residue_origin_atom_id}
+                                             {'connections'};
+                $atom_site_with_hydrogens{$residue_origin_atom_id} =
+                    $residue_site->{$residue_atom_id};
+            }
 
-        #     connect_atoms( \%atom_site_with_hydrogens,
-        #                    { 'append_connections' => 1 } );
-        # }
+            $parameters{'atom_site'} = \%atom_site_with_hydrogens;
+        }
 
         my $pseudo_atom_site =
             generate_pseudo( $atom_site,
