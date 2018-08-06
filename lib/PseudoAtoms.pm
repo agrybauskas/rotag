@@ -145,6 +145,8 @@ sub generate_pseudo
             # Adds hybridization, connection, conformation data from origin atom.
             $pseudo_atom_site{$last_atom_id}{'hybridization'} =
                 $atom_site{$atom_id}{'hybridization'};
+            # FIXME: be careful - it might produce contradictions between new
+            # and old pseudo atoms.
             $pseudo_atom_site{$last_atom_id}{'connections'} =
                 $atom_site{$atom_id}{'connections'};
             $pseudo_atom_site{$last_atom_id}{'conformation'} =
@@ -177,8 +179,9 @@ sub generate_pseudo
 sub generate_rotamer
 {
     my ( $atom_site, $angle_values, $last_atom_id, $alt_group_id, $options ) = @_;
-    my ( $set_missing_angles_to_zero ) =
-        ( $options->{'set_missing_angles_to_zero'} );
+    my ( $set_missing_angles_to_zero, $keep_origin_id ) =
+        ( $options->{'set_missing_angles_to_zero'},
+          $options->{'keep_origin_id'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -237,6 +240,17 @@ sub generate_rotamer
         for my $atom_id ( keys %rotamer_atom_site ) {
             $rotamer_atom_site{"$atom_id"}{'label_alt_id'} = '.';
         }
+    }
+
+    if( $keep_origin_id ) {
+        my %rotamer_atom_site_old_ids;
+        for my $atom_id ( keys %rotamer_atom_site ) {
+            my $origin_id = $rotamer_atom_site{$atom_id}{'origin_atom_id'};
+            $rotamer_atom_site{$atom_id}{'id'} = $origin_id;
+            $rotamer_atom_site_old_ids{$origin_id} =
+                $rotamer_atom_site{$atom_id};
+        }
+        return \%rotamer_atom_site_old_ids;
     }
 
     return \%rotamer_atom_site;
@@ -643,12 +657,14 @@ sub check_energy
 
         my $rotamer_site =
             generate_rotamer( $atom_site,
-                              { "$residue_unique_key" => \%angles } );
+                              { "$residue_unique_key" => \%angles },
+                              undef,
+                              undef,
+                              { 'keep_origin_id' => 1 } );
+
         my @rotamer_atom_ids = sort keys %{ $rotamer_site };
         my %rotamer_interaction_site =
             ( %{ $rotamer_site }, %{ $interaction_site } );
-
-        connect_atoms( \%rotamer_interaction_site );
 
         my $parameters_clone = clone( $parameters );
         if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
