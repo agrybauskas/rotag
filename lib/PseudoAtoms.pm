@@ -289,12 +289,12 @@ sub generate_library
     # Predetermines geometrically clearly defined hydrogen positions if
     # 'composite' potential function is used.
     if( $interactions eq 'composite' ) {
-        my %atom_site_with_hydrogens =
-            ( %atom_site,
-              %{ add_hydrogens( \%atom_site,
-                                { 'add_only_clear_positions' => 1,
-                                  'alt_id' => '.' } ) } );
-        connect_atoms( \%atom_site_with_hydrogens );
+        my $added_hydrogens =
+            add_hydrogens( \%atom_site,
+                           { 'add_only_clear_positions' => 1,
+                             'alt_id' => '.' } );
+        append_connections( \%atom_site, $added_hydrogens );
+        my %atom_site_with_hydrogens = ( %atom_site, %{ $added_hydrogens } );
         hybridization( \%atom_site_with_hydrogens );
         $parameters->{'atom_site'} = \%atom_site_with_hydrogens;
     }

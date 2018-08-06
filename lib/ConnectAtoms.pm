@@ -258,14 +258,15 @@ sub connect_two_atoms
 
 sub append_connections
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $appendable_site ) = @_;
 
-    for my $atom_id ( sort keys %{ $atom_site } ) {
-        for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
-            if( $connection_id > $atom_id
-             && ( ! any { $atom_id eq $_ }
-                       @{ $atom_site->{$connection_id}{'connections'} } ) ) {
-                push( @{ $atom_site->{$connection_id}{'connections'} },$atom_id);
+    for my $appendable_id ( keys %{ $appendable_site } ) {
+        for my $target_atom_id ( @{ $appendable_site->{$appendable_id}
+                                                      {'connections'} } ) {
+            if( ! any { $appendable_id eq $_ }
+                     @{ $atom_site->{$target_atom_id}{'connections'} }  ) {
+                push( @{ $atom_site->{$target_atom_id}{'connections'} },
+                      $appendable_id );
             }
         }
     }
