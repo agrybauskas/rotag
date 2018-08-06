@@ -26,7 +26,8 @@ use AtomProperties qw( %ATOMS
                        %HYDROGEN_NAMES
                        @MAINCHAIN_NAMES );
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( connect_atoms
+use ConnectAtoms qw( append_connections
+                     connect_atoms
                      is_neighbour
                      is_second_neighbour );
 use Grid qw( grid_box
@@ -826,6 +827,8 @@ sub add_hydrogens
             $hydrogen_site{$last_atom_id}{'is_pseudo_atom'} = 1;
             # Adds atom id that pseudo atoms was made of.
             $hydrogen_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
+            # Marks origin atom id as connection.
+            $hydrogen_site{$last_atom_id}{'connections'} = [ $atom_id ];
             }
         }
     }
