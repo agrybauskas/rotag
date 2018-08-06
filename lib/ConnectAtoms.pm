@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( around_distance
 		     connect_atoms
                      connect_two_atoms
+                     append_connections
 		     distance
 		     distance_squared
 		     is_connected
@@ -250,6 +251,23 @@ sub connect_two_atoms
               "$second_atom_id" );
         push( @{ $atom_site->{$second_atom_id}{'connections'} },
               "$first_atom_id" );
+    }
+
+    return;
+}
+
+sub append_connections
+{
+    my ( $atom_site ) = @_;
+
+    for my $atom_id ( sort keys %{ $atom_site } ) {
+        for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
+            if( $connection_id > $atom_id
+             && ( ! any { $atom_id eq $_ }
+                       @{ $atom_site->{$connection_id}{'connections'} } ) ) {
+                push( @{ $atom_site->{$connection_id}{'connections'} },$atom_id);
+            }
+        }
     }
 
     return;
