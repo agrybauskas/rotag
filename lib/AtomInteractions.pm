@@ -203,100 +203,25 @@ sub h_bond
     my @h_bonds; # List of hashes are used: ( { 'theta' => <float>,  } )
 
     for my $atom_pair ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) {
-        my $donor_hybridization = $atom_pair->[0]{'hybridization'};
-        my $donor_connection_ids = $atom_pair->[0]{'connections'};
-        my @donor_hydrogen_ids =
+        my @hydrogen_ids =
             map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
-               @{ $donor_connection_ids };
-        my @donor_hydrogen_names =
+               @{ $atom_pair->[0]{'connections'} };
+        my @hydrogen_names =
             defined $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
                                    {$atom_pair->[0]{'label_atom_id'}} ?
                  @{ $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
                                    {$atom_pair->[0]{'label_atom_id'}}} : ();
 
-        my @donor_coord =
-            ( $atom_pair->[0]{'Cartn_x'},
-              $atom_pair->[0]{'Cartn_y'},
-              $atom_pair->[0]{'Cartn_z'} );
-        my @acceptor_coord =
-            ( $atom_pair->[1]{'Cartn_x'},
-              $atom_pair->[1]{'Cartn_y'},
-              $atom_pair->[1]{'Cartn_z'} );
-
-        if( @donor_hydrogen_ids ) {
-            for my $donor_hydrogen_id ( @donor_hydrogen_ids ) {
-                my $theta = bond_angle(
-                    [ \@acceptor_coord,
-                      [ $atom_site->{$donor_hydrogen_id}{'Cartn_x'},
-                        $atom_site->{$donor_hydrogen_id}{'Cartn_y'},
-                        $atom_site->{$donor_hydrogen_id}{'Cartn_z'} ],
-                      \@donor_coord ] );
-                # TODO: should clarify the value of $r_donor_hydrogen. It might
-                # be a constant for each atom and hydrogen pair.
-                my $r_donor_hydrogen =
-                    distance( $atom_pair->[0],
-                              $atom_site->{$donor_hydrogen_id} );
+        if( @hydrogen_ids ) {
+            for my $hydrogen_id ( @hydrogen_ids ) {
                 push( @h_bonds,
-                      { 'theta' => $theta,
-                        'r_donor_hydrogen' => $r_donor_hydrogen } );
+                      h_bond_explicit( $atom_i,
+                                       $atom_site->{$hydrogen_id},
+                                       $atom_j ) );
             }
-        } elsif( @donor_hydrogen_names ) { # Hydrogens are generalized here. See
-            my @hybridizations = ( 'sp3', 'sp2', 'sp' );
-            my $covalent_radius_idx;
-            for( my $i = 0; $i <= $#hybridizations; $i++ ) {
-                if( $hybridizations[$i] eq $donor_hybridization ) {
-                    $covalent_radius_idx = $i;
-                    last;
-                }
-            }
-            # TODO: should clarify the value of $r_donor_hydrogen. It might
-            # be a constant for each atom and hydrogen pair.
-            my $r_donor_hydrogen =
-                $ATOMS{$atom_pair->[0]{'type_symbol'}}
-                      {'covalent_radius'}{'length'}->[$covalent_radius_idx]
-              + $ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
-
-            # Determines smallest and most favourable angle which theta will be
-            # calculated from. The smaller alpha angle, the greater theta is.
-            my $alpha;
-            if( $donor_hybridization eq 'sp3' ) {
-                $alpha = 109.5 * pi() / 180; # TODO: consider electron pairs?
-            } elsif( $donor_hybridization eq 'sp2' ) {
-                $alpha = 120 * pi() / 180; # TODO: should be angles hardcoded?
-            }
-
-            # TODO: check if it is possible to be in this loop if there are
-            # hydrogens connected?
-            my $alpha_delta;
-            for my $donor_connection_id ( @{ $donor_connection_ids } ) {
-                my $alpha_delta_local =
-                    bond_angle(
-                        [ \@acceptor_coord,
-                          \@donor_coord,
-                          [ $atom_site->{$donor_connection_id}{'Cartn_x'},
-                            $atom_site->{$donor_connection_id}{'Cartn_y'},
-                            $atom_site->{$donor_connection_id}{'Cartn_z'} ] ] );
-
-                # TODO: check if this statement below is actually true. For now,
-                # it seems like it.
-                if( ! defined $alpha_delta ) {
-                    $alpha_delta = $alpha_delta_local
-                } elsif( $alpha_delta_local < $alpha_delta ) {
-                    $alpha_delta = $alpha_delta_local;
-                }
-            }
-
-            $alpha = $alpha - $alpha_delta;
-
-            my $theta = acos(
-                ( $r_donor_hydrogen - $r * cos( $alpha ) )
-              / sqrt( $r_donor_hydrogen**2
-                    + $r**2
-                    - 2 * $r_donor_hydrogen * $r * cos( $alpha ) )
-            );
-
+        } elsif( @hydrogen_names ) {
             push( @h_bonds,
-                  {'theta' => $theta, 'r_donor_hydrogen' => $r_donor_hydrogen} );
+                  h_bond_implicit( $atom_site, $atom_i, $atom_j ) );
         }
     }
 
@@ -313,6 +238,86 @@ sub h_bond
     }
 
     return $h_bond_energy_sum;
+}
+
+sub h_bond_implicit
+{
+    my ( $atom_site, $donor_atom, $acceptor_atom ) = @_;
+
+    my $covalent_radius_idx;
+    my @hybridizations = ( 'sp3', 'sp2', 'sp' );
+    for( my $i = 0; $i <= $#hybridizations; $i++ ) {
+        if( $donor_atom->{'hybridization'} eq $hybridizations[$i] ) {
+            $covalent_radius_idx = $i;
+            last;
+        }
+    }
+
+    my $r_donor_hydrogen =
+        $ATOMS{$donor_atom->{'type_symbol'}}
+              {'covalent_radius'}{'length'}->[$covalent_radius_idx]
+      + $ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
+
+    # Determines smallest and most favourable angle which theta will be
+    # calculated from. The smaller alpha angle, the greater theta is.
+    my $alpha;
+    if( $donor_atom->{'hybridization'} eq 'sp3' ) {
+        $alpha = 109.5 * pi() / 180; # TODO: consider electron pairs?
+    } elsif( $donor_atom->{'hybridization'} eq 'sp2' ) {
+        $alpha = 120 * pi() / 180;
+    }
+
+    my $alpha_delta;
+    for my $donor_connection_id ( @{ $donor_atom->{'connections'} } ) {
+        my $alpha_delta_local =
+            bond_angle(
+                [ [ $acceptor_atom->{'Cartn_x'},
+                    $acceptor_atom->{'Cartn_y'},
+                    $acceptor_atom->{'Cartn_z'} ],
+                  [ $donor_atom->{'Cartn_x'},
+                    $donor_atom->{'Cartn_y'},
+                    $donor_atom->{'Cartn_z'} ],
+                  [ $atom_site->{$donor_connection_id}{'Cartn_x'},
+                    $atom_site->{$donor_connection_id}{'Cartn_y'},
+                    $atom_site->{$donor_connection_id}{'Cartn_z'} ] ] );
+
+        if( ! defined $alpha_delta ) {
+            $alpha_delta = $alpha_delta_local
+        } elsif( $alpha_delta_local < $alpha_delta ) {
+            $alpha_delta = $alpha_delta_local;
+        }
+    }
+
+    $alpha = $alpha - $alpha_delta;
+
+    my $r = distance( $donor_atom, $acceptor_atom );
+    my $theta = acos(
+        ( $r_donor_hydrogen - $r * cos( $alpha ) )
+      / sqrt( $r_donor_hydrogen**2
+            + $r**2
+            - 2 * $r_donor_hydrogen * $r * cos( $alpha ) )
+    );
+
+    return {'theta' => $theta, 'r_donor_hydrogen' => $r_donor_hydrogen};
+}
+
+sub h_bond_explicit
+{
+    my ( $donor_atom, $hydrogen_atom, $acceptor_atom  ) = @_;
+
+    my $theta = bond_angle(
+        [ [ $donor_atom->{'Cartn_x'},
+            $donor_atom->{'Cartn_y'},
+            $donor_atom->{'Cartn_z'} ],
+          [ $hydrogen_atom->{'Cartn_x'},
+            $hydrogen_atom->{'Cartn_y'},
+            $hydrogen_atom->{'Cartn_z'} ],
+          [ $acceptor_atom->{'Cartn_x'},
+            $acceptor_atom->{'Cartn_y'},
+            $acceptor_atom->{'Cartn_z'} ] ] );
+    my $r_donor_hydrogen = distance( $donor_atom, $hydrogen_atom );
+
+    return { 'theta' => $theta, 'r_donor_hydrogen' => $r_donor_hydrogen };
 }
 
 sub composite
