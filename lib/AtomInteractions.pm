@@ -152,10 +152,11 @@ sub h_bond
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $h_epsilon, $atom_site ) = (
+    my ( $r, $h_epsilon, $atom_site, $only_implicit ) = (
         $parameters->{'r'},
         $parameters->{'h_epsilon'},
-        $parameters->{'atom_site'}
+        $parameters->{'atom_site'},
+        $parameters->{'only_implicit_h_bond'}
     );
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
@@ -212,7 +213,7 @@ sub h_bond
                  @{ $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
                                    {$atom_pair->[0]{'label_atom_id'}}} : ();
 
-        if( @hydrogen_ids ) {
+        if( @hydrogen_ids && ! $only_implicit ) {
             for my $hydrogen_id ( @hydrogen_ids ) {
                 push( @h_bonds,
                       h_bond_explicit( $atom_i,
@@ -226,7 +227,6 @@ sub h_bond
     }
 
     # Calculates the sum of all hydrogen bonds.
-    # TODO: check if the range was chosen correctly.
     for my $h_bond ( @h_bonds ) {
         if( ( $h_bond->{'theta'} >=   90 * pi() / 180 )
          && ( $h_bond->{'theta'} <=  270 * pi() / 180 ) ) {
