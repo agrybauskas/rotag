@@ -308,15 +308,15 @@ sub generate_library
     connect_atoms( \%atom_site_no_hydrogens );
     hybridization( \%atom_site_no_hydrogens );
 
-    # # Predetermines geometrically clearly defined hydrogen positions.
-    # my %atom_site_w_hydrogens = %atom_site_no_hydrogens;
-    # my $hydrogens =
-    #     add_hydrogens( \%atom_site_w_hydrogens,
-    #                    { 'alt_id' => '.',
-    #                      'add_only_clear_positions' => 1 } );
-    # append_connections( \%atom_site_w_hydrogens, $hydrogens );
-    # %atom_site_w_hydrogens = ( %atom_site_w_hydrogens, %{ $hydrogens } );
-    # hybridization( \%atom_site_w_hydrogens );
+    # Predetermines geometrically clearly defined hydrogen positions.
+    my %atom_site_w_hydrogens = %atom_site_no_hydrogens;
+    my $hydrogens =
+        add_hydrogens( \%atom_site_w_hydrogens,
+                       { 'alt_id' => '.',
+                         'add_only_clear_positions' => 1 } );
+    append_connections( \%atom_site_w_hydrogens, $hydrogens );
+    %atom_site_w_hydrogens = ( %atom_site_w_hydrogens, %{ $hydrogens } );
+    hybridization( \%atom_site_w_hydrogens );
 
     # Generates conformational models before checking for clashes/interactions
     # for given residues.
@@ -392,18 +392,28 @@ sub generate_library
                          'parameters' => $parameters,
                          'threads' => $threads } ) };
 
-    # #         # Then, re-checks if each atom of the rotamer obey energy cutoffs.
-    # #         my ( $allowed_angles, $energy_sums ) =
-    # #             @{ multithreading(
-    # #                    \&calc_full_atom_energy,
-    # #                    { 'atom_site' => $atom_site,
-    # #                      'interaction_site' => \%interaction_site,
-    # #                      'residue_unique_key' => $residue_unique_key,
-    # #                      'potential_function' => $potential_function,
-    # #                      'energy_cutoff_atom' => $energy_cutoff_atom,
-    # #                      'parameters' => $parameters },
-    # #                    [ @allowed_angles ],
-    # #                    $threads ) };
+            calc_full_atom_energy(
+                { 'atom_site' => \%atom_site_w_hydrogens,
+                  'interaction_site' => \%interaction_site,
+                  'residue_unique_key' => $residue_unique_key,
+                  'potential_function' => $potential_function,
+                  'energy_cutoff_atom' => $energy_cutoff_atom,
+                  'parameters' => $parameters },
+                [ @allowed_angles ],
+            );
+
+            # # Then, re-checks if each atom of the rotamer obey energy cutoffs.
+            # my ( $allowed_angles, $energy_sums ) =
+            #     @{ multithreading(
+            #            \&calc_full_atom_energy,
+            #            { 'atom_site' => \%atom_site_no_hydrogens,
+            #              'interaction_site' => \%interaction_site,
+            #              'residue_unique_key' => $residue_unique_key,
+            #              'potential_function' => $potential_function,
+            #              'energy_cutoff_atom' => $energy_cutoff_atom,
+            #              'parameters' => $parameters },
+            #            [ @allowed_angles ],
+            #            $threads ) };
 
     # #         for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
     # #             my %angles =
@@ -611,7 +621,7 @@ sub calc_favourable_angle
 
 sub calc_full_atom_energy
 {
-    my ( $args, $array_blocks ) = @_;
+    my ( $args, $allowed_angles ) = @_;
     my ( $atom_site, $interaction_site, $residue_unique_key,
          $potential_function, $energy_cutoff_atom, $parameters ) = (
         $args->{'atom_site'},
@@ -622,64 +632,82 @@ sub calc_full_atom_energy
         $args->{'parameters'}
     );
 
-    # Checks for inter-atom interactions and determines if energies
-    # comply with cutoffs.
-    my @allowed_angles;
-    my @energy_sums;
-  ALLOWED_ANGLES:
-    for( my $i = 0; $i <= $#{ $array_blocks }; $i++ ) {
-        my %angles =
-            map { ( "chi$_" => $array_blocks->[$i][$_] ) }
-                0..$#{ $array_blocks->[$i] };
+    # Creates all-atom model (even with uncertain hydrogen positions) for
+    # selected residue.
+    my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+        split( ',', $residue_unique_key );
+    my $residue_site =
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { 'label_seq_id' => [ $residue_id ],
+                                 'label_asym_id' => [ $residue_chain ],
+                                 'label_alt_id' => [ $residue_alt ],
+                                 'label_entity_id' => [ $residue_entity ] } } );
+    my $hydrogens =
+        add_hydrogens( $residue_site,
+                       { 'use_existing_connections' => 1,
+                         'use_existing_hybridizations' => 1,
+                         'exclude_by_atom_name' => [ 'N', 'C' ] } );
+    append_connections( $residue_site, $hydrogens );
+    $residue_site = { %{ $residue_site }, %{ $hydrogens } };
 
-        my $rotamer_site =
-            generate_rotamer( $atom_site,
-                              { "$residue_unique_key" => \%angles },
-                              undef,
-                              undef,
-                              { 'keep_origin_id' => 1 } );
+  #   # Checks for inter-atom interactions and determines if energies
+  #   # comply with cutoffs.
+  #   my @allowed_angles;
+  #   my @energy_sums;
+  # ALLOWED_ANGLES:
+  #   for( my $i = 0; $i <= $#{ $array_blocks }; $i++ ) {
+  #       my %angles =
+  #           map { ( "chi$_" => $array_blocks->[$i][$_] ) }
+  #               0..$#{ $array_blocks->[$i] };
 
-        my @rotamer_atom_ids = sort keys %{ $rotamer_site };
-        my %rotamer_interaction_site =
-            ( %{ $rotamer_site }, %{ $interaction_site } );
+  #       my $rotamer_site =
+  #           generate_rotamer( $atom_site,
+  #                             { "$residue_unique_key" => \%angles },
+  #                             undef,
+  #                             undef,
+  #                             { 'keep_origin_id' => 1 } );
 
-        my $parameters_clone = clone( $parameters );
-        if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
-            replace_with_rotamer( $parameters_clone->{'atom_site'},
-                                  $residue_unique_key,
-                                  \%angles );
-        }
+  #       my @rotamer_atom_ids = sort keys %{ $rotamer_site };
+  #       my %rotamer_interaction_site =
+  #           ( %{ $rotamer_site }, %{ $interaction_site } );
 
-        my $rotamer_energy_sum = 0;
-        for my $rotamer_atom_id ( @rotamer_atom_ids ) {
-            my $rotamer_atom_energy = 0;
-            for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
-                if( ( $rotamer_atom_id ne $neighbour_atom_id )
-                    && ( ! is_neighbour( \%rotamer_interaction_site,
-                                         $rotamer_atom_id,
-                                         $neighbour_atom_id ) )
-                    && ( ! is_second_neighbour( \%rotamer_interaction_site,
-                                                $rotamer_atom_id,
-                                                $neighbour_atom_id ) ) ){
-                    $rotamer_atom_energy +=
-                        $potential_function->(
-                            $rotamer_interaction_site{$rotamer_atom_id},
-                            $rotamer_interaction_site{$neighbour_atom_id},
-                            $parameters_clone );
+  #       my $parameters_clone = clone( $parameters );
+  #       if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
+  #           replace_with_rotamer( $parameters_clone->{'atom_site'},
+  #                                 $residue_unique_key,
+  #                                 \%angles );
+  #       }
 
-                    next ALLOWED_ANGLES
-                        if $rotamer_atom_energy > $energy_cutoff_atom;
+  #       my $rotamer_energy_sum = 0;
+  #       for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+  #           my $rotamer_atom_energy = 0;
+  #           for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
+  #               if( ( $rotamer_atom_id ne $neighbour_atom_id )
+  #                   && ( ! is_neighbour( \%rotamer_interaction_site,
+  #                                        $rotamer_atom_id,
+  #                                        $neighbour_atom_id ) )
+  #                   && ( ! is_second_neighbour( \%rotamer_interaction_site,
+  #                                               $rotamer_atom_id,
+  #                                               $neighbour_atom_id ) ) ){
+  #                   $rotamer_atom_energy +=
+  #                       $potential_function->(
+  #                           $rotamer_interaction_site{$rotamer_atom_id},
+  #                           $rotamer_interaction_site{$neighbour_atom_id},
+  #                           $parameters_clone );
 
-                    $rotamer_energy_sum += $rotamer_atom_energy;
-                }
-            }
-        }
+  #                   next ALLOWED_ANGLES
+  #                       if $rotamer_atom_energy > $energy_cutoff_atom;
 
-        push( @allowed_angles, $array_blocks->[$i] );
-        push( @energy_sums, $rotamer_energy_sum );
-    }
+  #                   $rotamer_energy_sum += $rotamer_atom_energy;
+  #               }
+  #           }
+  #       }
 
-    return [ \@allowed_angles, \@energy_sums ] ;
+  #       push( @allowed_angles, $array_blocks->[$i] );
+  #       push( @energy_sums, $rotamer_energy_sum );
+  #   }
+
+  #   return [ \@allowed_angles, \@energy_sums ] ;
 }
 
 sub replace_with_rotamer
@@ -719,7 +747,7 @@ sub add_hydrogens
         $options->{'add_only_clear_positions'},
         $options->{'use_existing_connections'},
         $options->{'use_existing_hybridizations'},
-        $options->{'reference_atom_site'},    # Useful when analyzing only parts
+        $options->{'reference_atom_site'}, # Useful when analyzing only parts
         $options->{'exclude_by_atom_name'},
         $options->{'alt_id'} ); # of atom site.
 
