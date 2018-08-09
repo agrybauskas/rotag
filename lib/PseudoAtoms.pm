@@ -394,8 +394,9 @@ sub generate_library
 
             calc_full_atom_energy(
                 { 'atom_site' => \%atom_site_w_hydrogens,
-                  'interaction_site' => \%interaction_site,
                   'residue_unique_key' => $residue_unique_key,
+                  'interaction_site' => \%interaction_site,
+                  'small_angle' => $small_angle,
                   'potential_function' => $potential_function,
                   'energy_cutoff_atom' => $energy_cutoff_atom,
                   'parameters' => $parameters },
@@ -621,12 +622,14 @@ sub calc_favourable_angle
 
 sub calc_full_atom_energy
 {
-    my ( $args, $allowed_angles ) = @_;
-    my ( $atom_site, $interaction_site, $residue_unique_key,
-         $potential_function, $energy_cutoff_atom, $parameters ) = (
+    my ( $args, $checkable_angles ) = @_;
+    my ( $atom_site, $residue_unique_key, $interaction_site,
+         $small_angle, $potential_function, $energy_cutoff_atom,
+         $parameters ) = (
         $args->{'atom_site'},
-        $args->{'interaction_site'},
         $args->{'residue_unique_key'},
+        $args->{'interaction_site'},
+        $args->{'small_angle'},
         $args->{'potential_function'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'}
@@ -649,23 +652,50 @@ sub calc_full_atom_energy
                          'exclude_by_atom_name' => [ 'N', 'C' ] } );
     append_connections( $residue_site, $hydrogens );
     $residue_site = { %{ $residue_site }, %{ $hydrogens } };
+    rotation_only( $residue_site );
 
-  #   # Checks for inter-atom interactions and determines if energies
-  #   # comply with cutoffs.
-  #   my @allowed_angles;
-  #   my @energy_sums;
-  # ALLOWED_ANGLES:
-  #   for( my $i = 0; $i <= $#{ $array_blocks }; $i++ ) {
-  #       my %angles =
-  #           map { ( "chi$_" => $array_blocks->[$i][$_] ) }
-  #               0..$#{ $array_blocks->[$i] };
+    my $rotatable_bonds = rotatable_bonds( $residue_site );
+    if( ! %{ $rotatable_bonds } ) { next; }
 
-  #       my $rotamer_site =
-  #           generate_rotamer( $atom_site,
-  #                             { "$residue_unique_key" => \%angles },
-  #                             undef,
-  #                             undef,
-  #                             { 'keep_origin_id' => 1 } );
+    my %uniq_rotatable_bonds; # TODO: could be used to verify bond uniqueness.
+    for my $atom_id ( keys %{ $rotatable_bonds } ) {
+        for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
+            if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
+                $uniq_rotatable_bonds{"$angle_name"} =
+                    $rotatable_bonds->{"$atom_id"}{"$angle_name"};
+            }
+        }
+    }
+
+    my $uniq_rotatable_bond_num = scalar( keys %uniq_rotatable_bonds );
+    my $missing_rotatable_bond_num =
+        $uniq_rotatable_bond_num - scalar( @{ $checkable_angles->[0] } );
+    my @checkable_angles = @{ $checkable_angles };
+
+    if( $missing_rotatable_bond_num ) {
+        my @sampled_angles =
+            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * pi() ] ], $small_angle )};
+        foreach( 1..$missing_rotatable_bond_num ) {
+            @checkable_angles =
+                @{ permutation( 2, [], [ \@checkable_angles,
+                                         \@sampled_angles ], [] ) };
+            # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+            @checkable_angles =
+                map { [ @{ $_->[0] }, @{ $_->[1] } ] } @checkable_angles;
+        }
+    }
+
+    # Checks for inter-atom interactions and determines if energies
+    # comply with cutoffs.
+    my @allowed_angles;
+    my @energy_sums;
+  ALLOWED_ANGLES:
+    for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
+        my %angles =
+            map { ( "chi$_" => $checkable_angles[$i][$_] ) }
+                0..$#{ $checkable_angles[$i] };
+        my %rotamer_site = %{ $residue_site };
+        replace_with_rotamer( \%rotamer_site, $residue_unique_key, \%angles );
 
   #       my @rotamer_atom_ids = sort keys %{ $rotamer_site };
   #       my %rotamer_interaction_site =
@@ -705,7 +735,7 @@ sub calc_full_atom_energy
 
   #       push( @allowed_angles, $array_blocks->[$i] );
   #       push( @energy_sums, $rotamer_energy_sum );
-  #   }
+    }
 
   #   return [ \@allowed_angles, \@energy_sums ] ;
 }
