@@ -703,6 +703,7 @@ sub calc_full_atom_energy
         my @rotamer_atom_ids = sort keys %rotamer_site;
         my %rotamer_interaction_site =
             ( %rotamer_site, %{ $interaction_site } );
+        $parameters->{'atom_site'} = \%rotamer_interaction_site;
 
         my $rotamer_energy_sum = 0;
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
@@ -715,11 +716,11 @@ sub calc_full_atom_energy
                     && ( ! is_second_neighbour( \%rotamer_interaction_site,
                                                 $rotamer_atom_id,
                                                 $neighbour_atom_id ) ) ){
-                    # $rotamer_atom_energy +=
-                    #     $potential_function->(
-                    #         $rotamer_interaction_site{$rotamer_atom_id},
-                    #         $rotamer_interaction_site{$neighbour_atom_id},
-                    #         $parameters );
+                    $rotamer_atom_energy +=
+                        $potential_function->(
+                            $rotamer_interaction_site{$rotamer_atom_id},
+                            $rotamer_interaction_site{$neighbour_atom_id},
+                            $parameters );
 
                     next ALLOWED_ANGLES
                         if $rotamer_atom_energy > $energy_cutoff_atom;
