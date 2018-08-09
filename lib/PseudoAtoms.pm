@@ -392,47 +392,37 @@ sub generate_library
                          'parameters' => $parameters,
                          'threads' => $threads } ) };
 
-            calc_full_atom_energy(
-                { 'atom_site' => \%atom_site_w_hydrogens,
-                  'residue_unique_key' => $residue_unique_key,
-                  'interaction_site' => \%interaction_site,
-                  'small_angle' => $small_angle,
-                  'potential_function' => $potential_function,
-                  'energy_cutoff_atom' => $energy_cutoff_atom,
-                  'parameters' => $parameters },
-                [ @allowed_angles ],
-            );
+            # Then, re-checks if each atom of the rotamer obey energy cutoffs.
+            my ( $allowed_angles, $energy_sums ) =
+                @{ multithreading(
+                       \&calc_full_atom_energy,
+                       { 'atom_site' => \%atom_site_no_hydrogens,
+                         'residue_unique_key' => $residue_unique_key,
+                         'interaction_site' => \%interaction_site,
+                         'small_angle' => $small_angle,
+                         'potential_function' => $potential_function,
+                         'energy_cutoff_atom' => $energy_cutoff_atom,
+                         'parameters' => $parameters },
+                        [ @allowed_angles ],
+                       $threads ) };
 
-            # # Then, re-checks if each atom of the rotamer obey energy cutoffs.
-            # my ( $allowed_angles, $energy_sums ) =
-            #     @{ multithreading(
-            #            \&calc_full_atom_energy,
-            #            { 'atom_site' => \%atom_site_no_hydrogens,
-            #              'interaction_site' => \%interaction_site,
-            #              'residue_unique_key' => $residue_unique_key,
-            #              'potential_function' => $potential_function,
-            #              'energy_cutoff_atom' => $energy_cutoff_atom,
-            #              'parameters' => $parameters },
-            #            [ @allowed_angles ],
-            #            $threads ) };
-
-    # #         for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
-    # #             my %angles =
-    # #                 map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
-    # #                     ( 0..$#{ $allowed_angles->[$i] } );
-    # #             my $rotamer_energy_sum = $energy_sums->[$i];
-    # #             if( defined $rotamer_energy_sum
-    # #              && $rotamer_energy_sum <= $energy_cutoff_residue ) {
-    # #                 push( @{ $rotamer_library{"$residue_unique_key"} },
-    # #                       { 'angles' => \%angles,
-    # #                         'potential' => $interactions,
-    # #                         'potential_energy_value' => $rotamer_energy_sum } );
-    # #             }
-    # #         }
+            for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+                my %angles =
+                    map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
+                        ( 0..$#{ $allowed_angles->[$i] } );
+                my $rotamer_energy_sum = $energy_sums->[$i];
+                if( defined $rotamer_energy_sum
+                 && $rotamer_energy_sum <= $energy_cutoff_residue ) {
+                    push( @{ $rotamer_library{"$residue_unique_key"} },
+                          { 'angles' => \%angles,
+                            'potential' => $interactions,
+                            'potential_energy_value' => $rotamer_energy_sum } );
+                }
+            }
         }
     }
 
-    # return \%rotamer_library;
+    return \%rotamer_library;
 }
 
 sub calc_favourable_angles
@@ -622,7 +612,7 @@ sub calc_favourable_angle
 
 sub calc_full_atom_energy
 {
-    my ( $args, $checkable_angles ) = @_;
+    my ( $args, $array_blocks ) = @_;
     my ( $atom_site, $residue_unique_key, $interaction_site,
          $small_angle, $potential_function, $energy_cutoff_atom,
          $parameters ) = (
@@ -671,8 +661,8 @@ sub calc_full_atom_energy
 
     my $uniq_rotatable_bond_num = scalar( keys %uniq_rotatable_bonds );
     my $missing_rotatable_bond_num =
-        $uniq_rotatable_bond_num - scalar( @{ $checkable_angles->[0] } );
-    my @checkable_angles = @{ $checkable_angles };
+        $uniq_rotatable_bond_num - scalar( @{ $array_blocks->[0] } );
+    my @checkable_angles = @{ $array_blocks };
 
     if( $missing_rotatable_bond_num ) {
         my @sampled_angles =
