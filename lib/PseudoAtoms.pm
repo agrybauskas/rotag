@@ -298,7 +298,11 @@ sub generate_library
                                 "leonard_jones" => \&leonard_jones );
     my $potential_function = $potential_functions{"$interactions"};
 
+    my %rotamer_library;
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
+    my %atom_site_no_hydrogens =
+        %{ filter( { 'atom_site' => \%atom_site,
+                     'exclude' => { 'type_symbol' => [ 'H' ] } } ) };
 
     # Predetermines geometrically clearly defined hydrogen positions if
     # 'composite' potential function is used.
@@ -312,8 +316,6 @@ sub generate_library
         hybridization( \%atom_site_with_hydrogens );
         $parameters->{'atom_site'} = \%atom_site_with_hydrogens;
     }
-
-    my %rotamer_library;
 
     # Generates conformational models before checking for clashes/interactions
     # for given residues.
