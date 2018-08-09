@@ -388,7 +388,7 @@ sub generate_library
             # First, checks angles by step-by-step adding atoms to sidechains.
             # This is called growing side chain.
             my @allowed_angles =
-                @{ check_growing_side_chain_angles(
+                @{ calc_favourable_angles(
                        { 'atom_site' => \%atom_site,
                          'residue_unique_key' => $residue_unique_key,
                          'interaction_site' => \%interaction_site,
@@ -401,7 +401,7 @@ sub generate_library
             # Then, re-checks if each atom of the rotamer obey energy cutoffs.
             my ( $allowed_angles, $energy_sums ) =
                 @{ multithreading(
-                       \&check_energy,
+                       \&calc_full_atom_energy,
                        { 'atom_site' => $atom_site,
                          'interaction_site' => \%interaction_site,
                          'residue_unique_key' => $residue_unique_key,
@@ -430,7 +430,7 @@ sub generate_library
     return \%rotamer_library;
 }
 
-sub check_growing_side_chain_angles
+sub calc_favourable_angles
 {
     my ( $args ) = @_;
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
@@ -516,7 +516,7 @@ sub check_growing_side_chain_angles
             # Starts calculating potential energy.
             my ( $next_allowed_angles, $next_allowed_energies ) =
                 @{ multithreading(
-                       \&check_angles,
+                       \&calc_favourable_angle,
                        { 'atom_site' => $atom_site,
                          'atom_id' => $atom_id,
                          'interaction_site' => $interaction_site,
@@ -548,7 +548,7 @@ sub check_growing_side_chain_angles
     return \@allowed_angles;
 }
 
-sub check_angles
+sub calc_favourable_angle
 {
     my ( $args, $array_blocks ) = @_;
     my ( $atom_site, $atom_id, $interaction_site, $potential_function,
@@ -632,7 +632,7 @@ sub check_angles
     return [ \@allowed_angles, \@allowed_energies ];
 }
 
-sub check_energy
+sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
     my ( $atom_site, $interaction_site, $residue_unique_key,
