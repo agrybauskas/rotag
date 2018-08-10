@@ -636,15 +636,19 @@ sub calc_full_atom_energy
                                  'label_alt_id' => [ $residue_alt ],
                                  'label_entity_id' => [ $residue_entity ] },
                   'exclude' => { 'type_symbol' => [ 'H' ] } } );
-    my $hydrogens =
-        add_hydrogens( $residue_site,
-                       { 'use_existing_connections' => 1,
-                         'use_existing_hybridizations' => 1,
-                         'exclude_by_atom_name' => [ 'N', 'C' ],
-                         'alt_id' => '.' } );
-    append_connections( $residue_site, $hydrogens );
-    $residue_site = { %{ $residue_site }, %{ $hydrogens } };
-    rotation_only( $residue_site );
+
+    # Adds hydrogens if it is necessary for the calculations.
+    if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
+        my $hydrogens =
+            add_hydrogens( $residue_site,
+                           { 'use_existing_connections' => 1,
+                             'use_existing_hybridizations' => 1,
+                             'exclude_by_atom_name' => [ 'N', 'C' ],
+                             'alt_id' => '.' } );
+        append_connections( $residue_site, $hydrogens );
+        $residue_site = { %{ $residue_site }, %{ $hydrogens } };
+        rotation_only( $residue_site );
+    }
 
     my $rotatable_bonds = rotatable_bonds( $residue_site );
     if( ! %{ $rotatable_bonds } ) { next; }
