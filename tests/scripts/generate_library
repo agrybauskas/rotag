@@ -4,7 +4,9 @@ use strict;
 use warnings;
 
 use LinearAlgebra qw( pi );
-use PseudoAtoms qw( generate_library );
+use PDBxParser qw( to_pdbx );
+use PseudoAtoms qw( generate_library
+                    replace_with_rotamer);
 
 my ( $residue_id,
      $residue_chain,
@@ -31,7 +33,8 @@ $small_angle =~ s/pi/pi\(\)/g;
 my $rotamer_library =
     generate_library( { "atom_site" => $atom_site,
                         "residue_unique_keys" =>
-                            [ "$residue_id,$residue_chain,$residue_entity,$residue_alt" ],
+                            [ "$residue_id,$residue_chain,$residue_entity," .
+                              "$residue_alt" ],
                         "small_angle" => eval( $small_angle ),
                         "conf_model" => $conf_model,
                         "interactions"  => $potential,
@@ -39,22 +42,20 @@ my $rotamer_library =
                         "energy_cutoff_residue" => $energy_cutoff_residue,
                         "threads" => $threads } );
 
-print( "#residue_id,potential_energy_value,chi0,chi1,chi2,chi3,chi4\n" );
 for my $residue_unique_key ( keys %{ $rotamer_library } ) {
-    my ( $residue_id ) = split( ",", $residue_unique_key );
+    my $rotamer_id = 1;
     for my $rotamer ( @{ $rotamer_library->{$residue_unique_key} } ) {
-        my @rotamer_entry =
-            ( $residue_id,
-              sprintf( "%.3f",$rotamer->{"potential_energy_value"} ) );
-        for my $angle_name ( sort { $a cmp $b }
-                             keys %{ $rotamer->{"angles"} } ) {
-            push( @rotamer_entry,
-                  sprintf( "%.1f",
-                           180 * $rotamer->{"angles"}{"$angle_name"} / pi() ) );
-        }
-        for my $na ( 0..4-scalar( keys( %{ $rotamer->{"angles"} } ) ) ) {
-            push( @rotamer_entry, "" );
-        }
-        print( join( ",", @rotamer_entry ), "\n" );
+        my %rotamer_site = %{ $atom_site };
+        replace_with_rotamer( \%rotamer_site,
+                              $residue_unique_key,
+                              $rotamer->{'angles'} );
+        to_pdbx( { 'atom_site' => \%rotamer_site,
+                   'data_name' =>
+                       "$rotamer_id:" .
+                       join( ';',
+                             map { "$_:" .
+                                   sprintf( '%.3f', $rotamer->{'angles'}{$_} ) }
+                             sort keys %{ $rotamer->{'angles'} } ) } );
+        $rotamer_id++;
     }
 }

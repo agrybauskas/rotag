@@ -8,7 +8,8 @@ our @EXPORT_OK = qw( add_hydrogens
                      generate_library
                      generate_pseudo
                      generate_rotamer
-                     library_to_csv );
+                     library_to_csv
+                     replace_with_rotamer );
 
 use B qw( svref_2object );
 use Clone qw( clone );
