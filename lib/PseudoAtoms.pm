@@ -690,7 +690,10 @@ sub calc_full_atom_energy
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( \%rotamer_site, $residue_unique_key, \%angles );
 
-        my @rotamer_atom_ids = sort keys %rotamer_site;
+        my @rotamer_atom_ids =
+            sort keys %{ filter( { 'atom_site' => \%rotamer_site,
+                                   'exclude' =>
+                                   { 'label_atom_id' => \@MAINCHAIN_NAMES } } ) };
         my %rotamer_interaction_site =
             ( %rotamer_site, %{ $interaction_site } );
         $parameters->{'atom_site'} = \%rotamer_interaction_site;

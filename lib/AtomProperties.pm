@@ -273,7 +273,7 @@ our %HYDROGEN_NAMES = (
 
 # TODO: should include proline atoms.
 our @MAINCHAIN_NAMES = (
-    'N', 'CA', 'C', 'O', 'OXT', 'CB', 'H', 'H2',
+    'N', 'CA', 'C', 'O', 'OXT', 'CB', 'H', 'H2', 'HA',
     'HA2', 'HA3', 'HXT'
 );
 
