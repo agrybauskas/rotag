@@ -244,7 +244,12 @@ sub h_bond
 
 sub h_bond_implicit
 {
-    my ( $atom_site, $donor_atom, $acceptor_atom ) = @_;
+    my ( $atom_site, $donor_atom, $acceptor_atom, $parameters ) = @_;
+
+    my ( $h_epsilon ) = ( $parameters->{'h_epsilon'} );
+    $h_epsilon //= -2.5e+05; # TODO: this constant will be also in h_bond() and
+                             # h_bond() implicit. Remember to change in all of
+                             # three functions.
 
     my $covalent_radius_idx;
     my @hybridizations = ( 'sp3', 'sp2', 'sp' );
@@ -300,7 +305,10 @@ sub h_bond_implicit
             - 2 * $r_donor_hydrogen * $r * cos( $alpha ) )
     );
 
-    return {'theta' => $theta, 'r_donor_hydrogen' => $r_donor_hydrogen};
+    return $h_epsilon
+         * ( 5 * ( $r_donor_hydrogen / $r )**12
+           - 6 * ( $r_donor_hydrogen / $r )**10 )
+         * cos( $theta );
 }
 
 sub h_bond_explicit
@@ -325,9 +333,10 @@ sub h_bond_explicit
             $acceptor_atom->{'Cartn_y'},
             $acceptor_atom->{'Cartn_z'} ] ] );
 
-    return $h_epsilon * ( 5 * ( $r_donor_hydrogen / $r )**12
-                  - 6 * ( $r_donor_hydrogen / $r )**10 )
-          * cos( $theta );
+    return $h_epsilon
+        * ( 5 * ( $r_donor_hydrogen / $r )**12
+          - 6 * ( $r_donor_hydrogen / $r )**10 )
+        * cos( $theta );
 }
 
 sub composite
