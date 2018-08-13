@@ -9,6 +9,8 @@ our @EXPORT_OK = qw( hard_sphere
                      leonard_jones
                      coulomb
                      h_bond
+                     h_bond_explicit
+                     h_bond_implicit
                      composite );
 
 use List::Util qw( any );

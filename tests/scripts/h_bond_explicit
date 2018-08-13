@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use AtomInteractions qw( h_bond_explicit );
+
+my ( $donor_id, $hydrogen_id, $acceptor_id, $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $h_bond_description = h_bond_explicit( $atom_site->{$donor_id},
+                                          $atom_site->{$hydrogen_id},
+                                          $atom_site->{$acceptor_id} );
+
+print $h_bond_description->{'theta'}, " ",
+      $h_bond_description->{'r_donor_hydrogen'}, "\n";
