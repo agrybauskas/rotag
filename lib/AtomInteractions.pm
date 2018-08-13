@@ -305,8 +305,15 @@ sub h_bond_implicit
 
 sub h_bond_explicit
 {
-    my ( $donor_atom, $hydrogen_atom, $acceptor_atom  ) = @_;
+    my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
 
+    my ( $h_epsilon ) = ( $parameters->{'h_epsilon'} );
+    $h_epsilon //= -2.5e+05; # TODO: this constant will be also in h_bond() and
+                             # h_bond() implicit. Remember to change in all of
+                             # three functions.
+
+    my $r = distance( $donor_atom, $acceptor_atom );
+    my $r_donor_hydrogen = distance( $donor_atom, $hydrogen_atom );
     my $theta = bond_angle(
         [ [ $donor_atom->{'Cartn_x'},
             $donor_atom->{'Cartn_y'},
@@ -317,9 +324,10 @@ sub h_bond_explicit
           [ $acceptor_atom->{'Cartn_x'},
             $acceptor_atom->{'Cartn_y'},
             $acceptor_atom->{'Cartn_z'} ] ] );
-    my $r_donor_hydrogen = distance( $donor_atom, $hydrogen_atom );
 
-    return { 'theta' => $theta, 'r_donor_hydrogen' => $r_donor_hydrogen };
+    return $h_epsilon * ( 5 * ( $r_donor_hydrogen / $r )**12
+                  - 6 * ( $r_donor_hydrogen / $r )**10 )
+          * cos( $theta );
 }
 
 sub composite
