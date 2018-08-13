@@ -1,0 +1,35 @@
+data_single_atoms_001
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_auth_seq_id
+_atom_site.pdbx_auth_comp_id
+_atom_site.pdbx_auth_asym_id
+_atom_site.pdbx_auth_atom_name
+_atom_site.pdbx_PDB_model_num
+HETATM 1 C C01 . UNK A 1 . ? -0.000 -0.000 0.000 0.00 0.00 ? 1 UNK ? C01 1 UNK ? C01 1
+HETATM 2 N N01 . UNK A 1 . ? 0.857  0.262  0.118 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
+HETATM 3 N N01 . UNK A 1 . ? 2.557  0.740  0.376 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
+HETATM 4 N N01 . UNK A 1 . ? 6.004  1.828  0.873 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
+HETATM 5 N N01 . UNK A 1 . ? 12.813 4.040  1.873 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
+HETATM 6 N N01 . UNK A 1 . ? 26.509 7.770  4.280 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
+#

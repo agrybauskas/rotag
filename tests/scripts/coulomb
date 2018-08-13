@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use AtomInteractions qw( coulomb );
+
+my ( $atom_i_id, $atom_j_id, $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+print coulomb( $atom_site->{$atom_i_id}, $atom_site->{$atom_j_id} ), "\n";

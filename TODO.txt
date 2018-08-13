@@ -16,7 +16,7 @@
    cis (Z) or trans (E) (for sp2).
 -- Should have basic and most necessary attributes for PDBx and transfer them.
    However, should have option to carry everything through pipes.
--- Because sidechains grow when calculating energy, there might be no information
+++ Because sidechains grow when calculating energy, there might be no information
    about transformed next atom. One of the solutions might be to have one more
    rule - calculate when H is present. Another one - make second step
    calculations they might be also necessary for intramolecular clashes.
@@ -25,3 +25,5 @@
    redundant code also should be removed.
 -- Create functions that generate rotamer_energy and rotamer_angle cif loops.
 -- rotag_energy should have pairwise and rotamer/residue flags.
+-- Partial charges and full charges probably should be described for each
+   residue.
