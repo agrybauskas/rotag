@@ -279,7 +279,8 @@ sub h_bond_implicit
     }
 
     my $alpha_delta;
-    for my $donor_connection_id ( @{ $donor_atom->{'connections'} } ) {
+    for my $donor_connection_id ( grep { $atom_site->{"$_"}{'type_symbol'} ne 'H' }
+                                      @{ $donor_atom->{'connections'} } ) {
         my $alpha_delta_local =
             bond_angle(
                 [ [ $acceptor_atom->{'Cartn_x'},
@@ -298,7 +299,11 @@ sub h_bond_implicit
         }
     }
 
-    $alpha = $alpha - $alpha_delta;
+    if( $alpha_delta > $alpha ) {
+        $alpha = $alpha_delta - $alpha;
+    } else {
+        $alpha = $alpha - $alpha_delta;
+    }
 
     my $r_donor_acceptor = distance( $donor_atom, $acceptor_atom );
     my $r_acceptor_hydrogen =
@@ -313,9 +318,9 @@ sub h_bond_implicit
     );
 
     return $h_epsilon
-         * ( 5 * ( $r_sigma / $r_donor_acceptor )**12
-           - 6 * ( $r_sigma / $r_donor_acceptor )**10 )
-         * cos( $theta );
+        * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
+          - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
+        * cos( $theta );
 }
 
 sub h_bond_explicit
