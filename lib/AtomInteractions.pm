@@ -302,10 +302,14 @@ sub h_bond_implicit
             - 2 * $r_donor_hydrogen * $r_donor_acceptor * cos( $alpha ) )
     );
 
-    return $h_epsilon
-        * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
-          - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
-        * cos( $theta );
+    if( ( $theta >= 90 * pi() / 180 ) && ( $theta <=  270 * pi() / 180 ) ) {
+        return $h_epsilon
+             * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
+               - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
+             * cos( $theta );
+    } else {
+        return 0;
+    }
 }
 
 sub h_bond_explicit
@@ -332,10 +336,14 @@ sub h_bond_explicit
             $acceptor_atom->{'Cartn_y'},
             $acceptor_atom->{'Cartn_z'} ] ] );
 
-    return $h_epsilon
-        * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
-          - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
-        * cos( $theta );
+    if( ( $theta >= 90 * pi() / 180 ) && ( $theta <=  270 * pi() / 180 ) ) {
+        return $h_epsilon
+             * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
+               - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
+             * cos( $theta );
+    } else {
+        return 0;
+    }
 }
 
 sub composite
