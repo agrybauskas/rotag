@@ -246,8 +246,12 @@ sub h_bond_implicit
 {
     my ( $atom_site, $donor_atom, $acceptor_atom, $parameters ) = @_;
 
-    my ( $h_epsilon ) = ( $parameters->{'h_epsilon'} );
-    $h_epsilon //= -2.5e+05; # TODO: this constant will be also in h_bond() and
+    my ( $h_epsilon, $r_sigma ) = (
+        $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
+    );
+
+    $r_sigma //= 2.00;
+    $h_epsilon //= 1.00;     # TODO: this constant will be also in h_bond() and
                              # h_bond() implicit. Remember to change in all of
                              # three functions.
 
@@ -287,7 +291,6 @@ sub h_bond_implicit
                   [ $atom_site->{$donor_connection_id}{'Cartn_x'},
                     $atom_site->{$donor_connection_id}{'Cartn_y'},
                     $atom_site->{$donor_connection_id}{'Cartn_z'} ] ] );
-
         if( ! defined $alpha_delta ) {
             $alpha_delta = $alpha_delta_local
         } elsif( $alpha_delta_local < $alpha_delta ) {
@@ -297,17 +300,21 @@ sub h_bond_implicit
 
     $alpha = $alpha - $alpha_delta;
 
-    my $r = distance( $donor_atom, $acceptor_atom );
+    my $r_donor_acceptor = distance( $donor_atom, $acceptor_atom );
+    my $r_acceptor_hydrogen =
+        sqrt( $r_donor_acceptor**2
+            + $r_donor_hydrogen**2
+            - 2 * $r_donor_acceptor * $r_donor_hydrogen * cos( $alpha ) );
     my $theta = acos(
-        ( $r_donor_hydrogen - $r * cos( $alpha ) )
+        ( $r_donor_hydrogen - $r_donor_acceptor * cos( $alpha ) )
       / sqrt( $r_donor_hydrogen**2
-            + $r**2
-            - 2 * $r_donor_hydrogen * $r * cos( $alpha ) )
+            + $r_donor_acceptor**2
+            - 2 * $r_donor_hydrogen * $r_donor_acceptor * cos( $alpha ) )
     );
 
     return $h_epsilon
-         * ( 5 * ( $r_donor_hydrogen / $r )**12
-           - 6 * ( $r_donor_hydrogen / $r )**10 )
+         * ( 5 * ( $r_sigma / $r_donor_acceptor )**12
+           - 6 * ( $r_sigma / $r_donor_acceptor )**10 )
          * cos( $theta );
 }
 
@@ -315,13 +322,15 @@ sub h_bond_explicit
 {
     my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
 
-    my ( $h_epsilon ) = ( $parameters->{'h_epsilon'} );
+    my ( $h_epsilon, $r_sigma ) = (
+        $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
+    );
+    $r_sigma //= 2.00; # TODO: of course, should be updated.
     $h_epsilon //= 1.00;     # TODO: this constant will be also in h_bond() and
                              # h_bond() implicit. Remember to change in all of
                              # three functions.
 
-    my $r_sigma = 2.00; # TODO: of course, should be updated.
-    my $r_donor_hydrogen = distance( $hydrogen_atom, $acceptor_atom );
+    my $r_acceptor_hydrogen = distance( $hydrogen_atom, $acceptor_atom );
     my $theta = bond_angle(
         [ [ $donor_atom->{'Cartn_x'},
             $donor_atom->{'Cartn_y'},
@@ -334,8 +343,8 @@ sub h_bond_explicit
             $acceptor_atom->{'Cartn_z'} ] ] );
 
     return $h_epsilon
-        * ( 5 * ( $r_sigma / $r_donor_hydrogen )**12
-          - 6 * ( $r_sigma / $r_donor_hydrogen )**10 )
+        * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
+          - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
         * cos( $theta );
 }
 
