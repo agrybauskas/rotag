@@ -1,14 +1,16 @@
 {
   '1' => {
     'B_iso_or_equiv' => '0.00',
-    'Cartn_x' => '-0.000',
-    'Cartn_y' => '-0.000',
-    'Cartn_z' => '-0.000',
+    'Cartn_x' => '0.047',
+    'Cartn_y' => '0.035',
+    'Cartn_z' => '0.053',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'C1',
     'auth_comp_id' => 'UNK',
     'auth_seq_id' => '1',
-    'connections' => [],
+    'connections' => [
+      '2'
+    ],
     'group_PDB' => 'HETATM',
     'hybridization' => 'sp3',
     'id' => '1',
@@ -38,6 +40,7 @@
     'auth_comp_id' => 'UNK',
     'auth_seq_id' => '1',
     'connections' => [
+      '1',
       '4'
     ],
     'group_PDB' => 'HETATM',
@@ -68,9 +71,11 @@
     'auth_atom_id' => 'O3',
     'auth_comp_id' => 'UNK',
     'auth_seq_id' => '1',
-    'connections' => [],
+    'connections' => [
+      '5'
+    ],
     'group_PDB' => 'HETATM',
-    'hybridization' => 'sp3',
+    'hybridization' => 'sp2',
     'id' => '3',
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
@@ -121,16 +126,18 @@
   },
   '5' => {
     'B_iso_or_equiv' => '0.00',
-    'Cartn_x' => '3.303',
-    'Cartn_y' => '3.304',
-    'Cartn_z' => '-1.570',
+    'Cartn_x' => '3.186',
+    'Cartn_y' => '3.170',
+    'Cartn_z' => '-1.414',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'C5',
     'auth_comp_id' => 'UNK',
     'auth_seq_id' => '1',
-    'connections' => [],
+    'connections' => [
+      '3'
+    ],
     'group_PDB' => 'HETATM',
-    'hybridization' => 'sp3',
+    'hybridization' => 'sp2',
     'id' => '5',
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
