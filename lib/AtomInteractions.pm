@@ -154,12 +154,13 @@ sub h_bond
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $h_epsilon, $atom_site, $only_implicit ) = (
-        $parameters->{'r'},
+    my ( $h_epsilon, $atom_site, $only_implicit ) = (
         $parameters->{'h_epsilon'},
         $parameters->{'atom_site'},
         $parameters->{'only_implicit_h_bond'}
     );
+
+    $h_epsilon //= 1.0;
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # MoleculeProperties.
@@ -184,9 +185,6 @@ sub h_bond
         return 0;
     }
 
-    $r //= distance( $atom_i, $atom_j );
-    $h_epsilon //= -2.5e+05;
-
     # Calculates the angle (theta) between hydrogen acceptor, hydrogen and
     # hydrogen donor. If there is no information on the position of hydrogens
     # and cannot be determined by hybridization and the quantity of missing
@@ -201,45 +199,32 @@ sub h_bond
     #
     my $h_bond_energy_sum = 0;
 
-    # Because i and j atoms can be both hydrogen donors and acceptors, two
-    # possibilities are explored.
-    my @h_bonds; # List of hashes are used: ( { 'theta' => <float>,  } )
+    # # Because i and j atoms can be both hydrogen donors and acceptors, two
+    # # possibilities are explored.
+    # for my $atom_pair ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) {
+    #     my @hydrogen_ids =
+    #         map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
+    #            @{ $atom_pair->[0]{'connections'} };
+    #     my @hydrogen_names =
+    #         defined $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
+    #                                {$atom_pair->[0]{'label_atom_id'}} ?
+    #              @{ $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
+    #                                {$atom_pair->[0]{'label_atom_id'}}} : ();
 
-    for my $atom_pair ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) {
-        my @hydrogen_ids =
-            map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
-               @{ $atom_pair->[0]{'connections'} };
-        my @hydrogen_names =
-            defined $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-                                   {$atom_pair->[0]{'label_atom_id'}} ?
-                 @{ $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-                                   {$atom_pair->[0]{'label_atom_id'}}} : ();
+    #     if( @hydrogen_ids && ! $only_implicit ) {
+    #         for my $hydrogen_id ( @hydrogen_ids ) {
+    #             $h_bond_energy_sum +=
+    #                   h_bond_explicit( $atom_i,
+    #                                    $atom_site->{$hydrogen_id},
+    #                                    $atom_j );
+    #         }
+    #     } elsif( @hydrogen_names ) {
+    #         $h_bond_energy_sum +=
+    #             h_bond_implicit( $atom_site, $atom_i, $atom_j );
+    #     }
+    # }
 
-        if( @hydrogen_ids && ! $only_implicit ) {
-            for my $hydrogen_id ( @hydrogen_ids ) {
-                push( @h_bonds,
-                      h_bond_explicit( $atom_i,
-                                       $atom_site->{$hydrogen_id},
-                                       $atom_j ) );
-            }
-        } elsif( @hydrogen_names ) {
-            push( @h_bonds,
-                  h_bond_implicit( $atom_site, $atom_i, $atom_j ) );
-        }
-    }
-
-    # Calculates the sum of all hydrogen bonds.
-    for my $h_bond ( @h_bonds ) {
-        if( ( $h_bond->{'theta'} >=   90 * pi() / 180 )
-         && ( $h_bond->{'theta'} <=  270 * pi() / 180 ) ) {
-            $h_bond_energy_sum +=
-                $h_epsilon * ( 5 * ( $h_bond->{'r_donor_hydrogen'} / $r )**12
-                             - 6 * ( $h_bond->{'r_donor_hydrogen'} / $r )**10 )
-              * cos( $h_bond->{'theta'} );
-        }
-    }
-
-    return $h_bond_energy_sum;
+    # return $h_bond_energy_sum;
 }
 
 sub h_bond_implicit
