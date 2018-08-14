@@ -40,8 +40,7 @@
     'auth_comp_id' => 'SER',
     'auth_seq_id' => '1',
     'connections' => [
-      '1',
-      '4'
+      '1'
     ],
     'group_PDB' => 'HETATM',
     'hybridization' => 'sp3',
@@ -64,15 +63,14 @@
   },
   '3' => {
     'B_iso_or_equiv' => '0.00',
-    'Cartn_x' => '2.411',
-    'Cartn_y' => '1.437',
-    'Cartn_z' => '0.024',
+    'Cartn_x' => '3.826',
+    'Cartn_y' => '1.118',
+    'Cartn_z' => '-0.987',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'O',
     'auth_comp_id' => 'SER',
     'auth_seq_id' => '1',
     'connections' => [
-      '4',
       '5'
     ],
     'group_PDB' => 'HETATM',
@@ -94,43 +92,11 @@
     'pdbx_formal_charge' => '?',
     'type_symbol' => 'O'
   },
-  '4' => {
-    'B_iso_or_equiv' => '0.00',
-    'Cartn_x' => '1.443',
-    'Cartn_y' => '1.443',
-    'Cartn_z' => '0.288',
-    'auth_asym_id' => '?',
-    'auth_atom_id' => 'HG',
-    'auth_comp_id' => 'SER',
-    'auth_seq_id' => '1',
-    'connections' => [
-      '2',
-      '3'
-    ],
-    'group_PDB' => 'HETATM',
-    'hybridization' => 'sp3',
-    'id' => '4',
-    'label_alt_id' => '.',
-    'label_asym_id' => 'A',
-    'label_atom_id' => 'HG',
-    'label_comp_id' => 'SER',
-    'label_entity_id' => '1',
-    'label_seq_id' => '.',
-    'occupancy' => '1.00',
-    'pdbx_PDB_ins_code' => '?',
-    'pdbx_PDB_model_num' => '1',
-    'pdbx_auth_asym_id' => '?',
-    'pdbx_auth_atom_name' => 'HG',
-    'pdbx_auth_comp_id' => 'SER',
-    'pdbx_auth_seq_id' => '1',
-    'pdbx_formal_charge' => '?',
-    'type_symbol' => 'H'
-  },
   '5' => {
     'B_iso_or_equiv' => '0.00',
-    'Cartn_x' => '3.675',
-    'Cartn_y' => '1.393',
-    'Cartn_z' => '-0.021',
+    'Cartn_x' => '5.090',
+    'Cartn_y' => '1.074',
+    'Cartn_z' => '-1.032',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'C',
     'auth_comp_id' => 'SER',

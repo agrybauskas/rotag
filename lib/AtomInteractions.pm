@@ -199,32 +199,32 @@ sub h_bond
     #
     my $h_bond_energy_sum = 0;
 
-    # # Because i and j atoms can be both hydrogen donors and acceptors, two
-    # # possibilities are explored.
-    # for my $atom_pair ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) {
-    #     my @hydrogen_ids =
-    #         map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
-    #            @{ $atom_pair->[0]{'connections'} };
-    #     my @hydrogen_names =
-    #         defined $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-    #                                {$atom_pair->[0]{'label_atom_id'}} ?
-    #              @{ $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-    #                                {$atom_pair->[0]{'label_atom_id'}}} : ();
+    # Because i and j atoms can be both hydrogen donors and acceptors, two
+    # possibilities are explored.
+    for my $atom_pair ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) {
+        my @hydrogen_ids =
+            map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
+               @{ $atom_pair->[0]{'connections'} };
+        my @hydrogen_names =
+            defined $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
+                                   {$atom_pair->[0]{'label_atom_id'}} ?
+                 @{ $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
+                                   {$atom_pair->[0]{'label_atom_id'}}} : ();
 
-    #     if( @hydrogen_ids && ! $only_implicit ) {
-    #         for my $hydrogen_id ( @hydrogen_ids ) {
-    #             $h_bond_energy_sum +=
-    #                   h_bond_explicit( $atom_i,
-    #                                    $atom_site->{$hydrogen_id},
-    #                                    $atom_j );
-    #         }
-    #     } elsif( @hydrogen_names ) {
-    #         $h_bond_energy_sum +=
-    #             h_bond_implicit( $atom_site, $atom_i, $atom_j );
-    #     }
-    # }
+        if( @hydrogen_ids && ! $only_implicit ) {
+            for my $hydrogen_id ( @hydrogen_ids ) {
+                $h_bond_energy_sum +=
+                      h_bond_explicit( $atom_i,
+                                       $atom_site->{$hydrogen_id},
+                                       $atom_j );
+            }
+        } elsif( @hydrogen_names ) {
+            $h_bond_energy_sum +=
+                h_bond_implicit( $atom_site, $atom_i, $atom_j );
+        }
+    }
 
-    # return $h_bond_energy_sum;
+    return $h_bond_energy_sum;
 }
 
 sub h_bond_implicit

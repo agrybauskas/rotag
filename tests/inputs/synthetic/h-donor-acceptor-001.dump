@@ -6,7 +6,7 @@
     'Cartn_z' => '0.053',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'CA',
-    'auth_comp_id' => 'UNK',
+    'auth_comp_id' => 'SER',
     'auth_seq_id' => '1',
     'connections' => [
       '2'
@@ -17,7 +17,7 @@
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
     'label_atom_id' => 'CA',
-    'label_comp_id' => 'UNK',
+    'label_comp_id' => 'SER',
     'label_entity_id' => '1',
     'label_seq_id' => '.',
     'occupancy' => '1.00',
@@ -25,7 +25,7 @@
     'pdbx_PDB_model_num' => '1',
     'pdbx_auth_asym_id' => '?',
     'pdbx_auth_atom_name' => 'CA',
-    'pdbx_auth_comp_id' => 'UNK',
+    'pdbx_auth_comp_id' => 'SER',
     'pdbx_auth_seq_id' => '1',
     'pdbx_formal_charge' => '?',
     'type_symbol' => 'C'
@@ -37,7 +37,7 @@
     'Cartn_z' => '0.866',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'OG',
-    'auth_comp_id' => 'UNK',
+    'auth_comp_id' => 'SER',
     'auth_seq_id' => '1',
     'connections' => [
       '1',
@@ -49,7 +49,7 @@
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
     'label_atom_id' => 'OG',
-    'label_comp_id' => 'UNK',
+    'label_comp_id' => 'SER',
     'label_entity_id' => '1',
     'label_seq_id' => '.',
     'occupancy' => '1.00',
@@ -57,7 +57,7 @@
     'pdbx_PDB_model_num' => '1',
     'pdbx_auth_asym_id' => '?',
     'pdbx_auth_atom_name' => 'OG',
-    'pdbx_auth_comp_id' => 'UNK',
+    'pdbx_auth_comp_id' => 'SER',
     'pdbx_auth_seq_id' => '1',
     'pdbx_formal_charge' => '?',
     'type_symbol' => 'O'
@@ -69,7 +69,7 @@
     'Cartn_z' => '-0.704',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'O',
-    'auth_comp_id' => 'UNK',
+    'auth_comp_id' => 'SER',
     'auth_seq_id' => '1',
     'connections' => [
       '5'
@@ -80,7 +80,7 @@
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
     'label_atom_id' => 'O',
-    'label_comp_id' => 'UNK',
+    'label_comp_id' => 'SER',
     'label_entity_id' => '1',
     'label_seq_id' => '.',
     'occupancy' => '1.00',
@@ -88,7 +88,7 @@
     'pdbx_PDB_model_num' => '1',
     'pdbx_auth_asym_id' => '?',
     'pdbx_auth_atom_name' => 'O',
-    'pdbx_auth_comp_id' => 'UNK',
+    'pdbx_auth_comp_id' => 'SER',
     'pdbx_auth_seq_id' => '1',
     'pdbx_formal_charge' => '?',
     'type_symbol' => 'O'
@@ -100,7 +100,7 @@
     'Cartn_z' => '0.288',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'HG',
-    'auth_comp_id' => 'UNK',
+    'auth_comp_id' => 'SER',
     'auth_seq_id' => '1',
     'connections' => [
       '2'
@@ -111,7 +111,7 @@
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
     'label_atom_id' => 'HG',
-    'label_comp_id' => 'UNK',
+    'label_comp_id' => 'SER',
     'label_entity_id' => '1',
     'label_seq_id' => '.',
     'occupancy' => '1.00',
@@ -119,7 +119,7 @@
     'pdbx_PDB_model_num' => '1',
     'pdbx_auth_asym_id' => '?',
     'pdbx_auth_atom_name' => 'HG',
-    'pdbx_auth_comp_id' => 'UNK',
+    'pdbx_auth_comp_id' => 'SER',
     'pdbx_auth_seq_id' => '1',
     'pdbx_formal_charge' => '?',
     'type_symbol' => 'H'
@@ -131,7 +131,7 @@
     'Cartn_z' => '-1.414',
     'auth_asym_id' => '?',
     'auth_atom_id' => 'C',
-    'auth_comp_id' => 'UNK',
+    'auth_comp_id' => 'SER',
     'auth_seq_id' => '1',
     'connections' => [
       '3'
@@ -142,7 +142,7 @@
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
     'label_atom_id' => 'C',
-    'label_comp_id' => 'UNK',
+    'label_comp_id' => 'SER',
     'label_entity_id' => '1',
     'label_seq_id' => '.',
     'occupancy' => '1.00',
@@ -150,7 +150,7 @@
     'pdbx_PDB_model_num' => '1',
     'pdbx_auth_asym_id' => '?',
     'pdbx_auth_atom_name' => 'C',
-    'pdbx_auth_comp_id' => 'UNK',
+    'pdbx_auth_comp_id' => 'SER',
     'pdbx_auth_seq_id' => '1',
     'pdbx_formal_charge' => '?',
     'type_symbol' => 'C'
