@@ -236,7 +236,7 @@ sub h_bond_implicit
     );
 
     $r_sigma //= 2.00;
-    $h_epsilon //= -1.00;    # TODO: this constant will be also in h_bond() and
+    $h_epsilon //= 1.00;    # TODO: this constant will be also in h_bond() and
                              # h_bond() implicit. Remember to change in all of
                              # three functions.
 
@@ -303,7 +303,8 @@ sub h_bond_implicit
     );
 
     if( ( $theta >= 90 * pi() / 180 ) && ( $theta <=  270 * pi() / 180 ) ) {
-        return $h_epsilon
+        return ( -1 )
+             * $h_epsilon
              * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
                - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
              * cos( $theta );
@@ -320,7 +321,7 @@ sub h_bond_explicit
         $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
     );
     $r_sigma //= 2.00; # TODO: of course, should be updated.
-    $h_epsilon //= -1.00; # TODO: this constant will be also in h_bond() and
+    $h_epsilon //= 1.00; # TODO: this constant will be also in h_bond() and
                          # h_bond() implicit. Remember to change in all of
                          # three functions.
 
@@ -337,7 +338,8 @@ sub h_bond_explicit
             $acceptor_atom->{'Cartn_z'} ] ] );
 
     if( ( $theta >= 90 * pi() / 180 ) && ( $theta <=  270 * pi() / 180 ) ) {
-        return $h_epsilon
+        return ( -1 )
+             * $h_epsilon
              * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
                - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
              * cos( $theta );
