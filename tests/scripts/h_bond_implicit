@@ -15,6 +15,4 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print h_bond_implicit( $atom_site,
-                       $atom_site->{$donor_id},
-                       $atom_site->{$acceptor_id} ), "\n";
+print h_bond_implicit($atom_site->{$donor_id}, $atom_site->{$acceptor_id}), "\n";

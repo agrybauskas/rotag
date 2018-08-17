@@ -229,6 +229,44 @@ sub h_bond
 
 sub h_bond_implicit
 {
+    my ( $donor_atom, $acceptor_atom, $parameters ) = @_;
+
+    my ( $h_epsilon, $r_sigma ) = (
+        $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
+    );
+
+    $r_sigma //= 2.00;
+    $h_epsilon //= 1.00; # TODO: this constant will be also in h_bond() and
+                         # h_bond() implicit. Remember to change in all of
+                         # three functions.
+
+    my $covalent_radius_idx;
+    my @hybridizations = ( 'sp3', 'sp2', 'sp' );
+    for( my $i = 0; $i <= $#hybridizations; $i++ ) {
+        if( $donor_atom->{'hybridization'} eq $hybridizations[$i] ) {
+            $covalent_radius_idx = $i;
+            last;
+        }
+    }
+
+    my $r_donor_acceptor = distance( $donor_atom, $acceptor_atom );
+    my $r_donor_hydrogen =
+        $ATOMS{$donor_atom->{'type_symbol'}}
+              {'covalent_radius'}{'length'}->[$covalent_radius_idx]
+      + $ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
+    my $theta =
+        acos( ( $r_donor_acceptor**2 - $r_donor_hydrogen**2 - $r_sigma**2 )
+            / ( -2 * $r_donor_hydrogen * $r_sigma ) );
+
+    if( ( $theta >= 90 * pi() / 180 ) && ( $theta <=  270 * pi() / 180 ) ) {
+        return ( -1 ) * $h_epsilon * ( -1 ) * cos( $theta );
+    } else {
+        return 0;
+    }
+}
+
+sub h_bond_implicit_old
+{
     my ( $atom_site, $donor_atom, $acceptor_atom, $parameters ) = @_;
 
     my ( $h_epsilon, $r_sigma ) = (
@@ -236,9 +274,9 @@ sub h_bond_implicit
     );
 
     $r_sigma //= 2.00;
-    $h_epsilon //= 1.00;    # TODO: this constant will be also in h_bond() and
-                             # h_bond() implicit. Remember to change in all of
-                             # three functions.
+    $h_epsilon //= 1.00; # TODO: this constant will be also in h_bond() and
+                         # h_bond() implicit. Remember to change in all of
+                         # three functions.
 
     my $covalent_radius_idx;
     my @hybridizations = ( 'sp3', 'sp2', 'sp' );
