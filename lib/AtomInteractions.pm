@@ -261,8 +261,8 @@ sub h_bond_implicit
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
     if( ( $r_donor_acceptor <= $r_donor_hydrogen + $r_sigma )
-     && ( $theta >= 90 * pi() / 180 )
-     && ( $theta <=  270 * pi() / 180 ) ) {
+     && ( $theta >= pi() / 2 )
+     && ( $theta <=  3 * pi() / 2 ) ) {
         return ( -1 ) * $h_epsilon * ( -1 ) * cos( $theta );
     } else {
         return 0;
@@ -344,7 +344,7 @@ sub h_bond_implicit_old
             - 2 * $r_donor_hydrogen * $r_donor_acceptor * cos( $alpha ) )
     );
 
-    if( ( $theta >= 90 * pi() / 180 ) && ( $theta <=  270 * pi() / 180 ) ) {
+    if( ( $theta >= pi() / 2 ) && ( $theta <=  3 * pi() / 2 ) ) {
         return ( -1 )
              * $h_epsilon
              * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
@@ -379,7 +379,7 @@ sub h_bond_explicit
             $acceptor_atom->{'Cartn_y'},
             $acceptor_atom->{'Cartn_z'} ] ] );
 
-    if( ( $theta >= 90 * pi() / 180 ) && ( $theta <=  270 * pi() / 180 ) ) {
+    if( ( $theta >= pi() / 2 ) && ( $theta <=  3 * pi() / 2 ) ) {
         return ( -1 )
              * $h_epsilon
              * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
