@@ -33,17 +33,26 @@ sub rotation_only
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
     # Determines all residue ids present in atom site.
-    my @residue_ids =
-        uniq( @{ filter( { 'atom_site' => $atom_site,
-                           'data' => [ 'label_seq_id' ],
-                           'is_list' => 1 } ) } );
+    my @residue_unique_keys =
+        uniq( map { join( ',', @{$_} ) }
+              @{ filter( { 'atom_site' => $atom_site,
+                           'data' => [ 'label_seq_id',
+                                       'label_asym_id',
+                                       'label_entity_id',
+                                       'label_alt_id' ] } ) } );
 
     # Iterates through target residues and their atom ids and assigns
     # conformational equations which can produce pseudo-atoms later.
-    for my $residue_id ( @residue_ids ) {
+    for my $residue_unique_key ( @residue_unique_keys ) {
+        my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+            split( ',', $residue_unique_key );
         my $residue_site =
             filter( { 'atom_site' => \%atom_site,
-                      'include' => { 'label_seq_id' => [ $residue_id ] } } );
+                      'include' =>
+                      { 'label_seq_id' => [ $residue_id ],
+                        'label_asym_id' => [ $residue_chain ],
+                        'label_entity_id' => [ $residue_entity ],
+                        'label_alt_id' => [ $residue_alt ] } } );
 
         my $rotatable_bonds = rotatable_bonds( $residue_site );
 
