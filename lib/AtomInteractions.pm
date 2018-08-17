@@ -258,7 +258,10 @@ sub h_bond_implicit
         acos( ( $r_donor_acceptor**2 - $r_donor_hydrogen**2 - $r_sigma**2 )
             / ( -2 * $r_donor_hydrogen * $r_sigma ) );
 
-    if( ( $theta >= 90 * pi() / 180 ) && ( $theta <=  270 * pi() / 180 ) ) {
+    # TODO: study more on what restriction should be on $r_donor_acceptor.
+    if( ( $r_donor_acceptor <= $r_donor_hydrogen + $r_sigma )
+     && ( $theta >= 90 * pi() / 180 )
+     && ( $theta <=  270 * pi() / 180 ) ) {
         return ( -1 ) * $h_epsilon * ( -1 ) * cos( $theta );
     } else {
         return 0;
