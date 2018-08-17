@@ -9,6 +9,7 @@ use Getopt::Long;
 use ConnectAtoms qw( connect_atoms );
 use MoleculeProperties qw( hybridization );
 use PDBxParser qw( obtain_atom_site );
+use SidechainModels qw( rotation_only );
 
 $Data::Dumper::Indent = 1;
 $Data::Dumper::Sortkeys = 1;
@@ -22,11 +23,12 @@ my %options;
 
 my $is_connected = 0;
 my $is_hybridized = 0;
-my $is_rotation_only = 0;
+my $apply_rotation_only = 0;
 
 GetOptions(
     "c" => sub { $is_connected = 1 },
     "h" => sub { $is_hybridized = 1 },
+    "r" => sub { $apply_rotation_only = 1 },
 ) or die "Error in command line argument.";
 
 @ARGV = ( "-" ) unless @ARGV;
@@ -42,6 +44,10 @@ foreach my $pdbx_file ( @ARGV ) {
 
     if( $is_hybridized ) {
         hybridization( $atom_site );
+    }
+
+    if( $apply_rotation_only ) {
+        rotation_only( $atom_site );
     }
 
     my $cif_dump_structure = Dumper( $atom_site );
