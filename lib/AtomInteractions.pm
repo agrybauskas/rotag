@@ -214,14 +214,14 @@ sub h_bond
         if( @hydrogen_ids && ! $only_implicit ) {
             for my $hydrogen_id ( @hydrogen_ids ) {
                 $h_bond_energy_sum +=
-                    h_bond_explicit( $atom_i,
+                    h_bond_explicit( $atom_pair->[0],
                                      $atom_site->{$hydrogen_id},
-                                     $atom_j,
+                                     $atom_pair->[1],
                                      $parameters );
             }
         } elsif( @hydrogen_names ) {
             $h_bond_energy_sum +=
-                h_bond_implicit( $atom_i, $atom_j, $parameters );
+                h_bond_implicit( $atom_pair->[0], $atom_pair->[1], $parameters );
         }
     }
 
