@@ -338,6 +338,8 @@ sub rotatable_bonds
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
 
+    if( ! $start_atom_id || ! $next_atom_id ) { return {}; }
+
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
     my @visited_atom_ids = ( $start_atom_id );
