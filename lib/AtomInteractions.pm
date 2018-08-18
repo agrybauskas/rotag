@@ -160,8 +160,6 @@ sub h_bond
         $parameters->{'only_implicit_h_bond'}
     );
 
-    $h_epsilon //= 1.0;
-
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # MoleculeProperties.
     # TODO: read about the situations when there are hydrogen atom in the

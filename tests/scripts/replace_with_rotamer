@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use LinearAlgebra qw( pi );
+use PDBxParser qw( to_pdbx );
+use PseudoAtoms qw( replace_with_rotamer );
+
+#
+# Unit test: PseudoAtoms::generate_rotamer
+#                    residue_id angle_value
+# Example: ./generate_pseudo 12 "chi0 0" structure.dump
+#
+
+my ( $residue_id, $angle_values, $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+# Parses angles for pseudo-rotamers.
+my %angle_values = ( map { $_->[0] => $_->[1] }
+                     map { [ split( " ", $_ ) ] }
+                     split( "&", $angle_values ) );
+for my $angle_value ( keys %angle_values ) {
+    $angle_values{$angle_value} =~ s/pi/pi()/g;
+    $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
+}
+
+replace_with_rotamer( $atom_site, $residue_id, { $residue_id => \%angle_values } );
+
+to_pdbx( { "atom_site" => $atom_site } );
