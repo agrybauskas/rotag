@@ -32,6 +32,6 @@ for my $angle_value ( keys %angle_values ) {
     $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
 }
 
-replace_with_rotamer( $atom_site, $residue_id, { $residue_id => \%angle_values } );
+replace_with_rotamer( $atom_site, $residue_id, \%angle_values );
 
 to_pdbx( { "atom_site" => $atom_site } );
