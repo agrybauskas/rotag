@@ -293,7 +293,7 @@ sub sort_atom_names
     # This priority is achieved by assinging first, second and third priorities
     # to numbers. Then iteratively is sorted by priorities.
     my %atom_type_priority =
-        ( 'X' => 1, 'H' => 2, 'C' => 3, 'N' => 4, 'O' => 5, 'P' => 6, 'S' => 7 );
+        ( 'H' => 1, 'X' => 2, 'C' => 3, 'N' => 4, 'O' => 5, 'P' => 6, 'S' => 7 );
     my %greek_letter_priority =
         ( 'H' => 1, 'Z' => 2, 'E' => 3, 'D' => 4, 'G' => 5, 'B' => 6,
           'A' => 7,  '' => 8 );
