@@ -54,8 +54,9 @@ for my $residue_unique_key ( keys %{ $rotamer_library } ) {
                        "$rotamer_id:" .
                        join( ';',
                              map { "$_:" .
-                                   sprintf( '%.3f', $rotamer->{'angles'}{$_} ) }
-                             sort keys %{ $rotamer->{'angles'} } ) } );
+                                   sprintf( "%.3f", $rotamer->{'angles'}{$_} ) }
+                             sort keys %{ $rotamer->{'angles'} } ) . ';E:' .
+                       sprintf( "%.3f", $rotamer->{'potential_energy_value'} )});
         $rotamer_id++;
     }
 }
