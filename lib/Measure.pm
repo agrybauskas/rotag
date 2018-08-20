@@ -235,6 +235,12 @@ sub all_dihedral
                           'include' => { 'id' => \@second_connections },
                           'data' => [ 'label_atom_id' ],
                           'is_list' => 1 } ) )->[0];
+            my $first_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' =>
+                              { 'label_atom_id' => [ $first_atom_name ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
             my @third_connections = # Third atom connections, except second.
                 grep { $_ ne $second_atom_id }
                 @{ $residue_site->{$third_atom_id}{'connections'} };
@@ -244,14 +250,18 @@ sub all_dihedral
                           'include' => { 'id' => \@third_connections },
                           'data' => [ 'label_atom_id' ],
                           'is_list' => 1 } ) )->[0];
+            my $fourth_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' =>
+                              { 'label_atom_id' => [ $fourth_atom_name ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
 
             # Extracts coordinates for dihedral angle calculations.
             my $first_atom_coord =
-                filter(
-                    { 'atom_site' => $residue_site,
-                      'include' => { 'label_atom_id' => [ $first_atom_name ] },
-                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                      'is_list' => 1 } );
+                [ $residue_site->{$first_atom_id}{'Cartn_x'},
+                  $residue_site->{$first_atom_id}{'Cartn_y'},
+                  $residue_site->{$first_atom_id}{'Cartn_z'} ];
             my $second_atom_coord =
                 [ $residue_site->{$second_atom_id}{'Cartn_x'},
                   $residue_site->{$second_atom_id}{'Cartn_y'},
@@ -261,17 +271,15 @@ sub all_dihedral
                   $residue_site->{$third_atom_id}{'Cartn_y'},
                   $residue_site->{$third_atom_id}{'Cartn_z'} ];
             my $fourth_atom_coord =
-                filter(
-                    { 'atom_site' => $residue_site,
-                      'include' => { 'label_atom_id' => [ $fourth_atom_name ] },
-                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                      'is_list' => 1 } );
+                [ $residue_site->{$fourth_atom_id}{'Cartn_x'},
+                  $residue_site->{$fourth_atom_id}{'Cartn_y'},
+                  $residue_site->{$fourth_atom_id}{'Cartn_z'} ];
 
             $angle_values{$angle_name}{'atom_ids'} =
-                [ @second_connections,
+                [ $first_atom_id,
                   $second_atom_id,
                   $third_atom_id,
-                  @third_connections ];
+                  $fourth_atom_id ];
             $angle_values{$angle_name}{'value'} =
                 dihedral_angle( [ $first_atom_coord,
                                   $second_atom_coord,

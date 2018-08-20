@@ -109,7 +109,6 @@ for my $pdbx_file ( @ARGV ) {
         }
 
     } elsif( $calc_residue_angles ) {
-        # TODO: add atom_1_id, atom_2_id, ...
         $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
             [ "id", "residue_id", "chain", "entity", "alt", "residue_type",
               "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id",
