@@ -111,7 +111,9 @@ for my $pdbx_file ( @ARGV ) {
     } elsif( $calc_residue_angles ) {
         # TODO: add atom_1_id, atom_2_id, ...
         $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
-            [ "id", "residue_id", "chain", "entity", "alt", "residue_type", "type",
+            [ "id", "residue_id", "chain", "entity", "alt", "residue_type",
+              "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id",
+              "type",
               "value" ];
 
         my $dihedral_site =
@@ -129,13 +131,26 @@ for my $pdbx_file ( @ARGV ) {
                 sort keys %{ $dihedral_angles->{$residue_unique_key} } ) {
                 push( @{ $pdbx_loops{"_[local]_dihedral_angle"}{"data"} },
                       $dihedral_id, split( ',', $residue_unique_key ),
-                      $residue_name, $angle_name,
+                      $residue_name,
+                      $dihedral_angles->{$residue_unique_key}
+                                        {$angle_name}{'atom_ids'}[0],
+                      $dihedral_angles->{$residue_unique_key}
+                                        {$angle_name}{'atom_ids'}[1],
+                      $dihedral_angles->{$residue_unique_key}
+                                        {$angle_name}{'atom_ids'}[2],
+                      $dihedral_angles->{$residue_unique_key}
+                                        {$angle_name}{'atom_ids'}[3],
+                      $angle_name,
                       ( $in_degrees ?
-                        sprintf( "%.3f", $dihedral_angles->
-                                             {$residue_unique_key}{$angle_name}
+                        sprintf( "%.3f",
+                                 $dihedral_angles->{$residue_unique_key}
+                                                   {$angle_name}
+                                                   {'value'}
                       * 180 / pi() ) :
-                        sprintf( "%.3f", $dihedral_angles->
-                                             {$residue_unique_key}{$angle_name} ) ) );
+                        sprintf( "%.3f",
+                                 $dihedral_angles->{$residue_unique_key}
+                                                   {$angle_name}
+                                                   {'value'} ) ) );
             $dihedral_id++;
             }
         }

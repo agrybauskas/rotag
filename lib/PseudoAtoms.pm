@@ -112,7 +112,7 @@ sub generate_pseudo
                   [ map
                     { $_ - $angles{"$residue_id,$residue_chain," .
                                    "$residue_entity,$residue_alt"}
-                                  {"$angle_name"} }
+                                  {"$angle_name"}{'value'} }
                     @{ $angle_values->{"$angle_name"} } ] );
         }
 
@@ -157,7 +157,8 @@ sub generate_pseudo
             $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
                 { map { ( $_ => $angle_values{$_}
                               + $angles{"$residue_id,$residue_chain," .
-                                        "$residue_entity,$residue_alt"}{$_} ) }
+                                        "$residue_entity,$residue_alt"}
+                                       {$_}{'value'} ) }
                   @angle_names };
             # Adds additional pseudo-atom flag for future filtering.
             $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;

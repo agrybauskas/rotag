@@ -267,7 +267,12 @@ sub all_dihedral
                       'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
                       'is_list' => 1 } );
 
-            $angle_values{$angle_name} =
+            $angle_values{$angle_name}{'atom_ids'} =
+                [ @second_connections,
+                  $second_atom_id,
+                  $third_atom_id,
+                  @third_connections ];
+            $angle_values{$angle_name}{'value'} =
                 dihedral_angle( [ $first_atom_coord,
                                   $second_atom_coord,
                                   $third_atom_coord,

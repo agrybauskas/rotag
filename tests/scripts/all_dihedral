@@ -24,6 +24,7 @@ for my $residue_unique_key ( keys %{ $dihedral_angles } ) {
                     keys %{ $dihedral_angles->{$residue_unique_key} } ) {
         print( join( " ", split( ",", $residue_unique_key ), $angle ), " " );
         printf( "%.1f\n",
-                $dihedral_angles->{$residue_unique_key}{$angle} * 180 / pi() );
+                $dihedral_angles->{$residue_unique_key}{$angle}{'value'}
+              * 180 / pi() );
     }
 }
