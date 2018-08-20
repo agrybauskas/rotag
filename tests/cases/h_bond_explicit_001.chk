@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Force field parameters are not parameterized."
+exit 1
