@@ -112,6 +112,10 @@ for my $pdbx_file ( @ARGV ) {
         connect_atoms( $atom_site );
     }
 
+    if( $do_decompose ) {
+        $parameters{'decompose'} = 1;
+    }
+
     my $selected_atom_site =
         filter( { "atom_site" => $atom_site,
                   "include" => { "[local]_selection_state" => [ "T", "S" ] } } );
@@ -151,6 +155,7 @@ for my $pdbx_file ( @ARGV ) {
             my $entity = $selected_atom_site->{"$atom_id"}{"label_entity_id"};
             my $alt = $selected_atom_site->{"$atom_id"}{"label_alt_id"};
             my $potential_energy = 0;
+            my %potential_energy; # Used when decomposing composite energy values.
             for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} } ) {
                 # TODO: just in case, check if ignoring second neighbours are valid.
                 if( ( $atom_id ne $neighbour_atom_id )
@@ -165,25 +170,62 @@ for my $pdbx_file ( @ARGV ) {
                             $selected_atom_site->{$atom_id},
                             $selected_atom_site->{$neighbour_atom_id},
                             \%parameters );
-                    $potential_energy += $pairwise_potential_energy;
 
                     if( $do_pairwise ) {
-                        push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
-                              $calculation_id, $atom_id, $neighbour_atom_id,
-                              $residue_id, $chain, $entity, $alt,
-                              $options{"interactions"},
-                              sprintf( "%.3f", $potential_energy ) );
-                        $calculation_id++;
+                        if( $do_decompose ) {
+                            for my $interaction (
+                                grep { $_ ne 'composite' }
+                                sort keys %{ $pairwise_potential_energy } ) {
+                                push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
+                                      $calculation_id, $atom_id, $neighbour_atom_id,
+                                      $residue_id, $chain, $entity, $alt,
+                                      $interaction,
+                                      sprintf( "%.3f", $pairwise_potential_energy->{$interaction} ) );
+                                $calculation_id++;
+                            }
+                        } else {
+                            push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
+                                  $calculation_id, $atom_id, $neighbour_atom_id,
+                                  $residue_id, $chain, $entity, $alt,
+                                  $options{"interactions"},
+                                  sprintf( "%.3f", $pairwise_potential_energy ) );
+                            $calculation_id++;
+                        }
+                    } elsif( $do_decompose ) {
+                        for my $interaction (
+                            grep { $_ ne 'composite' }
+                            sort keys %{ $pairwise_potential_energy } ) {
+                            if( $potential_energy{$interaction} ) {
+                                $potential_energy{$interaction} =
+                                    $pairwise_potential_energy->{$interaction};
+                            } else {
+                                $potential_energy{$interaction} +=
+                                    $pairwise_potential_energy->{$interaction};
+                            }
+                        }
+                    } else {
+                        $potential_energy += $pairwise_potential_energy;
                     }
                 }
             }
 
-            if( ! $do_pairwise ) {
+            if( ! $do_pairwise && ! $do_decompose ) {
                 push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
                       $calculation_id, $atom_id, ".", $residue_id, $chain,
                       $entity, $alt, $options{"interactions"},
                       sprintf( "%.3f", $potential_energy ) );
                 $calculation_id++;
+            }
+
+            if( $do_decompose ) {
+                for my $interaction (
+                    grep { $_ ne 'composite' } sort keys %potential_energy ) {
+                    push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
+                          $calculation_id, $atom_id, ".", $residue_id, $chain,
+                          $entity, $alt, $interaction,
+                          sprintf( "%.3f", $potential_energy{$interaction} ) );
+                    $calculation_id++;
+                }
             }
         }
     }

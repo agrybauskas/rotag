@@ -418,15 +418,15 @@ sub composite
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
         my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
+
         if( $decompose ) {
-            return ( $leonard_jones + $coulomb + $h_bond,
-                     { 'leonard_jones' => $leonard_jones,
-                       'coulomb' => $coulomb,
-                       'h_bond' => $h_bond } );
+            return { 'composite' => $leonard_jones + $coulomb + $h_bond,
+                     'leonard_jones' => $leonard_jones,
+                     'coulomb' => $coulomb,
+                     'h_bond' => $h_bond };
         } else {
             return $leonard_jones + $coulomb + $h_bond;
         }
-
     } elsif( ( $r >= $cutoff_start * $sigma )
           && ( $r <= $cutoff_end * $sigma ) ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
@@ -435,21 +435,23 @@ sub composite
         my $cutoff_function =
             cos( ( pi() * ( $r - $cutoff_start * $sigma ) ) /
                  ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
+
         if( $decompose ) {
-            return ( ( $leonard_jones + $coulomb + $h_bond ) * $cutoff_function,
-                     { 'leonard_jones' => $leonard_jones,
-                       'coulomb' => $coulomb,
-                       'h_bond' => $h_bond } );
+            return { 'composite' =>
+                         ( $leonard_jones + $coulomb + $h_bond )
+                         * $cutoff_function,
+                     'leonard_jones' => $leonard_jones,
+                     'coulomb' => $coulomb,
+                     'h_bond' => $h_bond };
         } else {
             return ( $leonard_jones + $coulomb + $h_bond ) * $cutoff_function;
         }
-
     } else {
         if( $decompose ) {
-            return ( 0,
-                     { 'leonard_jones' => 0,
-                       'coulomb' => 0,
-                       'h_bond' => 0 } );
+            return { 'composite' => 0,
+                     'leonard_jones' => 0,
+                     'coulomb' => 0,
+                     'h_bond' => 0 };
         } else {
             return 0;
         }
