@@ -392,15 +392,18 @@ sub composite
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $sigma, $cutoff_start, $cutoff_end ) = (
+    my ( $r, $sigma, $cutoff_start, $cutoff_end, $decompose ) = (
         $parameters->{'r'},
         $parameters->{'sigma'},
         $parameters->{'cutoff_start'}, # * VdW distance.
         $parameters->{'cutoff_end'}, #   * VdW distance.
+        $parameters->{'decompose'}, # Returns hash of the energy function
+                                    # component values.
     );
 
     $cutoff_start //= 2.5;
     $cutoff_end //= 5.0;
+    $decompose //= 0;
 
     # Calculates squared distance between two atoms.
     $r //= sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
@@ -415,7 +418,15 @@ sub composite
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
         my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
-        return $leonard_jones + $coulomb + $h_bond;
+        if( $decompose ) {
+            return ( $leonard_jones + $coulomb + $h_bond,
+                     { 'leonard_jones' => $leonard_jones,
+                       'coulomb' => $coulomb,
+                       'h_bond' => $h_bond } );
+        } else {
+            return $leonard_jones + $coulomb + $h_bond;
+        }
+
     } elsif( ( $r >= $cutoff_start * $sigma )
           && ( $r <= $cutoff_end * $sigma ) ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
@@ -424,9 +435,24 @@ sub composite
         my $cutoff_function =
             cos( ( pi() * ( $r - $cutoff_start * $sigma ) ) /
                  ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
-        return ( $leonard_jones + $coulomb + $h_bond ) * $cutoff_function;
+        if( $decompose ) {
+            return ( ( $leonard_jones + $coulomb + $h_bond ) * $cutoff_function,
+                     { 'leonard_jones' => $leonard_jones,
+                       'coulomb' => $coulomb,
+                       'h_bond' => $h_bond } );
+        } else {
+            return ( $leonard_jones + $coulomb + $h_bond ) * $cutoff_function;
+        }
+
     } else {
-        return 0;
+        if( $decompose ) {
+            return ( 0,
+                     { 'leonard_jones' => 0,
+                       'coulomb' => 0,
+                       'h_bond' => 0 } );
+        } else {
+            return 0;
+        }
     }
 }
 
