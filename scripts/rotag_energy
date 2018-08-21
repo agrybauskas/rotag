@@ -37,6 +37,10 @@ use PseudoAtoms qw( add_hydrogens );
 #*                              leonard_jones | coulomb | h_bond)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
+#*    -d, --decompose
+#*        decompose composite energy values into their constituent energy values.
+#*    -p, --pairwise
+#*        check energy of the atoms in pairwise fashion.
 #*    -n, --threads
 #*        number of threads.
 #*    -v, --version
@@ -49,7 +53,9 @@ my %options;
 my $version = "1.0.0";
 
 GetOptions(
-    "potential|p=s" => \$options{"interactions"},
+    "potential|u=s" => \$options{"interactions"},
+    "pairwise|p=s" => \$options{"pairwise"},
+    "decompose|d=s" => \$options{"decompose"},
     "threads|n=s" => \$options{"threads"},
     "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
