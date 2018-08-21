@@ -1,0 +1,18 @@
+data_testing
+#
+loop_
+_[local]_dihedral_angle.id
+_[local]_dihedral_angle.residue_id
+_[local]_dihedral_angle.chain
+_[local]_dihedral_angle.entity
+_[local]_dihedral_angle.alt
+_[local]_dihedral_angle.residue_type
+_[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.type
+_[local]_dihedral_angle.value
+1 246 A 1 . 1 1607 1608 1611 1612 chi0 -2.885
+2 246 A 1 . 1 1608 1611 1612 1613 chi1 1.199
+#
