@@ -143,9 +143,23 @@ for my $pdbx_file ( @ARGV ) {
     my %pdbx_loops;
     my $calculation_id = 1;
 
-    $pdbx_loops{"_[local]_energy"}{"attributes"} =
-        [ "id", "atom_1_id", "atom_2_id", "residue_id", "chain", "entity",
-          "alt", "calculation_method", "value" ];
+    if( $do_pairwise ) {
+        $pdbx_loops{"_[local]_energy"}{"attributes"} =
+            [ "id", "atom_1_id", "atom_2_id", "residue_id", "chain", "entity",
+              "alt", "calculation_method", "value" ];
+        # $pdbx_loops{"_[local]_energy"}{"attributes"} =
+        #     [ "id", "atom_1_id", "type_symbol_1", "label_atom_1_id",
+        #       "label_alt_1_id", "label_comp_1_id", "label_asym_1_id",
+        #       "label_entity_1_id", "label_seq_1_id",
+        #       "atom_2_id", "type_symbol_2", "label_atom_2_id",
+        #       "label_atom_2_id", "label_alt_2_id", "label_comp_2_id",
+        #       "label_asym_2_id", "label_entity_2_id", "label_seq_2_id",
+        #       "calculation_method", "value" ];
+    } else {
+        $pdbx_loops{"_[local]_energy"}{"attributes"} =
+            [ "id", "atom_1_id", "atom_2_id", "residue_id", "chain", "entity",
+              "alt", "calculation_method", "value" ];
+    }
 
     # Calculates the sum of pairwise interactions.
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {

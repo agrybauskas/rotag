@@ -24,6 +24,6 @@
    very similar interation through cells. It should be refactored and the
    redundant code also should be removed.
 -- Create functions that generate rotamer_energy and rotamer_angle cif loops.
--- rotag_energy should have pairwise and rotamer/residue flags.
+++ rotag_energy should have pairwise and rotamer/residue flags.
 -- Partial charges and full charges probably should be described for each
    residue.
