@@ -51,6 +51,7 @@ use PseudoAtoms qw( add_hydrogens );
 my %options;
 
 my $version = "1.0.0";
+my $by_residue = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
 
@@ -157,9 +158,6 @@ for my $pdbx_file ( @ARGV ) {
             [ "id", "atom_id", "type_symbol", "label_atom_id", "label_seq_id",
               "label_comp_id", "label_asym_id", "label_entity_id",
               "label_alt_id", "calculation_method", "value" ];
-        # $pdbx_loops{"_[local]_energy"}{"attributes"} =
-        #     [ "id", "atom_1_id", "atom_2_id", "residue_id", "chain", "entity",
-        #       "alt", "calculation_method", "value" ];
     }
 
     # Calculates the sum of pairwise interactions.
@@ -183,27 +181,13 @@ for my $pdbx_file ( @ARGV ) {
                  && ( ! is_second_neighbour( $selected_atom_site,
                                              $atom_id,
                                              $neighbour_atom_id ) ) ) {
-                    my $neighbour_symbol =
-                        $selected_atom_site->{"$neighbour_atom_id"}
-                                             {"type_symbol"};
-                    my $neighbour_name =
-                        $selected_atom_site->{"$neighbour_atom_id"}
-                                             {"label_atom_id"};
-                    my $neighbour_residue_id =
-                        $selected_atom_site->{"$neighbour_atom_id"}
-                                             {"label_seq_id"};
-                    my $neighbour_residue_name =
-                        $selected_atom_site->{"$neighbour_atom_id"}
-                                             {"label_comp_id"};
-                    my $neighbour_chain =
-                        $selected_atom_site->{"$neighbour_atom_id"}
-                                             {"label_asym_id"};
-                    my $neighbour_entity =
-                        $selected_atom_site->{"$neighbour_atom_id"}
-                                             {"label_entity_id"};
-                    my $neighbour_alt =
-                        $selected_atom_site->{"$neighbour_atom_id"}
-                                             {"label_alt_id"};
+                    my ( $neighbour_symbol, $neighbour_name,
+                         $neighbour_residue_id, $neighbour_residue_name,
+                         $neighbour_chain, $neighbour_entity, $neighbour_alt ) =
+                        map { $selected_atom_site->{"$neighbour_atom_id"}{"$_"} }
+                            ( "type_symbol", "label_atom_id", "label_seq_id",
+                              "label_comp_id", "label_asym_id", "label_entity_id",
+                              "label_alt_id" );
 
                     my $pairwise_potential_energy =
                         $potential_function->(
