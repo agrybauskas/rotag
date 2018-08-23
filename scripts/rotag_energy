@@ -144,17 +144,14 @@ for my $pdbx_file ( @ARGV ) {
     my $calculation_id = 1;
 
     if( $do_pairwise ) {
-        $pdbx_loops{"_[local]_energy"}{"attributes"} =
-            [ "id", "atom_1_id", "atom_2_id", "residue_id", "chain", "entity",
-              "alt", "calculation_method", "value" ];
-        # $pdbx_loops{"_[local]_energy"}{"attributes"} =
-        #     [ "id", "atom_1_id", "type_symbol_1", "label_atom_1_id",
-        #       "label_alt_1_id", "label_comp_1_id", "label_asym_1_id",
-        #       "label_entity_1_id", "label_seq_1_id",
-        #       "atom_2_id", "type_symbol_2", "label_atom_2_id",
-        #       "label_atom_2_id", "label_alt_2_id", "label_comp_2_id",
-        #       "label_asym_2_id", "label_entity_2_id", "label_seq_2_id",
-        #       "calculation_method", "value" ];
+        $pdbx_loops{"_[local]_pairwise_energy"}{"attributes"} =
+            [ "id", "atom_1_id", "type_symbol_1", "label_atom_1_id",
+              "label_seq_1_id", "label_comp_1_id", "label_asym_1_id",
+              "label_entity_1_id", "label_alt_1_id",
+              "atom_2_id", "type_symbol_2", "label_atom_2_id",
+              "label_seq_2_id", "label_comp_2_id", "label_asym_2_id",
+              "label_entity_2_id", "label_alt_2_id",
+              "calculation_method", "value" ];
     } else {
         $pdbx_loops{"_[local]_energy"}{"attributes"} =
             [ "id", "atom_1_id", "atom_2_id", "residue_id", "chain", "entity",
@@ -164,7 +161,10 @@ for my $pdbx_file ( @ARGV ) {
     # Calculates the sum of pairwise interactions.
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         for my $atom_id ( @{ $target_cells->{$cell} } ) {
+            my $atom_symbol = $selected_atom_site->{"$atom_id"}{"type_symbol"};
+            my $atom_name = $selected_atom_site->{"$atom_id"}{"label_atom_id"};
             my $residue_id = $selected_atom_site->{"$atom_id"}{"label_seq_id"};
+            my $residue_name = $selected_atom_site->{"$atom_id"}{"label_comp_id"};
             my $chain = $selected_atom_site->{"$atom_id"}{"label_asym_id"};
             my $entity = $selected_atom_site->{"$atom_id"}{"label_entity_id"};
             my $alt = $selected_atom_site->{"$atom_id"}{"label_alt_id"};
@@ -179,6 +179,28 @@ for my $pdbx_file ( @ARGV ) {
                  && ( ! is_second_neighbour( $selected_atom_site,
                                              $atom_id,
                                              $neighbour_atom_id ) ) ) {
+                    my $neighbour_symbol =
+                        $selected_atom_site->{"$neighbour_atom_id"}
+                                             {"type_symbol"};
+                    my $neighbour_name =
+                        $selected_atom_site->{"$neighbour_atom_id"}
+                                             {"label_atom_id"};
+                    my $neighbour_residue_id =
+                        $selected_atom_site->{"$neighbour_atom_id"}
+                                             {"label_seq_id"};
+                    my $neighbour_residue_name =
+                        $selected_atom_site->{"$neighbour_atom_id"}
+                                             {"label_comp_id"};
+                    my $neighbour_chain =
+                        $selected_atom_site->{"$neighbour_atom_id"}
+                                             {"label_asym_id"};
+                    my $neighbour_entity =
+                        $selected_atom_site->{"$neighbour_atom_id"}
+                                             {"label_entity_id"};
+                    my $neighbour_alt =
+                        $selected_atom_site->{"$neighbour_atom_id"}
+                                             {"label_alt_id"};
+
                     my $pairwise_potential_energy =
                         $potential_function->(
                             $selected_atom_site->{$atom_id},
@@ -190,18 +212,28 @@ for my $pdbx_file ( @ARGV ) {
                             for my $interaction (
                                 grep { $_ ne 'composite' }
                                 sort keys %{ $pairwise_potential_energy } ) {
-                                push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
-                                      $calculation_id, $atom_id, $neighbour_atom_id,
-                                      $residue_id, $chain, $entity, $alt,
+                                push( @{ $pdbx_loops{"_[local]_pairwise_energy"}{"data"} },
+                                      $calculation_id, $atom_id, $atom_symbol,
+                                      $atom_name, $residue_id, $residue_name,
+                                      $chain, $entity, $alt,
+                                      $neighbour_atom_id, $neighbour_symbol,
+                                      $neighbour_name, $neighbour_residue_id,
+                                      $neighbour_residue_name, $neighbour_chain,
+                                      $neighbour_entity, $neighbour_alt,
                                       $interaction,
                                       sprintf( "%.3f", $pairwise_potential_energy->{$interaction} ) );
                                 $calculation_id++;
                             }
                         } else {
-                            push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
-                                  $calculation_id, $atom_id, $neighbour_atom_id,
-                                  $residue_id, $chain, $entity, $alt,
-                                  $options{"interactions"},
+                            push( @{ $pdbx_loops{"_[local]_pairwise_energy"}{"data"} },
+                                  $calculation_id, $atom_id, $atom_symbol,
+                                  $atom_name, $residue_id, $residue_name, $chain,
+                                  $entity, $alt,
+                                  $neighbour_atom_id, $neighbour_symbol,
+                                  $neighbour_name, $neighbour_residue_id,
+                                  $neighbour_residue_name, $neighbour_chain,
+                                  $neighbour_entity, $neighbour_alt,
+                                  $options{'interactions'},
                                   sprintf( "%.3f", $pairwise_potential_energy ) );
                             $calculation_id++;
                         }
