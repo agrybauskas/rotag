@@ -24,11 +24,8 @@ use PDBxParser qw( filter
 #*    -a, --atoms
 #*        calculates dihedral angle from the four coordinates of the selected
 #*        atoms (rotag_select should be used for residue selection).
-#*    -r, --residues
-#*        calculates all dihedral angles of selected residue(-s)
-#*        (rotag_select should be used for residue selection).
-#*    -d, --degrees
-#*        angles are in degrees (default: radians).
+#*    -r, --radians
+#*        angles are in radians.
 #*    -v, --version
 #*        print version.
 
@@ -38,13 +35,11 @@ my %options;
 
 my $version = "1.0.0";
 my $calc_atom_angles = 0;
-my $calc_residue_angles = 0;
-my $in_degrees = 0;
+my $in_degrees = 1;
 
 GetOptions(
     "atoms|a" => sub { $calc_atom_angles = 1 },
-    "residues|r" => sub { $calc_residue_angles = 1 },
-    "degrees|d" => sub { $in_degrees = 1 },
+    "radians|r" => sub { $in_degrees = 0 },
     "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -75,7 +70,8 @@ for my $pdbx_file ( @ARGV ) {
 
     if( $calc_atom_angles ) {
         $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
-            [ "id", "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id", "value" ];
+            [ "id", "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id",
+              "value", "units" ];
 
         my $dihedral_site =
             filter( { "atom_site" => $atom_site,
@@ -104,16 +100,16 @@ for my $pdbx_file ( @ARGV ) {
                   $dihedral_id, $first_atom_id, $second_atom_id, $third_atom_id,
                   $fourth_atom_id,
                   ( $in_degrees ? sprintf( "%.3f", $dihedral_angle * 180 / pi() )
-                                : sprintf( "%.3f", $dihedral_angle ) ) );
+                                : sprintf( "%.3f", $dihedral_angle ) ),
+                  ( $in_degrees ? "degrees" : "radians" ) );
             $dihedral_id++;
         }
 
-    } elsif( $calc_residue_angles ) {
+    } else {
         $pdbx_loops{"_[local]_dihedral_angle"}{"attributes"} =
             [ "id", "residue_id", "chain", "entity", "alt", "residue_type",
               "atom_1_id", "atom_2_id", "atom_3_id", "atom_4_id",
-              "type",
-              "value" ];
+              "type", "value", "units" ];
 
         my $dihedral_site =
             filter( { "atom_site" => $atom_site,
@@ -149,7 +145,8 @@ for my $pdbx_file ( @ARGV ) {
                         sprintf( "%.3f",
                                  $dihedral_angles->{$residue_unique_key}
                                                    {$angle_name}
-                                                   {'value'} ) ) );
+                                                   {'value'} ) ),
+                      ( $in_degrees ? "degrees" : "radians" ) );
             $dihedral_id++;
             }
         }
