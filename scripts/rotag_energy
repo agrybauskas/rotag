@@ -7,7 +7,8 @@ use Getopt::Long;
 use List::MoreUtils qw( any
                         uniq );
 
-use AtomProperties qw( %ATOMS );
+use AtomProperties qw( %ATOMS
+                       @MAINCHAIN_NAMES );
 use AtomInteractions qw( hard_sphere
                          soft_sphere
                          leonard_jones
@@ -52,17 +53,17 @@ use PseudoAtoms qw( add_hydrogens );
 
 my %options;
 
-my $version = "1.0.0";
+my $version = '1.0.0';
 my $do_rotamer = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
 
 GetOptions(
-    "potential|u=s" => \$options{"interactions"},
-    "rotamer|r" => sub { $do_residue = 1 },
-    "pairwise|p" => sub { $do_pairwise = 1 },
-    "decompose|d" => sub { $do_decompose = 1 },
-    "help|h" => sub { open( my $fh, "<", $0 );
+    'potential|u=s' => \$options{'interactions'},
+    'rotamer|r' => sub { $do_rotamer = 1 },
+    'pairwise|p' => sub { $do_pairwise = 1 },
+    'decompose|d' => sub { $do_decompose = 1 },
+    'help|h' => sub { open( my $fh, '<', $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
@@ -70,21 +71,21 @@ GetOptions(
                         print( $help_message, "\n" ) if $help_message; }
                     close( $fh );
                     exit; },
-    "version|v" => sub { print $version, "\n";
+    'version|v' => sub { print $version, "\n";
                        exit; } )
-    or die "Error in command line argument.";
+    or die 'Error in command line argument.';
 
 # Defaults.
 my %potential_functions = (
-    "composite" => \&composite,
-    "hard_sphere" => \&hard_sphere,
-    "soft_sphere" => \&soft_sphere,
-    "leonard_jones" => \&leonard_jones,
-    "coulomb" => \&coulomb,
-    "h_bond" => \&h_bond
+    'composite' => \&composite,
+    'hard_sphere' => \&hard_sphere,
+    'soft_sphere' => \&soft_sphere,
+    'leonard_jones' => \&leonard_jones,
+    'coulomb' => \&coulomb,
+    'h_bond' => \&h_bond
 );
-$options{"interactions"} //= "composite";
-$options{"threads"} //= 1;
+$options{'interactions'} //= 'composite';
+$options{'threads'} //= 1;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -101,8 +102,8 @@ for my $pdbx_file ( @ARGV ) {
 
     # Adds hydrogens for calculations where h_bond might be present.
     my %parameters;
-    if( $options{"interactions"} eq 'composite'
-     || $options{"interactions"} eq 'h_bond' ) {
+    if( $options{'interactions'} eq 'composite'
+     || $options{'interactions'} eq 'h_bond' ) {
         my %atom_site_with_hydrogens =
             ( %{ $atom_site },
               %{ add_hydrogens( $atom_site,
@@ -120,63 +121,70 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     my $selected_atom_site =
-        filter( { "atom_site" => $atom_site,
-                  "include" => { "[local]_selection_state" => [ "T", "S" ] } } );
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
     my $target_atom_ids =
-        filter( { "atom_site" => $selected_atom_site,
-                  "include" => { "[local]_selection_state" => [ "T" ] },
-                  "data" => [ "id" ],
-                  "is_list" => 1 } );
+        filter( { 'atom_site' => $selected_atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T' ] },
+                  'data' => [ 'id' ],
+                  'is_list' => 1 } );
 
     # TODO: decide the maximum length of cell. It should be corresponding to
     # PseudoAtoms::generate_library() and the cutoff of potential functions.
     my ( $grid_box, $target_cells ) =
         grid_box( $selected_atom_site,
-                  7 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[0]
-                + 2 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[0]
-                + 3 * $ATOMS{"C"}{"covalent_radius"}{"length"}->[1]
-                + 3 * $ATOMS{"N"}{"covalent_radius"}{"length"}->[1]
-                +     $ATOMS{"H"}{"covalent_radius"}{"length"}->[0],
+                  7 * $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
+                + 2 * $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
+                + 3 * $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
+                + 3 * $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
+                +     $ATOMS{'H'}{'covalent_radius'}{'length'}->[0],
                   $target_atom_ids );
 
     my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
 
-    my $potential_function = $potential_functions{$options{"interactions"}};
+    my $potential_function = $potential_functions{$options{'interactions'}};
 
     my %pdbx_loops;
     my $calculation_id = 1;
 
     if( $do_pairwise ) {
-        $pdbx_loops{"_[local]_pairwise_energy"}{"attributes"} =
-            [ "id", "atom_1_id", "type_symbol_1", "label_atom_1_id",
-              "label_seq_1_id", "label_comp_1_id", "label_asym_1_id",
-              "label_entity_1_id", "label_alt_1_id",
-              "atom_2_id", "type_symbol_2", "label_atom_2_id",
-              "label_seq_2_id", "label_comp_2_id", "label_asym_2_id",
-              "label_entity_2_id", "label_alt_2_id",
-              "calculation_method", "value" ];
+        $pdbx_loops{'_[local]_pairwise_energy'}{'attributes'} =
+            [ 'id', 'atom_1_id', 'type_symbol_1', 'label_atom_1_id',
+              'label_seq_1_id', 'label_comp_1_id', 'label_asym_1_id',
+              'label_entity_1_id', 'label_alt_1_id',
+              'atom_2_id', 'type_symbol_2', 'label_atom_2_id',
+              'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
+              'label_entity_2_id', 'label_alt_2_id',
+              'calculation_method', 'value' ];
     } elsif( $do_rotamer ) {
-        $pdbx_loops{"_[local]_rotamer_energy"}{"attributes"} =
-            [ "id", "label_atom_id", "label_seq_id", "label_comp_id",
-              "label_asym_id", "label_entity_id", "label_alt_id",
-              "calculation_method", "value" ];
+        $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
+            [ 'id', 'label_seq_id', 'label_asym_id', 'label_entity_id', 'label_alt_id',
+              'calculation_method', 'value' ];
     } else {
-        $pdbx_loops{"_[local]_energy"}{"attributes"} =
-            [ "id", "atom_id", "type_symbol", "label_atom_id", "label_seq_id",
-              "label_comp_id", "label_asym_id", "label_entity_id",
-              "label_alt_id", "calculation_method", "value" ];
+        $pdbx_loops{'_[local]_energy'}{'attributes'} =
+            [ 'id', 'atom_id', 'type_symbol', 'label_atom_id', 'label_seq_id',
+              'label_comp_id', 'label_asym_id', 'label_entity_id',
+              'label_alt_id', 'calculation_method', 'value' ];
     }
 
     # Calculates the sum of pairwise interactions.
+    my %residue_energy;
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         for my $atom_id ( @{ $target_cells->{$cell} } ) {
+            # if( $do_rotamer ) {
+            #     next if any { $selected_atom_site->{$atom_id}{'label_atom_id'} eq $_ }
+            #                 @MAINCHAIN_NAMES;
+            # }
+
             my ( $atom_symbol, $atom_name,
                  $atom_residue_id, $atom_residue_name,
                  $atom_chain, $atom_entity, $atom_alt ) =
-                     map { $selected_atom_site->{"$atom_id"}{"$_"} }
-                         ( "type_symbol", "label_atom_id", "label_seq_id",
-                           "label_comp_id", "label_asym_id", "label_entity_id",
-                           "label_alt_id" );
+                     map { $selected_atom_site->{$atom_id}{$_} }
+                         ( 'type_symbol', 'label_atom_id', 'label_seq_id',
+                           'label_comp_id', 'label_asym_id', 'label_entity_id',
+                           'label_alt_id' );
+            my $residue_unique_key =
+                join(',',$atom_residue_id, $atom_chain, $atom_entity, $atom_alt);
 
             my $potential_energy = 0;
             my %potential_energy; # Used when decomposing composite energy values.
@@ -192,10 +200,10 @@ for my $pdbx_file ( @ARGV ) {
                     my ( $neighbour_symbol, $neighbour_name,
                          $neighbour_residue_id, $neighbour_residue_name,
                          $neighbour_chain, $neighbour_entity, $neighbour_alt ) =
-                        map { $selected_atom_site->{"$neighbour_atom_id"}{"$_"} }
-                            ( "type_symbol", "label_atom_id", "label_seq_id",
-                              "label_comp_id", "label_asym_id", "label_entity_id",
-                              "label_alt_id" );
+                        map { $selected_atom_site->{$neighbour_atom_id}{$_} }
+                            ( 'type_symbol', 'label_atom_id', 'label_seq_id',
+                              'label_comp_id', 'label_asym_id', 'label_entity_id',
+                              'label_alt_id' );
 
                     my $pairwise_potential_energy =
                         $potential_function->(
@@ -208,7 +216,7 @@ for my $pdbx_file ( @ARGV ) {
                             for my $interaction (
                                 grep { $_ ne 'composite' }
                                 sort keys %{ $pairwise_potential_energy } ) {
-                                push( @{ $pdbx_loops{"_[local]_pairwise_energy"}{"data"} },
+                                push( @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
                                       $calculation_id, $atom_id, $atom_symbol,
                                       $atom_name, $atom_residue_id,
                                       $atom_residue_name, $atom_chain,
@@ -222,7 +230,7 @@ for my $pdbx_file ( @ARGV ) {
                                 $calculation_id++;
                             }
                         } else {
-                            push( @{ $pdbx_loops{"_[local]_pairwise_energy"}{"data"} },
+                            push( @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
                                   $calculation_id, $atom_id, $atom_symbol,
                                   $atom_name, $atom_residue_id,
                                   $atom_residue_name, $atom_chain, $atom_entity,
@@ -253,16 +261,16 @@ for my $pdbx_file ( @ARGV ) {
                 }
             }
 
-            if( ! $do_pairwise && ! $do_decompose ) {
+            if( ! $do_pairwise && ! $do_decompose && ! $do_rotamer ) {
                 push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
                       $calculation_id, $atom_id, $atom_symbol, $atom_name,
                       $atom_residue_id, $atom_residue_name, $atom_chain,
-                      $atom_entity, $atom_alt, $options{"interactions"},
+                      $atom_entity, $atom_alt, $options{'interactions'},
                       sprintf( "%.3f", $potential_energy ) );
                 $calculation_id++;
             }
 
-            if( $do_decompose ) {
+            if( $do_decompose && ! $do_rotamer ) {
                 for my $interaction (
                     grep { $_ ne 'composite' } sort keys %potential_energy ) {
                     push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
@@ -272,6 +280,48 @@ for my $pdbx_file ( @ARGV ) {
                           sprintf( "%.3f", $potential_energy{$interaction} ) );
                     $calculation_id++;
                 }
+            }
+
+            if( $do_rotamer ) {
+                if( $do_decompose ) {
+                    for my $interaction ( grep { $_ ne 'composite' }
+                                          sort keys %potential_energy ) {
+                        if( exists $residue_energy{$residue_unique_key}
+                         && exists $residue_energy{$residue_unique_key}
+                                                  {$interaction} ) {
+                            $residue_energy{$residue_unique_key}{$interaction} +=
+                                $potential_energy{$interaction};
+                        } else {
+                            $residue_energy{$residue_unique_key}{$interaction} =
+                                $potential_energy{$interaction};
+                        }
+                    }
+                } else {
+                    if( exists $residue_energy{$residue_unique_key}
+                     && exists $residue_energy{$residue_unique_key}
+                                              {$options{'interactions'}} ) {
+                        $residue_energy{$residue_unique_key}
+                                       {$options{'interactions'}} +=
+                            $potential_energy;
+                    } else {
+                        $residue_energy{$residue_unique_key}
+                                       {$options{'interactions'}} =
+                            $potential_energy;
+                    }
+                }
+            }
+        }
+    }
+
+    if( $do_rotamer ) {
+        my $calculation_id = 1;
+        for my $residue_unique_key ( sort keys %residue_energy ) {
+            for my $interaction ( sort keys %{ $residue_energy{$residue_unique_key} } ) {
+                push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
+                      $calculation_id, split( ',', $residue_unique_key ),
+                      $interaction,
+                      sprintf( "%.3f", $residue_energy{$residue_unique_key}{$interaction} ) );
+                $calculation_id++;
             }
         }
     }
