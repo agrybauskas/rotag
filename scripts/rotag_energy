@@ -53,13 +53,13 @@ use PseudoAtoms qw( add_hydrogens );
 my %options;
 
 my $version = "1.0.0";
-my $do_residue = 0;
+my $do_rotamer = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
 
 GetOptions(
     "potential|u=s" => \$options{"interactions"},
-    "residue|r" => sub { $do_residue = 1 },
+    "rotamer|r" => sub { $do_residue = 1 },
     "pairwise|p" => sub { $do_pairwise = 1 },
     "decompose|d" => sub { $do_decompose = 1 },
     "help|h" => sub { open( my $fh, "<", $0 );
@@ -154,6 +154,11 @@ for my $pdbx_file ( @ARGV ) {
               "atom_2_id", "type_symbol_2", "label_atom_2_id",
               "label_seq_2_id", "label_comp_2_id", "label_asym_2_id",
               "label_entity_2_id", "label_alt_2_id",
+              "calculation_method", "value" ];
+    } elsif( $do_rotamer ) {
+        $pdbx_loops{"_[local]_rotamer_energy"}{"attributes"} =
+            [ "id", "label_atom_id", "label_seq_id", "label_comp_id",
+              "label_asym_id", "label_entity_id", "label_alt_id",
               "calculation_method", "value" ];
     } else {
         $pdbx_loops{"_[local]_energy"}{"attributes"} =
