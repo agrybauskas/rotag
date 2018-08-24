@@ -37,6 +37,8 @@ use PseudoAtoms qw( add_hydrogens );
 #*                              leonard_jones | coulomb | h_bond)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
+#*    -r, --rotamer
+#*        calculate energy of the side-chain atoms for each selected residue.
 #*    -d, --decompose
 #*        decompose composite energy values into their constituent energy values.
 #*    -p, --pairwise
@@ -51,15 +53,15 @@ use PseudoAtoms qw( add_hydrogens );
 my %options;
 
 my $version = "1.0.0";
-my $by_residue = 0;
+my $do_residue = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
 
 GetOptions(
     "potential|u=s" => \$options{"interactions"},
+    "residue|r" => sub { $do_residue = 1 },
     "pairwise|p" => sub { $do_pairwise = 1 },
     "decompose|d" => sub { $do_decompose = 1 },
-    "threads|n=s" => \$options{"threads"},
     "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -163,13 +165,14 @@ for my $pdbx_file ( @ARGV ) {
     # Calculates the sum of pairwise interactions.
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         for my $atom_id ( @{ $target_cells->{$cell} } ) {
-            my $atom_symbol = $selected_atom_site->{"$atom_id"}{"type_symbol"};
-            my $atom_name = $selected_atom_site->{"$atom_id"}{"label_atom_id"};
-            my $residue_id = $selected_atom_site->{"$atom_id"}{"label_seq_id"};
-            my $residue_name = $selected_atom_site->{"$atom_id"}{"label_comp_id"};
-            my $chain = $selected_atom_site->{"$atom_id"}{"label_asym_id"};
-            my $entity = $selected_atom_site->{"$atom_id"}{"label_entity_id"};
-            my $alt = $selected_atom_site->{"$atom_id"}{"label_alt_id"};
+            my ( $atom_symbol, $atom_name,
+                 $atom_residue_id, $atom_residue_name,
+                 $atom_chain, $atom_entity, $atom_alt ) =
+                     map { $selected_atom_site->{"$atom_id"}{"$_"} }
+                         ( "type_symbol", "label_atom_id", "label_seq_id",
+                           "label_comp_id", "label_asym_id", "label_entity_id",
+                           "label_alt_id" );
+
             my $potential_energy = 0;
             my %potential_energy; # Used when decomposing composite energy values.
             for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} } ) {
@@ -202,8 +205,9 @@ for my $pdbx_file ( @ARGV ) {
                                 sort keys %{ $pairwise_potential_energy } ) {
                                 push( @{ $pdbx_loops{"_[local]_pairwise_energy"}{"data"} },
                                       $calculation_id, $atom_id, $atom_symbol,
-                                      $atom_name, $residue_id, $residue_name,
-                                      $chain, $entity, $alt,
+                                      $atom_name, $atom_residue_id,
+                                      $atom_residue_name, $atom_chain,
+                                      $atom_entity, $atom_alt,
                                       $neighbour_atom_id, $neighbour_symbol,
                                       $neighbour_name, $neighbour_residue_id,
                                       $neighbour_residue_name, $neighbour_chain,
@@ -215,8 +219,9 @@ for my $pdbx_file ( @ARGV ) {
                         } else {
                             push( @{ $pdbx_loops{"_[local]_pairwise_energy"}{"data"} },
                                   $calculation_id, $atom_id, $atom_symbol,
-                                  $atom_name, $residue_id, $residue_name, $chain,
-                                  $entity, $alt,
+                                  $atom_name, $atom_residue_id,
+                                  $atom_residue_name, $atom_chain, $atom_entity,
+                                  $atom_alt,
                                   $neighbour_atom_id, $neighbour_symbol,
                                   $neighbour_name, $neighbour_residue_id,
                                   $neighbour_residue_name, $neighbour_chain,
@@ -246,8 +251,8 @@ for my $pdbx_file ( @ARGV ) {
             if( ! $do_pairwise && ! $do_decompose ) {
                 push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
                       $calculation_id, $atom_id, $atom_symbol, $atom_name,
-                      $residue_id, $residue_name, $chain, $entity, $alt,
-                      $options{"interactions"},
+                      $atom_residue_id, $atom_residue_name, $atom_chain,
+                      $atom_entity, $atom_alt, $options{"interactions"},
                       sprintf( "%.3f", $potential_energy ) );
                 $calculation_id++;
             }
@@ -257,8 +262,8 @@ for my $pdbx_file ( @ARGV ) {
                     grep { $_ ne 'composite' } sort keys %potential_energy ) {
                     push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
                           $calculation_id, $atom_id, $atom_symbol, $atom_name,
-                          $residue_id, $residue_name, $chain, $entity, $alt,
-                          $interaction,
+                          $atom_residue_id, $atom_residue_name, $atom_chain,
+                          $atom_entity, $atom_alt, $interaction,
                           sprintf( "%.3f", $potential_energy{$interaction} ) );
                     $calculation_id++;
                 }
