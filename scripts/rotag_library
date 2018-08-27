@@ -67,16 +67,16 @@ my %options;
 my $version = "1.0.0";
 
 GetOptions(
-    "model=s" => \$options{"conf_model"},
-    "potential=s" => \$options{"interactions"},
-    "parameters=s" => \$options{"parameters"},
-    "angle-step=s" => \$options{"small_angle"},
+    "model|m=s" => \$options{"conf_model"},
+    "potential|u=s" => \$options{"interactions"},
+    "parameters|p=s" => \$options{"parameters"},
+    "angle-step|a=s" => \$options{"small_angle"},
     "cutoff-atom|c=s" => \$options{"energy_cutoff_atom"},
     "cutoff-residue|C=s" => \$options{"energy_cutoff_residue"},
-    "top-rank=s" => \$options{"top_rank"},
-    "top-ratio=s" => \$options{"top_ratio"},
-    "threads=s" => \$options{"threads"},
-    "help" => sub { open( my $fh, "<", $0 );
+    "top-rank|t=s" => \$options{"top_rank"},
+    "top-ratio|T=s" => \$options{"top_ratio"},
+    "threads|n=s" => \$options{"threads"},
+    "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                         $help_message =~ s/^\*$/ /g if $help_message;
