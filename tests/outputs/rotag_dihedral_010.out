@@ -2,16 +2,21 @@ data_testing
 #
 loop_
 _[local]_dihedral_angle.id
-_[local]_dihedral_angle.residue_id
-_[local]_dihedral_angle.chain
-_[local]_dihedral_angle.entity
-_[local]_dihedral_angle.alt
-_[local]_dihedral_angle.residue_type
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.lanel_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.label_entity_id
+_[local]_dihedral_angle.label_alt_id
 _[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
 _[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
 _[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
-1 340 A 1 . 1 2391 2392 2395 2396 chi0 56.654
+_[local]_dihedral_angle.units
+1 THR 340 A 1 . N 2391 CA 2392 CB 2395 OG1 2396 chi0 56.654 degrees
 #

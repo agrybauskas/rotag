@@ -2,19 +2,24 @@ data_testing
 #
 loop_
 _[local]_dihedral_angle.id
-_[local]_dihedral_angle.residue_id
-_[local]_dihedral_angle.chain
-_[local]_dihedral_angle.entity
-_[local]_dihedral_angle.alt
-_[local]_dihedral_angle.residue_type
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.lanel_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.label_entity_id
+_[local]_dihedral_angle.label_alt_id
 _[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
 _[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
 _[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
-1 315 A 1 . 1 2165 2166 2169 2170 chi0 -1.006
-2 315 A 1 . 1 2166 2169 2170 2171 chi1 -2.923
-3 315 A 1 . 1 2169 2170 2171 2172 chi2 1.112
-4 315 A 1 . 1 2170 2171 2172 2173 chi3 -2.967
+_[local]_dihedral_angle.units
+1 ARG 315 A 1 . N 2165 CA 2166 CB 2169 CG 2170 chi0 -57.631 degrees
+2 ARG 315 A 1 . CA 2166 CB 2169 CG 2170 CD 2171 chi1 -167.464 degrees
+3 ARG 315 A 1 . CB 2169 CG 2170 CD 2171 NE 2172 chi2 63.699 degrees
+4 ARG 315 A 1 . CG 2170 CD 2171 NE 2172 CZ 2173 chi3 -169.987 degrees
 #

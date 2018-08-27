@@ -2,17 +2,22 @@ data_testing
 #
 loop_
 _[local]_dihedral_angle.id
-_[local]_dihedral_angle.residue_id
-_[local]_dihedral_angle.chain
-_[local]_dihedral_angle.entity
-_[local]_dihedral_angle.alt
-_[local]_dihedral_angle.residue_type
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.lanel_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.label_entity_id
+_[local]_dihedral_angle.label_alt_id
 _[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
 _[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
 _[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
-1 546 B 1 . 1 8409 8410 8413 8414 chi0 177.191
-2 546 B 1 . 1 8410 8413 8414 8415 chi1 69.334
+_[local]_dihedral_angle.units
+1 LEU 546 B 1 . N 8409 CA 8410 CB 8413 CG 8414 chi0 177.191 degrees
+2 LEU 546 B 1 . CA 8410 CB 8413 CG 8414 CD1 8415 chi1 69.334 degrees
 #
