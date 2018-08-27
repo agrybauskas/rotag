@@ -163,12 +163,12 @@ for my $pdbx_file ( @ARGV ) {
               'label_entity_1_id', 'label_alt_1_id',
               'atom_2_id', 'type_symbol_2', 'label_atom_2_id',
               'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
-              'label_entity_2_id', 'label_alt_2_id',
-              'calculation_method', 'value' ];
+              'label_entity_2_id', 'label_alt_2_id', 'calculation_method',
+              'value' ];
     } elsif( $do_rotamer ) {
         $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
-            [ 'id', 'label_seq_id', 'label_asym_id', 'label_entity_id', 'label_alt_id',
-              'calculation_method', 'value' ];
+            [ 'id', 'label_seq_id', 'label_asym_id', 'label_entity_id',
+              'label_alt_id', 'calculation_method', 'value' ];
     } else {
         $pdbx_loops{'_[local]_energy'}{'attributes'} =
             [ 'id', 'atom_id', 'type_symbol', 'label_atom_id', 'label_seq_id',
@@ -180,10 +180,10 @@ for my $pdbx_file ( @ARGV ) {
     my %residue_energy;
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         for my $atom_id ( @{ $target_cells->{$cell} } ) {
-            # if( $do_rotamer ) {
-            #     next if any { $selected_atom_site->{$atom_id}{'label_atom_id'} eq $_ }
-            #                 @MAINCHAIN_NAMES;
-            # }
+            if( $do_rotamer ) {
+                next if any { $selected_atom_site->{$atom_id}{'label_atom_id'} eq $_ }
+                            @MAINCHAIN_NAMES;
+            }
 
             my ( $atom_symbol, $atom_name,
                  $atom_residue_id, $atom_residue_name,
