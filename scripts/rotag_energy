@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( any
                         uniq );
 
