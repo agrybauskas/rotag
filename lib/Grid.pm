@@ -65,13 +65,17 @@ sub create_box
 
 sub grid_box
 {
-    my ( $atom_site, $edge_length, $atom_ids ) = @_;
+    my ( $atom_site, $edge_length, $atom_ids, $options ) = @_;
+    my ( $attributes ) = ( $options->{'attributes'} );
+
+    $attributes //= [ 'id' ];
 
     # Default value for edge length is two times greater than the largest
     # covalent radius.
     $edge_length //=
 	max( map { @{ $ATOMS{$_}{'covalent_radius'}{'length'} } }
-	     keys %ATOMS ) * 2;
+	     keys %ATOMS ) * 5; # TODO: 5 is related to cuttof parameter in
+                                # composite function. Decide, how to handle it.
 
     # Determines boundary box around all atoms.
     my $atom_data =
@@ -113,7 +117,8 @@ sub grid_box
 	for my $atom_id ( @{ $atom_ids } ) {
 	    if( $atom_coord->[0] eq $atom_id ) {
 		push( @{ $atom_cell_pos{"$cell_index_x,$cell_index_y,$cell_index_z"} },
-		      $atom_coord->[0] );
+		      join( ',', map { $atom_site->{$atom_coord->[0]}{$_} }
+                                    @{ $attributes } ) );
 	    }
 	}
     }

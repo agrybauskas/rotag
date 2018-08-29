@@ -338,42 +338,45 @@ sub generate_library
         die 'Conformational model was not defined.';
     }
 
+    # Finds where CA of target residues are.
+    my @target_ca_ids;
+    for my $residue_unique_key ( @{ $residue_unique_keys } ) {
+        my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+            split( ',', $residue_unique_key );
+        my $atom_ca_id =
+            filter( { 'atom_site' => \%atom_site_no_hydrogens,
+                      'include' =>
+                      { 'label_atom_id' => [ 'CA' ],
+                        'label_seq_id' => [ $residue_id ],
+                        'label_asym_id' => [ $residue_chain ],
+                        'label_entity_id' => [ $residue_entity ],
+                        'label_alt_id' => [ $residue_alt ] },
+                      'data' => [ 'id' ],
+                      'is_list' => 1 } )->[0];
+        push( @target_ca_ids, $atom_ca_id );
+    }
+
     # Creates the grid box that has edge length of sum of all bonds of the
     # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
     # * (C=N) + (N-H).
     # TODO: should consider using shorter distances, because bonds have limits
     # on maximum bending and having shorter edge length reduces calculation time.
-    my ( $grid_box, undef ) =
+    my ( $grid_box, $target_cell_idxs ) =
         grid_box( \%atom_site_no_hydrogens,
                   7 * $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
                 + 2 * $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
                 + 3 * $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
                 + 3 * $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
-                +     $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] );
-
-    # Finds where CA of target residues are.
-    my %target_cell_idxs;
-    for my $cell_idx ( keys %{ $grid_box } ) {
-        for my $atom_id ( @{ $grid_box->{"$cell_idx"} } ) {
-            my ( $atom_name, $residue_id, $residue_chain, $residue_entity,
-                 $residue_alt ) = map { $atom_site_no_hydrogens{$atom_id}{$_} }
-                                      ( 'label_atom_id', 'label_seq_id',
-                                        'label_asym_id', 'label_entity_id',
-                                        'label_alt_id' );
-            my $residue_unique_key =
-                "$residue_id,$residue_chain,$residue_entity,$residue_alt";
-            if( $atom_name eq 'CA'
-             && any { $residue_unique_key eq $_ } @{ $residue_unique_keys } ) {
-                push( @{ $target_cell_idxs{$cell_idx} }, $residue_unique_key );
-            }
-        }
-    }
+                +     $ATOMS{'H'}{'covalent_radius'}{'length'}->[0],
+                  \@target_ca_ids,
+                  { 'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                      'label_entity_id', 'label_alt_id' ] } );
 
     my $neighbour_cells =
-        identify_neighbour_cells( $grid_box, \%target_cell_idxs );
+        identify_neighbour_cells( $grid_box, $target_cell_idxs );
 
-    for my $cell ( sort { $a cmp $b } keys %target_cell_idxs ) {
-        for my $residue_unique_key ( @{ $target_cell_idxs{$cell} } ) {
+    for my $cell ( sort { $a cmp $b } keys %{ $target_cell_idxs } ) {
+        for my $residue_unique_key ( @{ $target_cell_idxs->{$cell} } ) {
             # Because the change of side-chain position might impact the
             # surrounding, iteraction site consists of only main chain atoms.
             my %interaction_site =
@@ -586,8 +589,7 @@ sub calc_favourable_angle
                                   $interaction_id ) )
                 && ( ! is_second_neighbour( $atom_site,
                                             $pseudo_origin_id,
-                                            $interaction_id ) )
-                ) {
+                                            $interaction_id ) ) ) {
                 $potential_energy =
                     $potential_function->(
                         $pseudo_atom_site->{$pseudo_atom_id},
