@@ -74,7 +74,7 @@ sub grid_box
     # covalent radius.
     $edge_length //=
 	max( map { @{ $ATOMS{$_}{'covalent_radius'}{'length'} } }
-	     keys %ATOMS ) * 5; # TODO: 5 is related to cuttof parameter in
+	     keys %ATOMS ) * 2; # TODO: 2 is related to cuttof parameter in
                                 # composite function. Decide, how to handle it.
 
     # Determines boundary box around all atoms.
