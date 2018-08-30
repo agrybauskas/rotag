@@ -11,7 +11,8 @@ use PDBxParser qw( filter
                    obtain_atom_site
                    obtain_pdbx_loop
                    to_pdbx );
-use PseudoAtoms qw( generate_pseudo );
+use PseudoAtoms qw( add_hydrogens
+                    generate_pseudo );
 use SidechainModels qw( rotation_only  );
 
 #*rotag_add [options] file1 [file2, ...]
@@ -24,6 +25,8 @@ use SidechainModels qw( rotation_only  );
 #*    -r, --rotamer-atoms
 #*        adds pseudo atoms of defined rotamers. Input .cif has to contain
 #*        _[local]_rotamer_angle category (can be produced with rotag_library).
+#*    -H, --hydrogens
+#*        adds hydrogen atoms to selected atoms.
 #*    -v, --version
 #*        print version.
 
@@ -33,9 +36,11 @@ my %options;
 
 my $version = "1.0.0";
 my $add_rotamer_atoms = 0;
+my $add_hydrogens = 0;
 
 GetOptions(
     "rotamer-atoms|r" => sub { $add_rotamer_atoms = 1 },
+    "hydrogens|H" => sub { $add_hydrogens = 1 },
     "help|h" => sub { open( my $fh, "<", $0 );
                     while( <$fh> ) {
                         my ( $help_message ) = $_ =~ m/^#(\*.*)/;
@@ -157,5 +162,7 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( { "atom_site" => { %{ $atom_site }, %rotamer_atom_site },
                    "add_atom_attributes" => [ "[local]_selection_state" ],
                    "pdbx_loops" => $pdbx_loops } );
+    } elsif( $add_hydrogens ) {
+
     }
 }
