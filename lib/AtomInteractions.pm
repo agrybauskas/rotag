@@ -15,6 +15,7 @@ our @EXPORT_OK = qw( hard_sphere
 
 use List::Util qw( any );
 use Math::Trig qw( acos );
+use Readonly;
 
 use AtomProperties qw( %ATOMS
                        %HYDROGEN_NAMES );
@@ -23,22 +24,27 @@ use ConnectAtoms qw( distance
 use LinearAlgebra qw( pi );
 use Measure qw( bond_angle );
 
-# --------------------------- Potential functions ----------------------------- #
+our $VERSION = '1.0.0';
 
-# TODO: rewrite function descriptions.
+Readonly my $SP3_ANGLE => 109.5 * pi() / 180.0;
+Readonly my $SP2_ANGLE => 120.0 * pi() / 180.0;
+
+# --------------------------- Potential functions ----------------------------- #
 
 #
 # Hard sphere potential function. Described as:
-#     0,   r_{ij} >= vdw_{i} + vdw_{j}
-#     Inf, r_{ij} <  vdw_{i} + vdw_{j}
+#                       0,   r_{ij} >= vdw_{i} + vdw_{j}
+#                       Inf, r_{ij} <  vdw_{i} + vdw_{j}
 #
-#     where: r - distance between center of atoms;
-#            vdw - Van der Waals radius;
-#            Inf - infinity;
+# where:
+#     r   - distance between the center of atoms;
+#     vdw - van der Waals radius;
+#     Inf - infinity.
+#
 # Input:
-#     $atom_i, $atom_j - atom data structure (see PDBxParser.pm).
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
 # Output:
-#     two values: 0 or "Inf" (infinity).
+#     0 or 'Inf' (infinity).
 #
 
 sub hard_sphere
@@ -55,7 +61,7 @@ sub hard_sphere
              + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared < $sigma ** 2 ) {
-        return "Inf";
+        return 'Inf';
     } else {
         return 0;
     }
@@ -63,17 +69,19 @@ sub hard_sphere
 
 #
 # Soft sphere potential function. Described as:
-#     epsilon * ( vdw_{i} + vdw_{j} / r_{ij} ) ** n , r_{ij} <= vdw_{i} + vdw_{j}
-#     0, r_{ij} >  vdw_{i} + vdw_{j}
+#   epsilon * ( vdw_{i} + vdw_{j} / r_{ij} ) ** n , r_{ij} <= vdw_{i} + vdw_{j}
+#   0,                                              r_{ij} >  vdw_{i} + vdw_{j}
 #
-#     where: r - distance between center of atoms;
-#            vdw - Van der Waals radius;
-#            epsilon - energy coefficient;
-#            n - number increases the slope of potential.
+# where:
+#     r       - distance between the centers of the atoms;
+#     vdw     - van der Waals radius;
+#     epsilon - energy coefficient;
+#     n       - number that increases the slope of the potential.
+#
 # Input:
-#     $atom_i, $atom_j - atom data structure (see PDBxParser.pm).
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
 # Output:
-#     value, calculated by soft sphere potential.
+#     0 or energy value.
 #
 
 sub soft_sphere
@@ -94,7 +102,7 @@ sub soft_sphere
     $n //= 12;
 
     if( $r_squared <= $sigma ** 2 ) {
-        return $soft_epsilon * ( $sigma / sqrt( $r_squared ) )**$n;
+        return $soft_epsilon * ( $sigma / sqrt $r_squared )**$n;
     } else {
         return 0;
     }
@@ -103,15 +111,16 @@ sub soft_sphere
 #
 # Leonard-Jones potential function. Described as:
 #
-# 4 * epsilon * [ ( sigma / r ) ** 12 - ( sigma / r ) ** 6 ]
+#          4 * epsilon * [ ( sigma / r ) ** 12 - ( sigma / r ) ** 6 ]
 #
-#     where: r - distance between center of atoms;
-#            epsilon - energy coefficient;
-#            sigma - sum of Van der Waals radii of two atoms.
+# where:
+#     r       - distance between center of atoms;
+#     epsilon - energy coefficient;
+#     sigma   - sum of van der Waals radii of two atoms.
 # Input:
-#     $atom_i, $atom_j - atom data structure (see PDBxParser.pm).
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
 # Output:
-#     value, calculated by Leonard-Jones potential.
+#     energy value.
 #
 
 sub leonard_jones
@@ -121,7 +130,7 @@ sub leonard_jones
     my ( $r, $sigma, $lj_epsilon ) = (
         $parameters->{'r'},
         $parameters->{'sigma'},
-        $parameters->{'lj_epsilon'}
+        $parameters->{'lj_epsilon'},
     );
 
     $r //= distance( $atom_i, $atom_j );
@@ -157,14 +166,14 @@ sub h_bond
     my ( $h_epsilon, $atom_site, $only_implicit ) = (
         $parameters->{'h_epsilon'},
         $parameters->{'atom_site'},
-        $parameters->{'only_implicit_h_bond'}
+        $parameters->{'only_implicit_h_bond'},
     );
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # MoleculeProperties.
     # TODO: read about the situations when there are hydrogen atom in the
     # middle of two hydrogen acceptors.
-    my @h_bond_heavy_atoms = ( 'N', 'O', 'F' );
+    my @h_bond_heavy_atoms = qw( N O F );
     my @atom_i_hydrogen_names =
         defined $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
                                {$atom_i->{'label_atom_id'}} ?
@@ -240,7 +249,7 @@ sub h_bond_implicit
                          # three functions.
 
     my $covalent_radius_idx;
-    my @hybridizations = ( 'sp3', 'sp2', 'sp' );
+    my @hybridizations = qw( sp3 sp2 sp );
     for( my $i = 0; $i <= $#hybridizations; $i++ ) {
         if( $donor_atom->{'hybridization'} eq $hybridizations[$i] ) {
             $covalent_radius_idx = $i;
@@ -261,7 +270,7 @@ sub h_bond_implicit
     if( ( $r_donor_acceptor <= $r_donor_hydrogen + $r_sigma )
      && ( $theta >= pi() / 2 )
      && ( $theta <=  3 * pi() / 2 ) ) {
-        return ( -1 ) * $h_epsilon * ( -1 ) * cos( $theta );
+        return ( -1 ) * $h_epsilon * ( -1 ) * cos $theta;
     } else {
         return 0;
     }
@@ -281,7 +290,7 @@ sub h_bond_implicit_old
                          # three functions.
 
     my $covalent_radius_idx;
-    my @hybridizations = ( 'sp3', 'sp2', 'sp' );
+    my @hybridizations = qw( sp3 sp2 sp );
     for( my $i = 0; $i <= $#hybridizations; $i++ ) {
         if( $donor_atom->{'hybridization'} eq $hybridizations[$i] ) {
             $covalent_radius_idx = $i;
@@ -298,9 +307,9 @@ sub h_bond_implicit_old
     # calculated from. The smaller alpha angle, the greater theta is.
     my $alpha;
     if( $donor_atom->{'hybridization'} eq 'sp3' ) {
-        $alpha = 109.5 * pi() / 180; # TODO: consider electron pairs?
+        $alpha = $SP3_ANGLE; # TODO: consider electron pairs?
     } elsif( $donor_atom->{'hybridization'} eq 'sp2' ) {
-        $alpha = 120 * pi() / 180;
+        $alpha = $SP2_ANGLE;
     }
 
     my $alpha_delta;
@@ -334,12 +343,12 @@ sub h_bond_implicit_old
     my $r_acceptor_hydrogen =
         sqrt( $r_donor_acceptor**2
             + $r_donor_hydrogen**2
-            - 2 * $r_donor_acceptor * $r_donor_hydrogen * cos( $alpha ) );
+            - 2 * $r_donor_acceptor * $r_donor_hydrogen * cos $alpha );
     my $theta = acos(
-        ( $r_donor_hydrogen - $r_donor_acceptor * cos( $alpha ) )
+        ( $r_donor_hydrogen - $r_donor_acceptor * cos $alpha )
       / sqrt( $r_donor_hydrogen**2
             + $r_donor_acceptor**2
-            - 2 * $r_donor_hydrogen * $r_donor_acceptor * cos( $alpha ) )
+            - 2 * $r_donor_hydrogen * $r_donor_acceptor * cos $alpha )
     );
 
     if( ( $theta >= pi() / 2 ) && ( $theta <=  3 * pi() / 2 ) ) {
@@ -347,7 +356,7 @@ sub h_bond_implicit_old
              * $h_epsilon
              * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
                - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
-             * cos( $theta );
+             * cos $theta;
     } else {
         return 0;
     }
@@ -382,7 +391,7 @@ sub h_bond_explicit
              * $h_epsilon
              * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
                - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
-             * cos( $theta );
+             * cos $theta;
     } else {
         return 0;
     }
