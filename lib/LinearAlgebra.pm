@@ -24,6 +24,8 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
+our $VERSION = '1.0.0';
+
 # -------------------------------- Constants ---------------------------------- #
 
 #
@@ -36,7 +38,7 @@ our @EXPORT_OK = qw( create_ref_frame
 
 sub pi
 {
-    return 4 * atan2( 1, 1 );
+    return 4 * atan2 1, 1;
 }
 
 #
@@ -162,18 +164,18 @@ sub find_euler_angles
 
     if( $z_axis_in_xy_plane > epsilon() ) {
         $alpha_rad =
-            atan2( $local_ref_frame->[1][0] * $local_ref_frame->[2][1]
+            atan2  $local_ref_frame->[1][0] * $local_ref_frame->[2][1]
                  - $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
                    $local_ref_frame->[0][0] * $local_ref_frame->[2][1]
-                 - $local_ref_frame->[0][1] * $local_ref_frame->[2][0] );
-        $beta_rad = atan2( $z_axis_in_xy_plane, $local_ref_frame->[2][2] );
+                 - $local_ref_frame->[0][1] * $local_ref_frame->[2][0];
+        $beta_rad = atan2 $z_axis_in_xy_plane, $local_ref_frame->[2][2];
         $gamma_rad =
-            - atan2( - $local_ref_frame->[2][0], $local_ref_frame->[2][1] );
+            - atan2 - $local_ref_frame->[2][0], $local_ref_frame->[2][1];
     } else {
         $alpha_rad = 0.;
         $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : pi();
         $gamma_rad =
-            - atan2( $local_ref_frame->[0][1], $local_ref_frame->[0][0] );
+            - atan2 $local_ref_frame->[0][1], $local_ref_frame->[0][0];
     }
 
     return [ $alpha_rad, $beta_rad, $gamma_rad ];
@@ -247,7 +249,7 @@ sub x_axis_rotation
         ( [ 1, 0, 0, 0 ],
           [ 0, cos( $angle_rad ), - sin( $angle_rad ), 0 ],
           [ 0, sin( $angle_rad ), cos( $angle_rad ), 0 ],
-          [ 0, 0, 0, 1 ] );
+          [ 0, 0, 0, 1 ], );
 
     return \@rot_matrix_x;
 }
@@ -268,7 +270,7 @@ sub y_axis_rotation
         ( [ cos( $angle_rad ), 0, sin( $angle_rad ), 0 ],
           [ 0, 1, 0, 0 ],
           [ - sin( $angle_rad ), 0, cos( $angle_rad ), 0 ],
-          [ 0, 0, 0, 1 ] );
+          [ 0, 0, 0, 1 ], );
 
     return \@rot_matrix_y;
 }
@@ -289,7 +291,7 @@ sub z_axis_rotation
         ( [ cos( $angle_rad ), - sin( $angle_rad ), 0, 0 ],
           [ sin( $angle_rad ), cos( $angle_rad ), 0, 0 ],
           [ 0, 0, 1, 0 ],
-          [ 0, 0, 0, 1 ] );
+          [ 0, 0, 0, 1 ], );
 
     return \@rot_matrix_z;
 }
@@ -311,7 +313,7 @@ sub translation
         ( [ 1, 0, 0, $transl_coord[0] ],
           [ 0, 1, 0, $transl_coord[1] ],
           [ 0, 0, 1, $transl_coord[2] ],
-          [ 0, 0, 0, 1 ] );
+          [ 0, 0, 0, 1 ], );
 
     return \@transl_matrix;
 }
@@ -332,7 +334,7 @@ sub reshape
 
     # Checks, if there are enough elements for given list of dimensions.
     my $length_by_dimensions = 0;
-    for( my $i = 0; $i < scalar( @{ $dimensions } ); $i += 2 ) {
+    for( my $i = 0; $i < scalar @{ $dimensions }; $i += 2 ) {
         $length_by_dimensions += $dimensions->[$i] * $dimensions->[$i+1];
     }
 
@@ -341,15 +343,14 @@ sub reshape
 
     # Generates matrices.
     my @matrices;
-    for( my $i = 0; $i < scalar( @{ $dimensions } ); $i += 2 ) {
+    for( my $i = 0; $i < scalar @{ $dimensions }; $i += 2 ) {
         my $rows = $dimensions->[$i];
         my $cols = $dimensions->[$i+1];
 
-        push( @matrices, [] );
+        push @matrices, [];
 
-        foreach( 0..$rows-1) {
-            push( @{ $matrices[-1] },
-                  [ splice( @{ $element_list }, 0, $cols ) ] );
+        foreach( 0..$rows-1 ) {
+            push @{ $matrices[-1] }, [ splice @{ $element_list }, 0, $cols ];
         }
     }
 
@@ -373,7 +374,7 @@ sub flatten
     for my $matrix ( @{ $matrices } ) {
     for my $row ( @{ $matrix } ) {
     for my $element ( @{ $row } ) {
-        push( @element_list, $element );
+        push @element_list, $element;
     } } };
 
     return \@element_list;
@@ -418,7 +419,7 @@ sub vector_cross
          -$left_matrix->[0] * $right_matrix->[2]
          +$left_matrix->[2] * $right_matrix->[0],
           $left_matrix->[0] * $right_matrix->[1]
-         -$left_matrix->[1] * $right_matrix->[0] );
+         -$left_matrix->[1] * $right_matrix->[0], );
 
     return \@cross_product;
 }
@@ -549,23 +550,24 @@ sub matrix_product
 {
     my ( $left_matrix, $right_matrix, $symbol_values ) = @_;
 
-    my %symbol_values = %{ $symbol_values } if defined $symbol_values;
+    my %symbol_values;
+    if( defined $symbol_values ) { %symbol_values = %{ $symbol_values } };
 
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
-    die( { type => 'DimensionError',
-           message => "A row number of a left matrix is NOT equal " .
-               "to the column\nnumber of the right matrix." } )
-        unless( scalar( @{ transpose( $left_matrix ) } ) ==
-                scalar( @{ $right_matrix } ) );
+    die { type => 'DimensionError',
+          message => 'A row number of a left matrix is NOT equal ' .
+                     "to the column\nnumber of the right matrix.", }
+        unless scalar @{ transpose( $left_matrix ) } ==
+               scalar @{ $right_matrix };
 
     # Makes placeholder items consisting zero values for matrix_product array.
     my @matrix_product;
     for( my $product_row = 0;
-         $product_row < scalar( @$left_matrix );
+         $product_row < scalar @{ $left_matrix };
          $product_row++ ) {
         for( my $product_col = 0;
-             $product_col < scalar( @{ $right_matrix->[0] } );
+             $product_col < scalar @{ $right_matrix->[0] };
              $product_col++ ) {
             $matrix_product[$product_row][$product_col] = 0;
         }
@@ -573,13 +575,13 @@ sub matrix_product
 
     # Calculates matrix product of two matrices.
     for( my $product_row = 0;
-         $product_row < scalar( @matrix_product );
+         $product_row < scalar @matrix_product;
          $product_row++ ) {
         for( my $product_col = 0;
-             $product_col < scalar( @{ $matrix_product[$product_row] } );
+             $product_col < scalar @{ $matrix_product[$product_row] };
              $product_col++ ) {
             for( my $left_col = 0;
-                 $left_col < scalar( @{ $left_matrix->[$product_col] } );
+                 $left_col < scalar @{ $left_matrix->[$product_col] };
                  $left_col++ ) {
                 my $left_element;
                 my $right_element;
@@ -592,20 +594,20 @@ sub matrix_product
                 # Changes "$" to hash reference (for symbols that are
                 # written in "$x" form).
                 if( %symbol_values ) {
-                    $left_element =~ s/\$(\w+)/\$symbol_values{$1}/gx;
-                    $right_element =~ s/\$(\w+)/\$symbol_values{$1}/gx;
+                    $left_element =~ s/\$(\w+)/\$symbol_values{$1}/smgx;
+                    $right_element =~ s/\$(\w+)/\$symbol_values{$1}/smgx;
                 }
 
                 # Evaluates left and right elements.
-                $left_element = eval( $left_element );
-                $right_element = eval( $right_element );
+                $left_element = eval $left_element;
+                $right_element = eval $right_element;
 
                 # Throws error if one of the elements are undefined.
-                die( { type => 'UndifinedError',
-                       message => 'Left element contains undefined variable' } )
+                die { type => 'UndifinedError',
+                      message => 'Left element contains undefined variable', }
                     unless defined $left_element;
-                die( { type => 'UndifinedError',
-                       message => 'Right element contains undefined variable' } )
+                die { type => 'UndifinedError',
+                      message => 'Right element contains undefined variable', }
                     unless defined $right_element;
 
                 # Evaluates multiplication if no exceptions are thrown.
@@ -637,50 +639,50 @@ sub mult_matrix_product
     my @mult_matrix_product;
 
     # Only evaluates variables if there is only one matrix in @matrices.
-    if( scalar( @matrices ) == 1 ) {
-        push( @mult_matrix_product, [] );
+    if( scalar @matrices == 1 ) {
+        push @mult_matrix_product, [];
         my @matrix = @{ $matrices[0] };
         for my $row ( @matrix ) {
-            push( @{ $mult_matrix_product[-1] }, [] );
+            push @{ $mult_matrix_product[-1] }, [];
             for my $element ( @{ $row } ) {
-                $element =~ s/\$(\w+)/\$symbol_values{$1}/gx;
-                $element = eval( $element );
-                push( @{ $mult_matrix_product[-1][-1] }, $element );
+                $element =~ s/\$(\w+)/\$symbol_values{$1}/smgx;
+                $element = eval $element;
+                push @{ $mult_matrix_product[-1][-1] }, $element;
             }
         }
 
     } else {
         for( my $id = $#matrices; $id >= 1; $id-- ) {
             if( $id == $#matrices ) {
-                eval { push( @mult_matrix_product,
-                             matrix_product( $matrices[$id-1],
-                                             $matrices[$id],
-                                             $symbol_values ) );
+                eval { push @mult_matrix_product,
+                            matrix_product( $matrices[$id-1],
+                                            $matrices[$id],
+                                            $symbol_values );
                 } or do {
                     if( $@->{type} eq 'UndifinedError' ) {
-                        push( @mult_matrix_product,
-                              $matrices[$id-1],
-                              $matrices[$id] );
+                        push @mult_matrix_product,
+                             $matrices[$id-1],
+                             $matrices[$id];
                     } else {
-                        die( $@->{message} );
+                        die $@->{message};
                     }
                 };
 
             } else {
                 eval {
-                    unshift( @mult_matrix_product,
-                             matrix_product( $matrices[$id-1],
-                                             $mult_matrix_product[0],
-                                             $symbol_values ) );
-                    splice( @mult_matrix_product, 1, 1 );
+                    unshift @mult_matrix_product,
+                            matrix_product( $matrices[$id-1],
+                                            $mult_matrix_product[0],
+                                            $symbol_values );
+                    splice @mult_matrix_product, 1, 1;
                 } or do {
                     if( $@->{type} eq 'UndifinedError' ) {
-                        unshift( @mult_matrix_product,
-                                 $matrices[$id-1],
-                                 $mult_matrix_product[0] );
-                        splice( @mult_matrix_product, 1, 1 );
+                        unshift @mult_matrix_product,
+                                $matrices[$id-1],
+                                $mult_matrix_product[0];
+                        splice @mult_matrix_product, 1, 1;
                     } else {
-                        die( $@->{message} );
+                        die $@->{message};
                     }
                 };
             }
