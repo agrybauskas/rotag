@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( around_distance
+our @EXPORT_OK = qw( append_connections
+                     around_distance
 		     connect_atoms
                      connect_two_atoms
-                     append_connections
 		     distance
 		     distance_squared
 		     is_connected
@@ -22,7 +22,17 @@ use Grid qw( identify_neighbour_cells
              grid_box );
 use PDBxParser qw( filter );
 
-# ------------------------------ Connect atoms ------------------------------- #
+our $VERSION = '1.0.0';
+
+# ---------------------------- Pairwise relations ----------------------------- #
+
+#
+# Checks if atoms are connected.
+# Input:
+#     ${target,neighbour}_atom - atom data structure (see PDBxParser.pm).
+# Output:
+#     $is_connected - boolean: 0 (for not connected) or 1 (for connected).
+#
 
 sub is_connected
 {
@@ -51,24 +61,21 @@ sub is_connected
 			     {'error'} ],
 		     [] );
 
-    # Precalculates distance between atom pairs.
-    my $distance =
-	( $neighbour_atom->{'Cartn_x'} - $target_atom->{'Cartn_x'} ) ** 2
-      + ( $neighbour_atom->{'Cartn_y'} - $target_atom->{'Cartn_y'} ) ** 2
-      + ( $neighbour_atom->{'Cartn_z'} - $target_atom->{'Cartn_z'} ) ** 2;
+    # Precalculates squared distance between atom pairs.
+    my $distance_squared = distance_squared( $target_atom, $neighbour_atom );
 
     # Checks, if distance between atom pairs is in one of the combinations.
     my $bond_length;
     my $length_error;
     my $is_connected;
 
-    for( my $i = 0; $i < scalar( @{ $bond_length_comb } ); $i++ ) {
+    for my $i ( 0..$#{ $bond_length_comb } ) {
 	$bond_length =
 	    $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
 	$length_error =
 	    $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
-	if( ( $distance >= ( $bond_length - $length_error ) ** 2 )
-	 && ( $distance <= ( $bond_length + $length_error ) ** 2 ) ) {
+	if( ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
+            ( $distance_squared <= ( $bond_length + $length_error ) ** 2 ) ) {
 	    $is_connected = 1;
 	    last;
 	} else {
@@ -106,9 +113,9 @@ sub is_neighbour
 }
 
 #
-# Checks if two atoms are separated by one atom.
+# Checks if two atoms are separated only by one atom.
 # Input:
-#     $atom_site - atom data structure.
+#     $atom_site - atom site data structure.
 #     $target_atom_id - id of first atom.
 #     $sec_neighbour_id - id of second atom.
 # Output:
@@ -121,30 +128,51 @@ sub is_second_neighbour
 
     my $is_sec_neighbour = 0;
 
-    foreach my $i (
-	@{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
-    foreach my $j (
-	@{ $atom_site->{$i}{'connections'} } ) {
-	if( "$sec_neighbour_id" eq "$j" ) {
-	    $is_sec_neighbour = 1;
-	    last;
-	}
-    } last if $is_sec_neighbour == 1; }
+    foreach my $i ( @{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
+        foreach my $j ( @{ $atom_site->{$i}{'connections'} } ) {
+            if( "$sec_neighbour_id" eq "$j" ) {
+                $is_sec_neighbour = 1;
+                last;
+            }
+        }
+        last if $is_sec_neighbour == 1;
+    }
 
     return $is_sec_neighbour;
 }
+
+# ------------------------ Distance-related functions ------------------------- #
+
+# TODO: distance-related functions should be moved to Measure.pm. However, moving
+# of these functions causes both Measure.pm and ConnectAtoms.pm not work.
+
+#
+# Calculates the squared distance between two atoms.
+# Input:
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
+# Output:
+#     $distance_squared - value of calculated squared distance.
+#
 
 sub distance_squared
 {
     my ( $atom_i, $atom_j ) = @_;
 
     my $distance_squared =
-	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
-      + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
-      + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
+	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2 +
+        ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2 +
+        ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 
     return $distance_squared;
 }
+
+#
+# Calculates the distance between two atoms.
+# Input:
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
+# Output:
+#     $distance - value of the calculated distance.
+#
 
 sub distance
 {
@@ -152,6 +180,16 @@ sub distance
 
     return sqrt( distance_squared( $atom_i, $atom_j ) );
 }
+
+#
+# Selects the atoms that are at specified distance from selected atoms.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.obtain_atom_site);
+#     $atom_specifier - atom selector data structure (see PDBxParser::filter);
+#     $distance - max distance from which atoms should be included.
+# Output:
+#     %around_atom_site - atom site data structure of selected atoms.
+#
 
 sub around_distance
 {
@@ -164,9 +202,8 @@ sub around_distance
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
-    my @cell_indexes;
     my ( $grid_box, $atom_cell_pos ) =
-	grid_box( $atom_site, $distance * 2, \@atom_ids );
+        grid_box( $atom_site, $distance * 2, \@atom_ids );
     my $neighbour_cells = identify_neighbour_cells( $grid_box, $atom_cell_pos );
 
     # Checks for neighbouring cells for each cell.
@@ -174,8 +211,8 @@ sub around_distance
     foreach my $cell ( keys %{ $atom_cell_pos } ) {
         foreach my $atom_id ( @{ $atom_cell_pos->{$cell} } ) {
             foreach my $neighbour_id ( @{ $neighbour_cells->{$cell} } ) {
-        	if( ( ! any { $neighbour_id eq $_ } @atom_ids )
-        	 && ( distance_squared(
+        	if( ( ! any { $neighbour_id eq $_ } @atom_ids ) &&
+                    ( distance_squared(
         		  $atom_site->{$atom_id},
         		  $atom_site->{$neighbour_id} ) <= $distance ** 2 ) ) {
         	    $around_atom_site{$neighbour_id} =
@@ -188,6 +225,31 @@ sub around_distance
     return \%around_atom_site;
 }
 
+# ------------------------------ Connect atoms -------------------------------- #
+
+#
+# Connects two atoms by including ids to 'connections' attribute in both atom
+# data structure.
+# Input:
+#     $atom_site - $atom_site - atom site data structure (see PDBxParser.pm);
+#     ${first,second}_atom_id - atom ids.
+# Output:
+#     none
+#
+
+sub connect_two_atoms
+{
+    my ( $atom_site, $first_atom_id, $second_atom_id ) = @_;
+
+    if( is_connected( $atom_site->{"$first_atom_id"},
+                      $atom_site->{"$second_atom_id"} ) ) {
+        push @{ $atom_site->{$first_atom_id}{'connections'} }, "$second_atom_id";
+        push @{ $atom_site->{$second_atom_id}{'connections'} }, "$first_atom_id";
+    }
+
+    return;
+}
+
 #
 # Divides box into grid of cubes that has length of the desired bond. If box
 # is not perfectly divisible, then the boundaries are extended accordingly.
@@ -197,8 +259,8 @@ sub around_distance
 # Input:
 #     $atom_site - atom data structure.
 # Output:
-#     connects atoms by adding "connection" key and values to atom site data
-#     structure.
+#     none - connects atoms by adding "connection" key and values to atom site
+#     data structure.
 #
 
 sub connect_atoms
@@ -220,19 +282,19 @@ sub connect_atoms
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
-    my ( $grid_box, undef ) = grid_box( $atom_site );
+    my ( $grid_box ) = grid_box( $atom_site );
     my $neighbour_cells = identify_neighbour_cells( $grid_box );
 
     foreach my $cell ( keys %{ $grid_box } ) {
         foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
             foreach my $neighbour_id ( @{ $neighbour_cells->{$cell} } ) {
                 if( ( is_connected( $atom_site->{"$atom_id"},
-                                    $atom_site->{"$neighbour_id"} ) )
-                 && ( ( ! exists $atom_site->{$atom_id}{'connections'} )
-                   || ( ! any { $neighbour_id eq $_ }
+                                    $atom_site->{"$neighbour_id"} ) ) &&
+                    ( ( ! exists $atom_site->{$atom_id}{'connections'} ) ||
+                      ( ! any { $neighbour_id eq $_ }
                              @{ $atom_site->{$atom_id}{'connections'} } ) ) ){
-                    push( @{ $atom_site->{$atom_id}{'connections'} },
-                          "$neighbour_id" );
+                    push @{ $atom_site->{$atom_id}{'connections'} },
+                        "$neighbour_id";
                 }
             }
         }
@@ -241,20 +303,14 @@ sub connect_atoms
     return;
 }
 
-sub connect_two_atoms
-{
-    my ( $atom_site, $first_atom_id, $second_atom_id ) = @_;
-
-    if( is_connected( $atom_site->{"$first_atom_id"},
-                      $atom_site->{"$second_atom_id"} ) ) {
-        push( @{ $atom_site->{$first_atom_id}{'connections'} },
-              "$second_atom_id" );
-        push( @{ $atom_site->{$second_atom_id}{'connections'} },
-              "$first_atom_id" );
-    }
-
-    return;
-}
+#
+# Appends one's atom ids to the others list of connections.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $appendable_site - atom site that should be appended.
+# Output:
+#     none
+#
 
 sub append_connections
 {
@@ -264,9 +320,9 @@ sub append_connections
         for my $target_atom_id ( @{ $appendable_site->{$appendable_id}
                                                       {'connections'} } ) {
             if( ! any { $appendable_id eq $_ }
-                     @{ $atom_site->{$target_atom_id}{'connections'} }  ) {
-                push( @{ $atom_site->{$target_atom_id}{'connections'} },
-                      $appendable_id );
+                     @{ $atom_site->{$target_atom_id}{'connections'} } ) {
+                push @{ $atom_site->{$target_atom_id}{'connections'} },
+                    $appendable_id;
             }
         }
     }
