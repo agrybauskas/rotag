@@ -42,7 +42,8 @@ Readonly my $SP2_ANGLE => 120.0 * pi() / 180.0;
 #     Inf - infinity.
 #
 # Input:
-#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm);
+#     $parameters - hash of parameters' values.
 # Output:
 #     0 or 'Inf' (infinity).
 #
@@ -79,7 +80,8 @@ sub hard_sphere
 #     n       - number that increases the slope of the potential.
 #
 # Input:
-#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm);
+#     $parameters - hash of parameters' values.
 # Output:
 #     0 or energy value.
 #
@@ -96,13 +98,13 @@ sub soft_sphere
     );
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-             + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
     $soft_epsilon //= 1.0;
     $n //= 12;
 
     if( $r_squared <= $sigma ** 2 ) {
-        return $soft_epsilon * ( $sigma / sqrt $r_squared )**$n;
+        return $soft_epsilon * ( $sigma / sqrt $r_squared ) ** $n;
     } else {
         return 0;
     }
@@ -118,7 +120,8 @@ sub soft_sphere
 #     epsilon - energy coefficient;
 #     sigma   - sum of van der Waals radii of two atoms.
 # Input:
-#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm);
+#     $parameters - hash of parameters' values.
 # Output:
 #     energy value.
 #
@@ -134,12 +137,28 @@ sub leonard_jones
     );
 
     $r //= distance( $atom_i, $atom_j );
-    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-             + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
     $lj_epsilon //= 1.0;
 
     return 4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
 }
+
+#
+# Coulomb potential function. Described as:
+#
+#                     coulomb_k * q_{i} * q_{j} / r ** 2
+#
+# where:
+#     r           - distance between center of atoms;
+#     coulomb_k   - coulomb coefficient;
+#     q_{i,j}     - charge of the particle.
+# Input:
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm);
+#     $parameters - hash of parameters' values.
+# Output:
+#     energy value.
+#
 
 sub coulomb
 {
@@ -151,13 +170,23 @@ sub coulomb
     $r //= distance( $atom_i, $atom_j );
 
     # Extracts partial charges.
-    my $partial_charge_i =
-        $ATOMS{$atom_i->{'type_symbol'}}{'partial_charge'};
-    my $partial_charge_j =
-        $ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
+    my $partial_charge_i = $ATOMS{$atom_i->{'type_symbol'}}{'partial_charge'};
+    my $partial_charge_j = $ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
 
-    return $coulomb_k * ( $partial_charge_i * $partial_charge_j / $r**2 );
+    return $coulomb_k * $partial_charge_i * $partial_charge_j / $r ** 2;
 }
+
+#
+# Calculates hydrogen bond energy by applying implicit and explicit hydrogen
+# bond potentials according to the positions and types of atoms.
+#
+# Input:
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm);
+#     $parameters->{atom_site} - atom site data structure (see PDBxParser.pm);
+#     $parameters->{only_implicit_h_bond} - uses only implicit hydrogen bond
+#     potential.
+# Output:
+#     energy value.
 
 sub h_bond
 {
@@ -171,8 +200,6 @@ sub h_bond
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # MoleculeProperties.
-    # TODO: read about the situations when there are hydrogen atom in the
-    # middle of two hydrogen acceptors.
     my @h_bond_heavy_atoms = qw( N O F );
     my @atom_i_hydrogen_names =
         defined $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
@@ -186,24 +213,12 @@ sub h_bond
                                {$atom_j->{'label_atom_id'}} } : ();
 
     # Exits early if there are no hydrogen bond donor-acceptor combinations.
-    if( ! ( ( any { $atom_i->{'type_symbol'} eq $_ } @h_bond_heavy_atoms )
-         && ( any { $atom_j->{'type_symbol'} eq $_ } @h_bond_heavy_atoms ) )
-     || ! ( @atom_i_hydrogen_names || @atom_j_hydrogen_names ) ) {
+    if( ! ( ( any { $atom_i->{'type_symbol'} eq $_ } @h_bond_heavy_atoms ) &&
+            ( any { $atom_j->{'type_symbol'} eq $_ } @h_bond_heavy_atoms ) ) ||
+        ! ( @atom_i_hydrogen_names || @atom_j_hydrogen_names ) ) {
         return 0;
     }
 
-    # Calculates the angle (theta) between hydrogen acceptor, hydrogen and
-    # hydrogen donor. If there is no information on the position of hydrogens
-    # and cannot be determined by hybridization and the quantity of missing
-    # hydrogens, the smallest possible is determined by iterating through
-    # second neighbours of hydrogen donor and using information about
-    # hybridization assign the smallest possible alpha angle.
-    #                                    H
-    #                                   /_\theta
-    #                                  /   \
-    #                                 / alpha
-    #                      (H donor) O_) _ _ O (H acceptor)
-    #
     my $h_bond_energy_sum = 0;
 
     # Because i and j atoms can be both hydrogen donors and acceptors, two
@@ -235,6 +250,29 @@ sub h_bond
     return $h_bond_energy_sum;
 }
 
+#
+# Implicit hydrogen bond potential function. Described as:
+#
+#                          h_epsilon * cos( theta );
+#
+# where:
+#     h_epsilon - hydrogen bond coefficient;
+#     theta     - angle between hydrogen donor, hydrogen and hydrogen acceptor.
+#
+#                                      H
+#                                     /_\theta
+#                                    /   \
+#                                   /     \
+#                        (H donor) O       O (H acceptor)
+#
+# Input:
+#     $donor_atom - donor atom data structure (see PDBxParser.pm);
+#     $acceptor atom - acceptor atom data structure (see PDBxParser.pm);
+#     $parameters - hash of parameters' values.
+# Output:
+#     energy value.
+#
+
 sub h_bond_implicit
 {
     my ( $donor_atom, $acceptor_atom, $parameters ) = @_;
@@ -260,107 +298,52 @@ sub h_bond_implicit
     my $r_donor_acceptor = distance( $donor_atom, $acceptor_atom );
     my $r_donor_hydrogen =
         $ATOMS{$donor_atom->{'type_symbol'}}
-              {'covalent_radius'}{'length'}->[$covalent_radius_idx]
-      + $ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
+              {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
+        $ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
+
+    # Because there are no information on the position of hydrogen atom, the best
+    # case scenario is assumed - the distance of the atoms are optimal. This is
+    # done that way in order for explicit function increase energy if needed.
+    # That way energy cannot be excluded by the cutoff value.
     my $theta =
-        acos( ( $r_donor_acceptor**2 - $r_donor_hydrogen**2 - $r_sigma**2 )
-            / ( -2 * $r_donor_hydrogen * $r_sigma ) );
+        acos( ( $r_donor_acceptor ** 2 - $r_donor_hydrogen ** 2 - $r_sigma ** 2)/
+              ( -2 * $r_donor_hydrogen * $r_sigma ) );
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
-    if( ( $r_donor_acceptor <= $r_donor_hydrogen + $r_sigma )
-     && ( $theta >= pi() / 2 )
-     && ( $theta <=  3 * pi() / 2 ) ) {
-        return ( -1 ) * $h_epsilon * ( -1 ) * cos $theta;
+    if( ( $r_donor_acceptor <= $r_donor_hydrogen + $r_sigma ) &&
+        ( $theta >= pi() / 2 ) &&
+        ( $theta <=  3 * pi() / 2 ) ) {
+        return $h_epsilon * cos $theta;
     } else {
         return 0;
     }
 }
 
-sub h_bond_implicit_old
-{
-    my ( $atom_site, $donor_atom, $acceptor_atom, $parameters ) = @_;
-
-    my ( $h_epsilon, $r_sigma ) = (
-        $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
-    );
-
-    $r_sigma //= 2.00;
-    $h_epsilon //= 1.00; # TODO: this constant will be also in h_bond() and
-                         # h_bond() implicit. Remember to change in all of
-                         # three functions.
-
-    my $covalent_radius_idx;
-    my @hybridizations = qw( sp3 sp2 sp );
-    for( my $i = 0; $i <= $#hybridizations; $i++ ) {
-        if( $donor_atom->{'hybridization'} eq $hybridizations[$i] ) {
-            $covalent_radius_idx = $i;
-            last;
-        }
-    }
-
-    my $r_donor_hydrogen =
-        $ATOMS{$donor_atom->{'type_symbol'}}
-              {'covalent_radius'}{'length'}->[$covalent_radius_idx]
-      + $ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
-
-    # Determines smallest and most favourable angle which theta will be
-    # calculated from. The smaller alpha angle, the greater theta is.
-    my $alpha;
-    if( $donor_atom->{'hybridization'} eq 'sp3' ) {
-        $alpha = $SP3_ANGLE; # TODO: consider electron pairs?
-    } elsif( $donor_atom->{'hybridization'} eq 'sp2' ) {
-        $alpha = $SP2_ANGLE;
-    }
-
-    my $alpha_delta;
-    for my $donor_connection_id ( grep { $atom_site->{"$_"}{'type_symbol'} ne 'H' }
-                                      @{ $donor_atom->{'connections'} } ) {
-        my $alpha_delta_local =
-            bond_angle(
-                [ [ $acceptor_atom->{'Cartn_x'},
-                    $acceptor_atom->{'Cartn_y'},
-                    $acceptor_atom->{'Cartn_z'} ],
-                  [ $donor_atom->{'Cartn_x'},
-                    $donor_atom->{'Cartn_y'},
-                    $donor_atom->{'Cartn_z'} ],
-                  [ $atom_site->{$donor_connection_id}{'Cartn_x'},
-                    $atom_site->{$donor_connection_id}{'Cartn_y'},
-                    $atom_site->{$donor_connection_id}{'Cartn_z'} ] ] );
-        if( ! defined $alpha_delta ) {
-            $alpha_delta = $alpha_delta_local
-        } elsif( $alpha_delta_local < $alpha_delta ) {
-            $alpha_delta = $alpha_delta_local;
-        }
-    }
-
-    if( $alpha_delta > $alpha ) {
-        $alpha = $alpha_delta - $alpha;
-    } else {
-        $alpha = $alpha - $alpha_delta;
-    }
-
-    my $r_donor_acceptor = distance( $donor_atom, $acceptor_atom );
-    my $r_acceptor_hydrogen =
-        sqrt( $r_donor_acceptor**2
-            + $r_donor_hydrogen**2
-            - 2 * $r_donor_acceptor * $r_donor_hydrogen * cos $alpha );
-    my $theta = acos(
-        ( $r_donor_hydrogen - $r_donor_acceptor * cos $alpha )
-      / sqrt( $r_donor_hydrogen**2
-            + $r_donor_acceptor**2
-            - 2 * $r_donor_hydrogen * $r_donor_acceptor * cos $alpha )
-    );
-
-    if( ( $theta >= pi() / 2 ) && ( $theta <=  3 * pi() / 2 ) ) {
-        return ( -1 )
-             * $h_epsilon
-             * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
-               - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
-             * cos $theta;
-    } else {
-        return 0;
-    }
-}
+#
+# Explicit hydrogen bond potential function. Described as:
+#
+# - h_epsilon * [ 5 * ( sigma / r )**12 - 6 * ( sigma / r )**10 ] * cos( theta )
+#
+# where:
+#     r         - distance between center of atoms;
+#     h_epsilon - hydrogen bond coefficient;
+#     sigma     - optimal distance for hydrogen bond;
+#     theta     - angle between hydrogen donor, hydrogen and hydrogen acceptor.
+#
+#                                      H
+#                                     /_\theta
+#                                    /   \
+#                                   /     \
+#                        (H donor) O       O (H acceptor)
+#
+# Input:
+#     $donor_atom - donor atom data structure (see PDBxParser.pm);
+#     $hydrogen_atom - hydrogen atom data structure (see PDBxParser.pm);
+#     $acceptor_atom - acceptor atom data structure (see PDBxParser.pm);
+#     $parameters - hash of parameters' values.
+# Output:
+#     energy value.
+#
 
 sub h_bond_explicit
 {
@@ -387,15 +370,36 @@ sub h_bond_explicit
             $acceptor_atom->{'Cartn_z'} ] ] );
 
     if( ( $theta >= pi() / 2 ) && ( $theta <=  3 * pi() / 2 ) ) {
-        return ( -1 )
-             * $h_epsilon
-             * ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12
-               - 6 * ( $r_sigma / $r_acceptor_hydrogen )**10 )
-             * cos $theta;
+        return
+            ( -1 ) * $h_epsilon *
+            ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12 -
+              6 * ( $r_sigma / $r_acceptor_hydrogen )**10 ) *
+            cos $theta;
     } else {
         return 0;
     }
 }
+
+#
+# Combines Leonard-Jones, Coulomb, hydrogen bond potentials with smoothly
+# decreasing cutoff distance.
+#
+#         composite = leonard_jones + coulomb + h_bond * cutoff_function
+#
+# cutoff_function =
+#     cos( ( pi * ( r - cutoff_{start} * sigma ) ) /
+#          ( 2 * ( cutoff_{end} * sigma - cutoff_{start} * sigma ) ) )
+#
+# where:
+#     r                  - distance between center of atoms;
+#     cutoff_{start,end} - start, end of the cutoff function in amounts of sigma;
+#     sigma              - sum of van der Waals radii of two atoms.
+#
+# Input:
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm);
+#     $parameters - hash of parameters' values.
+# Output:
+#     energy value.
 
 sub composite
 {
@@ -415,13 +419,13 @@ sub composite
     $decompose //= 0;
 
     # Calculates squared distance between two atoms.
-    $r //= sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2
-                 + ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2
-                 + ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+    $r //= sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2 +
+                 ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2 +
+                 ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
 
     # Calculates Van der Waals distance of given atoms.
-    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-             + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r < $cutoff_start * $sigma ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
@@ -436,8 +440,8 @@ sub composite
         } else {
             return $leonard_jones + $coulomb + $h_bond;
         }
-    } elsif( ( $r >= $cutoff_start * $sigma )
-          && ( $r <= $cutoff_end * $sigma ) ) {
+    } elsif( ( $r >= $cutoff_start * $sigma ) &&
+             ( $r <= $cutoff_end * $sigma ) ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
         my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
@@ -447,8 +451,8 @@ sub composite
 
         if( $decompose ) {
             return { 'composite' =>
-                         ( $leonard_jones + $coulomb + $h_bond )
-                         * $cutoff_function,
+                         ( $leonard_jones + $coulomb + $h_bond ) *
+                         $cutoff_function,
                      'leonard_jones' => $leonard_jones,
                      'coulomb' => $coulomb,
                      'h_bond' => $h_bond };
