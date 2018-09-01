@@ -6,7 +6,10 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( permutation );
 
+our $VERSION = '1.0.0';
+
 # ------------------------------ Combinatorics -------------------------------- #
+
 #
 # Carries out permutation for list of arrays (recursive function).
 # Input:
@@ -22,10 +25,10 @@ our @EXPORT_OK = qw( permutation );
 sub permutation
 {
     my ( $size, $base, $list, $permuted_list ) = @_;
-    my $base_size = scalar( @{ $base } );
+    my $base_size = scalar @{ $base };
 
     if( $base_size == $size ) {
-        push( @{ $permuted_list }, $base );
+        push @{ $permuted_list }, $base;
     } else {
         for my $i ( @{ $list->[$base_size] } ) {
             permutation( $size, [ @{ $base }, $i ], $list, $permuted_list );
