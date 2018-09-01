@@ -9,10 +9,12 @@ our @EXPORT_OK = qw( %ATOMS
                      @MAINCHAIN_NAMES
                      sort_atom_names );
 
+our $VERSION = '1.0.0';
+
 # ----------------------------- Atom properties ------------------------------- #
 
 our %ATOMS = (
-    '.' => { # Point in space.
+    q{.} => { # Point in space.
              'covalent_radius' => {
                                     'length'    => [ 0 ],
                                     'error'     => [ 0 ]
@@ -91,8 +93,10 @@ our %ATOMS = (
              'vdw_radius' => 1.9,
              'valence' => 5,
              'partial_charge' => 0
-           }
+           },
     );
+
+# -------------------------------- Atom names --------------------------------- #
 
 our %HYDROGEN_NAMES = (
     'XAA' => { # Dummy side-chain.
@@ -268,16 +272,21 @@ our %HYDROGEN_NAMES = (
         'CB'  => [ 'HB2', 'HB3' ],
         'CG'  => [ 'HG2', 'HG3' ],
         'NE2' => [ 'HE21', 'HE22' ]
-    }
+    },
 );
 
 # TODO: should include proline atoms.
-our @MAINCHAIN_NAMES = (
-    'N', 'CA', 'C', 'O', 'OXT', 'CB', 'H', 'H2', 'HA',
-    'HA2', 'HA3', 'HXT', 'XA', 'XA2'
-);
+our @MAINCHAIN_NAMES = qw( N CA C O OXT CB H H2 HA HA2 HA3 HXT XA XA2 );
 
-# -------------------------- Atom related functions --------------------------- #
+#
+# Sorts atom names by their hierarchical rules.
+# Input:
+#     $atom_names - list of atom names;
+#     $options{sort_type} - sorts by atom type, greek letter, number or their
+#     combinations.
+# Output:
+#     @sorted_names - sorted list of atom names.
+#
 
 sub sort_atom_names
 {
@@ -293,17 +302,20 @@ sub sort_atom_names
     # This priority is achieved by assinging first, second and third priorities
     # to numbers. Then iteratively is sorted by priorities.
     my %atom_type_priority =
-        ( 'H' => 1, 'X' => 2, 'C' => 3, 'N' => 4, 'O' => 5, 'P' => 6, 'S' => 7 );
+        ( 'H' => 1, 'X' => 2, 'C' => 3, 'N' => 4, 'O' => 5, 'P' => 6, 'S' => 7,);
     my %greek_letter_priority =
-        ( 'H' => 1, 'Z' => 2, 'E' => 3, 'D' => 4, 'G' => 5, 'B' => 6,
-          'A' => 7,  '' => 8 );
+        ( 'H' => 1, 'Z' => 2, 'E' => 3, 'D' => 4, 'G' => 5, 'B' => 6, 'A' => 7,
+          q() => 8, );
 
     # Decomposes each atom name by its components.
     my %atom_names;
     for my $atom_name ( @{ $atom_names } ) {
-        my ( $atom_type ) = $atom_name =~ /(^[a-zA-z])[a-zA-z]?\d?/;
-        my ( $greek_letter ) = $atom_name =~ /^[a-zA-z]([a-zA-z]?)\d?/;
-        my ( $number ) = $atom_name =~ /^[a-zA-z][a-zA-z]?(\d?)/;
+        my ( $atom_type ) =
+            $atom_name =~ /(^\p{IsAlphabetic})\p{IsAlphabetic}?\d?/smx;
+        my ( $greek_letter ) =
+            $atom_name =~ /^\p{IsAlphabetic}(\p{IsAlphabetic}?)\d?/smx;
+        my ( $number ) =
+            $atom_name =~ /^\p{IsAlphabetic}\p{IsAlphabetic}?(\d?)/smx;
         $atom_names{$atom_name}{'type'} =
             $atom_type_priority{$atom_type};
         $atom_names{$atom_name}{'greek_letter'} =
@@ -316,15 +328,15 @@ sub sort_atom_names
     if( $sort_type eq 'tgn') { # By type, then greek letter and then number.
         @sorted_names =
           sort {
-              $atom_names{$b}{'type'} <=> $atom_names{$a}{'type'}
-           || $atom_names{$b}{'greek_letter'} <=> $atom_names{$a}{'greek_letter'}
-           || $atom_names{$a}{'number'} cmp $atom_names{$b}{'number'} }
+            $atom_names{$b}{'type'} <=> $atom_names{$a}{'type'} ||
+            $atom_names{$b}{'greek_letter'} <=> $atom_names{$a}{'greek_letter'}||
+            $atom_names{$a}{'number'} cmp $atom_names{$b}{'number'} }
               @{ $atom_names };
     } elsif( $sort_type eq 'gn' ) { # By greek letter and then number.
         @sorted_names =
           sort {
-              $atom_names{$b}{'greek_letter'} <=> $atom_names{$a}{'greek_letter'}
-           || $atom_names{$a}{'number'} cmp $atom_names{$b}{'number'} }
+            $atom_names{$b}{'greek_letter'} <=> $atom_names{$a}{'greek_letter'}||
+            $atom_names{$a}{'number'} cmp $atom_names{$b}{'number'} }
               @{ $atom_names };
     }
 

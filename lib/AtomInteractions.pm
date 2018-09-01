@@ -4,14 +4,14 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( hard_sphere
-                     soft_sphere
-                     leonard_jones
+our @EXPORT_OK = qw( composite
                      coulomb
                      h_bond
                      h_bond_explicit
                      h_bond_implicit
-                     composite );
+                     hard_sphere
+                     leonard_jones
+                     soft_sphere );
 
 use List::Util qw( any );
 use Math::Trig qw( acos );
