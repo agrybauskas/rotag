@@ -9,8 +9,9 @@ our @EXPORT_OK = qw( sample_angles );
 use POSIX;
 
 use LinearAlgebra qw( pi );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # --------------------------------- Sampling ---------------------------------- #
 

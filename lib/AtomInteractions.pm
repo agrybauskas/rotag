@@ -23,8 +23,9 @@ use ConnectAtoms qw( distance
                      distance_squared );
 use LinearAlgebra qw( pi );
 use Measure qw( bond_angle );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 Readonly my $SP3_ANGLE => 109.5 * pi() / 180.0;
 Readonly my $SP2_ANGLE => 120.0 * pi() / 180.0;

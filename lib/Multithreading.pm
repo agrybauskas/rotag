@@ -6,7 +6,9 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( multithreading );
 
-our $VERSION = '1.0.0';
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
 
 # -------------------- Preparing data for multi-threading --------------------- #
 

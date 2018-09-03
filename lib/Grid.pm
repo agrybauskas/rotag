@@ -13,8 +13,9 @@ use List::Util qw( max
 
 use AtomProperties qw( %ATOMS );
 use PDBxParser qw( filter );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # -------------------------- Grid-related functions --------------------------- #
 

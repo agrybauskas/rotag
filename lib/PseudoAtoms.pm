@@ -45,8 +45,9 @@ use PDBxParser qw( create_pdbx_entry
                    filter );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 

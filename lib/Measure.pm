@@ -19,8 +19,9 @@ use PDBxParser qw( filter );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use BondProperties qw( rotatable_bonds );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # --------------------------- Molecule parameters ----------------------------- #
 

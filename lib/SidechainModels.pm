@@ -14,8 +14,9 @@ use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use BondProperties qw( rotatable_bonds );
 use PDBxParser qw( filter );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # ----------------------- Idealistic sidechain models ------------------------- #
 

@@ -9,7 +9,9 @@ our @EXPORT_OK = qw( %ATOMS
                      @MAINCHAIN_NAMES
                      sort_atom_names );
 
-our $VERSION = '1.0.0';
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
 
 # ----------------------------- Atom properties ------------------------------- #
 

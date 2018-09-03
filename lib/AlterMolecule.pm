@@ -10,8 +10,9 @@ our @EXPORT_OK = qw( angle_bending
 
 use LinearAlgebra qw( mult_matrix_product
                       switch_ref_frame );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # ----------------------- Molecule alteration matrices ------------------------ #
 

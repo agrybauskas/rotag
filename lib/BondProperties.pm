@@ -15,8 +15,9 @@ use AtomProperties qw( %ATOMS
                        sort_atom_names );
 use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # -------------------------------- Constants ---------------------------------- #
 

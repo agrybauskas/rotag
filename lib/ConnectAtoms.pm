@@ -21,8 +21,9 @@ use Combinatorics qw( permutation );
 use Grid qw( identify_neighbour_cells
              grid_box );
 use PDBxParser qw( filter );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # ---------------------------- Pairwise relations ----------------------------- #
 

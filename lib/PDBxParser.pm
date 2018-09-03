@@ -12,8 +12,9 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      to_pdbx );
 
 use List::MoreUtils qw( any );
+use Version qw( $VERSION );
 
-our $VERSION = '1.0.0';
+our $VERSION = $VERSION;
 
 # --------------------------------- PDBx parser ------------------------------- #
 

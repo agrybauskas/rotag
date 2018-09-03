@@ -24,7 +24,9 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
-our $VERSION = '1.0.0';
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
 
 # -------------------------------- Constants ---------------------------------- #
 
