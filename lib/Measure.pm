@@ -20,7 +20,9 @@ use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use MoleculeProperties qw( rotatable_bonds );
 
-# ----------------------------- Molecule parameters --------------------------- #
+our $VERSION = '1.0.0';
+
+# --------------------------- Molecule parameters ----------------------------- #
 
 #
 # Calculates various parameters that describe molecule or atoms, such as, bond
@@ -40,9 +42,9 @@ sub bond_length
     my ( $atom_coord ) = @_;
 
     my $bond_length =
-        sqrt( ( $atom_coord->[1][0] - $atom_coord->[0][0] )**2
-            + ( $atom_coord->[1][1] - $atom_coord->[0][1] )**2
-            + ( $atom_coord->[1][2] - $atom_coord->[0][2] )**2 );
+        sqrt( ( $atom_coord->[1][0] - $atom_coord->[0][0] )**2 +
+              ( $atom_coord->[1][1] - $atom_coord->[0][1] )**2 +
+              ( $atom_coord->[1][2] - $atom_coord->[0][2] )**2 );
 
     return $bond_length;
 }
@@ -70,23 +72,23 @@ sub bond_angle
     # and C - remaining atom. Order of side atoms is irrelevant.
     my @vector_ab = ( $atom_coord->[0][0] - $atom_coord->[1][0],
                       $atom_coord->[0][1] - $atom_coord->[1][1],
-                      $atom_coord->[0][2] - $atom_coord->[1][2] );
+                      $atom_coord->[0][2] - $atom_coord->[1][2], );
     my @vector_bc = ( $atom_coord->[2][0] - $atom_coord->[1][0],
                       $atom_coord->[2][1] - $atom_coord->[1][1],
-                      $atom_coord->[2][2] - $atom_coord->[1][2] );
+                      $atom_coord->[2][2] - $atom_coord->[1][2], );
 
     my $vector_product = $vector_ab[0] * $vector_bc[0] +
-                       + $vector_ab[1] * $vector_bc[1]
-                       + $vector_ab[2] * $vector_bc[2];
+                         $vector_ab[1] * $vector_bc[1] +
+                         $vector_ab[2] * $vector_bc[2];
 
-    my $length_ab = sqrt( $vector_ab[0]**2
-                        + $vector_ab[1]**2
-                        + $vector_ab[2]**2 );
-    my $length_bc = sqrt( $vector_bc[0]**2
-                        + $vector_bc[1]**2
-                        + $vector_bc[2]**2 );
+    my $length_ab = sqrt( $vector_ab[0]**2 +
+                          $vector_ab[1]**2 +
+                          $vector_ab[2]**2 );
+    my $length_bc = sqrt( $vector_bc[0]**2 +
+                          $vector_bc[1]**2 +
+                          $vector_bc[2]**2 );
 
-    my $bond_angle = acos( $vector_product / ( $length_ab * $length_bc ) );
+    my $bond_angle = acos $vector_product / ( $length_ab * $length_bc );
 
     return $bond_angle;
 }
@@ -118,16 +120,16 @@ sub dihedral_angle
 
     #                                               ->    -> ->    ->
     # Creates normal vectors from the vector pairs: a and b, b and c.
-    my $vector_cross_ab = vector_cross( @$vector_a, @$vector_b );
-    my $vector_cross_bc = vector_cross( @$vector_b, @$vector_c );
+    my $vector_cross_ab = vector_cross( @{ $vector_a }, @{ $vector_b } );
+    my $vector_cross_bc = vector_cross( @{ $vector_b }, @{ $vector_c } );
 
     # Calculates length for each cross product.
-    my $vector_length_ab = sqrt( $vector_cross_ab->[0]**2
-                               + $vector_cross_ab->[1]**2
-                               + $vector_cross_ab->[2]**2 );
-    my $vector_length_bc = sqrt( $vector_cross_bc->[0]**2
-                               + $vector_cross_bc->[1]**2
-                               + $vector_cross_bc->[2]**2 );
+    my $vector_length_ab = sqrt $vector_cross_ab->[0]**2 +
+                                $vector_cross_ab->[1]**2 +
+                                $vector_cross_ab->[2]**2;
+    my $vector_length_bc = sqrt $vector_cross_bc->[0]**2 +
+                                $vector_cross_bc->[1]**2 +
+                                $vector_cross_bc->[2]**2;
 
     # Calculates normal vectors for each cross product of two vectors.
     my @normal_vector_ab = map { $_ / $vector_length_ab } @{ $vector_cross_ab };
@@ -135,9 +137,9 @@ sub dihedral_angle
 
     # Finishes orthonormal frame from normal vector ab, vector b and its cross
     # product.
-    my $vector_length_b = sqrt( $vector_b->[0][0]**2
-                              + $vector_b->[0][1]**2
-                              + $vector_b->[0][2]**2 );
+    my $vector_length_b = sqrt $vector_b->[0][0]**2 +
+                               $vector_b->[0][1]**2 +
+                               $vector_b->[0][2]**2;
     my @normal_vector_b = map { $_ / $vector_length_b } @{ $vector_b->[0] };
 
     my @orthonormal_cross =
@@ -146,12 +148,12 @@ sub dihedral_angle
     # Using orthonormal frame, projections from vector a and c are
     # generated and angle calculated.
     my $dihedral_angle =
-        - atan2( $orthonormal_cross[0][0] * $normal_vector_bc[0]
-               + $orthonormal_cross[0][1] * $normal_vector_bc[1]
-               + $orthonormal_cross[0][2] * $normal_vector_bc[2],
-                 $normal_vector_ab[0] * $normal_vector_bc[0]
-               + $normal_vector_ab[1] * $normal_vector_bc[1]
-               + $normal_vector_ab[2] * $normal_vector_bc[2] );
+        - atan2 $orthonormal_cross[0][0] * $normal_vector_bc[0] +
+                $orthonormal_cross[0][1] * $normal_vector_bc[1] +
+                $orthonormal_cross[0][2] * $normal_vector_bc[2],
+                $normal_vector_ab[0] * $normal_vector_bc[0] +
+                $normal_vector_ab[1] * $normal_vector_bc[1] +
+                $normal_vector_ab[2] * $normal_vector_bc[2];
 
     return $dihedral_angle;
 }
@@ -181,7 +183,7 @@ sub all_dihedral
                                  'label_asym_id',
                                  'label_entity_id',
                                  'label_alt_id' ] } ) };
-    @residue_unique_keys = uniq map { join( ',', @{$_} ) } @residue_unique_keys;
+    @residue_unique_keys = uniq map { join q{,}, @{$_} } @residue_unique_keys;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -193,7 +195,7 @@ sub all_dihedral
 
     for my $residue_unique_key ( @residue_unique_keys ) {
         my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-            split( ',', $residue_unique_key );
+            split /,/sxm, $residue_unique_key;
         my $residue_site =
             filter( { 'atom_site' => \%atom_site,
                       'include' => { 'label_seq_id' => [ $residue_id ],
@@ -309,21 +311,21 @@ sub rmsd
     my $rmsd = 0;
 
     # Gives the error if the size of the sets are different.
-    if( scalar( @{ $first_set } ) != scalar( @{ $second_set } ) ) {
-        die( 'Comparing different sizes of sets of the atoms is not allowed.' ) ;
+    if( scalar @{ $first_set } != scalar @{ $second_set } ) {
+        die 'Comparing different sizes of sets of the atoms is not allowed.';
     }
 
     # Sums up sqaured differences of coordinates.
     for( my $i = 0; $i <= $#{ $first_set }; $i++ ) {
-        $rmsd += ( $first_set->[$i][0] - $second_set->[$i][0] )**2
-               + ( $first_set->[$i][1] - $second_set->[$i][1] )**2
-               + ( $first_set->[$i][2] - $second_set->[$i][2] )**2
+        $rmsd += ( $first_set->[$i][0] - $second_set->[$i][0] )**2 +
+                 ( $first_set->[$i][1] - $second_set->[$i][1] )**2 +
+                 ( $first_set->[$i][2] - $second_set->[$i][2] )**2
     }
 
     # Devides by the number of member of the set.
-    $rmsd = $rmsd / scalar( @{ $first_set } );
+    $rmsd = $rmsd / scalar @{ $first_set };
 
-    return sqrt( $rmsd );
+    return sqrt $rmsd;
 }
 
 1;
