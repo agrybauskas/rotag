@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+sub pi
+{
+    return 4 * atan2 1, 1;
+}
+
+print pi();

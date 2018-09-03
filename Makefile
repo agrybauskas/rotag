@@ -6,11 +6,26 @@ YAPP_DIR=lib/Grammar
 YAPP_FILES=${wildcard ${YAPP_DIR}/*.yp}
 GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 
-all: ${GRAMMAR_MODULES}
+all: ${GRAMMAR_MODULES} ${PERL_MODULE}
 
 %.pm: %.yp
 	yapp -o $@ $<
 
+#
+# Generate Perl modules.
+#
+
+LIB_DIR=lib
+TOOLS_DIR=tools
+PERL_TEMPLATE=${LIB_DIR}/Constants.pmin
+PERL_MODULE=${LIB_DIR}/Constants.pm
+
+all: ${PERL_MODULE}
+
+${PERL_MODULE}: ${PERL_TEMPLATE}
+	sed 's/@PI@/'$$(${TOOLS_DIR}/calculate-pi)'/g' $^ \
+	    | sed 's/@EPSILON@/'$$(${TOOLS_DIR}/calculate-epsilon)'/g' \
+	    > $@
 
 #
 # Instalation of dependencies.
@@ -38,7 +53,7 @@ endef
 
 .PHONY: test
 
-test: ${GRAMMAR_MODULES} | ${TEST_DIFF}
+test: ${GRAMMAR_MODULES} ${PERL_MODULE} | ${TEST_DIFF}
 
 ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	@if ${can_run_test}; then \
@@ -68,3 +83,4 @@ clean:
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
+	rm -f ${PERL_MODULE}

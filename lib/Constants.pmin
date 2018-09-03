@@ -1,0 +1,13 @@
+package Constants;
+
+use strict;
+use warnings;
+
+our @EXPORT_OK = qw( $EPSILON
+                     $PI );
+
+our $EPSILON = @EPSILON@;
+
+out $PI = @PI@;
+
+1;

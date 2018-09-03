@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+sub epsilon
+{
+    my $EPSILON = 1.0;
+
+    while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
+        $EPSILON = 0.5 * $EPSILON;
+    }
+
+    return $EPSILON;
+}
+
+print epsilon();
