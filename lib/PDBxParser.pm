@@ -227,6 +227,7 @@ sub filter
         my @atom_data;
         if( defined $data_with_id && $data_with_id ) {
             my %atom_data_with_id;
+
             # Simply iterates through $atom_site keys and extracts data using
             # data specifier and is asigned to atom id.
             for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
@@ -234,7 +235,6 @@ sub filter
                     [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
             }
             return \%atom_data_with_id;
-
         } else {
             for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
                 if( defined $is_list && $is_list ) {
@@ -255,8 +255,9 @@ sub filter
 #
 # Creates PDBx entry.
 # Input:
-#     ;
+#     $args - hash of all necessary attributes with corresponding values;
 # Output:
+#     PDBx STDOUT
 #
 
 sub create_pdbx_entry
@@ -301,9 +302,11 @@ sub create_pdbx_entry
 #     $args->{data_name} - data name of the PDBx;
 #     $args->{pdbx_lines} - data structure of PDBx lines;
 #     $args->{pdbx_loops} - data structure of pdbx_loops;
-#     $args->{atom_site} -;
-#     $args->{atom_attributes} -;
-#     $args->{add_atom_attributes} -;
+#     $args->{atom_site} - atom site data structure;
+#     $args->{atom_attributes} - attribute list that should be included in the
+#     output;
+#     $args->{add_atom_attributes} - add list of attributes to existing data
+#     structure;
 #     $args->{fh} - file handler.
 # Output:
 #     PDBx STDOUT.
@@ -368,7 +371,6 @@ sub to_pdbx
                 } else {
                     print {$fh} q{ ?};
                 }
-
             } else {
                 if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
                     print {$fh} "\n", $atom_site->{$id}{$atom_attributes->[$i]};
