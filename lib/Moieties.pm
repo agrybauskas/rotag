@@ -7,7 +7,9 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( %ATOMS
                      %SIDECHAINS );
 
-# ---------------------------------- Moieties --------------------------------- #
+our $VERSION = '1.0.0';
+
+# --------------------------------- Moieties ---------------------------------- #
 
 our %ATOMS = (
     'H' => {
@@ -15,13 +17,13 @@ our %ATOMS = (
             'group_PDB' => 'ATOM',
             'id' => 1,
             'type_symbol' => 'H',
-            'label_alt_id' => '.',
+            'label_alt_id' => q{.},
             'Cartn_x' => -53.464,
             'Cartn_y' => -109.890,
             'Cartn_z' => -5.544,
             'pdbx_PDB_model_num' => 1,
-        }
-    }
+        },
+    },
 );
 
 our %SIDECHAINS = (
@@ -31,7 +33,7 @@ our %SIDECHAINS = (
             'id' => 2,
             'type_symbol' => 'C',
             'label_atom_id' => 'CB',
-            'label_alt_id' => '.',
+            'label_alt_id' => q{.},
             'label_comp_id' => 'SER',
             'label_asym_id' => undef,
             'label_entity_id' => undef,
@@ -50,7 +52,7 @@ our %SIDECHAINS = (
             'id' => 3,
             'type_symbol' => 'O',
             'label_atom_id' => 'OG',
-            'label_alt_id' => '.',
+            'label_alt_id' => q{.},
             'label_comp_id' => 'SER',
             'label_asym_id' => undef,
             'label_entity_id' => undef,
@@ -63,8 +65,8 @@ our %SIDECHAINS = (
             'auth_asym_id' => undef,
             'auth_atom_id' => 'OG',
             'pdbx_PDB_model_num' => undef,
-        }
-    }
+        },
+    },
 );
 
 1;
