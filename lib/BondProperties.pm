@@ -1,4 +1,4 @@
-package MoleculeProperties;
+package BondProperties;
 
 use strict;
 use warnings;

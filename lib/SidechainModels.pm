@@ -12,7 +12,7 @@ use AlterMolecule qw( bond_torsion );
 use AtomProperties qw( sort_atom_names );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
-use MoleculeProperties qw( rotatable_bonds );
+use BondProperties qw( rotatable_bonds );
 use PDBxParser qw( filter );
 
 # ----------------------- Idealistic sidechain models ------------------------- #

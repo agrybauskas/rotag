@@ -18,7 +18,7 @@ use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
-use MoleculeProperties qw( rotatable_bonds );
+use BondProperties qw( rotatable_bonds );
 
 our $VERSION = '1.0.0';
 

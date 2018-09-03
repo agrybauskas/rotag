@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use MoleculeProperties qw( hybridization );
+use BondProperties qw( hybridization );
 
 #
-# Unit test: MoleculeProperties::hybridization
+# Unit test: BondProperties::hybridization
 # Example: ./hybridization structure.dump
 #
 

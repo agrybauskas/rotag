@@ -39,7 +39,7 @@ use LinearAlgebra qw( mult_matrix_product
 use Measure qw( all_dihedral
                 dihedral_angle
                 bond_angle );
-use MoleculeProperties qw( hybridization
+use BondProperties qw( hybridization
                            rotatable_bonds );
 use Multithreading qw( multithreading );
 use PDBxParser qw( create_pdbx_entry

@@ -199,7 +199,7 @@ sub h_bond
     );
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
-    # MoleculeProperties.
+    # BondProperties.
     my @h_bond_heavy_atoms = qw( N O F );
     my @atom_i_hydrogen_names =
         defined $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
