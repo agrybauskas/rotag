@@ -27,3 +27,5 @@
 ++ rotag_energy should have pairwise and rotamer/residue flags.
 -- Partial charges and full charges probably should be described for each
    residue.
+-- pi and the constants that are being generated during the calculations should
+   be generated during the build. This way calculation will only occur once.
