@@ -389,9 +389,9 @@ sub vector_length
     my ( $vector ) = @_;
 
     my $vector_length =
-        sqrt( $vector->[0][0] ** 2
-            + $vector->[1][0] ** 2
-            + $vector->[2][0] ** 2 );
+        sqrt( $vector->[0][0] ** 2 +
+              $vector->[1][0] ** 2 +
+              $vector->[2][0] ** 2 );
 
     return $vector_length;
 }
@@ -410,12 +410,12 @@ sub vector_cross
     my ( $left_matrix, $right_matrix ) = @_;
 
     my @cross_product =
-        ( $left_matrix->[1] * $right_matrix->[2]
-         -$left_matrix->[2] * $right_matrix->[1],
-         -$left_matrix->[0] * $right_matrix->[2]
-         +$left_matrix->[2] * $right_matrix->[0],
-          $left_matrix->[0] * $right_matrix->[1]
-         -$left_matrix->[1] * $right_matrix->[0], );
+        ( $left_matrix->[1] * $right_matrix->[2] -
+          $left_matrix->[2] * $right_matrix->[1],
+        - $left_matrix->[0] * $right_matrix->[2] +
+          $left_matrix->[2] * $right_matrix->[0],
+          $left_matrix->[0] * $right_matrix->[1] -
+          $left_matrix->[1] * $right_matrix->[0], );
 
     return \@cross_product;
 }
@@ -551,11 +551,11 @@ sub matrix_product
 
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
-    die { type => 'DimensionError',
-          message => 'A row number of a left matrix is NOT equal ' .
-                     "to the column\nnumber of the right matrix.", }
-        unless scalar @{ transpose( $left_matrix ) } ==
-               scalar @{ $right_matrix };
+    if( scalar @{ transpose( $left_matrix ) } != scalar @{ $right_matrix } ) {
+        die { type => 'DimensionError',
+              message => 'A row number of a left matrix is NOT equal ' .
+                         "to the column\nnumber of the right matrix.", };
+    }
 
     # Makes placeholder items consisting zero values for matrix_product array.
     my @matrix_product;
@@ -599,12 +599,20 @@ sub matrix_product
                 $right_element = eval $right_element;
 
                 # Throws error if one of the elements are undefined.
-                die { type => 'UndifinedError',
-                      message => 'Left element contains undefined variable', }
-                    unless defined $left_element;
-                die { type => 'UndifinedError',
-                      message => 'Right element contains undefined variable', }
-                    unless defined $right_element;
+                if( ! defined $left_element ) {
+                    die
+                    {
+                        type => 'UndifinedError',
+                        message => 'Left element contains undefined variable',
+                    };
+                }
+                if( ! defined $right_element ) {
+                    die
+                    {
+                        type => 'UndifinedError',
+                        message => 'Right element contains undefined variable',
+                    }
+                }
 
                 # Evaluates multiplication if no exceptions are thrown.
                 $matrix_product[$product_row][$product_col] +=
@@ -655,12 +663,12 @@ sub mult_matrix_product
                                             $matrices[$id],
                                             $symbol_values );
                 } or do {
-                    if( $@->{type} eq 'UndifinedError' ) {
+                    if( ${ @ }->{type} eq 'UndifinedError' ) {
                         push @mult_matrix_product,
                              $matrices[$id-1],
                              $matrices[$id];
                     } else {
-                        die $@->{message};
+                        die ${ @ }->{message};
                     }
                 };
 
@@ -672,13 +680,13 @@ sub mult_matrix_product
                                             $symbol_values );
                     splice @mult_matrix_product, 1, 1;
                 } or do {
-                    if( $@->{type} eq 'UndifinedError' ) {
+                    if( ${ @ }->{type} eq 'UndifinedError' ) {
                         unshift @mult_matrix_product,
                                 $matrices[$id-1],
                                 $mult_matrix_product[0];
                         splice @mult_matrix_product, 1, 1;
                     } else {
-                        die $@->{message};
+                        die ${ @ }->{message};
                     }
                 };
             }
