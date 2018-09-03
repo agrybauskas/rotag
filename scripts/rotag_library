@@ -11,7 +11,7 @@ use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI );
 use ErrorHandling qw( parse_errors
                       parse_warnings );
-use MoleculeProperties qw( hybridization );
+use BondProperties qw( hybridization );
 use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );

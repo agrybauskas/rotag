@@ -21,7 +21,7 @@ use ConnectAtoms qw( connect_atoms
                      is_second_neighbour );
 use Grid qw( grid_box
              identify_neighbour_cells );
-use MoleculeProperties qw( hybridization );
+use BondProperties qw( hybridization );
 use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
