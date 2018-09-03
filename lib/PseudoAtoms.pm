@@ -30,10 +30,10 @@ use ConnectAtoms qw( append_connections
                      connect_atoms
                      is_neighbour
                      is_second_neighbour );
+use Constants qw( $PI );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product
-                      pi
                       switch_ref_frame );
 use Measure qw( all_dihedral
                 dihedral_angle
@@ -477,7 +477,7 @@ sub calc_favourable_angles
 
     my @sampled_angles =
         map { [ $_ ] }
-        @{ sample_angles( [ [ 0, 2 * pi() ] ], $small_angle ) };
+        @{ sample_angles( [ [ 0, 2 * $PI ] ], $small_angle ) };
     my @allowed_angles = @sampled_angles;
 
     # @zero_energies is a helper variable for permutation() in order to
@@ -675,7 +675,7 @@ sub calc_full_atom_energy
 
     if( $missing_rotatable_bond_num ) {
         my @sampled_angles =
-            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * pi() ] ], $small_angle )};
+            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * $PI ] ], $small_angle )};
         foreach( 1..$missing_rotatable_bond_num ) {
             @checkable_angles =
                 @{ permutation( 2, [], [ \@checkable_angles,
@@ -990,11 +990,11 @@ sub add_hydrogens_sp3
                               $up_atom_coord,
                               $mid_atom_coord,
                               $right_atom_coord ] );
-        if( abs( $dihedral_angle ) < ( 3 * pi() / 4 ) ) {
+        if( abs( $dihedral_angle ) < ( 3 * $PI / 4 ) ) {
             if( $dihedral_angle < 0 ) {
-                $dihedral_angle = ( 2 * pi() + $dihedral_angle ) / 2;
+                $dihedral_angle = ( 2 * $PI + $dihedral_angle ) / 2;
             } else {
-                $dihedral_angle = - ( 2 * pi() - $dihedral_angle ) / 2;
+                $dihedral_angle = - ( 2 * $PI - $dihedral_angle ) / 2;
             }
         } else {
             if( $dihedral_angle < 0 ) {
@@ -1016,10 +1016,10 @@ sub add_hydrogens_sp3
             @{ mult_matrix_product(
                    [ $transf_matrix,
                      [ [ $bond_length *
-                         cos( pi() / 2 - $dihedral_angle ) *
+                         cos( $PI / 2 - $dihedral_angle ) *
                          sin $hydrogen_angle ],
                        [ $bond_length *
-                         sin( pi() / 2 - $dihedral_angle ) *
+                         sin( $PI / 2 - $dihedral_angle ) *
                          sin $hydrogen_angle ],
                        [ $bond_length *
                          cos $hydrogen_angle ],
@@ -1063,10 +1063,10 @@ sub add_hydrogens_sp3
                 @{ mult_matrix_product(
                        [ $transf_matrix,
                          [ [ $bond_length *
-                             cos( 7 * pi() / 6 ) *
+                             cos( 7 * $PI / 6 ) *
                              sin $hydrogen_angle ],
                            [ $bond_length *
-                             sin( 7 * pi() / 6 ) *
+                             sin( 7 * $PI / 6 ) *
                              sin $hydrogen_angle ],
                            [ $bond_length *
                              cos $hydrogen_angle ],
@@ -1081,10 +1081,10 @@ sub add_hydrogens_sp3
                 @{ mult_matrix_product(
                        [ $transf_matrix,
                          [ [ $bond_length *
-                             cos( - 1 * pi() / 6 ) *
+                             cos( - 1 * $PI / 6 ) *
                              sin $hydrogen_angle ],
                            [ $bond_length *
-                             sin( - 1 * pi() / 6 ) *
+                             sin( - 1 * $PI / 6 ) *
                              sin $hydrogen_angle ],
                            [ $bond_length *
                              cos $hydrogen_angle ],
@@ -1118,9 +1118,9 @@ sub add_hydrogens_sp3
         my $bond_angle;
         if( $lone_pair_count > 0 ) {
             $bond_angle =
-                ( 109.5 - $lone_pair_count * 2.5 ) * pi() / 180;
+                ( 109.5 - $lone_pair_count * 2.5 ) * $PI / 180;
         } else {
-            $bond_angle = 109.5 * pi() / 180;
+            $bond_angle = 109.5 * $PI / 180;
         }
 
         # Adds hydrogens according to the quantity of lone pairs.
@@ -1140,10 +1140,10 @@ sub add_hydrogens_sp3
                 @{ mult_matrix_product(
                        [ $transf_matrix,
                          [ [ $bond_length
-                             * cos( 2 * pi() / 3 )
+                             * cos( 2 * $PI / 3 )
                              * sin $bond_angle ],
                            [ $bond_length
-                             * sin( 2 * pi() / 3 )
+                             * sin( 2 * $PI / 3 )
                              * sin $bond_angle ],
                            [ $bond_length
                              * cos $bond_angle ],
@@ -1156,10 +1156,10 @@ sub add_hydrogens_sp3
                 @{ mult_matrix_product(
                        [ $transf_matrix,
                          [ [ $bond_length *
-                             cos( 4 * pi() / 3 ) *
+                             cos( 4 * $PI / 3 ) *
                              sin $bond_angle ],
                            [ $bond_length *
-                             sin( 4 * pi() / 3 ) *
+                             sin( 4 * $PI / 3 ) *
                              sin $bond_angle ],
                            [ $bond_length *
                              cos $bond_angle ],
@@ -1226,7 +1226,7 @@ sub add_hydrogens_sp2
         #
         # where beta is angle between two given bonds.
         my $bond_angle =
-            ( 2 * pi() - bond_angle( [ $up_atom_coord,
+            ( 2 * $PI - bond_angle( [ $up_atom_coord,
                                        $mid_atom_coord,
                                        $left_atom_coord ] ) )
             / 2;
@@ -1237,10 +1237,10 @@ sub add_hydrogens_sp2
             @{ mult_matrix_product(
                    [ $transf_matrix,
                      [ [ $bond_length *
-                         cos( - 0.5 * pi() ) *
+                         cos( - 0.5 * $PI ) *
                          sin $bond_angle ],
                        [ $bond_length *
-                         sin( - 0.5 * pi() ) *
+                         sin( - 0.5 * $PI ) *
                          sin $bond_angle ],
                        [ $bond_length *
                          cos $bond_angle ],
@@ -1290,13 +1290,13 @@ sub add_hydrogens_sp2
                 @{ mult_matrix_product(
                        [ $transf_matrix,
                          [ [ $bond_length
-                             * cos( -0.5 * pi() )
-                             * sin( 120 * pi() / 180 ) ],
+                             * cos( -0.5 * $PI )
+                             * sin( 120 * $PI / 180 ) ],
                            [ $bond_length
-                             * sin( -0.5 * pi() )
-                             * sin( 120 * pi() / 180 ) ],
+                             * sin( -0.5 * $PI )
+                             * sin( 120 * $PI / 180 ) ],
                            [ $bond_length
-                             * cos( 120 * pi() / 180 ) ],
+                             * cos( 120 * $PI / 180 ) ],
                            [ 1 ] ] ] ) };
             shift @{ $missing_hydrogens };
         }
@@ -1306,13 +1306,13 @@ sub add_hydrogens_sp2
                 @{ mult_matrix_product(
                        [ $transf_matrix,
                          [ [ $bond_length
-                             * cos( 0.5 * pi() )
-                             * sin( 120 * pi() / 180 ) ],
+                             * cos( 0.5 * $PI )
+                             * sin( 120 * $PI / 180 ) ],
                            [ $bond_length
-                             * sin( 0.5 * pi() )
-                             * sin( 120 * pi() / 180 ) ],
+                             * sin( 0.5 * $PI )
+                             * sin( 120 * $PI / 180 ) ],
                            [ $bond_length
-                             * cos( 120 * pi() / 180 ) ],
+                             * cos( 120 * $PI / 180 ) ],
                            [ 1 ] ] ] ) };
         }
     }

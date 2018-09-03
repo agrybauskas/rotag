@@ -11,9 +11,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      mult_matrix_product
                      matrix_sum
                      matrix_sub
-                     pi
                      reshape
-                     epsilon
                      scalar_multipl
                      switch_ref_frame
                      translation
@@ -24,43 +22,11 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
+use Constants qw( $EPSILON
+                  $PI );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
-
-# -------------------------------- Constants ---------------------------------- #
-
-#
-# Returns PI value.
-#
-# Input:
-#     none.
-# Output:
-#     PI value.
-
-sub pi
-{
-    return 4 * atan2 1, 1;
-}
-
-#
-# Returns machine accuracy for floating point numbers.
-# Input:
-#     none.
-# Output:
-#     $EPSILON - machine accuracy value.
-#
-
-sub epsilon
-{
-    my $EPSILON = 1.0;
-
-    while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
-        $EPSILON = 0.5 * $EPSILON;
-    }
-
-    return $EPSILON;
-}
 
 # -------------------------- Numeric linear algebra --------------------------- #
 
@@ -160,7 +126,7 @@ sub find_euler_angles
         sqrt( $local_ref_frame->[2][0] * $local_ref_frame->[2][0] +
               $local_ref_frame->[2][1] * $local_ref_frame->[2][1] );
 
-    if( $z_axis_in_xy_plane > epsilon() ) {
+    if( $z_axis_in_xy_plane > $EPSILON ) {
         $alpha_rad =
             atan2  $local_ref_frame->[1][0] * $local_ref_frame->[2][1] -
                    $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
@@ -171,7 +137,7 @@ sub find_euler_angles
             - atan2 - $local_ref_frame->[2][0], $local_ref_frame->[2][1];
     } else {
         $alpha_rad = 0.;
-        $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : pi();
+        $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : $PI;
         $gamma_rad =
             - atan2 $local_ref_frame->[0][1], $local_ref_frame->[0][0];
     }

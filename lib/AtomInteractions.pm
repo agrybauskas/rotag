@@ -21,14 +21,14 @@ use AtomProperties qw( %ATOMS
                        %HYDROGEN_NAMES );
 use ConnectAtoms qw( distance
                      distance_squared );
-use LinearAlgebra qw( pi );
+use Constants qw( $PI );
 use Measure qw( bond_angle );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-Readonly my $SP3_ANGLE => 109.5 * pi() / 180.0;
-Readonly my $SP2_ANGLE => 120.0 * pi() / 180.0;
+Readonly my $SP3_ANGLE => 109.5 * $PI / 180.0;
+Readonly my $SP2_ANGLE => 120.0 * $PI / 180.0;
 
 # --------------------------- Potential functions ----------------------------- #
 
@@ -312,8 +312,8 @@ sub h_bond_implicit
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
     if( ( $r_donor_acceptor <= $r_donor_hydrogen + $r_sigma ) &&
-        ( $theta >= pi() / 2 ) &&
-        ( $theta <=  3 * pi() / 2 ) ) {
+        ( $theta >= $PI / 2 ) &&
+        ( $theta <=  3 * $PI / 2 ) ) {
         return $h_epsilon * cos $theta;
     } else {
         return 0;
@@ -370,7 +370,7 @@ sub h_bond_explicit
             $acceptor_atom->{'Cartn_y'},
             $acceptor_atom->{'Cartn_z'} ] ] );
 
-    if( ( $theta >= pi() / 2 ) && ( $theta <=  3 * pi() / 2 ) ) {
+    if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
         return
             ( -1 ) * $h_epsilon *
             ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12 -
@@ -447,7 +447,7 @@ sub composite
         my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
         my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
         my $cutoff_function =
-            cos( ( pi() * ( $r - $cutoff_start * $sigma ) ) /
+            cos( ( $PI * ( $r - $cutoff_start * $sigma ) ) /
                  ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
 
         if( $decompose ) {

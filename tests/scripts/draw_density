@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use lib "../../lib";
-use LinearAlgebra qw( pi );
+use Constants qw( $PI );
 use PDBxParser qw( obtain_atom_site
                    filter_atoms
                    select_atom_data
@@ -15,7 +15,7 @@ use SidechainModels qw( rotation_only );
 my ( $potential, $cutoff, $residue_id, $small_angle, $pdbx_file ) = @ARGV;
 
 my $atom_site = obtain_atom_site( $pdbx_file );
-$small_angle =~ s/pi/pi\(\)/g;
+$small_angle =~ s/pi/\$PI/g;
 
 # In Jmol, generates pseudo-atoms which represent positions of atom
 # after rotation along dihedral angle.

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use LinearAlgebra qw( pi );
+use Constants qw( $PI );
 use Measure qw( all_dihedral );
 
 my ( $pdbx_dump_file ) = @ARGV;
@@ -25,6 +25,6 @@ for my $residue_unique_key ( keys %{ $dihedral_angles } ) {
         print( join( " ", split( ",", $residue_unique_key ), $angle ), " " );
         printf( "%.1f\n",
                 $dihedral_angles->{$residue_unique_key}{$angle}{'value'}
-              * 180 / pi() );
+              * 180 / $PI );
     }
 }

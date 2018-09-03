@@ -8,7 +8,7 @@ our @EXPORT_OK = qw( sample_angles );
 
 use POSIX;
 
-use LinearAlgebra qw( pi );
+use Constants qw( $PI );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -35,9 +35,9 @@ sub sample_angles
 
     # Devides full circle (2*pi) into even intervals by $small_angle value.
     $small_angle = # Adjusts angle so, it could be devided evenly.
-        2 * pi() / floor( 2 * pi() / $small_angle );
+        2 * $PI / floor( 2 * $PI / $small_angle );
     my @small_angles =
-        map { $_ * $small_angle } 0..( floor( 2 * pi() / $small_angle ) - 1 );
+        map { $_ * $small_angle } 0..( floor( 2 * $PI / $small_angle ) - 1 );
 
     # Iterates around the circle and adds evenly spaced angles, if they are
     # inside intervals ($angle_ranges).

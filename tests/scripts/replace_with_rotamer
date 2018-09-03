@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use LinearAlgebra qw( pi );
+use Constants qw( $PI );
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( replace_with_rotamer );
 
@@ -28,7 +28,7 @@ my %angle_values = ( map { $_->[0] => $_->[1] }
                      map { [ split( " ", $_ ) ] }
                      split( "&", $angle_values ) );
 for my $angle_value ( keys %angle_values ) {
-    $angle_values{$angle_value} =~ s/pi/pi()/g;
+    $angle_values{$angle_value} =~ s/pi/\$PI/g;
     $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
 }
 

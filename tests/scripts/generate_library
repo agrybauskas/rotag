@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use LinearAlgebra qw( pi );
+use Constants qw( $PI );
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_library
                     replace_with_rotamer);
@@ -28,7 +28,7 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-$small_angle =~ s/pi/pi\(\)/g;
+$small_angle =~ s/pi/\$PI/g;
 
 my $rotamer_library =
     generate_library( { "atom_site" => $atom_site,

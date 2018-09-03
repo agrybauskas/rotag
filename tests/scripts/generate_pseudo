@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use LinearAlgebra qw( pi );
+use Constants qw( $PI );
 use PseudoAtoms qw( generate_pseudo );
 use Sampling qw( sample_angles );
 use PDBxParser qw( to_pdbx );
@@ -39,12 +39,12 @@ my %num_angle_values; # Numeric angle values.
 for my $dihedral_angle ( sort keys %angle_ranges ) {
     my $min_angle = $angle_ranges{"$dihedral_angle"}[0];
     my $max_angle = $angle_ranges{"$dihedral_angle"}[1];
-    $min_angle =~ s/pi/pi()/g;
-    $max_angle =~ s/pi/pi()/g;
+    $min_angle =~ s/pi/\$PI/g;
+    $max_angle =~ s/pi/\$PI/g;
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
     my $small_angle = # Change of angle in each rotation step.
-        2 * pi() / $num_of_angles{$dihedral_angle};
+        2 * $PI / $num_of_angles{$dihedral_angle};
     $num_angle_values{"$dihedral_angle"} =
         sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle );
 }
