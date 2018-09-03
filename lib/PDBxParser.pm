@@ -11,12 +11,19 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_pdbx_loop
                      to_pdbx );
 
+use List::MoreUtils qw( any );
+
+our $VERSION = '1.0.0';
+
 # --------------------------------- PDBx parser ------------------------------- #
 
 #
-# Extracts, filters and selects atom entries of PDBx files. 'Attribute'
-# coresponds to atom characteristics, such as atom or residue id, amino acid type
-# and etc. Term 'attribute' is used in PDBx documentation.
+# Obtains pdbx lines for a specified items.
+# Input:
+#     $pdbx_file - PDBx file path;
+#     $items - list of desired items.
+# Output:
+#     %pdbx_line_data - hash of item values.
 #
 
 sub obtain_pdbx_line
@@ -25,7 +32,7 @@ sub obtain_pdbx_line
 
     my %pdbx_line_data;
     my %current_line_data;
-    my $item_regexp = join( '|', @{ $items } );
+    my $item_regexp = join q{|}, @{ $items };
 
     local $/ = '';
     local @ARGV = ( $pdbx_file );
@@ -36,13 +43,22 @@ sub obtain_pdbx_line
     }
 
     for my $key ( sort { $a cmp $b } keys %current_line_data ) {
-        my ( $category, $attribute ) = split( "\\.", $key );
+        my ( $category, $attribute ) = split '\\.', $key;
         $pdbx_line_data{$category}{$attribute} =
             $current_line_data{$key};
     }
 
     return \%pdbx_line_data;
 }
+
+#
+# Obtains pdbx loops for a specified categories.
+# Input:
+#     $pdbx_file - PDBx file path;
+#     $categories - list of specified categories.
+# Output:
+#     %pdbx_loop_data - data structure for loop data.
+#
 
 sub obtain_pdbx_loop
 {
@@ -52,24 +68,24 @@ sub obtain_pdbx_loop
     my @attributes;
     my @data; # Will be used for storing atom data temporarily.
 
-    my $category_regexp = join( '|', @{ $categories } );
+    my $category_regexp = join q{|}, @{ $categories };
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
     local @ARGV = ( $pdbx_file );
     while( <> ) {
-        if( /($category_regexp)\.(.+)\n$/x ) {
-            if( ! @categories || $categories[$#categories] ne $1 ) {
-                push( @categories, $1 );
-                push( @attributes, [] );
-                push( @data, [] );
+        if( /($category_regexp)[.](.+)\n$/x ) {
+            if( ! @categories || $categories[-1] ne $1 ) {
+                push @categories, $1;
+                push @attributes, [];
+                push @data, [];
             }
-            push( @{ $attributes[$#attributes] }, split( ' ', $2 ) );
+            push @{ $attributes[-1] }, split q{ }, $2;
             $is_reading_lines = 1;
         } elsif( $is_reading_lines == 1 && /^_|loop_|#/ ) {
             if( $#categories eq $#{ $categories } ) { last; }
             $is_reading_lines = 0;
         } elsif( $is_reading_lines == 1 ) {
-            push( @{ $data[$#data] }, split( ' ', $_ ) );
+            push @{ $data[-1] }, split q{ }, $_;
         }
     }
 
@@ -109,23 +125,40 @@ sub obtain_atom_site
     my @atom_data_row;
     my %atom_data_row;
 
-    my $attribute_count = scalar( @atom_attributes );
-    my $atom_data_count = scalar( @atom_data );
+    my $attribute_count = scalar @atom_attributes;
+    my $atom_data_count = scalar @atom_data;
 
     for( my $pos = 0; $pos < $atom_data_count - 1; $pos += $attribute_count ) {
         @atom_data_row =
             @{ atom_data[$pos..$pos+$attribute_count-1] };
         %atom_data_row = ();
         for( my $col = 0; $col <= $#atom_data_row; $col++ ) {
-            $atom_data_row{$atom_attributes[$col]} =
-                $atom_data_row[$col];
+            $atom_data_row{$atom_attributes[$col]} = $atom_data_row[$col];
         }
-        $atom_site{$atom_data_row[1]} =
-            { %atom_data_row };
+        $atom_site{$atom_data_row[1]} = { %atom_data_row };
     }
 
     return \%atom_site;
 }
+
+#
+# Filters atom data structure according to specified attributes with include,
+# exclude options.
+# Input:
+#     $args->{'atom_site'} - atom data structure;
+#     $args->{'include'} - attribute selector that includes atom data structure.
+#     Ex.:
+#         { 'label_atom_id' => [ 'N', 'CA', 'CB', 'CD' ],
+#           'label_comp_id' => [ 'A' ] };
+#     $args->{'exclude'} - attribute selector that excludes atom data structure.
+#     Selector data structure is the same as $args->{include};
+#     $args->{'is_list'} - makes array instead of array of arrays;
+#     $args->{'data_with_id'} - takes atom data structure and treats it as a
+#     value and atom id - as a key;
+#     $args->{'group_id'} - assigns the value of described group id.
+# Output:
+#     \%filtered_atoms- filtered atom data structure;
+#
 
 sub filter
 {
@@ -138,7 +171,7 @@ sub filter
     my $data_with_id = $args->{'data_with_id'};
     my $group_id = $args->{'group_id'};
 
-    die( 'No PDBx data structure was loaded ' ) if ! defined $atom_site;
+    if( ! defined $atom_site ) { die 'No PDBx data structure was loaded '; }
 
     # Iterates through each atom in $atom_site and checks if atom specifiers
     # match up.
@@ -150,14 +183,14 @@ sub filter
             my $match_counter = 0; # Tracks if all matches occured.
             for my $attribute ( keys %{ $include } ) {
                 if( exists $atom_site->{$atom_id}{$attribute}
-                 && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
+                 && any { $atom_site->{$atom_id}{$attribute} eq $_ }
                     @{ $include->{$attribute} } ) {
                     $match_counter += 1;
                 } else {
                     last; # Terminates early if no match is found in specifier.
                 }
             }
-            if( $match_counter == scalar( keys %{ $include } ) ) {
+            if( $match_counter == scalar keys %{ $include } ) {
                 $filtered_atoms{$atom_id} = $atom_site->{$atom_id};
             }
         }
@@ -170,7 +203,7 @@ sub filter
         for my $atom_id ( keys %filtered_atoms ) {
             for my $attribute ( keys %{ $exclude } ) {
                 if( exists $atom_site->{$atom_id}{$attribute}
-                 && grep { $atom_site->{$atom_id}{$attribute} eq $_ }
+                 && any { $atom_site->{$atom_id}{$attribute} eq $_ }
                     @{ $exclude->{$attribute} } ) {
                     delete $filtered_atoms{$atom_id};
                     last;
@@ -205,11 +238,11 @@ sub filter
         } else {
             for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
                 if( defined $is_list && $is_list ) {
-                    push( @atom_data,
-                          map { $filtered_atoms{$atom_id}{$_} } @{ $data } );
+                    push @atom_data,
+                         map { $filtered_atoms{$atom_id}{$_} } @{ $data };
                 } else {
-                    push( @atom_data,
-                          [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ] );
+                    push @atom_data,
+                         [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ];
                 }
             }
             return \@atom_data;
@@ -219,6 +252,13 @@ sub filter
     return \%filtered_atoms;
 }
 
+#
+# Creates PDBx entry.
+# Input:
+#     ;
+# Output:
+#
+
 sub create_pdbx_entry
 {
     my ( $args ) = @_;
@@ -227,11 +267,11 @@ sub create_pdbx_entry
     my $type_symbol = $args->{'type_symbol'};
     my $label_atom_id = $args->{'label_atom_id'};
     my $label_alt_id = $args->{'label_alt_id'};
-    $label_alt_id //= '.';
+    $label_alt_id //= q{.};
     my $label_comp_id = $args->{'label_comp_id'};
     my $label_asym_id = $args->{'label_asym_id'};
     my $label_entity_id = $args->{'label_entity_id'};
-    $label_entity_id //= '?';
+    $label_entity_id //= q{?};
     my $label_seq_id = $args->{'label_seq_id'};
     my $cartn_x = $args->{'cartn_x'};
     my $cartn_y = $args->{'cartn_y'};
@@ -256,7 +296,17 @@ sub create_pdbx_entry
 # --------------------------- Data structure to STDOUT ------------------------ #
 
 #
-# Converts special atom site data structure back to PDBx, XYZ (for Jmol) and etc.
+# Converts atom site data structure to PDBx.
+# Input:
+#     $args->{data_name} - data name of the PDBx;
+#     $args->{pdbx_lines} - data structure of PDBx lines;
+#     $args->{pdbx_loops} - data structure of pdbx_loops;
+#     $args->{atom_site} -;
+#     $args->{atom_attributes} -;
+#     $args->{add_atom_attributes} -;
+#     $args->{fh} - file handler.
+# Output:
+#     PDBx STDOUT.
 #
 
 sub to_pdbx
@@ -273,15 +323,15 @@ sub to_pdbx
     $data_name //= 'testing';
     $fh //= \*STDOUT;
 
-    print $fh "data_$data_name\n#\n";
+    print {$fh} "data_$data_name\n#\n";
 
     # Prints out pdbx lines if they are present.
     if( defined $pdbx_lines ) {
     for my $category  ( sort { $a cmp $b } keys %{ $pdbx_lines } ) {
     for my $attribute ( sort { $a cmp $b } keys %{ $pdbx_lines->{$category} } ) {
-        printf $fh "%s.%s %s\n", $category, $attribute,
+        printf {$fh} "%s.%s %s\n", $category, $attribute,
                $pdbx_lines->{$category}{$attribute};
-    } print $fh "#\n"; } }
+    } print {$fh} "#\n"; } }
 
     # Prints out atom site structure if they are present.
     if( defined $atom_site ) {
@@ -298,44 +348,45 @@ sub to_pdbx
                                'Cartn_y',
                                'Cartn_z' ];
 
-        push( @{ $atom_attributes }, @{ $add_atom_attributes } )
-            if defined $add_atom_attributes;
+        if( defined $add_atom_attributes ) {
+            push @{ $atom_attributes }, @{ $add_atom_attributes };
+        }
 
-        print $fh "loop_\n";
+        print {$fh} "loop_\n";
 
         for my $attribute ( @{ $atom_attributes } ) {
-            $attribute eq $atom_attributes->[$#{ $atom_attributes }] ?
-                print $fh "_atom_site.$attribute":
-                print $fh "_atom_site.$attribute\n";
+            $attribute eq $atom_attributes->[-1] ?
+                print {$fh} "_atom_site.$attribute":
+                print {$fh} "_atom_site.$attribute\n";
         }
 
         for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
         for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
             if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
                 if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-                    print $fh ' ', $atom_site->{$id}{$atom_attributes->[$i]};
+                    print {$fh} q{ }, $atom_site->{$id}{$atom_attributes->[$i]};
                 } else {
-                    print $fh ' ?';
+                    print {$fh} q{ ?};
                 }
 
             } else {
                 if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-                    print $fh "\n", $atom_site->{$id}{$atom_attributes->[$i]};
+                    print {$fh} "\n", $atom_site->{$id}{$atom_attributes->[$i]};
                 } else {
-                    print $fh "\n";
+                    print {$fh} "\n";
                 }
             }
         } }
-        print $fh "\n#\n";
+        print {$fh} "\n#\n";
     }
 
     # Prints out pdbx loops if they are present.
     if( defined $pdbx_loops ) {
         for my $category ( sort keys %{ $pdbx_loops } ) {
-            print $fh "loop_\n";
+            print {$fh} "loop_\n";
 
             foreach( @{ $pdbx_loops->{$category}{'attributes'} } ) {
-                print $fh "$category.$_\n";
+                print {$fh} "$category.$_\n";
             }
             my $attribute_array_length =
                 $#{ $pdbx_loops->{$category}{'attributes'} };
@@ -344,11 +395,11 @@ sub to_pdbx
             for( my $i = 0;
                  $i <= $data_array_length;
                  $i += $attribute_array_length + 1 ){
-                print $fh join( ' ', @{ $pdbx_loops->{$category}{'data'} }
-                                [$i..$i+$attribute_array_length] ), "\n" ;
+                print {$fh} join( q{ }, @{ $pdbx_loops->{$category}{'data'} }
+                                  [$i..$i+$attribute_array_length] ), "\n" ;
             }
 
-            print $fh "#\n";
+            print {$fh} "#\n";
         }
     }
 
