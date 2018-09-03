@@ -211,8 +211,8 @@ sub generate_rotamer
 
             my %angles;
             for my $angle_name ( keys %{ $rotatable_bonds->{$atom_id} } ) {
-                if( exists $angle_values->{"$residue_unique_key"}{$angle_name}
-                 && defined $angle_values->{"$residue_unique_key"}{$angle_name} ) {
+                if( exists $angle_values->{"$residue_unique_key"}{$angle_name} &&
+                    defined $angle_values->{"$residue_unique_key"}{$angle_name}){
                     $angles{$angle_name} =
                         [ $angle_values->{"$residue_unique_key"}{$angle_name} ];
                 } else {
@@ -250,8 +250,7 @@ sub generate_rotamer
         for my $atom_id ( keys %rotamer_atom_site ) {
             my $origin_id = $rotamer_atom_site{$atom_id}{'origin_atom_id'};
             $rotamer_atom_site{$atom_id}{'id'} = $origin_id;
-            $rotamer_atom_site_old_ids{$origin_id} =
-                $rotamer_atom_site{$atom_id};
+            $rotamer_atom_site_old_ids{$origin_id}= $rotamer_atom_site{$atom_id};
         }
         return \%rotamer_atom_site_old_ids;
     }
@@ -490,8 +489,8 @@ sub calc_favourable_angles
         for my $atom_id ( @next_atom_ids ) {
             # Adds more angle combinations if there are more than one
             # rotatable bonds.
-            if( scalar( @{ $allowed_angles[0] } )
-              < scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
+            if( scalar( @{ $allowed_angles[0] } ) <
+                scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
                 @allowed_angles =
                     @{ permutation( 2, [], [ \@allowed_angles,
                                              \@sampled_angles ], [] ) };
@@ -500,11 +499,9 @@ sub calc_favourable_angles
                                              \@zero_energies ], [] ) };
                 # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
                 @allowed_angles =
-                    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
-                    @allowed_angles;
+                    map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
                 @allowed_energies =
-                    map { [ $_->[0][0] ] }
-                    @allowed_energies;
+                    map { [ $_->[0][0] ] } @allowed_energies;
             }
 
             # Marks visited atoms.
@@ -539,8 +536,7 @@ sub calc_favourable_angles
         @next_atom_ids = (); # Resets value for the new ones to be
                              # appended.
         for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-            if( ( ! any { $neighbour_atom_id eq $_ }
-                         @visited_atom_ids ) ) {
+            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) ) {
                 push @next_atom_ids, $neighbour_atom_id;
             }
         }
@@ -571,8 +567,7 @@ sub calc_favourable_angle
         my $angles = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
         my %angles =
-            map { ( "chi$_" => [ $angles->[$_] ] ) }
-            0..$#{ $angles };
+            map { ( "chi$_" => [ $angles->[$_] ] ) } 0..$#{ $angles };
 
         my $pseudo_atom_site =
             generate_pseudo( $atom_site,
@@ -587,10 +582,10 @@ sub calc_favourable_angle
         foreach my $interaction_id ( keys %{ $interaction_site } ) {
             if( ( ! is_neighbour( $atom_site,
                                   $pseudo_origin_id,
-                                  $interaction_id ) )
-                && ( ! is_second_neighbour( $atom_site,
-                                            $pseudo_origin_id,
-                                            $interaction_id ) ) ) {
+                                  $interaction_id ) ) &&
+                ( ! is_second_neighbour( $atom_site,
+                                         $pseudo_origin_id,
+                                         $interaction_id ) ) ) {
                 $potential_energy =
                     $potential_function->(
                         $pseudo_atom_site->{$pseudo_atom_id},
@@ -703,8 +698,7 @@ sub calc_full_atom_energy
             sort keys %{ filter( { 'atom_site' => \%rotamer_site,
                                    'exclude' =>
                                    { 'label_atom_id' => \@MAINCHAIN_NAMES } } ) };
-        my %rotamer_interaction_site =
-            ( %rotamer_site, %{ $interaction_site } );
+        my %rotamer_interaction_site = ( %rotamer_site, %{ $interaction_site } );
         $parameters->{'atom_site'} = \%rotamer_interaction_site;
 
         my $rotamer_energy_sum = 0;
@@ -840,14 +834,14 @@ sub add_hydrogens
         my %hydrogen_coord = map { $_ => undef } @missing_hydrogens;
 
         if( $hybridization eq 'sp3' ) {
-            add_hydrogens_sp3( $atom_site, $atom_id,
-                               \%hydrogen_coord, \@missing_hydrogens, $options );
+            add_hydrogens_sp3( $atom_site, $atom_id, \%hydrogen_coord,
+                               \@missing_hydrogens, $options );
         } elsif( $hybridization eq 'sp2' ) {
-            add_hydrogens_sp2( $atom_site, $atom_id,
-                               \%hydrogen_coord, \@missing_hydrogens, $options );
+            add_hydrogens_sp2( $atom_site, $atom_id, \%hydrogen_coord,
+                               \@missing_hydrogens, $options );
         } elsif( $hybridization eq 'sp' ) {
-            add_hydrogens_sp( $atom_site, $atom_id,
-                              \%hydrogen_coord, \@missing_hydrogens, $options );
+            add_hydrogens_sp( $atom_site, $atom_id, \%hydrogen_coord,
+                              \@missing_hydrogens, $options );
         }
 
         # Each coordinate of atoms is transformed by transformation
@@ -1024,8 +1018,8 @@ sub add_hydrogens_sp3
                        [ $bond_length *
                          cos $hydrogen_angle ],
                        [ 1 ] ] ] ) };
-    } elsif( scalar( @connection_ids ) == 2
-          && ! ( $add_only_clear_positions && $lone_pair_count > 0 ) ) {
+    } elsif( scalar( @connection_ids ) == 2 &&
+           ! ( $add_only_clear_positions && $lone_pair_count > 0 ) ) {
         # Calculates current angle between atoms that are connected to
         # target atom.
         my ( $up_atom_coord,
@@ -1117,8 +1111,7 @@ sub add_hydrogens_sp3
         # structures.
         my $bond_angle;
         if( $lone_pair_count > 0 ) {
-            $bond_angle =
-                ( 109.5 - $lone_pair_count * 2.5 ) * $PI / 180;
+            $bond_angle = ( 109.5 - $lone_pair_count * 2.5 ) * $PI / 180;
         } else {
             $bond_angle = 109.5 * $PI / 180;
         }
@@ -1139,14 +1132,14 @@ sub add_hydrogens_sp3
             ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
                 @{ mult_matrix_product(
                        [ $transf_matrix,
-                         [ [ $bond_length
-                             * cos( 2 * $PI / 3 )
-                             * sin $bond_angle ],
-                           [ $bond_length
-                             * sin( 2 * $PI / 3 )
-                             * sin $bond_angle ],
-                           [ $bond_length
-                             * cos $bond_angle ],
+                         [ [ $bond_length *
+                             cos( 2 * $PI / 3 ) *
+                             sin $bond_angle ],
+                           [ $bond_length *
+                             sin( 2 * $PI / 3 ) *
+                             sin $bond_angle ],
+                           [ $bond_length *
+                             cos $bond_angle ],
                            [ 1 ] ] ] ) };
             shift @{ $missing_hydrogens };
         }
@@ -1187,8 +1180,8 @@ sub add_hydrogens_sp2
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $ATOMS{$atom_type}{'covalent_radius'}{'length'}[1]
-      + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
+        $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
@@ -1228,8 +1221,7 @@ sub add_hydrogens_sp2
         my $bond_angle =
             ( 2 * $PI - bond_angle( [ $up_atom_coord,
                                        $mid_atom_coord,
-                                       $left_atom_coord ] ) )
-            / 2;
+                                       $left_atom_coord ] ) ) / 2;
 
         # Hydrogen is placed by placing hydrogen colinearly and then
         # rotating according to bond angle.
@@ -1262,7 +1254,7 @@ sub add_hydrogens_sp2
         my @second_neighbours =
             grep { ! /$atom_id/smx }
             map { @{ $reference_atom_site->{$_}{'connections'} } }
-            @connection_ids;
+                @connection_ids;
 
         for my $second_neighbour ( @second_neighbours ) {
             my $second_hybridization =
@@ -1289,14 +1281,14 @@ sub add_hydrogens_sp2
             ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
                 @{ mult_matrix_product(
                        [ $transf_matrix,
-                         [ [ $bond_length
-                             * cos( -0.5 * $PI )
-                             * sin( 120 * $PI / 180 ) ],
-                           [ $bond_length
-                             * sin( -0.5 * $PI )
-                             * sin( 120 * $PI / 180 ) ],
-                           [ $bond_length
-                             * cos( 120 * $PI / 180 ) ],
+                         [ [ $bond_length *
+                             cos( -0.5 * $PI ) *
+                             sin( 120 * $PI / 180 ) ],
+                           [ $bond_length *
+                             sin( -0.5 * $PI ) *
+                             sin( 120 * $PI / 180 ) ],
+                           [ $bond_length *
+                             cos( 120 * $PI / 180 ) ],
                            [ 1 ] ] ] ) };
             shift @{ $missing_hydrogens };
         }
@@ -1305,14 +1297,14 @@ sub add_hydrogens_sp2
             ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
                 @{ mult_matrix_product(
                        [ $transf_matrix,
-                         [ [ $bond_length
-                             * cos( 0.5 * $PI )
-                             * sin( 120 * $PI / 180 ) ],
-                           [ $bond_length
-                             * sin( 0.5 * $PI )
-                             * sin( 120 * $PI / 180 ) ],
-                           [ $bond_length
-                             * cos( 120 * $PI / 180 ) ],
+                         [ [ $bond_length *
+                             cos( 0.5 * $PI ) *
+                             sin( 120 * $PI / 180 ) ],
+                           [ $bond_length *
+                             sin( 0.5 * $PI ) *
+                             sin( 120 * $PI / 180 ) ],
+                           [ $bond_length *
+                             cos( 120 * $PI / 180 ) ],
                            [ 1 ] ] ] ) };
         }
     }
@@ -1331,8 +1323,8 @@ sub add_hydrogens_sp
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $ATOMS{$atom_type}{'covalent_radius'}{'length'}[1]
-      + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
+        $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
