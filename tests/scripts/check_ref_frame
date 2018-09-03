@@ -42,13 +42,13 @@ my @side_atom_coord = ( $atom_data->[0][0],
                         $atom_data->[0][1],
                         $atom_data->[0][2] );
 
-my $local_ref_frame = create_ref_frame( @mid_atom_coord,
-                                        @up_atom_coord,
-                                        @side_atom_coord );
+my $local_ref_frame = create_ref_frame( \@mid_atom_coord,
+                                        \@up_atom_coord,
+                                        \@side_atom_coord );
 
-my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( @mid_atom_coord,
-                                                     @up_atom_coord,
-                                                     @side_atom_coord ) };
+my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( \@mid_atom_coord,
+                                                     \@up_atom_coord,
+                                                     \@side_atom_coord ) };
 
 # Transforms given atom coordinates and prepares data for Jmol.
 open( my $fh, "<", $pdbx_file );

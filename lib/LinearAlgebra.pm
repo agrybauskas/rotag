@@ -66,46 +66,44 @@ sub epsilon
 # Creates local reference frame for any three given atoms positions in cartesian
 # coordinate system.
 # Input:
-#     ${mid,up,side}_atom_{x,y,z} - Cartesian coordinates of three atoms.
+#     ${mid,up,side}_atom_coord - Cartesian coordinates of three atoms.
 # Output:
 #     @local_ref_frame - Cartesian coordinates of points on x, y and z axis.
 #
 
 sub create_ref_frame
 {
-    my ( $mid_atom_x,  $mid_atom_y,  $mid_atom_z,
-         $up_atom_x,   $up_atom_y,   $up_atom_z,
-         $side_atom_x, $side_atom_y, $side_atom_z ) = @_;
+    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) = @_;
 
     my @local_ref_frame;
     my $vector_length;
 
     # Let local z-axis be colinear to bond between mid and up atoms.
-    $local_ref_frame[2][0] = $up_atom_x - $mid_atom_x;
-    $local_ref_frame[2][1] = $up_atom_y - $mid_atom_y;
-    $local_ref_frame[2][2] = $up_atom_z - $mid_atom_z;
+    $local_ref_frame[2][0] = $up_atom_coord->[0] - $mid_atom_coord->[0];
+    $local_ref_frame[2][1] = $up_atom_coord->[1] - $mid_atom_coord->[1];
+    $local_ref_frame[2][2] = $up_atom_coord->[2] - $mid_atom_coord->[2];
 
     # Let local x-axis be perpendicular to mid-up and mid-side bonds.
     $local_ref_frame[0][0] =
-        ( $side_atom_y - $mid_atom_y ) * $local_ref_frame[2][2]
-      - ( $side_atom_z - $mid_atom_z ) * $local_ref_frame[2][1];
+        ( $side_atom_coord->[1] - $mid_atom_coord->[1] ) * $local_ref_frame[2][2] -
+        ( $side_atom_coord->[2] - $mid_atom_coord->[2] ) * $local_ref_frame[2][1];
     $local_ref_frame[0][1] =
-      - ( $side_atom_x - $mid_atom_x ) * $local_ref_frame[2][2]
-      + ( $side_atom_z - $mid_atom_z ) * $local_ref_frame[2][0];
+      - ( $side_atom_coord->[0] - $mid_atom_coord->[0] ) * $local_ref_frame[2][2] +
+        ( $side_atom_coord->[2] - $mid_atom_coord->[2] ) * $local_ref_frame[2][0];
     $local_ref_frame[0][2] =
-        ( $side_atom_x - $mid_atom_x ) * $local_ref_frame[2][1]
-      - ( $side_atom_y - $mid_atom_y ) * $local_ref_frame[2][0];
+        ( $side_atom_coord->[0] - $mid_atom_coord->[0] ) * $local_ref_frame[2][1] -
+        ( $side_atom_coord->[1] - $mid_atom_coord->[1] ) * $local_ref_frame[2][0];
 
     # Let local y-axis be in the same plane as mid-up and mid-side bonds.
     $local_ref_frame[1][0] =
-        $local_ref_frame[2][1] * $local_ref_frame[0][2]
-      - $local_ref_frame[2][2] * $local_ref_frame[0][1];
+        $local_ref_frame[2][1] * $local_ref_frame[0][2] -
+        $local_ref_frame[2][2] * $local_ref_frame[0][1];
     $local_ref_frame[1][1] =
-      - $local_ref_frame[2][0] * $local_ref_frame[0][2]
-      + $local_ref_frame[2][2] * $local_ref_frame[0][0];
+      - $local_ref_frame[2][0] * $local_ref_frame[0][2] +
+        $local_ref_frame[2][2] * $local_ref_frame[0][0];
     $local_ref_frame[1][2] =
-        $local_ref_frame[2][0] * $local_ref_frame[0][1]
-      - $local_ref_frame[2][1] * $local_ref_frame[0][0];
+        $local_ref_frame[2][0] * $local_ref_frame[0][1] -
+        $local_ref_frame[2][1] * $local_ref_frame[0][0];
 
     # Normalizes all vectors to unit vectors.
     $vector_length =
@@ -136,15 +134,15 @@ sub create_ref_frame
 #
 # Function calculates Euler rotational angles (alpha, beta, gamma) that are used
 # to transform global reference frame to chosen one.
-# Input  (1 arg): array of three atom coordinates in x, y, z form.
-# Output (3 arg): euler angles (alpha, beta, gamma) in radians.
+# Input:
+#     ${mid,up,side}_atom_coord - Cartesian coordinates of three atoms.
+# Output:
+#     euler angles (alpha, beta, gamma) in radians.
 #
 
 sub find_euler_angles
 {
-    my ( $mid_atom_x,  $mid_atom_y,  $mid_atom_z,
-         $up_atom_x,   $up_atom_y,   $up_atom_z,
-         $side_atom_x, $side_atom_y, $side_atom_z ) = @_;
+    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) = @_;
 
     my $alpha_rad;
     my $beta_rad;
@@ -153,21 +151,19 @@ sub find_euler_angles
     my $z_axis_in_xy_plane;
 
     my $local_ref_frame =
-        create_ref_frame( $mid_atom_x,  $mid_atom_y,   $mid_atom_z,
-                          $up_atom_x,   $up_atom_y,    $up_atom_z,
-                          $side_atom_x, $side_atom_y,  $side_atom_z );
+        create_ref_frame( $mid_atom_coord, $up_atom_coord, $side_atom_coord );
 
     # Projects local z-axis to global xy-plane.
     $z_axis_in_xy_plane =
-        sqrt( $local_ref_frame->[2][0] * $local_ref_frame->[2][0]
-            + $local_ref_frame->[2][1] * $local_ref_frame->[2][1] );
+        sqrt( $local_ref_frame->[2][0] * $local_ref_frame->[2][0] +
+              $local_ref_frame->[2][1] * $local_ref_frame->[2][1] );
 
     if( $z_axis_in_xy_plane > epsilon() ) {
         $alpha_rad =
-            atan2  $local_ref_frame->[1][0] * $local_ref_frame->[2][1]
-                 - $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
-                   $local_ref_frame->[0][0] * $local_ref_frame->[2][1]
-                 - $local_ref_frame->[0][1] * $local_ref_frame->[2][0];
+            atan2  $local_ref_frame->[1][0] * $local_ref_frame->[2][1] -
+                   $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
+                   $local_ref_frame->[0][0] * $local_ref_frame->[2][1] -
+                   $local_ref_frame->[0][1] * $local_ref_frame->[2][0];
         $beta_rad = atan2 $z_axis_in_xy_plane, $local_ref_frame->[2][2];
         $gamma_rad =
             - atan2 - $local_ref_frame->[2][0], $local_ref_frame->[2][1];
@@ -202,9 +198,9 @@ sub switch_ref_frame
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
     my ( $alpha_rad, $beta_rad, $gamma_rad ) =
-        @{ find_euler_angles( @{ $mid_atom_coord },
-                              @{ $up_atom_coord },
-                              @{ $side_atom_coord } ) };
+        @{ find_euler_angles( $mid_atom_coord,
+                              $up_atom_coord,
+                              $side_atom_coord ) };
 
     # Depending on the option switch_to_local,
     my $ref_frame_switch;
