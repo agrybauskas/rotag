@@ -10,8 +10,11 @@ use POSIX;
 
 use LinearAlgebra qw( pi );
 
+our $VERSION = '1.0.0';
+
 # --------------------------------- Sampling ---------------------------------- #
 
+#
 # Produces angle values that are separated by even intervals.
 # Input:
 #     $angle_ranges - boundary between which angles can be sampled.
@@ -44,10 +47,10 @@ sub sample_angles
             $min_angle = $angle_range->[0];
             $max_angle = $angle_range->[1];
             if( $angle >= $min_angle && $angle <= $max_angle ) {
-                push( @angles, $angle );
+                push @angles, $angle;
                 last;
             } elsif( $min_angle == $max_angle ) {
-                push( @angles, $min_angle );
+                push @angles, $min_angle;
             }
         }
     }
