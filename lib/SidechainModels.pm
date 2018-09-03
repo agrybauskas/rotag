@@ -15,6 +15,8 @@ use LinearAlgebra qw( mult_matrix_product
 use BondProperties qw( rotatable_bonds );
 use PDBxParser qw( filter );
 
+our $VERSION = '1.0.0';
+
 # ----------------------- Idealistic sidechain models ------------------------- #
 
 #
@@ -34,18 +36,18 @@ sub rotation_only
 
     # Determines all residue ids present in atom site.
     my @residue_unique_keys =
-        uniq( map { join( ',', @{$_} ) }
+        uniq map { join q{,}, @{$_} }
               @{ filter( { 'atom_site' => $atom_site,
                            'data' => [ 'label_seq_id',
                                        'label_asym_id',
                                        'label_entity_id',
-                                       'label_alt_id' ] } ) } );
+                                       'label_alt_id' ] } ) };
 
     # Iterates through target residues and their atom ids and assigns
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_unique_key ( @residue_unique_keys ) {
         my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-            split( ',', $residue_unique_key );
+            split /,/sxm, $residue_unique_key;
         my $residue_site =
             filter( { 'atom_site' => \%atom_site,
                       'include' =>
@@ -59,7 +61,7 @@ sub rotation_only
         for my $atom_id ( keys %{ $residue_site }  ) {
             my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
                                $atom_site{"$atom_id"}{'Cartn_y'},
-                               $atom_site{"$atom_id"}{'Cartn_z'} );
+                               $atom_site{"$atom_id"}{'Cartn_z'}, );
 
             if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
@@ -106,11 +108,11 @@ sub rotation_only
 
             # Creates and appends matrices to a list of matrices that later
             # will be multiplied.
-            push( @transf_matrices,
-                  @{ bond_torsion( $mid_atom_coord,
-                                   $up_atom_coord,
-                                   $side_atom_coord,
-                                   $angle_name ) } );
+            push @transf_matrices,
+                 @{ bond_torsion( $mid_atom_coord,
+                                  $up_atom_coord,
+                                  $side_atom_coord,
+                                  $angle_name ) };
             }
 
             $atom_site->{$atom_id}{'conformation'} =
