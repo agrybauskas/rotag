@@ -16,6 +16,8 @@ use AtomProperties qw( %ATOMS
 use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter );
 
+our $VERSION = '1.0.0';
+
 # -------------------------------- Constants ---------------------------------- #
 
 my %BOND_TYPES = (
@@ -23,231 +25,239 @@ my %BOND_TYPES = (
         'H' => {
             'H' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                        - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] -
+                          $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                        + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] )
+                    2 * ( $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                          $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
             },
             'C' => {
-                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
+                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
             },
             'N' => {
-                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
+                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
             },
             'O' => {
-                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
+                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
             },
             'S' => {
-                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'H'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0]
-            }
+                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+            },
         },
         'C' => {
             'C' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                        - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] -
+                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                        + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] )
+                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
             },
             'N' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
+                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
             },
             'O' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
+                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
             },
             'S' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0]
-            }
+                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+            },
         },
         'N' => {
             'N' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                        - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
+                          $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                        + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] )
+                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                          $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
             },
             'O' => {
-                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
+                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
             },
             'S' => {
-                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0]
-            }
+                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+            },
         },
         'O' => {
             'O' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                        - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
+                          $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                        + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] )
+                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                          $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
             },
             'S' => {
-                'min_length' => $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
-                              - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'O'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[0]
-                              + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0]
-            }
+                'min_length' => $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] -
+                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] +
+                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+            },
         },
         'S' => {
             'S' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                        - $ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                          $ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'S'}{'covalent_radius'}{'length'}->[0]
-                        + $ATOMS{'S'}{'covalent_radius'}{'error'}->[0] )
-            }
-        }
+                    2 * ( $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                          $ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
+            },
+        },
     },
     'double' => {
         'C' => {
             'C' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
-                        - $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] -
+                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
-                        + $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] )
+                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
             },
             'N' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
-                              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[1]
-                              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[1]
-                              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[1]
+                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] -
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] -
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
+                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] +
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
             },
             'O' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
-                              - $ATOMS{'C'}{'covalent_radius'}{'error'}->[1]
-                              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'C'}{'covalent_radius'}{'error'}->[1]
-                              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[1]
-            }
+                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] -
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] +
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+            },
         },
         'N' => {
             'N' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
-                        - $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] -
+                          $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
-                        + $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] )
+                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+                          $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
             },
             'O' => {
-                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
-                              - $ATOMS{'N'}{'covalent_radius'}{'error'}->[1]
-                              - $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
-                              + $ATOMS{'N'}{'covalent_radius'}{'error'}->[1]
-                              + $ATOMS{'O'}{'covalent_radius'}{'error'}->[1]
-            }
+                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] -
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
+                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] +
+                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+            },
         },
         'O' => {
             'O' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
-                        - $ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
+                          $ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[1]
-                        + $ATOMS{'O'}{'covalent_radius'}{'error'}->[1] )
-            }
-        }
+                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
+                          $ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
+            },
+        },
     },
     'triple' => {
         'C' => {
             'C' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[2]
-                        - $ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
+                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[2] -
+                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[2]
-                        + $ATOMS{'C'}{'covalent_radius'}{'error'}->[2] )
-            }
-        }
-    }
+                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[2] +
+                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
+            },
+        },
+    },
 );
 
 # -------------------------- Bond related functions --------------------------- #
+
+#
+# Identifies bond type by checking the bond distance.
+# Input:
+#     ${target,neighbour}_atom - atom data structure (see PDBxParser.pm).
+# Output:
+#     $bond_type - bond type: single, double, tripple.
+#
 
 sub bond_type
 {
@@ -259,36 +269,36 @@ sub bond_type
     # Precalculates squared distance between atom pairs. Delocalized bonds are
     # described by double or triple bond.
     my $squared_distance =
-        ( $neighbour_atom->{'Cartn_x'} - $target_atom->{'Cartn_x'} ) ** 2
-      + ( $neighbour_atom->{'Cartn_y'} - $target_atom->{'Cartn_y'} ) ** 2
-      + ( $neighbour_atom->{'Cartn_z'} - $target_atom->{'Cartn_z'} ) ** 2;
+        ( $neighbour_atom->{'Cartn_x'} - $target_atom->{'Cartn_x'} ) ** 2 +
+        ( $neighbour_atom->{'Cartn_y'} - $target_atom->{'Cartn_y'} ) ** 2 +
+        ( $neighbour_atom->{'Cartn_z'} - $target_atom->{'Cartn_z'} ) ** 2;
 
     for my $bond_type ( keys %BOND_TYPES ) {
         if( exists $BOND_TYPES{$bond_type}
                               {$target_atom_type}
-                              {$neighbour_atom_type}
-         || exists $BOND_TYPES{$bond_type}
+                              {$neighbour_atom_type} ||
+            exists $BOND_TYPES{$bond_type}
                               {$neighbour_atom_type}
                               {$target_atom_type} ) {
             my $bond_length_min = $BOND_TYPES{$bond_type}
                                              {$target_atom_type}
                                              {$neighbour_atom_type}
-                                             {'min_length'}
-                               || $BOND_TYPES{$bond_type}
+                                             {'min_length'} ||
+                                  $BOND_TYPES{$bond_type}
                                              {$neighbour_atom_type}
                                              {$target_atom_type}
                                              {'min_length'};
             my $bond_length_max = $BOND_TYPES{$bond_type}
                                              {$target_atom_type}
                                              {$neighbour_atom_type}
-                                             {'max_length'}
-                               || $BOND_TYPES{$bond_type}
+                                             {'max_length'} ||
+                                  $BOND_TYPES{$bond_type}
                                              {$neighbour_atom_type}
                                              {$target_atom_type}
                                              {'max_length'};
 
-            if( ( $squared_distance >  $bond_length_min**2 )
-             && ( $squared_distance <= $bond_length_max**2 ) ) {
+            if( ( $squared_distance >  $bond_length_min**2 ) &&
+                ( $squared_distance <= $bond_length_max**2 ) ) {
                 return $bond_type;
             }
         }
@@ -296,6 +306,16 @@ sub bond_type
 
     return;
 }
+
+#
+# Identifies hybridization by examining bond types by distances and the
+# hybridizations of the connected atoms.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm).
+# Output:
+#     writes 'sp3', 'sp2' or 'sp' value to 'hybridization' key in atom data
+#     structure.
+#
 
 sub hybridization
 {
@@ -306,9 +326,9 @@ sub hybridization
         # Determines every type of connection.
         my @bond_types;
         for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
-            push( @bond_types,
-                  bond_type( $atom_site->{$atom_id},
-                             $atom_site->{$connection_id} ) );
+            push @bond_types,
+                 bond_type( $atom_site->{$atom_id},
+                            $atom_site->{$connection_id} );
         }
 
         # Depending on connections, assigns hybridization type.
@@ -323,6 +343,24 @@ sub hybridization
 
     return;
 }
+
+#
+# Identifies bonds that can be rotated by torsional angle.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     ${start,next}_atom_id - starting atom id and the next one that is followed
+#     in order to identify the direction of the search for rotatable bonds.
+# Output:
+#     %named_rotatable_bonds - data structure that describes rotatable bonds and
+#     the constituent atom ids of the bond. Ex.:
+#     {
+#       $atom_id_3 => {
+#                       $rotatable_bond_name_1 => [ $atom_id_1, $atom_id_2 ],
+#                       ...
+#                     },
+#       ...
+#     }
+#
 
 sub rotatable_bonds
 {
@@ -363,46 +401,48 @@ sub rotatable_bonds
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
-            if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3'
-                || $atom_site{$atom_id}{'hybridization'} eq 'sp3' ) {
+            if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
+                $atom_site{$atom_id}{'hybridization'} eq 'sp3' ) {
                 # If last visited atom was sp3, then rotatable bonds from
                 # previous atom are copied and the new one is appended.
-                push( @{ $rotatable_bonds{$atom_id} },
-                      [ $parent_atom_id, $atom_id ] );
-                unshift( @{ $rotatable_bonds{$atom_id} },
-                         @{ $rotatable_bonds{$parent_atom_id} } )
-                    if exists $rotatable_bonds{$parent_atom_id};
+                push @{ $rotatable_bonds{$atom_id} },
+                     [ $parent_atom_id, $atom_id ];
+                if( exists $rotatable_bonds{$parent_atom_id} ) {
+                    unshift @{ $rotatable_bonds{$atom_id} },
+                            @{ $rotatable_bonds{$parent_atom_id} };
+                }
             } else {
                 # If last visited atom is sp2 or sp, inherits its rotatable
                 # bonds, because double or triple bonds do not rotate.
-                unshift( @{ $rotatable_bonds{$atom_id} },
-                         @{ $rotatable_bonds{$parent_atom_id} } )
-                    if exists $rotatable_bonds{$parent_atom_id};
+                if( exists $rotatable_bonds{$parent_atom_id} ) {
+                    unshift @{ $rotatable_bonds{$atom_id} },
+                            @{ $rotatable_bonds{$parent_atom_id} };
+                }
             }
 
             # Marks visited atoms.
-            push( @visited_atom_ids, $atom_id );
+            push @visited_atom_ids, $atom_id;
 
             # Marks neighbouring atoms.
-            push( @neighbour_atom_ids,
-                  @{ $atom_site{$atom_id}{'connections'} } );
+            push @neighbour_atom_ids,
+                 @{ $atom_site{$atom_id}{'connections'} };
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
-                $parent_atom_ids{$neighbour_atom_id} = $atom_id
-                    if ( ! grep { $neighbour_atom_id eq $_ }
-                           @visited_atom_ids )
+                if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
                     # HACK: this exception might produce unexpected results.
-                    && ( ! exists $parent_atom_ids{$neighbour_atom_id} );
+                    ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
+                    $parent_atom_ids{$neighbour_atom_id} = $atom_id;
+                }
             }
         }
 
         # Determines next atoms that should be visited.
         @next_atom_ids = (); # Resets value for the new ones to be appended.
         for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-            if( ( ! grep { $neighbour_atom_id eq $_ } @visited_atom_ids )
-                && ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
-                push( @next_atom_ids, $neighbour_atom_id );
+            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
+                push @next_atom_ids, $neighbour_atom_id;
             }
         }
     }
@@ -411,9 +451,9 @@ sub rotatable_bonds
     # which have no rotatable bonds after previous filtering.
     for my $atom_id ( keys %rotatable_bonds ) {
         my $last_bond_idx = $#{ $rotatable_bonds{$atom_id} };
-        if( ( $atom_id == $rotatable_bonds{$atom_id}[$last_bond_idx][0]
-           || $atom_id == $rotatable_bonds{$atom_id}[$last_bond_idx][1] ) ) {
-            pop( @{ $rotatable_bonds{$atom_id} } );
+        if( ( $atom_id == $rotatable_bonds{$atom_id}[$last_bond_idx][0] ||
+              $atom_id == $rotatable_bonds{$atom_id}[$last_bond_idx][1] ) ) {
+            pop @{ $rotatable_bonds{$atom_id} };
         }
         if( ! @{ $rotatable_bonds{$atom_id} } ) {
             delete $rotatable_bonds{$atom_id};
@@ -425,9 +465,9 @@ sub rotatable_bonds
     # loop above.
     my @unique_bonds;
     for my $bond ( map { @{ $rotatable_bonds{$_} } } keys %rotatable_bonds ) {
-        if( ! grep { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
+        if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
                    @unique_bonds ){
-            push( @unique_bonds, $bond );
+            push @unique_bonds, $bond;
         }
     }
 
