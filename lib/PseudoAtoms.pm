@@ -12,7 +12,6 @@ our @EXPORT_OK = qw( add_hydrogens
                      replace_with_rotamer );
 
 use B qw( svref_2object );
-use Clone qw( clone );
 use List::Util qw( max );
 use List::MoreUtils qw( any
                         uniq );
@@ -40,13 +39,14 @@ use Measure qw( all_dihedral
                 dihedral_angle
                 bond_angle );
 use BondProperties qw( hybridization
-                           rotatable_bonds );
+                       rotatable_bonds );
 use Multithreading qw( multithreading );
 use PDBxParser qw( create_pdbx_entry
-                   filter
-                   to_pdbx );
+                   filter );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
+
+our $VERSION = '1.0.0';
 
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
@@ -105,15 +105,15 @@ sub generate_pseudo
 
         # Iterates through combinations of angles and evaluates conformational
         # model.
-        my @angle_names = sort( { $a cmp $b } keys %{ $angle_values } );
+        my @angle_names = sort { $a cmp $b } keys %{ $angle_values };
         my @angle_values;
         for my $angle_name ( @angle_names ) {
-            push( @angle_values,
-                  [ map
-                    { $_ - $angles{"$residue_id,$residue_chain," .
-                                   "$residue_entity,$residue_alt"}
-                                  {"$angle_name"}{'value'} }
-                    @{ $angle_values->{"$angle_name"} } ] );
+            push @angle_values,
+                 [ map
+                   { $_ - $angles{"$residue_id,$residue_chain," .
+                                  "$residue_entity,$residue_alt"}
+                                 {"$angle_name"}{'value'} }
+                   @{ $angle_values->{"$angle_name"} } ];
         }
 
         my $conformation = $atom_site{"$atom_id"}{'conformation'};
@@ -137,9 +137,9 @@ sub generate_pseudo
                   'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
                   'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
                   'label_seq_id' => $residue_id,
-                  'cartn_x' => sprintf( "%.3f", $transf_atom_coord->[0][0] ),
-                  'cartn_y' => sprintf( "%.3f", $transf_atom_coord->[1][0] ),
-                  'cartn_z' => sprintf( "%.3f", $transf_atom_coord->[2][0] ),
+                  'cartn_x' => sprintf( '%.3f', $transf_atom_coord->[0][0] ),
+                  'cartn_y' => sprintf( '%.3f', $transf_atom_coord->[1][0] ),
+                  'cartn_z' => sprintf( '%.3f', $transf_atom_coord->[2][0] ),
                 } );
             # Adds atom id that pseudo atoms was made of.
             $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
@@ -194,7 +194,7 @@ sub generate_rotamer
 
     for my $residue_unique_key ( keys %{ $angle_values } ) {
         my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-            split( ',', $residue_unique_key );
+            split /,/sxm, $residue_unique_key;
         my $residue_site =
             filter( { 'atom_site' => \%atom_site,
                       'include' =>
@@ -218,18 +218,18 @@ sub generate_rotamer
                     if( $set_missing_angles_to_zero ) {
                         $angles{$angle_name} = [ 0.0 ];
                     } else {
-                        die( "No values for $angle_name were assigned." );
+                        die "No values for $angle_name were assigned.";
                     }
                 }
             }
 
             %rotamer_atom_site =
                 ( %rotamer_atom_site,
-                  %{ generate_pseudo( { %atom_site, %rotamer_atom_site },
+                  %{ generate_pseudo( { ( %atom_site, %rotamer_atom_site ) },
                                       { 'id' => [ $atom_id ] },
                                       \%angles,
                                       $last_atom_id,
-                                      ( $alt_group_id ne '.' ?
+                                      ( $alt_group_id ne q{.} ?
                                         $alt_group_id :
                                         'X' ) ) } ); # Changes . to X, because
                                                      # otherwise screws up
@@ -238,9 +238,9 @@ sub generate_rotamer
         }
     }
 
-    if( $alt_group_id eq '.' ) {
+    if( $alt_group_id eq q{.} ) {
         for my $atom_id ( keys %rotamer_atom_site ) {
-            $rotamer_atom_site{"$atom_id"}{'label_alt_id'} = '.';
+            $rotamer_atom_site{"$atom_id"}{'label_alt_id'} = q{.};
         }
     }
 
@@ -289,15 +289,15 @@ sub generate_library
     my $threads = $args->{'threads'};
 
     $conf_model //= 'rotation_only';
-    $energy_cutoff_residue //= "Inf";
+    $energy_cutoff_residue //= 'Inf';
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => \@MAINCHAIN_NAMES };
 
     # Selection of potential function.
-    my %potential_functions = ( "composite" => \&composite,
-                                "hard_sphere" => \&hard_sphere,
-                                "soft_sphere" => \&soft_sphere,
-                                "leonard_jones" => \&leonard_jones );
+    my %potential_functions = ( 'composite' => \&composite,
+                                'hard_sphere' => \&hard_sphere,
+                                'soft_sphere' => \&soft_sphere,
+                                'leonard_jones' => \&leonard_jones, );
     my $potential_function = $potential_functions{"$interactions"};
 
     my %rotamer_library;
@@ -314,7 +314,7 @@ sub generate_library
     my %atom_site_w_hydrogens = %atom_site_no_hydrogens;
     my $hydrogens =
         add_hydrogens( \%atom_site_w_hydrogens,
-                       { 'alt_id' => '.',
+                       { 'alt_id' => q{.},
                          'add_only_clear_positions' => 1 } );
     append_connections( \%atom_site_w_hydrogens, $hydrogens );
     %atom_site_w_hydrogens = ( %atom_site_w_hydrogens, %{ $hydrogens } );
@@ -325,7 +325,7 @@ sub generate_library
     if( $conf_model eq 'rotation_only' ) {
         for my $residue_unique_key ( @{ $residue_unique_keys } ) {
             my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-                split( ',', $residue_unique_key );
+                split /,/sxm, $residue_unique_key;
             rotation_only(
                 filter( { 'atom_site' => \%atom_site_no_hydrogens,
                           'include' =>
@@ -342,7 +342,7 @@ sub generate_library
     my @target_ca_ids;
     for my $residue_unique_key ( @{ $residue_unique_keys } ) {
         my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-            split( ',', $residue_unique_key );
+            split /,/sxm, $residue_unique_key;
         my $atom_ca_id =
             filter( { 'atom_site' => \%atom_site_no_hydrogens,
                       'include' =>
@@ -353,7 +353,7 @@ sub generate_library
                         'label_alt_id' => [ $residue_alt ] },
                       'data' => [ 'id' ],
                       'is_list' => 1 } )->[0];
-        push( @target_ca_ids, $atom_ca_id );
+        push @target_ca_ids, $atom_ca_id;
     }
 
     # Creates the grid box that has edge length of sum of all bonds of the
@@ -418,10 +418,10 @@ sub generate_library
                 my $rotamer_energy_sum = $energy_sums->[$i];
                 if( defined $rotamer_energy_sum
                  && $rotamer_energy_sum <= $energy_cutoff_residue ) {
-                    push( @{ $rotamer_library{"$residue_unique_key"} },
-                          { 'angles' => \%angles,
-                            'potential' => $interactions,
-                            'potential_energy_value' => $rotamer_energy_sum } );
+                    push @{ $rotamer_library{"$residue_unique_key"} },
+                         { 'angles' => \%angles,
+                           'potential' => $interactions,
+                           'potential_energy_value' => $rotamer_energy_sum };
                 }
             }
         }
@@ -434,7 +434,7 @@ sub calc_favourable_angles
 {
     my ( $args ) = @_;
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
-         $potential_function, $energy_cutoff_atom, $parameters, $threads )=(
+         $potential_function, $energy_cutoff_atom, $parameters, $threads, )=(
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
@@ -442,11 +442,11 @@ sub calc_favourable_angles
         $args->{'potential_function'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
-        $args->{'threads'}
+        $args->{'threads'},
     );
 
     my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-        split( ',', $residue_unique_key );
+        split /,/sxm, $residue_unique_key;
     my $residue_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { 'label_seq_id' => [ $residue_id ],
@@ -507,11 +507,11 @@ sub calc_favourable_angles
             }
 
             # Marks visited atoms.
-            push( @visited_atom_ids, $atom_id );
+            push @visited_atom_ids, $atom_id;
 
             # Marks neighbouring atoms.
-            push( @neighbour_atom_ids,
-                  @{ $atom_site->{$atom_id}{'connections'} } );
+            push @neighbour_atom_ids,
+                 @{ $atom_site->{$atom_id}{'connections'} };
 
             # Starts calculating potential energy.
             my ( $next_allowed_angles, $next_allowed_energies ) =
@@ -523,10 +523,10 @@ sub calc_favourable_angles
                          'energy_cutoff_atom' => $energy_cutoff_atom,
                          'potential_function' => $potential_function,
                          'parameters' => $parameters },
-                       [ \@allowed_angles, \@allowed_energies ],
+                       [ \@allowed_angles, \@allowed_energies, ],
                        $threads ) };
 
-            if( scalar( @{ $next_allowed_angles } ) > 0 ) {
+            if( scalar @{ $next_allowed_angles } > 0 ) {
                 @allowed_angles = @{ $next_allowed_angles };
                 @allowed_energies = @{ $next_allowed_energies };
             } else {
@@ -538,9 +538,9 @@ sub calc_favourable_angles
         @next_atom_ids = (); # Resets value for the new ones to be
                              # appended.
         for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-            if( ( ! grep { $neighbour_atom_id eq $_ }
+            if( ( ! any { $neighbour_atom_id eq $_ }
                          @visited_atom_ids ) ) {
-                push( @next_atom_ids, $neighbour_atom_id );
+                push @next_atom_ids, $neighbour_atom_id;
             }
         }
     }
@@ -558,7 +558,7 @@ sub calc_favourable_angle
         $args->{'interaction_site'},
         $args->{'potential_function'},
         $args->{'energy_cutoff_atom'},
-        $args->{'parameters'}
+        $args->{'parameters'},
     );
 
     my %parameters = defined $parameters ? %{ $parameters } : ();
@@ -606,8 +606,8 @@ sub calc_favourable_angle
         # than the cutoff, then calculation was halted, but the
         # value remained.
         if( $potential_energy <= $energy_cutoff_atom ) {
-            push( @allowed_angles, $angles );
-            push( @allowed_energies, [ $energies + $potential_sum ] );
+            push @allowed_angles, $angles;
+            push @allowed_energies, [ $energies + $potential_sum ];
         }
     }
 
@@ -619,20 +619,20 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
     my ( $atom_site, $residue_unique_key, $interaction_site,
          $small_angle, $potential_function, $energy_cutoff_atom,
-         $parameters ) = (
+         $parameters, ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'small_angle'},
         $args->{'potential_function'},
         $args->{'energy_cutoff_atom'},
-        $args->{'parameters'}
+        $args->{'parameters'},
     );
 
     # Creates all-atom model (even with uncertain hydrogen positions) for
     # selected residue.
     my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-        split( ',', $residue_unique_key );
+        split /,/sxm, $residue_unique_key;
     my $residue_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { 'label_seq_id' => [ $residue_id ],
@@ -648,7 +648,7 @@ sub calc_full_atom_energy
                            { 'use_existing_connections' => 1,
                              'use_existing_hybridizations' => 1,
                              'exclude_by_atom_name' => [ 'N', 'C' ],
-                             'alt_id' => '.' } );
+                             'alt_id' => q{.} } );
         append_connections( $residue_site, $hydrogens );
         $residue_site = { %{ $residue_site }, %{ $hydrogens } };
         rotation_only( $residue_site );
@@ -667,9 +667,9 @@ sub calc_full_atom_energy
         }
     }
 
-    my $uniq_rotatable_bond_num = scalar( keys %uniq_rotatable_bonds );
+    my $uniq_rotatable_bond_num = scalar keys %uniq_rotatable_bonds;
     my $missing_rotatable_bond_num =
-        $uniq_rotatable_bond_num - scalar( @{ $array_blocks->[0] } );
+        $uniq_rotatable_bond_num - scalar @{ $array_blocks->[0] };
     my @checkable_angles = @{ $array_blocks };
 
     if( $missing_rotatable_bond_num ) {
@@ -731,8 +731,8 @@ sub calc_full_atom_energy
             }
         }
 
-        push( @allowed_angles, $checkable_angles[$i] );
-        push( @energy_sums, $rotamer_energy_sum );
+        push @allowed_angles, $checkable_angles[$i];
+        push @energy_sums, $rotamer_energy_sum;
     }
 
     return [ \@allowed_angles, \@energy_sums ] ;
@@ -746,7 +746,7 @@ sub replace_with_rotamer
         generate_rotamer( $atom_site,
                           { $residue_unique_key => $angles  },
                           undef, # TODO: move arguments to options.
-                          '.',
+                          q{.},
                           { 'set_missing_angles_to_zero' => 1 } );
 
     for my $residue_atom_id ( keys %{ $residue_site } ) {
@@ -777,7 +777,7 @@ sub add_hydrogens
         $options->{'use_existing_hybridizations'},
         $options->{'reference_atom_site'}, # Useful when analyzing only parts
         $options->{'exclude_by_atom_name'},
-        $options->{'alt_id'} ); # of atom site.
+        $options->{'alt_id'}, ); # of atom site.
 
     $add_only_clear_positions //= 0;
     $use_existing_connections //= 0;
@@ -818,13 +818,13 @@ sub add_hydrogens
                 @connection_ids;
         my @missing_hydrogens;
         for my $hydrogen_name ( @{ $hydrogen_names } ) {
-            if( ! grep { /$hydrogen_name/ } @connection_names ) {
-                push( @missing_hydrogens, $hydrogen_name );
+            if( ! any { /$hydrogen_name/sxm } @connection_names ) {
+                push @missing_hydrogens, $hydrogen_name;
             }
         }
 
         # Exits early if there are no spare hydrogens to add.
-        if( scalar( @missing_hydrogens ) == 0 ) { next; };
+        if( scalar @missing_hydrogens == 0 ) { next; };
 
         #            sp3                       sp2               sp
         #
@@ -866,11 +866,11 @@ sub add_hydrogens
                   'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},
                   'label_seq_id' => $residue_id,
                   'cartn_x' =>
-                      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[0][0] ),
+                      sprintf( '%.3f', $hydrogen_coord{$hydrogen_name}->[0][0] ),
                   'cartn_y' =>
-                      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[1][0] ),
+                      sprintf( '%.3f', $hydrogen_coord{$hydrogen_name}->[1][0] ),
                   'cartn_z' =>
-                      sprintf( "%.3f", $hydrogen_coord{$hydrogen_name}->[2][0] ),
+                      sprintf( '%.3f', $hydrogen_coord{$hydrogen_name}->[2][0] ),
                 } );
             # Adds additional pseudo-atom flag for future filtering.
             $hydrogen_site{$last_atom_id}{'is_pseudo_atom'} = 1;
@@ -893,7 +893,7 @@ sub add_hydrogens_sp3
     my ( $add_only_clear_positions,
          $reference_atom_site ) = (
         $options->{'add_only_clear_positions'},
-        $options->{'reference_atom_site'}
+        $options->{'reference_atom_site'},
     );
 
     $add_only_clear_positions //= 0;
@@ -902,8 +902,8 @@ sub add_hydrogens_sp3
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $ATOMS{$atom_type}{'covalent_radius'}{'length'}[0]
-      + $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $ATOMS{$atom_type}{'covalent_radius'}{'length'}[0] +
+        $ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
@@ -922,7 +922,7 @@ sub add_hydrogens_sp3
                  ( $atom_coord{$connection_ids[0]},
                    $atom_coord{$atom_id},
                    $atom_coord{$connection_ids[1]},
-                   $atom_coord{$connection_ids[2]} );
+                   $atom_coord{$connection_ids[2]}, );
 
         # Theoretically optimal angles should be so, the distance of
         # atoms would be furthest from each other. This strategy could
@@ -976,11 +976,11 @@ sub add_hydrogens_sp3
         # Calculates what common angle between hydrogen and rest of the
         # atoms should be.
         my $hydrogen_angle =
-            acos( ( - 4
-                    - 2 * cos( $up_mid_right_angle )
-                    - 2 * cos( $up_mid_left_angle )
-                    - 2 * cos( $right_mid_left_angle ) )
-                  / 6 );
+            acos( ( - 4 -
+                    2 * cos( $up_mid_right_angle ) -
+                    2 * cos( $up_mid_left_angle ) -
+                    2 * cos $right_mid_left_angle ) /
+                  6 );
 
         # Determines dihedral angle between left and right atoms. Then
         # splits rest of the 2 * pi angle into two equal parts.
@@ -1014,14 +1014,14 @@ sub add_hydrogens_sp3
         ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
             @{ mult_matrix_product(
                    [ $transf_matrix,
-                     [ [ $bond_length
-                         * cos( pi() / 2 - $dihedral_angle )
-                         * sin( $hydrogen_angle ) ],
-                       [ $bond_length
-                         * sin( pi() / 2 - $dihedral_angle )
-                         * sin( $hydrogen_angle ) ],
-                       [ $bond_length
-                         * cos( $hydrogen_angle ) ],
+                     [ [ $bond_length *
+                         cos( pi() / 2 - $dihedral_angle ) *
+                         sin $hydrogen_angle ],
+                       [ $bond_length *
+                         sin( pi() / 2 - $dihedral_angle ) *
+                         sin $hydrogen_angle ],
+                       [ $bond_length *
+                         cos $hydrogen_angle ],
                        [ 1 ] ] ] ) };
     } elsif( scalar( @connection_ids ) == 2
           && ! ( $add_only_clear_positions && $lone_pair_count > 0 ) ) {
@@ -1032,7 +1032,7 @@ sub add_hydrogens_sp3
              $left_atom_coord ) =
                  ( $atom_coord{$connection_ids[0]},
                    $atom_coord{$atom_id},
-                   $atom_coord{$connection_ids[1]} );
+                   $atom_coord{$connection_ids[1]}, );
 
         my $bond_angle =
             bond_angle( [ $up_atom_coord,
@@ -1045,7 +1045,7 @@ sub add_hydrogens_sp3
         #       acos( ( - 4 - 2 * cos( $bond_angle ) ) / 10 )
         #
         my $hydrogen_angle =
-            acos( ( - 4 - 2 * cos( $bond_angle ) ) / 10 );
+            acos( ( - 4 - 2 * cos $bond_angle ) / 10 );
 
         # Generates transformation matrix for transfering atoms to local
         # reference frame.
@@ -1061,32 +1061,32 @@ sub add_hydrogens_sp3
             ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
                 @{ mult_matrix_product(
                        [ $transf_matrix,
-                         [ [ $bond_length
-                             * cos( 7 * pi() / 6 )
-                             * sin( $hydrogen_angle ) ],
-                           [ $bond_length
-                             * sin( 7 * pi() / 6 )
-                             * sin( $hydrogen_angle )],
-                           [ $bond_length
-                             * cos( $hydrogen_angle )],
+                         [ [ $bond_length *
+                             cos( 7 * pi() / 6 ) *
+                             sin $hydrogen_angle ],
+                           [ $bond_length *
+                             sin( 7 * pi() / 6 ) *
+                             sin $hydrogen_angle ],
+                           [ $bond_length *
+                             cos $hydrogen_angle ],
                            [ 1 ] ] ] ) };
             shift @{ $missing_hydrogens };
         }
 
         # Additional hydrogen is added only to the atom that has no
         # electron pairs.
-        if( scalar( @{ $missing_hydrogens } ) == 1 ) {
+        if( scalar @{ $missing_hydrogens } == 1 ) {
             ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
                 @{ mult_matrix_product(
                        [ $transf_matrix,
-                         [ [ $bond_length
-                             * cos( - 1 * pi() / 6 )
-                             * sin( $hydrogen_angle ) ],
-                           [ $bond_length
-                             * sin( - 1 * pi() / 6 )
-                             * sin( $hydrogen_angle ) ],
-                           [ $bond_length
-                             * cos( $hydrogen_angle ) ],
+                         [ [ $bond_length *
+                             cos( - 1 * pi() / 6 ) *
+                             sin $hydrogen_angle ],
+                           [ $bond_length *
+                             sin( - 1 * pi() / 6 ) *
+                             sin $hydrogen_angle ],
+                           [ $bond_length *
+                             cos $hydrogen_angle ],
                            [ 1 ] ] ] ) };
         }
 
@@ -1095,13 +1095,13 @@ sub add_hydrogens_sp3
         # target atom.
         my ( $up_atom_coord,
              $mid_atom_coord,
-             $side_coord ) = # Coordinate that only will be used for
+             $side_coord, ) = # Coordinate that only will be used for
                  # defining a local reference frame.
                  ( $atom_coord{$connection_ids[0]},
                    $atom_coord{$atom_id},
                    [ $atom_site->{$atom_id}{'Cartn_x'},
                      $atom_site->{$atom_id}{'Cartn_y'} + 1,
-                     $atom_site->{$atom_id}{'Cartn_z'} ] );
+                     $atom_site->{$atom_id}{'Cartn_z'}, ], );
 
         # Generates transformation matrix for transfering atoms to local
         # reference frame.
@@ -1127,41 +1127,41 @@ sub add_hydrogens_sp3
             ( $hydrogen_coord->{$missing_hydrogens->[0]} )=
                 @{ mult_matrix_product(
                        [ $transf_matrix,
-                         [ [ $bond_length * sin( $bond_angle ) ],
+                         [ [ $bond_length * sin $bond_angle ],
                            [ 0 ],
-                           [ $bond_length * cos( $bond_angle ) ],
+                           [ $bond_length * cos $bond_angle ],
                            [ 1 ] ] ] ) };
             shift @{ $missing_hydrogens };
         }
 
-        if( scalar( @{ $missing_hydrogens } ) >= 2 ) {
+        if( scalar @{ $missing_hydrogens } >= 2 ) {
             ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
                 @{ mult_matrix_product(
                        [ $transf_matrix,
                          [ [ $bond_length
                              * cos( 2 * pi() / 3 )
-                             * sin( $bond_angle ) ],
+                             * sin $bond_angle ],
                            [ $bond_length
                              * sin( 2 * pi() / 3 )
-                             * sin( $bond_angle ) ],
+                             * sin $bond_angle ],
                            [ $bond_length
-                             * cos( $bond_angle ) ],
+                             * cos $bond_angle ],
                            [ 1 ] ] ] ) };
             shift @{ $missing_hydrogens };
         }
 
-        if( scalar( @{ $missing_hydrogens } ) == 1 ) {
+        if( scalar @{ $missing_hydrogens } == 1 ) {
             ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
                 @{ mult_matrix_product(
                        [ $transf_matrix,
-                         [ [ $bond_length
-                             * cos( 4 * pi() / 3 )
-                             * sin( $bond_angle ) ],
-                           [ $bond_length
-                             * sin( 4 * pi() / 3 )
-                             * sin( $bond_angle ) ],
-                           [ $bond_length
-                             * cos( $bond_angle ) ],
+                         [ [ $bond_length *
+                             cos( 4 * pi() / 3 ) *
+                             sin $bond_angle ],
+                           [ $bond_length *
+                             sin( 4 * pi() / 3 ) *
+                             sin $bond_angle ],
+                           [ $bond_length *
+                             cos $bond_angle ],
                            [ 1 ] ] ] ) };
         }
     }
@@ -1207,7 +1207,7 @@ sub add_hydrogens_sp2
              $left_atom_coord ) =
                  ( $atom_coord{$connection_ids[0]},
                    $atom_coord{$atom_id},
-                   $atom_coord{$connection_ids[1]} );
+                   $atom_coord{$connection_ids[1]}, );
 
         # Generates transformation matrix for transfering atoms to local
         # reference frame.
@@ -1235,18 +1235,18 @@ sub add_hydrogens_sp2
         ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
             @{ mult_matrix_product(
                    [ $transf_matrix,
-                     [ [ $bond_length
-                         * cos( - 0.5 * pi() )
-                         * sin( $bond_angle ) ],
-                       [ $bond_length
-                         * sin( - 0.5 * pi() )
-                         * sin( $bond_angle ) ],
-                       [ $bond_length
-                         * cos( $bond_angle ) ],
+                     [ [ $bond_length *
+                         cos( - 0.5 * pi() ) *
+                         sin $bond_angle ],
+                       [ $bond_length *
+                         sin( - 0.5 * pi() ) *
+                         sin $bond_angle ],
+                       [ $bond_length *
+                         cos $bond_angle ],
                        [ 1 ] ] ] ) };
 
-    } elsif( scalar( @connection_ids ) == 1
-          && ! ( $add_only_clear_positions && $lone_pair_count > 1 ) ) {
+    } elsif( ( scalar @connection_ids == 1 ) &&
+           ! ( $add_only_clear_positions && $lone_pair_count > 1 ) ) {
         my ( $up_atom_coord,
              $mid_atom_coord,
              $side_coord ) =
@@ -1254,12 +1254,12 @@ sub add_hydrogens_sp2
                    $atom_coord{$atom_id},
                    [ $atom_site->{$atom_id}{'Cartn_x'},
                      $atom_site->{$atom_id}{'Cartn_y'} + 1,
-                     $atom_site->{$atom_id}{'Cartn_z'} ] );
+                     $atom_site->{$atom_id}{'Cartn_z'}, ], );
 
         # If terminal atom belongs to conjugated system, hydrogens are
         # added not to violate rule where atoms should be in one plain.
         my @second_neighbours =
-            grep { ! /$atom_id/ }
+            grep { ! /$atom_id/smx }
             map { @{ $reference_atom_site->{$_}{'connections'} } }
             @connection_ids;
 
@@ -1347,7 +1347,7 @@ sub add_hydrogens_sp
                $atom_coord{$atom_id},
                [ $atom_site->{$atom_id}{'Cartn_x'},
                  $atom_site->{$atom_id}{'Cartn_y'} + 1,
-                 $atom_site->{$atom_id}{'Cartn_z'} ] );
+                 $atom_site->{$atom_id}{'Cartn_z'}, ], );
 
     # Generates transformation matrix for transfering atoms to local
     # reference frame.
