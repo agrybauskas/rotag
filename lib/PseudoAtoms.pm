@@ -437,7 +437,7 @@ sub generate_library
 # Calculates favourable rotamer angles for a given residue.
 # Input:
 #     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
-#     $args->{residue_unique_keys} - array of unique residue keys
+#     $args->{residue_unique_key} - unique residue key
 #     (see PDBxParser::unique_residue_key);
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
@@ -794,13 +794,24 @@ sub calc_full_atom_energy
     return [ \@allowed_angles, \@energy_sums ] ;
 }
 
+#
+# Rotates residue by specified dihedral angles.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $residue_unique_key - unique residue key
+#     (see PDBxParser::unique_residue_key);
+#     $angle_values - name and value of angles in hash form.
+# Output:
+#     changes coordinates of selected residue.
+#
+
 sub replace_with_rotamer
 {
-    my ( $atom_site, $residue_unique_key, $angles ) = @_;
+    my ( $atom_site, $residue_unique_key, $angle_values ) = @_;
 
     my $residue_site =
         generate_rotamer( $atom_site,
-                          { $residue_unique_key => $angles  },
+                          { $residue_unique_key => $angle_values  },
                           undef, # TODO: move arguments to options.
                           q{.},
                           { 'set_missing_angles_to_zero' => 1 } );
