@@ -291,13 +291,13 @@ sub filter_by_unique_residue_key
 
 sub unique_residue_key
 {
-    my $atom = @_;
+    my ( $atom ) = @_;
     return join q{,},
            map { $atom->{$_} }
                ( 'label_seq_id',
                  'label_asym_id',
-                 'label_entity',
-                 'label_alt_id' );
+                 'label_entity_id',
+                 'label_alt_id', );
 }
 
 #

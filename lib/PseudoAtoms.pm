@@ -42,7 +42,9 @@ use BondProperties qw( hybridization
                        rotatable_bonds );
 use Multithreading qw( multithreading );
 use PDBxParser qw( create_pdbx_entry
-                   filter );
+                   filter
+                   filter_by_unique_residue_key
+                   unique_residue_key );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
 use Version qw( $VERSION );
@@ -95,18 +97,12 @@ sub generate_pseudo
         # Calculates current dihedral angles of rotatable bonds. Will be used
         # for reseting dihedral angles to 0 degree angle.
         my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
-        my $residue_chain = $atom_site{$atom_id}{'label_asym_id'};
-        my $residue_entity = $atom_site{$atom_id}{'label_entity_id'};
-        my $residue_alt = $atom_site{$atom_id}{'label_alt_id'};
+        my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
         my %angles =
             %{ all_dihedral(
-                   filter( { 'atom_site' => \%atom_site,
-                             'include' =>
-                                 { 'label_seq_id' => [ $residue_id ],
-                                   'label_asym_id' => [ $residue_chain ],
-                                   'label_entity_id' => [ $residue_entity ],
-                                   'label_alt_id' => [ $residue_alt ] } } ) ) };
+                   filter_by_unique_residue_key( $atom_site,
+                                                 $residue_unique_key ) ) };
 
         # Iterates through combinations of angles and evaluates conformational
         # model.
@@ -114,8 +110,7 @@ sub generate_pseudo
         my @angle_values;
         for my $angle_name ( @angle_names ) {
             push @angle_values,
-                 [ map { $_ - $angles{"$residue_id,$residue_chain," .
-                                      "$residue_entity,$residue_alt"}
+                 [ map { $_ - $angles{$residue_unique_key}
                                      {"$angle_name"}{'value'} }
                    @{ $angle_values->{"$angle_name"} } ];
         }
@@ -142,7 +137,7 @@ sub generate_pseudo
                   'label_comp_id' => $atom_site{$atom_id}{'label_comp_id'},
                   'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
                   'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
-                  'label_seq_id' => $residue_id,
+                  'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
                   'cartn_x' => sprintf( '%.3f', $transf_atom_coord->[0][0] ),
                   'cartn_y' => sprintf( '%.3f', $transf_atom_coord->[1][0] ),
                   'cartn_z' => sprintf( '%.3f', $transf_atom_coord->[2][0] ),
@@ -162,9 +157,7 @@ sub generate_pseudo
             $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
             $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
                 { map { ( $_ => $angle_values{$_} +
-                                $angles{"$residue_id,$residue_chain," .
-                                        "$residue_entity,$residue_alt"}
-                                       {$_}{'value'} ) }
+                                $angles{$residue_unique_key}{$_}{'value'} ) }
                   @angle_names };
             # Adds additional pseudo-atom flag for future filtering.
             $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
