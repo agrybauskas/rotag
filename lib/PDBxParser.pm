@@ -10,7 +10,8 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_atom_site
                      obtain_pdbx_line
                      obtain_pdbx_loop
-                     to_pdbx );
+                     to_pdbx
+                     unique_residue_key );
 
 use List::MoreUtils qw( any );
 use Version qw( $VERSION );
@@ -258,9 +259,7 @@ sub filter
 # Filters atom site data structure by unique residue key.
 # Input:
 #     $atom_site - atom data structure;
-#     $unique_residue_key - a composite key that identifies residue uniquely. It
-#     consists of '_atom_site.label_seq_id', '_atom_site.label_asym_id',
-#     '_atom_site.label_entity_id' and '_atom_site.label_alt_id'.
+#     $unique_residue_key - a composite key that identifies residue uniquely.
 #     Ex.: '18,A,1,.'.
 # Output:
 #     %filtered_atoms - filtered atom data structure.
@@ -278,6 +277,27 @@ sub filter_by_unique_residue_key
                                      'label_entity_id' => [ $residue_entity ],
                                      'label_alt_id' => [ $residue_alt ] } } );
     return $filtered_atoms;
+}
+
+#
+# Create unique residue key that consists of '_atom_site.label_seq_id',
+# '_atom_site.label_asym_id', '_atom_site.label_entity_id' and
+# '_atom_site.label_alt_id'.
+# Input:
+#     $atom - atom data structure (see PDBxParser.pm);
+# Output:
+#     $unique_residue_key - unique residue key.
+#
+
+sub unique_residue_key
+{
+    my $atom = @_;
+    return join q{,},
+           map { $atom->{$_} }
+               ( 'label_seq_id',
+                 'label_asym_id',
+                 'label_entity',
+                 'label_alt_id' );
 }
 
 #

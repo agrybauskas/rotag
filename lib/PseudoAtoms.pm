@@ -94,7 +94,7 @@ sub generate_pseudo
     for my $atom_id ( @atom_ids ) {
         # Calculates current dihedral angles of rotatable bonds. Will be used
         # for reseting dihedral angles to 0 degree angle.
-        my $residue_id = $atom_site{"$atom_id"}{'label_seq_id'};
+        my $residue_id = $atom_site{$atom_id}{'label_seq_id'};
         my $residue_chain = $atom_site{$atom_id}{'label_asym_id'};
         my $residue_entity = $atom_site{$atom_id}{'label_entity_id'};
         my $residue_alt = $atom_site{$atom_id}{'label_alt_id'};
