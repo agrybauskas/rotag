@@ -15,7 +15,8 @@ use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( sort_atom_names );
 use ConnectAtoms qw( connect_atoms );
-use PDBxParser qw( filter );
+use PDBxParser qw( filter
+                   filter_by_unique_residue_key );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use BondProperties qw( rotatable_bonds );
@@ -195,14 +196,9 @@ sub all_dihedral
     my %residue_angles;
 
     for my $residue_unique_key ( @residue_unique_keys ) {
-        my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-            split /,/sxm, $residue_unique_key;
         my $residue_site =
-            filter( { 'atom_site' => \%atom_site,
-                      'include' => { 'label_seq_id' => [ $residue_id ],
-                                     'label_asym_id' => [ $residue_chain ],
-                                     'label_entity_id' => [ $residue_entity ],
-                                     'label_alt_id' => [ $residue_alt ] } } );
+            filter_by_unique_residue_key( \%atom_site,
+                                          $residue_unique_key );
 
         my $rotatable_bonds = rotatable_bonds( $residue_site );
         my %uniq_rotatable_bonds; # Unique rotatable bonds.

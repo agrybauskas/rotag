@@ -13,7 +13,8 @@ use AtomProperties qw( sort_atom_names );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use BondProperties qw( rotatable_bonds );
-use PDBxParser qw( filter );
+use PDBxParser qw( filter
+                   filter_by_unique_residue_key );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -47,15 +48,8 @@ sub rotation_only
     # Iterates through target residues and their atom ids and assigns
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_unique_key ( @residue_unique_keys ) {
-        my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-            split /,/sxm, $residue_unique_key;
         my $residue_site =
-            filter( { 'atom_site' => \%atom_site,
-                      'include' =>
-                      { 'label_seq_id' => [ $residue_id ],
-                        'label_asym_id' => [ $residue_chain ],
-                        'label_entity_id' => [ $residue_entity ],
-                        'label_alt_id' => [ $residue_alt ] } } );
+            filter_by_unique_residue_key( \%atom_site, $residue_unique_key );
 
         my $rotatable_bonds = rotatable_bonds( $residue_site );
 
