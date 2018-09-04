@@ -268,15 +268,15 @@ sub generate_rotamer
 #     $args->{small_angle} - angle by which rotation is made;
 #     $args->{conf_model} - possible sidechain movements described by sidechain
 #     model functions in SidechainModels.pm;
-#     $interactions - interaction models described by functions in
+#     $args->{interactions} - interaction models described by functions in
 #     AtomInteractions.pm;
-#     $parameters - parameters that are passed to interaction functions;
-#     $energy_cutoff_atom - maximum amount of energy that is allowed for atom to
-#     have in the rotamer according to potential functions;
-#     $energy_cutoff_residue - maximum amount of energy (the sum of energies of
-#     all atoms) that is allowed for residue to have in the rotamer according to
-#     potential functions;
-#     $threads - number of threads.
+#     $args->{parameters} - parameters that are passed to interaction functions;
+#     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
+#     atom to have in the rotamer according to potential functions;
+#     $args->{energy_cutoff_residue} - maximum amount of energy (the sum of
+#     energies of all atoms) that is allowed for residue to have in the rotamer
+#     according to potential functions;
+#     $args->{threads} - number of threads.
 # Output:
 #     %library_atom_site - atom site data structure with additional data.
 #
@@ -434,12 +434,29 @@ sub generate_library
 }
 
 #
-#
+# Calculates favourable rotamer angles for a given residue.
+# Input:
+#     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
+#     $args->{residue_unique_keys} - array of unique residue keys
+#     (see PDBxParser::unique_residue_key);
+#     $args->{interaction_site} - atom data structure that is included into
+#     energy calculations;
+#     $args->{small_angle} - angle by which rotation is made;
+#     $args->{potential_function} - reference to the potential function that is
+#     used for calculating energy;
+#     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
+#     atom to have in the rotamer according to potential functions;
+#     $args->{parameters} - parameters that are passed to interaction functions;
+#     $args->{threads} - number of threads.
+# Output:
+#     @allowed_angles - list of groups of allowed angles.
+#     Ex.: ( [ 0.0, 3.14 ], [ 3.14, 6.28 ] ).
 #
 
 sub calc_favourable_angles
 {
     my ( $args ) = @_;
+
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
          $potential_function, $energy_cutoff_atom, $parameters, $threads ) = (
         $args->{'atom_site'},
@@ -473,7 +490,7 @@ sub calc_favourable_angles
     my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     my @next_atom_ids =
         grep { $_ ne $ca_atom_id }
-        @{ $residue_site->{$cb_atom_id}{'connections'} };
+            @{ $residue_site->{$cb_atom_id}{'connections'} };
 
     my @sampled_angles =
         map { [ $_ ] } @{ sample_angles( [ [ 0, 2 * $PI ] ], $small_angle ) };
@@ -545,9 +562,29 @@ sub calc_favourable_angles
     return \@allowed_angles;
 }
 
+#
+# Calculates energy values for given rotamer angles.
+# Input:
+#     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
+#     $args->{atom_id} - atom id;
+#     $args->{interaction_site} - atom data structure that is included into
+#     energy calculations;
+#     $args->{potential_function} - reference to the potential function that is
+#     used for calculating energy;
+#     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
+#     atom to have in the rotamer according to potential functions;
+#     $args->{parameters} - parameters that are passed to interaction functions.
+# Output:
+#     @allowed_angles - list of groups of allowed angles.
+#     Ex.: ( [ 0.0, 3.14 ], [ 3.14, 6.28 ] );
+#     @allowed_energies - list of energies of the allowed angles.
+#     Ex.: ( [ -2.323 ], [ -15.0110 ] ).
+#
+
 sub calc_favourable_angle
 {
     my ( $args, $array_blocks ) = @_;
+
     my ( $atom_site, $atom_id, $interaction_site, $potential_function,
          $energy_cutoff_atom, $parameters ) = (
         $args->{'atom_site'},
@@ -610,12 +647,35 @@ sub calc_favourable_angle
     return [ \@allowed_angles, \@allowed_energies ];
 }
 
+#
+# Calculates full atom energy by including even the atoms of the current rotamer.
+# Input:
+#     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
+#     $args->{residue_unique_keys} - array of unique residue keys
+#     (see PDBxParser::unique_residue_key);
+#     $args->{interaction_site} - atom data structure that is included into
+#     energy calculations;
+#     $args->{small_angle} - angle by which rotation is made;
+#     $args->{potential_function} - reference to the potential function that is
+#     used for calculating energy;
+#     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
+#     atom to have in the rotamer according to potential functions;
+#     $args->{parameters} - parameters that are passed to interaction functions;
+#     $array_blocks - an array of arrays that contain suggested rotamer angles.
+# Output:
+#     @allowed_angles - list of groups of allowed angles.
+#     Ex.: ( [ 0.0, 3.14 ], [ 3.14, 6.28 ] );
+#     @energy_sums - list of energy sums of the all atoms in the residue after
+#     bond is rotated according to @allowed_angles.
+#     Ex.: ( [ -45.0212 ], [ -15.0002 ] ).
+#
+
 sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
-    my ( $atom_site, $residue_unique_key, $interaction_site,
-         $small_angle, $potential_function, $energy_cutoff_atom,
-         $parameters ) = (
+
+    my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
+         $potential_function, $energy_cutoff_atom, $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
@@ -653,6 +713,7 @@ sub calc_full_atom_energy
     my $rotatable_bonds = rotatable_bonds( $residue_site );
     if( ! %{ $rotatable_bonds } ) { next; }
 
+    # Identifies missing unique rotatable bonds.
     my %uniq_rotatable_bonds; # TODO: could be used to verify bond uniqueness.
     for my $atom_id ( keys %{ $rotatable_bonds } ) {
         for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
