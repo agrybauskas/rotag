@@ -171,9 +171,16 @@ sub generate_pseudo
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser);
 #     $angle_values - name and value of angles in hash form.
+#     $last_atom_id - last atom id for assigning new ids for pseudo atoms;
+#     $alt_group_id - alternative group id that is used to distinguish pseudo
+#     atoms;
+#     $otions->{'set_missing_angles_to_zero'} - if angles are unknown, they are
+#     set to 0 rad;
+#     $options->{'keep_origin_id'} - keeps ids the same as original atom's. Very
+#     useful when replacing existing residues.
 # Output:
-#     %generated_rotamers - atom site data structure with additional
-#     rotamer data.
+#     %generated_rotamers - atom site data structure with additional rotamer
+#     data.
 #
 
 sub generate_rotamer
@@ -252,24 +259,34 @@ sub generate_rotamer
 # Generates rotamer libraries by specified arguments that include atom
 # movements and interactions between atoms.
 # Input:
-#     $atom_site - atom site data structure (see PDBxParser).
-#     $residue_ids - array of residue ids.
-#     $small_angle - angle by which rotation is made.
-#     $conformations - possible sidechain movements described by sidechain
-#     modeling
-#     functions in SidechainModels.pm.
+#     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
+#     $args->{residue_unique_keys} - array of unique residue keys
+#     (see PDBxParser::unique_residue_key);
+#     $args->{include_interactions} - selection data structure
+#     (see PDBxParser::filter) that is used to select atoms that will be included
+#     into calculations of energy;
+#     $args->{small_angle} - angle by which rotation is made;
+#     $args->{conf_model} - possible sidechain movements described by sidechain
+#     model functions in SidechainModels.pm;
 #     $interactions - interaction models described by functions in
-#     AtomInteractions.pm
+#     AtomInteractions.pm;
+#     $parameters - parameters that are passed to interaction functions;
+#     $energy_cutoff_atom - maximum amount of energy that is allowed for atom to
+#     have in the rotamer according to potential functions;
+#     $energy_cutoff_residue - maximum amount of energy (the sum of energies of
+#     all atoms) that is allowed for residue to have in the rotamer according to
+#     potential functions;
+#     $threads - number of threads.
 # Output:
-#     %library_atom_site - atom site data structure with additional data
+#     %library_atom_site - atom site data structure with additional data.
 #
 
 sub generate_library
 {
     my ( $args ) = @_;
     my $atom_site = $args->{'atom_site'};
-    my $include_interactions = $args->{'include_interactions'};
     my $residue_unique_keys = $args->{'residue_unique_keys'};
+    my $include_interactions = $args->{'include_interactions'};
     my $small_angle = $args->{'small_angle'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
@@ -297,6 +314,7 @@ sub generate_library
     %atom_site_no_hydrogens =
         %{ filter( { 'atom_site' => $atom_site,
                      'exclude' => { 'type_symbol' => [ 'H' ] } } ) };
+
     connect_atoms( \%atom_site_no_hydrogens );
     hybridization( \%atom_site_no_hydrogens );
 
@@ -414,6 +432,10 @@ sub generate_library
 
     return \%rotamer_library;
 }
+
+#
+#
+#
 
 sub calc_favourable_angles
 {
