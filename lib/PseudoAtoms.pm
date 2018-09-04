@@ -270,12 +270,12 @@ sub generate_rotamer
 #     model functions in SidechainModels.pm;
 #     $args->{interactions} - interaction models described by functions in
 #     AtomInteractions.pm;
-#     $args->{parameters} - parameters that are passed to interaction functions;
+#     $args->{parameters} - parameters that are passed to interaction function;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
-#     atom to have in the rotamer according to potential functions;
+#     atom to have in the rotamer according to potential function;
 #     $args->{energy_cutoff_residue} - maximum amount of energy (the sum of
 #     energies of all atoms) that is allowed for residue to have in the rotamer
-#     according to potential functions;
+#     according to potential function;
 #     $args->{threads} - number of threads.
 # Output:
 #     %library_atom_site - atom site data structure with additional data.
@@ -322,7 +322,7 @@ sub generate_library
     my %atom_site_w_hydrogens = %atom_site_no_hydrogens;
     my $hydrogens =
         add_hydrogens( \%atom_site_w_hydrogens,
-                       { 'alt_id' => q{.},
+                       { 'alt_group_id' => q{.},
                          'add_only_clear_positions' => 1 } );
     append_connections( \%atom_site_w_hydrogens, $hydrogens );
     %atom_site_w_hydrogens = ( %atom_site_w_hydrogens, %{ $hydrogens } );
@@ -445,12 +445,12 @@ sub generate_library
 #     $args->{potential_function} - reference to the potential function that is
 #     used for calculating energy;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
-#     atom to have in the rotamer according to potential functions;
-#     $args->{parameters} - parameters that are passed to interaction functions;
+#     atom to have in the rotamer according to potential function;
+#     $args->{parameters} - parameters that are passed to interaction function;
 #     $args->{threads} - number of threads.
 # Output:
 #     @allowed_angles - list of groups of allowed angles.
-#     Ex.: ( [ 0.0, 3.14 ], [ 3.14, 6.28 ] ).
+#     Ex.: ( [ 0.00, 3.14 ], [ 3.14, 6.28 ] ).
 #
 
 sub calc_favourable_angles
@@ -572,13 +572,13 @@ sub calc_favourable_angles
 #     $args->{potential_function} - reference to the potential function that is
 #     used for calculating energy;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
-#     atom to have in the rotamer according to potential functions;
-#     $args->{parameters} - parameters that are passed to interaction functions.
+#     atom to have in the rotamer according to potential function;
+#     $args->{parameters} - parameters that are passed to interaction function.
 # Output:
 #     @allowed_angles - list of groups of allowed angles.
-#     Ex.: ( [ 0.0, 3.14 ], [ 3.14, 6.28 ] );
+#     Ex.: ( [ 0.00, 3.14 ], [ 3.14, 6.28 ] );
 #     @allowed_energies - list of energies of the allowed angles.
-#     Ex.: ( [ -2.323 ], [ -15.0110 ] ).
+#     Ex.: ( [ -2.32 ], [ -15.01 ] ).
 #
 
 sub calc_favourable_angle
@@ -659,15 +659,15 @@ sub calc_favourable_angle
 #     $args->{potential_function} - reference to the potential function that is
 #     used for calculating energy;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
-#     atom to have in the rotamer according to potential functions;
-#     $args->{parameters} - parameters that are passed to interaction functions;
+#     atom to have in the rotamer according to potential function;
+#     $args->{parameters} - parameters that are passed to interaction function;
 #     $array_blocks - an array of arrays that contain suggested rotamer angles.
 # Output:
 #     @allowed_angles - list of groups of allowed angles.
-#     Ex.: ( [ 0.0, 3.14 ], [ 3.14, 6.28 ] );
+#     Ex.: ( [ 0.00, 3.14 ], [ 3.14, 6.28 ] );
 #     @energy_sums - list of energy sums of the all atoms in the residue after
 #     bond is rotated according to @allowed_angles.
-#     Ex.: ( [ -45.0212 ], [ -15.0002 ] ).
+#     Ex.: ( [ -45.02 ], [ -15.00 ] ).
 #
 
 sub calc_full_atom_energy
@@ -704,7 +704,7 @@ sub calc_full_atom_energy
                            { 'use_existing_connections' => 1,
                              'use_existing_hybridizations' => 1,
                              'exclude_by_atom_name' => [ 'N', 'C' ],
-                             'alt_id' => q{.} } );
+                             'alt_group_id' => q{.} } );
         append_connections( $residue_site, $hydrogens );
         $residue_site = { %{ $residue_site }, %{ $hydrogens } };
         rotation_only( $residue_site );
@@ -795,14 +795,14 @@ sub calc_full_atom_energy
 }
 
 #
-# Rotates residue by specified dihedral angles.
+# Rotates residue bonds by specified dihedral angles.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $residue_unique_key - unique residue key
 #     (see PDBxParser::unique_residue_key);
 #     $angle_values - name and value of angles in hash form.
 # Output:
-#     changes coordinates of selected residue.
+#     changes coordinates of selected residue due to bond rotations.
 #
 
 sub replace_with_rotamer
@@ -829,29 +829,47 @@ sub replace_with_rotamer
     return;
 }
 
+#
+# Adds hydrogens to the molecule.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $options->{add_only_clear_postions} - adds only those atoms that have clear
+#     positions that can be determined by geometry. For example, hydrogens of
+#     methyl group that has only one known connection are not added, but with two
+#     connections - are;
+#     $options->{use_existing_connections} - does not overwrite atom connections;
+#     $options->{use_existing_hybridizations} - does not overwrite atom
+#     hybridizations;
+#     $options->{reference_atom_site} - atom site data structure that is used
+#     for determining atom connections;
+#     $options->{exclude_by_atom_name} - list of atom names that are excluded
+#     from being added hydrogens to;
+#     $options->{alt_group_id} - alternative group id that is used to distinguish
+#     pseudo atoms.
+# Output:
+#     %hydrogen_site - atom data structure with added hydrogens.
+#
+
 sub add_hydrogens
 {
     my ( $atom_site, $options ) = @_;
 
-    my ( $add_only_clear_positions,
-         $use_existing_connections,
-         $use_existing_hybridizations,
-         $reference_atom_site,
-         $exclude_by_atom_name,
-         $alt_id ) = ( # TODO: make more generalized solution.
-        $options->{'add_only_clear_positions'},
+    my ( $add_only_clear_positions, $use_existing_connections,
+         $use_existing_hybridizations, $reference_atom_site,
+         $exclude_by_atom_name, $alt_group_id ) = ( # TODO: make more generalized
+        $options->{'add_only_clear_positions'},     # solution.
         $options->{'use_existing_connections'},
         $options->{'use_existing_hybridizations'},
         $options->{'reference_atom_site'}, # Useful when analyzing only parts
         $options->{'exclude_by_atom_name'},
-        $options->{'alt_id'}, ); # of atom site.
+        $options->{'alt_group_id'}, ); # of atom site.
 
     $add_only_clear_positions //= 0;
     $use_existing_connections //= 0;
     $use_existing_hybridizations //= 0;
     $reference_atom_site //= $atom_site;
     $exclude_by_atom_name //= [];
-    $alt_id //= '1';
+    $alt_group_id //= '1';
 
     my %atom_site = %{ $atom_site };
 
@@ -927,7 +945,7 @@ sub add_hydrogens
                   'id' => $last_atom_id,
                   'type_symbol' => 'H',
                   'label_atom_id' => $hydrogen_name,
-                  'label_alt_id' => $alt_id,
+                  'label_alt_id' => $alt_group_id,
                   'label_comp_id' => $atom_site->{$atom_id}{'label_comp_id'},
                   'label_asym_id' => $atom_site->{$atom_id}{'label_asym_id'},
                   'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},
@@ -951,6 +969,22 @@ sub add_hydrogens
 
     return \%hydrogen_site;
 }
+
+#
+# Adds hydrogens to the atoms which are sp3 hybridized.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $atom_id - atom id;
+#     $hydrogen_coord - hydrogen coordinates from previous calculations - hash
+#     of arrays;
+#     $missing_hydrogens - list of hydrogens that are missing;
+#     $options->{add_only_clear_postions} - adds only those atoms that have clear
+#     positions that can be determined by geometry;
+#     $options->{reference_atom_site} - atom site data structure that is used
+#     for determining atom connections.
+# Outputs:
+#     appends hydrogen coordinates to $hydrogen_coord variable.
+#
 
 sub add_hydrogens_sp3
 {
@@ -1018,9 +1052,9 @@ sub add_hydrogens_sp3
         # However, there is a restriction of given angle. And the
         # calculation changes:
         #
-        #        alpha = arccos( ( - 4 - 2 * cos( beta )
-        #                              - 2 * cos( gamma )
-        #                              - 2 * cos( delta ) ) / 6 )
+        #        alpha = arccos( ( - 4 - 2 * cos( beta ) -
+        #                                2 * cos( gamma ) -
+        #                                2 * cos( delta ) ) / 6 )
         #
         # where beta is the given angle.
 
@@ -1233,6 +1267,22 @@ sub add_hydrogens_sp3
     return;
 }
 
+#
+# Adds hydrogens to the atoms which are sp2 hybridized.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $atom_id - atom id;
+#     $hydrogen_coord - hydrogen coordinates from previous calculations - hash
+#     of arrays;
+#     $missing_hydrogens - list of hydrogens that are missing;
+#     $options->{add_only_clear_postions} - adds only those atoms that have clear
+#     positions that can be determined by geometry;
+#     $options->{reference_atom_site} - atom site data structure that is used
+#     for determining atom connections.
+# Outputs:
+#     appends hydrogen coordinates to $hydrogen_coord variable.
+#
+
 sub add_hydrogens_sp2
 {
     my ( $atom_site, $atom_id, $hydrogen_coord, $missing_hydrogens,
@@ -1284,7 +1334,7 @@ sub add_hydrogens_sp2
         # part. Then desirable hydrogen angle should be calculated by
         # formula:
         #
-        # angle = ( 360 - beta ) / 2
+        #                  angle = ( 360 - beta ) / 2
         #
         # where beta is angle between two given bonds.
         my $bond_angle =
@@ -1380,6 +1430,22 @@ sub add_hydrogens_sp2
 
     return;
 }
+
+#
+# Adds hydrogens to the atoms which are sp hybridized.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $atom_id - atom id;
+#     $hydrogen_coord - hydrogen coordinates from previous calculations - hash
+#     of arrays;
+#     $missing_hydrogens - list of hydrogens that are missing;
+#     $options->{add_only_clear_postions} - adds only those atoms that have clear
+#     positions that can be determined by geometry;
+#     $options->{reference_atom_site} - atom site data structure that is used
+#     for determining atom connections.
+# Outputs:
+#     appends hydrogen coordinates to $hydrogen_coord variable.
+#
 
 sub add_hydrogens_sp
 {
