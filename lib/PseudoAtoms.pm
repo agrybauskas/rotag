@@ -52,19 +52,23 @@ our $VERSION = $VERSION;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
-# Generates pseudo-atoms from side chain models that are written in equation
-# form.
+# Generates pseudo-atoms from side chain models that are written in list of
+# analytical matrices.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser). Must have any
-#     sidechain model function applied to it (see SidechainModels.pm).
+#     sidechain model function applied to it (see SidechainModels.pm);
 #     $atom_specifier - hash of hashes for selecting atoms by attributes (see
-#     PDBxParser).
+#     PDBxParser.pm);
 #     $angle_values - hash of arrays that describe possible values of dihedral
-#     angles.
+#     angles:
 #     Ex.: { 'chi0' => [ 0, 0.4, 1.5, 2.0 ],
-#            'chi1' => [ 0, 2 ] }
+#            'chi1' => [ 0, 2 ] };
+#     $last_atom_id - last atom id for assigning new ids for pseudo atoms;
+#     $alt_group_id - alternative group id that is used to distinguish pseudo
+#     atoms. Very useful when generating rotamers.
 # Output:
-#     $pseudo_atom_site - atom site data structure for pseudo-atoms.
+#     $pseudo_atom_site - atom site data structure for pseudo-atoms with
+#     additional 'conformation' attribute.
 #
 
 sub generate_pseudo
@@ -110,10 +114,9 @@ sub generate_pseudo
         my @angle_values;
         for my $angle_name ( @angle_names ) {
             push @angle_values,
-                 [ map
-                   { $_ - $angles{"$residue_id,$residue_chain," .
-                                  "$residue_entity,$residue_alt"}
-                                 {"$angle_name"}{'value'} }
+                 [ map { $_ - $angles{"$residue_id,$residue_chain," .
+                                      "$residue_entity,$residue_alt"}
+                                     {"$angle_name"}{'value'} }
                    @{ $angle_values->{"$angle_name"} } ];
         }
 
@@ -122,10 +125,12 @@ sub generate_pseudo
             @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ){
             my %angle_values =
                 map { ( $angle_names[$_] => $angle_comb->[$_] ) }
-                0..$#angle_names;
+                    0..$#angle_names;
+
             # Evaluates matrices.
             my ( $transf_atom_coord ) =
                 @{ mult_matrix_product( $conformation, \%angle_values ) };
+
             # Adds necessary PDBx entries to pseudo atom site.
             $last_atom_id++;
             create_pdbx_entry(
@@ -156,8 +161,8 @@ sub generate_pseudo
             # Adds information about used dihedral angle values and names.
             $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
             $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
-                { map { ( $_ => $angle_values{$_}
-                              + $angles{"$residue_id,$residue_chain," .
+                { map { ( $_ => $angle_values{$_} +
+                                $angles{"$residue_id,$residue_chain," .
                                         "$residue_entity,$residue_alt"}
                                        {$_}{'value'} ) }
                   @angle_names };
@@ -172,7 +177,7 @@ sub generate_pseudo
 #
 # Generates rotamers according to given angle values.
 # Input:
-#     $residue_atom_site - atom site data structure (see PDBxParser).
+#     $atom_site - atom site data structure (see PDBxParser);
 #     $angle_values - name and value of angles in hash form.
 # Output:
 #     %generated_rotamers - atom site data structure with additional

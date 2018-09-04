@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( filter_by_unique_residue_key
+                   to_pdbx );
+
+#
+# Unit test: PDBxParser::filter_by_unique_residue_key.
+# Example: ./filter '18,1,A,.' structure.dump
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $unique_residue_key, $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+to_pdbx( { 'atom_site' =>
+               filter_by_unique_residue_key( $atom_site,
+                                             $unique_residue_key ) } );

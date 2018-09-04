@@ -7,7 +7,7 @@ use Data::Dumper;
 use Getopt::Long;
 
 use ConnectAtoms qw( connect_atoms );
-use MoleculeProperties qw( hybridization );
+use BondProperties qw( hybridization );
 use PDBxParser qw( obtain_atom_site );
 use SidechainModels qw( rotation_only );
 

@@ -1,0 +1,27 @@
+data_testing
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+ATOM 125 N N . PHE A 1 19 5.657 -1.871 71.430
+ATOM 126 C CA . PHE A 1 19 6.126 -2.494 70.191
+ATOM 127 C C . PHE A 1 19 5.935 -4.010 70.211
+ATOM 128 O O . PHE A 1 19 5.759 -4.606 69.160
+ATOM 129 C CB . PHE A 1 19 7.586 -2.101 69.896
+ATOM 130 C CG . PHE A 1 19 7.727 -0.653 69.507
+ATOM 131 C CD1 . PHE A 1 19 7.311 -0.218 68.261
+ATOM 132 C CD2 . PHE A 1 19 8.197 0.282 70.417
+ATOM 133 C CE1 . PHE A 1 19 7.385 1.129 67.915
+ATOM 134 C CE2 . PHE A 1 19 8.270 1.622 70.087
+ATOM 135 C CZ . PHE A 1 19 7.863 2.046 68.835
+#

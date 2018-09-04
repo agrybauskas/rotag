@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      filter
+                     filter_by_unique_residue_key
                      obtain_atom_site
                      obtain_pdbx_line
                      obtain_pdbx_loop
@@ -183,9 +184,9 @@ sub filter
         for my $atom_id ( keys %{ $atom_site } ) {
             my $match_counter = 0; # Tracks if all matches occured.
             for my $attribute ( keys %{ $include } ) {
-                if( exists $atom_site->{$atom_id}{$attribute}
-                 && any { $atom_site->{$atom_id}{$attribute} eq $_ }
-                    @{ $include->{$attribute} } ) {
+                if( exists $atom_site->{$atom_id}{$attribute} &&
+                    any { $atom_site->{$atom_id}{$attribute} eq $_ }
+                       @{ $include->{$attribute} } ) {
                     $match_counter += 1;
                 } else {
                     last; # Terminates early if no match is found in specifier.
@@ -203,9 +204,9 @@ sub filter
     if( defined $exclude && %{ $exclude } ) {
         for my $atom_id ( keys %filtered_atoms ) {
             for my $attribute ( keys %{ $exclude } ) {
-                if( exists $atom_site->{$atom_id}{$attribute}
-                 && any { $atom_site->{$atom_id}{$attribute} eq $_ }
-                    @{ $exclude->{$attribute} } ) {
+                if( exists $atom_site->{$atom_id}{$attribute} &&
+                    any { $atom_site->{$atom_id}{$attribute} eq $_ }
+                       @{ $exclude->{$attribute} } ) {
                     delete $filtered_atoms{$atom_id};
                     last;
                 }
@@ -251,6 +252,32 @@ sub filter
     }
 
     return \%filtered_atoms;
+}
+
+#
+# Filters atom site data structure by unique residue key.
+# Input:
+#     $atom_site - atom data structure;
+#     $unique_residue_key - a composite key that identifies residue uniquely. It
+#     consists of '_atom_site.label_seq_id', '_atom_site.label_asym_id',
+#     '_atom_site.label_entity_id' and '_atom_site.label_alt_id'.
+#     Ex.: '18,A,1,.'.
+# Output:
+#     %filtered_atoms - filtered atom data structure.
+#
+
+sub filter_by_unique_residue_key
+{
+    my ( $atom_site, $unique_residue_key ) = @_;
+    my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+        split /,/sxm, $unique_residue_key;
+    my $filtered_atoms = filter( { 'atom_site' => $atom_site,
+                                   'include' =>
+                                   { 'label_seq_id' => [ $residue_id ],
+                                     'label_asym_id' => [ $residue_chain ],
+                                     'label_entity_id' => [ $residue_entity ],
+                                     'label_alt_id' => [ $residue_alt ] } } );
+    return $filtered_atoms;
 }
 
 #
