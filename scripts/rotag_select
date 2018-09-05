@@ -74,7 +74,7 @@ GetOptions(
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
-                            my ( $help_message ) = $_ =~ m/^#(\*.*)/smx;
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
                             if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
                             if( $help_message ) { $help_message =~ s/^\*//smgx; }
                             if( $help_message ) { print $help_message, "\n"; }
