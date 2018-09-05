@@ -3,12 +3,16 @@
 use strict;
 use warnings;
 
+use autodie;
 use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 
 use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
 
 #*rotag_split [options] file1 [file2, ...]
 #*    splits PDBx into smaller ones according to the specified attribute or
@@ -40,29 +44,27 @@ use PDBxParser qw( filter
 
 # --------------------------------- Options ----------------------------------- #
 
-my %options;
-
-my $version = "1.0.0";
+my $split_by = 'entity';
+my $basename = '';
+my $extension = 'cif';
 
 GetOptions(
-    "by|b=s" => \$options{"split_by"},
-    "basename|n=s" => \$options{"basename"},
-    "extension|e=s" => \$options{"extension"},
-    "help|h" => sub { open( my $fh, "<", $0 );
-                    while( <$fh> ) {
-                        my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-                        $help_message =~ s/^\*$/ /g if $help_message;
-                        $help_message =~ s/^\*//g if $help_message;
-                        print( $help_message, "\n" ) if $help_message; }
-                    close( $fh );
-                    exit; },
-    "version|v" => sub { print $version, "\n";
-                       exit; } )
-    or die "Error in command line argument.";
-
-# Defaults.
-$options{"split_by"} //= "entity";
-$options{"extension"} //= "cif";
+    'by|b=s' => \$split_by,
+    'basename|n=s' => \$basename,
+    'extension|e=s' => \$extension,
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or die 'Error in command line argument.';
 
 my %attribute_equivalent = (
     'atomid' => 'id', 'atomname' => 'label_atom_id', 'atomtype' => 'type_symbol',
@@ -73,34 +75,34 @@ my %attribute_equivalent = (
 
 # ----------------------------------- Main ------------------------------------ #
 
-@ARGV = ( '-' ) unless @ARGV;
+local @ARGV = ( q{-} ) unless @ARGV;
 
 for my $pdbx_file ( @ARGV ) {
-    # Reads file path, stdin and "-" operator.
+    # Reads file path, stdin and '-' operator.
     my $atom_site;
     if( $pdbx_file ) {
         $atom_site = obtain_atom_site( $pdbx_file );
     } else {
-        die( "Use command \"rotag_split --help\" in order to see the manual.\n" );
+        die "Use command \"rotag_split --help\" in order to see the manual.\n";
     }
 
     # Splits PDBx.
-    my @split_by = map { split( " ", $_ ) }
-    split( ",", $options{"split_by"} );
-    @split_by = map { $attribute_equivalent{$_} } @split_by;
+    my @split_by = map { $attribute_equivalent{$_} }
+                   map { split / /sm }
+                       split /,/smx, $split_by;;
 
     my %split_groups;
     for my $atom_id ( sort keys %{ $atom_site } ) {
         # Creates group determining key that is used to sort atoms.
         my @attribute_values;
         for my $attribute ( @split_by ) {
-            push( @attribute_values, $atom_site->{$atom_id}{$attribute} );
+            push @attribute_values, $atom_site->{$atom_id}{$attribute};
         }
 
-        my $group_key = join( ",", @attribute_values );
+        my $group_key = join q{,}, @attribute_values;
 
         if( exists $split_groups{$group_key} ) {
-            push( @{ $split_groups{$group_key} }, $atom_id );
+            push @{ $split_groups{$group_key} }, $atom_id;
         } else {
             $split_groups{$group_key} = [ $atom_id ];
         }
@@ -109,29 +111,31 @@ for my $pdbx_file ( @ARGV ) {
     my $split_counter = 1;
     for my $split_group ( sort keys %split_groups ) {
         # Prints out the PDBx.
-        if( $options{'basename'} ) {
-            my $file_name =
-                $options{'basename'} . '-' . $split_counter . '.' .
-                $options{'extension'};
-            open( FH, '>', $file_name );
-            to_pdbx( { "atom_site" =>
-                           filter( { 'atom_site' => $atom_site,
-                                     'include' =>
-                                         { 'id' => $split_groups{$split_group} } } ),
-                       "add_atom_attributes" =>
-                           [ "[local]_selection_state",
-                             "[local]_selection_group" ],
-                       "fh" => \*FH } );
-            close( FH );
+        if( $basename ) {
+            my $file_name = "$basename-$split_counter.$extension";
+            open( my $fh, '>', $file_name );
+            to_pdbx(
+                { 'atom_site' =>
+                      filter( { 'atom_site' => $atom_site,
+                                'include' =>
+                                    { 'id' => $split_groups{$split_group} } } ),
+                  'add_atom_attributes' =>
+                      [ '[local]_selection_state',
+                        '[local]_selection_group' ],
+                  'fh' => \*{$fh} }
+            );
+            close( $fh );
             $split_counter++;
         } else {
-            to_pdbx( { "atom_site" =>
-                           filter( { 'atom_site' => $atom_site,
-                                     'include' =>
-                                         { 'id' => $split_groups{$split_group} } } ),
-                       "add_atom_attributes" =>
-                           [ "[local]_selection_state",
-                             "[local]_selection_group" ] } );
+            to_pdbx(
+                { 'atom_site' =>
+                      filter( { 'atom_site' => $atom_site,
+                                'include' =>
+                                    { 'id' => $split_groups{$split_group} } } ),
+                  'add_atom_attributes' =>
+                      [ '[local]_selection_state',
+                        '[local]_selection_group' ] }
+            );
         }
     }
 }
