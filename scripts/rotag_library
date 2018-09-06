@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use autodie;
 use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
@@ -13,11 +14,15 @@ use ErrorHandling qw( parse_errors
                       parse_warnings );
 use BondProperties qw( hybridization );
 use PDBxParser qw( filter
+                   filter_by_unique_residue_key
                    obtain_atom_site
                    to_pdbx );
 
 use PseudoAtoms qw( add_hydrogens
                     generate_library );
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
 
 #*rotag_library [options] file1 [file2, ...]
 #*    generate rotamer library.
@@ -62,132 +67,130 @@ use PseudoAtoms qw( add_hydrogens
 
 # --------------------------------- Options ----------------------------------- #
 
-my %options;
-
-my $version = "1.0.0";
+my $conf_model = 'rotation_only';
+my $interactions = 'composite';
+my $small_angle = 0.1;
+my $energy_cutoff_atom = 0.4;
+my $energy_cutoff_residue = 1.0;
+my $threads = 1;
+my $top_rank;
+my $top_ratio;
+my $parameters = q{};
 
 GetOptions(
-    "model|m=s" => \$options{"conf_model"},
-    "potential|u=s" => \$options{"interactions"},
-    "parameters|p=s" => \$options{"parameters"},
-    "angle-step|a=s" => \$options{"small_angle"},
-    "cutoff-atom|c=s" => \$options{"energy_cutoff_atom"},
-    "cutoff-residue|C=s" => \$options{"energy_cutoff_residue"},
-    "top-rank|t=s" => \$options{"top_rank"},
-    "top-ratio|T=s" => \$options{"top_ratio"},
-    "threads|n=s" => \$options{"threads"},
-    "help|h" => sub { open( my $fh, "<", $0 );
-                    while( <$fh> ) {
-                        my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-                        $help_message =~ s/^\*$/ /g if $help_message;
-                        $help_message =~ s/^\*//g if $help_message;
-                        print( $help_message, "\n" ) if $help_message; }
-                    close( $fh );
-                    exit; },
-    "version|v" => sub { print $version, "\n";
-                       exit; } )
-    or die "Error in command line argument.";
+    'model|m=s' => \$conf_model,
+    'potential|u=s' => \$interactions,
+    'parameters|p=s' => \$parameters,
+    'angle-step|a=s' => \$small_angle,
+    'cutoff-atom|c=s' => \$energy_cutoff_atom,
+    'cutoff-residue|C=s' => \$energy_cutoff_residue,
+    'top-rank|t=s' => \$top_rank,
+    'top-ratio|T=s' => \$top_ratio,
+    'threads|n=s' => \$threads,
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or die 'Error in command line argument.';
 
-# Default options.
-$options{"conf_model"} = "rotation_only" unless $options{"conf_model"};
-$options{"interactions"} = "composite" unless $options{"interactions"};
-$options{"small_angle"} = 0.1 unless $options{"small_angle"};
-$options{"energy_cutoff_atom"} = 0.4 unless $options{"energy_cutoff_atom"};
-$options{"energy_cutoff_residue"} = 1.0 unless $options{"energy_cutoff_residue"};
-$options{"threads"} = 1 unless $options{"threads"};
-$options{"parameters"} = '' unless $options{"parameters"};
-$options{"parameters"} = {
+$parameters = {
     map { $_->[0] => $_->[1] }
-    map { [ split( ' ', $_ ) ] }
-    split( ';', $options{"parameters"} )
+    map { [ split / /sm, $_ ] }
+    split /;/sxm, $parameters
 };
 
 # ----------------------------------- Main ------------------------------------ #
 
-@ARGV = ( '-' ) unless @ARGV;
+local @ARGV = ( q{-} ) unless @ARGV;
 
 for my $pdbx_file ( @ARGV ) {
-    # Reads file path, stdin and "-" operator.
+    # Reads file path, stdin and '-' operator.
     my $atom_site;
     if( $pdbx_file ) {
         $atom_site = obtain_atom_site( $pdbx_file );
     } else {
-        die( "Use command \"rotag_library --help\" in order to see the manual.\n" );
+        die "Use command \"rotag_library --help\" in order to see the manual.\n";
     }
 
     my $selected_atom_site =
-        filter( { "atom_site" => $atom_site,
-                  "include" => { "[local]_selection_state" => [ "T", "S" ] } } );
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
     my @residue_unique_keys =
         uniq (
-            map { join( ",", @{ $_ } ) }
-            @{ filter( { "atom_site" => $selected_atom_site,
-                         "include" => { "[local]_selection_state" => [ "T" ] },
-                         "data" =>
-                             [ "label_seq_id", "label_asym_id", "label_entity_id",
-                               "label_alt_id" ] } ) } );
+            map { join q{,}, @{ $_ } }
+            @{ filter( { 'atom_site' => $selected_atom_site,
+                         'include' => { '[local]_selection_state' => [ 'T' ] },
+                         'data' =>
+                             [ 'label_seq_id', 'label_asym_id','label_entity_id',
+                               'label_alt_id' ] } ) } );
 
     # Starts generating rotamer library.
     my $rotamer_library =
         generate_library(
-            { "atom_site" => $selected_atom_site,
-              "residue_unique_keys" => \@residue_unique_keys,
-              "small_angle" => $options{"small_angle"} * $PI,
-              "conf_model" => $options{"conf_model"},
-              "interactions" => $options{"interactions"},
-              "parameters" => $options{"parameters"},
-              "energy_cutoff_atom" => $options{"energy_cutoff_atom"},
-              "energy_cutoff_residue" => $options{"energy_cutoff_residue"},
-              "top" => $options{"top"},
-              "threads" => $options{"threads"}
+            { 'atom_site' => $selected_atom_site,
+              'residue_unique_keys' => \@residue_unique_keys,
+              'small_angle' => $small_angle * $PI,
+              'conf_model' => $conf_model,
+              'interactions' => $interactions,
+              'parameters' => $parameters,
+              'energy_cutoff_atom' => $energy_cutoff_atom,
+              'energy_cutoff_residue' => $energy_cutoff_residue,
+              'threads' => $threads
             } );
 
     # Collects residue angle and energy data.
     # TODO: should not forget adding atoms that make up dihedral angles.
     my %pdbx_loops; # PDBx loop data structure (see PDBxParser.pm to_pdbx)
 
-    $pdbx_loops{"_[local]_rotamer_angle"}{"attributes"} =
-        [ "id", "rotamer_id", "label_seq_id", "label_comp_id", "label_asym_id",
-          "label_entity_id", "label_alt_id", "type", "value" ];
-    $pdbx_loops{"_[local]_rotamer_energy"}{"attributes"} =
-        [ "id", "rotamer_id", "calculation_method", "value"];
+    $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} =
+        [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
+          'label_entity_id', 'label_alt_id', 'type', 'value' ];
+    $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
+        [ 'id', 'rotamer_id', 'calculation_method', 'value'];
 
     my $angle_id = 1;
     my $energy_id = 1;
     my $rotamer_id = 1;
-    for my $residue_unique_key ( sort { $a cmp $b } keys %{ $rotamer_library } ) {
+    for my $residue_unique_key ( sort { $a cmp $b } keys %{ $rotamer_library } ){
         my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-            split( ',', $residue_unique_key );
+            split /,/sxm, $residue_unique_key;
         my @residue_name =
-            uniq( @{ filter( { "atom_site" => $selected_atom_site,
-                               "include" =>
+            uniq( @{ filter( { 'atom_site' => $selected_atom_site,
+                               'include' =>
                                    { 'label_seq_id' => [ $residue_id ],
                                      'label_asym_id' => [ $residue_chain ],
                                      'label_alt_id' => [ $residue_alt ],
                                      'label_entity_id' => [ $residue_entity ] },
-                               "data" => [ "label_comp_id" ],
-                               "is_list" => 1 } ) } );
+                               'data' => [ 'label_comp_id' ],
+                               'is_list' => 1 } ) } );
 
         # Checks if 'top' option is int or float and filters rotamers accordingly.
         my @rotamers;
-        if( defined $options{"top_rank"} ) {
-            my $top_rank =
-                $options{"top_rank"} <=
-                    scalar(@{$rotamer_library->{$residue_unique_key}}) ?
-                $options{"top_rank"} :
-                scalar( @{ $rotamer_library->{$residue_unique_key} } );
+        if( defined $top_rank ) {
+            $top_rank =
+                $top_rank <= scalar @{$rotamer_library->{$residue_unique_key}} ?
+                $top_rank :
+                scalar @{ $rotamer_library->{$residue_unique_key} };
             @rotamers =
-                sort { $a->{'potential_energy_value'}
-                   <=> $b->{'potential_energy_value'} }
+                sort { $a->{'potential_energy_value'} <=>
+                       $b->{'potential_energy_value'} }
                     @{ $rotamer_library->{$residue_unique_key} };
             @rotamers = @rotamers[0..$top_rank-1];
-        } elsif( defined $options{"top_ratio"} ) {
-            my $top_rank =
+        } elsif( defined $top_ratio ) {
+            $top_rank =
                 int( scalar( @{ $rotamer_library->{$residue_unique_key} } )
-              * $options{"top_ratio"} );
+              * $top_ratio );
             @rotamers =
-                sort { $a->{'potential_energy_value'}
-                   <=> $b->{'potential_energy_value'} }
+                sort { $a->{'potential_energy_value'} <=>
+                       $b->{'potential_energy_value'} }
                     @{ $rotamer_library->{$residue_unique_key} };
             @rotamers = @rotamers[0..$top_rank-1];
         } else {
@@ -196,19 +199,19 @@ for my $pdbx_file ( @ARGV ) {
 
         for my $rotamer ( @rotamers ) {
             # Colects rotamer angle data.
-            for my $angle_name ( sort { $a cmp $b } keys %{ $rotamer->{"angles"} } ){
-                my $angle_value = $rotamer->{"angles"}{$angle_name};
-                push( @{ $pdbx_loops{"_[local]_rotamer_angle"}{"data"} },
-                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
-                      $residue_chain, $residue_entity, $residue_alt, $angle_name,
-                      sprintf( "%.3f", $angle_value ) );
+            for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
+                my $angle_value = $rotamer->{'angles'}{$angle_name};
+                push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
+                     $angle_id, $rotamer_id, $residue_id, $residue_name[0],
+                     $residue_chain, $residue_entity, $residue_alt, $angle_name,
+                     sprintf '%.3f', $angle_value );
                 $angle_id++;
             }
 
             # Colects rotamer energy data.
-            push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-                  $energy_id, $rotamer_id, $rotamer->{"potential"},
-                  $rotamer->{"potential_energy_value"} );
+            push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
+                 $energy_id, $rotamer_id, $rotamer->{'potential'},
+                 $rotamer->{'potential_energy_value'};
 
             $energy_id++;
             $rotamer_id++;
@@ -216,7 +219,7 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     # Prints out cif.
-    to_pdbx( { "atom_site" => $selected_atom_site,
-               "add_atom_attributes" => [ "[local]_selection_state" ],
-               "pdbx_loops" => \%pdbx_loops } );
+    to_pdbx( { 'atom_site' => $selected_atom_site,
+               'add_atom_attributes' => [ '[local]_selection_state' ],
+               'pdbx_loops' => \%pdbx_loops } );
 }
