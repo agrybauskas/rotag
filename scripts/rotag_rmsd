@@ -64,8 +64,8 @@ for my $pdbx_file ( @ARGV ) {
 
     # Calculates RMSD.
     my %pdbx_loops;
-    $pdbx_loops{'_[local]_dihedral_angle'}{'attributes'} =
-        [ 'id', 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id', 'value' ];
+    $pdbx_loops{'_[local]_rmsd'}{'attributes'} =
+        [ 'id', 'group_1_id', 'group_2_id', 'value' ];
 
     my $rmsd_atom_site =
         filter( { 'atom_site' => $atom_site,
@@ -76,8 +76,8 @@ for my $pdbx_file ( @ARGV ) {
                            'data' => [ '[local]_selection_group' ],
                            'is_list' => 1 } ) } );
 
-    my @rmsd;
     if( $is_strict ) {
+        my $rmsd_counter = 1;
         for( my $i = 0; $i <= $#group_ids; $i = $i + 2 ) {
             my $first_group_data =
                 filter( { 'atom_site' => $rmsd_atom_site,
@@ -118,10 +118,14 @@ for my $pdbx_file ( @ARGV ) {
                          [ (@{ $second_group_data->[$i] })[1..3] ];
                 }
             }
-            push @rmsd, rmsd( \@first_group_coord, \@second_group_coord );
-        }
 
+            push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                 $rmsd_counter, $group_ids[$i], $group_ids[$i+1],
+                 sprintf '%.3f',rmsd( \@first_group_coord, \@second_group_coord);
+            $rmsd_counter++;
+        }
     } else {
+        my $rmsd_counter = 1;
         for( my $i = 0; $i <= $#group_ids; $i = $i + 2 ) {
             my $first_group_coord =
                 filter( { 'atom_site' => $rmsd_atom_site,
@@ -133,12 +137,14 @@ for my $pdbx_file ( @ARGV ) {
                           'include' =>
                               { '[local]_selection_group' => [ $group_ids[$i+1] ] },
                           'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
-            push @rmsd, rmsd( $first_group_coord, $second_group_coord );
+
+            push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                 $rmsd_counter, $group_ids[$i], $group_ids[$i+1],
+                 sprintf '%.3f', rmsd( $first_group_coord, $second_group_coord );
+            $rmsd_counter++;
         }
     }
 
-    # TODO: change to cif format.
-    foreach( @rmsd ) {
-        printf "%.3f\n", $_;
-    }
+    # Prints out cif.
+    to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
 }
