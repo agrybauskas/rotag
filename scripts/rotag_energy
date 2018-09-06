@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use autodie;
 use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( any
@@ -24,8 +25,12 @@ use Grid qw( grid_box
 use BondProperties qw( hybridization );
 use PDBxParser qw( filter
                    obtain_atom_site
-                   to_pdbx );
+                   to_pdbx
+                   unique_residue_key );
 use PseudoAtoms qw( add_hydrogens );
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
 
 #*rotag_energy [options] file1 [file2, ...]
 #*    calculates potential energy of selected atoms.
@@ -52,29 +57,30 @@ use PseudoAtoms qw( add_hydrogens );
 
 # --------------------------------- Options ----------------------------------- #
 
-my %options;
-
-my $version = '1.0.0';
+my $interactions = 'composite';
 my $do_rotamer = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
+my $threads = 1;
 
 GetOptions(
-    'potential|u=s' => \$options{'interactions'},
+    'potential|u=s' => \$interactions,
     'rotamer|r' => sub { $do_rotamer = 1 },
     'pairwise|p' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
-    'help|h' => sub { open( my $fh, '<', $0 );
-                    while( <$fh> ) {
-                        my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-                        $help_message =~ s/^\*$/ /g if $help_message;
-                        $help_message =~ s/^\*//g if $help_message;
-                        print( $help_message, "\n" ) if $help_message; }
-                    close( $fh );
-                    exit; },
-    'version|v' => sub { print $version, "\n";
-                       exit; } )
-    or die 'Error in command line argument.';
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or die 'Error in command line argument.';
 
 # Defaults.
 my %potential_functions = (
@@ -83,28 +89,25 @@ my %potential_functions = (
     'soft_sphere' => \&soft_sphere,
     'leonard_jones' => \&leonard_jones,
     'coulomb' => \&coulomb,
-    'h_bond' => \&h_bond
+    'h_bond' => \&h_bond,
 );
-$options{'interactions'} //= 'composite';
-$options{'threads'} //= 1;
 
 # ----------------------------------- Main ------------------------------------ #
 
-@ARGV = ( '-' ) unless @ARGV;
+local @ARGV = ( q{-} ) unless @ARGV;
 
 for my $pdbx_file ( @ARGV ) {
-    # Reads file path, stdin and "-" operator.
+    # Reads file path, stdin and '-' operator.
     my $atom_site;
     if( $pdbx_file ) {
         $atom_site = obtain_atom_site( $pdbx_file );
     } else {
-        die( "Use command \"rotag_energy --help\" in order to see the manual.\n" );
+        die "Use command \"rotag_energy --help\" in order to see the manual.\n";
     }
 
     # Adds hydrogens for calculations where h_bond might be present.
     my %parameters;
-    if( $options{'interactions'} eq 'composite'
-     || $options{'interactions'} eq 'h_bond' ) {
+    if( $interactions eq 'composite' || $interactions eq 'h_bond' ) {
         my %atom_site_with_hydrogens =
             ( %{ $atom_site },
               %{ add_hydrogens( $atom_site,
@@ -144,7 +147,7 @@ for my $pdbx_file ( @ARGV ) {
 
     my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
 
-    my $potential_function = $potential_functions{$options{'interactions'}};
+    my $potential_function = $potential_functions{$interactions};
 
     my %pdbx_loops;
     my $calculation_id = 1;
@@ -174,7 +177,8 @@ for my $pdbx_file ( @ARGV ) {
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         for my $atom_id ( @{ $target_cells->{$cell} } ) {
             if( $do_rotamer ) {
-                next if any { $selected_atom_site->{$atom_id}{'label_atom_id'} eq $_ }
+                next if any { $selected_atom_site->{$atom_id}
+                                                   {'label_atom_id'} eq $_ }
                             @MAINCHAIN_NAMES;
             }
 
@@ -182,11 +186,12 @@ for my $pdbx_file ( @ARGV ) {
                  $atom_residue_id, $atom_residue_name,
                  $atom_chain, $atom_entity, $atom_alt ) =
                      map { $selected_atom_site->{$atom_id}{$_} }
-                         ( 'type_symbol', 'label_atom_id', 'label_seq_id',
-                           'label_comp_id', 'label_asym_id', 'label_entity_id',
-                           'label_alt_id' );
+                         qw( type_symbol label_atom_id label_seq_id
+                             label_comp_id label_asym_id label_entity_id
+                             label_alt_id );
+
             my $residue_unique_key =
-                join(',',$atom_residue_id, $atom_chain, $atom_entity, $atom_alt);
+                join q{,}, $atom_residue_id, $atom_chain, $atom_entity, $atom_alt;
 
             my $potential_energy = 0;
             my %potential_energy; # Used when decomposing composite energy values.
@@ -202,9 +207,9 @@ for my $pdbx_file ( @ARGV ) {
                          $neighbour_residue_id, $neighbour_residue_name,
                          $neighbour_chain, $neighbour_entity, $neighbour_alt ) =
                         map { $selected_atom_site->{$neighbour_atom_id}{$_} }
-                            ( 'type_symbol', 'label_atom_id', 'label_seq_id',
-                              'label_comp_id', 'label_asym_id', 'label_entity_id',
-                              'label_alt_id' );
+                            qw( type_symbol label_atom_id label_seq_id
+                                label_comp_id label_asym_id label_entity_id
+                                label_alt_id );
 
                     my $pairwise_potential_energy =
                         $potential_function->(
@@ -217,31 +222,31 @@ for my $pdbx_file ( @ARGV ) {
                             for my $interaction (
                                 grep { $_ ne 'composite' }
                                 sort keys %{ $pairwise_potential_energy } ) {
-                                push( @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
-                                      $calculation_id, $atom_id, $atom_symbol,
-                                      $atom_name, $atom_residue_id,
-                                      $atom_residue_name, $atom_chain,
-                                      $atom_entity, $atom_alt,
-                                      $neighbour_atom_id, $neighbour_symbol,
-                                      $neighbour_name, $neighbour_residue_id,
-                                      $neighbour_residue_name, $neighbour_chain,
-                                      $neighbour_entity, $neighbour_alt,
-                                      $interaction,
-                                      sprintf( "%.3f", $pairwise_potential_energy->{$interaction} ) );
+                                push @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
+                                     $calculation_id, $atom_id, $atom_symbol,
+                                     $atom_name, $atom_residue_id,
+                                     $atom_residue_name, $atom_chain,
+                                     $atom_entity, $atom_alt,
+                                     $neighbour_atom_id, $neighbour_symbol,
+                                     $neighbour_name, $neighbour_residue_id,
+                                     $neighbour_residue_name, $neighbour_chain,
+                                     $neighbour_entity, $neighbour_alt,
+                                     $interaction,
+                                     sprintf '%.3f', $pairwise_potential_energy->{$interaction};
                                 $calculation_id++;
                             }
                         } else {
-                            push( @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
-                                  $calculation_id, $atom_id, $atom_symbol,
-                                  $atom_name, $atom_residue_id,
-                                  $atom_residue_name, $atom_chain, $atom_entity,
-                                  $atom_alt,
-                                  $neighbour_atom_id, $neighbour_symbol,
-                                  $neighbour_name, $neighbour_residue_id,
-                                  $neighbour_residue_name, $neighbour_chain,
-                                  $neighbour_entity, $neighbour_alt,
-                                  $options{'interactions'},
-                                  sprintf( "%.3f", $pairwise_potential_energy ) );
+                            push @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
+                                 $calculation_id, $atom_id, $atom_symbol,
+                                 $atom_name, $atom_residue_id,
+                                 $atom_residue_name, $atom_chain, $atom_entity,
+                                 $atom_alt,
+                                 $neighbour_atom_id, $neighbour_symbol,
+                                 $neighbour_name, $neighbour_residue_id,
+                                 $neighbour_residue_name, $neighbour_chain,
+                                 $neighbour_entity, $neighbour_alt,
+                                 $interactions,
+                                 sprintf '%.3f', $pairwise_potential_energy;
                             $calculation_id++;
                         }
                     } elsif( $do_decompose ) {
@@ -263,22 +268,22 @@ for my $pdbx_file ( @ARGV ) {
             }
 
             if( ! $do_pairwise && ! $do_decompose && ! $do_rotamer ) {
-                push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
-                      $calculation_id, $atom_id, $atom_symbol, $atom_name,
-                      $atom_residue_id, $atom_residue_name, $atom_chain,
-                      $atom_entity, $atom_alt, $options{'interactions'},
-                      sprintf( "%.3f", $potential_energy ) );
+                push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
+                     $calculation_id, $atom_id, $atom_symbol, $atom_name,
+                     $atom_residue_id, $atom_residue_name, $atom_chain,
+                     $atom_entity, $atom_alt, $interactions,
+                     sprintf '%.3f', $potential_energy;
                 $calculation_id++;
             }
 
             if( $do_decompose && ! $do_rotamer ) {
                 for my $interaction (
                     grep { $_ ne 'composite' } sort keys %potential_energy ) {
-                    push( @{ $pdbx_loops{"_[local]_energy"}{"data"} },
-                          $calculation_id, $atom_id, $atom_symbol, $atom_name,
-                          $atom_residue_id, $atom_residue_name, $atom_chain,
-                          $atom_entity, $atom_alt, $interaction,
-                          sprintf( "%.3f", $potential_energy{$interaction} ) );
+                    push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
+                         $calculation_id, $atom_id, $atom_symbol, $atom_name,
+                         $atom_residue_id, $atom_residue_name, $atom_chain,
+                         $atom_entity, $atom_alt, $interaction,
+                         sprintf '%.3f', $potential_energy{$interaction};
                     $calculation_id++;
                 }
             }
@@ -287,8 +292,8 @@ for my $pdbx_file ( @ARGV ) {
                 if( $do_decompose ) {
                     for my $interaction ( grep { $_ ne 'composite' }
                                           sort keys %potential_energy ) {
-                        if( exists $residue_energy{$residue_unique_key}
-                         && exists $residue_energy{$residue_unique_key}
+                        if( exists $residue_energy{$residue_unique_key} &&
+                            exists $residue_energy{$residue_unique_key}
                                                   {$interaction} ) {
                             $residue_energy{$residue_unique_key}{$interaction} +=
                                 $potential_energy{$interaction};
@@ -298,16 +303,14 @@ for my $pdbx_file ( @ARGV ) {
                         }
                     }
                 } else {
-                    if( exists $residue_energy{$residue_unique_key}
-                     && exists $residue_energy{$residue_unique_key}
-                                              {$options{'interactions'}} ) {
+                    if( exists $residue_energy{$residue_unique_key} &&
+                        exists $residue_energy{$residue_unique_key}
+                                              {$interactions} ) {
                         $residue_energy{$residue_unique_key}
-                                       {$options{'interactions'}} +=
-                            $potential_energy;
+                                       {$interactions} += $potential_energy;
                     } else {
                         $residue_energy{$residue_unique_key}
-                                       {$options{'interactions'}} =
-                            $potential_energy;
+                                       {$interactions} = $potential_energy;
                     }
                 }
             }
@@ -315,17 +318,19 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( $do_rotamer ) {
-        my $calculation_id = 1;
+        $calculation_id = 1;
         for my $residue_unique_key ( sort keys %residue_energy ) {
-            for my $interaction ( sort keys %{ $residue_energy{$residue_unique_key} } ) {
-                push( @{ $pdbx_loops{"_[local]_rotamer_energy"}{"data"} },
-                      $calculation_id, split( ',', $residue_unique_key ),
-                      $interaction,
-                      sprintf( "%.3f", $residue_energy{$residue_unique_key}{$interaction} ) );
+            for my $interaction (
+                sort keys %{ $residue_energy{$residue_unique_key} } ) {
+                push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
+                     $calculation_id, split( /,/sxm, $residue_unique_key ),
+                     $interaction,
+                     sprintf '%.3f', $residue_energy{$residue_unique_key}
+                                                    {$interaction};
                 $calculation_id++;
             }
         }
     }
 
-    to_pdbx( { "pdbx_loops" => \%pdbx_loops } );
+    to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
 }

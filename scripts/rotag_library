@@ -14,7 +14,6 @@ use ErrorHandling qw( parse_errors
                       parse_warnings );
 use BondProperties qw( hybridization );
 use PDBxParser qw( filter
-                   filter_by_unique_residue_key
                    obtain_atom_site
                    to_pdbx );
 
@@ -204,7 +203,7 @@ for my $pdbx_file ( @ARGV ) {
                 push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
                      $residue_chain, $residue_entity, $residue_alt, $angle_name,
-                     sprintf '%.3f', $angle_value );
+                     sprintf '%.3f', $angle_value;
                 $angle_id++;
             }
 
