@@ -73,8 +73,18 @@ for my $pdbx_file ( @ARGV ) {
         die "Use command \"rotag_add --help\" in order to see the manual.\n";
     }
 
+    my $selected_atom_site =
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+    my $target_atom_ids =
+        filter( { 'atom_site' => $selected_atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T' ] },
+                  'data' => [ 'id' ],
+                  'is_list' => 1 } );
+
     if( $add_rotamer_atoms ) {
-        # Extracts rotamer angle data that will used to generate atom coordinates.
+        # Extracts rotamer angle data that will used to generate atom
+        # coordinates.
         my $pdbx_loops;
         if( $pdbx_file ) {
             $pdbx_loops =
@@ -83,16 +93,6 @@ for my $pdbx_file ( @ARGV ) {
             die 'No library was detected. Generate library with ' .
                 '\'rotag_library\' program.';
         }
-
-        # Generates actual pseudo atoms from rotamer angles.
-        my $selected_atom_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
-        my $target_atom_ids =
-            filter( { 'atom_site' => $selected_atom_site,
-                      'include' => { '[local]_selection_state' => [ 'T' ] },
-                      'data' => [ 'id' ],
-                      'is_list' => 1 } );
 
         # Generates data structure from $pdbx_loops.
         # TODO: maybe generate general data structure that can be created through
@@ -153,6 +153,9 @@ for my $pdbx_file ( @ARGV ) {
                    'add_atom_attributes' => [ '[local]_selection_state' ],
                    'pdbx_loops' => $pdbx_loops } );
     } elsif( $add_hydrogens ) {
-
+        # Prints out cif.
+        to_pdbx( { 'atom_site' => { %{ $selected_atom_site },
+                                    %{ add_hydrogens( $selected_atom_site ) } },
+                   'add_atom_attributes' => [ '[local]_selection_state' ] } );
     }
 }
