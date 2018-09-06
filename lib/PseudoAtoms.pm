@@ -856,13 +856,14 @@ sub add_hydrogens
 
     my ( $add_only_clear_positions, $use_existing_connections,
          $use_existing_hybridizations, $reference_atom_site,
-         $exclude_by_atom_name, $alt_group_id ) = ( # TODO: make more generalized
-        $options->{'add_only_clear_positions'},     # solution.
-        $options->{'use_existing_connections'},
-        $options->{'use_existing_hybridizations'},
-        $options->{'reference_atom_site'}, # Useful when analyzing only parts
-        $options->{'exclude_by_atom_name'},
-        $options->{'alt_group_id'}, ); # of atom site.
+         $exclude_by_atom_name, $alt_group_id, $use_origins_alt_group_id ) =
+        ( $options->{'add_only_clear_positions'},
+          $options->{'use_existing_connections'},
+          $options->{'use_existing_hybridizations'},
+          $options->{'reference_atom_site'},
+          $options->{'exclude_by_atom_name'},
+          $options->{'alt_group_id'},
+          $options->{'use_origins_alt_group_id'}, );
 
     $add_only_clear_positions //= 0;
     $use_existing_connections //= 0;
@@ -870,6 +871,7 @@ sub add_hydrogens
     $reference_atom_site //= $atom_site;
     $exclude_by_atom_name //= [];
     $alt_group_id //= '1';
+    $use_origins_alt_group_id //= 0;
 
     my %atom_site = %{ $atom_site };
 
@@ -945,7 +947,9 @@ sub add_hydrogens
                   'id' => $last_atom_id,
                   'type_symbol' => 'H',
                   'label_atom_id' => $hydrogen_name,
-                  'label_alt_id' => $alt_group_id,
+                  'label_alt_id' =>
+                      $use_origins_alt_group_id ?
+                      $atom_site->{$atom_id}{'label_alt_id'} : $alt_group_id,
                   'label_comp_id' => $atom_site->{$atom_id}{'label_comp_id'},
                   'label_asym_id' => $atom_site->{$atom_id}{'label_asym_id'},
                   'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},

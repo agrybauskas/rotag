@@ -154,8 +154,10 @@ for my $pdbx_file ( @ARGV ) {
                    'pdbx_loops' => $pdbx_loops } );
     } elsif( $add_hydrogens ) {
         # Prints out cif.
-        to_pdbx( { 'atom_site' => { %{ $selected_atom_site },
-                                    %{ add_hydrogens( $selected_atom_site ) } },
+        to_pdbx( { 'atom_site' =>
+                   { %{ $selected_atom_site },
+                     %{ add_hydrogens( $selected_atom_site,
+                                       { 'use_origins_alt_group_id' => 1 } ) } },
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     }
 }
