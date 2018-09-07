@@ -415,6 +415,10 @@ sub generate_library
                         [ @allowed_angles ],
                        $threads ) };
 
+            if( ! @{ $allowed_angles } ) {
+                die 'No possible rotamer solutions were detected.';
+            }
+
             for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                 my %angles =
                     map { ( "chi$_" => $allowed_angles->[$i][$_] ) }

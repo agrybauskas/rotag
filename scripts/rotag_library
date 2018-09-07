@@ -146,10 +146,6 @@ for my $pdbx_file ( @ARGV ) {
               'threads' => $threads
             } );
 
-    if( ! %{ $rotamer_library } ) {
-        die "No rotamers were generated.\n";
-    }
-
     # Collects residue angle and energy data.
     # TODO: should not forget adding atoms that make up dihedral angles.
     my %pdbx_loops; # PDBx loop data structure (see PDBxParser.pm to_pdbx)
