@@ -17,15 +17,20 @@ sub parse_errors
 {
     my ( $args ) = @_;
 
-    my ( $program, $filename, $message ) = (
+    my ( $program, $filename, $type, $message ) = (
         $args->{'program'},
         $args->{'filename'},
+        $args->{'type'},
         $args->{'message'},
     );
 
+    $type //= 'ERROR';
+
+    if( $filename eq '-' ) { $filename = 'STDIN'; }
+
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
-    print {*STDERR} "ERROR: $program: '$filename' - $message";
+    print {*STDERR} "$type: $program: $filename - $message";
 
     exit 1;
 }
@@ -34,15 +39,20 @@ sub parse_warnings
 {
     my ( $args ) = @_;
 
-    my ( $program, $filename, $message ) = (
+    my ( $program, $type, $filename, $message ) = (
         $args->{'program'},
         $args->{'filename'},
+        $args->{'type'},
         $args->{'message'},
     );
 
+    $type //= 'WARNING';
+
+    if( $filename eq '-' ) { $filename = 'STDIN'; }
+
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
-    print {*STDERR} "WARNING: $program: '$filename' - $message";
+    print {*STDERR} "$type: $program: '$filename' - $message";
 
     return;
 }

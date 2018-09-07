@@ -133,22 +133,30 @@ for my $pdbx_file ( @ARGV ) {
                                'label_alt_id' ] } ) } );
 
     # Starts generating rotamer library.
-    my $rotamer_library =
-        generate_library(
-            { 'atom_site' => $selected_atom_site,
-              'residue_unique_keys' => \@residue_unique_keys,
-              'small_angle' => $small_angle * $PI,
-              'conf_model' => $conf_model,
-              'interactions' => $interactions,
-              'parameters' => $parameters,
-              'energy_cutoff_atom' => $energy_cutoff_atom,
-              'energy_cutoff_residue' => $energy_cutoff_residue,
-              'threads' => $threads
-            } );
+    my $rotamer_library;
+    eval {
+        $rotamer_library =
+            generate_library(
+                { 'atom_site' => $selected_atom_site,
+                  'residue_unique_keys' => \@residue_unique_keys,
+                  'small_angle' => $small_angle * $PI,
+                  'conf_model' => $conf_model,
+                  'interactions' => $interactions,
+                  'parameters' => $parameters,
+                  'energy_cutoff_atom' => $energy_cutoff_atom,
+                  'energy_cutoff_residue' => $energy_cutoff_residue,
+                  'threads' => $threads
+                } );
+    };
+    if( $@ ) {
+        parse_errors( { 'program' => $0,
+                        'filename' => $pdbx_file,
+                        'type' => 'NOTE',
+                        'message' => $@ } );
+    }
 
     # Collects residue angle and energy data.
-    # TODO: should not forget adding atoms that make up dihedral angles.
-    my %pdbx_loops; # PDBx loop data structure (see PDBxParser.pm to_pdbx)
+    my %pdbx_loops;
 
     $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} =
         [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
