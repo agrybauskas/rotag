@@ -254,10 +254,10 @@ for my $pdbx_file ( @ARGV ) {
                             grep { $_ ne 'composite' }
                             sort keys %{ $pairwise_potential_energy } ) {
                             if( $potential_energy{$interaction} ) {
-                                $potential_energy{$interaction} =
+                                $potential_energy{$interaction} +=
                                     $pairwise_potential_energy->{$interaction};
                             } else {
-                                $potential_energy{$interaction} +=
+                                $potential_energy{$interaction} =
                                     $pairwise_potential_energy->{$interaction};
                             }
                         }
