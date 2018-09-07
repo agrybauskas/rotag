@@ -30,7 +30,8 @@ use ConnectAtoms qw( append_connections
                      connect_atoms
                      is_neighbour
                      is_second_neighbour );
-use Constants qw( $PI );
+use Constants qw( $PI
+                  $SIG_FIGS );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product
@@ -137,9 +138,9 @@ sub generate_pseudo
                   'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
                   'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
                   'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
-                  'cartn_x' => sprintf( '%.3f', $transf_atom_coord->[0][0] ),
-                  'cartn_y' => sprintf( '%.3f', $transf_atom_coord->[1][0] ),
-                  'cartn_z' => sprintf( '%.3f', $transf_atom_coord->[2][0] ),
+                  'cartn_x' => sprintf( $SIG_FIGS, $transf_atom_coord->[0][0] ),
+                  'cartn_y' => sprintf( $SIG_FIGS, $transf_atom_coord->[1][0] ),
+                  'cartn_z' => sprintf( $SIG_FIGS, $transf_atom_coord->[2][0] ),
                 } );
             # Adds atom id that pseudo atoms was made of.
             $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
@@ -955,11 +956,14 @@ sub add_hydrogens
                   'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},
                   'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
                   'cartn_x' =>
-                      sprintf( '%.3f', $hydrogen_coord{$hydrogen_name}->[0][0] ),
+                      sprintf( $SIG_FIGS,
+                               $hydrogen_coord{$hydrogen_name}->[0][0] ),
                   'cartn_y' =>
-                      sprintf( '%.3f', $hydrogen_coord{$hydrogen_name}->[1][0] ),
+                      sprintf( $SIG_FIGS,
+                               $hydrogen_coord{$hydrogen_name}->[1][0] ),
                   'cartn_z' =>
-                      sprintf( '%.3f', $hydrogen_coord{$hydrogen_name}->[2][0] ),
+                      sprintf( $SIG_FIGS,
+                               $hydrogen_coord{$hydrogen_name}->[2][0] ),
                 } );
             # Adds additional pseudo-atom flag for future filtering.
             $hydrogen_site{$last_atom_id}{'is_pseudo_atom'} = 1;

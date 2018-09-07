@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Constants qw( $SIG_FIGS );
 use LinearAlgebra qw( switch_ref_frame );
 
 #
@@ -32,5 +33,5 @@ my ( $ref_frame_coord ) =
                          $ref_frame ) };
 
 for my $row ( @{ $ref_frame_coord } ) {
-    print( join( "\t", map { sprintf( "%.3f", $_ ) } @{ $row } ), "\n" );
+    print( join( "\t", map { sprintf( $SIG_FIGS, $_ ) } @{ $row } ), "\n" );
 }

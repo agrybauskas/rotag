@@ -8,6 +8,7 @@ use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
 
+use Constants qw( $SIG_FIGS );
 use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
@@ -121,7 +122,8 @@ for my $pdbx_file ( @ARGV ) {
 
             push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
                  $rmsd_counter, $group_ids[$i], $group_ids[$i+1],
-                 sprintf '%.3f',rmsd( \@first_group_coord, \@second_group_coord);
+                 sprintf $SIG_FIGS,
+                         rmsd( \@first_group_coord, \@second_group_coord );
             $rmsd_counter++;
         }
     } else {
@@ -140,7 +142,8 @@ for my $pdbx_file ( @ARGV ) {
 
             push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
                  $rmsd_counter, $group_ids[$i], $group_ids[$i+1],
-                 sprintf '%.3f', rmsd( $first_group_coord, $second_group_coord );
+                 sprintf $SIG_FIGS,
+                         rmsd( $first_group_coord, $second_group_coord );
             $rmsd_counter++;
         }
     }

@@ -12,6 +12,7 @@ use LinearAlgebra qw( create_ref_frame
                       z_axis_rotation );
 
 use lib "../lib";
+use Constants qw( $SIG_FIG );
 use Utils qw( select_atom_data );
 
 #
@@ -75,7 +76,7 @@ for my $pdbx_line ( grep( /^ATOM/, @pdbx_lines ) ){
                                 - $mid_atom_coord[1],
                                 - $mid_atom_coord[2] ) ),
                  \@atom_coord ] ) };
-    printf( "%s %.3f %.3f %.3f\n",
+    printf( "%s $SIG_FIG $SIG_FIG $SIG_FIG\n",
             $atom_name,
             $tranf_atom_coord->[0][0],
             $tranf_atom_coord->[1][0],

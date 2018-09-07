@@ -5,10 +5,13 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( $EPSILON
-                     $PI );
+                     $PI
+                     $SIG_FIGS );
 
 our $EPSILON = @EPSILON@;
 
 our $PI = @PI@;
+
+our $SIG_FIGS = '%.3f';
 
 1;

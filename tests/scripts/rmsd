@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Constants qw( $SIG_FIGS );
 use Measure qw( rmsd );
 
 #
@@ -23,4 +24,4 @@ while( <$fh> ) {
 }
 close( $fh );
 
-printf( "%.3f\n", rmsd( @atom_coords ) );
+printf( "$SIG_FIGS\n", rmsd( @atom_coords ) );

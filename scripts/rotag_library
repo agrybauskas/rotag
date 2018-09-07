@@ -9,7 +9,8 @@ Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
 
 use ConnectAtoms qw( connect_atoms );
-use Constants qw( $PI );
+use Constants qw( $PI
+                  $SIG_FIGS );
 use ErrorHandling qw( parse_errors
                       parse_warnings );
 use BondProperties qw( hybridization );
@@ -203,7 +204,7 @@ for my $pdbx_file ( @ARGV ) {
                 push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
                      $residue_chain, $residue_entity, $residue_alt, $angle_name,
-                     sprintf '%.3f', $angle_value;
+                     sprintf $SIG_FIGS, $angle_value;
                 $angle_id++;
             }
 

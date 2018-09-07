@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Constants qw( $SIG_FIGS );
 use LinearAlgebra qw( x_axis_rotation );
 
 #
@@ -16,7 +17,7 @@ my $x_axis_rotation = x_axis_rotation( $angle );
 
 for( my $i=0; $i < 4; $i++ ) {
     for( my $j=0; $j < 4; $j++ ) {
-        printf( "%.3f ", $x_axis_rotation->[$i][$j] );
+        printf( "$SIG_FIGS ", $x_axis_rotation->[$i][$j] );
     }
     print( "\n" );
 }
