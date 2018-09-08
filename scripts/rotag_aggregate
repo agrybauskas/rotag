@@ -57,6 +57,8 @@ my @categories =
         _\[local\]_energy _\[local\]_pairwise_energy  _\[local\]_rmsd
         _\[local\]_rotamer_energy );
 
+my %pdbx_loops_aggregated_list;
+my %pdbx_loops_aggregated;
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $pdbx_loops;
@@ -67,5 +69,22 @@ for my $pdbx_file ( @ARGV ) {
             "manual.\n";
     }
 
-    my $pdbx_loop_data_unique = pdbx_loop_unique( $pdbx_loops );
+    for my $category ( sort keys %{ $pdbx_loops } ) {
+        push @{ $pdbx_loops_aggregated_list{$category} },
+             pdbx_loop_unique( { $category => $pdbx_loops->{$category} } );
+    }
+
+    for my $category ( sort keys %pdbx_loops_aggregated_list ) {
+        my $pdbx_loop_category_data = $pdbx_loops_aggregated_list{$category};
+        for my $pdbx_loops_list_item ( @{ $pdbx_loop_category_data } ) {
+            for my $unique_key ( sort keys %{ $pdbx_loops_list_item } ) {
+                if() {
+
+                } else {
+                    die "Use command \"rotag_aggregate --help\" in order to see the " .
+                        "manual.\n";
+                }
+            }
+        }
+    }
 }
