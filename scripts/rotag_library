@@ -123,6 +123,14 @@ for my $pdbx_file ( @ARGV ) {
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+
+    if( ! %{ $selected_atom_site } ) { # Selects all atoms by default.
+        $selected_atom_site = $atom_site;
+        for my $atom_id ( keys %{ $selected_atom_site } ) {
+            $selected_atom_site->{$atom_id}{'[local]_selection_state'} = 'T';
+        }
+    }
+
     my @residue_unique_keys =
         uniq (
             map { join q{,}, @{ $_ } }
