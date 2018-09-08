@@ -169,7 +169,8 @@ for my $pdbx_file ( @ARGV ) {
     # available.
     my $pdbx_loops;
     if( $pdbx_file ) {
-        $pdbx_loops = obtain_pdbx_loop( $pdbx_file, [ '_rotamer_angle' ] );
+        $pdbx_loops = obtain_pdbx_loop( $pdbx_file,
+                                        [ '_\[local\]_rotamer_angle' ] );
     }
 
     # Prints out the PDBx.
