@@ -5,10 +5,14 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
+use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
+use Moieties qw( %SIDECHAINS
+                 replace_with_moiety );
 use PDBxParser qw( filter
-                   obtain_atom_site );
+                   obtain_atom_site
+                   unique_residue_key );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -24,14 +28,19 @@ our $VERSION = $VERSION;
 #*OPTIONS:
 #*    -m, --mutate <str>
 #*        replaces selected side-chain with specified moiety.
-#*    -i, --isomer (default: R | L)
-#*        isomer that the moiety should be placed accordingly.
+#*    -r, --repeat
+#*        repeats pattern of
 #*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
 
+my $mutations = '';
+my $do_repeat = 0;
+
 GetOptions(
+    'mutate|m=s' => \$mutations,
+    'repeat|r' => sub { $do_repeat = 1; },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -61,10 +70,37 @@ for my $pdbx_file ( @ARGV ) {
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
-                  'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
-    my $target_atom_ids =
-        filter( { 'atom_site' => $selected_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
-                  'data' => [ 'id' ],
-                  'is_list' => 1 } );
+                  'exclude' => { '[local]_selection_group' => [ q{?} ] } } );
+    my @group_ids =
+        uniq( @{ filter( { 'atom_site' => $selected_atom_site,
+                           'data' => [ '[local]_selection_group' ],
+                           'is_list' => 1 } ) } );
+
+    if( ! @group_ids ) {
+        die "No residues were selected.\n";
+    }
+
+    $mutations =~ s/\s//smxg;
+    my @mutations = split q{;}, $mutations;
+
+    if( @mutations ) {
+        for( my $i = 0; $i <= $#mutations; $i++ ) {
+            my $ca_atom_id =
+                filter( { 'atom_site' => $selected_atom_site,
+                          'include' =>
+                              { 'label_atom_id' => [ 'CA' ],
+                                '[local]_selection_group' => [ $group_ids[$i] ]},
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            my $unique_residue_key =
+                unique_residue_key( $selected_atom_site->{$ca_atom_id} );
+
+            replace_with_moiety( $selected_atom_site,
+                                 $unique_residue_key,
+                                 $mutations[$i] );
+        }
+    } else {
+        die "No mutations were specified.\n"
+    }
 }

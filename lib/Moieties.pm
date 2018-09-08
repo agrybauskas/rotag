@@ -5,7 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( %ATOMS
-                     %SIDECHAINS );
+                     %SIDECHAINS
+                     replace_with_moiety );
 
 use Version qw( $VERSION );
 
@@ -70,5 +71,22 @@ our %SIDECHAINS = (
         },
     },
 );
+
+#
+# Replaces selected side-chain with specified moiety (usually another
+# side-chain).
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $unique_residue_key - key that can determine unique residue
+#     (see PDBxParser::unique_residue_key);
+#     $moiety - moiety in atom site data structure.
+# Output:
+#     changes atom site by replacing side-chain with specified moiety.
+#
+
+sub replace_with_moiety
+{
+    my ( $atom_site, $unique_residue_key, $moiety ) = @_;
+}
 
 1;
