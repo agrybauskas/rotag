@@ -1,0 +1,68 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use autodie;
+use Getopt::Long;
+Getopt::Long::Configure qw( gnu_getopt );
+
+use PDBxParser qw( filter
+                   obtain_atom_site );
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
+
+#*rotag_mutate [options] file1 [file2, ...]
+#*    replace/add side-chain with specified moiety.
+#*
+#*USAGE:
+#*    rotag_mutate -m > output.cif
+#*
+#*OPTIONS:
+#*    -m, --mutate
+#*        replaces selected side-chain into specified moiety.
+#*    -a, --add
+#*        adds specified moiety.
+#*    -v, --version
+#*        print version.
+
+# --------------------------------- Options ----------------------------------- #
+
+GetOptions(
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or die 'Error in command line argument.';
+
+# ----------------------------------- Main ------------------------------------ #
+
+local @ARGV = ( q{-} ) unless @ARGV;
+
+for my $pdbx_file ( @ARGV ) {
+    # Reads file path, stdin and '-' operator.
+    my $atom_site;
+    if( $pdbx_file ) {
+        $atom_site = obtain_atom_site( $pdbx_file );
+    } else {
+        die "Use command \"rotag_mutate --help\" in order to see the manual.\n";
+    }
+
+    my $selected_atom_site =
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+    my $target_atom_ids =
+        filter( { 'atom_site' => $selected_atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T' ] },
+                  'data' => [ 'id' ],
+                  'is_list' => 1 } );
+}
