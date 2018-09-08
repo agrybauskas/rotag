@@ -14,16 +14,18 @@ use Version qw( $VERSION );
 our $VERSION = $VERSION;
 
 #*rotag_mutate [options] file1 [file2, ...]
-#*    replace/add side-chain with specified moiety.
+#*    replace side-chain with specified moiety. Groups are needed to be specified
+#*    with rotag_select.
 #*
 #*USAGE:
-#*    rotag_mutate -m > output.cif
+#*    rotag_mutate -m 'Arg' input.cif > output.cif
+#*    rotag_mutate -m 'Ala; Lys' input.cif > output.cif
 #*
 #*OPTIONS:
-#*    -m, --mutate
-#*        replaces selected side-chain into specified moiety.
-#*    -a, --add
-#*        adds specified moiety.
+#*    -m, --mutate <str>
+#*        replaces selected side-chain with specified moiety.
+#*    -i, --isomer (default: R | L)
+#*        isomer that the moiety should be placed accordingly.
 #*    -v, --version
 #*        print version.
 
