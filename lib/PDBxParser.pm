@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      filter_by_unique_residue_key
+                     pdbx_loop_unique
                      obtain_atom_site
                      obtain_pdbx_line
                      obtain_pdbx_loop
@@ -103,6 +104,68 @@ sub obtain_pdbx_loop
 }
 
 #
+# Takes PDBx loop and converts it to hash of hashes where the first key is
+# unique.
+# Input:
+#     $pdbx_loop_data - data structure (from obtain_pdbx_loop);
+#     $unique_keys - combination of attribute data that serves as unique key.
+#     Ex.: [ 'id' ]
+# Output:
+#     %pdbx_loop_unique - special data structure.
+#     Ex.: { 1 => { 'group_id' => 'ATOM',
+#                   'id'       => 1,
+#                   ... } }
+
+sub pdbx_loop_unique
+{
+    my ( $pdbx_loop_data, $unique_keys ) = @_;
+
+    $unique_keys //= [ 'id' ];
+
+    my $category = [keys %{ $pdbx_loop_data }]->[0];
+
+    my @attributes = @{ $pdbx_loop_data->{$category}{'attributes'} };
+    my @data = @{ $pdbx_loop_data->{$category}{'data'} };
+
+    # Creates special data structure.
+    my %pdbx_loop_unique;
+    my @data_row;
+    my %data_row;
+
+    my $attribute_count = scalar @attributes;
+    my $data_count = scalar @data;
+
+    # Determines the positions of unique keys in attribute list.
+    my @attribute_pos;
+    for my $unique_key ( @{ $unique_keys } ) {
+        for( my $i = 0; $i <= $#attributes; $i++ ) {
+            if( $attributes[$i] eq $unique_key ) {
+                push @attribute_pos, $i;
+                last;
+            }
+        }
+    }
+
+    for( my $pos = 0; $pos < $data_count - 1; $pos += $attribute_count ) {
+        @data_row =
+            @{ data[$pos..$pos+$attribute_count-1] };
+        %data_row = ();
+        for( my $col = 0; $col <= $#data_row; $col++ ) {
+            $data_row{$attributes[$col]} = $data_row[$col];
+        }
+
+        my $unique_key = join q{,}, map { $data_row[$_] } @attribute_pos;
+        if( ! exists $pdbx_loop_unique{$unique_key} ) {
+            $pdbx_loop_unique{$unique_key} = { %data_row };
+        } else {
+            die 'Unique key supposed to be unique.';
+        }
+    }
+
+    return \%pdbx_loop_unique;
+}
+
+#
 # From PDBx file, obtains data only from _atom_site category and outputs special
 # data structure that represents atom data.
 # Input:
@@ -118,30 +181,8 @@ sub obtain_atom_site
 {
     my ( $pdbx_file ) = @_;
 
-    my $pdbx_data = obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] );
-    my @atom_attributes = @{ $pdbx_data->{'_atom_site'}{'attributes'} };
-    my @atom_data = @{ $pdbx_data->{'_atom_site'}{'data'} };
+    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
 
-    # Creates special data structure for describing atom site where atom id is
-    # key in hash and hash value is hash describing atom data.
-    my %atom_site;
-    my @atom_data_row;
-    my %atom_data_row;
-
-    my $attribute_count = scalar @atom_attributes;
-    my $atom_data_count = scalar @atom_data;
-
-    for( my $pos = 0; $pos < $atom_data_count - 1; $pos += $attribute_count ) {
-        @atom_data_row =
-            @{ atom_data[$pos..$pos+$attribute_count-1] };
-        %atom_data_row = ();
-        for( my $col = 0; $col <= $#atom_data_row; $col++ ) {
-            $atom_data_row{$atom_attributes[$col]} = $atom_data_row[$col];
-        }
-        $atom_site{$atom_data_row[1]} = { %atom_data_row };
-    }
-
-    return \%atom_site;
 }
 
 #

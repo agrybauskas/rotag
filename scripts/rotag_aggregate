@@ -7,7 +7,8 @@ use autodie;
 use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 
-use PDBxParser qw( obtain_pdbx_loop
+use PDBxParser qw( pdbx_loop_unique
+                   obtain_pdbx_loop
                    to_pdbx );
 use Version qw( $VERSION );
 
@@ -66,4 +67,5 @@ for my $pdbx_file ( @ARGV ) {
             "manual.\n";
     }
 
+    my $pdbx_loop_data_unique = pdbx_loop_unique( $pdbx_loops );
 }
