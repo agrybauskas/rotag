@@ -1,0 +1,64 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use autodie;
+use Getopt::Long;
+Getopt::Long::Configure qw( gnu_getopt );
+
+use PDBxParser qw( filter
+                   obtain_atom_site
+                   to_pdbx );
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
+
+#*rotag_aggregate [options] file1 file2 [file3, ...]
+#*    combine multiple PDBx outputs.
+#*
+#*USAGE:
+#*    rotag_aggregate input.cif
+#*    rotag_aggregate -r input.cif
+#*
+#*OPTIONS:
+#*    -r, --renumber
+#*        extension for the file if basename is present.
+#*    -v, --version
+#*        print version.
+
+# --------------------------------- Options ----------------------------------- #
+
+my $do_renumbering = 0;
+
+GetOptions(
+    'r|renumber' => \$do_renumbering,
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or die 'Error in command line argument.';
+
+# ----------------------------------- Main ------------------------------------ #
+
+local @ARGV = ( q{-} ) unless @ARGV;
+
+# TODO: make it to read multiple files from STDIN.
+for my $pdbx_file ( @ARGV ) {
+    # Reads file path, stdin and '-' operator.
+    my $atom_site;
+    if( $pdbx_file ) {
+        $atom_site = obtain_atom_site( $pdbx_file );
+    } else {
+        die "Use command \"rotag_aggregate --help\" in order to see the " .
+            "manual.\n";
+    }
+}

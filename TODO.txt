@@ -2,7 +2,7 @@
    selection.
 ++ Combined residue id, chain and PDB model num could be unique identifier for
    _[local]_ cif, because residue ids are not unique by themselves.
--- Decide how to handle dihedral angle calculations on residues without
+++ Decide how to handle dihedral angle calculations on residues without
    rotatable bonds.
 ++ Make rotamers show properly in Jmol by assigning label_alt_id different
    labels.
