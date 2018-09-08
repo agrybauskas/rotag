@@ -88,7 +88,7 @@ for my $pdbx_file ( @ARGV ) {
         my $pdbx_loops;
         if( $pdbx_file ) {
             $pdbx_loops =
-                obtain_pdbx_loop( $pdbx_file, [ '_rotamer_angle' ] );
+                obtain_pdbx_loop( $pdbx_file, [ '_[local]_rotamer_angle' ] );
         } else {
             die 'No library was detected. Generate library with ' .
                 '\'rotag_library\' program.';
@@ -97,8 +97,9 @@ for my $pdbx_file ( @ARGV ) {
         # Generates data structure from $pdbx_loops.
         # TODO: maybe generate general data structure that can be created through
         # unique id.
-        my $current_attributes = $pdbx_loops->{'_rotamer_angle'}{'attributes'};
-        my $data = $pdbx_loops->{'_rotamer_angle'}{'data'};
+        my $current_attributes =
+            $pdbx_loops->{'_[local]_rotamer_angle'}{'attributes'};
+        my $data = $pdbx_loops->{'_[local]_rotamer_angle'}{'data'};
 
         my %attribute_pos;
         for( my $i = 0; $i <= $#{ $current_attributes }; $i++ ) {
