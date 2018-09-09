@@ -170,7 +170,13 @@ sub replace_with_moiety
 
     # Removes old side-chain atoms.
     foreach( @sidechain_ids ) {
+        delete $residue_site->{$_};
         delete $atom_site->{$_};
+    }
+
+    # Renames residue.
+    foreach( keys %{ $residue_site } ) {
+        $atom_site->{$_}{'label_comp_id'} = $moiety;
     }
 
     return;
