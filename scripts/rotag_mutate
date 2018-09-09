@@ -12,6 +12,7 @@ use Moieties qw( %SIDECHAINS
                  replace_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
+                   to_pdbx
                    unique_residue_key );
 use Version qw( $VERSION );
 
@@ -99,6 +100,8 @@ for my $pdbx_file ( @ARGV ) {
             replace_with_moiety( $selected_atom_site,
                                  $unique_residue_key,
                                  $mutations[$i] );
+
+            to_pdbx( { 'atom_site' => $selected_atom_site } );
         }
     } else {
         die "No mutations were specified.\n"
