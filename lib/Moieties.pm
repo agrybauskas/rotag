@@ -111,6 +111,8 @@ sub replace_with_moiety
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $unique_residue_key );
+    my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+        split /,/smx, $unique_residue_key;
 
     my @sidechain_ids =
         @{ filter( { 'atom_site' => $residue_site,
@@ -160,6 +162,10 @@ sub replace_with_moiety
                                         [ 1 ] ] ] ) };
 
         $moiety_atom->{'id'} = $last_atom_id;
+        $moiety_atom->{'label_seq_id'} = $residue_id;
+        $moiety_atom->{'label_comp_id'} = $residue_chain;
+        $moiety_atom->{'label_entity_id'} = $residue_entity;
+        $moiety_atom->{'label_alt_id'} = $residue_alt;
         $moiety_atom->{'Cartn_x'}= sprintf $SIG_FIGS, $transf_atom_coord->[0][0];
         $moiety_atom->{'Cartn_y'}= sprintf $SIG_FIGS, $transf_atom_coord->[1][0];
         $moiety_atom->{'Cartn_z'}= sprintf $SIG_FIGS, $transf_atom_coord->[2][0];
