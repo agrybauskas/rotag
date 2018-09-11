@@ -11,8 +11,10 @@ our @EXPORT_OK = qw( %ATOMS
 use List::Util qw( max );
 use Math::Trig qw( acos );
 
+use AlterMolecule qw( bond_torsion );
 use AtomProperties qw( @MAINCHAIN_NAMES );
-use Constants qw( $SIG_FIGS );
+use Constants qw( $PI
+                  $SIG_FIGS );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key );
 use LinearAlgebra qw( mult_matrix_product
@@ -155,6 +157,10 @@ sub replace_with_moiety
         filter( { 'atom_site' => $residue_site,
                   'include' => { 'label_atom_id' => [ 'C' ] },
                   'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+    my $o_atom_coord =
+        filter( { 'atom_site' => $residue_site,
+                  'include' => { 'label_atom_id' => [ 'O' ] },
+                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
 
     # TODO: should be refactored, because the code is familiar to
     # PseudoAtoms::add_hydrogen().
@@ -169,16 +175,26 @@ sub replace_with_moiety
                              $c_atom_coord,
                              'global' ) };
 
+    # Rotational matrix is created for producing 'R' or 'S' configuration.
+    my $rotational_matrix = bond_torsion( $c_atom_coord,
+                                          $ca_atom_coord,
+                                          $o_atom_coord,
+                                          'omega' );
+
     # Adds moiety.
     for my $atom_id ( sort keys %{ $SIDECHAINS{$moiety} } ) {
         my $moiety_atom = $SIDECHAINS{$moiety}{$atom_id};
         my ( $transf_atom_coord ) =
-            @{ mult_matrix_product( [ $transf_matrix,
+            @{ mult_matrix_product( [ @{ $rotational_matrix },
+                                      $transf_matrix,
                                       $moiety_transf_matrix,
                                       [ [ $moiety_atom->{'Cartn_x'} ],
                                         [ $moiety_atom->{'Cartn_y'} ],
                                         [ $moiety_atom->{'Cartn_z'} ],
-                                        [ 1 ] ] ] ) };
+                                        [ 1 ] ] ],
+                                    { $isomer eq 'R' ?
+                                      ( 'omega' =>   2  * $PI / 3 ) :
+                                      ( 'omega' => (-2) * $PI / 3 ) } ) };
 
         $moiety_atom->{'id'} = $last_atom_id;
         $moiety_atom->{'label_seq_id'} = $residue_id;
