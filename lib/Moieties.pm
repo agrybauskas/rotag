@@ -193,8 +193,8 @@ sub replace_with_moiety
                                         [ $moiety_atom->{'Cartn_z'} ],
                                         [ 1 ] ] ],
                                     { $isomer eq 'R' ?
-                                      ( 'omega' =>   2  * $PI / 3 ) :
-                                      ( 'omega' => (-2) * $PI / 3 ) } ) };
+                                      ( 'omega' => (-2) * $PI / 3 ) :
+                                      ( 'omega' =>   2  * $PI / 3 ) } ) };
 
         $moiety_atom->{'id'} = $last_atom_id;
         $moiety_atom->{'label_seq_id'} = $residue_id;
