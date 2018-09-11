@@ -43,7 +43,7 @@ our %SIDECHAINS = (
     'SER' => {
         1 => {
             'group_PDB' => 'ATOM',
-            'id' => 2,
+            'id' => 1,
             'type_symbol' => 'C',
             'label_atom_id' => 'CA',
             'label_alt_id' => q{.},
@@ -109,6 +109,26 @@ sub replace_with_moiety
     $isomer //= 'R';
     $last_atom_id //= max( keys %{ $atom_site } );
 
+    # First, transformation matrix is generated that will position moiety atoms
+    # to the origin of reference frame.
+    my $moiety_ca_atom_coord =
+        filter( { 'atom_site' => $SIDECHAINS{'SER'},
+                  'include' => { 'label_atom_id' => [ 'CA' ] },
+                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+    my $moiety_cb_atom_coord =
+        filter( { 'atom_site' => $SIDECHAINS{'SER'},
+                  'include' => { 'label_atom_id' => [ 'CB' ] },
+                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+    my @moiety_helper_atom_coord = map { $_ + 1 } @{ $moiety_ca_atom_coord };
+
+    my ( $moiety_transf_matrix ) =
+        @{ switch_ref_frame( $moiety_ca_atom_coord,
+                             $moiety_cb_atom_coord,
+                             \@moiety_helper_atom_coord,
+                             'local' ) };
+
+    # Then generates transformation matrix that will align moiety atoms with
+    # target atoms.
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $unique_residue_key );
     my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
@@ -143,8 +163,6 @@ sub replace_with_moiety
 
     my $moiety_angle = acos( ( - 4 - 2 * cos $bond_angle ) / 10 );
 
-    # Generates transformation matrix for transfering atoms to local
-    # reference frame.
     my ( $transf_matrix ) =
         @{ switch_ref_frame( $ca_atom_coord,
                              $n_atom_coord,
@@ -156,6 +174,7 @@ sub replace_with_moiety
         my $moiety_atom = $SIDECHAINS{$moiety}{$atom_id};
         my ( $transf_atom_coord ) =
             @{ mult_matrix_product( [ $transf_matrix,
+                                      $moiety_transf_matrix,
                                       [ [ $moiety_atom->{'Cartn_x'} ],
                                         [ $moiety_atom->{'Cartn_y'} ],
                                         [ $moiety_atom->{'Cartn_z'} ],
