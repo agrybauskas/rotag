@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      filter_by_unique_residue_key
+                     mark_selection
                      pdbx_loop_unique
                      obtain_atom_site
                      obtain_pdbx_line
@@ -294,6 +295,38 @@ sub filter
     }
 
     return \%filtered_atoms;
+}
+
+#
+# Adds T (target), S (surrounding or selected), I (ignored) char to
+# '[local]_selection_state' attribute data.
+# Input:
+#     $atom_site - atom site data structure;
+#     $options{'target'} - list of ids of the target atom;
+#     $options{'select'} - list of ids of the selected atom;
+#     $options{'ignore'} - list of ids of the ignored atom.
+# Output:
+#     adds markers to specified attribute field.
+#
+
+sub mark_selection
+{
+    my ( $atom_site, $options ) = @_;
+
+    my ( $target_atom_ids, $selected_atom_ids ) =
+        ( $options->{'target'}, $options->{'select'}, );
+
+    for my $atom_id ( keys %{ $atom_site } ) {
+        if( any { $atom_id eq $_  } @{ $target_atom_ids } ) {
+            $atom_site->{$atom_id}{'[local]_selection_state'} = 'T';
+        } elsif( any { $atom_id eq $_  } @{ $selected_atom_ids } ) {
+            $atom_site->{$atom_id}{'[local]_selection_state'} = 'S';
+        } else {
+            $atom_site->{$atom_id}{'[local]_selection_state'} = 'I';
+        }
+    }
+
+    return;
 }
 
 #

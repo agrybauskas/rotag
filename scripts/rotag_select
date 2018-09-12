@@ -10,6 +10,7 @@ use List::MoreUtils qw( uniq );
 use List::Util qw( any );
 
 use PDBxParser qw( filter
+                   mark_selection
                    obtain_atom_site
                    obtain_pdbx_loop
                    to_pdbx );
@@ -149,15 +150,9 @@ for my $pdbx_file ( @ARGV ) {
                      'is_list' => 1 } ) };
 
     # Modifies PDBx entries by adding and/or changing selection states for atoms.
-    for my $atom_id ( keys %{ $atom_site } ) {
-        if( any { $atom_id eq $_  } @target_atom_ids ) {
-            $atom_site->{$atom_id}{'[local]_selection_state'} = 'T';
-        } elsif( any { $atom_id eq $_  } @selected_atom_ids ) {
-            $atom_site->{$atom_id}{'[local]_selection_state'} = 'S';
-        } else {
-            $atom_site->{$atom_id}{'[local]_selection_state'} = 'I';
-        }
-    }
+    mark_selection( $atom_site,
+                    { 'target' => \@target_atom_ids,
+                      'select' => \@selected_atom_ids } );
 
     if( ! $keep_ignored ) {
         $atom_site =
