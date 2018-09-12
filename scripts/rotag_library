@@ -15,6 +15,7 @@ use ErrorHandling qw( parse_errors
                       parse_warnings );
 use BondProperties qw( hybridization );
 use PDBxParser qw( filter
+                   mark_selection
                    obtain_atom_site
                    to_pdbx );
 
@@ -126,9 +127,8 @@ for my $pdbx_file ( @ARGV ) {
 
     if( ! %{ $selected_atom_site } ) { # Selects all atoms by default.
         $selected_atom_site = $atom_site;
-        for my $atom_id ( keys %{ $selected_atom_site } ) {
-            $selected_atom_site->{$atom_id}{'[local]_selection_state'} = 'T';
-        }
+        mark_selection( $selected_atom_site,
+                        { 'target' => [ keys %{ $selected_atom_site } ] } );
     }
 
     my @residue_unique_keys =
