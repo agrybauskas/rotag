@@ -62,7 +62,7 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die "ERROR: " . basename( $0 ) . ": mistake in command line argument.\n";
+) or die 'ERROR: ' . basename( $0 ) . ": mistake in command line argument.\n";
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -84,108 +84,100 @@ for my $pdbx_file ( @ARGV ) {
     my $target_atom_ids =
         filter( { 'atom_site' => $selected_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
+                  'exclude' => { 'label_atom_id' => \@MAINCHAIN_NAMES },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
 
     if( $add_rotamer_atoms ) {
-        # Selects all side-chain atoms if no specific atoms are selected.
+        # Extracts rotamer angle data that will used to generate atom
+        # coordinates.
+        my $pdbx_loops =
+            obtain_pdbx_loop( $pdbx_file, [ '_\[local\]_rotamer_angle' ] );
+        if( ! %{ $pdbx_loops } ) {
+            parse_errors(
+                { 'program' => $0,
+                  'filename' => $pdbx_file,
+                  'message' => 'no library was detected. Generate library with '.
+                               "'rotag_library' script.\n" } );
+        }
+
+        # Generates data structure from $pdbx_loops.
+        # TODO: maybe generate general data structure that can be created through
+        # unique id.
+        my $current_attributes =
+            $pdbx_loops->{'_[local]_rotamer_angle'}{'attributes'};
+        my $data = $pdbx_loops->{'_[local]_rotamer_angle'}{'data'};
+
+        my %attribute_pos;
+        for( my $i = 0; $i <= $#{ $current_attributes }; $i++ ) {
+            if( any { $current_attributes->[$i] eq $_ } @attribute_list ) {
+                $attribute_pos{$current_attributes->[$i]} = $i;
+            }
+        }
+
+        my %rotamer_angles;
+        for(my $i = 0; $i <= $#{ $data }; $i = $i + $#{ $current_attributes }+1){
+            my $residue_unique_key =
+                join q{,},
+                     ( $data->[$i+$attribute_pos{'label_seq_id'}],
+                       $data->[$i+$attribute_pos{'label_comp_id'}],
+                       $data->[$i+$attribute_pos{'label_entity_id'}],
+                       $data->[$i+$attribute_pos{'label_alt_id'}] );
+            $rotamer_angles{$residue_unique_key}
+                           {$data->[$i+$attribute_pos{'rotamer_id'}]}
+                           {$data->[$i+$attribute_pos{'type'}]} =
+                [ $data->[$i+$attribute_pos{'value'}] ];
+        }
+
+        rotation_only( $selected_atom_site ); # Generates rotational model.
+
+        my $last_atom_id = max( keys %{ $atom_site } );
+        my %rotamer_atom_site;
+        for my $atom_id ( @{ $target_atom_ids } ) {
+            my $residue_unique_key =
+                join q{,}, ( $selected_atom_site->{$atom_id}{'label_seq_id'},
+                             $selected_atom_site->{$atom_id}{'label_comp_id'},
+                             $selected_atom_site->{$atom_id}{'label_entity_id'},
+                             $selected_atom_site->{$atom_id}{'label_alt_id'} );
+            my $alt_group_id = 1;
+            for my $rotamer_id ( sort keys %{ $rotamer_angles
+                                                  {$residue_unique_key} } ){
+                my $rotamer_angles =
+                    $rotamer_angles{$residue_unique_key}{$rotamer_id};
+                %rotamer_atom_site =
+                  ( %rotamer_atom_site,
+                      %{ generate_pseudo( $selected_atom_site,
+                                          { 'id' => [ $atom_id ] },
+                                          $rotamer_angles,
+                                          $last_atom_id,
+                                          $alt_group_id ) } );
+                $last_atom_id++;
+                $alt_group_id++;
+            }
+        }
+
+        # Prints out cif.
+        to_pdbx( { 'atom_site' => { %{ $atom_site }, %rotamer_atom_site },
+                   'add_atom_attributes' => [ '[local]_selection_state' ],
+                   'pdbx_loops' => $pdbx_loops } );
+    } elsif( $add_hydrogens ) {
+        # Selects all atoms if no specific atoms are selected.
         if( ! %{ $selected_atom_site } ) {
             $selected_atom_site = $atom_site;
-            mark_selection(
-                $selected_atom_site,
-                { 'target' =>
-                      filter( { 'atom_site' => $selected_atom_site,
-                                'exclude' =>
-                                    { 'label_atom_id' => \@MAINCHAIN_NAMES },
-                                'data' => [ 'id' ],
-                                'is_list' => 1 } ),
-                  'select' => [ keys %{ $selected_atom_site } ] } );
+            mark_selection( $selected_atom_site,
+                            { 'target' => [ keys %{ $selected_atom_site } ] } );
         }
-        use Data::Dumper; print Dumper $selected_atom_site;
-    #     # Extracts rotamer angle data that will used to generate atom
-    #     # coordinates.
-    #     my $pdbx_loops =
-    #         obtain_pdbx_loop( $pdbx_file, [ '_\[local\]_rotamer_angle' ] );
-    #     if( ! %{ $pdbx_loops } ) {
-    #         parse_errors(
-    #             { 'program' => $0,
-    #               'filename' => $pdbx_file,
-    #               'message' => "no library was detected. Generate library with ".
-    #                            "'rotag_library' script.\n" } );
-    #     }
 
-    #     # Generates data structure from $pdbx_loops.
-    #     # TODO: maybe generate general data structure that can be created through
-    #     # unique id.
-    #     my $current_attributes =
-    #         $pdbx_loops->{'_[local]_rotamer_angle'}{'attributes'};
-    #     my $data = $pdbx_loops->{'_[local]_rotamer_angle'}{'data'};
-
-    #     my %attribute_pos;
-    #     for( my $i = 0; $i <= $#{ $current_attributes }; $i++ ) {
-    #         if( any { $current_attributes->[$i] eq $_ } @attribute_list ) {
-    #             $attribute_pos{$current_attributes->[$i]} = $i;
-    #         }
-    #     }
-
-    #     my %rotamer_angles;
-    #     for(my $i = 0; $i <= $#{ $data }; $i = $i + $#{ $current_attributes }+1){
-    #         my $residue_unique_key =
-    #             join q{,},
-    #                  ( $data->[$i+$attribute_pos{'label_seq_id'}],
-    #                    $data->[$i+$attribute_pos{'label_comp_id'}],
-    #                    $data->[$i+$attribute_pos{'label_entity_id'}],
-    #                    $data->[$i+$attribute_pos{'label_alt_id'}] );
-    #         $rotamer_angles{$residue_unique_key}
-    #                        {$data->[$i+$attribute_pos{'rotamer_id'}]}
-    #                        {$data->[$i+$attribute_pos{'type'}]} =
-    #             [ $data->[$i+$attribute_pos{'value'}] ];
-    #     }
-
-    #     rotation_only( $selected_atom_site ); # Generates rotational model.
-
-    #     my $last_atom_id = max( keys %{ $atom_site } );
-    #     my %rotamer_atom_site;
-    #     for my $atom_id ( @{ $target_atom_ids } ) {
-    #         my $residue_unique_key =
-    #             join q{,}, ( $selected_atom_site->{$atom_id}{'label_seq_id'},
-    #                          $selected_atom_site->{$atom_id}{'label_comp_id'},
-    #                          $selected_atom_site->{$atom_id}{'label_entity_id'},
-    #                          $selected_atom_site->{$atom_id}{'label_alt_id'} );
-    #         my $alt_group_id = 1;
-    #         for my $rotamer_id ( sort keys %{ $rotamer_angles
-    #                                               {$residue_unique_key} } ){
-    #             my $rotamer_angles =
-    #                 $rotamer_angles{$residue_unique_key}{$rotamer_id};
-    #             %rotamer_atom_site =
-    #               ( %rotamer_atom_site,
-    #                   %{ generate_pseudo( $selected_atom_site,
-    #                                       { 'id' => [ $atom_id ] },
-    #                                       $rotamer_angles,
-    #                                       $last_atom_id,
-    #                                       $alt_group_id ) } );
-    #             $last_atom_id++;
-    #             $alt_group_id++;
-    #         }
-    #     }
-
-    #     # Prints out cif.
-    #     to_pdbx( { 'atom_site' => { %{ $atom_site }, %rotamer_atom_site },
-    #                'add_atom_attributes' => [ '[local]_selection_state' ],
-    #                'pdbx_loops' => $pdbx_loops } );
-    # } elsif( $add_hydrogens ) {
-    #     # Selects all atoms if no specific atoms are selected.
-    #     if( ! %{ $selected_atom_site } ) {
-    #         $selected_atom_site = $atom_site;
-    #         mark_selection( $selected_atom_site,
-    #                         { 'target' => [ keys %{ $selected_atom_site } ] } );
-    #     }
-
-    #     # Prints out cif.
-    #     to_pdbx( { 'atom_site' =>
-    #                { %{ $selected_atom_site },
-    #                  %{ add_hydrogens( $selected_atom_site,
-    #                                    { 'use_origins_alt_group_id' => 1 } ) } },
-    #                'add_atom_attributes' => [ '[local]_selection_state' ] } );
+        # Prints out cif.
+        to_pdbx( { 'atom_site' =>
+                   { %{ $selected_atom_site },
+                     %{ add_hydrogens( $selected_atom_site,
+                                       { 'use_origins_alt_group_id' => 1 } ) } },
+                   'add_atom_attributes' => [ '[local]_selection_state' ] } );
+    } else {
+        parse_errors(
+            { 'program' => $0,
+              'filename' => $pdbx_file,
+              'message' => "no options were chosen for atom additions.\n" } );
     }
 }
