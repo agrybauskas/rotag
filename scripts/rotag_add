@@ -97,8 +97,8 @@ for my $pdbx_file ( @ARGV ) {
             parse_errors(
                 { 'program' => $0,
                   'filename' => $pdbx_file,
-                  'message' => 'no library was detected. Generate library with '.
-                               "'rotag_library' script.\n" } );
+                  'message' => 'no rotamer library was detected. Generate '.
+                               "library with 'rotag_library' script.\n" } );
         }
 
         # Generates data structure from $pdbx_loops.
