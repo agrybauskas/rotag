@@ -32,3 +32,5 @@
 -- Make proline also rotatable, but by adding a point (atom) that the last
    side-chain atom shoul be connected to would also produce rotamers.
 -- There should be a check of must attributes in CIF.
+-- Add option to use only implicit hydrogen bond model for composite energy
+   potential.
