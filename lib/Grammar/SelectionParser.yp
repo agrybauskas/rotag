@@ -193,42 +193,42 @@ exp
             }
             return \@rand_ids;
         }
-    | 'chain' str_ope
+    | 'label_asym_id' str_ope
         {
             filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
                       'include' => { 'label_asym_id' => $_[2] },
                       'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
                       'is_list' => 1 } );
         }
-    | 'resid' num_ope
+    | 'label_seq_id' num_ope
         {
             filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
                       'include' => { 'label_seq_id' => $_[2] },
                       'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
                       'is_list' => 1 } );
         }
-    | 'resname' str_ope
+    | 'label_comp_id' str_ope
         {
             filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
                       'include' => { 'label_comp_id' => $_[2] },
                       'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
                       'is_list' => 1 } );
         }
-    | 'atomid' num_ope
+    | 'id' num_ope
         {
             filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
                       'include' => { 'id' => $_[2] },
                       'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
                       'is_list' => 1 } );
         }
-    | 'atomname' str_ope
+    | 'label_atom_id' str_ope
         {
             filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
                       'include' => { 'label_atom_id' => $_[2] },
                       'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
                       'is_list' => 1 } );
         }
-    | 'atomtype' str_ope
+    | 'type_symbol' str_ope
         {
             filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
                       'include' => { 'type_symbol' => $_[2] },
@@ -260,9 +260,13 @@ sub lexer
     # Returns tokens to parser.
     for( $parser->YYData->{INPUT} ){
         if( s/^(resid)// ) {
-            return ( 'resid', $1 );
+            return ( 'label_seq_id', $1 );
+        } elsif(s/^(label_seq_id)//) {
+            return ( 'label_seq_id', $1 );
         } elsif(s/^(chain)//) {
-            return ( 'chain', $1 );
+            return ( 'label_asym_id', $1 );
+        } elsif(s/^(label_asym_id)//) {
+            return ( 'label_asym_id', $1 );
         } elsif(s/^(all)//) {
             return ( 'all', $1 );
         } elsif(s/^(mainchain)//) {
@@ -272,13 +276,21 @@ sub lexer
         } elsif(s/^(byres)//) {
             return ( 'byres', $1 );
         } elsif(s/^(resname)//) {
-            return ( 'resname', $1 );
+            return ( 'label_comp_id', $1 );
+        } elsif(s/^(label_comp_id)//) {
+            return ( 'label_comp_id', $1 );
         } elsif(s/^(atomid)//) {
-            return ( 'atomid', $1 );
+            return ( 'id', $1 );
+        } elsif(s/^(id)//) {
+            return ( 'id', $1 );
         } elsif(s/^(atomname)//) {
-            return ( 'atomname', $1 );
+            return ( 'label_atom_id', $1 );
+        } elsif(s/^(label_atom_id)//) {
+            return ( 'label_atom_id', $1 );
         } elsif(s/^(atomtype)//) {
-            return ( 'atomtype', $1 );
+            return ( 'type_symbol', $1 );
+        } elsif(s/^(type_symbol)//) {
+            return ( 'type_symbol', $1 );
         } elsif(s/^(around)//) {
             return ( 'around', $1 );
         } elsif(s/^(rand)//) {
