@@ -294,12 +294,14 @@ sub generate_library
     my $parameters = $args->{'parameters'};
     my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
     my $energy_cutoff_residue = $args->{'energy_cutoff_residue'};
+    my $is_hydrogen_explicit = $args->{'is_hydrogen_explicit'};
     my $threads = $args->{'threads'};
 
     $conf_model //= 'rotation_only';
     $energy_cutoff_residue //= 'Inf';
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => \@MAINCHAIN_NAMES };
+    $is_hydrogen_explicit //= 0;
 
     # Selection of potential function.
     my %potential_functions = ( 'composite' => \&composite,
@@ -411,6 +413,7 @@ sub generate_library
                          'small_angle' => $small_angle,
                          'potential_function' => $potential_function,
                          'energy_cutoff_atom' => $energy_cutoff_atom,
+                         'is_hydrogen_explicit' => $is_hydrogen_explicit,
                          'parameters' => $parameters },
                         [ @allowed_angles ],
                        $threads ) };
@@ -680,13 +683,15 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
-         $potential_function, $energy_cutoff_atom, $parameters ) = (
+         $potential_function, $energy_cutoff_atom, $is_hydrogen_explicit,
+         $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'small_angle'},
         $args->{'potential_function'},
         $args->{'energy_cutoff_atom'},
+        $args->{'is_hydrogen_explicit'},
         $args->{'parameters'},
     );
 
@@ -703,7 +708,8 @@ sub calc_full_atom_energy
                   'exclude' => { 'type_symbol' => [ 'H' ] } } );
 
     # Adds hydrogens if it is necessary for the calculations.
-    if( svref_2object( $potential_function )->GV->NAME eq 'composite' ) {
+    if( svref_2object( $potential_function )->GV->NAME eq 'composite' &&
+        $is_hydrogen_explicit ) {
         my $hydrogens =
             add_hydrogens( $residue_site,
                            { 'use_existing_connections' => 1,

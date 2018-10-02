@@ -57,6 +57,9 @@ our $VERSION = $VERSION;
 #*    -C, --cutoff-residue <float> (default: 1.0)
 #*        filters out rotamers which has the potential energy greater than the
 #*        cutoff value.
+#*    -H, --explicit-hydrogens
+#*        adds explicit hydrogens for calculating full atom energies. Otherwise,
+#*        implicit hydrogen model is used.
 #*    -t, --top-rank <int>
 #*        top rotamers according to the value of energies.
 #*    -T, --top-ratio <float>
@@ -73,6 +76,7 @@ my $interactions = 'composite';
 my $small_angle = 0.1;
 my $energy_cutoff_atom = 0.4;
 my $energy_cutoff_residue = 1.0;
+my $is_hydrogen_explicit = 0;
 my $threads = 1;
 my $top_rank;
 my $top_ratio;
@@ -85,6 +89,7 @@ GetOptions(
     'angle-step|a=s' => \$small_angle,
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
     'cutoff-residue|C=s' => \$energy_cutoff_residue,
+    'explicit-hydrogens|H' => sub { $is_hydrogen_explicit = 1 },
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
     'threads|n=s' => \$threads,
@@ -155,7 +160,8 @@ for my $pdbx_file ( @ARGV ) {
                   'parameters' => $parameters,
                   'energy_cutoff_atom' => $energy_cutoff_atom,
                   'energy_cutoff_residue' => $energy_cutoff_residue,
-                  'threads' => $threads
+                  'is_hydrogen_explicit' => $is_hydrogen_explicit,
+                  'threads' => $threads,
                 } );
     };
     if( $@ ) {
