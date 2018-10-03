@@ -167,7 +167,7 @@ for my $pdbx_file ( @ARGV ) {
     if( $@ ) {
         parse_errors( { 'program' => $0,
                         'filename' => $pdbx_file,
-                        'type' => 'NOTE',
+                        'type' => 'WARNING',
                         'message' => $@ } );
     }
 
