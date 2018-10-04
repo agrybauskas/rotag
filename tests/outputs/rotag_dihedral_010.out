@@ -3,7 +3,7 @@ data_testing
 loop_
 _[local]_dihedral_angle.id
 _[local]_dihedral_angle.label_comp_id
-_[local]_dihedral_angle.lanel_seq_id
+_[local]_dihedral_angle.label_seq_id
 _[local]_dihedral_angle.label_asym_id
 _[local]_dihedral_angle.label_entity_id
 _[local]_dihedral_angle.label_alt_id
