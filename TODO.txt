@@ -34,3 +34,5 @@
 -- There should be a check of must attributes in CIF.
 ++ Add option to use only implicit hydrogen bond model for composite energy
    potential.
+-- Add 0 value energy to rotag_energy.
+-- Parameter control should be added to rotag_energy for debugging.
