@@ -26,6 +26,7 @@ use Grid qw( grid_box
 use BondProperties qw( hybridization );
 use PDBxParser qw( filter
                    obtain_atom_site
+                   pdbx_loop_to_csv
                    to_pdbx
                    unique_residue_key );
 use PseudoAtoms qw( add_hydrogens );
@@ -51,6 +52,8 @@ our $VERSION = $VERSION;
 #*        decompose composite energy values into their constituent energy values.
 #*    -p, --pairwise
 #*        check energy of the atoms in pairwise fashion.
+#*    -F, --format (default: pdbx | csv)
+#*        output format.
 #*    -n, --threads
 #*        number of threads.
 #*    -v, --version
@@ -62,6 +65,7 @@ my $interactions = 'composite';
 my $do_rotamer = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
+my $output_format = 'pdbx';
 my $threads = 1;
 
 GetOptions(
@@ -69,6 +73,7 @@ GetOptions(
     'rotamer|r' => sub { $do_rotamer = 1 },
     'pairwise|p' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
+    'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -333,5 +338,15 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+    if( $output_format eq 'pdbx' ) {
+        to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+    } elsif( $output_format eq 'csv' ) {
+        if( $do_pairwise ) {
+            pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
+        } elsif( $do_rotamer ) {
+            pdbx_loop_to_csv( $pdbx_loops{'_[local]_rotamer_energy'} );
+        } else {
+            pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );
+        }
+    }
 }
