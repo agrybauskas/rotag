@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      filter_by_unique_residue_key
                      mark_selection
                      pdbx_loop_unique
+                     pdbx_loop_to_csv
                      obtain_atom_site
                      obtain_pdbx_line
                      obtain_pdbx_loop
@@ -525,6 +526,38 @@ sub to_pdbx
 
             print {$fh} "#\n";
         }
+    }
+
+    return;
+}
+
+#
+# Converts pdbx loop data structure to csv table.
+# Input:
+#     $pdbx_loops - data structure of pdbx_loops;
+#     $attributes - columns that should be displayed.
+# Output:
+#     csv STDOUT
+#
+
+sub pdbx_loop_to_csv
+{
+    my ( $pdbx_loop, $attributes ) = @_;
+
+    $attributes //= $pdbx_loop->{'attributes'};
+
+    if( defined $pdbx_loop ) {
+        print {*STDOUT} join( ',', @{ $attributes } ), "\n";
+    }
+
+    my $attribute_array_length =
+        $#{ $pdbx_loop->{'attributes'} };
+    my $data_array_length =
+        $#{ $pdbx_loop->{'data'} };
+
+    for( my $i = 0; $i <= $data_array_length; $i += $attribute_array_length + 1){
+        print {*STDOUT} join( q{,}, @{ $pdbx_loop->{'data'} }
+                                    [ $i..$i+$attribute_array_length ] ), "\n" ;
     }
 
     return;
