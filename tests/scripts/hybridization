@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
 use BondProperties qw( hybridization );
 
 #
