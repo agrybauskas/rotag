@@ -5,148 +5,159 @@ use warnings;
 
 use List::Util qw( max );
 
-use lib "../../lib";
 use AtomProperties qw( %ATOMS );
 use Constants qw( $SIG_FIGS );
-use ConnectAtoms qw( create_box grid_box );
-use PDBxParser qw( obtain_atom_site );
-
-use lib "../lib";
-use Utils qw( select_atom_data );
+use Grid qw( create_box
+             grid_box );
+use PDBxParser qw( filter
+                   obtain_atom_site );
 
 #
 # Unit test: ConnectAtoms::create_box.
 #
 # Creates smallest possible box that surrounds all selected atoms.
-#
-# Example: ./grid_box example.cif
+#                     cif         edge length
+# Example: ./grid_box example.cif 2.00
 #
 
-my ( $atom_specifier, $pdbx_file ) = @ARGV;
+my ( $pdbx_file, $edge_length ) = @ARGV;
+
+$edge_length //=
+    max( map { @{ $ATOMS{$_}{"covalent_radius"}{"length"} } } keys %ATOMS ) * 2;
 
 my $atom_site = obtain_atom_site( $pdbx_file );
 
 # In Jmol, prints out atom coordinates.
-print( "data \"model\"\n" );
-print( scalar( keys %{ $atom_site } ), "\n" );
-print( "testing\n" );
+print "data \"model\"\n";
+print scalar( keys %{ $atom_site } ), "\n";
+print "testing\n";
 
 for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-    printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
-            "\t$SIG_FIGS\t$SIG_FIGS\t$SIG_FIGS\n",
-            $atom_site->{$atom_id}{"Cartn_x"},
-            $atom_site->{$atom_id}{"Cartn_y"},
-            $atom_site->{$atom_id}{"Cartn_z"} );
+    printf "$atom_site->{$atom_id}{'type_symbol'}" .
+           "\t$SIG_FIGS\t$SIG_FIGS\t$SIG_FIGS\n",
+           $atom_site->{$atom_id}{"Cartn_x"},
+           $atom_site->{$atom_id}{"Cartn_y"},
+           $atom_site->{$atom_id}{"Cartn_z"};
 }
 
-print( "end \"model\"\n" );
+print "end \"model\"\n";
 
 # In Jmol, generates box around the molecule.
-my $MAX_COV_LENGTH =
-    max( map { @{ $ATOMS{$_}{"covalent_radius"}{"length"} } } keys %ATOMS ) * 2;
-my $grid_box = grid_box( $atom_site, $MAX_COV_LENGTH );
+my ( $grid_box ) = grid_box( $atom_site, $edge_length );
 
-my $atom_data =
-    select_atom_data( $pdbx_file, $atom_specifier, "Cartn_x,Cartn_y,Cartn_z" );
+my $atom_data = filter( { 'atom_site' => $atom_site,
+                          'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 my $boundary_box = create_box( $atom_data );
 
 my $line_counter = 0;
 for my $cell ( sort { $a cmp $b } keys %{ $grid_box } ) {
-    my @cell_indexes = split( ",", $cell );
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+    my @cell_indexes = split /,/, $cell;
+    printf "draw line$line_counter" .
+           " {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length,
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length,
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length,
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length,
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length,
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length,
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length,
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length,
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length,
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length,
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] + ( $cell_indexes[2] - 1 ) * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length,
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] + ( $cell_indexes[1] - 1 ) * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length;
     $line_counter++;
-    printf( "draw line$line_counter {$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
-            $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH,
-            $boundary_box->[0] +   $cell_indexes[0]       * $MAX_COV_LENGTH,
-            $boundary_box->[2] +   $cell_indexes[1]       * $MAX_COV_LENGTH,
-            $boundary_box->[4] +   $cell_indexes[2]       * $MAX_COV_LENGTH );
+    printf "draw line$line_counter " .
+           "{$SIG_FIGS $SIG_FIGS $SIG_FIGS} {$SIG_FIGS $SIG_FIGS $SIG_FIGS}\n",
+           $boundary_box->[0] + ( $cell_indexes[0] - 1 ) * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length,
+           $boundary_box->[0] +   $cell_indexes[0]       * $edge_length,
+           $boundary_box->[2] +   $cell_indexes[1]       * $edge_length,
+           $boundary_box->[4] +   $cell_indexes[2]       * $edge_length;
     $line_counter++;
 }
