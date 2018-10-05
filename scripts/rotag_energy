@@ -46,6 +46,17 @@ our $VERSION = $VERSION;
 #*                              leonard_jones | coulomb | h_bond)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
+#*    -p, --parameters <str>
+#*        parameters for composite potential energy function:
+#*            lj_epsilon   - Leonard-Jones epsilon;
+#*            c_k          - Coulomb constant;
+#*            h_epsilon    - hydrogen bond epsilon;
+#*            cutoff_start - x VdW where energy starts to go to zero;
+#*            cutoff_end   - x VdW where energy is at zero.
+#*        parameters for soft-sphere potential energy function:
+#*            soft_epsilon - soft sphere epsilon;
+#*            soft_n       - soft sphere n.
+#*        Example: 'lj_epsilon = 0.01, c_k = 0.4'.
 #*    -r, --rotamer
 #*        calculate energy of the side-chain atoms for each selected residue.
 #*    -d, --decompose
@@ -62,6 +73,7 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
+my $parameters = q{};
 my $do_rotamer = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
@@ -70,8 +82,9 @@ my $threads = 1;
 
 GetOptions(
     'potential|u=s' => \$interactions,
+    'parameters|p=s' => \$parameters,
     'rotamer|r' => sub { $do_rotamer = 1 },
-    'pairwise|p' => sub { $do_pairwise = 1 },
+    'pairwise|P' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -98,6 +111,13 @@ my %potential_functions = (
     'h_bond' => \&h_bond,
 );
 
+$parameters =~ s/\s//g;
+$parameters = {
+    map { $_->[0] => $_->[1] }
+    map { [ split /=/sm, $_ ] }
+    split /,/sxm, $parameters
+};
+
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
@@ -112,7 +132,6 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     # Adds hydrogens for calculations where h_bond might be present.
-    my %parameters;
     if( $interactions eq 'composite' || $interactions eq 'h_bond' ) {
         my %atom_site_with_hydrogens =
             ( %{ $atom_site },
@@ -120,14 +139,14 @@ for my $pdbx_file ( @ARGV ) {
                                 { 'add_only_clear_positions' => 1 } ) } );
         connect_atoms( \%atom_site_with_hydrogens );
         hybridization( \%atom_site_with_hydrogens );
-        $parameters{'atom_site'} = \%atom_site_with_hydrogens;
+        $parameters->{'atom_site'} = \%atom_site_with_hydrogens;
     } else {
         # TODO: look, how it will behave when pseudo atoms are introduced.
         connect_atoms( $atom_site );
     }
 
     if( $do_decompose ) {
-        $parameters{'decompose'} = 1;
+        $parameters->{'decompose'} = 1;
     }
 
     # If the attribute '[local]_selection_state' is absent, then every atom is
@@ -221,7 +240,7 @@ for my $pdbx_file ( @ARGV ) {
                         $potential_function->(
                             $selected_atom_site->{$atom_id},
                             $selected_atom_site->{$neighbour_atom_id},
-                            \%parameters );
+                            $parameters );
 
                     if( $do_pairwise ) {
                         if( $do_decompose ) {
