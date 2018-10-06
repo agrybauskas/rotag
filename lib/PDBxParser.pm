@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      filter_by_unique_residue_key
+                     identify_unique_residues
                      mark_selection
                      pdbx_loop_unique
                      pdbx_loop_to_csv
@@ -333,7 +334,7 @@ sub mark_selection
 #
 # Filters atom site data structure by unique residue key.
 # Input:
-#     $atom_site - atom data structure;
+#     $atom_site - atom data structure.
 #     $unique_residue_key - a composite key that identifies residue uniquely.
 #     Ex.: '18,A,1,.'.
 # Output:
@@ -359,7 +360,7 @@ sub filter_by_unique_residue_key
 # '_atom_site.label_asym_id', '_atom_site.label_entity_id' and
 # '_atom_site.label_alt_id'.
 # Input:
-#     $atom - atom data structure (see PDBxParser.pm);
+#     $atom - atom data structure.
 # Output:
 #     $unique_residue_key - unique residue key.
 #
@@ -373,6 +374,24 @@ sub unique_residue_key
                  'label_asym_id',
                  'label_entity_id',
                  'label_alt_id', );
+}
+
+#
+# Identifies unique residues and generates hash of lists of unique residues and
+# atom ids that belong to them.
+# Input:
+#     $atom_site - atom data structure.
+# Output:
+#     %unique_residues - atom ids that belong to unique residues.
+#
+
+sub identify_unique_residues
+{
+    my ( $atom_site ) = @_;
+
+    my %unique_residues;
+
+    return \%unique_residues;
 }
 
 #

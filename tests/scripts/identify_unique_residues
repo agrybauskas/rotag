@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( identify_unique_residues );
+
+#
+# Unit test: PDBxParser::identify_unique_residues.
+# Example: ./identify_unique_residues structure.dump
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+identify_unique_residues( $atom_site );
