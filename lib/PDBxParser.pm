@@ -17,7 +17,8 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      to_pdbx
                      unique_residue_key );
 
-use List::MoreUtils qw( any );
+use List::MoreUtils qw( any
+                        uniq );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -382,7 +383,7 @@ sub unique_residue_key
 # Input:
 #     $atom_site - atom data structure.
 # Output:
-#     %unique_residues - atom ids that belong to unique residues.
+#     %unique_alt_residues - atom ids that belong to unique residues.
 #
 
 sub identify_unique_residues
@@ -390,8 +391,38 @@ sub identify_unique_residues
     my ( $atom_site ) = @_;
 
     my %unique_residues;
+    my %unique_alt_residues;
 
-    return \%unique_residues;
+    # Separates main atom ids (with alt_id of ".") from alternative atom ids.
+    for my $atom_id ( keys %{ $atom_site } ) {
+        my $unique_residue_key = unique_residue_key( $atom_site->{$atom_id} );
+        my ( $residue_id, $chain, $entity_id, $alt_id ) =
+            split /,/sxm, $unique_residue_key;
+
+        if( $alt_id eq q{.} ) {
+            if( exists $unique_residues{$unique_residue_key} ) {
+                push @{ $unique_residues{$unique_residue_key} }, $atom_id;
+            } else {
+                $unique_residues{$unique_residue_key} = [ $atom_id ];
+            }
+        } else {
+            if( exists $unique_alt_residues{$unique_residue_key} ) {
+                push @{ $unique_alt_residues{$unique_residue_key} }, $atom_id;
+            } else {
+                $unique_alt_residues{$unique_residue_key} = [ $atom_id ];
+            }
+        }
+    }
+
+    # Joins main and alt residues.
+    for my $unique_alt_residue_key ( keys %unique_alt_residues ) {
+        my ( $residue_id, $chain, $entity_id, $alt_id ) =
+            split /,/sxm, $unique_alt_residue_key;
+        # my @unique_residues = grep {} keys
+        # for my $unique_alt_residue ( keys %unique_alt_residues ) {
+
+        # }
+    }
 }
 
 #
