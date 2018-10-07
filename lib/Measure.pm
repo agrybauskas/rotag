@@ -16,7 +16,8 @@ use List::MoreUtils qw( uniq );
 use AtomProperties qw( sort_atom_names );
 use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter
-                   filter_by_unique_residue_key );
+                   filter_by_unique_residue_key
+                   identify_unique_residues );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use BondProperties qw( rotatable_bonds );
@@ -179,13 +180,14 @@ sub all_dihedral
     my ( $atom_site ) = @_;
 
     # Collects non-redundant ids of given amino acid residues.
-    my @residue_unique_keys =
-        @{ filter( { 'atom_site' => $atom_site,
-                     'data' => [ 'label_seq_id',
-                                 'label_asym_id',
-                                 'label_entity_id',
-                                 'label_alt_id' ] } ) };
-    @residue_unique_keys = uniq map { join q{,}, @{$_} } @residue_unique_keys;
+    my $unique_residues = identify_unique_residues( $atom_site );
+    # my @residue_unique_keys =
+    #     @{ filter( { 'atom_site' => $atom_site,
+    #                  'data' => [ 'label_seq_id',
+    #                              'label_asym_id',
+    #                              'label_entity_id',
+    #                              'label_alt_id' ] } ) };
+    # @residue_unique_keys = uniq map { join q{,}, @{$_} } @residue_unique_keys;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -195,10 +197,11 @@ sub all_dihedral
     # calculates dihedral angles of each rotatable bond.
     my %residue_angles;
 
-    for my $residue_unique_key ( @residue_unique_keys ) {
+    for my $residue_unique_key ( sort keys %{ $unique_residues } ) {
         my $residue_site =
-            filter_by_unique_residue_key( \%atom_site,
-                                          $residue_unique_key );
+            filter( { 'atom_site' => \%atom_site,
+                      'include' =>
+                          { 'id' => $unique_residues->{$residue_unique_key} } });
 
         my $rotatable_bonds = rotatable_bonds( $residue_site );
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
