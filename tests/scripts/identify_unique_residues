@@ -21,4 +21,10 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-identify_unique_residues( $atom_site );
+my $unique_residues = identify_unique_residues( $atom_site );
+
+for my $unique_residue ( sort keys %{ $unique_residues } ) {
+    foreach( sort @{ $unique_residues->{$unique_residue} } ) {
+        print "$unique_residue,$_\n";
+    }
+}

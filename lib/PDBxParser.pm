@@ -415,14 +415,26 @@ sub identify_unique_residues
     }
 
     # Joins main and alt residues.
-    for my $unique_alt_residue_key ( keys %unique_alt_residues ) {
+    for my $unique_residue_key ( keys %unique_residues ) {
         my ( $residue_id, $chain, $entity_id, $alt_id ) =
-            split /,/sxm, $unique_alt_residue_key;
-        # my @unique_residues = grep {} keys
-        # for my $unique_alt_residue ( keys %unique_alt_residues ) {
+            split /,/sxm, $unique_residue_key;
+        my @unique_alt_residues =
+            grep { /^$residue_id,$chain,$entity_id,.+$/ }
+            keys %unique_alt_residues;
 
-        # }
+        if( ! @unique_alt_residues ) {
+            $unique_alt_residues{$unique_residue_key} =
+                $unique_residues{$unique_residue_key};
+            next;
+        }
+
+        for my $unique_alt_residue ( @unique_alt_residues ) {
+            push @{ $unique_alt_residues{$unique_alt_residue} },
+                 @{ $unique_residues{$unique_residue_key} };
+        }
     }
+
+    return \%unique_alt_residues;
 }
 
 #
