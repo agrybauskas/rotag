@@ -13,6 +13,7 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-ATOM 147 N N . SER A 1 18 -55.320 -109.795 -6.452
-ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255
+_atom_site.pdbx_PDB_model_num
+ATOM 147 N N . SER A 1 18 -55.320 -109.795 -6.452 1
+ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1
 #

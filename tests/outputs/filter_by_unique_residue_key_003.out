@@ -13,5 +13,6 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-HETATM 10739 MG MG . MG O 7 . 56.973 -18.134 69.581
+_atom_site.pdbx_PDB_model_num
+HETATM 10739 MG MG . MG O 7 . 56.973 -18.134 69.581 1
 #
