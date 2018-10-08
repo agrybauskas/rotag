@@ -36,3 +36,5 @@
    potential.
 -- Add 0 value energy to rotag_energy.
 ++ Parameter control should be added to rotag_energy for debugging.
+-- Should decide, how to change alt id for original atom after pseudo atom is
+   generated. Should it be kept to '.'? Or changed to match pattern in CIF?
