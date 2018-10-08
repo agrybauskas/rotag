@@ -42,7 +42,7 @@ sub rotation_only
               @{ filter( { 'atom_site' => $atom_site,
                            'data' => [ 'label_seq_id',
                                        'label_asym_id',
-                                       'label_entity_id',
+                                       'pdbx_PDB_model_num',
                                        'label_alt_id' ] } ) };
 
     # Iterates through target residues and their atom ids and assigns
