@@ -19,7 +19,7 @@ $atom_site = eval( $atom_site );
 my $dihedral_angles =
     all_dihedral( $atom_site );
 
-for my $residue_unique_key ( keys %{ $dihedral_angles } ) {
+for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
     for my $angle ( sort { $a cmp $b }
                     keys %{ $dihedral_angles->{$residue_unique_key} } ) {
         print( join( " ", split( ",", $residue_unique_key ), $angle ), " " );
