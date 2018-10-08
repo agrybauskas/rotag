@@ -141,6 +141,8 @@ sub generate_pseudo
                   'cartn_x' => sprintf( $SIG_FIGS, $transf_atom_coord->[0][0] ),
                   'cartn_y' => sprintf( $SIG_FIGS, $transf_atom_coord->[1][0] ),
                   'cartn_z' => sprintf( $SIG_FIGS, $transf_atom_coord->[2][0] ),
+                  'pdbx_PDB_model_num' =>
+                      $atom_site{$atom_id}{'pdbx_PDB_model_num'},
                 } );
             # Adds atom id that pseudo atoms was made of.
             $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
@@ -347,7 +349,7 @@ sub generate_library
     # Finds where CA of target residues are.
     my @target_ca_ids;
     for my $residue_unique_key ( @{ $residue_unique_keys } ) {
-        my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+        my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
             split /,/sxm, $residue_unique_key;
         my $atom_ca_id =
             filter( { 'atom_site' => \%atom_site_no_hydrogens,
@@ -355,7 +357,7 @@ sub generate_library
                       { 'label_atom_id' => [ 'CA' ],
                         'label_seq_id' => [ $residue_id ],
                         'label_asym_id' => [ $residue_chain ],
-                        'label_entity_id' => [ $residue_entity ],
+                        'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                         'label_alt_id' => [ $residue_alt ] },
                       'data' => [ 'id' ],
                       'is_list' => 1 } )->[0];
@@ -697,14 +699,14 @@ sub calc_full_atom_energy
 
     # Creates all-atom model (even with uncertain hydrogen positions) for
     # selected residue.
-    my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+    my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
         split /,/sxm, $residue_unique_key;
     my $residue_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { 'label_seq_id' => [ $residue_id ],
                                  'label_asym_id' => [ $residue_chain ],
                                  'label_alt_id' => [ $residue_alt ],
-                                 'label_entity_id' => [ $residue_entity ] },
+                                 'pdbx_PDB_model_num' => [ $pdbx_model_num ] },
                   'exclude' => { 'type_symbol' => [ 'H' ] } } );
 
     # Adds hydrogens if it is necessary for the calculations.
@@ -974,6 +976,8 @@ sub add_hydrogens
                   'cartn_z' =>
                       sprintf( $SIG_FIGS,
                                $hydrogen_coord{$hydrogen_name}->[2][0] ),
+                  'pdbx_PDB_model_num' =>
+                      $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
                 } );
             # Adds additional pseudo-atom flag for future filtering.
             $hydrogen_site{$last_atom_id}{'is_pseudo_atom'} = 1;
