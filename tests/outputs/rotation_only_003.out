@@ -3,8 +3,8 @@
 0.784 0.617 0.066 77.693 
 0 0 0 1 
 
-cos($chi0) -sin($chi0) 0 0 
-sin($chi0) cos($chi0) 0 0 
+cos($chi1) -sin($chi1) 0 0 
+sin($chi1) cos($chi1) 0 0 
 0 0 1 0 
 0 0 0 1 
 
@@ -13,8 +13,8 @@ sin($chi0) cos($chi0) 0 0
 6.76542155630955e-16 -0.909 0.416 1.525 
 0 0 0 1 
 
-cos($chi1) -sin($chi1) 0 0 
-sin($chi1) cos($chi1) 0 0 
+cos($chi2) -sin($chi2) 0 0 
+sin($chi2) cos($chi2) 0 0 
 0 0 1 0 
 0 0 0 1 
 
@@ -23,8 +23,8 @@ sin($chi1) cos($chi1) 0 0
 6.66133814775094e-16 -0.929 0.370 1.534 
 0 0 0 1 
 
-cos($chi2) -sin($chi2) 0 0 
-sin($chi2) cos($chi2) 0 0 
+cos($chi3) -sin($chi3) 0 0 
+sin($chi3) cos($chi3) 0 0 
 0 0 1 0 
 0 0 0 1 
 

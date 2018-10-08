@@ -4,7 +4,7 @@ export PERL5LIB=$(dirname "$0")/../../lib
 
 pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/glutamic-acid-rotation-only-001.dump
 residue_unique_key="14,A,1,."
-angle_values="chi0 0 & chi1 0.5*pi & chi2 pi"
+angle_values="chi1 0 & chi2 0.5*pi & chi3 pi"
 
 $(dirname "$0")/../scripts/replace_with_rotamer "${residue_unique_key}" \
 	                                        "${angle_values}" \

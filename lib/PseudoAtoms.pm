@@ -64,8 +64,8 @@ our $VERSION = $VERSION;
 #     PDBxParser.pm);
 #     $angle_values - hash of arrays that describe possible values of dihedral
 #     angles:
-#     Ex.: { 'chi0' => [ 0, 0.4, 1.5, 2.0 ],
-#            'chi1' => [ 0, 2 ] };
+#     Ex.: { 'chi1' => [ 0, 0.4, 1.5, 2.0 ],
+#            'chi2' => [ 0, 2 ] };
 #     $last_atom_id - last atom id for assigning new ids for pseudo atoms;
 #     $alt_group_id - alternative group id that is used to distinguish pseudo
 #     atoms. Very useful when generating rotamers.
@@ -427,7 +427,7 @@ sub generate_library
             for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                 my %angles =
                     map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
-                        ( 0..$#{ $allowed_angles->[$i] } );
+                        ( 1..$#{ $allowed_angles->[$i] }+1 );
                 my $rotamer_energy_sum = $energy_sums->[$i];
                 if( defined $rotamer_energy_sum &&
                     $rotamer_energy_sum <= $energy_cutoff_residue ) {
@@ -614,7 +614,7 @@ sub calc_favourable_angle
         my $angles = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
         my %angles =
-            map { ( "chi$_" => [ $angles->[$_] ] ) } 0..$#{ $angles };
+            map { ( "chi$_" => [ $angles->[$_] ] ) } 1..$#{ $angles }+1;
 
         my $pseudo_atom_site =
             generate_pseudo( $atom_site,
@@ -763,7 +763,7 @@ sub calc_full_atom_energy
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
         my %angles =
             map { ( "chi$_" => $checkable_angles[$i][$_] ) }
-                0..$#{ $checkable_angles[$i] };
+                1..$#{ $checkable_angles[$i] }+1;
 
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( \%rotamer_site, $residue_unique_key, \%angles );

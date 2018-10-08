@@ -172,7 +172,7 @@ sub dihedral_angle
 #     $residue_angles - data structure that relates residue id and angle values.
 #     Ex.:
 #       resi_id, angle_name, angle value
-#     { 18 => { 'chi0' => '-3.14' } }
+#     { 18 => { 'chi1' => '-3.14' } }
 #
 
 sub all_dihedral

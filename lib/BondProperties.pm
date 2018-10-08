@@ -483,7 +483,7 @@ sub rotatable_bonds
                          'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
 
     my %bond_names; # Names by second atom priority.
-    my $bond_name_id = 0;
+    my $bond_name_id = 1;
     for my $second_name ( @second_names_sorted ) {
         my $second_atom_id =
             filter( { 'atom_site' => \%atom_site,

@@ -1,266 +1,266 @@
 {
-          '3010' => {
-                      'label_alt_id' => '.',
-                      'auth_asym_id' => 'A',
-                      'occupancy' => '0.50',
-                      'Cartn_y_esd' => '?',
-                      'Cartn_z_esd' => '?',
-                      'id' => '3010',
-                      'Cartn_x' => '23.608',
-                      'pdbx_PDB_ins_code' => '?',
-                      'connections' => [
-                                         '3012'
-                                       ],
-                      'group_PDB' => 'ATOM',
-                      'Cartn_x_esd' => '?',
-                      'B_iso_or_equiv_esd' => '?',
-                      'hybridization' => 'sp3',
-                      'Cartn_z' => '43.715',
-                      'Cartn_y' => '-50.599',
-                      'B_iso_or_equiv' => '38.26',
-                      'pdbx_PDB_model_num' => '1',
-                      'pdbx_formal_charge' => '?',
-                      'label_atom_id' => 'N',
-                      'label_comp_id' => 'CYS',
-                      'auth_atom_id' => 'N',
-                      'label_asym_id' => 'A',
-                      'label_entity_id' => '1',
-                      'auth_comp_id' => 'CYS',
-                      'occupancy_esd' => '?',
-                      'type_symbol' => 'N',
-                      'auth_seq_id' => '464',
-                      'label_seq_id' => '419'
-                    },
-          '3012' => {
-                      'label_seq_id' => '419',
-                      'auth_seq_id' => '464',
-                      'type_symbol' => 'C',
-                      'auth_comp_id' => 'CYS',
-                      'occupancy_esd' => '?',
-                      'label_entity_id' => '1',
-                      'label_asym_id' => 'A',
-                      'auth_atom_id' => 'CA',
-                      'label_comp_id' => 'CYS',
-                      'label_atom_id' => 'CA',
-                      'pdbx_formal_charge' => '?',
-                      'pdbx_PDB_model_num' => '1',
-                      'Cartn_y' => '-49.169',
-                      'B_iso_or_equiv' => '37.19',
-                      'Cartn_z' => '43.570',
-                      'hybridization' => 'sp3',
-                      'B_iso_or_equiv_esd' => '?',
-                      'group_PDB' => 'ATOM',
-                      'Cartn_x_esd' => '?',
-                      'pdbx_PDB_ins_code' => '?',
-                      'connections' => [
-                                         '3010',
-                                         '3018',
-                                         '3014'
-                                       ],
-                      'Cartn_x' => '23.817',
-                      'Cartn_y_esd' => '?',
-                      'id' => '3012',
-                      'Cartn_z_esd' => '?',
-                      'auth_asym_id' => 'A',
-                      'occupancy' => '0.50',
-                      'label_alt_id' => '.'
-                    },
-          '3014' => {
-                      'label_asym_id' => 'A',
-                      'label_comp_id' => 'CYS',
-                      'auth_atom_id' => 'C',
-                      'label_atom_id' => 'C',
-                      'label_seq_id' => '419',
-                      'auth_seq_id' => '464',
-                      'type_symbol' => 'C',
-                      'occupancy_esd' => '?',
-                      'auth_comp_id' => 'CYS',
-                      'label_entity_id' => '1',
-                      'B_iso_or_equiv_esd' => '?',
-                      'group_PDB' => 'ATOM',
-                      'Cartn_x_esd' => '?',
-                      'pdbx_PDB_ins_code' => '?',
-                      'connections' => [
-                                         '3012',
-                                         '3016'
-                                       ],
-                      'Cartn_x' => '22.860',
-                      'Cartn_z_esd' => '?',
-                      'Cartn_y_esd' => '?',
-                      'id' => '3014',
-                      'label_alt_id' => '.',
-                      'auth_asym_id' => 'A',
-                      'occupancy' => '0.50',
-                      'pdbx_formal_charge' => '?',
-                      'pdbx_PDB_model_num' => '1',
-                      'B_iso_or_equiv' => '38.07',
-                      'Cartn_y' => '-48.310',
-                      'Cartn_z' => '44.426',
-                      'hybridization' => 'sp2'
-                    },
-          '3016' => {
-                      'type_symbol' => 'O',
-                      'auth_seq_id' => '464',
-                      'label_seq_id' => '419',
-                      'label_entity_id' => '1',
-                      'occupancy_esd' => '?',
-                      'auth_comp_id' => 'CYS',
-                      'label_comp_id' => 'CYS',
-                      'auth_atom_id' => 'O',
-                      'label_asym_id' => 'A',
-                      'label_atom_id' => 'O',
-                      'pdbx_PDB_model_num' => '1',
-                      'pdbx_formal_charge' => '?',
-                      'hybridization' => 'sp2',
-                      'Cartn_z' => '44.862',
-                      'B_iso_or_equiv' => '37.29',
-                      'Cartn_y' => '-47.223',
-                      'group_PDB' => 'ATOM',
-                      'Cartn_x_esd' => '?',
-                      'B_iso_or_equiv_esd' => '?',
-                      'occupancy' => '0.50',
-                      'auth_asym_id' => 'A',
-                      'label_alt_id' => '.',
-                      'Cartn_z_esd' => '?',
-                      'Cartn_y_esd' => '?',
-                      'id' => '3016',
-                      'Cartn_x' => '23.240',
-                      'pdbx_PDB_ins_code' => '?',
-                      'connections' => [
-                                         '3014'
-                                       ]
-                    },
-          '3020' => {
-                      'label_entity_id' => '1',
-                      'auth_comp_id' => 'CYS',
-                      'occupancy_esd' => '?',
-                      'auth_seq_id' => '464',
-                      'type_symbol' => 'S',
-                      'label_seq_id' => '419',
-                      'label_atom_id' => 'SG',
-                      'label_asym_id' => 'A',
-                      'auth_atom_id' => 'SG',
-                      'label_comp_id' => 'CYS',
-                      'Cartn_z' => '41.790',
-                      'hybridization' => 'sp3',
-                      'B_iso_or_equiv' => '53.83',
-                      'Cartn_y' => '-47.082',
-                      'pdbx_formal_charge' => '?',
-                      'pdbx_PDB_model_num' => '1',
-                      'conformation' => [
-                                          [
-                                            [
-                                              '0.983312807268098',
-                                              '-0.172288837153588',
-                                              '-0.0584164330886187',
-                                              '23.817'
-                                            ],
-                                            [
-                                              '-0.153599657741487',
-                                              '-0.958322077881036',
-                                              '0.240885740938463',
-                                              '-49.169'
-                                            ],
-                                            [
-                                              '-0.0974836817330519',
-                                              '-0.227893290024166',
-                                              '-0.968793879087668',
-                                              '43.57'
-                                            ],
-                                            [
-                                              0,
-                                              0,
-                                              0,
-                                              1
-                                            ]
-                                          ],
-                                          [
-                                            [
-                                              'cos($chi0)',
-                                              '-sin($chi0)',
-                                              0,
-                                              0
-                                            ],
-                                            [
-                                              'sin($chi0)',
-                                              'cos($chi0)',
-                                              0,
-                                              0
-                                            ],
-                                            [
-                                              0,
-                                              0,
-                                              1,
-                                              0
-                                            ],
-                                            [
-                                              0,
-                                              0,
-                                              0,
-                                              1
-                                            ]
-                                          ],
-                                          [
-                                            [
-                                              '-0.0487102514948923'
-                                            ],
-                                            [
-                                              '-1.61159700401013'
-                                            ],
-                                            [
-                                              '2.22134000280575'
-                                            ],
-                                            [
-                                              1
-                                            ]
-                                          ]
-                                        ],
-                      'id' => '3020',
-                      'Cartn_y_esd' => '?',
-                      'Cartn_z_esd' => '?',
-                      'auth_asym_id' => 'A',
-                      'occupancy' => '0.50',
-                      'label_alt_id' => '.',
-                      'pdbx_PDB_ins_code' => '?',
-                      'connections' => [
-                                         '3018'
-                                       ],
-                      'Cartn_x' => '23.917',
-                      'B_iso_or_equiv_esd' => '?',
-                      'Cartn_x_esd' => '?',
-                      'group_PDB' => 'ATOM'
-                    },
-          '3018' => {
-                      'pdbx_PDB_model_num' => '1',
-                      'pdbx_formal_charge' => '?',
-                      'B_iso_or_equiv' => '37.89',
-                      'Cartn_y' => '-48.802',
-                      'hybridization' => 'sp3',
-                      'Cartn_z' => '42.094',
-                      'group_PDB' => 'ATOM',
-                      'Cartn_x_esd' => '?',
-                      'B_iso_or_equiv_esd' => '?',
-                      'Cartn_x' => '23.728',
-                      'connections' => [
-                                         '3012',
-                                         '3020'
-                                       ],
-                      'pdbx_PDB_ins_code' => '?',
-                      'label_alt_id' => '.',
-                      'auth_asym_id' => 'A',
-                      'occupancy' => '0.50',
-                      'id' => '3018',
-                      'Cartn_y_esd' => '?',
-                      'Cartn_z_esd' => '?',
-                      'label_seq_id' => '419',
-                      'type_symbol' => 'C',
-                      'auth_seq_id' => '464',
-                      'occupancy_esd' => '?',
-                      'auth_comp_id' => 'CYS',
-                      'label_entity_id' => '1',
-                      'label_comp_id' => 'CYS',
-                      'auth_atom_id' => 'CB',
-                      'label_asym_id' => 'A',
-                      'label_atom_id' => 'CB'
-                    }
+  '3010' => {
+    'B_iso_or_equiv' => '38.26',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '23.608',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-50.599',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '43.715',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'N',
+    'auth_comp_id' => 'CYS',
+    'auth_seq_id' => '464',
+    'connections' => [
+      '3012'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
+    'id' => '3010',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'N',
+    'label_comp_id' => 'CYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '419',
+    'occupancy' => '0.50',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'N'
+  },
+  '3012' => {
+    'B_iso_or_equiv' => '37.19',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '23.817',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-49.169',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '43.570',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'CA',
+    'auth_comp_id' => 'CYS',
+    'auth_seq_id' => '464',
+    'connections' => [
+      '3010',
+      '3018',
+      '3014'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
+    'id' => '3012',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CA',
+    'label_comp_id' => 'CYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '419',
+    'occupancy' => '0.50',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '3014' => {
+    'B_iso_or_equiv' => '38.07',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '22.860',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-48.310',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '44.426',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'C',
+    'auth_comp_id' => 'CYS',
+    'auth_seq_id' => '464',
+    'connections' => [
+      '3012',
+      '3016'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '3014',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'C',
+    'label_comp_id' => 'CYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '419',
+    'occupancy' => '0.50',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '3016' => {
+    'B_iso_or_equiv' => '37.29',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '23.240',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-47.223',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '44.862',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'O',
+    'auth_comp_id' => 'CYS',
+    'auth_seq_id' => '464',
+    'connections' => [
+      '3014'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '3016',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'O',
+    'label_comp_id' => 'CYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '419',
+    'occupancy' => '0.50',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'O'
+  },
+  '3018' => {
+    'B_iso_or_equiv' => '37.89',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '23.728',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-48.802',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '42.094',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'CB',
+    'auth_comp_id' => 'CYS',
+    'auth_seq_id' => '464',
+    'connections' => [
+      '3012',
+      '3020'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
+    'id' => '3018',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CB',
+    'label_comp_id' => 'CYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '419',
+    'occupancy' => '0.50',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '3020' => {
+    'B_iso_or_equiv' => '53.83',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '23.917',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-47.082',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '41.790',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'SG',
+    'auth_comp_id' => 'CYS',
+    'auth_seq_id' => '464',
+    'conformation' => [
+      [
+        [
+          '0.983312807268098',
+          '-0.172288837153588',
+          '-0.0584164330886187',
+          '23.817'
+        ],
+        [
+          '-0.153599657741487',
+          '-0.958322077881036',
+          '0.240885740938463',
+          '-49.169'
+        ],
+        [
+          '-0.0974836817330519',
+          '-0.227893290024166',
+          '-0.968793879087668',
+          '43.57'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      [
+        [
+          'cos($chi1)',
+          '-sin($chi1)',
+          0,
+          0
+        ],
+        [
+          'sin($chi1)',
+          'cos($chi1)',
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      [
+        [
+          '-0.0487102514948923'
+        ],
+        [
+          '-1.61159700401013'
+        ],
+        [
+          '2.22134000280575'
+        ],
+        [
+          1
+        ]
+      ]
+    ],
+    'connections' => [
+      '3018'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
+    'id' => '3020',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'SG',
+    'label_comp_id' => 'CYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '419',
+    'occupancy' => '0.50',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'S'
+  }
 }
