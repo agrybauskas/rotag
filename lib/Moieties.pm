@@ -56,6 +56,7 @@ our %SIDECHAINS = (
             'Cartn_x' => 0.009,
             'Cartn_y' => 0.077,
             'Cartn_z' => -0.688,
+            'pdbx_PDB_model_num' => 1,
         },
         2 => {
             'group_PDB' => 'ATOM',
@@ -70,6 +71,7 @@ our %SIDECHAINS = (
             'Cartn_x' => -0.494,
             'Cartn_y' => 0.929,
             'Cartn_z' => 0.504,
+            'pdbx_PDB_model_num' => 1,
         },
         3 => {
             'group_PDB' => 'ATOM',
@@ -84,6 +86,7 @@ our %SIDECHAINS = (
             'Cartn_x' => -0.029,
             'Cartn_y' => 0.446,
             'Cartn_z' => 1.769,
+            'pdbx_PDB_model_num' => 1,
         },
     },
 );
