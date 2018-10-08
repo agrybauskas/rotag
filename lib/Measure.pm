@@ -179,17 +179,10 @@ sub all_dihedral
 {
     my ( $atom_site ) = @_;
 
-    # Collects non-redundant ids of given amino acid residues.
-    my $unique_residues = identify_unique_residues( $atom_site );
-    # my @residue_unique_keys =
-    #     @{ filter( { 'atom_site' => $atom_site,
-    #                  'data' => [ 'label_seq_id',
-    #                              'label_asym_id',
-    #                              'label_entity_id',
-    #                              'label_alt_id' ] } ) };
-    # @residue_unique_keys = uniq map { join q{,}, @{$_} } @residue_unique_keys;
-
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
+
+    # Collects non-redundant ids of given amino acid residues.
+    my $unique_residues = identify_unique_residues( \%atom_site );
 
     connect_atoms( \%atom_site );
 
