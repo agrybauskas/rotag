@@ -345,20 +345,20 @@ sub mark_selection
 sub filter_by_unique_residue_key
 {
     my ( $atom_site, $unique_residue_key ) = @_;
-    my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+    my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
         split /,/sxm, $unique_residue_key;
     my $filtered_atoms = filter( { 'atom_site' => $atom_site,
                                    'include' =>
                                    { 'label_seq_id' => [ $residue_id ],
                                      'label_asym_id' => [ $residue_chain ],
-                                     'label_entity_id' => [ $residue_entity ],
+                                     'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                                      'label_alt_id' => [ $residue_alt ] } } );
     return $filtered_atoms;
 }
 
 #
 # Create unique residue key that consists of '_atom_site.label_seq_id',
-# '_atom_site.label_asym_id', '_atom_site.label_entity_id' and
+# '_atom_site.label_asym_id', '_atom_site.pdbx_PDB_model_num' and
 # '_atom_site.label_alt_id'.
 # Input:
 #     $atom - atom data structure.
@@ -373,7 +373,7 @@ sub unique_residue_key
            map { $atom->{$_} }
                ( 'label_seq_id',
                  'label_asym_id',
-                 'label_entity_id',
+                 'pdbx_PDB_model_num',
                  'label_alt_id', );
 }
 
@@ -396,7 +396,7 @@ sub identify_unique_residues
     # Separates main atom ids (with alt_id of ".") from alternative atom ids.
     for my $atom_id ( keys %{ $atom_site } ) {
         my $unique_residue_key = unique_residue_key( $atom_site->{$atom_id} );
-        my ( $residue_id, $chain, $entity_id, $alt_id ) =
+        my ( $residue_id, $chain, $pdbx_model_num, $alt_id ) =
             split /,/sxm, $unique_residue_key;
 
         if( $alt_id eq q{.} ) {
@@ -416,10 +416,10 @@ sub identify_unique_residues
 
     # Joins main and alt residues.
     for my $unique_residue_key ( keys %unique_residues ) {
-        my ( $residue_id, $chain, $entity_id, $alt_id ) =
+        my ( $residue_id, $chain, $pdbx_model_num, $alt_id ) =
             split /,/sxm, $unique_residue_key;
         my @unique_alt_residues =
-            grep { /^$residue_id,$chain,$entity_id,.+$/ }
+            grep { /^$residue_id,$chain,$pdbx_model_num,.+$/ }
             keys %unique_alt_residues;
 
         if( ! @unique_alt_residues ) {
