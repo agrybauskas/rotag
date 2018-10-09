@@ -305,14 +305,43 @@ sub filter
 # Splits up atom site to different groups by specified attributes.
 # Input:
 #     $atom_site - atom site data structure;
-#     $attributes - list of attributes that atom site will be split by.
+#     $attributes - list of attributes that atom site will be split by;
+#     $options->{'append_dot_alt_ids'} - atoms that has 'label_alt_id' eq '.' to
+#     corresponding groups.
 # Output:
-#     @split_atom_site - list of atom site data structures.
+#     @split_groups - list of atom site data structures.
 #
 
 sub split_by
 {
-    my ( $atom_site, $attributes ) = @_;
+    my ( $atom_site, $attributes, $options ) = @_;
+    my ( $append_dot_alt_ids ) = ( $options->{'append_dot_alt_ids'} );
+
+    $append_dot_alt_ids //= 0;
+
+    my %split_groups;
+    for my $atom_id ( sort keys %{ $atom_site } ) {
+        # Creates group determining key that is used to sort atoms.
+        my @attribute_values;
+        for my $attribute ( @{ $attributes } ) {
+            push @attribute_values, $atom_site->{$atom_id}{$attribute};
+        }
+
+        my $group_key = join q{,}, @attribute_values;
+
+        if( exists $split_groups{$group_key} ) {
+            push @{ $split_groups{$group_key} }, $atom_id;
+        } else {
+            $split_groups{$group_key} = [ $atom_id ];
+        }
+    }
+
+    my @split_groups;
+    foreach( sort keys %split_groups ) {
+        push @split_groups, $split_groups{$_};
+    }
+
+    return \@split_groups;
 }
 
 #

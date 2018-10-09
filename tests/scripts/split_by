@@ -24,4 +24,4 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-split_by( $atom_site, \@attributes );
+use Data::Dumper; print Dumper split_by( $atom_site, \@attributes );
