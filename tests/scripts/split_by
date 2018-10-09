@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use PDBxParser qw( split_by
+use PDBxParser qw( filter
+                   split_by
                    to_pdbx );
 
 #
@@ -24,4 +25,7 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-use Data::Dumper; print Dumper split_by( $atom_site, \@attributes );
+foreach( @{ split_by( $atom_site, \@attributes ) } ) {
+    to_pdbx( { 'atom_site' => filter( { 'atom_site' => $atom_site,
+                                        'include' => { 'id' => $_ } } ) } );
+}
