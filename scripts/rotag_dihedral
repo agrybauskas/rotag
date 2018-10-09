@@ -15,6 +15,7 @@ use ErrorHandling qw( parse_errors );
 use Measure qw( all_dihedral
                 dihedral_angle );
 use PDBxParser qw( filter
+                   mark_selection
                    pdbx_loop_to_csv
                    obtain_atom_site
                    to_pdbx );
@@ -89,6 +90,7 @@ for my $pdbx_file ( @ARGV ) {
             filter( { 'atom_site' => $atom_site,
                       'include' => { '[local]_selection_state' => [ 'T' ] },
                       'exclude' => { '[local]_selection_group' => [ q{?} ] } } );
+
         my @dihedral_atom_ids =
             sort { $dihedral_site->{"$a"}{'[local]_selection_group'} <=>
                    $dihedral_site->{"$b"}{'[local]_selection_group'} }
@@ -134,6 +136,14 @@ for my $pdbx_file ( @ARGV ) {
         my $dihedral_site =
             filter( { 'atom_site' => $atom_site,
                       'include' => { '[local]_selection_state' => [ 'T' ] } } );
+
+        # Selects all atoms if no specific atoms are selected.
+        if( ! %{ $dihedral_site } ) {
+            $dihedral_site = $atom_site;
+            mark_selection( $dihedral_site,
+                            { 'target' => [ keys %{ $dihedral_site } ] } );
+        }
+
         my $dihedral_angles = all_dihedral( $dihedral_site );
 
         my $dihedral_id = 1;
