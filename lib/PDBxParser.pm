@@ -338,6 +338,14 @@ sub split_by
 
     # Joins main and alt residues if $append_dot_alt_ids = 1.
     if( $append_dot_alt_ids ) {
+        my $attribute_pos;
+        for my $i ( 0..$#{ $attributes } ) {
+            if( $attributes->[$i] eq 'label_alt_id' ) {
+                $attribute_pos = $i;
+                last;
+            }
+        }
+
         for my $unique_key ( sort keys %split_groups ) {
             # my ( $residue_id, $chain, $pdbx_model_num, $alt_id ) =
             #     split /,/sxm, $unique_residue_key;
