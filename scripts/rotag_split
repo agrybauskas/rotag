@@ -89,7 +89,7 @@ for my $pdbx_file ( @ARGV ) {
     # Splits PDBx.
     my @split_by = map { $attribute_equivalent{$_} }
                    map { split / /sm }
-                       split /,/smx, $split_by;;
+                       split /,/smx, $split_by;
 
     my %split_groups;
     for my $atom_id ( sort keys %{ $atom_site } ) {

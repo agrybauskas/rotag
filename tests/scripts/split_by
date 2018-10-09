@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( split_by
+                   to_pdbx );
+
+#
+# Unit test: PDBxParser::split_by.
+# Example: ./split_by "pdbx_PDB_model_num,label_alt_id" structure.dump
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $attributes, $pdbx_dump_file ) = @ARGV;
+
+my @attributes = split( ",", $attributes );
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+split_by( $atom_site, \@attributes );

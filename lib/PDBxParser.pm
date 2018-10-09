@@ -14,6 +14,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_atom_site
                      obtain_pdbx_line
                      obtain_pdbx_loop
+                     split_by
                      to_pdbx
                      unique_residue_key );
 
@@ -298,6 +299,20 @@ sub filter
     }
 
     return \%filtered_atoms;
+}
+
+#
+# Splits up atom site to different groups by specified attributes.
+# Input:
+#     $atom_site - atom site data structure;
+#     $attributes - list of attributes that atom site will be split by.
+# Output:
+#     @split_atom_site - list of atom site data structures.
+#
+
+sub split_by
+{
+    my ( $atom_site, $attributes ) = @_;
 }
 
 #
