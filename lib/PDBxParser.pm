@@ -336,8 +336,8 @@ sub split_by
         }
     }
 
-    # Joins main and alt residues if $append_dot_alt_ids = 1.
     if( $append_dot_alt_ids ) {
+        # Pre-determines position of attribute in unique key.
         my $attribute_pos;
         for my $i ( 0..$#{ $attributes } ) {
             if( $attributes->[$i] eq 'label_alt_id' ) {
@@ -346,24 +346,41 @@ sub split_by
             }
         }
 
+        # Divides split groups into two - those who have '.' as 'label_alt_id'
+        # and others.
+        my %origin_split_groups;
+        my %alt_split_groups;
         for my $unique_key ( sort keys %split_groups ) {
-            # my ( $residue_id, $chain, $pdbx_model_num, $alt_id ) =
-            #     split /,/sxm, $unique_residue_key;
-            # my @unique_alt_residues =
-            #     grep { /^$residue_id,$chain,$pdbx_model_num,.+$/ }
-            # keys %unique_alt_residues;
-
-            # if( ! @unique_alt_residues ) {
-            #     $unique_alt_residues{$unique_residue_key} =
-            #         $unique_residues{$unique_residue_key};
-            #     next;
-            # }
-
-            # for my $unique_alt_residue ( @unique_alt_residues ) {
-            #     push @{ $unique_alt_residues{$unique_alt_residue} },
-            #     @{ $unique_residues{$unique_residue_key} };
-            # }
+            my @unique_key_attributes = split /,/sxm, $unique_key;
+            if( $unique_key_attributes[$attribute_pos] eq q{.} ) {
+                $origin_split_groups{$unique_key} = $split_groups{$unique_key};
+            } else {
+                $alt_split_groups{$unique_key} = $split_groups{$unique_key};
+            }
         }
+
+        # Appends origin to alt groups if the atom count and type is correct.
+        # for my $unique_key ( sort keys %split_groups ) {
+        #     my @unique_key_attributes = split /,/sxm, $unique_key;
+        #     my @unique_key_origin;
+        #     if( $unique_key_attributes[$attribute_pos] eq q{.} ) {
+        #         push @unique_key_origin, $split_groups
+        #     }
+        #     # $unique_key_attributes[$attribute_pos] = '\\.';
+        #     # my $unique_key_regexp = join ',', @unique_key_attributes;
+        #     # my @unique_alt_residues =
+        #     #     grep { /^$unique_key_regexp$/ } keys %split_groups;
+
+        #     # if( ! @unique_alt_residues ) {
+        #     #     $split_groups{$unique_key} = $split_groups{$unique_key};
+        #     #     next;
+        #     # }
+
+        #     # for my $unique_alt_residue ( @unique_alt_residues ) {
+        #     #     push @{ $split_groups{$unique_key} },
+        #     #          @{ $split_groups{$unique_alt_residue} };
+        #     # }
+        # }
     }
 
     my @split_groups;
