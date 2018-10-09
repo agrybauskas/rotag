@@ -25,7 +25,7 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-foreach( @{ split_by( $atom_site, \@attributes ) } ) {
+foreach( @{ split_by( $atom_site, \@attributes, { 'append_dot_alt_ids' => 1 } ) } ) {
     to_pdbx( { 'atom_site' => filter( { 'atom_site' => $atom_site,
                                         'include' => { 'id' => $_ } } ) } );
 }

@@ -336,6 +336,28 @@ sub split_by
         }
     }
 
+    # Joins main and alt residues if $append_dot_alt_ids = 1.
+    if( $append_dot_alt_ids ) {
+        for my $unique_key ( sort keys %split_groups ) {
+            # my ( $residue_id, $chain, $pdbx_model_num, $alt_id ) =
+            #     split /,/sxm, $unique_residue_key;
+            # my @unique_alt_residues =
+            #     grep { /^$residue_id,$chain,$pdbx_model_num,.+$/ }
+            # keys %unique_alt_residues;
+
+            # if( ! @unique_alt_residues ) {
+            #     $unique_alt_residues{$unique_residue_key} =
+            #         $unique_residues{$unique_residue_key};
+            #     next;
+            # }
+
+            # for my $unique_alt_residue ( @unique_alt_residues ) {
+            #     push @{ $unique_alt_residues{$unique_alt_residue} },
+            #     @{ $unique_residues{$unique_residue_key} };
+            # }
+        }
+    }
+
     my @split_groups;
     foreach( sort keys %split_groups ) {
         push @split_groups, $split_groups{$_};
