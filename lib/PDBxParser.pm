@@ -316,6 +316,8 @@ sub split_by
     my ( $atom_site, $attributes, $options ) = @_;
     my ( $append_dot_alt_ids ) = ( $options->{'append_dot_alt_ids'} );
 
+    $attributes //=
+        [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
     $append_dot_alt_ids //= 0;
 
     my %split_groups;

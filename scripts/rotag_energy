@@ -27,6 +27,7 @@ use BondProperties qw( hybridization );
 use PDBxParser qw( filter
                    obtain_atom_site
                    pdbx_loop_to_csv
+                   split_by
                    to_pdbx
                    unique_residue_key );
 use PseudoAtoms qw( add_hydrogens );
