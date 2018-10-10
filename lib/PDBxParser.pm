@@ -338,49 +338,39 @@ sub split_by
 
     if( $append_dot_alt_ids ) {
         # Pre-determines position of attribute in unique key.
-        my $attribute_pos;
+        my $alt_id_pos;
         for my $i ( 0..$#{ $attributes } ) {
             if( $attributes->[$i] eq 'label_alt_id' ) {
-                $attribute_pos = $i;
+                $alt_id_pos = $i;
                 last;
             }
         }
 
-        # Divides split groups into two - those who have '.' as 'label_alt_id'
-        # and others.
-        my %origin_split_groups;
-        my %alt_split_groups;
-        for my $unique_key ( sort keys %split_groups ) {
+        # Defines relations alternative and origin atoms.
+        my %unique_key_relations;
+        my @origin_keys;
+        for my $unique_key ( keys %split_groups ) {
             my @unique_key_attributes = split /,/sxm, $unique_key;
-            if( $unique_key_attributes[$attribute_pos] eq q{.} ) {
-                $origin_split_groups{$unique_key} = $split_groups{$unique_key};
-            } else {
-                $alt_split_groups{$unique_key} = $split_groups{$unique_key};
+            if( $unique_key_attributes[$alt_id_pos] ne q{.} ) {
+                $unique_key_attributes[$alt_id_pos] = '.';
+
+                my $origin_key = join ',', @unique_key_attributes;
+                push @origin_keys, $origin_key;
+
+                $unique_key_relations{$unique_key} = $origin_key;
             }
         }
 
-        # Appends origin to alt groups if the atom count and type is correct.
-        # for my $unique_key ( sort keys %split_groups ) {
-        #     my @unique_key_attributes = split /,/sxm, $unique_key;
-        #     my @unique_key_origin;
-        #     if( $unique_key_attributes[$attribute_pos] eq q{.} ) {
-        #         push @unique_key_origin, $split_groups
-        #     }
-        #     # $unique_key_attributes[$attribute_pos] = '\\.';
-        #     # my $unique_key_regexp = join ',', @unique_key_attributes;
-        #     # my @unique_alt_residues =
-        #     #     grep { /^$unique_key_regexp$/ } keys %split_groups;
+        # Appends origin atoms to alternative groups of atoms if necessary.
+        for my $alt_key ( keys %unique_key_relations ) {
+            push @{ $split_groups{$alt_key} },
+                 @{ $split_groups{$unique_key_relations{$alt_key}} };
+        }
 
-        #     # if( ! @unique_alt_residues ) {
-        #     #     $split_groups{$unique_key} = $split_groups{$unique_key};
-        #     #     next;
-        #     # }
-
-        #     # for my $unique_alt_residue ( @unique_alt_residues ) {
-        #     #     push @{ $split_groups{$unique_key} },
-        #     #          @{ $split_groups{$unique_alt_residue} };
-        #     # }
-        # }
+        # Removes origin atoms that have alternatives.
+        for my $origin_key ( uniq @origin_keys ) {
+            delete $split_groups{$origin_key};
+        }
     }
 
     my @split_groups;

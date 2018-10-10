@@ -10,10 +10,11 @@ use PDBxParser qw( filter
 #
 # Unit test: PDBxParser::split_by.
 # Example: ./split_by "pdbx_PDB_model_num,label_alt_id" structure.dump
+#          ./split_by "label_alt_id" structure.dump 1
 #
 
 @ARGV = ( "-" ) unless @ARGV;
-my ( $attributes, $pdbx_dump_file ) = @ARGV;
+my ( $attributes, $pdbx_dump_file, $append_dot_alt_ids ) = @ARGV;
 
 my @attributes = split( ",", $attributes );
 
@@ -25,7 +26,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-foreach( @{ split_by( $atom_site, \@attributes, { 'append_dot_alt_ids' => 1 } ) } ) {
+foreach( @{ split_by( $atom_site, \@attributes,
+                      { 'append_dot_alt_ids' => $append_dot_alt_ids } ) } ) {
     to_pdbx( { 'atom_site' => filter( { 'atom_site' => $atom_site,
                                         'include' => { 'id' => $_ } } ) } );
 }
