@@ -7,7 +7,6 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      filter_by_unique_residue_key
-                     identify_unique_residues
                      mark_selection
                      pdbx_loop_unique
                      pdbx_loop_to_csv
@@ -309,7 +308,7 @@ sub filter
 #     $options->{'append_dot_alt_ids'} - atoms that has 'label_alt_id' eq '.' to
 #     corresponding groups.
 # Output:
-#     @split_groups - list of atom site data structures.
+#     %split_groups - hash of atom site data structures.
 #
 
 sub split_by
@@ -373,12 +372,7 @@ sub split_by
         }
     }
 
-    my @split_groups;
-    foreach( sort keys %split_groups ) {
-        push @split_groups, $split_groups{$_};
-    }
-
-    return \@split_groups;
+    return \%split_groups;
 }
 
 #
@@ -456,66 +450,6 @@ sub unique_residue_key
                  'label_asym_id',
                  'pdbx_PDB_model_num',
                  'label_alt_id', );
-}
-
-#
-# Identifies unique residues and generates hash of lists of unique residues and
-# atom ids that belong to them.
-# Input:
-#     $atom_site - atom data structure.
-# Output:
-#     %unique_alt_residues - atom ids that belong to unique residues.
-#
-
-sub identify_unique_residues
-{
-    my ( $atom_site ) = @_;
-
-    my %unique_residues;
-    my %unique_alt_residues;
-
-    # Separates main atom ids (with alt_id of ".") from alternative atom ids.
-    for my $atom_id ( keys %{ $atom_site } ) {
-        my $unique_residue_key = unique_residue_key( $atom_site->{$atom_id} );
-        my ( $residue_id, $chain, $pdbx_model_num, $alt_id ) =
-            split /,/sxm, $unique_residue_key;
-
-        if( $alt_id eq q{.} ) {
-            if( exists $unique_residues{$unique_residue_key} ) {
-                push @{ $unique_residues{$unique_residue_key} }, $atom_id;
-            } else {
-                $unique_residues{$unique_residue_key} = [ $atom_id ];
-            }
-        } else {
-            if( exists $unique_alt_residues{$unique_residue_key} ) {
-                push @{ $unique_alt_residues{$unique_residue_key} }, $atom_id;
-            } else {
-                $unique_alt_residues{$unique_residue_key} = [ $atom_id ];
-            }
-        }
-    }
-
-    # Joins main and alt residues.
-    for my $unique_residue_key ( keys %unique_residues ) {
-        my ( $residue_id, $chain, $pdbx_model_num, $alt_id ) =
-            split /,/sxm, $unique_residue_key;
-        my @unique_alt_residues =
-            grep { /^$residue_id,$chain,$pdbx_model_num,.+$/ }
-            keys %unique_alt_residues;
-
-        if( ! @unique_alt_residues ) {
-            $unique_alt_residues{$unique_residue_key} =
-                $unique_residues{$unique_residue_key};
-            next;
-        }
-
-        for my $unique_alt_residue ( @unique_alt_residues ) {
-            push @{ $unique_alt_residues{$unique_alt_residue} },
-                 @{ $unique_residues{$unique_residue_key} };
-        }
-    }
-
-    return \%unique_alt_residues;
 }
 
 #

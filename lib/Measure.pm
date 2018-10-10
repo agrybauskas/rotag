@@ -17,7 +17,7 @@ use AtomProperties qw( sort_atom_names );
 use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
-                   identify_unique_residues );
+                   split_by );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use BondProperties qw( rotatable_bonds );
@@ -181,8 +181,10 @@ sub all_dihedral
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
-    # Collects non-redundant ids of given amino acid residues.
-    my $unique_residues = identify_unique_residues( \%atom_site );
+    my $residue_groups = split_by( \%atom_site,
+                                   [ 'label_seq_id', 'label_asym_id',
+                                     'pdbx_PDB_model_num', 'label_alt_id' ],
+                                   { 'append_dot_alt_ids' => 1 } );
 
     connect_atoms( \%atom_site );
 
@@ -190,11 +192,11 @@ sub all_dihedral
     # calculates dihedral angles of each rotatable bond.
     my %residue_angles;
 
-    for my $residue_unique_key ( keys %{ $unique_residues } ) {
+    for my $residue_unique_key ( keys %{ $residue_groups } ) {
         my $residue_site =
             filter( { 'atom_site' => \%atom_site,
                       'include' =>
-                          { 'id' => $unique_residues->{$residue_unique_key} } });
+                          { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $rotatable_bonds = rotatable_bonds( $residue_site );
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
