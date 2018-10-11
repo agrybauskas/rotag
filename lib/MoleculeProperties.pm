@@ -226,4 +226,23 @@ my %RESIDUE_ATOMS = (
     },
 );
 
+my %CONNECTIVITY = (
+    'SER' => {
+        'N'   => [ 'CA', 'H', 'H2' ],
+        'CA'  => [ 'N', 'C', 'CB', 'HA' ],
+        'C'   => [ 'CA', 'O', 'OXT' ],
+        'O'   => [ 'C' ],
+        'CB'  => [ 'OG', 'HB2', 'HB3' ],
+        'OG'  => [ 'CB', 'HG' ],
+        'OXT' => [ 'C', 'HXT' ],
+        'H'   => [ 'N' ],
+        'H2'  => [ 'N' ],
+        'HA'  => [ 'CA' ],
+        'HXT' => [ 'OXT' ],
+        'HB2' => [ 'CB' ],
+        'HB3' => [ 'CB' ],
+        'HG'  => [ 'OG' ],
+    },
+);
+
 1;
