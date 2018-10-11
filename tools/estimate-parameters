@@ -1,0 +1,124 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use autodie;
+use Getopt::Long;
+use List::MoreUtils qw( uniq );
+Getopt::Long::Configure qw( gnu_getopt );
+
+use ErrorHandling qw( parse_errors );
+use PDBxParser qw( filter
+                   mark_selection
+                   obtain_atom_site );
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
+
+#*estimate-parameters [options] file1 [file2, ...]
+#*    estimate the parameters of the composite force field potential function.
+#*
+#*USAGE:
+#*    estimate-parameters input.cif > output.csv
+#*
+#*OPTIONS:
+#*    -a, --angle-step <float> (default: 0.1)
+#*        angle that each dihedral angle is turned by;
+#*    -p, --parameter-range <string>
+#*            (default:'lj_epsilon=0:0.1:1.0, c_k=0:0.1:1.0,
+#*                      h_epsilon=1.0:0.1:2.0, r_sigma=2.0:0:2.0,
+#*                      cutoff_atom=0.1:0:0.1, cutoff_residue=1.0:0:1.0,
+#*                      cutoff_start=2.5:0:2.5, cutoff_end=5.0:0:5.0')
+#*        specify parameter search range and step by using
+#*        <float>:<float>:<float> format.
+#*        Example: 'lj_potential=0.05:0.01:0.10,c_k=0:1.0:100.0'
+#*    -v, --version
+#*        print version.
+
+my $small_angle = 0.1;
+my $top_rank = 1;
+my $top_ratio;
+my $parameter_range =
+    'lj_epsilon=0:0.1:1.0, c_k=0:0.1:1.0, h_epsilon=1.0:0.1:2.0,' .
+    'r_sigma=2.0:0.1:3.0, cutoff_atom=0.1:0:0.1, cutoff_residue=1.0:0:1.0,' .
+    'cutoff_start=2.5:0.1:3.0, cutoff_end=5.0:0.1:5.5';
+
+GetOptions(
+    'angle-step|a=s' => \$small_angle,
+    'parameter-range|p' => \$parameter_range,
+    'top-rank|t=s' => \$top_rank,
+    'top-ratio|T=s' => \$top_ratio,
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or die 'Error in command line argument.';
+
+# ----------------------------------- Main ------------------------------------ #
+
+# First, generates parameter sets that should be checked.
+
+local @ARGV = ( q{-} ) unless @ARGV;
+
+for my $pdbx_file ( @ARGV ) {
+    # Reads file path, stdin and '-' operator.
+    my $atom_site;
+    if( $pdbx_file ) {
+        $atom_site = obtain_atom_site( $pdbx_file );
+    } else {
+        die "Use command \"rotag_library --help\" in order to see the manual.\n";
+    }
+
+    my $selected_atom_site =
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+
+    # Selects all atoms if no specific atoms are selected.
+    if( ! %{ $selected_atom_site } ) {
+        $selected_atom_site = $atom_site;
+        mark_selection( $selected_atom_site,
+                        { 'target' => [ keys %{ $selected_atom_site } ] } );
+    }
+
+    my @residue_unique_keys =
+        uniq (
+            map { join q{,}, @{ $_ } }
+            @{ filter( { 'atom_site' => $selected_atom_site,
+                         'include' => { '[local]_selection_state' => [ 'T' ] },
+                         'data' =>
+                             [ 'label_seq_id', 'label_asym_id','label_entity_id',
+                               'label_alt_id' ] } ) } );
+
+    # # Starts generating rotamer library.
+    # my $rotamer_library;
+    # eval {
+    #     $rotamer_library =
+    #         generate_library(
+    #             { 'atom_site' => $selected_atom_site,
+    #               'residue_unique_keys' => \@residue_unique_keys,
+    #               'small_angle' => $small_angle * $PI,
+    #               'conf_model' => 'rotation_only',
+    #               'interactions' => 'composite',
+    #               # 'parameters' => { '' },
+    #               # 'energy_cutoff_atom' => ,
+    #               # 'energy_cutoff_residue' => ,
+    #               'is_hydrogen_explicit' => $is_hydrogen_explicit,
+    #               'threads' => $threads,
+    #             } );
+    # };
+    # if( $@ ) {
+    #     parse_errors( { 'program' => $0,
+    #                     'filename' => $pdbx_file,
+    #                     'type' => 'WARNING',
+    #                     'message' => $@ } );
+    # }
+}
