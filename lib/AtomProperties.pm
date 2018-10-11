@@ -174,6 +174,7 @@ our %HYDROGEN_NAMES = (
     'PRO' => {
         'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
+        'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
         'CG'  => [ 'HG2', 'HG3' ],
         'CD'  => [ 'HD2', 'HD3' ]
