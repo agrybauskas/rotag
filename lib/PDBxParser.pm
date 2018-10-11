@@ -364,8 +364,10 @@ sub split_by
 
         # Appends origin atoms to alternative groups of atoms if necessary.
         for my $alt_key ( keys %unique_key_relations ) {
-            push @{ $split_groups{$alt_key} },
-                 @{ $split_groups{$unique_key_relations{$alt_key}} };
+            if( exists $split_groups{$unique_key_relations{$alt_key}} ) {
+                push @{ $split_groups{$alt_key} },
+                     @{ $split_groups{$unique_key_relations{$alt_key}} };
+            }
         }
 
         # Removes origin atoms that have alternatives.
