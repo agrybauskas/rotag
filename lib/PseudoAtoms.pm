@@ -426,8 +426,9 @@ sub generate_library
 
             for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                 my %angles =
-                    map { ( "chi$_" => $allowed_angles->[$i][$_] ) }
-                        ( 1..$#{ $allowed_angles->[$i] }+1 );
+                    map { my $angle_id = $_ + 1; ( "chi$angle_id" =>
+                                                      $allowed_angles->[$i][$_])}
+                        ( 0..$#{ $allowed_angles->[$i] } );
                 my $rotamer_energy_sum = $energy_sums->[$i];
                 if( defined $rotamer_energy_sum &&
                     $rotamer_energy_sum <= $energy_cutoff_residue ) {
@@ -614,7 +615,8 @@ sub calc_favourable_angle
         my $angles = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
         my %angles =
-            map { ( "chi$_" => [ $angles->[$_] ] ) } 1..$#{ $angles }+1;
+            map { my $angle_id = $_ + 1; ( "chi$angle_id" => [ $angles->[$_] ] )}
+                0..$#{ $angles };
 
         my $pseudo_atom_site =
             generate_pseudo( $atom_site,
@@ -762,8 +764,9 @@ sub calc_full_atom_energy
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
         my %angles =
-            map { ( "chi$_" => $checkable_angles[$i][$_] ) }
-                1..$#{ $checkable_angles[$i] }+1;
+            map { my $angle_id = $_ + 1; ( "chi$angle_id" =>
+                                               $checkable_angles[$i][$_] ) }
+                0..$#{ $checkable_angles[$i] };
 
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( \%rotamer_site, $residue_unique_key, \%angles );
