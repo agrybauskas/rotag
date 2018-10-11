@@ -35,8 +35,8 @@ our $VERSION = $VERSION;
 #*OPTIONS:
 #*    -m, --model <str> (default: rotation_only)
 #*        rules (model) that will be used to move side-chains.
-#*    -a, --angle-step <float> (default: 0.1) (in radians)
-#*        angle that each dihedral angle is turned by.
+#*    -a, --angle-step <float> (default: 0.1)
+#*        angle ratio that each dihedral angle is turned by.
 #*    -u, --potential (default: composite | hard_sphere | soft_sphere)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
@@ -154,7 +154,7 @@ for my $pdbx_file ( @ARGV ) {
             generate_library(
                 { 'atom_site' => $selected_atom_site,
                   'residue_unique_keys' => \@residue_unique_keys,
-                  'small_angle' => $small_angle * $PI,
+                  'small_angle' => $small_angle * 2 * $PI,
                   'conf_model' => $conf_model,
                   'interactions' => $interactions,
                   'parameters' => $parameters,
