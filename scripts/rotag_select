@@ -15,6 +15,7 @@ use PDBxParser qw( filter
                    obtain_pdbx_loop
                    to_pdbx );
 use Grammar::SelectionParser;
+use ErrorHandling qw( parse_errors );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -39,10 +40,11 @@ our $VERSION = $VERSION;
 #*            chain     - chain name        (_atom_site.label_asym_id);
 #*            mainchain - mainchain atoms;
 #*            sidechain - sidechain atoms;
-#*            target    - target atoms (only for --select).
+#*            target    - target atoms (--select uses --target atoms and --target
+#*                        uses target atoms described in a file).
 #*        Selection operators:
 #*            around  - atoms around <int> angstroms;
-#*            byresid - expands to residues;
+#*            byres   - expands to residues;
 #*            rand    - selects <int> number of atoms randomly.
 #*        Logical operators:
 #*            &  - and operator;
@@ -87,8 +89,6 @@ GetOptions(
 ) or die 'Error in command line argument.';
 
 $target_cmd //= 'all';
-$select_cmd //= $target_cmd;
-$select_cmd =~ s/(target)/$target_cmd/smgx;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -108,6 +108,33 @@ for my $pdbx_file ( @ARGV ) {
     my $selection_parser = SelectionParser->new();
     my @target_atom_ids;
     my @target_cmds = split /;/smx, $target_cmd;
+
+    # Replaces 'target' keyword with previously selected target ids.
+    if( $target_cmd =~ m/target/ ) {
+        my @previous_target_atoms;
+        for my $atom_id ( keys %{ $atom_site } ) {
+            if( exists $atom_site->{"$atom_id"}{'[local]_selection_state'} &&
+                $atom_site->{"$atom_id"}{'[local]_selection_state'} eq 'T' ) {
+                push @previous_target_atoms, $atom_id;
+            }
+        }
+
+        if( @previous_target_atoms ) {
+            my $previous_target_cmd =
+                'atomid ' . join ',', @previous_target_atoms;
+            $target_cmd =~ s/target/${previous_target_cmd}/g;
+        } else {
+            parse_errors( { 'program' => $0,
+                            'filename' => $pdbx_file,
+                            'type' => 'ERROR',
+                            'message' => 'no target atoms where previously ' .
+                                         "selected.\n" } );
+        }
+    }
+
+    # By default, target atoms are used for surrounding atom selection.
+    $select_cmd //= $target_cmd;
+    $select_cmd =~ s/(target)/$target_cmd/smgx;
 
     if( scalar @target_cmds > 1 ) {
         for my $target_cmd ( @target_cmds ) {

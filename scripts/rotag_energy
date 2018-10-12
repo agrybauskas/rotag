@@ -62,7 +62,7 @@ our $VERSION = $VERSION;
 #*        calculate energy of the side-chain atoms for each selected residue.
 #*    -d, --decompose
 #*        decompose composite energy values into their constituent energy values.
-#*    -p, --pairwise
+#*    -P, --pairwise
 #*        check energy of the atoms in pairwise fashion.
 #*    -F, --format (default: pdbx | csv)
 #*        output format.

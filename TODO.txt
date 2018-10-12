@@ -40,7 +40,7 @@
    generated. Should it be kept to '.'? Or changed to match pattern in CIF?
 -- Add additional sp2 hybridization test where it checks if the atoms are in
    one plane.
--- Basic connectivity for 20 amino acids should be checked by looking at table
+++ Basic connectivity for 20 amino acids should be checked by looking at table
    or Perl data structure.
 -- Add pre-calculate rotatable bonds for 20 amino acids - it is more effective.
 -- Add pre-defined hybridizations for 20 amino acids.
