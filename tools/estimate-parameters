@@ -8,6 +8,7 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
+use Combinatorics qw( permutation );
 use ErrorHandling qw( parse_errors );
 use PDBxParser qw( filter
                    mark_selection
@@ -39,14 +40,33 @@ our $VERSION = $VERSION;
 my $small_angle = 0.1;
 my $top_rank = 1;
 my $top_ratio;
-my $parameter_range =
+my $parameter_ranges =
     'lj_epsilon=0:0.1:1.0, c_k=0:0.1:1.0, h_epsilon=1.0:0.1:2.0,' .
     'r_sigma=2.0:0.1:3.0, cutoff_atom=0.1:0:0.1, cutoff_residue=1.0:0:1.0,' .
     'cutoff_start=2.5:0.1:3.0, cutoff_end=5.0:0.1:5.5';
 
+$parameter_ranges =~ s/\s//g;
+my @parameter_ranges;
+for my $parameter_range ( split /,/sxm, $parameter_ranges ) {
+    my ( $parameter, $range_string ) = split /=/sm, $parameter_range;
+    my ( $range_start, $range_increment, $range_end ) =
+        split /:/sm, $range_string;
+    my @range;
+    for( my $value = $range_start;
+         $value <= $range_end;
+         $value += $range_increment ) {
+        push @range, $value;
+        last if( $value >= $range_end );
+    }
+
+    push @parameter_ranges,
+         { 'parameter' => $parameter,
+           'values'    => \@range };
+}
+
 GetOptions(
     'angle-step|a=s' => \$small_angle,
-    'parameter-range|p' => \$parameter_range,
+    'parameter-range|p' => \$parameter_ranges,
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
     'help|h' => sub {
@@ -98,7 +118,13 @@ for my $pdbx_file ( @ARGV ) {
                              [ 'label_seq_id', 'label_asym_id','label_entity_id',
                                'label_alt_id' ] } ) } );
 
-    # # Starts generating rotamer library.
+    # Starts generating rotamer library.
+    my $permuted_parameters =
+        permutation( $#parameter_ranges,
+                     [], [ map { $parameter_ranges[$_]{'values'} }
+                           0..$#parameter_ranges ],
+                     [] );
+
     # my $rotamer_library;
     # eval {
     #     $rotamer_library =
