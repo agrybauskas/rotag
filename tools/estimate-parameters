@@ -8,9 +8,11 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
+use AtomProperties qw( @MAINCHAIN_NAMES );
 use Constants qw( $PI );
 use Combinatorics qw( permutation );
 use ErrorHandling qw( parse_warnings );
+use Measure qw( rmsd );
 use PDBxParser qw( filter
                    mark_selection
                    obtain_atom_site );
@@ -176,15 +178,22 @@ for my $pdbx_file ( @ARGV ) {
                                          keys %{ $rotamer_library } ){
                 my ( $residue_id, $residue_chain, $residue_entity, $residue_alt)=
                     split /,/sxm, $residue_unique_key;
+                my $residue_site =
+                    filter( { 'atom_site' => $selected_atom_site,
+                              'include' =>
+                                  { 'label_seq_id' => [ $residue_id ],
+                                    'label_asym_id' => [ $residue_chain ],
+                                    'label_alt_id' => [ $residue_alt ],
+                                    'label_entity_id' => [$residue_entity] } } );
                 my @residue_name =
-                    uniq( @{ filter( { 'atom_site' => $selected_atom_site,
-                                       'include' =>
-                                       { 'label_seq_id' => [ $residue_id ],
-                                         'label_asym_id' => [ $residue_chain ],
-                                         'label_alt_id' => [ $residue_alt ],
-                                         'label_entity_id' => [$residue_entity]},
-                                           'data' => [ 'label_comp_id' ],
-                                           'is_list' => 1 } ) } );
+                    uniq( @{ filter( { 'atom_site' => $residue_site,
+                                       'data' => [ 'label_comp_id' ],
+                                       'is_list' => 1 } ) } );
+                my $residue_coord =
+                    filter( { 'atom_site' => $residue_site,
+                              'exclude' =>
+                                  { 'label_atom_id' => \@MAINCHAIN_NAMES },
+                              'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
                 # Checks if 'top' option is int or float and filters rotamers
                 # accordingly.
@@ -197,8 +206,8 @@ for my $pdbx_file ( @ARGV ) {
                         scalar @{ $rotamer_library->{$residue_unique_key} };
                     @rotamers =
                         sort { $a->{'potential_energy_value'} <=>
-                                   $b->{'potential_energy_value'} }
-                    @{ $rotamer_library->{$residue_unique_key} };
+                               $b->{'potential_energy_value'} }
+                        @{ $rotamer_library->{$residue_unique_key} };
                     @rotamers = @rotamers[0..$top_rank-1];
                 } elsif( defined $top_ratio ) {
                     $top_rank =
@@ -206,8 +215,8 @@ for my $pdbx_file ( @ARGV ) {
                              * $top_ratio );
                     @rotamers =
                         sort { $a->{'potential_energy_value'} <=>
-                                   $b->{'potential_energy_value'} }
-                    @{ $rotamer_library->{$residue_unique_key} };
+                               $b->{'potential_energy_value'} }
+                        @{ $rotamer_library->{$residue_unique_key} };
                     @rotamers = @rotamers[0..$top_rank-1];
                 } else {
                     @rotamers = @{ $rotamer_library->{$residue_unique_key} };
@@ -217,13 +226,14 @@ for my $pdbx_file ( @ARGV ) {
                 # side-chain.
                 for my $rotamer ( @rotamers ) {
                     my $rotamer_site =
-                        generate_rotamer( $atom_site,
+                        generate_rotamer( $selected_atom_site,
                                           { $residue_unique_key =>
                                                 $rotamer->{'angles'} } );
                     my $rotamer_coord =
                         filter( { 'atom_site' => $rotamer_site,
                                   'data' =>
                                       [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+                    print rmsd( $residue_coord, $rotamer_coord ), "\n";
                 }
             }
         };
