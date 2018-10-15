@@ -39,7 +39,7 @@ sub parse_warnings
 {
     my ( $args ) = @_;
 
-    my ( $program, $type, $filename, $message ) = (
+    my ( $program, $filename, $type, $message ) = (
         $args->{'program'},
         $args->{'filename'},
         $args->{'type'},
