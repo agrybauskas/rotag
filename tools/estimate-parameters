@@ -10,11 +10,12 @@ Getopt::Long::Configure qw( gnu_getopt );
 
 use Constants qw( $PI );
 use Combinatorics qw( permutation );
-use ErrorHandling qw( parse_errors );
+use ErrorHandling qw( parse_warnings );
 use PDBxParser qw( filter
                    mark_selection
                    obtain_atom_site );
-use PseudoAtoms qw( generate_library );
+use PseudoAtoms qw( generate_rotamer
+                    generate_library );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -36,6 +37,15 @@ our $VERSION = $VERSION;
 #*        specify parameter search range and step by using
 #*        <float>:<float>:<float> format.
 #*        Example: 'lj_potential=0.05:0.01:0.10,c_k=0:1.0:100.0'
+#*    -t, --top-rank <int>
+#*        top rotamers according to the value of energies.
+#*    -T, --top-ratio <float>
+#*        top rotamers according to the value of energies.
+#*    -H, --explicit-hydrogens
+#*        adds explicit hydrogens for calculating full atom energies. Otherwise,
+#*        implicit hydrogen model is used.
+#*    -n, --threads
+#*        number of threads.
 #*    -v, --version
 #*        print version.
 
@@ -43,9 +53,15 @@ my $small_angle = 0.1;
 my $top_rank = 1;
 my $top_ratio;
 my $parameter_ranges =
-    'lj_epsilon=0:0.1:1.0, c_k=0:0.1:1.0, h_epsilon=1.0:0.1:2.0,' .
-    'r_sigma=2.0:0.1:3.0, cutoff_atom=0.1:0:0.1, cutoff_residue=1.0:0:1.0,' .
-    'cutoff_start=2.5:0.1:3.0, cutoff_end=5.0:0.1:5.5';
+    'lj_epsilon=1.0:0.1:2.0, c_k=1.0:0:1.0, h_epsilon=2.0:0:2.0,' .
+    'r_sigma=2.0:0:2.0, cutoff_atom=0.1:0:0.1, cutoff_residue=1.0:0:1.0,' .
+    'cutoff_start=2.5:0:2.5, cutoff_end=5.0:0:5.0';
+# my $parameter_ranges =
+#     'lj_epsilon=0:0.1:1.0, c_k=0:0.1:1.0, h_epsilon=1.0:0.1:2.0,' .
+#     'r_sigma=2.0:0.1:3.0, cutoff_atom=0.1:0:0.1, cutoff_residue=1.0:0:1.0,' .
+#     'cutoff_start=2.5:0.1:3.0, cutoff_end=5.0:0.1:5.5';
+my $is_hydrogen_explicit = 0;
+my $threads = 1;
 
 $parameter_ranges =~ s/\s//g;
 my @parameter_ranges;
@@ -73,6 +89,8 @@ GetOptions(
     'parameter-range|p' => \$parameter_ranges,
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
+    'explicit-hydrogens|H' => sub { $is_hydrogen_explicit = 1 },
+    'threads|n=s' => \$threads,
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -150,15 +168,70 @@ for my $pdbx_file ( @ARGV ) {
                           $current_parameters{'cutoff_atom'},
                       'energy_cutoff_residue' =>
                           $current_parameters{'cutoff_residue'},
-                      # 'is_hydrogen_explicit' => $is_hydrogen_explicit,
-                      # 'threads' => $threads,
+                      'is_hydrogen_explicit' => $is_hydrogen_explicit,
+                      'threads' => $threads,
                     } );
+
+            for my $residue_unique_key ( sort { $a cmp $b }
+                                         keys %{ $rotamer_library } ){
+                my ( $residue_id, $residue_chain, $residue_entity, $residue_alt)=
+                    split /,/sxm, $residue_unique_key;
+                my @residue_name =
+                    uniq( @{ filter( { 'atom_site' => $selected_atom_site,
+                                       'include' =>
+                                       { 'label_seq_id' => [ $residue_id ],
+                                         'label_asym_id' => [ $residue_chain ],
+                                         'label_alt_id' => [ $residue_alt ],
+                                         'label_entity_id' => [$residue_entity]},
+                                           'data' => [ 'label_comp_id' ],
+                                           'is_list' => 1 } ) } );
+
+                # Checks if 'top' option is int or float and filters rotamers
+                # accordingly.
+                my @rotamers;
+                if( defined $top_rank ) {
+                    $top_rank =
+                        $top_rank <=
+                            scalar @{$rotamer_library->{$residue_unique_key}} ?
+                        $top_rank :
+                        scalar @{ $rotamer_library->{$residue_unique_key} };
+                    @rotamers =
+                        sort { $a->{'potential_energy_value'} <=>
+                                   $b->{'potential_energy_value'} }
+                    @{ $rotamer_library->{$residue_unique_key} };
+                    @rotamers = @rotamers[0..$top_rank-1];
+                } elsif( defined $top_ratio ) {
+                    $top_rank =
+                        int( scalar( @{ $rotamer_library->{$residue_unique_key}})
+                             * $top_ratio );
+                    @rotamers =
+                        sort { $a->{'potential_energy_value'} <=>
+                                   $b->{'potential_energy_value'} }
+                    @{ $rotamer_library->{$residue_unique_key} };
+                    @rotamers = @rotamers[0..$top_rank-1];
+                } else {
+                    @rotamers = @{ $rotamer_library->{$residue_unique_key} };
+                }
+
+                # Generates rotamer and checks the angle with original
+                # side-chain.
+                for my $rotamer ( @rotamers ) {
+                    my $rotamer_site =
+                        generate_rotamer( $atom_site,
+                                          { $residue_unique_key =>
+                                                $rotamer->{'angles'} } );
+                    my $rotamer_coord =
+                        filter( { 'atom_site' => $rotamer_site,
+                                  'data' =>
+                                      [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+                }
+            }
         };
         if( $@ ) {
-            parse_errors( { 'program' => $0,
-                            'filename' => $pdbx_file,
-                            'type' => 'WARNING',
-                            'message' => $@ } );
+            parse_warnings( { 'program' => $0,
+                              'filename' => $pdbx_file,
+                              'type' => 'WARNING',
+                              'message' => $@ } );
         }
     }
 }
