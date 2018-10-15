@@ -8,12 +8,13 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
-use Constants qw( $EPSILON );
+use Constants qw( $PI );
 use Combinatorics qw( permutation );
 use ErrorHandling qw( parse_errors );
 use PDBxParser qw( filter
                    mark_selection
                    obtain_atom_site );
+use PseudoAtoms qw( generate_library );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -121,33 +122,43 @@ for my $pdbx_file ( @ARGV ) {
                              [ 'label_seq_id', 'label_asym_id','label_entity_id',
                                'label_alt_id' ] } ) } );
 
-    # Starts generating rotamer library.
     my $permuted_parameters =
         permutation( $#parameter_ranges,
                      [], [ map { $parameter_ranges[$_]{'values'} }
                            0..$#parameter_ranges ],
                      [] );
 
-    # my $rotamer_library;
-    # eval {
-    #     $rotamer_library =
-    #         generate_library(
-    #             { 'atom_site' => $selected_atom_site,
-    #               'residue_unique_keys' => \@residue_unique_keys,
-    #               'small_angle' => $small_angle * $PI,
-    #               'conf_model' => 'rotation_only',
-    #               'interactions' => 'composite',
-    #               # 'parameters' => { '' },
-    #               # 'energy_cutoff_atom' => ,
-    #               # 'energy_cutoff_residue' => ,
-    #               'is_hydrogen_explicit' => $is_hydrogen_explicit,
-    #               'threads' => $threads,
-    #             } );
-    # };
-    # if( $@ ) {
-    #     parse_errors( { 'program' => $0,
-    #                     'filename' => $pdbx_file,
-    #                     'type' => 'WARNING',
-    #                     'message' => $@ } );
-    # }
+    for my $parameters ( @{ $permuted_parameters } ) {
+        my %current_parameters;
+        for( my $i = 0; $i <= $#{ $parameters }; $i++ ) {
+            $current_parameters{$parameter_ranges[$i]->{'parameter'}} =
+                $parameters->[$i];
+        }
+
+        # Starts generating rotamer library.
+        my $rotamer_library;
+        eval {
+            $rotamer_library =
+                generate_library(
+                    { 'atom_site' => $selected_atom_site,
+                      'residue_unique_keys' => \@residue_unique_keys,
+                      'small_angle' => $small_angle * $PI,
+                      'conf_model' => 'rotation_only',
+                      'interactions' => 'composite',
+                      'parameters' => \%current_parameters,
+                      'energy_cutoff_atom' =>
+                          $current_parameters{'cutoff_atom'},
+                      'energy_cutoff_residue' =>
+                          $current_parameters{'cutoff_residue'},
+                      # 'is_hydrogen_explicit' => $is_hydrogen_explicit,
+                      # 'threads' => $threads,
+                    } );
+        };
+        if( $@ ) {
+            parse_errors( { 'program' => $0,
+                            'filename' => $pdbx_file,
+                            'type' => 'WARNING',
+                            'message' => $@ } );
+        }
+    }
 }
