@@ -44,3 +44,4 @@
    or Perl data structure.
 -- Add pre-calculate rotatable bonds for 20 amino acids - it is more effective.
 -- Add pre-defined hybridizations for 20 amino acids.
+-- Make sort by attribute in filter().
