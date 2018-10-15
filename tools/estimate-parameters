@@ -8,6 +8,7 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
+use Constants qw( $EPSILON );
 use Combinatorics qw( permutation );
 use ErrorHandling qw( parse_errors );
 use PDBxParser qw( filter
@@ -52,11 +53,13 @@ for my $parameter_range ( split /,/sxm, $parameter_ranges ) {
     my ( $range_start, $range_increment, $range_end ) =
         split /:/sm, $range_string;
     my @range;
-    for( my $value = $range_start;
-         $value <= $range_end;
-         $value += $range_increment ) {
-        push @range, $value;
-        last if( $value >= $range_end );
+    my $increment_counter = 0;
+    if( $range_increment != 0 ) {
+        $increment_counter  = ( $range_end - $range_start ) / $range_increment;
+    }
+
+    foreach( 0..$increment_counter ) {
+        push @range, $range_start + $_ * $range_increment;
     }
 
     push @parameter_ranges,
