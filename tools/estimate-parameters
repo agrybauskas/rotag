@@ -9,13 +9,15 @@ use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
 use AtomProperties qw( @MAINCHAIN_NAMES );
-use Constants qw( $PI );
+use Constants qw( $PI
+                  $SIG_FIGS );
 use Combinatorics qw( permutation );
 use ErrorHandling qw( parse_warnings );
 use Measure qw( rmsd );
 use PDBxParser qw( filter
                    mark_selection
-                   obtain_atom_site );
+                   obtain_atom_site
+                   to_pdbx );
 use PseudoAtoms qw( generate_rotamer
                     generate_library );
 use Version qw( $VERSION );
@@ -122,6 +124,14 @@ for my $pdbx_file ( @ARGV ) {
         die "Use command \"rotag_library --help\" in order to see the manual.\n";
     }
 
+    # Calculates RMSD.
+    my %pdbx_loops;
+    $pdbx_loops{'_[local]_parameter_estimation'}{'attributes'} =
+        [ 'id', 'label_seq_id', 'label_asym_id', 'label_entity_id',
+          'label_alt_id', 'lj_epsilon', 'c_k', 'h_epsilon', 'r_sigma',
+          'cutoff_atom', 'cutoff_residue', 'cutoff_start', 'cutoff_end',
+          'value' ];
+
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
@@ -143,11 +153,12 @@ for my $pdbx_file ( @ARGV ) {
                                'label_alt_id' ] } ) } );
 
     my $permuted_parameters =
-        permutation( $#parameter_ranges,
+        permutation( $#parameter_ranges + 1,
                      [], [ map { $parameter_ranges[$_]{'values'} }
                            0..$#parameter_ranges ],
                      [] );
 
+    my $calculation_id = 1;
     for my $parameters ( @{ $permuted_parameters } ) {
         my %current_parameters;
         for( my $i = 0; $i <= $#{ $parameters }; $i++ ) {
@@ -233,7 +244,20 @@ for my $pdbx_file ( @ARGV ) {
                         filter( { 'atom_site' => $rotamer_site,
                                   'data' =>
                                       [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
-                    print rmsd( $residue_coord, $rotamer_coord ), "\n";
+                    push @{$pdbx_loops{'_[local]_parameter_estimation'}{'data'}},
+                         $calculation_id, $residue_id, $residue_chain,
+                         $residue_entity, $residue_alt,
+                         $current_parameters{'lj_epsilon'},
+                         $current_parameters{'c_k'},
+                         $current_parameters{'h_epsilon'},
+                         $current_parameters{'r_sigma'},
+                         $current_parameters{'cutoff_atom'},
+                         $current_parameters{'cutoff_residue'},
+                         $current_parameters{'cutoff_start'},
+                         $current_parameters{'cutoff_end'},
+                         sprintf( $SIG_FIGS,
+                                  rmsd( $residue_coord, $rotamer_coord ) );
+                    $calculation_id++;
                 }
             }
         };
@@ -244,4 +268,6 @@ for my $pdbx_file ( @ARGV ) {
                               'message' => $@ } );
         }
     }
+
+    to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
 }
