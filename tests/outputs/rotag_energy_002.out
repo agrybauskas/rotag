@@ -3,16 +3,19 @@ data_testing
 loop_
 _[local]_energy.id
 _[local]_energy.atom_id
-_[local]_energy.residue_id
-_[local]_energy.chain
-_[local]_energy.entity
-_[local]_energy.alt
+_[local]_energy.type_symbol
+_[local]_energy.label_atom_id
+_[local]_energy.label_seq_id
+_[local]_energy.label_comp_id
+_[local]_energy.label_asym_id
+_[local]_energy.label_entity_id
+_[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
-1 147 18 A 1 . hard_sphere Inf
-2 148 18 A 1 . hard_sphere 0.000
-3 149 18 A 1 . hard_sphere 0.000
-4 150 18 A 1 . hard_sphere Inf
-5 151 18 A 1 . hard_sphere Inf
-6 152 18 A 1 . hard_sphere Inf
+1 148 C CA 18 SER A 1 . hard_sphere 0.000
+2 151 C CB 18 SER A 1 . hard_sphere Inf
+3 152 O OG 18 SER A 1 . hard_sphere Inf
+4 147 N N 18 SER A 1 . hard_sphere Inf
+5 149 C C 18 SER A 1 . hard_sphere 0.000
+6 150 O O 18 SER A 1 . hard_sphere Inf
 #

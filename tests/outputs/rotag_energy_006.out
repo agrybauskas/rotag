@@ -3,16 +3,19 @@ data_testing
 loop_
 _[local]_energy.id
 _[local]_energy.atom_id
-_[local]_energy.residue_id
-_[local]_energy.chain
-_[local]_energy.entity
-_[local]_energy.alt
+_[local]_energy.type_symbol
+_[local]_energy.label_atom_id
+_[local]_energy.label_seq_id
+_[local]_energy.label_comp_id
+_[local]_energy.label_asym_id
+_[local]_energy.label_entity_id
+_[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
-1 147 18 A 1 . h_bond -15.544
-2 148 18 A 1 . h_bond 0.000
-3 149 18 A 1 . h_bond 0.000
-4 150 18 A 1 . h_bond 0.000
-5 151 18 A 1 . h_bond 0.000
-6 152 18 A 1 . h_bond -92.689
+1 148 C CA 18 SER A 1 . h_bond 0.000
+2 151 C CB 18 SER A 1 . h_bond 0.000
+3 152 O OG 18 SER A 1 . h_bond -2.226
+4 147 N N 18 SER A 1 . h_bond -1.862
+5 149 C C 18 SER A 1 . h_bond 0.000
+6 150 O O 18 SER A 1 . h_bond 0.000
 #
