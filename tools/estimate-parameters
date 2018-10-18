@@ -262,10 +262,18 @@ for my $pdbx_file ( @ARGV ) {
             }
         };
         if( $@ ) {
-            parse_warnings( { 'program' => $0,
-                              'filename' => $pdbx_file,
-                              'type' => 'WARNING',
-                              'message' => $@ } );
+            push @{$pdbx_loops{'_[local]_parameter_estimation'}{'data'}},
+            $calculation_id, 'NA', 'NA', 'NA', 'NA',
+            $current_parameters{'lj_epsilon'},
+            $current_parameters{'c_k'},
+            $current_parameters{'h_epsilon'},
+            $current_parameters{'r_sigma'},
+            $current_parameters{'cutoff_atom'},
+            $current_parameters{'cutoff_residue'},
+            $current_parameters{'cutoff_start'},
+            $current_parameters{'cutoff_end'},
+            'NA';
+            $calculation_id++;
         }
     }
 
