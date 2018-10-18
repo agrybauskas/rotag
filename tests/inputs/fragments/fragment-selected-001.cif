@@ -1,0 +1,31 @@
+data_testing
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 643 N N . SER A 1 86 12.761 -1.621 41.992 1 T 1
+ATOM 644 C CA . SER A 1 86 11.338 -1.887 42.031 1 T 1
+ATOM 645 C C . SER A 1 86 10.867 -2.773 40.869 1 T 1
+ATOM 646 O O . SER A 1 86 9.812 -3.400 40.966 1 T 1
+ATOM 647 C CB . SER A 1 86 10.513 -0.591 41.936 1 T 1
+ATOM 648 O OG . SER A 1 86 11.030 0.223 40.902 1 T 1
+ATOM 649 N N . HIS A 1 87 11.688 -2.857 39.831 1 S ?
+ATOM 650 C CA . HIS A 1 87 11.273 -3.643 38.675 1 S ?
+ATOM 651 C C . HIS A 1 87 12.432 -3.828 37.716 1 S ?
+ATOM 652 O O . HIS A 1 87 13.240 -2.915 37.606 1 S ?
+ATOM 653 C CB . HIS A 1 87 10.140 -2.910 37.918 1 S ?
+ATOM 654 C CG . HIS A 1 87 9.576 -3.748 36.814 1 S ?
+ATOM 655 N ND1 . HIS A 1 87 8.894 -4.925 37.055 1 S ?
