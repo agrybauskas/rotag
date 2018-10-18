@@ -13,6 +13,7 @@ residue_entity="1"
 residue_alt="."
 small_angle="1*pi"
 threads="1"
+parameters='lj_epsilon=1.0,c_k=1.0,h_epsilon=1.0,r_sigma=2.0,cutoff_atom=0.5,cutoff_residue=1.0,cutoff_start=2.5,cutoff_end=5.0'
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
                                             ${residue_chain} \
@@ -24,4 +25,5 @@ $(dirname "$0")/../scripts/generate_library ${residue_id} \
 					    ${energy_cutoff_atom} \
 					    ${energy_cutoff_residue} \
 					    ${pdbx_dump_file} \
+                                            ${parameters} \
 					    ${threads}

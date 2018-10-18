@@ -1,3 +1,52 @@
-#residue_id,potential_energy_value,chi0,chi1,chi2,chi3,chi4
-14,-4.381,270.0,180.0,90.0,,
-14,-4.744,270.0,180.0,270.0,,
+data_1:chi1:4.712;chi2:3.142;chi3:1.571;E:-12.173
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 78 N N . GLU A 1 14 7.487 1.467 78.499 1
+ATOM 79 C CA . GLU A 1 14 6.301 1.778 77.693 1
+ATOM 80 C C . GLU A 1 14 6.534 1.406 76.259 1
+ATOM 81 O O . GLU A 1 14 5.644 0.872 75.606 1
+ATOM 82 C CB . GLU A 1 14 5.925 3.253 77.793 1
+ATOM 83 C CG . GLU A 1 14 4.950 3.588 78.929 1
+ATOM 84 C CD . GLU A 1 14 4.613 5.109 78.969 1
+ATOM 85 O OE1 . GLU A 1 14 3.628 5.527 78.302 1
+ATOM 86 O OE2 . GLU A 1 14 5.360 5.888 79.604 1
+#
+data_2:chi1:4.712;chi2:3.142;chi3:4.712;E:-12.436
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 78 N N . GLU A 1 14 7.487 1.467 78.499 1
+ATOM 79 C CA . GLU A 1 14 6.301 1.778 77.693 1
+ATOM 80 C C . GLU A 1 14 6.534 1.406 76.259 1
+ATOM 81 O O . GLU A 1 14 5.644 0.872 75.606 1
+ATOM 82 C CB . GLU A 1 14 5.925 3.253 77.793 1
+ATOM 83 C CG . GLU A 1 14 4.950 3.588 78.929 1
+ATOM 84 C CD . GLU A 1 14 4.613 5.109 78.969 1
+ATOM 85 O OE1 . GLU A 1 14 5.336 5.870 79.666 1
+ATOM 86 O OE2 . GLU A 1 14 3.600 5.531 78.365 1
+#

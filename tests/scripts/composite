@@ -5,7 +5,7 @@ use warnings;
 
 use AtomInteractions qw( composite );
 
-my ( $atom_i_id, $atom_j_id, $pdbx_dump_file ) = @ARGV;
+my ( $atom_i_id, $atom_j_id, $pdbx_dump_file, $parameters ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -15,6 +15,14 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
+$parameters =~ s/\s//g;
+$parameters = {
+    map { $_->[0] => $_->[1] }
+    map { [ split /=/sm, $_ ] }
+    split /,/sxm, $parameters
+};
+$parameters->{'atom_site'} = $atom_site;
+
 print composite( $atom_site->{$atom_i_id},
                  $atom_site->{$atom_j_id},
-                 { 'atom_site' => $atom_site } ), "\n";
+                 $parameters ), "\n";

@@ -19,6 +19,7 @@ my ( $residue_id,
      $energy_cutoff_atom,
      $energy_cutoff_residue,
      $pdbx_dump_file,
+     $parameters,
      $threads ) = @ARGV;
 
 my $atom_site;
@@ -28,6 +29,14 @@ while( <$fh> ) {
 }
 close( $fh );
 $atom_site = eval( $atom_site );
+
+$parameters =~ s/\s//g;
+$parameters = {
+    map { $_->[0] => $_->[1] }
+    map { [ split /=/sm, $_ ] }
+    split /,/sxm, $parameters
+};
+$parameters->{'atom_site'} = $atom_site;
 
 $small_angle =~ s/pi/\$PI/g;
 
@@ -41,6 +50,7 @@ my $rotamer_library =
                         "interactions"  => $potential,
                         "energy_cutoff_atom" => $energy_cutoff_atom,
                         "energy_cutoff_residue" => $energy_cutoff_residue,
+                        "parameters" => $parameters,
                         "threads" => $threads } );
 
 for my $residue_unique_key ( keys %{ $rotamer_library } ) {
