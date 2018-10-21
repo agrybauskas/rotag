@@ -12,6 +12,7 @@ our @EXPORT_OK = qw( add_hydrogens
                      replace_with_rotamer );
 
 use B qw( svref_2object );
+use Clone qw( clone );
 use List::Util qw( max );
 use List::MoreUtils qw( any
                         uniq );
@@ -324,7 +325,7 @@ sub generate_library
     hybridization( \%atom_site_no_hydrogens );
 
     # Predetermines geometrically clearly defined hydrogen positions.
-    my %atom_site_w_hydrogens = %atom_site_no_hydrogens;
+    my %atom_site_w_hydrogens = %{ clone( \%atom_site_no_hydrogens ) };
     my $hydrogens =
         add_hydrogens( \%atom_site_w_hydrogens,
                        { 'alt_group_id' => q{.},
