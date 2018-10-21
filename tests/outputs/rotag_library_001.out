@@ -13,12 +13,13 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 T
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 T
-ATOM 3 C CG . XAA A 1 18 -55.001 -111.179 -3.789 T
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 T
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 T
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1 T
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1 T
+ATOM 3 C CG . XAA A 1 18 -55.001 -111.179 -3.789 1 T
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1 T
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1 T
 #
 loop_
 _[local]_rotamer_angle.id
@@ -30,50 +31,28 @@ _[local]_rotamer_angle.label_entity_id
 _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 18 XAA A 1 . chi0 0.000
-2 2 18 XAA A 1 . chi0 0.314
-3 3 18 XAA A 1 . chi0 0.628
-4 4 18 XAA A 1 . chi0 0.942
-5 5 18 XAA A 1 . chi0 1.257
-6 6 18 XAA A 1 . chi0 1.571
-7 7 18 XAA A 1 . chi0 1.885
-8 8 18 XAA A 1 . chi0 2.199
-9 9 18 XAA A 1 . chi0 2.513
-10 10 18 XAA A 1 . chi0 2.827
-11 11 18 XAA A 1 . chi0 3.142
-12 12 18 XAA A 1 . chi0 3.456
-13 13 18 XAA A 1 . chi0 3.770
-14 14 18 XAA A 1 . chi0 4.084
-15 15 18 XAA A 1 . chi0 4.398
-16 16 18 XAA A 1 . chi0 4.712
-17 17 18 XAA A 1 . chi0 5.027
-18 18 18 XAA A 1 . chi0 5.341
-19 19 18 XAA A 1 . chi0 5.655
-20 20 18 XAA A 1 . chi0 5.969
+1 1 18 XAA A 1 . chi1 0.000
+2 2 18 XAA A 1 . chi1 0.698
+3 3 18 XAA A 1 . chi1 1.396
+4 4 18 XAA A 1 . chi1 2.094
+5 5 18 XAA A 1 . chi1 2.793
+6 6 18 XAA A 1 . chi1 3.491
+7 7 18 XAA A 1 . chi1 4.189
+8 8 18 XAA A 1 . chi1 4.887
+9 9 18 XAA A 1 . chi1 5.585
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 0
-2 2 composite 0
-3 3 composite 0
-4 4 composite 0
-5 5 composite 0
-6 6 composite 0
-7 7 composite 0
-8 8 composite 0
-9 9 composite 0
-10 10 composite 0
-11 11 composite 0
-12 12 composite 0
-13 13 composite 0
-14 14 composite 0
-15 15 composite 0
-16 16 composite 0
-17 17 composite 0
-18 18 composite 0
-19 19 composite 0
-20 20 composite 0
+1 1 composite -1.03540727385091
+2 2 composite -0.893070004589104
+3 3 composite -0.727406134581843
+4 4 composite -0.673040938435389
+5 5 composite -0.498848816276701
+6 6 composite -0.331932894960143
+7 7 composite -0.306166985974165
+8 8 composite -0.446327604079589
+9 9 composite -0.777838720703866
 #

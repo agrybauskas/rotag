@@ -13,13 +13,14 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 T
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 T
-ATOM 3 O OG . XAA A 1 18 -54.991 -111.226 -3.906 T
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 T
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 T
-ATOM 6 N N . XAA A 1 19 -55.721 -110.613 -1.930 S
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1 T
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1 T
+ATOM 3 O OG . XAA A 1 18 -54.991 -111.226 -3.906 1 T
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1 T
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1 T
+ATOM 6 N N . XAA A 1 19 -55.721 -110.613 -1.930 1 S
 #
 loop_
 _[local]_rotamer_angle.id
@@ -31,12 +32,12 @@ _[local]_rotamer_angle.label_entity_id
 _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 18 XAA A 1 . chi0 1.257
+1 1 18 XAA A 1 . chi1 1.396
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 0.010686296360459
+1 1 composite 0.010773256080297
 #
