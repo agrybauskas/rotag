@@ -4,14 +4,33 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( $EPSILON
+our @EXPORT_OK = qw( $COULOMB_K
+                     $CUTOFF_START
+                     $CUTOFF_END
+                     $EPSILON
+                     $H_EPSILON
+                     $H_SIGMA
+                     $LJ_EPSILON
                      $PI
-                     $SIG_FIGS );
+                     $SIG_FIGS
+                     $SOFT_EPSILON
+                     $SOFT_N );
+
+# ---------------------------- General constants ------------------------------ #
 
 our $EPSILON = @EPSILON@;
-
 our $PI = @PI@;
-
 our $SIG_FIGS = '%.3f';
+
+# -------------------------- Force-field constants ---------------------------- #
+
+our $SOFT_EPSILON = 1.0;
+our $SOFT_N = 12;
+our $LJ_EPSILON = 1.0;
+our $COULOMB_K = 1.0;
+our $H_EPSILON = 1.0;
+our $H_SIGMA = 2.0;
+our $CUTOFF_START = 2.5;
+our $CUTOFF_END = 5.0;
 
 1;

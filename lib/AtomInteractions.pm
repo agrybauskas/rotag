@@ -21,7 +21,15 @@ use AtomProperties qw( %ATOMS
                        %HYDROGEN_NAMES );
 use ConnectAtoms qw( distance
                      distance_squared );
-use Constants qw( $PI );
+use Constants qw( $CUTOFF_START
+                  $CUTOFF_END
+                  $COULOMB_K
+                  $H_EPSILON
+                  $H_SIGMA
+                  $LJ_EPSILON
+                  $PI
+                  $SOFT_EPSILON
+                  $SOFT_N );
 use Measure qw( bond_angle );
 use Version qw( $VERSION );
 
@@ -101,8 +109,8 @@ sub soft_sphere
     $r_squared //= distance_squared( $atom_i, $atom_j );
     $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
                $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    $soft_epsilon //= 1.0;
-    $n //= 12;
+    $soft_epsilon //= $SOFT_EPSILON;
+    $n //= $SOFT_N;
 
     if( $r_squared <= $sigma ** 2 ) {
         return $soft_epsilon * ( $sigma / sqrt $r_squared ) ** $n;
@@ -140,7 +148,7 @@ sub leonard_jones
     $r //= distance( $atom_i, $atom_j );
     $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
                $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    $lj_epsilon //= 1.0;
+    $lj_epsilon //= $LJ_EPSILON;
 
     return 4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
 }
@@ -167,7 +175,7 @@ sub coulomb
 
     my ( $r, $coulomb_k ) = ( $parameters->{'r'}, $parameters->{'c_k'} );
 
-    $coulomb_k //= 1.0;
+    $coulomb_k //= $COULOMB_K;
     $r //= distance( $atom_i, $atom_j );
 
     # Extracts partial charges.
@@ -282,10 +290,8 @@ sub h_bond_implicit
         $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
     );
 
-    $r_sigma //= 2.00;
-    $h_epsilon //= 1.00; # TODO: this constant will be also in h_bond() and
-                         # h_bond() implicit. Remember to change in all of
-                         # three functions.
+    $r_sigma //= $H_SIGMA;
+    $h_epsilon //= $H_EPSILON;
 
     my $covalent_radius_idx;
     my @hybridizations = qw( sp3 sp2 sp );
@@ -353,10 +359,8 @@ sub h_bond_explicit
     my ( $h_epsilon, $r_sigma ) = (
         $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
     );
-    $r_sigma //= 2.00; # TODO: of course, should be updated.
-    $h_epsilon //= 1.00; # TODO: this constant will be also in h_bond() and
-                         # h_bond() implicit. Remember to change in all of
-                         # three functions.
+    $r_sigma //= $H_SIGMA;
+    $h_epsilon //= $H_EPSILON;
 
     my $r_acceptor_hydrogen = distance( $hydrogen_atom, $acceptor_atom );
     my $theta = bond_angle(
@@ -415,8 +419,8 @@ sub composite
                                     # component values.
     );
 
-    $cutoff_start //= 2.5;
-    $cutoff_end //= 5.0;
+    $cutoff_start //= $CUTOFF_START;
+    $cutoff_end //= $CUTOFF_END;
     $decompose //= 0;
 
     # Calculates squared distance between two atoms.
