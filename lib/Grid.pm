@@ -12,6 +12,7 @@ use List::Util qw( max
 		   min );
 
 use AtomProperties qw( %ATOMS );
+use Constants qw( $EDGE_LENGTH_CONNECTION );
 use PDBxParser qw( filter );
 use Version qw( $VERSION );
 
@@ -75,10 +76,7 @@ sub grid_box
 
     # Default value for edge length is two times greater than the largest
     # covalent radius.
-    $edge_length //=
-	max( map { @{ $ATOMS{$_}{'covalent_radius'}{'length'} } }
-             keys %ATOMS ) * 2; # TODO: 2 is related to cuttof parameter in
-                                # composite function. Decide, how to handle it.
+    $edge_length //= $EDGE_LENGTH_CONNECTION;
 
     # Determines boundary box around all atoms.
     my $atom_data =

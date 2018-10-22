@@ -31,7 +31,8 @@ use ConnectAtoms qw( append_connections
                      connect_atoms
                      is_neighbour
                      is_second_neighbour );
-use Constants qw( $PI
+use Constants qw( $EDGE_LENGTH_INTERACTION
+                  $PI
                   $SIG_FIGS );
 use Grid qw( grid_box
              identify_neighbour_cells );
@@ -372,11 +373,7 @@ sub generate_library
     # on maximum bending and having shorter edge length reduces calculation time.
     my ( $grid_box, $target_cell_idxs ) =
         grid_box( \%atom_site_no_hydrogens,
-                  7 * $ATOMS{'C'}{'covalent_radius'}{'length'}->[0]
-                + 2 * $ATOMS{'N'}{'covalent_radius'}{'length'}->[0]
-                + 3 * $ATOMS{'C'}{'covalent_radius'}{'length'}->[1]
-                + 3 * $ATOMS{'N'}{'covalent_radius'}{'length'}->[1]
-                +     $ATOMS{'H'}{'covalent_radius'}{'length'}->[0],
+                  $EDGE_LENGTH_INTERACTION,
                   \@target_ca_ids,
                   { 'attributes' => [ 'label_seq_id', 'label_asym_id',
                                       'label_entity_id', 'label_alt_id' ] } );
