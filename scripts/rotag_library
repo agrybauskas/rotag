@@ -73,7 +73,8 @@ our $VERSION = $VERSION;
 
 my $conf_model = 'rotation_only';
 my $interactions = 'composite';
-my $small_angle = 0.1;
+my $small_angle_ratio = 0.1;
+my $small_angle_step;
 my $energy_cutoff_atom = 0.4;
 my $energy_cutoff_residue = 1.0;
 my $is_hydrogen_explicit = 0;
@@ -86,7 +87,8 @@ GetOptions(
     'model|m=s' => \$conf_model,
     'potential|u=s' => \$interactions,
     'parameters|p=s' => \$parameters,
-    'angle-step|a=s' => \$small_angle,
+    'angle-ratio|a=s' => \$small_angle_ratio,
+    'angle-step|A=s' => \$small_angle_step,
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
     'cutoff-residue|C=s' => \$energy_cutoff_residue,
     'explicit-hydrogens|H' => sub { $is_hydrogen_explicit = 1 },
@@ -154,7 +156,11 @@ for my $pdbx_file ( @ARGV ) {
             generate_library(
                 { 'atom_site' => $selected_atom_site,
                   'residue_unique_keys' => \@residue_unique_keys,
-                  'small_angle' => $small_angle * 2 * $PI,
+                  'small_angle' => (
+                      defined $small_angle_step ?
+                      $small_angle_step :
+                      $small_angle_ratio * 2 * $PI
+                  ),
                   'conf_model' => $conf_model,
                   'interactions' => $interactions,
                   'parameters' => $parameters,
