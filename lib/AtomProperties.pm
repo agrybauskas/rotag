@@ -129,7 +129,6 @@ our %HYDROGEN_NAMES = (
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
-        'ND1' => [ 'HD1' ],
         'CD2' => [ 'HD2' ],
         'CE1' => [ 'HE1' ],
         'NE2' => [ 'HE2' ]
@@ -149,7 +148,6 @@ our %HYDROGEN_NAMES = (
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
-        'OD2' => [ 'HD2' ]
     },
     'GLU' => {
         'N'   => [ 'H', 'H2' ],
@@ -157,7 +155,6 @@ our %HYDROGEN_NAMES = (
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
         'CG'  => [ 'HG2', 'HG3' ],
-        'OE2' => [ 'HE2' ]
     },
     'CYS' => {
         'N'   => [ 'H', 'H2' ],
