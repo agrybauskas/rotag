@@ -1,4 +1,4 @@
-data_1:chi1:3.927;chi2:1.571;E:-9.451
+data_1:chi1:3.927;chi2:1.571;E:-9.452
 #
 loop_
 _atom_site.group_PDB
@@ -23,7 +23,7 @@ ATOM 1413 C CG . ASP A 1 219 34.442 4.636 42.835 1
 ATOM 1414 O OD1 . ASP A 1 219 34.684 5.183 41.739 1
 ATOM 1415 O OD2 . ASP A 1 219 34.910 5.056 43.916 1
 #
-data_2:chi1:3.927;chi2:4.712;E:-9.234
+data_2:chi1:3.927;chi2:4.712;E:-9.235
 #
 loop_
 _atom_site.group_PDB

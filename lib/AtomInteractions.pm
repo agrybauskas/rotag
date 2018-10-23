@@ -31,6 +31,7 @@ use Constants qw( $CUTOFF_START
                   $SOFT_EPSILON
                   $SOFT_N );
 use Measure qw( bond_angle );
+use MoleculeProperties qw( %PARTIAL_CHARGE );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -172,15 +173,16 @@ sub leonard_jones
 sub coulomb
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
-
     my ( $r, $coulomb_k ) = ( $parameters->{'r'}, $parameters->{'c_k'} );
 
     $coulomb_k //= $COULOMB_K;
     $r //= distance( $atom_i, $atom_j );
 
     # Extracts partial charges.
-    my $partial_charge_i = $ATOMS{$atom_i->{'type_symbol'}}{'partial_charge'};
-    my $partial_charge_j = $ATOMS{$atom_j->{'type_symbol'}}{'partial_charge'};
+    my $partial_charge_i =
+        $PARTIAL_CHARGE{$atom_i->{'label_comp_id'}}{$atom_i->{'label_atom_id'}};
+    my $partial_charge_j =
+        $PARTIAL_CHARGE{$atom_j->{'label_comp_id'}}{$atom_j->{'label_atom_id'}};
 
     return $coulomb_k * $partial_charge_i * $partial_charge_j / $r ** 2;
 }

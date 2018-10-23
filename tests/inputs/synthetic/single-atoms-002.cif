@@ -26,10 +26,10 @@ _atom_site.pdbx_auth_comp_id
 _atom_site.pdbx_auth_asym_id
 _atom_site.pdbx_auth_atom_name
 _atom_site.pdbx_PDB_model_num
-HETATM 1 C C01 . UNK A 1 . ? -0.000 -0.000 0.000 0.00 0.00 ? 1 UNK ? C01 1 UNK ? C01 1
-HETATM 2 N N01 . UNK A 1 . ? 0.857  0.262  0.118 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
-HETATM 3 N N01 . UNK A 1 . ? 2.557  0.740  0.376 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
-HETATM 4 N N01 . UNK A 1 . ? 6.004  1.828  0.873 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
-HETATM 5 N N01 . UNK A 1 . ? 12.813 4.040  1.873 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
-HETATM 6 N N01 . UNK A 1 . ? 26.509 7.770  4.280 0.00 0.00 ? 1 UNK ? N01 1 UNK ? N01 1
+HETATM 1 C C . SER A 1 . ? -0.000 -0.000 0.000 0.00 0.00 ? 1 SER ? C 1 SER ? C 1
+HETATM 2 N N . SER A 1 . ? 0.857  0.262  0.118 0.00 0.00 ? 1 SER ? N 1 SER ? N 1
+HETATM 3 N N . SER A 1 . ? 2.557  0.740  0.376 0.00 0.00 ? 1 SER ? N 1 SER ? N 1
+HETATM 4 N N . SER A 1 . ? 6.004  1.828  0.873 0.00 0.00 ? 1 SER ? N 1 SER ? N 1
+HETATM 5 N N . SER A 1 . ? 12.813 4.040  1.873 0.00 0.00 ? 1 SER ? N 1 SER ? N 1
+HETATM 6 N N . SER A 1 . ? 26.509 7.770  4.280 0.00 0.00 ? 1 SER ? N 1 SER ? N 1
 #

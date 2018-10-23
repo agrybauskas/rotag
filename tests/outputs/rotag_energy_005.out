@@ -13,9 +13,9 @@ _[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
 1 148 C CA 18 SER A 1 . coulomb 0.000
-2 151 C CB 18 SER A 1 . coulomb -0.012
-3 152 O OG 18 SER A 1 . coulomb 0.091
-4 147 N N 18 SER A 1 . coulomb 0.046
-5 149 C C 18 SER A 1 . coulomb -0.005
-6 150 O O 18 SER A 1 . coulomb 0.029
+2 151 C CB 18 SER A 1 . coulomb -0.015
+3 152 O OG 18 SER A 1 . coulomb 0.096
+4 147 N N 18 SER A 1 . coulomb 0.064
+5 149 C C 18 SER A 1 . coulomb -0.022
+6 150 O O 18 SER A 1 . coulomb 0.035
 #
