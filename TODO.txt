@@ -42,8 +42,7 @@
    one plane.
 ++ Basic connectivity for 20 amino acids should be checked by looking at table
    or Perl data structure.
--- Add pre-calculate rotatable bonds for 20 amino acids - it is more effective.
--- Add pre-defined hybridizations for 20 amino acids.
+++ Add pre-defined hybridizations for 20 amino acids.
 -- Make sort by attribute in filter().
 ++ Have to deal with defaults of force fields. Might be good to store them into
    one file.

@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( %CONNECTIVITY
+our @EXPORT_OK = qw( %CLEAR_HYBRIDIZATION
+                     %CONNECTIVITY
                      %RESIDUE_ATOMS
                      %PARTIAL_CHARGE);
 
@@ -1106,7 +1107,7 @@ our %PARTIAL_CHARGE = (
     },
 );
 
-our %HYBRIDIZATION = (
+our %CLEAR_HYBRIDIZATION = (
     'XAA' => { # Dummy side-chain.
         'XA'  => 'sp3',
         'XA2' => 'sp3',
@@ -1116,7 +1117,6 @@ our %HYBRIDIZATION = (
         'OG'  => 'sp3',
     },
     'SER' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1125,7 +1125,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ARG' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1139,7 +1138,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'HIS' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1152,7 +1150,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'LYS' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1164,7 +1161,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ASP' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1175,7 +1171,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'GLU' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1187,7 +1182,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'CYS' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1196,14 +1190,12 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'GLY' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
         'OXT' => 'sp2',
     },
     'PRO' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1213,7 +1205,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ALA' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1221,7 +1212,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'VAL' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1231,7 +1221,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ILE' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1242,7 +1231,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'LEU' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1253,7 +1241,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'MET' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1264,7 +1251,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'PHE' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1278,7 +1264,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'TYR' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1292,7 +1277,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp3',
     },
     'TRP' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1309,7 +1293,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'THR' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1319,7 +1302,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ASN' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1330,7 +1312,6 @@ our %HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'GLN' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
