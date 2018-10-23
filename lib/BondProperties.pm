@@ -14,6 +14,7 @@ use List::MoreUtils qw( uniq );
 use AtomProperties qw( %ATOMS
                        sort_atom_names );
 use ConnectAtoms qw( connect_atoms );
+use MoleculeProperties qw( %CLEAR_HYBRIDIZATION );
 use PDBxParser qw( filter );
 use Version qw( $VERSION );
 
@@ -324,6 +325,17 @@ sub hybridization
     my ( $atom_site ) = @_;
 
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+        # Looks up to a pre-determined hash of known hybridization values and
+        # quits early.
+        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
+        if( exists $CLEAR_HYBRIDIZATION{$residue_name} &&
+            exists $CLEAR_HYBRIDIZATION{$residue_name}{$atom_name} ) {
+            $atom_site->{$atom_id}{'hybridization'} =
+                $CLEAR_HYBRIDIZATION{$residue_name}{$atom_name};
+            next;
+        }
+
         # Determines every type of connection.
         my @bond_types;
         for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {

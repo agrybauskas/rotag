@@ -1273,7 +1273,7 @@ our %CLEAR_HYBRIDIZATION = (
         'CE1' => 'sp2',
         'CE2' => 'sp2',
         'CZ'  => 'sp2',
-        'OH'  => 'sp2',
+        'OH'  => 'sp3',
         'OXT' => 'sp3',
     },
     'TRP' => {
