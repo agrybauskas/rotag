@@ -313,8 +313,9 @@ sub filter
 
 sub split_by
 {
-    my ( $atom_site, $attributes, $options ) = @_;
-    my ( $append_dot_alt_ids ) = ( $options->{'append_dot_alt_ids'} );
+    my ( %args ) = @_;
+    my ( $atom_site, $attributes, $append_dot_alt_ids ) =
+        ( $args{'atom_site'}, $args{'attributes'}, $args{'append_dot_alt_ids'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];

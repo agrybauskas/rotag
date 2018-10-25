@@ -26,8 +26,9 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $split_groups = split_by( $atom_site, \@attributes,
-                             { 'append_dot_alt_ids' => $append_dot_alt_ids } );
+my $split_groups = split_by( 'atom_site' => $atom_site,
+                             'attributes' => \@attributes,
+                             'append_dot_alt_ids' => $append_dot_alt_ids );
 
 foreach( sort keys %{ $split_groups } ) {
     to_pdbx( { 'atom_site' =>

@@ -181,8 +181,8 @@ sub all_dihedral
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
-    my $residue_groups = split_by( \%atom_site, undef,
-                                   { 'append_dot_alt_ids' => 1 } );
+    my $residue_groups = split_by( 'atom_site' => \%atom_site,
+                                   'append_dot_alt_ids' => 1 );
 
     connect_atoms( \%atom_site );
 
