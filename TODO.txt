@@ -47,3 +47,4 @@
 ++ Have to deal with defaults of force fields. Might be good to store them into
    one file.
 ++ Add capability to turn not only by angle, but also by ratio in rotag_library.
+-- Check if vector lengths when adding hydrogens all are 1.0.

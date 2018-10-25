@@ -1092,7 +1092,7 @@ sub add_hydrogens_sp3
                           $mid_atom_coord,
                           $left_atom_coord ] );
         my $right_mid_left_angle =
-            bond_angle( [ $up_atom_coord,
+            bond_angle( [ $right_atom_coord,
                           $mid_atom_coord,
                           $left_atom_coord ] );
 
@@ -1102,7 +1102,7 @@ sub add_hydrogens_sp3
             acos( ( - 4 -
                     2 * cos( $up_mid_right_angle ) -
                     2 * cos( $up_mid_left_angle ) -
-                    2 * cos $right_mid_left_angle ) /
+                    2 * cos( $right_mid_left_angle) ) /
                   6 );
 
         # Determines dihedral angle between left and right atoms. Then
