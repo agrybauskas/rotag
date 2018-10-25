@@ -306,7 +306,7 @@ sub filter
 # Input:
 #     $atom_site - atom site data structure;
 #     $attributes - list of attributes that atom site will be split by;
-#     $options->{'append_dot_alt_ids'} - atoms that has 'label_alt_id' eq '.' to
+#     $options->{'append_dot'} - atoms that has 'label_alt_id' eq '.' to
 #     corresponding groups.
 # Output:
 #     %split_groups - hash of atom site data structures.
@@ -315,12 +315,12 @@ sub filter
 sub split_by
 {
     my ( %args ) = @_;
-    my ( $atom_site, $attributes, $append_dot_alt_ids ) =
-        ( $args{'atom_site'}, $args{'attributes'}, $args{'append_dot_alt_ids'} );
+    my ( $atom_site, $attributes, $append_dot ) =
+        ( $args{'atom_site'}, $args{'attributes'}, $args{'append_dot'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
-    $append_dot_alt_ids //= 0;
+    $append_dot //= 0;
 
     my %split_groups;
     for my $atom_id ( sort keys %{ $atom_site } ) {
@@ -339,7 +339,7 @@ sub split_by
         }
     }
 
-    if( $append_dot_alt_ids ) {
+    if( $append_dot ) {
         # Pre-determines position of attribute in unique key.
         my $alt_id_pos;
         for my $i ( 0..$#{ $attributes } ) {
@@ -418,6 +418,7 @@ sub mark_selection
 # Input:
 #     $atom_site - atom data structure.
 #     $unique_residue_key - a composite key that identifies residue uniquely.
+#     $include_dot - includes '.' alt id into the selection.
 #     Ex.: '18,A,1,.'.
 # Output:
 #     %filtered_atoms - filtered atom data structure.
