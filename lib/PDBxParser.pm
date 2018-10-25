@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
+                     determine_residue_keys
                      filter
                      filter_by_unique_residue_key
                      mark_selection
@@ -424,7 +425,7 @@ sub mark_selection
 
 sub filter_by_unique_residue_key
 {
-    my ( $atom_site, $unique_residue_key ) = @_;
+    my ( $atom_site, $unique_residue_key, $include_dot ) = @_;
     my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
         split /,/sxm, $unique_residue_key;
     my $filtered_atoms = filter( { 'atom_site' => $atom_site,
@@ -432,7 +433,9 @@ sub filter_by_unique_residue_key
                                    { 'label_seq_id' => [ $residue_id ],
                                      'label_asym_id' => [ $residue_chain ],
                                      'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                                     'label_alt_id' => [ $residue_alt ] } } );
+                                     'label_alt_id' =>
+                                         [ $residue_alt,
+                                           ( $include_dot ? '.' : () ) ] } } );
     return $filtered_atoms;
 }
 
@@ -455,6 +458,39 @@ sub unique_residue_key
                  'label_asym_id',
                  'pdbx_PDB_model_num',
                  'label_alt_id', );
+}
+
+#
+# Generates a list of unique keys from the atom site.
+# Input:
+#     $atom_site - atom site data structure;
+#     $options->{'exclude_dot'} - excludes label atom ids with '.' valu, but
+#     only if there are alternatives.
+# Output:
+#     @residue_unique_keys - list of determined unique keys.
+#
+
+sub determine_residue_keys
+{
+    my ( $atom_site, $options ) = @_;
+    my ( $exclude_dot ) = $options->{'exclude_dot'};
+
+    my @residue_unique_keys;
+    for my $atom_id ( keys %{ $atom_site } ) {
+        push @residue_unique_keys, unique_residue_key( $atom_site->{$atom_id} );
+    }
+    @residue_unique_keys = uniq @residue_unique_keys;
+
+    if( scalar @residue_unique_keys > 1 ) {
+        for my $i ( 0..$#residue_unique_keys ) {
+            if( $exclude_dot && $residue_unique_keys[$i] =~ m/\.$/ ) {
+                splice @residue_unique_keys, $i, 1;
+                last;
+            }
+        }
+    }
+
+    return \@residue_unique_keys;
 }
 
 #
