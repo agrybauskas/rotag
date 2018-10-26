@@ -325,6 +325,7 @@ sub generate_library
 
     my %atom_sites;
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
+        my ( $pdbx_model_num, $alt_id ) = split /,/, $atom_site_identifier;
         my $current_atom_site =
             filter( { 'atom_site' => $atom_site,
                       'include' =>
@@ -370,7 +371,6 @@ sub generate_library
             push @target_ca_ids, $atom_ca_id;
         }
 
-
         # Creates the grid box that has edge length of sum of all bonds of the
         # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
         # * (C=N) + (N-H).
@@ -378,14 +378,48 @@ sub generate_library
         # on maximum bending and having shorter edge length reduces calculation
         # time.
         my ( $grid_box, $target_cell_idxs ) =
-            grid_box( $current_atom_site_no_H,
-                      $EDGE_LENGTH_INTERACTION,
-                      \@target_ca_ids,
-                      { 'attributes' => [ 'label_seq_id', 'label_asym_id',
-                                          'label_entity_id', 'label_alt_id' ] });
+            grid_box( $current_atom_site_no_H, $EDGE_LENGTH_INTERACTION,
+                      \@target_ca_ids );
 
         my $neighbour_cells =
             identify_neighbour_cells( $grid_box, $target_cell_idxs );
+
+        for my $cell ( sort { $a cmp $b } keys %{ $target_cell_idxs } ) {
+            for my $ca_atom_id ( @{ $target_cell_idxs->{$cell} } ) {
+                my $residue_id =
+                    $current_atom_site->{$ca_atom_id}{'label_seq_id'};
+                my $residue_site =
+                    filter( { 'atom_site' => $current_atom_site,
+                              'include' =>
+                                  { 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                                    'label_alt_id' => [ $alt_id, '.' ],
+                                    'label_seq_id' => [ $residue_id ] } } );
+                my $residue_unique_key =
+                    determine_residue_keys($residue_site, {'exclude_dot' => 1});
+
+                # Because the change of side-chain position might impact the
+                # surrounding, iteraction site consists of only main chain atoms.
+                my %interaction_site =
+                    %{ filter( { 'atom_site' => $current_atom_site_no_H,
+                                 'include' =>
+                                     { 'id' => $neighbour_cells->{$cell},
+                                       %{ $include_interactions } } } ) };
+
+                # # First, checks angles by step-by-step adding atoms to sidechains.
+                # # This is called growing side chain.
+                # my @allowed_angles =
+                #     @{ calc_favourable_angles(
+                #            { 'atom_site' => $current_atom_site_no_H,
+                #              'residue_unique_key' => $residue_unique_key,
+                #              'interaction_site' => \%interaction_site,
+                #              'small_angle' => $small_angle,
+                #              'potential_function' => $potential_function,
+                #              'energy_cutoff_atom' => $energy_cutoff_atom,
+                #              'parameters' => $parameters,
+                #              'threads' => $threads } ) };
+
+            }
+        }
     }
 
     # for my $cell ( sort { $a cmp $b } keys %{ $target_cell_idxs } ) {
