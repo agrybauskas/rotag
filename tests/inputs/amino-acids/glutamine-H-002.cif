@@ -1,0 +1,40 @@
+data_asparagine_H
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+ATOM   15    N  N      . GLN A 1 2  ? 29.179 -4.022  31.848 1.00 27.60  ? 3    GLN A N      1
+ATOM   16    C  CA     . GLN A 1 2  ? 28.336 -3.917  33.034 1.00 27.79  ? 3    GLN A CA     1
+ATOM   17    C  C      . GLN A 1 2  ? 28.514 -2.551  33.696 1.00 27.44  ? 3    GLN A C      1
+ATOM   18    O  O      . GLN A 1 2  ? 29.625 -2.025  33.751 1.00 27.45  ? 3    GLN A O      1
+ATOM   19    C  CB     . GLN A 1 2  ? 28.690 -5.015  34.041 1.00 28.79  ? 3    GLN A CB     1
+ATOM   20    C  CG     . GLN A 1 2  ? 28.348 -6.426  33.585 1.00 32.38  ? 3    GLN A CG     1
+ATOM   21    C  CD     . GLN A 1 2  ? 28.732 -7.479  34.614 1.00 35.93  ? 3    GLN A CD     1
+ATOM   22    O  OE1    . GLN A 1 2  ? 29.342 -7.169  35.637 1.00 37.53  ? 3    GLN A OE1    1
+ATOM   23    N  NE2    . GLN A 1 2  ? 28.368 -8.727  34.349 1.00 38.11  ? 3    GLN A NE2    1
+ATOM   24    H  H      . GLN A 1 2  ? 29.940 -4.394  31.998 1.00 33.12  ? 3    GLN A H      1
+ATOM   25    H  HA     . GLN A 1 2  ? 27.405 -4.018  32.780 1.00 33.34  ? 3    GLN A HA     1
+ATOM   26    H  HB2    . GLN A 1 2  ? 29.644 -4.985  34.210 1.00 34.55  ? 3    GLN A HB2    1
+ATOM   27    H  HB3    . GLN A 1 2  ? 28.207 -4.847  34.865 1.00 34.55  ? 3    GLN A HB3    1
+ATOM   28    H  HG2    . GLN A 1 2  ? 27.392 -6.487  33.434 1.00 38.86  ? 3    GLN A HG2    1
+ATOM   29    H  HG3    . GLN A 1 2  ? 28.827 -6.618  32.764 1.00 38.86  ? 3    GLN A HG3    1
+ATOM   30    H  HE21   . GLN A 1 2  ? 27.938 -8.905  33.626 1.00 45.74  ? 3    GLN A HE21   1
+ATOM   31    H  HE22   . GLN A 1 2  ? 28.562 -9.358  34.900 1.00 45.74  ? 3    GLN A HE22   1
