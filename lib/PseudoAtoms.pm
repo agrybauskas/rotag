@@ -48,6 +48,7 @@ use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys
                    filter
                    filter_by_unique_residue_key
+                   split_by
                    unique_residue_key );
 use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
@@ -317,130 +318,137 @@ sub generate_library
 
     my %rotamer_library;
 
-    # Strips out hydrogens if there are any in the structure.
-    my %atom_site_no_hydrogens = %{ $atom_site };
-    %atom_site_no_hydrogens =
-        %{ filter( { 'atom_site' => $atom_site,
-                     'exclude' => { 'type_symbol' => [ 'H' ] } } ) };
+    my $atom_site_groups =
+        split_by( 'atom_site' => $atom_site,
+                  'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
+                  'append_dot' => 1 );
 
-    connect_atoms( \%atom_site_no_hydrogens );
-    hybridization( \%atom_site_no_hydrogens );
-
-    # Predetermines geometrically clearly defined hydrogen positions.
-    my %atom_site_w_hydrogens = %{ clone( \%atom_site_no_hydrogens ) };
-    my $hydrogens =
-        add_hydrogens( \%atom_site_w_hydrogens,
-                       { 'alt_group_id' => q{.},
-                         'add_only_clear_positions' => 1 } );
-    append_connections( \%atom_site_w_hydrogens, $hydrogens );
-    %atom_site_w_hydrogens = ( %atom_site_w_hydrogens, %{ $hydrogens } );
-    hybridization( \%atom_site_w_hydrogens );
-
-    # Generates conformational models before checking for clashes/interactions
-    # for given residues.
-    if( $conf_model eq 'rotation_only' ) {
-        for my $residue_unique_key ( @{ $residue_unique_keys } ) {
-            rotation_only(
-                filter_by_unique_residue_key( \%atom_site_no_hydrogens,
-                                              $residue_unique_key )
-            );
-        }
-    } else {
-        die 'Conformational model was not defined.';
-    }
-
-    # Finds where CA of target residues are.
-    my @target_ca_ids;
-    for my $residue_unique_key ( @{ $residue_unique_keys } ) {
-        my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
-            split /,/sxm, $residue_unique_key;
-        my $atom_ca_id =
-            filter( { 'atom_site' => \%atom_site_no_hydrogens,
+    my %atom_sites;
+    for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
+        my $current_atom_site =
+            filter( { 'atom_site' => $atom_site,
                       'include' =>
-                      { 'label_atom_id' => [ 'CA' ],
-                        'label_seq_id' => [ $residue_id ],
-                        'label_asym_id' => [ $residue_chain ],
-                        'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                        'label_alt_id' => [ $residue_alt ] },
-                      'data' => [ 'id' ],
-                      'is_list' => 1 } )->[0];
-        push @target_ca_ids, $atom_ca_id;
-    }
+                          {'id' => $atom_site_groups->{$atom_site_identifier}}});
 
-    # Creates the grid box that has edge length of sum of all bonds of the
-    # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
-    # * (C=N) + (N-H).
-    # TODO: should consider using shorter distances, because bonds have limits
-    # on maximum bending and having shorter edge length reduces calculation time.
-    my ( $grid_box, $target_cell_idxs ) =
-        grid_box( \%atom_site_no_hydrogens,
-                  $EDGE_LENGTH_INTERACTION,
-                  \@target_ca_ids,
-                  { 'attributes' => [ 'label_seq_id', 'label_asym_id',
-                                      'label_entity_id', 'label_alt_id' ] } );
+        # Prepares hydrogen-free structure.
+        my $current_atom_site_no_H = clone( # Without hydrogens.
+            filter( { 'atom_site' => $current_atom_site,
+                      'exclude' => { 'type_symbol' => [ 'H' ] } } )
+        );
+        connect_atoms( $current_atom_site_no_H );
+        hybridization( $current_atom_site_no_H );
 
-    my $neighbour_cells =
-        identify_neighbour_cells( $grid_box, $target_cell_idxs );
+        # Predetermines geometrically clearly defined hydrogen positions.
+        my $current_atom_site_w_H = clone( $current_atom_site_no_H );
+        my $hydrogens =
+            add_hydrogens( $current_atom_site_w_H,
+                           { 'alt_group_id' => q{.},
+                             'add_only_clear_positions' => 1 } );
+        append_connections( $current_atom_site_w_H, $hydrogens );
+        $current_atom_site_w_H = { %{ $current_atom_site_w_H }, %{ $hydrogens }};
+        hybridization( $current_atom_site_w_H );
 
-    for my $cell ( sort { $a cmp $b } keys %{ $target_cell_idxs } ) {
-        for my $residue_unique_key ( @{ $target_cell_idxs->{$cell} } ) {
-            # Because the change of side-chain position might impact the
-            # surrounding, iteraction site consists of only main chain atoms.
-            my %interaction_site =
-                %{ filter( { 'atom_site' => \%atom_site_no_hydrogens,
-                             'include' => { 'id' => $neighbour_cells->{$cell},
-                                            %{ $include_interactions } } } ) };
-
-            # First, checks angles by step-by-step adding atoms to sidechains.
-            # This is called growing side chain.
-            my @allowed_angles =
-                @{ calc_favourable_angles(
-                       { 'atom_site' => \%atom_site_no_hydrogens,
-                         'residue_unique_key' => $residue_unique_key,
-                         'interaction_site' => \%interaction_site,
-                         'small_angle' => $small_angle,
-                         'potential_function' => $potential_function,
-                         'energy_cutoff_atom' => $energy_cutoff_atom,
-                         'parameters' => $parameters,
-                         'threads' => $threads } ) };
-
-            # Then, re-checks if each atom of the rotamer obey energy cutoffs.
-            my ( $allowed_angles, $energy_sums ) =
-                @{ multithreading(
-                       \&calc_full_atom_energy,
-                       { 'atom_site' => \%atom_site_no_hydrogens,
-                         'residue_unique_key' => $residue_unique_key,
-                         'interaction_site' => \%interaction_site,
-                         'small_angle' => $small_angle,
-                         'potential_function' => $potential_function,
-                         'energy_cutoff_atom' => $energy_cutoff_atom,
-                         'is_hydrogen_explicit' => $is_hydrogen_explicit,
-                         'parameters' => $parameters },
-                        [ @allowed_angles ],
-                       $threads ) };
-
-            if( ! @{ $allowed_angles } ) {
-                die "no possible rotamer solutions were detected.\n";
-            }
-
-            for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
-                my %angles =
-                    map { my $angle_id = $_ + 1; ( "chi$angle_id" =>
-                                                      $allowed_angles->[$i][$_])}
-                        ( 0..$#{ $allowed_angles->[$i] } );
-                my $rotamer_energy_sum = $energy_sums->[$i];
-                if( defined $rotamer_energy_sum &&
-                    $rotamer_energy_sum <= $energy_cutoff_residue ) {
-                    push @{ $rotamer_library{"$residue_unique_key"} },
-                         { 'angles' => \%angles,
-                           'potential' => $interactions,
-                           'potential_energy_value' => $rotamer_energy_sum };
-                }
-            }
+        # Generates conformational models before checking for
+        # clashes/interactions for given residues.
+        if( $conf_model eq 'rotation_only' ) {
+            rotation_only( $current_atom_site_no_H );
+        } else {
+            die 'Conformational model was not defined.';
         }
     }
 
-    return \%rotamer_library;
+    # # Finds where CA of target residues are.
+    # my @target_ca_ids;
+    # for my $residue_unique_key ( @{ $residue_unique_keys } ) {
+    #     my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
+    #         split /,/sxm, $residue_unique_key;
+    #     my $atom_ca_id =
+    #         filter( { 'atom_site' => \%atom_site_no_hydrogens,
+    #                   'include' =>
+    #                   { 'label_atom_id' => [ 'CA' ],
+    #                     'label_seq_id' => [ $residue_id ],
+    #                     'label_asym_id' => [ $residue_chain ],
+    #                     'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+    #                     'label_alt_id' => [ $residue_alt ] },
+    #                   'data' => [ 'id' ],
+    #                   'is_list' => 1 } )->[0];
+    #     push @target_ca_ids, $atom_ca_id;
+    # }
+
+    # # Creates the grid box that has edge length of sum of all bonds of the
+    # # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
+    # # * (C=N) + (N-H).
+    # # TODO: should consider using shorter distances, because bonds have limits
+    # # on maximum bending and having shorter edge length reduces calculation time.
+    # my ( $grid_box, $target_cell_idxs ) =
+    #     grid_box( \%atom_site_no_hydrogens,
+    #               $EDGE_LENGTH_INTERACTION,
+    #               \@target_ca_ids,
+    #               { 'attributes' => [ 'label_seq_id', 'label_asym_id',
+    #                                   'label_entity_id', 'label_alt_id' ] } );
+
+    # my $neighbour_cells =
+    #     identify_neighbour_cells( $grid_box, $target_cell_idxs );
+
+    # for my $cell ( sort { $a cmp $b } keys %{ $target_cell_idxs } ) {
+    #     for my $residue_unique_key ( @{ $target_cell_idxs->{$cell} } ) {
+    #         # Because the change of side-chain position might impact the
+    #         # surrounding, iteraction site consists of only main chain atoms.
+    #         my %interaction_site =
+    #             %{ filter( { 'atom_site' => \%atom_site_no_hydrogens,
+    #                          'include' => { 'id' => $neighbour_cells->{$cell},
+    #                                         %{ $include_interactions } } } ) };
+
+    #         # First, checks angles by step-by-step adding atoms to sidechains.
+    #         # This is called growing side chain.
+    #         my @allowed_angles =
+    #             @{ calc_favourable_angles(
+    #                    { 'atom_site' => \%atom_site_no_hydrogens,
+    #                      'residue_unique_key' => $residue_unique_key,
+    #                      'interaction_site' => \%interaction_site,
+    #                      'small_angle' => $small_angle,
+    #                      'potential_function' => $potential_function,
+    #                      'energy_cutoff_atom' => $energy_cutoff_atom,
+    #                      'parameters' => $parameters,
+    #                      'threads' => $threads } ) };
+
+    #         # Then, re-checks if each atom of the rotamer obey energy cutoffs.
+    #         my ( $allowed_angles, $energy_sums ) =
+    #             @{ multithreading(
+    #                    \&calc_full_atom_energy,
+    #                    { 'atom_site' => \%atom_site_no_hydrogens,
+    #                      'residue_unique_key' => $residue_unique_key,
+    #                      'interaction_site' => \%interaction_site,
+    #                      'small_angle' => $small_angle,
+    #                      'potential_function' => $potential_function,
+    #                      'energy_cutoff_atom' => $energy_cutoff_atom,
+    #                      'is_hydrogen_explicit' => $is_hydrogen_explicit,
+    #                      'parameters' => $parameters },
+    #                     [ @allowed_angles ],
+    #                    $threads ) };
+
+    #         if( ! @{ $allowed_angles } ) {
+    #             die "no possible rotamer solutions were detected.\n";
+    #         }
+
+    #         for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+    #             my %angles =
+    #                 map { my $angle_id = $_ + 1; ( "chi$angle_id" =>
+    #                                                   $allowed_angles->[$i][$_])}
+    #                     ( 0..$#{ $allowed_angles->[$i] } );
+    #             my $rotamer_energy_sum = $energy_sums->[$i];
+    #             if( defined $rotamer_energy_sum &&
+    #                 $rotamer_energy_sum <= $energy_cutoff_residue ) {
+    #                 push @{ $rotamer_library{"$residue_unique_key"} },
+    #                      { 'angles' => \%angles,
+    #                        'potential' => $interactions,
+    #                        'potential_energy_value' => $rotamer_energy_sum };
+    #             }
+    #         }
+    #     }
+    # }
+
+    # return \%rotamer_library;
 }
 
 #
