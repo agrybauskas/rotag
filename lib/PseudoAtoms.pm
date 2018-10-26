@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( add_hydrogens
+                     calc_favourable_angles
                      generate_library
                      generate_pseudo
                      generate_rotamer
@@ -405,19 +406,18 @@ sub generate_library
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
-                # # First, checks angles by step-by-step adding atoms to sidechains.
-                # # This is called growing side chain.
-                # my @allowed_angles =
-                #     @{ calc_favourable_angles(
-                #            { 'atom_site' => $current_atom_site_no_H,
-                #              'residue_unique_key' => $residue_unique_key,
-                #              'interaction_site' => \%interaction_site,
-                #              'small_angle' => $small_angle,
-                #              'potential_function' => $potential_function,
-                #              'energy_cutoff_atom' => $energy_cutoff_atom,
-                #              'parameters' => $parameters,
-                #              'threads' => $threads } ) };
-
+                # First, checks angles by step-by-step adding atoms to sidechains.
+                # This is called growing side chain.
+                my @allowed_angles =
+                    @{ calc_favourable_angles(
+                           { 'atom_site' => $current_atom_site_no_H,
+                             'residue_unique_key' => $residue_unique_key,
+                             'interaction_site' => \%interaction_site,
+                             'small_angle' => $small_angle,
+                             'potential_function' => $potential_function,
+                             'energy_cutoff_atom' => $energy_cutoff_atom,
+                             'parameters' => $parameters,
+                             'threads' => $threads } ) };
             }
         }
     }
@@ -519,97 +519,97 @@ sub calc_favourable_angles
         $args->{'threads'},
     );
 
-    my $residue_site =
-        filter_by_unique_residue_key( $atom_site, $residue_unique_key );
+    # my $residue_site =
+    #     filter_by_unique_residue_key( $atom_site, $residue_unique_key );
 
-    my $rotatable_bonds = rotatable_bonds( $residue_site );
-    if( ! %{ $rotatable_bonds } ) { next; }
+    # my $rotatable_bonds = rotatable_bonds( $residue_site );
+    # if( ! %{ $rotatable_bonds } ) { next; }
 
-    # Goes through each atom in side chain and calculates interaction
-    # potential with surrounding atoms. CA and CB are non-movable atoms
-    # so, they are marked as starting atoms.
-    my $ca_atom_id =
-        filter( { 'atom_site' => $residue_site,
-                  'include' => { 'label_atom_id' => [ 'CA' ] },
-                  'data' => [ 'id' ] } )->[0][0];
-    my $cb_atom_id =
-        filter( { 'atom_site' => $residue_site,
-                  'include' => { 'label_atom_id' => [ 'CB' ] },
-                  'data' => [ 'id' ] } )->[0][0];
+    # # Goes through each atom in side chain and calculates interaction
+    # # potential with surrounding atoms. CA and CB are non-movable atoms
+    # # so, they are marked as starting atoms.
+    # my $ca_atom_id =
+    #     filter( { 'atom_site' => $residue_site,
+    #               'include' => { 'label_atom_id' => [ 'CA' ] },
+    #               'data' => [ 'id' ] } )->[0][0];
+    # my $cb_atom_id =
+    #     filter( { 'atom_site' => $residue_site,
+    #               'include' => { 'label_atom_id' => [ 'CB' ] },
+    #               'data' => [ 'id' ] } )->[0][0];
 
-    my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
-    my @next_atom_ids =
-        grep { $_ ne $ca_atom_id }
-            @{ $residue_site->{$cb_atom_id}{'connections'} };
+    # my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
+    # my @next_atom_ids =
+    #     grep { $_ ne $ca_atom_id }
+    #         @{ $residue_site->{$cb_atom_id}{'connections'} };
 
-    my @sampled_angles =
-        map { [ $_ ] } @{ sample_angles( [ [ 0, 2 * $PI ] ], $small_angle ) };
-    my @allowed_angles = @sampled_angles;
+    # my @sampled_angles =
+    #     map { [ $_ ] } @{ sample_angles( [ [ 0, 2 * $PI ] ], $small_angle ) };
+    # my @allowed_angles = @sampled_angles;
 
-    # @zero_energies is a helper variable for permutation() in order to
-    # mimick the permutated angles and match their values correctly.
-    my @zero_energies = map { [ 0 ] } @sampled_angles;
-    my @allowed_energies = @zero_energies;
+    # # @zero_energies is a helper variable for permutation() in order to
+    # # mimick the permutated angles and match their values correctly.
+    # my @zero_energies = map { [ 0 ] } @sampled_angles;
+    # my @allowed_energies = @zero_energies;
 
-    while( scalar( @next_atom_ids ) != 0 ) {
-        my @neighbour_atom_ids;
-        for my $atom_id ( @next_atom_ids ) {
-            # Adds more angle combinations if there are more than one
-            # rotatable bonds.
-            if( scalar( @{ $allowed_angles[0] } ) <
-                scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
-                @allowed_angles =
-                    @{ permutation( 2, [], [ \@allowed_angles,
-                                             \@sampled_angles ], [] ) };
-                @allowed_energies =
-                    @{ permutation( 2, [], [ \@allowed_energies,
-                                             \@zero_energies ], [] ) };
-                # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-                @allowed_angles =
-                    map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
-                @allowed_energies =
-                    map { [ $_->[0][0] ] } @allowed_energies;
-            }
+    # while( scalar( @next_atom_ids ) != 0 ) {
+    #     my @neighbour_atom_ids;
+    #     for my $atom_id ( @next_atom_ids ) {
+    #         # Adds more angle combinations if there are more than one
+    #         # rotatable bonds.
+    #         if( scalar( @{ $allowed_angles[0] } ) <
+    #             scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
+    #             @allowed_angles =
+    #                 @{ permutation( 2, [], [ \@allowed_angles,
+    #                                          \@sampled_angles ], [] ) };
+    #             @allowed_energies =
+    #                 @{ permutation( 2, [], [ \@allowed_energies,
+    #                                          \@zero_energies ], [] ) };
+    #             # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+    #             @allowed_angles =
+    #                 map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
+    #             @allowed_energies =
+    #                 map { [ $_->[0][0] ] } @allowed_energies;
+    #         }
 
-            # Marks visited atoms.
-            push @visited_atom_ids, $atom_id;
+    #         # Marks visited atoms.
+    #         push @visited_atom_ids, $atom_id;
 
-            # Marks neighbouring atoms.
-            push @neighbour_atom_ids,
-                 @{ $atom_site->{$atom_id}{'connections'} };
+    #         # Marks neighbouring atoms.
+    #         push @neighbour_atom_ids,
+    #              @{ $atom_site->{$atom_id}{'connections'} };
 
-            # Starts calculating potential energy.
-            my ( $next_allowed_angles, $next_allowed_energies ) =
-                @{ multithreading(
-                       \&calc_favourable_angle,
-                       { 'atom_site' => $atom_site,
-                         'atom_id' => $atom_id,
-                         'interaction_site' => $interaction_site,
-                         'energy_cutoff_atom' => $energy_cutoff_atom,
-                         'potential_function' => $potential_function,
-                         'parameters' => $parameters },
-                       [ \@allowed_angles, \@allowed_energies, ],
-                       $threads ) };
+    #         # Starts calculating potential energy.
+    #         my ( $next_allowed_angles, $next_allowed_energies ) =
+    #             @{ multithreading(
+    #                    \&calc_favourable_angle,
+    #                    { 'atom_site' => $atom_site,
+    #                      'atom_id' => $atom_id,
+    #                      'interaction_site' => $interaction_site,
+    #                      'energy_cutoff_atom' => $energy_cutoff_atom,
+    #                      'potential_function' => $potential_function,
+    #                      'parameters' => $parameters },
+    #                    [ \@allowed_angles, \@allowed_energies, ],
+    #                    $threads ) };
 
-            if( scalar @{ $next_allowed_angles } > 0 ) {
-                @allowed_angles = @{ $next_allowed_angles };
-                @allowed_energies = @{ $next_allowed_energies };
-            } else {
-                die "no possible rotamer solutions were detected.\n";
-            }
-        }
+    #         if( scalar @{ $next_allowed_angles } > 0 ) {
+    #             @allowed_angles = @{ $next_allowed_angles };
+    #             @allowed_energies = @{ $next_allowed_energies };
+    #         } else {
+    #             die "no possible rotamer solutions were detected.\n";
+    #         }
+    #     }
 
-        # Determines next atoms that should be visited.
-        @next_atom_ids = (); # Resets value for the new ones to be
-                             # appended.
-        for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) ) {
-                push @next_atom_ids, $neighbour_atom_id;
-            }
-        }
-    }
+    #     # Determines next atoms that should be visited.
+    #     @next_atom_ids = (); # Resets value for the new ones to be
+    #                          # appended.
+    #     for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+    #         if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) ) {
+    #             push @next_atom_ids, $neighbour_atom_id;
+    #         }
+    #     }
+    # }
 
-    return \@allowed_angles;
+    # return \@allowed_angles;
 }
 
 #
