@@ -357,23 +357,18 @@ sub generate_library
         }
     }
 
-    # # Finds where CA of target residues are.
-    # my @target_ca_ids;
-    # for my $residue_unique_key ( @{ $residue_unique_keys } ) {
-    #     my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
-    #         split /,/sxm, $residue_unique_key;
-    #     my $atom_ca_id =
-    #         filter( { 'atom_site' => \%atom_site_no_hydrogens,
-    #                   'include' =>
-    #                   { 'label_atom_id' => [ 'CA' ],
-    #                     'label_seq_id' => [ $residue_id ],
-    #                     'label_asym_id' => [ $residue_chain ],
-    #                     'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-    #                     'label_alt_id' => [ $residue_alt ] },
-    #                   'data' => [ 'id' ],
-    #                   'is_list' => 1 } )->[0];
-    #     push @target_ca_ids, $atom_ca_id;
-    # }
+    # Finds where CA of target residues are.
+    my @target_ca_ids;
+    for my $residue_unique_key ( @{ $residue_unique_keys } ) {
+        my $residue_site =
+            filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1  );
+        my $atom_ca_id =
+            filter( { 'atom_site' => $residue_site,
+                      'include' => { 'label_atom_id' => [ 'CA' ] },
+                      'data' => [ 'id' ],
+                      'is_list' => 1 } )->[0];
+        push @target_ca_ids, $atom_ca_id;
+    }
 
     # # Creates the grid box that has edge length of sum of all bonds of the
     # # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
