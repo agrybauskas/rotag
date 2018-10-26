@@ -45,6 +45,7 @@ use BondProperties qw( hybridization
                        rotatable_bonds );
 use Multithreading qw( multithreading );
 use PDBxParser qw( create_pdbx_entry
+                   determine_residue_keys
                    filter
                    filter_by_unique_residue_key
                    unique_residue_key );
@@ -104,7 +105,7 @@ sub generate_pseudo
         my %angles =
             %{ all_dihedral(
                    filter_by_unique_residue_key( $atom_site,
-                                                 $residue_unique_key ) ) };
+                                                 $residue_unique_key, 1 ) ) };
 
         # Iterates through combinations of angles and evaluates conformational
         # model.
