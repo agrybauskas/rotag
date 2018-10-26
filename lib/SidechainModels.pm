@@ -10,10 +10,11 @@ use List::MoreUtils qw( uniq );
 
 use AlterMolecule qw( bond_torsion );
 use AtomProperties qw( sort_atom_names );
+use BondProperties qw( rotatable_bonds );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
-use BondProperties qw( rotatable_bonds );
-use PDBxParser qw( filter
+use PDBxParser qw( determine_residue_keys
+                   filter
                    filter_by_unique_residue_key );
 use Version qw( $VERSION );
 
@@ -38,18 +39,13 @@ sub rotation_only
 
     # Determines all residue ids present in atom site.
     my @residue_unique_keys =
-        uniq map { join q{,}, @{$_} }
-              @{ filter( { 'atom_site' => $atom_site,
-                           'data' => [ 'label_seq_id',
-                                       'label_asym_id',
-                                       'pdbx_PDB_model_num',
-                                       'label_alt_id' ] } ) };
+        @{ determine_residue_keys( $atom_site, { 'exclude_dot' => 1 } ) };
 
     # Iterates through target residues and their atom ids and assigns
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_unique_key ( @residue_unique_keys ) {
         my $residue_site =
-            filter_by_unique_residue_key( \%atom_site, $residue_unique_key );
+            filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
         my $rotatable_bonds = rotatable_bonds( $residue_site );
 
