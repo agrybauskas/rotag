@@ -355,35 +355,38 @@ sub generate_library
         } else {
             die 'Conformational model was not defined.';
         }
+
+        # Finds where CA of target residues are.
+        my @target_ca_ids;
+        for my $residue_unique_key ( @{ $residue_unique_keys } ) {
+            my $residue_site =
+                filter_by_unique_residue_key( $current_atom_site,
+                                              $residue_unique_key, 1 );
+            my $atom_ca_id =
+                filter( { 'atom_site' => $residue_site,
+                              'include' => { 'label_atom_id' => [ 'CA' ] },
+                              'data' => [ 'id' ],
+                              'is_list' => 1 } )->[0];
+            push @target_ca_ids, $atom_ca_id;
+        }
+
+
+        # Creates the grid box that has edge length of sum of all bonds of the
+        # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
+        # * (C=N) + (N-H).
+        # TODO: should consider using shorter distances, because bonds have limits
+        # on maximum bending and having shorter edge length reduces calculation
+        # time.
+        my ( $grid_box, $target_cell_idxs ) =
+            grid_box( $current_atom_site_no_H,
+                      $EDGE_LENGTH_INTERACTION,
+                      \@target_ca_ids,
+                      { 'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                          'label_entity_id', 'label_alt_id' ] });
+
+        my $neighbour_cells =
+            identify_neighbour_cells( $grid_box, $target_cell_idxs );
     }
-
-    # Finds where CA of target residues are.
-    my @target_ca_ids;
-    for my $residue_unique_key ( @{ $residue_unique_keys } ) {
-        my $residue_site =
-            filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1  );
-        my $atom_ca_id =
-            filter( { 'atom_site' => $residue_site,
-                      'include' => { 'label_atom_id' => [ 'CA' ] },
-                      'data' => [ 'id' ],
-                      'is_list' => 1 } )->[0];
-        push @target_ca_ids, $atom_ca_id;
-    }
-
-    # # Creates the grid box that has edge length of sum of all bonds of the
-    # # longest side-chain branch in arginine. Length: 3 * (C-C) + (C-N) + 2
-    # # * (C=N) + (N-H).
-    # # TODO: should consider using shorter distances, because bonds have limits
-    # # on maximum bending and having shorter edge length reduces calculation time.
-    # my ( $grid_box, $target_cell_idxs ) =
-    #     grid_box( \%atom_site_no_hydrogens,
-    #               $EDGE_LENGTH_INTERACTION,
-    #               \@target_ca_ids,
-    #               { 'attributes' => [ 'label_seq_id', 'label_asym_id',
-    #                                   'label_entity_id', 'label_alt_id' ] } );
-
-    # my $neighbour_cells =
-    #     identify_neighbour_cells( $grid_box, $target_cell_idxs );
 
     # for my $cell ( sort { $a cmp $b } keys %{ $target_cell_idxs } ) {
     #     for my $residue_unique_key ( @{ $target_cell_idxs->{$cell} } ) {
