@@ -205,7 +205,7 @@ sub generate_rotamer
 
     for my $residue_unique_key ( keys %{ $angle_values } ) {
         my $residue_site =
-            filter_by_unique_residue_key( \%atom_site, $residue_unique_key );
+            filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
         my $rotatable_bonds = rotatable_bonds( \%atom_site );
 
