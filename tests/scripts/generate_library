@@ -11,7 +11,7 @@ use PseudoAtoms qw( generate_library
 
 my ( $residue_id,
      $residue_chain,
-     $residue_entity,
+     $pdbx_model,
      $residue_alt,
      $conf_model,
      $small_angle,
@@ -40,10 +40,10 @@ $parameters->{'atom_site'} = $atom_site;
 
 $small_angle =~ s/pi/\$PI/g;
 
-my $rotamer_library =
+# my $rotamer_library =
     generate_library( { "atom_site" => $atom_site,
                         "residue_unique_keys" =>
-                            [ "$residue_id,$residue_chain,$residue_entity," .
+                            [ "$residue_id,$residue_chain,$pdbx_model," .
                               "$residue_alt" ],
                         "small_angle" => eval( $small_angle ),
                         "conf_model" => $conf_model,
@@ -53,22 +53,22 @@ my $rotamer_library =
                         "parameters" => $parameters,
                         "threads" => $threads } );
 
-for my $residue_unique_key ( keys %{ $rotamer_library } ) {
-    my $rotamer_id = 1;
-    for my $rotamer ( @{ $rotamer_library->{$residue_unique_key} } ) {
-        my %rotamer_site = %{ $atom_site };
-        replace_with_rotamer( \%rotamer_site,
-                              $residue_unique_key,
-                              $rotamer->{'angles'} );
-        to_pdbx( { 'atom_site' => \%rotamer_site,
-                   'data_name' =>
-                       "$rotamer_id:" .
-                       join( ';',
-                             map { "$_:" . sprintf( $SIG_FIGS,
-                                                    $rotamer->{'angles'}{$_} ) }
-                             sort keys %{ $rotamer->{'angles'} } ) . ';E:' .
-                       sprintf( $SIG_FIGS,
-                                $rotamer->{'potential_energy_value'} ) } );
-        $rotamer_id++;
-    }
-}
+# for my $residue_unique_key ( keys %{ $rotamer_library } ) {
+#     my $rotamer_id = 1;
+#     for my $rotamer ( @{ $rotamer_library->{$residue_unique_key} } ) {
+#         my %rotamer_site = %{ $atom_site };
+#         replace_with_rotamer( \%rotamer_site,
+#                               $residue_unique_key,
+#                               $rotamer->{'angles'} );
+#         to_pdbx( { 'atom_site' => \%rotamer_site,
+#                    'data_name' =>
+#                        "$rotamer_id:" .
+#                        join( ';',
+#                              map { "$_:" . sprintf( $SIG_FIGS,
+#                                                     $rotamer->{'angles'}{$_} ) }
+#                              sort keys %{ $rotamer->{'angles'} } ) . ';E:' .
+#                        sprintf( $SIG_FIGS,
+#                                 $rotamer->{'potential_energy_value'} ) } );
+#         $rotamer_id++;
+#     }
+# }
