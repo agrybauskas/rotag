@@ -420,69 +420,46 @@ sub generate_library
                              'parameters' => $parameters,
                              'threads' => $threads } ) };
 
+                # Then, re-checks if each atom of the rotamer obey energy
+                # cutoffs.
+                my ( $allowed_angles, $energy_sums ) =
+                    @{ multithreading(
+                           \&calc_full_atom_energy,
+                           { 'atom_site' => $current_atom_site_no_H,
+                             'residue_unique_key' => $residue_unique_key,
+                             'interaction_site' => \%interaction_site,
+                             'small_angle' => $small_angle,
+                             'potential_function' => $potential_function,
+                             'energy_cutoff_atom' => $energy_cutoff_atom,
+                             'is_hydrogen_explicit' => $is_hydrogen_explicit,
+                             'parameters' => $parameters },
+                           [ @allowed_angles ],
+                           $threads ) };
+
+                if( ! @{ $allowed_angles } ) {
+                    die "no possible rotamer solutions were detected.\n";
+                }
+
+
+                for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+                    my %angles =
+                        map { my $angle_id = $_ + 1;
+                              ( "chi$angle_id" => $allowed_angles->[$i][$_])}
+                            ( 0..$#{ $allowed_angles->[$i] } );
+                    my $rotamer_energy_sum = $energy_sums->[$i];
+                    if( defined $rotamer_energy_sum &&
+                        $rotamer_energy_sum <= $energy_cutoff_residue ) {
+                        push @{ $rotamer_library{"$residue_unique_key"} },
+                            { 'angles' => \%angles,
+                              'potential' => $interactions,
+                              'potential_energy_value' => $rotamer_energy_sum };
+                    }
+                }
             }
         }
     }
 
-    # for my $cell ( sort { $a cmp $b } keys %{ $target_cell_idxs } ) {
-    #     for my $residue_unique_key ( @{ $target_cell_idxs->{$cell} } ) {
-    #         # Because the change of side-chain position might impact the
-    #         # surrounding, iteraction site consists of only main chain atoms.
-    #         my %interaction_site =
-    #             %{ filter( { 'atom_site' => \%atom_site_no_hydrogens,
-    #                          'include' => { 'id' => $neighbour_cells->{$cell},
-    #                                         %{ $include_interactions } } } ) };
-
-    #         # First, checks angles by step-by-step adding atoms to sidechains.
-    #         # This is called growing side chain.
-    #         my @allowed_angles =
-    #             @{ calc_favourable_angles(
-    #                    { 'atom_site' => \%atom_site_no_hydrogens,
-    #                      'residue_unique_key' => $residue_unique_key,
-    #                      'interaction_site' => \%interaction_site,
-    #                      'small_angle' => $small_angle,
-    #                      'potential_function' => $potential_function,
-    #                      'energy_cutoff_atom' => $energy_cutoff_atom,
-    #                      'parameters' => $parameters,
-    #                      'threads' => $threads } ) };
-
-    #         # Then, re-checks if each atom of the rotamer obey energy cutoffs.
-    #         my ( $allowed_angles, $energy_sums ) =
-    #             @{ multithreading(
-    #                    \&calc_full_atom_energy,
-    #                    { 'atom_site' => \%atom_site_no_hydrogens,
-    #                      'residue_unique_key' => $residue_unique_key,
-    #                      'interaction_site' => \%interaction_site,
-    #                      'small_angle' => $small_angle,
-    #                      'potential_function' => $potential_function,
-    #                      'energy_cutoff_atom' => $energy_cutoff_atom,
-    #                      'is_hydrogen_explicit' => $is_hydrogen_explicit,
-    #                      'parameters' => $parameters },
-    #                     [ @allowed_angles ],
-    #                    $threads ) };
-
-    #         if( ! @{ $allowed_angles } ) {
-    #             die "no possible rotamer solutions were detected.\n";
-    #         }
-
-    #         for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
-    #             my %angles =
-    #                 map { my $angle_id = $_ + 1; ( "chi$angle_id" =>
-    #                                                   $allowed_angles->[$i][$_])}
-    #                     ( 0..$#{ $allowed_angles->[$i] } );
-    #             my $rotamer_energy_sum = $energy_sums->[$i];
-    #             if( defined $rotamer_energy_sum &&
-    #                 $rotamer_energy_sum <= $energy_cutoff_residue ) {
-    #                 push @{ $rotamer_library{"$residue_unique_key"} },
-    #                      { 'angles' => \%angles,
-    #                        'potential' => $interactions,
-    #                        'potential_energy_value' => $rotamer_energy_sum };
-    #             }
-    #         }
-    #     }
-    # }
-
-    # return \%rotamer_library;
+    return \%rotamer_library;
 }
 
 #
@@ -748,7 +725,7 @@ sub calc_full_atom_energy
         filter( { 'atom_site' => $atom_site,
                   'include' => { 'label_seq_id' => [ $residue_id ],
                                  'label_asym_id' => [ $residue_chain ],
-                                 'label_alt_id' => [ $residue_alt ],
+                                 'label_alt_id' => [ $residue_alt, '.' ],
                                  'pdbx_PDB_model_num' => [ $pdbx_model_num ] },
                   'exclude' => { 'type_symbol' => [ 'H' ] } } );
 
