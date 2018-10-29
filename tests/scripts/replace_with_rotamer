@@ -9,11 +9,10 @@ use PseudoAtoms qw( replace_with_rotamer );
 
 #
 # Unit test: PseudoAtoms::generate_rotamer
-#                    residue_id angle_value
-# Example: ./generate_pseudo 12 "chi0 0" structure.dump
+# Example: ./generate_pseudo '12,A,1,.' "chi0 0" structure.dump
 #
 
-my ( $residue_id, $angle_values, $pdbx_dump_file ) = @ARGV;
+my ( $residue_unique_key, $angle_values, $pdbx_dump_file ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -32,6 +31,6 @@ for my $angle_value ( keys %angle_values ) {
     $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
 }
 
-replace_with_rotamer( $atom_site, $residue_id, \%angle_values );
+replace_with_rotamer( $atom_site, $residue_unique_key, \%angle_values );
 
 to_pdbx( { "atom_site" => $atom_site } );
