@@ -81,11 +81,12 @@ our $VERSION = $VERSION;
 
 sub generate_pseudo
 {
-    my ( $atom_site,
-         $atom_specifier,
-         $angle_values,
-         $last_atom_id,
-         $alt_group_id ) = @_;
+    my ( $args ) = @_;
+    my ( $atom_site, $atom_specifier, $angle_values, $last_atom_id,
+         $alt_group_id ) =
+        ( $args->{'atom_site'}, $args->{'atom_specifier'},
+          $args->{'angle_values'}, $args->{'last_atom_id'},
+          $args->{'alt_group_id'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -234,15 +235,17 @@ sub generate_rotamer
 
             %rotamer_atom_site =
                 ( %rotamer_atom_site,
-                  %{ generate_pseudo( { ( %atom_site, %rotamer_atom_site ) },
-                                      { 'id' => [ $atom_id ] },
-                                      \%angles,
-                                      $last_atom_id,
-                                      ( $alt_group_id ne q{.} ?
-                                        $alt_group_id :
-                                        'X' ) ) } ); # Changes . to X, because
-                                                     # otherwise screws up
-                                                     # calculations.
+                  %{ generate_pseudo( {
+                         'atom_site' => { ( %atom_site, %rotamer_atom_site ) },
+                         'atom_specifier' => { 'id' => [ $atom_id ] },
+                         'angle_values' => \%angles,
+                         'last_atom_id' => $last_atom_id,
+                         'alt_group_id' =>
+                             ( $alt_group_id ne q{.} ?
+                               $alt_group_id :
+                               'X' ) } ) } ); # Changes . to X, because
+                                              # otherwise screws up
+                                              # calculations.
             $last_atom_id++;
         }
     }
@@ -640,9 +643,9 @@ sub calc_favourable_angle
                 0..$#{ $angles };
 
         my $pseudo_atom_site =
-            generate_pseudo( $atom_site,
-                             { 'id' => [ "$atom_id" ] },
-                             \%angles );
+            generate_pseudo( { 'atom_site' => $atom_site,
+                               'atom_specifier' => { 'id' => [ "$atom_id" ] },
+                               'angle_values' => \%angles } );
         my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
         my $pseudo_origin_id =
             $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
