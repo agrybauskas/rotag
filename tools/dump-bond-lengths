@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use autodie;
+use Data::Dumper;
+use Getopt::Long;
+Getopt::Long::Configure qw( gnu_getopt );
+
+use MoleculeProperties qw( %CONNECTIVITY );
+use PDBxParser qw( split_by );
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
+
+#*calculate-bond-lengths [options] file1 [file2, ...]
+#*    calculates bond lengths from cif files.
+#*
+#*USAGE:
+#*    calculate-bond-lengths input.cif > output.csv
+#*
+#*OPTIONS:
+#*    -v, --version
+#*        print version.
+
+GetOptions(
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or die 'Error in command line argument.';
+
+for my $pdbx_file ( @ARGV ) {
+    # Reads file path, stdin and '-' operator.
+    my $atom_site;
+    if( $pdbx_file ) {
+        $atom_site = obtain_atom_site( $pdbx_file );
+    } else {
+        die "Use command \"rotag_library --help\" in order to see the manual.\n";
+    }
+}

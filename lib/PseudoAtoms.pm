@@ -374,9 +374,9 @@ sub generate_library
                                               $residue_unique_key, 1 );
             my $atom_ca_id =
                 filter( { 'atom_site' => $residue_site,
-                              'include' => { 'label_atom_id' => [ 'CA' ] },
-                              'data' => [ 'id' ],
-                              'is_list' => 1 } )->[0];
+                          'include' => { 'label_atom_id' => [ 'CA' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
             push @target_ca_ids, $atom_ca_id;
         }
 
