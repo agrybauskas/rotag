@@ -49,6 +49,8 @@ sub rotation_only
 
         my $rotatable_bonds = rotatable_bonds( $residue_site );
 
+        if( ! %{ $rotatable_bonds } ) { next; }
+
         for my $atom_id ( keys %{ $residue_site }  ) {
             my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
                                $atom_site{"$atom_id"}{'Cartn_y'},
