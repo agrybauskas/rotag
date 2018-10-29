@@ -143,10 +143,10 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     # Splits atom site into groups by its uniqueness.
-    my $atom_site_groups = split_by( 'atom_site' => $atom_site,
-                                     'attributes' => [ 'pdbx_PDB_model_num',
-                                                       'label_alt_id' ],
-                                     'append_dot' => 1 );
+    my $atom_site_groups = split_by( { 'atom_site' => $atom_site,
+                                       'attributes' => [ 'pdbx_PDB_model_num',
+                                                         'label_alt_id' ],
+                                       'append_dot' => 1 } );
 
     my $rotamer_library;
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {

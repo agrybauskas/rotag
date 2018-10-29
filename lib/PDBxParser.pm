@@ -314,9 +314,9 @@ sub filter
 
 sub split_by
 {
-    my ( %args ) = @_;
+    my ( $args ) = @_;
     my ( $atom_site, $attributes, $append_dot ) =
-        ( $args{'atom_site'}, $args{'attributes'}, $args{'append_dot'} );
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];

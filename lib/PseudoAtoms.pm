@@ -326,9 +326,9 @@ sub generate_library
     my %rotamer_library;
 
     my $atom_site_groups =
-        split_by( 'atom_site' => $atom_site,
-                  'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
-                  'append_dot' => 1 );
+        split_by( { 'atom_site' => $atom_site,
+                    'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
+                    'append_dot' => 1  } );
 
     my %atom_sites;
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
