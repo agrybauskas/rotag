@@ -30,13 +30,15 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-$parameters =~ s/\s//g;
-$parameters = {
-    map { $_->[0] => $_->[1] }
-    map { [ split /=/sm, $_ ] }
-    split /,/sxm, $parameters
-};
-$parameters->{'atom_site'} = $atom_site;
+if( defined $parameters ) {
+    $parameters =~ s/\s//g;
+    $parameters = {
+        map { $_->[0] => $_->[1] }
+        map { [ split /=/sm, $_ ] }
+        split /,/sxm, $parameters
+    };
+    $parameters->{'atom_site'} = $atom_site;
+}
 
 $small_angle =~ s/pi/\$PI/g;
 

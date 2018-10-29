@@ -1,1 +1,391 @@
-# A placeholder for future data.
+data_1:chi1:0.000;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -55.744 -112.445 -5.689 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_2:chi1:0.331;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -55.406 -112.713 -5.888 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_3:chi1:0.661;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -54.985 -112.916 -5.971 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_4:chi1:0.992;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -54.527 -113.032 -5.930 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_5:chi1:1.323;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -54.081 -113.049 -5.769 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_6:chi1:1.653;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -53.696 -112.965 -5.505 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_7:chi1:1.984;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -53.413 -112.789 -5.167 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_8:chi1:2.315;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -53.263 -112.541 -4.792 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_9:chi1:2.646;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -53.262 -112.246 -4.420 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_10:chi1:2.976;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -53.410 -111.937 -4.092 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_11:chi1:3.307;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -53.692 -111.648 -3.843 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_12:chi1:3.638;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -54.076 -111.409 -3.700 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_13:chi1:3.968;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -54.522 -111.247 -3.679 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_14:chi1:4.960;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -55.740 -111.345 -4.302 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_15:chi1:5.291;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -55.960 -111.560 -4.663 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_16:chi1:5.622;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -56.037 -111.836 -5.042 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_17:chi1:5.952;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -55.962 -112.142 -5.396 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
