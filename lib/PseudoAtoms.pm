@@ -92,7 +92,7 @@ sub generate_pseudo
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
 
-    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
+    my %atom_site = %{ clone( $atom_site ) };
     my %pseudo_atom_site;
 
     my @atom_ids =
