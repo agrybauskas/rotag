@@ -8,8 +8,8 @@ use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( replace_with_rotamer );
 
 #
-# Unit test: PseudoAtoms::generate_rotamer
-# Example: ./generate_pseudo '12,A,1,.' "chi0 0" structure.dump
+# Unit test: PseudoAtoms::replace_with_rotamer
+# Example: ./replace_with_rotamer '12,A,1,.' "chi1 0" structure.dump
 #
 
 my ( $residue_unique_key, $angle_values, $pdbx_dump_file ) = @ARGV;

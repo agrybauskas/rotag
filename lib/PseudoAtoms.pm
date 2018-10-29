@@ -177,14 +177,14 @@ sub generate_pseudo
 #
 # Generates rotamers according to given angle values.
 # Input:
-#     $atom_site - atom site data structure (see PDBxParser);
-#     $angle_values - name and value of angles in hash form.
-#     $last_atom_id - last atom id for assigning new ids for pseudo atoms;
-#     $alt_group_id - alternative group id that is used to distinguish pseudo
-#     atoms;
-#     $otions->{'set_missing_angles_to_zero'} - if angles are unknown, they are
+#     $args->{'atom_site'} - atom site data structure (see PDBxParser);
+#     $args->{'angle_values'} - name and value of angles in hash form.
+#     $args->{'last_atom_id'} - last atom id for assigning new ids for pseudo atoms;
+#     $args->{'alt_group_id'} - alternative group id that is used to distinguish
+#     pseudo atoms;
+#     $args->{'set_missing_angles_to_zero'} - if angles are unknown, they are
 #     set to 0 rad;
-#     $options->{'keep_origin_id'} - keeps ids the same as original atom's. Very
+#     $args->{'keep_origin_id'} - keeps ids the same as original atom's. Very
 #     useful when replacing existing residues.
 # Output:
 #     %generated_rotamers - atom site data structure with additional rotamer
@@ -193,14 +193,17 @@ sub generate_pseudo
 
 sub generate_rotamer
 {
-    my ( $atom_site, $angle_values, $last_atom_id, $alt_group_id, $options ) = @_;
-    my ( $set_missing_angles_to_zero, $keep_origin_id ) =
-        ( $options->{'set_missing_angles_to_zero'},
-          $options->{'keep_origin_id'} );
+    my ( $args ) = @_;
+    my ( $atom_site, $angle_values, $last_atom_id, $alt_group_id,
+         $set_missing_angles_to_zero, $keep_origin_id ) =
+        ( $args->{'atom_site'}, $args->{'angle_values'}, $args->{'last_atom_id'},
+          $args->{'alt_group_id'}, $args->{'set_missing_angles_to_zero'},
+          $args->{'keep_origin_id'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
     $set_missing_angles_to_zero //= 0;
+    $keep_origin_id //= 0;
 
     my %atom_site = %{ $atom_site };
     my %rotamer_atom_site;
@@ -844,11 +847,11 @@ sub replace_with_rotamer
     my ( $atom_site, $residue_unique_key, $angle_values ) = @_;
 
     my $residue_site =
-        generate_rotamer( $atom_site,
-                          { $residue_unique_key => $angle_values  },
-                          undef, # TODO: move arguments to options.
-                          q{.},
-                          { 'set_missing_angles_to_zero' => 1 } );
+        generate_rotamer( { 'atom_site' => $atom_site,
+                            'angle_values' =>
+                                { $residue_unique_key => $angle_values  },
+                            'alt_group_id' => q{.},
+                            'set_missing_angles_to_zero' => 1 } );
 
     for my $residue_atom_id ( keys %{ $residue_site } ) {
         my $residue_origin_atom_id = $residue_site->{$residue_atom_id}
