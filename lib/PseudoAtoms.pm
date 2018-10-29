@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( add_hydrogens
+                     calc_favourable_angle
                      calc_favourable_angles
                      generate_library
                      generate_pseudo
