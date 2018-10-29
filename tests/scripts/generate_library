@@ -53,7 +53,7 @@ my $rotamer_library =
                         "parameters" => $parameters,
                         "threads" => $threads } );
 
-for my $residue_unique_key ( keys %{ $rotamer_library } ) {
+for my $residue_unique_key ( sort keys %{ $rotamer_library } ) {
     my $rotamer_id = 1;
     for my $rotamer ( @{ $rotamer_library->{$residue_unique_key} } ) {
         my %rotamer_site = %{ $atom_site };
