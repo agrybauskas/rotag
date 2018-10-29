@@ -7,7 +7,8 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( %CLEAR_HYBRIDIZATION
                      %CONNECTIVITY
                      %RESIDUE_ATOMS
-                     %PARTIAL_CHARGE);
+                     @ROTATABLE_RESIDUE_NAMES
+                     %PARTIAL_CHARGE );
 
 use Version qw( $VERSION );
 
@@ -1323,5 +1324,8 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
 );
+
+our @ROTATABLE_RESIDUE_NAMES =
+    qw( XAA SER ARG HIS LYS ASP GLU CYS VAL ILE LEU MET PHE TYR TRP THR ASN GLN );
 
 1;
