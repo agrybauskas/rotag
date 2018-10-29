@@ -244,9 +244,10 @@ sub generate_rotamer
                          'alt_group_id' =>
                              ( $alt_group_id ne q{.} ?
                                $alt_group_id :
-                               'X' ) } ) } ); # Changes . to X, because
+                               'X' ) } ) } ); # TODOL Changes . to X, because
                                               # otherwise screws up
-                                              # calculations.
+                                              # calculations, but better strategy
+                                              # should be chosen.
             $last_atom_id++;
         }
     }
@@ -850,17 +851,19 @@ sub replace_with_rotamer
 {
     my ( $atom_site, $residue_unique_key, $angle_values ) = @_;
 
+    my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
     my $residue_site =
         generate_rotamer( { 'atom_site' => $atom_site,
                             'angle_values' =>
                                 { $residue_unique_key => $angle_values  },
-                            'alt_group_id' => q{.},
+                            'alt_group_id' => 'X',
                             'set_missing_angles_to_zero' => 1 } );
 
     for my $residue_atom_id ( keys %{ $residue_site } ) {
         my $residue_origin_atom_id = $residue_site->{$residue_atom_id}
                                                     {'origin_atom_id'};
         $residue_site->{$residue_atom_id}{'id'} = $residue_origin_atom_id;
+        $residue_site->{$residue_atom_id}{'label_alt_id'} = $alt_group_id;
         $residue_site->{$residue_atom_id}{'connections'} =
             $atom_site->{$residue_origin_atom_id}{'connections'};
         $atom_site->{$residue_origin_atom_id} =
