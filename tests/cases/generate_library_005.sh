@@ -2,7 +2,7 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/aspartic-acid-001.dump
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/aspartic-acid-rotation-only-001.dump
 conf_model="rotation_only"
 potential="composite"
 energy_cutoff_atom=1.0

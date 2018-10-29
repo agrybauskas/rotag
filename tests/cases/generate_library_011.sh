@@ -2,7 +2,7 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/glutamine-H-002.dump
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/glutamine-H-rotation-only-002.dump
 conf_model="rotation_only"
 potential="composite"
 energy_cutoff_atom=70.0
