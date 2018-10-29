@@ -304,9 +304,9 @@ sub filter
 #
 # Splits up atom site to different groups by specified attributes.
 # Input:
-#     $atom_site - atom site data structure;
-#     $attributes - list of attributes that atom site will be split by;
-#     $options->{'append_dot'} - atoms that has 'label_alt_id' eq '.' to
+#     $args->{atom_site} - atom site data structure;
+#     $args->{attributes} - list of attributes that atom site will be split by;
+#     $args->{append_dot} - atoms that has 'label_alt_id' eq '.' to
 #     corresponding groups.
 # Output:
 #     %split_groups - hash of atom site data structures.

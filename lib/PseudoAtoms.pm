@@ -63,17 +63,18 @@ our $VERSION = $VERSION;
 # Generates pseudo-atoms from side chain models that are written in list of
 # analytical matrices.
 # Input:
-#     $atom_site - atom site data structure (see PDBxParser). Must have any
-#     sidechain model function applied to it (see SidechainModels.pm);
-#     $atom_specifier - hash of hashes for selecting atoms by attributes (see
-#     PDBxParser.pm);
-#     $angle_values - hash of arrays that describe possible values of dihedral
-#     angles:
+#     $args->{atom_site} - atom site data structure (see PDBxParser). Must have
+#     any sidechain model function applied to it (see SidechainModels.pm);
+#     $args->{atom_specifier} - hash of hashes for selecting atoms by attributes
+#     (see PDBxParser.pm);
+#     $args->{angle_values} - hash of arrays that describe possible values of
+#     dihedral angles:
 #     Ex.: { 'chi1' => [ 0, 0.4, 1.5, 2.0 ],
 #            'chi2' => [ 0, 2 ] };
-#     $last_atom_id - last atom id for assigning new ids for pseudo atoms;
-#     $alt_group_id - alternative group id that is used to distinguish pseudo
-#     atoms. Very useful when generating rotamers.
+#     $args->{last_atom_id} - last atom id for assigning new ids for pseud
+#     atoms;
+#     $args->{alt_group_id} - alternative group id that is used to distinguish
+#     pseudo atoms. Very useful when generating rotamers.
 # Output:
 #     $pseudo_atom_site - atom site data structure for pseudo-atoms with
 #     additional 'conformation' attribute.
