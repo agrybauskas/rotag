@@ -197,20 +197,25 @@ sub generate_rotamer
 {
     my ( $args ) = @_;
     my ( $atom_site, $angle_values, $last_atom_id, $alt_group_id,
-         $set_missing_angles_to_zero, $keep_origin_id ) =
+         $set_missing_angles_to_zero, $keep_origin_id, $keep_origin_alt_id ) =
         ( $args->{'atom_site'}, $args->{'angle_values'}, $args->{'last_atom_id'},
-          $args->{'alt_group_id'}, $args->{'set_missing_angles_to_zero'},
-          $args->{'keep_origin_id'} );
+          $args->{'last_atom_id'}, $args->{'set_missing_angles_to_zero'},
+          $args->{'keep_origin_id'}, $args->{'keep_origin_alt_id'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
     $set_missing_angles_to_zero //= 0;
     $keep_origin_id //= 0;
+    $keep_origin_alt_id //= 0; # Has higher priority than $alt_group_id.
 
-    my %atom_site = %{ $atom_site };
+    my %atom_site = %{ clone( $atom_site ) };
     my %rotamer_atom_site;
 
     for my $residue_unique_key ( keys %{ $angle_values } ) {
+        my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt_id ) =
+            split /,/, $residue_unique_key;
+        $residue_alt_id =
+            $keep_origin_alt_id ? $residue_alt_id : $alt_group_id;
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
@@ -241,20 +246,8 @@ sub generate_rotamer
                          'atom_specifier' => { 'id' => [ $atom_id ] },
                          'angle_values' => \%angles,
                          'last_atom_id' => $last_atom_id,
-                         'alt_group_id' =>
-                             ( $alt_group_id ne q{.} ?
-                               $alt_group_id :
-                               'X' ) } ) } ); # TODOL Changes . to X, because
-                                              # otherwise screws up
-                                              # calculations, but better strategy
-                                              # should be chosen.
+                         'alt_group_id' => $residue_alt_id } ) } );
             $last_atom_id++;
-        }
-    }
-
-    if( $alt_group_id eq q{.} ) {
-        for my $atom_id ( keys %rotamer_atom_site ) {
-            $rotamer_atom_site{"$atom_id"}{'label_alt_id'} = q{.};
         }
     }
 
@@ -856,7 +849,8 @@ sub replace_with_rotamer
         generate_rotamer( { 'atom_site' => $atom_site,
                             'angle_values' =>
                                 { $residue_unique_key => $angle_values  },
-                            'alt_group_id' => 'X',
+                            'alt_group_id' => 'X', # HACK: $keep_origin_alt_id
+                                                   # should be used.
                             'set_missing_angles_to_zero' => 1 } );
 
     for my $residue_atom_id ( keys %{ $residue_site } ) {
