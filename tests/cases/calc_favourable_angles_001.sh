@@ -2,12 +2,12 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/aspartic-acid-rotation-only-001.dump
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.dump
 potential="hard_sphere"
-interaction_specifier="atomname N,C,CA,O"
+interaction_specifier="label_atom_id N,C,CA,O"
 energy_cutoff_atom=0
 energy_cutoff_residue="Inf"
-residue_id="219"
+residue_id="18"
 residue_chain="A"
 pdbx_model_num="1"
 residue_alt="."
