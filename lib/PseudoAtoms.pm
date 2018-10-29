@@ -214,7 +214,7 @@ sub generate_rotamer
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
-        my $rotatable_bonds = rotatable_bonds( \%atom_site );
+        my $rotatable_bonds = rotatable_bonds( $residue_site );
 
         for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
             if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
