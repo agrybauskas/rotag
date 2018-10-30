@@ -13,10 +13,14 @@ use List::MoreUtils qw( any );
 
 use AtomProperties qw( @MAINCHAIN_NAMES );
 use PDBxParser qw( filter
+                   filter_by_unique_residue_key
                    mark_selection
                    obtain_atom_site
                    obtain_pdbx_loop
-                   to_pdbx );
+                   pdbx_loop_unique
+                   split_by
+                   to_pdbx
+                   unique_residue_key );
 use PseudoAtoms qw( add_hydrogens
                     generate_pseudo );
 use SidechainModels qw( rotation_only  );
@@ -102,57 +106,54 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         # Generates data structure from $pdbx_loops.
-        # TODO: maybe generate general data structure that can be created through
-        # unique id.
         my $current_attributes =
             $pdbx_loops->{'_[local]_rotamer_angle'}{'attributes'};
         my $data = $pdbx_loops->{'_[local]_rotamer_angle'}{'data'};
 
-        my %attribute_pos;
-        for( my $i = 0; $i <= $#{ $current_attributes }; $i++ ) {
-            if( any { $current_attributes->[$i] eq $_ } @attribute_list ) {
-                $attribute_pos{$current_attributes->[$i]} = $i;
+        my $pdbx_loop_unique = pdbx_loop_unique( $pdbx_loops, [ 'id' ] );
+        my $pdbx_loop_split_groups =
+            # TODO: 'atom_site' should be changed to 'loop_site' in the future.
+            split_by( { 'atom_site' => $pdbx_loop_unique } );
+
+        my %rotamer_angles;
+        for my $residue_unique_key ( sort keys %{ $pdbx_loop_split_groups } ) {
+            my $residue_site =
+                filter_by_unique_residue_key( $selected_atom_site,
+                                              $residue_unique_key, 1 );
+
+            # Generates rotational model.
+            rotation_only( $residue_site );
+
+            for my $id ( sort { $a <=> $b }
+                             @{$pdbx_loop_split_groups->{$residue_unique_key} }){
+                my $rotamer_id = $pdbx_loop_unique->{$id}{'rotamer_id'};
+                my $angle_name = $pdbx_loop_unique->{$id}{'type'};
+                my $angle_value = $pdbx_loop_unique->{$id}{'value'};
+                $rotamer_angles{$residue_unique_key}
+                               {"$rotamer_id"}
+                               {$angle_name} = [ $angle_value ];
             }
         }
 
-        my %rotamer_angles;
-        for(my $i = 0; $i <= $#{ $data }; $i = $i + $#{ $current_attributes }+1){
-            my $residue_unique_key =
-                join q{,},
-                     ( $data->[$i+$attribute_pos{'label_seq_id'}],
-                       $data->[$i+$attribute_pos{'label_comp_id'}],
-                       $data->[$i+$attribute_pos{'label_entity_id'}],
-                       $data->[$i+$attribute_pos{'label_alt_id'}] );
-            $rotamer_angles{$residue_unique_key}
-                           {$data->[$i+$attribute_pos{'rotamer_id'}]}
-                           {$data->[$i+$attribute_pos{'type'}]} =
-                [ $data->[$i+$attribute_pos{'value'}] ];
-        }
-
-        rotation_only( $selected_atom_site ); # Generates rotational model.
-
-        my $last_atom_id = max( keys %{ $atom_site } );
         my %rotamer_atom_site;
+        my $last_atom_id = max( keys %{ $atom_site } );
         for my $atom_id ( @{ $target_atom_ids } ) {
             my $residue_unique_key =
-                join q{,}, ( $selected_atom_site->{$atom_id}{'label_seq_id'},
-                             $selected_atom_site->{$atom_id}{'label_comp_id'},
-                             $selected_atom_site->{$atom_id}{'label_entity_id'},
-                             $selected_atom_site->{$atom_id}{'label_alt_id'} );
-            my $alt_group_id = 1;
-            for my $rotamer_id ( sort keys %{ $rotamer_angles
-                                                  {$residue_unique_key} } ){
+                unique_residue_key( $selected_atom_site->{$atom_id} );
+            for my $rotamer_id ( sort keys %{ $rotamer_angles{$residue_unique_key} } ){
                 my $rotamer_angles =
                     $rotamer_angles{$residue_unique_key}{$rotamer_id};
                 %rotamer_atom_site =
-                  ( %rotamer_atom_site,
-                      %{ generate_pseudo( $selected_atom_site,
-                                          { 'id' => [ $atom_id ] },
-                                          $rotamer_angles,
-                                          $last_atom_id,
-                                          $alt_group_id ) } );
+                    ( %rotamer_atom_site,
+                      %{ generate_pseudo(
+                             { 'atom_site' => $selected_atom_site,
+                               'atom_specifier' => { 'id' => [ $atom_id ] },
+                               'angle_values' => $rotamer_angles,
+                               'last_atom_id' => $last_atom_id,
+                                # TODO: check if it is a good idea to have
+                                # $rotamer_id as 'label_alt_id'.
+                               'alt_group_id' => $rotamer_id } ) } );
                 $last_atom_id++;
-                $alt_group_id++;
             }
         }
 
