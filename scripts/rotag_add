@@ -169,11 +169,25 @@ for my $pdbx_file ( @ARGV ) {
                             { 'target' => [ keys %{ $selected_atom_site } ] } );
         }
 
+        my $atom_site_split_groups =
+            split_by({ 'atom_site' => $selected_atom_site, 'append_dot' => 1 });
+
+        my %atom_site;
+        my $last_atom_id = max( keys %{ $selected_atom_site } );
+        for my $residue_unique_key ( sort keys %{ $atom_site_split_groups } ) {
+            my $residue_site =
+                filter_by_unique_residue_key( $selected_atom_site,
+                                              $residue_unique_key, 1 );
+            my $hydrogen_site =
+                add_hydrogens( $residue_site,
+                               { 'last_atom_id' => $last_atom_id,
+                                 'use_origins_alt_group_id' => 1 } );
+            %atom_site = ( %atom_site, %{ $hydrogen_site } );
+            $last_atom_id = max( keys %{ $hydrogen_site } );
+        }
+
         # Prints out cif.
-        to_pdbx( { 'atom_site' =>
-                   { %{ $selected_atom_site },
-                     %{ add_hydrogens( $selected_atom_site,
-                                       { 'use_origins_alt_group_id' => 1 } ) } },
+        to_pdbx( { 'atom_site' => { %{ $selected_atom_site }, %atom_site },
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } else {
         parse_errors(

@@ -895,12 +895,14 @@ sub add_hydrogens
 
     my ( $add_only_clear_positions, $use_existing_connections,
          $use_existing_hybridizations, $reference_atom_site,
-         $exclude_by_atom_name, $alt_group_id, $use_origins_alt_group_id ) =
+         $exclude_by_atom_name, $last_atom_id, $alt_group_id,
+         $use_origins_alt_group_id ) =
         ( $options->{'add_only_clear_positions'},
           $options->{'use_existing_connections'},
           $options->{'use_existing_hybridizations'},
           $options->{'reference_atom_site'},
           $options->{'exclude_by_atom_name'},
+          $options->{'last_atom_id'},
           $options->{'alt_group_id'},
           $options->{'use_origins_alt_group_id'}, );
 
@@ -919,7 +921,7 @@ sub add_hydrogens
     if( ! $use_existing_hybridizations ) { hybridization( \%atom_site ) };
 
     my %hydrogen_site;
-    my $last_atom_id = max( keys %{ $atom_site } );
+    $last_atom_id //= max( keys %{ $atom_site } );
 
     for my $atom_id ( sort { $a <=> $b } keys %atom_site ) {
         my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
