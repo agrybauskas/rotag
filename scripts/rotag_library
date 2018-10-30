@@ -143,7 +143,7 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     # Splits atom site into groups by its uniqueness.
-    my $atom_site_groups = split_by( { 'atom_site' => $atom_site,
+    my $atom_site_groups = split_by( { 'atom_site' => $selected_atom_site,
                                        'attributes' => [ 'pdbx_PDB_model_num',
                                                          'label_alt_id' ],
                                        'append_dot' => 1 } );
@@ -155,16 +155,20 @@ for my $pdbx_file ( @ARGV ) {
                       'include' =>
                           { 'id' =>
                                 $atom_site_groups->{$atom_site_identifier} } } );
+        my $current_target_site =
+            filter( { 'atom_site' => $current_atom_site,
+                      'include' => { '[local]_selection_state' => [ 'T' ] } } );
+
         my $residue_unique_key =
-            determine_residue_keys( $current_atom_site,
-                                    { 'exclude_dot' => 1 } )->[0];
+            determine_residue_keys( $current_target_site,
+                                    { 'exclude_dot' => 1 } );
 
         # Starts generating rotamer library.
         eval {
             $rotamer_library =
                 generate_library(
                     { 'atom_site' => $current_atom_site,
-                      'residue_unique_keys' => [ $residue_unique_key ],
+                      'residue_unique_keys' => $residue_unique_key,
                       'small_angle' => (
                           defined $small_angle_step ?
                           $small_angle_step :
