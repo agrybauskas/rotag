@@ -1,0 +1,24 @@
+data_testing
+#
+loop_
+_[local]_dihedral_angle.id
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.label_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.label_entity_id
+_[local]_dihedral_angle.label_alt_id
+_[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
+_[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
+_[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
+_[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_4_id
+_[local]_dihedral_angle.type
+_[local]_dihedral_angle.value
+_[local]_dihedral_angle.units
+1 XAA 18 A 1 A XA 3 CA 1 CB 2 CG 6 chi1 -112.802 degrees
+2 XAA 18 A 1 B XA 3 CA 1 CB 2 CG 7 chi1 -112.802 degrees
+3 XAA 18 A 2 . XA 11 CA 8 CB 9 CG 10 chi1 -112.802 degrees
+#
