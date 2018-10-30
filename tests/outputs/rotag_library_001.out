@@ -27,7 +27,7 @@ _[local]_rotamer_angle.rotamer_id
 _[local]_rotamer_angle.label_seq_id
 _[local]_rotamer_angle.label_comp_id
 _[local]_rotamer_angle.label_asym_id
-_[local]_rotamer_angle.label_entity_id
+_[local]_rotamer_angle.pdbx_PDB_model_num
 _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
