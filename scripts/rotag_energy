@@ -186,10 +186,17 @@ for my $pdbx_file ( @ARGV ) {
                                        $atom_site_groups->{$atom_site_identifier}
                                  } } ) );
 
+        # Replace every alt id to one in order to determine which calculation
+        # calculated what atom.
+        my ( undef, $current_alt_id ) = split /,/, $atom_site_identifier;
+        for my $atom_id ( keys %{ $current_atom_site } ) {
+            $current_atom_site->{$atom_id}{'label_alt_id'} = $current_alt_id;
+        }
+
         # Adds hydrogens for calculations where h_bond might be present.
         if( $interactions eq 'composite' || $interactions eq 'h_bond' ) {
             my $current_atom_site_w_H =
-                clone( { %{ $atom_site },
+                clone( { %{ $current_atom_site },
                          %{ add_hydrogens( $current_atom_site,
                                            { 'add_only_clear_positions' => 1 } )}
                        } );
@@ -210,8 +217,7 @@ for my $pdbx_file ( @ARGV ) {
         my ( $grid_box, $target_cells ) =
             grid_box( $current_atom_site, undef, $target_atom_ids );
 
-        my $neighbour_cells =
-            identify_neighbour_cells( $grid_box, $target_cells );
+        my $neighbour_cells = identify_neighbour_cells($grid_box, $target_cells);
 
         my $potential_function = $potential_functions{$interactions};
 
@@ -228,7 +234,7 @@ for my $pdbx_file ( @ARGV ) {
                 my ( $atom_symbol, $atom_name,
                      $atom_residue_id, $atom_residue_name,
                      $atom_chain, $atom_entity, $atom_alt ) =
-                         map { $selected_atom_site->{$atom_id}{$_} }
+                         map { $current_atom_site->{$atom_id}{$_} }
                              qw( type_symbol label_atom_id label_seq_id
                                  label_comp_id label_asym_id label_entity_id
                                  label_alt_id );
@@ -251,7 +257,7 @@ for my $pdbx_file ( @ARGV ) {
                         my ( $neighbour_symbol, $neighbour_name,
                              $neighbour_residue_id, $neighbour_residue_name,
                              $neighbour_chain, $neighbour_entity, $neighbour_alt ) =
-                            map { $selected_atom_site->{$neighbour_atom_id}{$_} }
+                            map { $current_atom_site->{$neighbour_atom_id}{$_} }
                                 qw( type_symbol label_atom_id label_seq_id
                                     label_comp_id label_asym_id label_entity_id
                                     label_alt_id );
@@ -327,7 +333,7 @@ for my $pdbx_file ( @ARGV ) {
 
                 if( $do_decompose && ! $do_rotamer ) {
                     for my $interaction (
-                        grep { $_ ne 'composite' } sort keys %potential_energy ) {
+                        grep { $_ ne 'composite' } sort keys %potential_energy ){
                         push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
                              $calculation_id, $atom_id, $atom_symbol, $atom_name,
                              $atom_residue_id, $atom_residue_name, $atom_chain,

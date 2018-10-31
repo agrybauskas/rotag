@@ -12,10 +12,26 @@ _[local]_energy.label_entity_id
 _[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
-1 148 C CA 18 SER A 1 . h_bond 0.000
-2 151 C CB 18 SER A 1 . h_bond 0.000
-3 152 O OG 18 SER A 1 . h_bond -2.226
-4 147 N N 18 SER A 1 . h_bond -1.862
-5 149 C C 18 SER A 1 . h_bond 0.000
-6 150 O O 18 SER A 1 . h_bond 0.000
+1 2165 N N 315 ARG A 1 . h_bond -0.571
+2 2166 C CA 315 ARG A 1 . h_bond 0.000
+3 2167 C C 315 ARG A 1 . h_bond 0.000
+4 2168 O O 315 ARG A 1 . h_bond -0.571
+5 2169 C CB 315 ARG A 1 A h_bond 0.000
+6 2173 C CD 315 ARG A 1 A h_bond 0.000
+7 2175 N NE 315 ARG A 1 A h_bond 0.000
+8 2171 C CG 315 ARG A 1 A h_bond 0.000
+9 2177 C CZ 315 ARG A 1 A h_bond 0.000
+10 2181 N NH2 315 ARG A 1 A h_bond 0.000
+11 2179 N NH1 315 ARG A 1 A h_bond 0.000
+12 2165 N N 315 ARG A 1 . h_bond -0.571
+13 2166 C CA 315 ARG A 1 . h_bond 0.000
+14 2167 C C 315 ARG A 1 . h_bond 0.000
+15 2168 O O 315 ARG A 1 . h_bond -0.571
+16 2170 C CB 315 ARG A 1 B h_bond 0.000
+17 2174 C CD 315 ARG A 1 B h_bond 0.000
+18 2176 N NE 315 ARG A 1 B h_bond 0.000
+19 2172 C CG 315 ARG A 1 B h_bond 0.000
+20 2178 C CZ 315 ARG A 1 B h_bond 0.000
+21 2182 N NH2 315 ARG A 1 B h_bond 0.000
+22 2180 N NH1 315 ARG A 1 B h_bond 0.000
 #
