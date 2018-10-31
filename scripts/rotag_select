@@ -38,6 +38,8 @@ our $VERSION = $VERSION;
 #*            resid     - residue id number (_atom_site.label_seq_id);
 #*            resname   - residue name      (_atom_site.label_comp_id);
 #*            chain     - chain name        (_atom_site.label_asym_id);
+#*            altid     - alt atom id       (_atom_site.label_alt_id);
+#*            model     - pdbx model num    (_atom_site.pdbx_PDB_model_num);
 #*            mainchain - mainchain atoms;
 #*            sidechain - sidechain atoms;
 #*            target    - target atoms (--select uses --target atoms and --target

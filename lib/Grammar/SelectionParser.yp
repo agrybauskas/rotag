@@ -242,6 +242,34 @@ exp
                       'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
                       'is_list' => 1 } );
         }
+    | 'altid' str_ope
+        {
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'label_alt_id' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
+        }
+    | 'altid' num_ope
+        {
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'label_alt_id' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
+        }
+    | 'model' str_ope
+        {
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
+        }
+    | 'model' num_ope
+        {
+            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+                      'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                      'is_list' => 1 } );
+        }
 ;
 
 num_ope
@@ -286,6 +314,10 @@ sub lexer
             return ( 'atomname', $1 );
         } elsif(s/^(atomtype)//) {
             return ( 'atomtype', $1 );
+        } elsif(s/^(altid)//) {
+            return ( 'altid', $1 );
+        } elsif(s/^(model)//) {
+            return ( 'model', $1 );
         } elsif(s/^(around)//) {
             return ( 'around', $1 );
         } elsif(s/^(rand)//) {
