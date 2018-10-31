@@ -135,8 +135,8 @@ sub replace_with_moiety
     # Then generates transformation matrix that will align moiety atoms with
     # target atoms.
     my $residue_site =
-        filter_by_unique_residue_key( $atom_site, $unique_residue_key );
-    my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+        filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
+    my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
         split /,/smx, $unique_residue_key;
 
     my @sidechain_ids =
@@ -202,7 +202,7 @@ sub replace_with_moiety
         $moiety_atom->{'id'} = $last_atom_id;
         $moiety_atom->{'label_seq_id'} = $residue_id;
         $moiety_atom->{'label_asym_id'} = $residue_chain;
-        $moiety_atom->{'label_entity_id'} = $residue_entity;
+        $moiety_atom->{'pdbx_PDB_model_num'} = $pdbx_model;
         $moiety_atom->{'label_alt_id'} = $residue_alt;
         $moiety_atom->{'Cartn_x'}= sprintf $SIG_FIGS, $transf_atom_coord->[0][0];
         $moiety_atom->{'Cartn_y'}= sprintf $SIG_FIGS, $transf_atom_coord->[1][0];
