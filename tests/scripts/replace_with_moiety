@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Constants qw( $PI );
+use PDBxParser qw( to_pdbx );
+use Moieties qw( replace_with_moiety );
+
+#
+# Unit test: Moieties::replace_with_moiety
+# Example: ./replace_with_moiety '12,A,1,.' 'SER' structure.dump
+#
+
+my ( $residue_unique_key, $moiety, $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+replace_with_moiety( $atom_site, $residue_unique_key, $moiety );
+
+to_pdbx( { 'atom_site' => $atom_site } );
