@@ -33,7 +33,7 @@ our $VERSION = $VERSION;
 #*            resname   - residue name      (_atom_site.label_comp_id);
 #*            chain     - chain name        (_atom_site.label_asym_id);
 #*            alt       - disorder          (_atom_site.label_alt_id);
-#*            entity    - entity id         (_atom_site.label_entity_id);
+#*            model     - entity id         (_atom_site.pdbx_PDB_model_num);
 #*            group     - selection group   (_atom_site.[local]_selection_group).
 #*    -n, --basename <str>
 #*        basename of the output file.
@@ -69,8 +69,8 @@ GetOptions(
 my %attribute_equivalent = (
     'atomid' => 'id', 'atomname' => 'label_atom_id', 'atomtype' => 'type_symbol',
     'resid' =>  'label_seq_id', 'resname' => 'label_comp_id',
-    'chain' => 'label_asym_id', 'alt' => 'label_alt_id',
-    'entity' => 'label_entity_id', 'group' => '[local]_selection_group'
+    'chain' => 'label_asym_id', 'altid' => 'label_alt_id',
+    'model' => 'pdbx_PDB_model_num', 'group' => '[local]_selection_group'
 );
 
 # ----------------------------------- Main ------------------------------------ #
