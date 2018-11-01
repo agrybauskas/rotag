@@ -129,7 +129,7 @@ for my $pdbx_file ( @ARGV ) {
     } else {
         $pdbx_loops{'_[local]_dihedral_angle'}{'attributes'} =
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
-              'label_entity_id', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
+              'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
               'atom_2_id', 'label_atom_2_id', 'atom_3_id', 'label_atom_3_id',
               'atom_4_id', 'label_atom_4_id', 'type', 'value', 'units' ];
 
