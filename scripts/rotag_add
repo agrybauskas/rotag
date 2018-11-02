@@ -106,10 +106,6 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         # Generates data structure from $pdbx_loops.
-        my $current_attributes =
-            $pdbx_loops->{'_[local]_rotamer_angle'}{'attributes'};
-        my $data = $pdbx_loops->{'_[local]_rotamer_angle'}{'data'};
-
         my $pdbx_loop_unique = pdbx_loop_unique( $pdbx_loops, [ 'id' ] );
         my $pdbx_loop_split_groups =
             # TODO: 'atom_site' should be changed to 'loop_site' in the future.
@@ -159,8 +155,7 @@ for my $pdbx_file ( @ARGV ) {
 
         # Prints out cif.
         to_pdbx( { 'atom_site' => { %{ $atom_site }, %rotamer_atom_site },
-                   'add_atom_attributes' => [ '[local]_selection_state' ],
-                   'pdbx_loops' => $pdbx_loops } );
+                   'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $selected_atom_site } ) {
