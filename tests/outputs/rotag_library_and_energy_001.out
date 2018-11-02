@@ -1,1 +1,12 @@
-# A placeholder for future data.
+data_testing
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.label_seq_id
+_[local]_rotamer_energy.label_asym_id
+_[local]_rotamer_energy.label_entity_id
+_[local]_rotamer_energy.label_alt_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 18 A 1 . composite -0.206
+#
