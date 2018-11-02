@@ -82,11 +82,11 @@ for( my $i = 0; $i <= $#mutations; $i++ ) {
     if( @angles ) {
         my $angles;
         if( $in_degrees ) {
-            $angles = { map { ( $_->[0], [ $_->[1] * $PI / 180.0 ] ) }
+            $angles = { map { ( $_->[0], $_->[1] * $PI / 180.0 ) }
                         map { [ split /=/ ] }
                         split /,/, $angles[$i] };
         } else {
-            $angles = { map { ( $_->[0], [ $_->[1] ] ) }
+            $angles = { map { ( $_->[0], $_->[1] ) }
                         map { [ split /=/ ] }
                         split /,/, $angles[$i] };
         }
