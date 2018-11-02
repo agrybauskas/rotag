@@ -51,7 +51,7 @@ my $do_repeat = 0;
 
 GetOptions(
     'mutate|m=s' => \$mutations,
-    'angles|a=s' => \$mutations,
+    'angles|a=s' => \$angles,
     'radians|r=s' => sub { $in_degrees = 0; },
     'repeat|R' => sub { $do_repeat = 1; },
     'help|h' => sub {
@@ -67,6 +67,27 @@ GetOptions(
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
 ) or die 'Error in command line argument.';
+
+my @mutations;
+my @angles;
+$mutations =~ s/\s//smxg;
+$angles =~ s/\s//smxg;
+@mutations = split q{;}, $mutations;
+@angles = split q{;}, $angles;
+
+for( my $i = 0; $i <= $#mutations; $i++ ) {
+    my $mutation_amino_acid = $mutations[$i];
+    if( @angles ) {
+        my $angles = { map { ( $_->[0], $_->[1]) }
+                       map { [ split /=/ ] }
+                       split /,/, $angles[$i] };
+        $mutations[$i] = { 'amino_acid' => $mutation_amino_acid,
+                           'angles'     => $angles };
+    } else {
+        $mutations[$i] = { 'amino_acid' => $mutation_amino_acid,
+                           'angles'     => {} };
+    }
+}
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -90,32 +111,29 @@ for my $pdbx_file ( @ARGV ) {
                            'data' => [ '[local]_selection_group' ],
                            'is_list' => 1 } ) } );
 
-    if( ! @group_ids ) {
-        die "No residues were selected.\n";
-    }
+    # if( ! @group_ids ) {
+    #     die "No residues were selected.\n";
+    # }
 
-    $mutations =~ s/\s//smxg;
-    my @mutations = split q{;}, $mutations;
+    # if( @mutations ) {
+    #     for( my $i = 0; $i <= $#mutations; $i++ ) {
+    #         my $ca_atom_id =
+    #             filter( { 'atom_site' => $selected_atom_site,
+    #                       'include' =>
+    #                           { 'label_atom_id' => [ 'CA' ],
+    #                             '[local]_selection_group' => [ $group_ids[$i] ]},
+    #                       'data' => [ 'id' ],
+    #                       'is_list' => 1 } )->[0];
+    #         my $unique_residue_key =
+    #             unique_residue_key( $selected_atom_site->{$ca_atom_id} );
 
-    if( @mutations ) {
-        for( my $i = 0; $i <= $#mutations; $i++ ) {
-            my $ca_atom_id =
-                filter( { 'atom_site' => $selected_atom_site,
-                          'include' =>
-                              { 'label_atom_id' => [ 'CA' ],
-                                '[local]_selection_group' => [ $group_ids[$i] ]},
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $unique_residue_key =
-                unique_residue_key( $selected_atom_site->{$ca_atom_id} );
+    #         replace_with_moiety( $selected_atom_site,
+    #                              $unique_residue_key,
+    #                              $mutations[$i] );
 
-            replace_with_moiety( $selected_atom_site,
-                                 $unique_residue_key,
-                                 $mutations[$i] );
-
-            to_pdbx( { 'atom_site' => $selected_atom_site } );
-        }
-    } else {
-        die "No mutations were specified.\n"
-    }
+    #         to_pdbx( { 'atom_site' => $selected_atom_site } );
+    #     }
+    # } else {
+    #     die "No mutations were specified.\n"
+    # }
 }
