@@ -25,23 +25,35 @@ our $VERSION = $VERSION;
 #*USAGE:
 #*    rotag_mutate -m 'Arg' input.cif > output.cif
 #*    rotag_mutate -m 'Ala; Lys' input.cif > output.cif
+#*    rotag_mutate -m 'ASP' -a 'chi1=120, chi2=60' input.cif > output.cif
+#*    rotag_mutate -m 'ASP' -a 'chi1=0.12, chi2=3.10' -r input.cif > output.cif
+#*    rotag_mutate -m 'ALA; SER' -a '_; chi1=134.0' input.cif > output.cif
 #*
 #*OPTIONS:
 #*    -m, --mutate <str>
 #*        replaces selected side-chain with specified moiety.
-#*    -r, --repeat
-#*        repeats pattern of
+#*    -a, --angles <str>
+#*        replaces selected side-chain by rotating selected moiety at certain
+#*        angle.
+#*    -r, --radians
+#*        radians are used in --angles argument.
+#*    -R, --repeat
+#*        repeats pattern of selected mutations.
 #*    -v, --version
 #*        print version.
 
 # --------------------------------- Options ----------------------------------- #
 
 my $mutations = '';
+my $angles = '';
+my $in_degrees = 1;
 my $do_repeat = 0;
 
 GetOptions(
     'mutate|m=s' => \$mutations,
-    'repeat|r' => sub { $do_repeat = 1; },
+    'angles|a=s' => \$mutations,
+    'radians|r=s' => sub { $in_degrees = 0; },
+    'repeat|R' => sub { $do_repeat = 1; },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
