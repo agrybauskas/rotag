@@ -9,6 +9,7 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
+use Constants qw( $PI );
 use Moieties qw( %SIDECHAINS
                  replace_with_moiety );
 use PDBxParser qw( filter
@@ -79,9 +80,17 @@ $angles =~ s/\s//smxg;
 for( my $i = 0; $i <= $#mutations; $i++ ) {
     my $mutation_amino_acid = $mutations[$i];
     if( @angles ) {
-        my $angles = { map { ( $_->[0], $_->[1]) }
-                       map { [ split /=/ ] }
-                       split /,/, $angles[$i] };
+        my $angles;
+        if( $in_degrees ) {
+            $angles = { map { ( $_->[0], [ $_->[1] * $PI / 180.0 ] ) }
+                        map { [ split /=/ ] }
+                        split /,/, $angles[$i] };
+        } else {
+            $angles = { map { ( $_->[0], [ $_->[1] ] ) }
+                        map { [ split /=/ ] }
+                        split /,/, $angles[$i] };
+        }
+
         $mutations[$i] = { 'amino_acid' => $mutation_amino_acid,
                            'angles'     => $angles };
     } else {
