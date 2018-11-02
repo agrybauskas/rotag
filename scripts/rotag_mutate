@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use autodie;
+use ErrorHandling qw( parse_errors );
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
@@ -111,29 +112,40 @@ for my $pdbx_file ( @ARGV ) {
                            'data' => [ '[local]_selection_group' ],
                            'is_list' => 1 } ) } );
 
-    # if( ! @group_ids ) {
-    #     die "No residues were selected.\n";
-    # }
+    if( ! @group_ids ) {
+        parse_errors( { 'program' => $0,
+                        'filename' => $pdbx_file,
+                        'type' => 'ERROR',
+                        'message' =>
+                            "No residues were selected. Use " .
+                            "rotag_select script to select residue(-s).\n" } );
+    }
 
-    # if( @mutations ) {
-    #     for( my $i = 0; $i <= $#mutations; $i++ ) {
-    #         my $ca_atom_id =
-    #             filter( { 'atom_site' => $selected_atom_site,
-    #                       'include' =>
-    #                           { 'label_atom_id' => [ 'CA' ],
-    #                             '[local]_selection_group' => [ $group_ids[$i] ]},
-    #                       'data' => [ 'id' ],
-    #                       'is_list' => 1 } )->[0];
-    #         my $unique_residue_key =
-    #             unique_residue_key( $selected_atom_site->{$ca_atom_id} );
+    if( @mutations ) {
+        for( my $i = 0; $i <= $#mutations; $i++ ) {
+            my $ca_atom_id =
+                filter( { 'atom_site' => $selected_atom_site,
+                          'include' =>
+                              { 'label_atom_id' => [ 'CA' ],
+                                '[local]_selection_group' => [ $group_ids[$i] ]},
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            my $unique_residue_key =
+                unique_residue_key( $selected_atom_site->{$ca_atom_id} );
 
-    #         replace_with_moiety( $selected_atom_site,
-    #                              $unique_residue_key,
-    #                              $mutations[$i] );
+            replace_with_moiety( $selected_atom_site,
+                                 $unique_residue_key,
+                                 $mutations[$i]->{'amino_acid'},
+                                 { 'angles' => $mutations[$i]->{'angles'}} );
 
-    #         to_pdbx( { 'atom_site' => $selected_atom_site } );
-    #     }
-    # } else {
-    #     die "No mutations were specified.\n"
-    # }
+            to_pdbx( { 'atom_site' => $selected_atom_site } );
+        }
+    } else {
+        parse_errors( { 'program' => $0,
+                        'filename' => $pdbx_file,
+                        'type' => 'ERROR',
+                        'message' => "No mutations were specified. Use -m " .
+                                     "option to achieve that.\n" } );
+
+    }
 }

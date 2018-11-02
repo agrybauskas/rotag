@@ -107,11 +107,13 @@ sub replace_with_moiety
 {
     my ( $atom_site, $unique_residue_key, $moiety, $options ) = @_;
 
-    my ( $isomer, $last_atom_id ) =
+    my ( $isomer, $angles, $last_atom_id ) =
         ( $options->{'isomer'},
+          $options->{'angles'},
           $options->{'last_atom_id'}, );
 
     $isomer //= 'R';
+    $angles //= {};
     $last_atom_id //= max( keys %{ $atom_site } );
 
     # First, transformation matrix is generated that will position moiety atoms
