@@ -5,7 +5,7 @@ _[local]_dihedral_angle.id
 _[local]_dihedral_angle.label_comp_id
 _[local]_dihedral_angle.label_seq_id
 _[local]_dihedral_angle.label_asym_id
-_[local]_dihedral_angle.label_entity_id
+_[local]_dihedral_angle.pdbx_PDB_model_num
 _[local]_dihedral_angle.label_alt_id
 _[local]_dihedral_angle.atom_1_id
 _[local]_dihedral_angle.label_atom_1_id
