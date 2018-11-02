@@ -44,29 +44,3 @@ ATOM 26 C CG 13 XAA A 1 18 -54.936 -112.933 -5.973 2 ?
 ATOM 27 C CG 14 XAA A 1 18 -53.896 -111.507 -3.749 2 ?
 ATOM 28 C CG 15 XAA A 1 18 -53.347 -112.714 -5.045 2 ?
 #
-loop_
-_[local]_rotamer_angle.id
-_[local]_rotamer_angle.rotamer_id
-_[local]_rotamer_angle.label_seq_id
-_[local]_rotamer_angle.label_comp_id
-_[local]_rotamer_angle.label_asym_id
-_[local]_rotamer_angle.pdbx_PDB_model_num
-_[local]_rotamer_angle.label_alt_id
-_[local]_rotamer_angle.type
-_[local]_rotamer_angle.value
-1 1 18 XAA A 1 A chi1 5.585
-2 2 18 XAA A 1 A chi1 0.000
-3 3 18 XAA A 1 A chi1 0.698
-4 4 18 XAA A 1 A chi1 3.491
-5 5 18 XAA A 1 A chi1 2.094
-6 6 18 XAA A 1 B chi1 5.585
-7 7 18 XAA A 1 B chi1 0.000
-8 8 18 XAA A 1 B chi1 0.698
-9 9 18 XAA A 1 B chi1 3.491
-10 10 18 XAA A 1 B chi1 2.094
-11 11 18 XAA A 2 . chi1 5.585
-12 12 18 XAA A 2 . chi1 0.000
-13 13 18 XAA A 2 . chi1 0.698
-14 14 18 XAA A 2 . chi1 3.491
-15 15 18 XAA A 2 . chi1 2.094
-#
