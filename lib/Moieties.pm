@@ -20,6 +20,8 @@ use PDBxParser qw( filter
 use LinearAlgebra qw( mult_matrix_product
                       switch_ref_frame );
 use Measure qw( bond_angle );
+use PseudoAtoms qw( replace_with_rotamer );
+use SidechainModels qw( rotation_only );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -223,6 +225,18 @@ sub replace_with_moiety
     # Renames residue.
     foreach( keys %{ $residue_site } ) {
         $atom_site->{$_}{'label_comp_id'} = $moiety;
+    }
+
+    if( %{ $angles } ) {
+        $residue_site =
+            filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
+
+        rotation_only( $residue_site );
+        replace_with_rotamer( $residue_site, $unique_residue_key, $angles );
+
+        for my $atom_id ( keys %{ $residue_site } ) {
+            $atom_site->{$atom_id} = $residue_site->{$atom_id};
+        }
     }
 
     return;
