@@ -52,4 +52,4 @@
    and certain parameters for interaction functions.
 -- Generalize atom_site data structure, because it can be used even with other
    types of data.
--- Add option to mutate with given dihedral angle.
+++ Add option to mutate with given dihedral angle.

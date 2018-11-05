@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Constants qw( $SIG_FIGS );
+use LinearAlgebra qw( normalize );
+
+#
+# Unit test: LinearAlgebra::normalize.
+# Example: ./vector_cross vector.dat
+#
+
+my ( $vector_file ) = @ARGV;
+
+open( my $fh, "<", $vector_file );
+my @rows = <$fh>;
+close( $fh );
+
+my @vector = map { [ split( " ", $_ ) ] } @rows;
+
+my $vector_normalized = normalize( \@vector );
+
+foreach( @{ $vector_normalized } ) {
+    printf $SIG_FIGS . "\n", $_->[0];
+}

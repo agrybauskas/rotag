@@ -11,6 +11,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      mult_matrix_product
                      matrix_sum
                      matrix_sub
+                     normalize
                      reshape
                      scalar_multipl
                      switch_ref_frame
@@ -386,6 +387,28 @@ sub vector_cross
           $left_matrix->[1] * $right_matrix->[0], );
 
     return \@cross_product;
+}
+
+#
+# Converts vectors to unit vectors (normalizes).
+# Input:
+#     $vector - vector where units are i, j, k.
+# Output:
+#     @vector_normalized - normalized vector.
+#
+
+sub normalize
+{
+    my ( $vector ) = @_;
+
+    my $vector_length = vector_length( $vector );
+
+    my @vector_normalized;
+    for my $row ( @{ $vector } ) {
+        push @vector_normalized, [ $row->[0] / $vector_length ];
+    }
+
+    return \@vector_normalized;
 }
 
 #
