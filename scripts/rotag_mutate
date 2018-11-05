@@ -25,15 +25,18 @@ our $VERSION = $VERSION;
 #*    with rotag_select.
 #*
 #*USAGE:
-#*    rotag_mutate -m 'Arg' input.cif > output.cif
-#*    rotag_mutate -m 'Ala; Lys' input.cif > output.cif
+#*    rotag_mutate -m 'ARG' input.cif > output.cif
+#*    rotag_mutate -m 'ALA; Lys' input.cif > output.cif
 #*    rotag_mutate -m 'ASP' -a 'chi1=120, chi2=60' input.cif > output.cif
 #*    rotag_mutate -m 'ASP' -a 'chi1=0.12, chi2=3.10' -r input.cif > output.cif
 #*    rotag_mutate -m 'ALA; SER' -a '_; chi1=134.0' input.cif > output.cif
+#*    rotag_mutate -m 'SEC' -M moiety.cif input.cif > output.cif
 #*
 #*OPTIONS:
 #*    -m, --mutate <str>
 #*        replaces selected side-chain with specified moiety.
+#*    -M, --import-moiety
+#*        use defined PDBx file where moiety atom site details are described.
 #*    -a, --angles <str>
 #*        replaces selected side-chain by rotating selected moiety at certain
 #*        angle.
@@ -47,12 +50,14 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $mutations = '';
+my $moiety_file='';
 my $angles = '';
 my $in_degrees = 1;
 my $do_repeat = 0;
 
 GetOptions(
     'mutate|m=s' => \$mutations,
+    'import-moiety|M=s' => \$moiety_file,
     'angles|a=s' => \$angles,
     'radians|r=s' => sub { $in_degrees = 0; },
     'repeat|R' => sub { $do_repeat = 1; },
@@ -112,6 +117,15 @@ for my $pdbx_file ( @ARGV ) {
         die "Use command \"rotag_mutate --help\" in order to see the manual.\n";
     }
 
+    my %append_moieties = ();
+    if( $moiety_file ) {
+        my $moiety_site = obtain_atom_site( $moiety_file );
+        for my $atom_id ( keys %{ $moiety_site } ) {
+            my $residue_name = $moiety_site->{$atom_id}{'label_comp_id'};
+            $append_moieties{$residue_name}{$atom_id} = $moiety_site->{$atom_id};
+        }
+    }
+
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
@@ -145,7 +159,8 @@ for my $pdbx_file ( @ARGV ) {
             replace_with_moiety( $selected_atom_site,
                                  $unique_residue_key,
                                  $mutations[$i]->{'amino_acid'},
-                                 { 'angles' => $mutations[$i]->{'angles'}} );
+                                 { 'angles' => $mutations[$i]->{'angles'},
+                                   'append_moieties' => \%append_moieties } );
 
             to_pdbx( { 'atom_site' => $selected_atom_site } );
         }

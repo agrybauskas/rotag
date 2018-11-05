@@ -109,23 +109,27 @@ sub replace_with_moiety
 {
     my ( $atom_site, $unique_residue_key, $moiety, $options ) = @_;
 
-    my ( $isomer, $angles, $last_atom_id ) =
+    my ( $isomer, $angles, $append_moieties, $last_atom_id ) =
         ( $options->{'isomer'},
           $options->{'angles'},
+          $options->{'append_moieties'},
           $options->{'last_atom_id'}, );
 
     $isomer //= 'R';
     $angles //= {};
+    $append_moieties //= {};
     $last_atom_id //= max( keys %{ $atom_site } );
+
+    my %all_sidechains = ( %SIDECHAINS, %{ $append_moieties } );
 
     # First, transformation matrix is generated that will position moiety atoms
     # to the origin of reference frame.
     my $moiety_ca_atom_coord =
-        filter( { 'atom_site' => $SIDECHAINS{'SER'},
+        filter( { 'atom_site' => $all_sidechains{$moiety},
                   'include' => { 'label_atom_id' => [ 'CA' ] },
                   'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
     my $moiety_cb_atom_coord =
-        filter( { 'atom_site' => $SIDECHAINS{'SER'},
+        filter( { 'atom_site' => $all_sidechains{$moiety},
                   'include' => { 'label_atom_id' => [ 'CB' ] },
                   'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
     my @moiety_helper_atom_coord = map { $_ + 1 } @{ $moiety_ca_atom_coord };
@@ -144,7 +148,11 @@ sub replace_with_moiety
         split /,/smx, $unique_residue_key;
 
     my @sidechain_ids =
-        @{ filter( { 'atom_site' => $residue_site,
+        @{ filter( { 'atom_site' => $atom_site,
+                     'include' =>
+                         { 'label_seq_id' => [ $residue_id ],
+                           'pdbx_PDB_model_num' => [ $pdbx_model ],
+                           'label_asym_id' => [ $residue_chain ] },
                      'exclude' =>
                          # TODO: make proper list of mainchain atoms.
                          { 'label_atom_id' =>
@@ -189,8 +197,8 @@ sub replace_with_moiety
                                           'omega' );
 
     # Adds moiety.
-    for my $atom_id ( sort keys %{ $SIDECHAINS{$moiety} } ) {
-        my $moiety_atom = $SIDECHAINS{$moiety}{$atom_id};
+    for my $atom_id ( sort keys %{ $all_sidechains{$moiety} } ) {
+        my $moiety_atom = $all_sidechains{$moiety}{$atom_id};
         my ( $transf_atom_coord ) =
             @{ mult_matrix_product( [ @{ $rotational_matrix },
                                       $transf_matrix,
@@ -207,7 +215,9 @@ sub replace_with_moiety
         $moiety_atom->{'label_seq_id'} = $residue_id;
         $moiety_atom->{'label_asym_id'} = $residue_chain;
         $moiety_atom->{'pdbx_PDB_model_num'} = $pdbx_model;
-        $moiety_atom->{'label_alt_id'} = $residue_alt;
+        # TODO: check if there will be situations when non '.' label_alt_id is
+        # needed.
+        $moiety_atom->{'label_alt_id'} = q{.};
         $moiety_atom->{'Cartn_x'}= sprintf $SIG_FIGS, $transf_atom_coord->[0][0];
         $moiety_atom->{'Cartn_y'}= sprintf $SIG_FIGS, $transf_atom_coord->[1][0];
         $moiety_atom->{'Cartn_z'}= sprintf $SIG_FIGS, $transf_atom_coord->[2][0];

@@ -1,1 +1,28 @@
-# A placeholder for future data.
+data_testing
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 2165 N N . ARG A 1 315 39.274 -16.345 34.147 1
+ATOM 2166 C CA . ARG A 1 315 39.567 -16.445 32.729 1
+ATOM 2167 C C . ARG A 1 315 40.085 -17.842 32.455 1
+ATOM 2168 O O . ARG A 1 315 40.821 -18.393 33.263 1
+ATOM 2183 C CB . ARG A . 315 38.281 -16.234 31.881 1
+ATOM 2184 C CG . ARG A . 315 37.983 -14.765 31.472 1
+ATOM 2185 C CD . ARG A . 315 39.047 -13.789 32.001 1
+ATOM 2186 N NE . ARG A . 315 40.142 -13.647 30.997 1
+ATOM 2187 C CZ . ARG A . 315 40.193 -14.268 29.822 1
+ATOM 2188 N NH1 . ARG A . 315 39.271 -15.085 29.396 1
+ATOM 2189 N NH2 . ARG A . 315 41.214 -14.050 29.055 1
+#
