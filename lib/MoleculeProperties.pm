@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( %CLEAR_HYBRIDIZATION
                      %CONNECTIVITY
+                     identify_residue_atoms
                      %RESIDUE_ATOMS
                      @ROTATABLE_RESIDUE_NAMES
                      %PARTIAL_CHARGE );
@@ -1326,6 +1327,24 @@ our %CLEAR_HYBRIDIZATION = (
 );
 
 our @ROTATABLE_RESIDUE_NAMES =
-    qw( XAA SER ARG HIS LYS ASP GLU CYS VAL ILE LEU MET PHE TYR TRP THR ASN GLN );
+    qw(XAA SER ARG HIS LYS ASP GLU CYS VAL ILE LEU MET PHE TYR TRP THR ASN GLN);
+
+# ------------------------ Molecule-related functions ------------------------- #
+
+#
+# Adds 'related_residue_atoms' key where value is a list of the atom ids from
+# the same unique residue.
+# Input:
+#     $atom_site - $atom_site - atom data structure.
+# Output:
+#     none - pushes atom ids to 'related_residue_atoms' key.
+#
+
+sub identify_residue_atoms
+{
+    my ( $atom_site ) = @_;
+
+    return;
+}
 
 1;
