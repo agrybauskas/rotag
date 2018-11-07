@@ -20,6 +20,7 @@ use PDBxParser qw( filter
                    to_pdbx );
 use PseudoAtoms qw( generate_rotamer
                     generate_library );
+use SidechainModels qw( rotation_only );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -166,6 +167,8 @@ for my $pdbx_file ( @ARGV ) {
                 $parameters->[$i];
         }
 
+        rotation_only( $selected_atom_site );
+
         # Starts generating rotamer library.
         my $rotamer_library;
         eval {
@@ -237,9 +240,10 @@ for my $pdbx_file ( @ARGV ) {
                 # side-chain.
                 for my $rotamer ( @rotamers ) {
                     my $rotamer_site =
-                        generate_rotamer( $selected_atom_site,
-                                          { $residue_unique_key =>
-                                                $rotamer->{'angles'} } );
+                        generate_rotamer( { 'atom_site' => $selected_atom_site,
+                                            'angle_values' =>
+                                                { $residue_unique_key =>
+                                                      $rotamer->{'angles'} } } );
                     my $rotamer_coord =
                         filter( { 'atom_site' => $rotamer_site,
                                   'data' =>
