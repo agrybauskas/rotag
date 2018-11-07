@@ -11,6 +11,8 @@ our @EXPORT_OK = qw( %CLEAR_HYBRIDIZATION
                      @ROTATABLE_RESIDUE_NAMES
                      %PARTIAL_CHARGE );
 
+use PDBxParser qw( unique_residue_key
+                   split_by );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -1342,7 +1344,41 @@ our @ROTATABLE_RESIDUE_NAMES =
 
 sub identify_residue_atoms
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $options ) = @_;
+    my ( $check_atom_names ) = $options->{'check_atom_names'};
+
+    my $split_groups = split_by( { 'atom_site' => $atom_site,
+                                   'attributes' => [ 'label_seq_id',
+                                                     'label_asym_id',
+                                                     'pdbx_PDB_model_num', ] } );
+
+    for my $atom_id ( keys %{ $atom_site } ) {
+        my $unique_residue_key = unique_residue_key( $atom_site->{$atom_id} );
+        my ( $residue_id, $residue_chain, $pdbx_model, $alt_id ) =
+            split /,/, $unique_residue_key;
+        my $split_group_entry = "${residue_id},${residue_chain},${pdbx_model}";
+        my $related_residue_atom_ids = $split_groups->{$split_group_entry};
+
+        # Splits related residues into alt id groups. Atom ids can be redundant.
+        for my $related_atom_id ( @{ $related_residue_atom_ids } ) {
+            my $related_alt_id =
+                $atom_site->{$related_atom_id}{'label_alt_id'};
+
+            if( $atom_id ne $related_atom_id ) {
+                next if( $check_atom_names &&
+                         $atom_site->{$atom_id}{'label_atom_id'} eq
+                         $atom_site->{$related_atom_id}{'label_atom_id'} );
+
+                if( $alt_id eq '.' ) {
+                    push @{ $atom_site->{$atom_id}{'related_residue_atoms'} },
+                        $related_atom_id;
+                } elsif( $alt_id eq $related_alt_id || $related_alt_id eq '.') {
+                    push @{ $atom_site->{$atom_id}{'related_residue_atoms'} },
+                        $related_atom_id;
+                }
+            }
+        }
+    }
 
     return;
 }
