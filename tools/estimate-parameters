@@ -36,9 +36,9 @@ our $VERSION = $VERSION;
 #*    -a, --angle-step <float> (default: 0.1)
 #*        angle that each dihedral angle is turned by;
 #*    -p, --parameter-range <string>
-#*            (default:'lj_epsilon=0:0.1:1.0, c_k=0:0.1:1.0,
-#*                      h_epsilon=1.0:0.1:2.0, r_sigma=2.0:0:2.0,
-#*                      cutoff_atom=0.1:0:0.1, cutoff_residue=1.0:0:1.0,
+#*            (default:'lj_epsilon=1.0:0:1.0, c_k=1.0:0:1.0,
+#*                      h_epsilon=1.0:0:1.0, r_sigma=2.0:0:2.0,
+#*                      cutoff_atom=0.4:0:0.4, cutoff_residue=1.0:0:1.0,
 #*                      cutoff_start=2.5:0:2.5, cutoff_end=5.0:0:5.0')
 #*        specify parameter search range and step by using
 #*        <float>:<float>:<float> format.
@@ -187,7 +187,7 @@ for my $pdbx_file ( @ARGV ) {
                 generate_library(
                     { 'atom_site' => $selected_atom_site,
                       'residue_unique_keys' => \@residue_unique_keys,
-                      'small_angle' => $small_angle * $PI,
+                      'small_angle' => $small_angle * $PI * 2,
                       'conf_model' => 'rotation_only',
                       'interactions' => 'composite',
                       'parameters' => \%current_parameters,
