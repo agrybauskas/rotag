@@ -465,7 +465,7 @@ sub unique_residue_key
 # Generates a list of unique keys from the atom site.
 # Input:
 #     $atom_site - atom site data structure;
-#     $options->{'exclude_dot'} - excludes label atom ids with '.' valu, but
+#     $options->{'exclude_dot'} - excludes label atom ids with '.' value, but
 #     only if there are alternatives.
 # Output:
 #     @residue_unique_keys - list of determined unique keys.

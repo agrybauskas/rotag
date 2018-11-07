@@ -1334,12 +1334,11 @@ our @ROTATABLE_RESIDUE_NAMES =
 # ------------------------ Molecule-related functions ------------------------- #
 
 #
-# Adds 'related_residue_atoms' key where value is a list of the atom ids from
-# the same unique residue.
+# Creates a hash where for each unique residue key proper atom ids are assigned.
 # Input:
 #     $atom_site - $atom_site - atom data structure.
 # Output:
-#     none - pushes atom ids to 'related_residue_atoms' key.
+#     %residue_atom_ids - hash of unique residue key and corresponding atom ids.
 #
 
 sub identify_residue_atoms
@@ -1352,6 +1351,7 @@ sub identify_residue_atoms
                                                      'label_asym_id',
                                                      'pdbx_PDB_model_num', ] } );
 
+    my %residue_atom_ids;
     for my $atom_id ( keys %{ $atom_site } ) {
         my $unique_residue_key = unique_residue_key( $atom_site->{$atom_id} );
         my ( $residue_id, $residue_chain, $pdbx_model, $alt_id ) =
@@ -1370,17 +1370,17 @@ sub identify_residue_atoms
                          $atom_site->{$related_atom_id}{'label_atom_id'} );
 
                 if( $alt_id eq '.' ) {
-                    push @{ $atom_site->{$atom_id}{'related_residue_atoms'} },
+                    push @{ $residue_atom_ids{$unique_residue_key} },
                         $related_atom_id;
                 } elsif( $alt_id eq $related_alt_id || $related_alt_id eq '.') {
-                    push @{ $atom_site->{$atom_id}{'related_residue_atoms'} },
+                    push @{ $residue_atom_ids{$unique_residue_key} },
                         $related_atom_id;
                 }
             }
         }
     }
 
-    return;
+    return \%residue_atom_ids;
 }
 
 1;

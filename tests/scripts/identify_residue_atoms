@@ -4,13 +4,15 @@ use strict;
 use warnings;
 
 use MoleculeProperties qw( identify_residue_atoms );
+use PDBxParser qw( filter
+                   to_pdbx );
 
 #
 # Unit test: MoleculeProperties::identify_residue_atoms
-# Example: ./identify_residue_atoms structure.dump
+# Example: ./identify_residue_atoms 'A' structure.dump
 #
 
-my ( $pdbx_dump_file ) = @ARGV;
+my ( $unique_residue_key, $pdbx_dump_file ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -20,18 +22,10 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-identify_residue_atoms( $atom_site );
+my $residue_atom_ids = identify_residue_atoms( $atom_site );
 
-# my @atom_coord;
-# my @parent_atom;
-# my @child_atom;
-
-# for my $parent_id ( keys %{ $atom_site } ) {
-#     @parent_atom = ( $parent_id, $atom_site->{$parent_id}{"label_atom_id"} );
-#     for my $child_id ( @{ $atom_site->{$parent_id}{"connections"} } ) {
-#         @child_atom =
-#             ( $child_id, $atom_site->{$child_id}{"label_atom_id"} );
-#         print( "$parent_atom[0] $parent_atom[1]:" );
-#         print( "$child_atom[0] $child_atom[1]\n" );
-#     }
-# }
+to_pdbx( { 'atom_site' =>
+               filter( { 'atom_site' => $atom_site,
+                         'include' =>
+                             { 'id' => $residue_atom_ids->{$unique_residue_key} }
+                       } ) } );
