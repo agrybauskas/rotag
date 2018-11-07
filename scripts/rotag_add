@@ -38,6 +38,8 @@ our $VERSION = $VERSION;
 #*    -r, --rotamer-atoms
 #*        adds pseudo atoms of defined rotamers. Input .cif has to contain
 #*        _[local]_rotamer_angle category (can be produced with rotag_library).
+#*    -k, --keep-original
+#*        keeps original atoms after new atoms are added.
 #*    -H, --hydrogens
 #*        adds hydrogen atoms to selected atoms.
 #*    -v, --version
@@ -47,12 +49,14 @@ our $VERSION = $VERSION;
 
 my $add_rotamer_atoms = 0;
 my $add_hydrogens = 0;
+my $keep_original = 1;
 my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
       'rotamer_id', 'type', 'value', );
 
 GetOptions(
     'rotamer-atoms|r' => sub { $add_rotamer_atoms = 1 },
+    'keep-original|k' => sub { $keep_original = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -152,7 +156,9 @@ for my $pdbx_file ( @ARGV ) {
                 $last_atom_id++;
             }
 
-            delete $atom_site->{$atom_id};
+            if( ! $keep_original ) {
+                delete $atom_site->{$atom_id};
+            }
         }
 
         # Prints out cif.
