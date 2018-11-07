@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use MoleculeProperties qw( identify_residue_atoms );
 use PDBxParser qw( filter
+                   identify_residue_atoms
                    to_pdbx );
 
 #
-# Unit test: MoleculeProperties::identify_residue_atoms
+# Unit test: PDBxParser::identify_residue_atoms
 # Example: ./identify_residue_atoms 'A' structure.dump
 #
 
