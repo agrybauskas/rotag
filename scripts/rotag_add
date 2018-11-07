@@ -49,7 +49,7 @@ our $VERSION = $VERSION;
 
 my $add_rotamer_atoms = 0;
 my $add_hydrogens = 0;
-my $keep_original = 1;
+my $keep_original = 0;
 my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
       'rotamer_id', 'type', 'value', );
