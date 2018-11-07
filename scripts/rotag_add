@@ -151,6 +151,8 @@ for my $pdbx_file ( @ARGV ) {
                                'alt_group_id' => $rotamer_id } ) } );
                 $last_atom_id++;
             }
+
+            delete $atom_site->{$atom_id};
         }
 
         # Prints out cif.

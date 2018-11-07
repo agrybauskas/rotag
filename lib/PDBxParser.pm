@@ -463,6 +463,8 @@ sub unique_residue_key
 }
 
 #
+# TODO: maybe this function should be deprecated, because identify_residue_atoms
+# does a better job.
 # Generates a list of unique keys from the atom site.
 # Input:
 #     $atom_site - atom site data structure;

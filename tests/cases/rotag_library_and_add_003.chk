@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "CB atoms are kept and not added to the rotamer."
