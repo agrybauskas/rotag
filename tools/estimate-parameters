@@ -5,7 +5,8 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
-use List::MoreUtils qw( uniq );
+use List::MoreUtils qw( any
+                        uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
 use AtomProperties qw( @MAINCHAIN_NAMES );
@@ -57,17 +58,19 @@ our $VERSION = $VERSION;
 my $small_angle = 0.1;
 my $top_rank = 1;
 my $top_ratio;
-my $parameter_ranges =
-    'lj_epsilon=1.0:0:1.0, c_k=1.0:0:1.0, h_epsilon=1.0:0:1.0,' .
-    'r_sigma=2.0:0:2.0, cutoff_atom=0.4:0:0.4, cutoff_residue=1.0:0:1.0,' .
+my $default_parameter_ranges =
+    'lj_epsilon=1.0:0:1.0, c_k=1.0:0:1.0, h_epsilon=1.0:0:1.0, ' .
+    'r_sigma=2.0:0:2.0, cutoff_atom=0.4:0:0.4, cutoff_residue=1.0:0:1.0, ' .
     'cutoff_start=2.5:0:2.5, cutoff_end=5.0:0:5.0';
+my $append_parameter_ranges;
+my $parameter_ranges;
 my $parameters;
 my $is_hydrogen_explicit = 0;
 my $threads = 1;
 
 GetOptions(
     'angle-step|a=s' => \$small_angle,
-    'parameter-ranges|p' => \$parameter_ranges,
+    'parameter-ranges|p=s' => \$append_parameter_ranges,
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
     'explicit-hydrogens|H' => sub { $is_hydrogen_explicit = 1 },
@@ -88,11 +91,17 @@ GetOptions(
 
 # Parses parameter ranges and updates if arguments from command line are
 # introduced.
+$parameter_ranges = join ',', ( $append_parameter_ranges,
+                                $default_parameter_ranges );
 $parameter_ranges =~ s/\s//g;
 
 my @parameter_ranges;
+my @visited_parameters = ();
 for my $parameter_range ( split /,/sxm, $parameter_ranges ) {
     my ( $parameter, $range_string ) = split /=/sm, $parameter_range;
+
+    next if any { $parameter eq $_ } @visited_parameters;
+
     my ( $range_start, $range_increment, $range_end ) =
         split /:/sm, $range_string;
     my @range;
@@ -108,6 +117,8 @@ for my $parameter_range ( split /,/sxm, $parameter_ranges ) {
     push @parameter_ranges,
          { 'parameter' => $parameter,
            'values'    => \@range };
+
+    push @visited_parameters, $parameter;
 }
 
 # ----------------------------------- Main ------------------------------------ #
