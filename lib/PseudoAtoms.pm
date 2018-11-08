@@ -45,6 +45,8 @@ use Measure qw( all_dihedral
                 bond_angle );
 use BondProperties qw( hybridization
                        rotatable_bonds );
+use MoleculeProperties qw( %CONNECTIVITY
+                           %RESIDUE_ATOMS );
 use Multithreading qw( multithreading );
 use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys
@@ -944,8 +946,27 @@ sub add_hydrogens
         # Decides how many and what hydrogens should be added according to the
         # quantity of bonds and hydrogen atoms that should be connected to the
         # target atom.
-        my @connection_ids =
-            @{ $reference_atom_site->{"$atom_id"}{'connections'} };
+        my @connection_ids = ();
+        if( exists $reference_atom_site->{"$atom_id"}{'connections'} ) {
+            @connection_ids =
+                @{ $reference_atom_site->{"$atom_id"}{'connections'} };
+        }
+
+        # # TODO: should be pre-determined as constant variable.
+        # my @mandatory_residue_atoms =
+        #     @{ $RESIDUE_ATOMS{$residue_name}{'mandatory'} };
+        # my @mandatory_connections = ();
+        # for my $mandatory_atom ( @mandatory_residue_atoms ) {
+        #     if( any { $mandatory_atom eq $_ }
+        #            @{ $CONNECTIVITY{$residue_name}{$atom_name} } ) {
+        #         push @mandatory_connections, $mandatory_atom;
+        #     }
+        # }
+
+        # # Hydrogens cannot be added if there is a missing information about
+        # # mandatory atom connections.
+        # next if( scalar @connection_ids < scalar @mandatory_connections );
+
         my @connection_names =
             map { $reference_atom_site->{"$_"}{'label_atom_id'} }
                 @connection_ids;
