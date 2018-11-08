@@ -76,6 +76,29 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	fi
 
 #
+# Coverage.
+#
+
+COVERAGE_CASES_DIR=tests/coverage
+COVERAGE_CASES=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${COVERAGE_CASES_DIR}/%.sh}
+COVERAGE_OUTS=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${COVERAGE_CASES_DIR}/%.out}
+
+.PHONY: coverage
+
+coverage: ${COVERAGE_CASES_DIR}/cover_db/coverage.html
+
+${COVERAGE_CASES_DIR}/cover_db/coverage.html: ${COVERAGE_OUTS}
+	cover
+	mv cover_db ${COVERAGE_CASES_DIR}
+
+${COVERAGE_CASES_DIR}/%.out: ${COVERAGE_CASES_DIR}/%.sh
+	./$< 2>&1 > $@ || true
+
+${COVERAGE_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
+	cp $^ $@
+	sed -i '4i export PERL5OPT=-MDevel::Cover make test' $@
+
+#
 # Utilities.
 #
 
@@ -83,6 +106,9 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 
 clean:
 	rm -f ${TEST_DIFF}
+	rm -f ${COVERAGE_CASES}
+	rm -f ${COVERAGE_OUTS}
+	rm -fr ${COVERAGE_CASES_DIR}/cover_db
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
