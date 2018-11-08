@@ -120,6 +120,7 @@ ${PROFILER_CASES_DIR}/%.out: ${PROFILER_CASES_DIR}/%.sh
 ${PROFILER_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
 	cp $^ $@
 	sed -i '4i export PERL5OPT=-d:NYTProf' $@
+	sed -i '5i NYTPROF=addpid:1' $@
 
 #
 # Utilities.
