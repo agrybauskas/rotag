@@ -191,7 +191,7 @@ for my $pdbx_file ( @ARGV ) {
 
             push @visited_atom_ids, keys %{ $residue_site };
 
-            $last_atom_id = max( keys %{ $hydrogen_site } );
+            $last_atom_id = max( keys %atom_site );
         }
 
         # Prints out cif.
