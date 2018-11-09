@@ -15,7 +15,7 @@ use AtomSite;
 $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Indent = 1;
 
-my $atom_site = AtomSite->new( { 'pdbx_file' => 'serine-001.cif' } );
+my $atom_site = AtomSite->new();
 
 $atom_site->destroy();
 
