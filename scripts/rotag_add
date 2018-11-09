@@ -12,6 +12,8 @@ use List::Util qw( max );
 use List::MoreUtils qw( any );
 
 use AtomProperties qw( @MAINCHAIN_NAMES );
+use BondProperties qw( hybridization );
+use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    mark_selection
@@ -165,6 +167,10 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( { 'atom_site' => { %{ $atom_site }, %rotamer_atom_site },
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } elsif( $add_hydrogens ) {
+        # FIXME: should be added after the groups are split.
+        connect_atoms( $atom_site );
+        hybridization( $atom_site );
+
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $selected_atom_site } ) {
             $selected_atom_site = $atom_site;
