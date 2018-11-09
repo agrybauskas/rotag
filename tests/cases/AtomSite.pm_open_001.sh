@@ -19,6 +19,6 @@ $Data::Dumper::Indent = 1;
 my $atom_site = AtomSite->new();
 $atom_site->open( $ENV{PDBX_FILE} );
 
-print Dumper $atom_site->get_atom_site();
+print Dumper $atom_site->{'atoms'};
 
 END

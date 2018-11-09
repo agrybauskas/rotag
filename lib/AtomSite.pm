@@ -4,9 +4,11 @@ use strict;
 use warnings;
 
 use List::MoreUtils qw( any );
+use List::Util qw( max );
 
 use PDBxParser qw( pdbx_loop_unique
-                   obtain_pdbx_loop );
+                   obtain_pdbx_loop
+                   to_pdbx );
 
 # ------------------------- Constructor and destructor ------------------------ #
 
@@ -31,7 +33,7 @@ sub destroy
 # Input:
 #     $pdbx_file - PDBx file.
 # Output:
-#     none - atom data structure is created and stored in $self->{'atom_site'}.
+#     none - atom data structure is created and stored in $self->{'atoms'}.
 #
 #     Ex.: { 1 => { 'group_id' => 'ATOM',
 #                   'id'       => 1,
@@ -42,23 +44,58 @@ sub open
 {
     my ( $self, $pdbx_file ) = @_;
 
-    $self->{'atom_site'} =
+    $self->{'atoms'} =
         pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
 
     return;
 }
 
 #
-# Returns atom data structure.
+# Creates atom data structure item.
+# Input:
+#     $options - hash of all necessary attributes with corresponding values;
 # Output:
-#     atom data structure.
+#     atom data structure item.
 #
 
-sub get_atom_site
+sub create
 {
-    my ( $self ) = @_;
+    my ( $self, $options ) = @_;
+    my $atom_id = $options->{'id'};
+    $atom_id //= max( keys %{ $self->{'atoms'} } );
+    my $type_symbol = $options->{'type_symbol'};
+    my $label_atom_id = $options->{'label_atom_id'};
+    my $label_alt_id = $options->{'label_alt_id'};
+    $label_alt_id //= q{.};
+    my $label_comp_id = $options->{'label_comp_id'};
+    my $label_asym_id = $options->{'label_asym_id'};
+    my $label_entity_id = $options->{'label_entity_id'};
+    $label_entity_id //= q{?};
+    my $label_seq_id = $options->{'label_seq_id'};
+    my $cartn_x = $options->{'cartn_x'};
+    my $cartn_y = $options->{'cartn_y'};
+    my $cartn_z = $options->{'cartn_z'};
+    my $pdbx_model_num = $options->{'pdbx_PDB_model_num'};
 
-    return $self->{'atom_site'};
+    if( ! exists $self->{'atoms'}{$atom_id} ) {
+        $self->{'atoms'}{"$atom_id"}{'group_PDB'} = 'ATOM';
+        $self->{'atoms'}{"$atom_id"}{'id'} = $atom_id;
+        $self->{'atoms'}{"$atom_id"}{'type_symbol'} = $type_symbol;
+        $self->{'atoms'}{"$atom_id"}{'label_atom_id'} = $label_atom_id;
+        $self->{'atoms'}{"$atom_id"}{'label_alt_id'} = $label_alt_id;
+        $self->{'atoms'}{"$atom_id"}{'label_comp_id'} = $label_comp_id;
+        $self->{'atoms'}{"$atom_id"}{'label_asym_id'} = $label_asym_id;
+        $self->{'atoms'}{"$atom_id"}{'label_entity_id'} = $label_entity_id;
+        $self->{'atoms'}{"$atom_id"}{'label_seq_id'} = $label_seq_id;
+        $self->{'atoms'}{"$atom_id"}{'Cartn_x'} = $cartn_x;
+        $self->{'atoms'}{"$atom_id"}{'Cartn_y'} = $cartn_y;
+        $self->{'atoms'}{"$atom_id"}{'Cartn_z'} = $cartn_z;
+        $self->{'atoms'}{"$atom_id"}{'pdbx_PDB_model_num'} = $pdbx_model_num;
+    } else {
+        die "Specified atom id is already present in the atom site.";
+    }
+
+    return;
 }
 
 #
@@ -82,23 +119,23 @@ sub filter
     my ( $include, $exclude ) =
         ( $options->{'include'}, $options->{'exclude'} );
 
-    my $atom_site = $self->{'atom_site'};
+    my $atoms = $self->{'atoms'};
 
-    if( ! defined $self->{'atom_site'} ) {
+    if( ! defined $self->{'atoms'} ) {
         die 'No atom were loaded to the AtomSite data structure.';
     }
 
-    # Iterates through each atom in $self->{'atom_site'} and checks if atom
+    # Iterates through each atom in $self->{'atoms'} and checks if atom
     # specifiers match up.
-    my %filtered_atom_site;
+    my %filtered_atoms;
 
     # First, filters atoms that are described in $self->{'include'} specifier.
     if( defined $include ) {
-        for my $atom_id ( keys %{ $atom_site } ) {
+        for my $atom_id ( keys %{ $atoms } ) {
             my $match_counter = 0; # Tracks if all matches occured.
             for my $attribute ( keys %{ $include } ) {
-                if( exists $atom_site->{$atom_id}{$attribute} &&
-                    any { $atom_site->{$atom_id}{$attribute} eq $_ }
+                if( exists $atoms->{$atom_id}{$attribute} &&
+                    any { $atoms->{$atom_id}{$attribute} eq $_ }
                        @{ $include->{$attribute} } ) {
                     $match_counter += 1;
                 } else {
@@ -106,28 +143,43 @@ sub filter
                 }
             }
             if( $match_counter == scalar keys %{ $include } ) {
-                $filtered_atom_site{$atom_id} = $atom_site->{$atom_id};
+                $filtered_atoms{$atom_id} = $atoms->{$atom_id};
             }
         }
     } else {
-        %filtered_atom_site = %{ $atom_site };
+        %filtered_atoms = %{ $atoms };
     }
 
     # Then filters out atoms that are in $self->{'exclude'} specifier.
     if( defined $exclude ) {
-        for my $atom_id ( keys %filtered_atom_site ) {
+        for my $atom_id ( keys %filtered_atoms ) {
             for my $attribute ( keys %{ $exclude } ) {
-                if( exists $atom_site->{$atom_id}{$attribute} &&
-                    any { $atom_site->{$atom_id}{$attribute} eq $_ }
+                if( exists $atoms->{$atom_id}{$attribute} &&
+                    any { $atoms->{$atom_id}{$attribute} eq $_ }
                        @{ $exclude->{$attribute} } ) {
-                    delete $filtered_atom_site{$atom_id};
+                    delete $filtered_atoms{$atom_id};
                     last;
                 }
             }
         }
     }
 
-    return \%filtered_atom_site;
+    return \%filtered_atoms;
+}
+
+#
+# Converts atom site data structure to PDBx.
+# Input:
+#     $options->{'atoms'} - atom site data structure.
+# Output:
+#     STDERR - PDBx format file.
+#
+
+sub pdbx
+{
+    my ( $self ) = @_;
+
+    return to_pdbx( { 'atom_site' => $self->{'atoms'}, 'data_name' => '' } );
 }
 
 1;
