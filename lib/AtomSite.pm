@@ -3,7 +3,8 @@ package AtomSite;
 use strict;
 use warnings;
 
-use PDBxParser qw( obtain_atom_site );
+use PDBxParser qw( pdbx_loop_unique
+                   obtain_pdbx_loop );
 
 # ------------------------- Constructor and destructor ------------------------ #
 
@@ -22,11 +23,24 @@ sub destroy
 
 # --------------------------------- Methods ----------------------------------- #
 
+#
+# From PDBx file, obtains data only from _atom_site category and outputs special
+# data structure that represents atom data.
+# Input:
+#     $pdbx_file - PDBx file.
+# Output:
+#     %atom_site - special data structure.
+#     Ex.: { 1 => { 'group_id' => 'ATOM',
+#                   'id'       => 1,
+#                   ... } }
+#
+
 sub open
 {
     my ( $self, $pdbx_file ) = @_;
 
-    $self->{'atom_site'} = obtain_atom_site( $pdbx_file );
+    $self->{'atom_site'} =
+        pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
 
     return;
 }
