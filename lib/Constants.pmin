@@ -16,7 +16,10 @@ our @EXPORT_OK = qw( $COULOMB_K
                      $PI
                      $SIG_FIGS
                      $SOFT_EPSILON
-                     $SOFT_N );
+                     $SOFT_N
+                     $SP3_ANGLE
+                     $SP2_ANGLE
+                     $SP_ANGLE );
 
 use List::Util qw( max );
 
@@ -27,6 +30,12 @@ use AtomProperties qw( %ATOMS );
 our $EPSILON = @EPSILON@;
 our $PI = @PI@;
 our $SIG_FIGS = '%.3f';
+
+# ----------------------------- Angle constants ------------------------------- #
+
+our $SP3_ANGLE = 109.5 * $PI / 180.0;
+our $SP2_ANGLE = 120.0 * $PI / 180.0;
+our $SP_ANGLE  = $PI;
 
 # ------------------------------ Grid constants ------------------------------- #
 

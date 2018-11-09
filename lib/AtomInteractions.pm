@@ -29,15 +29,14 @@ use Constants qw( $CUTOFF_START
                   $LJ_EPSILON
                   $PI
                   $SOFT_EPSILON
-                  $SOFT_N );
+                  $SOFT_N
+                  $SP3_ANGLE
+                  $SP2_ANGLE );
 use Measure qw( bond_angle );
 use MoleculeProperties qw( %PARTIAL_CHARGE );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
-
-Readonly my $SP3_ANGLE => 109.5 * $PI / 180.0;
-Readonly my $SP2_ANGLE => 120.0 * $PI / 180.0;
 
 # --------------------------- Potential functions ----------------------------- #
 
