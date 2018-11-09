@@ -19,8 +19,9 @@ $Data::Dumper::Indent = 1;
 my $atom_site = AtomSite->new();
 $atom_site->open( $ENV{PDBX_FILE} );
 
-print Dumper $atom_site->filter(
-      { 'include' =>
-          { 'label_atom_id' => [ 'CA', 'CB' ] } } );
+my $filtered_atom_site =
+   $atom_site->filter( { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] } } );
+
+print Dumper $filtered_atom_site->{'atoms'};
 
 END

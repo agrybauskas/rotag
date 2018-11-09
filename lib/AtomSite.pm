@@ -117,7 +117,7 @@ sub append
 
     for my $atom_site ( @{ $atom_sites } ) {
         if( $action eq 'r' ) {
-            for my $atom_id ( keys %{ $atom_site } ) {
+            for my $atom_id ( sort keys %{ $atom_site } ) {
                 $self->{'atoms'}{$self->{'last_atom_id'}+1} =
                     $atom_site->{$atom_id};
                 $self->{'atoms'}{$self->{'last_atom_id'}+1}{'id'} =
@@ -125,7 +125,7 @@ sub append
                 $self->{'last_atom_id'}++;
             }
         } else {
-            for my $atom_id ( keys %{ $atom_site } ) {
+            for my $atom_id ( sort keys %{ $atom_site } ) {
                 if( $action eq 'o' ) {
                     $self->{'atoms'}{$atom_id} = $atom_site->{$atom_id};
                 } else {

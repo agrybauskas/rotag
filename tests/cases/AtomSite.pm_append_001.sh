@@ -27,6 +27,6 @@ $atom_site_2->open( $ENV{PDBX_FILE_2} );
 $atom_site->append( [ $atom_site_1->{'atoms'},
                       $atom_site_2->{'atoms'} ], 'r' );
 
-print Dumper $atom_site->pdbx();
+print Dumper $atom_site;
 
 END
