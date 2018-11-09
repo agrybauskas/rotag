@@ -15,12 +15,12 @@ use PDBxParser qw( pdbx_loop_unique
 sub new
 {
     my ( $class, $options ) = @_;
-    my $self = {};
+    my $self = { 'last_atom_id' => 0 };
 
     return bless $self, $class;
 }
 
-sub destroy
+sub DESTROY
 {
     my ( $self ) = @_;
 }
@@ -46,6 +46,8 @@ sub open
 
     $self->{'atoms'} =
         pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
+
+    $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
 
     return;
 }
@@ -78,21 +80,63 @@ sub create
     my $pdbx_model_num = $options->{'pdbx_PDB_model_num'};
 
     if( ! exists $self->{'atoms'}{$atom_id} ) {
-        $self->{'atoms'}{"$atom_id"}{'group_PDB'} = 'ATOM';
-        $self->{'atoms'}{"$atom_id"}{'id'} = $atom_id;
-        $self->{'atoms'}{"$atom_id"}{'type_symbol'} = $type_symbol;
-        $self->{'atoms'}{"$atom_id"}{'label_atom_id'} = $label_atom_id;
-        $self->{'atoms'}{"$atom_id"}{'label_alt_id'} = $label_alt_id;
-        $self->{'atoms'}{"$atom_id"}{'label_comp_id'} = $label_comp_id;
-        $self->{'atoms'}{"$atom_id"}{'label_asym_id'} = $label_asym_id;
-        $self->{'atoms'}{"$atom_id"}{'label_entity_id'} = $label_entity_id;
-        $self->{'atoms'}{"$atom_id"}{'label_seq_id'} = $label_seq_id;
-        $self->{'atoms'}{"$atom_id"}{'Cartn_x'} = $cartn_x;
-        $self->{'atoms'}{"$atom_id"}{'Cartn_y'} = $cartn_y;
-        $self->{'atoms'}{"$atom_id"}{'Cartn_z'} = $cartn_z;
-        $self->{'atoms'}{"$atom_id"}{'pdbx_PDB_model_num'} = $pdbx_model_num;
+        $self->{'atoms'}{$atom_id}{'group_PDB'} = 'ATOM';
+        $self->{'atoms'}{$atom_id}{'id'} = $atom_id;
+        $self->{'atoms'}{$atom_id}{'type_symbol'} = $type_symbol;
+        $self->{'atoms'}{$atom_id}{'label_atom_id'} = $label_atom_id;
+        $self->{'atoms'}{$atom_id}{'label_alt_id'} = $label_alt_id;
+        $self->{'atoms'}{$atom_id}{'label_comp_id'} = $label_comp_id;
+        $self->{'atoms'}{$atom_id}{'label_asym_id'} = $label_asym_id;
+        $self->{'atoms'}{$atom_id}{'label_entity_id'} = $label_entity_id;
+        $self->{'atoms'}{$atom_id}{'label_seq_id'} = $label_seq_id;
+        $self->{'atoms'}{$atom_id}{'Cartn_x'} = $cartn_x;
+        $self->{'atoms'}{$atom_id}{'Cartn_y'} = $cartn_y;
+        $self->{'atoms'}{$atom_id}{'Cartn_z'} = $cartn_z;
+        $self->{'atoms'}{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
     } else {
-        die "Specified atom id is already present in the atom site.";
+        die 'Specified atom id is already present in the atom site.';
+    }
+
+    return;
+}
+
+#
+# Appends atom data structure to the current object.
+# Input:
+#     $atom_sites - list of appendable atom data structures.
+#     $action - flags: 'r' - renumber, 'o' - overwrite.
+# Output:
+#     none - atom sites are appended to the structure.
+#
+
+sub append
+{
+    my ( $self ) = shift;
+    my ( $atom_sites, $action ) = @_;
+    $action //= '';
+
+    for my $atom_site ( @{ $atom_sites } ) {
+        if( $action eq 'r' ) {
+            for my $atom_id ( keys %{ $atom_site } ) {
+                $self->{'atoms'}{$self->{'last_atom_id'}+1} =
+                    $atom_site->{$atom_id};
+                $self->{'atoms'}{$self->{'last_atom_id'}+1}{'id'} =
+                    $self->{'last_atom_id'}+1;
+                $self->{'last_atom_id'}++;
+            }
+        } else {
+            for my $atom_id ( keys %{ $atom_site } ) {
+                if( $action eq 'o' ) {
+                    $self->{'atoms'}{$atom_id} = $atom_site->{$atom_id};
+                } else {
+                    if( ! exists $self->{'atom_site'}{$atom_id} ) {
+                        $self->{'atoms'}{$atom_id} = $atom_site->{$atom_id};
+                    } else {
+                        die "Atom with id $atom_id already exists.";
+                    }
+                }
+            }
+        }
     }
 
     return;
@@ -142,6 +186,7 @@ sub filter
                     last; # Terminates early if no match is found in specifier.
                 }
             }
+
             if( $match_counter == scalar keys %{ $include } ) {
                 $filtered_atoms{$atom_id} = $atoms->{$atom_id};
             }
@@ -164,7 +209,10 @@ sub filter
         }
     }
 
-    return \%filtered_atoms;
+    # # Return object handle.
+    # my $filtered_atom_site = $self->new();
+    # $filtered_atom_site->append();
+    # return ;
 }
 
 #
