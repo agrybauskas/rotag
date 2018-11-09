@@ -394,7 +394,8 @@ sub hybridization
                             $atom_site->{$neighbours_neighbour}{'Cartn_y'},
                             $atom_site->{$neighbours_neighbour}{'Cartn_z'} ],
                         ] );
-                if( $current_dihedral_angle >= 0.95 * $PI ) {
+                if( $current_dihedral_angle >= 0.95 * $PI ||
+                    $current_dihedral_angle <= 0.05 * $PI ) {
                     $dihedral_angle = $current_dihedral_angle;
                     last;
                 }
