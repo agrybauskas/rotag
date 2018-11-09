@@ -39,9 +39,9 @@ our $SIG_FIGS = '%.3f';
 our $SP3_ANGLE = 109.5 * $PI / 180.0;
 our $SP2_ANGLE = 120.0 * $PI / 180.0;
 our $SP_ANGLE  = $PI;
-our $SP3_ANGLE_ERR = 10.95 * $PI / 180.0; #
-our $SP2_ANGLE_ERR = 12.00 * $PI / 180.0; # TODO: check for more accurate values.
-our $SP_ANGLE_ERR  = 0.1 * $PI;           #
+our $SP3_ANGLE_ERR = 5 * $PI / 180.0; #
+our $SP2_ANGLE_ERR = 5 * $PI / 180.0; # TODO: check for more accurate values.
+our $SP_ANGLE_ERR  = 5 * $PI / 180.0; #
 
 # ------------------------------ Grid constants ------------------------------- #
 

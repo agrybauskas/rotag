@@ -4,11 +4,13 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( all_dihedral
-                     bond_angle
-                     bond_length
-                     dihedral_angle
-                     rmsd );
+BEGIN {
+    our @EXPORT_OK = qw( all_dihedral
+                         bond_angle
+                         bond_length
+                         dihedral_angle
+                         rmsd );
+}
 
 use Math::Trig;
 use List::MoreUtils qw( uniq );
