@@ -129,7 +129,7 @@ sub append
                 if( $action eq 'o' ) {
                     $self->{'atoms'}{$atom_id} = $atom_site->{$atom_id};
                 } else {
-                    if( ! exists $self->{'atom_site'}{$atom_id} ) {
+                    if( ! exists $self->{'atoms'}{$atom_id} ) {
                         $self->{'atoms'}{$atom_id} = $atom_site->{$atom_id};
                     } else {
                         die "Atom with id $atom_id already exists.";
@@ -138,6 +138,8 @@ sub append
             }
         }
     }
+
+    $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
 
     return;
 }
@@ -209,10 +211,11 @@ sub filter
         }
     }
 
-    # # Return object handle.
-    # my $filtered_atom_site = $self->new();
-    # $filtered_atom_site->append();
-    # return ;
+    # Return object handle.
+    my $filtered_atom_site = AtomSite->new();
+    $filtered_atom_site->append( [ \%filtered_atoms ] );
+
+    return $filtered_atom_site;
 }
 
 #
