@@ -13,7 +13,11 @@ $VAR1 = bless( {
       'auth_atom_id' => 'N',
       'auth_comp_id' => 'ASP',
       'auth_seq_id' => '264',
+      'connections' => [
+        '1409'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp3',
       'id' => '1408',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -41,7 +45,13 @@ $VAR1 = bless( {
       'auth_atom_id' => 'CA',
       'auth_comp_id' => 'ASP',
       'auth_seq_id' => '264',
+      'connections' => [
+        '1408',
+        '1410',
+        '1412'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp3',
       'id' => '1409',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -69,7 +79,12 @@ $VAR1 = bless( {
       'auth_atom_id' => 'C',
       'auth_comp_id' => 'ASP',
       'auth_seq_id' => '264',
+      'connections' => [
+        '1409',
+        '1411'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp2',
       'id' => '1410',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -97,7 +112,11 @@ $VAR1 = bless( {
       'auth_atom_id' => 'O',
       'auth_comp_id' => 'ASP',
       'auth_seq_id' => '264',
+      'connections' => [
+        '1410'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp2',
       'id' => '1411',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -125,7 +144,12 @@ $VAR1 = bless( {
       'auth_atom_id' => 'CB',
       'auth_comp_id' => 'ASP',
       'auth_seq_id' => '264',
+      'connections' => [
+        '1409',
+        '1413'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp3',
       'id' => '1412',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -153,7 +177,13 @@ $VAR1 = bless( {
       'auth_atom_id' => 'CG',
       'auth_comp_id' => 'ASP',
       'auth_seq_id' => '264',
+      'connections' => [
+        '1412',
+        '1415',
+        '1414'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp2',
       'id' => '1413',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -181,7 +211,11 @@ $VAR1 = bless( {
       'auth_atom_id' => 'OD1',
       'auth_comp_id' => 'ASP',
       'auth_seq_id' => '264',
+      'connections' => [
+        '1413'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp2',
       'id' => '1414',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -209,7 +243,11 @@ $VAR1 = bless( {
       'auth_atom_id' => 'OD2',
       'auth_comp_id' => 'ASP',
       'auth_seq_id' => '264',
+      'connections' => [
+        '1413'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp2',
       'id' => '1415',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -237,7 +275,11 @@ $VAR1 = bless( {
       'auth_atom_id' => 'N',
       'auth_comp_id' => 'SER',
       'auth_seq_id' => '18',
+      'connections' => [
+        '148'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp3',
       'id' => '147',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -265,7 +307,13 @@ $VAR1 = bless( {
       'auth_atom_id' => 'CA',
       'auth_comp_id' => 'SER',
       'auth_seq_id' => '18',
+      'connections' => [
+        '147',
+        '149',
+        '151'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp3',
       'id' => '148',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -293,7 +341,12 @@ $VAR1 = bless( {
       'auth_atom_id' => 'C',
       'auth_comp_id' => 'SER',
       'auth_seq_id' => '18',
+      'connections' => [
+        '148',
+        '150'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp2',
       'id' => '149',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -321,7 +374,11 @@ $VAR1 = bless( {
       'auth_atom_id' => 'O',
       'auth_comp_id' => 'SER',
       'auth_seq_id' => '18',
+      'connections' => [
+        '149'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp2',
       'id' => '150',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -349,7 +406,12 @@ $VAR1 = bless( {
       'auth_atom_id' => 'CB',
       'auth_comp_id' => 'SER',
       'auth_seq_id' => '18',
+      'connections' => [
+        '148',
+        '152'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp3',
       'id' => '151',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',
@@ -377,7 +439,11 @@ $VAR1 = bless( {
       'auth_atom_id' => 'OG',
       'auth_comp_id' => 'SER',
       'auth_seq_id' => '18',
+      'connections' => [
+        '151'
+      ],
       'group_PDB' => 'ATOM',
+      'hybridization' => 'sp3',
       'id' => '152',
       'label_alt_id' => '.',
       'label_asym_id' => 'A',

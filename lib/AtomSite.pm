@@ -114,7 +114,7 @@ sub create
 # Appends atom data structure to the current object.
 # Input:
 #     $atom_sites - list of appendable atom data structures.
-#     $action - flags: 'r' - renumber, 'o' - overwrite.
+#     $renumber - renumbers the ids.
 # Output:
 #     none - atom sites are appended to the structure.
 #
@@ -122,11 +122,11 @@ sub create
 sub append
 {
     my ( $self ) = shift;
-    my ( $atom_sites, $action ) = @_;
-    $action //= '';
+    my ( $atom_sites, $renumber ) = @_;
+    $renumber //= 0;
 
     for my $atom_site ( @{ $atom_sites } ) {
-        if( $action eq 'r' ) {
+        if( $renumber ) {
             for my $atom_id ( sort keys %{ $atom_site } ) {
                 $self->{'atoms'}{$self->{'last_atom_id'}+1} =
                     $atom_site->{$atom_id};
@@ -226,6 +226,48 @@ sub filter
     $filtered_atom_site->append( [ \%filtered_atoms ] );
 
     return $filtered_atom_site;
+}
+
+#
+# Extracts information from atom data structure.
+# Input:
+#     $options{'data'} -
+#     $options{'data_with_id'} -
+#     $options{'is_list'} -
+# Output:
+#
+
+sub extract
+{
+    my ( $self, $options ) = @_;
+    my ( $data, $data_with_id, $is_list ) =
+        ( $options->{'data'}, $options->{'data_with_id'}, $options->{'is_list'});
+
+    my @atom_data;
+    my $atom_site = $self->{'atoms'};
+
+    if( defined $data_with_id && $data_with_id ) {
+        my %atom_data_with_id;
+
+        # Simply iterates through $atom_site keys and extracts data using
+        # data specifier and is asigned to atom id.
+        for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+            $atom_data_with_id{$atom_id} =
+                [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
+        }
+        return \%atom_data_with_id;
+    } else {
+        for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+            if( defined $is_list && $is_list ) {
+                push @atom_data,
+                    map { $atom_site->{$atom_id}{$_} } @{ $data };
+            } else {
+                push @atom_data,
+                    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
+            }
+        }
+        return \@atom_data;
+    }
 }
 
 #

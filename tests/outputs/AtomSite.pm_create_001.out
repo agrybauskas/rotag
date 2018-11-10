@@ -4,6 +4,7 @@ $VAR1 = {
     'Cartn_y' => '0',
     'Cartn_z' => '0',
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => 1,
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
