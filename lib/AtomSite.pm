@@ -6,6 +6,8 @@ use warnings;
 use List::MoreUtils qw( any );
 use List::Util qw( max );
 
+use BondProperties qw( hybridization );
+use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( pdbx_loop_unique
                    obtain_pdbx_loop
                    to_pdbx );
@@ -46,6 +48,10 @@ sub open
 
     $self->{'atoms'} =
         pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
+
+    # Inserting/updating bond properties.
+    connect_atoms( $self->{'atoms'} );
+    hybridization( $self->{'atoms'} );
 
     $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
 
@@ -97,6 +103,10 @@ sub create
         die 'Specified atom id is already present in the atom site';
     }
 
+    # Inserting/updating bond properties.
+    connect_atoms( $self->{'atoms'} );
+    hybridization( $self->{'atoms'} );
+
     return;
 }
 
@@ -134,6 +144,10 @@ sub append
             }
         }
     }
+
+    # Inserting/updating bond properties.
+    connect_atoms( $self->{'atoms'} );
+    hybridization( $self->{'atoms'} );
 
     $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
 
