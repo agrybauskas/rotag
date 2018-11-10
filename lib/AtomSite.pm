@@ -3,7 +3,8 @@ package AtomSite;
 use strict;
 use warnings;
 
-use List::MoreUtils qw( any );
+use List::MoreUtils qw( any
+                        uniq );
 use List::Util qw( max );
 
 use BondProperties qw( hybridization );
@@ -150,6 +151,45 @@ sub append
     hybridization( $self->{'atoms'} );
 
     $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
+
+    return;
+}
+
+#
+# Creates an index table that stores atom ids according to the attribute data.
+# Output:
+#     creates an index table.
+# Ex.:
+#     { 'label_atom_id' => { 'CA' => [ 1, 4, 7 ],
+#                            'CB' => [ 2, 5, 8 ] } }
+#
+
+sub index
+{
+    my ( $self ) = @_;
+    my $atoms = $self->{'atoms'};
+
+    my %index_table;
+
+    for my $atom_id ( keys %{ $atoms } ) {
+        my $atom = $atoms->{$atom_id};
+
+        for my $attribute ( keys %{ $atom } ) {
+            my $value = $atom->{$attribute};
+            next if ref $value;
+            if( exists $index_table{"$attribute"} &&
+                exists $index_table{"$attribute"}{"$value"} ) {
+                push @{ $index_table{"$attribute"}{"$value"} }, $atom_id;
+                # $index_table{"$attribute"}{"$value"} =
+                #     [ sort { $a <=> $b }
+                #           @{ $index_table{"$attribute"}{"$value"} } ];
+            } else {
+                $index_table{"$attribute"}{"$value"} = [ $atom_id ];
+            }
+        }
+    }
+
+    $self->{'index_table'} = { %index_table };
 
     return;
 }
