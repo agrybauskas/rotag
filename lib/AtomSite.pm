@@ -94,7 +94,7 @@ sub create
         $self->{'atoms'}{$atom_id}{'Cartn_z'} = $cartn_z;
         $self->{'atoms'}{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
     } else {
-        die 'Specified atom id is already present in the atom site.';
+        die 'Specified atom id is already present in the atom site';
     }
 
     return;
@@ -126,14 +126,10 @@ sub append
             }
         } else {
             for my $atom_id ( sort keys %{ $atom_site } ) {
-                if( $action eq 'o' ) {
+                if( ! exists $self->{'atoms'}{$atom_id} ) {
                     $self->{'atoms'}{$atom_id} = $atom_site->{$atom_id};
                 } else {
-                    if( ! exists $self->{'atoms'}{$atom_id} ) {
-                        $self->{'atoms'}{$atom_id} = $atom_site->{$atom_id};
-                    } else {
-                        die "Atom with id $atom_id already exists.";
-                    }
+                    die "Atom with id $atom_id already exists";
                 }
             }
         }
@@ -168,7 +164,7 @@ sub filter
     my $atoms = $self->{'atoms'};
 
     if( ! defined $self->{'atoms'} ) {
-        die 'No atom were loaded to the AtomSite data structure.';
+        die 'No atom were loaded to the AtomSite data structure';
     }
 
     # Iterates through each atom in $self->{'atoms'} and checks if atom
