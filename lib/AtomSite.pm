@@ -18,7 +18,10 @@ use PDBxParser qw( pdbx_loop_unique
 sub new
 {
     my ( $class, $options ) = @_;
-    my $self = { 'last_atom_id' => 0 };
+    my ( $update_bonds ) = ( $options->{'update_bonds'} );
+    $update_bonds //= 0;
+
+    my $self = { 'last_atom_id' => 0, 'update_bonds' => $update_bonds };
 
     return bless $self, $class;
 }
@@ -50,9 +53,10 @@ sub open
     $self->{'atoms'} =
         pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
 
-    # Inserting/updating bond properties.
-    connect_atoms( $self->{'atoms'} );
-    hybridization( $self->{'atoms'} );
+    if( $self->{'update_bonds'} ) {
+        connect_atoms( $self->{'atoms'} );
+        hybridization( $self->{'atoms'} );
+    }
 
     $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
 
@@ -104,9 +108,10 @@ sub create
         die 'Specified atom id is already present in the atom site';
     }
 
-    # Inserting/updating bond properties.
-    connect_atoms( $self->{'atoms'} );
-    hybridization( $self->{'atoms'} );
+    if( $self->{'update_bonds'} ) {
+        connect_atoms( $self->{'atoms'} );
+        hybridization( $self->{'atoms'} );
+    }
 
     return;
 }
@@ -146,9 +151,10 @@ sub append
         }
     }
 
-    # Inserting/updating bond properties.
-    connect_atoms( $self->{'atoms'} );
-    hybridization( $self->{'atoms'} );
+    if( $self->{'update_bonds'} ) {
+        connect_atoms( $self->{'atoms'} );
+        hybridization( $self->{'atoms'} );
+    }
 
     $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
 
