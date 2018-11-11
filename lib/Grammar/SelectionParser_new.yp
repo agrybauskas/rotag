@@ -230,10 +230,13 @@ exp
         }
     | 'atomname' str_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'label_atom_id' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            return [ map { @{ $_[0]->{USER}{ATOM_SITE}{index_table}
+                                     {label_atom_id}{$_} } }
+                        @{ $_[2] } ];
+            # filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
+            #           'include' => { 'label_atom_id' => $_[2] },
+            #           'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+            #           'is_list' => 1 } );
         }
     | 'atomtype' str_ope
         {
@@ -358,22 +361,17 @@ sub debugger
 
 sub parser
 {
-    my ( $self, $atom_site, $input, $by_attribute, $options ) = @_;
+    my ( $self, $atom_site, $input, $options ) = @_;
 
     my ( $seed ) = $options->{"seed"};
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
-    $self->YYData->{BY_ATTRIBUTE} = $by_attribute;
     $self->YYData->{SEED} = $seed;
 
-    my $selected_atom_data = $self->YYParse( yylex => \&lexer,
-                                             yyerror => \&debugger,
-                                             yydebug=>0x00 );
+    my $selected_atom_ids = $self->YYParse( yylex => \&lexer,
+                                            yyerror => \&debugger,
+                                            yydebug=>0x00 );
 
-    my $selected_atom_site =
-        filter( { "atom_site" => $atom_site,
-                  "include" => { $by_attribute => $selected_atom_data } } );
-
-    return $selected_atom_site;
+    return $selected_atom_ids;
 }

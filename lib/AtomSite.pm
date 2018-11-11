@@ -201,6 +201,37 @@ sub index
 }
 
 #
+# Adds T (target), S (surrounding or selected), I (ignored) char to
+# '[local]_selection_state' attribute data.
+# Input:
+#     $options{'target'} - list of ids of the target atom;
+#     $options{'select'} - list of ids of the selected atom;
+#     $options{'ignore'} - list of ids of the ignored atom.
+# Output:
+#     adds markers to specified attribute field.
+#
+
+sub mark_selection
+{
+    my ( $self, $options ) = @_;
+
+    my ( $target_atom_ids, $selected_atom_ids ) =
+        ( $options->{'target'}, $options->{'select'}, );
+
+    for my $atom_id ( keys %{ $self->{'atoms'} } ) {
+        if( any { $atom_id eq $_  } @{ $target_atom_ids } ) {
+            $self->{'atoms'}{$atom_id}{'[local]_selection_state'} = 'T';
+        } elsif( any { $atom_id eq $_  } @{ $selected_atom_ids } ) {
+            $self->{'atoms'}{$atom_id}{'[local]_selection_state'} = 'S';
+        } else {
+            $self->{'atoms'}{$atom_id}{'[local]_selection_state'} = 'I';
+        }
+    }
+
+    return;
+}
+
+#
 # Filters atom data structure according to specified attributes with include,
 # exclude options.
 # Input:
@@ -210,6 +241,8 @@ sub index
 #         { 'label_atom_id' => [ 'N', 'CA', 'CB', 'CD' ],
 #           'label_comp_id' => [ 'A' ] };
 #     $options->{'exclude'} - attribute selector that excludes atom data
+#     $options->{'group_id'} - assigns the value of described group id to
+#     '[local]_selection_group' attribute.
 #     structure.
 # Output:
 #     \%filtered_atoms- filtered atom data structure;
@@ -218,8 +251,8 @@ sub index
 sub filter
 {
     my ( $self, $options ) = @_;
-    my ( $include, $exclude ) =
-        ( $options->{'include'}, $options->{'exclude'} );
+    my ( $include, $exclude, $group_id ) =
+        ( $options->{'include'}, $options->{'exclude'}, $options->{'group_id'} );
 
     my $atoms = $self->{'atoms'};
 
@@ -247,6 +280,12 @@ sub filter
 
             if( $match_counter == scalar keys %{ $include } ) {
                 $filtered_atoms{$atom_id} = $atoms->{$atom_id};
+
+                # Assigns group id.
+                if( defined $group_id ) {
+                    $filtered_atoms{$atom_id}{'[local]_selection_group'} =
+                        $group_id;
+                }
             }
         }
     } else {

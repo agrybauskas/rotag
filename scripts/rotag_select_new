@@ -15,7 +15,7 @@ use PDBxParser qw( filter
                    obtain_atom_site
                    obtain_pdbx_loop
                    to_pdbx );
-use Grammar::SelectionParser;
+use Grammar::SelectionParser_new;
 use ErrorHandling qw( parse_errors );
 use Version qw( $VERSION );
 
@@ -108,101 +108,76 @@ for my $pdbx_file ( @ARGV ) {
         die "Use command \"rotag_select --help\" in order to see the manual.\n";
     }
 
+    # Replaces 'target' keyword with previously selected target ids.
+    if( $target_cmd =~ m/target/ ) {
+        my @previous_target_atoms;
+        for my $atom_id ( keys %{ $atom_site->{'atoms'} } ) {
+            if( exists $atom_site->{'atoms'}{$atom_id}
+                                   {'[local]_selection_state'} &&
+                $atom_site->{'atoms'}{$atom_id}
+                            {'[local]_selection_state'} eq 'T' ) {
+                push @previous_target_atoms, $atom_id;
+            }
+        }
+
+        if( @previous_target_atoms ) {
+            my $previous_target_cmd =
+                'atomid ' . join ',', @previous_target_atoms;
+            $target_cmd =~ s/target/${previous_target_cmd}/g;
+        } else {
+            parse_errors( { 'program' => $0,
+                            'filename' => $pdbx_file,
+                            'type' => 'ERROR',
+                            'message' => 'no target atoms where previously ' .
+                                         "selected.\n" } );
+        }
+    }
+
+
     # Parses command line arguments to select certain atoms in PDBx.
-    # my $group_id = 1;
-    my $selection_parser = SelectionParser->new();
+    my $group_id = 1;
+    my $selection_parser = SelectionParser_new->new();
     my @target_atom_ids;
     my @target_cmds = split /;/smx, $target_cmd;
 
-    # # Replaces 'target' keyword with previously selected target ids.
-    # if( $target_cmd =~ m/target/ ) {
-    #     my @previous_target_atoms;
-    #     for my $atom_id ( keys %{ $atom_site } ) {
-    #         if( exists $atom_site->{"$atom_id"}{'[local]_selection_state'} &&
-    #             $atom_site->{"$atom_id"}{'[local]_selection_state'} eq 'T' ) {
-    #             push @previous_target_atoms, $atom_id;
-    #         }
-    #     }
+    # By default, target atoms are used for surrounding atom selection.
+    $select_cmd //= $target_cmd;
+    $select_cmd =~ s/(target)/$target_cmd/smgx;
 
-    #     if( @previous_target_atoms ) {
-    #         my $previous_target_cmd =
-    #             'atomid ' . join ',', @previous_target_atoms;
-    #         $target_cmd =~ s/target/${previous_target_cmd}/g;
-    #     } else {
-    #         parse_errors( { 'program' => $0,
-    #                         'filename' => $pdbx_file,
-    #                         'type' => 'ERROR',
-    #                         'message' => 'no target atoms where previously ' .
-    #                                      "selected.\n" } );
-    #     }
-    # }
+    for my $target_cmd ( @target_cmds ) {
+        push @target_atom_ids,
+             $selection_parser->parser( $atom_site, $target_cmd,
+                                        { 'seed', $random_seed } );
+    }
 
-    # # By default, target atoms are used for surrounding atom selection.
-    # $select_cmd //= $target_cmd;
-    # $select_cmd =~ s/(target)/$target_cmd/smgx;
+    my @selected_atom_ids =
+        @{ $selection_parser->parser( $atom_site, $select_cmd,
+                                      { 'seed', $random_seed } ) };
 
-    # if( scalar @target_cmds > 1 ) {
-    #     for my $target_cmd ( @target_cmds ) {
-    #         push @target_atom_ids,
-    #              @{ filter( { 'atom_site' =>
-    #                               $selection_parser->parser(
-    #                                   $atom_site,
-    #                                   $target_cmd,
-    #                                   'id',
-    #                                   { 'seed' => $random_seed }
-    #                               ),
-    #                           'data' => [ 'id' ],
-    #                           'is_list' => 1,
-    #                           'group_id' => $group_id } ) };
-    #         $group_id++;
-    #     }
-    # } else {
-    #     @target_atom_ids =
-    #         @{ filter( { 'atom_site' =>
-    #                          $selection_parser->parser(
-    #                              $atom_site,
-    #                              $target_cmd,
-    #                              'id',
-    #                              { 'seed' => $random_seed }
-    #                          ),
-    #                          'data' => [ 'id' ],
-    #                          'is_list' => 1,
-    #                          'group_id' => $group_id } ) };
-    # }
+    # Modifies PDBx entries by adding and/or changing selection states for atoms.
+    $atom_site->mark_selection( { 'target' => \@target_atom_ids,
+                                  'select' => \@selected_atom_ids } );
 
-    # my @selected_atom_ids =
-    #     @{ filter( { 'atom_site' =>
-    #                      $selection_parser->parser(
-    #                          $atom_site,
-    #                          $select_cmd,
-    #                          'id',
-    #                          { 'seed' => $random_seed }
-    #                      ),
-    #                  'data' => [ 'id' ],
-    #                  'is_list' => 1 } ) };
+    my $filtered_atom_site;
+    if( ! $keep_ignored ) {
+        $filtered_atom_site =
+            $atom_site->filter( { 'exclude' =>
+                                      { '[local]_selection_state' => [ 'I' ] }});
+    } else {
+        $filtered_atom_site = $atom_site;
+    }
 
-    # # Modifies PDBx entries by adding and/or changing selection states for atoms.
-    # mark_selection( $atom_site,
-    #                 { 'target' => \@target_atom_ids,
-    #                   'select' => \@selected_atom_ids } );
+    # Extracts rotamer angle data that will used to generate atom coordinates if
+    # available.
+    my $pdbx_loops;
+    if( $pdbx_file ) {
+        $pdbx_loops = obtain_pdbx_loop( $pdbx_file,
+                                        [ '_\[local\]_rotamer_angle' ] );
+    }
 
-    # if( ! $keep_ignored ) {
-    #     $atom_site =
-    #         filter( { 'atom_site' => $atom_site,
-    #                   'exclude' => { '[local]_selection_state' => [ 'I' ] } } );
-    # }
-
-    # # Extracts rotamer angle data that will used to generate atom coordinates if
-    # # available.
-    # my $pdbx_loops;
-    # if( $pdbx_file ) {
-    #     $pdbx_loops = obtain_pdbx_loop( $pdbx_file,
-    #                                     [ '_\[local\]_rotamer_angle' ] );
-    # }
-
-    # # Prints out the PDBx.
-    # to_pdbx( { 'atom_site' => $atom_site,
-    #            $pdbx_loops ? ( 'pdbx_loops', $pdbx_loops ) : (),
-    #            'add_atom_attributes' => [ '[local]_selection_state',
-    #                                       '[local]_selection_group' ] } );
+    # Prints out the PDBx.
+    to_pdbx( { 'atom_site' => $filtered_atom_site->{'atoms'},
+               $pdbx_loops ? ( 'pdbx_loops', $pdbx_loops ) : (),
+               'add_atom_attributes' => [ '[local]_selection_state',
+                                          '[local]_selection_group' ] } );
 }
