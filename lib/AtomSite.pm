@@ -241,18 +241,25 @@ sub mark_selection
 #         { 'label_atom_id' => [ 'N', 'CA', 'CB', 'CD' ],
 #           'label_comp_id' => [ 'A' ] };
 #     $options->{'exclude'} - attribute selector that excludes atom data
+#     $options->{'return_ids'} - flag that make function return filtered atom
+#     ids instead of new AtomSite data structure.
 #     $options->{'group_id'} - assigns the value of described group id to
 #     '[local]_selection_group' attribute.
 #     structure.
 # Output:
-#     \%filtered_atoms- filtered atom data structure;
+#     \%filtered_atoms - filtered atom data structure;
+#            or
+#     \@filtered_atom_ids - list of filtered atom ids.
 #
 
 sub filter
 {
     my ( $self, $options ) = @_;
-    my ( $include, $exclude, $group_id ) =
-        ( $options->{'include'}, $options->{'exclude'}, $options->{'group_id'} );
+    my ( $include, $exclude, $return_ids, $group_id ) =
+        ( $options->{'include'},    $options->{'exclude'},
+          $options->{'return_ids'}, $options->{'group_id'} );
+
+    $return_ids //= 0;
 
     my $atoms = $self->{'atoms'};
 
@@ -306,11 +313,15 @@ sub filter
         }
     }
 
-    # Return object handle.
-    my $filtered_atom_site = AtomSite->new();
-    $filtered_atom_site->append( [ \%filtered_atoms ] );
+    # Return object handle or atom ids depending on the flag.
+    if( $return_ids ) {
+        return [ keys %filtered_atoms ]
+    } else {
+        my $filtered_atom_site = AtomSite->new();
+        $filtered_atom_site->append( [ \%filtered_atoms ] );
 
-    return $filtered_atom_site;
+        return $filtered_atom_site;
+    }
 }
 
 #

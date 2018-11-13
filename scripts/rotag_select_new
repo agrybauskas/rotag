@@ -133,7 +133,6 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-
     # Parses command line arguments to select certain atoms in PDBx.
     my $group_id = 1;
     my $selection_parser = SelectionParser_new->new();
