@@ -5,6 +5,8 @@
     use List::MoreUtils qw( uniq );
     use List::Util qw( any );
 
+    use AtomProperties qw( @MAINCHAIN_GRAMMAR
+                           @SIDECHAIN_GRAMMAR );
     use ConnectAtoms qw( around_distance );
     use PDBxParser qw( filter );
 %}
@@ -33,48 +35,23 @@ line
 exp
     : 'all'
         {
-            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                             'is_list' => 1 } );
+            return [ keys %{ $_[0]->{USER}{ATOM_SITE}{atoms} } ];
         }
     | 'mainchain' exp
         {
-            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
-                                            "label_atom_id" =>
-                                                [ "N", "CA", "C", "O",
-                                                  "OXT", "H", "H2", "HA",,
-                                                  "HA2", "HA3", "HXT" ] },
-                             'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
-                             'is_list' => 1 } );
+            return $_[0]->{USER}{ATOM_SITE}->filter( { 'include' =>
+                                                         { 'id' => $_[2],
+                                                           'label_atom_id' =>
+                                                               \@MAINCHAIN_GRAMMAR },
+                                                       'return_ids' => 1 } );
         }
     | 'sidechain' exp
         {
-            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
-                                            "label_atom_id" =>
-                                                [ "CB", "CD",
-                                                  "CD1", "CD2", "CE", "CE1",
-                                                  "CE2", "CE3", "CG", "CG1",
-                                                  "CG2", "CH2", "CZ", "CZ2",
-                                                  "CZ3",  "HB", "HB1",
-                                                  "HB2", "HB3", "HD1", "HD11",
-                                                  "HD12", "HD13", "HD2", "HD21",
-                                                  "HD22", "HD23", "HD3", "HE",
-                                                  "HE1", "HE2", "HE21", "HE22",
-                                                  "HE3", "HG", "HG1", "HG11",
-                                                  "HG12", "HG13", "HG2", "HG21",
-                                                  "HG22", "HG23", "HG3", "HH",
-                                                  "HH11", "HH12", "HH2", "HH21",
-                                                  "HH22", "HZ", "HZ1",
-                                                  "HZ2", "HZ3", "ND1",
-                                                  "ND2", "NE", "NE1", "NE2",
-                                                  "NH1", "NH2", "NZ",
-                                                  "OD1", "OD2", "OE1", "OE2",
-                                                  "OG", "OG1", "OH",
-                                                  "SD", "SG" ] },
-                             'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
-                             'is_list' => 1 } );
+            return $_[0]->{USER}{ATOM_SITE}->filter( { 'include' =>
+                                                         { 'id' => $_[2],
+                                                           'label_atom_id' =>
+                                                               \@SIDECHAIN_GRAMMAR },
+                                                       'return_ids' => 1 } );
         }
     | 'byres' exp
         {
@@ -221,7 +198,6 @@ exp
     | 'atomid' num_ope
         {
             return $_[2];
-
         }
     | 'atomname' str_ope
         {

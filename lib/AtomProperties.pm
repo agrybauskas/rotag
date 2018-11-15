@@ -7,6 +7,8 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( %ATOMS
                      %HYDROGEN_NAMES
                      @MAINCHAIN_NAMES
+                     @MAINCHAIN_GRAMMAR
+                     @SIDECHAIN_GRAMMAR
                      sort_atom_names );
 
 use Version qw( $VERSION );
@@ -275,8 +277,17 @@ our %HYDROGEN_NAMES = (
     },
 );
 
-# TODO: should include proline atoms.
+# TODO: should include proline atoms.   v should not be here
 our @MAINCHAIN_NAMES = qw( N CA C O OXT CB H H2 HA HA2 HA3 HXT XA XA2 );
+
+our @MAINCHAIN_GRAMMAR = qw( N CA C O OXT H H2 HA HA2 HA3 HXT XA XA2 );
+
+our @SIDECHAIN_GRAMMAR = qw( CB CD CD1 CD2 CE CE1 CE2 CE3 CG CG1 CG2 CH2 CZ CZ2
+                             CZ3 HB HB1 HB2 HB3 HD1 HD11 HD12 HD13 HD2 HD21
+                             HD22 HD23 HD3 HE HE1 HE2 HE21 HE22 HE3 HG HG1 HG11
+                             HG12 HG13 HG2 HG21 HG22 HG23 HG3 HH HH11 HH12 HH2
+                             HH21 HH22 HZ HZ1 HZ2 HZ3 ND1 ND2 NE NE1 NE2 NH1 NH2
+                             NZ OD1 OD2 OE1 OE2 OG OG1 OH SD SG );
 
 #
 # Sorts atom names by their hierarchical rules.
