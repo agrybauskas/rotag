@@ -56,36 +56,34 @@ exp
     | 'byres' exp
         {
             my @residue_ids =
-                uniq(
-                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-                             'data' => [ 'label_seq_id' ],
-                             'is_list' => 1 } ) } );
-            my @chains = # TODO: look, if states might make problems.
-                uniq(
-                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-                             'data' => [ 'label_asym_id' ],
-                             'is_list' => 1 } ) } );
+                uniq( @{ $_[0]->{USER}{ATOM_SITE}
+                              ->filter( { 'include' => { 'id' => $_[2] } } )
+                              ->extract( { 'data' => [ 'label_seq_id' ],
+                                           'is_list' => 1 } ) } );
+            my @chains =
+                uniq( @{ $_[0]->{USER}{ATOM_SITE}
+                              ->filter( { 'include' => { 'id' => $_[2] } } )
+                              ->extract( { 'data' => [ 'label_asym_id' ],
+                                           'is_list' => 1 } ) } );
             my @pdbx_model_num =
-                uniq(
-                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-                             'data' => [ 'pdbx_PDB_model_num' ],
-                             'is_list' => 1 } ) } );
+                uniq( @{ $_[0]->{USER}{ATOM_SITE}
+                              ->filter( { 'include' => { 'id' => $_[2] } } )
+                              ->extract( { 'data' => [ 'pdbx_PDB_model_num' ],
+                                           'is_list' => 1 } ) } );
             my @alt =
-                uniq(
-                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-                             'data' => [ 'label_alt_id' ],
-                             'is_list' => 1 } ) } );
-            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { 'label_seq_id' => \@residue_ids,
-                                            'label_asym_id' => \@chains,
-                                            'label_alt_id' => [ @alt, '.' ],
-                                            'label_entity_id' => \@pdbx_model_num, },
-                             'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                             'is_list' => 1 } );
+                uniq( @{ $_[0]->{USER}{ATOM_SITE}
+                              ->filter( { 'include' => { 'id' => $_[2] } } )
+                              ->extract( { 'data' => [ 'label_alt_id' ],
+                                           'is_list' => 1 } ) } );
+
+            return $_[0]->{USER}{ATOM_SITE}
+                        ->filter( { 'include' =>
+                                        { 'label_seq_id' => \@residue_ids,
+                                          'label_asym_id' => \@chains,
+                                          'label_alt_id' => [ @alt, '.' ],
+                                          'label_entity_id' => \@pdbx_model_num, } } )
+                        ->extract( { 'data' => [ 'id' ],
+                                     'is_list' => 1 } );
         }
     | exp '&' exp
         {
@@ -153,12 +151,10 @@ exp
             } else {
                 unshift( @ids, '!' );
                 $around_atom_site =
-                    around_distance( $_[0]->{USER}{ATOM_SITE},
-                                     { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
+                    around_distance( $_[0]->{USER}{ATOM_SITE}{atoms},
+                                     { 'id' => $_[1] },
                                      $_[3] );
-                return filter( { 'atom_site' => $around_atom_site,
-                                 'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                                 'is_list' => 1 } );
+                return [ keys %{ $around_atom_site } ];
             }
         }
     | exp 'rand' NUM
