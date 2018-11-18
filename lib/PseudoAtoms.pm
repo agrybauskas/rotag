@@ -444,7 +444,6 @@ sub generate_library
                     die "no possible rotamer solutions were detected.\n";
                 }
 
-
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                     my %angles =
                         map { my $angle_id = $_ + 1;

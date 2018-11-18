@@ -71,6 +71,9 @@ sub rotation_only
                                               {'connections'} } ) < 2 ){ next; }
 
                 my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
+                if( scalar( @{ $residue_site->{$mid_atom_id}
+                                              {'connections'} } ) < 2 ){ next; }
+
                 my @mid_connections = # Excludes up atom.
                     grep { $_ ne $up_atom_id }
                     @{ $residue_site->{$mid_atom_id}{'connections'} };
