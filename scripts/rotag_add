@@ -167,10 +167,6 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( { 'atom_site' => { %{ $atom_site }, %rotamer_atom_site },
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } elsif( $add_hydrogens ) {
-        # FIXME: should be added after the groups are split.
-        connect_atoms( $atom_site );
-        hybridization( $atom_site );
-
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $selected_atom_site } ) {
             $selected_atom_site = $atom_site;
@@ -179,26 +175,32 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         my $atom_site_split_groups =
-            split_by({ 'atom_site' => $selected_atom_site, 'append_dot' => 1 });
+            split_by( { 'atom_site' => $selected_atom_site,
+                        'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
+                        'append_dot' => 1 } );
 
         my %atom_site;
         my $last_atom_id = max( keys %{ $selected_atom_site } );
         my @visited_atom_ids;
-        for my $residue_unique_key ( sort keys %{ $atom_site_split_groups } ) {
-            my $residue_site =
-                filter_by_unique_residue_key( $selected_atom_site,
-                                              $residue_unique_key, 1 );
+        for my $group_key ( sort keys %{ $atom_site_split_groups } ) {
+            my $group_site =
+                filter( { 'atom_site' => $selected_atom_site,
+                          'include' =>
+                              { 'id' => $atom_site_split_groups->{$group_key}}});
+
+            connect_atoms( $group_site );
+            hybridization( $group_site );
+
             my $hydrogen_site =
-                add_hydrogens( $residue_site,
+                add_hydrogens( $group_site,
                                { 'last_atom_id' => $last_atom_id,
                                  'use_origins_alt_group_id' => 1,
                                  'use_existing_connections' => 1,
                                  'use_existing_hybridizations' => 1,
-                                 'reference_atom_site' => $selected_atom_site,
                                  'exclude_by_atom_ids' => \@visited_atom_ids } );
             %atom_site = ( %atom_site, %{ $hydrogen_site } );
 
-            push @visited_atom_ids, keys %{ $residue_site };
+            push @visited_atom_ids, keys %{ $group_site };
 
             $last_atom_id = max( keys %atom_site );
         }
