@@ -1,3 +1,0 @@
-$VAR1 = bless( {
-  'last_atom_id' => 0
-}, 'AtomSite' );
