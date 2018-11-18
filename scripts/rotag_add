@@ -193,6 +193,7 @@ for my $pdbx_file ( @ARGV ) {
                                { 'last_atom_id' => $last_atom_id,
                                  'use_origins_alt_group_id' => 1,
                                  'use_existing_connections' => 1,
+                                 'use_existing_hybridizations' => 1,
                                  'reference_atom_site' => $selected_atom_site,
                                  'exclude_by_atom_ids' => \@visited_atom_ids } );
             %atom_site = ( %atom_site, %{ $hydrogen_site } );

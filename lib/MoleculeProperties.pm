@@ -1118,7 +1118,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OG'  => 'sp3',
     },
     'SER' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1127,7 +1126,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ARG' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1141,7 +1139,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'HIS' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1154,7 +1151,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'LYS' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1166,7 +1162,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ASP' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1177,7 +1172,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'GLU' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1189,7 +1183,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'CYS' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1198,14 +1191,12 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'GLY' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
         'OXT' => 'sp2',
     },
     'PRO' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1215,7 +1206,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ALA' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1223,7 +1213,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'VAL' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1233,7 +1222,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ILE' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1244,7 +1232,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'LEU' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1255,7 +1242,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'MET' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1266,7 +1252,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'PHE' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1280,7 +1265,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'TYR' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1294,7 +1278,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp3',
     },
     'TRP' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1311,7 +1294,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'THR' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1321,7 +1303,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'ASN' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
@@ -1332,7 +1313,6 @@ our %CLEAR_HYBRIDIZATION = (
         'OXT' => 'sp2',
     },
     'GLN' => {
-        'N'   => 'sp2',
         'CA'  => 'sp3',
         'C'   => 'sp2',
         'O'   => 'sp2',
