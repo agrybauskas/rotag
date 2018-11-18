@@ -189,9 +189,11 @@ for my $pdbx_file ( @ARGV ) {
                 filter_by_unique_residue_key( $selected_atom_site,
                                               $residue_unique_key, 1 );
             my $hydrogen_site =
-                add_hydrogens( $residue_site ,
+                add_hydrogens( $residue_site,
                                { 'last_atom_id' => $last_atom_id,
                                  'use_origins_alt_group_id' => 1,
+                                 'use_existing_connections' => 1,
+                                 'reference_atom_site' => $selected_atom_site,
                                  'exclude_by_atom_ids' => \@visited_atom_ids } );
             %atom_site = ( %atom_site, %{ $hydrogen_site } );
 

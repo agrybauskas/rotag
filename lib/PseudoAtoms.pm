@@ -1415,8 +1415,8 @@ sub add_hydrogens_sp2
         # where beta is angle between two given bonds.
         my $bond_angle =
             ( 2 * $PI - bond_angle( [ $up_atom_coord,
-                                       $mid_atom_coord,
-                                       $left_atom_coord ] ) ) / 2;
+                                      $mid_atom_coord,
+                                      $left_atom_coord ] ) ) / 2;
 
         # Hydrogen is placed by placing hydrogen colinearly and then
         # rotating according to bond angle.
