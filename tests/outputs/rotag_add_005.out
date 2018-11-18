@@ -1,1 +1,40 @@
-# A placeholder for the future data.
+data_testing
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1 N N . ALA A 1 1 18.773 1.967 48.959 1 T
+ATOM 2 C CA . ALA A 1 1 18.180 2.513 50.215 1 T
+ATOM 3 C C . ALA A 1 1 18.718 3.917 50.506 1 T
+ATOM 4 O O . ALA A 1 1 17.956 4.886 50.544 1 T
+ATOM 5 C CB . ALA A 1 1 18.473 1.577 51.384 1 T
+ATOM 6 N N . CYS A 1 2 20.031 4.014 50.715 1 T
+ATOM 7 C CA . CYS A 1 2 20.687 5.291 50.992 1 T
+ATOM 8 C C . CYS A 1 2 21.147 5.951 49.690 1 T
+ATOM 9 O O . CYS A 1 2 22.338 5.955 49.351 1 T
+ATOM 10 C CB . CYS A 1 2 21.877 5.086 51.927 1 T
+ATOM 11 S SG . CYS A 1 2 22.471 6.606 52.667 1 T
+ATOM 12 H H . ALA A 1 1 18.538 1.137 48.668 1 ?
+ATOM 13 H H2 . ALA A 1 1 19.369 2.464 48.484 1 ?
+ATOM 14 H HA . ALA A 1 1 17.120 2.580 50.088 1 ?
+ATOM 15 H HB1 . ALA A 1 1 17.563 1.358 51.903 1 ?
+ATOM 16 H HB2 . ALA A 1 1 19.161 2.048 52.055 1 ?
+ATOM 17 H HB3 . ALA A 1 1 18.901 0.668 51.015 1 ?
+ATOM 18 H H . CYS A 1 2 20.537 3.258 50.684 1 ?
+ATOM 19 H HA . CYS A 1 2 19.984 5.939 51.472 1 ?
+ATOM 20 H HB2 . CYS A 1 2 22.682 4.656 51.368 1 ?
+ATOM 21 H HB3 . CYS A 1 2 21.582 4.428 52.718 1 ?
+ATOM 22 H HG . CYS A 1 2 23.703 6.291 53.150 1 ?
+#
