@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( index );
+
+#
+# Unit test: PDBxParser::index.
+# Example: ./index structure.dump
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $index_table = index(  $atom_site );
+
+for my $attribute ( sort keys %{ $index_table } ) {
+    for my $value ( sort keys %{ $index_table->{$attribute} } ) {
+        print "${attribute} ${value} ";
+        print join( q{,}, sort @{ $index_table->{$attribute}{$value} } ), "\n";
+    }
+}
