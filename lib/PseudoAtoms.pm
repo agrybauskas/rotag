@@ -952,20 +952,20 @@ sub add_hydrogens
                 @{ $reference_atom_site->{"$atom_id"}{'connections'} };
         }
 
-        # # TODO: should be pre-determined as constant variable.
-        # my @mandatory_residue_atoms =
-        #     @{ $RESIDUE_ATOMS{$residue_name}{'mandatory'} };
-        # my @mandatory_connections = ();
-        # for my $mandatory_atom ( @mandatory_residue_atoms ) {
-        #     if( any { $mandatory_atom eq $_ }
-        #            @{ $CONNECTIVITY{$residue_name}{$atom_name} } ) {
-        #         push @mandatory_connections, $mandatory_atom;
-        #     }
-        # }
+        # TODO: should be pre-determined as constant variable.
+        my @mandatory_residue_atoms =
+            @{ $RESIDUE_ATOMS{$residue_name}{'mandatory'} };
+        my @mandatory_connections = ();
+        for my $mandatory_atom ( @mandatory_residue_atoms ) {
+            if( any { $mandatory_atom eq $_ }
+                   @{ $CONNECTIVITY{$residue_name}{$atom_name} } ) {
+                push @mandatory_connections, $mandatory_atom;
+            }
+        }
 
-        # # Hydrogens cannot be added if there is a missing information about
-        # # mandatory atom connections.
-        # next if( scalar @connection_ids < scalar @mandatory_connections );
+        # Hydrogens cannot be added if there is a missing information about
+        # mandatory atom connections.
+        next if( scalar @connection_ids < scalar @mandatory_connections );
 
         my @connection_names =
             map { $reference_atom_site->{"$_"}{'label_atom_id'} }

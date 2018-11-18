@@ -109,14 +109,14 @@ our %HYDROGEN_NAMES = (
         'OG'  => [ 'HG' ]
     },
     'SER' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
         'OG'  => [ 'HG' ]
     },
     'ARG' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
@@ -127,7 +127,7 @@ our %HYDROGEN_NAMES = (
         'NH2' => [ 'HH21', 'HH22' ]
     },
     'HIS' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
@@ -136,7 +136,7 @@ our %HYDROGEN_NAMES = (
         'NE2' => [ 'HE2' ]
     },
     'LYS' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
@@ -146,27 +146,27 @@ our %HYDROGEN_NAMES = (
         'NZ'  => [ 'HZ1', 'HZ2' ]
     },
     'ASP' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
     },
     'GLU' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
         'CG'  => [ 'HG2', 'HG3' ],
     },
     'CYS' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
         'SG'  => [ 'HG' ]
     },
     'GLY' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA2', 'HA3' ],
         'OXT' => [ 'HXT' ]
     },
@@ -179,13 +179,13 @@ our %HYDROGEN_NAMES = (
         'CD'  => [ 'HD2', 'HD3' ]
     },
     'ALA' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB1', 'HB2', 'HB3' ]
     },
     'VAL' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB' ],
@@ -193,7 +193,7 @@ our %HYDROGEN_NAMES = (
         'CG2' => [ 'HG21', 'HG22', 'HG23' ]
     },
     'ILE' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB' ],
@@ -202,7 +202,7 @@ our %HYDROGEN_NAMES = (
         'CD1' => [ 'HD11', 'HD12', 'HD13' ]
     },
     'LEU' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
@@ -211,7 +211,7 @@ our %HYDROGEN_NAMES = (
         'CD2' => [ 'HD21', 'HD22', 'HD23' ]
     },
     'MET' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
@@ -219,7 +219,7 @@ our %HYDROGEN_NAMES = (
         'CE'  => [ 'HE1', 'HE2', 'HE3' ]
     },
     'PHE' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
@@ -230,7 +230,7 @@ our %HYDROGEN_NAMES = (
         'CZ'  => [ 'HZ' ]
     },
     'TYR' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
@@ -241,7 +241,7 @@ our %HYDROGEN_NAMES = (
         'OH'  => [ 'HH' ]
     },
     'TRP' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
@@ -253,7 +253,7 @@ our %HYDROGEN_NAMES = (
         'CH2' => [ 'HH2' ]
     },
     'THR' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB' ],
@@ -261,14 +261,14 @@ our %HYDROGEN_NAMES = (
         'CG2' => [ 'HG21', 'HG22', 'HG23' ]
     },
     'ASN' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
         'ND2' => [ 'HD21', 'HD22' ]
     },
     'GLN' => {
-        'N'   => [ 'H', 'H2' ],
+        'N'   => [ 'H' ],
         'CA'  => [ 'HA' ],
         'OXT' => [ 'HXT' ],
         'CB'  => [ 'HB2', 'HB3' ],
