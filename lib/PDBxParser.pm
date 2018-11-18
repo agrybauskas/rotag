@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      filter_by_unique_residue_key
                      identify_residue_atoms
+                     index
                      mark_selection
                      pdbx_loop_unique
                      pdbx_loop_to_csv
@@ -300,6 +301,41 @@ sub filter
     }
 
     return \%filtered_atoms;
+}
+
+#
+# Creates an index table that stores atom ids according to the attribute data.
+# Input:
+#     $atom_site - atom data structure.
+# Output:
+#     $index_table - index table.
+# Ex.:
+#     { 'label_atom_id' => { 'CA' => [ 1, 4, 7 ],
+#                            'CB' => [ 2, 5, 8 ] } }
+#
+
+sub index
+{
+    my ( $atom_site ) = @_;
+
+    my %index_table;
+
+    for my $atom_id ( keys %{ $atom_site } ) {
+        my $atom = $atom_site->{$atom_id};
+
+        for my $attribute ( keys %{ $atom } ) {
+            my $value = $atom->{$attribute};
+            next if ref $value;
+            if( exists $index_table{"$attribute"} &&
+                exists $index_table{"$attribute"}{"$value"} ) {
+                push @{ $index_table{"$attribute"}{"$value"} }, $atom_id;
+            } else {
+                $index_table{"$attribute"}{"$value"} = [ $atom_id ];
+            }
+        }
+    }
+
+    return \%index_table;
 }
 
 #
