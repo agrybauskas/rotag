@@ -393,12 +393,15 @@ sub generate_library
             for my $ca_atom_id ( @{ $target_cell_idxs->{$cell} } ) {
                 my $residue_id =
                     $current_atom_site->{$ca_atom_id}{'label_seq_id'};
+                my $residue_chain =
+                    $current_atom_site->{$ca_atom_id}{'label_asym_id'};
                 my $residue_site =
                     filter( { 'atom_site' => $current_atom_site,
                               'include' =>
                                   { 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                                     'label_alt_id' => [ $alt_id, '.' ],
-                                    'label_seq_id' => [ $residue_id ] } } );
+                                    'label_seq_id' => [ $residue_id ],
+                                    'label_asym_id' => [ $residue_chain ] } } );
                 my $residue_unique_key =
                     determine_residue_keys( $residue_site,
                                             {'exclude_dot' => 1} )->[0];
@@ -440,29 +443,29 @@ sub generate_library
                            [ @allowed_angles ],
                            $threads ) };
 
-                if( ! @{ $allowed_angles } ) {
-                    die "no possible rotamer solutions were detected.\n";
-                }
+    #             if( ! @{ $allowed_angles } ) {
+    #                 die "no possible rotamer solutions were detected.\n";
+    #             }
 
-                for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
-                    my %angles =
-                        map { my $angle_id = $_ + 1;
-                              ( "chi$angle_id" => $allowed_angles->[$i][$_])}
-                            ( 0..$#{ $allowed_angles->[$i] } );
-                    my $rotamer_energy_sum = $energy_sums->[$i];
-                    if( defined $rotamer_energy_sum &&
-                        $rotamer_energy_sum <= $energy_cutoff_residue ) {
-                        push @{ $rotamer_library{"$residue_unique_key"} },
-                            { 'angles' => \%angles,
-                              'potential' => $interactions,
-                              'potential_energy_value' => $rotamer_energy_sum };
-                    }
-                }
+    #             for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+    #                 my %angles =
+    #                     map { my $angle_id = $_ + 1;
+    #                           ( "chi$angle_id" => $allowed_angles->[$i][$_])}
+    #                         ( 0..$#{ $allowed_angles->[$i] } );
+    #                 my $rotamer_energy_sum = $energy_sums->[$i];
+    #                 if( defined $rotamer_energy_sum &&
+    #                     $rotamer_energy_sum <= $energy_cutoff_residue ) {
+    #                     push @{ $rotamer_library{"$residue_unique_key"} },
+    #                         { 'angles' => \%angles,
+    #                           'potential' => $interactions,
+    #                           'potential_energy_value' => $rotamer_energy_sum };
+    #                 }
+    #             }
             }
         }
     }
 
-    return \%rotamer_library;
+    # return \%rotamer_library;
 }
 
 #
