@@ -443,29 +443,29 @@ sub generate_library
                            [ @allowed_angles ],
                            $threads ) };
 
-    #             if( ! @{ $allowed_angles } ) {
-    #                 die "no possible rotamer solutions were detected.\n";
-    #             }
+                if( ! @{ $allowed_angles } ) {
+                    die "no possible rotamer solutions were detected.\n";
+                }
 
-    #             for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
-    #                 my %angles =
-    #                     map { my $angle_id = $_ + 1;
-    #                           ( "chi$angle_id" => $allowed_angles->[$i][$_])}
-    #                         ( 0..$#{ $allowed_angles->[$i] } );
-    #                 my $rotamer_energy_sum = $energy_sums->[$i];
-    #                 if( defined $rotamer_energy_sum &&
-    #                     $rotamer_energy_sum <= $energy_cutoff_residue ) {
-    #                     push @{ $rotamer_library{"$residue_unique_key"} },
-    #                         { 'angles' => \%angles,
-    #                           'potential' => $interactions,
-    #                           'potential_energy_value' => $rotamer_energy_sum };
-    #                 }
-    #             }
+                for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+                    my %angles =
+                        map { my $angle_id = $_ + 1;
+                              ( "chi$angle_id" => $allowed_angles->[$i][$_])}
+                            ( 0..$#{ $allowed_angles->[$i] } );
+                    my $rotamer_energy_sum = $energy_sums->[$i];
+                    if( defined $rotamer_energy_sum &&
+                        $rotamer_energy_sum <= $energy_cutoff_residue ) {
+                        push @{ $rotamer_library{"$residue_unique_key"} },
+                            { 'angles' => \%angles,
+                              'potential' => $interactions,
+                              'potential_energy_value' => $rotamer_energy_sum };
+                    }
+                }
             }
         }
     }
 
-    # return \%rotamer_library;
+    return \%rotamer_library;
 }
 
 #
@@ -800,6 +800,7 @@ sub calc_full_atom_energy
                                    'exclude' =>
                                    { 'label_atom_id' => \@MAINCHAIN_NAMES } } ) };
         my %rotamer_interaction_site = ( %rotamer_site, %{ $interaction_site } );
+        # FIXME: must find a proper atom_site to be passed.
         $parameters->{'atom_site'} = \%rotamer_interaction_site;
 
         my $rotamer_energy_sum = 0;
