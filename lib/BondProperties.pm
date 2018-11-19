@@ -7,7 +7,8 @@ use Exporter qw( import );
 BEGIN {
     our @EXPORT_OK = qw( bond_type
                          hybridization
-                         rotatable_bonds );
+                         rotatable_bonds
+                         unique_rotatables );
 }
 
 use List::Util qw( any );
@@ -589,6 +590,36 @@ sub rotatable_bonds
     }
 
     return \%named_rotatable_bonds;
+}
+
+#
+# Identifies unique rotatable bonds in selected group of residue atoms.
+# Input:
+#     $atom_site - atom data structure (see PDBxParser.pm).
+# Output:
+#     %unique_rotatable_bonds - hash of arrays that point to unique rotatable
+#     bonds.
+#     Ex.: { 'chi1' => [ 1, 2 ],
+#            'chi2' => [ 2, 3 ] }
+#
+
+sub unique_rotatables
+{
+    my ( $atom_site ) = @_;
+
+    my $rotatable_bonds = rotatable_bonds( $atom_site );
+
+    my %unique_rotatable_bonds;
+    for my $atom_id ( keys %{ $rotatable_bonds } ) {
+        for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
+            if( ! exists $unique_rotatable_bonds{"$angle_name"} ) {
+                $unique_rotatable_bonds{"$angle_name"} =
+                    $rotatable_bonds->{"$atom_id"}{"$angle_name"};
+            }
+        }
+    }
+
+    return \%unique_rotatable_bonds;
 }
 
 1;
