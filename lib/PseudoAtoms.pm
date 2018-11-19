@@ -800,7 +800,10 @@ sub calc_full_atom_energy
                                    'exclude' =>
                                    { 'label_atom_id' => \@MAINCHAIN_NAMES } } ) };
         my %rotamer_interaction_site = ( %rotamer_site, %{ $interaction_site } );
-        # FIXME: must find a proper atom_site to be passed.
+
+        # HACK: check if new connections will not erase important old ones.
+        connect_atoms( \%rotamer_interaction_site );
+
         $parameters->{'atom_site'} = \%rotamer_interaction_site;
 
         my $rotamer_energy_sum = 0;
