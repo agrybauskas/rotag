@@ -44,7 +44,8 @@ use Measure qw( all_dihedral
                 dihedral_angle
                 bond_angle );
 use BondProperties qw( hybridization
-                       rotatable_bonds );
+                       rotatable_bonds
+                       unique_rotatables );
 use MoleculeProperties qw( %CONNECTIVITY
                            %RESIDUE_ATOMS );
 use Multithreading qw( multithreading );
@@ -762,27 +763,19 @@ sub calc_full_atom_energy
                          'use_origins_alt_group_id' => 1 } );
     append_connections( $residue_site, $hydrogens );
     $residue_site = { %{ $residue_site }, %{ $hydrogens } };
+
     rotation_only( $residue_site );
 
-    my $rotatable_bonds = rotatable_bonds( $residue_site );
-    if( ! %{ $rotatable_bonds } ) { next; }
-
     # Identifies missing unique rotatable bonds.
-    my %uniq_rotatable_bonds; # TODO: could be used to verify bond uniqueness.
-    for my $atom_id ( keys %{ $rotatable_bonds } ) {
-        for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
-            if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
-                $uniq_rotatable_bonds{"$angle_name"} =
-                    $rotatable_bonds->{"$atom_id"}{"$angle_name"};
-            }
-        }
-    }
+    my %uniq_rotatable_bonds = %{ unique_rotatables( $residue_site ) };
+
+    if( ! %uniq_rotatable_bonds ) { next; }
 
     my $uniq_rotatable_bond_num = scalar keys %uniq_rotatable_bonds;
-    my $missing_rotatable_bond_num =
-        $uniq_rotatable_bond_num - scalar @{ $array_blocks->[0] };
-    my @checkable_angles = @{ $array_blocks };
+    my $missing_rotatable_bond_num = $uniq_rotatable_bond_num -
+                                     scalar @{ $array_blocks->[0] };
 
+    my @checkable_angles = @{ $array_blocks };
     if( $missing_rotatable_bond_num ) {
         my @sampled_angles =
             map { [ $_ ] } @{sample_angles( [ [ 0, 2 * $PI ] ], $small_angle )};
@@ -815,7 +808,7 @@ sub calc_full_atom_energy
                                    'exclude' =>
                                    { 'label_atom_id' => \@MAINCHAIN_NAMES } } ) };
         my %rotamer_interaction_site = ( %rotamer_site, %{ $interaction_site } );
-        use PDBxParser qw( to_pdbx ); to_pdbx( { 'atom_site' => \%rotamer_site } );
+
   #       # HACK: check if new connections will not erase important old ones.
   #       connect_atoms( \%rotamer_interaction_site );
 
