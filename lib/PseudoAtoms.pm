@@ -336,28 +336,30 @@ sub generate_library
                       'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
 
-        # Prepares hydrogen-free structure.
-        my $current_atom_site_no_H = clone( # Without hydrogens.
-            filter( { 'atom_site' => $current_atom_site,
+        # Predetermines geometrically clearly defined hydrogen positions.
+        my $current_atom_site_w_H = clone( $current_atom_site );
+        my $hydrogens =
+            add_hydrogens( $current_atom_site_w_H,
+                           { 'alt_group_id' => q{.},
+                             'add_only_clear_positions' => 1,
+                             'use_origins_alt_group_id' => 1 } );
+        append_connections( $current_atom_site_w_H, $hydrogens );
+        $current_atom_site_w_H = { %{ $current_atom_site_w_H }, %{ $hydrogens }};
+        hybridization( $current_atom_site_w_H );
+
+        # Also, prepares hydrogen-free structure.
+        my $current_atom_site_no_H = clone(
+            filter( { 'atom_site' => $current_atom_site_w_H,
                       'exclude' => { 'type_symbol' => [ 'H' ] } } )
         );
         connect_atoms( $current_atom_site_no_H );
         hybridization( $current_atom_site_no_H );
 
-        # Predetermines geometrically clearly defined hydrogen positions.
-        my $current_atom_site_w_H = clone( $current_atom_site_no_H );
-        my $hydrogens =
-            add_hydrogens( $current_atom_site_w_H,
-                           { 'alt_group_id' => q{.},
-                             'add_only_clear_positions' => 1 } );
-        append_connections( $current_atom_site_w_H, $hydrogens );
-        $current_atom_site_w_H = { %{ $current_atom_site_w_H }, %{ $hydrogens }};
-        hybridization( $current_atom_site_w_H );
-
         # Generates conformational models before checking for
         # clashes/interactions for given residues.
         if( $conf_model eq 'rotation_only' ) {
             rotation_only( $current_atom_site_no_H );
+            rotation_only( $current_atom_site_w_H );
         } else {
             die 'Conformational model was not defined.';
         }
@@ -383,7 +385,7 @@ sub generate_library
         # on maximum bending and having shorter edge length reduces calculation
         # time.
         my ( $grid_box, $target_cell_idxs ) =
-            grid_box( $current_atom_site_no_H, $EDGE_LENGTH_INTERACTION,
+            grid_box( $current_atom_site_w_H, $EDGE_LENGTH_INTERACTION,
                       \@target_ca_ids );
 
         my $neighbour_cells =
@@ -408,7 +410,7 @@ sub generate_library
 
                 # Because the change of side-chain position might impact the
                 # surrounding, iteraction site consists of only main chain atoms.
-                my %interaction_site =
+                my %interaction_site_no_H =
                     %{ filter( { 'atom_site' => $current_atom_site_no_H,
                                  'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
@@ -420,7 +422,7 @@ sub generate_library
                     @{ calc_favourable_angles(
                            { 'atom_site' => $current_atom_site_no_H,
                              'residue_unique_key' => $residue_unique_key,
-                             'interaction_site' => \%interaction_site,
+                             'interaction_site' => \%interaction_site_no_H,
                              'small_angle' => $small_angle,
                              'potential_function' => $potential_function,
                              'energy_cutoff_atom' => $energy_cutoff_atom,
@@ -429,43 +431,60 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
-                my ( $allowed_angles, $energy_sums ) =
-                    @{ multithreading(
-                           \&calc_full_atom_energy,
-                           { 'atom_site' => $current_atom_site_no_H,
-                             'residue_unique_key' => $residue_unique_key,
-                             'interaction_site' => \%interaction_site,
-                             'small_angle' => $small_angle,
-                             'potential_function' => $potential_function,
-                             'energy_cutoff_atom' => $energy_cutoff_atom,
-                             'is_hydrogen_explicit' => $is_hydrogen_explicit,
-                             'parameters' => $parameters },
-                           [ @allowed_angles ],
-                           $threads ) };
+                my %interaction_site_w_H =
+                    %{ filter( { 'atom_site' => $current_atom_site_w_H,
+                                 'include' =>
+                                     { 'id' => $neighbour_cells->{$cell},
+                                       %{ $include_interactions } } } ) };
 
-                if( ! @{ $allowed_angles } ) {
-                    die "no possible rotamer solutions were detected.\n";
-                }
+                calc_full_atom_energy(
+                    { 'atom_site' => $current_atom_site_w_H,
+                      'residue_unique_key' => $residue_unique_key,
+                      'interaction_site' => \%interaction_site_w_H,
+                      'small_angle' => $small_angle,
+                      'potential_function' => $potential_function,
+                      'energy_cutoff_atom' => $energy_cutoff_atom,
+                      'is_hydrogen_explicit' => $is_hydrogen_explicit,
+                      'parameters' => $parameters },
+                    [ @allowed_angles ]  );
 
-                for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
-                    my %angles =
-                        map { my $angle_id = $_ + 1;
-                              ( "chi$angle_id" => $allowed_angles->[$i][$_])}
-                            ( 0..$#{ $allowed_angles->[$i] } );
-                    my $rotamer_energy_sum = $energy_sums->[$i];
-                    if( defined $rotamer_energy_sum &&
-                        $rotamer_energy_sum <= $energy_cutoff_residue ) {
-                        push @{ $rotamer_library{"$residue_unique_key"} },
-                            { 'angles' => \%angles,
-                              'potential' => $interactions,
-                              'potential_energy_value' => $rotamer_energy_sum };
-                    }
-                }
+                # my ( $allowed_angles, $energy_sums ) =
+                #     @{ multithreading(
+                #            \&calc_full_atom_energy,
+                #            { 'atom_site' => $current_atom_site_w_H,
+                #              'residue_unique_key' => $residue_unique_key,
+                #              'interaction_site' => \%interaction_site_w_H,
+                #              'small_angle' => $small_angle,
+                #              'potential_function' => $potential_function,
+                #              'energy_cutoff_atom' => $energy_cutoff_atom,
+                #              'is_hydrogen_explicit' => $is_hydrogen_explicit,
+                #              'parameters' => $parameters },
+                #            [ @allowed_angles ],
+                #            $threads ) };
+
+    #             if( ! @{ $allowed_angles } ) {
+    #                 die "no possible rotamer solutions were detected.\n";
+    #             }
+
+    #             for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+    #                 my %angles =
+    #                     map { my $angle_id = $_ + 1;
+    #                           ( "chi$angle_id" => $allowed_angles->[$i][$_])}
+    #                         ( 0..$#{ $allowed_angles->[$i] } );
+    #                 my $rotamer_energy_sum = $energy_sums->[$i];
+    #                 if( defined $rotamer_energy_sum &&
+    #                     $rotamer_energy_sum <= $energy_cutoff_residue ) {
+    #                     push @{ $rotamer_library{"$residue_unique_key"} },
+    #                         { 'angles' => \%angles,
+    #                           'potential' => $interactions,
+    #                           'potential_energy_value' => $rotamer_energy_sum };
+    #                 }
+    #             }
             }
         }
     }
 
-    return \%rotamer_library;
+    # return \%rotamer_library;
 }
 
 #
@@ -725,29 +744,25 @@ sub calc_full_atom_energy
 
     # Creates all-atom model (even with uncertain hydrogen positions) for
     # selected residue.
-    my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
-        split /,/sxm, $residue_unique_key;
+    my ( $residue_id, $residue_chain, $pdbx_model_num,
+         $residue_alt ) = split /,/sxm, $residue_unique_key;
     my $residue_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { 'label_seq_id' => [ $residue_id ],
                                  'label_asym_id' => [ $residue_chain ],
                                  'label_alt_id' => [ $residue_alt, '.' ],
-                                 'pdbx_PDB_model_num' => [ $pdbx_model_num ] },
-                  'exclude' => { 'type_symbol' => [ 'H' ] } } );
+                                 'pdbx_PDB_model_num' => [ $pdbx_model_num ] }});
 
-    # Adds hydrogens if it is necessary for the calculations.
-    if( svref_2object( $potential_function )->GV->NAME eq 'composite' &&
-        $is_hydrogen_explicit ) {
-        my $hydrogens =
-            add_hydrogens( $residue_site,
-                           { 'use_existing_connections' => 1,
-                             'use_existing_hybridizations' => 1,
-                             'exclude_by_atom_name' => [ 'N', 'C' ],
-                             'alt_group_id' => q{.} } );
-        append_connections( $residue_site, $hydrogens );
-        $residue_site = { %{ $residue_site }, %{ $hydrogens } };
-        rotation_only( $residue_site );
-    }
+    # Adds hydrogens to the residue_site.
+    my $hydrogens =
+        add_hydrogens( $residue_site,
+                       { 'use_existing_connections' => 1,
+                         'use_existing_hybridizations' => 1,
+                         'exclude_by_atom_name' => [ 'N', 'C' ],
+                         'use_origins_alt_group_id' => 1 } );
+    append_connections( $residue_site, $hydrogens );
+    $residue_site = { %{ $residue_site }, %{ $hydrogens } };
+    rotation_only( $residue_site );
 
     my $rotatable_bonds = rotatable_bonds( $residue_site );
     if( ! %{ $rotatable_bonds } ) { next; }
@@ -800,42 +815,42 @@ sub calc_full_atom_energy
                                    'exclude' =>
                                    { 'label_atom_id' => \@MAINCHAIN_NAMES } } ) };
         my %rotamer_interaction_site = ( %rotamer_site, %{ $interaction_site } );
+        use PDBxParser qw( to_pdbx ); to_pdbx( { 'atom_site' => \%rotamer_site } );
+  #       # HACK: check if new connections will not erase important old ones.
+  #       connect_atoms( \%rotamer_interaction_site );
 
-        # HACK: check if new connections will not erase important old ones.
-        connect_atoms( \%rotamer_interaction_site );
+  #       $parameters->{'atom_site'} = \%rotamer_interaction_site;
 
-        $parameters->{'atom_site'} = \%rotamer_interaction_site;
+  #       my $rotamer_energy_sum = 0;
+  #       for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+  #           my $rotamer_atom_energy = 0;
+  #           for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
+  #               if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
+  #                   ( ! is_neighbour( \%rotamer_interaction_site,
+  #                                     $rotamer_atom_id,
+  #                                     $neighbour_atom_id ) ) &&
+  #                   ( ! is_second_neighbour( \%rotamer_interaction_site,
+  #                                            $rotamer_atom_id,
+  #                                            $neighbour_atom_id ) ) ){
+  #                   $rotamer_atom_energy +=
+  #                       $potential_function->(
+  #                           $rotamer_interaction_site{$rotamer_atom_id},
+  #                           $rotamer_interaction_site{$neighbour_atom_id},
+  #                           $parameters );
 
-        my $rotamer_energy_sum = 0;
-        for my $rotamer_atom_id ( @rotamer_atom_ids ) {
-            my $rotamer_atom_energy = 0;
-            for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
-                if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
-                    ( ! is_neighbour( \%rotamer_interaction_site,
-                                      $rotamer_atom_id,
-                                      $neighbour_atom_id ) ) &&
-                    ( ! is_second_neighbour( \%rotamer_interaction_site,
-                                             $rotamer_atom_id,
-                                             $neighbour_atom_id ) ) ){
-                    $rotamer_atom_energy +=
-                        $potential_function->(
-                            $rotamer_interaction_site{$rotamer_atom_id},
-                            $rotamer_interaction_site{$neighbour_atom_id},
-                            $parameters );
+  #                   next ALLOWED_ANGLES
+  #                       if $rotamer_atom_energy > $energy_cutoff_atom;
 
-                    next ALLOWED_ANGLES
-                        if $rotamer_atom_energy > $energy_cutoff_atom;
+  #                   $rotamer_energy_sum += $rotamer_atom_energy;
+  #               }
+  #           }
+  #       }
 
-                    $rotamer_energy_sum += $rotamer_atom_energy;
-                }
-            }
-        }
-
-        push @allowed_angles, $checkable_angles[$i];
-        push @energy_sums, $rotamer_energy_sum;
+  #       push @allowed_angles, $checkable_angles[$i];
+  #       push @energy_sums, $rotamer_energy_sum;
     }
 
-    return [ \@allowed_angles, \@energy_sums ] ;
+  #   return [ \@allowed_angles, \@energy_sums ] ;
 }
 
 #

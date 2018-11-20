@@ -164,9 +164,9 @@ for my $pdbx_file ( @ARGV ) {
                                     { 'exclude_dot' => 1 } );
 
         # Starts generating rotamer library.
-        my $rotamer_library;
-        eval {
-            $rotamer_library =
+    #     my $rotamer_library;
+    #     eval {
+    #         $rotamer_library =
                 generate_library(
                     { 'atom_site' => $current_atom_site,
                       'residue_unique_keys' => $residue_unique_keys,
@@ -183,93 +183,93 @@ for my $pdbx_file ( @ARGV ) {
                       'is_hydrogen_explicit' => $is_hydrogen_explicit,
                       'threads' => $threads,
                     } );
-        };
-        if( $@ ) {
-            parse_errors( { 'program' => $0,
-                            'filename' => $pdbx_file,
-                            'type' => 'WARNING',
-                            'message' => $@ } );
-        }
+    #     };
+    #     if( $@ ) {
+    #         parse_errors( { 'program' => $0,
+    #                         'filename' => $pdbx_file,
+    #                         'type' => 'WARNING',
+    #                         'message' => $@ } );
+    #     }
 
-        for my $residue_unique_key ( keys %{ $rotamer_library } ) {
-            $rotamer_library{$residue_unique_key} =
-                $rotamer_library->{$residue_unique_key};
-        }
+    #     for my $residue_unique_key ( keys %{ $rotamer_library } ) {
+    #         $rotamer_library{$residue_unique_key} =
+    #             $rotamer_library->{$residue_unique_key};
+    #     }
+    # }
+
+    # # Collects residue angle and energy data.
+    # my %pdbx_loops;
+
+    # $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} =
+    #     [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
+    #       'pdbx_PDB_model_num', 'label_alt_id', 'type', 'value' ];
+    # $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
+    #     [ 'id', 'rotamer_id', 'calculation_method', 'value'];
+
+    # my $angle_id = 1;
+    # my $energy_id = 1;
+    # my $rotamer_id = 1;
+    # for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ){
+    #     my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
+    #         split /,/sxm, $residue_unique_key;
+    #     my @residue_name =
+    #         uniq( @{ filter( { 'atom_site' => $selected_atom_site,
+    #                            'include' =>
+    #                                { 'label_seq_id' => [ $residue_id ],
+    #                                  'label_asym_id' => [ $residue_chain ],
+    #                                  'label_alt_id' => [ $residue_alt ],
+    #                                  'pdbx_PDB_model_num' => [ $pdbx_model ] },
+    #                            'data' => [ 'label_comp_id' ],
+    #                            'is_list' => 1 } ) } );
+
+    #     # Checks if 'top' option is int or float and filters rotamers accordingly.
+    #     my @rotamers;
+    #     if( defined $top_rank ) {
+    #         $top_rank =
+    #             $top_rank <= scalar @{$rotamer_library{$residue_unique_key}} ?
+    #             $top_rank :
+    #             scalar @{ $rotamer_library{$residue_unique_key} };
+    #         @rotamers =
+    #             sort { $a->{'potential_energy_value'} <=>
+    #                    $b->{'potential_energy_value'} }
+    #                 @{ $rotamer_library{$residue_unique_key} };
+    #         @rotamers = @rotamers[0..$top_rank-1];
+    #     } elsif( defined $top_ratio ) {
+    #         $top_rank =
+    #             int( scalar( @{ $rotamer_library{$residue_unique_key} } )
+    #           * $top_ratio );
+    #         @rotamers =
+    #             sort { $a->{'potential_energy_value'} <=>
+    #                    $b->{'potential_energy_value'} }
+    #                 @{ $rotamer_library{$residue_unique_key} };
+    #         @rotamers = @rotamers[0..$top_rank-1];
+    #     } else {
+    #         @rotamers = @{ $rotamer_library{$residue_unique_key} };
+    #     }
+
+    #     for my $rotamer ( @rotamers ) {
+    #         # Colects rotamer angle data.
+    #         for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
+    #             my $angle_value = $rotamer->{'angles'}{$angle_name};
+    #             push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
+    #                  $angle_id, $rotamer_id, $residue_id, $residue_name[0],
+    #                  $residue_chain, $pdbx_model, $residue_alt, $angle_name,
+    #                  sprintf $SIG_FIGS, $angle_value;
+    #             $angle_id++;
+    #         }
+
+    #         # Colects rotamer energy data.
+    #         push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
+    #              $energy_id, $rotamer_id, $rotamer->{'potential'},
+    #              $rotamer->{'potential_energy_value'};
+
+    #         $energy_id++;
+    #         $rotamer_id++;
+    #     }
     }
 
-    # Collects residue angle and energy data.
-    my %pdbx_loops;
-
-    $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} =
-        [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-          'pdbx_PDB_model_num', 'label_alt_id', 'type', 'value' ];
-    $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
-        [ 'id', 'rotamer_id', 'calculation_method', 'value'];
-
-    my $angle_id = 1;
-    my $energy_id = 1;
-    my $rotamer_id = 1;
-    for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ){
-        my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
-            split /,/sxm, $residue_unique_key;
-        my @residue_name =
-            uniq( @{ filter( { 'atom_site' => $selected_atom_site,
-                               'include' =>
-                                   { 'label_seq_id' => [ $residue_id ],
-                                     'label_asym_id' => [ $residue_chain ],
-                                     'label_alt_id' => [ $residue_alt ],
-                                     'pdbx_PDB_model_num' => [ $pdbx_model ] },
-                               'data' => [ 'label_comp_id' ],
-                               'is_list' => 1 } ) } );
-
-        # Checks if 'top' option is int or float and filters rotamers accordingly.
-        my @rotamers;
-        if( defined $top_rank ) {
-            $top_rank =
-                $top_rank <= scalar @{$rotamer_library{$residue_unique_key}} ?
-                $top_rank :
-                scalar @{ $rotamer_library{$residue_unique_key} };
-            @rotamers =
-                sort { $a->{'potential_energy_value'} <=>
-                       $b->{'potential_energy_value'} }
-                    @{ $rotamer_library{$residue_unique_key} };
-            @rotamers = @rotamers[0..$top_rank-1];
-        } elsif( defined $top_ratio ) {
-            $top_rank =
-                int( scalar( @{ $rotamer_library{$residue_unique_key} } )
-              * $top_ratio );
-            @rotamers =
-                sort { $a->{'potential_energy_value'} <=>
-                       $b->{'potential_energy_value'} }
-                    @{ $rotamer_library{$residue_unique_key} };
-            @rotamers = @rotamers[0..$top_rank-1];
-        } else {
-            @rotamers = @{ $rotamer_library{$residue_unique_key} };
-        }
-
-        for my $rotamer ( @rotamers ) {
-            # Colects rotamer angle data.
-            for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
-                my $angle_value = $rotamer->{'angles'}{$angle_name};
-                push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
-                     $angle_id, $rotamer_id, $residue_id, $residue_name[0],
-                     $residue_chain, $pdbx_model, $residue_alt, $angle_name,
-                     sprintf $SIG_FIGS, $angle_value;
-                $angle_id++;
-            }
-
-            # Colects rotamer energy data.
-            push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
-                 $energy_id, $rotamer_id, $rotamer->{'potential'},
-                 $rotamer->{'potential_energy_value'};
-
-            $energy_id++;
-            $rotamer_id++;
-        }
-    }
-
-    # Prints out cif.
-    to_pdbx( { 'atom_site' => $selected_atom_site,
-               'add_atom_attributes' => [ '[local]_selection_state' ],
-               'pdbx_loops' => \%pdbx_loops } );
+    # # Prints out cif.
+    # to_pdbx( { 'atom_site' => $selected_atom_site,
+    #            'add_atom_attributes' => [ '[local]_selection_state' ],
+    #            'pdbx_loops' => \%pdbx_loops } );
 }
