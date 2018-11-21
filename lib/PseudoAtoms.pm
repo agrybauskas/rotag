@@ -438,17 +438,6 @@ sub generate_library
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
-                # calc_full_atom_energy(
-                #     { 'atom_site' => $current_atom_site_w_H,
-                #       'residue_unique_key' => $residue_unique_key,
-                #       'interaction_site' => \%interaction_site_w_H,
-                #       'small_angle' => $small_angle,
-                #       'potential_function' => $potential_function,
-                #       'energy_cutoff_atom' => $energy_cutoff_atom,
-                #       'is_hydrogen_explicit' => $is_hydrogen_explicit,
-                #       'parameters' => $parameters },
-                #     [ @allowed_angles ]  );
-
                 my ( $allowed_angles, $energy_sums ) =
                     @{ multithreading(
                            \&calc_full_atom_energy,
@@ -811,6 +800,7 @@ sub calc_full_atom_energy
         # %rotamer_site
         my %rotamer_interaction_site = ( %{ $interaction_site }, %rotamer_site );
 
+        # HACK: should connect_atoms() be used here?
         # connect_atoms( \%rotamer_interaction_site );
 
         $parameters->{'atom_site'} = \%rotamer_interaction_site;
