@@ -3,6 +3,7 @@ package ConnectAtoms;
 use strict;
 use warnings;
 
+BEGIN{
 use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
                      around_distance
@@ -13,10 +14,12 @@ our @EXPORT_OK = qw( append_connections
                      is_connected
                      is_neighbour
                      is_second_neighbour );
+}
 
 use List::Util qw( any );
 
 use AtomProperties qw( %ATOMS );
+use BondProperties qw( %COVALENT_BOND_COMB );
 use Combinatorics qw( permutation );
 use Grid qw( identify_neighbour_cells
              grid_box );
@@ -41,26 +44,14 @@ sub is_connected
 
     # Generates all possible combinations of covalent distances.
     my $bond_length_comb =
-	permutation( 2,
-		     [],
-		     [ $ATOMS{$target_atom->{'type_symbol'}}
-			     {'covalent_radius'}
-			     {'length'},
-		       $ATOMS{$neighbour_atom->{'type_symbol'}}
-			     {'covalent_radius'}
-			     {'length'} ],
-		     [] );
+        $COVALENT_BOND_COMB{$target_atom->{'type_symbol'}}
+                           {$neighbour_atom->{'type_symbol'}}
+                           {'length'};
 
     my $length_error_comb =
-	permutation( 2,
-		     [],
-		     [ $ATOMS{$target_atom->{'type_symbol'}}
-			     {'covalent_radius'}
-			     {'error'},
-		       $ATOMS{$neighbour_atom->{'type_symbol'}}
-			     {'covalent_radius'}
-			     {'error'} ],
-		     [] );
+        $COVALENT_BOND_COMB{$target_atom->{'type_symbol'}}
+                           {$neighbour_atom->{'type_symbol'}}
+                           {'error'};
 
     # Precalculates squared distance between atom pairs.
     my $distance_squared = distance_squared( $target_atom, $neighbour_atom );
@@ -71,10 +62,8 @@ sub is_connected
     my $is_connected;
 
     for my $i ( 0..$#{ $bond_length_comb } ) {
-        $bond_length =
-            $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
-        $length_error =
-            $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
+        $bond_length = $bond_length_comb->[$i];
+        $length_error = $length_error_comb->[$i];
         if( ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
             ( $distance_squared <= ( $bond_length + $length_error ) ** 2 ) ) {
             $is_connected = 1;
