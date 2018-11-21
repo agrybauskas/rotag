@@ -338,15 +338,26 @@ sub covalent_bond_combinations
     my %covalent_bond_combinations;
     for my $atom_i ( keys %ATOMS ) {
         for my $atom_j ( keys %ATOMS ) {
-            for my $i ( 0..min( $#{ $ATOMS{$atom_i}{'covalent_radius'}{'length'} },
-                                $#{ $ATOMS{$atom_j}{'covalent_radius'}{'length'} } ) ) {
-                push @{ $covalent_bond_combinations{$atom_i}{$atom_j}{'length'} },
-                    $ATOMS{$atom_i}{'covalent_radius'}{'length'}[$i] +
-                    $ATOMS{$atom_j}{'covalent_radius'}{'length'}[$i];
-                push @{ $covalent_bond_combinations{$atom_i}{$atom_j}{'error'} },
-                    $ATOMS{$atom_i}{'covalent_radius'}{'error'}[$i] +
-                    $ATOMS{$atom_j}{'covalent_radius'}{'error'}[$i];
-            }
+            $covalent_bond_combinations{$atom_i}{$atom_j}{'length'} =
+                permutation( 2,
+                             [],
+                             [ $ATOMS{$atom_i->{'type_symbol'}}
+                                     {'covalent_radius'}
+                                     {'length'},
+                               $ATOMS{$atom_j->{'type_symbol'}}
+                                     {'covalent_radius'}
+                                     {'length'} ],
+                             [] );
+            $covalent_bond_combinations{$atom_i}{$atom_j}{'error'} =
+                permutation( 2,
+                             [],
+                             [ $ATOMS{$atom_i->{'type_symbol'}}
+                                     {'covalent_radius'}
+                                     {'error'},
+                               $ATOMS{$atom_j->{'type_symbol'}}
+                                     {'covalent_radius'}
+                                     {'error'} ],
+                             [] );
         }
     }
 
