@@ -62,8 +62,10 @@ sub is_connected
     my $is_connected;
 
     for my $i ( 0..$#{ $bond_length_comb } ) {
-        $bond_length = $bond_length_comb->[$i];
-        $length_error = $length_error_comb->[$i];
+        $bond_length =
+            $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
+        $length_error =
+            $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
         if( ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
             ( $distance_squared <= ( $bond_length + $length_error ) ** 2 ) ) {
             $is_connected = 1;

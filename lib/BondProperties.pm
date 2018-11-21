@@ -19,6 +19,7 @@ use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( %ATOMS
                        sort_atom_names );
+use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI );
 use Measure qw( dihedral_angle );
@@ -336,27 +337,19 @@ sub covalent_bond_combinations
     my ( $ATOMS ) = @_;
 
     my %covalent_bond_combinations;
-    for my $atom_i ( keys %ATOMS ) {
-        for my $atom_j ( keys %ATOMS ) {
-            $covalent_bond_combinations{$atom_i}{$atom_j}{'length'} =
+    for my $atom_i_name ( keys %ATOMS ) {
+        for my $atom_j_name ( keys %ATOMS ) {
+            $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'length'} =
                 permutation( 2,
                              [],
-                             [ $ATOMS{$atom_i->{'type_symbol'}}
-                                     {'covalent_radius'}
-                                     {'length'},
-                               $ATOMS{$atom_j->{'type_symbol'}}
-                                     {'covalent_radius'}
-                                     {'length'} ],
+                             [ $ATOMS{$atom_i_name}{'covalent_radius'}{'length'},
+                               $ATOMS{$atom_j_name}{'covalent_radius'}{'length'} ],
                              [] );
-            $covalent_bond_combinations{$atom_i}{$atom_j}{'error'} =
+            $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'error'} =
                 permutation( 2,
                              [],
-                             [ $ATOMS{$atom_i->{'type_symbol'}}
-                                     {'covalent_radius'}
-                                     {'error'},
-                               $ATOMS{$atom_j->{'type_symbol'}}
-                                     {'covalent_radius'}
-                                     {'error'} ],
+                             [ $ATOMS{$atom_i_name}{'covalent_radius'}{'error'},
+                               $ATOMS{$atom_j_name}{'covalent_radius'}{'error'} ],
                              [] );
         }
     }
