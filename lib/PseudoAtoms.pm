@@ -439,8 +439,7 @@ sub generate_library
                                        %{ $include_interactions } } } ) };
 
                 my ( $allowed_angles, $energy_sums ) =
-                    @{ multithreading(
-                           \&calc_full_atom_energy,
+                    @{ calc_full_atom_energy(
                            { 'atom_site' => $current_atom_site_w_H,
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site_w_H,
@@ -449,8 +448,21 @@ sub generate_library
                              'energy_cutoff_atom' => $energy_cutoff_atom,
                              'is_hydrogen_explicit' => $is_hydrogen_explicit,
                              'parameters' => $parameters },
-                           [ @allowed_angles ],
-                           $threads ) };
+                           [ @allowed_angles ] ) };
+
+                # my ( $allowed_angles, $energy_sums ) =
+                #     @{ multithreading(
+                #            \&calc_full_atom_energy,
+                #            { 'atom_site' => $current_atom_site_w_H,
+                #              'residue_unique_key' => $residue_unique_key,
+                #              'interaction_site' => \%interaction_site_w_H,
+                #              'small_angle' => $small_angle,
+                #              'potential_function' => $potential_function,
+                #              'energy_cutoff_atom' => $energy_cutoff_atom,
+                #              'is_hydrogen_explicit' => $is_hydrogen_explicit,
+                #              'parameters' => $parameters },
+                #            [ @allowed_angles ],
+                #            $threads ) };
 
                 if( ! @{ $allowed_angles } ) {
                     die "no possible rotamer solutions were detected.\n";
@@ -574,16 +586,26 @@ sub calc_favourable_angles
 
             # Starts calculating potential energy.
             my ( $next_allowed_angles, $next_allowed_energies ) =
-                @{ multithreading(
-                       \&calc_favourable_angle,
+                @{ calc_favourable_angle(
                        { 'atom_site' => $atom_site,
                          'atom_id' => $atom_id,
                          'interaction_site' => $interaction_site,
                          'energy_cutoff_atom' => $energy_cutoff_atom,
                          'potential_function' => $potential_function,
                          'parameters' => $parameters },
-                       [ \@allowed_angles, \@allowed_energies, ],
-                       $threads ) };
+                       [ \@allowed_angles, \@allowed_energies, ] ) };
+
+            # my ( $next_allowed_angles, $next_allowed_energies ) =
+            #     @{ multithreading(
+            #            \&calc_favourable_angle,
+            #            { 'atom_site' => $atom_site,
+            #              'atom_id' => $atom_id,
+            #              'interaction_site' => $interaction_site,
+            #              'energy_cutoff_atom' => $energy_cutoff_atom,
+            #              'potential_function' => $potential_function,
+            #              'parameters' => $parameters },
+            #            [ \@allowed_angles, \@allowed_energies, ],
+            #            $threads ) };
 
             if( scalar @{ $next_allowed_angles } > 0 ) {
                 @allowed_angles = @{ $next_allowed_angles };
