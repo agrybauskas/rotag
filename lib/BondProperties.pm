@@ -6,12 +6,15 @@ use warnings;
 use Exporter qw( import );
 BEGIN {
     our @EXPORT_OK = qw( bond_type
+                         %COVALENT_BOND_COMB
+                         covalent_bond_combinations
                          hybridization
                          rotatable_bonds
                          unique_rotatables );
 }
 
-use List::Util qw( any );
+use List::Util qw( any
+                   min );
 use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( %ATOMS
@@ -256,6 +259,8 @@ my %BOND_TYPES = (
     },
 );
 
+our %COVALENT_BOND_COMB = %{ covalent_bond_combinations( \%ATOMS ) };
+
 # -------------------------- Bond related functions --------------------------- #
 
 #
@@ -312,6 +317,40 @@ sub bond_type
     }
 
     return;
+}
+
+#
+# Determines all covalent bond combinations.
+# Inputs:
+#     \%ATOMS - atom parameter data structure.
+# Outputs:
+#     %covalent_bond_combinations - data structure for storing covalent bond
+#     combinations.
+#     Ex.: { 'C' =>
+#                { 'C' => { 'length' => [ 0.1, 0.2 ],
+#                           'error'  => [ 0.01, 0.01 ] } } }
+#
+
+sub covalent_bond_combinations
+{
+    my ( $ATOMS ) = @_;
+
+    my %covalent_bond_combinations;
+    for my $atom_i ( keys %ATOMS ) {
+        for my $atom_j ( keys %ATOMS ) {
+            for my $i ( 0..min( $#{ $ATOMS{$atom_i}{'covalent_radius'}{'length'} },
+                                $#{ $ATOMS{$atom_j}{'covalent_radius'}{'length'} } ) ) {
+                push @{ $covalent_bond_combinations{$atom_i}{$atom_j}{'length'} },
+                    $ATOMS{$atom_i}{'covalent_radius'}{'length'}[$i] +
+                    $ATOMS{$atom_j}{'covalent_radius'}{'length'}[$i];
+                push @{ $covalent_bond_combinations{$atom_i}{$atom_j}{'error'} },
+                    $ATOMS{$atom_i}{'covalent_radius'}{'error'}[$i] +
+                    $ATOMS{$atom_j}{'covalent_radius'}{'error'}[$i];
+            }
+        }
+    }
+
+    return \%covalent_bond_combinations;
 }
 
 #

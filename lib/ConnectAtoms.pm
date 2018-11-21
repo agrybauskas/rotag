@@ -6,13 +6,13 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
                      around_distance
-		     connect_atoms
+                     connect_atoms
                      connect_two_atoms
-		     distance
-		     distance_squared
-		     is_connected
-		     is_neighbour
-		     is_second_neighbour );
+                     distance
+                     distance_squared
+                     is_connected
+                     is_neighbour
+                     is_second_neighbour );
 
 use List::Util qw( any );
 
@@ -71,17 +71,17 @@ sub is_connected
     my $is_connected;
 
     for my $i ( 0..$#{ $bond_length_comb } ) {
-	$bond_length =
-	    $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
-	$length_error =
-	    $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
-	if( ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
+        $bond_length =
+            $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
+        $length_error =
+            $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
+        if( ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
             ( $distance_squared <= ( $bond_length + $length_error ) ** 2 ) ) {
-	    $is_connected = 1;
-	    last;
-	} else {
-	    $is_connected = 0;
-	}
+            $is_connected = 1;
+            last;
+        } else {
+            $is_connected = 0;
+        }
     }
 
     return $is_connected;
@@ -104,10 +104,10 @@ sub is_neighbour
 
     my $is_neighbour = 0;
     foreach my $i ( @{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
-	if( "$neighbour_id" eq "$i" ) {
-	    $is_neighbour = 1;
-	    last;
-	}
+        if( "$neighbour_id" eq "$i" ) {
+            $is_neighbour = 1;
+            last;
+        }
     }
 
     return $is_neighbour;
@@ -160,7 +160,7 @@ sub distance_squared
     my ( $atom_i, $atom_j ) = @_;
 
     my $distance_squared =
-	( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2 +
+        ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2 +
         ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2 +
         ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
 

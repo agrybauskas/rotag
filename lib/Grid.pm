@@ -9,7 +9,7 @@ our @EXPORT_OK = qw( create_box
                      identify_neighbour_cells );
 
 use List::Util qw( max
-		   min );
+                   min );
 
 use AtomProperties qw( %ATOMS );
 use Constants qw( $EDGE_LENGTH_CONNECTION );
