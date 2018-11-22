@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use AtomSite qw( prepare_for_calc );
+use Data::Dumper;
+
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
+
+#
+# Unit test: AtomSite::prepare_for_calc.
+# Example: ./prepare_for_calc structure.dump
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $pdbx_file_dump ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_file_dump );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+prepare_for_calc( $atom_site );
+
+print Dumper $atom_site;

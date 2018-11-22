@@ -7,6 +7,10 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( append_atom_site
                      prepare_for_calc );
 
+use BondProperties qw( hybridization );
+use ConnectAtoms qw( connect_atoms );
+use SidechainModels qw( rotation_only );
+
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -53,11 +57,22 @@ sub append_atom_site
 #
 # Prepares atom site data structure for calculations - adds connections,
 # assigns hybridizations and rotational bonds.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm).
+# Output:
+#     hybridization, connections and conformation attributes are added to the
+#     $atom_site.
 #
 
 sub prepare_for_calc
 {
+    my ( $atom_site ) = @_;
 
+    connect_atoms( $atom_site );
+    hybridization( $atom_site );
+    rotation_only( $atom_site );
+
+    return;
 }
 
 1;
