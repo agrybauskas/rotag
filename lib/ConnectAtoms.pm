@@ -250,6 +250,8 @@ sub connect_two_atoms
 # made by two atoms.
 # Input:
 #     $atom_site - atom data structure.
+#     $options->{'append_connections'} - only appends connections and not
+#     recalculates the old ones.
 # Output:
 #     none - connects atoms by adding "connection" key and values to atom site
 #     data structure.

@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use AtomSite qw( append_atom_site );
+use PDBxParser qw( to_pdbx );
+
+#
+# Unit test: AtomSite::append_atom_site.
+# Example: ./append_atom_site 202 structure-1.dump structure-2.dump
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $renumber_from, $pdbx_file_dump_1,  $pdbx_file_dump_2 ) = @ARGV;
+
+my @atom_sites;
+
+foreach( $pdbx_file_dump_1, $pdbx_file_dump_2 ) {
+    my $atom_site;
+    open( my $fh, "<", $_ );
+    while( <$fh> ) {
+        $atom_site .= "$_" ;
+    }
+    close( $fh );
+    $atom_site = eval( $atom_site );
+    push @atom_sites, $atom_site;
+}
+
+to_pdbx( { 'atom_site' => append_atom_site( \@atom_sites,
+                                            { 'renumber_from' =>
+                                                  $renumber_from } ) } );
