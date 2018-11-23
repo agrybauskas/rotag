@@ -18,8 +18,16 @@ $Data::Dumper::Indent = 1;
 
 my $atom_site = AtomSite->new();
 $atom_site->open( $ENV{PDBX_FILE} );
-$atom_site->index();
 
-print Dumper $atom_site->{'index_table'};
+my $index_table = AtomSite->index( $atom_site );
+
+for my $attribute ( sort keys %{ $index_table } ) {
+    for my $value ( sort keys %{ $index_table->{$attribute} } ) {
+        printf "%s %s %s\n",
+               $attribute,
+               $value,
+               join( ',', sort @{ $index_table->{$attribute}{$value} } );
+    }
+}
 
 END
