@@ -15,6 +15,7 @@ use List::MoreUtils qw( any
                         uniq );
 use List::Util qw( max );
 
+use Atom;
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( pdbx_loop_unique
@@ -45,21 +46,19 @@ sub DESTROY
 # Input:
 #     $pdbx_file - PDBx file.
 # Output:
-#     none - atom data structure is created and stored in $self->{'atoms'}.
-#
-#     Ex.: { 1 => { 'group_id' => 'ATOM',
-#                   'id'       => 1,
-#                   ... } }
+#     none - Atom data structure is created and stored in $self->{'atoms'}.
 #
 
 sub open
 {
-    my ( $self, $pdbx_file, $options ) = @_;
+    my ( $self, $pdbx_file ) = @_;
 
-    $self->{'_atoms'} =
+    my $atom_site =
         pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
 
-    $self->{'_last_atom_id'} = max( keys %{ $self->{'_atoms'} } );
+    for my $atom_id ( keys %{ $atom_site } ) {
+        $self->{'_atoms'}{$atom_id} = Atom->new( $atom_site->{$atom_id} );
+    }
 
     return;
 }
