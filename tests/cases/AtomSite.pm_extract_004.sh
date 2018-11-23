@@ -20,8 +20,8 @@ my $atom_site = AtomSite->new();
 $atom_site->open( $ENV{PDBX_FILE} );
 
 my $filtered_atom_site =
-   $atom_site->filter( { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] } } );
+   filter( $atom_site, { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] } } );
 
-print Dumper $filtered_atom_site->extract( { 'data' => [ 'label_atom_id' ] } );
+print Dumper extract( $filtered_atom_site, { 'data' => [ 'label_atom_id' ] } );
 
 END
