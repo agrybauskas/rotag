@@ -134,9 +134,9 @@ sub append
     my ( $self, $atom_sites ) = @_;
 
     for my $atom_site ( @{ $atom_sites } ) {
-        for my $atom_id ( sort keys %{ $atom_site } ) {
+        for my $atom_id ( sort keys %{ $atom_site->{'_atoms'} } ) {
             if( ! exists $self->{'_atoms'}{$atom_id} ) {
-                $self->{'_atoms'}{$atom_id} = $atom_site->{$atom_id};
+                $self->{'_atoms'}{$atom_id} = $atom_site->{'_atoms'}{$atom_id};
             } else {
                 die "Atom with id $atom_id already exists";
             }
@@ -354,16 +354,20 @@ sub extract
 #
 # Converts atom site data structure to PDBx.
 # Input:
-#     $options->{'atoms'} - atom site data structure.
+#     $self->{'_atoms'} - atom site data structure.
+#     $options->{'data_name'}
 # Output:
 #     STDERR - PDBx format file.
 #
 
 sub pdbx
 {
-    my ( $self ) = @_;
+    my ( $self, $options ) = @_;
+    my ( $data_name ) = $options->{'data_name'};
+    $data_name = '';
 
-    return to_pdbx( { 'atom_site' => $self->{'atoms'}, 'data_name' => '' } );
+    return to_pdbx( { 'atom_site' => $self->{'_atoms'},
+                      'data_name' => $data_name } );
 }
 
 1;

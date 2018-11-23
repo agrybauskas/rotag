@@ -504,5 +504,6 @@ $VAR1 = bless( {
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'N'
     }
-  }
+  },
+  '_last_atom_id' => '86'
 }, 'AtomSite' );
