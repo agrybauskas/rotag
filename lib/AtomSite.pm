@@ -181,8 +181,10 @@ sub index
 
     my %index_table;
 
-    for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
-        my $atom = $atom_site->{'_atoms'}{$atom_id};
+    my $atom_data =
+        ref $atom_site eq 'AtomSite' ? $atom_site->{'_atoms'} : $atom_site;
+    for my $atom_id ( keys %{ $atom_data } ) {
+        my $atom = $atom_data->{$atom_id};
 
         for my $attribute ( keys %{ $atom } ) {
             my $value = $atom->{$attribute};
