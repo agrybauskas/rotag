@@ -110,8 +110,7 @@ sub add
 #
 # Appends atom data structure to the current object.
 # Input:
-#     $atom_sites - list of appendable atom data structures.
-#     $renumber - renumbers the ids.
+#     $atom_sites - list of appendable atom site data structures.
 # Output:
 #     none - atom sites are appended to the structure.
 #
@@ -177,7 +176,7 @@ sub index
 #
 # Concatinates atom data structure.
 # Input:
-#     $atom_site - list of atom sites to be concatinated.
+#     $atom_sites - list of atom sites to be concatinated.
 # Output:
 #     %atom_site - concatinated atom site data structure.
 #
