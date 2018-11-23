@@ -18,9 +18,10 @@ $Data::Dumper::Indent = 1;
 
 my $atom_site = AtomSite->new();
 $atom_site->open( $ENV{PDBX_FILE} );
-my $filtered_atom_site =
-    filter( $atom_site, { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] } } );
 
-print Dumper $filtered_atom_site;
+print Dumper [ sort { $a <=> $b }
+                   @{ filter( $atom_site,
+                              { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] },
+                                'return_ids' => 1 } ) } ];
 
 END

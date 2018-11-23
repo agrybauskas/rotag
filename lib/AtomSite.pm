@@ -7,6 +7,7 @@ require Exporter;
 
 our @ISA = qw( Exporter );
 our @EXPORT = qw( extract
+                  filter
                   index
                   mark_selection
                   pdbx );
@@ -228,16 +229,14 @@ sub mark_selection
 
 sub filter
 {
-    my ( $self, $options ) = @_;
+    my ( $atom_site, $options ) = @_;
     my ( $include, $exclude, $return_ids, $group_id ) =
-        ( $options->{'include'},    $options->{'exclude'},
+        ( $options->{'include'}, $options->{'exclude'},
           $options->{'return_ids'}, $options->{'group_id'} );
 
     $return_ids //= 0;
 
-    my $atoms = $self->{'atoms'};
-
-    if( ! defined $self->{'atoms'} ) {
+    if( ! defined $atom_site->{'_atoms'} ) {
         die 'No atom were loaded to the AtomSite data structure';
     }
 
@@ -247,11 +246,11 @@ sub filter
 
     # First, filters atoms that are described in $self->{'include'} specifier.
     if( defined $include ) {
-        for my $atom_id ( keys %{ $atoms } ) {
+        for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
             my $match_counter = 0; # Tracks if all matches occured.
             for my $attribute ( keys %{ $include } ) {
-                if( exists $atoms->{$atom_id}{$attribute} &&
-                    any { $atoms->{$atom_id}{$attribute} eq $_ }
+                if( exists $atom_site->{'_atoms'}{$atom_id}{$attribute} &&
+                    any { $atom_site->{'_atoms'}{$atom_id}{$attribute} eq $_ }
                        @{ $include->{$attribute} } ) {
                     $match_counter += 1;
                 } else {
@@ -260,7 +259,7 @@ sub filter
             }
 
             if( $match_counter == scalar keys %{ $include } ) {
-                $filtered_atoms{$atom_id} = $atoms->{$atom_id};
+                $filtered_atoms{$atom_id} = $atom_site->{'_atoms'}{$atom_id};
 
                 # Assigns group id.
                 if( defined $group_id ) {
@@ -270,15 +269,15 @@ sub filter
             }
         }
     } else {
-        %filtered_atoms = %{ $atoms };
+        %filtered_atoms = %{ $atom_site->{'_atoms'} };
     }
 
     # Then filters out atoms that are in $self->{'exclude'} specifier.
     if( defined $exclude ) {
         for my $atom_id ( keys %filtered_atoms ) {
             for my $attribute ( keys %{ $exclude } ) {
-                if( exists $atoms->{$atom_id}{$attribute} &&
-                    any { $atoms->{$atom_id}{$attribute} eq $_ }
+                if( exists $atom_site->{'_atoms'}{$atom_id}{$attribute} &&
+                    any { $atom_site->{'_atoms'}{$atom_id}{$attribute} eq $_ }
                        @{ $exclude->{$attribute} } ) {
                     delete $filtered_atoms{$atom_id};
                     last;
@@ -291,10 +290,7 @@ sub filter
     if( $return_ids ) {
         return [ keys %filtered_atoms ]
     } else {
-        my $filtered_atom_site = AtomSite->new();
-        $filtered_atom_site->append( [ \%filtered_atoms ] );
-
-        return $filtered_atom_site;
+        return bless { '_atoms' => \%filtered_atoms }, 'AtomSite';
     }
 }
 
@@ -320,8 +316,8 @@ sub extract
     if( defined $data_with_id && $data_with_id ) {
         my %atom_data_with_id;
 
-        # Simply iterates through $atom_site->{'_atoms'} keys and extracts data using
-        # data specifier and is asigned to atom id.
+        # Simply iterates through $atom_site->{'_atoms'} keys and extracts data
+        # using data specifier and is asigned to atom id.
         for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site->{'_atoms'} } ) {
             $atom_data_with_id{$atom_id} =
                 [ map { $atom_site->{'_atoms'}->{$atom_id}{$_} } @{ $data } ];
