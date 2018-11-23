@@ -64,54 +64,6 @@ sub open
 }
 
 #
-# Creates atom data structure item.
-# Input:
-#     $atom_data - hash of all necessary attributes with corresponding values;
-# Output:
-#     %atom_site - atom site data structure.
-#
-
-sub create
-{
-    my ( $atom_data ) = @_;
-    my $atom_id = $atom_data->{'id'};
-    my $type_symbol = $atom_data->{'type_symbol'};
-    my $label_atom_id = $atom_data->{'label_atom_id'};
-    my $label_alt_id = $atom_data->{'label_alt_id'};
-    $label_alt_id //= q{.};
-    my $label_comp_id = $atom_data->{'label_comp_id'};
-    my $label_asym_id = $atom_data->{'label_asym_id'};
-    my $label_entity_id = $atom_data->{'label_entity_id'};
-    $label_entity_id //= q{?};
-    my $label_seq_id = $atom_data->{'label_seq_id'};
-    my $cartn_x = $atom_data->{'Cartn_x'};
-    my $cartn_y = $atom_data->{'Cartn_y'};
-    my $cartn_z = $atom_data->{'Cartn_z'};
-    my $pdbx_model_num = $atom_data->{'pdbx_PDB_model_num'};
-
-    my %atom_site = ();
-    if( ! exists $atom_site{$atom_id} ) {
-        $atom_site{$atom_id}{'group_PDB'} = 'ATOM';
-        $atom_site{$atom_id}{'id'} = $atom_id;
-        $atom_site{$atom_id}{'type_symbol'} = $type_symbol;
-        $atom_site{$atom_id}{'label_atom_id'} = $label_atom_id;
-        $atom_site{$atom_id}{'label_alt_id'} = $label_alt_id;
-        $atom_site{$atom_id}{'label_comp_id'} = $label_comp_id;
-        $atom_site{$atom_id}{'label_asym_id'} = $label_asym_id;
-        $atom_site{$atom_id}{'label_entity_id'} = $label_entity_id;
-        $atom_site{$atom_id}{'label_seq_id'} = $label_seq_id;
-        $atom_site{$atom_id}{'Cartn_x'} = $cartn_x;
-        $atom_site{$atom_id}{'Cartn_y'} = $cartn_y;
-        $atom_site{$atom_id}{'Cartn_z'} = $cartn_z;
-        $atom_site{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
-    } else {
-        die 'Specified atom id is already present in the atom site';
-    }
-
-    return \%atom_site;
-}
-
-#
 # Updates information about bonds in AtomSite object.
 # Output:
 #     updates/inserts 'connections', 'hybridization' attributes in atom site.
