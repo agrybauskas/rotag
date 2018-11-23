@@ -19,7 +19,7 @@ $Data::Dumper::Indent = 1;
 my $atom_site = AtomSite->new();
 $atom_site->open( $ENV{PDBX_FILE} );
 
-print Dumper $atom_site->extract( { 'data' => [ 'id', 'Cartn_x',
-                                                'Cartn_y', 'Cartn_z' ] } );
+print Dumper extract( $atom_site,
+                      { 'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
 END

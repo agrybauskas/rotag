@@ -6,7 +6,8 @@ use warnings;
 require Exporter;
 
 our @ISA = qw( Exporter );
-our @EXPORT = qw( index
+our @EXPORT = qw( extract
+                  index
                   mark_selection
                   pdbx );
 
@@ -176,6 +177,7 @@ sub index
 # Adds T (target), S (surrounding or selected), I (ignored) char to
 # '[local]_selection_state' attribute data.
 # Input:
+#     $atom_site - atom site data structure;
 #     $options{'target'} - list of ids of the target atom;
 #     $options{'select'} - list of ids of the selected atom;
 #     $options{'ignore'} - list of ids of the ignored atom.
@@ -299,41 +301,44 @@ sub filter
 #
 # Extracts information from atom data structure.
 # Input:
-#     $options{'data'} -
-#     $options{'data_with_id'} -
-#     $options{'is_list'} -
+#     $options{'data'} - list of data that should be extracted;
+#     $options{'data_with_id'} - takes atom data structure and treats it as a
+#     value and atom id - as a key;
+#     $options{'is_list'} - - makes array instead of array of arrays;
 # Output:
 #
 
 sub extract
 {
-    my ( $self, $options ) = @_;
+    my ( $atom_site, $options ) = @_;
     my ( $data, $data_with_id, $is_list ) =
-        ( $options->{'data'}, $options->{'data_with_id'}, $options->{'is_list'});
+        ( $options->{'data'}, $options->{'data_with_id'},
+          $options->{'is_list'} );
 
     my @atom_data;
-    my $atom_site = $self->{'atoms'};
 
     if( defined $data_with_id && $data_with_id ) {
         my %atom_data_with_id;
 
-        # Simply iterates through $atom_site keys and extracts data using
+        # Simply iterates through $atom_site->{'_atoms'} keys and extracts data using
         # data specifier and is asigned to atom id.
-        for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+        for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site->{'_atoms'} } ) {
             $atom_data_with_id{$atom_id} =
-                [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
+                [ map { $atom_site->{'_atoms'}->{$atom_id}{$_} } @{ $data } ];
         }
+
         return \%atom_data_with_id;
     } else {
-        for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+        for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site->{'_atoms'} } ) {
             if( defined $is_list && $is_list ) {
                 push @atom_data,
-                    map { $atom_site->{$atom_id}{$_} } @{ $data };
+                    map { $atom_site->{'_atoms'}->{$atom_id}{$_} } @{ $data };
             } else {
                 push @atom_data,
-                    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
+                    [ map { $atom_site->{'_atoms'}->{$atom_id}{$_} } @{ $data } ];
             }
         }
+
         return \@atom_data;
     }
 }
