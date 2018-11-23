@@ -105,6 +105,22 @@ sub create
 }
 
 #
+# Updates information about bonds in AtomSite object.
+# Output:
+#     updates/inserts 'connections', 'hybridization' attributes in atom site.
+#
+
+sub update_bonds
+{
+    my ( $self ) = @_;
+
+    connect_atoms( $self->{'_atoms'} );
+    hybridization( $self->{'_atoms'} );
+
+    return;
+}
+
+#
 # Appends atom data structure to the current object.
 # Input:
 #     $atom_sites - list of appendable atom data structures.
