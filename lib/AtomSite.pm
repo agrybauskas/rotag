@@ -7,7 +7,6 @@ require Exporter;
 
 our @ISA = qw( Exporter );
 our @EXPORT = qw( create
-                  concat
                   index
                   pdbx );
 
@@ -171,33 +170,6 @@ sub index
     }
 
     return \%index_table;
-}
-
-#
-# Concatinates atom data structure.
-# Input:
-#     $atom_sites - list of atom sites to be concatinated.
-# Output:
-#     %atom_site - concatinated atom site data structure.
-#
-
-sub concat
-{
-    my ( $atom_sites ) = @_;
-
-    my %atom_site = ();
-    for my $atom_site ( @{ $atom_sites } ) {
-        for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
-            if( ! exists $atom_site{'_atoms'}{$atom_id} ) {
-                $atom_site{'_atoms'}{$atom_id} =
-                    $atom_site->{'_atoms'}{$atom_id};
-            } else {
-                die "Atom with id $atom_id already exists";
-            }
-        }
-    }
-
-    return \%atom_site;
 }
 
 #
