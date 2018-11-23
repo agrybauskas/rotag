@@ -1,6 +1,6 @@
 $VAR1 = bless( {
   '_atoms' => {
-    '78' => {
+    '78' => bless( {
       'B_iso_or_equiv' => '36.24',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '7.487',
@@ -27,8 +27,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'N'
-    },
-    '79' => {
+    }, 'Atom' ),
+    '79' => bless( {
       'B_iso_or_equiv' => '40.01',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '6.301',
@@ -55,8 +55,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '80' => {
+    }, 'Atom' ),
+    '80' => bless( {
       'B_iso_or_equiv' => '39.03',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '6.534',
@@ -83,8 +83,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '81' => {
+    }, 'Atom' ),
+    '81' => bless( {
       'B_iso_or_equiv' => '36.55',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '5.644',
@@ -111,8 +111,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'O'
-    },
-    '82' => {
+    }, 'Atom' ),
+    '82' => bless( {
       'B_iso_or_equiv' => '27.94',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '5.925',
@@ -139,8 +139,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '83' => {
+    }, 'Atom' ),
+    '83' => bless( {
       'B_iso_or_equiv' => '31.71',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '5.461',
@@ -167,8 +167,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '84' => {
+    }, 'Atom' ),
+    '84' => bless( {
       'B_iso_or_equiv' => '45.80',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '4.100',
@@ -195,8 +195,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '85' => {
+    }, 'Atom' ),
+    '85' => bless( {
       'B_iso_or_equiv' => '35.77',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '3.337',
@@ -223,8 +223,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'O'
-    },
-    '86' => {
+    }, 'Atom' ),
+    '86' => bless( {
       'B_iso_or_equiv' => '37.84',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '3.764',
@@ -251,8 +251,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'O'
-    },
-    '8641' => {
+    }, 'Atom' ),
+    '8641' => bless( {
       'B_iso_or_equiv' => '59.59',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '7.318',
@@ -279,8 +279,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'N'
-    },
-    '8642' => {
+    }, 'Atom' ),
+    '8642' => bless( {
       'B_iso_or_equiv' => '56.54',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '8.688',
@@ -307,8 +307,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '8643' => {
+    }, 'Atom' ),
+    '8643' => bless( {
       'B_iso_or_equiv' => '47.68',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '9.372',
@@ -335,8 +335,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '8644' => {
+    }, 'Atom' ),
+    '8644' => bless( {
       'B_iso_or_equiv' => '47.02',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '10.237',
@@ -363,8 +363,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'O'
-    },
-    '8645' => {
+    }, 'Atom' ),
+    '8645' => bless( {
       'B_iso_or_equiv' => '57.61',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '9.502',
@@ -391,8 +391,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '8646' => {
+    }, 'Atom' ),
+    '8646' => bless( {
       'B_iso_or_equiv' => '54.96',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '9.222',
@@ -419,8 +419,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '8647' => {
+    }, 'Atom' ),
+    '8647' => bless( {
       'B_iso_or_equiv' => '65.85',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '9.975',
@@ -447,8 +447,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '8648' => {
+    }, 'Atom' ),
+    '8648' => bless( {
       'B_iso_or_equiv' => '75.43',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '10.073',
@@ -475,8 +475,8 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'C'
-    },
-    '8649' => {
+    }, 'Atom' ),
+    '8649' => bless( {
       'B_iso_or_equiv' => '81.59',
       'B_iso_or_equiv_esd' => '?',
       'Cartn_x' => '10.746',
@@ -503,6 +503,6 @@ $VAR1 = bless( {
       'pdbx_PDB_model_num' => '1',
       'pdbx_formal_charge' => '?',
       'type_symbol' => 'N'
-    }
+    }, 'Atom' )
   }
 }, 'AtomSite' );

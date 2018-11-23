@@ -80,6 +80,34 @@ sub update_bonds
 }
 
 #
+# Adds atoms to atom site.
+# Input:
+#     $atoms - list of atom data structure.
+# Output:
+#     adds atoms to the atom site.
+#
+
+sub add
+{
+    my ( $self, $atoms ) = @_;
+
+    for my $atom ( @{ $atoms } ) {
+        if( ref $atom ne 'Atom' ) {
+            die "Not 'Atom' struct is being added";
+        }
+
+        my $atom_id = $atom->{'id'};
+        if( ! exists $self->{'_atoms'}{$atom_id} ) {
+            $self->{'_atoms'}{$atom_id} = $atom;
+        } else {
+            die "Atom with id $atom_id already exists";
+        }
+    }
+
+    return;
+}
+
+#
 # Appends atom data structure to the current object.
 # Input:
 #     $atom_sites - list of appendable atom data structures.
@@ -93,21 +121,15 @@ sub append
     my ( $self, $atom_sites ) = @_;
 
     for my $atom_site ( @{ $atom_sites } ) {
-        if( ref $atom_site eq 'AtomSite' ) {
-            for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
-                if( ! exists $self->{'_atoms'}{$atom_id} ) {
-                    $self->{'_atoms'}{$atom_id}=$atom_site->{'_atoms'}{$atom_id};
-                } else {
-                    die "Atom with id $atom_id already exists";
-                }
-            }
-        } else {
-            for my $atom_id ( keys %{ $atom_site } ) {
-                if( ! exists $self->{'_atoms'}{$atom_id} ) {
-                    $self->{'_atoms'}{$atom_id} = $atom_site->{$atom_id};
-                } else {
-                    die "Atom with id $atom_id already exists";
-                }
+        if( ref $atom_site ne 'AtomSite' ) {
+            die "Not 'AtomSite' object is being appended";
+        }
+
+        for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
+            if( ! exists $self->{'_atoms'}{$atom_id} ) {
+                $self->{'_atoms'}{$atom_id}=$atom_site->{'_atoms'}{$atom_id};
+            } else {
+                die "Atom with id $atom_id already exists";
             }
         }
     }

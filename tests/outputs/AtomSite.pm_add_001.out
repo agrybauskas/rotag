@@ -1,0 +1,12 @@
+$VAR1 = bless( {
+  '_atoms' => {
+    '3' => bless( {
+      'Cartn_x' => '0',
+      'Cartn_y' => '0',
+      'Cartn_z' => '0',
+      'id' => 3,
+      'label_atom_id' => 'CA',
+      'type_symbol' => 'C'
+    }, 'Atom' )
+  }
+}, 'AtomSite' );

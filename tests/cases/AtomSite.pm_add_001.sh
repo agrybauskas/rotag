@@ -12,19 +12,22 @@ use warnings;
 
 use Data::Dumper;
 
+use Atom;
 use AtomSite;
 
 $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Indent = 1;
 
-my $atom_site_1 = AtomSite->new();
-my $atom_site_2 = AtomSite->new();
+my $atom_site = AtomSite->new();
 
-$atom_site_1->open( $ENV{PDBX_FILE_1} );
-$atom_site_2->open( $ENV{PDBX_FILE_2} );
+$atom_site->add(
+    [ Atom->new( { 'id' => 3,
+                 'type_symbol' => 'C',
+                 'label_atom_id' => 'CA',
+                 'Cartn_x' => 0.000,
+                 'Cartn_y' => 0.000,
+                 'Cartn_z' => 0.000 } ) ] );
 
-$atom_site_1->append( [ $atom_site_2->{'_atoms'} ] );
-
-print Dumper $atom_site_1;
+print Dumper $atom_site;
 
 END
