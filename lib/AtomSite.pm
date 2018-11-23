@@ -6,8 +6,8 @@ use warnings;
 require Exporter;
 
 our @ISA = qw( Exporter );
-our @EXPORT = qw( create
-                  index
+our @EXPORT = qw( index
+                  mark_selection
                   pdbx );
 
 use List::MoreUtils qw( any
@@ -185,18 +185,18 @@ sub index
 
 sub mark_selection
 {
-    my ( $self, $options ) = @_;
+    my ( $atom_site, $options ) = @_;
 
     my ( $target_atom_ids, $selected_atom_ids ) =
         ( $options->{'target'}, $options->{'select'}, );
 
-    for my $atom_id ( keys %{ $self->{'atoms'} } ) {
+    for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
         if( any { $atom_id eq $_  } @{ $target_atom_ids } ) {
-            $self->{'atoms'}{$atom_id}{'[local]_selection_state'} = 'T';
+            $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_state'} = 'T';
         } elsif( any { $atom_id eq $_  } @{ $selected_atom_ids } ) {
-            $self->{'atoms'}{$atom_id}{'[local]_selection_state'} = 'S';
+            $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_state'} = 'S';
         } else {
-            $self->{'atoms'}{$atom_id}{'[local]_selection_state'} = 'I';
+            $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_state'} = 'I';
         }
     }
 
@@ -349,7 +349,7 @@ sub extract
 
 sub pdbx
 {
-    my ( $self, $atom_site, $options ) = @_;
+    my ( $atom_site, $options ) = @_;
     my ( $data_name ) = $options->{'data_name'};
     $data_name = '';
 
