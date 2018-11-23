@@ -3,6 +3,14 @@ package AtomSite;
 use strict;
 use warnings;
 
+require Exporter;
+
+our @ISA = qw( Exporter );
+our @EXPORT = qw( create
+                  concat
+                  index
+                  pdbx );
+
 use List::MoreUtils qw( any
                         uniq );
 use List::Util qw( max );
@@ -66,7 +74,7 @@ sub open
 
 sub create
 {
-    my ( $self, $atom_data ) = @_;
+    my ( $atom_data ) = @_;
     my $atom_id = $atom_data->{'id'};
     my $type_symbol = $atom_data->{'type_symbol'};
     my $label_atom_id = $atom_data->{'label_atom_id'};
@@ -134,7 +142,7 @@ sub append
     my ( $self, $atom_sites ) = @_;
 
     for my $atom_site ( @{ $atom_sites } ) {
-        for my $atom_id ( sort keys %{ $atom_site->{'_atoms'} } ) {
+        for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
             if( ! exists $self->{'_atoms'}{$atom_id} ) {
                 $self->{'_atoms'}{$atom_id} = $atom_site->{'_atoms'}{$atom_id};
             } else {
@@ -159,7 +167,7 @@ sub append
 
 sub index
 {
-    my ( $self, $atom_site ) = @_;
+    my ( $atom_site ) = @_;
 
     my %index_table;
 
@@ -179,6 +187,33 @@ sub index
     }
 
     return \%index_table;
+}
+
+#
+# Concatinates atom data structure.
+# Input:
+#     $atom_site - list of atom sites to be concatinated.
+# Output:
+#     %atom_site - concatinated atom site data structure.
+#
+
+sub concat
+{
+    my ( $atom_sites ) = @_;
+
+    my %atom_site = ();
+    for my $atom_site ( @{ $atom_sites } ) {
+        for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
+            if( ! exists $atom_site{'_atoms'}{$atom_id} ) {
+                $atom_site{'_atoms'}{$atom_id} =
+                    $atom_site->{'_atoms'}{$atom_id};
+            } else {
+                die "Atom with id $atom_id already exists";
+            }
+        }
+    }
+
+    return \%atom_site;
 }
 
 #
@@ -358,11 +393,11 @@ sub extract
 
 sub pdbx
 {
-    my ( $self, $options ) = @_;
+    my ( $self, $atom_site, $options ) = @_;
     my ( $data_name ) = $options->{'data_name'};
     $data_name = '';
 
-    return to_pdbx( { 'atom_site' => $self->{'_atoms'},
+    return to_pdbx( { 'atom_site' => $atom_site->{'_atoms'},
                       'data_name' => $data_name } );
 }
 

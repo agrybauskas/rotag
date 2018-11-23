@@ -19,7 +19,7 @@ $Data::Dumper::Indent = 1;
 my $atom_site = AtomSite->new();
 $atom_site->open( $ENV{PDBX_FILE} );
 
-my $index_table = AtomSite->index( $atom_site );
+my $index_table = index( $atom_site );
 
 for my $attribute ( sort keys %{ $index_table } ) {
     for my $value ( sort keys %{ $index_table->{$attribute} } ) {
