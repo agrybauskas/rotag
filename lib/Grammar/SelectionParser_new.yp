@@ -7,8 +7,8 @@
 
     use AtomProperties qw( @MAINCHAIN_GRAMMAR
                            @SIDECHAIN_GRAMMAR );
+    use AtomSite;
     use ConnectAtoms qw( around_distance );
-    use PDBxParser qw( filter );
 %}
 
 %left ','
@@ -35,59 +35,54 @@ line
 exp
     : 'all'
         {
-            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                             'is_list' => 1 } );
+            return extract( $_[0]->{USER}{ATOM_SITE},
+                            {
+                              'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                              'is_list' => 1
+                            } );
         }
     | 'mainchain' exp
         {
-            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
-                                            "label_atom_id" => \@MAINCHAIN_GRAMMAR },
-                             'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
-                             'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[2],
+                                     'label_atom_id' => \@MAINCHAIN_GRAMMAR },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'sidechain' exp
         {
-            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2],
-                                            "label_atom_id" => \@SIDECHAIN_GRAMMAR },
-                             'data' => [  $_[0]->{USER}{BY_ATTRIBUTE} ],
-                             'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[2],
+                                     'label_atom_id' => \@SIDECHAIN_GRAMMAR },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'byres' exp
         {
             my @residue_ids =
                 uniq(
-                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-                             'data' => [ 'label_seq_id' ],
-                             'is_list' => 1 } ) } );
+                  @{ filter( $_[0]->{USER}{ATOM_SITE},
+                             { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE}=>$_[2]},
+                               'return' => 'label_seq_id' } ) } );
             my @chains = # TODO: look, if states might make problems.
                 uniq(
-                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-                             'data' => [ 'label_asym_id' ],
-                             'is_list' => 1 } ) } );
+                  @{ filter( $_[0]->{USER}{ATOM_SITE},
+                             { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE}=>$_[2]},
+                               'return' => 'label_asym_id' } ) } );
             my @pdbx_model_num =
                 uniq(
-                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-                             'data' => [ 'pdbx_PDB_model_num' ],
-                             'is_list' => 1 } ) } );
+                  @{ filter( $_[0]->{USER}{ATOM_SITE},
+                             { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE}=>$_[2]},
+                               'return' => 'pdbx_PDB_model_num' } ) } );
             my @alt =
                 uniq(
-                @{ filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { $_[0]->{USER}{BY_ATTRIBUTE} =>$_[2]},
-                             'data' => [ 'label_alt_id' ],
-                             'is_list' => 1 } ) } );
-            return filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                             'include' => { 'label_seq_id' => \@residue_ids,
+                  @{ filter( $_[0]->{USER}{ATOM_SITE},
+                             { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE}=>$_[2]},
+                               'return' => 'label_alt_id' } ) } );
+            return filter( $_[0]->{USER}{ATOM_SITE},
+                           { 'include' => { 'label_seq_id' => \@residue_ids,
                                             'label_asym_id' => \@chains,
                                             'label_alt_id' => [ @alt, '.' ],
-                                            'label_entity_id' => \@pdbx_model_num, },
-                             'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                             'is_list' => 1 } );
+                                            'pdbx_PDB_model_num' => \@pdbx_model_num },
+                             'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | exp '&&' exp
         {
@@ -155,12 +150,15 @@ exp
             } else {
                 unshift( @ids, '!' );
                 $around_atom_site =
-                    around_distance( $_[0]->{USER}{ATOM_SITE},
+                    around_distance( $_[0]->{USER}{ATOM_SITE}{_atoms},
                                      { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
                                      $_[3] );
-                return filter( { 'atom_site' => $around_atom_site,
-                                 'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                                 'is_list' => 1 } );
+                return extract( bless( { '_atoms' => $around_atom_site },
+                                       'AtomSite' ),
+                                {
+                                  'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
+                                  'is_list' => 1
+                                } );
             }
         }
     | exp 'rand' NUM
@@ -181,73 +179,63 @@ exp
         }
     | 'chain' str_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'label_asym_id' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'label_asym_id' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'resid' num_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'label_seq_id' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'label_seq_id' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'resname' str_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'label_comp_id' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'label_comp_id' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomid' num_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'id' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'id' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomname' str_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'label_atom_id' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'label_atom_id' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomtype' str_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'type_symbol' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'type_symbol' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'altid' str_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'label_alt_id' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'label_alt_id' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'altid' num_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'label_alt_id' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'label_alt_id' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'model' str_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'pdbx_PDB_model_num' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'model' num_ope
         {
-            filter( { 'atom_site' => $_[0]->{USER}{ATOM_SITE},
-                      'include' => { 'pdbx_PDB_model_num' => $_[2] },
-                      'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
-                      'is_list' => 1 } );
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                      'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
 ;
 
@@ -349,10 +337,12 @@ sub parser
     my $selected_atom_data = $self->YYParse( yylex => \&lexer,
                                              yyerror => \&debugger,
                                              yydebug=>0x00 );
-
     my $selected_atom_site =
-        filter( { "atom_site" => $atom_site,
-                  "include" => { $by_attribute => $selected_atom_data } } );
-
-    return $selected_atom_site;
+        filter( $atom_site,
+                {
+                  "atom_site" => $atom_site,
+                  "include" => { $by_attribute => $selected_atom_data }
+                } );
+    $selected_atom_site->pdbx();
+    # return $selected_atom_site;
 }
