@@ -19,7 +19,7 @@ sub new
 {
     my ( $class, $options ) = @_;
 
-    my $self = { 'last_atom_id' => 0 };
+    my $self = { '_atoms' => {} };
 
     return bless $self, $class;
 }
@@ -47,17 +47,11 @@ sub DESTROY
 sub open
 {
     my ( $self, $pdbx_file, $options ) = @_;
-    my ( $update_bonds ) = $options->{'update_bonds'};
 
-    $self->{'atoms'} =
+    $self->{'_atoms'} =
         pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
 
-    if( $update_bonds ) {
-        connect_atoms( $self->{'atoms'} );
-        hybridization( $self->{'atoms'} );
-    }
-
-    $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
+    $self->{'_last_atom_id'} = max( keys %{ $self->{'_atoms'} } );
 
     return;
 }
@@ -65,54 +59,49 @@ sub open
 #
 # Creates atom data structure item.
 # Input:
-#     $options - hash of all necessary attributes with corresponding values;
+#     $atom_data - hash of all necessary attributes with corresponding values;
 # Output:
-#     atom data structure item.
+#     %atom_site - atom site data structure.
 #
 
 sub create
 {
-    my ( $self, $options ) = @_;
-    my $atom_id = $options->{'id'};
-    $atom_id //= max( keys %{ $self->{'atoms'} } );
-    my $type_symbol = $options->{'type_symbol'};
-    my $label_atom_id = $options->{'label_atom_id'};
-    my $label_alt_id = $options->{'label_alt_id'};
+    my ( $self, $atom_data ) = @_;
+    my $atom_id = $atom_data->{'id'};
+    my $type_symbol = $atom_data->{'type_symbol'};
+    my $label_atom_id = $atom_data->{'label_atom_id'};
+    my $label_alt_id = $atom_data->{'label_alt_id'};
     $label_alt_id //= q{.};
-    my $label_comp_id = $options->{'label_comp_id'};
-    my $label_asym_id = $options->{'label_asym_id'};
-    my $label_entity_id = $options->{'label_entity_id'};
+    my $label_comp_id = $atom_data->{'label_comp_id'};
+    my $label_asym_id = $atom_data->{'label_asym_id'};
+    my $label_entity_id = $atom_data->{'label_entity_id'};
     $label_entity_id //= q{?};
-    my $label_seq_id = $options->{'label_seq_id'};
-    my $cartn_x = $options->{'cartn_x'};
-    my $cartn_y = $options->{'cartn_y'};
-    my $cartn_z = $options->{'cartn_z'};
-    my $pdbx_model_num = $options->{'pdbx_PDB_model_num'};
+    my $label_seq_id = $atom_data->{'label_seq_id'};
+    my $cartn_x = $atom_data->{'Cartn_x'};
+    my $cartn_y = $atom_data->{'Cartn_y'};
+    my $cartn_z = $atom_data->{'Cartn_z'};
+    my $pdbx_model_num = $atom_data->{'pdbx_PDB_model_num'};
 
-    if( ! exists $self->{'atoms'}{$atom_id} ) {
-        $self->{'atoms'}{$atom_id}{'group_PDB'} = 'ATOM';
-        $self->{'atoms'}{$atom_id}{'id'} = $atom_id;
-        $self->{'atoms'}{$atom_id}{'type_symbol'} = $type_symbol;
-        $self->{'atoms'}{$atom_id}{'label_atom_id'} = $label_atom_id;
-        $self->{'atoms'}{$atom_id}{'label_alt_id'} = $label_alt_id;
-        $self->{'atoms'}{$atom_id}{'label_comp_id'} = $label_comp_id;
-        $self->{'atoms'}{$atom_id}{'label_asym_id'} = $label_asym_id;
-        $self->{'atoms'}{$atom_id}{'label_entity_id'} = $label_entity_id;
-        $self->{'atoms'}{$atom_id}{'label_seq_id'} = $label_seq_id;
-        $self->{'atoms'}{$atom_id}{'Cartn_x'} = $cartn_x;
-        $self->{'atoms'}{$atom_id}{'Cartn_y'} = $cartn_y;
-        $self->{'atoms'}{$atom_id}{'Cartn_z'} = $cartn_z;
-        $self->{'atoms'}{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
+    my %atom_site = ();
+    if( ! exists $atom_site{$atom_id} ) {
+        $atom_site{$atom_id}{'group_PDB'} = 'ATOM';
+        $atom_site{$atom_id}{'id'} = $atom_id;
+        $atom_site{$atom_id}{'type_symbol'} = $type_symbol;
+        $atom_site{$atom_id}{'label_atom_id'} = $label_atom_id;
+        $atom_site{$atom_id}{'label_alt_id'} = $label_alt_id;
+        $atom_site{$atom_id}{'label_comp_id'} = $label_comp_id;
+        $atom_site{$atom_id}{'label_asym_id'} = $label_asym_id;
+        $atom_site{$atom_id}{'label_entity_id'} = $label_entity_id;
+        $atom_site{$atom_id}{'label_seq_id'} = $label_seq_id;
+        $atom_site{$atom_id}{'Cartn_x'} = $cartn_x;
+        $atom_site{$atom_id}{'Cartn_y'} = $cartn_y;
+        $atom_site{$atom_id}{'Cartn_z'} = $cartn_z;
+        $atom_site{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
     } else {
         die 'Specified atom id is already present in the atom site';
     }
 
-    if( $self->{'update_bonds'} ) {
-        connect_atoms( $self->{'atoms'} );
-        hybridization( $self->{'atoms'} );
-    }
-
-    return;
+    return \%atom_site;
 }
 
 #

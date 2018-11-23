@@ -17,8 +17,8 @@ $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Indent = 1;
 
 my $atom_site = AtomSite->new();
-$atom_site->open( $ENV{PDBX_FILE}, { 'update_bonds' => 0 } );
+$atom_site->open( $ENV{PDBX_FILE} );
 
-print Dumper $atom_site->{'atoms'};
+print Dumper $atom_site->{'_atoms'};
 
 END
