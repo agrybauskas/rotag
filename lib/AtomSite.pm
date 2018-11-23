@@ -230,11 +230,9 @@ sub mark_selection
 sub filter
 {
     my ( $atom_site, $options ) = @_;
-    my ( $include, $exclude, $return_ids, $group_id ) =
+    my ( $include, $exclude, $return_data, $group_id ) =
         ( $options->{'include'}, $options->{'exclude'},
-          $options->{'return_ids'}, $options->{'group_id'} );
-
-    $return_ids //= 0;
+          $options->{'return'}, $options->{'group_id'} );
 
     if( ! defined $atom_site->{'_atoms'} ) {
         die 'No atom were loaded to the AtomSite data structure';
@@ -287,8 +285,11 @@ sub filter
     }
 
     # Return object handle or atom ids depending on the flag.
-    if( $return_ids ) {
+    if( defined $return_data && $return_data eq 'id' ) {
         return [ keys %filtered_atoms ]
+    } elsif( defined $return_data ) {
+        return [ map { $filtered_atoms{$_}{$return_data} }
+                 keys %filtered_atoms ];
     } else {
         return bless { '_atoms' => \%filtered_atoms }, 'AtomSite';
     }
