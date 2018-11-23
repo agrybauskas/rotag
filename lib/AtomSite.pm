@@ -142,11 +142,21 @@ sub append
     my ( $self, $atom_sites ) = @_;
 
     for my $atom_site ( @{ $atom_sites } ) {
-        for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
-            if( ! exists $self->{'_atoms'}{$atom_id} ) {
-                $self->{'_atoms'}{$atom_id} = $atom_site->{'_atoms'}{$atom_id};
-            } else {
-                die "Atom with id $atom_id already exists";
+        if( ref $atom_site eq 'AtomSite' ) {
+            for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
+                if( ! exists $self->{'_atoms'}{$atom_id} ) {
+                    $self->{'_atoms'}{$atom_id}=$atom_site->{'_atoms'}{$atom_id};
+                } else {
+                    die "Atom with id $atom_id already exists";
+                }
+            }
+        } else {
+            for my $atom_id ( keys %{ $atom_site } ) {
+                if( ! exists $self->{'_atoms'}{$atom_id} ) {
+                    $self->{'_atoms'}{$atom_id} = $atom_site->{$atom_id};
+                } else {
+                    die "Atom with id $atom_id already exists";
+                }
             }
         }
     }
