@@ -18,10 +18,8 @@ use PDBxParser qw( pdbx_loop_unique
 sub new
 {
     my ( $class, $options ) = @_;
-    my ( $update_bonds ) = ( $options->{'update_bonds'} );
-    $update_bonds //= 0;
 
-    my $self = { 'last_atom_id' => 0, 'update_bonds' => $update_bonds };
+    my $self = { 'last_atom_id' => 0 };
 
     return bless $self, $class;
 }
@@ -48,12 +46,13 @@ sub DESTROY
 
 sub open
 {
-    my ( $self, $pdbx_file ) = @_;
+    my ( $self, $pdbx_file, $options ) = @_;
+    my ( $update_bonds ) = $options->{'update_bonds'};
 
     $self->{'atoms'} =
         pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
 
-    if( $self->{'update_bonds'} ) {
+    if( $update_bonds ) {
         connect_atoms( $self->{'atoms'} );
         hybridization( $self->{'atoms'} );
     }
