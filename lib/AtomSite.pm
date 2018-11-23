@@ -46,7 +46,7 @@ sub DESTROY
 # Input:
 #     $pdbx_file - PDBx file.
 # Output:
-#     none - Atom data structure is created and stored in $self->{'atoms'}.
+#     Atom data structure is created and stored in $self->{'atoms'}.
 #
 
 sub open
