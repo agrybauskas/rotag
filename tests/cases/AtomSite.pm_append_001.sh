@@ -24,8 +24,8 @@ my $atom_site_2 = AtomSite->new();
 $atom_site_1->open( $ENV{PDBX_FILE_1} );
 $atom_site_2->open( $ENV{PDBX_FILE_2} );
 
-$atom_site->append( [ $atom_site_1->{'atoms'},
-                      $atom_site_2->{'atoms'} ], 1 );
+$atom_site->append( [ $atom_site_1->{'_atoms'},
+                      $atom_site_2->{'_atoms'} ] );
 
 print Dumper $atom_site;
 

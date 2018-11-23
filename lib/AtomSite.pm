@@ -131,36 +131,17 @@ sub update_bonds
 
 sub append
 {
-    my ( $self ) = shift;
-    my ( $atom_sites, $renumber ) = @_;
-    $renumber //= 0;
+    my ( $self, $atom_sites ) = @_;
 
     for my $atom_site ( @{ $atom_sites } ) {
-        if( $renumber ) {
-            for my $atom_id ( sort keys %{ $atom_site } ) {
-                $self->{'atoms'}{$self->{'last_atom_id'}+1} =
-                    $atom_site->{$atom_id};
-                $self->{'atoms'}{$self->{'last_atom_id'}+1}{'id'} =
-                    $self->{'last_atom_id'}+1;
-                $self->{'last_atom_id'}++;
-            }
-        } else {
-            for my $atom_id ( sort keys %{ $atom_site } ) {
-                if( ! exists $self->{'atoms'}{$atom_id} ) {
-                    $self->{'atoms'}{$atom_id} = $atom_site->{$atom_id};
-                } else {
-                    die "Atom with id $atom_id already exists";
-                }
+        for my $atom_id ( sort keys %{ $atom_site } ) {
+            if( ! exists $self->{'_atoms'}{$atom_id} ) {
+                $self->{'_atoms'}{$atom_id} = $atom_site->{$atom_id};
+            } else {
+                die "Atom with id $atom_id already exists";
             }
         }
     }
-
-    if( $self->{'update_bonds'} ) {
-        connect_atoms( $self->{'atoms'} );
-        hybridization( $self->{'atoms'} );
-    }
-
-    $self->{'last_atom_id'} = max( keys %{ $self->{'atoms'} } );
 
     return;
 }
