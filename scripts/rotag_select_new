@@ -156,21 +156,12 @@ for my $pdbx_file ( @ARGV ) {
     #         $group_id++;
     #     }
     } else {
-        $selection_parser->parser( $atom_site, $target_cmd, 'id',
-                                   { 'seed' => $random_seed } );
-        # @target_atom_ids =
-            # filter( $selection_parser->parser() )->extract( [  ] );
-    #     @target_atom_ids =
-    #         @{ filter( { 'atom_site' =>
-    #                          $selection_parser->parser(
-    #                              $atom_site,
-    #                              $target_cmd,
-    #                              'id',
-    #                              { 'seed' => $random_seed }
-    #                          ),
-    #                          'data' => [ 'id' ],
-    #                          'is_list' => 1,
-    #                          'group_id' => $group_id } ) };
+        @target_atom_ids =
+            keys %{ $selection_parser->
+                        parser( $atom_site,
+                                $target_cmd,
+                                'id',
+                                { 'seed' => $random_seed } )->{'_atoms'} };
     }
 
     # my @selected_atom_ids =
