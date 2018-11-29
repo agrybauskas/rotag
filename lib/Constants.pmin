@@ -32,7 +32,7 @@ use AtomProperties qw( %ATOMS );
 
 our $EPSILON = @EPSILON@;
 our $PI = @PI@;
-our $SIG_FIGS = '%.3f';
+our $SIG_FIGS = '%.6f';
 
 # ----------------------------- Angle constants ------------------------------- #
 
