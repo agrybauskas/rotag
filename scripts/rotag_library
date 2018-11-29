@@ -261,7 +261,7 @@ for my $pdbx_file ( @ARGV ) {
             # Colects rotamer energy data.
             push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
                  $energy_id, $rotamer_id, $rotamer->{'potential'},
-                 $rotamer->{'potential_energy_value'};
+                 sprintf $SIG_FIGS, $rotamer->{'potential_energy_value'};
 
             $energy_id++;
             $rotamer_id++;
