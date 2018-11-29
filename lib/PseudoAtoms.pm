@@ -440,9 +440,13 @@ sub generate_library
 
                 my ( $allowed_angles, $energy_sums ) =
                     @{ calc_full_atom_energy(
-                           { 'atom_site' => $current_atom_site_w_H,
+                           { 'atom_site' => ( $is_hydrogen_explicit ?
+                                              $current_atom_site_w_H :
+                                              $current_atom_site_no_H ),
                              'residue_unique_key' => $residue_unique_key,
-                             'interaction_site' => \%interaction_site_w_H,
+                             'interaction_site' => ( $is_hydrogen_explicit ?
+                                                     \%interaction_site_w_H :
+                                                     \%interaction_site_no_H ),
                              'small_angle' => $small_angle,
                              'potential_function' => $potential_function,
                              'energy_cutoff_atom' => $energy_cutoff_atom,
@@ -766,16 +770,18 @@ sub calc_full_atom_energy
                                  'pdbx_PDB_model_num' => [ $pdbx_model_num ] }});
 
     # Adds hydrogens to the residue_site.
-    my $hydrogens =
-        add_hydrogens( $residue_site,
-                       { 'use_existing_connections' => 1,
-                         'use_existing_hybridizations' => 1,
-                         'exclude_by_atom_name' => [ 'N', 'C' ],
-                         'use_origins_alt_group_id' => 1 } );
-    append_connections( $residue_site, $hydrogens );
-    $residue_site = { %{ $residue_site }, %{ $hydrogens } };
+    if( $is_hydrogen_explicit ) {
+        my $hydrogens =
+            add_hydrogens( $residue_site,
+                           { 'use_existing_connections' => 1,
+                                 'use_existing_hybridizations' => 1,
+                                 'exclude_by_atom_name' => [ 'N', 'C' ],
+                                 'use_origins_alt_group_id' => 1 } );
+        append_connections( $residue_site, $hydrogens );
+        $residue_site = { %{ $residue_site }, %{ $hydrogens } };
 
-    rotation_only( $residue_site );
+        rotation_only( $residue_site );
+    }
 
     # Identifies missing unique rotatable bonds.
     my %uniq_rotatable_bonds = %{ unique_rotatables( $residue_site ) };
@@ -829,8 +835,8 @@ sub calc_full_atom_energy
 
         my $rotamer_energy_sum = 0;
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
-            my $rotamer_atom_energy = 0;
             for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
+                my $rotamer_atom_energy = 0;
                 if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
                     ( ! is_neighbour( \%rotamer_interaction_site,
                                       $rotamer_atom_id,
