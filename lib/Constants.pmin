@@ -14,7 +14,8 @@ our @EXPORT_OK = qw( $COULOMB_K
                      $H_SIGMA
                      $LJ_EPSILON
                      $PI
-                     $SIG_FIGS
+                     $SIG_FIGS_MIN
+                     $SIG_FIGS_MAX
                      $SOFT_EPSILON
                      $SOFT_N
                      $SP3_ANGLE
@@ -32,7 +33,8 @@ use AtomProperties qw( %ATOMS );
 
 our $EPSILON = @EPSILON@;
 our $PI = @PI@;
-our $SIG_FIGS = '%.6f';
+our $SIG_FIGS_MIN = '%.3f';
+our $SIG_FIGS_MAX = '%.6f';
 
 # ----------------------------- Angle constants ------------------------------- #
 

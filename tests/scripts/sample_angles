@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS );
+use Constants qw( $SIG_FIGS_MIN );
 use Sampling qw( sample_angles );
 
 #
@@ -20,5 +20,5 @@ my @angle_ranges = ( map { [ $_->[0],  $_->[1] ] }
 my $sampled_angles = sample_angles(  \@angle_ranges, $small_angle );
 
 for my $angle ( @{ $sampled_angles } ) {
-    printf( "$SIG_FIGS\n", $angle );
+    printf( "$SIG_FIGS_MIN\n", $angle );
 }

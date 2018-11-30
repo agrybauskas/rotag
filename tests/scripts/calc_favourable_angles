@@ -5,7 +5,7 @@ use warnings;
 
 use AtomInteractions qw( hard_sphere );
 use Constants qw( $PI
-                  $SIG_FIGS );
+                  $SIG_FIGS_MIN );
 use PDBxParser qw( filter
                    to_pdbx );
 use PseudoAtoms qw( calc_favourable_angles );
@@ -54,7 +54,7 @@ for my $angles ( @{ $favourable_angles } ) {
     my @angle_names = map { "chi${_}" } 1..$#{ $angles }+1;
     for my $i ( 0..$#{ $angles } ) {
         print $angle_id, ', ', $angle_names[$i], ', ',
-            sprintf( $SIG_FIGS, 180 * $angles->[$i] / $PI ), "\n";
+            sprintf( $SIG_FIGS_MIN, 180 * $angles->[$i] / $PI ), "\n";
     }
     $angle_id++;
 }

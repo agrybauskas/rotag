@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS );
+use Constants qw( $SIG_FIGS_MIN );
 use SidechainModels qw( rotation_only );
 
 #
@@ -30,7 +30,7 @@ for my $matrix_id ( 0..$#{ $conformation } ) {
     for my $row ( @{ $conformation->[$matrix_id] } ) {
         for my $item ( @{ $row } ) {
             if( $item =~ m/^[+-]?\d+[.]?\d+$/ ) {
-                printf( $SIG_FIGS, $item );
+                printf( $SIG_FIGS_MIN, $item );
             } else {
                 print( $item );
             }

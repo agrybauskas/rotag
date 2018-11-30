@@ -10,7 +10,7 @@ use List::MoreUtils qw( uniq );
 
 use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI
-                  $SIG_FIGS );
+                  $SIG_FIGS_MAX );
 use ErrorHandling qw( parse_errors
                       parse_warnings );
 use BondProperties qw( hybridization );
@@ -254,14 +254,14 @@ for my $pdbx_file ( @ARGV ) {
                 push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
                      $residue_chain, $pdbx_model, $residue_alt, $angle_name,
-                     sprintf $SIG_FIGS, $angle_value;
+                     sprintf $SIG_FIGS_MAX, $angle_value;
                 $angle_id++;
             }
 
             # Colects rotamer energy data.
             push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
                  $energy_id, $rotamer_id, $rotamer->{'potential'},
-                 sprintf $SIG_FIGS, $rotamer->{'potential_energy_value'};
+                 sprintf $SIG_FIGS_MAX, $rotamer->{'potential_energy_value'};
 
             $energy_id++;
             $rotamer_id++;

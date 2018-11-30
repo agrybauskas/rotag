@@ -18,7 +18,7 @@ use AtomInteractions qw( hard_sphere
                          coulomb
                          h_bond
                          composite );
-use Constants qw( $SIG_FIGS );
+use Constants qw( $SIG_FIGS_MAX );
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
                      is_second_neighbour );
@@ -284,7 +284,7 @@ for my $pdbx_file ( @ARGV ) {
                                          $neighbour_residue_name,
                                          $neighbour_chain, $neighbour_entity,
                                          $neighbour_alt, $interaction,
-                                         sprintf $SIG_FIGS,
+                                         sprintf $SIG_FIGS_MAX,
                                                  $pairwise_potential_energy->{$interaction};
                                     $calculation_id++;
                                 }
@@ -300,7 +300,7 @@ for my $pdbx_file ( @ARGV ) {
                                      $neighbour_residue_name, $neighbour_chain,
                                      $neighbour_entity, $neighbour_alt,
                                      $interactions,
-                                     sprintf $SIG_FIGS,
+                                     sprintf $SIG_FIGS_MAX,
                                              $pairwise_potential_energy;
                                 $calculation_id++;
                             }
@@ -327,7 +327,7 @@ for my $pdbx_file ( @ARGV ) {
                          $calculation_id, $atom_id, $atom_symbol, $atom_name,
                          $atom_residue_id, $atom_residue_name, $atom_chain,
                          $atom_entity, $atom_alt, $interactions,
-                         sprintf $SIG_FIGS, $potential_energy;
+                         sprintf $SIG_FIGS_MAX, $potential_energy;
                     $calculation_id++;
                 }
 
@@ -338,7 +338,7 @@ for my $pdbx_file ( @ARGV ) {
                              $calculation_id, $atom_id, $atom_symbol, $atom_name,
                              $atom_residue_id, $atom_residue_name, $atom_chain,
                              $atom_entity, $atom_alt, $interaction,
-                             sprintf $SIG_FIGS, $potential_energy{$interaction};
+                             sprintf $SIG_FIGS_MAX, $potential_energy{$interaction};
                         $calculation_id++;
                     }
                 }
@@ -380,8 +380,9 @@ for my $pdbx_file ( @ARGV ) {
                     push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
                          $calculation_id, split( /,/sxm, $residue_unique_key ),
                          $interaction,
-                         sprintf $SIG_FIGS, $residue_energy{$residue_unique_key}
-                                                           {$interaction};
+                         sprintf $SIG_FIGS_MAX,
+                                 $residue_energy{$residue_unique_key}
+                                                {$interaction};
                     $calculation_id++;
                 }
             }

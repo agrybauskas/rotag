@@ -8,4 +8,4 @@ moiety="SER"
 
 $(dirname "$0")/../scripts/replace_with_moiety "${residue_unique_key}" \
                                                ${moiety} \
-					       ${pdbx_dump_file}
+					                           ${pdbx_dump_file}

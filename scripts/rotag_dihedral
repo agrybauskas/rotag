@@ -10,7 +10,7 @@ Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
 
 use Constants qw( $PI
-                  $SIG_FIGS );
+                  $SIG_FIGS_MAX );
 use ErrorHandling qw( parse_errors );
 use Measure qw( all_dihedral
                 dihedral_angle );
@@ -120,8 +120,8 @@ for my $pdbx_file ( @ARGV ) {
                  $third_atom_id,
                  $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
                  $fourth_atom_id,
-                 ( $in_degrees ? sprintf $SIG_FIGS, $dihedral_angle * 180 / $PI
-                               : sprintf $SIG_FIGS, $dihedral_angle ),
+                 ( $in_degrees ? sprintf $SIG_FIGS_MAX, $dihedral_angle * 180 / $PI
+                               : sprintf $SIG_FIGS_MAX, $dihedral_angle ),
                  ( $in_degrees ? 'degrees' : 'radians' );
             $dihedral_id++;
         }
@@ -170,11 +170,11 @@ for my $pdbx_file ( @ARGV ) {
                      $atom_ids[3],
                      $angle_name,
                      ( $in_degrees ?
-                       sprintf $SIG_FIGS,
+                       sprintf $SIG_FIGS_MAX,
                                $dihedral_angles->{$residue_unique_key}
                                                  {$angle_name}
                                                  {'value'} * 180 / $PI :
-                       sprintf $SIG_FIGS,
+                       sprintf $SIG_FIGS_MAX,
                                $dihedral_angles->{$residue_unique_key}
                                                  {$angle_name}
                                                  {'value'} ),

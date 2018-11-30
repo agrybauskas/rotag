@@ -55,4 +55,4 @@
 ++ Add option to mutate with given dihedral angle.
 -- 'label_alt_id' probably should be used only when main-chain has one.
 -- Optimize AtomSite::filter().
--- Analyze only heavy atoms.
+++ Analyze only heavy atoms.

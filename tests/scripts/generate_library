@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Constants qw( $PI
-                  $SIG_FIGS );
+                  $SIG_FIGS_MIN );
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_library
                     replace_with_rotamer);
@@ -66,10 +66,10 @@ for my $residue_unique_key ( sort keys %{ $rotamer_library } ) {
                    'data_name' =>
                        "$rotamer_id:" .
                        join( ';',
-                             map { "$_:" . sprintf( $SIG_FIGS,
+                             map { "$_:" . sprintf( $SIG_FIGS_MIN,
                                                     $rotamer->{'angles'}{$_} ) }
                              sort keys %{ $rotamer->{'angles'} } ) . ';E:' .
-                       sprintf( $SIG_FIGS,
+                       sprintf( $SIG_FIGS_MIN,
                                 $rotamer->{'potential_energy_value'} ) } );
         $rotamer_id++;
     }

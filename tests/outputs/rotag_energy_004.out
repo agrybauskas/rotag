@@ -12,10 +12,10 @@ _[local]_energy.label_entity_id
 _[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
-1 148 C CA 18 SER A 1 . leonard_jones 0.000
-2 151 C CB 18 SER A 1 . leonard_jones 1.311
-3 152 O OG 18 SER A 1 . leonard_jones 22.727
-4 147 N N 18 SER A 1 . leonard_jones 2.135
-5 149 C C 18 SER A 1 . leonard_jones -0.983
-6 150 O O 18 SER A 1 . leonard_jones 0.910
+1 148 C CA 18 SER A 1 . leonard_jones 0.000000
+2 151 C CB 18 SER A 1 . leonard_jones 1.311380
+3 152 O OG 18 SER A 1 . leonard_jones 22.727106
+4 147 N N 18 SER A 1 . leonard_jones 2.135403
+5 149 C C 18 SER A 1 . leonard_jones -0.983008
+6 150 O O 18 SER A 1 . leonard_jones 0.909668
 #

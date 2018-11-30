@@ -1,4 +1,4 @@
-data_1:chi1:0.000;chi2:3.142;chi3:3.142;chi4:3.142;E:362.621
+data_1:chi1:0.000;chi2:3.142;chi3:3.142;chi4:3.142;E:95.838
 #
 loop_
 _atom_site.group_PDB
@@ -33,7 +33,7 @@ ATOM 2180 N NH1 B ARG A 1 315 42.859 -11.949 29.829 1
 ATOM 2181 N NH2 A ARG A 1 315 43.928 -10.984 34.736 1
 ATOM 2182 N NH2 B ARG A 1 315 41.616 -12.934 28.168 1
 #
-data_2:chi1:3.142;chi2:3.142;chi3:3.142;chi4:3.142;E:133.102
+data_2:chi1:3.142;chi2:3.142;chi3:3.142;chi4:3.142;E:60.309
 #
 loop_
 _atom_site.group_PDB
@@ -68,7 +68,7 @@ ATOM 2180 N NH1 B ARG A 1 315 42.859 -11.949 29.829 1
 ATOM 2181 N NH2 A ARG A 1 315 43.456 -13.791 27.187 1
 ATOM 2182 N NH2 B ARG A 1 315 41.616 -12.934 28.168 1
 #
-data_1:chi1:0.000;chi2:3.142;chi3:3.142;chi4:3.142;E:362.621
+data_1:chi1:0.000;chi2:3.142;chi3:3.142;chi4:3.142;E:95.838
 #
 loop_
 _atom_site.group_PDB
@@ -103,7 +103,7 @@ ATOM 2180 N NH1 B ARG A 1 315 44.074 -11.516 32.507 1
 ATOM 2181 N NH2 A ARG A 1 315 41.616 -12.934 28.168 1
 ATOM 2182 N NH2 B ARG A 1 315 43.928 -10.984 34.736 1
 #
-data_2:chi1:3.142;chi2:3.142;chi3:3.142;chi4:3.142;E:133.102
+data_2:chi1:3.142;chi2:3.142;chi3:3.142;chi4:3.142;E:60.309
 #
 loop_
 _atom_site.group_PDB

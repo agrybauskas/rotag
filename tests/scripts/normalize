@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS );
+use Constants qw( $SIG_FIGS_MIN );
 use LinearAlgebra qw( normalize );
 
 #
@@ -22,5 +22,5 @@ my @vector = map { [ split( " ", $_ ) ] } @rows;
 my $vector_normalized = normalize( \@vector );
 
 foreach( @{ $vector_normalized } ) {
-    printf $SIG_FIGS . "\n", $_->[0];
+    printf $SIG_FIGS_MIN . "\n", $_->[0];
 }

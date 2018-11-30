@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use AtomSite;
 use PDBxParser qw( filter
                    to_pdbx );
 use Grammar::SelectionParser;
@@ -17,16 +18,20 @@ my ( $selection_command,
      $pdbx_dump_file ) = @ARGV;
 
 my $atom_site;
+my $atoms;
 open( my $fh, "<", $pdbx_dump_file );
 while( <$fh> ) {
-    $atom_site .= "$_" ;
+    $atoms .= "$_" ;
 }
 close( $fh );
-$atom_site = eval( $atom_site );
+$atoms = eval( $atoms );
+
+$atom_site = AtomSite->new();
+$atom_site->{'_atoms'} = $atoms;
 
 my $selection_parser = new SelectionParser();
 my $selected_atom_site = $selection_parser->parser( $atom_site,
                                                     $selection_command,
                                                     "id" );
 
-to_pdbx( { "atom_site" => $selected_atom_site } );
+to_pdbx( { "atom_site" => $selected_atom_site->{'_atoms'} } );

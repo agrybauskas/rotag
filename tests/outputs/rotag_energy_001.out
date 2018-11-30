@@ -12,10 +12,10 @@ _[local]_energy.label_entity_id
 _[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
-1 148 C CA 18 SER A 1 . composite 0.000
-2 151 C CB 18 SER A 1 . composite 1.296
-3 152 O OG 18 SER A 1 . composite 20.598
-4 147 N N 18 SER A 1 . composite 0.338
-5 149 C C 18 SER A 1 . composite -1.005
-6 150 O O 18 SER A 1 . composite 0.945
+1 148 C CA 18 SER A 1 . composite 0.000000
+2 151 C CB 18 SER A 1 . composite 1.295907
+3 152 O OG 18 SER A 1 . composite 20.597989
+4 147 N N 18 SER A 1 . composite 0.337926
+5 149 C C 18 SER A 1 . composite -1.004909
+6 150 O O 18 SER A 1 . composite 0.945067
 #

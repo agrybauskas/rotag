@@ -12,6 +12,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      mark_selection
                      pdbx_loop_unique
                      pdbx_loop_to_csv
+                     pdbx_loop_to_array
                      obtain_atom_site
                      obtain_pdbx_line
                      obtain_pdbx_loop
@@ -169,6 +170,41 @@ sub pdbx_loop_unique
     }
 
     return \%pdbx_loop_unique;
+}
+
+#
+# Generates hash from pdbx loop data structure.
+# Input:
+#     $pdbx_loop_data - data structure (from obtain_pdbx_loop);
+# Output:
+#     @pdbx_loops - arrays of hashes data structure.
+#
+
+sub pdbx_loop_to_array
+{
+    my ( $pdbx_loop_data, $category ) = @_;
+
+    my @attributes = @{ $pdbx_loop_data->{$category}{'attributes'} };
+    my @data = @{ $pdbx_loop_data->{$category}{'data'} };
+
+    # Creates special data structure.
+    my @pdbx_loops;
+    my @data_row;
+    my %data_row;
+
+    my $attribute_count = scalar @attributes;
+    my $data_count = scalar @data;
+
+    for( my $pos = 0; $pos < $data_count - 1; $pos += $attribute_count ) {
+        @data_row = @{ data[$pos..$pos+$attribute_count-1] };
+        %data_row = ();
+        for( my $col = 0; $col <= $#data_row; $col++ ) {
+            $data_row{$attributes[$col]} = $data_row[$col];
+        }
+        push @pdbx_loops, { %data_row };
+    }
+
+    return \@pdbx_loops;
 }
 
 #

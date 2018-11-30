@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS );
+use Constants qw( $SIG_FIGS_MIN );
 use LinearAlgebra qw( find_euler_angles );
 
 #
@@ -25,4 +25,4 @@ my $euler_angles = find_euler_angles(
     [ $atom_coord[3], $atom_coord[4], $atom_coord[5] ],
     [ $atom_coord[6], $atom_coord[7], $atom_coord[8] ] );
 
-print( join( " ", map { sprintf( $SIG_FIGS, $_ ) } @{ $euler_angles } ) . "\n" );
+print( join( " ", map { sprintf( $SIG_FIGS_MIN, $_ ) } @{ $euler_angles } ) . "\n" );

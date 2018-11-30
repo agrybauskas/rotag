@@ -14,7 +14,7 @@ use Math::Trig qw( acos );
 use AlterMolecule qw( bond_torsion );
 use AtomProperties qw( @MAINCHAIN_NAMES );
 use Constants qw( $PI
-                  $SIG_FIGS );
+                  $SIG_FIGS_MIN );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key );
 use LinearAlgebra qw( mult_matrix_product
@@ -218,9 +218,12 @@ sub replace_with_moiety
         # TODO: check if there will be situations when non '.' label_alt_id is
         # needed.
         $moiety_atom->{'label_alt_id'} = q{.};
-        $moiety_atom->{'Cartn_x'}= sprintf $SIG_FIGS, $transf_atom_coord->[0][0];
-        $moiety_atom->{'Cartn_y'}= sprintf $SIG_FIGS, $transf_atom_coord->[1][0];
-        $moiety_atom->{'Cartn_z'}= sprintf $SIG_FIGS, $transf_atom_coord->[2][0];
+        $moiety_atom->{'Cartn_x'} =
+            sprintf $SIG_FIGS_MIN, $transf_atom_coord->[0][0];
+        $moiety_atom->{'Cartn_y'}=
+            sprintf $SIG_FIGS_MIN, $transf_atom_coord->[1][0];
+        $moiety_atom->{'Cartn_z'}=
+            sprintf $SIG_FIGS_MIN, $transf_atom_coord->[2][0];
 
         $atom_site->{$last_atom_id} = $moiety_atom;
         $last_atom_id++;

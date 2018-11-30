@@ -35,7 +35,7 @@ use ConnectAtoms qw( append_connections
                      is_second_neighbour );
 use Constants qw( $EDGE_LENGTH_INTERACTION
                   $PI
-                  $SIG_FIGS );
+                  $SIG_FIGS_MIN );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product
@@ -149,9 +149,9 @@ sub generate_pseudo
                   'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
                   'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
                   'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
-                  'cartn_x' => sprintf( $SIG_FIGS, $transf_atom_coord->[0][0] ),
-                  'cartn_y' => sprintf( $SIG_FIGS, $transf_atom_coord->[1][0] ),
-                  'cartn_z' => sprintf( $SIG_FIGS, $transf_atom_coord->[2][0] ),
+                  'cartn_x' => sprintf( $SIG_FIGS_MIN, $transf_atom_coord->[0][0] ),
+                  'cartn_y' => sprintf( $SIG_FIGS_MIN, $transf_atom_coord->[1][0] ),
+                  'cartn_z' => sprintf( $SIG_FIGS_MIN, $transf_atom_coord->[2][0] ),
                   'pdbx_PDB_model_num' =>
                       $atom_site{$atom_id}{'pdbx_PDB_model_num'},
                 } );
@@ -1055,13 +1055,13 @@ sub add_hydrogens
                   'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},
                   'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
                   'cartn_x' =>
-                      sprintf( $SIG_FIGS,
+                      sprintf( $SIG_FIGS_MIN,
                                $hydrogen_coord{$hydrogen_name}->[0][0] ),
                   'cartn_y' =>
-                      sprintf( $SIG_FIGS,
+                      sprintf( $SIG_FIGS_MIN,
                                $hydrogen_coord{$hydrogen_name}->[1][0] ),
                   'cartn_z' =>
-                      sprintf( $SIG_FIGS,
+                      sprintf( $SIG_FIGS_MIN,
                                $hydrogen_coord{$hydrogen_name}->[2][0] ),
                   'pdbx_PDB_model_num' =>
                       $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
