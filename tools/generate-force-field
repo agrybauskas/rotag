@@ -1,0 +1,65 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use autodie;
+use Data::Dumper;
+use Getopt::Long;
+Getopt::Long::Configure qw( gnu_getopt );
+
+use PDBxParser qw( obtain_pdbx_loop
+                   pdbx_loop_to_array );
+
+use Version qw( $VERSION );
+
+our $VERSION = $VERSION;
+
+#*generate-force-field [options] file1 [file2, ...]
+#*    generates force-field module using cif file.
+#*
+#*USAGE:
+#*    generate-force-field input.cif > output.csv
+#*
+#*OPTIONS:
+#*    -v, --version
+#*        print version.
+
+GetOptions(
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or die 'Error in command line argument.';
+
+for my $cif_file ( @ARGV ) {
+    # Reads file path, stdin and '-' operator.
+    my $pdbx_loops;
+    if( $cif_file ) {
+        $pdbx_loops = obtain_pdbx_loop( $cif_file,
+                                        [ '_atom_properties',
+                                          '_partial_charge',
+                                          '_residue_atom_necessety',
+                                          '_clear_hybridization',
+                                          '_connectivity',
+                                          '_hydrogen_names',
+                                          '_interaction_atom_names',
+                                          '_mainchain_atom_names',
+                                          '_sidechain_atom_names',
+                                          '_rotatable_residue_names' ] );
+    } else {
+        die "Use command \"generate-force-field --help\" in order to see the " .
+            "manual.\n";
+    }
+
+    my %ATOMS = ();
+    my @atoms_pdbx_loops = pdbx_loop_to_array( $pdbx_loops, '_atom_properties' );
+}
