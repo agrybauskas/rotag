@@ -1,5 +1,14 @@
-data_general-force-field
-
+data_general
+#
+_[local]_force_field.soft_epsilon 1.0
+_[local]_force_field.soft_n       12
+_[local]_force_field.lj_epsilon   1.0
+_[local]_force_field.coulomb_k    1.0
+_[local]_force_field.h_epsilon    1.0
+_[local]_force_field.h_sigma      2.0
+_[local]_force_field.cutoff_start 2.5
+_[local]_force_field.cutoff_end   5.0
+#
 loop_
 _[local]_atom_properties.type_symbol
 _[local]_atom_properties.hybridization
@@ -22,7 +31,7 @@ S sp3  1.05 0.03 1.89 2    2
 X sp3  1    0.05 0    0    0
 X sp2  0.5  0.05 0    0    0
 X sp   0.25 0.05 0    0    0
-
+#
 loop_
 _[local]_partial_charge.label_comp_id
 _[local]_partial_charge.label_atom_id
@@ -399,7 +408,7 @@ XAA HG   0.446
 XAA OG   -0.64
 XAA XA   0
 XAA XA2  0
-
+#
 loop_
 _[local]_residue_atom_necessety.label_comp_id
 _[local]_residue_atom_necessety.label_atom_id
@@ -799,7 +808,7 @@ XAA HA   0
 XAA HB2  0
 XAA HB3  0
 XAA HG   0
-
+#
 loop_
 _[local]_clear_hybridization.label_comp_id
 _[local]_clear_hybridization.label_atom_id
@@ -976,7 +985,7 @@ XAA CG   sp3
 XAA OG   sp3
 XAA XA   sp3
 XAA XA2  sp3
-
+#
 loop_
 _[local]_connectivity.label_comp_id
 _[local]_connectivity.label_atom_1_id
@@ -1739,7 +1748,7 @@ XAA CB   OG
 XAA HA   OG
 XAA CA   XA
 XAA CA   XA2
-
+#
 loop_
 _[local]_hydrogen_names.label_comp_id
 _[local]_hydrogen_names.label_atom_id
@@ -1945,7 +1954,7 @@ XAA CA   HA
 XAA CB   HB2
 XAA CB   HB3
 XAA OG   HG
-
+#
 loop_
 _[local]_interaction_atom_names.label_atom_id
 C
@@ -1962,7 +1971,7 @@ O
 OXT
 XA
 XA2
-
+#
 loop_
 _[local]_mainchain_atom_names.label_atom_id
 C
@@ -1978,7 +1987,7 @@ O
 OXT
 XA
 XA2
-
+#
 loop_
 _[local]_sidechain_atom_names.label_atom_id
 CB
@@ -2052,7 +2061,7 @@ OG1
 OH
 SD
 SG
-
+#
 loop_
 _[local]_rotatable_residue_names.label_comp_id
 XAA

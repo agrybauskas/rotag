@@ -9,6 +9,7 @@ use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 
 use PDBxParser qw( obtain_pdbx_loop
+                   obtain_pdbx_line
                    pdbx_loop_to_array );
 
 use Version qw( $VERSION );
@@ -62,6 +63,26 @@ for my $cif_file ( @ARGV ) {
         die "Use command \"generate-force-field --help\" in order to see the " .
             "manual.\n";
     }
+
+    # Force field constants.
+    my $force_field_constants =
+        obtain_pdbx_line( $cif_file, [ '_force_field.soft_epsilon',
+                                       '_force_field.soft_n',
+                                       '_force_field.lj_epsilon',
+                                       '_force_field.coulomb_k',
+                                       '_force_field.h_epsilon',
+                                       '_force_field.h_sigma',
+                                       '_force_field.cutoff_start',
+                                       '_force_field.cutoff_end' ] );
+
+    my $SOFT_EPSILON = $force_field_constants->{'_force_field'}{'soft_epsilon'};
+    my $SOFT_N = $force_field_constants->{'_force_field'}{'soft_n'};
+    my $LJ_EPSILON = $force_field_constants->{'_force_field'}{'lj_epsilon'};
+    my $COULOMB_K = $force_field_constants->{'_force_field'}{'coulomb_k'};
+    my $H_EPSILON = $force_field_constants->{'_force_field'}{'h_epsilon'};
+    my $H_SIGMA = $force_field_constants->{'_force_field'}{'h_sigma'};
+    my $CUTOFF_START = $force_field_constants->{'_force_field'}{'cutoff_start'};
+    my $CUTOFF_END = $force_field_constants->{'_force_field'}{'cutoff_end'};
 
     # Atom properties.
     my $ATOMS;
@@ -183,14 +204,19 @@ for my $cif_file ( @ARGV ) {
             $rotatable_residue_name->{'label_comp_id'};
     }
 
-    print Data::Dumper->Dump( [ $ATOMS, $PARTIAL_CHARGE, $RESIDUE_ATOMS,
+    print Data::Dumper->Dump( [ $SOFT_EPSILON, $SOFT_N, $LJ_EPSILON, $COULOMB_K,
+                                $H_EPSILON, $H_SIGMA, $CUTOFF_START, $CUTOFF_END,
+                                $ATOMS, $PARTIAL_CHARGE, $RESIDUE_ATOMS,
                                 $CLEAR_HYBRIDIZATION, $CONNECTIVITY,
                                 $HYDROGEN_NAMES, $INTERACTION_ATOM_NAMES,
                                 $MAINCHAIN_ATOM_NAMES, $SIDECHAIN_ATOM_NAMES,
                                 $ROTATABLE_RESIDUE_NAMES ],
-                              [ qw( ATOMS PARTIAL_CHARGE RESIDUE_ATOMS
+                              [ qw( SOFT_EPSILON SOFT_N LJ_EPSILON COULOMB_K
+                                    H_EPSILON H_SIGMA CUTOFF_START CUTOFF_END
+                                    ATOMS PARTIAL_CHARGE RESIDUE_ATOMS
                                     CLEAR_HYBRIDIZATION CONNECTIVITY
                                     HYDROGEN_NAMES INTERACTION_ATOM_NAMES
                                     MAINCHAIN_ATOM_NAMES SIDECHAIN_ATOM_NAMES
                                     ROTATABLE_RESIDUE_NAMES ) ] );
+    print "1;";
 }

@@ -1,8 +1,0 @@
-package ForceField;
-
-use strict;
-use warnings;
-
-use Exporter qw( import );
-
-# ------------------------------- Force-fields -------------------------------- #

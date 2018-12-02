@@ -6,8 +6,6 @@ YAPP_DIR=lib/Grammar
 YAPP_FILES=${wildcard ${YAPP_DIR}/*.yp}
 GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 
-all: ${GRAMMAR_MODULES} ${PERL_MODULE}
-
 %.pm: %.yp
 	yapp -o $@ $<
 
@@ -20,12 +18,29 @@ TOOLS_DIR=tools
 PERL_TEMPLATE=${LIB_DIR}/Constants.pmin
 PERL_MODULE=${LIB_DIR}/Constants.pm
 
-all: ${PERL_MODULE}
-
 ${PERL_MODULE}: ${PERL_TEMPLATE}
 	sed 's/@PI@/'$$(${TOOLS_DIR}/calculate-pi)'/g' $^ \
 	    | sed 's/@EPSILON@/'$$(${TOOLS_DIR}/calculate-epsilon)'/g' \
 	    > $@
+
+#
+# Generate force-field module.
+#
+
+LIB_FORCE_FIELD_DIR=lib/ForceField
+TOOLS_DIR=tools
+PERL_FORCE_FIELD_TEMPLATE=${LIB_FORCE_FIELD_DIR}/General.pmin
+PERL_FORCE_FIELD_CIF=${LIB_FORCE_FIELD_DIR}/general.cif
+PERL_FORCE_FIELD_MODULE=${LIB_FORCE_FIELD_DIR}/General.pm
+
+${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
+	cat $(word 1, $^) > $@
+	${TOOLS_DIR}/generate-force-field $(word 2, $^) >> $@
+	sed -i 's/\$$/our \$$/g' $@
+
+.PHONY: all
+
+all: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE}
 
 #
 # Instalation of dependencies.
@@ -53,7 +68,7 @@ endef
 
 .PHONY: test
 
-test: ${GRAMMAR_MODULES} ${PERL_MODULE} | ${TEST_DIFF}
+test: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE} | ${TEST_DIFF}
 
 ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	@if ${can_run_test}; then \
@@ -141,3 +156,4 @@ clean:
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${PERL_MODULE}
+	rm -f ${PERL_FORCE_FIELD_MODULE}
