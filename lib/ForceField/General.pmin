@@ -3,23 +3,4 @@ package ForceField;
 use strict;
 use warnings;
 
-use Exporter qw( import );
-our @EXPORT_OK = qw( $SOFT_EPSILON
-                     $SOFT_N
-                     $LJ_EPSILON
-                     $COULOMB_K
-                     $H_EPSILON
-                     $H_SIGMA
-                     $CUTOFF_START
-                     $CUTOFF_END
-                     $ATOMS
-                     $PARTIAL_CHARGE
-                     $CLEAR_HYBRIDIZATION
-                     $CONNECTIVITY
-                     $HYDROGEN_NAMES
-                     $INTERACTION_ATOM_NAMES
-                     $MAINCHAIN_ATOM_NAMES
-                     $SIDECHAIN_ATOM_NAMES
-                     $ROTATABLE_RESIDUE_NAMES );
-
-# ------------------------------- Force-fields -------------------------------- #
+# -------------------------- Force-field parameters --------------------------- #
