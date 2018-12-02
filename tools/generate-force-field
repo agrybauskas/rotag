@@ -128,8 +128,9 @@ for my $cif_file ( @ARGV ) {
     for my $residue_atoms_loop ( @{ $residue_atoms_loops } ) {
         my $residue_name = $residue_atoms_loop->{'label_comp_id'};
         my $atom_name = $residue_atoms_loop->{'label_atom_id'};
-        my $necessity_value = $residue_atoms_loop->{'value'}; # 1 or 0.
-        $RESIDUE_ATOMS->{$residue_name}{$atom_name} = $necessity_value;
+        my $necessity_value = $residue_atoms_loop->{'value'};
+        push @{ $RESIDUE_ATOMS->{$residue_name}{$necessity_value} },
+            $atom_name;
     }
 
     # Residue atom necessety.

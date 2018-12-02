@@ -38,9 +38,9 @@ PERL_FORCE_FIELD_MODULE=${LIB_FORCE_FIELD_DIR}/General.pm
 ${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
 	cat $(word 1, $^) > $@
 	${TOOLS_DIR}/generate-force-field $(word 2, $^) >> $@
-	sed -i 's/\$$/my \$$/g' $@
-	sed -i 's/%/my %/g' $@
-	sed -i 's/@/my @/g' $@
+	sed -i 's/\$$/our \$$/g' $@
+	sed -i 's/%/our %/g' $@
+	sed -i 's/@/our @/g' $@
 
 .PHONY: all
 

@@ -17,13 +17,12 @@ use List::Util qw( any
                    min );
 use List::MoreUtils qw( uniq );
 
-use AtomProperties qw( %ATOMS
-                       sort_atom_names );
+use AtomProperties qw( sort_atom_names );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI );
+use ForceField::General;
 use Measure qw( dihedral_angle );
-use MoleculeProperties qw( %CLEAR_HYBRIDIZATION );
 use PDBxParser qw( filter );
 use Version qw( $VERSION );
 
@@ -36,151 +35,151 @@ my %BOND_TYPES = (
         'H' => {
             'H' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] -
-                          $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] -
+                          $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                          $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                          $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
             },
             'C' => {
-                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
             },
             'N' => {
-                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
             },
             'O' => {
-                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
             },
             'S' => {
-                'min_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
             },
         },
         'C' => {
             'C' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] -
-                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] -
+                          $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                          $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
             },
             'N' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
             },
             'O' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
             },
             'S' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
             },
         },
         'N' => {
             'N' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
-                          $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
+                          $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                          $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                          $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
             },
             'O' => {
-                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
             },
             'S' => {
-                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
             },
         },
         'O' => {
             'O' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
-                          $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
+                          $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                          $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                          $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
             },
             'S' => {
-                'min_length' => $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] -
-                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[0] +
-                                $ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'min_length' => $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0] -
+                                $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
+                'max_length' => $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[0] +
+                                $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
             },
         },
         'S' => {
             'S' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                          $ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
+                          $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                          $ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
+                    2 * ( $General::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
+                          $General::ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
             },
         },
     },
@@ -188,61 +187,61 @@ my %BOND_TYPES = (
         'C' => {
             'C' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] -
-                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] -
+                          $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                          $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
             },
             'N' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] -
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] -
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] +
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
+                'min_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] -
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] -
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
+                'max_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
             },
             'O' => {
-                'min_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] -
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'C'}{'covalent_radius'}{'error'}->[1] +
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+                'min_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] -
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+                'max_length' => $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
             },
         },
         'N' => {
             'N' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] -
-                          $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] -
+                          $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-                          $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+                          $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
             },
             'O' => {
-                'min_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] -
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
-                                $ATOMS{'N'}{'covalent_radius'}{'error'}->[1] +
-                                $ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+                'min_length' => $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[1] -
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
+                'max_length' => $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
+                                $General::ATOMS{'N'}{'covalent_radius'}{'error'}->[1] +
+                                $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
             },
         },
         'O' => {
             'O' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
-                          $ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
+                          $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
-                          $ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
+                    2 * ( $General::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
+                          $General::ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
             },
         },
     },
@@ -250,17 +249,17 @@ my %BOND_TYPES = (
         'C' => {
             'C' => {
                 'min_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[2] -
-                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
+                    2 * ( $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[2] -
+                          $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
                 'max_length' =>
-                    2 * ( $ATOMS{'C'}{'covalent_radius'}{'length'}->[2] +
-                          $ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
+                    2 * ( $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[2] +
+                          $General::ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
             },
         },
     },
 );
 
-our %COVALENT_BOND_COMB = %{ covalent_bond_combinations( \%ATOMS ) };
+our %COVALENT_BOND_COMB = %{ covalent_bond_combinations( \%General::ATOMS ) };
 
 # -------------------------- Bond related functions --------------------------- #
 
@@ -337,19 +336,19 @@ sub covalent_bond_combinations
     my ( $ATOMS ) = @_;
 
     my %covalent_bond_combinations;
-    for my $atom_i_name ( keys %ATOMS ) {
-        for my $atom_j_name ( keys %ATOMS ) {
+    for my $atom_i_name ( keys %General::ATOMS ) {
+        for my $atom_j_name ( keys %General::ATOMS ) {
             $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'length'} =
                 permutation( 2,
                              [],
-                             [ $ATOMS{$atom_i_name}{'covalent_radius'}{'length'},
-                               $ATOMS{$atom_j_name}{'covalent_radius'}{'length'} ],
+                             [ $General::ATOMS{$atom_i_name}{'covalent_radius'}{'length'},
+                               $General::ATOMS{$atom_j_name}{'covalent_radius'}{'length'} ],
                              [] );
             $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'error'} =
                 permutation( 2,
                              [],
-                             [ $ATOMS{$atom_i_name}{'covalent_radius'}{'error'},
-                               $ATOMS{$atom_j_name}{'covalent_radius'}{'error'} ],
+                             [ $General::ATOMS{$atom_i_name}{'covalent_radius'}{'error'},
+                               $General::ATOMS{$atom_j_name}{'covalent_radius'}{'error'} ],
                              [] );
         }
     }
@@ -377,10 +376,10 @@ sub hybridization
         # quits early.
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
-        if( exists $CLEAR_HYBRIDIZATION{$residue_name} &&
-            exists $CLEAR_HYBRIDIZATION{$residue_name}{$atom_name} ) {
+        if( exists $General::CLEAR_HYBRIDIZATION{$residue_name} &&
+            exists $General::CLEAR_HYBRIDIZATION{$residue_name}{$atom_name} ) {
             $atom_site->{$atom_id}{'hybridization'} =
-                $CLEAR_HYBRIDIZATION{$residue_name}{$atom_name};
+                $General::CLEAR_HYBRIDIZATION{$residue_name}{$atom_name};
             next;
         }
 

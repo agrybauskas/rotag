@@ -17,23 +17,15 @@ use List::Util qw( any );
 use Math::Trig qw( acos );
 use Readonly;
 
-use AtomProperties qw( %ATOMS
-                       %HYDROGEN_NAMES );
 use ConnectAtoms qw( distance
                      distance_squared );
-use Constants qw( $CUTOFF_START
-                  $CUTOFF_END
-                  $COULOMB_K
-                  $H_EPSILON
-                  $H_SIGMA
-                  $LJ_EPSILON
-                  $PI
+use Constants qw( $PI
                   $SOFT_EPSILON
                   $SOFT_N
                   $SP3_ANGLE
                   $SP2_ANGLE );
+use ForceField::General;
 use Measure qw( bond_angle );
-use MoleculeProperties qw( %PARTIAL_CHARGE );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -67,8 +59,8 @@ sub hard_sphere
     );
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-             + $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $General::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
+             + $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared < $sigma ** 2 ) {
         return 'Inf';
@@ -107,10 +99,10 @@ sub soft_sphere
     );
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    $soft_epsilon //= $SOFT_EPSILON;
-    $n //= $SOFT_N;
+    $sigma //= $General::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $soft_epsilon //= $General::SOFT_EPSILON;
+    $n //= $General::SOFT_N;
 
     if( $r_squared <= $sigma ** 2 ) {
         return $soft_epsilon * ( $sigma / sqrt $r_squared ) ** $n;
@@ -146,9 +138,9 @@ sub leonard_jones
     );
 
     $r //= distance( $atom_i, $atom_j );
-    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    $lj_epsilon //= $LJ_EPSILON;
+    $sigma //= $General::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $lj_epsilon //= $General::LJ_EPSILON;
 
     return 4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
 }
@@ -174,14 +166,16 @@ sub coulomb
     my ( $atom_i, $atom_j, $parameters ) = @_;
     my ( $r, $coulomb_k ) = ( $parameters->{'r'}, $parameters->{'c_k'} );
 
-    $coulomb_k //= $COULOMB_K;
+    $coulomb_k //= $General::COULOMB_K;
     $r //= distance( $atom_i, $atom_j );
 
     # Extracts partial charges.
     my $partial_charge_i =
-        $PARTIAL_CHARGE{$atom_i->{'label_comp_id'}}{$atom_i->{'label_atom_id'}};
+        $General::PARTIAL_CHARGE{$atom_i->{'label_comp_id'}}
+                                {$atom_i->{'label_atom_id'}};
     my $partial_charge_j =
-        $PARTIAL_CHARGE{$atom_j->{'label_comp_id'}}{$atom_j->{'label_atom_id'}};
+        $General::PARTIAL_CHARGE{$atom_j->{'label_comp_id'}}
+                                {$atom_j->{'label_atom_id'}};
 
     return $coulomb_k * $partial_charge_i * $partial_charge_j / $r ** 2;
 }
@@ -212,15 +206,15 @@ sub h_bond
     # BondProperties.
     my @h_bond_heavy_atoms = qw( N O F );
     my @atom_i_hydrogen_names =
-        defined $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
-                               {$atom_i->{'label_atom_id'}} ?
-             @{ $HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
-                               {$atom_i->{'label_atom_id'}} } : ();
+        defined $General::HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
+                                        {$atom_i->{'label_atom_id'}} ?
+             @{ $General::HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
+                                        {$atom_i->{'label_atom_id'}} } : ();
     my @atom_j_hydrogen_names =
-        defined $HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
-                               {$atom_j->{'label_atom_id'}} ?
-             @{ $HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
-                               {$atom_j->{'label_atom_id'}} } : ();
+        defined $General::HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
+                                        {$atom_j->{'label_atom_id'}} ?
+             @{ $General::HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
+                                        {$atom_j->{'label_atom_id'}} } : ();
 
     # Exits early if there are no hydrogen bond donor-acceptor combinations.
     if( ! ( ( any { $atom_i->{'type_symbol'} eq $_ } @h_bond_heavy_atoms ) &&
@@ -238,10 +232,10 @@ sub h_bond
             map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
                @{ $atom_pair->[0]{'connections'} };
         my @hydrogen_names =
-            defined $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-                                   {$atom_pair->[0]{'label_atom_id'}} ?
-                 @{ $HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-                                   {$atom_pair->[0]{'label_atom_id'}}} : ();
+            defined $General::HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
+                                            {$atom_pair->[0]{'label_atom_id'}} ?
+                 @{ $General::HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
+                                            {$atom_pair->[0]{'label_atom_id'}}} : ();
 
         if( @hydrogen_ids && ! $only_implicit ) {
             for my $hydrogen_id ( @hydrogen_ids ) {
@@ -291,8 +285,8 @@ sub h_bond_implicit
         $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
     );
 
-    $r_sigma //= $H_SIGMA;
-    $h_epsilon //= $H_EPSILON;
+    $r_sigma //= $General::H_SIGMA;
+    $h_epsilon //= $General::H_EPSILON;
 
     my $covalent_radius_idx;
     my @hybridizations = qw( sp3 sp2 sp );
@@ -305,9 +299,9 @@ sub h_bond_implicit
 
     my $r_donor_acceptor = distance( $donor_atom, $acceptor_atom );
     my $r_donor_hydrogen =
-        $ATOMS{$donor_atom->{'type_symbol'}}
+        $General::ATOMS{$donor_atom->{'type_symbol'}}
               {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
-        $ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
+        $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
 
     # Because there are no information on the position of hydrogen atom, the best
     # case scenario is assumed - the distance of the atoms are optimal. This is
@@ -360,8 +354,8 @@ sub h_bond_explicit
     my ( $h_epsilon, $r_sigma ) = (
         $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
     );
-    $r_sigma //= $H_SIGMA;
-    $h_epsilon //= $H_EPSILON;
+    $r_sigma //= $General::H_SIGMA;
+    $h_epsilon //= $General::H_EPSILON;
 
     my $r_acceptor_hydrogen = distance( $hydrogen_atom, $acceptor_atom );
     my $theta = bond_angle(
@@ -420,8 +414,8 @@ sub composite
                                     # component values.
     );
 
-    $cutoff_start //= $CUTOFF_START;
-    $cutoff_end //= $CUTOFF_END;
+    $cutoff_start //= $General::CUTOFF_START;
+    $cutoff_end //= $General::CUTOFF_END;
     $decompose //= 0;
 
     # Calculates squared distance between two atoms.
@@ -430,8 +424,8 @@ sub composite
                  ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
 
     # Calculates Van der Waals distance of given atoms.
-    $sigma //= $ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $General::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r < $cutoff_start * $sigma ) {
         my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
