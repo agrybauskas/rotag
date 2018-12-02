@@ -1,4 +1,4 @@
-package ForceField;
+package General;
 
 use strict;
 use warnings;
