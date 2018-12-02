@@ -13,6 +13,9 @@ use PDBxParser qw( obtain_pdbx_loop
 
 use Version qw( $VERSION );
 
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
+
 our $VERSION = $VERSION;
 
 #*generate-force-field [options] file1 [file2, ...]
@@ -60,6 +63,134 @@ for my $cif_file ( @ARGV ) {
             "manual.\n";
     }
 
-    my %ATOMS = ();
-    my @atoms_pdbx_loops = pdbx_loop_to_array( $pdbx_loops, '_atom_properties' );
+    # Atom properties.
+    my $ATOMS;
+    my $atoms_pdbx_loops = pdbx_loop_to_array( $pdbx_loops, '_atom_properties' );
+
+    for my $atom_pdbx_loop ( @{ $atoms_pdbx_loops } ) {
+        my $type_symbol = $atom_pdbx_loop->{'type_symbol'};
+        my $hybridization = $atom_pdbx_loop->{'hybridization'};
+        my $covalent_radius_value = $atom_pdbx_loop->{'covalent_radius_value'};
+        my $covalent_radius_error = $atom_pdbx_loop->{'covalent_radius_error'};
+        my $vdw_radius = $atom_pdbx_loop->{'vdw_radius'};
+        my $lone_pair_count = $atom_pdbx_loop->{'lone_pair_count'};
+        my $valence = $atom_pdbx_loop->{'valence'};
+
+        $ATOMS->{$type_symbol}{'lone_pairs'} = $lone_pair_count;
+        $ATOMS->{$type_symbol}{'vdw_radius'} = $vdw_radius;
+        $ATOMS->{$type_symbol}{'valence'} = $valence;
+
+        push @{ $ATOMS->{$type_symbol}{'covalent_radius'}{'length'} },
+            $covalent_radius_value;
+        push @{ $ATOMS->{$type_symbol}{'covalent_radius'}{'error'} },
+            $covalent_radius_error;
+    }
+
+    # Partial charge.
+    my $PARTIAL_CHARGE;
+    my $partial_charge_loops = pdbx_loop_to_array( $pdbx_loops,
+                                                   '_partial_charge' );
+
+    for my $partial_charge_loop ( @{ $partial_charge_loops } ) {
+        my $residue_name = $partial_charge_loop->{'label_comp_id'};
+        my $atom_name = $partial_charge_loop->{'label_atom_id'};
+        my $partial_charge_value = $partial_charge_loop->{'value'};
+        $PARTIAL_CHARGE->{$residue_name}{$atom_name} = $partial_charge_value;
+    }
+
+    # Residue atom necessety.
+    my $RESIDUE_ATOMS;
+    my $residue_atoms_loops = pdbx_loop_to_array( $pdbx_loops,
+                                                  '_residue_atom_necessety' );
+
+    for my $residue_atoms_loop ( @{ $residue_atoms_loops } ) {
+        my $residue_name = $residue_atoms_loop->{'label_comp_id'};
+        my $atom_name = $residue_atoms_loop->{'label_atom_id'};
+        my $necessity_value = $residue_atoms_loop->{'value'}; # 1 or 0.
+        $RESIDUE_ATOMS->{$residue_name}{$atom_name} = $necessity_value;
+    }
+
+    # Residue atom necessety.
+    my $CLEAR_HYBRIDIZATION;
+    my $clear_hybridization_loops = pdbx_loop_to_array( $pdbx_loops,
+                                                        '_clear_hybridization' );
+
+    for my $clear_hybridization_loop ( @{ $clear_hybridization_loops } ) {
+        my $residue_name = $clear_hybridization_loop->{'label_comp_id'};
+        my $atom_name = $clear_hybridization_loop->{'label_atom_id'};
+        my $hybridization = $clear_hybridization_loop->{'type'};
+        $CLEAR_HYBRIDIZATION->{$residue_name}{$atom_name} = $hybridization;
+    }
+
+    # Connectivity.
+    my $CONNECTIVITY;
+    my $connectivity_loops = pdbx_loop_to_array( $pdbx_loops, '_connectivity' );
+
+    for my $connectivity_loop ( @{ $connectivity_loops } ) {
+        my $residue_name = $connectivity_loop->{'label_comp_id'};
+        my $atom_name_1 = $connectivity_loop->{'label_atom_1_id'};
+        my $atom_name_2 = $connectivity_loop->{'label_atom_2_id'};
+
+        push @{ $CONNECTIVITY->{$residue_name}{$atom_name_1} }, $atom_name_2;
+    }
+
+    # Connectivity.
+    my $HYDROGEN_NAMES;
+    my $hydrogen_names_loops = pdbx_loop_to_array( $pdbx_loops,
+                                                   '_hydrogen_names' );
+
+    for my $hydrogen_names_loop ( @{ $hydrogen_names_loops } ) {
+        my $residue_name = $hydrogen_names_loop->{'label_comp_id'};
+        my $atom_name = $hydrogen_names_loop->{'label_atom_id'};
+        my $hydrogen_name = $hydrogen_names_loop->{'label_hydrogen_atom_id'};
+
+        push @{ $HYDROGEN_NAMES->{$residue_name}{$atom_name} }, $hydrogen_name;
+    }
+
+    # Interaction atoms.
+    my $INTERACTION_ATOM_NAMES;
+    my $interaction_atom_names = pdbx_loop_to_array( $pdbx_loops,
+                                                   '_interaction_atom_names' );
+    for my $interaction_atom_name ( @{ $interaction_atom_names } ) {
+        push @{ $INTERACTION_ATOM_NAMES },
+            $interaction_atom_name->{'label_atom_id'};
+    }
+
+    # Mainchain atoms.
+    my $MAINCHAIN_ATOM_NAMES;
+    my $mainchain_atom_names = pdbx_loop_to_array( $pdbx_loops,
+                                                   '_mainchain_atom_names' );
+    for my $mainchain_atom_name ( @{ $mainchain_atom_names } ) {
+        push @{ $MAINCHAIN_ATOM_NAMES },
+            $mainchain_atom_name->{'label_atom_id'};
+    }
+
+    # Sidechain atoms.
+    my $SIDECHAIN_ATOM_NAMES;
+    my $sidechain_atom_names = pdbx_loop_to_array( $pdbx_loops,
+                                                   '_sidechain_atom_names' );
+    for my $sidechain_atom_name ( @{ $sidechain_atom_names } ) {
+        push @{ $SIDECHAIN_ATOM_NAMES },
+            $sidechain_atom_name->{'label_atom_id'};
+    }
+
+    # Rotatable residue names.
+    my $ROTATABLE_RESIDUE_NAMES;
+    my $rotatable_residue_names = pdbx_loop_to_array( $pdbx_loops,
+                                                   '_rotatable_residue_names' );
+    for my $rotatable_residue_name ( @{ $rotatable_residue_names } ) {
+        push @{ $ROTATABLE_RESIDUE_NAMES },
+            $rotatable_residue_name->{'label_comp_id'};
+    }
+
+    print Data::Dumper->Dump( [ $ATOMS, $PARTIAL_CHARGE, $RESIDUE_ATOMS,
+                                $CLEAR_HYBRIDIZATION, $CONNECTIVITY,
+                                $HYDROGEN_NAMES, $INTERACTION_ATOM_NAMES,
+                                $MAINCHAIN_ATOM_NAMES, $SIDECHAIN_ATOM_NAMES,
+                                $ROTATABLE_RESIDUE_NAMES ],
+                              [ qw( ATOMS PARTIAL_CHARGE RESIDUE_ATOMS
+                                    CLEAR_HYBRIDIZATION CONNECTIVITY
+                                    HYDROGEN_NAMES INTERACTION_ATOM_NAMES
+                                    MAINCHAIN_ATOM_NAMES SIDECHAIN_ATOM_NAMES
+                                    ROTATABLE_RESIDUE_NAMES ) ] );
 }

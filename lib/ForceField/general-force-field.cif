@@ -401,6 +401,7 @@ XAA XA   0
 XAA XA2  0
 
 loop_
+_[local]_residue_atom_necessety.label_comp_id
 _[local]_residue_atom_necessety.label_atom_id
 _[local]_residue_atom_necessety.value
 ALA C    1
@@ -2053,7 +2054,7 @@ SD
 SG
 
 loop_
-_[local]_rotatable_residue_names.label_atom_id
+_[local]_rotatable_residue_names.label_comp_id
 XAA
 SER
 ARG
