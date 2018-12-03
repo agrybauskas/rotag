@@ -18,7 +18,6 @@ our @EXPORT_OK = qw( append_connections
 
 use List::Util qw( any );
 
-use AtomProperties qw( %ATOMS );
 use BondProperties qw( %COVALENT_BOND_COMB );
 use Combinatorics qw( permutation );
 use Grid qw( identify_neighbour_cells

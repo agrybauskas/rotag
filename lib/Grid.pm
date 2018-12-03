@@ -11,7 +11,6 @@ our @EXPORT_OK = qw( create_box
 use List::Util qw( max
                    min );
 
-use AtomProperties qw( %ATOMS );
 use Constants qw( $EDGE_LENGTH_CONNECTION );
 use PDBxParser qw( filter );
 use Version qw( $VERSION );
