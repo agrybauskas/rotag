@@ -103,7 +103,8 @@ sub soft_sphere
     $n //= $General::SOFT_N;
 
     if( $r_squared <= $sigma ** 2 ) {
-        return $soft_epsilon * ( $sigma / sqrt $r_squared ) ** $n;
+        return $soft_epsilon * ( ( $sigma ** $n ) /
+                                 ( $r_squared ** ( $n / 2 ) ) );
     } else {
         return 0;
     }
@@ -129,18 +130,19 @@ sub leonard_jones
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $sigma, $lj_epsilon ) = (
-        $parameters->{'r'},
+    my ( $r_squared, $sigma, $lj_epsilon ) = (
+        $parameters->{'r_squared'},
         $parameters->{'sigma'},
         $parameters->{'lj_epsilon'},
     );
 
-    $r //= distance( $atom_i, $atom_j );
+    $r_squared //= distance_squared( $atom_i, $atom_j );
     $sigma //= $General::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
                $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
     $lj_epsilon //= $General::LJ_EPSILON;
 
-    return 4 * $lj_epsilon * ( ( $sigma / $r ) ** 12 - ( $sigma / $r ) ** 6 );
+    return 4 * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
+                               ( $sigma ** 6  / $r_squared ** 3 ) );
 }
 
 #
@@ -162,10 +164,11 @@ sub leonard_jones
 sub coulomb
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
-    my ( $r, $coulomb_k ) = ( $parameters->{'r'}, $parameters->{'c_k'} );
+    my ( $r_squared, $coulomb_k ) =
+        ( $parameters->{'r_squared'}, $parameters->{'c_k'} );
 
     $coulomb_k //= $General::COULOMB_K;
-    $r //= distance( $atom_i, $atom_j );
+    $r_squared //= distance_squared( $atom_i, $atom_j );
 
     # Extracts partial charges.
     my $partial_charge_i =
@@ -175,7 +178,7 @@ sub coulomb
         $General::PARTIAL_CHARGE{$atom_j->{'label_comp_id'}}
                                 {$atom_j->{'label_atom_id'}};
 
-    return $coulomb_k * $partial_charge_i * $partial_charge_j / $r ** 2;
+    return $coulomb_k * $partial_charge_i * $partial_charge_j / $r_squared;
 }
 
 #
