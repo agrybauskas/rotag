@@ -10,8 +10,6 @@ Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( any
                         uniq );
 
-use AtomProperties qw( %ATOMS
-                       @MAINCHAIN_NAMES );
 use AtomInteractions qw( hard_sphere
                          soft_sphere
                          leonard_jones
@@ -22,6 +20,7 @@ use Constants qw( $SIG_FIGS_MAX );
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
                      is_second_neighbour );
+use ForceField::General;
 use Grid qw( grid_box
              identify_neighbour_cells );
 use BondProperties qw( hybridization );
@@ -228,7 +227,7 @@ for my $pdbx_file ( @ARGV ) {
                 if( $do_rotamer ) {
                     next if any { $current_atom_site->{$atom_id}
                                                       {'label_atom_id'} eq $_ }
-                                @MAINCHAIN_NAMES;
+                                @General::INTERACTION_ATOM_NAMES;
                 }
 
                 my ( $atom_symbol, $atom_name,

@@ -5,10 +5,9 @@
     use List::MoreUtils qw( uniq );
     use List::Util qw( any );
 
-    use AtomProperties qw( @MAINCHAIN_GRAMMAR
-                           @SIDECHAIN_GRAMMAR );
     use AtomSite;
     use ConnectAtoms qw( around_distance );
+    use ForceField::General;
 %}
 
 %left ','
@@ -43,14 +42,16 @@ exp
         {
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[2],
-                                     'label_atom_id' => \@MAINCHAIN_GRAMMAR },
+                                     'label_atom_id' =>
+                                         \@General::MAINCHAIN_ATOM_NAMES },
                       'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'sidechain' exp
         {
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[2],
-                                     'label_atom_id' => \@SIDECHAIN_GRAMMAR },
+                                     'label_atom_id' =>
+                                         \@General::SIDECHAIN_ATOM_NAMES },
                       'return' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'byres' exp

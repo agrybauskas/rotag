@@ -10,8 +10,7 @@ use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
 use Constants qw( $PI );
-use Moieties qw( %SIDECHAINS
-                 replace_with_moiety );
+use Moieties qw( replace_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx

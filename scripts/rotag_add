@@ -11,7 +11,6 @@ Getopt::Long::Configure qw( gnu_getopt );
 use List::Util qw( max );
 use List::MoreUtils qw( any );
 
-use AtomProperties qw( @MAINCHAIN_NAMES );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter
@@ -94,7 +93,8 @@ for my $pdbx_file ( @ARGV ) {
     my $target_atom_ids =
         filter( { 'atom_site' => $selected_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
-                  'exclude' => { 'label_atom_id' => \@MAINCHAIN_NAMES },
+                  'exclude' => { 'label_atom_id' =>
+                                     \@General::INTERACTION_ATOM_NAMES },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
 

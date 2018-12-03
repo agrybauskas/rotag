@@ -9,11 +9,11 @@ use List::MoreUtils qw( any
                         uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
-use AtomProperties qw( @MAINCHAIN_NAMES );
 use Constants qw( $PI
                   $SIG_FIGS );
 use Combinatorics qw( permutation );
 use ErrorHandling qw( parse_warnings );
+use ForceField::General
 use Measure qw( rmsd );
 use PDBxParser qw( filter
                    mark_selection
@@ -217,7 +217,7 @@ for my $pdbx_file ( @ARGV ) {
                 my $residue_coord =
                     filter( { 'atom_site' => $residue_site,
                               'exclude' =>
-                                  { 'label_atom_id' => \@MAINCHAIN_NAMES },
+                                  { 'label_atom_id' => \@INTERACTION_ATOM_NAMES },
                               'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
                 # Checks if 'top' option is int or float and filters rotamers

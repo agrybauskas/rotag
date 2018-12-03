@@ -8,7 +8,7 @@ use Data::Dumper;
 use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 
-use MoleculeProperties qw( %CONNECTIVITY );
+use ForceField::General;
 use PDBxParser qw( split_by );
 use Version qw( $VERSION );
 
@@ -45,6 +45,7 @@ for my $pdbx_file ( @ARGV ) {
     if( $pdbx_file ) {
         $atom_site = obtain_atom_site( $pdbx_file );
     } else {
-        die "Use command \"rotag_library --help\" in order to see the manual.\n";
+        die "Use command \"dump-bond-lengths --help\" in order to see the" .
+            " manual.\n";
     }
 }
