@@ -195,7 +195,7 @@ sub pdbx_loop_to_array
     my $attribute_count = scalar @attributes;
     my $data_count = scalar @data;
 
-    for( my $pos = 0; $pos < $data_count - 1; $pos += $attribute_count ) {
+    for( my $pos = 0; $pos < $data_count; $pos += $attribute_count ) {
         @data_row = @{ data[$pos..$pos+$attribute_count-1] };
         %data_row = ();
         for( my $col = 0; $col <= $#data_row; $col++ ) {
