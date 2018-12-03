@@ -17,11 +17,8 @@ use List::Util qw( any );
 use Math::Trig qw( acos );
 use Readonly;
 
-use ConnectAtoms qw( distance
-                     distance_squared );
-use Constants qw( $PI
-                  $SP3_ANGLE
-                  $SP2_ANGLE );
+use ConnectAtoms qw( distance_squared );
+use Constants qw( $PI );
 use ForceField::General;
 use Measure qw( bond_angle );
 use Version qw( $VERSION );
@@ -289,8 +286,10 @@ sub h_bond_implicit
 {
     my ( $donor_atom, $acceptor_atom, $parameters ) = @_;
 
-    my ( $h_epsilon, $r_sigma ) = (
-        $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
+    my ( $r_donor_acceptor_squared, $h_epsilon, $r_sigma ) = (
+        $parameters->{'r_squared'},
+        $parameters->{'h_epsilon'},
+        $parameters->{'r_sigma'}
     );
 
     $r_sigma //= $General::H_SIGMA;
@@ -305,10 +304,10 @@ sub h_bond_implicit
         }
     }
 
-    my $r_donor_acceptor = distance( $donor_atom, $acceptor_atom );
+    $r_donor_acceptor_squared //= distance_squared( $donor_atom, $acceptor_atom);
     my $r_donor_hydrogen =
         $General::ATOMS{$donor_atom->{'type_symbol'}}
-              {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
+                       {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
         $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
 
     # Because there are no information on the position of hydrogen atom, the best
@@ -316,11 +315,11 @@ sub h_bond_implicit
     # done that way in order for explicit function increase energy if needed.
     # That way energy cannot be excluded by the cutoff value.
     my $theta =
-        acos( ( $r_donor_acceptor ** 2 - $r_donor_hydrogen ** 2 - $r_sigma ** 2)/
+        acos( ( $r_donor_acceptor_squared - $r_donor_hydrogen**2 - $r_sigma**2)/
               ( -2 * $r_donor_hydrogen * $r_sigma ) );
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
-    if( ( $r_donor_acceptor <= $r_donor_hydrogen + $r_sigma ) &&
+    if( ( $r_donor_acceptor_squared <= ( $r_donor_hydrogen + $r_sigma ) ** 2 ) &&
         ( $theta >= $PI / 2 ) &&
         ( $theta <=  3 * $PI / 2 ) ) {
         return $h_epsilon * cos $theta;
@@ -365,7 +364,8 @@ sub h_bond_explicit
     $r_sigma //= $General::H_SIGMA;
     $h_epsilon //= $General::H_EPSILON;
 
-    my $r_acceptor_hydrogen = distance( $hydrogen_atom, $acceptor_atom );
+    my $r_acceptor_hydrogen_squared =
+        distance_squared( $hydrogen_atom, $acceptor_atom );
     my $theta = bond_angle(
         [ [ $donor_atom->{'Cartn_x'},
             $donor_atom->{'Cartn_y'},
@@ -380,8 +380,8 @@ sub h_bond_explicit
     if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
         return
             ( -1 ) * $h_epsilon *
-            ( 5 * ( $r_sigma / $r_acceptor_hydrogen )**12 -
-              6 * ( $r_sigma / $r_acceptor_hydrogen )**10 ) *
+            ( 5 * ( $r_sigma ** 12 / $r_acceptor_hydrogen_squared ** 6 ) -
+              6 * ( $r_sigma ** 10 / $r_acceptor_hydrogen_squared ** 5 ) ) *
             cos $theta;
     } else {
         return 0;
@@ -413,8 +413,8 @@ sub composite
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r, $sigma, $cutoff_start, $cutoff_end, $decompose ) = (
-        $parameters->{'r'},
+    my ( $r_squared, $sigma, $cutoff_start, $cutoff_end, $decompose ) = (
+        $parameters->{'r_squared'},
         $parameters->{'sigma'},
         $parameters->{'cutoff_start'}, # * VdW distance.
         $parameters->{'cutoff_end'}, #   * VdW distance.
@@ -427,18 +427,19 @@ sub composite
     $decompose //= 0;
 
     # Calculates squared distance between two atoms.
-    $r //= sqrt( ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2 +
-                 ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2 +
-                 ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2 );
+    $r_squared //= distance_squared( $atom_i, $atom_j );
+
+    my %parameters = %{ $parameters };
+    $parameters{'r_squared'} = $r_squared;
 
     # Calculates Van der Waals distance of given atoms.
     $sigma //= $General::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
                $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
-    if( $r < $cutoff_start * $sigma ) {
-        my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
-        my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
-        my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
+    if( $r_squared < ( $cutoff_start * $sigma ) ** 2 ) {
+        my $leonard_jones = leonard_jones( $atom_i, $atom_j, \%parameters );
+        my $coulomb = coulomb( $atom_i, $atom_j, \%parameters );
+        my $h_bond = h_bond( $atom_i, $atom_j, \%parameters );
 
         if( $decompose ) {
             return { 'composite' => $leonard_jones + $coulomb + $h_bond,
@@ -448,13 +449,13 @@ sub composite
         } else {
             return $leonard_jones + $coulomb + $h_bond;
         }
-    } elsif( ( $r >= $cutoff_start * $sigma ) &&
-             ( $r <= $cutoff_end * $sigma ) ) {
-        my $leonard_jones = leonard_jones( $atom_i, $atom_j, $parameters );
-        my $coulomb = coulomb( $atom_i, $atom_j, $parameters );
-        my $h_bond = h_bond( $atom_i, $atom_j, $parameters );
+    } elsif( ( $r_squared >= ( $cutoff_start * $sigma ) ** 2 ) &&
+             ( $r_squared <= ( $cutoff_end   * $sigma ) ** 2 ) ) {
+        my $leonard_jones = leonard_jones( $atom_i, $atom_j, \%parameters );
+        my $coulomb = coulomb( $atom_i, $atom_j, \%parameters );
+        my $h_bond = h_bond( $atom_i, $atom_j, \%parameters );
         my $cutoff_function =
-            cos( ( $PI * ( $r - $cutoff_start * $sigma ) ) /
+            cos( ( $PI * ( sqrt( $r_squared ) - $cutoff_start * $sigma ) ) /
                  ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
 
         if( $decompose ) {
