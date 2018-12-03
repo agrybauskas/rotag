@@ -4,20 +4,12 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( $COULOMB_K
-                     $CUTOFF_START
-                     $CUTOFF_END
-                     $EPSILON
+our @EXPORT_OK = qw( $EPSILON
                      $EDGE_LENGTH_CONNECTION
                      $EDGE_LENGTH_INTERACTION
-                     $H_EPSILON
-                     $H_SIGMA
-                     $LJ_EPSILON
                      $PI
                      $SIG_FIGS_MIN
                      $SIG_FIGS_MAX
-                     $SOFT_EPSILON
-                     $SOFT_N
                      $SP3_ANGLE
                      $SP3_ANGLE_ERR
                      $SP2_ANGLE
@@ -56,16 +48,5 @@ our $EDGE_LENGTH_INTERACTION =
     3 * $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
     3 * $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
         $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
-
-# -------------------------- Force-field constants ---------------------------- #
-
-our $SOFT_EPSILON = 1.0;
-our $SOFT_N = 12;
-our $LJ_EPSILON = 1.0;
-our $COULOMB_K = 1.0;
-our $H_EPSILON = 1.0;
-our $H_SIGMA = 2.0;
-our $CUTOFF_START = 2.5;
-our $CUTOFF_END = 5.0;
 
 1;

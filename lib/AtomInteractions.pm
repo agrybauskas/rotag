@@ -20,8 +20,6 @@ use Readonly;
 use ConnectAtoms qw( distance
                      distance_squared );
 use Constants qw( $PI
-                  $SOFT_EPSILON
-                  $SOFT_N
                   $SP3_ANGLE
                   $SP2_ANGLE );
 use ForceField::General;
