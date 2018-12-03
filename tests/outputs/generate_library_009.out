@@ -1,4 +1,30 @@
-data_1:chi1:0.000;chi2:3.142;chi3:3.142;chi4:3.142;E:274.207
+data_1:chi1:0.000;chi2:3.142;chi3:3.142;chi4:0.000;E:248.803
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 8641 N N . LYS B 1 572 7.318 28.972 58.662 1
+ATOM 8642 C CA . LYS B 1 572 8.688 29.233 59.109 1
+ATOM 8643 C C . LYS B 1 572 9.372 30.320 58.273 1
+ATOM 8644 O O . LYS B 1 572 10.237 30.014 57.450 1
+ATOM 8645 C CB . LYS B 1 572 9.502 27.943 59.054 1
+ATOM 8646 C CG . LYS B 1 572 8.724 26.741 58.566 1
+ATOM 8647 C CD . LYS B 1 572 9.614 25.520 58.548 1
+ATOM 8648 C CE . LYS B 1 572 8.857 24.304 58.064 1
+ATOM 8649 N NZ . LYS B 1 572 7.445 24.639 57.737 1
+#
+data_2:chi1:0.000;chi2:3.142;chi3:3.142;chi4:3.142;E:64.770
 #
 loop_
 _atom_site.group_PDB
@@ -24,7 +50,33 @@ ATOM 8647 C CD . LYS B 1 572 9.614 25.520 58.548 1
 ATOM 8648 C CE . LYS B 1 572 8.857 24.304 58.064 1
 ATOM 8649 N NZ . LYS B 1 572 9.727 23.097 58.043 1
 #
-data_2:chi1:3.142;chi2:3.142;chi3:3.142;chi4:3.142;E:59.465
+data_3:chi1:3.142;chi2:3.142;chi3:3.142;chi4:0.000;E:203.628
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 8641 N N . LYS B 1 572 7.318 28.972 58.662 1
+ATOM 8642 C CA . LYS B 1 572 8.688 29.233 59.109 1
+ATOM 8643 C C . LYS B 1 572 9.372 30.320 58.273 1
+ATOM 8644 O O . LYS B 1 572 10.237 30.014 57.450 1
+ATOM 8645 C CB . LYS B 1 572 9.502 27.943 59.054 1
+ATOM 8646 C CG . LYS B 1 572 10.939 28.099 59.497 1
+ATOM 8647 C CD . LYS B 1 572 11.657 26.772 59.406 1
+ATOM 8648 C CE . LYS B 1 572 13.098 26.904 59.845 1
+ATOM 8649 N NZ . LYS B 1 572 13.418 28.301 60.246 1
+#
+data_4:chi1:3.142;chi2:3.142;chi3:3.142;chi4:3.142;E:20.700
 #
 loop_
 _atom_site.group_PDB
