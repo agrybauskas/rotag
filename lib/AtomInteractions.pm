@@ -228,8 +228,15 @@ sub h_bond
     # Because i and j atoms can be both hydrogen donors and acceptors, two
     # possibilities are explored.
     for my $atom_pair ( [ $atom_i, $atom_j ], [ $atom_j, $atom_i ] ) {
+        if( ! exists $atom_pair->[0]{'connections'} ||
+            ! defined $atom_pair->[0]{'connections'} ||
+            ! @{ $atom_pair->[0]{'connections'} } ) {
+            next;
+        };
+
         my @hydrogen_ids =
-            map { $atom_site->{$_}{'type_symbol'} eq 'H' ? $_ : () }
+            map { ( exists $atom_site->{$_} &&
+                    $atom_site->{$_}{'type_symbol'} eq 'H' ) ? $_ : () }
                @{ $atom_pair->[0]{'connections'} };
         my @hydrogen_names =
             defined $General::HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
