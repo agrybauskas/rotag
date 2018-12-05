@@ -138,53 +138,33 @@ for my $pdbx_file ( @ARGV ) {
     $select_cmd =~ s/(target)/$target_cmd/smgx;
 
     my $group_id = 1;
-    if( scalar @target_cmds > 1 ) {
-        for my $target_cmd ( @target_cmds ) {
-            @target_atom_ids =
-                keys %{ $selection_parser->
-                            parser( $atom_site,
-                                    $target_cmd,
-                                    'id',
-                                    { 'seed' => $random_seed } )->{'_atoms'} };
 
-            # Marks group ids by introducing _atom_site.[local]_selection_group.
-            foreach( @target_atom_ids ) {
-                $atom_site->{'_atoms'}{$_}{'[local]_selection_group'}= $group_id;
-            }
-
-            $group_id++;
-        }
-    } else {
+    for my $target_cmd ( @target_cmds ) {
         @target_atom_ids =
-            keys %{ $selection_parser->
-                        parser( $atom_site,
-                                $target_cmd,
-                                'id',
-                                { 'seed' => $random_seed } )->{'_atoms'} };
-
-        # Marks group ids by introducing _atom_site.[local]_selection_group.
-        foreach( @target_atom_ids ) {
-            $atom_site->{'_atoms'}{$_}{'[local]_selection_group'}= $group_id;
-        }
+            @{ $selection_parser->
+                   parser( $atom_site,
+                           $target_cmd,
+                           'id',
+                           { 'seed' => $random_seed } ) };
     }
 
     my @selected_atom_ids =
-        keys %{ $selection_parser->
-                    parser( $atom_site,
-                            $select_cmd,
-                            'id',
-                            { 'seed' => $random_seed } )->{'_atoms'} };
+        @{ $selection_parser->
+               parser( $atom_site,
+                       $select_cmd,
+                       'id',
+                       { 'seed' => $random_seed } ) };
 
-    # Modifies PDBx entries by adding and/or changing selection states for atoms.
-    mark_selection( $atom_site,
-                    { 'target' => \@target_atom_ids,
-                      'select' => \@selected_atom_ids } );
+    # # Modifies PDBx entries by adding and/or changing selection states for atoms.
+    # mark_selection( $atom_site,
+    #                 { 'target' => \@target_atom_ids,
+    #                   'select' => \@selected_atom_ids } );
 
-    if( ! $keep_ignored ) {
-        $atom_site =
-            filter( $atom_site,
-                    { 'exclude' => { '[local]_selection_state' => [ 'I' ] } } );
-    }
+    # if( ! $keep_ignored ) {
+    #     $atom_site =
+    #         filter( $atom_site,
+    #                 { 'exclude' => { '[local]_selection_state' => [ 'I' ] } } );
+    # }
 
     # Extracts rotamer angle data that will used to generate atom coordinates if
     # available.

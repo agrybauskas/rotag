@@ -335,10 +335,5 @@ sub parser
                                              yyerror => \&debugger,
                                              yydebug=>0x00 );
 
-    my $selected_atom_site =
-        filter( $atom_site,
-                { 'atom_site' => $atom_site,
-                  'include' => { $by_attribute => $selected_atom_data } } );
-
-    return $selected_atom_site;
+    return $selected_atom_data;
 }
