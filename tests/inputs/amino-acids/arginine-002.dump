@@ -12,7 +12,11 @@
     'auth_atom_id' => 'N',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2166'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => '2165',
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
@@ -40,7 +44,14 @@
     'auth_atom_id' => 'CA',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2165',
+      '2167',
+      '2169',
+      '2170'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => '2166',
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
@@ -68,7 +79,12 @@
     'auth_atom_id' => 'C',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2166',
+      '2168'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2167',
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
@@ -96,7 +112,11 @@
     'auth_atom_id' => 'O',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2167'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2168',
     'label_alt_id' => '.',
     'label_asym_id' => 'A',
@@ -124,7 +144,13 @@
     'auth_atom_id' => 'CB',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2166',
+      '2171',
+      '2172'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => '2169',
     'label_alt_id' => 'A',
     'label_asym_id' => 'A',
@@ -152,7 +178,13 @@
     'auth_atom_id' => 'CB',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2166',
+      '2171',
+      '2172'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => '2170',
     'label_alt_id' => 'B',
     'label_asym_id' => 'A',
@@ -180,7 +212,14 @@
     'auth_atom_id' => 'CG',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2169',
+      '2170',
+      '2173',
+      '2174'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => '2171',
     'label_alt_id' => 'A',
     'label_asym_id' => 'A',
@@ -208,7 +247,14 @@
     'auth_atom_id' => 'CG',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2169',
+      '2170',
+      '2173',
+      '2174'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => '2172',
     'label_alt_id' => 'B',
     'label_asym_id' => 'A',
@@ -236,7 +282,14 @@
     'auth_atom_id' => 'CD',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2175',
+      '2176',
+      '2171',
+      '2172'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => '2173',
     'label_alt_id' => 'A',
     'label_asym_id' => 'A',
@@ -264,7 +317,14 @@
     'auth_atom_id' => 'CD',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2175',
+      '2176',
+      '2171',
+      '2172'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
     'id' => '2174',
     'label_alt_id' => 'B',
     'label_asym_id' => 'A',
@@ -292,7 +352,14 @@
     'auth_atom_id' => 'NE',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2173',
+      '2174',
+      '2177',
+      '2178'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2175',
     'label_alt_id' => 'A',
     'label_asym_id' => 'A',
@@ -320,7 +387,14 @@
     'auth_atom_id' => 'NE',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2173',
+      '2174',
+      '2177',
+      '2178'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2176',
     'label_alt_id' => 'B',
     'label_asym_id' => 'A',
@@ -348,7 +422,16 @@
     'auth_atom_id' => 'CZ',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2175',
+      '2176',
+      '2181',
+      '2182',
+      '2179',
+      '2180'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2177',
     'label_alt_id' => 'A',
     'label_asym_id' => 'A',
@@ -376,7 +459,16 @@
     'auth_atom_id' => 'CZ',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2175',
+      '2176',
+      '2181',
+      '2182',
+      '2179',
+      '2180'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2178',
     'label_alt_id' => 'B',
     'label_asym_id' => 'A',
@@ -404,7 +496,12 @@
     'auth_atom_id' => 'NH1',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2177',
+      '2178'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2179',
     'label_alt_id' => 'A',
     'label_asym_id' => 'A',
@@ -432,7 +529,12 @@
     'auth_atom_id' => 'NH1',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2177',
+      '2178'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2180',
     'label_alt_id' => 'B',
     'label_asym_id' => 'A',
@@ -460,7 +562,12 @@
     'auth_atom_id' => 'NH2',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2177',
+      '2178'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2181',
     'label_alt_id' => 'A',
     'label_asym_id' => 'A',
@@ -488,7 +595,12 @@
     'auth_atom_id' => 'NH2',
     'auth_comp_id' => 'ARG',
     'auth_seq_id' => '360',
+    'connections' => [
+      '2177',
+      '2178'
+    ],
     'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
     'id' => '2182',
     'label_alt_id' => 'B',
     'label_asym_id' => 'A',

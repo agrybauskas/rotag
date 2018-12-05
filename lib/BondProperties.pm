@@ -19,7 +19,6 @@ use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( sort_atom_names );
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI );
 use ForceField::General;
 use Measure qw( dihedral_angle );
@@ -518,10 +517,6 @@ sub rotatable_bonds
     # Marks parent atom for next atom id.
     $parent_atom_ids{$next_atom_id} = $start_atom_id;
 
-    # Connects and determines hybridization for each atom.
-    connect_atoms( \%atom_site );
-    hybridization( \%atom_site );
-
     # Exists if there are no atoms that is not already visited.
     while( scalar( @next_atom_ids ) != 0 ) {
         # Iterates through every neighbouring atom if it was not visited
@@ -529,6 +524,15 @@ sub rotatable_bonds
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
+
+            if( ! exists $atom_site{$atom_id}{'hybridization'} ) {
+                die "atom with id $atom_id lacks information about " .
+                    "hybridization"
+            }
+            if( ! exists $atom_site{$parent_atom_id}{'hybridization'} ) {
+                die "atom with id $parent_atom_id lacks information about " .
+                    "hybridization"
+            }
 
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site{$atom_id}{'hybridization'} eq 'sp3' ) {
@@ -551,6 +555,10 @@ sub rotatable_bonds
 
             # Marks visited atoms.
             push @visited_atom_ids, $atom_id;
+
+            if( ! exists $atom_site{$atom_id}{'connections'} ) {
+                die "atom with id $atom_id lacks 'connections' key"
+            }
 
             # Marks neighbouring atoms.
             push @neighbour_atom_ids,
