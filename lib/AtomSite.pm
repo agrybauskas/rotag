@@ -192,65 +192,62 @@ sub mark_selection
 sub filter
 {
     my ( $atom_site, $options ) = @_;
-    my ( $include, $exclude, $return_data, $group_id ) =
+    my ( $include, $exclude, $return_data, $group_id, $selection_state ) =
         ( $options->{'include'}, $options->{'exclude'},
-          $options->{'return'}, $options->{'group_id'} );
+          $options->{'return_data'}, $options->{'group_id'},
+          $options->{'selection_state'} );
 
     if( ! defined $atom_site->{'_atoms'} ) {
         die 'No atom were loaded to the AtomSite data structure';
     }
 
+    $include //= {};
+    $exclude //= {};
+
     # Iterates through each atom in $self->{'atoms'} and checks if atom
     # specifiers match up.
     my %filtered_atoms;
 
-    # First, filters atoms that are described in $self->{'include'} specifier.
-    if( defined $include ) {
-        for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
-            my $match_counter = 0; # Tracks if all matches occured.
-            for my $attribute ( keys %{ $include } ) {
-                if( exists $atom_site->{'_atoms'}{$atom_id}{$attribute} &&
-                    any { $atom_site->{'_atoms'}{$atom_id}{$attribute} eq $_ }
-                       @{ $include->{$attribute} } ) {
-                    $match_counter += 1;
-                } else {
-                    last; # Terminates early if no match is found in specifier.
-                }
-            }
-
-            if( $match_counter == scalar keys %{ $include } ) {
-                $filtered_atoms{$atom_id} = $atom_site->{'_atoms'}{$atom_id};
-
-                # Assigns group id.
-                if( defined $group_id ) {
-                    $filtered_atoms{$atom_id}{'[local]_selection_group'} =
-                        $group_id;
-                }
+    for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
+        my $keep_atom = 1;
+        for my $attribute ( keys %{ $include } ) {
+            if( ! exists $atom_site->{'_atoms'}{$atom_id}{$attribute} ||
+                ! any { $atom_site->{'_atoms'}{$atom_id}{$attribute} eq $_ }
+                     @{ $include->{$attribute} } ) {
+                $keep_atom = 0;
             }
         }
-    } else {
-        %filtered_atoms = %{ $atom_site->{'_atoms'} };
-    }
 
-    # Then filters out atoms that are in $self->{'exclude'} specifier.
-    if( defined $exclude ) {
-        for my $atom_id ( keys %filtered_atoms ) {
-            for my $attribute ( keys %{ $exclude } ) {
-                if( exists $atom_site->{'_atoms'}{$atom_id}{$attribute} &&
-                    any { $atom_site->{'_atoms'}{$atom_id}{$attribute} eq $_ }
-                       @{ $exclude->{$attribute} } ) {
-                    delete $filtered_atoms{$atom_id};
-                    last;
-                }
+        next if $keep_atom == 0;
+
+        for my $attribute ( keys %{ $exclude } ) {
+            if( exists $atom_site->{'_atoms'}{$atom_id}{$attribute} &&
+                any { $atom_site->{'_atoms'}{$atom_id}{$attribute} eq $_ }
+                   @{ $exclude->{$attribute} } ) {
+                $keep_atom = 0;
             }
         }
+
+        next if $keep_atom == 0;
+
+        if( defined $group_id ) {
+            $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_group'} =
+                $group_id;
+        }
+
+        if( defined $selection_state ) {
+            $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_state'} =
+                $selection_state;
+        }
+
+        $filtered_atoms{$atom_id} = $atom_site->{'_atoms'}{$atom_id};
     }
 
     # Return object handle or atom ids depending on the flag.
     if( defined $return_data && $return_data eq 'id' ) {
-        return [ keys %filtered_atoms ]
+        return [ keys %filtered_atoms ];
     } elsif( defined $return_data ) {
-        return [ map { $filtered_atoms{$_}{$return_data} }
+        return [ map { $atom_site->{'_atoms'}{$_}{$return_data} }
                  keys %filtered_atoms ];
     } else {
         return bless { '_atoms' => \%filtered_atoms }, 'AtomSite';

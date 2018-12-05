@@ -22,6 +22,6 @@ $atom_site->open( $ENV{PDBX_FILE} );
 print Dumper [ sort { $a cmp $b }
                    @{ filter( $atom_site,
                               { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] },
-                                'return' => 'label_atom_id' } ) } ];
+                                'return_data' => 'label_atom_id' } ) } ];
 
 END
