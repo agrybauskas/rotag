@@ -156,13 +156,15 @@ sub mark_selection
         ( $options->{'target'}, $options->{'select'}, );
 
     for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
-        if( any { $atom_id eq $_  } @{ $target_atom_ids } ) {
-            $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_state'} = 'T';
-        } elsif( any { $atom_id eq $_  } @{ $selected_atom_ids } ) {
-            $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_state'} = 'S';
-        } else {
-            $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_state'} = 'I';
-        }
+        $atom_site->{'_atoms'}{$atom_id}{'[local]_selection_state'} = 'I';
+    }
+
+    for my $selected_atom_id ( @{ $selected_atom_ids } ) {
+        $atom_site->{'_atoms'}{$selected_atom_id}{'[local]_selection_state'}='S';
+    }
+
+    for my $target_atom_id ( @{ $target_atom_ids } ) {
+        $atom_site->{'_atoms'}{$target_atom_id}{'[local]_selection_state'} = 'T';
     }
 
     return;
