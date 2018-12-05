@@ -36,7 +36,6 @@ exp
         {
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'mainchain' exp
@@ -46,7 +45,6 @@ exp
                                      'label_atom_id' =>
                                          \@General::MAINCHAIN_ATOM_NAMES },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'sidechain' exp
@@ -56,7 +54,6 @@ exp
                                      'label_atom_id' =>
                                          \@General::SIDECHAIN_ATOM_NAMES },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'byres' exp
@@ -87,7 +84,6 @@ exp
                                             'label_alt_id' => [ @alt, '.' ],
                                             'pdbx_PDB_model_num' => \@pdbx_model_num },
                              'group_id' => $_[0]->{USER}{GROUP_ID},
-                             'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                              'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | exp '&&' exp
@@ -186,7 +182,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'label_asym_id' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'resid' num_ope
@@ -194,7 +189,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'label_seq_id' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'resname' str_ope
@@ -202,7 +196,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'label_comp_id' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomid' num_ope
@@ -210,7 +203,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'id' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomname' str_ope
@@ -218,7 +210,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'label_atom_id' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomtype' str_ope
@@ -226,7 +217,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'type_symbol' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'altid' str_ope
@@ -234,7 +224,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'label_alt_id' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'altid' num_ope
@@ -242,7 +231,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'label_alt_id' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'model' str_ope
@@ -250,7 +238,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'model' num_ope
@@ -258,7 +245,6 @@ exp
             filter( $_[0]->{USER}{ATOM_SITE},
                     { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'selection_state' => $_[0]->{USER}{SELECTION_STATE},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
 ;
@@ -351,18 +337,13 @@ sub parser
 {
     my ( $self, $atom_site, $input, $by_attribute, $options ) = @_;
 
-    my ( $seed, $group_id, $selection_state  ) = (
-        $options->{'seed'},
-        $options->{'group_id'},
-        $options->{'selection_state'}
-    );
+    my ( $seed, $group_id  ) = ( $options->{'seed'}, $options->{'group_id'} );
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
     $self->YYData->{BY_ATTRIBUTE} = $by_attribute;
     $self->YYData->{SEED} = $seed;
     $self->YYData->{GROUP_ID} = $group_id;
-    $self->YYData->{SELECTION_STATE} = $selection_state;
 
     my $selected_atom_data = $self->YYParse( yylex => \&lexer,
                                              yyerror => \&debugger,
