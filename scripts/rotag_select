@@ -107,7 +107,6 @@ for my $pdbx_file ( @ARGV ) {
 
     # Parses command line arguments to select certain atoms in PDBx.
     my $selection_parser = SelectionParser->new();
-    my @target_atom_ids;
     my @target_cmds = split /;/smx, $target_cmd;
 
     # Replaces 'target' keyword with previously selected target ids.
@@ -137,16 +136,18 @@ for my $pdbx_file ( @ARGV ) {
     $select_cmd //= $target_cmd;
     $select_cmd =~ s/(target)/$target_cmd/smgx;
 
+    my @target_atom_ids;
     my $group_id = 1;
 
     for my $target_cmd ( @target_cmds ) {
-        @target_atom_ids =
+        push @target_atom_ids,
             @{ $selection_parser->
                    parser( $atom_site,
                            $target_cmd,
                            'id',
                            { 'seed' => $random_seed,
                              'group_id' => $group_id } ) };
+        $group_id++;
     }
 
     my @selected_atom_ids =
