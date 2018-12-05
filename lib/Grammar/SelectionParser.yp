@@ -324,12 +324,18 @@ sub parser
 {
     my ( $self, $atom_site, $input, $by_attribute, $options ) = @_;
 
-    my ( $seed ) = $options->{"seed"};
+    my ( $seed, $group_id, $selection_state  ) = (
+        $options->{'seed'},
+        $options->{'group_id'},
+        $options->{'selection_state'}
+    );
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
     $self->YYData->{BY_ATTRIBUTE} = $by_attribute;
     $self->YYData->{SEED} = $seed;
+    $self->YYData->{GROUP_ID} = $group_id;
+    $self->YYData->{SELECTION_STATE} = $selection_state;
 
     my $selected_atom_data = $self->YYParse( yylex => \&lexer,
                                              yyerror => \&debugger,
