@@ -137,6 +137,14 @@ for my $pdbx_file ( @ARGV ) {
     $select_cmd //= $target_cmd;
     $select_cmd =~ s/(target)/$target_cmd/smgx;
 
+    my @selected_atom_ids =
+        @{ $selection_parser->
+               parser( $atom_site,
+                       $select_cmd,
+                       'id',
+                       { 'seed' => $random_seed,
+                         'selection_state' => 'S' } ) };
+
     my $group_id = 1;
 
     for my $target_cmd ( @target_cmds ) {
@@ -145,26 +153,16 @@ for my $pdbx_file ( @ARGV ) {
                    parser( $atom_site,
                            $target_cmd,
                            'id',
-                           { 'seed' => $random_seed } ) };
+                           { 'seed' => $random_seed,
+                             'group_id' => $group_id,
+                             'selection_state' => 'T' } ) };
     }
 
-    my @selected_atom_ids =
-        @{ $selection_parser->
-               parser( $atom_site,
-                       $select_cmd,
-                       'id',
-                       { 'seed' => $random_seed } ) };
-
-    # # Modifies PDBx entries by adding and/or changing selection states for atoms.
-    # mark_selection( $atom_site,
-    #                 { 'target' => \@target_atom_ids,
-    #                   'select' => \@selected_atom_ids } );
-
-    # if( ! $keep_ignored ) {
-    #     $atom_site =
-    #         filter( $atom_site,
-    #                 { 'exclude' => { '[local]_selection_state' => [ 'I' ] } } );
-    # }
+    if( ! $keep_ignored ) {
+        $atom_site =
+            filter( $atom_site,
+                    { 'exclude' => { '[local]_selection_state' => [ 'I' ] } } );
+    }
 
     # Extracts rotamer angle data that will used to generate atom coordinates if
     # available.
