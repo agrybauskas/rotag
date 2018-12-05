@@ -33,11 +33,6 @@ sub new
     return bless $self, $class;
 }
 
-sub DESTROY
-{
-    my ( $self ) = @_;
-}
-
 # --------------------------------- Methods ----------------------------------- #
 
 #
