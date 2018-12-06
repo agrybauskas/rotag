@@ -20,6 +20,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      to_pdbx
                      unique_residue_key );
 
+use Carp;
 use List::MoreUtils qw( any
                         uniq );
 use Version qw( $VERSION );
@@ -165,7 +166,7 @@ sub pdbx_loop_unique
         if( ! exists $pdbx_loop_unique{$unique_key} ) {
             $pdbx_loop_unique{$unique_key} = { %data_row };
         } else {
-            die 'Unique key supposed to be unique.';
+            confess 'unique key supposed to be unique.';
         }
     }
 
@@ -257,7 +258,7 @@ sub filter
     my $data_with_id = $args->{'data_with_id'};
     my $group_id = $args->{'group_id'};
 
-    if( ! defined $atom_site ) { die 'No PDBx data structure was loaded '; }
+    if( ! defined $atom_site ) { confess 'no PDBx data structure was loaded '; }
 
     # Iterates through each atom in $atom_site and checks if atom specifiers
     # match up.

@@ -7,4 +7,5 @@ variable_values="x=6,y=3,z=2"
 
 $(dirname "$0")/../scripts/mult_matrix_product "${variable_values}" \
 	                                       "${matrices_file}" 2>&1 \
-| sed 's/line\s*[0-9]*.$/line <row>./g'
+    | sed 's/line\s*[0-9]*.$/line <row>./g' \
+    | sed 's/0x[0-9a-f]\{12\}/<hex>/g'

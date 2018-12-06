@@ -2,7 +2,7 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-perl <<'END' 2>&1
+perl <<'END' 2>&1 | sed 's/0x[0-9a-f]\{12\}/<hex>/g'
 #!/usr/bin/perl
 
 use strict;

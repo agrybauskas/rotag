@@ -3,6 +3,8 @@ package Atom;
 use strict;
 use warnings;
 
+use Carp;
+
 sub new
 {
     my ( $class, $atom_data ) = @_;
@@ -13,11 +15,12 @@ sub new
     if( ref $atom_data eq 'HASH' ) {
         for my $mandatory_attribute ( @mandatory_attributes ) {
             if( ! exists $atom_data->{$mandatory_attribute} ) {
-                die "'$mandatory_attribute' key is absent in the data structure";
+                confess "'$mandatory_attribute' key is absent in the data " .
+                        "structure";
             }
         }
     } else {
-        die "Function argument does not have the valid data structure"
+        confess "function argument does not have the valid data structure"
     }
 
     my $self = $atom_data;

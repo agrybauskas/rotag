@@ -10,6 +10,7 @@ Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
 
 use BondProperties qw( hybridization );
+use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI
                   $SIG_FIGS_MAX );
 use ErrorHandling qw( parse_errors );
@@ -145,6 +146,7 @@ for my $pdbx_file ( @ARGV ) {
                             { 'target' => [ keys %{ $dihedral_site } ] } );
         }
 
+        connect_atoms( $dihedral_site );
         hybridization( $dihedral_site );
 
         my $dihedral_angles = all_dihedral( $dihedral_site );

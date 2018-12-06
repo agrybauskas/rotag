@@ -14,6 +14,7 @@ our @EXPORT_OK = qw( add_hydrogens
                      replace_with_rotamer );
 
 use B qw( svref_2object );
+use Carp;
 use Clone qw( clone );
 use List::Util qw( max );
 use List::MoreUtils qw( any
@@ -234,7 +235,7 @@ sub generate_rotamer
                     if( $set_missing_angles_to_zero ) {
                         $angles{$angle_name} = [ 0.0 ];
                     } else {
-                        die "No values for $angle_name were assigned.";
+                        confess "no values for $angle_name were assigned.";
                     }
                 }
             }
@@ -359,7 +360,7 @@ sub generate_library
             rotation_only( $current_atom_site_no_H );
             rotation_only( $current_atom_site_w_H );
         } else {
-            die 'Conformational model was not defined.';
+            confess 'conformational model was not defined.';
         }
 
         # Finds where CA of target residues are.
@@ -466,7 +467,7 @@ sub generate_library
                 #            $threads ) };
 
                 if( ! @{ $allowed_angles } ) {
-                    die "no possible rotamer solutions were detected.\n";
+                    confess "no possible rotamer solutions were detected.\n";
                 }
 
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
@@ -612,7 +613,7 @@ sub calc_favourable_angles
                 @allowed_angles = @{ $next_allowed_angles };
                 @allowed_energies = @{ $next_allowed_energies };
             } else {
-                die "no possible rotamer solutions were detected.\n";
+                confess "no possible rotamer solutions were detected.\n";
             }
         }
 

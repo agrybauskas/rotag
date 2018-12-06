@@ -1,1 +1,2 @@
-'type_symbol' key is absent in the data structure at tests/cases/../../lib/Atom.pm line 16.
+'type_symbol' key is absent in the data structure at tests/cases/../../lib/Atom.pm line 17.
+	Atom::new("Atom", HASH(<hex>)) called at - line 13

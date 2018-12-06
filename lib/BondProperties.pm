@@ -13,6 +13,7 @@ BEGIN {
                          unique_rotatables );
 }
 
+use Carp;
 use List::Util qw( any
                    min );
 use List::MoreUtils qw( uniq );
@@ -526,12 +527,12 @@ sub rotatable_bonds
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
             if( ! exists $atom_site{$atom_id}{'hybridization'} ) {
-                die "atom with id $atom_id lacks information about " .
-                    "hybridization"
+                confess "atom with id $atom_id lacks information about " .
+                        "hybridization"
             }
             if( ! exists $atom_site{$parent_atom_id}{'hybridization'} ) {
-                die "atom with id $parent_atom_id lacks information about " .
-                    "hybridization"
+                confess "atom with id $parent_atom_id lacks information about " .
+                        "hybridization"
             }
 
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
@@ -557,7 +558,7 @@ sub rotatable_bonds
             push @visited_atom_ids, $atom_id;
 
             if( ! exists $atom_site{$atom_id}{'connections'} ) {
-                die "atom with id $atom_id lacks 'connections' key"
+                confess "atom with id $atom_id lacks 'connections' key"
             }
 
             # Marks neighbouring atoms.

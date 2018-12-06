@@ -12,11 +12,11 @@ BEGIN {
                          rmsd );
 }
 
+use Carp;
 use Math::Trig;
 use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( sort_atom_names );
-use ConnectAtoms qw( connect_atoms );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    split_by );
@@ -186,8 +186,6 @@ sub all_dihedral
     my $residue_groups =
         split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
 
-    connect_atoms( \%atom_site );
-
     # Iterates through residue ids and, according to the parameter file,
     # calculates dihedral angles of each rotatable bond.
     my %residue_angles;
@@ -307,7 +305,7 @@ sub rmsd
 
     # Gives the error if the size of the sets are different.
     if( scalar @{ $first_set } != scalar @{ $second_set } ) {
-        die 'Comparing different sizes of sets of the atoms is not allowed.';
+        confess 'comparing different sizes of sets of the atoms is not allowed.';
     }
 
     # Sums up sqaured differences of coordinates.

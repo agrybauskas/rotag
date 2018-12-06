@@ -6,6 +6,8 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( multithreading );
 
+use Carp;
+
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -33,7 +35,7 @@ sub divide_arrays_into_blocks
 
         # Arrays have to have equal lengths.
         if( defined $array_length && scalar( @array ) ne $array_length ) {
-            die 'List of arrays have different lengths.';
+            confess 'list of arrays have different lengths.';
         }
         $array_length =  scalar @array;
 

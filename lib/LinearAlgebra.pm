@@ -23,6 +23,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
+use Carp;
 use Constants qw( $EPSILON
                   $PI );
 use Version qw( $VERSION );
@@ -191,7 +192,7 @@ sub switch_ref_frame
                                    x_axis_rotation( - $beta_rad ),
                                    z_axis_rotation( - $alpha_rad ) ] );
     } else {
-        die 'Must choose \$switch_to_global value between \'local\' and' .
+        confess 'Must choose \$switch_to_global value between \'local\' and' .
             '\'global\'.';
     }
 
@@ -303,7 +304,7 @@ sub reshape
         $length_by_dimensions += $dimensions->[$i] * $dimensions->[$i+1];
     }
 
-    die 'There are not enough elements or dimensions.'
+    confess 'There are not enough elements or dimensions.'
         if( scalar( @{ $element_list } ) != $length_by_dimensions );
 
     # Generates matrices.
@@ -543,7 +544,7 @@ sub matrix_product
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
     if( scalar @{ transpose( $left_matrix ) } != scalar @{ $right_matrix } ) {
-        die { type => 'DimensionError',
+        confess { type => 'DimensionError',
               message => 'A row number of a left matrix is NOT equal ' .
                          "to the column\nnumber of the right matrix.", };
     }
@@ -591,14 +592,14 @@ sub matrix_product
 
                 # Throws error if one of the elements are undefined.
                 if( ! defined $left_element ) {
-                    die
+                    confess
                     {
                         type => 'UndifinedError',
                         message => 'Left element contains undefined variable',
                     };
                 }
                 if( ! defined $right_element ) {
-                    die
+                    confess
                     {
                         type => 'UndifinedError',
                         message => 'Right element contains undefined variable',
@@ -659,7 +660,7 @@ sub mult_matrix_product
                              $matrices[$id-1],
                              $matrices[$id];
                     } else {
-                        die ${ @ }->{message};
+                        confess ${ @ }->{message};
                     }
                 };
 
@@ -677,7 +678,7 @@ sub mult_matrix_product
                                 $mult_matrix_product[0];
                         splice @mult_matrix_product, 1, 1;
                     } else {
-                        die ${ @ }->{message};
+                        confess ${ @ }->{message};
                     }
                 };
             }

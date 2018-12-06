@@ -8,6 +8,7 @@ use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
 
+use Carp;
 use Constants qw( $SIG_FIGS_MAX );
 use PDBxParser qw( filter
                    obtain_atom_site
@@ -96,8 +97,8 @@ for my $pdbx_file ( @ARGV ) {
             # Checks the length of the atom sets.
             # HACK: error message is duplicated in Measure::rmsd().
             if( scalar @{ $first_group_data } ne scalar @{ $second_group_data }){
-                die 'Comparing different sizes of sets of the atoms is not ' .
-                    'allowed.'
+                confess 'comparing different sizes of sets of the atoms is not ' .
+                        'allowed.'
             }
 
             # Sorts by residue name first by checking if their residue names are
@@ -110,8 +111,8 @@ for my $pdbx_file ( @ARGV ) {
             my @second_group_coord;
             for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
                 if( $first_group_data->[$i][0] ne $second_group_data->[$i][0] ) {
-                    die "Atom names do not match: $first_group_data->[$i][0] " .
-                         "and $second_group_data->[$i][0].";
+                    confess "atom names do not match: $first_group_data->[$i][0] " .
+                            "and $second_group_data->[$i][0].";
                 } else {
                     push @first_group_coord,
                          [ (@{ $first_group_data->[$i] })[1..3] ];

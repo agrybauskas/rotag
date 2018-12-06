@@ -11,6 +11,7 @@ our @EXPORT = qw( extract
                   mark_selection
                   pdbx );
 
+use Carp;
 use List::MoreUtils qw( any
                         uniq );
 use List::Util qw( max );
@@ -88,14 +89,14 @@ sub add
 
     for my $atom ( @{ $atoms } ) {
         if( ref $atom ne 'Atom' ) {
-            die "Not 'Atom' struct is being added";
+            confess "not 'Atom' struct is being added";
         }
 
         my $atom_id = $atom->{'id'};
         if( ! exists $self->{'_atoms'}{$atom_id} ) {
             $self->{'_atoms'}{$atom_id} = $atom;
         } else {
-            die "Atom with id $atom_id already exists";
+            confess "atom with id $atom_id already exists";
         }
     }
 
@@ -116,14 +117,14 @@ sub append
 
     for my $atom_site ( @{ $atom_sites } ) {
         if( ref $atom_site ne 'AtomSite' ) {
-            die "Not 'AtomSite' object is being appended";
+            confess "not 'AtomSite' object is being appended";
         }
 
         for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
             if( ! exists $self->{'_atoms'}{$atom_id} ) {
                 $self->{'_atoms'}{$atom_id}=$atom_site->{'_atoms'}{$atom_id};
             } else {
-                die "Atom with id $atom_id already exists";
+                confess "atom with id $atom_id already exists";
             }
         }
     }
@@ -195,7 +196,7 @@ sub filter
           $options->{'selection_state'} );
 
     if( ! defined $atom_site->{'_atoms'} ) {
-        die 'No atom were loaded to the AtomSite data structure';
+        confess 'no atom were loaded to the AtomSite data structure';
     }
 
     $include //= {};
