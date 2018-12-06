@@ -331,7 +331,6 @@ sub generate_library
                     'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
                     'append_dot' => 1  } );
 
-    my %atom_sites;
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my ( $pdbx_model_num, $alt_id ) = split /,/, $atom_site_identifier;
         my $current_atom_site =
