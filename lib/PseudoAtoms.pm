@@ -103,6 +103,11 @@ sub generate_pseudo
                      'is_list' => 1 } ) };
 
     for my $atom_id ( @atom_ids ) {
+        my $conformation = $atom_site{"$atom_id"}{'conformation'};
+
+        confess "atom with id $atom_id lacks 'conformation' key."
+            if ! defined $conformation;
+
         # Calculates current dihedral angles of rotatable bonds. Will be used
         # for reseting dihedral angles to 0 degree angle.
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
@@ -123,7 +128,6 @@ sub generate_pseudo
                    @{ $angle_values->{"$angle_name"} } ];
         }
 
-        my $conformation = $atom_site{"$atom_id"}{'conformation'};
         for my $angle_comb ( # Abreviation of angle combinations.
             @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ){
             my %angle_values =
