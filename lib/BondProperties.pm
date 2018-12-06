@@ -561,8 +561,7 @@ sub rotatable_bonds
             }
 
             # Marks neighbouring atoms.
-            push @neighbour_atom_ids,
-                 @{ $atom_site{$atom_id}{'connections'} };
+            push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
