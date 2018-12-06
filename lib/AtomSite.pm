@@ -201,27 +201,41 @@ sub filter
     $include //= {};
     $exclude //= {};
 
+    # Generates hash maps for fast lookup.
+    my %include_selector = ();
+    for my $attribute ( keys %{ $include } ) {
+        for my $value ( uniq @{ $include->{$attribute} } ) {
+            $include_selector{$attribute}{$value} = 1;
+        }
+    }
+
+    my %exclude_selector = ();
+    for my $attribute ( keys %{ $exclude } ) {
+        for my $value ( uniq @{ $exclude->{$attribute} } ) {
+            $exclude_selector{$attribute}{$value} = 1;
+        }
+    }
+
     # Iterates through each atom in $self->{'atoms'} and checks if atom
     # specifiers match up.
     my %filtered_atoms;
 
     for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
         my $keep_atom = 1;
-        for my $attribute ( keys %{ $include } ) {
-            if( ! exists $atom_site->{'_atoms'}{$atom_id}{$attribute} ||
-                ! any { $atom_site->{'_atoms'}{$atom_id}{$attribute} eq $_ }
-                     @{ $include->{$attribute} } ) {
+        for my $attribute ( keys %{ $atom_site->{'_atoms'}{$atom_id} } ) {
+            my $value = $atom_site->{'_atoms'}{$atom_id}{$attribute};
+            if( exists $include_selector{$attribute} &&
+                ( ! exists $include_selector{$attribute}{$value} ||
+                  $include_selector{$attribute}{$value} != 1 ) ) {
                 $keep_atom = 0;
+                last;
             }
-        }
 
-        next if $keep_atom == 0;
-
-        for my $attribute ( keys %{ $exclude } ) {
-            if( exists $atom_site->{'_atoms'}{$atom_id}{$attribute} &&
-                any { $atom_site->{'_atoms'}{$atom_id}{$attribute} eq $_ }
-                   @{ $exclude->{$attribute} } ) {
+            if( exists $exclude_selector{$attribute} &&
+                ( exists $exclude_selector{$attribute}{$value} &&
+                  $exclude_selector{$attribute}{$value} == 1 ) ) {
                 $keep_atom = 0;
+                last;
             }
         }
 
