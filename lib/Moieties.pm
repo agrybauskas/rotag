@@ -12,6 +12,8 @@ use List::Util qw( max );
 use Math::Trig qw( acos );
 
 use AlterMolecule qw( bond_torsion );
+use BondProperties qw( hybridization );
+use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI
                   $SIG_FIGS_MIN );
 use ForceField::General;
@@ -245,7 +247,11 @@ sub replace_with_moiety
         $residue_site =
             filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
 
+        connect_atoms( $residue_site );
+        hybridization( $residue_site );
+
         rotation_only( $residue_site );
+
         replace_with_rotamer( $residue_site, $unique_residue_key, $angles );
 
         for my $atom_id ( keys %{ $residue_site } ) {

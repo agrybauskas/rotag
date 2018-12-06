@@ -9,7 +9,9 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
+use BondProperties qw( hybridization );
 use Constants qw( $PI );
+use ConnectAtoms qw( connect_atoms );
 use Moieties qw( replace_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
