@@ -426,7 +426,6 @@ sub split_by
 #     $atom_site - atom site data structure;
 #     $options{'target'} - list of ids of the target atom;
 #     $options{'select'} - list of ids of the selected atom;
-#     $options{'ignore'} - list of ids of the ignored atom.
 # Output:
 #     adds markers to specified attribute field.
 #
@@ -439,13 +438,15 @@ sub mark_selection
         ( $options->{'target'}, $options->{'select'}, );
 
     for my $atom_id ( keys %{ $atom_site } ) {
-        if( any { $atom_id eq $_  } @{ $target_atom_ids } ) {
-            $atom_site->{$atom_id}{'[local]_selection_state'} = 'T';
-        } elsif( any { $atom_id eq $_  } @{ $selected_atom_ids } ) {
-            $atom_site->{$atom_id}{'[local]_selection_state'} = 'S';
-        } else {
-            $atom_site->{$atom_id}{'[local]_selection_state'} = 'I';
-        }
+        $atom_site->{$atom_id}{'[local]_selection_state'} = 'I';
+    }
+
+    for my $selected_atom_id ( @{ $selected_atom_ids } ) {
+        $atom_site->{$selected_atom_id}{'[local]_selection_state'}='S';
+    }
+
+    for my $target_atom_id ( @{ $target_atom_ids } ) {
+        $atom_site->{$target_atom_id}{'[local]_selection_state'} = 'T';
     }
 
     return;
