@@ -123,6 +123,9 @@ for my $pdbx_file ( @ARGV ) {
                 filter_by_unique_residue_key( $selected_atom_site,
                                               $residue_unique_key, 1 );
 
+            hybridization( $residue_site );
+            connect_atoms( $residue_site );
+
             # Generates rotational model.
             rotation_only( $residue_site );
 
