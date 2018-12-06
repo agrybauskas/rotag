@@ -470,7 +470,7 @@ sub generate_library
                 #            $threads ) };
 
                 if( ! @{ $allowed_angles } ) {
-                    confess "no possible rotamer solutions were detected.\n";
+                    die "no possible rotamer solutions were detected.\n";
                 }
 
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
@@ -616,7 +616,7 @@ sub calc_favourable_angles
                 @allowed_angles = @{ $next_allowed_angles };
                 @allowed_energies = @{ $next_allowed_energies };
             } else {
-                confess "no possible rotamer solutions were detected.\n";
+                die "no possible rotamer solutions were detected.\n";
             }
         }
 
