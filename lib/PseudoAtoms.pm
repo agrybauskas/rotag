@@ -775,9 +775,9 @@ sub calc_full_atom_energy
         my $hydrogens =
             add_hydrogens( $residue_site,
                            { 'use_existing_connections' => 1,
-                                 'use_existing_hybridizations' => 1,
-                                 'exclude_by_atom_name' => [ 'N', 'C' ],
-                                 'use_origins_alt_group_id' => 1 } );
+                             'use_existing_hybridizations' => 1,
+                             'exclude_by_atom_name' => [ 'N', 'C' ],
+                             'use_origins_alt_group_id' => 1 } );
         append_connections( $residue_site, $hydrogens );
         $residue_site = { %{ $residue_site }, %{ $hydrogens } };
 
@@ -1074,6 +1074,8 @@ sub add_hydrogens
             $hydrogen_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
             # Marks origin atom id as connection.
             $hydrogen_site{$last_atom_id}{'connections'} = [ $atom_id ];
+            # By default, hydrogen atoms are sp3 hybridized.
+            $hydrogen_site{$last_atom_id}{'hybridization'} = 'sp3';
             }
         }
     }
