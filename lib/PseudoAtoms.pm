@@ -88,7 +88,7 @@ sub generate_pseudo
          $alt_group_id ) =
         ( $args->{'atom_site'}, $args->{'atom_specifier'},
           $args->{'angle_values'}, $args->{'last_atom_id'},
-          $args->{'alt_group_id'} );
+          $args->{'alt_group_id'}, );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -205,7 +205,7 @@ sub generate_rotamer
          $set_missing_angles_to_zero, $keep_origin_id, $keep_origin_alt_id ) =
         ( $args->{'atom_site'}, $args->{'angle_values'}, $args->{'last_atom_id'},
           $args->{'last_atom_id'}, $args->{'set_missing_angles_to_zero'},
-          $args->{'keep_origin_id'}, $args->{'keep_origin_alt_id'} );
+          $args->{'keep_origin_id'}, $args->{'keep_origin_alt_id'}, );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -339,29 +339,29 @@ sub generate_library
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
 
         # Predetermines geometrically clearly defined hydrogen positions.
-        my $current_atom_site_w_H = clone( $current_atom_site );
+        my $current_atom_site_w_h = clone( $current_atom_site );
         my $hydrogens =
-            add_hydrogens( $current_atom_site_w_H,
+            add_hydrogens( $current_atom_site_w_h,
                            { 'alt_group_id' => q{.},
                              'add_only_clear_positions' => 1,
                              'use_origins_alt_group_id' => 1 } );
-        append_connections( $current_atom_site_w_H, $hydrogens );
-        $current_atom_site_w_H = { %{ $current_atom_site_w_H }, %{ $hydrogens }};
-        hybridization( $current_atom_site_w_H );
+        append_connections( $current_atom_site_w_h, $hydrogens );
+        $current_atom_site_w_h = { %{ $current_atom_site_w_h }, %{ $hydrogens }};
+        hybridization( $current_atom_site_w_h );
 
         # Also, prepares hydrogen-free structure.
-        my $current_atom_site_no_H = clone(
-            filter( { 'atom_site' => $current_atom_site_w_H,
+        my $current_atom_site_no_h = clone(
+            filter( { 'atom_site' => $current_atom_site_w_h,
                       'exclude' => { 'type_symbol' => [ 'H' ] } } )
         );
-        connect_atoms( $current_atom_site_no_H );
-        hybridization( $current_atom_site_no_H );
+        connect_atoms( $current_atom_site_no_h );
+        hybridization( $current_atom_site_no_h );
 
         # Generates conformational models before checking for
         # clashes/interactions for given residues.
         if( $conf_model eq 'rotation_only' ) {
-            rotation_only( $current_atom_site_no_H );
-            rotation_only( $current_atom_site_w_H );
+            rotation_only( $current_atom_site_no_h );
+            rotation_only( $current_atom_site_w_h );
         } else {
             confess 'conformational model was not defined.';
         }
@@ -387,7 +387,7 @@ sub generate_library
         # on maximum bending and having shorter edge length reduces calculation
         # time.
         my ( $grid_box, $target_cell_idxs ) =
-            grid_box( $current_atom_site_w_H, $EDGE_LENGTH_INTERACTION,
+            grid_box( $current_atom_site_w_h, $EDGE_LENGTH_INTERACTION,
                       \@target_ca_ids );
 
         my $neighbour_cells =
@@ -403,7 +403,7 @@ sub generate_library
                     filter( { 'atom_site' => $current_atom_site,
                               'include' =>
                                   { 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                                    'label_alt_id' => [ $alt_id, '.' ],
+                                    'label_alt_id' => [ $alt_id, q{.} ],
                                     'label_seq_id' => [ $residue_id ],
                                     'label_asym_id' => [ $residue_chain ] } } );
                 my $residue_unique_key =
@@ -412,8 +412,8 @@ sub generate_library
 
                 # Because the change of side-chain position might impact the
                 # surrounding, iteraction site consists of only main chain atoms.
-                my %interaction_site_no_H =
-                    %{ filter( { 'atom_site' => $current_atom_site_no_H,
+                my %interaction_site_no_h =
+                    %{ filter( { 'atom_site' => $current_atom_site_no_h,
                                  'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
@@ -422,9 +422,9 @@ sub generate_library
                 # This is called growing side chain.
                 my @allowed_angles =
                     @{ calc_favourable_angles(
-                           { 'atom_site' => $current_atom_site_no_H,
+                           { 'atom_site' => $current_atom_site_no_h,
                              'residue_unique_key' => $residue_unique_key,
-                             'interaction_site' => \%interaction_site_no_H,
+                             'interaction_site' => \%interaction_site_no_h,
                              'small_angle' => $small_angle,
                              'potential_function' => $potential_function,
                              'energy_cutoff_atom' => $energy_cutoff_atom,
@@ -433,8 +433,8 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
-                my %interaction_site_w_H =
-                    %{ filter( { 'atom_site' => $current_atom_site_w_H,
+                my %interaction_site_w_h =
+                    %{ filter( { 'atom_site' => $current_atom_site_w_h,
                                  'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
@@ -442,12 +442,12 @@ sub generate_library
                 my ( $allowed_angles, $energy_sums ) =
                     @{ calc_full_atom_energy(
                            { 'atom_site' => ( $is_hydrogen_explicit ?
-                                              $current_atom_site_w_H :
-                                              $current_atom_site_no_H ),
+                                              $current_atom_site_w_h :
+                                              $current_atom_site_no_h ),
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => ( $is_hydrogen_explicit ?
-                                                     \%interaction_site_w_H :
-                                                     \%interaction_site_no_H ),
+                                                     \%interaction_site_w_h :
+                                                     \%interaction_site_no_h ),
                              'small_angle' => $small_angle,
                              'potential_function' => $potential_function,
                              'energy_cutoff_atom' => $energy_cutoff_atom,
@@ -458,9 +458,9 @@ sub generate_library
                 # my ( $allowed_angles, $energy_sums ) =
                 #     @{ multithreading(
                 #            \&calc_full_atom_energy,
-                #            { 'atom_site' => $current_atom_site_w_H,
+                #            { 'atom_site' => $current_atom_site_w_h,
                 #              'residue_unique_key' => $residue_unique_key,
-                #              'interaction_site' => \%interaction_site_w_H,
+                #              'interaction_site' => \%interaction_site_w_h,
                 #              'small_angle' => $small_angle,
                 #              'potential_function' => $potential_function,
                 #              'energy_cutoff_atom' => $energy_cutoff_atom,
@@ -767,7 +767,7 @@ sub calc_full_atom_energy
         filter( { 'atom_site' => $atom_site,
                   'include' => { 'label_seq_id' => [ $residue_id ],
                                  'label_asym_id' => [ $residue_chain ],
-                                 'label_alt_id' => [ $residue_alt, '.' ],
+                                 'label_alt_id' => [ $residue_alt, q{.} ],
                                  'pdbx_PDB_model_num' => [ $pdbx_model_num ] }});
 
     # Adds hydrogens to the residue_site.
@@ -1190,7 +1190,7 @@ sub add_hydrogens_sp3
             acos( ( - 4 -
                     2 * cos( $up_mid_right_angle ) -
                     2 * cos( $up_mid_left_angle ) -
-                    2 * cos( $right_mid_left_angle) ) /
+                    2 * cos $right_mid_left_angle ) /
                   6 );
 
         # Determines dihedral angle between left and right atoms. Then
