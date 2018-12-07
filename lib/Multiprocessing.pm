@@ -1,11 +1,11 @@
-package Multithreading;
+package Multiprocessing;
 
 use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( multithreading
-                     forking );
+our @EXPORT_OK = qw( forking
+                     threading );
 
 use Carp;
 use Parallel::ForkManager;
@@ -15,10 +15,10 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-# -------------------- Preparing data for multi-threading --------------------- #
+# ---------------------- Preparing data for threading ------------------------- #
 
 #
-# Divides data arrays into smaller arrays that are being passed to multithreading
+# Divides data arrays into smaller arrays that are being passed to threading
 # function.
 # Input:
 #     $arrays - list of arrays of data;
@@ -71,10 +71,10 @@ sub divide_arrays_into_blocks
     return \@list_of_array_blocks;
 }
 
-# ----------------------------- Multi-threading ------------------------------- #
+# -------------------------------- Threading ---------------------------------- #
 
 #
-# Performs multithreading where function, arguments and data blocks are given.
+# Performs threading where function, arguments and data blocks are given.
 # Input:
 #     $function - reference to the function that will be run;
 #     $arguments - arguments that will be passed to a function;
@@ -84,7 +84,7 @@ sub divide_arrays_into_blocks
 #     @joined_block_results - results from all threads.
 #
 
-sub multithreading
+sub threading
 {
     my ( $function, $arguments, $divisible_arrays, $threads ) = @_;
 
@@ -115,8 +115,8 @@ sub multithreading
 # --------------------------------- Forking ----------------------------------- #
 
 #
-# Performs forking (similar idea to multithreading()) where function,
-# arguments and data blocks are given.
+# Performs forking (similar idea to threading()) where function, arguments and
+# data blocks are given.
 # Input:
 #     $function - reference to the function that will be run;
 #     $arguments - arguments that will be passed to a function;

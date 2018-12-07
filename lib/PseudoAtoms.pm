@@ -45,7 +45,7 @@ use Measure qw( all_dihedral
 use BondProperties qw( hybridization
                        rotatable_bonds
                        unique_rotatables );
-use Multithreading qw( multithreading );
+use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys
                    filter
