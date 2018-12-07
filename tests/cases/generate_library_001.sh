@@ -19,9 +19,9 @@ $(dirname "$0")/../scripts/generate_library ${residue_id} \
                                             ${residue_entity} \
                                             ${residue_alt} \
                               	            ${conf_model} \
-	                                    ${small_angle} \
-	                                    ${potential} \
-					    ${energy_cutoff_atom} \
+	                                        ${small_angle} \
+	                                        ${potential} \
+					                        ${energy_cutoff_atom} \
                                             ${energy_cutoff_residue} \
-					    ${pdbx_dump_file} \
+					                        ${pdbx_dump_file} \
                                             ${parameters}

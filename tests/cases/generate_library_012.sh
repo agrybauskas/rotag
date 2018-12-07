@@ -18,8 +18,8 @@ $(dirname "$0")/../scripts/generate_library ${residue_id} \
                                             ${residue_entity} \
                                             ${residue_alt} \
                                             ${conf_model} \
-	                                    ${small_angle} \
-	                                    ${potential} \
-					    ${energy_cutoff_atom} \
-					    ${energy_cutoff_residue} \
-					    ${pdbx_dump_file}
+     	                                    ${small_angle} \
+	                                        ${potential} \
+					                        ${energy_cutoff_atom} \
+					                        ${energy_cutoff_residue} \
+					                        ${pdbx_dump_file}
