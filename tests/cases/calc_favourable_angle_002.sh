@@ -10,7 +10,7 @@ checkable_angles="0.1*pi;0.2*pi;0.3*pi;0.4*pi;0.5*pi;0.6*pi;0.7*pi;0.8*pi;0.9*pi
 
 $(dirname "$0")/../scripts/calc_favourable_angle \
                ${atom_id} \
-	       ${checkable_angles} \
+	           ${checkable_angles} \
                "${interaction_specifier}" \
-	       ${energy_cutoff_atom} \
-	       ${pdbx_dump_file}
+	           ${energy_cutoff_atom} \
+	           ${pdbx_dump_file}

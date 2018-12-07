@@ -18,9 +18,9 @@ $(dirname "$0")/../scripts/calc_favourable_angles \
                ${residue_chain} \
                ${pdbx_model_num} \
                ${residue_alt} \
-	       ${small_angle} \
-	       ${potential} \
+	           ${small_angle} \
+	           ${potential} \
                "${interaction_specifier}" \
-	       ${energy_cutoff_atom} \
+	           ${energy_cutoff_atom} \
                ${energy_cutoff_residue} \
-	       ${pdbx_dump_file}
+	           ${pdbx_dump_file}
