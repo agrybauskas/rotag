@@ -9,11 +9,13 @@ use List::MoreUtils qw( any
                         uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
+use BondProperties qw( hybridization );
 use Constants qw( $PI
-                  $SIG_FIGS );
+                  $SIG_FIGS_MAX );
+use ConnectAtoms qw( connect_atoms );
 use Combinatorics qw( permutation );
 use ErrorHandling qw( parse_warnings );
-use ForceField::General
+use ForceField::General;
 use Measure qw( rmsd );
 use PDBxParser qw( filter
                    mark_selection
@@ -91,8 +93,12 @@ GetOptions(
 
 # Parses parameter ranges and updates if arguments from command line are
 # introduced.
-$parameter_ranges = join ',', ( $append_parameter_ranges,
-                                $default_parameter_ranges );
+if( defined $append_parameter_ranges ) {
+    $parameter_ranges = join ',', ( $append_parameter_ranges,
+                                    $default_parameter_ranges );
+} else {
+    $parameter_ranges = $default_parameter_ranges;
+}
 $parameter_ranges =~ s/\s//g;
 
 my @parameter_ranges;
@@ -178,6 +184,9 @@ for my $pdbx_file ( @ARGV ) {
                 $parameters->[$i];
         }
 
+        hybridization( $selected_atom_site );
+        connect_atoms( $selected_atom_site );
+
         rotation_only( $selected_atom_site );
 
         # Starts generating rotamer library.
@@ -217,7 +226,7 @@ for my $pdbx_file ( @ARGV ) {
                 my $residue_coord =
                     filter( { 'atom_site' => $residue_site,
                               'exclude' =>
-                                  { 'label_atom_id' => \@INTERACTION_ATOM_NAMES },
+                                  { 'label_atom_id' => \@General::INTERACTION_ATOM_NAMES },
                               'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
                 # Checks if 'top' option is int or float and filters rotamers
@@ -270,7 +279,7 @@ for my $pdbx_file ( @ARGV ) {
                          $current_parameters{'cutoff_residue'},
                          $current_parameters{'cutoff_start'},
                          $current_parameters{'cutoff_end'},
-                         sprintf( $SIG_FIGS,
+                         sprintf( $SIG_FIGS_MAX,
                                   rmsd( $residue_coord, $rotamer_coord ) );
                     $calculation_id++;
                 }
