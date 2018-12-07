@@ -4,9 +4,12 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( multithreading );
+our @EXPORT_OK = qw( multithreading
+                     forking );
 
 use Carp;
+use ForkManager;
+use threads;
 
 use Version qw( $VERSION );
 
@@ -107,6 +110,24 @@ sub multithreading
     }
 
     return \@joined_block_results;
+}
+
+# --------------------------------- Forking ----------------------------------- #
+#
+# Performs forking (similar idea to multithreading()) where function,
+# arguments and data blocks are given.
+# Input:
+#     $function - reference to the function that will be run;
+#     $arguments - arguments that will be passed to a function;
+#     $divisible_arrays - array of data;
+#     $proc_num - number of processes that will be run simultaneously.
+# Output:
+#     @joined_block_results - results from all threads.
+#
+
+sub forking
+{
+    my ( $function, $arguments, $divisible_arrays, $proc_num )= @_;
 }
 
 1;
