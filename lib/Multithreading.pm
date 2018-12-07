@@ -113,13 +113,14 @@ sub multithreading
 }
 
 # --------------------------------- Forking ----------------------------------- #
+
 #
 # Performs forking (similar idea to multithreading()) where function,
 # arguments and data blocks are given.
 # Input:
 #     $function - reference to the function that will be run;
 #     $arguments - arguments that will be passed to a function;
-#     $data_array - array of data;
+#     $data - array of single/multiple data;
 #     $threads - number of processes that will be run simultaneously.
 # Output:
 #     @results - results from all processes.
@@ -127,7 +128,7 @@ sub multithreading
 
 sub forking
 {
-    my ( $function, $arguments, $data_array, $threads )= @_;
+    my ( $function, $arguments, $data, $threads )= @_;
 
     my $pm = Parallel::ForkManager->new( $threads );
 
@@ -137,13 +138,15 @@ sub forking
     $pm->run_on_finish( sub {
          my ( $pid, $exit_code, $ident, $exit_signal,
               $core_dump, $data_structure_reference ) = @_;
-         push @results, $$data_structure_reference;
+         for my $i ( 0..$#{ $$data_structure_reference } ) {
+             push @{ $results[$i] }, @{ $$data_structure_reference->[$i] };
+         }
     } );
 
   DATA:
-    for my $data ( @{ $data_array } ) {
+    for my $i ( 0..$#{ $data->[0] } ) {
         $pm->start and next DATA;
-        my $array = $function->( $data );
+        my $array = $function->( $arguments, $data->[0][$i], $data->[1][$i] );
         $pm->finish( 0, \$array );
     }
     $pm->wait_all_children;
