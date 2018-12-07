@@ -8,7 +8,7 @@ our @EXPORT_OK = qw( multithreading
                      forking );
 
 use Carp;
-use ForkManager;
+use Parallel::ForkManager;
 use threads;
 
 use Version qw( $VERSION );
