@@ -119,15 +119,36 @@ sub multithreading
 # Input:
 #     $function - reference to the function that will be run;
 #     $arguments - arguments that will be passed to a function;
-#     $divisible_arrays - array of data;
-#     $proc_num - number of processes that will be run simultaneously.
+#     $data_array - array of data;
+#     $threads - number of processes that will be run simultaneously.
 # Output:
-#     @joined_block_results - results from all threads.
+#     @results - results from all processes.
 #
 
 sub forking
 {
-    my ( $function, $arguments, $divisible_arrays, $proc_num )= @_;
+    my ( $function, $arguments, $data_array, $threads )= @_;
+
+    my $pm = Parallel::ForkManager->new( $threads );
+
+    my @results;
+
+    # Rule to retrieve data.
+    $pm->run_on_finish( sub {
+         my ( $pid, $exit_code, $ident, $exit_signal,
+              $core_dump, $data_structure_reference ) = @_;
+         push @results, $$data_structure_reference;
+    } );
+
+  DATA:
+    for my $data ( @{ $data_array } ) {
+        $pm->start and next DATA;
+        my $array = $function->( $data );
+        $pm->finish( 0, \$array );
+    }
+    $pm->wait_all_children;
+
+    return \@results;
 }
 
 1;
