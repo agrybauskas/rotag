@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( add_hydrogens
                      calc_favourable_angle
                      calc_favourable_angles
+                     calc_full_atom_energy
                      generate_library
                      generate_pseudo
                      generate_rotamer
@@ -440,7 +441,8 @@ sub generate_library
                                        %{ $include_interactions } } } ) };
 
                 my ( $allowed_angles, $energy_sums ) =
-                    @{ calc_full_atom_energy(
+                    @{ threading(
+                           \&calc_full_atom_energy,
                            { 'atom_site' => ( $is_hydrogen_explicit ?
                                               $current_atom_site_w_h :
                                               $current_atom_site_no_h ),
@@ -453,25 +455,8 @@ sub generate_library
                              'energy_cutoff_atom' => $energy_cutoff_atom,
                              'is_hydrogen_explicit' => $is_hydrogen_explicit,
                              'parameters' => $parameters },
-                           [ @allowed_angles ] ) };
-
-                # my ( $allowed_angles, $energy_sums ) =
-                #     @{ threading(
-                #            \&calc_full_atom_energy,
-                #            { 'atom_site' => ( $is_hydrogen_explicit ?
-                #                               $current_atom_site_w_h :
-                #                               $current_atom_site_no_h ),
-                #              'residue_unique_key' => $residue_unique_key,
-                #              'interaction_site' => ( $is_hydrogen_explicit ?
-                #                                      \%interaction_site_w_h :
-                #                                      \%interaction_site_no_h ),
-                #              'small_angle' => $small_angle,
-                #              'potential_function' => $potential_function,
-                #              'energy_cutoff_atom' => $energy_cutoff_atom,
-                #              'is_hydrogen_explicit' => $is_hydrogen_explicit,
-                #              'parameters' => $parameters },
-                #            [ @allowed_angles ],
-                #            $threads ) };
+                           [ @allowed_angles ],
+                           $threads ) };
 
                 if( ! @{ $allowed_angles } ) {
                     die "no possible rotamer solutions were detected.\n";
