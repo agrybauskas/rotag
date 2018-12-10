@@ -87,7 +87,7 @@ sub threading
         divide_arrays_into_blocks( $divisible_arrays, $threads );
 
     my @block_results;
-    for my $i ( 0..$threads-1 ) {
+    for my $i ( 0..$#{ $allowed_array_blocks->[0] } ) {
         my $thread_task =
             threads->create( $function,
                              $arguments,
