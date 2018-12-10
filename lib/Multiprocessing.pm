@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( forking
+our @EXPORT_OK = qw( divide_arrays_into_blocks
+                     forking
                      threading );
 
 use Carp;
