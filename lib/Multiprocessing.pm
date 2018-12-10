@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( divide_arrays_into_blocks
 
 use Carp;
 use Parallel::ForkManager;
+use POSIX qw( ceil );
 use threads;
 
 use Version qw( $VERSION );
@@ -41,29 +42,22 @@ sub divide_arrays_into_blocks
         if( defined $array_length && scalar( @array ) ne $array_length ) {
             confess 'list of arrays have different lengths.';
         }
+
         $array_length =  scalar @array;
 
         # Splits the array into blocks/chunks.
+        my $max_block_size = ceil( $array_length / $threads );
+
         my @array_blocks;
-        my $max_block_size = int( scalar @array / $threads );
+        for( my $i = 0; $i < $array_length; $i += $max_block_size ) {
+            my $block_start = $i;
+            my $block_end = $i + $max_block_size - 1;
 
-        # If block size is smaller that the number of threads, then
-        # thread number is reduced.
-        my $reduce_threads = 0;
-        if( ! $max_block_size ) {
-            $reduce_threads = scalar @array;
-            $max_block_size = 1;
-        }
-
-        for my $i ( 0..$threads-$reduce_threads-1 ) {
-            my $block_start = $i * $max_block_size;
-            my $block_end = $block_start + $max_block_size - 1;
-            if( $i ne $threads-$reduce_threads-1 ) {
-                push @array_blocks, [ @array[$block_start..$block_end] ];
-            } else {
-                $block_end = $#array;
-                push @array_blocks, [ @array[$block_start..$block_end] ];
+            if( $block_end >= $array_length ) {
+                $block_end = $array_length - 1;
             }
+
+            push @array_blocks, [ @array[$block_start..$block_end] ];
         }
 
         push @list_of_array_blocks, \@array_blocks;
