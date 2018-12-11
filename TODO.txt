@@ -58,3 +58,5 @@
 ++ Analyze only heavy atoms.
 -- Add mainchain angle calculations for rotag_dihedral script.
 !! random-seed option is not working properly in rotag_select.
+-- Maybe should have an ability to sort PDBx entries according to residues,
+   because Jmol has a bug of viewing atoms with alternative ids.
