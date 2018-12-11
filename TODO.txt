@@ -57,3 +57,4 @@
 ++ Optimize AtomSite::filter().
 ++ Analyze only heavy atoms.
 -- Add mainchain angle calculations for rotag_dihedral script.
+!! random-seed option is not working properly in rotag_select.
