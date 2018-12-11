@@ -51,6 +51,7 @@ for my $cif_file ( @ARGV ) {
     if( $cif_file ) {
         $pdbx_loops = obtain_pdbx_loop( $cif_file,
                                         [ '_atom_properties',
+                                          '_lennard_jones',
                                           '_partial_charge',
                                           '_residue_atom_necessety',
                                           '_clear_hybridization',
@@ -106,6 +107,20 @@ for my $cif_file ( @ARGV ) {
             $covalent_radius_value;
         push @{ $ATOMS->{$type_symbol}{'covalent_radius'}{'error'} },
             $covalent_radius_error;
+    }
+
+    # Lennard-Jones parameters.
+    my $LENNARD_JONES;
+    my $lennard_jones_loops = pdbx_loop_to_array( $pdbx_loops, '_lennard_jones' );
+
+    for my $lennard_jones_loop ( @{ $lennard_jones_loops } ) {
+        my $type_symbol_1 = $lennard_jones_loop->{'type_symbol_1'};
+        my $type_symbol_2 = $lennard_jones_loop->{'type_symbol_2'};
+        my $sigma = $lennard_jones_loop->{'sigma'};
+        my $epsilon = $lennard_jones_loop->{'epsilon'};
+
+        $LENNARD_JONES->{$type_symbol_1}{$type_symbol_2}{'sigma'} = $sigma;
+        $LENNARD_JONES->{$type_symbol_1}{$type_symbol_2}{'epsilon'} = $epsilon;
     }
 
     # Partial charge.
@@ -208,17 +223,18 @@ for my $cif_file ( @ARGV ) {
 
     print Data::Dumper->Dump( [ $SOFT_EPSILON, $SOFT_N, $LJ_EPSILON, $COULOMB_K,
                                 $H_EPSILON, $H_SIGMA, $CUTOFF_START, $CUTOFF_END,
-                                $ATOMS, $PARTIAL_CHARGE, $RESIDUE_ATOMS,
-                                $CLEAR_HYBRIDIZATION, $CONNECTIVITY,
-                                $HYDROGEN_NAMES, $INTERACTION_ATOM_NAMES,
-                                $MAINCHAIN_ATOM_NAMES, $SIDECHAIN_ATOM_NAMES,
-                                $ROTATABLE_RESIDUE_NAMES ],
+                                $ATOMS, $LENNARD_JONES, $PARTIAL_CHARGE,
+                                $RESIDUE_ATOMS, $CLEAR_HYBRIDIZATION,
+                                $CONNECTIVITY, $HYDROGEN_NAMES,
+                                $INTERACTION_ATOM_NAMES, $MAINCHAIN_ATOM_NAMES,
+                                $SIDECHAIN_ATOM_NAMES, $ROTATABLE_RESIDUE_NAMES ],
                               [ qw( *SOFT_EPSILON *SOFT_N *LJ_EPSILON *COULOMB_K
                                     *H_EPSILON H_SIGMA *CUTOFF_START *CUTOFF_END
-                                    *ATOMS *PARTIAL_CHARGE *RESIDUE_ATOMS
-                                    *CLEAR_HYBRIDIZATION *CONNECTIVITY
-                                    *HYDROGEN_NAMES *INTERACTION_ATOM_NAMES
-                                    *MAINCHAIN_ATOM_NAMES *SIDECHAIN_ATOM_NAMES
+                                    *ATOMS *LENNARD_JONES *PARTIAL_CHARGE
+                                    *RESIDUE_ATOMS *CLEAR_HYBRIDIZATION
+                                    *CONNECTIVITY *HYDROGEN_NAMES
+                                    *INTERACTION_ATOM_NAMES *MAINCHAIN_ATOM_NAMES
+                                    *SIDECHAIN_ATOM_NAMES
                                     *ROTATABLE_RESIDUE_NAMES ) ] );
     print "1;\n";
 }
