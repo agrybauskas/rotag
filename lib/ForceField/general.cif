@@ -465,6 +465,14 @@ XAA XA   0
 XAA XA2  0
 #
 loop_
+_[local]_h_bond.type_symbol
+_[local]_h_bond.sigma
+_[local]_h_bond.epsilon
+N 1.90 5.00
+O 1.90 5.00
+S 2.50 1.00
+#
+loop_
 _[local]_residue_atom_necessety.label_comp_id
 _[local]_residue_atom_necessety.label_atom_id
 _[local]_residue_atom_necessety.value
