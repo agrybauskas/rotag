@@ -12,7 +12,7 @@ use List::MoreUtils qw( any
 
 use AtomInteractions qw( hard_sphere
                          soft_sphere
-                         leonard_jones
+                         lennard_jones
                          coulomb
                          h_bond
                          composite );
@@ -46,12 +46,12 @@ our $VERSION = $VERSION;
 #*
 #*OPTIONS:
 #*    -u, --potential (default: composite | hard_sphere | soft_sphere |
-#*                              leonard_jones | coulomb | h_bond)
+#*                              lennard_jones | coulomb | h_bond)
 #*        uses potential energy function for determining interactions between
 #*        selected residues and atoms that are reachable or described.
 #*    -p, --parameters <str>
 #*        parameters for composite potential energy function:
-#*            lj_epsilon   - Leonard-Jones epsilon;
+#*            lj_epsilon   - Lennard-Jones epsilon;
 #*            c_k          - Coulomb constant;
 #*            h_epsilon    - hydrogen bond epsilon;
 #*            cutoff_start - x VdW where energy starts to go to zero;
@@ -109,7 +109,7 @@ my %potential_functions = (
     'composite' => \&composite,
     'hard_sphere' => \&hard_sphere,
     'soft_sphere' => \&soft_sphere,
-    'leonard_jones' => \&leonard_jones,
+    'lennard_jones' => \&lennard_jones,
     'coulomb' => \&coulomb,
     'h_bond' => \&h_bond,
 );

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use AtomInteractions qw( leonard_jones );
+use AtomInteractions qw( lennard_jones );
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file ) = @ARGV;
 
@@ -15,4 +15,4 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print leonard_jones( $atom_site->{$atom_i_id}, $atom_site->{$atom_j_id} ), "\n";
+print lennard_jones( $atom_site->{$atom_i_id}, $atom_site->{$atom_j_id} ), "\n";

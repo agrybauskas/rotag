@@ -10,7 +10,7 @@ our @EXPORT_OK = qw( composite
                      h_bond_explicit
                      h_bond_implicit
                      hard_sphere
-                     leonard_jones
+                     lennard_jones
                      soft_sphere );
 
 use List::Util qw( any );
@@ -108,7 +108,7 @@ sub soft_sphere
 }
 
 #
-# Leonard-Jones potential function. Described as:
+# Lennard-Jones potential function. Described as:
 #
 #          4 * epsilon * [ ( sigma / r ) ** 12 - ( sigma / r ) ** 6 ]
 #
@@ -123,7 +123,7 @@ sub soft_sphere
 #     energy value.
 #
 
-sub leonard_jones
+sub lennard_jones
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
@@ -389,10 +389,10 @@ sub h_bond_explicit
 }
 
 #
-# Combines Leonard-Jones, Coulomb, hydrogen bond potentials with smoothly
+# Combines Lennard-Jones, Coulomb, hydrogen bond potentials with smoothly
 # decreasing cutoff distance.
 #
-#         composite = leonard_jones + coulomb + h_bond * cutoff_function
+#         composite = lennard_jones + coulomb + h_bond * cutoff_function
 #
 # cutoff_function =
 #     cos( ( pi * ( r - cutoff_{start} * sigma ) ) /
@@ -437,21 +437,21 @@ sub composite
                $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared < ( $cutoff_start * $sigma ) ** 2 ) {
-        my $leonard_jones = leonard_jones( $atom_i, $atom_j, \%parameters );
+        my $lennard_jones = lennard_jones( $atom_i, $atom_j, \%parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, \%parameters );
         my $h_bond = h_bond( $atom_i, $atom_j, \%parameters );
 
         if( $decompose ) {
-            return { 'composite' => $leonard_jones + $coulomb + $h_bond,
-                     'leonard_jones' => $leonard_jones,
+            return { 'composite' => $lennard_jones + $coulomb + $h_bond,
+                     'lennard_jones' => $lennard_jones,
                      'coulomb' => $coulomb,
                      'h_bond' => $h_bond };
         } else {
-            return $leonard_jones + $coulomb + $h_bond;
+            return $lennard_jones + $coulomb + $h_bond;
         }
     } elsif( ( $r_squared >= ( $cutoff_start * $sigma ) ** 2 ) &&
              ( $r_squared <= ( $cutoff_end   * $sigma ) ** 2 ) ) {
-        my $leonard_jones = leonard_jones( $atom_i, $atom_j, \%parameters );
+        my $lennard_jones = lennard_jones( $atom_i, $atom_j, \%parameters );
         my $coulomb = coulomb( $atom_i, $atom_j, \%parameters );
         my $h_bond = h_bond( $atom_i, $atom_j, \%parameters );
         my $cutoff_function =
@@ -460,18 +460,18 @@ sub composite
 
         if( $decompose ) {
             return { 'composite' =>
-                         ( $leonard_jones + $coulomb + $h_bond ) *
+                         ( $lennard_jones + $coulomb + $h_bond ) *
                          $cutoff_function,
-                     'leonard_jones' => $leonard_jones,
+                     'lennard_jones' => $lennard_jones,
                      'coulomb' => $coulomb,
                      'h_bond' => $h_bond };
         } else {
-            return ( $leonard_jones + $coulomb + $h_bond ) * $cutoff_function;
+            return ( $lennard_jones + $coulomb + $h_bond ) * $cutoff_function;
         }
     } else {
         if( $decompose ) {
             return { 'composite' => 0,
-                     'leonard_jones' => 0,
+                     'lennard_jones' => 0,
                      'coulomb' => 0,
                      'h_bond' => 0 };
         } else {

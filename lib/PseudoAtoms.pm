@@ -25,7 +25,7 @@ use threads;
 
 use AtomInteractions qw( hard_sphere
                          soft_sphere
-                         leonard_jones
+                         lennard_jones
                          composite );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( append_connections
@@ -322,7 +322,7 @@ sub generate_library
     my %potential_functions = ( 'composite' => \&composite,
                                 'hard_sphere' => \&hard_sphere,
                                 'soft_sphere' => \&soft_sphere,
-                                'leonard_jones' => \&leonard_jones, );
+                                'lennard_jones' => \&lennard_jones, );
     my $potential_function = $potential_functions{"$interactions"};
 
     my %rotamer_library;
