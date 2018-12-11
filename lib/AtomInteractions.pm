@@ -134,9 +134,12 @@ sub lennard_jones
     );
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $General::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    $lj_epsilon //= $General::LJ_EPSILON;
+    $sigma //= $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
+                                      {$atom_j->{'type_symbol'}}
+                                      {'sigma'};
+    $lj_epsilon //= $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
+                                           {$atom_j->{'type_symbol'}}
+                                           {'epsilon'};
 
     return 4 * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
                                ( $sigma ** 6  / $r_squared ** 3 ) );
