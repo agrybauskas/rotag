@@ -26,7 +26,6 @@ N sp3  0.71 0.02 1.66 1    3
 N sp2  0.60 0.06 1.66 1    3
 O sp3  0.66 0.02 1.5  2    2
 O sp2  0.57 0.07 1.5  2    2
-P ?    1.07 0.03 1.9  0    5
 S sp3  1.05 0.03 1.89 2    2
 X sp3  1    0.05 0    0    0
 X sp2  0.5  0.05 0    0    0
@@ -35,72 +34,57 @@ X sp   0.25 0.05 0    0    0
 loop_
 _[local]_lennard_jones.type_symbol_1
 _[local]_lennard_jones.type_symbol_2
-_[local]_lennard_jones.epsilon
 _[local]_lennard_jones.sigma
-. .
-. C
-. H
-. N
-. O
-. P
-. S
-. X
-C .
-C C
-C H
-C N
-C O
-C P
-C S
-C X
-H .
-H C
-H H
-H N
-H O
-H P
-H S
-H X
-N .
-N C
-N H
-N N
-N O
-N P
-N S
-N X
-O .
-O C
-O H
-O N
-O O
-O P
-O S
-O X
-P .
-P C
-P H
-P N
-P O
-P P
-P S
-P X
-S .
-S C
-S H
-S N
-S O
-S P
-S S
-S X
-X .
-X C
-X H
-X N
-X O
-X P
-X S
-X X
+_[local]_lennard_jones.epsilon
+. . 0.00 0.000
+. C 2.00 0.000
+. H 1.00 0.000
+. N 1.75 0.000
+. O 1.60 0.000
+. S 2.00 0.000
+. X 0.05 0.000
+C . 2.00 0.000
+C C 4.00 0.150
+C H 3.00 0.055
+C N 3.75 0.155
+C O 3.60 0.173
+C S 4.00 0.173
+C X 2.05 0.080
+H . 1.00 0.000
+H C 3.00 0.055
+H H 2.00 0.020
+H N 2.75 0.057
+H O 2.60 0.063
+H S 3.00 0.063
+H X 1.05 0.015
+N . 1.75 0.000
+N C 3.75 0.155
+N H 2.75 0.057
+N N 3.50 0.160
+N O 3.35 0.179
+N S 3.75 0.179
+N X 1.80 0.085
+O . 1.60 0.000
+O C 3.60 0.173
+O H 2.60 0.063
+O N 3.35 0.179
+O O 3.20 0.200
+O S 3.60 0.200
+O X 1.65 0.105
+S . 2.00 0.000
+S C 4.00 0.173
+S H 3.00 0.063
+S N 3.75 0.179
+S O 3.60 0.200
+S S 4.00 0.200
+S X 2.05 0.105
+X . 0.05 0.000
+X C 2.05 0.080
+X H 1.05 0.015
+X N 1.80 0.085
+X O 1.65 0.105
+X S 2.05 0.105
+X X 0.10 0.010
 #
 loop_
 _[local]_partial_charge.label_comp_id
