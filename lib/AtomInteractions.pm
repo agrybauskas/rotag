@@ -127,19 +127,15 @@ sub lennard_jones
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r_squared, $sigma, $lj_epsilon ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'sigma'},
-        $parameters->{'lj_epsilon'},
-    );
-
+    my ( $r_squared  ) = ( $parameters->{'r_squared'}, );
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
-                                      {$atom_j->{'type_symbol'}}
-                                      {'sigma'};
-    $lj_epsilon //= $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
-                                           {$atom_j->{'type_symbol'}}
-                                           {'epsilon'};
+
+    my $sigma = $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
+                                       {$atom_j->{'type_symbol'}}
+                                       {'sigma'};
+    my $lj_epsilon = $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
+                                            {$atom_j->{'type_symbol'}}
+                                            {'epsilon'};
 
     return 4 * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
                                ( $sigma ** 6  / $r_squared ** 3 ) );
@@ -197,15 +193,14 @@ sub h_bond
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $h_epsilon, $atom_site, $only_implicit ) = (
-        $parameters->{'h_epsilon'},
+    my ( $atom_site, $only_implicit ) = (
         $parameters->{'atom_site'},
         $parameters->{'only_implicit_h_bond'},
     );
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # BondProperties.
-    my @h_bond_heavy_atoms = qw( N O F );
+    my @h_bond_heavy_atoms = qw( N O S );
     my @atom_i_hydrogen_names =
         defined $General::HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
                                         {$atom_i->{'label_atom_id'}} ?
@@ -289,14 +284,12 @@ sub h_bond_implicit
 {
     my ( $donor_atom, $acceptor_atom, $parameters ) = @_;
 
-    my ( $r_donor_acceptor_squared, $h_epsilon, $r_sigma ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'h_epsilon'},
-        $parameters->{'r_sigma'}
-    );
+    my ( $r_donor_acceptor_squared ) = ( $parameters->{'r_squared'}, );
 
-    $r_sigma //= $General::H_SIGMA;
-    $h_epsilon //= $General::H_EPSILON;
+    my $r_sigma =
+        $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
+    my $h_epsilon =
+        $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'epsilon'};
 
     my $covalent_radius_idx;
     my @hybridizations = qw( sp3 sp2 sp );
@@ -361,11 +354,10 @@ sub h_bond_explicit
 {
     my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
 
-    my ( $h_epsilon, $r_sigma ) = (
-        $parameters->{'h_epsilon'}, $parameters->{'r_sigma'}
-    );
-    $r_sigma //= $General::H_SIGMA;
-    $h_epsilon //= $General::H_EPSILON;
+    my $r_sigma =
+        $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
+    my $h_epsilon =
+        $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'epsilon'};
 
     my $r_acceptor_hydrogen_squared =
         distance_squared( $hydrogen_atom, $acceptor_atom );
