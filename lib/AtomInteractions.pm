@@ -110,12 +110,13 @@ sub soft_sphere
 #
 # Lennard-Jones potential function. Described as:
 #
-#          4 * epsilon * [ ( sigma / r ) ** 12 - ( sigma / r ) ** 6 ]
+#          4 * k * epsilon * [ ( sigma / r ) ** 12 - ( sigma / r ) ** 6 ]
 #
 # where:
 #     r       - distance between center of atoms;
 #     epsilon - energy coefficient;
-#     sigma   - sum of van der Waals radii of two atoms.
+#     sigma   - sum of van der Waals radii of two atoms;
+#     k       - weight/adjustment constant.
 # Input:
 #     $atom_{i,j} - atom data structure (see PDBxParser.pm);
 #     $parameters - hash of parameters' values.
@@ -127,8 +128,13 @@ sub lennard_jones
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r_squared  ) = ( $parameters->{'r_squared'}, );
+    my ( $r_squared, $lj_k  ) = (
+        $parameters->{'r_squared'},
+        $parameters->{'lj_k'}
+    );
+
     $r_squared //= distance_squared( $atom_i, $atom_j );
+    $lj_k //= $General::LJ_K;
 
     my $sigma = $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
                                        {$atom_j->{'type_symbol'}}
@@ -137,18 +143,18 @@ sub lennard_jones
                                             {$atom_j->{'type_symbol'}}
                                             {'epsilon'};
 
-    return 4 * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
-                               ( $sigma ** 6  / $r_squared ** 3 ) );
+    return 4 * $lj_k * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
+                                       ( $sigma ** 6  / $r_squared ** 3 ) );
 }
 
 #
 # Coulomb potential function. Described as:
 #
-#                     coulomb_k * q_i * q_j / r ** 2
+#                         k * q_i * q_j / r ** 2
 #
 # where:
 #     r           - distance between center of atoms;
-#     coulomb_k   - coulomb coefficient;
+#     k           - weight/adjustment constant;
 #     q_{i,j}     - charge of the particle.
 # Input:
 #     $atom_{i,j} - atom data structure (see PDBxParser.pm);
@@ -160,11 +166,13 @@ sub lennard_jones
 sub coulomb
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
-    my ( $r_squared, $coulomb_k ) =
-        ( $parameters->{'r_squared'}, $parameters->{'c_k'} );
+    my ( $r_squared, $c_k ) = (
+        $parameters->{'r_squared'},
+        $parameters->{'c_k'}
+    );
 
-    $coulomb_k //= $General::COULOMB_K;
     $r_squared //= distance_squared( $atom_i, $atom_j );
+    $c_k //= $General::C_K;
 
     # Extracts partial charges.
     my $partial_charge_i =
@@ -174,7 +182,7 @@ sub coulomb
         $General::PARTIAL_CHARGE{$atom_j->{'label_comp_id'}}
                                 {$atom_j->{'label_atom_id'}};
 
-    return $coulomb_k * $partial_charge_i * $partial_charge_j / $r_squared;
+    return $c_k * $partial_charge_i * $partial_charge_j / $r_squared;
 }
 
 #
@@ -284,7 +292,12 @@ sub h_bond_implicit
 {
     my ( $donor_atom, $acceptor_atom, $parameters ) = @_;
 
-    my ( $r_donor_acceptor_squared ) = ( $parameters->{'r_squared'}, );
+    my ( $r_donor_acceptor_squared, $h_k ) = (
+        $parameters->{'r_squared'},
+        $parameters->{'h_k'},
+    );
+
+    $h_k //= $General::H_K;
 
     my $r_sigma =
         $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
@@ -318,7 +331,7 @@ sub h_bond_implicit
     if( ( $r_donor_acceptor_squared <= ( $r_donor_hydrogen + $r_sigma ) ** 2 ) &&
         ( $theta >= $PI / 2 ) &&
         ( $theta <=  3 * $PI / 2 ) ) {
-        return $h_epsilon * cos $theta;
+        return $h_k * $h_epsilon * cos $theta;
     } else {
         return 0;
     }
@@ -354,6 +367,10 @@ sub h_bond_explicit
 {
     my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
 
+    my ( $h_k ) = ( $parameters->{'h_k'}, );
+
+    $h_k //= $General::H_K;
+
     my $r_sigma =
         $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
     my $h_epsilon =
@@ -374,7 +391,9 @@ sub h_bond_explicit
 
     if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
         return
-            ( -1 ) * $h_epsilon *
+            ( -1 ) *
+            $h_k *
+            $h_epsilon *
             ( 5 * ( $r_sigma ** 12 / $r_acceptor_hydrogen_squared ** 6 ) -
               6 * ( $r_sigma ** 10 / $r_acceptor_hydrogen_squared ** 5 ) ) *
             cos $theta;
@@ -390,8 +409,8 @@ sub h_bond_explicit
 #         composite = lennard_jones + coulomb + h_bond * cutoff_function
 #
 # cutoff_function =
-#     cos( ( pi * ( r - cutoff_{start} * sigma ) ) /
-#          ( 2 * ( cutoff_{end} * sigma - cutoff_{start} * sigma ) ) )
+#     cos( ( pi * ( r - cutoff_start * sigma ) ) /
+#          ( 2  * ( cutoff_end * sigma - cutoff_start * sigma ) ) )
 #
 # where:
 #     r                  - distance between center of atoms;
