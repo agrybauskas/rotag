@@ -29,8 +29,8 @@ our $VERSION = $VERSION;
 
 #
 # Hard sphere potential function. Described as:
-#                       0,   r_{ij} >= vdw_{i} + vdw_{j}
-#                       Inf, r_{ij} <  vdw_{i} + vdw_{j}
+#                       0,   r_ij >= vdw_i + vdw_j
+#                       Inf, r_ij <  vdw_i + vdw_j
 #
 # where:
 #     r   - distance between the center of atoms;
@@ -66,8 +66,8 @@ sub hard_sphere
 
 #
 # Soft sphere potential function. Described as:
-#   epsilon * ( vdw_{i} + vdw_{j} / r_{ij} ) ** n , r_{ij} <= vdw_{i} + vdw_{j}
-#   0,                                              r_{ij} >  vdw_{i} + vdw_{j}
+#   epsilon * ( vdw_i + vdw_j / r_ij ) ^ n , r_ij <= vdw_i + vdw_j
+#   0,                                       r_ij >  vdw_i + vdw_j
 #
 # where:
 #     r       - distance between the centers of the atoms;
@@ -148,7 +148,7 @@ sub lennard_jones
 #
 # Coulomb potential function. Described as:
 #
-#                     coulomb_k * q_{i} * q_{j} / r ** 2
+#                     coulomb_k * q_i * q_j / r ** 2
 #
 # where:
 #     r           - distance between center of atoms;
