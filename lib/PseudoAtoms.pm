@@ -12,6 +12,7 @@ our @EXPORT_OK = qw( add_hydrogens
                      generate_pseudo
                      generate_rotamer
                      library_to_csv
+                     lowest_energy_state
                      replace_with_rotamer );
 
 use B qw( svref_2object );
@@ -844,6 +845,33 @@ sub calc_full_atom_energy
     }
 
     return [ \@allowed_angles, \@energy_sums ] ;
+}
+
+#
+# Calculates lowest possible energy state that atom would have if it interacted
+# with all surrounding atoms with best possible distances. Although, it is
+# very unrealistic for atom to be in such state, but very useful when using in
+# determining energy cutoff value for dead-end elimination algorithm.
+# Input:
+#     $atom_i - atom;
+#     $surrounding_atoms - list of surrounding atoms;
+#     $potential_function - reference to the potential function that is used for
+#     calculating energy;
+#     $parameters - potential function parameters.
+# Output:
+#     $lowest_energy_sum - energy value.
+#
+
+sub lowest_energy_state
+{
+    my ( $atom_i, $surrounding_atoms, $potential_function, $parameters ) = @_;
+
+    my $lowest_energy_sum = 0;
+    for my $atom_j ( @{ $surrounding_atoms } ) {
+        $lowest_energy_sum += $potential_function->( $atom_i, $atom_j );
+    }
+
+    return $lowest_energy_sum;
 }
 
 #
