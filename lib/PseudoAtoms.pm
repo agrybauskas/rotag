@@ -868,7 +868,10 @@ sub lowest_energy_state
 
     my $lowest_energy_sum = 0;
     for my $atom_j ( @{ $surrounding_atoms } ) {
-        $lowest_energy_sum += $potential_function->( $atom_i, $atom_j );
+        my %optimized_parameters = %{ $parameters }; # Used for producing lowest
+                                                     # possible energy sum.
+        $lowest_energy_sum +=
+            $potential_function->( $atom_i, $atom_j, \%optimized_parameters );
     }
 
     return $lowest_energy_sum;

@@ -130,7 +130,7 @@ sub lennard_jones
 
     my ( $r_squared, $lj_k  ) = (
         $parameters->{'r_squared'},
-        $parameters->{'lj_k'}
+        $parameters->{'lj_k'},
     );
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
@@ -168,7 +168,7 @@ sub coulomb
     my ( $atom_i, $atom_j, $parameters ) = @_;
     my ( $r_squared, $c_k ) = (
         $parameters->{'r_squared'},
-        $parameters->{'c_k'}
+        $parameters->{'c_k'},
     );
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
@@ -431,7 +431,7 @@ sub composite
         $parameters->{'r_squared'},
         $parameters->{'sigma'},
         $parameters->{'cutoff_start'}, # * VdW distance.
-        $parameters->{'cutoff_end'}, #   * VdW distance.
+        $parameters->{'cutoff_end'}, # * VdW distance.
         $parameters->{'decompose'}, # Returns hash of the energy function
                                     # component values.
     );
