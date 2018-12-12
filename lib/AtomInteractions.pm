@@ -128,13 +128,21 @@ sub lennard_jones
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r_squared, $lj_k  ) = (
+    my ( $r_squared, $lj_k, $is_optimal  ) = (
         $parameters->{'r_squared'},
         $parameters->{'lj_k'},
+        $parameters->{'is_optimal'},
     );
 
-    $r_squared //= distance_squared( $atom_i, $atom_j );
     $lj_k //= $General::LJ_K;
+
+    if( $is_optimal ) {
+        return $lj_k * $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
+                                              {$atom_j->{'type_symbol'}}
+                                              {'epsilon'};
+    }
+
+    $r_squared //= distance_squared( $atom_i, $atom_j );
 
     my $sigma = $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
                                        {$atom_j->{'type_symbol'}}
@@ -166,13 +174,14 @@ sub lennard_jones
 sub coulomb
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
-    my ( $r_squared, $c_k ) = (
+    my ( $r_squared, $c_k, $is_optimal ) = (
         $parameters->{'r_squared'},
         $parameters->{'c_k'},
+        $parameters->{'is_optimal'},
     );
 
-    $r_squared //= distance_squared( $atom_i, $atom_j );
     $c_k //= $General::C_K;
+    $r_squared //= distance_squared( $atom_i, $atom_j );
 
     # Extracts partial charges.
     my $partial_charge_i =
@@ -292,9 +301,10 @@ sub h_bond_implicit
 {
     my ( $donor_atom, $acceptor_atom, $parameters ) = @_;
 
-    my ( $r_donor_acceptor_squared, $h_k ) = (
+    my ( $r_donor_acceptor_squared, $h_k, $is_optimal ) = (
         $parameters->{'r_squared'},
         $parameters->{'h_k'},
+        $parameters->{'is_optimal'},
     );
 
     $h_k //= $General::H_K;
@@ -367,7 +377,10 @@ sub h_bond_explicit
 {
     my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
 
-    my ( $h_k ) = ( $parameters->{'h_k'}, );
+    my ( $h_k, $is_optimal ) = (
+        $parameters->{'h_k'},
+        $parameters->{'is_optimal'},
+    );
 
     $h_k //= $General::H_K;
 
@@ -427,18 +440,21 @@ sub composite
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
-    my ( $r_squared, $sigma, $cutoff_start, $cutoff_end, $decompose ) = (
+    my ( $r_squared, $sigma, $cutoff_start, $cutoff_end, $decompose,
+         $is_optimal ) = (
         $parameters->{'r_squared'},
         $parameters->{'sigma'},
         $parameters->{'cutoff_start'}, # * VdW distance.
         $parameters->{'cutoff_end'}, # * VdW distance.
         $parameters->{'decompose'}, # Returns hash of the energy function
                                     # component values.
+        $parameters->{'is_optimal'},
     );
 
     $cutoff_start //= $General::CUTOFF_START;
     $cutoff_end //= $General::CUTOFF_END;
     $decompose //= 0;
+    $is_optimal //= 0;
 
     # Calculates squared distance between two atoms.
     $r_squared //= distance_squared( $atom_i, $atom_j );
@@ -451,9 +467,13 @@ sub composite
                $General::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared < ( $cutoff_start * $sigma ) ** 2 ) {
-        my $lennard_jones = lennard_jones( $atom_i, $atom_j, \%parameters );
-        my $coulomb = coulomb( $atom_i, $atom_j, \%parameters );
-        my $h_bond = h_bond( $atom_i, $atom_j, \%parameters );
+        my $lennard_jones =
+            lennard_jones( $atom_i, $atom_j,
+                           { %parameters, ( 'is_optimal' => $is_optimal ) } );
+        my $coulomb = coulomb( $atom_i, $atom_j,
+                               { %parameters, ( 'is_optimal' => $is_optimal ) } );
+        my $h_bond =  h_bond( $atom_i, $atom_j,
+                              { %parameters, ( 'is_optimal' => $is_optimal ) } );
 
         if( $decompose ) {
             return { 'composite' => $lennard_jones + $coulomb + $h_bond,
@@ -465,9 +485,13 @@ sub composite
         }
     } elsif( ( $r_squared >= ( $cutoff_start * $sigma ) ** 2 ) &&
              ( $r_squared <= ( $cutoff_end   * $sigma ) ** 2 ) ) {
-        my $lennard_jones = lennard_jones( $atom_i, $atom_j, \%parameters );
-        my $coulomb = coulomb( $atom_i, $atom_j, \%parameters );
-        my $h_bond = h_bond( $atom_i, $atom_j, \%parameters );
+        my $lennard_jones =
+            lennard_jones( $atom_i, $atom_j,
+                           { %parameters, ( 'is_optimal' => $is_optimal ) } );
+        my $coulomb = coulomb( $atom_i, $atom_j,
+                               { %parameters, ( 'is_optimal' => $is_optimal ) } );
+        my $h_bond =  h_bond( $atom_i, $atom_j,
+                              { %parameters, ( 'is_optimal' => $is_optimal ) } );
         my $cutoff_function =
             cos( ( $PI * ( sqrt( $r_squared ) - $cutoff_start * $sigma ) ) /
                  ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
