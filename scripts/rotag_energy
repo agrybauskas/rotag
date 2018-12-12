@@ -51,9 +51,9 @@ our $VERSION = $VERSION;
 #*        selected residues and atoms that are reachable or described.
 #*    -p, --parameters <str>
 #*        parameters for composite potential energy function:
-#*            lj_epsilon   - Lennard-Jones epsilon;
+#*            lj_k         - Lennard-Jones constant;
 #*            c_k          - Coulomb constant;
-#*            h_epsilon    - hydrogen bond epsilon;
+#*            h_k          - hydrogen bond constant;
 #*            cutoff_start - x VdW where energy starts to go to zero;
 #*            cutoff_end   - x VdW where energy is at zero.
 #*        parameters for soft-sphere potential energy function:
