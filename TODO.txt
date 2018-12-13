@@ -60,3 +60,5 @@
 ++ random-seed option is not working properly in rotag_select.
 -- Maybe should have an ability to sort PDBx entries according to residues,
    because Jmol has a bug of viewing atoms with alternative ids.
+-- Maybe should add capability to select residues according to their main-chain
+   and side-chain dihedral angles.

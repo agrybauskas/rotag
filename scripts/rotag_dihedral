@@ -35,6 +35,8 @@ our $VERSION = $VERSION;
 #*                          of the selected atoms (rotag_select should be used
 #*                          for residue selection).
 #*
+#*    -m, --mainchain       calculates phi, psi and omega angles.
+#*
 #*    -r, --radians         angles are in radians.
 #*
 #*    -F, --format <format> output format [default: pdbx | csv] .
