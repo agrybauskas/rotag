@@ -6,12 +6,9 @@ use warnings;
 use autodie;
 use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
-use List::MoreUtils qw( uniq );
-use List::Util qw( any );
 
 use AtomSite;
-use PDBxParser qw( obtain_atom_site
-                   obtain_pdbx_loop
+use PDBxParser qw( obtain_pdbx_loop
                    to_pdbx );
 use Grammar::SelectionParser;
 use ErrorHandling qw( parse_errors );
@@ -19,49 +16,54 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-#*rotag_select [options] file1 [file2, ...]
+#*rotag_select [options] <file>...
 #*    select and mark atoms of interest by adding selection state [T|S|I] to
 #*    _atom_site category in PDBx.
 #*
-#*USAGE:
+#*Usage:
 #*    rotag_select -t 'resname ASP' -s 'resid 1-10' input.cif > output.cif
 #*
-#*OPTIONS:
-#*    -t, --target  <str>
-#*        command describing the residues that will be marked as target (T).
-#*        Selection keywords (equivalent PDBx category data items in parentheses):
-#*            all       - all atoms;
-#*            atomid    - atom id number    (_atom_site.id);
-#*            atomname  - atom name         (_atom_site.label_atom_id);
-#*            atomtype  - atom symbol       (_atom_site.type_symbol);
-#*            resid     - residue id number (_atom_site.label_seq_id);
-#*            resname   - residue name      (_atom_site.label_comp_id);
-#*            chain     - chain name        (_atom_site.label_asym_id);
-#*            altid     - alt atom id       (_atom_site.label_alt_id);
-#*            model     - pdbx model num    (_atom_site.pdbx_PDB_model_num);
-#*            mainchain - mainchain atoms;
-#*            sidechain - sidechain atoms;
-#*            target    - target atoms (--select uses --target atoms and --target
-#*                        uses target atoms described in a file).
-#*        Selection operators:
-#*            around  - atoms around <int> angstroms;
-#*            byres   - expands to residues;
-#*            rand    - selects <int> number of atoms randomly.
-#*        Logical operators:
-#*            &  - and operator;
-#*            |  - or operator;
-#*            !  - negation operator;
-#*            () - parentheses;
-#*            ;  - group/order selection separator.
-#*    -s, --select <str> (default: target)
-#*        command (same as --target) describing the atoms that will be marked as
-#*        selected (S).
-#*    -k, --keep-ignored
-#*        keeps ignored atoms.
-#*    -x, --rand-seed <int>
-#*        sets a seed for random (rand) selection.
-#*    -v, --version
-#*        print version.
+#*Options:
+#*    -t, --target <str>     command describing the residues that will be marked
+#*                           as target (T) [default: all].
+#*
+#*                           Selection keywords (equivalent PDBx category data
+#*                           items in parentheses):
+#*                               all       - all atoms;
+#*                               atomid    - atom id number;
+#*                               atomname  - atom name;
+#*                               atomtype  - atom symbol;
+#*                               resid     - residue id number;
+#*                               resname   - residue name;
+#*                               chain     - chain name;
+#*                               altid     - alt atom id;
+#*                               model     - pdbx model num;
+#*                               mainchain - mainchain atoms;
+#*                               sidechain - sidechain atoms;
+#*                               target    - target atoms (--select uses
+#*                                           --target atoms and --target uses
+#*                                           target atoms described in a file).
+#*
+#*                           Selection operators:
+#*                               around - atoms around <int> angstroms;
+#*                               byres  - expands to residues;
+#*                               rand   - selects <int> number of atoms randomly.
+#*
+#*                           Logical operators:
+#*                               && - and operator;
+#*                               || - or operator;
+#*                               !  - negation operator;
+#*                               () - parentheses;
+#*                               ;  - group/order selection separator.
+#*
+#*    -s, --select <str>     command (same as --target) describing the atoms that
+#*                           will be marked as selected (S) [default: target].
+#*
+#*    -k, --keep-ignored     keeps ignored atoms.
+#*
+#*    -x, --rand-seed <int>  sets a seed for random (rand) selection.
+#*
+#*    -v, --version          print version.
 
 # --------------------------------- Options ----------------------------------- #
 
