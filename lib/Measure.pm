@@ -248,18 +248,44 @@ sub all_dihedral
                           'is_list' => 1 } )->[0];
 
             # # Calculates phi angle if 'C' atom of previous residue is present.
-            # if( defined $prev_c_atom_id ) {
-            #     $angle_values{'phi'}{'atom_ids'} =
-            #         [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
-            #     $angle_values{'phi'}{'value'} =
-            #         dihedral_angles( [ [ $atom_site->{$prev_c_atom_id} ] ] );
-            # }
+            if( defined $prev_c_atom_id ) {
+                $angle_values{'phi'}{'atom_ids'} =
+                    [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
+                $angle_values{'phi'}{'value'} =
+                    dihedral_angle(
+                        [ [ $atom_site->{$prev_c_atom_id}{'Cartn_x'},
+                            $atom_site->{$prev_c_atom_id}{'Cartn_y'},
+                            $atom_site->{$prev_c_atom_id}{'Cartn_z'}, ],
+                          [ $atom_site->{$n_atom_id}{'Cartn_x'},
+                            $atom_site->{$n_atom_id}{'Cartn_y'},
+                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+                            $atom_site->{$ca_atom_id}{'Cartn_y'},
+                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
+                            $atom_site->{$c_atom_id}{'Cartn_y'},
+                            $atom_site->{$c_atom_id}{'Cartn_z'} ], ] );
+            }
 
-            # # Calculates psi angle.
-            # if( defined $next_n_atom_id ) {
-            #     # $angle_values{'phi'}{'atom_ids'} =
-            #     #     [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
-            # }
+            # Calculates psi angle.
+            if( defined $next_n_atom_id ) {
+                $angle_values{'psi'}{'atom_ids'} =
+                    [ $n_atom_id, $ca_atom_id, $c_atom_id, $next_n_atom_id ];
+                $angle_values{'psi'}{'value'} =
+                    dihedral_angle(
+                        [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
+                            $atom_site->{$n_atom_id}{'Cartn_y'},
+                            $atom_site->{$n_atom_id}{'Cartn_z'}, ],
+                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+                            $atom_site->{$ca_atom_id}{'Cartn_y'},
+                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
+                            $atom_site->{$c_atom_id}{'Cartn_y'},
+                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$next_n_atom_id}{'Cartn_x'},
+                            $atom_site->{$next_n_atom_id}{'Cartn_y'},
+                            $atom_site->{$next_n_atom_id}{'Cartn_z'} ], ] );
+            }
         }
 
         # Calculates every side-chain dihedral angle.
