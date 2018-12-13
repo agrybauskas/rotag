@@ -16,6 +16,7 @@ use Constants qw( $PI
 use Measure qw( all_dihedral
                 dihedral_angle );
 use PDBxParser qw( filter
+                   filter_by_unique_residue_key
                    mark_selection
                    pdbx_loop_to_csv
                    obtain_atom_site
@@ -46,11 +47,13 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $calc_atom_angles = 0;
+my $calc_mainchain = 0;
 my $in_degrees = 1;
 my $output_format = 'pdbx';
 
 GetOptions(
     'atoms|a' => sub { $calc_atom_angles = 1 },
+    'mainchain|m' => sub { $calc_mainchain = 1 },
     'radians|r' => sub { $in_degrees = 0 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -150,14 +153,17 @@ for my $pdbx_file ( @ARGV ) {
         connect_atoms( $dihedral_site );
         hybridization( $dihedral_site );
 
-        my $dihedral_angles = all_dihedral( $dihedral_site );
+        my $dihedral_angles = all_dihedral( $dihedral_site,
+                                            { 'calc_mainchain' =>
+                                                  ( $calc_mainchain ? 1 : 0 ) });
 
         my $dihedral_id = 1;
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
-            my ( $residue_name ) =
-                uniq( @{ filter( { 'atom_site' => $dihedral_site,
-                                   'data' => [ 'label_comp_id' ],
-                                   'is_list' => 1 } ) } );
+            my $residue_site =
+                filter_by_unique_residue_key( $dihedral_site,
+                                              $residue_unique_key );
+            my ( $residue_id ) = keys %{ $residue_site };
+            my $residue_name = $residue_site->{$residue_id}{'label_comp_id'};
 
             for my $angle_name (
                 sort keys %{ $dihedral_angles->{$residue_unique_key} } ) {
