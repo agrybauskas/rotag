@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use AtomInteractions qw( composite );
+use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( lowest_energy_state );
 
 my ( $atom_i_id, $atom_j_ids, $pdbx_dump_file, $parameters ) = @ARGV;
@@ -24,8 +25,9 @@ $parameters = {
 };
 $parameters->{'atom_site'} = $atom_site;
 
-print lowest_energy_state( $atom_site->{$atom_i_id},
-                           [ map { $atom_site->{$_} }
-                                 ( split /,/, $atom_j_ids ) ],
-                           \&composite,
-                           $parameters ), "\n";
+printf "%.6f\n",
+    lowest_energy_state( $atom_site->{$atom_i_id},
+                         [ map { $atom_site->{$_} }
+                               ( split /,/, $atom_j_ids ) ],
+                         \&composite,
+                         $parameters );

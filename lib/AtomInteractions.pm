@@ -328,7 +328,7 @@ sub h_bond_implicit
         $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'epsilon'};
 
     if( $is_optimal ) {
-        return $h_k * $h_epsilon;
+        return (-1) * $h_k * $h_epsilon;
     }
 
     my $covalent_radius_idx;
@@ -394,13 +394,20 @@ sub h_bond_explicit
 {
     my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
 
-    my ( $h_k ) = ( $parameters->{'h_k'}, );
+    my ( $h_k, $is_optimal ) = (
+        $parameters->{'h_k'},
+        $parameters->{'is_optimal'}
+    );
     $h_k //= $General::H_K;
 
     my $r_sigma =
         $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
     my $h_epsilon =
         $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'epsilon'};
+
+    if( $is_optimal ) {
+        return (-1) * $h_k * $h_epsilon;
+    }
 
     my $r_acceptor_hydrogen_squared =
         distance_squared( $hydrogen_atom, $acceptor_atom );
