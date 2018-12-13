@@ -14,33 +14,35 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-#*rotag_split [options] file1 [file2, ...]
-#*    splits PDBx into smaller ones according to the specified attribute or
+#*rotag_split [options] <file>...
+#*    split PDBx into smaller ones according to the specified attribute or
 #*    attributes.
 #*
-#*USAGE:
+#*Usage:
 #*    rotag_split -b 'resid' -n 'output' input.cif
 #*    rotag_split -b 'resid,chain' input.cif
 #*
-#*OPTIONS:
-#*    -b, --by <str>
-#*        attribute or attributes that will split PDBx into multiple files.
-#*        Available attributes:
-#*            atomid    - atom id number    (_atom_site.id);
-#*            atomname  - atom name         (_atom_site.label_atom_id);
-#*            atomtype  - atom symbol       (_atom_site.type_symbol);
-#*            resid     - residue id number (_atom_site.label_seq_id);
-#*            resname   - residue name      (_atom_site.label_comp_id);
-#*            chain     - chain name        (_atom_site.label_asym_id);
-#*            alt       - disorder          (_atom_site.label_alt_id);
-#*            model     - entity id         (_atom_site.pdbx_PDB_model_num);
-#*            group     - selection group   (_atom_site.[local]_selection_group).
-#*    -n, --basename <str>
-#*        basename of the output file.
-#*    -e, --extension <str> (default: cif)
-#*        extension for the file if basename is present.
-#*    -v, --version
-#*        print version.
+#*Options:
+#*    -b, --by <attribute>        attribute or attributes that will split PDBx
+#*                                into multiple files.
+#*
+#*                                Available attributes:
+#*                                    atomid    - atom id number;
+#*                                    atomname  - atom name;
+#*                                    atomtype  - atom symbol;
+#*                                    resid     - residue id number;
+#*                                    resname   - residue name;
+#*                                    chain     - chain name;
+#*                                    alt       - disorder;
+#*                                    model     - entity id;
+#*                                    group     - selection group.
+#*
+#*    -n, --basename <basename>   basename of the output file.
+#*
+#*    -e, --extension <extension> extension for the file if basename is present
+#*                                (default: cif).
+#*
+#*    -v, --version               print version.
 
 # --------------------------------- Options ----------------------------------- #
 
