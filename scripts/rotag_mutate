@@ -9,9 +9,7 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
-use BondProperties qw( hybridization );
 use Constants qw( $PI );
-use ConnectAtoms qw( connect_atoms );
 use Moieties qw( replace_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
@@ -21,11 +19,11 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-#*rotag_mutate [options] file1 [file2, ...]
+#*rotag_mutate [options] --mutate <moiety> <file>...
 #*    replace side-chain with specified moiety. Groups are needed to be specified
 #*    with rotag_select.
 #*
-#*USAGE:
+#*Usage:
 #*    rotag_mutate -m 'ARG' input.cif > output.cif
 #*    rotag_mutate -m 'ALA; Lys' input.cif > output.cif
 #*    rotag_mutate -m 'ASP' -a 'chi1=120, chi2=60' input.cif > output.cif
@@ -33,20 +31,25 @@ our $VERSION = $VERSION;
 #*    rotag_mutate -m 'ALA; SER' -a '_; chi1=134.0' input.cif > output.cif
 #*    rotag_mutate -m 'SEC' -M moiety.cif input.cif > output.cif
 #*
-#*OPTIONS:
-#*    -m, --mutate <str>
-#*        replaces selected side-chain with specified moiety.
-#*    -M, --import-moiety
-#*        use defined PDBx file where moiety atom site details are described.
-#*    -a, --angles <str>
-#*        replaces selected side-chain by rotating selected moiety at certain
-#*        angle.
-#*    -r, --radians
-#*        radians are used in --angles argument.
-#*    -R, --repeat
-#*        repeats pattern of selected mutations.
-#*    -v, --version
-#*        print version.
+#*Options:
+#*    -m, --mutate <str>         replaces selected side-chain with specified
+#*                               moiety.
+#*
+#*                               E.g.: 'VAL', 'VAL; SER'.
+#*
+#*    -M, --import-moiety <file> use defined PDBx file where moiety atom site
+#*                               details are described.
+#*
+#*    -a, --angles <str>         replaces selected side-chain by rotating
+#*                               selected moiety at certain angle.
+#*
+#*                               E.g.: 'chi1=120, chi2=60' or 'chi1=60; chi1=70'.
+#*
+#*    -r, --radians              radians are used in --angles argument.
+#*
+#*    -R, --repeat               repeats pattern of selected mutations.
+#*
+#*    -v, --version              print version.
 
 # --------------------------------- Options ----------------------------------- #
 
