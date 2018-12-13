@@ -191,6 +191,19 @@ sub coulomb
         $General::PARTIAL_CHARGE{$atom_j->{'label_comp_id'}}
                                 {$atom_j->{'label_atom_id'}};
 
+    if( $is_optimal ) {
+        if( $partial_charge_i * $partial_charge_j > 0 ) {
+            return 0;
+        } else {
+            # TODO: check if this assumption is true: Lennard-Jones sigma is
+            # taken as distance, because Lennard-Jones potential goes faster
+            # to infinity than Coulomb.
+            $r_squared = $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
+                                                {$atom_j->{'type_symbol'}}
+                                                {'sigma'} ** 2;
+        }
+    }
+
     return $c_k * $partial_charge_i * $partial_charge_j / $r_squared;
 }
 
