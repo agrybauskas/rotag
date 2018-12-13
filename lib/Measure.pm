@@ -170,6 +170,8 @@ sub dihedral_angle
 # calculations.
 # Input:
 #     $atom_site - atom data structure.
+#     $options->{'calc_mainchain'} - additionally calculates phi and psi
+#     mainchain dihedral angles.
 # Output:
 #     $residue_angles - data structure that relates residue id and angle values.
 #     Ex.:
@@ -179,7 +181,10 @@ sub dihedral_angle
 
 sub all_dihedral
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $options ) = @_;
+    my ( $calc_mainchain ) = ( $options->{'calc_mainchain'} );
+
+    $calc_mainchain //= 0;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -207,9 +212,57 @@ sub all_dihedral
             }
         }
 
-        # Calculates every dihedral angle.
         my %angle_values;
 
+        # Calculates main-chain phi, psi angles.
+        if( $calc_mainchain ) {
+            my $n_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'N' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            my $ca_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'CA' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            my $c_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'C' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            # TODO: look if these filter slow down calculations drastically.
+            my $prev_c_atom_id =
+                filter( { 'atom_site' => $atom_site,
+                          'include' =>
+                              { 'id' => $residue_site->{$n_atom_id}{'connections'},
+                                'label_atom_id' => [ 'C' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            my $next_n_atom_id =
+                filter( { 'atom_site' => $atom_site,
+                          'include' =>
+                              { 'id' => $residue_site->{$c_atom_id}{'connections'},
+                                'label_atom_id' => [ 'N' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+
+            # # Calculates phi angle if 'C' atom of previous residue is present.
+            # if( defined $prev_c_atom_id ) {
+            #     $angle_values{'phi'}{'atom_ids'} =
+            #         [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
+            #     $angle_values{'phi'}{'value'} =
+            #         dihedral_angles( [ [ $atom_site->{$prev_c_atom_id} ] ] );
+            # }
+
+            # # Calculates psi angle.
+            # if( defined $next_n_atom_id ) {
+            #     # $angle_values{'phi'}{'atom_ids'} =
+            #     #     [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
+            # }
+        }
+
+        # Calculates every side-chain dihedral angle.
         for my $angle_name ( keys %uniq_rotatable_bonds ) {
             # First, checks if rotatable bond has fourth atom produce dihedral
             # angle. It is done by looking at atom connections - if rotatable
