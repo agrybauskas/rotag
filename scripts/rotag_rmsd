@@ -18,18 +18,18 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-#*rotag_rmsd [options] file1 [file2, ...]
-#*    calculates rmsd between two groups of atoms.
+#*rotag_rmsd [options] <file>...
+#*    calculate rmsd between two groups of atoms.
 #*
-#*USAGE:
+#*Usage:
 #*    rotag_rmsd input.cif > output.cif
 #*
-#*OPTIONS:
-#*    -s, --strict
-#*        uses atom names to validate the pairs of atoms. Otherwise, only
-#*        coordinates are used and correct pairing is up to the PDBx file.
-#*    -v, --version
-#*        print version.
+#*Options:
+#*    -s, --strict  uses atom names to validate the pairs of atoms. Otherwise,
+#*                  only coordinates are used and correct pairing is up to the
+#*                  PDBx file.
+#*
+#*    -v, --version print version.
 
 # --------------------------------- Options ----------------------------------- #
 
