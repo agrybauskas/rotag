@@ -14,7 +14,6 @@ use Constants qw( $PI
                   $SIG_FIGS_MAX );
 use ConnectAtoms qw( connect_atoms );
 use Combinatorics qw( permutation );
-use ErrorHandling qw( parse_warnings );
 use ForceField::General;
 use Measure qw( rmsd );
 use PDBxParser qw( filter
@@ -28,33 +27,37 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-#*estimate-parameters [options] file1 [file2, ...]
+#*estimate-parameters [options] <file>...
 #*    estimate the parameters of the composite force field potential function.
 #*
-#*USAGE:
+#*Usage:
 #*    estimate-parameters input.cif > output.csv
 #*
-#*OPTIONS:
-#*    -a, --angle-step <float> (default: 0.1)
-#*        angle that each dihedral angle is turned by;
-#*    -p, --parameter-range <string>
-#*            (default:'lj_k=1.0:0:1.0, c_k=1.0:0:1.0, h_k=1.0:0:1.0
-#*                      cutoff_atom=0.4:0:0.4, cutoff_residue=1.0:0:1.0,
-#*                      cutoff_start=2.5:0:2.5, cutoff_end=5.0:0:5.0')
-#*        specify parameter search range and step by using
-#*        <float>:<float>:<float> format.
-#*        Example: 'lj_k=0.05:0.01:0.10,c_k=0:1.0:100.0'
-#*    -t, --top-rank <int>
-#*        top rotamers according to the value of energies.
-#*    -T, --top-ratio <float>
-#*        top rotamers according to the value of energies.
-#*    -H, --explicit-hydrogens
-#*        adds explicit hydrogens for calculating full atom energies. Otherwise,
-#*        implicit hydrogen model is used.
-#*    -n, --threads
-#*        number of threads.
-#*    -v, --version
-#*        print version.
+#*Options:
+#*    -a, --angle-step <float>    angle that each dihedral angle is turned by
+#*                                (default: 0.1).
+#*
+#*    -p, --parameter-range <str> specify parameter search range and step by
+#*                                using <float>:<float>:<float> format
+#*                                (default:'lj_k=1.0:0:1.0, c_k=1.0:0:1.0,
+#*                                 h_k=1.0:0:1.0, cutoff_atom=0.4:0:0.4,
+#*                                 cutoff_residue=1.0:0:1.0,
+#*                                 cutoff_start=2.5:0:2.5, cutoff_end=5.0:0:5.0').
+#*
+#*                                E.g.: 'lj_k=0.05:0.01:0.10,c_k=0:1.0:100.0'
+#*
+#*    -t, --top-rank <int>        top rotamers according to the value of energies.
+#*                                (default: 1)
+#*
+#*    -T, --top-ratio <float>     top rotamers according to the value of energies.
+#*
+#*    -H, --explicit-hydrogens    adds explicit hydrogens for calculating full
+#*                                atom energies. Otherwise, implicit hydrogen
+#*                                model is used.
+#*
+#*    -n, --threads <int>         number of threads.
+#*
+#*    -v, --version               print version.
 
 my $small_angle = 0.1;
 my $top_rank = 1;

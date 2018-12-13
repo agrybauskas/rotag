@@ -20,15 +20,14 @@ $Data::Dumper::Bless = 1;
 
 our $VERSION = $VERSION;
 
-#*generate-force-field [options] file1 [file2, ...]
-#*    generates force-field module using cif file.
+#*generate-force-field [options] <file>...
+#*    generate force-field module using cif file.
 #*
-#*USAGE:
+#*Usage:
 #*    generate-force-field input.cif > output.csv
 #*
-#*OPTIONS:
-#*    -v, --version
-#*        print version.
+#*Options:
+#*    -v, --version print version.
 
 GetOptions(
     'help|h' => sub {

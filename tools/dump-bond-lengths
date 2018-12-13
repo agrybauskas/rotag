@@ -14,15 +14,14 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-#*calculate-bond-lengths [options] file1 [file2, ...]
-#*    calculates bond lengths from cif files.
+#*calculate-bond-lengths [options] <file>...
+#*    calculate bond lengths from cif files.
 #*
-#*USAGE:
-#*    calculate-bond-lengths input.cif > output.csv
+#*Usage:
+#*    dump-bond-lengths input.cif > output.csv
 #*
-#*OPTIONS:
-#*    -v, --version
-#*        print version.
+#*Options:
+#*    -v, --version print version.
 
 GetOptions(
     'help|h' => sub {
