@@ -137,9 +137,9 @@ sub lennard_jones
     $lj_k //= $General::LJ_K;
 
     if( $is_optimal ) {
-        return $lj_k * $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
-                                              {$atom_j->{'type_symbol'}}
-                                              {'epsilon'};
+        return (-1) * $lj_k * $General::LENNARD_JONES{$atom_i->{'type_symbol'}}
+                                                     {$atom_j->{'type_symbol'}}
+                                                     {'epsilon'};
     }
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
