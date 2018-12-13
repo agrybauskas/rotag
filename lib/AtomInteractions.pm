@@ -327,6 +327,10 @@ sub h_bond_implicit
     my $h_epsilon =
         $General::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'epsilon'};
 
+    if( $is_optimal ) {
+        return $h_k * $h_epsilon;
+    }
+
     my $covalent_radius_idx;
     my @hybridizations = qw( sp3 sp2 sp );
     for( my $i = 0; $i <= $#hybridizations; $i++ ) {
@@ -390,11 +394,7 @@ sub h_bond_explicit
 {
     my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
 
-    my ( $h_k, $is_optimal ) = (
-        $parameters->{'h_k'},
-        $parameters->{'is_optimal'},
-    );
-
+    my ( $h_k ) = ( $parameters->{'h_k'}, );
     $h_k //= $General::H_K;
 
     my $r_sigma =
