@@ -410,7 +410,7 @@ sub generate_library
                                     'label_asym_id' => [ $residue_chain ] } } );
                 my $residue_unique_key =
                     determine_residue_keys( $residue_site,
-                                            {'exclude_dot' => 1} )->[0];
+                                            { 'exclude_dot' => 1 } )->[0];
 
                 # Because the change of side-chain position might impact the
                 # surrounding, iteraction site consists of only main chain atoms.

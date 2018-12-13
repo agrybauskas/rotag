@@ -164,7 +164,7 @@ exp
     | exp 'rand' NUM
         {
             srand( $_[0]->{USER}{SEED} );
-            my @ids = @{ $_[1] };
+            my @ids = sort { $a <=> $b } @{ $_[1] };
             my @rand_ids;
             if( scalar( @ids ) < $_[3] ) {
                 die( "List of $#ids atoms is smaller than the request of " .
