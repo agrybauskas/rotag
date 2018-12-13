@@ -114,7 +114,6 @@ for my $pdbx_file ( @ARGV ) {
 
     # Parses command line arguments to select certain atoms in PDBx.
     my $selection_parser = SelectionParser->new();
-    my @target_cmds = split /;/smx, $target_cmd;
 
     # Replaces 'target' keyword with previously selected target ids.
     if( $target_cmd =~ m/target/ ) {
@@ -138,6 +137,8 @@ for my $pdbx_file ( @ARGV ) {
                                          "selected.\n" } );
         }
     }
+
+    my @target_cmds = split /;/smx, $target_cmd;
 
     # By default, target atoms are used for surrounding atom selection.
     $select_cmd //= $target_cmd;
