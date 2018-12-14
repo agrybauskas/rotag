@@ -289,9 +289,6 @@ sub generate_rotamer
 #     $args->{parameters} - parameters that are passed to interaction function;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
-#     $args->{energy_cutoff_residue} - maximum amount of energy (the sum of
-#     energies of all atoms) that is allowed for residue to have in the rotamer
-#     according to potential function;
 #     $args->{threads} - number of threads.
 # Output:
 #     %library_atom_site - atom site data structure with additional data.
@@ -308,12 +305,10 @@ sub generate_library
     my $interactions = $args->{'interactions'};
     my $parameters = $args->{'parameters'};
     my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
-    my $energy_cutoff_residue = $args->{'energy_cutoff_residue'};
     my $is_hydrogen_explicit = $args->{'is_hydrogen_explicit'};
     my $threads = $args->{'threads'};
 
     $conf_model //= 'rotation_only';
-    $energy_cutoff_residue //= 'Inf';
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' =>
                                     \@General::INTERACTION_ATOM_NAMES };
@@ -469,8 +464,7 @@ sub generate_library
                               ( "chi$angle_id" => $allowed_angles->[$i][$_])}
                             ( 0..$#{ $allowed_angles->[$i] } );
                     my $rotamer_energy_sum = $energy_sums->[$i];
-                    if( defined $rotamer_energy_sum &&
-                        $rotamer_energy_sum <= $energy_cutoff_residue ) {
+                    if( defined $rotamer_energy_sum ) {
                         push @{ $rotamer_library{"$residue_unique_key"} },
                             { 'angles' => \%angles,
                               'potential' => $interactions,

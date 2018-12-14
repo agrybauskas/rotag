@@ -6,13 +6,12 @@ pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/aspartic-acid-rotation-only
 conf_model="rotation_only"
 potential="composite"
 energy_cutoff_atom=2.0
-energy_cutoff_residue="Inf"
 residue_id="219"
 residue_chain="A"
 residue_entity="1"
 residue_alt="."
 small_angle="0.25*pi"
-parameters='lj_k=1.0,c_k=1.0,h_k=1.0,cutoff_atom=0.5,cutoff_residue=1.0,cutoff_start=2.5,cutoff_end=5.0'
+parameters='lj_k=1.0,c_k=1.0,h_k=1.0,cutoff_atom=0.5,cutoff_start=2.5,cutoff_end=5.0'
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
                                             ${residue_chain} \
@@ -22,6 +21,5 @@ $(dirname "$0")/../scripts/generate_library ${residue_id} \
 	                                        ${small_angle} \
 	                                        ${potential} \
 					                        ${energy_cutoff_atom} \
-					                        ${energy_cutoff_residue} \
 					                        ${pdbx_dump_file} \
                                             ${parameters}

@@ -6,7 +6,6 @@ pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.du
 potential="hard_sphere"
 interaction_specifier="label_atom_id N,C,CA,O"
 energy_cutoff_atom=0
-energy_cutoff_residue="Inf"
 residue_id="18"
 residue_chain="A"
 pdbx_model_num="1"
@@ -23,6 +22,5 @@ $(dirname "$0")/../scripts/calc_full_atom_energy \
 	           ${potential} \
                "${interaction_specifier}" \
 	           ${energy_cutoff_atom} \
-               ${energy_cutoff_residue} \
                ${checkable_angles} \
 	           ${pdbx_dump_file}

@@ -18,7 +18,6 @@ my ( $residue_id,
      $potential,
      $interaction_specifier,
      $energy_cutoff_atom,
-     $energy_cutoff_residue,
      $checkable_angles,
      $pdbx_dump_file ) = @ARGV;
 

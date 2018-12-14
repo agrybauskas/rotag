@@ -41,7 +41,6 @@ our $VERSION = $VERSION;
 #*                                using <float>:<float>:<float> format
 #*                                (default:'lj_k=1.0:0:1.0, c_k=1.0:0:1.0,
 #*                                 h_k=1.0:0:1.0, cutoff_atom=0.4:0:0.4,
-#*                                 cutoff_residue=1.0:0:1.0,
 #*                                 cutoff_start=2.5:0:2.5, cutoff_end=5.0:0:5.0').
 #*
 #*                                E.g.: 'lj_k=0.05:0.01:0.10,c_k=0:1.0:100.0'
@@ -64,8 +63,8 @@ my $top_rank = 1;
 my $top_ratio;
 my $default_parameter_ranges =
     'lj_k=1.0:0:1.0, c_k=1.0:0:1.0 ' .
-    'cutoff_atom=0.4:0:0.4, cutoff_residue=1.0:0:1.0, ' .
-    'cutoff_start=2.5:0:2.5, cutoff_end=5.0:0:5.0';
+    'cutoff_atom=0.4:0:0.4, cutoff_start=2.5:0:2.5, '.
+    'cutoff_end=5.0:0:5.0';
 my $append_parameter_ranges;
 my $parameter_ranges;
 my $parameters;
@@ -149,7 +148,7 @@ for my $pdbx_file ( @ARGV ) {
     $pdbx_loops{'_[local]_parameter_estimation'}{'attributes'} =
         [ 'id', 'label_seq_id', 'label_asym_id', 'label_entity_id',
           'label_alt_id', 'lj_k', 'c_k', 'h_k', 'cutoff_atom',
-          'cutoff_residue', 'cutoff_start', 'cutoff_end', 'value' ];
+          'cutoff_start', 'cutoff_end', 'value' ];
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
@@ -203,8 +202,6 @@ for my $pdbx_file ( @ARGV ) {
                       'parameters' => \%current_parameters,
                       'energy_cutoff_atom' =>
                           $current_parameters{'cutoff_atom'},
-                      'energy_cutoff_residue' =>
-                          $current_parameters{'cutoff_residue'},
                       'is_hydrogen_explicit' => $is_hydrogen_explicit,
                       'threads' => $threads,
                     } );
@@ -276,7 +273,6 @@ for my $pdbx_file ( @ARGV ) {
                          $current_parameters{'c_k'},
                          $current_parameters{'h_k'},
                          $current_parameters{'cutoff_atom'},
-                         $current_parameters{'cutoff_residue'},
                          $current_parameters{'cutoff_start'},
                          $current_parameters{'cutoff_end'},
                          sprintf( $SIG_FIGS_MAX,
@@ -292,7 +288,6 @@ for my $pdbx_file ( @ARGV ) {
             $current_parameters{'c_k'},
             $current_parameters{'h_k'},
             $current_parameters{'cutoff_atom'},
-            $current_parameters{'cutoff_residue'},
             $current_parameters{'cutoff_start'},
             $current_parameters{'cutoff_end'},
             'NA';

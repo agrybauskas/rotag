@@ -6,7 +6,6 @@ pdbx_dump_file=$(dirname "$0")/../inputs/synthetic/xaa-rotation-only-002.dump
 potential="hard_sphere"
 interaction_specifier="label_atom_id N,C,CA,O"
 energy_cutoff_atom=0
-energy_cutoff_residue="Inf"
 residue_id="18"
 residue_chain="A"
 pdbx_model_num="1"
@@ -22,5 +21,4 @@ $(dirname "$0")/../scripts/calc_favourable_angles \
 	           ${potential} \
                "${interaction_specifier}" \
 	           ${energy_cutoff_atom} \
-               ${energy_cutoff_residue} \
 	           ${pdbx_dump_file}

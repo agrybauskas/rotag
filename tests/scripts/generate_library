@@ -17,7 +17,6 @@ my ( $residue_id,
      $small_angle,
      $potential,
      $energy_cutoff_atom,
-     $energy_cutoff_residue,
      $pdbx_dump_file,
      $parameters,
      $threads ) = @ARGV;
@@ -51,7 +50,6 @@ my $rotamer_library =
                         "conf_model" => $conf_model,
                         "interactions"  => $potential,
                         "energy_cutoff_atom" => $energy_cutoff_atom,
-                        "energy_cutoff_residue" => $energy_cutoff_residue,
                         "parameters" => $parameters,
                         "threads" => $threads } );
 

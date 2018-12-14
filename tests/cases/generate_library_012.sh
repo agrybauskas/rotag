@@ -6,7 +6,6 @@ pdbx_dump_file=$(dirname "$0")/../inputs/synthetic/xaa-rotation-only-002.dump
 conf_model="rotation_only"
 potential="soft_sphere"
 energy_cutoff_atom=0
-energy_cutoff_residue=0
 residue_id="18"
 residue_chain="A"
 residue_entity="1"
@@ -21,5 +20,4 @@ $(dirname "$0")/../scripts/generate_library ${residue_id} \
      	                                    ${small_angle} \
 	                                        ${potential} \
 					                        ${energy_cutoff_atom} \
-					                        ${energy_cutoff_residue} \
 					                        ${pdbx_dump_file}
