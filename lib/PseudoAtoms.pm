@@ -309,6 +309,7 @@ sub generate_library
     my $threads = $args->{'threads'};
 
     $conf_model //= 'rotation_only';
+    $energy_cutoff_atom //= $General::CUTOFF_ATOM;
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' =>
                                     \@General::INTERACTION_ATOM_NAMES };

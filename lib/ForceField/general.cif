@@ -2,9 +2,10 @@ data_general
 #
 _[local]_force_field.soft_epsilon 1.0
 _[local]_force_field.soft_n       12.0
-_[local]_force_field.lj_k   1.0
-_[local]_force_field.c_k    1.0
-_[local]_force_field.h_k    1.0
+_[local]_force_field.lj_k         1.0
+_[local]_force_field.c_k          1.0
+_[local]_force_field.h_k          1.0
+_[local]_force_field.cutoff_atoms 0.4
 _[local]_force_field.cutoff_start 2.5
 _[local]_force_field.cutoff_end   5.0
 #

@@ -73,6 +73,7 @@ for my $cif_file ( @ARGV ) {
                                        '_force_field.lj_k',
                                        '_force_field.c_k',
                                        '_force_field.h_k',
+                                       '_force_field.cutoff_atom',
                                        '_force_field.cutoff_start',
                                        '_force_field.cutoff_end' ] );
 
@@ -81,6 +82,7 @@ for my $cif_file ( @ARGV ) {
     my $LJ_K = $force_field_constants->{'_force_field'}{'lj_k'};
     my $C_K = $force_field_constants->{'_force_field'}{'c_k'};
     my $H_K = $force_field_constants->{'_force_field'}{'h_k'};
+    my $CUTOFF_ATOM = $force_field_constants->{'_force_field'}{'cutoff_atom'};
     my $CUTOFF_START = $force_field_constants->{'_force_field'}{'cutoff_start'};
     my $CUTOFF_END = $force_field_constants->{'_force_field'}{'cutoff_end'};
 
@@ -233,7 +235,7 @@ for my $cif_file ( @ARGV ) {
     }
 
     print Data::Dumper->Dump( [ $SOFT_EPSILON, $SOFT_N, $LJ_K, $C_K, $H_K,
-                                $CUTOFF_START, $CUTOFF_END, $ATOMS,
+                                $CUTOFF_ATOM, $CUTOFF_START, $CUTOFF_END, $ATOMS,
                                 $LENNARD_JONES, $PARTIAL_CHARGE,
                                 $HYDROGEN_BOND, $RESIDUE_ATOMS,
                                 $CLEAR_HYBRIDIZATION, $CONNECTIVITY,
@@ -241,7 +243,7 @@ for my $cif_file ( @ARGV ) {
                                 $MAINCHAIN_ATOM_NAMES, $SIDECHAIN_ATOM_NAMES,
                                 $ROTATABLE_RESIDUE_NAMES ],
                               [ qw( *SOFT_EPSILON *SOFT_N *LJ_K *C_K *H_K
-                                    *CUTOFF_START *CUTOFF_END *ATOMS
+                                    *CUTOFF_ATOM *CUTOFF_START *CUTOFF_END *ATOMS
                                     *LENNARD_JONES *PARTIAL_CHARGE
                                     *HYDROGEN_BOND *RESIDUE_ATOMS
                                     *CLEAR_HYBRIDIZATION *CONNECTIVITY
