@@ -85,7 +85,7 @@ my $conf_model = 'rotation_only';
 my $interactions = 'composite';
 my $small_angle_ratio = 0.1;
 my $small_angle_step;
-my $energy_cutoff_atom = 0.4;
+my $energy_cutoff_atom;
 my $is_hydrogen_explicit = 0;
 my $threads = 1;
 my $top_rank;
