@@ -40,6 +40,7 @@ our $VERSION = $VERSION;
 #*                              model     - pdbx model num;
 #*                              mainchain - mainchain atoms;
 #*                              sidechain - sidechain atoms;
+#*                              hetatoms  - heteroatoms;
 #*                              target    - target atoms (--select uses
 #*                                          --target atoms and --target uses
 #*                                          target atoms described in a file).

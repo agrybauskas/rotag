@@ -13,7 +13,7 @@
 %left ','
 %left '-'
 %left 'around' 'rand'
-%right 'byres' 'mainchain' 'sidechain'
+%right 'byres'
 %left '!'
 %left '||' '&&'
 
@@ -38,21 +38,28 @@ exp
                     { 'group_id' => $_[0]->{USER}{GROUP_ID},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
-    | 'mainchain' exp
+    | 'mainchain'
         {
             filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[2],
-                                     'label_atom_id' =>
-                                         \@General::MAINCHAIN_ATOM_NAMES },
+                    { 'include' => { 'label_atom_id' =>
+                                         \@General::MAINCHAIN_ATOM_NAMES,
+                                     'group_PDB' => [ 'ATOM' ] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
-    | 'sidechain' exp
+    | 'sidechain'
         {
             filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[2],
-                                     'label_atom_id' =>
-                                         \@General::SIDECHAIN_ATOM_NAMES },
+                    { 'include' => { 'label_atom_id' =>
+                                         \@General::SIDECHAIN_ATOM_NAMES,
+                                     'group_PDB' => [ 'ATOM' ] },
+                      'group_id' => $_[0]->{USER}{GROUP_ID},
+                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+        }
+    | 'hetatoms'
+        {
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { 'group_PDB' => [ 'HETATM' ] },
                       'group_id' => $_[0]->{USER}{GROUP_ID},
                       'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
@@ -278,6 +285,8 @@ sub lexer
             return ( 'mainchain', $1 );
         } elsif(s/^(sidechain)//) {
             return ( 'sidechain', $1 );
+        } elsif(s/^(hetatoms)//) {
+            return ( 'hetatoms', $1 );
         } elsif(s/^(byres)//) {
             return ( 'byres', $1 );
         } elsif(s/^(resname)//) {
