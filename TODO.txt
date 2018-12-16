@@ -62,3 +62,4 @@
    because Jmol has a bug of viewing atoms with alternative ids.
 -- Maybe should add capability to select residues according to their main-chain
    and side-chain dihedral angles.
+-- around_distance() and grid_box() functions should isolated different alt-ids.
