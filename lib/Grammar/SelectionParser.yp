@@ -58,33 +58,30 @@ exp
         }
     | 'byres' exp
         {
-            my @residue_ids =
-                uniq(
-                  @{ filter( $_[0]->{USER}{ATOM_SITE},
-                             { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE}=>$_[2]},
-                               'return_data' => 'label_seq_id' } ) } );
-            my @chains = # TODO: look, if states might make problems.
-                uniq(
-                  @{ filter( $_[0]->{USER}{ATOM_SITE},
-                             { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE}=>$_[2]},
-                               'return_data' => 'label_asym_id' } ) } );
-            my @pdbx_model_num =
-                uniq(
-                  @{ filter( $_[0]->{USER}{ATOM_SITE},
-                             { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE}=>$_[2]},
-                               'return_data' => 'pdbx_PDB_model_num' } ) } );
-            my @alt =
-                uniq(
-                  @{ filter( $_[0]->{USER}{ATOM_SITE},
-                             { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE}=>$_[2]},
-                               'return_data' => 'label_alt_id' } ) } );
-            return filter( $_[0]->{USER}{ATOM_SITE},
-                           { 'include' => { 'label_seq_id' => \@residue_ids,
-                                            'label_asym_id' => \@chains,
-                                            'label_alt_id' => [ @alt, '.' ],
-                                            'pdbx_PDB_model_num' => \@pdbx_model_num },
-                             'group_id' => $_[0]->{USER}{GROUP_ID},
-                             'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            my @residue_atom_ids = ();
+            for my $atom_id ( @{ $_[2] } ) {
+                push @residue_atom_ids,
+                    @{ filter( $_[0]->{USER}{ATOM_SITE},
+                            { 'include' => { 'label_seq_id'  =>
+                                                 [ $_[0]->{USER}{ATOM_SITE}
+                                                          {'_atoms'}{$atom_id}
+                                                          {'label_seq_id'} ],
+                                             'label_asym_id' =>
+                                                 [ $_[0]->{USER}{ATOM_SITE}
+                                                          {'_atoms'}{$atom_id}
+                                                          {'label_asym_id'} ],
+                                             'label_alt_id'  =>
+                                                 [ $_[0]->{USER}{ATOM_SITE}
+                                                          {'_atoms'}{$atom_id}
+                                                          {'label_alt_id'}, '.' ],
+                                             'pdbx_PDB_model_num' =>
+                                                 [ $_[0]->{USER}{ATOM_SITE}
+                                                          {'_atoms'}{$atom_id}
+                                                          {'pdbx_PDB_model_num'} ] },
+                              'group_id' => $_[0]->{USER}{GROUP_ID},
+                              'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } ) };
+            }
+            return [ uniq @residue_atom_ids ];
         }
     | exp '&&' exp
         {
