@@ -78,6 +78,8 @@ our $VERSION = $VERSION;
 #     atoms;
 #     $args->{alt_group_id} - alternative group id that is used to distinguish
 #     pseudo atoms. Very useful when generating rotamers.
+#     $args->{selection_state} - adds/changes '[local]_selection_state' to
+#     specified value.
 # Output:
 #     $pseudo_atom_site - atom site data structure for pseudo-atoms with
 #     additional 'conformation' attribute.
@@ -87,10 +89,10 @@ sub generate_pseudo
 {
     my ( $args ) = @_;
     my ( $atom_site, $atom_specifier, $angle_values, $last_atom_id,
-         $alt_group_id ) =
+         $alt_group_id, $selection_state ) =
         ( $args->{'atom_site'}, $args->{'atom_specifier'},
           $args->{'angle_values'}, $args->{'last_atom_id'},
-          $args->{'alt_group_id'}, );
+          $args->{'alt_group_id'}, $args->{'selection_state'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -177,6 +179,11 @@ sub generate_pseudo
                   @angle_names };
             # Adds additional pseudo-atom flag for future filtering.
             $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
+            # Adds selection state if it is defined.
+            if( defined $selection_state ) {
+                $pseudo_atom_site{$last_atom_id}{'[local]_selection_state'} =
+                    $selection_state;
+            }
         }
     }
 
@@ -938,7 +945,7 @@ sub add_hydrogens
          $use_existing_hybridizations, $reference_atom_site,
          $exclude_by_atom_name, $exclude_by_atom_ids,
          $last_atom_id, $alt_group_id,
-         $use_origins_alt_group_id ) =
+         $use_origins_alt_group_id, $selection_state ) =
         ( $options->{'add_only_clear_positions'},
           $options->{'use_existing_connections'},
           $options->{'use_existing_hybridizations'},
@@ -947,7 +954,8 @@ sub add_hydrogens
           $options->{'exclude_by_atom_ids'},
           $options->{'last_atom_id'},
           $options->{'alt_group_id'},
-          $options->{'use_origins_alt_group_id'}, );
+          $options->{'use_origins_alt_group_id'},
+          $options->{'selection_state'}, );
 
     $add_only_clear_positions //= 0;
     $use_existing_connections //= 0;
@@ -1080,6 +1088,11 @@ sub add_hydrogens
             $hydrogen_site{$last_atom_id}{'connections'} = [ $atom_id ];
             # By default, hydrogen atoms are sp3 hybridized.
             $hydrogen_site{$last_atom_id}{'hybridization'} = 'sp3';
+            # Adds selection state if it is defined.
+            if( defined $selection_state ) {
+                $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
+                    $selection_state;
+            }
             }
         }
     }

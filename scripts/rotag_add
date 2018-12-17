@@ -157,7 +157,8 @@ for my $pdbx_file ( @ARGV ) {
                                'last_atom_id' => $last_atom_id,
                                 # TODO: check if it is a good idea to have
                                 # $rotamer_id as 'label_alt_id'.
-                               'alt_group_id' => $rotamer_id } ) } );
+                               'alt_group_id' => $rotamer_id,
+                               'selection_state' => 'T' } ) } );
                 $last_atom_id++;
             }
 
@@ -202,7 +203,8 @@ for my $pdbx_file ( @ARGV ) {
                                  'use_origins_alt_group_id' => 1,
                                  'use_existing_connections' => 1,
                                  'use_existing_hybridizations' => 1,
-                                 'exclude_by_atom_ids' => \@visited_atom_ids } );
+                                 'exclude_by_atom_ids' => \@visited_atom_ids,
+                                 'selection_state' => 'T' } );
             %atom_site = ( %atom_site, %{ $hydrogen_site } );
 
             push @visited_atom_ids, keys %{ $current_atom_site };
