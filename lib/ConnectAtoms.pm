@@ -20,9 +20,11 @@ use List::Util qw( any );
 
 use BondProperties qw( %COVALENT_BOND_COMB );
 use Combinatorics qw( permutation );
+use ForceField::General;
 use Grid qw( identify_neighbour_cells
              grid_box );
-use PDBxParser qw( filter );
+use PDBxParser qw( filter
+                   unique_residue_key );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -33,13 +35,18 @@ our $VERSION = $VERSION;
 # Checks if atoms are connected.
 # Input:
 #     ${target,neighbour}_atom - atom data structure (see PDBxParser.pm).
+#     $options->{'only_covalent_radii'} - if on, connection is determined only
+#     with covalent radii and ForceField::CONNECTIVITY is ignored.
 # Output:
 #     $is_connected - boolean: 0 (for not connected) or 1 (for connected).
 #
 
 sub is_connected
 {
-    my ( $target_atom, $neighbour_atom ) = @_;
+    my ( $target_atom, $neighbour_atom, $options ) = @_;
+
+    my ( $only_covalent_radii ) = ( $options->{'only_covalent_radii'}, );
+    $only_covalent_radii //= 0;
 
     # Generates all possible combinations of covalent distances.
     my $bond_length_comb =
@@ -51,6 +58,16 @@ sub is_connected
         $COVALENT_BOND_COMB{$target_atom->{'type_symbol'}}
                            {$neighbour_atom->{'type_symbol'}}
                            {'error'};
+
+    my $target_residue_name = $target_atom->{'label_comp_id'};
+    my $target_atom_name = $target_atom->{'label_atom_id'};
+    my $neighbour_atom_name = $neighbour_atom->{'label_atom_id'};
+
+    # Determines their residue unique keys.
+    # TODO: should be cautious about alt ids that can divide sidechain in two
+    # parts.
+    my $target_residue_key = unique_residue_key( $target_atom );
+    my $neighbour_residue_key = unique_residue_key( $neighbour_atom );
 
     # Precalculates squared distance between atom pairs.
     my $distance_squared = distance_squared( $target_atom, $neighbour_atom );
@@ -69,7 +86,16 @@ sub is_connected
             ( $distance_squared <= ( $bond_length + $length_error ) ** 2 ) ) {
             $is_connected = 1;
             last;
-        } else {
+        } elsif( ( ! $only_covalent_radii ) &&
+                 ( $target_residue_key eq $neighbour_residue_key ) &&
+                 ( exists $General::CONNECTIVITY{$target_residue_name}
+                                                {$target_atom_name} &&
+                   any { $neighbour_atom_name eq $_  }
+                      @{ $General::CONNECTIVITY{$target_residue_name}
+                                               {$target_atom_name} } ) ) {
+            $is_connected = 1;
+        }
+        else {
             $is_connected = 0;
         }
     }
