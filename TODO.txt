@@ -63,6 +63,5 @@
 -- Maybe should add capability to select residues according to their main-chain
    and side-chain dihedral angles.
 -- around_distance() and grid_box() functions should isolated different alt-ids.
--- Hydrogens should be first added and then removed in rotag_library().
 -- Figure out how heteroatoms should be treated when the part of them are
    selected and included in iteraction sites.
