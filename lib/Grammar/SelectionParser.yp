@@ -12,7 +12,7 @@
 
 %left ','
 %left '-'
-%left 'around' 'rand'
+%left 'around' 'rand' 'group'
 %right 'byres'
 %left '!'
 %left '||' '&&'
@@ -181,6 +181,20 @@ exp
             }
             return \@rand_ids;
         }
+    | exp 'group' NUM
+        {
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
+                      'group_id' => $_[3],
+                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+        }
+    | exp 'group' STR
+        {
+            filter( $_[0]->{USER}{ATOM_SITE},
+                    { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
+                      'group_id' => $_[3],
+                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+        }
     | 'chain' str_ope
         {
             filter( $_[0]->{USER}{ATOM_SITE},
@@ -305,6 +319,8 @@ sub lexer
             return ( 'around', $1 );
         } elsif(s/^(rand)//) {
             return ( 'rand', $1 );
+        } elsif(s/^(group)//) {
+            return ( 'group', $1 );
         } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
         } elsif( s/^(\w+)// ) {

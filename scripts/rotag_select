@@ -48,7 +48,8 @@ our $VERSION = $VERSION;
 #*                          Selection operators:
 #*                              around - atoms around <int> angstroms;
 #*                              byres  - expands to residues;
-#*                              rand   - selects <int> number of atoms randomly.
+#*                              rand   - selects <int> number of atoms randomly;
+#*                              group  - assigns <int> or <str> as group id.
 #*
 #*                          List operators:
 #*                              - - range of integers (e.g. 2-5 is 2,3,4,5);
