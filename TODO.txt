@@ -65,3 +65,4 @@
 -- around_distance() and grid_box() functions should isolated different alt-ids.
 -- Figure out how heteroatoms should be treated when the part of them are
    selected and included in iteraction sites.
+-- Add group assignment keyword to the grammar.
