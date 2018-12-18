@@ -17,6 +17,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_pdbx_line
                      obtain_pdbx_loop
                      split_by
+                     split_pdbx_file
                      to_pdbx
                      unique_residue_key );
 
@@ -28,6 +29,32 @@ use Version qw( $VERSION );
 our $VERSION = $VERSION;
 
 # --------------------------------- PDBx parser ------------------------------- #
+
+#
+# Searches for '^data_' pattern in the pdbx file and splits it.
+# Input:
+#     $pdbx_file - PDBx file path;
+# Output:
+#     @pdbx_files - array of pdbx file content.
+#
+
+sub split_pdbx_file
+{
+    my ( $pdbx_file ) = @_;
+
+    my @pdbx_file_data;
+
+    local @ARGV = ( $pdbx_file );
+    while( <> ) {
+        if( /^data_/x ) {
+            push @pdbx_file_data, $_;
+        } else {
+            $pdbx_file_data[-1] .= $_;
+        }
+    }
+
+    return \@pdbx_file_data;
+}
 
 #
 # Obtains pdbx lines for a specified items.
