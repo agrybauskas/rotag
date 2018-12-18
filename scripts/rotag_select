@@ -22,6 +22,7 @@ our $VERSION = $VERSION;
 #*
 #*Usage:
 #*    rotag_select -t 'resname ASP' -s 'resid 1-10' input.cif > output.cif
+#*    rotag_select -t 'model 5' -t 'model 10' input1.cif input2.cif > output.cif
 #*
 #*Options:
 #*    -t, --target <str>    command describing the residues that will be marked
@@ -74,14 +75,14 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Options ----------------------------------- #
 
-my $target_cmd;
-my $select_cmd;
+my $target_cmds;
+my $select_cmds;
 my $keep_ignored = 0;
 my $random_seed = 23;
 
 GetOptions(
-    'target|t=s' => \$target_cmd,
-    'select|s=s' => \$select_cmd,
+    'target|t=s@' => \$target_cmds,
+    'select|s=s@' => \$select_cmds,
     'keep-ignored|k' => sub { $keep_ignored = 1 },
     'random-seed|x=s' => \$random_seed,
     'help|h' => sub {
@@ -98,13 +99,12 @@ GetOptions(
     'version|v' => sub { print $VERSION, "\n"; exit; }
 ) or die 'Error in command line argument.';
 
-$target_cmd //= 'all';
-
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-for my $pdbx_file ( @ARGV ) {
+for( my $i = 0; $i <= $#ARGV; $i++ ) {
+    my $pdbx_file = $ARGV[$i];
     # Reads file path, stdin and '-' operator.
     my $atom_site;
     if( $pdbx_file ) {
@@ -112,6 +112,18 @@ for my $pdbx_file ( @ARGV ) {
         $atom_site->open( $pdbx_file );
     } else {
         die "Use command \"rotag_select --help\" in order to see the manual.\n";
+    }
+
+    # Assigns correct target and select command line arguments for current file.
+    my $target_cmd;
+    if( defined $target_cmds && $i <= scalar @{ $target_cmds } ) {
+        $target_cmd = $target_cmds->[$i];
+    }
+    $target_cmd //= 'all';
+
+    my $select_cmd;
+    if( defined $select_cmds && $i <= scalar @{ $select_cmds } ) {
+        $select_cmd = $select_cmds->[$i];
     }
 
     # Parses command line arguments to select certain atoms in PDBx.
