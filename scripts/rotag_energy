@@ -176,12 +176,12 @@ for my $pdbx_file ( @ARGV ) {
               'value' ];
     } elsif( $do_rotamer ) {
         $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
-            [ 'id', 'label_seq_id', 'label_asym_id', 'label_entity_id',
+            [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
     } else {
         $pdbx_loops{'_[local]_energy'}{'attributes'} =
             [ 'id', 'atom_id', 'type_symbol', 'label_atom_id', 'label_seq_id',
-              'label_comp_id', 'label_asym_id', 'label_entity_id',
+              'label_comp_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
     }
 
@@ -244,7 +244,7 @@ for my $pdbx_file ( @ARGV ) {
                      $atom_chain, $atom_entity, $atom_alt ) =
                          map { $current_atom_site->{$atom_id}{$_} }
                              qw( type_symbol label_atom_id label_seq_id
-                                 label_comp_id label_asym_id label_entity_id
+                                 label_comp_id label_asym_id pdbx_PDB_model_num
                                  label_alt_id );
 
                 my $residue_unique_key =
@@ -267,7 +267,7 @@ for my $pdbx_file ( @ARGV ) {
                              $neighbour_chain, $neighbour_entity, $neighbour_alt ) =
                             map { $current_atom_site->{$neighbour_atom_id}{$_} }
                                 qw( type_symbol label_atom_id label_seq_id
-                                    label_comp_id label_asym_id label_entity_id
+                                    label_comp_id label_asym_id pdbx_PDB_model_num
                                     label_alt_id );
 
                         my $pairwise_potential_energy =

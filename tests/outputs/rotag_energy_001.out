@@ -8,7 +8,7 @@ _[local]_energy.label_atom_id
 _[local]_energy.label_seq_id
 _[local]_energy.label_comp_id
 _[local]_energy.label_asym_id
-_[local]_energy.label_entity_id
+_[local]_energy.pdbx_PDB_model_num
 _[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
