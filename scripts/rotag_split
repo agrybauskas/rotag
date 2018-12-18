@@ -46,7 +46,7 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Options ----------------------------------- #
 
-my $split_by = 'entity';
+my $split_by = 'pdbx_PDB_model_num';
 my $basename = '';
 my $extension = 'cif';
 
