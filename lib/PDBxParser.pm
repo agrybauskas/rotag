@@ -95,13 +95,18 @@ sub obtain_pdbx_line
 # Input:
 #     $pdbx_file - PDBx file path;
 #     $categories - list of specified categories.
+#     $options->{'is_stream'} - flag that indicates that $pdbx_file is actually
+#     the content.
 # Output:
 #     %pdbx_loop_data - data structure for loop data.
 #
 
 sub obtain_pdbx_loop
 {
-    my ( $pdbx_file, $categories ) = @_;
+    my ( $pdbx_file, $categories, $options ) = @_;
+
+    my ( $is_stream ) = ( $options->{'is_stream'} );
+    $is_stream //= 0;
 
     my @categories;
     my @attributes;
@@ -110,7 +115,18 @@ sub obtain_pdbx_loop
     my $category_regexp = join q{|}, @{ $categories };
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
-    local @ARGV = ( $pdbx_file );
+    local @ARGV = @ARGV;
+
+    # TODO: analyze if opening and then using 'while( <> )' without closing
+    # filehandle is good solution to both handle stdin, file paths and content
+    # of the file.
+    my $pdbx_stream;
+    if( $is_stream ) {
+        open $pdbx_stream, "<", $pdbx_file;
+    } else {
+        @ARGV = ( $pdbx_file );
+    }
+
     while( <> ) {
         if( /($category_regexp)[.](.+)\n$/x ) {
             if( ! @categories || $categories[-1] ne $1 ) {
@@ -240,6 +256,8 @@ sub pdbx_loop_to_array
 # data structure that represents atom data.
 # Input:
 #     $pdbx_file - PDBx file.
+#     $options->{'is_stream'} - flag that indicates that $pdbx_file is actually
+#     the content.
 # Output:
 #     %atom_site - special data structure.
 #     Ex.: { 1 => { 'group_id' => 'ATOM',
@@ -249,10 +267,12 @@ sub pdbx_loop_to_array
 
 sub obtain_atom_site
 {
-    my ( $pdbx_file ) = @_;
-
-    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
-
+    my ( $pdbx_file, $options ) = @_;
+    my ( $is_stream ) = ( $options->{'is_stream'} );
+    $is_stream //= 0;
+    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file,
+                                               [ '_atom_site' ],
+                                               { 'is_stream' => $is_stream } ) );
 }
 
 #
