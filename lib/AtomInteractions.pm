@@ -13,6 +13,7 @@ our @EXPORT_OK = qw( composite
                      lennard_jones
                      soft_sphere );
 
+use Carp;
 use List::Util qw( any );
 use Math::Trig qw( acos );
 use Readonly;
@@ -191,6 +192,18 @@ sub coulomb
         $General::PARTIAL_CHARGE{$atom_j->{'label_comp_id'}}
                                 {$atom_j->{'label_atom_id'}};
 
+    if( ! defined $partial_charge_i ) {
+        confess $atom_i->{'label_atom_id'} . 'atom with id ' . $atom_i->{'id'} .
+                ' from ' . $atom_i->{'label_comp_id'} . 'residue does not have' .
+                'defined partial charge in force field file.' ;
+    }
+    if( ! defined $partial_charge_j ) {
+        confess $atom_j->{'label_atom_id'} . ' atom with id ' . $atom_j->{'id'} .
+                ' from ' . $atom_j->{'label_comp_id'} . 'residue does not have' .
+                'defined partial charge in force field file.' ;
+    }
+
+    # if( ! defined $partial_charge_j ) { print $atom_j->{'label_atom_id'}, " ", $atom_j->{'label_comp_id'}, "\n" };
     if( $is_optimal ) {
         if( $partial_charge_i * $partial_charge_j > 0 ) {
             return 0;
