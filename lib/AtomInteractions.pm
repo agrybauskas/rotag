@@ -194,13 +194,13 @@ sub coulomb
 
     if( ! defined $partial_charge_i ) {
         confess $atom_i->{'label_atom_id'} . 'atom with id ' . $atom_i->{'id'} .
-                ' from ' . $atom_i->{'label_comp_id'} . 'residue does not have' .
-                'defined partial charge in force field file.' ;
+                ' from ' . $atom_i->{'label_comp_id'} . ' residue does not have '.
+                'defined partial charge in force field file' ;
     }
     if( ! defined $partial_charge_j ) {
         confess $atom_j->{'label_atom_id'} . ' atom with id ' . $atom_j->{'id'} .
-                ' from ' . $atom_j->{'label_comp_id'} . 'residue does not have' .
-                'defined partial charge in force field file.' ;
+                ' from ' . $atom_j->{'label_comp_id'} . ' residue does not have '.
+                'defined partial charge in force field file' ;
     }
 
     # if( ! defined $partial_charge_j ) { print $atom_j->{'label_atom_id'}, " ", $atom_j->{'label_comp_id'}, "\n" };
