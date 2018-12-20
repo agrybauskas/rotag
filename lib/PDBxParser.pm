@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      filter_by_unique_residue_key
                      identify_residue_atoms
+                     join_pdbx_loops
                      mark_selection
                      pdbx_loop_unique
                      pdbx_loop_to_csv
@@ -191,6 +192,40 @@ sub pdbx_loop_unique
     }
 
     return \%pdbx_loop_unique;
+}
+
+#
+# Joins pdbx loops by shared attribute value.
+# Input:
+#     $pdbx_loops - pdbx loop data structure;
+#     $join_by_attribute - attribute that the pdbx loops will be joined by;
+#     $options->{'include_attributes'} - specified attributes that will be
+#     included in the output.
+#     $options->{'exclude_attributes'} - specified attributes that will be
+#     excluded from the output.
+# Output:
+#     %joined_pdbx_loop - result of pdbx loop join.
+#
+
+sub join_pdbx_loops
+{
+    my ( $pdbx_loops, $join_by_attribute, $options ) = @_;
+    my ( $include_attributes, $exclude_attributes ) = (
+        $options->{'include_attributes'},
+        $options->{'exclude_attributes'},
+    );
+
+    $include_attributes //=
+        [ uniq map { @{ $pdbx_loops->{$_}{'attributes'} } }
+               sort keys %{ $pdbx_loops } ];
+    $exclude_attributes //= [];
+
+    my @attributes;
+    for my $include_attribute ( @{ $include_attributes } ) {
+        push @attributes, $include_attribute;
+    }
+
+    my @data;
 }
 
 #
@@ -826,10 +861,8 @@ sub pdbx_loop_to_csv
         print {*STDOUT} join( ',', @{ $attributes } ), "\n";
     }
 
-    my $attribute_array_length =
-        $#{ $pdbx_loop->{'attributes'} };
-    my $data_array_length =
-        $#{ $pdbx_loop->{'data'} };
+    my $attribute_array_length = $#{ $pdbx_loop->{'attributes'} };
+    my $data_array_length = $#{ $pdbx_loop->{'data'} };
 
     for( my $i = 0; $i <= $data_array_length; $i += $attribute_array_length + 1){
         print {*STDOUT} join( q{,}, @{ $pdbx_loop->{'data'} }

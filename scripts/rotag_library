@@ -13,9 +13,11 @@ use Constants qw( $PI
 use ErrorHandling qw( parse_errors );
 use PDBxParser qw( determine_residue_keys
                    filter
+                   join_pdbx_loops
                    mark_selection
                    obtain_atom_site
                    split_by
+                   pdbx_loop_to_csv
                    to_pdbx );
 use PseudoAtoms qw( generate_library );
 use Version qw( $VERSION );
@@ -75,6 +77,12 @@ our $VERSION = $VERSION;
 #*    -T, --top-ratio <float>      top rotamers according to the value of
 #*                                 energies (default: 1.0).
 #*
+#*    -F, --format <format>        output format. Using csv format
+#*                                 '_[local]_rotamer_angle' and
+#*                                 '_[local]_rotamer_energy' data is joined
+#*                                 through 'rotamer_id' and '_atom_site' is not
+#*                                 included (default: cif | csv).
+#*
 #*    -n, --threads <int>          number of threads.
 #*
 #*    -v, --version                print version.
@@ -90,6 +98,7 @@ my $is_hydrogen_explicit = 0;
 my $threads = 1;
 my $top_rank;
 my $top_ratio;
+my $output_format = 'cif';
 my $parameters = q{};
 
 GetOptions(
@@ -102,6 +111,7 @@ GetOptions(
     'explicit-hydrogens|H' => sub { $is_hydrogen_explicit = 1 },
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
+    'format|F=s' => \$output_format,
     'threads|n=s' => \$threads,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -275,8 +285,13 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    # Prints out cif.
-    to_pdbx( { 'atom_site' => $selected_atom_site,
-               'add_atom_attributes' => [ '[local]_selection_state' ],
-               'pdbx_loops' => \%pdbx_loops } );
+    # Prints out cif or csv.
+    if( $output_format eq 'csv' ) {
+        join_pdbx_loops( \%pdbx_loops, 'rotamer_id',
+                         { 'exclude_attributes' => [ 'id' ] } );
+    } elsif( $output_format eq 'cif' ) {
+        to_pdbx( { 'atom_site' => $selected_atom_site,
+                   'add_atom_attributes' => [ '[local]_selection_state' ],
+                   'pdbx_loops' => \%pdbx_loops } );
+    }
 }

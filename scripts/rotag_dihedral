@@ -40,7 +40,7 @@ our $VERSION = $VERSION;
 #*
 #*    -r, --radians         angles are in radians.
 #*
-#*    -F, --format <format> output format [default: pdbx | csv] .
+#*    -F, --format <format> output format (default: pdbx | csv).
 #*
 #*    -v, --version         print version.
 
