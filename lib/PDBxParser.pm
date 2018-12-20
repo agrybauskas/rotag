@@ -137,13 +137,7 @@ sub obtain_pdbx_loop
 #     Ex.: [ 'id' ]
 # Output:
 #     %pdbx_loop_unique - special data structure.
-#     Ex.: { 1 => { 'group_id' => 'ATOM',
-#                   'id'       => 1,
-#                   ... } }
-#
-#          or (if 'read_until_end')
-#
-#          [ { 1 => { 'group_id' => 'ATOM',
+#     Ex.: [ { 1 => { 'group_id' => 'ATOM',
 #                     'id'       => 1,
 #                     ... } },
 #            ... ]
@@ -244,13 +238,7 @@ sub pdbx_loop_to_array
 #     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 # Output:
 #     %atom_site - special data structure.
-#     Ex.: { 1 => { 'group_id' => 'ATOM',
-#                   'id'       => 1,
-#                   ... } }
-#
-#          or (if 'read_until_end')
-#
-#          [ { 1 => { 'group_id' => 'ATOM',
+#     Ex.: [ { 1 => { 'group_id' => 'ATOM',
 #                     'id'       => 1,
 #                     ... } },
 #            ... ]
@@ -263,15 +251,10 @@ sub obtain_atom_site
 
     $read_until_end //= 0;
 
-    if( $read_until_end ) {
-        return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file,
-                                                   [ '_atom_site' ],
-                                                   { 'read_until_end' => 1 } ) );
-    } else {
-        return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file,
-                                                   [ '_atom_site' ] ) );
-    }
-
+    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file,
+                                               [ '_atom_site' ],
+                                               { 'read_until_end' =>
+                                                     $read_until_end } ) );
 }
 
 #
