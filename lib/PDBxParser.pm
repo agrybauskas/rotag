@@ -90,30 +90,41 @@ sub obtain_pdbx_loop
     local @ARGV = ( $pdbx_file );
 
     while( <> ) {
-        if( /($category_regexp)[.](.+)\n$/x ) {
-            if( ! @categories || $categories[-1] ne $1 ) {
-                push @categories, $1;
-                push @attributes, [];
-                push @data, [];
+        if( /^data_/ ) {
+            push @categories, [];
+            push @attributes, [];
+            push @data, [];
+        } elsif( /($category_regexp)[.](.+)\n$/x ) {
+            if( ! @{ $categories[-1] } || $categories[-1][-1] ne $1 ) {
+                push @{ $categories[-1] }, $1;
+                push @{ $attributes[-1] }, [];
+                push @{ $data[-1] }, [];
             }
-            push @{ $attributes[-1] }, split q{ }, $2;
+            push @{ $attributes[-1][-1] }, split q{ }, $2;
             $is_reading_lines = 1;
         } elsif( $is_reading_lines == 1 && /^_|loop_|#/ ) {
-            if( $#categories eq $#{ $categories } ) { last; }
+            if( $#categories eq $#{ $categories } && ! $read_until_end ) { last; }
             $is_reading_lines = 0;
         } elsif( $is_reading_lines == 1 ) {
-            push @{ $data[-1] }, split q{ }, $_;
+            push @{ $data[-1][-1] }, split q{ }, $_;
         }
     }
 
     # Generates hash from three lists.
-    my %pdbx_loop_data;
+    my @pdbx_loop_data;
     for( my $i = 0; $i <= $#categories; $i++ ) {
-        $pdbx_loop_data{$categories[$i]}{'attributes'} = $attributes[$i];
-        $pdbx_loop_data{$categories[$i]}{'data'} = $data[$i];
+        my %pdbx_loop_data;
+        for( my $j = 0; $j <= $#{ $categories[-1] }; $j++ ) {
+            $pdbx_loop_data{$categories[$i][$j]}{'attributes'} =
+                $attributes[$i][$j];
+            $pdbx_loop_data{$categories[$i][$j]}{'data'} =
+                $data[$i][$j];
+        }
+
+        push @pdbx_loop_data, \%pdbx_loop_data;
     }
 
-    return \%pdbx_loop_data;
+    return \@pdbx_loop_data;
 }
 
 #
