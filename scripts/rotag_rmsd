@@ -13,7 +13,6 @@ use Constants qw( $SIG_FIGS_MAX );
 use PDBxParser qw( filter
                    obtain_atom_site
                    pdbx_loop_to_csv
-                   split_pdbx_file
                    to_pdbx );
 use Measure qw( rmsd );
 use Version qw( $VERSION );
@@ -70,37 +69,32 @@ die "No comparison groups are selected. Use -c argument.\n"
 my %atom_site_groups = ();
 
 for my $pdbx_file ( @ARGV ) {
-    # Splits pdbx files if there are multiple ones inside.
-    my $pdbx_file_streams = split_pdbx_file( $pdbx_file );
-    for my $pdbx_file_stream ( @{ $pdbx_file_streams } ) {
-        # Reads file path, stdin and '-' operator.
-        my $atom_site;
-        if( $pdbx_file_stream ) {
-            $atom_site =
-                obtain_atom_site( $pdbx_file_stream, { 'is_stream' => 1 } );
+    # Reads file path, stdin and '-' operator.
+    my $atom_site;
+    if( $pdbx_file ) {
+        $atom_site = obtain_atom_site( $pdbx_file );
+    } else {
+        die "Use command \"rotag_rmsd --help\" in order to see the " .
+            "manual.\n";
+    }
+
+    # Assigns filters atoms and assigns to specified groups.
+    my @group_ids =
+        uniq( @{ filter( { 'atom_site' => $atom_site,
+                           'data' => [ '[local]_selection_group' ],
+                           'is_list' => 1 } ) } );
+
+    for my $group_id ( @group_ids ) {
+        if( ! exists $atom_site_groups{$group_id} ) {
+            my $group_atom_site =
+                filter( { 'atom_site' => $atom_site,
+                          'include' =>
+                              { '[local]_selection_state' => [ 'T' ],
+                                '[local]_selection_group' => [$group_id] }});
+            $atom_site_groups{$group_id} = $group_atom_site;
         } else {
-            die "Use command \"rotag_rmsd --help\" in order to see the " .
-                "manual.\n";
-        }
-
-        # Assigns filters atoms and assigns to specified groups.
-        my @group_ids =
-            uniq( @{ filter( { 'atom_site' => $atom_site,
-                               'data' => [ '[local]_selection_group' ],
-                               'is_list' => 1 } ) } );
-
-        for my $group_id ( @group_ids ) {
-            if( ! exists $atom_site_groups{$group_id} ) {
-                my $group_atom_site =
-                    filter( { 'atom_site' => $atom_site,
-                              'include' =>
-                                  { '[local]_selection_state' => [ 'T' ],
-                                    '[local]_selection_group' => [$group_id] }});
-                $atom_site_groups{$group_id} = $group_atom_site;
-            } else {
-                confess 'there are multiple instances of the group in' .
-                        ' different files';
-            }
+            confess 'there are multiple instances of the group in' .
+                    ' different files';
         }
     }
 }
