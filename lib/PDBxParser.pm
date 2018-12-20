@@ -68,13 +68,17 @@ sub obtain_pdbx_line
 # Input:
 #     $pdbx_file - PDBx file path;
 #     $categories - list of specified categories.
+#     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 # Output:
 #     %pdbx_loop_data - data structure for loop data.
 #
 
 sub obtain_pdbx_loop
 {
-    my ( $pdbx_file, $categories ) = @_;
+    my ( $pdbx_file, $categories, $options ) = @_;
+    my ( $read_until_end ) = ( $options->{'read_until_end'} );
+
+    $read_until_end //= 0;
 
     my @categories;
     my @attributes;
@@ -118,16 +122,28 @@ sub obtain_pdbx_loop
 # Input:
 #     $pdbx_loop_data - data structure (from obtain_pdbx_loop);
 #     $unique_keys - combination of attribute data that serves as unique key.
+#     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 #     Ex.: [ 'id' ]
 # Output:
 #     %pdbx_loop_unique - special data structure.
 #     Ex.: { 1 => { 'group_id' => 'ATOM',
 #                   'id'       => 1,
 #                   ... } }
+#
+#          or (if 'read_until_end')
+#
+#          [ { 1 => { 'group_id' => 'ATOM',
+#                     'id'       => 1,
+#                     ... } },
+#            ... ]
+#
 
 sub pdbx_loop_unique
 {
-    my ( $pdbx_loop_data, $unique_keys ) = @_;
+    my ( $pdbx_loop_data, $unique_keys, $options ) = @_;
+    my ( $read_until_end ) = ( $options->{'read_until_end'} );
+
+    $read_until_end //= 0;
 
     $unique_keys //= [ 'id' ];
 
@@ -214,18 +230,37 @@ sub pdbx_loop_to_array
 # data structure that represents atom data.
 # Input:
 #     $pdbx_file - PDBx file.
+#     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 # Output:
 #     %atom_site - special data structure.
 #     Ex.: { 1 => { 'group_id' => 'ATOM',
 #                   'id'       => 1,
 #                   ... } }
 #
+#          or (if 'read_until_end')
+#
+#          [ { 1 => { 'group_id' => 'ATOM',
+#                     'id'       => 1,
+#                     ... } },
+#            ... ]
+#
 
 sub obtain_atom_site
 {
-    my ( $pdbx_file ) = @_;
+    my ( $pdbx_file, $options ) = @_;
+    my ( $read_until_end ) = ( $options->{'read_until_end'} );
 
-    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
+    $read_until_end //= 0;
+
+    if( $read_until_end ) {
+        return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file,
+                                                   [ '_atom_site' ],
+                                                   { 'read_until_end' => 1 } ) );
+    } else {
+        return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file,
+                                                   [ '_atom_site' ] ) );
+    }
+
 }
 
 #
