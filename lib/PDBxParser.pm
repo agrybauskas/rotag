@@ -83,7 +83,7 @@ sub obtain_pdbx_loop
     my $category_regexp = join q{|}, @{ $categories };
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
-    local @ARGV = @ARGV;
+    local @ARGV = ( $pdbx_file );
 
     while( <> ) {
         if( /($category_regexp)[.](.+)\n$/x ) {
