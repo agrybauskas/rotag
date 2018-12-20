@@ -98,7 +98,7 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 }
-use Data::Dumper; print STDERR Dumper \%atom_site_groups;
+
 # Calculates RMSD.
 my %pdbx_loops;
 $pdbx_loops{'_[local]_rmsd'}{'attributes'} =
