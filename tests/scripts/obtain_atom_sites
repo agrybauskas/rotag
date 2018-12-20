@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( obtain_atom_sites
+                   to_pdbx );
+
+#
+# Unit test: PDBxParser::obtain_atom_site
+# Example: ./obtain_atom_sites structure.cif
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+
+foreach my $pdbx_file ( @ARGV ) {
+    my $atom_sites = obtain_atom_sites( $pdbx_file );
+    foreach( @{ $atom_sites } ) {
+        to_pdbx( { "atom_site" => $_ } );
+    }
+}

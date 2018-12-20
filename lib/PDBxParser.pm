@@ -14,6 +14,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      pdbx_loop_to_csv
                      pdbx_loop_to_array
                      obtain_atom_site
+                     obtain_atom_sites
                      obtain_pdbx_line
                      obtain_pdbx_loop
                      split_by
@@ -70,7 +71,7 @@ sub obtain_pdbx_line
 #     $categories - list of specified categories.
 #     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 # Output:
-#     %pdbx_loop_data - data structure for loop data.
+#     %pdbx_loop_data - data structure for loop data or list of data structure.
 #
 
 sub obtain_pdbx_loop
@@ -90,12 +91,12 @@ sub obtain_pdbx_loop
     local @ARGV = ( $pdbx_file );
 
     while( <> ) {
-        if( /^data_/ ) {
+        if( /^data_/ || ! @categories ) {
             push @categories, [];
             push @attributes, [];
             push @data, [];
         } elsif( /($category_regexp)[.](.+)\n$/x ) {
-            if( ! @{ $categories[-1] } || $categories[-1][-1] ne $1 ) {
+            if( !@{ $categories[-1] } || $categories[-1][-1] ne $1 ) {
                 push @{ $categories[-1] }, $1;
                 push @{ $attributes[-1] }, [];
                 push @{ $data[-1] }, [];
@@ -124,6 +125,7 @@ sub obtain_pdbx_loop
         push @pdbx_loop_data, \%pdbx_loop_data;
     }
 
+    return $pdbx_loop_data[0] if ! $read_until_end;
     return \@pdbx_loop_data;
 }
 
@@ -137,10 +139,6 @@ sub obtain_pdbx_loop
 #     Ex.: [ 'id' ]
 # Output:
 #     %pdbx_loop_unique - special data structure.
-#     Ex.: [ { 1 => { 'group_id' => 'ATOM',
-#                     'id'       => 1,
-#                     ... } },
-#            ... ]
 #
 
 sub pdbx_loop_unique
@@ -235,26 +233,43 @@ sub pdbx_loop_to_array
 # data structure that represents atom data.
 # Input:
 #     $pdbx_file - PDBx file.
-#     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 # Output:
 #     %atom_site - special data structure.
-#     Ex.: [ { 1 => { 'group_id' => 'ATOM',
-#                     'id'       => 1,
-#                     ... } },
-#            ... ]
+#     E.g.: { 1 => { 'id' => 2,
+#                    'label_atom_id' => 'CA',
+#                    ... }
+#             ... }
 #
 
 sub obtain_atom_site
 {
-    my ( $pdbx_file, $options ) = @_;
-    my ( $read_until_end ) = ( $options->{'read_until_end'} );
+    my ( $pdbx_file ) = @_;
 
-    $read_until_end //= 0;
+    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
+}
 
-    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file,
-                                               [ '_atom_site' ],
-                                               { 'read_until_end' =>
-                                                     $read_until_end } ) );
+#
+# From PDBx file, obtains data only from _atom_site category and outputs special
+# data structure that represents atom data. It is done for whole file or stream
+# so, multiple data_ streams with _atom_site can be parsed.
+# Input:
+#     $pdbx_file - PDBx file.
+# Output:
+#     @atom_sites - list of special data structure.
+#
+
+sub obtain_atom_sites
+{
+    my ( $pdbx_file ) = @_;
+    my $pdbx_loops =
+        obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ], {'read_until_end' => 1});
+
+    my @atom_sites;
+    for my $pdbx_loop ( @{ $pdbx_loops } ) {
+        push @atom_sites, pdbx_loop_unique( $pdbx_loop );
+    }
+
+    return \@atom_sites;
 }
 
 #
