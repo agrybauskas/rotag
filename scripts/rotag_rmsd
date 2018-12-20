@@ -111,6 +111,13 @@ for my $comparison_group ( @comparison_groups ) {
         confess 'there has to be two groups of atoms to be compared against';
     }
 
+    # Checks if these groups exist.
+    for my $group ( @{ $comparison_group } ) {
+        if( ! exists $atom_site_groups{$comparison_group->[$group]} ) {
+            confess "group $group is not present in pdbx"
+        }
+    }
+
     my $first_group_data =
         filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
                   'data' =>
