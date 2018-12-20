@@ -98,7 +98,7 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 }
-
+use Data::Dumper; print STDERR Dumper \%atom_site_groups;
 # Calculates RMSD.
 my %pdbx_loops;
 $pdbx_loops{'_[local]_rmsd'}{'attributes'} =
@@ -113,7 +113,7 @@ for my $comparison_group ( @comparison_groups ) {
 
     # Checks if these groups exist.
     for my $group ( @{ $comparison_group } ) {
-        if( ! exists $atom_site_groups{$comparison_group->[$group]} ) {
+        if( ! exists $atom_site_groups{$group} ) {
             confess "group $group is not present in pdbx"
         }
     }
