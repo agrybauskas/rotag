@@ -6,7 +6,9 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      determine_residue_keys
+                     extract
                      filter
+                     filter_new
                      filter_by_unique_residue_key
                      identify_residue_atoms
                      mark_selection
@@ -381,6 +383,148 @@ sub filter
     }
 
     return \%filtered_atoms;
+}
+
+#
+# Filters atom data structure according to specified attributes with include,
+# exclude options.
+# Input:
+#     $options->{'include'} - attribute selector that includes atom data
+#     structure.
+#     Ex.:
+#         { 'label_atom_id' => [ 'N', 'CA', 'CB', 'CD' ],
+#           'label_comp_id' => [ 'A' ] };
+#     $options->{'exclude'} - attribute selector that excludes atom data
+#     $options->{'return_ids'} - flag that make function return filtered atom
+#     ids instead of new AtomSite data structure.
+#     $options->{'group_id'} - assigns the value of described group id to
+#     '[local]_selection_group' attribute.
+#     structure.
+# Output:
+#     \%filtered_atoms - filtered atom data structure;
+#            or
+#     \@filtered_atom_ids - list of filtered atom ids.
+#
+
+sub filter_new
+{
+    my ( $atom_site, $options ) = @_;
+    my ( $include, $exclude, $return_data, $group_id, $selection_state ) =
+        ( $options->{'include'}, $options->{'exclude'},
+          $options->{'return_data'}, $options->{'group_id'},
+          $options->{'selection_state'} );
+
+    if( ! defined $atom_site ) {
+        confess 'no atom were loaded to the AtomSite data structure';
+    }
+
+    $include //= {};
+    $exclude //= {};
+
+    # Generates hash maps for fast lookup.
+    my %include_selector = ();
+    for my $attribute ( keys %{ $include } ) {
+        for my $value ( uniq @{ $include->{$attribute} } ) {
+            $include_selector{$attribute}{$value} = 1;
+        }
+    }
+
+    my %exclude_selector = ();
+    for my $attribute ( keys %{ $exclude } ) {
+        for my $value ( uniq @{ $exclude->{$attribute} } ) {
+            $exclude_selector{$attribute}{$value} = 1;
+        }
+    }
+
+    # Iterates through each atom in $self->{'atoms'} and checks if atom
+    # specifiers match up.
+    my %filtered_atoms;
+
+    for my $atom_id ( keys %{ $atom_site } ) {
+        my $keep_atom = 1;
+        for my $attribute ( keys %{ $atom_site->{$atom_id} } ) {
+            my $value = $atom_site->{$atom_id}{$attribute};
+            if( exists $include_selector{$attribute} &&
+                ( ! exists $include_selector{$attribute}{$value} ||
+                  $include_selector{$attribute}{$value} != 1 ) ) {
+                $keep_atom = 0;
+                last;
+            }
+
+            if( exists $exclude_selector{$attribute} &&
+                ( exists $exclude_selector{$attribute}{$value} &&
+                  $exclude_selector{$attribute}{$value} == 1 ) ) {
+                $keep_atom = 0;
+                last;
+            }
+        }
+
+        next if $keep_atom == 0;
+
+        if( defined $group_id ) {
+            $atom_site->{$atom_id}{'[local]_selection_group'} = $group_id;
+        }
+
+        if( defined $selection_state ) {
+            $atom_site->{$atom_id}{'[local]_selection_state'} = $selection_state;
+        }
+
+        $filtered_atoms{$atom_id} = $atom_site->{$atom_id};
+    }
+
+    # Return object handle or atom ids depending on the flag.
+    if( defined $return_data && $return_data eq 'id' ) {
+        return [ keys %filtered_atoms ];
+    } elsif( defined $return_data ) {
+        return [ map { $atom_site->{$_}{$return_data} } keys %filtered_atoms ];
+    } else {
+        return \%filtered_atoms;
+    }
+}
+
+#
+# Extracts information from atom data structure.
+# Input:
+#     $options{'data'} - list of data that should be extracted;
+#     $options{'data_with_id'} - takes atom data structure and treats it as a
+#     value and atom id - as a key;
+#     $options{'is_list'} - - makes array instead of array of arrays;
+# Output:
+#
+
+sub extract
+{
+    my ( $atom_site, $options ) = @_;
+    my ( $data, $data_with_id, $is_list ) =
+        ( $options->{'data'}, $options->{'data_with_id'},
+          $options->{'is_list'} );
+
+    my @atom_data;
+
+    if( defined $data_with_id && $data_with_id ) {
+        my %atom_data_with_id;
+
+        # Simply iterates through $atom_site keys and extracts data
+        # using data specifier and is asigned to atom id.
+        for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+            $atom_data_with_id{$atom_id} =
+                [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
+        }
+
+        return \%atom_data_with_id;
+    } else {
+        for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+            if( defined $is_list && $is_list ) {
+                push @atom_data,
+                    map { $atom_site->{$atom_id}{$_} } @{ $data };
+            } else {
+                push @atom_data,
+                    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
+            }
+        }
+
+        return \@atom_data;
+    }
 }
 
 #

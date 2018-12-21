@@ -7,8 +7,10 @@ use autodie;
 use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 
-use AtomSite;
-use PDBxParser qw( obtain_pdbx_loop
+use PDBxParser qw( filter_new
+                   mark_selection
+                   obtain_atom_site
+                   obtain_pdbx_loop
                    to_pdbx );
 use Grammar::SelectionParser;
 use ErrorHandling qw( parse_errors );
@@ -108,8 +110,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
     if( $pdbx_file ) {
-        $atom_site = AtomSite->new();
-        $atom_site->open( $pdbx_file );
+        $atom_site = obtain_atom_site( $pdbx_file );
     } else {
         die "Use command \"rotag_select --help\" in order to see the manual.\n";
     }
@@ -132,9 +133,9 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     # Replaces 'target' keyword with previously selected target ids.
     if( $target_cmd =~ m/target/ ) {
         my @previous_target_atoms;
-        for my $atom_id ( keys %{ $atom_site->{'_atoms'} } ) {
-            if( exists $atom_site->{'_atoms'}{"$atom_id"}{'[local]_selection_state'} &&
-                $atom_site->{'_atoms'}{"$atom_id"}{'[local]_selection_state'} eq 'T' ) {
+        for my $atom_id ( keys %{ $atom_site } ) {
+            if( exists $atom_site->{"$atom_id"}{'[local]_selection_state'} &&
+                $atom_site->{"$atom_id"}{'[local]_selection_state'} eq 'T' ) {
                 push @previous_target_atoms, $atom_id;
             }
         }
@@ -184,8 +185,8 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
 
     if( ! $keep_ignored ) {
         $atom_site =
-            filter( $atom_site,
-                    { 'exclude' => { '[local]_selection_state' => [ 'I' ] } } );
+            filter_new( $atom_site,
+                        {'exclude' => { '[local]_selection_state' => [ 'I' ] }});
     }
 
     # Extracts rotamer angle data that will used to generate atom coordinates if
@@ -197,7 +198,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     }
 
     # Prints out the PDBx.
-    to_pdbx( { 'atom_site' => $atom_site->{'_atoms'},
+    to_pdbx( { 'atom_site' => $atom_site,
                $pdbx_loops ? ( 'pdbx_loops', $pdbx_loops ) : (),
                'add_atom_attributes' => [ '[local]_selection_state',
                                           '[local]_selection_group' ] } );

@@ -5,8 +5,9 @@
     use List::MoreUtils qw( uniq );
     use List::Util qw( any );
 
-    use AtomSite;
     use ConnectAtoms qw( around_distance );
+    use PDBxParser qw( extract
+                       filter_new );
     use ForceField::General;
 %}
 
@@ -34,59 +35,59 @@ line
 exp
     : 'all'
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'mainchain'
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'label_atom_id' =>
-                                         \@General::MAINCHAIN_ATOM_NAMES,
-                                     'group_PDB' => [ 'ATOM' ] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'label_atom_id' =>
+                                             \@General::MAINCHAIN_ATOM_NAMES,
+                                         'group_PDB' => [ 'ATOM' ] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'sidechain'
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'label_atom_id' =>
-                                         \@General::SIDECHAIN_ATOM_NAMES,
-                                     'group_PDB' => [ 'ATOM' ] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'label_atom_id' =>
+                                             \@General::SIDECHAIN_ATOM_NAMES,
+                                         'group_PDB' => [ 'ATOM' ] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'hetatoms'
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'group_PDB' => [ 'HETATM' ] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'group_PDB' => [ 'HETATM' ] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'byres' exp
         {
             my @residue_atom_ids = ();
             for my $atom_id ( @{ $_[2] } ) {
                 push @residue_atom_ids,
-                    @{ filter( $_[0]->{USER}{ATOM_SITE},
-                            { 'include' => { 'label_seq_id'  =>
-                                                 [ $_[0]->{USER}{ATOM_SITE}
-                                                          {'_atoms'}{$atom_id}
-                                                          {'label_seq_id'} ],
-                                             'label_asym_id' =>
-                                                 [ $_[0]->{USER}{ATOM_SITE}
-                                                          {'_atoms'}{$atom_id}
-                                                          {'label_asym_id'} ],
-                                             'label_alt_id'  =>
-                                                 [ $_[0]->{USER}{ATOM_SITE}
-                                                          {'_atoms'}{$atom_id}
-                                                          {'label_alt_id'}, '.' ],
-                                             'pdbx_PDB_model_num' =>
-                                                 [ $_[0]->{USER}{ATOM_SITE}
-                                                          {'_atoms'}{$atom_id}
-                                                          {'pdbx_PDB_model_num'} ] },
-                              'group_id' => $_[0]->{USER}{GROUP_ID},
-                              'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } ) };
+                    @{ filter_new( $_[0]->{USER}{ATOM_SITE},
+                                   { 'include' => { 'label_seq_id'  =>
+                                                    [ $_[0]->{USER}{ATOM_SITE}
+                                                             {$atom_id}
+                                                             {'label_seq_id'} ],
+                                                    'label_asym_id' =>
+                                                    [ $_[0]->{USER}{ATOM_SITE}
+                                                             {$atom_id}
+                                                             {'label_asym_id'} ],
+                                                    'label_alt_id'  =>
+                                                    [ $_[0]->{USER}{ATOM_SITE}
+                                                             {$atom_id}
+                                                             {'label_alt_id'}, '.' ],
+                                                    'pdbx_PDB_model_num' =>
+                                                    [ $_[0]->{USER}{ATOM_SITE}
+                                                             {$atom_id}
+                                                             {'pdbx_PDB_model_num'} ] },
+                                     'group_id' => $_[0]->{USER}{GROUP_ID},
+                                     'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } ) };
             }
             return [ uniq @residue_atom_ids ];
         }
@@ -156,11 +157,10 @@ exp
             } else {
                 unshift( @ids, '!' );
                 $around_atom_site =
-                    around_distance( $_[0]->{USER}{ATOM_SITE}{_atoms},
+                    around_distance( $_[0]->{USER}{ATOM_SITE},
                                      { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
                                      $_[3] );
-                return extract( bless( { '_atoms' => $around_atom_site },
-                                       'AtomSite' ),
+                return extract( $around_atom_site,
                                 { 'data' => [ $_[0]->{USER}{BY_ATTRIBUTE} ],
                                   'is_list' => 1 } );
             }
@@ -183,87 +183,87 @@ exp
         }
     | exp 'group' NUM
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
-                      'group_id' => $_[3],
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
+                          'group_id' => $_[3],
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | exp 'group' STR
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
-                      'group_id' => $_[3],
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { $_[0]->{USER}{BY_ATTRIBUTE} => $_[1] },
+                          'group_id' => $_[3],
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'chain' str_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'label_asym_id' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'label_asym_id' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'resid' num_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'label_seq_id' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'label_seq_id' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'resname' str_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'label_comp_id' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'label_comp_id' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomid' num_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'id' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'id' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomname' str_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'label_atom_id' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'label_atom_id' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'atomtype' str_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'type_symbol' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'type_symbol' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'altid' str_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'label_alt_id' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'label_alt_id' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'altid' num_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'label_alt_id' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'label_alt_id' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'model' str_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
     | 'model' num_ope
         {
-            filter( $_[0]->{USER}{ATOM_SITE},
-                    { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
-                      'group_id' => $_[0]->{USER}{GROUP_ID},
-                      'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
+            filter_new( $_[0]->{USER}{ATOM_SITE},
+                        { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                          'group_id' => $_[0]->{USER}{GROUP_ID},
+                          'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
 ;
 
