@@ -9,7 +9,6 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      filter
                      filter_by_unique_residue_key
                      identify_residue_atoms
-                     join_pdbx_loops
                      mark_selection
                      pdbx_loop_unique
                      pdbx_loop_to_csv
@@ -192,60 +191,6 @@ sub pdbx_loop_unique
     }
 
     return \%pdbx_loop_unique;
-}
-
-#
-# Joins pdbx loops by shared attribute value.
-# Input:
-#     $pdbx_loops - pdbx loop data structure;
-#     $join_by_attribute - attribute that the pdbx loops will be joined by;
-#     $options->{'include_attributes'} - specified attributes that will be
-#     included in the output.
-#     $options->{'exclude_attributes'} - specified attributes that will be
-#     excluded from the output.
-# Output:
-#     %joined_pdbx_loop - result of pdbx loop join.
-#
-
-sub join_pdbx_loops
-{
-    my ( $pdbx_loops, $join_by_attribute, $options ) = @_;
-    my ( $include_attributes, $exclude_attributes ) = (
-        $options->{'include_attributes'},
-        $options->{'exclude_attributes'},
-    );
-
-    $include_attributes //=
-        [ uniq map { @{ $pdbx_loops->{$_}{'attributes'} } }
-               sort keys %{ $pdbx_loops } ];
-    $exclude_attributes //= [];
-
-    # TODO: the logic of joining should be simpler - without using varying and
-    # temporary data structures.
-    my %pdbx_loops = ();
-    for my $category ( keys %{ $pdbx_loops } ) {
-        my %pdbx_loop_unique;
-        for my $pdbx_data ( @{ pdbx_loop_to_array( $pdbx_loops, $category ) } ) {
-            if( ! exists $pdbx_loop_unique{$pdbx_data->{$join_by_attribute}} ) {
-                $pdbx_loop_unique{$pdbx_data->{$join_by_attribute}} = $pdbx_data;
-            } else {
-                confess "atom with $pdbx_data->{$join_by_attribute} " .
-                        "$join_by_attribute already exists. It should be unique";
-            }
-        }
-        $pdbx_loops{$category} = \%pdbx_loop_unique;
-    }
-
-    my @attributes = ();
-    for my $include_attribute ( @{ $include_attributes } ) {
-        next if any { $_ eq $include_attribute } @{ $exclude_attributes };
-        push @attributes, $include_attribute;
-    }
-
-    my @data;
-    for my $pdbx_loop_array ( sort keys %pdbx_loops ) {
-        my %joined_pdbx_loop_data = ();
-    }
 }
 
 #
