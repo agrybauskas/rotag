@@ -220,12 +220,32 @@ sub join_pdbx_loops
                sort keys %{ $pdbx_loops } ];
     $exclude_attributes //= [];
 
-    my @attributes;
+    # TODO: the logic of joining should be simpler - without using varying and
+    # temporary data structures.
+    my %pdbx_loops = ();
+    for my $category ( keys %{ $pdbx_loops } ) {
+        my %pdbx_loop_unique;
+        for my $pdbx_data ( @{ pdbx_loop_to_array( $pdbx_loops, $category ) } ) {
+            if( ! exists $pdbx_loop_unique{$pdbx_data->{$join_by_attribute}} ) {
+                $pdbx_loop_unique{$pdbx_data->{$join_by_attribute}} = $pdbx_data;
+            } else {
+                confess "atom with $pdbx_data->{$join_by_attribute} " .
+                        "$join_by_attribute already exists. It should be unique";
+            }
+        }
+        $pdbx_loops{$category} = \%pdbx_loop_unique;
+    }
+
+    my @attributes = ();
     for my $include_attribute ( @{ $include_attributes } ) {
+        next if any { $_ eq $include_attribute } @{ $exclude_attributes };
         push @attributes, $include_attribute;
     }
 
     my @data;
+    for my $pdbx_loop_array ( sort keys %pdbx_loops ) {
+        my %joined_pdbx_loop_data = ();
+    }
 }
 
 #
