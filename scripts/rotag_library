@@ -34,8 +34,11 @@ our $VERSION = $VERSION;
 #*    -m, --model <str>            rules (model) that are used to move side-chains
 #*                                 (default: rotation_only).
 #*
-#*    -a, --angle-step <float>     angle ratio that each dihedral angle is turned
-#*                                 by (default: 0.1).
+#*    -a, --angle-step-deg <float> angle that each dihedral angle is turned
+#*                                 by in degrees (default: 0.1).
+#*
+#*    -A, --angle-step-rad <float> angle ratio that each dihedral angle is turned
+#*                                 by in radians.
 #*
 #*    -u, --potential <potential>  uses potential energy function for determining
 #*                                 interactions between selected residues and
@@ -84,8 +87,8 @@ our $VERSION = $VERSION;
 
 my $conf_model = 'rotation_only';
 my $interactions = 'composite';
-my $small_angle_ratio = 0.1;
-my $small_angle_step;
+my $angle_step_deg = 0.1 * 360;
+my $angle_step_rad;
 my $energy_cutoff_atom;
 my $is_hydrogen_explicit = 0;
 my $threads = 1;
@@ -97,8 +100,8 @@ GetOptions(
     'model|m=s' => \$conf_model,
     'potential|u=s' => \$interactions,
     'parameters|p=s' => \$parameters,
-    'angle-ratio|a=s' => \$small_angle_ratio,
-    'angle-step|A=s' => \$small_angle_step,
+    'angle-step-deg|a=s' => \$angle_step_deg,
+    'angle-step-rad|A=s' => \$angle_step_rad,
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
     'explicit-hydrogens|H' => sub { $is_hydrogen_explicit = 1 },
     'top-rank|t=s' => \$top_rank,
@@ -180,9 +183,9 @@ for my $pdbx_file ( @ARGV ) {
                       'include_interactions' =>
                           { 'id' => [ keys %{ $current_atom_site } ] },
                       'small_angle' => (
-                          defined $small_angle_step ?
-                          $small_angle_step :
-                          $small_angle_ratio * 2 * $PI
+                          defined $angle_step_rad ?
+                          $angle_step_rad :
+                          $angle_step_deg * $PI / 180.0
                       ),
                       'conf_model' => $conf_model,
                       'interactions' => $interactions,

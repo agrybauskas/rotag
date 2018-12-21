@@ -32,14 +32,15 @@ _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 1 1 18 XAA A 1 . chi1 0.000000
-2 2 18 XAA A 1 . chi1 0.698132
-3 3 18 XAA A 1 . chi1 1.396263
-4 4 18 XAA A 1 . chi1 2.094395
-5 5 18 XAA A 1 . chi1 2.792527
-6 6 18 XAA A 1 . chi1 3.490659
-7 7 18 XAA A 1 . chi1 4.188790
-8 8 18 XAA A 1 . chi1 4.886922
-9 9 18 XAA A 1 . chi1 5.585054
+2 2 18 XAA A 1 . chi1 0.628319
+3 3 18 XAA A 1 . chi1 1.256637
+4 4 18 XAA A 1 . chi1 1.884956
+5 5 18 XAA A 1 . chi1 2.513274
+6 6 18 XAA A 1 . chi1 3.141593
+7 7 18 XAA A 1 . chi1 3.769911
+8 8 18 XAA A 1 . chi1 4.398230
+9 9 18 XAA A 1 . chi1 5.026548
+10 10 18 XAA A 1 . chi1 5.654867
 #
 loop_
 _[local]_rotamer_energy.id
@@ -47,12 +48,13 @@ _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
 1 1 composite -0.089231
-2 2 composite -0.091238
-3 3 composite -0.091262
-4 4 composite -0.089420
-5 5 composite -0.071449
-6 6 composite -0.047094
-7 7 composite -0.037925
-8 8 composite -0.047099
-9 9 composite -0.071312
+2 2 composite -0.091417
+3 3 composite -0.090724
+4 4 composite -0.091291
+5 5 composite -0.080720
+6 6 composite -0.058259
+7 7 composite -0.041241
+8 8 composite -0.038721
+9 9 composite -0.051102
+10 10 composite -0.073838
 #

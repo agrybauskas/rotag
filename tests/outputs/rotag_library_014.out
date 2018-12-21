@@ -210,16 +210,16 @@ _[local]_rotamer_angle.pdbx_PDB_model_num
 _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 81 SER A 1 . chi1 4.886922
-2 1 81 SER A 1 . chi2 2.094395
-3 2 82 SER A 1 . chi1 4.188790
-4 2 82 SER A 1 . chi2 4.188790
+1 1 81 SER A 1 . chi1 5.026548
+2 1 81 SER A 1 . chi2 1.884956
+3 2 82 SER A 1 . chi1 4.398230
+4 2 82 SER A 1 . chi2 1.884956
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -0.307719
-2 2 composite 2.116972
+1 1 composite -0.315929
+2 2 composite 2.204796
 #
