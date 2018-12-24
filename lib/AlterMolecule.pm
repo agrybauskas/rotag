@@ -8,8 +8,8 @@ our @EXPORT_OK = qw( angle_bending
                      bond_stretching
                      bond_torsion );
 
-use LinearAlgebra qw( mult_matrix_product
-                      switch_ref_frame );
+use LinearAlgebra qw( switch_ref_frame );
+use Symbolic;
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -34,25 +34,26 @@ sub bond_torsion
          $angle_name ) = @_;
 
     # Rotation matrix around the bond.
-    my @rot_matrix =
-        ( [ "cos(\$${angle_name})", "-sin(\$${angle_name})", 0, 0 ],
-          [ "sin(\$${angle_name})",  "cos(\$${angle_name})", 0, 0 ],
-          [ 0, 0, 1, 0 ],
-          [ 0, 0, 0, 1 ], );
-
-    # Multiplying multiple matrices to get a final form.
     my $rot_matrix =
-        mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
-                                                    $up_atom_coord,
-                                                    $side_atom_coord,
-                                                    'global' ) },
-                               \@rot_matrix,
-                               @{ switch_ref_frame( $mid_atom_coord,
-                                                    $up_atom_coord,
-                                                    $side_atom_coord,
-                                                    'local' ) } ] );
+        Symbolic->new(
+            { 'symbols' => [ $angle_name ],
+              'matrix' => sub { my ( $svar ) = @_;
+                                return [ [ cos( $svar ),-sin( $svar ), 0, 0 ],
+                                         [ sin( $svar ), cos( $svar ), 0, 0 ],
+                                         [ 0, 0, 1, 0 ],
+                                         [ 0, 0, 0, 1 ], ]; } } );
+    my @rot_matrix =
+        ( @{ switch_ref_frame( $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               'global' ) },
+          $rot_matrix,
+          @{ switch_ref_frame( $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               'local' ) } );
 
-    return $rot_matrix;
+    return \@rot_matrix;
 }
 
 #
@@ -73,24 +74,28 @@ sub bond_stretching
          $length_name ) = @_;
 
     # Translation of the coordinates of the bond.
-    my @transl_matrix = ( [ 1, 0, 0, 0 ],
-                          [ 0, 1, 0, 0 ],
-                          [ 0, 0, 1, "\$${length_name}" ],
-                          [ 0, 0, 0, 1 ], );
+    my $transl_matrix =
+        Symbolic->new(
+            { 'symbols' => [ $length_name ],
+              'matrix' => sub { my ( $svar ) = @_;
+                                return [ [ 1, 0, 0, 0 ],
+                                         [ 0, 1, 0, 0 ],
+                                         [ 0, 0, 1, $svar ],
+                                         [ 0, 0, 0, 1 ], ]; } } );
 
     # Multiplying multiple matrices to get a final form.
-    my $transl_matrix =
-        mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
-                                                    $up_atom_coord,
-                                                    $side_atom_coord,
-                                                    'global' ) },
-                               \@transl_matrix,
-                               @{ switch_ref_frame( $mid_atom_coord,
-                                                    $up_atom_coord,
-                                                    $side_atom_coord,
-                                                    'local' ) } ] );
+    my @transl_matrix =
+        ( @{ switch_ref_frame( $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               'global' ) },
+          $transl_matrix,
+          @{ switch_ref_frame( $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               'local' ) } );
 
-    return $transl_matrix;
+    return \@transl_matrix;
 }
 
 #
@@ -113,31 +118,37 @@ sub angle_bending
          $angle_name_y, ) = @_;
 
     # Bond angle matrices that rotates along x and y axes.
-    my @rot_matrix_x =
-        ( [ 1, 0, 0, 0 ],
-          [ 0, "cos(\$${angle_name_x})", "-sin(\$${angle_name_x})", 0 ],
-          [ 0, "sin(\$${angle_name_x})", "cos(\$${angle_name_x})", 0 ],
-          [ 0, 0, 0, 1 ], );
-    my @rot_matrix_y =
-        ( [ "cos(\$${angle_name_y})", 0, "sin(\$${angle_name_y})", 0 ],
-          [ 0, 1, 0, 0 ],
-          [ "-sin(\$${angle_name_y})", 0, "cos(\$${angle_name_y})", 0 ],
-          [ 0, 0, 0, 1 ], );
+    my $rot_matrix_x =
+        Symbolic->new(
+            { 'symbols' => [ $angle_name_x ],
+              'matrix' => sub { my ( $svar ) = @_;
+                                return [ [ 1, 0, 0, 0 ],
+                                         [ 0, cos( $svar ), -sin( $svar ), 0 ],
+                                         [ 0, sin( $svar ), cos( $svar ), 0 ],
+                                         [ 0, 0, 0, 1 ], ]; } } );
+    my $rot_matrix_y =
+        Symbolic->new(
+            { 'symbols' => [ $angle_name_y ],
+              'matrix' => sub { my ( $svar ) = @_;
+                                return [ [ cos( $svar ), 0, sin( $svar ), 0 ],
+                                         [ 0, 1, 0, 0 ],
+                                         [ -sin( $svar ), 0, cos( $svar ), 0 ],
+                                         [ 0, 0, 0, 1 ], ]; } } );
 
     # Multiplying multiple matrices to get a final form.
-    my $rot_matrix =
-        mult_matrix_product( [ @{ switch_ref_frame( $mid_atom_coord,
-                                                    $up_atom_coord,
-                                                    $side_atom_coord,
-                                                    'global' ) },
-                               \@rot_matrix_y,
-                               \@rot_matrix_x,
-                               @{ switch_ref_frame( $mid_atom_coord,
-                                                    $up_atom_coord,
-                                                    $side_atom_coord,
-                                                    'local' ) } ] );
+    my @rot_matrix =
+        ( @{ switch_ref_frame( $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               'global' ) },
+          $rot_matrix_y,
+          $rot_matrix_x,
+          @{ switch_ref_frame( $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               'local' ) } );
 
-    return $rot_matrix;
+    return \@rot_matrix;
 }
 
 1;

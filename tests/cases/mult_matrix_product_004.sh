@@ -1,9 +1,33 @@
-#!/bin/bash
+#!/usr/bin/perl
 
-export PERL5LIB=$(dirname "$0")/../../lib
+use strict;
+use warnings;
 
-matrices_file=$(dirname "$0")/../inputs/matrices/matrices-004.dat
-variable_values="x=6,y=3,z=2"
+use LinearAlgebra qw( mult_matrix_product );
+use Symbolic;
 
-$(dirname "$0")/../scripts/mult_matrix_product "${variable_values}" \
-	                                       ${matrices_file}
+
+my $matrix1 = [ [ 1, 0, 0 ],
+                [ 0, 2, 0 ],
+                [ 0, 0, 3 ], ];
+my $matrix2 = [ [ 1, 0, 0 ],
+                [ 0, 2, 0 ],
+                [ 0, 0, 3 ], ];
+my $matrix3 =
+    Symbolic->new(
+        { 'symbols' => [ 'x', 'y', 'z' ],
+          'matrix' => sub { my ( $x, $y, $z ) = @_;
+                            return [ [ $x ],
+                                     [ $y ],
+                                     [ $z ], ] } } );
+
+my $matrix_product =
+    mult_matrix_product( [ $matrix1, $matrix2, $matrix3 ],
+                         { 'x' => 6, 'y' => 3, 'z' => 2 } );
+
+for my $matrix_id ( 0..$#{ $matrix_product } ) {
+    for my $row ( @{ $matrix_product->[$matrix_id] } ) {
+        print( join( " ", @{ $row } ), "\n" );
+    }
+    print( "\n" ) if $matrix_id != $#{ $matrix_product };
+}

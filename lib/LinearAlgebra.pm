@@ -24,6 +24,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      z_axis_rotation );
 
 use Carp;
+use Clone qw( clone );
 use Constants qw( $EPSILON
                   $PI );
 use Version qw( $VERSION );
@@ -491,8 +492,7 @@ sub scalar_multipl
 # ------------------------- Symbolic linear algebra --------------------------- #
 
 #
-# Performs basic linear algebra on symbolic expressions. Uses GiNaC for
-# calculations.
+# Performs basic linear algebra on symbolic expressions.
 #
 # Example of rotation along z-axis by chi angle:
 #
@@ -541,6 +541,40 @@ sub matrix_product
     my %symbol_values;
     if( defined $symbol_values ) { %symbol_values = %{ $symbol_values } };
 
+    # Checks for analytical functions and evaluates if the values are present.
+    if( ref $left_matrix eq 'Symbolic' ) {
+        if( $left_matrix->{'is_evaluated'} ) {
+            $left_matrix = $left_matrix->{'matrix'};
+        } else {
+            my @symbol_values =
+                map { $symbol_values->{$_} } @{ $left_matrix->{'symbols'} };
+            if( defined $symbol_values[-1] &&
+                $#symbol_values eq $#{ $left_matrix->{'symbols'} } ) {
+                $left_matrix->evaluate( $symbol_values );
+                $left_matrix = $left_matrix->{'matrix'};
+            }
+        }
+    }
+
+    if( ref $right_matrix eq 'Symbolic' ) {
+        if( $right_matrix->{'is_evaluated'} ) {
+            $right_matrix = $right_matrix->{'matrix'};
+        } else {
+            my @symbol_values =
+                map { $symbol_values->{$_} } @{ $right_matrix->{'symbols'} };
+            if( defined $symbol_values[-1] &&
+                $#symbol_values eq $#{ $right_matrix->{'symbols'} } ) {
+                $right_matrix->evaluate( $symbol_values );
+                $right_matrix = $right_matrix->{'matrix'};
+            }
+        }
+    }
+
+    # Returns both matrices if any of two matrices are not evaluated.
+    if( ref $left_matrix eq 'Symbolic' || ref $right_matrix eq 'Symbolic' ) {
+        return $left_matrix, $right_matrix;
+    }
+
     # Notifies error, when the column number of left matrix does not equal the
     # row number of the right matrix.
     if( scalar @{ transpose( $left_matrix ) } != scalar @{ $right_matrix } ) {
@@ -549,69 +583,21 @@ sub matrix_product
                          "to the column\nnumber of the right matrix.", };
     }
 
-    # Makes placeholder items consisting zero values for matrix_product array.
-    my @matrix_product;
-    for( my $product_row = 0;
-         $product_row < scalar @{ $left_matrix };
-         $product_row++ ) {
-        for( my $product_col = 0;
-             $product_col < scalar @{ $right_matrix->[0] };
-             $product_col++ ) {
-            $matrix_product[$product_row][$product_col] = 0;
-        }
-    }
-
     # Calculates matrix product of two matrices.
-    for( my $product_row = 0;
-         $product_row < scalar @matrix_product;
-         $product_row++ ) {
-        for( my $product_col = 0;
-             $product_col < scalar @{ $matrix_product[$product_row] };
-             $product_col++ ) {
-            for( my $left_col = 0;
-                 $left_col < scalar @{ $left_matrix->[$product_col] };
-                 $left_col++ ) {
-                my $left_element;
-                my $right_element;
-
-                # Retrieves numbers that will be multiplied and added to
-                # matrix_product array.
-                $left_element = $left_matrix->[$product_row][$left_col];
-                $right_element = $right_matrix->[$left_col][$product_col];
-
-                # Changes "$" to hash reference (for symbols that are
-                # written in "$x" form).
-                if( %symbol_values ) {
-                    $left_element =~ s/\$(\w+)/\$symbol_values{$1}/smgx;
-                    $right_element =~ s/\$(\w+)/\$symbol_values{$1}/smgx;
-                }
-
-                # Evaluates left and right elements.
-                $left_element = eval $left_element;
-                $right_element = eval $right_element;
-
-                # Throws error if one of the elements are undefined.
-                if( ! defined $left_element ) {
-                    confess
-                    {
-                        type => 'UndifinedError',
-                        message => 'Left element contains undefined variable',
-                    };
-                }
-                if( ! defined $right_element ) {
-                    confess
-                    {
-                        type => 'UndifinedError',
-                        message => 'Right element contains undefined variable',
-                    }
-                }
-
-                # Evaluates multiplication if no exceptions are thrown.
-                $matrix_product[$product_row][$product_col] +=
-                    $left_element * $right_element;
-            }
+    my @matrix_product;
+    for(my $left_row = 0; $left_row <= $#{ $left_matrix }; $left_row++){
+    for(my $right_col = 0; $right_col <= $#{ $right_matrix->[0] }; $right_col++){
+    for(my $right_row = 0; $right_row <= $#{ $right_matrix }; $right_row++){
+        if( ! defined $matrix_product[$left_row][$right_col] ) {
+            $matrix_product[$left_row][$right_col] =
+                $left_matrix->[$left_row][$right_row] *
+                $right_matrix->[$right_row][$right_col];
+        } else {
+            $matrix_product[$left_row][$right_col] +=
+                $left_matrix->[$left_row][$right_row] *
+                $right_matrix->[$right_row][$right_col];
         }
-    }
+    } } }
 
     return \@matrix_product;
 }
@@ -629,58 +615,53 @@ sub mult_matrix_product
 {
     my ( $matrices, $symbol_values ) = @_;
 
-    my @matrices = @{ $matrices };
+    my @matrices = @{ clone( $matrices ) };
 
     # Multiplies matrices from left to right.
     my @mult_matrix_product;
 
     # Only evaluates variables if there is only one matrix in @matrices.
     if( scalar @matrices == 1 ) {
-        push @mult_matrix_product, [];
-        my @matrix = @{ $matrices[0] };
-        for my $row ( @matrix ) {
-            push @{ $mult_matrix_product[-1] }, [];
-            for my $element ( @{ $row } ) {
-                $element =~ s/\$(\w+)/\$symbol_values{$1}/smgx;
-                $element = eval $element;
-                push @{ $mult_matrix_product[-1][-1] }, $element;
+        my $matrix = $matrices[0];
+        # Checks for analytical functions and evaluates if the values are
+        # present.
+        if( ref $matrix eq 'Symbolic' ) {
+            if( $matrix->{'is_evaluated'} ) {
+                $matrix = $matrix->{'matrix'};
+            } else {
+                my @symbol_values =
+                    map { $symbol_values->{$_} } @{ $matrix->{'symbols'} };
+                if( defined $symbol_values[-1] &&
+                    $#symbol_values eq $#{ $matrix->{'symbols'} } ) {
+                    $matrix->evaluate( $symbol_values );
+                    $matrix = $matrix->{'matrix'};
+                }
             }
         }
 
-    } else {
-        for( my $id = $#matrices; $id >= 1; $id-- ) {
-            if( $id == $#matrices ) {
-                eval { push @mult_matrix_product,
-                            matrix_product( $matrices[$id-1],
-                                            $matrices[$id],
-                                            $symbol_values );
-                } or do {
-                    if( ${ @ }->{type} eq 'UndifinedError' ) {
-                        push @mult_matrix_product,
-                             $matrices[$id-1],
-                             $matrices[$id];
-                    } else {
-                        confess ${ @ }->{message};
-                    }
-                };
+        push @mult_matrix_product, $matrix;
 
+    } else {
+        for( my $i = $#matrices; $i >= 1; $i-- ) {
+            if( $i == $#matrices ) {
+                eval {
+                    push @mult_matrix_product,
+                        matrix_product( $matrices[$i-1],
+                                        $matrices[$i],
+                                        $symbol_values );
+                } or do {
+                    confess ${ @ }->{message};
+                };
             } else {
                 eval {
                     unshift @mult_matrix_product,
-                            matrix_product( $matrices[$id-1],
+                            matrix_product( $matrices[$i-1],
                                             $mult_matrix_product[0],
                                             $symbol_values );
                     splice @mult_matrix_product, 1, 1;
                 } or do {
-                    if( ${ @ }->{type} eq 'UndifinedError' ) {
-                        unshift @mult_matrix_product,
-                                $matrices[$id-1],
-                                $mult_matrix_product[0];
-                        splice @mult_matrix_product, 1, 1;
-                    } else {
-                        confess ${ @ }->{message};
-                    }
-                };
+                    confess ${ @ }->{message};
+                }
             }
         }
     }

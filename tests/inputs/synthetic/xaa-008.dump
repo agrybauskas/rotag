@@ -112,32 +112,19 @@
           1
         ]
       ],
-      [
-        [
-          'cos($chi1)',
-          '-sin($chi1)',
-          0,
-          0
-        ],
-        [
-          'sin($chi1)',
-          'cos($chi1)',
-          0,
-          0
-        ],
-        [
-          0,
-          0,
-          1,
-          0
-        ],
-        [
-          0,
-          0,
-          0,
-          1
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'chi1'
         ]
-      ],
+      }, 'Symbolic' ),
       [
         [
           '1.23266166981819'
@@ -215,32 +202,19 @@
           1
         ]
       ],
-      [
-        [
-          'cos($chi1)',
-          '-sin($chi1)',
-          0,
-          0
-        ],
-        [
-          'sin($chi1)',
-          'cos($chi1)',
-          0,
-          0
-        ],
-        [
-          0,
-          0,
-          1,
-          0
-        ],
-        [
-          0,
-          0,
-          0,
-          1
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'chi1'
         ]
-      ],
+      }, 'Symbolic' ),
       [
         [
           '-0.366255846055571',
@@ -267,32 +241,19 @@
           1
         ]
       ],
-      [
-        [
-          'cos($chi2)',
-          '-sin($chi2)',
-          0,
-          0
-        ],
-        [
-          'sin($chi2)',
-          'cos($chi2)',
-          0,
-          0
-        ],
-        [
-          0,
-          0,
-          1,
-          0
-        ],
-        [
-          0,
-          0,
-          0,
-          1
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'chi2'
         ]
-      ],
+      }, 'Symbolic' ),
       [
         [
           '0.000270666743752201'

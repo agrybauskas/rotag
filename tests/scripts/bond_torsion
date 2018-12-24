@@ -3,7 +3,12 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use AlterMolecule qw( bond_torsion );
+
+$Data::Dumper::Indent = 1;
+$Data::Dumper::Sortkeys = 1;
 
 #
 # Unit test: AlterMolecule::bond_torsion.
@@ -22,9 +27,4 @@ close( $fh );
 my $bond_torsion_matrix =
     bond_torsion( $atom_coords[0], $atom_coords[1], $atom_coords[2], "chi");
 
-for my $matrix_id ( 0..$#{ $bond_torsion_matrix } ) {
-    for my $row ( @{ $bond_torsion_matrix->[$matrix_id] } ) {
-        print( join( "\t", @{ $row } ), "\n" );
-    }
-    print( "\n" ) if $matrix_id != $#{ $bond_torsion_matrix };
-}
+print Dumper $bond_torsion_matrix;

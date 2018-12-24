@@ -39,7 +39,8 @@ use Constants qw( $EDGE_LENGTH_INTERACTION
 use ForceField::General;
 use Grid qw( grid_box
              identify_neighbour_cells );
-use LinearAlgebra qw( mult_matrix_product
+use LinearAlgebra qw( matrix_product
+                      mult_matrix_product
                       switch_ref_frame );
 use Measure qw( all_dihedral
                 dihedral_angle

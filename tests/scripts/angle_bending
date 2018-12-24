@@ -3,7 +3,12 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use AlterMolecule qw( angle_bending );
+
+$Data::Dumper::Indent = 1;
+$Data::Dumper::Sortkeys = 1;
 
 #
 # Unit test: AlterMolecule::angle_bending.
@@ -26,9 +31,4 @@ my $angle_bending_matrix =
                    "psi",
                    "theta" );
 
-for my $matrix_id ( 0..$#{ $angle_bending_matrix } ) {
-    for my $row ( @{ $angle_bending_matrix->[$matrix_id] } ) {
-        print( join( "\t", @{ $row } ), "\n" );
-    }
-    print( "\n" ) if $matrix_id != $#{ $angle_bending_matrix };
-}
+print Dumper $angle_bending_matrix;

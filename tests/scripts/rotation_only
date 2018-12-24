@@ -3,8 +3,13 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use Constants qw( $SIG_FIGS_MIN );
 use SidechainModels qw( rotation_only );
+
+$Data::Dumper::Indent = 1;
+$Data::Dumper::Sortkeys = 1;
 
 #
 # Unit test: SidechainModels::rotation_only
@@ -24,19 +29,4 @@ $atom_site = eval( $atom_site );
 
 rotation_only( $atom_site );
 
-my $conformation = $atom_site->{$atom_id}{"conformation"};
-
-for my $matrix_id ( 0..$#{ $conformation } ) {
-    for my $row ( @{ $conformation->[$matrix_id] } ) {
-        for my $item ( @{ $row } ) {
-            if( $item =~ m/^[+-]?\d+[.]?\d+$/ ) {
-                printf( $SIG_FIGS_MIN, $item );
-            } else {
-                print( $item );
-            }
-            print( " " );
-        }
-        print( "\n" );
-    }
-    print( "\n" ) if $matrix_id != $#{ $conformation };
-}
+print Dumper $atom_site->{$atom_id}{"conformation"};

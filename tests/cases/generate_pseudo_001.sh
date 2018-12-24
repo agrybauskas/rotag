@@ -8,6 +8,6 @@ angle_ranges="chi1 0,2*pi"
 num_of_angles="chi1 20"
 
 $(dirname "$0")/../scripts/generate_pseudo "${atom_id}" \
-	                                   "${angle_ranges}" \
-	                                   "${num_of_angles}" \
-					   ${pdbx_dump_file}
+                                           "${angle_ranges}" \
+                                           "${num_of_angles}" \
+                                           ${pdbx_dump_file}

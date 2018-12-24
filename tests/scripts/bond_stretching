@@ -3,7 +3,12 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use AlterMolecule qw( bond_stretching );
+
+$Data::Dumper::Indent = 1;
+$Data::Dumper::Sortkeys = 1;
 
 #
 # Unit test: AlterMolecule::bond_stretching.
@@ -22,9 +27,4 @@ close( $fh );
 my $bond_stretching_matrix =
     bond_stretching( $atom_coords[0], $atom_coords[1], $atom_coords[2], "r");
 
-for my $matrix_id ( 0..$#{ $bond_stretching_matrix } ) {
-    for my $row ( @{ $bond_stretching_matrix->[$matrix_id] } ) {
-        print( join( "\t", @{ $row } ), "\n" );
-    }
-    print( "\n" ) if $matrix_id != $#{ $bond_stretching_matrix };
-}
+print Dumper $bond_stretching_matrix;
