@@ -66,3 +66,6 @@
 -- Figure out how heteroatoms should be treated when the part of them are
    selected and included in iteraction sites.
 ++ Add group assignment keyword to the grammar.
+-- Generate mainchain atoms with specified dihedral angles. It will be useful
+   for inverstigating impact of mainchain conformation to sidechains.
+-- Add Monte Carlo and specified angle range sampling in rotag_library.
