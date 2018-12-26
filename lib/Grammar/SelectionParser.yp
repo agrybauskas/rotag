@@ -2,10 +2,14 @@
 %{
     use warnings;
 
+    use Clone qw( clone );
     use List::MoreUtils qw( uniq );
     use List::Util qw( any );
 
-    use ConnectAtoms qw( around_distance );
+    use BondProperties qw( hybridization );
+    use ConnectAtoms qw( around_distance
+                         connect_atoms );
+    use Measure qw( all_dihedral );
     use PDBxParser qw( extract
                        filter_new );
     use ForceField::General;
@@ -198,6 +202,29 @@ exp
         }
     | exp 'angles' map_ope
         {
+            my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
+            connect_atoms( $clone_atom_site );
+            hybridization( $clone_atom_site );
+
+            my $dihedral_angles =
+                all_dihedral(
+                    filter_new( $clone_atom_site,
+                                { 'calc_mainchain' => 1,
+                                  'reference_atom_site' => $clone_atom_site } ) );
+
+            my @residue_unique_keys = (); # Residue unique keys that passes the
+                                          # criteria.
+            for my $residue_unique_key ( %{ $dihedral_angles } ) {
+                my $is_valid_angle = 0;
+                for my $angles ( keys %{ $_[3] } ) {
+
+                }
+
+                if( $is_valid_angle ) {
+                    push @residue_unique_keys, $residue_unique_key;
+                }
+            }
+
             return $_[1];
         }
     | 'chain' str_ope
@@ -273,8 +300,8 @@ exp
 ;
 
 map_ope
-    : map_ope ',' map_ope { return { %{ $_[1] }, %{ $_[3] } }; }
-    | STR '=' NUM         { return { $_[1] => $_[3] }; }
+    : map_ope ',' map_ope      { return { %{ $_[1] }, %{ $_[3] } }; }
+    | STR '=' FLOAT '..' FLOAT { return { $_[1] => { 'min' => $_[3], 'max' => $_[5] } }; }
 ;
 
 num_ope
@@ -333,6 +360,8 @@ sub lexer
             return ( 'group', $1 );
         } elsif(s/^(angles)//) {
             return ( 'angles', $1 );
+        } elsif( s/^([0-9]+\.[0-9]+)// ) {
+            return ( 'FLOAT', $1 );
         } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
         } elsif( s/^(\w+)// ) {
