@@ -12,6 +12,7 @@
     use Constants qw( $PI );
     use Measure qw( all_dihedral );
     use PDBxParser qw( extract
+                       filter_by_unique_residue_key
                        filter_new );
     use ForceField::General;
 %}
@@ -239,11 +240,21 @@ exp
                 }
             }
 
+            my @atom_ids = ();
             for my $residue_unique_key ( @residue_unique_keys ) {
-
+                my $residue_atom_site =
+                    filter_by_unique_residue_key( $clone_atom_site,
+                                                  $residue_unique_key,
+                                                  1 );
+                push @atom_ids,
+                    @{ filter_new(
+                           $residue_atom_site,
+                           { 'include' => {$_[0]->{USER}{BY_ATTRIBUTE} => $_[1]},
+                             'group_id' => $_[0]->{USER}{GROUP_ID},
+                             'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } ) };
             }
 
-            return $_[1];
+            return [ uniq @atom_ids ];
         }
     | 'chain' str_ope
         {
