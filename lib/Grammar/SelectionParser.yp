@@ -13,7 +13,8 @@
 
 %left ','
 %left '..'
-%left 'around' 'rand' 'group'
+%left '='
+%left 'around' 'rand' 'group' 'angles'
 %right 'byres'
 %left '!'
 %left '||' '&&'
@@ -31,6 +32,7 @@ line
             }
         }
 ;
+
 # TODO: main and side should be written as exp mainchain exp, exp sidechain exp.
 exp
     : 'all'
@@ -195,6 +197,10 @@ exp
                           'group_id' => $_[3],
                           'return_data' => $_[0]->{USER}{BY_ATTRIBUTE} } );
         }
+    | exp 'angles' map_ope
+        {
+            return [ 5 ];
+        }
     | 'chain' str_ope
         {
             filter_new( $_[0]->{USER}{ATOM_SITE},
@@ -267,10 +273,17 @@ exp
         }
 ;
 
+map_ope
+    : map_ope ',' map_ope { { %{ $_[1] }, %{ $_[3] } }; }
+    | map_ope '=' map_ope { { $_[1] => $_[3] }; }
+    | STR                 { [ $_[1] ]; }
+    | FLOAT               { [ $_[1] ]; }
+;
+
 num_ope
-    : num_ope ',' num_ope { [ @{ $_[1] }, @{ $_[3] } ]; }
+    : num_ope ','  num_ope { [ @{ $_[1] }, @{ $_[3] } ]; }
     | num_ope '..' num_ope { [ $_[1]->[0]..$_[3]->[0] ]; }
-    | NUM                 { [ int( $_[1] ) ]; }
+    | NUM                  { [ int( $_[1] ) ]; }
 ;
 
 str_ope
@@ -321,6 +334,8 @@ sub lexer
             return ( 'rand', $1 );
         } elsif(s/^(group)//) {
             return ( 'group', $1 );
+        } elsif(s/^(angles)//) {
+            return ( 'angles', $1 );
         } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
         } elsif( s/^(\w+)// ) {
@@ -329,6 +344,8 @@ sub lexer
             return ( ',', $1 );
         } elsif( s/^(\.\.)// ) {
             return ( '..', $1 );
+        } elsif( s/^(=)// ) {
+            return ( '=', $1 );
         } elsif( s/^(\|\|)// ) {
             return ( '||', $1 );
         } elsif( s/^(&&)// ) {
