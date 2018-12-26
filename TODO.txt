@@ -69,3 +69,5 @@
 -- Generate mainchain atoms with specified dihedral angles. It will be useful
    for inverstigating impact of mainchain conformation to sidechains.
 -- Add Monte Carlo and specified angle range sampling in rotag_library.
+-- Expand token should be added that growth of selection by one amino-acid would
+   be useful when determining mainchain dihedral angles.
