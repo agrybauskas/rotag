@@ -9,6 +9,7 @@
     use BondProperties qw( hybridization );
     use ConnectAtoms qw( around_distance
                          connect_atoms );
+    use Constants qw( $PI );
     use Measure qw( all_dihedral );
     use PDBxParser qw( extract
                        filter_new );
@@ -216,13 +217,30 @@ exp
                                           # criteria.
             for my $residue_unique_key ( %{ $dihedral_angles } ) {
                 my $is_valid_angle = 0;
-                for my $angles ( keys %{ $_[3] } ) {
-
+                for my $angle ( keys %{ $_[3] } ) {
+                    my $min_angle = $_[3]->{$angle}{'min'} * $PI / 180;
+                    my $max_angle = $_[3]->{$angle}{'max'} * $PI / 180;
+                    my $residue_angle;
+                    if( exists $dihedral_angles->{$residue_unique_key}
+                                                 {$angle}{'value'} &&
+                        $dihedral_angles->{$residue_unique_key}
+                                          {$angle}{'value'} >= $min_angle &&
+                        $dihedral_angles->{$residue_unique_key}{$angle}
+                                          {'value'} <= $max_angle ) {
+                        $is_valid_angle = 1;
+                    } else {
+                        $is_valid_angle = 0;
+                        last;
+                    }
                 }
 
                 if( $is_valid_angle ) {
                     push @residue_unique_keys, $residue_unique_key;
                 }
+            }
+
+            for my $residue_unique_key ( @residue_unique_keys ) {
+
             }
 
             return $_[1];
@@ -301,7 +319,8 @@ exp
 
 map_ope
     : map_ope ',' map_ope      { return { %{ $_[1] }, %{ $_[3] } }; }
-    | STR '=' FLOAT '..' FLOAT { return { $_[1] => { 'min' => $_[3], 'max' => $_[5] } }; }
+    | STR '=' FLOAT '..' FLOAT { return { $_[1] => { 'min' => $_[3],
+                                                     'max' => $_[5] } }; }
 ;
 
 num_ope
@@ -360,7 +379,7 @@ sub lexer
             return ( 'group', $1 );
         } elsif(s/^(angles)//) {
             return ( 'angles', $1 );
-        } elsif( s/^([0-9]+\.[0-9]+)// ) {
+        } elsif( s/^((?:\-)?[0-9]+\.[0-9]+)// ) {
             return ( 'FLOAT', $1 );
         } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
