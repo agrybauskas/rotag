@@ -12,7 +12,7 @@
 %}
 
 %left ','
-%left '-'
+%left '..'
 %left 'around' 'rand' 'group'
 %right 'byres'
 %left '!'
@@ -269,7 +269,7 @@ exp
 
 num_ope
     : num_ope ',' num_ope { [ @{ $_[1] }, @{ $_[3] } ]; }
-    | num_ope '-' num_ope { [ $_[1]->[0]..$_[3]->[0] ]; }
+    | num_ope '..' num_ope { [ $_[1]->[0]..$_[3]->[0] ]; }
     | NUM                 { [ int( $_[1] ) ]; }
 ;
 
@@ -327,8 +327,8 @@ sub lexer
             return ( 'STR', $1 );
         } elsif( s/^(,)// ) {
             return ( ',', $1 );
-        } elsif( s/^(-)// ) {
-            return ( '-', $1 );
+        } elsif( s/^(\.\.)// ) {
+            return ( '..', $1 );
         } elsif( s/^(\|\|)// ) {
             return ( '||', $1 );
         } elsif( s/^(&&)// ) {
