@@ -11,9 +11,8 @@
     use ForceField::General;
 %}
 
-%left '='
 %left ','
-%left '..'
+%left '..' '='
 %left 'around' 'rand' 'group' 'angles'
 %right 'byres'
 %left '!'
@@ -199,7 +198,7 @@ exp
         }
     | exp 'angles' map_ope
         {
-            return [ @{ $_[1] } ];
+            return $_[1];
         }
     | 'chain' str_ope
         {
@@ -274,10 +273,8 @@ exp
 ;
 
 map_ope
-    : map_one ',' map_one
-    | KEY '=' VALUE { { $_[1] => $_[3] }; }
-    | KEY           { $_[1]; }
-    | VALUE         { $_[1]; }
+    : map_ope ',' map_ope { return { %{ $_[1] }, %{ $_[3] } }; }
+    | STR '=' NUM         { return { $_[1] => $_[3] }; }
 ;
 
 num_ope
