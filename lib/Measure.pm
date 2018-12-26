@@ -182,9 +182,13 @@ sub dihedral_angle
 sub all_dihedral
 {
     my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain ) = ( $options->{'calc_mainchain'} );
+    my ( $calc_mainchain, $reference_atom_site ) = (
+        $options->{'calc_mainchain'},
+        $options->{'reference_atom_site'},
+    );
 
     $calc_mainchain //= 0;
+    $reference_atom_site //= $atom_site;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -233,14 +237,14 @@ sub all_dihedral
                           'is_list' => 1 } )->[0];
             # TODO: look if these filter slow down calculations drastically.
             my $prev_c_atom_id =
-                filter( { 'atom_site' => $atom_site,
+                filter( { 'atom_site' => $reference_atom_site,
                           'include' =>
                               { 'id' => $residue_site->{$n_atom_id}{'connections'},
                                 'label_atom_id' => [ 'C' ] },
                           'data' => [ 'id' ],
                           'is_list' => 1 } )->[0];
             my $next_n_atom_id =
-                filter( { 'atom_site' => $atom_site,
+                filter( { 'atom_site' => $reference_atom_site,
                           'include' =>
                               { 'id' => $residue_site->{$c_atom_id}{'connections'},
                                 'label_atom_id' => [ 'N' ] },
