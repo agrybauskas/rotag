@@ -7,5 +7,5 @@ split_by_attributes="pdbx_PDB_model_num,label_alt_id"
 append_to_alt_ids=1
 
 "$(dirname "$0")"/../scripts/split_by ${split_by_attributes} \
-		                      ${pdbx_dump_file} \
+                                      ${pdbx_dump_file} \
                                       ${append_to_alt_ids}
