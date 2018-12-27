@@ -20,7 +20,7 @@
 %left ','
 %left '..' '='
 %left 'around' 'rand' 'group' 'angles'
-%right 'byres'
+%right 'byres' 'expand'
 %left '!'
 %left '||' '&&'
 
@@ -256,6 +256,20 @@ exp
 
             return [ uniq @atom_ids ];
         }
+    | 'expand' exp
+        {
+            my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
+            connect_atoms( $clone_atom_site );
+            # TODO: BY_ATTRIBUTE should be just 'id' and nothing else.
+            my @expanded_atom_ids = ();
+            for my $atom_id ( @{ $_[2] } ) {
+                push @expanded_atom_ids, $atom_id;
+                push @expanded_atom_ids,
+                    @{ $clone_atom_site->{$atom_id}{'connections'} };
+            }
+
+            return [ @expanded_atom_ids ];
+        }
     | 'chain' str_ope
         {
             filter_new( $_[0]->{USER}{ATOM_SITE},
@@ -370,6 +384,8 @@ sub lexer
             return ( 'hetatoms', $1 );
         } elsif(s/^(byres)//) {
             return ( 'byres', $1 );
+        } elsif(s/^(expand)//) {
+            return ( 'expand', $1 );
         } elsif(s/^(resname)//) {
             return ( 'resname', $1 );
         } elsif(s/^(atomid)//) {
