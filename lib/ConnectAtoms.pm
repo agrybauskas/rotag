@@ -94,8 +94,7 @@ sub is_connected
                       @{ $General::CONNECTIVITY{$target_residue_name}
                                                {$target_atom_name} } ) ) {
             $is_connected = 1;
-        }
-        else {
+        } else {
             $is_connected = 0;
         }
     }
