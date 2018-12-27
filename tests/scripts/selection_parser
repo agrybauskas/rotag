@@ -26,8 +26,7 @@ $atom_site = eval( $atom_site );
 
 my $selection_parser = new SelectionParser();
 my $selected_atom_ids = $selection_parser->parser( $atom_site,
-                                                   $selection_command,
-                                                   'id' );
+                                                   $selection_command );
 my $selected_atom_site =
     filter_new( $atom_site, { 'include' => { 'id' => $selected_atom_ids } } );
 

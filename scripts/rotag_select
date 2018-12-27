@@ -174,7 +174,6 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
             @{ $selection_parser->
                    parser( $atom_site,
                            $target_cmd,
-                           'id',
                            { 'seed' => $random_seed,
                              'group_id' => $group_id } ) };
         $group_id++;
@@ -184,7 +183,6 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
         @{ $selection_parser->
                parser( $atom_site,
                        $select_cmd,
-                       'id',
                        { 'seed' => $random_seed } ) };
 
     mark_selection( $atom_site, { 'target' => \@target_atom_ids,
