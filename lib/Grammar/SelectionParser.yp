@@ -42,34 +42,36 @@ line
 exp
     : 'all'
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'mainchain'
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'label_atom_id' =>
-                                             \@General::MAINCHAIN_ATOM_NAMES,
-                                         'group_PDB' => [ 'ATOM' ] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' =>
+                                     { 'label_atom_id' =>
+                                           \@General::MAINCHAIN_ATOM_NAMES,
+                                       'group_PDB' => [ 'ATOM' ] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'sidechain'
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'label_atom_id' =>
-                                             \@General::SIDECHAIN_ATOM_NAMES,
-                                         'group_PDB' => [ 'ATOM' ] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' =>
+                                     { 'label_atom_id' =>
+                                           \@General::SIDECHAIN_ATOM_NAMES,
+                                       'group_PDB' => [ 'ATOM' ] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'hetatoms'
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'group_PDB' => [ 'HETATM' ] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'group_PDB' => [ 'HETATM' ] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'byres' exp
         {
@@ -139,7 +141,7 @@ exp
         }
     | '(' exp ')'
         {
-            $_[2];
+            return $_[2];
         }
     | '!' exp
         {
@@ -190,17 +192,17 @@ exp
         }
     | exp 'group' NUM
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'id' => $_[1] },
-                          'group_id' => $_[3],
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'id' => $_[1] },
+                                 'group_id' => $_[3],
+                                 'return_data' => 'id' } );
         }
     | exp 'group' STR
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'id' => $_[1] },
-                          'group_id' => $_[3],
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'id' => $_[1] },
+                                 'group_id' => $_[3],
+                                 'return_data' => 'id' } );
         }
     | exp 'angles' map_ope
         {
@@ -260,7 +262,7 @@ exp
         {
             my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
             connect_atoms( $clone_atom_site );
-            # TODO: BY_ATTRIBUTE should be just 'id' and nothing else.
+
             my @expanded_atom_ids = ();
             for my $atom_id ( @{ $_[2] } ) {
                 push @expanded_atom_ids, $atom_id;
@@ -272,73 +274,73 @@ exp
         }
     | 'chain' str_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'label_asym_id' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_asym_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'resid' num_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'label_seq_id' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_seq_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'resname' str_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'label_comp_id' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_comp_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'atomid' num_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'id' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'atomname' str_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'label_atom_id' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_atom_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'atomtype' str_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'type_symbol' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'type_symbol' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'altid' str_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'label_alt_id' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_alt_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'altid' num_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'label_alt_id' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_alt_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'model' str_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
     | 'model' num_ope
         {
-            filter_new( $_[0]->{USER}{ATOM_SITE},
-                        { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
-                          'group_id' => $_[0]->{USER}{GROUP_ID},
-                          'return_data' => 'id' } );
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
         }
 ;
 
@@ -349,14 +351,14 @@ map_ope
 ;
 
 num_ope
-    : num_ope ','  num_ope { [ @{ $_[1] }, @{ $_[3] } ]; }
-    | num_ope '..' num_ope { [ $_[1]->[0]..$_[3]->[0] ]; }
-    | NUM                  { [ int( $_[1] ) ]; }
+    : num_ope ','  num_ope { return [ @{ $_[1] }, @{ $_[3] } ]; }
+    | num_ope '..' num_ope { return [ $_[1]->[0]..$_[3]->[0] ]; }
+    | NUM                  { return [ int( $_[1] ) ]; }
 ;
 
 str_ope
-    : str_ope ',' str_ope { [ @{ $_[1] }, @{ $_[3] } ]; }
-    | STR                 { [ $_[1] ]; }
+    : str_ope ',' str_ope { return [ @{ $_[1] }, @{ $_[3] } ]; }
+    | STR                 { return [ $_[1] ]; }
 ;
 
 %%
