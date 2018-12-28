@@ -10,7 +10,7 @@ our @EXPORT_OK = qw( create_box
 
 use List::Util qw( max
                    min );
-
+use Carp qw( confess );
 use Constants qw( $EDGE_LENGTH_CONNECTION );
 use PDBxParser qw( filter );
 use Version qw( $VERSION );
@@ -36,6 +36,12 @@ sub create_box
     my @atom_coord_x = map { $_->[0] } @{ $atom_coord };
     my @atom_coord_y = map { $_->[1] } @{ $atom_coord };
     my @atom_coord_z = map { $_->[2] } @{ $atom_coord };
+
+    if( ! ( defined $atom_coord_x[0] &&
+            defined $atom_coord_y[0] &&
+            defined $atom_coord_z[0] ) ) {
+        confess 'not all x, y and z coordinates are defined';
+    }
 
     # Directions are adapted to right-handed Cartesian coordinate system.
     # Looking for leftmost and rightmost coordinates of X-axis.
@@ -79,8 +85,8 @@ sub grid_box
 
     # Determines boundary box around all atoms.
     my $atom_data =
-	filter( { 'atom_site' => $atom_site,
-		  'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        filter( { 'atom_site' => $atom_site,
+                  'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
     my @atom_coordinates = map { [ $_->[1], $_->[2], $_->[3] ] } @{ $atom_data };
     my $boundary_box = create_box( \@atom_coordinates );
 
@@ -93,30 +99,30 @@ sub grid_box
 
     # Iterates through atoms and determines in which cell these atoms are.
     foreach my $atom_coord ( @{ $atom_data } ) {
-	$cell_index_x =
-	    int( ( $atom_coord->[1] - $boundary_box->[0] ) / $edge_length ) + 1;
-	$cell_index_y =
-	    int( ( $atom_coord->[2] - $boundary_box->[2] ) / $edge_length ) + 1;
-	$cell_index_z =
-	    int( ( $atom_coord->[3] - $boundary_box->[4] ) / $edge_length ) + 1;
+        $cell_index_x =
+            int( ( $atom_coord->[1] - $boundary_box->[0] ) / $edge_length ) + 1;
+        $cell_index_y =
+            int( ( $atom_coord->[2] - $boundary_box->[2] ) / $edge_length ) + 1;
+        $cell_index_z =
+            int( ( $atom_coord->[3] - $boundary_box->[4] ) / $edge_length ) + 1;
 
-	# Checks if hash keys already  exist.
-	if( exists $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} ) {
-	    push @{ $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} },
+        # Checks if hash keys already  exist.
+        if( exists $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} ) {
+            push @{ $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} },
                 $atom_coord->[0];
-	} else {
-	    $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} =
-		[ $atom_coord->[0] ];
-	}
+        } else {
+            $grid_box{"$cell_index_x,$cell_index_y,$cell_index_z"} =
+                [ $atom_coord->[0] ];
+        }
 
-	# Identifies what cells do atoms occupy, if they are in the list.
-	if( ! $atom_ids ) { next; }
+        # Identifies what cells do atoms occupy, if they are in the list.
+        if( ! $atom_ids ) { next; }
 
-	for my $atom_id ( @{ $atom_ids } ) {
-	if( $atom_coord->[0] eq $atom_id ) {
+        for my $atom_id ( @{ $atom_ids } ) {
+        if( $atom_coord->[0] eq $atom_id ) {
             push @{ $atom_cell_pos{"$cell_index_x,$cell_index_y,$cell_index_z"}},
-                join q(,), map { $atom_site->{$atom_coord->[0]}{$_} }
-                              @{ $attributes };
+                 join q(,), map { $atom_site->{$atom_coord->[0]}{$_} }
+                 @{ $attributes };
         } }
     }
 
