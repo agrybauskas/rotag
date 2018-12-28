@@ -23,7 +23,7 @@ our @EXPORT_OK = qw( create_ref_frame
                      y_axis_rotation
                      z_axis_rotation );
 
-use Carp;
+use Carp qw( confess );
 use Clone qw( clone );
 use Constants qw( $EPSILON
                   $PI );
@@ -48,18 +48,6 @@ sub create_ref_frame
 
     my @local_ref_frame;
     my $vector_length;
-
-    # Checks, if coordinates are correctly assigned or have correct size.
-    if( ! defined $mid_atom_coord || ! defined $up_atom_coord ||
-        ! defined $up_atom_coord ) {
-        confess 'three atom coordinates have to be given - only';
-    }
-    if( ref $mid_atom_coord  ne 'ARRAY'  || ref $up_atom_coord ne 'ARRAY' ||
-        ref $side_atom_coord ne 'ARRAY'  || $#{ $mid_atom_coord }  != 2   ||
-        scalar $#{ $up_atom_coord } != 2 || $#{ $side_atom_coord } != 2 ) {
-        confess 'three coordinates are needed for each of the three atom in ' .
-                'order to calculate the frame of reference';
-    }
 
     # Let local z-axis be colinear to bond between mid and up atoms.
     $local_ref_frame[2][0] = $up_atom_coord->[0] - $mid_atom_coord->[0];
@@ -178,10 +166,6 @@ sub switch_ref_frame
          $side_atom_coord,
          $switch_ref_to ) = @_;
 
-    if( ! defined $switch_ref_to ) {
-        confess 'reference argument was not selected';
-    }
-
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
     my ( $alpha_rad, $beta_rad, $gamma_rad ) =
@@ -228,8 +212,6 @@ sub x_axis_rotation
 {
     my ( $angle_rad ) = @_;
 
-    if( ! defined $angle_rad ) { confess 'angle is not defined'; }
-
     my @rot_matrix_x =
         ( [ 1, 0, 0, 0 ],
           [ 0, cos( $angle_rad ), - sin( $angle_rad ), 0 ],
@@ -251,8 +233,6 @@ sub y_axis_rotation
 {
     my ( $angle_rad ) = @_;
 
-    if( ! defined $angle_rad ) { confess 'angle is not defined'; }
-
     my @rot_matrix_y =
         ( [ cos( $angle_rad ), 0, sin( $angle_rad ), 0 ],
           [ 0, 1, 0, 0 ],
@@ -273,8 +253,6 @@ sub y_axis_rotation
 sub z_axis_rotation
 {
     my ( $angle_rad ) = @_;
-
-    if( ! defined $angle_rad ) { confess 'angle is not defined'; }
 
     my @rot_matrix_z =
         ( [ cos( $angle_rad ), - sin( $angle_rad ), 0, 0 ],
@@ -382,12 +360,6 @@ sub vector_length
 {
     my ( $vector ) = @_;
 
-    if( ! defined $vector->[0] || ! defined $vector->[0][0] ||
-        ! defined $vector->[1] || ! defined $vector->[1][0] ||
-        ! defined $vector->[2] || ! defined $vector->[2][0] ) {
-        confess 'not all element of the vector are defined';
-    }
-
     my $vector_length = sqrt( $vector->[0][0] ** 2 +
                               $vector->[1][0] ** 2 +
                               $vector->[2][0] ** 2 );
@@ -407,17 +379,6 @@ sub vector_length
 sub vector_cross
 {
     my ( $left_matrix, $right_matrix ) = @_;
-
-    if( ! defined $left_matrix->[0] ||
-        ! defined $left_matrix->[1] ||
-        ! defined $left_matrix->[2] ) {
-        confess 'the elements of the left 3D matrix are not defined';
-    }
-    if( ! defined $right_matrix->[0] ||
-        ! defined $right_matrix->[1] ||
-        ! defined $right_matrix->[2] ) {
-        confess 'the elements of the right 3D matrix are not defined';
-    }
 
     my @cross_product =
         ( $left_matrix->[1] * $right_matrix->[2] -
