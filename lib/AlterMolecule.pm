@@ -8,6 +8,7 @@ our @EXPORT_OK = qw( angle_bending
                      bond_stretching
                      bond_torsion );
 
+use Carp qw( confess );
 use LinearAlgebra qw( switch_ref_frame );
 use Symbolic;
 use Version qw( $VERSION );
@@ -33,6 +34,8 @@ sub bond_torsion
          $side_atom_coord,
          $angle_name ) = @_;
 
+    if( ! defined $angle_name ) { confess 'angle name was not declared'; }
+
     # Rotation matrix around the bond.
     my $rot_matrix =
         Symbolic->new(
@@ -51,7 +54,7 @@ sub bond_torsion
           @{ switch_ref_frame( $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'local' ) } );
+                               'local' ) }, );
 
     return \@rot_matrix;
 }
@@ -73,6 +76,8 @@ sub bond_stretching
          $side_atom_coord,
          $length_name ) = @_;
 
+    if( ! defined $length_name ) { confess 'length name was not declared'; }
+
     # Translation of the coordinates of the bond.
     my $transl_matrix =
         Symbolic->new(
@@ -93,7 +98,7 @@ sub bond_stretching
           @{ switch_ref_frame( $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'local' ) } );
+                               'local' ) }, );
 
     return \@transl_matrix;
 }
@@ -116,6 +121,10 @@ sub angle_bending
          $side_atom_coord,
          $angle_name_x,
          $angle_name_y, ) = @_;
+
+    if( ! defined $angle_name_x || ! defined $angle_name_y ) {
+        confess 'one of the (or both) angle names was not declared';
+    }
 
     # Bond angle matrices that rotates along x and y axes.
     my $rot_matrix_x =
@@ -146,7 +155,7 @@ sub angle_bending
           @{ switch_ref_frame( $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'local' ) } );
+                               'local' ) }, );
 
     return \@rot_matrix;
 }
