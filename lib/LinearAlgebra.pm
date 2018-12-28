@@ -49,6 +49,18 @@ sub create_ref_frame
     my @local_ref_frame;
     my $vector_length;
 
+    # Checks, if coordinates are correctly assigned or have correct size.
+    if( ! defined $mid_atom_coord || ! defined $up_atom_coord ||
+        ! defined $up_atom_coord ) {
+        confess 'three atom coordinates have to be given - only';
+    }
+    if( ref $mid_atom_coord  ne 'ARRAY'  || ref $up_atom_coord ne 'ARRAY' ||
+        ref $side_atom_coord ne 'ARRAY'  || $#{ $mid_atom_coord }  != 2   ||
+        scalar $#{ $up_atom_coord } != 2 || $#{ $side_atom_coord } != 2 ) {
+        confess 'three coordinates are needed for each of the three atom in ' .
+                'order to calculate the frame of reference';
+    }
+
     # Let local z-axis be colinear to bond between mid and up atoms.
     $local_ref_frame[2][0] = $up_atom_coord->[0] - $mid_atom_coord->[0];
     $local_ref_frame[2][1] = $up_atom_coord->[1] - $mid_atom_coord->[1];
@@ -153,7 +165,7 @@ sub find_euler_angles
 # Input:
 #     ${mid,up,side}_atom_coord - array of three atom coordinates in x, y, z
 #     form, that frame of reference will be transformed to.
-#     $switch_to_local - boolean that switches frame of reference to local (if
+#     $switch_to_local - string that switches frame of reference to local (if
 #     'local') and global (if 'global').
 # Output:
 #     $ref_frame_switch - 4x4 transformation matrix.
@@ -165,6 +177,10 @@ sub switch_ref_frame
          $up_atom_coord,
          $side_atom_coord,
          $switch_ref_to ) = @_;
+
+    if( ! defined $switch_ref_to ) {
+        confess 'reference argument was not selected';
+    }
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
@@ -193,8 +209,8 @@ sub switch_ref_frame
                                    x_axis_rotation( - $beta_rad ),
                                    z_axis_rotation( - $alpha_rad ) ] );
     } else {
-        confess 'Must choose \$switch_to_global value between \'local\' and' .
-            '\'global\'.';
+        confess 'must choose $switch_to_global value between \'local\' and ' .
+                '\'global\'';
     }
 
     return $ref_frame_switch;
@@ -211,6 +227,8 @@ sub switch_ref_frame
 sub x_axis_rotation
 {
     my ( $angle_rad ) = @_;
+
+    if( ! defined $angle_rad ) { confess 'angle is not defined'; }
 
     my @rot_matrix_x =
         ( [ 1, 0, 0, 0 ],
@@ -233,6 +251,8 @@ sub y_axis_rotation
 {
     my ( $angle_rad ) = @_;
 
+    if( ! defined $angle_rad ) { confess 'angle is not defined'; }
+
     my @rot_matrix_y =
         ( [ cos( $angle_rad ), 0, sin( $angle_rad ), 0 ],
           [ 0, 1, 0, 0 ],
@@ -253,6 +273,8 @@ sub y_axis_rotation
 sub z_axis_rotation
 {
     my ( $angle_rad ) = @_;
+
+    if( ! defined $angle_rad ) { confess 'angle is not defined'; }
 
     my @rot_matrix_z =
         ( [ cos( $angle_rad ), - sin( $angle_rad ), 0, 0 ],
@@ -305,8 +327,9 @@ sub reshape
         $length_by_dimensions += $dimensions->[$i] * $dimensions->[$i+1];
     }
 
-    confess 'There are not enough elements or dimensions.'
-        if( scalar( @{ $element_list } ) != $length_by_dimensions );
+    if( scalar( @{ $element_list } ) != $length_by_dimensions ) {
+        confess 'there are not enough elements or dimensions';
+    }
 
     # Generates matrices.
     my @matrices;
@@ -359,10 +382,15 @@ sub vector_length
 {
     my ( $vector ) = @_;
 
-    my $vector_length =
-        sqrt( $vector->[0][0] ** 2 +
-              $vector->[1][0] ** 2 +
-              $vector->[2][0] ** 2 );
+    if( ! defined $vector->[0] || ! defined $vector->[0][0] ||
+        ! defined $vector->[1] || ! defined $vector->[1][0] ||
+        ! defined $vector->[2] || ! defined $vector->[2][0] ) {
+        confess 'not all element of the vector are defined';
+    }
+
+    my $vector_length = sqrt( $vector->[0][0] ** 2 +
+                              $vector->[1][0] ** 2 +
+                              $vector->[2][0] ** 2 );
 
     return $vector_length;
 }
@@ -379,6 +407,17 @@ sub vector_length
 sub vector_cross
 {
     my ( $left_matrix, $right_matrix ) = @_;
+
+    if( ! defined $left_matrix->[0] ||
+        ! defined $left_matrix->[1] ||
+        ! defined $left_matrix->[2] ) {
+        confess 'the elements of the left 3D matrix are not defined';
+    }
+    if( ! defined $right_matrix->[0] ||
+        ! defined $right_matrix->[1] ||
+        ! defined $right_matrix->[2] ) {
+        confess 'the elements of the right 3D matrix are not defined';
+    }
 
     my @cross_product =
         ( $left_matrix->[1] * $right_matrix->[2] -
@@ -430,6 +469,10 @@ sub matrix_sum
 
     for my $i ( 0..$#{ $left_matrix } ) {
         for my $j ( 0..$#{ $left_matrix->[$i] } ) {
+            if(!defined $right_matrix->[$i] || !defined $right_matrix->[$i][$j]){
+                confess "there is no ($i, $j) element in the right matrix";
+            }
+
             $matrix_sum[$i][$j] =
                 $left_matrix->[$i][$j] + $right_matrix->[$i][$j];
         }
@@ -456,6 +499,10 @@ sub matrix_sub
 
     for my $i ( 0..$#{ $left_matrix } ) {
         for my $j ( 0..$#{ $left_matrix->[$i] } ) {
+            if(!defined $right_matrix->[$i] || !defined $right_matrix->[$i][$j]){
+                confess "there is no ($i, $j) element in the right matrix";
+            }
+
             $matrix_sub[$i][$j] =
                 $left_matrix->[$i][$j] - $right_matrix->[$i][$j];
         }
@@ -661,7 +708,7 @@ sub mult_matrix_product
                     splice @mult_matrix_product, 1, 1;
                 } or do {
                     confess ${ @ }->{message};
-                }
+                };
             }
         }
     }
