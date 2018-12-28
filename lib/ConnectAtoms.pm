@@ -16,10 +16,10 @@ our @EXPORT_OK = qw( append_connections
                      is_second_neighbour );
 }
 
+use Carp qw( confess );
 use List::Util qw( any );
 
 use BondProperties qw( %COVALENT_BOND_COMB );
-use Combinatorics qw( permutation );
 use ForceField::General;
 use Grid qw( identify_neighbour_cells
              grid_box );
@@ -58,6 +58,13 @@ sub is_connected
         $COVALENT_BOND_COMB{$target_atom->{'type_symbol'}}
                            {$neighbour_atom->{'type_symbol'}}
                            {'error'};
+
+    if( ! defined $bond_length_comb || ! defined $length_error_comb ) {
+        confess sprintf 'bond between %s and %s atoms is not characterized ' .
+                        'in the current force field description',
+                        $target_atom->{'type_symbol'},
+                        $neighbour_atom->{'type_symbol'};
+    }
 
     my $target_residue_name = $target_atom->{'label_comp_id'};
     my $target_atom_name = $target_atom->{'label_atom_id'};
@@ -107,19 +114,26 @@ sub is_connected
 # for existing "connection" keys in atom site data structure.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser).
-#     $target_id - first atom id.
-#     $neighbour_id - second atom id.
+#     $target_atom_id - first atom id.
+#     $neighbour_atom_id - second atom id.
 # Output:
 #     $is_neighbour - boolean of two values: 0 (as false) and 1 (as true).
 #
 
 sub is_neighbour
 {
-    my ( $atom_site, $target_atom_id, $neighbour_id ) = @_;
+    my ( $atom_site, $target_atom_id, $neighbour_atom_id ) = @_;
+
+    if( ! exists $atom_site->{"$target_atom_id"} ) {
+        confess "atom with id $target_atom_id does not exist in the atom site";
+    }
+    if( ! exists $atom_site->{"$target_atom_id"}{'connections'} ) {
+        confess "atom with id $target_atom_id does not have 'connection' key";
+    }
 
     my $is_neighbour = 0;
     foreach my $i ( @{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
-        if( "$neighbour_id" eq "$i" ) {
+        if( "$neighbour_atom_id" eq "$i" ) {
             $is_neighbour = 1;
             last;
         }
@@ -133,20 +147,30 @@ sub is_neighbour
 # Input:
 #     $atom_site - atom site data structure.
 #     $target_atom_id - id of first atom.
-#     $sec_neighbour_id - id of second atom.
+#     $sec_neighbour_atom_id - id of second atom.
 # Output:
 #     $is_sec_neighbour - boolean of two values: 0 (as false) and 1 (as true).
 #
 
 sub is_second_neighbour
 {
-    my ( $atom_site, $target_atom_id, $sec_neighbour_id ) = @_;
+    my ( $atom_site, $target_atom_id, $sec_neighbour_atom_id ) = @_;
+
+    if( ! exists $atom_site->{"$target_atom_id"} ) {
+        confess "atom with id $target_atom_id does not exist in the atom site";
+    }
+    if( ! exists $atom_site->{"$target_atom_id"}{'connections'} ) {
+        confess "atom with id $target_atom_id does not have 'connection' key";
+    }
 
     my $is_sec_neighbour = 0;
-
     foreach my $i ( @{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
+        if( ! exists $atom_site->{$i}{'connections'} ) {
+            confess "atom with id $i does not have 'connection' key";
+        }
+
         foreach my $j ( @{ $atom_site->{$i}{'connections'} } ) {
-            if( "$sec_neighbour_id" eq "$j" ) {
+            if( "$sec_neighbour_atom_id" eq "$j" ) {
                 $is_sec_neighbour = 1;
                 last;
             }
