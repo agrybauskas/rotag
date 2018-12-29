@@ -23,7 +23,7 @@ use Combinatorics qw( permutation );
 use Constants qw( $PI );
 use ForceField::General;
 use Measure qw( dihedral_angle );
-use PDBxParser qw( filter );
+use PDBxParser qw( filter_new );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -496,14 +496,12 @@ sub rotatable_bonds
     my ( $atom_site, $start_atom_id, $next_atom_id ) = @_;
 
     # By default, CA is starting atom and CB next.
-    $start_atom_id //= filter( { 'atom_site' => $atom_site,
-                                 'include' => { 'label_atom_id' => [ 'CA' ] },
-                                 'data' => [ 'id' ],
-                                 'is_list' => 1 } )->[0];
-    $next_atom_id //=  filter( { 'atom_site' => $atom_site,
-                                 'include' => { 'label_atom_id' => [ 'CB' ] },
-                                 'data' => [ 'id' ],
-                                 'is_list' => 1 } )->[0];
+    $start_atom_id //= filter_new( $atom_site,
+                               { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                                 'return_data' => 'id' } )->[0];
+    $next_atom_id //= filter_new( $atom_site,
+                               { 'include' => { 'label_atom_id' => [ 'CB' ] },
+                                 'return_data' => 'id' } )->[0];
 
     if( ! $start_atom_id || ! $next_atom_id ) { return {}; }
 
@@ -613,19 +611,18 @@ sub rotatable_bonds
                                                          # bond.
     my @second_names_sorted =
         @{ sort_atom_names(
-               filter( { 'atom_site' => \%atom_site,
-                         'include' => { 'id' => \@bond_second_ids },
-                         'data' => [ 'label_atom_id' ],
-                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+               filter_new( \%atom_site,
+                       { 'include' => { 'id' => \@bond_second_ids },
+                         'return_data' => 'label_atom_id' } ),
+               { 'sort_type' => 'gn' } ) };
 
     my %bond_names; # Names by second atom priority.
     my $bond_name_id = 1;
     for my $second_name ( @second_names_sorted ) {
         my $second_atom_id =
-            filter( { 'atom_site' => \%atom_site,
-                      'include' => { 'label_atom_id' => [ $second_name ] },
-                      'data' => [ 'id' ],
-                      'is_list' => 1 } )->[0];
+            filter_new( \%atom_site,
+                    { 'include' => { 'label_atom_id' => [ $second_name ] },
+                      'return_data' => 'id' } )->[0];
         $bond_names{"$second_atom_id"} = "chi$bond_name_id";
         $bond_name_id++;
     }
