@@ -71,3 +71,6 @@
 -- Add Monte Carlo and specified angle range sampling in rotag_library.
 -- Expand token should be added that growth of selection by one amino-acid would
    be useful when determining mainchain dihedral angles.
+-- Changing filter() to filter_new() it decreased speed of rotag_library by two
+   times. Find out why and fix it, because having two similar functions is
+   tedious.
