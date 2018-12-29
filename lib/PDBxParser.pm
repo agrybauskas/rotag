@@ -407,11 +407,10 @@ sub filter
 sub filter_new
 {
     my ( $atom_site, $options ) = @_;
-    my ( $include, $exclude, $return_data, $return_data_with_id, $group_id,
-         $selection_state ) =
+    my ( $include, $exclude, $return_data, $group_id, $selection_state ) =
         ( $options->{'include'}, $options->{'exclude'},
-          $options->{'return_data'}, $options->{'return_data_with_id'},
-          $options->{'group_id'}, $options->{'selection_state'} );
+          $options->{'return_data'}, $options->{'group_id'},
+          $options->{'selection_state'} );
 
     if( ! defined $atom_site ) {
         confess 'no atom were loaded to the AtomSite data structure';
@@ -474,10 +473,6 @@ sub filter_new
     # Return object handle or atom ids depending on the flag.
     if( defined $return_data && $return_data eq 'id' ) {
         return [ keys %filtered_atoms ];
-    } elsif( defined $return_data && ref $return_data eq 'ARRAY' ) {
-        return extract( \%filtered_atoms,
-                        { 'data' => $return_data,
-                          'data_with_id' => $return_data_with_id } );
     } elsif( defined $return_data ) {
         return [ map { $atom_site->{$_}{$return_data} } keys %filtered_atoms ];
     } else {
@@ -502,6 +497,8 @@ sub extract
         ( $options->{'data'}, $options->{'data_with_id'},
           $options->{'is_list'} );
 
+    my @atom_data;
+
     if( defined $data_with_id && $data_with_id ) {
         my %atom_data_with_id;
 
@@ -514,8 +511,6 @@ sub extract
 
         return \%atom_data_with_id;
     } else {
-        my @atom_data;
-
         for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
             if( defined $is_list && $is_list ) {
                 push @atom_data,
@@ -659,8 +654,8 @@ sub filter_by_unique_residue_key
     my ( $atom_site, $unique_residue_key, $include_dot ) = @_;
     my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
         split /,/sxm, $unique_residue_key;
-    my $filtered_atoms = filter_new( $atom_site,
-                                 { 'include' =>
+    my $filtered_atoms = filter( { 'atom_site' => $atom_site,
+                                   'include' =>
                                    { 'label_seq_id' => [ $residue_id ],
                                      'label_asym_id' => [ $residue_chain ],
                                      'pdbx_PDB_model_num' => [ $pdbx_model_num ],

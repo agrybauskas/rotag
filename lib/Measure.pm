@@ -18,7 +18,6 @@ use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( sort_atom_names );
 use PDBxParser qw( filter
-                   filter_new
                    filter_by_unique_residue_key
                    split_by );
 use LinearAlgebra qw( matrix_sub
@@ -202,8 +201,8 @@ sub all_dihedral
 
     for my $residue_unique_key ( keys %{ $residue_groups } ) {
         my $residue_site =
-            filter_new( \%atom_site,
-                    { 'include' =>
+            filter( { 'atom_site' => \%atom_site,
+                      'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $rotatable_bonds = rotatable_bonds( $residue_site );
@@ -222,30 +221,35 @@ sub all_dihedral
         # Calculates main-chain phi, psi angles.
         if( $calc_mainchain ) {
             my $n_atom_id =
-                filter_new( $residue_site,
-                        { 'include' => { 'label_atom_id' => [ 'N' ] },
-                          'return_data' => 'id' } )->[0];
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'N' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
             my $ca_atom_id =
-                filter_new( $residue_site,
-                        { 'include' => { 'label_atom_id' => [ 'CA' ] },
-                          'return_data' => 'id' } )->[0];
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'CA' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
             my $c_atom_id =
-                filter_new( $residue_site,
-                        { 'include' => { 'label_atom_id' => [ 'C' ] },
-                          'return_data' => 'id' } )->[0];
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'C' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
             # TODO: look if these filter slow down calculations drastically.
             my $prev_c_atom_id =
-                filter_new( $reference_atom_site,
-                        { 'include' =>
+                filter( { 'atom_site' => $reference_atom_site,
+                          'include' =>
                               { 'id' => $residue_site->{$n_atom_id}{'connections'},
                                 'label_atom_id' => [ 'C' ] },
-                          'return_data' => 'id' } )->[0];
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
             my $next_n_atom_id =
-                filter_new( $reference_atom_site,
-                        { 'include' =>
+                filter( { 'atom_site' => $reference_atom_site,
+                          'include' =>
                               { 'id' => $residue_site->{$c_atom_id}{'connections'},
                                 'label_atom_id' => [ 'N' ] },
-                          'return_data' => 'id' } )->[0];
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
 
             # # Calculates phi angle if 'C' atom of previous residue is present.
             if( defined $prev_c_atom_id ) {
@@ -305,14 +309,16 @@ sub all_dihedral
                 @{ $residue_site->{$second_atom_id}{'connections'} };
             my $first_atom_name =
                 sort_atom_names(
-                filter_new( $residue_site,
-                        { 'include' => { 'id' => \@second_connections },
-                          'return_data' => 'label_atom_id' } ) )->[0];
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'id' => \@second_connections },
+                          'data' => [ 'label_atom_id' ],
+                          'is_list' => 1 } ) )->[0];
             my $first_atom_id =
-                filter_new( $residue_site,
-                        { 'include' =>
+                filter( { 'atom_site' => $residue_site,
+                          'include' =>
                               { 'label_atom_id' => [ $first_atom_name ] },
-                          'return_data' => 'id' } )->[0];
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
             my @third_connections = # Third atom connections, except second.
                 grep { $_ ne $second_atom_id }
                 @{ $residue_site->{$third_atom_id}{'connections'} };
@@ -323,9 +329,11 @@ sub all_dihedral
                           'data' => [ 'label_atom_id' ],
                           'is_list' => 1 } ) )->[0];
             my $fourth_atom_id =
-                filter_new( $residue_site,
-                        { 'include' => {'label_atom_id' => [ $fourth_atom_name ]},
-                          'return_data' => 'id' } )->[0];
+                filter( { 'atom_site' => $residue_site,
+                          'include' =>
+                              { 'label_atom_id' => [ $fourth_atom_name ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
 
             # Extracts coordinates for dihedral angle calculations.
             my $first_atom_coord =

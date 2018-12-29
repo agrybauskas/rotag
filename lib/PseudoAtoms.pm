@@ -51,7 +51,7 @@ use BondProperties qw( hybridization
 use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys
-                   filter_new
+                   filter
                    filter_by_unique_residue_key
                    split_by
                    unique_residue_key );
@@ -102,9 +102,10 @@ sub generate_pseudo
     my %pseudo_atom_site;
 
     my @atom_ids =
-        @{ filter_new( \%atom_site,
-                   { 'include' => $atom_specifier,
-                     'return_data' => 'id' } ) };
+        @{ filter( { 'atom_site' => \%atom_site,
+                     'include' => $atom_specifier,
+                     'data' => [ 'id' ],
+                     'is_list' => 1 } ) };
 
     for my $atom_id ( @atom_ids ) {
         my $conformation = $atom_site{"$atom_id"}{'conformation'};
@@ -339,8 +340,8 @@ sub generate_library
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my ( $pdbx_model_num, $alt_id ) = split /,/, $atom_site_identifier;
         my $current_atom_site =
-            filter_new( $atom_site,
-                    { 'include' =>
+            filter( { 'atom_site' => $atom_site,
+                      'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
 
         # Predetermines geometrically clearly defined hydrogen positions.
@@ -356,8 +357,8 @@ sub generate_library
 
         # Also, prepares hydrogen-free structure.
         my $current_atom_site_no_h = clone(
-            filter_new( $current_atom_site_w_h,
-                    { 'exclude' => { 'type_symbol' => [ 'H' ] } } )
+            filter( { 'atom_site' => $current_atom_site_w_h,
+                      'exclude' => { 'type_symbol' => [ 'H' ] } } )
         );
         connect_atoms( $current_atom_site_no_h );
         hybridization( $current_atom_site_no_h );
@@ -378,9 +379,10 @@ sub generate_library
                 filter_by_unique_residue_key( $current_atom_site,
                                               $residue_unique_key, 1 );
             my $atom_ca_id =
-                filter_new( $residue_site,
-                        { 'include' => { 'label_atom_id' => [ 'CA' ] },
-                          'return_data' => 'id' } )->[0];
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'CA' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
             push @target_ca_ids, $atom_ca_id;
         }
 
@@ -404,8 +406,8 @@ sub generate_library
                 my $residue_chain =
                     $current_atom_site->{$ca_atom_id}{'label_asym_id'};
                 my $residue_site =
-                    filter_new( $current_atom_site,
-                            { 'include' =>
+                    filter( { 'atom_site' => $current_atom_site,
+                              'include' =>
                                   { 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                                     'label_alt_id' => [ $alt_id, q{.} ],
                                     'label_seq_id' => [ $residue_id ],
@@ -417,8 +419,8 @@ sub generate_library
                 # Because the change of side-chain position might impact the
                 # surrounding, iteraction site consists of only main chain atoms.
                 my %interaction_site_no_h =
-                    %{ filter_new( $current_atom_site_no_h,
-                               { 'include' =>
+                    %{ filter( { 'atom_site' => $current_atom_site_no_h,
+                                 'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
@@ -438,8 +440,8 @@ sub generate_library
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
                 my %interaction_site_w_h =
-                    %{ filter_new( $current_atom_site_w_h,
-                               { 'include' =>
+                    %{ filter( { 'atom_site' => $current_atom_site_w_h,
+                                 'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
@@ -531,13 +533,13 @@ sub calc_favourable_angles
     # potential with surrounding atoms. CA and CB are non-movable atoms
     # so, they are marked as starting atoms.
     my $ca_atom_id =
-        filter_new( $residue_site,
-                { 'include' => { 'label_atom_id' => [ 'CA' ] },
-                  'return_data' => 'id' } )->[0];
+        filter( { 'atom_site' => $residue_site,
+                  'include' => { 'label_atom_id' => [ 'CA' ] },
+                  'data' => [ 'id' ] } )->[0][0];
     my $cb_atom_id =
-        filter_new( $residue_site,
-                { 'include' => { 'label_atom_id' => [ 'CB' ] },
-                  'return_data' => 'id' } )->[0];
+        filter( { 'atom_site' => $residue_site,
+                  'include' => { 'label_atom_id' => [ 'CB' ] },
+                  'data' => [ 'id' ] } )->[0][0];
 
     my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     my @next_atom_ids =
@@ -745,8 +747,8 @@ sub calc_full_atom_energy
     my ( $residue_id, $residue_chain, $pdbx_model_num,
          $residue_alt ) = split /,/sxm, $residue_unique_key;
     my $residue_site =
-        filter_new( $atom_site,
-                { 'include' => { 'label_seq_id' => [ $residue_id ],
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { 'label_seq_id' => [ $residue_id ],
                                  'label_asym_id' => [ $residue_chain ],
                                  'label_alt_id' => [ $residue_alt, q{.} ],
                                  'pdbx_PDB_model_num' => [ $pdbx_model_num ] }});
@@ -803,8 +805,8 @@ sub calc_full_atom_energy
         replace_with_rotamer( \%rotamer_site, $residue_unique_key, \%angles );
 
         my @rotamer_atom_ids =
-            sort keys %{ filter_new( \%rotamer_site,
-                                 { 'exclude' =>
+            sort keys %{ filter( { 'atom_site' => \%rotamer_site,
+                                   'exclude' =>
                                    { 'label_atom_id' =>
                                          \@General::INTERACTION_ATOM_NAMES } } ) };
         # HACK: make sure that $interaction_site atom ids are updated by
@@ -1136,9 +1138,10 @@ sub add_hydrogens_sp3
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter_new( $reference_atom_site,
-                   { 'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'return_data_with_id' => 1 } ) };
+        %{ filter( { 'atom_site' => $reference_atom_site,
+                     'include' => { 'id' => \@connection_ids },
+                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'data_with_id' => 1 } ) };
 
     my $lone_pair_count = $General::ATOMS{$atom_type}{'lone_pairs'};
 
@@ -1432,9 +1435,10 @@ sub add_hydrogens_sp2
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter_new( $reference_atom_site,
-                   { 'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'return_data_with_id' => 1 } ) };
+        %{ filter( { 'atom_site' => $reference_atom_site,
+                     'include' => { 'id' => \@connection_ids },
+                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'data_with_id' => 1 } ) };
 
     my $lone_pair_count = $General::ATOMS{$atom_type}{'lone_pairs'};
 
@@ -1590,9 +1594,10 @@ sub add_hydrogens_sp
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter_new( $reference_atom_site,
-                   { 'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'return_data_with_id' => 1 } ) };
+        %{ filter( { 'atom_site' => $reference_atom_site,
+                     'include' => { 'id' => \@connection_ids },
+                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'data_with_id' => 1 } ) };
 
     my ( $up_atom_coord,
          $mid_atom_coord,

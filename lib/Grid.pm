@@ -12,7 +12,7 @@ use List::Util qw( max
                    min );
 use Carp qw( confess );
 use Constants qw( $EDGE_LENGTH_CONNECTION );
-use PDBxParser qw( extract );
+use PDBxParser qw( filter );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -85,8 +85,8 @@ sub grid_box
 
     # Determines boundary box around all atoms.
     my $atom_data =
-        extract( $atom_site,
-                 { 'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        filter( { 'atom_site' => $atom_site,
+                  'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
     my @atom_coordinates = map { [ $_->[1], $_->[2], $_->[3] ] } @{ $atom_data };
     my $boundary_box = create_box( \@atom_coordinates );
 

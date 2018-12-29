@@ -14,7 +14,7 @@ use BondProperties qw( rotatable_bonds );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( determine_residue_keys
-                   filter_new
+                   filter
                    filter_by_unique_residue_key );
 use Version qw( $VERSION );
 
@@ -83,10 +83,11 @@ sub rotation_only
                 my $side_atom_name =
                     sort_atom_names( \@mid_connection_names )->[0];
                 my $side_atom_id =
-                    filter_new( $residue_site,
-                            { 'include' =>
-                              { 'label_atom_id' => [ $side_atom_name ] },
-                                'return_data' => 'id' } )->[0];
+                    filter( { 'atom_site' => $residue_site,
+                              'include' =>
+                            { 'label_atom_id' => [ $side_atom_name ] },
+                              'data' => [ 'id' ],
+                              'is_list' => 1 } )->[0];
 
                 my $mid_atom_coord =
                     [ $residue_site->{$mid_atom_id}{'Cartn_x'},
