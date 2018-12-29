@@ -23,7 +23,7 @@ use BondProperties qw( %COVALENT_BOND_COMB );
 use ForceField::General;
 use Grid qw( identify_neighbour_cells
              grid_box );
-use PDBxParser qw( filter
+use PDBxParser qw( filter_new
                    unique_residue_key );
 use Version qw( $VERSION );
 
@@ -235,10 +235,9 @@ sub around_distance
 {
     my ( $atom_site, $atom_specifier, $distance ) = @_;
 
-    my @atom_ids = @{ filter( { 'atom_site' => $atom_site,
-                                'include' => $atom_specifier,
-                                'data' => [ 'id' ],
-                                'is_list' => 1 } ) };
+    my @atom_ids = @{ filter_new( $atom_site,
+                              { 'include' => $atom_specifier,
+                                'return_data' => 'id' } ) };
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.

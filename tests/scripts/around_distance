@@ -30,5 +30,7 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-# to_pdbx( around_distance( $atom_site, \%include_specifier, $around_distance ) );
-around_distance( $atom_site, \%include_specifier, $around_distance );
+to_pdbx( { 'atom_site' =>
+               around_distance( $atom_site,
+                                \%include_specifier,
+                                $around_distance ) } );

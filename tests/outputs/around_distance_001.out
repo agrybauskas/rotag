@@ -1,0 +1,21 @@
+data_testing
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 147 N N . SER A 1 18 -55.320 -109.795 -6.452 1
+ATOM 149 C C . SER A 1 18 -53.415 -111.063 -7.316 1
+ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1
+ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 1
+#
