@@ -59,8 +59,7 @@ sub obtain_pdbx_line
 
     for my $key ( sort { $a cmp $b } keys %current_line_data ) {
         my ( $category, $attribute ) = split '\\.', $key;
-        $pdbx_line_data{$category}{$attribute} =
-            $current_line_data{$key};
+        $pdbx_line_data{$category}{$attribute} = $current_line_data{$key};
     }
 
     return \%pdbx_line_data;
@@ -177,8 +176,7 @@ sub pdbx_loop_unique
     }
 
     for( my $pos = 0; $pos < $data_count - 1; $pos += $attribute_count ) {
-        @data_row =
-            @{ data[$pos..$pos+$attribute_count-1] };
+        @data_row = @{ data[$pos..$pos+$attribute_count-1] };
         %data_row = ();
         for( my $col = 0; $col <= $#data_row; $col++ ) {
             $data_row{$attributes[$col]} = $data_row[$col];
