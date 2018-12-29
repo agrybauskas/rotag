@@ -17,7 +17,7 @@ use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI
                   $SIG_FIGS_MIN );
 use ForceField::General;
-use PDBxParser qw( filter
+use PDBxParser qw( filter_new
                    filter_by_unique_residue_key );
 use LinearAlgebra qw( mult_matrix_product
                       switch_ref_frame );
@@ -127,13 +127,13 @@ sub replace_with_moiety
     # First, transformation matrix is generated that will position moiety atoms
     # to the origin of reference frame.
     my $moiety_ca_atom_coord =
-        filter( { 'atom_site' => $all_sidechains{$moiety},
-                  'include' => { 'label_atom_id' => [ 'CA' ] },
-                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+        filter_new( $all_sidechains{$moiety},
+                { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                  'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
     my $moiety_cb_atom_coord =
-        filter( { 'atom_site' => $all_sidechains{$moiety},
-                  'include' => { 'label_atom_id' => [ 'CB' ] },
-                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+        filter_new( $all_sidechains{$moiety},
+                { 'include' => { 'label_atom_id' => [ 'CB' ] },
+                  'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
     my @moiety_helper_atom_coord = map { $_ + 1 } @{ $moiety_ca_atom_coord };
 
     my ( $moiety_transf_matrix ) =
@@ -150,8 +150,8 @@ sub replace_with_moiety
         split /,/smx, $unique_residue_key;
 
     my @sidechain_ids =
-        @{ filter( { 'atom_site' => $atom_site,
-                     'include' =>
+        @{ filter_new( $atom_site,
+                   { 'include' =>
                          { 'label_seq_id' => [ $residue_id ],
                            'pdbx_PDB_model_num' => [ $pdbx_model ],
                            'label_asym_id' => [ $residue_chain ] },
@@ -160,25 +160,24 @@ sub replace_with_moiety
                          { 'label_atom_id' =>
                                [ grep { $_ ne 'CB' }
                                       @General::INTERACTION_ATOM_NAMES ] },
-                     'data' => [ 'id' ],
-                     'is_list' => 1 } ) };
+                     'return_data' => 'id' } ) };
 
     my $n_atom_coord =
-        filter( { 'atom_site' => $residue_site,
-                  'include' => { 'label_atom_id' => [ 'N' ] },
-                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+        filter_new( $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'N' ] },
+                  'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
     my $ca_atom_coord =
-        filter( { 'atom_site' => $residue_site,
-                  'include' => { 'label_atom_id' => [ 'CA' ] },
-                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+        filter_new( $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                  'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
     my $c_atom_coord =
-        filter( { 'atom_site' => $residue_site,
-                  'include' => { 'label_atom_id' => [ 'C' ] },
-                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+        filter_new( $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'C' ] },
+                  'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
     my $o_atom_coord =
-        filter( { 'atom_site' => $residue_site,
-                  'include' => { 'label_atom_id' => [ 'O' ] },
-                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+        filter_new( $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'O' ] },
+                  'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
 
     # TODO: should be refactored, because the code is familiar to
     # PseudoAtoms::add_hydrogen().
