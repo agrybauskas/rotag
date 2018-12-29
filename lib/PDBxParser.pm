@@ -473,6 +473,8 @@ sub filter_new
     # Return object handle or atom ids depending on the flag.
     if( defined $return_data && $return_data eq 'id' ) {
         return [ keys %filtered_atoms ];
+    } elsif( defined $return_data && ref $return_data eq 'ARRAY' ) {
+        return extract( \%filtered_atoms, { 'data' => $return_data } );
     } elsif( defined $return_data ) {
         return [ map { $atom_site->{$_}{$return_data} } keys %filtered_atoms ];
     } else {
