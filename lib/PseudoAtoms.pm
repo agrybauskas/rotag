@@ -51,7 +51,6 @@ use BondProperties qw( hybridization
 use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys
-                   filter
                    filter_new
                    filter_by_unique_residue_key
                    split_by
@@ -1137,10 +1136,9 @@ sub add_hydrogens_sp3
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter( { 'atom_site' => $reference_atom_site,
-                     'include' => { 'id' => \@connection_ids },
-                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'data_with_id' => 1 } ) };
+        %{ filter_new( $reference_atom_site,
+                   { 'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'return_data_with_id' => 1 } ) };
 
     my $lone_pair_count = $General::ATOMS{$atom_type}{'lone_pairs'};
 
@@ -1434,10 +1432,9 @@ sub add_hydrogens_sp2
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter( { 'atom_site' => $reference_atom_site,
-                     'include' => { 'id' => \@connection_ids },
-                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'data_with_id' => 1 } ) };
+        %{ filter_new( $reference_atom_site,
+                   { 'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'return_data_with_id' => 1 } ) };
 
     my $lone_pair_count = $General::ATOMS{$atom_type}{'lone_pairs'};
 
@@ -1593,10 +1590,9 @@ sub add_hydrogens_sp
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
-        %{ filter( { 'atom_site' => $reference_atom_site,
-                     'include' => { 'id' => \@connection_ids },
-                     'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
-                     'data_with_id' => 1 } ) };
+        %{ filter_new( $reference_atom_site,
+                   { 'return_data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                     'return_data_with_id' => 1 } ) };
 
     my ( $up_atom_coord,
          $mid_atom_coord,
