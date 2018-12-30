@@ -2,8 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 #include "PDBxParser.h"
 
@@ -47,13 +46,13 @@ void obtain_pdbx_loop( std::string pdbx_file,
             } else if( boost::regex_search( line, match, category_regex ) ) {
                 if( current_categories.back().empty() ||
                     current_categories.back().back() != match[1] ) {
-                    current_categories.back().push_back( match[1] );
+                    std::string category( match[1] );
+                    current_categories.back().push_back( category );
                     attributes.back().push_back( std::vector<std::string>() );
                     data.back().push_back( std::vector<std::string>() );
                 }
-                // attributes.back().back().push_back( boost::algorithm::trim( match[2] ) );
-                // std::cout << boost::algorithm::trim( "  d  " ) << std::endl;
-                // boost::algorithm::trim( match[2] );
+                std::string attribute( match[2] );
+                attributes.back().back().push_back( attribute );
                 is_reading_lines = true;
             }
         }
