@@ -1,5 +1,6 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 #include <boost/algorithm/string/split.hpp>
@@ -15,12 +16,13 @@
       categories - list of specified categories.
       read_until_end - boolean flag for reading whole pdbx file or stdin.
   Output:
-      pdbx_loop_data - data structure for loop data or list of data structure.
+      pdbx_loop_data_list - data structure for loop data or list of data structure.
 */
 
-void obtain_pdbx_loop( std::string pdbx_file,
-                       std::vector<std::string> categories,
-                       bool read_until_end = false )
+std::vector< std::map< std::string, std::map< std::string, std::vector<std::string> > > >
+obtain_pdbx_loop( std::string pdbx_file,
+                  std::vector<std::string> categories,
+                  bool read_until_end = false )
 {
     std::vector< std::vector<std::string> > current_categories;
     std::vector< std::vector< std::vector<std::string> > > attributes;
@@ -53,11 +55,9 @@ void obtain_pdbx_loop( std::string pdbx_file,
                     attributes.back().push_back( std::vector<std::string>() );
                     data.back().push_back( std::vector<std::string>() );
                 }
-
                 std::string attribute( match[2] );
                 boost::trim( attribute );
                 attributes.back().back().push_back( attribute );
-
                 is_reading_lines = true;
             } else if( is_reading_lines &&
                        boost::regex_search( line, match, reading_end_regex ) ) {
@@ -65,7 +65,6 @@ void obtain_pdbx_loop( std::string pdbx_file,
                     ! read_until_end ) {
                     break;
                 }
-
                 is_reading_lines = false;
             } else if( is_reading_lines ) {
                 std::vector<std::string> data_split;
@@ -81,4 +80,18 @@ void obtain_pdbx_loop( std::string pdbx_file,
     }
 
     /* Generates hash from three lists. */
+    std::vector< std::map< std::string, std::map< std::string, std::vector<std::string> > > >
+        pdbx_loop_data_list;
+    for( int i = 0; i < current_categories.size(); i++ ) {
+        std::map< std::string, std::map< std::string, std::vector<std::string> > >
+            pdbx_loop_data;
+        for( int j = 0; j < current_categories.back().size(); j++ ) {
+            pdbx_loop_data[current_categories[i][j]]["attributes"] = attributes[i][j];
+            pdbx_loop_data[current_categories[i][j]]["data"] = data[i][j];
+        }
+
+        pdbx_loop_data_list.push_back( pdbx_loop_data );
+    }
+
+    return pdbx_loop_data_list;
 }
