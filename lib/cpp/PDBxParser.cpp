@@ -2,7 +2,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/regex.hpp>
 #include "PDBxParser.h"
 
@@ -51,11 +53,32 @@ void obtain_pdbx_loop( std::string pdbx_file,
                     attributes.back().push_back( std::vector<std::string>() );
                     data.back().push_back( std::vector<std::string>() );
                 }
+
                 std::string attribute( match[2] );
+                boost::trim( attribute );
                 attributes.back().back().push_back( attribute );
+
                 is_reading_lines = true;
+            } else if( is_reading_lines &&
+                       boost::regex_search( line, match, reading_end_regex ) ) {
+                if( current_categories.size() == current_categories.size() &&
+                    ! read_until_end ) {
+                    break;
+                }
+
+                is_reading_lines = false;
+            } else if( is_reading_lines ) {
+                std::vector<std::string> data_split;
+                boost::split( data_split, line, boost::is_any_of(" ")  );
+                for( int i = 0; i < data_split.size(); i++ ) {
+                    if( data_split[i] != "" ) {
+                        data.back().back().push_back( data_split[i] );
+                    }
+                }
             }
         }
         fh.close();
     }
+
+    /* Generates hash from three lists. */
 }
