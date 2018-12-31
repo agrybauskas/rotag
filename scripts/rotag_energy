@@ -16,7 +16,8 @@ use AtomInteractions qw( hard_sphere
                          coulomb
                          h_bond
                          composite );
-use Constants qw( $SIG_FIGS_MAX );
+use Constants qw( $SIG_FIGS_MIN
+                  $SIG_FIGS_MAX );
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
                      is_second_neighbour );
@@ -76,6 +77,9 @@ our $VERSION = $VERSION;
 #*
 #*    -P, --pairwise              check energy of the atoms in pairwise fashion.
 #*
+#*    -b, --b-factor              adds 'B_iso_or_equiv' as energy value to the
+#*                                PDBx 'atom_site' loop.
+#*
 #*    -F, --format <format>       output format (default: pdbx | csv).
 #*
 #*    -n, --threads <int>         number of threads.
@@ -89,6 +93,7 @@ my $parameters = q{};
 my $do_rotamer = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
+my $add_B_iso = 0;
 my $output_format = 'pdbx';
 my $threads = 1;
 
@@ -98,6 +103,7 @@ GetOptions(
     'rotamer|r' => sub { $do_rotamer = 1 },
     'pairwise|P' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
+    'b-factor|b' => sub { $add_B_iso = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -332,12 +338,18 @@ for my $pdbx_file ( @ARGV ) {
                 }
 
                 if( ! $do_pairwise && ! $do_decompose && ! $do_rotamer ) {
-                    push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
-                         $calculation_id, $atom_id, $atom_symbol, $atom_name,
-                         $atom_residue_id, $atom_residue_name, $atom_chain,
-                         $atom_entity, $atom_alt, $interactions,
-                         sprintf $SIG_FIGS_MAX, $potential_energy;
-                    $calculation_id++;
+                    if( $add_B_iso ) {
+                        $atom_site->{$atom_id}{'B_iso_or_equiv'} =
+                            sprintf $SIG_FIGS_MIN, $potential_energy;
+                        $calculation_id++;
+                    } else {
+                        push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
+                            $calculation_id, $atom_id, $atom_symbol, $atom_name,
+                            $atom_residue_id, $atom_residue_name, $atom_chain,
+                            $atom_entity, $atom_alt, $interactions,
+                            sprintf $SIG_FIGS_MAX, $potential_energy;
+                        $calculation_id++;
+                    }
                 }
 
                 if( $do_decompose && ! $do_rotamer ) {
@@ -399,7 +411,12 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( $output_format eq 'pdbx' ) {
-        to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+        if( $add_B_iso ) {
+            to_pdbx( { 'atom_site' => $atom_site,
+                       'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
+        } else {
+            to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+        }
     } elsif( $output_format eq 'csv' ) {
         if( $do_pairwise ) {
             pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
