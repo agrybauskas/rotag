@@ -301,12 +301,15 @@ sub h_bond
 }
 
 #
-# Implicit hydrogen bond potential function. Described as:
+# Implicit hydrogen bond potential function. Described as explicit, but best
+# case scenario is introduced:
 #
-#                          h_epsilon * cos( theta );
+# h_epsilon * [ 5 * ( sigma / r )**12 - 6 * ( sigma / r )**10 ] * cos( theta )**4
 #
 # where:
+#     r         - distance between center of atoms;
 #     h_epsilon - hydrogen bond coefficient;
+#     sigma     - optimal distance for hydrogen bond;
 #     theta     - angle between hydrogen donor, hydrogen and hydrogen acceptor.
 #
 #                                      H
@@ -363,15 +366,24 @@ sub h_bond_implicit
     # case scenario is assumed - the distance of the atoms are optimal. This is
     # done that way in order for explicit function increase energy if needed.
     # That way energy cannot be excluded by the cutoff value.
-    my $theta =
-        acos( ( $r_donor_acceptor_squared - $r_donor_hydrogen**2 - $r_sigma**2)/
-              ( -2 * $r_donor_hydrogen * $r_sigma ) );
+    my $theta;
+    if( $r_donor_acceptor_squared < $r_sigma ** 2 ) {
+        $theta = acos(
+            ( $r_donor_acceptor_squared - $r_donor_hydrogen**2 - $r_sigma**2) /
+            ( ( -2 ) * $r_donor_hydrogen * $r_sigma )
+        );
+    } else {
+        $theta = $PI;
+    }
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
-    if( ( $r_donor_acceptor_squared <= ( $r_donor_hydrogen + $r_sigma ) ** 2 ) &&
-        ( $theta >= $PI / 2 ) &&
-        ( $theta <=  3 * $PI / 2 ) ) {
-        return $h_k * $h_epsilon * cos $theta;
+    if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
+        return
+            $h_k *
+            $h_epsilon *
+            ( 5 * ( $r_sigma ** 12 / $r_donor_acceptor_squared ** 6 ) -
+              6 * ( $r_sigma ** 10 / $r_donor_acceptor_squared ** 5 ) ) *
+            cos( $theta )**4;
     } else {
         return 0;
     }
@@ -380,7 +392,7 @@ sub h_bond_implicit
 #
 # Explicit hydrogen bond potential function. Described as:
 #
-# - h_epsilon * [ 5 * ( sigma / r )**12 - 6 * ( sigma / r )**10 ] * cos( theta )
+# h_epsilon * [ 5 * ( sigma / r )**12 - 6 * ( sigma / r )**10 ] * cos( theta )**4
 #
 # where:
 #     r         - distance between center of atoms;
@@ -407,7 +419,8 @@ sub h_bond_explicit
 {
     my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
 
-    my ( $h_k, $is_optimal ) = (
+    my ( $r_donor_acceptor_squared, $h_k, $is_optimal ) = (
+        $parameters->{'r_squared'},
         $parameters->{'h_k'},
         $parameters->{'is_optimal'}
     );
@@ -422,8 +435,7 @@ sub h_bond_explicit
         return (-1) * $h_k * $h_epsilon;
     }
 
-    my $r_acceptor_hydrogen_squared =
-        distance_squared( $hydrogen_atom, $acceptor_atom );
+    $r_donor_acceptor_squared //=distance_squared( $donor_atom, $acceptor_atom );
     my $theta = bond_angle(
         [ [ $donor_atom->{'Cartn_x'},
             $donor_atom->{'Cartn_y'},
@@ -437,12 +449,11 @@ sub h_bond_explicit
 
     if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
         return
-            ( -1 ) *
             $h_k *
             $h_epsilon *
-            ( 5 * ( $r_sigma ** 12 / $r_acceptor_hydrogen_squared ** 6 ) -
-              6 * ( $r_sigma ** 10 / $r_acceptor_hydrogen_squared ** 5 ) ) *
-            cos $theta;
+            ( 5 * ( $r_sigma ** 12 / $r_donor_acceptor_squared ** 6 ) -
+              6 * ( $r_sigma ** 10 / $r_donor_acceptor_squared ** 5 ) ) *
+            cos( $theta )**4;
     } else {
         return 0;
     }
