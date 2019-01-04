@@ -207,7 +207,6 @@ sub coulomb
                 'defined partial charge in force field file' ;
     }
 
-    # if( ! defined $partial_charge_j ) { print $atom_j->{'label_atom_id'}, " ", $atom_j->{'label_comp_id'}, "\n" };
     if( $is_optimal ) {
         if( $partial_charge_i * $partial_charge_j > 0 ) {
             return 0;
@@ -413,13 +412,18 @@ sub h_bond_implicit
 
         my $alpha = abs( $hybridization_angle - $neighbour_donor_acceptor_angle );
 
-        $theta = asin(
-            ( sin( $alpha ) * sqrt( $r_donor_acceptor_squared ) ) /
-            ( sqrt( $r_donor_hydrogen ** 2 +
-                    $r_donor_acceptor_squared -
-                    2 * $r_donor_hydrogen * sqrt( $r_donor_acceptor_squared ) *
-                    cos( $alpha ) ) )
+        my $r_acceptor_hydrogen_squared =
+            $r_donor_hydrogen ** 2 +
+            $r_donor_acceptor_squared -
+            2 * $r_donor_hydrogen * sqrt( $r_donor_acceptor_squared ) *
+            cos( $alpha );
+
+        my $beta = asin(
+            sin( $alpha ) * $r_donor_hydrogen /
+            sqrt( $r_acceptor_hydrogen_squared )
         );
+
+        $theta = $PI - $alpha - $beta;
     }
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
