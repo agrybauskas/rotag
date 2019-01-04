@@ -374,12 +374,21 @@ sub h_bond_implicit
     # TODO: check for 0, 108.5 angles.
     my $theta;
     if( $r_donor_acceptor_squared < $r_sigma ** 2 ) {
-        $theta = acos(
-            ( $r_donor_acceptor_squared -
-              ( $r_donor_hydrogen ** 2 ) -
-              ( $r_acceptor_hydrogen_vdw ** 2 ) ) /
-            ( ( -2 ) * $r_donor_hydrogen * $r_acceptor_hydrogen_vdw )
-        );
+        if( $r_donor_acceptor_squared <
+                ( $r_donor_hydrogen + $r_acceptor_hydrogen_vdw ) ** 2 &&
+             $r_donor_hydrogen <
+                 sqrt( $r_donor_acceptor_squared ) + $r_acceptor_hydrogen_vdw &&
+             $r_acceptor_hydrogen_vdw <
+                 sqrt( $r_donor_acceptor_squared ) + $r_donor_hydrogen ) {
+            $theta = acos(
+                ( $r_donor_acceptor_squared -
+                  ( $r_donor_hydrogen ** 2 ) -
+                  ( $r_acceptor_hydrogen_vdw ** 2 ) ) /
+                ( ( -2 ) * $r_donor_hydrogen * $r_acceptor_hydrogen_vdw )
+            );
+        } else {
+            $theta = 0;
+        }
     } else {
         # Using both sine and cosine rules we can produce formula that calculates
         # theta of best case scenario:
@@ -427,7 +436,7 @@ sub h_bond_implicit
     }
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
-    if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
+    if( defined $theta && ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
         return
             $h_k *
             $h_epsilon *
