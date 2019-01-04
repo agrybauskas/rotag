@@ -15,11 +15,15 @@ our @EXPORT_OK = qw( composite
 
 use Carp;
 use List::Util qw( any );
-use Math::Trig qw( acos );
+use Math::Trig qw( acos
+                   asin );
 use Readonly;
 
 use ConnectAtoms qw( distance_squared );
-use Constants qw( $PI );
+use Constants qw( $PI
+                  $SP3_ANGLE
+                  $SP2_ANGLE
+                  $SP_ANGLE );
 use ForceField::General;
 use Measure qw( bond_angle );
 use Version qw( $VERSION );
@@ -315,8 +319,10 @@ sub h_bond
 #                                      H
 #                                     /_\theta
 #                                    /   \
-#                                   /     \
-#                        (H donor) O       O (H acceptor)
+#                                   /    /\alpha
+#                        (H donor) O ----- O (H acceptor)
+#                                          |
+#                                          |
 #
 # Input:
 #     $donor_atom - donor atom data structure (see PDBxParser.pm);
@@ -330,10 +336,11 @@ sub h_bond_implicit
 {
     my ( $donor_atom, $acceptor_atom, $parameters ) = @_;
 
-    my ( $r_donor_acceptor_squared, $h_k, $is_optimal ) = (
+    my ( $r_donor_acceptor_squared, $h_k, $is_optimal, $reference_atom_site ) = (
         $parameters->{'r_squared'},
         $parameters->{'h_k'},
         $parameters->{'is_optimal'},
+        $parameters->{'atom_site'},
     );
 
     $h_k //= $General::H_K;
@@ -362,19 +369,58 @@ sub h_bond_implicit
                        {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
         $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
 
-    # Because there are no information on the position of hydrogen atom, the best
-    # case scenario is assumed - the distance of the atoms are optimal. This is
-    # done that way in order for explicit function increase energy if needed.
-    # That way energy cannot be excluded by the cutoff value.
-    my $theta;
-    if( $r_donor_acceptor_squared < $r_sigma ** 2 ) {
-        $theta = acos(
-            ( $r_donor_acceptor_squared - $r_donor_hydrogen**2 - $r_sigma**2) /
-            ( ( -2 ) * $r_donor_hydrogen * $r_sigma )
-        );
-    } else {
-        $theta = $PI;
+    # Using both sine and cosine rules we can produce formula that calculates
+    # theta of best case scenario:
+    #
+    #   theta = asin( r_donor_acceptor * sin( alpha ) / r_hydrogen_acceptor )
+    #
+    my $neighbour_donor_acceptor_angle =
+        bond_angle(
+            [ [ $reference_atom_site->{$donor_atom->{'connections'}[0]}
+                                      {'Cartn_x'},
+                $reference_atom_site->{$donor_atom->{'connections'}[0]}
+                                      {'Cartn_y'},
+                $reference_atom_site->{$donor_atom->{'connections'}[0]}
+                                      {'Cartn_z'}, ],
+              [ $donor_atom->{'Cartn_x'},
+                $donor_atom->{'Cartn_y'},
+                $donor_atom->{'Cartn_z'}, ],
+              [ $acceptor_atom->{'Cartn_x'},
+                $acceptor_atom->{'Cartn_y'},
+                $acceptor_atom->{'Cartn_z'}, ] ] );
+
+    my $hybridization_angle;
+    if( $donor_atom->{'hybridization'} eq 'sp3' ) {
+        $hybridization_angle = $SP3_ANGLE;
+    } elsif( $donor_atom->{'hybridization'} eq 'sp2' ) {
+        $hybridization_angle = $SP2_ANGLE;
+    } elsif( $donor_atom->{'hybridization'} eq 'sp' ) {
+        $hybridization_angle = $SP_ANGLE;
     }
+
+    my $alpha = abs( $hybridization_angle - $neighbour_donor_acceptor_angle );
+
+    # TODO: check for 0, 108.5 angles.
+    # # my $theta =
+    #     use Data::Dumper; print STDERR Dumper
+    #     asin( ( sin( $alpha ) * sqrt( $r_donor_acceptor_squared ) ) /
+    #           ( sqrt( $r_donor_hydrogen ** 2 +
+    #                   $r_donor_acceptor_squared -
+    #                   2 * $r_donor_hydrogen * sqrt( $r_donor_acceptor_squared ) *
+    #                   cos( $alpha ) ) ) ) * 180 / $PI;
+
+    # Determines theta angle.
+    # my $theta;
+    # if( $r_donor_acceptor_squared < $r_sigma ** 2 ) {
+    #     $theta = acos(
+    #         ( $r_donor_acceptor_squared - $r_donor_hydrogen**2 - $r_sigma**2) /
+    #         ( ( -2 ) * $r_donor_hydrogen * $r_sigma )
+    #     );
+    # } else {
+    #     $theta = $PI;
+    # }
+
+    my $theta = $PI;
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
     if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
