@@ -368,13 +368,18 @@ sub h_bond_implicit
         $General::ATOMS{$donor_atom->{'type_symbol'}}
                        {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
         $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
+    my $r_acceptor_hydrogen_vdw =
+        $General::ATOMS{$acceptor_atom->{'type_symbol'}}{'vdw_radius'} +
+        $General::ATOMS{'H'}{'vdw_radius'};
 
     # TODO: check for 0, 108.5 angles.
     my $theta;
     if( $r_donor_acceptor_squared < $r_sigma ** 2 ) {
         $theta = acos(
-            ( $r_donor_acceptor_squared - $r_donor_hydrogen ** 2 - $r_sigma ** 2) /
-            ( ( -2 ) * $r_donor_hydrogen * $r_sigma )
+            ( $r_donor_acceptor_squared -
+              ( $r_donor_hydrogen ** 2 ) -
+              ( $r_acceptor_hydrogen_vdw ** 2 ) ) /
+            ( ( -2 ) * $r_donor_hydrogen * $r_acceptor_hydrogen_vdw )
         );
     } else {
         # Using both sine and cosine rules we can produce formula that calculates
@@ -416,8 +421,6 @@ sub h_bond_implicit
                     cos( $alpha ) ) )
         );
     }
-
-    # use Data::Dumper; print STDERR Dumper $theta * 180 / $PI;
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
     if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
