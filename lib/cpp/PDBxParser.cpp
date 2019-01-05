@@ -19,10 +19,9 @@
       pdbx_loop_data_list - data structure for loop data or list of data structure.
 */
 
-std::vector< std::map< std::string, std::map< std::string, std::vector<std::string> > > >
-obtain_pdbx_loop( std::string pdbx_file,
-                  std::vector<std::string> categories,
-                  bool read_until_end = false )
+std::vector<pdbx_loop_data> obtain_pdbx_loop( std::string pdbx_file,
+                                              std::vector<std::string> categories,
+                                              bool read_until_end = false )
 {
     std::vector< std::vector<std::string> > current_categories;
     std::vector< std::vector< std::vector<std::string> > > attributes;
@@ -80,11 +79,9 @@ obtain_pdbx_loop( std::string pdbx_file,
     }
 
     /* Generates hash from three lists. */
-    std::vector< std::map< std::string, std::map< std::string, std::vector<std::string> > > >
-        pdbx_loop_data_list;
+    std::vector<pdbx_loop_data> pdbx_loop_data_list;
     for( int i = 0; i < current_categories.size(); i++ ) {
-        std::map< std::string, std::map< std::string, std::vector<std::string> > >
-            pdbx_loop_data;
+        pdbx_loop_data pdbx_loop_data;
         for( int j = 0; j < current_categories.back().size(); j++ ) {
             pdbx_loop_data[current_categories[i][j]]["attributes"] = attributes[i][j];
             pdbx_loop_data[current_categories[i][j]]["data"] = data[i][j];
