@@ -92,3 +92,22 @@ std::vector<pdbx_loop_data> obtain_pdbx_loop( std::string pdbx_file,
 
     return pdbx_loop_data_list;
 }
+
+/*
+  Takes PDBx loop and converts it to hash of hashes where the first key is
+  unique.
+  Input:
+      pdbx_loop_data - data structure (from obtain_pdbx_loop);
+      unique_keys - combination of attribute data that serves as unique key.
+      read_until_end - reads whole pdbx file or stdin.
+      Ex.: [ 'id' ]
+  Output:
+      pdbx_loop_unique - special data structure.
+*/
+
+pdbx_unique_entry pdbx_loop_unique( std::vector<pdbx_loop_data> pdbx_loop_data,
+                                    std::vector<std::string> unique_keys,
+                                    bool read_until_end = false )
+{
+
+}
