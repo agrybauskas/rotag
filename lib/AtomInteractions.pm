@@ -11,7 +11,8 @@ our @EXPORT_OK = qw( composite
                      h_bond_implicit
                      hard_sphere
                      lennard_jones
-                     soft_sphere );
+                     soft_sphere
+                     torsion );
 
 use Carp;
 use List::Util qw( any );
@@ -221,6 +222,18 @@ sub coulomb
     }
 
     return $c_k * $partial_charge_i * $partial_charge_j / $r_squared;
+}
+
+#
+# Calculates torsion potential.
+#
+#             ( epsilon / 2 ) * ( 1 + cos( n * omega - gamma ) )
+#
+#
+
+sub torsion
+{
+    return 0;
 }
 
 #
