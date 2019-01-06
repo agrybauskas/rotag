@@ -16,7 +16,8 @@ use AtomInteractions qw( hard_sphere
                          coulomb
                          h_bond
                          composite );
-use Constants qw( $SIG_FIGS_MIN
+use Constants qw( $EDGE_LENGTH_INTERACTION
+                  $SIG_FIGS_MIN
                   $SIG_FIGS_MAX );
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
@@ -230,7 +231,9 @@ for my $pdbx_file ( @ARGV ) {
                       'is_list' => 1 } );
 
         my ( $grid_box, $target_cells ) =
-            grid_box( $current_atom_site, undef, $target_atom_ids );
+            grid_box( $current_atom_site,
+                      $EDGE_LENGTH_INTERACTION,
+                      $target_atom_ids );
 
         my $neighbour_cells = identify_neighbour_cells($grid_box, $target_cells);
 
