@@ -1,4 +1,4 @@
-package ForceField::Interactions::NonBonded;
+package ForceField::NonBonded;
 
 use strict;
 use warnings;

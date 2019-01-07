@@ -33,9 +33,9 @@ use Constants qw( $EDGE_LENGTH_INTERACTION
                   $PI
                   $SIG_FIGS_MIN );
 use ForceField::Parameters;
-use ForceField::Interactions::NonBonded qw( general
-                                            hard_sphere
-                                            soft_sphere );
+use ForceField::NonBonded qw( general
+                              hard_sphere
+                              soft_sphere );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( matrix_product

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use ForceField::Interactions::NonBonded qw( hard_sphere );
+use ForceField::NonBonded qw( hard_sphere );
 use Constants qw( $PI
                   $SIG_FIGS_MIN );
 use PDBxParser qw( filter

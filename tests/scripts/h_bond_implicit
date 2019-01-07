@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use ForceField::Interactions::NonBonded qw( h_bond_implicit );
+use ForceField::NonBonded qw( h_bond_implicit );
 
 my ( $donor_id, $acceptor_id, $pdbx_dump_file ) = @ARGV;
 
