@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use ForceField::Interactions::Composite qw( general );
+use ForceField::Interactions::Composite qw( general_non_bonded );
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( lowest_energy_state );
 
@@ -29,5 +29,5 @@ printf "%.6f\n",
     lowest_energy_state( $atom_site->{$atom_i_id},
                          [ map { $atom_site->{$_} }
                                ( split /,/, $atom_j_ids ) ],
-                         \&general,
+                         \&general_non_bonded,
                          $parameters );

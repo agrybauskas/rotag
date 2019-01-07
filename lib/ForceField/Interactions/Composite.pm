@@ -4,13 +4,15 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( general );
+our @EXPORT_OK = qw( general_bonded
+                     general_non_bonded);
 
+use ConnectAtoms qw( distance_squared );
+use Constants qw( $PI );
+use ForceField::Interactions::Bonded qw( torsion );
 use ForceField::Interactions::NonBonded qw( coulomb
                                             h_bond
                                             lennard_jones );
-use ConnectAtoms qw( distance_squared );
-use Constants qw( $PI );
 use ForceField::Parameters;
 use Version qw( $VERSION );
 
@@ -22,7 +24,7 @@ our $VERSION = $VERSION;
 # Combines Lennard-Jones, Coulomb, hydrogen bond potentials with smoothly
 # decreasing cutoff distance.
 #
-#         general = lennard_jones + coulomb + h_bond * cutoff_function
+#    general_non_bonded = lennard_jones + coulomb + h_bond * cutoff_function
 #
 # cutoff_function =
 #     cos( ( pi * ( r - cutoff_start * sigma ) ) /
@@ -39,7 +41,7 @@ our $VERSION = $VERSION;
 # Output:
 #     energy value.
 
-sub general
+sub general_non_bonded
 {
     my ( $atom_i, $atom_j, $parameters ) = @_;
 
@@ -79,7 +81,7 @@ sub general
                               { %parameters, ( 'is_optimal' => $is_optimal ) } );
 
         if( $decompose ) {
-            return { 'composite' => $lennard_jones + $coulomb + $h_bond,
+            return { 'non_bonded' => $lennard_jones + $coulomb + $h_bond,
                      'lennard_jones' => $lennard_jones,
                      'coulomb' => $coulomb,
                      'h_bond' => $h_bond };
@@ -100,7 +102,7 @@ sub general
                  ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
 
         if( $decompose ) {
-            return { 'composite' =>
+            return { 'non_bonded' =>
                          ( $lennard_jones + $coulomb + $h_bond ) *
                          $cutoff_function,
                      'lennard_jones' => $lennard_jones,
@@ -111,7 +113,7 @@ sub general
         }
     } else {
         if( $decompose ) {
-            return { 'composite' => 0,
+            return { 'non_bonded' => 0,
                      'lennard_jones' => 0,
                      'coulomb' => 0,
                      'h_bond' => 0 };

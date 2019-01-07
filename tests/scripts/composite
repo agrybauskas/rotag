@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use ForceField::Interactions::Composite qw( general );
+use ForceField::Interactions::Composite qw( general_non_bonded );
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file, $parameters ) = @ARGV;
 
@@ -23,6 +23,6 @@ $parameters = {
 };
 $parameters->{'atom_site'} = $atom_site;
 
-print general( $atom_site->{$atom_i_id},
-               $atom_site->{$atom_j_id},
-               $parameters ), "\n";
+print general_non_bonded( $atom_site->{$atom_i_id},
+                          $atom_site->{$atom_j_id},
+                          $parameters ), "\n";

@@ -22,7 +22,7 @@ use ForceField::Interactions::NonBonded qw( coulomb
                                             h_bond
                                             lennard_jones
                                             soft_sphere );
-use ForceField::Interactions::Composite qw( general );
+use ForceField::Interactions::Composite qw( general_non_bonded );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use BondProperties qw( hybridization );
@@ -122,7 +122,7 @@ GetOptions(
 
 # Defaults.
 my %potential_functions = (
-    'composite' => \&general,
+    'composite' => \&general_non_bonded,
     'hard_sphere' => \&hard_sphere,
     'soft_sphere' => \&soft_sphere,
     'lennard_jones' => \&lennard_jones,
