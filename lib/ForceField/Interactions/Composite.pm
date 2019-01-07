@@ -123,4 +123,24 @@ sub general_non_bonded
     }
 }
 
+sub general_bonded
+{
+    my ( $atom_i, $parameters ) = @_;
+    my ( $decompose, $is_optimal ) =
+        ( $parameters->{'decompose'}, $parameters->{'is_optimal'} );
+
+    if( $is_optimal ) {
+        return 0;
+    } else {
+        my $torsion = torsion( $atom_i->{'id'}, $parameters );
+
+        if( $decompose ) {
+            return { 'bonded' => $torsion,
+                     'torsion' => $torsion };
+        } else {
+            return $torsion;
+        }
+    }
+}
+
 1;
