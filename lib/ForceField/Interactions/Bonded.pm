@@ -20,11 +20,13 @@ our $VERSION = $VERSION;
 #
 # Calculates bond torsion potential.
 #
-#             k * ( epsilon / 2 ) * ( 1 + cos( 2 * omega ) )
+#                k * ( t_epsilon / 2 ) * ( 1 + cos( n * omega ) )
 #
 # where:
-#     k     - energy weight/adjustment constant;
-#     omega - dihedral angle.
+#     k         - energy weight/adjustment constant;
+#     t_epsilon - maximum energy of the peak;
+#     n         - number of energy maxima;
+#     omega     - dihedral angle.
 # Input:
 #     $atom_site - atom site data structure;
 #     $atom_i_id - target atom id;
@@ -37,10 +39,15 @@ sub torsion
 {
     my ( $atom_i_id, $parameters ) = @_;
 
-    my ( $t_epsilon, $reference_atom_site ) =
-        ( $parameters->{'t_epsilon'}, $parameters->{'atom_site'} );
+    my ( $t_epsilon, $t_k, $reference_atom_site ) = (
+        $parameters->{'t_epsilon'},
+        $parameters->{'t_k'},
+        $parameters->{'atom_site'}
+    );
 
     $t_epsilon //= 1.0;
+    $t_k //= 1.0;
+    my $t_n //= 3; # FIXME: here the number depends on the hybridization.
 
     # Determines all dihedral angles by searching third neighbours following the
     # connections.
@@ -93,7 +100,8 @@ sub torsion
                 $reference_atom_site->{$atom_i_id}{'Cartn_z'} ] ],
         );
 
-        $torsion_potential += ( $t_epsilon / 2 ) * ( 1 + cos( 2 * $omega ) )
+        $torsion_potential +=
+            $t_k * ( $t_epsilon / 2 ) * ( 1 + cos( $t_n * $omega ) );
     }
 
     return $torsion_potential;
