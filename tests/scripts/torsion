@@ -15,4 +15,4 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print torsion( $atom_site, $atom_i_id ), "\n";
+print torsion( $atom_i_id, { 'atom_site' => $atom_site } ), "\n";
