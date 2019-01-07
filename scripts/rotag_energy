@@ -23,7 +23,8 @@ use ForceField::NonBonded qw( coulomb
                               h_bond
                               lennard_jones
                               soft_sphere );
-use ForceField::Bonded qw( general );
+use ForceField::Bonded qw( general
+                           torsion);
 use Grid qw( grid_box
              identify_neighbour_cells );
 use BondProperties qw( hybridization );
@@ -124,7 +125,7 @@ GetOptions(
 # Defaults.
 my %potential_functions = (
     'composite' => \&ForceField::NonBonded::general,
-    'general_bonded' => \&ForceField::Bonded::general,
+    'torsion' => \&torsion,
     'hard_sphere' => \&hard_sphere,
     'soft_sphere' => \&soft_sphere,
     'lennard_jones' => \&lennard_jones,
@@ -267,11 +268,13 @@ for my $pdbx_file ( @ARGV ) {
                 my %potential_energy; # Used when decomposing composite energy
                                       # values.
 
-                # # Adds bonded potential energy term.
-                # $potential_energy =
-                #     ForceField::Bonded::general( $current_atom_site->{$atom_id},
-                #                                  { 'atom_site' =>
-                #                                        $current_atom_site } );
+                # Adds bonded potential energy term.
+                if( $interactions eq 'composite' ) {
+                    $potential_energy = ForceField::Bonded::general(
+                        $current_atom_site->{$atom_id},
+                        $parameters
+                    );
+                }
 
                 # Adds non-bonded potential energy term.
                 for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} }){

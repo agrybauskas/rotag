@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( general
 use Readonly;
 
 use AtomProperties qw( sort_atom_names );
+use ForceField::Parameters;
 use Measure qw( dihedral_angle );
 use Version qw( $VERSION );
 
@@ -46,7 +47,7 @@ sub torsion
     );
 
     $t_epsilon //= 1.0;
-    $t_k //= 1.0;
+    $t_k //= $Parameters::T_K;
     my $t_n //= 3; # FIXME: here the number depends on the hybridization.
 
     # Determines all dihedral angles by searching third neighbours following the
