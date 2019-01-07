@@ -18,12 +18,12 @@ use ConnectAtoms qw( connect_atoms
                      is_second_neighbour );
 use ForceField::Parameters;
 use ForceField::Interactions::NonBonded qw( coulomb
+                                            general
                                             hard_sphere
                                             h_bond
                                             lennard_jones
                                             soft_sphere );
-use ForceField::Interactions::Composite qw( general_bonded
-                                            general_non_bonded );
+use ForceField::Interactions::Bonded qw( general );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use BondProperties qw( hybridization );
@@ -123,8 +123,8 @@ GetOptions(
 
 # Defaults.
 my %potential_functions = (
-    'composite' => \&general_non_bonded,
-    'general_bonded' => \&general_bonded,
+    'composite' => \&ForceField::Interactions::NonBonded::general,
+    'general_bonded' => \&ForceField::Interactions::Bonded::general,
     'hard_sphere' => \&hard_sphere,
     'soft_sphere' => \&soft_sphere,
     'lennard_jones' => \&lennard_jones,
@@ -245,9 +245,9 @@ for my $pdbx_file ( @ARGV ) {
         my %residue_energy;
         for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
             for my $atom_id ( @{ $target_cells->{$cell} } ) {
-                use Data::Dumper;
-                print Dumper general_bonded( $current_atom_site->{$atom_id},
-                                             { 'atom_site' => $current_atom_site } );
+                # use Data::Dumper;
+                # print Dumper $NonBonded::general_bonded( $current_atom_site->{$atom_id},
+                #                                          { 'atom_site' => $current_atom_site } );
                 if( $do_rotamer ) {
                     next if any { $current_atom_site->{$atom_id}
                                                       {'label_atom_id'} eq $_ }
