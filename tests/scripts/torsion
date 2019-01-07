@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use AtomInteractions qw( torsion );
+use ForceField::Interactions::Bonded qw( torsion );
 
 my ( $atom_i_id, $pdbx_dump_file ) = @ARGV;
 
