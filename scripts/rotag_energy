@@ -367,7 +367,7 @@ for my $pdbx_file ( @ARGV ) {
                     }
                 }
 
-                if( $do_rotamer ) {
+                if( $do_rotamer && ! $do_pairwise ) {
                     if( $do_decompose ) {
                         for my $interaction ( grep { $_ ne 'composite' }
                                               sort keys %potential_energy ) {
