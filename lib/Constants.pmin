@@ -19,7 +19,7 @@ our @EXPORT_OK = qw( $EPSILON
 
 use List::Util qw( max );
 
-use ForceField::General;
+use ForceField::Parameters;
 
 # ---------------------------- General constants ------------------------------ #
 
@@ -40,13 +40,13 @@ our $SP_ANGLE_ERR  = 5 * $PI / 180.0; #
 # ------------------------------ Grid constants ------------------------------- #
 
 our $EDGE_LENGTH_CONNECTION =
-    max( map { @{ $General::ATOMS{$_}{'covalent_radius'}{'length'} } }
-             keys %General::ATOMS ) * 2;
+    max( map { @{ $Parameters::ATOMS{$_}{'covalent_radius'}{'length'} } }
+             keys %Parameters::ATOMS ) * 2;
 our $EDGE_LENGTH_INTERACTION =
-    7 * $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-    2 * $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-    3 * $General::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-    3 * $General::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-        $General::ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
+    7 * $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
+    2 * $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
+    3 * $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
+    3 * $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
+        $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
 
 1;

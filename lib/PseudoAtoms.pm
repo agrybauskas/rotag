@@ -36,7 +36,7 @@ use ConnectAtoms qw( append_connections
 use Constants qw( $EDGE_LENGTH_INTERACTION
                   $PI
                   $SIG_FIGS_MIN );
-use ForceField::General;
+use ForceField::Parameters;
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( matrix_product
@@ -317,10 +317,10 @@ sub generate_library
     my $threads = $args->{'threads'};
 
     $conf_model //= 'rotation_only';
-    $energy_cutoff_atom //= $General::CUTOFF_ATOM;
+    $energy_cutoff_atom //= $Parameters::CUTOFF_ATOM;
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' =>
-                                    \@General::INTERACTION_ATOM_NAMES };
+                                    \@Parameters::INTERACTION_ATOM_NAMES };
     $is_hydrogen_explicit //= 0;
 
     # Selection of potential function.
@@ -808,7 +808,7 @@ sub calc_full_atom_energy
             sort keys %{ filter( { 'atom_site' => \%rotamer_site,
                                    'exclude' =>
                                    { 'label_atom_id' =>
-                                         \@General::INTERACTION_ATOM_NAMES } } ) };
+                                         \@Parameters::INTERACTION_ATOM_NAMES } } ) };
         # HACK: make sure that $interaction_site atom ids are updated by
         # %rotamer_site
         my %rotamer_interaction_site = ( %{ $interaction_site }, %rotamer_site );
@@ -984,7 +984,7 @@ sub add_hydrogens
 
         my $residue_name = $atom_site{$atom_id}{'label_comp_id'};
 
-        my $hydrogen_names = $General::HYDROGEN_NAMES{$residue_name}{$atom_name};
+        my $hydrogen_names = $Parameters::HYDROGEN_NAMES{$residue_name}{$atom_name};
 
         if( ! $hydrogen_names ) { next; }; # Exits early if there should be no
                                            # hydrogens connected to the atom.
@@ -1002,11 +1002,11 @@ sub add_hydrogens
 
         # TODO: should be pre-determined as constant variable.
         my @mandatory_residue_atoms =
-            @{ $General::RESIDUE_ATOMS{$residue_name}{'mandatory'} };
+            @{ $Parameters::RESIDUE_ATOMS{$residue_name}{'mandatory'} };
         my @mandatory_connections = ();
         for my $mandatory_atom ( @mandatory_residue_atoms ) {
             if( any { $mandatory_atom eq $_ }
-                   @{ $General::CONNECTIVITY{$residue_name}{$atom_name} } ) {
+                   @{ $Parameters::CONNECTIVITY{$residue_name}{$atom_name} } ) {
                 push @mandatory_connections, $mandatory_atom;
             }
         }
@@ -1133,8 +1133,8 @@ sub add_hydrogens_sp3
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $General::ATOMS{$atom_type}{'covalent_radius'}{'length'}[0] +
-        $General::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $Parameters::ATOMS{$atom_type}{'covalent_radius'}{'length'}[0] +
+        $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
@@ -1143,7 +1143,7 @@ sub add_hydrogens_sp3
                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
                      'data_with_id' => 1 } ) };
 
-    my $lone_pair_count = $General::ATOMS{$atom_type}{'lone_pairs'};
+    my $lone_pair_count = $Parameters::ATOMS{$atom_type}{'lone_pairs'};
 
     if( scalar( @connection_ids ) == 3 ) {
         my ( $up_atom_coord,
@@ -1430,8 +1430,8 @@ sub add_hydrogens_sp2
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $General::ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
-        $General::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $Parameters::ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
+        $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
@@ -1440,7 +1440,7 @@ sub add_hydrogens_sp2
                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
                      'data_with_id' => 1 } ) };
 
-    my $lone_pair_count = $General::ATOMS{$atom_type}{'lone_pairs'};
+    my $lone_pair_count = $Parameters::ATOMS{$atom_type}{'lone_pairs'};
 
     # Depending on quantity of atoms connections, adds hydrogens.
     if( scalar @connection_ids == 2 ) {
@@ -1589,8 +1589,8 @@ sub add_hydrogens_sp
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $General::ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
-        $General::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $Parameters::ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
+        $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =

@@ -22,7 +22,7 @@ use Constants qw( $EDGE_LENGTH_INTERACTION
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
                      is_second_neighbour );
-use ForceField::General;
+use ForceField::Parameters;
 use Grid qw( grid_box
              identify_neighbour_cells );
 use BondProperties qw( hybridization );
@@ -246,7 +246,7 @@ for my $pdbx_file ( @ARGV ) {
                 if( $do_rotamer ) {
                     next if any { $current_atom_site->{$atom_id}
                                                       {'label_atom_id'} eq $_ }
-                                @General::INTERACTION_ATOM_NAMES;
+                                @Parameters::INTERACTION_ATOM_NAMES;
                 }
 
                 my ( $atom_symbol, $atom_name,

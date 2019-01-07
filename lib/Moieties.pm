@@ -16,7 +16,7 @@ use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI
                   $SIG_FIGS_MIN );
-use ForceField::General;
+use ForceField::Parameters;
 use PDBxParser qw( filter
                    filter_by_unique_residue_key );
 use LinearAlgebra qw( mult_matrix_product
@@ -159,7 +159,7 @@ sub replace_with_moiety
                          # TODO: make proper list of mainchain atoms.
                          { 'label_atom_id' =>
                                [ grep { $_ ne 'CB' }
-                                      @General::INTERACTION_ATOM_NAMES ] },
+                                      @Parameters::INTERACTION_ATOM_NAMES ] },
                      'data' => [ 'id' ],
                      'is_list' => 1 } ) };
 

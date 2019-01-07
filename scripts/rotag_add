@@ -94,7 +94,7 @@ for my $pdbx_file ( @ARGV ) {
         filter( { 'atom_site' => $selected_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
                   'exclude' => { 'label_atom_id' =>
-                                     \@General::INTERACTION_ATOM_NAMES },
+                                     \@Parameters::INTERACTION_ATOM_NAMES },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
 
