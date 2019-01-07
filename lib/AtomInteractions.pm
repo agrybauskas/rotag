@@ -20,11 +20,13 @@ use Math::Trig qw( acos
                    asin );
 use Readonly;
 
+use AtomProperties qw( sort_atom_names );
 use ConnectAtoms qw( distance_squared );
 use Constants qw( $PI
                   $SP3_ANGLE
                   $SP2_ANGLE
                   $SP_ANGLE );
+use Measure qw( dihedral_angle );
 use ForceField::General;
 use Measure qw( bond_angle );
 use Version qw( $VERSION );
@@ -225,15 +227,80 @@ sub coulomb
 }
 
 #
-# Calculates torsion potential.
+# Calculates bond torsion potential.
 #
-#             ( epsilon / 2 ) * ( 1 + cos( n * omega - gamma ) )
+#             k * ( epsilon / 2 ) * ( 1 + cos( 2 * omega ) )
 #
+# where:
+#     k     - energy weight/adjustment constant;
+#     omega - dihedral angle.
+# Input:
+#     $atom_site - atom site data structure;
+#     $atom_i_id - target atom id;
+#     $parameters - parameters' values.
+# Output:
+#     $torsion_potential - value of torsion energy potential.
 #
 
 sub torsion
 {
-    return 0;
+    my ( $atom_site, $atom_i_id, $parameters ) = @_;
+
+    my ( $t_epsilon ) = ( $parameters->{'t_epsilon'}, );
+
+    $t_epsilon //= 1.0;
+
+    # Determines all dihedral angles by searching third neighbours following the
+    # connections.
+    my @connection_ids = @{ $atom_site->{$atom_i_id}{'connections'} };
+
+    my $torsion_potential = 0;
+    for my $neighbour_id ( @connection_ids ) {
+        my @second_neighbour_ids =
+            grep { $atom_i_id ne $_ }
+                @{ $atom_site->{$neighbour_id}{'connections'} };
+
+        next if ! @second_neighbour_ids;
+
+        my @second_atom_names =
+            @{ sort_atom_names( [ map { $atom_site->{$_}{'label_atom_id'} }
+                                      @second_neighbour_ids ] ) };
+        my ( $second_neighbour_id ) =
+            grep { $atom_site->{$_}{'label_atom_id'} eq $second_atom_names[0] }
+                 @second_neighbour_ids;
+
+        my @third_neighbour_ids =
+            grep { $neighbour_id ne $_ }
+                @{ $atom_site->{$second_neighbour_id}{'connections'} };
+
+        next if ! @third_neighbour_ids;
+
+        my @third_atom_names =
+            @{ sort_atom_names( [ map { $atom_site->{$_}{'label_atom_id'} }
+                                      @third_neighbour_ids ] ) };
+        my ( $third_neighbour_id ) =
+            grep { $atom_site->{$_}{'label_atom_id'} eq $third_atom_names[0] }
+                 @third_neighbour_ids;
+
+        my $omega = dihedral_angle(
+            [ [ $atom_site->{$third_neighbour_id}{'Cartn_x'},
+                $atom_site->{$third_neighbour_id}{'Cartn_y'},
+                $atom_site->{$third_neighbour_id}{'Cartn_z'} ],
+              [ $atom_site->{$second_neighbour_id}{'Cartn_x'},
+                $atom_site->{$second_neighbour_id}{'Cartn_y'},
+                $atom_site->{$second_neighbour_id}{'Cartn_z'} ],
+              [ $atom_site->{$neighbour_id}{'Cartn_x'},
+                $atom_site->{$neighbour_id}{'Cartn_y'},
+                $atom_site->{$neighbour_id}{'Cartn_z'} ],
+              [ $atom_site->{$atom_i_id}{'Cartn_x'},
+                $atom_site->{$atom_i_id}{'Cartn_y'},
+                $atom_site->{$atom_i_id}{'Cartn_z'} ] ],
+        );
+
+        $torsion_potential += ( $t_epsilon / 2 ) * ( 1 + cos( 2 * $omega ) )
+    }
+
+    return $torsion_potential;
 }
 
 #
