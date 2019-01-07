@@ -12,10 +12,10 @@ _[local]_energy.pdbx_PDB_model_num
 _[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
-1 148 C CA 18 SER A 1 . coulomb 0.000000
-2 151 C CB 18 SER A 1 . coulomb -0.015474
-3 152 O OG 18 SER A 1 . coulomb 0.096393
-4 147 N N 18 SER A 1 . coulomb 0.064264
-5 149 C C 18 SER A 1 . coulomb -0.021901
-6 150 O O 18 SER A 1 . coulomb 0.035399
+1 147 N N 18 SER A 1 . coulomb 0.075156
+2 148 C CA 18 SER A 1 . coulomb -0.002838
+3 149 C C 18 SER A 1 . coulomb -0.029418
+4 150 O O 18 SER A 1 . coulomb 0.043419
+5 151 C CB 18 SER A 1 . coulomb -0.015474
+6 152 O OG 18 SER A 1 . coulomb 0.096393
 #

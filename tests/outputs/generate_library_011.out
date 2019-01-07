@@ -1,4 +1,4 @@
-data_1:chi1:0.000;chi2:3.142;chi3:0.000;E:44.642
+data_1:chi1:0.000;chi2:3.142;chi3:0.000;E:44.641
 #
 loop_
 _atom_site.group_PDB
@@ -32,7 +32,7 @@ ATOM 29 H HG3 . GLN A 1 2 30.614 -5.424 33.449 1
 ATOM 30 H HE21 . GLN A 1 2 31.491 -7.812 33.566 1
 ATOM 31 H HE22 . GLN A 1 2 31.295 -8.502 34.872 1
 #
-data_2:chi1:0.000;chi2:3.142;chi3:3.142;E:57.827
+data_2:chi1:0.000;chi2:3.142;chi3:3.142;E:57.826
 #
 loop_
 _atom_site.group_PDB

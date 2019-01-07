@@ -12,10 +12,10 @@ _[local]_energy.pdbx_PDB_model_num
 _[local]_energy.label_alt_id
 _[local]_energy.calculation_method
 _[local]_energy.value
-1 148 C CA 18 SER A 1 . composite 0.000000
-2 151 C CB 18 SER A 1 . composite 2.581270
-3 152 O OG 18 SER A 1 . composite 9.883890
-4 147 N N 18 SER A 1 . composite 1.680377
-5 149 C C 18 SER A 1 . composite -0.142881
-6 150 O O 18 SER A 1 . composite 2.383252
+1 147 N N 18 SER A 1 . composite 1.647846
+2 148 C CA 18 SER A 1 . composite -0.093184
+3 149 C C 18 SER A 1 . composite -0.178138
+4 150 O O 18 SER A 1 . composite 2.379919
+5 151 C CB 18 SER A 1 . composite 2.581270
+6 152 O OG 18 SER A 1 . composite 11.893288
 #

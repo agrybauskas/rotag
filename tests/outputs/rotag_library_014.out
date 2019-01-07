@@ -213,13 +213,13 @@ _[local]_rotamer_angle.value
 1 1 81 SER A 1 . chi1 5.026548
 2 1 81 SER A 1 . chi2 1.884956
 3 2 82 SER A 1 . chi1 4.398230
-4 2 82 SER A 1 . chi2 1.884956
+4 2 82 SER A 1 . chi2 2.513274
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -0.315929
-2 2 composite 2.204796
+1 1 composite -0.309617
+2 2 composite 2.207191
 #
