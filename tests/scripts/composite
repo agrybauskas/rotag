@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use AtomInteractions qw( composite );
+use ForceField::Interactions::Composite qw( general );
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file, $parameters ) = @ARGV;
 
@@ -23,6 +23,6 @@ $parameters = {
 };
 $parameters->{'atom_site'} = $atom_site;
 
-print composite( $atom_site->{$atom_i_id},
-                 $atom_site->{$atom_j_id},
-                 $parameters ), "\n";
+print general( $atom_site->{$atom_i_id},
+               $atom_site->{$atom_j_id},
+               $parameters ), "\n";

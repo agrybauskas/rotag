@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use AtomInteractions qw( h_bond_explicit );
+use ForceField::Interactions::NonBonded qw( h_bond_explicit );
 
 my ( $donor_id, $hydrogen_id, $acceptor_id, $pdbx_dump_file ) = @ARGV;
 

@@ -1,4 +1,4 @@
-package Composite;
+package ForceField::Interactions::Composite;
 
 use strict;
 use warnings;
@@ -6,6 +6,9 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( general );
 
+use ForceField::Interactions::NonBonded qw( coulomb
+                                            h_bond
+                                            lennard_jones );
 use ConnectAtoms qw( distance_squared );
 use Constants qw( $PI );
 use ForceField::Parameters;

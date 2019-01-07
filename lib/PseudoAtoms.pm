@@ -24,10 +24,6 @@ use List::MoreUtils qw( any
 use Math::Trig qw( acos );
 use threads;
 
-use AtomInteractions qw( hard_sphere
-                         soft_sphere
-                         lennard_jones
-                         composite );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( append_connections
                      connect_atoms
@@ -37,6 +33,9 @@ use Constants qw( $EDGE_LENGTH_INTERACTION
                   $PI
                   $SIG_FIGS_MIN );
 use ForceField::Parameters;
+use ForceField::Interactions::NonBonded qw( hard_sphere
+                                            soft_sphere );
+use ForceField::Interactions::Composite qw( general );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( matrix_product
@@ -324,10 +323,9 @@ sub generate_library
     $is_hydrogen_explicit //= 0;
 
     # Selection of potential function.
-    my %potential_functions = ( 'composite' => \&composite,
+    my %potential_functions = ( 'composite' => \&general,
                                 'hard_sphere' => \&hard_sphere,
-                                'soft_sphere' => \&soft_sphere,
-                                'lennard_jones' => \&lennard_jones, );
+                                'soft_sphere' => \&soft_sphere, );
     my $potential_function = $potential_functions{"$interactions"};
 
     my %rotamer_library;
