@@ -504,6 +504,8 @@ sub generate_library
 #     $args->{small_angle} - angle by which rotation is made;
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of non-bonded atoms;
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function;
@@ -518,12 +520,14 @@ sub calc_favourable_angles
     my ( $args ) = @_;
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
-         $non_bonded_potential, $energy_cutoff_atom, $parameters, $threads ) = (
+         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
+         $parameters, $threads ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'small_angle'},
         $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
         $args->{'threads'},
@@ -597,6 +601,7 @@ sub calc_favourable_angles
                          'interaction_site' => $interaction_site,
                          'energy_cutoff_atom' => $energy_cutoff_atom,
                          'non_bonded_potential' => $non_bonded_potential,
+                         'bonded_potential' => $bonded_potential,
                          'parameters' => $parameters },
                        [ \@allowed_angles, \@allowed_energies, ],
                        $threads ) };
@@ -631,6 +636,8 @@ sub calc_favourable_angles
 #     energy calculations;
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of non-bonded atoms;
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function.
@@ -646,11 +653,12 @@ sub calc_favourable_angle
     my ( $args, $array_blocks ) = @_;
 
     my ( $atom_site, $atom_id, $interaction_site, $non_bonded_potential,
-         $energy_cutoff_atom, $parameters ) = (
+         $bonded_potential, $energy_cutoff_atom, $parameters ) = (
         $args->{'atom_site'},
         $args->{'atom_id'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
     );
@@ -736,13 +744,14 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
-         $non_bonded_potential, $energy_cutoff_atom, $is_hydrogen_explicit,
-         $parameters ) = (
+         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
+         $is_hydrogen_explicit, $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'small_angle'},
         $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'is_hydrogen_explicit'},
         $args->{'parameters'},
@@ -866,11 +875,14 @@ sub calc_full_atom_energy
 #     $surrounding_atoms - list of surrounding atoms;
 #     $non_bonded_potential - reference to the potential function that is used for
 #     calculating energy of non-bonded atoms;
+#     $bonded_potential - reference to the potential function that is used for
+#     calculating energy of bonded atoms;
 #     $parameters - potential function parameters.
 # Output:
 #     $lowest_energy_sum - energy value.
 #
 
+# FIXME: adde bonded potential.
 sub lowest_energy_state
 {
     my ( $atom_i, $surrounding_atoms, $non_bonded_potential, $parameters ) = @_;
