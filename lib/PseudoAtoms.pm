@@ -685,6 +685,13 @@ sub calc_favourable_angle
 
         my $potential_energy = 0; # TODO: look if here should be zeros.
         my $potential_sum = 0;
+
+        # # Calculation of potential energy of bonded atoms.
+        # $potential_energy = $bonded_potential->(
+        #     $pseudo_atom_site->{$pseudo_atom_id},
+        # );
+
+        # Calculation of potential energy of non-bonded atoms.
         foreach my $interaction_id ( keys %{ $interaction_site } ) {
             if( ( ! is_neighbour( $atom_site,
                                   $pseudo_origin_id,
@@ -692,11 +699,11 @@ sub calc_favourable_angle
                 ( ! is_second_neighbour( $atom_site,
                                          $pseudo_origin_id,
                                          $interaction_id ) ) ) {
-                $potential_energy =
-                    $non_bonded_potential->(
-                        $pseudo_atom_site->{$pseudo_atom_id},
-                        $atom_site->{$interaction_id},
-                        \%parameters );
+                $potential_energy = $non_bonded_potential->(
+                    $pseudo_atom_site->{$pseudo_atom_id},
+                    $atom_site->{$interaction_id},
+                    \%parameters
+                );
                 $potential_sum += $potential_energy;
                 last if $potential_energy > $energy_cutoff_atom;
             }
