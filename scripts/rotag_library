@@ -86,7 +86,7 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $conf_model = 'rotation_only';
-my $interactions = 'composite';
+my $non_bonded_interactions = 'composite';
 my $angle_step_deg = 0.1 * 360;
 my $angle_step_rad;
 my $energy_cutoff_atom;
@@ -98,7 +98,7 @@ my $parameters = q{};
 
 GetOptions(
     'model|m=s' => \$conf_model,
-    'potential|u=s' => \$interactions,
+    'potential|u=s' => \$non_bonded_interactions,
     'parameters|p=s' => \$parameters,
     'angle-step-deg|a=s' => \$angle_step_deg,
     'angle-step-rad|A=s' => \$angle_step_rad,
@@ -188,7 +188,7 @@ for my $pdbx_file ( @ARGV ) {
                           $angle_step_deg * $PI / 180.0
                       ),
                       'conf_model' => $conf_model,
-                      'interactions' => $interactions,
+                      'non_bonded_interactions' => $non_bonded_interactions,
                       'parameters' => $parameters,
                       'energy_cutoff_atom' => $energy_cutoff_atom,
                       'is_hydrogen_explicit' => $is_hydrogen_explicit,

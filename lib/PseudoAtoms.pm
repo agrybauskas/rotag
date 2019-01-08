@@ -309,7 +309,8 @@ sub generate_library
     my $include_interactions = $args->{'include_interactions'};
     my $small_angle = $args->{'small_angle'};
     my $conf_model = $args->{'conf_model'};
-    my $interactions = $args->{'interactions'};
+    my $non_bonded_interactions = $args->{'non_bonded_interactions'};
+    my $bonded_interactions = $args->{'bonded_interactions'};
     my $parameters = $args->{'parameters'};
     my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
     my $is_hydrogen_explicit = $args->{'is_hydrogen_explicit'};
@@ -326,7 +327,7 @@ sub generate_library
     my %potential_functions = ( 'composite' => \&general,
                                 'hard_sphere' => \&hard_sphere,
                                 'soft_sphere' => \&soft_sphere, );
-    my $potential_function = $potential_functions{"$interactions"};
+    my $potential_function = $potential_functions{"$non_bonded_interactions"};
 
     my %rotamer_library;
 
@@ -474,7 +475,7 @@ sub generate_library
                     if( defined $rotamer_energy_sum ) {
                         push @{ $rotamer_library{"$residue_unique_key"} },
                             { 'angles' => \%angles,
-                              'potential' => $interactions,
+                              'potential' => $non_bonded_interactions,
                               'potential_energy_value' => $rotamer_energy_sum };
                     }
                 }
