@@ -33,6 +33,7 @@ use Constants qw( $EDGE_LENGTH_INTERACTION
                   $PI
                   $SIG_FIGS_MIN );
 use ForceField::Parameters;
+use ForceField::Bonded qw( general );
 use ForceField::NonBonded qw( general
                               hard_sphere
                               soft_sphere );
@@ -309,8 +310,7 @@ sub generate_library
     my $include_interactions = $args->{'include_interactions'};
     my $small_angle = $args->{'small_angle'};
     my $conf_model = $args->{'conf_model'};
-    my $non_bonded_interactions = $args->{'non_bonded_interactions'};
-    my $bonded_interactions = $args->{'bonded_interactions'};
+    my $interactions = $args->{'interactions'};
     my $parameters = $args->{'parameters'};
     my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
     my $is_hydrogen_explicit = $args->{'is_hydrogen_explicit'};
@@ -324,10 +324,11 @@ sub generate_library
     $is_hydrogen_explicit //= 0;
 
     # Selection of potential function.
-    my %potential_functions = ( 'composite' => \&general,
-                                'hard_sphere' => \&hard_sphere,
-                                'soft_sphere' => \&soft_sphere, );
-    my $potential_function = $potential_functions{"$non_bonded_interactions"};
+    my %potential_functions =
+        ( 'composite'   => { 'non_bonded' => \&ForceField::NonBonded::general,
+                             'bonded'     => \&ForceField::Bonded::general},
+          'hard_sphere' => { 'non_bonded' => \&hard_sphere },
+          'soft_sphere' => { 'non_bonded' => \&soft_sphere }, );
 
     my %rotamer_library;
 
@@ -431,7 +432,10 @@ sub generate_library
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site_no_h,
                              'small_angle' => $small_angle,
-                             'potential_function' => $potential_function,
+                             'non_bonded_potential' =>
+                                 $potential_functions{$interactions}{'non_bonded'},
+                             'bonded_potential' =>
+                                 $potential_functions{$interactions}{'bonded'},
                              'energy_cutoff_atom' => $energy_cutoff_atom,
                              'parameters' => $parameters,
                              'threads' => $threads } ) };
@@ -455,7 +459,10 @@ sub generate_library
                                                      \%interaction_site_w_h :
                                                      \%interaction_site_no_h ),
                              'small_angle' => $small_angle,
-                             'potential_function' => $potential_function,
+                             'non_bonded_potential' =>
+                                 $potential_functions{$interactions}{'non_bonded'},
+                             'bonded_potential' =>
+                                 $potential_functions{$interactions}{'bonded'},
                              'energy_cutoff_atom' => $energy_cutoff_atom,
                              'is_hydrogen_explicit' => $is_hydrogen_explicit,
                              'parameters' => $parameters },
@@ -475,7 +482,7 @@ sub generate_library
                     if( defined $rotamer_energy_sum ) {
                         push @{ $rotamer_library{"$residue_unique_key"} },
                             { 'angles' => \%angles,
-                              'potential' => $non_bonded_interactions,
+                              'potential' => $interactions,
                               'potential_energy_value' => $rotamer_energy_sum };
                     }
                 }
@@ -495,8 +502,8 @@ sub generate_library
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
 #     $args->{small_angle} - angle by which rotation is made;
-#     $args->{potential_function} - reference to the potential function that is
-#     used for calculating energy;
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of non-bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function;
@@ -511,12 +518,12 @@ sub calc_favourable_angles
     my ( $args ) = @_;
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
-         $potential_function, $energy_cutoff_atom, $parameters, $threads ) = (
+         $non_bonded_potential, $energy_cutoff_atom, $parameters, $threads ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'small_angle'},
-        $args->{'potential_function'},
+        $args->{'non_bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
         $args->{'threads'},
@@ -589,7 +596,7 @@ sub calc_favourable_angles
                          'atom_id' => $atom_id,
                          'interaction_site' => $interaction_site,
                          'energy_cutoff_atom' => $energy_cutoff_atom,
-                         'potential_function' => $potential_function,
+                         'non_bonded_potential' => $non_bonded_potential,
                          'parameters' => $parameters },
                        [ \@allowed_angles, \@allowed_energies, ],
                        $threads ) };
@@ -622,8 +629,8 @@ sub calc_favourable_angles
 #     $args->{atom_id} - atom id;
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
-#     $args->{potential_function} - reference to the potential function that is
-#     used for calculating energy;
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of non-bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function.
@@ -638,12 +645,12 @@ sub calc_favourable_angle
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $atom_site, $atom_id, $interaction_site, $potential_function,
+    my ( $atom_site, $atom_id, $interaction_site, $non_bonded_potential,
          $energy_cutoff_atom, $parameters ) = (
         $args->{'atom_site'},
         $args->{'atom_id'},
         $args->{'interaction_site'},
-        $args->{'potential_function'},
+        $args->{'non_bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
     );
@@ -678,7 +685,7 @@ sub calc_favourable_angle
                                          $pseudo_origin_id,
                                          $interaction_id ) ) ) {
                 $potential_energy =
-                    $potential_function->(
+                    $non_bonded_potential->(
                         $pseudo_atom_site->{$pseudo_atom_id},
                         $atom_site->{$interaction_id},
                         \%parameters );
@@ -710,8 +717,8 @@ sub calc_favourable_angle
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
 #     $args->{small_angle} - angle by which rotation is made;
-#     $args->{potential_function} - reference to the potential function that is
-#     used for calculating energy;
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of non-bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function;
@@ -729,13 +736,13 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
-         $potential_function, $energy_cutoff_atom, $is_hydrogen_explicit,
+         $non_bonded_potential, $energy_cutoff_atom, $is_hydrogen_explicit,
          $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'small_angle'},
-        $args->{'potential_function'},
+        $args->{'non_bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'is_hydrogen_explicit'},
         $args->{'parameters'},
@@ -829,7 +836,7 @@ sub calc_full_atom_energy
                                              $rotamer_atom_id,
                                              $neighbour_atom_id ) ) ){
                     $rotamer_atom_energy +=
-                        $potential_function->(
+                        $non_bonded_potential->(
                             $rotamer_interaction_site{$rotamer_atom_id},
                             $rotamer_interaction_site{$neighbour_atom_id},
                             $parameters );
@@ -857,8 +864,8 @@ sub calc_full_atom_energy
 # Input:
 #     $atom_i - atom;
 #     $surrounding_atoms - list of surrounding atoms;
-#     $potential_function - reference to the potential function that is used for
-#     calculating energy;
+#     $non_bonded_potential - reference to the potential function that is used for
+#     calculating energy of non-bonded atoms;
 #     $parameters - potential function parameters.
 # Output:
 #     $lowest_energy_sum - energy value.
@@ -866,12 +873,12 @@ sub calc_full_atom_energy
 
 sub lowest_energy_state
 {
-    my ( $atom_i, $surrounding_atoms, $potential_function, $parameters ) = @_;
+    my ( $atom_i, $surrounding_atoms, $non_bonded_potential, $parameters ) = @_;
 
     my $lowest_energy_sum = 0;
     for my $atom_j ( @{ $surrounding_atoms } ) {
         $lowest_energy_sum +=
-            $potential_function->( $atom_i, $atom_j,
+            $non_bonded_potential->( $atom_i, $atom_j,
                                    { %{ $parameters }, ( 'is_optimal' => 1 ) } );
     }
 

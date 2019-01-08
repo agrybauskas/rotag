@@ -48,7 +48,7 @@ my $rotamer_library =
                               "$residue_alt" ],
                         "small_angle" => eval( $small_angle ),
                         "conf_model" => $conf_model,
-                        "non_bonded_interactions"  => $potential,
+                        "interactions"  => $potential,
                         "energy_cutoff_atom" => $energy_cutoff_atom,
                         "parameters" => $parameters,
                         "threads" => $threads } );

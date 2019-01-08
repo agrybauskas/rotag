@@ -48,7 +48,7 @@ my ( $favourable_angles, $favourable_energies ) =
     @{ calc_favourable_angle( { 'atom_site' => $atom_site,
                                 'atom_id' => $atom_id,
                                 'interaction_site' => $interaction_site,
-                                'potential_function' => \&hard_sphere,
+                                'non_bonded_potential' => \&hard_sphere,
                                 'energy_cutoff_atom' => $energy_cutoff_atom,
                                 'threads' => 1,
                               }, [ \@checkable_angles, \@checkable_energies ] )};

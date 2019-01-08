@@ -54,7 +54,7 @@ my ( $favourable_angles, $favourable_energies ) =
                                     "${pdbx_model},${residue_alt}",
                                 'interaction_site' => $interaction_site,
                                 'small_angle' => eval( $small_angle ),
-                                'potential_function' => \&hard_sphere,
+                                'non_bonded_potential' => \&hard_sphere,
                                 'energy_cutoff_atom' => $energy_cutoff_atom,
                                 'is_hydrogen_explicit' => 0,
                               },
