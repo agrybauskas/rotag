@@ -686,11 +686,6 @@ sub calc_favourable_angle
         my $potential_energy = 0; # TODO: look if here should be zeros.
         my $potential_sum = 0;
 
-        # # Calculation of potential energy of bonded atoms.
-        # $potential_energy = $bonded_potential->(
-        #     $pseudo_atom_site->{$pseudo_atom_id},
-        # );
-
         # Calculation of potential energy of non-bonded atoms.
         foreach my $interaction_id ( keys %{ $interaction_site } ) {
             if( ( ! is_neighbour( $atom_site,
@@ -841,7 +836,17 @@ sub calc_full_atom_energy
         $parameters->{'atom_site'} = \%rotamer_interaction_site;
 
         my $rotamer_energy_sum = 0;
+
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+            # Calculation of potential energy of bonded atoms.
+            if( defined $bonded_potential ) {
+                $rotamer_energy_sum += $bonded_potential->(
+                    $rotamer_interaction_site{$rotamer_atom_id},
+                    $parameters
+                );
+            }
+
+            # Calculation of potential energy of non-bonded atoms.
             for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
                 my $rotamer_atom_energy = 0;
                 if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
