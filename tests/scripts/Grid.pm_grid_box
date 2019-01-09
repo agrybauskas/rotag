@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use GridNew;
+
+#
+# Unit test: GridNew::grid_box
+# Example: ./Grid.pm_grid_box structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $grid = GridNew->new( { 'atom_site' => $atom_site } );
+$grid->grid_box();
+
+for my $cell ( sort keys %{ $grid->cells } ) {
+    for my $atom_id ( sort @{ $grid->cells->{$cell} } ) {
+        printf "%s %s\n", $cell, $atom_id;
+    }
+}
