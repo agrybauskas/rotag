@@ -27,7 +27,7 @@ sub set_grid_box
 
     ( $self->{'grid_box'} ) = grid_box( $self->{'atoms'}, $edge_length );
 
-    return $self->{'grid_box'};
+    return;
 }
 
 sub get_grid_box
