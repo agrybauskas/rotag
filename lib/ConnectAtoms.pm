@@ -8,6 +8,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
                      around_distance
                      connect_atoms
+                     connect_atoms_new
                      connect_two_atoms
                      distance
                      distance_squared
@@ -343,6 +344,34 @@ sub connect_atoms
     }
 
     return;
+}
+
+sub connect_atoms_new
+{
+    my ( $atom_site ) = @_;
+
+    # For each cell, checks neighbouring cells. Creates box around atoms, makes
+    # grid with edge length of max covalent radii of the parameter file.
+    my ( $grid_box ) = grid_box( $atom_site );
+    my $neighbour_cells = identify_neighbour_cells( $grid_box );
+
+    my %connections = ();
+    foreach my $cell ( keys %{ $grid_box } ) {
+        foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
+            foreach my $neighbour_id ( @{ $neighbour_cells->{$cell} } ) {
+                if( ( is_connected( $atom_site->{$atom_id},
+                                    $atom_site->{$neighbour_id} ) ) &&
+                    ( ( ! exists $connections{$atom_id} ) ||
+                      ( ! any { $neighbour_id eq $_ }
+                             @{ $connections{$atom_id} } ) ) ){
+                    push @{ $connections{$atom_id} }, $neighbour_id;
+                    push @{ $connections{$neighbour_id} }, $atom_id;
+                }
+            }
+        }
+    }
+
+    return \%connections;
 }
 
 #

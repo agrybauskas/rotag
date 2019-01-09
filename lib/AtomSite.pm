@@ -3,6 +3,7 @@ package AtomSite;
 use strict;
 use warnings;
 
+use ConnectAtoms qw( connect_atoms_new );
 use Grid qw( grid_box );
 
 # ----------------------- Constructors and Destructors ------------------------ #
@@ -43,6 +44,22 @@ sub get_grid_box
     my ( $self ) = @_;
 
     return $self->{'grid_box'};
+}
+
+sub set_connections
+{
+    my ( $self ) = @_;
+
+    $self->{'connections'} = connect_atoms_new( $self->{'atoms'} );
+
+    return
+}
+
+sub get_connections
+{
+    my ( $self ) = @_;
+
+    return $self->{'connections'};
 }
 
 # --------------------------------- Methods ----------------------------------- #
