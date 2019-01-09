@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use AtomSite;
+
+#
+# Unit test: AtomSite::grid_box
+# Example: ./AtomSite.pm_grid_box structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atoms;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atoms .= "$_" ;
+}
+close( $fh );
+$atoms = eval( $atoms );
+
+my $atom_site = AtomSite->new( { 'atoms' => $atoms } );
+$atom_site->set_grid_box();
+
+for my $cell ( sort keys %{ $atom_site->get_grid_box } ) {
+    for my $atom_id ( sort @{ $atom_site->get_grid_box->{$cell} } ) {
+        printf "%s %s\n", $cell, $atom_id;
+    }
+}
