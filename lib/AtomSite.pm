@@ -65,13 +65,8 @@ sub set_connections
         $self->set_grid_box( { 'edge_length' => $edge_length } );
     }
 
-    $self->{'connections'} = connect_atoms_new(
-        $self->{'atoms'},
-        {
-            map { $_ => $self->{'grid_box'}{$_}{'atom_ids'} }
-            keys %{ $self->{'grid_box'} }
-        },
-    );
+    $self->{'connections'} =
+        connect_atoms_new( $self->{'atoms'}, $slef->{'grid_box'} );
 
     return;
 }

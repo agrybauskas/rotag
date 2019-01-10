@@ -348,11 +348,10 @@ sub connect_atoms
 
 sub connect_atoms_new
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $grid_box ) = @_;
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
-    my ( $grid_box ) = grid_box( $atom_site );
     my $neighbour_cells = identify_neighbour_cells( $grid_box );
 
     my %connections = ();
