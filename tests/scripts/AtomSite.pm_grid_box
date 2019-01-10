@@ -24,7 +24,7 @@ my $atom_site = AtomSite->new( { 'atoms' => $atoms } );
 $atom_site->set_grid_box();
 
 for my $cell ( sort keys %{ $atom_site->get_grid_box } ) {
-    for my $atom_id ( sort @{ $atom_site->get_grid_box->{$cell} } ) {
+    for my $atom_id ( sort @{ $atom_site->get_grid_box->{$cell}{'atom_ids'} } ) {
         printf "%s %s\n", $cell, $atom_id;
     }
 }

@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use AtomSite;
+
+#
+# Unit test: AtomSite::grid_connections
+# Example: ./AtomSite.pm_connections structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atoms;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atoms .= "$_" ;
+}
+close( $fh );
+$atoms = eval( $atoms );
+
+my $atom_site = AtomSite->new( { 'atoms' => $atoms } );
+$atom_site->set_connections();
+
+for my $atom_i_id ( sort keys %{ $atom_site->get_connections } ) {
+    for my $atom_j_id ( sort @{ $atom_site->get_connections->{$atom_i_id} } ) {
+        printf "%s %s\n", $atom_i_id, $atom_j_id;
+    }
+}
