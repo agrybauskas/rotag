@@ -6,7 +6,8 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_box
                      grid_box
-                     identify_neighbour_cells );
+                     identify_neighbour_cells
+                     identify_neighbour_cells_new );
 
 use List::Util qw( max
                    min );
@@ -157,6 +158,29 @@ sub identify_neighbour_cells
             if( exists $grid_box->{"$i,$j,$k"} ) {
                 push @{ $neighbour_cells{"$cell"} },
                      @{ $grid_box->{"$i,$j,$k"} };
+        } } } }
+    }
+
+    return \%neighbour_cells;
+}
+
+sub identify_neighbour_cells_new
+{
+    my ( $grid_box, $specified_cells ) = @_;
+
+    $specified_cells //= $grid_box; # Checks all cells.
+
+    # Checks for neighbouring cells for each cell.
+    my %neighbour_cells;
+    foreach my $cell ( keys %{ $specified_cells } ) {
+        my @cell_idxs = split /,/sxm, $cell;
+
+        # $i represents x, $j - y, $k - z coordinates.
+        for my $i ( ( $cell_idxs[0] - 1..$cell_idxs[0] + 1 ) ) {
+        for my $j ( ( $cell_idxs[1] - 1..$cell_idxs[1] + 1 ) ) {
+        for my $k ( ( $cell_idxs[2] - 1..$cell_idxs[2] + 1 ) ) {
+            if( exists $grid_box->{"$i,$j,$k"} ) {
+                push @{ $neighbour_cells{"$cell"} }, "$i,$j,$k";
         } } } }
     }
 
