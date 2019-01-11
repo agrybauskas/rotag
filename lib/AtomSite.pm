@@ -39,11 +39,11 @@ sub set_grid_box
     my $edge_length = $options->{'edge_length'};
 
     my ( $grid_box ) = grid_box( $self->{'atoms'}, $edge_length );
+    my $neighbouring_cells = identify_neighbour_cells_new( $grid_box );
 
     for my $cell ( keys %{ $grid_box } ) {
         $self->{'grid_box'}{$cell}{'atom_ids'} = $grid_box->{$cell};
-        $self->{'grid_box'}{$cell}{'neighbours'} =
-            identify_neighbour_cells_new( $grid_box );
+        $self->{'grid_box'}{$cell}{'neighbours'} = $neighbouring_cells->{$cell};
     }
 
     return;
@@ -66,7 +66,7 @@ sub set_connections
     }
 
     $self->{'connections'} =
-        connect_atoms_new( $self->{'atoms'}, $slef->{'grid_box'} );
+        connect_atoms_new( $self->{'atoms'}, $self->{'grid_box'} );
 
     return;
 }

@@ -350,19 +350,17 @@ sub connect_atoms_new
 {
     my ( $atom_site, $grid_box ) = @_;
 
-    # For each cell, checks neighbouring cells. Creates box around atoms, makes
-    # grid with edge length of max covalent radii of the parameter file.
-    my $neighbour_cells = identify_neighbour_cells( $grid_box );
-
     my %connections = ();
     foreach my $cell ( keys %{ $grid_box } ) {
-        foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
-            foreach my $neighbour_id ( @{ $neighbour_cells->{$cell} } ) {
-                if( ( is_connected( $atom_site->{$atom_id},
-                                    $atom_site->{$neighbour_id} ) ) &&
-                    ( ( ! exists $connections{$atom_id} ) ||
-                      ( ! any { $neighbour_id eq $_ }
-                             @{ $connections{$atom_id} } ) ) ){
+        foreach my $atom_id ( @{ $grid_box->{$cell}{'atom_ids'} } ) {
+            my @neighbour_ids =
+                map { @{ $grid_box->{$_}{'atom_ids'} } }
+                   @{ $grid_box->{$cell}{'neighbours'} };
+            foreach my $neighbour_id ( @neighbour_ids ) {
+                if( ( ( ! exists $connections{$atom_id} ) ||
+                      ( ! exists $connections{$neighbour_id} ) ) &&
+                    ( is_connected( $atom_site->{$atom_id},
+                                    $atom_site->{$neighbour_id} ) ) ){
                     push @{ $connections{$atom_id} }, $neighbour_id;
                     push @{ $connections{$neighbour_id} }, $atom_id;
                 }
