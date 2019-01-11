@@ -9,6 +9,7 @@ BEGIN {
                          %COVALENT_BOND_COMB
                          covalent_bond_combinations
                          hybridization
+                         hybridization_new
                          rotatable_bonds
                          unique_rotatables );
 }
@@ -471,6 +472,113 @@ sub hybridization
     }
 
     return;
+}
+
+sub hybridization_new
+{
+    # Use connect_atoms before using hybridization function.
+    my ( $atom_site ) = @_;
+
+    my %hybridization;
+    for my $atom_id ( keys %{ $atom_site } ) {
+        # Looks up to a pre-determined hash of known hybridization values and
+        # quits early.
+        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
+        if( exists $Parameters::CLEAR_HYBRIDIZATION{$residue_name} &&
+            exists $Parameters::CLEAR_HYBRIDIZATION{$residue_name}{$atom_name} ) {
+            $hybridization{$atom_id} =
+                $Parameters::CLEAR_HYBRIDIZATION{$residue_name}{$atom_name};
+            next;
+        }
+
+        # Determines if the connected atoms sits in one plane.
+        my $dihedral_angle;
+        if( exists $atom_site->{$atom_id}{'connections'} &&
+            scalar @{ $atom_site->{$atom_id}{'connections'} } == 3 ) {
+            my ( $left_atom_id, $right_atom_id, $up_atom_id ) =
+                @{ $atom_site->{$atom_id}{'connections'} };
+            $dihedral_angle =
+                    dihedral_angle(
+                        [ [ $atom_site->{$left_atom_id}{'Cartn_x'},
+                            $atom_site->{$left_atom_id}{'Cartn_y'},
+                            $atom_site->{$left_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$right_atom_id}{'Cartn_x'},
+                            $atom_site->{$right_atom_id}{'Cartn_y'},
+                            $atom_site->{$right_atom_id}{'Cartn_z'}],
+                          [ $atom_site->{$atom_id}{'Cartn_x'},
+                            $atom_site->{$atom_id}{'Cartn_y'},
+                            $atom_site->{$atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$up_atom_id}{'Cartn_x'},
+                            $atom_site->{$up_atom_id}{'Cartn_y'},
+                            $atom_site->{$up_atom_id}{'Cartn_z'} ],
+                        ] );
+        } elsif( exists $atom_site->{$atom_id}{'connections'} &&
+                 scalar @{ $atom_site->{$atom_id}{'connections'} } == 2 ) {
+            my ( $left_atom_id, $right_atom_id, $up_atom_id ) =
+                @{ $atom_site->{$atom_id}{'connections'} };
+
+            my @neighbours_neighbours;
+            for my $neighbours_neighbour (
+                ( @{ $atom_site->{$left_atom_id}{'connections'} },
+                  @{ $atom_site->{$right_atom_id}{'connections'} } ) ) {
+                if( ! any { $neighbours_neighbour eq $_ }
+                          ( $left_atom_id, $right_atom_id, $atom_id ) ) {
+                    push @neighbours_neighbours, $neighbours_neighbour;
+                }
+            }
+            @neighbours_neighbours = uniq @neighbours_neighbours;
+
+            for my $neighbours_neighbour ( @neighbours_neighbours ) {
+                my $current_dihedral_angle =
+                    dihedral_angle(
+                        [ [ $atom_site->{$left_atom_id}{'Cartn_x'},
+                            $atom_site->{$left_atom_id}{'Cartn_y'},
+                            $atom_site->{$left_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$right_atom_id}{'Cartn_x'},
+                            $atom_site->{$right_atom_id}{'Cartn_y'},
+                            $atom_site->{$right_atom_id}{'Cartn_z'}],
+                          [ $atom_site->{$atom_id}{'Cartn_x'},
+                            $atom_site->{$atom_id}{'Cartn_y'},
+                            $atom_site->{$atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$neighbours_neighbour}{'Cartn_x'},
+                            $atom_site->{$neighbours_neighbour}{'Cartn_y'},
+                            $atom_site->{$neighbours_neighbour}{'Cartn_z'} ],
+                        ] );
+                if( ( $current_dihedral_angle >=  0.95 * $PI &&
+                      $current_dihedral_angle <=  1.05 * $PI ) ||
+                    ( $current_dihedral_angle >= -0.05 * $PI &&
+                      $current_dihedral_angle <=  0.05 * $PI ) ) {
+                    $dihedral_angle = $current_dihedral_angle;
+                    last;
+                }
+            }
+        }
+
+        if( defined $dihedral_angle && $dihedral_angle >= 0.95 * $PI ) {
+            $hybridization{$atom_id} = 'sp2';
+            next;
+        }
+
+        # Determines every type of connection.
+        my @bond_types;
+        for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
+            push @bond_types,
+                 bond_type( $atom_site->{$atom_id},
+                            $atom_site->{$connection_id} );
+        }
+
+        # Depending on connections, assigns hybridization type.
+        if( any { $_ eq 'double' } @bond_types ) {
+            $hybridization{$atom_id} = 'sp2';
+        } elsif( any { $_ eq 'triple' } @bond_types ) {
+            $hybridization{$atom_id} = 'sp';
+        } else {
+            $hybridization{$atom_id} = 'sp3';
+        }
+    }
+
+    return \%hybridization;
 }
 
 #

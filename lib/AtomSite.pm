@@ -3,6 +3,7 @@ package AtomSite;
 use strict;
 use warnings;
 
+use BondProperties qw( hybridization_new );
 use ConnectAtoms qw( connect_atoms_new );
 use Grid qw( grid_box
              identify_neighbour_cells_new );
@@ -76,6 +77,26 @@ sub get_connections
     my ( $self ) = @_;
 
     return $self->{'connections'};
+}
+
+sub set_hybridizations
+{
+    my ( $self, $options ) = @_;
+
+    if( ! defined $self->{'grid_box'} ) {
+        $self->set_connections( $options );
+    }
+
+    $self->{'hybridizations'} = hybridization_new( $self->{'atoms'} );
+
+    return;
+}
+
+sub get_hybridizations
+{
+    my ( $self ) = @_;
+
+    return $self->{'hybridizations'};
 }
 
 # --------------------------------- Methods ----------------------------------- #

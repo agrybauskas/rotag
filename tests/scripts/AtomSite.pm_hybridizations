@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use AtomSite;
+
+#
+# Unit test: AtomSite::set_hybridizations
+# Example: ./AtomSite.pm_hybridizations structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atoms;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atoms .= "$_" ;
+}
+close( $fh );
+$atoms = eval( $atoms );
+
+my $atom_site = AtomSite->new( { 'atoms' => $atoms } );
+$atom_site->set_hybridizations();
+
+for my $atom_id ( sort keys %{ $atom_site->get_hybridizations }  ) {
+    print( $atom_site->{'atoms'}{$atom_id}{"label_atom_id"}, "\t",
+           $atom_site->get_hybridizations->{$atom_id}, "\n" );
+}

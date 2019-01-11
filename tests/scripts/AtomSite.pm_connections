@@ -6,7 +6,7 @@ use warnings;
 use AtomSite;
 
 #
-# Unit test: AtomSite::grid_connections
+# Unit test: AtomSite::get_connections
 # Example: ./AtomSite.pm_connections structure.dump
 #
 
