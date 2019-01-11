@@ -34,6 +34,13 @@ sub new
 
 # ----------------------------- Setters/Getters ------------------------------- #
 
+sub atoms
+{
+    my ( $self ) = @_;
+
+    return $self->{'atoms'}
+}
+
 sub set_grid_box
 {
     my ( $self, $options ) = @_;

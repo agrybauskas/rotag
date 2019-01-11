@@ -27,7 +27,7 @@ for my $atom_i_id ( sort { $a <=> $b } keys %{ $atom_site->get_connections } ) {
     for my $atom_j_id ( sort { $a <=> $b }
                             @{ $atom_site->get_connections->{$atom_i_id} } ) {
         printf "%s %s:%s %s\n",
-            $atom_i_id, $atom_site->{'atoms'}{$atom_i_id}{'label_atom_id'},
-            $atom_j_id, $atom_site->{'atoms'}{$atom_j_id}{'label_atom_id'};
+            $atom_i_id, $atom_site->atoms->{$atom_i_id}{'label_atom_id'},
+            $atom_j_id, $atom_site->atoms->{$atom_j_id}{'label_atom_id'};
     }
 }

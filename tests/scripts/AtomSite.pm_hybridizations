@@ -24,6 +24,6 @@ my $atom_site = AtomSite->new( { 'atoms' => $atoms } );
 $atom_site->set_hybridizations();
 
 for my $atom_id ( sort keys %{ $atom_site->get_hybridizations }  ) {
-    print( $atom_site->{'atoms'}{$atom_id}{"label_atom_id"}, "\t",
+    print( $atom_site->atoms->{$atom_id}{"label_atom_id"}, "\t",
            $atom_site->get_hybridizations->{$atom_id}, "\n" );
 }
