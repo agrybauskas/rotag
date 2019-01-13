@@ -4,13 +4,15 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( rotation_only );
+our @EXPORT_OK = qw( rotation_only
+                     rotation_only_new );
 
 use List::MoreUtils qw( uniq );
 
 use AlterMolecule qw( bond_torsion );
 use AtomProperties qw( sort_atom_names );
-use BondProperties qw( rotatable_bonds );
+use BondProperties qw( rotatable_bonds
+                       rotatable_bonds_new);
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( determine_residue_keys
@@ -119,6 +121,87 @@ sub rotation_only
     }
 
     return;
+}
+
+
+sub rotation_only_new
+{
+    my ( $atom_site, $connections, $hybridizations ) = @_;
+
+    # Iterates through target residues and their atom ids and assigns
+    # conformational rotation matrices which can produce pseudo-atoms later.
+    my $rotatable_bonds =
+        rotatable_bonds_new( $atom_site, $connections, $hybridizations );
+
+    my %conformations = ();
+    for my $atom_id ( keys %{ $atom_site }  ) {
+        my @atom_coord = ( $atom_site->{$atom_id}{'Cartn_x'},
+                           $atom_site->{$atom_id}{'Cartn_y'},
+                           $atom_site->{$atom_id}{'Cartn_z'}, );
+
+        if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
+
+        my @transf_matrices; # Matrices for transforming atom coordinates.
+
+        for my $angle_name ( sort { $a cmp $b }
+                             keys %{ $rotatable_bonds->{$atom_id} } ) {
+            # First, checks if rotatable bond has fourth atom produce
+            # dihedral angle. It is done by looking at atom connections: if
+            # rotatable bond ends with terminal atom, then this bond is
+            # excluded.
+            my $up_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[1];
+            if( scalar( @{ $connections->{$up_atom_id} } ) < 2 ){ next; }
+
+            my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
+            if( scalar( @{ $connections->{$mid_atom_id} } ) < 2 ){ next; }
+
+            my @mid_connections = # Excludes up atom.
+                grep { $_ ne $up_atom_id } @{ $connections->{$mid_atom_id} };
+            my @mid_connection_names = # Excludes up atom.
+                map { $atom_site->{$_}{'label_atom_id'} }
+                @mid_connections;
+            my $side_atom_name =
+                sort_atom_names( \@mid_connection_names )->[0];
+            my $side_atom_id =
+                filter( { 'atom_site' => $atom_site,
+                          'include' =>
+                        { 'label_atom_id' => [ $side_atom_name ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+
+            my $mid_atom_coord =
+                [ $atom_site->{$mid_atom_id}{'Cartn_x'},
+                  $atom_site->{$mid_atom_id}{'Cartn_y'},
+                  $atom_site->{$mid_atom_id}{'Cartn_z'} ];
+            my $up_atom_coord =
+                [ $atom_site->{$up_atom_id}{'Cartn_x'},
+                  $atom_site->{$up_atom_id}{'Cartn_y'},
+                  $atom_site->{$up_atom_id}{'Cartn_z'} ];
+            my $side_atom_coord =
+                [ $atom_site->{$side_atom_id}{'Cartn_x'},
+                  $atom_site->{$side_atom_id}{'Cartn_y'},
+                  $atom_site->{$side_atom_id}{'Cartn_z'} ];
+
+            # Tracks atoms that are involved in conformational change.
+            push @{ $conformations{$atom_id}{'atom_ids'} },
+                [ $atom_id, $up_atom_id, $mid_atom_id, $side_atom_id ];
+
+            # Creates and appends matrices to a list of matrices that later
+            # will be multiplied.
+            push @transf_matrices,
+                @{ bond_torsion( $mid_atom_coord,
+                                 $up_atom_coord,
+                                 $side_atom_coord,
+                                 $angle_name ) };
+        }
+
+        $conformations{$atom_id}{'model'} =
+            mult_matrix_product(
+                [ @transf_matrices,
+                  @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
+    }
+
+    return \%conformations;
 }
 
 1;

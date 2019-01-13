@@ -19,6 +19,10 @@ sub new
         'atoms'          => $args->{'atoms'},
         # { <atoms_id> => [ <atoms_id>, ... ], ... }
         'connections'    => $args->{'connections'},
+        # { <atoms_id> =>
+        #       { 'atom_ids' => [ <atom_id>, ... ],
+        #         'model' => [ [ 0 ], [ 0 ], [ 0 ], [ 1 ] ] }, ... }
+        'conformations'  => $args->{'conformations'},
         # { <atom_id> => <hybridization>, ... }
         'hybridizations' => $args->{'hybridizations'},
         # { <atom_id> => { <atom_id> => { <type> => <value> }, ... }, ... }
@@ -90,7 +94,7 @@ sub set_hybridizations
 {
     my ( $self, $options ) = @_;
 
-    if( ! defined $self->{'grid_box'} ) {
+    if( ! defined $self->{'connections'} ) {
         $self->set_connections( $options );
     }
 
@@ -104,6 +108,29 @@ sub get_hybridizations
     my ( $self ) = @_;
 
     return $self->{'hybridizations'};
+}
+
+sub set_conformations
+{
+    my ( $self, $model, $options ) = @_;
+
+    if( ! defined $self->{'hybridizations'} ) {
+        $self->set_hybridizations( $options ); # Also, generates 'connections'.
+    }
+
+    $self->{'conformations'} =
+        $model->( $self->{'atoms'},
+                  $self->{'connections'},
+                  $self->{'hybridizations'} );
+
+    return
+}
+
+sub get_conformations
+{
+    my ( $self ) = @_;
+
+    return $self->{'conformations'};
 }
 
 # --------------------------------- Methods ----------------------------------- #
