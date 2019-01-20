@@ -1123,6 +1123,9 @@ sub add_hydrogens
             if( defined $selection_state ) {
                 $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
                     $selection_state;
+            } else {
+                $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
+                    $atom_site{$atom_id}{'[local]_selection_state'};
             }
             }
         }
