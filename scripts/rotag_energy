@@ -140,6 +140,17 @@ $parameters = {
     split /,/sxm, $parameters
 };
 
+# Checks if parameters are applicable. Parameters should be updated if new
+# potentials are added.
+my @allowed_parameters =
+    qw( lj_k c_k h_k t_k cutoff_start cutoff_end soft_epsilon soft_n);
+
+for my $parameter ( keys %{ $parameters } ) {
+    if( ! any { $parameter eq $_ } @allowed_parameters ) {
+        die "'$parameter' argument is not valid.\n";
+    }
+}
+
 if( $do_decompose ) {
     $parameters->{'decompose'} = 1;
 }
