@@ -36,21 +36,25 @@ our $VERSION = $VERSION;
 #*    rotag_add -H input.cif > output.cif
 #*
 #*Options:
-#*    -S, --side-chains   adds atoms of defined rotamer. Input .cif has to
-#*                        contain _[local]_rotamer_angle category (can be
-#*                        produced with rotag_library).
+#*    -S, --side-chains     adds atoms of defined rotamer. Input .cif has to
+#*                          contain _[local]_rotamer_angle category (can be
+#*                          produced with rotag_library).
 #*
-#*    -H, --hydrogens     adds hydrogen atoms to selected atoms.
+#*    -H, --hydrogens       adds hydrogen atoms to selected atoms.
 #*
-#*    -k, --keep-original keeps original atoms after new atoms are added
-#*                        (applicable for -S option).
+#*    -k, --keep-original   keeps original atoms after new atoms are added
+#*                          (applicable for -S option).
 #*
-#*    -v, --version       print version.
+#*    -c, --clear-positions adds only those hydrogens that have clear positions
+#*                          from the current structure (applicable for -H option).
+#*
+#*    -v, --version         print version.
 
 # --------------------------------- Options ----------------------------------- #
 
 my $add_sidechains = 0;
 my $add_hydrogens = 0;
+my $add_clear_positions = 0;
 my $keep_original = 0;
 my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
@@ -60,6 +64,7 @@ GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
     'keep-original|k' => sub { $keep_original = 1 },
+    'clear-positions|c' => sub { $add_clear_positions = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -206,6 +211,8 @@ for my $pdbx_file ( @ARGV ) {
                                  'use_origins_alt_group_id' => 1,
                                  'use_existing_connections' => 1,
                                  'use_existing_hybridizations' => 1,
+                                 'add_only_clear_positions' =>
+                                     $add_clear_positions,
                                  'exclude_by_atom_ids' => \@visited_atom_ids } );
             %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
 
