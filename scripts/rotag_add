@@ -90,9 +90,11 @@ for my $pdbx_file ( @ARGV ) {
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
-
-    my $target_atom_ids =
+    my $target_atom_site =
         filter( { 'atom_site' => $selected_atom_site,
+                  'include' => { '[local]_selection_state' => [ 'T' ] } } );
+    my $target_atom_ids =
+        filter( { 'atom_site' => $target_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
                   'exclude' => { 'label_atom_id' =>
                                      \@Parameters::INTERACTION_ATOM_NAMES },
@@ -173,23 +175,23 @@ for my $pdbx_file ( @ARGV ) {
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
-        if( ! %{ $selected_atom_site } ) {
-            $selected_atom_site = $atom_site;
-            mark_selection( $selected_atom_site,
-                            { 'target' => [ keys %{ $selected_atom_site } ] } );
+        if( ! %{ $target_atom_site } ) {
+            $target_atom_site = $atom_site;
+            mark_selection( $target_atom_site,
+                            { 'target' => [ keys %{ $target_atom_site } ] } );
         }
 
         my $atom_site_split_groups =
-            split_by( { 'atom_site' => $selected_atom_site,
+            split_by( { 'atom_site' => $target_atom_site,
                         'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
                         'append_dot' => 1 } );
 
-        my %atom_site;
-        my $last_atom_id = max( keys %{ $selected_atom_site } );
+        my %hydrogen_site;
+        my $last_atom_id = max( keys %{ $target_atom_site } );
         my @visited_atom_ids;
         for my $atom_site_identifier ( sort keys %{ $atom_site_split_groups } ) {
             my $current_atom_site =
-                filter( { 'atom_site' => $selected_atom_site,
+                filter( { 'atom_site' => $target_atom_site,
                           'include' =>
                               { 'id' =>
                                     $atom_site_split_groups->
@@ -205,15 +207,15 @@ for my $pdbx_file ( @ARGV ) {
                                  'use_existing_connections' => 1,
                                  'use_existing_hybridizations' => 1,
                                  'exclude_by_atom_ids' => \@visited_atom_ids } );
-            %atom_site = ( %atom_site, %{ $hydrogen_site } );
+            %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
 
             push @visited_atom_ids, keys %{ $current_atom_site };
 
-            $last_atom_id = max( keys %atom_site );
+            $last_atom_id = max( keys %hydrogen_site );
         }
 
         # Prints out cif.
-        to_pdbx( { 'atom_site' => { %{ $selected_atom_site }, %atom_site },
+        to_pdbx( { 'atom_site' => { %{ $atom_site }, %hydrogen_site },
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } else {
         parse_errors(
