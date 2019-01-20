@@ -57,7 +57,7 @@ my @attribute_list =
       'rotamer_id', 'type', 'value', );
 
 GetOptions(
-    'sidechains|S' => sub { $add_sidechains = 1 },
+    'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
     'keep-original|k' => sub { $keep_original = 1 },
     'help|h' => sub {
@@ -204,8 +204,7 @@ for my $pdbx_file ( @ARGV ) {
                                  'use_origins_alt_group_id' => 1,
                                  'use_existing_connections' => 1,
                                  'use_existing_hybridizations' => 1,
-                                 'exclude_by_atom_ids' => \@visited_atom_ids,
-                                 'selection_state' => 'T' } );
+                                 'exclude_by_atom_ids' => \@visited_atom_ids } );
             %atom_site = ( %atom_site, %{ $hydrogen_site } );
 
             push @visited_atom_ids, keys %{ $current_atom_site };
