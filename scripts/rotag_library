@@ -6,6 +6,7 @@ use warnings;
 use autodie;
 use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
+Getopt::Long::Configure qw( no_bundling );
 use List::MoreUtils qw( uniq );
 use List::Util qw( any );
 
@@ -30,6 +31,7 @@ our $VERSION = $VERSION;
 #*Usage:
 #*    rotag_library -u combined input.cif > output.cif
 #*    rotag_library -c 0.005 input.cif > output.cif
+#*    rotag_library -c 0.005 -p lj_k=1.05 c_k=0.4 input.cif > output.cif
 #*
 #*Options:
 #*    -m, --model <str>            rules (model) that are used to move side-chains
@@ -64,7 +66,7 @@ our $VERSION = $VERSION;
 #*                                     soft_epsilon - soft sphere epsilon;
 #*                                     soft_n       - soft sphere n.
 #*
-#*                                 E.g.: 'lj_k = 0.01, c_k = 0.4'.
+#*                                 E.g.: '-p lj_k=0.01 c_k=0.4'.
 #*
 #*    -c, --cutoff-atom <float>    the maximum value of energy potential for each
 #*                                 atom that allows for further rotamer search
@@ -90,12 +92,12 @@ my $energy_cutoff_atom;
 my $threads = 1;
 my $top_rank;
 my $top_ratio;
-my $parameters = q{};
+my %parameters = ();
 
 GetOptions(
     'model|m=s' => \$conf_model,
     'potential|u=s' => \$interactions,
-    'parameters|p=s' => \$parameters,
+    'parameters|p=s%{1,}' => \%parameters,
     'angle-step-deg|a=s' => \$angle_step_deg,
     'angle-step-rad|A=s' => \$angle_step_rad,
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
@@ -116,21 +118,13 @@ GetOptions(
     'version|v' => sub { print $VERSION, "\n"; exit; }
 ) or die 'Error in command line argument.';
 
-$parameters =~ s/\s//g;
-$parameters = {
-    map { $_->[0] => $_->[1] }
-    map { [ split /=/sm, $_ ] }
-    split /,/sxm, $parameters
-};
-
-# Checks if parameters are applicable. Parameters should be updated if new
-# potentials are added.
+# Checks the names of the parameters.
 my @allowed_parameters =
-    qw( lj_k c_k h_k t_k cutoff_start cutoff_end soft_epsilon soft_n);
+    qw( lj_k c_k h_k t_k cutoff_start cutoff_end soft_epsilon soft_n );
 
-for my $parameter ( keys %{ $parameters } ) {
+for my $parameter ( keys %parameters ) {
     if( ! any { $parameter eq $_ } @allowed_parameters ) {
-        die "'$parameter' argument is not valid.\n";
+        die "'$parameter' parameter is not valid.\n";
     }
 }
 
@@ -195,7 +189,7 @@ for my $pdbx_file ( @ARGV ) {
                       ),
                       'conf_model' => $conf_model,
                       'interactions' => $interactions,
-                      'parameters' => $parameters,
+                      'parameters' => \%parameters,
                       'energy_cutoff_atom' => $energy_cutoff_atom,
                       'threads' => $threads,
                     } );
