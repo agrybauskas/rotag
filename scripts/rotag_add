@@ -32,23 +32,24 @@ our $VERSION = $VERSION;
 #*    add pseudo atoms.
 #*
 #*Usage:
-#*    rotag_add -r input.cif > output.cif
+#*    rotag_add -S input.cif > output.cif
 #*    rotag_add -H input.cif > output.cif
 #*
 #*Options:
-#*    -r, --rotamer-atoms adds pseudo atoms of defined rotamers. Input .cif has
-#*                        to contain _[local]_rotamer_angle category (can be
+#*    -S, --side-chains   adds atoms of defined rotamer. Input .cif has to
+#*                        contain _[local]_rotamer_angle category (can be
 #*                        produced with rotag_library).
 #*
-#*    -k, --keep-original keeps original atoms after new atoms are added.
-#*
 #*    -H, --hydrogens     adds hydrogen atoms to selected atoms.
+#*
+#*    -k, --keep-original keeps original atoms after new atoms are added
+#*                        (applicable for -S option).
 #*
 #*    -v, --version       print version.
 
 # --------------------------------- Options ----------------------------------- #
 
-my $add_rotamer_atoms = 0;
+my $add_sidechains = 0;
 my $add_hydrogens = 0;
 my $keep_original = 0;
 my @attribute_list =
@@ -56,9 +57,9 @@ my @attribute_list =
       'rotamer_id', 'type', 'value', );
 
 GetOptions(
-    'rotamer-atoms|r' => sub { $add_rotamer_atoms = 1 },
-    'keep-original|k' => sub { $keep_original = 1 },
+    'sidechains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
+    'keep-original|k' => sub { $keep_original = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -98,7 +99,7 @@ for my $pdbx_file ( @ARGV ) {
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
 
-    if( $add_rotamer_atoms ) {
+    if( $add_sidechains ) {
         # Extracts rotamer angle data that will used to generate atom
         # coordinates.
         my $pdbx_loops =
