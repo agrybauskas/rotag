@@ -34,7 +34,6 @@ use PDBxParser qw( filter
                    pdbx_loop_to_csv
                    split_by
                    to_pdbx );
-use PseudoAtoms qw( add_hydrogens );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -223,20 +222,9 @@ for my $pdbx_file ( @ARGV ) {
             $current_atom_site->{$atom_id}{'label_alt_id'} = $current_alt_id;
         }
 
-        # Adds hydrogens for calculations where h_bond might be present.
-        if( $interactions eq 'composite' || $interactions eq 'h_bond' ) {
-            my $current_atom_site_w_H =
-                clone( { %{ $current_atom_site },
-                         %{ add_hydrogens( $current_atom_site,
-                                           { 'add_only_clear_positions' => 1 } )}
-                       } );
-            connect_atoms( $current_atom_site_w_H );
-            hybridization( $current_atom_site_w_H );
-            $parameters->{'atom_site'} = $current_atom_site_w_H;
-        } else {
-            # TODO: look, how it will behave when pseudo atoms are introduced.
-            connect_atoms( $current_atom_site );
-        }
+        connect_atoms( $current_atom_site );
+        hybridization( $current_atom_site );
+        $parameters->{'atom_site'} = $current_atom_site;
 
         my $target_atom_ids =
             filter( { 'atom_site' => $current_atom_site,

@@ -77,3 +77,6 @@
 -- rotag_energy needs good restructuring and refactoring.
 -- Should use stack model instead of storing every angle combination in RAM -
    potentially can crash the system if the number of angles are very small.
+-- Think about situations when hydrogen atoms are excluded - do single electrons
+   or electron pairs interact the way some moieties interact with other atoms.
+   There could be a way to model those electrons as groups.

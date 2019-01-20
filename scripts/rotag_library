@@ -70,10 +70,6 @@ our $VERSION = $VERSION;
 #*                                 atom that allows for further rotamer search
 #*                                 (default: 0.4).
 #*
-#*    -H, --explicit-hydrogens     adds explicit hydrogens for calculating full
-#*                                 atom energies. Otherwise, implicit hydrogen
-#*                                 model is used.
-#*
 #*    -t, --top-rank <int>         top rotamers according to the value of
 #*                                 energies.
 #*
@@ -91,7 +87,6 @@ my $interactions = 'composite';
 my $angle_step_deg = 0.1 * 360;
 my $angle_step_rad;
 my $energy_cutoff_atom;
-my $is_hydrogen_explicit = 0;
 my $threads = 1;
 my $top_rank;
 my $top_ratio;
@@ -104,7 +99,6 @@ GetOptions(
     'angle-step-deg|a=s' => \$angle_step_deg,
     'angle-step-rad|A=s' => \$angle_step_rad,
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
-    'explicit-hydrogens|H' => sub { $is_hydrogen_explicit = 1 },
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
     'threads|n=s' => \$threads,
@@ -203,7 +197,6 @@ for my $pdbx_file ( @ARGV ) {
                       'interactions' => $interactions,
                       'parameters' => $parameters,
                       'energy_cutoff_atom' => $energy_cutoff_atom,
-                      'is_hydrogen_explicit' => $is_hydrogen_explicit,
                       'threads' => $threads,
                     } );
         };

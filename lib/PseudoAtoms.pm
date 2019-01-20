@@ -313,7 +313,6 @@ sub generate_library
     my $interactions = $args->{'interactions'};
     my $parameters = $args->{'parameters'};
     my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
-    my $is_hydrogen_explicit = $args->{'is_hydrogen_explicit'};
     my $threads = $args->{'threads'};
 
     $conf_model //= 'rotation_only';
@@ -321,7 +320,6 @@ sub generate_library
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' =>
                                     \@Parameters::INTERACTION_ATOM_NAMES };
-    $is_hydrogen_explicit //= 0;
 
     # Selection of potential function.
     my %potential_functions =
@@ -344,30 +342,13 @@ sub generate_library
                       'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
 
-        # Predetermines geometrically clearly defined hydrogen positions.
-        my $current_atom_site_w_h = clone( $current_atom_site );
-        my $hydrogens =
-            add_hydrogens( $current_atom_site_w_h,
-                           { 'alt_group_id' => q{.},
-                             'add_only_clear_positions' => 1,
-                             'use_origins_alt_group_id' => 1 } );
-        append_connections( $current_atom_site_w_h, $hydrogens );
-        $current_atom_site_w_h = { %{ $current_atom_site_w_h }, %{ $hydrogens }};
-        hybridization( $current_atom_site_w_h );
-
-        # Also, prepares hydrogen-free structure.
-        my $current_atom_site_no_h = clone(
-            filter( { 'atom_site' => $current_atom_site_w_h,
-                      'exclude' => { 'type_symbol' => [ 'H' ] } } )
-        );
-        connect_atoms( $current_atom_site_no_h );
-        hybridization( $current_atom_site_no_h );
+        connect_atoms( $current_atom_site );
+        hybridization( $current_atom_site );
 
         # Generates conformational models before checking for
         # clashes/interactions for given residues.
         if( $conf_model eq 'rotation_only' ) {
-            rotation_only( $current_atom_site_no_h );
-            rotation_only( $current_atom_site_w_h );
+            rotation_only( $current_atom_site );
         } else {
             confess 'conformational model was not defined.';
         }
@@ -393,7 +374,7 @@ sub generate_library
         # on maximum bending and having shorter edge length reduces calculation
         # time.
         my ( $grid_box, $target_cell_idxs ) =
-            grid_box( $current_atom_site_w_h, $EDGE_LENGTH_INTERACTION,
+            grid_box( $current_atom_site, $EDGE_LENGTH_INTERACTION,
                       \@target_ca_ids );
 
         my $neighbour_cells =
@@ -416,10 +397,8 @@ sub generate_library
                     determine_residue_keys( $residue_site,
                                             { 'exclude_dot' => 1 } )->[0];
 
-                # Because the change of side-chain position might impact the
-                # surrounding, iteraction site consists of only main chain atoms.
-                my %interaction_site_no_h =
-                    %{ filter( { 'atom_site' => $current_atom_site_no_h,
+                my %interaction_site =
+                    %{ filter( { 'atom_site' => $current_atom_site,
                                  'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
@@ -428,9 +407,9 @@ sub generate_library
                 # This is called growing side chain.
                 my @allowed_angles =
                     @{ calc_favourable_angles(
-                           { 'atom_site' => $current_atom_site_no_h,
+                           { 'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'interaction_site' => \%interaction_site_no_h,
+                             'interaction_site' => \%interaction_site,
                              'small_angle' => $small_angle,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
@@ -442,29 +421,18 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
-                my %interaction_site_w_h =
-                    %{ filter( { 'atom_site' => $current_atom_site_w_h,
-                                 'include' =>
-                                     { 'id' => $neighbour_cells->{$cell},
-                                       %{ $include_interactions } } } ) };
-
                 my ( $allowed_angles, $energy_sums ) =
                     @{ threading(
                            \&calc_full_atom_energy,
-                           { 'atom_site' => ( $is_hydrogen_explicit ?
-                                              $current_atom_site_w_h :
-                                              $current_atom_site_no_h ),
+                           { 'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'interaction_site' => ( $is_hydrogen_explicit ?
-                                                     \%interaction_site_w_h :
-                                                     \%interaction_site_no_h ),
+                             'interaction_site' => \%interaction_site,
                              'small_angle' => $small_angle,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
                              'energy_cutoff_atom' => $energy_cutoff_atom,
-                             'is_hydrogen_explicit' => $is_hydrogen_explicit,
                              'parameters' => $parameters },
                            [ @allowed_angles ],
                            $threads ) };
@@ -747,7 +715,7 @@ sub calc_full_atom_energy
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
          $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
-         $is_hydrogen_explicit, $parameters ) = (
+         $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
@@ -755,12 +723,9 @@ sub calc_full_atom_energy
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
-        $args->{'is_hydrogen_explicit'},
         $args->{'parameters'},
     );
 
-    # Creates all-atom model (even with uncertain hydrogen positions) for
-    # selected residue.
     my ( $residue_id, $residue_chain, $pdbx_model_num,
          $residue_alt ) = split /,/sxm, $residue_unique_key;
     my $residue_site =
@@ -770,19 +735,7 @@ sub calc_full_atom_energy
                                  'label_alt_id' => [ $residue_alt, q{.} ],
                                  'pdbx_PDB_model_num' => [ $pdbx_model_num ] }});
 
-    # Adds hydrogens to the residue_site.
-    if( $is_hydrogen_explicit ) {
-        my $hydrogens =
-            add_hydrogens( $residue_site,
-                           { 'use_existing_connections' => 1,
-                             'use_existing_hybridizations' => 1,
-                             'exclude_by_atom_name' => [ 'N', 'C' ],
-                             'use_origins_alt_group_id' => 1 } );
-        append_connections( $residue_site, $hydrogens );
-        $residue_site = { %{ $residue_site }, %{ $hydrogens } };
-
-        rotation_only( $residue_site );
-    }
+    rotation_only( $residue_site );
 
     # Identifies missing unique rotatable bonds.
     my %uniq_rotatable_bonds = %{ unique_rotatables( $residue_site ) };
@@ -1125,7 +1078,7 @@ sub add_hydrogens
                     $selection_state;
             } else {
                 $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
-                    $atom_site{$atom_id}{'[local]_selection_state'};
+                    $atom_site->{$atom_id}{'[local]_selection_state'};
             }
             }
         }
