@@ -21,9 +21,7 @@ use PDBxParser qw( determine_residue_keys
 use PseudoAtoms qw( generate_library );
 use Version qw( $VERSION );
 
-Getopt::Long::Configure qw( gnu_getopt
-                            no_ignore_case
-                            no_bundling );
+Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
@@ -33,7 +31,7 @@ our $VERSION = $VERSION;
 #*Usage:
 #*    rotag_library -u combined input.cif > output.cif
 #*    rotag_library -c 0.005 input.cif > output.cif
-#*    rotag_library -c 0.005 -p lj_k=1.05 c_k=0.4 input.cif > output.cif
+#*    rotag_library -c 0.005 -p 'lj_k=1.05, c_k=0.4' input.cif > output.cif
 #*
 #*Options:
 #*    -u, --potential <potential> uses potential energy function for determining
@@ -59,7 +57,7 @@ our $VERSION = $VERSION;
 #*                                    soft_epsilon - soft sphere epsilon;
 #*                                    soft_n       - soft sphere n.
 #*
-#*                                E.g.: '-p lj_k=0.01 c_k=0.4'.
+#*                                E.g.: -p 'lj_k=0.01, c_k=0.4'.
 #*
 #*    -a, --angle-step <float>    angle that each dihedral angle is turned
 #*                                by in degrees (default: 36.0).
@@ -89,11 +87,11 @@ my $energy_cutoff_atom;
 my $threads = 1;
 my $top_rank;
 my $top_ratio;
-my %parameters = ();
+my $parameters = '';
 
 GetOptions(
     'potential|u=s' => \$interactions,
-    'parameters|p=s%{1,}' => \%parameters,
+    'parameters|p=s' => \$parameters,
     'angle-step|a=s' => \$angle_step,
     'radians|r' => sub { $in_radians = 1 },
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
@@ -114,11 +112,19 @@ GetOptions(
     'version|v' => sub { print $VERSION, "\n"; exit; }
 ) or die 'Error in command line argument.';
 
+# Parses parameter string.
+$parameters =~ s/\s//g;
+$parameters = {
+    map { $_->[0] => $_->[1] }
+    map { [ split /=/sm, $_ ] }
+    split /,/sxm, $parameters
+};
+
 # Checks the names of the parameters.
 my @allowed_parameters =
     qw( lj_k c_k h_k t_k cutoff_start cutoff_end soft_epsilon soft_n );
 
-for my $parameter ( keys %parameters ) {
+for my $parameter ( keys %{ $parameters } ) {
     if( ! any { $parameter eq $_ } @allowed_parameters ) {
         die "'$parameter' parameter is not valid.\n";
     }
@@ -184,7 +190,7 @@ for my $pdbx_file ( @ARGV ) {
                           $angle_step * $PI / 180.0
                       ),
                       'interactions' => $interactions,
-                      'parameters' => \%parameters,
+                      'parameters' => $parameters,
                       'energy_cutoff_atom' => $energy_cutoff_atom,
                       'threads' => $threads,
                     } );
