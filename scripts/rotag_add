@@ -28,7 +28,7 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-#*rotag_add [options] (-r | -H) <file>...
+#*rotag_add [options] (-S | -H) <file>...
 #*    add pseudo atoms.
 #*
 #*Usage:
