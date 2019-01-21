@@ -5,7 +5,6 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
 
 use Carp;
@@ -16,6 +15,8 @@ use PDBxParser qw( filter
                    to_pdbx );
 use Measure qw( rmsd );
 use Version qw( $VERSION );
+
+Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
@@ -28,7 +29,7 @@ our $VERSION = $VERSION;
 #*Options:
 #*    -c, --compare <str>   compares atoms of the defined groups.
 #*
-#*                          E.g.: '1, 2' or '3, 4; 5, 7'
+#*                          E.g.: -c '1, 2' or -c '3, 4; 5, 7'
 #*
 #*    -F, --format <format> output format (default: pdbx | csv).
 #*
@@ -37,10 +38,12 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $comparison = q{};
+my $not_strict = 0;
 my $output_format = 'pdbx';
 
 GetOptions(
-    'comparison|c=s' => \$comparison,
+    'compare|c=s' => \$comparison,
+    'not-strict|N'  => sub { $not_strict = 1; },
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -144,13 +147,15 @@ for my $comparison_group ( @comparison_groups ) {
     my @first_group_coord;
     my @second_group_coord;
 
-    for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
-        if( $first_group_data->[$i][0] ne $second_group_data->[$i][0] ) {
-            confess "atom names do not match: $first_group_data->[$i][0] " .
-                    "and $second_group_data->[$i][0].";
-        } else {
-            push @first_group_coord, [ (@{ $first_group_data->[$i] })[1..3] ];
-            push @second_group_coord, [ (@{ $second_group_data->[$i] })[1..3] ];
+    if( ! $not_strict ) {
+        for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
+            if( $first_group_data->[$i][0] ne $second_group_data->[$i][0] ) {
+                confess "atom names do not match: $first_group_data->[$i][0] " .
+                        "and $second_group_data->[$i][0].";
+            } else {
+                push @first_group_coord, [ (@{ $first_group_data->[$i] })[1..3] ];
+                push @second_group_coord, [ (@{ $second_group_data->[$i] })[1..3] ];
+            }
         }
     }
 
