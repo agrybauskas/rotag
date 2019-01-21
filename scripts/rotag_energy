@@ -6,8 +6,6 @@ use warnings;
 use autodie;
 use Clone qw( clone );
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
-Getopt::Long::Configure qw( no_bundling );
 use List::MoreUtils qw( any
                         uniq );
 
@@ -36,6 +34,10 @@ use PDBxParser qw( filter
                    split_by
                    to_pdbx );
 use Version qw( $VERSION );
+
+Getopt::Long::Configure qw( gnu_getopt
+                            no_bundling
+                            no_ignore_case );
 
 our $VERSION = $VERSION;
 
@@ -73,7 +75,7 @@ our $VERSION = $VERSION;
 #*
 #*                                E.g.: '-p lj_k=0.01 c_k=0.4'.
 #*
-#*    -r, --rotamer               calculate energy of the side-chain atoms for
+#*    -S, --side-chains           calculate energy of the side-chain atoms for
 #*                                each selected residue.
 #*
 #*    -d, --decompose             decompose composite energy values into their
@@ -94,7 +96,7 @@ our $VERSION = $VERSION;
 
 my $interactions = 'composite';
 my %parameters = ();
-my $do_rotamer = 0;
+my $do_sidechain = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
 my $add_B_iso = 0;
@@ -104,7 +106,7 @@ my $threads = 1;
 GetOptions(
     'potential|u=s' => \$interactions,
     'parameters|p=s%{1,}' => \%parameters,
-    'rotamer|r' => sub { $do_rotamer = 1 },
+    'side-chains|S' => sub { $do_sidechain = 1 },
     'pairwise|P' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
     'b-factor|b' => sub { $add_B_iso = 1 },
@@ -190,7 +192,7 @@ for my $pdbx_file ( @ARGV ) {
               'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
               'label_entity_2_id', 'label_alt_2_id', 'calculation_method',
               'value' ];
-    } elsif( $do_rotamer ) {
+    } elsif( $do_sidechain ) {
         $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
             [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
@@ -240,7 +242,7 @@ for my $pdbx_file ( @ARGV ) {
         my %residue_energy;
         for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
             for my $atom_id ( @{ $target_cells->{$cell} } ) {
-                if( $do_rotamer ) {
+                if( $do_sidechain ) {
                     next if any { $current_atom_site->{$atom_id}
                                                       {'label_atom_id'} eq $_ }
                                 @Parameters::INTERACTION_ATOM_NAMES;
@@ -347,7 +349,7 @@ for my $pdbx_file ( @ARGV ) {
                     }
                 }
 
-                if( ! $do_pairwise && ! $do_decompose && ! $do_rotamer ) {
+                if( ! $do_pairwise && ! $do_decompose && ! $do_sidechain ) {
                     if( $add_B_iso ) {
                         $atom_site->{$atom_id}{'B_iso_or_equiv'} =
                             sprintf $SIG_FIGS_MIN, $potential_energy;
@@ -362,7 +364,7 @@ for my $pdbx_file ( @ARGV ) {
                     }
                 }
 
-                if( $do_decompose && ! $do_rotamer ) {
+                if( $do_decompose && ! $do_sidechain ) {
                     for my $interaction (
                         grep { $_ ne 'composite' } sort keys %potential_energy ){
                         push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
@@ -374,7 +376,7 @@ for my $pdbx_file ( @ARGV ) {
                     }
                 }
 
-                if( $do_rotamer && ! $do_pairwise ) {
+                if( $do_sidechain && ! $do_pairwise ) {
                     if( $do_decompose ) {
                         for my $interaction ( grep { $_ ne 'composite' }
                                               sort keys %potential_energy ) {
@@ -403,7 +405,7 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
 
-        if( $do_rotamer ) {
+        if( $do_sidechain ) {
             $calculation_id = 1;
             for my $residue_unique_key ( sort keys %residue_energy ) {
                 for my $interaction (
@@ -430,7 +432,7 @@ for my $pdbx_file ( @ARGV ) {
     } elsif( $output_format eq 'csv' ) {
         if( $do_pairwise ) {
             pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
-        } elsif( $do_rotamer ) {
+        } elsif( $do_sidechain ) {
             pdbx_loop_to_csv( $pdbx_loops{'_[local]_rotamer_energy'} );
         } else {
             pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );

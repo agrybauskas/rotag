@@ -6,7 +6,6 @@ use warnings;
 use autodie;
 use File::Basename;
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
 use List::Util qw( max );
 
 use BondProperties qw( hybridization );
@@ -25,6 +24,8 @@ use PseudoAtoms qw( add_hydrogens
                     generate_pseudo );
 use SidechainModels qw( rotation_only  );
 use Version qw( $VERSION );
+
+Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 

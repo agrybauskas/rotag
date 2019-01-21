@@ -6,7 +6,6 @@ use warnings;
 use autodie;
 use File::Basename;
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
 
 use BondProperties qw( hybridization );
@@ -22,6 +21,8 @@ use PDBxParser qw( filter
                    obtain_atom_site
                    to_pdbx );
 use Version qw( $VERSION );
+
+Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
