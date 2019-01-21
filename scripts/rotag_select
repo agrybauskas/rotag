@@ -53,7 +53,6 @@ our $VERSION = $VERSION;
 #*                              around - atoms around <int> angstroms;
 #*                              byres  - expands to residues;
 #*                              rand   - selects <int> number of atoms randomly;
-#*                              group  - assigns <int> or <str> as group id.
 #*                              angles - assigns min <float> and max <float>
 #*                                       angle range where selected angles should
 #*                                       be in (e.g. angles 'chi1=90..160' or
@@ -73,6 +72,9 @@ our $VERSION = $VERSION;
 #*                              !  - negation operator;
 #*                              () - parentheses;
 #*                              ;  - group/order selection separator.
+#*
+#*                          Annotation operator:
+#*                              : - assigns <int> or <str> as group id.
 #*
 #*    -s, --select <str>    command (same as --target) describing the atoms that
 #*                          will be marked as selected (S) [default: target].
