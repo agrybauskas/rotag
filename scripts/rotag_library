@@ -29,7 +29,7 @@ our $VERSION = $VERSION;
 #*    generate rotamer library.
 #*
 #*Usage:
-#*    rotag_library -u combined input.cif > output.cif
+#*    rotag_library -u composite input.cif > output.cif
 #*    rotag_library -c 0.005 input.cif > output.cif
 #*    rotag_library -c 0.005 -p 'lj_k=1.05, c_k=0.4' input.cif > output.cif
 #*

@@ -5,7 +5,6 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
 
 use PDBxParser qw( filter_new
                    mark_selection
@@ -15,6 +14,8 @@ use PDBxParser qw( filter_new
 use Grammar::SelectionParser;
 use ErrorHandling qw( parse_errors );
 use Version qw( $VERSION );
+
+Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
