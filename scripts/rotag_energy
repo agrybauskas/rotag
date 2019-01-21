@@ -35,9 +35,7 @@ use PDBxParser qw( filter
                    to_pdbx );
 use Version qw( $VERSION );
 
-Getopt::Long::Configure qw( gnu_getopt
-                            no_bundling
-                            no_ignore_case );
+Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
@@ -47,7 +45,7 @@ our $VERSION = $VERSION;
 #*Usage:
 #*    rotag_energy input.cif > output.cif
 #*    rotag_energy -u hard_sphere input.cif > output.cif
-#*    rotag_energy input.cif -p lj_k=0.01 c_k=0.4 > output.cif
+#*    rotag_energy input.cif -p 'lj_k=0.01, c_k=0.4' > output.cif
 #*
 #*Options:
 #*    -u, --potential <potential> uses potential energy function for determining
@@ -73,7 +71,7 @@ our $VERSION = $VERSION;
 #*                                    soft_epsilon - soft sphere epsilon;
 #*                                    soft_n       - soft sphere n.
 #*
-#*                                E.g.: '-p lj_k=0.01 c_k=0.4'.
+#*                                E.g.: 'lj_k=0.01, c_k=0.4'.
 #*
 #*    -S, --side-chains           calculate energy of the side-chain atoms for
 #*                                each selected residue.
@@ -95,7 +93,7 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
-my %parameters = ();
+my $parameters = '';
 my $do_sidechain = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
@@ -105,7 +103,7 @@ my $threads = 1;
 
 GetOptions(
     'potential|u=s' => \$interactions,
-    'parameters|p=s%{1,}' => \%parameters,
+    'parameters|p=s' => \$parameters,
     'side-chains|S' => sub { $do_sidechain = 1 },
     'pairwise|P' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
@@ -136,19 +134,26 @@ my %potential_functions = (
     'h_bond' => \&h_bond,
 );
 
-# Checks if parameters are applicable. Parameters should be updated if new
-# potentials are added.
+# Parses parameter string.
+$parameters =~ s/\s//g;
+$parameters = {
+    map { $_->[0] => $_->[1] }
+    map { [ split /=/sm, $_ ] }
+    split /,/sxm, $parameters
+};
+
+# Checks the names of the parameters.
 my @allowed_parameters =
     qw( lj_k c_k h_k t_k cutoff_start cutoff_end soft_epsilon soft_n);
 
-for my $parameter ( keys %parameters ) {
+for my $parameter ( keys %{ $parameters } ) {
     if( ! any { $parameter eq $_ } @allowed_parameters ) {
         die "'$parameter' argument is not valid.\n";
     }
 }
 
 if( $do_decompose ) {
-    $parameters{'decompose'} = 1;
+    $parameters->{'decompose'} = 1;
 }
 
 # ----------------------------------- Main ------------------------------------ #
@@ -221,7 +226,7 @@ for my $pdbx_file ( @ARGV ) {
 
         connect_atoms( $current_atom_site );
         hybridization( $current_atom_site );
-        $parameters{'atom_site'} = $current_atom_site;
+        $parameters->{'atom_site'} = $current_atom_site;
 
         my $target_atom_ids =
             filter( { 'atom_site' => $current_atom_site,
@@ -268,7 +273,7 @@ for my $pdbx_file ( @ARGV ) {
                 if( $interactions eq 'composite' ) {
                     $potential_energy = ForceField::Bonded::general(
                         $current_atom_site->{$atom_id},
-                        \%parameters
+                        $parameters
                     );
                 }
 
@@ -293,7 +298,7 @@ for my $pdbx_file ( @ARGV ) {
                             $potential_function->(
                                 $current_atom_site->{$atom_id},
                                 $current_atom_site->{$neighbour_atom_id},
-                                \%parameters );
+                                $parameters );
 
                         if( $do_pairwise ) {
                             if( $do_decompose ) {
