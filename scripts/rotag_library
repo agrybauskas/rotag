@@ -5,8 +5,6 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
-Getopt::Long::Configure qw( no_bundling );
 use List::MoreUtils qw( uniq );
 use List::Util qw( any );
 
@@ -23,6 +21,10 @@ use PDBxParser qw( determine_residue_keys
 use PseudoAtoms qw( generate_library );
 use Version qw( $VERSION );
 
+Getopt::Long::Configure qw( gnu_getopt
+                            no_ignore_case
+                            no_bundling );
+
 our $VERSION = $VERSION;
 
 #*rotag_library [options] <file>...
@@ -34,56 +36,55 @@ our $VERSION = $VERSION;
 #*    rotag_library -c 0.005 -p lj_k=1.05 c_k=0.4 input.cif > output.cif
 #*
 #*Options:
-#*    -a, --angle-step-deg <float> angle that each dihedral angle is turned
-#*                                 by in degrees (default: 0.1).
+#*    -u, --potential <potential> uses potential energy function for determining
+#*                                interactions between selected residues and
+#*                                atoms that are reachable or described
+#*                                (default: composite | hard_sphere
+#*                                | soft_sphere).
 #*
-#*    -A, --angle-step-rad <float> angle ratio that each dihedral angle is turned
-#*                                 by in radians.
+#*    -p, --parameters <str>      parameter values.
 #*
-#*    -u, --potential <potential>  uses potential energy function for determining
-#*                                 interactions between selected residues and
-#*                                 atoms that are reachable or described
-#*                                 (default: composite | hard_sphere
-#*                                 | soft_sphere).
+#*                                Parameters for composite potential energy
+#*                                function:
+#*                                    lj_k         - Leonard-Jones constant;
+#*                                    c_k          - Coulomb constant;
+#*                                    h_k          - hydrogen bond constant;
+#*                                    cutoff_start - x VdW where energy starts
+#*                                                   to go to zero;
+#*                                    cutoff_end   - x VdW where energy is at
+#*                                                   zero.
 #*
-#*    -p, --parameters <str>       parameter values.
+#*                                Parameters for soft-sphere potential energy
+#*                                function:
+#*                                    soft_epsilon - soft sphere epsilon;
+#*                                    soft_n       - soft sphere n.
 #*
-#*                                 Parameters for composite potential energy
-#*                                 function:
-#*                                     lj_k         - Leonard-Jones constant;
-#*                                     c_k          - Coulomb constant;
-#*                                     h_k          - hydrogen bond constant;
-#*                                     cutoff_start - x VdW where energy starts
-#*                                                    to go to zero;
-#*                                     cutoff_end   - x VdW where energy is at
-#*                                                    zero.
+#*                                E.g.: '-p lj_k=0.01 c_k=0.4'.
 #*
-#*                                 Parameters for soft-sphere potential energy
-#*                                 function:
-#*                                     soft_epsilon - soft sphere epsilon;
-#*                                     soft_n       - soft sphere n.
+#*    -a, --angle-step <float>    angle that each dihedral angle is turned
+#*                                by in degrees (default: 36.0).
 #*
-#*                                 E.g.: '-p lj_k=0.01 c_k=0.4'.
+#*    -r, --radians               angle value is in radians.
 #*
-#*    -c, --cutoff-atom <float>    the maximum value of energy potential for each
-#*                                 atom that allows for further rotamer search
-#*                                 (default: 0.4).
+#*    -c, --cutoff-atom <float>   the maximum value of energy potential for each
+#*                                atom that allows for further rotamer search
+#*                                (default: 0.4).
 #*
-#*    -t, --top-rank <int>         top rotamers according to the value of
-#*                                 energies.
+#*    -t, --top-rank <int>        top rotamers according to the value of
+#*                                energies.
 #*
-#*    -T, --top-ratio <float>      top rotamers according to the value of
-#*                                 energies (default: 1.0).
+#*    -T, --top-ratio <float>     top rotamers according to the value of
+#*                                energies (default: 1.0).
 #*
-#*    -n, --threads <int>          number of threads.
+#*    -n, --threads <int>         number of threads.
 #*
-#*    -v, --version                print version.
+#*    -v, --version               print version.
 
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
-my $angle_step_deg = 0.1 * 360;
-my $angle_step_rad;
+my $angle_step = 0.1 * 360;
+my $in_radians = 0;
 my $energy_cutoff_atom;
 my $threads = 1;
 my $top_rank;
@@ -93,8 +94,8 @@ my %parameters = ();
 GetOptions(
     'potential|u=s' => \$interactions,
     'parameters|p=s%{1,}' => \%parameters,
-    'angle-step-deg|a=s' => \$angle_step_deg,
-    'angle-step-rad|A=s' => \$angle_step_rad,
+    'angle-step|a=s' => \$angle_step,
+    'radians|r' => sub { $in_radians = 1 },
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
@@ -178,9 +179,9 @@ for my $pdbx_file ( @ARGV ) {
                       'include_interactions' =>
                           { 'id' => [ keys %{ $current_atom_site } ] },
                       'small_angle' => (
-                          defined $angle_step_rad ?
-                          $angle_step_rad :
-                          $angle_step_deg * $PI / 180.0
+                          $in_radians ?
+                          $angle_step :
+                          $angle_step * $PI / 180.0
                       ),
                       'interactions' => $interactions,
                       'parameters' => \%parameters,
