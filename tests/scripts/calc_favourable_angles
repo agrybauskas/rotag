@@ -14,7 +14,7 @@ my ( $residue_id,
      $residue_chain,
      $pdbx_model,
      $residue_alt,
-     $small_angle,
+     $angles,
      $potential,
      $interaction_specifier,
      $energy_cutoff_atom,
@@ -28,7 +28,7 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-$small_angle =~ s/pi/\$PI/g;
+$angles =~ s/pi/\$PI/g;
 
 my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
                               map { [ split( " ", $_ ) ] }

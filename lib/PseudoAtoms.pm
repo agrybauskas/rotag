@@ -289,7 +289,13 @@ sub generate_rotamer
 #     $args->{include_interactions} - selection data structure
 #     (see PDBxParser::filter) that is used to select atoms that will be included
 #     into calculations of energy;
-#     $args->{small_angle} - angle by which rotation is made;
+#     $args->{angles} - angle data structure by which rotation is made:
+#     {
+#       'chi1' => {
+#           'angle_start' => 0.0,
+#           'angle_step' => 36.0,
+#           'angle_end' => 360.0,
+#     }.
 #     $args->{conf_model} - possible sidechain movements described by sidechain
 #     model functions in SidechainModels.pm;
 #     $args->{interactions} - interaction models described by functions in
@@ -308,7 +314,7 @@ sub generate_library
     my $atom_site = $args->{'atom_site'};
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
-    my $small_angle = $args->{'small_angle'};
+    my $angles = $args->{'angles'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
     my $parameters = $args->{'parameters'};
@@ -410,7 +416,7 @@ sub generate_library
                            { 'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site,
-                             'small_angle' => $small_angle,
+                             'angles' => $angles,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
@@ -427,7 +433,7 @@ sub generate_library
                            { 'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site,
-                             'small_angle' => $small_angle,
+                             'angles' => $angles,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
@@ -469,7 +475,7 @@ sub generate_library
 #     (see PDBxParser::unique_residue_key);
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
-#     $args->{small_angle} - angle by which rotation is made;
+#     $args->{angles} - angle data structure by which rotation is made.
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of non-bonded atoms;
 #     $args->{non_bonded_potential} - reference to the potential function that is
@@ -487,13 +493,13 @@ sub calc_favourable_angles
 {
     my ( $args ) = @_;
 
-    my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
+    my ( $atom_site, $residue_unique_key, $interaction_site, $angles,
          $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
          $parameters, $threads ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
-        $args->{'small_angle'},
+        $args->{'angles'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
@@ -694,7 +700,7 @@ sub calc_favourable_angle
 #     (see PDBxParser::unique_residue_key);
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
-#     $args->{small_angle} - angle by which rotation is made;
+#     $args->{angles} - angle data structure by which rotation is made.
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of non-bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
@@ -713,13 +719,13 @@ sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
+    my ( $atom_site, $residue_unique_key, $interaction_site, $angles,
          $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
          $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
-        $args->{'small_angle'},
+        $args->{'angles'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},

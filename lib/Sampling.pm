@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( sample_angles );
+our @EXPORT_OK = qw( sample_angles
+                     sample_angles_qs_parsing );
 
 use POSIX;
 
@@ -57,6 +58,63 @@ sub sample_angles
     }
 
     return \@angles;
+}
+
+#
+# Parses query string and generates data structure suited for generating
+# rotamers.
+# Input:
+#     $query_string - query string.
+#     E.g. '0..36.0..360.0', '0..18.0..180.0', '0..90.0', 'chi1=0..36.0',
+#          'chi1=90.0..90.0, chi2=0.0..10.0..360.0'.
+# Output:
+#     %angles - data structure describing angles:
+#     { 'chi1' => [ 0.0, 1.0, 2.0 ], ... }.
+#
+
+sub sample_angles_qs_parsing
+{
+    my ( $query_string, $in_radians ) = @_;
+
+    $query_string =~ s/\s//g;
+
+    my %angles;
+    for my $angle ( split /;/, $query_string ) {
+        my $angle_name;
+        my $angle_start;
+        my $angle_step;
+        my $angle_end;
+
+        if( $angle =~ m/^(\w+)=(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
+            ( $angle_name, $angle_start, $angle_step, $angle_end ) =
+                ( $1, $2, $3, $4 );
+        } elsif( $angle =~ m/^(\w+)=(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
+            ( $angle_name, $angle_start, $angle_end ) = ( $1, $2, $3 );
+        } elsif( $angle =~ m/^(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
+            ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
+        } elsif( $angle =~ m/^(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
+            ( $angle_start, $angle_end ) = ( $1, $2 );
+        } else {
+            die "Syntax '$angle' is incorrect\n"
+        }
+
+        $angle_name //= '*';
+        $angle_start //= 0.0;
+        $angle_step //= 2 * $PI / 10;
+        $angle_end //= 2 * $PI;
+
+        if( $in_radians ) {
+            $angles{$angle_name} =
+                sample_angles( [ [ $angle_start, $angle_end ] ], $angle_step );
+        } else {
+            $angles{$angle_name} =
+                sample_angles( [ [ $angle_start * $PI / 180.0,
+                                   $angle_end * $PI / 180.0 ] ],
+                                 $angle_step * $PI / 180.0 );
+        }
+    }
+
+    return \%angles;
 }
 
 1;

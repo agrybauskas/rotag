@@ -18,7 +18,8 @@ use PDBxParser qw( determine_residue_keys
                    split_by
                    pdbx_loop_to_csv
                    to_pdbx );
-use PseudoAtoms qw( generate_library );
+# use PseudoAtoms qw( generate_library );
+use Sampling qw( sample_angles_qs_parsing );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -131,33 +132,7 @@ $parameters = {
 };
 
 # Parses string describing angles.
-$angles =~ s/\s//g;
-my %angles;
-for my $angle ( split /;/, $angles ) {
-    my $angle_name;
-    my $angle_start;
-    my $angle_step;
-    my $angle_end;
-    if( $angle =~ m/^(\w+)=(\d+(\.\d+)?)\.\.(\d+(\.\d+)?)\.\.(\d+(\.\d+)?)$/ ) {
-        $angle_name = $1;
-        $angle_start = $2;
-        $angle_step = $3;
-        $angle_end = $4;
-    } elsif( $angle =~ m/^(\w+)=(\d+(\.\d+)?)\.\.(\d+(\.\d+)?)$/ ) {
-        $angle_name = $1;
-        $angle_start = $2;
-        $angle_end = $3;
-    } elsif( $angle =~ m/^(\d+(\.\d+)?)\.\.(\d+(\.\d+)?)\.\.(\d+(\.\d+)?)$/ ) {
-        $angle_start = $1;
-        $angle_step = $2;
-        $angle_end = $3;
-    } elsif( $angle =~ m/^(\d+(\.\d+)?)\.\.(\d+(\.\d+)?)$/ ) {
-        $angle_start = $1;
-        $angle_end = $2;
-    } else {
-        die "Syntax '$angle' is incorrect\n"
-    }
-}
+sample_angles_qs_parsing( $angles );
 
 # # Checks the names of the parameters.
 # my @allowed_parameters =
@@ -169,7 +144,7 @@ for my $angle ( split /;/, $angles ) {
 #     }
 # }
 
-# ----------------------------------- Main ------------------------------------ #
+# # ----------------------------------- Main ------------------------------------ #
 
 # local @ARGV = ( q{-} ) unless @ARGV;
 
@@ -223,11 +198,7 @@ for my $angle ( split /;/, $angles ) {
 #                       'residue_unique_keys' => $residue_unique_keys,
 #                       'include_interactions' =>
 #                           { 'id' => [ keys %{ $current_atom_site } ] },
-#                       'small_angle' => $angle_step,
-#                           # $in_radians ?
-#                           # $angle_step :
-#                           # $angle_step * $PI / 180.0
-#                       'angle_range' => $angle_range,
+#                       'angles' => \%angles,
 #                       'interactions' => $interactions,
 #                       'parameters' => $parameters,
 #                       'energy_cutoff_atom' => $energy_cutoff_atom,
