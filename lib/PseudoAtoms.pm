@@ -433,7 +433,6 @@ sub generate_library
                            { 'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site,
-                             'angles' => $angles,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
@@ -737,22 +736,17 @@ sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $atom_site, $residue_unique_key, $interaction_site, $angles,
-         $small_angle, $non_bonded_potential, $bonded_potential,
-         $energy_cutoff_atom, $parameters ) = (
+    my ( $atom_site, $residue_unique_key, $interaction_site,
+         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
+         $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
-        $args->{'angles'},
-        $args->{'small_angle'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
     );
-
-    # TODO: look how separate $angles and $small_angle influence on the function;
-    $small_angle //= 0.1 * 2 * $PI;
 
     my ( $residue_id, $residue_chain, $pdbx_model_num,
          $residue_alt ) = split /,/sxm, $residue_unique_key;
@@ -763,41 +757,18 @@ sub calc_full_atom_energy
                                  'label_alt_id' => [ $residue_alt, q{.} ],
                                  'pdbx_PDB_model_num' => [ $pdbx_model_num ] }});
 
-    rotation_only( $residue_site );
-
-    # Identifies missing unique rotatable bonds.
-    my %uniq_rotatable_bonds = %{ unique_rotatables( $residue_site ) };
-
-    if( ! %uniq_rotatable_bonds ) { next; }
-
-    my $uniq_rotatable_bond_num = scalar keys %uniq_rotatable_bonds;
-    my $missing_rotatable_bond_num = $uniq_rotatable_bond_num -
-                                     scalar @{ $array_blocks->[0] };
-
-    my @checkable_angles = @{ $array_blocks };
-    if( $missing_rotatable_bond_num ) {
-        my @sampled_angles =
-            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * $PI ] ], $small_angle )};
-        foreach( 1..$missing_rotatable_bond_num ) {
-            @checkable_angles =
-                @{ permutation( 2, [], [ \@checkable_angles,
-                                         \@sampled_angles ], [] ) };
-            # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-            @checkable_angles =
-                map { [ @{ $_->[0] }, @{ $_->[1] } ] } @checkable_angles;
-        }
-    }
-
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
+    my @checkable_angles = @{ $array_blocks };
     my @allowed_angles;
     my @energy_sums;
+
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
         my %angles =
             map { my $angle_id = $_ + 1; ( "chi$angle_id" =>
                                                $checkable_angles[$i][$_] ) }
-                0..$#{ $checkable_angles[$i] };
+                ( 0..$#{ $checkable_angles[$i] } );
 
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( \%rotamer_site, $residue_unique_key, \%angles );
