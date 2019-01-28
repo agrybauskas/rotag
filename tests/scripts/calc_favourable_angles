@@ -9,6 +9,7 @@ use Constants qw( $PI
 use PDBxParser qw( filter
                    to_pdbx );
 use PseudoAtoms qw( calc_favourable_angles );
+use Sampling qw( sample_angles_qs_parsing );
 
 my ( $residue_id,
      $residue_chain,
@@ -27,8 +28,9 @@ while( <$fh> ) {
 }
 close( $fh );
 $atom_site = eval( $atom_site );
+$angles =~ s/\s//g;
+$angles = sample_angles_qs_parsing( $angles );
 
-$angles =~ s/pi/\$PI/g;
 
 my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
                               map { [ split( " ", $_ ) ] }
@@ -42,7 +44,7 @@ my $favourable_angles =
                                   "${residue_id},${residue_chain},".
                                   "${pdbx_model},${residue_alt}",
                               'interaction_site' => $interaction_site,
-                              'small_angle' => eval( $small_angle ),
+                              'angles' => $angles,
                               'non_bonded_potential' => \&hard_sphere,
                               'energy_cutoff_atom' => $energy_cutoff_atom,
                               'threads' => 1,

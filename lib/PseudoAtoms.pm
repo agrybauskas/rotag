@@ -494,18 +494,21 @@ sub calc_favourable_angles
     my ( $args ) = @_;
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $angles,
-         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
-         $parameters, $threads ) = (
+         $small_angle, $non_bonded_potential, $bonded_potential,
+         $energy_cutoff_atom, $parameters, $threads ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'angles'},
+        $args->{'small_angle'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
         $args->{'threads'},
     );
+
+    $small_angle //= 0.1 * $PI;
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
@@ -530,33 +533,42 @@ sub calc_favourable_angles
         grep { $_ ne $ca_atom_id }
             @{ $residue_site->{$cb_atom_id}{'connections'} };
 
-    my @sampled_angles =
-        map { [ $_ ] } @{ sample_angles( [ [ 0, 2 * $PI ] ], $small_angle ) };
-    my @allowed_angles = @sampled_angles;
-
-    # @zero_energies is a helper variable for permutation() in order to
-    # mimick the permutated angles and match their values correctly.
-    my @zero_energies = map { [ 0 ] } @sampled_angles;
-    my @allowed_energies = @zero_energies;
-
+    my @allowed_angles;
+    my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
+            my @default_allowed_angles;
+            if( ! defined $angles &&
+                exists $angles->{$atom_id} &&
+                defined $angles->{$atom_id} ) {
+            } else {
+                @default_allowed_angles =
+                    map { [ $_ ] }
+                       @{ sample_angles( [ [ 0, 2 * $PI ] ], $small_angle ) };
+            }
+
+            my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
+
             # Adds more angle combinations if there are more than one
             # rotatable bonds.
-            if( scalar( @{ $allowed_angles[0] } ) <
+            if( @allowed_angles &&
+                scalar( @{ $allowed_angles[0] } ) <
                 scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
                 @allowed_angles =
                     @{ permutation( 2, [], [ \@allowed_angles,
-                                             \@sampled_angles ], [] ) };
+                                             \@default_allowed_angles ], [] ) };
                 @allowed_energies =
                     @{ permutation( 2, [], [ \@allowed_energies,
-                                             \@zero_energies ], [] ) };
+                                             \@default_allowed_energies ], [] ) };
                 # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
                 @allowed_angles =
                     map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
                 @allowed_energies =
                     map { [ $_->[0][0] ] } @allowed_energies;
+            } else {
+                @allowed_angles = @default_allowed_angles;
+                @allowed_energies = @default_allowed_energies;
             }
 
             # Marks visited atoms.
@@ -577,7 +589,7 @@ sub calc_favourable_angles
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential,
                          'parameters' => $parameters },
-                       [ \@allowed_angles, \@allowed_energies, ],
+                       [ \@allowed_angles, \@allowed_energies ],
                        $threads ) };
 
             if( scalar @{ $next_allowed_angles } > 0 ) {
@@ -755,7 +767,8 @@ sub calc_full_atom_energy
     my @checkable_angles = @{ $array_blocks };
     if( $missing_rotatable_bond_num ) {
         my @sampled_angles =
-            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * $PI ] ], $small_angle )};
+            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * $PI ] ], # $small_angle
+                                 )};
         foreach( 1..$missing_rotatable_bond_num ) {
             @checkable_angles =
                 @{ permutation( 2, [], [ \@checkable_angles,
