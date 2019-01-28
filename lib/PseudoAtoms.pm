@@ -738,17 +738,21 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $angles,
-         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
-         $parameters ) = (
+         $small_angle, $non_bonded_potential, $bonded_potential,
+         $energy_cutoff_atom, $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'angles'},
+        $args->{'small_angle'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
     );
+
+    # TODO: look how separate $angles and $small_angle influence on the function;
+    $small_angle //= 0.1 * 2 * $PI;
 
     my ( $residue_id, $residue_chain, $pdbx_model_num,
          $residue_alt ) = split /,/sxm, $residue_unique_key;
@@ -773,8 +777,7 @@ sub calc_full_atom_energy
     my @checkable_angles = @{ $array_blocks };
     if( $missing_rotatable_bond_num ) {
         my @sampled_angles =
-            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * $PI ] ], # $small_angle
-                                 )};
+            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * $PI ] ], $small_angle )};
         foreach( 1..$missing_rotatable_bond_num ) {
             @checkable_angles =
                 @{ permutation( 2, [], [ \@checkable_angles,
