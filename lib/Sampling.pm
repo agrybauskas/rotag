@@ -74,9 +74,10 @@ sub sample_angles
 
 sub sample_angles_qs_parsing
 {
-    my ( $query_string, $in_radians ) = @_;
+    my ( $query_string, $in_radians, $small_angle ) = @_;
 
     $query_string =~ s/\s//g;
+    $small_angle = 36.0;
 
     my %angles;
     for my $angle ( split /,/, $query_string ) {
@@ -100,8 +101,8 @@ sub sample_angles_qs_parsing
 
         $angle_name //= '*';
         $angle_start //= 0.0;
-        $angle_step //= 2 * $PI / 10;
-        $angle_end //= 2 * $PI;
+        $angle_step //= $small_angle;
+        $angle_end //= 360.0;
 
         if( $in_radians ) {
             $angles{$angle_name} =
@@ -110,7 +111,7 @@ sub sample_angles_qs_parsing
             $angles{$angle_name} =
                 sample_angles( [ [ $angle_start * $PI / 180.0,
                                    $angle_end * $PI / 180.0 ] ],
-                                 $angle_step * $PI / 180.0 );
+                                   $angle_step * $PI / 180.0 );
         }
     }
 

@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+
+use Sampling qw( sample_angles_qs_parsing );
+
+$Data::Dumper::Indent = 1;
+$Data::Dumper::Sortkeys = 1;
+
+#
+# Unit test: Sampling::sample_angles_qs_parsing
+# Example: ./sample_angles_qs_parsing '0.0..36.0..360.0'
+#
+
+my ( $angles_qs ) = @ARGV;
+
+print Dumper sample_angles_qs_parsing( $angles_qs );
