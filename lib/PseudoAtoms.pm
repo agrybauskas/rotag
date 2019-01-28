@@ -547,6 +547,11 @@ sub calc_favourable_angles
                 @default_allowed_angles =
                     map { [ $_ ] }
                        @{ $angles->{$last_angle_name} };
+            } elsif( defined $angles  && exists $angles->{'*'} &&
+                     defined $angles->{'*'}  ) {
+                @default_allowed_angles =
+                    map { [ $_ ] }
+                       @{ $angles->{'*'} };
             } else {
                 @default_allowed_angles =
                     map { [ $_ ] }
