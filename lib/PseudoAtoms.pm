@@ -540,7 +540,7 @@ sub calc_favourable_angles
         for my $atom_id ( @next_atom_ids ) {
             my @default_allowed_angles;
             my ( $last_angle_name ) =
-                sort { $a cmp $b } keys %{ $rotatable_bonds->{$atom_id} };
+                sort { $b cmp $a } keys %{ $rotatable_bonds->{$atom_id} };
 
             if( defined $angles  && exists $angles->{$last_angle_name} &&
                 defined $angles->{$last_angle_name} ) {
@@ -571,7 +571,7 @@ sub calc_favourable_angles
                     map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
                 @allowed_energies =
                     map { [ $_->[0][0] ] } @allowed_energies;
-            } else {
+            } elsif( ! @allowed_angles ) {
                 @allowed_angles = @default_allowed_angles;
                 @allowed_energies = @default_allowed_energies;
             }

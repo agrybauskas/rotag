@@ -79,7 +79,7 @@ sub sample_angles_qs_parsing
     $query_string =~ s/\s//g;
 
     my %angles;
-    for my $angle ( split /;/, $query_string ) {
+    for my $angle ( split /,/, $query_string ) {
         my $angle_name;
         my $angle_start;
         my $angle_step;
