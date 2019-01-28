@@ -508,7 +508,8 @@ sub calc_favourable_angles
         $args->{'threads'},
     );
 
-    $small_angle //= 0.1 * $PI;
+    # TODO: look how separate $angles and $small_angle influence on the function;
+    $small_angle //= 0.1 * 2 * $PI;
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
@@ -539,9 +540,14 @@ sub calc_favourable_angles
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
             my @default_allowed_angles;
-            if( ! defined $angles &&
-                exists $angles->{$atom_id} &&
-                defined $angles->{$atom_id} ) {
+            my ( $last_angle_name ) =
+                sort { $a cmp $b } keys %{ $rotatable_bonds->{$atom_id} };
+
+            if( defined $angles  && exists $angles->{$last_angle_name} &&
+                defined $angles->{$last_angle_name} ) {
+                @default_allowed_angles =
+                    map { [ $_ ] }
+                       @{ $angles->{$last_angle_name} };
             } else {
                 @default_allowed_angles =
                     map { [ $_ ] }
