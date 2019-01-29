@@ -2,7 +2,6 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-angle_range="0-2"
-small_angle=0.2
-
-$(dirname "$0")/../scripts/sample_angles "${angle_range}" "${small_angle}"
+# $(dirname "$0")/../scripts/sample_angles "0..2" 0.2
+# $(dirname "$0")/../scripts/sample_angles "0..1" 0.1
+$(dirname "$0")/../scripts/sample_angles "-1..1" 0.1

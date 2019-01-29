@@ -28,7 +28,9 @@ our $VERSION = $VERSION;
 
 sub sample_angles
 {
-    my ( $angle_ranges, $small_angle ) = @_;
+    my ( $angle_ranges, $small_angle, $angle_phase_shift ) = @_;
+
+    $angle_phase_shift //= -$PI;
 
     my @angles;
     my $min_angle;
@@ -38,7 +40,8 @@ sub sample_angles
     $small_angle = # Adjusts angle so, it could be devided evenly.
         2 * $PI / floor( 2 * $PI / $small_angle );
     my @small_angles =
-        map { $_ * $small_angle } 0..( floor( 2 * $PI / $small_angle ) - 1 );
+        map { $_ * $small_angle + $angle_phase_shift }
+            ( 0..( floor( 2 * $PI / $small_angle ) - 1 ) );
 
     # Iterates around the circle and adds evenly spaced angles, if they are
     # inside intervals ($angle_ranges).
