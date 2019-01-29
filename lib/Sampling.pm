@@ -86,18 +86,18 @@ sub sample_angles_qs_parsing
         my $angle_step;
         my $angle_end;
 
-        if( $angle =~ m/^(\w+)=(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
+        if( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
             ( $angle_name, $angle_start, $angle_step, $angle_end ) =
                 ( $1, $2, $3, $4 );
-        } elsif( $angle =~ m/^(\w+)=(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
+        } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
             ( $angle_name, $angle_start, $angle_end ) = ( $1, $2, $3 );
-        } elsif( $angle =~ m/^(\w+)=(\d+(?:\.\d+)?)$/ ) {
+        } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)$/ ) {
             ( $angle_name, $angle_step ) = ( $1, $2 );
-        } elsif( $angle =~ m/^(\d+(?:\.\d+)?)$/ ) {
+        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
             ( $angle_step ) = ( $1 );
-        } elsif( $angle =~ m/^(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
+        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
             ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
-        } elsif( $angle =~ m/^(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
+        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
             ( $angle_start, $angle_end ) = ( $1, $2 );
         }else {
             die "Syntax '$angle' is incorrect\n"
