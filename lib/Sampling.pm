@@ -91,18 +91,22 @@ sub sample_angles_qs_parsing
                 ( $1, $2, $3, $4 );
         } elsif( $angle =~ m/^(\w+)=(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
             ( $angle_name, $angle_start, $angle_end ) = ( $1, $2, $3 );
+        } elsif( $angle =~ m/^(\w+)=(\d+(?:\.\d+)?)$/ ) {
+            ( $angle_name, $angle_step ) = ( $1, $2 );
+        } elsif( $angle =~ m/^(\d+(?:\.\d+)?)$/ ) {
+            ( $angle_step ) = ( $1 );
         } elsif( $angle =~ m/^(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
             ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
         } elsif( $angle =~ m/^(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)$/ ) {
             ( $angle_start, $angle_end ) = ( $1, $2 );
-        } else {
+        }else {
             die "Syntax '$angle' is incorrect\n"
         }
 
         $angle_name //= '*';
-        $angle_start //= 0.0;
+        $angle_start //= -180.0;
         $angle_step //= $small_angle;
-        $angle_end //= 360.0;
+        $angle_end //= 180.0;
 
         if( $in_radians ) {
             $angles{$angle_name} =
