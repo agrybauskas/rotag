@@ -169,7 +169,7 @@ sub _torsion
 {
     my ( $omega, $phase ) = @_;
 
-    if( $omega < ( -$PI / $phase ) && $omega > ( $PI / $phase ) ) {
+    if( $omega < ( -$PI / $phase ) || $omega > ( $PI / $phase ) ) {
         return 0
     } else {
         return ( 1 / 2 ) * ( 1 + cos( $phase * $omega ) );
