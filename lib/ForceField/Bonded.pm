@@ -11,6 +11,7 @@ our @EXPORT_OK = qw( general
 use Readonly;
 
 use AtomProperties qw( sort_atom_names );
+use Constants qw( $PI );
 use ForceField::Parameters;
 use Measure qw( dihedral_angle );
 use Version qw( $VERSION );
@@ -111,12 +112,68 @@ sub torsion
 
 sub torsion_new
 {
-    my ( $t_epsilon, $t_k, $reference_atom_site ) = (
-        $parameters->{'t_epsilon'},
+    my ( $atom_i_id, $parameters ) = @_;
+
+    my ( $t_k, $reference_atom_site ) = (
         $parameters->{'t_k'},
         $parameters->{'atom_site'}
     );
 
+    $t_k //= $Parameters::T_K;
+    my $phase = 3;
+
+    # Determines all dihedral angles by searching third neighbours following the
+    # connections.
+    my @connection_ids = @{ $reference_atom_site->{$atom_i_id}{'connections'} };
+    my $torsion_potential = 0;
+    for my $neighbour_id ( @connection_ids ) {
+        my @second_neighbour_ids =
+            grep { $atom_i_id ne $_ }
+                @{ $reference_atom_site->{$neighbour_id}{'connections'} };
+
+        next if ! @second_neighbour_ids;
+
+        for my $second_neighbour_id ( @second_neighbour_ids ) {
+            my @third_neighbour_ids =
+                grep { $neighbour_id ne $_ }
+                    @{ $reference_atom_site->{$second_neighbour_id}
+                                             {'connections'} };
+
+            next if ! @third_neighbour_ids;
+
+            for my $third_neighbour_id ( @third_neighbour_ids ) {
+                my $omega = dihedral_angle(
+                    [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
+                        $reference_atom_site->{$third_neighbour_id}{'Cartn_y'},
+                        $reference_atom_site->{$third_neighbour_id}{'Cartn_z'} ],
+                      [ $reference_atom_site->{$second_neighbour_id}{'Cartn_x'},
+                        $reference_atom_site->{$second_neighbour_id}{'Cartn_y'},
+                        $reference_atom_site->{$second_neighbour_id}{'Cartn_z'} ],
+                      [ $reference_atom_site->{$neighbour_id}{'Cartn_x'},
+                        $reference_atom_site->{$neighbour_id}{'Cartn_y'},
+                        $reference_atom_site->{$neighbour_id}{'Cartn_z'} ],
+                      [ $reference_atom_site->{$atom_i_id}{'Cartn_x'},
+                        $reference_atom_site->{$atom_i_id}{'Cartn_y'},
+                        $reference_atom_site->{$atom_i_id}{'Cartn_z'} ] ],
+                );
+
+                $torsion_potential += _torsion( $omega, $phase );
+            }
+        }
+    }
+
+    return $torsion_potential;
+}
+
+sub _torsion
+{
+    my ( $omega, $phase ) = @_;
+
+    if( $omega < ( -$PI / $phase ) && $omega > ( $PI / $phase ) ) {
+        return 0
+    } else {
+        return ( 1 / 2 ) * ( 1 + cos( $phase * $omega ) );
+    }
 }
 
 sub general
