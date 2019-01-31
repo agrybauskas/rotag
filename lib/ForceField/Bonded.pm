@@ -157,7 +157,7 @@ sub torsion_new
                         $reference_atom_site->{$atom_i_id}{'Cartn_z'} ] ],
                 );
 
-                $torsion_potential += _torsion( $omega, $phase );
+                $torsion_potential += $t_k * _torsion( $omega, $phase );
             }
         }
     }
