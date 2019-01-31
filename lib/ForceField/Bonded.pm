@@ -185,7 +185,7 @@ sub general
     if( $is_optimal ) {
         return 0;
     } else {
-        my $torsion = torsion( $atom_i->{'id'}, $parameters );
+        my $torsion = torsion_new( $atom_i->{'id'}, $parameters );
 
         if( $decompose ) {
             return { 'bonded' => $torsion,
