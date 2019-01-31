@@ -5,7 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( general
-                     torsion );
+                     torsion
+                     torsion_new );
 
 use Readonly;
 
@@ -106,6 +107,16 @@ sub torsion
     }
 
     return $torsion_potential;
+}
+
+sub torsion_new
+{
+    my ( $t_epsilon, $t_k, $reference_atom_site ) = (
+        $parameters->{'t_epsilon'},
+        $parameters->{'t_k'},
+        $parameters->{'atom_site'}
+    );
+
 }
 
 sub general
