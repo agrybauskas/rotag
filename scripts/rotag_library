@@ -92,7 +92,7 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
-my $angles = '0..36.0..360.0';
+my $angles = '-180.0..36.0..180.0';
 my $in_radians = 0;
 my $energy_cutoff_atom;
 my $threads = 1;
