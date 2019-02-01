@@ -34,7 +34,7 @@ _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 1 1 18 XAA A 1 . chi1 1.256637
-2 1 18 XAA A 1 . chi2 3.141593
+2 1 18 XAA A 1 . chi2 -3.141593
 #
 loop_
 _[local]_rotamer_energy.id

@@ -32,7 +32,7 @@ _[local]_rotamer_angle.pdbx_PDB_model_num
 _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 18 XAA A 1 . chi1 5.654867
+1 1 18 XAA A 1 . chi1 -0.628319
 #
 loop_
 _[local]_rotamer_energy.id

@@ -44,20 +44,20 @@ _[local]_rotamer_angle.pdbx_PDB_model_num
 _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 315 ARG A 1 A chi1 4.712389
-2 1 315 ARG A 1 A chi2 3.141593
-3 1 315 ARG A 1 A chi3 3.141593
-4 1 315 ARG A 1 A chi4 3.141593
-5 2 315 ARG A 1 B chi1 4.712389
-6 2 315 ARG A 1 B chi2 3.141593
-7 2 315 ARG A 1 B chi3 3.141593
-8 2 315 ARG A 1 B chi4 3.141593
+1 1 315 ARG A 1 A chi1 -1.570796
+2 1 315 ARG A 1 A chi2 -3.141593
+3 1 315 ARG A 1 A chi3 -3.141593
+4 1 315 ARG A 1 A chi4 -3.141593
+5 2 315 ARG A 1 B chi1 -1.570796
+6 2 315 ARG A 1 B chi2 -3.141593
+7 2 315 ARG A 1 B chi3 -3.141593
+8 2 315 ARG A 1 B chi4 -3.141593
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 45.828604
-2 2 composite 45.828604
+1 1 composite 33.934330
+2 2 composite 33.934330
 #
