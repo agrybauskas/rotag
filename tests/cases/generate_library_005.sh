@@ -10,8 +10,8 @@ residue_id="219"
 residue_chain="A"
 residue_entity="1"
 residue_alt="."
-angles="chi1=-180.0..45.0..180.0,chi2=-180.0..45.0..180.0"
-parameters='lj_k=1.0,c_k=1.0,h_k=1.0,cutoff_atom=0.5,cutoff_start=2.5,cutoff_end=5.0'
+angles="45.0"
+parameters='lj_k=1.0,c_k=1.0,h_k=1.0,t_k=1.0,cutoff_atom=0.5,cutoff_start=2.5,cutoff_end=5.0'
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
                                             ${residue_chain} \

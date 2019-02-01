@@ -10,7 +10,7 @@ residue_id="18"
 residue_chain="A"
 pdbx_model_num="1"
 residue_alt="."
-angles="chi1=0.0..18.0..360.0"
+angles="chi1=-180.0..36.0..180.0"
 
 $(dirname "$0")/../scripts/calc_favourable_angles \
                ${residue_id} \
