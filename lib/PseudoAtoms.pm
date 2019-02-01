@@ -370,6 +370,9 @@ sub generate_library
                           'include' => { 'label_atom_id' => [ 'CA' ] },
                           'data' => [ 'id' ],
                           'is_list' => 1 } )->[0];
+
+            if( ! defined $atom_ca_id ) { next; }
+
             push @target_ca_ids, $atom_ca_id;
         }
 
