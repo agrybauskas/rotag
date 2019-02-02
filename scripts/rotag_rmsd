@@ -107,7 +107,11 @@ for my $pdbx_file ( @ARGV ) {
 # Calculates RMSD.
 my %pdbx_loops;
 $pdbx_loops{'_[local]_rmsd'}{'attributes'} =
-    [ 'id', 'group_1_id', 'group_2_id', 'value' ];
+    [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id', 'label_seq_1_id',
+      'label_comp_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
+      'label_alt_1_id', 'group_2_id', 'atom_2_id', 'label_atom_2_id',
+      'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
+      'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
 
 my $rmsd_counter = 1;
 
@@ -126,11 +130,17 @@ for my $comparison_group ( @comparison_groups ) {
     my $first_group_data =
         filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
                   'data' =>
-                      [ 'label_atom_id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+                      [ 'id', '[local]_selection_group', 'label_atom_id',
+                        'label_seq_id', 'label_comp_id', 'label_asym_id',
+                        'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
+                        'Cartn_y', 'Cartn_z' ] } );
     my $second_group_data =
         filter( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
                   'data' =>
-                      [ 'label_atom_id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+                      [ 'id', '[local]_selection_group', 'label_atom_id',
+                        'label_seq_id', 'label_comp_id', 'label_asym_id',
+                        'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
+                        'Cartn_y', 'Cartn_z' ] } );
 
     # Checks the length of the atom sets.
     # TODO: error message is duplicated in Measure::rmsd().
@@ -141,27 +151,28 @@ for my $comparison_group ( @comparison_groups ) {
 
     # Sorts by residue name first by checking if their residue names are
     # correct.
-    $first_group_data = [ sort { $a->[0] cmp $b->[0] } @{ $first_group_data } ];
-    $second_group_data = [ sort { $a->[0] cmp $b->[0] } @{ $second_group_data }];
+    $first_group_data  = [ sort { $a->[2] cmp $b->[2] } @{ $first_group_data  }];
+    $second_group_data = [ sort { $a->[2] cmp $b->[2] } @{ $second_group_data }];
 
     my @first_group_coord;
     my @second_group_coord;
 
     if( ! $not_strict ) {
         for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
-            if( $first_group_data->[$i][0] ne $second_group_data->[$i][0] ) {
-                confess "atom names do not match: $first_group_data->[$i][0] " .
-                        "and $second_group_data->[$i][0].";
-            } else {
-                push @first_group_coord, [ (@{ $first_group_data->[$i] })[1..3] ];
-                push @second_group_coord, [ (@{ $second_group_data->[$i] })[1..3] ];
+            if( $first_group_data->[$i][2] ne $second_group_data->[$i][2] ) {
+                confess "atom names do not match: $first_group_data->[$i][2] " .
+                        "and $second_group_data->[$i][2]";
             }
+
+            push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                $rmsd_counter,
+                ( @{ $first_group_data->[$i] } )[0..7],
+                ( @{ $second_group_data->[$i] })[0..7],
+                sprintf $SIG_FIGS_MAX,
+                rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
+                      [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
         }
     }
-
-    push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-         $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
-         sprintf $SIG_FIGS_MAX, rmsd(\@first_group_coord, \@second_group_coord);
 
     $rmsd_counter++;
 }
