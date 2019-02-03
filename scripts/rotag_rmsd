@@ -31,6 +31,9 @@ our $VERSION = $VERSION;
 #*
 #*                          E.g.: -c '1, 2' or -c '3, 4; 5, 7'
 #*
+#*    -d, --decompose       decompose RMSD value of the group to its
+#*                          constituents.
+#*
 #*    -F, --format <format> output format (default: pdbx | csv).
 #*
 #*    -v, --version         print version.
@@ -38,11 +41,13 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $comparison = q{};
+my $do_decompose = 0;
 my $not_strict = 0;
 my $output_format = 'pdbx';
 
 GetOptions(
     'compare|c=s' => \$comparison,
+    'decompose|d' => sub { $do_decompose = 1; },
     'not-strict|N'  => sub { $not_strict = 1; },
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -106,12 +111,17 @@ for my $pdbx_file ( @ARGV ) {
 
 # Calculates RMSD.
 my %pdbx_loops;
-$pdbx_loops{'_[local]_rmsd'}{'attributes'} =
-    [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id', 'label_seq_1_id',
-      'label_comp_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
-      'label_alt_1_id', 'group_2_id', 'atom_2_id', 'label_atom_2_id',
-      'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
-      'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
+if( $do_decompose ) {
+    $pdbx_loops{'_[local]_rmsd'}{'attributes'} =
+        [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id', 'label_seq_1_id',
+          'label_comp_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
+          'label_alt_1_id', 'group_2_id', 'atom_2_id', 'label_atom_2_id',
+          'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
+          'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
+} else {
+    $pdbx_loops{'_[local]_rmsd'}{'attributes'} =
+        [ 'id', 'group_1_id', 'group_2_id', 'value' ];
+}
 
 my $rmsd_counter = 1;
 
@@ -164,14 +174,28 @@ for my $comparison_group ( @comparison_groups ) {
                         "and $second_group_data->[$i][2]";
             }
 
-            push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-                $rmsd_counter,
-                ( @{ $first_group_data->[$i] } )[0..7],
-                ( @{ $second_group_data->[$i] })[0..7],
-                sprintf $SIG_FIGS_MAX,
-                rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
-                      [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
+            if( $do_decompose ) {
+                push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                    $rmsd_counter,
+                    ( @{ $first_group_data->[$i] } )[0..7],
+                    ( @{ $second_group_data->[$i] })[0..7],
+                    sprintf $SIG_FIGS_MAX,
+                    rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
+                          [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
+            } else {
+                push @first_group_coord,
+                    [ ( @{ $first_group_data->[$i] } )[8..10] ];
+                push @second_group_coord,
+                    [ ( @{ $second_group_data->[$i] } )[8..10] ];
+            }
         }
+    }
+
+    if( ! $do_decompose ) {
+        push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+            $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
+            sprintf $SIG_FIGS_MAX,
+            rmsd( \@first_group_coord, \@second_group_coord );
     }
 
     $rmsd_counter++;
