@@ -43,6 +43,8 @@ our $VERSION = $VERSION;
 #*
 #*    -H, --hydrogens       adds hydrogen atoms to selected atoms.
 #*
+#*    -s, --selected        include selected atoms.
+#*
 #*    -k, --keep-original   keeps original atoms after new atoms are added
 #*                          (applicable for -S option).
 #*
@@ -55,6 +57,7 @@ our $VERSION = $VERSION;
 
 my $add_sidechains = 0;
 my $add_hydrogens = 0;
+my $include_selected = 0;
 my $add_clear_positions = 0;
 my $keep_original = 0;
 my @attribute_list =
@@ -64,6 +67,7 @@ my @attribute_list =
 GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
+    'selected|s' => sub { $include_selected = 1 },
     'keep-original|k' => sub { $keep_original = 1 },
     'clear-positions|c' => sub { $add_clear_positions = 1 },
     'help|h' => sub {
@@ -98,7 +102,9 @@ for my $pdbx_file ( @ARGV ) {
                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
     my $target_atom_site =
         filter( { 'atom_site' => $selected_atom_site,
-                  'include' => { '[local]_selection_state' => [ 'T' ] } } );
+                  'include' => { '[local]_selection_state' =>
+                                     ( $include_selected ?
+                                       [ 'T', 'S' ] : [ 'T' ] ) } } );
     my $target_atom_ids =
         filter( { 'atom_site' => $target_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
@@ -201,7 +207,7 @@ for my $pdbx_file ( @ARGV ) {
                           'include' =>
                               { 'id' =>
                                     $atom_site_split_groups->
-                                                   {$atom_site_identifier} } } );
+                                        {$atom_site_identifier} } } );
 
             connect_atoms( $current_atom_site );
             hybridization( $current_atom_site );
