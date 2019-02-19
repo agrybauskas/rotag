@@ -300,7 +300,14 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( @{ $tags } ) {
-
+        # TODO: quick fix, but should be standardized. How to handle atom site?
+        # Maybe after the data structure unification this problem will be solved,
+        # because now it is quite messy.
+        to_pdbx({ ( ( any { $_ eq '_atom_site' } @{ $tags } ) ?
+                    ( 'atom_site' => $selected_atom_site,
+                      'add_atom_attributes' => [ '[local]_selection_state' ] ) :
+                    () ),
+                  'pdbx_loops' => { map { $_ => $pdbx_loops{$_} } @{ $tags } }});
     } else {
         to_pdbx( { 'atom_site' => $selected_atom_site,
                    'add_atom_attributes' => [ '[local]_selection_state' ],
