@@ -85,6 +85,8 @@ our $VERSION = $VERSION;
 #*    -T, --top-ratio <float>     top rotamers according to the value of
 #*                                energies (default: 1.0).
 #*
+#*    --tags <tag>[,<tag>...]     output only specified PDBx tags.
+#*
 #*    -n, --threads <int>         number of threads.
 #*
 #*    -v, --version               print version.
@@ -98,6 +100,7 @@ my $energy_cutoff_atom;
 my $threads = 1;
 my $top_rank;
 my $top_ratio;
+my $tags = '';
 my $parameters = '';
 
 GetOptions(
@@ -108,6 +111,7 @@ GetOptions(
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
+    'tags=s' => \$tags,
     'threads|n=s' => \$threads,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -130,6 +134,12 @@ $parameters = {
     map { [ split /=/sm, $_ ] }
     split /,/sxm, $parameters
 };
+
+# Parses tag string.
+$tags =~ s/\s//g;
+$tags = [
+    split /,/sxm, $tags
+];
 
 # Parses string describing angles.
 my %angles = %{ sample_angles_qs_parsing( $angles ) };
@@ -289,8 +299,11 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    # Prints out cif or csv.
-    to_pdbx( { 'atom_site' => $selected_atom_site,
-               'add_atom_attributes' => [ '[local]_selection_state' ],
-               'pdbx_loops' => \%pdbx_loops } );
+    if( @{ $tags } ) {
+
+    } else {
+        to_pdbx( { 'atom_site' => $selected_atom_site,
+                   'add_atom_attributes' => [ '[local]_selection_state' ],
+                   'pdbx_loops' => \%pdbx_loops } );
+    }
 }
