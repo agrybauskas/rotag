@@ -80,5 +80,5 @@
 -- Think about situations when hydrogen atoms are excluded - do single electrons
    or electron pairs interact the way some moieties interact with other atoms.
    There could be a way to model those electrons as groups.
--- If there are too many chi angles than there are possible in the structure,
+++ If there are too many chi angles than there are possible in the structure,
    there are angle reapeats. The redundant angles should be removed.

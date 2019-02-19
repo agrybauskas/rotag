@@ -124,7 +124,9 @@ sub generate_pseudo
 
         # Iterates through combinations of angles and evaluates conformational
         # model.
-        my @angle_names = sort { $a cmp $b } keys %{ $angle_values };
+        my @angle_names = grep { exists $angles{$residue_unique_key}{$_} }
+                          sort { $a cmp $b }
+                          keys %{ $angle_values };
         my @angle_values;
         for my $angle_name ( @angle_names ) {
             push @angle_values,
