@@ -4,11 +4,11 @@ use strict;
 use warnings;
 
 use autodie;
-use ErrorHandling qw( parse_errors );
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 
 use Constants qw( $PI );
+use Logging qw( error );
 use Moieties qw( replace_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
@@ -140,12 +140,11 @@ for my $pdbx_file ( @ARGV ) {
                            'is_list' => 1 } ) } );
 
     if( ! @group_ids ) {
-        parse_errors( { 'program' => $0,
-                        'filename' => $pdbx_file,
-                        'type' => 'ERROR',
-                        'message' =>
-                            "no residues were selected. Use " .
-                            "rotag_select script to select residue(-s).\n" } );
+        error( { 'program' => $0,
+                 'filename' => $pdbx_file,
+                 'message' =>
+                     "no residues were selected. Use " .
+                     "rotag_select script to select residue(-s).\n" } );
     }
 
     if( @mutations ) {
@@ -170,10 +169,9 @@ for my $pdbx_file ( @ARGV ) {
             to_pdbx( { 'atom_site' => $selected_atom_site } );
         }
     } else {
-        parse_errors( { 'program' => $0,
-                        'filename' => $pdbx_file,
-                        'type' => 'ERROR',
-                        'message' => "no mutations were specified. Use -m " .
-                                     "option to achieve that.\n" } );
+        error( { 'program' => $0,
+                 'filename' => $pdbx_file,
+                 'message' => "no mutations were specified. Use -m " .
+                              "option to achieve that.\n" } );
     }
 }

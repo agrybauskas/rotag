@@ -10,7 +10,7 @@ use List::Util qw( any );
 
 use Constants qw( $PI
                   $SIG_FIGS_MAX );
-use ErrorHandling qw( parse_errors );
+use Logging qw( warning );
 use PDBxParser qw( determine_residue_keys
                    filter
                    mark_selection
@@ -216,10 +216,9 @@ for my $pdbx_file ( @ARGV ) {
                     } );
         };
         if( $@ ) {
-            parse_errors( { 'program' => $0,
-                            'filename' => $pdbx_file,
-                            'type' => 'WARNING',
-                            'message' => $@ } );
+            warning( { 'program' => $0,
+                       'filename' => $pdbx_file,
+                       'message' => $@ } );
         }
 
         for my $residue_unique_key ( keys %{ $rotamer_library } ) {

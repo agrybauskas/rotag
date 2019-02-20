@@ -12,7 +12,7 @@ use PDBxParser qw( filter_new
                    obtain_pdbx_loop
                    to_pdbx );
 use Grammar::SelectionParser;
-use ErrorHandling qw( parse_errors );
+use Logging qw( error );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -155,11 +155,10 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                 'atomid ' . join ',', @previous_target_atoms;
             $target_cmd =~ s/target/${previous_target_cmd}/g;
         } else {
-            parse_errors( { 'program' => $0,
-                            'filename' => $pdbx_file,
-                            'type' => 'ERROR',
-                            'message' => 'no target atoms where previously ' .
-                                         "selected.\n" } );
+            error( { 'program' => $0,
+                     'filename' => $pdbx_file,
+                     'message' => 'no target atoms where previously ' .
+                                  "selected.\n" } );
         }
     }
 

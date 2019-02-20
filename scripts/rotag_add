@@ -10,7 +10,7 @@ use List::Util qw( max );
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
-use ErrorHandling qw( parse_errors );
+use Logging qw( error );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    mark_selection
@@ -118,7 +118,7 @@ for my $pdbx_file ( @ARGV ) {
         my $pdbx_loops =
             obtain_pdbx_loop( $pdbx_file, [ '_\[local\]_rotamer_angle' ] );
         if( ! %{ $pdbx_loops } ) {
-            parse_errors(
+            error(
                 { 'program' => $0,
                   'filename' => $pdbx_file,
                   'message' => 'no rotamer library was detected. Generate '.
@@ -243,7 +243,7 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( { 'atom_site' => { %{ $atom_site }, %hydrogen_site },
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } else {
-        parse_errors(
+        error(
             { 'program' => $0,
               'filename' => $pdbx_file,
               'message' => "no options were chosen for atom additions.\n" } );

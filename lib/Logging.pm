@@ -1,11 +1,12 @@
-package ErrorHandling;
+package Logging;
 
 use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( parse_errors
-                     parse_warnings );
+our @EXPORT_OK = qw( error
+                     info
+                     warning );
 
 use Version qw( $VERSION );
 
@@ -13,7 +14,7 @@ our $VERSION = $VERSION;
 
 # ------------------------------ Error handling ------------------------------- #
 
-sub parse_errors
+sub error
 {
     my ( $args ) = @_;
 
@@ -24,7 +25,7 @@ sub parse_errors
         $args->{'message'},
     );
 
-    $type //= 'ERROR';
+    $type //= 'Error';
 
     if( $filename eq '-' ) { $filename = 'STDIN'; }
 
@@ -35,7 +36,7 @@ sub parse_errors
     exit 1;
 }
 
-sub parse_warnings
+sub info
 {
     my ( $args ) = @_;
 
@@ -46,13 +47,35 @@ sub parse_warnings
         $args->{'message'},
     );
 
-    $type //= 'WARNING';
+    $type //= 'Info';
 
     if( $filename eq '-' ) { $filename = 'STDIN'; }
 
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
-    print {*STDERR} "$type: $program: '$filename' - $message";
+    print {*STDERR} "$type: $message";
+
+    return;
+}
+
+sub warning
+{
+    my ( $args ) = @_;
+
+    my ( $program, $filename, $type, $message ) = (
+        $args->{'program'},
+        $args->{'filename'},
+        $args->{'type'},
+        $args->{'message'},
+    );
+
+    $type //= 'Warning';
+
+    if( $filename eq '-' ) { $filename = 'STDIN'; }
+
+    $program =~ s/^.+\/(\w+)$/$1/gsxm;
+
+    print {*STDERR} "$type: $program: $filename - $message";
 
     return;
 }
