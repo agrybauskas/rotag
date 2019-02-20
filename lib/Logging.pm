@@ -31,7 +31,11 @@ sub error
 
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
-    print {*STDERR} "$type: $program: $filename - $message";
+    if( defined $filename ) {
+        print {*STDERR} "$type: $program: $filename - $message";
+    } else {
+        print {*STDERR} "$type: $program: $message";
+    }
 
     exit 1;
 }
@@ -75,7 +79,11 @@ sub warning
 
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
-    print {*STDERR} "$type: $program: $filename - $message";
+    if( defined $filename ) {
+        print {*STDERR} "$type: $program: $filename - $message";
+    } else {
+        print {*STDERR} "$type: $program: $message";
+    }
 
     return;
 }

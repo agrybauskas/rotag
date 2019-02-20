@@ -82,7 +82,8 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'ERROR: ' . basename( $0 ) . ": mistake in command line argument.\n";
+) or error( { 'program' => basename( $0 ),
+              'message' => "mistake in command line argument.\n" } );
 
 # ----------------------------------- Main ------------------------------------ #
 
