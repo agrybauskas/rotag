@@ -44,18 +44,12 @@ sub info
 {
     my ( $args ) = @_;
 
-    my ( $program, $filename, $type, $message ) = (
-        $args->{'program'},
-        $args->{'filename'},
+    my ( $type, $message ) = (
         $args->{'type'},
         $args->{'message'},
     );
 
     $type //= 'Info';
-
-    if( defined $filename && $filename eq '-' ) { $filename = 'STDIN'; }
-
-    $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
     print {*STDERR} "$type: $message";
 
@@ -77,12 +71,13 @@ sub warning
 
     if( defined $filename && $filename eq '-' ) { $filename = 'STDIN'; }
 
-    $program =~ s/^.+\/(\w+)$/$1/gsxm;
-
     if( defined $filename ) {
         print {*STDERR} "$type: $program: $filename - $message";
-    } else {
+    } elsif( defined $program ) {
+        $program =~ s/^.+\/(\w+)$/$1/gsxm;
         print {*STDERR} "$type: $program: $message";
+    } else {
+        print {*STDERR} "$type: $message";
     }
 
     return;

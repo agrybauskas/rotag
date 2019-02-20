@@ -11,7 +11,8 @@ use Try::Tiny;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
-use Logging qw( error );
+use Logging qw( error
+                warning );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    mark_selection
@@ -38,19 +39,23 @@ our $VERSION = $VERSION;
 #*    rotag_add -H input.cif > output.cif
 #*
 #*Options:
-#*    -S, --side-chains     adds atoms of defined rotamer. Input .cif has to
+#*    -S, --side-chains     add atoms of defined rotamer. Input .cif has to
 #*                          contain _[local]_rotamer_angle category (can be
 #*                          produced with rotag_library).
 #*
-#*    -H, --hydrogens       adds hydrogen atoms to selected atoms.
+#*    -H, --hydrogens       add hydrogen atoms to selected atoms.
 #*
 #*    -s, --selected        include selected atoms.
 #*
-#*    -k, --keep-original   keeps original atoms after new atoms are added
+#*    -k, --keep-original   keep original atoms after new atoms are added
 #*                          (applicable for -S option).
 #*
-#*    -c, --clear-positions adds only those hydrogens that have clear positions
+#*    -c, --clear-positions add only those hydrogens that have clear positions
 #*                          from the current structure (applicable for -H option).
+#*
+#*    --debug               print all warning messages.
+#*
+#*    --verbose             print
 #*
 #*    -v, --version         print version.
 
@@ -64,6 +69,13 @@ my $keep_original = 0;
 my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
       'rotamer_id', 'type', 'value', );
+my $verbose = 0;
+my $debug = 0;
+
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
 
 GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
@@ -82,8 +94,10 @@ GetOptions(
                         close $fh;
                         exit;
                     },
+    'debug' => sub { $debug = 1 },
+    'verbose' => sub { $verbose = 1 },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or error( { 'program' => basename( $0 ),
+) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
 
 # ----------------------------------- Main ------------------------------------ #
@@ -97,6 +111,12 @@ for my $pdbx_file ( @ARGV ) {
     try {
         $atom_site = obtain_atom_site( $pdbx_file );
     } catch {
+        if( $debug ) {
+            foreach( @warnings ) {
+                warning( { 'type' => 'Debug',
+                           'message' => "$_" } );
+            }
+        }
         error( { 'program' => $0,
                  'filename' => $pdbx_file,
                  'message' => "\l$!.\n" } );
