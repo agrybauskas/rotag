@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -7,6 +7,7 @@ use autodie;
 use File::Basename;
 use Getopt::Long;
 use List::Util qw( max );
+use Try::Tiny;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
@@ -92,11 +93,14 @@ local @ARGV = ( q{-} ) unless @ARGV;
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
+
+    try {
         $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_add --help\" in order to see the manual.\n";
-    }
+    } catch {
+        error( { 'program' => $0,
+                 'filename' => $pdbx_file,
+                 'message' => "$!.\n" } );
+    };
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
