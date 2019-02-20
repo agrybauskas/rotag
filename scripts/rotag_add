@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 use strict;
 use warnings;
@@ -99,7 +99,7 @@ for my $pdbx_file ( @ARGV ) {
     } catch {
         error( { 'program' => $0,
                  'filename' => $pdbx_file,
-                 'message' => "$!.\n" } );
+                 'message' => "\l$!.\n" } );
     };
 
     my $selected_atom_site =
