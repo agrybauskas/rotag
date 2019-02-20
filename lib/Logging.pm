@@ -27,7 +27,7 @@ sub error
 
     $type //= 'Error';
 
-    if( $filename eq '-' ) { $filename = 'STDIN'; }
+    if( defined $filename && $filename eq '-' ) { $filename = 'STDIN'; }
 
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
@@ -53,7 +53,7 @@ sub info
 
     $type //= 'Info';
 
-    if( $filename eq '-' ) { $filename = 'STDIN'; }
+    if( defined $filename && $filename eq '-' ) { $filename = 'STDIN'; }
 
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
@@ -75,7 +75,7 @@ sub warning
 
     $type //= 'Warning';
 
-    if( $filename eq '-' ) { $filename = 'STDIN'; }
+    if( defined $filename && $filename eq '-' ) { $filename = 'STDIN'; }
 
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
