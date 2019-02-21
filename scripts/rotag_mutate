@@ -6,9 +6,11 @@ use warnings;
 use autodie;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
+use Try::Tiny;
 
 use Constants qw( $PI );
-use Logging qw( error );
+use Logging qw( error
+                warning );
 use Moieties qw( replace_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
@@ -67,11 +69,17 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'Error in command line argument.';
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 my @mutations;
 $mutations =~ s/\s//smxg;
 @mutations = split q{;}, $mutations;
+
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
 
 for( my $i = 0; $i <= $#mutations; $i++ ) {
     my $statement = $mutations[$i];
@@ -94,7 +102,8 @@ for( my $i = 0; $i <= $#mutations; $i++ ) {
             }
         } elsif( $_ =~ m/^\w+$/ ) {
             if( defined $moiety ) {
-                die "cannot mutate into multiple moieties: $moiety, $_" ;
+                error({'message' =>
+                           "cannot mutate into multiple moieties: $moiety, $_"});
             }
 
             $moiety = $_;
@@ -112,13 +121,15 @@ for( my $i = 0; $i <= $#mutations; $i++ ) {
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_mutate --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     my %append_moieties = ();
@@ -174,4 +185,10 @@ for my $pdbx_file ( @ARGV ) {
                  'message' => "no mutations were specified. Use -m " .
                               "option to achieve that.\n" } );
     }
-}
+} } catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    error( { 'program' => $0,
+             'message' => "\l$!.\n" } );
+};
