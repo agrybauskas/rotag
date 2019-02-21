@@ -83,6 +83,7 @@ GetOptions(
 local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
@@ -211,7 +212,9 @@ for my $pdbx_file ( @ARGV ) {
     } elsif( $output_format eq 'csv' ) {
         pdbx_loop_to_csv( $pdbx_loops{'_[local]_dihedral_angle'} );
     }
-} } catch {
+}
+
+} catch {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }

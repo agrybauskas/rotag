@@ -97,6 +97,7 @@ GetOptions(
 local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
@@ -258,7 +259,9 @@ for my $pdbx_file ( @ARGV ) {
               'filename' => $pdbx_file,
               'message' => "no options were chosen for atom additions.\n" } );
     }
-} } catch {
+}
+
+} catch {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }

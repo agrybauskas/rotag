@@ -6,9 +6,12 @@ use warnings;
 use autodie;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
+use Try::Tiny;
 
 use Carp;
 use Constants qw( $SIG_FIGS_MAX );
+use Logging qw( error
+                warning );
 use PDBxParser qw( filter
                    obtain_atom_sites
                    pdbx_loop_to_csv
@@ -45,6 +48,11 @@ my $do_decompose = 0;
 my $not_strict = 0;
 my $output_format = 'pdbx';
 
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
 GetOptions(
     'compare|c=s' => \$comparison,
     'decompose|d' => sub { $do_decompose = 1; },
@@ -62,7 +70,8 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'Error in command line argument.';
+)  or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -71,19 +80,21 @@ local @ARGV = ( q{-} ) unless @ARGV;
 $comparison =~ s/ //g;
 my @comparison_groups = map { [ split /,/, $_ ] } ( split /;/, $comparison );
 
-die "No comparison groups are selected. Use -c argument.\n"
+error( { 'message' => "No comparison groups are selected. Use -c argument.\n" } )
     if ! @comparison_groups;
 
 my %atom_site_groups = ();
 
+try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_sites;
-    if( $pdbx_file ) {
-        $atom_sites = obtain_atom_sites( $pdbx_file );
-    } else {
-        die "Use command \"rotag_rmsd --help\" in order to see the " .
-            "manual.\n";
+    $atom_sites = obtain_atom_sites( $pdbx_file );
+
+    if( ! @{ $atom_sites } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     for my $atom_site ( @{ $atom_sites } ) {
@@ -207,3 +218,11 @@ if( $output_format eq 'pdbx' ) {
 } elsif( $output_format eq 'csv' ) {
     pdbx_loop_to_csv( $pdbx_loops{'_[local]_rmsd'} );
 }
+
+} catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    error( { 'program' => $0,
+             'message' => "\l$!.\n" } );
+};

@@ -122,6 +122,7 @@ for( my $i = 0; $i <= $#mutations; $i++ ) {
 local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
@@ -185,7 +186,9 @@ for my $pdbx_file ( @ARGV ) {
                  'message' => "no mutations were specified. Use -m " .
                               "option to achieve that.\n" } );
     }
-} } catch {
+}
+
+} catch {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }

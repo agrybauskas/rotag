@@ -168,6 +168,7 @@ for my $parameter ( keys %{ $parameters } ) {
 local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
@@ -322,7 +323,9 @@ for my $pdbx_file ( @ARGV ) {
                    'add_atom_attributes' => [ '[local]_selection_state' ],
                    'pdbx_loops' => \%pdbx_loops } );
     }
-}  } catch {
+}
+
+} catch {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }
