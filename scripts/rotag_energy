@@ -8,6 +8,7 @@ use Clone qw( clone );
 use Getopt::Long;
 use List::MoreUtils qw( any
                         uniq );
+use Try::Tiny;
 
 use Constants qw( $EDGE_LENGTH_INTERACTION
                   $SIG_FIGS_MIN
@@ -27,6 +28,8 @@ use ForceField::Bonded qw( general
 use Grid qw( grid_box
              identify_neighbour_cells );
 use BondProperties qw( hybridization );
+use Logging qw( error
+                warning );
 use PDBxParser qw( filter
                    mark_selection
                    obtain_atom_site
@@ -101,6 +104,11 @@ my $add_B_iso = 0;
 my $output_format = 'pdbx';
 my $threads = 1;
 
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
 GetOptions(
     'potential|u=s' => \$interactions,
     'parameters|p=s' => \$parameters,
@@ -148,7 +156,8 @@ my @allowed_parameters =
 
 for my $parameter ( keys %{ $parameters } ) {
     if( ! any { $parameter eq $_ } @allowed_parameters ) {
-        die "'$parameter' argument is not valid.\n";
+        error( { 'program' => $0,
+                 'message' => "'$parameter' argument is not valid.\n" } );
     }
 }
 
@@ -160,13 +169,15 @@ if( $do_decompose ) {
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_energy --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     my $selected_atom_site =
@@ -443,4 +454,8 @@ for my $pdbx_file ( @ARGV ) {
             pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );
         }
     }
-}
+} } catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+};

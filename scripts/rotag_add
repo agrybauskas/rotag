@@ -104,23 +104,11 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-
-    try {
         $atom_site = obtain_atom_site( $pdbx_file );
-    } catch {
-        if( $debug ) {
-            foreach( @warnings ) {
-                warning( { 'type' => 'Debug',
-                           'message' => "$_" } );
-            }
-        }
-        error( { 'program' => $0,
-                 'filename' => $pdbx_file,
-                 'message' => "\l$!.\n" } );
-    };
 
     if( ! %{ $atom_site } ) {
         warning( { 'message' => "$pdbx_file is empty.\n" } );
@@ -278,4 +266,13 @@ for my $pdbx_file ( @ARGV ) {
               'filename' => $pdbx_file,
               'message' => "no options were chosen for atom additions.\n" } );
     }
-}
+} } catch {
+    if( $debug ) {
+        foreach( @warnings ) {
+            warning( { 'type' => 'Debug',
+                       'message' => "$_" } );
+        }
+    }
+    error( { 'program' => $0,
+             'message' => "\l$!.\n" } );
+};
