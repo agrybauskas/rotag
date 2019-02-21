@@ -5,7 +5,10 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
+use Try::Tiny;
 
+use Logging qw( error
+                warning );
 use PDBxParser qw( filter_new
                    mark_selection
                    obtain_atom_site
@@ -92,6 +95,11 @@ my $select_cmds;
 my $keep_ignored = 0;
 my $random_seed = 23;
 
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
 GetOptions(
     'target|t=s@' => \$target_cmds,
     'select|s=s@' => \$select_cmds,
@@ -115,14 +123,17 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
+
 for( my $i = 0; $i <= $#ARGV; $i++ ) {
     my $pdbx_file = $ARGV[$i];
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_select --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        next;
     }
 
     # Assigns correct target and select command line arguments for current file.
@@ -210,3 +221,11 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                'add_atom_attributes' => [ '[local]_selection_state',
                                           '[local]_selection_group' ] } );
 }
+
+} catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    error( { 'program' => $0,
+             'message' => "\l$!.\n" } );
+};
