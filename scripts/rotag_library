@@ -227,9 +227,7 @@ for my $pdbx_file ( @ARGV ) {
                     } );
         };
         if( $@ ) {
-            warning( { 'program' => $0,
-                       'filename' => $pdbx_file,
-                       'message' => $@ } );
+            warning( { 'message' => $@ } );
             exit;
         }
 
