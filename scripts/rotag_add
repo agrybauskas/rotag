@@ -53,10 +53,6 @@ our $VERSION = $VERSION;
 #*    -c, --clear-positions add only those hydrogens that have clear positions
 #*                          from the current structure (applicable for -H option).
 #*
-#*    --debug               print all warning messages.
-#*
-#*    --verbose             print
-#*
 #*    -v, --version         print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -69,8 +65,6 @@ my $keep_original = 0;
 my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
       'rotamer_id', 'type', 'value', );
-my $verbose = 0;
-my $debug = 0;
 
 my @warnings;
 local $SIG{__WARN__} = sub {
@@ -94,8 +88,6 @@ GetOptions(
                         close $fh;
                         exit;
                     },
-    'debug' => sub { $debug = 1 },
-    'verbose' => sub { $verbose = 1 },
     'version|v' => sub { print $VERSION, "\n"; exit; }
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
@@ -267,11 +259,8 @@ for my $pdbx_file ( @ARGV ) {
               'message' => "no options were chosen for atom additions.\n" } );
     }
 } } catch {
-    if( $debug ) {
-        foreach( @warnings ) {
-            warning( { 'type' => 'Debug',
-                       'message' => "$_" } );
-        }
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
     }
     error( { 'program' => $0,
              'message' => "\l$!.\n" } );
