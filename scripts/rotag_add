@@ -100,7 +100,7 @@ try {
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-        $atom_site = obtain_atom_site( $pdbx_file );
+    $atom_site = obtain_atom_site( $pdbx_file );
 
     if( ! %{ $atom_site } ) {
         warning( { 'message' => "$pdbx_file is empty.\n" } );

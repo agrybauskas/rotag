@@ -215,4 +215,6 @@ for my $pdbx_file ( @ARGV ) {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }
+    error( { 'program' => $0,
+             'message' => "\l$!.\n" } );
 };

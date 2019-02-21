@@ -129,7 +129,8 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'Error in command line argument.';
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 # Defaults.
 my %potential_functions = (
@@ -458,4 +459,6 @@ for my $pdbx_file ( @ARGV ) {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }
+    error( { 'program' => $0,
+             'message' => "\l$!.\n" } );
 };

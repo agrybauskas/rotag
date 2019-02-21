@@ -7,10 +7,12 @@ use autodie;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use List::Util qw( any );
+use Try::Tiny;
 
 use Constants qw( $PI
                   $SIG_FIGS_MAX );
-use Logging qw( warning );
+use Logging qw( error
+                warning );
 use PDBxParser qw( determine_residue_keys
                    filter
                    mark_selection
@@ -103,6 +105,11 @@ my $top_ratio;
 my $tags = '';
 my $parameters = '';
 
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
 GetOptions(
     'potential|u=s' => \$interactions,
     'parameters|p=s' => \$parameters,
@@ -125,7 +132,8 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'Error in command line argument.';
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 # Parses parameter string.
 $parameters =~ s/\s//g;
@@ -150,7 +158,8 @@ my @allowed_parameters =
 
 for my $parameter ( keys %{ $parameters } ) {
     if( ! any { $parameter eq $_ } @allowed_parameters ) {
-        die "'$parameter' parameter is not valid.\n";
+        error( 'program' => $0,
+               'message' => "'$parameter' parameter is not valid.\n" );
     }
 }
 
@@ -158,13 +167,15 @@ for my $parameter ( keys %{ $parameters } ) {
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_library --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     my $selected_atom_site =
@@ -313,4 +324,10 @@ for my $pdbx_file ( @ARGV ) {
                    'add_atom_attributes' => [ '[local]_selection_state' ],
                    'pdbx_loops' => \%pdbx_loops } );
     }
-}
+}  } catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    error( { 'program' => $0,
+             'message' => "\l$!.\n" } );
+};
