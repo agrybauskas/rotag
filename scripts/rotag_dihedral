@@ -7,11 +7,14 @@ use autodie;
 use File::Basename;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
+use Try::Tiny;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI
                   $SIG_FIGS_MAX );
+use Logging qw( error
+                warning );
 use Measure qw( all_dihedral
                 dihedral_angle );
 use PDBxParser qw( filter
@@ -50,6 +53,11 @@ my $calc_mainchain = 0;
 my $in_radians = 0;
 my $output_format = 'pdbx';
 
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
 GetOptions(
     'side-chains|S' => sub { $calc_sidechain = 1 },
     'main-chains|M' => sub { $calc_mainchain = 1 },
@@ -67,7 +75,8 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'ERROR: ' . basename( $0 ) . ": mistake in command line argument.\n";
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -76,10 +85,18 @@ local @ARGV = ( q{-} ) unless @ARGV;
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
+
+    try {
         $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_dihedral --help\" in order to see the manual.\n";
+    } catch {
+        foreach( @warnings ) {
+            warning( { 'message' => "$_" } );
+        }
+    };
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     # Calculates dihedral angles
