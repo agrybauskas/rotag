@@ -122,6 +122,11 @@ for my $pdbx_file ( @ARGV ) {
                  'message' => "\l$!.\n" } );
     };
 
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
+    }
+
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
