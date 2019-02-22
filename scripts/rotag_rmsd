@@ -53,6 +53,11 @@ local $SIG{__WARN__} = sub {
     push @warnings, @_;
 };
 
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
+
 GetOptions(
     'compare|c=s' => \$comparison,
     'decompose|d' => sub { $do_decompose = 1; },
@@ -223,6 +228,7 @@ if( $output_format eq 'pdbx' ) {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }
-    error( { 'program' => $0,
-             'message' => "\l$!.\n" } );
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
 };

@@ -100,6 +100,11 @@ local $SIG{__WARN__} = sub {
     push @warnings, @_;
 };
 
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
+
 GetOptions(
     'target|t=s@' => \$target_cmds,
     'select|s=s@' => \$select_cmds,
@@ -226,6 +231,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }
-    error( { 'program' => $0,
-             'message' => "\l$!.\n" } );
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
 };

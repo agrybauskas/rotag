@@ -71,6 +71,11 @@ local $SIG{__WARN__} = sub {
     push @warnings, @_;
 };
 
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
+
 GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
@@ -265,6 +270,7 @@ for my $pdbx_file ( @ARGV ) {
     foreach( @warnings ) {
         warning( { 'message' => "$_" } );
     }
-    error( { 'program' => $0,
-             'message' => "\l$!.\n" } );
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
 };
