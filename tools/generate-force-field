@@ -52,6 +52,7 @@ for my $cif_file ( @ARGV ) {
                                         [ '_atom_properties',
                                           '_lennard_jones',
                                           '_partial_charge',
+                                          '_torsional',
                                           '_h_bond',
                                           '_residue_atom_necessety',
                                           '_clear_hybridization',
@@ -135,6 +136,17 @@ for my $cif_file ( @ARGV ) {
         my $atom_name = $partial_charge_loop->{'label_atom_id'};
         my $partial_charge_value = $partial_charge_loop->{'value'};
         $PARTIAL_CHARGE->{$residue_name}{$atom_name} = $partial_charge_value;
+    }
+
+    # Torsional potential parameters.
+    my $TORSIONAL;
+    my $torsional_loops = pdbx_loop_to_array( $pdbx_loops, '_torsional' );
+
+    for my $torsional_loop ( @{ $torsional_loops } ) {
+        my $type_symbol = $torsional_loop->{'type_symbol'};
+        my $epsilon = $torsional_loop->{'epsilon'};
+
+        $TORSIONAL->{$type_symbol}{'epsilon'} = $epsilon;
     }
 
     # Hydrogen bond parameters.
@@ -238,7 +250,7 @@ for my $cif_file ( @ARGV ) {
 
     print Data::Dumper->Dump( [ $SOFT_EPSILON, $SOFT_N, $LJ_K, $C_K, $H_K, $T_K,
                                 $CUTOFF_ATOM, $CUTOFF_START, $CUTOFF_END, $ATOMS,
-                                $LENNARD_JONES, $PARTIAL_CHARGE,
+                                $LENNARD_JONES, $PARTIAL_CHARGE, $TORSIONAL,
                                 $HYDROGEN_BOND, $RESIDUE_ATOMS,
                                 $CLEAR_HYBRIDIZATION, $CONNECTIVITY,
                                 $HYDROGEN_NAMES, $INTERACTION_ATOM_NAMES,
@@ -246,7 +258,7 @@ for my $cif_file ( @ARGV ) {
                                 $ROTATABLE_RESIDUE_NAMES ],
                               [ qw( *SOFT_EPSILON *SOFT_N *LJ_K *C_K *H_K *T_K
                                     *CUTOFF_ATOM *CUTOFF_START *CUTOFF_END *ATOMS
-                                    *LENNARD_JONES *PARTIAL_CHARGE
+                                    *LENNARD_JONES *PARTIAL_CHARGE *TORSIONAL
                                     *HYDROGEN_BOND *RESIDUE_ATOMS
                                     *CLEAR_HYBRIDIZATION *CONNECTIVITY
                                     *HYDROGEN_NAMES *INTERACTION_ATOM_NAMES

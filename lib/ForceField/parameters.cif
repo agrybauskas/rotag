@@ -468,6 +468,17 @@ XAA OG   -0.64
 XAA XA   0
 XAA XA2  0
 #
+_[local]_torsional.type_symbol
+_[local]_torsional.epsilon
+. 0
+C 1
+H 0.25
+N 0.5
+O 0.75
+S 1.125
+P 1.5
+X 1
+#
 loop_
 _[local]_h_bond.type_symbol
 _[local]_h_bond.sigma
