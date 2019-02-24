@@ -1,4 +1,4 @@
-data_1:chi1:-3.142;chi2:-3.142;chi3:-3.142;E:56.206
+data_1:chi1:-3.142;chi2:-3.142;chi3:-3.142;E:54.455
 #
 loop_
 _atom_site.group_PDB
@@ -32,7 +32,7 @@ ATOM 29 H HG3 . GLN A 1 2 26.927 -5.106 35.092 1
 ATOM 30 H HE21 . GLN A 1 2 29.597 -6.801 35.123 1
 ATOM 31 H HE22 . GLN A 1 2 29.481 -7.559 36.400 1
 #
-data_2:chi1:-3.142;chi2:-3.142;chi3:0.000;E:37.827
+data_2:chi1:-3.142;chi2:-3.142;chi3:0.000;E:36.075
 #
 loop_
 _atom_site.group_PDB
@@ -66,7 +66,7 @@ ATOM 29 H HG3 . GLN A 1 2 26.927 -5.106 35.092 1
 ATOM 30 H HE21 . GLN A 1 2 26.972 -5.575 37.595 1
 ATOM 31 H HE22 . GLN A 1 2 27.772 -6.761 38.009 1
 #
-data_3:chi1:0.000;chi2:-3.142;chi3:-3.142;E:83.501
+data_3:chi1:0.000;chi2:-3.142;chi3:-3.142;E:80.500
 #
 loop_
 _atom_site.group_PDB
@@ -100,7 +100,7 @@ ATOM 29 H HG3 . GLN A 1 2 30.614 -5.424 33.449 1
 ATOM 30 H HE21 . GLN A 1 2 28.801 -6.387 35.855 1
 ATOM 31 H HE22 . GLN A 1 2 29.544 -7.574 36.361 1
 #
-data_4:chi1:0.000;chi2:-3.142;chi3:0.000;E:65.182
+data_4:chi1:0.000;chi2:-3.142;chi3:0.000;E:62.181
 #
 loop_
 _atom_site.group_PDB

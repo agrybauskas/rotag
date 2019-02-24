@@ -142,6 +142,9 @@ sub torsion_new
             next if ! @third_neighbour_ids;
 
             for my $third_neighbour_id ( @third_neighbour_ids ) {
+                my $atom_name =
+                    $reference_atom_site->{$third_neighbour_id}{'type_symbol'};
+                my $epsilon = $Parameters::TORSIONAL{$atom_name}{'epsilon'};
                 my $omega = dihedral_angle(
                     [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
                         $reference_atom_site->{$third_neighbour_id}{'Cartn_y'},
@@ -157,7 +160,7 @@ sub torsion_new
                         $reference_atom_site->{$atom_i_id}{'Cartn_z'} ] ],
                 );
 
-                $torsion_potential += $t_k * _torsion( $omega, $phase );
+                $torsion_potential += $t_k * _torsion( $omega, $phase, $epsilon );
             }
         }
     }
@@ -167,12 +170,12 @@ sub torsion_new
 
 sub _torsion
 {
-    my ( $omega, $phase ) = @_;
+    my ( $omega, $phase, $epsilon ) = @_;
 
     if( $omega < ( -$PI / $phase ) || $omega > ( $PI / $phase ) ) {
         return 0
     } else {
-        return ( 1 / 2 ) * ( 1 + cos( $phase * $omega ) );
+        return ( $epsilon / 2 ) * ( 1 + cos( $phase * $omega ) );
     }
 }
 
