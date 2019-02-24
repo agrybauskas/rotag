@@ -143,10 +143,11 @@ for my $cif_file ( @ARGV ) {
     my $torsional_loops = pdbx_loop_to_array( $pdbx_loops, '_torsional' );
 
     for my $torsional_loop ( @{ $torsional_loops } ) {
-        my $type_symbol = $torsional_loop->{'type_symbol'};
+        my $type_symbol_1 = $torsional_loop->{'type_symbol_1'};
+        my $type_symbol_2 = $torsional_loop->{'type_symbol_2'};
         my $epsilon = $torsional_loop->{'epsilon'};
 
-        $TORSIONAL->{$type_symbol}{'epsilon'} = $epsilon;
+        $TORSIONAL->{$type_symbol_1}{$type_symbol_2}{'epsilon'} = $epsilon;
     }
 
     # Hydrogen bond parameters.

@@ -124,6 +124,7 @@ sub torsion_new
 
     # Determines all dihedral angles by searching third neighbours following the
     # connections.
+    my $atom_name = $reference_atom_site->{$atom_i_id}{'type_symbol'};
     my @connection_ids = @{ $reference_atom_site->{$atom_i_id}{'connections'} };
     my $torsion_potential = 0;
     for my $neighbour_id ( @connection_ids ) {
@@ -142,9 +143,10 @@ sub torsion_new
             next if ! @third_neighbour_ids;
 
             for my $third_neighbour_id ( @third_neighbour_ids ) {
-                my $atom_name =
+                my $third_atom_name =
                     $reference_atom_site->{$third_neighbour_id}{'type_symbol'};
-                my $epsilon = $Parameters::TORSIONAL{$atom_name}{'epsilon'};
+                my $epsilon = $Parameters::TORSIONAL{$third_atom_name}
+                                                    {$atom_name}{'epsilon'};
                 my $omega = dihedral_angle(
                     [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
                         $reference_atom_site->{$third_neighbour_id}{'Cartn_y'},
