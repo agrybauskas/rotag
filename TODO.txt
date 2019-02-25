@@ -82,3 +82,5 @@
    There could be a way to model those electrons as groups.
 ++ If there are too many chi angles than there are possible in the structure,
    there are angle reapeats. The redundant angles should be removed.
+-- Moved part of the code that deals with choosing right rotamers to
+   new rotag_library script.
