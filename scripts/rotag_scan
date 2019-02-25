@@ -28,13 +28,13 @@ Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
-#*rotag_library [options] <file>...
-#*    generate rotamer library.
+#*rotag_scan [options] <file>...
+#*    scan for rotamer conformations.
 #*
 #*Usage:
-#*    rotag_library -u composite input.cif > output.cif
-#*    rotag_library -c 0.005 input.cif > output.cif
-#*    rotag_library -c 0.005 -p 'lj_k=1.05, c_k=0.4' input.cif > output.cif
+#*    rotag_scan -u composite input.cif > output.cif
+#*    rotag_scan -c 0.005 input.cif > output.cif
+#*    rotag_scan -c 0.005 -p 'lj_k=1.05, c_k=0.4' input.cif > output.cif
 #*
 #*Options:
 #*    -u, --potential <potential> uses potential energy function for determining
