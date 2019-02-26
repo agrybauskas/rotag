@@ -29,7 +29,7 @@ ${PERL_MODULE}: ${PERL_TEMPLATE}
 # Compiling CPP and linking to Perl5 with SWIG.
 #
 
-CPP_DIR=${LIB_DIR}/cpp
+CPP_DIR=${LIB_DIR}/CPP
 CPP_OBJS=${SWIG_FILES:%.i=%.o}
 SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
 PM_FILES=${SWIG_FILES:%.i=%.pm}

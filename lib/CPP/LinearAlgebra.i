@@ -11,6 +11,6 @@
     use strict;
     use warnings;
 
-    use Export qw( import );
+    use Exporter qw( import );
     our @EXPORT_OK = qw( create_ref_frame );
 %}

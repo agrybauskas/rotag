@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Constants qw( $SIG_FIGS_MIN );
+use CPP::LinearAlgebra qw( create_ref_frame );
+
+#
+# Unit test: CPP::LinearAlgebra::create_ref_frame.
+# Example: ./create_ref_frame_cpp atom-coord.dat
+#
+
+my ( $atom_coord_file ) = @ARGV;
+my @atom_coord;
+
+open( my $fh, "<", $atom_coord_file );
+while( <$fh> ){
+    push( @atom_coord, grep( /\S/, split( /#.+|\s+/, $_ ) ) );
+}
+close( $fh );
+
+create_ref_frame();
+
+# my $local_ref_frame = create_ref_frame(
+#     [ $atom_coord[0], $atom_coord[1], $atom_coord[2] ],
+#     [ $atom_coord[3], $atom_coord[4], $atom_coord[5] ],
+#     [ $atom_coord[6], $atom_coord[7], $atom_coord[8] ] );
+
+# for( my $i=0; $i < 3; $i++ ) {
+#     for( my $j=0; $j < 3; $j++ ) {
+#         printf( "$SIG_FIGS_MIN ", $local_ref_frame->[$i][$j] );
+#     }
+#     print( "\n" );
+# }
