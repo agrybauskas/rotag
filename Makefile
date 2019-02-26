@@ -1,6 +1,4 @@
-.PHONY: all
-
-all: ${GRAMMAR_MODULES} ${WRAP_FILES} ${PM_FILES}
+all:
 
 #
 # Grammar compilation.
@@ -10,7 +8,7 @@ YAPP_DIR=lib/Grammar
 YAPP_FILES=${wildcard ${YAPP_DIR}/*.yp}
 GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 
-%.pm: %.yp
+${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 	yapp -o $@ $<
 
 #
@@ -39,17 +37,17 @@ WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
 WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
 SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
-%.pm: %.i
+${CPP_DIR}/%.pm ${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
 	swig -c++ -perl $<
 
-%.o: %.cpp
+${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
 	g++ -c -fPIC $< -o $@
 
-%_wrap.o: %_wrap.cxx
+${CPP_DIR}/%_wrap.o: ${CPP_DIR}/%_wrap.cxx
 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
 	    -o $@
 
-%.so: %_wrap.o %.o
+${CPP_DIR}/%.so: ${CPP_DIR}/%_wrap.o ${CPP_DIR}/%.o
 	g++ -shared $^ -o $@
 
 #
@@ -71,7 +69,7 @@ ${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE}
+all: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE} ${PM_FILES} | ${SHARED_OBJS}
 
 #
 # Instalation of dependencies.
