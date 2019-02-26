@@ -1,6 +1,6 @@
 %include LinearAlgebra.i
 
-%module LinearAlgebra
+%module(package="CPP::LinearAlgebra") "CPP::LinearAlgebra"
 %{
     #include "LinearAlgebra.h"
 %}
