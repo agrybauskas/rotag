@@ -52,6 +52,7 @@ for my $cif_file ( @ARGV ) {
                                         [ '_atom_properties',
                                           '_lennard_jones',
                                           '_partial_charge',
+                                          '_torsional',
                                           '_h_bond',
                                           '_residue_atom_necessety',
                                           '_clear_hybridization',
@@ -73,6 +74,7 @@ for my $cif_file ( @ARGV ) {
                                        '_force_field.lj_k',
                                        '_force_field.c_k',
                                        '_force_field.h_k',
+                                       '_force_field.t_k',
                                        '_force_field.cutoff_atom',
                                        '_force_field.cutoff_start',
                                        '_force_field.cutoff_end' ] );
@@ -82,6 +84,7 @@ for my $cif_file ( @ARGV ) {
     my $LJ_K = $force_field_constants->{'_force_field'}{'lj_k'};
     my $C_K = $force_field_constants->{'_force_field'}{'c_k'};
     my $H_K = $force_field_constants->{'_force_field'}{'h_k'};
+    my $T_K = $force_field_constants->{'_force_field'}{'t_k'};
     my $CUTOFF_ATOM = $force_field_constants->{'_force_field'}{'cutoff_atom'};
     my $CUTOFF_START = $force_field_constants->{'_force_field'}{'cutoff_start'};
     my $CUTOFF_END = $force_field_constants->{'_force_field'}{'cutoff_end'};
@@ -133,6 +136,18 @@ for my $cif_file ( @ARGV ) {
         my $atom_name = $partial_charge_loop->{'label_atom_id'};
         my $partial_charge_value = $partial_charge_loop->{'value'};
         $PARTIAL_CHARGE->{$residue_name}{$atom_name} = $partial_charge_value;
+    }
+
+    # Torsional potential parameters.
+    my $TORSIONAL;
+    my $torsional_loops = pdbx_loop_to_array( $pdbx_loops, '_torsional' );
+
+    for my $torsional_loop ( @{ $torsional_loops } ) {
+        my $type_symbol_1 = $torsional_loop->{'type_symbol_1'};
+        my $type_symbol_2 = $torsional_loop->{'type_symbol_2'};
+        my $epsilon = $torsional_loop->{'epsilon'};
+
+        $TORSIONAL->{$type_symbol_1}{$type_symbol_2}{'epsilon'} = $epsilon;
     }
 
     # Hydrogen bond parameters.
@@ -234,17 +249,17 @@ for my $cif_file ( @ARGV ) {
             $rotatable_residue_name->{'label_comp_id'};
     }
 
-    print Data::Dumper->Dump( [ $SOFT_EPSILON, $SOFT_N, $LJ_K, $C_K, $H_K,
+    print Data::Dumper->Dump( [ $SOFT_EPSILON, $SOFT_N, $LJ_K, $C_K, $H_K, $T_K,
                                 $CUTOFF_ATOM, $CUTOFF_START, $CUTOFF_END, $ATOMS,
-                                $LENNARD_JONES, $PARTIAL_CHARGE,
+                                $LENNARD_JONES, $PARTIAL_CHARGE, $TORSIONAL,
                                 $HYDROGEN_BOND, $RESIDUE_ATOMS,
                                 $CLEAR_HYBRIDIZATION, $CONNECTIVITY,
                                 $HYDROGEN_NAMES, $INTERACTION_ATOM_NAMES,
                                 $MAINCHAIN_ATOM_NAMES, $SIDECHAIN_ATOM_NAMES,
                                 $ROTATABLE_RESIDUE_NAMES ],
-                              [ qw( *SOFT_EPSILON *SOFT_N *LJ_K *C_K *H_K
+                              [ qw( *SOFT_EPSILON *SOFT_N *LJ_K *C_K *H_K *T_K
                                     *CUTOFF_ATOM *CUTOFF_START *CUTOFF_END *ATOMS
-                                    *LENNARD_JONES *PARTIAL_CHARGE
+                                    *LENNARD_JONES *PARTIAL_CHARGE *TORSIONAL
                                     *HYDROGEN_BOND *RESIDUE_ATOMS
                                     *CLEAR_HYBRIDIZATION *CONNECTIVITY
                                     *HYDROGEN_NAMES *INTERACTION_ATOM_NAMES

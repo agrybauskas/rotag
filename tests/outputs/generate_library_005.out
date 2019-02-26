@@ -1,29 +1,4 @@
-data_1:chi1:4.712;chi2:1.571;E:3.446
-#
-loop_
-_atom_site.group_PDB
-_atom_site.id
-_atom_site.type_symbol
-_atom_site.label_atom_id
-_atom_site.label_alt_id
-_atom_site.label_comp_id
-_atom_site.label_asym_id
-_atom_site.label_entity_id
-_atom_site.label_seq_id
-_atom_site.Cartn_x
-_atom_site.Cartn_y
-_atom_site.Cartn_z
-_atom_site.pdbx_PDB_model_num
-ATOM 1408 N N . ASP A 1 219 33.629 1.247 41.706 1
-ATOM 1409 C CA . ASP A 1 219 34.297 2.104 42.669 1
-ATOM 1410 C C . ASP A 1 219 34.468 1.397 44.005 1
-ATOM 1411 O O . ASP A 1 219 35.468 1.582 44.696 1
-ATOM 1412 C CB . ASP A 1 219 33.528 3.419 42.840 1
-ATOM 1413 C CG . ASP A 1 219 33.989 4.497 41.870 1
-ATOM 1414 O OD1 . ASP A 1 219 33.419 4.571 40.760 1
-ATOM 1415 O OD2 . ASP A 1 219 34.907 5.276 42.208 1
-#
-data_2:chi1:4.712;chi2:4.712;E:3.491
+data_1:chi1:-1.571;chi2:-1.571;E:3.485
 #
 loop_
 _atom_site.group_PDB
@@ -47,4 +22,29 @@ ATOM 1412 C CB . ASP A 1 219 33.528 3.419 42.840 1
 ATOM 1413 C CG . ASP A 1 219 33.989 4.497 41.870 1
 ATOM 1414 O OD1 . ASP A 1 219 34.914 5.254 42.229 1
 ATOM 1415 O OD2 . ASP A 1 219 33.443 4.587 40.748 1
+#
+data_2:chi1:-1.571;chi2:1.571;E:3.440
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1408 N N . ASP A 1 219 33.629 1.247 41.706 1
+ATOM 1409 C CA . ASP A 1 219 34.297 2.104 42.669 1
+ATOM 1410 C C . ASP A 1 219 34.468 1.397 44.005 1
+ATOM 1411 O O . ASP A 1 219 35.468 1.582 44.696 1
+ATOM 1412 C CB . ASP A 1 219 33.528 3.419 42.840 1
+ATOM 1413 C CG . ASP A 1 219 33.989 4.497 41.870 1
+ATOM 1414 O OD1 . ASP A 1 219 33.419 4.571 40.760 1
+ATOM 1415 O OD2 . ASP A 1 219 34.907 5.276 42.208 1
 #

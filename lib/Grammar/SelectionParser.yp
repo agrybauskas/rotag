@@ -14,15 +14,16 @@
     use PDBxParser qw( extract
                        filter_by_unique_residue_key
                        filter_new );
-    use ForceField::General;
+    use ForceField::Parameters;
 %}
 
 %left ','
 %left '..' '='
-%left 'around' 'rand' 'group' 'angles'
+%left 'around' 'rand' 'angles'
 %right 'byres' 'expand'
 %left '!'
 %left '||' '&&'
+%left ':'
 
 %%
 
@@ -40,7 +41,21 @@ line
 
 # TODO: main and side should be written as exp mainchain exp, exp sidechain exp.
 exp
-    : 'all'
+    : NUM ':' exp
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'id' => $_[3] },
+                                 'group_id' => $_[1],
+                                 'return_data' => 'id' } );
+        }
+    | STR ':' exp
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'id' => $_[3] },
+                                 'group_id' => $_[1],
+                                 'return_data' => 'id' } );
+        }
+    | 'all'
         {
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'group_id' => $_[0]->{USER}{GROUP_ID},
@@ -51,7 +66,7 @@ exp
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' =>
                                      { 'label_atom_id' =>
-                                           \@General::MAINCHAIN_ATOM_NAMES,
+                                           \@Parameters::MAINCHAIN_ATOM_NAMES,
                                        'group_PDB' => [ 'ATOM' ] },
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
@@ -61,7 +76,7 @@ exp
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' =>
                                      { 'label_atom_id' =>
-                                           \@General::SIDECHAIN_ATOM_NAMES,
+                                           \@Parameters::SIDECHAIN_ATOM_NAMES,
                                        'group_PDB' => [ 'ATOM' ] },
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
@@ -145,6 +160,7 @@ exp
         }
     | '!' exp
         {
+            # FIXME: ! exp && ! exp creates error message where $ids[0] is undef.
             my @ids = @{ $_[2] };
             if( $ids[0] eq '!' ) {
                 shift( @ids );
@@ -189,20 +205,6 @@ exp
                 splice( @ids, $rand_idx, 1 );
             }
             return \@rand_ids;
-        }
-    | exp 'group' NUM
-        {
-            return filter_new( $_[0]->{USER}{ATOM_SITE},
-                               { 'include' => { 'id' => $_[1] },
-                                 'group_id' => $_[3],
-                                 'return_data' => 'id' } );
-        }
-    | exp 'group' STR
-        {
-            return filter_new( $_[0]->{USER}{ATOM_SITE},
-                               { 'include' => { 'id' => $_[1] },
-                                 'group_id' => $_[3],
-                                 'return_data' => 'id' } );
         }
     | exp 'angles' map_ope
         {
@@ -372,7 +374,9 @@ sub lexer
 
     # Returns tokens to parser.
     for( $parser->YYData->{INPUT} ){
-        if( s/^(resid)// ) {
+        if( s/^(:)// ) {
+            return ( ':', $1 );
+        } elsif( s/^(resid)// ) {
             return ( 'resid', $1 );
         } elsif(s/^(chain)//) {
             return ( 'chain', $1 );

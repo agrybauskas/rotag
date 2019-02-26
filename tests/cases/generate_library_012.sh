@@ -10,14 +10,14 @@ residue_id="18"
 residue_chain="A"
 residue_entity="1"
 residue_alt="."
-small_angle="0.1*pi"
+angles="18.0"
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
                                             ${residue_chain} \
                                             ${residue_entity} \
                                             ${residue_alt} \
                                             ${conf_model} \
-     	                                    ${small_angle} \
+     	                                    ${angles} \
 	                                        ${potential} \
 					                        ${energy_cutoff_atom} \
 					                        ${pdbx_dump_file}

@@ -6,32 +6,39 @@ use warnings;
 use autodie;
 use Clone qw( clone );
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( any
                         uniq );
+use Try::Tiny;
 
-use AtomInteractions qw( hard_sphere
-                         soft_sphere
-                         lennard_jones
-                         coulomb
-                         h_bond
-                         composite );
-use Constants qw( $SIG_FIGS_MAX );
+use Constants qw( $EDGE_LENGTH_INTERACTION
+                  $SIG_FIGS_MIN
+                  $SIG_FIGS_MAX );
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
                      is_second_neighbour );
-use ForceField::General;
+use ForceField::Parameters;
+use ForceField::NonBonded qw( coulomb
+                              general
+                              hard_sphere
+                              h_bond
+                              lennard_jones
+                              soft_sphere );
+use ForceField::Bonded qw( general
+                           torsion);
 use Grid qw( grid_box
              identify_neighbour_cells );
 use BondProperties qw( hybridization );
+use Logging qw( error
+                warning );
 use PDBxParser qw( filter
                    mark_selection
                    obtain_atom_site
                    pdbx_loop_to_csv
                    split_by
                    to_pdbx );
-use PseudoAtoms qw( add_hydrogens );
 use Version qw( $VERSION );
+
+Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
@@ -41,6 +48,7 @@ our $VERSION = $VERSION;
 #*Usage:
 #*    rotag_energy input.cif > output.cif
 #*    rotag_energy -u hard_sphere input.cif > output.cif
+#*    rotag_energy input.cif -p 'lj_k=0.01, c_k=0.4' > output.cif
 #*
 #*Options:
 #*    -u, --potential <potential> uses potential energy function for determining
@@ -66,15 +74,18 @@ our $VERSION = $VERSION;
 #*                                    soft_epsilon - soft sphere epsilon;
 #*                                    soft_n       - soft sphere n.
 #*
-#*                                E.g.: 'lj_k = 0.01, c_k = 0.4'.
+#*                                E.g.: 'lj_k=0.01, c_k=0.4'.
 #*
-#*    -r, --rotamer               calculate energy of the side-chain atoms for
+#*    -S, --side-chains           calculate energy of the side-chain atoms for
 #*                                each selected residue.
 #*
 #*    -d, --decompose             decompose composite energy values into their
 #*                                constituent energy values.
 #*
 #*    -P, --pairwise              check energy of the atoms in pairwise fashion.
+#*
+#*    -b, --b-factor              adds 'B_iso_or_equiv' as energy value to the
+#*                                PDBx 'atom_site' loop.
 #*
 #*    -F, --format <format>       output format (default: pdbx | csv).
 #*
@@ -85,19 +96,31 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
-my $parameters = q{};
-my $do_rotamer = 0;
+my $parameters = '';
+my $do_sidechain = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
+my $add_B_iso = 0;
 my $output_format = 'pdbx';
 my $threads = 1;
+
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
 
 GetOptions(
     'potential|u=s' => \$interactions,
     'parameters|p=s' => \$parameters,
-    'rotamer|r' => sub { $do_rotamer = 1 },
+    'side-chains|S' => sub { $do_sidechain = 1 },
     'pairwise|P' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
+    'b-factor|b' => sub { $add_B_iso = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -111,11 +134,13 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'Error in command line argument.';
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 # Defaults.
 my %potential_functions = (
-    'composite' => \&composite,
+    'composite' => \&ForceField::NonBonded::general,
+    'torsion' => \&torsion,
     'hard_sphere' => \&hard_sphere,
     'soft_sphere' => \&soft_sphere,
     'lennard_jones' => \&lennard_jones,
@@ -123,12 +148,24 @@ my %potential_functions = (
     'h_bond' => \&h_bond,
 );
 
+# Parses parameter string.
 $parameters =~ s/\s//g;
 $parameters = {
     map { $_->[0] => $_->[1] }
     map { [ split /=/sm, $_ ] }
     split /,/sxm, $parameters
 };
+
+# Checks the names of the parameters.
+my @allowed_parameters =
+    qw( lj_k c_k h_k t_k cutoff_start cutoff_end soft_epsilon soft_n);
+
+for my $parameter ( keys %{ $parameters } ) {
+    if( ! any { $parameter eq $_ } @allowed_parameters ) {
+        error( { 'program' => $0,
+                 'message' => "'$parameter' argument is not valid.\n" } );
+    }
+}
 
 if( $do_decompose ) {
     $parameters->{'decompose'} = 1;
@@ -138,13 +175,16 @@ if( $do_decompose ) {
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_energy --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     my $selected_atom_site =
@@ -175,7 +215,7 @@ for my $pdbx_file ( @ARGV ) {
               'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
               'label_entity_2_id', 'label_alt_2_id', 'calculation_method',
               'value' ];
-    } elsif( $do_rotamer ) {
+    } elsif( $do_sidechain ) {
         $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
             [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
@@ -202,20 +242,9 @@ for my $pdbx_file ( @ARGV ) {
             $current_atom_site->{$atom_id}{'label_alt_id'} = $current_alt_id;
         }
 
-        # Adds hydrogens for calculations where h_bond might be present.
-        if( $interactions eq 'composite' || $interactions eq 'h_bond' ) {
-            my $current_atom_site_w_H =
-                clone( { %{ $current_atom_site },
-                         %{ add_hydrogens( $current_atom_site,
-                                           { 'add_only_clear_positions' => 1 } )}
-                       } );
-            connect_atoms( $current_atom_site_w_H );
-            hybridization( $current_atom_site_w_H );
-            $parameters->{'atom_site'} = $current_atom_site_w_H;
-        } else {
-            # TODO: look, how it will behave when pseudo atoms are introduced.
-            connect_atoms( $current_atom_site );
-        }
+        connect_atoms( $current_atom_site );
+        hybridization( $current_atom_site );
+        $parameters->{'atom_site'} = $current_atom_site;
 
         my $target_atom_ids =
             filter( { 'atom_site' => $current_atom_site,
@@ -224,7 +253,9 @@ for my $pdbx_file ( @ARGV ) {
                       'is_list' => 1 } );
 
         my ( $grid_box, $target_cells ) =
-            grid_box( $current_atom_site, undef, $target_atom_ids );
+            grid_box( $current_atom_site,
+                      $EDGE_LENGTH_INTERACTION,
+                      $target_atom_ids );
 
         my $neighbour_cells = identify_neighbour_cells($grid_box, $target_cells);
 
@@ -234,10 +265,10 @@ for my $pdbx_file ( @ARGV ) {
         my %residue_energy;
         for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
             for my $atom_id ( @{ $target_cells->{$cell} } ) {
-                if( $do_rotamer ) {
+                if( $do_sidechain ) {
                     next if any { $current_atom_site->{$atom_id}
                                                       {'label_atom_id'} eq $_ }
-                                @General::INTERACTION_ATOM_NAMES;
+                                @Parameters::INTERACTION_ATOM_NAMES;
                 }
 
                 my ( $atom_symbol, $atom_name,
@@ -255,6 +286,16 @@ for my $pdbx_file ( @ARGV ) {
                 my $potential_energy = 0;
                 my %potential_energy; # Used when decomposing composite energy
                                       # values.
+
+                # Adds bonded potential energy term.
+                if( $interactions eq 'composite' ) {
+                    $potential_energy = ForceField::Bonded::general(
+                        $current_atom_site->{$atom_id},
+                        $parameters
+                    );
+                }
+
+                # Adds non-bonded potential energy term.
                 for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} }){
                     if( ( $atom_id ne $neighbour_atom_id )
                      && ( ! is_neighbour( $current_atom_site,
@@ -331,16 +372,22 @@ for my $pdbx_file ( @ARGV ) {
                     }
                 }
 
-                if( ! $do_pairwise && ! $do_decompose && ! $do_rotamer ) {
-                    push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
-                         $calculation_id, $atom_id, $atom_symbol, $atom_name,
-                         $atom_residue_id, $atom_residue_name, $atom_chain,
-                         $atom_entity, $atom_alt, $interactions,
-                         sprintf $SIG_FIGS_MAX, $potential_energy;
-                    $calculation_id++;
+                if( ! $do_pairwise && ! $do_decompose && ! $do_sidechain ) {
+                    if( $add_B_iso ) {
+                        $atom_site->{$atom_id}{'B_iso_or_equiv'} =
+                            sprintf $SIG_FIGS_MIN, $potential_energy;
+                        $calculation_id++;
+                    } else {
+                        push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
+                            $calculation_id, $atom_id, $atom_symbol, $atom_name,
+                            $atom_residue_id, $atom_residue_name, $atom_chain,
+                            $atom_entity, $atom_alt, $interactions,
+                            sprintf $SIG_FIGS_MAX, $potential_energy;
+                        $calculation_id++;
+                    }
                 }
 
-                if( $do_decompose && ! $do_rotamer ) {
+                if( $do_decompose && ! $do_sidechain ) {
                     for my $interaction (
                         grep { $_ ne 'composite' } sort keys %potential_energy ){
                         push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
@@ -352,7 +399,7 @@ for my $pdbx_file ( @ARGV ) {
                     }
                 }
 
-                if( $do_rotamer ) {
+                if( $do_sidechain && ! $do_pairwise ) {
                     if( $do_decompose ) {
                         for my $interaction ( grep { $_ ne 'composite' }
                                               sort keys %potential_energy ) {
@@ -381,7 +428,7 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
 
-        if( $do_rotamer ) {
+        if( $do_sidechain ) {
             $calculation_id = 1;
             for my $residue_unique_key ( sort keys %residue_energy ) {
                 for my $interaction (
@@ -399,14 +446,28 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( $output_format eq 'pdbx' ) {
-        to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+        if( $add_B_iso ) {
+            to_pdbx( { 'atom_site' => $atom_site,
+                       'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
+        } else {
+            to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+        }
     } elsif( $output_format eq 'csv' ) {
         if( $do_pairwise ) {
             pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
-        } elsif( $do_rotamer ) {
+        } elsif( $do_sidechain ) {
             pdbx_loop_to_csv( $pdbx_loops{'_[local]_rotamer_energy'} );
         } else {
             pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );
         }
     }
 }
+
+} catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
+};

@@ -10,14 +10,14 @@ residue_id="18"
 residue_chain="A"
 pdbx_model_num="1"
 residue_alt="."
-small_angle="0.1*pi"
+angles="-180.0..36.0..180.0"
 
 $(dirname "$0")/../scripts/calc_favourable_angles \
                ${residue_id} \
                ${residue_chain} \
                ${pdbx_model_num} \
                ${residue_alt} \
-	           ${small_angle} \
+	           ${angles} \
 	           ${potential} \
                "${interaction_specifier}" \
 	           ${energy_cutoff_atom} \

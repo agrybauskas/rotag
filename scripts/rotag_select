@@ -5,16 +5,20 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
+use Try::Tiny;
 
+use Logging qw( error
+                warning );
 use PDBxParser qw( filter_new
                    mark_selection
                    obtain_atom_site
                    obtain_pdbx_loop
                    to_pdbx );
 use Grammar::SelectionParser;
-use ErrorHandling qw( parse_errors );
+use Logging qw( error );
 use Version qw( $VERSION );
+
+Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
@@ -52,7 +56,6 @@ our $VERSION = $VERSION;
 #*                              around - atoms around <int> angstroms;
 #*                              byres  - expands to residues;
 #*                              rand   - selects <int> number of atoms randomly;
-#*                              group  - assigns <int> or <str> as group id.
 #*                              angles - assigns min <float> and max <float>
 #*                                       angle range where selected angles should
 #*                                       be in (e.g. angles 'chi1=90..160' or
@@ -73,6 +76,9 @@ our $VERSION = $VERSION;
 #*                              () - parentheses;
 #*                              ;  - group/order selection separator.
 #*
+#*                          Annotation operator:
+#*                              : - assigns <int> or <str> as group id.
+#*
 #*    -s, --select <str>    command (same as --target) describing the atoms that
 #*                          will be marked as selected (S) [default: target].
 #*
@@ -88,6 +94,16 @@ my $target_cmds;
 my $select_cmds;
 my $keep_ignored = 0;
 my $random_seed = 23;
+
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
 
 GetOptions(
     'target|t=s@' => \$target_cmds,
@@ -112,14 +128,17 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
+
 for( my $i = 0; $i <= $#ARGV; $i++ ) {
     my $pdbx_file = $ARGV[$i];
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_select --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        next;
     }
 
     # Assigns correct target and select command line arguments for current file.
@@ -152,11 +171,10 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                 'atomid ' . join ',', @previous_target_atoms;
             $target_cmd =~ s/target/${previous_target_cmd}/g;
         } else {
-            parse_errors( { 'program' => $0,
-                            'filename' => $pdbx_file,
-                            'type' => 'ERROR',
-                            'message' => 'no target atoms where previously ' .
-                                         "selected.\n" } );
+            error( { 'program' => $0,
+                     'filename' => $pdbx_file,
+                     'message' => 'no target atoms where previously ' .
+                                  "selected.\n" } );
         }
     }
 
@@ -208,3 +226,12 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                'add_atom_attributes' => [ '[local]_selection_state',
                                           '[local]_selection_group' ] } );
 }
+
+} catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
+};

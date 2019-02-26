@@ -1,6 +1,0 @@
-package General;
-
-use strict;
-use warnings;
-
-# -------------------------- Force-field parameters --------------------------- #

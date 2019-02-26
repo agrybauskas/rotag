@@ -24,10 +24,6 @@ use List::MoreUtils qw( any
 use Math::Trig qw( acos );
 use threads;
 
-use AtomInteractions qw( hard_sphere
-                         soft_sphere
-                         lennard_jones
-                         composite );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( append_connections
                      connect_atoms
@@ -36,7 +32,11 @@ use ConnectAtoms qw( append_connections
 use Constants qw( $EDGE_LENGTH_INTERACTION
                   $PI
                   $SIG_FIGS_MIN );
-use ForceField::General;
+use ForceField::Parameters;
+use ForceField::Bonded qw( general );
+use ForceField::NonBonded qw( general
+                              hard_sphere
+                              soft_sphere );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( matrix_product
@@ -124,7 +124,9 @@ sub generate_pseudo
 
         # Iterates through combinations of angles and evaluates conformational
         # model.
-        my @angle_names = sort { $a cmp $b } keys %{ $angle_values };
+        my @angle_names = grep { exists $angles{$residue_unique_key}{$_} }
+                          sort { $a cmp $b }
+                          keys %{ $angle_values };
         my @angle_values;
         for my $angle_name ( @angle_names ) {
             push @angle_values,
@@ -289,7 +291,13 @@ sub generate_rotamer
 #     $args->{include_interactions} - selection data structure
 #     (see PDBxParser::filter) that is used to select atoms that will be included
 #     into calculations of energy;
-#     $args->{small_angle} - angle by which rotation is made;
+#     $args->{angles} - angle data structure by which rotation is made:
+#     {
+#       'chi1' => {
+#           'angle_start' => 0.0,
+#           'angle_step' => 36.0,
+#           'angle_end' => 360.0,
+#     }.
 #     $args->{conf_model} - possible sidechain movements described by sidechain
 #     model functions in SidechainModels.pm;
 #     $args->{interactions} - interaction models described by functions in
@@ -308,27 +316,25 @@ sub generate_library
     my $atom_site = $args->{'atom_site'};
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
-    my $small_angle = $args->{'small_angle'};
+    my $angles = $args->{'angles'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
     my $parameters = $args->{'parameters'};
     my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
-    my $is_hydrogen_explicit = $args->{'is_hydrogen_explicit'};
     my $threads = $args->{'threads'};
 
     $conf_model //= 'rotation_only';
-    $energy_cutoff_atom //= $General::CUTOFF_ATOM;
+    $energy_cutoff_atom //= $Parameters::CUTOFF_ATOM;
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' =>
-                                    \@General::INTERACTION_ATOM_NAMES };
-    $is_hydrogen_explicit //= 0;
+                                    \@Parameters::INTERACTION_ATOM_NAMES };
 
     # Selection of potential function.
-    my %potential_functions = ( 'composite' => \&composite,
-                                'hard_sphere' => \&hard_sphere,
-                                'soft_sphere' => \&soft_sphere,
-                                'lennard_jones' => \&lennard_jones, );
-    my $potential_function = $potential_functions{"$interactions"};
+    my %potential_functions =
+        ( 'composite'   => { 'non_bonded' => \&ForceField::NonBonded::general,
+                             'bonded'     => \&ForceField::Bonded::general},
+          'hard_sphere' => { 'non_bonded' => \&hard_sphere },
+          'soft_sphere' => { 'non_bonded' => \&soft_sphere }, );
 
     my %rotamer_library;
 
@@ -344,30 +350,13 @@ sub generate_library
                       'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
 
-        # Predetermines geometrically clearly defined hydrogen positions.
-        my $current_atom_site_w_h = clone( $current_atom_site );
-        my $hydrogens =
-            add_hydrogens( $current_atom_site_w_h,
-                           { 'alt_group_id' => q{.},
-                             'add_only_clear_positions' => 1,
-                             'use_origins_alt_group_id' => 1 } );
-        append_connections( $current_atom_site_w_h, $hydrogens );
-        $current_atom_site_w_h = { %{ $current_atom_site_w_h }, %{ $hydrogens }};
-        hybridization( $current_atom_site_w_h );
-
-        # Also, prepares hydrogen-free structure.
-        my $current_atom_site_no_h = clone(
-            filter( { 'atom_site' => $current_atom_site_w_h,
-                      'exclude' => { 'type_symbol' => [ 'H' ] } } )
-        );
-        connect_atoms( $current_atom_site_no_h );
-        hybridization( $current_atom_site_no_h );
+        connect_atoms( $current_atom_site );
+        hybridization( $current_atom_site );
 
         # Generates conformational models before checking for
         # clashes/interactions for given residues.
         if( $conf_model eq 'rotation_only' ) {
-            rotation_only( $current_atom_site_no_h );
-            rotation_only( $current_atom_site_w_h );
+            rotation_only( $current_atom_site );
         } else {
             confess 'conformational model was not defined.';
         }
@@ -383,6 +372,9 @@ sub generate_library
                           'include' => { 'label_atom_id' => [ 'CA' ] },
                           'data' => [ 'id' ],
                           'is_list' => 1 } )->[0];
+
+            if( ! defined $atom_ca_id ) { next; }
+
             push @target_ca_ids, $atom_ca_id;
         }
 
@@ -393,7 +385,7 @@ sub generate_library
         # on maximum bending and having shorter edge length reduces calculation
         # time.
         my ( $grid_box, $target_cell_idxs ) =
-            grid_box( $current_atom_site_w_h, $EDGE_LENGTH_INTERACTION,
+            grid_box( $current_atom_site, $EDGE_LENGTH_INTERACTION,
                       \@target_ca_ids );
 
         my $neighbour_cells =
@@ -416,10 +408,8 @@ sub generate_library
                     determine_residue_keys( $residue_site,
                                             { 'exclude_dot' => 1 } )->[0];
 
-                # Because the change of side-chain position might impact the
-                # surrounding, iteraction site consists of only main chain atoms.
-                my %interaction_site_no_h =
-                    %{ filter( { 'atom_site' => $current_atom_site_no_h,
+                my %interaction_site =
+                    %{ filter( { 'atom_site' => $current_atom_site,
                                  'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
@@ -428,37 +418,31 @@ sub generate_library
                 # This is called growing side chain.
                 my @allowed_angles =
                     @{ calc_favourable_angles(
-                           { 'atom_site' => $current_atom_site_no_h,
+                           { 'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'interaction_site' => \%interaction_site_no_h,
-                             'small_angle' => $small_angle,
-                             'potential_function' => $potential_function,
+                             'interaction_site' => \%interaction_site,
+                             'angles' => $angles,
+                             'non_bonded_potential' =>
+                                 $potential_functions{$interactions}{'non_bonded'},
+                             'bonded_potential' =>
+                                 $potential_functions{$interactions}{'bonded'},
                              'energy_cutoff_atom' => $energy_cutoff_atom,
                              'parameters' => $parameters,
                              'threads' => $threads } ) };
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
-                my %interaction_site_w_h =
-                    %{ filter( { 'atom_site' => $current_atom_site_w_h,
-                                 'include' =>
-                                     { 'id' => $neighbour_cells->{$cell},
-                                       %{ $include_interactions } } } ) };
-
                 my ( $allowed_angles, $energy_sums ) =
                     @{ threading(
                            \&calc_full_atom_energy,
-                           { 'atom_site' => ( $is_hydrogen_explicit ?
-                                              $current_atom_site_w_h :
-                                              $current_atom_site_no_h ),
+                           { 'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'interaction_site' => ( $is_hydrogen_explicit ?
-                                                     \%interaction_site_w_h :
-                                                     \%interaction_site_no_h ),
-                             'small_angle' => $small_angle,
-                             'potential_function' => $potential_function,
+                             'interaction_site' => \%interaction_site,
+                             'non_bonded_potential' =>
+                                 $potential_functions{$interactions}{'non_bonded'},
+                             'bonded_potential' =>
+                                 $potential_functions{$interactions}{'bonded'},
                              'energy_cutoff_atom' => $energy_cutoff_atom,
-                             'is_hydrogen_explicit' => $is_hydrogen_explicit,
                              'parameters' => $parameters },
                            [ @allowed_angles ],
                            $threads ) };
@@ -495,9 +479,11 @@ sub generate_library
 #     (see PDBxParser::unique_residue_key);
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
-#     $args->{small_angle} - angle by which rotation is made;
-#     $args->{potential_function} - reference to the potential function that is
-#     used for calculating energy;
+#     $args->{angles} - angle data structure by which rotation is made.
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of non-bonded atoms;
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function;
@@ -511,17 +497,23 @@ sub calc_favourable_angles
 {
     my ( $args ) = @_;
 
-    my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
-         $potential_function, $energy_cutoff_atom, $parameters, $threads ) = (
+    my ( $atom_site, $residue_unique_key, $interaction_site, $angles,
+         $small_angle, $non_bonded_potential, $bonded_potential,
+         $energy_cutoff_atom, $parameters, $threads ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
+        $args->{'angles'},
         $args->{'small_angle'},
-        $args->{'potential_function'},
+        $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
         $args->{'threads'},
     );
+
+    # TODO: look how separate $angles and $small_angle influence on the function;
+    $small_angle //= 0.1 * 2 * $PI;
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
@@ -546,33 +538,52 @@ sub calc_favourable_angles
         grep { $_ ne $ca_atom_id }
             @{ $residue_site->{$cb_atom_id}{'connections'} };
 
-    my @sampled_angles =
-        map { [ $_ ] } @{ sample_angles( [ [ 0, 2 * $PI ] ], $small_angle ) };
-    my @allowed_angles = @sampled_angles;
-
-    # @zero_energies is a helper variable for permutation() in order to
-    # mimick the permutated angles and match their values correctly.
-    my @zero_energies = map { [ 0 ] } @sampled_angles;
-    my @allowed_energies = @zero_energies;
-
+    my @allowed_angles;
+    my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
+            my @default_allowed_angles;
+            my ( $last_angle_name ) =
+                sort { $b cmp $a } keys %{ $rotatable_bonds->{$atom_id} };
+
+            if( defined $angles  && exists $angles->{$last_angle_name} &&
+                defined $angles->{$last_angle_name} ) {
+                @default_allowed_angles =
+                    map { [ $_ ] }
+                       @{ $angles->{$last_angle_name} };
+            } elsif( defined $angles  && exists $angles->{'*'} &&
+                     defined $angles->{'*'}  ) {
+                @default_allowed_angles =
+                    map { [ $_ ] }
+                       @{ $angles->{'*'} };
+            } else {
+                @default_allowed_angles =
+                    map { [ $_ ] }
+                       @{ sample_angles( [ [ 0, 2 * $PI ] ], $small_angle ) };
+            }
+
+            my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
+
             # Adds more angle combinations if there are more than one
             # rotatable bonds.
-            if( scalar( @{ $allowed_angles[0] } ) <
+            if( @allowed_angles &&
+                scalar( @{ $allowed_angles[0] } ) <
                 scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
                 @allowed_angles =
                     @{ permutation( 2, [], [ \@allowed_angles,
-                                             \@sampled_angles ], [] ) };
+                                             \@default_allowed_angles ], [] ) };
                 @allowed_energies =
                     @{ permutation( 2, [], [ \@allowed_energies,
-                                             \@zero_energies ], [] ) };
+                                             \@default_allowed_energies ], [] ) };
                 # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
                 @allowed_angles =
                     map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
                 @allowed_energies =
                     map { [ $_->[0][0] ] } @allowed_energies;
+            } elsif( ! @allowed_angles ) {
+                @allowed_angles = @default_allowed_angles;
+                @allowed_energies = @default_allowed_energies;
             }
 
             # Marks visited atoms.
@@ -590,9 +601,10 @@ sub calc_favourable_angles
                          'atom_id' => $atom_id,
                          'interaction_site' => $interaction_site,
                          'energy_cutoff_atom' => $energy_cutoff_atom,
-                         'potential_function' => $potential_function,
+                         'non_bonded_potential' => $non_bonded_potential,
+                         'bonded_potential' => $bonded_potential,
                          'parameters' => $parameters },
-                       [ \@allowed_angles, \@allowed_energies, ],
+                       [ \@allowed_angles, \@allowed_energies ],
                        $threads ) };
 
             if( scalar @{ $next_allowed_angles } > 0 ) {
@@ -623,8 +635,10 @@ sub calc_favourable_angles
 #     $args->{atom_id} - atom id;
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
-#     $args->{potential_function} - reference to the potential function that is
-#     used for calculating energy;
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of non-bonded atoms;
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function.
@@ -639,12 +653,13 @@ sub calc_favourable_angle
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $atom_site, $atom_id, $interaction_site, $potential_function,
-         $energy_cutoff_atom, $parameters ) = (
+    my ( $atom_site, $atom_id, $interaction_site, $non_bonded_potential,
+         $bonded_potential, $energy_cutoff_atom, $parameters ) = (
         $args->{'atom_site'},
         $args->{'atom_id'},
         $args->{'interaction_site'},
-        $args->{'potential_function'},
+        $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
         $args->{'parameters'},
     );
@@ -671,6 +686,8 @@ sub calc_favourable_angle
 
         my $potential_energy = 0; # TODO: look if here should be zeros.
         my $potential_sum = 0;
+
+        # Calculation of potential energy of non-bonded atoms.
         foreach my $interaction_id ( keys %{ $interaction_site } ) {
             if( ( ! is_neighbour( $atom_site,
                                   $pseudo_origin_id,
@@ -678,11 +695,11 @@ sub calc_favourable_angle
                 ( ! is_second_neighbour( $atom_site,
                                          $pseudo_origin_id,
                                          $interaction_id ) ) ) {
-                $potential_energy =
-                    $potential_function->(
-                        $pseudo_atom_site->{$pseudo_atom_id},
-                        $atom_site->{$interaction_id},
-                        \%parameters );
+                $potential_energy = $non_bonded_potential->(
+                    $pseudo_atom_site->{$pseudo_atom_id},
+                    $atom_site->{$interaction_id},
+                    \%parameters
+                );
                 $potential_sum += $potential_energy;
                 last if $potential_energy > $energy_cutoff_atom;
             }
@@ -710,9 +727,9 @@ sub calc_favourable_angle
 #     (see PDBxParser::unique_residue_key);
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
-#     $args->{small_angle} - angle by which rotation is made;
-#     $args->{potential_function} - reference to the potential function that is
-#     used for calculating energy;
+#     $args->{angles} - angle data structure by which rotation is made.
+#     $args->{non_bonded_potential} - reference to the potential function that is
+#     used for calculating energy of non-bonded atoms;
 #     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function;
@@ -729,21 +746,18 @@ sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $atom_site, $residue_unique_key, $interaction_site, $small_angle,
-         $potential_function, $energy_cutoff_atom, $is_hydrogen_explicit,
+    my ( $atom_site, $residue_unique_key, $interaction_site,
+         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
          $parameters ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
-        $args->{'small_angle'},
-        $args->{'potential_function'},
+        $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
-        $args->{'is_hydrogen_explicit'},
         $args->{'parameters'},
     );
 
-    # Creates all-atom model (even with uncertain hydrogen positions) for
-    # selected residue.
     my ( $residue_id, $residue_chain, $pdbx_model_num,
          $residue_alt ) = split /,/sxm, $residue_unique_key;
     my $residue_site =
@@ -753,53 +767,18 @@ sub calc_full_atom_energy
                                  'label_alt_id' => [ $residue_alt, q{.} ],
                                  'pdbx_PDB_model_num' => [ $pdbx_model_num ] }});
 
-    # Adds hydrogens to the residue_site.
-    if( $is_hydrogen_explicit ) {
-        my $hydrogens =
-            add_hydrogens( $residue_site,
-                           { 'use_existing_connections' => 1,
-                             'use_existing_hybridizations' => 1,
-                             'exclude_by_atom_name' => [ 'N', 'C' ],
-                             'use_origins_alt_group_id' => 1 } );
-        append_connections( $residue_site, $hydrogens );
-        $residue_site = { %{ $residue_site }, %{ $hydrogens } };
-
-        rotation_only( $residue_site );
-    }
-
-    # Identifies missing unique rotatable bonds.
-    my %uniq_rotatable_bonds = %{ unique_rotatables( $residue_site ) };
-
-    if( ! %uniq_rotatable_bonds ) { next; }
-
-    my $uniq_rotatable_bond_num = scalar keys %uniq_rotatable_bonds;
-    my $missing_rotatable_bond_num = $uniq_rotatable_bond_num -
-                                     scalar @{ $array_blocks->[0] };
-
-    my @checkable_angles = @{ $array_blocks };
-    if( $missing_rotatable_bond_num ) {
-        my @sampled_angles =
-            map { [ $_ ] } @{sample_angles( [ [ 0, 2 * $PI ] ], $small_angle )};
-        foreach( 1..$missing_rotatable_bond_num ) {
-            @checkable_angles =
-                @{ permutation( 2, [], [ \@checkable_angles,
-                                         \@sampled_angles ], [] ) };
-            # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-            @checkable_angles =
-                map { [ @{ $_->[0] }, @{ $_->[1] } ] } @checkable_angles;
-        }
-    }
-
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
+    my @checkable_angles = @{ $array_blocks };
     my @allowed_angles;
     my @energy_sums;
+
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
         my %angles =
             map { my $angle_id = $_ + 1; ( "chi$angle_id" =>
                                                $checkable_angles[$i][$_] ) }
-                0..$#{ $checkable_angles[$i] };
+                ( 0..$#{ $checkable_angles[$i] } );
 
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( \%rotamer_site, $residue_unique_key, \%angles );
@@ -808,7 +787,7 @@ sub calc_full_atom_energy
             sort keys %{ filter( { 'atom_site' => \%rotamer_site,
                                    'exclude' =>
                                    { 'label_atom_id' =>
-                                         \@General::INTERACTION_ATOM_NAMES } } ) };
+                                         \@Parameters::INTERACTION_ATOM_NAMES } } ) };
         # HACK: make sure that $interaction_site atom ids are updated by
         # %rotamer_site
         my %rotamer_interaction_site = ( %{ $interaction_site }, %rotamer_site );
@@ -819,7 +798,17 @@ sub calc_full_atom_energy
         $parameters->{'atom_site'} = \%rotamer_interaction_site;
 
         my $rotamer_energy_sum = 0;
+
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+            # Calculation of potential energy of bonded atoms.
+            if( defined $bonded_potential ) {
+                $rotamer_energy_sum += $bonded_potential->(
+                    $rotamer_interaction_site{$rotamer_atom_id},
+                    $parameters
+                );
+            }
+
+            # Calculation of potential energy of non-bonded atoms.
             for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
                 my $rotamer_atom_energy = 0;
                 if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
@@ -830,7 +819,7 @@ sub calc_full_atom_energy
                                              $rotamer_atom_id,
                                              $neighbour_atom_id ) ) ){
                     $rotamer_atom_energy +=
-                        $potential_function->(
+                        $non_bonded_potential->(
                             $rotamer_interaction_site{$rotamer_atom_id},
                             $rotamer_interaction_site{$neighbour_atom_id},
                             $parameters );
@@ -858,21 +847,24 @@ sub calc_full_atom_energy
 # Input:
 #     $atom_i - atom;
 #     $surrounding_atoms - list of surrounding atoms;
-#     $potential_function - reference to the potential function that is used for
-#     calculating energy;
+#     $non_bonded_potential - reference to the potential function that is used for
+#     calculating energy of non-bonded atoms;
+#     $bonded_potential - reference to the potential function that is used for
+#     calculating energy of bonded atoms;
 #     $parameters - potential function parameters.
 # Output:
 #     $lowest_energy_sum - energy value.
 #
 
+# FIXME: adde bonded potential.
 sub lowest_energy_state
 {
-    my ( $atom_i, $surrounding_atoms, $potential_function, $parameters ) = @_;
+    my ( $atom_i, $surrounding_atoms, $non_bonded_potential, $parameters ) = @_;
 
     my $lowest_energy_sum = 0;
     for my $atom_j ( @{ $surrounding_atoms } ) {
         $lowest_energy_sum +=
-            $potential_function->( $atom_i, $atom_j,
+            $non_bonded_potential->( $atom_i, $atom_j,
                                    { %{ $parameters }, ( 'is_optimal' => 1 ) } );
     }
 
@@ -984,7 +976,7 @@ sub add_hydrogens
 
         my $residue_name = $atom_site{$atom_id}{'label_comp_id'};
 
-        my $hydrogen_names = $General::HYDROGEN_NAMES{$residue_name}{$atom_name};
+        my $hydrogen_names = $Parameters::HYDROGEN_NAMES{$residue_name}{$atom_name};
 
         if( ! $hydrogen_names ) { next; }; # Exits early if there should be no
                                            # hydrogens connected to the atom.
@@ -1002,11 +994,11 @@ sub add_hydrogens
 
         # TODO: should be pre-determined as constant variable.
         my @mandatory_residue_atoms =
-            @{ $General::RESIDUE_ATOMS{$residue_name}{'mandatory'} };
+            @{ $Parameters::RESIDUE_ATOMS{$residue_name}{'mandatory'} };
         my @mandatory_connections = ();
         for my $mandatory_atom ( @mandatory_residue_atoms ) {
             if( any { $mandatory_atom eq $_ }
-                   @{ $General::CONNECTIVITY{$residue_name}{$atom_name} } ) {
+                   @{ $Parameters::CONNECTIVITY{$residue_name}{$atom_name} } ) {
                 push @mandatory_connections, $mandatory_atom;
             }
         }
@@ -1093,6 +1085,9 @@ sub add_hydrogens
             if( defined $selection_state ) {
                 $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
                     $selection_state;
+            } else {
+                $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
+                    $atom_site->{$atom_id}{'[local]_selection_state'};
             }
             }
         }
@@ -1133,8 +1128,8 @@ sub add_hydrogens_sp3
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $General::ATOMS{$atom_type}{'covalent_radius'}{'length'}[0] +
-        $General::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $Parameters::ATOMS{$atom_type}{'covalent_radius'}{'length'}[0] +
+        $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
@@ -1143,7 +1138,7 @@ sub add_hydrogens_sp3
                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
                      'data_with_id' => 1 } ) };
 
-    my $lone_pair_count = $General::ATOMS{$atom_type}{'lone_pairs'};
+    my $lone_pair_count = $Parameters::ATOMS{$atom_type}{'lone_pairs'};
 
     if( scalar( @connection_ids ) == 3 ) {
         my ( $up_atom_coord,
@@ -1430,8 +1425,8 @@ sub add_hydrogens_sp2
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $General::ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
-        $General::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $Parameters::ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
+        $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =
@@ -1440,7 +1435,7 @@ sub add_hydrogens_sp2
                      'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ],
                      'data_with_id' => 1 } ) };
 
-    my $lone_pair_count = $General::ATOMS{$atom_type}{'lone_pairs'};
+    my $lone_pair_count = $Parameters::ATOMS{$atom_type}{'lone_pairs'};
 
     # Depending on quantity of atoms connections, adds hydrogens.
     if( scalar @connection_ids == 2 ) {
@@ -1589,8 +1584,8 @@ sub add_hydrogens_sp
     my $atom_type = $atom_site->{$atom_id}{'type_symbol'};
 
     my $bond_length =
-        $General::ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
-        $General::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
+        $Parameters::ATOMS{$atom_type}{'covalent_radius'}{'length'}[1] +
+        $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}[0];
 
     my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
     my %atom_coord =

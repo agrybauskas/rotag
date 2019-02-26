@@ -6,12 +6,13 @@ use warnings;
 use autodie;
 use File::Basename;
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
 use List::Util qw( max );
+use Try::Tiny;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
-use ErrorHandling qw( parse_errors );
+use Logging qw( error
+                warning );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    mark_selection
@@ -26,39 +27,61 @@ use PseudoAtoms qw( add_hydrogens
 use SidechainModels qw( rotation_only  );
 use Version qw( $VERSION );
 
+Getopt::Long::Configure qw( gnu_getopt );
+
 our $VERSION = $VERSION;
 
-#*rotag_add [options] (-r | -H) <file>...
+#*rotag_add [options] (-S | -H) <file>...
 #*    add pseudo atoms.
 #*
 #*Usage:
-#*    rotag_add -r input.cif > output.cif
+#*    rotag_add -S input.cif > output.cif
 #*    rotag_add -H input.cif > output.cif
 #*
 #*Options:
-#*    -r, --rotamer-atoms adds pseudo atoms of defined rotamers. Input .cif has
-#*                        to contain _[local]_rotamer_angle category (can be
-#*                        produced with rotag_library).
+#*    -S, --side-chains     add atoms of defined rotamer. Input .cif has to
+#*                          contain _[local]_rotamer_angle category (can be
+#*                          produced with rotag_library).
 #*
-#*    -k, --keep-original keeps original atoms after new atoms are added.
+#*    -H, --hydrogens       add hydrogen atoms to selected atoms.
 #*
-#*    -H, --hydrogens     adds hydrogen atoms to selected atoms.
+#*    -s, --selected        include selected atoms.
 #*
-#*    -v, --version       print version.
+#*    -k, --keep-original   keep original atoms after new atoms are added
+#*                          (applicable for -S option).
+#*
+#*    -c, --clear-positions add only those hydrogens that have clear positions
+#*                          from the current structure (applicable for -H option).
+#*
+#*    -v, --version         print version.
 
 # --------------------------------- Options ----------------------------------- #
 
-my $add_rotamer_atoms = 0;
+my $add_sidechains = 0;
 my $add_hydrogens = 0;
+my $include_selected = 0;
+my $add_clear_positions = 0;
 my $keep_original = 0;
 my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
       'rotamer_id', 'type', 'value', );
 
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
+
 GetOptions(
-    'rotamer-atoms|r' => sub { $add_rotamer_atoms = 1 },
-    'keep-original|k' => sub { $keep_original = 1 },
+    'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
+    'selected|s' => sub { $include_selected = 1 },
+    'keep-original|k' => sub { $keep_original = 1 },
+    'clear-positions|c' => sub { $add_clear_positions = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -71,40 +94,47 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'ERROR: ' . basename( $0 ) . ": mistake in command line argument.\n";
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_add --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
-
-    my $target_atom_ids =
+    my $target_atom_site =
         filter( { 'atom_site' => $selected_atom_site,
+                  'include' => { '[local]_selection_state' =>
+                                 ( $include_selected ? [ 'T', 'S' ] : [ 'T' ] ) } } );
+    my $target_atom_ids =
+        filter( { 'atom_site' => $target_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
                   'exclude' => { 'label_atom_id' =>
-                                     \@General::INTERACTION_ATOM_NAMES },
+                                     \@Parameters::INTERACTION_ATOM_NAMES },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
 
-    if( $add_rotamer_atoms ) {
+    if( $add_sidechains ) {
         # Extracts rotamer angle data that will used to generate atom
         # coordinates.
         my $pdbx_loops =
             obtain_pdbx_loop( $pdbx_file, [ '_\[local\]_rotamer_angle' ] );
         if( ! %{ $pdbx_loops } ) {
-            parse_errors(
+            error(
                 { 'program' => $0,
                   'filename' => $pdbx_file,
                   'message' => 'no rotamer library was detected. Generate '.
@@ -172,10 +202,11 @@ for my $pdbx_file ( @ARGV ) {
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
-        if( ! %{ $selected_atom_site } ) {
+        if( ! %{ $target_atom_site } ) {
+            $target_atom_site = $atom_site;
             $selected_atom_site = $atom_site;
-            mark_selection( $selected_atom_site,
-                            { 'target' => [ keys %{ $selected_atom_site } ] } );
+            mark_selection( $target_atom_site,
+                            { 'target' => [ keys %{ $target_atom_site } ] } );
         }
 
         my $atom_site_split_groups =
@@ -183,19 +214,29 @@ for my $pdbx_file ( @ARGV ) {
                         'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
                         'append_dot' => 1 } );
 
-        my %atom_site;
-        my $last_atom_id = max( keys %{ $selected_atom_site } );
+        my %hydrogen_site;
+        my $last_atom_id = max( keys %{ $atom_site } );
         my @visited_atom_ids;
         for my $atom_site_identifier ( sort keys %{ $atom_site_split_groups } ) {
             my $current_atom_site =
+                filter( { 'atom_site' => $target_atom_site,
+                          'include' =>
+                              { 'id' =>
+                                    $atom_site_split_groups->
+                                        {$atom_site_identifier} } } );
+            my $reference_atom_site =
                 filter( { 'atom_site' => $selected_atom_site,
                           'include' =>
                               { 'id' =>
                                     $atom_site_split_groups->
-                                                   {$atom_site_identifier} } } );
+                                        {$atom_site_identifier} } } );
 
             connect_atoms( $current_atom_site );
             hybridization( $current_atom_site );
+            # TODO: check how determination of bond parameters could be reduced,
+            # because it increases the computation time.
+            connect_atoms( $reference_atom_site );
+            hybridization( $reference_atom_site );
 
             my $hydrogen_site =
                 add_hydrogens( $current_atom_site,
@@ -203,22 +244,33 @@ for my $pdbx_file ( @ARGV ) {
                                  'use_origins_alt_group_id' => 1,
                                  'use_existing_connections' => 1,
                                  'use_existing_hybridizations' => 1,
+                                 'add_only_clear_positions' =>
+                                     $add_clear_positions,
                                  'exclude_by_atom_ids' => \@visited_atom_ids,
-                                 'selection_state' => 'T' } );
-            %atom_site = ( %atom_site, %{ $hydrogen_site } );
+                                 'reference_atom_site' => $reference_atom_site } );
+            %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
 
             push @visited_atom_ids, keys %{ $current_atom_site };
 
-            $last_atom_id = max( keys %atom_site );
+            $last_atom_id = max( keys %hydrogen_site );
         }
 
         # Prints out cif.
-        to_pdbx( { 'atom_site' => { %{ $selected_atom_site }, %atom_site },
+        to_pdbx( { 'atom_site' => { %{ $atom_site }, %hydrogen_site },
                    'add_atom_attributes' => [ '[local]_selection_state' ] } );
     } else {
-        parse_errors(
+        error(
             { 'program' => $0,
               'filename' => $pdbx_file,
               'message' => "no options were chosen for atom additions.\n" } );
     }
 }
+
+} catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
+};

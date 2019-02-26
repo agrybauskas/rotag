@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use AtomInteractions qw( soft_sphere );
+use ForceField::NonBonded qw( soft_sphere );
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file ) = @ARGV;
 

@@ -20,7 +20,7 @@ use Carp qw( confess );
 use List::Util qw( any );
 
 use BondProperties qw( %COVALENT_BOND_COMB );
-use ForceField::General;
+use ForceField::Parameters;
 use Grid qw( identify_neighbour_cells
              grid_box );
 use PDBxParser qw( filter
@@ -95,10 +95,10 @@ sub is_connected
             last;
         } elsif( ( ! $only_covalent_radii ) &&
                  ( $target_residue_key eq $neighbour_residue_key ) &&
-                 ( exists $General::CONNECTIVITY{$target_residue_name}
+                 ( exists $Parameters::CONNECTIVITY{$target_residue_name}
                                                 {$target_atom_name} &&
                    any { $neighbour_atom_name eq $_  }
-                      @{ $General::CONNECTIVITY{$target_residue_name}
+                      @{ $Parameters::CONNECTIVITY{$target_residue_name}
                                                {$target_atom_name} } ) ) {
             $is_connected = 1;
         } else {
