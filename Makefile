@@ -187,7 +187,7 @@ cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${PERL_MODULE}
 	rm -f ${PERL_FORCE_FIELD_MODULE}
-	rm -f ${PM_FILE}
+	rm -f ${PM_FILES}
 	rm -f ${SHARED_OBJ}
 	rm -f ${CPP_OBJ}
 	rm -f ${WRAP_FILE}
