@@ -26,6 +26,33 @@ ${PERL_MODULE}: ${PERL_TEMPLATE}
 	    > $@
 
 #
+# Compiling CPP and linking to Perl5 with SWIG.
+#
+
+CPP_DIR=lib
+CPP_OBJ=${SWIG_FILE:%.i=%.o}
+SWIG_FILE=${wildcard ${CPP_DIR}/*.i}
+PM_FILE=${SWIG_FILE:%.i=%.pm}
+WRAP_FILE=${SWIG_FILE:%.i=%_wrap.cxx}
+WRAP_OBJ=${WRAP_FILE:%.cxx=%.o}
+SHARED_OBJ=${CPP_OBJ:%.o=%.so}
+
+build: ${SHARED_OBJ} ${PM_FILE}
+
+%.pm %_wrap.cxx: %.i
+	swig -c++ -perl $<
+
+%.o: %.cpp
+	g++ -c -fPIC $< -o $@
+
+%_wrap.o: %_wrap.cxx
+	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
+	    -o $@
+
+%.so: %_wrap.o %.o
+	g++ -shared $^ -o $@
+
+#
 # Generate force field module.
 #
 
@@ -155,9 +182,14 @@ clean:
 	rm -fr ${COVERAGE_CASES_DIR}/cover_db
 	rm -f ${PROFILER_CASES}
 	rm -f ${PROFILER_OUTS}
-	rm -fr ${PROFILER_CASES_DIR}/nytprof ${PROFILER_CASES_DIR}/nytprof.out
+	rm -fr ${PROFILER_CASES_DIR}/nytprof
+	rm -fr ${PROFILER_CASES_DIR}/nytprof.out
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${PERL_MODULE}
 	rm -f ${PERL_FORCE_FIELD_MODULE}
+	rm -f ${PM_FILE}
+	rm -f ${SHARED_OBJ}
+	rm -f ${CPP_OBJ}
+	rm -f ${WRAP_FILE}
