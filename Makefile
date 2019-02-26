@@ -1,4 +1,4 @@
-all:
+all: ${GRAMMAR_MODULES} ${PM_FILES}
 
 #
 # Grammar compilation.
@@ -29,15 +29,13 @@ ${PERL_MODULE}: ${PERL_TEMPLATE}
 # Compiling CPP and linking to Perl5 with SWIG.
 #
 
-CPP_DIR=lib
+CPP_DIR=lib/cpp
 CPP_OBJ=${SWIG_FILE:%.i=%.o}
 SWIG_FILE=${wildcard ${CPP_DIR}/*.i}
-PM_FILE=${SWIG_FILE:%.i=%.pm}
+PM_FILES=${SWIG_FILE:%.i=%.pm}
 WRAP_FILE=${SWIG_FILE:%.i=%_wrap.cxx}
 WRAP_OBJ=${WRAP_FILE:%.cxx=%.o}
 SHARED_OBJ=${CPP_OBJ:%.o=%.so}
-
-build: ${SHARED_OBJ} ${PM_FILE}
 
 %.pm %_wrap.cxx: %.i
 	swig -c++ -perl $<
