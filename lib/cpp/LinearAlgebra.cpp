@@ -1,4 +1,4 @@
-#include <LinearAlgebra.h>
+#include "LinearAlgebra.h"
 
 /* ------------------------- Numeric linear algebra -------------------------- */
 
