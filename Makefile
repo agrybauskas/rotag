@@ -1,4 +1,6 @@
-all: ${GRAMMAR_MODULES} ${PM_FILES}
+.PHONY: all
+
+all: ${GRAMMAR_MODULES} ${WRAP_FILES} ${PM_FILES}
 
 #
 # Grammar compilation.
@@ -30,14 +32,14 @@ ${PERL_MODULE}: ${PERL_TEMPLATE}
 #
 
 CPP_DIR=${LIB_DIR}/cpp
-CPP_OBJ=${SWIG_FILE:%.i=%.o}
-SWIG_FILE=${wildcard ${CPP_DIR}/*.i}
-PM_FILES=${SWIG_FILE:%.i=%.pm}
-WRAP_FILE=${SWIG_FILE:%.i=%_wrap.cxx}
-WRAP_OBJ=${WRAP_FILE:%.cxx=%.o}
-SHARED_OBJ=${CPP_OBJ:%.o=%.so}
+CPP_OBJS=${SWIG_FILES:%.i=%.o}
+SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
+PM_FILES=${SWIG_FILES:%.i=%.pm}
+WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
+WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
+SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
-%.pm %_wrap.cxx: %.i
+%.pm: %.i
 	swig -c++ -perl $<
 
 %.o: %.cpp
@@ -188,6 +190,6 @@ cleanAll distclean: clean
 	rm -f ${PERL_MODULE}
 	rm -f ${PERL_FORCE_FIELD_MODULE}
 	rm -f ${PM_FILES}
-	rm -f ${SHARED_OBJ}
-	rm -f ${CPP_OBJ}
-	rm -f ${WRAP_FILE}
+	rm -f ${SHARED_OBJS}
+	rm -f ${CPP_OBJS}
+	rm -f ${WRAP_FILES}
