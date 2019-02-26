@@ -1,4 +1,5 @@
 #include "LinearAlgebra.h"
+#include <iostream>
 
 /* ------------------------- Numeric linear algebra -------------------------- */
 
@@ -10,3 +11,8 @@
   Output:
       local_ref_frame - Cartesian coordinates of points on x, y and z axis.
 */
+
+void create_ref_frame()
+{
+    std::cout << "Haha\n" << std::endl;
+}
