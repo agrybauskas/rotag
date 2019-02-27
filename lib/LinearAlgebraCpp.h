@@ -5,6 +5,6 @@
 #include "perl.h"
 #include "XSUB.h"
 
-void create_ref_frame( SV *mid_atom_coord, SV *up_atom_coord, SV *side_atom_coord );
+void create_ref_frame( SV *mid_atom_coord_ptr, SV *up_atom_coord_ptr, SV *side_atom_coord_ptr );
 
 #endif
