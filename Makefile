@@ -41,7 +41,7 @@ ${CPP_DIR}/%.pm ${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
 	swig -c++ -perl $<
 
 ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
-	g++ -c -fPIC $< -o $@
+	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
 
 ${CPP_DIR}/%_wrap.o: ${CPP_DIR}/%_wrap.cxx
 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
