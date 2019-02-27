@@ -37,7 +37,10 @@ WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
 WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
 SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
-${CPP_DIR}/%.pm ${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
+${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
+	swig -c++ -perl $<
+
+${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
 	swig -c++ -perl $<
 
 ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
