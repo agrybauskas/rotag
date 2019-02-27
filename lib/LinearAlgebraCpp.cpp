@@ -1,4 +1,4 @@
-#include "LinearAlgebra.h"
+#include "LinearAlgebraCpp.h"
 #include <iostream>
 
 /* ------------------------- Numeric linear algebra -------------------------- */

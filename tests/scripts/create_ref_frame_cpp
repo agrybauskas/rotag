@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Constants qw( $SIG_FIGS_MIN );
-use CPP::LinearAlgebra qw( create_ref_frame );
+use LinearAlgebraCpp qw( create_ref_frame );
 
 #
 # Unit test: CPP::LinearAlgebra::create_ref_frame.
