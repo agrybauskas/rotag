@@ -5,6 +5,8 @@
 #include "perl.h"
 #include "XSUB.h"
 
-void create_ref_frame( SV *mid_atom_coord_ptr, SV *up_atom_coord_ptr, SV *side_atom_coord_ptr );
+void create_ref_frame( SV*, SV*, SV* );
+
+double calculate_vector_length( double* );
 
 #endif
