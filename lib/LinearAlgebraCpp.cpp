@@ -21,4 +21,8 @@ void create_ref_frame( SV *mid_atom_coord_ptr, SV *up_atom_coord_ptr, SV *side_a
     AV *mid_atom_coord_av = (AV*) SvRV( mid_atom_coord_ptr );
     AV *up_atom_coord_av = (AV*) SvRV( up_atom_coord_ptr );
     AV *side_atom_coord_av = (AV*) SvRV( side_atom_coord_ptr );
+
+    double mid_atom_coord[3];
+    double up_atom_coord[3];
+    double side_atom_coord[3];
 }
