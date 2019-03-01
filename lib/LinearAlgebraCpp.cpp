@@ -79,6 +79,11 @@ void create_ref_frame( SV *mid_atom_coord_ptr, SV *up_atom_coord_ptr, SV *side_a
 
     /* Converts to Perl data types. */
     AV* local_ref_frame_av = new AV();
+    for( int i = 0; i < 3; i++ ) {
+        for( int j = 0; j < 3; j++ ) {
+
+        }
+    }
 }
 
 /*
