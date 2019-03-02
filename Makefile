@@ -36,12 +36,11 @@ PM_FILES=${SWIG_FILES:%.i=%.pm}
 WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
 WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
 SHARED_OBJS=${CPP_OBJS:%.o=%.so}
+
 CPP_TEST_SRC=tests/src
 CPP_TEST_BIN=tests/bin
-CPP_TEST_FILES=${${wildcard ${CPP_TEST_SRC}/*.cpp}:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
-
-testing:
-	@echo ${CPP_TEST_FILES}
+CPP_TEST_FILES=${wildcard ${CPP_TEST_SRC}/*.cpp}
+CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
 
 ${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
 	swig -c++ -perl $<
@@ -58,6 +57,9 @@ ${CPP_DIR}/%_wrap.o: ${CPP_DIR}/%_wrap.cxx
 
 ${CPP_DIR}/%.so: ${CPP_DIR}/%_wrap.o ${CPP_DIR}/%.o
 	g++ -shared $^ -o $@
+
+${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp
+	g++ -c $^ -o $@
 
 #
 # Generate force field module.
@@ -78,7 +80,7 @@ ${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE} ${PM_FILES} | ${SHARED_OBJS}
+all: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE} ${PM_FILES} | ${SHARED_OBJS} ${CPP_TEST_BINS}
 
 #
 # Instalation of dependencies.
