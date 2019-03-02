@@ -2,9 +2,9 @@
 #include <iostream>
 #include <math.h>
 #include <string>
-#include "EXTERN.h"
-#include "perl.h"
-#include "XSUB.h"
+// #include "EXTERN.h"
+// #include "perl.h"
+// #include "XSUB.h"
 
 /* ------------------------- Numeric linear algebra -------------------------- */
 

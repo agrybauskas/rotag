@@ -30,36 +30,43 @@ ${PERL_MODULE}: ${PERL_TEMPLATE}
 #
 
 CPP_DIR=${LIB_DIR}
-CPP_OBJS=${SWIG_FILES:%.i=%.o}
-SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
-PM_FILES=${SWIG_FILES:%.i=%.pm}
-WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
-WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
-SHARED_OBJS=${CPP_OBJS:%.o=%.so}
+CPP_FILES=${wildcard ${CPP_DIR}/*.cpp}
+CPP_OBJS=${CPP_FILES:%.cpp=%.o}
+# CPP_OBJS=${SWIG_FILES:%.i=%.o}
+# SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
+# PM_FILES=${SWIG_FILES:%.i=%.pm}
+# WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
+# WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
+# SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
 CPP_TEST_SRC=tests/src
 CPP_TEST_BIN=tests/bin
 CPP_TEST_FILES=${wildcard ${CPP_TEST_SRC}/*.cpp}
 CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
 
-${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
-	swig -c++ -perl $<
-
-${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
-	swig -c++ -perl $<
+.PRECIOUS: ${CPP_OBJS}
 
 ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
-	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
+	g++ -c -fPIC $< -o $@
 
-${CPP_DIR}/%_wrap.o: ${CPP_DIR}/%_wrap.cxx
-	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
-	    -o $@
+# ${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
+# 	swig -c++ -perl $<
 
-${CPP_DIR}/%.so: ${CPP_DIR}/%_wrap.o ${CPP_DIR}/%.o
-	g++ -shared $^ -o $@
+# ${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
+# 	swig -c++ -perl $<
 
-${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp
-	g++ -c $^ -fPIC -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
+# ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
+# 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
+
+# ${CPP_DIR}/%_wrap.o: ${CPP_DIR}/%_wrap.cxx
+# 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
+# 	    -o $@
+
+# ${CPP_DIR}/%.so: ${CPP_DIR}/%_wrap.o ${CPP_DIR}/%.o
+# 	g++ -shared $^ -o $@
+
+# ${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp
+# 	g++ -c $^ -fPIC -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
 
 #
 # Generate force field module.
@@ -80,7 +87,7 @@ ${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE} ${PM_FILES} | ${SHARED_OBJS} ${CPP_TEST_BINS}
+all: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE} | ${CPP_OBJS} ${CPP_TEST_BINS}
 
 #
 # Instalation of dependencies.
@@ -198,8 +205,11 @@ cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${PERL_MODULE}
 	rm -f ${PERL_FORCE_FIELD_MODULE}
-	rm -f ${PM_FILES}
-	rm -f ${SHARED_OBJS}
 	rm -f ${CPP_OBJS}
-	rm -f ${WRAP_FILES}
 	rm -f ${CPP_TEST_BINS}
+
+# rm -f ${PM_FILES}
+# rm -f ${SHARED_OBJS}
+# rm -f ${CPP_OBJS}
+# rm -f ${WRAP_FILES}
+# rm -f ${CPP_TEST_BINS}
