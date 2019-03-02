@@ -36,6 +36,12 @@ PM_FILES=${SWIG_FILES:%.i=%.pm}
 WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
 WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
 SHARED_OBJS=${CPP_OBJS:%.o=%.so}
+CPP_TEST_SRC=tests/src
+CPP_TEST_BIN=tests/bin
+CPP_TEST_FILES=${${wildcard ${CPP_TEST_SRC}/*.cpp}:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
+
+testing:
+	@echo ${CPP_TEST_FILES}
 
 ${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
 	swig -c++ -perl $<
