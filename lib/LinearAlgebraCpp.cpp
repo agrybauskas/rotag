@@ -1,10 +1,7 @@
 #include "LinearAlgebraCpp.h"
 #include <iostream>
 #include <math.h>
-#include <string>
-// #include "EXTERN.h"
-// #include "perl.h"
-// #include "XSUB.h"
+#include <vector>
 
 /* ------------------------- Numeric linear algebra -------------------------- */
 
@@ -17,22 +14,10 @@
       local_ref_frame - Cartesian coordinates of points on x, y and z axis.
 */
 
-void create_ref_frame( // SV *mid_atom_coord_ptr, SV *up_atom_coord_ptr, SV *side_atom_coord_ptr
-                       )
+void create_ref_frame( std::vector<double> mid_atom_coord,
+                       std::vector<double> up_atom_coord,
+                       std::vector<double> side_atom_coord )
 {
-    // AV *mid_atom_coord_av = (AV*) SvRV( mid_atom_coord_ptr );
-    // AV *up_atom_coord_av = (AV*) SvRV( up_atom_coord_ptr );
-    // AV *side_atom_coord_av = (AV*) SvRV( side_atom_coord_ptr );
-
-    // double mid_atom_coord[3];
-    // double up_atom_coord[3];
-    // double side_atom_coord[3];
-    // for( int i = 0; i < 3; i++ ) {
-    //     mid_atom_coord[i] = SvIV( (SV*) *av_fetch( mid_atom_coord_av, i, 0 ) );
-    //     up_atom_coord[i] = SvIV( (SV*) *av_fetch( up_atom_coord_av, i, 0 ) );
-    //     side_atom_coord[i] = SvIV( (SV*) *av_fetch( side_atom_coord_av, i, 0 ) );
-    // }
-
     // double local_ref_frame[3][3];
 
     // /* Let local z-axis be colinear to bond between mid and up atoms. */
@@ -87,16 +72,16 @@ void create_ref_frame( // SV *mid_atom_coord_ptr, SV *up_atom_coord_ptr, SV *sid
     // }
 }
 
-/*
-  Calculates vector length.
-  Input:
-      vector - 1x3 (if 1x4, last column is ignored) matrix.
-  Output:
-      vector length.
-*/
+// /*
+//   Calculates vector length.
+//   Input:
+//       vector - 1x3 (if 1x4, last column is ignored) matrix.
+//   Output:
+//       vector length.
+// */
 
-double calculate_vector_length( double* vector_ptr )
-{
-    double vector[3] = {vector_ptr[0], vector_ptr[1], vector_ptr[2]};
-    return sqrt(pow( vector[0], 2 ) + pow( vector[1], 2 ) + pow( vector[2], 2 ));
-}
+// double calculate_vector_length( double* vector_ptr )
+// {
+//     double vector[3] = {vector_ptr[0], vector_ptr[1], vector_ptr[2]};
+//     return sqrt(pow( vector[0], 2 ) + pow( vector[1], 2 ) + pow( vector[2], 2 ));
+// }
