@@ -1,4 +1,4 @@
-#inlcude "../../lib/LinearAlgebraCpp"
+#include "../../lib/LinearAlgebraCpp.h"
 
 int main() {
     return 0;

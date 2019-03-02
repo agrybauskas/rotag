@@ -59,7 +59,7 @@ ${CPP_DIR}/%.so: ${CPP_DIR}/%_wrap.o ${CPP_DIR}/%.o
 	g++ -shared $^ -o $@
 
 ${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp
-	g++ -c $^ -o $@
+	g++ -c $^ -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
 
 #
 # Generate force field module.
