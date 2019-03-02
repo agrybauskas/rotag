@@ -5,7 +5,7 @@
 /* #include "perl.h" */
 /* #include "XSUB.h" */
 
-void create_ref_frame( SV*, SV*, SV* );
+void create_ref_frame( /* SV*, SV*, SV* */ );
 
 double calculate_vector_length( double* );
 
