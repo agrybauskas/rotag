@@ -1,4 +1,3 @@
-#       x       y       z         ( three-atom position in cartesian coordinates )
-        0.000   0.000   0.000   # ( mid_atom )
-        0.000   0.000   1.000   # ( up_atom )
-        1.000   0.000   0.000   # ( side_atom )
+0.000   0.000   0.000
+0.000   0.000   1.000
+1.000   0.000   0.000
