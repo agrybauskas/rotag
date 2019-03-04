@@ -1,6 +1,7 @@
 #include "LinearAlgebraCpp.h"
 #include <iostream>
 #include <fstream>
+#include <stdio.h>
 #include <string>
 #include <vector>
 #include <boost/algorithm/string.hpp>
@@ -34,7 +35,15 @@ int main( int argc, char* argv[] ) {
         if( i / 3 == 2 ) { side_atom_coord.push_back( coords_xyz.at( i ) ); }
     }
 
-    create_ref_frame( mid_atom_coord, up_atom_coord, side_atom_coord );
+    std::vector< std::vector<double> > reference_frame =
+        create_ref_frame( mid_atom_coord, up_atom_coord, side_atom_coord );
+
+    for( int i = 0; i < reference_frame.size(); i++ ) {
+        printf( "%.3f %.3f %.3f\n",
+                reference_frame[i][0],
+                reference_frame[i][1],
+                reference_frame[i][2] );
+    }
 
     return 0;
 }
