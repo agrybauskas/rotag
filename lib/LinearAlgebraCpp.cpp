@@ -18,34 +18,34 @@ void create_ref_frame( std::vector<double> mid_atom_coord,
                        std::vector<double> up_atom_coord,
                        std::vector<double> side_atom_coord )
 {
-    // double local_ref_frame[3][3];
+    std::vector< std::vector<double> > local_ref_frame(3, std::vector<double>(4) );
 
-    // /* Let local z-axis be colinear to bond between mid and up atoms. */
-    // local_ref_frame[2][0] = up_atom_coord[0] - mid_atom_coord[0];
-    // local_ref_frame[2][1] = up_atom_coord[1] - mid_atom_coord[1];
-    // local_ref_frame[2][2] = up_atom_coord[2] - mid_atom_coord[2];
+    /* Let local z-axis be colinear to bond between mid and up atoms. */
+    local_ref_frame[2][0] = up_atom_coord[0] - mid_atom_coord[0];
+    local_ref_frame[2][1] = up_atom_coord[1] - mid_atom_coord[1];
+    local_ref_frame[2][2] = up_atom_coord[2] - mid_atom_coord[2];
 
-    // /* Let local x-axis be perpendicular to mid-up and mid-side bonds. */
-    // local_ref_frame[0][0] =
-    //     ( side_atom_coord[1] - mid_atom_coord[1] ) * local_ref_frame[2][2] -
-    //     ( side_atom_coord[2] - mid_atom_coord[2] ) * local_ref_frame[2][1];
-    // local_ref_frame[0][1] =
-    //   - ( side_atom_coord[0] - mid_atom_coord[0] ) * local_ref_frame[2][2] +
-    //     ( side_atom_coord[2] - mid_atom_coord[2] ) * local_ref_frame[2][0];
-    // local_ref_frame[0][2] =
-    //     ( side_atom_coord[0] - mid_atom_coord[0] ) * local_ref_frame[2][1] -
-    //     ( side_atom_coord[1] - mid_atom_coord[1] ) * local_ref_frame[2][0];
+    /* Let local x-axis be perpendicular to mid-up and mid-side bonds. */
+    local_ref_frame[0][0] =
+        ( side_atom_coord[1] - mid_atom_coord[1] ) * local_ref_frame[2][2] -
+        ( side_atom_coord[2] - mid_atom_coord[2] ) * local_ref_frame[2][1];
+    local_ref_frame[0][1] =
+      - ( side_atom_coord[0] - mid_atom_coord[0] ) * local_ref_frame[2][2] +
+        ( side_atom_coord[2] - mid_atom_coord[2] ) * local_ref_frame[2][0];
+    local_ref_frame[0][2] =
+        ( side_atom_coord[0] - mid_atom_coord[0] ) * local_ref_frame[2][1] -
+        ( side_atom_coord[1] - mid_atom_coord[1] ) * local_ref_frame[2][0];
 
-    // /* Let local y-axis be in the same plane as mid-up and mid-side bonds. */
-    // local_ref_frame[1][0] =
-    //     local_ref_frame[2][1] * local_ref_frame[0][2] -
-    //     local_ref_frame[2][2] * local_ref_frame[0][1];
-    // local_ref_frame[1][1] =
-    //   - local_ref_frame[2][0] * local_ref_frame[0][2] +
-    //     local_ref_frame[2][2] * local_ref_frame[0][0];
-    // local_ref_frame[1][2] =
-    //     local_ref_frame[2][0] * local_ref_frame[0][1] -
-    //     local_ref_frame[2][1] * local_ref_frame[0][0];
+    /* Let local y-axis be in the same plane as mid-up and mid-side bonds. */
+    local_ref_frame[1][0] =
+        local_ref_frame[2][1] * local_ref_frame[0][2] -
+        local_ref_frame[2][2] * local_ref_frame[0][1];
+    local_ref_frame[1][1] =
+      - local_ref_frame[2][0] * local_ref_frame[0][2] +
+        local_ref_frame[2][2] * local_ref_frame[0][0];
+    local_ref_frame[1][2] =
+        local_ref_frame[2][0] * local_ref_frame[0][1] -
+        local_ref_frame[2][1] * local_ref_frame[0][0];
 
     // /* Normalizes all vectors to unit vectors. */
     // double vector_length = calculate_vector_length((double*) local_ref_frame[2]);
