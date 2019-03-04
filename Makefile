@@ -66,7 +66,7 @@ ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
 # 	g++ -shared $^ -o $@
 
 ${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp
-	g++ $^ -o $@
+	g++ $^ -I${LIB_DIR} -o $@
 
 #
 # Generate force field module.

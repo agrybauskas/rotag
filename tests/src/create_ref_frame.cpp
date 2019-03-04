@@ -1,4 +1,4 @@
-#include "../../lib/LinearAlgebraCpp.h"
+#include "LinearAlgebraCpp.h"
 #include <iostream>
 
 int main() {
