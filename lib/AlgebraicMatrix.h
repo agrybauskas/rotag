@@ -14,6 +14,8 @@ class AlgebraicMatrix {
  public:
   AlgebraicMatrix();
   void set_symbols( std::vector<std::string> symbols );
+  void set_is_evaluated( bool is_evaluated );
+  void set_matrix( std::vector< std::vector<double > > matrix );
 };
 
 #endif
