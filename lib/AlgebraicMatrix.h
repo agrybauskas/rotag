@@ -6,7 +6,7 @@
 
 class AlgebraicMatrix {
  private:
-  bool is_evaluated;
+  bool is_evaluated = false;
   std::vector<std::string> symbols;
   std::vector< std::vector<double> > matrix;
   std::vector< std::vector<double> > matrix_function;

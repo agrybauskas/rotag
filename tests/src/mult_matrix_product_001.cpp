@@ -18,7 +18,12 @@ int main( int argc, char* argv[] ) {
                                                  { 0, 0, 3 } };
   AlgebraicMatrix algebraic_matrix1;
   algebraic_matrix1.set_matrix( matrix1 );
-    // AlgebraicMatrix matrix2( true, std::vector<std::string> (), matrix2_func );
+  algebraic_matrix1.set_is_evaluated( true );
+
+  AlgebraicMatrix algebraic_matrix2;
+  std::vector<std::string> symbols2 = { "x", "y", "z" };
+  algebraic_matrix2.set_symbols( symbols2 );
+  // algebraic_matrix2.set_matrix_func();
 
   // std::vector<std::string> symbols2 = { "x", "y", "z" };
   // AlgebraicMatrix matrix2(
