@@ -61,6 +61,6 @@ double calc_vector_length( std::vector<double> vector );
       transposed_matrix - transposed matrix.
 */
 
-void transpose( std::vector< std::vector<double> > matrix );
+std::vector< std::vector<double> > transpose( std::vector< std::vector<double> > matrix );
 
 #endif

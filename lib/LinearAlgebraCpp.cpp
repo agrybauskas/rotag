@@ -101,7 +101,19 @@ double calc_vector_length( std::vector<double> vector )
 
 /* ------------------------ Symbolic linear algebra -------------------------- */
 
-void transpose( std::vector< std::vector<double> > matrix )
+std::vector< std::vector<double> > transpose( std::vector< std::vector<double> > matrix )
 {
+  int row_count = matrix.size();
+  int col_count = matrix[0].size();
 
+  std::vector< std::vector<double> > transposed_matrix ( row_count,
+                                                         std::vector<double> ( col_count ) );
+
+  for ( int row = 0; row < transposed_matrix.size(); row++ ) {
+    for ( int col = 0; col < transposed_matrix[row].size(); col++ ) {
+      transposed_matrix[col][row] = matrix[row][col];
+    }
+  }
+
+  return transposed_matrix;
 }
