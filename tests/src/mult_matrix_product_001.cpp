@@ -5,13 +5,13 @@
 #include <vector>
 
 int main( int argc, char* argv[] ) {
-  std::vector< std::vector<double> > tmp_matrix1 = { { 1, 0, 0 },
-                                                     { 0, 2, 0 },
-                                                     { 0, 0, 3 } };
+  // std::vector< std::vector<double> > tmp_matrix1 = { { 1, 0, 0 },
+  //                                                    { 0, 2, 0 },
+  //                                                    { 0, 0, 3 } };
 
-  AlgebraicMatrix matrix1( true, std::vector<std::string> (), tmp_matrix1 );
+  // AlgebraicMatrix matrix1( true, std::vector<std::string> (), tmp_matrix1 );
 
-  std::vector<std::string> symbols2 = { "x", "y", "z" };
+  // std::vector<std::string> symbols2 = { "x", "y", "z" };
   // AlgebraicMatrix matrix2(
   //     false,
   //     symbols2,
