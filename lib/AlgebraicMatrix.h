@@ -4,12 +4,6 @@
 #include <string>
 #include <vector>
 
-struct args {
-  bool is_evaluated;
-  std::vector<std::string> symbols;
-  std::vector< std::vector<double> > matrix;
-};
-
 class AlgebraicMatrix {
  private:
   bool is_evaluated;
@@ -17,7 +11,8 @@ class AlgebraicMatrix {
   std::vector< std::vector<double> > matrix;
 
  public:
-  AlgebraicMatrix( args arguments );
+  AlgebraicMatrix( bool is_evaluated, std::vector<std::string> symbols,
+                   std::vector< std::vector<double> > matrix );
 
   void set_symbols( std::vector<std::string> symbols );
 };

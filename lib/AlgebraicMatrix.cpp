@@ -1,10 +1,11 @@
 #include "AlgebraicMatrix.h"
 
-AlgebraicMatrix::AlgebraicMatrix( args arguments )
+AlgebraicMatrix::AlgebraicMatrix( bool is_evaluated, std::vector<std::string> symbols,
+                                  std::vector< std::vector<double> > )
 {
-  this->is_evaluated = arguments.is_evaluated;
-  this->symbols = arguments.symbols;
-  this->matrix = arguments.matrix;
+  this->is_evaluated = is_evaluated;
+  this->symbols = symbols;
+  this->matrix = matrix;
   return;
 }
 
