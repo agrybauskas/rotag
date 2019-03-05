@@ -9,13 +9,14 @@ class AlgebraicMatrix {
   bool is_evaluated = false;
   std::vector<std::string> symbols;
   std::vector< std::vector<double> > matrix;
-  std::vector< std::vector<double> > matrix_function;
+  std::vector< std::vector<double> > ( *matrix_function )( double *args[] );
 
  public:
   AlgebraicMatrix();
   void set_symbols( std::vector<std::string> symbols );
   void set_is_evaluated( bool is_evaluated );
   void set_matrix( std::vector< std::vector<double > > matrix );
+  void set_matrix_function( std::vector< std::vector<double> > ( *matrix_function )( double *args[] ) );
 };
 
 #endif
