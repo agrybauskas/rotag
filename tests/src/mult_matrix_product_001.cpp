@@ -1,6 +1,6 @@
 #include "AlgebraicMatrix.h"
 
-#include <functional>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -19,10 +19,14 @@ int main( int argc, char* argv[] ) {
   AlgebraicMatrix algebraic_matrix1;
   algebraic_matrix1.set_matrix( matrix1 );
 
+  std::cout << algebraic_matrix1.get_is_evaluated() << std::endl;
+
   AlgebraicMatrix algebraic_matrix2;
   std::vector<std::string> symbols2 = { "x", "y", "z" };
   algebraic_matrix2.set_symbols( symbols2 );
   algebraic_matrix2.set_matrix_function( matrix2_function );
+
+  std::cout << algebraic_matrix2.get_is_evaluated() << std::endl;
 
   return 0;
 }
