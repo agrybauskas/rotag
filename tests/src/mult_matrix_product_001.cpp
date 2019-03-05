@@ -18,7 +18,6 @@ int main( int argc, char* argv[] ) {
                                                  { 0, 0, 3 } };
   AlgebraicMatrix algebraic_matrix1;
   algebraic_matrix1.set_matrix( matrix1 );
-  algebraic_matrix1.set_is_evaluated( true );
 
   AlgebraicMatrix algebraic_matrix2;
   std::vector<std::string> symbols2 = { "x", "y", "z" };
