@@ -3,7 +3,6 @@
 
 #include <vector>
 
-
 /* ------------------------- Numeric linear algebra -------------------------- */
 
 /*

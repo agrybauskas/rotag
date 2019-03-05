@@ -1,11 +1,12 @@
-#include "LinearAlgebraCpp.h"
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
 #include <string>
 #include <vector>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include "LinearAlgebraCpp.h"
 
 int main( int argc, char* argv[] ) {
     std::vector<double> mid_atom_coord;
