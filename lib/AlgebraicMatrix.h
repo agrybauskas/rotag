@@ -12,11 +12,7 @@ class AlgebraicMatrix {
   std::vector< std::vector<double> > matrix_function;
 
  public:
-  AlgebraicMatrix( bool is_evaluated,
-                   std::vector<std::string> symbols,
-                   std::vector< std::vector<double> > matrix,
-                   std::vector< std::vector<double> > (*matrix_function)( double *args[] ) );
-
+  AlgebraicMatrix();
   void set_symbols( std::vector<std::string> symbols );
 };
 

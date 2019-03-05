@@ -13,11 +13,11 @@ std::vector< std::vector<double> > matrix2_func( double *args[] )
 }
 
 int main( int argc, char* argv[] ) {
-  // std::vector< std::vector<double> > tmp_matrix1 = { { 1, 0, 0 },
-  //                                                    { 0, 2, 0 },
-  //                                                    { 0, 0, 3 } };
+  std::vector< std::vector<double> > matrix1 = { { 1, 0, 0 },
+                                                 { 0, 2, 0 },
+                                                 { 0, 0, 3 } };
 
-  // AlgebraicMatrix matrix1( true, std::vector<std::string> (), tmp_matrix1 );
+  AlgebraicMatrix algebraic_matrix1;
     // AlgebraicMatrix matrix2( true, std::vector<std::string> (), matrix2_func );
 
   // std::vector<std::string> symbols2 = { "x", "y", "z" };
