@@ -98,3 +98,10 @@ double calc_vector_length( std::vector<double> vector )
 {
   return sqrt( pow( vector[0], 2 ) + pow( vector[1], 2 ) + pow( vector[2], 2 ) );
 }
+
+/* ------------------------ Symbolic linear algebra -------------------------- */
+
+void transpose( std::vector< std::vector<double> > matrix )
+{
+
+}

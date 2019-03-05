@@ -41,4 +41,26 @@ std::vector<double> find_euler_angle( std::vector<double> mid_atom_coord,
 
 double calc_vector_length( std::vector<double> vector );
 
+/* ------------------------ Symbolic linear algebra -------------------------- */
+
+/*
+  Performs basic linear algebra on symbolic expressions.
+
+  Example of rotation along z-axis by chi angle:
+
+       / cos(chi) -sin(chi) 0 \   / x \   / x * cos(chi) + y * sin(chi) \
+       | sin(chi)  cos(chi) 0 | * | y | = | x * sin(chi) + y * cos(chi) |
+       \    0         0     1 /   \ z /   \              z              /
+*/
+
+/*
+  Transposes matrix.
+  Input:
+      matrix - array representing matrix.
+  Output:
+      transposed_matrix - transposed matrix.
+*/
+
+void transpose( std::vector< std::vector<double> > matrix );
+
 #endif
