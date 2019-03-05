@@ -22,7 +22,8 @@ void AlgebraicMatrix::set_matrix( std::vector< std::vector<double > > matrix )
   return;
 }
 
-void AlgebraicMatrix::set_matrix_function( std::vector< std::vector<double> > ( *matrix_function )( double *args[] ) )
+void AlgebraicMatrix::set_matrix_function(
+    std::vector< std::vector<double> > ( *matrix_function )( double *args[] ) )
 {
   this->matrix_function = matrix_function;
   return;
