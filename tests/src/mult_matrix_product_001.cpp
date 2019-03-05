@@ -18,7 +18,7 @@ int main( int argc, char* argv[] ) {
   //                                                    { 0, 0, 3 } };
 
   // AlgebraicMatrix matrix1( true, std::vector<std::string> (), tmp_matrix1 );
-    AlgebraicMatrix matrix2( true, std::vector<std::string> (), matrix2_func );
+    // AlgebraicMatrix matrix2( true, std::vector<std::string> (), matrix2_func );
 
   // std::vector<std::string> symbols2 = { "x", "y", "z" };
   // AlgebraicMatrix matrix2(
