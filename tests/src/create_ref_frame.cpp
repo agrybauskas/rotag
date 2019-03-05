@@ -21,8 +21,8 @@ int main( int argc, char* argv[] ) {
         while( getline( fh, line ) ) {
             std::vector<std::string> line_split;
             boost::split( line_split, line, boost::is_any_of(" ")  );
-            for( int i = 0; i < line_split.size(); i++ ) {
-                if( line_split[i] != "" ) {
+            for ( int i = 0; i < line_split.size(); i++ ) {
+                if ( line_split[i] != "" ) {
                     coords_xyz.push_back( std::stod( line_split[i] ) );
                 }
             }
@@ -31,9 +31,9 @@ int main( int argc, char* argv[] ) {
     }
 
     for( int i = 0; i < coords_xyz.size(); i++ ) {
-        if( i / 3 == 0 ) { mid_atom_coord.push_back( coords_xyz.at( i ) ); }
-        if( i / 3 == 1 ) { up_atom_coord.push_back( coords_xyz.at( i ) ); }
-        if( i / 3 == 2 ) { side_atom_coord.push_back( coords_xyz.at( i ) ); }
+        if ( i / 3 == 0 ) { mid_atom_coord.push_back( coords_xyz.at( i ) ); }
+        if ( i / 3 == 1 ) { up_atom_coord.push_back( coords_xyz.at( i ) ); }
+        if ( i / 3 == 2 ) { side_atom_coord.push_back( coords_xyz.at( i ) ); }
     }
 
     std::vector< std::vector<double> > reference_frame =

@@ -60,5 +60,7 @@ std::vector< std::vector<double> > create_ref_frame( std::vector<double> mid_ato
 
 double calc_vector_length( std::vector<double> vector )
 {
-    return sqrt(pow( vector[0], 2 ) + pow( vector[1], 2 ) + pow( vector[2], 2 ));
+    return sqrt( pow( vector[0], 2 ) +
+                 pow( vector[1], 2 ) +
+                 pow( vector[2], 2 ) );
 }
