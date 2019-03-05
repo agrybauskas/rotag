@@ -2,7 +2,7 @@
 
 AlgebraicMatrix::AlgebraicMatrix( bool is_evaluated,
                                   std::vector<std::string> symbols,
-                                  std::vector<std::string> *matrix_func() )
+                                  std::vector< std::vector<double> > ( *matrix_func )( double *args[] ) )
 {
   this->is_evaluated = is_evaluated;
   this->symbols = symbols;
