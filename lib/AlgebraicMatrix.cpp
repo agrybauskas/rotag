@@ -1,6 +1,12 @@
 #include "AlgebraicMatrix.h"
 
+/* --------------------- Contructors and/or destructors ---------------------- */
+
 AlgebraicMatrix::AlgebraicMatrix(){};
+
+/* -------------------------------- Methods ---------------------------------- */
+
+
 
 /* -------------------------- Setters and Getters ---------------------------- */
 
@@ -27,4 +33,18 @@ void AlgebraicMatrix::set_matrix_function(
 {
   this->matrix_function = matrix_function;
   return;
+}
+
+std::vector<std::string> AlgebraicMatrix::get_symbols() {
+  return this->symbols;
+}
+
+bool AlgebraicMatrix::get_is_evaluated()
+{
+  return this->is_evaluated;
+}
+
+std::vector< std::vector<double > > AlgebraicMatrix::get_matrix()
+{
+  return this->matrix;
 }
