@@ -19,6 +19,7 @@ void AlgebraicMatrix::evaluate( std::map<std::string, double> symbol_values )
     }
   } catch( std::string error_message ) {
     std::cout << error_message << std::endl;
+    exit( EXIT_FAILURE );
   }
 
   /* Prepares array for passing to matrix function. */
@@ -29,6 +30,7 @@ void AlgebraicMatrix::evaluate( std::map<std::string, double> symbol_values )
   }
 
   this->matrix = this->matrix_function( args );
+  this->is_evaluated = true;
 
   return;
 }
