@@ -6,7 +6,10 @@ AlgebraicMatrix::AlgebraicMatrix(){};
 
 /* -------------------------------- Methods ---------------------------------- */
 
+void AlgebraicMatrix::evaluate( std::map<std::string, double> )
+{
 
+}
 
 /* -------------------------- Setters and Getters ---------------------------- */
 

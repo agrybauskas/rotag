@@ -6,10 +6,13 @@
 
 std::vector< std::vector<double> > matrix2_function( double *args[] )
 {
-    std::vector< std::vector<double> > tmp_matrix2 = { { 1, 0, 0 },
-                                                       { 0, 2, 0 },
-                                                       { 0, 0, 3 } };
-    return tmp_matrix2;
+  double x = *args[0];
+  double y = *args[1];
+  double z = *args[2];
+  std::vector< std::vector<double> > tmp_matrix2 = { { x, 0, 0 },
+                                                     { 0, y, 0 },
+                                                     { 0, 0, z } };
+  return tmp_matrix2;
 }
 
 int main( int argc, char* argv[] ) {
