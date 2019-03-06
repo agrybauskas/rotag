@@ -1,9 +1,10 @@
-#include "AlgebraicMatrix.h"
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <map>
+
+#include "AlgebraicMatrix.h"
+#include "LinearAlgebraCpp.h"
 
 std::vector< std::vector<double> > matrix2_function( double args[] )
 {
@@ -33,6 +34,8 @@ int main( int argc, char* argv[] ) {
                                                   { "z", 2 } };
 
   algebraic_matrix2.evaluate( symbol_values );
+
+  matrix_product( algebraic_matrix1, algebraic_matrix2, symbol_values );
 
   return 0;
 }

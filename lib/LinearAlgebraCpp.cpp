@@ -73,7 +73,7 @@ std::vector<double> find_euler_angle( std::vector<double> mid_atom_coord,
      sqrt( local_ref_frame[2][0] * local_ref_frame[2][0] +
            local_ref_frame[2][1] * local_ref_frame[2][1] );
 
-  if( z_axis_in_xy_plane > std::numeric_limits<double>::epsilon() ) {
+  if ( z_axis_in_xy_plane > std::numeric_limits<double>::epsilon() ) {
     alpha_rad =
       atan2( local_ref_frame[1][0] * local_ref_frame[2][1] -
              local_ref_frame[1][1] * local_ref_frame[2][0],
@@ -114,7 +114,23 @@ std::vector< std::vector<double> > transpose( std::vector< std::vector<double> >
   return transposed_matrix;
 }
 
-void matrix_product( AlgebraicMatrix left_matrix, AlgebraicMatrix right_matrix, std::map<std::string, double> )
+void matrix_product( AlgebraicMatrix left_matrix,
+                     AlgebraicMatrix right_matrix,
+                     std::map<std::string, double> symbol_values )
 {
+  /* First, evaluates all matrices if they are not evaluated. */
+  if ( left_matrix.get_is_evaluated() != 1 ) {
+    left_matrix.evaluate( symbol_values );
+  }
+  if ( right_matrix.get_is_evaluated() != 1 ) {
+    right_matrix.evaluate( symbol_values );
+  }
 
+  /* Notifies error, when the column number of left matrix does not equal the
+     row number of the right matrix. */
+  if ( left_matrix.get_matrix()[0].size() != right_matrix.get_matrix().size() ) {
+    std::cout << "A row number of a left matrix is NOT equal to the column\nnumber of the right matrix."
+              << std::endl;
+    exit( EXIT_FAILURE );
+  }
 }

@@ -76,6 +76,8 @@ std::vector< std::vector<double> > transpose( std::vector< std::vector<double> >
       matrix_product - matrix product.
 */
 
-void matrix_product( AlgebraicMatrix left_matrix, AlgebraicMatrix right_matrix, std::map<std::string, double> );
+void matrix_product( AlgebraicMatrix left_matrix,
+                     AlgebraicMatrix right_matrix,
+                     std::map<std::string, double> symbol_values );
 
 #endif
