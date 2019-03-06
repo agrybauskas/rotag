@@ -9,6 +9,8 @@ AlgebraicMatrix::AlgebraicMatrix(){};
 void AlgebraicMatrix::evaluate( std::map<std::string, double> symbol_values )
 {
   std::vector<std::string> symbols = this->symbols;
+
+  /* Checks if all symbol values are present. */
   try {
     for( std::string symbol : symbols ) {
       if( symbol_values.count( symbol ) == 0 ) {
@@ -18,6 +20,17 @@ void AlgebraicMatrix::evaluate( std::map<std::string, double> symbol_values )
   } catch( std::string error_message ) {
     std::cout << error_message << std::endl;
   }
+
+  /* Prepares array for passing to matrix function. */
+  int symbols_size = symbols.size();
+  double args[symbols_size];
+  for( int i = 0; i < symbols_size; i++ ) {
+    args[i] = symbol_values[symbols[i]];
+  }
+
+  // this->matrix = this->matrix_function(  );
+
+  return;
 }
 
 /* -------------------------- Setters and Getters ---------------------------- */
