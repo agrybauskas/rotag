@@ -114,9 +114,9 @@ std::vector< std::vector<double> > transpose( std::vector< std::vector<double> >
   return transposed_matrix;
 }
 
-void matrix_product( AlgebraicMatrix left_matrix,
-                     AlgebraicMatrix right_matrix,
-                     std::map<std::string, double> symbol_values )
+AlgebraicMatrix matrix_product( AlgebraicMatrix left_matrix,
+                                AlgebraicMatrix right_matrix,
+                                std::map<std::string, double> symbol_values )
 {
   /* First, evaluates all matrices if they are not evaluated. */
   if ( left_matrix.get_is_evaluated() != 1 ) {
@@ -138,17 +138,21 @@ void matrix_product( AlgebraicMatrix left_matrix,
     exit( EXIT_FAILURE );
   }
 
-  std::vector< std::vector<double> > matrix_product;
+  std::vector< std::vector<double> > local_matrix_product(
+      local_left_matrix.size(), std::vector<double>( local_right_matrix[0].size() ) );
+
   for ( int left_row = 0; left_row < local_left_matrix.size(); left_row++  ) {
     for ( int right_col = 0; right_col < local_right_matrix[0].size(); right_col++ ) {
       for ( int right_row = 0; right_row < local_right_matrix.size(); right_row++ ) {
-        // matrix_product[left_row][right_col] =
-        //   left_matrix[left_row][right_row] *
-        //   right_matrix[right_row][right_col];
-        // matrix_product[left_row][right_col] +=
-        //   local_left_matrix[left_row][right_row] *
-        //   local_right_matrix[right_row][right_col];
+        local_matrix_product[left_row][right_col] +=
+          local_left_matrix[left_row][right_row] *
+          local_right_matrix[right_row][right_col];
       }
     }
   }
+
+  AlgebraicMatrix matrix_product_obj;
+  matrix_product_obj.set_matrix( local_matrix_product );
+
+  return matrix_product_obj;
 }
