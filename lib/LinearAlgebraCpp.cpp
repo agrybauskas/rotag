@@ -126,11 +126,29 @@ void matrix_product( AlgebraicMatrix left_matrix,
     right_matrix.evaluate( symbol_values );
   }
 
+  std::vector< std::vector<double> > local_left_matrix = left_matrix.get_matrix();
+  std::vector< std::vector<double> > local_right_matrix = right_matrix.get_matrix();
+
   /* Notifies error, when the column number of left matrix does not equal the
      row number of the right matrix. */
-  if ( left_matrix.get_matrix()[0].size() != right_matrix.get_matrix().size() ) {
-    std::cout << "A row number of a left matrix is NOT equal to the column\nnumber of the right matrix."
+  if ( local_left_matrix[0].size() != local_right_matrix.size() ) {
+    std::cout << "A row number of a left matrix is NOT equal to the column\n"
+              << "number of the right matrix."
               << std::endl;
     exit( EXIT_FAILURE );
+  }
+
+  std::vector< std::vector<double> > matrix_product;
+  for ( int left_row = 0; left_row < local_left_matrix.size(); left_row++  ) {
+    for ( int right_col = 0; right_col < local_right_matrix[0].size(); right_col++ ) {
+      for ( int right_row = 0; right_row < local_right_matrix.size(); right_row++ ) {
+        // matrix_product[left_row][right_col] =
+        //   left_matrix[left_row][right_row] *
+        //   right_matrix[right_row][right_col];
+        // matrix_product[left_row][right_col] +=
+        //   local_left_matrix[left_row][right_row] *
+        //   local_right_matrix[right_row][right_col];
+      }
+    }
   }
 }
