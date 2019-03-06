@@ -41,20 +41,13 @@ std::vector< std::vector<double> > create_ref_frame( std::vector<double> mid_ato
     local_ref_frame[2][1] * local_ref_frame[0][0];
 
   /* Normalizes all vectors to unit vectors. */
-  double vector_length = calc_vector_length( local_ref_frame[2] );
-  local_ref_frame[2][0] = local_ref_frame[2][0] / vector_length;
-  local_ref_frame[2][1] = local_ref_frame[2][1] / vector_length;
-  local_ref_frame[2][2] = local_ref_frame[2][2] / vector_length;
-
-  vector_length = calc_vector_length( local_ref_frame[0] );
-  local_ref_frame[0][0] = local_ref_frame[0][0] / vector_length;
-  local_ref_frame[0][1] = local_ref_frame[0][1] / vector_length;
-  local_ref_frame[0][2] = local_ref_frame[0][2] / vector_length;
-
-  vector_length = calc_vector_length( local_ref_frame[1] );
-  local_ref_frame[1][0] = local_ref_frame[1][0] / vector_length;
-  local_ref_frame[1][1] = local_ref_frame[1][1] / vector_length;
-  local_ref_frame[1][2] = local_ref_frame[1][2] / vector_length;
+  double vector_length;
+  for ( int i = 0; i < 3; i++ ) {
+    vector_length = calc_vector_length( local_ref_frame[i] );
+    for ( int j = 0; j < 3; j++ ) {
+      local_ref_frame[i][j] = local_ref_frame[i][j] / vector_length;
+    }
+  }
 
   return local_ref_frame;
 }
