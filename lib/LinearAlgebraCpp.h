@@ -1,7 +1,11 @@
 #ifndef _LINEARALGEBRACPP_H_
 #define _LINEARALGEBRACPP_H_
 
+#include <map>
+#include <string>
 #include <vector>
+
+#include "AlgebraicMatrix.h"
 
 /* ------------------------- Numeric linear algebra -------------------------- */
 
@@ -62,5 +66,16 @@ double calc_vector_length( std::vector<double> vector );
 */
 
 std::vector< std::vector<double> > transpose( std::vector< std::vector<double> > matrix );
+
+/*
+  Calculates matrix product of two matrices.
+  Input:
+      {left, right}_matrix - matrices.
+      symbol_values - values of the unknown variable(-s).
+  Output:
+      matrix_product - matrix product.
+*/
+
+void matrix_product( AlgebraicMatrix left_matrix, AlgebraicMatrix right_matrix, std::map<std::string, double> );
 
 #endif

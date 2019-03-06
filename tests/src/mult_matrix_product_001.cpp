@@ -34,12 +34,5 @@ int main( int argc, char* argv[] ) {
 
   algebraic_matrix2.evaluate( symbol_values );
 
-  for( int i = 0; i < algebraic_matrix2.get_matrix().size(); i++ ) {
-    for( int j = 0; j < algebraic_matrix2.get_matrix()[i].size(); j++ ) {
-      printf( "%.3f ", algebraic_matrix2.get_matrix()[i][j] );
-    }
-    std::cout << std::endl;
-  }
-
   return 0;
 }

@@ -1,9 +1,12 @@
 #include "LinearAlgebraCpp.h"
 
+#include <map>
 #include <iostream>
 #include <limits>
 #include <math.h>
 #include <vector>
+
+#include "AlgebraicMatrix.h"
 
 /* ------------------------- Numeric linear algebra -------------------------- */
 
@@ -109,4 +112,9 @@ std::vector< std::vector<double> > transpose( std::vector< std::vector<double> >
   }
 
   return transposed_matrix;
+}
+
+void matrix_product( AlgebraicMatrix left_matrix, AlgebraicMatrix right_matrix, std::map<std::string, double> )
+{
+
 }
