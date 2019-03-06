@@ -5,11 +5,11 @@
 #include <vector>
 #include <map>
 
-std::vector< std::vector<double> > matrix2_function( double *args[] )
+std::vector< std::vector<double> > matrix2_function( double args[] )
 {
-  double x = *args[0];
-  double y = *args[1];
-  double z = *args[2];
+  double x = args[0];
+  double y = args[1];
+  double z = args[2];
   std::vector< std::vector<double> > tmp_matrix2 = { { x },
                                                      { y },
                                                      { z } };
@@ -33,6 +33,13 @@ int main( int argc, char* argv[] ) {
                                                   { "z", 2 } };
 
   algebraic_matrix2.evaluate( symbol_values );
+
+  for( int i = 0; i < algebraic_matrix2.get_matrix().size(); i++ ) {
+    for( int j = 0; j < algebraic_matrix2.get_matrix()[i].size(); j++ ) {
+      printf( "%.3f ", algebraic_matrix2.get_matrix()[i][j] );
+    }
+    std::cout << std::endl;
+  }
 
   return 0;
 }

@@ -28,7 +28,7 @@ void AlgebraicMatrix::evaluate( std::map<std::string, double> symbol_values )
     args[i] = symbol_values[symbols[i]];
   }
 
-  // this->matrix = this->matrix_function(  );
+  this->matrix = this->matrix_function( args );
 
   return;
 }
@@ -49,7 +49,7 @@ void AlgebraicMatrix::set_matrix( std::vector< std::vector<double > > matrix )
 }
 
 void AlgebraicMatrix::set_matrix_function(
-    std::vector< std::vector<double> > ( *matrix_function )( double *args[] ) )
+    std::vector< std::vector<double> > ( *matrix_function )( double args[] ) )
 {
   this->matrix_function = matrix_function;
   return;
