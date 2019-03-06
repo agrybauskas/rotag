@@ -1,6 +1,7 @@
 #ifndef _ALGEBRAICMATRIX_H_
 #define _ALGEBRAICMATRIX_H_
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
@@ -19,7 +20,7 @@ class AlgebraicMatrix {
   void set_matrix( std::vector< std::vector<double > > matrix );
   void set_matrix_function( std::vector< std::vector<double> > ( *matrix_function )( double *args[] ) );
 
-  void evaluate( std::map<std::string, double> );
+  void evaluate( std::map<std::string, double> symbol_values );
   std::vector<std::string> get_symbols();
   bool get_is_evaluated();
   std::vector< std::vector<double > > get_matrix();

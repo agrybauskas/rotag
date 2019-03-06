@@ -6,9 +6,18 @@ AlgebraicMatrix::AlgebraicMatrix(){};
 
 /* -------------------------------- Methods ---------------------------------- */
 
-void AlgebraicMatrix::evaluate( std::map<std::string, double> )
+void AlgebraicMatrix::evaluate( std::map<std::string, double> symbol_values )
 {
-
+  std::vector<std::string> symbols = this->symbols;
+  try {
+    for( std::string symbol : symbols ) {
+      if( symbol_values.count( symbol ) == 0 ) {
+        throw "'" + symbol + "'" + " value is not passed";
+      }
+    }
+  } catch( std::string error_message ) {
+    std::cout << error_message << std::endl;
+  }
 }
 
 /* -------------------------- Setters and Getters ---------------------------- */
