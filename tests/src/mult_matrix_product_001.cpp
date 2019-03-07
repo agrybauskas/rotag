@@ -33,18 +33,11 @@ int main( int argc, char* argv[] ) {
                                                   { "y", 3 },
                                                   { "z", 2 } };
 
-  algebraic_matrix2.evaluate( symbol_values );
+  std::vector<AlgebraicMatrix> matrices;
+  matrices.push_back( algebraic_matrix1 );
+  matrices.push_back( algebraic_matrix2 );
 
-  AlgebraicMatrix matrix_product_obj = matrix_product( algebraic_matrix1,
-                                                       algebraic_matrix2,
-                                                       symbol_values );
-
-  for( int i = 0; i < matrix_product_obj.get_matrix().size(); i++ ) {
-    for( int j = 0; j < matrix_product_obj.get_matrix()[i].size(); j++ ) {
-      printf( "%.3f ", matrix_product_obj.get_matrix()[i][j] );
-    }
-    std::cout << std::endl;
-  }
+  mult_matrix_product( matrices, symbol_values );
 
   return 0;
 }

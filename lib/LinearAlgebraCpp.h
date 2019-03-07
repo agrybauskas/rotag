@@ -80,4 +80,16 @@ AlgebraicMatrix matrix_product( AlgebraicMatrix left_matrix,
                                 AlgebraicMatrix right_matrix,
                                 std::map<std::string, double> symbol_values );
 
+/*
+  Calculates matrix product of list of any size of matrices.
+  Input:
+      matrices - list of matrices.
+      symbol_values - values of the unknown variable(-s).
+  Output:
+      mult_matrix_product - matrix product.
+*/
+
+void mult_matrix_product( std::vector<AlgebraicMatrix>,
+                          std::map<std::string, double> symbol_values );
+
 #endif

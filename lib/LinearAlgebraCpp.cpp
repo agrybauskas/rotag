@@ -156,3 +156,9 @@ AlgebraicMatrix matrix_product( AlgebraicMatrix left_matrix,
 
   return matrix_product_obj;
 }
+
+void mult_matrix_product( std::vector<AlgebraicMatrix>,
+                          std::map<std::string, double> symbol_values )
+{
+
+}
