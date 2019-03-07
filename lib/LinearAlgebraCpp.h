@@ -89,7 +89,7 @@ AlgebraicMatrix matrix_product( AlgebraicMatrix left_matrix,
       mult_matrix_product - matrix product.
 */
 
-void mult_matrix_product( std::vector<AlgebraicMatrix>,
+void mult_matrix_product( std::vector<AlgebraicMatrix> matrices,
                           std::map<std::string, double> symbol_values );
 
 #endif

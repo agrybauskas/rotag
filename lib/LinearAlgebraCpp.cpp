@@ -157,8 +157,18 @@ AlgebraicMatrix matrix_product( AlgebraicMatrix left_matrix,
   return matrix_product_obj;
 }
 
-void mult_matrix_product( std::vector<AlgebraicMatrix>,
+void mult_matrix_product( std::vector<AlgebraicMatrix> matrices,
                           std::map<std::string, double> symbol_values )
 {
+  std::vector<AlgebraicMatrix> mult_matrix_product;
 
+  if ( matrices.size() == 1 ) {
+    AlgebraicMatrix matrix = matrices[0];
+    if ( ! matrix.get_is_evaluated() ) {
+      matrix.evaluate( symbol_values );
+    }
+    mult_matrix_product.push_back(matrix);
+  } else {
+
+  }
 }
