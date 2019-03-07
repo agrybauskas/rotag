@@ -532,7 +532,7 @@ sub calc_favourable_angles
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
 
     my $rotatable_bonds = rotatable_bonds( $residue_site );
-    if( ! %{ $rotatable_bonds } ) { next; }
+    if( ! %{ $rotatable_bonds } ) { return []; }
 
     # Goes through each atom in side chain and calculates interaction
     # potential with surrounding atoms. CA and CB are non-movable atoms
@@ -557,19 +557,17 @@ sub calc_favourable_angles
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
             my @default_allowed_angles;
+            # TODO: last angle should be sorted with <=> by first removing chi
+            # prefix. It will be important if large quantity of dihedral angles
+            # are analyzed.
             my ( $last_angle_name ) =
                 sort { $b cmp $a } keys %{ $rotatable_bonds->{$atom_id} };
 
-            if( defined $angles  && exists $angles->{$last_angle_name} &&
-                defined $angles->{$last_angle_name} ) {
+            if( exists $angles->{$last_angle_name} ) {
                 @default_allowed_angles =
-                    map { [ $_ ] }
-                       @{ $angles->{$last_angle_name} };
-            } elsif( defined $angles  && exists $angles->{'*'} &&
-                     defined $angles->{'*'}  ) {
-                @default_allowed_angles =
-                    map { [ $_ ] }
-                       @{ $angles->{'*'} };
+                    map { [ $_ ] } @{ $angles->{$last_angle_name} };
+            } elsif( exists $angles->{'*'} ) {
+                @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
             } else {
                 @default_allowed_angles =
                     map { [ $_ ] }
@@ -603,8 +601,7 @@ sub calc_favourable_angles
             push @visited_atom_ids, $atom_id;
 
             # Marks neighbouring atoms.
-            push @neighbour_atom_ids,
-                 @{ $atom_site->{$atom_id}{'connections'} };
+            push @neighbour_atom_ids, @{ $atom_site->{$atom_id}{'connections'} };
 
             # Starts calculating potential energy.
             my ( $next_allowed_angles, $next_allowed_energies ) =
