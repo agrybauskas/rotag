@@ -181,8 +181,6 @@ std::vector<AlgebraicMatrix> mult_matrix_product(
           matrix_product( matrices[i-1], mult_matrix_product[0], symbol_values );
 
         std::swap( mult_matrix_product[0], local_matrix_product );
-
-        mult_matrix_product.erase( mult_matrix_product.begin() + 1 );
       }
     }
   }
