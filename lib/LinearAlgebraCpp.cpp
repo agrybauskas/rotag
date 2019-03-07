@@ -1,5 +1,6 @@
 #include "LinearAlgebraCpp.h"
 
+#include <algorithm>
 #include <map>
 #include <iostream>
 #include <limits>
@@ -157,8 +158,8 @@ AlgebraicMatrix matrix_product( AlgebraicMatrix left_matrix,
   return matrix_product_obj;
 }
 
-void mult_matrix_product( std::vector<AlgebraicMatrix> matrices,
-                          std::map<std::string, double> symbol_values )
+std::vector<AlgebraicMatrix> mult_matrix_product(
+  std::vector<AlgebraicMatrix> matrices, std::map<std::string, double> symbol_values )
 {
   std::vector<AlgebraicMatrix> mult_matrix_product;
 
@@ -167,8 +168,24 @@ void mult_matrix_product( std::vector<AlgebraicMatrix> matrices,
     if ( ! matrix.get_is_evaluated() ) {
       matrix.evaluate( symbol_values );
     }
+
     mult_matrix_product.push_back(matrix);
   } else {
+    for ( int i = matrices.size() - 1; i >= 1; i-- ) {
+      if ( i == matrices.size() - 1 ) {
+        mult_matrix_product.push_back( matrix_product( matrices[i-1],
+                                                       matrices[i],
+                                                       symbol_values ) );
+      } else {
+        AlgebraicMatrix local_matrix_product =
+          matrix_product( matrices[i-1], mult_matrix_product[0], symbol_values );
 
+        std::swap( mult_matrix_product[0], local_matrix_product );
+
+        mult_matrix_product.erase( mult_matrix_product.begin() + 1 );
+      }
+    }
   }
+
+  return mult_matrix_product;
 }

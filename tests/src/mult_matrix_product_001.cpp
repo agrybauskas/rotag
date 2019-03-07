@@ -37,7 +37,15 @@ int main( int argc, char* argv[] ) {
   matrices.push_back( algebraic_matrix1 );
   matrices.push_back( algebraic_matrix2 );
 
-  mult_matrix_product( matrices, symbol_values );
+  std::vector<std::vector<double>> matrix_product_result =
+    mult_matrix_product( matrices, symbol_values )[0].get_matrix();
+
+  for( int i = 0; i < matrix_product_result.size(); i++ ) {
+    for( int j = 0; j < matrix_product_result[i].size(); j++ ) {
+      printf( "%.3f ", matrix_product_result[i][j] );
+    }
+    std::cout << std::endl;
+  }
 
   return 0;
 }
