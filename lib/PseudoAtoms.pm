@@ -467,7 +467,7 @@ sub generate_library
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                     my %angles =
                         map { my $angle_id = $_ + 1;
-                              ( "chi$angle_id" => $allowed_angles->[$i][$_])}
+                              ( "chi$angle_id" => $allowed_angles->[$i][$_] ) }
                             ( 0..$#{ $allowed_angles->[$i] } );
                     my $rotamer_energy_sum = $energy_sums->[$i];
                     if( defined $rotamer_energy_sum ) {
@@ -695,7 +695,7 @@ sub calc_favourable_angle
         my $energies = $array_blocks->[1][$i][0];
         my %angles =
             map { my $angle_id = $_ + 1; ( "chi$angle_id" => [ $angles->[$_] ] )}
-                0..$#{ $angles };
+                ( 0..$#{ $angles } );
 
         my $pseudo_atom_site =
             generate_pseudo( { 'atom_site' => $atom_site,
@@ -779,14 +779,8 @@ sub calc_full_atom_energy
         $args->{'parameters'},
     );
 
-    my ( $residue_id, $residue_chain, $pdbx_model_num,
-         $residue_alt ) = split /,/sxm, $residue_unique_key;
     my $residue_site =
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_seq_id' => [ $residue_id ],
-                                 'label_asym_id' => [ $residue_chain ],
-                                 'label_alt_id' => [ $residue_alt, q{.} ],
-                                 'pdbx_PDB_model_num' => [ $pdbx_model_num ] }});
+        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
 
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
