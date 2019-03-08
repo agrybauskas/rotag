@@ -229,7 +229,7 @@ sub generate_rotamer
     my %rotamer_atom_site;
 
     for my $residue_unique_key ( keys %{ $angle_values } ) {
-        my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt_id ) =
+        my ( undef, undef, undef, $residue_alt_id ) =
             split /,/, $residue_unique_key;
         $residue_alt_id =
             $keep_origin_alt_id ? $residue_alt_id : $alt_group_id;
