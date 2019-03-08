@@ -4,12 +4,13 @@ use strict;
 use warnings;
 
 use autodie;
-use ErrorHandling qw( parse_errors );
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
-Getopt::Long::Configure qw( gnu_getopt );
+use Try::Tiny;
 
 use Constants qw( $PI );
+use Logging qw( error
+                warning );
 use Moieties qw( replace_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
@@ -19,35 +20,30 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-#*rotag_mutate [options] --mutate <moiety> <file>...
+Getopt::Long::Configure qw( gnu_getopt );
+
+#*rotag_mutate [options] -m <str> <file>...
 #*    replace side-chain with specified moiety. Groups are needed to be specified
 #*    with rotag_select.
 #*
 #*Usage:
 #*    rotag_mutate -m 'ARG' input.cif > output.cif
-#*    rotag_mutate -m 'ALA; Lys' input.cif > output.cif
-#*    rotag_mutate -m 'ASP' -a 'chi1=120, chi2=60' input.cif > output.cif
-#*    rotag_mutate -m 'ASP' -a 'chi1=0.12, chi2=3.10' -r input.cif > output.cif
-#*    rotag_mutate -m 'ALA; SER' -a '_; chi1=134.0' input.cif > output.cif
+#*    rotag_mutate -m '1:ALA; 2:Lys' input.cif > output.cif
+#*    rotag_mutate -m '1:ASP, chi1=120, chi2=60' input.cif > output.cif
+#*    rotag_mutate -m '3:ALA; 5:SER, chi1=134.0' input.cif > output.cif
 #*    rotag_mutate -m 'SEC' -M moiety.cif input.cif > output.cif
 #*
 #*Options:
 #*    -m, --mutate <str>         replaces selected side-chain with specified
 #*                               moiety.
 #*
-#*                               E.g.: 'VAL', 'VAL; SER'.
+#*                               E.g.: 'VAL', '2:VAL; 3:SER', 'SER, chi1=0.0',
+#*                               '1:ASP, chi1=0.0, chi2=150.0; 2:SER'.
 #*
 #*    -M, --import-moiety <file> use defined PDBx file where moiety atom site
 #*                               details are described.
 #*
-#*    -a, --angles <str>         replaces selected side-chain by rotating
-#*                               selected moiety at certain angle.
-#*
-#*                               E.g.: 'chi1=120, chi2=60' or 'chi1=60; chi1=70'.
-#*
 #*    -r, --radians              radians are used in --angles argument.
-#*
-#*    -R, --repeat               repeats pattern of selected mutations.
 #*
 #*    -v, --version              print version.
 
@@ -55,16 +51,12 @@ our $VERSION = $VERSION;
 
 my $mutations = '';
 my $moiety_file='';
-my $angles = '';
-my $in_degrees = 1;
-my $do_repeat = 0;
+my $in_radians = 0;
 
 GetOptions(
     'mutate|m=s' => \$mutations,
     'import-moiety|M=s' => \$moiety_file,
-    'angles|a=s' => \$angles,
-    'radians|r=s' => sub { $in_degrees = 0; },
-    'repeat|R' => sub { $do_repeat = 1; },
+    'radians|r=s' => sub { $in_radians = 1; },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -77,48 +69,73 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'Error in command line argument.';
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 my @mutations;
-my @angles;
 $mutations =~ s/\s//smxg;
-$angles =~ s/\s//smxg;
 @mutations = split q{;}, $mutations;
-@angles = split q{;}, $angles;
+
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
 
 for( my $i = 0; $i <= $#mutations; $i++ ) {
-    my $mutation_amino_acid = $mutations[$i];
-    if( @angles ) {
-        my $angles;
-        if( $in_degrees ) {
-            $angles = { map { ( $_->[0], $_->[1] * $PI / 180.0 ) }
-                        map { [ split /=/ ] }
-                        split /,/, $angles[$i] };
-        } else {
-            $angles = { map { ( $_->[0], $_->[1] ) }
-                        map { [ split /=/ ] }
-                        split /,/, $angles[$i] };
-        }
+    my $statement = $mutations[$i];
 
-        $mutations[$i] = { 'amino_acid' => $mutation_amino_acid,
-                           'angles'     => $angles };
-    } else {
-        $mutations[$i] = { 'amino_acid' => $mutation_amino_acid,
-                           'angles'     => {} };
+    my $group_id;
+    if( $statement =~ s/^(\w+)\:// ) {
+        $group_id = $1;
     }
+
+    my $moiety;
+    my %angles = ();
+    foreach( split /,/, $statement ) {
+        if( $_ =~ m/^\w+=[-]?[0-9]+\.?[0-9]?$/ ) {
+            if( $in_radians ) {
+                my ( $angle_name, $angle_value ) = split /=/, $_;
+                $angles{$angle_name} = $angle_value;
+            } else {
+                my ( $angle_name, $angle_value ) = split /=/, $_;
+                $angles{$angle_name} = $angle_value * $PI / 180.0;
+            }
+        } elsif( $_ =~ m/^\w+$/ ) {
+            if( defined $moiety ) {
+                error({'message' =>
+                           "cannot mutate into multiple moieties: $moiety, $_"});
+            }
+
+            $moiety = $_;
+        }
+    }
+
+    $mutations[$i] = {
+        'group_id' => $group_id,
+        'moiety' => $moiety,
+        'angles' => \%angles,
+    };
 }
 
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_mutate --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     my %append_moieties = ();
@@ -140,12 +157,11 @@ for my $pdbx_file ( @ARGV ) {
                            'is_list' => 1 } ) } );
 
     if( ! @group_ids ) {
-        parse_errors( { 'program' => $0,
-                        'filename' => $pdbx_file,
-                        'type' => 'ERROR',
-                        'message' =>
-                            "No residues were selected. Use " .
-                            "rotag_select script to select residue(-s).\n" } );
+        error( { 'program' => $0,
+                 'filename' => $pdbx_file,
+                 'message' =>
+                     "no residues were selected. Use " .
+                     "rotag_select script to select residue(-s).\n" } );
     }
 
     if( @mutations ) {
@@ -154,7 +170,8 @@ for my $pdbx_file ( @ARGV ) {
                 filter( { 'atom_site' => $selected_atom_site,
                           'include' =>
                               { 'label_atom_id' => [ 'CA' ],
-                                '[local]_selection_group' => [ $group_ids[$i] ]},
+                                '[local]_selection_group' =>
+                                    [ $mutations[$i]{'group_id'} ] },
                           'data' => [ 'id' ],
                           'is_list' => 1 } )->[0];
             my $unique_residue_key =
@@ -162,18 +179,25 @@ for my $pdbx_file ( @ARGV ) {
 
             replace_with_moiety( $selected_atom_site,
                                  $unique_residue_key,
-                                 $mutations[$i]->{'amino_acid'},
-                                 { 'angles' => $mutations[$i]->{'angles'},
+                                 $mutations[$i]{'moiety'},
+                                 { 'angles' => $mutations[$i]{'angles'},
                                    'append_moieties' => \%append_moieties } );
 
             to_pdbx( { 'atom_site' => $selected_atom_site } );
         }
     } else {
-        parse_errors( { 'program' => $0,
-                        'filename' => $pdbx_file,
-                        'type' => 'ERROR',
-                        'message' => "No mutations were specified. Use -m " .
-                                     "option to achieve that.\n" } );
-
+        error( { 'program' => $0,
+                 'filename' => $pdbx_file,
+                 'message' => "no mutations were specified. Use -m " .
+                              "option to achieve that.\n" } );
     }
 }
+
+} catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
+};

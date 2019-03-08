@@ -6,13 +6,15 @@ use warnings;
 use autodie;
 use File::Basename;
 use Getopt::Long;
-Getopt::Long::Configure qw( gnu_getopt );
 use List::MoreUtils qw( uniq );
+use Try::Tiny;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use Constants qw( $PI
                   $SIG_FIGS_MAX );
+use Logging qw( error
+                warning );
 use Measure qw( all_dihedral
                 dihedral_angle );
 use PDBxParser qw( filter
@@ -23,6 +25,8 @@ use PDBxParser qw( filter
                    to_pdbx );
 use Version qw( $VERSION );
 
+Getopt::Long::Configure qw( gnu_getopt );
+
 our $VERSION = $VERSION;
 
 #*rotag_dihedral [options] <file>...
@@ -32,11 +36,9 @@ our $VERSION = $VERSION;
 #*    rotag_dihedral input.cif > output.cif
 #*
 #*Options:
-#*    -a, --atoms           calculates dihedral angle from the four coordinates
-#*                          of the selected atoms (rotag_select should be used
-#*                          for residue selection).
+#*    -S, --side-chains     calculates chi angles of the side-chain atoms.
 #*
-#*    -m, --mainchain       calculates phi and psi angles.
+#*    -M, --main-chains     calculates phi and psi angles of the main-chain atoms.
 #*
 #*    -r, --radians         angles are in radians.
 #*
@@ -46,15 +48,25 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Options ----------------------------------- #
 
-my $calc_atom_angles = 0;
+my $calc_sidechain = 0;
 my $calc_mainchain = 0;
-my $in_degrees = 1;
+my $in_radians = 0;
 my $output_format = 'pdbx';
 
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
+
 GetOptions(
-    'atoms|a' => sub { $calc_atom_angles = 1 },
-    'mainchain|m' => sub { $calc_mainchain = 1 },
-    'radians|r' => sub { $in_degrees = 0 },
+    'side-chains|S' => sub { $calc_sidechain = 1 },
+    'main-chains|M' => sub { $calc_mainchain = 1 },
+    'radians|r' => sub { $in_radians = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -68,71 +80,29 @@ GetOptions(
                         exit;
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
-) or die 'ERROR: ' . basename( $0 ) . ": mistake in command line argument.\n";
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
 
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+try {
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    if( $pdbx_file ) {
-        $atom_site = obtain_atom_site( $pdbx_file );
-    } else {
-        die "Use command \"rotag_dihedral --help\" in order to see the manual.\n";
+    $atom_site = obtain_atom_site( $pdbx_file );
+
+    if( ! %{ $atom_site } ) {
+        warning( { 'message' => "$pdbx_file is empty.\n" } );
+        exit;
     }
 
     # Calculates dihedral angles
     my %pdbx_loops;
 
-    if( $calc_atom_angles ) {
-        $pdbx_loops{'_[local]_dihedral_angle'}{'attributes'} =
-            [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_atom_2_id',
-              'atom_2_id', 'label_atom_3_id', 'atom_3_id', 'label_atom_4_id',
-              'atom_4_id', 'value', 'units' ];
-
-        my $dihedral_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' => { '[local]_selection_state' => [ 'T' ] },
-                      'exclude' => { '[local]_selection_group' => [ q{?} ] } } );
-
-        my @dihedral_atom_ids =
-            sort { $dihedral_site->{"$a"}{'[local]_selection_group'} <=>
-                   $dihedral_site->{"$b"}{'[local]_selection_group'} }
-            keys %{ $dihedral_site };
-
-        my $dihedral_id = 1;
-        for( my $i = 0; $i <= $#dihedral_atom_ids; $i = $i + 4 ) {
-            my $first_atom_id = $dihedral_atom_ids[$i];
-            my $second_atom_id = $dihedral_atom_ids[$i+1];
-            my $third_atom_id = $dihedral_atom_ids[$i+2];
-            my $fourth_atom_id = $dihedral_atom_ids[$i+3];
-            my $dihedral_angle =
-                dihedral_angle(
-                    [ map { [ $dihedral_site->{$_}{'Cartn_x'},
-                              $dihedral_site->{$_}{'Cartn_y'},
-                              $dihedral_site->{$_}{'Cartn_z'} ] }
-                      ( $first_atom_id, $second_atom_id,
-                        $third_atom_id, $fourth_atom_id ) ] );
-
-            push @{ $pdbx_loops{'_[local]_dihedral_angle'}{'data'} },
-                 $dihedral_id,
-                 $dihedral_site->{$first_atom_id}{'label_atom_id'},
-                 $first_atom_id,
-                 $dihedral_site->{$second_atom_id}{'label_atom_id'},
-                 $second_atom_id,
-                 $dihedral_site->{$third_atom_id}{'label_atom_id'},
-                 $third_atom_id,
-                 $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
-                 $fourth_atom_id,
-                 ( $in_degrees ? sprintf $SIG_FIGS_MAX, $dihedral_angle * 180 / $PI
-                               : sprintf $SIG_FIGS_MAX, $dihedral_angle ),
-                 ( $in_degrees ? 'degrees' : 'radians' );
-            $dihedral_id++;
-        }
-
-    } else {
+    if( $calc_sidechain ) {
         $pdbx_loops{'_[local]_dihedral_angle'}{'attributes'} =
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
               'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
@@ -181,18 +151,64 @@ for my $pdbx_file ( @ARGV ) {
                      $dihedral_site->{$atom_ids[3]}{'label_atom_id'},
                      $atom_ids[3],
                      $angle_name,
-                     ( $in_degrees ?
+                     ( $in_radians ?
                        sprintf $SIG_FIGS_MAX,
                                $dihedral_angles->{$residue_unique_key}
                                                  {$angle_name}
-                                                 {'value'} * 180 / $PI :
+                                                 {'value'} :
                        sprintf $SIG_FIGS_MAX,
                                $dihedral_angles->{$residue_unique_key}
                                                  {$angle_name}
-                                                 {'value'} ),
-                     ( $in_degrees ? 'degrees' : 'radians' );
-            $dihedral_id++;
+                                                 {'value'} * 180 / $PI ),
+                     ( $in_radians ? 'radians' : 'degrees' );
+                $dihedral_id++;
             }
+        }
+
+    } else {
+        $pdbx_loops{'_[local]_dihedral_angle'}{'attributes'} =
+            [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_atom_2_id',
+              'atom_2_id', 'label_atom_3_id', 'atom_3_id', 'label_atom_4_id',
+              'atom_4_id', 'value', 'units' ];
+
+        my $dihedral_site =
+            filter( { 'atom_site' => $atom_site,
+                      'include' => { '[local]_selection_state' => [ 'T' ] },
+                      'exclude' => { '[local]_selection_group' => [ q{?} ] } } );
+
+        my @dihedral_atom_ids =
+            sort { $dihedral_site->{"$a"}{'[local]_selection_group'} <=>
+                   $dihedral_site->{"$b"}{'[local]_selection_group'} }
+            keys %{ $dihedral_site };
+
+        my $dihedral_id = 1;
+        for( my $i = 0; $i <= $#dihedral_atom_ids; $i = $i + 4 ) {
+            my $first_atom_id = $dihedral_atom_ids[$i];
+            my $second_atom_id = $dihedral_atom_ids[$i+1];
+            my $third_atom_id = $dihedral_atom_ids[$i+2];
+            my $fourth_atom_id = $dihedral_atom_ids[$i+3];
+            my $dihedral_angle =
+                dihedral_angle(
+                    [ map { [ $dihedral_site->{$_}{'Cartn_x'},
+                              $dihedral_site->{$_}{'Cartn_y'},
+                              $dihedral_site->{$_}{'Cartn_z'} ] }
+                      ( $first_atom_id, $second_atom_id,
+                        $third_atom_id, $fourth_atom_id ) ] );
+
+            push @{ $pdbx_loops{'_[local]_dihedral_angle'}{'data'} },
+                 $dihedral_id,
+                 $dihedral_site->{$first_atom_id}{'label_atom_id'},
+                 $first_atom_id,
+                 $dihedral_site->{$second_atom_id}{'label_atom_id'},
+                 $second_atom_id,
+                 $dihedral_site->{$third_atom_id}{'label_atom_id'},
+                 $third_atom_id,
+                 $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
+                 $fourth_atom_id,
+                 ( $in_radians ? sprintf $SIG_FIGS_MAX, $dihedral_angle
+                               : sprintf $SIG_FIGS_MAX, $dihedral_angle * 180 / $PI ),
+                 ( $in_radians ? 'radians' : 'degrees' );
+            $dihedral_id++;
         }
     }
 
@@ -202,3 +218,12 @@ for my $pdbx_file ( @ARGV ) {
         pdbx_loop_to_csv( $pdbx_loops{'_[local]_dihedral_angle'} );
     }
 }
+
+} catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
+};

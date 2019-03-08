@@ -8,13 +8,14 @@ use Constants qw( $PI
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_library
                     replace_with_rotamer);
+use Sampling qw( sample_angles_qs_parsing );
 
 my ( $residue_id,
      $residue_chain,
      $pdbx_model,
      $residue_alt,
      $conf_model,
-     $small_angle,
+     $angles,
      $potential,
      $energy_cutoff_atom,
      $pdbx_dump_file,
@@ -39,14 +40,14 @@ if( defined $parameters ) {
     $parameters->{'atom_site'} = $atom_site;
 }
 
-$small_angle =~ s/pi/\$PI/g;
+$angles = sample_angles_qs_parsing( $angles );
 
 my $rotamer_library =
     generate_library( { "atom_site" => $atom_site,
                         "residue_unique_keys" =>
                             [ "$residue_id,$residue_chain,$pdbx_model," .
                               "$residue_alt" ],
-                        "small_angle" => eval( $small_angle ),
+                        "angles" => $angles,
                         "conf_model" => $conf_model,
                         "interactions"  => $potential,
                         "energy_cutoff_atom" => $energy_cutoff_atom,

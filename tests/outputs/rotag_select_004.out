@@ -1,1 +1,1 @@
-List of -1 atoms is smaller than the request of 2 atoms. at lib/Grammar/SelectionParser.yp line <row>, <> line <row>.
+Error: rotag_select: List of -1 atoms is smaller than the request of 2 atoms. at lib/Grammar/SelectionParser.yp line <row>, <> line <row>.

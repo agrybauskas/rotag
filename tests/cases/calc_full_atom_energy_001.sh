@@ -10,7 +10,6 @@ residue_id="18"
 residue_chain="A"
 pdbx_model_num="1"
 residue_alt="."
-small_angle="0.1*pi"
 checkable_angles="1.0*pi;1.1*pi;1.2*pi;1.3*pi;1.4*pi;1.5*pi;1.6*pi;1.7*pi;1.8*pi;1.9*pi;2.0*pi"
 
 $(dirname "$0")/../scripts/calc_full_atom_energy \
@@ -18,7 +17,6 @@ $(dirname "$0")/../scripts/calc_full_atom_energy \
                ${residue_chain} \
                ${pdbx_model_num} \
                ${residue_alt} \
-	           ${small_angle} \
 	           ${potential} \
                "${interaction_specifier}" \
 	           ${energy_cutoff_atom} \

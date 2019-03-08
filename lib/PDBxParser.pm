@@ -153,6 +153,11 @@ sub pdbx_loop_unique
 
     my $category = [keys %{ $pdbx_loop_data }]->[0];
 
+    if( ! %{ $pdbx_loop_data } ) {
+        warn "no appropriate information was found\n";
+        return {};
+    }
+
     my @attributes = @{ $pdbx_loop_data->{$category}{'attributes'} };
     my @data = @{ $pdbx_loop_data->{$category}{'data'} };
 

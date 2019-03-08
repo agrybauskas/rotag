@@ -14,7 +14,6 @@ my ( $residue_id,
      $residue_chain,
      $pdbx_model,
      $residue_alt,
-     $small_angle,
      $potential,
      $interaction_specifier,
      $energy_cutoff_atom,
@@ -28,8 +27,6 @@ while( <$fh> ) {
 }
 close( $fh );
 $atom_site = eval( $atom_site );
-
-$small_angle =~ s/pi/\$PI/g;
 
 my @checkable_angles;
 for my $angles ( split /;/, $checkable_angles ) {
@@ -53,7 +50,6 @@ my ( $favourable_angles, $favourable_energies ) =
                                     "${residue_id},${residue_chain},".
                                     "${pdbx_model},${residue_alt}",
                                 'interaction_site' => $interaction_site,
-                                'small_angle' => eval( $small_angle ),
                                 'non_bonded_potential' => \&hard_sphere,
                                 'energy_cutoff_atom' => $energy_cutoff_atom,
                                 'is_hydrogen_explicit' => 0,
