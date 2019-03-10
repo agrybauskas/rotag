@@ -1,0 +1,179 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use autodie;
+use Getopt::Long;
+use List::Util qw( any );
+use Try::Tiny;
+
+use Constants qw( $PI
+                  $SIG_FIGS_MAX );
+use Logging qw( error
+                warning );
+use PDBxParser qw( obtain_atom_site
+                   obtain_pdbx_loop
+                   pdbx_loop_to_csv
+                   pdbx_loop_unique
+                   split_by
+                   to_pdbx );
+use Version qw( $VERSION );
+
+Getopt::Long::Configure qw( gnu_getopt );
+
+our $VERSION = $VERSION;
+
+#*rotag_library [options] <file>...
+#*    generate rotamer library.
+#*
+#*Usage:
+#*    rotag_library -t 5 input.cif > output.cif
+#*    rotag_library -T 0.2 input.cif > output.cif
+#*
+#*Options:
+#*    -t, --top-rank <int>        top rotamers according to the value of
+#*                                energies.
+#*
+#*    -T, --top-ratio <float>     top rotamers according to the value of
+#*                                energies (default: 1.0).
+#*
+#*    --tags <tag>[,<tag>...]     output only specified PDBx tags.
+#*
+#*    -v, --version               print version.
+
+# --------------------------------- Options ----------------------------------- #
+
+my $top_rank;
+my $top_ratio;
+my $tags = '';
+
+my @warnings;
+local $SIG{__WARN__} = sub {
+    push @warnings, @_;
+};
+
+my @errors;
+local $SIG{__DIE__} = sub {
+    push @errors, @_;
+};
+
+GetOptions(
+    'top-rank|t=s' => \$top_rank,
+    'top-ratio|T=s' => \$top_ratio,
+    'tags=s' => \$tags,
+    'help|h' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
+                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
+                            if( $help_message ) { print $help_message, "\n"; }
+                        }
+                        close $fh;
+                        exit;
+                    },
+    'version|v' => sub { print $VERSION, "\n"; exit; }
+) or error( { 'program' => $0,
+              'message' => "mistake in command line argument.\n" } );
+
+# Parses tag string.
+$tags =~ s/\s//g;
+$tags = [
+    split /,/sxm, $tags
+];
+
+# ----------------------------------- Main ------------------------------------ #
+
+local @ARGV = ( q{-} ) unless @ARGV;
+
+try {
+
+for my $pdbx_file ( @ARGV ) {
+    # Reads file path, stdin and '-' operator.
+    my $atom_site = obtain_atom_site( $pdbx_file );
+
+    my $pdbx_loops =
+        obtain_pdbx_loop( $pdbx_file,
+                          [ '_\[local\]_rotamer_angle',
+                            '_\[local\]_rotamer_energy' ],
+                          { 'read_until_end' => 1 } );
+
+    if( ! %{ $pdbx_loops->[0] } || ! %{ $pdbx_loops->[1] } ) {
+        warning( { 'message' => 'no rotamer angles and energies were ' .
+                                "detected.\n" } );
+        exit;
+    }
+
+    my $rotamer_angles =
+        pdbx_loop_unique( { '_[local]_rotamer_angle' =>
+                                $pdbx_loops->[0]{'_[local]_rotamer_angle'} } );
+    my $rotamer_energy =
+        pdbx_loop_unique( { '_[local]_rotamer_energy' =>
+                                $pdbx_loops->[1]{'_[local]_rotamer_energy'} },
+                          [ 'rotamer_id' ] );
+
+    # Generates a new collection of residue angles with defined frequencies.
+    my $residue_angle_groups = split_by( { 'atom_site' => $rotamer_angles } );
+    my @rotamers;
+
+    for my $residue_unique_key ( sort keys %{ $residue_angle_groups } ) {
+        my @rotamer_ids = @{ $residue_angle_groups->{$residue_unique_key} };
+
+        my $current_top_rank;
+        if( $top_rank ) {
+            $current_top_rank =
+                $top_rank <= scalar @rotamer_ids ?
+                $top_rank :
+                scalar @rotamer_ids;
+        } elsif( $top_ratio ) {
+            $current_top_rank = int( scalar( @rotamer_ids ) * $top_ratio );
+            $current_top_rank = $current_top_rank == 0 ? 1 : $current_top_rank;
+        } else {
+            push @rotamers, @rotamer_ids;
+            next;
+        }
+
+        my @current_rotamers =
+            sort { $rotamer_energy->{$a}{'potential_energy_value'} <=>
+                   $rotamer_energy->{$b}{'potential_energy_value'} }
+                 @rotamer_ids;
+        push @rotamers, @current_rotamers[0..$current_top_rank-1];
+    }
+
+    my %pdbx_loops;
+    $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} =
+        [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
+          'pdbx_PDB_model_num', 'label_alt_id', 'type', 'value' ];
+
+    # TODO: frequency of the rotamers are excluded for now.
+    for my $rotamer ( @rotamers ) {
+        push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
+            map { $rotamer_angles->{$rotamer}{$_} }
+               @{ $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} };
+    }
+
+    if( @{ $tags } ) {
+        # TODO: quick fix, but should be standardized. How to handle atom site?
+        # Maybe after the data structure unification this problem will be solved,
+        # because now it is quite messy.
+        to_pdbx({ ( ( any { $_ eq '_atom_site' } @{ $tags } ) ?
+                    ( 'atom_site' => $atom_site,
+                      'add_atom_attributes' => [ '[local]_selection_state' ] ) :
+                    () ),
+                  'pdbx_loops' => { map { $_ => $pdbx_loops{$_} } @{ $tags } }});
+    } else {
+        to_pdbx( { 'atom_site' => $atom_site,
+                   'add_atom_attributes' => [ '[local]_selection_state' ],
+                   'pdbx_loops' => \%pdbx_loops } );
+    }
+}
+
+} catch {
+    foreach( @warnings ) {
+        warning( { 'message' => "$_" } );
+    }
+    foreach( @errors ) {
+        error( { 'program' => $0, 'message' => "$_" } );
+    }
+};

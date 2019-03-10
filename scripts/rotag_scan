@@ -81,12 +81,6 @@ our $VERSION = $VERSION;
 #*                                atom that allows for further rotamer search
 #*                                (default: 0.4).
 #*
-#*    -t, --top-rank <int>        top rotamers according to the value of
-#*                                energies.
-#*
-#*    -T, --top-ratio <float>     top rotamers according to the value of
-#*                                energies (default: 1.0).
-#*
 #*    --tags <tag>[,<tag>...]     output only specified PDBx tags.
 #*
 #*    -n, --threads <int>         number of threads.
@@ -100,8 +94,6 @@ my $angles = '-180.0..36.0..180.0';
 my $in_radians = 0;
 my $energy_cutoff_atom;
 my $threads = 1;
-my $top_rank;
-my $top_ratio;
 my $tags = '';
 my $parameters = '';
 
@@ -121,8 +113,6 @@ GetOptions(
     'angles|a=s' => \$angles,
     'radians|r' => sub { $in_radians = 1 },
     'cutoff-atom|c=s' => \$energy_cutoff_atom,
-    'top-rank|t=s' => \$top_rank,
-    'top-ratio|T=s' => \$top_ratio,
     'tags=s' => \$tags,
     'threads|n=s' => \$threads,
     'help|h' => sub {
@@ -268,32 +258,7 @@ for my $pdbx_file ( @ARGV ) {
                                'data' => [ 'label_comp_id' ],
                                'is_list' => 1 } ) } );
 
-        # Checks if 'top' option is int or float and filters rotamers accordingly.
-        my @rotamers;
-        if( defined $top_rank ) {
-            $top_rank =
-                $top_rank <= scalar @{$rotamer_library{$residue_unique_key}} ?
-                $top_rank :
-                scalar @{ $rotamer_library{$residue_unique_key} };
-            @rotamers =
-                sort { $a->{'potential_energy_value'} <=>
-                       $b->{'potential_energy_value'} }
-                    @{ $rotamer_library{$residue_unique_key} };
-            @rotamers = @rotamers[0..$top_rank-1];
-        } elsif( defined $top_ratio ) {
-            $top_rank =
-                int( scalar( @{ $rotamer_library{$residue_unique_key} } )
-              * $top_ratio );
-            @rotamers =
-                sort { $a->{'potential_energy_value'} <=>
-                       $b->{'potential_energy_value'} }
-                    @{ $rotamer_library{$residue_unique_key} };
-            @rotamers = @rotamers[0..$top_rank-1];
-        } else {
-            @rotamers = @{ $rotamer_library{$residue_unique_key} };
-        }
-
-        for my $rotamer ( @rotamers ) {
+        for my $rotamer ( @{ $rotamer_library{$residue_unique_key} } ) {
             # Colects rotamer angle data.
             for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
                 my $angle_value = $rotamer->{'angles'}{$angle_name};

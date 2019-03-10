@@ -40,8 +40,35 @@ _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 1 1 18 XAA A 1 A chi1 -3.141593
-2 2 18 XAA A 1 B chi1 -3.141593
-3 3 18 XAA A 2 . chi1 -3.141593
+2 2 18 XAA A 1 A chi1 -2.513274
+3 3 18 XAA A 1 A chi1 -1.884956
+4 4 18 XAA A 1 A chi1 -1.256637
+5 5 18 XAA A 1 A chi1 -0.628319
+6 6 18 XAA A 1 A chi1 -0.000000
+7 7 18 XAA A 1 A chi1 0.628319
+8 8 18 XAA A 1 A chi1 1.256637
+9 9 18 XAA A 1 A chi1 1.884956
+10 10 18 XAA A 1 A chi1 2.513274
+11 11 18 XAA A 1 B chi1 -3.141593
+12 12 18 XAA A 1 B chi1 -2.513274
+13 13 18 XAA A 1 B chi1 -1.884956
+14 14 18 XAA A 1 B chi1 -1.256637
+15 15 18 XAA A 1 B chi1 -0.628319
+16 16 18 XAA A 1 B chi1 -0.000000
+17 17 18 XAA A 1 B chi1 0.628319
+18 18 18 XAA A 1 B chi1 1.256637
+19 19 18 XAA A 1 B chi1 1.884956
+20 20 18 XAA A 1 B chi1 2.513274
+21 21 18 XAA A 2 . chi1 -3.141593
+22 22 18 XAA A 2 . chi1 -2.513274
+23 23 18 XAA A 2 . chi1 -1.884956
+24 24 18 XAA A 2 . chi1 -1.256637
+25 25 18 XAA A 2 . chi1 -0.628319
+26 26 18 XAA A 2 . chi1 -0.000000
+27 27 18 XAA A 2 . chi1 0.628319
+28 28 18 XAA A 2 . chi1 1.256637
+29 29 18 XAA A 2 . chi1 1.884956
+30 30 18 XAA A 2 . chi1 2.513274
 #
 loop_
 _[local]_rotamer_energy.id
@@ -49,6 +76,33 @@ _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
 1 1 composite -0.204644
-2 2 composite -0.204644
-3 3 composite -0.204644
+2 2 composite 0.404327
+3 3 composite 2.080520
+4 4 composite 0.150261
+5 5 composite 0.130919
+6 6 composite 0.834872
+7 7 composite 0.208818
+8 8 composite -0.033219
+9 9 composite 0.765588
+10 10 composite 0.487708
+11 11 composite -0.204644
+12 12 composite 0.404327
+13 13 composite 2.080520
+14 14 composite 0.150261
+15 15 composite 0.130919
+16 16 composite 0.834872
+17 17 composite 0.208818
+18 18 composite -0.033219
+19 19 composite 0.765588
+20 20 composite 0.487708
+21 21 composite -0.204644
+22 22 composite 0.404327
+23 23 composite 2.080520
+24 24 composite 0.150261
+25 25 composite 0.130919
+26 26 composite 0.834872
+27 27 composite 0.208818
+28 28 composite -0.033219
+29 29 composite 0.765588
+30 30 composite 0.487708
 #
