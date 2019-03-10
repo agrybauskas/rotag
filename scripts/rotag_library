@@ -12,7 +12,8 @@ use Constants qw( $PI
                   $SIG_FIGS_MAX );
 use Logging qw( error
                 warning );
-use PDBxParser qw( obtain_atom_site
+use PDBxParser qw( filter
+                   obtain_atom_site
                    obtain_pdbx_loop
                    pdbx_loop_to_csv
                    pdbx_loop_unique
@@ -149,10 +150,12 @@ for my $pdbx_file ( @ARGV ) {
           'pdbx_PDB_model_num', 'label_alt_id', 'type', 'value' ];
 
     # TODO: frequency of the rotamers are excluded for now.
-    for my $rotamer ( @rotamers ) {
-        push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
-            map { $rotamer_angles->{$rotamer}{$_} }
-               @{ $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} };
+    for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
+        if( any { $rotamer_angles->{$angle_id}{'rotamer_id'} eq $_ } @rotamers ) {
+            push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
+                map { $rotamer_angles->{$angle_id}{$_} }
+                   @{ $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} };
+        }
     }
 
     if( @{ $tags } ) {
