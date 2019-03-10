@@ -32,6 +32,7 @@ ${PERL_MODULE}: ${PERL_TEMPLATE}
 CPP_DIR=${LIB_DIR}/CPP
 CPP_FILES=${wildcard ${CPP_DIR}/*.cpp}
 CPP_OBJS=${CPP_FILES:%.cpp=%.o}
+CPP_FLAGS=-lboost_regex
 # CPP_OBJS=${SWIG_FILES:%.i=%.o}
 # SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
 # PM_FILES=${SWIG_FILES:%.i=%.pm}
@@ -47,7 +48,7 @@ CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
 .PRECIOUS: ${CPP_OBJS}
 
 ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
-	g++ -c -I${CPP_DIR} $< -o $@
+	g++ -c -I${CPP_DIR} ${CPP_FLAGS} $< -o $@
 
 # ${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
 # 	swig -c++ -perl $<
@@ -66,7 +67,7 @@ ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
 # 	g++ -shared $^ -o $@
 
 ${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp ${CPP_OBJS}
-	g++ $< -I${CPP_DIR} -o $@ ${CPP_OBJS}
+	g++ $< -I${CPP_DIR} ${CPP_FLAGS} -o $@ ${CPP_OBJS}
 
 #
 # Generate force field module.
