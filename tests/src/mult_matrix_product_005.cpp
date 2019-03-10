@@ -5,7 +5,7 @@
 #include <map>
 
 #include "AlgebraicMatrix.h"
-#include "LinearAlgebraCpp.h"
+#include "LinearAlgebra.h"
 
 std::vector< std::vector<double> > matrix1_function( double args[] )
 {

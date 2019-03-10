@@ -1,4 +1,4 @@
-#include "LinearAlgebraCpp.h"
+#include "LinearAlgebra.h"
 
 #include <algorithm>
 #include <map>

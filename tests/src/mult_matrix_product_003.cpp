@@ -4,7 +4,7 @@
 #include <map>
 
 #include "AlgebraicMatrix.h"
-#include "LinearAlgebraCpp.h"
+#include "LinearAlgebra.h"
 
 int main( int argc, char* argv[] ) {
   std::vector< std::vector<double> > matrix1 = { { 1 }, { 2 }, { 3 } };

@@ -6,7 +6,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include "LinearAlgebraCpp.h"
+#include "LinearAlgebra.h"
 
 int main( int argc, char* argv[] ) {
   std::vector<double> mid_atom_coord;

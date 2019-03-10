@@ -10,7 +10,7 @@ residue_id="572"
 residue_chain="B"
 residue_entity="1"
 residue_alt="."
-angles="180.0"
+angles="72.0"
 parameters='lj_k=1.0,c_k=1.0,h_k=1.0,t_k=1.0,cutoff_atom=0.5,cutoff_start=2.5,cutoff_end=5.0'
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \

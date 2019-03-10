@@ -7,7 +7,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/join.hpp>
-#include "LinearAlgebraCpp.h"
+#include "LinearAlgebra.h"
 
 int main( int argc, char* argv[] ) {
   std::vector< std::vector<double> > matrix;

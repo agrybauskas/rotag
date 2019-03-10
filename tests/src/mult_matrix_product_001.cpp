@@ -4,7 +4,7 @@
 #include <map>
 
 #include "AlgebraicMatrix.h"
-#include "LinearAlgebraCpp.h"
+#include "LinearAlgebra.h"
 
 std::vector< std::vector<double> > matrix2_function( double args[] )
 {

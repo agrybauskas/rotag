@@ -29,7 +29,7 @@ ${PERL_MODULE}: ${PERL_TEMPLATE}
 # Compiling CPP and linking to Perl5 with SWIG.
 #
 
-CPP_DIR=${LIB_DIR}
+CPP_DIR=${LIB_DIR}/CPP
 CPP_FILES=${wildcard ${CPP_DIR}/*.cpp}
 CPP_OBJS=${CPP_FILES:%.cpp=%.o}
 # CPP_OBJS=${SWIG_FILES:%.i=%.o}
@@ -47,7 +47,7 @@ CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
 .PRECIOUS: ${CPP_OBJS}
 
 ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
-	g++ -c -I${LIB_DIR} $< -o $@
+	g++ -c -I${CPP_DIR} $< -o $@
 
 # ${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
 # 	swig -c++ -perl $<
@@ -66,7 +66,7 @@ ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
 # 	g++ -shared $^ -o $@
 
 ${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp ${CPP_OBJS}
-	g++ $< -I${LIB_DIR} -o $@ ${CPP_OBJS}
+	g++ $< -I${CPP_DIR} -o $@ ${CPP_OBJS}
 
 #
 # Generate force field module.
