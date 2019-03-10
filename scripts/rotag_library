@@ -91,7 +91,8 @@ try {
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
-    my $atom_site = obtain_atom_site( $pdbx_file );
+    my $atom_site;
+    $atom_site = obtain_atom_site( $pdbx_file );
 
     my $pdbx_loops =
         obtain_pdbx_loop( $pdbx_file,
@@ -99,7 +100,8 @@ for my $pdbx_file ( @ARGV ) {
                             '_\[local\]_rotamer_energy' ],
                           { 'read_until_end' => 1 } );
 
-    if( ! %{ $pdbx_loops->[0] } || ! %{ $pdbx_loops->[1] } ) {
+    if( ! exists $pdbx_loops->[0]{'_[local]_rotamer_angle'} ||
+        ! exists $pdbx_loops->[0]{'_[local]_rotamer_energy'} ) {
         warning( { 'message' => 'no rotamer angles and energies were ' .
                                 "detected.\n" } );
         exit;
@@ -110,7 +112,7 @@ for my $pdbx_file ( @ARGV ) {
                                 $pdbx_loops->[0]{'_[local]_rotamer_angle'} } );
     my $rotamer_energy =
         pdbx_loop_unique( { '_[local]_rotamer_energy' =>
-                                $pdbx_loops->[1]{'_[local]_rotamer_energy'} },
+                                $pdbx_loops->[0]{'_[local]_rotamer_energy'} },
                           [ 'rotamer_id' ] );
 
     # Generates a new collection of residue angles with defined frequencies.
