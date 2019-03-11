@@ -5,7 +5,8 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
-use List::Util qw( any );
+use List::Util qw( any
+                   uniq );
 use Try::Tiny;
 
 use Constants qw( $PI
@@ -121,8 +122,9 @@ for my $pdbx_file ( @ARGV ) {
     my @rotamers;
 
     for my $residue_unique_key ( sort keys %{ $residue_angle_groups } ) {
-        my @rotamer_ids = @{ $residue_angle_groups->{$residue_unique_key} };
-
+        my @angle_ids = @{ $residue_angle_groups->{$residue_unique_key} };
+        my @rotamer_ids =
+            uniq map { $rotamer_angles->{$_}{'rotamer_id'} } @angle_ids;
         my $current_top_rank;
         if( $top_rank ) {
             $current_top_rank =
