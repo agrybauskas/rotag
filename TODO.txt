@@ -68,7 +68,7 @@
 ++ Add group assignment keyword to the grammar.
 -- Generate mainchain atoms with specified dihedral angles. It will be useful
    for inverstigating impact of mainchain conformation to sidechains.
--- Add Monte Carlo and specified angle range sampling in rotag_library.
+-- Add Monte Carlo and specified angle range sampling in rotag_scan.
 ++ Expand token should be added that growth of selection by one amino-acid would
    be useful when determining mainchain dihedral angles.
 -- Changing filter() to filter_new() it decreased speed of rotag_library by two
@@ -78,5 +78,5 @@
    potentially can crash the system if the number of angles are very small.
 ++ If there are too many chi angles than there are possible in the structure,
    there are angle reapeats. The redundant angles should be removed.
--- Moved part of the code that deals with choosing right rotamers to
+++ Moved part of the code that deals with choosing right rotamers to
    new rotag_library script.
