@@ -17,6 +17,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      pdbx_loop_to_array
                      obtain_atom_site
                      obtain_atom_sites
+                     obtain_pdbx_data
                      obtain_pdbx_line
                      obtain_pdbx_loop
                      split_by
@@ -31,6 +32,38 @@ use Version qw( $VERSION );
 our $VERSION = $VERSION;
 
 # --------------------------------- PDBx parser ------------------------------- #
+
+#
+# Obtains pdbx data.
+# Input:
+#     $pdbx_file - PDBx file path;
+#     $items - list of desired items.
+# Output:
+#     %pdbx_data - hash of arrays of item values.
+#
+
+sub obtain_pdbx_data
+{
+    my ( $pdbx_file, $options ) = @_;
+    my ( $categories, $items, $read_until_end ) = (
+        $options->{'categories'},
+        $options->{'items'},
+        $options->{'read_until_end'}
+    );
+
+    $read_until_end //= 0;
+
+    my @categories;
+    my @attributes;
+    my @items;
+    my @data; # Will be used for storing atom data temporarily.
+
+    my $category_regexp = join q{|}, @{ $categories } if defined $categories;
+    my $item_regexp = join q{|}, @{ $items } if defined $items;
+    my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
+
+    local @ARGV = ( $pdbx_file );
+}
 
 #
 # Obtains pdbx lines for a specified items.
