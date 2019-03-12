@@ -27,7 +27,7 @@ our $VERSION = $VERSION;
 #*    _atom_site category in PDBx.
 #*
 #*Usage:
-#*    rotag_select -t 'resname ASP' -s 'resid 1-10' input.cif > output.cif
+#*    rotag_select -t 'resname ASP' -s 'resid 1..10' input.cif > output.cif
 #*    rotag_select -t 'model 5' -t 'model 10' input1.cif input2.cif > output.cif
 #*
 #*Options:
@@ -62,12 +62,12 @@ our $VERSION = $VERSION;
 #*                                       'psi=60..70, phi=50..80').
 #*
 #*                          List operators:
-#*                              - - range of integers (e.g. 2-5 is 2,3,4,5);
-#*                              , - list of integers or keywords (e.g. 2,3 or
-#*                                  A,B).
+#*                              .. - range of integers (e.g. 2..5 is 2,3,4,5);
+#*                              ,  - list of integers or keywords (e.g. 2,3 or
+#*                                   A,B).
 #*
 #*                          Map operators:
-#*                              .. - min and max float (e.g. 0.0..30.0).
+#*                              = - assigns value to the string (e.g. chi1=1.0).
 #*
 #*                          Logical operators:
 #*                              && - and operator;
