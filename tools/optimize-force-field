@@ -29,7 +29,7 @@ use Version qw( $VERSION );
 our $VERSION = $VERSION;
 
 #*optimize-force-field [options] <file>...
-#*    estimate the parameters of the composite force-field potential function.
+#*    optimize the parameters for the composite force-field potential function.
 #*
 #*Usage:
 #*    optimize-force-field parameters.cif > output.cif
