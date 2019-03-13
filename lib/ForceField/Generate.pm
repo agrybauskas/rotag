@@ -41,8 +41,10 @@ sub obtain_force_field_data
 
     @looped_categories = uniq @looped_categories;
 
-    # my $pdbx_line_data = obtain_pdbx_line_new( $pdbx_file, \@unlooped_items );
-    # my $pdbx_loop_data = obtain_pdbx_loop( $pdbx_file, \@looped_categories );
+    my $pdbx_line_data = obtain_pdbx_line_new( $pdbx_file, \@unlooped_items );
+    my $pdbx_loop_data = obtain_pdbx_loop( $pdbx_file, \@looped_categories );
+
+    return { %{ $pdbx_line_data }, %{ $pdbx_loop_data } };
 }
 
 1;
