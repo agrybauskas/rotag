@@ -468,6 +468,7 @@ XAA OG   -0.64
 XAA XA   0
 XAA XA2  0
 #
+loop_
 _[local]_torsional.type_symbol_1
 _[local]_torsional.type_symbol_2
 _[local]_torsional.epsilon
