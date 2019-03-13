@@ -43,6 +43,30 @@ our $VERSION = $VERSION;
 
 sub obtain_pdbx_line
 {
+    my ( $pdbx_file, $items ) = @_;
+
+    my %pdbx_line_data;
+    my %current_line_data;
+    my $item_regexp = join q{|}, @{ $items };
+
+    local $/ = '';
+    local @ARGV = ( $pdbx_file );
+    while( <> ) {
+        my %single_line_matches = ( m/($item_regexp)\s+(?!;)(\S.+\S)/gx );
+        my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/gx );
+        %current_line_data = ( %single_line_matches, %multi_line_matches );
+    }
+
+    for my $key ( sort { $a cmp $b } keys %current_line_data ) {
+        my ( $category, $attribute ) = split '\\.', $key;
+        $pdbx_line_data{$category}{$attribute} = $current_line_data{$key};
+    }
+
+    return \%pdbx_line_data;
+}
+
+sub obtain_pdbx_line_new
+{
     my ( $pdbx_file, $items, $options ) = @_;
     my ( $read_until_end ) = ( $options->{'read_until_end'} );
 
@@ -958,6 +982,11 @@ sub to_pdbx
     }
 
     return;
+}
+
+sub to_pdbx_new
+{
+
 }
 
 #
