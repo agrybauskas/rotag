@@ -18,9 +18,11 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_atom_site
                      obtain_atom_sites
                      obtain_pdbx_line
+                     obtain_pdbx_line_new
                      obtain_pdbx_loop
                      split_by
                      to_pdbx
+                     to_pdbx_new
                      unique_residue_key );
 
 use Carp;
@@ -983,6 +985,15 @@ sub to_pdbx
 
     return;
 }
+
+#
+# Converts pdbx loop data structure to csv table.
+# Input:
+#     $pdbx_loops - data structure of pdbx_loops;
+#     $attributes - columns that should be displayed.
+# Output:
+#     csv STDOUT
+#
 
 sub to_pdbx_new
 {
