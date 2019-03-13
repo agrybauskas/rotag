@@ -17,4 +17,6 @@ my @item_specifier = split( ",", $item_specifier );
 # my $pdbx_line_data =
     obtain_pdbx_line( $pdbx_file, \@item_specifier );
 
+# use Data::Dumper; print STDERR Dumper $pdbx_line_data;
+
 # to_pdbx( { 'pdbx_lines' => $pdbx_line_data } );

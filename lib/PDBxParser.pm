@@ -122,6 +122,7 @@ sub obtain_pdbx_loop
     for( my $i = 0; $i <= $#categories; $i++ ) {
         my %pdbx_loop_data;
         for( my $j = 0; $j <= $#{ $categories[-1] }; $j++ ) {
+            $pdbx_loop_data{$categories[$i][$j]}{'is_loop'} = 1;
             $pdbx_loop_data{$categories[$i][$j]}{'attributes'} =
                 $attributes[$i][$j];
             $pdbx_loop_data{$categories[$i][$j]}{'data'} =
