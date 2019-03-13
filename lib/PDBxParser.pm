@@ -986,18 +986,37 @@ sub to_pdbx
     return;
 }
 
-#
-# Converts pdbx loop data structure to csv table.
-# Input:
-#     $pdbx_loops - data structure of pdbx_loops;
-#     $attributes - columns that should be displayed.
-# Output:
-#     csv STDOUT
-#
-
 sub to_pdbx_new
 {
+    my ( $args ) = @_;
+    my ( $data_name, $pdbx_data, $pdbx_data_indexed, $fh ) = (
+        $args->{'data_name'},
+        $args->{'pdbx_data'},
+        $args->{'pdbx_data_indexed'},
+        $args->{'fh'},
+    );
 
+    $data_name //= 'testing';
+    $fh //= \*STDOUT;
+
+    print {$fh} "data_${data_name}\n#\n";
+
+    # Parses unindexed pdbx data structure.
+    if( defined $pdbx_data ) {
+        for my $category  ( sort { $a cmp $b } keys %{ $pdbx_data } ) {
+            if( $pdbx_data->{$category}{'is_loop'} ) {
+
+            } else { # PDBx line data.
+                my @attributes = @{ $pdbx_data->{$category}{'attribute'} };
+                my @data = @{ $pdbx_data->{$category}{'data'} };
+                for( my $i = 0; $i <= $#attributes; $i++ ) {
+                    printf {$fh} "%s.%s %s\n", $category, $attributes[$i],
+                        $data[$i];
+                }
+            }
+            print {$fh} "#\n";
+        }
+    }
 }
 
 #
