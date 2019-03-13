@@ -43,7 +43,10 @@ our $VERSION = $VERSION;
 
 sub obtain_pdbx_line
 {
-    my ( $pdbx_file, $items ) = @_;
+    my ( $pdbx_file, $items, $options ) = @_;
+    my ( $read_until_end ) = ( $options->{'read_until_end'} );
+
+    $read_until_end //= 0;
 
     my %pdbx_line_data;
     my %current_line_data;
@@ -59,7 +62,9 @@ sub obtain_pdbx_line
 
     for my $key ( sort { $a cmp $b } keys %current_line_data ) {
         my ( $category, $attribute ) = split '\\.', $key;
-        $pdbx_line_data{$category}{$attribute} = $current_line_data{$key};
+        push @{ $pdbx_line_data{$category}{'attribute'} }, $attribute;
+        push @{ $pdbx_line_data{$category}{'data'} }, $current_line_data{$key};
+        $pdbx_line_data{$category}{'is_loop'} = 0;
     }
 
     return \%pdbx_line_data;

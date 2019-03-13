@@ -14,7 +14,7 @@ use PDBxParser qw( obtain_pdbx_line
 my ( $item_specifier, $pdbx_file ) = @ARGV;
 my @item_specifier = split( ",", $item_specifier );
 
-my $pdbx_line_data =
+# my $pdbx_line_data =
     obtain_pdbx_line( $pdbx_file, \@item_specifier );
 
-to_pdbx( { 'pdbx_lines' => $pdbx_line_data } );
+# to_pdbx( { 'pdbx_lines' => $pdbx_line_data } );
