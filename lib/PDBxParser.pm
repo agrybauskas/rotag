@@ -989,17 +989,76 @@ sub to_pdbx
 sub to_pdbx_new
 {
     my ( $args ) = @_;
-    my ( $data_name, $pdbx_data, $pdbx_data_indexed, $fh ) = (
+    my ( $data_name, $pdbx_data, $pdbx_data_indexed, $attributes,
+         $add_attributes, $fh ) = (
         $args->{'data_name'},
         $args->{'pdbx_data'},
         $args->{'pdbx_data_indexed'},
+        $args->{'attributes'},
+        $args->{'add_atom_attributes'},
         $args->{'fh'},
     );
 
     $data_name //= 'testing';
+    $attributes //= { '_atom_site' =>
+                          [ 'group_PDB',
+                            'id',
+                            'type_symbol',
+                            'label_atom_id',
+                            'label_alt_id',
+                            'label_comp_id',
+                            'label_asym_id',
+                            'label_entity_id',
+                            'label_seq_id',
+                            'Cartn_x',
+                            'Cartn_y',
+                            'Cartn_z',
+                            'pdbx_PDB_model_num', ] };
     $fh //= \*STDOUT;
 
     print {$fh} "data_${data_name}\n#\n";
+
+    # Parses indexed pdbx data structure.
+    if( defined $pdbx_data_indexed ) {
+        for my $category ( sort { $a cmp $b } keys %{ $pdbx_data_indexed } ) {
+            # TODO: what if it does not exist?
+            my $current_attributes = $attributes->{$category};
+
+            if( defined $add_attributes->{$category} ) {
+                push @{ $current_attributes }, @{ $add_attributes->{$category} };
+            }
+
+            print {$fh} "loop_\n";
+
+            for my $current_attribute ( @{ $current_attributes } ) {
+                $current_attribute eq $current_attributes->[-1] ?
+                    print {$fh} "_atom_site.$current_attribute":
+                    print {$fh} "_atom_site.$current_attribute\n";
+            }
+
+            my $current_pdbx_data_indexed = $pdbx_data_indexed->{$category};
+            for my $id (sort { $a <=> $b } keys %{ $current_pdbx_data_indexed }){
+            for( my $i = 0; $i <= $#{ $current_attributes }; $i++ ) {
+            if( $i % ( $#{ $current_attributes } + 1) != 0 ) {
+                if( exists $current_pdbx_data_indexed->{$id}
+                                                       {$current_attributes->[$i]}){
+                    print {$fh} q{ },
+                        $current_pdbx_data_indexed->{$id}{$current_attributes->[$i]};
+                } else {
+                    print {$fh} q{ ?};
+                }
+            } else {
+                if( exists $current_pdbx_data_indexed->{$id}
+                                                       {$current_attributes->[$i]}){
+                    print {$fh} "\n",
+                        $current_pdbx_data_indexed->{$id}{$current_attributes->[$i]};
+                } else {
+                    print {$fh} "\n";
+                }
+            } } }
+            print {$fh} "\n#\n";
+        }
+    }
 
     # Parses unindexed pdbx data structure.
     if( defined $pdbx_data ) {
@@ -1020,7 +1079,7 @@ sub to_pdbx_new
                                       [$i..$i+$attribute_array_length] ), "\n" ;
                 }
             } else { # PDBx line data.
-                my @attributes = @{ $pdbx_data->{$category}{'attribute'} };
+                my @attributes = @{ $pdbx_data->{$category}{'attributes'} };
                 my @data = @{ $pdbx_data->{$category}{'data'} };
                 for( my $i = 0; $i <= $#attributes; $i++ ) {
                     printf {$fh} "%s.%s %s\n", $category, $attributes[$i],
@@ -1030,6 +1089,8 @@ sub to_pdbx_new
             print {$fh} "#\n";
         }
     }
+
+    return;
 }
 
 #
