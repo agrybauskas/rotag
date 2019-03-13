@@ -88,7 +88,7 @@ sub obtain_pdbx_line_new
 
     for my $key ( sort { $a cmp $b } keys %current_line_data ) {
         my ( $category, $attribute ) = split '\\.', $key;
-        push @{ $pdbx_line_data{$category}{'attribute'} }, $attribute;
+        push @{ $pdbx_line_data{$category}{'attributes'} }, $attribute;
         push @{ $pdbx_line_data{$category}{'data'} }, $current_line_data{$key};
         $pdbx_line_data{$category}{'is_loop'} = 0;
     }
@@ -1005,7 +1005,20 @@ sub to_pdbx_new
     if( defined $pdbx_data ) {
         for my $category  ( sort { $a cmp $b } keys %{ $pdbx_data } ) {
             if( $pdbx_data->{$category}{'is_loop'} ) {
-
+                print {$fh} "loop_\n";
+                foreach( @{ $pdbx_data->{$category}{'attributes'} } ) {
+                    print {$fh} "$category.$_\n";
+                }
+                my $attribute_array_length =
+                    $#{ $pdbx_data->{$category}{'attributes'} };
+                my $data_array_length =
+                    $#{ $pdbx_data->{$category}{'data'} };
+                for( my $i = 0;
+                     $i <= $data_array_length;
+                     $i += $attribute_array_length + 1 ){
+                    print {$fh} join( q{ }, @{ $pdbx_data->{$category}{'data'} }
+                                      [$i..$i+$attribute_array_length] ), "\n" ;
+                }
             } else { # PDBx line data.
                 my @attributes = @{ $pdbx_data->{$category}{'attribute'} };
                 my @data = @{ $pdbx_data->{$category}{'data'} };
