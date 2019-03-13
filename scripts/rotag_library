@@ -98,8 +98,8 @@ for my $pdbx_file ( @ARGV ) {
 
     my $pdbx_loops =
         obtain_pdbx_loop( $pdbx_file,
-                          [ '_\[local\]_rotamer_angle',
-                            '_\[local\]_rotamer_energy' ],
+                          [ '_[local]_rotamer_angle',
+                            '_[local]_rotamer_energy' ],
                           { 'read_until_end' => 1 } );
 
     if( ! exists $pdbx_loops->[0]{'_[local]_rotamer_angle'} ||

@@ -69,14 +69,13 @@ sub obtain_pdbx_line
 
 sub obtain_pdbx_line_new
 {
-    my ( $pdbx_file, $items, $options ) = @_;
-    my ( $read_until_end ) = ( $options->{'read_until_end'} );
-
-    $read_until_end //= 0;
+    my ( $pdbx_file, $items ) = @_;
 
     my %pdbx_line_data;
     my %current_line_data;
     my $item_regexp = join q{|}, @{ $items };
+    $item_regexp =~ s/\[/\\[/g;
+    $item_regexp =~ s/\]/\\]/g;
 
     local $/ = '';
     local @ARGV = ( $pdbx_file );
@@ -118,6 +117,8 @@ sub obtain_pdbx_loop
     my @data; # Will be used for storing atom data temporarily.
 
     my $category_regexp = join q{|}, @{ $categories };
+    $category_regexp =~ s/\[/\\[/g;
+    $category_regexp =~ s/\]/\\]/g;
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
     local @ARGV = ( $pdbx_file );
