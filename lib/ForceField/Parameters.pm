@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use File::Basename qw( dirname );
-use List::Util qw( uniq );
+use List::Util qw( max
+                   uniq );
 
 use PDBxParser qw( pdbx_loop_to_array
                    obtain_pdbx_line_new
@@ -19,8 +20,9 @@ sub new
 
     $force_field_file //= dirname( __FILE__ ) . '/Parameters.cif';
 
-    my $self = { %{ constants() },
-                 %{ force_field( $force_field_file ) } };
+    my $force_field = force_field( $force_field_file );
+    my $constants = constants( $force_field );
+    my $self = { %{ $constants }, %{ $force_field } };
 
     return bless $self, $class;
 }
@@ -79,6 +81,8 @@ sub _pi
 
 sub constants
 {
+    my ( $force_field ) = @_;
+
     my %constants;
 
     # General constants.
@@ -102,6 +106,23 @@ sub constants
         5.0 * $constants{'_constants'}{'pi'} / 180.0;
 
     # Grid constants.
+    $constants{'_constants'}{'edge_length_connection'} =
+        max( map { @{ $force_field->{'_[local]_atom_properties'}{$_}
+                                    {'covalent_radius'}{'length'} } }
+             keys %{ $force_field->{'_[local]_atom_properties'} } ) * 2;
+
+    # Arginine model is use for calculating the interaction cutoff.
+    $constants{'_constants'}{'edge_length_interaction'} =
+        7 * $force_field->{'_[local]_atom_properties'}{'C'}{'covalent_radius'}
+                          {'length'}->[0] +
+        2 * $force_field->{'_[local]_atom_properties'}{'N'}{'covalent_radius'}
+                          {'length'}->[0] +
+        3 * $force_field->{'_[local]_atom_properties'}{'C'}{'covalent_radius'}
+                          {'length'}->[1] +
+        3 * $force_field->{'_[local]_atom_properties'}{'N'}{'covalent_radius'}
+                          {'length'}->[1] +
+            $force_field->{'_[local]_atom_properties'}{'H'}{'covalent_radius'}
+                          {'length'}->[0];
 
     return \%constants;
 }
@@ -127,11 +148,22 @@ sub force_field
         my $lone_pair_count = $atom_properties->{'lone_pair_count'};
         my $vdw_radius = $atom_properties->{'vdw_radius'};
         my $valence = $atom_properties->{'valence'};
+        my $covalent_radius_value = $atom_properties->{'covalent_radius_value'};
+        my $covalent_radius_error = $atom_properties->{'covalent_radius_error'};
 
         $force_field_parameters{'_[local]_atom_properties'}{$type_symbol}
                                {'lone_pairs'} = $lone_pair_count;
         $force_field_parameters{'_[local]_atom_properties'}{$type_symbol}
                                {'vdw_radius'} = $vdw_radius;
+        $force_field_parameters{'_[local]_atom_properties'}{$type_symbol}
+                               {'valence'} = $valence;
+
+        push @{ $force_field_parameters{'_[local]_atom_properties'}{$type_symbol}
+                                       {'covalent_radius'}{'length'} },
+            $covalent_radius_value;
+        push @{ $force_field_parameters{'_[local]_atom_properties'}{$type_symbol}
+                                       {'covalent_radius'}{'error'} },
+            $covalent_radius_error;
     }
 
     # Restructuring parameters of Lennard-Jones.
