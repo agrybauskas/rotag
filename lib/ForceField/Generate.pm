@@ -93,6 +93,100 @@ sub force_field_parameters
                                {$type_symbol_2}{'epsilon'} = $epsilon;
     }
 
+    # Restructuring parameters of partial charge.
+    my $partial_charge_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_partial_charge' );
+
+    for my $partial_charge ( @{ $partial_charge_loop } ) {
+        my $residue_name = $partial_charge->{'label_comp_id'};
+        my $atom_name = $partial_charge->{'label_atom_id'};
+        my $partial_charge_value = $partial_charge->{'value'};
+
+        $force_field_parameters{'_[local]_partial_charge'}{$residue_name}
+                               {$atom_name} = $partial_charge_value;
+    }
+
+    # Restructuring parameters of partial torsional potential.
+    my $torsional_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_torsional' );
+
+    for my $torsional ( @{ $torsional_loop } ) {
+        my $type_symbol_1 = $torsional->{'type_symbol_1'};
+        my $type_symbol_2 = $torsional->{'type_symbol_2'};
+        my $epsilon = $torsional->{'epsilon'};
+
+        $force_field_parameters{'_[local]_torsional'}{$type_symbol_1}
+                               {$type_symbol_2}{'epsilon'} = $epsilon;
+    }
+
+    # Restructuring parameters of hydrogen bond.
+    my $hydrogen_bond_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_h_bond' );
+
+    for my $hydrogen_bond ( @{ $hydrogen_bond_loop } ) {
+        my $type_symbol = $hydrogen_bond->{'type_symbol'};
+        my $sigma = $hydrogen_bond->{'sigma'};
+        my $epsilon = $hydrogen_bond->{'epsilon'};
+
+        $force_field_parameters{'_[local]_h_bond'}{$type_symbol}{'sigma'} =
+            $sigma;
+        $force_field_parameters{'_[local]_h_bond'}{$type_symbol}{'epsilon'} =
+            $epsilon;
+    }
+
+    # Restructuring parameters of atom necessity.
+    my $residue_atoms_loop =
+        pdbx_loop_to_array($force_field_data, '_[local]_residue_atom_necessity');
+
+    for my $residue_atoms ( @{ $residue_atoms_loop } ) {
+        my $residue_name = $residue_atoms->{'label_comp_id'};
+        my $atom_name = $residue_atoms->{'label_atom_id'};
+        my $necessity_value = $residue_atoms->{'value'};
+
+        push @{ $force_field_parameters{'_[local]_residue_atom_necessity'}
+                                       {$residue_name}
+                                       {$necessity_value} }, $atom_name;
+    }
+
+    # Restructuring parameters of clear hybridizations.
+    my $clear_hybridization_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_clear_hybridization' );
+
+    for my $clear_hybridization ( @{ $clear_hybridization_loop } ) {
+        my $residue_name = $clear_hybridization->{'label_comp_id'};
+        my $atom_name = $clear_hybridization->{'label_atom_id'};
+        my $hybridization = $clear_hybridization->{'type'};
+
+        $force_field_parameters{'_[local]_clear_hybridization'}{$residue_name}
+                               {$atom_name} = $hybridization;
+    }
+
+    # Restructuring parameters of connectivity.
+    my $connectivity_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_connectivity' );
+
+    for my $connectivity ( @{ $connectivity_loop } ) {
+        my $residue_name = $connectivity->{'label_comp_id'};
+        my $atom_name_1 = $connectivity->{'label_atom_1_id'};
+        my $atom_name_2 = $connectivity->{'label_atom_2_id'};
+
+        push @{ $force_field_parameters{'_[local]_hydrogen_names'}{$residue_name}
+                                       {$atom_name_1} }, $atom_name_2;
+    }
+
+    # Restructuring parameters of hydrogen names.
+    my $hydrogen_names_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_hydrogen_names' );
+
+    for my $hydrogen_names ( @{ $hydrogen_names_loop } ) {
+        my $residue_name = $hydrogen_names->{'label_comp_id'};
+        my $atom_name = $hydrogen_names->{'label_atom_id'};
+        my $hydrogen_name = $hydrogen_names->{'label_hydrogen_atom_id'};
+
+        $force_field_parameters{'_[local]_hydrogen_names'}{$residue_name}
+                               {$atom_name} = $hydrogen_name;
+    }
+
     return;
 }
 
