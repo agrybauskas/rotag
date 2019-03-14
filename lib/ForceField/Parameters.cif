@@ -531,9 +531,9 @@ O 1.90 5.00
 S 2.50 1.00
 #
 loop_
-_[local]_residue_atom_necessety.label_comp_id
-_[local]_residue_atom_necessety.label_atom_id
-_[local]_residue_atom_necessety.value
+_[local]_residue_atom_necessity.label_comp_id
+_[local]_residue_atom_necessity.label_atom_id
+_[local]_residue_atom_necessity.value
 ALA C    mandatory
 ALA CA   mandatory
 ALA CB   mandatory
