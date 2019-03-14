@@ -3,12 +3,24 @@ package Parameters;
 use strict;
 use warnings;
 
+use File::Basename qw( dirname );
+use List::Util qw( uniq );
+
+use PDBxParser qw( pdbx_loop_to_array
+                   obtain_pdbx_line_new
+                   obtain_pdbx_loop );
+
 # ------------------------- Constructors/Destructors -------------------------- #
 
 sub new
 {
     my ( $class, $args ) = @_;
-    my $self = {};
+    my ( $parameter_file ) = ( $args->{'parameter_file'} );
+
+    $parameter_file //= dirname( __FILE__ ) . '/Parameters.cif';
+
+    my $self = { %{ force_field_parameters( $parameter_file ) } };
+
     return bless $self, $class;
 }
 
@@ -52,7 +64,7 @@ sub force_field_parameters
 {
     my ( $pdbx_file ) = @_;
 
-    my $force_field_data = obtain_force_field_data( $pdbx_file );
+    my $force_field_data = _obtain_force_field_data( $pdbx_file );
 
     my %force_field_parameters = ();
 
@@ -204,3 +216,5 @@ sub force_field_parameters
 
     return \%force_field_parameters;
 }
+
+1;

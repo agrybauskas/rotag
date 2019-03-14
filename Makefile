@@ -31,16 +31,16 @@ ${PERL_MODULE}: ${PERL_TEMPLATE}
 
 LIB_FORCE_FIELD_DIR=lib/ForceField
 TOOLS_DIR=tools
-PERL_FORCE_FIELD_TEMPLATE=${LIB_FORCE_FIELD_DIR}/Parameters.pmin
-PERL_FORCE_FIELD_CIF=${LIB_FORCE_FIELD_DIR}/Parameters.cif
-PERL_FORCE_FIELD_MODULE=${LIB_FORCE_FIELD_DIR}/Parameters.pm
+# PERL_FORCE_FIELD_TEMPLATE=${LIB_FORCE_FIELD_DIR}/Parameters.pmin
+# PERL_FORCE_FIELD_CIF=${LIB_FORCE_FIELD_DIR}/Parameters.cif
+# PERL_FORCE_FIELD_MODULE=${LIB_FORCE_FIELD_DIR}/Parameters.pm
 
-${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
-	cat $(word 1, $^) > $@
-	${TOOLS_DIR}/generate-force-field $(word 2, $^) >> $@
-	sed -i 's/\$$/our \$$/g' $@
-	sed -i 's/%/our %/g' $@
-	sed -i 's/@/our @/g' $@
+# ${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
+# 	cat $(word 1, $^) > $@
+# 	${TOOLS_DIR}/generate-force-field $(word 2, $^) >> $@
+# 	sed -i 's/\$$/our \$$/g' $@
+# 	sed -i 's/%/our %/g' $@
+# 	sed -i 's/@/our @/g' $@
 
 .PHONY: all
 
