@@ -187,7 +187,23 @@ sub force_field_parameters
                                {$atom_name} = $hydrogen_name;
     }
 
-    return;
+    # Restructuring parameters of interaction atom names.
+    $force_field_parameters{'_[local]_interaction_atoms'} =
+        $force_field_data->{'_[local]_interaction_atoms'}{'data'};
+
+    # Restructuring parameters of mainchain atom names.
+    $force_field_parameters{'_[local]_mainchain_atom_names'} =
+        $force_field_data->{'_[local]_mainchain_atom_names'}{'data'};
+
+    # Restructuring parameters of sidechain atom names.
+    $force_field_parameters{'_[local]_sidechain_atom_names'} =
+        $force_field_data->{'_[local]_sidechain_atom_names'}{'data'};
+
+    # Restructuring parameters of rotatable residue names.
+    $force_field_parameters{'_[local]_rotatable_residue_names'} =
+        $force_field_data->{'_[local]_rotatable_residue_names'}{'data'};
+
+    return \%force_field_parameters;
 }
 
 1;

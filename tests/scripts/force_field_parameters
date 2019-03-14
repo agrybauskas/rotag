@@ -17,6 +17,5 @@ use ForceField::Generate qw( force_field_parameters );
 @ARGV = ( "-" ) unless @ARGV;
 
 foreach( @ARGV ) {
-    # print Dumper
-    force_field_parameters( $_ );
+    print Dumper force_field_parameters( $_ );
 }
