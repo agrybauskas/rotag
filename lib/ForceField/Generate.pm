@@ -57,18 +57,41 @@ sub force_field_parameters
 
     my %force_field_parameters = ();
 
-    # Force field constants.
-    # my $SOFT_EPSILON = $force_field_data->{'_[local]_force_field'}{'soft_epsilon'};
-    # my $SOFT_N = $force_field_data->{'_force_field'}{'soft_n'};
-    # my $LJ_K = $force_field_data->{'_force_field'}{'lj_k'};
-    # my $C_K = $force_field_data->{'_force_field'}{'c_k'};
-    # my $H_K = $force_field_data->{'_force_field'}{'h_k'};
-    # my $T_K = $force_field_data->{'_force_field'}{'t_k'};
-    # my $CUTOFF_ATOM = $force_field_data->{'_force_field'}{'cutoff_atom'};
-    # my $CUTOFF_START = $force_field_data->{'_force_field'}{'cutoff_start'};
-    # my $CUTOFF_END = $force_field_data->{'_force_field'}{'cutoff_end'};
+    # Restructuring force field constants.
+    $force_field_parameters{'_[local]_force_field'} =
+        pdbx_loop_to_array( $force_field_data, '_[local]_force_field' );
 
-    # use Data::Dumper; print STDERR Dumper $SOFT_EPSILON;
+    # Restructuring parameters of atom properties.
+    my $atom_properties_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_atom_properties' );
+
+    for my $atom_properties ( @{ $atom_properties_loop } ) {
+        my $type_symbol = $atom_properties->{'type_symbol'};
+        my $lone_pair_count = $atom_properties->{'lone_pair_count'};
+        my $vdw_radius = $atom_properties->{'vdw_radius'};
+        my $valence = $atom_properties->{'valence'};
+
+        $force_field_parameters{'_[local]_atom_properties'}{$type_symbol}
+                               {'lone_pairs'} = $lone_pair_count;
+        $force_field_parameters{'_[local]_atom_properties'}{$type_symbol}
+                               {'vdw_radius'} = $vdw_radius;
+    }
+
+    # Restructuring parameters of Lennard-Jones.
+    my $lennard_jones_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_lennard_jones' );
+
+    for my $lennard_jones ( @{ $lennard_jones_loop } ) {
+        my $type_symbol_1 = $lennard_jones->{'type_symbol_1'};
+        my $type_symbol_2 = $lennard_jones->{'type_symbol_2'};
+        my $sigma = $lennard_jones->{'sigma'};
+        my $epsilon = $lennard_jones->{'epsilon'};
+
+        $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_1}
+                               {$type_symbol_2}{'sigma'} = $sigma;
+        $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_1}
+                               {$type_symbol_2}{'epsilon'} = $epsilon;
+    }
 
     return;
 }
