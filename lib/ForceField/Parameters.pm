@@ -15,11 +15,12 @@ use PDBxParser qw( pdbx_loop_to_array
 sub new
 {
     my ( $class, $args ) = @_;
-    my ( $parameter_file ) = ( $args->{'parameter_file'} );
+    my ( $force_field_file ) = ( $args->{'force_field_file'} );
 
-    $parameter_file //= dirname( __FILE__ ) . '/Parameters.cif';
+    $force_field_file //= dirname( __FILE__ ) . '/Parameters.cif';
 
-    my $self = { %{ force_field_parameters( $parameter_file ) } };
+    my $self = { %{ constants() },
+                 %{ force_field( $force_field_file ) } };
 
     return bless $self, $class;
 }
@@ -58,9 +59,54 @@ sub _obtain_force_field_data
     return { %{ $pdbx_line_data }, %{ $pdbx_loop_data } };
 }
 
+sub _epsilon
+{
+    my $EPSILON = 1.0;
+
+    while( ( 1.0 + 0.5 * $EPSILON ) != 1.0 ) {
+        $EPSILON = 0.5 * $EPSILON;
+    }
+
+    return $EPSILON;
+}
+
+sub _pi
+{
+    return 4 * atan2 1, 1;
+}
+
 # ----------------------------- Setters/Getters ------------------------------- #
 
-sub force_field_parameters
+sub constants
+{
+    my %constants;
+
+    # General constants.
+    $constants{'_constants'}{'epsilon'} = _epsilon();
+    $constants{'_constants'}{'pi'} = _pi();
+    $constants{'_constants'}{'sig_figs_min'} = '%.3f';
+    $constants{'_constants'}{'sig_figs_max'} = '%.6f';
+
+    # Angle constants.
+    $constants{'_constants'}{'sp3_angle'} =
+        109.5 * $constants{'_constants'}{'pi'} / 180.0;
+    $constants{'_constants'}{'sp2_angle'} =
+        120.0 * $constants{'_constants'}{'pi'} / 180.0;
+    $constants{'_constants'}{'sp2_angle'} =
+        $constants{'_constants'}{'pi'};
+    $constants{'_constants'}{'sp3_angle_err'} =
+        5.0 * $constants{'_constants'}{'pi'} / 180.0;
+    $constants{'_constants'}{'sp2_angle_err'} =
+        5.0 * $constants{'_constants'}{'pi'} / 180.0;
+    $constants{'_constants'}{'sp_angle_err'} =
+        5.0 * $constants{'_constants'}{'pi'} / 180.0;
+
+    # Grid constants.
+
+    return \%constants;
+}
+
+sub force_field
 {
     my ( $pdbx_file ) = @_;
 
