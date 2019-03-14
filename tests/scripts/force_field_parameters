@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
+
+use ForceField::Generate qw( force_field_parameters );
+
+#
+# Unit test: ForceField::Generate::force_field_parameters
+# Example: ./force_field_parameters parameters.cif
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+
+foreach( @ARGV ) {
+    # print Dumper
+    force_field_parameters( $_ );
+}
