@@ -22,7 +22,8 @@ sub new
 
     my $force_field = force_field( $force_field_file );
     my $constants = constants( $force_field );
-    my $self = { %{ $constants }, %{ $force_field } };
+    my $bond_types = bond_types( $force_field );
+    my $self = { %{ $constants }, %{ $bond_types }, %{ $force_field } };
 
     return bless $self, $class;
 }
@@ -60,6 +61,31 @@ sub _obtain_force_field_data
 
     return { %{ $pdbx_line_data }, %{ $pdbx_loop_data } };
 }
+
+# sub _covalent_bond_combinations
+# {
+#     my ( $ATOMS ) = @_;
+
+#     my %covalent_bond_combinations;
+#     for my $atom_i_name ( keys %Parameters::ATOMS ) {
+#         for my $atom_j_name ( keys %Parameters::ATOMS ) {
+#             $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'length'} =
+#                 permutation( 2,
+#                              [],
+#                              [ $Parameters::ATOMS{$atom_i_name}{'covalent_radius'}{'length'},
+#                                $Parameters::ATOMS{$atom_j_name}{'covalent_radius'}{'length'} ],
+#                              [] );
+#             $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'error'} =
+#                 permutation( 2,
+#                              [],
+#                              [ $Parameters::ATOMS{$atom_i_name}{'covalent_radius'}{'error'},
+#                                $Parameters::ATOMS{$atom_j_name}{'covalent_radius'}{'error'} ],
+#                              [] );
+#         }
+#     }
+
+#     return \%covalent_bond_combinations;
+# }
 
 sub _epsilon
 {
@@ -294,5 +320,98 @@ sub force_field
 
     return \%force_field_parameters;
 }
+
+sub bond_types
+{
+    my ( $force_field ) = @_;
+
+    my %bond_types;
+
+    # Single bonds.
+    my @atom_symbols_single = qw( H C N O S );
+    for my $first_atom_symbol ( @atom_symbols_single ) {
+        for my $second_atom_symbol ( @atom_symbols_single ) {
+            $bond_types{'_bond_types'}{'single'}{$first_atom_symbol}
+                       {$second_atom_symbol}{'min_length'} =
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'length'}[0] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'length'}[0] -
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'error'}[0] -
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'error'}[0];
+            $bond_types{'_bond_types'}{'single'}{$first_atom_symbol}
+                       {$second_atom_symbol}{'max_length'} =
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'length'}[0] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'length'}[0] +
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'error'}[0] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'error'}[0];
+        }
+    }
+
+    # Double bonds.
+    my @atom_symbols_double = qw( C N O );
+    for my $first_atom_symbol ( @atom_symbols_double ) {
+        for my $second_atom_symbol ( @atom_symbols_double ) {
+            $bond_types{'_bond_types'}{'double'}{$first_atom_symbol}
+                       {$second_atom_symbol}{'min_length'} =
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'length'}[1] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'length'}[1] -
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'error'}[1] -
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'error'}[1];
+            $bond_types{'_bond_types'}{'double'}{$first_atom_symbol}
+                       {$second_atom_symbol}{'max_length'} =
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'length'}[1] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'length'}[1] +
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'error'}[1] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'error'}[1];
+        }
+    }
+
+    # Triple bonds.
+    my @atom_symbols_triple = qw( C );
+    for my $first_atom_symbol ( @atom_symbols_triple ) {
+        for my $second_atom_symbol ( @atom_symbols_triple ) {
+            $bond_types{'_bond_types'}{'triple'}{$first_atom_symbol}
+                       {$second_atom_symbol}{'min_length'} =
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'length'}[2] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'length'}[2] -
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'error'}[2] -
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'error'}[2];
+            $bond_types{'_bond_types'}{'triple'}{$first_atom_symbol}
+                       {$second_atom_symbol}{'max_length'} =
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'length'}[2] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'length'}[2] +
+                $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
+                              {'covalent_radius'}{'error'}[2] +
+                $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
+                              {'covalent_radius'}{'error'}[2];
+        }
+    }
+
+    return \%bond_types;
+}
+
+# our %COVALENT_BOND_COMB = %{ covalent_bond_combinations( \%Parameters::ATOMS ) };
+
 
 1;
