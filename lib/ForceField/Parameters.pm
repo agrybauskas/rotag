@@ -277,8 +277,8 @@ sub force_field
         my $atom_name = $hydrogen_names->{'label_atom_id'};
         my $hydrogen_name = $hydrogen_names->{'label_hydrogen_atom_id'};
 
-        $force_field_parameters{'_[local]_hydrogen_names'}{$residue_name}
-                               {$atom_name} = $hydrogen_name;
+        push @{ $force_field_parameters{'_[local]_hydrogen_names'}{$residue_name}
+                                       {$atom_name} }, $hydrogen_name;
     }
 
     # Restructuring parameters of interaction atom names.

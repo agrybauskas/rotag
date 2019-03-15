@@ -19,15 +19,12 @@ $atom_site = eval( $atom_site );
 
 my $PARAMETERS = Parameters->new();
 
-add_hydrogens( $atom_site,
-               $PARAMETERS,
-               { 'add_only_clear_positions' => $add_only_clear_positions } );
+%{ $atom_site } =
+    ( %{ $atom_site },
+      %{ add_hydrogens(
+             $atom_site,
+             $PARAMETERS,
+             { 'add_only_clear_positions' => $add_only_clear_positions } ) } );
 
-# %{ $atom_site } =
-#     ( %{ $atom_site },
-#       %{ add_hydrogens(
-#              $atom_site,
-#              { 'add_only_clear_positions' => $add_only_clear_positions } ) } );
-
-# # Prints out PDBx format file.
-# to_pdbx( { "atom_site" => $atom_site } );
+# Prints out PDBx format file.
+to_pdbx( { "atom_site" => $atom_site } );
