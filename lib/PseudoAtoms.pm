@@ -322,7 +322,6 @@ sub generate_library
     my $angles = $args->{'angles'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
-    my $parameters = $args->{'parameters'};
     my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
     my $threads = $args->{'threads'};
     my $PARAMETERS = $args->{'PARAMETERS'};
@@ -435,7 +434,6 @@ sub generate_library
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
                              'energy_cutoff_atom' => $energy_cutoff_atom,
-                             'parameters' => $parameters,
                              'threads' => $threads,
                              'PARAMETERS' => $PARAMETERS } ) };
 
@@ -452,23 +450,9 @@ sub generate_library
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
                              'energy_cutoff_atom' => $energy_cutoff_atom,
-                             'parameters' => $parameters,
                              'PARAMETERS' => $PARAMETERS },
                            [ @allowed_angles ],
                            $threads ) };
-
-                # my ( $allowed_angles, $energy_sums ) =
-                #     @{ calc_full_atom_energy(
-                #            { 'atom_site' => $current_atom_site,
-                #              'residue_unique_key' => $residue_unique_key,
-                #              'interaction_site' => \%interaction_site,
-                #              'non_bonded_potential' =>
-                #                  $potential_functions{$interactions}{'non_bonded'},
-                #              'bonded_potential' =>
-                #                  $potential_functions{$interactions}{'bonded'},
-                #              'energy_cutoff_atom' => $energy_cutoff_atom,
-                #              'parameters' => $parameters },
-                #            [ @allowed_angles ] ) };
 
                 if( ! @{ $allowed_angles } ) {
                     die "no possible rotamer solutions were detected.\n";
@@ -522,7 +506,7 @@ sub calc_favourable_angles
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $angles,
          $small_angle, $non_bonded_potential, $bonded_potential,
-         $energy_cutoff_atom, $parameters, $threads, $PARAMETERS ) = (
+         $energy_cutoff_atom, $threads, $PARAMETERS ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
@@ -531,7 +515,6 @@ sub calc_favourable_angles
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
-        $args->{'parameters'},
         $args->{'threads'},
         $args->{'PARAMETERS'},
     );
@@ -626,21 +609,9 @@ sub calc_favourable_angles
                          'energy_cutoff_atom' => $energy_cutoff_atom,
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential,
-                         'parameters' => $parameters,
                          'PARAMETERS' => $PARAMETERS },
                        [ \@allowed_angles, \@allowed_energies ],
                        $threads ) };
-
-           # my ( $next_allowed_angles, $next_allowed_energies ) =
-           #     @{ calc_favourable_angle(
-           #            { 'atom_site' => $atom_site,
-           #              'atom_id' => $atom_id,
-           #              'interaction_site' => $interaction_site,
-           #              'energy_cutoff_atom' => $energy_cutoff_atom,
-           #              'non_bonded_potential' => $non_bonded_potential,
-           #              'bonded_potential' => $bonded_potential,
-           #              'parameters' => $parameters },
-           #            [ \@allowed_angles, \@allowed_energies ] ) };
 
             if( scalar @{ $next_allowed_angles } > 0 ) {
                 @allowed_angles = @{ $next_allowed_angles };
@@ -786,15 +757,15 @@ sub calc_full_atom_energy
 
     my ( $atom_site, $residue_unique_key, $interaction_site,
          $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
-         $parameters, $PARAMETERS ) = (
+         $PARAMETERS, $options ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
-        $args->{'parameters'},
         $args->{'PARAMETERS'},
+        $args->{'options'},
     );
 
     my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
@@ -831,7 +802,7 @@ sub calc_full_atom_energy
         # HACK: should connect_atoms() be used here?
         # connect_atoms( \%rotamer_interaction_site );
 
-        $parameters->{'atom_site'} = \%rotamer_interaction_site;
+        $options->{'atom_site'} = \%rotamer_interaction_site;
 
         my $rotamer_energy_sum = 0;
 
@@ -840,7 +811,8 @@ sub calc_full_atom_energy
             if( defined $bonded_potential ) {
                 $rotamer_energy_sum += $bonded_potential->(
                     $rotamer_interaction_site{$rotamer_atom_id},
-                    $parameters
+                    $PARAMETERS,
+                    $options
                 );
             }
 
@@ -858,7 +830,8 @@ sub calc_full_atom_energy
                         $non_bonded_potential->(
                             $rotamer_interaction_site{$rotamer_atom_id},
                             $rotamer_interaction_site{$neighbour_atom_id},
-                            $parameters );
+                            $PARAMETERS,
+                            $options );
 
                     next ALLOWED_ANGLES
                         if $rotamer_atom_energy > $energy_cutoff_atom;
@@ -923,7 +896,7 @@ sub replace_with_rotamer
     my ( $atom_site, $residue_unique_key, $angle_values, $PARAMETERS ) = @_;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
-    my $residue_site =
+    # my $residue_site =
         generate_rotamer( { 'atom_site' => $atom_site,
                             'angle_values' =>
                                 { $residue_unique_key => $angle_values  },
@@ -932,16 +905,16 @@ sub replace_with_rotamer
                             'set_missing_angles_to_zero' => 1,
                             'PARAMETERS' => $PARAMETERS } );
 
-    for my $residue_atom_id ( keys %{ $residue_site } ) {
-        my $residue_origin_atom_id = $residue_site->{$residue_atom_id}
-                                                    {'origin_atom_id'};
-        $residue_site->{$residue_atom_id}{'id'} = $residue_origin_atom_id;
-        $residue_site->{$residue_atom_id}{'label_alt_id'} = $alt_group_id;
-        $residue_site->{$residue_atom_id}{'connections'} =
-            $atom_site->{$residue_origin_atom_id}{'connections'};
-        $atom_site->{$residue_origin_atom_id} =
-            $residue_site->{$residue_atom_id};
-    }
+    # for my $residue_atom_id ( keys %{ $residue_site } ) {
+    #     my $residue_origin_atom_id = $residue_site->{$residue_atom_id}
+    #                                                 {'origin_atom_id'};
+    #     $residue_site->{$residue_atom_id}{'id'} = $residue_origin_atom_id;
+    #     $residue_site->{$residue_atom_id}{'label_alt_id'} = $alt_group_id;
+    #     $residue_site->{$residue_atom_id}{'connections'} =
+    #         $atom_site->{$residue_origin_atom_id}{'connections'};
+    #     $atom_site->{$residue_origin_atom_id} =
+    #         $residue_site->{$residue_atom_id};
+    # }
 
     return;
 }
