@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ConnectAtoms qw( connect_atoms );
+use ForceField::Parameters;
 
 #
 # Unit test: ConnectAtoms::connect_atoms
@@ -20,7 +21,9 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-connect_atoms( $atom_site );
+my $PARAMETERS = Parameters->new();
+
+connect_atoms( $atom_site, $PARAMETERS );
 
 my @atom_coord;
 my @parent_atom;

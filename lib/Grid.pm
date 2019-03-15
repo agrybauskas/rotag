@@ -11,7 +11,7 @@ our @EXPORT_OK = qw( create_box
 use List::Util qw( max
                    min );
 use Carp qw( confess );
-use Constants qw( $EDGE_LENGTH_CONNECTION );
+use ForceField::Parameters;
 use PDBxParser qw( filter );
 use Version qw( $VERSION );
 
@@ -74,8 +74,11 @@ sub create_box
 
 sub grid_box
 {
-    my ( $atom_site, $edge_length, $atom_ids, $options ) = @_;
+    my ( $atom_site, $edge_length, $atom_ids, $PARAMETERS, $options ) = @_;
     my ( $attributes ) = ( $options->{'attributes'} );
+
+    my $EDGE_LENGTH_CONNECTION =
+        $PARAMETERS->{'_[local]_constants'}{'edge_length_connection'};
 
     $attributes //= [ 'id' ];
 
