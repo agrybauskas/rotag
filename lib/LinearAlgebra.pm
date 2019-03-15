@@ -25,8 +25,7 @@ our @EXPORT_OK = qw( create_ref_frame
 
 use Carp qw( confess );
 use Clone qw( clone );
-# use Constants qw( $EPSILON
-#                   $PI );
+use ForceField::Parameters;
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -102,51 +101,54 @@ sub create_ref_frame
     return \@local_ref_frame;
 }
 
-# #
-# # Function calculates Euler rotational angles (alpha, beta, gamma) that are used
-# # to transform global reference frame to chosen one.
-# # Input:
-# #     ${mid,up,side}_atom_coord - Cartesian coordinates of three atoms.
-# # Output:
-# #     euler angles (alpha, beta, gamma) in radians.
-# #
+#
+# Function calculates Euler rotational angles (alpha, beta, gamma) that are used
+# to transform global reference frame to chosen one.
+# Input:
+#     ${mid,up,side}_atom_coord - Cartesian coordinates of three atoms.
+# Output:
+#     euler angles (alpha, beta, gamma) in radians.
+#
 
-# sub find_euler_angles
-# {
-#     my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) = @_;
+sub find_euler_angles
+{
+    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord, $PARAMETERS ) = @_;
 
-#     my $alpha_rad;
-#     my $beta_rad;
-#     my $gamma_rad;
+    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+    my $EPSILON = $PARAMETERS->{'_[local]_constants'}{'epsilon'};
 
-#     my $z_axis_in_xy_plane;
+    my $alpha_rad;
+    my $beta_rad;
+    my $gamma_rad;
 
-#     my $local_ref_frame =
-#         create_ref_frame( $mid_atom_coord, $up_atom_coord, $side_atom_coord );
+    my $z_axis_in_xy_plane;
 
-#     # Projects local z-axis to global xy-plane.
-#     $z_axis_in_xy_plane =
-#         sqrt( $local_ref_frame->[2][0] * $local_ref_frame->[2][0] +
-#               $local_ref_frame->[2][1] * $local_ref_frame->[2][1] );
+    my $local_ref_frame =
+        create_ref_frame( $mid_atom_coord, $up_atom_coord, $side_atom_coord );
 
-#     if( $z_axis_in_xy_plane > $EPSILON ) {
-#         $alpha_rad =
-#             atan2  $local_ref_frame->[1][0] * $local_ref_frame->[2][1] -
-#                    $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
-#                    $local_ref_frame->[0][0] * $local_ref_frame->[2][1] -
-#                    $local_ref_frame->[0][1] * $local_ref_frame->[2][0];
-#         $beta_rad = atan2 $z_axis_in_xy_plane, $local_ref_frame->[2][2];
-#         $gamma_rad =
-#             - atan2 - $local_ref_frame->[2][0], $local_ref_frame->[2][1];
-#     } else {
-#         $alpha_rad = 0.;
-#         $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : $PI;
-#         $gamma_rad =
-#             - atan2 $local_ref_frame->[0][1], $local_ref_frame->[0][0];
-#     }
+    # Projects local z-axis to global xy-plane.
+    $z_axis_in_xy_plane =
+        sqrt( $local_ref_frame->[2][0] * $local_ref_frame->[2][0] +
+              $local_ref_frame->[2][1] * $local_ref_frame->[2][1] );
 
-#     return [ $alpha_rad, $beta_rad, $gamma_rad ];
-# }
+    if( $z_axis_in_xy_plane > $EPSILON ) {
+        $alpha_rad =
+            atan2  $local_ref_frame->[1][0] * $local_ref_frame->[2][1] -
+                   $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
+                   $local_ref_frame->[0][0] * $local_ref_frame->[2][1] -
+                   $local_ref_frame->[0][1] * $local_ref_frame->[2][0];
+        $beta_rad = atan2 $z_axis_in_xy_plane, $local_ref_frame->[2][2];
+        $gamma_rad =
+            - atan2 - $local_ref_frame->[2][0], $local_ref_frame->[2][1];
+    } else {
+        $alpha_rad = 0.;
+        $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : $PI;
+        $gamma_rad =
+            - atan2 $local_ref_frame->[0][1], $local_ref_frame->[0][0];
+    }
+
+    return [ $alpha_rad, $beta_rad, $gamma_rad ];
+}
 
 #
 # Switches between global and local frames of reference.
