@@ -47,16 +47,18 @@ our $VERSION = $VERSION;
 
 sub hard_sphere
 {
-    my ( $atom_i, $atom_j, $parameters ) = @_;
+    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
 
-    my ( $r_squared, $sigma, $soft_epsilon, $n ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'sigma'},
+    my ( $r_squared, $sigma ) = (
+        $options->{'r_squared'},
+        $options->{'sigma'},
     );
 
+    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
+
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $Parameters::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'}
-             + $Parameters::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $ATOM_PROPERTIES->{$atom_i->{'type_symbol'}}{'vdw_radius'}
+             + $ATOM_PROPERTIES->{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared < $sigma ** 2 ) {
         return 'Inf';

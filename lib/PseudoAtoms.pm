@@ -689,19 +689,19 @@ sub calc_favourable_angle
     my ( $args, $array_blocks ) = @_;
 
     my ( $atom_site, $atom_id, $interaction_site, $non_bonded_potential,
-         $bonded_potential, $energy_cutoff_atom, $parameters, $PARAMETERS ) = (
+         $bonded_potential, $energy_cutoff_atom, $PARAMETERS, $options ) = (
         $args->{'atom_site'},
         $args->{'atom_id'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'energy_cutoff_atom'},
-        $args->{'parameters'},
         $args->{'PARAMETERS'},
+        $args->{'options'},
     );
 
-    my %parameters = defined $parameters ? %{ $parameters } : ();
-    $parameters{'atom_site'} = $atom_site;
+    my %options = defined $options ? %{ $options } : ();
+    $options{'atom_site'} = $atom_site;
 
     my @allowed_angles;
     my @allowed_energies;
@@ -735,7 +735,8 @@ sub calc_favourable_angle
                 $potential_energy = $non_bonded_potential->(
                     $pseudo_atom_site->{$pseudo_atom_id},
                     $atom_site->{$interaction_id},
-                    \%parameters
+                    $PARAMETERS,
+                    \%options
                 );
                 $potential_sum += $potential_energy;
                 last if $potential_energy > $energy_cutoff_atom;

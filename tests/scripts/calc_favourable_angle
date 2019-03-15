@@ -4,8 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::NonBonded qw( hard_sphere );
-use Constants qw( $PI
-                  $SIG_FIGS_MIN );
+use ForceField::Parameters;
 use PDBxParser qw( filter
                    to_pdbx );
 use PseudoAtoms qw( calc_favourable_angle );
@@ -23,6 +22,10 @@ while( <$fh> ) {
 }
 close( $fh );
 $atom_site = eval( $atom_site );
+
+my $PARAMETERS = Parameters->new();
+my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 
 my @checkable_angles;
 my @checkable_energies;
@@ -51,6 +54,7 @@ my ( $favourable_angles, $favourable_energies ) =
                                 'non_bonded_potential' => \&hard_sphere,
                                 'energy_cutoff_atom' => $energy_cutoff_atom,
                                 'threads' => 1,
+                                'PARAMETERS' => $PARAMETERS,
                               }, [ \@checkable_angles, \@checkable_energies ] )};
 
 my $angle_id = 1;
