@@ -9,7 +9,6 @@ our @EXPORT_OK = qw( sample_angles
 
 use POSIX;
 
-use Constants qw( $PI );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -28,7 +27,9 @@ our $VERSION = $VERSION;
 
 sub sample_angles
 {
-    my ( $angle_ranges, $small_angle, $angle_phase_shift ) = @_;
+    my ( $angle_ranges, $small_angle, $angle_phase_shift, $PARAMETERS ) = @_;
+
+    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
     $angle_phase_shift //= -$PI;
 
@@ -77,7 +78,9 @@ sub sample_angles
 
 sub sample_angles_qs_parsing
 {
-    my ( $query_string, $in_radians, $small_angle ) = @_;
+    my ( $query_string, $in_radians, $small_angle, $PARAMETERS ) = @_;
+
+    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
     $query_string =~ s/\s//g;
     $small_angle = 36.0;
@@ -113,12 +116,14 @@ sub sample_angles_qs_parsing
 
         if( $in_radians ) {
             $angles{$angle_name} =
-                sample_angles( [ [ $angle_start, $angle_end ] ], $angle_step );
+                sample_angles( [ [ $angle_start, $angle_end ] ], $angle_step,
+                               undef, $PARAMETERS );
         } else {
             $angles{$angle_name} =
                 sample_angles( [ [ $angle_start * $PI / 180.0,
                                    $angle_end * $PI / 180.0 ] ],
-                                   $angle_step * $PI / 180.0 );
+                               $angle_step * $PI / 180.0,
+                               undef, $PARAMETERS );
         }
     }
 

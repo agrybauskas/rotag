@@ -20,10 +20,6 @@ use Math::Trig qw( acos
 use Readonly;
 
 use ConnectAtoms qw( distance_squared );
-use Constants qw( $PI
-                  $SP3_ANGLE
-                  $SP2_ANGLE
-                  $SP_ANGLE );
 use ForceField::Parameters;
 use Measure qw( bond_angle );
 use Version qw( $VERSION );
@@ -333,7 +329,7 @@ sub h_bond
 
 sub h_bond_implicit
 {
-    my ( $donor_atom, $acceptor_atom, $parameters ) = @_;
+    my ( $donor_atom, $acceptor_atom, $parameters, $PARAMETERS ) = @_;
 
     my ( $r_donor_acceptor_squared, $h_k, $is_optimal, $reference_atom_site ) = (
         $parameters->{'r_squared'},
@@ -343,6 +339,11 @@ sub h_bond_implicit
     );
 
     $h_k //= $Parameters::H_K;
+
+    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+    my $SP3_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp3_angle'};
+    my $SP2_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp2_angle'};
+    my $SP_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp_angle'};
 
     my $r_sigma =
         $Parameters::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
@@ -476,7 +477,7 @@ sub h_bond_implicit
 
 sub h_bond_explicit
 {
-    my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters  ) = @_;
+    my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters, $PARAMETERS  ) = @_;
 
     my ( $r_donor_acceptor_squared, $h_k, $is_optimal ) = (
         $parameters->{'r_squared'},
@@ -484,6 +485,8 @@ sub h_bond_explicit
         $parameters->{'is_optimal'}
     );
     $h_k //= $Parameters::H_K;
+
+    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
     my $r_sigma =
         $Parameters::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
@@ -541,7 +544,7 @@ sub h_bond_explicit
 
 sub general
 {
-    my ( $atom_i, $atom_j, $parameters ) = @_;
+    my ( $atom_i, $atom_j, $parameters, $PARAMETERS ) = @_;
 
     my ( $r_squared, $sigma, $cutoff_start, $cutoff_end, $decompose,
          $is_optimal ) = (
@@ -558,6 +561,8 @@ sub general
     $cutoff_end //= $Parameters::CUTOFF_END;
     $decompose //= 0;
     $is_optimal //= 0;
+
+    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
     # Calculates squared distance between two atoms.
     $r_squared //= distance_squared( $atom_i, $atom_j );

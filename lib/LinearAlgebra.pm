@@ -166,14 +166,16 @@ sub switch_ref_frame
     my ( $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
-         $switch_ref_to ) = @_;
+         $switch_ref_to,
+         $PARAMETERS ) = @_;
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
     my ( $alpha_rad, $beta_rad, $gamma_rad ) =
         @{ find_euler_angles( $mid_atom_coord,
                               $up_atom_coord,
-                              $side_atom_coord ) };
+                              $side_atom_coord,
+                              $PARAMETERS ) };
 
     # Depending on the option switch_to_local,
     my $ref_frame_switch;

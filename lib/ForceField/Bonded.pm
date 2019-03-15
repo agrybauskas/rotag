@@ -11,7 +11,6 @@ our @EXPORT_OK = qw( general
 use Readonly;
 
 use AtomProperties qw( sort_atom_names );
-use Constants qw( $PI );
 use ForceField::Parameters;
 use Measure qw( dihedral_angle );
 use Version qw( $VERSION );
@@ -172,7 +171,9 @@ sub torsion_new
 
 sub _torsion
 {
-    my ( $omega, $phase, $epsilon ) = @_;
+    my ( $omega, $phase, $epsilon, $PARAMETERS ) = @_;
+
+    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
     if( $omega < ( -$PI / $phase ) || $omega > ( $PI / $phase ) ) {
         return 0

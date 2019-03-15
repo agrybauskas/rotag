@@ -14,8 +14,6 @@ use Math::Trig qw( acos );
 use AlterMolecule qw( bond_torsion );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
-use Constants qw( $PI
-                  $SIG_FIGS_MIN );
 use ForceField::Parameters;
 use PDBxParser qw( filter
                    filter_by_unique_residue_key );
@@ -109,7 +107,7 @@ our %SIDECHAINS = (
 
 sub replace_with_moiety
 {
-    my ( $atom_site, $unique_residue_key, $moiety, $options ) = @_;
+    my ( $atom_site, $unique_residue_key, $moiety, $PARAMETERS, $options ) = @_;
 
     my ( $isomer, $angles, $append_moieties, $last_atom_id ) =
         ( $options->{'isomer'},
@@ -121,6 +119,10 @@ sub replace_with_moiety
     $angles //= {};
     $append_moieties //= {};
     $last_atom_id //= max( keys %{ $atom_site } );
+
+    my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
+    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+    my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
 
     my %all_sidechains = ( %SIDECHAINS, %{ $append_moieties } );
 
@@ -140,7 +142,8 @@ sub replace_with_moiety
         @{ switch_ref_frame( $moiety_ca_atom_coord,
                              $moiety_cb_atom_coord,
                              \@moiety_helper_atom_coord,
-                             'local' ) };
+                             'local',
+                             $PARAMETERS ) };
 
     # Then generates transformation matrix that will align moiety atoms with
     # target atoms.
@@ -159,7 +162,7 @@ sub replace_with_moiety
                          # TODO: make proper list of mainchain atoms.
                          { 'label_atom_id' =>
                                [ grep { $_ ne 'CB' }
-                                      @Parameters::INTERACTION_ATOM_NAMES ] },
+                                      @{ $INTERACTION_ATOM_NAMES } ] },
                      'data' => [ 'id' ],
                      'is_list' => 1 } ) };
 
@@ -191,13 +194,15 @@ sub replace_with_moiety
         @{ switch_ref_frame( $ca_atom_coord,
                              $n_atom_coord,
                              $c_atom_coord,
-                             'global' ) };
+                             'global',
+                             $PARAMETERS ) };
 
     # Rotational matrix is created for producing 'R' or 'S' configuration.
     my $rotational_matrix = bond_torsion( $c_atom_coord,
                                           $ca_atom_coord,
                                           $o_atom_coord,
-                                          'omega' );
+                                          'omega',
+                                          $PARAMETERS );
 
     # Adds moiety.
     for my $atom_id ( sort keys %{ $all_sidechains{$moiety} } ) {
