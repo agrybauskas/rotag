@@ -945,192 +945,196 @@ sub replace_with_rotamer
     return;
 }
 
-# #
-# # Adds hydrogens to the molecule.
-# # Input:
-# #     $atom_site - atom site data structure (see PDBxParser.pm);
-# #     $options->{add_only_clear_postions} - adds only those atoms that have clear
-# #     positions that can be determined by geometry. For example, hydrogens of
-# #     methyl group that has only one known connection are not added, but with two
-# #     connections - are;
-# #     $options->{use_existing_connections} - does not overwrite atom connections;
-# #     $options->{use_existing_hybridizations} - does not overwrite atom
-# #     hybridizations;
-# #     $options->{reference_atom_site} - atom site data structure that is used
-# #     for determining atom connections;
-# #     $options->{exclude_by_atom_name} - list of atom names that are excluded
-# #     from being added hydrogens to;
-# #     $options->{alt_group_id} - alternative group id that is used to distinguish
-# #     pseudo atoms.
-# # Output:
-# #     %hydrogen_site - atom data structure with added hydrogens.
-# #
+#
+# Adds hydrogens to the molecule.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $options->{add_only_clear_postions} - adds only those atoms that have clear
+#     positions that can be determined by geometry. For example, hydrogens of
+#     methyl group that has only one known connection are not added, but with two
+#     connections - are;
+#     $options->{use_existing_connections} - does not overwrite atom connections;
+#     $options->{use_existing_hybridizations} - does not overwrite atom
+#     hybridizations;
+#     $options->{reference_atom_site} - atom site data structure that is used
+#     for determining atom connections;
+#     $options->{exclude_by_atom_name} - list of atom names that are excluded
+#     from being added hydrogens to;
+#     $options->{alt_group_id} - alternative group id that is used to distinguish
+#     pseudo atoms.
+# Output:
+#     %hydrogen_site - atom data structure with added hydrogens.
+#
 
-# sub add_hydrogens
-# {
-#     my ( $atom_site, $options ) = @_;
+sub add_hydrogens
+{
+    my ( $atom_site, $PARAMETERS, $options ) = @_;
 
-#     my ( $add_only_clear_positions, $use_existing_connections,
-#          $use_existing_hybridizations, $reference_atom_site,
-#          $exclude_by_atom_name, $exclude_by_atom_ids,
-#          $last_atom_id, $alt_group_id,
-#          $use_origins_alt_group_id, $selection_state ) =
-#         ( $options->{'add_only_clear_positions'},
-#           $options->{'use_existing_connections'},
-#           $options->{'use_existing_hybridizations'},
-#           $options->{'reference_atom_site'},
-#           $options->{'exclude_by_atom_name'},
-#           $options->{'exclude_by_atom_ids'},
-#           $options->{'last_atom_id'},
-#           $options->{'alt_group_id'},
-#           $options->{'use_origins_alt_group_id'},
-#           $options->{'selection_state'}, );
+    my ( $add_only_clear_positions, $use_existing_connections,
+         $use_existing_hybridizations, $reference_atom_site,
+         $exclude_by_atom_name, $exclude_by_atom_ids,
+         $last_atom_id, $alt_group_id,
+         $use_origins_alt_group_id, $selection_state ) =
+        ( $options->{'add_only_clear_positions'},
+          $options->{'use_existing_connections'},
+          $options->{'use_existing_hybridizations'},
+          $options->{'reference_atom_site'},
+          $options->{'exclude_by_atom_name'},
+          $options->{'exclude_by_atom_ids'},
+          $options->{'last_atom_id'},
+          $options->{'alt_group_id'},
+          $options->{'use_origins_alt_group_id'},
+          $options->{'selection_state'}, );
 
-#     $add_only_clear_positions //= 0;
-#     $use_existing_connections //= 0;
-#     $use_existing_hybridizations //= 0;
-#     $reference_atom_site //= $atom_site;
-#     $exclude_by_atom_name //= [];
-#     $exclude_by_atom_ids //= [];
-#     $alt_group_id //= '1';
-#     $use_origins_alt_group_id //= 0;
+    $add_only_clear_positions //= 0;
+    $use_existing_connections //= 0;
+    $use_existing_hybridizations //= 0;
+    $reference_atom_site //= $atom_site;
+    $exclude_by_atom_name //= [];
+    $exclude_by_atom_ids //= [];
+    $alt_group_id //= '1';
+    $use_origins_alt_group_id //= 0;
 
-#     my %atom_site = %{ $atom_site };
+    my $HYDROGEN_NAMES = $PARAMETERS->{'_[local]_hydrogen_names'};
+    my $RESIDUE_ATOMS = $PARAMETERS->{'_[local]_residue_atom_necessity'};
+    my $CONNECTIVITY = $PARAMETERS->{'_[local]_connectivity'};
 
-#     if( ! $use_existing_connections ) { connect_atoms( \%atom_site ) };
+    my %atom_site = %{ $atom_site };
 
-#     if( ! $use_existing_hybridizations ) { hybridization( \%atom_site ) };
+    if( !$use_existing_connections ) {connect_atoms( \%atom_site, $PARAMETERS )};
 
-#     my %hydrogen_site;
-#     $last_atom_id //= max( keys %{ $atom_site } );
+    if( !$use_existing_hybridizations ) {hybridization(\%atom_site,$PARAMETERS)};
 
-#     for my $atom_id ( sort { $a <=> $b } keys %atom_site ) {
-#         my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
+    my %hydrogen_site;
+    $last_atom_id //= max( keys %{ $atom_site } );
 
-#         next if any { $_ eq $atom_id } @{ $exclude_by_atom_ids };
-#         next if any { $_ eq $atom_name } @{ $exclude_by_atom_name };
+    for my $atom_id ( sort { $a <=> $b } keys %atom_site ) {
+        my $atom_name = $atom_site{$atom_id}{'label_atom_id'};
 
-#         my $residue_name = $atom_site{$atom_id}{'label_comp_id'};
+        next if any { $_ eq $atom_id } @{ $exclude_by_atom_ids };
+        next if any { $_ eq $atom_name } @{ $exclude_by_atom_name };
 
-#         my $hydrogen_names = $Parameters::HYDROGEN_NAMES{$residue_name}{$atom_name};
+        my $residue_name = $atom_site{$atom_id}{'label_comp_id'};
 
-#         if( ! $hydrogen_names ) { next; }; # Exits early if there should be no
-#                                            # hydrogens connected to the atom.
+        my $hydrogen_names = $HYDROGEN_NAMES->{$residue_name}{$atom_name};
 
-#         my $hybridization = $atom_site->{$atom_id}{'hybridization'};
+        if( ! $hydrogen_names ) { next; }; # Exits early if there should be no
+                                           # hydrogens connected to the atom.
 
-#         # Decides how many and what hydrogens should be added according to the
-#         # quantity of bonds and hydrogen atoms that should be connected to the
-#         # target atom.
-#         my @connection_ids = ();
-#         if( exists $reference_atom_site->{"$atom_id"}{'connections'} ) {
-#             @connection_ids =
-#                 @{ $reference_atom_site->{"$atom_id"}{'connections'} };
-#         }
+        my $hybridization = $atom_site->{$atom_id}{'hybridization'};
 
-#         # TODO: should be pre-determined as constant variable.
-#         my @mandatory_residue_atoms =
-#             @{ $Parameters::RESIDUE_ATOMS{$residue_name}{'mandatory'} };
-#         my @mandatory_connections = ();
-#         for my $mandatory_atom ( @mandatory_residue_atoms ) {
-#             if( any { $mandatory_atom eq $_ }
-#                    @{ $Parameters::CONNECTIVITY{$residue_name}{$atom_name} } ) {
-#                 push @mandatory_connections, $mandatory_atom;
-#             }
-#         }
+        # Decides how many and what hydrogens should be added according to the
+        # quantity of bonds and hydrogen atoms that should be connected to the
+        # target atom.
+        my @connection_ids = ();
+        if( exists $reference_atom_site->{"$atom_id"}{'connections'} ) {
+            @connection_ids =
+                @{ $reference_atom_site->{"$atom_id"}{'connections'} };
+        }
 
-#         # Hydrogens cannot be added if there is a missing information about
-#         # mandatory atom connections.
-#         next if( scalar @connection_ids < scalar @mandatory_connections );
+    #     # TODO: should be pre-determined as constant variable.
+    #     my @mandatory_residue_atoms =
+    #         @{ $RESIDUE_ATOMS->{$residue_name}{'mandatory'} };
+    #     my @mandatory_connections = ();
+    #     for my $mandatory_atom ( @mandatory_residue_atoms ) {
+    #         if( any { $mandatory_atom eq $_ }
+    #                @{ $CONNECTIVITY->{$residue_name}{$atom_name} } ) {
+    #             push @mandatory_connections, $mandatory_atom;
+    #         }
+    #     }
 
-#         my @connection_names =
-#             map { $reference_atom_site->{"$_"}{'label_atom_id'} }
-#                 @connection_ids;
-#         my @missing_hydrogens;
-#         for my $hydrogen_name ( @{ $hydrogen_names } ) {
-#             if( ! any { /$hydrogen_name/sxm } @connection_names ) {
-#                 push @missing_hydrogens, $hydrogen_name;
-#             }
-#         }
+    #     # Hydrogens cannot be added if there is a missing information about
+    #     # mandatory atom connections.
+    #     next if( scalar @connection_ids < scalar @mandatory_connections );
 
-#         # Exits early if there are no spare hydrogens to add.
-#         if( scalar @missing_hydrogens == 0 ) { next; };
+    #     my @connection_names =
+    #         map { $reference_atom_site->{"$_"}{'label_atom_id'} }
+    #             @connection_ids;
+    #     my @missing_hydrogens;
+    #     for my $hydrogen_name ( @{ $hydrogen_names } ) {
+    # #         if( ! any { /$hydrogen_name/sxm } @connection_names ) {
+    # #             push @missing_hydrogens, $hydrogen_name;
+    # #         }
+    #     }
 
-#         #            sp3                       sp2               sp
-#         #
-#         #            Up(2)                     Up(2)             Up(2)
-#         # z          |                         |                 |
-#         # |_y      Middle(1) __ Right(3)     Middle(1)         Middle(1)
-#         # /         / \                       / \                |
-#         # x    Left(4) Back(5)           Left(4) Right(3)        Down(3)
-#         #
-#         # Depending on hybridization and present bond connections, adds missing
-#         # hydrogens.
-#         my %hydrogen_coord = map { $_ => undef } @missing_hydrogens;
+    #     # Exits early if there are no spare hydrogens to add.
+    #     if( scalar @missing_hydrogens == 0 ) { next; };
 
-#         if( $hybridization eq 'sp3' ) {
-#             add_hydrogens_sp3( $atom_site, $atom_id, \%hydrogen_coord,
-#                                \@missing_hydrogens, $options );
-#         } elsif( $hybridization eq 'sp2' ) {
-#             add_hydrogens_sp2( $atom_site, $atom_id, \%hydrogen_coord,
-#                                \@missing_hydrogens, $options );
-#         } elsif( $hybridization eq 'sp' ) {
-#             add_hydrogens_sp( $atom_site, $atom_id, \%hydrogen_coord,
-#                               \@missing_hydrogens, $options );
-#         }
+    #     #            sp3                       sp2               sp
+    #     #
+    #     #            Up(2)                     Up(2)             Up(2)
+    #     # z          |                         |                 |
+    #     # |_y      Middle(1) __ Right(3)     Middle(1)         Middle(1)
+    #     # /         / \                       / \                |
+    #     # x    Left(4) Back(5)           Left(4) Right(3)        Down(3)
+    #     #
+    #     # Depending on hybridization and present bond connections, adds missing
+    #     # hydrogens.
+    #     my %hydrogen_coord = map { $_ => undef } @missing_hydrogens;
 
-#         # Each coordinate of atoms is transformed by transformation
-#         # matrix and added to %hydrogen_site.
-#         for my $hydrogen_name ( sort { $a cmp $b } keys %hydrogen_coord ) {
-#             if( $hydrogen_coord{$hydrogen_name} ) {
-#             # Adds necessary PDBx entries to pseudo atom site.
-#             $last_atom_id++;
-#             create_pdbx_entry(
-#                 { 'atom_site' => \%hydrogen_site,
-#                   'id' => $last_atom_id,
-#                   'type_symbol' => 'H',
-#                   'label_atom_id' => $hydrogen_name,
-#                   'label_alt_id' =>
-#                       $use_origins_alt_group_id ?
-#                       $atom_site->{$atom_id}{'label_alt_id'} : $alt_group_id,
-#                   'label_comp_id' => $atom_site->{$atom_id}{'label_comp_id'},
-#                   'label_asym_id' => $atom_site->{$atom_id}{'label_asym_id'},
-#                   'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},
-#                   'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
-#                   'cartn_x' =>
-#                       sprintf( $SIG_FIGS_MIN,
-#                                $hydrogen_coord{$hydrogen_name}->[0][0] ),
-#                   'cartn_y' =>
-#                       sprintf( $SIG_FIGS_MIN,
-#                                $hydrogen_coord{$hydrogen_name}->[1][0] ),
-#                   'cartn_z' =>
-#                       sprintf( $SIG_FIGS_MIN,
-#                                $hydrogen_coord{$hydrogen_name}->[2][0] ),
-#                   'pdbx_PDB_model_num' =>
-#                       $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
-#                 } );
-#             # Adds additional pseudo-atom flag for future filtering.
-#             $hydrogen_site{$last_atom_id}{'is_pseudo_atom'} = 1;
-#             # Adds atom id that pseudo atoms was made of.
-#             $hydrogen_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
-#             # Marks origin atom id as connection.
-#             $hydrogen_site{$last_atom_id}{'connections'} = [ $atom_id ];
-#             # By default, hydrogen atoms are sp3 hybridized.
-#             $hydrogen_site{$last_atom_id}{'hybridization'} = 'sp3';
-#             # Adds selection state if it is defined.
-#             if( defined $selection_state ) {
-#                 $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
-#                     $selection_state;
-#             } else {
-#                 $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
-#                     $atom_site->{$atom_id}{'[local]_selection_state'};
-#             }
-#             }
-#         }
-#     }
+    #     if( $hybridization eq 'sp3' ) {
+    #         add_hydrogens_sp3( $atom_site, $atom_id, \%hydrogen_coord,
+    #                            \@missing_hydrogens, $options );
+    #     } elsif( $hybridization eq 'sp2' ) {
+    #         add_hydrogens_sp2( $atom_site, $atom_id, \%hydrogen_coord,
+    #                            \@missing_hydrogens, $options );
+    #     } elsif( $hybridization eq 'sp' ) {
+    #         add_hydrogens_sp( $atom_site, $atom_id, \%hydrogen_coord,
+    #                           \@missing_hydrogens, $options );
+    #     }
 
-#     return \%hydrogen_site;
-# }
+    #     # Each coordinate of atoms is transformed by transformation
+    #     # matrix and added to %hydrogen_site.
+    #     for my $hydrogen_name ( sort { $a cmp $b } keys %hydrogen_coord ) {
+    #         if( $hydrogen_coord{$hydrogen_name} ) {
+    #         # Adds necessary PDBx entries to pseudo atom site.
+    #         $last_atom_id++;
+    #         create_pdbx_entry(
+    #             { 'atom_site' => \%hydrogen_site,
+    #               'id' => $last_atom_id,
+    #               'type_symbol' => 'H',
+    #               'label_atom_id' => $hydrogen_name,
+    #               'label_alt_id' =>
+    #                   $use_origins_alt_group_id ?
+    #                   $atom_site->{$atom_id}{'label_alt_id'} : $alt_group_id,
+    #               'label_comp_id' => $atom_site->{$atom_id}{'label_comp_id'},
+    #               'label_asym_id' => $atom_site->{$atom_id}{'label_asym_id'},
+    #               'label_entity_id' => $atom_site->{$atom_id}{'label_entity_id'},
+    #               'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
+    #               'cartn_x' =>
+    #                   sprintf( $SIG_FIGS_MIN,
+    #                            $hydrogen_coord{$hydrogen_name}->[0][0] ),
+    #               'cartn_y' =>
+    #                   sprintf( $SIG_FIGS_MIN,
+    #                            $hydrogen_coord{$hydrogen_name}->[1][0] ),
+    #               'cartn_z' =>
+    #                   sprintf( $SIG_FIGS_MIN,
+    #                            $hydrogen_coord{$hydrogen_name}->[2][0] ),
+    #               'pdbx_PDB_model_num' =>
+    #                   $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
+    #             } );
+    #         # Adds additional pseudo-atom flag for future filtering.
+    #         $hydrogen_site{$last_atom_id}{'is_pseudo_atom'} = 1;
+    #         # Adds atom id that pseudo atoms was made of.
+    #         $hydrogen_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
+    #         # Marks origin atom id as connection.
+    #         $hydrogen_site{$last_atom_id}{'connections'} = [ $atom_id ];
+    #         # By default, hydrogen atoms are sp3 hybridized.
+    #         $hydrogen_site{$last_atom_id}{'hybridization'} = 'sp3';
+    #         # Adds selection state if it is defined.
+    #         if( defined $selection_state ) {
+    #             $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
+    #                 $selection_state;
+    #         } else {
+    #             $hydrogen_site{$last_atom_id}{'[local]_selection_state'} =
+    #                 $atom_site->{$atom_id}{'[local]_selection_state'};
+    #         }
+    #         }
+    #     }
+    }
+
+    # return \%hydrogen_site;
+}
 
 # #
 # # Adds hydrogens to the atoms which are sp3 hybridized.
