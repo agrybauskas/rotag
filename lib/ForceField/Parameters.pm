@@ -310,7 +310,7 @@ sub bond_types
     my @atom_symbols_single = qw( H C N O S );
     for my $first_atom_symbol ( @atom_symbols_single ) {
         for my $second_atom_symbol ( @atom_symbols_single ) {
-            $bond_types{'_bond_types'}{'single'}{$first_atom_symbol}
+            $bond_types{'_[local]_bond_types'}{'single'}{$first_atom_symbol}
                        {$second_atom_symbol}{'min_length'} =
                 $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
                               {'covalent_radius'}{'length'}[0] +
@@ -320,7 +320,7 @@ sub bond_types
                               {'covalent_radius'}{'error'}[0] -
                 $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
                               {'covalent_radius'}{'error'}[0];
-            $bond_types{'_bond_types'}{'single'}{$first_atom_symbol}
+            $bond_types{'_[local]_bond_types'}{'single'}{$first_atom_symbol}
                        {$second_atom_symbol}{'max_length'} =
                 $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
                               {'covalent_radius'}{'length'}[0] +
@@ -337,7 +337,7 @@ sub bond_types
     my @atom_symbols_double = qw( C N O );
     for my $first_atom_symbol ( @atom_symbols_double ) {
         for my $second_atom_symbol ( @atom_symbols_double ) {
-            $bond_types{'_bond_types'}{'double'}{$first_atom_symbol}
+            $bond_types{'_[local]_bond_types'}{'double'}{$first_atom_symbol}
                        {$second_atom_symbol}{'min_length'} =
                 $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
                               {'covalent_radius'}{'length'}[1] +
@@ -347,7 +347,7 @@ sub bond_types
                               {'covalent_radius'}{'error'}[1] -
                 $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
                               {'covalent_radius'}{'error'}[1];
-            $bond_types{'_bond_types'}{'double'}{$first_atom_symbol}
+            $bond_types{'_[local]_bond_types'}{'double'}{$first_atom_symbol}
                        {$second_atom_symbol}{'max_length'} =
                 $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
                               {'covalent_radius'}{'length'}[1] +
@@ -364,7 +364,7 @@ sub bond_types
     my @atom_symbols_triple = qw( C );
     for my $first_atom_symbol ( @atom_symbols_triple ) {
         for my $second_atom_symbol ( @atom_symbols_triple ) {
-            $bond_types{'_bond_types'}{'triple'}{$first_atom_symbol}
+            $bond_types{'_[local]_bond_types'}{'triple'}{$first_atom_symbol}
                        {$second_atom_symbol}{'min_length'} =
                 $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
                               {'covalent_radius'}{'length'}[2] +
@@ -374,7 +374,7 @@ sub bond_types
                               {'covalent_radius'}{'error'}[2] -
                 $force_field->{'_[local]_atom_properties'}{$second_atom_symbol}
                               {'covalent_radius'}{'error'}[2];
-            $bond_types{'_bond_types'}{'triple'}{$first_atom_symbol}
+            $bond_types{'_[local]_bond_types'}{'triple'}{$first_atom_symbol}
                        {$second_atom_symbol}{'max_length'} =
                 $force_field->{'_[local]_atom_properties'}{$first_atom_symbol}
                               {'covalent_radius'}{'length'}[2] +
@@ -399,14 +399,15 @@ sub covalent_bond_combinations
     my %covalent_bond_combinations;
     for my $atom_i_name ( keys %{ $atom_properties } ) {
         for my $atom_j_name ( keys %{ $atom_properties } ) {
-            $covalent_bond_combinations{'covalent_bond_combinations'}
+            $covalent_bond_combinations{'_[local]_covalent_bond_combinations'}
                                        {$atom_i_name}{$atom_j_name}{'length'} =
                 permutation( 2,
                              [],
                              [ $atom_properties->{$atom_i_name}{'covalent_radius'}{'length'},
                                $atom_properties->{$atom_j_name}{'covalent_radius'}{'length'} ],
                              [] );
-            $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'error'} =
+            $covalent_bond_combinations{'_[local]_covalent_bond_combinations'}
+                                       {$atom_i_name}{$atom_j_name}{'error'} =
                 permutation( 2,
                              [],
                              [ $atom_properties->{$atom_i_name}{'covalent_radius'}{'error'},

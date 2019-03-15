@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use BondProperties qw( hybridization );
+use ForceField::Parameters;
 
 #
 # Unit test: BondProperties::hybridization
@@ -20,7 +21,9 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-hybridization( $atom_site );
+my $PARAMETERS = Parameters->new();
+
+hybridization( $atom_site, $PARAMETERS );
 
 for my $atom_id ( sort keys %{ $atom_site } ) {
     print( $atom_site->{$atom_id}{"label_atom_id"}, "\t",
