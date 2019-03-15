@@ -7,6 +7,8 @@ use File::Basename qw( dirname );
 use List::Util qw( max
                    uniq );
 
+use Combinatorics qw( permutation );
+
 use PDBxParser qw( pdbx_loop_to_array
                    obtain_pdbx_line_new
                    obtain_pdbx_loop );
@@ -23,7 +25,9 @@ sub new
     my $force_field = force_field( $force_field_file );
     my $constants = constants( $force_field );
     my $bond_types = bond_types( $force_field );
-    my $self = { %{ $constants }, %{ $bond_types }, %{ $force_field } };
+    my $covalent_bond_combinations = covalent_bond_combinations( $force_field );
+    my $self = { %{ $constants }, %{ $bond_types }, %{ $force_field },
+                 %{ $covalent_bond_combinations } };
 
     return bless $self, $class;
 }
@@ -61,31 +65,6 @@ sub _obtain_force_field_data
 
     return { %{ $pdbx_line_data }, %{ $pdbx_loop_data } };
 }
-
-# sub _covalent_bond_combinations
-# {
-#     my ( $ATOMS ) = @_;
-
-#     my %covalent_bond_combinations;
-#     for my $atom_i_name ( keys %Parameters::ATOMS ) {
-#         for my $atom_j_name ( keys %Parameters::ATOMS ) {
-#             $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'length'} =
-#                 permutation( 2,
-#                              [],
-#                              [ $Parameters::ATOMS{$atom_i_name}{'covalent_radius'}{'length'},
-#                                $Parameters::ATOMS{$atom_j_name}{'covalent_radius'}{'length'} ],
-#                              [] );
-#             $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'error'} =
-#                 permutation( 2,
-#                              [],
-#                              [ $Parameters::ATOMS{$atom_i_name}{'covalent_radius'}{'error'},
-#                                $Parameters::ATOMS{$atom_j_name}{'covalent_radius'}{'error'} ],
-#                              [] );
-#         }
-#     }
-
-#     return \%covalent_bond_combinations;
-# }
 
 sub _epsilon
 {
@@ -411,7 +390,32 @@ sub bond_types
     return \%bond_types;
 }
 
-# our %COVALENT_BOND_COMB = %{ covalent_bond_combinations( \%Parameters::ATOMS ) };
+sub covalent_bond_combinations
+{
+    my ( $force_field ) = @_;
 
+    my $atom_properties = $force_field->{'_[local]_atom_properties'};
+
+    my %covalent_bond_combinations;
+    for my $atom_i_name ( keys %{ $atom_properties } ) {
+        for my $atom_j_name ( keys %{ $atom_properties } ) {
+            $covalent_bond_combinations{'covalent_bond_combinations'}
+                                       {$atom_i_name}{$atom_j_name}{'length'} =
+                permutation( 2,
+                             [],
+                             [ $atom_properties->{$atom_i_name}{'covalent_radius'}{'length'},
+                               $atom_properties->{$atom_j_name}{'covalent_radius'}{'length'} ],
+                             [] );
+            $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'error'} =
+                permutation( 2,
+                             [],
+                             [ $atom_properties->{$atom_i_name}{'covalent_radius'}{'error'},
+                               $atom_properties->{$atom_j_name}{'covalent_radius'}{'error'} ],
+                             [] );
+        }
+    }
+
+    return \%covalent_bond_combinations;
+}
 
 1;
