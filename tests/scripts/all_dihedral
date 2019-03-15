@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $PI );
+use ForceField::Parameters;
 use Measure qw( all_dihedral );
 
 my ( $pdbx_dump_file, $calc_mainchain ) = @ARGV;
@@ -15,6 +15,9 @@ while( <$fh> ) {
 }
 close( $fh );
 $atom_site = eval( $atom_site );
+
+my $PARAMETERS = Parameters->new();
+my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
 my $dihedral_angles = all_dihedral( $atom_site,
                                     { 'calc_mainchain' => $calc_mainchain } );

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS_MIN );
+use ForceField::Parameters;
 use Measure qw( rmsd );
 
 #
@@ -23,5 +23,8 @@ while( <$fh> ) {
     }
 }
 close( $fh );
+
+my $PARAMETERS = Parameters->new();
+my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 
 printf( "$SIG_FIGS_MIN\n", rmsd( @atom_coords ) );
