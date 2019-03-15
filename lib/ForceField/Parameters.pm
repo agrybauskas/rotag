@@ -91,33 +91,33 @@ sub constants
     my %constants;
 
     # General constants.
-    $constants{'_constants'}{'epsilon'} = _epsilon();
-    $constants{'_constants'}{'pi'} = _pi();
-    $constants{'_constants'}{'sig_figs_min'} = '%.3f';
-    $constants{'_constants'}{'sig_figs_max'} = '%.6f';
+    $constants{'_[local]_constants'}{'epsilon'} = _epsilon();
+    $constants{'_[local]_constants'}{'pi'} = _pi();
+    $constants{'_[local]_constants'}{'sig_figs_min'} = '%.3f';
+    $constants{'_[local]_constants'}{'sig_figs_max'} = '%.6f';
 
     # Angle constants.
-    $constants{'_constants'}{'sp3_angle'} =
-        109.5 * $constants{'_constants'}{'pi'} / 180.0;
-    $constants{'_constants'}{'sp2_angle'} =
-        120.0 * $constants{'_constants'}{'pi'} / 180.0;
-    $constants{'_constants'}{'sp2_angle'} =
-        $constants{'_constants'}{'pi'};
-    $constants{'_constants'}{'sp3_angle_err'} =
-        5.0 * $constants{'_constants'}{'pi'} / 180.0;
-    $constants{'_constants'}{'sp2_angle_err'} =
-        5.0 * $constants{'_constants'}{'pi'} / 180.0;
-    $constants{'_constants'}{'sp_angle_err'} =
-        5.0 * $constants{'_constants'}{'pi'} / 180.0;
+    $constants{'_[local]_constants'}{'sp3_angle'} =
+        109.5 * $constants{'_[local]_constants'}{'pi'} / 180.0;
+    $constants{'_[local]_constants'}{'sp2_angle'} =
+        120.0 * $constants{'_[local]_constants'}{'pi'} / 180.0;
+    $constants{'_[local]_constants'}{'sp2_angle'} =
+        $constants{'_[local]_constants'}{'pi'};
+    $constants{'_[local]_constants'}{'sp3_angle_err'} =
+        5.0 * $constants{'_[local]_constants'}{'pi'} / 180.0;
+    $constants{'_[local]_constants'}{'sp2_angle_err'} =
+        5.0 * $constants{'_[local]_constants'}{'pi'} / 180.0;
+    $constants{'_[local]_constants'}{'sp_angle_err'} =
+        5.0 * $constants{'_[local]_constants'}{'pi'} / 180.0;
 
     # Grid constants.
-    $constants{'_constants'}{'edge_length_connection'} =
+    $constants{'_[local]_constants'}{'edge_length_connection'} =
         max( map { @{ $force_field->{'_[local]_atom_properties'}{$_}
                                     {'covalent_radius'}{'length'} } }
              keys %{ $force_field->{'_[local]_atom_properties'} } ) * 2;
 
     # Arginine model is use for calculating the interaction cutoff.
-    $constants{'_constants'}{'edge_length_interaction'} =
+    $constants{'_[local]_constants'}{'edge_length_interaction'} =
         7 * $force_field->{'_[local]_atom_properties'}{'C'}{'covalent_radius'}
                           {'length'}->[0] +
         2 * $force_field->{'_[local]_atom_properties'}{'N'}{'covalent_radius'}

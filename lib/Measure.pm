@@ -163,245 +163,245 @@ sub dihedral_angle
     return $dihedral_angle;
 }
 
-#
-# Calculates dihedral angles for all given atoms that are described in atom site
-# data structure (produced by obtain_atom_site or functions that uses it).
-# Usage of connect_atoms and hybridization functions are necessary for correct
-# calculations.
-# Input:
-#     $atom_site - atom data structure.
-#     $options->{'calc_mainchain'} - additionally calculates phi and psi
-#     mainchain dihedral angles.
-# Output:
-#     $residue_angles - data structure that relates residue id and angle values.
-#     Ex.:
-#       resi_id, angle_name, angle value
-#     { 18 => { 'chi1' => '-3.14' } }
-#
+# #
+# # Calculates dihedral angles for all given atoms that are described in atom site
+# # data structure (produced by obtain_atom_site or functions that uses it).
+# # Usage of connect_atoms and hybridization functions are necessary for correct
+# # calculations.
+# # Input:
+# #     $atom_site - atom data structure.
+# #     $options->{'calc_mainchain'} - additionally calculates phi and psi
+# #     mainchain dihedral angles.
+# # Output:
+# #     $residue_angles - data structure that relates residue id and angle values.
+# #     Ex.:
+# #       resi_id, angle_name, angle value
+# #     { 18 => { 'chi1' => '-3.14' } }
+# #
 
-sub all_dihedral
-{
-    my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $reference_atom_site ) = (
-        $options->{'calc_mainchain'},
-        $options->{'reference_atom_site'},
-    );
+# sub all_dihedral
+# {
+#     my ( $atom_site, $options ) = @_;
+#     my ( $calc_mainchain, $reference_atom_site ) = (
+#         $options->{'calc_mainchain'},
+#         $options->{'reference_atom_site'},
+#     );
 
-    $calc_mainchain //= 0;
-    $reference_atom_site //= $atom_site;
+#     $calc_mainchain //= 0;
+#     $reference_atom_site //= $atom_site;
 
-    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
+#     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
-    my $residue_groups =
-        split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
+#     my $residue_groups =
+#         split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
 
-    # Iterates through residue ids and, according to the parameter file,
-    # calculates dihedral angles of each rotatable bond.
-    my %residue_angles;
+#     # Iterates through residue ids and, according to the parameter file,
+#     # calculates dihedral angles of each rotatable bond.
+#     my %residue_angles;
 
-    for my $residue_unique_key ( keys %{ $residue_groups } ) {
-        my $residue_site =
-            filter( { 'atom_site' => \%atom_site,
-                      'include' =>
-                          { 'id' => $residue_groups->{$residue_unique_key} } } );
+#     for my $residue_unique_key ( keys %{ $residue_groups } ) {
+#         my $residue_site =
+#             filter( { 'atom_site' => \%atom_site,
+#                       'include' =>
+#                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        my $rotatable_bonds = rotatable_bonds( $residue_site );
-        my %uniq_rotatable_bonds; # Unique rotatable bonds.
-        for my $atom_id ( keys %{ $rotatable_bonds } ) {
-            for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
-                if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
-                    $uniq_rotatable_bonds{"$angle_name"} =
-                        $rotatable_bonds->{"$atom_id"}{"$angle_name"};
-                }
-            }
-        }
+#         my $rotatable_bonds = rotatable_bonds( $residue_site );
+#         my %uniq_rotatable_bonds; # Unique rotatable bonds.
+#         for my $atom_id ( keys %{ $rotatable_bonds } ) {
+#             for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
+#                 if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
+#                     $uniq_rotatable_bonds{"$angle_name"} =
+#                         $rotatable_bonds->{"$atom_id"}{"$angle_name"};
+#                 }
+#             }
+#         }
 
-        my %angle_values;
+#         my %angle_values;
 
-        # Calculates main-chain phi, psi angles.
-        if( $calc_mainchain ) {
-            my $n_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'N' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $ca_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'CA' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $c_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'C' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            # TODO: look if these filter slow down calculations drastically.
-            my $prev_c_atom_id =
-                filter( { 'atom_site' => $reference_atom_site,
-                          'include' =>
-                              { 'id' => $residue_site->{$n_atom_id}{'connections'},
-                                'label_atom_id' => [ 'C' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $next_n_atom_id =
-                filter( { 'atom_site' => $reference_atom_site,
-                          'include' =>
-                              { 'id' => $residue_site->{$c_atom_id}{'connections'},
-                                'label_atom_id' => [ 'N' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
+#         # Calculates main-chain phi, psi angles.
+#         if( $calc_mainchain ) {
+#             my $n_atom_id =
+#                 filter( { 'atom_site' => $residue_site,
+#                           'include' => { 'label_atom_id' => [ 'N' ] },
+#                           'data' => [ 'id' ],
+#                           'is_list' => 1 } )->[0];
+#             my $ca_atom_id =
+#                 filter( { 'atom_site' => $residue_site,
+#                           'include' => { 'label_atom_id' => [ 'CA' ] },
+#                           'data' => [ 'id' ],
+#                           'is_list' => 1 } )->[0];
+#             my $c_atom_id =
+#                 filter( { 'atom_site' => $residue_site,
+#                           'include' => { 'label_atom_id' => [ 'C' ] },
+#                           'data' => [ 'id' ],
+#                           'is_list' => 1 } )->[0];
+#             # TODO: look if these filter slow down calculations drastically.
+#             my $prev_c_atom_id =
+#                 filter( { 'atom_site' => $reference_atom_site,
+#                           'include' =>
+#                               { 'id' => $residue_site->{$n_atom_id}{'connections'},
+#                                 'label_atom_id' => [ 'C' ] },
+#                           'data' => [ 'id' ],
+#                           'is_list' => 1 } )->[0];
+#             my $next_n_atom_id =
+#                 filter( { 'atom_site' => $reference_atom_site,
+#                           'include' =>
+#                               { 'id' => $residue_site->{$c_atom_id}{'connections'},
+#                                 'label_atom_id' => [ 'N' ] },
+#                           'data' => [ 'id' ],
+#                           'is_list' => 1 } )->[0];
 
-            # # Calculates phi angle if 'C' atom of previous residue is present.
-            if( defined $prev_c_atom_id ) {
-                $angle_values{'phi'}{'atom_ids'} =
-                    [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
-                $angle_values{'phi'}{'value'} =
-                    dihedral_angle(
-                        [ [ $atom_site->{$prev_c_atom_id}{'Cartn_x'},
-                            $atom_site->{$prev_c_atom_id}{'Cartn_y'},
-                            $atom_site->{$prev_c_atom_id}{'Cartn_z'}, ],
-                          [ $atom_site->{$n_atom_id}{'Cartn_x'},
-                            $atom_site->{$n_atom_id}{'Cartn_y'},
-                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ], ] );
-            }
+#             # # Calculates phi angle if 'C' atom of previous residue is present.
+#             if( defined $prev_c_atom_id ) {
+#                 $angle_values{'phi'}{'atom_ids'} =
+#                     [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
+#                 $angle_values{'phi'}{'value'} =
+#                     dihedral_angle(
+#                         [ [ $atom_site->{$prev_c_atom_id}{'Cartn_x'},
+#                             $atom_site->{$prev_c_atom_id}{'Cartn_y'},
+#                             $atom_site->{$prev_c_atom_id}{'Cartn_z'}, ],
+#                           [ $atom_site->{$n_atom_id}{'Cartn_x'},
+#                             $atom_site->{$n_atom_id}{'Cartn_y'},
+#                             $atom_site->{$n_atom_id}{'Cartn_z'} ],
+#                           [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+#                             $atom_site->{$ca_atom_id}{'Cartn_y'},
+#                             $atom_site->{$ca_atom_id}{'Cartn_z'} ],
+#                           [ $atom_site->{$c_atom_id}{'Cartn_x'},
+#                             $atom_site->{$c_atom_id}{'Cartn_y'},
+#                             $atom_site->{$c_atom_id}{'Cartn_z'} ], ] );
+#             }
 
-            # Calculates psi angle.
-            if( defined $next_n_atom_id ) {
-                $angle_values{'psi'}{'atom_ids'} =
-                    [ $n_atom_id, $ca_atom_id, $c_atom_id, $next_n_atom_id ];
-                $angle_values{'psi'}{'value'} =
-                    dihedral_angle(
-                        [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
-                            $atom_site->{$n_atom_id}{'Cartn_y'},
-                            $atom_site->{$n_atom_id}{'Cartn_z'}, ],
-                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$next_n_atom_id}{'Cartn_x'},
-                            $atom_site->{$next_n_atom_id}{'Cartn_y'},
-                            $atom_site->{$next_n_atom_id}{'Cartn_z'} ], ] );
-            }
-        }
+#             # Calculates psi angle.
+#             if( defined $next_n_atom_id ) {
+#                 $angle_values{'psi'}{'atom_ids'} =
+#                     [ $n_atom_id, $ca_atom_id, $c_atom_id, $next_n_atom_id ];
+#                 $angle_values{'psi'}{'value'} =
+#                     dihedral_angle(
+#                         [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
+#                             $atom_site->{$n_atom_id}{'Cartn_y'},
+#                             $atom_site->{$n_atom_id}{'Cartn_z'}, ],
+#                           [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+#                             $atom_site->{$ca_atom_id}{'Cartn_y'},
+#                             $atom_site->{$ca_atom_id}{'Cartn_z'} ],
+#                           [ $atom_site->{$c_atom_id}{'Cartn_x'},
+#                             $atom_site->{$c_atom_id}{'Cartn_y'},
+#                             $atom_site->{$c_atom_id}{'Cartn_z'} ],
+#                           [ $atom_site->{$next_n_atom_id}{'Cartn_x'},
+#                             $atom_site->{$next_n_atom_id}{'Cartn_y'},
+#                             $atom_site->{$next_n_atom_id}{'Cartn_z'} ], ] );
+#             }
+#         }
 
-        # Calculates every side-chain dihedral angle.
-        for my $angle_name ( keys %uniq_rotatable_bonds ) {
-            # First, checks if rotatable bond has fourth atom produce dihedral
-            # angle. It is done by looking at atom connections - if rotatable
-            # bond ends with terminal atom, then this bond is excluded.
-            if( scalar( @{ $residue_site->
-                               {$uniq_rotatable_bonds{$angle_name}->[1]}
-                               {'connections'} } ) < 2 ){ next; }
+#         # Calculates every side-chain dihedral angle.
+#         for my $angle_name ( keys %uniq_rotatable_bonds ) {
+#             # First, checks if rotatable bond has fourth atom produce dihedral
+#             # angle. It is done by looking at atom connections - if rotatable
+#             # bond ends with terminal atom, then this bond is excluded.
+#             if( scalar( @{ $residue_site->
+#                                {$uniq_rotatable_bonds{$angle_name}->[1]}
+#                                {'connections'} } ) < 2 ){ next; }
 
-            # Chooses proper atom ids for calculating dihedral angles.
-            my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
-            my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
-            my @second_connections = # Second atom connections, except third.
-                grep { $_ ne $third_atom_id }
-                @{ $residue_site->{$second_atom_id}{'connections'} };
-            my $first_atom_name =
-                sort_atom_names(
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'id' => \@second_connections },
-                          'data' => [ 'label_atom_id' ],
-                          'is_list' => 1 } ) )->[0];
-            my $first_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' =>
-                              { 'label_atom_id' => [ $first_atom_name ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my @third_connections = # Third atom connections, except second.
-                grep { $_ ne $second_atom_id }
-                @{ $residue_site->{$third_atom_id}{'connections'} };
-            my $fourth_atom_name =
-                sort_atom_names(
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'id' => \@third_connections },
-                          'data' => [ 'label_atom_id' ],
-                          'is_list' => 1 } ) )->[0];
-            my $fourth_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' =>
-                              { 'label_atom_id' => [ $fourth_atom_name ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
+#             # Chooses proper atom ids for calculating dihedral angles.
+#             my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
+#             my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
+#             my @second_connections = # Second atom connections, except third.
+#                 grep { $_ ne $third_atom_id }
+#                 @{ $residue_site->{$second_atom_id}{'connections'} };
+#             my $first_atom_name =
+#                 sort_atom_names(
+#                 filter( { 'atom_site' => $residue_site,
+#                           'include' => { 'id' => \@second_connections },
+#                           'data' => [ 'label_atom_id' ],
+#                           'is_list' => 1 } ) )->[0];
+#             my $first_atom_id =
+#                 filter( { 'atom_site' => $residue_site,
+#                           'include' =>
+#                               { 'label_atom_id' => [ $first_atom_name ] },
+#                           'data' => [ 'id' ],
+#                           'is_list' => 1 } )->[0];
+#             my @third_connections = # Third atom connections, except second.
+#                 grep { $_ ne $second_atom_id }
+#                 @{ $residue_site->{$third_atom_id}{'connections'} };
+#             my $fourth_atom_name =
+#                 sort_atom_names(
+#                 filter( { 'atom_site' => $residue_site,
+#                           'include' => { 'id' => \@third_connections },
+#                           'data' => [ 'label_atom_id' ],
+#                           'is_list' => 1 } ) )->[0];
+#             my $fourth_atom_id =
+#                 filter( { 'atom_site' => $residue_site,
+#                           'include' =>
+#                               { 'label_atom_id' => [ $fourth_atom_name ] },
+#                           'data' => [ 'id' ],
+#                           'is_list' => 1 } )->[0];
 
-            # Extracts coordinates for dihedral angle calculations.
-            my $first_atom_coord =
-                [ $residue_site->{$first_atom_id}{'Cartn_x'},
-                  $residue_site->{$first_atom_id}{'Cartn_y'},
-                  $residue_site->{$first_atom_id}{'Cartn_z'} ];
-            my $second_atom_coord =
-                [ $residue_site->{$second_atom_id}{'Cartn_x'},
-                  $residue_site->{$second_atom_id}{'Cartn_y'},
-                  $residue_site->{$second_atom_id}{'Cartn_z'} ];
-            my $third_atom_coord =
-                [ $residue_site->{$third_atom_id}{'Cartn_x'},
-                  $residue_site->{$third_atom_id}{'Cartn_y'},
-                  $residue_site->{$third_atom_id}{'Cartn_z'} ];
-            my $fourth_atom_coord =
-                [ $residue_site->{$fourth_atom_id}{'Cartn_x'},
-                  $residue_site->{$fourth_atom_id}{'Cartn_y'},
-                  $residue_site->{$fourth_atom_id}{'Cartn_z'} ];
+#             # Extracts coordinates for dihedral angle calculations.
+#             my $first_atom_coord =
+#                 [ $residue_site->{$first_atom_id}{'Cartn_x'},
+#                   $residue_site->{$first_atom_id}{'Cartn_y'},
+#                   $residue_site->{$first_atom_id}{'Cartn_z'} ];
+#             my $second_atom_coord =
+#                 [ $residue_site->{$second_atom_id}{'Cartn_x'},
+#                   $residue_site->{$second_atom_id}{'Cartn_y'},
+#                   $residue_site->{$second_atom_id}{'Cartn_z'} ];
+#             my $third_atom_coord =
+#                 [ $residue_site->{$third_atom_id}{'Cartn_x'},
+#                   $residue_site->{$third_atom_id}{'Cartn_y'},
+#                   $residue_site->{$third_atom_id}{'Cartn_z'} ];
+#             my $fourth_atom_coord =
+#                 [ $residue_site->{$fourth_atom_id}{'Cartn_x'},
+#                   $residue_site->{$fourth_atom_id}{'Cartn_y'},
+#                   $residue_site->{$fourth_atom_id}{'Cartn_z'} ];
 
-            $angle_values{$angle_name}{'atom_ids'} =
-                [ $first_atom_id,
-                  $second_atom_id,
-                  $third_atom_id,
-                  $fourth_atom_id ];
-            $angle_values{$angle_name}{'value'} =
-                dihedral_angle( [ $first_atom_coord,
-                                  $second_atom_coord,
-                                  $third_atom_coord,
-                                  $fourth_atom_coord ] );
-        }
+#             $angle_values{$angle_name}{'atom_ids'} =
+#                 [ $first_atom_id,
+#                   $second_atom_id,
+#                   $third_atom_id,
+#                   $fourth_atom_id ];
+#             $angle_values{$angle_name}{'value'} =
+#                 dihedral_angle( [ $first_atom_coord,
+#                                   $second_atom_coord,
+#                                   $third_atom_coord,
+#                                   $fourth_atom_coord ] );
+#         }
 
-        %{ $residue_angles{$residue_unique_key} } = %angle_values;
-    }
+#         %{ $residue_angles{$residue_unique_key} } = %angle_values;
+#     }
 
-    return \%residue_angles;
-}
+#     return \%residue_angles;
+# }
 
-#
-# Calculates root-mean-square deviation of two same-length sets.
-# Input:
-#     ${first, second}_set - two equal by length sets of cartesian coordinates
-#     of points.
-# Output:
-#     $rmsd - root-mean-square deviation.
-#
+# #
+# # Calculates root-mean-square deviation of two same-length sets.
+# # Input:
+# #     ${first, second}_set - two equal by length sets of cartesian coordinates
+# #     of points.
+# # Output:
+# #     $rmsd - root-mean-square deviation.
+# #
 
-sub rmsd
-{
-    my ( $first_set, $second_set ) = @_; # Order of set is not important.
+# sub rmsd
+# {
+#     my ( $first_set, $second_set ) = @_; # Order of set is not important.
 
-    my $rmsd = 0;
+#     my $rmsd = 0;
 
-    # Gives the error if the size of the sets are different.
-    if( scalar @{ $first_set } != scalar @{ $second_set } ) {
-        confess 'comparing different sizes of sets of the atoms is not allowed.';
-    }
+#     # Gives the error if the size of the sets are different.
+#     if( scalar @{ $first_set } != scalar @{ $second_set } ) {
+#         confess 'comparing different sizes of sets of the atoms is not allowed.';
+#     }
 
-    # Sums up sqaured differences of coordinates.
-    for( my $i = 0; $i <= $#{ $first_set }; $i++ ) {
-        $rmsd += ( $first_set->[$i][0] - $second_set->[$i][0] )**2 +
-                 ( $first_set->[$i][1] - $second_set->[$i][1] )**2 +
-                 ( $first_set->[$i][2] - $second_set->[$i][2] )**2
-    }
+#     # Sums up sqaured differences of coordinates.
+#     for( my $i = 0; $i <= $#{ $first_set }; $i++ ) {
+#         $rmsd += ( $first_set->[$i][0] - $second_set->[$i][0] )**2 +
+#                  ( $first_set->[$i][1] - $second_set->[$i][1] )**2 +
+#                  ( $first_set->[$i][2] - $second_set->[$i][2] )**2
+#     }
 
-    # Devides by the number of member of the set.
-    $rmsd = $rmsd / scalar @{ $first_set };
+#     # Devides by the number of member of the set.
+#     $rmsd = $rmsd / scalar @{ $first_set };
 
-    return sqrt $rmsd;
-}
+#     return sqrt $rmsd;
+# }
 
 1;

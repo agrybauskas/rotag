@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS_MIN );
+use ForceField::Parameters;
 use Measure qw( dihedral_angle );
 
 #
@@ -19,5 +19,8 @@ while( <$fh> ){
     push( @atom_coords, [ grep( /\S/, split( /#.+|\s+/, $_ ) ) ] );
 }
 close( $fh );
+
+my $PARAMETERS = Parameters->new();
+my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 
 printf( "$SIG_FIGS_MIN\n", dihedral_angle( \@atom_coords ) );

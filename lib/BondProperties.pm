@@ -17,7 +17,7 @@ use List::MoreUtils qw( uniq );
 
 # use AtomProperties qw( sort_atom_names );
 # use Combinatorics qw( permutation );
-# use Measure qw( dihedral_angle );
+use Measure qw( dihedral_angle );
 # use PDBxParser qw( filter );
 use Version qw( $VERSION );
 
