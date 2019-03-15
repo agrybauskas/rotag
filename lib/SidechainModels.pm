@@ -33,7 +33,7 @@ our $VERSION = $VERSION;
 
 sub rotation_only
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $PARAMETERS ) = @_;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -108,7 +108,8 @@ sub rotation_only
                  @{ bond_torsion( $mid_atom_coord,
                                   $up_atom_coord,
                                   $side_atom_coord,
-                                  $angle_name ) };
+                                  $angle_name,
+                                  $PARAMETERS ) };
             }
 
             $atom_site->{$atom_id}{'conformation'} =
