@@ -39,17 +39,14 @@ our $VERSION = $VERSION;
 
 sub torsion
 {
-    my ( $atom_i_id, $parameters ) = @_;
+    my ( $atom_i_id, $PARAMETERS, $options ) = @_;
 
-    my ( $t_epsilon, $t_k, $reference_atom_site ) = (
-        $parameters->{'t_epsilon'},
-        $parameters->{'t_k'},
-        $parameters->{'atom_site'}
-    );
+    my ( $reference_atom_site ) = ( $options->{'atom_site'} );
 
-    $t_epsilon //= 1.0;
-    $t_k //= $Parameters::T_K;
-    my $t_n //= 3; # FIXME: here the number depends on the hybridization.
+    my $T_K //= $PARAMETERS->{'_[local]_force_field'}{'t_k'};
+
+    my $t_epsilon = 1.0;
+    my $t_n = 3; # FIXME: here the number depends on the hybridization.
 
     # Determines all dihedral angles by searching third neighbours following the
     # connections.
@@ -103,7 +100,7 @@ sub torsion
         );
 
         $torsion_potential +=
-            $t_k * ( $t_epsilon / 2 ) * ( 1 + cos( $t_n * $omega ) );
+            $T_K * ( $t_epsilon / 2 ) * ( 1 + cos( $t_n * $omega ) );
     }
 
     return $torsion_potential;
@@ -111,14 +108,13 @@ sub torsion
 
 sub torsion_new
 {
-    my ( $atom_i_id, $parameters ) = @_;
+    my ( $atom_i_id, $PARAMETERS, $options ) = @_;
 
-    my ( $t_k, $reference_atom_site ) = (
-        $parameters->{'t_k'},
-        $parameters->{'atom_site'}
-    );
+    my ( $reference_atom_site ) = ( $options->{'atom_site'} );
 
-    $t_k //= $Parameters::T_K;
+    my $T_K = $PARAMETERS->{'_[local]_force_field'}{'t_k'};
+    my $TORSIONAL = $PARAMETERS->{'_[local]_torsional'};
+
     my $phase = 3;
 
     # Determines all dihedral angles by searching third neighbours following the
@@ -144,8 +140,8 @@ sub torsion_new
             for my $third_neighbour_id ( @third_neighbour_ids ) {
                 my $third_atom_name =
                     $reference_atom_site->{$third_neighbour_id}{'type_symbol'};
-                my $epsilon = $Parameters::TORSIONAL{$third_atom_name}
-                                                    {$atom_name}{'epsilon'};
+                my $epsilon = $TORSIONAL->{$third_atom_name}{$atom_name}
+                                          {'epsilon'};
                 my $omega = dihedral_angle(
                     [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
                         $reference_atom_site->{$third_neighbour_id}{'Cartn_y'},
@@ -161,7 +157,8 @@ sub torsion_new
                         $reference_atom_site->{$atom_i_id}{'Cartn_z'} ] ],
                 );
 
-                $torsion_potential += $t_k * _torsion( $omega, $phase, $epsilon );
+                $torsion_potential +=
+                    $T_K * _torsion( $omega, $phase, $epsilon, $PARAMETERS );
             }
         }
     }
@@ -184,14 +181,14 @@ sub _torsion
 
 sub general
 {
-    my ( $atom_i, $parameters ) = @_;
+    my ( $atom_i, $PARAMETERS, $options ) = @_;
     my ( $decompose, $is_optimal ) =
-        ( $parameters->{'decompose'}, $parameters->{'is_optimal'} );
+        ( $options->{'decompose'}, $options->{'is_optimal'} );
 
     if( $is_optimal ) {
         return 0;
     } else {
-        my $torsion = torsion_new( $atom_i->{'id'}, $parameters );
+        my $torsion = torsion_new( $atom_i->{'id'}, $PARAMETERS, $options );
 
         if( $decompose ) {
             return { 'bonded' => $torsion,
