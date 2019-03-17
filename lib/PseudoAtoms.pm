@@ -475,7 +475,7 @@ sub generate_library
         }
     }
 
-    # return \%rotamer_library;
+    return \%rotamer_library;
 }
 
 #
