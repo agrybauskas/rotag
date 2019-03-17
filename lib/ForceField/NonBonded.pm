@@ -542,44 +542,43 @@ sub h_bond_explicit
 
 sub general
 {
-    my ( $atom_i, $atom_j, $parameters, $PARAMETERS ) = @_;
+    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
 
-    my ( $r_squared, $sigma, $cutoff_start, $cutoff_end, $decompose,
-         $is_optimal ) = (
+    my ( $r_squared, $sigma, $decompose, $is_optimal ) = (
         $parameters->{'r_squared'},
         $parameters->{'sigma'},
-        $parameters->{'cutoff_start'}, # * VdW distance.
-        $parameters->{'cutoff_end'}, # * VdW distance.
         $parameters->{'decompose'}, # Returns hash of the energy function
                                     # component values.
         $parameters->{'is_optimal'},
     );
 
-    $cutoff_start //= $Parameters::CUTOFF_START;
-    $cutoff_end //= $Parameters::CUTOFF_END;
-    $decompose //= 0;
-    $is_optimal //= 0;
 
     my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+    my $CUTOFF_START = $PARAMETERS->{'_[local]_force_field'}{'cutoff_start'};
+    my $CUTOFF_END = $PARAMETERS->{'_[local]_force_field'}{'cutoff_end'};
+    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
+
+    $decompose //= 0;
+    $is_optimal //= 0;
 
     # Calculates squared distance between two atoms.
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
-    my %parameters = %{ $parameters };
-    $parameters{'r_squared'} = $r_squared;
+    my %parameters = %{ $options };
+    $options{'r_squared'} = $r_squared;
 
     # Calculates Van der Waals distance of given atoms.
-    $sigma //= $Parameters::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $Parameters::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $ATOM_PROPERTIES->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $ATOM_PROPERTIES->{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
-    if( $r_squared < ( $cutoff_start * $sigma ) ** 2 ) {
+    if( $r_squared < ( $CUTOFF_START * $sigma ) ** 2 ) {
         my $lennard_jones =
-            lennard_jones( $atom_i, $atom_j,
-                           { %parameters, ( 'is_optimal' => $is_optimal ) } );
-        my $coulomb = coulomb( $atom_i, $atom_j,
-                               { %parameters, ( 'is_optimal' => $is_optimal ) } );
-        my $h_bond =  h_bond( $atom_i, $atom_j,
-                              { %parameters, ( 'is_optimal' => $is_optimal ) } );
+            lennard_jones( $atom_i, $atom_j, $PARAMETERS,
+                           { %options, ( 'is_optimal' => $is_optimal ) } );
+        my $coulomb = coulomb( $atom_i, $atom_j, $PARAMETERS,
+                               { %options, ( 'is_optimal' => $is_optimal ) } );
+        my $h_bond =  h_bond( $atom_i, $atom_j, $PARAMETERS,
+                              { %options, ( 'is_optimal' => $is_optimal ) } );
 
         if( $decompose ) {
             return { 'non_bonded' => $lennard_jones + $coulomb + $h_bond,
@@ -589,18 +588,18 @@ sub general
         } else {
             return $lennard_jones + $coulomb + $h_bond;
         }
-    } elsif( ( $r_squared >= ( $cutoff_start * $sigma ) ** 2 ) &&
-             ( $r_squared <= ( $cutoff_end   * $sigma ) ** 2 ) ) {
+    } elsif( ( $r_squared >= ( $CUTOFF_START * $sigma ) ** 2 ) &&
+             ( $r_squared <= ( $CUTOFF_END   * $sigma ) ** 2 ) ) {
         my $lennard_jones =
-            lennard_jones( $atom_i, $atom_j,
-                           { %parameters, ( 'is_optimal' => $is_optimal ) } );
-        my $coulomb = coulomb( $atom_i, $atom_j,
-                               { %parameters, ( 'is_optimal' => $is_optimal ) } );
-        my $h_bond =  h_bond( $atom_i, $atom_j,
-                              { %parameters, ( 'is_optimal' => $is_optimal ) } );
+            lennard_jones( $atom_i, $atom_j, $PARAMETERS,
+                           { %options, ( 'is_optimal' => $is_optimal ) } );
+        my $coulomb = coulomb( $atom_i, $atom_j, $PARAMETERS,
+                               { %options, ( 'is_optimal' => $is_optimal ) } );
+        my $h_bond =  h_bond( $atom_i, $atom_j, $PARAMETERS,
+                              { %options, ( 'is_optimal' => $is_optimal ) } );
         my $cutoff_function =
-            cos( ( $PI * ( sqrt( $r_squared ) - $cutoff_start * $sigma ) ) /
-                 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
+            cos( ( $PI * ( sqrt( $r_squared ) - $CUTOFF_START * $sigma ) ) /
+                 ( 2 * ( $CUTOFF_END * $sigma - $CUTOFF_START * $sigma ) ) );
 
         if( $decompose ) {
             return { 'non_bonded' =>
