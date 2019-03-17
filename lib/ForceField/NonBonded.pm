@@ -49,10 +49,7 @@ sub hard_sphere
 {
     my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
 
-    my ( $r_squared, $sigma ) = (
-        $options->{'r_squared'},
-        $options->{'sigma'},
-    );
+    my ( $r_squared, $sigma ) = ( $options->{'r_squared'}, $options->{'sigma'} );
 
     my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
 
@@ -87,24 +84,21 @@ sub hard_sphere
 
 sub soft_sphere
 {
-    my ( $atom_i, $atom_j, $parameters ) = @_;
+    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
 
-    my ( $r_squared, $sigma, $soft_epsilon, $n ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'sigma'},
-        $parameters->{'soft_epsilon'},
-        $parameters->{'soft_n'},
-    );
+    my ( $r_squared, $sigma ) = ( $options->{'r_squared'}, $options->{'sigma'} );
+
+    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
+    my $SOFT_EPSILON = $PARAMETERS->{'_[local]_force_field'}{'soft_epsilon'};
+    my $SOFT_N = $PARAMETERS->{'_[local]_force_field'}{'soft_n'};
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $Parameters::ATOMS{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $Parameters::ATOMS{$atom_j->{'type_symbol'}}{'vdw_radius'};
-    $soft_epsilon //= $Parameters::SOFT_EPSILON;
-    $n //= $Parameters::SOFT_N;
+    $sigma //= $ATOM_PROPERTIES->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $ATOM_PROPERTIES->{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared <= $sigma ** 2 ) {
-        return $soft_epsilon * ( ( $sigma ** $n ) /
-                                 ( $r_squared ** ( $n / 2 ) ) );
+        return $SOFT_EPSILON * ( ( $sigma ** $SOFT_N ) /
+                                 ( $r_squared ** ( $SOFT_N / 2 ) ) );
     } else {
         return 0;
     }

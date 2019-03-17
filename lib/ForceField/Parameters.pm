@@ -142,7 +142,7 @@ sub force_field
 
     # Restructuring force field constants.
     $force_field_parameters{'_[local]_force_field'} =
-        pdbx_loop_to_array( $force_field_data, '_[local]_force_field' );
+        pdbx_loop_to_array( $force_field_data, '_[local]_force_field' )->[0];
 
     # Restructuring parameters of atom properties.
     my $atom_properties_loop =
