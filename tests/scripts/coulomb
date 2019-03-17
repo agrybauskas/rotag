@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::NonBonded qw( coulomb );
+use ForceField::Parameters;
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file ) = @ARGV;
 
@@ -15,4 +16,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print coulomb( $atom_site->{$atom_i_id}, $atom_site->{$atom_j_id} ), "\n";
+my $PARAMETERS = Parameters->new();
+
+print coulomb( $atom_site->{$atom_i_id},
+               $atom_site->{$atom_j_id},
+               $PARAMETERS ), "\n";

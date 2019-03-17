@@ -88,9 +88,9 @@ sub soft_sphere
 
     my ( $r_squared, $sigma ) = ( $options->{'r_squared'}, $options->{'sigma'} );
 
-    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
     my $SOFT_EPSILON = $PARAMETERS->{'_[local]_force_field'}{'soft_epsilon'};
     my $SOFT_N = $PARAMETERS->{'_[local]_force_field'}{'soft_n'};
+    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
     $sigma //= $ATOM_PROPERTIES->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
@@ -130,8 +130,8 @@ sub lennard_jones
         $options->{'is_optimal'},
     );
 
-    my $LENNARD_JONES = $PARAMETERS->{'_[local]_lennard_jones'};
     my $LJ_K = $PARAMETERS->{'_[local]_force_field'}{'lj_k'};
+    my $LENNARD_JONES = $PARAMETERS->{'_[local]_lennard_jones'};
 
     if( $is_optimal ) {
         return (-1) * $LJ_K * $LENNARD_JONES->{$atom_i->{'type_symbol'}}
@@ -170,23 +170,22 @@ sub lennard_jones
 
 sub coulomb
 {
-    my ( $atom_i, $atom_j, $parameters ) = @_;
-    my ( $r_squared, $c_k, $is_optimal ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'c_k'},
-        $parameters->{'is_optimal'},
+    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
+    my ( $r_squared, $is_optimal ) = (
+        $options->{'r_squared'},
+        $options->{'is_optimal'},
     );
 
-    $c_k //= $Parameters::C_K;
+    my $C_K = $PARAMETERS->{'_[local]_force_field'}{'c_k'};
+    my $PARTIAL_CHARGE = $PARAMETERS->{'_[local]_partial_charge'};
+
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
     # Extracts partial charges.
     my $partial_charge_i =
-        $Parameters::PARTIAL_CHARGE{$atom_i->{'label_comp_id'}}
-                                {$atom_i->{'label_atom_id'}};
+        $PARTIAL_CHARGE->{$atom_i->{'label_comp_id'}}{$atom_i->{'label_atom_id'}};
     my $partial_charge_j =
-        $Parameters::PARTIAL_CHARGE{$atom_j->{'label_comp_id'}}
-                                {$atom_j->{'label_atom_id'}};
+        $PARTIAL_CHARGE->{$atom_j->{'label_comp_id'}}{$atom_j->{'label_atom_id'}};
 
     if( ! defined $partial_charge_i ) {
         confess $atom_i->{'label_atom_id'} . 'atom with id ' . $atom_i->{'id'} .
@@ -206,13 +205,14 @@ sub coulomb
             # TODO: check if this assumption is true: Lennard-Jones sigma is
             # taken as distance, because Lennard-Jones potential goes faster
             # to infinity than Coulomb.
-            $r_squared = $Parameters::LENNARD_JONES{$atom_i->{'type_symbol'}}
-                                                {$atom_j->{'type_symbol'}}
-                                                {'sigma'} ** 2;
+            my $LENNARD_JONES = $PARAMETERS->{'_[local]_lennard_jones'};
+            $r_squared = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
+                                         {$atom_j->{'type_symbol'}}
+                                         {'sigma'} ** 2;
         }
     }
 
-    return $c_k * $partial_charge_i * $partial_charge_j / $r_squared;
+    return $C_K * $partial_charge_i * $partial_charge_j / $r_squared;
 }
 
 #
