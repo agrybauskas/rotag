@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $PI );
+use ForceField::Parameters;
 use PseudoAtoms qw( generate_pseudo );
 use Sampling qw( sample_angles );
 use PDBxParser qw( to_pdbx );
@@ -23,6 +23,9 @@ while( <$fh> ) {
 }
 close( $fh );
 $atom_site = eval( $atom_site );
+
+my $PARAMETERS = Parameters->new();
+my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
 # Parses angle ranges for
 my %angle_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
@@ -46,13 +49,15 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     my $small_angle = # Change of angle in each rotation step.
         2 * $PI / $num_of_angles{$dihedral_angle};
     $num_angle_values{"$dihedral_angle"} =
-        sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle );
+        sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle, undef,
+                       $PARAMETERS );
 }
 
 %{ $atom_site } =
     ( %{ $atom_site },
        %{ generate_pseudo( { 'atom_site' => $atom_site,
                              'atom_specifier' => { "id" => [ $atom_id ] },
-                             'angle_values' => \%num_angle_values } ) } );
+                             'angle_values' => \%num_angle_values,
+                             'PARAMETERS' => $PARAMETERS } ) } );
 
 to_pdbx( { "atom_site" => $atom_site } );

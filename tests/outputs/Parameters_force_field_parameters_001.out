@@ -4068,19 +4068,17 @@ $VAR1 = bless( {
       }
     }
   },
-  '_[local]_force_field' => [
-    {
-      'c_k' => '1.0',
-      'cutoff_atom' => '15.0',
-      'cutoff_end' => '5.0',
-      'cutoff_start' => '2.5',
-      'h_k' => '1.0',
-      'lj_k' => '1.0',
-      'soft_epsilon' => '1.0',
-      'soft_n' => '12.0',
-      't_k' => '1.0'
-    }
-  ],
+  '_[local]_force_field' => {
+    'c_k' => '1.0',
+    'cutoff_atom' => '15.0',
+    'cutoff_end' => '5.0',
+    'cutoff_start' => '2.5',
+    'h_k' => '1.0',
+    'lj_k' => '1.0',
+    'soft_epsilon' => '1.0',
+    'soft_n' => '12.0',
+    't_k' => '1.0'
+  },
   '_[local]_h_bond' => {
     'N' => {
       'epsilon' => '5.00',
@@ -4600,7 +4598,22 @@ $VAR1 = bless( {
       ]
     }
   },
-  '_[local]_interaction_atoms' => undef,
+  '_[local]_interaction_atom_names' => [
+    'N',
+    'CA',
+    'C',
+    'O',
+    'OXT',
+    'CB',
+    'H',
+    'H2',
+    'HA',
+    'HA2',
+    'HA3',
+    'HXT',
+    'XA',
+    'XA2'
+  ],
   '_[local]_lennard_jones' => {
     '.' => {
       '.' => {
