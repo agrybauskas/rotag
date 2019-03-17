@@ -282,8 +282,8 @@ sub force_field
     }
 
     # Restructuring parameters of interaction atom names.
-    $force_field_parameters{'_[local]_interaction_atoms'} =
-        $force_field_data->{'_[local]_interaction_atoms'}{'data'};
+    $force_field_parameters{'_[local]_interaction_atom_names'} =
+        $force_field_data->{'_[local]_interaction_atom_names'}{'data'};
 
     # Restructuring parameters of mainchain atom names.
     $force_field_parameters{'_[local]_mainchain_atom_names'} =

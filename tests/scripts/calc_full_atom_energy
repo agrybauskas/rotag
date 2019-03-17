@@ -46,28 +46,26 @@ my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
-# my ( $favourable_angles, $favourable_energies ) =
-#     @{
-        calc_full_atom_energy( { 'atom_site' => $atom_site,
+my ( $favourable_angles, $favourable_energies ) =
+    @{ calc_full_atom_energy( { 'atom_site' => $atom_site,
                                 'residue_unique_key' =>
                                     "${residue_id},${residue_chain},".
                                     "${pdbx_model},${residue_alt}",
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
-                                'is_hydrogen_explicit' => 0,
                                 'PARAMETERS' => $PARAMETERS,
                               },
                               [ @checkable_angles ],
-                              'threads' => 1 ) # }
-;
+                              'threads' => 1 ) };
 
-# my $angle_id = 1;
-# for my $i ( $#{ $favourable_angles } ) {
-#     my @angle_names = map { "chi${_}" } 1..$#{ $favourable_angles->[$i] }+1;
-#     for my $j ( 0..$#{ $favourable_angles->[$i] } ) {
-#         print $angle_id, ', ', $angle_names[$j], ', ',
-#             sprintf( $SIG_FIGS_MIN, 180 * $favourable_angles->[$i][$j] / $PI ), ', ',
-#             sprintf( $SIG_FIGS_MIN, $favourable_energies->[$i] ), "\n";
-#     }
-#     $angle_id++;
-# }
+my $angle_id = 1;
+
+for my $i ( 0..$#{ $favourable_angles } ) {
+    my @angle_names = map { "chi${_}" } 1..$#{ $favourable_angles->[$i] }+1;
+    for my $j ( 0..$#{ $favourable_angles->[$i] } ) {
+        print $angle_id, ', ', $angle_names[$j], ', ',
+            sprintf( $SIG_FIGS_MIN, 180 * $favourable_angles->[$i][$j] / $PI ), ', ',
+            sprintf( $SIG_FIGS_MIN, $favourable_energies->[$i] ), "\n";
+    }
+    $angle_id++;
+}

@@ -794,6 +794,7 @@ sub calc_full_atom_energy
                                    'exclude' =>
                                    { 'label_atom_id' =>
                                          $INTERACTION_ATOM_NAMES } } ) };
+
         # HACK: make sure that $interaction_site atom ids are updated by
         # %rotamer_site.
         my %rotamer_interaction_site = ( %{ $interaction_site }, %rotamer_site );
@@ -895,7 +896,7 @@ sub replace_with_rotamer
     my ( $atom_site, $residue_unique_key, $angle_values, $PARAMETERS ) = @_;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
-    # my $residue_site =
+    my $residue_site =
         generate_rotamer( { 'atom_site' => $atom_site,
                             'angle_values' =>
                                 { $residue_unique_key => $angle_values  },
@@ -904,16 +905,16 @@ sub replace_with_rotamer
                             'set_missing_angles_to_zero' => 1,
                             'PARAMETERS' => $PARAMETERS } );
 
-    # for my $residue_atom_id ( keys %{ $residue_site } ) {
-    #     my $residue_origin_atom_id = $residue_site->{$residue_atom_id}
-    #                                                 {'origin_atom_id'};
-    #     $residue_site->{$residue_atom_id}{'id'} = $residue_origin_atom_id;
-    #     $residue_site->{$residue_atom_id}{'label_alt_id'} = $alt_group_id;
-    #     $residue_site->{$residue_atom_id}{'connections'} =
-    #         $atom_site->{$residue_origin_atom_id}{'connections'};
-    #     $atom_site->{$residue_origin_atom_id} =
-    #         $residue_site->{$residue_atom_id};
-    # }
+    for my $residue_atom_id ( keys %{ $residue_site } ) {
+        my $residue_origin_atom_id = $residue_site->{$residue_atom_id}
+                                                    {'origin_atom_id'};
+        $residue_site->{$residue_atom_id}{'id'} = $residue_origin_atom_id;
+        $residue_site->{$residue_atom_id}{'label_alt_id'} = $alt_group_id;
+        $residue_site->{$residue_atom_id}{'connections'} =
+            $atom_site->{$residue_origin_atom_id}{'connections'};
+        $atom_site->{$residue_origin_atom_id} =
+            $residue_site->{$residue_atom_id};
+    }
 
     return;
 }
