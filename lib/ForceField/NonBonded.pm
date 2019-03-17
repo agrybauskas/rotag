@@ -545,11 +545,11 @@ sub general
     my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
 
     my ( $r_squared, $sigma, $decompose, $is_optimal ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'sigma'},
-        $parameters->{'decompose'}, # Returns hash of the energy function
-                                    # component values.
-        $parameters->{'is_optimal'},
+        $options->{'r_squared'},
+        $options->{'sigma'},
+        $options->{'decompose'}, # Returns hash of the energy function
+                                 # component values.
+        $options->{'is_optimal'},
     );
 
 
@@ -564,7 +564,7 @@ sub general
     # Calculates squared distance between two atoms.
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
-    my %parameters = %{ $options };
+    my %options = %{ $options };
     $options{'r_squared'} = $r_squared;
 
     # Calculates Van der Waals distance of given atoms.
