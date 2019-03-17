@@ -236,8 +236,7 @@ sub h_bond
         $options->{'only_implicit_h_bond'},
     );
 
-    my $HYDROGEN_NAMES =
-        $PARAMETERS->{'_[local]_hydrogen_names'}{'hydrogen_names'};
+    my $HYDROGEN_NAMES = $PARAMETERS->{'_[local]_hydrogen_names'};
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # BondProperties.
