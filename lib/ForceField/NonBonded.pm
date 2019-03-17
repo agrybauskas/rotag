@@ -229,26 +229,29 @@ sub coulomb
 
 sub h_bond
 {
-    my ( $atom_i, $atom_j, $parameters ) = @_;
+    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
 
     my ( $atom_site, $only_implicit ) = (
-        $parameters->{'atom_site'},
-        $parameters->{'only_implicit_h_bond'},
+        $options->{'atom_site'},
+        $options->{'only_implicit_h_bond'},
     );
+
+    my $HYDROGEN_NAMES =
+        $PARAMETERS->{'_[local]_hydrogen_names'}{'hydrogen_names'};
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # BondProperties.
     my @h_bond_heavy_atoms = qw( N O S );
     my @atom_i_hydrogen_names =
-        defined $Parameters::HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
-                                        {$atom_i->{'label_atom_id'}} ?
-             @{ $Parameters::HYDROGEN_NAMES{$atom_i->{'label_comp_id'}}
-                                        {$atom_i->{'label_atom_id'}} } : ();
+        defined $HYDROGEN_NAMES->{$atom_i->{'label_comp_id'}}
+                                 {$atom_i->{'label_atom_id'}} ?
+             @{ $HYDROGEN_NAMES->{$atom_i->{'label_comp_id'}}
+                                 {$atom_i->{'label_atom_id'}} } : ();
     my @atom_j_hydrogen_names =
-        defined $Parameters::HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
-                                        {$atom_j->{'label_atom_id'}} ?
-             @{ $Parameters::HYDROGEN_NAMES{$atom_j->{'label_comp_id'}}
-                                        {$atom_j->{'label_atom_id'}} } : ();
+        defined $HYDROGEN_NAMES->{$atom_j->{'label_comp_id'}}
+                                 {$atom_j->{'label_atom_id'}} ?
+             @{ $HYDROGEN_NAMES->{$atom_j->{'label_comp_id'}}
+                                 {$atom_j->{'label_atom_id'}} } : ();
 
     # Exits early if there are no hydrogen bond donor-acceptor combinations.
     if( ! ( ( any { $atom_i->{'type_symbol'} eq $_ } @h_bond_heavy_atoms ) &&
@@ -273,10 +276,10 @@ sub h_bond
                     $atom_site->{$_}{'type_symbol'} eq 'H' ) ? $_ : () }
                @{ $atom_pair->[0]{'connections'} };
         my @hydrogen_names =
-            defined $Parameters::HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-                                            {$atom_pair->[0]{'label_atom_id'}} ?
-                 @{ $Parameters::HYDROGEN_NAMES{$atom_pair->[0]{'label_comp_id'}}
-                                            {$atom_pair->[0]{'label_atom_id'}}} : ();
+            defined $HYDROGEN_NAMES->{$atom_pair->[0]{'label_comp_id'}}
+                                     {$atom_pair->[0]{'label_atom_id'}} ?
+                 @{ $HYDROGEN_NAMES->{$atom_pair->[0]{'label_comp_id'}}
+                                     {$atom_pair->[0]{'label_atom_id'}}} : ();
 
         if( @hydrogen_ids && ! $only_implicit ) {
             for my $hydrogen_id ( @hydrogen_ids ) {
@@ -284,11 +287,15 @@ sub h_bond
                     h_bond_explicit( $atom_pair->[0],
                                      $atom_site->{$hydrogen_id},
                                      $atom_pair->[1],
-                                     $parameters );
+                                     $PARAMETERS,
+                                     $options );
             }
         } elsif( @hydrogen_names ) {
             $h_bond_energy_sum +=
-                h_bond_implicit( $atom_pair->[0], $atom_pair->[1], $parameters );
+                h_bond_implicit( $atom_pair->[0],
+                                 $atom_pair->[1],
+                                 $PARAMETERS,
+                                 $options );
         }
     }
 
@@ -325,29 +332,27 @@ sub h_bond
 
 sub h_bond_implicit
 {
-    my ( $donor_atom, $acceptor_atom, $parameters, $PARAMETERS ) = @_;
+    my ( $donor_atom, $acceptor_atom, $PARAMETERS, $options ) = @_;
 
-    my ( $r_donor_acceptor_squared, $h_k, $is_optimal, $reference_atom_site ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'h_k'},
-        $parameters->{'is_optimal'},
-        $parameters->{'atom_site'},
+    my ( $r_donor_acceptor_squared, $is_optimal, $reference_atom_site ) = (
+        $options->{'r_squared'},
+        $options->{'is_optimal'},
+        $options->{'atom_site'},
     );
-
-    $h_k //= $Parameters::H_K;
 
     my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
     my $SP3_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp3_angle'};
     my $SP2_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp2_angle'};
     my $SP_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp_angle'};
+    my $H_K = $PARAMETERS->{'_[local]_force_field'}->{'h_k'};
+    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
+    my $HYDROGEN_BOND = $PARAMETERS->{'_[local]_h_bond'};
 
-    my $r_sigma =
-        $Parameters::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
-    my $h_epsilon =
-        $Parameters::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'epsilon'};
+    my $r_sigma = $HYDROGEN_BOND->{$acceptor_atom->{'type_symbol'}}{'sigma'};
+    my $h_epsilon = $HYDROGEN_BOND->{$acceptor_atom->{'type_symbol'}}{'epsilon'};
 
     if( $is_optimal ) {
-        return (-1) * $h_k * $h_epsilon;
+        return (-1) * $H_K * $h_epsilon;
     }
 
     my $covalent_radius_idx;
@@ -361,12 +366,12 @@ sub h_bond_implicit
 
     $r_donor_acceptor_squared //= distance_squared( $donor_atom, $acceptor_atom);
     my $r_donor_hydrogen =
-        $Parameters::ATOMS{$donor_atom->{'type_symbol'}}
-                       {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
-        $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0];
+        $ATOM_PROPERTIES->{$donor_atom->{'type_symbol'}}
+                          {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
+        $ATOM_PROPERTIES->{'H'}{'covalent_radius'}{'length'}->[0];
     my $r_acceptor_hydrogen_vdw =
-        $Parameters::ATOMS{$acceptor_atom->{'type_symbol'}}{'vdw_radius'} +
-        $Parameters::ATOMS{'H'}{'vdw_radius'};
+        $ATOM_PROPERTIES->{$acceptor_atom->{'type_symbol'}}{'vdw_radius'} +
+        $ATOM_PROPERTIES->{'H'}{'vdw_radius'};
 
     # TODO: check for 0, 108.5 angles.
     my $theta;
@@ -435,7 +440,7 @@ sub h_bond_implicit
     # TODO: study more on what restriction should be on $r_donor_acceptor.
     if( defined $theta && ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
         return
-            $h_k *
+            $H_K *
             $h_epsilon *
             ( 5 * ( $r_sigma ** 12 / $r_donor_acceptor_squared ** 6 ) -
               6 * ( $r_sigma ** 10 / $r_donor_acceptor_squared ** 5 ) ) *
@@ -473,24 +478,22 @@ sub h_bond_implicit
 
 sub h_bond_explicit
 {
-    my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $parameters, $PARAMETERS  ) = @_;
+    my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $PARAMETERS, $options  ) = @_;
 
-    my ( $r_donor_acceptor_squared, $h_k, $is_optimal ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'h_k'},
-        $parameters->{'is_optimal'}
+    my ( $r_donor_acceptor_squared, $is_optimal ) = (
+        $options->{'r_squared'},
+        $options->{'is_optimal'}
     );
-    $h_k //= $Parameters::H_K;
 
     my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+    my $H_K = $PARAMETERS->{'_[local]_force_field'}{'h_k'};
+    my $HYDROGEN_BOND = $PARAMETERS->{'_[local]_h_bond'};
 
-    my $r_sigma =
-        $Parameters::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'sigma'};
-    my $h_epsilon =
-        $Parameters::HYDROGEN_BOND{$acceptor_atom->{'type_symbol'}}{'epsilon'};
+    my $r_sigma = $HYDROGEN_BOND->{$acceptor_atom->{'type_symbol'}}{'sigma'};
+    my $h_epsilon = $HYDROGEN_BOND->{$acceptor_atom->{'type_symbol'}}{'epsilon'};
 
     if( $is_optimal ) {
-        return (-1) * $h_k * $h_epsilon;
+        return (-1) * $H_K * $h_epsilon;
     }
 
     $r_donor_acceptor_squared //=distance_squared( $donor_atom, $acceptor_atom );
@@ -507,7 +510,7 @@ sub h_bond_explicit
 
     if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
         return
-            $h_k *
+            $H_K *
             $h_epsilon *
             ( 5 * ( $r_sigma ** 12 / $r_donor_acceptor_squared ** 6 ) -
               6 * ( $r_sigma ** 10 / $r_donor_acceptor_squared ** 5 ) ) *

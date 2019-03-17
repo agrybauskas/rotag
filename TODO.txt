@@ -80,3 +80,5 @@
    there are angle reapeats. The redundant angles should be removed.
 ++ Moved part of the code that deals with choosing right rotamers to
    new rotag_library script.
+-- Atom interaction constants should be moved from small functions to the
+   general ones.
