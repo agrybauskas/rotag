@@ -15,7 +15,6 @@ my ( $residue_id,
      $residue_alt,
      $potential,
      $interaction_specifier,
-     $energy_cutoff_atom,
      $checkable_angles,
      $pdbx_dump_file ) = @ARGV;
 
@@ -47,19 +46,20 @@ my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
-my ( $favourable_angles, $favourable_energies ) =
-    @{ calc_full_atom_energy( { 'atom_site' => $atom_site,
+# my ( $favourable_angles, $favourable_energies ) =
+#     @{
+        calc_full_atom_energy( { 'atom_site' => $atom_site,
                                 'residue_unique_key' =>
                                     "${residue_id},${residue_chain},".
                                     "${pdbx_model},${residue_alt}",
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
-                                'energy_cutoff_atom' => $energy_cutoff_atom,
                                 'is_hydrogen_explicit' => 0,
                                 'PARAMETERS' => $PARAMETERS,
                               },
                               [ @checkable_angles ],
-                              'threads' => 1 ) };
+                              'threads' => 1 ) # }
+;
 
 # my $angle_id = 1;
 # for my $i ( $#{ $favourable_angles } ) {

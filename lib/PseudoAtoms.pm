@@ -756,18 +756,17 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
 
     my ( $atom_site, $residue_unique_key, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
-         $PARAMETERS, $options ) = (
+         $non_bonded_potential, $bonded_potential, $PARAMETERS, $options ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
-        $args->{'energy_cutoff_atom'},
         $args->{'PARAMETERS'},
         $args->{'options'},
     );
 
+    my $ENERGY_CUTOFF_ATOM = $PARAMETERS->{'_[local]_force_field'}{'cutoff_atom'};
     my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
 
     my $residue_site =
@@ -796,7 +795,7 @@ sub calc_full_atom_energy
                                    { 'label_atom_id' =>
                                          $INTERACTION_ATOM_NAMES } } ) };
         # HACK: make sure that $interaction_site atom ids are updated by
-        # %rotamer_site
+        # %rotamer_site.
         my %rotamer_interaction_site = ( %{ $interaction_site }, %rotamer_site );
 
         # HACK: should connect_atoms() be used here?
@@ -834,7 +833,7 @@ sub calc_full_atom_energy
                             $options );
 
                     next ALLOWED_ANGLES
-                        if $rotamer_atom_energy > $energy_cutoff_atom;
+                        if $rotamer_atom_energy > $ENERGY_CUTOFF_ATOM;
 
                     $rotamer_energy_sum += $rotamer_atom_energy;
                 }
