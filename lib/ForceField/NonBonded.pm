@@ -123,32 +123,32 @@ sub soft_sphere
 
 sub lennard_jones
 {
-    my ( $atom_i, $atom_j, $parameters ) = @_;
+    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
 
-    my ( $r_squared, $lj_k, $is_optimal  ) = (
-        $parameters->{'r_squared'},
-        $parameters->{'lj_k'},
-        $parameters->{'is_optimal'},
+    my ( $r_squared, $is_optimal  ) = (
+        $options->{'r_squared'},
+        $options->{'is_optimal'},
     );
 
-    $lj_k //= $Parameters::LJ_K;
+    my $LENNARD_JONES = $PARAMETERS->{'_[local]_lennard_jones'};
+    my $LJ_K = $PARAMETERS->{'_[local]_force_field'}{'lj_k'};
 
     if( $is_optimal ) {
-        return (-1) * $lj_k * $Parameters::LENNARD_JONES{$atom_i->{'type_symbol'}}
-                                                     {$atom_j->{'type_symbol'}}
-                                                     {'epsilon'};
+        return (-1) * $LJ_K * $LENNARD_JONES->{$atom_i->{'type_symbol'}}
+                                              {$atom_j->{'type_symbol'}}
+                                              {'epsilon'};
     }
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
-    my $sigma = $Parameters::LENNARD_JONES{$atom_i->{'type_symbol'}}
-                                       {$atom_j->{'type_symbol'}}
-                                       {'sigma'};
-    my $lj_epsilon = $Parameters::LENNARD_JONES{$atom_i->{'type_symbol'}}
-                                            {$atom_j->{'type_symbol'}}
-                                            {'epsilon'};
+    my $sigma = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
+                                {$atom_j->{'type_symbol'}}
+                                {'sigma'};
+    my $lj_epsilon = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
+                                     {$atom_j->{'type_symbol'}}
+                                     {'epsilon'};
 
-    return 4 * $lj_k * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
+    return 4 * $LJ_K * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
                                        ( $sigma ** 6  / $r_squared ** 3 ) );
 }
 
