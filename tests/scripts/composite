@@ -20,7 +20,7 @@ $parameters =~ s/\s//g;
 my $PARAMETERS = Parameters->new();
 $PARAMETERS->set_parameter_values(
     { '_[local]_constants' =>
-      { map { ( split /=/sm, $_ ) } split /,/sxm, $parameters } }
+          { map { ( split /=/sm, $_ ) } split /,/sxm, $parameters } }
 );
 
 my %options;

@@ -424,8 +424,12 @@ sub set_parameter_values
     my ( $self, $parameter_values ) = @_;
     for my $category ( sort keys %{ $parameter_values } ) {
         for my $attribute ( sort keys %{ $parameter_values->{$category} } ) {
-            $self->{$category}{$attribute} =
-                $parameter_values->{$category}{$attribute};
+            if( exists $parameter_values->{$category}{$attribute} ) {
+                $self->{$category}{$attribute} =
+                    $parameter_values->{$category}{$attribute};
+            } else {
+                die "parameter argument is not valid.\n";
+            }
         }
     }
     return;
