@@ -145,11 +145,6 @@ my %potential_functions = (
     'h_bond' => \&h_bond,
 );
 
-my %options = ();
-if( $do_decompose ) {
-    $options{'decompose'} = 1;
-}
-
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
@@ -170,6 +165,11 @@ for my $parameter_pair ( split /,/sxm, $parameters ) {
     $PARAMETERS->set_parameter_values(
         { '_[local]_force_field' => { $parameter => $value } }
     );
+}
+
+my %options = ();
+if( $do_decompose ) {
+    $options{'decompose'} = 1;
 }
 
 for my $pdbx_file ( @ARGV ) {
