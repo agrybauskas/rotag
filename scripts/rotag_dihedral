@@ -12,8 +12,6 @@ use Try::Tiny;
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
-# use Constants qw( $PI
-#                   $SIG_FIGS_MAX );
 use Logging qw( error
                 warning );
 use Measure qw( all_dihedral

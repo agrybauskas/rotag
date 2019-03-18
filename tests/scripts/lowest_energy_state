@@ -21,8 +21,8 @@ $atom_site = eval( $atom_site );
 $parameters =~ s/\s//g;
 my $PARAMETERS = Parameters->new();
 $PARAMETERS->set_parameter_values(
-    { '_[local]_constants' =>
-      { map { ( split /=/sm, $_ ) } split /,/sxm, $parameters } }
+    { '_[local]_force_field' =>
+          { map { ( split /=/sm, $_ ) } split /,/sxm, $parameters } }
 );
 
 printf "%.6f\n",
