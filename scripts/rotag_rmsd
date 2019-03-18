@@ -9,7 +9,7 @@ use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
 use Carp;
-use Constants qw( $SIG_FIGS_MAX );
+use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter
@@ -91,6 +91,9 @@ error( { 'message' => "No comparison groups are selected. Use -c argument.\n" } 
 my %atom_site_groups = ();
 
 try {
+
+my $PARAMETERS = Parameters->new();
+my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
