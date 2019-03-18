@@ -323,6 +323,7 @@ sub generate_library
     my $interactions = $args->{'interactions'};
     my $threads = $args->{'threads'};
     my $PARAMETERS = $args->{'PARAMETERS'};
+    my $options = $args->{'options'};
 
     my $EDGE_LENGTH_INTERACTION =
         $PARAMETERS->{'_[local]_edge_length_interaction'};
@@ -431,7 +432,8 @@ sub generate_library
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
                              'threads' => $threads,
-                             'PARAMETERS' => $PARAMETERS } ) };
+                             'PARAMETERS' => $PARAMETERS,
+                             'options' => $options } ) };
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
@@ -445,7 +447,8 @@ sub generate_library
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
-                             'PARAMETERS' => $PARAMETERS },
+                             'PARAMETERS' => $PARAMETERS,
+                             'options' => $options },
                            [ @allowed_angles ],
                            $threads ) };
 

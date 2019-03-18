@@ -32,8 +32,8 @@ our $VERSION = $VERSION;
 #*
 #*Usage:
 #*    rotag_scan -u composite input.cif > output.cif
-#*    rotag_scan -c 0.005 input.cif > output.cif
-#*    rotag_scan -c 0.005 -p 'lj_k=1.05, c_k=0.4' input.cif > output.cif
+#*    rotag_scan input.cif > output.cif
+#*    rotag_scan -p 'cutoff_atom=0.5, lj_k=1.05, c_k=0.4' input.cif > output.cif
 #*
 #*Options:
 #*    -u, --potential <potential> uses potential energy function for determining
@@ -49,6 +49,8 @@ our $VERSION = $VERSION;
 #*                                    lj_k         - Leonard-Jones constant;
 #*                                    c_k          - Coulomb constant;
 #*                                    h_k          - hydrogen bond constant;
+#*                                    cutoff_atom  - largest possible energy
+#*                                                   value for the atom;
 #*                                    cutoff_start - x VdW where energy starts
 #*                                                   to go to zero;
 #*                                    cutoff_end   - x VdW where energy is at
@@ -76,10 +78,6 @@ our $VERSION = $VERSION;
 #*
 #*    -r, --radians               angle value is in radians.
 #*
-#*    -c, --cutoff-atom <float>   the maximum value of energy potential for each
-#*                                atom that allows for further rotamer search
-#*                                (default: 0.4).
-#*
 #*    --tags <tag>[,<tag>...]     output only specified PDBx tags.
 #*
 #*    -n, --threads <int>         number of threads.
@@ -91,7 +89,6 @@ our $VERSION = $VERSION;
 my $interactions = 'composite';
 my $angles = '-180.0..36.0..180.0';
 my $in_radians = 0;
-my $energy_cutoff_atom;
 my $threads = 1;
 my $tags = '';
 my $parameters = '';
@@ -111,7 +108,6 @@ GetOptions(
     'parameters|p=s' => \$parameters,
     'angles|a=s' => \$angles,
     'radians|r' => sub { $in_radians = 1 },
-    'cutoff-atom|c=s' => \$energy_cutoff_atom,
     'tags=s' => \$tags,
     'threads|n=s' => \$threads,
     'help|h' => sub {
