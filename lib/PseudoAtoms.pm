@@ -848,37 +848,40 @@ sub calc_full_atom_energy
     return [ \@allowed_angles, \@energy_sums ] ;
 }
 
-# #
-# # Calculates lowest possible energy state that atom would have if it interacted
-# # with all surrounding atoms with best possible distances. Although, it is
-# # very unrealistic for atom to be in such state, but very useful when using in
-# # determining energy cutoff value for dead-end elimination algorithm.
-# # Input:
-# #     $atom_i - atom;
-# #     $surrounding_atoms - list of surrounding atoms;
-# #     $non_bonded_potential - reference to the potential function that is used for
-# #     calculating energy of non-bonded atoms;
-# #     $bonded_potential - reference to the potential function that is used for
-# #     calculating energy of bonded atoms;
-# #     $parameters - potential function parameters.
-# # Output:
-# #     $lowest_energy_sum - energy value.
-# #
+#
+# Calculates lowest possible energy state that atom would have if it interacted
+# with all surrounding atoms with best possible distances. Although, it is
+# very unrealistic for atom to be in such state, but very useful when using in
+# determining energy cutoff value for dead-end elimination algorithm.
+# Input:
+#     $atom_i - atom;
+#     $surrounding_atoms - list of surrounding atoms;
+#     $non_bonded_potential - reference to the potential function that is used for
+#     calculating energy of non-bonded atoms;
+#     $bonded_potential - reference to the potential function that is used for
+#     calculating energy of bonded atoms;
+#     $parameters - potential function parameters.
+# Output:
+#     $lowest_energy_sum - energy value.
+#
 
-# # FIXME: add bonded potential.
-# sub lowest_energy_state
-# {
-#     my ( $atom_i, $surrounding_atoms, $non_bonded_potential, $parameters ) = @_;
+# FIXME: add bonded potential.
+sub lowest_energy_state
+{
+    my ( $atom_i, $surrounding_atoms, $non_bonded_potential, $PARAMETERS,
+         $options ) = @_;
 
-#     my $lowest_energy_sum = 0;
-#     for my $atom_j ( @{ $surrounding_atoms } ) {
-#         $lowest_energy_sum +=
-#             $non_bonded_potential->( $atom_i, $atom_j,
-#                                    { %{ $parameters }, ( 'is_optimal' => 1 ) } );
-#     }
+    $options //= {};
 
-#     return $lowest_energy_sum;
-# }
+    my $lowest_energy_sum = 0;
+    for my $atom_j ( @{ $surrounding_atoms } ) {
+        $lowest_energy_sum +=
+            $non_bonded_potential->( $atom_i, $atom_j, $PARAMETERS,
+                                   { %{ $options }, ( 'is_optimal' => 1 ) } );
+    }
+
+    return $lowest_energy_sum;
+}
 
 #
 # Rotates residue bonds by specified dihedral angles.

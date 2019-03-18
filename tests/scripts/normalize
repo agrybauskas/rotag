@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS_MIN );
 use LinearAlgebra qw( normalize );
+use ForceField::Parameters;
 
 #
 # Unit test: LinearAlgebra::normalize.
@@ -16,6 +16,9 @@ my ( $vector_file ) = @ARGV;
 open( my $fh, "<", $vector_file );
 my @rows = <$fh>;
 close( $fh );
+
+my $PARAMETERS = Parameters->new();
+my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 
 my @vector = map { [ split( " ", $_ ) ] } @rows;
 

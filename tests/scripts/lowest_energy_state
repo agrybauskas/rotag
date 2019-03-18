@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::NonBonded qw( general );
+use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( lowest_energy_state );
 
@@ -18,16 +19,15 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 $parameters =~ s/\s//g;
-$parameters = {
-    map { $_->[0] => $_->[1] }
-    map { [ split /=/sm, $_ ] }
-    split /,/sxm, $parameters
-};
-$parameters->{'atom_site'} = $atom_site;
+my $PARAMETERS = Parameters->new();
+$PARAMETERS->set_parameter_values(
+    { '_[local]_constants' =>
+      { map { ( split /=/sm, $_ ) } split /,/sxm, $parameters } }
+);
 
 printf "%.6f\n",
     lowest_energy_state( $atom_site->{$atom_i_id},
                          [ map { $atom_site->{$_} }
                                ( split /,/, $atom_j_ids ) ],
                          \&general,
-                         $parameters );
+                         $PARAMETERS );
