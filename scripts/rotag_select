@@ -7,6 +7,7 @@ use autodie;
 use Getopt::Long;
 use Try::Tiny;
 
+use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter_new
@@ -130,6 +131,8 @@ local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
 
+my $PARAMETERS = Parameters->new();
+
 for( my $i = 0; $i <= $#ARGV; $i++ ) {
     my $pdbx_file = $ARGV[$i];
     # Reads file path, stdin and '-' operator.
@@ -192,6 +195,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
             @{ $selection_parser->
                    parser( $atom_site,
                            $target_cmd,
+                           $PARAMETERS,
                            { 'seed' => $random_seed,
                              'group_id' => $group_id } ) };
         $group_id++;
@@ -201,6 +205,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
         @{ $selection_parser->
                parser( $atom_site,
                        $select_cmd,
+                       $PARAMETERS,
                        { 'seed' => $random_seed } ) };
 
     mark_selection( $atom_site, { 'target' => \@target_atom_ids,
