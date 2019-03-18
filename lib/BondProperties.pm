@@ -175,7 +175,8 @@ sub hybridization
         for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
             push @bond_types,
                  bond_type( $atom_site->{$atom_id},
-                            $atom_site->{$connection_id} );
+                            $atom_site->{$connection_id},
+                            $PARAMETERS );
         }
 
         # Depending on connections, assigns hybridization type.
