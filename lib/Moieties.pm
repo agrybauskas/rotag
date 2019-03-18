@@ -252,12 +252,13 @@ sub replace_with_moiety
         $residue_site =
             filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
 
-        connect_atoms( $residue_site );
-        hybridization( $residue_site );
+        connect_atoms( $residue_site, $PARAMETERS );
+        hybridization( $residue_site, $PARAMETERS );
 
-        rotation_only( $residue_site );
+        rotation_only( $residue_site, $PARAMETERS );
 
-        replace_with_rotamer( $residue_site, $unique_residue_key, $angles );
+        replace_with_rotamer( $residue_site, $unique_residue_key, $angles,
+                              $PARAMETERS );
 
         for my $atom_id ( keys %{ $residue_site } ) {
             $atom_site->{$atom_id} = $residue_site->{$atom_id};

@@ -8,7 +8,7 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
-use Constants qw( $PI );
+use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use Moieties qw( replace_with_moiety );
@@ -72,10 +72,6 @@ GetOptions(
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
 
-my @mutations;
-$mutations =~ s/\s//smxg;
-@mutations = split q{;}, $mutations;
-
 my @warnings;
 local $SIG{__WARN__} = sub {
     push @warnings, @_;
@@ -85,6 +81,20 @@ my @errors;
 local $SIG{__DIE__} = sub {
     push @errors, @_;
 };
+
+# ----------------------------------- Main ------------------------------------ #
+
+local @ARGV = ( q{-} ) unless @ARGV;
+
+try {
+
+my $PARAMETERS = Parameters->new();
+my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+
+# Parsing mutation string.
+my @mutations;
+$mutations =~ s/\s//smxg;
+@mutations = split q{;}, $mutations;
 
 for( my $i = 0; $i <= $#mutations; $i++ ) {
     my $statement = $mutations[$i];
@@ -121,12 +131,6 @@ for( my $i = 0; $i <= $#mutations; $i++ ) {
         'angles' => \%angles,
     };
 }
-
-# ----------------------------------- Main ------------------------------------ #
-
-local @ARGV = ( q{-} ) unless @ARGV;
-
-try {
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
@@ -180,6 +184,7 @@ for my $pdbx_file ( @ARGV ) {
             replace_with_moiety( $selected_atom_site,
                                  $unique_residue_key,
                                  $mutations[$i]{'moiety'},
+                                 $PARAMETERS,
                                  { 'angles' => $mutations[$i]{'angles'},
                                    'append_moieties' => \%append_moieties } );
 
