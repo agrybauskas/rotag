@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::NonBonded qw( general );
+use ForceField::Parameters;
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file, $parameters ) = @ARGV;
 
@@ -16,13 +17,16 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 $parameters =~ s/\s//g;
-$parameters = {
-    map { $_->[0] => $_->[1] }
-    map { [ split /=/sm, $_ ] }
-    split /,/sxm, $parameters
-};
-$parameters->{'atom_site'} = $atom_site;
+my $PARAMETERS = Parameters->new();
+$PARAMETERS->set_parameter_values(
+    { '_[local]_constants' =>
+      { map { ( split /=/sm, $_ ) } split /,/sxm, $parameters } }
+);
+
+my %options;
+$options{'atom_site'} = $atom_site;
 
 print general( $atom_site->{$atom_i_id},
                $atom_site->{$atom_j_id},
-               $parameters ), "\n";
+               $PARAMETERS,
+               \%options ), "\n";

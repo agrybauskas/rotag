@@ -3,13 +3,16 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS_MIN );
 use LinearAlgebra qw( translation );
+use ForceField::Parameters;
 
 #
 # Unit test: LinearAlgebra::translation.
 # Example: ./translation 1.50 1.50 1.50 # distance in Angstroms.
 #
+
+my $PARAMETERS = Parameters->new();
+my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 
 my ( $x_distance, $y_distance, $z_distance ) = @ARGV;
 
