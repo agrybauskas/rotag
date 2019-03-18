@@ -11,6 +11,7 @@ use Try::Tiny;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
+use ForceField::Parameters();
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter
@@ -102,6 +103,8 @@ GetOptions(
 local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
+my $PARAMETERS = Parameters->new();
+my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
@@ -123,8 +126,7 @@ for my $pdbx_file ( @ARGV ) {
     my $target_atom_ids =
         filter( { 'atom_site' => $target_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
-                  'exclude' => { 'label_atom_id' =>
-                                     \@Parameters::INTERACTION_ATOM_NAMES },
+                  'exclude' => { 'label_atom_id' => $INTERACTION_ATOM_NAMES },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
 
@@ -153,11 +155,11 @@ for my $pdbx_file ( @ARGV ) {
                 filter_by_unique_residue_key( $selected_atom_site,
                                               $residue_unique_key, 1 );
 
-            hybridization( $residue_site );
-            connect_atoms( $residue_site );
+            hybridization( $residue_site, $PARAMETERS );
+            connect_atoms( $residue_site, $PARAMETERS );
 
             # Generates rotational model.
-            rotation_only( $residue_site );
+            rotation_only( $residue_site, $PARAMETERS );
 
             for my $id ( sort { $a <=> $b }
                              @{$pdbx_loop_split_groups->{$residue_unique_key} }){
@@ -188,7 +190,8 @@ for my $pdbx_file ( @ARGV ) {
                                 # TODO: check if it is a good idea to have
                                 # $rotamer_id as 'label_alt_id'.
                                'alt_group_id' => $rotamer_id,
-                               'selection_state' => 'T' } ) } );
+                               'selection_state' => 'T',
+                               'PARAMETERS' => $PARAMETERS } ) } );
                 $last_atom_id++;
             }
 
@@ -231,15 +234,15 @@ for my $pdbx_file ( @ARGV ) {
                                     $atom_site_split_groups->
                                         {$atom_site_identifier} } } );
 
-            connect_atoms( $current_atom_site );
-            hybridization( $current_atom_site );
+            connect_atoms( $current_atom_site, $PARAMETERS );
+            hybridization( $current_atom_site, $PARAMETERS );
             # TODO: check how determination of bond parameters could be reduced,
             # because it increases the computation time.
-            connect_atoms( $reference_atom_site );
-            hybridization( $reference_atom_site );
+            connect_atoms( $reference_atom_site, $PARAMETERS );
+            hybridization( $reference_atom_site, $PARAMETERS );
 
             my $hydrogen_site =
-                add_hydrogens( $current_atom_site,
+                add_hydrogens( $current_atom_site, $PARAMETERS,
                                { 'last_atom_id' => $last_atom_id,
                                  'use_origins_alt_group_id' => 1,
                                  'use_existing_connections' => 1,
@@ -247,7 +250,7 @@ for my $pdbx_file ( @ARGV ) {
                                  'add_only_clear_positions' =>
                                      $add_clear_positions,
                                  'exclude_by_atom_ids' => \@visited_atom_ids,
-                                 'reference_atom_site' => $reference_atom_site } );
+                                 'reference_atom_site' => $reference_atom_site});
             %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
 
             push @visited_atom_ids, keys %{ $current_atom_site };
