@@ -9,8 +9,7 @@ use List::Util qw( any
                    uniq );
 use Try::Tiny;
 
-use Constants qw( $PI
-                  $SIG_FIGS_MAX );
+use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter
@@ -90,6 +89,10 @@ $tags = [
 local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
+
+my $PARAMETERS = Parameters->new();
+my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
