@@ -9,7 +9,6 @@
     use BondProperties qw( hybridization );
     use ConnectAtoms qw( around_distance
                          connect_atoms );
-    use Constants qw( $PI );
     use Measure qw( all_dihedral );
     use PDBxParser qw( extract
                        filter_by_unique_residue_key
@@ -184,7 +183,8 @@ exp
                 $around_atom_site =
                     around_distance( $_[0]->{USER}{ATOM_SITE},
                                      { 'id' => $_[1] },
-                                     $_[3] );
+                                     $_[3],
+                                     $_[0]->{USER}{PARAMETERS} );
                 return extract( $around_atom_site,
                                 { 'data' => [ 'id' ],
                                   'is_list' => 1 } );
@@ -208,9 +208,12 @@ exp
         }
     | exp 'angles' map_ope
         {
+            my $PARAMETERS = $_[0]->{USER}{PARAMETERS};
+            my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+
             my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
-            connect_atoms( $clone_atom_site );
-            hybridization( $clone_atom_site );
+            connect_atoms( $clone_atom_site, $PARAMETERS );
+            hybridization( $clone_atom_site, $PARAMETERS );
 
             my $dihedral_angles =
                 all_dihedral(
@@ -263,7 +266,7 @@ exp
     | 'expand' exp
         {
             my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
-            connect_atoms( $clone_atom_site );
+            connect_atoms( $clone_atom_site, $_[0]->{USER}{PARAMETERS} );
 
             my @expanded_atom_ids = ();
             for my $atom_id ( @{ $_[2] } ) {
@@ -452,12 +455,13 @@ sub debugger
 
 sub parser
 {
-    my ( $self, $atom_site, $input, $options ) = @_;
+    my ( $self, $atom_site, $input, $PARAMETERS, $options ) = @_;
 
     my ( $seed, $group_id  ) = ( $options->{'seed'}, $options->{'group_id'} );
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
+    $self->YYData->{PARAMETERS} = $PARAMETERS;
     $self->YYData->{SEED} = $seed;
     $self->YYData->{GROUP_ID} = $group_id;
 

@@ -234,7 +234,7 @@ sub distance
 
 sub around_distance
 {
-    my ( $atom_site, $atom_specifier, $distance ) = @_;
+    my ( $atom_site, $atom_specifier, $distance, $PARAMETERS ) = @_;
 
     my @atom_ids = @{ filter( { 'atom_site' => $atom_site,
                                 'include' => $atom_specifier,
@@ -244,7 +244,7 @@ sub around_distance
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
     my ( $grid_box, $atom_cell_pos ) =
-        grid_box( $atom_site, $distance * 2, \@atom_ids );
+        grid_box( $atom_site, $distance * 2, \@atom_ids, $PARAMETERS );
     my $neighbour_cells = identify_neighbour_cells( $grid_box, $atom_cell_pos );
 
     # Checks for neighbouring cells for each cell.
