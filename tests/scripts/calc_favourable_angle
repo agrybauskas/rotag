@@ -12,7 +12,6 @@ use PseudoAtoms qw( calc_favourable_angle );
 my ( $atom_id,
      $checkable_angles,
      $interaction_specifier,
-     $energy_cutoff_atom,
      $pdbx_dump_file ) = @ARGV;
 
 my $atom_site;
@@ -52,7 +51,6 @@ my ( $favourable_angles, $favourable_energies ) =
                                 'atom_id' => $atom_id,
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
-                                'energy_cutoff_atom' => $energy_cutoff_atom,
                                 'threads' => 1,
                                 'PARAMETERS' => $PARAMETERS,
                               }, [ \@checkable_angles, \@checkable_energies ] )};

@@ -17,7 +17,6 @@ my ( $residue_id,
      $angles,
      $potential,
      $interaction_specifier,
-     $energy_cutoff_atom,
      $pdbx_dump_file ) = @ARGV;
 
 my $atom_site;
@@ -49,7 +48,6 @@ my $favourable_angles =
                               'interaction_site' => $interaction_site,
                               'angles' => $angles,
                               'non_bonded_potential' => \&hard_sphere,
-                              'energy_cutoff_atom' => $energy_cutoff_atom,
                               'threads' => 1,
                               'PARAMETERS' => $PARAMETERS,
                             } );
