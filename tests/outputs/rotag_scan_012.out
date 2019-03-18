@@ -44,7 +44,7 @@ _[local]_rotamer_angle.value
 3 3 18 XAA A 1 A chi1 -1.884956
 4 4 18 XAA A 1 A chi1 -1.256637
 5 5 18 XAA A 1 A chi1 -0.628319
-6 6 18 XAA A 1 A chi1 -0.000000
+6 6 18 XAA A 1 A chi1 0.000000
 7 7 18 XAA A 1 A chi1 0.628319
 8 8 18 XAA A 1 A chi1 1.256637
 9 9 18 XAA A 1 A chi1 1.884956
@@ -54,7 +54,7 @@ _[local]_rotamer_angle.value
 13 13 18 XAA A 1 B chi1 -1.884956
 14 14 18 XAA A 1 B chi1 -1.256637
 15 15 18 XAA A 1 B chi1 -0.628319
-16 16 18 XAA A 1 B chi1 -0.000000
+16 16 18 XAA A 1 B chi1 0.000000
 17 17 18 XAA A 1 B chi1 0.628319
 18 18 18 XAA A 1 B chi1 1.256637
 19 19 18 XAA A 1 B chi1 1.884956
@@ -64,7 +64,7 @@ _[local]_rotamer_angle.value
 23 23 18 XAA A 2 . chi1 -1.884956
 24 24 18 XAA A 2 . chi1 -1.256637
 25 25 18 XAA A 2 . chi1 -0.628319
-26 26 18 XAA A 2 . chi1 -0.000000
+26 26 18 XAA A 2 . chi1 0.000000
 27 27 18 XAA A 2 . chi1 0.628319
 28 28 18 XAA A 2 . chi1 1.256637
 29 29 18 XAA A 2 . chi1 1.884956

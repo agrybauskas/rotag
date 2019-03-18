@@ -34,7 +34,7 @@ _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 1 1 18 XAA A 1 . chi1 -3.141593
 2 2 18 XAA A 1 . chi1 -0.628319
-3 3 18 XAA A 1 . chi1 -0.000000
+3 3 18 XAA A 1 . chi1 0.000000
 4 4 18 XAA A 1 . chi1 0.628319
 5 5 18 XAA A 1 . chi1 1.256637
 6 6 18 XAA A 1 . chi1 1.884956
