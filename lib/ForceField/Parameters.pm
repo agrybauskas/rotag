@@ -419,4 +419,16 @@ sub covalent_bond_combinations
     return \%covalent_bond_combinations;
 }
 
+sub set_parameter_values
+{
+    my ( $self, $parameter_values ) = @_;
+    for my $category ( sort keys %{ $parameter_values } ) {
+        for my $attribute ( sort keys %{ $parameter_values->{$category} } ) {
+            $self->{$category}{$attribute} =
+                $parameter_values->{$category}{$attribute};
+        }
+    }
+    return;
+}
+
 1;
