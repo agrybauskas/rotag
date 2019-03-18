@@ -9,8 +9,7 @@ use List::MoreUtils qw( uniq );
 use List::Util qw( any );
 use Try::Tiny;
 
-use Constants qw( $PI
-                  $SIG_FIGS_MAX );
+use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use PDBxParser qw( determine_residue_keys
@@ -130,39 +129,33 @@ GetOptions(
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
 
-# Parses parameter string.
-$parameters =~ s/\s//g;
-$parameters = {
-    map { $_->[0] => $_->[1] }
-    map { [ split /=/sm, $_ ] }
-    split /,/sxm, $parameters
-};
-
 # Parses tag string.
 $tags =~ s/\s//g;
 $tags = [
     split /,/sxm, $tags
 ];
 
-# Parses string describing angles.
-my %angles = %{ sample_angles_qs_parsing( $angles ) };
-
-# Checks the names of the parameters.
-my @allowed_parameters =
-    qw( lj_k c_k h_k t_k cutoff_start cutoff_end soft_epsilon soft_n );
-
-for my $parameter ( keys %{ $parameters } ) {
-    if( ! any { $parameter eq $_ } @allowed_parameters ) {
-        error( 'program' => $0,
-               'message' => "'$parameter' parameter is not valid.\n" );
-    }
-}
-
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
+
+my $PARAMETERS = Parameters->new();
+my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
+
+# Parses string describing angles.
+my %angles = %{ sample_angles_qs_parsing( $angles, undef, undef, $PARAMETERS ) };
+
+# Parses parameter string.
+$parameters =~ s/\s//g;
+for my $parameter_pair ( split /,/sxm, $parameters ) {
+    my ( $parameter, $value ) = split /=/sm, $parameter_pair;
+    $PARAMETERS->set_parameter_values(
+        { '_[local]_force_field' => { $parameter => $value } }
+    );
+}
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
@@ -217,8 +210,7 @@ for my $pdbx_file ( @ARGV ) {
                           { 'id' => [ keys %{ $current_atom_site } ] },
                       'angles' => \%angles,
                       'interactions' => $interactions,
-                      'parameters' => $parameters,
-                      'energy_cutoff_atom' => $energy_cutoff_atom,
+                      'PARAMETERS' => $PARAMETERS,
                       'threads' => $threads,
                     } );
         };
