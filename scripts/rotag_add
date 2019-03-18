@@ -103,6 +103,7 @@ GetOptions(
 local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
+
 my $PARAMETERS = Parameters->new();
 my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
 

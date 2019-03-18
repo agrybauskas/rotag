@@ -11,8 +11,9 @@ use Try::Tiny;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
-use Constants qw( $PI
-                  $SIG_FIGS_MAX );
+use ForceField::Parameters;
+# use Constants qw( $PI
+#                   $SIG_FIGS_MAX );
 use Logging qw( error
                 warning );
 use Measure qw( all_dihedral
@@ -89,6 +90,10 @@ local @ARGV = ( q{-} ) unless @ARGV;
 
 try {
 
+my $PARAMETERS = Parameters->new();
+my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
+
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
@@ -120,8 +125,8 @@ for my $pdbx_file ( @ARGV ) {
                             { 'target' => [ keys %{ $dihedral_site } ] } );
         }
 
-        connect_atoms( $dihedral_site );
-        hybridization( $dihedral_site );
+        connect_atoms( $dihedral_site, $PARAMETERS );
+        hybridization( $dihedral_site, $PARAMETERS );
 
         my $dihedral_angles = all_dihedral( $dihedral_site,
                                             { 'calc_mainchain' =>

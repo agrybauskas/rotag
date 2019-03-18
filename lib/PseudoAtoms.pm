@@ -52,7 +52,7 @@ use PDBxParser qw( create_pdbx_entry
                    filter_by_unique_residue_key
                    split_by
                    unique_residue_key );
-# use Sampling qw( sample_angles );
+use Sampling qw( sample_angles );
 use SidechainModels qw( rotation_only );
 use Version qw( $VERSION );
 
