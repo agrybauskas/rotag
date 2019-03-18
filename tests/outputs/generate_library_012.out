@@ -67,7 +67,53 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_4:chi1:-1.571;E:0.000
+data_4:chi1:-2.199;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -54.683 -111.212 -3.701 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_5:chi1:-1.885;E:0.000
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1
+ATOM 3 C CG . XAA A 1 18 -55.113 -111.179 -3.835 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
+#
+data_6:chi1:-1.571;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -90,7 +136,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_5:chi1:-1.257;E:0.000
+data_7:chi1:-1.257;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -113,7 +159,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_6:chi1:-0.942;E:0.000
+data_8:chi1:-0.942;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -136,7 +182,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_7:chi1:-0.628;E:0.000
+data_9:chi1:-0.628;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -159,7 +205,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_8:chi1:-0.314;E:0.000
+data_10:chi1:-0.314;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -182,7 +228,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_9:chi1:-0.000;E:0.000
+data_11:chi1:0.000;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -205,7 +251,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_10:chi1:0.314;E:0.000
+data_12:chi1:0.314;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -228,7 +274,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_11:chi1:0.628;E:0.000
+data_13:chi1:0.628;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -251,7 +297,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_12:chi1:0.942;E:0.000
+data_14:chi1:0.942;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -274,7 +320,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_13:chi1:1.257;E:0.000
+data_15:chi1:1.257;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -297,7 +343,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_14:chi1:1.571;E:0.000
+data_16:chi1:1.571;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -320,7 +366,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_15:chi1:1.885;E:0.000
+data_17:chi1:1.885;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -343,7 +389,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_16:chi1:2.199;E:0.000
+data_18:chi1:2.199;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -366,7 +412,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_17:chi1:2.513;E:0.000
+data_19:chi1:2.513;E:0.000
 #
 loop_
 _atom_site.group_PDB
@@ -389,7 +435,7 @@ ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1
 ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1
 ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 1
 #
-data_18:chi1:2.827;E:0.000
+data_20:chi1:2.827;E:0.000
 #
 loop_
 _atom_site.group_PDB

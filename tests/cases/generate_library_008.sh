@@ -5,7 +5,6 @@ export PERL5LIB=$(dirname "$0")/../../lib
 pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.dump
 conf_model="rotation_only"
 potential="composite"
-energy_cutoff_atom=0.5
 residue_id="18"
 residue_chain="A"
 residue_entity="1"
@@ -20,6 +19,5 @@ $(dirname "$0")/../scripts/generate_library ${residue_id} \
                                             ${conf_model} \
 	                                        ${angles} \
 	                                        ${potential} \
-					                        ${energy_cutoff_atom} \
 					                        ${pdbx_dump_file} \
                                             ${parameters}

@@ -306,7 +306,6 @@ sub generate_rotamer
 #     $args->{interactions} - interaction models described by functions in
 #     AtomInteractions.pm;
 #     $args->{parameters} - parameters that are passed to interaction function;
-#     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
 #     atom to have in the rotamer according to potential function;
 #     $args->{threads} - number of threads.
 # Output:
@@ -322,7 +321,6 @@ sub generate_library
     my $angles = $args->{'angles'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
-    my $energy_cutoff_atom = $args->{'energy_cutoff_atom'};
     my $threads = $args->{'threads'};
     my $PARAMETERS = $args->{'PARAMETERS'};
 
@@ -332,7 +330,6 @@ sub generate_library
     my $CUTOFF_ATOM = $PARAMETERS->{'_[local]_constants'}{'cutoff_atom'};
 
     $conf_model //= 'rotation_only';
-    $energy_cutoff_atom //= $CUTOFF_ATOM;
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => $INTERACTION_ATOM_NAMES };
 
@@ -433,7 +430,6 @@ sub generate_library
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
-                             'energy_cutoff_atom' => $energy_cutoff_atom,
                              'threads' => $threads,
                              'PARAMETERS' => $PARAMETERS } ) };
 
@@ -449,7 +445,6 @@ sub generate_library
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
-                             'energy_cutoff_atom' => $energy_cutoff_atom,
                              'PARAMETERS' => $PARAMETERS },
                            [ @allowed_angles ],
                            $threads ) };
@@ -491,8 +486,6 @@ sub generate_library
 #     used for calculating energy of non-bonded atoms;
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of bonded atoms;
-#     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
-#     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function;
 #     $args->{threads} - number of threads.
 # Output:
@@ -506,7 +499,7 @@ sub calc_favourable_angles
 
     my ( $atom_site, $residue_unique_key, $interaction_site, $angles,
          $small_angle, $non_bonded_potential, $bonded_potential,
-         $energy_cutoff_atom, $threads, $PARAMETERS ) = (
+         $threads, $PARAMETERS ) = (
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
@@ -514,7 +507,6 @@ sub calc_favourable_angles
         $args->{'small_angle'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
-        $args->{'energy_cutoff_atom'},
         $args->{'threads'},
         $args->{'PARAMETERS'},
     );
@@ -606,7 +598,6 @@ sub calc_favourable_angles
                        { 'atom_site' => $atom_site,
                          'atom_id' => $atom_id,
                          'interaction_site' => $interaction_site,
-                         'energy_cutoff_atom' => $energy_cutoff_atom,
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential,
                          'PARAMETERS' => $PARAMETERS },
@@ -645,8 +636,6 @@ sub calc_favourable_angles
 #     used for calculating energy of non-bonded atoms;
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of bonded atoms;
-#     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
-#     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function.
 # Output:
 #     @allowed_angles - list of groups of allowed angles.
@@ -660,16 +649,17 @@ sub calc_favourable_angle
     my ( $args, $array_blocks ) = @_;
 
     my ( $atom_site, $atom_id, $interaction_site, $non_bonded_potential,
-         $bonded_potential, $energy_cutoff_atom, $PARAMETERS, $options ) = (
+         $bonded_potential, $PARAMETERS, $options ) = (
         $args->{'atom_site'},
         $args->{'atom_id'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
-        $args->{'energy_cutoff_atom'},
         $args->{'PARAMETERS'},
         $args->{'options'},
     );
+
+    my $ENERGY_CUTOFF_ATOM= $PARAMETERS->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
@@ -710,7 +700,7 @@ sub calc_favourable_angle
                     \%options
                 );
                 $potential_sum += $potential_energy;
-                last if $potential_energy > $energy_cutoff_atom;
+                last if $potential_energy > $ENERGY_CUTOFF_ATOM;
             }
         }
 
@@ -719,7 +709,7 @@ sub calc_favourable_angle
         # last calculated potential. If potential was greater
         # than the cutoff, then calculation was halted, but the
         # value remained.
-        if( $potential_energy <= $energy_cutoff_atom ) {
+        if( $potential_energy <= $ENERGY_CUTOFF_ATOM ) {
             push @allowed_angles, $angles;
             push @allowed_energies, [ $energies + $potential_sum ];
         }
@@ -739,8 +729,6 @@ sub calc_favourable_angle
 #     $args->{angles} - angle data structure by which rotation is made.
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of non-bonded atoms;
-#     $args->{energy_cutoff_atom} - maximum amount of energy that is allowed for
-#     atom to have in the rotamer according to potential function;
 #     $args->{parameters} - parameters that are passed to interaction function;
 #     $array_blocks - an array of arrays that contain suggested rotamer angles.
 # Output:

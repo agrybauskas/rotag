@@ -16,7 +16,6 @@ my ( $residue_id,
      $conf_model,
      $angles,
      $potential,
-     $energy_cutoff_atom,
      $pdbx_dump_file,
      $parameters,
      $threads ) = @ARGV;
@@ -29,18 +28,15 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-if( defined $parameters ) {
-    $parameters =~ s/\s//g;
-    $parameters = {
-        map { $_->[0] => $_->[1] }
-        map { [ split /=/sm, $_ ] }
-        split /,/sxm, $parameters
-    };
-    $parameters->{'atom_site'} = $atom_site;
-}
-
 my $PARAMETERS = Parameters->new();
 my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
+if( defined $parameters ) {
+    $parameters =~ s/\s//g;
+    $PARAMETERS->set_parameter_values(
+        { '_[local]_force_field' =>
+              { map { ( split /=/sm, $_ ) } split /,/sxm, $parameters } }
+    );
+}
 
 $angles = sample_angles_qs_parsing( $angles, undef, undef, $PARAMETERS );
 
@@ -52,7 +48,6 @@ my $rotamer_library =
                         "angles" => $angles,
                         "conf_model" => $conf_model,
                         "interactions"  => $potential,
-                        "energy_cutoff_atom" => $energy_cutoff_atom,
                         "parameters" => $parameters,
                         "threads" => $threads,
                         "PARAMETERS" => $PARAMETERS } );
