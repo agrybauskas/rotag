@@ -3,13 +3,16 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS_MIN );
 use LinearAlgebra qw( y_axis_rotation );
+use ForceField::Parameters;
 
 #
 # Unit test: LinearAlgebra::y_axis_rotation.
 # Example: ./y_axis_rotation 1.50 # angle in radians.
 #
+
+my $PARAMETERS = Parameters->new();
+my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 
 my ( $angle ) = @ARGV;
 
