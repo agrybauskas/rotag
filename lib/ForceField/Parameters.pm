@@ -116,16 +116,12 @@ sub constants
                                     {'covalent_radius'}{'length'} } }
              keys %{ $force_field->{'_[local]_atom_properties'} } ) * 2;
 
-    # Arginine model is use for calculating the interaction cutoff.
+    # Arginine model is used for calculating the interaction cutoff.
     $constants{'_[local]_constants'}{'edge_length_interaction'} =
-        7 * $force_field->{'_[local]_atom_properties'}{'C'}{'covalent_radius'}
+        9 * $force_field->{'_[local]_atom_properties'}{'C'}{'covalent_radius'}
                           {'length'}->[0] +
         2 * $force_field->{'_[local]_atom_properties'}{'N'}{'covalent_radius'}
                           {'length'}->[0] +
-        3 * $force_field->{'_[local]_atom_properties'}{'C'}{'covalent_radius'}
-                          {'length'}->[1] +
-        3 * $force_field->{'_[local]_atom_properties'}{'N'}{'covalent_radius'}
-                          {'length'}->[1] +
             $force_field->{'_[local]_atom_properties'}{'H'}{'covalent_radius'}
                           {'length'}->[0];
 
