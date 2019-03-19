@@ -65,7 +65,7 @@ exp
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' =>
                                      { 'label_atom_id' =>
-                                           \@Parameters::MAINCHAIN_ATOM_NAMES,
+                                           $_[0]->{USER}{PARAMETERS}{'_[local]_mainchain_atom_names'},
                                        'group_PDB' => [ 'ATOM' ] },
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
@@ -75,7 +75,7 @@ exp
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' =>
                                      { 'label_atom_id' =>
-                                           \@Parameters::SIDECHAIN_ATOM_NAMES,
+                                           $_[0]->{USER}{PARAMETERS}{'_[local]_sidechain_atom_names'},
                                        'group_PDB' => [ 'ATOM' ] },
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
