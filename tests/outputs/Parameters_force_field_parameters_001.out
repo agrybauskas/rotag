@@ -2086,6 +2086,8 @@ $VAR1 = bless( {
     }
   },
   '_[local]_constants' => {
+    'edge_length_connection' => '2.14',
+    'edge_length_interaction' => '10.95',
     'epsilon' => '2.22044604925031e-16',
     'pi' => '3.14159265358979',
     'sig_figs_max' => '%.6f',
@@ -6036,7 +6038,5 @@ $VAR1 = bless( {
         'epsilon' => '1.00'
       }
     }
-  },
-  'edge_length_connection' => '2.14',
-  'edge_length_interaction' => '10.95'
+  }
 }, 'Parameters' );

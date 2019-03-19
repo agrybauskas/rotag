@@ -111,13 +111,13 @@ sub constants
         5.0 * $constants{'_[local]_constants'}{'pi'} / 180.0;
 
     # Grid constants.
-    $constants{'edge_length_connection'} =
+    $constants{'_[local]_constants'}{'edge_length_connection'} =
         max( map { @{ $force_field->{'_[local]_atom_properties'}{$_}
                                     {'covalent_radius'}{'length'} } }
              keys %{ $force_field->{'_[local]_atom_properties'} } ) * 2;
 
     # Arginine model is use for calculating the interaction cutoff.
-    $constants{'edge_length_interaction'} =
+    $constants{'_[local]_constants'}{'edge_length_interaction'} =
         7 * $force_field->{'_[local]_atom_properties'}{'C'}{'covalent_radius'}
                           {'length'}->[0] +
         2 * $force_field->{'_[local]_atom_properties'}{'N'}{'covalent_radius'}

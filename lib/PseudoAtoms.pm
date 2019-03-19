@@ -326,7 +326,7 @@ sub generate_library
     my $options = $args->{'options'};
 
     my $EDGE_LENGTH_INTERACTION =
-        $PARAMETERS->{'_[local]_edge_length_interaction'};
+        $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
     my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
     my $CUTOFF_ATOM = $PARAMETERS->{'_[local]_constants'}{'cutoff_atom'};
 
