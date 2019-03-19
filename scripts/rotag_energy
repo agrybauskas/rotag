@@ -152,8 +152,7 @@ local @ARGV = ( q{-} ) unless @ARGV;
 try {
 
 my $PARAMETERS = Parameters->new();
-my $EDGE_LENGTH_INTERACTION =
-    $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
+my $EDGE_LENGTH_INTERACTION = $PARAMETERS->{'edge_length_interaction'};
 my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
 my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};

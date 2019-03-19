@@ -77,8 +77,7 @@ sub grid_box
     my ( $atom_site, $edge_length, $atom_ids, $PARAMETERS, $options ) = @_;
     my ( $attributes ) = ( $options->{'attributes'} );
 
-    my $EDGE_LENGTH_CONNECTION =
-        $PARAMETERS->{'_[local]_constants'}{'edge_length_connection'};
+    my $EDGE_LENGTH_CONNECTION = $PARAMETERS->{'edge_length_connection'};
 
     $attributes //= [ 'id' ];
 
