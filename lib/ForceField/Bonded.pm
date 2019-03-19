@@ -191,8 +191,7 @@ sub general
         my $torsion = torsion_new( $atom_i->{'id'}, $PARAMETERS, $options );
 
         if( $decompose ) {
-            return { 'bonded' => $torsion,
-                     'torsion' => $torsion };
+            return { 'torsion' => $torsion };
         } else {
             return $torsion;
         }

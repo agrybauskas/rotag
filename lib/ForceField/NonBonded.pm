@@ -552,7 +552,6 @@ sub general
         $options->{'is_optimal'},
     );
 
-
     my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
     my $CUTOFF_START = $PARAMETERS->{'_[local]_force_field'}{'cutoff_start'};
     my $CUTOFF_END = $PARAMETERS->{'_[local]_force_field'}{'cutoff_end'};
@@ -581,8 +580,7 @@ sub general
                               { %options, ( 'is_optimal' => $is_optimal ) } );
 
         if( $decompose ) {
-            return { 'non_bonded' => $lennard_jones + $coulomb + $h_bond,
-                     'lennard_jones' => $lennard_jones,
+            return { 'lennard_jones' => $lennard_jones,
                      'coulomb' => $coulomb,
                      'h_bond' => $h_bond };
         } else {
@@ -602,10 +600,7 @@ sub general
                  ( 2 * ( $CUTOFF_END * $sigma - $CUTOFF_START * $sigma ) ) );
 
         if( $decompose ) {
-            return { 'non_bonded' =>
-                         ( $lennard_jones + $coulomb + $h_bond ) *
-                         $cutoff_function,
-                     'lennard_jones' => $lennard_jones,
+            return { 'lennard_jones' => $lennard_jones,
                      'coulomb' => $coulomb,
                      'h_bond' => $h_bond };
         } else {
@@ -613,8 +608,7 @@ sub general
         }
     } else {
         if( $decompose ) {
-            return { 'non_bonded' => 0,
-                     'lennard_jones' => 0,
+            return { 'lennard_jones' => 0,
                      'coulomb' => 0,
                      'h_bond' => 0 };
         } else {
