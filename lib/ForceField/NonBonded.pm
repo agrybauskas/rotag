@@ -133,10 +133,12 @@ sub lennard_jones
     my $LJ_K = $PARAMETERS->{'_[local]_force_field'}{'lj_k'};
     my $LENNARD_JONES = $PARAMETERS->{'_[local]_lennard_jones'};
 
+    my $lj_epsilon = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
+                                     {$atom_j->{'type_symbol'}}
+                                     {'epsilon'};
+
     if( $is_optimal ) {
-        return (-1) * $LJ_K * $LENNARD_JONES->{$atom_i->{'type_symbol'}}
-                                              {$atom_j->{'type_symbol'}}
-                                              {'epsilon'};
+        return (-1) * $LJ_K * $lj_epsilon;
     }
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
@@ -144,9 +146,6 @@ sub lennard_jones
     my $sigma = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
                                 {$atom_j->{'type_symbol'}}
                                 {'sigma'};
-    my $lj_epsilon = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
-                                     {$atom_j->{'type_symbol'}}
-                                     {'epsilon'};
 
     return 4 * $LJ_K * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
                                        ( $sigma ** 6  / $r_squared ** 3 ) );

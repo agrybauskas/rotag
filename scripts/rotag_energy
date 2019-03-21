@@ -264,7 +264,7 @@ for my $pdbx_file ( @ARGV ) {
                 if( $do_sidechain ) {
                     next if any { $current_atom_site->{$atom_id}
                                                       {'label_atom_id'} eq $_ }
-                                $INTERACTION_ATOM_NAMES;
+                               @{ $INTERACTION_ATOM_NAMES };
                 }
 
                 my ( $atom_symbol, $atom_name,
