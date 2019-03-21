@@ -101,7 +101,7 @@ sub constants
         109.5 * $constants{'_[local]_constants'}{'pi'} / 180.0;
     $constants{'_[local]_constants'}{'sp2_angle'} =
         120.0 * $constants{'_[local]_constants'}{'pi'} / 180.0;
-    $constants{'_[local]_constants'}{'sp2_angle'} =
+    $constants{'_[local]_constants'}{'sp_angle'} =
         $constants{'_[local]_constants'}{'pi'};
     $constants{'_[local]_constants'}{'sp3_angle_err'} =
         5.0 * $constants{'_[local]_constants'}{'pi'} / 180.0;
