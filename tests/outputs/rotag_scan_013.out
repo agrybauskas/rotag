@@ -215,7 +215,7 @@ _[local]_rotamer_angle.value
 3 3 81 SER A 1 . chi1 -1.884956
 4 4 81 SER A 1 . chi1 -1.256637
 5 5 81 SER A 1 . chi1 -0.628319
-6 6 81 SER A 1 . chi1 -0.000000
+6 6 81 SER A 1 . chi1 0.000000
 7 7 81 SER A 1 . chi1 0.628319
 8 8 81 SER A 1 . chi1 1.256637
 9 9 82 SER A 1 . chi1 -2.513274
@@ -228,16 +228,16 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 6.883015
-2 2 composite -0.376150
-3 3 composite -1.329816
-4 4 composite -0.634761
-5 5 composite 3.945149
-6 6 composite 9.350367
-7 7 composite 5.415839
-8 8 composite 7.540957
-9 9 composite 1.048209
-10 10 composite -0.592641
-11 11 composite 9.253709
-12 12 composite 16.702396
+1 1 composite 6.883009
+2 2 composite -0.376168
+3 3 composite -1.329865
+4 4 composite -0.634851
+5 5 composite 3.945080
+6 6 composite 9.350343
+7 7 composite 5.415831
+8 8 composite 7.540953
+9 9 composite 1.048760
+10 10 composite -0.592487
+11 11 composite 9.253778
+12 12 composite 16.702538
 #

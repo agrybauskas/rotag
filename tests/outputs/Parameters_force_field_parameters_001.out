@@ -2087,15 +2087,16 @@ $VAR1 = bless( {
   },
   '_[local]_constants' => {
     'edge_length_connection' => '2.14',
-    'edge_length_interaction' => '10.95',
+    'edge_length_interaction' => '8.57',
     'epsilon' => '2.22044604925031e-16',
     'pi' => '3.14159265358979',
     'sig_figs_max' => '%.6f',
     'sig_figs_min' => '%.3f',
-    'sp2_angle' => '3.14159265358979',
+    'sp2_angle' => '2.0943951023932',
     'sp2_angle_err' => '0.0872664625997165',
     'sp3_angle' => '1.91113553093379',
     'sp3_angle_err' => '0.0872664625997165',
+    'sp_angle' => '3.14159265358979',
     'sp_angle_err' => '0.0872664625997165'
   },
   '_[local]_covalent_bond_combinations' => {
