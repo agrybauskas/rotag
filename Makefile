@@ -87,31 +87,6 @@ ${COVERAGE_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
 	sed -i '4i export PERL5OPT=-MDevel::Cover make test' $@
 
 #
-# Profiler.
-#
-
-PROFILER_CASES_DIR=tests/profiler
-PROFILER_CASES=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${PROFILER_CASES_DIR}/%.sh}
-PROFILER_OUTS=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${PROFILER_CASES_DIR}/%.out}
-
-.PHONY: profiler
-
-profiler: ${PROFILER_CASES_DIR}/nytprof/index.html
-
-${PROFILER_CASES_DIR}/nytprof/index.html: ${PROFILER_OUTS}
-	nytprofmerge nytprof.out.*
-	nytprofhtml --file nytprof-merged.out
-	mv nytprof* ${PROFILER_CASES_DIR}
-
-${PROFILER_CASES_DIR}/%.out: ${PROFILER_CASES_DIR}/%.sh
-	./$< 2>&1 > $@ || true
-
-${PROFILER_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
-	cp $^ $@
-	sed -i '4i export PERL5OPT=-d:NYTProf' $@
-	sed -i '5i export NYTPROF=addpid=1' $@
-
-#
 # Utilities.
 #
 
@@ -122,9 +97,6 @@ clean:
 	rm -f ${COVERAGE_CASES}
 	rm -f ${COVERAGE_OUTS}
 	rm -fr ${COVERAGE_CASES_DIR}/cover_db
-	rm -f ${PROFILER_CASES}
-	rm -f ${PROFILER_OUTS}
-	rm -fr ${PROFILER_CASES_DIR}/nytprof ${PROFILER_CASES_DIR}/nytprof.out
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
