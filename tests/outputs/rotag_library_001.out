@@ -34,6 +34,8 @@ _[local]_rotamer_angle.pdbx_PDB_model_num
 _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 219 ASP A 1 . chi1 -2.513274
-2 1 219 ASP A 1 . chi2 -3.141593
+23 12 219 ASP A 1 . chi1 -1.884956
+24 12 219 ASP A 1 . chi2 -1.884956
+33 17 219 ASP A 1 . chi1 -1.884956
+34 17 219 ASP A 1 . chi2 1.884956
 #
