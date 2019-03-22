@@ -128,6 +128,7 @@ for my $pdbx_file ( @ARGV ) {
         my @angle_ids = @{ $residue_angle_groups->{$residue_unique_key} };
         my @rotamer_ids =
             uniq map { $rotamer_angles->{$_}{'rotamer_id'} } @angle_ids;
+
         my $current_top_rank;
         if( $top_rank ) {
             $current_top_rank =
@@ -143,8 +144,8 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         my @current_rotamers =
-            sort { $rotamer_energy->{$a}{'potential_energy_value'} <=>
-                   $rotamer_energy->{$b}{'potential_energy_value'} }
+            sort { $rotamer_energy->{$a}{'value'} <=>
+                   $rotamer_energy->{$b}{'value'} }
                  @rotamer_ids;
         push @rotamers, @current_rotamers[0..$current_top_rank-1];
     }
