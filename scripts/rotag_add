@@ -67,14 +67,12 @@ my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
       'rotamer_id', 'type', 'value', );
 
-my @warnings;
 local $SIG{__WARN__} = sub {
-    push @warnings, @_;
+    warning( { 'message' => @_ } );
 };
 
-my @errors;
 local $SIG{__DIE__} = sub {
-    push @errors, @_;
+    error( { 'program' => $0, 'message' => @_ } );
 };
 
 GetOptions(
@@ -101,8 +99,6 @@ GetOptions(
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
-
-try {
 
 my $PARAMETERS = Parameters->new();
 my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
@@ -269,12 +265,3 @@ for my $pdbx_file ( @ARGV ) {
               'message' => "no options were chosen for atom additions.\n" } );
     }
 }
-
-} catch {
-    foreach( @warnings ) {
-        warning( { 'message' => "$_" } );
-    }
-    foreach( @errors ) {
-        error( { 'program' => $0, 'message' => "$_" } );
-    }
-};

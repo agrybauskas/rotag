@@ -101,14 +101,12 @@ my $add_B_iso = 0;
 my $output_format = 'pdbx';
 my $threads = 1;
 
-my @warnings;
 local $SIG{__WARN__} = sub {
-    push @warnings, @_;
+    warning( { 'message' => @_ } );
 };
 
-my @errors;
 local $SIG{__DIE__} = sub {
-    push @errors, @_;
+    error( { 'program' => $0, 'message' => @_ } );
 };
 
 GetOptions(
@@ -148,8 +146,6 @@ my %potential_functions = (
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
-
-try {
 
 my $PARAMETERS = Parameters->new();
 my $EDGE_LENGTH_INTERACTION =
@@ -460,12 +456,3 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 }
-
-} catch {
-    foreach( @warnings ) {
-        warning( { 'message' => "$_" } );
-    }
-    foreach( @errors ) {
-        error( { 'program' => $0, 'message' => "$_" } );
-    }
-};

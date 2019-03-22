@@ -53,6 +53,14 @@ my $mutations = '';
 my $moiety_file='';
 my $in_radians = 0;
 
+local $SIG{__WARN__} = sub {
+    warning( { 'message' => @_ } );
+};
+
+local $SIG{__DIE__} = sub {
+    error( { 'program' => $0, 'message' => @_ } );
+};
+
 GetOptions(
     'mutate|m=s' => \$mutations,
     'import-moiety|M=s' => \$moiety_file,
@@ -72,21 +80,9 @@ GetOptions(
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
 
-my @warnings;
-local $SIG{__WARN__} = sub {
-    push @warnings, @_;
-};
-
-my @errors;
-local $SIG{__DIE__} = sub {
-    push @errors, @_;
-};
-
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
-
-try {
 
 my $PARAMETERS = Parameters->new();
 my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
@@ -197,12 +193,3 @@ for my $pdbx_file ( @ARGV ) {
                               "option to achieve that.\n" } );
     }
 }
-
-} catch {
-    foreach( @warnings ) {
-        warning( { 'message' => "$_" } );
-    }
-    foreach( @errors ) {
-        error( { 'program' => $0, 'message' => "$_" } );
-    }
-};

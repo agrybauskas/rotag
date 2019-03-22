@@ -48,14 +48,12 @@ my $do_decompose = 0;
 my $not_strict = 0;
 my $output_format = 'pdbx';
 
-my @warnings;
 local $SIG{__WARN__} = sub {
-    push @warnings, @_;
+    warning( { 'message' => @_ } );
 };
 
-my @errors;
 local $SIG{__DIE__} = sub {
-    push @errors, @_;
+    error( { 'program' => $0, 'message' => @_ } );
 };
 
 GetOptions(
@@ -89,8 +87,6 @@ error( { 'message' => "No comparison groups are selected. Use -c argument.\n" } 
     if ! @comparison_groups;
 
 my %atom_site_groups = ();
-
-try {
 
 my $PARAMETERS = Parameters->new();
 my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
@@ -226,12 +222,3 @@ if( $output_format eq 'pdbx' ) {
 } elsif( $output_format eq 'csv' ) {
     pdbx_loop_to_csv( $pdbx_loops{'_[local]_rmsd'} );
 }
-
-} catch {
-    foreach( @warnings ) {
-        warning( { 'message' => "$_" } );
-    }
-    foreach( @errors ) {
-        error( { 'program' => $0, 'message' => "$_" } );
-    }
-};

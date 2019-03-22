@@ -49,14 +49,12 @@ my $top_rank;
 my $top_ratio;
 my $tags = '';
 
-my @warnings;
 local $SIG{__WARN__} = sub {
-    push @warnings, @_;
+    warning( { 'message' => @_ } );
 };
 
-my @errors;
 local $SIG{__DIE__} = sub {
-    push @errors, @_;
+    error( { 'program' => $0, 'message' => @_ } );
 };
 
 GetOptions(
@@ -87,8 +85,6 @@ $tags = [
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
-
-try {
 
 my $PARAMETERS = Parameters->new();
 my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
@@ -179,12 +175,3 @@ for my $pdbx_file ( @ARGV ) {
                    'pdbx_loops' => \%pdbx_loops } );
     }
 }
-
-} catch {
-    foreach( @warnings ) {
-        warning( { 'message' => "$_" } );
-    }
-    foreach( @errors ) {
-        error( { 'program' => $0, 'message' => "$_" } );
-    }
-};

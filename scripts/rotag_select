@@ -96,14 +96,12 @@ my $select_cmds;
 my $keep_ignored = 0;
 my $random_seed = 23;
 
-my @warnings;
 local $SIG{__WARN__} = sub {
-    push @warnings, @_;
+    warning( { 'message' => @_ } );
 };
 
-my @errors;
 local $SIG{__DIE__} = sub {
-    push @errors, @_;
+    error( { 'program' => $0, 'message' => @_ } );
 };
 
 GetOptions(
@@ -128,8 +126,6 @@ GetOptions(
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
-
-try {
 
 my $PARAMETERS = Parameters->new();
 
@@ -231,12 +227,3 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                'add_atom_attributes' => [ '[local]_selection_state',
                                           '[local]_selection_group' ] } );
 }
-
-} catch {
-    foreach( @warnings ) {
-        warning( { 'message' => "$_" } );
-    }
-    foreach( @errors ) {
-        error( { 'program' => $0, 'message' => "$_" } );
-    }
-};

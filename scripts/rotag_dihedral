@@ -52,14 +52,12 @@ my $calc_mainchain = 0;
 my $in_radians = 0;
 my $output_format = 'pdbx';
 
-my @warnings;
 local $SIG{__WARN__} = sub {
-    push @warnings, @_;
+    warning( { 'message' => @_ } );
 };
 
-my @errors;
 local $SIG{__DIE__} = sub {
-    push @errors, @_;
+    error( { 'program' => $0, 'message' => @_ } );
 };
 
 GetOptions(
@@ -85,8 +83,6 @@ GetOptions(
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
-
-try {
 
 my $PARAMETERS = Parameters->new();
 my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
@@ -221,12 +217,3 @@ for my $pdbx_file ( @ARGV ) {
         pdbx_loop_to_csv( $pdbx_loops{'_[local]_dihedral_angle'} );
     }
 }
-
-} catch {
-    foreach( @warnings ) {
-        warning( { 'message' => "$_" } );
-    }
-    foreach( @errors ) {
-        error( { 'program' => $0, 'message' => "$_" } );
-    }
-};
