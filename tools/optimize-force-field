@@ -10,12 +10,12 @@ use Getopt::Long;
 Getopt::Long::Configure qw( gnu_getopt );
 
 # use BondProperties qw( hybridization );
-# use Constants qw( $PI
-#                   $SIG_FIGS_MAX );
-use Constants qw( $PI );
 # use ConnectAtoms qw( connect_atoms );
 # use Combinatorics qw( permutation );
 # use ForceField::General;
+use ForceField::Parameters;
+use Logging qw( error
+                warning );
 # use Measure qw( rmsd );
 # use PDBxParser qw( filter
 #                    mark_selection
@@ -48,8 +48,16 @@ our $VERSION = $VERSION;
 #*    -v, --version               print version.
 
 my $parameters;
-my $small_angle = 0.1 * $PI;
 my $threads = 1;
+my $small_angle;
+
+local $SIG{__WARN__} = sub {
+    warning( { 'message' => @_ } );
+};
+
+local $SIG{__DIE__} = sub {
+    error( { 'program' => $0, 'message' => @_ } );
+};
 
 GetOptions(
     'angle-step|a=s' => \$small_angle,
@@ -68,6 +76,16 @@ GetOptions(
                     },
     'version|v' => sub { print $VERSION, "\n"; exit; }
 ) or die 'Error in command line argument.';
+
+local @ARGV = ( q{-} ) unless @ARGV;
+
+my $params = Parameters->new();
+my $multi_parameters = $params->explore_force_field_parameters( \@ARGV );
+
+# my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+# my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
+
+# $small_angle = 0.1 * $PI;
 
 # # Parses parameter ranges and updates if arguments from command line are
 # # introduced.

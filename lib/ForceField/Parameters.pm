@@ -431,4 +431,22 @@ sub set_parameter_values
     return;
 }
 
+# --------------------------------- Methods ----------------------------------- #
+
+sub explore_force_field_parameters
+{
+    my ( $self, $parameters_files ) = @_;
+
+    my @parameters = ();
+
+    for my $parameters_file ( @{ $parameters_files } ) {
+        my $parameters =
+            Parameters->new( { 'force_field_file' => $parameters_file } );
+
+        # Look for attributes containing _min, _max and _delta post-fixes in
+        # 'force_field' attributes.
+        my $force_field = $parameters->{'_[local]_force_field'};
+    }
+}
+
 1;
