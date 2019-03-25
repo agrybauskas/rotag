@@ -3,6 +3,7 @@ package Parameters;
 use strict;
 use warnings;
 
+use Clone qw( clone );
 use File::Basename qw( dirname );
 use List::Util qw( max
                    uniq );
@@ -478,9 +479,22 @@ sub explore_force_field_parameters
         }
 
         # Creates the combinations of the varying parameters.
-        my $permutated_parameters_values =
+        my $permutated_parameters_list =
             permutation( $#parameter_list + 1, [], \@parameter_value_list, [] );
+
+        for my $permutated_parameters ( @{ $permutated_parameters_list } ) {
+            my $current_parameters = clone( $parameters );
+            my %change_parameters_to =
+                map { $parameter_list[$_] => $permutated_parameters->[$_] }
+                    ( 0..$#parameter_list );
+            $current_parameters->set_parameter_values(
+                { '_[local]_force_field' => \%change_parameters_to }
+            );
+            push @parameters, $current_parameters;
+        }
     }
+
+    return \@parameters;
 }
 
 1;
