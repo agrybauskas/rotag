@@ -447,7 +447,14 @@ sub explore_force_field_parameters
         # 'force_field' attributes.
         my %possible_parameter_values = ();
         my $force_field = $parameters->{'_[local]_force_field'};
-        use Data::Dumper; print STDERR Dumper $force_field;
+        for my $parameter ( sort keys %{ $force_field } ) {
+            my $parameter_value = $force_field->{$parameter};
+            if( $parameter_value eq '?' ) {
+                my $parameter_min = $force_field->{"${parameter}_min"};
+                my $parameter_max = $force_field->{"${parameter}_max"};
+                my $parameter_delta = $force_field->{"${parameter}_delta"};
+            }
+        }
     }
 }
 
