@@ -447,14 +447,39 @@ sub explore_force_field_parameters
         # 'force_field' attributes.
         my %possible_parameter_values = ();
         my $force_field = $parameters->{'_[local]_force_field'};
+        my @parameter_list = ();
+        my @parameter_value_list = ();
         for my $parameter ( sort keys %{ $force_field } ) {
             my $parameter_value = $force_field->{$parameter};
             if( $parameter_value eq '?' ) {
                 my $parameter_min = $force_field->{"${parameter}_min"};
                 my $parameter_max = $force_field->{"${parameter}_max"};
                 my $parameter_delta = $force_field->{"${parameter}_delta"};
+
+                if( $parameter_delta && $parameter_min && $parameter_max ) {
+                    my $current_parameter_step_count =
+                        int( ( $parameter_max - $parameter_min ) /
+                             $parameter_delta );
+                    my @current_parameter_value_list =
+                        map { $parameter_min + $parameter_delta * $_ }
+                            ( 0..$current_parameter_step_count );
+                    push @parameter_list, $parameter;
+                    push @parameter_value_list, \@current_parameter_value_list;
+                    next;
+                } elsif( $parameter_min && $parameter_max ) {
+                    push @parameter_list, $parameter;
+                    push @parameter_value_list, [$parameter_min, $parameter_max];
+                    next;
+                } else {
+                    die "no min/max values of the ${parameter} parameter is " .
+                        "supplied\n";
+                }
             }
         }
+
+        # Creates the combinations of the varying parameters.
+        my $permutated_parameters_values =
+            permutation( $#parameter_list + 1, [], \@parameter_value_list, [] );
     }
 }
 
