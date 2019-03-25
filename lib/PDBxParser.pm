@@ -80,7 +80,7 @@ sub obtain_pdbx_line_new
     local $/ = '';
     local @ARGV = ( $pdbx_file );
     while( <> ) {
-        my %single_line_matches = ( m/($item_regexp)\s+(?!;)(\S.+\S)/gx );
+        my %single_line_matches = ( m/($item_regexp)\s+(?!;)('.+'|\S+)/g );
         my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/gx );
         %current_line_data = ( %single_line_matches, %multi_line_matches );
     }

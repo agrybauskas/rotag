@@ -447,8 +447,7 @@ sub explore_force_field_parameters
         # 'force_field' attributes.
         my %possible_parameter_values = ();
         my $force_field = $parameters->{'_[local]_force_field'};
-        for my $parameter ( sort keys %{ $force_field } ) {
-        }
+        use Data::Dumper; print STDERR Dumper $force_field;
     }
 }
 
