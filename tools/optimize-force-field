@@ -142,26 +142,46 @@ for my $parameters ( @{ $multi_parameters } ) {
                       'threads' => $threads, } );
         };
 
-    #             for my $residue_unique_key ( sort { $a cmp $b }
-    #                                          keys %{ $rotamer_library } ){
-    #                 my ( $residue_id, $residue_chain, $residue_entity, $residue_alt)=
-    #                     split /,/sxm, $residue_unique_key;
-    #                 my $residue_site =
-    #                     filter( { 'atom_site' => $selected_atom_site,
-    #                               'include' =>
-    #                                   { 'label_seq_id' => [ $residue_id ],
-    #                                     'label_asym_id' => [ $residue_chain ],
-    #                                     'label_alt_id' => [ $residue_alt ],
-    #                                     'label_entity_id' => [$residue_entity] } } );
-    #                 my @residue_name =
-    #                     uniq( @{ filter( { 'atom_site' => $residue_site,
-    #                                        'data' => [ 'label_comp_id' ],
-    #                                        'is_list' => 1 } ) } );
-    #                 my $residue_coord =
-    #                     filter( { 'atom_site' => $residue_site,
-    #                               'exclude' =>
-    #                                   { 'label_atom_id' => \@General::INTERACTION_ATOM_NAMES },
-    #                               'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        for my $residue_unique_key (sort { $a cmp $b } keys %{$rotamer_library}){
+            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt)=
+                split /,/sxm, $residue_unique_key;
+            my $residue_site =
+                filter( { 'atom_site' => $selected_atom_site,
+                          'include' =>
+                              { 'label_seq_id' => [ $residue_id ],
+                                'label_asym_id' => [ $residue_chain ],
+                                'label_alt_id' => [ $residue_alt ],
+                                'label_entity_id' => [$residue_entity] } } );
+            my @residue_name =
+                uniq( @{ filter( { 'atom_site' => $residue_site,
+                                   'data' => [ 'label_comp_id' ],
+                                   'is_list' => 1 } ) } );
+            my $residue_coord =
+                filter( { 'atom_site' => $residue_site,
+                          'exclude' =>
+                              { 'label_atom_id' =>
+                                    $parameters->{'_[local]_interaction_atom_names'} },
+                          'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+
+                    my $current_top_rank;
+        if( $top_rank ) {
+            $current_top_rank =
+                $top_rank <= scalar @rotamer_ids ?
+                $top_rank :
+                scalar @rotamer_ids;
+        } elsif( $top_ratio ) {
+            $current_top_rank = int( scalar( @rotamer_ids ) * $top_ratio );
+            $current_top_rank = $current_top_rank == 0 ? 1 : $current_top_rank;
+        } else {
+            push @rotamers, @rotamer_ids;
+            next;
+        }
+
+        my @current_rotamers =
+            sort { $rotamer_energy->{$a}{'value'} <=>
+                   $rotamer_energy->{$b}{'value'} }
+                 @rotamer_ids;
+        push @rotamers, @current_rotamers[0..$current_top_rank-1];
 
     #                 # Checks if 'top' option is int or float and filters rotamers
     #                 # accordingly.
@@ -229,7 +249,7 @@ for my $parameters ( @{ $multi_parameters } ) {
     #             'NA';
     #             $calculation_id++;
     #         }
-    #     }
+        }
 
     #     to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
     }
