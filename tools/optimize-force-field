@@ -206,19 +206,22 @@ for my $parameters ( @{ $multi_parameters } ) {
                                     'PARAMETERS' => $parameters } );
             my $rotamer_coord =
                 filter( { 'atom_site' => $rotamer_site,
+                          'exclude' =>
+                              { 'label_atom_id' =>
+                                    $parameters->{'_[local]_interaction_atom_names'} },
                           'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
             $rmsd_sum += rmsd( $residue_coord, $rotamer_coord );
             $rotamer_number++;
         }
-
-        push @{ $pdbx_loops{'_[local]_parameter_estimation'}{'data'} },
-            $calculation_id, $force_field->{'lj_k'}, $force_field->{'c_k'},
-            $force_field->{'h_k'}, $force_field->{'t_k'},
-            $force_field->{'cutoff_atom'}, $force_field->{'cutoff_start'},
-            $force_field->{'cutoff_end'}, $rotamer_number,
-            sprintf( $SIG_FIGS_MAX, $rmsd_sum / $rotamer_number );
     }
+
+    push @{ $pdbx_loops{'_[local]_parameter_estimation'}{'data'} },
+        $calculation_id, $force_field->{'lj_k'}, $force_field->{'c_k'},
+        $force_field->{'h_k'}, $force_field->{'t_k'},
+        $force_field->{'cutoff_atom'}, $force_field->{'cutoff_start'},
+        $force_field->{'cutoff_end'}, $rotamer_number,
+        sprintf( $SIG_FIGS_MAX, $rmsd_sum / $rotamer_number );
 
     $calculation_id++;
 }
