@@ -82,16 +82,19 @@ my $multi_parameters =
 
 
 # Calculates RMSD for given parameters.
+# TODO: maybe should try to generalize in the future for more parameters or
+# have different parameter files for each potential energy functions, such as
+# hard_sphere, soft_sphere and composite.
 my %pdbx_loops;
 $pdbx_loops{'_[local]_parameter_estimation'}{'attributes'} =
-    [ 'id', 'label_seq_id', 'label_asym_id', 'label_entity_id',
-      'label_alt_id', 'lj_k', 'c_k', 'h_k', 'cutoff_atom',
-      'cutoff_start', 'cutoff_end', 'value' ];
+    [ 'id', 'lj_k', 'c_k', 'h_k', 't_k', 'cutoff_atom', 'cutoff_start',
+      'cutoff_end', 'rmsd_average' ];
 
-my $calculation = 1;
+my $calculation_id = 1;
 for my $parameters ( @{ $multi_parameters } ) {
     my $PI = $parameters->{'_[local]_constants'}{'pi'};
     my $SIG_FIGS_MAX = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+    my $force_field = $parameters->{'_[local]_force_field'};
 
     $small_angle //= 0.1 * $PI;
 
@@ -187,7 +190,15 @@ for my $parameters ( @{ $multi_parameters } ) {
             $rmsd += ( 1 / scalar @{ $rotamers } ) * rmsd( $residue_coord,
                                                            $rotamer_coord );
         }
+
+        push @{ $pdbx_loops{'_[local]_parameter_estimation'}{'data'} },
+            $calculation_id, $force_field->{'lj_k'}, $force_field->{'c_k'},
+            $force_field->{'h_k'}, $force_field->{'t_k'},
+            $force_field->{'cutoff_atom'}, $force_field->{'cutoff_start'},
+            $force_field->{'cutoff_end'}, sprintf( $SIG_FIGS_MAX, $rmsd );
     }
+
+    $calculation_id++;
 }
 
 to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
