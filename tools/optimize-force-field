@@ -91,7 +91,7 @@ my $multi_parameters =
 my %pdbx_loops;
 $pdbx_loops{'_[local]_parameter_estimation'}{'attributes'} =
     [ 'id', 'lj_k', 'c_k', 'h_k', 't_k', 'cutoff_atom', 'cutoff_start',
-      'cutoff_end', 'rmsd_average' ];
+      'cutoff_end', 'rotamer_number', 'rmsd_average' ];
 
 my $calculation_id = 1;
 for my $parameters ( @{ $multi_parameters } ) {
@@ -101,6 +101,9 @@ for my $parameters ( @{ $multi_parameters } ) {
 
     # Parses string describing angles.
     my %angles = %{ sample_angles_qs_parsing( $angles, undef, undef, $parameters ) };
+
+    my $rmsd_sum = 0;
+    my $rotamer_number = 0;
 
     for my $pdbx_file ( @ARGV ) {
         # Reads file path, stdin and '-' operator.
@@ -165,8 +168,6 @@ for my $parameters ( @{ $multi_parameters } ) {
 
         next if ! %rotamer_library;
 
-        my $rmsd = 0;
-
         for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
             my ( $residue_id, $residue_chain, $residue_entity, $residue_alt)=
                 split /,/sxm, $residue_unique_key;
@@ -207,15 +208,16 @@ for my $parameters ( @{ $multi_parameters } ) {
                 filter( { 'atom_site' => $rotamer_site,
                           'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
-            $rmsd += ( 1 / scalar @{ $rotamers } ) * rmsd( $residue_coord,
-                                                           $rotamer_coord );
+            $rmsd_sum += rmsd( $residue_coord, $rotamer_coord );
+            $rotamer_number++;
         }
 
         push @{ $pdbx_loops{'_[local]_parameter_estimation'}{'data'} },
             $calculation_id, $force_field->{'lj_k'}, $force_field->{'c_k'},
             $force_field->{'h_k'}, $force_field->{'t_k'},
             $force_field->{'cutoff_atom'}, $force_field->{'cutoff_start'},
-            $force_field->{'cutoff_end'}, sprintf( $SIG_FIGS_MAX, $rmsd );
+            $force_field->{'cutoff_end'}, $rotamer_number,
+            sprintf( $SIG_FIGS_MAX, $rmsd_sum / $rotamer_number );
     }
 
     $calculation_id++;
