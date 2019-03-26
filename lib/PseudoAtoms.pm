@@ -435,6 +435,8 @@ sub generate_library
                              'PARAMETERS' => $PARAMETERS,
                              'options' => $options } ) };
 
+                next if ! @allowed_angles;
+
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
                 my ( $allowed_angles, $energy_sums ) =
@@ -451,10 +453,6 @@ sub generate_library
                              'options' => $options },
                            [ @allowed_angles ],
                            $threads ) };
-
-                if( ! @{ $allowed_angles } ) {
-                    die "no possible rotamer solutions were detected.\n";
-                }
 
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                     my %angles =
@@ -614,7 +612,8 @@ sub calc_favourable_angles
                 @allowed_angles = @{ $next_allowed_angles };
                 @allowed_energies = @{ $next_allowed_energies };
             } else {
-                die "no possible rotamer solutions were detected.\n";
+                return [];
+                # die "no possible rotamer solutions were detected.\n";
             }
         }
 
