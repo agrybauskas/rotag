@@ -91,7 +91,7 @@ my $multi_parameters =
 my %pdbx_loops;
 $pdbx_loops{'_[local]_parameter_estimation'}{'attributes'} =
     [ 'id', 'lj_k', 'c_k', 'h_k', 't_k', 'cutoff_atom', 'cutoff_start',
-      'cutoff_end', 'rotamer_number', 'rmsd_average' ];
+      'cutoff_end', 'rotamer_number', 'energy_average', 'rmsd_average' ];
 
 my $calculation_id = 1;
 for my $parameters ( @{ $multi_parameters } ) {
@@ -103,6 +103,7 @@ for my $parameters ( @{ $multi_parameters } ) {
     my %angles = %{ sample_angles_qs_parsing( $angles, undef, undef, $parameters ) };
 
     my $rmsd_sum = 0;
+    my $energy_sum = 0;
     my $rotamer_number = 0;
 
     for my $pdbx_file ( @ARGV ) {
@@ -212,6 +213,7 @@ for my $parameters ( @{ $multi_parameters } ) {
                           'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
             $rmsd_sum += rmsd( $residue_coord, $rotamer_coord );
+            $energy_sum += $top_rotamer->{'potential_energy_value'};
             $rotamer_number++;
         }
     }
@@ -221,6 +223,7 @@ for my $parameters ( @{ $multi_parameters } ) {
         $force_field->{'h_k'}, $force_field->{'t_k'},
         $force_field->{'cutoff_atom'}, $force_field->{'cutoff_start'},
         $force_field->{'cutoff_end'}, $rotamer_number,
+        sprintf( $SIG_FIGS_MAX, $energy_sum / $rotamer_number ),
         sprintf( $SIG_FIGS_MAX, $rmsd_sum / $rotamer_number );
 
     $calculation_id++;
