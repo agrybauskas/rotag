@@ -163,92 +163,51 @@ for my $parameters ( @{ $multi_parameters } ) {
                                     $parameters->{'_[local]_interaction_atom_names'} },
                           'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
-                    my $current_top_rank;
-        if( $top_rank ) {
-            $current_top_rank =
-                $top_rank <= scalar @rotamer_ids ?
-                $top_rank :
-                scalar @rotamer_ids;
-        } elsif( $top_ratio ) {
-            $current_top_rank = int( scalar( @rotamer_ids ) * $top_ratio );
-            $current_top_rank = $current_top_rank == 0 ? 1 : $current_top_rank;
-        } else {
-            push @rotamers, @rotamer_ids;
-            next;
-        }
+            # Chooses the rotamer with the lowest energy state.
+            my ( $top_rotamer ) =
+                sort { $a->{'potential_energy_value'} <=>
+                       $b->{'potential_energy_value'} }
+                    @{ $rotamer_library->{$residue_unique_key} };
 
-        my @current_rotamers =
-            sort { $rotamer_energy->{$a}{'value'} <=>
-                   $rotamer_energy->{$b}{'value'} }
-                 @rotamer_ids;
-        push @rotamers, @current_rotamers[0..$current_top_rank-1];
-
-    #                 # Checks if 'top' option is int or float and filters rotamers
-    #                 # accordingly.
-    #                 my @rotamers;
-    #                 if( defined $top_rank ) {
-    #                     $top_rank =
-    #                         $top_rank <=
-    #                             scalar @{$rotamer_library->{$residue_unique_key}} ?
-    #                         $top_rank :
-    #                         scalar @{ $rotamer_library->{$residue_unique_key} };
-    #                     @rotamers =
-    #                         sort { $a->{'potential_energy_value'} <=>
-    #                                $b->{'potential_energy_value'} }
-    #                         @{ $rotamer_library->{$residue_unique_key} };
-    #                     @rotamers = @rotamers[0..$top_rank-1];
-    #                 } elsif( defined $top_ratio ) {
-    #                     $top_rank =
-    #                         int( scalar( @{ $rotamer_library->{$residue_unique_key}})
-    #                              * $top_ratio );
-    #                     @rotamers =
-    #                         sort { $a->{'potential_energy_value'} <=>
-    #                                $b->{'potential_energy_value'} }
-    #                         @{ $rotamer_library->{$residue_unique_key} };
-    #                     @rotamers = @rotamers[0..$top_rank-1];
-    #                 } else {
-    #                     @rotamers = @{ $rotamer_library->{$residue_unique_key} };
-    #                 }
-
-    #                 # Generates rotamer and checks the angle with original
-    #                 # side-chain.
-    #                 for my $rotamer ( @rotamers ) {
-    #                     my $rotamer_site =
-    #                         generate_rotamer( { 'atom_site' => $selected_atom_site,
-    #                                             'angle_values' =>
-    #                                                 { $residue_unique_key =>
-    #                                                       $rotamer->{'angles'} } } );
-    #                     my $rotamer_coord =
-    #                         filter( { 'atom_site' => $rotamer_site,
-    #                                   'data' =>
-    #                                       [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
-    #                     push @{$pdbx_loops{'_[local]_parameter_estimation'}{'data'}},
-    #                          $calculation_id, $residue_id, $residue_chain,
-    #                          $residue_entity, $residue_alt,
-    #                          $current_parameters{'lj_k'},
-    #                          $current_parameters{'c_k'},
-    #                          $current_parameters{'h_k'},
-    #                          $current_parameters{'cutoff_atom'},
-    #                          $current_parameters{'cutoff_start'},
-    #                          $current_parameters{'cutoff_end'},
-    #                          sprintf( $SIG_FIGS_MAX,
-    #                                   rmsd( $residue_coord, $rotamer_coord ) );
-    #                     $calculation_id++;
-    #                 }
-    #             }
-    #         };
-    #         if( $@ ) {
-    #             push @{$pdbx_loops{'_[local]_parameter_estimation'}{'data'}},
-    #             $calculation_id, 'NA', 'NA', 'NA', 'NA',
-    #             $current_parameters{'lj_k'},
-    #             $current_parameters{'c_k'},
-    #             $current_parameters{'h_k'},
-    #             $current_parameters{'cutoff_atom'},
-    #             $current_parameters{'cutoff_start'},
-    #             $current_parameters{'cutoff_end'},
-    #             'NA';
-    #             $calculation_id++;
-    #         }
+            #         # Generates rotamer and checks the angle with original
+            #         # side-chain.
+            #         for my $rotamer ( @rotamers ) {
+            #             my $rotamer_site =
+            #                 generate_rotamer( { 'atom_site' => $selected_atom_site,
+            #                                     'angle_values' =>
+            #                                         { $residue_unique_key =>
+            #                                               $rotamer->{'angles'} } } );
+            #             my $rotamer_coord =
+            #                 filter( { 'atom_site' => $rotamer_site,
+            #                           'data' =>
+            #                               [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+            #             push @{$pdbx_loops{'_[local]_parameter_estimation'}{'data'}},
+            #                  $calculation_id, $residue_id, $residue_chain,
+            #                  $residue_entity, $residue_alt,
+            #                  $current_parameters{'lj_k'},
+            #                  $current_parameters{'c_k'},
+            #                  $current_parameters{'h_k'},
+            #                  $current_parameters{'cutoff_atom'},
+            #                  $current_parameters{'cutoff_start'},
+            #                  $current_parameters{'cutoff_end'},
+            #                  sprintf( $SIG_FIGS_MAX,
+            #                           rmsd( $residue_coord, $rotamer_coord ) );
+            #             $calculation_id++;
+            #         }
+            #     }
+            # };
+            # if( $@ ) {
+            #     push @{$pdbx_loops{'_[local]_parameter_estimation'}{'data'}},
+            #     $calculation_id, 'NA', 'NA', 'NA', 'NA',
+            #     $current_parameters{'lj_k'},
+            #     $current_parameters{'c_k'},
+            #     $current_parameters{'h_k'},
+            #     $current_parameters{'cutoff_atom'},
+            #     $current_parameters{'cutoff_start'},
+            #     $current_parameters{'cutoff_end'},
+            #     'NA';
+            #     $calculation_id++;
+            # }
         }
 
     #     to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
