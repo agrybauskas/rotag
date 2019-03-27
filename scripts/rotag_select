@@ -213,6 +213,8 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                         {'exclude' => { '[local]_selection_state' => [ 'I' ] }});
     }
 
+    next if ! %{ $atom_site };
+
     # Extracts rotamer angle data that will used to generate atom coordinates if
     # available.
     my $pdbx_loops;
