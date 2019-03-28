@@ -126,6 +126,8 @@ for my $pdbx_file ( @ARGV ) {
     }
 }
 
+exit if ! %atom_site_groups;
+
 # Calculates RMSD.
 my %pdbx_loops;
 if( $do_decompose ) {
