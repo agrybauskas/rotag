@@ -144,6 +144,18 @@ sub obtain_pdbx_loop
         }
     }
 
+    # Checks the difference between the categories that were searched and
+    # the ones that were found.
+    for my $searched_category ( @{ $categories } ) {
+        if( ! any { $_ eq $searched_category } @categories ) {
+            if( $pdbx_file eq '-' ) {
+                warn "'$searched_category' data was not found in STDIN.\n";
+            } else {
+                warn "'$searched_category' data was not found in '$pdbx_file'.\n";
+            }
+        }
+    }
+
     # Generates hash from three lists.
     my @pdbx_loop_data;
     for( my $i = 0; $i <= $#categories; $i++ ) {
@@ -187,7 +199,6 @@ sub pdbx_loop_unique
     my $category = [keys %{ $pdbx_loop_data }]->[0];
 
     if( ! %{ $pdbx_loop_data } ) {
-        warn "no appropriate information was found\n";
         return {};
     }
 
