@@ -108,9 +108,13 @@ sub obtain_pdbx_line_new
 sub obtain_pdbx_loop
 {
     my ( $pdbx_file, $categories, $options ) = @_;
-    my ( $read_until_end ) = ( $options->{'read_until_end'} );
+    my ( $read_until_end, $ignore_missing_categories ) = (
+        $options->{'read_until_end'},
+        $options->{'ignore_missing_categories'},
+    );
 
     $read_until_end //= 0;
+    $ignore_missing_categories //= 0;
 
     my @categories;
     my @attributes;
@@ -146,14 +150,17 @@ sub obtain_pdbx_loop
 
     # Checks the difference between the categories that were searched and
     # the ones that were found.
-    for my $current_categories ( @categories ) {
-        for my $searched_category ( @{ $categories } ) {
-            if( ! any { $searched_category eq $_ } @{ $current_categories } ) {
-                if( $pdbx_file eq '-' ) {
-                    warn "'$searched_category' data was not found in STDIN.\n";
-                } else {
-                    warn "'$searched_category' data was not found in " .
-                         "'$pdbx_file'.\n";
+    if( ! $ignore_missing_categories ) {
+        for my $current_categories ( @categories ) {
+            for my $searched_category ( @{ $categories } ) {
+                if( ! any { $searched_category eq $_ } @{ $current_categories }){
+                    if( $pdbx_file eq '-' ) {
+                        warn "'$searched_category' data was not found in " .
+                             "STDIN.\n";
+                    } else {
+                        warn "'$searched_category' data was not found in " .
+                             "'$pdbx_file'.\n";
+                    }
                 }
             }
         }
@@ -295,9 +302,10 @@ sub pdbx_loop_to_array
 
 sub obtain_atom_site
 {
-    my ( $pdbx_file ) = @_;
+    my ( $pdbx_file, $options ) = @_;
 
-    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ] ) );
+    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ],
+                                               $options ) );
 }
 
 #

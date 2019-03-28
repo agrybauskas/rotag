@@ -228,7 +228,8 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     my $pdbx_loops;
     if( $pdbx_file ) {
         $pdbx_loops = obtain_pdbx_loop( $pdbx_file,
-                                        [ '_\[local\]_rotamer_angle' ] );
+                                        [ '_[local]_rotamer_angle' ],
+                                        { 'ignore_missing_categories' =>  1 } );
     }
 
     # Prints out the PDBx.

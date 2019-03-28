@@ -133,8 +133,8 @@ for my $pdbx_file ( @ARGV ) {
     if( $add_sidechains ) {
         # Extracts rotamer angle data that will used to generate atom
         # coordinates.
-        my $pdbx_loops =
-            obtain_pdbx_loop( $pdbx_file, [ '_[local]_rotamer_angle' ] );
+        my $pdbx_loops = obtain_pdbx_loop( $pdbx_file,
+                                           [ '_[local]_rotamer_angle' ] );
 
         next if ! %{ $pdbx_loops };
 
