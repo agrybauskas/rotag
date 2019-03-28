@@ -169,6 +169,13 @@ if( $do_decompose ) {
 }
 
 for my $pdbx_file ( @ARGV ) {
+    if( -z $pdbx_file ) {
+        warning( { 'program' => $0,
+                   'filename' => $pdbx_file,
+                   'message' => "is empty.\n" } );
+        next;
+    }
+
     # Reads file path, stdin and '-' operator.
     my $atom_site;
     $atom_site = obtain_atom_site( $pdbx_file );

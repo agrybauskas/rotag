@@ -92,14 +92,16 @@ my $PARAMETERS = Parameters->new();
 my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
+    if( -z $pdbx_file ) {
+        warning( { 'program' => $0,
+                   'filename' => $pdbx_file,
+                   'message' => "is empty.\n" } );
+        next;
+    }
+
     # Reads file path, stdin and '-' operator.
     my $atom_sites;
     $atom_sites = obtain_atom_sites( $pdbx_file );
-
-    if( ! @{ $atom_sites } ) {
-        warning( { 'message' => "$pdbx_file is empty.\n" } );
-        exit;
-    }
 
     for my $atom_site ( @{ $atom_sites } ) {
         # Assigns filters atoms and assigns to specified groups.
