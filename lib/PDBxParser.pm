@@ -146,12 +146,15 @@ sub obtain_pdbx_loop
 
     # Checks the difference between the categories that were searched and
     # the ones that were found.
-    for my $searched_category ( @{ $categories } ) {
-        if( ! any { $_ eq $searched_category } @categories ) {
-            if( $pdbx_file eq '-' ) {
-                warn "'$searched_category' data was not found in STDIN.\n";
-            } else {
-                warn "'$searched_category' data was not found in '$pdbx_file'.\n";
+    for my $current_categories ( @categories ) {
+        for my $searched_category ( @{ $categories } ) {
+            if( ! any { $searched_category eq $_ } @{ $current_categories } ) {
+                if( $pdbx_file eq '-' ) {
+                    warn "'$searched_category' data was not found in STDIN.\n";
+                } else {
+                    warn "'$searched_category' data was not found in " .
+                         "'$pdbx_file'.\n";
+                }
             }
         }
     }
