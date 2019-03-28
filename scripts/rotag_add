@@ -128,13 +128,8 @@ for my $pdbx_file ( @ARGV ) {
         # coordinates.
         my $pdbx_loops =
             obtain_pdbx_loop( $pdbx_file, [ '_[local]_rotamer_angle' ] );
-        if( ! %{ $pdbx_loops } ) {
-            error(
-                { 'program' => $0,
-                  'filename' => $pdbx_file,
-                  'message' => 'no rotamer library was detected. Generate '.
-                               "library with 'rotag_library' script.\n" } );
-        }
+
+        next if ! %{ $pdbx_loops };
 
         # Generates data structure from $pdbx_loops.
         my $pdbx_loop_unique = pdbx_loop_unique( $pdbx_loops, [ 'id' ] );
