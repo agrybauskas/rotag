@@ -94,7 +94,7 @@ my $tags = '';
 my $parameters = '';
 
 local $SIG{__WARN__} = sub {
-    warning( { 'message' => @_ } );
+    warning( { 'program' => $0, 'message' => @_ } );
 };
 
 local $SIG{__DIE__} = sub {
@@ -150,21 +150,11 @@ for my $parameter_pair ( split /,/sxm, $parameters ) {
 }
 
 for my $pdbx_file ( @ARGV ) {
-    if( -z $pdbx_file ) {
-        warning( { 'program' => $0,
-                   'filename' => $pdbx_file,
-                   'message' => "is empty.\n" } );
-        next;
-    }
-
     # Reads file path, stdin and '-' operator.
     my $atom_site;
     $atom_site = obtain_atom_site( $pdbx_file );
 
-    if( ! %{ $atom_site } ) {
-        warning( { 'message' => "$pdbx_file is empty.\n" } );
-        exit;
-    }
+    next if ! %{ $atom_site };
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,

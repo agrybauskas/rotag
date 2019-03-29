@@ -49,7 +49,7 @@ my $not_strict = 0;
 my $output_format = 'pdbx';
 
 local $SIG{__WARN__} = sub {
-    warning( { 'message' => @_ } );
+    warning( { 'program' => $0, 'message' => @_ } );
 };
 
 local $SIG{__DIE__} = sub {
@@ -92,13 +92,6 @@ my $PARAMETERS = Parameters->new();
 my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
-    if( -z $pdbx_file ) {
-        warning( { 'program' => $0,
-                   'filename' => $pdbx_file,
-                   'message' => "is empty.\n" } );
-        next;
-    }
-
     # Reads file path, stdin and '-' operator.
     my $atom_sites;
     $atom_sites = obtain_atom_sites( $pdbx_file );

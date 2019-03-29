@@ -126,8 +126,10 @@ sub obtain_pdbx_loop
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
     local @ARGV = ( $pdbx_file );
+    my $line_counter = 0;
 
     while( <> ) {
+        $line_counter++;
         if( /^data_/ || ! @categories ) {
             push @categories, [];
             push @attributes, [];
@@ -165,6 +167,9 @@ sub obtain_pdbx_loop
             }
         }
     }
+
+    warn "$pdbx_file - is empty.\n" if $line_counter == 0 && $pdbx_file ne '-';
+    warn "STDIN - is empty.\n" if $line_counter == 0 && $pdbx_file eq '-';
 
     # Generates hash from three lists.
     my @pdbx_loop_data;

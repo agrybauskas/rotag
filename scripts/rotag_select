@@ -97,7 +97,7 @@ my $keep_ignored = 0;
 my $random_seed = 23;
 
 local $SIG{__WARN__} = sub {
-    warning( { 'message' => @_ } );
+    warning( { 'program' => $0, 'message' => @_ } );
 };
 
 local $SIG{__DIE__} = sub {
@@ -131,22 +131,10 @@ my $PARAMETERS = Parameters->new();
 
 for( my $i = 0; $i <= $#ARGV; $i++ ) {
     my $pdbx_file = $ARGV[$i];
-
-    if( -z $pdbx_file ) {
-        warning( { 'program' => $0,
-                   'filename' => $pdbx_file,
-                   'message' => "is empty.\n" } );
-        next;
-    }
-
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    $atom_site = obtain_atom_site( $pdbx_file );
-
-    if( ! %{ $atom_site } ) {
-        warning( { 'message' => "$pdbx_file is empty.\n" } );
-        next;
-    }
+    $atom_site = obtain_atom_site( $pdbx_file,
+                                   { 'ignore_missing_categories' => 1 } );
 
     # Assigns correct target and select command line arguments for current file.
     my $target_cmd;
