@@ -129,7 +129,6 @@ sub obtain_pdbx_loop
     my $line_counter = 0;
 
     while( <> ) {
-        $line_counter++;
         if( /^data_/ || ! @categories ) {
             push @categories, [];
             push @attributes, [];
@@ -148,6 +147,7 @@ sub obtain_pdbx_loop
         } elsif( $is_reading_lines == 1 ) {
             push @{ $data[-1][-1] }, split q{ }, $_;
         }
+        $line_counter++;
     }
 
     # Checks the difference between the categories that were searched and
@@ -168,8 +168,10 @@ sub obtain_pdbx_loop
         }
     }
 
-    warn "$pdbx_file - is empty.\n" if $line_counter == 0 && $pdbx_file ne '-';
-    warn "STDIN - is empty.\n" if $line_counter == 0 && $pdbx_file eq '-';
+    warn "$pdbx_file - is empty.\n"
+        if $line_counter == 0 && $pdbx_file ne '-' && ! $ignore_missing_categories;
+    warn "STDIN - is empty.\n"
+        if $line_counter == 0 && $pdbx_file eq '-' && ! $ignore_missing_categories;
 
     # Generates hash from three lists.
     my @pdbx_loop_data;
