@@ -18,6 +18,8 @@ use Math::Trig;
 use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( sort_atom_names );
+use ForceField::Bonded;
+use ForceField::NonBonded;
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    split_by );
@@ -27,6 +29,49 @@ use BondProperties qw( rotatable_bonds );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
+
+my %POTENTIALS = (
+    'composite' => {
+        'bonded' => {
+            'torsion' => \&ForceField::Bonded::torsion_new,
+        },
+        'non_bonded' => {
+            'lennard_jones' => \&ForceField::NonBonded::lennard_jones,
+            'coulomb' => \&ForceField::NonBonded::coulomb,
+            'h_bond' => \&ForceField::NonBonded::h_bond,
+        }
+    },
+    'torsion' => {
+        'bonded' => {
+            'torsion' => \&ForceField::Bonded::torsion_new,
+        }
+    },
+    'hard_sphere' => {
+        'non_bonded' => {
+            'hard_sphere' => \&ForceField::Bonded::hard_sphere,
+        }
+    },
+    'soft_sphere' => {
+        'non_bonded' => {
+            'soft_sphere' => \&ForceField::Bonded::soft_sphere
+        }
+    },
+    'lennard_jones' => {
+        'non_bonded' => {
+            'lennard_jones' => \&ForceField::NonBonded::lennard_jones,
+        }
+    },
+    'coulomb' => {
+        'non_bonded' => {
+            'coulomb' => \&ForceField::NonBonded::coulomb,
+        }
+    },
+    'h_bond' => {
+        'non_bonded' => {
+            'h_bond' => \&ForceField::NonBonded::h_bond,
+        }
+    }
+);
 
 # --------------------------- Molecule parameters ----------------------------- #
 
