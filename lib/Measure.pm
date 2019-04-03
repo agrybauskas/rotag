@@ -9,7 +9,8 @@ BEGIN {
                          bond_angle
                          bond_length
                          dihedral_angle
-                         rmsd );
+                         rmsd
+                         energy );
 }
 
 use Carp;
@@ -402,6 +403,17 @@ sub rmsd
     $rmsd = $rmsd / scalar @{ $first_set };
 
     return sqrt $rmsd;
+}
+
+#
+# Calculates energy values of the given structure.
+# Input:
+# Output:
+#
+
+sub energy
+{
+
 }
 
 1;
