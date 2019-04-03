@@ -31,10 +31,10 @@
    be generated during the build. This way calculation will only occur once.
 -- Make proline also rotatable, but by adding a point (atom) that the last
    side-chain atom shoul be connected to would also produce rotamers.
--- There should be a check of must attributes in CIF.
+++ There should be a check of must attributes in CIF.
 ++ Add option to use only implicit hydrogen bond model for composite energy
    potential.
--- Add 0 value energy to rotag_energy.
+++ Add 0 value energy to rotag_energy.
 ++ Parameter control should be added to rotag_energy for debugging.
 -- Should decide, how to change alt id for original atom after pseudo atom is
    generated. Should it be kept to '.'? Or changed to match pattern in CIF?
@@ -63,7 +63,7 @@
 ++ Maybe should add capability to select residues according to their main-chain
    and side-chain dihedral angles.
 -- around_distance() and grid_box() functions should isolated different alt-ids.
--- Figure out how heteroatoms should be treated when the part of them are
+!! Figure out how heteroatoms should be treated when the part of them are
    selected and included in iteraction sites.
 ++ Add group assignment keyword to the grammar.
 -- Generate mainchain atoms with specified dihedral angles. It will be useful
