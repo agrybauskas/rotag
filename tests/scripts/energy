@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ForceField::Parameters;
+use Measure qw( energy );
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $PARAMETERS = Parameters->new();
+my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+
+energy( $atom_site, $PARAMETERS );
+
+# my $dihedral_angles = all_dihedral( $atom_site,
+#                                     { 'calc_mainchain' => $calc_mainchain } );
+
+# for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
+#     for my $angle ( sort { $a cmp $b }
+#                     keys %{ $dihedral_angles->{$residue_unique_key} } ) {
+#         print( join( " ", split( ",", $residue_unique_key ), $angle ), " " );
+#         printf( "%.1f\n",
+#                 $dihedral_angles->{$residue_unique_key}{$angle}{'value'}
+#               * 180 / $PI );
+#     }
+# }

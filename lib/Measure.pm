@@ -14,10 +14,12 @@ BEGIN {
 }
 
 use Carp;
+use Clone qw( clone );
 use Math::Trig;
 use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( sort_atom_names );
+use Grid qw( grid_box );
 use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
@@ -30,7 +32,7 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-my %POTENTIALS = (
+my %potentials = (
     'composite' => {
         'bonded' => {
             'torsion' => \&ForceField::Bonded::torsion_new,
@@ -458,7 +460,49 @@ sub rmsd
 
 sub energy
 {
+    my ( $atom_site, $PARAMETERS, $options  ) = @_;
+    my ( $reference_atom_site ) = (
+        $options->{'reference_atom_site'},
+    );
 
+    $reference_atom_site //= $atom_site;
+
+    my $EDGE_LENGTH_INTERACTION =
+        $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
+
+    # Splits atom site into groups by its uniqueness.
+    my $atom_site_groups = split_by( { 'atom_site' => $atom_site,
+                                       'attributes' => [ 'pdbx_PDB_model_num',
+                                                         'label_alt_id',
+                                                         'label_asym_id' ],
+                                       'append_dot' => 1 } );
+
+    my $calculation_id = 1;
+    for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
+        my $current_atom_site =
+            clone( filter( { 'atom_site' => $atom_site,
+                             'include' =>
+                                 { 'id' =>
+                                       $atom_site_groups->{$atom_site_identifier}
+                                 } } ) );
+
+        # Replace every alt id to one in order to determine which calculation
+        # calculated what atom.
+        my ( undef, $current_alt_id ) = split /,/, $atom_site_identifier;
+        for my $atom_id ( keys %{ $current_atom_site } ) {
+            $current_atom_site->{$atom_id}{'label_alt_id'} = $current_alt_id;
+        }
+
+        my %options = ();
+        $options{'atom_site'} = $current_atom_site;
+
+        my @target_atom_ids = keys %{ $current_atom_site };
+
+        my ( $grid_box, $target_cells ) = grid_box( $current_atom_site,
+                                                    $EDGE_LENGTH_INTERACTION,
+                                                    \@target_atom_ids,
+                                                    $PARAMETERS );
+    }
 }
 
 1;
