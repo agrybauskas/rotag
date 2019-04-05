@@ -6,11 +6,13 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( general
                      torsion
+                     torsion_object
                      torsion_new );
 
 use Readonly;
 
 use AtomProperties qw( sort_atom_names );
+use Energy;
 use ForceField::Parameters;
 use Measure qw( dihedral_angle );
 use Version qw( $VERSION );
@@ -164,6 +166,73 @@ sub torsion_new
     }
 
     return $torsion_potential;
+}
+
+# TODO: must keep only one torsion function.
+sub torsion_object
+{
+    my ( $atom_i_id, $PARAMETERS, $options ) = @_;
+
+    my ( $reference_atom_site ) = ( $options->{'atom_site'} );
+
+    my $T_K = $PARAMETERS->{'_[local]_force_field'}{'t_k'};
+    my $TORSIONAL = $PARAMETERS->{'_[local]_torsional'};
+
+    my $phase = 3;
+
+    # Determines all dihedral angles by searching third neighbours following the
+    # connections.
+    my $atom_name = $reference_atom_site->{$atom_i_id}{'type_symbol'};
+    my @connection_ids = @{ $reference_atom_site->{$atom_i_id}{'connections'} };
+    my @torsion_potentials = ();
+    for my $neighbour_id ( @connection_ids ) {
+        my @second_neighbour_ids =
+            grep { $atom_i_id ne $_ }
+                @{ $reference_atom_site->{$neighbour_id}{'connections'} };
+
+        next if ! @second_neighbour_ids;
+
+        for my $second_neighbour_id ( @second_neighbour_ids ) {
+            my @third_neighbour_ids =
+                grep { $neighbour_id ne $_ }
+                    @{ $reference_atom_site->{$second_neighbour_id}
+                                             {'connections'} };
+
+            next if ! @third_neighbour_ids;
+
+            for my $third_neighbour_id ( @third_neighbour_ids ) {
+                my $third_atom_name =
+                    $reference_atom_site->{$third_neighbour_id}{'type_symbol'};
+                my $epsilon = $TORSIONAL->{$third_atom_name}{$atom_name}
+                                          {'epsilon'};
+                my $omega = dihedral_angle(
+                    [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
+                        $reference_atom_site->{$third_neighbour_id}{'Cartn_y'},
+                        $reference_atom_site->{$third_neighbour_id}{'Cartn_z'} ],
+                      [ $reference_atom_site->{$second_neighbour_id}{'Cartn_x'},
+                        $reference_atom_site->{$second_neighbour_id}{'Cartn_y'},
+                        $reference_atom_site->{$second_neighbour_id}{'Cartn_z'} ],
+                      [ $reference_atom_site->{$neighbour_id}{'Cartn_x'},
+                        $reference_atom_site->{$neighbour_id}{'Cartn_y'},
+                        $reference_atom_site->{$neighbour_id}{'Cartn_z'} ],
+                      [ $reference_atom_site->{$atom_i_id}{'Cartn_x'},
+                        $reference_atom_site->{$atom_i_id}{'Cartn_y'},
+                        $reference_atom_site->{$atom_i_id}{'Cartn_z'} ] ],
+                );
+
+                my $energy_potential = Energy->new();
+                $energy_potential->set_energy(
+                    'torsion',
+                    [ $atom_i_id, $neighbour_id, $second_neighbour_id,
+                      $third_neighbour_id ],
+                    $T_K * _torsion( $omega, $phase, $epsilon, $PARAMETERS )
+                );
+                push @torsion_potentials, $energy_potential;
+            }
+        }
+    }
+
+    return \@torsion_potentials;
 }
 
 sub _torsion

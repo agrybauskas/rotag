@@ -19,7 +19,8 @@ $atom_site = eval( $atom_site );
 my $PARAMETERS = Parameters->new();
 my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
-energy( $atom_site, $potential, $PARAMETERS );
+use Data::Dumper;
+print STDERR Dumper energy( $atom_site, $potential, $PARAMETERS );
 
 # my $dihedral_angles = all_dihedral( $atom_site,
 #                                     { 'calc_mainchain' => $calc_mainchain } );

@@ -24,6 +24,7 @@ use ConnectAtoms qw( is_neighbour
                      is_second_neighbour );
 use Grid qw( grid_box
              identify_neighbour_cells );
+use Energy;
 use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
@@ -39,7 +40,7 @@ our $VERSION = $VERSION;
 my %potentials = (
     'composite' => {
         'bonded' => {
-            'torsion' => \&ForceField::Bonded::torsion_new,
+            'torsion' => \&ForceField::Bonded::torsion_object,
         },
         'non_bonded' => {
             'lennard_jones' => \&ForceField::NonBonded::lennard_jones,
@@ -49,7 +50,7 @@ my %potentials = (
     },
     'torsion' => {
         'bonded' => {
-            'torsion' => \&ForceField::Bonded::torsion_new,
+            'torsion' => \&ForceField::Bonded::torsion_object,
         }
     },
     'hard_sphere' => {
@@ -516,21 +517,19 @@ sub energy
 
         my $neighbour_cells = identify_neighbour_cells($grid_box, $target_cells);
 
-        my %residue_energy = ();
+        my @residue_energy = ();
         for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
             for my $atom_id ( @{ $target_cells->{$cell} } ) {
                 next if any { $current_atom_site->{$atom_id}
                                                   {'label_atom_id'} eq $_ }
                            @{ $INTERACTION_ATOM_NAMES };
 
-                my %potential_energy;
-
                 # Adds bonded potential energy term.
                 for my $bonded_potential ( keys %bonded_potentials ) {
-                    $potential_energy{$bonded_potential}{$atom_id} =
-                        $bonded_potentials{$bonded_potential}(
-                            $atom_id, $PARAMETERS, \%options
-                    );
+                    push @residue_energy,
+                         @{ $bonded_potentials{$bonded_potential}( $atom_id,
+                                                                   $PARAMETERS,
+                                                                   \%options ) };
                 }
 
                 # Adds non-bonded potential energy term.
@@ -544,20 +543,28 @@ sub energy
                                                  $neighbour_atom_id ) ) ) {
 
                         for my $non_bonded_potential ( keys %non_bonded_potentials ) {
-                            $potential_energy{$non_bonded_potential}
-                                             {$atom_id}{$neighbour_atom_id} =
+                            my $energy_potential = Energy->new();
+                            $energy_potential->set_energy(
+                                $non_bonded_potential,
+                                [ $atom_id, $neighbour_atom_id ],
                                 $non_bonded_potentials{$non_bonded_potential}(
                                     $current_atom_site->{$atom_id},
                                     $current_atom_site->{$neighbour_atom_id},
                                     $PARAMETERS,
                                     \%options
+                                )
                             );
+                            push @residue_energy, $energy_potential;
                         }
                     }
                 }
             }
         }
+
+        $energy{$atom_site_identifier} = \@residue_energy;
     }
+
+    return \%energy;
 }
 
 1;

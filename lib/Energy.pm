@@ -12,7 +12,7 @@ sub new
     return bless $self, $class;
 }
 
-sub set_energy_value
+sub set_energy
 {
     my ( $self, $energy_type, $atoms, $value ) = @_;
     $self->{'energy_type'} = $energy_type;
@@ -23,19 +23,19 @@ sub set_energy_value
 sub energy_type
 {
     my ( $self ) = @_;
-    return $self->{'energy_type'}
+    return $self->{'energy_type'};
 }
 
 sub atoms
 {
     my ( $self ) = @_;
-    return $self->{'atoms'}
+    return $self->{'atoms'};
 }
 
 sub value
 {
     my ( $self ) = @_;
-    return $self->{'value'}
+    return $self->{'value'};
 }
 
 1;
