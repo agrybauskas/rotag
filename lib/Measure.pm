@@ -16,10 +16,14 @@ BEGIN {
 use Carp;
 use Clone qw( clone );
 use Math::Trig;
-use List::MoreUtils qw( uniq );
+use List::MoreUtils qw( any
+                        uniq );
 
 use AtomProperties qw( sort_atom_names );
-use Grid qw( grid_box );
+use ConnectAtoms qw( is_neighbour
+                     is_second_neighbour );
+use Grid qw( grid_box
+             identify_neighbour_cells );
 use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
@@ -460,15 +464,18 @@ sub rmsd
 
 sub energy
 {
-    my ( $atom_site, $PARAMETERS, $options  ) = @_;
-    my ( $reference_atom_site ) = (
+    my ( $atom_site, $potential, $PARAMETERS, $options  ) = @_;
+    my ( $reference_atom_site, $only_sidechain ) = (
         $options->{'reference_atom_site'},
+        $options->{'only_sidechain'},
     );
 
     $reference_atom_site //= $atom_site;
 
     my $EDGE_LENGTH_INTERACTION =
         $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
+    my $INTERACTION_ATOM_NAMES =
+        $PARAMETERS->{'_[local]_interaction_atom_names'};
 
     # Splits atom site into groups by its uniqueness.
     my $atom_site_groups = split_by( { 'atom_site' => $atom_site,
@@ -478,6 +485,10 @@ sub energy
                                        'append_dot' => 1 } );
 
     my $calculation_id = 1;
+    my %energy = ();
+    my %bonded_potentials = %{ $potentials{$potential}{'bonded'} };
+    my %non_bonded_potentials = %{ $potentials{$potential}{'non_bonded'} };
+
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my $current_atom_site =
             clone( filter( { 'atom_site' => $atom_site,
@@ -502,6 +513,40 @@ sub energy
                                                     $EDGE_LENGTH_INTERACTION,
                                                     \@target_atom_ids,
                                                     $PARAMETERS );
+
+        my $neighbour_cells = identify_neighbour_cells($grid_box, $target_cells);
+
+        my %residue_energy = ();
+        for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
+            for my $atom_id ( @{ $target_cells->{$cell} } ) {
+                next if any { $current_atom_site->{$atom_id}
+                                                  {'label_atom_id'} eq $_ }
+                           @{ $INTERACTION_ATOM_NAMES };
+
+                my %potential_energy;
+
+                # Adds bonded potential energy term.
+                for my $bonded_potential ( keys %bonded_potentials ) {
+                    $potential_energy{$bonded_potential} =
+                        $bonded_potentials{$bonded_potential}(
+                            $atom_id, $PARAMETERS, \%options
+                    );
+                }
+
+                # Adds non-bonded potential energy term.
+                for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} }){
+                    if( ( $atom_id ne $neighbour_atom_id ) &&
+                        ( ! is_neighbour( $current_atom_site,
+                                          $atom_id,
+                                          $neighbour_atom_id ) ) &&
+                        ( ! is_second_neighbour( $current_atom_site,
+                                                 $atom_id,
+                                                 $neighbour_atom_id ) ) ) {
+
+                    }
+                }
+            }
+        }
     }
 }
 

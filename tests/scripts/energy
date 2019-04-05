@@ -6,7 +6,7 @@ use warnings;
 use ForceField::Parameters;
 use Measure qw( energy );
 
-my ( $pdbx_dump_file ) = @ARGV;
+my ( $potential, $pdbx_dump_file ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -19,7 +19,7 @@ $atom_site = eval( $atom_site );
 my $PARAMETERS = Parameters->new();
 my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
-energy( $atom_site, $PARAMETERS );
+energy( $atom_site, $potential, $PARAMETERS );
 
 # my $dihedral_angles = all_dihedral( $atom_site,
 #                                     { 'calc_mainchain' => $calc_mainchain } );
