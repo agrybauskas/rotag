@@ -466,12 +466,12 @@ sub rmsd
 sub energy
 {
     my ( $atom_site, $potential, $PARAMETERS, $options  ) = @_;
-    my ( $reference_atom_site, $only_sidechain ) = (
-        $options->{'reference_atom_site'},
+    my ( $target_atom_ids, $only_sidechain ) = (
+        $options->{'target_atom_ids'},
         $options->{'only_sidechain'},
     );
 
-    $reference_atom_site //= $atom_site;
+    $target_atom_ids = [ sort keys %{ $atom_site } ];
 
     my $EDGE_LENGTH_INTERACTION =
         $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
@@ -490,84 +490,63 @@ sub energy
     my %bonded_potentials = %{ $potentials{$potential}{'bonded'} };
     my %non_bonded_potentials = %{ $potentials{$potential}{'non_bonded'} };
 
-    for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
-        my $current_atom_site =
-            clone( filter( { 'atom_site' => $atom_site,
-                             'include' =>
-                                 { 'id' =>
-                                       $atom_site_groups->{$atom_site_identifier}
-                                 } } ) );
+    my %options = ();
+    $options{'atom_site'} = $atom_site;
 
-        # Replace every alt id to one in order to determine which calculation
-        # calculated what atom.
-        my ( undef, $current_alt_id ) = split /,/, $atom_site_identifier;
-        for my $atom_id ( keys %{ $current_atom_site } ) {
-            $current_atom_site->{$atom_id}{'label_alt_id'} = $current_alt_id;
-        }
+    my ( $grid_box, $target_cells ) = grid_box( $atom_site,
+                                                $EDGE_LENGTH_INTERACTION,
+                                                $target_atom_ids,
+                                                $PARAMETERS );
 
-        my %options = ();
-        $options{'atom_site'} = $current_atom_site;
+    my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
 
-        my @target_atom_ids = keys %{ $current_atom_site };
+    my @residue_energy = ();
+    for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
+        for my $atom_id ( @{ $target_cells->{$cell} } ) {
+            next if any { $atom_site->{$atom_id}{'label_atom_id'} eq $_ }
+                       @{ $INTERACTION_ATOM_NAMES };
 
-        my ( $grid_box, $target_cells ) = grid_box( $current_atom_site,
-                                                    $EDGE_LENGTH_INTERACTION,
-                                                    \@target_atom_ids,
-                                                    $PARAMETERS );
+            # Adds bonded potential energy term.
+            for my $bonded_potential ( keys %bonded_potentials ) {
+                $bonded_potentials{$bonded_potential}( $atom_id,
+                                                       $PARAMETERS,
+                                                       \%options );
+                push @residue_energy,
+                     @{ $bonded_potentials{$bonded_potential}( $atom_id,
+                                                               $PARAMETERS,
+                                                               \%options ) };
+            }
 
-        my $neighbour_cells = identify_neighbour_cells($grid_box, $target_cells);
+            # Adds non-bonded potential energy term.
+            for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} }){
+                if( ( $atom_id ne $neighbour_atom_id ) &&
+                    ( ! is_neighbour( $atom_site,
+                                      $atom_id,
+                                      $neighbour_atom_id ) ) &&
+                    ( ! is_second_neighbour( $atom_site,
+                                             $atom_id,
+                                             $neighbour_atom_id ) ) ) {
 
-        my @residue_energy = ();
-        for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
-            for my $atom_id ( @{ $target_cells->{$cell} } ) {
-                next if any { $current_atom_site->{$atom_id}
-                                                  {'label_atom_id'} eq $_ }
-                           @{ $INTERACTION_ATOM_NAMES };
-
-                # Adds bonded potential energy term.
-                for my $bonded_potential ( keys %bonded_potentials ) {
-                    $bonded_potentials{$bonded_potential}( $atom_id,
-                                                           $PARAMETERS,
-                                                           \%options );
-                    push @residue_energy,
-                         @{ $bonded_potentials{$bonded_potential}( $atom_id,
-                                                                   $PARAMETERS,
-                                                                   \%options ) };
-                }
-
-                # Adds non-bonded potential energy term.
-                for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} }){
-                    if( ( $atom_id ne $neighbour_atom_id ) &&
-                        ( ! is_neighbour( $current_atom_site,
-                                          $atom_id,
-                                          $neighbour_atom_id ) ) &&
-                        ( ! is_second_neighbour( $current_atom_site,
-                                                 $atom_id,
-                                                 $neighbour_atom_id ) ) ) {
-
-                        for my $non_bonded_potential ( keys %non_bonded_potentials ) {
-                            my $energy_potential = Energy->new();
-                            $energy_potential->set_energy(
-                                $non_bonded_potential,
-                                [ $atom_id, $neighbour_atom_id ],
-                                $non_bonded_potentials{$non_bonded_potential}(
-                                    $current_atom_site->{$atom_id},
-                                    $current_atom_site->{$neighbour_atom_id},
-                                    $PARAMETERS,
-                                    \%options
-                                )
-                            );
-                            push @residue_energy, $energy_potential;
-                        }
+                    for my $non_bonded_potential ( keys %non_bonded_potentials ) {
+                        my $energy_potential = Energy->new();
+                        $energy_potential->set_energy(
+                            $non_bonded_potential,
+                            [ $atom_id, $neighbour_atom_id ],
+                            $non_bonded_potentials{$non_bonded_potential}(
+                                $atom_site->{$atom_id},
+                                $atom_site->{$neighbour_atom_id},
+                                $PARAMETERS,
+                                \%options
+                            )
+                        );
+                        push @residue_energy, $energy_potential;
                     }
                 }
             }
         }
-
-        $energy{$atom_site_identifier} = \@residue_energy;
     }
 
-    return \%energy;
+    return \@residue_energy;
 }
 
 1;

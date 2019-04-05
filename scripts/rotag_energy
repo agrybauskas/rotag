@@ -13,6 +13,7 @@ use Try::Tiny;
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
                      is_second_neighbour );
+use Measure qw( energy );
 use ForceField::Parameters;
 use ForceField::NonBonded qw( coulomb
                               general
@@ -132,25 +133,22 @@ GetOptions(
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
 
-# Defaults.
-my %potential_functions = (
-    'composite' => \&ForceField::NonBonded::general,
-    'torsion' => \&torsion,
-    'hard_sphere' => \&hard_sphere,
-    'soft_sphere' => \&soft_sphere,
-    'lennard_jones' => \&lennard_jones,
-    'coulomb' => \&coulomb,
-    'h_bond' => \&h_bond,
-);
+# # Defaults.
+# my %potential_functions = (
+#     'composite' => \&ForceField::NonBonded::general,
+#     'torsion' => \&torsion,
+#     'hard_sphere' => \&hard_sphere,
+#     'soft_sphere' => \&soft_sphere,
+#     'lennard_jones' => \&lennard_jones,
+#     'coulomb' => \&coulomb,
+#     'h_bond' => \&h_bond,
+# );
 
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
 my $PARAMETERS = Parameters->new();
-my $EDGE_LENGTH_INTERACTION =
-    $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
-my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
 my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
 
@@ -240,216 +238,23 @@ for my $pdbx_file ( @ARGV ) {
                       'data' => [ 'id' ],
                       'is_list' => 1 } );
 
-        my ( $grid_box, $target_cells ) =
-            grid_box( $current_atom_site,
-                      $EDGE_LENGTH_INTERACTION,
-                      $target_atom_ids,
-                      $PARAMETERS );
-
-        my $neighbour_cells = identify_neighbour_cells($grid_box, $target_cells);
-
-        my $potential_function = $potential_functions{$interactions};
-
-        # Calculates the sum of pairwise interactions.
-        my %residue_energy;
-        for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
-            for my $atom_id ( @{ $target_cells->{$cell} } ) {
-                if( $do_sidechain ) {
-                    next if any { $current_atom_site->{$atom_id}
-                                                      {'label_atom_id'} eq $_ }
-                               @{ $INTERACTION_ATOM_NAMES };
-                }
-
-                my ( $atom_symbol, $atom_name,
-                     $atom_residue_id, $atom_residue_name,
-                     $atom_chain, $atom_entity, $atom_alt ) =
-                         map { $current_atom_site->{$atom_id}{$_} }
-                             qw( type_symbol label_atom_id label_seq_id
-                                 label_comp_id label_asym_id pdbx_PDB_model_num
-                                 label_alt_id );
-
-                my $residue_unique_key =
-                    join q{,}, $atom_residue_id, $atom_chain, $atom_entity,
-                    $atom_alt;
-
-                my $potential_energy = 0;
-                my %potential_energy; # Used when decomposing composite energy
-                                      # values.
-
-                # Adds bonded potential energy term.
-                if( $interactions eq 'composite' ) {
-                    $potential_energy = ForceField::Bonded::general(
-                        $current_atom_site->{$atom_id},
-                        $PARAMETERS,
-                        \%options
-                    );
-                }
-
-                # Adds non-bonded potential energy term.
-                for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} }){
-                    if( ( $atom_id ne $neighbour_atom_id )
-                     && ( ! is_neighbour( $current_atom_site,
-                                          $atom_id,
-                                          $neighbour_atom_id ) )
-                     && ( ! is_second_neighbour( $current_atom_site,
-                                                 $atom_id,
-                                                 $neighbour_atom_id ) ) ) {
-                        my ( $neighbour_symbol, $neighbour_name,
-                             $neighbour_residue_id, $neighbour_residue_name,
-                             $neighbour_chain, $neighbour_entity, $neighbour_alt ) =
-                            map { $current_atom_site->{$neighbour_atom_id}{$_} }
-                                qw( type_symbol label_atom_id label_seq_id
-                                    label_comp_id label_asym_id pdbx_PDB_model_num
-                                    label_alt_id );
-
-                        my $pairwise_potential_energy =
-                            $potential_function->(
-                                $current_atom_site->{$atom_id},
-                                $current_atom_site->{$neighbour_atom_id},
-                                $PARAMETERS,
-                                \%options );
-
-                        if( $do_pairwise ) {
-                            if( $do_decompose ) {
-                                for my $interaction (
-                                    grep { $_ ne 'composite' }
-                                    sort keys %{ $pairwise_potential_energy } ){
-                                    push @{ $pdbx_loops{'_[local]_pairwise_energy'}
-                                                       {'data'} },
-                                         $calculation_id, $atom_id, $atom_symbol,
-                                         $atom_name, $atom_residue_id,
-                                         $atom_residue_name, $atom_chain,
-                                         $atom_entity, $atom_alt,
-                                         $neighbour_atom_id, $neighbour_symbol,
-                                         $neighbour_name, $neighbour_residue_id,
-                                         $neighbour_residue_name,
-                                         $neighbour_chain, $neighbour_entity,
-                                         $neighbour_alt, $interaction,
-                                         sprintf $SIG_FIGS_MAX,
-                                                 $pairwise_potential_energy->{$interaction};
-                                    $calculation_id++;
-                                }
-                            } else {
-                                push @{ $pdbx_loops{'_[local]_pairwise_energy'}
-                                                   {'data'} },
-                                     $calculation_id, $atom_id, $atom_symbol,
-                                     $atom_name, $atom_residue_id,
-                                     $atom_residue_name, $atom_chain,
-                                     $atom_entity, $atom_alt,
-                                     $neighbour_atom_id, $neighbour_symbol,
-                                     $neighbour_name, $neighbour_residue_id,
-                                     $neighbour_residue_name, $neighbour_chain,
-                                     $neighbour_entity, $neighbour_alt,
-                                     $interactions,
-                                     sprintf $SIG_FIGS_MAX,
-                                             $pairwise_potential_energy;
-                                $calculation_id++;
-                            }
-                        } elsif( $do_decompose ) {
-                            for my $interaction (
-                                grep { $_ ne 'composite' }
-                                sort keys %{ $pairwise_potential_energy } ) {
-                                if( $potential_energy{$interaction} ) {
-                                    $potential_energy{$interaction} +=
-                                        $pairwise_potential_energy->{$interaction};
-                                } else {
-                                    $potential_energy{$interaction} =
-                                        $pairwise_potential_energy->{$interaction};
-                                }
-                            }
-                        } else {
-                            $potential_energy += $pairwise_potential_energy;
-                        }
-                    }
-                }
-
-                if( ! $do_pairwise && ! $do_decompose && ! $do_sidechain ) {
-                    if( $add_B_iso ) {
-                        $atom_site->{$atom_id}{'B_iso_or_equiv'} =
-                            sprintf $SIG_FIGS_MIN, $potential_energy;
-                        $calculation_id++;
-                    } else {
-                        push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
-                            $calculation_id, $atom_id, $atom_symbol, $atom_name,
-                            $atom_residue_id, $atom_residue_name, $atom_chain,
-                            $atom_entity, $atom_alt, $interactions,
-                            sprintf $SIG_FIGS_MAX, $potential_energy;
-                        $calculation_id++;
-                    }
-                }
-
-                if( $do_decompose && ! $do_sidechain ) {
-                    for my $interaction (
-                        grep { $_ ne 'composite' } sort keys %potential_energy ){
-                        push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
-                             $calculation_id, $atom_id, $atom_symbol, $atom_name,
-                             $atom_residue_id, $atom_residue_name, $atom_chain,
-                             $atom_entity, $atom_alt, $interaction,
-                             sprintf $SIG_FIGS_MAX, $potential_energy{$interaction};
-                        $calculation_id++;
-                    }
-                }
-
-                if( $do_sidechain && ! $do_pairwise ) {
-                    if( $do_decompose ) {
-                        for my $interaction ( grep { $_ ne 'composite' }
-                                              sort keys %potential_energy ) {
-                            if( exists $residue_energy{$residue_unique_key} &&
-                                exists $residue_energy{$residue_unique_key}
-                                                      {$interaction} ) {
-                                $residue_energy{$residue_unique_key}{$interaction} +=
-                                    $potential_energy{$interaction};
-                            } else {
-                                $residue_energy{$residue_unique_key}{$interaction} =
-                                    $potential_energy{$interaction};
-                            }
-                        }
-                    } else {
-                        if( exists $residue_energy{$residue_unique_key} &&
-                            exists $residue_energy{$residue_unique_key}
-                                                  {$interactions} ) {
-                            $residue_energy{$residue_unique_key}
-                                           {$interactions} += $potential_energy;
-                        } else {
-                            $residue_energy{$residue_unique_key}
-                                           {$interactions} = $potential_energy;
-                        }
-                    }
-                }
-            }
-        }
-
-        if( $do_sidechain ) {
-            $calculation_id = 1;
-            for my $residue_unique_key ( sort keys %residue_energy ) {
-                for my $interaction (
-                    sort keys %{ $residue_energy{$residue_unique_key} } ) {
-                    push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
-                         $calculation_id, split( /,/sxm, $residue_unique_key ),
-                         $interaction,
-                         sprintf $SIG_FIGS_MAX,
-                                 $residue_energy{$residue_unique_key}
-                                                {$interaction};
-                    $calculation_id++;
-                }
-            }
-        }
+        my $energies = energy( $current_atom_site, $interactions, $PARAMETERS,
+                               { 'target_atom_ids' => $target_atom_ids } );
     }
-
-    if( $output_format eq 'pdbx' ) {
-        if( $add_B_iso ) {
-            to_pdbx( { 'atom_site' => $atom_site,
-                       'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
-        } else {
-            to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
-        }
-    } elsif( $output_format eq 'csv' ) {
-        if( $do_pairwise ) {
-            pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
-        } elsif( $do_sidechain ) {
-            pdbx_loop_to_csv( $pdbx_loops{'_[local]_rotamer_energy'} );
-        } else {
-            pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );
-        }
-    }
+    # if( $output_format eq 'pdbx' ) {
+    #     if( $add_B_iso ) {
+    #         to_pdbx( { 'atom_site' => $atom_site,
+    #                    'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
+    #     } else {
+    #         to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+    #     }
+    # } elsif( $output_format eq 'csv' ) {
+    #     if( $do_pairwise ) {
+    #         pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
+    #     } elsif( $do_sidechain ) {
+    #         pdbx_loop_to_csv( $pdbx_loops{'_[local]_rotamer_energy'} );
+    #     } else {
+    #         pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );
+    #     }
+    # }
 }
