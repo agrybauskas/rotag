@@ -133,17 +133,6 @@ GetOptions(
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
 
-# # Defaults.
-# my %potential_functions = (
-#     'composite' => \&ForceField::NonBonded::general,
-#     'torsion' => \&torsion,
-#     'hard_sphere' => \&hard_sphere,
-#     'soft_sphere' => \&soft_sphere,
-#     'lennard_jones' => \&lennard_jones,
-#     'coulomb' => \&coulomb,
-#     'h_bond' => \&h_bond,
-# );
-
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
@@ -191,28 +180,6 @@ for my $pdbx_file ( @ARGV ) {
                                                          'label_asym_id' ],
                                        'append_dot' => 1 } );
 
-    my %pdbx_loops;
-    if( $do_pairwise ) {
-        $pdbx_loops{'_[local]_pairwise_energy'}{'attributes'} =
-            [ 'id', 'atom_1_id', 'type_symbol_1', 'label_atom_1_id',
-              'label_seq_1_id', 'label_comp_1_id', 'label_asym_1_id',
-              'label_entity_1_id', 'label_alt_1_id',
-              'atom_2_id', 'type_symbol_2', 'label_atom_2_id',
-              'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
-              'label_entity_2_id', 'label_alt_2_id', 'calculation_method',
-              'value' ];
-    } elsif( $do_sidechain ) {
-        $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
-            [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
-              'label_alt_id', 'calculation_method', 'value' ];
-    } else {
-        $pdbx_loops{'_[local]_energy'}{'attributes'} =
-            [ 'id', 'atom_id', 'type_symbol', 'label_atom_id', 'label_seq_id',
-              'label_comp_id', 'label_asym_id', 'pdbx_PDB_model_num',
-              'label_alt_id', 'calculation_method', 'value' ];
-    }
-
-    my $calculation_id = 1;
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my $current_atom_site =
             clone( filter( { 'atom_site' => $atom_site,
@@ -241,6 +208,28 @@ for my $pdbx_file ( @ARGV ) {
         my $energies = energy( $current_atom_site, $interactions, $PARAMETERS,
                                { 'target_atom_ids' => $target_atom_ids } );
     }
+
+    my %pdbx_loops;
+    if( $do_pairwise ) {
+        $pdbx_loops{'_[local]_pairwise_energy'}{'attributes'} =
+            [ 'id', 'atom_1_id', 'type_symbol_1', 'label_atom_1_id',
+              'label_seq_1_id', 'label_comp_1_id', 'label_asym_1_id',
+              'label_entity_1_id', 'label_alt_1_id',
+              'atom_2_id', 'type_symbol_2', 'label_atom_2_id',
+              'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
+              'label_entity_2_id', 'label_alt_2_id', 'calculation_method',
+              'value' ];
+    } elsif( $do_sidechain ) {
+        $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
+            [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
+              'label_alt_id', 'calculation_method', 'value' ];
+    } else {
+        $pdbx_loops{'_[local]_energy'}{'attributes'} =
+            [ 'id', 'atom_id', 'type_symbol', 'label_atom_id', 'label_seq_id',
+              'label_comp_id', 'label_asym_id', 'pdbx_PDB_model_num',
+              'label_alt_id', 'calculation_method', 'value' ];
+    }
+
     # if( $output_format eq 'pdbx' ) {
     #     if( $add_B_iso ) {
     #         to_pdbx( { 'atom_site' => $atom_site,
