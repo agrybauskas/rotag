@@ -82,3 +82,5 @@
    new rotag_library script.
 -- Atom interaction constants should be moved from small functions to the
    general ones.
+-- Change amino-acid dump files, because they contain too much information and
+   some tests are not properly performed, such as connect_atoms().

@@ -3,6 +3,8 @@ package Energy;
 use strict;
 use warnings;
 
+# ------------------------- Constructors/Destructors -------------------------- #
+
 sub new
 {
     my ( $class, $args ) = @_;
@@ -11,6 +13,8 @@ sub new
                  'value' => undef };
     return bless $self, $class;
 }
+
+# ----------------------------- Setters/Getters ------------------------------- #
 
 sub set_energy
 {
@@ -37,5 +41,7 @@ sub value
     my ( $self ) = @_;
     return $self->{'value'};
 }
+
+# --------------------------------- Methods ----------------------------------- #
 
 1;
