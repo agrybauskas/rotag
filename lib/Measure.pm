@@ -526,6 +526,9 @@ sub energy
 
                 # Adds bonded potential energy term.
                 for my $bonded_potential ( keys %bonded_potentials ) {
+                    $bonded_potentials{$bonded_potential}( $atom_id,
+                                                           $PARAMETERS,
+                                                           \%options );
                     push @residue_energy,
                          @{ $bonded_potentials{$bonded_potential}( $atom_id,
                                                                    $PARAMETERS,
