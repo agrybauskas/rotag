@@ -527,7 +527,7 @@ sub energy
 
                 # Adds bonded potential energy term.
                 for my $bonded_potential ( keys %bonded_potentials ) {
-                    $potential_energy{$bonded_potential} =
+                    $potential_energy{$bonded_potential}{$atom_id} =
                         $bonded_potentials{$bonded_potential}(
                             $atom_id, $PARAMETERS, \%options
                     );
@@ -543,6 +543,16 @@ sub energy
                                                  $atom_id,
                                                  $neighbour_atom_id ) ) ) {
 
+                        for my $non_bonded_potential ( keys %non_bonded_potentials ) {
+                            $potential_energy{$non_bonded_potential}
+                                             {$atom_id}{$neighbour_atom_id} =
+                                $non_bonded_potentials{$non_bonded_potential}(
+                                    $current_atom_site->{$atom_id},
+                                    $current_atom_site->{$neighbour_atom_id},
+                                    $PARAMETERS,
+                                    \%options
+                            );
+                        }
                     }
                 }
             }
