@@ -466,9 +466,13 @@ sub rmsd
 sub energy
 {
     my ( $atom_site, $potential, $PARAMETERS, $options  ) = @_;
-    my ( $target_atom_ids ) = ( $options->{'target_atom_ids'} );
+    my ( $target_atom_ids, $only_sidechains ) = (
+        $options->{'target_atom_ids'},
+        $options->{'only_sidechains'},
+    );
 
-    $target_atom_ids = [ sort keys %{ $atom_site } ];
+    $target_atom_ids //= [ sort keys %{ $atom_site } ];
+    $only_sidechains //= 0;
 
     my $EDGE_LENGTH_INTERACTION =
         $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
@@ -500,8 +504,8 @@ sub energy
     my @residue_energy = ();
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         for my $atom_id ( @{ $target_cells->{$cell} } ) {
-            next if any { $atom_site->{$atom_id}{'label_atom_id'} eq $_ }
-                       @{ $INTERACTION_ATOM_NAMES };
+            next if ( any { $atom_site->{$atom_id}{'label_atom_id'} eq $_ }
+                         @{ $INTERACTION_ATOM_NAMES } ) && $only_sidechains;
 
             # Adds bonded potential energy term.
             for my $bonded_potential ( keys %bonded_potentials ) {

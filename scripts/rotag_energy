@@ -201,7 +201,8 @@ for my $pdbx_file ( @ARGV ) {
 
         push @energies,
              @{ energy( $current_atom_site, $interactions, $PARAMETERS,
-                        { 'target_atom_ids' => $target_atom_ids } ) };
+                        { 'target_atom_ids' => $target_atom_ids,
+                          'only_sidechains' => $do_sidechain } ) };
     }
 
     # Sort according to the first atom id, then the second atom id and lastly the
