@@ -466,10 +466,7 @@ sub rmsd
 sub energy
 {
     my ( $atom_site, $potential, $PARAMETERS, $options  ) = @_;
-    my ( $target_atom_ids, $only_sidechain ) = (
-        $options->{'target_atom_ids'},
-        $options->{'only_sidechain'},
-    );
+    my ( $target_atom_ids ) = ( $options->{'target_atom_ids'} );
 
     $target_atom_ids = [ sort keys %{ $atom_site } ];
 

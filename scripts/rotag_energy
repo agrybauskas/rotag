@@ -150,11 +150,6 @@ for my $parameter_pair ( split /,/sxm, $parameters ) {
     );
 }
 
-my %options = ();
-if( $do_decompose ) {
-    $options{'decompose'} = 1;
-}
-
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site;
@@ -180,6 +175,7 @@ for my $pdbx_file ( @ARGV ) {
                                                          'label_asym_id' ],
                                        'append_dot' => 1 } );
 
+    my @energies = ();
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my $current_atom_site =
             clone( filter( { 'atom_site' => $atom_site,
@@ -197,7 +193,6 @@ for my $pdbx_file ( @ARGV ) {
 
         connect_atoms( $current_atom_site, $PARAMETERS );
         hybridization( $current_atom_site, $PARAMETERS );
-        $options{'atom_site'} = $current_atom_site;
 
         my $target_atom_ids =
             filter( { 'atom_site' => $current_atom_site,
@@ -205,9 +200,17 @@ for my $pdbx_file ( @ARGV ) {
                       'data' => [ 'id' ],
                       'is_list' => 1 } );
 
-        my $energies = energy( $current_atom_site, $interactions, $PARAMETERS,
-                               { 'target_atom_ids' => $target_atom_ids } );
+        push @energies,
+             @{ energy( $current_atom_site, $interactions, $PARAMETERS,
+                        { 'target_atom_ids' => $target_atom_ids } ) };
     }
+
+    # Sort according to the first atom id, then the second atom id and lastly the
+    # force field.
+    @energies = sort { $a->{'atoms'}[0]    <=> $b->{'atoms'}[0] ||
+                       $a->{'atoms'}[-1]   <=> $b->{'atoms'}[-1] ||
+                       $a->{'energy_type'} cmp $b->{'energy_type'} }
+                     @energies;
 
     my %pdbx_loops;
     if( $do_pairwise ) {
