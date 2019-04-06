@@ -138,7 +138,6 @@ GetOptions(
 local @ARGV = ( q{-} ) unless @ARGV;
 
 my $PARAMETERS = Parameters->new();
-my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
 my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
 
 # Parses parameter string.
@@ -207,9 +206,9 @@ for my $pdbx_file ( @ARGV ) {
 
     # Sort according to the first atom id, then the second atom id and lastly the
     # force field.
-    @energies = sort { $a->{'atoms'}[0]    <=> $b->{'atoms'}[0] ||
-                       $a->{'atoms'}[-1]   <=> $b->{'atoms'}[-1] ||
-                       $a->{'energy_type'} cmp $b->{'energy_type'} }
+    @energies = sort { $a->atoms->[0]  <=> $b->atoms->[0] ||
+                       $a->atoms->[-1] <=> $b->atoms->[-1] ||
+                       $a->energy_type cmp $b->energy_type }
                      @energies;
 
     my %pdbx_loops;
@@ -222,6 +221,27 @@ for my $pdbx_file ( @ARGV ) {
               'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
               'label_entity_2_id', 'label_alt_2_id', 'calculation_method',
               'value' ];
+
+        my $calculation_id = 1;
+        for my $energy ( @energies ) {
+            my $atom_1_id = $energy->atoms->[0];
+            my $atom_2_id = $energy->atoms->[-1];
+            my $atom_1 = $atom_site->{$atom_1_id};
+            my $atom_2 = $atom_site->{$atom_2_id};
+            my $calculation_method = $energy->energy_type;
+            my $value = $energy->value;
+            push @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
+                $calculation_id, $atom_1_id, $atom_1->{'type_symbol'},
+                $atom_1->{'label_atom_id'}, $atom_1->{'label_seq_id'},
+                $atom_1->{'label_comp_id'}, $atom_1->{'label_asym_id'},
+                $atom_1->{'label_entity_id'}, $atom_1->{'label_alt_id'},
+                $atom_2_id, $atom_2->{'type_symbol'},
+                $atom_2->{'label_atom_id'}, $atom_2->{'label_seq_id'},
+                $atom_2->{'label_comp_id'}, $atom_2->{'label_asym_id'},
+                $atom_2->{'label_entity_id'}, $atom_2->{'label_alt_id'},
+                $calculation_method, sprintf( $SIG_FIGS_MAX, $value );
+            $calculation_id++;
+        }
     } elsif( $do_sidechain ) {
         $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
             [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
@@ -233,20 +253,20 @@ for my $pdbx_file ( @ARGV ) {
               'label_alt_id', 'calculation_method', 'value' ];
     }
 
-    # if( $output_format eq 'pdbx' ) {
-    #     if( $add_B_iso ) {
-    #         to_pdbx( { 'atom_site' => $atom_site,
-    #                    'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
-    #     } else {
-    #         to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
-    #     }
-    # } elsif( $output_format eq 'csv' ) {
-    #     if( $do_pairwise ) {
-    #         pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
-    #     } elsif( $do_sidechain ) {
-    #         pdbx_loop_to_csv( $pdbx_loops{'_[local]_rotamer_energy'} );
-    #     } else {
-    #         pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );
-    #     }
-    # }
+    if( $output_format eq 'pdbx' ) {
+        if( $add_B_iso ) {
+            to_pdbx( { 'atom_site' => $atom_site,
+                       'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
+        } else {
+            to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+        }
+    } elsif( $output_format eq 'csv' ) {
+        if( $do_pairwise ) {
+            pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
+        } elsif( $do_sidechain ) {
+            pdbx_loop_to_csv( $pdbx_loops{'_[local]_rotamer_energy'} );
+        } else {
+            pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );
+        }
+    }
 }
