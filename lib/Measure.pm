@@ -532,7 +532,6 @@ sub energy
                                              $atom_id,
                                              $neighbour_atom_id ) ) ) {
 
-                    my $residue_non_bonded_energy_sum = 0;
                     for my $non_bonded_potential ( keys %non_bonded_potentials ) {
                         my $energy_potential = Energy->new();
                         $energy_potential->set_energy(
@@ -546,7 +545,7 @@ sub energy
                             )
                         );
                         push @residue_energy, $energy_potential;
-                        $residue_non_bonded_energy_sum+=$energy_potential->value;
+                        $residue_energy_sum += $energy_potential->value;
                     }
                 }
             }
