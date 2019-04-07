@@ -466,13 +466,15 @@ sub rmsd
 sub energy
 {
     my ( $atom_site, $potential, $PARAMETERS, $options  ) = @_;
-    my ( $target_atom_ids, $only_sidechains ) = (
+    my ( $target_atom_ids, $only_sidechains, $decompose ) = (
         $options->{'target_atom_ids'},
         $options->{'only_sidechains'},
+        $options->{'decompose'},
     );
 
     $target_atom_ids //= [ sort keys %{ $atom_site } ];
     $only_sidechains //= 0;
+    $decompose //= 0;
 
     my $EDGE_LENGTH_INTERACTION =
         $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
@@ -501,25 +503,27 @@ sub energy
 
     my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
 
-    my @residue_energy = ();
+    my @residue_energies = ();
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         for my $atom_id ( @{ $target_cells->{$cell} } ) {
             next if ( any { $atom_site->{$atom_id}{'label_atom_id'} eq $_ }
                          @{ $INTERACTION_ATOM_NAMES } ) && $only_sidechains;
 
+            my @residue_energy = ();
+            my $residue_energy_sum = 0;
+
             # Adds bonded potential energy term.
             for my $bonded_potential ( keys %bonded_potentials ) {
-                $bonded_potentials{$bonded_potential}( $atom_id,
-                                                       $PARAMETERS,
-                                                       \%options );
-                push @residue_energy,
-                     @{ $bonded_potentials{$bonded_potential}( $atom_id,
-                                                               $PARAMETERS,
-                                                               \%options ) };
+                my $residue_bonded_energy =
+                    $bonded_potentials{$bonded_potential}( $atom_id,
+                                                           $PARAMETERS,
+                                                           \%options );
+                push @residue_energy, @{ $residue_bonded_energy };
+                $residue_energy_sum += $residue_bonded_energy;
             }
 
             # Adds non-bonded potential energy term.
-            for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} }){
+            for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} } ) {
                 if( ( $atom_id ne $neighbour_atom_id ) &&
                     ( ! is_neighbour( $atom_site,
                                       $atom_id,
@@ -528,6 +532,7 @@ sub energy
                                              $atom_id,
                                              $neighbour_atom_id ) ) ) {
 
+                    my $residue_non_bonded_energy_sum = 0;
                     for my $non_bonded_potential ( keys %non_bonded_potentials ) {
                         my $energy_potential = Energy->new();
                         $energy_potential->set_energy(
@@ -541,13 +546,16 @@ sub energy
                             )
                         );
                         push @residue_energy, $energy_potential;
+                        $residue_non_bonded_energy_sum+=$energy_potential->value;
                     }
                 }
             }
+
+            push @residue_energies, @residue_energy;
         }
     }
 
-    return \@residue_energy;
+    return \@residue_energies;
 }
 
 1;
