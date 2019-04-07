@@ -518,8 +518,12 @@ sub energy
                     $bonded_potentials{$bonded_potential}( $atom_id,
                                                            $PARAMETERS,
                                                            \%options );
-                push @residue_energy, @{ $residue_bonded_energy };
-                $residue_energy_sum += $residue_bonded_energy;
+
+                if( $decompose ) {
+                    push @residue_energy, @{ $residue_bonded_energy };
+                } else {
+                    $residue_energy_sum += $residue_bonded_energy;
+                }
             }
 
             # Adds non-bonded potential energy term.
@@ -544,8 +548,12 @@ sub energy
                                 \%options
                             )
                         );
-                        push @residue_energy, $energy_potential;
-                        $residue_energy_sum += $energy_potential->value;
+
+                        if( $decompose ) {
+                            push @residue_energy, $energy_potential;
+                        } else {
+                            $residue_energy_sum += $energy_potential->value;
+                        }
                     }
                 }
             }
