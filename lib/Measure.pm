@@ -565,16 +565,16 @@ sub energy
                             $residue_energy_sum += $energy_potential->value;
                         }
                     }
-                }
 
-                if( ! $decompose ) {
-                    my $energy_potential = Energy->new();
-                    $energy_potential->set_energy(
-                        $potential,
-                        [ $atom_id, $neighbour_atom_id ],
-                        $residue_energy_sum
-                    );
-                    push @residue_energy, $energy_potential;
+                    if( ! $decompose ) {
+                        my $energy_potential = Energy->new();
+                        $energy_potential->set_energy(
+                            $potential,
+                            [ $atom_id, $neighbour_atom_id ],
+                            $residue_energy_sum
+                        );
+                        push @residue_energy, $energy_potential;
+                    }
                 }
             }
 
