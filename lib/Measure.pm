@@ -512,21 +512,20 @@ sub energy
             my @residue_energy = ();
             my $residue_energy_sum = 0;
 
-            # Adds bonded potential energy term.
+            # Calculates bonded potential energy term.
+            my %bonded_residue_energy = (); # For faster neighbour energy search.
             for my $bonded_potential ( keys %bonded_potentials ) {
                 my $residue_bonded_energy =
                     $bonded_potentials{$bonded_potential}( $atom_id,
                                                            $PARAMETERS,
                                                            \%options );
-
-                if( $decompose ) {
-                    push @residue_energy, @{ $residue_bonded_energy };
-                } else {
-                    $residue_energy_sum += $residue_bonded_energy;
+                for my $bonded_energy ( @{ $residue_bonded_energy } ) {
+                    my $neighbour_atom_id = $bonded_energy->atoms->[-1];
+                    push @{ $bonded_residue_energy{$neighbour_atom_id} },
+                        $bonded_energy;
                 }
             }
 
-            # Adds non-bonded potential energy term.
             for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} } ) {
                 if( ( $atom_id ne $neighbour_atom_id ) &&
                     ( ! is_neighbour( $atom_site,
@@ -536,6 +535,17 @@ sub energy
                                              $atom_id,
                                              $neighbour_atom_id ) ) ) {
 
+                    # Adds bonded potential energy term.
+                    for my $bonded_potential (
+                        @{ $bonded_residue_energy{$neighbour_atom_id} } ) {
+                        if( $decompose ) {
+                            push @residue_energy, $bonded_potential;
+                        } else {
+                            $residue_energy_sum += $bonded_potential->value;
+                        }
+                    }
+
+                    # Adds non-bonded potential energy term.
                     for my $non_bonded_potential ( keys %non_bonded_potentials ) {
                         my $energy_potential = Energy->new();
                         $energy_potential->set_energy(
