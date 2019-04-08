@@ -248,6 +248,16 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
             [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
+
+        my $calculation_id = 1;
+        for my $energy ( @energies ) {
+            my $atom_id = $energy->atoms->[0];
+            my $atom = $atom_site->{$atom_id};
+            my $label_seq_id = $atom->{'label_seq_id'};
+            my $label_asym_id = $atom->{'label_asym_id'};
+            my $pdbx_PDB_model_num = $atom->{'pdbx_PDB_model_num'};
+            my $label_alt_id = $atom->{'label_alt_id'};
+        }
     } else {
         $pdbx_loops{'_[local]_energy'}{'attributes'} =
             [ 'id', 'atom_id', 'type_symbol', 'label_atom_id', 'label_seq_id',
