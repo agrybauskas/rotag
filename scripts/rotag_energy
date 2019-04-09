@@ -215,13 +215,6 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    # Sort according to the first atom id, then the second atom id and lastly the
-    # force field.
-    @energies = sort { $a->atoms->[0]  <=> $b->atoms->[0] ||
-                       $a->atoms->[-1] <=> $b->atoms->[-1] ||
-                       $a->energy_type cmp $b->energy_type }
-                     @energies;
-
     my %pdbx_loops;
     if( $do_pairwise ) {
         $pdbx_loops{'_[local]_pairwise_energy'}{'attributes'} =
