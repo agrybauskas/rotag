@@ -15,14 +15,6 @@ use ConnectAtoms qw( connect_atoms
                      is_second_neighbour );
 use Measure qw( energy );
 use ForceField::Parameters;
-use ForceField::NonBonded qw( coulomb
-                              general
-                              hard_sphere
-                              h_bond
-                              lennard_jones
-                              soft_sphere );
-use ForceField::Bonded qw( general
-                           torsion);
 use Grid qw( grid_box
              identify_neighbour_cells );
 use BondProperties qw( hybridization );

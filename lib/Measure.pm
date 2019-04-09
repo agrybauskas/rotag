@@ -55,12 +55,12 @@ my %potentials = (
     },
     'hard_sphere' => {
         'non_bonded' => {
-            'hard_sphere' => \&ForceField::Bonded::hard_sphere,
+            'hard_sphere' => \&ForceField::NonBonded::hard_sphere,
         }
     },
     'soft_sphere' => {
         'non_bonded' => {
-            'soft_sphere' => \&ForceField::Bonded::soft_sphere
+            'soft_sphere' => \&ForceField::NonBonded::soft_sphere
         }
     },
     'lennard_jones' => {
@@ -490,8 +490,16 @@ sub energy
 
     my $calculation_id = 1;
     my %energy = ();
-    my %bonded_potentials = %{ $potentials{$potential}{'bonded'} };
-    my %non_bonded_potentials = %{ $potentials{$potential}{'non_bonded'} };
+
+    my %bonded_potentials = ();
+    if( exists $potentials{$potential}{'bonded'} ) {
+        %bonded_potentials = %{ $potentials{$potential}{'bonded'} };
+    }
+
+    my %non_bonded_potentials = ();
+    if( exists $potentials{$potential}{'non_bonded'} ) {
+        %non_bonded_potentials = %{ $potentials{$potential}{'non_bonded'} };
+    }
 
     my %options = ();
     $options{'atom_site'} = $atom_site;
