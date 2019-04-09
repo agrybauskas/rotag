@@ -166,7 +166,6 @@ for my $pdbx_file ( @ARGV ) {
                                                          'label_asym_id' ],
                                        'append_dot' => 1 } );
 
-    my @energies = ();
     my %energies = (); # For calculating energies for the whole sidechains.
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my $current_atom_site =
@@ -192,16 +191,11 @@ for my $pdbx_file ( @ARGV ) {
                       'data' => [ 'id' ],
                       'is_list' => 1 } );
 
-        my $energy = energy( $current_atom_site, $interactions, $PARAMETERS,
-                             { 'target_atom_ids' => $target_atom_ids,
-                               'only_sidechains' => $do_sidechain,
-                               'decompose' => $do_decompose } );
-
-        if( $do_sidechain && ! $do_pairwise ) {
-            push @{ $energies{$atom_site_identifier} }, @{ $energy };
-        } else {
-            push @energies, @{ $energy };
-        }
+        push @{ $energies{$atom_site_identifier} },
+             @{ energy( $current_atom_site, $interactions, $PARAMETERS,
+                        { 'target_atom_ids' => $target_atom_ids,
+                          'only_sidechains' => $do_sidechain,
+                          'decompose' => $do_decompose } ) };
     }
 
     my %pdbx_loops;
@@ -216,64 +210,66 @@ for my $pdbx_file ( @ARGV ) {
               'value' ];
 
         my $calculation_id = 1;
-        for my $energy ( @energies ) {
-            my $atom_1_id = $energy->atoms->[0];
-            my $atom_2_id = $energy->atoms->[-1];
-            my $atom_1 = $atom_site->{$atom_1_id};
-            my $atom_2 = $atom_site->{$atom_2_id};
-            my $calculation_method = $energy->energy_type;
-            my $value = $energy->value;
-            push @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
-                $calculation_id, $atom_1_id, $atom_1->{'type_symbol'},
-                $atom_1->{'label_atom_id'}, $atom_1->{'label_seq_id'},
-                $atom_1->{'label_comp_id'}, $atom_1->{'label_asym_id'},
-                $atom_1->{'label_entity_id'}, $atom_1->{'label_alt_id'},
-                $atom_2_id, $atom_2->{'type_symbol'},
-                $atom_2->{'label_atom_id'}, $atom_2->{'label_seq_id'},
-                $atom_2->{'label_comp_id'}, $atom_2->{'label_asym_id'},
-                $atom_2->{'label_entity_id'}, $atom_2->{'label_alt_id'},
-                $calculation_method, sprintf( $SIG_FIGS_MAX, $value );
-            $calculation_id++;
+        for my $atom_site_identifier ( sort keys %energies ) {
+            for my $energy ( @{ $energies{$atom_site_identifier} } ) {
+                my $atom_1_id = $energy->atoms->[0];
+                my $atom_2_id = $energy->atoms->[-1];
+                my $atom_1 = $atom_site->{$atom_1_id};
+                my $atom_2 = $atom_site->{$atom_2_id};
+                my $calculation_method = $energy->energy_type;
+                my $value = $energy->value;
+                push @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
+                    $calculation_id, $atom_1_id, $atom_1->{'type_symbol'},
+                    $atom_1->{'label_atom_id'}, $atom_1->{'label_seq_id'},
+                    $atom_1->{'label_comp_id'}, $atom_1->{'label_asym_id'},
+                    $atom_1->{'label_entity_id'}, $atom_1->{'label_alt_id'},
+                    $atom_2_id, $atom_2->{'type_symbol'},
+                    $atom_2->{'label_atom_id'}, $atom_2->{'label_seq_id'},
+                    $atom_2->{'label_comp_id'}, $atom_2->{'label_asym_id'},
+                    $atom_2->{'label_entity_id'}, $atom_2->{'label_alt_id'},
+                    $calculation_method, sprintf( $SIG_FIGS_MAX, $value );
+                $calculation_id++;
+            }
         }
     } elsif( $do_sidechain ) {
         $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
             [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
 
-        my %rotamer_energies = ();
-        for my $atom_site_identifier ( keys %energies ) {
-            # Devides rotamer energies according to their unique residue
-            # identifiers.
-            for my $energy ( @{ $energies{$atom_site_identifier} } ) {
-                my $atom_id = $energy->atoms->[0];
-                my $atom = $atom_site->{$atom_id};
-                my $label_seq_id = $atom->{'label_seq_id'};
-                my $energy_type = $energy->energy_type;
-                if( exists $rotamer_energies{"$label_seq_id,$atom_site_identifier"} ) {
-                    $rotamer_energies{"$label_seq_id,$atom_site_identifier"}
-                                     {$energy_type} += $energy->value;
-                } else {
-                    $rotamer_energies{"$label_seq_id,$atom_site_identifier"}
-                                     {$energy_type} = $energy->value;
-                }
-            }
-        }
+    #     my %rotamer_energies = ();
+    #     for my $atom_site_identifier ( keys %energies ) {
+    #         # Devides rotamer energies according to their unique residue
+    #         # identifiers.
+    #         for my $energy ( @{ $energies{$atom_site_identifier} } ) {
+    #             my $atom_id = $energy->atoms->[0];
+    #             my $atom = $atom_site->{$atom_id};
+    #             my $label_seq_id = $atom->{'label_seq_id'};
+    #             my $energy_type = $energy->energy_type;
+    #             if( exists $rotamer_energies{"$label_seq_id,$atom_site_identifier"} ) {
+    #                 $rotamer_energies{"$label_seq_id,$atom_site_identifier"}
+    #                                  {$energy_type} += $energy->value;
+    #             } else {
+    #                 $rotamer_energies{"$label_seq_id,$atom_site_identifier"}
+    #                                  {$energy_type} = $energy->value;
+    #             }
+    #         }
+    #     }
 
-        my $calculation_id = 1;
-        for my $unique_residue_identifier ( sort keys %rotamer_energies ) {
-            my ( $label_seq_id, $pdbx_PDB_model_num, $label_alt_id,
-                 $label_asym_id ) = split /,/, $unique_residue_identifier;
-            for my $calculation_method (
-                sort keys %{ $rotamer_energies{$unique_residue_identifier} } ) {
-                push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
-                    $calculation_id, $label_seq_id, $label_asym_id,
-                    $pdbx_PDB_model_num, $label_alt_id, $calculation_method,
-                    sprintf( $SIG_FIGS_MAX,
-                             $rotamer_energies{$unique_residue_identifier}
-                                              {$calculation_method} );
-                $calculation_id++;
-            }
-        }
+    #     my $calculation_id = 1;
+    #     for my $unique_residue_identifier ( sort keys %rotamer_energies ) {
+    #         my ( $label_seq_id, $pdbx_PDB_model_num, $label_alt_id,
+    #              $label_asym_id ) = split /,/, $unique_residue_identifier;
+    #         for my $calculation_method (
+    #             sort keys %{ $rotamer_energies{$unique_residue_identifier} } ) {
+    #             push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
+    #                 $calculation_id, $label_seq_id, $label_asym_id,
+    #                 $pdbx_PDB_model_num, $label_alt_id, $calculation_method,
+    #                 sprintf( $SIG_FIGS_MAX,
+    #                          $rotamer_energies{$unique_residue_identifier}
+    #                                           {$calculation_method} );
+    #             $calculation_id++;
+    #         }
+    #     }
     } else {
         $pdbx_loops{'_[local]_energy'}{'attributes'} =
             [ 'id', 'atom_id', 'type_symbol', 'label_atom_id', 'label_seq_id',
