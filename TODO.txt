@@ -48,7 +48,7 @@
    one file.
 ++ Add capability to turn not only by angle, but also by ratio in rotag_library.
 -- Check if vector lengths when adding hydrogens all are 1.0.
--- Add debug checks on the absence of connection, conformation, hybridization
+++ Add debug checks on the absence of connection, conformation, hybridization
    and certain parameters for interaction functions.
 -- Generalize atom_site data structure, because it can be used even with other
    types of data.
@@ -58,8 +58,6 @@
 ++ Analyze only heavy atoms.
 ++ Add mainchain angle calculations for rotag_dihedral script.
 ++ random-seed option is not working properly in rotag_select.
--- Maybe should have an ability to sort PDBx entries according to residues,
-   because Jmol has a bug of viewing atoms with alternative ids.
 ++ Maybe should add capability to select residues according to their main-chain
    and side-chain dihedral angles.
 -- around_distance() and grid_box() functions should isolated different alt-ids.
@@ -80,7 +78,7 @@
    there are angle reapeats. The redundant angles should be removed.
 ++ Moved part of the code that deals with choosing right rotamers to
    new rotag_library script.
--- Atom interaction constants should be moved from small functions to the
-   general ones.
 -- Change amino-acid dump files, because they contain too much information and
    some tests are not properly performed, such as connect_atoms().
+!! Make sure that only pdbx_PDB_model_num and label_alt_id are used to isolate
+   calculations.

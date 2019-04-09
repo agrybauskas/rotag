@@ -9,5 +9,5 @@ _[local]_rotamer_energy.label_alt_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
 1 5 A 1 . composite 12.184236
-1 5 B 1 A composite 22.784330
+2 5 B 1 A composite 22.784330
 #
