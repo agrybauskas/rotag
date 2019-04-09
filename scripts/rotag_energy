@@ -130,6 +130,7 @@ GetOptions(
 local @ARGV = ( q{-} ) unless @ARGV;
 
 my $PARAMETERS = Parameters->new();
+my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
 my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
 
 # Parses parameter string.
@@ -307,6 +308,21 @@ for my $pdbx_file ( @ARGV ) {
                         sprintf( $SIG_FIGS_MAX,
                                  $atom_energies{$atom_id}
                                                {$calculation_method} );
+
+                    # Only for side-chain atoms adds energy values to B iso
+                    # attribute.
+                    if( $add_B_iso ) {
+                        if( !any { $atom_site->{$atom_id}{'label_atom_id'} eq $_}
+                                @{ $INTERACTION_ATOM_NAMES } ) {
+                            $atom_site->{$atom_id}{'B_iso_or_equiv'} =
+                                sprintf( $SIG_FIGS_MAX,
+                                         $atom_energies{$atom_id}
+                                                       {$calculation_method} );
+                        } else {
+                            $atom_site->{$atom_id}{'B_iso_or_equiv'} = '?';
+                        }
+                    }
+
                     $calculation_id++;
                 }
             }
