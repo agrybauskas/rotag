@@ -192,18 +192,15 @@ for my $pdbx_file ( @ARGV ) {
                       'data' => [ 'id' ],
                       'is_list' => 1 } );
 
+        my $energy = energy( $current_atom_site, $interactions, $PARAMETERS,
+                             { 'target_atom_ids' => $target_atom_ids,
+                               'only_sidechains' => $do_sidechain,
+                               'decompose' => $do_decompose } );
+
         if( $do_sidechain && ! $do_pairwise ) {
-            push @{ $energies{$atom_site_identifier} },
-                 @{ energy( $current_atom_site, $interactions, $PARAMETERS,
-                            { 'target_atom_ids' => $target_atom_ids,
-                              'only_sidechains' => $do_sidechain,
-                              'decompose' => $do_decompose } ) };
+            push @{ $energies{$atom_site_identifier} }, @{ $energy };
         } else {
-            push @energies,
-                 @{ energy( $current_atom_site, $interactions, $PARAMETERS,
-                            { 'target_atom_ids' => $target_atom_ids,
-                              'only_sidechains' => $do_sidechain,
-                              'decompose' => $do_decompose } ) };
+            push @energies, @{ $energy };
         }
     }
 
