@@ -20,20 +20,27 @@ my $PARAMETERS = Parameters->new();
 my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
 
 my $potential_energies =
-    energy( $atom_site, $potential, $PARAMETERS );
+    energy( $atom_site, $potential, $PARAMETERS,
+            { 'only_sidechains' => 1, 'decompose' => 1 } );
+my @potential_energies =
+    sort { $a->atoms->[0]  <=> $b->atoms->[0]  ||
+           $a->atoms->[-1] <=> $b->atoms->[-1] ||
+           $a->energy_type cmp $b->energy_type }
+        @{ $potential_energies };
 
-for my $residue_unique_key ( sort keys %{ $potential_energies } ) {
-    my @potential_energies =
-        sort { $a->atoms->[0]  <=> $b->atoms->[0]  ||
-               $a->atoms->[-1] <=> $b->atoms->[-1] ||
-               $a->energy_type cmp $b->energy_type }
-            @{ $potential_energies->{$residue_unique_key} };
-    for my $energy ( @potential_energies ) {
-        printf( "%s,%s,%s,%s,%.3f\n",
-                $residue_unique_key,
-                $energy->energy_type,
-                $energy->atoms->[0],
-                $energy->atoms->[-1],
-                $energy->value );
-    }
+for my $energy ( @potential_energies ) {
+    my $atom_id = $energy->atoms->[0];
+    my $atom = $atom_site->{$atom_id};
+    my $label_seq_id = $atom->{'label_seq_id'};
+    my $pdbx_PDB_model_num = $atom->{'pdbx_PDB_model_num'};
+    my $label_alt_id = $atom->{'label_alt_id'};
+    my $label_asym_id = $atom->{'label_asym_id'};
+    printf( "%s,%s,%s,%s,%s,%s,%.3f\n",
+            $pdbx_PDB_model_num,
+            $label_alt_id,
+            $label_asym_id,
+            $energy->energy_type,
+            $energy->atoms->[0],
+            $energy->atoms->[-1],
+            $energy->value );
 }
