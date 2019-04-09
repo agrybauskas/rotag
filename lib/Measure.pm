@@ -521,7 +521,7 @@ sub energy
                                                            \%options );
                 for my $bonded_energy ( @{ $residue_bonded_energy } ) {
                     my $neighbour_atom_id = $bonded_energy->atoms->[-1];
-                    push @{ $bonded_residue_energy{$neighbour_atom_id} },
+                    push @{ $bonded_residue_energy{$atom_id}{$neighbour_atom_id} },
                         $bonded_energy;
                 }
             }
@@ -537,7 +537,7 @@ sub energy
 
                     # Adds bonded potential energy term.
                     for my $bonded_potential (
-                        @{ $bonded_residue_energy{$neighbour_atom_id} } ) {
+                        @{ $bonded_residue_energy{$atom_id}{$neighbour_atom_id} } ) {
                         if( $decompose ) {
                             push @residue_energy, $bonded_potential;
                         } else {
