@@ -16,8 +16,8 @@ $Data::Dumper::Sortkeys = 1;
 # Example: ./sample_angles_qs_parsing '0.0..36.0..360.0'
 #
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
 my ( $angles_qs ) = @ARGV;
 
-print Dumper sample_angles_qs_parsing( $angles_qs, undef, undef, $PARAMETERS );
+print Dumper sample_angles_qs_parsing( $parameters, $angles_qs );

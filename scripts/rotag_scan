@@ -91,7 +91,7 @@ my $angles = '-180.0..36.0..180.0';
 my $in_radians = 0;
 my $threads = 1;
 my $tags = '';
-my $parameters = '';
+my $parameters_cmd = '';
 
 local $SIG{__WARN__} = sub {
     warning( { 'program' => $0, 'message' => @_ } );
@@ -103,7 +103,7 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'potential|u=s' => \$interactions,
-    'parameters|p=s' => \$parameters,
+    'parameters|p=s' => \$parameters_cmd,
     'angles|a=s' => \$angles,
     'radians|r' => sub { $in_radians = 1 },
     'tags=s' => \$tags,
@@ -133,18 +133,18 @@ $tags = [
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 # Parses string describing angles.
-my %angles = %{ sample_angles_qs_parsing( $angles, undef, undef, $PARAMETERS ) };
+my %angles = %{sample_angles_qs_parsing( $parameters, $angles ) };
 
 # Parses parameter string.
-$parameters =~ s/\s//g;
-for my $parameter_pair ( split /,/sxm, $parameters ) {
+$parameters_cmd =~ s/\s//g;
+for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
     my ( $parameter, $value ) = split /=/sm, $parameter_pair;
-    $PARAMETERS->set_parameter_values(
+    $parameters->set_parameter_values(
         { '_[local]_force_field' => { $parameter => $value } }
     );
 }
@@ -191,13 +191,13 @@ for my $pdbx_file ( @ARGV ) {
         # Starts generating rotamer library.
         my $rotamer_library =
             generate_library(
-                { 'atom_site' => $current_atom_site,
+                { 'parameters' => $parameters,
+                  'atom_site' => $current_atom_site,
                   'residue_unique_keys' => $residue_unique_keys,
                   'include_interactions' =>
                       { 'id' => [ keys %{ $current_atom_site } ] },
                   'angles' => \%angles,
                   'interactions' => $interactions,
-                  'PARAMETERS' => $PARAMETERS,
                   'threads' => $threads,
                 } );
 
@@ -244,14 +244,14 @@ for my $pdbx_file ( @ARGV ) {
                 push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
                      $residue_chain, $pdbx_model, $residue_alt, $angle_name,
-                     sprintf $SIG_FIGS_MAX, $angle_value;
+                     sprintf $sig_figs_max, $angle_value;
                 $angle_id++;
             }
 
             # Colects rotamer energy data.
             push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
                  $energy_id, $rotamer_id, $rotamer->{'potential'},
-                 sprintf $SIG_FIGS_MAX, $rotamer->{'potential_energy_value'};
+                 sprintf $sig_figs_max, $rotamer->{'potential_energy_value'};
 
             $energy_id++;
             $rotamer_id++;

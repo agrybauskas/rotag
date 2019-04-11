@@ -86,9 +86,9 @@ $tags = [
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.

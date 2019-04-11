@@ -127,7 +127,7 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
 for( my $i = 0; $i <= $#ARGV; $i++ ) {
     my $pdbx_file = $ARGV[$i];
@@ -162,8 +162,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
         }
 
         if( @previous_target_atoms ) {
-            my $previous_target_cmd =
-                'atomid ' . join ',', @previous_target_atoms;
+            my $previous_target_cmd = 'atomid '. join ',', @previous_target_atoms;
             $target_cmd =~ s/target/${previous_target_cmd}/g;
         } else {
             error( { 'program' => $0,
@@ -187,7 +186,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
             @{ $selection_parser->
                    parser( $atom_site,
                            $target_cmd,
-                           $PARAMETERS,
+                           $parameters,
                            { 'seed' => $random_seed,
                              'group_id' => $group_id } ) };
         $group_id++;
@@ -197,7 +196,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
         @{ $selection_parser->
                parser( $atom_site,
                        $select_cmd,
-                       $PARAMETERS,
+                       $parameters,
                        { 'seed' => $random_seed } ) };
 
     mark_selection( $atom_site, { 'target' => \@target_atom_ids,

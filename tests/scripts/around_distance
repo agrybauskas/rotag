@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use ConnectAtoms qw( around_distance );
 
@@ -30,7 +31,10 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
+my $parameters = Parameters->new();
+
 to_pdbx( { 'atom_site' =>
-               around_distance( $atom_site,
+               around_distance( $parameters,
+                                $atom_site,
                                 \%include_specifier,
                                 $around_distance ) } );

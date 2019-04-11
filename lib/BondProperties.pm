@@ -34,9 +34,9 @@ our $VERSION = $VERSION;
 
 sub bond_type
 {
-    my ( $target_atom, $neighbour_atom, $PARAMETERS ) = @_;
+    my ( $parameters, $target_atom, $neighbour_atom ) = @_;
 
-    my $BOND_TYPES = $PARAMETERS->{'_[local]_bond_types'};
+    my $bond_types = $parameters->{'_[local]_bond_types'};
 
     my $target_atom_type = $target_atom->{'type_symbol'};
     my $neighbour_atom_type = $neighbour_atom->{'type_symbol'};
@@ -48,15 +48,15 @@ sub bond_type
         ( $neighbour_atom->{'Cartn_y'} - $target_atom->{'Cartn_y'} ) ** 2 +
         ( $neighbour_atom->{'Cartn_z'} - $target_atom->{'Cartn_z'} ) ** 2;
 
-    for my $bond_type ( keys %{ $BOND_TYPES } ) {
-        if( exists $BOND_TYPES->{$bond_type}
+    for my $bond_type ( keys %{ $bond_types } ) {
+        if( exists $bond_types->{$bond_type}
                                 {$target_atom_type}
                                 {$neighbour_atom_type} ) {
-            my $bond_length_min = $BOND_TYPES->{$bond_type}
+            my $bond_length_min = $bond_types->{$bond_type}
                                                {$target_atom_type}
                                                {$neighbour_atom_type}
                                                {'min_length'};
-            my $bond_length_max = $BOND_TYPES->{$bond_type}
+            my $bond_length_max = $bond_types->{$bond_type}
                                                {$target_atom_type}
                                                {$neighbour_atom_type}
                                                {'max_length'};
@@ -84,20 +84,20 @@ sub bond_type
 sub hybridization
 {
     # Use connect_atoms before using hybridization function.
-    my ( $atom_site, $PARAMETERS ) = @_;
+    my ( $parameters, $atom_site ) = @_;
 
-    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-    my $CLEAR_HYBRIDIZATION = $PARAMETERS->{'_[local]_clear_hybridization'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $clear_hybridization = $parameters->{'_[local]_clear_hybridization'};
 
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
         # Looks up to a pre-determined hash of known hybridization values and
         # quits early.
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
-        if( exists $CLEAR_HYBRIDIZATION->{$residue_name} &&
-            exists $CLEAR_HYBRIDIZATION->{$residue_name}{$atom_name} ) {
+        if( exists $clear_hybridization->{$residue_name} &&
+            exists $clear_hybridization->{$residue_name}{$atom_name} ) {
             $atom_site->{$atom_id}{'hybridization'} =
-                $CLEAR_HYBRIDIZATION->{$residue_name}{$atom_name};
+                $clear_hybridization->{$residue_name}{$atom_name};
             next;
         }
 
@@ -155,17 +155,17 @@ sub hybridization
                             $atom_site->{$neighbours_neighbour}{'Cartn_y'},
                             $atom_site->{$neighbours_neighbour}{'Cartn_z'} ],
                         ] );
-                if( ( $current_dihedral_angle >=  0.95 * $PI &&
-                      $current_dihedral_angle <=  1.05 * $PI ) ||
-                    ( $current_dihedral_angle >= -0.05 * $PI &&
-                      $current_dihedral_angle <=  0.05 * $PI ) ) {
+                if( ( $current_dihedral_angle >=  0.95 * $pi &&
+                      $current_dihedral_angle <=  1.05 * $pi ) ||
+                    ( $current_dihedral_angle >= -0.05 * $pi &&
+                      $current_dihedral_angle <=  0.05 * $pi ) ) {
                     $dihedral_angle = $current_dihedral_angle;
                     last;
                 }
             }
         }
 
-        if( defined $dihedral_angle && $dihedral_angle >= 0.95 * $PI ) {
+        if( defined $dihedral_angle && $dihedral_angle >= 0.95 * $pi ) {
             $atom_site->{$atom_id}{'hybridization'} = 'sp2';
             next;
         }
@@ -174,9 +174,8 @@ sub hybridization
         my @bond_types;
         for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
             push @bond_types,
-                 bond_type( $atom_site->{$atom_id},
-                            $atom_site->{$connection_id},
-                            $PARAMETERS );
+                 bond_type( $parameters, $atom_site->{$atom_id},
+                            $atom_site->{$connection_id} );
         }
 
         # Depending on connections, assigns hybridization type.

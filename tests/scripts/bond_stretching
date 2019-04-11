@@ -25,10 +25,10 @@ while( <$fh> ){
 }
 close( $fh );
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
 my $bond_stretching_matrix =
-    bond_stretching( $atom_coords[0], $atom_coords[1], $atom_coords[2], "r",
-                     $PARAMETERS );
+    bond_stretching( $parameters, $atom_coords[0], $atom_coords[1],
+                     $atom_coords[2], 'r' );
 
 print Dumper $bond_stretching_matrix;

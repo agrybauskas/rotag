@@ -16,8 +16,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 my $dihedral_angles = all_dihedral( $atom_site,
                                     { 'calc_mainchain' => $calc_mainchain } );
@@ -27,7 +27,7 @@ for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
                     keys %{ $dihedral_angles->{$residue_unique_key} } ) {
         print( join( " ", split( ",", $residue_unique_key ), $angle ), " " );
         printf( "%.1f\n",
-                $dihedral_angles->{$residue_unique_key}{$angle}{'value'}
-              * 180 / $PI );
+                $dihedral_angles->{$residue_unique_key}{$angle}{'value'} * 180 /
+                $pi );
     }
 }

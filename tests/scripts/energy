@@ -16,11 +16,11 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 my $potential_energies =
-    energy( $atom_site, $potential, $PARAMETERS,
+    energy( $parameters, $atom_site, $potential,
             { 'only_sidechains' => 1, 'decompose' => 1 } );
 my @potential_energies =
     sort { $a->atoms->[0]  <=> $b->atoms->[0]  ||

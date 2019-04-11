@@ -95,12 +95,12 @@ $pdbx_loops{'_[local]_parameter_estimation'}{'attributes'} =
 
 my $calculation_id = 1;
 for my $parameters ( @{ $multi_parameters } ) {
-    my $PI = $parameters->{'_[local]_constants'}{'pi'};
-    my $SIG_FIGS_MAX = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
     my $force_field = $parameters->{'_[local]_force_field'};
 
     # Parses string describing angles.
-    my %angles = %{ sample_angles_qs_parsing( $angles, undef, undef, $parameters ) };
+    my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
 
     my $rmsd_sum = 0;
     my $energy_sum = 0;
@@ -150,14 +150,14 @@ for my $parameters ( @{ $multi_parameters } ) {
 
             my $rotamer_library =
                 generate_library(
-                    { 'atom_site' => $current_atom_site,
+                    { 'parameters' => $parameters,
+                      'atom_site' => $current_atom_site,
                       'residue_unique_keys' => $residue_unique_keys,
                       'include_interactions' =>
                           { 'id' => [ keys %{ $current_atom_site } ] },
                       'angles' => \%angles,
                       'conf_model' => 'rotation_only',
                       'interactions' => 'composite',
-                      'PARAMETERS' => $parameters,
                       'threads' => $threads,
                     } );
 
@@ -170,7 +170,7 @@ for my $parameters ( @{ $multi_parameters } ) {
         next if ! %rotamer_library;
 
         for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
-            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt)=
+            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
                 split /,/sxm, $residue_unique_key;
             my $residue_site =
                 filter( { 'atom_site' => $selected_atom_site,
@@ -200,11 +200,11 @@ for my $parameters ( @{ $multi_parameters } ) {
             # Generates rotamer and checks the angle with original
             # side-chain.
             my $rotamer_site =
-                generate_rotamer( { 'atom_site' => $selected_atom_site,
+                generate_rotamer( { 'parameters' => $parameters,
+                                    'atom_site' => $selected_atom_site,
                                     'angle_values' =>
                                         { $residue_unique_key =>
-                                              $top_rotamer->{'angles'} },
-                                    'PARAMETERS' => $parameters } );
+                                              $top_rotamer->{'angles'} } } );
             my $rotamer_coord =
                 filter( { 'atom_site' => $rotamer_site,
                           'exclude' =>
@@ -223,8 +223,8 @@ for my $parameters ( @{ $multi_parameters } ) {
         $force_field->{'h_k'}, $force_field->{'t_k'},
         $force_field->{'cutoff_atom'}, $force_field->{'cutoff_start'},
         $force_field->{'cutoff_end'}, $rotamer_number,
-        sprintf( $SIG_FIGS_MAX, $energy_sum / $rotamer_number ),
-        sprintf( $SIG_FIGS_MAX, $rmsd_sum / $rotamer_number );
+        sprintf( $sig_figs_max, $energy_sum / $rotamer_number ),
+        sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number );
 
     $calculation_id++;
 }

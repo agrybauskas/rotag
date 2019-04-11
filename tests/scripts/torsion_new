@@ -16,6 +16,6 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
-print torsion_new( $atom_i_id, $PARAMETERS, { 'atom_site' => $atom_site } ),"\n";
+print torsion_new( $parameters, $atom_i_id, { 'atom_site' => $atom_site } ),"\n";

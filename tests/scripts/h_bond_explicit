@@ -16,9 +16,9 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
-print h_bond_explicit( $atom_site->{$donor_id},
+print h_bond_explicit( $parameters,
+                       $atom_site->{$donor_id},
                        $atom_site->{$hydrogen_id},
-                       $atom_site->{$acceptor_id},
-                       $PARAMETERS ), "\n";
+                       $atom_site->{$acceptor_id} ), "\n";

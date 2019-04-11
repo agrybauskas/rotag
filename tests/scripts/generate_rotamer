@@ -22,23 +22,23 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 # Parses angles for pseudo-rotamers.
 my %angle_values = ( map { $_->[0] => $_->[1] }
                      map { [ split( " ", $_ ) ] }
                      split( "&", $angle_values ) );
 for my $angle_value ( keys %angle_values ) {
-    $angle_values{$angle_value} =~ s/pi/\$PI/g;
+    $angle_values{$angle_value} =~ s/pi/\$pi/g;
     $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
 }
 
 %{ $atom_site } =
     ( %{ $atom_site },
-      %{ generate_rotamer( { 'atom_site' => $atom_site,
+      %{ generate_rotamer( { 'parameters' => $parameters,
+                             'atom_site' => $atom_site,
                              'angle_values' =>
-                                 { $residue_unique_key => \%angle_values },
-                             'PARAMETERS' => $PARAMETERS } ) } );
+                                 { $residue_unique_key => \%angle_values } } ) } );
 
 to_pdbx( { "atom_site" => $atom_site } );

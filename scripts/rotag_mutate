@@ -84,8 +84,8 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 # Parsing mutation string.
 my @mutations;
@@ -109,7 +109,7 @@ for( my $i = 0; $i <= $#mutations; $i++ ) {
                 $angles{$angle_name} = $angle_value;
             } else {
                 my ( $angle_name, $angle_value ) = split /=/, $_;
-                $angles{$angle_name} = $angle_value * $PI / 180.0;
+                $angles{$angle_name} = $angle_value * $pi / 180.0;
             }
         } elsif( $_ =~ m/^\w+$/ ) {
             if( defined $moiety ) {
@@ -174,10 +174,10 @@ for my $pdbx_file ( @ARGV ) {
             my $unique_residue_key =
                 unique_residue_key( $selected_atom_site->{$ca_atom_id} );
 
-            replace_with_moiety( $selected_atom_site,
+            replace_with_moiety( $parameters,
+                                 $selected_atom_site,
                                  $unique_residue_key,
                                  $mutations[$i]{'moiety'},
-                                 $PARAMETERS,
                                  { 'angles' => $mutations[$i]{'angles'},
                                    'append_moieties' => \%append_moieties } );
 

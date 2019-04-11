@@ -17,13 +17,13 @@ open( my $fh, "<", $vector_file );
 my @rows = <$fh>;
 close( $fh );
 
-my $PARAMETERS = Parameters->new();
-my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
+my $parameters = Parameters->new();
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
 my @vector = map { [ split( " ", $_ ) ] } @rows;
 
 my $vector_normalized = normalize( \@vector );
 
 foreach( @{ $vector_normalized } ) {
-    printf $SIG_FIGS_MIN . "\n", $_->[0];
+    printf $sig_figs_min . "\n", $_->[0];
 }

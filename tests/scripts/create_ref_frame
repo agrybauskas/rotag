@@ -20,8 +20,8 @@ while( <$fh> ){
 }
 close( $fh );
 
-my $PARAMETERS = Parameters->new();
-my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
+my $parameters = Parameters->new();
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
 my $local_ref_frame = create_ref_frame(
     [ $atom_coord[0], $atom_coord[1], $atom_coord[2] ],
@@ -30,7 +30,7 @@ my $local_ref_frame = create_ref_frame(
 
 for( my $i=0; $i < 3; $i++ ) {
     for( my $j=0; $j < 3; $j++ ) {
-        printf( "$SIG_FIGS_MIN ", $local_ref_frame->[$i][$j] );
+        printf( "$sig_figs_min ", $local_ref_frame->[$i][$j] );
     }
     print( "\n" );
 }

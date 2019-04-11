@@ -20,13 +20,14 @@ while( <$fh> ){
 }
 close( $fh );
 
-my $PARAMETERS = Parameters->new();
-my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
+my $parameters = Parameters->new();
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
 my $euler_angles = find_euler_angles(
+    $parameters,
     [ $atom_coord[0], $atom_coord[1], $atom_coord[2] ],
     [ $atom_coord[3], $atom_coord[4], $atom_coord[5] ],
-    [ $atom_coord[6], $atom_coord[7], $atom_coord[8] ],
-    $PARAMETERS );
+    [ $atom_coord[6], $atom_coord[7], $atom_coord[8] ] );
 
-print( join( " ", map { sprintf( $SIG_FIGS_MIN, $_ ) } @{ $euler_angles } ) . "\n" );
+print( join( " ", map { sprintf( $sig_figs_min, $_ ) } @{ $euler_angles } ) .
+       "\n" );

@@ -26,15 +26,15 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
 my @checkable_angles;
 for my $angles ( split /;/, $checkable_angles ) {
     my @current_angles;
     for my $angle ( split /,/, $angles ) {
-        $angle =~ s/pi/\$PI/g;
+        $angle =~ s/pi/\$pi/g;
         push @current_angles, eval( $angle );
     }
     push @checkable_angles, \@current_angles;
@@ -47,13 +47,13 @@ my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
 my ( $favourable_angles, $favourable_energies ) =
-    @{ calc_full_atom_energy( { 'atom_site' => $atom_site,
+    @{ calc_full_atom_energy( { 'parameters' => $parameters,
+                                'atom_site' => $atom_site,
                                 'residue_unique_key' =>
                                     "${residue_id},${residue_chain},".
                                     "${pdbx_model},${residue_alt}",
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
-                                'PARAMETERS' => $PARAMETERS,
                               },
                               [ @checkable_angles ],
                               'threads' => 1 ) };
@@ -64,8 +64,8 @@ for my $i ( 0..$#{ $favourable_angles } ) {
     my @angle_names = map { "chi${_}" } 1..$#{ $favourable_angles->[$i] }+1;
     for my $j ( 0..$#{ $favourable_angles->[$i] } ) {
         print $angle_id, ', ', $angle_names[$j], ', ',
-            sprintf( $SIG_FIGS_MIN, 180 * $favourable_angles->[$i][$j] / $PI ), ', ',
-            sprintf( $SIG_FIGS_MIN, $favourable_energies->[$i] ), "\n";
+            sprintf( $sig_figs_min, 180 * $favourable_angles->[$i][$j] / $pi ), ', ',
+            sprintf( $sig_figs_min, $favourable_energies->[$i] ), "\n";
     }
     $angle_id++;
 }

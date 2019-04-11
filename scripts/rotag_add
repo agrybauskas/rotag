@@ -99,8 +99,8 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $PARAMETERS = Parameters->new();
-my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
+my $parameters = Parameters->new();
+my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
@@ -119,7 +119,7 @@ for my $pdbx_file ( @ARGV ) {
     my $target_atom_ids =
         filter( { 'atom_site' => $target_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
-                  'exclude' => { 'label_atom_id' => $INTERACTION_ATOM_NAMES },
+                  'exclude' => { 'label_atom_id' => $interaction_atom_names },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
 
@@ -143,20 +143,19 @@ for my $pdbx_file ( @ARGV ) {
                 filter_by_unique_residue_key( $selected_atom_site,
                                               $residue_unique_key, 1 );
 
-            hybridization( $residue_site, $PARAMETERS );
-            connect_atoms( $residue_site, $PARAMETERS );
+            hybridization( $parameters, $residue_site );
+            connect_atoms( $parameters, $residue_site );
 
             # Generates rotational model.
-            rotation_only( $residue_site, $PARAMETERS );
+            rotation_only( $parameters, $residue_site );
 
             for my $id ( sort { $a <=> $b }
                              @{$pdbx_loop_split_groups->{$residue_unique_key} }){
                 my $rotamer_id = $pdbx_loop_unique->{$id}{'rotamer_id'};
                 my $angle_name = $pdbx_loop_unique->{$id}{'type'};
                 my $angle_value = $pdbx_loop_unique->{$id}{'value'};
-                $rotamer_angles{$residue_unique_key}
-                               {"$rotamer_id"}
-                               {$angle_name} = [ $angle_value ];
+                $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name}=
+                    [ $angle_value ];
             }
         }
 
@@ -171,15 +170,15 @@ for my $pdbx_file ( @ARGV ) {
                 %rotamer_atom_site =
                     ( %rotamer_atom_site,
                       %{ generate_pseudo(
-                             { 'atom_site' => $selected_atom_site,
+                             { 'parameters' => $parameters,
+                               'atom_site' => $selected_atom_site,
                                'atom_specifier' => { 'id' => [ $atom_id ] },
                                'angle_values' => $rotamer_angles,
                                'last_atom_id' => $last_atom_id,
                                 # TODO: check if it is a good idea to have
                                 # $rotamer_id as 'label_alt_id'.
                                'alt_group_id' => $rotamer_id,
-                               'selection_state' => 'T',
-                               'PARAMETERS' => $PARAMETERS } ) } );
+                               'selection_state' => 'T' } ) } );
                 $last_atom_id++;
             }
 
@@ -222,15 +221,15 @@ for my $pdbx_file ( @ARGV ) {
                                     $atom_site_split_groups->
                                         {$atom_site_identifier} } } );
 
-            connect_atoms( $current_atom_site, $PARAMETERS );
-            hybridization( $current_atom_site, $PARAMETERS );
+            connect_atoms( $parameters, $current_atom_site );
+            hybridization( $parameters, $current_atom_site );
             # TODO: check how determination of bond parameters could be reduced,
             # because it increases the computation time.
-            connect_atoms( $reference_atom_site, $PARAMETERS );
-            hybridization( $reference_atom_site, $PARAMETERS );
+            connect_atoms( $parameters, $reference_atom_site );
+            hybridization( $parameters, $reference_atom_site );
 
             my $hydrogen_site =
-                add_hydrogens( $current_atom_site, $PARAMETERS,
+                add_hydrogens( $parameters, $current_atom_site,
                                { 'last_atom_id' => $last_atom_id,
                                  'use_origins_alt_group_id' => 1,
                                  'use_existing_connections' => 1,

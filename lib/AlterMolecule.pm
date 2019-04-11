@@ -28,11 +28,11 @@ our $VERSION = $VERSION;
 
 sub bond_torsion
 {
-    my ( $mid_atom_coord,
+    my ( $parameters,
+         $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
-         $angle_name,
-         $PARAMETERS ) = @_;
+         $angle_name ) = @_;
 
     # Rotation matrix around the bond.
     my $rot_matrix =
@@ -44,17 +44,17 @@ sub bond_torsion
                                          [ 0, 0, 1, 0 ],
                                          [ 0, 0, 0, 1 ], ]; } } );
     my @rot_matrix =
-        ( @{ switch_ref_frame( $mid_atom_coord,
+        ( @{ switch_ref_frame( $parameters,
+                               $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'global',
-                               $PARAMETERS ) },
+                               'global' ) },
           $rot_matrix,
-          @{ switch_ref_frame( $mid_atom_coord,
+          @{ switch_ref_frame( $parameters,
+                               $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'local',
-                               $PARAMETERS ) }, );
+                               'local' ) }, );
 
     return \@rot_matrix;
 }
@@ -71,11 +71,11 @@ sub bond_torsion
 
 sub bond_stretching
 {
-    my ( $mid_atom_coord,
+    my ( $parameters,
+         $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
-         $length_name,
-         $PARAMETERS ) = @_;
+         $length_name ) = @_;
 
     # Translation of the coordinates of the bond.
     my $transl_matrix =
@@ -89,17 +89,17 @@ sub bond_stretching
 
     # Multiplying multiple matrices to get a final form.
     my @transl_matrix =
-        ( @{ switch_ref_frame( $mid_atom_coord,
+        ( @{ switch_ref_frame( $parameters,
+                               $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'global',
-                               $PARAMETERS ) },
+                               'global' ) },
           $transl_matrix,
-          @{ switch_ref_frame( $mid_atom_coord,
+          @{ switch_ref_frame( $parameters,
+                               $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'local',
-                               $PARAMETERS ) }, );
+                               'local' ) }, );
 
     return \@transl_matrix;
 }
@@ -117,12 +117,12 @@ sub bond_stretching
 
 sub angle_bending
 {
-    my ( $mid_atom_coord,
+    my ( $parameters,
+         $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
          $angle_name_x,
-         $angle_name_y,
-         $PARAMETERS ) = @_;
+         $angle_name_y ) = @_;
 
     # Bond angle matrices that rotates along x and y axes.
     my $rot_matrix_x =
@@ -144,18 +144,18 @@ sub angle_bending
 
     # Multiplying multiple matrices to get a final form.
     my @rot_matrix =
-        ( @{ switch_ref_frame( $mid_atom_coord,
+        ( @{ switch_ref_frame( $parameters,
+                               $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'global',
-                               $PARAMETERS ) },
+                               'global' ) },
           $rot_matrix_y,
           $rot_matrix_x,
-          @{ switch_ref_frame( $mid_atom_coord,
+          @{ switch_ref_frame( $parameters,
+                               $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
-                               'local',
-                               $PARAMETERS ) }, );
+                               'local' ) }, );
 
     return \@rot_matrix;
 }

@@ -41,11 +41,11 @@ our $VERSION = $VERSION;
 
 sub torsion
 {
-    my ( $atom_i_id, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i_id, $options ) = @_;
 
     my ( $reference_atom_site ) = ( $options->{'atom_site'} );
 
-    my $T_K //= $PARAMETERS->{'_[local]_force_field'}{'t_k'};
+    my $t_k //= $parameters->{'_[local]_force_field'}{'t_k'};
 
     my $t_epsilon = 1.0;
     my $t_n = 3; # FIXME: here the number depends on the hybridization.
@@ -102,7 +102,7 @@ sub torsion
         );
 
         $torsion_potential +=
-            $T_K * ( $t_epsilon / 2 ) * ( 1 + cos( $t_n * $omega ) );
+            $t_k * ( $t_epsilon / 2 ) * ( 1 + cos( $t_n * $omega ) );
     }
 
     return $torsion_potential;
@@ -110,12 +110,12 @@ sub torsion
 
 sub torsion_new
 {
-    my ( $atom_i_id, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i_id, $options ) = @_;
 
     my ( $reference_atom_site ) = ( $options->{'atom_site'} );
 
-    my $T_K = $PARAMETERS->{'_[local]_force_field'}{'t_k'};
-    my $TORSIONAL = $PARAMETERS->{'_[local]_torsional'};
+    my $t_k = $parameters->{'_[local]_force_field'}{'t_k'};
+    my $torsional = $parameters->{'_[local]_torsional'};
 
     my $phase = 3;
 
@@ -142,7 +142,7 @@ sub torsion_new
             for my $third_neighbour_id ( @third_neighbour_ids ) {
                 my $third_atom_name =
                     $reference_atom_site->{$third_neighbour_id}{'type_symbol'};
-                my $epsilon = $TORSIONAL->{$third_atom_name}{$atom_name}
+                my $epsilon = $torsional->{$third_atom_name}{$atom_name}
                                           {'epsilon'};
                 my $omega = dihedral_angle(
                     [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
@@ -160,7 +160,7 @@ sub torsion_new
                 );
 
                 $torsion_potential +=
-                    $T_K * _torsion( $omega, $phase, $epsilon, $PARAMETERS );
+                    $t_k * _torsion( $parameters, $omega, $phase, $epsilon );
             }
         }
     }
@@ -171,12 +171,12 @@ sub torsion_new
 # TODO: must keep only one torsion function.
 sub torsion_object
 {
-    my ( $atom_i_id, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i_id, $options ) = @_;
 
     my ( $reference_atom_site ) = ( $options->{'atom_site'} );
 
-    my $T_K = $PARAMETERS->{'_[local]_force_field'}{'t_k'};
-    my $TORSIONAL = $PARAMETERS->{'_[local]_torsional'};
+    my $t_k = $parameters->{'_[local]_force_field'}{'t_k'};
+    my $torsional = $parameters->{'_[local]_torsional'};
 
     my $phase = 3;
 
@@ -203,7 +203,7 @@ sub torsion_object
             for my $third_neighbour_id ( @third_neighbour_ids ) {
                 my $third_atom_name =
                     $reference_atom_site->{$third_neighbour_id}{'type_symbol'};
-                my $epsilon = $TORSIONAL->{$third_atom_name}{$atom_name}
+                my $epsilon = $torsional->{$third_atom_name}{$atom_name}
                                           {'epsilon'};
                 my $omega = dihedral_angle(
                     [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
@@ -225,7 +225,7 @@ sub torsion_object
                     'torsion',
                     [ $atom_i_id, $neighbour_id, $second_neighbour_id,
                       $third_neighbour_id ],
-                    $T_K * _torsion( $omega, $phase, $epsilon, $PARAMETERS )
+                    $t_k * _torsion( $parameters, $omega, $phase, $epsilon )
                 );
                 push @torsion_potentials, $energy_potential;
             }
@@ -237,11 +237,11 @@ sub torsion_object
 
 sub _torsion
 {
-    my ( $omega, $phase, $epsilon, $PARAMETERS ) = @_;
+    my ( $parameters, $omega, $phase, $epsilon ) = @_;
 
-    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    if( $omega < ( -$PI / $phase ) || $omega > ( $PI / $phase ) ) {
+    if( $omega < ( - $pi / $phase ) || $omega > ( $pi / $phase ) ) {
         return 0
     } else {
         return ( $epsilon / 2 ) * ( 1 + cos( $phase * $omega ) );
@@ -250,14 +250,14 @@ sub _torsion
 
 sub general
 {
-    my ( $atom_i, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i, $options ) = @_;
     my ( $decompose, $is_optimal ) =
         ( $options->{'decompose'}, $options->{'is_optimal'} );
 
     if( $is_optimal ) {
         return 0;
     } else {
-        my $torsion = torsion_new( $atom_i->{'id'}, $PARAMETERS, $options );
+        my $torsion = torsion_new( $parameters, $atom_i->{'id'}, $options );
 
         if( $decompose ) {
             return { 'torsion' => $torsion };

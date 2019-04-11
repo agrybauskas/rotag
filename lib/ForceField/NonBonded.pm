@@ -47,15 +47,15 @@ our $VERSION = $VERSION;
 
 sub hard_sphere
 {
-    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i, $atom_j, $options ) = @_;
 
     my ( $r_squared, $sigma ) = ( $options->{'r_squared'}, $options->{'sigma'} );
 
-    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
+    my $atom_properties = $parameters->{'_[local]_atom_properties'};
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $ATOM_PROPERTIES->{$atom_i->{'type_symbol'}}{'vdw_radius'}
-             + $ATOM_PROPERTIES->{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $atom_properties->{$atom_i->{'type_symbol'}}{'vdw_radius'}
+             + $atom_properties->{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared < $sigma ** 2 ) {
         return 'Inf';
@@ -84,21 +84,21 @@ sub hard_sphere
 
 sub soft_sphere
 {
-    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i, $atom_j, $options ) = @_;
 
     my ( $r_squared, $sigma ) = ( $options->{'r_squared'}, $options->{'sigma'} );
 
-    my $SOFT_EPSILON = $PARAMETERS->{'_[local]_force_field'}{'soft_epsilon'};
-    my $SOFT_N = $PARAMETERS->{'_[local]_force_field'}{'soft_n'};
-    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
+    my $soft_epsilon = $parameters->{'_[local]_force_field'}{'soft_epsilon'};
+    my $soft_n = $parameters->{'_[local]_force_field'}{'soft_n'};
+    my $atom_properties = $parameters->{'_[local]_atom_properties'};
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
-    $sigma //= $ATOM_PROPERTIES->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $ATOM_PROPERTIES->{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $atom_properties->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $atom_properties->{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
     if( $r_squared <= $sigma ** 2 ) {
-        return $SOFT_EPSILON * ( ( $sigma ** $SOFT_N ) /
-                                 ( $r_squared ** ( $SOFT_N / 2 ) ) );
+        return $soft_epsilon * ( ( $sigma ** $soft_n ) /
+                                 ( $r_squared ** ( $soft_n / 2 ) ) );
     } else {
         return 0;
     }
@@ -123,31 +123,31 @@ sub soft_sphere
 
 sub lennard_jones
 {
-    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i, $atom_j, $options ) = @_;
 
     my ( $r_squared, $is_optimal  ) = (
         $options->{'r_squared'},
         $options->{'is_optimal'},
     );
 
-    my $LJ_K = $PARAMETERS->{'_[local]_force_field'}{'lj_k'};
-    my $LENNARD_JONES = $PARAMETERS->{'_[local]_lennard_jones'};
+    my $lj_k = $parameters->{'_[local]_force_field'}{'lj_k'};
+    my $lennard_jones = $parameters->{'_[local]_lennard_jones'};
 
-    my $lj_epsilon = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
+    my $lj_epsilon = $lennard_jones->{$atom_i->{'type_symbol'}}
                                      {$atom_j->{'type_symbol'}}
                                      {'epsilon'};
 
     if( $is_optimal ) {
-        return (-1) * $LJ_K * $lj_epsilon;
+        return ( -1 ) * $lj_k * $lj_epsilon;
     }
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
-    my $sigma = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
+    my $sigma = $lennard_jones->{$atom_i->{'type_symbol'}}
                                 {$atom_j->{'type_symbol'}}
                                 {'sigma'};
 
-    return 4 * $LJ_K * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
+    return 4 * $lj_k * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
                                        ( $sigma ** 6  / $r_squared ** 3 ) );
 }
 
@@ -169,22 +169,22 @@ sub lennard_jones
 
 sub coulomb
 {
-    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i, $atom_j, $options ) = @_;
     my ( $r_squared, $is_optimal ) = (
         $options->{'r_squared'},
         $options->{'is_optimal'},
     );
 
-    my $C_K = $PARAMETERS->{'_[local]_force_field'}{'c_k'};
-    my $PARTIAL_CHARGE = $PARAMETERS->{'_[local]_partial_charge'};
+    my $c_k = $parameters->{'_[local]_force_field'}{'c_k'};
+    my $partial_charge = $parameters->{'_[local]_partial_charge'};
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
     # Extracts partial charges.
     my $partial_charge_i =
-        $PARTIAL_CHARGE->{$atom_i->{'label_comp_id'}}{$atom_i->{'label_atom_id'}};
+        $partial_charge->{$atom_i->{'label_comp_id'}}{$atom_i->{'label_atom_id'}};
     my $partial_charge_j =
-        $PARTIAL_CHARGE->{$atom_j->{'label_comp_id'}}{$atom_j->{'label_atom_id'}};
+        $partial_charge->{$atom_j->{'label_comp_id'}}{$atom_j->{'label_atom_id'}};
 
     if( ! defined $partial_charge_i ) {
         confess $atom_i->{'label_atom_id'} . 'atom with id ' . $atom_i->{'id'} .
@@ -204,14 +204,14 @@ sub coulomb
             # TODO: check if this assumption is true: Lennard-Jones sigma is
             # taken as distance, because Lennard-Jones potential goes faster
             # to infinity than Coulomb.
-            my $LENNARD_JONES = $PARAMETERS->{'_[local]_lennard_jones'};
-            $r_squared = $LENNARD_JONES->{$atom_i->{'type_symbol'}}
+            my $lennard_jones = $parameters->{'_[local]_lennard_jones'};
+            $r_squared = $lennard_jones->{$atom_i->{'type_symbol'}}
                                          {$atom_j->{'type_symbol'}}
                                          {'sigma'} ** 2;
         }
     }
 
-    return $C_K * $partial_charge_i * $partial_charge_j / $r_squared;
+    return $c_k * $partial_charge_i * $partial_charge_j / $r_squared;
 }
 
 #
@@ -228,27 +228,27 @@ sub coulomb
 
 sub h_bond
 {
-    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i, $atom_j, $options ) = @_;
 
     my ( $atom_site, $only_implicit ) = (
         $options->{'atom_site'},
         $options->{'only_implicit_h_bond'},
     );
 
-    my $HYDROGEN_NAMES = $PARAMETERS->{'_[local]_hydrogen_names'};
+    my $hydrogen_names = $parameters->{'_[local]_hydrogen_names'};
 
     # TODO: should not be hardcoded - maybe stored in AtomProperties or
     # BondProperties.
     my @h_bond_heavy_atoms = qw( N O S );
     my @atom_i_hydrogen_names =
-        defined $HYDROGEN_NAMES->{$atom_i->{'label_comp_id'}}
+        defined $hydrogen_names->{$atom_i->{'label_comp_id'}}
                                  {$atom_i->{'label_atom_id'}} ?
-             @{ $HYDROGEN_NAMES->{$atom_i->{'label_comp_id'}}
+             @{ $hydrogen_names->{$atom_i->{'label_comp_id'}}
                                  {$atom_i->{'label_atom_id'}} } : ();
     my @atom_j_hydrogen_names =
-        defined $HYDROGEN_NAMES->{$atom_j->{'label_comp_id'}}
+        defined $hydrogen_names->{$atom_j->{'label_comp_id'}}
                                  {$atom_j->{'label_atom_id'}} ?
-             @{ $HYDROGEN_NAMES->{$atom_j->{'label_comp_id'}}
+             @{ $hydrogen_names->{$atom_j->{'label_comp_id'}}
                                  {$atom_j->{'label_atom_id'}} } : ();
 
     # Exits early if there are no hydrogen bond donor-acceptor combinations.
@@ -274,25 +274,25 @@ sub h_bond
                     $atom_site->{$_}{'type_symbol'} eq 'H' ) ? $_ : () }
                @{ $atom_pair->[0]{'connections'} };
         my @hydrogen_names =
-            defined $HYDROGEN_NAMES->{$atom_pair->[0]{'label_comp_id'}}
+            defined $hydrogen_names->{$atom_pair->[0]{'label_comp_id'}}
                                      {$atom_pair->[0]{'label_atom_id'}} ?
-                 @{ $HYDROGEN_NAMES->{$atom_pair->[0]{'label_comp_id'}}
+                 @{ $hydrogen_names->{$atom_pair->[0]{'label_comp_id'}}
                                      {$atom_pair->[0]{'label_atom_id'}}} : ();
 
         if( @hydrogen_ids && ! $only_implicit ) {
             for my $hydrogen_id ( @hydrogen_ids ) {
                 $h_bond_energy_sum +=
-                    h_bond_explicit( $atom_pair->[0],
+                    h_bond_explicit( $parameters,
+                                     $atom_pair->[0],
                                      $atom_site->{$hydrogen_id},
                                      $atom_pair->[1],
-                                     $PARAMETERS,
                                      $options );
             }
         } elsif( @hydrogen_names ) {
             $h_bond_energy_sum +=
-                h_bond_implicit( $atom_pair->[0],
+                h_bond_implicit( $parameters,
+                                 $atom_pair->[0],
                                  $atom_pair->[1],
-                                 $PARAMETERS,
                                  $options );
         }
     }
@@ -330,7 +330,7 @@ sub h_bond
 
 sub h_bond_implicit
 {
-    my ( $donor_atom, $acceptor_atom, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $donor_atom, $acceptor_atom, $options ) = @_;
 
     my ( $r_donor_acceptor_squared, $is_optimal, $reference_atom_site ) = (
         $options->{'r_squared'},
@@ -338,19 +338,19 @@ sub h_bond_implicit
         $options->{'atom_site'},
     );
 
-    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-    my $SP3_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp3_angle'};
-    my $SP2_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp2_angle'};
-    my $SP_ANGLE = $PARAMETERS->{'_[local]_constants'}{'sp_angle'};
-    my $H_K = $PARAMETERS->{'_[local]_force_field'}->{'h_k'};
-    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
-    my $HYDROGEN_BOND = $PARAMETERS->{'_[local]_h_bond'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $sp3_angle = $parameters->{'_[local]_constants'}{'sp3_angle'};
+    my $sp2_angle = $parameters->{'_[local]_constants'}{'sp2_angle'};
+    my $sp_angle = $parameters->{'_[local]_constants'}{'sp_angle'};
+    my $h_k = $parameters->{'_[local]_force_field'}->{'h_k'};
+    my $atom_properties = $parameters->{'_[local]_atom_properties'};
+    my $hydrogen_bond = $parameters->{'_[local]_h_bond'};
 
-    my $r_sigma = $HYDROGEN_BOND->{$acceptor_atom->{'type_symbol'}}{'sigma'};
-    my $h_epsilon = $HYDROGEN_BOND->{$acceptor_atom->{'type_symbol'}}{'epsilon'};
+    my $r_sigma = $hydrogen_bond->{$acceptor_atom->{'type_symbol'}}{'sigma'};
+    my $h_epsilon = $hydrogen_bond->{$acceptor_atom->{'type_symbol'}}{'epsilon'};
 
     if( $is_optimal ) {
-        return (-1) * $H_K * $h_epsilon;
+        return ( -1 ) * $h_k * $h_epsilon;
     }
 
     my $covalent_radius_idx;
@@ -364,12 +364,12 @@ sub h_bond_implicit
 
     $r_donor_acceptor_squared //= distance_squared( $donor_atom, $acceptor_atom);
     my $r_donor_hydrogen =
-        $ATOM_PROPERTIES->{$donor_atom->{'type_symbol'}}
+        $atom_properties->{$donor_atom->{'type_symbol'}}
                           {'covalent_radius'}{'length'}->[$covalent_radius_idx] +
-        $ATOM_PROPERTIES->{'H'}{'covalent_radius'}{'length'}->[0];
+        $atom_properties->{'H'}{'covalent_radius'}{'length'}->[0];
     my $r_acceptor_hydrogen_vdw =
-        $ATOM_PROPERTIES->{$acceptor_atom->{'type_symbol'}}{'vdw_radius'} +
-        $ATOM_PROPERTIES->{'H'}{'vdw_radius'};
+        $atom_properties->{$acceptor_atom->{'type_symbol'}}{'vdw_radius'} +
+        $atom_properties->{'H'}{'vdw_radius'};
 
     # TODO: check for 0, 108.5 angles.
     my $theta;
@@ -412,11 +412,11 @@ sub h_bond_implicit
 
         my $hybridization_angle;
         if( $donor_atom->{'hybridization'} eq 'sp3' ) {
-            $hybridization_angle = $SP3_ANGLE;
+            $hybridization_angle = $sp3_angle;
         } elsif( $donor_atom->{'hybridization'} eq 'sp2' ) {
-            $hybridization_angle = $SP2_ANGLE;
+            $hybridization_angle = $sp2_angle;
         } elsif( $donor_atom->{'hybridization'} eq 'sp' ) {
-            $hybridization_angle = $SP_ANGLE;
+            $hybridization_angle = $sp_angle;
         }
 
         my $alpha = abs( $hybridization_angle - $neighbour_donor_acceptor_angle );
@@ -432,13 +432,13 @@ sub h_bond_implicit
             sqrt( $r_acceptor_hydrogen_squared )
         );
 
-        $theta = $PI - $alpha - $beta;
+        $theta = $pi - $alpha - $beta;
     }
 
     # TODO: study more on what restriction should be on $r_donor_acceptor.
-    if( defined $theta && ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
+    if( defined $theta && ( $theta >= $pi / 2 ) && ( $theta <=  3 * $pi / 2 ) ) {
         return
-            $H_K *
+            $h_k *
             $h_epsilon *
             ( 5 * ( $r_sigma ** 12 / $r_donor_acceptor_squared ** 6 ) -
               6 * ( $r_sigma ** 10 / $r_donor_acceptor_squared ** 5 ) ) *
@@ -476,22 +476,22 @@ sub h_bond_implicit
 
 sub h_bond_explicit
 {
-    my ( $donor_atom, $hydrogen_atom, $acceptor_atom, $PARAMETERS, $options  ) = @_;
+    my ( $parameters, $donor_atom, $hydrogen_atom, $acceptor_atom, $options ) = @_;
 
     my ( $r_donor_acceptor_squared, $is_optimal ) = (
         $options->{'r_squared'},
         $options->{'is_optimal'}
     );
 
-    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-    my $H_K = $PARAMETERS->{'_[local]_force_field'}{'h_k'};
-    my $HYDROGEN_BOND = $PARAMETERS->{'_[local]_h_bond'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $h_k = $parameters->{'_[local]_force_field'}{'h_k'};
+    my $hydrogen_bond = $parameters->{'_[local]_h_bond'};
 
-    my $r_sigma = $HYDROGEN_BOND->{$acceptor_atom->{'type_symbol'}}{'sigma'};
-    my $h_epsilon = $HYDROGEN_BOND->{$acceptor_atom->{'type_symbol'}}{'epsilon'};
+    my $r_sigma = $hydrogen_bond->{$acceptor_atom->{'type_symbol'}}{'sigma'};
+    my $h_epsilon = $hydrogen_bond->{$acceptor_atom->{'type_symbol'}}{'epsilon'};
 
     if( $is_optimal ) {
-        return (-1) * $H_K * $h_epsilon;
+        return (-1) * $h_k * $h_epsilon;
     }
 
     $r_donor_acceptor_squared //=distance_squared( $donor_atom, $acceptor_atom );
@@ -506,9 +506,9 @@ sub h_bond_explicit
             $acceptor_atom->{'Cartn_y'},
             $acceptor_atom->{'Cartn_z'} ] ] );
 
-    if( ( $theta >= $PI / 2 ) && ( $theta <=  3 * $PI / 2 ) ) {
+    if( ( $theta >= $pi / 2 ) && ( $theta <=  3 * $pi / 2 ) ) {
         return
-            $H_K *
+            $h_k *
             $h_epsilon *
             ( 5 * ( $r_sigma ** 12 / $r_donor_acceptor_squared ** 6 ) -
               6 * ( $r_sigma ** 10 / $r_donor_acceptor_squared ** 5 ) ) *
@@ -541,7 +541,7 @@ sub h_bond_explicit
 
 sub general
 {
-    my ( $atom_i, $atom_j, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_i, $atom_j, $options ) = @_;
 
     my ( $r_squared, $sigma, $decompose, $is_optimal ) = (
         $options->{'r_squared'},
@@ -551,10 +551,10 @@ sub general
         $options->{'is_optimal'},
     );
 
-    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-    my $CUTOFF_START = $PARAMETERS->{'_[local]_force_field'}{'cutoff_start'};
-    my $CUTOFF_END = $PARAMETERS->{'_[local]_force_field'}{'cutoff_end'};
-    my $ATOM_PROPERTIES = $PARAMETERS->{'_[local]_atom_properties'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $cutoff_start = $parameters->{'_[local]_force_field'}{'cutoff_start'};
+    my $cutoff_end = $parameters->{'_[local]_force_field'}{'cutoff_end'};
+    my $atom_properties = $parameters->{'_[local]_atom_properties'};
 
     $decompose //= 0;
     $is_optimal //= 0;
@@ -566,16 +566,16 @@ sub general
     $options{'r_squared'} = $r_squared;
 
     # Calculates Van der Waals distance of given atoms.
-    $sigma //= $ATOM_PROPERTIES->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $ATOM_PROPERTIES->{$atom_j->{'type_symbol'}}{'vdw_radius'};
+    $sigma //= $atom_properties->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $atom_properties->{$atom_j->{'type_symbol'}}{'vdw_radius'};
 
-    if( $r_squared < ( $CUTOFF_START * $sigma ) ** 2 ) {
+    if( $r_squared < ( $cutoff_start * $sigma ) ** 2 ) {
         my $lennard_jones =
-            lennard_jones( $atom_i, $atom_j, $PARAMETERS,
+            lennard_jones( $parameters, $atom_i, $atom_j,
                            { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $coulomb = coulomb( $atom_i, $atom_j, $PARAMETERS,
+        my $coulomb = coulomb( $parameters, $atom_i, $atom_j,
                                { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $h_bond =  h_bond( $atom_i, $atom_j, $PARAMETERS,
+        my $h_bond =  h_bond( $parameters, $atom_i, $atom_j,
                               { %options, ( 'is_optimal' => $is_optimal ) } );
 
         if( $decompose ) {
@@ -585,18 +585,18 @@ sub general
         } else {
             return $lennard_jones + $coulomb + $h_bond;
         }
-    } elsif( ( $r_squared >= ( $CUTOFF_START * $sigma ) ** 2 ) &&
-             ( $r_squared <= ( $CUTOFF_END   * $sigma ) ** 2 ) ) {
+    } elsif( ( $r_squared >= ( $cutoff_start * $sigma ) ** 2 ) &&
+             ( $r_squared <= ( $cutoff_end   * $sigma ) ** 2 ) ) {
         my $lennard_jones =
-            lennard_jones( $atom_i, $atom_j, $PARAMETERS,
+            lennard_jones( $parameters, $atom_i, $atom_j,
                            { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $coulomb = coulomb( $atom_i, $atom_j, $PARAMETERS,
+        my $coulomb = coulomb( $parameters, $atom_i, $atom_j,
                                { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $h_bond =  h_bond( $atom_i, $atom_j, $PARAMETERS,
+        my $h_bond =  h_bond( $parameters, $atom_i, $atom_j,
                               { %options, ( 'is_optimal' => $is_optimal ) } );
         my $cutoff_function =
-            cos( ( $PI * ( sqrt( $r_squared ) - $CUTOFF_START * $sigma ) ) /
-                 ( 2 * ( $CUTOFF_END * $sigma - $CUTOFF_START * $sigma ) ) );
+            cos( ( $pi * ( sqrt( $r_squared ) - $cutoff_start * $sigma ) ) /
+                 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
 
         if( $decompose ) {
             return { 'lennard_jones' => $lennard_jones,

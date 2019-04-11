@@ -24,8 +24,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 # Parses angle ranges for
 my %angle_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
@@ -42,22 +42,21 @@ my %num_angle_values; # Numeric angle values.
 for my $dihedral_angle ( sort keys %angle_ranges ) {
     my $min_angle = $angle_ranges{"$dihedral_angle"}[0];
     my $max_angle = $angle_ranges{"$dihedral_angle"}[1];
-    $min_angle =~ s/pi/\$PI/g;
-    $max_angle =~ s/pi/\$PI/g;
+    $min_angle =~ s/pi/\$pi/g;
+    $max_angle =~ s/pi/\$pi/g;
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
     my $small_angle = # Change of angle in each rotation step.
-        2 * $PI / $num_of_angles{$dihedral_angle};
+        2 * $pi / $num_of_angles{$dihedral_angle};
     $num_angle_values{"$dihedral_angle"} =
-        sample_angles( [ [ $min_angle, $max_angle ] ], $small_angle, undef,
-                       $PARAMETERS );
+        sample_angles( $parameters, [ [ $min_angle, $max_angle ] ], $small_angle );
 }
 
 %{ $atom_site } =
     ( %{ $atom_site },
-       %{ generate_pseudo( { 'atom_site' => $atom_site,
+       %{ generate_pseudo( { 'parameters' => $parameters,
+                             'atom_site' => $atom_site,
                              'atom_specifier' => { "id" => [ $atom_id ] },
-                             'angle_values' => \%num_angle_values,
-                             'PARAMETERS' => $PARAMETERS } ) } );
+                             'angle_values' => \%num_angle_values } ) } );
 
 to_pdbx( { "atom_site" => $atom_site } );

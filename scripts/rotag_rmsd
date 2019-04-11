@@ -88,8 +88,8 @@ error( { 'message' => "No comparison groups are selected. Use -c argument.\n" } 
 
 my %atom_site_groups = ();
 
-my $PARAMETERS = Parameters->new();
-my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
+my $parameters = Parameters->new();
+my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
@@ -191,7 +191,7 @@ for my $comparison_group ( @comparison_groups ) {
                     $rmsd_counter,
                     ( @{ $first_group_data->[$i] } )[0..7],
                     ( @{ $second_group_data->[$i] })[0..7],
-                    sprintf $SIG_FIGS_MAX,
+                    sprintf $sig_figs_max,
                     rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
                           [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
             } else {
@@ -206,7 +206,7 @@ for my $comparison_group ( @comparison_groups ) {
     if( ! $do_decompose ) {
         push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
             $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
-            sprintf $SIG_FIGS_MAX,
+            sprintf $sig_figs_max,
             rmsd( \@first_group_coord, \@second_group_coord );
     }
 

@@ -465,7 +465,7 @@ sub rmsd
 
 sub energy
 {
-    my ( $atom_site, $potential, $PARAMETERS, $options  ) = @_;
+    my ( $parameters, $atom_site, $potential, $options  ) = @_;
     my ( $target_atom_ids, $only_sidechains, $decompose ) = (
         $options->{'target_atom_ids'},
         $options->{'only_sidechains'},
@@ -476,10 +476,10 @@ sub energy
     $only_sidechains //= 0;
     $decompose //= 0;
 
-    my $EDGE_LENGTH_INTERACTION =
-        $PARAMETERS->{'_[local]_constants'}{'edge_length_interaction'};
-    my $INTERACTION_ATOM_NAMES =
-        $PARAMETERS->{'_[local]_interaction_atom_names'};
+    my $edge_length_interaction =
+        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
+    my $interaction_atom_names =
+        $parameters->{'_[local]_interaction_atom_names'};
 
     # Splits atom site into groups by its uniqueness.
     my $atom_site_groups = split_by( { 'atom_site' => $atom_site,
@@ -504,10 +504,10 @@ sub energy
     my %options = ();
     $options{'atom_site'} = $atom_site;
 
-    my ( $grid_box, $target_cells ) = grid_box( $atom_site,
-                                                $EDGE_LENGTH_INTERACTION,
-                                                $target_atom_ids,
-                                                $PARAMETERS );
+    my ( $grid_box, $target_cells ) = grid_box( $parameters,
+                                                $atom_site,
+                                                $edge_length_interaction,
+                                                $target_atom_ids );
 
     my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
 
@@ -515,7 +515,7 @@ sub energy
     for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
         for my $atom_id ( @{ $target_cells->{$cell} } ) {
             next if ( any { $atom_site->{$atom_id}{'label_atom_id'} eq $_ }
-                         @{ $INTERACTION_ATOM_NAMES } ) && $only_sidechains;
+                         @{ $interaction_atom_names } ) && $only_sidechains;
 
             my @residue_energy = ();
             my $residue_energy_sum = 0;
@@ -524,8 +524,8 @@ sub energy
             my %bonded_residue_energy = (); # For faster neighbour energy search.
             for my $bonded_potential ( keys %bonded_potentials ) {
                 my $residue_bonded_energy =
-                    $bonded_potentials{$bonded_potential}( $atom_id,
-                                                           $PARAMETERS,
+                    $bonded_potentials{$bonded_potential}( $parameters,
+                                                           $atom_id,
                                                            \%options );
                 for my $bonded_energy ( @{ $residue_bonded_energy } ) {
                     my $neighbour_atom_id = $bonded_energy->atoms->[-1];
@@ -560,9 +560,9 @@ sub energy
                             $non_bonded_potential,
                             [ $atom_id, $neighbour_atom_id ],
                             $non_bonded_potentials{$non_bonded_potential}(
+                                $parameters,
                                 $atom_site->{$atom_id},
                                 $atom_site->{$neighbour_atom_id},
-                                $PARAMETERS,
                                 \%options
                             )
                         );

@@ -41,22 +41,22 @@ our $VERSION = $VERSION;
 
 sub is_connected
 {
-    my ( $target_atom, $neighbour_atom, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $target_atom, $neighbour_atom, $options ) = @_;
 
     my ( $only_covalent_radii ) = ( $options->{'only_covalent_radii'}, );
     $only_covalent_radii //= 0;
 
-    my $COVALENT_BOND_COMB = $PARAMETERS->{'_[local]_covalent_bond_combinations'};
-    my $CONNECTIVITY = $PARAMETERS->{'_[local]_connectivity'};
+    my $covalent_bond_comb = $parameters->{'_[local]_covalent_bond_combinations'};
+    my $connectivity = $parameters->{'_[local]_connectivity'};
 
     # Generates all possible combinations of covalent distances.
     my $bond_length_comb =
-        $COVALENT_BOND_COMB->{$target_atom->{'type_symbol'}}
+        $covalent_bond_comb->{$target_atom->{'type_symbol'}}
                              {$neighbour_atom->{'type_symbol'}}
                              {'length'};
 
     my $length_error_comb =
-        $COVALENT_BOND_COMB->{$target_atom->{'type_symbol'}}
+        $covalent_bond_comb->{$target_atom->{'type_symbol'}}
                              {$neighbour_atom->{'type_symbol'}}
                              {'error'};
 
@@ -86,20 +86,18 @@ sub is_connected
     my $is_connected;
 
     for my $i ( 0..$#{ $bond_length_comb } ) {
-        $bond_length =
-            $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
-        $length_error =
-            $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
+        $bond_length = $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
+        $length_error = $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
         if( ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
             ( $distance_squared <= ( $bond_length + $length_error ) ** 2 ) ) {
             $is_connected = 1;
             last;
         } elsif( ( ! $only_covalent_radii ) &&
                  ( $target_residue_key eq $neighbour_residue_key ) &&
-                 ( exists $CONNECTIVITY->{$target_residue_name}
+                 ( exists $connectivity->{$target_residue_name}
                                          {$target_atom_name} &&
                    any { $neighbour_atom_name eq $_  }
-                      @{ $CONNECTIVITY->{$target_residue_name}
+                      @{ $connectivity->{$target_residue_name}
                                         {$target_atom_name} } ) ) {
             $is_connected = 1;
         } else {
@@ -234,7 +232,7 @@ sub distance
 
 sub around_distance
 {
-    my ( $atom_site, $atom_specifier, $distance, $PARAMETERS ) = @_;
+    my ( $parameters, $atom_site, $atom_specifier, $distance ) = @_;
 
     my @atom_ids = @{ filter( { 'atom_site' => $atom_site,
                                 'include' => $atom_specifier,
@@ -244,7 +242,7 @@ sub around_distance
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
     my ( $grid_box, $atom_cell_pos ) =
-        grid_box( $atom_site, $distance * 2, \@atom_ids, $PARAMETERS );
+        grid_box( $parameters, $atom_site, $distance * 2, \@atom_ids );
     my $neighbour_cells = identify_neighbour_cells( $grid_box, $atom_cell_pos );
 
     # Checks for neighbouring cells for each cell.
@@ -278,11 +276,11 @@ sub around_distance
 
 sub connect_two_atoms
 {
-    my ( $atom_site, $first_atom_id, $second_atom_id, $PARAMETERS ) = @_;
+    my ( $parameters, $atom_site, $first_atom_id, $second_atom_id ) = @_;
 
-    if( is_connected( $atom_site->{"$first_atom_id"},
-                      $atom_site->{"$second_atom_id"},
-                      $PARAMETERS ) ) {
+    if( is_connected( $parameters,
+                      $atom_site->{"$first_atom_id"},
+                      $atom_site->{"$second_atom_id"} ) ) {
         push @{ $atom_site->{$first_atom_id}{'connections'} }, "$second_atom_id";
         push @{ $atom_site->{$second_atom_id}{'connections'} }, "$first_atom_id";
     }
@@ -307,7 +305,7 @@ sub connect_two_atoms
 
 sub connect_atoms
 {
-    my ( $atom_site, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
 
     my ( $append_connections ) = ( $options->{'append_connections'} );
 
@@ -324,15 +322,15 @@ sub connect_atoms
 
     # For each cell, checks neighbouring cells. Creates box around atoms, makes
     # grid with edge length of max covalent radii of the parameter file.
-    my ( $grid_box ) = grid_box( $atom_site, $PARAMETERS );
+    my ( $grid_box ) = grid_box( $parameters, $atom_site );
     my $neighbour_cells = identify_neighbour_cells( $grid_box );
 
     foreach my $cell ( keys %{ $grid_box } ) {
         foreach my $atom_id ( @{ $grid_box->{$cell} } ) {
             foreach my $neighbour_id ( @{ $neighbour_cells->{$cell} } ) {
-                if( ( is_connected( $atom_site->{"$atom_id"},
-                                    $atom_site->{"$neighbour_id"},
-                                    $PARAMETERS ) ) &&
+                if( ( is_connected( $parameters,
+                                    $atom_site->{"$atom_id"},
+                                    $atom_site->{"$neighbour_id"} ) ) &&
                     ( ( ! exists $atom_site->{$atom_id}{'connections'} ) ||
                       ( ! any { $neighbour_id eq $_ }
                              @{ $atom_site->{$atom_id}{'connections'} } ) ) ){

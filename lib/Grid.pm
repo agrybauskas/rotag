@@ -74,17 +74,17 @@ sub create_box
 
 sub grid_box
 {
-    my ( $atom_site, $edge_length, $atom_ids, $PARAMETERS, $options ) = @_;
+    my ( $parameters, $atom_site, $edge_length, $atom_ids, $options ) = @_;
     my ( $attributes ) = ( $options->{'attributes'} );
 
-    my $EDGE_LENGTH_CONNECTION =
-        $PARAMETERS->{'_[local]_constants'}{'edge_length_connection'};
+    my $edge_length_connection =
+        $parameters->{'_[local]_constants'}{'edge_length_connection'};
 
     $attributes //= [ 'id' ];
 
     # Default value for edge length is two times greater than the largest
     # covalent radius.
-    $edge_length //= $EDGE_LENGTH_CONNECTION;
+    $edge_length //= $edge_length_connection;
 
     # Determines boundary box around all atoms.
     my $atom_data =

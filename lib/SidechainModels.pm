@@ -33,7 +33,7 @@ our $VERSION = $VERSION;
 
 sub rotation_only
 {
-    my ( $atom_site, $PARAMETERS ) = @_;
+    my ( $parameters, $atom_site ) = @_;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -76,10 +76,10 @@ sub rotation_only
 
                 my @mid_connections = # Excludes up atom.
                     grep { $_ ne $up_atom_id }
-                    @{ $residue_site->{$mid_atom_id}{'connections'} };
+                        @{ $residue_site->{$mid_atom_id}{'connections'} };
                 my @mid_connection_names = # Excludes up atom.
                     map { $residue_site->{$_}{'label_atom_id'} }
-                    @mid_connections;
+                        @mid_connections;
                 my $side_atom_name =
                     sort_atom_names( \@mid_connection_names )->[0];
                 my $side_atom_id =
@@ -105,11 +105,11 @@ sub rotation_only
             # Creates and appends matrices to a list of matrices that later
             # will be multiplied.
             push @transf_matrices,
-                 @{ bond_torsion( $mid_atom_coord,
+                 @{ bond_torsion( $parameters,
+                                  $mid_atom_coord,
                                   $up_atom_coord,
                                   $side_atom_coord,
-                                  $angle_name,
-                                  $PARAMETERS ) };
+                                  $angle_name ) };
             }
 
             $atom_site->{$atom_id}{'conformation'} =

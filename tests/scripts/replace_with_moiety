@@ -22,8 +22,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
-replace_with_moiety( $atom_site, $residue_unique_key, $moiety, $PARAMETERS );
+replace_with_moiety( $parameters, $atom_site, $residue_unique_key, $moiety );
 
 to_pdbx( { 'atom_site' => $atom_site } );

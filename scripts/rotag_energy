@@ -86,7 +86,7 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
-my $parameters = '';
+my $parameters_cmd = '';
 my $do_sidechain = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
@@ -104,7 +104,7 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'potential|u=s' => \$interactions,
-    'parameters|p=s' => \$parameters,
+    'parameters|p=s' => \$parameters_cmd,
     'side-chains|S' => sub { $do_sidechain = 1 },
     'pairwise|P' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
@@ -129,15 +129,15 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $PARAMETERS = Parameters->new();
-my $INTERACTION_ATOM_NAMES = $PARAMETERS->{'_[local]_interaction_atom_names'};
-my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
+my $parameters = Parameters->new();
+my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 # Parses parameter string.
-$parameters =~ s/\s//g;
-for my $parameter_pair ( split /,/sxm, $parameters ) {
+$parameters_cmd =~ s/\s//g;
+for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
     my ( $parameter, $value ) = split /=/sm, $parameter_pair;
-    $PARAMETERS->set_parameter_values(
+    $parameters->set_parameter_values(
         { '_[local]_force_field' => { $parameter => $value } }
     );
 }
@@ -183,8 +183,8 @@ for my $pdbx_file ( @ARGV ) {
             $current_atom_site->{$atom_id}{'label_alt_id'} = $current_alt_id;
         }
 
-        connect_atoms( $current_atom_site, $PARAMETERS );
-        hybridization( $current_atom_site, $PARAMETERS );
+        connect_atoms( $parameters, $current_atom_site );
+        hybridization( $parameters, $current_atom_site );
 
         my $target_atom_ids =
             filter( { 'atom_site' => $current_atom_site,
@@ -193,7 +193,7 @@ for my $pdbx_file ( @ARGV ) {
                       'is_list' => 1 } );
 
         push @{ $energies{$atom_site_identifier} },
-             @{ energy( $current_atom_site, $interactions, $PARAMETERS,
+             @{ energy( $parameters, $current_atom_site, $interactions,
                         { 'target_atom_ids' => $target_atom_ids,
                           'only_sidechains' => $do_sidechain,
                           'decompose' => $do_decompose } ) };
@@ -230,7 +230,7 @@ for my $pdbx_file ( @ARGV ) {
                     $atom_2->{'label_atom_id'}, $atom_2->{'label_seq_id'},
                     $atom_2->{'label_comp_id'}, $label_asym_id,
                     $pdbx_PDB_model_num, $label_alt_id,
-                    $calculation_method, sprintf( $SIG_FIGS_MAX, $value );
+                    $calculation_method, sprintf( $sig_figs_max, $value );
                 $calculation_id++;
             }
         }
@@ -264,7 +264,7 @@ for my $pdbx_file ( @ARGV ) {
                     push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
                         $calculation_id, $label_seq_id, $label_asym_id,
                         $pdbx_PDB_model_num, $label_alt_id, $calculation_method,
-                        sprintf( $SIG_FIGS_MAX,
+                        sprintf( $sig_figs_max,
                                  $rotamer_energies{$label_seq_id}
                                                   {$calculation_method} );
                     $calculation_id++;
@@ -305,7 +305,7 @@ for my $pdbx_file ( @ARGV ) {
                         $calculation_id, $atom_id, $type_symbol, $label_atom_id,
                         $label_seq_id, $label_comp_id, $label_asym_id,
                         $pdbx_PDB_model_num, $label_alt_id, $calculation_method,
-                        sprintf( $SIG_FIGS_MAX,
+                        sprintf( $sig_figs_max,
                                  $atom_energies{$atom_id}
                                                {$calculation_method} );
 
@@ -313,9 +313,9 @@ for my $pdbx_file ( @ARGV ) {
                     # attribute.
                     if( $add_B_iso ) {
                         if( !any { $atom_site->{$atom_id}{'label_atom_id'} eq $_}
-                                @{ $INTERACTION_ATOM_NAMES } ) {
+                                @{ $interaction_atom_names } ) {
                             $atom_site->{$atom_id}{'B_iso_or_equiv'} =
-                                sprintf( $SIG_FIGS_MAX,
+                                sprintf( $sig_figs_max,
                                          $atom_energies{$atom_id}
                                                        {$calculation_method} );
                         } else {

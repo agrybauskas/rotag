@@ -27,12 +27,12 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
 $angles =~ s/\s//g;
-$angles = sample_angles_qs_parsing( $angles, undef, undef, $PARAMETERS );
+$angles = sample_angles_qs_parsing( $parameters, $angles );
 
 my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
                               map { [ split( " ", $_ ) ] }
@@ -41,15 +41,15 @@ my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
 my $favourable_angles =
-    calc_favourable_angles( { 'atom_site' => $atom_site,
+    calc_favourable_angles( { 'parameters' => $parameters,
+                              'atom_site' => $atom_site,
                               'residue_unique_key' =>
                                   "${residue_id},${residue_chain},".
                                   "${pdbx_model},${residue_alt}",
                               'interaction_site' => $interaction_site,
                               'angles' => $angles,
                               'non_bonded_potential' => \&hard_sphere,
-                              'threads' => 1,
-                              'PARAMETERS' => $PARAMETERS,
+                              'threads' => 1
                             } );
 
 my $angle_id = 1;
@@ -57,7 +57,7 @@ for my $angles ( @{ $favourable_angles } ) {
     my @angle_names = map { "chi${_}" } 1..$#{ $angles }+1;
     for my $i ( 0..$#{ $angles } ) {
         print $angle_id, ', ', $angle_names[$i], ', ',
-            sprintf( $SIG_FIGS_MIN, 180 * $angles->[$i] / $PI ), "\n";
+            sprintf( $sig_figs_min, 180 * $angles->[$i] / $pi ), "\n";
     }
     $angle_id++;
 }

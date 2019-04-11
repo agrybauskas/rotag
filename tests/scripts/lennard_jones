@@ -16,8 +16,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
-print lennard_jones( $atom_site->{$atom_i_id},
-                     $atom_site->{$atom_j_id},
-                     $PARAMETERS ), "\n";
+print lennard_jones( $parameters,
+                     $atom_site->{$atom_i_id},
+                     $atom_site->{$atom_j_id} ), "\n";

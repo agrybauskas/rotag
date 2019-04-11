@@ -112,10 +112,10 @@ sub create_ref_frame
 
 sub find_euler_angles
 {
-    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord, $PARAMETERS ) = @_;
+    my ( $parameters, $mid_atom_coord, $up_atom_coord, $side_atom_coord ) = @_;
 
-    my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-    my $EPSILON = $PARAMETERS->{'_[local]_constants'}{'epsilon'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
     my $alpha_rad;
     my $beta_rad;
@@ -131,7 +131,7 @@ sub find_euler_angles
         sqrt( $local_ref_frame->[2][0] * $local_ref_frame->[2][0] +
               $local_ref_frame->[2][1] * $local_ref_frame->[2][1] );
 
-    if( $z_axis_in_xy_plane > $EPSILON ) {
+    if( $z_axis_in_xy_plane > $epsilon ) {
         $alpha_rad =
             atan2  $local_ref_frame->[1][0] * $local_ref_frame->[2][1] -
                    $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
@@ -142,9 +142,8 @@ sub find_euler_angles
             - atan2 - $local_ref_frame->[2][0], $local_ref_frame->[2][1];
     } else {
         $alpha_rad = 0.;
-        $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : $PI;
-        $gamma_rad =
-            - atan2 $local_ref_frame->[0][1], $local_ref_frame->[0][0];
+        $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : $pi;
+        $gamma_rad = - atan2 $local_ref_frame->[0][1], $local_ref_frame->[0][0];
     }
 
     return [ $alpha_rad, $beta_rad, $gamma_rad ];
@@ -163,19 +162,19 @@ sub find_euler_angles
 
 sub switch_ref_frame
 {
-    my ( $mid_atom_coord,
+    my ( $parameters,
+         $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
-         $switch_ref_to,
-         $PARAMETERS ) = @_;
+         $switch_ref_to ) = @_;
 
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
     my ( $alpha_rad, $beta_rad, $gamma_rad ) =
-        @{ find_euler_angles( $mid_atom_coord,
+        @{ find_euler_angles( $parameters,
+                              $mid_atom_coord,
                               $up_atom_coord,
-                              $side_atom_coord,
-                              $PARAMETERS ) };
+                              $side_atom_coord ) };
 
     # Depending on the option switch_to_local,
     my $ref_frame_switch;

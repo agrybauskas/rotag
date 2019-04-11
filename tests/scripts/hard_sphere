@@ -16,8 +16,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
-print hard_sphere( $atom_site->{$atom_i_id},
-                   $atom_site->{$atom_j_id},
-                   $PARAMETERS ), "\n";
+print hard_sphere( $parameters,
+                   $atom_site->{$atom_i_id},
+                   $atom_site->{$atom_j_id} ), "\n";

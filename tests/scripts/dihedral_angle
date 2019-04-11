@@ -20,7 +20,7 @@ while( <$fh> ){
 }
 close( $fh );
 
-my $PARAMETERS = Parameters->new();
-my $SIG_FIGS_MIN = $PARAMETERS->{'_[local]_constants'}{'sig_figs_min'};
+my $parameters = Parameters->new();
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
-printf( "$SIG_FIGS_MIN\n", dihedral_angle( \@atom_coords ) );
+printf( "$sig_figs_min\n", dihedral_angle( \@atom_coords ) );

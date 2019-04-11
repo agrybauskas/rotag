@@ -25,14 +25,14 @@ while( <$fh> ){
 }
 close( $fh );
 
-my $PARAMETERS = Parameters->new();
+my $parameters = Parameters->new();
 
 my $angle_bending_matrix =
-    angle_bending( $atom_coords[0],
+    angle_bending( $parameters,
+                   $atom_coords[0],
                    $atom_coords[1],
                    $atom_coords[2],
                    "psi",
-                   "theta",
-                   $PARAMETERS );
+                   "theta" );
 
 print Dumper $angle_bending_matrix;

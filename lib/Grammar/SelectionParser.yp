@@ -181,10 +181,10 @@ exp
             } else {
                 unshift( @ids, '!' );
                 $around_atom_site =
-                    around_distance( $_[0]->{USER}{ATOM_SITE},
+                    around_distance( $_[0]->{USER}{PARAMETERS},
+                                     $_[0]->{USER}{ATOM_SITE},
                                      { 'id' => $_[1] },
-                                     $_[3],
-                                     $_[0]->{USER}{PARAMETERS} );
+                                     $_[3] );
                 return extract( $around_atom_site,
                                 { 'data' => [ 'id' ],
                                   'is_list' => 1 } );
@@ -214,12 +214,12 @@ exp
         }
     | exp 'angles' map_ope
         {
-            my $PARAMETERS = $_[0]->{USER}{PARAMETERS};
-            my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
+            my $parameters = $_[0]->{USER}{PARAMETERS};
+            my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
             my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
-            connect_atoms( $clone_atom_site, $PARAMETERS );
-            hybridization( $clone_atom_site, $PARAMETERS );
+            connect_atoms( $parameters, $clone_atom_site );
+            hybridization( $parameters, $clone_atom_site );
 
             my $dihedral_angles =
                 all_dihedral(
@@ -232,8 +232,8 @@ exp
             for my $residue_unique_key ( %{ $dihedral_angles } ) {
                 my $is_valid_angle = 0;
                 for my $angle ( keys %{ $_[3] } ) {
-                    my $min_angle = $_[3]->{$angle}{'min'} * $PI / 180;
-                    my $max_angle = $_[3]->{$angle}{'max'} * $PI / 180;
+                    my $min_angle = $_[3]->{$angle}{'min'} * $pi / 180;
+                    my $max_angle = $_[3]->{$angle}{'max'} * $pi / 180;
                     my $residue_angle;
                     if( exists $dihedral_angles->{$residue_unique_key}
                                                  {$angle}{'value'} &&
@@ -272,7 +272,7 @@ exp
     | 'expand' exp
         {
             my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
-            connect_atoms( $clone_atom_site, $_[0]->{USER}{PARAMETERS} );
+            connect_atoms( $_[0]->{USER}{PARAMETERS}, $clone_atom_site );
 
             my @expanded_atom_ids = ();
             for my $atom_id ( @{ $_[2] } ) {
@@ -461,13 +461,13 @@ sub debugger
 
 sub parser
 {
-    my ( $self, $atom_site, $input, $PARAMETERS, $options ) = @_;
+    my ( $self, $atom_site, $input, $parameters, $options ) = @_;
 
     my ( $seed, $group_id  ) = ( $options->{'seed'}, $options->{'group_id'} );
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
-    $self->YYData->{PARAMETERS} = $PARAMETERS;
+    $self->YYData->{PARAMETERS} = $parameters;
     $self->YYData->{SEED} = $seed;
     $self->YYData->{GROUP_ID} = $group_id;
 

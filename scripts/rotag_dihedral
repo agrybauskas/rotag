@@ -84,9 +84,9 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $PARAMETERS = Parameters->new();
-my $PI = $PARAMETERS->{'_[local]_constants'}{'pi'};
-my $SIG_FIGS_MAX = $PARAMETERS->{'_[local]_constants'}{'sig_figs_max'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
@@ -116,8 +116,8 @@ for my $pdbx_file ( @ARGV ) {
                             { 'target' => [ keys %{ $dihedral_site } ] } );
         }
 
-        connect_atoms( $dihedral_site, $PARAMETERS );
-        hybridization( $dihedral_site, $PARAMETERS );
+        connect_atoms( $parameters, $dihedral_site );
+        hybridization( $parameters, $dihedral_site );
 
         my $dihedral_angles = all_dihedral( $dihedral_site,
                                             { 'calc_mainchain' =>
@@ -148,14 +148,14 @@ for my $pdbx_file ( @ARGV ) {
                      $atom_ids[3],
                      $angle_name,
                      ( $in_radians ?
-                       sprintf $SIG_FIGS_MAX,
+                       sprintf $sig_figs_max,
                                $dihedral_angles->{$residue_unique_key}
                                                  {$angle_name}
                                                  {'value'} :
-                       sprintf $SIG_FIGS_MAX,
+                       sprintf $sig_figs_max,
                                $dihedral_angles->{$residue_unique_key}
                                                  {$angle_name}
-                                                 {'value'} * 180 / $PI ),
+                                                 {'value'} * 180 / $pi ),
                      ( $in_radians ? 'radians' : 'degrees' );
                 $dihedral_id++;
             }
@@ -201,8 +201,8 @@ for my $pdbx_file ( @ARGV ) {
                  $third_atom_id,
                  $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
                  $fourth_atom_id,
-                 ( $in_radians ? sprintf $SIG_FIGS_MAX, $dihedral_angle
-                               : sprintf $SIG_FIGS_MAX, $dihedral_angle * 180 / $PI ),
+                 ( $in_radians ? sprintf $sig_figs_max, $dihedral_angle
+                               : sprintf $sig_figs_max, $dihedral_angle * 180 / $pi ),
                  ( $in_radians ? 'radians' : 'degrees' );
             $dihedral_id++;
         }
