@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( %ATOMS
-                     %SIDECHAINS
+our @EXPORT_OK = qw( %atoms
+                     %sidechain
                      replace_with_moiety );
 
 use List::Util qw( max );
