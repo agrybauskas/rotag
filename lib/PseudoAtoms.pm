@@ -1226,13 +1226,13 @@ sub add_hydrogens_sp3
                               $right_atom_coord ] );
         if( abs( $dihedral_angle ) < ( 3 * $pi / 4 ) ) {
             if( $dihedral_angle < 0 ) {
-                $dihedral_angle = ( 2 * $pi + $dihedral_angle ) / 2;
+                $dihedral_angle =   ( 2 * $pi + $dihedral_angle ) / 2;
             } else {
                 $dihedral_angle = - ( 2 * $pi - $dihedral_angle ) / 2;
             }
         } else {
             if( $dihedral_angle < 0 ) {
-                $dihedral_angle = $dihedral_angle / 2;
+                $dihedral_angle =   $dihedral_angle / 2;
             } else {
                 $dihedral_angle = - $dihedral_angle / 2;
             }
