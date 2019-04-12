@@ -452,6 +452,19 @@ sub generate_library
                            [ @allowed_angles ],
                            $threads ) };
 
+                # my ( $allowed_angles, $energy_sums ) =
+                #     @{ calc_full_atom_energy(
+                #            { 'parameters' => $parameters,
+                #              'atom_site' => $current_atom_site,
+                #              'residue_unique_key' => $residue_unique_key,
+                #              'interaction_site' => \%interaction_site,
+                #              'non_bonded_potential' =>
+                #                  $potential_functions{$interactions}{'non_bonded'},
+                #              'bonded_potential' =>
+                #                  $potential_functions{$interactions}{'bonded'},
+                #              'options' => $options },
+                #            [ @allowed_angles ] ) };
+
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                     my %angles =
                         map { my $angle_id = $_ + 1;
@@ -604,6 +617,16 @@ sub calc_favourable_angles
                          'bonded_potential' => $bonded_potential },
                        [ \@allowed_angles, \@allowed_energies ],
                        $threads ) };
+
+            # my ( $next_allowed_angles, $next_allowed_energies ) =
+            #     @{ calc_favourable_angle(
+            #            { 'parameters' => $parameters,
+            #              'atom_site' => $atom_site,
+            #              'atom_id' => $atom_id,
+            #              'interaction_site' => $interaction_site,
+            #              'non_bonded_potential' => $non_bonded_potential,
+            #              'bonded_potential' => $bonded_potential },
+            #            [ \@allowed_angles, \@allowed_energies ] ) };
 
             if( scalar @{ $next_allowed_angles } > 0 ) {
                 @allowed_angles = @{ $next_allowed_angles };
