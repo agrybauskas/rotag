@@ -6,8 +6,9 @@ use warnings;
 use Data::Dumper;
 use Getopt::Long;
 
-use ConnectAtoms qw( connect_atoms );
 use BondProperties qw( hybridization );
+use ConnectAtoms qw( connect_atoms );
+use ForceField::Parameters;
 use PDBxParser qw( obtain_atom_site );
 use SidechainModels qw( rotation_only );
 
@@ -35,21 +36,23 @@ GetOptions(
 
 @ARGV = ( "-" ) unless @ARGV;
 
+my $parameters = Parameters->new();
+
 my $atom_site;
 
 foreach my $pdbx_file ( @ARGV ) {
     $atom_site = obtain_atom_site( $pdbx_file );
 
     if( $is_connected ) {
-        connect_atoms( $atom_site );
+        connect_atoms( $parameters, $atom_site );
     }
 
     if( $is_hybridized ) {
-        hybridization( $atom_site );
+        hybridization( $parameters, $atom_site );
     }
 
     if( $apply_rotation_only ) {
-        rotation_only( $atom_site );
+        rotation_only( $parameters, $atom_site );
     }
 
     my $cif_dump_structure = Dumper( $atom_site );
