@@ -16,6 +16,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      pdbx_loop_to_csv
                      pdbx_loop_to_array
                      obtain_atom_site
+                     obtain_pdb_atom_site
                      obtain_atom_sites
                      obtain_pdbx_line
                      obtain_pdbx_line_new
@@ -899,6 +900,33 @@ sub create_pdbx_entry
     $atom_site->{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
 
     return;
+}
+
+# --------------------------------- PDB parser -------------------------------- #
+
+sub obtain_pdb_atom_site
+{
+    my ( $pdbx_file ) = @_;
+
+    my %atom_site = ();
+
+    my $is_reading_lines = 1;
+    my $pdbx_PDB_model_num = 1;
+
+    local @ARGV = ( $pdbx_file );
+    while( <> ) {
+        last if ! $is_reading_lines;
+
+        if( /^MODEL/ ) {
+
+        } elsif( /^ATOM/ ) {
+
+        } elsif( /^HETATM/ ) {
+
+        } elsif( /^TER/ ) {
+            $is_reading_lines = 0;
+        }
+    }
 }
 
 # --------------------------- Data structure to STDOUT ------------------------ #
