@@ -920,12 +920,17 @@ sub obtain_pdb_atom_site
         if( /^MODEL/ ) {
 
         } elsif( /^ATOM/ ) {
-            my ( $group_pdb_str, $id_str, $label_atom_id_str, $label_alt_id_str,
-                 $label_comp_id_str, $label_asym_id_str, $label_seq_id_str, # skipping iCode
-                 $cartn_x_str, $cartn_y_str, $cartn_z_str, $occupancy,
-                 $B_iso_or_equiv_esd_str, $type_symbol_str,
-                 $pdbx_formal_charge_str ) =
+            my @atom_data =
                 m/^(.{6})(.{5}).{1}(.{4})(.{1})(.{3}).{1}(.{1})(.{4}).{4}(.{8})(.{8})(.{8})(.{6})(.{6})(.{2})(.{2})/;
+
+            for my $atom_data_item ( @atom_data ) {
+                $atom_data_item =~ s/ //g;
+            }
+
+            my ( $group_pdb, $id, $label_atom_id, $label_alt_id, $label_comp_id,
+                 $label_asym_id, $label_seq_id, $cartn_x, $cartn_y, $cartn_z,
+                 $occupancy, $B_iso_or_equiv_esd, $type_symbol,
+                 $pdbx_formal_charge ) = @atom_data;
         } elsif( /^HETATM/ ) {
 
         } elsif( /^TER/ ) {
