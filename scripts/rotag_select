@@ -13,6 +13,7 @@ use Logging qw( error
 use PDBxParser qw( filter_new
                    mark_selection
                    obtain_atom_site
+                   obtain_pdb_atom_site
                    obtain_pdbx_loop
                    to_pdbx );
 use Grammar::SelectionParser;
@@ -83,6 +84,8 @@ our $VERSION = $VERSION;
 #*    -s, --select <str>    command (same as --target) describing the atoms that
 #*                          will be marked as selected (S) [default: target].
 #*
+#*    -p, --pdb             input file is in PDB format.
+#*
 #*    -k, --keep-ignored    keeps ignored atoms.
 #*
 #*    -x, --rand-seed <int> sets a seed for random (rand) selection.
@@ -93,6 +96,7 @@ our $VERSION = $VERSION;
 
 my $target_cmds;
 my $select_cmds;
+my $is_pdb = 0;
 my $keep_ignored = 0;
 my $random_seed = 23;
 
@@ -107,6 +111,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'target|t=s@' => \$target_cmds,
     'select|s=s@' => \$select_cmds,
+    'pdb|p' => sub { $is_pdb = 1 },
     'keep-ignored|k' => sub { $keep_ignored = 1 },
     'random-seed|x=s' => \$random_seed,
     'help|h' => sub {
@@ -133,8 +138,12 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     my $pdbx_file = $ARGV[$i];
     # Reads file path, stdin and '-' operator.
     my $atom_site;
-    $atom_site = obtain_atom_site( $pdbx_file,
-                                   { 'ignore_missing_categories' => 1 } );
+    if( $is_pdb ) {
+        $atom_site = obtain_pdb_atom_site( $pdbx_file );
+    } else {
+        $atom_site = obtain_atom_site( $pdbx_file,
+                                       { 'ignore_missing_categories' => 1 } );
+    }
 
     # Assigns correct target and select command line arguments for current file.
     my $target_cmd;
