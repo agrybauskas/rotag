@@ -918,8 +918,8 @@ sub obtain_pdb_atom_site
             my ( $model_id ) = m/^.{6}.{4}(.{4})$/;
             $pdbx_PDB_model_num = $model_id;
         } elsif( /^ATOM|^HETATM/ ) {
-            my @atom_data =
-                m/^(.{6})(.{5}).{1}(.{4})(.{1})(.{3}).{1}(.{1})(.{4}).{4}(.{8})(.{8})(.{8})(.{6})(.{6}).{10}(.{2})(.{2})$/;
+            # TODO: look if more '?!:' should be included in regex.
+            my @atom_data = m/^(.{6})(.{5}).{1}(.{4})(.{1})(.{3}).{1}(.{1})(.{4}).{4}(.{8})(.{8})(.{8})(.{6})(.{6}).{10}(.{2})(?!:.{2})/;
 
             for my $atom_data_item ( @atom_data ) {
                 $atom_data_item =~ s/ //g;
