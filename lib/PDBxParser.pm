@@ -910,16 +910,13 @@ sub obtain_pdb_atom_site
 
     my %atom_site = ();
 
-    my $is_reading_lines = 1;
     my $pdbx_PDB_model_num = 1;
 
     local @ARGV = ( $pdbx_file );
     while( <> ) {
-        last if ! $is_reading_lines;
-
         if( /^MODEL/ ) {
 
-        } elsif( /^ATOM/ ) {
+        } elsif( /^ATOM|^HETATM/ ) {
             my @atom_data =
                 m/^(.{6})(.{5}).{1}(.{4})(.{1})(.{3}).{1}(.{1})(.{4}).{4}(.{8})(.{8})(.{8})(.{6})(.{6}).{10}(.{2})(.{2})/;
 
@@ -947,10 +944,6 @@ sub obtain_pdb_atom_site
             $atom_site{$id}{'B_iso_or_equiv_esd'} = $B_iso_or_equiv_esd;
             $atom_site{$id}{'pdbx_formal_charge'} = $pdbx_formal_charge;
             $atom_site{$id}{'pdbx_PDB_model_num'} = $pdbx_PDB_model_num;
-        } elsif( /^HETATM/ ) {
-
-        } elsif( /^TER/ ) {
-            $is_reading_lines = 0;
         }
     }
 
