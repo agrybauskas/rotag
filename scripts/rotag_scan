@@ -217,7 +217,7 @@ for my $pdbx_file ( @ARGV ) {
 
     $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} =
         [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-          'pdbx_PDB_model_num', 'label_alt_id', 'type', 'value' ];
+          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value' ];
     $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
         [ 'id', 'rotamer_id', 'calculation_method', 'value'];
 
@@ -237,13 +237,17 @@ for my $pdbx_file ( @ARGV ) {
                                'data' => [ 'label_comp_id' ],
                                'is_list' => 1 } ) } );
 
+        my $rotamer_frequency =
+            1 / scalar @{ $rotamer_library{$residue_unique_key} };
+
         for my $rotamer ( @{ $rotamer_library{$residue_unique_key} } ) {
             # Colects rotamer angle data.
             for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
                 my $angle_value = $rotamer->{'angles'}{$angle_name};
                 push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
-                     $residue_chain, $pdbx_model, $residue_alt, $angle_name,
+                     $residue_chain, $pdbx_model, $residue_alt,
+                     sprintf( $sig_figs_max, $rotamer_frequency ), $angle_name,
                      sprintf $sig_figs_max, $angle_value;
                 $angle_id++;
             }
