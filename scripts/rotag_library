@@ -143,7 +143,13 @@ for my $pdbx_file ( @ARGV ) {
             sort { $rotamer_energy->{$a}{'value'} <=>
                    $rotamer_energy->{$b}{'value'} }
                  @rotamer_ids;
-        push @rotamers, @current_rotamers[0..$current_top_rank-1];
+        @current_rotamers = @current_rotamers[0..$current_top_rank-1];
+
+        # for my $current_rotamer ( @current_rotamers ) {
+
+        # }
+
+        push @rotamers, @current_rotamers;
     }
 
     my %pdbx_loops;
