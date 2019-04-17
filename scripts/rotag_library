@@ -120,6 +120,7 @@ for my $pdbx_file ( @ARGV ) {
     my $residue_angle_groups = split_by( { 'atom_site' => $rotamer_angles } );
     my @rotamers;
 
+    my %frequencies = ();
     for my $residue_unique_key ( sort keys %{ $residue_angle_groups } ) {
         my @angle_ids = @{ $residue_angle_groups->{$residue_unique_key} };
         my @rotamer_ids =
@@ -145,24 +146,38 @@ for my $pdbx_file ( @ARGV ) {
                  @rotamer_ids;
         @current_rotamers = @current_rotamers[0..$current_top_rank-1];
 
-        # for my $current_rotamer ( @current_rotamers ) {
+        next if ! @current_rotamers;
 
-        # }
+        # TODO: frequency part will change in the future, because it can change
+        # according to different strategies of calculations.
+        for my $rotamer_id ( @current_rotamers ) {
+            $frequencies{$rotamer_id} =
+                sprintf( $sig_figs_max, 1 / scalar @current_rotamers );
+        }
 
         push @rotamers, @current_rotamers;
     }
 
     my %pdbx_loops;
-    $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} =
-        [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-          'pdbx_PDB_model_num', 'label_alt_id', 'type', 'value' ];
+    my @attributes =
+        ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
+          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value' );
+    $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} = \@attributes;
 
-    # TODO: frequency of the rotamers are excluded for now.
     for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
-        if( any { $rotamer_angles->{$angle_id}{'rotamer_id'} eq $_ } @rotamers ) {
+        my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
+        if( any { $rotamer_id eq $_ } @rotamers ) {
+            my @rotamer_data = ();
+            for my $attribute ( @attributes ) {
+                if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
+                    push @rotamer_data, $rotamer_angles->{$angle_id}{$attribute};
+                }
+            }
+
             push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
-                map { $rotamer_angles->{$angle_id}{$_} }
-                   @{ $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} };
+                 @rotamer_data[0..6],
+                 $frequencies{$rotamer_id},
+                 @rotamer_data[7..8];
         }
     }
 
