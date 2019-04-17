@@ -1,10 +1,12 @@
-def __init_plugin__( app=None ):
-    from pymol.plugins import addmenuitemqt
-    addmenuitemqt( 'rotag', run_rotag_gui )
+def __init_plugin__( app ):
+    app.menuBar.addmenuitem( 'Plugin', 'command', label='rotag',
+                             command=lambda: rotag_tk_dialog( app.root ) )
 
-def run_rotag_gui():
-    from pymol.Qt import QtWidgets
+def rotag_tk_dialog( parent ):
+    try:
+        import tkMessageBox  # Python 2
+    except ImportError:
+        import tkinter.messagebox as tkMessageBox  # Python 3
 
-    dialog = QtWidgets.QDialog()
-
-    dialog.show()
+    tkMessageBox.showinfo( parent=parent, title='rotag',
+                           message='Hello World' )
