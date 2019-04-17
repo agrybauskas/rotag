@@ -64,6 +64,21 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	fi
 
 #
+# Plugins
+#
+
+PLUGIN_DIR=plugins
+PLUGINS=${PLUGIN_DIR}/pymol2-rotag
+PLUGINS_ZIP=${PLUGINS:%=%.zip}
+
+.PHONY: plugins
+
+plugins: ${PLUGINS_ZIP}
+
+%.zip: %
+	zip -r $@ $<
+
+#
 # Coverage.
 #
 
@@ -100,3 +115,4 @@ clean:
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
+	rm -f ${PLUGINS_ZIP}
