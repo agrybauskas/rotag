@@ -41,6 +41,9 @@ our $VERSION = $VERSION;
 #*
 #*    --tags <tag>[,<tag>...]     output only specified PDBx tags.
 #*
+#*    -F, --format <format>       output format. Only one category can be
+#*                                present if csv is select (default: pdbx | csv).
+#*
 #*    -v, --version               print version.
 
 # --------------------------------- Options ----------------------------------- #
@@ -48,6 +51,7 @@ our $VERSION = $VERSION;
 my $top_rank;
 my $top_ratio;
 my $tags = '';
+my $output_format = 'pdbx';
 
 local $SIG{__WARN__} = sub {
     warning( { 'message' => @_ } );
@@ -61,6 +65,7 @@ GetOptions(
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
     'tags=s' => \$tags,
+    'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -185,14 +190,33 @@ for my $pdbx_file ( @ARGV ) {
         # TODO: quick fix, but should be standardized. How to handle atom site?
         # Maybe after the data structure unification this problem will be solved,
         # because now it is quite messy.
-        to_pdbx({ ( ( any { $_ eq '_atom_site' } @{ $tags } ) ?
-                    ( 'atom_site' => $atom_site,
-                      'add_atom_attributes' => [ '[local]_selection_state' ] ) :
-                    () ),
-                  'pdbx_loops' => { map { $_ => $pdbx_loops{$_} } @{ $tags } }});
+        if( $output_format eq 'pdbx' ) {
+            to_pdbx( { ( ( any { $_ eq '_atom_site' } @{ $tags } ) ?
+                         ( 'atom_site' => $atom_site,
+                           'add_atom_attributes' =>
+                               [ '[local]_selection_state' ] ) :
+                         () ),
+                       'pdbx_loops' => { map { $_ => $pdbx_loops{$_} }
+                                            @{ $tags } } } );
+        } elsif( $output_format eq 'csv' ) {
+            if( scalar @{ $tags } == 1 ) {
+                # TODO: decide if 'atom_site' can be chosen as tag option.
+                pdbx_loop_to_csv( $pdbx_loops{$tags->[0]} );
+            } else {
+                warning( { 'message' => "only one tag has to be chosen for " .
+                                        "CSV format.\n" } );
+                exit;
+            }
+        }
     } else {
-        to_pdbx( { 'atom_site' => $atom_site,
-                   'add_atom_attributes' => [ '[local]_selection_state' ],
-                   'pdbx_loops' => \%pdbx_loops } );
+        if( $output_format eq 'pdbx' ) {
+            to_pdbx( { 'atom_site' => $atom_site,
+                       'add_atom_attributes' => [ '[local]_selection_state' ],
+                       'pdbx_loops' => \%pdbx_loops } );
+        } elsif( $output_format eq 'csv' ) {
+                warning( { 'message' => "tag has to be chosen for CSV " .
+                                        "format.\n" } );
+                exit;
+        }
     }
 }
