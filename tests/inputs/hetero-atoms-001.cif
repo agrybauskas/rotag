@@ -1,0 +1,43 @@
+data_testing
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+HETATM 5691 C C10 . 322 A ? 501 -43.333 -109.275 -40.490 1 T 1
+HETATM 5692 C C8 . 322 A ? 501 -42.498 -111.759 -42.585 1 T 1
+HETATM 5693 C C9 . 322 A ? 501 -42.107 -110.143 -40.667 1 T 1
+HETATM 5694 C C4 . 322 A ? 501 -44.783 -115.945 -42.618 1 T 1
+HETATM 5695 C C5 . 322 A ? 501 -45.004 -115.644 -41.230 1 T 1
+HETATM 5696 C C6 . 322 A ? 501 -44.411 -114.383 -40.595 1 T 1
+HETATM 5697 C C3 . 322 A ? 501 -45.367 -117.099 -43.237 1 T 1
+HETATM 5698 C C2 . 322 A ? 501 -44.408 -116.738 -45.478 1 T 1
+HETATM 5699 C C1 . 322 A ? 501 -44.447 -117.421 -46.831 1 T 1
+HETATM 5700 C C7 . 322 A ? 501 -43.115 -113.783 -41.089 1 T 1
+HETATM 5701 BR BR1 . 322 A ? 501 -46.104 -116.208 -38.598 1 T 1
+HETATM 5702 BR BR2 . 322 A ? 501 -47.542 -118.821 -40.081 1 T 1
+HETATM 5703 N N1 . 322 A ? 501 -42.474 -111.470 -41.223 1 T 1
+HETATM 5704 S S1 . 322 A ? 501 -42.988 -113.404 -42.841 1 T 1
+HETATM 5705 O O1 . 322 A ? 501 -45.223 -117.513 -44.584 1 T 1
+HETATM 5706 C C11 . 322 A ? 501 -42.810 -112.514 -40.355 1 T 1
+HETATM 5707 C C12 . 322 A ? 501 -45.814 -116.537 -40.467 1 T 1
+HETATM 5708 C C13 . 322 A ? 501 -46.412 -117.663 -41.079 1 T 1
+HETATM 5709 C C14 . 322 A ? 501 -46.189 -117.935 -42.452 1 T 1
+HETATM 5710 O O2 . 322 A ? 501 -44.448 -109.486 -40.957 1 T 1
+HETATM 5711 S S2 . 322 A ? 501 -42.132 -110.756 -43.870 1 T 1
+HETATM 5712 O O3 . 322 A ? 501 -43.027 -108.201 -39.720 1 T 1
+HETATM 5713 O O4 . 322 A ? 501 -42.849 -112.457 -39.131 1 T 1
+HETATM 5714 O O5 . 322 A ? 501 -46.784 -119.041 -43.041 1 T 1
+#
