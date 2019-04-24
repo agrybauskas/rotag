@@ -182,7 +182,8 @@ for my $pdbx_file ( @ARGV ) {
             push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
                  @rotamer_data[0..6],
                  $frequencies{$rotamer_id},
-                 @rotamer_data[7..8];
+                 $rotamer_data[8],
+                 $rotamer_data[7];
         }
     }
 
