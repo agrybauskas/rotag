@@ -11,6 +11,7 @@ use Try::Tiny;
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters();
+use Hydrogens qw( add_hydrogens );
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter
@@ -22,8 +23,7 @@ use PDBxParser qw( filter
                    split_by
                    to_pdbx
                    unique_residue_key );
-use PseudoAtoms qw( add_hydrogens
-                    generate_pseudo );
+use PseudoAtoms qw( generate_pseudo );
 use SidechainModels qw( rotation_only  );
 use Version qw( $VERSION );
 

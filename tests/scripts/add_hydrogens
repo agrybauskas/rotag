@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use ForceField::Parameters;
+use Hydrogens qw( add_hydrogens );
 use PDBxParser qw( to_pdbx );
-use PseudoAtoms qw( add_hydrogens );
 
 my ( $pdbx_dump_file, $add_only_clear_positions ) = @ARGV;
 
