@@ -372,9 +372,35 @@ sub append_connections
     return;
 }
 
+#
+# Generates hash heys or digests for given atom site with connections inside.
+# Input:
+#     $parameter - parameter object;
+#     $atom_site - atom site data structure.
+# Output:
+#     $connection_digest - string that summarizes the connections of given
+#     atom site.
+#
+
 sub connection_digest
 {
+    my ( $parameters, $atom_site ) = @_;
 
+    my @digest_list = ();
+    for my $atom ( map   { $atom_site->{$_} }
+                   sort  { $atom_site->{$a}{'label_atom_id'} cmp
+                           $atom_site->{$b}{'label_atom_id'} }
+                   keys %{ $atom_site } ) {
+        my $atom_name = $atom->{'label_atom_id'};
+        my $connections = $atom->{'connections'};
+        if( defined $connections ) {
+            push @digest_list,
+                [ $atom_name,
+                  map { $atom_site->{$_}{'label_atom_id'} } @{ $connections } ];
+        } else {
+            push @digest_list, $atom_name;
+        }
+    }
 }
 
 1;
