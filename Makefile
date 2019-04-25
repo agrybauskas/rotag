@@ -13,7 +13,7 @@ GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES}
+all: ${GRAMMAR_MODULES} plugins
 
 #
 # Instalation of dependencies.
