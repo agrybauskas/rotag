@@ -8,6 +8,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
                      around_distance
                      connect_atoms
+                     connection_digest
                      connect_two_atoms
                      distance
                      distance_squared
@@ -369,6 +370,11 @@ sub append_connections
     }
 
     return;
+}
+
+sub connection_digest
+{
+
 }
 
 1;

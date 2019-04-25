@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ConnectAtoms qw( connection_digest );
+use ForceField::Parameters;
+
+#
+# Unit test: ConnectAtoms::connection_digest
+# Example: ./connection_digest structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $parameters = Parameters->new();
+
+connection_digest( $parameters, $atom_site->{'connections'} );
