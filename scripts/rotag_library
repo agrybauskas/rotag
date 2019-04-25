@@ -183,7 +183,7 @@ for my $pdbx_file ( @ARGV ) {
                  @rotamer_data[0..6],
                  $frequencies{$rotamer_id},
                  $rotamer_data[8],
-                 $rotamer_data[7];
+                 $rotamer_data[9];
         }
     }
 
