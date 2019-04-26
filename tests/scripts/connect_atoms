@@ -11,7 +11,7 @@ use ForceField::Parameters;
 # Example: ./connect_atoms structure.dump
 #
 
-my ( $pdbx_dump_file ) = @ARGV;
+my ( $pdbx_dump_file, $only_covalent_radii ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -23,7 +23,8 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-connect_atoms( $parameters, $atom_site );
+connect_atoms( $parameters, $atom_site,
+               { 'only_covalent_radii' => $only_covalent_radii } );
 
 my @atom_coord;
 my @parent_atom;

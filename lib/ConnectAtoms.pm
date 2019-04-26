@@ -225,9 +225,13 @@ sub connect_atoms
 {
     my ( $parameters, $atom_site, $options ) = @_;
 
-    my ( $append_connections ) = ( $options->{'append_connections'} );
+    my ( $append_connections, $only_covalent_radii ) = (
+        $options->{'append_connections'},
+        $options->{'only_covalent_radii'},
+    );
 
     $append_connections //= 0;
+    $only_covalent_radii //= 0;
 
     # Removes all previously described connections if certain flags are not on.
     if( ! $append_connections ) {
@@ -248,7 +252,9 @@ sub connect_atoms
             foreach my $neighbour_id ( @{ $neighbour_cells->{$cell} } ) {
                 if( ( is_connected( $parameters,
                                     $atom_site->{"$atom_id"},
-                                    $atom_site->{"$neighbour_id"} ) ) &&
+                                    $atom_site->{"$neighbour_id"},
+                                    { 'only_covalent_radii' =>
+                                          $only_covalent_radii } ) ) &&
                     ( ( ! exists $atom_site->{$atom_id}{'connections'} ) ||
                       ( ! any { $neighbour_id eq $_ }
                              @{ $atom_site->{$atom_id}{'connections'} } ) ) ){

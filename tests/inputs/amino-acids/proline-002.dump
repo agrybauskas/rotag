@@ -6,7 +6,6 @@
     '[local]_selection_state' => 'T',
     'connections' => [
       '2066',
-      '2071'
     ],
     'group_PDB' => 'ATOM',
     'hybridization' => 'sp3',
@@ -131,7 +130,6 @@
     'Cartn_z' => '54.599',
     '[local]_selection_state' => 'T',
     'connections' => [
-      '2065',
       '2070'
     ],
     'group_PDB' => 'ATOM',
