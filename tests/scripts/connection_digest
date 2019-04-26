@@ -23,4 +23,4 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-connection_digest( $parameters, $atom_site );
+print connection_digest( $parameters, $atom_site ), "\n";

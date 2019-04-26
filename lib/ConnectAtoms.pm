@@ -15,6 +15,7 @@ our @EXPORT_OK = qw( append_connections
 }
 
 use Carp qw( confess );
+use Digest::MD5 qw( md5_hex );
 use List::Util qw( any );
 
 use Grid qw( identify_neighbour_cells
@@ -295,28 +296,49 @@ sub append_connections
 #     $atom_site - atom site data structure.
 # Output:
 #     $connection_digest - string that summarizes the connections of given
-#     atom site.
+#     atom site and returns md5 hex.
 #
 
 sub connection_digest
 {
-    my ( $parameters, $atom_site ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
+
+    my ( $show_string ) = $options->{'show_string'};
+    $show_string //= 0;
 
     my @digest_list = ();
-    for my $atom ( map   { $atom_site->{$_} }
-                   sort  { $atom_site->{$a}{'label_atom_id'} cmp
-                           $atom_site->{$b}{'label_atom_id'} }
-                   keys %{ $atom_site } ) {
-        my $atom_name = $atom->{'label_atom_id'};
-        my $connections = $atom->{'connections'};
-        if( defined $connections ) {
-            push @digest_list,
-                [ $atom_name,
-                  map { $atom_site->{$_}{'label_atom_id'} } @{ $connections } ];
+    for my $atom_id ( sort keys %{ $atom_site } ) {
+        my $connections = $atom_site->{$atom_id}{'connections'};
+
+        # All pseudo atom ids are converted to original ones.
+        my @atom_ids_only_original = ();
+
+        my $original_atom_id = $atom_site->{$atom_id}{'original_atom_id'};
+        if( defined $original_atom_id  ) {
+            push @atom_ids_only_original, $original_atom_id;
         } else {
-            push @digest_list, $atom_name;
+            push @atom_ids_only_original, $atom_id;
         }
+
+        for my $connection_id ( sort @{ $connections } ) {
+            my $connection_original_id =
+                $atom_site->{$connection_id}{'original_atom_id'};
+            if( defined $connection_original_id ) {
+                push @atom_ids_only_original, $connection_original_id;
+            } else {
+                push @atom_ids_only_original, $connection_id;
+            }
+        }
+
+        push @digest_list, sort { $a <=> $b } @atom_ids_only_original;
     }
+
+    my $connection_digest = join ',', @digest_list;
+    if( ! $show_string ) {
+        $connection_digest = md5_hex( join ',', @digest_list );
+    }
+
+    return $connection_digest;
 }
 
 1;
