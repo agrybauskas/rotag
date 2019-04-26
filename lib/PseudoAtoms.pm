@@ -778,6 +778,7 @@ sub calc_full_atom_energy
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
+    # my $residue_digest = connection_digest( $residue_site );
 
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
@@ -795,6 +796,11 @@ sub calc_full_atom_energy
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
                               \%angles );
+
+        # connect_atoms( $parameters, \%rotamer_site,
+        #                { 'only_covalent_radii' => 1 } );
+
+        # next if connection_digest( \%rotamer_site ) ne $residue_digest;
 
         my @rotamer_atom_ids =
             sort keys %{ filter( { 'atom_site' => \%rotamer_site,
