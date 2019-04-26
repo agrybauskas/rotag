@@ -306,18 +306,25 @@ sub connection_digest
     my ( $show_string ) = $options->{'show_string'};
     $show_string //= 0;
 
-    my @digest_list = ();
-    for my $atom_id ( sort keys %{ $atom_site } ) {
-        my $connections = $atom_site->{$atom_id}{'connections'};
+    # Sorts atom ids by the atom ids and original atom ids if they are pseudo
+    # atoms.
+    # TODO: try to find a way to check even if there are multiple pseudo atoms
+    # with the same original atom ids.
+    my @sorted_atom_ids =
+        sort  { original_atom_id( $atom_site, $a ) <=>
+                original_atom_id( $atom_site, $b ) }
+        keys %{ $atom_site };
 
-        # All pseudo atom ids are converted to original ones.
+    my @digest_list = ();
+    for my $atom_id ( @sorted_atom_ids ) {
+        my $connections = $atom_site->{$atom_id}{'connections'};
         my @atom_ids_only_original = ();
 
         my $original_atom_id = $atom_site->{$atom_id}{'original_atom_id'};
         if( defined $original_atom_id  ) {
-            push @atom_ids_only_original, $original_atom_id;
+            push @digest_list, $original_atom_id;
         } else {
-            push @atom_ids_only_original, $atom_id;
+            push @digest_list, $atom_id;
         }
 
         for my $connection_id ( sort @{ $connections } ) {
@@ -339,6 +346,17 @@ sub connection_digest
     }
 
     return $connection_digest;
+}
+
+sub original_atom_id
+{
+    my ( $atom_site, $atom_id ) = @_;
+    my $original_atom_id = $atom_site->{$atom_id}{'original_atom_id'};
+    if( defined $original_atom_id ) {
+        return $original_atom_id;
+    } else {
+        return $atom_id;
+    }
 }
 
 1;
