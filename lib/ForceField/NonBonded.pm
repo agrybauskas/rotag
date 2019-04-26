@@ -19,9 +19,9 @@ use Math::Trig qw( acos
                    asin );
 use Readonly;
 
-use ConnectAtoms qw( distance_squared );
 use ForceField::Parameters;
-use Measure qw( bond_angle );
+use Measure qw( bond_angle
+                distance_squared );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;

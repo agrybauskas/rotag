@@ -7,9 +7,9 @@
     use List::Util qw( any );
 
     use BondProperties qw( hybridization );
-    use ConnectAtoms qw( around_distance
-                         connect_atoms );
-    use Measure qw( all_dihedral );
+    use ConnectAtoms qw( connect_atoms );
+    use Measure qw( all_dihedral
+                    around_distance );
     use PDBxParser qw( extract
                        filter_by_unique_residue_key
                        filter_new );

@@ -6,12 +6,9 @@ use warnings;
 BEGIN{
 use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
-                     around_distance
                      connect_atoms
                      connection_digest
                      connect_two_atoms
-                     distance
-                     distance_squared
                      is_connected
                      is_neighbour
                      is_second_neighbour );
@@ -22,6 +19,7 @@ use List::Util qw( any );
 
 use Grid qw( identify_neighbour_cells
              grid_box );
+use Measure qw( distance_squared );
 use PDBxParser qw( filter
                    unique_residue_key );
 use Version qw( $VERSION );
@@ -179,88 +177,6 @@ sub is_second_neighbour
     }
 
     return $is_sec_neighbour;
-}
-
-# ------------------------ Distance-related functions ------------------------- #
-
-# TODO: distance-related functions should be moved to Measure.pm. However, moving
-# of these functions causes both Measure.pm and ConnectAtoms.pm not work.
-
-#
-# Calculates the squared distance between two atoms.
-# Input:
-#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
-# Output:
-#     $distance_squared - value of calculated squared distance.
-#
-
-sub distance_squared
-{
-    my ( $atom_i, $atom_j ) = @_;
-
-    my $distance_squared =
-        ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2 +
-        ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2 +
-        ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
-
-    return $distance_squared;
-}
-
-#
-# Calculates the distance between two atoms.
-# Input:
-#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
-# Output:
-#     $distance - value of the calculated distance.
-#
-
-sub distance
-{
-    my ( $atom_i, $atom_j ) = @_;
-
-    return sqrt( distance_squared( $atom_i, $atom_j ) );
-}
-
-#
-# Selects the atoms that are at specified distance from selected atoms.
-# Input:
-#     $atom_site - atom site data structure (see PDBxParser.obtain_atom_site);
-#     $atom_specifier - atom selector data structure (see PDBxParser::filter);
-#     $distance - max distance from which atoms should be included.
-# Output:
-#     %around_atom_site - atom site data structure of selected atoms.
-#
-
-sub around_distance
-{
-    my ( $parameters, $atom_site, $atom_specifier, $distance ) = @_;
-
-    my @atom_ids = @{ filter( { 'atom_site' => $atom_site,
-                                'include' => $atom_specifier,
-                                'data' => [ 'id' ],
-                                'is_list' => 1 } ) };
-
-    # For each cell, checks neighbouring cells. Creates box around atoms, makes
-    # grid with edge length of max covalent radii of the parameter file.
-    my ( $grid_box, $atom_cell_pos ) =
-        grid_box( $parameters, $atom_site, $distance * 2, \@atom_ids );
-    my $neighbour_cells = identify_neighbour_cells( $grid_box, $atom_cell_pos );
-
-    # Checks for neighbouring cells for each cell.
-    my %around_atom_site;
-    foreach my $cell ( keys %{ $atom_cell_pos } ) {
-        foreach my $atom_id ( @{ $atom_cell_pos->{$cell} } ) {
-            foreach my $neighbour_id ( @{ $neighbour_cells->{$cell} } ) {
-        	if( ( ! any { $neighbour_id eq $_ } @atom_ids ) &&
-                    ( distance_squared(
-                          $atom_site->{$atom_id},
-                          $atom_site->{$neighbour_id} ) <= $distance ** 2 ) ) {
-        	    $around_atom_site{$neighbour_id} = $atom_site->{$neighbour_id};
-        	} }
-        }
-    }
-
-    return \%around_atom_site;
 }
 
 # ------------------------------ Connect atoms -------------------------------- #

@@ -5,13 +5,13 @@ use warnings;
 
 use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
-use ConnectAtoms qw( around_distance );
+use Measure qw( around_distance );
 
 #
-# Unit test: ConnectAtoms::around_distance.
-# Example: ./filter "label_atom_id CA,N,CB,OG" \
-#                   5 \
-#                   structure.dump
+# Unit test: Measure::around_distance.
+# Example: ./around_distance "label_atom_id CA,N,CB,OG" \
+#                            5 \
+#                            structure.dump
 #
 
 @ARGV = ( "-" ) unless @ARGV;
