@@ -83,3 +83,4 @@
    some tests are not properly performed, such as connect_atoms().
 !! Make sure that only pdbx_PDB_model_num and label_alt_id are used to isolate
    calculations.
+!! Fix wrong pairwise interaction display in rotag_energy.
