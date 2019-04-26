@@ -25,6 +25,7 @@ use threads;
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( append_connections
                      connect_atoms
+                     connection_digest
                      is_neighbour
                      is_second_neighbour );
 use ForceField::Parameters;
