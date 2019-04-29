@@ -368,7 +368,41 @@ sub original_atom_id
 
 sub retains_connections
 {
+    my ( $parameters, $atom_site_1, $atom_site_2, $options ) = @_;
 
+    # Generates hash that translates original atom ids to atom ids from second
+    # atom site. It is needed, because after rotation the atom id can change.
+    my %atom_id_2_to_original = ();
+    for my $atom_id_2 ( keys %{ $atom_site_2 } ) {
+        my $original_atom_id_2 = original_atom_id( $atom_site_2, $atom_id_2 );
+        $atom_id_2_to_original{$atom_id_2} = $original_atom_id_2;
+    }
+
+    my %atom_2_original_connections = ();
+    for my $atom_id_2 ( keys %{ $atom_site_2 } ) {
+        my $atom_2_connections = $atom_site_2->{$atom_id_2}{'connections'};
+        if( defined $atom_2_connections ) {
+            # TODO: check the correctness of the code if atom ids are missing
+            # in atom site.
+            $atom_2_original_connections{$atom_id_2_to_original{$atom_id_2}} =
+                [ map { $atom_id_2_to_original{$_} } @{ $atom_2_connections } ];
+        }
+    }
+
+    for my $atom_id_1 ( keys %{ $atom_site_1 } ) {
+        return 0 if ! exists $atom_id_2_to_original{$atom_id_1};
+
+        my $atom_1_connections = $atom_site_1->{$atom_id_1}{'connections'};
+
+        next if ! defined $atom_1_connections;
+
+        for my $connection_id_1 ( @{ $atom_1_connections } ) {
+            return 0 if ! any { $connection_id_1 eq $_ }
+                             @{ $atom_2_original_connections{$atom_id_1} };
+        }
+    }
+
+    return 1;
 }
 
 1;
