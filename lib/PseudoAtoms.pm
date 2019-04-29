@@ -25,9 +25,9 @@ use threads;
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( append_connections
                      connect_atoms
-                     connection_digest
                      is_neighbour
-                     is_second_neighbour );
+                     is_second_neighbour
+                     retains_connections );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
 use ForceField::NonBonded qw( general
@@ -778,7 +778,6 @@ sub calc_full_atom_energy
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
-    # my $residue_digest = connection_digest( $residue_site );
 
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
@@ -789,18 +788,17 @@ sub calc_full_atom_energy
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
         my %angles =
-            map { my $angle_id = $_ + 1; ( "chi$angle_id" =>
-                                               $checkable_angles[$i][$_] ) }
+            map { my $angle_id = $_ + 1;
+                  ( "chi$angle_id" => $checkable_angles[$i][$_] ) }
                 ( 0..$#{ $checkable_angles[$i] } );
 
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
                               \%angles );
 
-        # connect_atoms( $parameters, \%rotamer_site,
-        #                { 'only_covalent_radii' => 1 } );
+        # connect_atoms($parameters, \%rotamer_site, {'only_covalent_radii' => 1});
 
-        # next if connection_digest( \%rotamer_site ) ne $residue_digest;
+        # next if retains_connections($parameters,$residue_site,\%rotamer_site);
 
         my @rotamer_atom_ids =
             sort keys %{ filter( { 'atom_site' => \%rotamer_site,
