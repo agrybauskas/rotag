@@ -11,7 +11,8 @@ our @EXPORT_OK = qw( append_connections
                      connect_two_atoms
                      is_connected
                      is_neighbour
-                     is_second_neighbour );
+                     is_second_neighbour
+                     retains_connections );
 }
 
 use Carp qw( confess );
@@ -363,6 +364,11 @@ sub original_atom_id
     } else {
         return $atom_id;
     }
+}
+
+sub retains_connections
+{
+
 }
 
 1;
