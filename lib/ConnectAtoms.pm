@@ -7,7 +7,6 @@ BEGIN{
 use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
                      connect_atoms
-                     connection_digest
                      connect_two_atoms
                      is_connected
                      is_neighbour
@@ -296,76 +295,6 @@ sub append_connections
     return;
 }
 
-#
-# Generates hash heys or digests for given atom site with connections inside.
-# Input:
-#     $parameter - parameter object;
-#     $atom_site - atom site data structure.
-# Output:
-#     $connection_digest - string that summarizes the connections of given
-#     atom site and returns md5 hex.
-#
-
-sub connection_digest
-{
-    my ( $parameters, $atom_site, $options ) = @_;
-
-    my ( $show_string ) = $options->{'show_string'};
-    $show_string //= 0;
-
-    # Sorts atom ids by the atom ids and original atom ids if they are pseudo
-    # atoms.
-    # TODO: try to find a way to check even if there are multiple pseudo atoms
-    # with the same original atom ids.
-    my @sorted_atom_ids =
-        sort  { original_atom_id( $atom_site, $a ) <=>
-                original_atom_id( $atom_site, $b ) }
-        keys %{ $atom_site };
-
-    my @digest_list = ();
-    for my $atom_id ( @sorted_atom_ids ) {
-        my $connections = $atom_site->{$atom_id}{'connections'};
-        my @atom_ids_only_original = ();
-
-        my $original_atom_id = $atom_site->{$atom_id}{'original_atom_id'};
-        if( defined $original_atom_id  ) {
-            push @digest_list, $original_atom_id;
-        } else {
-            push @digest_list, $atom_id;
-        }
-
-        for my $connection_id ( sort @{ $connections } ) {
-            my $connection_original_id =
-                $atom_site->{$connection_id}{'original_atom_id'};
-            if( defined $connection_original_id ) {
-                push @atom_ids_only_original, $connection_original_id;
-            } else {
-                push @atom_ids_only_original, $connection_id;
-            }
-        }
-
-        push @digest_list, sort { $a <=> $b } @atom_ids_only_original;
-    }
-
-    my $connection_digest = join ',', @digest_list;
-    if( ! $show_string ) {
-        $connection_digest = md5_hex( join ',', @digest_list );
-    }
-
-    return $connection_digest;
-}
-
-sub original_atom_id
-{
-    my ( $atom_site, $atom_id ) = @_;
-    my $original_atom_id = $atom_site->{$atom_id}{'original_atom_id'};
-    if( defined $original_atom_id ) {
-        return $original_atom_id;
-    } else {
-        return $atom_id;
-    }
-}
-
 sub retains_connections
 {
     my ( $parameters, $atom_site_1, $atom_site_2, $options ) = @_;
@@ -403,6 +332,17 @@ sub retains_connections
     }
 
     return 1;
+}
+
+sub original_atom_id
+{
+    my ( $atom_site, $atom_id ) = @_;
+    my $original_atom_id = $atom_site->{$atom_id}{'original_atom_id'};
+    if( defined $original_atom_id ) {
+        return $original_atom_id;
+    } else {
+        return $atom_id;
+    }
 }
 
 1;
