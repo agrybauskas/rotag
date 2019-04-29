@@ -796,9 +796,9 @@ sub calc_full_atom_energy
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
                               \%angles );
 
-        # connect_atoms($parameters, \%rotamer_site, {'only_covalent_radii' => 1});
+        connect_atoms($parameters, \%rotamer_site, {'only_covalent_radii' => 1});
 
-        # next if retains_connections($parameters,$residue_site,\%rotamer_site);
+        next if !retains_connections( $parameters,$residue_site,\%rotamer_site );
 
         my @rotamer_atom_ids =
             sort keys %{ filter( { 'atom_site' => \%rotamer_site,
