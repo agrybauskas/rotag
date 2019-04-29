@@ -187,7 +187,7 @@ sub coulomb
         $partial_charge->{$atom_j->{'label_comp_id'}}{$atom_j->{'label_atom_id'}};
 
     if( ! defined $partial_charge_i ) {
-        confess $atom_i->{'label_atom_id'} . 'atom with id ' . $atom_i->{'id'} .
+        confess $atom_i->{'label_atom_id'} . ' atom with id ' . $atom_i->{'id'} .
                 ' from ' . $atom_i->{'label_comp_id'} . ' residue does not have '.
                 'defined partial charge in force field file' ;
     }
