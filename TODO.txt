@@ -90,3 +90,5 @@
    (chi2).
 !! Around token must accomodate floats.
 -- Add possibility to select specific rotamers to add.
+-- Check how groups behave when '&&' operators are introduced:
+   '1:atomname OG && altid 1'.
