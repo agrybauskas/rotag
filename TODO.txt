@@ -92,3 +92,5 @@
 -- Add possibility to select specific rotamers to add.
 -- Check how groups behave when '&&' operators are introduced:
    '1:atomname OG && altid 1'.
+-- It would be nice to have rotag_rmsd option to show only one line for each
+   unique residue pair.
