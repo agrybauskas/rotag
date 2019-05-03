@@ -89,3 +89,4 @@
    aspartic acid (chi2), glutamic acid (chi3), phenylalanine (chi2) and tyrosine
    (chi2).
 !! Around token must accomodate floats.
+-- Add possibility to select specific rotamers to add.
