@@ -425,7 +425,7 @@ sub lexer
             return ( 'FLOAT', $1 );
         } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
-        } elsif( s/^(\w+)// ) {
+        } elsif( s/^(\w+|\.)(?!\.)// ) {
             return ( 'STR', $1 );
         } elsif( s/^(,)// ) {
             return ( ',', $1 );
