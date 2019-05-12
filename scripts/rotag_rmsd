@@ -49,7 +49,6 @@ our $VERSION = $VERSION;
 my $comparison = q{};
 my $rmsd_sidechains = 0;
 my $do_decompose = 0;
-my $not_strict = 0;
 my $output_format = 'pdbx';
 
 local $SIG{__WARN__} = sub {
@@ -64,7 +63,6 @@ GetOptions(
     'compare|c=s' => \$comparison,
     'side-chains|S' => sub { $rmsd_sidechains = 1; },
     'decompose|d' => sub { $do_decompose = 1; },
-    'not-strict|N'  => sub { $not_strict = 1; },
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -184,27 +182,25 @@ for my $comparison_group ( @comparison_groups ) {
     my @first_group_coord;
     my @second_group_coord;
 
-    if( ! $not_strict ) {
-        for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
-            if( $first_group_data->[$i][2] ne $second_group_data->[$i][2] ) {
-                confess "atom names do not match: $first_group_data->[$i][2] " .
-                        "and $second_group_data->[$i][2]";
-            }
+    for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
+        if( $first_group_data->[$i][2] ne $second_group_data->[$i][2] ) {
+            confess "atom names do not match: $first_group_data->[$i][2] " .
+                    "and $second_group_data->[$i][2]";
+        }
 
-            if( $do_decompose ) {
-                push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-                    $rmsd_counter,
-                    ( @{ $first_group_data->[$i] } )[0..7],
-                    ( @{ $second_group_data->[$i] })[0..7],
-                    sprintf $sig_figs_max,
-                    rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
-                          [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
-            } else {
-                push @first_group_coord,
-                    [ ( @{ $first_group_data->[$i] } )[8..10] ];
-                push @second_group_coord,
-                    [ ( @{ $second_group_data->[$i] } )[8..10] ];
-            }
+        if( $do_decompose ) {
+            push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                $rmsd_counter,
+                ( @{ $first_group_data->[$i] } )[0..7],
+                ( @{ $second_group_data->[$i] })[0..7],
+                sprintf $sig_figs_max,
+                rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
+                      [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
+        } else {
+            push @first_group_coord,
+                [ ( @{ $first_group_data->[$i] } )[8..10] ];
+            push @second_group_coord,
+                [ ( @{ $second_group_data->[$i] } )[8..10] ];
         }
     }
 
