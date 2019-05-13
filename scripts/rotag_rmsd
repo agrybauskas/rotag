@@ -156,10 +156,14 @@ for my $comparison_group ( @comparison_groups ) {
     # Generates the comparison pairs.
     # TODO: implement sidechain comparison so, the groups would not be calculated
     # if --side-chains flag is not on.
-    my $first_atom_site =
-        split_by( { 'atom_site' => $atom_site_groups{$comparison_group->[0]} } );
-    my $second_atom_site =
-        split_by( { 'atom_site' => $atom_site_groups{$comparison_group->[1]} } );
+    my $first_atom_group =
+        split_by( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
+                    'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                      'pdbx_PDB_model_num' ] } );
+    my $second_atom_group =
+        split_by( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
+                    'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                      'pdbx_PDB_model_num' ] } );
 
     # my $first_group_data =
     #     filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
