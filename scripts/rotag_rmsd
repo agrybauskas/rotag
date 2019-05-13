@@ -165,6 +165,10 @@ for my $comparison_group ( @comparison_groups ) {
                     'attributes' => [ 'label_seq_id', 'label_asym_id',
                                       'pdbx_PDB_model_num' ] } );
 
+    for my $first_group_key ( sort keys %{ $first_atom_group } ) {
+        next if ! exists $second_atom_group->{$first_group_key};
+    }
+
     # my $first_group_data =
     #     filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
     #               'data' =>
