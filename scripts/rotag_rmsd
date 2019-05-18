@@ -175,6 +175,12 @@ for my $comparison_group ( @comparison_groups ) {
 
         my $sidechain_pairs =
             permutation( 2, [], [ $first_group, [ $second_group ] ], [] );
+
+        for my $sidechain_pair ( @{ $sidechain_pairs } ) {
+            my $first_sidechain_altid = $sidechain_pair->[0][0];
+            for my $second_sidechain_altid ( @{ $sidechain_pair->[1] } ) {
+            }
+        }
     }
 
     # my $first_group_data =
