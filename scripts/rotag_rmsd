@@ -4,11 +4,12 @@ use strict;
 use warnings;
 
 use autodie;
+use Carp;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
-use Carp;
+use Combinatorics qw( permutation );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -166,7 +167,14 @@ for my $comparison_group ( @comparison_groups ) {
                                       'pdbx_PDB_model_num' ] } );
 
     for my $first_group_key ( sort keys %{ $first_atom_group } ) {
-        next if ! exists $second_atom_group->{$first_group_key};
+        my $first_group = [ map { [ $_ ] }
+                               @{ $first_atom_group->{$first_group_key} } ];
+        my $second_group = $second_atom_group->{$first_group_key};
+
+        next if ! @{ $second_group };
+
+        my $sidechain_pairs =
+            permutation( 2, [], [ $first_group, [ $second_group ] ], [] );
     }
 
     # my $first_group_data =
