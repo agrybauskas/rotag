@@ -208,6 +208,9 @@ for my $comparison_group ( @comparison_groups ) {
                                     'label_comp_id', 'label_asym_id',
                                     'pdbx_PDB_model_num', 'label_alt_id',
                                     'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+
+                my $best_pairwise_data; # By RMSD.
+                my $best_rmsd_average;
                 for my $second_alt_id ( @second_alt_ids ) {
                     my $second_sidechain_data =
                         filter( { 'atom_site' => $second_group_atom_site,
@@ -263,26 +266,26 @@ for my $comparison_group ( @comparison_groups ) {
                     }
 
                     if( $rmsd_best_case ) {
-                        my $best_pairwise_data; # By RMSD.
-                        my $best_rmsd_average;
-
                         my $current_rmsd_sum = 0;
                         my $current_rmsd_count = 0;
                         foreach ( @pairwise_sidechain_data ) {
                             $current_rmsd_sum += $_->[16];
                             $current_rmsd_count++;
                         }
+                        my $current_rmsd_average =
+                            $current_rmsd_sum / $current_rmsd_count;
 
-                        # } else {
-                        #     $best_pairwise_data = $current_pairwise_data;
-                        #     $best_rmsd_average = $current_rmsd_average;
-                        # }
+                        if( ( ! defined $best_pairwise_data &&
+                              ! defined $best_rmsd_average ) ||
+                            $current_rmsd_average < $best_rmsd_average ) {
+                            $best_pairwise_data = \@pairwise_sidechain_data;
+                            $best_rmsd_average = $current_rmsd_average;
+                        }
 
                         # @pairwise_sidechain_data =
                         #     sort { $a->[16] <=> $b->[16] }
                         #          @pairwise_sidechain_data;
                     }
-
                     last;
                         # elsif( $do_decompose ) {
 
