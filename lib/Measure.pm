@@ -604,6 +604,85 @@ sub rmsd_sidechains
                 [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data  } ];
             $second_sidechain_data =
                 [ sort { $a->[2] cmp $b->[2] } @{ $second_sidechain_data } ];
+
+            for( my $i = 0; $i <= $#{ $first_sidechain_data }; $i++ ) {
+                if( $first_sidechain_data->[$i][2] ne
+                    $second_sidechain_data->[$i][2] ) {
+                    confess 'atom names do not match: ' .
+                            "$first_sidechain_data->[$i][2] and " .
+                            "$second_sidechain_data->[$i][2]";
+                }
+            }
+
+        #                 push @pairwise_sidechain_data,
+        #                     [ ( @{ $first_sidechain_data->[$i] } )[0..7],
+        #                       ( @{ $second_sidechain_data->[$i] } )[0..7],
+        #                       sprintf $sig_figs_max,
+        #                       rmsd( [ [ ( @{$first_sidechain_data->[$i]} )
+        #                                                            [8..10] ] ],
+        #                             [ [ ( @{$second_sidechain_data->[$i]} )
+        #                                                             [8..10] ]])];
+        #             }
+
+        #             if( $rmsd_best_case ) {
+        #                 my $current_rmsd_sum = 0;
+        #                 my $current_rmsd_count = 0;
+        #                 foreach ( @pairwise_sidechain_data ) {
+        #                     $current_rmsd_sum += $_->[16];
+        #                     $current_rmsd_count++;
+        #                 }
+        #                 my $current_rmsd_average =
+        #                     $current_rmsd_sum / $current_rmsd_count;
+
+        #                 if( ( ! defined $best_pairwise_data &&
+        #                       ! defined $best_rmsd_average ) ||
+        #                     $current_rmsd_average < $best_rmsd_average ) {
+        #                     $best_pairwise_data = \@pairwise_sidechain_data;
+        #                     $best_rmsd_average = $current_rmsd_average;
+        #                 }
+
+        #                 # @pairwise_sidechain_data =
+        #                 #     sort { $a->[16] <=> $b->[16] }
+        #                 #          @pairwise_sidechain_data;
+        #             }
+        #             last;
+        #                 # elsif( $do_decompose ) {
+
+        #                 # } else {
+        #                 #     push @first_sidechain_coord,
+        #                 #         [ ( @{ $first_sidechain_data->[$i] } )[8..10] ];
+        #                 #     push @second_sidechain_coord,
+        #                 #         [ ( @{ $second_sidechain_data->[$i] } )[8..10] ];
+        #                 # }
+
+
+        #                 # if( $do_decompose ) {
+        #                 #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+        #                 #         $rmsd_counter,
+        #                 #         ( @{ $first_sidechain_data->[$i] } )[0..7],
+        #                 #         ( @{ $second_sidechain_data->[$i] } )[0..7],
+        #                 #         sprintf $sig_figs_max,
+        #                 #         rmsd([[( @{$first_sidechain_data->[$i]} )[8..10]]],
+        #                 #              [[( @{$second_sidechain_data->[$i]} )[8..10]]]);
+        #                 # } else {
+        #                 #     push @first_sidechain_coord,
+        #                 #         [ ( @{ $first_sidechain_data->[$i] } )[8..10] ];
+        #                 #     push @second_sidechain_coord,
+        #                 #         [ ( @{ $second_sidechain_data->[$i] } )[8..10] ];
+        #                 # }
+
+        #             # if( ! $do_decompose ) {
+        #             #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+        #             #         $rmsd_counter, $comparison_group->[0],
+        #             #         $comparison_group->[1], sprintf $sig_figs_max,
+        #             #         rmsd( \@first_sidechain_coord,
+        #             #               \@second_sidechain_coord );
+        #             # }
+
+        #             $rmsd_counter++;
+        #         }
+        #         last;
+        #     }
         }
     }
 }
