@@ -154,8 +154,6 @@ for my $comparison_group ( @comparison_groups ) {
     }
 
     # Generates the comparison pairs.
-    # TODO: implement sidechain comparison so, the groups would not be calculated
-    # if --side-chains flag is not on.
     my $first_atom_groups =
         split_by( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
                     'attributes' => [ 'label_seq_id', 'label_asym_id',
@@ -166,12 +164,10 @@ for my $comparison_group ( @comparison_groups ) {
                                       'pdbx_PDB_model_num' ] } );
 
     for my $first_group_key ( sort keys %{ $first_atom_groups } ) {
-        my ( $residue_id, $chain, $pdbx_model_num ) = split /,/,$first_group_key;
+        my ( $residue_id, $chain, $pdbx_model_num ) =
+            split /,/,$first_group_key;
         my $first_group_atom_ids = $first_atom_groups->{$first_group_key};
         my $second_group_atom_ids = $second_atom_groups->{$first_group_key};
-
-        next if ! @{ $second_group_atom_ids };
-
         my $first_group_atom_site =
             filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
                       'include' => { 'id' => $first_group_atom_ids } } );
@@ -179,160 +175,173 @@ for my $comparison_group ( @comparison_groups ) {
             filter( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
                       'include' => { 'id' => $second_group_atom_ids } } );
 
-        my @first_alt_ids =
-            uniq @{ filter( { 'atom_site' => $first_group_atom_site,
-                              'data' => [ 'label_alt_id' ],
-                              'is_list' => 1 } ) };
-        my @second_alt_ids =
-            uniq @{ filter( { 'atom_site' => $second_group_atom_site,
-                              'data' => [ 'label_alt_id' ],
-                              'is_list' => 1 } ) };
+        if( $rmsd_sidechains ) {
+            next if ( ! defined $second_group_atom_ids ||
+                      ! @{ $second_group_atom_ids } ) &&
+                    $rmsd_sidechains;
 
-        for my $first_alt_id ( @first_alt_ids ) {
-            my $first_sidechain_data =
-                filter( { 'atom_site' => $first_group_atom_site,
-                          'include' =>
-                              { 'label_seq_id' => [ $residue_id ],
-                                'label_asym_id' => [ $chain ],
-                                'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                                'label_alt_id' => [ $first_alt_id ] },
-                          'data' =>
-                              [ 'id', '[local]_selection_group', 'label_atom_id',
-                                'label_seq_id', 'label_comp_id', 'label_asym_id',
-                                'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
-                                'Cartn_y', 'Cartn_z' ] } );
-            for my $second_alt_id ( @second_alt_ids ) {
-                my $second_sidechain_data =
-                    filter( { 'atom_site' => $second_group_atom_site,
+            my @first_alt_ids =
+                uniq @{ filter( { 'atom_site' => $first_group_atom_site,
+                                  'data' => [ 'label_alt_id' ],
+                                  'is_list' => 1 } ) };
+            my @second_alt_ids =
+                uniq @{ filter( { 'atom_site' => $second_group_atom_site,
+                                  'data' => [ 'label_alt_id' ],
+                                  'is_list' => 1 } ) };
+
+            for my $first_alt_id ( @first_alt_ids ) {
+                my $first_sidechain_data =
+                    filter( { 'atom_site' => $first_group_atom_site,
                               'include' =>
                                   { 'label_seq_id' => [ $residue_id ],
                                     'label_asym_id' => [ $chain ],
                                     'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                                    'label_alt_id' => [ $second_alt_id ] },
+                                    'label_alt_id' => [ $first_alt_id ] },
                               'data' =>
                                   [ 'id', '[local]_selection_group',
                                     'label_atom_id', 'label_seq_id',
                                     'label_comp_id', 'label_asym_id',
                                     'pdbx_PDB_model_num', 'label_alt_id',
                                     'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+                for my $second_alt_id ( @second_alt_ids ) {
+                    my $second_sidechain_data =
+                        filter( { 'atom_site' => $second_group_atom_site,
+                                  'include' =>
+                                      { 'label_seq_id' => [ $residue_id ],
+                                        'label_asym_id' => [ $chain ],
+                                        'pdbx_PDB_model_num' =>[$pdbx_model_num],
+                                        'label_alt_id' => [ $second_alt_id ] },
+                                  'data' =>
+                                      [ 'id', '[local]_selection_group',
+                                        'label_atom_id', 'label_seq_id',
+                                        'label_comp_id', 'label_asym_id',
+                                        'pdbx_PDB_model_num', 'label_alt_id',
+                                        'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
-                # Checks the length of the atom sets.
-                # TODO: error message is duplicated in Measure::rmsd().
-                if( scalar @{ $first_sidechain_data } ne
-                    scalar @{ $second_sidechain_data } ) {
-                    confess 'comparing different sizes of sets of the atoms is '.
-                            'not allowed';
-                }
-
-
-                # Sorts by residue name first by checking if their residue names are
-                # correct.
-                $first_sidechain_data  = [ sort { $a->[2] cmp $b->[2] }
-                                               @{ $first_sidechain_data  }];
-                $second_sidechain_data = [ sort { $a->[2] cmp $b->[2] }
-                                               @{ $second_sidechain_data }];
-
-                my @first_sidechain_coord;
-                my @second_sidechain_coord;
-
-                for( my $i = 0; $i <= $#{ $first_sidechain_data }; $i++ ) {
-                    if( $first_sidechain_data->[$i][2] ne $second_sidechain_data->[$i][2] ) {
-                        confess 'atom names do not match: ' .
-                                "$first_sidechain_data->[$i][2] and " .
-                                "$second_sidechain_data->[$i][2]";
+                    # Checks the length of the atom sets.
+                    # TODO: error message is duplicated in Measure::rmsd().
+                    if( scalar @{ $first_sidechain_data } ne
+                        scalar @{ $second_sidechain_data } ) {
+                        confess 'comparing different sizes of sets of the atoms ' .
+                                'is not allowed';
                     }
 
-                    if( $do_decompose ) {
+                    # Sorts by residue name first by checking if their residue names
+                    # are correct.
+                    $first_sidechain_data  =
+                        [ sort { $a->[2] cmp $b->[2] }
+                              @{ $first_sidechain_data  } ];
+                    $second_sidechain_data =
+                        [ sort { $a->[2] cmp $b->[2] }
+                              @{ $second_sidechain_data } ];
+
+                    my @first_sidechain_coord;
+                    my @second_sidechain_coord;
+
+                    for( my $i = 0; $i <= $#{ $first_sidechain_data }; $i++ ) {
+                        if( $first_sidechain_data->[$i][2] ne
+                            $second_sidechain_data->[$i][2] ) {
+                            confess 'atom names do not match: ' .
+                                    "$first_sidechain_data->[$i][2] and " .
+                                    "$second_sidechain_data->[$i][2]";
+                        }
+
+                        if( $do_decompose ) {
+                            push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                                $rmsd_counter,
+                                ( @{ $first_sidechain_data->[$i] } )[0..7],
+                                ( @{ $second_sidechain_data->[$i] } )[0..7],
+                                sprintf $sig_figs_max,
+                                rmsd([[( @{$first_sidechain_data->[$i]} )[8..10]]],
+                                     [[( @{$second_sidechain_data->[$i]} )[8..10]]]);
+                        } else {
+                            push @first_sidechain_coord,
+                                [ ( @{ $first_sidechain_data->[$i] } )[8..10] ];
+                            push @second_sidechain_coord,
+                                [ ( @{ $second_sidechain_data->[$i] } )[8..10] ];
+                        }
+                    }
+
+                    if( ! $do_decompose ) {
                         push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-                            $rmsd_counter,
-                            ( @{ $first_sidechain_data->[$i] } )[0..7],
-                            ( @{ $second_sidechain_data->[$i] })[0..7],
-                            sprintf $sig_figs_max,
-                            rmsd( [ [ ( @{ $first_sidechain_data->[$i] }  )[8..10] ] ],
-                                  [ [ ( @{ $second_sidechain_data->[$i] } )[8..10] ] ] );
-                    } else {
-                        push @first_sidechain_coord,
-                            [ ( @{ $first_sidechain_data->[$i] } )[8..10] ];
-                        push @second_sidechain_coord,
-                            [ ( @{ $second_sidechain_data->[$i] } )[8..10] ];
+                            $rmsd_counter, $comparison_group->[0],
+                            $comparison_group->[1], sprintf $sig_figs_max,
+                            rmsd( \@first_sidechain_coord,
+                                  \@second_sidechain_coord );
                     }
-                }
 
-                if( ! $do_decompose ) {
-                    push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-                        $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
-                        sprintf $sig_figs_max,
-                        rmsd( \@first_sidechain_coord, \@second_sidechain_coord );
+                    $rmsd_counter++;
                 }
-
-                $rmsd_counter++;
             }
+        } else {
+            my $first_group_data =
+                filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
+                          'data' =>
+                              [ 'id', '[local]_selection_group', 'label_atom_id',
+                                'label_seq_id', 'label_comp_id', 'label_asym_id',
+                                'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
+                                'Cartn_y', 'Cartn_z' ] } );
+            my $second_group_data =
+                filter( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
+                          'data' =>
+                              [ 'id', '[local]_selection_group', 'label_atom_id',
+                                'label_seq_id', 'label_comp_id', 'label_asym_id',
+                                'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
+                                'Cartn_y', 'Cartn_z' ] } );
+
+            # Checks the length of the atom sets.
+            # TODO: error message is duplicated in Measure::rmsd().
+            if( scalar @{ $first_group_data } ne scalar @{ $second_group_data }){
+                confess 'comparing different sizes of sets of the atoms is not ' .
+                        'allowed';
+            }
+
+            # Sorts by residue name first by checking if their residue names are
+            # correct.
+            $first_group_data  =
+                [ sort { $a->[2] cmp $b->[2] } @{ $first_group_data  }];
+            $second_group_data =
+                [ sort { $a->[2] cmp $b->[2] } @{ $second_group_data }];
+
+            my @first_group_coord;
+            my @second_group_coord;
+
+            for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
+                if( $first_group_data->[$i][2] ne $second_group_data->[$i][2] ) {
+                    confess "atom names do not match: $first_group_data->[$i][2] " .
+                            "and $second_group_data->[$i][2]";
+                }
+
+                if( $do_decompose ) {
+                    push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                        $rmsd_counter,
+                        ( @{ $first_group_data->[$i] } )[0..7],
+                        ( @{ $second_group_data->[$i] })[0..7],
+                        sprintf $sig_figs_max,
+                        rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
+                              [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
+                } else {
+                    push @first_group_coord,
+                        [ ( @{ $first_group_data->[$i] } )[8..10] ];
+                    push @second_group_coord,
+                        [ ( @{ $second_group_data->[$i] } )[8..10] ];
+                }
+            }
+
+            if( ! $do_decompose ) {
+                push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                    $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
+                    sprintf $sig_figs_max,
+                    rmsd( \@first_group_coord, \@second_group_coord );
+            }
+
+            $rmsd_counter++;
         }
     }
-
-    # my $first_group_data =
-    #     filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
-    #               'data' =>
-    #                   [ 'id', '[local]_selection_group', 'label_atom_id',
-    #                     'label_seq_id', 'label_comp_id', 'label_asym_id',
-    #                     'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
-    #                     'Cartn_y', 'Cartn_z' ] } );
-    # my $second_group_data =
-    #     filter( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
-    #               'data' =>
-    #                   [ 'id', '[local]_selection_group', 'label_atom_id',
-    #                     'label_seq_id', 'label_comp_id', 'label_asym_id',
-    #                     'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
-    #                     'Cartn_y', 'Cartn_z' ] } );
-
-    # # Checks the length of the atom sets.
-    # # TODO: error message is duplicated in Measure::rmsd().
-    # if( scalar @{ $first_group_data } ne scalar @{ $second_group_data }){
-    #     confess 'comparing different sizes of sets of the atoms is not ' .
-    #             'allowed';
-    # }
-
-    # # Sorts by residue name first by checking if their residue names are
-    # # correct.
-    # $first_group_data  = [ sort { $a->[2] cmp $b->[2] } @{ $first_group_data  }];
-    # $second_group_data = [ sort { $a->[2] cmp $b->[2] } @{ $second_group_data }];
-
-    # my @first_group_coord;
-    # my @second_group_coord;
-
-    # for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
-    #     if( $first_group_data->[$i][2] ne $second_group_data->[$i][2] ) {
-    #         confess "atom names do not match: $first_group_data->[$i][2] " .
-    #                 "and $second_group_data->[$i][2]";
-    #     }
-
-    #     if( $do_decompose ) {
-    #         push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-    #             $rmsd_counter,
-    #             ( @{ $first_group_data->[$i] } )[0..7],
-    #             ( @{ $second_group_data->[$i] })[0..7],
-    #             sprintf $sig_figs_max,
-    #             rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
-    #                   [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
-    #     } else {
-    #         push @first_group_coord,
-    #             [ ( @{ $first_group_data->[$i] } )[8..10] ];
-    #         push @second_group_coord,
-    #             [ ( @{ $second_group_data->[$i] } )[8..10] ];
-    #     }
-    # }
-
-    # if( ! $do_decompose ) {
-    #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-    #         $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
-    #         sprintf $sig_figs_max,
-    #         rmsd( \@first_group_coord, \@second_group_coord );
-    # }
-
-    # $rmsd_counter++;
 }
 
 # Prints out cif or csv
+# TODO: decide what to do when group data is empty.
 if( $output_format eq 'pdbx' ) {
     to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
 } elsif( $output_format eq 'csv' ) {
