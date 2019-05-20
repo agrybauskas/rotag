@@ -13,6 +13,7 @@ BEGIN {
                          distance
                          distance_squared
                          rmsd
+                         rmsd_sidechains
                          energy );
 }
 
@@ -538,14 +539,73 @@ sub rmsd
 }
 
 #
-# Calculates best-case RMSD.
+# Calculates side-chain RMSD combinations.
 # Input:
 # Output:
 #
 
-sub best_case_rmsd
+sub rmsd_sidechains
 {
+    my ( $first_atom_site, $second_atom_site, $unique_residue_key, $options )=@_;
+    my ( $decompose, $best_choice ) = ( $options->{'decompose'},
+                                        $options->{'best_choice'} );
 
+    my ( $residue_id, $chain, $pdbx_model_num ) = split /,/,$unique_residue_key;
+
+    my @first_alt_ids =
+        uniq @{ filter( { 'atom_site' => $first_atom_site,
+                          'data' => [ 'label_alt_id' ],
+                          'is_list' => 1 } ) };
+    my @second_alt_ids =
+        uniq @{ filter( { 'atom_site' => $second_atom_site,
+                          'data' => [ 'label_alt_id' ],
+                          'is_list' => 1 } ) };
+
+    for my $first_alt_id ( @first_alt_ids ) {
+        my $first_sidechain_data =
+            filter( { 'atom_site' => $first_atom_site,
+                      'include' =>
+                          { 'label_seq_id' => [ $residue_id ],
+                            'label_asym_id' => [ $chain ],
+                            'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                            'label_alt_id' => [ $first_alt_id ] },
+                      'data' =>
+                          [ 'id', '[local]_selection_group',
+                            'label_atom_id', 'label_seq_id',
+                            'label_comp_id', 'label_asym_id',
+                            'pdbx_PDB_model_num', 'label_alt_id',
+                            'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        for my $second_alt_id ( @second_alt_ids ) {
+            my $second_sidechain_data =
+                filter( { 'atom_site' => $second_atom_site,
+                          'include' =>
+                              { 'label_seq_id' => [ $residue_id ],
+                                'label_asym_id' => [ $chain ],
+                                'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                                'label_alt_id' => [ $second_alt_id ] },
+                          'data' =>
+                              [ 'id', '[local]_selection_group',
+                                'label_atom_id', 'label_seq_id',
+                                'label_comp_id', 'label_asym_id',
+                                'pdbx_PDB_model_num', 'label_alt_id',
+                                'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+
+            # Checks the length of the atom sets.
+            # TODO: error message is duplicated in Measure::rmsd().
+            if( scalar @{ $first_sidechain_data } ne
+                scalar @{ $second_sidechain_data } ) {
+                confess 'comparing different sizes of sets of the atoms ' .
+                    'is not allowed';
+            }
+
+            # Sorts by residue name first by checking if their residue
+            # names are correct.
+            $first_sidechain_data  =
+                [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data  } ];
+            $second_sidechain_data =
+                [ sort { $a->[2] cmp $b->[2] } @{ $second_sidechain_data } ];
+        }
+    }
 }
 
 #
