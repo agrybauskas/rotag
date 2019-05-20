@@ -38,6 +38,8 @@ our $VERSION = $VERSION;
 #*    -S, --side-chains     compares only side-chain atoms agains other
 #*                          side-chain atoms.
 #*
+#*    -b, --best-case       chooses best RMSD value of side-chain comparison.
+#*
 #*    -d, --decompose       decompose RMSD value of the group to its
 #*                          constituents.
 #*
@@ -49,6 +51,7 @@ our $VERSION = $VERSION;
 
 my $comparison = q{};
 my $rmsd_sidechains = 0;
+my $rmsd_best_case = 0;
 my $do_decompose = 0;
 my $output_format = 'pdbx';
 
@@ -63,6 +66,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'compare|c=s' => \$comparison,
     'side-chains|S' => sub { $rmsd_sidechains = 1; },
+    'best-case|b' => sub { $rmsd_best_case = 1; },
     'decompose|d' => sub { $do_decompose = 1; },
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -226,8 +230,8 @@ for my $comparison_group ( @comparison_groups ) {
                                 'is not allowed';
                     }
 
-                    # Sorts by residue name first by checking if their residue names
-                    # are correct.
+                    # Sorts by residue name first by checking if their residue
+                    # names are correct.
                     $first_sidechain_data  =
                         [ sort { $a->[2] cmp $b->[2] }
                               @{ $first_sidechain_data  } ];
