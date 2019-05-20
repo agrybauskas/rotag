@@ -538,6 +538,17 @@ sub rmsd
 }
 
 #
+# Calculates best-case RMSD.
+# Input:
+# Output:
+#
+
+sub best_case_rmsd
+{
+
+}
+
+#
 # Calculates energy values of the given structure.
 # Input:
 # Output:
