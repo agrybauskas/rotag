@@ -7,6 +7,7 @@ use autodie;
 use Carp;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
+use List::Util qw( sum );
 use Try::Tiny;
 
 use ForceField::Parameters;
@@ -262,13 +263,27 @@ for my $comparison_group ( @comparison_groups ) {
                     }
 
                     if( $rmsd_best_case ) {
-                        @pairwise_sidechain_data =
-                            sort { $a->[16] <=> $b->[16] }
-                                 @pairwise_sidechain_data;
+                        my $best_pairwise_data; # By RMSD.
+                        my $best_rmsd_average;
+
+                        my $current_rmsd_sum = 0;
+                        my $current_rmsd_count = 0;
+                        foreach ( @pairwise_sidechain_data ) {
+                            $current_rmsd_sum += $_->[16];
+                            $current_rmsd_count++;
+                        }
+
+                        # } else {
+                        #     $best_pairwise_data = $current_pairwise_data;
+                        #     $best_rmsd_average = $current_rmsd_average;
+                        # }
+
+                        # @pairwise_sidechain_data =
+                        #     sort { $a->[16] <=> $b->[16] }
+                        #          @pairwise_sidechain_data;
                     }
 
-                    # use Data::Dumper; print STDERR Dumper \@pairwise_sidechain_data;
-
+                    last;
                         # elsif( $do_decompose ) {
 
                         # } else {
@@ -304,6 +319,7 @@ for my $comparison_group ( @comparison_groups ) {
 
                     $rmsd_counter++;
                 }
+                last;
             }
         } else {
             my $first_group_data =
