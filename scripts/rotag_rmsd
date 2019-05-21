@@ -183,11 +183,33 @@ for my $comparison_group ( @comparison_groups ) {
             next if ( ! defined $second_group_atom_ids ||
                       ! @{ $second_group_atom_ids } );
 
-            my $rmsd_sidechains =
+            my $rmsd_sidechain_comparisons =
                 rmsd_sidechains( $parameters,
                                  $first_group_atom_site,
                                  $second_group_atom_site,
-                                 $first_group_key );
+                                 $first_group_key,
+                                 { 'best_case' => $rmsd_best_case } );
+
+            for my $rmsd_sidechain_comparison ( @{$rmsd_sidechain_comparisons} ){
+                if( $do_decompose ) {
+                    push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                         $rmsd_counter,
+                         @{ $rmsd_sidechain_comparison };
+                    $rmsd_counter++;
+                }
+            }
+
+            if( ! $do_decompose ) {
+                my $rmsd_sum =
+                    sum( map { $_->[-1] } @{ $rmsd_sidechain_comparisons } );
+                my $rmsd_count = scalar @{ $rmsd_sidechain_comparisons };
+                my $rmsd_average = $rmsd_sum / $rmsd_count;
+                push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                    $rmsd_counter,
+                    $rmsd_sidechain_comparisons->[0][1],
+                    $rmsd_sidechain_comparisons->[0][9],
+                    sprintf $sig_figs_max, $rmsd_average;
+            }
         } else {
             my $first_group_data =
                 filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},

@@ -549,11 +549,9 @@ sub rmsd_sidechains
 {
     my ( $parameters, $first_atom_site, $second_atom_site, $unique_residue_key,
          $options ) = @_;
-    my ( $decompose, $best_choice ) = ( $options->{'decompose'},
-                                        $options->{'best_choice'} );
+    my ( $best_case ) = ( $options->{'best_case'} );
 
-    $decompose //= 0;
-    $best_choice //= 0;
+    $best_case //= 0;
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
@@ -578,7 +576,7 @@ sub rmsd_sidechains
                             'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                             'label_alt_id' => [ $first_alt_id ] },
                       'data' =>
-                          [ 'id', '[local]_selection_group',
+                          [ '[local]_selection_group', 'id',
                             'label_atom_id', 'label_seq_id',
                             'label_comp_id', 'label_asym_id',
                             'pdbx_PDB_model_num', 'label_alt_id',
@@ -596,9 +594,8 @@ sub rmsd_sidechains
                                 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                                 'label_alt_id' => [ $second_alt_id ] },
                           'data' =>
-                              [ 'id', '[local]_selection_group',
-                                'label_atom_id', 'label_seq_id',
-                                'label_comp_id', 'label_asym_id',
+                              [ 'id', '[local]_selection_group', 'label_atom_id',
+                                'label_seq_id', 'label_comp_id', 'label_asym_id',
                                 'pdbx_PDB_model_num', 'label_alt_id',
                                 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
             $second_sidechain_data =
@@ -629,42 +626,19 @@ sub rmsd_sidechains
                            [ [ ( @{$second_sidechain_data->[$i]} )[8..10] ] ]) ];
             }
 
-            if( $best_choice ) {
+            if( $best_case ) {
                 my $current_rmsd_average =
                     sum( map { $_->[-1] } @current_sidechain_data ) /
                     scalar @current_sidechain_data;
                 if( ( ! @sidechain_comparison_data && ! defined $rmsd_average )||
                     $current_rmsd_average < $rmsd_average ) {
-                    @sidechain_comparison_data = \@current_sidechain_data;
+                    @sidechain_comparison_data = @current_sidechain_data;
                     $rmsd_average = $current_rmsd_average;
                 }
             } else {
                 push @sidechain_comparison_data, @current_sidechain_data;
             }
         }
-
-        # if( $do_decompose ) {
-        #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-        #         $rmsd_counter,
-        #         ( @{ $first_sidechain_data->[$i] } )[0..7],
-        #         ( @{ $second_sidechain_data->[$i] } )[0..7],
-        #         sprintf $sig_figs_max,
-        #         rmsd([[( @{$first_sidechain_data->[$i]} )[8..10]]],
-        #              [[( @{$second_sidechain_data->[$i]} )[8..10]]]);
-        # } else {
-        #     push @first_sidechain_coord,
-        #         [ ( @{ $first_sidechain_data->[$i] } )[8..10] ];
-        #     push @second_sidechain_coord,
-        #         [ ( @{ $second_sidechain_data->[$i] } )[8..10] ];
-        # }
-
-        # if( ! $do_decompose ) {
-        #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-        #         $rmsd_counter, $comparison_group->[0],
-        #         $comparison_group->[1], sprintf $sig_figs_max,
-        #         rmsd( \@first_sidechain_coord,
-        #               \@second_sidechain_coord );
-        # }
     }
 
     return \@sidechain_comparison_data;
