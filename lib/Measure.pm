@@ -575,6 +575,8 @@ sub rmsd_sidechains
                             'label_comp_id', 'label_asym_id',
                             'pdbx_PDB_model_num', 'label_alt_id',
                             'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        $first_sidechain_data  =
+            [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data  } ];
         for my $second_alt_id ( @second_alt_ids ) {
             my $second_sidechain_data =
                 filter( { 'atom_site' => $second_atom_site,
@@ -589,6 +591,8 @@ sub rmsd_sidechains
                                 'label_comp_id', 'label_asym_id',
                                 'pdbx_PDB_model_num', 'label_alt_id',
                                 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+            $second_sidechain_data =
+                [ sort { $a->[2] cmp $b->[2] } @{ $second_sidechain_data } ];
 
             # Checks the length of the atom sets.
             # TODO: error message is duplicated in Measure::rmsd().
@@ -597,13 +601,6 @@ sub rmsd_sidechains
                 confess 'comparing different sizes of sets of the atoms ' .
                     'is not allowed';
             }
-
-            # Sorts by residue name first by checking if their residue
-            # names are correct.
-            $first_sidechain_data  =
-                [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data  } ];
-            $second_sidechain_data =
-                [ sort { $a->[2] cmp $b->[2] } @{ $second_sidechain_data } ];
 
             for( my $i = 0; $i <= $#{ $first_sidechain_data }; $i++ ) {
                 if( $first_sidechain_data->[$i][2] ne
