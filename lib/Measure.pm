@@ -22,6 +22,7 @@ use Clone qw( clone );
 use Math::Trig;
 use List::MoreUtils qw( any
                         uniq );
+use List::Util qw( sum );
 
 use AtomProperties qw( sort_atom_names );
 use ConnectAtoms qw( is_neighbour
@@ -546,9 +547,15 @@ sub rmsd
 
 sub rmsd_sidechains
 {
-    my ( $first_atom_site, $second_atom_site, $unique_residue_key, $options )=@_;
+    my ( $parameters, $first_atom_site, $second_atom_site, $unique_residue_key,
+         $options ) = @_;
     my ( $decompose, $best_choice ) = ( $options->{'decompose'},
                                         $options->{'best_choice'} );
+
+    $decompose //= 0;
+    $best_choice //= 0;
+
+    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
     my ( $residue_id, $chain, $pdbx_model_num ) = split /,/,$unique_residue_key;
 
@@ -561,6 +568,7 @@ sub rmsd_sidechains
                           'data' => [ 'label_alt_id' ],
                           'is_list' => 1 } ) };
 
+    my @sidechain_comparison_data = ();
     for my $first_alt_id ( @first_alt_ids ) {
         my $first_sidechain_data =
             filter( { 'atom_site' => $first_atom_site,
@@ -577,6 +585,8 @@ sub rmsd_sidechains
                             'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
         $first_sidechain_data  =
             [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data  } ];
+
+        my $rmsd_average;
         for my $second_alt_id ( @second_alt_ids ) {
             my $second_sidechain_data =
                 filter( { 'atom_site' => $second_atom_site,
@@ -602,6 +612,7 @@ sub rmsd_sidechains
                     'is not allowed';
             }
 
+            my @current_sidechain_data = ();
             for( my $i = 0; $i <= $#{ $first_sidechain_data }; $i++ ) {
                 if( $first_sidechain_data->[$i][2] ne
                     $second_sidechain_data->[$i][2] ) {
@@ -609,79 +620,54 @@ sub rmsd_sidechains
                             "$first_sidechain_data->[$i][2] and " .
                             "$second_sidechain_data->[$i][2]";
                 }
+
+                push @current_sidechain_data,
+                    [ (@{$first_sidechain_data->[$i]})[0..7],
+                      (@{$second_sidechain_data->[$i]})[0..7],
+                      sprintf $sig_figs_max,
+                      rmsd([ [ ( @{$first_sidechain_data->[$i]} )[8..10] ] ],
+                           [ [ ( @{$second_sidechain_data->[$i]} )[8..10] ] ]) ];
             }
 
-        #                 push @pairwise_sidechain_data,
-        #                     [ ( @{ $first_sidechain_data->[$i] } )[0..7],
-        #                       ( @{ $second_sidechain_data->[$i] } )[0..7],
-        #                       sprintf $sig_figs_max,
-        #                       rmsd( [ [ ( @{$first_sidechain_data->[$i]} )
-        #                                                            [8..10] ] ],
-        #                             [ [ ( @{$second_sidechain_data->[$i]} )
-        #                                                             [8..10] ]])];
-        #             }
-
-        #             if( $rmsd_best_case ) {
-        #                 my $current_rmsd_sum = 0;
-        #                 my $current_rmsd_count = 0;
-        #                 foreach ( @pairwise_sidechain_data ) {
-        #                     $current_rmsd_sum += $_->[16];
-        #                     $current_rmsd_count++;
-        #                 }
-        #                 my $current_rmsd_average =
-        #                     $current_rmsd_sum / $current_rmsd_count;
-
-        #                 if( ( ! defined $best_pairwise_data &&
-        #                       ! defined $best_rmsd_average ) ||
-        #                     $current_rmsd_average < $best_rmsd_average ) {
-        #                     $best_pairwise_data = \@pairwise_sidechain_data;
-        #                     $best_rmsd_average = $current_rmsd_average;
-        #                 }
-
-        #                 # @pairwise_sidechain_data =
-        #                 #     sort { $a->[16] <=> $b->[16] }
-        #                 #          @pairwise_sidechain_data;
-        #             }
-        #             last;
-        #                 # elsif( $do_decompose ) {
-
-        #                 # } else {
-        #                 #     push @first_sidechain_coord,
-        #                 #         [ ( @{ $first_sidechain_data->[$i] } )[8..10] ];
-        #                 #     push @second_sidechain_coord,
-        #                 #         [ ( @{ $second_sidechain_data->[$i] } )[8..10] ];
-        #                 # }
-
-
-        #                 # if( $do_decompose ) {
-        #                 #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-        #                 #         $rmsd_counter,
-        #                 #         ( @{ $first_sidechain_data->[$i] } )[0..7],
-        #                 #         ( @{ $second_sidechain_data->[$i] } )[0..7],
-        #                 #         sprintf $sig_figs_max,
-        #                 #         rmsd([[( @{$first_sidechain_data->[$i]} )[8..10]]],
-        #                 #              [[( @{$second_sidechain_data->[$i]} )[8..10]]]);
-        #                 # } else {
-        #                 #     push @first_sidechain_coord,
-        #                 #         [ ( @{ $first_sidechain_data->[$i] } )[8..10] ];
-        #                 #     push @second_sidechain_coord,
-        #                 #         [ ( @{ $second_sidechain_data->[$i] } )[8..10] ];
-        #                 # }
-
-        #             # if( ! $do_decompose ) {
-        #             #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
-        #             #         $rmsd_counter, $comparison_group->[0],
-        #             #         $comparison_group->[1], sprintf $sig_figs_max,
-        #             #         rmsd( \@first_sidechain_coord,
-        #             #               \@second_sidechain_coord );
-        #             # }
-
-        #             $rmsd_counter++;
-        #         }
-        #         last;
-        #     }
+            if( $best_choice ) {
+                my $current_rmsd_average =
+                    sum( map { $_->[-1] } @current_sidechain_data ) /
+                    scalar @current_sidechain_data;
+                if( ( ! @sidechain_comparison_data && ! defined $rmsd_average )||
+                    $current_rmsd_average < $rmsd_average ) {
+                    @sidechain_comparison_data = \@current_sidechain_data;
+                    $rmsd_average = $current_rmsd_average;
+                }
+            } else {
+                push @sidechain_comparison_data, @current_sidechain_data;
+            }
         }
+
+        # if( $do_decompose ) {
+        #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+        #         $rmsd_counter,
+        #         ( @{ $first_sidechain_data->[$i] } )[0..7],
+        #         ( @{ $second_sidechain_data->[$i] } )[0..7],
+        #         sprintf $sig_figs_max,
+        #         rmsd([[( @{$first_sidechain_data->[$i]} )[8..10]]],
+        #              [[( @{$second_sidechain_data->[$i]} )[8..10]]]);
+        # } else {
+        #     push @first_sidechain_coord,
+        #         [ ( @{ $first_sidechain_data->[$i] } )[8..10] ];
+        #     push @second_sidechain_coord,
+        #         [ ( @{ $second_sidechain_data->[$i] } )[8..10] ];
+        # }
+
+        # if( ! $do_decompose ) {
+        #     push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+        #         $rmsd_counter, $comparison_group->[0],
+        #         $comparison_group->[1], sprintf $sig_figs_max,
+        #         rmsd( \@first_sidechain_coord,
+        #               \@second_sidechain_coord );
+        # }
     }
+
+    return \@sidechain_comparison_data;
 }
 
 #

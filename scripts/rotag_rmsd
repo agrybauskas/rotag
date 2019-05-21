@@ -184,7 +184,8 @@ for my $comparison_group ( @comparison_groups ) {
                       ! @{ $second_group_atom_ids } );
 
             my $rmsd_sidechains =
-                rmsd_sidechains( $first_group_atom_site,
+                rmsd_sidechains( $parameters,
+                                 $first_group_atom_site,
                                  $second_group_atom_site,
                                  $first_group_key );
         } else {
