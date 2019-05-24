@@ -164,7 +164,8 @@ for my $pdbx_file ( @ARGV ) {
         for my $atom_id ( @{ $target_atom_ids } ) {
             my $residue_unique_key =
                 unique_residue_key( $selected_atom_site->{$atom_id} );
-            for my $rotamer_id ( sort keys %{ $rotamer_angles{$residue_unique_key} } ){
+            for my $rotamer_id ( sort { $a <=> $b }
+                                 keys %{ $rotamer_angles{$residue_unique_key} }){
                 my $rotamer_angles =
                     $rotamer_angles{$residue_unique_key}{$rotamer_id};
                 %rotamer_atom_site =
