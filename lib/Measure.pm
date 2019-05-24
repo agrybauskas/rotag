@@ -542,7 +542,11 @@ sub rmsd
 #
 # Calculates side-chain RMSD combinations.
 # Input:
+#     ${first,second}_atom_site - atom site data structure;
+#     $unique_residue_key - unique residue key;
+#     $options{'best_case'} - chooses those rmsd that are lowest.
 # Output:
+#     @sidechain_comparison_data - list of RMSD comparison data.
 #
 
 sub rmsd_sidechains
