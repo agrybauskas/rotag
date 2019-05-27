@@ -964,6 +964,7 @@ sub obtain_pdb_atom_site
 #     output;
 #     $args->{add_atom_attributes} - add list of attributes to existing data
 #     structure;
+#     $args->{tags} - tags that should be displayed;
 #     $args->{fh} - file handler.
 # Output:
 #     PDBx STDOUT.
@@ -978,6 +979,7 @@ sub to_pdbx
     my $atom_site = $args->{'atom_site'};
     my $atom_attributes = $args->{'atom_attributes'};
     my $add_atom_attributes = $args->{'add_atom_attributes'};
+    my $tags = $args->{'tags'};
     my $fh = $args->{'fh'};
 
     $data_name //= 'testing';
