@@ -132,17 +132,19 @@ for my $pdbx_file ( @ARGV ) {
 exit if ! %atom_site_groups;
 
 # Calculates RMSD.
-my %pdbx_loops;
+my %pdbx_data;
 if( $do_decompose ) {
-    $pdbx_loops{'_[local]_rmsd'}{'attributes'} =
+    $pdbx_data{'_[local]_rmsd'}{'attributes'} =
         [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id', 'label_seq_1_id',
           'label_comp_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
           'label_alt_1_id', 'group_2_id', 'atom_2_id', 'label_atom_2_id',
           'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
           'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
+    $pdbx_data{'_[local]_rmsd'}{'is_loop'} = 1;
 } else {
-    $pdbx_loops{'_[local]_rmsd'}{'attributes'} =
+    $pdbx_data{'_[local]_rmsd'}{'attributes'} =
         [ 'id', 'group_1_id', 'group_2_id', 'value' ];
+    $pdbx_data{'_[local]_rmsd'}{'is_loop'} = 1;
 }
 
 my $rmsd_counter = 1;
@@ -192,7 +194,7 @@ for my $comparison_group ( @comparison_groups ) {
 
             for my $rmsd_sidechain_comparison ( @{$rmsd_sidechain_comparisons} ){
                 if( $do_decompose ) {
-                    push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                    push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                          $rmsd_counter,
                          @{ $rmsd_sidechain_comparison };
                     $rmsd_counter++;
@@ -204,7 +206,7 @@ for my $comparison_group ( @comparison_groups ) {
                     sum( map { $_->[-1] } @{ $rmsd_sidechain_comparisons } );
                 my $rmsd_count = scalar @{ $rmsd_sidechain_comparisons };
                 my $rmsd_average = $rmsd_sum / $rmsd_count;
-                push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                     $rmsd_counter,
                     $rmsd_sidechain_comparisons->[0][1],
                     $rmsd_sidechain_comparisons->[0][9],
@@ -250,7 +252,7 @@ for my $comparison_group ( @comparison_groups ) {
                 }
 
                 if( $do_decompose ) {
-                    push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                    push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                         $rmsd_counter,
                         ( @{ $first_group_data->[$i] } )[0..7],
                         ( @{ $second_group_data->[$i] })[0..7],
@@ -266,7 +268,7 @@ for my $comparison_group ( @comparison_groups ) {
             }
 
             if( ! $do_decompose ) {
-                push @{ $pdbx_loops{'_[local]_rmsd'}{'data'} },
+                push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                     $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
                     sprintf $sig_figs_max,
                     rmsd( \@first_group_coord, \@second_group_coord );
@@ -280,7 +282,7 @@ for my $comparison_group ( @comparison_groups ) {
 # Prints out cif or csv
 # TODO: decide what to do when group data is empty.
 if( $output_format eq 'pdbx' ) {
-    to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+    to_pdbx( { 'pdbx_data' => \%pdbx_data } );
 } elsif( $output_format eq 'csv' ) {
-    pdbx_loop_to_csv( $pdbx_loops{'_[local]_rmsd'} );
+    pdbx_loop_to_csv( $pdbx_data{'_[local]_rmsd'} );
 }

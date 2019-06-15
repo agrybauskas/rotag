@@ -1,9 +1,14 @@
 data_testing
 #
-_audit_conform.dict_name mmcif_pdbx.dic
+loop_
+_audit_author.address
+_audit_author.name
+_audit_author.pdbx_ordinal
+? 'Zhang, J.' 1
+? 'Qiu, C.' 2
+? 'Hall, T.' 3
 #
-_citation.id primary
-_citation.title 'Nop9 is a PUF-like protein that prevents premature cleavage to correctly process pre-18S rRNA.'
+_audit_conform.dict_name mmcif_pdbx.dic
 #
 _entity_poly.pdbx_seq_one_letter_code 
 ;ETQPQMFFGVLDREELEYFKQAESTLQLDAFEAPEEKFQFVTSIIEEAKGKELKLVTSQITSKLMERVILECDETQLKDI
@@ -15,6 +20,4 @@ LIQKYYPEKSDAKNILESCLLLSASTLGNTRDDWPTAEERRRSVFLEQLIDYDDKFLNITIDSMLALPEERLIQMCYHGV
 FSHVVEHVLQTTRVDIIKRKMLLNILSKESVNLACNVYGSHIMDKLWEFTAKLTLYKERIARALVLETEKVKNSIYGRQV
 WKNWKLELYVRKMWDWKKLIKEQEFEIFPNSKPLQPKPEK
 ;
-#
-_entry.id 5SVD
 #

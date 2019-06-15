@@ -59,7 +59,7 @@ for my $residue_unique_key ( sort keys %{ $rotamer_library } ) {
                               \%rotamer_site,
                               $residue_unique_key,
                               $rotamer->{'angles'} );
-        to_pdbx( { 'atom_site' => \%rotamer_site,
+        to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => \%rotamer_site },
                    'data_name' =>
                        "$rotamer_id:" .
                        join( ';',

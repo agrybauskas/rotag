@@ -221,16 +221,17 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
 
     # Extracts rotamer angle data that will used to generate atom coordinates if
     # available.
-    my $pdbx_loops;
+    my $pdbx_data;
     if( $pdbx_file ) {
-        $pdbx_loops = obtain_pdbx_loop( $pdbx_file,
+        $pdbx_data = obtain_pdbx_loop( $pdbx_file,
                                         [ '_[local]_rotamer_angle' ],
                                         { 'ignore_missing_categories' =>  1 } );
     }
 
     # Prints out the PDBx.
-    to_pdbx( { 'atom_site' => $atom_site,
-               $pdbx_loops ? ( 'pdbx_loops', $pdbx_loops ) : (),
-               'add_atom_attributes' => [ '[local]_selection_state',
-                                          '[local]_selection_group' ] } );
+    to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => $atom_site },
+               $pdbx_data ? ( 'pdbx_data', $pdbx_data ) : (),
+               'add_attributes' =>
+                   { '_atom_site' => [ '[local]_selection_state',
+                                       '[local]_selection_group' ] } } );
 }

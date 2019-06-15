@@ -199,9 +199,9 @@ for my $pdbx_file ( @ARGV ) {
                           'decompose' => $do_decompose } ) };
     }
 
-    my %pdbx_loops;
+    my %pdbx_data;
     if( $do_pairwise ) {
-        $pdbx_loops{'_[local]_pairwise_energy'}{'attributes'} =
+        $pdbx_data{'_[local]_pairwise_energy'}{'attributes'} =
             [ 'id', 'atom_1_id', 'type_symbol_1', 'label_atom_1_id',
               'label_seq_1_id', 'label_comp_1_id', 'label_asym_1_id',
               'label_entity_1_id', 'label_alt_1_id',
@@ -209,6 +209,7 @@ for my $pdbx_file ( @ARGV ) {
               'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
               'label_entity_2_id', 'label_alt_2_id', 'calculation_method',
               'value' ];
+        $pdbx_data{'_[local]_pairwise_energy'}{'is_loop'} = 1;
 
         my $calculation_id = 1;
         for my $atom_site_identifier ( sort keys %energies ) {
@@ -221,7 +222,7 @@ for my $pdbx_file ( @ARGV ) {
                 my $atom_2 = $atom_site->{$atom_2_id};
                 my $calculation_method = $energy->energy_type;
                 my $value = $energy->value;
-                push @{ $pdbx_loops{'_[local]_pairwise_energy'}{'data'} },
+                push @{ $pdbx_data{'_[local]_pairwise_energy'}{'data'} },
                     $calculation_id, $atom_1_id, $atom_1->{'type_symbol'},
                     $atom_1->{'label_atom_id'}, $atom_1->{'label_seq_id'},
                     $atom_1->{'label_comp_id'}, $label_asym_id,
@@ -235,9 +236,10 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
     } elsif( $do_sidechain ) {
-        $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
+        $pdbx_data{'_[local]_rotamer_energy'}{'attributes'} =
             [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
+        $pdbx_data{'_[local]_rotamer_energy'}{'is_loop'} = 1;
 
         my $calculation_id = 1;
         for my $atom_site_identifier ( sort keys %energies ) {
@@ -261,7 +263,7 @@ for my $pdbx_file ( @ARGV ) {
             for my $label_seq_id ( sort keys %rotamer_energies ) {
                 for my $calculation_method (
                     sort keys %{ $rotamer_energies {$label_seq_id} } ) {
-                    push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
+                    push @{ $pdbx_data{'_[local]_rotamer_energy'}{'data'} },
                         $calculation_id, $label_seq_id, $label_asym_id,
                         $pdbx_PDB_model_num, $label_alt_id, $calculation_method,
                         sprintf( $sig_figs_max,
@@ -272,10 +274,11 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
     } else {
-        $pdbx_loops{'_[local]_energy'}{'attributes'} =
+        $pdbx_data{'_[local]_energy'}{'attributes'} =
             [ 'id', 'atom_id', 'type_symbol', 'label_atom_id', 'label_seq_id',
               'label_comp_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
+        $pdbx_data{'_[local]_energy'}{'is_loop'} = 1;
 
         my $calculation_id = 1;
         for my $atom_site_identifier ( sort keys %energies ) {
@@ -301,7 +304,7 @@ for my $pdbx_file ( @ARGV ) {
                 my $label_comp_id = $atom_site->{$atom_id}{'label_comp_id'};
                 for my $calculation_method (
                     sort keys %{ $atom_energies{$atom_id} } ) {
-                    push @{ $pdbx_loops{'_[local]_energy'}{'data'} },
+                    push @{ $pdbx_data{'_[local]_energy'}{'data'} },
                         $calculation_id, $atom_id, $type_symbol, $label_atom_id,
                         $label_seq_id, $label_comp_id, $label_asym_id,
                         $pdbx_PDB_model_num, $label_alt_id, $calculation_method,
@@ -334,15 +337,15 @@ for my $pdbx_file ( @ARGV ) {
             to_pdbx( { 'atom_site' => $atom_site,
                        'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
         } else {
-            to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+            to_pdbx( { 'pdbx_data' => \%pdbx_data } );
         }
     } elsif( $output_format eq 'csv' ) {
         if( $do_pairwise ) {
-            pdbx_loop_to_csv( $pdbx_loops{'_[local]_pairwise_energy'} );
+            pdbx_loop_to_csv( $pdbx_data{'_[local]_pairwise_energy'} );
         } elsif( $do_sidechain ) {
-            pdbx_loop_to_csv( $pdbx_loops{'_[local]_rotamer_energy'} );
+            pdbx_loop_to_csv( $pdbx_data{'_[local]_rotamer_energy'} );
         } else {
-            pdbx_loop_to_csv( $pdbx_loops{'_[local]_energy'} );
+            pdbx_loop_to_csv( $pdbx_data{'_[local]_energy'} );
         }
     }
 }

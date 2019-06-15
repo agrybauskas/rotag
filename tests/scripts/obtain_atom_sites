@@ -16,6 +16,6 @@ use PDBxParser qw( obtain_atom_sites
 foreach my $pdbx_file ( @ARGV ) {
     my $atom_sites = obtain_atom_sites( $pdbx_file );
     foreach( @{ $atom_sites } ) {
-        to_pdbx( { "atom_site" => $_ } );
+        to_pdbx( { "pdbx_data_indexed" => { "_atom_site" => $_ } } );
     }
 }

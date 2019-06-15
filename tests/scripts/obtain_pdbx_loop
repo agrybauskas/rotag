@@ -17,4 +17,4 @@ my @category_specifier = split( ",", $category_specifier );
 my $pdbx_loop_data =
     obtain_pdbx_loop( $pdbx_file, \@category_specifier );
 
-to_pdbx( { "pdbx_loops" => $pdbx_loop_data } );
+to_pdbx( { "pdbx_data" => $pdbx_loop_data } );

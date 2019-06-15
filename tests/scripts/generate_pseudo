@@ -59,4 +59,4 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
                              'atom_specifier' => { "id" => [ $atom_id ] },
                              'angle_values' => \%num_angle_values } ) } );
 
-to_pdbx( { "atom_site" => $atom_site } );
+to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => $atom_site } } );

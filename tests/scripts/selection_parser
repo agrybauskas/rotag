@@ -34,4 +34,4 @@ my $selected_atom_ids = $selection_parser->parser( $atom_site,
 my $selected_atom_site =
     filter_new( $atom_site, { 'include' => { 'id' => $selected_atom_ids } } );
 
-to_pdbx( { 'atom_site' => $selected_atom_site } );
+to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => $selected_atom_site } } );

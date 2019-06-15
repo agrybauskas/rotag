@@ -33,8 +33,8 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-to_pdbx( { 'atom_site' =>
-               around_distance( $parameters,
-                                $atom_site,
-                                \%include_specifier,
-                                $around_distance ) } );
+to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' =>
+                                        around_distance( $parameters,
+                                                         $atom_site,
+                                                         \%include_specifier,
+                                                         $around_distance ) } } );

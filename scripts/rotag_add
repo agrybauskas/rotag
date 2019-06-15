@@ -132,7 +132,8 @@ for my $pdbx_file ( @ARGV ) {
         next if ! %{ $pdbx_loops };
 
         # Generates data structure from $pdbx_loops.
-        my $pdbx_loop_unique = pdbx_loop_unique( $pdbx_loops, [ 'id' ] );
+        my $pdbx_loop_unique =
+            pdbx_loop_unique( $pdbx_loops, '_[local]_rotamer_angle', [ 'id' ] );
         my $pdbx_loop_split_groups =
             # TODO: 'atom_site' should be changed to 'loop_site' in the future.
             split_by( { 'atom_site' => $pdbx_loop_unique } );
@@ -189,8 +190,10 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         # Prints out cif.
-        to_pdbx( { 'atom_site' => { %{ $atom_site }, %rotamer_atom_site },
-                   'add_atom_attributes' => [ '[local]_selection_state' ] } );
+        to_pdbx( { 'pdbx_data_indexed' =>
+                       {'_atom_site' => { %{ $atom_site }, %rotamer_atom_site }},
+                   'add_attributes' =>
+                       {'_atom_site' => [ '[local]_selection_state' ] } } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $target_atom_site } ) {
@@ -247,8 +250,10 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         # Prints out cif.
-        to_pdbx( { 'atom_site' => { %{ $atom_site }, %hydrogen_site },
-                   'add_atom_attributes' => [ '[local]_selection_state' ] } );
+        to_pdbx( { 'pdbx_data_indexed' =>
+                       { '_atom_site' => { %{ $atom_site }, %hydrogen_site } },
+                   'add_attributes' =>
+                       { '_atom_site' => [ '[local]_selection_state' ] } } );
     } else {
         error(
             { 'program' => $0,

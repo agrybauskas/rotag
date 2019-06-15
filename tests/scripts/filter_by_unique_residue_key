@@ -22,6 +22,7 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-to_pdbx( { 'atom_site' =>
-               filter_by_unique_residue_key( $atom_site,
-                                             $unique_residue_key ) } );
+to_pdbx( { 'pdbx_data_indexed' =>
+               { '_atom_site' =>
+                     filter_by_unique_residue_key( $atom_site,
+                                                   $unique_residue_key ) } } );

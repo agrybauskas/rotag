@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      determine_residue_keys
                      extract
+                     related_category_data
                      filter
                      filter_new
                      filter_by_unique_residue_key
@@ -18,12 +19,11 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_atom_site
                      obtain_pdb_atom_site
                      obtain_atom_sites
+                     obtain_pdbx_data
                      obtain_pdbx_line
-                     obtain_pdbx_line_new
                      obtain_pdbx_loop
                      split_by
                      to_pdbx
-                     to_pdbx_new
                      unique_residue_key );
 
 use Carp;
@@ -51,38 +51,16 @@ sub obtain_pdbx_line
     my %pdbx_line_data;
     my %current_line_data;
     my $item_regexp = join q{|}, @{ $items };
-
-    local $/ = '';
-    local @ARGV = ( $pdbx_file );
-    while( <> ) {
-        my %single_line_matches = ( m/($item_regexp)\s+(?!;)(\S.+\S)/gx );
-        my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/gx );
-        %current_line_data = ( %single_line_matches, %multi_line_matches );
-    }
-
-    for my $key ( sort { $a cmp $b } keys %current_line_data ) {
-        my ( $category, $attribute ) = split '\\.', $key;
-        $pdbx_line_data{$category}{$attribute} = $current_line_data{$key};
-    }
-
-    return \%pdbx_line_data;
-}
-
-sub obtain_pdbx_line_new
-{
-    my ( $pdbx_file, $items ) = @_;
-
-    my %pdbx_line_data;
-    my %current_line_data;
-    my $item_regexp = join q{|}, @{ $items };
     $item_regexp =~ s/\[/\\[/g;
     $item_regexp =~ s/\]/\\]/g;
 
     local $/ = '';
     local @ARGV = ( $pdbx_file );
     while( <> ) {
-        my %single_line_matches = ( m/($item_regexp)\s+(?!;)('.+'|\S+)/g );
-        my %multi_line_matches = ( m/($item_regexp)\s+(\n;[^;]+;)/gx );
+        my %single_line_matches =
+            ( m/($item_regexp|$item_regexp\.\S+)\s+(?!;)('.+'|\S+)/g );
+        my %multi_line_matches =
+            ( m/($item_regexp|$item_regexp\.\S+)\s+(\n;[^;]+;)/gx );
         %current_line_data = ( %single_line_matches, %multi_line_matches );
     }
 
@@ -146,7 +124,8 @@ sub obtain_pdbx_loop
             if( $#categories eq $#{ $categories } && ! $read_until_end ) { last; }
             $is_reading_lines = 0;
         } elsif( $is_reading_lines == 1 ) {
-            push @{ $data[-1][-1] }, split q{ }, $_;
+            my @current_data = ( $_ =~ m/('.+'|\S+)/g );
+            push @{ $data[-1][-1] }, @current_data;
         }
         $line_counter++;
     }
@@ -194,6 +173,33 @@ sub obtain_pdbx_loop
 }
 
 #
+# Obtains pdbx data for a specified categories or items.
+# Input:
+#     $pdbx_file - PDBx file path;
+#     $data_identifier - list of categories or items;
+# Output:
+#     %pdbx_data - data structure for pdbx data.
+#
+
+sub obtain_pdbx_data
+{
+    my ( $pdbx_file, $data_identifier ) = @_;
+    my %pdbx_data = ();
+
+    if( defined $data_identifier && @{ $data_identifier } ) {
+        %pdbx_data = (
+            %pdbx_data,
+            %{ obtain_pdbx_line( $pdbx_file, $data_identifier ) } );
+        %pdbx_data = (
+            %pdbx_data,
+            %{ obtain_pdbx_loop( $pdbx_file, $data_identifier,
+                                 { 'ignore_missing_categories' => 1 } ) } );
+    }
+
+    return \%pdbx_data;
+}
+
+#
 # Takes PDBx loop and converts it to hash of hashes where the first key is
 # unique.
 # Input:
@@ -207,16 +213,17 @@ sub obtain_pdbx_loop
 
 sub pdbx_loop_unique
 {
-    my ( $pdbx_loop_data, $unique_keys, $options ) = @_;
-    my ( $read_until_end ) = ( $options->{'read_until_end'} );
+    my ( $pdbx_loop_data, $category, $unique_keys, $options ) = @_;
+    my ( $is_unique, $read_until_end ) = (
+        $options->{'is_unique'}, $options->{'read_until_end'}
+    );
 
     $read_until_end //= 0;
-
     $unique_keys //= [ 'id' ];
+    $is_unique //= 1; # TODO: should be refactored, because the name of the
+                      # function and this flags contradicts each other.
 
-    my $category = [keys %{ $pdbx_loop_data }]->[0];
-
-    if( ! %{ $pdbx_loop_data } ) {
+    if( ! defined $pdbx_loop_data || ! %{ $pdbx_loop_data } ) {
         return {};
     }
 
@@ -251,9 +258,17 @@ sub pdbx_loop_unique
 
         my $unique_key = join q{,}, map { $data_row[$_] } @attribute_pos;
         if( ! exists $pdbx_loop_unique{$unique_key} ) {
-            $pdbx_loop_unique{$unique_key} = { %data_row };
+            if( ! $is_unique ) {
+                $pdbx_loop_unique{$unique_key} = [ { %data_row } ];
+            } else {
+                $pdbx_loop_unique{$unique_key} = { %data_row };
+            }
         } else {
-            confess 'unique key supposed to be unique.';
+            if( ! $is_unique ) {
+                push @{ $pdbx_loop_unique{$unique_key} }, { %data_row };
+            } else {
+                confess 'unique key supposed to be unique.';
+            }
         }
     }
 
@@ -313,7 +328,7 @@ sub obtain_atom_site
     my ( $pdbx_file, $options ) = @_;
 
     return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ],
-                                               $options ) );
+                                               $options ), '_atom_site', [ 'id' ] );
 }
 
 #
@@ -334,7 +349,7 @@ sub obtain_atom_sites
 
     my @atom_sites;
     for my $pdbx_loop ( @{ $pdbx_loops } ) {
-        push @atom_sites, pdbx_loop_unique( $pdbx_loop );
+        push @atom_sites, pdbx_loop_unique( $pdbx_loop, '_atom_site', [ 'id' ] );
     }
 
     return \@atom_sites;
@@ -902,6 +917,33 @@ sub create_pdbx_entry
     return;
 }
 
+sub related_category_data
+{
+    my ( $pdbx_data, $relationships ) = @_;
+
+    my %related_category_data = ();
+
+    for my $category ( sort keys %{ $relationships } ) {
+        for my $related_category ( sort keys %{ $relationships->{$category} } ) {
+            my @references = @{ $relationships->{$category}{$related_category} };
+            for my $reference ( @references ) {
+                my $keys = $reference->{'keys'};
+                my $reference_keys = $reference->{'reference_keys'};
+                $related_category_data{$category}{'keys'} = $keys;
+                $related_category_data{$category}{'reference_category'} =
+                    $related_category;
+                $related_category_data{$category}{'reference_keys'} =
+                    $reference_keys;
+                $related_category_data{$category}{'data'} =
+                    pdbx_loop_unique( $pdbx_data, $related_category,
+                                      $reference_keys, { 'is_unique' => 0 } );
+            }
+        }
+    }
+
+    return \%related_category_data;
+}
+
 # --------------------------------- PDB parser -------------------------------- #
 
 sub obtain_pdb_atom_site
@@ -957,14 +999,12 @@ sub obtain_pdb_atom_site
 # Converts atom site data structure to PDBx.
 # Input:
 #     $args->{data_name} - data name of the PDBx;
-#     $args->{pdbx_lines} - data structure of PDBx lines;
-#     $args->{pdbx_loops} - data structure of pdbx_loops;
-#     $args->{atom_site} - atom site data structure;
-#     $args->{atom_attributes} - attribute list that should be included in the
+#     $args->{pdbx_data} - data structure of PDBx;
+#     $args->{pdbx_data_indexed} - data structure from pdbx_data_indexed();
+#     $args->{attributes} - attribute list that should be included in the
 #     output;
-#     $args->{add_atom_attributes} - add list of attributes to existing data
+#     $args->{add_attributes} - add list of attributes to existing data
 #     structure;
-#     $args->{tags} - tags that should be displayed;
 #     $args->{fh} - file handler.
 # Output:
 #     PDBx STDOUT.
@@ -973,111 +1013,13 @@ sub obtain_pdb_atom_site
 sub to_pdbx
 {
     my ( $args ) = @_;
-    my $data_name = $args->{'data_name'};
-    my $pdbx_lines = $args->{'pdbx_lines'};
-    my $pdbx_loops = $args->{'pdbx_loops'};
-    my $atom_site = $args->{'atom_site'};
-    my $atom_attributes = $args->{'atom_attributes'};
-    my $add_atom_attributes = $args->{'add_atom_attributes'};
-    my $tags = $args->{'tags'};
-    my $fh = $args->{'fh'};
-
-    $data_name //= 'testing';
-    $fh //= \*STDOUT;
-
-    print {$fh} "data_$data_name\n#\n";
-
-    # Prints out pdbx lines if they are present.
-    if( defined $pdbx_lines ) {
-    for my $category  ( sort { $a cmp $b } keys %{ $pdbx_lines } ) {
-    for my $attribute ( sort { $a cmp $b } keys %{ $pdbx_lines->{$category} } ) {
-        printf {$fh} "%s.%s %s\n", $category, $attribute,
-               $pdbx_lines->{$category}{$attribute};
-    } print {$fh} "#\n"; } }
-
-    # Prints out atom site structure if they are present.
-    if( defined $atom_site ) {
-        $atom_attributes //= [ 'group_PDB',
-                               'id',
-                               'type_symbol',
-                               'label_atom_id',
-                               'label_alt_id',
-                               'label_comp_id',
-                               'label_asym_id',
-                               'label_entity_id',
-                               'label_seq_id',
-                               'Cartn_x',
-                               'Cartn_y',
-                               'Cartn_z',
-                               'pdbx_PDB_model_num', ];
-
-        if( defined $add_atom_attributes ) {
-            push @{ $atom_attributes }, @{ $add_atom_attributes };
-        }
-
-        print {$fh} "loop_\n";
-
-        for my $attribute ( @{ $atom_attributes } ) {
-            $attribute eq $atom_attributes->[-1] ?
-                print {$fh} "_atom_site.$attribute":
-                print {$fh} "_atom_site.$attribute\n";
-        }
-
-        for my $id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-        for( my $i = 0; $i <= $#{ $atom_attributes }; $i++ ) {
-            if( $i % ( $#{ $atom_attributes } + 1) != 0 ) {
-                if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-                    print {$fh} q{ }, $atom_site->{$id}{$atom_attributes->[$i]};
-                } else {
-                    print {$fh} q{ ?};
-                }
-            } else {
-                if( exists $atom_site->{$id}{$atom_attributes->[$i]} ) {
-                    print {$fh} "\n", $atom_site->{$id}{$atom_attributes->[$i]};
-                } else {
-                    print {$fh} "\n";
-                }
-            }
-        } }
-        print {$fh} "\n#\n";
-    }
-
-    # Prints out pdbx loops if they are present.
-    if( defined $pdbx_loops ) {
-        for my $category ( sort keys %{ $pdbx_loops } ) {
-            print {$fh} "loop_\n";
-
-            foreach( @{ $pdbx_loops->{$category}{'attributes'} } ) {
-                print {$fh} "$category.$_\n";
-            }
-            my $attribute_array_length =
-                $#{ $pdbx_loops->{$category}{'attributes'} };
-            my $data_array_length =
-                $#{ $pdbx_loops->{$category}{'data'} };
-            for( my $i = 0;
-                 $i <= $data_array_length;
-                 $i += $attribute_array_length + 1 ){
-                print {$fh} join( q{ }, @{ $pdbx_loops->{$category}{'data'} }
-                                  [$i..$i+$attribute_array_length] ), "\n" ;
-            }
-
-            print {$fh} "#\n";
-        }
-    }
-
-    return;
-}
-
-sub to_pdbx_new
-{
-    my ( $args ) = @_;
     my ( $data_name, $pdbx_data, $pdbx_data_indexed, $attributes,
          $add_attributes, $fh ) = (
         $args->{'data_name'},
         $args->{'pdbx_data'},
         $args->{'pdbx_data_indexed'},
         $args->{'attributes'},
-        $args->{'add_atom_attributes'},
+        $args->{'add_attributes'},
         $args->{'fh'},
     );
 
@@ -1120,24 +1062,25 @@ sub to_pdbx_new
 
             my $current_pdbx_data_indexed = $pdbx_data_indexed->{$category};
             for my $id (sort { $a <=> $b } keys %{ $current_pdbx_data_indexed }){
-            for( my $i = 0; $i <= $#{ $current_attributes }; $i++ ) {
-            if( $i % ( $#{ $current_attributes } + 1) != 0 ) {
-                if( exists $current_pdbx_data_indexed->{$id}
-                                                       {$current_attributes->[$i]}){
-                    print {$fh} q{ },
-                        $current_pdbx_data_indexed->{$id}{$current_attributes->[$i]};
-                } else {
-                    print {$fh} q{ ?};
+                for( my $i = 0; $i <= $#{ $current_attributes }; $i++ ) {
+                    my $data_value = $current_pdbx_data_indexed->
+                                         {$id}{$current_attributes->[$i]};
+                    if( $i % ( $#{ $current_attributes } + 1) != 0 ) {
+                        if( defined $current_pdbx_data_indexed->
+                                        {$id}{$current_attributes->[$i]} ){
+                            print {$fh} q{ }, $data_value;
+                        } else {
+                            print {$fh} q{ ?};
+                        }
+                    } else {
+                        if( defined $data_value ){
+                            print {$fh} "\n", $data_value;
+                        } else {
+                            print {$fh} "\n";
+                        }
+                    }
                 }
-            } else {
-                if( exists $current_pdbx_data_indexed->{$id}
-                                                       {$current_attributes->[$i]}){
-                    print {$fh} "\n",
-                        $current_pdbx_data_indexed->{$id}{$current_attributes->[$i]};
-                } else {
-                    print {$fh} "\n";
-                }
-            } } }
+            }
             print {$fh} "\n#\n";
         }
     }
@@ -1157,8 +1100,16 @@ sub to_pdbx_new
                 for( my $i = 0;
                      $i <= $data_array_length;
                      $i += $attribute_array_length + 1 ){
-                    print {$fh} join( q{ }, @{ $pdbx_data->{$category}{'data'} }
-                                      [$i..$i+$attribute_array_length] ), "\n" ;
+                    my @current_data_list = ();
+                    for my $data_value ( @{ $pdbx_data->{$category}{'data'} }
+                                             [$i..$i+$attribute_array_length] ) {
+                        if( defined $data_value ) {
+                            push @current_data_list, $data_value;
+                        } else {
+                            push @current_data_list, '?';
+                        }
+                    }
+                    print {$fh} join( q{ }, @current_data_list ), "\n" ;
                 }
             } else { # PDBx line data.
                 my @attributes = @{ $pdbx_data->{$category}{'attributes'} };

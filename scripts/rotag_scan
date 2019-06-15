@@ -218,13 +218,15 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     # Collects residue angle and energy data.
-    my %pdbx_loops;
+    my %pdbx_data;
 
-    $pdbx_loops{'_[local]_rotamer_angle'}{'attributes'} =
+    $pdbx_data{'_[local]_rotamer_angle'}{'attributes'} =
         [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
           'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value' ];
-    $pdbx_loops{'_[local]_rotamer_energy'}{'attributes'} =
+    $pdbx_data{'_[local]_rotamer_energy'}{'attributes'} =
         [ 'id', 'rotamer_id', 'calculation_method', 'value'];
+    $pdbx_data{'_[local]_rotamer_angle'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rotamer_energy'}{'is_loop'} = 1;
 
     my $angle_id = 1;
     my $energy_id = 1;
@@ -249,7 +251,7 @@ for my $pdbx_file ( @ARGV ) {
             # Colects rotamer angle data.
             for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
                 my $angle_value = $rotamer->{'angles'}{$angle_name};
-                push @{ $pdbx_loops{'_[local]_rotamer_angle'}{'data'} },
+                push @{ $pdbx_data{'_[local]_rotamer_angle'}{'data'} },
                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
                      $residue_chain, $pdbx_model, $residue_alt,
                      sprintf( $sig_figs_max, $rotamer_frequency ), $angle_name,
@@ -258,7 +260,7 @@ for my $pdbx_file ( @ARGV ) {
             }
 
             # Colects rotamer energy data.
-            push @{ $pdbx_loops{'_[local]_rotamer_energy'}{'data'} },
+            push @{ $pdbx_data{'_[local]_rotamer_energy'}{'data'} },
                  $energy_id, $rotamer_id, $rotamer->{'potential'},
                  sprintf $sig_figs_max, $rotamer->{'potential_energy_value'};
 
@@ -276,12 +278,12 @@ for my $pdbx_file ( @ARGV ) {
                          ( 'atom_site' => $selected_atom_site,
                            'add_atom_attributes' => [ '[local]_selection_state' ] ) :
                          () ),
-                       'pdbx_loops' => { map { $_ => $pdbx_loops{$_} }
+                       'pdbx_data' => { map { $_ => $pdbx_data{$_} }
                                             @{ $tags } } } );
         } elsif( $output_format eq 'csv' ) {
             if( scalar @{ $tags } == 1 ) {
                 # TODO: decide if 'atom_site' can be chosen as tag option.
-                pdbx_loop_to_csv( $pdbx_loops{$tags->[0]} );
+                pdbx_loop_to_csv( $pdbx_data{$tags->[0]} );
             } else {
                 warning( { 'message' => "only one tag has to be chosen for " .
                                         "CSV format.\n" } );
@@ -290,9 +292,11 @@ for my $pdbx_file ( @ARGV ) {
         }
     } else {
         if( $output_format eq 'pdbx' ) {
-            to_pdbx( { 'atom_site' => $selected_atom_site,
-                       'add_atom_attributes' => [ '[local]_selection_state' ],
-                       'pdbx_loops' => \%pdbx_loops } );
+            to_pdbx( { 'pdbx_data_indexed' =>
+                           { '_atom_site' => $selected_atom_site },
+                       'add_attributes' =>
+                           { '_atom_site' => [ '[local]_selection_state' ] },
+                       'pdbx_data' => \%pdbx_data } );
         } else {
             warning( { 'message' => "tag has to be chosen for CSV " .
                                     "format.\n" } );

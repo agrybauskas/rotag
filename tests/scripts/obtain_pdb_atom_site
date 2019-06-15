@@ -18,6 +18,6 @@ my $atom_site;
 foreach my $pdbx_file ( @ARGV ) {
     $atom_site = obtain_pdb_atom_site( $pdbx_file );
     if( %{ $atom_site } ) {
-        to_pdbx( { "atom_site" => $atom_site } );
+        to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => $atom_site } } );
     }
 }

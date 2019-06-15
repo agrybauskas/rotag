@@ -11,8 +11,7 @@ use List::Util qw( max
 use Combinatorics qw( permutation );
 
 use PDBxParser qw( pdbx_loop_to_array
-                   obtain_pdbx_line_new
-                   obtain_pdbx_loop );
+                   obtain_pdbx_data );
 
 # ------------------------- Constructors/Destructors -------------------------- #
 
@@ -61,10 +60,10 @@ sub _obtain_force_field_data
 
     @looped_categories = uniq @looped_categories;
 
-    my $pdbx_line_data = obtain_pdbx_line_new( $pdbx_file, \@unlooped_items );
-    my $pdbx_loop_data = obtain_pdbx_loop( $pdbx_file, \@looped_categories );
+    my $pdbx_data =
+        obtain_pdbx_data( $pdbx_file, [ @looped_categories, @unlooped_items ] );
 
-    return { %{ $pdbx_line_data }, %{ $pdbx_loop_data } };
+    return $pdbx_data;
 }
 
 sub _epsilon

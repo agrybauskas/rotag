@@ -181,7 +181,8 @@ for my $pdbx_file ( @ARGV ) {
                                  { 'angles' => $mutations[$i]{'angles'},
                                    'append_moieties' => \%append_moieties } );
 
-            to_pdbx( { 'atom_site' => $selected_atom_site } );
+            to_pdbx( { 'pdbx_data_indexed' =>
+                           { '_atom_site' => $selected_atom_site } } );
         }
     } else {
         error( { 'program' => $0,
