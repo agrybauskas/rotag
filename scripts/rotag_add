@@ -190,7 +190,8 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         # Prints out cif.
-        to_pdbx( { 'pdbx_data_indexed' =>
+        to_pdbx( { 'pdbx_data' => $pdbx_loops,
+                   'pdbx_data_indexed' =>
                        {'_atom_site' => { %{ $atom_site }, %rotamer_atom_site }},
                    'add_attributes' =>
                        {'_atom_site' => [ '[local]_selection_state' ] } } );
