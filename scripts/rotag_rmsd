@@ -16,6 +16,7 @@ use Logging qw( error
 use PDBxParser qw( filter
                    obtain_atom_sites
                    pdbx_loop_to_csv
+                   related_category_data
                    split_by
                    to_pdbx );
 use Measure qw( rmsd
@@ -208,7 +209,7 @@ for my $comparison_group ( @comparison_groups ) {
                 my $rmsd_average = $rmsd_sum / $rmsd_count;
                 push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                     $rmsd_counter,
-                    $rmsd_sidechain_comparisons->[0][1],
+                    $rmsd_sidechain_comparisons->[0][0],
                     $rmsd_sidechain_comparisons->[0][9],
                     sprintf $sig_figs_max, $rmsd_average;
             }
