@@ -280,6 +280,27 @@ for my $comparison_group ( @comparison_groups ) {
     }
 }
 
+# # Shows only data related to filtered atoms.
+# if( $is_related ) {
+#     my $related_data =
+#         related_category_data(
+#             $pdbx,
+#             { '_[local]_rotamer_angle' =>
+#                   { '_atom_site' =>
+#                       [ { 'keys' =>
+#                               [ 'label_seq_id', 'label_asym_id',
+#                                 'pdbx_PDB_model_num', 'label_alt_id' ],
+#                           'reference_keys' =>
+#                               [ 'label_seq_id', 'label_asym_id',
+#                                 'pdbx_PDB_model_num', 'rotamer_id' ] }]}});
+#     for my $related_category ( keys %{ $related_data } ) {
+#         $pdbx->{$related_category}{'data'} =
+#             indexed2raw( { $related_category =>
+#                                $related_data->{$related_category} } )
+#                                             ->{$related_category}{'data'};
+#     }
+# }
+
 # Prints out cif or csv
 # TODO: decide what to do when group data is empty.
 if( $output_format eq 'pdbx' ) {
