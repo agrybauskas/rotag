@@ -264,15 +264,12 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                                     'pdbx_PDB_model_num', 'label_alt_id' ],
                               'reference_keys' =>
                                   [ 'label_seq_id', 'label_asym_id',
-                                    'pdbx_PDB_model_num', 'label_alt_id' ] }]}});
-        for my $category ( keys %{ $related_data } ) {
-            for my $related_category ( keys %{ $related_data->{$category}{'data'} } ) {
-                $pdbx->{$related_category} =
-                    indexed2raw( { $related_category =>
-                                       $related_data->{$category}{'data'}
-                                                      {$related_category} } )->
-                                                             {$related_category};
-            }
+                                    'pdbx_PDB_model_num', 'rotamer_id' ] }]}});
+        for my $related_category ( keys %{ $related_data } ) {
+            $pdbx->{$related_category}{'data'} =
+                indexed2raw( { $related_category =>
+                                   $related_data->{$related_category} } )
+                                                ->{$related_category}{'data'};
         }
     }
 
