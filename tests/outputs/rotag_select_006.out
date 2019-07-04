@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB
@@ -18,7 +18,7 @@ _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
 ATOM 4205 N NE1 . TRP A 1 564 -0.995 -41.706 30.316 1 T 1
 #
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB

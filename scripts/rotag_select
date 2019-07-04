@@ -11,11 +11,12 @@ use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter_new
-                   mark_selection
-                   obtain_atom_site
-                   obtain_pdb_atom_site
-                   obtain_pdbx_loop
-                   to_pdbx );
+                   mark_selection );
+use PDBxParser_new qw( raw2indexed
+                       raw2pdbx
+                       related_category_data
+                       indexed2raw
+                       obtain_pdbx_data );
 use Grammar::SelectionParser;
 use Logging qw( error );
 use Version qw( $VERSION );
@@ -84,11 +85,15 @@ our $VERSION = $VERSION;
 #*    -s, --select <str>    command (same as --target) describing the atoms that
 #*                          will be marked as selected (S) [default: target].
 #*
+#*    --tags                select PDBx tag that will be in the output.
+#*
+#*    -r, --related-data    select data that is related to filtered atoms.
+#*
 #*    -p, --pdb             input file is in PDB format.
 #*
-#*    -k, --keep-ignored    keeps ignored atoms.
+#*    -k, --keep-ignored    keep ignored atoms.
 #*
-#*    -x, --rand-seed <int> sets a seed for random (rand) selection.
+#*    -x, --rand-seed <int> set a seed for random (rand) selection.
 #*
 #*    -v, --version         print version.
 
@@ -96,9 +101,17 @@ our $VERSION = $VERSION;
 
 my $target_cmds;
 my $select_cmds;
+my $tags = '_atom_site';
+my $is_related = 0;
 my $is_pdb = 0;
 my $keep_ignored = 0;
 my $random_seed = 23;
+
+my @default_categories = (
+    '_atom_site', '_[local]_rotamer_angle', '_[local]_dihedral_angle',
+    '_[local]_rotamer_energy', '_[local]_pairwise_energy', '_[local]_energy',
+    '_[local]_rmsd'
+);
 
 local $SIG{__WARN__} = sub {
     warning( { 'program' => $0, 'message' => @_ } );
@@ -111,6 +124,8 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'target|t=s@' => \$target_cmds,
     'select|s=s@' => \$select_cmds,
+    'tags=s' => \$tags,
+    'related-data|r' => sub { $is_related = 1 },
     'pdb|p' => sub { $is_pdb = 1 },
     'keep-ignored|k' => sub { $keep_ignored = 1 },
     'random-seed|x=s' => \$random_seed,
@@ -132,17 +147,26 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+$tags =~ s/ //g;
+my @tags = split /,/, $tags;
+
 my $parameters = Parameters->new();
 
 for( my $i = 0; $i <= $#ARGV; $i++ ) {
     my $pdbx_file = $ARGV[$i];
+
     # Reads file path, stdin and '-' operator.
+    my $pdbx;
     my $atom_site;
+
     if( $is_pdb ) {
         $atom_site = obtain_pdb_atom_site( $pdbx_file );
     } else {
-        $atom_site = obtain_atom_site( $pdbx_file,
-                                       { 'ignore_missing_categories' => 1 } );
+        $pdbx = obtain_pdbx_data( $pdbx_file, \@default_categories,
+                                  { 'ignore_missing_categories' => 1 } );
+        $atom_site = raw2indexed(
+            $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } }
+        )->{'_atom_site'}{'data'};
     }
 
     # Assigns correct target and select command line arguments for current file.
@@ -219,19 +243,42 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
 
     next if ! %{ $atom_site };
 
-    # Extracts rotamer angle data that will used to generate atom coordinates if
-    # available.
-    my $pdbx_data;
-    if( $pdbx_file ) {
-        $pdbx_data = obtain_pdbx_loop( $pdbx_file,
-                                        [ '_[local]_rotamer_angle' ],
-                                        { 'ignore_missing_categories' =>  1 } );
+    # Brings back atom site to it's general pdbx data structure.
+    my %current_atom_site = ();
+    $current_atom_site{'_atom_site'}{'metadata'}{'is_loop'} =
+        $pdbx->{'_atom_site'}{'metadata'}{'is_loop'};
+    $current_atom_site{'_atom_site'}{'metadata'}{'attributes'} =
+        $pdbx->{'_atom_site'}{'metadata'}{'attributes'};
+    $current_atom_site{'_atom_site'}{'data'} = $atom_site;
+    $pdbx->{'_atom_site'} = indexed2raw( \%current_atom_site )->{'_atom_site'};
+
+    # Shows only data related to filtered atoms.
+    if( $is_related ) {
+        my $related_data =
+            related_category_data(
+                $pdbx,
+                { '_[local]_rotamer_angle' =>
+                      { '_atom_site' =>
+                          [ { 'keys' =>
+                                  [ 'label_seq_id', 'label_asym_id',
+                                    'pdbx_PDB_model_num', 'label_alt_id' ],
+                              'reference_keys' =>
+                                  [ 'label_seq_id', 'label_asym_id',
+                                    'pdbx_PDB_model_num', 'label_alt_id' ] }]}});
+        for my $category ( keys %{ $related_data } ) {
+            for my $related_category ( keys %{ $related_data->{$category}{'data'} } ) {
+                $pdbx->{$related_category} =
+                    indexed2raw( { $related_category =>
+                                       $related_data->{$category}{'data'}
+                                                      {$related_category} } )->
+                                                             {$related_category};
+            }
+        }
     }
 
     # Prints out the PDBx.
-    to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => $atom_site },
-               $pdbx_data ? ( 'pdbx_data', $pdbx_data ) : (),
-               'add_attributes' =>
-                   { '_atom_site' => [ '[local]_selection_state',
-                                       '[local]_selection_group' ] } } );
+    raw2pdbx( $pdbx, { 'add_attributes' =>
+                           { '_atom_site' => [ '[local]_selection_state',
+                                               '[local]_selection_group' ] },
+                       'tags' => \@tags } );
 }
