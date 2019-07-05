@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( indexed2raw
                      pdbx_raw
                      raw2indexed
                      to_pdbx
+                     to_csv
                      related_category_data );
 
 use Carp;
@@ -554,6 +555,43 @@ sub to_pdbx
 
             print {$fh} "#\n";
         }
+    }
+
+    return;
+}
+
+#
+# Converts pdbx loop data structure to csv table.
+# Input:
+#     $pdbx_loops - data structure of pdbx_loops;
+#     $attributes - columns that should be displayed.
+# Output:
+#     csv STDOUT
+#
+
+sub to_csv
+{
+    my ( $self, $options ) = @_;
+    my ( $category, $attributes ) = (
+        $options->{'category'}, $options->{'attributes'}
+    );
+
+    $category //= (sort keys %{ $self })[0]; # TODO: assigning through list
+                                             # might loose the information.
+    my $pdbx_raw = $self->{$category};
+
+    $attributes //= $pdbx_raw->{'metadata'}{'attributes'};
+
+    if( defined $pdbx_raw ) {
+        print {*STDOUT} join( ',', @{ $attributes } ), "\n";
+    }
+
+    my $attribute_array_length = $#{ $pdbx_raw->{'metadata'}{'attributes'} };
+    my $data_array_length = $#{ $pdbx_raw->{'data'} };
+
+    for( my $i = 0; $i <= $data_array_length; $i += $attribute_array_length + 1){
+        print {*STDOUT} join( q{,}, @{ $pdbx_raw->{'data'} }
+                                    [ $i..$i+$attribute_array_length ] ), "\n" ;
     }
 
     return;

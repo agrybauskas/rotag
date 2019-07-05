@@ -15,10 +15,10 @@ use Logging qw( error
                 warning );
 use PDBxParser qw( filter
                    obtain_atom_sites
-                   pdbx_loop_to_csv
                    split_by );
 use PDBxParser_new qw( related_category_data
-                       to_pdbx );
+                       to_pdbx
+                       to_csv );
 use Measure qw( rmsd
                 rmsd_sidechains );
 use Version qw( $VERSION );
@@ -306,5 +306,5 @@ for my $related_category ( keys %{ $related_data } ) {
 if( $output_format eq 'pdbx' ) {
     to_pdbx( \%pdbx_data );
 } elsif( $output_format eq 'csv' ) {
-    # pdbx_loop_to_csv( $pdbx_data{'_[local]_rmsd'} );
+    to_csv( { '_[local]_rmsd' => $pdbx_data{'_[local]_rmsd'} } );
 }
