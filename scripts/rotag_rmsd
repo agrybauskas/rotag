@@ -16,9 +16,9 @@ use Logging qw( error
 use PDBxParser qw( filter
                    obtain_atom_sites
                    pdbx_loop_to_csv
-                   related_category_data
-                   split_by
-                   to_pdbx );
+                   split_by );
+use PDBxParser_new qw( related_category_data
+                       to_pdbx );
 use Measure qw( rmsd
                 rmsd_sidechains );
 use Version qw( $VERSION );
@@ -135,17 +135,19 @@ exit if ! %atom_site_groups;
 # Calculates RMSD.
 my %pdbx_data;
 if( $do_decompose ) {
-    $pdbx_data{'_[local]_rmsd'}{'attributes'} =
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'attributes'} =
         [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id', 'label_seq_1_id',
           'label_comp_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
           'label_alt_1_id', 'group_2_id', 'atom_2_id', 'label_atom_2_id',
           'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
           'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
-    $pdbx_data{'_[local]_rmsd'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_indexed'} = 0;
 } else {
-    $pdbx_data{'_[local]_rmsd'}{'attributes'} =
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'attributes'} =
         [ 'id', 'group_1_id', 'group_2_id', 'value' ];
-    $pdbx_data{'_[local]_rmsd'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_indexed'} = 0;
 }
 
 my $rmsd_counter = 1;
@@ -281,28 +283,28 @@ for my $comparison_group ( @comparison_groups ) {
 }
 
 # Shows dihedral angles related to selected atoms used to calculate RMSD.
-# my $related_data =
-#     related_category_data(
-#         $pdbx,
-#         { '_[local]_rotamer_angle' =>
-#               { '_atom_site' =>
-#                   [ { 'keys' =>
-#                           [ 'label_seq_id', 'label_asym_id',
-#                             'pdbx_PDB_model_num', 'label_alt_id' ],
-#                       'reference_keys' =>
-#                           [ 'label_seq_id', 'label_asym_id',
-#                             'pdbx_PDB_model_num', 'rotamer_id' ] }]}});
-# for my $related_category ( keys %{ $related_data } ) {
-#     $pdbx->{$related_category}{'data'} =
-#         indexed2raw( { $related_category =>
-#                            $related_data->{$related_category} } )
-#                                         ->{$related_category}{'data'};
-# }
+my $related_data = related_category_data(
+    \%pdbx_data,
+    { '_[local]_rotamer_angle' =>
+      { '_[local]_rmsd' =>
+            [ { 'keys' =>
+                    [ 'label_seq_id', 'label_asym_id',
+                      'pdbx_PDB_model_num', 'label_alt_id' ],
+                'reference_keys' =>
+                    [ 'label_seq_1_id', 'label_asym_1_id',
+                      'pdbx_PDB_model_num_1', 'label_alt_1_id' ] } ] } }
+);
+for my $related_category ( keys %{ $related_data } ) {
+    $pdbx_data{$related_category}{'data'} =
+        indexed2raw( { $related_category =>
+                           $related_data->{$related_category} } )
+                                        ->{$related_category}{'data'};
+}
 
 # Prints out cif or csv
 # TODO: decide what to do when group data is empty.
 if( $output_format eq 'pdbx' ) {
-    to_pdbx( { 'pdbx_data' => \%pdbx_data } );
+    to_pdbx( \%pdbx_data );
 } elsif( $output_format eq 'csv' ) {
-    pdbx_loop_to_csv( $pdbx_data{'_[local]_rmsd'} );
+    # pdbx_loop_to_csv( $pdbx_data{'_[local]_rmsd'} );
 }
