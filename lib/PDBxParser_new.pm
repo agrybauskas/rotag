@@ -345,11 +345,13 @@ sub raw2indexed
 
 sub indexed2raw
 {
-    my ( $pdbx_indexed ) = @_;
+    my ( $pdbx_indexed, $options ) = @_;
+    my ( $attribute_order ) = ( $options->{'attribute_order'} );
 
     my %pdbx_raw = ();
     for my $category ( keys %{ $pdbx_indexed } ) {
         my $current_pdbx_indexed = $pdbx_indexed->{$category}{'data'};
+        my $current_attribute_order = $attribute_order->{$category};
 
         $pdbx_raw{$category}{'metadata'}{'is_loop'} =
             $pdbx_indexed->{$category}{'metadata'}{'is_loop'};
@@ -363,6 +365,12 @@ sub indexed2raw
                 uniq
                 map { keys %{ $current_pdbx_indexed->{$_} } }
                 keys %{ $current_pdbx_indexed };
+            if( defined $current_attribute_order ) {
+                my ( $sorted_attribute_list ) =
+                    sort_by_list( \@category_attributes,
+                                  $current_attribute_order );
+                @category_attributes = @{ $sorted_attribute_list };
+            }
             $pdbx_raw{$category}{'metadata'}{'attributes'}=\@category_attributes;
 
             # HACK: should figure out how to deal with simple ids and combined
@@ -385,6 +393,12 @@ sub indexed2raw
                 map { keys %{ $_ } }
                 map { @{ $current_pdbx_indexed->{$_} } }
                 keys %{ $current_pdbx_indexed };
+            if( defined $current_attribute_order ) {
+                my ( $sorted_attribute_list ) =
+                    sort_by_list( \@category_attributes,
+                                  $current_attribute_order );
+                @category_attributes = @{ $sorted_attribute_list };
+            }
             $pdbx_raw{$category}{'metadata'}{'attributes'}=\@category_attributes;
 
             for my $id ( sort { $a cmp $b } keys %{ $current_pdbx_indexed } ){
@@ -497,6 +511,15 @@ sub to_pdbx
 
                 foreach( @{ $category_attribute_order } ) {
                     print {$fh} "$category.$_\n";
+                }
+
+                if( $pdbx_data->{$category}{'metadata'}{'is_indexed'} ) {
+                    $pdbx_data->{$category} = indexed2raw(
+                        { $category => $pdbx_data->{$category} },
+                        { 'attribute_order' => {
+                            $category =>
+                                $pdbx_data->{$category}{'metadata'}{'attributes'} } }
+                    )->{$category};
                 }
 
                 my $attribute_array_length =

@@ -233,14 +233,8 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
 
     next if ! %{ $atom_site };
 
-    # Brings back atom site to it's general pdbx data structure.
-    my %current_atom_site = ();
-    $current_atom_site{'_atom_site'}{'metadata'}{'is_loop'} =
-        $pdbx->{'_atom_site'}{'metadata'}{'is_loop'};
-    $current_atom_site{'_atom_site'}{'metadata'}{'attributes'} =
-        $pdbx->{'_atom_site'}{'metadata'}{'attributes'};
-    $current_atom_site{'_atom_site'}{'data'} = $atom_site;
-    $pdbx->{'_atom_site'} = indexed2raw( \%current_atom_site )->{'_atom_site'};
+    $pdbx->{'_atom_site'}{'data'} = $atom_site;
+    $pdbx->{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
 
     # Prints out the PDBx.
     to_pdbx( $pdbx, { 'add_attributes' =>
