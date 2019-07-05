@@ -4,10 +4,13 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( filter_new
+our @EXPORT_OK = qw( filter
+                     filter_by_unique_residue_key
+                     filter_new
                      indexed2raw
                      mark_selection
                      obtain_pdbx_data
+                     obtain_atom_site
                      pdbx_indexed
                      pdbx_raw
                      raw2indexed
@@ -427,6 +430,140 @@ sub indexed2raw
 # ----------------------------- Atom-site related ----------------------------- #
 
 #
+# From PDBx file, obtains data only from _atom_site category and outputs special
+# data structure that represents atom data.
+# Input:
+#     $pdbx_file - PDBx file.
+# Output:
+#     %atom_site - indexed data structure.
+#     E.g.: { 1 => { 'id' => 2,
+#                    'label_atom_id' => 'CA',
+#                    ... }
+#             ... }
+#
+
+sub obtain_atom_site
+{
+    my ( $pdbx_file, $options ) = @_;
+
+    return pdbx_indexed( $pdbx_file,
+                         [ '_atom_site' ],
+                         { 'attributes' => { '_atom_site' => [ 'id' ] } } )->
+                                                          {'_atom_site'}{'data'};
+}
+
+#
+# Filters atom data structure according to specified attributes with include,
+# exclude options.
+# Input:
+#     $args->{'atom_site'} - atom data structure;
+#     $args->{'include'} - attribute selector that includes atom data structure.
+#     Ex.:
+#         { 'label_atom_id' => [ 'N', 'CA', 'CB', 'CD' ],
+#           'label_comp_id' => [ 'A' ] };
+#     $args->{'exclude'} - attribute selector that excludes atom data structure.
+#     Selector data structure is the same as $args->{include};
+#     $args->{'is_list'} - makes array instead of array of arrays;
+#     $args->{'data_with_id'} - takes atom data structure and treats it as a
+#     value and atom id - as a key;
+#     $args->{'group_id'} - assigns the value of described group id.
+# Output:
+#     \%filtered_atoms- filtered atom data structure;
+#
+
+sub filter
+{
+    my ( $args ) = @_;
+    my $atom_site = $args->{'atom_site'};
+    my $include = $args->{'include'};
+    my $exclude = $args->{'exclude'};
+    my $data = $args->{'data'};
+    my $is_list = $args->{'is_list'};
+    my $data_with_id = $args->{'data_with_id'};
+    my $group_id = $args->{'group_id'};
+
+    if( ! defined $atom_site ) { confess 'no PDBx data structure was loaded '; }
+
+    # Iterates through each atom in $atom_site and checks if atom specifiers
+    # match up.
+    my %filtered_atoms;
+
+    # First, filters atoms that are described in $include specifier.
+    if( defined $include && %{ $include } ) {
+        for my $atom_id ( keys %{ $atom_site } ) {
+            my $match_counter = 0; # Tracks if all matches occured.
+            for my $attribute ( keys %{ $include } ) {
+                if( exists $atom_site->{$atom_id}{$attribute} &&
+                    any { $atom_site->{$atom_id}{$attribute} eq $_ }
+                       @{ $include->{$attribute} } ) {
+                    $match_counter += 1;
+                } else {
+                    last; # Terminates early if no match is found in specifier.
+                }
+            }
+            if( $match_counter == scalar keys %{ $include } ) {
+                $filtered_atoms{$atom_id} = $atom_site->{$atom_id};
+            }
+        }
+    } else {
+        %filtered_atoms = %{ $atom_site };
+    }
+
+    # Then filters out atoms that are in $exclude specifier.
+    if( defined $exclude && %{ $exclude } ) {
+        for my $atom_id ( keys %filtered_atoms ) {
+            for my $attribute ( keys %{ $exclude } ) {
+                if( exists $atom_site->{$atom_id}{$attribute} &&
+                    any { $atom_site->{$atom_id}{$attribute} eq $_ }
+                       @{ $exclude->{$attribute} } ) {
+                    delete $filtered_atoms{$atom_id};
+                    last;
+                }
+            }
+        }
+    }
+
+    # TODO: again another iteration through atom data structure. Should look into
+    # it how to reduce the quantity of iterations.
+    if( defined $group_id ) {
+        for my $atom_id ( keys %filtered_atoms ) {
+            $filtered_atoms{$atom_id}{'[local]_selection_group'} = $group_id;
+        }
+    }
+
+    # Extracts specific data, if defined.
+    if( defined $data && @{ $data } ) {
+        # Simply iterates through $atom_site keys and extracts data using data
+        # specifier.
+        my @atom_data;
+        if( defined $data_with_id && $data_with_id ) {
+            my %atom_data_with_id;
+
+            # Simply iterates through $atom_site keys and extracts data using
+            # data specifier and is asigned to atom id.
+            for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+                $atom_data_with_id{$atom_id} =
+                    [ map { $atom_site->{$atom_id}{$_} } @{ $data } ];
+            }
+            return \%atom_data_with_id;
+        } else {
+            for my $atom_id ( sort { $a <=> $b } keys %filtered_atoms ) {
+                if( defined $is_list && $is_list ) {
+                    push @atom_data,
+                         map { $filtered_atoms{$atom_id}{$_} } @{ $data };
+                } else {
+                    push @atom_data,
+                         [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ];
+                }
+            }
+            return \@atom_data;
+        }
+    }
+
+    return \%filtered_atoms;
+}
+
+#
 # Filters atom data structure according to specified attributes with include,
 # exclude options.
 # Input:
@@ -521,6 +658,33 @@ sub filter_new
     } else {
         return \%filtered_atoms;
     }
+}
+
+#
+# Filters atom site data structure by unique residue key.
+# Input:
+#     $atom_site - atom data structure.
+#     $unique_residue_key - a composite key that identifies residue uniquely.
+#     $include_dot - includes '.' alt id into the selection.
+#     Ex.: '18,A,1,.'.
+# Output:
+#     %filtered_atoms - filtered atom data structure.
+#
+
+sub filter_by_unique_residue_key
+{
+    my ( $atom_site, $unique_residue_key, $include_dot ) = @_;
+    my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
+        split /,/sxm, $unique_residue_key;
+    my $filtered_atoms = filter( { 'atom_site' => $atom_site,
+                                   'include' =>
+                                   { 'label_seq_id' => [ $residue_id ],
+                                     'label_asym_id' => [ $residue_chain ],
+                                     'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                                     'label_alt_id' =>
+                                         [ $residue_alt,
+                                           ( $include_dot ? '.' : () ) ] } } );
+    return $filtered_atoms;
 }
 
 #
