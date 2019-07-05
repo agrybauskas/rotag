@@ -10,11 +10,11 @@ use Try::Tiny;
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use PDBxParser qw( filter_new
-                   mark_selection );
-use PDBxParser_new qw( raw2indexed
-                       related_category_data
+use PDBxParser_new qw( filter_new
                        indexed2raw
+                       mark_selection
+                       raw2indexed
+                       related_category_data
                        obtain_pdbx_data
                        to_pdbx );
 use Grammar::SelectionParser;

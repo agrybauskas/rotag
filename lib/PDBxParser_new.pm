@@ -4,14 +4,16 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( indexed2raw
+our @EXPORT_OK = qw( filter_new
+                     indexed2raw
+                     mark_selection
                      obtain_pdbx_data
                      pdbx_indexed
                      pdbx_raw
                      raw2indexed
-                     to_pdbx
+                     related_category_data
                      to_csv
-                     related_category_data );
+                     to_pdbx );
 
 use Carp;
 use List::MoreUtils qw( any
@@ -20,7 +22,7 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-# --------------------------------- PDBx parser ------------------------------- #
+# -------------------------------- Data structure ----------------------------- #
 
 sub pdbx_raw
 {
@@ -34,6 +36,8 @@ sub pdbx_indexed
     return raw2indexed( obtain_pdbx_data( $pdbx_file, $data_identifier ),
                         $options );
 }
+
+# --------------------------------- PDBx parser ------------------------------- #
 
 #
 # Obtains pdbx data for the specified categories or items.
@@ -418,6 +422,138 @@ sub indexed2raw
     }
 
     return \%pdbx_raw;
+}
+
+# ----------------------------- Atom-site related ----------------------------- #
+
+#
+# Filters atom data structure according to specified attributes with include,
+# exclude options.
+# Input:
+#     $options->{'include'} - attribute selector that includes atom data
+#     structure.
+#     Ex.:
+#         { 'label_atom_id' => [ 'N', 'CA', 'CB', 'CD' ],
+#           'label_comp_id' => [ 'A' ] };
+#     $options->{'exclude'} - attribute selector that excludes atom data
+#     $options->{'return_ids'} - flag that make function return filtered atom
+#     ids instead of new AtomSite data structure.
+#     $options->{'group_id'} - assigns the value of described group id to
+#     '[local]_selection_group' attribute.
+#     structure.
+# Output:
+#     \%filtered_atoms - filtered atom data structure;
+#            or
+#     \@filtered_atom_ids - list of filtered atom ids.
+#
+
+sub filter_new
+{
+    my ( $atom_site, $options ) = @_;
+    my ( $include, $exclude, $return_data, $group_id, $selection_state ) =
+        ( $options->{'include'}, $options->{'exclude'},
+          $options->{'return_data'}, $options->{'group_id'},
+          $options->{'selection_state'} );
+
+    if( ! defined $atom_site ) {
+        confess 'no atom were loaded to the AtomSite data structure';
+    }
+
+    $include //= {};
+    $exclude //= {};
+
+    # Generates hash maps for fast lookup.
+    my %include_selector = ();
+    for my $attribute ( keys %{ $include } ) {
+        for my $value ( uniq @{ $include->{$attribute} } ) {
+            $include_selector{$attribute}{$value} = 1;
+        }
+    }
+
+    my %exclude_selector = ();
+    for my $attribute ( keys %{ $exclude } ) {
+        for my $value ( uniq @{ $exclude->{$attribute} } ) {
+            $exclude_selector{$attribute}{$value} = 1;
+        }
+    }
+
+    # Iterates through each atom in $self->{'atoms'} and checks if atom
+    # specifiers match up.
+    my %filtered_atoms;
+
+    for my $atom_id ( keys %{ $atom_site } ) {
+        my $keep_atom = 1;
+        for my $attribute ( keys %{ $atom_site->{$atom_id} } ) {
+            my $value = $atom_site->{$atom_id}{$attribute};
+            if( exists $include_selector{$attribute} &&
+                ( ! exists $include_selector{$attribute}{$value} ||
+                  $include_selector{$attribute}{$value} != 1 ) ) {
+                $keep_atom = 0;
+                last;
+            }
+
+            if( exists $exclude_selector{$attribute} &&
+                ( exists $exclude_selector{$attribute}{$value} &&
+                  $exclude_selector{$attribute}{$value} == 1 ) ) {
+                $keep_atom = 0;
+                last;
+            }
+        }
+
+        next if $keep_atom == 0;
+
+        if( defined $group_id ) {
+            $atom_site->{$atom_id}{'[local]_selection_group'} = $group_id;
+        }
+
+        if( defined $selection_state ) {
+            $atom_site->{$atom_id}{'[local]_selection_state'} = $selection_state;
+        }
+
+        $filtered_atoms{$atom_id} = $atom_site->{$atom_id};
+    }
+
+    # Return object handle or atom ids depending on the flag.
+    if( defined $return_data && $return_data eq 'id' ) {
+        return [ keys %filtered_atoms ];
+    } elsif( defined $return_data ) {
+        return [ map { $atom_site->{$_}{$return_data} } keys %filtered_atoms ];
+    } else {
+        return \%filtered_atoms;
+    }
+}
+
+#
+# Adds T (target), S (surrounding or selected), I (ignored) char to
+# '[local]_selection_state' attribute data.
+# Input:
+#     $atom_site - atom site data structure;
+#     $options{'target'} - list of ids of the target atom;
+#     $options{'select'} - list of ids of the selected atom;
+# Output:
+#     adds markers to specified attribute field.
+#
+
+sub mark_selection
+{
+    my ( $atom_site, $options ) = @_;
+
+    my ( $target_atom_ids, $selected_atom_ids ) =
+        ( $options->{'target'}, $options->{'select'}, );
+
+    for my $atom_id ( keys %{ $atom_site } ) {
+        $atom_site->{$atom_id}{'[local]_selection_state'} = 'I';
+    }
+
+    for my $selected_atom_id ( @{ $selected_atom_ids } ) {
+        $atom_site->{$selected_atom_id}{'[local]_selection_state'}='S';
+    }
+
+    for my $target_atom_id ( @{ $target_atom_ids } ) {
+        $atom_site->{$target_atom_id}{'[local]_selection_state'} = 'T';
+    }
+
+    return;
 }
 
 # --------------------------- Data structures to STDOUT ----------------------- #
