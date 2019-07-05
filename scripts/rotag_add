@@ -14,15 +14,13 @@ use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
                 warning );
-use PDBxParser qw( filter
-                   filter_by_unique_residue_key
-                   mark_selection
-                   obtain_atom_site
-                   obtain_pdbx_loop
-                   pdbx_loop_unique
-                   split_by
-                   to_pdbx
-                   unique_residue_key );
+use PDBxParser_new qw( filter
+                       filter_by_unique_residue_key
+                       mark_selection
+                       obtain_atom_site
+                       obtain_pdbx_data
+                       split_by
+                       to_pdbx );
 use PseudoAtoms qw( generate_pseudo );
 use SidechainModels qw( rotation_only  );
 use Version qw( $VERSION );
@@ -107,158 +105,158 @@ for my $pdbx_file ( @ARGV ) {
     my $atom_site;
     $atom_site = obtain_atom_site( $pdbx_file );
 
-    next if ! %{ $atom_site };
+#     next if ! %{ $atom_site };
 
-    my $selected_atom_site =
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
-    my $target_atom_site =
-        filter( { 'atom_site' => $selected_atom_site,
-                  'include' => { '[local]_selection_state' =>
-                                 ( $include_selected ? [ 'T', 'S' ] : [ 'T' ] ) } } );
-    my $target_atom_ids =
-        filter( { 'atom_site' => $target_atom_site,
-                  'include' => { '[local]_selection_state' => [ 'T' ] },
-                  'exclude' => { 'label_atom_id' => $interaction_atom_names },
-                  'data' => [ 'id' ],
-                  'is_list' => 1 } );
+#     my $selected_atom_site =
+#         filter( { 'atom_site' => $atom_site,
+#                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+#     my $target_atom_site =
+#         filter( { 'atom_site' => $selected_atom_site,
+#                   'include' => { '[local]_selection_state' =>
+#                                  ( $include_selected ? [ 'T', 'S' ] : [ 'T' ] ) } } );
+#     my $target_atom_ids =
+#         filter( { 'atom_site' => $target_atom_site,
+#                   'include' => { '[local]_selection_state' => [ 'T' ] },
+#                   'exclude' => { 'label_atom_id' => $interaction_atom_names },
+#                   'data' => [ 'id' ],
+#                   'is_list' => 1 } );
 
-    if( $add_sidechains ) {
-        # Extracts rotamer angle data that will used to generate atom
-        # coordinates.
-        my $pdbx_loops = obtain_pdbx_loop( $pdbx_file,
-                                           [ '_[local]_rotamer_angle' ] );
+#     if( $add_sidechains ) {
+#         # Extracts rotamer angle data that will used to generate atom
+#         # coordinates.
+#         my $pdbx_loops = obtain_pdbx_loop( $pdbx_file,
+#                                            [ '_[local]_rotamer_angle' ] );
 
-        next if ! %{ $pdbx_loops };
+#         next if ! %{ $pdbx_loops };
 
-        # Generates data structure from $pdbx_loops.
-        my $pdbx_loop_unique =
-            pdbx_loop_unique( $pdbx_loops, '_[local]_rotamer_angle', [ 'id' ] );
-        my $pdbx_loop_split_groups =
-            # TODO: 'atom_site' should be changed to 'loop_site' in the future.
-            split_by( { 'atom_site' => $pdbx_loop_unique } );
+#         # Generates data structure from $pdbx_loops.
+#         my $pdbx_loop_unique =
+#             pdbx_loop_unique( $pdbx_loops, '_[local]_rotamer_angle', [ 'id' ] );
+#         my $pdbx_loop_split_groups =
+#             # TODO: 'atom_site' should be changed to 'loop_site' in the future.
+#             split_by( { 'atom_site' => $pdbx_loop_unique } );
 
-        my %rotamer_angles;
-        for my $residue_unique_key ( sort keys %{ $pdbx_loop_split_groups } ) {
-            my $residue_site =
-                filter_by_unique_residue_key( $selected_atom_site,
-                                              $residue_unique_key, 1 );
+#         my %rotamer_angles;
+#         for my $residue_unique_key ( sort keys %{ $pdbx_loop_split_groups } ) {
+#             my $residue_site =
+#                 filter_by_unique_residue_key( $selected_atom_site,
+#                                               $residue_unique_key, 1 );
 
-            hybridization( $parameters, $residue_site );
-            connect_atoms( $parameters, $residue_site );
+#             hybridization( $parameters, $residue_site );
+#             connect_atoms( $parameters, $residue_site );
 
-            # Generates rotational model.
-            rotation_only( $parameters, $residue_site );
+#             # Generates rotational model.
+#             rotation_only( $parameters, $residue_site );
 
-            for my $id ( sort { $a <=> $b }
-                             @{$pdbx_loop_split_groups->{$residue_unique_key} }){
-                my $rotamer_id = $pdbx_loop_unique->{$id}{'rotamer_id'};
-                my $angle_name = $pdbx_loop_unique->{$id}{'type'};
-                my $angle_value = $pdbx_loop_unique->{$id}{'value'};
-                $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name}=
-                    [ $angle_value ];
-            }
-        }
+#             for my $id ( sort { $a <=> $b }
+#                              @{$pdbx_loop_split_groups->{$residue_unique_key} }){
+#                 my $rotamer_id = $pdbx_loop_unique->{$id}{'rotamer_id'};
+#                 my $angle_name = $pdbx_loop_unique->{$id}{'type'};
+#                 my $angle_value = $pdbx_loop_unique->{$id}{'value'};
+#                 $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name}=
+#                     [ $angle_value ];
+#             }
+#         }
 
-        my %rotamer_atom_site;
-        my $last_atom_id = max( keys %{ $atom_site } );
-        for my $atom_id ( @{ $target_atom_ids } ) {
-            my $residue_unique_key =
-                unique_residue_key( $selected_atom_site->{$atom_id} );
-            for my $rotamer_id ( sort { $a <=> $b }
-                                 keys %{ $rotamer_angles{$residue_unique_key} }){
-                my $rotamer_angles =
-                    $rotamer_angles{$residue_unique_key}{$rotamer_id};
-                %rotamer_atom_site =
-                    ( %rotamer_atom_site,
-                      %{ generate_pseudo(
-                             { 'parameters' => $parameters,
-                               'atom_site' => $selected_atom_site,
-                               'atom_specifier' => { 'id' => [ $atom_id ] },
-                               'angle_values' => $rotamer_angles,
-                               'last_atom_id' => $last_atom_id,
-                                # TODO: check if it is a good idea to have
-                                # $rotamer_id as 'label_alt_id'.
-                               'alt_group_id' => $rotamer_id,
-                               'selection_state' => 'T' } ) } );
-                $last_atom_id++;
-            }
+#         my %rotamer_atom_site;
+#         my $last_atom_id = max( keys %{ $atom_site } );
+#         for my $atom_id ( @{ $target_atom_ids } ) {
+#             my $residue_unique_key =
+#                 unique_residue_key( $selected_atom_site->{$atom_id} );
+#             for my $rotamer_id ( sort { $a <=> $b }
+#                                  keys %{ $rotamer_angles{$residue_unique_key} }){
+#                 my $rotamer_angles =
+#                     $rotamer_angles{$residue_unique_key}{$rotamer_id};
+#                 %rotamer_atom_site =
+#                     ( %rotamer_atom_site,
+#                       %{ generate_pseudo(
+#                              { 'parameters' => $parameters,
+#                                'atom_site' => $selected_atom_site,
+#                                'atom_specifier' => { 'id' => [ $atom_id ] },
+#                                'angle_values' => $rotamer_angles,
+#                                'last_atom_id' => $last_atom_id,
+#                                 # TODO: check if it is a good idea to have
+#                                 # $rotamer_id as 'label_alt_id'.
+#                                'alt_group_id' => $rotamer_id,
+#                                'selection_state' => 'T' } ) } );
+#                 $last_atom_id++;
+#             }
 
-            if( ! $keep_original ) {
-                delete $atom_site->{$atom_id};
-            }
-        }
+#             if( ! $keep_original ) {
+#                 delete $atom_site->{$atom_id};
+#             }
+#         }
 
-        # Prints out cif.
-        to_pdbx( { 'pdbx_data' => $pdbx_loops,
-                   'pdbx_data_indexed' =>
-                       {'_atom_site' => { %{ $atom_site }, %rotamer_atom_site }},
-                   'add_attributes' =>
-                       {'_atom_site' => [ '[local]_selection_state' ] } } );
-    } elsif( $add_hydrogens ) {
-        # Selects all atoms if no specific atoms are selected.
-        if( ! %{ $target_atom_site } ) {
-            $target_atom_site = $atom_site;
-            $selected_atom_site = $atom_site;
-            mark_selection( $target_atom_site,
-                            { 'target' => [ keys %{ $target_atom_site } ] } );
-        }
+#         # Prints out cif.
+#         to_pdbx( { 'pdbx_data' => $pdbx_loops,
+#                    'pdbx_data_indexed' =>
+#                        {'_atom_site' => { %{ $atom_site }, %rotamer_atom_site }},
+#                    'add_attributes' =>
+#                        {'_atom_site' => [ '[local]_selection_state' ] } } );
+#     } elsif( $add_hydrogens ) {
+#         # Selects all atoms if no specific atoms are selected.
+#         if( ! %{ $target_atom_site } ) {
+#             $target_atom_site = $atom_site;
+#             $selected_atom_site = $atom_site;
+#             mark_selection( $target_atom_site,
+#                             { 'target' => [ keys %{ $target_atom_site } ] } );
+#         }
 
-        my $atom_site_split_groups =
-            split_by( { 'atom_site' => $selected_atom_site,
-                        'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
-                        'append_dot' => 1 } );
+#         my $atom_site_split_groups =
+#             split_by( { 'atom_site' => $selected_atom_site,
+#                         'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
+#                         'append_dot' => 1 } );
 
-        my %hydrogen_site;
-        my $last_atom_id = max( keys %{ $atom_site } );
-        my @visited_atom_ids;
-        for my $atom_site_identifier ( sort keys %{ $atom_site_split_groups } ) {
-            my $current_atom_site =
-                filter( { 'atom_site' => $target_atom_site,
-                          'include' =>
-                              { 'id' =>
-                                    $atom_site_split_groups->
-                                        {$atom_site_identifier} } } );
-            my $reference_atom_site =
-                filter( { 'atom_site' => $selected_atom_site,
-                          'include' =>
-                              { 'id' =>
-                                    $atom_site_split_groups->
-                                        {$atom_site_identifier} } } );
+#         my %hydrogen_site;
+#         my $last_atom_id = max( keys %{ $atom_site } );
+#         my @visited_atom_ids;
+#         for my $atom_site_identifier ( sort keys %{ $atom_site_split_groups } ) {
+#             my $current_atom_site =
+#                 filter( { 'atom_site' => $target_atom_site,
+#                           'include' =>
+#                               { 'id' =>
+#                                     $atom_site_split_groups->
+#                                         {$atom_site_identifier} } } );
+#             my $reference_atom_site =
+#                 filter( { 'atom_site' => $selected_atom_site,
+#                           'include' =>
+#                               { 'id' =>
+#                                     $atom_site_split_groups->
+#                                         {$atom_site_identifier} } } );
 
-            connect_atoms( $parameters, $current_atom_site );
-            hybridization( $parameters, $current_atom_site );
-            # TODO: check how determination of bond parameters could be reduced,
-            # because it increases the computation time.
-            connect_atoms( $parameters, $reference_atom_site );
-            hybridization( $parameters, $reference_atom_site );
+#             connect_atoms( $parameters, $current_atom_site );
+#             hybridization( $parameters, $current_atom_site );
+#             # TODO: check how determination of bond parameters could be reduced,
+#             # because it increases the computation time.
+#             connect_atoms( $parameters, $reference_atom_site );
+#             hybridization( $parameters, $reference_atom_site );
 
-            my $hydrogen_site =
-                add_hydrogens( $parameters, $current_atom_site,
-                               { 'last_atom_id' => $last_atom_id,
-                                 'use_origins_alt_group_id' => 1,
-                                 'use_existing_connections' => 1,
-                                 'use_existing_hybridizations' => 1,
-                                 'add_only_clear_positions' =>
-                                     $add_clear_positions,
-                                 'exclude_by_atom_ids' => \@visited_atom_ids,
-                                 'reference_atom_site' => $reference_atom_site});
-            %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
+#             my $hydrogen_site =
+#                 add_hydrogens( $parameters, $current_atom_site,
+#                                { 'last_atom_id' => $last_atom_id,
+#                                  'use_origins_alt_group_id' => 1,
+#                                  'use_existing_connections' => 1,
+#                                  'use_existing_hybridizations' => 1,
+#                                  'add_only_clear_positions' =>
+#                                      $add_clear_positions,
+#                                  'exclude_by_atom_ids' => \@visited_atom_ids,
+#                                  'reference_atom_site' => $reference_atom_site});
+#             %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
 
-            push @visited_atom_ids, keys %{ $current_atom_site };
+#             push @visited_atom_ids, keys %{ $current_atom_site };
 
-            $last_atom_id = max( keys %hydrogen_site );
-        }
+#             $last_atom_id = max( keys %hydrogen_site );
+#         }
 
-        # Prints out cif.
-        to_pdbx( { 'pdbx_data_indexed' =>
-                       { '_atom_site' => { %{ $atom_site }, %hydrogen_site } },
-                   'add_attributes' =>
-                       { '_atom_site' => [ '[local]_selection_state' ] } } );
-    } else {
-        error(
-            { 'program' => $0,
-              'filename' => $pdbx_file,
-              'message' => "no options were chosen for atom additions.\n" } );
-    }
+#         # Prints out cif.
+#         to_pdbx( { 'pdbx_data_indexed' =>
+#                        { '_atom_site' => { %{ $atom_site }, %hydrogen_site } },
+#                    'add_attributes' =>
+#                        { '_atom_site' => [ '[local]_selection_state' ] } } );
+#     } else {
+#         error(
+#             { 'program' => $0,
+#               'filename' => $pdbx_file,
+#               'message' => "no options were chosen for atom additions.\n" } );
+#     }
 }

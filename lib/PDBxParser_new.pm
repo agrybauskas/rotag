@@ -15,6 +15,7 @@ our @EXPORT_OK = qw( filter
                      pdbx_raw
                      raw2indexed
                      related_category_data
+                     split_by
                      to_csv
                      to_pdbx );
 
@@ -685,6 +686,86 @@ sub filter_by_unique_residue_key
                                          [ $residue_alt,
                                            ( $include_dot ? '.' : () ) ] } } );
     return $filtered_atoms;
+}
+
+#
+# Splits up atom site to different groups by specified attributes.
+# Input:
+#     $args->{atom_site} - atom site data structure;
+#     $args->{attributes} - list of attributes that atom site will be split by;
+#     $args->{append_dot} - atoms that has 'label_alt_id' eq '.' to
+#     corresponding groups.
+# Output:
+#     %split_groups - hash of atom site data structures.
+#
+
+sub split_by
+{
+    my ( $args ) = @_;
+    my ( $atom_site, $attributes, $append_dot ) =
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'} );
+
+    $attributes //=
+        [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
+    $append_dot //= 0;
+
+    my %split_groups;
+    for my $atom_id ( sort keys %{ $atom_site } ) {
+        # Creates group determining key that is used to sort atoms.
+        my @attribute_values;
+        for my $attribute ( @{ $attributes } ) {
+            push @attribute_values, $atom_site->{$atom_id}{$attribute};
+        }
+
+        my $group_key = join q{,}, @attribute_values;
+
+        if( exists $split_groups{$group_key} ) {
+            push @{ $split_groups{$group_key} }, $atom_id;
+        } else {
+            $split_groups{$group_key} = [ $atom_id ];
+        }
+    }
+
+    if( $append_dot ) {
+        # Pre-determines position of attribute in unique key.
+        my $alt_id_pos;
+        for my $i ( 0..$#{ $attributes } ) {
+            if( $attributes->[$i] eq 'label_alt_id' ) {
+                $alt_id_pos = $i;
+                last;
+            }
+        }
+
+        # Defines relations alternative and origin atoms.
+        my %unique_key_relations;
+        my @origin_keys;
+        for my $unique_key ( keys %split_groups ) {
+            my @unique_key_attributes = split /,/sxm, $unique_key;
+            if( $unique_key_attributes[$alt_id_pos] ne q{.} ) {
+                $unique_key_attributes[$alt_id_pos] = '.';
+
+                my $origin_key = join ',', @unique_key_attributes;
+                push @origin_keys, $origin_key;
+
+                $unique_key_relations{$unique_key} = $origin_key;
+            }
+        }
+
+        # Appends origin atoms to alternative groups of atoms if necessary.
+        for my $alt_key ( keys %unique_key_relations ) {
+            if( exists $split_groups{$unique_key_relations{$alt_key}} ) {
+                push @{ $split_groups{$alt_key} },
+                     @{ $split_groups{$unique_key_relations{$alt_key}} };
+            }
+        }
+
+        # Removes origin atoms that have alternatives.
+        for my $origin_key ( uniq @origin_keys ) {
+            delete $split_groups{$origin_key};
+        }
+    }
+
+    return \%split_groups;
 }
 
 #
