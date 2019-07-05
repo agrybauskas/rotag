@@ -9,7 +9,7 @@ our @EXPORT_OK = qw( indexed2raw
                      pdbx_indexed
                      pdbx_raw
                      raw2indexed
-                     raw2pdbx
+                     to_pdbx
                      related_category_data );
 
 use Carp;
@@ -408,7 +408,7 @@ sub indexed2raw
 # --------------------------- Data structures to STDOUT ----------------------- #
 
 #
-# Converts atom site data structure to PDBx.
+# Converts pdbx data structure to PDBx.
 # Input:
 #     $options->{data_name} - data name of the PDBx;
 #     $options->{category_order} - category list that should be included in the
@@ -417,12 +417,13 @@ sub indexed2raw
 #     included in the output in certain order;
 #     $options->{add_attributes} - add list of attributes to existing data
 #     structure;
+#     $options->{tags} - tags that should be included in the output.
 #     $options->{fh} - file handler.
 # Output:
 #     PDBx STDOUT.
 #
 
-sub raw2pdbx
+sub to_pdbx
 {
     my ( $pdbx_data, $options ) = @_;
     my ( $data_name, $category_order, $attribute_order, $tags, $add_attributes,

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use PDBxParser_new qw( obtain_pdbx_data
-                       raw2pdbx );
+                       to_pdbx );
 
 #
 # Unit test: PDBxParser::obtain_pdbx_data
@@ -19,4 +19,4 @@ $pdbx_file = '-' unless $pdbx_file;
 my $pdbx_data =
     obtain_pdbx_data( $pdbx_file, \@data_identifier );
 
-raw2pdbx( $pdbx_data );
+to_pdbx( $pdbx_data );
