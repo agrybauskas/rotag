@@ -105,6 +105,7 @@ sub obtain_pdbx_line
         push @{$pdbx_line_data{$category}{'metadata'}{'attributes'}}, $attribute;
         push @{$pdbx_line_data{$category}{'data'}}, $current_line_data{$key};
         $pdbx_line_data{$category}{'metadata'}{'is_loop'} = 0;
+        $pdbx_line_data{$category}{'metadata'}{'is_indexed'} = 0;
     }
 
     return \%pdbx_line_data;
@@ -187,6 +188,7 @@ sub obtain_pdbx_loop
         my %pdbx_loop_data;
         for( my $j = 0; $j <= $#{ $categories[-1] }; $j++ ) {
             $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'is_loop'} = 1;
+            $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'is_indexed'} = 0;
             $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'attributes'} =
                 $attributes[$i][$j];
             $pdbx_loop_data{$categories[$i][$j]}{'data'} =

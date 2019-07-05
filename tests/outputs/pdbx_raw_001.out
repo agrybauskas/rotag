@@ -17,6 +17,7 @@ $VAR1 = {
         'name',
         'pdbx_ordinal'
       ],
+      'is_indexed' => 0,
       'is_loop' => 1
     }
   },
@@ -28,6 +29,7 @@ $VAR1 = {
       'attributes' => [
         'dict_name'
       ],
+      'is_indexed' => 0,
       'is_loop' => 0
     }
   },
@@ -48,6 +50,7 @@ WKNWKLELYVRKMWDWKKLIKEQEFEIFPNSKPLQPKPEK
       'attributes' => [
         'pdbx_seq_one_letter_code'
       ],
+      'is_indexed' => 0,
       'is_loop' => 0
     }
   }
