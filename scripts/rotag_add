@@ -197,69 +197,71 @@ for my $pdbx_file ( @ARGV ) {
                    'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] } } );
     } elsif( $add_hydrogens ) {
-#         # Selects all atoms if no specific atoms are selected.
-#         if( ! %{ $target_atom_site } ) {
-#             $target_atom_site = $atom_site;
-#             $selected_atom_site = $atom_site;
-#             mark_selection( $target_atom_site,
-#                             { 'target' => [ keys %{ $target_atom_site } ] } );
-#         }
+        # Selects all atoms if no specific atoms are selected.
+        if( ! %{ $target_atom_site } ) {
+            $target_atom_site = $atom_site;
+            $selected_atom_site = $atom_site;
+            mark_selection( $target_atom_site,
+                            { 'target' => [ keys %{ $target_atom_site } ] } );
+        }
 
-#         my $atom_site_split_groups =
-#             split_by( { 'atom_site' => $selected_atom_site,
-#                         'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
-#                         'append_dot' => 1 } );
+        my $atom_site_split_groups =
+            split_by( { 'atom_site' => $selected_atom_site,
+                        'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
+                        'append_dot' => 1 } );
 
-#         my %hydrogen_site;
-#         my $last_atom_id = max( keys %{ $atom_site } );
-#         my @visited_atom_ids;
-#         for my $atom_site_identifier ( sort keys %{ $atom_site_split_groups } ) {
-#             my $current_atom_site =
-#                 filter( { 'atom_site' => $target_atom_site,
-#                           'include' =>
-#                               { 'id' =>
-#                                     $atom_site_split_groups->
-#                                         {$atom_site_identifier} } } );
-#             my $reference_atom_site =
-#                 filter( { 'atom_site' => $selected_atom_site,
-#                           'include' =>
-#                               { 'id' =>
-#                                     $atom_site_split_groups->
-#                                         {$atom_site_identifier} } } );
+        my %hydrogen_site;
+        my $last_atom_id = max( keys %{ $atom_site } );
+        my @visited_atom_ids;
+        for my $atom_site_identifier ( sort keys %{ $atom_site_split_groups } ) {
+            my $current_atom_site =
+                filter( { 'atom_site' => $target_atom_site,
+                          'include' =>
+                              { 'id' =>
+                                    $atom_site_split_groups->
+                                        {$atom_site_identifier} } } );
+            my $reference_atom_site =
+                filter( { 'atom_site' => $selected_atom_site,
+                          'include' =>
+                              { 'id' =>
+                                    $atom_site_split_groups->
+                                        {$atom_site_identifier} } } );
 
-#             connect_atoms( $parameters, $current_atom_site );
-#             hybridization( $parameters, $current_atom_site );
-#             # TODO: check how determination of bond parameters could be reduced,
-#             # because it increases the computation time.
-#             connect_atoms( $parameters, $reference_atom_site );
-#             hybridization( $parameters, $reference_atom_site );
+            connect_atoms( $parameters, $current_atom_site );
+            hybridization( $parameters, $current_atom_site );
+            # TODO: check how determination of bond parameters could be reduced,
+            # because it increases the computation time.
+            connect_atoms( $parameters, $reference_atom_site );
+            hybridization( $parameters, $reference_atom_site );
 
-#             my $hydrogen_site =
-#                 add_hydrogens( $parameters, $current_atom_site,
-#                                { 'last_atom_id' => $last_atom_id,
-#                                  'use_origins_alt_group_id' => 1,
-#                                  'use_existing_connections' => 1,
-#                                  'use_existing_hybridizations' => 1,
-#                                  'add_only_clear_positions' =>
-#                                      $add_clear_positions,
-#                                  'exclude_by_atom_ids' => \@visited_atom_ids,
-#                                  'reference_atom_site' => $reference_atom_site});
-#             %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
+            my $hydrogen_site =
+                add_hydrogens( $parameters, $current_atom_site,
+                               { 'last_atom_id' => $last_atom_id,
+                                 'use_origins_alt_group_id' => 1,
+                                 'use_existing_connections' => 1,
+                                 'use_existing_hybridizations' => 1,
+                                 'add_only_clear_positions' =>
+                                     $add_clear_positions,
+                                 'exclude_by_atom_ids' => \@visited_atom_ids,
+                                 'reference_atom_site' => $reference_atom_site});
+            %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
 
-#             push @visited_atom_ids, keys %{ $current_atom_site };
+            push @visited_atom_ids, keys %{ $current_atom_site };
 
-#             $last_atom_id = max( keys %hydrogen_site );
-#         }
+            $last_atom_id = max( keys %hydrogen_site );
+        }
 
-#         # Prints out cif.
-#         to_pdbx( { 'pdbx_data_indexed' =>
-#                        { '_atom_site' => { %{ $atom_site }, %hydrogen_site } },
-#                    'add_attributes' =>
-#                        { '_atom_site' => [ '[local]_selection_state' ] } } );
-#     } else {
-#         error(
-#             { 'program' => $0,
-#               'filename' => $pdbx_file,
-#               'message' => "no options were chosen for atom additions.\n" } );
+        $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %hydrogen_site };
+        $pdbx->{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
+        to_pdbx( $pdbx,
+                 { 'categories' => [ '_atom_site' ],
+                   'add_attributes' =>
+                       { '_atom_site' => [ '[local]_selection_state' ] } } );
+    } else {
+        error(
+            { 'program' => $0,
+              'filename' => $pdbx_file,
+              'message' => "no options were chosen for atom additions.\n" } );
     }
 }
