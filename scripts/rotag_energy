@@ -20,12 +20,12 @@ use Grid qw( grid_box
 use BondProperties qw( hybridization );
 use Logging qw( error
                 warning );
-use PDBxParser qw( filter
-                   mark_selection
-                   obtain_atom_site
-                   pdbx_loop_to_csv
-                   split_by
-                   to_pdbx );
+use PDBxParser_new qw( filter
+                       mark_selection
+                       obtain_pdbx_data
+                       split_by
+                       to_csv
+                       to_pdbx );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -143,9 +143,10 @@ for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
 }
 
 for my $pdbx_file ( @ARGV ) {
+    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
+
     # Reads file path, stdin and '-' operator.
-    my $atom_site;
-    $atom_site = obtain_atom_site( $pdbx_file );
+    my $atom_site = $pdbx->{''};
 
     next if ! %{ $atom_site };
 
@@ -333,19 +334,19 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( $output_format eq 'pdbx' ) {
-        if( $add_B_iso ) {
-            to_pdbx( { 'atom_site' => $atom_site,
-                       'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
-        } else {
-            to_pdbx( { 'pdbx_data' => \%pdbx_data } );
-        }
+    #     if( $add_B_iso ) {
+    # #         to_pdbx( { 'atom_site' => $atom_site,
+    # #                    'add_atom_attributes' => [ 'B_iso_or_equiv' ] } );
+    #     } else {
+    #         to_pdbx( \%pdbx_data );
+    #     }
     } elsif( $output_format eq 'csv' ) {
-        if( $do_pairwise ) {
-            pdbx_loop_to_csv( $pdbx_data{'_[local]_pairwise_energy'} );
-        } elsif( $do_sidechain ) {
-            pdbx_loop_to_csv( $pdbx_data{'_[local]_rotamer_energy'} );
-        } else {
-            pdbx_loop_to_csv( $pdbx_data{'_[local]_energy'} );
-        }
+    #     if( $do_pairwise ) {
+    #         pdbx_loop_to_csv( $pdbx_data{'_[local]_pairwise_energy'} );
+    #     } elsif( $do_sidechain ) {
+    #         pdbx_loop_to_csv( $pdbx_data{'_[local]_rotamer_energy'} );
+    #     } else {
+    #         pdbx_loop_to_csv( $pdbx_data{'_[local]_energy'} );
+    #     }
     }
 }
