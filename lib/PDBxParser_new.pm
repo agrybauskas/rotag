@@ -933,8 +933,9 @@ sub to_pdbx
             'pdbx_PDB_model_num',
         ]
     };
-    $add_attributes //= { '_atom_site' => [ '[local]_selection_state',
-                                            '[local]_selection_group' ] };
+    # TODO: should it be removed?
+    # $add_attributes //= { '_atom_site' => [ '[local]_selection_state',
+    #                                         '[local]_selection_group' ] };
     $fh //= \*STDOUT;
 
     my ( $current_categories ) =

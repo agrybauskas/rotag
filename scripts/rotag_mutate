@@ -12,10 +12,12 @@ use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use Moieties qw( replace_with_moiety );
-use PDBxParser qw( filter
-                   obtain_atom_site
-                   to_pdbx
-                   unique_residue_key );
+use PDBxParser_new qw( filter
+                       obtain_atom_site
+                       obtain_pdbx_data
+                       raw2indexed
+                       to_pdbx
+                       unique_residue_key );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -129,9 +131,10 @@ for( my $i = 0; $i <= $#mutations; $i++ ) {
 }
 
 for my $pdbx_file ( @ARGV ) {
-    # Reads file path, stdin and '-' operator.
-    my $atom_site;
-    $atom_site = obtain_atom_site( $pdbx_file );
+    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
+    $pdbx = raw2indexed($pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } });
+
+    my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
     next if ! %{ $atom_site };
 
@@ -181,8 +184,13 @@ for my $pdbx_file ( @ARGV ) {
                                  { 'angles' => $mutations[$i]{'angles'},
                                    'append_moieties' => \%append_moieties } );
 
-            to_pdbx( { 'pdbx_data_indexed' =>
-                           { '_atom_site' => $selected_atom_site } } );
+            my %current_pdbx = ();
+            $current_pdbx{'_atom_site'} = $pdbx->{'_atom_site'};
+            $current_pdbx{'_atom_site'}{'data'} = $selected_atom_site;
+            $current_pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+            $current_pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
+            to_pdbx( \%current_pdbx );
         }
     } else {
         error( { 'program' => $0,
