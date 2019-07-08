@@ -193,7 +193,8 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx->{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
 
         to_pdbx( $pdbx,
-                 { 'add_attributes' =>
+                 { 'categories' => [ '_atom_site' ],
+                   'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] } } );
     } elsif( $add_hydrogens ) {
 #         # Selects all atoms if no specific atoms are selected.

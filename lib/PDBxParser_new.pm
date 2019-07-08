@@ -882,8 +882,9 @@ sub to_pdbx
                                             '[local]_selection_group' ] };
     $fh //= \*STDOUT;
 
-    my ( $categories ) =
+    my ( $current_categories ) =
         sort_by_list( [ sort keys %{ $pdbx_data } ], $category_order );
+    $categories //= $current_categories;
 
     print {$fh} "data_${data_name}\n#\n";
 
