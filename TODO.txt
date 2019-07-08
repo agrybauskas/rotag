@@ -96,3 +96,5 @@
    unique residue pair.
 !! Look if ids are not repeating in rotag_rmsd -S output.
 -- to_csv() should also parse indexed data.
+-- It looks that raw2indexed() and indexed2raw() should be functions that
+   only deal with references. That way conversions are more convenient.

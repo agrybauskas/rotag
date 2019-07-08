@@ -976,14 +976,14 @@ sub to_pdbx
 
 sub to_csv
 {
-    my ( $self, $options ) = @_;
+    my ( $pdbx, $options ) = @_;
     my ( $category, $attributes ) = (
         $options->{'category'}, $options->{'attributes'}
     );
 
-    $category //= (sort keys %{ $self })[0]; # TODO: assigning through list
+    $category //= (sort keys %{ $pdbx })[0]; # TODO: assigning through list
                                              # might loose the information.
-    my $pdbx_raw = $self->{$category};
+    my $pdbx_raw = $pdbx->{$category};
 
     $attributes //= $pdbx_raw->{'metadata'}{'attributes'};
 
