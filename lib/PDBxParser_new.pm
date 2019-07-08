@@ -844,9 +844,10 @@ sub mark_selection
 sub to_pdbx
 {
     my ( $pdbx_data, $options ) = @_;
-    my ( $data_name, $category_order, $attribute_order, $tags, $add_attributes,
-         $fh ) = (
+    my ( $data_name, $categories, $category_order, $attribute_order, $tags,
+         $add_attributes, $fh ) = (
         $options->{'data_name'},
+        $options->{'categories'},
         $options->{'category_order'},
         $options->{'attribute_order'},
         $options->{'tags'},
@@ -877,8 +878,8 @@ sub to_pdbx
             'pdbx_PDB_model_num',
         ]
     };
-    $add_attributes //= { '_atom_site' => [ '_[local]_selection_state',
-                                            '_[local]_selection_group' ] };
+    $add_attributes //= { '_atom_site' => [ '[local]_selection_state',
+                                            '[local]_selection_group' ] };
     $fh //= \*STDOUT;
 
     my ( $categories ) =
