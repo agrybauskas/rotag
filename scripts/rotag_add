@@ -189,6 +189,11 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
 
+        $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %rotamer_atom_site };
+        $pdbx->{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
+        to_pdbx( $pdbx );
+
         # # Prints out cif.
         # to_pdbx( { 'pdbx_data' => $pdbx_loops,
         #            'pdbx_data_indexed' =>
