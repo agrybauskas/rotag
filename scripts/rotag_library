@@ -49,7 +49,7 @@ our $VERSION = $VERSION;
 
 my $top_rank;
 my $top_ratio;
-my $tags = '';
+my $tags = '_atom_site,_[local]_rotamer_angle';
 my $output_format = 'pdbx';
 
 local $SIG{__WARN__} = sub {
@@ -99,127 +99,106 @@ for my $pdbx_file ( @ARGV ) {
                                  [ '_atom_site',
                                    '_[local]_rotamer_angle',
                                    '_[local]_rotamer_energy' ] );
-    $pdbx = raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] },
-                                  'read_until_end' => 1 } );
+    $pdbx = raw2indexed( $pdbx,
+                         { 'attributes' =>
+                               { '_atom_site' => [ 'id' ],
+                                 '_[local]_rotamer_angle' => [ 'id' ],
+                                 '_[local]_rotamer_energy' => [ 'rotamer_id' ] },
+                           'read_until_end' => 1 } );
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
-    # if( ! exists $pdbx_data->[0]{'_[local]_rotamer_angle'} ||
-    #     ! exists $pdbx_data->[0]{'_[local]_rotamer_energy'} ) {
-    #     warning( { 'message' => 'no rotamer angles and energies were ' .
-    #                             "detected.\n" } );
-    #     exit;
-    # }
+    if( ! exists $pdbx->{'_[local]_rotamer_angle'} ||
+        ! exists $pdbx->{'_[local]_rotamer_energy'} ) {
+        warning( { 'message' => 'no rotamer angles and energies were ' .
+                                "detected.\n" } );
+        exit;
+    }
 
-    # my $rotamer_angles =
-    #     pdbx_loop_unique( { '_[local]_rotamer_angle' =>
-    #                             $pdbx_data->[0]{'_[local]_rotamer_angle'} },
-    #                       '_[local]_rotamer_angle', [ 'id' ] );
-    # my $rotamer_energy =
-    #     pdbx_loop_unique( { '_[local]_rotamer_energy' =>
-    #                             $pdbx_data->[0]{'_[local]_rotamer_energy'} },
-    #                       '_[local]_rotamer_energy',
-    #                       [ 'rotamer_id' ] );
+    my $rotamer_angles = $pdbx->{'_[local]_rotamer_angle'}{'data'};
+    my $rotamer_energy = $pdbx->{'_[local]_rotamer_energy'}{'data'};
 
-    # # Generates a new collection of residue angles with defined frequencies.
-    # my $residue_angle_groups = split_by( { 'atom_site' => $rotamer_angles } );
-    # my @rotamers;
+    # Generates a new collection of residue angles with defined frequencies.
+    my $residue_angle_groups = split_by( { 'atom_site' => $rotamer_angles } );
+    my @rotamers;
 
-    # my %frequencies = ();
-    # for my $residue_unique_key ( sort keys %{ $residue_angle_groups } ) {
-    #     my @angle_ids = @{ $residue_angle_groups->{$residue_unique_key} };
-    #     my @rotamer_ids =
-    #         uniq map { $rotamer_angles->{$_}{'rotamer_id'} } @angle_ids;
+    my %frequencies = ();
+    for my $residue_unique_key ( sort keys %{ $residue_angle_groups } ) {
+        my @angle_ids = @{ $residue_angle_groups->{$residue_unique_key} };
+        my @rotamer_ids =
+            uniq map { $rotamer_angles->{$_}{'rotamer_id'} } @angle_ids;
 
-    #     my $current_top_rank;
-    #     if( $top_rank ) {
-    #         $current_top_rank =
-    #             $top_rank <= scalar @rotamer_ids ?
-    #             $top_rank :
-    #             scalar @rotamer_ids;
-    #     } elsif( $top_ratio ) {
-    #         $current_top_rank = int( scalar( @rotamer_ids ) * $top_ratio );
-    #         $current_top_rank = $current_top_rank == 0 ? 1 : $current_top_rank;
-    #     } else {
-    #         push @rotamers, @rotamer_ids;
-    #         next;
-    #     }
+        my $current_top_rank;
+        if( $top_rank ) {
+            $current_top_rank =
+                $top_rank <= scalar @rotamer_ids ?
+                $top_rank :
+                scalar @rotamer_ids;
+        } elsif( $top_ratio ) {
+            $current_top_rank = int( scalar( @rotamer_ids ) * $top_ratio );
+            $current_top_rank = $current_top_rank == 0 ? 1 : $current_top_rank;
+        } else {
+            push @rotamers, @rotamer_ids;
+            next;
+        }
 
-    #     my @current_rotamers =
-    #         sort { $rotamer_energy->{$a}{'value'} <=>
-    #                $rotamer_energy->{$b}{'value'} }
-    #              @rotamer_ids;
-    #     @current_rotamers = @current_rotamers[0..$current_top_rank-1];
+        my @current_rotamers =
+            sort { $rotamer_energy->{$a}{'value'} <=>
+                   $rotamer_energy->{$b}{'value'} }
+                 @rotamer_ids;
+        @current_rotamers = @current_rotamers[0..$current_top_rank-1];
 
-    #     next if ! @current_rotamers;
+        next if ! @current_rotamers;
 
-    #     # TODO: frequency part will change in the future, because it can change
-    #     # according to different strategies of calculations.
-    #     for my $rotamer_id ( @current_rotamers ) {
-    #         $frequencies{$rotamer_id} =
-    #             sprintf( $sig_figs_max, 1 / scalar @current_rotamers );
-    #     }
+        # TODO: frequency part will change in the future, because it can change
+        # according to different strategies of calculations.
+        for my $rotamer_id ( @current_rotamers ) {
+            $frequencies{$rotamer_id} =
+                sprintf( $sig_figs_max, 1 / scalar @current_rotamers );
+        }
 
-    #     push @rotamers, @current_rotamers;
-    # }
+        push @rotamers, @current_rotamers;
+    }
 
-    # my %pdbx_data;
-    # my @attributes =
-    #     ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-    #       'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value' );
-    # $pdbx_data{'_[local]_rotamer_angle'}{'attributes'} = \@attributes;
-    # $pdbx_data{'_[local]_rotamer_angle'}{'is_loop'} = 1;
+    my %pdbx_data;
+    $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
+    my @attributes =
+        ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
+          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value' );
+    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'}=\@attributes;
+    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_indexed'} = 0;
 
-    # for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
-    #     my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
-    #     if( any { $rotamer_id eq $_ } @rotamers ) {
-    #         my @rotamer_data = ();
-    #         for my $attribute ( @attributes ) {
-    #             if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
-    #                 push @rotamer_data, $rotamer_angles->{$angle_id}{$attribute};
-    #             }
-    #         }
+    for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
+        my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
+        if( any { $rotamer_id eq $_ } @rotamers ) {
+            my @rotamer_data = ();
+            for my $attribute ( @attributes ) {
+                if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
+                    push @rotamer_data, $rotamer_angles->{$angle_id}{$attribute};
+                }
+            }
 
-    #         push @{ $pdbx_data{'_[local]_rotamer_angle'}{'data'} },
-    #              @rotamer_data[0..6],
-    #              $frequencies{$rotamer_id},
-    #              $rotamer_data[8],
-    #              $rotamer_data[9];
-    #     }
-    # }
+            push @{ $pdbx_data{'_[local]_rotamer_angle'}{'data'} },
+                 @rotamer_data[0..6],
+                 $frequencies{$rotamer_id},
+                 $rotamer_data[8],
+                 $rotamer_data[9];
+        }
+    }
 
-    # if( @{ $tags } ) {
-    #     # TODO: quick fix, but should be standardized. How to handle atom site?
-    #     # Maybe after the data structure unification this problem will be solved,
-    #     # because now it is quite messy.
-    #     if( $output_format eq 'pdbx' ) {
-    #         to_pdbx( { ( ( any { $_ eq '_atom_site' } @{ $tags } ) ?
-    #                      ( 'pdbx_data_indexed' => { '_atom_site' => $atom_site },
-    #                        'add_atom_attributes' =>
-    #                            {'_atom_site' => [ '[local]_selection_state' ]} ):
-    #                      () ),
-    #                    'pdbx_data' => { map { $_ => $pdbx_data{$_} }
-    #                                        @{ $tags } } } );
-    #     } elsif( $output_format eq 'csv' ) {
-    #         if( scalar @{ $tags } == 1 ) {
-    #             # TODO: decide if 'atom_site' can be chosen as tag option.
-    #             pdbx_loop_to_csv( $pdbx_data{$tags->[0]} );
-    #         } else {
-    #             warning( { 'message' => "only one tag has to be chosen for " .
-    #                                     "CSV format.\n" } );
-    #             exit;
-    #         }
-    #     }
-    # } else {
-    #     if( $output_format eq 'pdbx' ) {
-    #         to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => $atom_site },
-    #                    'add_attributes' =>
-    #                        { '_atom_site' => [ '[local]_selection_state' ] },
-    #                    'pdbx_data' => \%pdbx_data } );
-    #     } elsif( $output_format eq 'csv' ) {
-    #             warning( { 'message' => "tag has to be chosen for CSV " .
-    #                                     "format.\n" } );
-    #             exit;
-    #     }
-    # }
+    if( $output_format eq 'pdbx' ) {
+        to_pdbx( \%pdbx_data,
+                 { 'add_attributes' =>
+                       { '_atom_site' => [ '[local]_selection_state' ] },
+                   'tags' => $tags } );
+    } elsif( $output_format eq 'csv' ) {
+        if( scalar @{ $tags } == 1 ) {
+            to_csv( %pdbx_data, { 'category' => $tags->[0] } );
+        } else {
+            warning( { 'message' => "only one tag has to be chosen for " .
+                           "CSV format.\n" } );
+            exit;
+        }
+    }
 }
