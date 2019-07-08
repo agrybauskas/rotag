@@ -13,10 +13,10 @@ use Try::Tiny;
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use PDBxParser qw( filter
-                   obtain_atom_sites
-                   split_by );
-use PDBxParser_new qw( related_category_data
+use PDBxParser qw( obtain_atom_sites );
+use PDBxParser_new qw( filter
+                       related_category_data
+                       split_by
                        to_pdbx
                        to_csv );
 use Measure qw( rmsd
