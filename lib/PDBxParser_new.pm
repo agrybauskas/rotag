@@ -17,7 +17,8 @@ our @EXPORT_OK = qw( filter
                      related_category_data
                      split_by
                      to_csv
-                     to_pdbx );
+                     to_pdbx
+                     unique_residue_key );
 
 use Carp;
 use List::MoreUtils qw( any
@@ -686,6 +687,27 @@ sub filter_by_unique_residue_key
                                          [ $residue_alt,
                                            ( $include_dot ? '.' : () ) ] } } );
     return $filtered_atoms;
+}
+
+#
+# Create unique residue key that consists of '_atom_site.label_seq_id',
+# '_atom_site.label_asym_id', '_atom_site.pdbx_PDB_model_num' and
+# '_atom_site.label_alt_id'.
+# Input:
+#     $atom - atom data structure.
+# Output:
+#     $unique_residue_key - unique residue key.
+#
+
+sub unique_residue_key
+{
+    my ( $atom ) = @_;
+    return join q{,},
+           map { $atom->{$_} }
+               ( 'label_seq_id',
+                 'label_asym_id',
+                 'pdbx_PDB_model_num',
+                 'label_alt_id', );
 }
 
 #
