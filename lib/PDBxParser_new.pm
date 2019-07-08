@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( filter
+our @EXPORT_OK = qw( determine_residue_keys
+                     filter
                      filter_by_unique_residue_key
                      filter_new
                      indexed2raw
@@ -708,6 +709,60 @@ sub unique_residue_key
                  'label_asym_id',
                  'pdbx_PDB_model_num',
                  'label_alt_id', );
+}
+
+#
+# TODO: maybe this function should be deprecated, because identify_residue_atoms
+# does a better job.
+# Generates a list of unique keys from the atom site.
+# Input:
+#     $atom_site - atom site data structure;
+#     $options->{'exclude_dot'} - excludes label atom ids with '.' value, but
+#     only if there are alternatives.
+# Output:
+#     @residue_unique_keys - list of determined unique keys.
+#
+
+sub determine_residue_keys
+{
+    my ( $atom_site, $options ) = @_;
+    my ( $exclude_dot ) = $options->{'exclude_dot'};
+
+    my @current_residue_unique_keys;
+    for my $atom_id ( keys %{ $atom_site } ) {
+        push @current_residue_unique_keys,
+            unique_residue_key( $atom_site->{$atom_id} );
+    }
+    @current_residue_unique_keys = uniq @current_residue_unique_keys;
+
+    my %residue_key_tree;
+    for my $residue_unique_key ( @current_residue_unique_keys ) {
+        my $reduced_unique_key = $residue_unique_key;
+        my $alt_id = $residue_unique_key;
+        $reduced_unique_key =~ s/^(.+,.+,.+),.+$/$1/g;
+        $alt_id =~ s/^.+,.+,.+,(.+)$/$1/g;
+        if( exists $residue_key_tree{$reduced_unique_key} ) {
+            push @{ $residue_key_tree{$reduced_unique_key} },$residue_unique_key;
+        } else {
+            $residue_key_tree{$reduced_unique_key} = [ $residue_unique_key ];
+        }
+    }
+
+    my @residue_unique_keys;
+    for my $reduced_unique_key ( keys %residue_key_tree ) {
+        my $residue_unique_keys = $residue_key_tree{$reduced_unique_key};
+        if( scalar @{ $residue_unique_keys } > 1 ) {
+            for my $i ( 0..$#{ $residue_unique_keys } ) {
+                if( $exclude_dot && $residue_unique_keys->[$i] =~ m/\.$/ ) {
+                    splice @{ $residue_unique_keys }, $i, 1;
+                    last;
+                }
+            }
+        }
+        push @residue_unique_keys, @{ $residue_unique_keys };
+    }
+
+    return \@residue_unique_keys;
 }
 
 #

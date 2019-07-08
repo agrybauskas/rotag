@@ -346,7 +346,7 @@ for my $pdbx_file ( @ARGV ) {
         if( $add_B_iso ) {
             to_pdbx( \%pdbx_data,
                      { 'categories' => [ '_atom_site' ],
-                       'add_atom_attributes' =>
+                       'add_attributes' =>
                            { '_atom_site' => [ 'B_iso_or_equiv' ] } } );
         } else {
             to_pdbx( \%pdbx_data,
