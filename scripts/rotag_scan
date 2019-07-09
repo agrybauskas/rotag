@@ -157,9 +157,8 @@ for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
 
 for my $pdbx_file ( @ARGV ) {
     my %pdbx_data = %{ obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] ) };
-    %pdbx_data = %{ raw2indexed( \%pdbx_data,
-                                 { 'attributes' =>
-                                       { '_atom_site' => [ 'id' ] } } ) };
+    raw2indexed( \%pdbx_data,
+                 { 'attributes' => { '_atom_site' => [ 'id' ] } } );
 
     my $atom_site = $pdbx_data{'_atom_site'}{'data'};
 

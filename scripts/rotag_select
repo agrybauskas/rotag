@@ -154,9 +154,8 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     } else {
         $pdbx = obtain_pdbx_data( $pdbx_file, \@tags,
                                   { 'ignore_missing_categories' => 1 } );
-        $atom_site = raw2indexed(
-            $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } }
-        )->{'_atom_site'}{'data'};
+        raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
+        $atom_site = $pdbx->{'_atom_site'}{'data'};
     }
 
     # Assigns correct target and select command line arguments for current file.
