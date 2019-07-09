@@ -38,7 +38,7 @@ $VAR1 = {
         'dict_name'
       ],
       'is_indexed' => 1,
-      'is_loop' => 0
+      'is_loop' => 1
     }
   },
   '_entity_poly' => {
@@ -61,7 +61,7 @@ WKNWKLELYVRKMWDWKKLIKEQEFEIFPNSKPLQPKPEK
         'pdbx_seq_one_letter_code'
       ],
       'is_indexed' => 1,
-      'is_loop' => 0
+      'is_loop' => 1
     }
   }
 };

@@ -19,6 +19,7 @@ $Data::Dumper::Indent = 1;
 my ( $data_identifier, $pdbx_file ) = @ARGV;
 my @data_identifier = split( ",", $data_identifier );
 
-my $pdbx_indexed = raw2indexed( pdbx_raw( $pdbx_file, \@data_identifier ) );
+my $pdbx = pdbx_raw( $pdbx_file, \@data_identifier );
+raw2indexed( $pdbx );
 
-print Dumper $pdbx_indexed;
+print Dumper $pdbx;

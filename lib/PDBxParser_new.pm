@@ -39,8 +39,9 @@ sub pdbx_raw
 sub pdbx_indexed
 {
     my ( $pdbx_file, $data_identifier, $options ) = @_;
-    return raw2indexed( obtain_pdbx_data( $pdbx_file, $data_identifier ),
-                        $options );
+    my $pdbx = obtain_pdbx_data( $pdbx_file, $data_identifier );
+    raw2indexed( $pdbx, $options );
+    return $pdbx;
 }
 
 # --------------------------------- PDBx parser ------------------------------- #
@@ -260,15 +261,18 @@ sub related_category_data
 #
 # Takes PDBx and indexes them by defined attributes.
 # Input:
-#     $attributes - combination of attribute data that serves as unique key.
+#     $pdbx - data structure generated with pdbx_raw().
+#     $options->{attributes} - combination of attribute data that serves as
+#     unique key.
 #     $options->{'read_until_end'} - reads whole pdbx file or stdin.
+#     $options->{'is_unique'} - checks the uniqueness.
 # Output:
 #     %indexed - returns indexed pdbx;
 #
 
 sub raw2indexed
 {
-    my ( $pdbx_raw, $options ) = @_;
+    my ( $pdbx, $options ) = @_;
     my ( $attributes, $read_until_end, $default_is_unique ) = (
         $options->{'attributes'},
         $options->{'read_until_end'},
@@ -281,18 +285,18 @@ sub raw2indexed
 
     my %attributes = %{ $attributes };
 
-    if( ! defined $pdbx_raw || ! %{ $pdbx_raw } ) {
+    if( ! defined $pdbx || ! %{ $pdbx } ) {
         return {};
     }
 
     my %indexed = ();
 
-    for my $category ( keys %{ $pdbx_raw } ) {
+    for my $category ( keys %{ $pdbx } ) {
         my $keys = $attributes->{$category};
-        my @attributes = @{ $pdbx_raw->{$category}{'metadata'}{'attributes'} };
-        my @data = @{ $pdbx_raw->{$category}{'data'} };
+        my @attributes = @{ $pdbx->{$category}{'metadata'}{'attributes'} };
+        my @data = @{ $pdbx->{$category}{'data'} };
 
-        my $is_unique = $pdbx_raw->{$category}{'metadata'}{'is_unique'};
+        my $is_unique = $pdbx->{$category}{'metadata'}{'is_unique'};
         $is_unique //= $default_is_unique;
 
         # Creates special data structure.
@@ -316,9 +320,9 @@ sub raw2indexed
         my $auto_increment = 0;
         my %current_indexed = ();
         $current_indexed{'metadata'}{'attributes'} =
-            $pdbx_raw->{$category}{'metadata'}{'attributes'};
+            $pdbx->{$category}{'metadata'}{'attributes'};
         $current_indexed{'metadata'}{'is_loop'} =
-            $pdbx_raw->{$category}{'metadata'}{'is_loop'};
+            $pdbx->{$category}{'metadata'}{'is_loop'};
         $current_indexed{'metadata'}{'is_indexed'} = 1;
         for( my $pos = 0; $pos <= $data_count - 1; $pos += $attribute_count ) {
             @data_row = @{ data[$pos..$pos+$attribute_count-1] };
@@ -348,26 +352,25 @@ sub raw2indexed
             $auto_increment++;
         }
 
-        $indexed{$category} = { %current_indexed };
+        $pdbx->{$category} = { %current_indexed };
+        $pdbx->{$category}{'metadata'}{'is_indexed'} = 1;
+        $pdbx->{$category}{'metadata'}{'is_loop'} = 1;
     }
 
-    return \%indexed;
+    return;
 }
 
 sub indexed2raw
 {
-    my ( $pdbx_indexed, $options ) = @_;
+    my ( $pdbx, $options ) = @_;
     my ( $attribute_order ) = ( $options->{'attribute_order'} );
 
-    my %pdbx_raw = ();
-    for my $category ( keys %{ $pdbx_indexed } ) {
-        my $current_pdbx_indexed = $pdbx_indexed->{$category}{'data'};
+    for my $category ( keys %{ $pdbx } ) {
+        my $current_pdbx_indexed = $pdbx->{$category}{'data'};
         my $current_attribute_order = $attribute_order->{$category};
 
-        $pdbx_raw{$category}{'metadata'}{'is_loop'} =
-            $pdbx_indexed->{$category}{'metadata'}{'is_loop'};
-        $pdbx_raw{$category}{'metadata'}{'is_indexed'} = 0;
-
+        $pdbx->{$category}{'metadata'}{'is_indexed'} = 0;
+        $pdbx->{$category}{'data'} = (); # Resets the data.
 
         my ( $first_pdbx_id ) = sort keys %{ $current_pdbx_indexed };
         if( ref $current_pdbx_indexed->{$first_pdbx_id} eq 'HASH' ) {
@@ -382,7 +385,7 @@ sub indexed2raw
                                   $current_attribute_order );
                 @category_attributes = @{ $sorted_attribute_list };
             }
-            $pdbx_raw{$category}{'metadata'}{'attributes'}=\@category_attributes;
+            $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
 
             # HACK: should figure out how to deal with simple ids and combined
             # keys at the same time.
@@ -391,9 +394,9 @@ sub indexed2raw
                     my $data_value =
                         $current_pdbx_indexed->{$id}{$category_attributes[$i]};
                     if( defined $data_value ) {
-                        push @{ $pdbx_raw{$category}{'data'} }, $data_value;
+                        push @{ $pdbx->{$category}{'data'} }, $data_value;
                     } else {
-                        push @{ $pdbx_raw{$category}{'data'} }, '?';
+                        push @{ $pdbx->{$category}{'data'} }, '?';
                     }
                 }
             }
@@ -410,16 +413,16 @@ sub indexed2raw
                                   $current_attribute_order );
                 @category_attributes = @{ $sorted_attribute_list };
             }
-            $pdbx_raw{$category}{'metadata'}{'attributes'}=\@category_attributes;
+            $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
 
             for my $id ( sort { $a cmp $b } keys %{ $current_pdbx_indexed } ){
                 for my $group ( @{ $current_pdbx_indexed->{$id} } ) {
                     for( my $i = 0; $i <= $#category_attributes; $i++ ) {
                         my $data_value = $group->{$category_attributes[$i]};
                         if( defined $data_value ) {
-                            push @{ $pdbx_raw{$category}{'data'} }, $data_value;
+                            push @{ $pdbx->{$category}{'data'} }, $data_value;
                         } else {
-                            push @{ $pdbx_raw{$category}{'data'} }, '?';
+                            push @{ $pdbx->{$category}{'data'} }, '?';
                         }
                     }
                 }
@@ -427,7 +430,7 @@ sub indexed2raw
         }
     }
 
-    return \%pdbx_raw;
+    return;
 }
 
 # ----------------------------- Atom-site related ----------------------------- #
