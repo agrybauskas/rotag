@@ -291,6 +291,9 @@ sub raw2indexed
     my %indexed = ();
 
     for my $category ( keys %{ $pdbx } ) {
+        next if ! exists $pdbx->{$category} ||
+                $pdbx->{$category}{'metadata'}{'is_indexed'} eq 1;
+
         my $keys = $attributes->{$category};
         my @attributes = @{ $pdbx->{$category}{'metadata'}{'attributes'} };
         my @data = @{ $pdbx->{$category}{'data'} };
@@ -369,7 +372,8 @@ sub indexed2raw
     $categories //= [ keys %{ $pdbx } ];
 
     for my $category ( @{ $categories } ) {
-        next if ! exists $pdbx->{$category};
+        next if ! exists $pdbx->{$category} ||
+                $pdbx->{$category}{'metadata'}{'is_indexed'} eq 0;
 
         my $current_pdbx_indexed = $pdbx->{$category}{'data'};
         my $current_attribute_order = $attribute_order->{$category};
