@@ -66,12 +66,16 @@ sub obtain_pdbx_data
         my @pdbx = ();
 
         # Slurp whole pdbx file.
+        my $line_counter = 0;
         {
             local $/ = '';
             while( <> ) {
                 push @pdbx, $_;
+                $line_counter++;
             }
         }
+
+        warn "$pdbx_file is empty.\n" if $line_counter == 0;
 
         %pdbx_data = (
             %pdbx_data,
@@ -154,7 +158,6 @@ sub obtain_pdbx_loop
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
     my @pdbx = ( split /\n/, $pdbx->[0] );
-    my $line_counter = 0;
 
     foreach( @pdbx ) {
         if( /^data_/ || ! @categories ) {
@@ -176,7 +179,6 @@ sub obtain_pdbx_loop
             my @current_data = ( $_ =~ m/('.+'|\S+)/g );
             push @{ $data[-1][-1] }, @current_data;
         }
-        $line_counter++;
     }
 
     # Checks the difference between the categories that were searched and
@@ -190,9 +192,6 @@ sub obtain_pdbx_loop
             }
         }
     }
-
-    warn "pdbx file is empty.\n"
-        if $line_counter == 0 && ! $ignore_missing_categories;
 
     # Generates hash from three lists.
     my @pdbx_loop_data;
