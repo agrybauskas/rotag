@@ -57,7 +57,7 @@ sub pdbx_indexed
 
 sub obtain_pdbx_data
 {
-    my ( $pdbx_file, $data_identifier ) = @_;
+    my ( $pdbx_file, $data_identifier, $options ) = @_;
     my %pdbx_data = ();
 
     local @ARGV = ( $pdbx_file );
@@ -79,7 +79,7 @@ sub obtain_pdbx_data
 
         %pdbx_data = (
             %pdbx_data,
-            %{ obtain_pdbx_line( \@pdbx, $data_identifier ) } );
+            %{ obtain_pdbx_line( \@pdbx, $data_identifier, $options ) } );
         %pdbx_data = (
             %pdbx_data,
             %{ obtain_pdbx_loop( \@pdbx, $data_identifier,
