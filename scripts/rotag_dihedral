@@ -19,7 +19,8 @@ use Measure qw( all_dihedral
 use PDBxParser_new qw( filter
                        filter_by_unique_residue_key
                        mark_selection
-                       obtain_atom_site
+                       obtain_pdbx_data
+                       raw2indexed
                        to_csv
                        to_pdbx );
 use Version qw( $VERSION );
@@ -89,23 +90,22 @@ my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
-    # Reads file path, stdin and '-' operator.
-    my $atom_site;
-    $atom_site = obtain_atom_site( $pdbx_file );
+    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
+    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
+
+    my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
     next if ! %{ $atom_site };
 
     # Calculates dihedral angles
-    my %pdbx_data;
-
     if( $calc_sidechain ) {
-        $pdbx_data{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
+        $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
               'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
               'atom_2_id', 'label_atom_2_id', 'atom_3_id', 'label_atom_3_id',
               'atom_4_id', 'label_atom_4_id', 'type', 'value', 'units' ];
-        $pdbx_data{'_[local]_dihedral_angle'}{'metadata'}{'is_loop'} = 1;
-        $pdbx_data{'_[local]_dihedral_angle'}{'metadata'}{'is_indexed'} = 0;
+        $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'is_loop'} = 1;
+        $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'is_indexed'} = 0;
 
         my $dihedral_site =
             filter( { 'atom_site' => $atom_site,
@@ -137,7 +137,7 @@ for my $pdbx_file ( @ARGV ) {
                 sort keys %{ $dihedral_angles->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $dihedral_angles->{$residue_unique_key}
                                                     {$angle_name}{'atom_ids'} };
-                push @{ $pdbx_data{'_[local]_dihedral_angle'}{'data'} },
+                push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                      $dihedral_id, $residue_name,
                      split( /,/sxm, $residue_unique_key ),
                      $dihedral_site->{$atom_ids[0]}{'label_atom_id'},
@@ -164,12 +164,12 @@ for my $pdbx_file ( @ARGV ) {
         }
 
     } else {
-        $pdbx_data{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
+        $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
             [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_atom_2_id',
               'atom_2_id', 'label_atom_3_id', 'atom_3_id', 'label_atom_4_id',
               'atom_4_id', 'value', 'units' ];
-        $pdbx_data{'_[local]_dihedral_angle'}{'metadata'}{'is_loop'} = 1;
-        $pdbx_data{'_[local]_dihedral_angle'}{'metadata'}{'is_indexed'} = 0;
+        $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'is_loop'} = 1;
+        $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'is_indexed'} = 0;
 
         my $dihedral_site =
             filter( { 'atom_site' => $atom_site,
@@ -195,7 +195,7 @@ for my $pdbx_file ( @ARGV ) {
                       ( $first_atom_id, $second_atom_id,
                         $third_atom_id, $fourth_atom_id ) ] );
 
-            push @{ $pdbx_data{'_[local]_dihedral_angle'}{'data'} },
+            push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                  $dihedral_id,
                  $dihedral_site->{$first_atom_id}{'label_atom_id'},
                  $first_atom_id,
@@ -213,8 +213,8 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( $output_format eq 'pdbx' ) {
-        to_pdbx( \%pdbx_data );
+        to_pdbx( $pdbx );
     } elsif( $output_format eq 'csv' ) {
-        to_csv( \%pdbx_data );
+        to_csv( $pdbx );
     }
 }
