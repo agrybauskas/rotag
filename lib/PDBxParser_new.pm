@@ -363,9 +363,15 @@ sub raw2indexed
 sub indexed2raw
 {
     my ( $pdbx, $options ) = @_;
-    my ( $attribute_order ) = ( $options->{'attribute_order'} );
+    my ( $categories, $attribute_order ) = (
+        $options->{'categories'}, $options->{'attribute_order'}
+    );
 
-    for my $category ( keys %{ $pdbx } ) {
+    $categories //= [ keys %{ $pdbx } ];
+
+    for my $category ( @{ $categories } ) {
+        next if ! exists $pdbx->{$category};
+
         my $current_pdbx_indexed = $pdbx->{$category}{'data'};
         my $current_attribute_order = $attribute_order->{$category};
 
@@ -979,12 +985,13 @@ sub to_pdbx
                 }
 
                 if( $pdbx_data->{$category}{'metadata'}{'is_indexed'} ) {
-                    $pdbx_data->{$category} = indexed2raw(
-                        { $category => $pdbx_data->{$category} },
-                        { 'attribute_order' => {
-                            $category =>
-                                $pdbx_data->{$category}{'metadata'}{'attributes'} } }
-                    )->{$category};
+                    indexed2raw( $pdbx_data,
+                                 { 'categories' => $categories,
+                                   'attribute_order' => {
+                                       $category =>
+                                           $pdbx_data->{$category}{'metadata'}
+                                                                  {'attributes'}
+                                   } } );
                 }
 
                 my $attribute_array_length =
