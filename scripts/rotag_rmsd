@@ -108,36 +108,34 @@ for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $pdbx =
         obtain_pdbx_data( $pdbx_file, [ '_atom_site' ], {'read_until_end' => 1});
-    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
+    use Data::Dumper;
+    print STDERR Dumper scalar @{ $pdbx->{'_atom_site'}{'data'} };
+    # raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
 
-    # my $atom_sites = $pdbx->{'_atom_site'}{'data'};
+    # my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
-    # # TODO: maybe raw2index also could parse data even if it is array of indexed
-    # # values.
-    # for my $atom_site ( @{ $atom_sites } ) {
-    # #     # Assigns filters atoms and assigns to specified groups.
-    # #     my @group_ids =
-    # #         uniq( @{ filter( { 'atom_site' => $atom_site,
-    # #                            'data' => [ '[local]_selection_group' ],
-    # #                            'is_list' => 1 } ) } );
+    # # Assigns filters atoms and assigns to specified groups.
+    # my @group_ids =
+    #     uniq( @{ filter( { 'atom_site' => $atom_site,
+    #                        'data' => [ '[local]_selection_group' ],
+    #                        'is_list' => 1 } ) } );
 
-    # #     for my $group_id ( @group_ids ) {
-    # #         if( ! exists $atom_site_groups{$group_id} ) {
-    # #             my $group_atom_site =
-    # #                 filter( { 'atom_site' => $atom_site,
-    # #                           'include' =>
-    # #                               { '[local]_selection_state' => [ 'T' ],
-    # #                                 '[local]_selection_group' => [$group_id] }});
-    # #             $atom_site_groups{$group_id} = $group_atom_site;
-    # #         } else {
-    # #             confess 'there are multiple instances of the group in' .
-    # #                     ' different files';
-    # #         }
-    # #     }
+    # for my $group_id ( @group_ids ) {
+    #     if( ! exists $atom_site_groups{$group_id} ) {
+    #         my $group_atom_site =
+    #             filter( { 'atom_site' => $atom_site,
+    #                       'include' =>
+    #                           { '[local]_selection_state' => [ 'T' ],
+    #                             '[local]_selection_group' => [$group_id] }});
+    #         $atom_site_groups{$group_id} = $group_atom_site;
+    #     } else {
+    #         confess 'there are multiple instances of the group in' .
+    #                 ' different files';
+    #     }
     # }
 }
 
-# exit if ! %atom_site_groups;
+exit if ! %atom_site_groups;
 
 # # Calculates RMSD.
 # my %pdbx_data;

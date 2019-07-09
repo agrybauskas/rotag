@@ -288,8 +288,6 @@ sub raw2indexed
         return {};
     }
 
-    my %indexed = ();
-
     for my $category ( keys %{ $pdbx } ) {
         next if ! exists $pdbx->{$category} ||
                 $pdbx->{$category}{'metadata'}{'is_indexed'} eq 1;
