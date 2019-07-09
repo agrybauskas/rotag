@@ -106,10 +106,8 @@ my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
-    my $pdbx =
+    # my $pdbx =
         obtain_pdbx_data( $pdbx_file, [ '_atom_site' ], {'read_until_end' => 1});
-    use Data::Dumper;
-    print STDERR Dumper scalar @{ $pdbx->{'_atom_site'}{'data'} };
     # raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
 
     # my $atom_site = $pdbx->{'_atom_site'}{'data'};

@@ -60,6 +60,11 @@ sub obtain_pdbx_data
     my ( $pdbx_file, $data_identifier, $options ) = @_;
     my %pdbx_data = ();
 
+    $options //= {};
+
+    my %options = %{ $options };
+    $options{'ignore_missing_categories'} = 1;
+
     local @ARGV = ( $pdbx_file );
 
     if( defined $data_identifier && @{ $data_identifier } ) {
@@ -79,11 +84,10 @@ sub obtain_pdbx_data
 
         %pdbx_data = (
             %pdbx_data,
-            %{ obtain_pdbx_line( \@pdbx, $data_identifier, $options ) } );
+            %{ obtain_pdbx_line( \@pdbx, $data_identifier ) } );
         %pdbx_data = (
             %pdbx_data,
-            %{ obtain_pdbx_loop( \@pdbx, $data_identifier,
-                                 { 'ignore_missing_categories' => 1 } ) } );
+            %{ obtain_pdbx_loop( \@pdbx, $data_identifier, \%options ) } );
     }
 
     return \%pdbx_data;
