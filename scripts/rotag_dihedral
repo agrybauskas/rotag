@@ -215,6 +215,6 @@ for my $pdbx_file ( @ARGV ) {
     if( $output_format eq 'pdbx' ) {
         to_pdbx( $pdbx, { 'categories' => [ '_[local]_dihedral_angle' ] } );
     } elsif( $output_format eq 'csv' ) {
-        to_csv( $pdbx );
+        to_csv( $pdbx, { 'category' => '_[local]_dihedral_angle' } );
     }
 }
