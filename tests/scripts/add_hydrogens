@@ -26,5 +26,10 @@ my $parameters = Parameters->new();
              $atom_site,
              { 'add_only_clear_positions' => $add_only_clear_positions } ) } );
 
-# Prints out PDBx format file.
-to_pdbx( { "pdbx_data_indexed" => { '_atom_site' => $atom_site } } );
+# # Prints out PDBx format file.
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} = $atom_site;
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
+to_pdbx( \%pdbx );
