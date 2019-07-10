@@ -1154,8 +1154,8 @@ sub to_pdbx
     };
     $fh //= \*STDOUT;
 
-    my ( $current_categories ) =
-        sort_by_list( [ sort keys %{ $pdbx_data } ], $category_order );
+    my ( $current_categories ) = sort_by_list( [ sort keys %{ $pdbx_data } ],
+                                               $category_order );
     $categories //= $current_categories;
 
     print {$fh} "data_${data_name}\n#\n";
@@ -1173,7 +1173,7 @@ sub to_pdbx
             my @append_attributes = ();
             for my $add_attribute ( @{ $add_attributes->{$category} } ) {
                 if( ! any { $add_attributes eq $_ }
-                    @{ $category_attribute_order } ) {
+                         @{ $category_attribute_order } ) {
                     push @append_attributes, $add_attribute;
                 }
             }
@@ -1274,6 +1274,8 @@ sub to_csv
 sub sort_by_list
 {
     my ( $unsorted_list, $sort_by_list ) = @_;
+
+    $sort_by_list //= $unsorted_list;
 
     my @sorted_list = sort @{ $unsorted_list };
     my %sort_order = ();
