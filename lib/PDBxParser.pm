@@ -524,59 +524,29 @@ sub indexed2raw
         $pdbx->{$category}{'metadata'}{'is_indexed'} = 0;
         $pdbx->{$category}{'data'} = (); # Resets the data.
 
-        my ( $first_pdbx_id ) = sort keys %{ $current_pdbx_indexed };
-        if( ref $current_pdbx_indexed->{$first_pdbx_id} eq 'HASH' ) {
-            my @category_attributes =
-                sort { $a cmp $b }
-                uniq
-                map { keys %{ $current_pdbx_indexed->{$_} } }
-                keys %{ $current_pdbx_indexed };
-            if( defined $current_attribute_order ) {
-                my ( $sorted_attribute_list ) =
-                    sort_by_list( \@category_attributes,
-                                  $current_attribute_order );
-                @category_attributes = @{ $sorted_attribute_list };
-            }
-            $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
+        my @category_attributes =
+            sort { $a cmp $b }
+            uniq
+            map { keys %{ $current_pdbx_indexed->{$_} } }
+            keys %{ $current_pdbx_indexed };
+        if( defined $current_attribute_order ) {
+            my ( $sorted_attribute_list ) =
+                sort_by_list( \@category_attributes,
+                              $current_attribute_order );
+            @category_attributes = @{ $sorted_attribute_list };
+        }
+        $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
 
-            # HACK: should figure out how to deal with simple ids and combined
-            # keys at the same time.
-            for my $id ( sort { $a <=> $b } keys %{ $current_pdbx_indexed } ){
-                for( my $i = 0; $i <= $#category_attributes; $i++ ) {
-                    my $data_value =
-                        $current_pdbx_indexed->{$id}{$category_attributes[$i]};
-                    if( defined $data_value ) {
-                        push @{ $pdbx->{$category}{'data'} }, $data_value;
-                    } else {
-                        push @{ $pdbx->{$category}{'data'} }, '?';
-                    }
-                }
-            }
-        } elsif( ref $current_pdbx_indexed->{$first_pdbx_id} eq 'ARRAY' ) {
-            my @category_attributes =
-                sort { $a cmp $b }
-                uniq
-                map { keys %{ $_ } }
-                map { @{ $current_pdbx_indexed->{$_} } }
-                keys %{ $current_pdbx_indexed };
-            if( defined $current_attribute_order ) {
-                my ( $sorted_attribute_list ) =
-                    sort_by_list( \@category_attributes,
-                                  $current_attribute_order );
-                @category_attributes = @{ $sorted_attribute_list };
-            }
-            $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
-
-            for my $id ( sort { $a cmp $b } keys %{ $current_pdbx_indexed } ){
-                for my $group ( @{ $current_pdbx_indexed->{$id} } ) {
-                    for( my $i = 0; $i <= $#category_attributes; $i++ ) {
-                        my $data_value = $group->{$category_attributes[$i]};
-                        if( defined $data_value ) {
-                            push @{ $pdbx->{$category}{'data'} }, $data_value;
-                        } else {
-                            push @{ $pdbx->{$category}{'data'} }, '?';
-                        }
-                    }
+        # HACK: should figure out how to deal with simple ids and combined
+        # keys at the same time.
+        for my $id ( sort { $a <=> $b } keys %{ $current_pdbx_indexed } ){
+            for( my $i = 0; $i <= $#category_attributes; $i++ ) {
+                my $data_value =
+                    $current_pdbx_indexed->{$id}{$category_attributes[$i]};
+                if( defined $data_value ) {
+                    push @{ $pdbx->{$category}{'data'} }, $data_value;
+                } else {
+                    push @{ $pdbx->{$category}{'data'} }, '?';
                 }
             }
         }
@@ -1182,9 +1152,6 @@ sub to_pdbx
             'pdbx_PDB_model_num',
         ]
     };
-    # TODO: should it be removed?
-    # $add_attributes //= { '_atom_site' => [ '[local]_selection_state',
-    #                                         '[local]_selection_group' ] };
     $fh //= \*STDOUT;
 
     my ( $current_categories ) =
@@ -1195,19 +1162,18 @@ sub to_pdbx
 
     if( %{ $pdbx_data } ) {
         for my $category  ( @{ $categories } ) {
-            next if defined $tags &&
-                  ! any { $category eq $_ } @{ $tags };
+            next if defined $tags && ! any { $category eq $_ } @{ $tags };
 
             my $category_attribute_order = $attribute_order->{$category};
             if( ! defined $category_attribute_order ) {
-                $category_attribute_order = $pdbx_data->{$category}{'metadata'}
-                                                                   {'attributes'};
+                $category_attribute_order =
+                    $pdbx_data->{$category}{'metadata'}{'attributes'};
             }
 
             my @append_attributes = ();
             for my $add_attribute ( @{ $add_attributes->{$category} } ) {
                 if( ! any { $add_attributes eq $_ }
-                         @{ $category_attribute_order } ) {
+                    @{ $category_attribute_order } ) {
                     push @append_attributes, $add_attribute;
                 }
             }
@@ -1228,10 +1194,7 @@ sub to_pdbx
                     indexed2raw( $pdbx_data,
                                  { 'categories' => $categories,
                                    'attribute_order' => {
-                                       $category =>
-                                           $pdbx_data->{$category}{'metadata'}
-                                                                  {'attributes'}
-                                   } } );
+                                       $category => $category_attribute_order}});
                 }
 
                 my $attribute_array_length =
