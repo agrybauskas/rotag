@@ -136,7 +136,6 @@ sub obtain_pdbx_line
 # Input:
 #     $pdbx - PDBx file content;
 #     $categories - list of specified categories.
-#     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 # Output:
 #     %pdbx_loop_data - data structure for loop data or list of data structure.
 #
@@ -144,12 +143,10 @@ sub obtain_pdbx_line
 sub obtain_pdbx_loop
 {
     my ( $pdbx, $categories, $options ) = @_;
-    my ( $read_until_end, $ignore_missing_categories ) = (
-        $options->{'read_until_end'},
+    my ( $ignore_missing_categories ) = (
         $options->{'ignore_missing_categories'},
     );
 
-    $read_until_end //= 0;
     $ignore_missing_categories //= 0;
 
     my @categories;
@@ -177,7 +174,7 @@ sub obtain_pdbx_loop
             push @{ $attributes[-1][-1] }, split q{ }, $2;
             $is_reading_lines = 1;
         } elsif( $is_reading_lines == 1 && /^_|loop_|#/ ) {
-            if( $#categories eq $#{ $categories } && ! $read_until_end ) { last; }
+            if( $#categories eq $#{ $categories } ) { last; }
             $is_reading_lines = 0;
         } elsif( $is_reading_lines == 1 ) {
             my @current_data = ( $_ =~ m/('.+'|\S+)/g );
@@ -213,8 +210,7 @@ sub obtain_pdbx_loop
         push @pdbx_loop_data, \%pdbx_loop_data;
     }
 
-    return $pdbx_loop_data[0] if ! $read_until_end;
-    return \@pdbx_loop_data;
+    return $pdbx_loop_data[0]; # FIXME: remove left-over data structure.
 }
 
 sub related_category_data
@@ -267,7 +263,6 @@ sub related_category_data
 #     $pdbx - data structure generated with pdbx_raw().
 #     $options->{attributes} - combination of attribute data that serves as
 #     unique key.
-#     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 #     $options->{'is_unique'} - checks the uniqueness.
 # Output:
 #     %indexed - returns indexed pdbx;
@@ -283,7 +278,6 @@ sub raw2indexed
     );
 
     $attributes //= {} unless $attributes;
-    $read_until_end //= 0;
     $default_is_unique //= 1;
 
     my %attributes = %{ $attributes };
