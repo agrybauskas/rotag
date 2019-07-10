@@ -19,6 +19,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_atom_site
                      obtain_pdb_atom_site
                      pdbx_indexed
+                     pdbx_loop_to_array
                      pdbx_raw
                      raw2indexed
                      related_category_data
@@ -228,6 +229,41 @@ sub obtain_pdbx_loop
     }
 
     return $pdbx_loop_data[0]; # FIXME: remove left-over data structure.
+}
+
+#
+# Generates hash from pdbx loop data structure.
+# Input:
+#     $pdbx_loop_data - data structure (from obtain_pdbx_loop);
+# Output:
+#     @pdbx_loops - arrays of hashes data structure.
+#
+
+sub pdbx_loop_to_array
+{
+    my ( $pdbx_loop_data, $category ) = @_;
+
+    my @attributes = @{ $pdbx_loop_data->{$category}{'metadata'}{'attributes'} };
+    my @data = @{ $pdbx_loop_data->{$category}{'data'} };
+
+    # Creates special data structure.
+    my @pdbx_loops;
+    my @data_row;
+    my %data_row;
+
+    my $attribute_count = scalar @attributes;
+    my $data_count = scalar @data;
+
+    for( my $pos = 0; $pos < $data_count; $pos += $attribute_count ) {
+        @data_row = @{ data[$pos..$pos+$attribute_count-1] };
+        %data_row = ();
+        for( my $col = 0; $col <= $#data_row; $col++ ) {
+            $data_row{$attributes[$col]} = $data_row[$col];
+        }
+        push @pdbx_loops, { %data_row };
+    }
+
+    return \@pdbx_loops;
 }
 
 #
