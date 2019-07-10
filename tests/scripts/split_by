@@ -31,8 +31,12 @@ my $split_groups = split_by( { 'atom_site' => $atom_site,
                                'append_dot' => $append_dot } );
 
 foreach( sort keys %{ $split_groups } ) {
-    to_pdbx( { 'pdbx_data_indexed' =>
-                   { '_atom_site' =>
-                         filter( { 'atom_site' => $atom_site,
-                                   'include' => { 'id' => $split_groups->{$_} } } ) } } );
+    my %pdbx =();
+    $pdbx{'_atom_site'}{'data'} =
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { 'id' => $split_groups->{$_} } } );
+    $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+    $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
+    to_pdbx( \%pdbx );
 }

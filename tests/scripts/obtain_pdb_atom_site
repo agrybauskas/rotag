@@ -17,7 +17,13 @@ my $atom_site;
 
 foreach my $pdbx_file ( @ARGV ) {
     $atom_site = obtain_pdb_atom_site( $pdbx_file );
+
+    my %pdbx =();
+    $pdbx{'_atom_site'}{'data'} = $atom_site;
+    $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+    $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
     if( %{ $atom_site } ) {
-        to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => $atom_site } } );
+        to_pdbx( \%pdbx );
     }
 }

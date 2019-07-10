@@ -26,4 +26,9 @@ my $parameters = Parameters->new();
 
 replace_with_moiety( $parameters, $atom_site, $residue_unique_key, $moiety );
 
-to_pdbx( { 'pdbx_data_indexed' => { '_atom_site' => $atom_site } } );
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} = $atom_site;
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
+to_pdbx( \%pdbx );

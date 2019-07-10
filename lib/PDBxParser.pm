@@ -16,9 +16,9 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_pdbx_data
                      obtain_pdbx_line
                      obtain_pdbx_loop
+                     obtain_pdb_atom_site
                      obtain_atom_site
                      obtain_atom_sites
-                     obtain_pdb_atom_site
                      pdbx_indexed
                      pdbx_loop_to_array
                      pdbx_raw
