@@ -22,7 +22,10 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-to_pdbx( { 'pdbx_data_indexed' =>
-               { '_atom_site' =>
-                     filter_by_unique_residue_key( $atom_site,
-                                                   $unique_residue_key ) } } );
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} =
+    filter_by_unique_residue_key( $atom_site, $unique_residue_key );
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
+to_pdbx( \%pdbx );

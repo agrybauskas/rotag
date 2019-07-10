@@ -47,9 +47,12 @@ if( $data_specifier ) {
         print( join( " ", @{ $atom_data[$i] } ), "\n" );
     }
 } else {
-    to_pdbx( { 'pdbx_data_indexed' =>
-                   { '_atom_site' =>
-                         filter( { "atom_site" => $atom_site,
-                                   "include"   => \%include_specifier,
-                                   "exclude"   => \%exclude_specifier } ) } } );
+    my %pdbx =();
+    $pdbx{'_atom_site'}{'data'} = filter({ "atom_site" => $atom_site,
+                                           "include"   => \%include_specifier,
+                                           "exclude"   => \%exclude_specifier });
+    $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+    $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+
+    to_pdbx( \%pdbx );
 }
