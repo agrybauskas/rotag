@@ -97,7 +97,7 @@ sub obtain_pdbx_data
     }
 
     if( $read_stream ) {
-        return @pdbx_data;
+        return \@pdbx_data;
     } else {
         return $pdbx_data[0];
     }
