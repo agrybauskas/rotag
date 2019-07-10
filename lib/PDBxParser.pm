@@ -7,22 +7,23 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      determine_residue_keys
                      extract
-                     related_category_data
                      filter
-                     filter_new
                      filter_by_unique_residue_key
+                     filter_new
                      identify_residue_atoms
+                     indexed2raw
                      mark_selection
-                     pdbx_loop_unique
-                     pdbx_loop_to_csv
-                     pdbx_loop_to_array
-                     obtain_atom_site
-                     obtain_pdb_atom_site
-                     obtain_atom_sites
                      obtain_pdbx_data
                      obtain_pdbx_line
                      obtain_pdbx_loop
+                     obtain_atom_site
+                     obtain_pdb_atom_site
+                     pdbx_indexed
+                     pdbx_raw
+                     raw2indexed
+                     related_category_data
                      split_by
+                     to_csv
                      to_pdbx
                      unique_residue_key );
 
@@ -33,12 +34,86 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
+# -------------------------------- Data structure ----------------------------- #
+
+sub pdbx_raw
+{
+    my ( $pdbx_file, $data_identifier ) = @_;
+    return obtain_pdbx_data( $pdbx_file, $data_identifier );
+}
+
+sub pdbx_indexed
+{
+    my ( $pdbx_file, $data_identifier, $options ) = @_;
+    my $pdbx = obtain_pdbx_data( $pdbx_file, $data_identifier );
+    raw2indexed( $pdbx, $options );
+    return $pdbx;
+}
+
 # --------------------------------- PDBx parser ------------------------------- #
+
+#
+# Obtains pdbx data for the specified categories or items.
+# Input:
+#     $pdbx_file - PDBx file path;
+#     $data_identifier - list of categories or items;
+# Output:
+#     %pdbx_data - data structure for pdbx data.
+#
+
+sub obtain_pdbx_data
+{
+    my ( $pdbx_file, $data_identifier, $options ) = @_;
+    my ( $read_stream ) = ( $options->{'read_stream'} );
+
+    $read_stream //= 0;
+
+    my @pdbx_data = ();
+
+    local @ARGV = ( $pdbx_file );
+
+    if( defined $data_identifier && @{ $data_identifier } ) {
+        my @pdbxs = ();
+
+        # Slurp whole pdbx file.
+        my $line_counter = 0;
+        {
+            local $/ = '';
+            while( <> ) {
+                push @pdbxs, map { 'data_' . $_ }
+                             grep { $_ ne '' }
+                             split /(?<!\S)data_/, $_;
+                $line_counter++;
+            }
+        }
+
+        warn "$pdbx_file is empty.\n" if $line_counter == 0;
+
+        for my $pdbx ( @pdbxs ) {
+            my %pdbx_data = ();
+            %pdbx_data = (
+                %pdbx_data,
+                %{ obtain_pdbx_line( [ $pdbx ], $data_identifier ) } );
+            %pdbx_data = (
+                %pdbx_data,
+                %{ obtain_pdbx_loop( [ $pdbx ], $data_identifier,
+                                     { 'ignore_missing_categories' => 1 } ) } );
+
+            push @pdbx_data, \%pdbx_data;
+        }
+    }
+
+    if( $read_stream ) {
+        return \@pdbx_data;
+    } else {
+        return $pdbx_data[0];
+    }
+}
 
 #
 # Obtains pdbx lines for a specified items.
 # Input:
-#     $pdbx_file - PDBx file path;
+#     $pdbx - PDBx file content;
 #     $items - list of desired items.
 # Output:
 #     %pdbx_line_data - hash of item values.
@@ -46,7 +121,7 @@ our $VERSION = $VERSION;
 
 sub obtain_pdbx_line
 {
-    my ( $pdbx_file, $items ) = @_;
+    my ( $pdbx, $items ) = @_;
 
     my %pdbx_line_data;
     my %current_line_data;
@@ -54,9 +129,7 @@ sub obtain_pdbx_line
     $item_regexp =~ s/\[/\\[/g;
     $item_regexp =~ s/\]/\\]/g;
 
-    local $/ = '';
-    local @ARGV = ( $pdbx_file );
-    while( <> ) {
+    foreach( @{ $pdbx } ) {
         my %single_line_matches =
             ( m/($item_regexp|$item_regexp\.\S+)\s+(?!;)('.+'|\S+)/g );
         my %multi_line_matches =
@@ -66,9 +139,10 @@ sub obtain_pdbx_line
 
     for my $key ( sort { $a cmp $b } keys %current_line_data ) {
         my ( $category, $attribute ) = split '\\.', $key;
-        push @{ $pdbx_line_data{$category}{'attributes'} }, $attribute;
-        push @{ $pdbx_line_data{$category}{'data'} }, $current_line_data{$key};
-        $pdbx_line_data{$category}{'is_loop'} = 0;
+        push @{$pdbx_line_data{$category}{'metadata'}{'attributes'}}, $attribute;
+        push @{$pdbx_line_data{$category}{'data'}}, $current_line_data{$key};
+        $pdbx_line_data{$category}{'metadata'}{'is_loop'} = 0;
+        $pdbx_line_data{$category}{'metadata'}{'is_indexed'} = 0;
     }
 
     return \%pdbx_line_data;
@@ -77,22 +151,19 @@ sub obtain_pdbx_line
 #
 # Obtains pdbx loops for a specified categories.
 # Input:
-#     $pdbx_file - PDBx file path;
+#     $pdbx - PDBx file content;
 #     $categories - list of specified categories.
-#     $options->{'read_until_end'} - reads whole pdbx file or stdin.
 # Output:
 #     %pdbx_loop_data - data structure for loop data or list of data structure.
 #
 
 sub obtain_pdbx_loop
 {
-    my ( $pdbx_file, $categories, $options ) = @_;
-    my ( $read_until_end, $ignore_missing_categories ) = (
-        $options->{'read_until_end'},
+    my ( $pdbx, $categories, $options ) = @_;
+    my ( $ignore_missing_categories ) = (
         $options->{'ignore_missing_categories'},
     );
 
-    $read_until_end //= 0;
     $ignore_missing_categories //= 0;
 
     my @categories;
@@ -104,15 +175,14 @@ sub obtain_pdbx_loop
     $category_regexp =~ s/\]/\\]/g;
     my $is_reading_lines = 0; # Starts/stops reading lines at certain flags.
 
-    local @ARGV = ( $pdbx_file );
-    my $line_counter = 0;
+    my @pdbx = ( split /\n/, $pdbx->[0] );
 
-    while( <> ) {
+    foreach( @pdbx ) {
         if( /^data_/ || ! @categories ) {
             push @categories, [];
             push @attributes, [];
             push @data, [];
-        } elsif( /($category_regexp)[.](.+)\n$/x ) {
+        } elsif( /($category_regexp)[.](.+)$/x ) {
             if( !@{ $categories[-1] } || $categories[-1][-1] ne $1 ) {
                 push @{ $categories[-1] }, $1;
                 push @{ $attributes[-1] }, [];
@@ -121,13 +191,12 @@ sub obtain_pdbx_loop
             push @{ $attributes[-1][-1] }, split q{ }, $2;
             $is_reading_lines = 1;
         } elsif( $is_reading_lines == 1 && /^_|loop_|#/ ) {
-            if( $#categories eq $#{ $categories } && ! $read_until_end ) { last; }
+            if( $#categories eq $#{ $categories } ) { last; }
             $is_reading_lines = 0;
         } elsif( $is_reading_lines == 1 ) {
             my @current_data = ( $_ =~ m/('.+'|\S+)/g );
             push @{ $data[-1][-1] }, @current_data;
         }
-        $line_counter++;
     }
 
     # Checks the difference between the categories that were searched and
@@ -136,30 +205,20 @@ sub obtain_pdbx_loop
         for my $current_categories ( @categories ) {
             for my $searched_category ( @{ $categories } ) {
                 if( ! any { $searched_category eq $_ } @{ $current_categories }){
-                    if( $pdbx_file eq '-' ) {
-                        warn "'$searched_category' data was not found in " .
-                             "STDIN.\n";
-                    } else {
-                        warn "'$searched_category' data was not found in " .
-                             "'$pdbx_file'.\n";
-                    }
+                    warn "'$searched_category' data was not found.\n";
                 }
             }
         }
     }
-
-    warn "$pdbx_file - is empty.\n"
-        if $line_counter == 0 && $pdbx_file ne '-' && ! $ignore_missing_categories;
-    warn "STDIN - is empty.\n"
-        if $line_counter == 0 && $pdbx_file eq '-' && ! $ignore_missing_categories;
 
     # Generates hash from three lists.
     my @pdbx_loop_data;
     for( my $i = 0; $i <= $#categories; $i++ ) {
         my %pdbx_loop_data;
         for( my $j = 0; $j <= $#{ $categories[-1] }; $j++ ) {
-            $pdbx_loop_data{$categories[$i][$j]}{'is_loop'} = 1;
-            $pdbx_loop_data{$categories[$i][$j]}{'attributes'} =
+            $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'is_loop'} = 1;
+            $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'is_indexed'} = 0;
+            $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'attributes'} =
                 $attributes[$i][$j];
             $pdbx_loop_data{$categories[$i][$j]}{'data'} =
                 $data[$i][$j];
@@ -168,147 +227,329 @@ sub obtain_pdbx_loop
         push @pdbx_loop_data, \%pdbx_loop_data;
     }
 
-    return $pdbx_loop_data[0] if ! $read_until_end;
-    return \@pdbx_loop_data;
+    return $pdbx_loop_data[0]; # FIXME: remove left-over data structure.
 }
 
 #
-# Obtains pdbx data for a specified categories or items.
+# Creates a hash where for each unique residue key proper atom ids are assigned.
 # Input:
-#     $pdbx_file - PDBx file path;
-#     $data_identifier - list of categories or items;
+#     $atom_site - $atom_site - atom data structure.
 # Output:
-#     %pdbx_data - data structure for pdbx data.
+#     %residue_atom_ids - hash of unique residue key and corresponding atom ids.
 #
 
-sub obtain_pdbx_data
+sub identify_residue_atoms
 {
-    my ( $pdbx_file, $data_identifier ) = @_;
-    my %pdbx_data = ();
+    my ( $atom_site, $options ) = @_;
+    my ( $check_atom_names ) = $options->{'check_atom_names'};
 
-    if( defined $data_identifier && @{ $data_identifier } ) {
-        %pdbx_data = (
-            %pdbx_data,
-            %{ obtain_pdbx_line( $pdbx_file, $data_identifier ) } );
-        %pdbx_data = (
-            %pdbx_data,
-            %{ obtain_pdbx_loop( $pdbx_file, $data_identifier,
-                                 { 'ignore_missing_categories' => 1 } ) } );
+    my $split_groups = split_by( { 'atom_site' => $atom_site,
+                                   'attributes' => [ 'label_seq_id',
+                                                     'label_asym_id',
+                                                     'pdbx_PDB_model_num', ] } );
+
+    my %residue_atom_ids;
+    for my $atom_id ( keys %{ $atom_site } ) {
+        my $unique_residue_key = unique_residue_key( $atom_site->{$atom_id} );
+        my ( $residue_id, $residue_chain, $pdbx_model, $alt_id ) =
+            split /,/, $unique_residue_key;
+        my $split_group_entry = "${residue_id},${residue_chain},${pdbx_model}";
+        my $related_residue_atom_ids = $split_groups->{$split_group_entry};
+
+        # Splits related residues into alt id groups. Atom ids can be redundant.
+        for my $related_atom_id ( @{ $related_residue_atom_ids } ) {
+            my $related_alt_id =
+                $atom_site->{$related_atom_id}{'label_alt_id'};
+
+            if( $atom_id ne $related_atom_id ) {
+                next if( $check_atom_names &&
+                         $atom_site->{$atom_id}{'label_atom_id'} eq
+                         $atom_site->{$related_atom_id}{'label_atom_id'} );
+
+                if( $alt_id eq '.' ) {
+                    push @{ $residue_atom_ids{$unique_residue_key} },
+                        $related_atom_id;
+                } elsif( $alt_id eq $related_alt_id || $related_alt_id eq '.') {
+                    push @{ $residue_atom_ids{$unique_residue_key} },
+                        $related_atom_id;
+                }
+            }
+        }
     }
 
-    return \%pdbx_data;
+    return \%residue_atom_ids;
 }
 
 #
-# Takes PDBx loop and converts it to hash of hashes where the first key is
-# unique.
+# Creates PDBx entry.
 # Input:
-#     $pdbx_loop_data - data structure (from obtain_pdbx_loop);
-#     $unique_keys - combination of attribute data that serves as unique key.
-#     $options->{'read_until_end'} - reads whole pdbx file or stdin.
-#     Ex.: [ 'id' ]
+#     $args - hash of all necessary attributes with corresponding values;
 # Output:
-#     %pdbx_loop_unique - special data structure.
+#     PDBx STDOUT
 #
 
-sub pdbx_loop_unique
+sub create_pdbx_entry
 {
-    my ( $pdbx_loop_data, $category, $unique_keys, $options ) = @_;
-    my ( $is_unique, $read_until_end ) = (
-        $options->{'is_unique'}, $options->{'read_until_end'}
+    my ( $args ) = @_;
+    my $atom_site = $args->{'atom_site'};
+    my $atom_id = $args->{'id'};
+    my $type_symbol = $args->{'type_symbol'};
+    my $label_atom_id = $args->{'label_atom_id'};
+    my $label_alt_id = $args->{'label_alt_id'};
+    $label_alt_id //= q{.};
+    my $label_comp_id = $args->{'label_comp_id'};
+    my $label_asym_id = $args->{'label_asym_id'};
+    my $label_entity_id = $args->{'label_entity_id'};
+    $label_entity_id //= q{?};
+    my $label_seq_id = $args->{'label_seq_id'};
+    my $cartn_x = $args->{'cartn_x'};
+    my $cartn_y = $args->{'cartn_y'};
+    my $cartn_z = $args->{'cartn_z'};
+    my $pdbx_model_num = $args->{'pdbx_PDB_model_num'};
+
+    $atom_site->{$atom_id}{'group_PDB'} = 'ATOM';
+    $atom_site->{$atom_id}{'id'} = $atom_id;
+    $atom_site->{$atom_id}{'type_symbol'} = $type_symbol;
+    $atom_site->{$atom_id}{'label_atom_id'} = $label_atom_id;
+    $atom_site->{$atom_id}{'label_alt_id'} = $label_alt_id;
+    $atom_site->{$atom_id}{'label_comp_id'} = $label_comp_id;
+    $atom_site->{$atom_id}{'label_asym_id'} = $label_asym_id;
+    $atom_site->{$atom_id}{'label_entity_id'} = $label_entity_id;
+    $atom_site->{$atom_id}{'label_seq_id'} = $label_seq_id;
+    $atom_site->{$atom_id}{'Cartn_x'} = $cartn_x;
+    $atom_site->{$atom_id}{'Cartn_y'} = $cartn_y;
+    $atom_site->{$atom_id}{'Cartn_z'} = $cartn_z;
+    $atom_site->{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
+
+    return;
+}
+
+sub related_category_data
+{
+    my ( $pdbx_data, $relationships ) = @_;
+
+    my %related_category_data = ();
+
+    for my $category ( sort keys %{ $relationships } ) {
+        next if ! exists $pdbx_data->{$category};
+
+        for my $related_category ( sort keys %{ $relationships->{$category} } ) {
+            my @references = @{ $relationships->{$category}{$related_category} };
+            for my $reference ( @references ) {
+                my $keys = $reference->{'keys'};
+                my $reference_keys = $reference->{'reference_keys'};
+                $related_category_data{$category}{'keys'} = $reference_keys;
+                $related_category_data{$category}{'reference_category'} =
+                    $related_category;
+                $related_category_data{$category}{'reference_keys'} =
+                    $keys;
+
+                my $category_data =
+                    raw2indexed( { $related_category =>
+                                       $pdbx_data->{$related_category} },
+                                 { 'attributes' =>
+                                       { $related_category => $keys },
+                                   'is_unique' => 0 } );
+                my $related_category_data =
+                    raw2indexed( { $category => $pdbx_data->{$category} },
+                                 { 'attributes' =>
+                                       { $category => $reference_keys },
+                                   'is_unique' => 0 } );
+                for my $key ( keys %{ $category_data->{$related_category}{'data'} } ) {
+                    $related_category_data{$category}{'data'}{$key} =
+                        $related_category_data->{$category}{'data'}{$key};
+                }
+            }
+        }
+    }
+
+    return \%related_category_data;
+}
+
+# -------------------- Conversions between data structures -------------------- #
+
+#
+# Takes PDBx and indexes them by defined attributes.
+# Input:
+#     $pdbx - data structure generated with pdbx_raw().
+#     $options->{attributes} - combination of attribute data that serves as
+#     unique key.
+#     $options->{'is_unique'} - checks the uniqueness.
+# Output:
+#     %indexed - returns indexed pdbx;
+#
+
+sub raw2indexed
+{
+    my ( $pdbx, $options ) = @_;
+    my ( $attributes, $read_until_end, $default_is_unique ) = (
+        $options->{'attributes'},
+        $options->{'read_until_end'},
+        $options->{'is_unique'},
     );
 
-    $read_until_end //= 0;
-    $unique_keys //= [ 'id' ];
-    $is_unique //= 1; # TODO: should be refactored, because the name of the
-                      # function and this flags contradicts each other.
+    $attributes //= {} unless $attributes;
+    $default_is_unique //= 1;
 
-    if( ! defined $pdbx_loop_data || ! %{ $pdbx_loop_data } ) {
+    my %attributes = %{ $attributes };
+
+    if( ! defined $pdbx || ! %{ $pdbx } ) {
         return {};
     }
 
-    my @attributes = @{ $pdbx_loop_data->{$category}{'attributes'} };
-    my @data = @{ $pdbx_loop_data->{$category}{'data'} };
+    for my $category ( keys %{ $pdbx } ) {
+        next if ! exists $pdbx->{$category} ||
+                $pdbx->{$category}{'metadata'}{'is_indexed'} eq 1;
 
-    # Creates special data structure.
-    my %pdbx_loop_unique;
-    my @data_row;
-    my %data_row;
+        my $keys = $attributes->{$category};
+        my @attributes = @{ $pdbx->{$category}{'metadata'}{'attributes'} };
+        my @data = @{ $pdbx->{$category}{'data'} };
 
-    my $attribute_count = scalar @attributes;
-    my $data_count = scalar @data;
+        my $is_unique = $pdbx->{$category}{'metadata'}{'is_unique'};
+        $is_unique //= $default_is_unique;
 
-    # Determines the positions of unique keys in attribute list.
-    my @attribute_pos;
-    for my $unique_key ( @{ $unique_keys } ) {
-        for( my $i = 0; $i <= $#attributes; $i++ ) {
-            if( $attributes[$i] eq $unique_key ) {
-                push @attribute_pos, $i;
-                last;
+        # Creates special data structure.
+        my @data_row;
+        my %data_row;
+
+        my $attribute_count = scalar @attributes;
+        my $data_count = scalar @data;
+
+        # Determines the positions of unique keys in attribute list.
+        my @attribute_pos;
+        for my $key ( @{ $keys } ) {
+            for( my $i = 0; $i <= $#attributes; $i++ ) {
+                if( $attributes[$i] eq $key ) {
+                    push @attribute_pos, $i;
+                    last;
+                }
             }
         }
+
+        my $auto_increment = 0;
+        my %current_indexed = ();
+        $current_indexed{'metadata'}{'attributes'} =
+            $pdbx->{$category}{'metadata'}{'attributes'};
+        $current_indexed{'metadata'}{'is_loop'} =
+            $pdbx->{$category}{'metadata'}{'is_loop'};
+        $current_indexed{'metadata'}{'is_indexed'} = 1;
+        for( my $pos = 0; $pos <= $data_count - 1; $pos += $attribute_count ) {
+            @data_row = @{ data[$pos..$pos+$attribute_count-1] };
+            %data_row = ();
+            for( my $col = 0; $col <= $#data_row; $col++ ) {
+                $data_row{$attributes[$col]} = $data_row[$col];
+            }
+
+            my $current_key = join q{,}, map { $data_row[$_] } @attribute_pos;
+            $current_key = $auto_increment unless $current_key;
+
+            if( ! exists $current_indexed{'data'}{$current_key} ) {
+                if( ! $is_unique ) {
+                    $current_indexed{'data'}{$current_key} = [ { %data_row } ];
+                } else {
+                    $current_indexed{'data'}{$current_key} = { %data_row };
+                }
+            } else {
+                if( ! $is_unique ) {
+                    push @{ $current_indexed{'data'}{$current_key} },
+                          { %data_row };
+                } else {
+                    confess 'unique key supposed to be unique.';
+                }
+            }
+
+            $auto_increment++;
+        }
+
+        $pdbx->{$category} = { %current_indexed };
+        $pdbx->{$category}{'metadata'}{'is_indexed'} = 1;
+        $pdbx->{$category}{'metadata'}{'is_loop'} = 1;
     }
 
-    for( my $pos = 0; $pos < $data_count - 1; $pos += $attribute_count ) {
-        @data_row = @{ data[$pos..$pos+$attribute_count-1] };
-        %data_row = ();
-        for( my $col = 0; $col <= $#data_row; $col++ ) {
-            $data_row{$attributes[$col]} = $data_row[$col];
-        }
-
-        my $unique_key = join q{,}, map { $data_row[$_] } @attribute_pos;
-        if( ! exists $pdbx_loop_unique{$unique_key} ) {
-            if( ! $is_unique ) {
-                $pdbx_loop_unique{$unique_key} = [ { %data_row } ];
-            } else {
-                $pdbx_loop_unique{$unique_key} = { %data_row };
-            }
-        } else {
-            if( ! $is_unique ) {
-                push @{ $pdbx_loop_unique{$unique_key} }, { %data_row };
-            } else {
-                confess 'unique key supposed to be unique.';
-            }
-        }
-    }
-
-    return \%pdbx_loop_unique;
+    return;
 }
 
-#
-# Generates hash from pdbx loop data structure.
-# Input:
-#     $pdbx_loop_data - data structure (from obtain_pdbx_loop);
-# Output:
-#     @pdbx_loops - arrays of hashes data structure.
-#
-
-sub pdbx_loop_to_array
+sub indexed2raw
 {
-    my ( $pdbx_loop_data, $category ) = @_;
+    my ( $pdbx, $options ) = @_;
+    my ( $categories, $attribute_order ) = (
+        $options->{'categories'}, $options->{'attribute_order'}
+    );
 
-    my @attributes = @{ $pdbx_loop_data->{$category}{'attributes'} };
-    my @data = @{ $pdbx_loop_data->{$category}{'data'} };
+    $categories //= [ keys %{ $pdbx } ];
 
-    # Creates special data structure.
-    my @pdbx_loops;
-    my @data_row;
-    my %data_row;
+    for my $category ( @{ $categories } ) {
+        next if ! exists $pdbx->{$category} ||
+                $pdbx->{$category}{'metadata'}{'is_indexed'} eq 0;
 
-    my $attribute_count = scalar @attributes;
-    my $data_count = scalar @data;
+        my $current_pdbx_indexed = $pdbx->{$category}{'data'};
+        my $current_attribute_order = $attribute_order->{$category};
 
-    for( my $pos = 0; $pos < $data_count; $pos += $attribute_count ) {
-        @data_row = @{ data[$pos..$pos+$attribute_count-1] };
-        %data_row = ();
-        for( my $col = 0; $col <= $#data_row; $col++ ) {
-            $data_row{$attributes[$col]} = $data_row[$col];
+        $pdbx->{$category}{'metadata'}{'is_indexed'} = 0;
+        $pdbx->{$category}{'data'} = (); # Resets the data.
+
+        my ( $first_pdbx_id ) = sort keys %{ $current_pdbx_indexed };
+        if( ref $current_pdbx_indexed->{$first_pdbx_id} eq 'HASH' ) {
+            my @category_attributes =
+                sort { $a cmp $b }
+                uniq
+                map { keys %{ $current_pdbx_indexed->{$_} } }
+                keys %{ $current_pdbx_indexed };
+            if( defined $current_attribute_order ) {
+                my ( $sorted_attribute_list ) =
+                    sort_by_list( \@category_attributes,
+                                  $current_attribute_order );
+                @category_attributes = @{ $sorted_attribute_list };
+            }
+            $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
+
+            # HACK: should figure out how to deal with simple ids and combined
+            # keys at the same time.
+            for my $id ( sort { $a <=> $b } keys %{ $current_pdbx_indexed } ){
+                for( my $i = 0; $i <= $#category_attributes; $i++ ) {
+                    my $data_value =
+                        $current_pdbx_indexed->{$id}{$category_attributes[$i]};
+                    if( defined $data_value ) {
+                        push @{ $pdbx->{$category}{'data'} }, $data_value;
+                    } else {
+                        push @{ $pdbx->{$category}{'data'} }, '?';
+                    }
+                }
+            }
+        } elsif( ref $current_pdbx_indexed->{$first_pdbx_id} eq 'ARRAY' ) {
+            my @category_attributes =
+                sort { $a cmp $b }
+                uniq
+                map { keys %{ $_ } }
+                map { @{ $current_pdbx_indexed->{$_} } }
+                keys %{ $current_pdbx_indexed };
+            if( defined $current_attribute_order ) {
+                my ( $sorted_attribute_list ) =
+                    sort_by_list( \@category_attributes,
+                                  $current_attribute_order );
+                @category_attributes = @{ $sorted_attribute_list };
+            }
+            $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
+
+            for my $id ( sort { $a cmp $b } keys %{ $current_pdbx_indexed } ){
+                for my $group ( @{ $current_pdbx_indexed->{$id} } ) {
+                    for( my $i = 0; $i <= $#category_attributes; $i++ ) {
+                        my $data_value = $group->{$category_attributes[$i]};
+                        if( defined $data_value ) {
+                            push @{ $pdbx->{$category}{'data'} }, $data_value;
+                        } else {
+                            push @{ $pdbx->{$category}{'data'} }, '?';
+                        }
+                    }
+                }
+            }
         }
-        push @pdbx_loops, { %data_row };
     }
 
-    return \@pdbx_loops;
+    return;
 }
+
+# ----------------------------- Atom-site related ----------------------------- #
 
 #
 # From PDBx file, obtains data only from _atom_site category and outputs special
@@ -316,7 +557,7 @@ sub pdbx_loop_to_array
 # Input:
 #     $pdbx_file - PDBx file.
 # Output:
-#     %atom_site - special data structure.
+#     %atom_site - indexed data structure.
 #     E.g.: { 1 => { 'id' => 2,
 #                    'label_atom_id' => 'CA',
 #                    ... }
@@ -327,32 +568,10 @@ sub obtain_atom_site
 {
     my ( $pdbx_file, $options ) = @_;
 
-    return pdbx_loop_unique( obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ],
-                                               $options ), '_atom_site', [ 'id' ] );
-}
-
-#
-# From PDBx file, obtains data only from _atom_site category and outputs special
-# data structure that represents atom data. It is done for whole file or stream
-# so, multiple data_ streams with _atom_site can be parsed.
-# Input:
-#     $pdbx_file - PDBx file.
-# Output:
-#     @atom_sites - list of special data structure.
-#
-
-sub obtain_atom_sites
-{
-    my ( $pdbx_file ) = @_;
-    my $pdbx_loops =
-        obtain_pdbx_loop( $pdbx_file, [ '_atom_site' ], {'read_until_end' => 1});
-
-    my @atom_sites;
-    for my $pdbx_loop ( @{ $pdbx_loops } ) {
-        push @atom_sites, pdbx_loop_unique( $pdbx_loop, '_atom_site', [ 'id' ] );
-    }
-
-    return \@atom_sites;
+    return pdbx_indexed( $pdbx_file,
+                         [ '_atom_site' ],
+                         { 'attributes' => { '_atom_site' => [ 'id' ] } } )->
+                                                          {'_atom_site'}{'data'};
 }
 
 #
@@ -564,6 +783,108 @@ sub filter_new
 }
 
 #
+# Filters atom site data structure by unique residue key.
+# Input:
+#     $atom_site - atom data structure.
+#     $unique_residue_key - a composite key that identifies residue uniquely.
+#     $include_dot - includes '.' alt id into the selection.
+#     Ex.: '18,A,1,.'.
+# Output:
+#     %filtered_atoms - filtered atom data structure.
+#
+
+sub filter_by_unique_residue_key
+{
+    my ( $atom_site, $unique_residue_key, $include_dot ) = @_;
+    my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
+        split /,/sxm, $unique_residue_key;
+    my $filtered_atoms = filter( { 'atom_site' => $atom_site,
+                                   'include' =>
+                                   { 'label_seq_id' => [ $residue_id ],
+                                     'label_asym_id' => [ $residue_chain ],
+                                     'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                                     'label_alt_id' =>
+                                         [ $residue_alt,
+                                           ( $include_dot ? '.' : () ) ] } } );
+    return $filtered_atoms;
+}
+
+#
+# Create unique residue key that consists of '_atom_site.label_seq_id',
+# '_atom_site.label_asym_id', '_atom_site.pdbx_PDB_model_num' and
+# '_atom_site.label_alt_id'.
+# Input:
+#     $atom - atom data structure.
+# Output:
+#     $unique_residue_key - unique residue key.
+#
+
+sub unique_residue_key
+{
+    my ( $atom ) = @_;
+    return join q{,},
+           map { $atom->{$_} }
+               ( 'label_seq_id',
+                 'label_asym_id',
+                 'pdbx_PDB_model_num',
+                 'label_alt_id', );
+}
+
+#
+# TODO: maybe this function should be deprecated, because identify_residue_atoms
+# does a better job.
+# Generates a list of unique keys from the atom site.
+# Input:
+#     $atom_site - atom site data structure;
+#     $options->{'exclude_dot'} - excludes label atom ids with '.' value, but
+#     only if there are alternatives.
+# Output:
+#     @residue_unique_keys - list of determined unique keys.
+#
+
+sub determine_residue_keys
+{
+    my ( $atom_site, $options ) = @_;
+    my ( $exclude_dot ) = $options->{'exclude_dot'};
+
+    my @current_residue_unique_keys;
+    for my $atom_id ( keys %{ $atom_site } ) {
+        push @current_residue_unique_keys,
+            unique_residue_key( $atom_site->{$atom_id} );
+    }
+    @current_residue_unique_keys = uniq @current_residue_unique_keys;
+
+    my %residue_key_tree;
+    for my $residue_unique_key ( @current_residue_unique_keys ) {
+        my $reduced_unique_key = $residue_unique_key;
+        my $alt_id = $residue_unique_key;
+        $reduced_unique_key =~ s/^(.+,.+,.+),.+$/$1/g;
+        $alt_id =~ s/^.+,.+,.+,(.+)$/$1/g;
+        if( exists $residue_key_tree{$reduced_unique_key} ) {
+            push @{ $residue_key_tree{$reduced_unique_key} },$residue_unique_key;
+        } else {
+            $residue_key_tree{$reduced_unique_key} = [ $residue_unique_key ];
+        }
+    }
+
+    my @residue_unique_keys;
+    for my $reduced_unique_key ( keys %residue_key_tree ) {
+        my $residue_unique_keys = $residue_key_tree{$reduced_unique_key};
+        if( scalar @{ $residue_unique_keys } > 1 ) {
+            for my $i ( 0..$#{ $residue_unique_keys } ) {
+                if( $exclude_dot && $residue_unique_keys->[$i] =~ m/\.$/ ) {
+                    splice @{ $residue_unique_keys }, $i, 1;
+                    last;
+                }
+            }
+        }
+        push @residue_unique_keys, @{ $residue_unique_keys };
+    }
+
+    return \@residue_unique_keys;
+}
+
+#
 # Extracts information from atom data structure.
 # Input:
 #     $options{'data'} - list of data that should be extracted;
@@ -721,229 +1042,6 @@ sub mark_selection
     return;
 }
 
-#
-# Filters atom site data structure by unique residue key.
-# Input:
-#     $atom_site - atom data structure.
-#     $unique_residue_key - a composite key that identifies residue uniquely.
-#     $include_dot - includes '.' alt id into the selection.
-#     Ex.: '18,A,1,.'.
-# Output:
-#     %filtered_atoms - filtered atom data structure.
-#
-
-sub filter_by_unique_residue_key
-{
-    my ( $atom_site, $unique_residue_key, $include_dot ) = @_;
-    my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
-        split /,/sxm, $unique_residue_key;
-    my $filtered_atoms = filter( { 'atom_site' => $atom_site,
-                                   'include' =>
-                                   { 'label_seq_id' => [ $residue_id ],
-                                     'label_asym_id' => [ $residue_chain ],
-                                     'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                                     'label_alt_id' =>
-                                         [ $residue_alt,
-                                           ( $include_dot ? '.' : () ) ] } } );
-    return $filtered_atoms;
-}
-
-#
-# Create unique residue key that consists of '_atom_site.label_seq_id',
-# '_atom_site.label_asym_id', '_atom_site.pdbx_PDB_model_num' and
-# '_atom_site.label_alt_id'.
-# Input:
-#     $atom - atom data structure.
-# Output:
-#     $unique_residue_key - unique residue key.
-#
-
-sub unique_residue_key
-{
-    my ( $atom ) = @_;
-    return join q{,},
-           map { $atom->{$_} }
-               ( 'label_seq_id',
-                 'label_asym_id',
-                 'pdbx_PDB_model_num',
-                 'label_alt_id', );
-}
-
-#
-# TODO: maybe this function should be deprecated, because identify_residue_atoms
-# does a better job.
-# Generates a list of unique keys from the atom site.
-# Input:
-#     $atom_site - atom site data structure;
-#     $options->{'exclude_dot'} - excludes label atom ids with '.' value, but
-#     only if there are alternatives.
-# Output:
-#     @residue_unique_keys - list of determined unique keys.
-#
-
-sub determine_residue_keys
-{
-    my ( $atom_site, $options ) = @_;
-    my ( $exclude_dot ) = $options->{'exclude_dot'};
-
-    my @current_residue_unique_keys;
-    for my $atom_id ( keys %{ $atom_site } ) {
-        push @current_residue_unique_keys,
-            unique_residue_key( $atom_site->{$atom_id} );
-    }
-    @current_residue_unique_keys = uniq @current_residue_unique_keys;
-
-    my %residue_key_tree;
-    for my $residue_unique_key ( @current_residue_unique_keys ) {
-        my $reduced_unique_key = $residue_unique_key;
-        my $alt_id = $residue_unique_key;
-        $reduced_unique_key =~ s/^(.+,.+,.+),.+$/$1/g;
-        $alt_id =~ s/^.+,.+,.+,(.+)$/$1/g;
-        if( exists $residue_key_tree{$reduced_unique_key} ) {
-            push @{ $residue_key_tree{$reduced_unique_key} },$residue_unique_key;
-        } else {
-            $residue_key_tree{$reduced_unique_key} = [ $residue_unique_key ];
-        }
-    }
-
-    my @residue_unique_keys;
-    for my $reduced_unique_key ( keys %residue_key_tree ) {
-        my $residue_unique_keys = $residue_key_tree{$reduced_unique_key};
-        if( scalar @{ $residue_unique_keys } > 1 ) {
-            for my $i ( 0..$#{ $residue_unique_keys } ) {
-                if( $exclude_dot && $residue_unique_keys->[$i] =~ m/\.$/ ) {
-                    splice @{ $residue_unique_keys }, $i, 1;
-                    last;
-                }
-            }
-        }
-        push @residue_unique_keys, @{ $residue_unique_keys };
-    }
-
-    return \@residue_unique_keys;
-}
-
-#
-# Creates a hash where for each unique residue key proper atom ids are assigned.
-# Input:
-#     $atom_site - $atom_site - atom data structure.
-# Output:
-#     %residue_atom_ids - hash of unique residue key and corresponding atom ids.
-#
-
-sub identify_residue_atoms
-{
-    my ( $atom_site, $options ) = @_;
-    my ( $check_atom_names ) = $options->{'check_atom_names'};
-
-    my $split_groups = split_by( { 'atom_site' => $atom_site,
-                                   'attributes' => [ 'label_seq_id',
-                                                     'label_asym_id',
-                                                     'pdbx_PDB_model_num', ] } );
-
-    my %residue_atom_ids;
-    for my $atom_id ( keys %{ $atom_site } ) {
-        my $unique_residue_key = unique_residue_key( $atom_site->{$atom_id} );
-        my ( $residue_id, $residue_chain, $pdbx_model, $alt_id ) =
-            split /,/, $unique_residue_key;
-        my $split_group_entry = "${residue_id},${residue_chain},${pdbx_model}";
-        my $related_residue_atom_ids = $split_groups->{$split_group_entry};
-
-        # Splits related residues into alt id groups. Atom ids can be redundant.
-        for my $related_atom_id ( @{ $related_residue_atom_ids } ) {
-            my $related_alt_id =
-                $atom_site->{$related_atom_id}{'label_alt_id'};
-
-            if( $atom_id ne $related_atom_id ) {
-                next if( $check_atom_names &&
-                         $atom_site->{$atom_id}{'label_atom_id'} eq
-                         $atom_site->{$related_atom_id}{'label_atom_id'} );
-
-                if( $alt_id eq '.' ) {
-                    push @{ $residue_atom_ids{$unique_residue_key} },
-                        $related_atom_id;
-                } elsif( $alt_id eq $related_alt_id || $related_alt_id eq '.') {
-                    push @{ $residue_atom_ids{$unique_residue_key} },
-                        $related_atom_id;
-                }
-            }
-        }
-    }
-
-    return \%residue_atom_ids;
-}
-
-#
-# Creates PDBx entry.
-# Input:
-#     $args - hash of all necessary attributes with corresponding values;
-# Output:
-#     PDBx STDOUT
-#
-
-sub create_pdbx_entry
-{
-    my ( $args ) = @_;
-    my $atom_site = $args->{'atom_site'};
-    my $atom_id = $args->{'id'};
-    my $type_symbol = $args->{'type_symbol'};
-    my $label_atom_id = $args->{'label_atom_id'};
-    my $label_alt_id = $args->{'label_alt_id'};
-    $label_alt_id //= q{.};
-    my $label_comp_id = $args->{'label_comp_id'};
-    my $label_asym_id = $args->{'label_asym_id'};
-    my $label_entity_id = $args->{'label_entity_id'};
-    $label_entity_id //= q{?};
-    my $label_seq_id = $args->{'label_seq_id'};
-    my $cartn_x = $args->{'cartn_x'};
-    my $cartn_y = $args->{'cartn_y'};
-    my $cartn_z = $args->{'cartn_z'};
-    my $pdbx_model_num = $args->{'pdbx_PDB_model_num'};
-
-    $atom_site->{$atom_id}{'group_PDB'} = 'ATOM';
-    $atom_site->{$atom_id}{'id'} = $atom_id;
-    $atom_site->{$atom_id}{'type_symbol'} = $type_symbol;
-    $atom_site->{$atom_id}{'label_atom_id'} = $label_atom_id;
-    $atom_site->{$atom_id}{'label_alt_id'} = $label_alt_id;
-    $atom_site->{$atom_id}{'label_comp_id'} = $label_comp_id;
-    $atom_site->{$atom_id}{'label_asym_id'} = $label_asym_id;
-    $atom_site->{$atom_id}{'label_entity_id'} = $label_entity_id;
-    $atom_site->{$atom_id}{'label_seq_id'} = $label_seq_id;
-    $atom_site->{$atom_id}{'Cartn_x'} = $cartn_x;
-    $atom_site->{$atom_id}{'Cartn_y'} = $cartn_y;
-    $atom_site->{$atom_id}{'Cartn_z'} = $cartn_z;
-    $atom_site->{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
-
-    return;
-}
-
-sub related_category_data
-{
-    my ( $pdbx_data, $relationships ) = @_;
-
-    my %related_category_data = ();
-
-    for my $category ( sort keys %{ $relationships } ) {
-        for my $related_category ( sort keys %{ $relationships->{$category} } ) {
-            my @references = @{ $relationships->{$category}{$related_category} };
-            for my $reference ( @references ) {
-                my $keys = $reference->{'keys'};
-                my $reference_keys = $reference->{'reference_keys'};
-                $related_category_data{$category}{'keys'} = $keys;
-                $related_category_data{$category}{'reference_category'} =
-                    $related_category;
-                $related_category_data{$category}{'reference_keys'} =
-                    $reference_keys;
-                $related_category_data{$category}{'data'} =
-                    pdbx_loop_unique( $pdbx_data, $related_category,
-                                      $reference_keys, { 'is_unique' => 0 } );
-            }
-        }
-    }
-
-    return \%related_category_data;
-}
-
 # --------------------------------- PDB parser -------------------------------- #
 
 sub obtain_pdb_atom_site
@@ -993,132 +1091,143 @@ sub obtain_pdb_atom_site
     return \%atom_site;
 }
 
-# --------------------------- Data structure to STDOUT ------------------------ #
+# --------------------------- Data structures to STDOUT ----------------------- #
 
 #
-# Converts atom site data structure to PDBx.
+# Converts pdbx data structure to PDBx.
 # Input:
-#     $args->{data_name} - data name of the PDBx;
-#     $args->{pdbx_data} - data structure of PDBx;
-#     $args->{pdbx_data_indexed} - data structure from pdbx_data_indexed();
-#     $args->{attributes} - attribute list that should be included in the
-#     output;
-#     $args->{add_attributes} - add list of attributes to existing data
+#     $options->{data_name} - data name of the PDBx;
+#     $options->{category_order} - category list that should be included in the
+#     output in certain order;
+#     $options->{attribute_order} - attribute hash of lists that should be
+#     included in the output in certain order;
+#     $options->{add_attributes} - add list of attributes to existing data
 #     structure;
-#     $args->{fh} - file handler.
+#     $options->{tags} - tags that should be included in the output.
+#     $options->{fh} - file handler.
 # Output:
 #     PDBx STDOUT.
 #
 
 sub to_pdbx
 {
-    my ( $args ) = @_;
-    my ( $data_name, $pdbx_data, $pdbx_data_indexed, $attributes,
+    my ( $pdbx_data, $options ) = @_;
+    my ( $data_name, $categories, $category_order, $attribute_order, $tags,
          $add_attributes, $fh ) = (
-        $args->{'data_name'},
-        $args->{'pdbx_data'},
-        $args->{'pdbx_data_indexed'},
-        $args->{'attributes'},
-        $args->{'add_attributes'},
-        $args->{'fh'},
+        $options->{'data_name'},
+        $options->{'categories'},
+        $options->{'category_order'},
+        $options->{'attribute_order'},
+        $options->{'tags'},
+        $options->{'add_attributes'},
+        $options->{'fh'},
     );
 
-    $data_name //= 'testing';
-    $attributes //= { '_atom_site' =>
-                          [ 'group_PDB',
-                            'id',
-                            'type_symbol',
-                            'label_atom_id',
-                            'label_alt_id',
-                            'label_comp_id',
-                            'label_asym_id',
-                            'label_entity_id',
-                            'label_seq_id',
-                            'Cartn_x',
-                            'Cartn_y',
-                            'Cartn_z',
-                            'pdbx_PDB_model_num', ] };
+    $data_name //= 'rotag';
+    $category_order //= [
+        '_atom_site', '_[local]_rotamer_angle', '_[local]_dihedral_angle',
+        '_[local]_rotamer_energy', '_[local]_pairwise_energy', '_[local]_energy',
+        '_[local]_rmsd'
+    ];
+    $attribute_order //= {
+        '_atom_site' => [
+            'group_PDB',
+            'id',
+            'type_symbol',
+            'label_atom_id',
+            'label_alt_id',
+            'label_comp_id',
+            'label_asym_id',
+            'label_entity_id',
+            'label_seq_id',
+            'Cartn_x',
+            'Cartn_y',
+            'Cartn_z',
+            'pdbx_PDB_model_num',
+        ]
+    };
+    # TODO: should it be removed?
+    # $add_attributes //= { '_atom_site' => [ '[local]_selection_state',
+    #                                         '[local]_selection_group' ] };
     $fh //= \*STDOUT;
+
+    my ( $current_categories ) =
+        sort_by_list( [ sort keys %{ $pdbx_data } ], $category_order );
+    $categories //= $current_categories;
 
     print {$fh} "data_${data_name}\n#\n";
 
-    # Parses indexed pdbx data structure.
-    if( defined $pdbx_data_indexed ) {
-        for my $category ( sort { $a cmp $b } keys %{ $pdbx_data_indexed } ) {
-            # TODO: what if it does not exist?
-            my $current_attributes = $attributes->{$category};
+    if( %{ $pdbx_data } ) {
+        for my $category  ( @{ $categories } ) {
+            next if defined $tags &&
+                  ! any { $category eq $_ } @{ $tags };
 
-            if( defined $add_attributes->{$category} ) {
-                push @{ $current_attributes }, @{ $add_attributes->{$category} };
+            my $category_attribute_order = $attribute_order->{$category};
+            if( ! defined $category_attribute_order ) {
+                $category_attribute_order = $pdbx_data->{$category}{'metadata'}
+                                                                   {'attributes'};
             }
 
-            print {$fh} "loop_\n";
-
-            for my $current_attribute ( @{ $current_attributes } ) {
-                $current_attribute eq $current_attributes->[-1] ?
-                    print {$fh} "_atom_site.$current_attribute":
-                    print {$fh} "_atom_site.$current_attribute\n";
-            }
-
-            my $current_pdbx_data_indexed = $pdbx_data_indexed->{$category};
-            for my $id (sort { $a <=> $b } keys %{ $current_pdbx_data_indexed }){
-                for( my $i = 0; $i <= $#{ $current_attributes }; $i++ ) {
-                    my $data_value = $current_pdbx_data_indexed->
-                                         {$id}{$current_attributes->[$i]};
-                    if( $i % ( $#{ $current_attributes } + 1) != 0 ) {
-                        if( defined $current_pdbx_data_indexed->
-                                        {$id}{$current_attributes->[$i]} ){
-                            print {$fh} q{ }, $data_value;
-                        } else {
-                            print {$fh} q{ ?};
-                        }
-                    } else {
-                        if( defined $data_value ){
-                            print {$fh} "\n", $data_value;
-                        } else {
-                            print {$fh} "\n";
-                        }
-                    }
+            my @append_attributes = ();
+            for my $add_attribute ( @{ $add_attributes->{$category} } ) {
+                if( ! any { $add_attributes eq $_ }
+                         @{ $category_attribute_order } ) {
+                    push @append_attributes, $add_attribute;
                 }
             }
-            print {$fh} "\n#\n";
-        }
-    }
+            push @{ $category_attribute_order }, @append_attributes;
 
-    # Parses unindexed pdbx data structure.
-    if( defined $pdbx_data ) {
-        for my $category  ( sort { $a cmp $b } keys %{ $pdbx_data } ) {
-            if( $pdbx_data->{$category}{'is_loop'} ) {
+            my ( undef, $current_attribute_order ) =
+                sort_by_list( $category_attribute_order,
+                              $pdbx_data->{$category}{'metadata'}{'attributes'});
+
+            if( $pdbx_data->{$category}{'metadata'}{'is_loop'} ) {
                 print {$fh} "loop_\n";
-                foreach( @{ $pdbx_data->{$category}{'attributes'} } ) {
+
+                foreach( @{ $category_attribute_order } ) {
                     print {$fh} "$category.$_\n";
                 }
+
+                if( $pdbx_data->{$category}{'metadata'}{'is_indexed'} ) {
+                    indexed2raw( $pdbx_data,
+                                 { 'categories' => $categories,
+                                   'attribute_order' => {
+                                       $category =>
+                                           $pdbx_data->{$category}{'metadata'}
+                                                                  {'attributes'}
+                                   } } );
+                }
+
                 my $attribute_array_length =
-                    $#{ $pdbx_data->{$category}{'attributes'} };
+                    $#{ $pdbx_data->{$category}{'metadata'}{'attributes'} };
                 my $data_array_length =
                     $#{ $pdbx_data->{$category}{'data'} };
                 for( my $i = 0;
                      $i <= $data_array_length;
-                     $i += $attribute_array_length + 1 ){
+                     $i += $attribute_array_length + 1 ) {
                     my @current_data_list = ();
-                    for my $data_value ( @{ $pdbx_data->{$category}{'data'} }
-                                             [$i..$i+$attribute_array_length] ) {
-                        if( defined $data_value ) {
-                            push @current_data_list, $data_value;
+                    for my $j ( 0..$#{ $category_attribute_order } ) {
+                        my $attribute = $category_attribute_order->[$j];
+                        my $pos = $current_attribute_order->{$attribute};
+                        if( defined $pos ) {
+                            push @current_data_list,
+                                $pdbx_data->{$category}{'data'}[$i+$pos];
                         } else {
-                            push @current_data_list, '?';
+                            push @current_data_list, '?'
                         }
                     }
                     print {$fh} join( q{ }, @current_data_list ), "\n" ;
                 }
             } else { # PDBx line data.
-                my @attributes = @{ $pdbx_data->{$category}{'attributes'} };
+                my @attributes =
+                    @{ $pdbx_data->{$category}{'metadata'}{'attributes'} };
                 my @data = @{ $pdbx_data->{$category}{'data'} };
                 for( my $i = 0; $i <= $#attributes; $i++ ) {
                     printf {$fh} "%s.%s %s\n", $category, $attributes[$i],
                         $data[$i];
                 }
             }
+
             print {$fh} "#\n";
         }
     }
@@ -1135,25 +1244,58 @@ sub to_pdbx
 #     csv STDOUT
 #
 
-sub pdbx_loop_to_csv
+sub to_csv
 {
-    my ( $pdbx_loop, $attributes ) = @_;
+    my ( $pdbx, $options ) = @_;
+    my ( $category, $attributes ) = (
+        $options->{'category'}, $options->{'attributes'}
+    );
 
-    $attributes //= $pdbx_loop->{'attributes'};
+    $category //= (sort keys %{ $pdbx })[0]; # TODO: assigning through list
+                                             # might loose the information.
+    my $pdbx_raw = $pdbx->{$category};
 
-    if( defined $pdbx_loop ) {
+    $attributes //= $pdbx_raw->{'metadata'}{'attributes'};
+
+    if( defined $pdbx_raw ) {
         print {*STDOUT} join( ',', @{ $attributes } ), "\n";
     }
 
-    my $attribute_array_length = $#{ $pdbx_loop->{'attributes'} };
-    my $data_array_length = $#{ $pdbx_loop->{'data'} };
+    my $attribute_array_length = $#{ $pdbx_raw->{'metadata'}{'attributes'} };
+    my $data_array_length = $#{ $pdbx_raw->{'data'} };
 
     for( my $i = 0; $i <= $data_array_length; $i += $attribute_array_length + 1){
-        print {*STDOUT} join( q{,}, @{ $pdbx_loop->{'data'} }
+        print {*STDOUT} join( q{,}, @{ $pdbx_raw->{'data'} }
                                     [ $i..$i+$attribute_array_length ] ), "\n" ;
     }
 
     return;
+}
+
+sub sort_by_list
+{
+    my ( $unsorted_list, $sort_by_list ) = @_;
+
+    my @sorted_list = sort @{ $unsorted_list };
+    my %sort_order = ();
+    my $upper_pos = $#{ $sort_by_list } + 1;
+    for my $item ( @sorted_list ) {
+        for my $pos ( 0..$#{ $sort_by_list } ) {
+            if( $item eq $sort_by_list->[$pos] ) {
+                $sort_order{$item} = $pos;
+            }
+        }
+
+        # Move category to the back of the category list.
+        if( ! exists $sort_order{$item} ) {
+            $sort_order{$item} = $upper_pos;
+            $upper_pos++;
+        }
+    }
+    @sorted_list =
+        sort { $sort_order{$a} <=> $sort_order{$b} } @sorted_list;
+
+    return \@sorted_list, \%sort_order;
 }
 
 1;
