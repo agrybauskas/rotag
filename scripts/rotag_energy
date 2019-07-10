@@ -20,13 +20,13 @@ use Grid qw( grid_box
 use BondProperties qw( hybridization );
 use Logging qw( error
                 warning );
-use PDBxParser_new qw( filter
-                       mark_selection
-                       obtain_pdbx_data
-                       raw2indexed
-                       split_by
-                       to_csv
-                       to_pdbx );
+use PDBxParser qw( filter
+                   mark_selection
+                   obtain_pdbx_data
+                   raw2indexed
+                   split_by
+                   to_csv
+                   to_pdbx );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );

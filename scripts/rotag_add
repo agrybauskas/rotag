@@ -14,14 +14,14 @@ use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
                 warning );
-use PDBxParser_new qw( filter
-                       filter_by_unique_residue_key
-                       mark_selection
-                       obtain_pdbx_data
-                       raw2indexed
-                       split_by
-                       to_pdbx
-                       unique_residue_key );
+use PDBxParser qw( filter
+                   filter_by_unique_residue_key
+                   mark_selection
+                   obtain_pdbx_data
+                   raw2indexed
+                   split_by
+                   to_pdbx
+                   unique_residue_key );
 use PseudoAtoms qw( generate_pseudo );
 use SidechainModels qw( rotation_only  );
 use Version qw( $VERSION );

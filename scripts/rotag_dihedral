@@ -16,13 +16,13 @@ use Logging qw( error
                 warning );
 use Measure qw( all_dihedral
                 dihedral_angle );
-use PDBxParser_new qw( filter
-                       filter_by_unique_residue_key
-                       mark_selection
-                       obtain_pdbx_data
-                       raw2indexed
-                       to_csv
-                       to_pdbx );
+use PDBxParser qw( filter
+                   filter_by_unique_residue_key
+                   mark_selection
+                   obtain_pdbx_data
+                   raw2indexed
+                   to_csv
+                   to_pdbx );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );

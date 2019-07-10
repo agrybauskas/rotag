@@ -12,12 +12,12 @@ use Try::Tiny;
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use PDBxParser_new qw( filter
-                       obtain_pdbx_data
-                       raw2indexed
-                       split_by
-                       to_csv
-                       to_pdbx );
+use PDBxParser qw( filter
+                   obtain_pdbx_data
+                   raw2indexed
+                   split_by
+                   to_csv
+                   to_pdbx );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );

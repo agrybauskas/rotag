@@ -10,13 +10,13 @@ use Try::Tiny;
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use PDBxParser_new qw( filter_new
-                       indexed2raw
-                       mark_selection
-                       raw2indexed
-                       related_category_data
-                       obtain_pdbx_data
-                       to_pdbx );
+use PDBxParser qw( filter_new
+                   indexed2raw
+                   mark_selection
+                   raw2indexed
+                   related_category_data
+                   obtain_pdbx_data
+                   to_pdbx );
 use Grammar::SelectionParser;
 use Logging qw( error );
 use Version qw( $VERSION );

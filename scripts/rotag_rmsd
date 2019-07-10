@@ -13,13 +13,13 @@ use Try::Tiny;
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use PDBxParser_new qw( filter
-                       obtain_pdbx_data
-                       raw2indexed
-                       related_category_data
-                       split_by
-                       to_pdbx
-                       to_csv );
+use PDBxParser qw( filter
+                   obtain_pdbx_data
+                   raw2indexed
+                   related_category_data
+                   split_by
+                   to_pdbx ):
+
 use Measure qw( rmsd
                 rmsd_sidechains );
 use Version qw( $VERSION );

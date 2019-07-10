@@ -5,7 +5,7 @@ use warnings;
 
 use Data::Dumper;
 
-use PDBxParser_new qw( pdbx_indexed );
+use PDBxParser qw( pdbx_indexed );
 
 $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Indent = 1;

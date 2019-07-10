@@ -12,14 +12,14 @@ use Try::Tiny;
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use PDBxParser_new qw( determine_residue_keys
-                       filter
-                       mark_selection
-                       obtain_pdbx_data
-                       raw2indexed
-                       split_by
-                       to_csv
-                       to_pdbx );
+use PDBxParser qw( determine_residue_keys
+                   filter
+                   mark_selection
+                   obtain_pdbx_data
+                   raw2indexed
+                   split_by
+                   to_csv
+                   to_pdbx );
 use PseudoAtoms qw( generate_library );
 use Sampling qw( sample_angles_qs_parsing );
 use Version qw( $VERSION );

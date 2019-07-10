@@ -12,12 +12,12 @@ use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use Moieties qw( replace_with_moiety );
-use PDBxParser_new qw( filter
-                       obtain_atom_site
-                       obtain_pdbx_data
-                       raw2indexed
-                       to_pdbx
-                       unique_residue_key );
+use PDBxParser qw( filter
+                   obtain_atom_site
+                   obtain_pdbx_data
+                   raw2indexed
+                   to_pdbx
+                   unique_residue_key );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
