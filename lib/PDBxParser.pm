@@ -17,6 +17,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_pdbx_line
                      obtain_pdbx_loop
                      obtain_atom_site
+                     obtain_atom_sites
                      obtain_pdb_atom_site
                      pdbx_indexed
                      pdbx_loop_to_array
@@ -578,6 +579,31 @@ sub obtain_atom_site
                          [ '_atom_site' ],
                          { 'attributes' => { '_atom_site' => [ 'id' ] } } )->
                                                           {'_atom_site'}{'data'};
+}
+
+#
+# From PDBx file, obtains data only from _atom_site category and outputs special
+# data structure that represents atom data. It is done for whole file or stream
+# so, multiple data_ streams with _atom_site can be parsed.
+# Input:
+#     $pdbx_file - PDBx file.
+# Output:
+#     @atom_sites - list of special data structure.
+#
+
+sub obtain_atom_sites
+{
+    my ( $pdbx_file ) = @_;
+
+    my $pdbxs = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ],
+                                  { 'read_stream' => 1 } );
+    my @atom_sites = ();
+    for my $pdbx ( @{ $pdbxs } ) {
+        raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
+        push @atom_sites, $pdbx->{'_atom_site'}{'data'};
+    }
+
+    return \@atom_sites;
 }
 
 #
