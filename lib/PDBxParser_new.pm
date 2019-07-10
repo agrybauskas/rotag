@@ -58,39 +58,49 @@ sub pdbx_indexed
 sub obtain_pdbx_data
 {
     my ( $pdbx_file, $data_identifier, $options ) = @_;
-    my %pdbx_data = ();
+    my ( $read_stream ) = ( $options->{'read_stream'} );
 
-    $options //= {};
+    $read_stream //= 0;
 
-    my %options = %{ $options };
-    $options{'ignore_missing_categories'} = 1;
+    my @pdbx_data = ();
 
     local @ARGV = ( $pdbx_file );
 
     if( defined $data_identifier && @{ $data_identifier } ) {
-        my @pdbx = ();
+        my @pdbxs = ();
 
         # Slurp whole pdbx file.
         my $line_counter = 0;
         {
             local $/ = '';
             while( <> ) {
-                push @pdbx, $_;
+                push @pdbxs, map { 'data_' . $_ }
+                             grep { $_ ne '' }
+                             split /data_/, $_;
                 $line_counter++;
             }
         }
 
         warn "$pdbx_file is empty.\n" if $line_counter == 0;
 
-        %pdbx_data = (
-            %pdbx_data,
-            %{ obtain_pdbx_line( \@pdbx, $data_identifier ) } );
-        %pdbx_data = (
-            %pdbx_data,
-            %{ obtain_pdbx_loop( \@pdbx, $data_identifier, \%options ) } );
+        for my $pdbx ( @pdbxs ) {
+            my %pdbx_data = ();
+            %pdbx_data = (
+                %pdbx_data,
+                %{ obtain_pdbx_line( [ $pdbx ], $data_identifier ) } );
+            %pdbx_data = (
+                %pdbx_data,
+                %{ obtain_pdbx_loop( [ $pdbx ], $data_identifier,
+                                     { 'ignore_missing_categories' => 1 } ) } );
+            push @pdbx_data, \%pdbx_data;
+        }
     }
 
-    return \%pdbx_data;
+    if( $read_stream ) {
+        return @pdbx_data;
+    } else {
+        return $pdbx_data[0];
+    }
 }
 
 #
