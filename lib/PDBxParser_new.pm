@@ -76,7 +76,7 @@ sub obtain_pdbx_data
             while( <> ) {
                 push @pdbxs, map { 'data_' . $_ }
                              grep { $_ ne '' }
-                             split /data_/, $_;
+                             split /(?<!\S)data_/, $_;
                 $line_counter++;
             }
         }
@@ -92,6 +92,7 @@ sub obtain_pdbx_data
                 %pdbx_data,
                 %{ obtain_pdbx_loop( [ $pdbx ], $data_identifier,
                                      { 'ignore_missing_categories' => 1 } ) } );
+
             push @pdbx_data, \%pdbx_data;
         }
     }
