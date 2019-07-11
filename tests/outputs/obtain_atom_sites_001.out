@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB
@@ -19,7 +19,7 @@ ATOM 2651 C CG 2 ASP A 1 91 -16.988 42.773 90.015 1
 ATOM 2652 O OD1 2 ASP A 1 91 -18.072 42.692 89.391 1
 ATOM 2653 O OD2 2 ASP A 1 91 -16.623 43.851 90.543 1
 #
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB

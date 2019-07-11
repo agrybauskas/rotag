@@ -1,1 +1,2 @@
-./tests/cases/../inputs/empty.cif - is empty.
+./tests/cases/../inputs/empty.cif is empty.
+Can't use an undefined value as a HASH reference at tests/cases/../../lib/PDBxParser.pm line 581.
