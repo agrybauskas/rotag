@@ -1255,7 +1255,7 @@ sub to_pdbx
         }
     }
 
-    return;
+    # return;
 }
 
 #
@@ -1300,9 +1300,11 @@ sub sort_by_list
     my ( $unsorted_list, $sort_by_list ) = @_;
 
     $sort_by_list //= $unsorted_list;
+    $unsorted_list //= $sort_by_list;
 
     my @sorted_list = sort @{ $unsorted_list };
     my %sort_order = ();
+
     my $upper_pos = $#{ $sort_by_list } + 1;
     for my $item ( @sorted_list ) {
         for my $pos ( 0..$#{ $sort_by_list } ) {
