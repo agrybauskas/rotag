@@ -530,20 +530,18 @@ sub indexed2raw
             uniq
             map { keys %{ $current_pdbx_indexed->{$_} } }
             keys %{ $current_pdbx_indexed };
+
         if( defined $current_attribute_order ) {
-            my ( $sorted_attribute_list ) =
-                sort_by_list( \@category_attributes,
-                              $current_attribute_order );
-            @category_attributes = @{ $sorted_attribute_list };
+            @category_attributes = @{ $current_attribute_order };
         }
+
         $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
 
         # HACK: should figure out how to deal with simple ids and combined
         # keys at the same time.
         for my $id ( sort { $a <=> $b } keys %{ $current_pdbx_indexed } ){
-            for( my $i = 0; $i <= $#category_attributes; $i++ ) {
-                my $data_value =
-                    $current_pdbx_indexed->{$id}{$category_attributes[$i]};
+            for my $attribute ( @category_attributes ) {
+                my $data_value = $current_pdbx_indexed->{$id}{$attribute};
                 if( defined $data_value ) {
                     push @{ $pdbx->{$category}{'data'} }, $data_value;
                 } else {
@@ -1205,9 +1203,9 @@ sub to_pdbx
             }
             push @{ $category_attribute_order }, @append_attributes;
 
-            my ( undef, $current_attribute_order ) =
-                sort_by_list( $category_attribute_order,
-                              $pdbx_data->{$category}{'metadata'}{'attributes'});
+            my ( undef, $current_attribute_order_table ) =
+                sort_by_list( $pdbx_data->{$category}{'metadata'}{'attributes'},
+                              $category_attribute_order );
 
             if( $pdbx_data->{$category}{'metadata'}{'is_loop'} ) {
                 print {$fh} "loop_\n";
@@ -1233,7 +1231,7 @@ sub to_pdbx
                     my @current_data_list = ();
                     for my $j ( 0..$#{ $category_attribute_order } ) {
                         my $attribute = $category_attribute_order->[$j];
-                        my $pos = $current_attribute_order->{$attribute};
+                        my $pos = $current_attribute_order_table->{$attribute};
                         if( defined $pos ) {
                             push @current_data_list,
                                 $pdbx_data->{$category}{'data'}[$i+$pos];
