@@ -18,7 +18,7 @@ use PDBxParser qw( filter
                    raw2indexed
                    related_category_data
                    split_by
-                   to_pdbx ):
+                   to_pdbx );
 
 use Measure qw( rmsd
                 rmsd_sidechains );
