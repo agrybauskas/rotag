@@ -39,9 +39,12 @@ define can_run_test
 [ ! -e ${TEST_CASES_DIR}/$*.chk ]
 endef
 
-.PHONY: test
+.PHONY: test listdiff
 
 test: ${GRAMMAR_MODULES} | ${TEST_DIFF}
+
+listdiff:
+	@-find ${TEST_OUT_DIR} -type f -name '*.diff' -size +0 | sort -u
 
 ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	@if ${can_run_test}; then \
