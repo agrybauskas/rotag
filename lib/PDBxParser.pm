@@ -1204,8 +1204,7 @@ sub to_pdbx
             push @{ $category_attribute_order }, @append_attributes;
 
             my ( undef, $current_attribute_order_table ) =
-                sort_by_list( $pdbx_data->{$category}{'metadata'}{'attributes'},
-                              $category_attribute_order );
+                sort_by_list( $category_attribute_order );
 
             if( $pdbx_data->{$category}{'metadata'}{'is_loop'} ) {
                 print {$fh} "loop_\n";
