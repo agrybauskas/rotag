@@ -3,6 +3,7 @@ $VAR1 = {
     'data' => {
       '1' => [
         {
+          'frequency' => '0.037037',
           'id' => '1',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -14,6 +15,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '2',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -27,6 +29,7 @@ $VAR1 = {
       ],
       '10' => [
         {
+          'frequency' => '0.037037',
           'id' => '19',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -38,6 +41,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '20',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -51,6 +55,7 @@ $VAR1 = {
       ],
       '11' => [
         {
+          'frequency' => '0.037037',
           'id' => '21',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -62,6 +67,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '22',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -75,6 +81,7 @@ $VAR1 = {
       ],
       '12' => [
         {
+          'frequency' => '0.037037',
           'id' => '23',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -86,6 +93,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '24',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -99,6 +107,7 @@ $VAR1 = {
       ],
       '13' => [
         {
+          'frequency' => '0.037037',
           'id' => '25',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -110,6 +119,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '26',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -123,6 +133,7 @@ $VAR1 = {
       ],
       '14' => [
         {
+          'frequency' => '0.037037',
           'id' => '27',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -134,6 +145,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '28',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -147,6 +159,7 @@ $VAR1 = {
       ],
       '15' => [
         {
+          'frequency' => '0.037037',
           'id' => '29',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -158,6 +171,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '30',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -171,6 +185,7 @@ $VAR1 = {
       ],
       '16' => [
         {
+          'frequency' => '0.037037',
           'id' => '31',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -182,6 +197,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '32',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -195,6 +211,7 @@ $VAR1 = {
       ],
       '17' => [
         {
+          'frequency' => '0.037037',
           'id' => '33',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -206,6 +223,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '34',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -219,6 +237,7 @@ $VAR1 = {
       ],
       '18' => [
         {
+          'frequency' => '0.037037',
           'id' => '35',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -230,6 +249,7 @@ $VAR1 = {
           'value' => '-1.884956'
         },
         {
+          'frequency' => '0.037037',
           'id' => '36',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -243,6 +263,7 @@ $VAR1 = {
       ],
       '19' => [
         {
+          'frequency' => '0.037037',
           'id' => '37',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -254,6 +275,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '38',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -267,6 +289,7 @@ $VAR1 = {
       ],
       '2' => [
         {
+          'frequency' => '0.037037',
           'id' => '3',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -278,6 +301,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '4',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -291,6 +315,7 @@ $VAR1 = {
       ],
       '20' => [
         {
+          'frequency' => '0.037037',
           'id' => '39',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -302,6 +327,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '40',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -315,6 +341,7 @@ $VAR1 = {
       ],
       '21' => [
         {
+          'frequency' => '0.037037',
           'id' => '41',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -326,6 +353,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '42',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -339,6 +367,7 @@ $VAR1 = {
       ],
       '22' => [
         {
+          'frequency' => '0.037037',
           'id' => '43',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -350,6 +379,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '44',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -363,6 +393,7 @@ $VAR1 = {
       ],
       '23' => [
         {
+          'frequency' => '0.037037',
           'id' => '45',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -374,6 +405,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '46',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -387,6 +419,7 @@ $VAR1 = {
       ],
       '24' => [
         {
+          'frequency' => '0.037037',
           'id' => '47',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -398,6 +431,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '48',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -411,6 +445,7 @@ $VAR1 = {
       ],
       '25' => [
         {
+          'frequency' => '0.037037',
           'id' => '49',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -422,6 +457,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '50',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -435,6 +471,7 @@ $VAR1 = {
       ],
       '26' => [
         {
+          'frequency' => '0.037037',
           'id' => '51',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -446,6 +483,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '52',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -459,6 +497,7 @@ $VAR1 = {
       ],
       '27' => [
         {
+          'frequency' => '0.037037',
           'id' => '53',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -470,6 +509,7 @@ $VAR1 = {
           'value' => '-1.256637'
         },
         {
+          'frequency' => '0.037037',
           'id' => '54',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -483,6 +523,7 @@ $VAR1 = {
       ],
       '3' => [
         {
+          'frequency' => '0.037037',
           'id' => '5',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -494,6 +535,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '6',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -507,6 +549,7 @@ $VAR1 = {
       ],
       '4' => [
         {
+          'frequency' => '0.037037',
           'id' => '7',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -518,6 +561,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '8',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -531,6 +575,7 @@ $VAR1 = {
       ],
       '5' => [
         {
+          'frequency' => '0.037037',
           'id' => '9',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -542,6 +587,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '10',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -555,6 +601,7 @@ $VAR1 = {
       ],
       '6' => [
         {
+          'frequency' => '0.037037',
           'id' => '11',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -566,6 +613,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '12',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -579,6 +627,7 @@ $VAR1 = {
       ],
       '7' => [
         {
+          'frequency' => '0.037037',
           'id' => '13',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -590,6 +639,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '14',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -603,6 +653,7 @@ $VAR1 = {
       ],
       '8' => [
         {
+          'frequency' => '0.037037',
           'id' => '15',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -614,6 +665,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '16',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -627,6 +679,7 @@ $VAR1 = {
       ],
       '9' => [
         {
+          'frequency' => '0.037037',
           'id' => '17',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',
@@ -638,6 +691,7 @@ $VAR1 = {
           'value' => '-2.513274'
         },
         {
+          'frequency' => '0.037037',
           'id' => '18',
           'label_alt_id' => '.',
           'label_asym_id' => 'A',

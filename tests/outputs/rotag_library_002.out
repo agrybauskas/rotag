@@ -35,8 +35,8 @@ _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-23 12 219 ASP A 1 . 0.500000 chi1 -1.884956
-24 12 219 ASP A 1 . 0.500000 chi2 -1.884956
-33 17 219 ASP A 1 . 0.500000 chi1 -1.884956
-34 17 219 ASP A 1 . 0.500000 chi2 1.884956
+23 12 219 ASP A 1 . 0.500000 0.037037 chi1
+24 12 219 ASP A 1 . 0.500000 0.037037 chi2
+33 17 219 ASP A 1 . 0.500000 0.037037 chi1
+34 17 219 ASP A 1 . 0.500000 0.037037 chi2
 #
