@@ -381,20 +381,15 @@ sub related_category_data
                 $related_category_data{$category}{'reference_keys'} =
                     $keys;
 
-                my $category_data =
-                    raw2indexed( { $related_category =>
-                                       $pdbx_data->{$related_category} },
-                                 { 'attributes' =>
-                                       { $related_category => $keys },
+                raw2indexed( $pdbx_data,
+                             { 'attributes' =>
+                                   { $category => $reference_keys,
+                                     $related_category => $keys },
                                    'is_unique' => 0 } );
-                my $related_category_data =
-                    raw2indexed( { $category => $pdbx_data->{$category} },
-                                 { 'attributes' =>
-                                       { $category => $reference_keys },
-                                   'is_unique' => 0 } );
-                for my $key ( keys %{ $category_data->{$related_category}{'data'} } ) {
+
+                for my $key ( keys %{ $pdbx_data->{$related_category}{'data'} }){
                     $related_category_data{$category}{'data'}{$key} =
-                        $related_category_data->{$category}{'data'}{$key};
+                        $pdbx_data->{$related_category}{'data'}{$key};
                 }
             }
         }
