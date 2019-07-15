@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB
@@ -208,36 +208,37 @@ _[local]_rotamer_angle.label_comp_id
 _[local]_rotamer_angle.label_asym_id
 _[local]_rotamer_angle.pdbx_PDB_model_num
 _[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 81 SER A 1 . chi1 -3.141593
-2 2 81 SER A 1 . chi1 -2.513274
-3 3 81 SER A 1 . chi1 -1.884956
-4 4 81 SER A 1 . chi1 -1.256637
-5 5 81 SER A 1 . chi1 -0.628319
-6 6 81 SER A 1 . chi1 0.000000
-7 7 81 SER A 1 . chi1 0.628319
-8 8 81 SER A 1 . chi1 1.256637
-9 9 82 SER A 1 . chi1 -2.513274
-10 10 82 SER A 1 . chi1 -1.884956
-11 11 82 SER A 1 . chi1 -1.256637
-12 12 82 SER A 1 . chi1 0.628319
+1 1 81 SER A 1 . 0.125000 chi1 -3.141593
+2 2 81 SER A 1 . 0.125000 chi1 -2.513274
+3 3 81 SER A 1 . 0.125000 chi1 -1.884956
+4 4 81 SER A 1 . 0.125000 chi1 -1.256637
+5 5 81 SER A 1 . 0.125000 chi1 -0.628319
+6 6 81 SER A 1 . 0.125000 chi1 0.000000
+7 7 81 SER A 1 . 0.125000 chi1 0.628319
+8 8 81 SER A 1 . 0.125000 chi1 1.256637
+9 9 82 SER A 1 . 0.250000 chi1 -2.513274
+10 10 82 SER A 1 . 0.250000 chi1 -1.884956
+11 11 82 SER A 1 . 0.250000 chi1 -1.256637
+12 12 82 SER A 1 . 0.250000 chi1 0.628319
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 6.883009
-2 2 composite -0.376168
-3 3 composite -1.329865
-4 4 composite -0.634851
-5 5 composite 3.945080
-6 6 composite 9.350343
-7 7 composite 5.415831
-8 8 composite 7.540953
-9 9 composite 1.048760
-10 10 composite -0.592487
-11 11 composite 9.253778
-12 12 composite 16.702538
+1 1 composite 6.883002
+2 2 composite -0.376173
+3 3 composite -1.329859
+4 4 composite -0.634828
+5 5 composite 3.945052
+6 6 composite 9.350238
+7 7 composite 5.415767
+8 8 composite 7.540930
+9 9 composite 1.048741
+10 10 composite -0.592494
+11 11 composite 9.253774
+12 12 composite 16.702536
 #
