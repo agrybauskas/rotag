@@ -567,11 +567,15 @@ sub indexed2raw
 sub obtain_atom_site
 {
     my ( $pdbx_file, $options ) = @_;
-
-    return pdbx_indexed( $pdbx_file,
-                         [ '_atom_site' ],
-                         { 'attributes' => { '_atom_site' => [ 'id' ] } } )->
-                                                          {'_atom_site'}{'data'};
+    my $atom_site =
+        pdbx_indexed( $pdbx_file,
+                      [ '_atom_site' ],
+                      { 'attributes' => { '_atom_site' => [ 'id' ] } } );
+    if( defined $atom_site && %{ $atom_site } ) {
+        return $atom_site->{'_atom_site'}{'data'};
+    } else {
+        return {};
+    }
 }
 
 #
