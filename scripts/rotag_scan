@@ -162,7 +162,7 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx_data{'_atom_site'}{'data'};
 
-    next if ! %{ $atom_site };
+    next if ! defined $atom_site || %{ $atom_site };
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
