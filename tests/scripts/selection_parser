@@ -31,11 +31,12 @@ my $selection_parser = new SelectionParser();
 my $selected_atom_ids = $selection_parser->parser( $atom_site,
                                                    $selection_command,
                                                    $parameters );
+
 my $selected_atom_site =
     filter_new( $atom_site, { 'include' => { 'id' => $selected_atom_ids } } );
 
 my %pdbx =();
-$pdbx{'_atom_site'}{'data'} = $atom_site;
+$pdbx{'_atom_site'}{'data'} = $selected_atom_site;
 $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
 $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
 to_pdbx( \%pdbx );
