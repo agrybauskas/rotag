@@ -130,7 +130,7 @@ for my $pdbx_file ( @ARGV ) {
     if( $add_sidechains ) {
         my $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
 
-        next if ! %{ $rotamer_angle };
+        next if ! defined $rotamer_angle || ! %{ $rotamer_angle };
 
         my $rotamer_angle_split_groups =
             # TODO: 'atom_site' should be changed to 'loop_site' in the future.
