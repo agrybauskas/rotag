@@ -532,11 +532,22 @@ sub indexed2raw
         $pdbx->{$category}{'metadata'}{'is_indexed'} = 0;
         $pdbx->{$category}{'data'} = (); # Resets the data.
 
-        my @category_attributes =
-            sort { $a cmp $b }
-            uniq
-            map { keys %{ $current_pdbx_indexed->{$_} } }
-            keys %{ $current_pdbx_indexed };
+        my @category_attributes = ();
+        my ( $first_id ) = sort keys %{ $current_pdbx_indexed };
+        if( ref $current_pdbx_indexed->{$first_id} eq 'HASH' ) {
+            @category_attributes =
+                sort { $a cmp $b }
+                uniq
+                map { keys %{ $current_pdbx_indexed->{$_} } }
+                keys %{ $current_pdbx_indexed };
+        } elsif( ref $current_pdbx_indexed->{$first_id} eq 'ARRAY' ) {
+            @category_attributes =
+                sort { $a cmp $b }
+                uniq
+                map { keys %{ $_ } }
+                map { @{ $current_pdbx_indexed->{$_} } }
+                keys %{ $current_pdbx_indexed };
+        }
 
         if( defined $current_attribute_order ) {
             @category_attributes = @{ $current_attribute_order };
@@ -548,13 +559,26 @@ sub indexed2raw
 
         # HACK: should figure out how to deal with simple ids and combined
         # keys at the same time.
-        for my $id ( sort { $a <=> $b } keys %{ $current_pdbx_indexed } ){
-            for my $attribute ( @category_attributes ) {
-                my $data_value = $current_pdbx_indexed->{$id}{$attribute};
-                if( defined $data_value ) {
-                    push @{ $pdbx->{$category}{'data'} }, $data_value;
-                } else {
-                    push @{ $pdbx->{$category}{'data'} }, '?';
+        for my $id ( sort { $a cmp $b } keys %{ $current_pdbx_indexed } ){
+            if( ref $current_pdbx_indexed->{$id} eq 'HASH' ) {
+                for my $attribute ( @category_attributes ) {
+                    my $data_value = $current_pdbx_indexed->{$id}{$attribute};
+                    if( defined $data_value ) {
+                        push @{ $pdbx->{$category}{'data'} }, $data_value;
+                    } else {
+                        push @{ $pdbx->{$category}{'data'} }, '?';
+                    }
+                }
+            } elsif( ref $current_pdbx_indexed->{$id} eq 'ARRAY' ) {
+                for my $record ( @{ $current_pdbx_indexed->{$id} } ) {
+                    for my $attribute ( @category_attributes ) {
+                        my $data_value = $record->{$attribute};
+                        if( defined $data_value ) {
+                            push @{ $pdbx->{$category}{'data'} }, $data_value;
+                        } else {
+                            push @{ $pdbx->{$category}{'data'} }, '?';
+                        }
+                    }
                 }
             }
         }
