@@ -46,6 +46,8 @@ our $VERSION = $VERSION;
 #*
 #*    -s, --selected        include selected atoms.
 #*
+#*    --tags                select PDBx tag that will be in the output.
+#*
 #*    -k, --keep-original   keep original atoms after new atoms are added
 #*                          (applicable for -S option).
 #*
@@ -59,6 +61,7 @@ our $VERSION = $VERSION;
 my $add_sidechains = 0;
 my $add_hydrogens = 0;
 my $include_selected = 0;
+my $tags = '_atom_site';
 my $add_clear_positions = 0;
 my $keep_original = 0;
 my @attribute_list =
@@ -77,6 +80,7 @@ GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
     'selected|s' => sub { $include_selected = 1 },
+    'tags=s' => \$tags,
     'keep-original|k' => sub { $keep_original = 1 },
     'clear-positions|c' => sub { $add_clear_positions = 1 },
     'help|h' => sub {
@@ -97,6 +101,9 @@ GetOptions(
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
+
+$tags =~ s/ //g;
+my @tags = split /,/, $tags;
 
 my $parameters = Parameters->new();
 my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
@@ -191,7 +198,7 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %rotamer_atom_site };
 
         to_pdbx( $pdbx,
-                 { 'categories' => [ '_atom_site' ],
+                 { 'categories' => \@tags,,
                    'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] } } );
     } elsif( $add_hydrogens ) {
@@ -252,7 +259,7 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %hydrogen_site };
 
         to_pdbx( $pdbx,
-                 { 'categories' => [ '_atom_site' ],
+                 { 'categories' => \@tags,
                    'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] } } );
     } else {
