@@ -264,12 +264,9 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
         }
     }
 
-    use Data::Dumper;
-    print STDERR Dumper $pdbx;
-
-    # # Prints out the PDBx.
-    # to_pdbx( $pdbx, { 'add_attributes' =>
-    #                       { '_atom_site' => [ '[local]_selection_state',
-    #                                           '[local]_selection_group' ] },
-    #                   'tags' => \@tags } );
+    # Prints out the PDBx.
+    to_pdbx( $pdbx, { 'add_attributes' =>
+                          { '_atom_site' => [ '[local]_selection_state',
+                                              '[local]_selection_group' ] },
+                      'tags' => \@tags } );
 }
