@@ -256,7 +256,6 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                                                     'label_asym_id',
                                                     'pdbx_PDB_model_num',
                                                     'label_alt_id' ] } ] } } );
-
         for my $category ( keys %{ $related_pdbx_data } ) {
             my $reference_category =
                 $related_pdbx_data->{$category}{'reference_category'};
@@ -265,9 +264,12 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
         }
     }
 
-    # Prints out the PDBx.
-    to_pdbx( $pdbx, { 'add_attributes' =>
-                          { '_atom_site' => [ '[local]_selection_state',
-                                              '[local]_selection_group' ] },
-                      'tags' => \@tags } );
+    use Data::Dumper;
+    print STDERR Dumper $pdbx;
+
+    # # Prints out the PDBx.
+    # to_pdbx( $pdbx, { 'add_attributes' =>
+    #                       { '_atom_site' => [ '[local]_selection_state',
+    #                                           '[local]_selection_group' ] },
+    #                   'tags' => \@tags } );
 }
