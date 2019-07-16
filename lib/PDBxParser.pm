@@ -515,6 +515,7 @@ sub indexed2raw
                 $pdbx->{$category}{'metadata'}{'is_indexed'} eq 0;
 
         my $current_pdbx_indexed = $pdbx->{$category}{'data'};
+        my $current_pdbx_attributes=$pdbx->{$category}{'metadata'}{'attributes'};
         my $current_attribute_order = $attribute_order->{$category};
 
         $pdbx->{$category}{'metadata'}{'is_indexed'} = 0;
@@ -528,6 +529,8 @@ sub indexed2raw
 
         if( defined $current_attribute_order ) {
             @category_attributes = @{ $current_attribute_order };
+        } elsif( defined $current_pdbx_attributes ) {
+            @category_attributes = @{ $current_pdbx_attributes };
         }
 
         $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
@@ -1253,7 +1256,7 @@ sub to_pdbx
         }
     }
 
-    # return;
+    return;
 }
 
 #
