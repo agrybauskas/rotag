@@ -30,6 +30,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      unique_residue_key );
 
 use Carp;
+use Clone qw( clone );
 use List::MoreUtils qw( any
                         uniq );
 use Version qw( $VERSION );
@@ -365,7 +366,7 @@ sub related_category_data
 {
     my ( $pdbx_data, $relationships ) = @_;
 
-    my %pdbx_data = %{ $pdbx_data };
+    my %pdbx_data = %{ clone $pdbx_data };
     my %related_category_data = ();
 
     for my $category ( sort keys %{ $relationships } ) {
@@ -381,6 +382,15 @@ sub related_category_data
                     $related_category;
                 $related_category_data{$category}{'reference_keys'} =
                     $keys;
+
+                if( $pdbx_data{$category}{'metadata'}{'is_indexed'} ) {
+                    indexed2raw( \%pdbx_data,
+                                 { 'categories' => [ $category ] } );
+                }
+                if( $pdbx_data{$related_category}{'metadata'}{'is_indexed'} ) {
+                    indexed2raw( \%pdbx_data,
+                                 { 'categories' => [ $related_category ] } );
+                }
 
                 raw2indexed( \%pdbx_data,
                              { 'attributes' =>
