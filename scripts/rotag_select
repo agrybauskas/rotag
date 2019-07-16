@@ -241,6 +241,26 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     $pdbx->{'_atom_site'}{'data'} = $atom_site;
     $pdbx->{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
 
+    # Checks for related data in existing categories connected to '_atom_site'.
+    my $related_pdbx_data =
+        related_category_data(
+            $pdbx,
+            { '_[local]_rotamer_angle' =>
+                  { '_atom_site' =>
+                        [ { 'keys' => [ 'label_seq_id',
+                                        'label_asym_id',
+                                        'pdbx_PDB_model_num',
+                                        'rotamer_id' ],
+                            'reference_keys' => [ 'label_seq_id',
+                                                  'label_asym_id',
+                                                  'pdbx_PDB_model_num',
+                                                  'label_alt_id' ] } ] } } );
+
+    for my $related_category ( keys %{ $related_pdbx_data } ) {
+        # $pdbx->{$related_category}{'data'} =
+        #     $related_pdbx_data->{$related_category}{'data'};
+    }
+
     # Prints out the PDBx.
     to_pdbx( $pdbx, { 'add_attributes' =>
                           { '_atom_site' => [ '[local]_selection_state',
