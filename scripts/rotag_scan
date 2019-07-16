@@ -131,9 +131,7 @@ GetOptions(
 
 # Parses tag string.
 $tags =~ s/\s//g;
-$tags = [
-    split /,/sxm, $tags
-];
+my @tags = split /,/sxm, $tags;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -156,11 +154,14 @@ for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
 }
 
 for my $pdbx_file ( @ARGV ) {
-    my %pdbx_data = %{ obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] ) };
-    raw2indexed( \%pdbx_data,
+    my $pdbx_data = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
+
+    next if ! defined $pdbx_data || ! %{ $pdbx_data };
+
+    raw2indexed( $pdbx_data,
                  { 'attributes' => { '_atom_site' => [ 'id' ] } } );
 
-    my $atom_site = $pdbx_data{'_atom_site'}{'data'};
+    my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
 
     next if ! defined $atom_site || ! %{ $atom_site };
 
@@ -221,15 +222,15 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     # Collects residue angle and energy data.
-    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'} =
+    $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'attributes'} =
         [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
           'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value' ];
-    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'attributes'} =
+    $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'attributes'} =
         [ 'id', 'rotamer_id', 'calculation_method', 'value'];
-    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_indexed'} = 0;
-    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'is_indexed'} = 0;
+    $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'is_indexed'} = 0;
+    $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'is_indexed'} = 0;
 
     my $angle_id = 1;
     my $energy_id = 1;
@@ -254,7 +255,7 @@ for my $pdbx_file ( @ARGV ) {
             # Colects rotamer angle data.
             for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
                 my $angle_value = $rotamer->{'angles'}{$angle_name};
-                push @{ $pdbx_data{'_[local]_rotamer_angle'}{'data'} },
+                push @{ $pdbx_data->{'_[local]_rotamer_angle'}{'data'} },
                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
                      $residue_chain, $pdbx_model, $residue_alt,
                      sprintf( $sig_figs_max, $rotamer_frequency ), $angle_name,
@@ -263,7 +264,7 @@ for my $pdbx_file ( @ARGV ) {
             }
 
             # Colects rotamer energy data.
-            push @{ $pdbx_data{'_[local]_rotamer_energy'}{'data'} },
+            push @{ $pdbx_data->{'_[local]_rotamer_energy'}{'data'} },
                  $energy_id, $rotamer_id, $rotamer->{'potential'},
                  sprintf $sig_figs_max, $rotamer->{'potential_energy_value'};
 
@@ -273,13 +274,13 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( $output_format eq 'pdbx' ) {
-        to_pdbx( \%pdbx_data,
+        to_pdbx( $pdbx_data,
                  { 'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] },
-                   'tags' => $tags } );
+                   'tags' => \@tags } );
     } elsif( $output_format eq 'csv' ) {
             if( scalar @{ $tags } == 1 ) {
-                to_csv( %pdbx_data, { 'category' => $tags->[0] } );
+                to_csv( $pdbx_data, { 'category' => $tags[0] } );
             } else {
                 warning( { 'message' => "only one tag has to be chosen for " .
                                         "CSV format.\n" } );

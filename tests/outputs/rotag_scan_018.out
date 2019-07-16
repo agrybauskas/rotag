@@ -1,2 +1,1 @@
 Warning: rotag_scan: ./tests/cases/../inputs/empty.cif is empty.
-Error: rotag_scan: Can't use an undefined value as a HASH reference at /home/algirdas/src/rotag/scripts/rotag_scan line 159.
