@@ -398,7 +398,7 @@ sub related_category_data
                                      $related_category => $keys },
                                    'is_unique' => 0 } );
 
-                for my $key ( keys %{ $pdbx_data{$related_category}{'data'} }){
+                for my $key ( keys %{ $pdbx_data{$category}{'data'} }){
                     $related_category_data{$category}{'data'}{$key} =
                         $pdbx_data{$related_category}{'data'}{$key};
                 }
