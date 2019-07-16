@@ -365,6 +365,7 @@ sub related_category_data
 {
     my ( $pdbx_data, $relationships ) = @_;
 
+    my %pdbx_data = %{ $pdbx_data };
     my %related_category_data = ();
 
     for my $category ( sort keys %{ $relationships } ) {
@@ -381,15 +382,15 @@ sub related_category_data
                 $related_category_data{$category}{'reference_keys'} =
                     $keys;
 
-                raw2indexed( $pdbx_data,
+                raw2indexed( \%pdbx_data,
                              { 'attributes' =>
                                    { $category => $reference_keys,
                                      $related_category => $keys },
                                    'is_unique' => 0 } );
 
-                for my $key ( keys %{ $pdbx_data->{$related_category}{'data'} }){
+                for my $key ( keys %{ $pdbx_data{$related_category}{'data'} }){
                     $related_category_data{$category}{'data'}{$key} =
-                        $pdbx_data->{$related_category}{'data'}{$key};
+                        $pdbx_data{$related_category}{'data'}{$key};
                 }
             }
         }

@@ -24,7 +24,13 @@ my $pdbx_data = obtain_pdbx_data( $pdbx_file, [ '_atom_site',
 
 print Dumper
     related_category_data( $pdbx_data,
-                           { '_[local]_rotamer_energy' => {
+                           { '_atom_site' => {
                                '_[local]_rotamer_angle' =>
-                                   [ { 'keys' => [ 'rotamer_id' ],
-                                       'reference_keys' => [ 'rotamer_id' ] } ] } } );
+                                   [ { 'keys' => [ 'label_seq_id',
+                                                   'label_asym_id',
+                                                   'pdbx_PDB_model_num',
+                                                   'rotamer_id' ],
+                                       'reference_keys' => [ 'label_seq_id',
+                                                             'label_asym_id',
+                                                             'pdbx_PDB_model_num',
+                                                             'label_alt_id' ] } ] } } );
