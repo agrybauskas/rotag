@@ -98,3 +98,5 @@
 -- to_csv() should also parse indexed data.
 -- It looks that raw2indexed() and indexed2raw() should be functions that
    only deal with references. That way conversions are more convenient.
+-- Tidy up the pdbx data structure by introducing 'related_data' instead of
+   using related_category_data() all the time.
