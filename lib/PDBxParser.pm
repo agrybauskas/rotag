@@ -441,6 +441,7 @@ sub raw2indexed
     }
 
     for my $category ( keys %{ $pdbx } ) {
+        # TODO: should add condition where there attribute is not defined.
         next if ! exists $pdbx->{$category} ||
                 $pdbx->{$category}{'metadata'}{'is_indexed'} eq 1;
 
