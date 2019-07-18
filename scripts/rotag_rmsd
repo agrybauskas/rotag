@@ -49,7 +49,7 @@ our $VERSION = $VERSION;
 #*    -d, --decompose       decompose RMSD value of the group to its
 #*                          constituents.
 #*
-#*    --tags                select PDBx tag that will be in the output.
+#*    --categories          select PDBx categories that will be in the output.
 #*
 #*    -r, --related-data    only related data records from other categories are
 #*                          shown when '_atom_site' records are selected.
@@ -64,9 +64,10 @@ my $comparison = q{};
 my $rmsd_sidechains = 0;
 my $rmsd_best_case = 0;
 my $do_decompose = 0;
-my $tags = '_atom_site,_[local]_rmsd,_[local]_rotamer_angle';
+my $output_categories = '_atom_site,_[local]_rmsd,_[local]_rotamer_angle';
 my $is_related = 0;
 my $output_format = 'pdbx';
+my @category_list = ( '_atom_site' '_[local]_rmsd' '_[local]_rotamer_angle' );
 
 local $SIG{__WARN__} = sub {
     warning( { 'program' => $0, 'message' => @_ } );
@@ -81,6 +82,7 @@ GetOptions(
     'side-chains|S' => sub { $rmsd_sidechains = 1; },
     'best-case|b' => sub { $rmsd_best_case = 1; },
     'decompose|d' => sub { $do_decompose = 1; },
+    'categories=s' => \$output_categories,
     'related-data|r' => sub { $is_related = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -102,8 +104,8 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-$tags =~ s/ //g;
-my @tags = split /,/, $tags;
+$output_categories =~ s/ //g;
+my @output_categories = split /,/, $output_categories;
 
 $comparison =~ s/ //g;
 my @comparison_groups = map { [ split /,/, $_ ] } ( split /;/, $comparison );
@@ -119,7 +121,7 @@ my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
     my $pdbxs =
-        obtain_pdbx_data( $pdbx_file, \@tags, { 'read_stream' => 1 } );
+        obtain_pdbx_data( $pdbx_file, \@category_list, { 'read_stream' => 1 } );
 
     for my $pdbx ( @{ $pdbxs } ) {
         raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
@@ -328,7 +330,7 @@ if( $is_related && $do_decompose ) {
 # Prints out cif or csv
 # TODO: decide what to do when group data is empty.
 if( $output_format eq 'pdbx' ) {
-    to_pdbx( \%pdbx_data, { 'tags' => \@tags } );
+    to_pdbx( \%pdbx_data, { 'categories' => \@output_categories } );
 } elsif( $output_format eq 'csv' ) {
     to_csv( { '_[local]_rmsd' => $pdbx_data{'_[local]_rmsd'} } );
 }

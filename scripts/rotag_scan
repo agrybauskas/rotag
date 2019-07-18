@@ -79,7 +79,7 @@ our $VERSION = $VERSION;
 #*
 #*    -r, --radians               angle value is in radians.
 #*
-#*    --tags <tag>[,<tag>...]     output only specified PDBx tags.
+#*    --categories                output only specified PDBx categories.
 #*
 #*    -F, --format <format>       output format. Only one category can be
 #*                                present if csv is select (default: pdbx | csv).
@@ -94,9 +94,10 @@ my $interactions = 'composite';
 my $angles = '-180.0..36.0..180.0';
 my $in_radians = 0;
 my $threads = 1;
-my $tags = '_atom_site,_[local]_rotamer_angle,_[local]_rotamer_energy';
+my $output_categories = '_atom_site,_[local]_rotamer_angle,_[local]_rotamer_energy';
 my $output_format = 'pdbx';
 my $parameters_cmd = '';
+my @category_list = ( '_atom_site' );
 
 local $SIG{__WARN__} = sub {
     warning( { 'program' => $0, 'message' => @_ } );
@@ -111,7 +112,7 @@ GetOptions(
     'parameters|p=s' => \$parameters_cmd,
     'angles|a=s' => \$angles,
     'radians|r' => sub { $in_radians = 1 },
-    'tags=s' => \$tags,
+    'categories=s' => \$output_categories,
     'format|F=s' => \$output_format,
     'threads|n=s' => \$threads,
     'help|h' => sub {
@@ -130,8 +131,8 @@ GetOptions(
               'message' => "mistake in command line argument.\n" } );
 
 # Parses tag string.
-$tags =~ s/\s//g;
-my @tags = split /,/sxm, $tags;
+$output_categories =~ s/\s//g;
+my @output_categories = split /,/sxm, $output_categories;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -154,7 +155,7 @@ for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
 }
 
 for my $pdbx_file ( @ARGV ) {
-    my $pdbx_data = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
+    my $pdbx_data = obtain_pdbx_data( $pdbx_file, \@category_list );
 
     next if ! defined $pdbx_data || ! %{ $pdbx_data };
 
@@ -277,10 +278,10 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( $pdbx_data,
                  { 'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] },
-                   'tags' => \@tags } );
+                   'tags' => \@output_categories } );
     } elsif( $output_format eq 'csv' ) {
-            if( scalar @{ $tags } == 1 ) {
-                to_csv( $pdbx_data, { 'category' => $tags[0] } );
+            if( scalar @output_categories == 1 ) {
+                to_csv( $pdbx_data, { 'category' => $output_categories[0] } );
             } else {
                 warning( { 'message' => "only one tag has to be chosen for " .
                                         "CSV format.\n" } );
