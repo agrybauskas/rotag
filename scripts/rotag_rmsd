@@ -67,7 +67,7 @@ my $do_decompose = 0;
 my $output_categories = '_atom_site,_[local]_rmsd,_[local]_rotamer_angle';
 my $is_related = 0;
 my $output_format = 'pdbx';
-my @category_list = ( '_atom_site' '_[local]_rmsd' '_[local]_rotamer_angle' );
+my @category_list = ( '_atom_site', '_[local]_rotamer_angle' );
 
 local $SIG{__WARN__} = sub {
     warning( { 'program' => $0, 'message' => @_ } );
@@ -330,7 +330,7 @@ if( $is_related && $do_decompose ) {
 # Prints out cif or csv
 # TODO: decide what to do when group data is empty.
 if( $output_format eq 'pdbx' ) {
-    to_pdbx( \%pdbx_data, { 'categories' => \@output_categories } );
+    to_pdbx( \%pdbx_data, { 'tags' => \@output_categories } );
 } elsif( $output_format eq 'csv' ) {
     to_csv( { '_[local]_rmsd' => $pdbx_data{'_[local]_rmsd'} } );
 }
