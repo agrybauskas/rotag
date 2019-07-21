@@ -5,6 +5,7 @@ use warnings;
 
 use autodie;
 use Carp;
+use Clone qw( clone );
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use List::Util qw( sum );
@@ -114,7 +115,7 @@ error( { 'message' => "No comparison groups are selected. Use -c argument.\n" } 
     if ! @comparison_groups;
 
 my %atom_site_groups = ();
-my @rotamer_angles = ();
+my %rotamer_angles = ();
 
 my $parameters = Parameters->new();
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
@@ -129,7 +130,18 @@ for my $pdbx_file ( @ARGV ) {
         my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
         if( $is_related && defined $pdbx->{'_[local]_rotamer_angle'} ) {
-            push @rotamer_angles, $pdbx->{'_[local]_rotamer_angle'};
+            # TODO: should find a better way than cloning and pushing to the
+            # same %rotamer_angles hash.
+            my $pdbx_cloned = clone $pdbx;
+            indexed2raw( $pdbx_cloned,
+                         { 'categories' => [ '_[local]_rotamer_angle' ] } );
+            if( %rotamer_angles ) {
+                $rotamer_angles{'_[local]_rotamer_angle'} =
+                    $pdbx_cloned->{'_[local]_rotamer_angle'};
+            } else {
+                push @{ $rotamer_angles{'_[local]_rotamer_angle'}{'data'} },
+                    @{ $pdbx_cloned->{'_[local]_rotamer_angle'}{'data'} };
+            }
         }
 
         # Assigns filters atoms and assigns to specified groups.
@@ -309,7 +321,8 @@ for my $comparison_group ( @comparison_groups ) {
 # Shows dihedral angles related to selected atoms used to calculate RMSD.
 if( $is_related && $do_decompose ) {
     # FIXME: for testing purposes the first element is chosen.
-    $pdbx_data{'_[local]_rotamer_angle'} = $rotamer_angles[0];
+    $pdbx_data{'_[local]_rotamer_angle'} =
+        $rotamer_angles{'_[local]_rotamer_angle'};
 
     # my $related_data = related_category_data(
     #     \%pdbx_data,
@@ -327,10 +340,10 @@ if( $is_related && $do_decompose ) {
     # }
 }
 
-# Prints out cif or csv
-# TODO: decide what to do when group data is empty.
-if( $output_format eq 'pdbx' ) {
-    to_pdbx( \%pdbx_data, { 'tags' => \@output_categories } );
-} elsif( $output_format eq 'csv' ) {
-    to_csv( { '_[local]_rmsd' => $pdbx_data{'_[local]_rmsd'} } );
-}
+# # Prints out cif or csv
+# # TODO: decide what to do when group data is empty.
+# if( $output_format eq 'pdbx' ) {
+#     to_pdbx( \%pdbx_data, { 'tags' => \@output_categories } );
+# } elsif( $output_format eq 'csv' ) {
+#     to_csv( { '_[local]_rmsd' => $pdbx_data{'_[local]_rmsd'} } );
+# }
