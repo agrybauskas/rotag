@@ -135,12 +135,13 @@ for my $pdbx_file ( @ARGV ) {
             my $pdbx_cloned = clone $pdbx;
             indexed2raw( $pdbx_cloned,
                          { 'categories' => [ '_[local]_rotamer_angle' ] } );
+
             if( %rotamer_angles ) {
-                $rotamer_angles{'_[local]_rotamer_angle'} =
-                    $pdbx_cloned->{'_[local]_rotamer_angle'};
-            } else {
                 push @{ $rotamer_angles{'_[local]_rotamer_angle'}{'data'} },
                     @{ $pdbx_cloned->{'_[local]_rotamer_angle'}{'data'} };
+            } else {
+                $rotamer_angles{'_[local]_rotamer_angle'} =
+                    $pdbx_cloned->{'_[local]_rotamer_angle'};
             }
         }
 
@@ -324,26 +325,26 @@ if( $is_related && $do_decompose ) {
     $pdbx_data{'_[local]_rotamer_angle'} =
         $rotamer_angles{'_[local]_rotamer_angle'};
 
-    # my $related_data = related_category_data(
-    #     \%pdbx_data,
-    #     { '_[local]_rotamer_angle' =>
-    #           { '_[local]_rmsd' =>
-    #                 [ { 'keys' =>
-    #                         [ 'label_seq_id', 'label_asym_id',
-    #                           'pdbx_PDB_model_num', 'label_alt_id' ],
-    #                     'reference_keys' =>
-    #                         [ 'label_seq_1_id', 'label_asym_1_id',
-    #                           'pdbx_PDB_model_num_1', 'label_alt_1_id' ] } ] }});
+    my $related_data = related_category_data(
+        \%pdbx_data,
+        { '_[local]_rotamer_angle' =>
+              { '_[local]_rmsd' =>
+                    [ { 'keys' =>
+                            [ 'label_seq_id', 'label_asym_id',
+                              'pdbx_PDB_model_num', 'label_alt_id' ],
+                        'reference_keys' =>
+                            [ 'label_seq_1_id', 'label_asym_1_id',
+                              'pdbx_PDB_model_num_1', 'label_alt_1_id' ] } ] }});
 
     # for my $related_category ( keys %{ $related_data } ) {
     #     indexed2raw( \%pdbx_data );
     # }
 }
 
-# # Prints out cif or csv
-# # TODO: decide what to do when group data is empty.
-# if( $output_format eq 'pdbx' ) {
-#     to_pdbx( \%pdbx_data, { 'tags' => \@output_categories } );
-# } elsif( $output_format eq 'csv' ) {
-#     to_csv( { '_[local]_rmsd' => $pdbx_data{'_[local]_rmsd'} } );
-# }
+# Prints out cif or csv
+# TODO: decide what to do when group data is empty.
+if( $output_format eq 'pdbx' ) {
+    to_pdbx( \%pdbx_data, { 'tags' => \@output_categories } );
+} elsif( $output_format eq 'csv' ) {
+    to_csv( { '_[local]_rmsd' => $pdbx_data{'_[local]_rmsd'} } );
+}
