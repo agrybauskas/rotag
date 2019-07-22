@@ -79,7 +79,7 @@ our $VERSION = $VERSION;
 #*
 #*    -r, --radians               angle value is in radians.
 #*
-#*    --categories                output only specified PDBx categories.
+#*    --tags                      output only specified PDBx categories.
 #*
 #*    -F, --format <format>       output format. Only one category can be
 #*                                present if csv is select (default: pdbx | csv).
@@ -112,7 +112,7 @@ GetOptions(
     'parameters|p=s' => \$parameters_cmd,
     'angles|a=s' => \$angles,
     'radians|r' => sub { $in_radians = 1 },
-    'categories=s' => \$output_categories,
+    'tags=s' => \$output_categories,
     'format|F=s' => \$output_format,
     'threads|n=s' => \$threads,
     'help|h' => sub {

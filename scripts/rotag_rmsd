@@ -50,7 +50,7 @@ our $VERSION = $VERSION;
 #*    -d, --decompose       decompose RMSD value of the group to its
 #*                          constituents.
 #*
-#*    --categories          select PDBx categories that will be in the output.
+#*    --tags                select PDBx categories that will be in the output.
 #*
 #*    -r, --related-data    only related data records from other categories are
 #*                          shown when '_atom_site' records are selected.
@@ -83,7 +83,7 @@ GetOptions(
     'side-chains|S' => sub { $rmsd_sidechains = 1; },
     'best-case|b' => sub { $rmsd_best_case = 1; },
     'decompose|d' => sub { $do_decompose = 1; },
-    'categories=s' => \$output_categories,
+    'tags=s' => \$output_categories,
     'related-data|r' => sub { $is_related = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {

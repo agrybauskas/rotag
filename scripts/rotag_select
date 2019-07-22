@@ -85,7 +85,7 @@ our $VERSION = $VERSION;
 #*    -s, --select <str>    command (same as --target) describing the atoms that
 #*                          will be marked as selected (S) [default: target].
 #*
-#*    --categories          select PDBx tag that will be in the output.
+#*    --tags                select PDBx tag that will be in the output.
 #*
 #*    -r, --related-data    only related data records from other categories are
 #*                          shown when '_atom_site' records are selected.
@@ -123,7 +123,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'target|t=s@' => \$target_cmds,
     'select|s=s@' => \$select_cmds,
-    'categories=s' => \$output_categories,
+    'tags=s' => \$output_categories,
     'related-data|r' => sub { $is_related = 1 },
     'pdb|p' => sub { $is_pdb = 1 },
     'keep-ignored|k' => sub { $keep_ignored = 1 },

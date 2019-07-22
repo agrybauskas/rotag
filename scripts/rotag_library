@@ -38,7 +38,7 @@ our $VERSION = $VERSION;
 #*    -T, --top-ratio <float>                 top rotamers according to the
 #*                                            value of energies (default: 1.0).
 #*
-#*    --categories <category>[,<category>...] output only specified PDBx tags.
+#*    --tags <category>[,<category>...]       output only specified PDBx tags.
 #*
 #*    -F, --format <format>                   output format. Only one category
 #*                                            can be present if csv is select
@@ -66,7 +66,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
-    'categories=s' => \$output_categories,
+    'tags=s' => \$output_categories,
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;

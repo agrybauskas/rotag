@@ -46,7 +46,7 @@ our $VERSION = $VERSION;
 #*
 #*    -s, --selected        include selected atoms.
 #*
-#*    --categories          select PDBx category that will be in the output.
+#*    --tags          select PDBx category that will be in the output.
 #*
 #*    -k, --keep-original   keep original atoms after new atoms are added
 #*                          (applicable for -S option).
@@ -81,7 +81,7 @@ GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
     'selected|s' => sub { $include_selected = 1 },
-    'categories=s' => \$output_categories,
+    'tags=s' => \$output_categories,
     'keep-original|k' => sub { $keep_original = 1 },
     'clear-positions|c' => sub { $add_clear_positions = 1 },
     'help|h' => sub {
