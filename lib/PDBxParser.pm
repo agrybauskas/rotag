@@ -394,8 +394,8 @@ sub related_category_data
 
                 raw2indexed( \%pdbx_data,
                              { 'attributes' =>
-                                   { $category => $reference_keys,
-                                     $related_category => $keys },
+                                   { $related_category => $reference_keys,
+                                     $category => $keys },
                                    'is_unique' => 0 } );
 
                 for my $key ( keys %{ $pdbx_data{$category}{'data'} }){
