@@ -334,7 +334,7 @@ if( $is_related && $do_decompose ) {
                               'pdbx_PDB_model_num_1', 'label_alt_1_id' ],
                         'reference_keys' =>
                             [ 'label_seq_id', 'label_asym_id',
-                              'pdbx_PDB_model_num', 'label_alt_id' ] } ] }});
+                              'pdbx_PDB_model_num', 'rotamer_id' ] } ] } } );
 
     for my $category ( keys %{ $related_data } ) {
         my $related_category_data = $related_data->{$category};
