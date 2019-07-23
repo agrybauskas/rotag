@@ -560,7 +560,7 @@ sub indexed2raw
 
         # HACK: should figure out how to deal with simple ids and combined
         # keys at the same time. Very messy code - should be refactored.
-        for my $id ( sort { $a <=> $b } keys %{ $current_pdbx_indexed } ){
+        for my $id ( sort { $a cmp $b } keys %{ $current_pdbx_indexed } ){
             if( ref $current_pdbx_indexed->{$id} eq 'HASH' ) {
                 for my $attribute ( @category_attributes ) {
                     my $data_value =$current_pdbx_indexed->{$id}{$attribute};
