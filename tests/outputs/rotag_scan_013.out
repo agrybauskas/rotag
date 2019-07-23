@@ -211,18 +211,19 @@ _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 81 SER A 1 . 0.125000 chi1 -3.141593
-2 2 81 SER A 1 . 0.125000 chi1 -2.513274
-3 3 81 SER A 1 . 0.125000 chi1 -1.884956
-4 4 81 SER A 1 . 0.125000 chi1 -1.256637
-5 5 81 SER A 1 . 0.125000 chi1 -0.628319
-6 6 81 SER A 1 . 0.125000 chi1 0.000000
-7 7 81 SER A 1 . 0.125000 chi1 0.628319
-8 8 81 SER A 1 . 0.125000 chi1 1.256637
-9 9 82 SER A 1 . 0.250000 chi1 -2.513274
-10 10 82 SER A 1 . 0.250000 chi1 -1.884956
-11 11 82 SER A 1 . 0.250000 chi1 -1.256637
-12 12 82 SER A 1 . 0.250000 chi1 0.628319
+_[local]_rotamer_angle.units
+1 1 81 SER A 1 . 0.125000 chi1 -180.000000 degrees
+2 2 81 SER A 1 . 0.125000 chi1 -144.000000 degrees
+3 3 81 SER A 1 . 0.125000 chi1 -108.000000 degrees
+4 4 81 SER A 1 . 0.125000 chi1 -72.000000 degrees
+5 5 81 SER A 1 . 0.125000 chi1 -36.000000 degrees
+6 6 81 SER A 1 . 0.125000 chi1 0.000000 degrees
+7 7 81 SER A 1 . 0.125000 chi1 36.000000 degrees
+8 8 81 SER A 1 . 0.125000 chi1 72.000000 degrees
+9 9 82 SER A 1 . 0.250000 chi1 -144.000000 degrees
+10 10 82 SER A 1 . 0.250000 chi1 -108.000000 degrees
+11 11 82 SER A 1 . 0.250000 chi1 -72.000000 degrees
+12 12 82 SER A 1 . 0.250000 chi1 36.000000 degrees
 #
 loop_
 _[local]_rotamer_energy.id

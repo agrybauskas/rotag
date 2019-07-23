@@ -47,14 +47,15 @@ _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 97 ASP A 1 B 0.250000 chi1 -3.141593
-2 1 97 ASP A 1 B 0.250000 chi2 -3.141593
-3 2 97 ASP A 1 B 0.250000 chi1 -3.141593
-4 2 97 ASP A 1 B 0.250000 chi2 -1.570796
-5 3 97 ASP A 1 B 0.250000 chi1 -3.141593
-6 3 97 ASP A 1 B 0.250000 chi2 0.000000
-7 4 97 ASP A 1 B 0.250000 chi1 -3.141593
-8 4 97 ASP A 1 B 0.250000 chi2 1.570796
+_[local]_rotamer_angle.units
+1 1 97 ASP A 1 B 0.250000 chi1 -180.000000 degrees
+2 1 97 ASP A 1 B 0.250000 chi2 -180.000000 degrees
+3 2 97 ASP A 1 B 0.250000 chi1 -180.000000 degrees
+4 2 97 ASP A 1 B 0.250000 chi2 -90.000000 degrees
+5 3 97 ASP A 1 B 0.250000 chi1 -180.000000 degrees
+6 3 97 ASP A 1 B 0.250000 chi2 0.000000 degrees
+7 4 97 ASP A 1 B 0.250000 chi1 -180.000000 degrees
+8 4 97 ASP A 1 B 0.250000 chi2 90.000000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
