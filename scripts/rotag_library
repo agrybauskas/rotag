@@ -165,7 +165,8 @@ for my $pdbx_file ( @ARGV ) {
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
     my @attributes =
         ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value' );
+          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
+          'units' );
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'}=\@attributes;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_indexed'} = 0;
@@ -184,7 +185,8 @@ for my $pdbx_file ( @ARGV ) {
                  @rotamer_data[0..6],
                  $frequencies{$rotamer_id},
                  $rotamer_data[8],
-                 $rotamer_data[9];
+                 $rotamer_data[9],
+                 $rotamer_data[10];
         }
     }
 
