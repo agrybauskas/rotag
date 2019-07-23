@@ -1,0 +1,35 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1416 C CG 1 ASP A 1 219 34.449 4.611 43.054 1 T
+ATOM 1443 O OD1 1 ASP A 1 219 33.927 5.736 43.205 1 T
+ATOM 1470 O OD2 1 ASP A 1 219 35.686 4.434 43.082 1 T
+#
+loop_
+_[local]_rotamer_angle.id
+_[local]_rotamer_angle.rotamer_id
+_[local]_rotamer_angle.label_seq_id
+_[local]_rotamer_angle.label_comp_id
+_[local]_rotamer_angle.label_asym_id
+_[local]_rotamer_angle.pdbx_PDB_model_num
+_[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
+_[local]_rotamer_angle.type
+_[local]_rotamer_angle.value
+1 1 219 ASP A 1 . 0.037037 chi1 -2.513274
+2 1 219 ASP A 1 . 0.037037 chi2 -3.141593
+#

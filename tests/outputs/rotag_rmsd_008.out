@@ -1,0 +1,31 @@
+data_rotag
+#
+loop_
+_[local]_rmsd.id
+_[local]_rmsd.group_1_id
+_[local]_rmsd.atom_1_id
+_[local]_rmsd.label_atom_1_id
+_[local]_rmsd.label_seq_1_id
+_[local]_rmsd.label_comp_1_id
+_[local]_rmsd.label_asym_1_id
+_[local]_rmsd.pdbx_PDB_model_num_1
+_[local]_rmsd.label_alt_1_id
+_[local]_rmsd.group_2_id
+_[local]_rmsd.atom_2_id
+_[local]_rmsd.label_atom_2_id
+_[local]_rmsd.label_seq_2_id
+_[local]_rmsd.label_comp_2_id
+_[local]_rmsd.label_asym_2_id
+_[local]_rmsd.pdbx_PDB_model_num_2
+_[local]_rmsd.label_alt_2_id
+_[local]_rmsd.value
+1 1 1417 CG 219 ASP A 1 2 1418 2 CG 219 ASP A 1 3 0.000000
+2 1 1444 OD1 219 ASP A 1 2 1445 2 OD1 219 ASP A 1 3 0.681000
+3 1 1471 OD2 219 ASP A 1 2 1472 2 OD2 219 ASP A 1 3 0.674236
+4 1 1417 CG 219 ASP A 1 2 1419 2 CG 219 ASP A 1 4 0.000000
+5 1 1444 OD1 219 ASP A 1 2 1446 2 OD1 219 ASP A 1 4 1.296042
+6 1 1471 OD2 219 ASP A 1 2 1473 2 OD2 219 ASP A 1 4 1.282057
+7 1 1417 CG 219 ASP A 1 2 1420 2 CG 219 ASP A 1 5 0.000000
+8 1 1444 OD1 219 ASP A 1 2 1447 2 OD1 219 ASP A 1 5 1.783486
+9 1 1471 OD2 219 ASP A 1 2 1474 2 OD2 219 ASP A 1 5 1.763692
+#
