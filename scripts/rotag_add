@@ -107,6 +107,7 @@ $output_categories =~ s/ //g;
 my @output_categories = split /,/, $output_categories;
 
 my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
 for my $pdbx_file ( @ARGV ) {
@@ -160,7 +161,13 @@ for my $pdbx_file ( @ARGV ) {
                                                      { $residue_unique_key } } ){
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
                 my $angle_name = $rotamer_angle->{$id}{'type'};
-                my $angle_value = $rotamer_angle->{$id}{'value'};
+                my $angle_value;
+                if( defined $rotamer_angle->{$id}{'units'} &&
+                    $rotamer_angle->{$id}{'units'} eq 'degrees' ) {
+                    $angle_value = $pi * $rotamer_angle->{$id}{'value'} / 180.0;
+                } else {
+                    $angle_value = $rotamer_angle->{$id}{'value'};
+                }
                 $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name}=
                     [ $angle_value ];
             }
