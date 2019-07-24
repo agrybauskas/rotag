@@ -363,5 +363,10 @@ for my $pdbx_file ( @ARGV ) {
         } else {
             to_csv( \%pdbx_data, { 'category' => '_[local]_energy' } );
         }
+    } else {
+        error(
+            { 'program' => $0,
+              'message' => "output format '${output_format}'" .
+                           " is not supported.\n" } );
     }
 }

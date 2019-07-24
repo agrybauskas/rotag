@@ -1,0 +1,29 @@
+data_rotag
+#
+loop_
+_[local]_pairwise_energy.id
+_[local]_pairwise_energy.atom_1_id
+_[local]_pairwise_energy.type_symbol_1
+_[local]_pairwise_energy.label_atom_1_id
+_[local]_pairwise_energy.label_seq_1_id
+_[local]_pairwise_energy.label_comp_1_id
+_[local]_pairwise_energy.label_asym_1_id
+_[local]_pairwise_energy.label_entity_1_id
+_[local]_pairwise_energy.label_alt_1_id
+_[local]_pairwise_energy.atom_2_id
+_[local]_pairwise_energy.type_symbol_2
+_[local]_pairwise_energy.label_atom_2_id
+_[local]_pairwise_energy.label_seq_2_id
+_[local]_pairwise_energy.label_comp_2_id
+_[local]_pairwise_energy.label_asym_2_id
+_[local]_pairwise_energy.label_entity_2_id
+_[local]_pairwise_energy.label_alt_2_id
+_[local]_pairwise_energy.calculation_method
+_[local]_pairwise_energy.value
+1 147 N N 18 SER A 1 . 147 N N 18 SER A 1 . lennard_jones 1.576480
+2 148 C CA 18 SER A 1 . 148 C CA 18 SER A 1 . lennard_jones -0.090347
+3 149 C C 18 SER A 1 . 149 C C 18 SER A 1 . lennard_jones -0.148720
+4 150 O O 18 SER A 1 . 150 O O 18 SER A 1 . lennard_jones 2.336500
+5 151 C CB 18 SER A 1 . 151 C CB 18 SER A 1 . lennard_jones 2.596744
+6 152 O OG 18 SER A 1 . 152 O OG 18 SER A 1 . lennard_jones 12.231106
+#
