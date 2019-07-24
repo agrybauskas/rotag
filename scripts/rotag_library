@@ -12,8 +12,7 @@ use Try::Tiny;
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use PDBxParser qw( filter
-                   obtain_pdbx_data
+use PDBxParser qw( obtain_pdbx_data
                    raw2indexed
                    split_by
                    to_csv
@@ -103,7 +102,8 @@ for my $pdbx_file ( @ARGV ) {
     if( ! exists $pdbx->{'_atom_site'} ||
         ! exists $pdbx->{'_[local]_rotamer_angle'} ||
         ! exists $pdbx->{'_[local]_rotamer_energy'} ) {
-        warning( { 'message' => 'no atom sites, rotamer angles or energies ' .
+        warning( { 'program' => $0,
+                   'message' => 'no atom sites, rotamer angles or energies ' .
                                 "were detected.\n" } );
         next;
     }
@@ -133,7 +133,7 @@ for my $pdbx_file ( @ARGV ) {
         if( $top_rank ) {
             $current_top_rank =
                 $top_rank <=
-                ( scalar @rotamer_ids ? $top_rank : scalar @rotamer_ids );
+                scalar @rotamer_ids ? $top_rank : scalar @rotamer_ids;
         } elsif( $top_ratio ) {
             $current_top_rank = int( scalar( @rotamer_ids ) * $top_ratio );
             $current_top_rank = $current_top_rank == 0 ? 1 : $current_top_rank;
@@ -147,8 +147,6 @@ for my $pdbx_file ( @ARGV ) {
                    $rotamer_energy->{$b}{'value'} }
                  @rotamer_ids;
         @current_rotamers = @current_rotamers[0..$current_top_rank-1];
-
-        next if ! @current_rotamers;
 
         # TODO: frequency part will change in the future, because it can change
         # according to different strategies of calculations.
@@ -177,6 +175,8 @@ for my $pdbx_file ( @ARGV ) {
             for my $attribute ( @attributes ) {
                 if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
                     push @rotamer_data, $rotamer_angles->{$angle_id}{$attribute};
+                } else {
+                    push @rotamer_data, '?';
                 }
             }
 
@@ -196,11 +196,17 @@ for my $pdbx_file ( @ARGV ) {
                    'tags' => \@output_categories } );
     } elsif( $output_format eq 'csv' ) {
         if( scalar @output_categories == 1 ) {
-            to_csv( %pdbx_data, { 'category' => $output_categories[0] } );
+            to_csv( \%pdbx_data, { 'category' => $output_categories[0] } );
         } else {
-            warning( { 'message' => "only one tag has to be chosen for " .
+            warning( { 'program' => $0,
+                       'message' => "only one tag has to be chosen for " .
                                     "CSV format.\n" } );
             exit;
         }
+    } else {
+        error(
+            { 'program' => $0,
+              'message' => "output format '${output_format}' is not " .
+                           "supported.\n" } );
     }
 }

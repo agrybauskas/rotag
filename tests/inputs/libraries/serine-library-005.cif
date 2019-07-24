@@ -33,25 +33,10 @@ _[local]_rotamer_angle.label_alt_id
 _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-_[local]_rotamer_angle.units
-1 1 18 SER A 1 . 0.142857 chi1 -3.141593 radians
-2 2 18 SER A 1 . 0.142857 chi1 -2.513274 radians
-3 3 18 SER A 1 . 0.142857 chi1 -1.884956 radians
-4 4 18 SER A 1 . 0.142857 chi1 -1.256637 radians
-5 5 18 SER A 1 . 0.142857 chi1 -0.628319 radians
-6 6 18 SER A 1 . 0.142857 chi1 0.628319 radians
-7 7 18 SER A 1 . 0.142857 chi1 1.256637 radians
-#
-loop_
-_[local]_rotamer_energy.id
-_[local]_rotamer_energy.rotamer_id
-_[local]_rotamer_energy.calculation_method
-_[local]_rotamer_energy.value
-1 1 composite 8.091828
-2 2 composite 0.708357
-3 3 composite -0.107139
-4 4 composite 1.206041
-5 5 composite 8.176096
-6 6 composite 9.830312
-7 7 composite 11.567912
-#
+1 1 18 SER A 1 . 0.142857 chi1 -3.141593
+2 2 18 SER A 1 . 0.142857 chi1 -2.513274
+3 3 18 SER A 1 . 0.142857 chi1 -1.884956
+4 4 18 SER A 1 . 0.142857 chi1 -1.256637
+5 5 18 SER A 1 . 0.142857 chi1 -0.628319
+6 6 18 SER A 1 . 0.142857 chi1 0.628319
+7 7 18 SER A 1 . 0.142857 chi1 1.256637
