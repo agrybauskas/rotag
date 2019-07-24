@@ -100,7 +100,13 @@ my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 for my $pdbx_file ( @ARGV ) {
     my $pdbx = obtain_pdbx_data( $pdbx_file, \@category_list );
 
-    next if ! defined $pdbx || ! %{ $pdbx };
+    if( ! exists $pdbx->{'_atom_site'} ||
+        ! exists $pdbx->{'_[local]_rotamer_angle'} ||
+        ! exists $pdbx->{'_[local]_rotamer_energy'} ) {
+        warning( { 'message' => 'no atom sites, rotamer angles or energies ' .
+                                "were detected.\n" } );
+        next;
+    }
 
     raw2indexed( $pdbx,
                  { 'attributes' =>
@@ -110,14 +116,6 @@ for my $pdbx_file ( @ARGV ) {
                    'read_until_end' => 1 } );
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
-
-    if( ! exists $pdbx->{'_[local]_rotamer_angle'} ||
-        ! exists $pdbx->{'_[local]_rotamer_energy'} ) {
-        warning( { 'message' => 'no rotamer angles and energies were ' .
-                                "detected.\n" } );
-        next;
-    }
-
     my $rotamer_angles = $pdbx->{'_[local]_rotamer_angle'}{'data'};
     my $rotamer_energy = $pdbx->{'_[local]_rotamer_energy'}{'data'};
 
@@ -134,9 +132,8 @@ for my $pdbx_file ( @ARGV ) {
         my $current_top_rank;
         if( $top_rank ) {
             $current_top_rank =
-                $top_rank <= scalar @rotamer_ids ?
-                $top_rank :
-                scalar @rotamer_ids;
+                $top_rank <=
+                ( scalar @rotamer_ids ? $top_rank : scalar @rotamer_ids );
         } elsif( $top_ratio ) {
             $current_top_rank = int( scalar( @rotamer_ids ) * $top_ratio );
             $current_top_rank = $current_top_rank == 0 ? 1 : $current_top_rank;
