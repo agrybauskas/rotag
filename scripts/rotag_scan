@@ -263,8 +263,11 @@ for my $pdbx_file ( @ARGV ) {
                      $angle_id, $rotamer_id, $residue_id, $residue_name[0],
                      $residue_chain, $pdbx_model, $residue_alt,
                      sprintf( $sig_figs_max, $rotamer_frequency ), $angle_name,
-                     sprintf( $sig_figs_max, 180.0 * $angle_value / $pi ),
-                     'degrees';
+                     ( $in_radians ?
+                       ( sprintf( $sig_figs_max, $angle_value ),
+                         'radians' ) :
+                       ( sprintf( $sig_figs_max, 180.0 * $angle_value / $pi ),
+                         'degrees' ) );
                 $angle_id++;
             }
 
