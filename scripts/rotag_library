@@ -72,9 +72,11 @@ GetOptions(
                         open my $fh, '<', $0;
                         while( <$fh> ) {
                             my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
-                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
-                            if( $help_message ) { print $help_message, "\n"; }
+                            if( $help_message ) {
+                                $help_message =~ s/^\*$/ /smgx;
+                                $help_message =~ s/^\*//smgx;
+                                print $help_message, "\n";
+                            }
                         }
                         close $fh;
                         exit;
