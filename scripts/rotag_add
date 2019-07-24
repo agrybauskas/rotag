@@ -119,7 +119,11 @@ for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
-    next if ! defined $atom_site || ! %{ $atom_site };
+    if( ! defined $atom_site || ! %{ $atom_site } ) {
+        warning( { 'program' => $0,
+                   'message' => "no atom sites were detected.\n" } );
+        next;
+    }
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
@@ -138,7 +142,11 @@ for my $pdbx_file ( @ARGV ) {
     if( $add_sidechains ) {
         my $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
 
-        next if ! defined $rotamer_angle || ! %{ $rotamer_angle };
+        if( ! defined $rotamer_angle || ! %{ $rotamer_angle } ) {
+            warning( { 'program' => $0,
+                       'message' => "no rotamer angles were detected.\n" } );
+            next;
+        }
 
         my $rotamer_angle_split_groups =
             # TODO: 'atom_site' should be changed to 'loop_site' in the future.

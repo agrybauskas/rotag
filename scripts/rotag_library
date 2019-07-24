@@ -113,7 +113,7 @@ for my $pdbx_file ( @ARGV ) {
         ! exists $pdbx->{'_[local]_rotamer_energy'} ) {
         warning( { 'message' => 'no rotamer angles and energies were ' .
                                 "detected.\n" } );
-        exit;
+        next;
     }
 
     my $rotamer_angles = $pdbx->{'_[local]_rotamer_angle'}{'data'};
@@ -200,7 +200,7 @@ for my $pdbx_file ( @ARGV ) {
             to_csv( %pdbx_data, { 'category' => $output_categories[0] } );
         } else {
             warning( { 'message' => "only one tag has to be chosen for " .
-                           "CSV format.\n" } );
+                                    "CSV format.\n" } );
             exit;
         }
     }
