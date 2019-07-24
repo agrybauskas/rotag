@@ -97,7 +97,11 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
-    next if ! defined $atom_site || ! %{ $atom_site };
+    if( ! defined $atom_site ) {
+        warning( { 'program' => $0,
+                   'message' => "no atom sites were detected.\n" } );
+        next;
+    }
 
     # Calculates dihedral angles
     if( $calc_sidechain ) {
@@ -218,5 +222,10 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( $pdbx, { 'tags' => [ '_[local]_dihedral_angle' ] } );
     } elsif( $output_format eq 'csv' ) {
         to_csv( $pdbx, { 'category' => '_[local]_dihedral_angle' } );
+    } else {
+        error(
+            { 'program' => $0,
+              'message' => "output format '${output_format}'" .
+                           " is not supported.\n" } );
     }
 }
