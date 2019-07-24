@@ -121,7 +121,7 @@ for my $pdbx_file ( @ARGV ) {
     # Reads file path, stdin and '-' operator.
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
-    if( ! defined $atom_site || ! %{ $atom_site } ) {
+    if( ! defined $atom_site ) {
         warning( { 'program' => $0,
                    'message' => "no atom sites were detected.\n" } );
         next;
@@ -144,7 +144,7 @@ for my $pdbx_file ( @ARGV ) {
     if( $add_sidechains ) {
         my $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
 
-        if( ! defined $rotamer_angle || ! %{ $rotamer_angle } ) {
+        if( ! defined $rotamer_angle ) {
             warning( { 'program' => $0,
                        'message' => "no rotamer angles were detected.\n" } );
             next;
