@@ -1,0 +1,1 @@
+Error: rotag_mutate: ./tests/cases/../inputs/amino-acids/cysteine-001.cif - no residues were selected. Use 'rotag_select' script to select residue(-s).

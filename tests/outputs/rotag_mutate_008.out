@@ -1,0 +1,2 @@
+Warning: rotag_mutate: selection group was not specified in 'SEC'
+Error: rotag_mutate: ./tests/cases/../inputs/amino-acids/leucine-selected-001.cif - no mutations were specified. Use -m option to achieve that.

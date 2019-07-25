@@ -106,14 +106,14 @@ for( my $i = 0; $i <= $#mutations_stmt; $i++ ) {
         # However, only one statement has to be present.
         warning( { 'program' => $0,
                    'message' => 'selection group was not specified in ' .
-                                " '${statement}'\n" } );
+                                "'${statement}'\n" } );
         next;
     }
 
     my $moiety;
     my %angles = ();
     foreach( split /,/, $statement ) {
-        if( $_ =~ m/^\w+=[-]?[0-9]+\.?[0-9]?$/ ) {
+        if( $_ =~ m/^chi1=[-]?[0-9]+[\\.]?[0-9]?/ ) {
             if( $in_radians ) {
                 my ( $angle_name, $angle_value ) = split /=/, $_;
                 $angles{$angle_name} = $angle_value;
@@ -144,7 +144,11 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
 
-    next if ! defined $atom_site || ! %{ $atom_site };
+    if( ! defined $atom_site ) {
+        warning( { 'program' => $0,
+                   'message' => "no atom sites were detected.\n" } );
+        next;
+    }
 
     my %append_moieties = ();
     if( $moiety_file ) {
@@ -169,7 +173,7 @@ for my $pdbx_file ( @ARGV ) {
                  'filename' => $pdbx_file,
                  'message' =>
                      "no residues were selected. Use " .
-                     "rotag_select script to select residue(-s).\n" } );
+                     "'rotag_select' script to select residue(-s).\n" } );
     }
 
     if( @mutations ) {
