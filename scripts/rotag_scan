@@ -159,18 +159,16 @@ for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
 for my $pdbx_file ( @ARGV ) {
     my $pdbx_data = obtain_pdbx_data( $pdbx_file, \@category_list );
 
-    next if ! defined $pdbx_data || ! %{ $pdbx_data };
+    if( ! defined $pdbx_data->{'_atom_site'}{'data'} ) {
+        warning( { 'program' => $0,
+                   'message' => "no atom sites were detected.\n" } );
+        next;
+    }
 
     raw2indexed( $pdbx_data,
                  { 'attributes' => { '_atom_site' => [ 'id' ] } } );
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
-
-    if( ! defined $atom_site ) {
-        warning( { 'program' => $0,
-                   'message' => "no atom sites were detected.\n" } );
-        next;
-    }
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
