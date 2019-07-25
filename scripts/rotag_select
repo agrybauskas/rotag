@@ -257,11 +257,11 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                           [ { 'keys' => [ 'label_seq_id',
                                           'label_asym_id',
                                           'pdbx_PDB_model_num',
-                                          'rotamer_id' ],
+                                          'label_alt_id' ],
                               'reference_keys' => [ 'label_seq_id',
                                                     'label_asym_id',
                                                     'pdbx_PDB_model_num',
-                                                    'label_alt_id' ] } ] } } );
+                                                    'rotamer_id' ] } ] } } );
         for my $category ( keys %{ $related_pdbx_data } ) {
             my $reference_category =
                 $related_pdbx_data->{$category}{'reference_category'};
