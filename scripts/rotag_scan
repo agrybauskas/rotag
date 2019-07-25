@@ -145,7 +145,7 @@ my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 # Parses string describing angles.
-my %angles = %{sample_angles_qs_parsing( $parameters, $angles ) };
+my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
 
 # Parses parameter string.
 $parameters_cmd =~ s/\s//g;
@@ -166,7 +166,11 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
 
-    next if ! defined $atom_site || ! %{ $atom_site };
+    if( ! defined $atom_site ) {
+        warning( { 'program' => $0,
+                   'message' => "no atom sites were detected.\n" } );
+        next;
+    }
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
@@ -294,5 +298,10 @@ for my $pdbx_file ( @ARGV ) {
                                         "CSV format.\n" } );
                 exit;
             }
+    } else {
+        error(
+            { 'program' => $0,
+              'message' => "output format '${output_format}'" .
+                           " is not supported.\n" } );
     }
 }
