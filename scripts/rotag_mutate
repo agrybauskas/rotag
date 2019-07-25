@@ -29,11 +29,9 @@ Getopt::Long::Configure qw( gnu_getopt );
 #*    with rotag_select.
 #*
 #*Usage:
-#*    rotag_mutate -m 'ARG' input.cif > output.cif
 #*    rotag_mutate -m '1:ALA; 2:Lys' input.cif > output.cif
 #*    rotag_mutate -m '1:ASP, chi1=120, chi2=60' input.cif > output.cif
 #*    rotag_mutate -m '3:ALA; 5:SER, chi1=134.0' input.cif > output.cif
-#*    rotag_mutate -m 'SEC' -M moiety.cif input.cif > output.cif
 #*
 #*Options:
 #*    -m, --mutate <str>         replaces selected side-chain with specified
@@ -66,7 +64,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'mutate|m=s' => \$mutations,
     'import-moiety|M=s' => \$moiety_file,
-    'radians|r=s' => sub { $in_radians = 1; },
+    'radians|r' => sub { $in_radians = 1; },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -93,15 +91,23 @@ my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 # Parsing mutation string.
 my @mutations;
+my @mutations_stmt;
 $mutations =~ s/\s//smxg;
-@mutations = split q{;}, $mutations;
+@mutations_stmt = split q{;}, $mutations;
 
-for( my $i = 0; $i <= $#mutations; $i++ ) {
-    my $statement = $mutations[$i];
+for( my $i = 0; $i <= $#mutations_stmt; $i++ ) {
+    my $statement = $mutations_stmt[$i];
 
     my $group_id;
     if( $statement =~ s/^(\w+)\:// ) {
         $group_id = $1;
+    } else {
+        # TODO: should allow to edit every amino acid if no group is present.
+        # However, only one statement has to be present.
+        warning( { 'program' => $0,
+                   'message' => 'selection group was not specified in ' .
+                                " '${statement}'\n" } );
+        next;
     }
 
     my $moiety;

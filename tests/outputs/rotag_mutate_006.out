@@ -1,0 +1,2 @@
+Warning: rotag_mutate: selection group was not specified in  'SER,chi1=90.0'
+Error: rotag_mutate: STDIN - no mutations were specified. Use -m option to achieve that.
