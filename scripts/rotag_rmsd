@@ -113,8 +113,11 @@ my @output_categories = split /,/, $output_categories;
 $comparison =~ s/ //g;
 my @comparison_groups = map { [ split /,/, $_ ] } ( split /;/, $comparison );
 
-error( { 'message' => "No comparison groups are selected. Use -c argument.\n" } )
-    if ! @comparison_groups;
+if( ! @comparison_groups ) {
+    error( { 'program' => $0,
+             'message' => 'No comparison groups are selected. Use' .
+                          " -c argument.\n" } );
+}
 
 my %atom_site_groups = ();
 my %rotamer_angles = ();
@@ -162,8 +165,9 @@ for my $pdbx_file ( @ARGV ) {
                                     '[local]_selection_group' => [$group_id] }});
                 $atom_site_groups{$group_id} = $group_atom_site;
             } else {
-                confess 'there are multiple instances of the group in' .
-                        ' different files';
+                error( { 'program' => $0,
+                         'message' => 'there are multiple instances of the group ' .
+                                      "in different files.\n" } );
             }
         }
     }
@@ -193,13 +197,16 @@ my $rmsd_counter = 1;
 
 for my $comparison_group ( @comparison_groups ) {
     if( scalar @{ $comparison_group } != 2 ) {
-        confess 'there has to be two groups of atoms to be compared against';
+        error( { 'program' => $0,
+                 'message' => 'there has to be two groups of atoms to be compared ' .
+                              "against.\n" } );
     }
 
     # Checks if these groups exist.
     for my $group ( @{ $comparison_group } ) {
         if( ! exists $atom_site_groups{$group} ) {
-            confess "group $group is not present in pdbx"
+            error( { 'program' => $0,
+                     'message' => "group $group is not present in pdbx.\n" } );
         }
     }
 
@@ -224,9 +231,6 @@ for my $comparison_group ( @comparison_groups ) {
                       'include' => { 'id' => $second_group_atom_ids } } );
 
         if( $rmsd_sidechains ) {
-            next if ( ! defined $second_group_atom_ids ||
-                      ! @{ $second_group_atom_ids } );
-
             my $rmsd_sidechain_comparisons =
                 rmsd_sidechains( $parameters,
                                  $first_group_atom_site,
@@ -273,8 +277,9 @@ for my $comparison_group ( @comparison_groups ) {
             # Checks the length of the atom sets.
             # TODO: error message is duplicated in Measure::rmsd().
             if( scalar @{ $first_group_data } ne scalar @{ $second_group_data }){
-                confess 'comparing different sizes of sets of the atoms is not ' .
-                        'allowed';
+                error( { 'program' => $0,
+                         'message' => 'comparing different sizes of sets of ' .
+                                      "the atoms is not allowed.\n" } );
             }
 
             # Sorts by residue name first by checking if their residue names are
@@ -289,8 +294,12 @@ for my $comparison_group ( @comparison_groups ) {
 
             for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
                 if( $first_group_data->[$i][2] ne $second_group_data->[$i][2] ) {
-                    confess "atom names do not match: $first_group_data->[$i][2] " .
-                            "and $second_group_data->[$i][2]";
+                    error( { 'program' => $0,
+                             'message' =>
+                                 'atom names do not match: ' .
+                                 "$first_group_data->[$i][2] and " .
+                                 "$second_group_data->[$i][2] atoms do not " .
+                                 "match.\n" } );
                 }
 
                 if( $do_decompose ) {
@@ -365,4 +374,8 @@ if( $output_format eq 'pdbx' ) {
                        "CSV format.\n" } );
         exit;
     }
+} else {
+    error( { 'program' => $0,
+             'message' => "output format '${output_format}'" .
+                          " is not supported.\n" } );
 }
