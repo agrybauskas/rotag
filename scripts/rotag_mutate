@@ -113,7 +113,7 @@ for( my $i = 0; $i <= $#mutations_stmt; $i++ ) {
     my $moiety;
     my %angles = ();
     foreach( split /,/, $statement ) {
-        if( $_ =~ m/^chi1=[-]?[0-9]+[\\.]?[0-9]?/ ) {
+        if( $_ =~ m/^[a-zA-Z0-9]+=[-]?[0-9]+[\\.]?[0-9]?/ ) {
             if( $in_radians ) {
                 my ( $angle_name, $angle_value ) = split /=/, $_;
                 $angles{$angle_name} = $angle_value;
@@ -121,7 +121,7 @@ for( my $i = 0; $i <= $#mutations_stmt; $i++ ) {
                 my ( $angle_name, $angle_value ) = split /=/, $_;
                 $angles{$angle_name} = $angle_value * $pi / 180.0;
             }
-        } elsif( $_ =~ m/^\w+$/ ) {
+        } elsif( $_ =~ m/^[a-zA-Z0-9]+$/ ) {
             if( defined $moiety ) {
                 error({'message' =>
                            "cannot mutate into multiple moieties: $moiety, $_"});

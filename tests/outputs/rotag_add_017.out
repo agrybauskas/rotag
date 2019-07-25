@@ -1,0 +1,25 @@
+rotag_add [options] (-S | -H) <file>...
+    add pseudo atoms.
+ 
+Usage:
+    rotag_add -S input.cif > output.cif
+    rotag_add -H input.cif > output.cif
+ 
+Options:
+    -S, --side-chains     add atoms of defined rotamer. Input .cif has to
+                          contain _[local]_rotamer_angle category (can be
+                          produced with rotag_library).
+ 
+    -H, --hydrogens       add hydrogen atoms to selected atoms.
+ 
+    -s, --selected        include selected atoms.
+ 
+    --tags          select PDBx category that will be in the output.
+ 
+    -k, --keep-original   keep original atoms after new atoms are added
+                          (applicable for -S option).
+ 
+    -c, --clear-positions add only those hydrogens that have clear positions
+                          from the current structure (applicable for -H option).
+ 
+    -v, --version         print version.
