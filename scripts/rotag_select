@@ -15,6 +15,7 @@ use PDBxParser qw( filter_new
                    mark_selection
                    raw2indexed
                    related_category_data
+                   obtain_pdb_atom_site
                    obtain_pdbx_data
                    to_pdbx );
 use Grammar::SelectionParser;
