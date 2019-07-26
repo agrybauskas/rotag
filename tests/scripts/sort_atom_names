@@ -10,7 +10,7 @@ use AtomProperties qw( sort_atom_names );
 # Example: ./sort_by_priority atom_names.dat
 #
 
-my ( $atom_names_file ) = @ARGV;
+my ( $atom_names_file, $sort_type ) = @ARGV;
 
 open( my $fh, "<", $atom_names_file );
 my @atom_names = <$fh>;
@@ -19,6 +19,6 @@ close( $fh );
 my ( $atom_names ) =
     map { [ split( " ", $_ ) ] } grep { $_ ne "\n" } @atom_names;
 
-my $sorted_names = sort_atom_names( $atom_names );
+my $sorted_names = sort_atom_names( $atom_names, { 'sort_type' => $sort_type } );
 
 print( join( " ", @{ $sorted_names } ), "\n" );

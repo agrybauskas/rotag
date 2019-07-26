@@ -6,6 +6,8 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( sort_atom_names );
 
+use Carp qw( confess );
+
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -72,6 +74,8 @@ sub sort_atom_names
             $atom_names{$b}{'greek_letter'} <=> $atom_names{$a}{'greek_letter'}||
             $atom_names{$a}{'number'} cmp $atom_names{$b}{'number'} }
               @{ $atom_names };
+    } else {
+        confess "there is no such '${sort_type}' option when sorting atom names";
     }
 
     return \@sorted_names;
