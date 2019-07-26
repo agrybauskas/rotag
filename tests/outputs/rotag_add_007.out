@@ -1,1 +1,2 @@
 Warning: rotag_add: ./tests/cases/../inputs/empty.cif is empty.
+Warning: rotag_add: no atom sites were detected.

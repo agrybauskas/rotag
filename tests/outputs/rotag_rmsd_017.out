@@ -1,0 +1,9 @@
+data_rotag
+#
+loop_
+_[local]_rmsd.id
+_[local]_rmsd.group_1_id
+_[local]_rmsd.group_2_id
+_[local]_rmsd.value
+1 1 2 0.831168
+#
