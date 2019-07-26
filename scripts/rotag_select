@@ -11,7 +11,6 @@ use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter_new
-                   indexed2raw
                    mark_selection
                    raw2indexed
                    related_category_data
@@ -172,14 +171,17 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     }
 
     # Assigns correct target and select command line arguments for current file.
+    # TODO: think about the situations when there are one target or select
+    # statement and multiple files. Should the selections be applied to multiple
+    # files or only one.
     my $target_cmd;
-    if( defined $target_cmds && $i <= scalar @{ $target_cmds } ) {
+    if( defined $target_cmds && $i < scalar @{ $target_cmds } ) {
         $target_cmd = $target_cmds->[$i];
     }
     $target_cmd //= 'all';
 
     my $select_cmd;
-    if( defined $select_cmds && $i <= scalar @{ $select_cmds } ) {
+    if( defined $select_cmds && $i < scalar @{ $select_cmds } ) {
         $select_cmd = $select_cmds->[$i];
     }
 
@@ -190,6 +192,8 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     if( $target_cmd =~ m/target/ ) {
         my @previous_target_atoms;
         for my $atom_id ( keys %{ $atom_site } ) {
+            # TODO: decide it should behave when 'S' is present and if we would
+            # like to keep that selection.
             if( exists $atom_site->{"$atom_id"}{'[local]_selection_state'} &&
                 $atom_site->{"$atom_id"}{'[local]_selection_state'} eq 'T' ) {
                 push @previous_target_atoms, $atom_id;
