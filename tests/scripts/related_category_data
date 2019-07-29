@@ -29,8 +29,8 @@ print Dumper
                                    [ { 'keys' => [ 'label_seq_id',
                                                    'label_asym_id',
                                                    'pdbx_PDB_model_num',
-                                                   'rotamer_id' ],
+                                                   'label_alt_id' ],
                                        'reference_keys' => [ 'label_seq_id',
                                                              'label_asym_id',
                                                              'pdbx_PDB_model_num',
-                                                             'label_alt_id' ] } ] } } );
+                                                             'rotamer_id' ] } ] } } );
