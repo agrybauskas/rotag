@@ -184,7 +184,9 @@ for my $pdbx_file ( @ARGV ) {
 
         my @dihedral_atom_ids =
             sort { $dihedral_site->{"$a"}{'[local]_selection_group'} <=>
-                   $dihedral_site->{"$b"}{'[local]_selection_group'} }
+                   $dihedral_site->{"$b"}{'[local]_selection_group'} ||
+                   $dihedral_site->{"$a"}{'id'} <=>
+                   $dihedral_site->{"$b"}{'id'}  }
             keys %{ $dihedral_site };
 
         my $dihedral_id = 1;
