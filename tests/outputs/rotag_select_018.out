@@ -38,5 +38,4 @@ _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
 ATOM 8641 N N . LYS B 1 572 7.318 28.972 58.662 1 T 1
-ATOM 8642 C CA . LYS B 1 572 8.688 29.233 59.109 1 S ?
 #

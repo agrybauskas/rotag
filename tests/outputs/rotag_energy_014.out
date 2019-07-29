@@ -1,21 +1,7 @@
-data_rotag
-#
-loop_
-_[local]_energy.id
-_[local]_energy.atom_id
-_[local]_energy.type_symbol
-_[local]_energy.label_atom_id
-_[local]_energy.label_seq_id
-_[local]_energy.label_comp_id
-_[local]_energy.label_asym_id
-_[local]_energy.pdbx_PDB_model_num
-_[local]_energy.label_alt_id
-_[local]_energy.calculation_method
-_[local]_energy.value
-1 147 N N 18 SER A 1 . composite 1.676684
-2 148 C CA 18 SER A 1 . composite 0.000000
-3 149 C C 18 SER A 1 . composite -0.142881
-4 150 O O 18 SER A 1 . composite 2.383252
-5 151 C CB 18 SER A 1 . composite 2.609060
-6 152 O OG 18 SER A 1 . composite 1.578831
-#
+id,atom_id,type_symbol,label_atom_id,label_seq_id,label_comp_id,label_asym_id,pdbx_PDB_model_num,label_alt_id,calculation_method,value
+1,147,N,N,18,SER,A,1,.,composite,1.676684
+2,148,C,CA,18,SER,A,1,.,composite,0.000000
+3,149,C,C,18,SER,A,1,.,composite,-0.142881
+4,150,O,O,18,SER,A,1,.,composite,2.383252
+5,151,C,CB,18,SER,A,1,.,composite,2.609060
+6,152,O,OG,18,SER,A,1,.,composite,1.578831
