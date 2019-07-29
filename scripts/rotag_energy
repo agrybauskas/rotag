@@ -292,6 +292,13 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx_data{'_[local]_energy'}{'metadata'}{'is_loop'} = 1;
         $pdbx_data{'_[local]_energy'}{'metadata'}{'is_indexed'} = 0;
 
+        # Empty out 'B_iso_or_equiv' values if --b-factor is flagged.
+        if( $add_B_iso ) {
+            for my $id ( keys %{ $atom_site } ) {
+                delete $atom_site->{$id}{'B_iso_or_equiv'};
+            }
+        }
+
         my $calculation_id = 1;
         for my $atom_site_identifier ( sort keys %energies ) {
             my %atom_energies = ();
