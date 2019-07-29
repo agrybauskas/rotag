@@ -1,1 +1,1 @@
-Error: rotag_select: ./cases/../inputs/amino-acids/methionine-selected-001.cif - no target atoms where previously selected.
+Error: rotag_select: ./tests/cases/../inputs/amino-acids/methionine-selected-001.cif - no target atoms where previously selected.
