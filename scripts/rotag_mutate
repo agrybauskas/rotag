@@ -123,8 +123,9 @@ for( my $i = 0; $i <= $#mutations_stmt; $i++ ) {
             }
         } elsif( $_ =~ m/^[a-zA-Z0-9]+$/ ) {
             if( defined $moiety ) {
-                error({'message' =>
-                           "cannot mutate into multiple moieties: $moiety, $_"});
+                error( { 'program' => $0,
+                         'message' => 'cannot mutate into multiple moieties: ' .
+                                      "$moiety, $_\n"} );
             }
 
             $moiety = $_;
