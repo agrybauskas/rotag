@@ -34,30 +34,30 @@ _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 _[local]_rotamer_angle.units
-1 1 18 XAA A 1 . 0.100000 chi1 -180.000000 degrees
-2 2 18 XAA A 1 . 0.100000 chi1 -144.000000 degrees
-3 3 18 XAA A 1 . 0.100000 chi1 -108.000000 degrees
-4 4 18 XAA A 1 . 0.100000 chi1 -72.000000 degrees
-5 5 18 XAA A 1 . 0.100000 chi1 -36.000000 degrees
-6 6 18 XAA A 1 . 0.100000 chi1 0.000000 degrees
-7 7 18 XAA A 1 . 0.100000 chi1 36.000000 degrees
-8 8 18 XAA A 1 . 0.100000 chi1 72.000000 degrees
-9 9 18 XAA A 1 . 0.100000 chi1 108.000000 degrees
-10 10 18 XAA A 1 . 0.100000 chi1 144.000000 degrees
+1 1 18 XAA A 1 . 0.100000 chi1 -180.000 degrees
+2 2 18 XAA A 1 . 0.100000 chi1 -144.000 degrees
+3 3 18 XAA A 1 . 0.100000 chi1 -108.000 degrees
+4 4 18 XAA A 1 . 0.100000 chi1 -72.000 degrees
+5 5 18 XAA A 1 . 0.100000 chi1 -36.000 degrees
+6 6 18 XAA A 1 . 0.100000 chi1 0.000 degrees
+7 7 18 XAA A 1 . 0.100000 chi1 36.000 degrees
+8 8 18 XAA A 1 . 0.100000 chi1 72.000 degrees
+9 9 18 XAA A 1 . 0.100000 chi1 108.000 degrees
+10 10 18 XAA A 1 . 0.100000 chi1 144.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -0.175699
-2 2 composite -0.627784
-3 3 composite -0.893362
-4 4 composite -0.510382
-5 5 composite -0.121149
-6 6 composite -0.020928
-7 7 composite -0.005117
-8 8 composite -0.003198
-9 9 composite -0.006557
-10 10 composite -0.030623
+1 1 composite -0.175775
+2 2 composite -0.628609
+3 3 composite -0.892269
+4 4 composite -0.511392
+5 5 composite -0.121400
+6 6 composite -0.020874
+7 7 composite -0.005113
+8 8 composite -0.003207
+9 9 composite -0.006551
+10 10 composite -0.030520
 #

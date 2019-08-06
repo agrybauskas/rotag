@@ -123,7 +123,7 @@ my %atom_site_groups = ();
 my %rotamer_angles = ();
 
 my $parameters = Parameters->new();
-my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
 for my $pdbx_file ( @ARGV ) {
     my $pdbxs =
@@ -256,7 +256,7 @@ for my $comparison_group ( @comparison_groups ) {
                     $rmsd_counter,
                     $rmsd_sidechain_comparisons->[0][0],
                     $rmsd_sidechain_comparisons->[0][9],
-                    sprintf $sig_figs_max, $rmsd_average;
+                    sprintf $sig_figs_min, $rmsd_average;
             }
         } else {
             my $first_group_data =
@@ -307,7 +307,7 @@ for my $comparison_group ( @comparison_groups ) {
                         $rmsd_counter,
                         ( @{ $first_group_data->[$i] } )[0..7],
                         ( @{ $second_group_data->[$i] })[0..7],
-                        sprintf $sig_figs_max,
+                        sprintf $sig_figs_min,
                         rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
                               [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
                 } else {
@@ -321,7 +321,7 @@ for my $comparison_group ( @comparison_groups ) {
             if( ! $do_decompose ) {
                 push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                     $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
-                    sprintf $sig_figs_max,
+                    sprintf $sig_figs_min,
                     rmsd( \@first_group_coord, \@second_group_coord );
             }
 

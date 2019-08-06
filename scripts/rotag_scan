@@ -142,6 +142,7 @@ local @ARGV = ( q{-} ) unless @ARGV;
 
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 # Parses string describing angles.
@@ -268,7 +269,7 @@ for my $pdbx_file ( @ARGV ) {
                      ( $in_radians ?
                        ( sprintf( $sig_figs_max, $angle_value ),
                          'radians' ) :
-                       ( sprintf( $sig_figs_max, 180.0 * $angle_value / $pi ),
+                       ( sprintf( $sig_figs_min, 180.0 * $angle_value / $pi ),
                          'degrees' ) );
                 $angle_id++;
             }

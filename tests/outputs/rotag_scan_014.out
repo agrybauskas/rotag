@@ -212,46 +212,46 @@ _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 _[local]_rotamer_angle.units
-1 1 81 SER A 1 . 0.100000 chi1 -180.000000 degrees
-2 2 81 SER A 1 . 0.100000 chi1 -144.000000 degrees
-3 3 81 SER A 1 . 0.100000 chi1 -108.000000 degrees
-4 4 81 SER A 1 . 0.100000 chi1 -72.000000 degrees
-5 5 81 SER A 1 . 0.100000 chi1 -36.000000 degrees
-6 6 81 SER A 1 . 0.100000 chi1 0.000000 degrees
-7 7 81 SER A 1 . 0.100000 chi1 36.000000 degrees
-8 8 81 SER A 1 . 0.100000 chi1 72.000000 degrees
-9 9 81 SER A 1 . 0.100000 chi1 108.000000 degrees
-10 10 81 SER A 1 . 0.100000 chi1 144.000000 degrees
-11 11 82 SER A 1 . 0.125000 chi1 -180.000000 degrees
-12 12 82 SER A 1 . 0.125000 chi1 -144.000000 degrees
-13 13 82 SER A 1 . 0.125000 chi1 -108.000000 degrees
-14 14 82 SER A 1 . 0.125000 chi1 -72.000000 degrees
-15 15 82 SER A 1 . 0.125000 chi1 -36.000000 degrees
-16 16 82 SER A 1 . 0.125000 chi1 0.000000 degrees
-17 17 82 SER A 1 . 0.125000 chi1 36.000000 degrees
-18 18 82 SER A 1 . 0.125000 chi1 72.000000 degrees
+1 1 81 SER A 1 . 0.100000 chi1 -180.000 degrees
+2 2 81 SER A 1 . 0.100000 chi1 -144.000 degrees
+3 3 81 SER A 1 . 0.100000 chi1 -108.000 degrees
+4 4 81 SER A 1 . 0.100000 chi1 -72.000 degrees
+5 5 81 SER A 1 . 0.100000 chi1 -36.000 degrees
+6 6 81 SER A 1 . 0.100000 chi1 0.000 degrees
+7 7 81 SER A 1 . 0.100000 chi1 36.000 degrees
+8 8 81 SER A 1 . 0.100000 chi1 72.000 degrees
+9 9 81 SER A 1 . 0.100000 chi1 108.000 degrees
+10 10 81 SER A 1 . 0.100000 chi1 144.000 degrees
+11 11 82 SER A 1 . 0.125000 chi1 -180.000 degrees
+12 12 82 SER A 1 . 0.125000 chi1 -144.000 degrees
+13 13 82 SER A 1 . 0.125000 chi1 -108.000 degrees
+14 14 82 SER A 1 . 0.125000 chi1 -72.000 degrees
+15 15 82 SER A 1 . 0.125000 chi1 -36.000 degrees
+16 16 82 SER A 1 . 0.125000 chi1 0.000 degrees
+17 17 82 SER A 1 . 0.125000 chi1 36.000 degrees
+18 18 82 SER A 1 . 0.125000 chi1 72.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 6.883002
-2 2 composite -0.376173
-3 3 composite -1.329859
-4 4 composite -0.634828
-5 5 composite 3.945052
-6 6 composite 9.350238
-7 7 composite 5.415767
-8 8 composite 7.540930
-9 9 composite 24.432409
-10 10 composite 27.490551
-11 11 composite 26.397040
-12 12 composite 1.048741
-13 13 composite -0.592494
-14 14 composite 9.253774
-15 15 composite 36.427682
-16 16 composite 41.238187
-17 17 composite 16.702536
-18 18 composite 24.601612
+1 1 composite 6.875987
+2 2 composite -0.375728
+3 3 composite -1.329910
+4 4 composite -0.633758
+5 5 composite 3.939553
+6 6 composite 9.367369
+7 7 composite 5.425279
+8 8 composite 7.541452
+9 9 composite 24.471277
+10 10 composite 27.470480
+11 11 composite 26.366029
+12 12 composite 1.045371
+13 13 composite -0.591702
+14 14 composite 9.245825
+15 15 composite 36.526231
+16 16 composite 41.315853
+17 17 composite 16.727836
+18 18 composite 24.661056
 #

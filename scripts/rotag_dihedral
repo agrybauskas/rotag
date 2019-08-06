@@ -89,6 +89,7 @@ local @ARGV = ( q{-} ) unless @ARGV;
 
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
@@ -160,7 +161,7 @@ for my $pdbx_file ( @ARGV ) {
                                $dihedral_angles->{$residue_unique_key}
                                                  {$angle_name}
                                                  {'value'} :
-                       sprintf $sig_figs_max,
+                       sprintf $sig_figs_min,
                                $dihedral_angles->{$residue_unique_key}
                                                  {$angle_name}
                                                  {'value'} * 180 / $pi ),
@@ -214,7 +215,7 @@ for my $pdbx_file ( @ARGV ) {
                  $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
                  $fourth_atom_id,
                  ( $in_radians ? sprintf $sig_figs_max, $dihedral_angle
-                               : sprintf $sig_figs_max, $dihedral_angle * 180 / $pi ),
+                               : sprintf $sig_figs_min, $dihedral_angle * 180 / $pi ),
                  ( $in_radians ? 'radians' : 'degrees' );
             $dihedral_id++;
         }

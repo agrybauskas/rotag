@@ -18,8 +18,8 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 ARG 315 A 1 . N 2165 CA 2166 CB 2169 CG 2170 chi1 -57.630910 degrees
-2 ARG 315 A 1 . CA 2166 CB 2169 CG 2170 CD 2171 chi2 -167.464330 degrees
-3 ARG 315 A 1 . CB 2169 CG 2170 CD 2171 NE 2172 chi3 63.698657 degrees
-4 ARG 315 A 1 . CG 2170 CD 2171 NE 2172 CZ 2173 chi4 -169.986810 degrees
+1 ARG 315 A 1 . N 2165 CA 2166 CB 2169 CG 2170 chi1 -57.631 degrees
+2 ARG 315 A 1 . CA 2166 CB 2169 CG 2170 CD 2171 chi2 -167.464 degrees
+3 ARG 315 A 1 . CB 2169 CG 2170 CD 2171 NE 2172 chi3 63.699 degrees
+4 ARG 315 A 1 . CG 2170 CD 2171 NE 2172 CZ 2173 chi4 -169.987 degrees
 #

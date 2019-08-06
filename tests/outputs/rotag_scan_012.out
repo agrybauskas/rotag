@@ -41,70 +41,70 @@ _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 _[local]_rotamer_angle.units
-1 1 18 XAA A 1 A 0.100000 chi1 -180.000000 degrees
-2 2 18 XAA A 1 A 0.100000 chi1 -144.000000 degrees
-3 3 18 XAA A 1 A 0.100000 chi1 -108.000000 degrees
-4 4 18 XAA A 1 A 0.100000 chi1 -72.000000 degrees
-5 5 18 XAA A 1 A 0.100000 chi1 -36.000000 degrees
-6 6 18 XAA A 1 A 0.100000 chi1 0.000000 degrees
-7 7 18 XAA A 1 A 0.100000 chi1 36.000000 degrees
-8 8 18 XAA A 1 A 0.100000 chi1 72.000000 degrees
-9 9 18 XAA A 1 A 0.100000 chi1 108.000000 degrees
-10 10 18 XAA A 1 A 0.100000 chi1 144.000000 degrees
-11 11 18 XAA A 1 B 0.100000 chi1 -180.000000 degrees
-12 12 18 XAA A 1 B 0.100000 chi1 -144.000000 degrees
-13 13 18 XAA A 1 B 0.100000 chi1 -108.000000 degrees
-14 14 18 XAA A 1 B 0.100000 chi1 -72.000000 degrees
-15 15 18 XAA A 1 B 0.100000 chi1 -36.000000 degrees
-16 16 18 XAA A 1 B 0.100000 chi1 0.000000 degrees
-17 17 18 XAA A 1 B 0.100000 chi1 36.000000 degrees
-18 18 18 XAA A 1 B 0.100000 chi1 72.000000 degrees
-19 19 18 XAA A 1 B 0.100000 chi1 108.000000 degrees
-20 20 18 XAA A 1 B 0.100000 chi1 144.000000 degrees
-21 21 18 XAA A 2 . 0.100000 chi1 -180.000000 degrees
-22 22 18 XAA A 2 . 0.100000 chi1 -144.000000 degrees
-23 23 18 XAA A 2 . 0.100000 chi1 -108.000000 degrees
-24 24 18 XAA A 2 . 0.100000 chi1 -72.000000 degrees
-25 25 18 XAA A 2 . 0.100000 chi1 -36.000000 degrees
-26 26 18 XAA A 2 . 0.100000 chi1 0.000000 degrees
-27 27 18 XAA A 2 . 0.100000 chi1 36.000000 degrees
-28 28 18 XAA A 2 . 0.100000 chi1 72.000000 degrees
-29 29 18 XAA A 2 . 0.100000 chi1 108.000000 degrees
-30 30 18 XAA A 2 . 0.100000 chi1 144.000000 degrees
+1 1 18 XAA A 1 A 0.100000 chi1 -180.000 degrees
+2 2 18 XAA A 1 A 0.100000 chi1 -144.000 degrees
+3 3 18 XAA A 1 A 0.100000 chi1 -108.000 degrees
+4 4 18 XAA A 1 A 0.100000 chi1 -72.000 degrees
+5 5 18 XAA A 1 A 0.100000 chi1 -36.000 degrees
+6 6 18 XAA A 1 A 0.100000 chi1 0.000 degrees
+7 7 18 XAA A 1 A 0.100000 chi1 36.000 degrees
+8 8 18 XAA A 1 A 0.100000 chi1 72.000 degrees
+9 9 18 XAA A 1 A 0.100000 chi1 108.000 degrees
+10 10 18 XAA A 1 A 0.100000 chi1 144.000 degrees
+11 11 18 XAA A 1 B 0.100000 chi1 -180.000 degrees
+12 12 18 XAA A 1 B 0.100000 chi1 -144.000 degrees
+13 13 18 XAA A 1 B 0.100000 chi1 -108.000 degrees
+14 14 18 XAA A 1 B 0.100000 chi1 -72.000 degrees
+15 15 18 XAA A 1 B 0.100000 chi1 -36.000 degrees
+16 16 18 XAA A 1 B 0.100000 chi1 0.000 degrees
+17 17 18 XAA A 1 B 0.100000 chi1 36.000 degrees
+18 18 18 XAA A 1 B 0.100000 chi1 72.000 degrees
+19 19 18 XAA A 1 B 0.100000 chi1 108.000 degrees
+20 20 18 XAA A 1 B 0.100000 chi1 144.000 degrees
+21 21 18 XAA A 2 . 0.100000 chi1 -180.000 degrees
+22 22 18 XAA A 2 . 0.100000 chi1 -144.000 degrees
+23 23 18 XAA A 2 . 0.100000 chi1 -108.000 degrees
+24 24 18 XAA A 2 . 0.100000 chi1 -72.000 degrees
+25 25 18 XAA A 2 . 0.100000 chi1 -36.000 degrees
+26 26 18 XAA A 2 . 0.100000 chi1 0.000 degrees
+27 27 18 XAA A 2 . 0.100000 chi1 36.000 degrees
+28 28 18 XAA A 2 . 0.100000 chi1 72.000 degrees
+29 29 18 XAA A 2 . 0.100000 chi1 108.000 degrees
+30 30 18 XAA A 2 . 0.100000 chi1 144.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -0.204644
-2 2 composite 0.404327
-3 3 composite 2.080520
-4 4 composite 0.150261
-5 5 composite 0.130919
-6 6 composite 0.834872
-7 7 composite 0.208818
-8 8 composite -0.033219
-9 9 composite 0.765588
-10 10 composite 0.487708
-11 11 composite -0.204644
-12 12 composite 0.404327
-13 13 composite 2.080520
-14 14 composite 0.150261
-15 15 composite 0.130919
-16 16 composite 0.834872
-17 17 composite 0.208818
-18 18 composite -0.033219
-19 19 composite 0.765588
-20 20 composite 0.487708
-21 21 composite -0.204644
-22 22 composite 0.404327
-23 23 composite 2.080520
-24 24 composite 0.150261
-25 25 composite 0.130919
-26 26 composite 0.834872
-27 27 composite 0.208818
-28 28 composite -0.033219
-29 29 composite 0.765588
-30 30 composite 0.487708
+1 1 composite -0.204634
+2 2 composite 0.405150
+3 3 composite 2.079443
+4 4 composite 0.150847
+5 5 composite 0.130619
+6 6 composite 0.834867
+7 7 composite 0.208638
+8 8 composite -0.033264
+9 9 composite 0.765477
+10 10 composite 0.488010
+11 11 composite -0.204634
+12 12 composite 0.405150
+13 13 composite 2.079443
+14 14 composite 0.150847
+15 15 composite 0.130619
+16 16 composite 0.834867
+17 17 composite 0.208638
+18 18 composite -0.033264
+19 19 composite 0.765477
+20 20 composite 0.488010
+21 21 composite -0.204634
+22 22 composite 0.405150
+23 23 composite 2.079443
+24 24 composite 0.150847
+25 25 composite 0.130619
+26 26 composite 0.834867
+27 27 composite 0.208638
+28 28 composite -0.033264
+29 29 composite 0.765477
+30 30 composite 0.488010
 #

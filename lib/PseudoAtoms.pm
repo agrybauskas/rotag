@@ -90,7 +90,7 @@ sub generate_pseudo
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
 
-    my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
+    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
     my %atom_site = %{ clone( $atom_site ) };
     my %pseudo_atom_site;
@@ -151,9 +151,9 @@ sub generate_pseudo
                   'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
                   'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
                   'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
-                  'cartn_x' => sprintf( $sig_figs_min, $transf_atom_coord->[0][0] ),
-                  'cartn_y' => sprintf( $sig_figs_min, $transf_atom_coord->[1][0] ),
-                  'cartn_z' => sprintf( $sig_figs_min, $transf_atom_coord->[2][0] ),
+                  'cartn_x' => sprintf( $sig_figs_max, $transf_atom_coord->[0][0] ),
+                  'cartn_y' => sprintf( $sig_figs_max, $transf_atom_coord->[1][0] ),
+                  'cartn_z' => sprintf( $sig_figs_max, $transf_atom_coord->[2][0] ),
                   'pdbx_PDB_model_num' =>
                       $atom_site{$atom_id}{'pdbx_PDB_model_num'},
                 } );
