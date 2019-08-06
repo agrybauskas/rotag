@@ -6,7 +6,7 @@
    rotatable bonds.
 ++ Make rotamers show properly in Jmol by assigning label_alt_id different
    labels.
--- Maybe rotag-select could filter also by residue or atom ids, because when
+++ Maybe rotag-select could filter also by residue or atom ids, because when
    parsing files and using pipes some of the [local] data might be lost or not
    needed.
 ++ Order maybe should be changed to group only.
@@ -14,7 +14,7 @@
 ++ Should use lambda function instead of eval in LinearAlgebra.pm.
 !! Write two functions determining configuration hierarchy: R or S (for sp3) and
    cis (Z) or trans (E) (for sp2).
--- Should have basic and most necessary attributes for PDBx and transfer them.
+++ Should have basic and most necessary attributes for PDBx and transfer them.
    However, should have option to carry everything through pipes.
 ++ Because sidechains grow when calculating energy, there might be no information
    about transformed next atom. One of the solutions might be to have one more
@@ -96,7 +96,7 @@
    unique residue pair.
 !! Look if ids are not repeating in rotag_rmsd -S output.
 -- to_csv() should also parse indexed data.
--- It looks that raw2indexed() and indexed2raw() should be functions that
+++ It looks that raw2indexed() and indexed2raw() should be functions that
    only deal with references. That way conversions are more convenient.
 -- Tidy up the pdbx data structure by introducing 'related_data' instead of
    using related_category_data() all the time.
