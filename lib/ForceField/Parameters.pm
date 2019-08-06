@@ -181,6 +181,10 @@ sub force_field
                                {$type_symbol_2}{'sigma'} = $sigma;
         $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_1}
                                {$type_symbol_2}{'epsilon'} = $epsilon;
+        $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_2}
+                               {$type_symbol_1}{'sigma'} = $sigma;
+        $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_2}
+                               {$type_symbol_1}{'epsilon'} = $epsilon;
     }
 
     # Restructuring parameters of partial charge.
@@ -207,6 +211,8 @@ sub force_field
 
         $force_field_parameters{'_[local]_torsional'}{$type_symbol_1}
                                {$type_symbol_2}{'epsilon'} = $epsilon;
+        $force_field_parameters{'_[local]_torsional'}{$type_symbol_2}
+                               {$type_symbol_1}{'epsilon'} = $epsilon;
     }
 
     # Restructuring parameters of hydrogen bond.

@@ -6369,7 +6369,7 @@ $VAR1 = bless( {
         'epsilon' => '0.00'
       },
       'C' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.0'
       },
       'H' => {
         'epsilon' => '0.25'
