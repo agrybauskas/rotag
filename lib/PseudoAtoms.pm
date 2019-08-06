@@ -43,7 +43,7 @@ use BondProperties qw( hybridization
 use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys
-                   filter
+                   filter_new
                    filter_by_unique_residue_key
                    split_by
                    unique_residue_key );
@@ -96,10 +96,9 @@ sub generate_pseudo
     my %pseudo_atom_site;
 
     my @atom_ids =
-        @{ filter( { 'atom_site' => \%atom_site,
-                     'include' => $atom_specifier,
-                     'data' => [ 'id' ],
-                     'is_list' => 1 } ) };
+        @{ filter_new( \%atom_site,
+                   { 'include' => $atom_specifier,
+                     'return_data' => 'id' } ) };
 
     for my $atom_id ( @atom_ids ) {
         my $conformation = $atom_site{"$atom_id"}{'conformation'};
@@ -344,8 +343,8 @@ sub generate_library
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my ( $pdbx_model_num, $alt_id ) = split /,/, $atom_site_identifier;
         my $current_atom_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' =>
+            filter_new( $atom_site,
+                    { 'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
 
         connect_atoms( $parameters, $current_atom_site );
@@ -366,10 +365,9 @@ sub generate_library
                 filter_by_unique_residue_key( $current_atom_site,
                                               $residue_unique_key, 1 );
             my $atom_ca_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'CA' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
+                filter_new( $residue_site,
+                        { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                          'return_data' => 'id' } )->[0];
 
             if( ! defined $atom_ca_id ) { next; }
 
@@ -396,8 +394,8 @@ sub generate_library
                 my $residue_chain =
                     $current_atom_site->{$ca_atom_id}{'label_asym_id'};
                 my $residue_site =
-                    filter( { 'atom_site' => $current_atom_site,
-                              'include' =>
+                    filter_new( $current_atom_site,
+                            { 'include' =>
                                   { 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                                     'label_alt_id' => [ $alt_id, q{.} ],
                                     'label_seq_id' => [ $residue_id ],
@@ -407,8 +405,8 @@ sub generate_library
                                             { 'exclude_dot' => 1 } )->[0];
 
                 my %interaction_site =
-                    %{ filter( { 'atom_site' => $current_atom_site,
-                                 'include' =>
+                    %{ filter_new( $current_atom_site,
+                               { 'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
@@ -533,13 +531,13 @@ sub calc_favourable_angles
     # potential with surrounding atoms. CA and CB are non-movable atoms
     # so, they are marked as starting atoms.
     my $ca_atom_id =
-        filter( { 'atom_site' => $residue_site,
-                  'include' => { 'label_atom_id' => [ 'CA' ] },
-                  'data' => [ 'id' ] } )->[0][0];
+        filter_new( $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                  'return_data' => 'id' } )->[0];
     my $cb_atom_id =
-        filter( { 'atom_site' => $residue_site,
-                  'include' => { 'label_atom_id' => [ 'CB' ] },
-                  'data' => [ 'id' ] } )->[0][0];
+        filter_new( $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'CB' ] },
+                  'return_data' => 'id' } )->[0];
 
     my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     my @next_atom_ids =
@@ -801,8 +799,8 @@ sub calc_full_atom_energy
         # next if !retains_connections( $parameters,$residue_site,\%rotamer_site );
 
         my @rotamer_atom_ids =
-            sort keys %{ filter( { 'atom_site' => \%rotamer_site,
-                                   'exclude' =>
+            sort keys %{ filter_new( \%rotamer_site,
+                                 { 'exclude' =>
                                    { 'label_atom_id' =>
                                          $interaction_atom_names } } ) };
 
