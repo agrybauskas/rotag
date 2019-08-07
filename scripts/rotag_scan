@@ -28,65 +28,65 @@ Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
-#*rotag_scan [options] <file>...
+#*rotag_scan [options] [--] <cif-file>...
 #*    scan for rotamer conformations.
 #*
 #*Usage:
-#*    rotag_scan -u composite input.cif > output.cif
+#*    rotag_scan --potential composite input.cif > output.cif
 #*    rotag_scan input.cif > output.cif
-#*    rotag_scan -p 'cutoff_atom=0.5, lj_k=1.05, c_k=0.4' input.cif > output.cif
+#*    rotag_scan --parameters 'cutoff_atom=0.5, lj_k=1.05' input.cif > output.cif
 #*
 #*Options:
-#*    -u, --potential <potential> uses potential energy function for determining
-#*                                interactions between selected residues and
-#*                                atoms that are reachable or described
-#*                                (default: composite | hard_sphere
-#*                                | soft_sphere).
+#*    -u, --potential <potential>
+#*                        uses potential energy function for determining
+#*                        interactions between selected residues and atoms that
+#*                        are reachable or described (default: composite |
+#*                        hard_sphere | soft_sphere).
+#*    -p, --parameters <parameter>=<float>[,<parameter>=<float>...]
+#*                        parameter values.
 #*
-#*    -p, --parameters <str>      parameter values.
+#*                        Parameters for composite potential energy
+#*                        function:
+#*                            lj_k         - Leonard-Jones constant;
+#*                            c_k          - Coulomb constant;
+#*                            h_k          - hydrogen bond constant;
+#*                            cutoff_atom  - largest possible energy
+#*                                           value for the atom;
+#*                            cutoff_start - x VdW where energy starts
+#*                                           to go to zero;
+#*                            cutoff_end   - x VdW where energy is at
+#*                                           zero.
 #*
-#*                                Parameters for composite potential energy
-#*                                function:
-#*                                    lj_k         - Leonard-Jones constant;
-#*                                    c_k          - Coulomb constant;
-#*                                    h_k          - hydrogen bond constant;
-#*                                    cutoff_atom  - largest possible energy
-#*                                                   value for the atom;
-#*                                    cutoff_start - x VdW where energy starts
-#*                                                   to go to zero;
-#*                                    cutoff_end   - x VdW where energy is at
-#*                                                   zero.
+#*                        Parameters for soft-sphere potential energy
+#*                        function:
+#*                            soft_epsilon - soft sphere epsilon;
+#*                            soft_n       - soft sphere n.
 #*
-#*                                Parameters for soft-sphere potential energy
-#*                                function:
-#*                                    soft_epsilon - soft sphere epsilon;
-#*                                    soft_n       - soft sphere n.
+#*                        Example: 'lj_k=0.01, c_k=0.4'.
+#*    -a, --angles <angles>
+#*                        angles that each dihedral angle is turned by in degrees
+#*                        expressed in special grammar:
+#*                            <float>..<float>..<float>
+#*                                defined steps that are performed by
+#*                                defined range;
+#*                            <angle> = <float>[,<float>...]
+#*                                defined steps that are performed by
+#*                                defined range for specific angle;
 #*
-#*                                E.g.: -p 'lj_k=0.01, c_k=0.4'.
-#*
-#*    -a, --angles <str>          angles that each dihedral angle is turned
-#*                                by in degrees expressed in special grammar:
-#*                                    <float>..<float>..<float>
-#*                                        - defined steps that are performed by
-#*                                          defined range;
-#*                                    <angle> = <float>...[,...]
-#*                                        - defined steps that are performed by
-#*                                          defined range for specific angle;
-#*
-#*                                E.g.: '0..36.0..360.0', '0..18.0..180.0',
-#*                                      '0..90.0', 'chi1=0..36.0',
-#*                                      'chi1=90.0..90.0, chi2=0.0..10.0..360.0'.
-#*
-#*    -r, --radians               angle value is in radians.
-#*
-#*    --tags                      output only specified PDBx categories.
-#*
-#*    -F, --format <format>       output format. Only one category can be
-#*                                present if csv is select (default: pdbx | csv).
-#*
-#    -n, --threads <int>         number of threads.
-#
-#*    -v, --version               print version.
+#*                        Example: '0..36.0..360.0', '0..18.0..180.0',
+#*                                 '0..90.0', 'chi1=0..36.0',
+#*                                 'chi1=90.0..90.0, chi2=0.0..10.0..360.0'.
+#*    -r, --radians
+#*                        angle value is in radians.
+#*    --tags <tag>[,<tag>...]
+#*                        output only specified PDBx categories.
+#*    -F, --format <format>
+#*                        output format. Only one category can be present if csv
+#*                        is select (default: pdbx | csv).
+#    -n, --threads <int>
+#                        number of threads.
+#*    -v, --version
+#*                        print version.
 
 # --------------------------------- Options ----------------------------------- #
 

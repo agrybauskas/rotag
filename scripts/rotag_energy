@@ -48,7 +48,7 @@ our $VERSION = $VERSION;
 #*                        are reachable or described (default: composite |
 #*                        hard_sphere | soft_sphere | lennard_jones | coulomb |
 #*                        h_bond).
-#*    -p, --parameters <parameters>
+#*    -p, --parameters <parameter>=<float>[,<parameter>=<float>...]
 #*                        parameter values.
 #*
 #*                        Parameters for composite potential energy
