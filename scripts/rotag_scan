@@ -84,8 +84,8 @@ our $VERSION = $VERSION;
 #*    -F, --format <format>       output format. Only one category can be
 #*                                present if csv is select (default: pdbx | csv).
 #*
-#*    -n, --threads <int>         number of threads.
-#*
+#    -n, --threads <int>         number of threads.
+#
 #*    -v, --version               print version.
 
 # --------------------------------- Options ----------------------------------- #
