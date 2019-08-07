@@ -30,31 +30,35 @@ Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
-#*rotag_add [options] (-S | -H) <file>...
+#*rotag_add [options] (--side-chains | --hydrogens) [--] <cif-file>...
 #*    add pseudo atoms.
 #*
 #*Usage:
-#*    rotag_add -S input.cif > output.cif
-#*    rotag_add -H input.cif > output.cif
+#*    rotag_add --side-chains input.cif > output.cif
+#*    rotag_add --hydrogens input.cif > output.cif
 #*
 #*Options:
-#*    -S, --side-chains     add atoms of defined rotamer. Input .cif has to
-#*                          contain _[local]_rotamer_angle category (can be
-#*                          produced with rotag_library).
-#*
-#*    -H, --hydrogens       add hydrogen atoms to selected atoms.
-#*
-#*    -s, --selected        include selected atoms.
-#*
-#*    --tags          select PDBx category that will be in the output.
-#*
-#*    -k, --keep-original   keep original atoms after new atoms are added
-#*                          (applicable for -S option).
-#*
-#*    -c, --clear-positions add only those hydrogens that have clear positions
-#*                          from the current structure (applicable for -H option).
-#*
-#*    -v, --version         print version.
+#*    -S, --side-chains
+#*                        add atoms of defined rotamer. Input .cif has to
+#*                        contain _[local]_rotamer_angle category (can be
+#*                        produced with rotag_library).
+#*    -H, --hydrogens
+#*                        add hydrogen atoms to selected atoms.
+#*    -s, --selected
+#*                        include selected atoms.
+#*    --tags <tags>
+#*                        select PDBx category that will be in the output.
+#*                        Example: "_atom_site,_[local]_rotamer_angle"
+#*                        (default: "_atom_site").
+#*    -k, --keep-original
+#*                        keep original atoms after new atoms are added
+#*                        (applicable only for --side-chains option).
+#*    -c, --clear-positions
+#*                        add only those hydrogens that have clear positions from
+#*                        the current structure (applicable for --hydrogens
+#*                        option).
+#*    -v, --version
+#*                        print version.
 
 # --------------------------------- Options ----------------------------------- #
 
