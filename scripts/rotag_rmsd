@@ -31,33 +31,35 @@ Getopt::Long::Configure qw( gnu_getopt );
 
 our $VERSION = $VERSION;
 
-#*rotag_rmsd [options] -c <groups> <file>...
+#*rotag_rmsd [options] --compare <compare-groups> [--] <cif-file>...
 #*    calculate rmsd between two groups of atoms.
 #*
 #*Usage:
-#*    rotag_rmsd input.cif > output.cif
+#*    rotag_rmsd --compare '1,2' input.cif > output.cif
+#*    rotag_rmsd -S --compare '3,4;6,7' input.cif > output.cif
 #*
 #*Options:
-#*    -c, --compare <str>   compares atoms of the defined groups.
+#*    -c, --compare <group>,<group>[;<group>,<group>;...]
+#*                        compares atoms of the defined groups.
 #*
-#*                          E.g.: -c '1, 2' or -c '3, 4; 5, 7'
-#*
-#*    -S, --side-chains     compares only side-chain atoms agains other
-#*                          side-chain atoms.
-#*
-#*    -b, --best-case       chooses best RMSD value of side-chain comparison.
-#*
-#*    -d, --decompose       decompose RMSD value of the group to its
-#*                          constituents.
-#*
-#*    --tags                select PDBx categories that will be in the output.
-#*
-#*    -r, --related-data    only related data records from other categories are
-#*                          shown when '_atom_site' records are selected.
-#*
-#*    -F, --format <format> output format (default: pdbx | csv).
-#*
-#*    -v, --version         print version.
+#*                        Example: --compare '1, 2' or --compare '3, 4; 5, 7'.
+#*    -S, --side-chains
+#*                        compares only side-chain atoms agains other side-chain
+#*                        atoms.
+#*    -b, --best-case
+#*                        chooses best RMSD value of side-chain comparison.
+#*    -d, --decompose
+#*                        decompose RMSD value of the group to its constituents.
+#*    --tags <tag>[,<tag>...]
+#*                        select PDBx categories that will be in the output
+#*                        (default: '_atom_site,_[local]_rmsd,_[local]_rotamer_angle').
+#*    -r, --related-data
+#*                        only related data records from other categories are
+#*                        shown when '_atom_site' records are selected.
+#*    -F, --format <format>
+#*                        output format (default: pdbx | csv).
+#*    -v, --version
+#*                        print version.
 
 # --------------------------------- Options ----------------------------------- #
 
