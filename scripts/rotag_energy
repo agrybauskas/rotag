@@ -81,7 +81,7 @@ our $VERSION = $VERSION;
 #*    -F, --format <format>
 #*                        output format (default: pdbx | csv).
 #    -n, --threads <int>
-#                         number of threads.
+#                        number of threads.
 #*    -v, --version
 #*                        print version.
 

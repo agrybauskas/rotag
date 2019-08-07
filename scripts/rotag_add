@@ -46,9 +46,8 @@ our $VERSION = $VERSION;
 #*                        add hydrogen atoms to selected atoms.
 #*    -s, --selected
 #*                        include selected atoms.
-#*    --tags <tags>
+#*    --tags <tag>[,<tag>...]
 #*                        select PDBx category that will be in the output.
-#*                        Example: "_atom_site,_[local]_rotamer_angle"
 #*                        (default: "_atom_site").
 #*    -k, --keep-original
 #*                        keep original atoms after new atoms are added
