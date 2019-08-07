@@ -12,7 +12,7 @@ use List::Util qw( max
                    min );
 use Carp qw( confess );
 use ForceField::Parameters;
-use PDBxParser qw( filter );
+use PDBxParser qw( extract );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -88,8 +88,8 @@ sub grid_box
 
     # Determines boundary box around all atoms.
     my $atom_data =
-        filter( { 'atom_site' => $atom_site,
-                  'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        extract( $atom_site,
+                 { 'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
     my @atom_coordinates = map { [ $_->[1], $_->[2], $_->[3] ] } @{ $atom_data };
     my $boundary_box = create_box( \@atom_coordinates );
 
