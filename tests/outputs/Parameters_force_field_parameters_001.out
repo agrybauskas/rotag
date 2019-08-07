@@ -6257,19 +6257,19 @@ $VAR1 = bless( {
         'epsilon' => '1.00'
       },
       'H' => {
-        'epsilon' => '0.25'
+        'epsilon' => '1.00'
       },
       'N' => {
-        'epsilon' => '0.5'
+        'epsilon' => '10.00'
       },
       'O' => {
-        'epsilon' => '0.75'
+        'epsilon' => '10.00'
       },
       'S' => {
-        'epsilon' => '1.125'
+        'epsilon' => '10.00'
       },
       'X' => {
-        'epsilon' => '1.0'
+        'epsilon' => '1.00'
       }
     },
     'H' => {
@@ -6277,22 +6277,22 @@ $VAR1 = bless( {
         'epsilon' => '0.00'
       },
       'C' => {
-        'epsilon' => '0.25'
+        'epsilon' => '1.00'
       },
       'H' => {
-        'epsilon' => '0.0625'
+        'epsilon' => '1.00'
       },
       'N' => {
-        'epsilon' => '0.125'
+        'epsilon' => '10.00'
       },
       'O' => {
-        'epsilon' => '0.1875'
+        'epsilon' => '10.00'
       },
       'S' => {
-        'epsilon' => '0.28125'
+        'epsilon' => '10.00'
       },
       'X' => {
-        'epsilon' => '0.25'
+        'epsilon' => '1.00'
       }
     },
     'N' => {
@@ -6300,22 +6300,22 @@ $VAR1 = bless( {
         'epsilon' => '0.00'
       },
       'C' => {
-        'epsilon' => '0.5'
+        'epsilon' => '10.00'
       },
       'H' => {
-        'epsilon' => '0.125'
+        'epsilon' => '10.00'
       },
       'N' => {
-        'epsilon' => '0.25'
+        'epsilon' => '10.00'
       },
       'O' => {
-        'epsilon' => '0.375'
+        'epsilon' => '10.00'
       },
       'S' => {
-        'epsilon' => '0.5625'
+        'epsilon' => '10.00'
       },
       'X' => {
-        'epsilon' => '0.5'
+        'epsilon' => '10.00'
       }
     },
     'O' => {
@@ -6323,22 +6323,22 @@ $VAR1 = bless( {
         'epsilon' => '0.00'
       },
       'C' => {
-        'epsilon' => '0.75'
+        'epsilon' => '10.00'
       },
       'H' => {
-        'epsilon' => '0.1875'
+        'epsilon' => '10.00'
       },
       'N' => {
-        'epsilon' => '0.375'
+        'epsilon' => '10.00'
       },
       'O' => {
-        'epsilon' => '0.5625'
+        'epsilon' => '10.00'
       },
       'S' => {
-        'epsilon' => '0.84375'
+        'epsilon' => '10.00'
       },
       'X' => {
-        'epsilon' => '0.75'
+        'epsilon' => '10.00'
       }
     },
     'S' => {
@@ -6346,22 +6346,22 @@ $VAR1 = bless( {
         'epsilon' => '0.00'
       },
       'C' => {
-        'epsilon' => '1.125'
+        'epsilon' => '10.00'
       },
       'H' => {
-        'epsilon' => '0.28125'
+        'epsilon' => '10.00'
       },
       'N' => {
-        'epsilon' => '0.5625'
+        'epsilon' => '10.00'
       },
       'O' => {
-        'epsilon' => '0.84375'
+        'epsilon' => '10.00'
       },
       'S' => {
-        'epsilon' => '1.265625'
+        'epsilon' => '10.00'
       },
       'X' => {
-        'epsilon' => '1.125'
+        'epsilon' => '10.00'
       }
     },
     'X' => {
@@ -6369,19 +6369,19 @@ $VAR1 = bless( {
         'epsilon' => '0.00'
       },
       'C' => {
-        'epsilon' => '1.0'
+        'epsilon' => '1.00'
       },
       'H' => {
-        'epsilon' => '0.25'
+        'epsilon' => '1.00'
       },
       'N' => {
-        'epsilon' => '0.5'
+        'epsilon' => '10.00'
       },
       'O' => {
-        'epsilon' => '0.75'
+        'epsilon' => '10.00'
       },
       'S' => {
-        'epsilon' => '1.125'
+        'epsilon' => '10.00'
       },
       'X' => {
         'epsilon' => '1.00'

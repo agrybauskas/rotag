@@ -1,19 +1,20 @@
-rotag_energy [options] <file>...
+rotag_energy [options] [--] <cif-file>...
     calculate potential energy of selected atoms.
  
 Usage:
     rotag_energy input.cif > output.cif
-    rotag_energy -u hard_sphere input.cif > output.cif
-    rotag_energy input.cif -p 'lj_k=0.01, c_k=0.4' > output.cif
+    rotag_energy --potential hard_sphere input.cif > output.cif
+    rotag_energy input.cif --parameters 'lj_k=0.01, c_k=0.4' > output.cif
  
 Options:
-    -u, --potential <potential> uses potential energy function for determining
-                                interactions between selected residues and
-                                atoms that are reachable or described.
-                                (default: composite | hard_sphere | soft_sphere
-                                | lennard_jones | coulomb | h_bond)
- 
-    -p, --parameters <str>      parameter values.
+    -u, --potential <potential>
+                        uses potential energy function for determining
+                        interactions between selected residues and atoms that
+                        are reachable or described (default: composite |
+                        hard_sphere | soft_sphere | lennard_jones | coulomb |
+                        h_bond).
+    -p, --parameters <parameter>=<float>[,<parameter>=<float>...]
+                        parameter values.
  
                                 Parameters for composite potential energy
                                 function:
@@ -30,21 +31,19 @@ Options:
                                     soft_epsilon - soft sphere epsilon;
                                     soft_n       - soft sphere n.
  
-                                E.g.: 'lj_k=0.01, c_k=0.4'.
- 
-    -S, --side-chains           calculate energy of the side-chain atoms for
-                                each selected residue.
- 
-    -d, --decompose             decompose composite energy values into their
+                        Example: 'lj_k=0.01, c_k=0.4'.
+    -S, --side-chains
+                        calculate energy of the side-chain atoms for each
+                        selected residue.
+    -d, --decompose
+                        decompose composite energy values into their
                                 constituent energy values.
- 
-    -P, --pairwise              check energy of the atoms in pairwise fashion.
- 
-    -b, --b-factor              adds 'B_iso_or_equiv' as energy value to the
-                                PDBx 'atom_site' loop.
- 
-    -F, --format <format>       output format (default: pdbx | csv).
- 
-    -n, --threads <int>         number of threads.
- 
-    -v, --version               print version.
+    -P, --pairwise
+                        check energy of the atoms in pairwise fashion.
+    -b, --b-factor
+                        adds 'B_iso_or_equiv' as energy value to the PDBx
+                        'atom_site' loop.
+    -F, --format <format>
+                        output format (default: pdbx | csv).
+    -v, --version
+                        print version.

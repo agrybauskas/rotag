@@ -1,21 +1,21 @@
-rotag_library [options] <file>...
+rotag_library [options] [--] <cif-file>...
     generate rotamer library.
  
 Usage:
-    rotag_library -t 5 input.cif > output.cif
-    rotag_library -T 0.2 input.cif > output.cif
+    rotag_library --top-rank 5 input.cif > output.cif
+    rotag_library --top-ratio 0.2 input.cif > output.cif
  
 Options:
-    -t, --top-rank <int>                    top rotamers according to the value
-                                            of energies.
- 
-    -T, --top-ratio <float>                 top rotamers according to the
-                                            value of energies (default: 1.0).
- 
-    --tags <category>[,<category>...]       output only specified PDBx tags.
- 
-    -F, --format <format>                   output format. Only one category
-                                            can be present if csv is select
-                                            (default: pdbx | csv).
- 
-    -v, --version                           print version.
+    -t, --top-rank <int>
+                        top rotamers according to the value of energies.
+    -T, --top-ratio <float>
+                        top rotamers according to the value of energies
+                        [default: 1.0].
+    --tags <tag>[,<tag>...]
+                        output only specified PDBx tags
+                        (default: '_atom_site,_[local]_rotamer_angle').
+    -F, --format <format>
+                        output format. Only one category can be present if csv
+                        is select (default: pdbx | csv).
+    -v, --version
+                        print version.
