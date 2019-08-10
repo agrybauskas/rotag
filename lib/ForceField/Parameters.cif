@@ -2035,6 +2035,24 @@ XAA CB   HB3
 XAA OG   HG
 #
 loop_
+_[local]_symmetrical_atom_names.label_comp_id
+_[local]_symmetrical_atom_names.label_atom_1_id
+_[local]_symmetrical_atom_names.label_atom_2_id
+ARG NH1  NH2
+ARG HH11 HH21
+ARG HH12 HH22
+ASP OD1  OD2
+GLU OE1  OE2
+PHE CD1  CD2
+PHE CE1  CE2
+PHE HD1  HD2
+PHE HE1  HE2
+TYR CD1  CD2
+TYR CE1  CE2
+TYR HD1  HD2
+TYR HE1  HE2
+#
+loop_
 _[local]_interaction_atom_names.label_atom_id
 N CA C O OXT CB H H2 HA HA2 HA3 HXT XA XA2
 #

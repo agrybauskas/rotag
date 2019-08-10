@@ -283,6 +283,24 @@ sub force_field
                                        {$atom_name} }, $hydrogen_name;
     }
 
+    # Restructuring information about symmetrical atoms in the residues.
+    my $symmetrical_atom_names_loop =
+        pdbx_loop_to_array( $force_field_data,
+                            '_[local]_symmetrical_atom_names' );
+
+    for my $symmetrical_atom_names ( @{ $symmetrical_atom_names_loop } ) {
+        my $residue_name = $symmetrical_atom_names->{'label_comp_id'};
+        my $atom_name_1 = $symmetrical_atom_names->{'label_atom_1_id'};
+        my $atom_name_2 = $symmetrical_atom_names->{'label_atom_2_id'};
+
+        push @{ $force_field_parameters{'_[local]_symmetrical_atom_names'}
+                                       {$residue_name}
+                                       {$atom_name_1} }, $atom_name_2;
+        push @{ $force_field_parameters{'_[local]_symmetrical_atom_names'}
+                                       {$residue_name}
+                                       {$atom_name_2} }, $atom_name_1;
+    }
+
     # Restructuring parameters of interaction atom names.
     $force_field_parameters{'_[local]_interaction_atom_names'} =
         $force_field_data->{'_[local]_interaction_atom_names'}{'data'};
