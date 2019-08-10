@@ -558,6 +558,9 @@ sub rmsd_sidechains
     $best_case //= 0;
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+    # TODO: think if using of symmetric atom data should be optional or
+    # mandatory.
+    my $symmetrical_atom_names =$parameters->{'_[local]_symmetrical_atom_names'};
 
     my ( $residue_id, $chain, $pdbx_model_num ) = split /,/,$unique_residue_key;
 
