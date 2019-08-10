@@ -591,6 +591,7 @@ sub rmsd_sidechains
         $first_sidechain_data  =
             [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data  } ];
 
+        my $residue_name = $first_sidechain_data->[0][4];
         my $rmsd_average;
         for my $second_alt_id ( @second_alt_ids ) {
             my $second_sidechain_data =
@@ -631,6 +632,12 @@ sub rmsd_sidechains
                       sprintf $sig_figs_max,
                       rmsd([ [ ( @{$first_sidechain_data->[$i]} )[8..10] ] ],
                            [ [ ( @{$second_sidechain_data->[$i]} )[8..10] ] ]) ];
+
+                # HACK: works only for atoms that are symmetrical by rotating 180
+                # degrees. Have to find more robust way to do it and change parameter
+                # file.
+                if( defined $symmetrical_atom_names->{$residue_name} ) {
+                }
             }
 
             if( $best_case ) {
