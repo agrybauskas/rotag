@@ -588,8 +588,6 @@ sub rmsd_sidechains
                             'label_comp_id', 'label_asym_id',
                             'pdbx_PDB_model_num', 'label_alt_id',
                             'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
-        $first_sidechain_data  =
-            [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data  } ];
 
         my $residue_name = $first_sidechain_data->[0][4];
         my $rmsd_average;
@@ -606,8 +604,10 @@ sub rmsd_sidechains
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
                                 'pdbx_PDB_model_num', 'label_alt_id',
                                 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
-            $second_sidechain_data =
-                [ sort { $a->[2] cmp $b->[2] } @{ $second_sidechain_data } ];
+            my %second_sidechain = ();
+            for my $second_atom_data ( @{ $second_sidechain_data } ) {
+                $second_sidechain{$second_atom_data->[2]} = $second_atom_data;
+            }
 
             # Checks the length of the atom sets.
             # TODO: error message is duplicated in Measure::rmsd().
@@ -626,17 +626,25 @@ sub rmsd_sidechains
                             "$second_sidechain_data->[$i][2]";
                 }
 
-                push @current_sidechain_data,
-                    [ (@{$first_sidechain_data->[$i]})[0..7],
-                      (@{$second_sidechain_data->[$i]})[0..7],
-                      sprintf $sig_figs_max,
-                      rmsd([ [ ( @{$first_sidechain_data->[$i]} )[8..10] ] ],
-                           [ [ ( @{$second_sidechain_data->[$i]} )[8..10] ] ]) ];
-
-                # HACK: works only for atoms that are symmetrical by rotating 180
-                # degrees. Have to find more robust way to do it and change parameter
-                # file.
-                if( defined $symmetrical_atom_names->{$residue_name} ) {
+                # Checks if the side-chain have structural symmetry and chooses
+                # the best RMSD value.
+                if( defined $symmetrical_atom_names->{$residue_name} &&
+                    defined $symmetrical_atom_names->
+                                              {$residue_name}
+                                              {$first_sidechain_data->[$i][2]}) {
+                    push @current_sidechain_data,
+                        [ (@{$first_sidechain_data->[$i]})[0..7],
+                          (@{$second_sidechain_data->[$i]})[0..7],
+                          sprintf $sig_figs_max,
+                          rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
+                               [[(@{$second_sidechain_data->[$i]})[8..10]]])];
+                } else {
+                    push @current_sidechain_data,
+                        [ (@{$first_sidechain_data->[$i]})[0..7],
+                          (@{$second_sidechain_data->[$i]})[0..7],
+                          sprintf $sig_figs_max,
+                          rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
+                               [[(@{$second_sidechain_data->[$i]})[8..10]]])];
                 }
             }
 
