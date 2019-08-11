@@ -102,9 +102,9 @@
     'type_symbol' => 'C'
   },
   '452' => {
-    'Cartn_x' => '34.496',
-    'Cartn_y' => '5.121',
-    'Cartn_z' => '44.193',
+    'Cartn_x' => '34.597',
+    'Cartn_y' => '5.445',
+    'Cartn_z' => '42.133',
     '[local]_selection_group' => '1',
     '[local]_selection_state' => 'T',
     'group_PDB' => 'ATOM',
@@ -119,9 +119,9 @@
     'type_symbol' => 'O'
   },
   '453' => {
-    'Cartn_x' => '35.133',
-    'Cartn_y' => '5.038',
-    'Cartn_z' => '42.097',
+    'Cartn_x' => '35.038',
+    'Cartn_y' => '4.710',
+    'Cartn_z' => '44.151',
     '[local]_selection_group' => '1',
     '[local]_selection_state' => 'T',
     'group_PDB' => 'ATOM',
