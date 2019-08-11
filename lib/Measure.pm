@@ -628,24 +628,30 @@ sub rmsd_sidechains
 
                 # Checks if the side-chain have structural symmetry and chooses
                 # the best RMSD value.
-                if( defined $symmetrical_atom_names->{$residue_name} &&
-                    defined $symmetrical_atom_names->
-                                              {$residue_name}
-                                              {$first_sidechain_data->[$i][2]}) {
+                # my $symmetrical_atom_names =
+                #     $symmetrical_atom_names->{$residue_name}
+                #                              {$first_sidechain_data->[$i][2]};
+                # if( defined $symmetrical_atom_names ) {
+                #     my $best_case_rmsd;
+                #     my @second_atom_names = ( $first_sidechain_data->[$i][2],
+                #                               @{ $symmetrical_atom_names } );
+                #     # for my $second_atom_name ( @second_atom_names ) {
+                #     #     my $
+                #     # }
+                #     #     push @current_sidechain_data,
+                #     #         [ (@{$first_sidechain_data->[$i]})[0..7],
+                #     #           (@{$second_sidechain_data->[$i]})[0..7],
+                #     #           sprintf $sig_figs_max,
+                #     #           rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
+                #     #                [[(@{$second_sidechain_data->[$i]})[8..10]]])];
+                # } else {
                     push @current_sidechain_data,
                         [ (@{$first_sidechain_data->[$i]})[0..7],
                           (@{$second_sidechain_data->[$i]})[0..7],
                           sprintf $sig_figs_max,
                           rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
                                [[(@{$second_sidechain_data->[$i]})[8..10]]])];
-                } else {
-                    push @current_sidechain_data,
-                        [ (@{$first_sidechain_data->[$i]})[0..7],
-                          (@{$second_sidechain_data->[$i]})[0..7],
-                          sprintf $sig_figs_max,
-                          rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
-                               [[(@{$second_sidechain_data->[$i]})[8..10]]])];
-                }
+                # }
             }
 
             if( $best_case ) {
