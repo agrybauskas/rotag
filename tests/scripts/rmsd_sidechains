@@ -31,4 +31,8 @@ $atom_site_2 = eval( $atom_site_2 );
 
 my $parameters = Parameters->new();
 
-rmsd_sidechains( $parameters, $atom_site_1, $atom_site_2, '86,A,1');
+my $rmsd_data =
+    rmsd_sidechains( $parameters, $atom_site_1, $atom_site_2, '86,A,1');
+for my $rmsd ( @{ $rmsd_data } ) {
+    print join ' ', @{ $rmsd }, "\n";
+}

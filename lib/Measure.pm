@@ -628,30 +628,35 @@ sub rmsd_sidechains
 
                 # Checks if the side-chain have structural symmetry and chooses
                 # the best RMSD value.
-                # my $symmetrical_atom_names =
-                #     $symmetrical_atom_names->{$residue_name}
-                #                              {$first_sidechain_data->[$i][2]};
-                # if( defined $symmetrical_atom_names ) {
-                #     my $best_case_rmsd;
-                #     my @second_atom_names = ( $first_sidechain_data->[$i][2],
-                #                               @{ $symmetrical_atom_names } );
-                #     # for my $second_atom_name ( @second_atom_names ) {
-                #     #     my $
-                #     # }
-                #     #     push @current_sidechain_data,
-                #     #         [ (@{$first_sidechain_data->[$i]})[0..7],
-                #     #           (@{$second_sidechain_data->[$i]})[0..7],
-                #     #           sprintf $sig_figs_max,
-                #     #           rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
-                #     #                [[(@{$second_sidechain_data->[$i]})[8..10]]])];
-                # } else {
-                    push @current_sidechain_data,
-                        [ (@{$first_sidechain_data->[$i]})[0..7],
-                          (@{$second_sidechain_data->[$i]})[0..7],
-                          sprintf $sig_figs_max,
-                          rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
-                               [[(@{$second_sidechain_data->[$i]})[8..10]]])];
-                # }
+                my $symmetrical_atom_names =
+                    $symmetrical_atom_names->{$residue_name}
+                                             {$first_sidechain_data->[$i][2]};
+                my $rmsd;
+                # TODO: make sure that there are no situations were best case
+                # rmsd does not produce higher avarage rmsd.
+                if( defined $symmetrical_atom_names ) {
+                    my @second_atom_names = ( $first_sidechain_data->[$i][2],
+                                              @{ $symmetrical_atom_names } );
+                    for my $second_atom_name ( @second_atom_names ) {
+                        my $symmetric_atom_data =
+                            $second_sidechain{$second_atom_name};
+                        my $current_rmsd =
+                            rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
+                                 [[(@{$symmetric_atom_data})[8..10]]]);
+                        if( ! defined $rmsd || $current_rmsd < $rmsd ){
+                            $rmsd = $current_rmsd;
+                        }
+                    }
+                } else {
+                    $rmsd = rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
+                                 [[(@{$second_sidechain_data->[$i]})[8..10]]]);
+                }
+
+                push @current_sidechain_data,
+                    [ (@{$first_sidechain_data->[$i]})[0..7],
+                      (@{$second_sidechain_data->[$i]})[0..7],
+                      sprintf $sig_figs_max,
+                      $rmsd ];
             }
 
             if( $best_case ) {
