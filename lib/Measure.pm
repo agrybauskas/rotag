@@ -588,6 +588,8 @@ sub rmsd_sidechains
                             'label_comp_id', 'label_asym_id',
                             'pdbx_PDB_model_num', 'label_alt_id',
                             'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        $first_sidechain_data =
+            [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data } ];
 
         my $residue_name = $first_sidechain_data->[0][4];
         my $rmsd_average;
@@ -604,6 +606,9 @@ sub rmsd_sidechains
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
                                 'pdbx_PDB_model_num', 'label_alt_id',
                                 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+            $second_sidechain_data =
+                [ sort { $a->[2] cmp $b->[2] } @{ $second_sidechain_data } ];
+
             my %second_sidechain = ();
             for my $second_atom_data ( @{ $second_sidechain_data } ) {
                 $second_sidechain{$second_atom_data->[2]} = $second_atom_data;
