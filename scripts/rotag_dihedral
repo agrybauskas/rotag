@@ -184,6 +184,13 @@ for my $pdbx_file ( @ARGV ) {
                       'include' => { '[local]_selection_state' => [ 'T' ] },
                       'exclude' => { '[local]_selection_group' => [ q{?} ] } } );
 
+        if( ! %{ $dihedral_site } ) {
+            warning( { 'program' => $0,
+                       'message' => 'no atoms were selected for calculating ' .
+                                    "dihedral angles.\n" } );
+            next;
+        }
+
         my @dihedral_atom_ids =
             sort { $dihedral_site->{"$a"}{'[local]_selection_group'} <=>
                    $dihedral_site->{"$b"}{'[local]_selection_group'} ||
