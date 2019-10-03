@@ -88,7 +88,7 @@
    for those amino acids that have more than one symmetry: arginine (chi4),
    aspartic acid (chi2), glutamic acid (chi3), phenylalanine (chi2) and tyrosine
    (chi2).
-!! Around token must accomodate floats.
+++ Around token must accomodate floats.
 -- Add possibility to select specific rotamers to add.
 -- Check how groups behave when '&&' operators are introduced:
    '1:atomname OG && altid 1'.
