@@ -311,10 +311,24 @@ exp
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
         }
+    | 'authchain' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'auth_asym_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
     | 'resid' num_ope
         {
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' => { 'label_seq_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'authresid' num_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'auth_seq_id' => $_[2] },
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
         }
@@ -408,8 +422,12 @@ sub lexer
             return ( ':', $1 );
         } elsif( s/^(resid)// ) {
             return ( 'resid', $1 );
+        } elsif( s/^(authresid)// ) {
+            return ( 'authresid', $1 );
         } elsif(s/^(chain)//) {
             return ( 'chain', $1 );
+        } elsif(s/^(authchain)//) {
+            return ( 'authchain', $1 );
         } elsif(s/^(all)//) {
             return ( 'all', $1 );
         } elsif(s/^(mainchain)//) {
