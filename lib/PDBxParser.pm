@@ -82,12 +82,14 @@ sub obtain_pdbx_data
         # Slurp whole pdbx file.
         my $line_counter = 0;
         {
-            local $/ = '';
+            local $/ = undef;
             while( <> ) {
                 push @pdbxs, map { 'data_' . $_ }
                              grep { $_ ne '' }
                              split /(?<!\S)data_/, $_;
-                $line_counter++;
+                if( $_ ne '' ) {
+                    $line_counter++;
+                }
             }
         }
 
