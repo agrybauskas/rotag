@@ -156,12 +156,18 @@ for my $pdbx_file ( @ARGV ) {
         # Determines, how to split rotamer angles into groups.
         my $rotamer_angle_split_groups = {};
         my @rotamer_ids = sort keys %{ $rotamer_angle };
-        if( map { exists $rotamer_angle->{$rotamer_ids[0]}{$_} }
-                ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
-                  'pdbx_PDB_model_num' ) ) {
+        if( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
+            exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
+            exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
+            exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ) {
             $rotamer_angle_split_groups =
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
                 split_by( { 'atom_site' => $rotamer_angle } );
+        } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ) {
+            $rotamer_angle_split_groups =
+                # TODO: 'atom_site' should be changed to 'loop_site' in the future.
+                split_by( { 'atom_site' => $rotamer_angle,
+                            'attributes' => [ 'label_comp_id' ] } );
         }
 
         my %rotamer_angles;
