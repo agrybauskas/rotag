@@ -14,7 +14,8 @@ use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
                 warning );
-use PDBxParser qw( filter
+use PDBxParser qw( extract
+                   filter
                    filter_by_unique_residue_key
                    mark_selection
                    obtain_pdbx_data
@@ -188,15 +189,16 @@ for my $pdbx_file ( @ARGV ) {
 
             # Determines the key that will connect 'atom_site' and
             # '_[local]_rotamer_angle' data.
-            my $residue_angle_key = $residue_unique_key;
+            my $residue_angle_key;
             if( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
                 exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
                 exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
                 exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ){
                 $residue_angle_key = $residue_unique_key;
             } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ){
-                $residue_angle_key =
-                    $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'};
+                $residue_angle_key = extract( $residue_site,
+                                              { 'data' => [ 'label_comp_id' ],
+                                                'is_list' => 1 } )->[0];
             }
 
             for my $id ( sort { $a <=> $b } @{ $rotamer_angle_split_groups->
