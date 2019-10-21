@@ -164,6 +164,12 @@ for my $pdbx_file ( @ARGV ) {
             $rotamer_angle_split_groups =
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
                 split_by( { 'atom_site' => $rotamer_angle } );
+        } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
+                 exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) {
+            $rotamer_angle_split_groups =
+                # TODO: 'atom_site' should be changed to 'loop_site' in the future.
+                split_by( { 'atom_site' => $rotamer_angle,
+                            'attributes' => [ 'phi', 'psi' ] } );
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ) {
             $rotamer_angle_split_groups =
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
