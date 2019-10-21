@@ -170,8 +170,12 @@ for my $pdbx_file ( @ARGV ) {
                             'attributes' => [ 'label_comp_id' ] } );
         }
 
+        my $atom_site_split_groups =
+            split_by( { 'atom_site' => $target_atom_site,
+                        'append_dot' => 1 } );
+
         my %rotamer_angles;
-        for my $residue_unique_key ( sort keys %{ $rotamer_angle_split_groups }){
+        for my $residue_unique_key ( sort keys %{ $atom_site_split_groups } ) {
             my $residue_site =
                 filter_by_unique_residue_key( $selected_atom_site,
                                               $residue_unique_key, 1 );
@@ -182,9 +186,21 @@ for my $pdbx_file ( @ARGV ) {
             # Generates rotational model.
             rotation_only( $parameters, $residue_site );
 
-            for my $id ( sort { $a <=> $b }
-                             @{ $rotamer_angle_split_groups->
-                                                     { $residue_unique_key } } ){
+            # Determines the key that will connect 'atom_site' and
+            # '_[local]_rotamer_angle' data.
+            my $residue_angle_key = $residue_unique_key;
+            if( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
+                exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
+                exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
+                exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ){
+                $residue_angle_key = $residue_unique_key;
+            } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ){
+                $residue_angle_key =
+                    $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'};
+            }
+
+            for my $id ( sort { $a <=> $b } @{ $rotamer_angle_split_groups->
+                                                       {$residue_angle_key} } ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
                 my $angle_name = $rotamer_angle->{$id}{'type'};
                 my $angle_value;
