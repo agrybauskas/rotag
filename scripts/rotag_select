@@ -68,7 +68,9 @@ our $VERSION = $VERSION;
 #*                            angles - assigns min <float> and max <float>
 #*                                     angle range where selected angles should
 #*                                     be in (e.g. angles 'chi1=90..160' or
-#*                                     'psi=60..70, phi=50..80').
+#*                                     'psi=60..70, phi=50..80');
+#*                            expand - expands the selection by one step that
+#*                                     follows the connections.
 #*
 #*                        List operators:
 #*                            .. - range of integers (e.g. 2..5 is 2,3,4,5);
