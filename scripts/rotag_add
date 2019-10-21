@@ -169,7 +169,7 @@ for my $pdbx_file ( @ARGV ) {
             $rotamer_angle_split_groups =
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
                 split_by( { 'atom_site' => $rotamer_angle,
-                            'attributes' => [ 'phi', 'psi' ] } );
+                            'attributes' => [ 'label_comp_id', 'phi', 'psi' ] } );
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ) {
             $rotamer_angle_split_groups =
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
@@ -201,6 +201,10 @@ for my $pdbx_file ( @ARGV ) {
                 exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
                 exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ){
                 $residue_angle_key = $residue_unique_key;
+            } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
+                     exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
+                     exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) {
+
             } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ){
                 $residue_angle_key = extract( $residue_site,
                                               { 'data' => [ 'label_comp_id' ],
