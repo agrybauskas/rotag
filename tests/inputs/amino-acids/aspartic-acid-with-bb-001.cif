@@ -1,0 +1,29 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 2053 C C . SER A 1 299 43.775 -29.570 52.115 1 T ?
+ATOM 2057 N N . ASP A 1 300 43.082 -28.465 51.855 1 T 1
+ATOM 2058 C CA . ASP A 1 300 42.260 -27.794 52.856 1 T 1
+ATOM 2059 C C . ASP A 1 300 40.793 -27.626 52.389 1 T 1
+ATOM 2060 O O . ASP A 1 300 40.543 -27.149 51.281 1 T 1
+ATOM 2061 C CB . ASP A 1 300 42.866 -26.425 53.185 1 T 1
+ATOM 2062 C CG . ASP A 1 300 42.038 -25.646 54.187 1 T 1
+ATOM 2063 O OD1 . ASP A 1 300 41.869 -26.151 55.314 1 T 1
+ATOM 2064 O OD2 . ASP A 1 300 41.603 -24.513 53.863 1 T 1
+ATOM 2065 N N . PRO A 1 301 39.822 -28.001 53.238 1 T ?
+#
