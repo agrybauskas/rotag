@@ -315,9 +315,9 @@ sub all_dihedral
                     [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
                 $angle_values{'phi'}{'value'} =
                     dihedral_angle(
-                        [ [ $atom_site->{$prev_c_atom_id}{'Cartn_x'},
-                            $atom_site->{$prev_c_atom_id}{'Cartn_y'},
-                            $atom_site->{$prev_c_atom_id}{'Cartn_z'}, ],
+                        [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_z'}, ],
                           [ $atom_site->{$n_atom_id}{'Cartn_x'},
                             $atom_site->{$n_atom_id}{'Cartn_y'},
                             $atom_site->{$n_atom_id}{'Cartn_z'} ],
@@ -344,9 +344,9 @@ sub all_dihedral
                           [ $atom_site->{$c_atom_id}{'Cartn_x'},
                             $atom_site->{$c_atom_id}{'Cartn_y'},
                             $atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$next_n_atom_id}{'Cartn_x'},
-                            $atom_site->{$next_n_atom_id}{'Cartn_y'},
-                            $atom_site->{$next_n_atom_id}{'Cartn_z'} ], ] );
+                          [ $reference_atom_site->{$next_n_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$next_n_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$next_n_atom_id}{'Cartn_z'} ], ] );
             }
         }
 
