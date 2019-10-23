@@ -205,15 +205,30 @@ for my $pdbx_file ( @ARGV ) {
             } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
                      exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
                      exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) {
-                my $dihedral_angles =
-                    all_dihedral( $residue_site,
-                                  {'calc_mainchain' => 1,
-                                   'reference_atom_site' =>$selected_atom_site});
+                my $dihedral_angles = all_dihedral(
+                    $residue_site,
+                    { 'calc_mainchain' => 1,
+                      'reference_atom_site' => $selected_atom_site }
+                );
+                # Checks the closest candidate for existing backbone dihedral
+                # angle combination.
+                my $phi;
+                my $psi;
+                if( %{ $dihedral_angles } ) {
+                    $phi =
+                        180.00 * $dihedral_angles->{$residue_unique_key}{'phi'} /
+                        $pi;
+                    $psi =
+                        180.00 * $dihedral_angles->{$residue_unique_key}{'psi'} /
+                        $pi;
+                }
             } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ){
                 $residue_angle_key = extract( $residue_site,
                                               { 'data' => [ 'label_comp_id' ],
                                                 'is_list' => 1 } )->[0];
             }
+
+            next if ! defined $residue_angle_key;
 
             for my $id ( sort { $a <=> $b } @{ $rotamer_angle_split_groups->
                                                        {$residue_angle_key} } ) {
