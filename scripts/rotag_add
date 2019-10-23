@@ -205,7 +205,10 @@ for my $pdbx_file ( @ARGV ) {
             } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
                      exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
                      exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) {
-                # print STDERR Dumper all_dihedral( $residue_site, { 'calc_mainchain' => 1 } );
+                my $dihedral_angles =
+                    all_dihedral( $residue_site,
+                                  {'calc_mainchain' => 1,
+                                   'reference_atom_site' =>$selected_atom_site});
             } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ){
                 $residue_angle_key = extract( $residue_site,
                                               { 'data' => [ 'label_comp_id' ],
