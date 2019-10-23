@@ -436,7 +436,9 @@ sub all_dihedral
                                   $fourth_atom_coord ] );
         }
 
-        %{ $residue_angles{$residue_unique_key} } = %angle_values;
+        if( %angle_values ) {
+            %{ $residue_angles{$residue_unique_key} } = %angle_values;
+        }
     }
 
     return \%residue_angles;
