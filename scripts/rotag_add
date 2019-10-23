@@ -210,18 +210,43 @@ for my $pdbx_file ( @ARGV ) {
                     { 'calc_mainchain' => 1,
                       'reference_atom_site' => $selected_atom_site }
                 );
-                # Checks the closest candidate for existing backbone dihedral
-                # angle combination.
+
+                # Calculates phi and psi angles.
                 my $phi;
                 my $psi;
                 if( %{ $dihedral_angles } ) {
                     $phi =
-                        180.00 * $dihedral_angles->{$residue_unique_key}{'phi'} /
+                        180.00 *
+                        $dihedral_angles->{$residue_unique_key}{'phi'}{'value'} /
                         $pi;
                     $psi =
-                        180.00 * $dihedral_angles->{$residue_unique_key}{'psi'} /
+                        180.00 *
+                        $dihedral_angles->{$residue_unique_key}{'psi'}{'value'} /
                         $pi;
                 }
+
+                # Checks the closest candidate for existing backbone dihedral
+                # angle combination.
+                my $residue_name = extract( $residue_site,
+                                            { 'data' => [ 'label_comp_id' ],
+                                              'is_list' => 1 } )->[0];
+                my $closest_key_candidate;
+                for my $rotamer_unique_key (keys %{$rotamer_angle_split_groups}){
+                    # TODO: there is a room for optimization here by generating
+                    # hash table.
+                    my ( $angle_residue_name, $angle_phi, $angle_psi ) =
+                        split /,/, $rotamer_unique_key;
+
+                    next if $residue_name ne $angle_residue_name;
+
+                    if( $phi >= $angle_phi && $phi < $angle_phi + 10.0 &&
+                        $psi >= $angle_psi && $psi < $angle_psi + 10.0 ) {
+                        $closest_key_candidate =
+                            "$angle_residue_name,$angle_phi,$angle_psi";
+                        last;
+                    }
+                }
+                $residue_angle_key = $closest_key_candidate;
             } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ){
                 $residue_angle_key = extract( $residue_site,
                                               { 'data' => [ 'label_comp_id' ],
