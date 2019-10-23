@@ -293,24 +293,36 @@ sub all_dihedral
                           'include' => { 'label_atom_id' => [ 'C' ] },
                           'data' => [ 'id' ],
                           'is_list' => 1 } )->[0];
+
             # TODO: look if these filter slow down calculations drastically.
-            my $prev_c_atom_id =
-                filter( { 'atom_site' => $reference_atom_site,
-                          'include' =>
-                              { 'id' => $residue_site->{$n_atom_id}{'connections'},
-                                'label_atom_id' => [ 'C' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $next_n_atom_id =
-                filter( { 'atom_site' => $reference_atom_site,
-                          'include' =>
-                              { 'id' => $residue_site->{$c_atom_id}{'connections'},
-                                'label_atom_id' => [ 'N' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
+            my $prev_c_atom_id;
+            if( defined $n_atom_id &&
+                defined $residue_site->{$n_atom_id}{'connections'} ) {
+                $prev_c_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $residue_site->{$n_atom_id}{'connections'},
+                            'label_atom_id' => [ 'C' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
+            my $next_n_atom_id;
+            if( defined $c_atom_id &&
+                defined $residue_site->{$c_atom_id}{'connections'} ) {
+                $next_n_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $residue_site->{$c_atom_id}{'connections'},
+                            'label_atom_id' => [ 'N' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
 
             # Calculates phi angle if 'C' atom of previous residue is present.
-            if( defined $prev_c_atom_id ) {
+            if( defined $prev_c_atom_id && defined $n_atom_id &&
+                defined $ca_atom_id && defined $ca_atom_id ) {
                 $angle_values{'phi'}{'atom_ids'} =
                     [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
                 $angle_values{'phi'}{'value'} =
@@ -330,7 +342,8 @@ sub all_dihedral
             }
 
             # Calculates psi angle.
-            if( defined $next_n_atom_id ) {
+            if( defined $next_n_atom_id && defined $n_atom_id &&
+                defined $ca_atom_id && defined $c_atom_id ) {
                 $angle_values{'psi'}{'atom_ids'} =
                     [ $n_atom_id, $ca_atom_id, $c_atom_id, $next_n_atom_id ];
                 $angle_values{'psi'}{'value'} =

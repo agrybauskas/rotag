@@ -1,1 +1,25 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_[local]_dihedral_angle.id
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.label_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.pdbx_PDB_model_num
+_[local]_dihedral_angle.label_alt_id
+_[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
+_[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
+_[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
+_[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_4_id
+_[local]_dihedral_angle.type
+_[local]_dihedral_angle.value
+_[local]_dihedral_angle.units
+1 ASP 300 A 1 . N 2057 CA 2058 CB 2061 CG 2062 chi1 178.053 degrees
+2 ASP 300 A 1 . CA 2058 CB 2061 CG 2062 OD1 2063 chi2 60.723 degrees
+3 ASP 300 A 1 . C 2053 N 2057 CA 2058 C 2059 phi -124.281 degrees
+4 ASP 300 A 1 . N 2057 CA 2058 C 2059 N 2065 psi 130.954 degrees
+#
