@@ -165,6 +165,13 @@ for my $pdbx_file ( @ARGV ) {
             $rotamer_angle_split_groups =
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
                 split_by( { 'atom_site' => $rotamer_angle } );
+        } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'phi_min'} &&
+                 exists $rotamer_angle->{$rotamer_ids[0]}{'phi_max'} &&
+                 exists $rotamer_angle->{$rotamer_ids[0]}{'psi_min'} &&
+                 exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) {
+            $rotamer_angle_split_groups =
+                split_by( { 'atom_site' => $rotamer_angle,
+                            'attributes' => [ 'label_comp_id', 'phi_min', 'psi_min' ] } );
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
                  exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) {
             $rotamer_angle_split_groups =
@@ -202,6 +209,8 @@ for my $pdbx_file ( @ARGV ) {
                 exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
                 exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ){
                 $residue_angle_key = $residue_unique_key;
+                # HACK: check if all values in 'phi_min' and 'psi_min' has length
+                # to 'phi_max' and 'psi_max' of 10 accordingly.
             } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
                      exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
                      exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) {
