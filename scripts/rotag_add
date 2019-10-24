@@ -211,9 +211,12 @@ for my $pdbx_file ( @ARGV ) {
                 $residue_angle_key = $residue_unique_key;
                 # HACK: check if all values in 'phi_min' and 'psi_min' has length
                 # to 'phi_max' and 'psi_max' of 10 accordingly.
-            } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
-                     exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
-                     exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) {
+            } elsif( ( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
+                       exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
+                       exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) ||
+                     ( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
+                       exists $rotamer_angle->{$rotamer_ids[0]}{'phi_min'} &&
+                       exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) ) {
                 my $dihedral_angles = all_dihedral(
                     $residue_site,
                     { 'calc_mainchain' => 1,
