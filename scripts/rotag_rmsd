@@ -188,6 +188,14 @@ if( $do_decompose ) {
           'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_indexed'} = 0;
+} elsif( $rmsd_sidechains ) {
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'attributes'} =
+        [ 'id', 'group_1_id', 'label_seq_1_id', 'label_comp_1_id',
+          'label_asym_1_id', 'pdbx_PDB_model_num_1', 'label_alt_1_id',
+          'group_2_id', 'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
+          'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_indexed'} = 0;
 } else {
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'attributes'} =
         [ 'id', 'group_1_id', 'group_2_id', 'value' ];
@@ -257,7 +265,9 @@ for my $comparison_group ( @comparison_groups ) {
                 push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                     $rmsd_counter,
                     $rmsd_sidechain_comparisons->[0][0],
+                    (@{ $rmsd_sidechain_comparisons->[0] })[3..7],
                     $rmsd_sidechain_comparisons->[0][9],
+                    (@{ $rmsd_sidechain_comparisons->[0] })[11..15],
                     sprintf $sig_figs_min, $rmsd_average;
             }
         } else {
