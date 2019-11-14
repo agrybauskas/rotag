@@ -31,9 +31,28 @@ sub sidechain_positions
     my $atom_site_cas = filter_new( $atom_site,
                                     { 'include' =>
                                           { 'label_atom_id' => [ 'CA' ] } } );
-    my ( $grid_box_cas ) =
-        grid_box( $parameters, $atom_site_cas, $edge_length_interaction );
 
+    my ( $grid_box_cas ) = grid_box( $parameters, $atom_site_cas,
+                                     $edge_length_interaction );
+    my $neighbouring_cells = identify_neighbour_cells( $grid_box_cas );
+
+    for my $cell ( keys %{ $grid_box_cas } ) {
+        my $neighbour_cell_atom_ids = $neighbouring_cells->{$cell};
+        for my $atom_id ( @{ $grid_box_cas->{$cell} } ) {
+            my $unique_residue_key =
+                $atom_site->{$atom_id}{'label_atom_id'} .
+                $atom_site->{$atom_id}{'label_seq_id'};
+            my $neighbour_atom_ids =
+                [ grep { $atom_id ne $_ } @{ $grid_box_cas->{$cell} }  ];
+            push @{ $neighbour_atom_ids }, @{ $neighbour_cell_atom_ids };
+
+            for my $neighbour_atom_id ( @{ $neighbour_atom_ids } ) {
+                my $neighbour_residue_key =
+                    $atom_site->{$neighbour_atom_id}{'label_atom_id'} .
+                    $atom_site->{$neighbour_atom_id}{'label_seq_id'};
+            }
+        }
+    }
 }
 
 # ----------------------------------------------------------------------------- #
