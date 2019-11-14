@@ -13,6 +13,7 @@ use PDBxParser qw( filter
                    obtain_pdbx_data
                    raw2indexed
                    to_pdbx );
+use PredictSidechains qw( sidechain_positions );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -118,6 +119,9 @@ for my $pdbx_file ( @ARGV ) {
                        'message' => "no rotamer angles were detected.\n" } );
             next;
         }
+
+        sidechain_positions( { 'atom_site' => $selected_atom_site,
+                               'parameters' => $parameters } );
 
     } else {
         error(
