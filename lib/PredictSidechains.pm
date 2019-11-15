@@ -38,6 +38,7 @@ sub sidechain_positions
     my $neighbouring_cells = identify_neighbour_cells( $grid_box_cas );
 
     my $interaction_graph = Graph->new();
+    my $graph_viz = GraphViz->new(); # NOTE: only for development purposes.
 
     for my $cell ( keys %{ $grid_box_cas } ) {
         my $neighbour_cell_atom_ids = $neighbouring_cells->{$cell};
@@ -46,29 +47,26 @@ sub sidechain_positions
                 unique_residue_key( $atom_site_cas->{$atom_id} );
 
             $interaction_graph->add_vertex( $unique_residue_key );
+            $graph_viz->add_node( $unique_residue_key );
 
             my $neighbour_atom_ids =
-                [ grep { $atom_id ne $_ } @{ $grid_box_cas->{$cell} }  ];
-            push @{ $neighbour_atom_ids }, @{ $neighbour_cell_atom_ids };
+                [ grep { $atom_id ne $_ } @{ $neighbour_cell_atom_ids }  ];
 
             for my $neighbour_atom_id ( @{ $neighbour_atom_ids } ) {
                 my $neighbour_residue_key =
                     unique_residue_key( $atom_site_cas->{$neighbour_atom_id} );
 
+                $interaction_graph->add_vertex( $unique_residue_key );
+                # $graph_viz->add_node( $neighbour_residue_key );
+
                 $interaction_graph->add_edge( $unique_residue_key,
                                               $neighbour_residue_key );
+                # $graph_viz->add_edge( $unique_residue_key =>
+                #                       $neighbour_residue_key );
             }
         }
     }
 
-    use Data::Dumper;
-    print STDERR Dumper $interaction_graph;
-
-    # my $graph_viz = GraphViz->new(); # NOTE: only for development purposes.
-    # $graph_viz->add_node( $unique_residue_key );
-    # $graph_viz->add_node( $neighbour_residue_key );
-    # $graph_viz->add_edge( $unique_residue_key =>
-    #                           $neighbour_residue_key );
     # print $graph_viz->as_png;
 }
 
