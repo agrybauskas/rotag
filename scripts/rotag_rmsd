@@ -67,7 +67,7 @@ my $comparison = q{};
 my $rmsd_sidechains = 0;
 my $rmsd_best_case = 0;
 my $do_decompose = 0;
-my $output_categories = '_atom_site,_[local]_rmsd,_[local]_rotamer_angle';
+my $tags = '_atom_site,_[local]_rmsd,_[local]_rotamer_angle';
 my $is_related = 0;
 my $output_format = 'pdbx';
 my @category_list = ( '_atom_site', '_[local]_rotamer_angle' );
@@ -85,7 +85,7 @@ GetOptions(
     'side-chains|S' => sub { $rmsd_sidechains = 1; },
     'best-case|b' => sub { $rmsd_best_case = 1; },
     'decompose|d' => sub { $do_decompose = 1; },
-    'tags=s' => \$output_categories,
+    'tags=s' => \$tags,
     'related-data|r' => sub { $is_related = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -109,8 +109,8 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-$output_categories =~ s/ //g;
-my @output_categories = split /,/, $output_categories;
+$tags =~ s/ //g;
+my @tags = split /,/, $tags;
 
 $comparison =~ s/ //g;
 my @comparison_groups = map { [ split /,/, $_ ] } ( split /;/, $comparison );
@@ -377,10 +377,10 @@ if( $is_related && $do_decompose ) {
 # Prints out cif or csv
 # TODO: decide what to do when group data is empty.
 if( $output_format eq 'pdbx' ) {
-    to_pdbx( \%pdbx_data, { 'tags' => \@output_categories } );
+    to_pdbx( \%pdbx_data, { 'tags' => \@tags } );
 } elsif( $output_format eq 'csv' ) {
-    if( scalar @output_categories == 1 ) {
-        to_csv( \%pdbx_data, { 'category' => $output_categories[0] } );
+    if( scalar @tags == 1 ) {
+        to_csv( \%pdbx_data, { 'category' => $tags[0] } );
     } else {
         warning( { 'message' => "only one tag has to be chosen for " .
                        "CSV format.\n" } );
