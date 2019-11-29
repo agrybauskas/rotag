@@ -9,12 +9,16 @@
 %%
 
 exp
-    :
-    | '[' exp ']' { return [ $_[2] ] }
-    | '{' exp '}' { return { $_[2] } }
-    | exp ',' exp { return [ $_[1], $_[3] ] }
-    | exp '=' exp { return { $_[1] => $_[3] } }
-    | STR { return $_[1] }
+    : hash
+    | list
+;
+
+hash
+    : STR '=' STR { return { $_[1] => $_[3] } }
+;
+
+list
+    : STR ',' STR { return [ $_[1], $_[3] ] }
 ;
 
 %%
