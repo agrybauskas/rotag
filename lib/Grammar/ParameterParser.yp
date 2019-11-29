@@ -4,25 +4,14 @@
 %}
 
 %left ','
-%right '='
 
 %%
 
-exp
-    : hash
-    | list
-;
-
-hash
-    : STR '=' hash { return { $_[1] => $_[3] }; }
-    | STR '=' list { return { $_[1] => $_[3] }; }
-;
-
-list
-    : list ',' list { return [ @{ $_[1] }, @{ $_[3] } ]; }
-    | hash ',' hash { return { %{ $_[1] }, %{ $_[3] } }; }
+list:
+    | '[' list ']' { return [ $_[2] ]; }
+    | list ',' list { return [ @{ $_[1] }, @{ $_[3] } ]; }
     | STR { return [ $_[1] ]; }
-;
+    ;
 
 %%
 
@@ -31,25 +20,36 @@ sub lexer
     my( $parser ) = shift;
 
     $parser->YYData->{INPUT} || return( '',undef );
-    $parser->YYData->{INPUT} =~ s/^[ \t]//;
+    $parser->YYData->{INPUT} =~ s/^\s?//;
 
     # Returns tokens to parser.
     for( $parser->YYData->{INPUT} ){
-        if( s/^(=)// ) {
-            return ( '=', $1 );
-        } elsif( s/^(,)// ) {
-            return ( ',', $1 );
-        } elsif( s/^(\{)// ) {
-            return ( '{', $1 );
-        } elsif( s/^(\})// ) {
-            return ( '}', $1 );
-        } elsif( s/^(\[)// ) {
+        if( s/^(\[)// ) {
             return ( '[', $1 );
         } elsif( s/^(\])// ) {
             return ( ']', $1 );
-        } elsif( s/^(\w+|\.)(?!\.)// ) {
+        } elsif( s/^(,)// ) {
+            return ( ',', $1 );
+        } elsif( s/^(=)// ) {
+            return ( '=', $1 );
+        } elsif( s/^(\w+)// ) {
             return ( 'STR', $1 );
         }
+        # if( s/^(=)// ) {
+        #     return ( '=', $1 );
+        # } elsif( s/^(,)// ) {
+        #     return ( ',', $1 );
+        # } elsif( s/^(\{)// ) {
+        #     return ( '{', $1 );
+        # } elsif( s/^(\})// ) {
+        #     return ( '}', $1 );
+        # } elsif( s/^(\[)// ) {
+        #     return ( '[', $1 );
+        # } elsif( s/^(\])// ) {
+        #     return ( ']', $1 );
+        # } elsif( s/^(\w+)// ) {
+        #     return ( 'STR', $1 );
+        # }
     }
 }
 
