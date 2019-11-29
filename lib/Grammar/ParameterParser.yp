@@ -14,11 +14,14 @@ exp
 ;
 
 hash
-    : STR '=' STR { return { $_[1] => $_[3] } }
+    : STR '=' hash { return { $_[1] => $_[3] }; }
+    | STR '=' list { return { $_[1] => $_[3] }; }
 ;
 
 list
-    : STR ',' STR { return [ $_[1], $_[3] ] }
+    : list ',' list { return [ @{ $_[1] }, @{ $_[3] } ]; }
+    | hash ',' hash { return { %{ $_[1] }, %{ $_[3] } }; }
+    | STR { return [ $_[1] ]; }
 ;
 
 %%
