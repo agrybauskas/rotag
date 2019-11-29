@@ -1,0 +1,518 @@
+#!perl
+%{
+    use warnings;
+
+    use Clone qw( clone );
+    use List::MoreUtils qw( uniq );
+    use List::Util qw( any );
+
+    use BondProperties qw( hybridization );
+    use ConnectAtoms qw( connect_atoms );
+    use Measure qw( all_dihedral
+                    around_distance );
+    use PDBxParser qw( extract
+                       filter_by_unique_residue_key
+                       filter_new );
+    use ForceField::Parameters;
+%}
+
+%left ','
+%left '..' '='
+%left 'around' 'rand' 'angles'
+%right 'byres' 'expand'
+%left '!'
+%left '||' '&&'
+%left ':'
+
+%%
+
+line
+    : exp
+        {
+            if( ! $_[1]->[0] ) { return []; }
+            if( $_[1]->[0] eq '!' ) {
+                return [];
+            } else {
+                return [ uniq( @{ $_[1] } ) ];
+            }
+        }
+;
+
+# TODO: main and side should be written as exp mainchain exp, exp sidechain exp.
+exp
+    : NUM ':' exp
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'id' => $_[3] },
+                                 'group_id' => $_[1],
+                                 'return_data' => 'id' } );
+        }
+    | STR ':' exp
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'id' => $_[3] },
+                                 'group_id' => $_[1],
+                                 'return_data' => 'id' } );
+        }
+    | 'all'
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'mainchain'
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' =>
+                                     { 'label_atom_id' =>
+                                           $_[0]->{USER}{PARAMETERS}{'_[local]_mainchain_atom_names'},
+                                       'group_PDB' => [ 'ATOM' ] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'sidechain'
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' =>
+                                     { 'label_atom_id' =>
+                                           $_[0]->{USER}{PARAMETERS}{'_[local]_sidechain_atom_names'},
+                                       'group_PDB' => [ 'ATOM' ] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'hetatoms'
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'group_PDB' => [ 'HETATM' ] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'byres' exp
+        {
+            my @residue_atom_ids = ();
+            for my $atom_id ( @{ $_[2] } ) {
+                push @residue_atom_ids,
+                    @{ filter_new( $_[0]->{USER}{ATOM_SITE},
+                                   { 'include' => { 'label_seq_id'  =>
+                                                    [ $_[0]->{USER}{ATOM_SITE}
+                                                             {$atom_id}
+                                                             {'label_seq_id'} ],
+                                                    'label_asym_id' =>
+                                                    [ $_[0]->{USER}{ATOM_SITE}
+                                                             {$atom_id}
+                                                             {'label_asym_id'} ],
+                                                    'label_alt_id'  =>
+                                                    [ $_[0]->{USER}{ATOM_SITE}
+                                                             {$atom_id}
+                                                             {'label_alt_id'}, '.' ],
+                                                    'pdbx_PDB_model_num' =>
+                                                    [ $_[0]->{USER}{ATOM_SITE}
+                                                             {$atom_id}
+                                                             {'pdbx_PDB_model_num'} ] },
+                                     'group_id' => $_[0]->{USER}{GROUP_ID},
+                                     'return_data' => 'id' } ) };
+            }
+            return [ uniq @residue_atom_ids ];
+        }
+    | exp '&&' exp
+        {
+            my @joint_ids;
+            if( ! @{ $_[1] } || ! @{ $_[3] } ) { return []; }
+            my @first_ids = @{ $_[1] };
+            my @second_ids = @{ $_[3] };
+            if( $first_ids[0] ne '!' && $second_ids[0] ne '!' ) {
+                for my $id ( @first_ids ) {
+                    push( @joint_ids, $id ) if any { $id eq $_ } @second_ids;
+                }
+                return \@joint_ids;
+            } elsif( $first_ids[0] ne '!' && $second_ids[0] eq '!' ) {
+                for my $id ( @first_ids ) {
+                    push( @joint_ids, $id ) if ! any { $id eq $_ } @second_ids;
+                }
+                return \@joint_ids;
+            } elsif( $first_ids[0] eq '!' && $second_ids[0] ne '!' ) {
+                for my $id ( @second_ids ) {
+                    push( @joint_ids, $id ) if ! any { $id eq $_ } @first_ids;
+                }
+                return \@joint_ids;
+            } else {
+                shift( @first_ids );
+                shift( @second_ids );
+                return [ '!', uniq( @first_ids, @second_ids ) ];
+            }
+        }
+    | exp '||' exp
+        {
+            if( ! @{ $_[1] } || ! @{ $_[3] } ) {
+                return [ @{ $_[1] }, @{ $_[3] } ];
+            }
+            if( $_[1]->[0] ne '!' && $_[3]->[0] ne '!' ) {
+                return [ uniq( @{ $_[1] }, @{ $_[3] } ) ];
+            } else {
+                die( 'Negation (!) with or operator (|) has no valuable ' .
+                     'meaning when selecting atoms' );
+            }
+        }
+    | '(' exp ')'
+        {
+            return $_[2];
+        }
+    | '!' exp
+        {
+            # FIXME: ! exp && ! exp creates error message where $ids[0] is undef.
+            my @ids = @{ $_[2] };
+            if( $ids[0] eq '!' ) {
+                shift( @ids );
+                return \@ids;
+            } else {
+                unshift( @ids, '!' );
+                return \@ids;
+            }
+        }
+    | exp 'around' NUM
+        {
+            my @ids = @{ $_[1] };
+            my $around_atom_site;
+            my $atom_specifier;
+            if( $ids[0] eq '!' ) {
+            #   # TODO: should look how to deal with negations.
+            #   shift( @ids );
+            #   return \@ids;
+            } else {
+                unshift( @ids, '!' );
+                $around_atom_site =
+                    around_distance( $_[0]->{USER}{PARAMETERS},
+                                     $_[0]->{USER}{ATOM_SITE},
+                                     { 'id' => $_[1] },
+                                     $_[3] );
+                return extract( $around_atom_site,
+                                { 'data' => [ 'id' ],
+                                  'is_list' => 1 } );
+            }
+        }
+    | exp 'around' FLOAT
+        {
+            my @ids = @{ $_[1] };
+            my $around_atom_site;
+            my $atom_specifier;
+            if( $ids[0] eq '!' ) {
+            #   # TODO: should look how to deal with negations.
+            #   shift( @ids );
+            #   return \@ids;
+            } else {
+                unshift( @ids, '!' );
+                $around_atom_site =
+                    around_distance( $_[0]->{USER}{PARAMETERS},
+                                     $_[0]->{USER}{ATOM_SITE},
+                                     { 'id' => $_[1] },
+                                     $_[3] );
+                return extract( $around_atom_site,
+                                { 'data' => [ 'id' ],
+                                  'is_list' => 1 } );
+            }
+        }
+    | exp 'rand' NUM
+        {
+            srand( $_[0]->{USER}{SEED} );
+            my @ids = sort { $a <=> $b } @{ $_[1] };
+            my @rand_ids = ();
+            my $rand_count = $_[3];
+            if( scalar( @ids ) < $rand_count ) {
+                if( ! @ids ) {
+                    return [];
+                } else {
+                    warn( "List of $#ids atoms is smaller than the request of " .
+                          "$rand_count atoms." );
+                    $rand_count = scalar( @ids );
+                }
+            }
+            foreach( 1..$rand_count ) {
+                my $rand_idx = rand( $#ids );
+                push( @rand_ids, $ids[$rand_idx] );
+                splice( @ids, $rand_idx, 1 );
+            }
+            return \@rand_ids;
+        }
+    | exp 'angles' map_ope
+        {
+            my $parameters = $_[0]->{USER}{PARAMETERS};
+            my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+            my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
+            connect_atoms( $parameters, $clone_atom_site );
+            hybridization( $parameters, $clone_atom_site );
+
+            my $dihedral_angles =
+                all_dihedral(
+                    filter_new( $clone_atom_site,
+                                { 'calc_mainchain' => 1,
+                                  'reference_atom_site' => $clone_atom_site } ) );
+
+            my @residue_unique_keys = (); # Residue unique keys that passes the
+                                          # criteria.
+            for my $residue_unique_key ( %{ $dihedral_angles } ) {
+                my $is_valid_angle = 0;
+                for my $angle ( keys %{ $_[3] } ) {
+                    my $min_angle = $_[3]->{$angle}{'min'} * $pi / 180;
+                    my $max_angle = $_[3]->{$angle}{'max'} * $pi / 180;
+                    my $residue_angle;
+                    if( exists $dihedral_angles->{$residue_unique_key}
+                                                 {$angle}{'value'} &&
+                        $dihedral_angles->{$residue_unique_key}
+                                          {$angle}{'value'} >= $min_angle &&
+                        $dihedral_angles->{$residue_unique_key}{$angle}
+                                          {'value'} <= $max_angle ) {
+                        $is_valid_angle = 1;
+                    } else {
+                        $is_valid_angle = 0;
+                        last;
+                    }
+                }
+
+                if( $is_valid_angle ) {
+                    push @residue_unique_keys, $residue_unique_key;
+                }
+            }
+
+            my @atom_ids = ();
+            for my $residue_unique_key ( @residue_unique_keys ) {
+                my $residue_atom_site =
+                    filter_by_unique_residue_key( $clone_atom_site,
+                                                  $residue_unique_key,
+                                                  1 );
+                push @atom_ids,
+                    @{ filter_new(
+                           $residue_atom_site,
+                           { 'include' => { 'id' => $_[1]},
+                             'group_id' => $_[0]->{USER}{GROUP_ID},
+                             'return_data' => 'id' } ) };
+            }
+
+            return [ uniq @atom_ids ];
+        }
+    | 'expand' exp
+        {
+            my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
+            connect_atoms( $_[0]->{USER}{PARAMETERS}, $clone_atom_site );
+
+            my @expanded_atom_ids = ();
+            for my $atom_id ( @{ $_[2] } ) {
+                push @expanded_atom_ids, $atom_id;
+                push @expanded_atom_ids,
+                    @{ $clone_atom_site->{$atom_id}{'connections'} };
+            }
+
+            return [ @expanded_atom_ids ];
+        }
+    | 'chain' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_asym_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'authchain' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'auth_asym_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'resid' num_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_seq_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'authresid' num_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'auth_seq_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'resname' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_comp_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'atomid' num_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'atomname' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_atom_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'atomtype' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'type_symbol' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'altid' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_alt_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'altid' num_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'label_alt_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'model' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'model' num_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'pdbx_PDB_model_num' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+;
+
+map_ope
+    : map_ope ',' map_ope      { return { %{ $_[1] }, %{ $_[3] } }; }
+    | STR '=' FLOAT '..' FLOAT { return { $_[1] => { 'min' => $_[3],
+                                                     'max' => $_[5] } }; }
+;
+
+num_ope
+    : num_ope ','  num_ope { return [ @{ $_[1] }, @{ $_[3] } ]; }
+    | num_ope '..' num_ope { return [ $_[1]->[0]..$_[3]->[0] ]; }
+    | NUM                  { return [ int( $_[1] ) ]; }
+;
+
+str_ope
+    : str_ope ',' str_ope { return [ @{ $_[1] }, @{ $_[3] } ]; }
+    | STR                 { return [ $_[1] ]; }
+;
+
+%%
+
+sub lexer
+{
+    my( $parser ) = shift;
+
+    $parser->YYData->{INPUT} || return( '',undef );
+    $parser->YYData->{INPUT} =~ s/^[ \t]//;
+
+    # Returns tokens to parser.
+    for( $parser->YYData->{INPUT} ){
+        if( s/^(:)// ) {
+            return ( ':', $1 );
+        } elsif( s/^(resid)// ) {
+            return ( 'resid', $1 );
+        } elsif( s/^(authresid)// ) {
+            return ( 'authresid', $1 );
+        } elsif(s/^(chain)//) {
+            return ( 'chain', $1 );
+        } elsif(s/^(authchain)//) {
+            return ( 'authchain', $1 );
+        } elsif(s/^(all)//) {
+            return ( 'all', $1 );
+        } elsif(s/^(mainchain)//) {
+            return ( 'mainchain', $1 );
+        } elsif(s/^(sidechain)//) {
+            return ( 'sidechain', $1 );
+        } elsif(s/^(hetatoms)//) {
+            return ( 'hetatoms', $1 );
+        } elsif(s/^(byres)//) {
+            return ( 'byres', $1 );
+        } elsif(s/^(expand)//) {
+            return ( 'expand', $1 );
+        } elsif(s/^(resname)//) {
+            return ( 'resname', $1 );
+        } elsif(s/^(atomid)//) {
+            return ( 'atomid', $1 );
+        } elsif(s/^(atomname)//) {
+            return ( 'atomname', $1 );
+        } elsif(s/^(atomtype)//) {
+            return ( 'atomtype', $1 );
+        } elsif(s/^(altid)//) {
+            return ( 'altid', $1 );
+        } elsif(s/^(model)//) {
+            return ( 'model', $1 );
+        } elsif(s/^(around)//) {
+            return ( 'around', $1 );
+        } elsif(s/^(rand)//) {
+            return ( 'rand', $1 );
+        } elsif(s/^(group)//) {
+            return ( 'group', $1 );
+        } elsif(s/^(angles)//) {
+            return ( 'angles', $1 );
+        } elsif( s/^((?:\-)?[0-9]+\.[0-9]+)// ) {
+            return ( 'FLOAT', $1 );
+        } elsif( s/^([0-9]+)// ) {
+            return ( 'NUM', $1 );
+        } elsif( s/^(\w+|\.)(?!\.)// ) {
+            return ( 'STR', $1 );
+        } elsif( s/^(,)// ) {
+            return ( ',', $1 );
+        } elsif( s/^(\.\.)// ) {
+            return ( '..', $1 );
+        } elsif( s/^(=)// ) {
+            return ( '=', $1 );
+        } elsif( s/^(\|\|)// ) {
+            return ( '||', $1 );
+        } elsif( s/^(&&)// ) {
+            return ( '&&', $1 );
+        } elsif( s/^(\()// ) {
+            return ( '(', $1 );
+        } elsif( s/^(\))// ) {
+            return ( ')', $1 );
+        } elsif( s/^(\!)// ) {
+            return ( '!', $1 );
+        }
+    }
+}
+
+sub debugger
+{
+    exists $_[0]->YYData->{ERRMSG}
+
+    and do {
+        print $_[0]->YYData->{ERRMSG};
+        return;
+    };
+
+    print "Syntax error\n";
+}
+
+sub parser
+{
+    my ( $self, $atom_site, $input, $parameters, $options ) = @_;
+
+    my ( $seed, $group_id  ) = ( $options->{'seed'}, $options->{'group_id'} );
+
+    $self->YYData->{INPUT} = $input;
+    $self->YYData->{ATOM_SITE} = $atom_site;
+    $self->YYData->{PARAMETERS} = $parameters;
+    $self->YYData->{SEED} = $seed;
+    $self->YYData->{GROUP_ID} = $group_id;
+
+    my $selected_atom_data = $self->YYParse( yylex => \&lexer,
+                                             yyerror => \&debugger,
+                                             yydebug=>0x00 );
+
+    return $selected_atom_data;
+}
