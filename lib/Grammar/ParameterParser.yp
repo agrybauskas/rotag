@@ -3,14 +3,27 @@
     use warnings;
 %}
 
-%left ','
+%left '=' ','
 
 %%
 
-list:
-    | '[' list ']' { return [ $_[2] ]; }
-    | list ',' list { return [ @{ $_[1] }, @{ $_[3] } ]; }
+exp:
+    | exp ',' exp
+        {
+            if( ref $_[1] eq 'ARRAY' && ref $_[3] eq 'ARRAY' ) {
+                return [ @{ $_[1] }, @{ $_[3] }  ];
+            } elsif( ref $_[1] eq 'HASH' && ref $_[3] eq 'HASH' ) {
+                return { %{ $_[1] }, %{ $_[3] } };
+            } else {
+                die "Arrays cannot be in the same data structure with hashes.\n";
+            }
+        }
+    | hash
     | STR { return [ $_[1] ]; }
+    ;
+
+hash:
+    | STR '=' STR { return { $_[1] => $_[3] }; }
     ;
 
 %%
@@ -28,28 +41,17 @@ sub lexer
             return ( '[', $1 );
         } elsif( s/^(\])// ) {
             return ( ']', $1 );
-        } elsif( s/^(,)// ) {
-            return ( ',', $1 );
+        } elsif( s/^({)// ) {
+            return ( '{', $1 );
+        } elsif( s/^(})// ) {
+            return ( '}', $1 );
         } elsif( s/^(=)// ) {
             return ( '=', $1 );
-        } elsif( s/^(\w+)// ) {
+        } elsif( s/^(,)// ) {
+            return ( ',', $1 );
+        } elsif( s/^([A-Za-z0-9]?)// ) {
             return ( 'STR', $1 );
         }
-        # if( s/^(=)// ) {
-        #     return ( '=', $1 );
-        # } elsif( s/^(,)// ) {
-        #     return ( ',', $1 );
-        # } elsif( s/^(\{)// ) {
-        #     return ( '{', $1 );
-        # } elsif( s/^(\})// ) {
-        #     return ( '}', $1 );
-        # } elsif( s/^(\[)// ) {
-        #     return ( '[', $1 );
-        # } elsif( s/^(\])// ) {
-        #     return ( ']', $1 );
-        # } elsif( s/^(\w+)// ) {
-        #     return ( 'STR', $1 );
-        # }
     }
 }
 
@@ -74,7 +76,7 @@ sub parser
     my $parameter_data =
         $self->YYParse( yylex => \&lexer,
                         yyerror => \&debugger,
-                        yydebug=>0x00 );
+                        yydebug=>0x00 ); # 0x00 0x1F
 
     use Data::Dumper;
     print STDERR Dumper $parameter_data;
