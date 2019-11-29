@@ -3,8 +3,13 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use ForceField::Parameters;
 use Grammar::ParameterParser;
+
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
 
 #
 # Unit test: Grammar::ParameterParser.
@@ -17,4 +22,4 @@ my ( $parameter_cmd, $parameter_file ) = @ARGV;
 my $parameters = Parameters->new();
 
 my $parameter_parser = new ParameterParser();
-$parameter_parser->parser( $parameter_cmd );
+print Dumper $parameter_parser->parser( $parameter_cmd );
