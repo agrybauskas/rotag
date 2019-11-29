@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::Parameters;
-use Grammar::SelectionParser;
+use Grammar::ParameterParser;
 
 #
 # Unit test: Grammar::ParameterParser.
@@ -12,9 +12,9 @@ use Grammar::SelectionParser;
 #
 
 @ARGV = ( "-" ) unless @ARGV;
-my ( $parameter_command, $parameter_file ) = @ARGV;
+my ( $parameter_cmd, $parameter_file ) = @ARGV;
 
 my $parameters = Parameters->new();
 
-my $parameter_parser = new SelectionParser();
-$parameter_parser->parser();
+my $parameter_parser = new ParameterParser();
+$parameter_parser->parser( $parameter_cmd );
