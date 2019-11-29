@@ -3,7 +3,8 @@
     use warnings;
 %}
 
-%left '=' ','
+%right '='
+%left ','
 
 %%
 
@@ -21,7 +22,6 @@ exp:
     | STR '=' '[' exp ']' { return { $_[1] => $_[4] }; }
     | STR '=' '{' exp '}' { return { $_[1] => $_[4] }; }
     | STR '=' STR { return { $_[1] => $_[3] }; }
-    | '"' STR BLANK STR '"' { return [ "$_[2]$_[3]$_[4]" ] }
     | STR { return [ $_[1] ] }
     ;
 
@@ -49,8 +49,6 @@ sub lexer
             return ( ',', $1 );
         } elsif( s/^(\")// ) {
             return ( '"', $1 );
-        } elsif( s/^(\s)// ) {
-            return ( 'BLANK', $1 );
         } elsif( s/^([A-Za-z0-9]*)// ) {
             return ( 'STR', $1 );
         }
@@ -74,14 +72,12 @@ sub parser
     my ( $self, $input ) = @_;
 
     $self->YYData->{INPUT} = $input;
+    $self->YYData->{INPUT} =~ s/ //g;
 
     my $parameter_data =
         $self->YYParse( yylex => \&lexer,
                         yyerror => \&debugger,
                         yydebug=>0x00 ); # 0x00 0x1F
 
-    use Data::Dumper;
-    print STDERR Dumper $parameter_data;
-
-    # return $parameter_data;
+    return $parameter_data;
 }
