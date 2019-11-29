@@ -18,12 +18,10 @@ exp:
                 die "Arrays cannot be in the same data structure with hashes.\n";
             }
         }
-    | hash
-    | STR { return [ $_[1] ]; }
-    ;
-
-hash:
+    | STR '=' '[' exp ']' { return { $_[1] => $_[4] }; }
+    | STR '=' '{' exp '}' { return { $_[1] => $_[4] }; }
     | STR '=' STR { return { $_[1] => $_[3] }; }
+    | STR { return [ $_[1] ] }
     ;
 
 %%
@@ -49,7 +47,7 @@ sub lexer
             return ( '=', $1 );
         } elsif( s/^(,)// ) {
             return ( ',', $1 );
-        } elsif( s/^([A-Za-z0-9]?)// ) {
+        } elsif( s/^([A-Za-z0-9]*)// ) {
             return ( 'STR', $1 );
         }
     }
