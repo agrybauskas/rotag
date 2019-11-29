@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ForceField::Parameters;
+use Grammar::SelectionParser;
+
+#
+# Unit test: Grammar::ParameterParser.
+# Example: ./parameter_parser '_[local]_force_field.t_k={id=1, resid=2}' parameters.cif
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $parameter_command, $parameter_file ) = @ARGV;
+
+my $parameters = Parameters->new();
+
+my $parameter_parser = new SelectionParser();
+$parameter_parser->parser();
