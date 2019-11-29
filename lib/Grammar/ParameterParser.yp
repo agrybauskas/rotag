@@ -21,6 +21,7 @@ exp:
     | STR '=' '[' exp ']' { return { $_[1] => $_[4] }; }
     | STR '=' '{' exp '}' { return { $_[1] => $_[4] }; }
     | STR '=' STR { return { $_[1] => $_[3] }; }
+    | '"' STR BLANK STR '"' { return [ "$_[2]$_[3]$_[4]" ] }
     | STR { return [ $_[1] ] }
     ;
 
@@ -31,7 +32,6 @@ sub lexer
     my( $parser ) = shift;
 
     $parser->YYData->{INPUT} || return( '',undef );
-    $parser->YYData->{INPUT} =~ s/^\s?//;
 
     # Returns tokens to parser.
     for( $parser->YYData->{INPUT} ){
@@ -47,6 +47,10 @@ sub lexer
             return ( '=', $1 );
         } elsif( s/^(,)// ) {
             return ( ',', $1 );
+        } elsif( s/^(\")// ) {
+            return ( '"', $1 );
+        } elsif( s/^(\s)// ) {
+            return ( 'BLANK', $1 );
         } elsif( s/^([A-Za-z0-9]*)// ) {
             return ( 'STR', $1 );
         }
