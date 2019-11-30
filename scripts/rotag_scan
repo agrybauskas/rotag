@@ -161,7 +161,8 @@ for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
 }
 
 # Parses JSON string.
-$parameters->set_parameter_values( decode_json( $parameters_json_cmd ) );
+$parameters->set_parameter_values( decode_json( $parameters_json_cmd ),
+                                   { 'is_json' => 1 } );
 
 for my $pdbx_file ( @ARGV ) {
     my $pdbx_data = obtain_pdbx_data( $pdbx_file, \@category_list );

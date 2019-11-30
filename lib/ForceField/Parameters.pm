@@ -441,17 +441,25 @@ sub covalent_bond_combinations
 
 sub set_parameter_values
 {
-    my ( $self, $parameter_values ) = @_;
-    for my $category ( sort keys %{ $parameter_values } ) {
-        for my $attribute ( sort keys %{ $parameter_values->{$category} } ) {
-            if( exists $parameter_values->{$category}{$attribute} ) {
-                $self->{$category}{$attribute} =
-                    $parameter_values->{$category}{$attribute};
-            } else {
-                die "parameter argument is not valid.\n";
+    my ( $self, $parameter_values, $options ) = @_;
+    my ( $is_json ) = ( $options->{'is_json'} );
+    if( $is_json ) {
+        use Data::Dumper;
+        print STDERR Dumper $parameter_values;
+    } else {
+        for my $category ( sort keys %{ $parameter_values } ) {
+            for my $attribute ( sort keys %{ $parameter_values->{$category} } ) {
+                if( exists $parameter_values->{$category}{$attribute} ) {
+                    $self->{$category}{$attribute} =
+                        $parameter_values->{$category}{$attribute};
+                } else {
+                    die "parameter argument is not valid.\n";
+                }
             }
         }
+
     }
+
     return;
 }
 
