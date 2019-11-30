@@ -452,7 +452,7 @@ sub set_parameter_values
             }
         } elsif( ref $parameter_values eq 'HASH' ) {
             for my $parameter ( keys %{ $parameter_values } ) {
-                if( ref $parameter_values->{$parameter} eq 'SCALAR' ) {
+                if( ref \$parameter_values->{$parameter} eq 'SCALAR' ) {
                     $self->{$parameter} = $parameter_values->{$parameter};
                 } else {
                     $self->set_parameter_values( $parameter_values->{$parameter},
