@@ -8,7 +8,7 @@
 
 %%
 
-exp:
+exp: #empty
     | exp ',' exp
         {
             if( ref $_[1] eq 'ARRAY' && ref $_[3] eq 'ARRAY' ) {
@@ -20,9 +20,19 @@ exp:
             }
         }
     # | STR '=' '[' exp ']' { return { $_[1] => $_[4] }; }
-    | STR '=' '{' exp '}' { return { $_[1] => $_[4] }; }
-    | STR '=' STR { return { $_[1] => $_[3] }; }
-    | STR { return [ $_[1] ] }
+    | VAR '=' '{' exp '}' { return { $_[1] => $_[4] }; }
+    | VAR '=' VALUE { return { $_[1] => $_[3] }; }
+    | VALUE { return [ $_[1] ] }
+    ;
+
+VAR: #empty
+    | STR
+    ;
+
+VALUE: #empty
+    | STR
+    | FLOAT
+    | NUM
     ;
 
 %%
@@ -49,8 +59,12 @@ sub lexer
             return ( ',', $1 );
         } elsif( s/^(\")// ) {
             return ( '"', $1 );
-        } elsif( s/^([A-Za-z0-9_\[\]]*)// ) {
+        } elsif( s/^([A-Za-z_\[\]][A-Za-z_\[\]0-9]*)// ) {
             return ( 'STR', $1 );
+        } elsif( s/^((?:\-)?[0-9]+\.[0-9]+)// ) {
+            return ( 'FLOAT', $1 );
+        } elsif( s/^([0-9]+)// ) {
+            return ( 'NUM', $1 );
         }
     }
 }
