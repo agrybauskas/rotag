@@ -441,22 +441,22 @@ sub covalent_bond_combinations
 
 sub set_parameter_values
 {
-    my ( $self, $parameter_values, $options ) = @_;
+    my ( $self, $parameters_ref, $parameter_values, $options ) = @_;
     my ( $is_json ) = ( $options->{'is_json'} );
 
     if( $is_json ) {
-        if( ref $parameter_values eq 'ARRAY' ) {
-            for my $parameter_value ( @{ $parameter_values } ) {
-                $self->set_parameter_values( $parameter_value,
-                                             { 'is_json' => 1 } );
-            }
-        } elsif( ref $parameter_values eq 'HASH' ) {
+        if( ref $parameter_values eq 'HASH' ) {
             for my $parameter ( keys %{ $parameter_values } ) {
-                if( ref \$parameter_values->{$parameter} eq 'SCALAR' ) {
-                    $self->{$parameter} = $parameter_values->{$parameter};
+                if( ref \$parameter_values->{$parameter} eq 'SCALAR' ||
+                    ref \$parameter_values->{$parameter} eq 'ARRAY' ) {
+                    ${$parameters_ref}->{$parameter} =
+                        $parameter_values->{$parameter};
                 } else {
-                    $self->set_parameter_values( $parameter_values->{$parameter},
-                                                 { 'is_json' => 1 } );
+                    $self->set_parameter_values(
+                        \${$parameters_ref}->{$parameter},
+                        $parameter_values->{$parameter},
+                        { 'is_json' => 1 }
+                    );
                 }
             }
         }
@@ -473,7 +473,7 @@ sub set_parameter_values
         }
     }
 
-    return;
+    return $parameter_values;
 }
 
 # --------------------------------- Methods ----------------------------------- #
