@@ -443,9 +443,23 @@ sub set_parameter_values
 {
     my ( $self, $parameter_values, $options ) = @_;
     my ( $is_json ) = ( $options->{'is_json'} );
+
     if( $is_json ) {
-        use Data::Dumper;
-        print STDERR Dumper $parameter_values;
+        if( ref $parameter_values eq 'ARRAY' ) {
+            for my $parameter_value ( @{ $parameter_values } ) {
+                $self->set_parameter_values( $parameter_value,
+                                             { 'is_json' => 1 } );
+            }
+        } elsif( ref $parameter_values eq 'HASH' ) {
+            for my $parameter ( keys %{ $parameter_values } ) {
+                if( ref $parameter_values->{$parameter} eq 'SCALAR' ) {
+                    $self->{$parameter} = $parameter_values->{$parameter};
+                } else {
+                    $self->set_parameter_values( $parameter_values->{$parameter},
+                                                 { 'is_json' => 1 } );
+                }
+            }
+        }
     } else {
         for my $category ( sort keys %{ $parameter_values } ) {
             for my $attribute ( sort keys %{ $parameter_values->{$category} } ) {
@@ -457,7 +471,6 @@ sub set_parameter_values
                 }
             }
         }
-
     }
 
     return;
