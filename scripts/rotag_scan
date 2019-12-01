@@ -156,7 +156,7 @@ $parameters_cmd =~ s/\s//g;
 for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
     my ( $parameter, $value ) = split /=/sm, $parameter_pair;
     $parameters->set_parameter_values(
-        { '_[local]_force_field' => { $parameter => $value } }
+        \$parameter, { '_[local]_force_field' => { $parameter => $value } }
     );
 }
 
