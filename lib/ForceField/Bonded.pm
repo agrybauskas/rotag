@@ -178,8 +178,6 @@ sub torsion_object
     my $t_k = $parameters->{'_[local]_force_field'}{'t_k'};
     my $torsional = $parameters->{'_[local]_torsional'};
 
-    my $phase = 3;
-
     # Determines all dihedral angles by searching third neighbours following the
     # connections.
     my $atom_name = $reference_atom_site->{$atom_i_id}{'type_symbol'};
@@ -205,6 +203,8 @@ sub torsion_object
                     $reference_atom_site->{$third_neighbour_id}{'type_symbol'};
                 my $epsilon = $torsional->{$third_atom_name}{$atom_name}
                                           {'epsilon'};
+                my $phase = $torsional->{$third_atom_name}{$atom_name}
+                                          {'phase'};
                 my $omega = dihedral_angle(
                     [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
                         $reference_atom_site->{$third_neighbour_id}{'Cartn_y'},
