@@ -6318,163 +6318,212 @@ $VAR1 = bless( {
   '_[local]_torsional' => {
     '.' => {
       '.' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'C' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'H' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'N' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'O' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'S' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'X' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       }
     },
     'C' => {
       '.' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'C' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       },
       'H' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       },
       'N' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'O' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'S' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'X' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       }
     },
     'H' => {
       '.' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'C' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       },
       'H' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       },
       'N' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'O' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'S' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'X' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       }
     },
     'N' => {
       '.' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'C' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'H' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'N' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'O' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'S' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'X' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       }
     },
     'O' => {
       '.' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'C' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'H' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'N' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'O' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'S' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'X' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       }
     },
     'S' => {
       '.' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'C' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'H' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'N' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'O' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'S' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'X' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       }
     },
     'X' => {
       '.' => {
-        'epsilon' => '0.00'
+        'epsilon' => '0.00',
+        'phase' => '3'
       },
       'C' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       },
       'H' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       },
       'N' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'O' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'S' => {
-        'epsilon' => '10.00'
+        'epsilon' => '10.00',
+        'phase' => '3'
       },
       'X' => {
-        'epsilon' => '1.00'
+        'epsilon' => '1.00',
+        'phase' => '3'
       }
     }
   }
