@@ -452,34 +452,35 @@ loop_
 _[local]_torsional.type_symbol_1
 _[local]_torsional.type_symbol_2
 _[local]_torsional.epsilon
-. . 0.00
-. C 0.00
-. H 0.00
-. N 0.00
-. O 0.00
-. S 0.00
-. X 0.00
-C C 1.00
-C H 1.00
-C N 10.00
-C O 10.00
-C S 10.00
-C X 1.00
-H H 1.00
-H N 10.00
-H O 10.00
-H S 10.00
-H X 1.00
-N N 10.00
-N O 10.00
-N S 10.00
-N X 10.00
-O O 10.00
-O S 10.00
-O X 10.00
-S S 10.00
-S X 10.00
-X X 1.00
+_[local]_torsional.phase
+. . 0.00 3
+. C 0.00 3
+. H 0.00 3
+. N 0.00 3
+. O 0.00 3
+. S 0.00 3
+. X 0.00 3
+C C 1.00 3
+C H 1.00 3
+C N 10.00 3
+C O 10.00 3
+C S 10.00 3
+C X 1.00 3
+H H 1.00 3
+H N 10.00 3
+H O 10.00 3
+H S 10.00 3
+H X 1.00 3
+N N 10.00 3
+N O 10.00 3
+N S 10.00 3
+N X 10.00 3
+O O 10.00 3
+O S 10.00 3
+O X 10.00 3
+S S 10.00 3
+S X 10.00 3
+X X 1.00 3
 #
 loop_
 _[local]_h_bond.type_symbol

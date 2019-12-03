@@ -208,11 +208,16 @@ sub force_field
         my $type_symbol_1 = $torsional->{'type_symbol_1'};
         my $type_symbol_2 = $torsional->{'type_symbol_2'};
         my $epsilon = $torsional->{'epsilon'};
+        my $phase = $torsional->{'phase'};
 
         $force_field_parameters{'_[local]_torsional'}{$type_symbol_1}
                                {$type_symbol_2}{'epsilon'} = $epsilon;
         $force_field_parameters{'_[local]_torsional'}{$type_symbol_2}
                                {$type_symbol_1}{'epsilon'} = $epsilon;
+        $force_field_parameters{'_[local]_torsional'}{$type_symbol_1}
+                               {$type_symbol_2}{'phase'} = $phase;
+        $force_field_parameters{'_[local]_torsional'}{$type_symbol_2}
+                               {$type_symbol_1}{'phase'} = $phase;
     }
 
     # Restructuring parameters of hydrogen bond.
