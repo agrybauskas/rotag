@@ -5,9 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( general
-                     torsion
                      torsion_object
-                     torsion_new );
+                     torsion );
 
 use Readonly;
 
@@ -40,7 +39,7 @@ our $VERSION = $VERSION;
 #     $torsion_potential - value of torsion energy potential.
 #
 
-sub torsion_new
+sub torsion
 {
     my ( $parameters, $atom_i_id, $options ) = @_;
 
@@ -189,7 +188,7 @@ sub general
     if( $is_optimal ) {
         return 0;
     } else {
-        my $torsion = torsion_new( $parameters, $atom_i->{'id'}, $options );
+        my $torsion = torsion( $parameters, $atom_i->{'id'}, $options );
 
         if( $decompose ) {
             return { 'torsion' => $torsion };
