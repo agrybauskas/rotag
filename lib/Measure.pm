@@ -45,7 +45,7 @@ our $VERSION = $VERSION;
 my %potentials = (
     'composite' => {
         'bonded' => {
-            'torsion' => \&ForceField::Bonded::torsion_object,
+            'torsion' => \&ForceField::Bonded::torsion_components,
         },
         'non_bonded' => {
             'lennard_jones' => \&ForceField::NonBonded::lennard_jones,
@@ -55,7 +55,7 @@ my %potentials = (
     },
     'torsion' => {
         'bonded' => {
-            'torsion' => \&ForceField::Bonded::torsion_object,
+            'torsion' => \&ForceField::Bonded::torsion_components,
         }
     },
     'hard_sphere' => {

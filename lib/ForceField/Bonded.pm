@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( general
-                     torsion_object
+                     torsion_components
                      torsion );
 
 use Readonly;
@@ -55,7 +55,7 @@ sub torsion
 
     my $torsion_potential_sum = 0;
     my $torsion_potentials =
-        torsion_object( $parameters, $atom_i_id, $options );
+        torsion_components( $parameters, $atom_i_id, $options );
     for my $torsion_potential ( @{ $torsion_potentials } ) {
         $torsion_potential_sum += $torsion_potential->value;
     }
@@ -63,7 +63,7 @@ sub torsion
     return $torsion_potential_sum;
 }
 
-sub torsion_object
+sub torsion_components
 {
     my ( $parameters, $atom_i_id, $options ) = @_;
 
