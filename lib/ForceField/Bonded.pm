@@ -23,12 +23,12 @@ our $VERSION = $VERSION;
 #
 # Calculates bond torsion potential.
 #
-#                k * ( t_epsilon / 2 ) * ( 1 + cos( n * omega ) )
+#                t_k * ( epsilon / 2 ) * ( 1 + cos( phase * omega ) )
 #
 # where:
-#     k         - energy weight/adjustment constant;
-#     t_epsilon - maximum energy of the peak;
-#     n         - number of energy maxima;
+#     t_k         - energy weight/adjustment constant;
+#     epsilon   - maximum energy of the peak;
+#     phase     - number of energy maxima;
 #     omega     - dihedral angle.
 # Input:
 #     $parameters - parameters' values.
