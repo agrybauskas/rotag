@@ -6,6 +6,7 @@ use warnings;
 use autodie;
 use Clone qw( clone );
 use Getopt::Long;
+use JSON;
 use List::MoreUtils qw( any
                         uniq );
 use Try::Tiny;
@@ -89,6 +90,7 @@ our $VERSION = $VERSION;
 
 my $interactions = 'composite';
 my $parameters_cmd = '';
+my $parameters_json_cmd = '{}';
 my $do_sidechain = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
@@ -107,6 +109,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'potential|u=s' => \$interactions,
     'parameters|p=s' => \$parameters_cmd,
+    'json-parameters|j=s' => \$parameters_json_cmd,
     'side-chains|S' => sub { $do_sidechain = 1 },
     'pairwise|P' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
@@ -142,9 +145,14 @@ $parameters_cmd =~ s/\s//g;
 for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
     my ( $parameter, $value ) = split /=/sm, $parameter_pair;
     $parameters->set_parameter_values(
-        { '_[local]_force_field' => { $parameter => $value } }
+        \$parameters, { '_[local]_force_field' => { $parameter => $value } }
     );
 }
+
+# Parses JSON string.
+$parameters->set_parameter_values( \$parameters,
+                                   decode_json( $parameters_json_cmd ),
+                                   { 'is_json' => 1 } );
 
 for my $pdbx_file ( @ARGV ) {
     my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
