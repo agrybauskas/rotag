@@ -836,7 +836,41 @@ sub energy
         }
     }
 
-    return \@residue_energies;
+    my @energies = ();
+    if( ! $decompose ) {
+        @energies = @residue_energies;
+    } else {
+        # TODO: seems here it could be optimized.
+        my @atom_pairs = ();
+        my %atom_pair_interactions = ();
+        for my $residue_energy ( @residue_energies ) {
+            my $atom_id = $residue_energy->atoms->[0];
+            my $interaction_atom_id = $residue_energy->atoms->[-1];
+            push @atom_pairs, [ $atom_id, $interaction_atom_id ];
+            push @{ $atom_pair_interactions{$atom_id}{$interaction_atom_id} },
+                $residue_energy;
+        }
+
+        my $energy_sum = 0;
+        for my $atom_pair ( @atom_pairs ) {
+            my $atom_id = $atom_pair->[0];
+            my $interaction_atom_id = $atom_pair->[-1];
+
+            for my $energy ( @{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} }){
+                $energy_sum += $energy->value;
+            }
+
+            my $energy = Energy->new();
+            $energy->set_energy(
+                $potential, [ $atom_id, $interaction_atom_id ], $energy_sum
+            );
+
+            push @energies, $energy;
+        }
+    }
+
+    return \@energies;
 }
 
 1;
