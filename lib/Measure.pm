@@ -819,7 +819,7 @@ sub energy
     }
 
     my @atom_ids = ();
-    my %atom_id_pairs =
+    my %atom_id_pairs = ();
     my %atom_pair_interactions = ();
     for my $residue_energy ( @residue_energies ) {
         my $atom_id = $residue_energy->atoms->[0];
