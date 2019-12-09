@@ -818,59 +818,61 @@ sub energy
         }
     }
 
-    my @atom_pairs = ();
+    my @atom_ids = ();
+    my %atom_id_pairs =
     my %atom_pair_interactions = ();
     for my $residue_energy ( @residue_energies ) {
         my $atom_id = $residue_energy->atoms->[0];
         my $interaction_atom_id = $residue_energy->atoms->[-1];
         my $energy_type = $residue_energy->energy_type;
 
-        if( ! exists $atom_pair_interactions{$atom_id}
-                                            {$interaction_atom_id}
-                                            {$energy_type} ) {
-            push @atom_pairs, [ $atom_id, $interaction_atom_id ];
+        if( ! exists $atom_id_pairs{$atom_id} ) {
+            push @atom_ids, $atom_id;
         }
 
-        push @{ $atom_pair_interactions{$atom_id}
-                                       {$interaction_atom_id}
-                                       {$energy_type} },
+        if( ! exists $atom_pair_interactions{$atom_id}{$interaction_atom_id} ) {
+            push @{ $atom_id_pairs{$atom_id} }, $interaction_atom_id;
+        }
+
+        push @{ $atom_pair_interactions{$atom_id}{$interaction_atom_id}
+                                                 {$energy_type} },
             $residue_energy;
     }
 
     my @energies = ();
-    for my $atom_pair ( @atom_pairs ) {
-        my $atom_id = $atom_pair->[0];
-        my $interaction_atom_id = $atom_pair->[1];
-        my @energy_types =
-            sort keys %{$atom_pair_interactions{$atom_id}{$interaction_atom_id}};
+    # for my $atom_pair ( @atom_pairs ) {
+    #     my $atom_id = $atom_pair->[0];
+    #     my $interaction_atom_id = $atom_pair->[1];
+    #     my @energy_types =
+    #         sort keys %{$atom_pair_interactions{$atom_id}{$interaction_atom_id}};
 
-        if( $pairwise && $decompose ) {
-            for my $energy_type ( @energy_types ) {
-                push @energies,
-                    @{ $atom_pair_interactions{$atom_id}
-                                              {$interaction_atom_id}
-                                              {$energy_type} };
-            }
-        } elsif( $decompose ) {
+    #     if( $pairwise && $decompose ) {
+    #         for my $energy_type ( @energy_types ) {
+    #             push @energies,
+    #                 @{ $atom_pair_interactions{$atom_id}
+    #                                           {$interaction_atom_id}
+    #                                           {$energy_type} };
+    #         }
+    #     } elsif( $decompose ) {
 
-        } elsif( $pairwise ) {
+    #     } elsif( $pairwise ) {
 
-        } else {
-            my $energy_sum_value = 0;
-            for my $energy_type ( @energy_types ) {
-                $energy_sum_value +=
-                    $atom_pair_interactions{$atom_id}
-                                           {$interaction_atom_id}
-                                           {$energy_type}[0]->value;
-            }
+    #     } else {
+    #         my $energy_sum_value = 0;
+    #         for my $energy_type ( @energy_types ) {
+    #             $energy_sum_value +=
+    #                 $atom_pair_interactions{$atom_id}
+    #                                        {$interaction_atom_id}
+    #                                        {$energy_type}[0]->value;
+    #         }
 
-            my $energy_sum = Energy->new();
-            $energy_sum->set_energy( $potential,
-                                     [ $atom_id, $interaction_atom_id ],
-                                     $energy_sum_value );
-            push @energies, $energy_sum;
-        }
-    }
+    #         my $energy_sum = Energy->new();
+    #         $energy_sum->set_energy( $potential,
+    #                                  [ $atom_id, $interaction_atom_id ],
+    #                                  $energy_sum_value );
+    #         push @energies, $energy_sum;
+    #     }
+    # }
 
     return \@energies;
 }
