@@ -712,10 +712,11 @@ sub rmsd_sidechains
 sub energy
 {
     my ( $parameters, $atom_site, $potential, $options  ) = @_;
-    my ( $target_atom_ids, $only_sidechains, $decompose ) = (
+    my ( $target_atom_ids, $only_sidechains, $decompose, $pairwise ) = (
         $options->{'target_atom_ids'},
         $options->{'only_sidechains'},
         $options->{'decompose'},
+        $options->{'pairwise'},
     );
 
     $target_atom_ids //= [ sort keys %{ $atom_site } ];
@@ -817,7 +818,6 @@ sub energy
         }
     }
 
-    my @energies = ();
     my @atom_pairs = ();
     my %atom_pair_interactions = ();
     for my $residue_energy ( @residue_energies ) {
@@ -837,33 +837,38 @@ sub energy
             $residue_energy;
     }
 
+    my @energies = ();
     for my $atom_pair ( @atom_pairs ) {
         my $atom_id = $atom_pair->[0];
         my $interaction_atom_id = $atom_pair->[1];
         my @energy_types =
             sort keys %{$atom_pair_interactions{$atom_id}{$interaction_atom_id}};
 
-        # if( ! $decompose ) {
-        #     # my $energy_sum = 0;
-        #     # for my $energy ( @{ $atom_pair_interactions{$atom_id}
-        #     #                                            {$interaction_atom_id} }){
-        #     #     $energy_sum += $energy->value;
-        #     # }
-        #     # my $total_energy = Energy->new();
-        #     # $total_energy->set_energy(
-        #     #     $potential,
-        #     #     [ $atom_id, $interaction_atom_id ],
-        #     #     $energy_sum
-        #     # );
-        #     # $atom_pair_interactions{$atom_id}{$interaction_atom_id} =
-        #     #     [ $total_energy ];
-        # }
+        if( $pairwise && $decompose ) {
+            for my $energy_type ( @energy_types ) {
+                push @energies,
+                    @{ $atom_pair_interactions{$atom_id}
+                                              {$interaction_atom_id}
+                                              {$energy_type} };
+            }
+        } elsif( $decompose ) {
 
-        for my $energy_type ( @energy_types ) {
-            push @energies,
-                 @{ $atom_pair_interactions{$atom_id}
+        } elsif( $pairwise ) {
+
+        } else {
+            my $energy_sum_value = 0;
+            for my $energy_type ( @energy_types ) {
+                $energy_sum_value +=
+                    $atom_pair_interactions{$atom_id}
                                            {$interaction_atom_id}
-                                           {$energy_type} };
+                                           {$energy_type}[0]->value;
+            }
+
+            my $energy_sum = Energy->new();
+            $energy_sum->set_energy( $potential,
+                                     [ $atom_id, $interaction_atom_id ],
+                                     $energy_sum_value );
+            push @energies, $energy_sum;
         }
     }
 

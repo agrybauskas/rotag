@@ -209,7 +209,8 @@ for my $pdbx_file ( @ARGV ) {
              @{ energy( $parameters, $current_atom_site, $interactions,
                         { 'target_atom_ids' => $target_atom_ids,
                           'only_sidechains' => $do_sidechain,
-                          'decompose' => $do_decompose } ) };
+                          'decompose' => $do_decompose,
+                          'pairwise' => $do_pairwise } ) };
     }
 
     my %pdbx_data;
