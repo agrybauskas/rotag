@@ -832,22 +832,28 @@ sub energy
             $residue_energy;
     }
 
-    my $energy_sum = 0;
     for my $atom_pair ( @atom_pairs ) {
         my $atom_id = $atom_pair->[0];
         my $interaction_atom_id = $atom_pair->[1];
 
-        for my $energy ( @{ $atom_pair_interactions{$atom_id}
-                                                   {$interaction_atom_id} }){
-            $energy_sum += $energy->value;
+        if( ! $decompose ) {
+            my $energy_sum = 0;
+            for my $energy ( @{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} }){
+                $energy_sum += $energy->value;
+            }
+            my $total_energy = Energy->new();
+            $total_energy->set_energy(
+                $potential,
+                [ $atom_id, $interaction_atom_id ],
+                $energy_sum
+            );
+            $atom_pair_interactions{$atom_id}{$interaction_atom_id} =
+                [ $total_energy ];
         }
 
-        my $energy = Energy->new();
-        $energy->set_energy(
-            $potential, [ $atom_id, $interaction_atom_id ], $energy_sum
-        );
-
-        push @energies, $energy;
+        push @energies,
+            @{$atom_pair_interactions{$atom_id}{$interaction_atom_id}};
     }
 
     return \@energies;
