@@ -823,17 +823,17 @@ sub energy
     for my $residue_energy ( @residue_energies ) {
         my $atom_id = $residue_energy->atoms->[0];
         my $interaction_atom_id = $residue_energy->atoms->[-1];
-        my $residue_potential = $residue_energy->energy_type;
+        my $energy_type = $residue_energy->energy_type;
 
         if( ! exists $atom_pair_interactions{$atom_id}
                                             {$interaction_atom_id}
-                                            {$residue_potential} ) {
+                                            {$energy_type} ) {
             push @atom_pairs, [ $atom_id, $interaction_atom_id ];
         }
 
         push @{ $atom_pair_interactions{$atom_id}
                                        {$interaction_atom_id}
-                                       {$residue_potential} },
+                                       {$energy_type} },
             $residue_energy;
     }
 
