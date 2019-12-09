@@ -764,7 +764,6 @@ sub energy
                          @{ $interaction_atom_names } ) && $only_sidechains;
 
             my @residue_energy = ();
-            my $residue_energy_sum = 0;
 
             # Calculates bonded potential energy term.
             my %bonded_residue_energy = (); # For faster neighbour energy search.
@@ -792,11 +791,7 @@ sub energy
                     # Adds bonded potential energy term.
                     for my $bonded_potential (
                         @{ $bonded_residue_energy{$atom_id}{$neighbour_atom_id} } ) {
-                        if( $decompose ) {
-                            push @residue_energy, $bonded_potential;
-                        } else {
-                            $residue_energy_sum += $bonded_potential->value;
-                        }
+                        push @residue_energy, $bonded_potential;
                     }
 
                     # Adds non-bonded potential energy term.
@@ -813,23 +808,9 @@ sub energy
                             )
                         );
 
-                        if( $decompose ) {
-                            push @residue_energy, $energy_potential;
-                        } else {
-                            $residue_energy_sum += $energy_potential->value;
-                        }
+                        push @residue_energy, $energy_potential;
                     }
                 }
-            }
-
-            if( ! $decompose ) {
-                my $energy_potential = Energy->new();
-                $energy_potential->set_energy(
-                    $potential,
-                    [ $atom_id ],
-                    $residue_energy_sum
-                );
-                push @residue_energy, $energy_potential;
             }
 
             push @residue_energies, @residue_energy;
@@ -837,37 +818,36 @@ sub energy
     }
 
     my @energies = ();
-    if( ! $decompose ) {
-        @energies = @residue_energies;
-    } else {
-        # TODO: seems here it could be optimized.
-        my @atom_pairs = ();
-        my %atom_pair_interactions = ();
-        for my $residue_energy ( @residue_energies ) {
-            my $atom_id = $residue_energy->atoms->[0];
-            my $interaction_atom_id = $residue_energy->atoms->[-1];
+    my @atom_pairs = ();
+    my %atom_pair_interactions = ();
+    for my $residue_energy ( @residue_energies ) {
+        my $atom_id = $residue_energy->atoms->[0];
+        my $interaction_atom_id = $residue_energy->atoms->[-1];
+
+        if( ! exists $atom_pair_interactions{$atom_id}{$interaction_atom_id} ) {
             push @atom_pairs, [ $atom_id, $interaction_atom_id ];
-            push @{ $atom_pair_interactions{$atom_id}{$interaction_atom_id} },
-                $residue_energy;
         }
 
-        my $energy_sum = 0;
-        for my $atom_pair ( @atom_pairs ) {
-            my $atom_id = $atom_pair->[0];
-            my $interaction_atom_id = $atom_pair->[-1];
+        push @{ $atom_pair_interactions{$atom_id}{$interaction_atom_id} },
+            $residue_energy;
+    }
 
-            for my $energy ( @{ $atom_pair_interactions{$atom_id}
-                                                       {$interaction_atom_id} }){
-                $energy_sum += $energy->value;
-            }
+    my $energy_sum = 0;
+    for my $atom_pair ( @atom_pairs ) {
+        my $atom_id = $atom_pair->[0];
+        my $interaction_atom_id = $atom_pair->[1];
 
-            my $energy = Energy->new();
-            $energy->set_energy(
-                $potential, [ $atom_id, $interaction_atom_id ], $energy_sum
-            );
-
-            push @energies, $energy;
+        for my $energy ( @{ $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id} }){
+            $energy_sum += $energy->value;
         }
+
+        my $energy = Energy->new();
+        $energy->set_energy(
+            $potential, [ $atom_id, $interaction_atom_id ], $energy_sum
+        );
+
+        push @energies, $energy;
     }
 
     return \@energies;
