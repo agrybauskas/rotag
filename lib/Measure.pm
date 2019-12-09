@@ -823,37 +823,48 @@ sub energy
     for my $residue_energy ( @residue_energies ) {
         my $atom_id = $residue_energy->atoms->[0];
         my $interaction_atom_id = $residue_energy->atoms->[-1];
+        my $residue_potential = $residue_energy->energy_type;
 
-        if( ! exists $atom_pair_interactions{$atom_id}{$interaction_atom_id} ) {
+        if( ! exists $atom_pair_interactions{$atom_id}
+                                            {$interaction_atom_id}
+                                            {$residue_potential} ) {
             push @atom_pairs, [ $atom_id, $interaction_atom_id ];
         }
 
-        push @{ $atom_pair_interactions{$atom_id}{$interaction_atom_id} },
+        push @{ $atom_pair_interactions{$atom_id}
+                                       {$interaction_atom_id}
+                                       {$residue_potential} },
             $residue_energy;
     }
 
     for my $atom_pair ( @atom_pairs ) {
         my $atom_id = $atom_pair->[0];
         my $interaction_atom_id = $atom_pair->[1];
+        my @energy_types =
+            sort keys %{$atom_pair_interactions{$atom_id}{$interaction_atom_id}};
 
-        if( ! $decompose ) {
-            my $energy_sum = 0;
-            for my $energy ( @{ $atom_pair_interactions{$atom_id}
-                                                       {$interaction_atom_id} }){
-                $energy_sum += $energy->value;
-            }
-            my $total_energy = Energy->new();
-            $total_energy->set_energy(
-                $potential,
-                [ $atom_id, $interaction_atom_id ],
-                $energy_sum
-            );
-            $atom_pair_interactions{$atom_id}{$interaction_atom_id} =
-                [ $total_energy ];
+        # if( ! $decompose ) {
+        #     # my $energy_sum = 0;
+        #     # for my $energy ( @{ $atom_pair_interactions{$atom_id}
+        #     #                                            {$interaction_atom_id} }){
+        #     #     $energy_sum += $energy->value;
+        #     # }
+        #     # my $total_energy = Energy->new();
+        #     # $total_energy->set_energy(
+        #     #     $potential,
+        #     #     [ $atom_id, $interaction_atom_id ],
+        #     #     $energy_sum
+        #     # );
+        #     # $atom_pair_interactions{$atom_id}{$interaction_atom_id} =
+        #     #     [ $total_energy ];
+        # }
+
+        for my $energy_type ( @energy_types ) {
+            push @energies,
+                 @{ $atom_pair_interactions{$atom_id}
+                                           {$interaction_atom_id}
+                                           {$energy_type} };
         }
-
-        push @energies,
-            @{$atom_pair_interactions{$atom_id}{$interaction_atom_id}};
     }
 
     return \@energies;
