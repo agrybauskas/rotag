@@ -840,6 +840,25 @@ sub energy
     }
 
     my @energies = ();
+    if( $pairwise ) {
+        for my $atom_id ( @atom_ids ) {
+            my @interaction_atom_ids = @{ $atom_id_pairs{$atom_id} };
+            if( $decompose ) {
+                for my $interaction_atom_id ( @interaction_atom_ids ) {
+                    my @energy_types =
+                        sort
+                        keys %{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} };
+                    push @energies,
+                        map {$atom_pair_interactions{$atom_id}
+                                                    {$interaction_atom_id}{$_}[0]}
+                        @energy_types;
+                }
+            } else {
+
+            }
+        }
+    }
     # for my $atom_pair ( @atom_pairs ) {
     #     my $atom_id = $atom_pair->[0];
     #     my $interaction_atom_id = $atom_pair->[1];
