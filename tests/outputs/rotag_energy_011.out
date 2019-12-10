@@ -20,10 +20,20 @@ _[local]_pairwise_energy.label_entity_2_id
 _[local]_pairwise_energy.label_alt_2_id
 _[local]_pairwise_energy.calculation_method
 _[local]_pairwise_energy.value
-1 147 N N 18 SER A 1 . 147 N N 18 SER A 1 . lennard_jones 1.576480
-2 148 C CA 18 SER A 1 . 148 C CA 18 SER A 1 . lennard_jones -0.090347
-3 149 C C 18 SER A 1 . 149 C C 18 SER A 1 . lennard_jones -0.148720
-4 150 O O 18 SER A 1 . 150 O O 18 SER A 1 . lennard_jones 2.336500
-5 151 C CB 18 SER A 1 . 151 C CB 18 SER A 1 . lennard_jones 2.596744
-6 152 O OG 18 SER A 1 . 152 O OG 18 SER A 1 . lennard_jones 12.231106
+1 147 N N 18 SER A 1 . 150 O O 18 SER A 1 . lennard_jones -0.159847
+2 147 N N 18 SER A 1 . 152 O OG 18 SER A 1 . lennard_jones 1.775961
+3 147 N N 18 SER A 1 . 153 O O 19 SER A 1 . lennard_jones -0.039633
+4 148 C CA 18 SER A 1 . 153 O O 19 SER A 1 . lennard_jones -0.090347
+5 149 C C 18 SER A 1 . 152 O OG 18 SER A 1 . lennard_jones -0.120980
+6 149 C C 18 SER A 1 . 153 O O 19 SER A 1 . lennard_jones -0.027740
+7 150 O O 18 SER A 1 . 147 N N 18 SER A 1 . lennard_jones -0.159847
+8 150 O O 18 SER A 1 . 151 C CB 18 SER A 1 . lennard_jones 2.618014
+9 150 O O 18 SER A 1 . 152 O OG 18 SER A 1 . lennard_jones -0.110314
+10 150 O O 18 SER A 1 . 153 O O 19 SER A 1 . lennard_jones -0.011352
+11 151 C CB 18 SER A 1 . 150 O O 18 SER A 1 . lennard_jones 2.618014
+12 151 C CB 18 SER A 1 . 153 O O 19 SER A 1 . lennard_jones -0.021271
+13 152 O OG 18 SER A 1 . 147 N N 18 SER A 1 . lennard_jones 1.775961
+14 152 O OG 18 SER A 1 . 149 C C 18 SER A 1 . lennard_jones -0.120980
+15 152 O OG 18 SER A 1 . 150 O O 18 SER A 1 . lennard_jones -0.110314
+16 152 O OG 18 SER A 1 . 153 O O 19 SER A 1 . lennard_jones 10.686439
 #
