@@ -875,7 +875,35 @@ sub energy
             }
         } else {
             if( $decompose ) {
+                my %energy_sum = ();
+                for my $interaction_atom_id ( @interaction_atom_ids ) {
+                    my @energy_types =
+                        sort
+                        keys %{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} };
 
+                    for my $energy_type ( @energy_types ) {
+                        if( exists $energy_sum{$energy_type} &&
+                            defined $energy_sum{$energy_type} ) {
+                            $energy_sum{$energy_type} +=
+                                $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id}
+                                                       {$energy_type}[0]->value;
+                        } else {
+                            $energy_sum{$energy_type} +=
+                                $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id}
+                                                       {$energy_type}[0]->value;
+                        }
+                    }
+                }
+
+                for my $energy_type ( sort keys %energy_sum ) {
+                    my $energy = Energy->new();
+                    $energy->set_energy( $energy_type, [ $atom_id ],
+                                         $energy_sum{$energy_type} );
+                    push @energies, $energy;
+                }
             } else {
                 my $energy_sum = 0;
                 for my $interaction_atom_id ( @interaction_atom_ids ) {
