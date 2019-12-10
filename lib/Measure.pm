@@ -840,25 +840,43 @@ sub energy
     }
 
     my @energies = ();
-    if( $pairwise ) {
-        for my $atom_id ( @atom_ids ) {
+    for my $atom_id ( @atom_ids ) {
+        if( $pairwise ) {
             my @interaction_atom_ids = @{ $atom_id_pairs{$atom_id} };
-            if( $decompose ) {
-                for my $interaction_atom_id ( @interaction_atom_ids ) {
-                    my @energy_types =
-                        sort
-                        keys %{ $atom_pair_interactions{$atom_id}
-                                                       {$interaction_atom_id} };
-                    push @energies,
-                        map {$atom_pair_interactions{$atom_id}
-                                                    {$interaction_atom_id}{$_}[0]}
-                        @energy_types;
-                }
-            } else {
+            for my $interaction_atom_id ( @interaction_atom_ids ) {
+                my @energy_types =
+                    sort
+                    keys %{ $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id} };
 
+                if( $decompose ) {
+                    push @energies,
+                        map { $atom_pair_interactions{$atom_id}
+                                                     {$interaction_atom_id}
+                                                     {$_}[0] }
+                        @energy_types;
+                } else {
+                    my $energy_sum = 0;
+                    for my $energy_type ( @energy_types ) {
+                        $energy_sum +=
+                            $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id}
+                                                   {$energy_type}[0]->value;
+                    }
+
+                    my $energy = Energy->new();
+                    $energy->set_energy( $potential,
+                                         [ $atom_id, $interaction_atom_id ],
+                                         $energy_sum );
+
+                    push @energies, $energy;
+                }
             }
+        } else {
+
         }
     }
+
     # for my $atom_pair ( @atom_pairs ) {
     #     my $atom_id = $atom_pair->[0];
     #     my $interaction_atom_id = $atom_pair->[1];
