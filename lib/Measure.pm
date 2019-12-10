@@ -841,8 +841,9 @@ sub energy
 
     my @energies = ();
     for my $atom_id ( @atom_ids ) {
+        my @interaction_atom_ids = @{ $atom_id_pairs{$atom_id} };
+
         if( $pairwise ) {
-            my @interaction_atom_ids = @{ $atom_id_pairs{$atom_id} };
             for my $interaction_atom_id ( @interaction_atom_ids ) {
                 my @energy_types =
                     sort
@@ -873,7 +874,29 @@ sub energy
                 }
             }
         } else {
+            if( $decompose ) {
 
+            } else {
+                my $energy_sum = 0;
+                for my $interaction_atom_id ( @interaction_atom_ids ) {
+                    my @energy_types =
+                        sort
+                        keys %{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} };
+
+                    for my $energy_type ( @energy_types ) {
+                        $energy_sum +=
+                            $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id}
+                                                   {$energy_type}[0]->value;
+                    }
+                }
+
+                my $energy = Energy->new();
+                $energy->set_energy( $potential, [ $atom_id ], $energy_sum );
+
+                push @energies, $energy;
+            }
         }
     }
 
