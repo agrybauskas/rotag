@@ -18,10 +18,10 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 ASP 219 A 1 1 N 1408 CA 1409 CB 1412 CG 1416 chi1 -90.000 degrees
-2 ASP 219 A 1 1 CA 1409 CB 1412 CG 1416 OD1 1419 chi2 180.000 degrees
-3 ASP 219 A 1 2 N 1408 CA 1409 CB 1412 CG 1417 chi1 -90.000 degrees
-4 ASP 219 A 1 2 CA 1409 CB 1412 CG 1417 OD1 1420 chi2 -90.000 degrees
-5 ASP 219 A 1 3 N 1408 CA 1409 CB 1412 CG 1418 chi1 -90.000 degrees
-6 ASP 219 A 1 3 CA 1409 CB 1412 CG 1418 OD1 1421 chi2 90.000 degrees
+1 ASP 219 A 1 1 1408 N 1409 CA 1412 CB 1416 CG chi1 -90.000 degrees
+2 ASP 219 A 1 1 1409 CA 1412 CB 1416 CG 1419 OD1 chi2 180.000 degrees
+3 ASP 219 A 1 2 1408 N 1409 CA 1412 CB 1417 CG chi1 -90.000 degrees
+4 ASP 219 A 1 2 1409 CA 1412 CB 1417 CG 1420 OD1 chi2 -90.000 degrees
+5 ASP 219 A 1 3 1408 N 1409 CA 1412 CB 1418 CG chi1 -90.000 degrees
+6 ASP 219 A 1 3 1409 CA 1412 CB 1418 CG 1421 OD1 chi2 90.000 degrees
 #

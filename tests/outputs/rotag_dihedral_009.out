@@ -18,5 +18,5 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 THR 340 A 1 . N 2391 CA 2392 CB 2395 OG1 2396 chi1 0.988794 radians
+1 THR 340 A 1 . 2391 N 2392 CA 2395 CB 2396 OG1 chi1 0.988794 radians
 #

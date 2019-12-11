@@ -18,5 +18,5 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 SER 18 A 1 . N 147 CA 148 CB 153 OG 154 chi1 0.000 degrees
+1 SER 18 A 1 . 147 N 148 CA 153 CB 154 OG chi1 0.000 degrees
 #

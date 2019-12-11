@@ -18,14 +18,14 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 XAA 18 A 1 1 XA 4 CA 1 CB 2 CG 6 chi1 -3.141593 radians
-2 XAA 18 A 1 10 XA 4 CA 1 CB 2 CG 15 chi1 2.513274 radians
-3 XAA 18 A 1 2 XA 4 CA 1 CB 2 CG 7 chi1 -2.513274 radians
-4 XAA 18 A 1 3 XA 4 CA 1 CB 2 CG 8 chi1 -1.884955 radians
-5 XAA 18 A 1 4 XA 4 CA 1 CB 2 CG 9 chi1 -1.256637 radians
-6 XAA 18 A 1 5 XA 4 CA 1 CB 2 CG 10 chi1 -0.628318 radians
-7 XAA 18 A 1 6 XA 4 CA 1 CB 2 CG 11 chi1 -0.000000 radians
-8 XAA 18 A 1 7 XA 4 CA 1 CB 2 CG 12 chi1 0.628319 radians
-9 XAA 18 A 1 8 XA 4 CA 1 CB 2 CG 13 chi1 1.256637 radians
-10 XAA 18 A 1 9 XA 4 CA 1 CB 2 CG 14 chi1 1.884955 radians
+1 XAA 18 A 1 1 4 XA 1 CA 2 CB 6 CG chi1 -3.141593 radians
+2 XAA 18 A 1 10 4 XA 1 CA 2 CB 15 CG chi1 2.513274 radians
+3 XAA 18 A 1 2 4 XA 1 CA 2 CB 7 CG chi1 -2.513274 radians
+4 XAA 18 A 1 3 4 XA 1 CA 2 CB 8 CG chi1 -1.884955 radians
+5 XAA 18 A 1 4 4 XA 1 CA 2 CB 9 CG chi1 -1.256637 radians
+6 XAA 18 A 1 5 4 XA 1 CA 2 CB 10 CG chi1 -0.628318 radians
+7 XAA 18 A 1 6 4 XA 1 CA 2 CB 11 CG chi1 -0.000000 radians
+8 XAA 18 A 1 7 4 XA 1 CA 2 CB 12 CG chi1 0.628319 radians
+9 XAA 18 A 1 8 4 XA 1 CA 2 CB 13 CG chi1 1.256637 radians
+10 XAA 18 A 1 9 4 XA 1 CA 2 CB 14 CG chi1 1.884955 radians
 #

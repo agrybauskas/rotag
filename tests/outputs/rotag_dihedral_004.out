@@ -18,6 +18,6 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 LEU 546 B 1 . N 8409 CA 8410 CB 8413 CG 8414 chi1 3.092570 radians
-2 LEU 546 B 1 . CA 8410 CB 8413 CG 8414 CD1 8415 chi2 1.210109 radians
+1 LEU 546 B 1 . 8409 N 8410 CA 8413 CB 8414 CG chi1 3.092570 radians
+2 LEU 546 B 1 . 8410 CA 8413 CB 8414 CG 8415 CD1 chi2 1.210109 radians
 #
