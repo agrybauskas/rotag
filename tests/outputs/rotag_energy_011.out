@@ -8,7 +8,7 @@ _[local]_pairwise_energy.label_atom_1_id
 _[local]_pairwise_energy.label_seq_1_id
 _[local]_pairwise_energy.label_comp_1_id
 _[local]_pairwise_energy.label_asym_1_id
-_[local]_pairwise_energy.label_entity_1_id
+_[local]_pairwise_energy.pdbx_PDB_model_num_1
 _[local]_pairwise_energy.label_alt_1_id
 _[local]_pairwise_energy.atom_2_id
 _[local]_pairwise_energy.type_symbol_2
@@ -16,7 +16,7 @@ _[local]_pairwise_energy.label_atom_2_id
 _[local]_pairwise_energy.label_seq_2_id
 _[local]_pairwise_energy.label_comp_2_id
 _[local]_pairwise_energy.label_asym_2_id
-_[local]_pairwise_energy.label_entity_2_id
+_[local]_pairwise_energy.pdbx_PDB_model_num_2
 _[local]_pairwise_energy.label_alt_2_id
 _[local]_pairwise_energy.calculation_method
 _[local]_pairwise_energy.value

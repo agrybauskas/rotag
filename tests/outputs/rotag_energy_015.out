@@ -1,4 +1,4 @@
-id,atom_1_id,type_symbol_1,label_atom_1_id,label_seq_1_id,label_comp_1_id,label_asym_1_id,label_entity_1_id,label_alt_1_id,atom_2_id,type_symbol_2,label_atom_2_id,label_seq_2_id,label_comp_2_id,label_asym_2_id,label_entity_2_id,label_alt_2_id,calculation_method,value
+id,atom_1_id,type_symbol_1,label_atom_1_id,label_seq_1_id,label_comp_1_id,label_asym_1_id,pdbx_PDB_model_num_1,label_alt_1_id,atom_2_id,type_symbol_2,label_atom_2_id,label_seq_2_id,label_comp_2_id,label_asym_2_id,pdbx_PDB_model_num_2,label_alt_2_id,calculation_method,value
 1,1408,N,N,219,ASP,A,1,.,1411,O,O,219,ASP,A,1,.,composite,-0.116906
 2,1408,N,N,219,ASP,A,1,.,1413,C,CG,219,ASP,A,1,.,composite,-0.061743
 3,1408,N,N,219,ASP,A,1,.,1414,O,OD1,219,ASP,A,1,.,composite,-0.111006
