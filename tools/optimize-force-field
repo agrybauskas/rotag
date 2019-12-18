@@ -83,15 +83,13 @@ my $params = Parameters->new();
 my $multi_parameters =
     $params->explore_force_field_parameters( [ $parameter_file ] );
 
-
 # Calculates RMSD for given parameters.
-# TODO: maybe should try to generalize in the future for more parameters or
-# have different parameter files for each potential energy functions, such as
-# hard_sphere, soft_sphere and composite.
-my %pdbx_loops;
-$pdbx_loops{'_[local]_parameter_estimation'}{'attributes'} =
+my %pdbx;
+$pdbx{'_[local]_parameter_estimation'}{'metadata'}{'attributes'} =
     [ 'id', 'lj_k', 'c_k', 'h_k', 't_k', 'cutoff_atom', 'cutoff_start',
       'cutoff_end', 'rotamer_number', 'energy_average', 'rmsd_average' ];
+$pdbx{'_[local]_parameter_estimation'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_[local]_parameter_estimation'}{'metadata'}{'is_indexed'} = 0;
 
 my $calculation_id = 1;
 for my $parameters ( @{ $multi_parameters } ) {
@@ -218,7 +216,7 @@ for my $parameters ( @{ $multi_parameters } ) {
         }
     }
 
-    push @{ $pdbx_loops{'_[local]_parameter_estimation'}{'data'} },
+    push @{ $pdbx{'_[local]_parameter_estimation'}{'data'} },
         $calculation_id, $force_field->{'lj_k'}, $force_field->{'c_k'},
         $force_field->{'h_k'}, $force_field->{'t_k'},
         $force_field->{'cutoff_atom'}, $force_field->{'cutoff_start'},
@@ -229,4 +227,4 @@ for my $parameters ( @{ $multi_parameters } ) {
     $calculation_id++;
 }
 
-to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+to_pdbx( \%pdbx, { 'tags' => [ '_[local]_parameter_estimation' ] } );
