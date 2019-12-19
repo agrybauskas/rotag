@@ -14,6 +14,28 @@ sub new
     return bless $self, $class;
 }
 
+# ----------------------------- Setters/Getters ------------------------------- #
+
+sub parameters
+{
+
+}
+
 # --------------------------------- Methods ----------------------------------- #
+
+sub calculation_func
+{
+
+}
+
+sub estimation_func
+{
+
+}
+
+sub contraints
+{
+
+}
 
 1;
