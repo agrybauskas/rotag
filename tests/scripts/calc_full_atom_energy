@@ -16,7 +16,8 @@ my ( $residue_id,
      $potential,
      $interaction_specifier,
      $checkable_angles,
-     $pdbx_dump_file ) = @ARGV;
+     $pdbx_dump_file,
+     $rmsd ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -54,6 +55,7 @@ my ( $favourable_angles, $favourable_energies ) =
                                     "${pdbx_model},${residue_alt}",
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
+                                ( defined $rmsd ? ( 'rmsd' => 1 ): () )
                               },
                               [ @checkable_angles ],
                               'threads' => 1 ) };

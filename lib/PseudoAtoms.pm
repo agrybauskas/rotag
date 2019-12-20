@@ -761,13 +761,14 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $options ) = (
+         $non_bonded_potential, $bonded_potential, $rmsd, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
+        $args->{'rmsd'},
         $args->{'options'},
     );
 
@@ -782,6 +783,7 @@ sub calc_full_atom_energy
     my @checkable_angles = @{ $array_blocks };
     my @allowed_angles;
     my @energy_sums;
+    my @rmsd;
 
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
@@ -852,6 +854,10 @@ sub calc_full_atom_energy
 
         push @allowed_angles, $checkable_angles[$i];
         push @energy_sums, $rotamer_energy_sum;
+
+        if( $rmsd ) {
+            print 'RMSD~~';
+        }
     }
 
     return [ \@allowed_angles, \@energy_sums ] ;
