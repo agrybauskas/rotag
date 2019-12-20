@@ -36,7 +36,8 @@ use ForceField::NonBonded qw( general
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product );
-use Measure qw( all_dihedral );
+use Measure qw( all_dihedral
+                rmsd_sidechains );
 use BondProperties qw( hybridization
                        rotatable_bonds
                        unique_rotatables );
@@ -783,7 +784,7 @@ sub calc_full_atom_energy
     my @checkable_angles = @{ $array_blocks };
     my @allowed_angles;
     my @energy_sums;
-    my @rmsd;
+    my @rmsds;
 
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
@@ -855,12 +856,14 @@ sub calc_full_atom_energy
         push @allowed_angles, $checkable_angles[$i];
         push @energy_sums, $rotamer_energy_sum;
 
-        if( $rmsd ) {
-            print 'RMSD~~';
+        if( defined $rmsd ) {
+            push @rmsds,
+                rmsd_sidechains( $parameters, $residue_site, \%rotamer_site,
+                                 $residue_unique_key );
         }
     }
 
-    return [ \@allowed_angles, \@energy_sums ] ;
+    return [ \@allowed_angles, \@energy_sums, \@rmsds ] ;
 }
 
 #
