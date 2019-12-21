@@ -9,10 +9,10 @@ sub new
 {
     my ( $class, $args ) = @_;
 
-    my $self = { 'parameters'  => undef,
-                 'calculation' => undef,
-                 'estimation'  => undef,
-                 'constraints' => undef };
+    my $self = [ { 'parameters'  => undef,
+                   'calculation' => undef,
+                   'estimation'  => undef,
+                   'constraints' => undef } ];
 
     return bless $self, $class;
 }
