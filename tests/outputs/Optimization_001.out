@@ -1,8 +1,6 @@
-$VAR1 = bless( [
-  {
-    'calculation' => undef,
-    'constraints' => undef,
-    'estimation' => undef,
-    'parameters' => undef
-  }
-], 'Optimization' );
+$VAR1 = bless( {
+  'calculation' => undef,
+  'constraints' => undef,
+  'estimation' => undef,
+  'parameters' => undef
+}, 'Optimization' );
