@@ -47,7 +47,7 @@ my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
-my ( $favourable_angles, $favourable_energies ) =
+my ( $favourable_angles, $favourable_energies, $rmsds ) =
     @{ calc_full_atom_energy( { 'parameters' => $parameters,
                                 'atom_site' => $atom_site,
                                 'residue_unique_key' =>
@@ -67,7 +67,18 @@ for my $i ( 0..$#{ $favourable_angles } ) {
     for my $j ( 0..$#{ $favourable_angles->[$i] } ) {
         print $angle_id, ', ', $angle_names[$j], ', ',
             sprintf( $sig_figs_min, 180 * $favourable_angles->[$i][$j] / $pi ), ', ',
-            sprintf( $sig_figs_min, $favourable_energies->[$i] ), "\n";
+            sprintf( $sig_figs_min, $favourable_energies->[$i] );
+        if( @{ $rmsds } ) {
+            my $rmsd_sum = 0;
+            my $rmsd_count = 0;
+            for my $rmsd ( @{ $rmsds->[$i] } ) {
+                $rmsd_sum += $rmsd->[-1];
+                $rmsd_count++;
+            }
+            print ', ' . sprintf( $sig_figs_min, $rmsd_sum / $rmsd_count ) ."\n";
+        } else {
+            print "\n";
+        }
     }
     $angle_id++;
 }
