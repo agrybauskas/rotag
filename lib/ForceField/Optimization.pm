@@ -21,7 +21,8 @@ sub new
 
 sub parameters
 {
-
+    my ( $self, $parameters ) = @_;
+    $self->{'parameters'} = $parameters;
 }
 
 # --------------------------------- Methods ----------------------------------- #
