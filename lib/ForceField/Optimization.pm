@@ -9,7 +9,10 @@ sub new
 {
     my ( $class, $args ) = @_;
 
-    my $self = {};
+    my $self = { 'parameters'  => undef,
+                 'calculation' => undef,
+                 'estimation'  => undef,
+                 'constraints' => undef };
 
     return bless $self, $class;
 }
@@ -23,12 +26,12 @@ sub parameters
 
 # --------------------------------- Methods ----------------------------------- #
 
-sub calculation_func
+sub calculation
 {
 
 }
 
-sub estimation_func
+sub estimation
 {
 
 }
