@@ -39,12 +39,16 @@ our $VERSION = $VERSION;
 #*Options:
 #*    -a, --angle-step <float>    angle that each dihedral angle is turned by
 #*                                (default: 0.1).
+#*
+#*    -i, --iterations <int>      number of iterations.
+#*
 #*    -n, --threads <int>         number of threads.
 #*
 #*    -v, --version               print version.
 
 my $threads = 1;
 my $angles = '-180.0..36.0..180.0';
+my $max_iterations = 1;
 my $parameters_json_cmd = '{}';
 
 local $SIG{__WARN__} = sub {
@@ -57,6 +61,7 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'angles|a=s' => \$angles,
+    'iterations|i=s' => \$max_iterations,
     'json-parameters|j=s' => \$parameters_json_cmd,
     'threads|n=s' => \$threads,
     'help|h' => sub {
@@ -77,8 +82,10 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $calculations_left = 0;
-while( $calculations_left > 0 ) {
+my @parameters_to_optimize = ();
+
+my $iteration = 0;
+while( $iteration < $max_iterations ) {
     my $parameters = Parameters->new();
 
     # Parses JSON string.
@@ -209,4 +216,6 @@ while( $calculations_left > 0 ) {
             $rotamer_number++;
         }
     }
+
+    $iteration++;
 }
