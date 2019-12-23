@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_ref_frame
+                     evaluate_matrix_of_functions
                      matrix_of_functions
                      find_euler_angles
                      flatten
@@ -513,6 +514,21 @@ sub matrix_of_functions
         }
     }
     return \@matrix_of_functions;
+}
+
+sub evaluate_matrix_of_functions
+{
+    my ( $matrix_of_functions, $matrix_of_values ) = @_;
+    my @evaluated_matrix_of_functions = ();
+    for my $row ( 0..$#{ $matrix_of_functions } ) {
+        for my $col ( 0..$#{ $matrix_of_functions->[$row] } ) {
+            $evaluated_matrix_of_functions[$row][$col] =
+                $matrix_of_functions->[$row][$col]->(
+                    $matrix_of_values->[$row][$col]
+                );
+        }
+    }
+    return \@evaluated_matrix_of_functions;
 }
 
 # ------------------------- Symbolic linear algebra --------------------------- #
