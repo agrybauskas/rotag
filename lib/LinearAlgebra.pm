@@ -522,6 +522,9 @@ sub evaluate_matrix_of_functions
     my @evaluated_matrix_of_functions = ();
     for my $row ( 0..$#{ $matrix_of_functions } ) {
         for my $col ( 0..$#{ $matrix_of_functions->[$row] } ) {
+            if( ! defined $matrix_of_values->[$row][$col] ) {
+                die "The number of items in value matrix is missing.\n";
+            }
             $evaluated_matrix_of_functions[$row][$col] =
                 $matrix_of_functions->[$row][$col]->(
                     $matrix_of_values->[$row][$col]
