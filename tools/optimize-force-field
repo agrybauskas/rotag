@@ -5,7 +5,6 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
-use JSON;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
 
@@ -51,7 +50,6 @@ our $VERSION = $VERSION;
 my $threads = 1;
 my $angles = '-180.0..36.0..180.0';
 my $max_iterations = 1;
-my $parameters_json_cmd = '{}';
 
 local $SIG{__WARN__} = sub {
     warning( { 'message' => @_ } );
@@ -64,7 +62,6 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'angles|a=s' => \$angles,
     'iterations|i=s' => \$max_iterations,
-    'json-parameters|j=s' => \$parameters_json_cmd,
     'threads|n=s' => \$threads,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -84,15 +81,11 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $parameters = Parameters->new();
 my @parameters_to_optimize = ();
 
-# Parses JSON string.
-$parameters->set_parameter_values( \$parameters,
-                                   decode_json( $parameters_json_cmd ),
-                                   { 'is_json' => 1 } );
-
 foreach( 0..$max_iterations ) {
+    my $parameters = Parameters->new();
+
     # Calculates RMSD for given parameters.
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
