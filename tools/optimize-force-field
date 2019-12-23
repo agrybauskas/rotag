@@ -228,8 +228,16 @@ sub array2hash
 {
     my ( $keys, $value ) = @_;
     my %hash;
-    if( $#{ $keys } > 1 ) {
+    my $keys_count = scalar @{ $keys };
+    if( $#{ $keys } > 0 ) {
+        $hash{$keys->[0]} =
+            array2hash( [ ( @{ $keys } )[1..$keys_count-1] ], $value );
     } else {
+        if( $value =~ m/\[(\S*)\]/ ) {
+            $hash{$keys->[0]} = [ split /,/, $1 ];
+        } else {
+            $hash{$keys->[0]} = $value;
+        }
     }
     return \%hash;
 }
