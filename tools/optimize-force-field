@@ -98,7 +98,7 @@ if( $parameters_cmd ) {
     }
 }
 
-foreach( 0..$max_iterations ) {
+foreach( 0..$max_iterations-1 ) {
     # Calculates RMSD for given parameters.
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
@@ -222,6 +222,8 @@ foreach( 0..$max_iterations ) {
             $rotamer_number++;
         }
     }
+
+    print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
 }
 
 sub array2hash
