@@ -91,6 +91,8 @@ my @parameters_to_optimize = ();
 if( $parameters_cmd ) {
     for my $parameter_cmd ( split /;/, $parameters_cmd ) {
         my ( $key_path, $values ) = split /=/, $parameter_cmd;
+        my @keys = split /:/, $key_path;
+        my $parameter = array2hash( \@keys, $values );
     }
 }
 
@@ -221,3 +223,13 @@ if( $parameters_cmd ) {
 #         }
 #     }
 # }
+
+sub array2hash
+{
+    my ( $keys, $value ) = @_;
+    my %hash;
+    if( $#{ $keys } > 1 ) {
+    } else {
+    }
+    return \%hash;
+}
