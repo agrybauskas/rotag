@@ -13,6 +13,8 @@ use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use Combinatorics qw( permutation );
 use ForceField::Parameters;
+use LinearAlgebra qw( evaluate_matrix_of_functions
+                      matrix_of_functions );
 use Logging qw( error
                 warning );
 use Measure qw( rmsd );
@@ -82,17 +84,15 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+my $parameters = Parameters->new();
 my @parameters_to_optimize = ();
 
-my $iteration = 0;
-while( $iteration < $max_iterations ) {
-    my $parameters = Parameters->new();
+# Parses JSON string.
+$parameters->set_parameter_values( \$parameters,
+                                   decode_json( $parameters_json_cmd ),
+                                   { 'is_json' => 1 } );
 
-    # Parses JSON string.
-    $parameters->set_parameter_values( \$parameters,
-                                       decode_json( $parameters_json_cmd ),
-                                       { 'is_json' => 1 } );
-
+foreach( 0..$max_iterations ) {
     # Calculates RMSD for given parameters.
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
@@ -216,6 +216,4 @@ while( $iteration < $max_iterations ) {
             $rotamer_number++;
         }
     }
-
-    $iteration++;
 }
