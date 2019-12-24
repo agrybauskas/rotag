@@ -862,8 +862,8 @@ sub calc_full_atom_energy
 
         if( defined $rmsd ) {
             push @rmsds,
-                @{ rmsd_sidechains( $parameters, $residue_site, \%rotamer_site,
-                                    $residue_unique_key ) };
+                rmsd_sidechains( $parameters, $residue_site, \%rotamer_site,
+                                 $residue_unique_key );
         }
     }
 
