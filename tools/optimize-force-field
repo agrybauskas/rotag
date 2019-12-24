@@ -190,7 +190,11 @@ foreach( 0..$max_iterations-1 ) {
         }
     }
 
-    print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+    if( $rotamer_number == 0 ) {
+        die "no possible rotamer solutions were detected.\n";
+    } else {
+        print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+    }
 }
 
 sub array2hash
