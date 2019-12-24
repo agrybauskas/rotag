@@ -293,7 +293,8 @@ sub generate_rotamer
 #           'angle_start' => 0.0,
 #           'angle_step' => 36.0,
 #           'angle_end' => 360.0,
-#     }.
+#     };
+#     $args->{rmsd} - include RMSD calculations;
 #     $args->{conf_model} - possible sidechain movements described by sidechain
 #     model functions in SidechainModels.pm;
 #     $args->{interactions} - interaction models described by functions in
@@ -313,6 +314,7 @@ sub generate_library
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
     my $angles = $args->{'angles'};
+    my $rmsd = $args->{'rmsd'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
     my $threads = $args->{'threads'};
@@ -431,7 +433,7 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
-                my ( $allowed_angles, $energy_sums ) =
+                my ( $allowed_angles, $energy_sums, $rmsds ) =
                     @{ threading(
                            \&calc_full_atom_energy,
                            { 'parameters' => $parameters,
@@ -442,6 +444,7 @@ sub generate_library
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
+                             ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                              'options' => $options },
                            [ @allowed_angles ],
                            $threads ) };
@@ -469,7 +472,8 @@ sub generate_library
                         push @{ $rotamer_library{"$residue_unique_key"} },
                             { 'angles' => \%angles,
                               'potential' => $interactions,
-                              'potential_energy_value' => $rotamer_energy_sum };
+                              'potential_energy_value' => $rotamer_energy_sum,
+                              ( $rmsd ? ( 'rmsd' => $rmsds ) : () ) };
                     }
                 }
             }
