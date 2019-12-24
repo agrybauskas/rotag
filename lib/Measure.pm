@@ -577,7 +577,7 @@ sub rmsd_sidechains
 
     $average //= 0;
     $best_case //= 0;
-    $include_atoms //= $parameters->{'sidechain_atom_names'}{'label_atom_id'};
+    $include_atoms //= $parameters->{'_[local]_sidechain_atom_names'};
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
     # TODO: think if using of symmetric atom data should be optional or
@@ -605,7 +605,7 @@ sub rmsd_sidechains
                             'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                             'label_alt_id' => [ $first_alt_id ],
                             ( $include_atoms ?
-                              ( 'label_alt_id' => $include_atoms ): () ) },
+                              ( 'label_atom_id' => $include_atoms ): () ) },
                       'data' =>
                           [ '[local]_selection_group', 'id',
                             'label_atom_id', 'label_seq_id',
@@ -626,7 +626,7 @@ sub rmsd_sidechains
                                 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                                 'label_alt_id' => [ $second_alt_id ],
                                 ( $include_atoms ?
-                                  ( 'label_alt_id' => $include_atoms ): () ) },
+                                  ( 'label_atom_id' => $include_atoms ): () ) },
                           'data' =>
                               [ 'id', '[local]_selection_group', 'label_atom_id',
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
