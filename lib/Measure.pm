@@ -569,15 +569,17 @@ sub rmsd_sidechains
 {
     my ( $parameters, $first_atom_site, $second_atom_site, $unique_residue_key,
          $options ) = @_;
-    my ( $average, $best_case, $include_atoms ) = (
+    my ( $average, $best_case, $include_atoms, $exclude_atoms ) = (
         $options->{'average'},
         $options->{'best_case'},
-        $options->{'include_atoms'}
+        $options->{'include_atoms'},
+        $options->{'exclude_atoms'}
     );
 
     $average //= 0;
     $best_case //= 0;
     $include_atoms //= $parameters->{'_[local]_sidechain_atom_names'};
+    $exclude_atoms //= [ 'CB' ];
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
     # TODO: think if using of symmetric atom data should be optional or
@@ -606,6 +608,9 @@ sub rmsd_sidechains
                             'label_alt_id' => [ $first_alt_id ],
                             ( $include_atoms ?
                               ( 'label_atom_id' => $include_atoms ): () ) },
+                      'exclude' =>
+                          { ( $exclude_atoms ?
+                              ( 'label_atom_id' => $exclude_atoms ): () ) },
                       'data' =>
                           [ '[local]_selection_group', 'id',
                             'label_atom_id', 'label_seq_id',
@@ -627,6 +632,9 @@ sub rmsd_sidechains
                                 'label_alt_id' => [ $second_alt_id ],
                                 ( $include_atoms ?
                                   ( 'label_atom_id' => $include_atoms ): () ) },
+                          'exclude' =>
+                              { ( $exclude_atoms ?
+                                    ( 'label_atom_id' => $exclude_atoms ): () )},
                           'data' =>
                               [ 'id', '[local]_selection_group', 'label_atom_id',
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
