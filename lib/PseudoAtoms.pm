@@ -788,7 +788,7 @@ sub calc_full_atom_energy
     my @checkable_angles = @{ $array_blocks };
     my @allowed_angles;
     my @energy_sums;
-    my @rmsds;
+    my @rmsd_averages;
 
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
@@ -861,13 +861,13 @@ sub calc_full_atom_energy
         push @energy_sums, $rotamer_energy_sum;
 
         if( defined $rmsd ) {
-            push @rmsds,
+            push @rmsd_averages,
                 rmsd_sidechains( $parameters, $residue_site, \%rotamer_site,
-                                 $residue_unique_key );
+                                 $residue_unique_key, { 'average' => 1 } );
         }
     }
 
-    return [ \@allowed_angles, \@energy_sums, \@rmsds ] ;
+    return [ \@allowed_angles, \@energy_sums, \@rmsd_averages ] ;
 }
 
 #
