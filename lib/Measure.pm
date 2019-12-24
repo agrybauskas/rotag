@@ -569,11 +569,15 @@ sub rmsd_sidechains
 {
     my ( $parameters, $first_atom_site, $second_atom_site, $unique_residue_key,
          $options ) = @_;
-    my ( $average, $best_case ) =
-        ( $options->{'average'}, $options->{'best_case'} );
+    my ( $average, $best_case, $include_atoms ) = (
+        $options->{'average'},
+        $options->{'best_case'},
+        $options->{'include_atoms'}
+    );
 
     $average //= 0;
     $best_case //= 0;
+    $include_atoms //= $parameters->{'sidechain_atom_names'}{'label_atom_id'};
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
     # TODO: think if using of symmetric atom data should be optional or
@@ -599,7 +603,9 @@ sub rmsd_sidechains
                           { 'label_seq_id' => [ $residue_id ],
                             'label_asym_id' => [ $chain ],
                             'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                            'label_alt_id' => [ $first_alt_id ] },
+                            'label_alt_id' => [ $first_alt_id ],
+                            ( $include_atoms ?
+                              ( 'label_alt_id' => $include_atoms ): () ) },
                       'data' =>
                           [ '[local]_selection_group', 'id',
                             'label_atom_id', 'label_seq_id',
@@ -618,7 +624,9 @@ sub rmsd_sidechains
                               { 'label_seq_id' => [ $residue_id ],
                                 'label_asym_id' => [ $chain ],
                                 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                                'label_alt_id' => [ $second_alt_id ] },
+                                'label_alt_id' => [ $second_alt_id ],
+                                ( $include_atoms ?
+                                  ( 'label_alt_id' => $include_atoms ): () ) },
                           'data' =>
                               [ 'id', '[local]_selection_group', 'label_atom_id',
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
