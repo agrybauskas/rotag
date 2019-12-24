@@ -69,13 +69,7 @@ for my $i ( 0..$#{ $favourable_angles } ) {
             sprintf( $sig_figs_min, 180 * $favourable_angles->[$i][$j] / $pi ), ', ',
             sprintf( $sig_figs_min, $favourable_energies->[$i] );
         if( @{ $rmsds } ) {
-            my $rmsd_sum = 0;
-            my $rmsd_count = 0;
-            for my $rmsd ( @{ $rmsds->[$i] } ) {
-                $rmsd_sum += $rmsd->[-1];
-                $rmsd_count++;
-            }
-            print ', ' . sprintf( $sig_figs_min, $rmsd_sum / $rmsd_count ) ."\n";
+            print ', ' . sprintf( $sig_figs_min, $rmsds->[$i][0] ) ."\n";
         } else {
             print "\n";
         }

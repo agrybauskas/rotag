@@ -559,7 +559,8 @@ sub rmsd
 # Input:
 #     ${first,second}_atom_site - atom site data structure;
 #     $unique_residue_key - unique residue key;
-#     $options{'best_case'} - chooses those rmsd that are lowest.
+#     $options{'average'} - calculates RMSD average;
+#     $options{'best_case'} - chooses those RMSD that are lowest.
 # Output:
 #     @sidechain_comparison_data - list of RMSD comparison data.
 #
@@ -568,8 +569,10 @@ sub rmsd_sidechains
 {
     my ( $parameters, $first_atom_site, $second_atom_site, $unique_residue_key,
          $options ) = @_;
-    my ( $best_case ) = ( $options->{'best_case'} );
+    my ( $average, $best_case ) =
+        ( $options->{'average'}, $options->{'best_case'} );
 
+    $average //= 0;
     $best_case //= 0;
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
@@ -694,6 +697,12 @@ sub rmsd_sidechains
                     @sidechain_comparison_data = @current_sidechain_data;
                     $rmsd_average = $current_rmsd_average;
                 }
+            } elsif( $average ) {
+                my $current_rmsd_average =
+                    sum( map { $_->[-1] } @current_sidechain_data ) /
+                    scalar @current_sidechain_data;
+                # TODO: give more information - not only RMSD value.
+                push @sidechain_comparison_data, $current_rmsd_average;
             } else {
                 push @sidechain_comparison_data, @current_sidechain_data;
             }
