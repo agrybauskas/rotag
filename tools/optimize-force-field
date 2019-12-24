@@ -172,27 +172,25 @@ foreach( 0..$max_iterations-1 ) {
         }
 
         next if ! %rotamer_library;
-        # use Data::Dumper;
-        # print STDERR Dumper \%rotamer_library;
 
-        # for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
-        #     my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-        #         split /,/sxm, $residue_unique_key;
+        for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
+            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+                split /,/sxm, $residue_unique_key;
 
-        #     # Chooses the rotamer with the lowest energy state.
-        #     my $rotamers = $rotamer_library{$residue_unique_key};
-        #     my ( $top_rotamer ) =
-        #         sort { $a->{'potential_energy_value'} <=>
-        #                $b->{'potential_energy_value'} }
-        #             @{ $rotamers };
+            # Chooses the rotamer with the lowest energy state.
+            my $rotamers = $rotamer_library{$residue_unique_key};
+            my ( $top_rotamer ) =
+                sort { $a->{'potential_energy_value'} <=>
+                       $b->{'potential_energy_value'} }
+                    @{ $rotamers };
 
-        #     $rmsd_sum += $top_rotamer->{'rmsd'};
-        #     $energy_sum += $top_rotamer->{'potential_energy_value'};
-        #     $rotamer_number++;
-        # }
+            $rmsd_sum += $top_rotamer->{'rmsd'};
+            $energy_sum += $top_rotamer->{'potential_energy_value'};
+            $rotamer_number++;
+        }
     }
 
-    # print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+    print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
 }
 
 sub array2hash

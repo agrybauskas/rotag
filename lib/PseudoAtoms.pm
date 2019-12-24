@@ -472,8 +472,8 @@ sub generate_library
                         push @{ $rotamer_library{"$residue_unique_key"} },
                             { 'angles' => \%angles,
                               'potential' => $interactions,
-                              'potential_energy_value' => $rotamer_energy_sum,
-                              ( $rmsd ? ( 'rmsd' => $rmsds ) : () ) };
+                              'potential_energy_value' => $energy_sums->[$i],
+                              ( $rmsd ? ( 'rmsd' => $rmsds->[$i][-1] ) : () ) };
                     }
                 }
             }
@@ -862,8 +862,8 @@ sub calc_full_atom_energy
 
         if( defined $rmsd ) {
             push @rmsds,
-                rmsd_sidechains( $parameters, $residue_site, \%rotamer_site,
-                                 $residue_unique_key );
+                @{ rmsd_sidechains( $parameters, $residue_site, \%rotamer_site,
+                                    $residue_unique_key ) };
         }
     }
 
