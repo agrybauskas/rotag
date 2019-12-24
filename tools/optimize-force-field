@@ -207,7 +207,17 @@ sub array2hash
             array2hash( [ ( @{ $keys } )[1..$keys_count-1] ], $value );
     } else {
         if( $value =~ m/\[(\S*)\]/ ) {
-            $hash{$keys->[0]} = [ split /,/, $1 ];
+            my @current_values = map { split /\.\./, $_ } split /,/, $1;
+            if( scalar @current_values == 3 ) {
+                my $start = $current_values[0];
+                my $step = $current_values[1];
+                $step ||= 1;
+                my $end = $current_values[2];
+                $hash{$keys->[0]} =
+                    [ map { $step * $_ } ( $start / $step .. $end / $step ) ];
+            } else {
+                $hash{$keys->[0]} = \@current_values;
+            }
         } else {
             $hash{$keys->[0]} = $value;
         }
