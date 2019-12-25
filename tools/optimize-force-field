@@ -87,8 +87,6 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $parameters = Parameters->new();
-
 my @parameters = ();
 my @values = ();
 if( $parameters_cmd ) {
@@ -118,7 +116,16 @@ if( $parameters_cmd ) {
 
 @values = @{ permutation( scalar @parameters, [], \@values, [] ) };
 
-foreach( 0..$max_iterations-1 ) {
+for my $i ( 0..scalar @values - 1 ) {
+    my $parameters = Parameters->new();
+
+    # Update the parameters.
+    for my $j ( 0..scalar @parameters - 1 ) {
+        $parameters->set_parameter_values( $parameters,
+                                           array2hash( $parameters[$j],
+                                                       $values[$i][$j] ) );
+    }
+
     # Calculates RMSD for given parameters.
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
