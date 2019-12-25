@@ -89,12 +89,30 @@ local @ARGV = ( q{-} ) unless @ARGV;
 
 my $parameters = Parameters->new();
 
+my @parameters = ();
+my @values = ();
 if( $parameters_cmd ) {
     for my $parameter_cmd ( split /;/, $parameters_cmd ) {
         my ( $key_path, $values ) = split /=/, $parameter_cmd;
+
         my @keys = split /:/, $key_path;
-        my $parameter_update = array2hash( \@keys, $values );
-        $parameters->set_parameter_values( $parameters, $parameter_update );
+        push @parameters, \@keys;
+
+        if( $values =~ m/\[(\S*)\]/ ) {
+            my @current_values = map { split /\.\./, $_ } split /,/, $1;
+            if( scalar @current_values == 3 ) {
+                my $start = $current_values[0];
+                my $step = $current_values[1];
+                $step ||= 1;
+                my $end = $current_values[2];
+                push @values,
+                    [ map { $step * $_ } ( $start / $step .. $end / $step ) ];
+            } else {
+                push @values, \@current_values;
+            }
+        } else {
+            push @values, [ $values ];
+        }
     }
 }
 
@@ -206,21 +224,7 @@ sub array2hash
         $hash{$keys->[0]} =
             array2hash( [ ( @{ $keys } )[1..$keys_count-1] ], $value );
     } else {
-        if( $value =~ m/\[(\S*)\]/ ) {
-            my @current_values = map { split /\.\./, $_ } split /,/, $1;
-            if( scalar @current_values == 3 ) {
-                my $start = $current_values[0];
-                my $step = $current_values[1];
-                $step ||= 1;
-                my $end = $current_values[2];
-                $hash{$keys->[0]} =
-                    [ map { $step * $_ } ( $start / $step .. $end / $step ) ];
-            } else {
-                $hash{$keys->[0]} = \@current_values;
-            }
-        } else {
-            $hash{$keys->[0]} = $value;
-        }
+        $hash{$keys->[0]} = $value;
     }
     return \%hash;
 }
