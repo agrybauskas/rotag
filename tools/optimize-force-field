@@ -116,6 +116,8 @@ if( $parameters_cmd ) {
     }
 }
 
+@values = @{ permutation( scalar @parameters, [], \@values, [] ) };
+
 foreach( 0..$max_iterations-1 ) {
     # Calculates RMSD for given parameters.
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
