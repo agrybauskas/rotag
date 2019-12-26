@@ -447,7 +447,7 @@ sub covalent_bond_combinations
 sub set_parameter_values
 {
     my ( $self, $parameters_ref, $parameter_values, $options ) = @_;
-    my ( $is_json ) = ( $options->{'is_json'} );
+    my ( $is_json, $is_long ) = ( $options->{'is_json'}, $options->{'is_long'} );
 
     if( $is_json ) {
         if( ref $parameter_values eq 'HASH' ) {
@@ -465,6 +465,22 @@ sub set_parameter_values
                 }
             }
         }
+    } elsif( $is_long ) {
+        if( ref $parameter_values eq 'HASH' ) {
+            for my $parameter ( keys %{ $parameter_values } ) {
+                if( ref \$parameter_values->{$parameter} eq 'SCALAR' ||
+                    ref \$parameter_values->{$parameter} eq 'ARRAY' ) {
+                    $parameters_ref->{$parameter} =
+                        $parameter_values->{$parameter};
+                } else {
+                    $self->set_parameter_values(
+                        $parameters_ref->{$parameter},
+                        $parameter_values->{$parameter},
+                        { 'is_long' => 1 }
+                    );
+                }
+            }
+        }
     } else {
         for my $category ( sort keys %{ $parameter_values } ) {
             for my $attribute ( sort keys %{ $parameter_values->{$category} } ) {
@@ -478,7 +494,7 @@ sub set_parameter_values
         }
     }
 
-    return $parameter_values;
+    return;
 }
 
 1;
