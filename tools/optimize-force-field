@@ -116,7 +116,11 @@ if( $parameters_cmd ) {
 
 @values = @{ permutation( scalar @parameters, [], \@values, [] ) };
 
-print join( ',', map { join( '.', @{ $_ } ) } @parameters ), "\n";
+if( @parameters ) {
+    print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd\n";
+} else {
+    print "rmsd\n";
+}
 
 for my $i ( 0..scalar @values - 1 ) {
     my $parameters = Parameters->new();
@@ -222,8 +226,12 @@ for my $i ( 0..scalar @values - 1 ) {
     if( $rotamer_number == 0 ) {
         die "no possible rotamer solutions were detected.\n";
     } else {
-        print join( ',', @{ $values[$i] } ) . ',' .
-              sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+        if( @parameters ) {
+            print join( ',', @{ $values[$i] } ) . ',' .
+                sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+        } else {
+            print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+        }
     }
 }
 
