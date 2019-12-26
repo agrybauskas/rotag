@@ -57,11 +57,11 @@ my $parameters_cmd = '';
 my $max_iterations = 1;
 
 local $SIG{__WARN__} = sub {
-    warning( { 'message' => @_ } );
+    # warning( { 'message' => @_ } );
 };
 
 local $SIG{__DIE__} = sub {
-    warning( { 'message' => @_ } );
+    # warning( { 'message' => @_ } );
 };
 
 GetOptions(
