@@ -61,7 +61,7 @@ local $SIG{__WARN__} = sub {
 };
 
 local $SIG{__DIE__} = sub {
-    error( { 'program' => $0, 'message' => @_ } );
+    warning( { 'message' => @_ } );
 };
 
 GetOptions(
@@ -186,7 +186,7 @@ for my $i ( 0..scalar @values - 1 ) {
                                         { 'exclude_dot' => 1 } );
 
             my $rotamer_library = {};
-            eval {
+            eval{
                 $rotamer_library = generate_library(
                     { 'parameters' => $parameters,
                       'atom_site' => $current_atom_site,
@@ -200,6 +200,9 @@ for my $i ( 0..scalar @values - 1 ) {
                       'threads' => $threads,
                     } );
             };
+            if( $@ ) {
+                next;
+            }
 
             for my $residue_unique_key ( keys %{ $rotamer_library } ) {
                 $rotamer_library{$residue_unique_key} =
