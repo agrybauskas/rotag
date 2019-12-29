@@ -89,156 +89,187 @@ local @ARGV = ( q{-} ) unless @ARGV;
 
 my @parameters = ();
 my @values = ();
+# if( $parameters_cmd ) {
+#     for my $parameter_cmd ( split /;/, $parameters_cmd ) {
+#         my ( $key_path, $values ) = split /=/, $parameter_cmd;
+
+#         my @keys = split /:/, $key_path;
+#         push @parameters, \@keys;
+
+#         if( $values =~ m/\[(\S*)\]/ ) {
+#             my @current_values = map { split /\.\./, $_ } split /,/, $1;
+#             if( scalar @current_values == 3 ) {
+#                 my $start = $current_values[0];
+#                 my $step = $current_values[1];
+#                 $step ||= 1;
+#                 my $end = $current_values[2];
+#                 push @values,
+#                     [ map { $step * $_ } ( $start / $step .. $end / $step ) ];
+#             } else {
+#                 push @values, \@current_values;
+#             }
+#         } else {
+#             push @values, [ $values ];
+#         }
+#     }
+# }
+
 if( $parameters_cmd ) {
     for my $parameter_cmd ( split /;/, $parameters_cmd ) {
-        my ( $key_path, $values ) = split /=/, $parameter_cmd;
+        my @current_params_cmd =
+            ($parameters_cmd =~m/[A-Za-z0-9_\:\.\-]+\=(?:\[)[\-0-9\.,]+(?:\])/g);
+        my @current_parameters = ();
+        for my $current_param_cmd ( @current_params_cmd ) {
+            my ( $key_path, $values ) = split /=/, $current_param_cmd;
 
-        my @keys = split /:/, $key_path;
-        push @parameters, \@keys;
+            my @keys = split /:/, $key_path;
+            push @current_parameters, \@keys;
 
-        if( $values =~ m/\[(\S*)\]/ ) {
-            my @current_values = map { split /\.\./, $_ } split /,/, $1;
-            if( scalar @current_values == 3 ) {
-                my $start = $current_values[0];
-                my $step = $current_values[1];
-                $step ||= 1;
-                my $end = $current_values[2];
-                push @values,
-                    [ map { $step * $_ } ( $start / $step .. $end / $step ) ];
-            } else {
-                push @values, \@current_values;
-            }
-        } else {
-            push @values, [ $values ];
+            # if( $values =~ m/\[(\S*)\]/ ) {
+            #     my @current_values = map { split /\.\./, $_ } split /,/, $1;
+            #     if( scalar @current_values == 3 ) {
+            #         my $start = $current_values[0];
+            #         my $step = $current_values[1];
+            #         $step ||= 1;
+            #         my $end = $current_values[2];
+            #         push @values,
+            #             [ map { $step * $_ } ( $start / $step .. $end / $step ) ];
+            #     } else {
+            #         push @values, \@current_values;
+            #     }
+            # } else {
+            #     push @values, [ $values ];
+            # }
         }
     }
 }
 
 @values = @{ permutation( scalar @parameters, [], \@values, [] ) };
 
-if( @parameters ) {
-    print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd\n";
-} else {
-    print "rmsd\n";
-}
+# if( @parameters ) {
+#     print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd\n";
+# } else {
+#     print "rmsd\n";
+# }
 
 for my $i ( 0..scalar @values - 1 ) {
-    my $parameters = Parameters->new();
+    # my $parameters = Parameters->new();
 
-    # Update the parameters.
-    for my $j ( 0..scalar @parameters - 1 ) {
-        $parameters->set_parameter_values( $parameters,
-                                           array2hash( $parameters[$j],
-                                                       $values[$i][$j] ),
-                                           { 'is_long' => 1 } );
-    }
+    # # Update the parameters.
+    # for my $j ( 0..scalar @parameters - 1 ) {
+    #     $parameters->set_parameter_values( $parameters,
+    #                                        array2hash( $parameters[$j],
+    #                                                    $values[$i][$j] ),
+    #                                        { 'is_long' => 1 } );
+    # }
 
-    # Calculates RMSD for given parameters.
-    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+    # # Calculates RMSD for given parameters.
+    # my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
-    # Parses string describing angles.
-    my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
+    # # Parses string describing angles.
+    # my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
 
-    my $rmsd_sum = 0;
-    my $energy_sum = 0;
-    my $rotamer_number = 0;
+    # my $rmsd_sum = 0;
+    # my $energy_sum = 0;
+    # my $rotamer_number = 0;
 
-    for my $pdbx_file ( @ARGV ) {
-        # Reads file path, stdin and '-' operator.
-        my $atom_site;
-        if( $pdbx_file ) {
-            $atom_site = obtain_atom_site( $pdbx_file );
-        } else {
-            die "Use command \"rotag_library --help\" in order to see the manual.\n";
-        }
+    # for my $pdbx_file ( @ARGV ) {
+    #     # Reads file path, stdin and '-' operator.
+    #     my $atom_site;
+    #     if( $pdbx_file ) {
+    #         $atom_site = obtain_atom_site( $pdbx_file );
+    #     } else {
+    #         die "Use command \"rotag_library --help\" in order to see the manual.\n";
+    #     }
 
-        my $selected_atom_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+    #     my $selected_atom_site =
+    #         filter( { 'atom_site' => $atom_site,
+    #                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
 
-        # Selects all atoms if no specific atoms are selected.
-        if( ! %{ $selected_atom_site } ) {
-            $selected_atom_site = $atom_site;
-            mark_selection( $selected_atom_site,
-                            { 'target' => [ keys %{ $selected_atom_site } ] } );
-        }
+    #     # Selects all atoms if no specific atoms are selected.
+    #     if( ! %{ $selected_atom_site } ) {
+    #         $selected_atom_site = $atom_site;
+    #         mark_selection( $selected_atom_site,
+    #                         { 'target' => [ keys %{ $selected_atom_site } ] } );
+    #     }
 
-        # Splits atom site into groups by its uniqueness.
-        my $atom_site_groups = split_by( { 'atom_site' => $selected_atom_site,
-                                           'attributes' => [ 'pdbx_PDB_model_num',
-                                                             'label_alt_id' ],
-                                           'append_dot' => 1 } );
+    #     # Splits atom site into groups by its uniqueness.
+    #     my $atom_site_groups = split_by( { 'atom_site' => $selected_atom_site,
+    #                                        'attributes' => [ 'pdbx_PDB_model_num',
+    #                                                          'label_alt_id' ],
+    #                                        'append_dot' => 1 } );
 
-        # Starts generating rotamer library.
-        my %rotamer_library;
-        for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
-            my $current_atom_site =
-                filter( { 'atom_site' => $atom_site,
-                          'include' =>
-                              { 'id' =>
-                                    $atom_site_groups->{$atom_site_identifier} } } );
-            my $current_target_site =
-                filter( { 'atom_site' => $current_atom_site,
-                          'include' => { '[local]_selection_state' => [ 'T' ] } } );
+    #     # Starts generating rotamer library.
+    #     my %rotamer_library;
+    #     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
+    #         my $current_atom_site =
+    #             filter( { 'atom_site' => $atom_site,
+    #                       'include' =>
+    #                           { 'id' =>
+    #                                 $atom_site_groups->{$atom_site_identifier} } } );
+    #         my $current_target_site =
+    #             filter( { 'atom_site' => $current_atom_site,
+    #                       'include' => { '[local]_selection_state' => [ 'T' ] } } );
 
-            my $residue_unique_keys =
-                determine_residue_keys( $current_target_site,
-                                        { 'exclude_dot' => 1 } );
+    #         my $residue_unique_keys =
+    #             determine_residue_keys( $current_target_site,
+    #                                     { 'exclude_dot' => 1 } );
 
-            my $rotamer_library = {};
-            eval{
-                $rotamer_library = generate_library(
-                    { 'parameters' => $parameters,
-                      'atom_site' => $current_atom_site,
-                      'residue_unique_keys' => $residue_unique_keys,
-                      'include_interactions' =>
-                          { 'id' => [ keys %{ $current_atom_site } ] },
-                      'angles' => \%angles,
-                      'rmsd' => 1,
-                      'conf_model' => 'rotation_only',
-                      'interactions' => 'composite',
-                      'threads' => $threads,
-                    } );
-            };
-            if( $@ ) {
-                next;
-            }
+    #         my $rotamer_library = {};
+    #         eval{
+    #             $rotamer_library = generate_library(
+    #                 { 'parameters' => $parameters,
+    #                   'atom_site' => $current_atom_site,
+    #                   'residue_unique_keys' => $residue_unique_keys,
+    #                   'include_interactions' =>
+    #                       { 'id' => [ keys %{ $current_atom_site } ] },
+    #                   'angles' => \%angles,
+    #                   'rmsd' => 1,
+    #                   'conf_model' => 'rotation_only',
+    #                   'interactions' => 'composite',
+    #                   'threads' => $threads,
+    #                 } );
+    #         };
+    #         if( $@ ) {
+    #             next;
+    #         }
 
-            for my $residue_unique_key ( keys %{ $rotamer_library } ) {
-                $rotamer_library{$residue_unique_key} =
-                    $rotamer_library->{$residue_unique_key};
-            }
-        }
+    #         for my $residue_unique_key ( keys %{ $rotamer_library } ) {
+    #             $rotamer_library{$residue_unique_key} =
+    #                 $rotamer_library->{$residue_unique_key};
+    #         }
+    #     }
 
-        next if ! %rotamer_library;
+    #     next if ! %rotamer_library;
 
-        for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
-            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-                split /,/sxm, $residue_unique_key;
+    #     for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
+    #         my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+    #             split /,/sxm, $residue_unique_key;
 
-            # Chooses the rotamer with the lowest energy state.
-            my $rotamers = $rotamer_library{$residue_unique_key};
-            my ( $top_rotamer ) =
-                sort { $a->{'potential_energy_value'} <=>
-                       $b->{'potential_energy_value'} }
-                    @{ $rotamers };
+    #         # Chooses the rotamer with the lowest energy state.
+    #         my $rotamers = $rotamer_library{$residue_unique_key};
+    #         my ( $top_rotamer ) =
+    #             sort { $a->{'potential_energy_value'} <=>
+    #                    $b->{'potential_energy_value'} }
+    #                 @{ $rotamers };
 
-            $rmsd_sum += $top_rotamer->{'rmsd'};
-            $energy_sum += $top_rotamer->{'potential_energy_value'};
-            $rotamer_number++;
-        }
-    }
+    #         $rmsd_sum += $top_rotamer->{'rmsd'};
+    #         $energy_sum += $top_rotamer->{'potential_energy_value'};
+    #         $rotamer_number++;
+    #     }
+    # }
 
-    if( $rotamer_number == 0 ) {
-        die "no possible rotamer solutions were detected.\n";
-    } else {
+    # if( $rotamer_number == 0 ) {
+    #     die "no possible rotamer solutions were detected.\n";
+    # } else {
         if( @parameters ) {
-            print join( ',', @{ $values[$i] } ) . ',' .
-                sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+            print join( ',', @{ $values[$i] } ) . "\n";
+            # print join( ',', @{ $values[$i] } ) . ',' .
+            #     sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
         } else {
-            print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+            # print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
         }
-    }
+    # }
 }
 
 sub array2hash
