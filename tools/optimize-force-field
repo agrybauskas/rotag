@@ -10,7 +10,8 @@ Getopt::Long::Configure qw( gnu_getopt );
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
-use Combinatorics qw( permutation );
+use Combinatorics qw( adjacent
+                      permutation );
 use ForceField::Parameters;
 use LinearAlgebra qw( evaluate_matrix_of_functions
                       matrix_of_functions );
@@ -89,58 +90,37 @@ local @ARGV = ( q{-} ) unless @ARGV;
 
 my @parameters = ();
 my @values = ();
-# if( $parameters_cmd ) {
-#     for my $parameter_cmd ( split /;/, $parameters_cmd ) {
-#         my ( $key_path, $values ) = split /=/, $parameter_cmd;
-
-#         my @keys = split /:/, $key_path;
-#         push @parameters, \@keys;
-
-#         if( $values =~ m/\[(\S*)\]/ ) {
-#             my @current_values = map { split /\.\./, $_ } split /,/, $1;
-#             if( scalar @current_values == 3 ) {
-#                 my $start = $current_values[0];
-#                 my $step = $current_values[1];
-#                 $step ||= 1;
-#                 my $end = $current_values[2];
-#                 push @values,
-#                     [ map { $step * $_ } ( $start / $step .. $end / $step ) ];
-#             } else {
-#                 push @values, \@current_values;
-#             }
-#         } else {
-#             push @values, [ $values ];
-#         }
-#     }
-# }
 
 if( $parameters_cmd ) {
     for my $parameter_cmd ( split /;/, $parameters_cmd ) {
         my @current_params_cmd =
-            ($parameters_cmd =~m/[A-Za-z0-9_\:\.\-]+\=(?:\[)[\-0-9\.,]+(?:\])/g);
+            ($parameter_cmd =~m/[A-Za-z0-9_\:\.\-]+\=(?:\[)[\-0-9\.,]+(?:\])/g);
         my @current_parameters = ();
+        my @current_values = ();
         for my $current_param_cmd ( @current_params_cmd ) {
             my ( $key_path, $values ) = split /=/, $current_param_cmd;
 
             my @keys = split /:/, $key_path;
             push @current_parameters, \@keys;
 
-            # if( $values =~ m/\[(\S*)\]/ ) {
-            #     my @current_values = map { split /\.\./, $_ } split /,/, $1;
-            #     if( scalar @current_values == 3 ) {
-            #         my $start = $current_values[0];
-            #         my $step = $current_values[1];
-            #         $step ||= 1;
-            #         my $end = $current_values[2];
-            #         push @values,
-            #             [ map { $step * $_ } ( $start / $step .. $end / $step ) ];
-            #     } else {
-            #         push @values, \@current_values;
-            #     }
-            # } else {
-            #     push @values, [ $values ];
-            # }
+            if( $values =~ m/\[(\S*)\]/ ) {
+                my @values = map { split /\.\./, $_ } split /,/, $1;
+                if( scalar @values == 3 ) {
+                    my $start = $values[0];
+                    my $step = $values[1];
+                    $step ||= 1;
+                    my $end = $values[2];
+                    push @current_values,
+                        [ map { $step * $_ }( $start / $step .. $end / $step ) ];
+                } else {
+                    push @current_values, \@values;
+                }
+            } else {
+                push @current_values, [ $values ];
+            }
         }
+
+        @current_values = @{ adjacent( \@current_values ) };
     }
 }
 
