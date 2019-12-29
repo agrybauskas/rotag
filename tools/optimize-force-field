@@ -95,7 +95,8 @@ my @values = ();
 if( $parameters_cmd ) {
     for my $parameter_cmd ( split /;/, $parameters_cmd ) {
         my @current_params_cmd =
-            ($parameter_cmd =~m/[A-Za-z0-9_\:\.\-]+\=(?:\[)[\-0-9\.,]+(?:\])/g);
+            ($parameter_cmd =~m/[A-Za-z0-9_\:\.\-\]\[]+\=(?:\[)[\-0-9\.,]+(?:\])/g);
+
         my @current_parameters = ();
         my @current_values = ();
         for my $current_param_cmd ( @current_params_cmd ) {
@@ -128,12 +129,12 @@ if( $parameters_cmd ) {
     }
 }
 
-@parameters = map { flatten( [ $_ ] ) } @parameters;
 @values = @{ permutation( scalar @parameters, [], \@values, [] ) };
 @values = map { flatten( [ $_ ] ) } @values;
 
 if( @parameters ) {
-    print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd\n";
+    print join( ',', map { join( '.', @{ $_ } ) }
+                     map { @{ $_ } } @parameters ), ",rmsd\n";
 } else {
     print "rmsd\n";
 }
@@ -142,9 +143,9 @@ for my $i ( 0..scalar @values - 1 ) {
     my $parameters = Parameters->new();
 
     # Update the parameters.
-    for my $j ( 0..scalar @parameters - 1 ) {
+    for my $j ( 0..scalar @{ $parameters[$i] } - 1 ) {
         $parameters->set_parameter_values( $parameters,
-                                           array2hash( $parameters[$j],
+                                           array2hash( $parameters[$i][$j],
                                                        $values[$i][$j] ),
                                            { 'is_long' => 1 } );
     }
