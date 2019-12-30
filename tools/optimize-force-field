@@ -217,9 +217,6 @@ for my $i ( 0..scalar @values - 1 ) {
                       'threads' => $threads,
                     } );
             };
-            if( $@ ) {
-                next;
-            }
 
             for my $residue_unique_key ( keys %{ $rotamer_library } ) {
                 $rotamer_library{$residue_unique_key} =
@@ -247,7 +244,7 @@ for my $i ( 0..scalar @values - 1 ) {
     }
 
     if( $rotamer_number == 0 ) {
-        die "no possible rotamer solutions were detected.\n";
+        print join( ',', @{ $values[$i] } ) . ',' . "NA", "\n";
     } else {
         if( @parameters ) {
             print join( ',', @{ $values[$i] } ) . ',' .
