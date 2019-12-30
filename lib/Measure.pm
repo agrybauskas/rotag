@@ -579,7 +579,11 @@ sub rmsd_sidechains
     $average //= 0;
     $best_case //= 0;
     $include_atoms //= $parameters->{'_[local]_sidechain_atom_names'};
-    $exclude_atoms //= [ 'CB' ];
+    # HACK: grep'ing by first symbol is not robust, because the first symbol of
+    # atom name sometimes can differ from the type symbol.
+    $exclude_atoms //=
+        [ 'CB', grep { /^H/  }
+                    @{ $parameters->{'_[local]_sidechain_atom_names'} } ];
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
     # TODO: think if using of symmetric atom data should be optional or
