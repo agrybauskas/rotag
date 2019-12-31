@@ -140,23 +140,23 @@ if( @parameters ) {
     print "rmsd\n";
 }
 
+my @rotamer_libraries = ();
+
 my $fm = Parallel::ForkManager->new( $threads );
 
-# # Rule to retrieve data from parallel processes.
-# $fm->run_on_finish( sub {
-#     my ( $pid, $exit_code, $ident, $exit_signal,
-#          $core_dump, $pdbx_id ) = @_;
-#     if( defined $pdbx_id ) {
-#         push @filtered_pdbx_ids, $$pdbx_id;
-#     }
-# } );
+# Rule to retrieve data from parallel processes.
+$fm->run_on_finish( sub {
+    my ( $pid, $exit_code, $ident, $exit_signal,
+         $core_dump, $rotamer_library ) = @_;
+    if( defined $rotamer_library ) {
+        push @rotamer_libraries, $rotamer_library;
+    }
+} );
 
-#  CIF:
-# $fm->start and next CIF;
-# $fm->finish( 0, \$pdbx_id );
-# $fm->wait_all_children;
-
+PARAMETERS:
 for my $i ( 0..scalar @values - 1 ) {
+    $fm->start and next PARAMETERS;
+
     my $parameters = Parameters->new();
 
     # Update the parameters.
@@ -242,34 +242,41 @@ for my $i ( 0..scalar @values - 1 ) {
 
         next if ! %rotamer_library;
 
-        for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
-            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-                split /,/sxm, $residue_unique_key;
+        $fm->finish( 0, \%rotamer_library );
 
-            # Chooses the rotamer with the lowest energy state.
-            my $rotamers = $rotamer_library{$residue_unique_key};
-            my ( $top_rotamer ) =
-                sort { $a->{'potential_energy_value'} <=>
-                       $b->{'potential_energy_value'} }
-                    @{ $rotamers };
+        # for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
+        #     my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+        #         split /,/sxm, $residue_unique_key;
 
-            $rmsd_sum += $top_rotamer->{'rmsd'};
-            $energy_sum += $top_rotamer->{'potential_energy_value'};
-            $rotamer_number++;
-        }
+        #     # Chooses the rotamer with the lowest energy state.
+        #     my $rotamers = $rotamer_library{$residue_unique_key};
+        #     my ( $top_rotamer ) =
+        #         sort { $a->{'potential_energy_value'} <=>
+        #                $b->{'potential_energy_value'} }
+        #             @{ $rotamers };
+
+        #     $rmsd_sum += $top_rotamer->{'rmsd'};
+        #     $energy_sum += $top_rotamer->{'potential_energy_value'};
+        #     $rotamer_number++;
+        # }
     }
 
-    if( $rotamer_number == 0 ) {
-        print join( ',', @{ $values[$i] } ) . ',' . "NA", "\n";
-    } else {
-        if( @parameters ) {
-            print join( ',', @{ $values[$i] } ) . ',' .
-                sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
-        } else {
-            print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
-        }
-    }
+    # if( $rotamer_number == 0 ) {
+    #     print join( ',', @{ $values[$i] } ) . ',' . "NA", "\n";
+    # } else {
+    #     if( @parameters ) {
+    #         print join( ',', @{ $values[$i] } ) . ',' .
+    #             sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+    #     } else {
+    #         print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+    #     }
+    # }
 }
+
+$fm->wait_all_children;
+
+use Data::Dumper;
+print STDERR Dumper \@rotamer_libraries;
 
 sub array2hash
 {
