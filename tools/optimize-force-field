@@ -140,6 +140,7 @@ if( @parameters ) {
     print "rmsd\n";
 }
 
+my @rotamer_parameters = ();
 my @rotamer_libraries = ();
 
 my $fm = Parallel::ForkManager->new( $threads );
@@ -147,9 +148,10 @@ my $fm = Parallel::ForkManager->new( $threads );
 # Rule to retrieve data from parallel processes.
 $fm->run_on_finish( sub {
     my ( $pid, $exit_code, $ident, $exit_signal,
-         $core_dump, $rotamer_library ) = @_;
-    if( defined $rotamer_library ) {
-        push @rotamer_libraries, $rotamer_library;
+         $core_dump, $rotamer_data ) = @_;
+    if( defined $rotamer_data->[0] && defined $rotamer_data->[1] ) {
+        push @rotamer_parameters, $rotamer_data->[0];
+        push @rotamer_libraries, $rotamer_data->[1];
     }
 } );
 
@@ -168,14 +170,9 @@ for my $i ( 0..scalar @values - 1 ) {
     }
 
     # Calculates RMSD for given parameters.
-    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
     # Parses string describing angles.
     my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
-
-    my $rmsd_sum = 0;
-    my $energy_sum = 0;
-    my $rotamer_number = 0;
 
     for my $pdbx_file ( @ARGV ) {
         # Reads file path, stdin and '-' operator.
@@ -240,43 +237,52 @@ for my $i ( 0..scalar @values - 1 ) {
             }
         }
 
-        next if ! %rotamer_library;
-
-        $fm->finish( 0, \%rotamer_library );
-
-        # for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
-        #     my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-        #         split /,/sxm, $residue_unique_key;
-
-        #     # Chooses the rotamer with the lowest energy state.
-        #     my $rotamers = $rotamer_library{$residue_unique_key};
-        #     my ( $top_rotamer ) =
-        #         sort { $a->{'potential_energy_value'} <=>
-        #                $b->{'potential_energy_value'} }
-        #             @{ $rotamers };
-
-        #     $rmsd_sum += $top_rotamer->{'rmsd'};
-        #     $energy_sum += $top_rotamer->{'potential_energy_value'};
-        #     $rotamer_number++;
-        # }
+        $fm->finish( 0, [ \$parameters, \%rotamer_library ] );
     }
-
-    # if( $rotamer_number == 0 ) {
-    #     print join( ',', @{ $values[$i] } ) . ',' . "NA", "\n";
-    # } else {
-    #     if( @parameters ) {
-    #         print join( ',', @{ $values[$i] } ) . ',' .
-    #             sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
-    #     } else {
-    #         print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
-    #     }
-    # }
 }
 
 $fm->wait_all_children;
 
-use Data::Dumper;
-print STDERR Dumper \@rotamer_libraries;
+for( my $i = 0; $i <= $#rotamer_libraries; $i++ ) {
+    next if ! %{ $rotamer_libraries[$i] };
+
+    # my $sig_figs_max =
+    #     $rotamer_parameters[$i]{'_[local]_constants'}{'sig_figs_max'};
+
+    my $rmsd_sum = 0;
+    my $energy_sum = 0;
+    my $rotamer_number = 0;
+
+    for my $residue_unique_key ( sort { $a cmp $b } keys %{ $rotamer_libraries[$i] } ){
+        my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+            split /,/sxm, $residue_unique_key;
+
+        # Chooses the rotamer with the lowest energy state.
+        my $rotamers = $rotamer_libraries[$i]->{$residue_unique_key};
+        my ( $top_rotamer ) =
+            sort { $a->{'potential_energy_value'} <=>
+                   $b->{'potential_energy_value'} }
+                @{ $rotamers };
+
+        $rmsd_sum += $top_rotamer->{'rmsd'};
+        $energy_sum += $top_rotamer->{'potential_energy_value'};
+        $rotamer_number++;
+    }
+
+    if( $rotamer_number == 0 ) {
+        print join( ',', @{ $values[$i] } ) . ',' . "NA", "\n";
+    } else {
+        if( @parameters ) {
+            print join( ',', @{ $values[$i] } ) . ',' .
+                sprintf( '%.6f', $rmsd_sum / $rotamer_number ), "\n";
+            # print join( ',', @{ $values[$i] } ) . ',' .
+            #     sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+        } else {
+            print sprintf( '%.6f', $rmsd_sum / $rotamer_number ), "\n";
+            # print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+        }
+    }
+}
 
 sub array2hash
 {
