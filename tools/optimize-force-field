@@ -7,6 +7,7 @@ use autodie;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
+use Parallel::ForkManager;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
@@ -139,6 +140,22 @@ if( @parameters ) {
     print "rmsd\n";
 }
 
+my $fm = Parallel::ForkManager->new( $threads );
+
+# # Rule to retrieve data from parallel processes.
+# $fm->run_on_finish( sub {
+#     my ( $pid, $exit_code, $ident, $exit_signal,
+#          $core_dump, $pdbx_id ) = @_;
+#     if( defined $pdbx_id ) {
+#         push @filtered_pdbx_ids, $$pdbx_id;
+#     }
+# } );
+
+#  CIF:
+# $fm->start and next CIF;
+# $fm->finish( 0, \$pdbx_id );
+# $fm->wait_all_children;
+
 for my $i ( 0..scalar @values - 1 ) {
     my $parameters = Parameters->new();
 
@@ -213,8 +230,7 @@ for my $i ( 0..scalar @values - 1 ) {
                       'angles' => \%angles,
                       'rmsd' => 1,
                       'conf_model' => 'rotation_only',
-                      'interactions' => 'composite',
-                      'threads' => $threads,
+                      'interactions' => 'composite'
                     } );
             };
 
