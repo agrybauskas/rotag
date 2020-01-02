@@ -15,6 +15,7 @@ sub new
     my ( $class, $particles ) = @_;
     my $self = {
         'particles' => undef,
+        'cost_function' => undef,
     };
 
     for my $name ( keys %{ $particles } ) {
@@ -29,13 +30,22 @@ sub new
     return bless $self, $class;
 }
 
+# ----------------------------- Setters/Getters ------------------------------- #
+
+sub set_cost_function
+{
+    my ( $self, $cost_function ) = @_;
+    $self->{'cost_function'} = $cost_function;
+}
+
 # ------------------------- Optimization algorithms --------------------------- #
 
 sub particle_swarm
 {
-    my ( $particles ) = @_;
-    use Data::Dumper;
-    print STDERR Dumper $particles;
+    my ( $particles, $options ) = @_;
+    my ( $seed ) = ( $options->{'seed'} );
+
+    $seed //= 23;
 }
 
 1;
