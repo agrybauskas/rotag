@@ -12,19 +12,30 @@ use Optimization::Parameters;
 
 sub new
 {
-    my ( $class, $particles ) = @_;
+    my ( $class, $parameters, $particle_num, $options ) = @_;
+    my ( $seed ) = ( $options->{'seed'} );
+    $seed //= 23;
+
     my $self = {
-        'particles' => undef,
+        'particles' => [],
         'cost_function' => undef,
     };
 
-    for my $name ( keys %{ $particles } ) {
-        my $particle = Parameters->new( {
-            'key' => $name,
-            'min_range' => $particles->{$name}{'min_range'},
-            'max_range' => $particles->{$name}{'max_range'}
-        } );
-        $self->{'particles'}{$name} = $particle;
+    srand( $seed );
+
+    for my $i ( 0..$particle_num-1 ) {
+        for my $name ( keys %{ $parameters } ) {
+            my $particle = Parameters->new( {
+                'key' => $name,
+                'min_range' => $parameters->{$name}{'min_range'},
+                'max_range' => $parameters->{$name}{'max_range'},
+                # 'value' =>
+                #     $parameters->{$name}->min_range +
+                #     rand( $parameters->{$name}->max_range -
+                #           $parameters->{$name}->min_range )
+            } );
+            # $self->{'particles'} = $particle;
+        }
     }
 
     return bless $self, $class;
@@ -44,25 +55,21 @@ sub particle_swarm
 {
     my ( $particles, $options ) = @_;
     my $cost_function = $particles->{'cost_function'};
-    my ( $seed ) = ( $options->{'seed'} );
-    $seed //= 23;
-
-    srand( $seed );
 
     if( ! defined $cost_function ) {
         die "Cost function is missing. It has to be set.\n";
     }
 
-    for my $key ( keys %{ $particles->{'particles'} } ) {
-        my ( $particle ) = $particles->{'particles'}{$key};
+    # for my $key ( keys %{ $particles->{'particles'} } ) {
+    #     my ( $particle ) = $particles->{'particles'}{$key};
 
-        if( ! defined $particle->value ) {
-            $particle->value(
-                $particle->min_range +
-                rand( $particle->max_range - $particle->min_range )
-            );
-        }
-    }
+    #     if( ! defined $particle->value ) {
+    #         $particle->value(
+    #             $particle->min_range +
+    #             rand( $particle->max_range - $particle->min_range )
+    #         );
+    #     }
+    # }
 }
 
 1;
