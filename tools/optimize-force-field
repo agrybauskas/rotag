@@ -135,9 +135,9 @@ if( $parameters_cmd ) {
 @values = map { flatten( [ $_ ] ) } @values;
 
 if( @parameters ) {
-    print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd\n";
+    print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd,count\n";
 } else {
-    print "rmsd\n";
+    print "rmsd,count\n";
 }
 
 my $fm = Parallel::ForkManager->new( $threads );
@@ -249,13 +249,15 @@ for my $i ( 0..scalar @values - 1 ) {
     }
 
     if( $rotamer_number == 0 ) {
-        print join( ',', @{ $values[$i] } ) . ',' . "NA", "\n";
+        print join( ',', @{ $values[$i] } ) , ',' , "NA", ',', "NA", "\n";
     } else {
         if( @parameters ) {
             print join( ',', @{ $values[$i] } ) . ',' .
-                sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+                sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ) , ',' ,
+                $rotamer_number, "\n";
         } else {
-            print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), "\n";
+            print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), ',',
+                $rotamer_number, "\n";
         }
     }
 
