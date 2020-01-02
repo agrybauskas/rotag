@@ -3,6 +3,9 @@ package Optimization;
 use strict;
 use warnings;
 
+use Exporter qw( import );
+our @EXPORT_OK = qw( particle_swarm );
+
 use Optimization::Parameters;
 
 # ------------------------- Constructors/Destructors -------------------------- #
@@ -12,7 +15,6 @@ sub new
     my ( $class, $particles ) = @_;
     my $self = {
         'particles' => undef,
-        'min_value' => undef
     };
 
     for my $name ( keys %{ $particles } ) {
@@ -32,7 +34,8 @@ sub new
 sub particle_swarm
 {
     my ( $particles ) = @_;
+    use Data::Dumper;
+    print STDERR Dumper $particles;
 }
-
 
 1;
