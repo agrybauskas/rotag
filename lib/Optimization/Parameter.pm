@@ -1,4 +1,4 @@
-package Parameters;
+package Parameter;
 
 use strict;
 use warnings;
