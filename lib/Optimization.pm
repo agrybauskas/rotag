@@ -35,7 +35,7 @@ sub new
                     rand( $parameters->{$name}{'max_range'} -
                           $parameters->{$name}{'min_range'} )
             } );
-            $self->{'particles'}{$id}{$name} = $parameter;
+            $self->{'particles'}{$id}{'parameters'}{$name} = $parameter;
         }
     }
 
@@ -61,16 +61,9 @@ sub particle_swarm
         die "Cost function is missing. It has to be set.\n";
     }
 
-    # for my $key ( keys %{ $particles->{'particles'} } ) {
-    #     my ( $particle ) = $particles->{'particles'}{$key};
-
-    #     if( ! defined $particle->value ) {
-    #         $particle->value(
-    #             $particle->min_range +
-    #             rand( $particle->max_range - $particle->min_range )
-    #         );
-    #     }
-    # }
+    for my $id ( keys %{ $particles->{'particles'} } ) {
+        my $particle = $particles->{'particles'}{$id};
+    }
 }
 
 1;
