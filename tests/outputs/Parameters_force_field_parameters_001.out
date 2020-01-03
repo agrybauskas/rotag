@@ -6386,7 +6386,7 @@ $VAR1 = bless( {
         'phase' => '3'
       },
       'H' => {
-        'epsilon' => '1.00',
+        'epsilon' => '10.00',
         'phase' => '3'
       },
       'N' => {

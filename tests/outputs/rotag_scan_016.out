@@ -62,8 +62,8 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 48.321118
-2 2 composite 34.001422
-3 3 composite 43.529073
-4 4 composite 34.956550
+1 1 composite 48.329262
+2 2 composite 34.009566
+3 3 composite 43.537218
+4 4 composite 34.964695
 #
