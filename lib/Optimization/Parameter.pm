@@ -25,10 +25,6 @@ sub new
         die "'max_range' value for Optimization::Parameter is mandatory.\n";
     }
 
-    # Optional arguments.
-    $self->{'value'} = $args->{'value'};
-    $self->{'speed'} = $args->{'speed'};
-
     return bless $self, $class;
 }
 
@@ -51,25 +47,5 @@ sub max_range
     my ( $self ) = @_;
     return $self->{'max_range'};
 }
-
-sub value
-{
-    my ( $self, $value ) = @_;
-    if( scalar @_ == 2  ) {
-        $self->{'value'} = $value;
-    }
-    return $self->{'value'};
-}
-
-sub speed
-{
-    my ( $self, $speed ) = @_;
-    if( scalar @_ == 2  ) {
-        $self->{'speed'} = $speed;
-    }
-    return $self->{'speed'};
-}
-
-# --------------------------------- Methods ----------------------------------- #
 
 1;

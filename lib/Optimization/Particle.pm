@@ -1,4 +1,4 @@
-package Optimization;
+package Particle;
 
 use strict;
 use warnings;
@@ -9,31 +9,20 @@ use Optimization::Parameter;
 
 sub new
 {
-    my ( $class, $parameters, $particle_num, $options ) = @_;
-    my ( $seed ) = ( $options->{'seed'} );
-    $seed //= 23;
+    my ( $class, $parameters, $options ) = @_;
 
-    my $self = {
-        'particles' => undef,
-        'cost_function' => undef,
-    };
+    my $self = { 'parameters' => undef,
+                 'position' => undef,
+                 'speed' => undef };
 
-    srand( $seed );
-
-    for my $i ( 0..$particle_num-1 ) {
-        my $id = $i+1;
-        for my $name ( keys %{ $parameters } ) {
-            my $parameter = Parameters->new( {
-                'key' => $name,
-                'min_range' => $parameters->{$name}{'min_range'},
-                'max_range' => $parameters->{$name}{'max_range'},
-                'value' =>
-                    $parameters->{$name}{'min_range'} +
-                    rand( $parameters->{$name}{'max_range'} -
-                          $parameters->{$name}{'min_range'} )
-            } );
-            $self->{'particles'}{$id}{'parameters'}{$name} = $parameter;
-        }
+    for my $name ( keys %{ $parameters } ) {
+        my $parameter = Parameter->new( {
+            'key' => $name,
+            'min_range' => $parameters->{$name}{'min_range'},
+            'max_range' => $parameters->{$name}{'max_range'},
+            'value' => undef,
+        } );
+        $self->{'parameters'}{$name} = $parameter;
     }
 
     return bless $self, $class;
@@ -41,10 +30,22 @@ sub new
 
 # ----------------------------- Setters/Getters ------------------------------- #
 
-sub set_cost_function
+sub position
 {
-    my ( $self, $cost_function ) = @_;
-    $self->{'cost_function'} = $cost_function;
+    my ( $self, $position ) = @_;
+    if( scalar @_ == 2  ) {
+        $self->{'position'} = $position;
+    }
+    return $self->{'position'};
+}
+
+sub speed
+{
+    my ( $self, $speed ) = @_;
+    if( scalar @_ == 2  ) {
+        $self->{'speed'} = $speed;
+    }
+    return $self->{'speed'};
 }
 
 1;
