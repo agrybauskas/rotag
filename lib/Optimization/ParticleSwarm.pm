@@ -1,14 +1,19 @@
-package Optimization;
+package ParticleSwarm;
 
 use strict;
 use warnings;
 
-use Exporter qw( import );
-our @EXPORT_OK = qw( particle_swarm );
+# ------------------------- Constructors/Destructors -------------------------- #
 
-sub particle_swarm
+sub new
 {
-    my ( $particles ) = @_;
+    my ( $class, $parameters, $options ) = @_;
+
+    my $self = {};
+
+    return bless $self, $class;
 }
+
+# ----------------------------- Setters/Getters ------------------------------- #
 
 1;
