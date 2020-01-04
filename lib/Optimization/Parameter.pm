@@ -36,6 +36,15 @@ sub key
     return $self->{'key'};
 }
 
+sub value
+{
+    my ( $self, $value ) = @_;
+    if( scalar @_ == 2 ) {
+        $self->{'value'} = $value;
+    }
+    return $self->{'value'};
+}
+
 sub min
 {
     my ( $self ) = @_;

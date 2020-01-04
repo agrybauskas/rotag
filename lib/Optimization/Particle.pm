@@ -30,6 +30,16 @@ sub new
 
 # ----------------------------- Setters/Getters ------------------------------- #
 
+sub get_values
+{
+    my ( $self ) = @_;
+    my %values = ();
+    for my $name ( keys %{ $self->{'parameters'} } ) {
+        $values{$name} = $self->{'parameters'}{$name}->value;
+    }
+    return \%values;
+}
+
 sub position
 {
     my ( $self, $position ) = @_;
@@ -46,6 +56,18 @@ sub speed
         $self->{'speed'} = $speed;
     }
     return $self->{'speed'};
+}
+
+# --------------------------------- Methods ----------------------------------- #
+
+sub no_values
+{
+    my ( $self ) = @_;
+    my $parameter_values = $self->get_values;
+    if( map { $parameter_values->{$_} } keys %{ $parameter_values } ) {
+        return 1;
+    }
+    return 0;
 }
 
 1;
