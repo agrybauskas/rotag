@@ -18,8 +18,8 @@ sub new
     for my $name ( keys %{ $parameters } ) {
         my $parameter = Parameter->new( {
             'key' => $name,
-            'min_range' => $parameters->{$name}{'min_range'},
-            'max_range' => $parameters->{$name}{'max_range'},
+            'min' => $parameters->{$name}{'min'},
+            'max' => $parameters->{$name}{'max'},
             'value' => undef,
         } );
         $self->{'parameters'}{$name} = $parameter;

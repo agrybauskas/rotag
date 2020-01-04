@@ -12,17 +12,17 @@ sub new
 
     # Mandatory arguments.
     $self->{'key'} = $args->{'key'};
-    $self->{'min_range'} = $args->{'min_range'};
-    $self->{'max_range'} = $args->{'max_range'};
+    $self->{'min'} = $args->{'min'};
+    $self->{'max'} = $args->{'max'};
 
     if( ! defined $self->{'key'} ) {
         die "'key' value for Optimization::Parameter is mandatory.\n";
     }
-    if( ! defined $self->{'min_range'} ) {
-        die "'min_range' value for Optimization::Parameter is mandatory.\n";
+    if( ! defined $self->{'min'} ) {
+        die "'min' value for Optimization::Parameter is mandatory.\n";
     }
-    if( ! defined $self->{'max_range'} ) {
-        die "'max_range' value for Optimization::Parameter is mandatory.\n";
+    if( ! defined $self->{'max'} ) {
+        die "'max' value for Optimization::Parameter is mandatory.\n";
     }
 
     return bless $self, $class;
@@ -36,16 +36,16 @@ sub key
     return $self->{'key'};
 }
 
-sub min_range
+sub min
 {
     my ( $self ) = @_;
-    return $self->{'min_range'};
+    return $self->{'min'};
 }
 
-sub max_range
+sub max
 {
     my ( $self ) = @_;
-    return $self->{'max_range'};
+    return $self->{'max'};
 }
 
 1;

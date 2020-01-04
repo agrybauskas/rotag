@@ -3,11 +3,13 @@ package ParticleSwarm;
 use strict;
 use warnings;
 
+use Optimization::Particle;
+
 # ------------------------- Constructors/Destructors -------------------------- #
 
 sub new
 {
-    my ( $class, $parameters, $options ) = @_;
+    my ( $class, $parameters, $particle_num, $options ) = @_;
 
     my $self = {};
 
