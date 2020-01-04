@@ -5,12 +5,11 @@ use warnings;
 
 use Data::Dumper;
 
-use Optimization::Particle;
-use Optimization qw( particle_swarm );
+use Optimization::ParticleSwarm;
 
 $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Indent = 1;
 
-my $x = Particle->new( { 'x' => { 'min_range' => 5.0, 'max_range' => 10.0 } } );
+# my $x = Particle->new( { 'x' => { 'min_range' => 5.0, 'max_range' => 10.0 } } );
 
-particle_swarm( [ $x ] );
+# particle_swarm( [ $x ] );
