@@ -26,7 +26,7 @@ sub new
                 my $parameter = $particle->{'parameters'}{$name};
                 my $min = $parameter->min;
                 my $max = $parameter->max;
-                $parameter->value( $min + rand( $min - $max ) );
+                $parameter->value( $min + rand( $max - $min ) );
             }
         }
         $self->{'particles'}{$id} = $particle;
@@ -54,8 +54,10 @@ sub optimize
             "mandatory.\n";
     }
 
+    my $particles = $self->{'particles'};
+    use Data::Dumper;
+    print STDERR Dumper $particles;
     for my $i ( 0..$iterations-1 ) {
-        print $i, "\n";
     }
 }
 
