@@ -48,6 +48,12 @@ sub set_cost_function
 sub optimize
 {
     my ( $self, $iterations ) = @_;
+
+    if( ! defined $self->{'cost_function'} ) {
+        die "'cost_function' value for Optimization::ParticleSwarm is " .
+            "mandatory.\n";
+    }
+
     for my $i ( 0..$iterations-1 ) {
         print $i, "\n";
     }
