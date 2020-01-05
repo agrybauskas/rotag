@@ -49,7 +49,8 @@ sub optimize
 {
     my ( $self, $iterations ) = @_;
 
-    if( ! defined $self->{'cost_function'} ) {
+    my $cost_function = $self->{'cost_function'};
+    if( ! defined $cost_function ) {
         die "'cost_function' value for Optimization::ParticleSwarm is " .
             "mandatory.\n";
     }
@@ -58,6 +59,7 @@ sub optimize
     for my $i ( 0..$iterations-1 ) {
         for my $id ( keys %{ $particles } ) {
             my $particle = $particles->{$id};
+            my $parameters = $particle->{'parameters'};
         }
     }
 }
