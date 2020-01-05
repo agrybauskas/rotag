@@ -55,9 +55,10 @@ sub optimize
     }
 
     my $particles = $self->{'particles'};
-    use Data::Dumper;
-    print STDERR Dumper $particles;
     for my $i ( 0..$iterations-1 ) {
+        for my $id ( keys %{ $particles } ) {
+            my $particle = $particles->{$id};
+        }
     }
 }
 
