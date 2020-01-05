@@ -16,7 +16,8 @@ sub new
 
     srand( $seed );
 
-    my $self = { 'particles' => undef };
+    my $self = { 'particles' => undef,
+                 'cost_function' => undef };
     for my $i ( 0..$particle_num-1 ) {
         my $id = $i + 1;
         my $particle = Particle->new( $parameters );
@@ -35,5 +36,21 @@ sub new
 }
 
 # ----------------------------- Setters/Getters ------------------------------- #
+
+sub set_cost_function
+{
+    my ( $self, $cost_function ) = @_;
+    $self->{'cost_function'} = $cost_function;
+}
+
+# --------------------------------- Methods ----------------------------------- #
+
+sub optimize
+{
+    my ( $self, $iterations ) = @_;
+    for my $i ( 0..$iterations-1 ) {
+        print $i, "\n";
+    }
+}
 
 1;
