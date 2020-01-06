@@ -57,9 +57,25 @@ sub optimize
 
     my $particles = $self->{'particles'};
     for my $i ( 0..$iterations-1 ) {
+        # TODO: should be added more than min function when searching for
+        # optimal solution.
+        my $best_position;
+        my $best_value;
         for my $id ( keys %{ $particles } ) {
             my $particle = $particles->{$id};
             my $parameters = $particle->{'parameters'};
+            my @parameter_values =
+                map { $parameters->{$_}->value } sort keys %{ $parameters };
+            my $best_particle_value = $cost_function->( @parameter_values );
+
+            $particle->position( $best_particle_value );
+
+            # Check for best overal value in all particles.
+            if( ( ! defined $best_position || ! defined $best_value ) ||
+                ( $best_particle_value <= $best_value  ) ) {
+                $best_position = \@parameter_values;
+                $best_value = $best_particle_value;
+            }
         }
     }
 }
