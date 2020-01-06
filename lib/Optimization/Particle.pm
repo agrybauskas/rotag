@@ -12,7 +12,7 @@ sub new
     my ( $class, $parameters, $options ) = @_;
 
     my $self = { 'parameters' => undef,
-                 'position' => undef,
+                 'value' => undef,
                  'speed' => undef };
 
     for my $name ( keys %{ $parameters } ) {
@@ -38,6 +38,15 @@ sub get_values
         $values{$name} = $self->{'parameters'}{$name}->value;
     }
     return \%values;
+}
+
+sub value
+{
+    my ( $self, $value ) = @_;
+    if( scalar @_ == 2 ) {
+        $self->{'value'} = $value;
+    }
+    return $self->{'value'};
 }
 
 sub position
