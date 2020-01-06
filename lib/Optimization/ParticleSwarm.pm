@@ -17,7 +17,9 @@ sub new
     srand( $seed );
 
     my $self = { 'particles' => undef,
-                 'cost_function' => undef };
+                 'cost_function' => undef,
+                 'optimal_position' => undef,
+                 'optimal_parameters' => undef };
     for my $i ( 0..$particle_num-1 ) {
         my $id = $i + 1;
         my $particle = Particle->new( $parameters );
