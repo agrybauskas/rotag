@@ -62,7 +62,18 @@ sub optimize
         for my $id ( keys %{ $particles } ) {
             my $particle = $particles->{$id};
             my $parameters = $particle->{'parameters'};
-            $particle->position( $cost_function->( $parameters ) );
+            my $speed = $particle->speed;
+
+            if( defined $speed ) {
+            }
+
+            $particle->value( $cost_function->( $parameters ) );
+
+            if( ! defined $self->{'optimal_value'} ||
+                $particle->value < $self->{'optimal_value'} ) {
+                $self->{'optimal_value'} = $particle->value;
+                $self->{'optimal_parameters'} = $parameters;
+            }
         }
     }
 }
