@@ -45,6 +45,18 @@ sub set_cost_function
     $self->{'cost_function'} = $cost_function;
 }
 
+sub optimal_value
+{
+    my ( $self ) = @_;
+    return $self->{'optimal_value'};
+}
+
+sub optimal_parameters
+{
+    my ( $self ) = @_;
+    return $self->{'optimal_parameters'};
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 sub optimize
@@ -96,15 +108,14 @@ sub optimize
         for my $id ( keys %{ $particles } ) {
             my $particle = $particles->{$id};
             my $parameters = $particle->{'parameters'};
-
-            # my $weight = $particle->value / $self->{'optimal_value'};
-
-            # my $speed;
-            for my $name ( keys %{ $parameters } ) {
-                my $parameter = $parameters->{$name};
-                my $optimal_parameter = $self->{'optimal_parameters'}{$name};
-                # $parameter->speed($optimal_parameter->value-$parameter->value);
+            my %updated_speed = ();
+            for my $key ( keys %{ $parameters } ) {
+                my $parameter = $parameters->{$key};
+                my $optimal_parameter = $self->{'optimal_parameters'}{$key};
+                $updated_speed{$key} =
+                    $optimal_parameter->value-$parameter->value;
             }
+            $particle->speed( \%updated_speed );
         }
     }
 }
