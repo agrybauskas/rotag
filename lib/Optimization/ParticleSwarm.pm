@@ -61,7 +61,7 @@ sub optimal_parameters
 
 sub optimize
 {
-    my ( $self, $iterations ) = @_;
+    my ( $self, $iterations, $options ) = @_;
 
     my $cost_function = $self->{'cost_function'};
     if( ! defined $cost_function ) {
@@ -71,7 +71,7 @@ sub optimize
 
     my $particles = $self->{'particles'};
     for my $i ( 0..$iterations-1 ) {
-        for my $id ( keys %{ $particles } ) {
+        for my $id ( sort keys %{ $particles } ) {
             my $particle = $particles->{$id};
             my $parameters = $particle->{'parameters'};
 
