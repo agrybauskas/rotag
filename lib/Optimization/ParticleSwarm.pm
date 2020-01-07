@@ -66,9 +66,21 @@ sub optimize
             if( ! defined $particle->speed ) {
                 my %speed = ();
                 for my $key ( keys %{ $parameters } ) {
-                    $speed{$key} = $parameters->{$key}->uniform();
+                    $speed{$key} =
+                        rand( 1 ) *
+                        ( $parameters->{$key}->uniform() -
+                          $parameters->{$key}->value );
                 }
                 $particle->speed( \%speed );
+            }
+
+            if( defined $particle->speed ) {
+                for my $key ( keys %{ $parameters } ) {
+                    my $parameter_value = $parameters->{$key}->value;
+                    $parameters->{$key}->value(
+                        $parameter_value + $particle->speed->{$key}
+                    );
+                }
             }
 
             $particle->value( $cost_function->( $parameters ) );
