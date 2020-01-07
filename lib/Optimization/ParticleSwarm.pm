@@ -75,6 +75,20 @@ sub optimize
                 $self->{'optimal_parameters'} = $parameters;
             }
         }
+
+        # Sets speed for next iteration.
+        for my $id ( keys %{ $particles } ) {
+            my $particle = $particles->{$id};
+            my $parameters = $particle->{'parameters'};
+
+            my $weight = $particle->value / $self->{'optimal_value'};
+
+            for my $name ( keys %{ $parameters } ) {
+                my $parameter = $parameters->{$name};
+                my $optimal_parameter = $self->{'optimal_parameters'}{$name};
+                # $parameter->speed($optimal_parameter->value-$parameter->value);
+            }
+        }
     }
 }
 
