@@ -62,9 +62,13 @@ sub optimize
         for my $id ( keys %{ $particles } ) {
             my $particle = $particles->{$id};
             my $parameters = $particle->{'parameters'};
-            my $speed = $particle->speed;
 
-            if( defined $speed ) {
+            if( ! defined $particle->speed ) {
+                my %speed = ();
+                for my $parameter ( keys %{ $parameters } ) {
+                    my $uniform_parameter_value =
+                        $parameters->{$parameter}->uniform();
+                }
             }
 
             $particle->value( $cost_function->( $parameters ) );
@@ -81,8 +85,9 @@ sub optimize
             my $particle = $particles->{$id};
             my $parameters = $particle->{'parameters'};
 
-            my $weight = $particle->value / $self->{'optimal_value'};
+            # my $weight = $particle->value / $self->{'optimal_value'};
 
+            # my $speed;
             for my $name ( keys %{ $parameters } ) {
                 my $parameter = $parameters->{$name};
                 my $optimal_parameter = $self->{'optimal_parameters'}{$name};

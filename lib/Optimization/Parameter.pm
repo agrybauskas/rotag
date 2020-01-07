@@ -57,4 +57,12 @@ sub max
     return $self->{'max'};
 }
 
+sub uniform
+{
+    my ( $parameter ) = @_;
+    my $min = $parameter->min;
+    my $max = $parameter->max;
+    return $min + rand( $max - $min );
+}
+
 1;
