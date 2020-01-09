@@ -126,18 +126,29 @@ sub optimize
                 $self->{'global_optimal_value'} = $particle->value;
                 $self->{'global_optimal_param'} = $parameters;
             }
+            if( ! exists $self->{'local_optimal_value'}{$id} ||
+                $particle->value <= $self->{'local_optimal_value'}{$id} ) {
+                $self->{'local_optimal_value'}{$id} = $particle->value;
+                $self->{'local_optimal_param'}{$id} = $parameters;
+            }
         }
 
         # Sets speed for next iteration.
-        for my $id ( keys %{ $particles } ) {
+        for my $id ( sort keys %{ $particles } ) {
             my $particle = $particles->{$id};
             my $parameters = $particle->{'parameters'};
             my %updated_speed = ();
-            for my $key ( keys %{ $parameters } ) {
+            for my $key ( sort keys %{ $parameters } ) {
                 my $parameter = $parameters->{$key};
-                my $optimal_parameter = $self->{'global_optimal_param'}{$key};
+                my $global_optimal_parameter =
+                    $self->{'global_optimal_param'}{$key};
+                my $local_optimal_parameter =
+                    $self->{'local_optimal_param'}{$id}{$key};
                 $updated_speed{$key} =
-                    $optimal_parameter->value-$parameter->value;
+                    rand( 1 ) *
+                    ( $global_optimal_parameter->value -
+                      $local_optimal_parameter->value -
+                      $parameter->value );
             }
             $particle->speed( \%updated_speed );
         }
