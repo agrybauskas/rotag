@@ -146,9 +146,8 @@ sub optimize
                     $self->{'local_optimal_param'}{$id}{$key};
                 $updated_speed{$key} =
                     rand( 1 ) *
-                    ( $global_optimal_parameter->value -
-                      $local_optimal_parameter->value -
-                      $parameter->value );
+                    ( ( $global_optimal_parameter->value - $parameter->value ) -
+                      ( $local_optimal_parameter->value - $parameter->value ) );
             }
             $particle->speed( \%updated_speed );
         }
