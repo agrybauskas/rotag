@@ -91,44 +91,14 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my @parameters = ();
-my @values = ();
+my %parameters = ();
 
 if( $parameters_cmd ) {
     for my $parameter_cmd ( @{ $parameters_cmd } ) {
+        my ( $key_path, $values ) = split /=/, $parameter_cmd;
+        my ( $min, $max ) = split /,/, $values;
+        $parameters{$key_path} = { 'min' => $min, 'max' => $max };
     }
-#         my @current_params_cmd =
-#             ($parameter_cmd =~m/[A-Za-z0-9_\:\.\-\]\[]+\=(?:\[)[\-0-9\.,]+(?:\])/g);
-
-#         my @current_parameters = ();
-#         my @current_values = ();
-#         for my $current_param_cmd ( @current_params_cmd ) {
-#             my ( $key_path, $values ) = split /=/, $current_param_cmd;
-
-#             my @keys = split /:/, $key_path;
-#             push @current_parameters, \@keys;
-
-#             if( $values =~ m/\[(\S*)\]/ ) {
-#                 my @values = map { split /\.\./, $_ } split /,/, $1;
-#                 if( scalar @values == 3 ) {
-#                     my $start = $values[0];
-#                     my $step = $values[1];
-#                     $step ||= 1;
-#                     my $end = $values[2];
-#                     push @current_values,
-#                         [ map { $step * $_ }( $start / $step .. $end / $step ) ];
-#                 } else {
-#                     push @current_values, \@values;
-#                 }
-#             } else {
-#                 push @current_values, [ $values ];
-#             }
-#         }
-
-#         @current_values = @{ adjacent( \@current_values ) };
-
-#         push @parameters, \@current_parameters;
-#         push @values, \@current_values;
 }
 
 # @parameters = map { @{ $_ } } @parameters;
