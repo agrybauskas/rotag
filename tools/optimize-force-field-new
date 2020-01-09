@@ -59,6 +59,7 @@ my $threads = 1;
 my $angles = '-180.0..36.0..180.0';
 my $parameters_cmd = '';
 my $max_iterations = 1;
+my $particle_num = 10;
 
 local $SIG{__WARN__} = sub {
     # warning( { 'message' => @_ } );
@@ -71,6 +72,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'angles|a=s' => \$angles,
     'parameters|p=s@' => \$parameters_cmd,
+    'particle_num|P=s' => \$particle_num,
     'iterations|i=s' => \$max_iterations,
     'threads|n=s' => \$threads,
     'help|h' => sub {
@@ -101,19 +103,8 @@ if( $parameters_cmd ) {
     }
 }
 
-# @parameters = map { @{ $_ } } @parameters;
-# @values = @{ permutation( scalar @values, [], \@values, [] ) };
-# @values = map { flatten( [ $_ ] ) } @values;
+my $ps = ParticleSwarm->new( \%parameters, $particle_num );
 
-# if( @parameters ) {
-#     print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd,count\n";
-# } else {
-#     print "rmsd,count\n";
-# }
-
-# my $fm = Parallel::ForkManager->new( $threads );
-
-# PARAMETERS:
 # for my $i ( 0..scalar @values - 1 ) {
 #     $fm->start and next PARAMETERS;
 
@@ -231,11 +222,7 @@ if( $parameters_cmd ) {
 #                 $rotamer_number, "\n";
 #         }
 #     }
-
-#     $fm->finish;
 # }
-
-# $fm->wait_all_children;
 
 sub array2hash
 {
