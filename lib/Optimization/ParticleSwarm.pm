@@ -86,19 +86,17 @@ sub optimize
                 $particle->speed( \%speed );
             }
 
-            if( defined $particle->speed ) {
-                for my $key ( keys %{ $parameters } ) {
-                    my $parameter_value = $parameters->{$key}->value;
-                    $parameters->{$key}->value(
-                        $parameter_value + $particle->speed->{$key}
-                    );
-                }
+            for my $key ( keys %{ $parameters } ) {
+                my $parameter_value = $parameters->{$key}->value;
+                $parameters->{$key}->value(
+                    $parameter_value + $particle->speed->{$key}
+                );
             }
 
             $particle->value( $cost_function->( $parameters ) );
 
             if( ! defined $self->{'optimal_value'} ||
-                $particle->value < $self->{'optimal_value'} ) {
+                $particle->value <= $self->{'optimal_value'} ) {
                 $self->{'optimal_value'} = $particle->value;
                 $self->{'optimal_parameters'} = $parameters;
             }
