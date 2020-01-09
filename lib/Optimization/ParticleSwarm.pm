@@ -59,6 +59,18 @@ sub global_optimal_param
     return $self->{'global_optimal_param'};
 }
 
+sub local_optimal_value
+{
+    my ( $self ) = @_;
+    return $self->{'local_optimal_value'};
+}
+
+sub local_optimal_param
+{
+    my ( $self ) = @_;
+    return $self->{'local_optimal_param'};
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 sub optimize
