@@ -11,14 +11,19 @@ $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Indent = 1;
 
 my $particle_swarm =
-    ParticleSwarm->new( { 'x' => { 'min' => -4.0, 'max' => 4.0 } }, 10 );
+    ParticleSwarm->new( { 'x' => { 'min' => -2.0, 'max' => 2.0 },
+                          'y' => { 'min' => -2.0, 'max' => 2.0 } }, 10 );
 
 $particle_swarm->set_cost_function(
     \&{sub { my ( $param ) = @_;
-             return (2*$param->{'x'}->value**4)+(3*$param->{'x'}->value**3)+
-                    ($param->{'x'}->value**2); } }
+             return $param->{'x'}*exp(-($param->{'x'}**2+$param->{'y'}**2)); } }
 );
 $particle_swarm->optimize( 10 );
 
 print Dumper $particle_swarm->global_optimal_param;
 print Dumper $particle_swarm->global_optimal_value;
+
+print "------------------------\n";
+
+use Data::Dumper;
+print STDERR Dumper $particle_swarm;
