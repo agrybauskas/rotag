@@ -26,7 +26,7 @@ sub new
         my $id = $i + 1;
         my $particle = Particle->new( $parameters );
         if( $particle->no_values ) {
-            for my $name ( keys %{ $particle->{'parameters'} } ) {
+            for my $name ( sort keys %{ $particle->{'parameters'} } ) {
                 my $parameter = $particle->{'parameters'}{$name};
                 my $min = $parameter->min;
                 my $max = $parameter->max;
