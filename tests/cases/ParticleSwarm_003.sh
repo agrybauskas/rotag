@@ -16,7 +16,8 @@ my $particle_swarm =
 
 $particle_swarm->set_cost_function(
     \&{sub { my ( $param ) = @_;
-             return $param->{'x'}*exp(-($param->{'x'}**2+$param->{'y'}**2)); } }
+             return $param->{'x'}->value*exp(-($param->{'x'}->value**2+
+                                               $param->{'y'}->value**2)); } }
 );
 $particle_swarm->optimize( 10 );
 
