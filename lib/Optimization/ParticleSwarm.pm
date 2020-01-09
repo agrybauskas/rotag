@@ -49,25 +49,37 @@ sub set_cost_function
 
 sub global_optimal_value
 {
-    my ( $self ) = @_;
+    my ( $self, $global_optimal_value ) = @_;
+    if( scalar @_ == 2 ) {
+        $self->{'global_optimal_value'} = $global_optimal_value;
+    }
     return $self->{'global_optimal_value'};
 }
 
 sub global_optimal_param
 {
-    my ( $self ) = @_;
+    my ( $self, $global_optimal_param ) = @_;
+    if( scalar @_ == 2 ) {
+        $self->{'global_optimal_param'} = $global_optimal_param;
+    }
     return $self->{'global_optimal_param'};
 }
 
 sub local_optimal_value
 {
-    my ( $self ) = @_;
+    my ( $self, $local_optimal_value ) = @_;
+    if( scalar @_ == 2 ) {
+        $self->{'local_optimal_value'} = $local_optimal_value;
+    }
     return $self->{'local_optimal_value'};
 }
 
 sub local_optimal_param
 {
-    my ( $self ) = @_;
+    my ( $self, $local_optimal_param ) = @_;
+    if( scalar @_ == 2 ) {
+        $self->{'local_optimal_param'} = $local_optimal_param;
+    }
     return $self->{'local_optimal_param'};
 }
 
