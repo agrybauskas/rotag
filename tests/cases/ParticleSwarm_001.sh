@@ -17,5 +17,5 @@ $particle_swarm->set_cost_function( \&{sub { my ( $param ) = @_;
                                              return $param->{x}->value**2 }} );
 $particle_swarm->optimize( 10 );
 
-print Dumper $particle_swarm->optimal_parameters;
-print Dumper $particle_swarm->optimal_value;
+print Dumper $particle_swarm->global_optimal_param;
+print Dumper $particle_swarm->global_optimal_value;

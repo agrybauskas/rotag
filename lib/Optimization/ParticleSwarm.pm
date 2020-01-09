@@ -18,8 +18,10 @@ sub new
 
     my $self = { 'particles' => undef,
                  'cost_function' => undef,
-                 'optimal_value' => undef,
-                 'optimal_parameters' => undef };
+                 'global_optimal_value' => undef,
+                 'global_optimal_param' => undef,
+                 'local_optimal_value' => undef,
+                 'local_optimal_param' => undef };
     for my $i ( 0..$particle_num-1 ) {
         my $id = $i + 1;
         my $particle = Particle->new( $parameters );
@@ -45,16 +47,16 @@ sub set_cost_function
     $self->{'cost_function'} = $cost_function;
 }
 
-sub optimal_value
+sub global_optimal_value
 {
     my ( $self ) = @_;
-    return $self->{'optimal_value'};
+    return $self->{'global_optimal_value'};
 }
 
-sub optimal_parameters
+sub global_optimal_param
 {
     my ( $self ) = @_;
-    return $self->{'optimal_parameters'};
+    return $self->{'global_optimal_param'};
 }
 
 # --------------------------------- Methods ----------------------------------- #
@@ -95,10 +97,10 @@ sub optimize
 
             $particle->value( $cost_function->( $parameters ) );
 
-            if( ! defined $self->{'optimal_value'} ||
-                $particle->value <= $self->{'optimal_value'} ) {
-                $self->{'optimal_value'} = $particle->value;
-                $self->{'optimal_parameters'} = $parameters;
+            if( ! defined $self->{'global_optimal_value'} ||
+                $particle->value <= $self->{'global_optimal_value'} ) {
+                $self->{'global_optimal_value'} = $particle->value;
+                $self->{'global_optimal_param'} = $parameters;
             }
         }
 
@@ -109,7 +111,7 @@ sub optimize
             my %updated_speed = ();
             for my $key ( keys %{ $parameters } ) {
                 my $parameter = $parameters->{$key};
-                my $optimal_parameter = $self->{'optimal_parameters'}{$key};
+                my $optimal_parameter = $self->{'global_optimal_param'}{$key};
                 $updated_speed{$key} =
                     $optimal_parameter->value-$parameter->value;
             }
