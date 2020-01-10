@@ -111,6 +111,14 @@ $ps->set_cost_function( \&run_calculations,
                           'pdbxs' => \@ARGV } );
 $ps->optimize( $max_iterations );
 
+my $global_optimal_param = $ps->global_optimal_param;
+my $global_optimal_value = $ps->global_optimal_value;
+
+print join( ',', sort keys %{ $ps->global_optimal_param } ), ',', 'rmsd', "\n";
+print join( ',', map { $ps->global_optimal_param->{$_}->value }
+                     (sort keys %{ $ps->global_optimal_param } ) ), ',',
+      $global_optimal_value, "\n";
+
 sub run_calculations
 {
     my ( $change_parameters, $options ) = @_;
