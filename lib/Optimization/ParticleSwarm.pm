@@ -43,8 +43,9 @@ sub new
 
 sub set_cost_function
 {
-    my ( $self, $cost_function ) = @_;
+    my ( $self, $cost_function, $parameters ) = @_;
     $self->{'cost_function'} = $cost_function;
+    $self->{'function_parameters'} = $parameters;
 }
 
 sub global_optimal_value
@@ -119,7 +120,9 @@ sub optimize
                 );
             }
 
-            $particle->value( $cost_function->( $parameters ) );
+            $particle->value(
+                $cost_function->( $parameters, $self->{'function_parameters'} )
+            );
 
             if( ! defined $self->{'global_optimal_value'} ||
                 $particle->value <= $self->{'global_optimal_value'} ) {
