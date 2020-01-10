@@ -114,10 +114,15 @@ $ps->optimize( $max_iterations );
 my $global_optimal_param = $ps->global_optimal_param;
 my $global_optimal_value = $ps->global_optimal_value;
 
-print join( ',', sort keys %{ $ps->global_optimal_param } ), ',', 'rmsd', "\n";
-print join( ',', map { $ps->global_optimal_param->{$_}->value }
-                     (sort keys %{ $ps->global_optimal_param } ) ), ',',
-      $global_optimal_value, "\n";
+if( %{ $global_optimal_param } ) {
+    print join( ',', sort keys %{ $global_optimal_param } ), ',', 'rmsd', "\n";
+    print join( ',', map { $global_optimal_param->{$_}->value }
+                         ( sort keys %{ $global_optimal_param } ) ), ',',
+        $global_optimal_value, "\n";
+} else {
+    print "rmsd\n";
+    print $global_optimal_value, "\n";
+}
 
 sub run_calculations
 {
