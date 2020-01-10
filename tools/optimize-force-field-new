@@ -10,6 +10,7 @@ Getopt::Long::Configure qw( gnu_getopt );
 use Parallel::ForkManager;
 
 use BondProperties qw( hybridization );
+use Clone qw( clone );
 use ConnectAtoms qw( connect_atoms );
 use Combinatorics qw( adjacent
                       permutation );
@@ -105,115 +106,134 @@ if( $parameters_cmd ) {
 }
 
 my $ps = ParticleSwarm->new( \%parameters, $particle_num );
-$ps->set_cost_function( \&run_calculations, $parameters );
-
-$ps->optimize(1);
-
-# # Calculates RMSD for given parameters.
-# my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
-
-# # Parses string describing angles.
-# my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
+$ps->set_cost_function( \&run_calculations,
+                        { 'parameters' => $parameters,
+                          'pdbxs' => \@ARGV } );
+$ps->optimize( $max_iterations );
 
 sub run_calculations
 {
-    my ( $change_parameters, $parameters ) = @_;
+    my ( $change_parameters, $options ) = @_;
+    my ( $parameters, $pdbxs ) =
+        ( $options->{'parameters'}, $options->{'pdbxs'} );
+    my $current_parameters = clone $parameters;
+
+    for my $full_key ( sort keys %{ $change_parameters } ) {
+        my @keys = split /\./, $full_key;
+        my $value = $change_parameters->{$full_key}->value;
+        $current_parameters->set_parameter_values(
+            $current_parameters,
+            array2hash( \@keys, $value ),
+            { 'is_long' => 1 }
+        );
+    }
+
+    # Calculates RMSD for given parameters.
+    my $sig_figs_max =
+        $current_parameters->{'_[local]_constants'}{'sig_figs_max'};
+
+    # Parses string describing angles.
+    my %angles = %{ sample_angles_qs_parsing( $current_parameters, $angles ) };
+
+    my $rmsd_sum = 0;
+    my $energy_sum = 0;
+    my $rotamer_number = 0;
+
+    for my $pdbx_file ( @{ $pdbxs } ) {
+                # Reads file path, stdin and '-' operator.
+        my $atom_site;
+        if( $pdbx_file ) {
+            $atom_site = obtain_atom_site( $pdbx_file );
+        } else {
+            die "Use command \"rotag_library --help\" in order to see the manual.\n";
+        }
+
+        my $selected_atom_site =
+            filter( { 'atom_site' => $atom_site,
+                      'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+
+        # Selects all atoms if no specific atoms are selected.
+        if( ! %{ $selected_atom_site } ) {
+            $selected_atom_site = $atom_site;
+            mark_selection( $selected_atom_site,
+                            { 'target' => [ keys %{ $selected_atom_site } ] } );
+        }
+
+        # Splits atom site into groups by its uniqueness.
+        my $atom_site_groups = split_by( { 'atom_site' => $selected_atom_site,
+                                           'attributes' => [ 'pdbx_PDB_model_num',
+                                                             'label_alt_id' ],
+                                           'append_dot' => 1 } );
+
+        # Starts generating rotamer library.
+        my %rotamer_library;
+        for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
+            my $current_atom_site =
+                filter( { 'atom_site' => $atom_site,
+                          'include' =>
+                              { 'id' =>
+                                    $atom_site_groups->{$atom_site_identifier} } } );
+            my $current_target_site =
+                filter( { 'atom_site' => $current_atom_site,
+                          'include' => { '[local]_selection_state' => [ 'T' ] } } );
+
+            my $residue_unique_keys =
+                determine_residue_keys( $current_target_site,
+                                        { 'exclude_dot' => 1 } );
+
+            my $rotamer_library = {};
+            eval{
+                $rotamer_library = generate_library(
+                    { 'parameters' => $current_parameters,
+                      'atom_site' => $current_atom_site,
+                      'residue_unique_keys' => $residue_unique_keys,
+                      'include_interactions' =>
+                          { 'id' => [ keys %{ $current_atom_site } ] },
+                      'angles' => \%angles,
+                      'rmsd' => 1,
+                      'conf_model' => 'rotation_only',
+                      'interactions' => 'composite'
+                    } );
+            };
+
+            for my $residue_unique_key ( keys %{ $rotamer_library } ) {
+                $rotamer_library{$residue_unique_key} =
+                    $rotamer_library->{$residue_unique_key};
+            }
+        }
+
+        next if ! %rotamer_library;
+
+        for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
+            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+                split /,/sxm, $residue_unique_key;
+
+            # Chooses the rotamer with the lowest energy state.
+            my $rotamers = $rotamer_library{$residue_unique_key};
+            my ( $top_rotamer ) =
+                sort { $a->{'potential_energy_value'} <=>
+                       $b->{'potential_energy_value'} }
+                    @{ $rotamers };
+
+            $rmsd_sum += $top_rotamer->{'rmsd'};
+            $energy_sum += $top_rotamer->{'potential_energy_value'};
+            $rotamer_number++;
+        }
+    }
+
+    return sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number );
 }
 
-# my $rmsd_sum = 0;
-# my $energy_sum = 0;
-# my $rotamer_number = 0;
-
-# for my $pdbx_file ( @ARGV ) {
-#     # # Reads file path, stdin and '-' operator.
-#     # my $atom_site;
-#     # if( $pdbx_file ) {
-#     #     $atom_site = obtain_atom_site( $pdbx_file );
-#     # } else {
-#     #     die "Use command \"rotag_library --help\" in order to see the manual.\n";
-#     # }
-
-#     # my $selected_atom_site =
-#     #     filter( { 'atom_site' => $atom_site,
-#     #               'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
-
-#     # # Selects all atoms if no specific atoms are selected.
-#     # if( ! %{ $selected_atom_site } ) {
-#     #     $selected_atom_site = $atom_site;
-#     #     mark_selection( $selected_atom_site,
-#     #                     { 'target' => [ keys %{ $selected_atom_site } ] } );
-#     # }
-
-#     # # Splits atom site into groups by its uniqueness.
-#     # my $atom_site_groups = split_by( { 'atom_site' => $selected_atom_site,
-#     #                                    'attributes' => [ 'pdbx_PDB_model_num',
-#     #                                                      'label_alt_id' ],
-#     #                                    'append_dot' => 1 } );
-
-# #     # Starts generating rotamer library.
-# #     my %rotamer_library;
-# #     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
-# #         my $current_atom_site =
-# #             filter( { 'atom_site' => $atom_site,
-# #                       'include' =>
-# #                           { 'id' =>
-# #                                 $atom_site_groups->{$atom_site_identifier} } } );
-# #         my $current_target_site =
-# #             filter( { 'atom_site' => $current_atom_site,
-# #                       'include' => { '[local]_selection_state' => [ 'T' ] } } );
-
-# #         my $residue_unique_keys =
-# #             determine_residue_keys( $current_target_site,
-# #                                     { 'exclude_dot' => 1 } );
-
-# #         my $rotamer_library = {};
-# #         eval{
-# #             $rotamer_library = generate_library(
-# #                 { 'parameters' => $parameters,
-# #                   'atom_site' => $current_atom_site,
-# #                   'residue_unique_keys' => $residue_unique_keys,
-# #                   'include_interactions' =>
-# #                       { 'id' => [ keys %{ $current_atom_site } ] },
-# #                   'angles' => \%angles,
-# #                   'rmsd' => 1,
-# #                   'conf_model' => 'rotation_only',
-# #                   'interactions' => 'composite'
-# #                 } );
-# #         };
-
-# #         for my $residue_unique_key ( keys %{ $rotamer_library } ) {
-# #             $rotamer_library{$residue_unique_key} =
-# #                 $rotamer_library->{$residue_unique_key};
-# #         }
-# #     }
-
-# #     next if ! %rotamer_library;
-
-# #     for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
-# #         my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-# #             split /,/sxm, $residue_unique_key;
-
-# #         # Chooses the rotamer with the lowest energy state.
-# #         my $rotamers = $rotamer_library{$residue_unique_key};
-# #         my ( $top_rotamer ) =
-# #             sort { $a->{'potential_energy_value'} <=>
-# #                    $b->{'potential_energy_value'} }
-# #                 @{ $rotamers };
-
-# #         $rmsd_sum += $top_rotamer->{'rmsd'};
-# #         $energy_sum += $top_rotamer->{'potential_energy_value'};
-# #         $rotamer_number++;
-# #     }
-# }
-
-# # if( $rotamer_number == 0 ) {
-# #     print join( ',', @{ $values[$i] } ) , ',' , "NA", ',', "NA", "\n";
-# # } else {
-# #     if( @parameters ) {
-# #         print join( ',', @{ $values[$i] } ) . ',' .
-# #             sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ) , ',' ,
-# #             $rotamer_number, "\n";
-# #     } else {
-# #         print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), ',',
-# #             $rotamer_number, "\n";
-# #     }
+sub array2hash
+{
+    my ( $keys, $value ) = @_;
+    my %hash;
+    my $keys_count = scalar @{ $keys };
+    if( $#{ $keys } > 0 ) {
+        $hash{$keys->[0]} =
+            array2hash( [ ( @{ $keys } )[1..$keys_count-1] ], $value );
+    } else {
+        $hash{$keys->[0]} = $value;
+    }
+    return \%hash;
+}
