@@ -131,6 +131,26 @@ sub run_calculations
         ( $options->{'parameters'}, $options->{'pdbxs'} );
     my $current_parameters = clone $parameters;
 
+    # HACK: Adds additional keys for '_[local]_torsional', because C-X-X-O and
+    # O-X-X-C interactions are present in parameter data structure. So, only once
+    # parameter has to be changed.
+    for my $full_key ( sort keys %{ $change_parameters } ) {
+        my @keys = split /\./, $full_key;
+        my $category = $keys[0];
+
+        next if ! defined $category;
+
+        if( $category eq '_[local]_torsional' ) {
+            my $additional_change_parameter = $full_key;
+            $additional_change_parameter =~
+                s/^(_\[local\]_torsional)\.(\w+)\.(\w+)\.(.+)$/$1.$3.$2.$4/g;
+            $change_parameters->{$additional_change_parameter} =
+                clone $change_parameters->{$full_key};
+            $change_parameters->{$additional_change_parameter}{key} =
+                $additional_change_parameter;
+        }
+    }
+
     for my $full_key ( sort keys %{ $change_parameters } ) {
         my @keys = split /\./, $full_key;
         my $value = $change_parameters->{$full_key}->value;
