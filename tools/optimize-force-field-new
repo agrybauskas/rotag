@@ -108,7 +108,8 @@ if( $parameters_cmd ) {
 my $ps = ParticleSwarm->new( \%parameters, $particle_num );
 $ps->set_cost_function( \&run_calculations,
                         { 'parameters' => $parameters,
-                          'pdbxs' => \@ARGV } );
+                          'pdbxs' => \@ARGV,
+                          'threads' => $threads } );
 $ps->optimize( $max_iterations );
 
 my $global_optimal_param = $ps->global_optimal_param;
@@ -127,8 +128,8 @@ if( %{ $global_optimal_param } ) {
 sub run_calculations
 {
     my ( $change_parameters, $options ) = @_;
-    my ( $parameters, $pdbxs ) =
-        ( $options->{'parameters'}, $options->{'pdbxs'} );
+    my ( $parameters, $pdbxs, $threads ) =
+        ( $options->{'parameters'}, $options->{'pdbxs'}, $options->{'threads'} );
     my $current_parameters = clone $parameters;
 
     # HACK: Adds additional keys for '_[local]_torsional', because C-X-X-O and
@@ -172,8 +173,10 @@ sub run_calculations
     my $energy_sum = 0;
     my $rotamer_number = 0;
 
+  # PDBX:
     for my $pdbx_file ( @{ $pdbxs } ) {
-                # Reads file path, stdin and '-' operator.
+        # $pm->start and next DATA;
+        # Reads file path, stdin and '-' operator.
         my $atom_site;
         if( $pdbx_file ) {
             $atom_site = obtain_atom_site( $pdbx_file );
