@@ -132,6 +132,8 @@ sub run_calculations
         ( $options->{'parameters'}, $options->{'pdbxs'}, $options->{'threads'} );
     my $current_parameters = clone $parameters;
 
+    $threads //= 1;
+
     # HACK: Adds additional keys for '_[local]_torsional', because C-X-X-O and
     # O-X-X-C interactions are present in parameter data structure. So, only once
     # parameter has to be changed.
@@ -162,6 +164,17 @@ sub run_calculations
         );
     }
 
+    my $pm = Parallel::ForkManager->new( $threads );
+
+    # # Rule to retrieve data.
+    # $pm->run_on_finish( sub {
+    #      my ( $pid, $exit_code, $ident, $exit_signal,
+    #           $core_dump, $data_structure_reference ) = @_;
+    #      for my $i ( 0..$#{ $$data_structure_reference } ) {
+    #          push @{ $results[$i] }, @{ $$data_structure_reference->[$i] };
+    #      }
+    # } );
+
     # Calculates RMSD for given parameters.
     my $sig_figs_max =
         $current_parameters->{'_[local]_constants'}{'sig_figs_max'};
@@ -173,9 +186,10 @@ sub run_calculations
     my $energy_sum = 0;
     my $rotamer_number = 0;
 
-  # PDBX:
+  PDBX:
     for my $pdbx_file ( @{ $pdbxs } ) {
-        # $pm->start and next DATA;
+        $pm->start and next PDBX;
+
         # Reads file path, stdin and '-' operator.
         my $atom_site;
         if( $pdbx_file ) {
@@ -255,7 +269,11 @@ sub run_calculations
             $energy_sum += $top_rotamer->{'potential_energy_value'};
             $rotamer_number++;
         }
+
+        $pm->finish( 0, # \$array
+            );
     }
+    $pm->wait_all_children;
 
     return sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number );
 }
