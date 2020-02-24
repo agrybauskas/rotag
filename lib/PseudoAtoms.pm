@@ -570,11 +570,18 @@ sub calc_favourable_angles
             } elsif( exists $angles->{'*'} ) {
                 @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
             } else {
-                @default_allowed_angles =
-                    map { [ $_ ] }
-                       @{ sample_angles( $parameters,
-                                         [ [ 0, 2 * $pi ] ],
-                                         $small_angle ) };
+                if( defined $rand_count ) {
+                    @default_allowed_angles =
+                        map { [ $_ ] }
+                           @{ sample_angles( $parameters, [ [ 0, 2 * $pi ] ],
+                                             undef, undef, $rand_count ) };
+                } else {
+                    @default_allowed_angles =
+                        map { [ $_ ] }
+                           @{ sample_angles( $parameters,
+                                             [ [ 0, 2 * $pi ] ],
+                                             $small_angle ) };
+                }
             }
 
             my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
