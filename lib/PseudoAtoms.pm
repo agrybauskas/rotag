@@ -527,6 +527,7 @@ sub calc_favourable_angles
 
     # TODO: look how separate $angles and $small_angle influence on the function.
     $small_angle //= 0.1 * 2 * $pi;
+    $rand_seed //= 23;
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
