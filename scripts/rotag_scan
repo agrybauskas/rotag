@@ -81,7 +81,7 @@ our $VERSION = $VERSION;
 #*                        angle value is in radians.
 #*    -x, --rand-seed <int>
 #*                        set a seed for random angle selection.
-#*    -x, --rand-count <int>
+#*    -X, --rand-count <int>
 #*                        number of random angles.
 #*    --tags <tag>[,<tag>...]
 #*                        output only specified PDBx categories.

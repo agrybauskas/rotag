@@ -519,8 +519,8 @@ sub calc_favourable_angles
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'threads'},
-        $args->{'rand_seed'},
-        $args->{'rand_count'},
+        $args->{'options'}{'rand_seed'},
+        $args->{'options'}{'rand_count'},
     );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
