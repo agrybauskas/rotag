@@ -226,7 +226,7 @@ for my $pdbx_file ( @ARGV ) {
                   'angles' => \%angles,
                   'interactions' => $interactions,
                   'threads' => $threads,
-                  'options' => { 'random' => $choose_random }
+                  'options' => { 'rand_seed' => $rand_seed }
                 } );
 
         for my $residue_unique_key ( keys %{ $rotamer_library } ) {
