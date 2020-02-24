@@ -324,7 +324,6 @@ sub generate_library
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
     my $cutoff_atom = $parameters->{'_[local]_constants'}{'cutoff_atom'};
-    my $rand_seed = $options->{'rand_seed'};
 
     $conf_model //= 'rotation_only';
     $threads //= 1;
@@ -423,7 +422,6 @@ sub generate_library
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site,
                              'angles' => $angles,
-                             'rand_seed' => $rand_seed,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
@@ -511,7 +509,7 @@ sub calc_favourable_angles
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
          $angles, $small_angle, $non_bonded_potential, $bonded_potential,
-         $threads, $rand_seed ) = (
+         $threads, $rand_seed, $rand_count ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
@@ -522,11 +520,12 @@ sub calc_favourable_angles
         $args->{'bonded_potential'},
         $args->{'threads'},
         $args->{'rand_seed'},
+        $args->{'rand_count'},
     );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    # TODO: look how separate $angles and $small_angle influence on the function;
+    # TODO: look how separate $angles and $small_angle influence on the function.
     $small_angle //= 0.1 * 2 * $pi;
 
     my $residue_site =
