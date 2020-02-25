@@ -17,7 +17,8 @@ our @EXPORT_OK = qw( calc_favourable_angle
 use B qw( svref_2object );
 use Carp;
 use Clone qw( clone );
-use List::Util qw( max );
+use List::Util qw( max
+                   shuffle );
 use List::MoreUtils qw( any
                         uniq );
 use threads;
@@ -509,7 +510,7 @@ sub calc_favourable_angles
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
          $angles, $small_angle, $non_bonded_potential, $bonded_potential,
-         $threads ) = (
+         $threads, $rand_count, $rand_seed ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
@@ -519,12 +520,15 @@ sub calc_favourable_angles
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'threads'},
+        $args->{'options'}{'rand_count'},
+        $args->{'options'}{'rand_seed'},
     );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     # TODO: look how separate $angles and $small_angle influence on the function.
     $small_angle //= 0.1 * 2 * $pi;
+    $rand_seed //= 23;
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
@@ -565,7 +569,17 @@ sub calc_favourable_angles
                 @default_allowed_angles =
                     map { [ $_ ] } @{ $angles->{$last_angle_name} };
             } elsif( exists $angles->{'*'} ) {
-                @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
+                if( defined $rand_count && defined $rand_seed ) {
+                    if( $rand_count > scalar @{$angles->{'*'}} ) {
+                        die 'number of randomly selected angles is greater that ' .
+                            "possible angles.\n";
+                    }
+                    @default_allowed_angles =
+                        map { [ $angles->{'*'}[$_] ] }
+                        ( shuffle( 0..$#{$angles->{'*'}} ) )[0..$rand_count-1];
+                } else {
+                    @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
+                }
             } else {
                 @default_allowed_angles =
                     map { [ $_ ] }

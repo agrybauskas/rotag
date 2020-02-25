@@ -98,7 +98,7 @@ our $VERSION = $VERSION;
 my $interactions = 'composite';
 my $angles = '-180.0..36.0..180.0';
 my $in_radians = 0;
-my $rand_seed;
+my $rand_seed = 23;
 my $rand_count;
 my $threads = 1;
 my $tags = '_atom_site,_[local]_rotamer_angle,_[local]_rotamer_energy';
@@ -155,6 +155,11 @@ my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+
+# Set random seed.
+if( defined $rand_seed && defined $rand_count ) {
+    srand( $rand_seed );
+}
 
 # Parses string describing angles.
 my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
