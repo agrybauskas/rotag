@@ -574,9 +574,10 @@ sub calc_favourable_angles
                         die 'number of randomly selected angles is greater that ' .
                             "possible angles.\n";
                     }
+                    my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}} );
                     @default_allowed_angles =
                         map { [ $angles->{'*'}[$_] ] }
-                        ( shuffle( 0..$#{$angles->{'*'}} ) )[0..$rand_count-1];
+                            @shuffled_idxs[0..$rand_count-1];
                 } else {
                     @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
                 }
