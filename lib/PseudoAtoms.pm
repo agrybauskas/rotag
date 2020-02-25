@@ -509,7 +509,7 @@ sub calc_favourable_angles
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
          $angles, $small_angle, $non_bonded_potential, $bonded_potential,
-         $threads, $rand_seed, $rand_count ) = (
+         $threads ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
@@ -519,15 +519,12 @@ sub calc_favourable_angles
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'threads'},
-        $args->{'options'}{'rand_seed'},
-        $args->{'options'}{'rand_count'},
     );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     # TODO: look how separate $angles and $small_angle influence on the function.
     $small_angle //= 0.1 * 2 * $pi;
-    $rand_seed //= 23;
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
@@ -570,18 +567,11 @@ sub calc_favourable_angles
             } elsif( exists $angles->{'*'} ) {
                 @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
             } else {
-                if( defined $rand_count ) {
-                    @default_allowed_angles =
-                        map { [ $_ ] }
-                           @{ sample_angles( $parameters, [ [ 0, 2 * $pi ] ],
-                                             undef, undef, $rand_count ) };
-                } else {
-                    @default_allowed_angles =
-                        map { [ $_ ] }
-                           @{ sample_angles( $parameters,
-                                             [ [ 0, 2 * $pi ] ],
-                                             $small_angle ) };
-                }
+                @default_allowed_angles =
+                    map { [ $_ ] }
+                       @{ sample_angles( $parameters,
+                                         [ [ 0, 2 * $pi ] ],
+                                         $small_angle ) };
             }
 
             my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
