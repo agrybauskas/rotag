@@ -111,16 +111,18 @@ for my $pdbx_file ( @ARGV ) {
                   'is_list' => 1 } );
 
     if( $predict_sidechains ) {
-        my $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
-        my $rotamer_energy = $pdbx->{'_[local]_rotamer_energy'}{'data'};
+        my $rotamer_angles = $pdbx->{'_[local]_rotamer_angle'}{'data'};
+        my $rotamer_energies = $pdbx->{'_[local]_rotamer_energy'}{'data'};
 
-        if( ! defined $rotamer_angle ) {
+        if( ! defined $rotamer_angles ) {
             warning( { 'program' => $0,
                        'message' => "no rotamer angles were detected.\n" } );
             next;
         }
 
-        sidechain_positions( { 'atom_site' => $selected_atom_site,
+        sidechain_positions( { 'rotamer_angles' => $rotamer_angles,
+                               'rotamer_energies' => $rotamer_energies,
+                               'atom_site' => $selected_atom_site,
                                'parameters' => $parameters } );
 
     } else {

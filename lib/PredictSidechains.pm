@@ -21,8 +21,10 @@ our $VERSION = $VERSION;
 sub sidechain_positions
 {
     my ( $args ) = @_;
-    my ( $parameters, $atom_site ) =
-        ( $args->{'parameters'}, $args->{'atom_site'} );
+    my ( $rotamer_angles, $rotamer_energies, $parameters, $atom_site ) = (
+        $args->{'rotamer_angles'}, $args->{'rotamer_energies'},
+        $args->{'parameters'}, $args->{'atom_site'}
+    );
 
     my $edge_length_interaction =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
@@ -66,6 +68,9 @@ sub sidechain_positions
             }
         }
     }
+
+    # use Data::Dumper;
+    # print STDERR Dumper $interaction_graph;
 
     # print $graph_viz->as_png;
 }
