@@ -7,11 +7,16 @@ use autodie;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 Getopt::Long::Configure qw( gnu_getopt );
+use Parallel::ForkManager;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
-use Combinatorics qw( permutation );
+use Combinatorics qw( adjacent
+                      permutation );
 use ForceField::Parameters;
+use LinearAlgebra qw( evaluate_matrix_of_functions
+                      flatten
+                      matrix_of_functions );
 use Logging qw( error
                 warning );
 use Measure qw( rmsd );
@@ -33,33 +38,39 @@ our $VERSION = $VERSION;
 #*    optimize the parameters for the composite force-field potential function.
 #*
 #*Usage:
-#*    optimize-force-field parameters.cif > output.cif
+#*    optimize-force-field structure.cif > output.cif
 #*
 #*Options:
 #*    -a, --angle-step <float>    angle that each dihedral angle is turned by
 #*                                (default: 0.1).
 #*
-#*    -p, --parameter-file <str>  specify the path of parameter file.
+#*    -p, --parameters <str>      parameters and parameter steps that should be
+#*                                used to explore the them.
+#*                                Ex.: '_[local]_force_field:t_k=0.5..0.25..1.0'.
+#*
+#*    -i, --iterations <int>      number of iterations.
 #*
 #*    -n, --threads <int>         number of threads.
 #*
 #*    -v, --version               print version.
 
-my $parameter_file;
 my $threads = 1;
 my $angles = '-180.0..36.0..180.0';
+my $parameters_cmd = '';
+my $max_iterations = 1;
 
 local $SIG{__WARN__} = sub {
-    warning( { 'message' => @_ } );
+    # warning( { 'message' => @_ } );
 };
 
 local $SIG{__DIE__} = sub {
-    error( { 'program' => $0, 'message' => @_ } );
+    # warning( { 'message' => @_ } );
 };
 
 GetOptions(
     'angles|a=s' => \$angles,
-    'parameter-file|p=s' => \$parameter_file,
+    'parameters|p=s' => \$parameters_cmd,
+    'iterations|i=s' => \$max_iterations,
     'threads|n=s' => \$threads,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -79,25 +90,74 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my $params = Parameters->new();
-my $multi_parameters =
-    $params->explore_force_field_parameters( [ $parameter_file ] );
+my @parameters = ();
+my @values = ();
 
+if( $parameters_cmd ) {
+    for my $parameter_cmd ( split /;/, $parameters_cmd ) {
+        my @current_params_cmd =
+            ($parameter_cmd =~m/[A-Za-z0-9_\:\.\-\]\[]+\=(?:\[)[\-0-9\.,]+(?:\])/g);
 
-# Calculates RMSD for given parameters.
-# TODO: maybe should try to generalize in the future for more parameters or
-# have different parameter files for each potential energy functions, such as
-# hard_sphere, soft_sphere and composite.
-my %pdbx_loops;
-$pdbx_loops{'_[local]_parameter_estimation'}{'attributes'} =
-    [ 'id', 'lj_k', 'c_k', 'h_k', 't_k', 'cutoff_atom', 'cutoff_start',
-      'cutoff_end', 'rotamer_number', 'energy_average', 'rmsd_average' ];
+        my @current_parameters = ();
+        my @current_values = ();
+        for my $current_param_cmd ( @current_params_cmd ) {
+            my ( $key_path, $values ) = split /=/, $current_param_cmd;
 
-my $calculation_id = 1;
-for my $parameters ( @{ $multi_parameters } ) {
-    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+            my @keys = split /:/, $key_path;
+            push @current_parameters, \@keys;
+
+            if( $values =~ m/\[(\S*)\]/ ) {
+                my @values = map { split /\.\./, $_ } split /,/, $1;
+                if( scalar @values == 3 ) {
+                    my $start = $values[0];
+                    my $step = $values[1];
+                    $step ||= 1;
+                    my $end = $values[2];
+                    push @current_values,
+                        [ map { $step * $_ }( $start / $step .. $end / $step ) ];
+                } else {
+                    push @current_values, \@values;
+                }
+            } else {
+                push @current_values, [ $values ];
+            }
+        }
+
+        @current_values = @{ adjacent( \@current_values ) };
+
+        push @parameters, \@current_parameters;
+        push @values, \@current_values;
+    }
+}
+
+@parameters = map { @{ $_ } } @parameters;
+@values = @{ permutation( scalar @values, [], \@values, [] ) };
+@values = map { flatten( [ $_ ] ) } @values;
+
+if( @parameters ) {
+    print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd,count\n";
+} else {
+    print "rmsd,count\n";
+}
+
+my $fm = Parallel::ForkManager->new( $threads );
+
+PARAMETERS:
+for my $i ( 0..scalar @values - 1 ) {
+    $fm->start and next PARAMETERS;
+
+    my $parameters = Parameters->new();
+
+    # Update the parameters.
+    for my $j ( 0..scalar @parameters - 1 ) {
+        $parameters->set_parameter_values( $parameters,
+                                           array2hash( $parameters[$j],
+                                                       $values[$i][$j] ),
+                                           { 'is_long' => 1 } );
+    }
+
+    # Calculates RMSD for given parameters.
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
-    my $force_field = $parameters->{'_[local]_force_field'};
 
     # Parses string describing angles.
     my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
@@ -148,18 +208,20 @@ for my $parameters ( @{ $multi_parameters } ) {
                 determine_residue_keys( $current_target_site,
                                         { 'exclude_dot' => 1 } );
 
-            my $rotamer_library =
-                generate_library(
+            my $rotamer_library = {};
+            eval{
+                $rotamer_library = generate_library(
                     { 'parameters' => $parameters,
                       'atom_site' => $current_atom_site,
                       'residue_unique_keys' => $residue_unique_keys,
                       'include_interactions' =>
                           { 'id' => [ keys %{ $current_atom_site } ] },
                       'angles' => \%angles,
+                      'rmsd' => 1,
                       'conf_model' => 'rotation_only',
-                      'interactions' => 'composite',
-                      'threads' => $threads,
+                      'interactions' => 'composite'
                     } );
+            };
 
             for my $residue_unique_key ( keys %{ $rotamer_library } ) {
                 $rotamer_library{$residue_unique_key} =
@@ -172,23 +234,6 @@ for my $parameters ( @{ $multi_parameters } ) {
         for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
             my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
                 split /,/sxm, $residue_unique_key;
-            my $residue_site =
-                filter( { 'atom_site' => $selected_atom_site,
-                          'include' =>
-                              { 'label_seq_id' => [ $residue_id ],
-                                'label_asym_id' => [ $residue_chain ],
-                                'label_alt_id' => [ $residue_alt ],
-                                'label_entity_id' => [$residue_entity] } } );
-            my @residue_name =
-                uniq( @{ filter( { 'atom_site' => $residue_site,
-                                   'data' => [ 'label_comp_id' ],
-                                   'is_list' => 1 } ) } );
-            my $residue_coord =
-                filter( { 'atom_site' => $residue_site,
-                          'exclude' =>
-                              { 'label_atom_id' =>
-                                    $parameters->{'_[local]_interaction_atom_names'} },
-                          'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
             # Chooses the rotamer with the lowest energy state.
             my $rotamers = $rotamer_library{$residue_unique_key};
@@ -197,36 +242,40 @@ for my $parameters ( @{ $multi_parameters } ) {
                        $b->{'potential_energy_value'} }
                     @{ $rotamers };
 
-            # Generates rotamer and checks the angle with original
-            # side-chain.
-            my $rotamer_site =
-                generate_rotamer( { 'parameters' => $parameters,
-                                    'atom_site' => $selected_atom_site,
-                                    'angle_values' =>
-                                        { $residue_unique_key =>
-                                              $top_rotamer->{'angles'} } } );
-            my $rotamer_coord =
-                filter( { 'atom_site' => $rotamer_site,
-                          'exclude' =>
-                              { 'label_atom_id' =>
-                                    $parameters->{'_[local]_interaction_atom_names'} },
-                          'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
-
-            $rmsd_sum += rmsd( $residue_coord, $rotamer_coord );
+            $rmsd_sum += $top_rotamer->{'rmsd'};
             $energy_sum += $top_rotamer->{'potential_energy_value'};
             $rotamer_number++;
         }
     }
 
-    push @{ $pdbx_loops{'_[local]_parameter_estimation'}{'data'} },
-        $calculation_id, $force_field->{'lj_k'}, $force_field->{'c_k'},
-        $force_field->{'h_k'}, $force_field->{'t_k'},
-        $force_field->{'cutoff_atom'}, $force_field->{'cutoff_start'},
-        $force_field->{'cutoff_end'}, $rotamer_number,
-        sprintf( $sig_figs_max, $energy_sum / $rotamer_number ),
-        sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number );
+    if( $rotamer_number == 0 ) {
+        print join( ',', @{ $values[$i] } ) , ',' , "NA", ',', "NA", "\n";
+    } else {
+        if( @parameters ) {
+            print join( ',', @{ $values[$i] } ) . ',' .
+                sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ) , ',' ,
+                $rotamer_number, "\n";
+        } else {
+            print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), ',',
+                $rotamer_number, "\n";
+        }
+    }
 
-    $calculation_id++;
+    $fm->finish;
 }
 
-to_pdbx( { 'pdbx_loops' => \%pdbx_loops } );
+$fm->wait_all_children;
+
+sub array2hash
+{
+    my ( $keys, $value ) = @_;
+    my %hash;
+    my $keys_count = scalar @{ $keys };
+    if( $#{ $keys } > 0 ) {
+        $hash{$keys->[0]} =
+            array2hash( [ ( @{ $keys } )[1..$keys_count-1] ], $value );
+    } else {
+        $hash{$keys->[0]} = $value;
+    }
+    return \%hash;
+}

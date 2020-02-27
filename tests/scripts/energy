@@ -21,7 +21,7 @@ my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 my $potential_energies =
     energy( $parameters, $atom_site, $potential,
-            { 'only_sidechains' => 1, 'decompose' => 1 } );
+            { 'only_sidechains' => 1, 'decompose' => 1, 'pairwise' => 1 } );
 my @potential_energies =
     sort { $a->atoms->[0]  <=> $b->atoms->[0]  ||
            $a->atoms->[-1] <=> $b->atoms->[-1] ||

@@ -33,6 +33,7 @@ my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 if( defined $parameters_cmd ) {
     $parameters_cmd =~ s/\s//g;
     $parameters->set_parameter_values(
+        $parameters,
         { '_[local]_force_field' =>
               { map { ( split /=/sm, $_ ) } split /,/sxm, $parameters_cmd } }
     );

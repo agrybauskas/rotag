@@ -208,11 +208,16 @@ sub force_field
         my $type_symbol_1 = $torsional->{'type_symbol_1'};
         my $type_symbol_2 = $torsional->{'type_symbol_2'};
         my $epsilon = $torsional->{'epsilon'};
+        my $phase = $torsional->{'phase'};
 
         $force_field_parameters{'_[local]_torsional'}{$type_symbol_1}
                                {$type_symbol_2}{'epsilon'} = $epsilon;
         $force_field_parameters{'_[local]_torsional'}{$type_symbol_2}
                                {$type_symbol_1}{'epsilon'} = $epsilon;
+        $force_field_parameters{'_[local]_torsional'}{$type_symbol_1}
+                               {$type_symbol_2}{'phase'} = $phase;
+        $force_field_parameters{'_[local]_torsional'}{$type_symbol_2}
+                               {$type_symbol_1}{'phase'} = $phase;
     }
 
     # Restructuring parameters of hydrogen bond.
@@ -441,83 +446,55 @@ sub covalent_bond_combinations
 
 sub set_parameter_values
 {
-    my ( $self, $parameter_values ) = @_;
-    for my $category ( sort keys %{ $parameter_values } ) {
-        for my $attribute ( sort keys %{ $parameter_values->{$category} } ) {
-            if( exists $parameter_values->{$category}{$attribute} ) {
-                $self->{$category}{$attribute} =
-                    $parameter_values->{$category}{$attribute};
-            } else {
-                die "parameter argument is not valid.\n";
-            }
-        }
-    }
-    return;
-}
+    my ( $self, $parameters_ref, $parameter_values, $options ) = @_;
+    my ( $is_json, $is_long ) = ( $options->{'is_json'}, $options->{'is_long'} );
 
-# --------------------------------- Methods ----------------------------------- #
-
-sub explore_force_field_parameters
-{
-    my ( $self, $parameters_files ) = @_;
-
-    my @parameters = ();
-
-    for my $parameters_file ( @{ $parameters_files } ) {
-        my $parameters =
-            Parameters->new( { 'force_field_file' => $parameters_file } );
-
-        # Look for attributes containing _min, _max and _delta post-fixes in
-        # 'force_field' attributes.
-        my %possible_parameter_values = ();
-        my $force_field = $parameters->{'_[local]_force_field'};
-        my @parameter_list = ();
-        my @parameter_value_list = ();
-        for my $parameter ( sort keys %{ $force_field } ) {
-            my $parameter_value = $force_field->{$parameter};
-            if( $parameter_value eq '?' ) {
-                my $parameter_min = $force_field->{"${parameter}_min"};
-                my $parameter_max = $force_field->{"${parameter}_max"};
-                my $parameter_delta = $force_field->{"${parameter}_delta"};
-
-                if( $parameter_delta && $parameter_min && $parameter_max ) {
-                    my $current_parameter_step_count =
-                        int( ( $parameter_max - $parameter_min ) /
-                             $parameter_delta );
-                    my @current_parameter_value_list =
-                        map { $parameter_min + $parameter_delta * $_ }
-                            ( 0..$current_parameter_step_count );
-                    push @parameter_list, $parameter;
-                    push @parameter_value_list, \@current_parameter_value_list;
-                    next;
-                } elsif( $parameter_min && $parameter_max ) {
-                    push @parameter_list, $parameter;
-                    push @parameter_value_list, [$parameter_min, $parameter_max];
-                    next;
+    if( $is_json ) {
+        if( ref $parameter_values eq 'HASH' ) {
+            for my $parameter ( keys %{ $parameter_values } ) {
+                if( ref \$parameter_values->{$parameter} eq 'SCALAR' ||
+                    ref \$parameter_values->{$parameter} eq 'ARRAY' ) {
+                    ${$parameters_ref}->{$parameter} =
+                        $parameter_values->{$parameter};
                 } else {
-                    die "no min/max values of the ${parameter} parameter is " .
-                        "supplied\n";
+                    $self->set_parameter_values(
+                        \${$parameters_ref}->{$parameter},
+                        $parameter_values->{$parameter},
+                        { 'is_json' => 1 }
+                    );
                 }
             }
         }
-
-        # Creates the combinations of the varying parameters.
-        my $permutated_parameters_list =
-            permutation( $#parameter_list + 1, [], \@parameter_value_list, [] );
-
-        for my $permutated_parameters ( @{ $permutated_parameters_list } ) {
-            my $current_parameters = clone( $parameters );
-            my %change_parameters_to =
-                map { $parameter_list[$_] => $permutated_parameters->[$_] }
-                    ( 0..$#parameter_list );
-            $current_parameters->set_parameter_values(
-                { '_[local]_force_field' => \%change_parameters_to }
-            );
-            push @parameters, $current_parameters;
+    } elsif( $is_long ) {
+        if( ref $parameter_values eq 'HASH' ) {
+            for my $parameter ( keys %{ $parameter_values } ) {
+                if( ref \$parameter_values->{$parameter} eq 'SCALAR' ||
+                    ref \$parameter_values->{$parameter} eq 'ARRAY' ) {
+                    $parameters_ref->{$parameter} =
+                        $parameter_values->{$parameter};
+                } else {
+                    $self->set_parameter_values(
+                        $parameters_ref->{$parameter},
+                        $parameter_values->{$parameter},
+                        { 'is_long' => 1 }
+                    );
+                }
+            }
+        }
+    } else {
+        for my $category ( sort keys %{ $parameter_values } ) {
+            for my $attribute ( sort keys %{ $parameter_values->{$category} } ) {
+                if( exists $parameter_values->{$category}{$attribute} ) {
+                    $self->{$category}{$attribute} =
+                        $parameter_values->{$category}{$attribute};
+                } else {
+                    die "parameter argument is not valid.\n";
+                }
+            }
         }
     }
 
-    return \@parameters;
+    return;
 }
 
 1;

@@ -49,7 +49,7 @@ our $VERSION = $VERSION;
 
 my $top_rank;
 my $top_ratio;
-my $output_categories = '_atom_site,_[local]_rotamer_angle';
+my $tags = '_atom_site,_[local]_rotamer_angle';
 my $output_format = 'pdbx';
 my @category_list = ( '_atom_site', '_[local]_rotamer_angle',
                       '_[local]_rotamer_energy' );
@@ -65,7 +65,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
-    'tags=s' => \$output_categories,
+    'tags=s' => \$tags,
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -85,8 +85,8 @@ GetOptions(
               'message' => "mistake in command line argument.\n" } );
 
 # Parses tag string.
-$output_categories =~ s/\s//g;
-my @output_categories = split /,/sxm, $output_categories;
+$tags =~ s/\s//g;
+my @tags = split /,/sxm, $tags;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -193,10 +193,10 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( \%pdbx_data,
                  { 'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] },
-                   'tags' => \@output_categories } );
+                   'tags' => \@tags } );
     } elsif( $output_format eq 'csv' ) {
-        if( scalar @output_categories == 1 ) {
-            to_csv( \%pdbx_data, { 'category' => $output_categories[0] } );
+        if( scalar @tags == 1 ) {
+            to_csv( \%pdbx_data, { 'category' => $tags[0] } );
         } else {
             warning( { 'program' => $0,
                        'message' => "only one tag has to be chosen for " .

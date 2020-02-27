@@ -27,7 +27,7 @@ our $VERSION = $VERSION;
 
 sub sample_angles
 {
-    my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift ) = @_;
+    my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift, $rand_count ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
@@ -37,26 +37,30 @@ sub sample_angles
     my $min_angle;
     my $max_angle;
 
-    # Devides full circle (2*pi) into even intervals by $small_angle value.
-    $small_angle = # Adjusts angle so, it could be devided evenly.
-        2 * $pi / floor( 2 * $pi / $small_angle );
-    my @small_angles =
-        map { $_ * $small_angle + $angle_phase_shift }
-            ( 0..( floor( 2 * $pi / $small_angle ) - 1 ) );
+    if( defined $rand_count ) {
 
-    # Iterates around the circle and adds evenly spaced angles, if they are
-    # inside intervals ($angle_ranges).
-    for my $angle ( @small_angles ) {
-        # TODO: might speed up calculation by eliminating previous elements
-        # from $angle_ranges array.
-        for my $angle_range ( @{ $angle_ranges } ) {
-            $min_angle = $angle_range->[0];
-            $max_angle = $angle_range->[1];
-            if( $angle >= $min_angle && $angle <= $max_angle ) {
-                push @angles, $angle;
-                last;
-            } elsif( $min_angle == $max_angle ) {
-                push @angles, $min_angle;
+    } else {
+        # Devides full circle (2*pi) into even intervals by $small_angle value.
+        $small_angle = # Adjusts angle so, it could be devided evenly.
+            2 * $pi / floor( 2 * $pi / $small_angle );
+        my @small_angles =
+            map { $_ * $small_angle + $angle_phase_shift }
+                ( 0..( floor( 2 * $pi / $small_angle ) - 1 ) );
+
+        # Iterates around the circle and adds evenly spaced angles, if they are
+        # inside intervals ($angle_ranges).
+        for my $angle ( @small_angles ) {
+            # TODO: might speed up calculation by eliminating previous elements
+            # from $angle_ranges array.
+            for my $angle_range ( @{ $angle_ranges } ) {
+                $min_angle = $angle_range->[0];
+                $max_angle = $angle_range->[1];
+                if( $angle >= $min_angle && $angle <= $max_angle ) {
+                    push @angles, $angle;
+                    last;
+                } elsif( $min_angle == $max_angle ) {
+                    push @angles, $min_angle;
+                }
             }
         }
     }

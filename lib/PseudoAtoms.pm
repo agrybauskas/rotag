@@ -17,7 +17,8 @@ our @EXPORT_OK = qw( calc_favourable_angle
 use B qw( svref_2object );
 use Carp;
 use Clone qw( clone );
-use List::Util qw( max );
+use List::Util qw( max
+                   shuffle );
 use List::MoreUtils qw( any
                         uniq );
 use threads;
@@ -36,7 +37,8 @@ use ForceField::NonBonded qw( general
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product );
-use Measure qw( all_dihedral );
+use Measure qw( all_dihedral
+                rmsd_sidechains );
 use BondProperties qw( hybridization
                        rotatable_bonds
                        unique_rotatables );
@@ -292,7 +294,8 @@ sub generate_rotamer
 #           'angle_start' => 0.0,
 #           'angle_step' => 36.0,
 #           'angle_end' => 360.0,
-#     }.
+#     };
+#     $args->{rmsd} - include RMSD calculations;
 #     $args->{conf_model} - possible sidechain movements described by sidechain
 #     model functions in SidechainModels.pm;
 #     $args->{interactions} - interaction models described by functions in
@@ -312,6 +315,7 @@ sub generate_library
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
     my $angles = $args->{'angles'};
+    my $rmsd = $args->{'rmsd'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
     my $threads = $args->{'threads'};
@@ -430,7 +434,7 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
-                my ( $allowed_angles, $energy_sums ) =
+                my ( $allowed_angles, $energy_sums, $rmsds ) =
                     @{ threading(
                            \&calc_full_atom_energy,
                            { 'parameters' => $parameters,
@@ -441,6 +445,7 @@ sub generate_library
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
+                             ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                              'options' => $options },
                            [ @allowed_angles ],
                            $threads ) };
@@ -468,7 +473,8 @@ sub generate_library
                         push @{ $rotamer_library{"$residue_unique_key"} },
                             { 'angles' => \%angles,
                               'potential' => $interactions,
-                              'potential_energy_value' => $rotamer_energy_sum };
+                              'potential_energy_value' => $energy_sums->[$i],
+                              ( $rmsd ? ( 'rmsd' => $rmsds->[$i][-1] ) : () ) };
                     }
                 }
             }
@@ -504,7 +510,7 @@ sub calc_favourable_angles
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
          $angles, $small_angle, $non_bonded_potential, $bonded_potential,
-         $threads ) = (
+         $threads, $rand_count, $rand_seed ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
@@ -514,12 +520,15 @@ sub calc_favourable_angles
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'threads'},
+        $args->{'options'}{'rand_count'},
+        $args->{'options'}{'rand_seed'},
     );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    # TODO: look how separate $angles and $small_angle influence on the function;
+    # TODO: look how separate $angles and $small_angle influence on the function.
     $small_angle //= 0.1 * 2 * $pi;
+    $rand_seed //= 23;
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
@@ -560,7 +569,18 @@ sub calc_favourable_angles
                 @default_allowed_angles =
                     map { [ $_ ] } @{ $angles->{$last_angle_name} };
             } elsif( exists $angles->{'*'} ) {
-                @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
+                if( defined $rand_count && defined $rand_seed ) {
+                    if( $rand_count > scalar @{$angles->{'*'}} ) {
+                        die 'number of randomly selected angles is greater that ' .
+                            "possible angles.\n";
+                    }
+                    my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}} );
+                    @default_allowed_angles =
+                        map { [ $angles->{'*'}[$_] ] }
+                            @shuffled_idxs[0..$rand_count-1];
+                } else {
+                    @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
+                }
             } else {
                 @default_allowed_angles =
                     map { [ $_ ] }
@@ -761,13 +781,14 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $options ) = (
+         $non_bonded_potential, $bonded_potential, $rmsd, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
+        $args->{'rmsd'},
         $args->{'options'},
     );
 
@@ -782,6 +803,7 @@ sub calc_full_atom_energy
     my @checkable_angles = @{ $array_blocks };
     my @allowed_angles;
     my @energy_sums;
+    my @rmsd_averages;
 
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
@@ -852,9 +874,15 @@ sub calc_full_atom_energy
 
         push @allowed_angles, $checkable_angles[$i];
         push @energy_sums, $rotamer_energy_sum;
+
+        if( defined $rmsd ) {
+            push @rmsd_averages,
+                rmsd_sidechains( $parameters, $residue_site, \%rotamer_site,
+                                 $residue_unique_key, { 'average' => 1 } );
+        }
     }
 
-    return [ \@allowed_angles, \@energy_sums ] ;
+    return [ \@allowed_angles, \@energy_sums, \@rmsd_averages ] ;
 }
 
 #

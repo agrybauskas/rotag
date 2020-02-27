@@ -18,4 +18,4 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-print torsion( $parameters, $atom_i_id, { 'atom_site' => $atom_site } ), "\n";
+print torsion( $parameters, $atom_i_id, { 'atom_site' => $atom_site } ),"\n";

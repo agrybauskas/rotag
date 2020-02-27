@@ -45,7 +45,7 @@ our $VERSION = $VERSION;
 my %potentials = (
     'composite' => {
         'bonded' => {
-            'torsion' => \&ForceField::Bonded::torsion_object,
+            'torsion' => \&ForceField::Bonded::torsion_components,
         },
         'non_bonded' => {
             'lennard_jones' => \&ForceField::NonBonded::lennard_jones,
@@ -55,7 +55,7 @@ my %potentials = (
     },
     'torsion' => {
         'bonded' => {
-            'torsion' => \&ForceField::Bonded::torsion_object,
+            'torsion' => \&ForceField::Bonded::torsion_components,
         }
     },
     'hard_sphere' => {
@@ -559,7 +559,8 @@ sub rmsd
 # Input:
 #     ${first,second}_atom_site - atom site data structure;
 #     $unique_residue_key - unique residue key;
-#     $options{'best_case'} - chooses those rmsd that are lowest.
+#     $options{'average'} - calculates RMSD average;
+#     $options{'best_case'} - chooses those RMSD that are lowest.
 # Output:
 #     @sidechain_comparison_data - list of RMSD comparison data.
 #
@@ -568,9 +569,21 @@ sub rmsd_sidechains
 {
     my ( $parameters, $first_atom_site, $second_atom_site, $unique_residue_key,
          $options ) = @_;
-    my ( $best_case ) = ( $options->{'best_case'} );
+    my ( $average, $best_case, $include_atoms, $exclude_atoms ) = (
+        $options->{'average'},
+        $options->{'best_case'},
+        $options->{'include_atoms'},
+        $options->{'exclude_atoms'}
+    );
 
+    $average //= 0;
     $best_case //= 0;
+    $include_atoms //= $parameters->{'_[local]_sidechain_atom_names'};
+    # HACK: grep'ing by first symbol is not robust, because the first symbol of
+    # atom name sometimes can differ from the type symbol.
+    $exclude_atoms //=
+        [ 'CB', grep { /^H/  }
+                    @{ $parameters->{'_[local]_sidechain_atom_names'} } ];
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
     # TODO: think if using of symmetric atom data should be optional or
@@ -596,7 +609,12 @@ sub rmsd_sidechains
                           { 'label_seq_id' => [ $residue_id ],
                             'label_asym_id' => [ $chain ],
                             'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                            'label_alt_id' => [ $first_alt_id ] },
+                            'label_alt_id' => [ $first_alt_id ],
+                            ( $include_atoms ?
+                              ( 'label_atom_id' => $include_atoms ): () ) },
+                      'exclude' =>
+                          { ( $exclude_atoms ?
+                              ( 'label_atom_id' => $exclude_atoms ): () ) },
                       'data' =>
                           [ '[local]_selection_group', 'id',
                             'label_atom_id', 'label_seq_id',
@@ -615,7 +633,12 @@ sub rmsd_sidechains
                               { 'label_seq_id' => [ $residue_id ],
                                 'label_asym_id' => [ $chain ],
                                 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
-                                'label_alt_id' => [ $second_alt_id ] },
+                                'label_alt_id' => [ $second_alt_id ],
+                                ( $include_atoms ?
+                                  ( 'label_atom_id' => $include_atoms ): () ) },
+                          'exclude' =>
+                              { ( $exclude_atoms ?
+                                    ( 'label_atom_id' => $exclude_atoms ): () )},
                           'data' =>
                               [ 'id', '[local]_selection_group', 'label_atom_id',
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
@@ -694,6 +717,12 @@ sub rmsd_sidechains
                     @sidechain_comparison_data = @current_sidechain_data;
                     $rmsd_average = $current_rmsd_average;
                 }
+            } elsif( $average ) {
+                my $current_rmsd_average =
+                    sum( map { $_->[-1] } @current_sidechain_data ) /
+                    scalar @current_sidechain_data;
+                # TODO: give more information - not only RMSD value.
+                push @sidechain_comparison_data, $current_rmsd_average;
             } else {
                 push @sidechain_comparison_data, @current_sidechain_data;
             }
@@ -712,10 +741,11 @@ sub rmsd_sidechains
 sub energy
 {
     my ( $parameters, $atom_site, $potential, $options  ) = @_;
-    my ( $target_atom_ids, $only_sidechains, $decompose ) = (
+    my ( $target_atom_ids, $only_sidechains, $decompose, $pairwise ) = (
         $options->{'target_atom_ids'},
         $options->{'only_sidechains'},
         $options->{'decompose'},
+        $options->{'pairwise'},
     );
 
     $target_atom_ids //= [ sort keys %{ $atom_site } ];
@@ -764,7 +794,6 @@ sub energy
                          @{ $interaction_atom_names } ) && $only_sidechains;
 
             my @residue_energy = ();
-            my $residue_energy_sum = 0;
 
             # Calculates bonded potential energy term.
             my %bonded_residue_energy = (); # For faster neighbour energy search.
@@ -792,11 +821,7 @@ sub energy
                     # Adds bonded potential energy term.
                     for my $bonded_potential (
                         @{ $bonded_residue_energy{$atom_id}{$neighbour_atom_id} } ) {
-                        if( $decompose ) {
-                            push @residue_energy, $bonded_potential;
-                        } else {
-                            $residue_energy_sum += $bonded_potential->value;
-                        }
+                        push @residue_energy, $bonded_potential;
                     }
 
                     # Adds non-bonded potential energy term.
@@ -813,30 +838,160 @@ sub energy
                             )
                         );
 
-                        if( $decompose ) {
-                            push @residue_energy, $energy_potential;
-                        } else {
-                            $residue_energy_sum += $energy_potential->value;
-                        }
+                        push @residue_energy, $energy_potential;
                     }
                 }
-            }
-
-            if( ! $decompose ) {
-                my $energy_potential = Energy->new();
-                $energy_potential->set_energy(
-                    $potential,
-                    [ $atom_id ],
-                    $residue_energy_sum
-                );
-                push @residue_energy, $energy_potential;
             }
 
             push @residue_energies, @residue_energy;
         }
     }
 
-    return \@residue_energies;
+    my @atom_ids = ();
+    my %atom_id_pairs = ();
+    my %atom_pair_interactions = ();
+    for my $residue_energy ( @residue_energies ) {
+        my $atom_id = $residue_energy->atoms->[0];
+        my $interaction_atom_id = $residue_energy->atoms->[-1];
+        my $energy_type = $residue_energy->energy_type;
+
+        if( ! exists $atom_id_pairs{$atom_id} ) {
+            push @atom_ids, $atom_id;
+        }
+
+        if( ! exists $atom_pair_interactions{$atom_id}{$interaction_atom_id} ) {
+            push @{ $atom_id_pairs{$atom_id} }, $interaction_atom_id;
+        }
+
+        push @{ $atom_pair_interactions{$atom_id}{$interaction_atom_id}
+                                                 {$energy_type} },
+            $residue_energy;
+    }
+
+    my @energies = ();
+    for my $atom_id ( @atom_ids ) {
+        my @interaction_atom_ids = @{ $atom_id_pairs{$atom_id} };
+
+        if( $pairwise ) {
+            for my $interaction_atom_id ( @interaction_atom_ids ) {
+                my @energy_types =
+                    sort
+                    keys %{ $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id} };
+
+                if( $decompose ) {
+                    push @energies,
+                        map { $atom_pair_interactions{$atom_id}
+                                                     {$interaction_atom_id}
+                                                     {$_}[0] }
+                        @energy_types;
+                } else {
+                    my $energy_sum = 0;
+                    for my $energy_type ( @energy_types ) {
+                        $energy_sum +=
+                            $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id}
+                                                   {$energy_type}[0]->value;
+                    }
+
+                    my $energy = Energy->new();
+                    $energy->set_energy( $potential,
+                                         [ $atom_id, $interaction_atom_id ],
+                                         $energy_sum );
+
+                    push @energies, $energy;
+                }
+            }
+        } else {
+            if( $decompose ) {
+                my %energy_sum = ();
+                for my $interaction_atom_id ( @interaction_atom_ids ) {
+                    my @energy_types =
+                        sort
+                        keys %{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} };
+
+                    for my $energy_type ( @energy_types ) {
+                        if( exists $energy_sum{$energy_type} &&
+                            defined $energy_sum{$energy_type} ) {
+                            $energy_sum{$energy_type} +=
+                                $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id}
+                                                       {$energy_type}[0]->value;
+                        } else {
+                            $energy_sum{$energy_type} +=
+                                $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id}
+                                                       {$energy_type}[0]->value;
+                        }
+                    }
+                }
+
+                for my $energy_type ( sort keys %energy_sum ) {
+                    my $energy = Energy->new();
+                    $energy->set_energy( $energy_type, [ $atom_id ],
+                                         $energy_sum{$energy_type} );
+                    push @energies, $energy;
+                }
+            } else {
+                my $energy_sum = 0;
+                for my $interaction_atom_id ( @interaction_atom_ids ) {
+                    my @energy_types =
+                        sort
+                        keys %{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} };
+
+                    for my $energy_type ( @energy_types ) {
+                        $energy_sum +=
+                            $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id}
+                                                   {$energy_type}[0]->value;
+                    }
+                }
+
+                my $energy = Energy->new();
+                $energy->set_energy( $potential, [ $atom_id ], $energy_sum );
+
+                push @energies, $energy;
+            }
+        }
+    }
+
+    # for my $atom_pair ( @atom_pairs ) {
+    #     my $atom_id = $atom_pair->[0];
+    #     my $interaction_atom_id = $atom_pair->[1];
+    #     my @energy_types =
+    #         sort keys %{$atom_pair_interactions{$atom_id}{$interaction_atom_id}};
+
+    #     if( $pairwise && $decompose ) {
+    #         for my $energy_type ( @energy_types ) {
+    #             push @energies,
+    #                 @{ $atom_pair_interactions{$atom_id}
+    #                                           {$interaction_atom_id}
+    #                                           {$energy_type} };
+    #         }
+    #     } elsif( $decompose ) {
+
+    #     } elsif( $pairwise ) {
+
+    #     } else {
+    #         my $energy_sum_value = 0;
+    #         for my $energy_type ( @energy_types ) {
+    #             $energy_sum_value +=
+    #                 $atom_pair_interactions{$atom_id}
+    #                                        {$interaction_atom_id}
+    #                                        {$energy_type}[0]->value;
+    #         }
+
+    #         my $energy_sum = Energy->new();
+    #         $energy_sum->set_energy( $potential,
+    #                                  [ $atom_id, $interaction_atom_id ],
+    #                                  $energy_sum_value );
+    #         push @energies, $energy_sum;
+    #     }
+    # }
+
+    return \@energies;
 }
 
 1;

@@ -16,7 +16,8 @@ my ( $residue_id,
      $potential,
      $interaction_specifier,
      $checkable_angles,
-     $pdbx_dump_file ) = @ARGV;
+     $pdbx_dump_file,
+     $rmsd ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -46,7 +47,7 @@ my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
-my ( $favourable_angles, $favourable_energies ) =
+my ( $favourable_angles, $favourable_energies, $rmsds ) =
     @{ calc_full_atom_energy( { 'parameters' => $parameters,
                                 'atom_site' => $atom_site,
                                 'residue_unique_key' =>
@@ -54,6 +55,7 @@ my ( $favourable_angles, $favourable_energies ) =
                                     "${pdbx_model},${residue_alt}",
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
+                                ( defined $rmsd ? ( 'rmsd' => 1 ): () )
                               },
                               [ @checkable_angles ],
                               'threads' => 1 ) };
@@ -65,7 +67,12 @@ for my $i ( 0..$#{ $favourable_angles } ) {
     for my $j ( 0..$#{ $favourable_angles->[$i] } ) {
         print $angle_id, ', ', $angle_names[$j], ', ',
             sprintf( $sig_figs_min, 180 * $favourable_angles->[$i][$j] / $pi ), ', ',
-            sprintf( $sig_figs_min, $favourable_energies->[$i] ), "\n";
+            sprintf( $sig_figs_min, $favourable_energies->[$i] );
+        if( @{ $rmsds } ) {
+            print ', ' . sprintf( $sig_figs_min, $rmsds->[$i][0] ) ."\n";
+        } else {
+            print "\n";
+        }
     }
     $angle_id++;
 }

@@ -12,5 +12,5 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.atom_4_id
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 N 40 CA 41 C 42 O 43 -0.246180 radians
+1 40 N 41 CA 42 C 43 O -0.246180 radians
 #
