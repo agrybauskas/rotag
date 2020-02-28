@@ -126,6 +126,7 @@ for my $pdbx_file ( @ARGV ) {
                                       'atom_site' => $selected_atom_site,
                                       'parameters' => $parameters } );
         $sidechain_prediction->interaction_graph();
+        $sidechain_prediction->choose();
     } else {
         error(
             { 'program' => $0,
