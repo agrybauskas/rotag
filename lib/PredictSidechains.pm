@@ -40,6 +40,13 @@ sub interaction_graph
     my ( $parameters, $atom_site ) =
         ( $self->{'parameters'}, $self->{'atom_site'} );
 
+    if( ! defined $parameters ) {
+        die "parameters are not set.\n";
+    }
+    if( ! defined $atom_site ) {
+        die "atom site is not supplied.\n";
+    }
+
     my $edge_length_interaction =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
 
@@ -83,7 +90,18 @@ sub interaction_graph
 
 sub choose
 {
+    my ( $self ) = @_;
 
+    if( ! defined $self->{'rotamer_angles'} ) {
+        die "rotamer angles are not supplied by '_[local]_rotamer_angle' tag.\n";
+    }
+    if( ! defined $self->{'rotamer_energies'} ) {
+        die "rotamer energies are not supplied by '_[local]_rotamer_energy'" .
+            " tag.\n";
+    }
+    if( ! defined $self->{'interaction_graph'} ) {
+        $self->interaction_graph();
+    }
 }
 
 1;
