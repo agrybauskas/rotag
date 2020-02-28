@@ -92,16 +92,24 @@ sub choose
 {
     my ( $self ) = @_;
 
-    if( ! defined $self->{'rotamer_angles'} ) {
+    my ( $rotamer_angles, $rotamer_energies, $interaction_graph ) = (
+        $self->{'rotamer_angles'},
+        $self->{'rotamer_energies'},
+        $self->{'interaction_graph'}
+    );
+
+    if( ! defined $rotamer_angles ) {
         die "rotamer angles are not supplied by '_[local]_rotamer_angle' tag.\n";
     }
-    if( ! defined $self->{'rotamer_energies'} ) {
+    if( ! defined $rotamer_energies ) {
         die "rotamer energies are not supplied by '_[local]_rotamer_energy'" .
             " tag.\n";
     }
-    if( ! defined $self->{'interaction_graph'} ) {
+    if( ! defined $interaction_graph ) {
         $self->interaction_graph();
     }
+
+
 }
 
 1;
