@@ -125,6 +125,7 @@ for my $pdbx_file ( @ARGV ) {
                                       'rotamer_energies' => $rotamer_energies,
                                       'atom_site' => $selected_atom_site,
                                       'parameters' => $parameters } );
+        $sidechain_prediction->interaction_graph();
     } else {
         error(
             { 'program' => $0,
