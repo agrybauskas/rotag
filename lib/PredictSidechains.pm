@@ -109,7 +109,19 @@ sub choose
         $self->interaction_graph();
     }
 
-
+    # Generates related data structure that joins rotamer angle with energy data.
+    # TODO: should use similar function to related_category_data().
+    for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
+        my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
+        my $rotamer_angle_type = $rotamer_angle->{'type'};
+        my $rotamer_id = $rotamer_angle->{'rotamer_id'};
+        $rotamer_energies->{$rotamer_id}{'angles'}{$rotamer_angle_type} =
+            $rotamer_angle;
+        # TODO: removing frequencies, because they can be changed and, for now,
+        # they are ignored.
+        delete $rotamer_energies->{$rotamer_id}{'angles'}{$rotamer_angle_type}
+                                                         {'frequency'};
+    }
 }
 
 1;
