@@ -24,7 +24,8 @@ sub new
         'atom_site' => $args->{'atom_site'},
         'rotamer_angles' => $args->{'rotamer_angles'},
         'rotamer_energies' => $args->{'rotamer_energies'},
-        'rotamer_combined_data' => undef,
+        'unique_residue_tbl' => undef,
+        'rotamer_energy_angle_tbl' => undef,
         'interaction_graph' => undef,
         'parameters' => $args->{'parameters'}
     };
@@ -37,31 +38,31 @@ sub new
             " tag.\n";
     }
 
-    # Generates related data structure that joins rotamer angle with energy data.
-    my $rotamer_angles = $self->{'rotamer_angles'};
-    my $rotamer_energies = $self->{'rotamer_energies'};
-    for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
-        # TODO: be careful of memory usage.
-        my $rotamer_angle = clone $rotamer_angles->{$rotamer_angle_id};
-        my $rotamer_id = $rotamer_angle->{'rotamer_id'};
-        my $rotamer_energy = clone $rotamer_energies->{$rotamer_id};
-        my $unique_residue_key =
-            sprintf '%s,%s,%s,%s',
-            $rotamer_angle->{'label_seq_id'},
-            $rotamer_angle->{'label_asym_id'},
-            $rotamer_angle->{'pdbx_PDB_model_num'},
-            $rotamer_angle->{'label_alt_id'};
-        my $rotamer_angle_type = $rotamer_angle->{'type'};
+    # # Generates related data structure that joins rotamer angle with energy data.
+    # my $rotamer_angles = $self->{'rotamer_angles'};
+    # my $rotamer_energies = $self->{'rotamer_energies'};
+    # for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
+    #     # TODO: be careful of memory usage.
+    #     my $rotamer_angle = clone $rotamer_angles->{$rotamer_angle_id};
+    #     my $rotamer_id = $rotamer_angle->{'rotamer_id'};
+    #     my $rotamer_energy = clone $rotamer_energies->{$rotamer_id};
+    #     my $unique_residue_key =
+    #         sprintf '%s,%s,%s,%s',
+    #         $rotamer_angle->{'label_seq_id'},
+    #         $rotamer_angle->{'label_asym_id'},
+    #         $rotamer_angle->{'pdbx_PDB_model_num'},
+    #         $rotamer_angle->{'label_alt_id'};
+    #     my $rotamer_angle_type = $rotamer_angle->{'type'};
 
-        # TODO: removing frequencies, because they can be changed and, for now,
-        # they are ignored.
-        delete $rotamer_energy->{'frequency'};
+    #     # TODO: removing frequencies, because they can be changed and, for now,
+    #     # they are ignored.
+    #     delete $rotamer_energy->{'frequency'};
 
-        $rotamer_energy->{'angles'}{$rotamer_angle_type} = $rotamer_angle;
+    #     $rotamer_energy->{'angles'}{$rotamer_angle_type} = $rotamer_angle;
 
-        # push @{ $self->{'rotamer_combined_data'}{$unique_residue_key} },
-        #     $rotamer_energy;
-    }
+    #     # push @{ $self->{'rotamer_combined_data'}{$unique_residue_key} },
+    #     #     $rotamer_energy;
+    # }
 
     return bless $self, $class;
 }
