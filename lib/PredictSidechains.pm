@@ -27,7 +27,7 @@ sub new
         'rotamer_look_up_tbls' => {
             'angle_id' => {
                 'rotamer_id' => undef,
-                'unique_residue_key' => undef,
+                'unique_residue_key' => undef
             },
             'rotamer_id' => {
                 'angle_ids' => undef,
@@ -37,7 +37,7 @@ sub new
                 'angle_ids' => undef,
                 'rotamer_ids' => undef
             }
-        }
+        },
         'interaction_graph' => undef,
         'parameters' => $args->{'parameters'}
     };
@@ -62,12 +62,26 @@ sub new
             $rotamer_angle->{'pdbx_PDB_model_num'},
             $rotamer_angle->{'label_alt_id'};
 
-        # push @{ $self->{'rotamer_angle_tbl'}{} } =
-        #     $rotamer_angle_id;
+        $self->{'rotamer_look_up_tbls'}{'angle_id'}{$rotamer_angle_id}
+                                                   {'rotamer_id'} =
+            $rotamer_id;
+        $self->{'rotamer_look_up_tbls'}{'angle_id'}{$rotamer_angle_id}
+                                                   {'unique_residue_key'} =
+            $unique_residue_key;
 
-        # if( ! exists $self->{'rotamer_energy_tbl'}{$rotamer_id} ) {
-        #     $self->{'rotamer_energy_tbl'}{$rotamer_id} = $unique_residue_key;
-        # }
+        push @{ $self->{'rotamer_look_up_tbls'}{'rotamer_id'}{$rotamer_id}
+                                                             {'angle_ids'} },
+            $rotamer_angle_id;
+        $self->{'rotamer_look_up_tbls'}{'rotamer_id'}{$rotamer_id}
+                                                     {'unique_residue_key'} =
+            $unique_residue_key;
+
+        push @{$self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
+                                              {$unique_residue_key}{'angle_ids'}},
+            $rotamer_angle_id;
+        push @{$self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
+                                              {$unique_residue_key}{'rotamer_ids'}},
+            $rotamer_id;
     }
 
     return bless $self, $class;
