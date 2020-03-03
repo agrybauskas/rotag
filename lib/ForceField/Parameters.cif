@@ -1046,6 +1046,7 @@ TYR C    sp2
 TYR CA   sp3
 TYR CB   sp3
 TYR CD1  sp2
+TYR CD2  sp2
 TYR CE1  sp2
 TYR CE2  sp2
 TYR CG   sp2
