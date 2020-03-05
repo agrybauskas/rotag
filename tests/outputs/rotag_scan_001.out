@@ -53,10 +53,10 @@ _[local]_rotamer_energy.value
 2 2 composite -0.041210
 3 3 composite -0.038723
 4 4 composite -0.051071
-5 5 composite 0.271647
-6 6 composite 0.910750
-7 7 composite 0.254037
-8 8 composite 0.005407
-9 9 composite 0.813827
-10 10 composite 0.572733
+5 5 composite 0.409843
+6 6 composite 1.310750
+7 7 composite 0.392234
+8 8 composite 0.043867
+9 9 composite 1.175892
+10 10 composite 0.834112
 #

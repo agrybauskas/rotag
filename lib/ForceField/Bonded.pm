@@ -67,18 +67,25 @@ sub torsion_components
 {
     my ( $parameters, $atom_i_id, $options ) = @_;
 
-    my ( $reference_atom_site ) = ( $options->{'atom_site'} );
+    my ( $reference_atom_site, $debug ) =
+        ( $options->{'atom_site'}, $options->{'debug'} );
+
+    $debug //= 0;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $t_k = $parameters->{'_[local]_force_field'}{'t_k'};
     my $torsional = $parameters->{'_[local]_torsional'};
+    my $torsional_atom_names = $parameters->{'_[local]_torsional_atom_names'};
 
     # Determines all dihedral angles by searching third neighbours following the
     # connections.
-    my $atom_name = $reference_atom_site->{$atom_i_id}{'type_symbol'};
+    my $atom_name = $reference_atom_site->{$atom_i_id}{'label_atom_id'};
+    my $residue_name = $reference_atom_site->{$atom_i_id}{'label_comp_id'};
     my @connection_ids = @{ $reference_atom_site->{$atom_i_id}{'connections'} };
     my @torsion_potentials = ();
     for my $neighbour_id ( @connection_ids ) {
+        my $neighbour_atom_name =
+            $reference_atom_site->{$neighbour_id}{'label_atom_id'};
         my @second_neighbour_ids =
             grep { $atom_i_id ne $_ }
                 @{ $reference_atom_site->{$neighbour_id}{'connections'} };
@@ -86,6 +93,8 @@ sub torsion_components
         next if ! @second_neighbour_ids;
 
         for my $second_neighbour_id ( @second_neighbour_ids ) {
+            my $second_atom_name =
+                $reference_atom_site->{$second_neighbour_id}{'label_atom_id'};
             my @third_neighbour_ids =
                 grep { $neighbour_id ne $_ }
                     @{ $reference_atom_site->{$second_neighbour_id}
@@ -94,12 +103,66 @@ sub torsion_components
             next if ! @third_neighbour_ids;
 
             for my $third_neighbour_id ( @third_neighbour_ids ) {
-                my $third_atom_name =
-                    $reference_atom_site->{$third_neighbour_id}{'type_symbol'};
-                my $epsilon = $torsional->{$third_atom_name}{$atom_name}
-                                          {'epsilon'};
-                my $phase = $torsional->{$third_atom_name}{$atom_name}
-                                          {'phase'};
+                my $alt_atom_name =
+                    $torsional_atom_names->{$residue_name}
+                                           {$atom_name}[0];
+                my $alt_neighbour_atom_name =
+                    $torsional_atom_names->{$residue_name}
+                                           {$neighbour_atom_name}[0];
+                my $alt_second_atom_name =
+                    $torsional_atom_names->{$residue_name}
+                                           {$second_atom_name}[0];
+                my $alt_third_atom_name =
+                    $torsional_atom_names->{$residue_name}
+                                           {$reference_atom_site->
+                                                {$third_neighbour_id}
+                                                {'label_atom_id'}}[0];
+
+                my $epsilon;
+                my $phase;
+                my $gamma;
+
+                if( defined $alt_atom_name &&
+                    defined $alt_neighbour_atom_name &&
+                    defined $alt_second_atom_name &&
+                    defined $alt_third_atom_name ) {
+                    my @torsion_angle_keys = (
+                        "$alt_atom_name,$alt_neighbour_atom_name," .
+                        "$alt_second_atom_name,$alt_third_atom_name",
+                        "$alt_third_atom_name,$alt_second_atom_name," .
+                        "$alt_neighbour_atom_name,$alt_atom_name",
+                        "?,$alt_neighbour_atom_name,$alt_second_atom_name,?",
+                        "?,$alt_second_atom_name,$alt_neighbour_atom_name,?",
+                    );
+                    for my $torsion_angle_key ( @torsion_angle_keys ) {
+                        if( defined $torsional->{$torsion_angle_key} ) {
+                            if( $debug ) {
+                                print STDERR
+                                    "$atom_i_id,$neighbour_id,".
+                                    "$second_neighbour_id,$third_neighbour_id," .
+                                    "$atom_name,$neighbour_atom_name," .
+                                    "$second_atom_name," .
+                                    $reference_atom_site->{$third_neighbour_id}
+                                                          {'label_atom_id'} .",".
+                                    "$torsion_angle_key,";
+                            }
+
+                            ( $epsilon, $phase, $gamma ) = (
+                                $torsional->{$torsion_angle_key}{'epsilon'},
+                                $torsional->{$torsion_angle_key}{'phase'},
+                                $pi * $torsional->{$torsion_angle_key}{'gamma'} / 180.0,
+                            );
+
+                            last;
+                        }
+                    }
+                }
+
+                if( ! defined $epsilon && ! defined $phase &&
+                    ! defined $gamma ) {
+                    ( $epsilon, $phase, $gamma ) = ( 0.0, 1.0, 0.0 );
+                }
+
                 my $omega = dihedral_angle(
                     [ [ $reference_atom_site->{$third_neighbour_id}{'Cartn_x'},
                         $reference_atom_site->{$third_neighbour_id}{'Cartn_y'},
@@ -115,12 +178,17 @@ sub torsion_components
                         $reference_atom_site->{$atom_i_id}{'Cartn_z'} ] ],
                 );
 
+                if( $debug ) {
+                    print STDERR sprintf( '%.3f', 180.0 * $omega / $pi ), "\n";
+                }
+
                 my $torsion_potential;
-                if( $omega < ( - $pi / $phase ) || $omega > ( $pi / $phase ) ) {
+                if( $omega < - ( $pi - $gamma ) / $phase ||
+                    $omega >   ( $pi + $gamma ) / $phase ) {
                     $torsion_potential = 0;
                 } else {
                     $torsion_potential =
-                        ( $epsilon / 2 ) * ( 1 + cos( $phase * $omega ) );
+                        ( $epsilon / 2 ) * ( 1 + cos( $phase * $omega - $gamma ) );
                 }
 
                 my $energy_potential = Energy->new();
