@@ -4420,15 +4420,15 @@ $VAR1 = bless( {
     }
   },
   '_[local]_force_field' => {
-    'c_k' => '1.0',
-    'cutoff_atom' => '15.0',
+    'c_k' => '100.0',
+    'cutoff_atom' => '50.0',
     'cutoff_end' => '5.0',
     'cutoff_start' => '2.5',
-    'h_k' => '1.0',
-    'lj_k' => '1.0',
+    'h_k' => '10.0',
+    'lj_k' => '0.25',
     'soft_epsilon' => '1.0',
     'soft_n' => '12.0',
-    't_k' => '1.0'
+    't_k' => '2.5'
   },
   '_[local]_h_bond' => {
     'N' => {

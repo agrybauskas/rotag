@@ -1,6 +1,6 @@
 id,atom_id,type_symbol,label_atom_id,label_seq_id,label_comp_id,label_asym_id,pdbx_PDB_model_num,label_alt_id,calculation_method,value
-1,147,N,N,18,SER,A,1,.,composite,1.676684
-2,149,C,C,18,SER,A,1,.,composite,-0.142881
-3,150,O,O,18,SER,A,1,.,composite,2.383252
-4,151,C,CB,18,SER,A,1,.,composite,2.609060
-5,152,O,OG,18,SER,A,1,.,composite,1.578831
+1,147,N,N,18,SER,A,1,.,composite,6.793481
+2,149,C,C,18,SER,A,1,.,composite,-2.220371
+3,150,O,O,18,SER,A,1,.,composite,4.126862
+4,151,C,CB,18,SER,A,1,.,composite,-0.240892
+5,152,O,OG,18,SER,A,1,.,composite,4.134952
