@@ -5,12 +5,15 @@ def __init_plugin__( app ):
 def rotag_tk_dialog( parent ): # TODO: find out how to use parent object.
     import Tkinter as tk
     import ttk
+    import os
 
     WIDTH = 500
     HEIGHT = 600
 
     # Initialization.
     root = tk.Tk()
+    root.title("rotag")
+    # root.iconbitmap( os.path.dirname( __file__ ) + "/icon.ico" )
 
     # Canvas.
     canvas = tk.Canvas( root, height=HEIGHT, width=WIDTH )
