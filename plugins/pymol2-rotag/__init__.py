@@ -23,10 +23,8 @@ def rotag_tk_dialog( parent ): # TODO: find out how to use parent object.
     # Notebook tabs.
     scan_tab          = ttk.Frame(notebook)
     library_tab       = ttk.Frame(notebook)
-    configuration_tab = ttk.Frame(notebook)
     about_tab         = ttk.Frame(notebook)
 
     notebook.add( scan_tab, text = "Scan" )
     notebook.add( library_tab, text = "Library" )
-    notebook.add( configuration_tab, text = "Configuration" )
     notebook.add( about_tab, text = "About" )
