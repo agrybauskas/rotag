@@ -52,29 +52,29 @@ my $rotamer_library =
                         "interactions"  => $potential,
                         "threads" => $threads } );
 
-for my $residue_unique_key ( sort keys %{ $rotamer_library } ) {
-    my $rotamer_id = 1;
-    for my $rotamer ( @{ $rotamer_library->{$residue_unique_key} } ) {
-        my %rotamer_site = %{ $atom_site };
-        replace_with_rotamer( $parameters,
-                              \%rotamer_site,
-                              $residue_unique_key,
-                              $rotamer->{'angles'} );
+# for my $residue_unique_key ( sort keys %{ $rotamer_library } ) {
+#     my $rotamer_id = 1;
+#     for my $rotamer ( @{ $rotamer_library->{$residue_unique_key} } ) {
+#         my %rotamer_site = %{ $atom_site };
+#         replace_with_rotamer( $parameters,
+#                               \%rotamer_site,
+#                               $residue_unique_key,
+#                               $rotamer->{'angles'} );
 
-        my %pdbx =();
-        $pdbx{'_atom_site'}{'data'} = \%rotamer_site;
-        $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-        $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+#         my %pdbx =();
+#         $pdbx{'_atom_site'}{'data'} = \%rotamer_site;
+#         $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+#         $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
 
-        to_pdbx( \%pdbx,
-                 { 'data_name' =>
-                       "$rotamer_id:" .
-                       join( ';',
-                             map { "$_:" . sprintf( $sig_figs_min,
-                                                    $rotamer->{'angles'}{$_} ) }
-                             sort keys %{ $rotamer->{'angles'} } ) . ';E:' .
-                       sprintf( $sig_figs_min,
-                                $rotamer->{'potential_energy_value'} ) } );
-        $rotamer_id++;
-    }
-}
+#         to_pdbx( \%pdbx,
+#                  { 'data_name' =>
+#                        "$rotamer_id:" .
+#                        join( ';',
+#                              map { "$_:" . sprintf( $sig_figs_min,
+#                                                     $rotamer->{'angles'}{$_} ) }
+#                              sort keys %{ $rotamer->{'angles'} } ) . ';E:' .
+#                        sprintf( $sig_figs_min,
+#                                 $rotamer->{'potential_energy_value'} ) } );
+#         $rotamer_id++;
+#     }
+# }
