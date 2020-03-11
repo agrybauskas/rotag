@@ -271,7 +271,33 @@ sub connect_atoms
 
 sub connection_sequence
 {
+    my @connection_sequence = ();
 
+    # my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
+    # my @next_atom_ids =
+    #     grep { $_ ne $ca_atom_id }
+    #         @{ $residue_site->{$cb_atom_id}{'connections'} };
+    # while( scalar( @next_atom_ids ) != 0 ) {
+    #     my @neighbour_atom_ids;
+    #     for my $atom_id ( @next_atom_ids ) {
+    #     }
+        #         # Marks visited atoms.
+    #         push @visited_atom_ids, $atom_id;
+
+    #         # Marks neighbouring atoms.
+    #         push @neighbour_atom_ids, @{ $atom_site->{$atom_id}{'connections'} };
+
+    #     # Determines next atoms that should be visited.
+    #     @next_atom_ids = (); # Resets value for the new ones to be
+    #                          # appended.
+    #     for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+    #         if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) ) {
+    #             push @next_atom_ids, $neighbour_atom_id;
+    #         }
+    #     }
+
+    # }
+    return \@connection_sequence;
 }
 
 #
