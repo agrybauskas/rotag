@@ -662,6 +662,11 @@ sub calc_favourable_angles
     return \@allowed_angles;
 }
 
+sub calc_favourable_angles_new
+{
+
+}
+
 #
 # Calculates energy values for given rotamer angles.
 # Input:
