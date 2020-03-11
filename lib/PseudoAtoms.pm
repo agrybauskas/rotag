@@ -26,6 +26,7 @@ use threads;
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( append_connections
                      connect_atoms
+                     connection_sequence
                      is_neighbour
                      is_second_neighbour
                      retains_connections );
@@ -694,6 +695,8 @@ sub calc_favourable_angles_new
     my $rotatable_bonds = rotatable_bonds( $residue_site );
     if( ! %{ $rotatable_bonds } ) { return []; }
 
+    my $full_interaction_site = clone $interaction_site;
+
     # Goes through each atom in side chain and calculates interaction
     # potential with surrounding atoms. CA and CB are non-movable atoms
     # so, they are marked as starting atoms.
@@ -706,10 +709,10 @@ sub calc_favourable_angles_new
                 { 'include' => { 'label_atom_id' => [ 'CB' ] },
                   'return_data' => 'id' } )->[0];
 
-    my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
-    my @next_atom_ids =
-        grep { $_ ne $ca_atom_id }
-            @{ $residue_site->{$cb_atom_id}{'connections'} };
+    # my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
+    # my @next_atom_ids =
+    #     grep { $_ ne $ca_atom_id }
+    #         @{ $residue_site->{$cb_atom_id}{'connections'} };
 
     my @allowed_angles;
     my @allowed_energies;

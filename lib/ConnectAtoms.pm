@@ -8,6 +8,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
                      connect_atoms
                      connect_two_atoms
+                     connection_sequence
                      is_connected
                      is_neighbour
                      is_second_neighbour
@@ -266,6 +267,11 @@ sub connect_atoms
     }
 
     return;
+}
+
+sub connection_sequence
+{
+
 }
 
 #
