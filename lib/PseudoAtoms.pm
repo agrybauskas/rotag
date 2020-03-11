@@ -417,7 +417,7 @@ sub generate_library
                 # First, checks angles by step-by-step adding atoms to sidechains.
                 # This is called growing side chain.
                 my @allowed_angles =
-                    @{ calc_favourable_angles(
+                    @{ calc_favourable_angles_new(
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
@@ -664,7 +664,160 @@ sub calc_favourable_angles
 
 sub calc_favourable_angles_new
 {
+    my ( $args ) = @_;
 
+    my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
+         $angles, $small_angle, $non_bonded_potential, $bonded_potential,
+         $threads, $rand_count, $rand_seed ) = (
+        $args->{'parameters'},
+        $args->{'atom_site'},
+        $args->{'residue_unique_key'},
+        $args->{'interaction_site'},
+        $args->{'angles'},
+        $args->{'small_angle'},
+        $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'},
+        $args->{'threads'},
+        $args->{'options'}{'rand_count'},
+        $args->{'options'}{'rand_seed'},
+    );
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+    # TODO: look how separate $angles and $small_angle influence on the function.
+    $small_angle //= 0.1 * 2 * $pi;
+    $rand_seed //= 23;
+
+    my $residue_site =
+        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
+
+    my $rotatable_bonds = rotatable_bonds( $residue_site );
+    if( ! %{ $rotatable_bonds } ) { return []; }
+
+    # Goes through each atom in side chain and calculates interaction
+    # potential with surrounding atoms. CA and CB are non-movable atoms
+    # so, they are marked as starting atoms.
+    my $ca_atom_id =
+        filter_new( $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                  'return_data' => 'id' } )->[0];
+    my $cb_atom_id =
+        filter_new( $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'CB' ] },
+                  'return_data' => 'id' } )->[0];
+
+    my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
+    my @next_atom_ids =
+        grep { $_ ne $ca_atom_id }
+            @{ $residue_site->{$cb_atom_id}{'connections'} };
+
+    my @allowed_angles;
+    my @allowed_energies;
+    # while( scalar( @next_atom_ids ) != 0 ) {
+    #     my @neighbour_atom_ids;
+    #     for my $atom_id ( @next_atom_ids ) {
+    #         my @default_allowed_angles;
+    #         # TODO: last angle should be sorted with <=> by first removing chi
+    #         # prefix. It will be important if large quantity of dihedral angles
+    #         # are analyzed.
+    #         my ( $last_angle_name ) =
+    #             sort { $b cmp $a } keys %{ $rotatable_bonds->{$atom_id} };
+
+    #         if( exists $angles->{$last_angle_name} ) {
+    #             @default_allowed_angles =
+    #                 map { [ $_ ] } @{ $angles->{$last_angle_name} };
+    #         } elsif( exists $angles->{'*'} ) {
+    #             if( defined $rand_count && defined $rand_seed ) {
+    #                 if( $rand_count > scalar @{$angles->{'*'}} ) {
+    #                     die 'number of randomly selected angles is greater that ' .
+    #                         "possible angles.\n";
+    #                 }
+    #                 my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}} );
+    #                 @default_allowed_angles =
+    #                     map { [ $angles->{'*'}[$_] ] }
+    #                         @shuffled_idxs[0..$rand_count-1];
+    #             } else {
+    #                 @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
+    #             }
+    #         } else {
+    #             @default_allowed_angles =
+    #                 map { [ $_ ] }
+    #                    @{ sample_angles( $parameters,
+    #                                      [ [ 0, 2 * $pi ] ],
+    #                                      $small_angle ) };
+    #         }
+
+    #         my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
+
+    #         # Adds more angle combinations if there are more than one
+    #         # rotatable bonds.
+    #         if( @allowed_angles &&
+    #             scalar( @{ $allowed_angles[0] } ) <
+    #             scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
+    #             @allowed_angles =
+    #                 @{ permutation( 2, [], [ \@allowed_angles,
+    #                                          \@default_allowed_angles ], [] ) };
+    #             @allowed_energies =
+    #                 @{ permutation( 2, [], [ \@allowed_energies,
+    #                                          \@default_allowed_energies ], [] ) };
+    #             # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+    #             @allowed_angles =
+    #                 map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
+    #             @allowed_energies =
+    #                 map { [ $_->[0][0] ] } @allowed_energies;
+    #         } elsif( ! @allowed_angles ) {
+    #             @allowed_angles = @default_allowed_angles;
+    #             @allowed_energies = @default_allowed_energies;
+    #         }
+
+    #         # Marks visited atoms.
+    #         push @visited_atom_ids, $atom_id;
+
+    #         # Marks neighbouring atoms.
+    #         push @neighbour_atom_ids, @{ $atom_site->{$atom_id}{'connections'} };
+
+    #         # Starts calculating potential energy.
+    #         my ( $next_allowed_angles, $next_allowed_energies ) =
+    #             @{ threading(
+    #                    \&calc_favourable_angle,
+    #                    { 'parameters' => $parameters,
+    #                      'atom_site' => $atom_site,
+    #                      'atom_id' => $atom_id,
+    #                      'interaction_site' => $interaction_site,
+    #                      'non_bonded_potential' => $non_bonded_potential,
+    #                      'bonded_potential' => $bonded_potential },
+    #                    [ \@allowed_angles, \@allowed_energies ],
+    #                    $threads ) };
+
+    #         # my ( $next_allowed_angles, $next_allowed_energies ) =
+    #         #     @{ calc_favourable_angle(
+    #         #            { 'parameters' => $parameters,
+    #         #              'atom_site' => $atom_site,
+    #         #              'atom_id' => $atom_id,
+    #         #              'interaction_site' => $interaction_site,
+    #         #              'non_bonded_potential' => $non_bonded_potential,
+    #         #              'bonded_potential' => $bonded_potential },
+    #         #            [ \@allowed_angles, \@allowed_energies ] ) };
+
+    #         if( scalar @{ $next_allowed_angles } > 0 ) {
+    #             @allowed_angles = @{ $next_allowed_angles };
+    #             @allowed_energies = @{ $next_allowed_energies };
+    #         } else {
+    #             return [];
+    #         }
+    #     }
+
+    #     # Determines next atoms that should be visited.
+    #     @next_atom_ids = (); # Resets value for the new ones to be
+    #                          # appended.
+    #     for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+    #         if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) ) {
+    #             push @next_atom_ids, $neighbour_atom_id;
+    #         }
+    #     }
+    # }
+
+    return \@allowed_angles;
 }
 
 #
