@@ -23,4 +23,9 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-connection_sequence( $parameters, $atom_site, $start_atom_id, $next_atom_id );
+my $connection_sequence =
+    connection_sequence($parameters, $atom_site, $start_atom_id, $next_atom_id);
+
+foreach( @{ $connection_sequence } ) {
+    print $_, "\n";
+}
