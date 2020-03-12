@@ -271,7 +271,10 @@ sub connect_atoms
 
 sub connection_sequence
 {
+    my ( $parameters, $atom_site, $start_atom_id, $next_atom_id ) = @_;
+
     my @connection_sequence = ();
+    my %visited_atom_ids = ( "$start_atom_id" => 1, "$next_atom_id" => 1 );
 
     # my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     # my @next_atom_ids =

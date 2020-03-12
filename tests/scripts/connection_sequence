@@ -11,7 +11,7 @@ use ForceField::Parameters;
 # Example: ./connection_sequence structure
 #
 
-my ( $pdbx_dump_file ) = @ARGV;
+my ( $pdbx_dump_file, $start_atom_id, $next_atom_id ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -23,4 +23,4 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-connection_sequence( $parameters, $atom_site );
+connection_sequence( $parameters, $atom_site, $start_atom_id, $next_atom_id );
