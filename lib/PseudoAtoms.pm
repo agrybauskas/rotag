@@ -709,6 +709,9 @@ sub calc_favourable_angles_new
                 { 'include' => { 'label_atom_id' => [ 'CB' ] },
                   'return_data' => 'id' } )->[0];
 
+    my $atom_connection_seq =
+        connection_sequence($parameters,$residue_site,$ca_atom_id,$cb_atom_id);
+
     # my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     # my @next_atom_ids =
     #     grep { $_ ne $ca_atom_id }
@@ -716,6 +719,11 @@ sub calc_favourable_angles_new
 
     my @allowed_angles;
     my @allowed_energies;
+
+    for my $atom_id ( @{ $atom_connection_seq } ) {
+        print $atom_id, "\n";
+    }
+
     # while( scalar( @next_atom_ids ) != 0 ) {
     #     my @neighbour_atom_ids;
     #     for my $atom_id ( @next_atom_ids ) {
