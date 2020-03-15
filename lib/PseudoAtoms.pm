@@ -716,6 +716,8 @@ sub calc_favourable_angles_new
     my @allowed_energies;
 
     for my $atom_id ( @{ $atom_connection_seq } ) {
+        next if $atom_id eq $ca_atom_id || $atom_id eq $cb_atom_id;
+
         my @default_allowed_angles;
         my ( $last_angle_name ) = sort { $b cmp $a }
                                   keys %{ $rotatable_bonds->{$atom_id} };
@@ -744,7 +746,7 @@ sub calc_favourable_angles_new
                                      $small_angle ) };
         }
 
-        # my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
+        my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
 
         # # Adds more angle combinations if there are more than one
         # # rotatable bonds.
