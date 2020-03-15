@@ -748,26 +748,26 @@ sub calc_favourable_angles_new
 
         my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
 
-        # # Adds more angle combinations if there are more than one
-        # # rotatable bonds.
-        # if( @allowed_angles &&
-        #     scalar( @{ $allowed_angles[0] } ) <
-        #     scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
-        #     @allowed_angles =
-        #         @{ permutation( 2, [], [ \@allowed_angles,
-        #                                  \@default_allowed_angles ], [] ) };
-        #     @allowed_energies =
-        #         @{ permutation( 2, [], [ \@allowed_energies,
-        #                                  \@default_allowed_energies ], [] ) };
-        #     # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-        #     @allowed_angles =
-        #         map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
-        #     @allowed_energies =
-        #         map { [ $_->[0][0] ] } @allowed_energies;
-        # } elsif( ! @allowed_angles ) {
-        #     @allowed_angles = @default_allowed_angles;
-        #     @allowed_energies = @default_allowed_energies;
-        # }
+        # Adds more angle combinations if there are more than one
+        # rotatable bonds.
+        if( @allowed_angles &&
+            scalar( @{ $allowed_angles[0] } ) <
+            scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
+            @allowed_angles =
+                @{ permutation( 2, [], [ \@allowed_angles,
+                                         \@default_allowed_angles ], [] ) };
+            @allowed_energies =
+                @{ permutation( 2, [], [ \@allowed_energies,
+                                         \@default_allowed_energies ], [] ) };
+            # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+            @allowed_angles =
+                map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
+            @allowed_energies =
+                map { [ $_->[0][0] ] } @allowed_energies;
+        } elsif( ! @allowed_angles ) {
+            @allowed_angles = @default_allowed_angles;
+            @allowed_energies = @default_allowed_energies;
+        };
 
         # # Starts calculating potential energy.
         # my ( $next_allowed_angles, $next_allowed_energies ) =
