@@ -275,18 +275,13 @@ sub connection_sequence
     my ( $parameters, $atom_site, $start_atom_id, $next_atom_id ) = @_;
 
     my %visited_atom_ids = ( $start_atom_id => 1, $next_atom_id => 1 );
-    my @next_atom_ids =
-        grep { $_ ne $start_atom_id }
-            @{ $atom_site->{$next_atom_id}{'connections'} };
+    my @next_atom_ids = ( $next_atom_id );
 
     my @connection_sequence = ( $start_atom_id, $next_atom_id );
 
-    while( scalar( @next_atom_ids ) != 0 ) {
+    while( scalar( @next_atom_ids ) > 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
-            # Marks visited atoms.
-            $visited_atom_ids{$atom_id} = 1;
-
             # Marks neighbouring atoms.
             push @neighbour_atom_ids, @{ $atom_site->{$atom_id}{'connections'} };
         }
@@ -297,8 +292,12 @@ sub connection_sequence
 
         for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
             next if $visited_atom_ids{$neighbour_atom_id};
+
             push @connection_sequence, $neighbour_atom_id;
             push @next_atom_ids, $neighbour_atom_id;
+
+            # Marks visited atoms.
+            $visited_atom_ids{$neighbour_atom_id} = 1;
         }
     }
 
