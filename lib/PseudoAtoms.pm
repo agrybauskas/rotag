@@ -769,25 +769,25 @@ sub calc_favourable_angles_new
             @allowed_energies = @default_allowed_energies;
         };
 
-        # # Starts calculating potential energy.
-        # my ( $next_allowed_angles, $next_allowed_energies ) =
-        #     @{ threading(
-        #            \&calc_favourable_angle,
-        #            { 'parameters' => $parameters,
-        #              'atom_site' => $atom_site,
-        #              'atom_id' => $atom_id,
-        #              'interaction_site' => $interaction_site,
-        #              'non_bonded_potential' => $non_bonded_potential,
-        #              'bonded_potential' => $bonded_potential },
-        #            [ \@allowed_angles, \@allowed_energies ],
-        #            $threads ) };
+        # Starts calculating potential energy.
+        my ( $next_allowed_angles, $next_allowed_energies ) =
+            @{ threading(
+                   \&calc_favourable_angle,
+                   { 'parameters' => $parameters,
+                     'atom_site' => $atom_site,
+                     'atom_id' => $atom_id,
+                     'interaction_site' => $interaction_site,
+                     'non_bonded_potential' => $non_bonded_potential,
+                     'bonded_potential' => $bonded_potential },
+                   [ \@allowed_angles, \@allowed_energies ],
+                   $threads ) };
 
-        # if( scalar @{ $next_allowed_angles } > 0 ) {
-        #     @allowed_angles = @{ $next_allowed_angles };
-        #     @allowed_energies = @{ $next_allowed_energies };
-        # } else {
-        #     return [];
-        # }
+        if( scalar @{ $next_allowed_angles } > 0 ) {
+            @allowed_angles = @{ $next_allowed_angles };
+            @allowed_energies = @{ $next_allowed_energies };
+        } else {
+            return [];
+        }
     }
 
     return \@allowed_angles, \@allowed_energies;
