@@ -772,7 +772,7 @@ sub calc_favourable_angles_new
         # Starts calculating potential energy.
         my ( $next_allowed_angles, $next_allowed_energies ) =
             @{ threading(
-                   \&calc_favourable_angle,
+                   \&calc_favourable_angle_new,
                    { 'parameters' => $parameters,
                      'atom_site' => $atom_site,
                      'atom_id' => $atom_id,
@@ -813,6 +813,80 @@ sub calc_favourable_angles_new
 #
 
 sub calc_favourable_angle
+{
+    my ( $args, $array_blocks ) = @_;
+
+    my ( $parameters, $atom_site, $atom_id, $interaction_site,
+         $non_bonded_potential, $bonded_potential, $options ) = (
+        $args->{'parameters'},
+        $args->{'atom_site'},
+        $args->{'atom_id'},
+        $args->{'interaction_site'},
+        $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'},
+        $args->{'options'},
+    );
+
+    my $energy_cutoff_atom= $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+
+    my %options = defined $options ? %{ $options } : ();
+    $options{'atom_site'} = $atom_site;
+
+    my @allowed_angles;
+    my @allowed_energies;
+    for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
+        my $angles = $array_blocks->[0][$i];
+        my $energies = $array_blocks->[1][$i][0];
+        my %angles =
+            map { my $angle_id = $_ + 1; ( "chi$angle_id" => [ $angles->[$_] ] )}
+                ( 0..$#{ $angles } );
+
+        my $pseudo_atom_site =
+            generate_pseudo( { 'parameters' => $parameters,
+                               'atom_site' => $atom_site,
+                               'atom_specifier' => { 'id' => [ "$atom_id" ] },
+                               'angle_values' => \%angles } );
+        my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
+        my $pseudo_origin_id =
+            $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
+
+        my $potential_energy = 0; # TODO: look if here should be zeros.
+        my $potential_sum = 0;
+
+        # Calculation of potential energy of non-bonded atoms.
+        foreach my $interaction_id ( keys %{ $interaction_site } ) {
+            if( ( ! is_neighbour( $atom_site,
+                                  $pseudo_origin_id,
+                                  $interaction_id ) ) &&
+                ( ! is_second_neighbour( $atom_site,
+                                         $pseudo_origin_id,
+                                         $interaction_id ) ) ) {
+                $potential_energy = $non_bonded_potential->(
+                    $parameters,
+                    $pseudo_atom_site->{$pseudo_atom_id},
+                    $atom_site->{$interaction_id},
+                    \%options
+                );
+                $potential_sum += $potential_energy;
+                last if $potential_energy > $energy_cutoff_atom;
+            }
+        }
+
+        # Writes allowed angles to @next_allowed_angles that will
+        # be passed to more global @allowed_angles. Checks the
+        # last calculated potential. If potential was greater
+        # than the cutoff, then calculation was halted, but the
+        # value remained.
+        if( $potential_energy <= $energy_cutoff_atom ) {
+            push @allowed_angles, $angles;
+            push @allowed_energies, [ $energies + $potential_sum ];
+        }
+    }
+
+    return [ \@allowed_angles, \@allowed_energies ];
+}
+
+sub calc_favourable_angle_new
 {
     my ( $args, $array_blocks ) = @_;
 
