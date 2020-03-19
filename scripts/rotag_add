@@ -239,6 +239,8 @@ for my $pdbx_file ( @ARGV ) {
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) ||
                      ( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
                        exists $rotamer_angle->{$rotamer_ids[0]}{'phi_min'} &&
+                       exists $rotamer_angle->{$rotamer_ids[0]}{'psi_min'} &&
+                       exists $rotamer_angle->{$rotamer_ids[0]}{'phi_max'} &&
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) ) {
                 my $dihedral_angles = all_dihedral(
                     $residue_site,
@@ -250,14 +252,20 @@ for my $pdbx_file ( @ARGV ) {
                 my $phi;
                 my $psi;
                 if( %{ $dihedral_angles } ) {
-                    $phi =
-                        180.00 *
-                        $dihedral_angles->{$residue_unique_key}{'phi'}{'value'} /
-                        $pi;
-                    $psi =
-                        180.00 *
-                        $dihedral_angles->{$residue_unique_key}{'psi'}{'value'} /
-                        $pi;
+                    if( defined $dihedral_angles->{$residue_unique_key}{'phi'}{'value'} &&
+                        defined $dihedral_angles->{$residue_unique_key}{'psi'}{'value'} ) {
+                        $phi =
+                            180.00 *
+                            $dihedral_angles->{$residue_unique_key}{'phi'}{'value'} /
+                            $pi;
+                        $psi =
+                            180.00 *
+                            $dihedral_angles->{$residue_unique_key}{'psi'}{'value'} /
+                            $pi;
+                    } else {
+                        die 'phi and psi angles cannot be determined due to' .
+                            "the lack of required main-chain atoms\n.";
+                    }
                 }
 
                 # Checks the closest candidate for existing backbone dihedral
