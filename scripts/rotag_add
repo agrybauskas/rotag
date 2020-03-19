@@ -149,7 +149,19 @@ for my $pdbx_file ( @ARGV ) {
                   'is_list' => 1 } );
 
     if( $add_sidechains ) {
-        my $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
+        my $rotamer_angle;
+        if( $rotamer_angle_file  ) {
+            my $pdbx_rotamer_angle =
+                obtain_pdbx_data( $rotamer_angle_file,
+                                  [ '_[local]_rotamer_angle' ] );
+            raw2indexed( $pdbx_rotamer_angle,
+                         { 'attributes' =>
+                               { '_[local]_rotamer_angle' => [ 'id' ] } } );
+            $rotamer_angle =
+                $pdbx_rotamer_angle->{'_[local]_rotamer_angle'}{'data'};
+        } else {
+            $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
+        }
 
         if( ! defined $rotamer_angle ) {
             warning( { 'program' => $0,
