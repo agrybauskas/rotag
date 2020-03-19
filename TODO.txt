@@ -107,3 +107,5 @@
 ++ Unify rotag_scan, rotag_mutate and rotag_energy selection and parameter
    formats. It could be something like this: '<selection>:<action>'. An example,
    'group 5: chi1=0.0'.
+-- Have to make sure that if no connections are determined, it should be tried
+   to be implied from atom distances.
