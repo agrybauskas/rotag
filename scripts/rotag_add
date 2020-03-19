@@ -86,7 +86,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
-    'a|rotamer-angle-file' => \$rotamer_angle_file,
+    'a|rotamer-angle-file=s' => \$rotamer_angle_file,
     'selected|s' => sub { $include_selected = 1 },
     'tags=s' => \$tags,
     'keep-original|k' => sub { $keep_original = 1 },
