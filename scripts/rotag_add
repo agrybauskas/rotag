@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use autodie;
+use Clone qw( clone );
 use Getopt::Long;
 use List::Util qw( max );
 use Try::Tiny;
@@ -137,6 +138,14 @@ for my $pdbx_file ( @ARGV ) {
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+
+    # Selects all atoms if no specific atoms are selected.
+    if( ! %{ $selected_atom_site } ) {
+        $selected_atom_site = clone $atom_site;
+        mark_selection( $selected_atom_site,
+                        { 'target' => [ keys %{ $selected_atom_site } ] } );
+    }
+
     my $target_atom_site =
         filter( { 'atom_site' => $selected_atom_site,
                   'include' => { '[local]_selection_state' =>
