@@ -292,14 +292,41 @@ exp
         }
     | 'expand' exp
         {
-            my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
-            connect_atoms( $_[0]->{USER}{PARAMETERS}, $clone_atom_site );
+            my $filtered_atom_site =
+                filter_new( $_[0]->{USER}{ATOM_SITE},
+                            { 'include' => { 'id' => $_[2] } } );
+            my $surrounding_atom_site = around_distance(
+                $_[0]->{USER}{PARAMETERS},
+                $_[0]->{USER}{ATOM_SITE},
+                { 'id' => $_[2] },
+                $_[0]->{USER}{PARAMETERS}{'_[local]_constants'}
+                                         {'edge_length_connection'}
+            );
+            my $possibly_connected_atom_site = {
+                %{ $filtered_atom_site },
+                %{ $surrounding_atom_site }
+            };
 
-            my @expanded_atom_ids = ();
-            for my $atom_id ( @{ $_[2] } ) {
-                push @expanded_atom_ids, $atom_id;
-                push @expanded_atom_ids,
-                    @{ $clone_atom_site->{$atom_id}{'connections'} };
+            connect_atoms( $_[0]->{USER}{PARAMETERS},
+                           $possibly_connected_atom_site );
+
+            my @expanded_atom_ids = ( @{ $_[2] } );
+            my %visited_surrounding_atom_ids = ();
+            for my $surrounding_atom_id ( keys %{ $surrounding_atom_site } ) {
+                my $connections =
+                    $possibly_connected_atom_site->{$surrounding_atom_id}
+                                                   {'connections'};
+                if( defined $connections ) {
+                    for my $connection_atom_id ( @{ $connections } ) {
+                        if( exists $filtered_atom_site->{$connection_atom_id} &&
+                            ! $visited_surrounding_atom_ids{$connection_atom_id} ) {
+                            push @expanded_atom_ids, $connection_atom_id;
+                            last;
+                        }
+                    }
+                }
+
+                $visited_surrounding_atom_ids{$surrounding_atom_id} = 1;
             }
 
             return [ @expanded_atom_ids ];

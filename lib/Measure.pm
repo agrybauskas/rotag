@@ -489,6 +489,7 @@ sub distance
 #     %around_atom_site - atom site data structure of selected atoms.
 #
 
+# TODO: move to more appropriately-named module.
 sub around_distance
 {
     my ( $parameters, $atom_site, $atom_specifier, $distance ) = @_;
