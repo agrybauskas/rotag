@@ -314,13 +314,13 @@ exp
             my %visited_surrounding_atom_ids = ();
             for my $surrounding_atom_id ( keys %{ $surrounding_atom_site } ) {
                 my $connections =
-                    $possibly_connected_atom_site->{$surrounding_atom_id}
-                                                   {'connections'};
+                    $surrounding_atom_site->{$surrounding_atom_id}
+                                            {'connections'};
                 if( defined $connections ) {
                     for my $connection_atom_id ( @{ $connections } ) {
                         if( exists $filtered_atom_site->{$connection_atom_id} &&
-                            ! $visited_surrounding_atom_ids{$connection_atom_id} ) {
-                            push @expanded_atom_ids, $connection_atom_id;
+                            ! exists $visited_surrounding_atom_ids{$connection_atom_id} ) {
+                            push @expanded_atom_ids, $surrounding_atom_id;
                             last;
                         }
                     }
