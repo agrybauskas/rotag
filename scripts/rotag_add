@@ -141,9 +141,9 @@ for my $pdbx_file ( @ARGV ) {
 
     # Selects all atoms if no specific atoms are selected.
     if( ! %{ $selected_atom_site } ) {
-        $selected_atom_site = clone $atom_site;
-        mark_selection( $selected_atom_site,
+        mark_selection( $atom_site,
                         { 'target' => [ keys %{ $selected_atom_site } ] } );
+        $selected_atom_site = clone $atom_site;
     }
 
     my $target_atom_site =
