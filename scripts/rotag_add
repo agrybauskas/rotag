@@ -65,6 +65,7 @@ our $VERSION = $VERSION;
 
 my $add_sidechains = 0;
 my $add_hydrogens = 0;
+my $rotamer_angle_file = '';
 my $include_selected = 0;
 my $tags = '_atom_site';
 my $add_clear_positions = 0;
@@ -85,6 +86,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
+    'a|rotamer-angle-file' => \$rotamer_angle_file,
     'selected|s' => sub { $include_selected = 1 },
     'tags=s' => \$tags,
     'keep-original|k' => sub { $keep_original = 1 },
