@@ -12,6 +12,8 @@ Options:
                           produced with rotag_library).
     -H, --hydrogens
                         add hydrogen atoms to selected atoms.
+    -a, --rotamer-angle-file
+                        selects rotamer angles from the file.
     -s, --selected
                         include selected atoms.
     --tags <tag>[,<tag>...]
