@@ -4,9 +4,13 @@ use strict;
 use warnings;
 
 use autodie;
+use Cwd qw( abs_path );
 use Clone qw( clone );
+use File::Basename qw( basename
+                       dirname );
 use Getopt::Long;
 use List::Util qw( max );
+use Module::Load;
 use Try::Tiny;
 
 use BondProperties qw( hybridization );
@@ -164,7 +168,13 @@ for my $pdbx_file ( @ARGV ) {
     if( $add_sidechains ) {
         my $rotamer_angle;
         if( $rotamer_angle_module ) {
-
+            # HACK: it is probably a hack. Ask colleagues for the opinion.
+            my $rotamer_angle_module_path =
+                dirname( abs_path( $rotamer_angle_module ) ) . '/' .
+                basename( $rotamer_angle_module );
+            load $rotamer_angle_module_path,
+                qw( %rotamer_angle %rotamer_angle_grouped );
+            $rotamer_angle = \%RotamerLibraryAngles::rotamer_angle;
         } elsif( $rotamer_angle_file  ) {
             my $pdbx_rotamer_angle =
                 obtain_pdbx_data( $rotamer_angle_file,
@@ -190,7 +200,7 @@ for my $pdbx_file ( @ARGV ) {
         if( $rotamer_angle_module ) {
             # TODO: needs to be refactored, because the data structures vary
             # a bit.
-            $rotamer_angle_split_groups = $rotamer_angle;
+            $rotamer_angle_split_groups = \%RotamerLibraryAngles::rotamer_angle_grouped;
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
             exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
             exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
