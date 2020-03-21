@@ -4,13 +4,9 @@ use strict;
 use warnings;
 
 use autodie;
-use Cwd qw( abs_path );
 use Clone qw( clone );
-use File::Basename qw( basename
-                       dirname );
 use Getopt::Long;
 use List::Util qw( max );
-use Module::Load;
 use Try::Tiny;
 
 use BondProperties qw( hybridization );
@@ -52,7 +48,9 @@ our $VERSION = $VERSION;
 #*    -H, --hydrogens
 #*                        add hydrogen atoms to selected atoms.
 #*    -a, --rotamer-angle-file
-#*                        selects rotamer angles from the file.
+#*                        selects rotamer angles from the cif file.
+#*    -j, --rotamer-angle-json-file
+#*                        selects rotamer angles from the json file.
 #*    -s, --selected
 #*                        include selected atoms.
 #*    --tags <tag>[,<tag>...]
@@ -73,7 +71,7 @@ our $VERSION = $VERSION;
 my $add_sidechains = 0;
 my $add_hydrogens = 0;
 my $rotamer_angle_file = '';
-my $rotamer_angle_module = '';
+my $rotamer_angle_json_file = '';
 my $include_selected = 0;
 my $tags = '_atom_site';
 my $add_clear_positions = 0;
@@ -94,8 +92,8 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
-    'a|rotamer-angle-file=s' => \$rotamer_angle_file,
-    'm|include-angle-module=s' => \$rotamer_angle_module,
+    'a|rotamer-angle-cif-file=s' => \$rotamer_angle_file,
+    'j|rotamer-angle-json-file=s' => \$rotamer_angle_json_file,
     'selected|s' => sub { $include_selected = 1 },
     'tags=s' => \$tags,
     'keep-original|k' => sub { $keep_original = 1 },
@@ -167,14 +165,7 @@ for my $pdbx_file ( @ARGV ) {
 
     if( $add_sidechains ) {
         my $rotamer_angle;
-        if( $rotamer_angle_module ) {
-            # HACK: it is probably a hack. Ask colleagues for the opinion.
-            my $rotamer_angle_module_path =
-                dirname( abs_path( $rotamer_angle_module ) ) . '/' .
-                basename( $rotamer_angle_module );
-            load $rotamer_angle_module_path,
-                qw( %rotamer_angle %rotamer_angle_grouped );
-            $rotamer_angle = \%RotamerLibraryAngles::rotamer_angle;
+        if( $rotamer_angle_json_file ) {
         } elsif( $rotamer_angle_file  ) {
             my $pdbx_rotamer_angle =
                 obtain_pdbx_data( $rotamer_angle_file,
@@ -197,10 +188,7 @@ for my $pdbx_file ( @ARGV ) {
         # Determines, how to split rotamer angles into groups.
         my $rotamer_angle_split_groups = {};
         my @rotamer_ids = sort keys %{ $rotamer_angle };
-        if( $rotamer_angle_module ) {
-            # TODO: needs to be refactored, because the data structures vary
-            # a bit.
-            $rotamer_angle_split_groups = \%RotamerLibraryAngles::rotamer_angle_grouped;
+        if( $rotamer_angle_json_file ) {
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
             exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
             exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
