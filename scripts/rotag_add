@@ -189,9 +189,6 @@ for my $pdbx_file ( @ARGV ) {
                                { '_[local]_rotamer_angle' => [ 'id' ] } } );
             $rotamer_angle =
                 $pdbx_rotamer_angle->{'_[local]_rotamer_angle'}{'data'};
-            # my $json = encode_json $rotamer_angle;
-            # print $json;
-            # exit;
         } else {
             $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
         }
@@ -234,10 +231,6 @@ for my $pdbx_file ( @ARGV ) {
                 split_by( { 'atom_site' => $rotamer_angle,
                             'attributes' => [ 'label_comp_id' ] } );
         }
-
-        # my $json = encode_json $rotamer_angle_split_groups;
-        # print $json;
-        # exit;
 
         my $atom_site_split_groups =
             split_by( { 'atom_site' => $target_atom_site,
