@@ -228,15 +228,16 @@ for my $pdbx_file ( @ARGV ) {
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
                 split_by( { 'atom_site' => $rotamer_angle,
                             'attributes' => [ 'label_comp_id', 'phi', 'psi' ] } );
-            # my $json = encode_json $rotamer_angle_split_groups;
-            # print $json;
-            # exit;
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ) {
             $rotamer_angle_split_groups =
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
                 split_by( { 'atom_site' => $rotamer_angle,
                             'attributes' => [ 'label_comp_id' ] } );
         }
+
+        # my $json = encode_json $rotamer_angle_split_groups;
+        # print $json;
+        # exit;
 
         my $atom_site_split_groups =
             split_by( { 'atom_site' => $target_atom_site,
