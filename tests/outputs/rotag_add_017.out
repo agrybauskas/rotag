@@ -8,12 +8,14 @@ Usage:
 Options:
     -S, --side-chains
                         add atoms of defined rotamer. Input .cif has to
-                          contain _[local]_rotamer_angle category (can be
-                          produced with rotag_library).
+                        contain _[local]_rotamer_angle category (can be
+                        produced with rotag_library).
     -H, --hydrogens
                         add hydrogen atoms to selected atoms.
     -a, --rotamer-angle-file
-                        selects rotamer angles from the file.
+                        selects rotamer angles from the cif file.
+    -j, --rotamer-angle-json-file
+                        selects rotamer angles from the json file.
     -s, --selected
                         include selected atoms.
     --tags <tag>[,<tag>...]
