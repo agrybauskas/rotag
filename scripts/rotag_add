@@ -164,17 +164,22 @@ for my $pdbx_file ( @ARGV ) {
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
 
+    my $rotamer_angle_data_json;
+    if( $rotamer_angle_json_file ) {
+        my $json;
+        {
+            local $/; #Enable 'slurp' mode
+            open my $fh, "<", $rotamer_angle_json_file;
+            $json = <$fh>;
+            close $fh;
+        }
+        $rotamer_angle_data_json = decode_json( $json );
+    }
+
     if( $add_sidechains ) {
         my $rotamer_angle;
-        if( $rotamer_angle_json_file ) {
-            # my $json;
-            # {
-            #     local $/; #Enable 'slurp' mode
-            #     open my $fh, "<", $rotamer_angle_json_file;
-            #     $json = <$fh>;
-            #     close $fh;
-            # }
-            # $rotamer_angle = decode_json( $json );
+        if( defined $rotamer_angle_data_json ) {
+            $rotamer_angle = $rotamer_angle_data_json->{'rotamer_angle'};
         } elsif( $rotamer_angle_file  ) {
             my $pdbx_rotamer_angle =
                 obtain_pdbx_data( $rotamer_angle_file,
@@ -200,8 +205,9 @@ for my $pdbx_file ( @ARGV ) {
         # Determines, how to split rotamer angles into groups.
         my $rotamer_angle_split_groups = {};
         my @rotamer_ids = sort keys %{ $rotamer_angle };
-        if( $rotamer_angle_json_file ) {
-
+        if( defined $rotamer_angle_data_json ) {
+            $rotamer_angle_split_groups =
+                $rotamer_angle_data_json->{'rotamer_angle_grouped'};
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
             exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
             exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
