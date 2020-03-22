@@ -167,14 +167,14 @@ for my $pdbx_file ( @ARGV ) {
     if( $add_sidechains ) {
         my $rotamer_angle;
         if( $rotamer_angle_json_file ) {
-            my $json;
-            {
-                local $/; #Enable 'slurp' mode
-                open my $fh, "<", $rotamer_angle_json_file;
-                $json = <$fh>;
-                close $fh;
-            }
-            $rotamer_angle = decode_json( $json );
+            # my $json;
+            # {
+            #     local $/; #Enable 'slurp' mode
+            #     open my $fh, "<", $rotamer_angle_json_file;
+            #     $json = <$fh>;
+            #     close $fh;
+            # }
+            # $rotamer_angle = decode_json( $json );
         } elsif( $rotamer_angle_file  ) {
             my $pdbx_rotamer_angle =
                 obtain_pdbx_data( $rotamer_angle_file,
@@ -184,6 +184,9 @@ for my $pdbx_file ( @ARGV ) {
                                { '_[local]_rotamer_angle' => [ 'id' ] } } );
             $rotamer_angle =
                 $pdbx_rotamer_angle->{'_[local]_rotamer_angle'}{'data'};
+            # my $json = encode_json $rotamer_angle;
+            # print $json;
+            # exit;
         } else {
             $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
         }
