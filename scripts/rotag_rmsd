@@ -195,7 +195,7 @@ if( $do_decompose ) {
           'group_2_id', 'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
           'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'type'} = 'raw';
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'type'} = 'record';
 } else {
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'attributes'} =
         [ 'id', 'group_1_id', 'group_2_id', 'value' ];
@@ -263,12 +263,22 @@ for my $comparison_group ( @comparison_groups ) {
                 my $rmsd_count = scalar @{ $rmsd_sidechain_comparisons };
                 my $rmsd_average = $rmsd_sum / $rmsd_count;
                 push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-                    $rmsd_counter,
-                    $rmsd_sidechain_comparisons->[0][0],
-                    (@{ $rmsd_sidechain_comparisons->[0] })[3..7],
-                    $rmsd_sidechain_comparisons->[0][9],
-                    (@{ $rmsd_sidechain_comparisons->[0] })[11..15],
-                    sprintf $sig_figs_min, $rmsd_average;
+                    { 'id' => $rmsd_counter,
+                      'group_1_id' => $rmsd_sidechain_comparisons->[0][0],
+                      'label_seq_1_id' => $rmsd_sidechain_comparisons->[0][3],
+                      'label_comp_1_id' => $rmsd_sidechain_comparisons->[0][4],
+                      'label_asym_1_id' => $rmsd_sidechain_comparisons->[0][5],
+                      'pdbx_PDB_model_num_1' =>
+                          $rmsd_sidechain_comparisons->[0][6],
+                      'label_alt_1_id' => $rmsd_sidechain_comparisons->[0][7],
+                      'group_2_id' => $rmsd_sidechain_comparisons->[0][9],
+                      'label_seq_2_id' => $rmsd_sidechain_comparisons->[0][11],
+                      'label_comp_2_id' => $rmsd_sidechain_comparisons->[0][12],
+                      'label_asym_2_id' => $rmsd_sidechain_comparisons->[0][13],
+                      'pdbx_PDB_model_num_2' =>
+                          $rmsd_sidechain_comparisons->[0][14],
+                      'label_alt_2_id' => $rmsd_sidechain_comparisons->[0][15],
+                      'value' => sprintf $sig_figs_min, $rmsd_average };
             }
         } else {
             my $first_group_data =
