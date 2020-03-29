@@ -22,7 +22,10 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      pdbx_indexed
                      pdbx_loop_to_array
                      pdbx_raw
+                     pdbx_record
                      raw2indexed
+                     raw2record
+                     record2raw
                      related_category_data
                      split_by
                      to_csv
@@ -51,6 +54,14 @@ sub pdbx_indexed
     my ( $pdbx_file, $data_identifier, $options ) = @_;
     my $pdbx = obtain_pdbx_data( $pdbx_file, $data_identifier );
     raw2indexed( $pdbx, $options );
+    return $pdbx;
+}
+
+sub pdbx_record
+{
+    my ( $pdbx_file, $data_identifier, $options ) = @_;
+    my $pdbx = obtain_pdbx_data( $pdbx_file, $data_identifier );
+    raw2record( $pdbx, $options );
     return $pdbx;
 }
 
@@ -148,7 +159,7 @@ sub obtain_pdbx_line
         push @{$pdbx_line_data{$category}{'metadata'}{'attributes'}}, $attribute;
         push @{$pdbx_line_data{$category}{'data'}}, $current_line_data{$key};
         $pdbx_line_data{$category}{'metadata'}{'is_loop'} = 0;
-        $pdbx_line_data{$category}{'metadata'}{'is_indexed'} = 0;
+        $pdbx_line_data{$category}{'metadata'}{'type'} = 'raw';
     }
 
     return \%pdbx_line_data;
@@ -223,7 +234,7 @@ sub obtain_pdbx_loop
         my %pdbx_loop_data;
         for( my $j = 0; $j <= $#{ $categories[-1] }; $j++ ) {
             $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'is_loop'} = 1;
-            $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'is_indexed'} = 0;
+            $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'type'}='raw';
             $pdbx_loop_data{$categories[$i][$j]}{'metadata'}{'attributes'} =
                 $attributes[$i][$j];
             $pdbx_loop_data{$categories[$i][$j]}{'data'} =
@@ -386,11 +397,11 @@ sub related_category_data
                 $related_category_data{$category}{'reference_keys'} =
                     $keys;
 
-                if( $pdbx_data{$category}{'metadata'}{'is_indexed'} ) {
+                if( $pdbx_data{$category}{'metadata'}{'type'} eq 'indexed' ) {
                     indexed2raw( \%pdbx_data,
                                  { 'categories' => [ $category ] } );
                 }
-                if( $pdbx_data{$related_category}{'metadata'}{'is_indexed'} ) {
+                if( $pdbx_data{$related_category}{'metadata'}{'type'} eq 'indexed' ) {
                     indexed2raw( \%pdbx_data,
                                  { 'categories' => [ $related_category ] } );
                 }
@@ -446,7 +457,7 @@ sub raw2indexed
     for my $category ( keys %{ $pdbx } ) {
         # TODO: should add condition where there attribute is not defined.
         next if ! exists $pdbx->{$category} ||
-                $pdbx->{$category}{'metadata'}{'is_indexed'} eq 1;
+                $pdbx->{$category}{'metadata'}{'type'} eq 'indexed';
 
         my $keys = $attributes->{$category};
         my @attributes = @{ $pdbx->{$category}{'metadata'}{'attributes'} };
@@ -479,7 +490,7 @@ sub raw2indexed
             $pdbx->{$category}{'metadata'}{'attributes'};
         $current_indexed{'metadata'}{'is_loop'} =
             $pdbx->{$category}{'metadata'}{'is_loop'};
-        $current_indexed{'metadata'}{'is_indexed'} = 1;
+        $current_indexed{'metadata'}{'type'} = 'indexed';
         for( my $pos = 0; $pos <= $data_count - 1; $pos += $attribute_count ) {
             @data_row = @{ data[$pos..$pos+$attribute_count-1] };
             %data_row = ();
@@ -509,7 +520,7 @@ sub raw2indexed
         }
 
         $pdbx->{$category} = { %current_indexed };
-        $pdbx->{$category}{'metadata'}{'is_indexed'} = 1;
+        $pdbx->{$category}{'metadata'}{'type'} = 'indexed';
         $pdbx->{$category}{'metadata'}{'is_loop'} = 1;
     }
 
@@ -527,13 +538,13 @@ sub indexed2raw
 
     for my $category ( @{ $categories } ) {
         next if ! exists $pdbx->{$category} ||
-                $pdbx->{$category}{'metadata'}{'is_indexed'} eq 0;
+                $pdbx->{$category}{'metadata'}{'type'} eq 'raw';
 
         my $current_pdbx_indexed = $pdbx->{$category}{'data'};
         my $current_pdbx_attributes=$pdbx->{$category}{'metadata'}{'attributes'};
         my $current_attribute_order = $attribute_order->{$category};
 
-        $pdbx->{$category}{'metadata'}{'is_indexed'} = 0;
+        $pdbx->{$category}{'metadata'}{'type'} = 'raw';
         $pdbx->{$category}{'data'} = (); # Resets the data.
 
         my @category_attributes = ();
@@ -585,6 +596,111 @@ sub indexed2raw
                                 '?';
                         }
                     }
+                }
+            }
+        }
+    }
+
+    return;
+}
+
+sub raw2record
+{
+    my ( $pdbx, $options ) = @_;
+    my ( $attributes ) = ( $options->{'attributes'} );
+
+    $attributes //= {} unless $attributes;
+
+    my %attributes = %{ $attributes };
+
+    if( ! defined $pdbx || ! %{ $pdbx } ) {
+        return {};
+    }
+
+    for my $category ( keys %{ $pdbx } ) {
+        # TODO: should add condition where there attribute is not defined.
+        next if ! exists $pdbx->{$category} ||
+                $pdbx->{$category}{'metadata'}{'type'} eq 'record';
+
+        my @attributes = @{ $pdbx->{$category}{'metadata'}{'attributes'} };
+        my @data = @{ $pdbx->{$category}{'data'} };
+
+        # Creates special data structure.
+        my @data_row;
+        my %data_row;
+
+        my $attribute_count = scalar @attributes;
+        my $data_count = scalar @data;
+
+        my %records = ();
+        $records{'metadata'}{'attributes'} =
+            $pdbx->{$category}{'metadata'}{'attributes'};
+        $records{'metadata'}{'is_loop'} =
+            $pdbx->{$category}{'metadata'}{'is_loop'};
+        # TODO: have to be changed to more general, because it is not indexed
+        # data.
+        $records{'metadata'}{'type'} = 'record';
+        for( my $pos = 0; $pos <= $data_count - 1; $pos += $attribute_count ) {
+            @data_row = @{ data[$pos..$pos+$attribute_count-1] };
+            %data_row = ();
+            for( my $col = 0; $col <= $#data_row; $col++ ) {
+                $data_row{$attributes[$col]} = $data_row[$col];
+            }
+
+            push @{ $records{'data'} }, { %data_row };
+        }
+
+        $pdbx->{$category} = { %records };
+        $pdbx->{$category}{'metadata'}{'type'} = 'record';
+        $pdbx->{$category}{'metadata'}{'is_loop'} = 1;
+    }
+
+    return;
+}
+
+sub record2raw
+{
+    my ( $pdbx, $options ) = @_;
+    my ( $categories, $attribute_order ) = (
+        $options->{'categories'}, $options->{'attribute_order'}
+    );
+
+    $categories //= [ keys %{ $pdbx } ];
+
+    for my $category ( @{ $categories } ) {
+        next if ! exists $pdbx->{$category} ||
+                $pdbx->{$category}{'metadata'}{'type'} eq 'raw';
+
+        my $current_pdbx_records = $pdbx->{$category}{'data'};
+        my $current_pdbx_attributes=$pdbx->{$category}{'metadata'}{'attributes'};
+        my $current_attribute_order = $attribute_order->{$category};
+
+        $pdbx->{$category}{'metadata'}{'type'} = 'raw';
+        $pdbx->{$category}{'data'} = (); # Resets the data.
+
+        my @category_attributes =
+            sort { $a cmp $b }
+            uniq
+            map { keys %{ $_ } }
+            @{ $current_pdbx_records };
+
+        if( defined $current_attribute_order ) {
+            @category_attributes = @{ $current_attribute_order };
+        } elsif( defined $current_pdbx_attributes ) {
+            @category_attributes = @{ $current_pdbx_attributes };
+        }
+
+        $pdbx->{$category}{'metadata'}{'attributes'}=\@category_attributes;
+
+        for my $record ( @{ $current_pdbx_records } ) {
+            for my $attribute ( @category_attributes ) {
+                my $data_value = $record->{$attribute};
+                if( defined $data_value ) {
+                    push @{ $pdbx->{$category}{'data'} },
+                        $data_value;
+                } else {
+                    push @{ $pdbx->{$category}{'data'} },
+                        '?';
                 }
             }
         }
@@ -1256,11 +1372,16 @@ sub to_pdbx
                     print {$fh} "$category.$_\n";
                 }
 
-                if( $pdbx_data->{$category}{'metadata'}{'is_indexed'} ) {
+                if( $pdbx_data->{$category}{'metadata'}{'type'} eq 'indexed' ) {
                     indexed2raw( $pdbx_data,
-                                 { 'categories' => $categories,
+                                 { 'categories' => [ $category ],
                                    'attribute_order' => {
                                        $category => $category_attribute_order}});
+                } elsif( $pdbx_data->{$category}{'metadata'}{'type'} eq 'record' ) {
+                    record2raw( $pdbx_data,
+                                { 'categories' => [ $category ],
+                                  'attribute_order' => {
+                                      $category => $category_attribute_order}});
                 }
 
                 my $attribute_array_length =
@@ -1318,19 +1439,25 @@ sub to_csv
 
     $category //= (sort keys %{ $pdbx })[0]; # TODO: assigning through list
                                              # might loose the information.
-    my $pdbx_raw = $pdbx->{$category};
+    my $pdbx_raw = { $category => clone $pdbx->{$category} };
+    my $pdbx_type = $pdbx_raw->{$category}{'metadata'}{'type'};
+    if( $pdbx_type eq 'indexed' ) {
+        indexed2raw( $pdbx_raw, { 'categories' => [ $category ] } );
+    } elsif( $pdbx_type eq 'record' ) {
+        record2raw( $pdbx_raw, { 'categories' => [ $category ] } );
+    }
 
-    $attributes //= $pdbx_raw->{'metadata'}{'attributes'};
+    $attributes //= $pdbx_raw->{$category}{'metadata'}{'attributes'};
 
     if( defined $pdbx_raw ) {
         print {*STDOUT} join( ',', @{ $attributes } ), "\n";
     }
 
-    my $attribute_array_length = $#{ $pdbx_raw->{'metadata'}{'attributes'} };
-    my $data_array_length = $#{ $pdbx_raw->{'data'} };
+    my $attribute_array_length = $#{ $pdbx_raw->{$category}{'metadata'}{'attributes'} };
+    my $data_array_length = $#{ $pdbx_raw->{$category}{'data'} };
 
     for( my $i = 0; $i <= $data_array_length; $i += $attribute_array_length + 1){
-        print {*STDOUT} join( q{,}, @{ $pdbx_raw->{'data'} }
+        print {*STDOUT} join( q{,}, @{ $pdbx_raw->{$category}{'data'} }
                                     [ $i..$i+$attribute_array_length ] ), "\n" ;
     }
 

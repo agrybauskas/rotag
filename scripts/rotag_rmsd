@@ -187,7 +187,7 @@ if( $do_decompose ) {
           'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
           'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_indexed'} = 0;
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'type'} = 'raw';
 } elsif( $rmsd_sidechains ) {
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'attributes'} =
         [ 'id', 'group_1_id', 'label_seq_1_id', 'label_comp_1_id',
@@ -195,12 +195,12 @@ if( $do_decompose ) {
           'group_2_id', 'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
           'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_indexed'} = 0;
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'type'} = 'raw';
 } else {
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'attributes'} =
         [ 'id', 'group_1_id', 'group_2_id', 'value' ];
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_indexed'} = 0;
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'type'} = 'record';
 }
 
 my $rmsd_counter = 1;
@@ -332,9 +332,12 @@ for my $comparison_group ( @comparison_groups ) {
 
             if( ! $do_decompose ) {
                 push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-                    $rmsd_counter, $comparison_group->[0], $comparison_group->[1],
-                    sprintf $sig_figs_min,
-                    rmsd( \@first_group_coord, \@second_group_coord );
+                    { 'id' => $rmsd_counter,
+                      'group_1_id' => $comparison_group->[0],
+                      'group_2_id' => $comparison_group->[1],
+                      'value' =>
+                          sprintf $sig_figs_min,
+                                  rmsd( \@first_group_coord, \@second_group_coord ) };
             }
 
             $rmsd_counter++;
@@ -369,7 +372,7 @@ if( $is_related && $do_decompose ) {
         my $related_category_data = $related_data->{$category};
         my $related_category = $related_category_data->{'reference_category'};
         $pdbx_data{$related_category}{'data'} = $related_category_data->{'data'};
-        $pdbx_data{$related_category}{'metadata'}{'is_indexed'} = 1;
+        $pdbx_data{$related_category}{'metadata'}{'type'} = 'indexed';
         indexed2raw( \%pdbx_data, { 'categories' => [ '_[local]_rotamer_angle' ] } );
     }
 }

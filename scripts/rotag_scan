@@ -259,8 +259,8 @@ for my $pdbx_file ( @ARGV ) {
         [ 'id', 'rotamer_id', 'calculation_method', 'value'];
     $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'is_indexed'} = 0;
-    $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'is_indexed'} = 0;
+    $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
+    $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'type'} = 'record';
 
     my $angle_id = 1;
     my $energy_id = 1;
@@ -286,21 +286,34 @@ for my $pdbx_file ( @ARGV ) {
             for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
                 my $angle_value = $rotamer->{'angles'}{$angle_name};
                 push @{ $pdbx_data->{'_[local]_rotamer_angle'}{'data'} },
-                     $angle_id, $rotamer_id, $residue_id, $residue_name[0],
-                     $residue_chain, $pdbx_model, $residue_alt,
-                     sprintf( $sig_figs_max, $rotamer_frequency ), $angle_name,
-                     ( $in_radians ?
-                       ( sprintf( $sig_figs_max, $angle_value ),
-                         'radians' ) :
-                       ( sprintf( $sig_figs_min, 180.0 * $angle_value / $pi ),
-                         'degrees' ) );
+                    { 'id' => $angle_id,
+                      'rotamer_id' => $rotamer_id,
+                      'label_seq_id' => $residue_id,
+                      'label_comp_id' => $residue_name[0],
+                      'label_asym_id' => $residue_chain,
+                      'pdbx_PDB_model_num' => $pdbx_model,
+                      'label_alt_id' => $residue_alt,
+                      'frequency' =>
+                          sprintf( $sig_figs_max, $rotamer_frequency ),
+                      'type' => $angle_name,
+                      'value' =>
+                          ( $in_radians ? sprintf( $sig_figs_max,
+                                                   $angle_value ) :
+                                          sprintf( $sig_figs_min,
+                                                   180.0 * $angle_value / $pi )),
+                      'units' =>
+                          ( $in_radians ? 'radians' : 'degrees' ) };
                 $angle_id++;
             }
 
             # Colects rotamer energy data.
             push @{ $pdbx_data->{'_[local]_rotamer_energy'}{'data'} },
-                 $energy_id, $rotamer_id, $rotamer->{'potential'},
-                 sprintf $sig_figs_max, $rotamer->{'potential_energy_value'};
+                { 'id' => $energy_id,
+                  'rotamer_id' => $rotamer_id,
+                  'calculation_method' => $rotamer->{'potential'},
+                  'value' =>
+                      sprintf $sig_figs_max,
+                              $rotamer->{'potential_energy_value'} };
 
             $energy_id++;
             $rotamer_id++;

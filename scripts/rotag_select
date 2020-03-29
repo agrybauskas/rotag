@@ -259,7 +259,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     next if ! %{ $atom_site };
 
     $pdbx->{'_atom_site'}{'data'} = $atom_site;
-    $pdbx->{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+    $pdbx->{'_atom_site'}{'metadata'}{'type'} = 'indexed';
     $pdbx->{'_atom_site'}{'metadata'}{'is_loop'} = 1;
 
     # Checks for related data in existing categories connected to '_atom_site'.

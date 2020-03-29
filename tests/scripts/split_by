@@ -36,7 +36,7 @@ foreach( sort keys %{ $split_groups } ) {
         filter( { 'atom_site' => $atom_site,
                   'include' => { 'id' => $split_groups->{$_} } } );
     $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-    $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+    $pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
     to_pdbx( \%pdbx );
 }

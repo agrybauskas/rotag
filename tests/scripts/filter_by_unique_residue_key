@@ -26,6 +26,6 @@ my %pdbx =();
 $pdbx{'_atom_site'}{'data'} =
     filter_by_unique_residue_key( $atom_site, $unique_residue_key );
 $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-$pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
 to_pdbx( \%pdbx );

@@ -217,7 +217,7 @@ for my $pdbx_file ( @ARGV ) {
 
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
     $pdbx_data{'_atom_site'}{'data'} = $atom_site;
-    $pdbx_data{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+    $pdbx_data{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
     if( $do_pairwise ) {
         $pdbx_data{'_[local]_pairwise_energy'}{'metadata'}{'attributes'} =
@@ -229,7 +229,7 @@ for my $pdbx_file ( @ARGV ) {
               'pdbx_PDB_model_num_2', 'label_alt_2_id', 'calculation_method',
               'value' ];
         $pdbx_data{'_[local]_pairwise_energy'}{'metadata'}{'is_loop'} = 1;
-        $pdbx_data{'_[local]_pairwise_energy'}{'metadata'}{'is_indexed'} = 0;
+        $pdbx_data{'_[local]_pairwise_energy'}{'metadata'}{'type'} = 'record';
 
         my $calculation_id = 1;
         for my $atom_site_identifier ( sort keys %energies ) {
@@ -243,15 +243,25 @@ for my $pdbx_file ( @ARGV ) {
                 my $calculation_method = $energy->energy_type;
                 my $value = $energy->value;
                 push @{ $pdbx_data{'_[local]_pairwise_energy'}{'data'} },
-                    $calculation_id, $atom_1_id, $atom_1->{'type_symbol'},
-                    $atom_1->{'label_atom_id'}, $atom_1->{'label_seq_id'},
-                    $atom_1->{'label_comp_id'}, $label_asym_id,
-                    $pdbx_PDB_model_num, $label_alt_id,
-                    $atom_2_id, $atom_2->{'type_symbol'},
-                    $atom_2->{'label_atom_id'}, $atom_2->{'label_seq_id'},
-                    $atom_2->{'label_comp_id'}, $label_asym_id,
-                    $pdbx_PDB_model_num, $label_alt_id,
-                    $calculation_method, sprintf( $sig_figs_max, $value );
+                    { 'id' => $calculation_id,
+                      'atom_1_id' => $atom_1_id,
+                      'type_symbol_1' => $atom_1->{'type_symbol'},
+                      'label_atom_1_id' => $atom_1->{'label_atom_id'},
+                      'label_seq_1_id' => $atom_1->{'label_seq_id'},
+                      'label_comp_1_id' => $atom_1->{'label_comp_id'},
+                      'label_asym_1_id' => $label_asym_id,
+                      'pdbx_PDB_model_num_1' => $pdbx_PDB_model_num,
+                      'label_alt_1_id' => $label_alt_id,
+                      'atom_2_id' => $atom_2_id,
+                      'type_symbol_2' => $atom_2->{'type_symbol'},
+                      'label_atom_2_id' => $atom_2->{'label_atom_id'},
+                      'label_seq_2_id' => $atom_2->{'label_seq_id'},
+                      'label_comp_2_id' => $atom_2->{'label_comp_id'},
+                      'label_asym_2_id' => $label_asym_id,
+                      'pdbx_PDB_model_num_2' => $pdbx_PDB_model_num,
+                      'label_alt_2_id' => $label_alt_id,
+                      'calculation_method' => $calculation_method,
+                      'value' => sprintf( $sig_figs_max, $value ) };
                 $calculation_id++;
             }
         }
@@ -260,7 +270,7 @@ for my $pdbx_file ( @ARGV ) {
             [ 'id', 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
         $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
-        $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'is_indexed'} = 0;
+        $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'type'} = 'record';
 
         my $calculation_id = 1;
         for my $atom_site_identifier ( sort keys %energies ) {
@@ -285,11 +295,16 @@ for my $pdbx_file ( @ARGV ) {
                 for my $calculation_method (
                     sort keys %{ $rotamer_energies {$label_seq_id} } ) {
                     push @{ $pdbx_data{'_[local]_rotamer_energy'}{'data'} },
-                        $calculation_id, $label_seq_id, $label_asym_id,
-                        $pdbx_PDB_model_num, $label_alt_id, $calculation_method,
-                        sprintf( $sig_figs_max,
-                                 $rotamer_energies{$label_seq_id}
-                                                  {$calculation_method} );
+                        { 'id' => $calculation_id,
+                          'label_seq_id' => $label_seq_id,
+                          'label_asym_id' => $label_asym_id,
+                          'pdbx_PDB_model_num' => $pdbx_PDB_model_num,
+                          'label_alt_id' => $label_alt_id,
+                          'calculation_method' => $calculation_method,
+                          'value' =>
+                              sprintf( $sig_figs_max,
+                                       $rotamer_energies{$label_seq_id}
+                                                        {$calculation_method} )};
                     $calculation_id++;
                 }
             }
@@ -300,7 +315,7 @@ for my $pdbx_file ( @ARGV ) {
               'label_comp_id', 'label_asym_id', 'pdbx_PDB_model_num',
               'label_alt_id', 'calculation_method', 'value' ];
         $pdbx_data{'_[local]_energy'}{'metadata'}{'is_loop'} = 1;
-        $pdbx_data{'_[local]_energy'}{'metadata'}{'is_indexed'} = 0;
+        $pdbx_data{'_[local]_energy'}{'metadata'}{'type'} = 'record';
 
         # Empty out 'B_iso_or_equiv' values if --b-factor is flagged.
         if( $add_B_iso ) {
@@ -334,12 +349,20 @@ for my $pdbx_file ( @ARGV ) {
                 for my $calculation_method (
                     sort keys %{ $atom_energies{$atom_id} } ) {
                     push @{ $pdbx_data{'_[local]_energy'}{'data'} },
-                        $calculation_id, $atom_id, $type_symbol, $label_atom_id,
-                        $label_seq_id, $label_comp_id, $label_asym_id,
-                        $pdbx_PDB_model_num, $label_alt_id, $calculation_method,
-                        sprintf( $sig_figs_max,
-                                 $atom_energies{$atom_id}
-                                               {$calculation_method} );
+                        { 'id' => $calculation_id,
+                          'atom_id' => $atom_id,
+                          'type_symbol' => $type_symbol,
+                          'label_atom_id' => $label_atom_id,
+                          'label_seq_id' => $label_seq_id,
+                          'label_comp_id' => $label_comp_id,
+                          'label_asym_id' => $label_asym_id,
+                          'pdbx_PDB_model_num' => $pdbx_PDB_model_num,
+                          'label_alt_id' => $label_alt_id,
+                          'calculation_method' => $calculation_method,
+                          'value' =>
+                              sprintf( $sig_figs_max,
+                                       $atom_energies{$atom_id}
+                                                     {$calculation_method} ) };
 
                     # Only for side-chain atoms adds energy values to B iso
                     # attribute.

@@ -166,7 +166,7 @@ for my $pdbx_file ( @ARGV ) {
           'units' );
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'}=\@attributes;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_indexed'} = 0;
+    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
 
     for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
         my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
@@ -181,11 +181,17 @@ for my $pdbx_file ( @ARGV ) {
             }
 
             push @{ $pdbx_data{'_[local]_rotamer_angle'}{'data'} },
-                 @rotamer_data[0..6],
-                 $frequencies{$rotamer_id},
-                 $rotamer_data[8],
-                 $rotamer_data[9],
-                 $rotamer_data[10];
+                { 'id' => $rotamer_data[0],
+                  'rotamer_id' => $rotamer_data[1],
+                  'label_seq_id' => $rotamer_data[2],
+                  'label_comp_id' => $rotamer_data[3],
+                  'label_asym_id' => $rotamer_data[4],
+                  'pdbx_PDB_model_num' => $rotamer_data[5],
+                  'label_alt_id' => $rotamer_data[6],
+                  'frequency' => $frequencies{$rotamer_id},
+                  'type' => $rotamer_data[8],
+                  'value' => $rotamer_data[9],
+                  'units' => $rotamer_data[10] };
         }
     }
 

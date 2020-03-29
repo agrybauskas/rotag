@@ -1,15 +1,21 @@
 $VAR1 = {
   '_audit_author' => {
     'data' => [
-      '?',
-      '\'Zhang, J.\'',
-      '1',
-      '?',
-      '\'Qiu, C.\'',
-      '2',
-      '?',
-      '\'Hall, T.\'',
-      '3'
+      {
+        'address' => '?',
+        'name' => '\'Zhang, J.\'',
+        'pdbx_ordinal' => '1'
+      },
+      {
+        'address' => '?',
+        'name' => '\'Qiu, C.\'',
+        'pdbx_ordinal' => '2'
+      },
+      {
+        'address' => '?',
+        'name' => '\'Hall, T.\'',
+        'pdbx_ordinal' => '3'
+      }
     ],
     'metadata' => {
       'attributes' => [
@@ -18,24 +24,27 @@ $VAR1 = {
         'pdbx_ordinal'
       ],
       'is_loop' => 1,
-      'type' => 'raw'
+      'type' => 'record'
     }
   },
   '_audit_conform' => {
     'data' => [
-      'mmcif_pdbx.dic'
+      {
+        'dict_name' => 'mmcif_pdbx.dic'
+      }
     ],
     'metadata' => {
       'attributes' => [
         'dict_name'
       ],
-      'is_loop' => 0,
-      'type' => 'raw'
+      'is_loop' => 1,
+      'type' => 'record'
     }
   },
   '_entity_poly' => {
     'data' => [
-      '
+      {
+        'pdbx_seq_one_letter_code' => '
 ;ETQPQMFFGVLDREELEYFKQAESTLQLDAFEAPEEKFQFVTSIIEEAKGKELKLVTSQITSKLMERVILECDETQLKDI
 FQSFNGVFFGLSCHKYASHVLETLFVRSAALVERELLTPSFDNNEKEGPYVTMENMFLFMLNELKPHLKTMMNHQYASHV
 LRLLILILSSKTLPNSTKANSTLRSKKSKIARKMIDIKDNDDFNKVYQTPESFKSELRDIITTLYKGFTNGAESRSDISQ
@@ -45,13 +54,14 @@ LIQKYYPEKSDAKNILESCLLLSASTLGNTRDDWPTAEERRRSVFLEQLIDYDDKFLNITIDSMLALPEERLIQMCYHGV
 FSHVVEHVLQTTRVDIIKRKMLLNILSKESVNLACNVYGSHIMDKLWEFTAKLTLYKERIARALVLETEKVKNSIYGRQV
 WKNWKLELYVRKMWDWKKLIKEQEFEIFPNSKPLQPKPEK
 ;'
+      }
     ],
     'metadata' => {
       'attributes' => [
         'pdbx_seq_one_letter_code'
       ],
-      'is_loop' => 0,
-      'type' => 'raw'
+      'is_loop' => 1,
+      'type' => 'record'
     }
   }
 };

@@ -64,7 +64,7 @@ for my $residue_unique_key ( sort keys %{ $rotamer_library } ) {
         my %pdbx =();
         $pdbx{'_atom_site'}{'data'} = \%rotamer_site;
         $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-        $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+        $pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
         to_pdbx( \%pdbx,
                  { 'data_name' =>

@@ -201,7 +201,7 @@ for my $pdbx_file ( @ARGV ) {
             $current_pdbx{'_atom_site'} = $pdbx->{'_atom_site'};
             $current_pdbx{'_atom_site'}{'data'} = $selected_atom_site;
             $current_pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-            $current_pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+            $current_pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
             to_pdbx( \%current_pdbx );
         }
