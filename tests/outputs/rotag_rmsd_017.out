@@ -15,8 +15,7 @@ _[local]_rmsd.label_asym_2_id
 _[local]_rmsd.pdbx_PDB_model_num_2
 _[local]_rmsd.label_alt_2_id
 _[local]_rmsd.value
-_[local]_rmsd.n_count
-1 1 219 ASP A 1 2 2 219 ASP A 1 3 0.452 ?
-2 1 219 ASP A 1 2 2 219 ASP A 1 4 0.859 ?
-3 1 219 ASP A 1 2 2 219 ASP A 1 5 0.859 ?
+1 1 219 ASP A 1 2 2 219 ASP A 1 3 0.452
+2 1 219 ASP A 1 2 2 219 ASP A 1 4 0.859
+3 1 219 ASP A 1 2 2 219 ASP A 1 5 0.859
 #

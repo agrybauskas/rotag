@@ -193,7 +193,8 @@ if( $do_decompose ) {
         [ 'id', 'group_1_id', 'label_seq_1_id', 'label_comp_1_id',
           'label_asym_1_id', 'pdbx_PDB_model_num_1', 'label_alt_1_id',
           'group_2_id', 'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
-          'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value', 'n_count' ];
+          'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value',
+          ( $rmsd_sidechains && $rmsd_best_case ? ( 'n_count' ) : () ) ];
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'type'} = 'record';
 } else {
