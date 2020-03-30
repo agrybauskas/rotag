@@ -359,6 +359,10 @@ for my $comparison_group ( @comparison_groups ) {
 
                 $rmsd_counter++;
             }
+
+            if( $rmsd_sidechains && ! $do_decompose ) {
+                $rmsd_counter++;
+            }
         }
     }
 }
