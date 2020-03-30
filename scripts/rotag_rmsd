@@ -375,6 +375,16 @@ for my $comparison_group ( @comparison_groups ) {
                 $rmsd_counter++;
             }
         }
+
+        if( @current_comparisons ) {
+            my $overall_rmsd_record_count = scalar @current_comparisons;
+            my ( $best_case_rmsd_record ) =
+                sort { $a->{'value'} <=> $b->{'value'} } @current_comparisons;
+            $best_case_rmsd_record->{'n_count'} = $overall_rmsd_record_count;
+
+            push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
+                $best_case_rmsd_record;
+        }
     }
 }
 
