@@ -1,0 +1,31 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 3356 C CG . ASP B 1 179 18.835 -23.544 97.483 1 T 1
+ATOM 3357 O OD1 . ASP B 1 179 17.838 -24.160 97.042 1 T 1
+ATOM 3358 O OD2 . ASP B 1 179 19.429 -23.892 98.526 1 T 1
+ATOM 38152 C CG . ASP S 1 69 31.620 10.954 102.313 1 T 1
+ATOM 38153 O OD1 . ASP S 1 69 31.328 9.759 102.495 1 T 1
+ATOM 38154 O OD2 . ASP S 1 69 32.013 11.388 101.209 1 T 1
+ATOM 38155 C CG 458 ASP B 1 179 18.906044 -23.640608 97.357697 1 T 2
+ATOM 38156 O OD1 458 ASP B 1 179 18.081870 -23.615872 98.300073 1 T 2
+ATOM 38157 O OD2 458 ASP B 1 179 19.369934 -24.707978 96.902375 1 T 2
+ATOM 38158 C CG 692 ASP S 1 69 31.477421 11.082123 102.215414 1 T 2
+ATOM 38159 O OD1 692 ASP S 1 69 31.638143 9.851831 102.298860 1 T 2
+ATOM 38160 O OD2 692 ASP S 1 69 31.299108 11.662904 101.123389 1 T 2
+#
