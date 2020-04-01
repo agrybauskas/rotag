@@ -256,6 +256,9 @@ for my $comparison_group ( @comparison_groups ) {
                                      $first_group_key,
                                      { 'best_case' => $rmsd_best_case } );
 
+                # HACK: there should be a way to avoid this check.
+                next if ! @{ $rmsd_sidechain_comparisons };
+
                 for my $rmsd_sidechain_comparison ( @{$rmsd_sidechain_comparisons} ){
                     if( $do_decompose ) {
                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },

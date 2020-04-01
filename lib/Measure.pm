@@ -645,6 +645,10 @@ sub rmsd_sidechains
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
                                 'pdbx_PDB_model_num', 'label_alt_id',
                                 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+
+            # HACK: there should be a way to avoid this check.
+            next if ! @{ $second_sidechain_data };
+
             $second_sidechain_data =
                 [ sort { $a->[2] cmp $b->[2] } @{ $second_sidechain_data } ];
 
