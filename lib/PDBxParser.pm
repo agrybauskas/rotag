@@ -30,7 +30,8 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      split_by
                      to_csv
                      to_pdbx
-                     unique_residue_key );
+                     unique_residue_key
+                     unique_residue_keys );
 
 use Carp;
 use Clone qw( clone );
@@ -996,6 +997,17 @@ sub filter_by_unique_residue_key
                                          [ $residue_alt,
                                            ( $include_dot ? '.' : () ) ] } } );
     return $filtered_atoms;
+}
+
+sub unique_residue_keys
+{
+    my ( $atom_site ) = @_;
+    my @unique_residue_keys = ();
+    for my $atom_id ( keys %{ $atom_site } ) {
+        push @unique_residue_keys,
+            unique_residue_key( $atom_site->{$atom_id} );
+    }
+    return sort { $a cmp $b } uniq @unique_residue_keys;
 }
 
 #

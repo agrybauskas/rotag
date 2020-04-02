@@ -34,7 +34,9 @@ use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
-                   split_by );
+                   split_by
+                   unique_residue_key
+                   unique_residue_keys );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use BondProperties qw( rotatable_bonds );
@@ -568,7 +570,7 @@ sub rmsd
 
 sub rmsd_sidechains
 {
-    my ( $parameters, $first_atom_site, $second_atom_site, $unique_residue_key,
+    my ( $parameters, $first_atom_site, $second_atom_site, #$unique_residue_key,
          $options ) = @_;
     my ( $average, $best_case, $include_atoms, $exclude_atoms ) = (
         $options->{'average'},
@@ -591,25 +593,20 @@ sub rmsd_sidechains
     # mandatory.
     my $symmetrical_atom_names =$parameters->{'_[local]_symmetrical_atom_names'};
 
-    my ( $residue_id, $chain, $pdbx_model_num ) = split /,/,$unique_residue_key;
-
-    my @first_alt_ids =
-        uniq @{ filter( { 'atom_site' => $first_atom_site,
-                          'data' => [ 'label_alt_id' ],
-                          'is_list' => 1 } ) };
-    my @second_alt_ids =
-        uniq @{ filter( { 'atom_site' => $second_atom_site,
-                          'data' => [ 'label_alt_id' ],
-                          'is_list' => 1 } ) };
+    my @first_unique_residue_keys  = unique_residue_keys( $first_atom_site );
+    my @second_unique_residue_keys = unique_residue_keys( $second_atom_site );
 
     my @sidechain_comparison_data = ();
-    for my $first_alt_id ( @first_alt_ids ) {
+    for my $first_unique_residue_key ( @first_unique_residue_keys ) {
+        my ( $first_residue_id, $first_chain, $first_pdbx_model_num,
+             $first_alt_id ) =
+            split /,/, $first_unique_residue_key;
         my $first_sidechain_data =
             filter( { 'atom_site' => $first_atom_site,
                       'include' =>
-                          { 'label_seq_id' => [ $residue_id ],
-                            'label_asym_id' => [ $chain ],
-                            'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                          { 'label_seq_id' => [ $first_residue_id ],
+                            'label_asym_id' => [ $first_chain ],
+                            'pdbx_PDB_model_num' => [ $first_pdbx_model_num ],
                             'label_alt_id' => [ $first_alt_id ],
                             ( $include_atoms ?
                               ( 'label_atom_id' => $include_atoms ): () ) },
@@ -627,13 +624,16 @@ sub rmsd_sidechains
 
         my $residue_name = $first_sidechain_data->[0][4];
         my $rmsd_average;
-        for my $second_alt_id ( @second_alt_ids ) {
+        for my $second_unique_residue_key ( @second_unique_residue_keys ) {
+            my ( $second_residue_id, $second_chain, $second_pdbx_model_num,
+                 $second_alt_id ) =
+                split /,/, $second_unique_residue_key;
             my $second_sidechain_data =
                 filter( { 'atom_site' => $second_atom_site,
                           'include' =>
-                              { 'label_seq_id' => [ $residue_id ],
-                                'label_asym_id' => [ $chain ],
-                                'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                              { 'label_seq_id' => [ $second_residue_id ],
+                                'label_asym_id' => [ $second_chain ],
+                                'pdbx_PDB_model_num' => [ $second_pdbx_model_num ],
                                 'label_alt_id' => [ $second_alt_id ],
                                 ( $include_atoms ?
                                   ( 'label_atom_id' => $include_atoms ): () ) },

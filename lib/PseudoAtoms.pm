@@ -878,7 +878,7 @@ sub calc_full_atom_energy
         if( defined $rmsd ) {
             push @rmsd_averages,
                 rmsd_sidechains( $parameters, $residue_site, \%rotamer_site,
-                                 $residue_unique_key, { 'average' => 1 } );
+                                 { 'average' => 1 } );
         }
     }
 
