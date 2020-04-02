@@ -440,6 +440,38 @@ if( $is_related && $do_decompose ) {
             indexed2raw( \%pdbx_data,
                          { 'categories' => [ '_[local]_rotamer_angle' ] } );
         }
+    } elsif( defined $rotamer_angles{'_[local]_dihedral_angle'} &&
+                  %{ $rotamer_angles{'_[local]_dihedral_angle'} } ) {
+        $pdbx_data{'_[local]_dihedral_angle'} =
+            $rotamer_angles{'_[local]_dihedral_angle'};
+
+        my $related_data = related_category_data(
+            \%pdbx_data,
+            { '_[local]_rmsd' =>
+                  { '_[local]_dihedral_angle' =>
+                        [ { 'keys' =>
+                                [ 'label_seq_1_id', 'label_asym_1_id',
+                                  'pdbx_PDB_model_num_1', 'label_alt_1_id' ],
+                            'reference_keys' =>
+                                [ 'label_seq_id', 'label_asym_id',
+                                  'pdbx_PDB_model_num', 'label_alt_id' ] },
+                          { 'keys' =>
+                                [ 'label_seq_2_id', 'label_asym_2_id',
+                                  'pdbx_PDB_model_num_2', 'label_alt_2_id' ],
+                            'reference_keys' =>
+                                [ 'label_seq_id', 'label_asym_id',
+                                  'pdbx_PDB_model_num', 'label_alt_id' ] } ] } } );
+
+        for my $category ( keys %{ $related_data } ) {
+            my $related_category_data = $related_data->{$category};
+            my $related_category =
+                $related_category_data->{'reference_category'};
+            $pdbx_data{$related_category}{'data'} =
+                $related_category_data->{'data'};
+            $pdbx_data{$related_category}{'metadata'}{'type'} = 'indexed';
+            indexed2raw( \%pdbx_data,
+                         { 'categories' => [ '_[local]_dihedral_angle' ] } );
+        }
     }
 }
 
