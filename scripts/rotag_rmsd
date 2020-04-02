@@ -145,7 +145,9 @@ for my $pdbx_file ( @ARGV ) {
             indexed2raw( $pdbx_cloned,
                          { 'categories' => [ '_[local]_rotamer_angle' ] } );
 
-            if( %rotamer_angles ) {
+            if( %rotamer_angles &&
+                defined $rotamer_angles{'_[local]_rotamer_angle'} &&
+                     %{ $rotamer_angles{'_[local]_rotamer_angle'} } ) {
                 push @{ $rotamer_angles{'_[local]_rotamer_angle'}{'data'} },
                     @{ $pdbx_cloned->{'_[local]_rotamer_angle'}{'data'} };
             } else {
@@ -159,7 +161,9 @@ for my $pdbx_file ( @ARGV ) {
             indexed2raw( $pdbx_cloned,
                          { 'categories' => [ '_[local]_dihedral_angle' ] } );
 
-            if( %rotamer_angles ) {
+            if( %rotamer_angles &&
+                defined $rotamer_angles{'_[local]_dihedral_angle'} &&
+                     %{ $rotamer_angles{'_[local]_dihedral_angle'} } ) {
                 push @{ $rotamer_angles{'_[local]_dihedral_angle'}{'data'} },
                     @{ $pdbx_cloned->{'_[local]_dihedral_angle'}{'data'} };
             } else {
