@@ -278,16 +278,14 @@ for my $comparison_group ( @comparison_groups ) {
                 # HACK: there should be a way to avoid this check.
                 next if ! @{ $rmsd_sidechain_comparisons };
 
-                for my $rmsd_sidechain_comparison ( @{$rmsd_sidechain_comparisons} ){
-                    if( $do_decompose ) {
+                if( $do_decompose ) {
+                    for my $rmsd_sidechain_comparison (@{$rmsd_sidechain_comparisons}){
                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                              $rmsd_counter,
                              @{ $rmsd_sidechain_comparison };
                         $rmsd_counter++;
                     }
-                }
-
-                if( ! $do_decompose ) {
+                } else {
                     my $rmsd_sum =
                         sum( map { $_->[-1] } @{ $rmsd_sidechain_comparisons } );
                     my $rmsd_count = scalar @{ $rmsd_sidechain_comparisons };
