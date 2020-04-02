@@ -408,33 +408,38 @@ for my $comparison_group ( @comparison_groups ) {
 
 # Shows dihedral angles related to selected atoms used to calculate RMSD.
 if( $is_related && $do_decompose ) {
-    # FIXME: for testing purposes the first element is chosen.
-    $pdbx_data{'_[local]_rotamer_angle'} =
-        $rotamer_angles{'_[local]_rotamer_angle'};
+    if( defined $rotamer_angles{'_[local]_rotamer_angle'} &&
+             %{ $rotamer_angles{'_[local]_rotamer_angle'} } ) {
+        $pdbx_data{'_[local]_rotamer_angle'} =
+            $rotamer_angles{'_[local]_rotamer_angle'};
 
-    my $related_data = related_category_data(
-        \%pdbx_data,
-        { '_[local]_rmsd' =>
-              { '_[local]_rotamer_angle' =>
-                    [ { 'keys' =>
-                            [ 'label_seq_1_id', 'label_asym_1_id',
-                              'pdbx_PDB_model_num_1', 'label_alt_1_id' ],
-                        'reference_keys' =>
-                            [ 'label_seq_id', 'label_asym_id',
-                              'pdbx_PDB_model_num', 'rotamer_id' ] },
-                      { 'keys' =>
-                            [ 'label_seq_2_id', 'label_asym_2_id',
-                              'pdbx_PDB_model_num_2', 'label_alt_2_id' ],
-                        'reference_keys' =>
-                            [ 'label_seq_id', 'label_asym_id',
-                              'pdbx_PDB_model_num', 'rotamer_id' ] } ] } } );
+        my $related_data = related_category_data(
+            \%pdbx_data,
+            { '_[local]_rmsd' =>
+                  { '_[local]_rotamer_angle' =>
+                        [ { 'keys' =>
+                                [ 'label_seq_1_id', 'label_asym_1_id',
+                                  'pdbx_PDB_model_num_1', 'label_alt_1_id' ],
+                            'reference_keys' =>
+                                [ 'label_seq_id', 'label_asym_id',
+                                  'pdbx_PDB_model_num', 'rotamer_id' ] },
+                          { 'keys' =>
+                                [ 'label_seq_2_id', 'label_asym_2_id',
+                                  'pdbx_PDB_model_num_2', 'label_alt_2_id' ],
+                            'reference_keys' =>
+                                [ 'label_seq_id', 'label_asym_id',
+                                  'pdbx_PDB_model_num', 'rotamer_id' ] } ] } } );
 
-    for my $category ( keys %{ $related_data } ) {
-        my $related_category_data = $related_data->{$category};
-        my $related_category = $related_category_data->{'reference_category'};
-        $pdbx_data{$related_category}{'data'} = $related_category_data->{'data'};
-        $pdbx_data{$related_category}{'metadata'}{'type'} = 'indexed';
-        indexed2raw( \%pdbx_data, { 'categories' => [ '_[local]_rotamer_angle' ] } );
+        for my $category ( keys %{ $related_data } ) {
+            my $related_category_data = $related_data->{$category};
+            my $related_category =
+                $related_category_data->{'reference_category'};
+            $pdbx_data{$related_category}{'data'} =
+                $related_category_data->{'data'};
+            $pdbx_data{$related_category}{'metadata'}{'type'} = 'indexed';
+            indexed2raw( \%pdbx_data,
+                         { 'categories' => [ '_[local]_rotamer_angle' ] } );
+        }
     }
 }
 
