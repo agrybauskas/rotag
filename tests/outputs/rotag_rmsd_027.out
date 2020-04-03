@@ -16,6 +16,6 @@ _[local]_rmsd.pdbx_PDB_model_num_2
 _[local]_rmsd.label_alt_2_id
 _[local]_rmsd.value
 _[local]_rmsd.n_count
-1 1 179 ASP B 1 . 2 179 ASP B 1 458 0.986 2
-4 1 69 ASP S 1 . 2 69 ASP S 1 692 0.454 2
+1 1 179 ASP B 1 . 2 179 ASP B 1 458 0.986 1
+2 1 69 ASP S 1 . 2 69 ASP S 1 692 0.454 1
 #

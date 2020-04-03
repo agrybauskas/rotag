@@ -1,1 +1,28 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_[local]_rmsd.id
+_[local]_rmsd.group_1_id
+_[local]_rmsd.atom_1_id
+_[local]_rmsd.label_atom_1_id
+_[local]_rmsd.label_seq_1_id
+_[local]_rmsd.label_comp_1_id
+_[local]_rmsd.label_asym_1_id
+_[local]_rmsd.pdbx_PDB_model_num_1
+_[local]_rmsd.label_alt_1_id
+_[local]_rmsd.group_2_id
+_[local]_rmsd.atom_2_id
+_[local]_rmsd.label_atom_2_id
+_[local]_rmsd.label_seq_2_id
+_[local]_rmsd.label_comp_2_id
+_[local]_rmsd.label_asym_2_id
+_[local]_rmsd.pdbx_PDB_model_num_2
+_[local]_rmsd.label_alt_2_id
+_[local]_rmsd.value
+1 1 1861 CG 235 ASP A 1 . 1876 2 CG 235 ASP A 1 144 0.342736
+2 1 1862 OD1 235 ASP A 1 . 1880 2 OD1 235 ASP A 1 144 0.528161
+3 1 1863 OD2 235 ASP A 1 . 1884 2 OD2 235 ASP A 1 144 0.429957
+4 1 291 CG 43 ASP A 1 . 1867 2 CG 43 ASP A 1 147 0.160308
+5 1 292 OD1 43 ASP A 1 . 1871 2 OD1 43 ASP A 1 147 0.932460
+6 1 293 OD2 43 ASP A 1 . 1875 2 OD2 43 ASP A 1 147 0.508190
+#

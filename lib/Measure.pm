@@ -564,6 +564,7 @@ sub rmsd
 #     $unique_residue_key - unique residue key;
 #     $options{'average'} - calculates RMSD average;
 #     $options{'best_case'} - chooses those RMSD that are lowest.
+#     $options{'strict'} - residue id, chain id and model number has to match.
 # Output:
 #     @sidechain_comparison_data - list of RMSD comparison data.
 #
@@ -572,11 +573,12 @@ sub rmsd_sidechains
 {
     my ( $parameters, $first_atom_site, $second_atom_site, #$unique_residue_key,
          $options ) = @_;
-    my ( $average, $best_case, $include_atoms, $exclude_atoms ) = (
+    my ( $average, $best_case, $include_atoms, $exclude_atoms, $strict ) = (
         $options->{'average'},
         $options->{'best_case'},
         $options->{'include_atoms'},
-        $options->{'exclude_atoms'}
+        $options->{'exclude_atoms'},
+        $options->{'strict'}
     );
 
     $average //= 0;
@@ -587,6 +589,7 @@ sub rmsd_sidechains
     $exclude_atoms //=
         [ 'CB', grep { /^H/  }
                     @{ $parameters->{'_[local]_sidechain_atom_names'} } ];
+    $strict //= 1;
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
     # TODO: think if using of symmetric atom data should be optional or
@@ -628,6 +631,12 @@ sub rmsd_sidechains
             my ( $second_residue_id, $second_chain, $second_pdbx_model_num,
                  $second_alt_id ) =
                 split /,/, $second_unique_residue_key;
+
+            next if ! ( $first_residue_id eq $second_residue_id &&
+                        $first_chain eq $second_chain &&
+                        $first_pdbx_model_num eq $second_pdbx_model_num ) &&
+                    $strict;
+
             my $second_sidechain_data =
                 filter( { 'atom_site' => $second_atom_site,
                           'include' =>

@@ -282,7 +282,8 @@ for my $comparison_group ( @comparison_groups ) {
                     rmsd_sidechains( $parameters,
                                      $first_group_atom_site,
                                      $second_group_atom_site,
-                                     { 'best_case' => $rmsd_best_case } );
+                                     { 'best_case' => $rmsd_best_case,
+                                       'strict' => $strict } );
 
                 # HACK: there should be a way to avoid this check.
                 next if ! @{ $rmsd_sidechain_comparisons };
