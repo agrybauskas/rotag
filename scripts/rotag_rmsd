@@ -418,6 +418,11 @@ for my $comparison_group ( @comparison_groups ) {
     }
 }
 
+if( ! @{ $pdbx_data{'_[local]_rmsd'}{'data'} } ) {
+    die "no proper comparison was found. Try to use '--no-strict' in order ".
+        "to get more possible side-chains to compare to.\n";
+}
+
 # Shows dihedral angles related to selected atoms used to calculate RMSD.
 if( $is_related && $do_decompose ) {
     if( defined $rotamer_angles{'_[local]_rotamer_angle'} &&
