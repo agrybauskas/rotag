@@ -418,7 +418,8 @@ for my $comparison_group ( @comparison_groups ) {
     }
 }
 
-if( ! @{ $pdbx_data{'_[local]_rmsd'}{'data'} } ) {
+if( ! defined $pdbx_data{'_[local]_rmsd'}{'data'} ||
+    ! @{ $pdbx_data{'_[local]_rmsd'}{'data'} } ) {
     die "no proper comparison was found. Try to use '--no-strict' in order ".
         "to get more possible side-chains to compare to.\n";
 }
