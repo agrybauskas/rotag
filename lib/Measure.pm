@@ -743,6 +743,11 @@ sub rmsd_sidechains
         }
     }
 
+    if( ! @sidechain_comparison_data ) {
+        die "no proper comparison was found. Try to use '--no-strict' in order ".
+            "to get more possible side-chains to compare to.\n";
+    }
+
     return \@sidechain_comparison_data;
 }
 
