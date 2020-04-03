@@ -791,6 +791,7 @@ sub filter
     my $exclude = $args->{'exclude'};
     my $data = $args->{'data'};
     my $is_list = $args->{'is_list'};
+    my $is_hash = $args->{'is_hash'};
     my $data_with_id = $args->{'data_with_id'};
     my $group_id = $args->{'group_id'};
 
@@ -863,6 +864,8 @@ sub filter
                 if( defined $is_list && $is_list ) {
                     push @atom_data,
                          map { $filtered_atoms{$atom_id}{$_} } @{ $data };
+                } elsif( defined $is_hash && $is_hash ) {
+                    push @atom_data, $filtered_atoms{$atom_id};
                 } else {
                     push @atom_data,
                          [ map { $filtered_atoms{$atom_id}{$_} } @{ $data } ];
