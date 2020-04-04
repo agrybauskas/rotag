@@ -3,8 +3,13 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use ForceField::Parameters;
 use Measure qw( rmsd_sidechains );
+
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
 
 #
 # Unit test: Measure::rmsd_sidechains
@@ -34,6 +39,7 @@ my $parameters = Parameters->new();
 my $rmsd_data =
     rmsd_sidechains( $parameters, $atom_site_1, $atom_site_2,
                      { 'best_case' => $is_best_case } );
+
 for my $rmsd ( @{ $rmsd_data } ) {
-    print join ' ', @{ $rmsd }, "\n";
+    print Dumper $rmsd;
 }
