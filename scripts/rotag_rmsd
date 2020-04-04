@@ -216,7 +216,7 @@ if( $do_decompose ) {
           'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
           'pdbx_PDB_model_num_2', 'label_alt_2_id', 'value' ];
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'type'} = 'raw';
+    $pdbx_data{'_[local]_rmsd'}{'metadata'}{'type'} = 'record';
 } elsif( $rmsd_sidechains ) {
     $pdbx_data{'_[local]_rmsd'}{'metadata'}{'attributes'} =
         [ 'id', 'group_1_id', 'label_seq_1_id', 'label_comp_1_id',
@@ -291,8 +291,8 @@ for my $comparison_group ( @comparison_groups ) {
                 if( $do_decompose ) {
                     for my $rmsd_sidechain_comparison (@{$rmsd_sidechain_comparisons}){
                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-                             $rmsd_counter,
-                             @{ $rmsd_sidechain_comparison };
+                             { 'id' => $rmsd_counter,
+                              %{ $rmsd_sidechain_comparison } };
                         $rmsd_counter++;
                     }
                 } else {
@@ -334,14 +334,16 @@ for my $comparison_group ( @comparison_groups ) {
                                   [ 'id', '[local]_selection_group', 'label_atom_id',
                                     'label_seq_id', 'label_comp_id', 'label_asym_id',
                                     'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
-                                    'Cartn_y', 'Cartn_z' ] } );
+                                    'Cartn_y', 'Cartn_z' ],
+                              'is_hash' => 1 } );
                 my $second_group_data =
                     filter( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
                               'data' =>
                                   [ 'id', '[local]_selection_group', 'label_atom_id',
                                     'label_seq_id', 'label_comp_id', 'label_asym_id',
                                     'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
-                                    'Cartn_y', 'Cartn_z' ] } );
+                                    'Cartn_y', 'Cartn_z' ],
+                              'is_hash' => 1 } );
 
                 # Checks the length of the atom sets.
                 # TODO: error message is duplicated in Measure::rmsd().
@@ -354,36 +356,78 @@ for my $comparison_group ( @comparison_groups ) {
                 # Sorts by residue name first by checking if their residue names are
                 # correct.
                 $first_group_data  =
-                    [ sort { $a->[2] cmp $b->[2] } @{ $first_group_data  }];
+                    [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
+                          @{ $first_group_data  }];
                 $second_group_data =
-                    [ sort { $a->[2] cmp $b->[2] } @{ $second_group_data }];
+                    [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
+                          @{ $second_group_data }];
 
                 my @first_group_coord;
                 my @second_group_coord;
 
                 for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
-                    if( $first_group_data->[$i][2] ne $second_group_data->[$i][2] ) {
+                    if( $first_group_data->[$i]{'label_atom_id'} ne
+                        $second_group_data->[$i]{'label_atom_id'} ) {
                         error( { 'program' => $0,
                                  'message' =>
                                      'atom names do not match: ' .
-                                     "$first_group_data->[$i][2] and " .
-                                     "$second_group_data->[$i][2] atoms do not " .
-                                     "match.\n" } );
+                                     "$first_group_data->[$i]{'label_atom_id'} and " .
+                                     "$second_group_data->[$i]{'label_atom_id'} " .
+                                     "atoms do not match.\n" } );
                     }
 
                     if( $do_decompose ) {
                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-                            $rmsd_counter,
-                            ( @{ $first_group_data->[$i] } )[0..7],
-                            ( @{ $second_group_data->[$i] })[0..7],
-                            sprintf $sig_figs_min,
-                            rmsd( [ [ ( @{ $first_group_data->[$i] }  )[8..10] ] ],
-                                  [ [ ( @{ $second_group_data->[$i] } )[8..10] ] ] );
+                            { 'id' => $rmsd_counter,
+                              'group_1_id' =>
+                                  $first_group_data->[$i]{'[local]_selection_group'},
+                              'atom_1_id' =>
+                                  $first_group_data->[$i]{'id'},
+                              'label_atom_1_id' =>
+                                  $first_group_data->[$i]{'label_atom_id'},
+                              'label_seq_1_id' =>
+                                  $first_group_data->[$i]{'label_seq_id'},
+                              'label_comp_1_id' =>
+                                  $first_group_data->[$i]{'label_comp_id'},
+                              'label_asym_1_id' =>
+                                  $first_group_data->[$i]{'label_asym_id'},
+                              'pdbx_PDB_model_num_1' =>
+                                  $first_group_data->[$i]{'pdbx_PDB_model_num'},
+                              'label_alt_1_id' =>
+                                  $first_group_data->[$i]{'label_alt_id'},
+                              'group_2_id' =>
+                                  $second_group_data->[$i]{'[local]_selection_group'},
+                              'atom_2_id' =>
+                                  $second_group_data->[$i]{'id'},
+                              'label_atom_2_id' =>
+                                  $second_group_data->[$i]{'label_atom_id'},
+                              'label_seq_2_id' =>
+                                  $second_group_data->[$i]{'label_seq_id'},
+                              'label_comp_2_id' =>
+                                  $second_group_data->[$i]{'label_comp_id'},
+                              'label_asym_2_id' =>
+                                  $second_group_data->[$i]{'label_asym_id'},
+                              'pdbx_PDB_model_num_2' =>
+                                  $second_group_data->[$i]{'pdbx_PDB_model_num'},
+                              'label_alt_2_id' =>
+                                  $second_group_data->[$i]{'label_alt_id'},
+                              'value' =>
+                                  sprintf $sig_figs_min,
+                                  rmsd( [ [ $first_group_data->[$i]{'Cartn_x'},
+                                            $first_group_data->[$i]{'Cartn_y'},
+                                            $first_group_data->[$i]{'Cartn_z'} ] ],
+                                        [ [ $second_group_data->[$i]{'Cartn_x'},
+                                            $second_group_data->[$i]{'Cartn_y'},
+                                            $second_group_data->[$i]{'Cartn_z'} ] ] ) };
                     } else {
                         push @first_group_coord,
-                            [ ( @{ $first_group_data->[$i] } )[8..10] ];
+                            [ $first_group_data->[$i]{'Cartn_x'},
+                              $first_group_data->[$i]{'Cartn_y'},
+                              $first_group_data->[$i]{'Cartn_z'} ];
                         push @second_group_coord,
-                            [ ( @{ $second_group_data->[$i] } )[8..10] ];
+                            [ $second_group_data->[$i]{'Cartn_x'},
+                              $second_group_data->[$i]{'Cartn_y'},
+                              $second_group_data->[$i]{'Cartn_z'} ];
                     }
                 }
 
