@@ -42,7 +42,7 @@ _[local]_rmsd.label_asym_2_id
 _[local]_rmsd.pdbx_PDB_model_num_2
 _[local]_rmsd.label_alt_2_id
 _[local]_rmsd.value
-1 1 458 CG 49 ASP A 1 . 5211 2 CG 137 ASP B 1 . 43.107854
-2 1 459 OD1 49 ASP A 1 . 5212 2 OD1 137 ASP B 1 . 42.449785
-3 1 460 OD2 49 ASP A 1 . 5212 2 OD1 137 ASP B 1 . 44.344293
+1 1 458 CG 49 ASP A 1 . 2 5211 CG 137 ASP B 1 . 43.107854
+2 1 459 OD1 49 ASP A 1 . 2 5212 OD1 137 ASP B 1 . 42.449785
+3 1 460 OD2 49 ASP A 1 . 2 5212 OD1 137 ASP B 1 . 44.344293
 #
