@@ -35,7 +35,8 @@ _[local]_rmsd.label_asym_2_id
 _[local]_rmsd.pdbx_PDB_model_num_2
 _[local]_rmsd.label_alt_2_id
 _[local]_rmsd.value
-1 1 1417 CG 219 ASP A 1 2 2 1418 CG 219 ASP A 1 3 0.000000
-2 1 1444 OD1 219 ASP A 1 2 2 1445 OD1 219 ASP A 1 3 0.681000
-3 1 1471 OD2 219 ASP A 1 2 2 1472 OD2 219 ASP A 1 3 0.674236
+_[local]_rmsd.n_count
+1 1 1417 CG 219 ASP A 1 2 2 1418 CG 219 ASP A 1 3 0.000000 ?
+2 1 1444 OD1 219 ASP A 1 2 2 1445 OD1 219 ASP A 1 3 0.681000 ?
+3 1 1471 OD2 219 ASP A 1 2 2 1472 OD2 219 ASP A 1 3 0.674236 ?
 #
