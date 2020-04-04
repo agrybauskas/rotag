@@ -716,7 +716,7 @@ sub rmsd_sidechains
                     # TODO: refactor by creating a function that would extract
                     # data by giving key mapping argument.
                     push @current_sidechain_data,
-                        { 'id_1' =>
+                        { 'atom_1_id' =>
                               $first_sidechain_data->[$i]{'id'},
                           'group_1_id' =>
                               $first_sidechain_data->[$i]{'[local]_selection_group'},
@@ -731,8 +731,8 @@ sub rmsd_sidechains
                           'pdbx_PDB_model_num_1' =>
                               $first_sidechain_data->[$i]{'pdbx_PDB_model_num'},
                           'label_alt_1_id' =>
-                              $first_sidechain_data->[$i]{'label_atom_id'},
-                          'id_2' =>
+                              $first_sidechain_data->[$i]{'label_alt_id'},
+                          'atom_2_id' =>
                               $symmetric_atom_data->{'id'},
                           'group_2_id' =>
                               $symmetric_atom_data->{'[local]_selection_group'},
@@ -762,7 +762,7 @@ sub rmsd_sidechains
                     # TODO: refactor by creating a function that would extract
                     # data by giving key mapping argument.
                     push @current_sidechain_data,
-                        { 'id_1' =>
+                        { 'atom_1_id' =>
                               $first_sidechain_data->[$i]{'id'},
                           'group_1_id' =>
                               $first_sidechain_data->[$i]{'[local]_selection_group'},
@@ -777,8 +777,8 @@ sub rmsd_sidechains
                           'pdbx_PDB_model_num_1' =>
                               $first_sidechain_data->[$i]{'pdbx_PDB_model_num'},
                           'label_alt_1_id' =>
-                              $first_sidechain_data->[$i]{'label_atom_id'},
-                          'id_2' =>
+                              $first_sidechain_data->[$i]{'label_alt_id'},
+                          'atom_2_id' =>
                               $second_sidechain_data->[$i]{'id'},
                           'group_2_id' =>
                               $second_sidechain_data->[$i]{'[local]_selection_group'},
