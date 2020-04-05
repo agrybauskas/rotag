@@ -550,11 +550,14 @@ sub indexed2raw
 
         my @category_attributes = ();
         my ( $first_id ) = sort keys %{ $current_pdbx_indexed };
+
+        # TODO: check when indexes do not contain data.
         if( ref $current_pdbx_indexed->{$first_id} eq 'HASH' ) {
             @category_attributes =
                 sort { $a cmp $b }
                 uniq
                 map { keys %{ $current_pdbx_indexed->{$_} } }
+                grep { defined $current_pdbx_indexed->{$_} }
                 keys %{ $current_pdbx_indexed };
         } elsif( ref $current_pdbx_indexed->{$first_id} eq 'ARRAY' ) {
             @category_attributes =
@@ -562,6 +565,7 @@ sub indexed2raw
                 uniq
                 map { keys %{ $_ } }
                 map { @{ $current_pdbx_indexed->{$_} } }
+                grep { defined $current_pdbx_indexed->{$_} }
                 keys %{ $current_pdbx_indexed };
         }
 
