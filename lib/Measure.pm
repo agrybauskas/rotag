@@ -679,7 +679,6 @@ sub rmsd_sidechains
             }
 
             my @current_sidechain_data = ();
-            my $n_count = scalar @{ $first_sidechain_data };
             for( my $i = 0; $i <= $#{ $first_sidechain_data }; $i++ ) {
                 if( $first_sidechain_data->[$i]{'label_atom_id'} ne
                     $second_sidechain_data->[$i]{'label_atom_id'} ) {
@@ -749,8 +748,7 @@ sub rmsd_sidechains
                               $symmetric_atom_data->{'pdbx_PDB_model_num'},
                           'label_alt_2_id' =>
                               $symmetric_atom_data->{'label_alt_id'},
-                          'value' => sprintf( $sig_figs_max, $rmsd ),
-                          ( $best_case ? ( 'n_count' => $n_count ) : () ) };
+                          'value' => sprintf( $sig_figs_max, $rmsd ) };
 
                 } else {
                     my $rmsd = rmsd(
@@ -796,8 +794,7 @@ sub rmsd_sidechains
                               $second_sidechain_data->[$i]{'pdbx_PDB_model_num'},
                           'label_alt_2_id' =>
                               $second_sidechain_data->[$i]{'label_alt_id'},
-                          'value' => sprintf( $sig_figs_max, $rmsd ),
-                          ( $best_case ? ( 'n_count' => $n_count ) : () ) };
+                          'value' => sprintf( $sig_figs_max, $rmsd ) };
                 }
             }
 
