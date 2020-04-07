@@ -290,11 +290,14 @@ for my $comparison_group ( @comparison_groups ) {
                 # HACK: there should be a way to avoid this check.
                 next if ! @{ $rmsd_sidechain_comparisons };
 
+                # TODO: would be nice to refactor those conditionals.
                 if( $do_decompose ) {
                     for my $rmsd_sidechain_comparison (@{$rmsd_sidechain_comparisons}){
                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                              { 'id' => $rmsd_counter,
-                              %{ $rmsd_sidechain_comparison } };
+                              %{ $rmsd_sidechain_comparison },
+                               'n_count' =>
+                                   scalar keys %{ $second_group_atom_site } };
                         $rmsd_counter++;
                     }
                 } else {
