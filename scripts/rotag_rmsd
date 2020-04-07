@@ -292,12 +292,23 @@ for my $comparison_group ( @comparison_groups ) {
 
                 # TODO: would be nice to refactor those conditionals.
                 if( $do_decompose ) {
+                    my $n_count;
+                    if( $rmsd_best_case ) {
+                        $n_count =
+                            keys %{
+                                split_by( { 'atom_site' => $second_group_atom_site,
+                                            'attributes' => [ 'label_seq_id',
+                                                              'label_asym_id',
+                                                              'pdbx_PDB_model_num',
+                                                              'label_alt_id' ]
+                            } ) };
+                    }
+
                     for my $rmsd_sidechain_comparison (@{$rmsd_sidechain_comparisons}){
                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
                              { 'id' => $rmsd_counter,
                               %{ $rmsd_sidechain_comparison },
-                               'n_count' =>
-                                   scalar keys %{ $second_group_atom_site } };
+                               'n_count' => $n_count };
                         $rmsd_counter++;
                     }
                 } else {
