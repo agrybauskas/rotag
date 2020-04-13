@@ -209,7 +209,8 @@ for my $pdbx_file ( @ARGV ) {
 
     # Splits atom site into groups by its uniqueness.
     my $atom_site_groups = split_by( { 'atom_site' => $selected_atom_site,
-                                       'attributes' => [ 'pdbx_PDB_model_num',
+                                       'attributes' => [ 'label_asym_id',
+                                                         'pdbx_PDB_model_num',
                                                          'label_alt_id' ],
                                        'append_dot' => 1 } );
 
