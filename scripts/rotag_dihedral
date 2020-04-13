@@ -55,11 +55,15 @@ my $in_radians = 0;
 my $output_format = 'pdbx';
 
 local $SIG{__WARN__} = sub {
-    warning( { 'program' => $0, 'message' => @_ } );
+    warning( { 'program' => $0,
+               'message' => @_,
+               'filename' => join( ', ', @ARGV ) } );
 };
 
 local $SIG{__DIE__} = sub {
-    error( { 'program' => $0, 'message' => @_ } );
+    error( { 'program' => $0,
+             'message' => @_,
+             'filename' => join( ', ', @ARGV ) } );
 };
 
 GetOptions(

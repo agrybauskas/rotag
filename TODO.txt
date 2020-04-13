@@ -109,5 +109,4 @@
    'group 5: chi1=0.0'.
 -- Have to make sure that if no connections are determined, it should be tried
    to be implied from atom distances.
--- Error and warning messages should point out filenames and command-line
-   arguments in all rotag scripts.
+++ Error and warning messages should point out filenames in all rotag scripts.
