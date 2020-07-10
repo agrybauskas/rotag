@@ -7,10 +7,10 @@ use Combinatorics qw( permutation );
 
 #
 # Unit test: Combinatorics::permutation
-# Example: ./permutation set.dat
+# Example: ./permutation set.dat 3
 #
 
-my ( $set_file ) = @ARGV;
+my ( $set_file, $size ) = @ARGV;
 my @angles = ( [] );
 
 open( my $fh, "<", $set_file );
@@ -26,6 +26,6 @@ close( $fh );
 @angles = map { $_->[0] } @angles;
 
 # Prints out all possible combinations of angles of list of sets.
-my $permuted_list = permutation( 3, [], \@angles, [] );
+my $permuted_list = permutation( $size, [], \@angles, [] );
 
 print( join( " ", @{ $_ } ), "\n" ) for @{ $permuted_list }
