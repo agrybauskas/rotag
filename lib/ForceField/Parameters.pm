@@ -200,24 +200,43 @@ sub force_field
                                {$atom_name} = $partial_charge_value;
     }
 
-    # Restructuring parameters of partial torsional potential.
+    # Preparing atom names for torsion potential.
+    my $torsional_atom_names_loop =
+        pdbx_loop_to_array( $force_field_data, '_[local]_torsional_atom_names' );
+
+    for my $torsional_atom_name ( @{ $torsional_atom_names_loop } ) {
+        my $label_comp_id = $torsional_atom_name->{'label_comp_id'};
+        my $label_atom_id = $torsional_atom_name->{'label_atom_id'};
+        my $alt_atom_name = $torsional_atom_name->{'alt_atom_name'};
+        push @{ $force_field_parameters{'_[local]_torsional_atom_names'}
+                                       {$label_comp_id}{$label_atom_id} },
+            $alt_atom_name;
+    }
+
+    # Restructuring parameters for torsional potential.
     my $torsional_loop =
         pdbx_loop_to_array( $force_field_data, '_[local]_torsional' );
 
     for my $torsional ( @{ $torsional_loop } ) {
-        my $type_symbol_1 = $torsional->{'type_symbol_1'};
-        my $type_symbol_2 = $torsional->{'type_symbol_2'};
+        my $label_atom_1_id = $torsional->{'label_atom_1_id'};
+        my $label_atom_2_id = $torsional->{'label_atom_2_id'};
+        my $label_atom_3_id = $torsional->{'label_atom_3_id'};
+        my $label_atom_4_id = $torsional->{'label_atom_4_id'};
         my $epsilon = $torsional->{'epsilon'};
         my $phase = $torsional->{'phase'};
+        my $gamma = $torsional->{'gamma'};
 
-        $force_field_parameters{'_[local]_torsional'}{$type_symbol_1}
-                               {$type_symbol_2}{'epsilon'} = $epsilon;
-        $force_field_parameters{'_[local]_torsional'}{$type_symbol_2}
-                               {$type_symbol_1}{'epsilon'} = $epsilon;
-        $force_field_parameters{'_[local]_torsional'}{$type_symbol_1}
-                               {$type_symbol_2}{'phase'} = $phase;
-        $force_field_parameters{'_[local]_torsional'}{$type_symbol_2}
-                               {$type_symbol_1}{'phase'} = $phase;
+        my $key_forward =
+            "$label_atom_1_id,$label_atom_2_id,$label_atom_3_id,$label_atom_4_id";
+        my $key_reverse =
+            "$label_atom_1_id,$label_atom_2_id,$label_atom_3_id,$label_atom_4_id";
+
+        $force_field_parameters{'_[local]_torsional'}{$key_forward}{'epsilon'} = $epsilon;
+        $force_field_parameters{'_[local]_torsional'}{$key_reverse}{'epsilon'} = $epsilon;
+        $force_field_parameters{'_[local]_torsional'}{$key_forward}{'phase'} = $phase;
+        $force_field_parameters{'_[local]_torsional'}{$key_reverse}{'phase'} = $phase;
+        $force_field_parameters{'_[local]_torsional'}{$key_forward}{'gamma'} = $gamma;
+        $force_field_parameters{'_[local]_torsional'}{$key_reverse}{'gamma'} = $gamma;
     }
 
     # Restructuring parameters of hydrogen bond.

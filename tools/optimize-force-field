@@ -10,6 +10,7 @@ Getopt::Long::Configure qw( gnu_getopt );
 use Parallel::ForkManager;
 
 use BondProperties qw( hybridization );
+use Clone qw( clone );
 use ConnectAtoms qw( connect_atoms );
 use Combinatorics qw( adjacent
                       permutation );
@@ -20,6 +21,7 @@ use LinearAlgebra qw( evaluate_matrix_of_functions
 use Logging qw( error
                 warning );
 use Measure qw( rmsd );
+use Optimization::ParticleSwarm;
 use PDBxParser qw( determine_residue_keys
                    filter
                    mark_selection
@@ -58,6 +60,7 @@ my $threads = 1;
 my $angles = '-180.0..36.0..180.0';
 my $parameters_cmd = '';
 my $max_iterations = 1;
+my $particle_num = 10;
 
 local $SIG{__WARN__} = sub {
     # warning( { 'message' => @_ } );
@@ -69,7 +72,8 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'angles|a=s' => \$angles,
-    'parameters|p=s' => \$parameters_cmd,
+    'parameters|p=s@' => \$parameters_cmd,
+    'particle_num|P=s' => \$particle_num,
     'iterations|i=s' => \$max_iterations,
     'threads|n=s' => \$threads,
     'help|h' => sub {
@@ -90,83 +94,116 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
-my @parameters = ();
-my @values = ();
+my $parameters = Parameters->new();
+my %parameters = ();
 
 if( $parameters_cmd ) {
-    for my $parameter_cmd ( split /;/, $parameters_cmd ) {
-        my @current_params_cmd =
-            ($parameter_cmd =~m/[A-Za-z0-9_\:\.\-\]\[]+\=(?:\[)[\-0-9\.,]+(?:\])/g);
-
-        my @current_parameters = ();
-        my @current_values = ();
-        for my $current_param_cmd ( @current_params_cmd ) {
-            my ( $key_path, $values ) = split /=/, $current_param_cmd;
-
-            my @keys = split /:/, $key_path;
-            push @current_parameters, \@keys;
-
-            if( $values =~ m/\[(\S*)\]/ ) {
-                my @values = map { split /\.\./, $_ } split /,/, $1;
-                if( scalar @values == 3 ) {
-                    my $start = $values[0];
-                    my $step = $values[1];
-                    $step ||= 1;
-                    my $end = $values[2];
-                    push @current_values,
-                        [ map { $step * $_ }( $start / $step .. $end / $step ) ];
-                } else {
-                    push @current_values, \@values;
-                }
-            } else {
-                push @current_values, [ $values ];
-            }
-        }
-
-        @current_values = @{ adjacent( \@current_values ) };
-
-        push @parameters, \@current_parameters;
-        push @values, \@current_values;
+    for my $parameter_cmd ( @{ $parameters_cmd } ) {
+        my ( $key_path, $values ) = split /=/, $parameter_cmd;
+        my ( $min, $max ) = split /,/, $values;
+        $parameters{$key_path} = { 'min' => $min, 'max' => $max };
     }
 }
 
-@parameters = map { @{ $_ } } @parameters;
-@values = @{ permutation( scalar @values, [], \@values, [] ) };
-@values = map { flatten( [ $_ ] ) } @values;
+my $ps = ParticleSwarm->new( \%parameters, $particle_num );
+$ps->set_cost_function( \&run_calculations,
+                        { 'parameters' => $parameters,
+                          'pdbxs' => \@ARGV,
+                          'threads' => $threads } );
+$ps->optimize( $max_iterations );
 
-if( @parameters ) {
-    print join( ',', map { join( '.', @{ $_ } ) } @parameters ), ",rmsd,count\n";
+my $global_optimal_param = $ps->global_optimal_param;
+my $global_optimal_value = $ps->global_optimal_value;
+
+if( %{ $global_optimal_param } ) {
+    print join( ',', map { "\"$_\"" } sort keys %{ $global_optimal_param } ),
+                ',', '"rmsd"', "\n";
+    print join( ',', map { $global_optimal_param->{$_}->value }
+                         ( sort keys %{ $global_optimal_param } ) ), ',',
+        $global_optimal_value, "\n";
 } else {
-    print "rmsd,count\n";
+    print "\"rmsd\"\n";
+    print $global_optimal_value, "\n";
 }
 
-my $fm = Parallel::ForkManager->new( $threads );
+sub run_calculations
+{
+    my ( $change_parameters, $options ) = @_;
+    my ( $parameters, $pdbxs, $threads ) =
+        ( $options->{'parameters'}, $options->{'pdbxs'}, $options->{'threads'} );
+    my $current_parameters = clone $parameters;
 
-PARAMETERS:
-for my $i ( 0..scalar @values - 1 ) {
-    $fm->start and next PARAMETERS;
+    $threads //= 1;
 
-    my $parameters = Parameters->new();
+    # HACK: Adds additional keys for '_[local]_torsional', because C-X-X-O and
+    # O-X-X-C interactions are present in parameter data structure. So, only once
+    # parameter has to be changed.
+    for my $full_key ( sort keys %{ $change_parameters } ) {
+        my @keys = split /\./, $full_key;
+        my $category = $keys[0];
 
-    # Update the parameters.
-    for my $j ( 0..scalar @parameters - 1 ) {
-        $parameters->set_parameter_values( $parameters,
-                                           array2hash( $parameters[$j],
-                                                       $values[$i][$j] ),
-                                           { 'is_long' => 1 } );
+        next if ! defined $category;
+
+        if( $category eq '_[local]_torsional' ) {
+            my $additional_change_parameter = $full_key;
+            $additional_change_parameter =~
+                s/^(_\[local\]_torsional)\.(\w+)\.(\w+)\.(.+)$/$1.$3.$2.$4/g;
+            $change_parameters->{$additional_change_parameter} =
+                clone $change_parameters->{$full_key};
+            $change_parameters->{$additional_change_parameter}{key} =
+                $additional_change_parameter;
+        }
+    }
+
+    for my $full_key ( sort keys %{ $change_parameters } ) {
+        my @keys = split /\./, $full_key;
+        my $value = $change_parameters->{$full_key}->value;
+        $current_parameters->set_parameter_values(
+            $current_parameters,
+            array2hash( \@keys, $value ),
+            { 'is_long' => 1 }
+        );
     }
 
     # Calculates RMSD for given parameters.
-    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+    my $sig_figs_max =
+        $current_parameters->{'_[local]_constants'}{'sig_figs_max'};
 
     # Parses string describing angles.
-    my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
+    my %angles = %{ sample_angles_qs_parsing( $current_parameters, $angles ) };
 
     my $rmsd_sum = 0;
     my $energy_sum = 0;
     my $rotamer_number = 0;
 
-    for my $pdbx_file ( @ARGV ) {
+    my $pm = Parallel::ForkManager->new( $threads );
+
+    # Rule to retrieve data.
+    $pm->run_on_finish( sub {
+         my ( $pid, $exit_code, $ident, $exit_signal,
+              $core_dump, $rotamer_library ) = @_;
+
+         for my $residue_unique_key ( sort { $a cmp $b } keys %{ $rotamer_library } ){
+             my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
+                 split /,/sxm, $residue_unique_key;
+
+             # Chooses the rotamer with the lowest energy state.
+             my $rotamers = $rotamer_library->{$residue_unique_key};
+             my ( $top_rotamer ) =
+                 sort { $a->{'potential_energy_value'} <=>
+                        $b->{'potential_energy_value'} }
+                     @{ $rotamers };
+
+             $rmsd_sum += $top_rotamer->{'rmsd'};
+             $energy_sum += $top_rotamer->{'potential_energy_value'};
+             $rotamer_number++;
+         }
+    } );
+
+  PDBX:
+    for my $pdbx_file ( @{ $pdbxs } ) {
+        $pm->start and next PDBX;
+
         # Reads file path, stdin and '-' operator.
         my $atom_site;
         if( $pdbx_file ) {
@@ -211,7 +248,7 @@ for my $i ( 0..scalar @values - 1 ) {
             my $rotamer_library = {};
             eval{
                 $rotamer_library = generate_library(
-                    { 'parameters' => $parameters,
+                    { 'parameters' => $current_parameters,
                       'atom_site' => $current_atom_site,
                       'residue_unique_keys' => $residue_unique_keys,
                       'include_interactions' =>
@@ -231,40 +268,13 @@ for my $i ( 0..scalar @values - 1 ) {
 
         next if ! %rotamer_library;
 
-        for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ) {
-            my ( $residue_id, $residue_chain, $residue_entity, $residue_alt ) =
-                split /,/sxm, $residue_unique_key;
-
-            # Chooses the rotamer with the lowest energy state.
-            my $rotamers = $rotamer_library{$residue_unique_key};
-            my ( $top_rotamer ) =
-                sort { $a->{'potential_energy_value'} <=>
-                       $b->{'potential_energy_value'} }
-                    @{ $rotamers };
-
-            $rmsd_sum += $top_rotamer->{'rmsd'};
-            $energy_sum += $top_rotamer->{'potential_energy_value'};
-            $rotamer_number++;
-        }
+        $pm->finish( 0, \%rotamer_library );
     }
 
-    if( $rotamer_number == 0 ) {
-        print join( ',', @{ $values[$i] } ) , ',' , "NA", ',', "NA", "\n";
-    } else {
-        if( @parameters ) {
-            print join( ',', @{ $values[$i] } ) . ',' .
-                sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ) , ',' ,
-                $rotamer_number, "\n";
-        } else {
-            print sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number ), ',',
-                $rotamer_number, "\n";
-        }
-    }
+    $pm->wait_all_children;
 
-    $fm->finish;
+    return sprintf( $sig_figs_max, $rmsd_sum / $rotamer_number );
 }
-
-$fm->wait_all_children;
 
 sub array2hash
 {

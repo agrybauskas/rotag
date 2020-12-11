@@ -54,11 +54,15 @@ my $moiety_file='';
 my $in_radians = 0;
 
 local $SIG{__WARN__} = sub {
-    warning( { 'program' => $0, 'message' => @_ } );
+    warning( { 'program' => $0,
+               'message' => @_,
+               'filename' => join( ', ', @ARGV ) } );
 };
 
 local $SIG{__DIE__} = sub {
-    error( { 'program' => $0, 'message' => @_ } );
+    error( { 'program' => $0,
+             'message' => @_,
+             'filename' => join( ', ', @ARGV ) } );
 };
 
 GetOptions(
@@ -201,7 +205,7 @@ for my $pdbx_file ( @ARGV ) {
             $current_pdbx{'_atom_site'} = $pdbx->{'_atom_site'};
             $current_pdbx{'_atom_site'}{'data'} = $selected_atom_site;
             $current_pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-            $current_pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+            $current_pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
             to_pdbx( \%current_pdbx );
         }

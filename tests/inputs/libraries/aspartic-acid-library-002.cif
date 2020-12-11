@@ -1,0 +1,48 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 458 C CG . ASP A 1 49 18.931 -7.754 8.472 1 T 1
+ATOM 459 O OD1 . ASP A 1 49 18.427 -8.419 7.524 1 T 1
+ATOM 460 O OD2 . ASP A 1 49 18.802 -6.518 8.564 1 T 1
+ATOM 5211 C CG . ASP B 1 137 25.400 -50.047 3.205 1 T 2
+ATOM 5212 O OD1 . ASP B 1 137 26.528 -49.915 3.724 1 T 2
+ATOM 5213 O OD2 . ASP B 1 137 24.893 -51.149 2.933 1 T 2
+#
+loop_
+_[local]_dihedral_angle.id
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.label_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.pdbx_PDB_model_num
+_[local]_dihedral_angle.label_alt_id
+_[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
+_[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
+_[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
+_[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_4_id
+_[local]_dihedral_angle.type
+_[local]_dihedral_angle.value
+_[local]_dihedral_angle.units
+1 ASP 137 B 1 . 5206 N 5207 CA 5210 CB 5211 CG chi1 -75.491 degrees
+2 ASP 137 B 1 . 5207 CA 5210 CB 5211 CG 5212 OD1 chi2 -26.577 degrees
+3 ASP 49 A 1 . 453 N 454 CA 457 CB 458 CG chi1 54.790 degrees
+4 ASP 49 A 1 . 454 CA 457 CB 458 CG 459 OD1 chi2 -63.880 degrees
+#

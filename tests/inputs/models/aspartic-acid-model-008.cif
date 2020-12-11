@@ -1,0 +1,25 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 291 C CG . ASP A 1 43 1.861 14.979 23.989 1 T 1
+ATOM 292 O OD1 . ASP A 1 43 2.582 14.152 24.622 1 T 1
+ATOM 293 O OD2 . ASP A 1 43 2.336 15.942 23.331 1 T 1
+ATOM 1861 C CG . ASP A 1 235 18.425 5.115 1.309 1 T 1
+ATOM 1862 O OD1 . ASP A 1 235 18.157 5.126 2.530 1 T 1
+ATOM 1863 O OD2 . ASP A 1 235 19.615 5.211 0.909 1 T 1
+#

@@ -34,7 +34,9 @@ use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
-                   split_by );
+                   split_by
+                   unique_residue_key
+                   unique_residue_keys );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use BondProperties qw( rotatable_bonds );
@@ -489,6 +491,7 @@ sub distance
 #     %around_atom_site - atom site data structure of selected atoms.
 #
 
+# TODO: move to more appropriately-named module.
 sub around_distance
 {
     my ( $parameters, $atom_site, $atom_specifier, $distance ) = @_;
@@ -561,19 +564,21 @@ sub rmsd
 #     $unique_residue_key - unique residue key;
 #     $options{'average'} - calculates RMSD average;
 #     $options{'best_case'} - chooses those RMSD that are lowest.
+#     $options{'strict'} - residue id, chain id and model number has to match.
 # Output:
 #     @sidechain_comparison_data - list of RMSD comparison data.
 #
 
 sub rmsd_sidechains
 {
-    my ( $parameters, $first_atom_site, $second_atom_site, $unique_residue_key,
+    my ( $parameters, $first_atom_site, $second_atom_site, #$unique_residue_key,
          $options ) = @_;
-    my ( $average, $best_case, $include_atoms, $exclude_atoms ) = (
+    my ( $average, $best_case, $include_atoms, $exclude_atoms, $strict ) = (
         $options->{'average'},
         $options->{'best_case'},
         $options->{'include_atoms'},
-        $options->{'exclude_atoms'}
+        $options->{'exclude_atoms'},
+        $options->{'strict'}
     );
 
     $average //= 0;
@@ -584,31 +589,27 @@ sub rmsd_sidechains
     $exclude_atoms //=
         [ 'CB', grep { /^H/  }
                     @{ $parameters->{'_[local]_sidechain_atom_names'} } ];
+    $strict //= 1;
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
     # TODO: think if using of symmetric atom data should be optional or
     # mandatory.
     my $symmetrical_atom_names =$parameters->{'_[local]_symmetrical_atom_names'};
 
-    my ( $residue_id, $chain, $pdbx_model_num ) = split /,/,$unique_residue_key;
-
-    my @first_alt_ids =
-        uniq @{ filter( { 'atom_site' => $first_atom_site,
-                          'data' => [ 'label_alt_id' ],
-                          'is_list' => 1 } ) };
-    my @second_alt_ids =
-        uniq @{ filter( { 'atom_site' => $second_atom_site,
-                          'data' => [ 'label_alt_id' ],
-                          'is_list' => 1 } ) };
+    my @first_unique_residue_keys  = unique_residue_keys( $first_atom_site );
+    my @second_unique_residue_keys = unique_residue_keys( $second_atom_site );
 
     my @sidechain_comparison_data = ();
-    for my $first_alt_id ( @first_alt_ids ) {
+    for my $first_unique_residue_key ( @first_unique_residue_keys ) {
+        my ( $first_residue_id, $first_chain, $first_pdbx_model_num,
+             $first_alt_id ) =
+            split /,/, $first_unique_residue_key;
         my $first_sidechain_data =
             filter( { 'atom_site' => $first_atom_site,
                       'include' =>
-                          { 'label_seq_id' => [ $residue_id ],
-                            'label_asym_id' => [ $chain ],
-                            'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                          { 'label_seq_id' => [ $first_residue_id ],
+                            'label_asym_id' => [ $first_chain ],
+                            'pdbx_PDB_model_num' => [ $first_pdbx_model_num ],
                             'label_alt_id' => [ $first_alt_id ],
                             ( $include_atoms ?
                               ( 'label_atom_id' => $include_atoms ): () ) },
@@ -620,19 +621,30 @@ sub rmsd_sidechains
                             'label_atom_id', 'label_seq_id',
                             'label_comp_id', 'label_asym_id',
                             'pdbx_PDB_model_num', 'label_alt_id',
-                            'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+                            'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                      'is_hash' => 1 } );
         $first_sidechain_data =
-            [ sort { $a->[2] cmp $b->[2] } @{ $first_sidechain_data } ];
+            [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
+                  @{ $first_sidechain_data } ];
 
-        my $residue_name = $first_sidechain_data->[0][4];
+        my $residue_name = $first_sidechain_data->[0]{'label_comp_id'};
         my $rmsd_average;
-        for my $second_alt_id ( @second_alt_ids ) {
+        for my $second_unique_residue_key ( @second_unique_residue_keys ) {
+            my ( $second_residue_id, $second_chain, $second_pdbx_model_num,
+                 $second_alt_id ) =
+                split /,/, $second_unique_residue_key;
+
+            next if ! ( $first_residue_id eq $second_residue_id &&
+                        $first_chain eq $second_chain &&
+                        $first_pdbx_model_num eq $second_pdbx_model_num ) &&
+                    $strict;
+
             my $second_sidechain_data =
                 filter( { 'atom_site' => $second_atom_site,
                           'include' =>
-                              { 'label_seq_id' => [ $residue_id ],
-                                'label_asym_id' => [ $chain ],
-                                'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                              { 'label_seq_id' => [ $second_residue_id ],
+                                'label_asym_id' => [ $second_chain ],
+                                'pdbx_PDB_model_num' => [ $second_pdbx_model_num ],
                                 'label_alt_id' => [ $second_alt_id ],
                                 ( $include_atoms ?
                                   ( 'label_atom_id' => $include_atoms ): () ) },
@@ -643,13 +655,19 @@ sub rmsd_sidechains
                               [ 'id', '[local]_selection_group', 'label_atom_id',
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
                                 'pdbx_PDB_model_num', 'label_alt_id',
-                                'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+                                'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                          'is_hash' => 1 } );
+
+            # HACK: there should be a way to avoid this check.
+            next if ! @{ $second_sidechain_data };
+
             $second_sidechain_data =
-                [ sort { $a->[2] cmp $b->[2] } @{ $second_sidechain_data } ];
+                [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
+                      @{ $second_sidechain_data } ];
 
             my %second_sidechain = ();
             for my $second_atom_data ( @{ $second_sidechain_data } ) {
-                $second_sidechain{$second_atom_data->[2]} = $second_atom_data;
+                $second_sidechain{$second_atom_data->{'label_atom_id'}} = $second_atom_data;
             }
 
             # Checks the length of the atom sets.
@@ -662,55 +680,127 @@ sub rmsd_sidechains
 
             my @current_sidechain_data = ();
             for( my $i = 0; $i <= $#{ $first_sidechain_data }; $i++ ) {
-                if( $first_sidechain_data->[$i][2] ne
-                    $second_sidechain_data->[$i][2] ) {
+                if( $first_sidechain_data->[$i]{'label_atom_id'} ne
+                    $second_sidechain_data->[$i]{'label_atom_id'} ) {
                     confess 'atom names do not match: ' .
-                            "$first_sidechain_data->[$i][2] and " .
-                            "$second_sidechain_data->[$i][2]";
+                            "$first_sidechain_data->[$i]{'label_atom_id'} and " .
+                            "$second_sidechain_data->[$i]{'label_atom_id'}";
                 }
 
                 # Checks if the side-chain have structural symmetry and chooses
                 # the best RMSD value.
                 my $symmetrical_atom_names =
                     $symmetrical_atom_names->{$residue_name}
-                                             {$first_sidechain_data->[$i][2]};
-                # TODO: make sure that there are no situations were best case
-                # rmsd does not produce higher avarage rmsd.
+                                             {$first_sidechain_data->[$i]{'label_atom_id'}};
                 if( defined $symmetrical_atom_names ) {
                     my $rmsd;
                     my $symmetric_atom_data;
-                    my @second_atom_names = ( $first_sidechain_data->[$i][2],
+                    my @second_atom_names = ( $first_sidechain_data->[$i]{'label_atom_id'},
                                               @{ $symmetrical_atom_names } );
                     for my $second_atom_name ( @second_atom_names ) {
                         my $current_symmetric_atom_data =
                             $second_sidechain{$second_atom_name};
-                        my $current_rmsd =
-                            rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
-                                 [[(@{$current_symmetric_atom_data})[8..10]]]);
+                        my $current_rmsd = rmsd(
+                            [ [ $first_sidechain_data->[$i]{'Cartn_x'},
+                                $first_sidechain_data->[$i]{'Cartn_y'},
+                                $first_sidechain_data->[$i]{'Cartn_z'}] ],
+                            [ [ $current_symmetric_atom_data->{'Cartn_x'},
+                                $current_symmetric_atom_data->{'Cartn_y'},
+                                $current_symmetric_atom_data->{'Cartn_z'}]]);
                         if( ! defined $rmsd || $current_rmsd < $rmsd ){
                             $symmetric_atom_data = $current_symmetric_atom_data;
                             $rmsd = $current_rmsd;
                         }
                     }
 
+                    # TODO: refactor by creating a function that would extract
+                    # data by giving key mapping argument.
                     push @current_sidechain_data,
-                        [ (@{$first_sidechain_data->[$i]})[0..7],
-                          (@{$symmetric_atom_data})[0..7],
-                          sprintf $sig_figs_max, $rmsd ];
+                        { 'atom_1_id' =>
+                              $first_sidechain_data->[$i]{'id'},
+                          'group_1_id' =>
+                              $first_sidechain_data->[$i]{'[local]_selection_group'},
+                          'label_atom_1_id' =>
+                              $first_sidechain_data->[$i]{'label_atom_id'},
+                          'label_seq_1_id' =>
+                              $first_sidechain_data->[$i]{'label_seq_id'},
+                          'label_comp_1_id' =>
+                              $first_sidechain_data->[$i]{'label_comp_id'},
+                          'label_asym_1_id' =>
+                              $first_sidechain_data->[$i]{'label_asym_id'},
+                          'pdbx_PDB_model_num_1' =>
+                              $first_sidechain_data->[$i]{'pdbx_PDB_model_num'},
+                          'label_alt_1_id' =>
+                              $first_sidechain_data->[$i]{'label_alt_id'},
+                          'atom_2_id' =>
+                              $symmetric_atom_data->{'id'},
+                          'group_2_id' =>
+                              $symmetric_atom_data->{'[local]_selection_group'},
+                          'label_atom_2_id' =>
+                              $symmetric_atom_data->{'label_atom_id'},
+                          'label_seq_2_id' =>
+                              $symmetric_atom_data->{'label_seq_id'},
+                          'label_comp_2_id' =>
+                              $symmetric_atom_data->{'label_comp_id'},
+                          'label_asym_2_id' =>
+                              $symmetric_atom_data->{'label_asym_id'},
+                          'pdbx_PDB_model_num_2' =>
+                              $symmetric_atom_data->{'pdbx_PDB_model_num'},
+                          'label_alt_2_id' =>
+                              $symmetric_atom_data->{'label_alt_id'},
+                          'value' => sprintf( $sig_figs_max, $rmsd ) };
+
                 } else {
-                    my $rmsd =
-                        rmsd([[(@{$first_sidechain_data->[$i]})[8..10]]],
-                             [[(@{$second_sidechain_data->[$i]})[8..10]]]);
+                    my $rmsd = rmsd(
+                        [ [ $first_sidechain_data->[$i]{'Cartn_x'},
+                            $first_sidechain_data->[$i]{'Cartn_y'},
+                            $first_sidechain_data->[$i]{'Cartn_z'}] ],
+                        [ [ $second_sidechain_data->[$i]{'Cartn_x'},
+                            $second_sidechain_data->[$i]{'Cartn_y'},
+                            $second_sidechain_data->[$i]{'Cartn_z'}]]);
+
+                    # TODO: refactor by creating a function that would extract
+                    # data by giving key mapping argument.
                     push @current_sidechain_data,
-                        [ (@{$first_sidechain_data->[$i]})[0..7],
-                          (@{$second_sidechain_data->[$i]})[0..7],
-                          sprintf $sig_figs_max, $rmsd ];
+                        { 'atom_1_id' =>
+                              $first_sidechain_data->[$i]{'id'},
+                          'group_1_id' =>
+                              $first_sidechain_data->[$i]{'[local]_selection_group'},
+                          'label_atom_1_id' =>
+                              $first_sidechain_data->[$i]{'label_atom_id'},
+                          'label_seq_1_id' =>
+                              $first_sidechain_data->[$i]{'label_seq_id'},
+                          'label_comp_1_id' =>
+                              $first_sidechain_data->[$i]{'label_comp_id'},
+                          'label_asym_1_id' =>
+                              $first_sidechain_data->[$i]{'label_asym_id'},
+                          'pdbx_PDB_model_num_1' =>
+                              $first_sidechain_data->[$i]{'pdbx_PDB_model_num'},
+                          'label_alt_1_id' =>
+                              $first_sidechain_data->[$i]{'label_alt_id'},
+                          'atom_2_id' =>
+                              $second_sidechain_data->[$i]{'id'},
+                          'group_2_id' =>
+                              $second_sidechain_data->[$i]{'[local]_selection_group'},
+                          'label_atom_2_id' =>
+                              $second_sidechain_data->[$i]{'label_atom_id'},
+                          'label_seq_2_id' =>
+                              $second_sidechain_data->[$i]{'label_seq_id'},
+                          'label_comp_2_id' =>
+                              $second_sidechain_data->[$i]{'label_comp_id'},
+                          'label_asym_2_id' =>
+                              $second_sidechain_data->[$i]{'label_asym_id'},
+                          'pdbx_PDB_model_num_2' =>
+                              $second_sidechain_data->[$i]{'pdbx_PDB_model_num'},
+                          'label_alt_2_id' =>
+                              $second_sidechain_data->[$i]{'label_alt_id'},
+                          'value' => sprintf( $sig_figs_max, $rmsd ) };
                 }
             }
 
             if( $best_case ) {
                 my $current_rmsd_average =
-                    sum( map { $_->[-1] } @current_sidechain_data ) /
+                    sum( map { $_->{'value'} } @current_sidechain_data ) /
                     scalar @current_sidechain_data;
                 if( ( ! @sidechain_comparison_data && ! defined $rmsd_average )||
                     $current_rmsd_average < $rmsd_average ) {
@@ -719,10 +809,11 @@ sub rmsd_sidechains
                 }
             } elsif( $average ) {
                 my $current_rmsd_average =
-                    sum( map { $_->[-1] } @current_sidechain_data ) /
+                    sum( map { $_->{'value'} } @current_sidechain_data ) /
                     scalar @current_sidechain_data;
                 # TODO: give more information - not only RMSD value.
-                push @sidechain_comparison_data, $current_rmsd_average;
+                push @sidechain_comparison_data,
+                    { 'value' => $current_rmsd_average };
             } else {
                 push @sidechain_comparison_data, @current_sidechain_data;
             }
@@ -956,40 +1047,6 @@ sub energy
             }
         }
     }
-
-    # for my $atom_pair ( @atom_pairs ) {
-    #     my $atom_id = $atom_pair->[0];
-    #     my $interaction_atom_id = $atom_pair->[1];
-    #     my @energy_types =
-    #         sort keys %{$atom_pair_interactions{$atom_id}{$interaction_atom_id}};
-
-    #     if( $pairwise && $decompose ) {
-    #         for my $energy_type ( @energy_types ) {
-    #             push @energies,
-    #                 @{ $atom_pair_interactions{$atom_id}
-    #                                           {$interaction_atom_id}
-    #                                           {$energy_type} };
-    #         }
-    #     } elsif( $decompose ) {
-
-    #     } elsif( $pairwise ) {
-
-    #     } else {
-    #         my $energy_sum_value = 0;
-    #         for my $energy_type ( @energy_types ) {
-    #             $energy_sum_value +=
-    #                 $atom_pair_interactions{$atom_id}
-    #                                        {$interaction_atom_id}
-    #                                        {$energy_type}[0]->value;
-    #         }
-
-    #         my $energy_sum = Energy->new();
-    #         $energy_sum->set_energy( $potential,
-    #                                  [ $atom_id, $interaction_atom_id ],
-    #                                  $energy_sum_value );
-    #         push @energies, $energy_sum;
-    #     }
-    # }
 
     return \@energies;
 }
