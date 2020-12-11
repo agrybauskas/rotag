@@ -131,6 +131,9 @@ for my $pdbx_file ( @ARGV ) {
                                       'parameters' => $parameters } );
         $sidechain_prediction->interaction_graph();
         $sidechain_prediction->choose();
+
+        use Data::Dumper;
+        print STDERR Dumper $sidechain_prediction->{'interaction_graph'};
     } else {
         error(
             { 'program' => $0,
