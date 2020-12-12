@@ -163,10 +163,10 @@ sub choose
         $self->interaction_graph();
     }
 
-    use Data::Dumper;
-    for my $edge ( $interaction_graph->edges ) {
-        print STDERR Dumper $edge;
-    }
+    # use Data::Dumper;
+    # for my $edge ( $interaction_graph->edges ) {
+    #     print STDERR Dumper $edge;
+    # }
 }
 
 1;
