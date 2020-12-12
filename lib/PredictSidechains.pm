@@ -6,6 +6,7 @@ use warnings;
 use Clone qw( clone );
 use Graph;
 
+use Measure qw( energy );
 use PDBxParser qw( filter_new
                    unique_residue_key );
 use Grid qw( grid_box
@@ -160,6 +161,11 @@ sub choose
 
     if( ! defined $interaction_graph ) {
         $self->interaction_graph();
+    }
+
+    use Data::Dumper;
+    for my $edge ( $interaction_graph->edges ) {
+        print STDERR Dumper $edge;
     }
 }
 
