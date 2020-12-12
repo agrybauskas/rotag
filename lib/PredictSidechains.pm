@@ -150,7 +150,13 @@ sub choose
 {
     my ( $self ) = @_;
 
-    my ( $interaction_graph ) = ( $self->{'interaction_graph'} );
+    my ( $interaction_graph, $rotamer_angles, $rotamer_energies,
+         $rotamer_look_up_tbls ) = (
+        $self->{'interaction_graph'},
+        $self->{'rotamer_angles'},
+        $self->{'rotamer_energies'},
+        $self->{'rotamer_angles'}
+    );
 
     if( ! defined $interaction_graph ) {
         $self->interaction_graph();
