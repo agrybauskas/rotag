@@ -1,0 +1,16 @@
+data_rotag
+#
+loop_
+_[local]_dihedral_angle.id
+_[local]_dihedral_angle.label_atom_1_id
+_[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_2_id
+_[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_3_id
+_[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_4_id
+_[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.value
+_[local]_dihedral_angle.units
+1 40 N 41 CA 42 C 43 O -14.105 degrees
+#

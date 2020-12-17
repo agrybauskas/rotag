@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _[local]_dihedral_angle.id
@@ -18,6 +18,6 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 ASP 219 A 1 . N 1408 CA 1409 CB 1412 CG 1413 chi1 -161.267730 degrees
-2 ASP 219 A 1 . CA 1409 CB 1412 CG 1413 OD1 1414 chi2 65.154672 degrees
+1 ASP 219 A 1 . 1408 N 1409 CA 1412 CB 1413 CG chi1 -161.268 degrees
+2 ASP 219 A 1 . 1409 CA 1412 CB 1413 CG 1414 OD1 chi2 65.155 degrees
 #

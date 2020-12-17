@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+
+use PDBxParser qw( pdbx_raw
+                   raw2indexed );
+
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
+
+#
+# Unit test: PDBxParser::raw2indexed
+# Example: ./raw2indexed '_atom_site' structure.cif
+#
+
+my ( $data_identifier, $pdbx_file ) = @ARGV;
+my @data_identifier = split( ",", $data_identifier );
+
+my $pdbx = pdbx_raw( $pdbx_file, \@data_identifier );
+raw2indexed( $pdbx );
+
+print Dumper $pdbx;

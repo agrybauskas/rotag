@@ -6,260 +6,21 @@ use warnings;
 use Exporter qw( import );
 BEGIN {
     our @EXPORT_OK = qw( bond_type
-                         %COVALENT_BOND_COMB
-                         covalent_bond_combinations
                          hybridization
                          rotatable_bonds
                          unique_rotatables );
 }
 
 use Carp;
-use List::Util qw( any
-                   min );
+use List::Util qw( any );
 use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( sort_atom_names );
-use Combinatorics qw( permutation );
-use Constants qw( $PI );
-use ForceField::Parameters;
 use Measure qw( dihedral_angle );
 use PDBxParser qw( filter );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
-
-# -------------------------------- Constants ---------------------------------- #
-
-my %BOND_TYPES = (
-    'single' => {
-        'H' => {
-            'H' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] -
-                          $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                          $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] ),
-            },
-            'C' => {
-                'min_length' => $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0],
-            },
-            'N' => {
-                'min_length' => $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
-            },
-            'O' => {
-                'min_length' => $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-            },
-            'S' => {
-                'min_length' => $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'H'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'H'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-            },
-        },
-        'C' => {
-            'C' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] -
-                          $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                          $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] ),
-            },
-            'N' => {
-                'min_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0],
-            },
-            'O' => {
-                'min_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-            },
-            'S' => {
-                'min_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-            },
-        },
-        'N' => {
-            'N' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] -
-                          $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                          $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] ),
-            },
-            'O' => {
-                'min_length' => $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0],
-            },
-            'S' => {
-                'min_length' => $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-            },
-        },
-        'O' => {
-            'O' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] -
-                          $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                          $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0] ),
-            },
-            'S' => {
-                'min_length' => $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0] -
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-                'max_length' => $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[0] +
-                                $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0],
-            },
-        },
-        'S' => {
-            'S' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] -
-                          $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'S'}{'covalent_radius'}{'length'}->[0] +
-                          $Parameters::ATOMS{'S'}{'covalent_radius'}{'error'}->[0] ),
-            },
-        },
-    },
-    'double' => {
-        'C' => {
-            'C' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] -
-                          $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                          $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] ),
-            },
-            'N' => {
-                'min_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] -
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] -
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[1],
-            },
-            'O' => {
-                'min_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] -
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[1] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
-            },
-        },
-        'N' => {
-            'N' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] -
-                          $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-                          $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[1] ),
-            },
-            'O' => {
-                'min_length' => $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[1] -
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
-                'max_length' => $Parameters::ATOMS{'N'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
-                                $Parameters::ATOMS{'N'}{'covalent_radius'}{'error'}->[1] +
-                                $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[1],
-            },
-        },
-        'O' => {
-            'O' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] -
-                          $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'O'}{'covalent_radius'}{'length'}->[1] +
-                          $Parameters::ATOMS{'O'}{'covalent_radius'}{'error'}->[1] ),
-            },
-        },
-    },
-    'triple' => {
-        'C' => {
-            'C' => {
-                'min_length' =>
-                    2 * ( $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[2] -
-                          $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
-                'max_length' =>
-                    2 * ( $Parameters::ATOMS{'C'}{'covalent_radius'}{'length'}->[2] +
-                          $Parameters::ATOMS{'C'}{'covalent_radius'}{'error'}->[2] ),
-            },
-        },
-    },
-);
-
-our %COVALENT_BOND_COMB = %{ covalent_bond_combinations( \%Parameters::ATOMS ) };
 
 # -------------------------- Bond related functions --------------------------- #
 
@@ -273,7 +34,9 @@ our %COVALENT_BOND_COMB = %{ covalent_bond_combinations( \%Parameters::ATOMS ) }
 
 sub bond_type
 {
-    my ( $target_atom, $neighbour_atom ) = @_;
+    my ( $parameters, $target_atom, $neighbour_atom ) = @_;
+
+    my $bond_types = $parameters->{'_[local]_bond_types'};
 
     my $target_atom_type = $target_atom->{'type_symbol'};
     my $neighbour_atom_type = $neighbour_atom->{'type_symbol'};
@@ -285,29 +48,18 @@ sub bond_type
         ( $neighbour_atom->{'Cartn_y'} - $target_atom->{'Cartn_y'} ) ** 2 +
         ( $neighbour_atom->{'Cartn_z'} - $target_atom->{'Cartn_z'} ) ** 2;
 
-    for my $bond_type ( keys %BOND_TYPES ) {
-        if( exists $BOND_TYPES{$bond_type}
-                              {$target_atom_type}
-                              {$neighbour_atom_type} ||
-            exists $BOND_TYPES{$bond_type}
-                              {$neighbour_atom_type}
-                              {$target_atom_type} ) {
-            my $bond_length_min = $BOND_TYPES{$bond_type}
-                                             {$target_atom_type}
-                                             {$neighbour_atom_type}
-                                             {'min_length'} ||
-                                  $BOND_TYPES{$bond_type}
-                                             {$neighbour_atom_type}
-                                             {$target_atom_type}
-                                             {'min_length'};
-            my $bond_length_max = $BOND_TYPES{$bond_type}
-                                             {$target_atom_type}
-                                             {$neighbour_atom_type}
-                                             {'max_length'} ||
-                                  $BOND_TYPES{$bond_type}
-                                             {$neighbour_atom_type}
-                                             {$target_atom_type}
-                                             {'max_length'};
+    for my $bond_type ( keys %{ $bond_types } ) {
+        if( exists $bond_types->{$bond_type}
+                                {$target_atom_type}
+                                {$neighbour_atom_type} ) {
+            my $bond_length_min = $bond_types->{$bond_type}
+                                               {$target_atom_type}
+                                               {$neighbour_atom_type}
+                                               {'min_length'};
+            my $bond_length_max = $bond_types->{$bond_type}
+                                               {$target_atom_type}
+                                               {$neighbour_atom_type}
+                                               {'max_length'};
 
             if( ( $squared_distance >  $bond_length_min**2 ) &&
                 ( $squared_distance <= $bond_length_max**2 ) ) {
@@ -320,47 +72,12 @@ sub bond_type
 }
 
 #
-# Determines all covalent bond combinations.
-# Inputs:
-#     \%ATOMS - atom parameter data structure.
-# Outputs:
-#     %covalent_bond_combinations - data structure for storing covalent bond
-#     combinations.
-#     Ex.: { 'C' =>
-#                { 'C' => { 'length' => [ 0.1, 0.2 ],
-#                           'error'  => [ 0.01, 0.01 ] } } }
-#
-
-sub covalent_bond_combinations
-{
-    my ( $ATOMS ) = @_;
-
-    my %covalent_bond_combinations;
-    for my $atom_i_name ( keys %Parameters::ATOMS ) {
-        for my $atom_j_name ( keys %Parameters::ATOMS ) {
-            $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'length'} =
-                permutation( 2,
-                             [],
-                             [ $Parameters::ATOMS{$atom_i_name}{'covalent_radius'}{'length'},
-                               $Parameters::ATOMS{$atom_j_name}{'covalent_radius'}{'length'} ],
-                             [] );
-            $covalent_bond_combinations{$atom_i_name}{$atom_j_name}{'error'} =
-                permutation( 2,
-                             [],
-                             [ $Parameters::ATOMS{$atom_i_name}{'covalent_radius'}{'error'},
-                               $Parameters::ATOMS{$atom_j_name}{'covalent_radius'}{'error'} ],
-                             [] );
-        }
-    }
-
-    return \%covalent_bond_combinations;
-}
-
-#
 # Identifies hybridization by examining bond types by distances and the
 # hybridizations of the connected atoms.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm).
+#     $options->{'calculate_hybridization'} - ignores hybridizations from
+#     parameter file;
 # Output:
 #     writes 'sp3', 'sp2' or 'sp' value to 'hybridization' key in atom data
 #     structure.
@@ -369,17 +86,23 @@ sub covalent_bond_combinations
 sub hybridization
 {
     # Use connect_atoms before using hybridization function.
-    my ( $atom_site ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
+
+    my ( $calculate_hybridization ) = ( $options->{'calculate_hybridization'} );
+    $calculate_hybridization //= 0;
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $clear_hybridization = $parameters->{'_[local]_clear_hybridization'};
 
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
         # Looks up to a pre-determined hash of known hybridization values and
         # quits early.
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
-        if( exists $Parameters::CLEAR_HYBRIDIZATION{$residue_name} &&
-            exists $Parameters::CLEAR_HYBRIDIZATION{$residue_name}{$atom_name} ) {
+        if( exists $clear_hybridization->{$residue_name} &&
+            exists $clear_hybridization->{$residue_name}{$atom_name} ) {
             $atom_site->{$atom_id}{'hybridization'} =
-                $Parameters::CLEAR_HYBRIDIZATION{$residue_name}{$atom_name};
+                $clear_hybridization->{$residue_name}{$atom_name};
             next;
         }
 
@@ -437,17 +160,17 @@ sub hybridization
                             $atom_site->{$neighbours_neighbour}{'Cartn_y'},
                             $atom_site->{$neighbours_neighbour}{'Cartn_z'} ],
                         ] );
-                if( ( $current_dihedral_angle >=  0.95 * $PI &&
-                      $current_dihedral_angle <=  1.05 * $PI ) ||
-                    ( $current_dihedral_angle >= -0.05 * $PI &&
-                      $current_dihedral_angle <=  0.05 * $PI ) ) {
+                if( ( $current_dihedral_angle >=  0.95 * $pi &&
+                      $current_dihedral_angle <=  1.05 * $pi ) ||
+                    ( $current_dihedral_angle >= -0.05 * $pi &&
+                      $current_dihedral_angle <=  0.05 * $pi ) ) {
                     $dihedral_angle = $current_dihedral_angle;
                     last;
                 }
             }
         }
 
-        if( defined $dihedral_angle && $dihedral_angle >= 0.95 * $PI ) {
+        if( defined $dihedral_angle && $dihedral_angle >= 0.95 * $pi ) {
             $atom_site->{$atom_id}{'hybridization'} = 'sp2';
             next;
         }
@@ -456,7 +179,7 @@ sub hybridization
         my @bond_types;
         for my $connection_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
             push @bond_types,
-                 bond_type( $atom_site->{$atom_id},
+                 bond_type( $parameters, $atom_site->{$atom_id},
                             $atom_site->{$connection_id} );
         }
 

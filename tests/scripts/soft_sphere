@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::NonBonded qw( soft_sphere );
+use ForceField::Parameters;
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file ) = @ARGV;
 
@@ -15,4 +16,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print soft_sphere( $atom_site->{$atom_i_id}, $atom_site->{$atom_j_id} ), "\n";
+my $parameters = Parameters->new();
+
+print soft_sphere( $parameters,
+                   $atom_site->{$atom_i_id},
+                   $atom_site->{$atom_j_id} ), "\n";

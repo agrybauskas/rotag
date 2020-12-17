@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB
@@ -30,14 +30,34 @@ _[local]_rotamer_angle.label_comp_id
 _[local]_rotamer_angle.label_asym_id
 _[local]_rotamer_angle.pdbx_PDB_model_num
 _[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 18 XAA A 1 . chi1 1.256637
+_[local]_rotamer_angle.units
+1 1 18 XAA A 1 . 0.100000 chi1 -180.000 degrees
+2 2 18 XAA A 1 . 0.100000 chi1 -144.000 degrees
+3 3 18 XAA A 1 . 0.100000 chi1 -108.000 degrees
+4 4 18 XAA A 1 . 0.100000 chi1 -72.000 degrees
+5 5 18 XAA A 1 . 0.100000 chi1 -36.000 degrees
+6 6 18 XAA A 1 . 0.100000 chi1 0.000 degrees
+7 7 18 XAA A 1 . 0.100000 chi1 36.000 degrees
+8 8 18 XAA A 1 . 0.100000 chi1 72.000 degrees
+9 9 18 XAA A 1 . 0.100000 chi1 108.000 degrees
+10 10 18 XAA A 1 . 0.100000 chi1 144.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -0.192667
+1 1 composite -0.014690
+2 2 composite -0.004453
+3 3 composite -0.002605
+4 4 composite -0.003827
+5 5 composite -0.011654
+6 6 composite -0.045258
+7 7 composite -0.129858
+8 8 composite -0.192733
+9 9 composite -0.146146
+10 10 composite -0.056264
 #

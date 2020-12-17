@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::NonBonded qw( h_bond );
+use ForceField::Parameters;
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file ) = @ARGV;
 
@@ -15,6 +16,9 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print h_bond( $atom_site->{$atom_i_id},
+my $parameters = Parameters->new();
+
+print h_bond( $parameters,
+              $atom_site->{$atom_i_id},
               $atom_site->{$atom_j_id},
               { 'atom_site' => $atom_site } ), "\n";

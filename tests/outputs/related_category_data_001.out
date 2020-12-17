@@ -1,0 +1,123 @@
+$VAR1 = {
+  '_atom_site' => {
+    'data' => {
+      '219,A,1,2' => [
+        {
+          'frequency' => '0.037037',
+          'id' => '3',
+          'label_alt_id' => '.',
+          'label_asym_id' => 'A',
+          'label_comp_id' => 'ASP',
+          'label_seq_id' => '219',
+          'pdbx_PDB_model_num' => '1',
+          'rotamer_id' => '2',
+          'type' => 'chi1',
+          'value' => '-2.513274'
+        },
+        {
+          'frequency' => '0.037037',
+          'id' => '4',
+          'label_alt_id' => '.',
+          'label_asym_id' => 'A',
+          'label_comp_id' => 'ASP',
+          'label_seq_id' => '219',
+          'pdbx_PDB_model_num' => '1',
+          'rotamer_id' => '2',
+          'type' => 'chi2',
+          'value' => '-2.513274'
+        }
+      ],
+      '219,A,1,3' => [
+        {
+          'frequency' => '0.037037',
+          'id' => '5',
+          'label_alt_id' => '.',
+          'label_asym_id' => 'A',
+          'label_comp_id' => 'ASP',
+          'label_seq_id' => '219',
+          'pdbx_PDB_model_num' => '1',
+          'rotamer_id' => '3',
+          'type' => 'chi1',
+          'value' => '-2.513274'
+        },
+        {
+          'frequency' => '0.037037',
+          'id' => '6',
+          'label_alt_id' => '.',
+          'label_asym_id' => 'A',
+          'label_comp_id' => 'ASP',
+          'label_seq_id' => '219',
+          'pdbx_PDB_model_num' => '1',
+          'rotamer_id' => '3',
+          'type' => 'chi2',
+          'value' => '-1.884956'
+        }
+      ],
+      '219,A,1,4' => [
+        {
+          'frequency' => '0.037037',
+          'id' => '7',
+          'label_alt_id' => '.',
+          'label_asym_id' => 'A',
+          'label_comp_id' => 'ASP',
+          'label_seq_id' => '219',
+          'pdbx_PDB_model_num' => '1',
+          'rotamer_id' => '4',
+          'type' => 'chi1',
+          'value' => '-2.513274'
+        },
+        {
+          'frequency' => '0.037037',
+          'id' => '8',
+          'label_alt_id' => '.',
+          'label_asym_id' => 'A',
+          'label_comp_id' => 'ASP',
+          'label_seq_id' => '219',
+          'pdbx_PDB_model_num' => '1',
+          'rotamer_id' => '4',
+          'type' => 'chi2',
+          'value' => '-1.256637'
+        }
+      ],
+      '219,A,1,5' => [
+        {
+          'frequency' => '0.037037',
+          'id' => '10',
+          'label_alt_id' => '.',
+          'label_asym_id' => 'A',
+          'label_comp_id' => 'ASP',
+          'label_seq_id' => '219',
+          'pdbx_PDB_model_num' => '1',
+          'rotamer_id' => '5',
+          'type' => 'chi2',
+          'value' => '-0.628319'
+        },
+        {
+          'frequency' => '0.037037',
+          'id' => '9',
+          'label_alt_id' => '.',
+          'label_asym_id' => 'A',
+          'label_comp_id' => 'ASP',
+          'label_seq_id' => '219',
+          'pdbx_PDB_model_num' => '1',
+          'rotamer_id' => '5',
+          'type' => 'chi1',
+          'value' => '-2.513274'
+        }
+      ]
+    },
+    'keys' => [
+      'label_seq_id',
+      'label_asym_id',
+      'pdbx_PDB_model_num',
+      'rotamer_id'
+    ],
+    'reference_category' => '_[local]_rotamer_angle',
+    'reference_keys' => [
+      'label_seq_id',
+      'label_asym_id',
+      'pdbx_PDB_model_num',
+      'label_alt_id'
+    ]
+  }
+};

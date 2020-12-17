@@ -1,1 +1,2 @@
-Warning: ./tests/cases/../inputs/empty.cif is empty.
+Warning: rotag_scan:  - ./tests/cases/../inputs/empty.cif is empty.
+Warning: rotag_scan: no atom sites were detected.

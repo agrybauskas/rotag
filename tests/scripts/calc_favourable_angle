@@ -4,8 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::NonBonded qw( hard_sphere );
-use Constants qw( $PI
-                  $SIG_FIGS_MIN );
+use ForceField::Parameters;
 use PDBxParser qw( filter
                    to_pdbx );
 use PseudoAtoms qw( calc_favourable_angle );
@@ -13,7 +12,6 @@ use PseudoAtoms qw( calc_favourable_angle );
 my ( $atom_id,
      $checkable_angles,
      $interaction_specifier,
-     $energy_cutoff_atom,
      $pdbx_dump_file ) = @ARGV;
 
 my $atom_site;
@@ -24,13 +22,17 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
+
 my @checkable_angles;
 my @checkable_energies;
 for my $angles ( split /;/, $checkable_angles ) {
     my @current_angles;
     my @current_energies;
     for my $angle ( split /,/, $angles ) {
-        $angle =~ s/pi/\$PI/g;
+        $angle =~ s/pi/\$pi/g;
         push @current_angles, eval( $angle );
         push @current_energies, 0.0;
     }
@@ -45,11 +47,11 @@ my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
 my ( $favourable_angles, $favourable_energies ) =
-    @{ calc_favourable_angle( { 'atom_site' => $atom_site,
+    @{ calc_favourable_angle( { 'parameters' => $parameters,
+                                'atom_site' => $atom_site,
                                 'atom_id' => $atom_id,
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
-                                'energy_cutoff_atom' => $energy_cutoff_atom,
                                 'threads' => 1,
                               }, [ \@checkable_angles, \@checkable_energies ] )};
 
@@ -58,7 +60,7 @@ for my $angles ( @{ $favourable_angles } ) {
     my @angle_names = map { "chi${_}" } 1..$#{ $angles }+1;
     for my $i ( 0..$#{ $angles } ) {
         print $angle_id, ', ', $angle_names[$i], ', ',
-            sprintf( $SIG_FIGS_MIN, 180 * $angles->[$i] / $PI ), "\n";
+            sprintf( $sig_figs_min, 180 * $angles->[$i] / $pi ), "\n";
     }
     $angle_id++;
 }

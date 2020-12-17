@@ -1,0 +1,25 @@
+data_rotag
+#
+loop_
+_[local]_rmsd.id
+_[local]_rmsd.group_1_id
+_[local]_rmsd.atom_1_id
+_[local]_rmsd.label_atom_1_id
+_[local]_rmsd.label_seq_1_id
+_[local]_rmsd.label_comp_1_id
+_[local]_rmsd.label_asym_1_id
+_[local]_rmsd.pdbx_PDB_model_num_1
+_[local]_rmsd.label_alt_1_id
+_[local]_rmsd.group_2_id
+_[local]_rmsd.atom_2_id
+_[local]_rmsd.label_atom_2_id
+_[local]_rmsd.label_seq_2_id
+_[local]_rmsd.label_comp_2_id
+_[local]_rmsd.label_asym_2_id
+_[local]_rmsd.pdbx_PDB_model_num_2
+_[local]_rmsd.label_alt_2_id
+_[local]_rmsd.value
+_[local]_rmsd.n_count
+1 1 836 OG 107 SER A 1 . 2 7371 OG 107 SER A 1 670 0.035936 108
+2 1 7349 OG 318 SER B 1 B 2 7513 OG 318 SER B 1 1461 0.073710 109
+#

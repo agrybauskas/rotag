@@ -1,0 +1,48 @@
+data_rotag
+#
+loop_
+_[local]_dihedral_angle.id
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.label_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.pdbx_PDB_model_num
+_[local]_dihedral_angle.label_alt_id
+_[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
+_[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
+_[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
+_[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_4_id
+_[local]_dihedral_angle.type
+_[local]_dihedral_angle.value
+_[local]_dihedral_angle.units
+3 ASP 49 A 1 . 453 N 454 CA 457 CB 458 CG chi1 54.790 degrees
+4 ASP 49 A 1 . 454 CA 457 CB 458 CG 459 OD1 chi2 -63.880 degrees
+1 ASP 137 B 1 . 5206 N 5207 CA 5210 CB 5211 CG chi1 -75.491 degrees
+2 ASP 137 B 1 . 5207 CA 5210 CB 5211 CG 5212 OD1 chi2 -26.577 degrees
+#
+loop_
+_[local]_rmsd.id
+_[local]_rmsd.group_1_id
+_[local]_rmsd.atom_1_id
+_[local]_rmsd.label_atom_1_id
+_[local]_rmsd.label_seq_1_id
+_[local]_rmsd.label_comp_1_id
+_[local]_rmsd.label_asym_1_id
+_[local]_rmsd.pdbx_PDB_model_num_1
+_[local]_rmsd.label_alt_1_id
+_[local]_rmsd.group_2_id
+_[local]_rmsd.atom_2_id
+_[local]_rmsd.label_atom_2_id
+_[local]_rmsd.label_seq_2_id
+_[local]_rmsd.label_comp_2_id
+_[local]_rmsd.label_asym_2_id
+_[local]_rmsd.pdbx_PDB_model_num_2
+_[local]_rmsd.label_alt_2_id
+_[local]_rmsd.value
+1 1 458 CG 49 ASP A 1 . 2 5211 CG 137 ASP B 1 . 43.107854
+2 1 459 OD1 49 ASP A 1 . 2 5212 OD1 137 ASP B 1 . 42.449785
+3 1 460 OD2 49 ASP A 1 . 2 5212 OD1 137 ASP B 1 . 44.344293
+#

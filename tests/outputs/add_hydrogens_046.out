@@ -1,0 +1,24 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 1408 N N . ASP A 1 219 33.59963 1.2093698 41.738857 1
+ATOM 1409 C CA . ASP A 1 219 34.315666 2.0987098 42.634396 1
+ATOM 1410 C C . ASP A 1 219 34.553738 1.400112 43.956333 1
+ATOM 1412 C CB . ASP A 1 219 33.495247 3.350087 42.86521 1
+ATOM 1413 H H 1 ASP A 1 219 32.748 1.694 41.455 1
+ATOM 1414 H H2 1 ASP A 1 219 33.395 0.359 42.264 1
+ATOM 1415 H HA 1 ASP A 1 219 35.256 2.364 42.197 1
+#

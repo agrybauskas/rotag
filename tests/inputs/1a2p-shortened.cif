@@ -1,0 +1,34 @@
+data_1A2P
+_refine.details
+;INITIAL POSITIONAL AND B-FACTOR REFINEMENT WAS CARRIED OUT WITH X-PLOR (BRUNGER, 1992) FOR DATA IN THE RESOLUTION RANGE 7.0 - 1.5 ANGSTROMS. AT R-VALUES OF R=0.174 FOR F.GREATER THAN 3 SIGMA(F), THE REFINEMENT WAS CONTINUED WITH THE PROGRAM SHELXL-93.
+
+ANISOU RECORDS CONTAIN ANISOTROPIC DISPLACEMENT PARAMETERS
+U11 U22 U33 U23 U13 U12 (ANGSTROMS**2) MULTIPLIED BY 10000.
+ISOTROPIC EQUIVALENTS OF ANISOTROPIC TEMPERATURE FACTORS
+ARE ALSO PRESENTED IN THIS ENTRY.
+;
+_refine.pdbx_overall_SU_R_free_Blow_DPI          ?
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_formal_charge
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
+ATOM   1    N  N   . VAL A 1 3   ? 16.875  37.901 43.478 1.00 47.79 ? 3   VAL A N   1
+ATOM   2    C  CA  . VAL A 1 3   ? 17.997  38.577 42.795 1.00 41.49 ? 3   VAL A CA  1

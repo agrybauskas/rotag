@@ -12,20 +12,6 @@ ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 	yapp -o $@ $<
 
 #
-# Generate Perl modules.
-#
-
-LIB_DIR=lib
-TOOLS_DIR=tools
-PERL_TEMPLATE=${LIB_DIR}/Constants.pmin
-PERL_MODULE=${LIB_DIR}/Constants.pm
-
-${PERL_MODULE}: ${PERL_TEMPLATE}
-	sed 's/@PI@/'$$(${TOOLS_DIR}/calculate-pi)'/g' $^ \
-	    | sed 's/@EPSILON@/'$$(${TOOLS_DIR}/calculate-epsilon)'/g' \
-	    > $@
-
-#
 # Compiling CPP and linking to Perl5 with SWIG.
 #
 
@@ -70,6 +56,20 @@ ${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp ${CPP_OBJS}
 	g++ $< -I${CPP_DIR} -o $@ ${CPP_OBJS} ${CPP_LIBS}
 
 #
+# Generate Perl modules.
+#
+
+LIB_DIR=lib
+TOOLS_DIR=tools
+PERL_TEMPLATE=${LIB_DIR}/Constants.pmin
+PERL_MODULE=${LIB_DIR}/Constants.pm
+
+${PERL_MODULE}: ${PERL_TEMPLATE}
+	sed 's/@PI@/'$$(${TOOLS_DIR}/calculate-pi)'/g' $^ \
+	    | sed 's/@EPSILON@/'$$(${TOOLS_DIR}/calculate-epsilon)'/g' \
+	    > $@
+
+#
 # Generate force field module.
 #
 
@@ -88,7 +88,7 @@ ${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE} | ${CPP_OBJS} ${CPP_TEST_BINS}
+all: ${GRAMMAR_MODULES} plugins | ${CPP_OBJS} ${CPP_TEST_BINS}
 
 #
 # Instalation of dependencies.
@@ -114,9 +114,12 @@ define can_run_test
 [ ! -e ${TEST_CASES_DIR}/$*.chk ]
 endef
 
-.PHONY: test
+.PHONY: test listdiff
 
-test: ${GRAMMAR_MODULES} ${PERL_MODULE} ${PERL_FORCE_FIELD_MODULE} | ${TEST_DIFF}
+test: ${GRAMMAR_MODULES} | ${TEST_DIFF}
+
+listdiff:
+	@-find ${TEST_OUT_DIR} -type f -name '*.diff' -size +0 | sort -u
 
 ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	@if ${can_run_test}; then \
@@ -137,6 +140,21 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	    ${TEST_CASES_DIR}/$*.chk; \
 	    touch $@; \
 	fi
+
+#
+# Plugins
+#
+
+PLUGIN_DIR=plugins
+PLUGINS=${PLUGIN_DIR}/pymol2-rotag
+PLUGINS_ZIP=${PLUGINS:%=%.zip}
+
+.PHONY: plugins
+
+plugins: ${PLUGINS_ZIP}
+
+%.zip: %
+	zip -r $@ $<
 
 #
 # Coverage.
@@ -162,31 +180,6 @@ ${COVERAGE_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
 	sed -i '4i export PERL5OPT=-MDevel::Cover make test' $@
 
 #
-# Profiler.
-#
-
-PROFILER_CASES_DIR=tests/profiler
-PROFILER_CASES=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${PROFILER_CASES_DIR}/%.sh}
-PROFILER_OUTS=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${PROFILER_CASES_DIR}/%.out}
-
-.PHONY: profiler
-
-profiler: ${PROFILER_CASES_DIR}/nytprof/index.html
-
-${PROFILER_CASES_DIR}/nytprof/index.html: ${PROFILER_OUTS}
-	nytprofmerge nytprof.out.*
-	nytprofhtml --file nytprof-merged.out
-	mv nytprof* ${PROFILER_CASES_DIR}
-
-${PROFILER_CASES_DIR}/%.out: ${PROFILER_CASES_DIR}/%.sh
-	./$< 2>&1 > $@ || true
-
-${PROFILER_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
-	cp $^ $@
-	sed -i '4i export PERL5OPT=-d:NYTProf' $@
-	sed -i '5i export NYTPROF=addpid=1' $@
-
-#
 # Utilities.
 #
 
@@ -197,10 +190,6 @@ clean:
 	rm -f ${COVERAGE_CASES}
 	rm -f ${COVERAGE_OUTS}
 	rm -fr ${COVERAGE_CASES_DIR}/cover_db
-	rm -f ${PROFILER_CASES}
-	rm -f ${PROFILER_OUTS}
-	rm -fr ${PROFILER_CASES_DIR}/nytprof
-	rm -fr ${PROFILER_CASES_DIR}/nytprof.out
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
@@ -208,9 +197,8 @@ cleanAll distclean: clean
 	rm -f ${PERL_FORCE_FIELD_MODULE}
 	rm -f ${CPP_OBJS}
 	rm -f ${CPP_TEST_BINS}
-
-# rm -f ${PM_FILES}
-# rm -f ${SHARED_OBJS}
-# rm -f ${CPP_OBJS}
-# rm -f ${WRAP_FILES}
-# rm -f ${CPP_TEST_BINS}
+	rm -f ${SHARED_OBJS}
+	rm -f ${CPP_OBJS}
+	rm -f ${WRAP_FILES}
+	rm -f ${CPP_TEST_BINS}
+	rm -f ${PLUGINS_ZIP}

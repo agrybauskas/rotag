@@ -6,26 +6,86 @@ use warnings;
 use Exporter qw( import );
 BEGIN {
     our @EXPORT_OK = qw( all_dihedral
+                         around_distance
                          bond_angle
                          bond_length
                          dihedral_angle
-                         rmsd );
+                         distance
+                         distance_squared
+                         rmsd
+                         rmsd_sidechains
+                         energy );
 }
 
 use Carp;
+use Clone qw( clone );
 use Math::Trig;
-use List::MoreUtils qw( uniq );
+use List::MoreUtils qw( any
+                        uniq );
+use List::Util qw( sum );
 
 use AtomProperties qw( sort_atom_names );
+use ConnectAtoms qw( is_neighbour
+                     is_second_neighbour );
+use Grid qw( grid_box
+             identify_neighbour_cells );
+use Energy;
+use ForceField::Bonded;
+use ForceField::NonBonded;
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
-                   split_by );
+                   split_by
+                   unique_residue_key
+                   unique_residue_keys );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
 use BondProperties qw( rotatable_bonds );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
+
+my %potentials = (
+    'composite' => {
+        'bonded' => {
+            'torsion' => \&ForceField::Bonded::torsion_components,
+        },
+        'non_bonded' => {
+            'lennard_jones' => \&ForceField::NonBonded::lennard_jones,
+            'coulomb' => \&ForceField::NonBonded::coulomb,
+            'h_bond' => \&ForceField::NonBonded::h_bond,
+        }
+    },
+    'torsion' => {
+        'bonded' => {
+            'torsion' => \&ForceField::Bonded::torsion_components,
+        }
+    },
+    'hard_sphere' => {
+        'non_bonded' => {
+            'hard_sphere' => \&ForceField::NonBonded::hard_sphere,
+        }
+    },
+    'soft_sphere' => {
+        'non_bonded' => {
+            'soft_sphere' => \&ForceField::NonBonded::soft_sphere
+        }
+    },
+    'lennard_jones' => {
+        'non_bonded' => {
+            'lennard_jones' => \&ForceField::NonBonded::lennard_jones,
+        }
+    },
+    'coulomb' => {
+        'non_bonded' => {
+            'coulomb' => \&ForceField::NonBonded::coulomb,
+        }
+    },
+    'h_bond' => {
+        'non_bonded' => {
+            'h_bond' => \&ForceField::NonBonded::h_bond,
+        }
+    }
+);
 
 # --------------------------- Molecule parameters ----------------------------- #
 
@@ -235,31 +295,43 @@ sub all_dihedral
                           'include' => { 'label_atom_id' => [ 'C' ] },
                           'data' => [ 'id' ],
                           'is_list' => 1 } )->[0];
-            # TODO: look if these filter slow down calculations drastically.
-            my $prev_c_atom_id =
-                filter( { 'atom_site' => $reference_atom_site,
-                          'include' =>
-                              { 'id' => $residue_site->{$n_atom_id}{'connections'},
-                                'label_atom_id' => [ 'C' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $next_n_atom_id =
-                filter( { 'atom_site' => $reference_atom_site,
-                          'include' =>
-                              { 'id' => $residue_site->{$c_atom_id}{'connections'},
-                                'label_atom_id' => [ 'N' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
 
-            # # Calculates phi angle if 'C' atom of previous residue is present.
-            if( defined $prev_c_atom_id ) {
+            # TODO: look if these filter slow down calculations drastically.
+            my $prev_c_atom_id;
+            if( defined $n_atom_id &&
+                defined $residue_site->{$n_atom_id}{'connections'} ) {
+                $prev_c_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $residue_site->{$n_atom_id}{'connections'},
+                            'label_atom_id' => [ 'C' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
+            my $next_n_atom_id;
+            if( defined $c_atom_id &&
+                defined $residue_site->{$c_atom_id}{'connections'} ) {
+                $next_n_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $residue_site->{$c_atom_id}{'connections'},
+                            'label_atom_id' => [ 'N' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
+
+            # Calculates phi angle if 'C' atom of previous residue is present.
+            if( defined $prev_c_atom_id && defined $n_atom_id &&
+                defined $ca_atom_id && defined $ca_atom_id ) {
                 $angle_values{'phi'}{'atom_ids'} =
                     [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
                 $angle_values{'phi'}{'value'} =
                     dihedral_angle(
-                        [ [ $atom_site->{$prev_c_atom_id}{'Cartn_x'},
-                            $atom_site->{$prev_c_atom_id}{'Cartn_y'},
-                            $atom_site->{$prev_c_atom_id}{'Cartn_z'}, ],
+                        [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_z'}, ],
                           [ $atom_site->{$n_atom_id}{'Cartn_x'},
                             $atom_site->{$n_atom_id}{'Cartn_y'},
                             $atom_site->{$n_atom_id}{'Cartn_z'} ],
@@ -272,7 +344,8 @@ sub all_dihedral
             }
 
             # Calculates psi angle.
-            if( defined $next_n_atom_id ) {
+            if( defined $next_n_atom_id && defined $n_atom_id &&
+                defined $ca_atom_id && defined $c_atom_id ) {
                 $angle_values{'psi'}{'atom_ids'} =
                     [ $n_atom_id, $ca_atom_id, $c_atom_id, $next_n_atom_id ];
                 $angle_values{'psi'}{'value'} =
@@ -286,9 +359,9 @@ sub all_dihedral
                           [ $atom_site->{$c_atom_id}{'Cartn_x'},
                             $atom_site->{$c_atom_id}{'Cartn_y'},
                             $atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$next_n_atom_id}{'Cartn_x'},
-                            $atom_site->{$next_n_atom_id}{'Cartn_y'},
-                            $atom_site->{$next_n_atom_id}{'Cartn_z'} ], ] );
+                          [ $reference_atom_site->{$next_n_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$next_n_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$next_n_atom_id}{'Cartn_z'} ], ] );
             }
         }
 
@@ -365,10 +438,90 @@ sub all_dihedral
                                   $fourth_atom_coord ] );
         }
 
-        %{ $residue_angles{$residue_unique_key} } = %angle_values;
+        if( %angle_values ) {
+            %{ $residue_angles{$residue_unique_key} } = %angle_values;
+        }
     }
 
     return \%residue_angles;
+}
+
+#
+# Calculates the squared distance between two atoms.
+# Input:
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
+# Output:
+#     $distance_squared - value of calculated squared distance.
+#
+
+sub distance_squared
+{
+    my ( $atom_i, $atom_j ) = @_;
+
+    my $distance_squared =
+        ( $atom_j->{'Cartn_x'} - $atom_i->{'Cartn_x'} ) ** 2 +
+        ( $atom_j->{'Cartn_y'} - $atom_i->{'Cartn_y'} ) ** 2 +
+        ( $atom_j->{'Cartn_z'} - $atom_i->{'Cartn_z'} ) ** 2;
+
+    return $distance_squared;
+}
+
+#
+# Calculates the distance between two atoms.
+# Input:
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm).
+# Output:
+#     $distance - value of the calculated distance.
+#
+
+sub distance
+{
+    my ( $atom_i, $atom_j ) = @_;
+
+    return sqrt( distance_squared( $atom_i, $atom_j ) );
+}
+
+#
+# Selects the atoms that are at specified distance from selected atoms.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.obtain_atom_site);
+#     $atom_specifier - atom selector data structure (see PDBxParser::filter);
+#     $distance - max distance from which atoms should be included.
+# Output:
+#     %around_atom_site - atom site data structure of selected atoms.
+#
+
+# TODO: move to more appropriately-named module.
+sub around_distance
+{
+    my ( $parameters, $atom_site, $atom_specifier, $distance ) = @_;
+
+    my @atom_ids = @{ filter( { 'atom_site' => $atom_site,
+                                'include' => $atom_specifier,
+                                'data' => [ 'id' ],
+                                'is_list' => 1 } ) };
+
+    # For each cell, checks neighbouring cells. Creates box around atoms, makes
+    # grid with edge length of max covalent radii of the parameter file.
+    my ( $grid_box, $atom_cell_pos ) =
+        grid_box( $parameters, $atom_site, $distance * 2, \@atom_ids );
+    my $neighbour_cells = identify_neighbour_cells( $grid_box, $atom_cell_pos );
+
+    # Checks for neighbouring cells for each cell.
+    my %around_atom_site;
+    foreach my $cell ( keys %{ $atom_cell_pos } ) {
+        foreach my $atom_id ( @{ $atom_cell_pos->{$cell} } ) {
+            foreach my $neighbour_id ( @{ $neighbour_cells->{$cell} } ) {
+        	if( ( ! any { $neighbour_id eq $_ } @atom_ids ) &&
+                    ( distance_squared(
+                          $atom_site->{$atom_id},
+                          $atom_site->{$neighbour_id} ) <= $distance ** 2 ) ) {
+        	    $around_atom_site{$neighbour_id} = $atom_site->{$neighbour_id};
+        	} }
+        }
+    }
+
+    return \%around_atom_site;
 }
 
 #
@@ -402,6 +555,500 @@ sub rmsd
     $rmsd = $rmsd / scalar @{ $first_set };
 
     return sqrt $rmsd;
+}
+
+#
+# Calculates side-chain RMSD combinations.
+# Input:
+#     ${first,second}_atom_site - atom site data structure;
+#     $unique_residue_key - unique residue key;
+#     $options{'average'} - calculates RMSD average;
+#     $options{'best_case'} - chooses those RMSD that are lowest.
+#     $options{'strict'} - residue id, chain id and model number has to match.
+# Output:
+#     @sidechain_comparison_data - list of RMSD comparison data.
+#
+
+sub rmsd_sidechains
+{
+    my ( $parameters, $first_atom_site, $second_atom_site, #$unique_residue_key,
+         $options ) = @_;
+    my ( $average, $best_case, $include_atoms, $exclude_atoms, $strict ) = (
+        $options->{'average'},
+        $options->{'best_case'},
+        $options->{'include_atoms'},
+        $options->{'exclude_atoms'},
+        $options->{'strict'}
+    );
+
+    $average //= 0;
+    $best_case //= 0;
+    $include_atoms //= $parameters->{'_[local]_sidechain_atom_names'};
+    # HACK: grep'ing by first symbol is not robust, because the first symbol of
+    # atom name sometimes can differ from the type symbol.
+    $exclude_atoms //=
+        [ 'CB', grep { /^H/  }
+                    @{ $parameters->{'_[local]_sidechain_atom_names'} } ];
+    $strict //= 1;
+
+    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+    # TODO: think if using of symmetric atom data should be optional or
+    # mandatory.
+    my $symmetrical_atom_names =$parameters->{'_[local]_symmetrical_atom_names'};
+
+    my @first_unique_residue_keys  = unique_residue_keys( $first_atom_site );
+    my @second_unique_residue_keys = unique_residue_keys( $second_atom_site );
+
+    my @sidechain_comparison_data = ();
+    for my $first_unique_residue_key ( @first_unique_residue_keys ) {
+        my ( $first_residue_id, $first_chain, $first_pdbx_model_num,
+             $first_alt_id ) =
+            split /,/, $first_unique_residue_key;
+        my $first_sidechain_data =
+            filter( { 'atom_site' => $first_atom_site,
+                      'include' =>
+                          { 'label_seq_id' => [ $first_residue_id ],
+                            'label_asym_id' => [ $first_chain ],
+                            'pdbx_PDB_model_num' => [ $first_pdbx_model_num ],
+                            'label_alt_id' => [ $first_alt_id ],
+                            ( $include_atoms ?
+                              ( 'label_atom_id' => $include_atoms ): () ) },
+                      'exclude' =>
+                          { ( $exclude_atoms ?
+                              ( 'label_atom_id' => $exclude_atoms ): () ) },
+                      'data' =>
+                          [ '[local]_selection_group', 'id',
+                            'label_atom_id', 'label_seq_id',
+                            'label_comp_id', 'label_asym_id',
+                            'pdbx_PDB_model_num', 'label_alt_id',
+                            'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                      'is_hash' => 1 } );
+        $first_sidechain_data =
+            [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
+                  @{ $first_sidechain_data } ];
+
+        my $residue_name = $first_sidechain_data->[0]{'label_comp_id'};
+        my $rmsd_average;
+        for my $second_unique_residue_key ( @second_unique_residue_keys ) {
+            my ( $second_residue_id, $second_chain, $second_pdbx_model_num,
+                 $second_alt_id ) =
+                split /,/, $second_unique_residue_key;
+
+            next if ! ( $first_residue_id eq $second_residue_id &&
+                        $first_chain eq $second_chain &&
+                        $first_pdbx_model_num eq $second_pdbx_model_num ) &&
+                    $strict;
+
+            my $second_sidechain_data =
+                filter( { 'atom_site' => $second_atom_site,
+                          'include' =>
+                              { 'label_seq_id' => [ $second_residue_id ],
+                                'label_asym_id' => [ $second_chain ],
+                                'pdbx_PDB_model_num' => [ $second_pdbx_model_num ],
+                                'label_alt_id' => [ $second_alt_id ],
+                                ( $include_atoms ?
+                                  ( 'label_atom_id' => $include_atoms ): () ) },
+                          'exclude' =>
+                              { ( $exclude_atoms ?
+                                    ( 'label_atom_id' => $exclude_atoms ): () )},
+                          'data' =>
+                              [ 'id', '[local]_selection_group', 'label_atom_id',
+                                'label_seq_id', 'label_comp_id', 'label_asym_id',
+                                'pdbx_PDB_model_num', 'label_alt_id',
+                                'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                          'is_hash' => 1 } );
+
+            # HACK: there should be a way to avoid this check.
+            next if ! @{ $second_sidechain_data };
+
+            $second_sidechain_data =
+                [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
+                      @{ $second_sidechain_data } ];
+
+            my %second_sidechain = ();
+            for my $second_atom_data ( @{ $second_sidechain_data } ) {
+                $second_sidechain{$second_atom_data->{'label_atom_id'}} = $second_atom_data;
+            }
+
+            # Checks the length of the atom sets.
+            # TODO: error message is duplicated in Measure::rmsd().
+            if( scalar @{ $first_sidechain_data } ne
+                scalar @{ $second_sidechain_data } ) {
+                confess 'comparing different sizes of sets of the atoms ' .
+                    'is not allowed';
+            }
+
+            my @current_sidechain_data = ();
+            for( my $i = 0; $i <= $#{ $first_sidechain_data }; $i++ ) {
+                if( $first_sidechain_data->[$i]{'label_atom_id'} ne
+                    $second_sidechain_data->[$i]{'label_atom_id'} ) {
+                    confess 'atom names do not match: ' .
+                            "$first_sidechain_data->[$i]{'label_atom_id'} and " .
+                            "$second_sidechain_data->[$i]{'label_atom_id'}";
+                }
+
+                # Checks if the side-chain have structural symmetry and chooses
+                # the best RMSD value.
+                my $symmetrical_atom_names =
+                    $symmetrical_atom_names->{$residue_name}
+                                             {$first_sidechain_data->[$i]{'label_atom_id'}};
+                if( defined $symmetrical_atom_names ) {
+                    my $rmsd;
+                    my $symmetric_atom_data;
+                    my @second_atom_names = ( $first_sidechain_data->[$i]{'label_atom_id'},
+                                              @{ $symmetrical_atom_names } );
+                    for my $second_atom_name ( @second_atom_names ) {
+                        my $current_symmetric_atom_data =
+                            $second_sidechain{$second_atom_name};
+                        my $current_rmsd = rmsd(
+                            [ [ $first_sidechain_data->[$i]{'Cartn_x'},
+                                $first_sidechain_data->[$i]{'Cartn_y'},
+                                $first_sidechain_data->[$i]{'Cartn_z'}] ],
+                            [ [ $current_symmetric_atom_data->{'Cartn_x'},
+                                $current_symmetric_atom_data->{'Cartn_y'},
+                                $current_symmetric_atom_data->{'Cartn_z'}]]);
+                        if( ! defined $rmsd || $current_rmsd < $rmsd ){
+                            $symmetric_atom_data = $current_symmetric_atom_data;
+                            $rmsd = $current_rmsd;
+                        }
+                    }
+
+                    # TODO: refactor by creating a function that would extract
+                    # data by giving key mapping argument.
+                    push @current_sidechain_data,
+                        { 'atom_1_id' =>
+                              $first_sidechain_data->[$i]{'id'},
+                          'group_1_id' =>
+                              $first_sidechain_data->[$i]{'[local]_selection_group'},
+                          'label_atom_1_id' =>
+                              $first_sidechain_data->[$i]{'label_atom_id'},
+                          'label_seq_1_id' =>
+                              $first_sidechain_data->[$i]{'label_seq_id'},
+                          'label_comp_1_id' =>
+                              $first_sidechain_data->[$i]{'label_comp_id'},
+                          'label_asym_1_id' =>
+                              $first_sidechain_data->[$i]{'label_asym_id'},
+                          'pdbx_PDB_model_num_1' =>
+                              $first_sidechain_data->[$i]{'pdbx_PDB_model_num'},
+                          'label_alt_1_id' =>
+                              $first_sidechain_data->[$i]{'label_alt_id'},
+                          'atom_2_id' =>
+                              $symmetric_atom_data->{'id'},
+                          'group_2_id' =>
+                              $symmetric_atom_data->{'[local]_selection_group'},
+                          'label_atom_2_id' =>
+                              $symmetric_atom_data->{'label_atom_id'},
+                          'label_seq_2_id' =>
+                              $symmetric_atom_data->{'label_seq_id'},
+                          'label_comp_2_id' =>
+                              $symmetric_atom_data->{'label_comp_id'},
+                          'label_asym_2_id' =>
+                              $symmetric_atom_data->{'label_asym_id'},
+                          'pdbx_PDB_model_num_2' =>
+                              $symmetric_atom_data->{'pdbx_PDB_model_num'},
+                          'label_alt_2_id' =>
+                              $symmetric_atom_data->{'label_alt_id'},
+                          'value' => sprintf( $sig_figs_max, $rmsd ) };
+
+                } else {
+                    my $rmsd = rmsd(
+                        [ [ $first_sidechain_data->[$i]{'Cartn_x'},
+                            $first_sidechain_data->[$i]{'Cartn_y'},
+                            $first_sidechain_data->[$i]{'Cartn_z'}] ],
+                        [ [ $second_sidechain_data->[$i]{'Cartn_x'},
+                            $second_sidechain_data->[$i]{'Cartn_y'},
+                            $second_sidechain_data->[$i]{'Cartn_z'}]]);
+
+                    # TODO: refactor by creating a function that would extract
+                    # data by giving key mapping argument.
+                    push @current_sidechain_data,
+                        { 'atom_1_id' =>
+                              $first_sidechain_data->[$i]{'id'},
+                          'group_1_id' =>
+                              $first_sidechain_data->[$i]{'[local]_selection_group'},
+                          'label_atom_1_id' =>
+                              $first_sidechain_data->[$i]{'label_atom_id'},
+                          'label_seq_1_id' =>
+                              $first_sidechain_data->[$i]{'label_seq_id'},
+                          'label_comp_1_id' =>
+                              $first_sidechain_data->[$i]{'label_comp_id'},
+                          'label_asym_1_id' =>
+                              $first_sidechain_data->[$i]{'label_asym_id'},
+                          'pdbx_PDB_model_num_1' =>
+                              $first_sidechain_data->[$i]{'pdbx_PDB_model_num'},
+                          'label_alt_1_id' =>
+                              $first_sidechain_data->[$i]{'label_alt_id'},
+                          'atom_2_id' =>
+                              $second_sidechain_data->[$i]{'id'},
+                          'group_2_id' =>
+                              $second_sidechain_data->[$i]{'[local]_selection_group'},
+                          'label_atom_2_id' =>
+                              $second_sidechain_data->[$i]{'label_atom_id'},
+                          'label_seq_2_id' =>
+                              $second_sidechain_data->[$i]{'label_seq_id'},
+                          'label_comp_2_id' =>
+                              $second_sidechain_data->[$i]{'label_comp_id'},
+                          'label_asym_2_id' =>
+                              $second_sidechain_data->[$i]{'label_asym_id'},
+                          'pdbx_PDB_model_num_2' =>
+                              $second_sidechain_data->[$i]{'pdbx_PDB_model_num'},
+                          'label_alt_2_id' =>
+                              $second_sidechain_data->[$i]{'label_alt_id'},
+                          'value' => sprintf( $sig_figs_max, $rmsd ) };
+                }
+            }
+
+            if( $best_case ) {
+                my $current_rmsd_average =
+                    sum( map { $_->{'value'} } @current_sidechain_data ) /
+                    scalar @current_sidechain_data;
+                if( ( ! @sidechain_comparison_data && ! defined $rmsd_average )||
+                    $current_rmsd_average < $rmsd_average ) {
+                    @sidechain_comparison_data = @current_sidechain_data;
+                    $rmsd_average = $current_rmsd_average;
+                }
+            } elsif( $average ) {
+                my $current_rmsd_average =
+                    sum( map { $_->{'value'} } @current_sidechain_data ) /
+                    scalar @current_sidechain_data;
+                # TODO: give more information - not only RMSD value.
+                push @sidechain_comparison_data,
+                    { 'value' => $current_rmsd_average };
+            } else {
+                push @sidechain_comparison_data, @current_sidechain_data;
+            }
+        }
+    }
+
+    return \@sidechain_comparison_data;
+}
+
+#
+# Calculates energy values of the given structure.
+# Input:
+# Output:
+#
+
+sub energy
+{
+    my ( $parameters, $atom_site, $potential, $options  ) = @_;
+    my ( $target_atom_ids, $only_sidechains, $decompose, $pairwise ) = (
+        $options->{'target_atom_ids'},
+        $options->{'only_sidechains'},
+        $options->{'decompose'},
+        $options->{'pairwise'},
+    );
+
+    $target_atom_ids //= [ sort keys %{ $atom_site } ];
+    $only_sidechains //= 0;
+    $decompose //= 0;
+
+    my $edge_length_interaction =
+        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
+    my $interaction_atom_names =
+        $parameters->{'_[local]_interaction_atom_names'};
+
+    # Splits atom site into groups by its uniqueness.
+    my $atom_site_groups = split_by( { 'atom_site' => $atom_site,
+                                       'attributes' => [ 'pdbx_PDB_model_num',
+                                                         'label_alt_id',
+                                                         'label_asym_id' ],
+                                       'append_dot' => 1 } );
+
+    my $calculation_id = 1;
+    my %energy = ();
+
+    my %bonded_potentials = ();
+    if( exists $potentials{$potential}{'bonded'} ) {
+        %bonded_potentials = %{ $potentials{$potential}{'bonded'} };
+    }
+
+    my %non_bonded_potentials = ();
+    if( exists $potentials{$potential}{'non_bonded'} ) {
+        %non_bonded_potentials = %{ $potentials{$potential}{'non_bonded'} };
+    }
+
+    my %options = ();
+    $options{'atom_site'} = $atom_site;
+
+    my ( $grid_box, $target_cells ) = grid_box( $parameters,
+                                                $atom_site,
+                                                $edge_length_interaction,
+                                                $target_atom_ids );
+
+    my $neighbour_cells = identify_neighbour_cells( $grid_box, $target_cells );
+
+    my @residue_energies = ();
+    for my $cell ( sort { $a cmp $b } keys %{ $target_cells } ) {
+        for my $atom_id ( @{ $target_cells->{$cell} } ) {
+            next if ( any { $atom_site->{$atom_id}{'label_atom_id'} eq $_ }
+                         @{ $interaction_atom_names } ) && $only_sidechains;
+
+            my @residue_energy = ();
+
+            # Calculates bonded potential energy term.
+            my %bonded_residue_energy = (); # For faster neighbour energy search.
+            for my $bonded_potential ( keys %bonded_potentials ) {
+                my $residue_bonded_energy =
+                    $bonded_potentials{$bonded_potential}( $parameters,
+                                                           $atom_id,
+                                                           \%options );
+                for my $bonded_energy ( @{ $residue_bonded_energy } ) {
+                    my $neighbour_atom_id = $bonded_energy->atoms->[-1];
+                    push @{ $bonded_residue_energy{$atom_id}{$neighbour_atom_id} },
+                        $bonded_energy;
+                }
+            }
+
+            for my $neighbour_atom_id ( uniq @{ $neighbour_cells->{$cell} } ) {
+                if( ( $atom_id ne $neighbour_atom_id ) &&
+                    ( ! is_neighbour( $atom_site,
+                                      $atom_id,
+                                      $neighbour_atom_id ) ) &&
+                    ( ! is_second_neighbour( $atom_site,
+                                             $atom_id,
+                                             $neighbour_atom_id ) ) ) {
+
+                    # Adds bonded potential energy term.
+                    for my $bonded_potential (
+                        @{ $bonded_residue_energy{$atom_id}{$neighbour_atom_id} } ) {
+                        push @residue_energy, $bonded_potential;
+                    }
+
+                    # Adds non-bonded potential energy term.
+                    for my $non_bonded_potential ( keys %non_bonded_potentials ) {
+                        my $energy_potential = Energy->new();
+                        $energy_potential->set_energy(
+                            $non_bonded_potential,
+                            [ $atom_id, $neighbour_atom_id ],
+                            $non_bonded_potentials{$non_bonded_potential}(
+                                $parameters,
+                                $atom_site->{$atom_id},
+                                $atom_site->{$neighbour_atom_id},
+                                \%options
+                            )
+                        );
+
+                        push @residue_energy, $energy_potential;
+                    }
+                }
+            }
+
+            push @residue_energies, @residue_energy;
+        }
+    }
+
+    my @atom_ids = ();
+    my %atom_id_pairs = ();
+    my %atom_pair_interactions = ();
+    for my $residue_energy ( @residue_energies ) {
+        my $atom_id = $residue_energy->atoms->[0];
+        my $interaction_atom_id = $residue_energy->atoms->[-1];
+        my $energy_type = $residue_energy->energy_type;
+
+        if( ! exists $atom_id_pairs{$atom_id} ) {
+            push @atom_ids, $atom_id;
+        }
+
+        if( ! exists $atom_pair_interactions{$atom_id}{$interaction_atom_id} ) {
+            push @{ $atom_id_pairs{$atom_id} }, $interaction_atom_id;
+        }
+
+        push @{ $atom_pair_interactions{$atom_id}{$interaction_atom_id}
+                                                 {$energy_type} },
+            $residue_energy;
+    }
+
+    my @energies = ();
+    for my $atom_id ( @atom_ids ) {
+        my @interaction_atom_ids = @{ $atom_id_pairs{$atom_id} };
+
+        if( $pairwise ) {
+            for my $interaction_atom_id ( @interaction_atom_ids ) {
+                my @energy_types =
+                    sort
+                    keys %{ $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id} };
+
+                if( $decompose ) {
+                    push @energies,
+                        map { $atom_pair_interactions{$atom_id}
+                                                     {$interaction_atom_id}
+                                                     {$_}[0] }
+                        @energy_types;
+                } else {
+                    my $energy_sum = 0;
+                    for my $energy_type ( @energy_types ) {
+                        $energy_sum +=
+                            $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id}
+                                                   {$energy_type}[0]->value;
+                    }
+
+                    my $energy = Energy->new();
+                    $energy->set_energy( $potential,
+                                         [ $atom_id, $interaction_atom_id ],
+                                         $energy_sum );
+
+                    push @energies, $energy;
+                }
+            }
+        } else {
+            if( $decompose ) {
+                my %energy_sum = ();
+                for my $interaction_atom_id ( @interaction_atom_ids ) {
+                    my @energy_types =
+                        sort
+                        keys %{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} };
+
+                    for my $energy_type ( @energy_types ) {
+                        if( exists $energy_sum{$energy_type} &&
+                            defined $energy_sum{$energy_type} ) {
+                            $energy_sum{$energy_type} +=
+                                $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id}
+                                                       {$energy_type}[0]->value;
+                        } else {
+                            $energy_sum{$energy_type} +=
+                                $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id}
+                                                       {$energy_type}[0]->value;
+                        }
+                    }
+                }
+
+                for my $energy_type ( sort keys %energy_sum ) {
+                    my $energy = Energy->new();
+                    $energy->set_energy( $energy_type, [ $atom_id ],
+                                         $energy_sum{$energy_type} );
+                    push @energies, $energy;
+                }
+            } else {
+                my $energy_sum = 0;
+                for my $interaction_atom_id ( @interaction_atom_ids ) {
+                    my @energy_types =
+                        sort
+                        keys %{ $atom_pair_interactions{$atom_id}
+                                                       {$interaction_atom_id} };
+
+                    for my $energy_type ( @energy_types ) {
+                        $energy_sum +=
+                            $atom_pair_interactions{$atom_id}
+                                                   {$interaction_atom_id}
+                                                   {$energy_type}[0]->value;
+                    }
+                }
+
+                my $energy = Energy->new();
+                $energy->set_energy( $potential, [ $atom_id ], $energy_sum );
+
+                push @energies, $energy;
+            }
+        }
+    }
+
+    return \@energies;
 }
 
 1;

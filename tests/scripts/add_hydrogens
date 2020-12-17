@@ -3,8 +3,9 @@
 use strict;
 use warnings;
 
+use ForceField::Parameters;
+use Hydrogens qw( add_hydrogens );
 use PDBxParser qw( to_pdbx );
-use PseudoAtoms qw( add_hydrogens );
 
 my ( $pdbx_dump_file, $add_only_clear_positions ) = @ARGV;
 
@@ -16,11 +17,19 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
+my $parameters = Parameters->new();
+
 %{ $atom_site } =
     ( %{ $atom_site },
       %{ add_hydrogens(
+             $parameters,
              $atom_site,
              { 'add_only_clear_positions' => $add_only_clear_positions } ) } );
 
 # Prints out PDBx format file.
-to_pdbx( { "atom_site" => $atom_site } );
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} = $atom_site;
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+
+to_pdbx( \%pdbx );

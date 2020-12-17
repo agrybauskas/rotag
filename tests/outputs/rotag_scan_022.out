@@ -1,0 +1,210 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1607 N N . PHE A 1 246 46.863 -11.209 51.724 1 T
+ATOM 1608 C CA . PHE A 1 246 45.611 -11.319 50.999 1 T
+ATOM 1609 C C . PHE A 1 246 45.219 -12.790 50.797 1 T
+ATOM 1610 O O . PHE A 1 246 44.029 -13.130 50.829 1 T
+ATOM 1611 C CB . PHE A 1 246 45.673 -10.611 49.656 1 T
+ATOM 1612 C CG . PHE A 1 246 44.320 -10.410 49.060 1 T
+ATOM 1613 C CD1 . PHE A 1 246 43.433 -9.522 49.651 1 T
+ATOM 1614 C CD2 . PHE A 1 246 43.906 -11.131 47.952 1 T
+ATOM 1615 C CE1 . PHE A 1 246 42.167 -9.337 49.140 1 T
+ATOM 1616 C CE2 . PHE A 1 246 42.632 -10.942 47.430 1 T
+ATOM 1617 C CZ . PHE A 1 246 41.766 -10.052 48.029 1 T
+#
+loop_
+_[local]_rotamer_angle.id
+_[local]_rotamer_angle.rotamer_id
+_[local]_rotamer_angle.label_seq_id
+_[local]_rotamer_angle.label_comp_id
+_[local]_rotamer_angle.label_asym_id
+_[local]_rotamer_angle.pdbx_PDB_model_num
+_[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
+_[local]_rotamer_angle.type
+_[local]_rotamer_angle.value
+_[local]_rotamer_angle.units
+1 1 246 PHE A 1 . 0.018519 chi1 -108.000 degrees
+2 1 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
+3 2 246 PHE A 1 . 0.018519 chi1 -108.000 degrees
+4 2 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
+5 3 246 PHE A 1 . 0.018519 chi1 -108.000 degrees
+6 3 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
+7 4 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+8 4 246 PHE A 1 . 0.018519 chi2 -180.000 degrees
+9 5 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+10 5 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
+11 6 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+12 6 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
+13 7 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+14 7 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
+15 8 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+16 8 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
+17 9 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+18 9 246 PHE A 1 . 0.018519 chi2 0.000 degrees
+19 10 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+20 10 246 PHE A 1 . 0.018519 chi2 36.000 degrees
+21 11 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+22 11 246 PHE A 1 . 0.018519 chi2 72.000 degrees
+23 12 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+24 12 246 PHE A 1 . 0.018519 chi2 108.000 degrees
+25 13 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
+26 13 246 PHE A 1 . 0.018519 chi2 144.000 degrees
+27 14 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+28 14 246 PHE A 1 . 0.018519 chi2 -180.000 degrees
+29 15 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+30 15 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
+31 16 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+32 16 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
+33 17 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+34 17 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
+35 18 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+36 18 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
+37 19 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+38 19 246 PHE A 1 . 0.018519 chi2 0.000 degrees
+39 20 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+40 20 246 PHE A 1 . 0.018519 chi2 36.000 degrees
+41 21 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+42 21 246 PHE A 1 . 0.018519 chi2 72.000 degrees
+43 22 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+44 22 246 PHE A 1 . 0.018519 chi2 108.000 degrees
+45 23 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
+46 23 246 PHE A 1 . 0.018519 chi2 144.000 degrees
+47 24 246 PHE A 1 . 0.018519 chi1 0.000 degrees
+48 24 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
+49 25 246 PHE A 1 . 0.018519 chi1 0.000 degrees
+50 25 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
+51 26 246 PHE A 1 . 0.018519 chi1 0.000 degrees
+52 26 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
+53 27 246 PHE A 1 . 0.018519 chi1 0.000 degrees
+54 27 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
+55 28 246 PHE A 1 . 0.018519 chi1 0.000 degrees
+56 28 246 PHE A 1 . 0.018519 chi2 36.000 degrees
+57 29 246 PHE A 1 . 0.018519 chi1 0.000 degrees
+58 29 246 PHE A 1 . 0.018519 chi2 72.000 degrees
+59 30 246 PHE A 1 . 0.018519 chi1 0.000 degrees
+60 30 246 PHE A 1 . 0.018519 chi2 108.000 degrees
+61 31 246 PHE A 1 . 0.018519 chi1 0.000 degrees
+62 31 246 PHE A 1 . 0.018519 chi2 144.000 degrees
+63 32 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+64 32 246 PHE A 1 . 0.018519 chi2 -180.000 degrees
+65 33 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+66 33 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
+67 34 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+68 34 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
+69 35 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+70 35 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
+71 36 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+72 36 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
+73 37 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+74 37 246 PHE A 1 . 0.018519 chi2 0.000 degrees
+75 38 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+76 38 246 PHE A 1 . 0.018519 chi2 36.000 degrees
+77 39 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+78 39 246 PHE A 1 . 0.018519 chi2 72.000 degrees
+79 40 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+80 40 246 PHE A 1 . 0.018519 chi2 108.000 degrees
+81 41 246 PHE A 1 . 0.018519 chi1 36.000 degrees
+82 41 246 PHE A 1 . 0.018519 chi2 144.000 degrees
+83 42 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+84 42 246 PHE A 1 . 0.018519 chi2 -180.000 degrees
+85 43 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+86 43 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
+87 44 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+88 44 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
+89 45 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+90 45 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
+91 46 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+92 46 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
+93 47 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+94 47 246 PHE A 1 . 0.018519 chi2 0.000 degrees
+95 48 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+96 48 246 PHE A 1 . 0.018519 chi2 36.000 degrees
+97 49 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+98 49 246 PHE A 1 . 0.018519 chi2 72.000 degrees
+99 50 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+100 50 246 PHE A 1 . 0.018519 chi2 108.000 degrees
+101 51 246 PHE A 1 . 0.018519 chi1 72.000 degrees
+102 51 246 PHE A 1 . 0.018519 chi2 144.000 degrees
+103 52 246 PHE A 1 . 0.018519 chi1 108.000 degrees
+104 52 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
+105 53 246 PHE A 1 . 0.018519 chi1 108.000 degrees
+106 53 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
+107 54 246 PHE A 1 . 0.018519 chi1 108.000 degrees
+108 54 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 74.612007
+2 2 composite 71.216013
+3 3 composite 75.784645
+4 4 composite 81.209263
+5 5 composite 78.261633
+6 6 composite 72.780456
+7 7 composite 72.222825
+8 8 composite 76.887336
+9 9 composite 83.007619
+10 10 composite 80.159210
+11 11 composite 73.440224
+12 12 composite 72.327028
+13 13 composite 76.427950
+14 14 composite 115.470080
+15 15 composite 108.216239
+16 16 composite 80.978372
+17 17 composite 78.151335
+18 18 composite 86.461424
+19 19 composite 120.761360
+20 20 composite 118.329625
+21 21 composite 82.593516
+22 22 composite 78.342901
+23 23 composite 86.224790
+24 24 composite 117.527134
+25 25 composite 86.767452
+26 26 composite 87.624463
+27 27 composite 130.038703
+28 28 composite 130.175321
+29 29 composite 87.834104
+30 30 composite 88.052194
+31 31 composite 129.269400
+32 32 composite 112.410306
+33 33 composite 86.761474
+34 34 composite 79.568046
+35 35 composite 83.523230
+36 36 composite 119.344143
+37 37 composite 122.587848
+38 38 composite 89.458642
+39 39 composite 80.271986
+40 40 composite 83.846454
+41 41 composite 114.717495
+42 42 composite 107.887711
+43 43 composite 112.463986
+44 44 composite 84.759985
+45 45 composite 80.391437
+46 46 composite 89.046062
+47 47 composite 111.468669
+48 48 composite 121.982318
+49 49 composite 87.265954
+50 50 composite 80.590416
+51 51 composite 88.196122
+52 52 composite 105.493261
+53 53 composite 98.209839
+54 54 composite 147.072304
+#

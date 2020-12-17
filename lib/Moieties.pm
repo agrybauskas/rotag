@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( %ATOMS
-                     %SIDECHAINS
+our @EXPORT_OK = qw( %atoms
+                     %sidechain
                      replace_with_moiety );
 
 use List::Util qw( max );
@@ -14,8 +14,6 @@ use Math::Trig qw( acos );
 use AlterMolecule qw( bond_torsion );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
-use Constants qw( $PI
-                  $SIG_FIGS_MIN );
 use ForceField::Parameters;
 use PDBxParser qw( filter
                    filter_by_unique_residue_key );
@@ -30,7 +28,7 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Moieties ---------------------------------- #
 
-our %ATOMS = (
+our %atoms = (
     'H' => {
         1 => {
             'group_PDB' => 'ATOM',
@@ -45,7 +43,7 @@ our %ATOMS = (
     },
 );
 
-our %SIDECHAINS = (
+our %sidechains = (
     'SER' => {
         1 => {
             'group_PDB' => 'ATOM',
@@ -109,7 +107,7 @@ our %SIDECHAINS = (
 
 sub replace_with_moiety
 {
-    my ( $atom_site, $unique_residue_key, $moiety, $options ) = @_;
+    my ( $parameters, $atom_site, $unique_residue_key, $moiety, $options ) = @_;
 
     my ( $isomer, $angles, $append_moieties, $last_atom_id ) =
         ( $options->{'isomer'},
@@ -122,7 +120,11 @@ sub replace_with_moiety
     $append_moieties //= {};
     $last_atom_id //= max( keys %{ $atom_site } );
 
-    my %all_sidechains = ( %SIDECHAINS, %{ $append_moieties } );
+    my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+
+    my %all_sidechains = ( %sidechains, %{ $append_moieties } );
 
     # First, transformation matrix is generated that will position moiety atoms
     # to the origin of reference frame.
@@ -137,7 +139,8 @@ sub replace_with_moiety
     my @moiety_helper_atom_coord = map { $_ + 1 } @{ $moiety_ca_atom_coord };
 
     my ( $moiety_transf_matrix ) =
-        @{ switch_ref_frame( $moiety_ca_atom_coord,
+        @{ switch_ref_frame( $parameters,
+                             $moiety_ca_atom_coord,
                              $moiety_cb_atom_coord,
                              \@moiety_helper_atom_coord,
                              'local' ) };
@@ -159,7 +162,7 @@ sub replace_with_moiety
                          # TODO: make proper list of mainchain atoms.
                          { 'label_atom_id' =>
                                [ grep { $_ ne 'CB' }
-                                      @Parameters::INTERACTION_ATOM_NAMES ] },
+                                      @{ $interaction_atom_names } ] },
                      'data' => [ 'id' ],
                      'is_list' => 1 } ) };
 
@@ -188,13 +191,15 @@ sub replace_with_moiety
     my $moiety_angle = acos( ( - 4 - 2 * cos $bond_angle ) / 10 );
 
     my ( $transf_matrix ) =
-        @{ switch_ref_frame( $ca_atom_coord,
+        @{ switch_ref_frame( $parameters,
+                             $ca_atom_coord,
                              $n_atom_coord,
                              $c_atom_coord,
                              'global' ) };
 
     # Rotational matrix is created for producing 'R' or 'S' configuration.
-    my $rotational_matrix = bond_torsion( $c_atom_coord,
+    my $rotational_matrix = bond_torsion( $parameters,
+                                          $c_atom_coord,
                                           $ca_atom_coord,
                                           $o_atom_coord,
                                           'omega' );
@@ -211,8 +216,8 @@ sub replace_with_moiety
                                         [ $moiety_atom->{'Cartn_z'} ],
                                         [ 1 ] ] ],
                                     { $isomer eq 'R' ?
-                                      ( 'omega' => (-2) * $PI / 3 ) :
-                                      ( 'omega' =>   2  * $PI / 3 ) } ) };
+                                      ( 'omega' => (-2) * $pi / 3 ) :
+                                      ( 'omega' =>   2  * $pi / 3 ) } ) };
 
         $moiety_atom->{'id'} = $last_atom_id;
         $moiety_atom->{'label_seq_id'} = $residue_id;
@@ -222,11 +227,11 @@ sub replace_with_moiety
         # needed.
         $moiety_atom->{'label_alt_id'} = q{.};
         $moiety_atom->{'Cartn_x'} =
-            sprintf $SIG_FIGS_MIN, $transf_atom_coord->[0][0];
+            sprintf $sig_figs_min, $transf_atom_coord->[0][0];
         $moiety_atom->{'Cartn_y'}=
-            sprintf $SIG_FIGS_MIN, $transf_atom_coord->[1][0];
+            sprintf $sig_figs_min, $transf_atom_coord->[1][0];
         $moiety_atom->{'Cartn_z'}=
-            sprintf $SIG_FIGS_MIN, $transf_atom_coord->[2][0];
+            sprintf $sig_figs_min, $transf_atom_coord->[2][0];
 
         $atom_site->{$last_atom_id} = $moiety_atom;
         $last_atom_id++;
@@ -247,12 +252,13 @@ sub replace_with_moiety
         $residue_site =
             filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
 
-        connect_atoms( $residue_site );
-        hybridization( $residue_site );
+        connect_atoms( $parameters, $residue_site );
+        hybridization( $parameters, $residue_site );
 
-        rotation_only( $residue_site );
+        rotation_only( $parameters, $residue_site );
 
-        replace_with_rotamer( $residue_site, $unique_residue_key, $angles );
+        replace_with_rotamer( $parameters, $residue_site, $unique_residue_key,
+                              $angles );
 
         for my $atom_id ( keys %{ $residue_site } ) {
             $atom_site->{$atom_id} = $residue_site->{$atom_id};

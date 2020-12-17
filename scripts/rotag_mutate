@@ -8,12 +8,14 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
-use Constants qw( $PI );
+use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use Moieties qw( replace_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
+                   obtain_pdbx_data
+                   raw2indexed
                    to_pdbx
                    unique_residue_key );
 use Version qw( $VERSION );
@@ -22,30 +24,28 @@ our $VERSION = $VERSION;
 
 Getopt::Long::Configure qw( gnu_getopt );
 
-#*rotag_mutate [options] -m <str> <file>...
+#*rotag_mutate [options] -m <mutations> [--] <cif-file>...
 #*    replace side-chain with specified moiety. Groups are needed to be specified
 #*    with rotag_select.
 #*
 #*Usage:
-#*    rotag_mutate -m 'ARG' input.cif > output.cif
-#*    rotag_mutate -m '1:ALA; 2:Lys' input.cif > output.cif
-#*    rotag_mutate -m '1:ASP, chi1=120, chi2=60' input.cif > output.cif
-#*    rotag_mutate -m '3:ALA; 5:SER, chi1=134.0' input.cif > output.cif
-#*    rotag_mutate -m 'SEC' -M moiety.cif input.cif > output.cif
+#*    rotag_mutate --mutate '1:ALA; 2:LYS' input.cif > output.cif
+#*    rotag_mutate --mutate '1:ASP, chi1=120, chi2=60' input.cif > output.cif
+#*    rotag_mutate --mutate '3:ALA; 5:SER, chi1=134.0' input.cif > output.cif
 #*
 #*Options:
-#*    -m, --mutate <str>         replaces selected side-chain with specified
-#*                               moiety.
+#*    -m, --mutate <mutations>
+#*                        replaces selected side-chain with specified moiety.
 #*
-#*                               E.g.: 'VAL', '2:VAL; 3:SER', 'SER, chi1=0.0',
-#*                               '1:ASP, chi1=0.0, chi2=150.0; 2:SER'.
-#*
-#*    -M, --import-moiety <file> use defined PDBx file where moiety atom site
-#*                               details are described.
-#*
-#*    -r, --radians              radians are used in --angles argument.
-#*
-#*    -v, --version              print version.
+#*                        Example: 'VAL', '2:VAL; 3:SER',
+#*                                 '1:ASP, chi1=0.0, chi2=150.0; 2:SER'.
+#*    -M, --import-moiety <cif-file>
+#*                        use defined PDBx file where moiety atom site details
+#*                        are described.
+#*    -r, --radians
+#*                        radians are used in --angles argument.
+#*    -v, --version
+#*                        print version.
 
 # --------------------------------- Options ----------------------------------- #
 
@@ -53,17 +53,31 @@ my $mutations = '';
 my $moiety_file='';
 my $in_radians = 0;
 
+local $SIG{__WARN__} = sub {
+    warning( { 'program' => $0,
+               'message' => @_,
+               'filename' => join( ', ', @ARGV ) } );
+};
+
+local $SIG{__DIE__} = sub {
+    error( { 'program' => $0,
+             'message' => @_,
+             'filename' => join( ', ', @ARGV ) } );
+};
+
 GetOptions(
     'mutate|m=s' => \$mutations,
     'import-moiety|M=s' => \$moiety_file,
-    'radians|r=s' => sub { $in_radians = 1; },
+    'radians|r' => sub { $in_radians = 1; },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
                             my ( $help_message ) = $_ =~ m/^#(\*.*)/;
-                            if( $help_message ) {$help_message =~ s/^\*$/ /smgx;}
-                            if( $help_message ) { $help_message =~ s/^\*//smgx; }
-                            if( $help_message ) { print $help_message, "\n"; }
+                            if( $help_message ) {
+                                $help_message =~ s/^\*$/ /smgx;
+                                $help_message =~ s/^\*//smgx;
+                                print $help_message, "\n";
+                            }
                         }
                         close $fh;
                         exit;
@@ -72,43 +86,50 @@ GetOptions(
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
 
+# ----------------------------------- Main ------------------------------------ #
+
+local @ARGV = ( q{-} ) unless @ARGV;
+
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+# Parsing mutation string.
 my @mutations;
+my @mutations_stmt;
 $mutations =~ s/\s//smxg;
-@mutations = split q{;}, $mutations;
+@mutations_stmt = split q{;}, $mutations;
 
-my @warnings;
-local $SIG{__WARN__} = sub {
-    push @warnings, @_;
-};
-
-my @errors;
-local $SIG{__DIE__} = sub {
-    push @errors, @_;
-};
-
-for( my $i = 0; $i <= $#mutations; $i++ ) {
-    my $statement = $mutations[$i];
+for( my $i = 0; $i <= $#mutations_stmt; $i++ ) {
+    my $statement = $mutations_stmt[$i];
 
     my $group_id;
     if( $statement =~ s/^(\w+)\:// ) {
         $group_id = $1;
+    } else {
+        # TODO: should allow to edit every amino acid if no group is present.
+        # However, only one statement has to be present.
+        warning( { 'program' => $0,
+                   'message' => 'selection group was not specified in ' .
+                                "'${statement}'\n" } );
+        next;
     }
 
     my $moiety;
     my %angles = ();
     foreach( split /,/, $statement ) {
-        if( $_ =~ m/^\w+=[-]?[0-9]+\.?[0-9]?$/ ) {
+        if( $_ =~ m/^[a-zA-Z0-9]+=[-]?[0-9]+[\\.]?[0-9]?/ ) {
             if( $in_radians ) {
                 my ( $angle_name, $angle_value ) = split /=/, $_;
                 $angles{$angle_name} = $angle_value;
             } else {
                 my ( $angle_name, $angle_value ) = split /=/, $_;
-                $angles{$angle_name} = $angle_value * $PI / 180.0;
+                $angles{$angle_name} = $angle_value * $pi / 180.0;
             }
-        } elsif( $_ =~ m/^\w+$/ ) {
+        } elsif( $_ =~ m/^[a-zA-Z0-9]+$/ ) {
             if( defined $moiety ) {
-                error({'message' =>
-                           "cannot mutate into multiple moieties: $moiety, $_"});
+                error( { 'program' => $0,
+                         'message' => 'cannot mutate into multiple moieties: ' .
+                                      "$moiety, $_\n"} );
             }
 
             $moiety = $_;
@@ -122,20 +143,16 @@ for( my $i = 0; $i <= $#mutations; $i++ ) {
     };
 }
 
-# ----------------------------------- Main ------------------------------------ #
-
-local @ARGV = ( q{-} ) unless @ARGV;
-
-try {
-
 for my $pdbx_file ( @ARGV ) {
-    # Reads file path, stdin and '-' operator.
-    my $atom_site;
-    $atom_site = obtain_atom_site( $pdbx_file );
+    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
+    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
 
-    if( ! %{ $atom_site } ) {
-        warning( { 'message' => "$pdbx_file is empty.\n" } );
-        exit;
+    my $atom_site = $pdbx->{'_atom_site'}{'data'};
+
+    if( ! defined $atom_site ) {
+        warning( { 'program' => $0,
+                   'message' => "no atom sites were detected.\n" } );
+        next;
     }
 
     my %append_moieties = ();
@@ -161,7 +178,7 @@ for my $pdbx_file ( @ARGV ) {
                  'filename' => $pdbx_file,
                  'message' =>
                      "no residues were selected. Use " .
-                     "rotag_select script to select residue(-s).\n" } );
+                     "'rotag_select' script to select residue(-s).\n" } );
     }
 
     if( @mutations ) {
@@ -177,13 +194,20 @@ for my $pdbx_file ( @ARGV ) {
             my $unique_residue_key =
                 unique_residue_key( $selected_atom_site->{$ca_atom_id} );
 
-            replace_with_moiety( $selected_atom_site,
+            replace_with_moiety( $parameters,
+                                 $selected_atom_site,
                                  $unique_residue_key,
                                  $mutations[$i]{'moiety'},
                                  { 'angles' => $mutations[$i]{'angles'},
                                    'append_moieties' => \%append_moieties } );
 
-            to_pdbx( { 'atom_site' => $selected_atom_site } );
+            my %current_pdbx = ();
+            $current_pdbx{'_atom_site'} = $pdbx->{'_atom_site'};
+            $current_pdbx{'_atom_site'}{'data'} = $selected_atom_site;
+            $current_pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+            $current_pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+
+            to_pdbx( \%current_pdbx );
         }
     } else {
         error( { 'program' => $0,
@@ -192,12 +216,3 @@ for my $pdbx_file ( @ARGV ) {
                               "option to achieve that.\n" } );
     }
 }
-
-} catch {
-    foreach( @warnings ) {
-        warning( { 'message' => "$_" } );
-    }
-    foreach( @errors ) {
-        error( { 'program' => $0, 'message' => "$_" } );
-    }
-};

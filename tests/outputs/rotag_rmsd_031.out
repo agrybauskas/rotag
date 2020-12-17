@@ -1,0 +1,35 @@
+data_rotag
+#
+loop_
+_[local]_rmsd.id
+_[local]_rmsd.group_1_id
+_[local]_rmsd.atom_1_id
+_[local]_rmsd.label_atom_1_id
+_[local]_rmsd.label_seq_1_id
+_[local]_rmsd.label_comp_1_id
+_[local]_rmsd.label_asym_1_id
+_[local]_rmsd.pdbx_PDB_model_num_1
+_[local]_rmsd.label_alt_1_id
+_[local]_rmsd.group_2_id
+_[local]_rmsd.atom_2_id
+_[local]_rmsd.label_atom_2_id
+_[local]_rmsd.label_seq_2_id
+_[local]_rmsd.label_comp_2_id
+_[local]_rmsd.label_asym_2_id
+_[local]_rmsd.pdbx_PDB_model_num_2
+_[local]_rmsd.label_alt_2_id
+_[local]_rmsd.value
+_[local]_rmsd.n_count
+1 1 1861 CG 235 ASP A 1 . 2 1876 CG 235 ASP A 1 144 0.342736 4
+2 1 1862 OD1 235 ASP A 1 . 2 1880 OD1 235 ASP A 1 144 0.528161 4
+3 1 1863 OD2 235 ASP A 1 . 2 1884 OD2 235 ASP A 1 144 0.429957 4
+4 1 1861 CG 235 ASP A 1 . 2 1865 CG 43 ASP A 1 145 29.398626 4
+5 1 1862 OD1 235 ASP A 1 . 2 1873 OD2 43 ASP A 1 145 27.675743 4
+6 1 1863 OD2 235 ASP A 1 . 2 1873 OD2 43 ASP A 1 145 29.721193 4
+7 1 291 CG 43 ASP A 1 . 2 1876 CG 235 ASP A 1 144 29.902268 4
+8 1 292 OD1 43 ASP A 1 . 2 1880 OD1 235 ASP A 1 144 28.700330 4
+9 1 293 OD2 43 ASP A 1 . 2 1880 OD1 235 ASP A 1 144 28.519603 4
+10 1 291 CG 43 ASP A 1 . 2 1867 CG 43 ASP A 1 147 0.160308 4
+11 1 292 OD1 43 ASP A 1 . 2 1871 OD1 43 ASP A 1 147 0.932460 4
+12 1 293 OD2 43 ASP A 1 . 2 1875 OD2 43 ASP A 1 147 0.508190 4
+#

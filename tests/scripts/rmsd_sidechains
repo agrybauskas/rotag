@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+
+use ForceField::Parameters;
+use Measure qw( rmsd_sidechains );
+
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
+
+#
+# Unit test: Measure::rmsd_sidechains
+# Example: ./rmsd_sidechains
+#
+
+my ( $pdbx_dump_file_1, $pdbx_dump_file_2, $is_best_case ) = @ARGV;
+
+my $atom_site_1;
+open( my $fh1, "<", $pdbx_dump_file_1 );
+while( <$fh1> ) {
+    $atom_site_1 .= "$_" ;
+}
+close( $fh1 );
+$atom_site_1 = eval( $atom_site_1 );
+
+my $atom_site_2;
+open( my $fh2, "<", $pdbx_dump_file_2 );
+while( <$fh2> ) {
+    $atom_site_2 .= "$_" ;
+}
+close( $fh2 );
+$atom_site_2 = eval( $atom_site_2 );
+
+my $parameters = Parameters->new();
+
+my $rmsd_data =
+    rmsd_sidechains( $parameters, $atom_site_1, $atom_site_2,
+                     { 'best_case' => $is_best_case } );
+
+for my $rmsd ( @{ $rmsd_data } ) {
+    print Dumper $rmsd;
+}

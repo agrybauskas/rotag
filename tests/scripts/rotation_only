@@ -5,7 +5,7 @@ use warnings;
 
 use Data::Dumper;
 
-use Constants qw( $SIG_FIGS_MIN );
+use ForceField::Parameters;
 use SidechainModels qw( rotation_only );
 
 $Data::Dumper::Indent = 1;
@@ -27,6 +27,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-rotation_only( $atom_site );
+my $parameters = Parameters->new();
+
+rotation_only( $parameters, $atom_site );
 
 print Dumper $atom_site->{$atom_id}{"conformation"};

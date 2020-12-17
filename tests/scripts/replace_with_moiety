@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $PI );
+use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use Moieties qw( replace_with_moiety );
 
@@ -22,6 +22,13 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-replace_with_moiety( $atom_site, $residue_unique_key, $moiety );
+my $parameters = Parameters->new();
 
-to_pdbx( { 'atom_site' => $atom_site } );
+replace_with_moiety( $parameters, $atom_site, $residue_unique_key, $moiety );
+
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} = $atom_site;
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+
+to_pdbx( \%pdbx );

@@ -5,6 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_ref_frame
+                     evaluate_matrix_of_functions
+                     matrix_of_functions
                      find_euler_angles
                      flatten
                      matrix_product
@@ -25,8 +27,7 @@ our @EXPORT_OK = qw( create_ref_frame
 
 use Carp qw( confess );
 use Clone qw( clone );
-use Constants qw( $EPSILON
-                  $PI );
+use ForceField::Parameters;
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -113,7 +114,10 @@ sub create_ref_frame
 
 sub find_euler_angles
 {
-    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) = @_;
+    my ( $parameters, $mid_atom_coord, $up_atom_coord, $side_atom_coord ) = @_;
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
     my $alpha_rad;
     my $beta_rad;
@@ -129,7 +133,7 @@ sub find_euler_angles
         sqrt( $local_ref_frame->[2][0] * $local_ref_frame->[2][0] +
               $local_ref_frame->[2][1] * $local_ref_frame->[2][1] );
 
-    if( $z_axis_in_xy_plane > $EPSILON ) {
+    if( $z_axis_in_xy_plane > $epsilon ) {
         $alpha_rad =
             atan2  $local_ref_frame->[1][0] * $local_ref_frame->[2][1] -
                    $local_ref_frame->[1][1] * $local_ref_frame->[2][0],
@@ -140,9 +144,8 @@ sub find_euler_angles
             - atan2 - $local_ref_frame->[2][0], $local_ref_frame->[2][1];
     } else {
         $alpha_rad = 0.;
-        $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : $PI;
-        $gamma_rad =
-            - atan2 $local_ref_frame->[0][1], $local_ref_frame->[0][0];
+        $beta_rad = ( $local_ref_frame->[2][2] > 0. ) ? 0. : $pi;
+        $gamma_rad = - atan2 $local_ref_frame->[0][1], $local_ref_frame->[0][0];
     }
 
     return [ $alpha_rad, $beta_rad, $gamma_rad ];
@@ -161,7 +164,8 @@ sub find_euler_angles
 
 sub switch_ref_frame
 {
-    my ( $mid_atom_coord,
+    my ( $parameters,
+         $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
          $switch_ref_to ) = @_;
@@ -169,7 +173,8 @@ sub switch_ref_frame
     # Rotation matrix to coordinating global reference frame properly.
     # Finding Euler angles necessary for rotation matrix.
     my ( $alpha_rad, $beta_rad, $gamma_rad ) =
-        @{ find_euler_angles( $mid_atom_coord,
+        @{ find_euler_angles( $parameters,
+                              $mid_atom_coord,
                               $up_atom_coord,
                               $side_atom_coord ) };
 
@@ -495,6 +500,38 @@ sub scalar_multipl
     }
 
     return \@matrix_multipl;
+}
+
+# ------------------------- Matrices with functions --------------------------- #
+
+sub matrix_of_functions
+{
+    my ( $function_ref, $rows, $cols ) = @_;
+    my @matrix_of_functions = ();
+    for my $row ( 0..$rows-1 ) {
+        for my $col ( 0..$cols-1 ) {
+            $matrix_of_functions[$row][$col] = $function_ref;
+        }
+    }
+    return \@matrix_of_functions;
+}
+
+sub evaluate_matrix_of_functions
+{
+    my ( $matrix_of_functions, $matrix_of_values ) = @_;
+    my @evaluated_matrix_of_functions = ();
+    for my $row ( 0..$#{ $matrix_of_functions } ) {
+        for my $col ( 0..$#{ $matrix_of_functions->[$row] } ) {
+            if( ! defined $matrix_of_values->[$row][$col] ) {
+                die "The number of items in value matrix is missing.\n";
+            }
+            $evaluated_matrix_of_functions[$row][$col] =
+                $matrix_of_functions->[$row][$col]->(
+                    $matrix_of_values->[$row][$col]
+                );
+        }
+    }
+    return \@evaluated_matrix_of_functions;
 }
 
 # ------------------------- Symbolic linear algebra --------------------------- #

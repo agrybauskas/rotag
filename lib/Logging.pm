@@ -8,6 +8,8 @@ our @EXPORT_OK = qw( error
                      info
                      warning );
 
+use File::Basename;
+
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -32,9 +34,9 @@ sub error
     $program =~ s/^.+\/(\w+)$/$1/gsxm;
 
     if( defined $filename ) {
-        print {*STDERR} "$type: $program: $filename - $message";
+        print {*STDERR} "$type: " . basename( $program ) . ": $filename - $message";
     } else {
-        print {*STDERR} "$type: $program: $message";
+        print {*STDERR} "$type: " . basename( $program ) . ": $message";
     }
 
     exit 1;
@@ -72,10 +74,10 @@ sub warning
     if( defined $filename && $filename eq '-' ) { $filename = 'STDIN'; }
 
     if( defined $filename ) {
-        print {*STDERR} "$type: $program: $filename - $message";
+        print {*STDERR} "$type: " . basename( $program ) . ": $filename - $message";
     } elsif( defined $program ) {
         $program =~ s/^.+\/(\w+)$/$1/gsxm;
-        print {*STDERR} "$type: $program: $message";
+        print {*STDERR} "$type: " . basename( $program ) . ": $message";
     } else {
         print {*STDERR} "$type: $message";
     }

@@ -1,0 +1,57 @@
+$VAR1 = {
+  '_audit_author' => {
+    'data' => [
+      '?',
+      '\'Zhang, J.\'',
+      '1',
+      '?',
+      '\'Qiu, C.\'',
+      '2',
+      '?',
+      '\'Hall, T.\'',
+      '3'
+    ],
+    'metadata' => {
+      'attributes' => [
+        'address',
+        'name',
+        'pdbx_ordinal'
+      ],
+      'is_loop' => 1,
+      'type' => 'raw'
+    }
+  },
+  '_audit_conform' => {
+    'data' => [
+      'mmcif_pdbx.dic'
+    ],
+    'metadata' => {
+      'attributes' => [
+        'dict_name'
+      ],
+      'is_loop' => 1,
+      'type' => 'raw'
+    }
+  },
+  '_entity_poly' => {
+    'data' => [
+      '
+;ETQPQMFFGVLDREELEYFKQAESTLQLDAFEAPEEKFQFVTSIIEEAKGKELKLVTSQITSKLMERVILECDETQLKDI
+FQSFNGVFFGLSCHKYASHVLETLFVRSAALVERELLTPSFDNNEKEGPYVTMENMFLFMLNELKPHLKTMMNHQYASHV
+LRLLILILSSKTLPNSTKANSTLRSKKSKIARKMIDIKDNDDFNKVYQTPESFKSELRDIITTLYKGFTNGAESRSDISQ
+STITKFREYSVDKVASPVIQLIIQVEGIFDRDRSFWRLVFNTADEKDPKEESFLEYLLSDPVGSHFLENVIGSARLKYVE
+RLYRLYMKDRIVKLAKRDTTGAFVVRALLEHLKEKDVKQILDAVVPELSMLLNSNMDFGTAIINTSNKQGGYLRDDVIAQ
+LIQKYYPEKSDAKNILESCLLLSASTLGNTRDDWPTAEERRRSVFLEQLIDYDDKFLNITIDSMLALPEERLIQMCYHGV
+FSHVVEHVLQTTRVDIIKRKMLLNILSKESVNLACNVYGSHIMDKLWEFTAKLTLYKERIARALVLETEKVKNSIYGRQV
+WKNWKLELYVRKMWDWKKLIKEQEFEIFPNSKPLQPKPEK
+;'
+    ],
+    'metadata' => {
+      'attributes' => [
+        'pdbx_seq_one_letter_code'
+      ],
+      'is_loop' => 1,
+      'type' => 'raw'
+    }
+  }
+};

@@ -4,8 +4,9 @@ use strict;
 use warnings;
 
 use ForceField::Bonded qw( torsion );
+use ForceField::Parameters;
 
-my ( $atom_i_id, $pdbx_dump_file ) = @ARGV;
+my ( $atom_i_id, $pdbx_dump_file, $debug ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -15,4 +16,7 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print torsion( $atom_i_id, { 'atom_site' => $atom_site } ), "\n";
+my $parameters = Parameters->new();
+
+print torsion( $parameters, $atom_i_id, { 'atom_site' => $atom_site,
+                                          'debug' => $debug } ),"\n";

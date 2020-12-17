@@ -9,7 +9,6 @@ our @EXPORT_OK = qw( sample_angles
 
 use POSIX;
 
-use Constants qw( $PI );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -28,34 +27,40 @@ our $VERSION = $VERSION;
 
 sub sample_angles
 {
-    my ( $angle_ranges, $small_angle, $angle_phase_shift ) = @_;
+    my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift, $rand_count ) = @_;
 
-    $angle_phase_shift //= -$PI;
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+    $angle_phase_shift //= - $pi;
 
     my @angles;
     my $min_angle;
     my $max_angle;
 
-    # Devides full circle (2*pi) into even intervals by $small_angle value.
-    $small_angle = # Adjusts angle so, it could be devided evenly.
-        2 * $PI / floor( 2 * $PI / $small_angle );
-    my @small_angles =
-        map { $_ * $small_angle + $angle_phase_shift }
-            ( 0..( floor( 2 * $PI / $small_angle ) - 1 ) );
+    if( defined $rand_count ) {
 
-    # Iterates around the circle and adds evenly spaced angles, if they are
-    # inside intervals ($angle_ranges).
-    for my $angle ( @small_angles ) {
-        # TODO: might speed up calculation by eliminating previous elements
-        # from $angle_ranges array.
-        for my $angle_range ( @{ $angle_ranges } ) {
-            $min_angle = $angle_range->[0];
-            $max_angle = $angle_range->[1];
-            if( $angle >= $min_angle && $angle <= $max_angle ) {
-                push @angles, $angle;
-                last;
-            } elsif( $min_angle == $max_angle ) {
-                push @angles, $min_angle;
+    } else {
+        # Devides full circle (2*pi) into even intervals by $small_angle value.
+        $small_angle = # Adjusts angle so, it could be devided evenly.
+            2 * $pi / floor( 2 * $pi / $small_angle );
+        my @small_angles =
+            map { $_ * $small_angle + $angle_phase_shift }
+                ( 0..( floor( 2 * $pi / $small_angle ) - 1 ) );
+
+        # Iterates around the circle and adds evenly spaced angles, if they are
+        # inside intervals ($angle_ranges).
+        for my $angle ( @small_angles ) {
+            # TODO: might speed up calculation by eliminating previous elements
+            # from $angle_ranges array.
+            for my $angle_range ( @{ $angle_ranges } ) {
+                $min_angle = $angle_range->[0];
+                $max_angle = $angle_range->[1];
+                if( $angle >= $min_angle && $angle <= $max_angle ) {
+                    push @angles, $angle;
+                    last;
+                } elsif( $min_angle == $max_angle ) {
+                    push @angles, $min_angle;
+                }
             }
         }
     }
@@ -77,7 +82,9 @@ sub sample_angles
 
 sub sample_angles_qs_parsing
 {
-    my ( $query_string, $in_radians, $small_angle ) = @_;
+    my ( $parameters, $query_string, $in_radians, $small_angle ) = @_;
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     $query_string =~ s/\s//g;
     $small_angle = 36.0;
@@ -107,18 +114,20 @@ sub sample_angles_qs_parsing
         }
 
         $angle_name //= '*';
-        $angle_start //= -180.0;
+        $angle_start //= - 180.0;
         $angle_step //= $small_angle;
         $angle_end //= 180.0;
 
         if( $in_radians ) {
             $angles{$angle_name} =
-                sample_angles( [ [ $angle_start, $angle_end ] ], $angle_step );
+                sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
+                               $angle_step );
         } else {
             $angles{$angle_name} =
-                sample_angles( [ [ $angle_start * $PI / 180.0,
-                                   $angle_end * $PI / 180.0 ] ],
-                                   $angle_step * $PI / 180.0 );
+                sample_angles( $parameters,
+                               [ [ $angle_start * $pi / 180.0,
+                                   $angle_end * $pi / 180.0 ] ],
+                               $angle_step * $pi / 180.0 );
         }
     }
 

@@ -1,0 +1,42 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 836 O OG . SER A 1 107 -36.748 46.362 16.977 1 T 1
+ATOM 7349 O OG B SER B 1 318 9.317 -46.931 -4.566 1 T 1
+#
+loop_
+_[local]_dihedral_angle.id
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.label_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.pdbx_PDB_model_num
+_[local]_dihedral_angle.label_alt_id
+_[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
+_[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
+_[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
+_[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_4_id
+_[local]_dihedral_angle.type
+_[local]_dihedral_angle.value
+_[local]_dihedral_angle.units
+1 SER 107 A 1 . 831 N 832 CA 835 CB 836 OG chi1 51.558 degrees
+2 SER 318 B 1 B 7341 N 7343 CA 7347 CB 7349 OG chi1 -56.795 degrees
+#

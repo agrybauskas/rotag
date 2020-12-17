@@ -1,5 +1,8 @@
 package Symbolic;
 
+use strict;
+use warnings;
+
 sub new
 {
     my ( $class, $args ) = @_;

@@ -15,7 +15,11 @@ use PDBxParser qw( obtain_atom_sites
 
 foreach my $pdbx_file ( @ARGV ) {
     my $atom_sites = obtain_atom_sites( $pdbx_file );
-    foreach( @{ $atom_sites } ) {
-        to_pdbx( { "atom_site" => $_ } );
+    for my $atom_site ( @{ $atom_sites } ) {
+        my %pdbx =();
+        $pdbx{'_atom_site'}{'data'} = $atom_site;
+        $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+        $pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+        to_pdbx( \%pdbx );
     }
 }

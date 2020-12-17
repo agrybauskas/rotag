@@ -1,0 +1,22 @@
+data_rotag
+#
+loop_
+_[local]_rmsd.id
+_[local]_rmsd.group_1_id
+_[local]_rmsd.label_seq_1_id
+_[local]_rmsd.label_comp_1_id
+_[local]_rmsd.label_asym_1_id
+_[local]_rmsd.pdbx_PDB_model_num_1
+_[local]_rmsd.label_alt_1_id
+_[local]_rmsd.group_2_id
+_[local]_rmsd.label_seq_2_id
+_[local]_rmsd.label_comp_2_id
+_[local]_rmsd.label_asym_2_id
+_[local]_rmsd.pdbx_PDB_model_num_2
+_[local]_rmsd.label_alt_2_id
+_[local]_rmsd.value
+1 1 219 ASP A 1 2 2 219 ASP A 1 4 0.859
+2 1 219 ASP A 1 2 2 219 ASP A 1 5 0.859
+3 1 219 ASP A 1 3 2 219 ASP A 1 4 0.452
+4 1 219 ASP A 1 3 2 219 ASP A 1 5 0.859
+#

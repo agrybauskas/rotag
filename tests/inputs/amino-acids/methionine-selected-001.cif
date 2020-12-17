@@ -1,0 +1,27 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 3847 N N . MET A 1 523 2.774 -42.358 35.000 1 I ?
+ATOM 3848 C CA . MET A 1 523 1.615 -42.528 34.128 1 I ?
+ATOM 3849 C C . MET A 1 523 1.728 -41.622 32.926 1 I ?
+ATOM 3850 O O . MET A 1 523 1.367 -42.016 31.816 1 I ?
+ATOM 3851 C CB . MET A 1 523 0.290 -42.247 34.888 1 I ?
+ATOM 3852 C CG . MET A 1 523 0.047 -43.286 35.998 1 I ?
+ATOM 3853 S SD . MET A 1 523 0.109 -45.023 35.430 1 I ?
+ATOM 3854 C CE . MET A 1 523 -1.117 -44.972 34.121 1 I ?
+#

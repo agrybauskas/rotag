@@ -1,0 +1,51 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 1417 C CG 2 ASP A 1 219 34.449 4.611 43.054 1 T 1
+ATOM 1418 C CG 3 ASP A 1 219 34.449 4.611 43.054 1 T 2
+ATOM 1419 C CG 4 ASP A 1 219 34.449 4.611 43.054 1 T 2
+ATOM 1420 C CG 5 ASP A 1 219 34.449 4.611 43.054 1 T 2
+ATOM 1444 O OD1 2 ASP A 1 219 34.072 5.513 43.832 1 T 1
+ATOM 1445 O OD1 3 ASP A 1 219 34.496 5.121 44.193 1 T 2
+ATOM 1446 O OD1 4 ASP A 1 219 35.038 4.710 44.151 1 T 2
+ATOM 1447 O OD1 5 ASP A 1 219 35.490 4.437 43.721 1 T 2
+ATOM 1471 O OD2 2 ASP A 1 219 35.549 4.651 42.460 1 T 1
+ATOM 1472 O OD2 3 ASP A 1 219 35.133 5.038 42.097 1 T 2
+ATOM 1473 O OD2 4 ASP A 1 219 34.597 5.445 42.133 1 T 2
+ATOM 1474 O OD2 5 ASP A 1 219 34.147 5.717 42.553 1 T 2
+#
+loop_
+_[local]_rotamer_angle.id
+_[local]_rotamer_angle.rotamer_id
+_[local]_rotamer_angle.label_seq_id
+_[local]_rotamer_angle.label_comp_id
+_[local]_rotamer_angle.label_asym_id
+_[local]_rotamer_angle.pdbx_PDB_model_num
+_[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
+_[local]_rotamer_angle.type
+_[local]_rotamer_angle.value
+10 5 219 ASP A 1 . 0.037037 chi2 -0.628319
+3 2 219 ASP A 1 . 0.037037 chi1 -2.513274
+4 2 219 ASP A 1 . 0.037037 chi2 -2.513274
+5 3 219 ASP A 1 . 0.037037 chi1 -2.513274
+6 3 219 ASP A 1 . 0.037037 chi2 -1.884956
+7 4 219 ASP A 1 . 0.037037 chi1 -2.513274
+8 4 219 ASP A 1 . 0.037037 chi2 -1.256637
+9 5 219 ASP A 1 . 0.037037 chi1 -2.513274
+#

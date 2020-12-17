@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use ForceField::Parameters;
 use Grammar::SelectionParser;
 use PDBxParser qw( filter_new
                    to_pdbx );
@@ -24,10 +25,18 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
+my $parameters = Parameters->new();
+
 my $selection_parser = new SelectionParser();
 my $selected_atom_ids = $selection_parser->parser( $atom_site,
-                                                   $selection_command );
+                                                   $selection_command,
+                                                   $parameters );
+
 my $selected_atom_site =
     filter_new( $atom_site, { 'include' => { 'id' => $selected_atom_ids } } );
 
-to_pdbx( { 'atom_site' => $selected_atom_site } );
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} = $selected_atom_site;
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+to_pdbx( \%pdbx );

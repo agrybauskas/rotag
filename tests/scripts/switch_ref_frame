@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 
-use Constants qw( $SIG_FIGS_MIN );
 use LinearAlgebra qw( switch_ref_frame );
+use ForceField::Parameters;
 
 #
 # Unit test: LinearAlgebra::switch_ref_frame.
@@ -26,12 +26,16 @@ while( <$fh> ) {
 }
 close( $fh );
 
+my $parameters = Parameters->new();
+my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
+
 my ( $ref_frame_coord ) =
-    @{ switch_ref_frame( $atom_coords[0],
+    @{ switch_ref_frame( $parameters,
+                         $atom_coords[0],
                          $atom_coords[1],
                          $atom_coords[2],
                          $ref_frame ) };
 
 for my $row ( @{ $ref_frame_coord } ) {
-    print( join( "\t", map { sprintf( $SIG_FIGS_MIN, $_ ) } @{ $row } ), "\n" );
+    print( join( "\t", map { sprintf( $sig_figs_min, $_ ) } @{ $row } ), "\n" );
 }

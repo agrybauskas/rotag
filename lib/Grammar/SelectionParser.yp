@@ -7,10 +7,9 @@
     use List::Util qw( any );
 
     use BondProperties qw( hybridization );
-    use ConnectAtoms qw( around_distance
-                         connect_atoms );
-    use Constants qw( $PI );
-    use Measure qw( all_dihedral );
+    use ConnectAtoms qw( connect_atoms );
+    use Measure qw( all_dihedral
+                    around_distance );
     use PDBxParser qw( extract
                        filter_by_unique_residue_key
                        filter_new );
@@ -66,7 +65,7 @@ exp
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' =>
                                      { 'label_atom_id' =>
-                                           \@Parameters::MAINCHAIN_ATOM_NAMES,
+                                           $_[0]->{USER}{PARAMETERS}{'_[local]_mainchain_atom_names'},
                                        'group_PDB' => [ 'ATOM' ] },
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
@@ -76,7 +75,7 @@ exp
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' =>
                                      { 'label_atom_id' =>
-                                           \@Parameters::SIDECHAIN_ATOM_NAMES,
+                                           $_[0]->{USER}{PARAMETERS}{'_[local]_sidechain_atom_names'},
                                        'group_PDB' => [ 'ATOM' ] },
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
@@ -182,7 +181,29 @@ exp
             } else {
                 unshift( @ids, '!' );
                 $around_atom_site =
-                    around_distance( $_[0]->{USER}{ATOM_SITE},
+                    around_distance( $_[0]->{USER}{PARAMETERS},
+                                     $_[0]->{USER}{ATOM_SITE},
+                                     { 'id' => $_[1] },
+                                     $_[3] );
+                return extract( $around_atom_site,
+                                { 'data' => [ 'id' ],
+                                  'is_list' => 1 } );
+            }
+        }
+    | exp 'around' FLOAT
+        {
+            my @ids = @{ $_[1] };
+            my $around_atom_site;
+            my $atom_specifier;
+            if( $ids[0] eq '!' ) {
+            #   # TODO: should look how to deal with negations.
+            #   shift( @ids );
+            #   return \@ids;
+            } else {
+                unshift( @ids, '!' );
+                $around_atom_site =
+                    around_distance( $_[0]->{USER}{PARAMETERS},
+                                     $_[0]->{USER}{ATOM_SITE},
                                      { 'id' => $_[1] },
                                      $_[3] );
                 return extract( $around_atom_site,
@@ -194,12 +215,18 @@ exp
         {
             srand( $_[0]->{USER}{SEED} );
             my @ids = sort { $a <=> $b } @{ $_[1] };
-            my @rand_ids;
-            if( scalar( @ids ) < $_[3] ) {
-                die( "List of $#ids atoms is smaller than the request of " .
-                     "$_[3] atoms." );
+            my @rand_ids = ();
+            my $rand_count = $_[3];
+            if( scalar( @ids ) < $rand_count ) {
+                if( ! @ids ) {
+                    return [];
+                } else {
+                    warn( "List of $#ids atoms is smaller than the request of " .
+                          "$rand_count atoms." );
+                    $rand_count = scalar( @ids );
+                }
             }
-            foreach( 1..$_[3] ) {
+            foreach( 1..$rand_count ) {
                 my $rand_idx = rand( $#ids );
                 push( @rand_ids, $ids[$rand_idx] );
                 splice( @ids, $rand_idx, 1 );
@@ -208,9 +235,12 @@ exp
         }
     | exp 'angles' map_ope
         {
+            my $parameters = $_[0]->{USER}{PARAMETERS};
+            my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
             my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
-            connect_atoms( $clone_atom_site );
-            hybridization( $clone_atom_site );
+            connect_atoms( $parameters, $clone_atom_site );
+            hybridization( $parameters, $clone_atom_site );
 
             my $dihedral_angles =
                 all_dihedral(
@@ -223,8 +253,8 @@ exp
             for my $residue_unique_key ( %{ $dihedral_angles } ) {
                 my $is_valid_angle = 0;
                 for my $angle ( keys %{ $_[3] } ) {
-                    my $min_angle = $_[3]->{$angle}{'min'} * $PI / 180;
-                    my $max_angle = $_[3]->{$angle}{'max'} * $PI / 180;
+                    my $min_angle = $_[3]->{$angle}{'min'} * $pi / 180;
+                    my $max_angle = $_[3]->{$angle}{'max'} * $pi / 180;
                     my $residue_angle;
                     if( exists $dihedral_angles->{$residue_unique_key}
                                                  {$angle}{'value'} &&
@@ -262,14 +292,41 @@ exp
         }
     | 'expand' exp
         {
-            my $clone_atom_site = clone( $_[0]->{USER}{ATOM_SITE} );
-            connect_atoms( $clone_atom_site );
+            my $filtered_atom_site =
+                filter_new( $_[0]->{USER}{ATOM_SITE},
+                            { 'include' => { 'id' => $_[2] } } );
+            my $surrounding_atom_site = around_distance(
+                $_[0]->{USER}{PARAMETERS},
+                $_[0]->{USER}{ATOM_SITE},
+                { 'id' => $_[2] },
+                $_[0]->{USER}{PARAMETERS}{'_[local]_constants'}
+                                         {'edge_length_connection'}
+            );
+            my $possibly_connected_atom_site = {
+                %{ $filtered_atom_site },
+                %{ $surrounding_atom_site }
+            };
 
-            my @expanded_atom_ids = ();
-            for my $atom_id ( @{ $_[2] } ) {
-                push @expanded_atom_ids, $atom_id;
-                push @expanded_atom_ids,
-                    @{ $clone_atom_site->{$atom_id}{'connections'} };
+            connect_atoms( $_[0]->{USER}{PARAMETERS},
+                           $possibly_connected_atom_site );
+
+            my @expanded_atom_ids = ( @{ $_[2] } );
+            my %visited_surrounding_atom_ids = ();
+            for my $surrounding_atom_id ( keys %{ $surrounding_atom_site } ) {
+                my $connections =
+                    $surrounding_atom_site->{$surrounding_atom_id}
+                                            {'connections'};
+                if( defined $connections ) {
+                    for my $connection_atom_id ( @{ $connections } ) {
+                        if( exists $filtered_atom_site->{$connection_atom_id} &&
+                            ! exists $visited_surrounding_atom_ids{$connection_atom_id} ) {
+                            push @expanded_atom_ids, $surrounding_atom_id;
+                            last;
+                        }
+                    }
+                }
+
+                $visited_surrounding_atom_ids{$surrounding_atom_id} = 1;
             }
 
             return [ @expanded_atom_ids ];
@@ -281,10 +338,24 @@ exp
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
         }
+    | 'authchain' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'auth_asym_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
     | 'resid' num_ope
         {
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' => { 'label_seq_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
+    | 'authresid' num_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'auth_seq_id' => $_[2] },
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
         }
@@ -378,8 +449,12 @@ sub lexer
             return ( ':', $1 );
         } elsif( s/^(resid)// ) {
             return ( 'resid', $1 );
+        } elsif( s/^(authresid)// ) {
+            return ( 'authresid', $1 );
         } elsif(s/^(chain)//) {
             return ( 'chain', $1 );
+        } elsif(s/^(authchain)//) {
+            return ( 'authchain', $1 );
         } elsif(s/^(all)//) {
             return ( 'all', $1 );
         } elsif(s/^(mainchain)//) {
@@ -416,7 +491,7 @@ sub lexer
             return ( 'FLOAT', $1 );
         } elsif( s/^([0-9]+)// ) {
             return ( 'NUM', $1 );
-        } elsif( s/^(\w+)// ) {
+        } elsif( s/^(\w+|\.)(?!\.)// ) {
             return ( 'STR', $1 );
         } elsif( s/^(,)// ) {
             return ( ',', $1 );
@@ -452,12 +527,13 @@ sub debugger
 
 sub parser
 {
-    my ( $self, $atom_site, $input, $options ) = @_;
+    my ( $self, $atom_site, $input, $parameters, $options ) = @_;
 
     my ( $seed, $group_id  ) = ( $options->{'seed'}, $options->{'group_id'} );
 
     $self->YYData->{INPUT} = $input;
     $self->YYData->{ATOM_SITE} = $atom_site;
+    $self->YYData->{PARAMETERS} = $parameters;
     $self->YYData->{SEED} = $seed;
     $self->YYData->{GROUP_ID} = $group_id;
 

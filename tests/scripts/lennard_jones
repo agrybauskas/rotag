@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::NonBonded qw( lennard_jones );
+use ForceField::Parameters;
 
 my ( $atom_i_id, $atom_j_id, $pdbx_dump_file ) = @ARGV;
 
@@ -15,4 +16,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-print lennard_jones( $atom_site->{$atom_i_id}, $atom_site->{$atom_j_id} ), "\n";
+my $parameters = Parameters->new();
+
+print lennard_jones( $parameters,
+                     $atom_site->{$atom_i_id},
+                     $atom_site->{$atom_j_id} ), "\n";

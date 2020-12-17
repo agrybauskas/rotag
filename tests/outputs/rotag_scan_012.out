@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB
@@ -37,18 +37,74 @@ _[local]_rotamer_angle.label_comp_id
 _[local]_rotamer_angle.label_asym_id
 _[local]_rotamer_angle.pdbx_PDB_model_num
 _[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
-1 1 18 XAA A 1 A chi1 -3.141593
-2 2 18 XAA A 1 B chi1 -3.141593
-3 3 18 XAA A 2 . chi1 -3.141593
+_[local]_rotamer_angle.units
+1 1 18 XAA A 1 A 0.100000 chi1 -180.000 degrees
+2 2 18 XAA A 1 A 0.100000 chi1 -144.000 degrees
+3 3 18 XAA A 1 A 0.100000 chi1 -108.000 degrees
+4 4 18 XAA A 1 A 0.100000 chi1 -72.000 degrees
+5 5 18 XAA A 1 A 0.100000 chi1 -36.000 degrees
+6 6 18 XAA A 1 A 0.100000 chi1 0.000 degrees
+7 7 18 XAA A 1 A 0.100000 chi1 36.000 degrees
+8 8 18 XAA A 1 A 0.100000 chi1 72.000 degrees
+9 9 18 XAA A 1 A 0.100000 chi1 108.000 degrees
+10 10 18 XAA A 1 A 0.100000 chi1 144.000 degrees
+11 11 18 XAA A 1 B 0.100000 chi1 -180.000 degrees
+12 12 18 XAA A 1 B 0.100000 chi1 -144.000 degrees
+13 13 18 XAA A 1 B 0.100000 chi1 -108.000 degrees
+14 14 18 XAA A 1 B 0.100000 chi1 -72.000 degrees
+15 15 18 XAA A 1 B 0.100000 chi1 -36.000 degrees
+16 16 18 XAA A 1 B 0.100000 chi1 0.000 degrees
+17 17 18 XAA A 1 B 0.100000 chi1 36.000 degrees
+18 18 18 XAA A 1 B 0.100000 chi1 72.000 degrees
+19 19 18 XAA A 1 B 0.100000 chi1 108.000 degrees
+20 20 18 XAA A 1 B 0.100000 chi1 144.000 degrees
+21 21 18 XAA A 2 . 0.100000 chi1 -180.000 degrees
+22 22 18 XAA A 2 . 0.100000 chi1 -144.000 degrees
+23 23 18 XAA A 2 . 0.100000 chi1 -108.000 degrees
+24 24 18 XAA A 2 . 0.100000 chi1 -72.000 degrees
+25 25 18 XAA A 2 . 0.100000 chi1 -36.000 degrees
+26 26 18 XAA A 2 . 0.100000 chi1 0.000 degrees
+27 27 18 XAA A 2 . 0.100000 chi1 36.000 degrees
+28 28 18 XAA A 2 . 0.100000 chi1 72.000 degrees
+29 29 18 XAA A 2 . 0.100000 chi1 108.000 degrees
+30 30 18 XAA A 2 . 0.100000 chi1 144.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -0.204644
-2 2 composite -0.204644
-3 3 composite -0.204644
+1 1 composite -0.204634
+2 2 composite 0.405150
+3 3 composite 2.079443
+4 4 composite 0.150847
+5 5 composite 0.268816
+6 6 composite 1.234867
+7 7 composite 0.346835
+8 8 composite 0.005196
+9 9 composite 1.127542
+10 10 composite 0.749389
+11 11 composite -0.204634
+12 12 composite 0.405150
+13 13 composite 2.079443
+14 14 composite 0.150847
+15 15 composite 0.268816
+16 16 composite 1.234867
+17 17 composite 0.346835
+18 18 composite 0.005196
+19 19 composite 1.127542
+20 20 composite 0.749389
+21 21 composite -0.204634
+22 22 composite 0.405150
+23 23 composite 2.079443
+24 24 composite 0.150847
+25 25 composite 0.268816
+26 26 composite 1.234867
+27 27 composite 0.346835
+28 28 composite 0.005196
+29 29 composite 1.127542
+30 30 composite 0.749389
 #

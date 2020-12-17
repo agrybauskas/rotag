@@ -1,0 +1,22 @@
+rotag_mutate [options] -m <mutations> [--] <cif-file>...
+    replace side-chain with specified moiety. Groups are needed to be specified
+    with rotag_select.
+ 
+Usage:
+    rotag_mutate --mutate '1:ALA; 2:LYS' input.cif > output.cif
+    rotag_mutate --mutate '1:ASP, chi1=120, chi2=60' input.cif > output.cif
+    rotag_mutate --mutate '3:ALA; 5:SER, chi1=134.0' input.cif > output.cif
+ 
+Options:
+    -m, --mutate <mutations>
+                        replaces selected side-chain with specified moiety.
+ 
+                        Example: 'VAL', '2:VAL; 3:SER',
+                               '1:ASP, chi1=0.0, chi2=150.0; 2:SER'.
+    -M, --import-moiety <cif-file>
+                        use defined PDBx file where moiety atom site details
+                        are described.
+    -r, --radians
+                        radians are used in --angles argument.
+    -v, --version
+                        print version.

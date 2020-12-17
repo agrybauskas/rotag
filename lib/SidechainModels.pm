@@ -14,7 +14,7 @@ use BondProperties qw( rotatable_bonds );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( determine_residue_keys
-                   filter
+                   filter_new
                    filter_by_unique_residue_key );
 use Version qw( $VERSION );
 
@@ -33,7 +33,7 @@ our $VERSION = $VERSION;
 
 sub rotation_only
 {
-    my ( $atom_site ) = @_;
+    my ( $parameters, $atom_site ) = @_;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -76,18 +76,17 @@ sub rotation_only
 
                 my @mid_connections = # Excludes up atom.
                     grep { $_ ne $up_atom_id }
-                    @{ $residue_site->{$mid_atom_id}{'connections'} };
+                        @{ $residue_site->{$mid_atom_id}{'connections'} };
                 my @mid_connection_names = # Excludes up atom.
                     map { $residue_site->{$_}{'label_atom_id'} }
-                    @mid_connections;
+                        @mid_connections;
                 my $side_atom_name =
                     sort_atom_names( \@mid_connection_names )->[0];
                 my $side_atom_id =
-                    filter( { 'atom_site' => $residue_site,
-                              'include' =>
-                            { 'label_atom_id' => [ $side_atom_name ] },
-                              'data' => [ 'id' ],
-                              'is_list' => 1 } )->[0];
+                    filter_new( $residue_site,
+                            {  'include' =>
+                                   { 'label_atom_id' => [ $side_atom_name ] },
+                               'return_data' => 'id' } )->[0];
 
                 my $mid_atom_coord =
                     [ $residue_site->{$mid_atom_id}{'Cartn_x'},
@@ -105,7 +104,8 @@ sub rotation_only
             # Creates and appends matrices to a list of matrices that later
             # will be multiplied.
             push @transf_matrices,
-                 @{ bond_torsion( $mid_atom_coord,
+                 @{ bond_torsion( $parameters,
+                                  $mid_atom_coord,
                                   $up_atom_coord,
                                   $side_atom_coord,
                                   $angle_name ) };

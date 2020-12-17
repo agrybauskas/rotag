@@ -14,7 +14,26 @@ use PDBxParser qw( obtain_pdbx_line
 my ( $item_specifier, $pdbx_file ) = @ARGV;
 my @item_specifier = split( ",", $item_specifier );
 
-my $pdbx_line_data =
-    obtain_pdbx_line( $pdbx_file, \@item_specifier );
+@ARGV = ( $pdbx_file );
 
-to_pdbx( { 'pdbx_lines' => $pdbx_line_data } );
+# Slurp whole pdbx file.
+my @pdbxs = ();
+my $line_counter = 0;
+{
+    local $/ = '';
+    while( <> ) {
+        push @pdbxs, map { 'data_' . $_ }
+        grep { $_ ne '' }
+        split /(?<!\S)data_/, $_;
+        $line_counter++;
+    }
+}
+
+my @pdbx_line_data = ();
+for my $pdbx ( @pdbxs ) {
+    my $pdbx_line_data =
+        obtain_pdbx_line( [ $pdbx ], \@item_specifier );
+    push @pdbx_line_data, $pdbx_line_data;
+}
+
+to_pdbx( $pdbx_line_data[0] );

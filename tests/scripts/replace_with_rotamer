@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Constants qw( $PI );
+use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( replace_with_rotamer );
 
@@ -22,15 +22,23 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
 # Parses angles for pseudo-rotamers.
 my %angle_values = ( map { $_->[0] => $_->[1] }
                      map { [ split( " ", $_ ) ] }
                      split( "&", $angle_values ) );
 for my $angle_value ( keys %angle_values ) {
-    $angle_values{$angle_value} =~ s/pi/\$PI/g;
+    $angle_values{$angle_value} =~ s/pi/\$pi/g;
     $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
 }
 
-replace_with_rotamer( $atom_site, $residue_unique_key, \%angle_values );
+replace_with_rotamer($parameters,$atom_site,$residue_unique_key,\%angle_values);
 
-to_pdbx( { "atom_site" => $atom_site } );
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} = $atom_site;
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+
+to_pdbx( \%pdbx );

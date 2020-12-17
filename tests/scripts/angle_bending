@@ -6,6 +6,7 @@ use warnings;
 use Data::Dumper;
 
 use AlterMolecule qw( angle_bending );
+use ForceField::Parameters;
 
 $Data::Dumper::Indent = 1;
 $Data::Dumper::Sortkeys = 1;
@@ -24,8 +25,11 @@ while( <$fh> ){
 }
 close( $fh );
 
+my $parameters = Parameters->new();
+
 my $angle_bending_matrix =
-    angle_bending( $atom_coords[0],
+    angle_bending( $parameters,
+                   $atom_coords[0],
                    $atom_coords[1],
                    $atom_coords[2],
                    "psi",

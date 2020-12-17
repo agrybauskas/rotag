@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB
@@ -24,7 +24,7 @@ ATOM 7 C CD . GLN A 1 5 29.206 4.679 62.955 1
 ATOM 8 O OE1 . GLN A 1 5 28.618 4.166 61.995 1
 ATOM 9 N NE2 . GLN A 1 5 30.536 4.801 62.999 1
 #
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB

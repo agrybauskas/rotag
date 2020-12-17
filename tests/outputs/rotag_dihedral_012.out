@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _[local]_dihedral_angle.id
@@ -18,7 +18,7 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 XAA 18 A 1 A XA 3 CA 1 CB 2 CG 6 chi1 -112.802275 degrees
-2 XAA 18 A 1 B XA 3 CA 1 CB 2 CG 7 chi1 -112.802275 degrees
-3 XAA 18 A 2 . XA 11 CA 8 CB 9 CG 10 chi1 -112.802275 degrees
+1 XAA 18 A 1 A 3 XA 1 CA 2 CB 6 CG chi1 -112.802 degrees
+2 XAA 18 A 1 B 3 XA 1 CA 2 CB 7 CG chi1 -112.802 degrees
+3 XAA 18 A 2 . 11 XA 8 CA 9 CB 10 CG chi1 -112.802 degrees
 #

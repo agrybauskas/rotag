@@ -1,0 +1,345 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1 T
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1 T
+ATOM 3 O OG . XAA A 1 18 -54.133 -112.946 -5.723 1 T
+ATOM 4 H HG . XAA A 1 18 -54.389 -113.689 -5.105 1 T
+ATOM 5 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1 T
+ATOM 6 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1 T
+ATOM 7 O O . SER A 1 19 -54.903 -115.198 -3.857 1 S
+ATOM 8 O O . SER A 1 20 -51.150 -113.446 -5.056 1 S
+#
+loop_
+_[local]_rotamer_angle.id
+_[local]_rotamer_angle.rotamer_id
+_[local]_rotamer_angle.label_seq_id
+_[local]_rotamer_angle.label_comp_id
+_[local]_rotamer_angle.label_asym_id
+_[local]_rotamer_angle.pdbx_PDB_model_num
+_[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
+_[local]_rotamer_angle.type
+_[local]_rotamer_angle.value
+_[local]_rotamer_angle.units
+1 1 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+2 1 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+3 2 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+4 2 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+5 3 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+6 3 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+7 4 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+8 4 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+9 5 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+10 5 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+11 6 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+12 6 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+13 7 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+14 7 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+15 8 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+16 8 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+17 9 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+18 9 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+19 10 18 XAA A 1 . 0.010000 chi1 -3.141593 radians
+20 10 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+21 11 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+22 11 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+23 12 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+24 12 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+25 13 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+26 13 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+27 14 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+28 14 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+29 15 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+30 15 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+31 16 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+32 16 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+33 17 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+34 17 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+35 18 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+36 18 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+37 19 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+38 19 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+39 20 18 XAA A 1 . 0.010000 chi1 -2.513274 radians
+40 20 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+41 21 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+42 21 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+43 22 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+44 22 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+45 23 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+46 23 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+47 24 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+48 24 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+49 25 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+50 25 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+51 26 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+52 26 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+53 27 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+54 27 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+55 28 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+56 28 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+57 29 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+58 29 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+59 30 18 XAA A 1 . 0.010000 chi1 -1.884956 radians
+60 30 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+61 31 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+62 31 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+63 32 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+64 32 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+65 33 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+66 33 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+67 34 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+68 34 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+69 35 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+70 35 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+71 36 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+72 36 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+73 37 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+74 37 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+75 38 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+76 38 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+77 39 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+78 39 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+79 40 18 XAA A 1 . 0.010000 chi1 -1.256637 radians
+80 40 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+81 41 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+82 41 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+83 42 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+84 42 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+85 43 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+86 43 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+87 44 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+88 44 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+89 45 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+90 45 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+91 46 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+92 46 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+93 47 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+94 47 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+95 48 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+96 48 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+97 49 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+98 49 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+99 50 18 XAA A 1 . 0.010000 chi1 -0.628319 radians
+100 50 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+101 51 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+102 51 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+103 52 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+104 52 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+105 53 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+106 53 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+107 54 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+108 54 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+109 55 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+110 55 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+111 56 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+112 56 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+113 57 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+114 57 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+115 58 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+116 58 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+117 59 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+118 59 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+119 60 18 XAA A 1 . 0.010000 chi1 0.000000 radians
+120 60 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+121 61 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+122 61 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+123 62 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+124 62 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+125 63 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+126 63 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+127 64 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+128 64 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+129 65 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+130 65 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+131 66 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+132 66 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+133 67 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+134 67 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+135 68 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+136 68 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+137 69 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+138 69 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+139 70 18 XAA A 1 . 0.010000 chi1 0.628319 radians
+140 70 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+141 71 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+142 71 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+143 72 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+144 72 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+145 73 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+146 73 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+147 74 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+148 74 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+149 75 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+150 75 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+151 76 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+152 76 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+153 77 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+154 77 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+155 78 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+156 78 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+157 79 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+158 79 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+159 80 18 XAA A 1 . 0.010000 chi1 1.256637 radians
+160 80 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+161 81 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+162 81 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+163 82 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+164 82 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+165 83 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+166 83 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+167 84 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+168 84 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+169 85 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+170 85 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+171 86 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+172 86 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+173 87 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+174 87 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+175 88 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+176 88 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+177 89 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+178 89 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+179 90 18 XAA A 1 . 0.010000 chi1 1.884956 radians
+180 90 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+181 91 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+182 91 18 XAA A 1 . 0.010000 chi2 -3.141593 radians
+183 92 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+184 92 18 XAA A 1 . 0.010000 chi2 -2.513274 radians
+185 93 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+186 93 18 XAA A 1 . 0.010000 chi2 -1.884956 radians
+187 94 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+188 94 18 XAA A 1 . 0.010000 chi2 -1.256637 radians
+189 95 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+190 95 18 XAA A 1 . 0.010000 chi2 -0.628319 radians
+191 96 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+192 96 18 XAA A 1 . 0.010000 chi2 0.000000 radians
+193 97 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+194 97 18 XAA A 1 . 0.010000 chi2 0.628319 radians
+195 98 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+196 98 18 XAA A 1 . 0.010000 chi2 1.256637 radians
+197 99 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+198 99 18 XAA A 1 . 0.010000 chi2 1.884956 radians
+199 100 18 XAA A 1 . 0.010000 chi1 2.513274 radians
+200 100 18 XAA A 1 . 0.010000 chi2 2.513274 radians
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 1.331573
+2 2 composite 0.233566
+3 3 composite -0.778170
+4 4 composite -0.304660
+5 5 composite 2.974543
+6 6 composite 5.022375
+7 7 composite 5.206208
+8 8 composite 4.682988
+9 9 composite 3.937988
+10 10 composite 2.820351
+11 11 composite 0.985606
+12 12 composite 0.693428
+13 13 composite 1.066573
+14 14 composite 2.100631
+15 15 composite 3.567119
+16 16 composite 4.637647
+17 17 composite 4.346782
+18 18 composite 3.622263
+19 19 composite 2.849533
+20 20 composite 1.911192
+21 21 composite 0.847882
+22 22 composite 1.039402
+23 23 composite 1.720463
+24 24 composite 2.608753
+25 25 composite 3.660423
+26 26 composite 4.404682
+27 27 composite 3.919362
+28 28 composite 3.086370
+29 29 composite 2.271701
+30 30 composite 1.416625
+31 31 composite 0.709785
+32 32 composite 1.239273
+33 33 composite 2.040844
+34 34 composite 2.861521
+35 35 composite 3.764611
+36 36 composite 4.363561
+37 37 composite 3.755186
+38 38 composite 2.809433
+39 39 composite 1.891544
+40 40 composite 1.018417
+41 41 composite 1.677496
+42 42 composite 2.604358
+43 43 composite 3.556997
+44 44 composite 4.381735
+45 45 composite 5.222334
+46 46 composite 5.726286
+47 47 composite 4.994578
+48 48 composite 3.885186
+49 49 composite 2.760183
+50 50 composite 1.713363
+51 51 composite 3.427133
+52 52 composite 5.015439
+53 53 composite 6.236807
+54 54 composite 7.143101
+55 55 composite 7.966709
+56 56 composite 8.382859
+57 57 composite 7.488813
+58 58 composite 6.132496
+59 59 composite 4.674554
+60 60 composite 3.147440
+61 61 composite 0.151963
+62 62 composite 2.743393
+63 63 composite 4.428090
+64 64 composite 5.520934
+65 65 composite 6.363127
+66 66 composite 6.660024
+67 67 composite 5.489474
+68 68 composite 3.738398
+69 69 composite 2.025659
+70 70 composite 0.093286
+71 71 composite -0.931658
+72 72 composite 1.811310
+73 73 composite 4.134922
+74 74 composite 5.478870
+75 75 composite 6.297930
+76 76 composite 6.263859
+77 77 composite 4.293242
+78 78 composite 1.013746
+79 79 composite 0.137149
+80 80 composite -0.045166
+81 81 composite 6.110406
+82 82 composite 7.216182
+83 83 composite 9.665891
+84 84 composite 10.890386
+85 85 composite 11.333701
+86 86 composite 11.029332
+87 87 composite 10.545196
+88 88 composite 9.789310
+89 89 composite 8.259534
+90 90 composite 7.596108
+91 91 composite 6.687484
+92 92 composite 5.726408
+93 93 composite 6.519580
+94 94 composite 8.271797
+95 95 composite 9.368885
+96 96 composite 9.936864
+97 97 composite 10.414641
+98 98 composite 10.365617
+99 99 composite 9.840068
+100 100 composite 8.651656
+#

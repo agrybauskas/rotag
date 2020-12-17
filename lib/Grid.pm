@@ -11,8 +11,8 @@ our @EXPORT_OK = qw( create_box
 use List::Util qw( max
                    min );
 use Carp qw( confess );
-use Constants qw( $EDGE_LENGTH_CONNECTION );
-use PDBxParser qw( filter );
+use ForceField::Parameters;
+use PDBxParser qw( extract );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -74,19 +74,22 @@ sub create_box
 
 sub grid_box
 {
-    my ( $atom_site, $edge_length, $atom_ids, $options ) = @_;
+    my ( $parameters, $atom_site, $edge_length, $atom_ids, $options ) = @_;
     my ( $attributes ) = ( $options->{'attributes'} );
+
+    my $edge_length_connection =
+        $parameters->{'_[local]_constants'}{'edge_length_connection'};
 
     $attributes //= [ 'id' ];
 
     # Default value for edge length is two times greater than the largest
     # covalent radius.
-    $edge_length //= $EDGE_LENGTH_CONNECTION;
+    $edge_length //= $edge_length_connection;
 
     # Determines boundary box around all atoms.
     my $atom_data =
-        filter( { 'atom_site' => $atom_site,
-                  'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        extract( $atom_site,
+                 { 'data' => [ 'id', 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
     my @atom_coordinates = map { [ $_->[1], $_->[2], $_->[3] ] } @{ $atom_data };
     my $boundary_box = create_box( \@atom_coordinates );
 

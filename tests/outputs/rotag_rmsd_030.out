@@ -1,0 +1,1 @@
+Error: rotag_rmsd: ./tests/cases/../inputs/libraries/aspartic-acid-library-002.cif - no proper comparison was found. Try to use '--no-strict' in order to get more possible side-chains to compare to.

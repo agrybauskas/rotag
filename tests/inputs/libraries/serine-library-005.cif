@@ -1,0 +1,42 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 147 N N . SER A 1 18 -55.320 -109.795 -6.452 1 T
+ATOM 148 C CA . SER A 1 18 -54.128 -110.543 -6.071 1 T
+ATOM 149 C C . SER A 1 18 -53.415 -111.063 -7.316 1 T
+ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1 T
+ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 1 T
+ATOM 152 O OG . SER A 1 18 -54.962 -111.220 -3.896 1 T
+#
+loop_
+_[local]_rotamer_angle.id
+_[local]_rotamer_angle.rotamer_id
+_[local]_rotamer_angle.label_seq_id
+_[local]_rotamer_angle.label_comp_id
+_[local]_rotamer_angle.label_asym_id
+_[local]_rotamer_angle.pdbx_PDB_model_num
+_[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
+_[local]_rotamer_angle.type
+_[local]_rotamer_angle.value
+1 1 18 SER A 1 . 0.142857 chi1 -3.141593
+2 2 18 SER A 1 . 0.142857 chi1 -2.513274
+3 3 18 SER A 1 . 0.142857 chi1 -1.884956
+4 4 18 SER A 1 . 0.142857 chi1 -1.256637
+5 5 18 SER A 1 . 0.142857 chi1 -0.628319
+6 6 18 SER A 1 . 0.142857 chi1 0.628319
+7 7 18 SER A 1 . 0.142857 chi1 1.256637

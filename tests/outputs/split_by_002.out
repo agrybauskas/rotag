@@ -1,4 +1,4 @@
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB
@@ -26,7 +26,7 @@ ATOM 2177 C CZ A ARG A 1 315 41.836 -12.708 29.457 1
 ATOM 2179 N NH1 A ARG A 1 315 42.859 -11.949 29.829 1
 ATOM 2181 N NH2 A ARG A 1 315 41.616 -12.934 28.168 1
 #
-data_testing
+data_rotag
 #
 loop_
 _atom_site.group_PDB

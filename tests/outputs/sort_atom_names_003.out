@@ -1,0 +1,2 @@
+there is no such 'n' option when sorting atom names at tests/cases/../../lib/AtomProperties.pm line <row>.
+	AtomProperties::sort_atom_names(ARRAY(<hex>), HASH(<hex>)) called at ./tests/cases/../scripts/sort_atom_names line <row>.

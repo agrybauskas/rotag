@@ -1,0 +1,3 @@
+id,label_comp_id,label_seq_id,label_asym_id,pdbx_PDB_model_num,label_alt_id,atom_1_id,label_atom_1_id,atom_2_id,label_atom_2_id,atom_3_id,label_atom_3_id,atom_4_id,label_atom_4_id,type,value,units
+1,LEU,546,B,1,.,8409,N,8410,CA,8413,CB,8414,CG,chi1,177.191,degrees
+2,LEU,546,B,1,.,8410,CA,8413,CB,8414,CG,8415,CD1,chi2,69.334,degrees

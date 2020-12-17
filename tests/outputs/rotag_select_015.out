@@ -1,0 +1,81 @@
+rotag_select [options] [--] <cif-file>...
+    select and mark atoms of interest by adding selection state [T|S|I] to
+    _atom_site category in PDBx.
+ 
+Usage:
+    rotag_select \
+        --target 'resname ASP' --select 'resid 1..10' input.cif > output.cif
+    rotag_select \
+        --target 'model 5' \
+        --target 'model 10' input1.cif input2.cif > output.cif
+ 
+Options:
+    -t, --target <selection-query>
+                        command describing the residues that will be marked
+                        as target (T) (default: all).
+ 
+                        Selection keywords (equivalent PDBx category data
+                        items in parentheses):
+                            all       - all atoms;
+                            atomid    - atom id number;
+                            atomname  - atom name;
+                            atomtype  - atom symbol;
+                            resid     - residue id number;
+                            authresid - author residue id number;
+                            resname   - residue name;
+                            chain     - chain name;
+                            authchain - author chain name;
+                            altid     - alt atom id;
+                            model     - pdbx model num;
+                            mainchain - mainchain atoms;
+                            sidechain - sidechain atoms;
+                            hetatoms  - heteroatoms;
+                            target    - target atoms (--select uses
+                                        --target atoms and --target uses
+                                        target atoms described in a file).
+ 
+                        Selection operators:
+                            around - atoms around <int> angstroms;
+                            byres  - expands to residues;
+                            rand   - selects <int> number of atoms randomly;
+                            angles - assigns min <float> and max <float>
+                                     angle range where selected angles should
+                                     be in (e.g. angles 'chi1=90..160' or
+                                     'psi=60..70, phi=50..80');
+                            expand - expands the selection by one step that
+                                     follows the connections.
+ 
+                        List operators:
+                            .. - range of integers (e.g. 2..5 is 2,3,4,5);
+                            ,  - list of integers or keywords (e.g. 2,3 or
+                                 A,B).
+ 
+                        Map operators:
+                            = - assigns value to the string (e.g. chi1=1.0).
+ 
+                        Logical operators:
+                            && - and operator;
+                            || - or operator;
+                            !  - negation operator;
+                            () - parentheses;
+                            ;  - group/order selection separator.
+ 
+                        Annotation operator:
+                            : - assigns <int> or <str> as group id.
+    -s, --select <selection-query>
+                        command (same as --target) describing the atoms that
+                        will be marked as selected (S) (default: target).
+    --tags <tag>[,<tag>...]
+                        select PDBx tag that will be in the output
+                        (default: '_atom_site,_[local]_rotamer_angle,_[local]_dihedral_angle,_[local]_rotamer_energy,_[local]_pairwise_energy,_[local]_energy,_[local]_rmsd').
+    -r, --related-data
+                        only related data records from other categories are
+                        shown when '_atom_site' records are selected.
+    -p, --pdb
+                        input file is in PDB format.
+    -k, --keep-ignored
+                        keep ignored atoms.
+    -x, --rand-seed <int>
+                        set a seed for random (rand) selection.
+    -v, --version
+                        print version.

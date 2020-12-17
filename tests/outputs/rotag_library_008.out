@@ -1,0 +1,5 @@
+id,rotamer_id,label_seq_id,label_comp_id,label_asym_id,pdbx_PDB_model_num,label_alt_id,frequency,type,value,units
+1,1,572,LYS,B,1,.,1.000000,chi1,-180.000000,degrees
+2,1,572,LYS,B,1,.,1.000000,chi2,-180.000000,degrees
+3,1,572,LYS,B,1,.,1.000000,chi3,-180.000000,degrees
+4,1,572,LYS,B,1,.,1.000000,chi4,-180.000000,degrees

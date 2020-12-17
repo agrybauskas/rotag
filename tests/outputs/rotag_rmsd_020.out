@@ -1,0 +1,35 @@
+rotag_rmsd [options] --compare <compare-groups> [--] <cif-file>...
+    calculate rmsd between two groups of atoms.
+ 
+Usage:
+    rotag_rmsd --compare '1,2' input.cif > output.cif
+    rotag_rmsd -S --compare '3,4;6,7' input.cif > output.cif
+ 
+Options:
+    -c, --compare <group>,<group>[;<group>,<group>;...]
+                        compares atoms of the defined groups.
+ 
+                        Example: --compare '1, 2' or --compare '3, 4; 5, 7'.
+    -S, --side-chains
+                        compares only side-chain atoms agains other side-chain
+                        atoms.
+    -s, --strict
+                        compares only those side-chains that have matching
+                        '_atom_site.label_seq_id', '_atom_site.label_asym_id'
+                        and '_atom_site.pdbx_PDB_model_num' (default).
+        --no-strict
+                        switches of '--strict' mode.
+    -b, --best-case
+                        chooses best RMSD value of side-chain comparison.
+    -d, --decompose
+                        decompose RMSD value of the group to its constituents.
+    --tags <tag>[,<tag>...]
+                        select PDBx categories that will be in the output
+                        (default: '_atom_site,_[local]_rmsd,_[local]_rotamer_angle').
+    -r, --related-data
+                        only related data records from other categories are
+                        shown when '_atom_site' records are selected.
+    -F, --format <format>
+                        output format (default: pdbx | csv).
+    -v, --version
+                        print version.
