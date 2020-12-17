@@ -167,6 +167,11 @@ sub choose
     # for my $edge ( $interaction_graph->edges ) {
     #     print STDERR Dumper $edge;
     # }
+    use Data::Dumper;
+    for my $vertex ( $interaction_graph->vertices ) {
+        print STDERR Dumper $interaction_graph->get_edge_count($vertex);
+    }
+
 }
 
 1;
