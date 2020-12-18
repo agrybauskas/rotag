@@ -244,104 +244,104 @@ for my $pdbx_file ( @ARGV ) {
                                  'rand_count' => $rand_count }
                 } );
 
-        for my $residue_unique_key ( keys %{ $rotamer_library } ) {
-            $rotamer_library{$residue_unique_key} =
-                $rotamer_library->{$residue_unique_key};
-        }
+        # for my $residue_unique_key ( keys %{ $rotamer_library } ) {
+        #     $rotamer_library{$residue_unique_key} =
+        #         $rotamer_library->{$residue_unique_key};
+        # }
     }
 
-    if( ! %rotamer_library ) {
-        warning({'message' => "no possible rotamer solutions were detected.\n"});
-        exit;
-    }
+    # if( ! %rotamer_library ) {
+    #     warning({'message' => "no possible rotamer solutions were detected.\n"});
+    #     exit;
+    # }
 
-    # Collects residue angle and energy data.
-    $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'attributes'} =
-        [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
-          'units' ];
-    $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'attributes'} =
-        [ 'id', 'rotamer_id', 'calculation_method', 'value'];
-    $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
-    $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'type'} = 'record';
+    # # Collects residue angle and energy data.
+    # $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'attributes'} =
+    #     [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
+    #       'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
+    #       'units' ];
+    # $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'attributes'} =
+    #     [ 'id', 'rotamer_id', 'calculation_method', 'value'];
+    # $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
+    # $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
+    # $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
+    # $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'type'} = 'record';
 
-    my $angle_id = 1;
-    my $energy_id = 1;
-    my $rotamer_id = 1;
-    for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ){
-        my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
-            split /,/sxm, $residue_unique_key;
-        my @residue_name =
-            uniq( @{ filter( { 'atom_site' => $selected_atom_site,
-                               'include' =>
-                                   { 'label_seq_id' => [ $residue_id ],
-                                     'label_asym_id' => [ $residue_chain ],
-                                     'label_alt_id' => [ $residue_alt ],
-                                     'pdbx_PDB_model_num' => [ $pdbx_model ] },
-                               'data' => [ 'label_comp_id' ],
-                               'is_list' => 1 } ) } );
+    # my $angle_id = 1;
+    # my $energy_id = 1;
+    # my $rotamer_id = 1;
+    # for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ){
+    #     my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
+    #         split /,/sxm, $residue_unique_key;
+    #     my @residue_name =
+    #         uniq( @{ filter( { 'atom_site' => $selected_atom_site,
+    #                            'include' =>
+    #                                { 'label_seq_id' => [ $residue_id ],
+    #                                  'label_asym_id' => [ $residue_chain ],
+    #                                  'label_alt_id' => [ $residue_alt ],
+    #                                  'pdbx_PDB_model_num' => [ $pdbx_model ] },
+    #                            'data' => [ 'label_comp_id' ],
+    #                            'is_list' => 1 } ) } );
 
-        my $rotamer_frequency =
-            1 / scalar @{ $rotamer_library{$residue_unique_key} };
+    #     my $rotamer_frequency =
+    #         1 / scalar @{ $rotamer_library{$residue_unique_key} };
 
-        for my $rotamer ( @{ $rotamer_library{$residue_unique_key} } ) {
-            # Colects rotamer angle data.
-            for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
-                my $angle_value = $rotamer->{'angles'}{$angle_name};
-                push @{ $pdbx_data->{'_[local]_rotamer_angle'}{'data'} },
-                    { 'id' => $angle_id,
-                      'rotamer_id' => $rotamer_id,
-                      'label_seq_id' => $residue_id,
-                      'label_comp_id' => $residue_name[0],
-                      'label_asym_id' => $residue_chain,
-                      'pdbx_PDB_model_num' => $pdbx_model,
-                      'label_alt_id' => $residue_alt,
-                      'frequency' =>
-                          sprintf( $sig_figs_max, $rotamer_frequency ),
-                      'type' => $angle_name,
-                      'value' =>
-                          ( $in_radians ? sprintf( $sig_figs_max,
-                                                   $angle_value ) :
-                                          sprintf( $sig_figs_min,
-                                                   180.0 * $angle_value / $pi )),
-                      'units' =>
-                          ( $in_radians ? 'radians' : 'degrees' ) };
-                $angle_id++;
-            }
+    #     for my $rotamer ( @{ $rotamer_library{$residue_unique_key} } ) {
+    #         # Colects rotamer angle data.
+    #         for my $angle_name (sort { $a cmp $b } keys %{$rotamer->{'angles'}}){
+    #             my $angle_value = $rotamer->{'angles'}{$angle_name};
+    #             push @{ $pdbx_data->{'_[local]_rotamer_angle'}{'data'} },
+    #                 { 'id' => $angle_id,
+    #                   'rotamer_id' => $rotamer_id,
+    #                   'label_seq_id' => $residue_id,
+    #                   'label_comp_id' => $residue_name[0],
+    #                   'label_asym_id' => $residue_chain,
+    #                   'pdbx_PDB_model_num' => $pdbx_model,
+    #                   'label_alt_id' => $residue_alt,
+    #                   'frequency' =>
+    #                       sprintf( $sig_figs_max, $rotamer_frequency ),
+    #                   'type' => $angle_name,
+    #                   'value' =>
+    #                       ( $in_radians ? sprintf( $sig_figs_max,
+    #                                                $angle_value ) :
+    #                                       sprintf( $sig_figs_min,
+    #                                                180.0 * $angle_value / $pi )),
+    #                   'units' =>
+    #                       ( $in_radians ? 'radians' : 'degrees' ) };
+    #             $angle_id++;
+    #         }
 
-            # Colects rotamer energy data.
-            push @{ $pdbx_data->{'_[local]_rotamer_energy'}{'data'} },
-                { 'id' => $energy_id,
-                  'rotamer_id' => $rotamer_id,
-                  'calculation_method' => $rotamer->{'potential'},
-                  'value' =>
-                      sprintf $sig_figs_max,
-                              $rotamer->{'potential_energy_value'} };
+    #         # Colects rotamer energy data.
+    #         push @{ $pdbx_data->{'_[local]_rotamer_energy'}{'data'} },
+    #             { 'id' => $energy_id,
+    #               'rotamer_id' => $rotamer_id,
+    #               'calculation_method' => $rotamer->{'potential'},
+    #               'value' =>
+    #                   sprintf $sig_figs_max,
+    #                           $rotamer->{'potential_energy_value'} };
 
-            $energy_id++;
-            $rotamer_id++;
-        }
-    }
+    #         $energy_id++;
+    #         $rotamer_id++;
+    #     }
+    # }
 
-    if( $output_format eq 'pdbx' ) {
-        to_pdbx( $pdbx_data,
-                 { 'add_attributes' =>
-                       { '_atom_site' => [ '[local]_selection_state' ] },
-                   'tags' => \@tags } );
-    } elsif( $output_format eq 'csv' ) {
-            if( scalar @tags == 1 ) {
-                to_csv( $pdbx_data, { 'category' => $tags[0] } );
-            } else {
-                warning( { 'message' => "only one tag has to be chosen for " .
-                                        "CSV format.\n" } );
-                exit;
-            }
-    } else {
-        error(
-            { 'program' => $0,
-              'message' => "output format '${output_format}'" .
-                           " is not supported.\n" } );
-    }
+    # if( $output_format eq 'pdbx' ) {
+    #     to_pdbx( $pdbx_data,
+    #              { 'add_attributes' =>
+    #                    { '_atom_site' => [ '[local]_selection_state' ] },
+    #                'tags' => \@tags } );
+    # } elsif( $output_format eq 'csv' ) {
+    #         if( scalar @tags == 1 ) {
+    #             to_csv( $pdbx_data, { 'category' => $tags[0] } );
+    #         } else {
+    #             warning( { 'message' => "only one tag has to be chosen for " .
+    #                                     "CSV format.\n" } );
+    #             exit;
+    #         }
+    # } else {
+    #     error(
+    #         { 'program' => $0,
+    #           'message' => "output format '${output_format}'" .
+    #                        " is not supported.\n" } );
+    # }
 }
