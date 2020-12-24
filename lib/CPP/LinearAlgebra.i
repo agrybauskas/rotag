@@ -1,11 +1,11 @@
-%include LinearAlgebraCpp.i
+%include LinearAlgebra.i
 
-%module(package="LinearAlgebraCpp") "LinearAlgebraCpp"
+%module(package="LinearAlgebra") "LinearAlgebra"
 %{
-    #include "LinearAlgebraCpp.h"
+    #include "LinearAlgebra.h"
 %}
 
-%include "LinearAlgebraCpp.h"
+%include "LinearAlgebra.h"
 
 %perlcode %{
     use strict;

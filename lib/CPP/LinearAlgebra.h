@@ -1,5 +1,5 @@
-#ifndef _LINEARALGEBRACPP_H_
-#define _LINEARALGEBRACPP_H_
+#ifndef _LINEARALGEBRA_H_
+#define _LINEARALGEBRA_H_
 
 #include <map>
 #include <string>

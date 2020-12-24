@@ -15,11 +15,14 @@ ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 # Compiling CPP and linking to Perl5 with SWIG.
 #
 
+# ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
+# 	g++ -c -I${CPP_DIR} $< -o $@
+# CPP_OBJS=${CPP_FILES:%.cpp=%.o}
+
 CPP_DIR=${LIB_DIR}/CPP
 CPP_FILES=${wildcard ${CPP_DIR}/*.cpp}
-CPP_OBJS=${CPP_FILES:%.cpp=%.o}
+CPP_OBJS=${CPP_FILES:%.i=%.o}
 CPP_LIBS=-lboost_regex
-CPP_OBJS=${SWIG_FILES:%.i=%.o}
 SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
 PM_FILES=${SWIG_FILES:%.i=%.pm}
 WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
@@ -33,27 +36,21 @@ CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
 
 .PRECIOUS: ${CPP_OBJS}
 
-${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
-	g++ -c -I${CPP_DIR} $< -o $@
-
-${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
+%.pm: %.i
 	swig -c++ -perl $<
 
-${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
+%_wrap.cxx: %.i
 	swig -c++ -perl $<
 
-${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
+%.o: %.cpp
 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
 
-${CPP_DIR}/%_wrap.o: ${CPP_DIR}/%_wrap.cxx
+%_wrap.o: %_wrap.cxx
 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
 	    -o $@
 
-${CPP_DIR}/%.so: ${CPP_DIR}/%_wrap.o ${CPP_DIR}/%.o
+%.so: %_wrap.o %.o
 	g++ -shared $^ -o $@
-
-${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp ${CPP_OBJS}
-	g++ $< -I${CPP_DIR} -o $@ ${CPP_OBJS} ${CPP_LIBS}
 
 #
 # Generate Perl modules.
@@ -88,7 +85,7 @@ ${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} plugins | ${CPP_OBJS} ${CPP_TEST_BINS}
+all: ${GRAMMAR_MODULES} plugins | ${CPP_OBJS} ${PM_FILES} ${WRAP_OBJS} ${SHARED_OBJS}
 
 #
 # Instalation of dependencies.
@@ -198,7 +195,6 @@ cleanAll distclean: clean
 	rm -f ${CPP_OBJS}
 	rm -f ${CPP_TEST_BINS}
 	rm -f ${SHARED_OBJS}
-	rm -f ${CPP_OBJS}
 	rm -f ${WRAP_FILES}
-	rm -f ${CPP_TEST_BINS}
+	rm -f ${WRAP_OBJS}
 	rm -f ${PLUGINS_ZIP}
