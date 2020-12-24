@@ -19,12 +19,12 @@ CPP_DIR=${LIB_DIR}/CPP
 CPP_FILES=${wildcard ${CPP_DIR}/*.cpp}
 CPP_OBJS=${CPP_FILES:%.cpp=%.o}
 CPP_LIBS=-lboost_regex
-# CPP_OBJS=${SWIG_FILES:%.i=%.o}
-# SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
-# PM_FILES=${SWIG_FILES:%.i=%.pm}
-# WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
-# WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
-# SHARED_OBJS=${CPP_OBJS:%.o=%.so}
+CPP_OBJS=${SWIG_FILES:%.i=%.o}
+SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
+PM_FILES=${SWIG_FILES:%.i=%.pm}
+WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
+WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
+SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
 CPP_TEST_SRC=tests/src
 CPP_TEST_BIN=tests/bin
@@ -36,21 +36,21 @@ CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
 ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
 	g++ -c -I${CPP_DIR} $< -o $@
 
-# ${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
-# 	swig -c++ -perl $<
+${CPP_DIR}/%.pm: ${CPP_DIR}/%.i
+	swig -c++ -perl $<
 
-# ${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
-# 	swig -c++ -perl $<
+${CPP_DIR}/%_wrap.cxx: ${CPP_DIR}/%.i
+	swig -c++ -perl $<
 
-# ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
-# 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
+${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
+	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
 
-# ${CPP_DIR}/%_wrap.o: ${CPP_DIR}/%_wrap.cxx
-# 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
-# 	    -o $@
+${CPP_DIR}/%_wrap.o: ${CPP_DIR}/%_wrap.cxx
+	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
+	    -o $@
 
-# ${CPP_DIR}/%.so: ${CPP_DIR}/%_wrap.o ${CPP_DIR}/%.o
-# 	g++ -shared $^ -o $@
+${CPP_DIR}/%.so: ${CPP_DIR}/%_wrap.o ${CPP_DIR}/%.o
+	g++ -shared $^ -o $@
 
 ${CPP_TEST_BIN}/%: ${CPP_TEST_SRC}/%.cpp ${CPP_OBJS}
 	g++ $< -I${CPP_DIR} -o $@ ${CPP_OBJS} ${CPP_LIBS}
