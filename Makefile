@@ -21,10 +21,10 @@ ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 
 LIB_DIR=lib
 CPP_DIR=${LIB_DIR}/CPP
-CPP_FILES=${wildcard ${CPP_DIR}/*.cpp}
-CPP_OBJS=${CPP_FILES:%.i=%.o}
-CPP_LIBS=-lboost_regex
 SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
+CPP_FILES=${SWIG_FILES:%.i=%.cpp}
+CPP_OBJS=${SWIG_FILES:%.i=%.o}
+CPP_LIBS=-lboost_regex
 PM_FILES=${SWIG_FILES:%.i=%.pm}
 WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
 WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
@@ -162,9 +162,9 @@ cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${PERL_MODULE}
 	rm -f ${PERL_FORCE_FIELD_MODULE}
-	# rm -f ${CPP_OBJS}
-	# rm -f ${CPP_TEST_BINS}
-	# rm -f ${SHARED_OBJS}
+	rm -f ${CPP_OBJS}
+	rm -f ${CPP_TEST_BINS}
+	rm -f ${SHARED_OBJS}
 	rm -f ${WRAP_FILES}
 	rm -f ${WRAP_OBJS}
 	rm -f ${PLUGINS_ZIP}
