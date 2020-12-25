@@ -230,6 +230,7 @@ for my $pdbx_file ( @ARGV ) {
                                     { 'exclude_dot' => 1 } );
 
         # Starts generating rotamer library.
+        # PseudoAtomsc::generate_library()
         # my $rotamer_library =
         #     generate_library(
         #         { 'parameters' => $parameters,
