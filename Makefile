@@ -51,7 +51,7 @@ SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 	    -o $@
 
 %.so: %_wrap.o %.o
-	g++ -shared $^ -o $@
+	g++ -shared $^ -L ${CPP_DIR} -o $@
 
 .PHONY: all
 
