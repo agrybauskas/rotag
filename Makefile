@@ -19,6 +19,7 @@ ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 # 	g++ -c -I${CPP_DIR} $< -o $@
 # CPP_OBJS=${CPP_FILES:%.cpp=%.o}
 
+LIB_DIR=lib
 CPP_DIR=${LIB_DIR}/CPP
 CPP_FILES=${wildcard ${CPP_DIR}/*.cpp}
 CPP_OBJS=${CPP_FILES:%.i=%.o}
@@ -29,10 +30,10 @@ WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
 WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
 SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
-CPP_TEST_SRC=tests/src
-CPP_TEST_BIN=tests/bin
-CPP_TEST_FILES=${wildcard ${CPP_TEST_SRC}/*.cpp}
-CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
+# CPP_TEST_SRC=tests/src
+# CPP_TEST_BIN=tests/bin
+# CPP_TEST_FILES=${wildcard ${CPP_TEST_SRC}/*.cpp}
+# CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
 
 .PRECIOUS: ${CPP_OBJS}
 
@@ -51,37 +52,6 @@ CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
 
 %.so: %_wrap.o %.o
 	g++ -shared $^ -o $@
-
-#
-# Generate Perl modules.
-#
-
-LIB_DIR=lib
-TOOLS_DIR=tools
-PERL_TEMPLATE=${LIB_DIR}/Constants.pmin
-PERL_MODULE=${LIB_DIR}/Constants.pm
-
-${PERL_MODULE}: ${PERL_TEMPLATE}
-	sed 's/@PI@/'$$(${TOOLS_DIR}/calculate-pi)'/g' $^ \
-	    | sed 's/@EPSILON@/'$$(${TOOLS_DIR}/calculate-epsilon)'/g' \
-	    > $@
-
-#
-# Generate force field module.
-#
-
-LIB_FORCE_FIELD_DIR=lib/ForceField
-TOOLS_DIR=tools
-PERL_FORCE_FIELD_TEMPLATE=${LIB_FORCE_FIELD_DIR}/Parameters.pmin
-PERL_FORCE_FIELD_CIF=${LIB_FORCE_FIELD_DIR}/parameters.cif
-PERL_FORCE_FIELD_MODULE=${LIB_FORCE_FIELD_DIR}/Parameters.pm
-
-${PERL_FORCE_FIELD_MODULE}: ${PERL_FORCE_FIELD_TEMPLATE} ${PERL_FORCE_FIELD_CIF}
-	cat $(word 1, $^) > $@
-	${TOOLS_DIR}/generate-force-field $(word 2, $^) >> $@
-	sed -i 's/\$$/our \$$/g' $@
-	sed -i 's/%/our %/g' $@
-	sed -i 's/@/our @/g' $@
 
 .PHONY: all
 
@@ -192,9 +162,9 @@ cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${PERL_MODULE}
 	rm -f ${PERL_FORCE_FIELD_MODULE}
-	rm -f ${CPP_OBJS}
-	rm -f ${CPP_TEST_BINS}
-	rm -f ${SHARED_OBJS}
+	# rm -f ${CPP_OBJS}
+	# rm -f ${CPP_TEST_BINS}
+	# rm -f ${SHARED_OBJS}
 	rm -f ${WRAP_FILES}
 	rm -f ${WRAP_OBJS}
 	rm -f ${PLUGINS_ZIP}
