@@ -13,6 +13,6 @@
 #include <string>
 #include <vector>
 
-void generate_library(SV* hash_ref);
+void generate_library(SV* options_ptr);
 
 #endif

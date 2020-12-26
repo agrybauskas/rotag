@@ -230,42 +230,19 @@ for my $pdbx_file ( @ARGV ) {
                                     { 'exclude_dot' => 1 } );
 
         # Starts generating rotamer library.
-        # my $rotamer_library =
-            # PseudoAtomsc::generate_library(
-            #     { 'parameters' => $parameters,
-            #       'atom_site' => $current_atom_site,
-            #       'residue_unique_keys' => $residue_unique_keys,
-            #       'include_interactions' =>
-            #           { 'id' => [ keys %{ $current_atom_site } ] },
-            #       'angles' => \%angles,
-            #       'interactions' => $interactions,
-            #       'threads' => $threads,
-            #       'options' => { 'rand_seed' => $rand_seed,
-            #                      'rand_count' => $rand_count }
-            #     } );
-# %module(package="PseudoAtoms") "PseudoAtoms"
-
-# %include PseudoAtoms.i
-
-# %{
-#     #include "PseudoAtoms.h"
-
-#     #include "EXTERN.h"
-#     #include "perl.h"
-#     #include "XSUB.h"
-# %}
-
-# %include "PseudoAtoms.h"
-
-# %perlcode %{
-#     use strict;
-#     use warnings;
-
-#     use Exporter qw( import );
-#     our @EXPORT_OK = qw( generate_library );
-# %}
-
-        PseudoAtoms::generate_library( { "a" => "c" } );
+        my $rotamer_library =
+            PseudoAtomsc::generate_library(
+                { 'parameters' => $parameters,
+                  'atom_site' => $current_atom_site,
+                  'residue_unique_keys' => $residue_unique_keys,
+                  'include_interactions' =>
+                      { 'id' => [ keys %{ $current_atom_site } ] },
+                  'angles' => \%angles,
+                  'interactions' => $interactions,
+                  'threads' => $threads,
+                  'options' => { 'rand_seed' => $rand_seed,
+                                 'rand_count' => $rand_count }
+                } );
 
         # for my $residue_unique_key ( keys %{ $rotamer_library } ) {
         #     $rotamer_library{$residue_unique_key} =
