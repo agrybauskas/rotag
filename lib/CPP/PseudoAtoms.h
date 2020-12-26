@@ -3,12 +3,16 @@
 
 #include "PseudoAtoms.h"
 
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
 #include <map>
 #include <iostream>
 #include <math.h>
 #include <string>
 #include <vector>
 
-int generate_library(std::map<std::string, double> *hash);
+void generate_library(SV* hash_ref);
 
 #endif

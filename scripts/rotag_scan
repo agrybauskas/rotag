@@ -243,8 +243,29 @@ for my $pdbx_file ( @ARGV ) {
             #       'options' => { 'rand_seed' => $rand_seed,
             #                      'rand_count' => $rand_count }
             #     } );
+# %module(package="PseudoAtoms") "PseudoAtoms"
 
-        PseudoAtomsc::generate_library({"aaaa" => 2.0});
+# %include PseudoAtoms.i
+
+# %{
+#     #include "PseudoAtoms.h"
+
+#     #include "EXTERN.h"
+#     #include "perl.h"
+#     #include "XSUB.h"
+# %}
+
+# %include "PseudoAtoms.h"
+
+# %perlcode %{
+#     use strict;
+#     use warnings;
+
+#     use Exporter qw( import );
+#     our @EXPORT_OK = qw( generate_library );
+# %}
+
+        PseudoAtoms::generate_library( { "a" => "c" } );
 
         # for my $residue_unique_key ( keys %{ $rotamer_library } ) {
         #     $rotamer_library{$residue_unique_key} =
