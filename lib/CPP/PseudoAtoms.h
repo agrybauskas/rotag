@@ -3,6 +3,12 @@
 
 #include "PseudoAtoms.h"
 
-int generate_library();
+#include <map>
+#include <iostream>
+#include <math.h>
+#include <string>
+#include <vector>
+
+int generate_library(std::map<std::string, double> *hash);
 
 #endif

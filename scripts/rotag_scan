@@ -230,20 +230,21 @@ for my $pdbx_file ( @ARGV ) {
                                     { 'exclude_dot' => 1 } );
 
         # Starts generating rotamer library.
-        # PseudoAtomsc::generate_library()
         # my $rotamer_library =
-        #     generate_library(
-        #         { 'parameters' => $parameters,
-        #           'atom_site' => $current_atom_site,
-        #           'residue_unique_keys' => $residue_unique_keys,
-        #           'include_interactions' =>
-        #               { 'id' => [ keys %{ $current_atom_site } ] },
-        #           'angles' => \%angles,
-        #           'interactions' => $interactions,
-        #           'threads' => $threads,
-        #           'options' => { 'rand_seed' => $rand_seed,
-        #                          'rand_count' => $rand_count }
-        #         } );
+            # PseudoAtomsc::generate_library(
+            #     { 'parameters' => $parameters,
+            #       'atom_site' => $current_atom_site,
+            #       'residue_unique_keys' => $residue_unique_keys,
+            #       'include_interactions' =>
+            #           { 'id' => [ keys %{ $current_atom_site } ] },
+            #       'angles' => \%angles,
+            #       'interactions' => $interactions,
+            #       'threads' => $threads,
+            #       'options' => { 'rand_seed' => $rand_seed,
+            #                      'rand_count' => $rand_count }
+            #     } );
+
+        PseudoAtomsc::generate_library({"aaaa" => 2.0});
 
         # for my $residue_unique_key ( keys %{ $rotamer_library } ) {
         #     $rotamer_library{$residue_unique_key} =
