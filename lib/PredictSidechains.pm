@@ -27,16 +27,16 @@ sub new
         'rotamer_energies' => $args->{'rotamer_energies'},
         'rotamer_look_up_tbls' => {
             'angle_id' => {
-                'rotamer_id' => undef,
-                'unique_residue_key' => undef
+                # 'rotamer_id' => undef,
+                # 'unique_residue_key' => undef
             },
             'rotamer_id' => {
-                'angle_ids' => undef,
-                'unique_residue_key' => undef
+                # 'angle_ids' => undef,
+                # 'unique_residue_key' => undef
             },
             'unique_residue_key' => {
-                'angle_ids' => undef,
-                'rotamer_ids' => undef
+                # 'angle_ids' => undef,
+                # 'rotamer_ids' => undef
             }
         },
         'interaction_graph' => undef,
@@ -63,26 +63,26 @@ sub new
             $rotamer_angle->{'pdbx_PDB_model_num'},
             $rotamer_angle->{'label_alt_id'};
 
-        $self->{'rotamer_look_up_tbls'}{'angle_id'}{$rotamer_angle_id}
-                                                   {'rotamer_id'} =
-            $rotamer_id;
-        $self->{'rotamer_look_up_tbls'}{'angle_id'}{$rotamer_angle_id}
-                                                   {'unique_residue_key'} =
-            $unique_residue_key;
+        # $self->{'rotamer_look_up_tbls'}{'angle_id'}{$rotamer_angle_id}
+        #                                            {'rotamer_id'} =
+        #     $rotamer_id;
+        # $self->{'rotamer_look_up_tbls'}{'angle_id'}{$rotamer_angle_id}
+        #                                            {'unique_residue_key'} =
+        #     $unique_residue_key;
 
-        push @{ $self->{'rotamer_look_up_tbls'}{'rotamer_id'}{$rotamer_id}
-                                                             {'angle_ids'} },
-            $rotamer_angle_id;
-        $self->{'rotamer_look_up_tbls'}{'rotamer_id'}{$rotamer_id}
-                                                     {'unique_residue_key'} =
-            $unique_residue_key;
+        # push @{ $self->{'rotamer_look_up_tbls'}{'rotamer_id'}{$rotamer_id}
+        #                                                      {'angle_ids'} },
+        #     $rotamer_angle_id;
+        # $self->{'rotamer_look_up_tbls'}{'rotamer_id'}{$rotamer_id}
+        #                                              {'unique_residue_key'} =
+        #     $unique_residue_key;
 
-        push @{$self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
-                                              {$unique_residue_key}{'angle_ids'}},
-            $rotamer_angle_id;
-        push @{$self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
-                                              {$unique_residue_key}{'rotamer_ids'}},
-            $rotamer_id;
+        # push @{$self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
+        #                                       {$unique_residue_key}{'angle_ids'}},
+        #     $rotamer_angle_id;
+        # push @{$self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
+        #                                       {$unique_residue_key}{'rotamer_ids'}},
+        #     $rotamer_id;
     }
 
     return bless $self, $class;
@@ -96,8 +96,7 @@ sub interaction_graph
 {
     my ( $self ) = @_;
 
-    my ( $parameters, $atom_site ) =
-        ( $self->{'parameters'}, $self->{'atom_site'} );
+    my ( $parameters, $atom_site )=($self->{'parameters'}, $self->{'atom_site'});
 
     if( ! defined $parameters ) {
         die "parameters are not set.\n";
@@ -139,6 +138,12 @@ sub interaction_graph
                 $interaction_graph->add_edge( $unique_residue_key,
                                               $neighbour_residue_key );
             }
+
+            # $interaction_graph->set_vertex_attribute(
+            #     $unique_residue_key, 'rotamer_angle_count',
+            #     $rotamer_angles->{$unique_residue_key}
+            # );
+            use Data::Dumper; print STDERR Dumper $self->{'rotamer_look_up_tbls'};
         }
     }
 
@@ -163,15 +168,18 @@ sub choose
         $self->interaction_graph();
     }
 
-    # use Data::Dumper;
+    use Data::Dumper;
+    print STDERR Dumper $interaction_graph;
+
     # for my $edge ( $interaction_graph->edges ) {
     #     print STDERR Dumper $edge;
     # }
-    use Data::Dumper;
-    for my $vertex ( $interaction_graph->vertices ) {
-        print STDERR Dumper $interaction_graph->get_edge_count($vertex);
-    }
 
+    # my $node_order_by_edge_count = [];
+    # use Data::Dumper;
+    # for my $vertex ( $interaction_graph->vertices ) {
+    #     print STDERR Dumper $vertex;
+    # }
 }
 
 1;
