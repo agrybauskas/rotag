@@ -133,11 +133,11 @@ sub interaction_graph
                                               $neighbour_residue_key );
             }
 
-            # $interaction_graph->set_vertex_attribute(
-            #     $unique_residue_key, 'rotamer_angle_count',
-            #     $rotamer_angles->{$unique_residue_key}
-            # );
-            use Data::Dumper; print STDERR Dumper $self->{'rotamer_look_up_tbls'};
+            $interaction_graph->set_vertex_attribute(
+                $unique_residue_key, 'rotamer_angle_count',
+                scalar( @{ $self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
+                                  {$unique_residue_key}{'angle_ids'} } )
+            );
         }
     }
 
@@ -161,9 +161,6 @@ sub choose
     if( ! defined $interaction_graph ) {
         $self->interaction_graph();
     }
-
-    use Data::Dumper;
-    print STDERR Dumper $interaction_graph;
 
     # for my $edge ( $interaction_graph->edges ) {
     #     print STDERR Dumper $edge;
