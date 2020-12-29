@@ -9,6 +9,7 @@ use Graph;
 use Measure qw( energy );
 use PDBxParser qw( filter_new
                    unique_residue_key );
+use PseudoAtoms qw( generate_rotamer );
 use Grid qw( grid_box
              identify_neighbour_cells );
 
@@ -168,17 +169,21 @@ sub choose
         push @nodes, $vertex;
     }
 
-    # Sorting by rotamer count and edge count.
-    my @sorted_nodes_by_rotamer_count =
-        sort { $interaction_graph->get_vertex_attribute( $a, 'rotamer_angle_count' ) <=>
-               $interaction_graph->get_vertex_attribute( $b, 'rotamer_angle_count' ) } @nodes;
+    # Sorting by rotamer count.
+    @nodes = sort {
+        $interaction_graph->get_vertex_attribute($a, 'rotamer_angle_count') <=>
+        $interaction_graph->get_vertex_attribute($b, 'rotamer_angle_count')
+    } @nodes;
 
-    my @sorted_nodes_by_edge_count =
-        sort { $interaction_graph->neighbours( $a ) <=>
-               $interaction_graph->neighbours( $b ) } @nodes;
+    for my $unique_residue_key ( @nodes  ) {
+        my @neighbours = $interaction_graph->neighbours($unique_residue_key);
+        @neighbours = sort {
+            $interaction_graph->get_vertex_attribute($a, 'rotamer_angle_count') <=>
+            $interaction_graph->get_vertex_attribute($b, 'rotamer_angle_count')
+        } @neighbours;
 
-    for my $sidechain ( @sorted_nodes_by_rotamer_count  ) {
-
+        for my $neighbour ( @neighbours ) {
+        }
     }
 }
 
