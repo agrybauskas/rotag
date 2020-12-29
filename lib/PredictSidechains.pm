@@ -162,15 +162,24 @@ sub choose
         $self->interaction_graph();
     }
 
-    # for my $edge ( $interaction_graph->edges ) {
-    #     print STDERR Dumper $edge;
-    # }
+    my @nodes = ();
 
-    # my $node_order_by_edge_count = [];
-    # use Data::Dumper;
-    # for my $vertex ( $interaction_graph->vertices ) {
-    #     print STDERR Dumper $vertex;
-    # }
+    for my $vertex ( $interaction_graph->vertices ) {
+        push @nodes, $vertex;
+    }
+
+    # Sorting by rotamer count and edge count.
+    my @sorted_nodes_by_rotamer_count =
+        sort { $interaction_graph->get_vertex_attribute( $a, 'rotamer_angle_count' ) <=>
+               $interaction_graph->get_vertex_attribute( $b, 'rotamer_angle_count' ) } @nodes;
+
+    my @sorted_nodes_by_edge_count =
+        sort { $interaction_graph->neighbours( $a ) <=>
+               $interaction_graph->neighbours( $b ) } @nodes;
+
+    for my $sidechain ( @sorted_nodes_by_rotamer_count  ) {
+
+    }
 }
 
 1;
