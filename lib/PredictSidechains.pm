@@ -7,9 +7,10 @@ use Clone qw( clone );
 use Graph;
 
 use Measure qw( energy );
-use PDBxParser qw( filter_new
+use PDBxParser qw( extract
+                   filter_new
                    unique_residue_key );
-use PseudoAtoms qw( generate_rotamer );
+use PseudoAtoms qw( replace_with_rotamer );
 use Grid qw( grid_box
              identify_neighbour_cells );
 
@@ -24,6 +25,8 @@ sub new
     my ( $class, $args ) = @_;
     my $self = {
         'atom_site' => $args->{'atom_site'},
+        'grid_box' => $args->{'grid_box'},
+        'neighbouring_cells' => $args->{'neighbouring_cells'},
         'rotamer_angles' => $args->{'rotamer_angles'},
         'rotamer_energies' => $args->{'rotamer_energies'},
         'rotamer_look_up_tbls' => {
@@ -109,13 +112,27 @@ sub interaction_graph
                                     { 'include' =>
                                           { 'label_atom_id' => [ 'CA' ] } } );
 
-    my ( $grid_box_cas ) = grid_box( $parameters, $atom_site_cas,
-                                     $edge_length_interaction );
-    my $neighbouring_cells = identify_neighbour_cells( $grid_box_cas );
+    # TODO: grid box should be built once.
+    my ( $grid_box, $grid_atom_pos ) =
+        grid_box( $parameters, $atom_site, $edge_length_interaction,
+                  extract( $atom_site_cas,
+                           { 'data' => [ 'id' ], 'is_list' => 1 } ) );
+    my ( $grid_box_cas, $grid_ca_atom_pos ) =
+        grid_box( $parameters, $atom_site_cas, $edge_length_interaction,
+                  extract( $atom_site_cas,
+                           { 'data' => [ 'id' ], 'is_list' => 1 } ) );
+    my $neighbouring_cells =
+        identify_neighbour_cells( $grid_box, $grid_ca_atom_pos );;
+    my $neighbouring_cells_cas =
+        identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
+
+    $self->{'grid_box'} = $grid_box;
+    $self->{'grid_ca_atom_pos'} = $grid_atom_pos;
+    $self->{'neighbouring_cells'} = $neighbouring_cells;
 
     my $interaction_graph = Graph->new();
     for my $cell ( keys %{ $grid_box_cas } ) {
-        my $neighbour_cell_atom_ids = $neighbouring_cells->{$cell};
+        my $neighbour_cell_atom_ids = $neighbouring_cells_cas->{$cell};
         for my $atom_id ( @{ $grid_box_cas->{$cell} } ) {
             my $unique_residue_key =
                 unique_residue_key( $atom_site_cas->{$atom_id} );
@@ -151,8 +168,9 @@ sub choose
 {
     my ( $self ) = @_;
 
-    my ( $interaction_graph, $rotamer_angles, $rotamer_energies,
+    my ( $parameters, $interaction_graph, $rotamer_angles, $rotamer_energies,
          $rotamer_look_up_tbls ) = (
+        $self->{'parameters'},
         $self->{'interaction_graph'},
         $self->{'rotamer_angles'},
         $self->{'rotamer_energies'},
@@ -183,6 +201,9 @@ sub choose
         } @neighbours;
 
         for my $neighbour ( @neighbours ) {
+            # use Data::Dumper;
+            # print STDERR Dumper;
+            # replace_with_rotamer( $parameters, $self->{'atom_site'} } );
         }
     }
 }
