@@ -25,8 +25,9 @@ sub new
     my ( $class, $args ) = @_;
     my $self = {
         'atom_site' => $args->{'atom_site'},
-        'grid_box' => $args->{'grid_box'},
-        'neighbouring_cells' => $args->{'neighbouring_cells'},
+        'grid_box' => undef,
+        'neighbouring_cells' => undef,
+        'grid_ca_atom_pos' => undef,
         'rotamer_angles' => $args->{'rotamer_angles'},
         'rotamer_energies' => $args->{'rotamer_energies'},
         'rotamer_look_up_tbls' => {
@@ -169,12 +170,16 @@ sub choose
     my ( $self ) = @_;
 
     my ( $parameters, $interaction_graph, $rotamer_angles, $rotamer_energies,
-         $rotamer_look_up_tbls ) = (
+         $rotamer_look_up_tbls, $grid_box, $neighbouring_cells,
+         $grid_ca_atom_pos ) = (
         $self->{'parameters'},
         $self->{'interaction_graph'},
         $self->{'rotamer_angles'},
         $self->{'rotamer_energies'},
-        $self->{'rotamer_angles'}
+        $self->{'rotamer_angles'},
+        $self->{'grid_box'},
+        $self->{'neighbouring_cells'},
+        $self->{'grid_ca_atom_pos'}
     );
 
     if( ! defined $interaction_graph ) {
