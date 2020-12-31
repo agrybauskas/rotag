@@ -9,7 +9,8 @@ use Graph;
 use Measure qw( energy );
 use PDBxParser qw( extract
                    filter_new
-                   unique_residue_key );
+                   unique_residue_key
+                   to_pdbx );
 use PseudoAtoms qw( replace_with_rotamer );
 use Grid qw( grid_box
              identify_neighbour_cells );
@@ -181,10 +182,11 @@ sub choose
 {
     my ( $self ) = @_;
 
-    my ( $parameters, $interaction_graph, $rotamer_angles, $rotamer_energies,
-         $rotamer_look_up_tbls, $grid_box, $neighbouring_cells,
-         $grid_ca_atom_pos_by_unique_key ) = (
+    my ( $parameters, $atom_site, $interaction_graph, $rotamer_angles,
+         $rotamer_energies, $rotamer_look_up_tbls, $grid_box,
+         $neighbouring_cells, $grid_ca_atom_pos_by_unique_key ) = (
         $self->{'parameters'},
+        $self->{'atom_site'},
         $self->{'interaction_graph'},
         $self->{'rotamer_angles'},
         $self->{'rotamer_energies'},
