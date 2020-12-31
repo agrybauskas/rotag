@@ -27,7 +27,7 @@ sub new
         'atom_site' => $args->{'atom_site'},
         'grid_box' => undef,
         'neighbouring_cells' => undef,
-        'grid_ca_atom_pos' => undef,
+        'grid_ca_atom_pos_by_unique_key' => undef,
         'rotamer_angles' => $args->{'rotamer_angles'},
         'rotamer_energies' => $args->{'rotamer_energies'},
         'rotamer_look_up_tbls' => {
@@ -123,12 +123,24 @@ sub interaction_graph
                   extract( $atom_site_cas,
                            { 'data' => [ 'id' ], 'is_list' => 1 } ) );
     my $neighbouring_cells =
-        identify_neighbour_cells( $grid_box, $grid_ca_atom_pos );;
+        identify_neighbour_cells( $grid_box, $grid_ca_atom_pos );
     my $neighbouring_cells_cas =
         identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
 
+    my %grid_ca_atom_pos_by_unique_key = ();
+    for my $grid_index ( keys %{ $grid_ca_atom_pos } ) {
+        for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_index} } ) {
+            my $unique_residue_key =
+                unique_residue_key( $atom_site_cas->{$atom_id} );
+            if ( ! exists $grid_ca_atom_pos_by_unique_key{$unique_residue_key} ||
+                 ! defined $grid_ca_atom_pos_by_unique_key{$unique_residue_key} ) {
+                $grid_ca_atom_pos_by_unique_key{$unique_residue_key} = $grid_index;
+            }
+        }
+    }
+
     $self->{'grid_box'} = $grid_box;
-    $self->{'grid_ca_atom_pos'} = $grid_atom_pos;
+    $self->{'grid_ca_atom_pos_by_unique_key'} = \%grid_ca_atom_pos_by_unique_key;
     $self->{'neighbouring_cells'} = $neighbouring_cells;
 
     my $interaction_graph = Graph->new();
@@ -171,7 +183,7 @@ sub choose
 
     my ( $parameters, $interaction_graph, $rotamer_angles, $rotamer_energies,
          $rotamer_look_up_tbls, $grid_box, $neighbouring_cells,
-         $grid_ca_atom_pos ) = (
+         $grid_ca_atom_pos_by_unique_key ) = (
         $self->{'parameters'},
         $self->{'interaction_graph'},
         $self->{'rotamer_angles'},
@@ -179,7 +191,7 @@ sub choose
         $self->{'rotamer_angles'},
         $self->{'grid_box'},
         $self->{'neighbouring_cells'},
-        $self->{'grid_ca_atom_pos'}
+        $self->{'grid_ca_atom_pos_by_unique_key'}
     );
 
     if( ! defined $interaction_graph ) {
@@ -199,15 +211,13 @@ sub choose
     } @nodes;
 
     for my $unique_residue_key ( @nodes  ) {
-        my @neighbours = $interaction_graph->neighbours($unique_residue_key);
+        my @neighbours = $interaction_graph->neighbours( $unique_residue_key );
         @neighbours = sort {
             $interaction_graph->get_vertex_attribute($a, 'rotamer_angle_count') <=>
             $interaction_graph->get_vertex_attribute($b, 'rotamer_angle_count')
         } @neighbours;
 
         for my $neighbour ( @neighbours ) {
-            # use Data::Dumper;
-            # print STDERR Dumper;
             # replace_with_rotamer( $parameters, $self->{'atom_site'} } );
         }
     }
