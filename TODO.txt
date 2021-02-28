@@ -110,3 +110,4 @@
 -- Have to make sure that if no connections are determined, it should be tried
    to be implied from atom distances.
 ++ Error and warning messages should point out filenames in all rotag scripts.
+-- There are errors when both '.' and integer 'altid' are used in 'rotag_select'.
