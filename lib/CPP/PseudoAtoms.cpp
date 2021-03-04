@@ -34,6 +34,8 @@ void generate_library(SV* options_ptr)
     // HACK: the variables should be changeable in the future.
     std::string conf_model =  "rotation_only";
     int threads = 1;
+
+    std::cout << interaction_atom_names << std::endl;
     // include_interactions
 
     // potential_functions

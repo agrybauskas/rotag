@@ -259,7 +259,6 @@ for my $pdbx_file ( @ARGV ) {
                                                   {'edge_length_interaction'} ),
                   'cutoff_atom' =>
                       $parameters->{'_[local]_constants'}{'cutoff_atom'},
-                  # 'rmsd'=> 1,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
                                  'rand_count' => $rand_count }
