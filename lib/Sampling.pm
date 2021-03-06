@@ -38,7 +38,7 @@ sub sample_angles
     my $max_angle;
 
     if( defined $rand_count ) {
-
+        # TODO: add random sampling.
     } else {
         # Devides full circle (2*pi) into even intervals by $small_angle value.
         $small_angle = # Adjusts angle so, it could be devided evenly.
