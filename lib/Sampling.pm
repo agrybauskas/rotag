@@ -85,6 +85,7 @@ sub sample_angles_qs_parsing
     my ( $parameters, $query_string, $in_radians, $small_angle ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $dihedral_angle_constraints = $parameters->{'_[local]_dihedral_angle_restraints'};
 
     $query_string =~ s/\s//g;
     $small_angle = 36.0;
