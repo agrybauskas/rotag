@@ -166,7 +166,7 @@ if( defined $rand_seed ) {
 }
 
 # Parses string describing angles.
-my %angles = %{ sample_angles_qs_parsing_new( $parameters, $angles ) };
+my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
 
 # Parses parameter string.
 $parameters_cmd =~ s/\s//g;
