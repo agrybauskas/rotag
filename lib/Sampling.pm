@@ -5,7 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( sample_angles
-                     sample_angles_qs_parsing );
+                     sample_angles_qs_parsing
+                     sample_angles_qs_parsing_new );
 
 use POSIX;
 
@@ -85,7 +86,64 @@ sub sample_angles_qs_parsing
     my ( $parameters, $query_string, $in_radians, $small_angle ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
-    my $dihedral_angle_constraints = $parameters->{'_[local]_dihedral_angle_restraints'};
+    my $dihedral_angle_restraints =
+        $parameters->{'_[local]_dihedral_angle_restraints'};
+
+    $query_string =~ s/\s//g;
+    $small_angle = 36.0;
+
+    my %angles;
+    for my $angle ( split /,/, $query_string ) {
+        my $angle_name;
+        my $angle_start;
+        my $angle_step;
+        my $angle_end;
+
+        if( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            ( $angle_name, $angle_start, $angle_step, $angle_end ) =
+                ( $1, $2, $3, $4 );
+        } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            ( $angle_name, $angle_start, $angle_end ) = ( $1, $2, $3 );
+        } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)$/ ) {
+            ( $angle_name, $angle_step ) = ( $1, $2 );
+        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
+            ( $angle_step ) = ( $1 );
+        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
+        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            ( $angle_start, $angle_end ) = ( $1, $2 );
+        }else {
+            die "Syntax '$angle' is incorrect\n"
+        }
+
+        $angle_name //= '*';
+        $angle_start //= - 180.0;
+        $angle_step //= $small_angle;
+        $angle_end //= 180.0;
+
+        if( $in_radians ) {
+            $angles{$angle_name} =
+                sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
+                               $angle_step );
+        } else {
+            $angles{$angle_name} =
+                sample_angles( $parameters,
+                               [ [ $angle_start * $pi / 180.0,
+                                   $angle_end * $pi / 180.0 ] ],
+                               $angle_step * $pi / 180.0 );
+        }
+    }
+
+    return \%angles;
+}
+
+sub sample_angles_qs_parsing_new
+{
+    my ( $parameters, $query_string, $in_radians, $small_angle ) = @_;
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $dihedral_angle_restraints =
+        $parameters->{'_[local]_dihedral_angle_restraints'};
 
     $query_string =~ s/\s//g;
     $small_angle = 36.0;
