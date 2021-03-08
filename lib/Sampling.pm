@@ -159,19 +159,11 @@ sub sample_angles_qs_parsing_new
                 $angle_name = '*';
             }
 
-            my $angle_start;
-            if( $angle_info->{'range_from'} eq '.' ) {
-                # if( $angle_info->{$residue_name}{'.'} ) {
-                #     # $angle_start = $angle_info->{$residue_name}{'.'};
-                # } else {
-                #     # $angle_start = $angle_info->{'.'};
-                # }
-            }
-            use Data::Dumper;
-            print STDERR Dumper $angle_info;
-
-            # my $angle_step = $angle_info->{'step'};
-            # my $angle_end = $angle_info->{'range_to'};
+            my ( $angle_start, $angle_step, $angle_end ) =
+                @{ retrieve_dihedral_angle_params( $dihedral_angle_restraints,
+                                                   $residue_name,
+                                                   $angle,
+                                                   [ 'range_from', 'range_start' ] ) };
 
             # if( $in_radians ) {
             #     $angles_new{$residue_name}{$angle_name} =
@@ -229,6 +221,26 @@ sub sample_angles_qs_parsing_new
     # }
 
     return \%angles;
+}
+
+sub retrieve_dihedral_angle_params
+{
+    my ( $dihedral_angle_restraints, $residue_name, $angle_name, $params ) = @_;
+
+    my @params = ();
+    for my $param ( @{ $params } ) {
+        # if( defined $dihedral_angle_restraints->{$residue_name}{$angle_name}{'range_from'} &&
+        #     $dihedral_angle_restraints->{$residue_name}{$name}{'range_from'} &&
+        #     $dihedral_angle_restraints->{$residue_name}{$name}{'range_from'} ne '.' ) {
+        #     $angle_start =
+        #         $dihedral_angle_restraints->{$residue_name}{'.'}{'range_from'};
+        #     } elsif( defined $dihedral_angle_restraints->{'.'}{'range_from'} ne '.' ) {
+        # #         $angle_start = $dihedral_angle_restraints->{'.'}{'range_from'};
+        # #     }
+        # }
+    }
+
+    return \@params;
 }
 
 1;
