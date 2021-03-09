@@ -152,7 +152,6 @@ sub sample_angles_qs_parsing_new
     my %angles_new;
     for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
         for my $angle_name ( sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
-            # my $angle_name = $angle;
             # if( $angle_name eq '.' ) {
             #     $angle_name = '*'
             # }
@@ -163,6 +162,7 @@ sub sample_angles_qs_parsing_new
                                                 [ 'range_from', 'step', 'range_to' ] );
 
             use Data::Dumper;
+            print STDERR Dumper $residue_name, $angle_name;
             print STDERR Dumper $angle_start, $angle_step, $angle_end;
             print STDERR Dumper "-----";
             # if( $in_radians ) {
@@ -179,46 +179,46 @@ sub sample_angles_qs_parsing_new
         }
     }
 
-    # for my $angle ( split /,/, $query_string ) {
-    #     # my $angle_name;
-    #     # my $angle_start;
-    #     # my $angle_step;
-    #     # my $angle_end;
+    for my $angle ( split /,/, $query_string ) {
+        # my $angle_name;
+        # my $angle_start;
+        # my $angle_step;
+        # my $angle_end;
 
-    #     # if( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
-    #     #     ( $angle_name, $angle_start, $angle_step, $angle_end ) =
-    #     #         ( $1, $2, $3, $4 );
-    #     # } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
-    #     #     ( $angle_name, $angle_start, $angle_end ) = ( $1, $2, $3 );
-    #     # } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)$/ ) {
-    #     #     ( $angle_name, $angle_step ) = ( $1, $2 );
-    #     # } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
-    #     #     ( $angle_step ) = ( $1 );
-    #     # } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
-    #     #     ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
-    #     # } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
-    #     #     ( $angle_start, $angle_end ) = ( $1, $2 );
-    #     # }else {
-    #     #     die "Syntax '$angle' is incorrect\n"
-    #     # }
+        # if( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+        #     ( $angle_name, $angle_start, $angle_step, $angle_end ) =
+        #         ( $1, $2, $3, $4 );
+        # } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+        #     ( $angle_name, $angle_start, $angle_end ) = ( $1, $2, $3 );
+        # } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)$/ ) {
+        #     ( $angle_name, $angle_step ) = ( $1, $2 );
+        # } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
+        #     ( $angle_step ) = ( $1 );
+        # } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+        #     ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
+        # } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+        #     ( $angle_start, $angle_end ) = ( $1, $2 );
+        # }else {
+        #     die "Syntax '$angle' is incorrect\n"
+        # }
 
-    #     # $angle_name //= '*';
-    #     # $angle_start //= - 180.0;
-    #     # $angle_step //= $small_angle;
-    #     # $angle_end //= 180.0;
+        # $angle_name //= '*';
+        # $angle_start //= - 180.0;
+        # $angle_step //= $small_angle;
+        # $angle_end //= 180.0;
 
-    #     # if( $in_radians ) {
-    #     #     $angles{$angle_name} =
-    #     #         sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
-    #     #                        $angle_step );
-    #     # } else {
-    #     #     $angles{$angle_name} =
-    #     #         sample_angles( $parameters,
-    #     #                        [ [ $angle_start * $pi / 180.0,
-    #     #                            $angle_end * $pi / 180.0 ] ],
-    #     #                        $angle_step * $pi / 180.0 );
-    #     # }
-    # }
+        # if( $in_radians ) {
+        #     $angles{$angle_name} =
+        #         sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
+        #                        $angle_step );
+        # } else {
+        #     $angles{$angle_name} =
+        #         sample_angles( $parameters,
+        #                        [ [ $angle_start * $pi / 180.0,
+        #                            $angle_end * $pi / 180.0 ] ],
+        #                        $angle_step * $pi / 180.0 );
+        # }
+    }
 
     return \%angles;
 }
@@ -238,24 +238,10 @@ sub retrieve_dihedral_angle_params
 
         if( defined $angle_specific && $angle_specific ne '.' ) {
             $params{$param} = $angle_specific;
-        } elsif( defined $angle_specific ) {
-            if( defined $residue_specific && $residue_specific ne '.' ) {
-                $params{$param} = $residue_specific;
-            } elsif( defined $residue_specific ) {
-                if( defined $nonspecific ) {
-                    $params{$param} = $nonspecific;
-                }
-            }
         } elsif( defined $residue_specific && $residue_specific ne '.' ) {
             $params{$param} = $residue_specific;
-        } elsif( defined $residue_specific ) {
-            if( defined $nonspecific ) {
-                $params{$param} = $nonspecific;
-            }
-        } elsif( defined $nonspecific ) {
-            $params{$param} = $nonspecific;
         } else {
-            $params{$param} = undef;
+            $params{$param} = $nonspecific;
         }
     }
 
