@@ -96,7 +96,7 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
-my $angles = '-180.0..36.0..180.0';
+my $angles = '';
 my $in_radians = 0;
 my $rand_seed;
 my $rand_count;

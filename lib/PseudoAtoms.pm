@@ -533,6 +533,9 @@ sub calc_favourable_angles
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
 
+    my ( $any_key ) = keys %{ $residue_site };
+    my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
+
     my $rotatable_bonds = rotatable_bonds( $residue_site );
     if( ! %{ $rotatable_bonds } ) { return []; }
 
@@ -565,7 +568,13 @@ sub calc_favourable_angles
             my ( $last_angle_name ) =
                 sort { $b cmp $a } keys %{ $rotatable_bonds->{$atom_id} };
 
-            if( exists $angles->{'*'}{$last_angle_name} ) {
+            if( exists $angles->{$residue_name}{$last_angle_name} ) {
+                @default_allowed_angles =
+                    map { [ $_ ] } @{ $angles->{$residue_name}{$last_angle_name} };
+            } elsif( exists $angles->{$residue_name}{'*'} ) {
+                @default_allowed_angles =
+                    map { [ $_ ] } @{ $angles->{$residue_name}{'*'} };
+            } elsif( exists $angles->{'*'}{$last_angle_name} ) {
                 @default_allowed_angles =
                     map { [ $_ ] } @{ $angles->{'*'}{$last_angle_name} };
             } elsif( exists $angles->{'*'}{'*'} ) {
