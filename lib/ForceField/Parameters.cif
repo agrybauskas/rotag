@@ -2547,7 +2547,7 @@ _[local]_dihedral_angle.range_from
 _[local]_dihedral_angle.range_to
 _[local]_dihedral_angle.step
 _[local]_dihedral_angle.type
-.   .    -180.0 180.0 18.0 degrees
+.   .    -180.0 180.0 10.0 degrees
 ARG .    .      .     36.0 degrees
 ASN chi2 -90.0  90.0  .    degrees
 ASP chi2 -90.0  90.0  .    degrees
