@@ -110,11 +110,13 @@ ${COVERAGE_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
 
 .PHONY: clean cleanAll distclean
 
-clean:
-	rm -f ${TEST_DIFF}
+clean: testclean
 	rm -f ${COVERAGE_CASES}
 	rm -f ${COVERAGE_OUTS}
 	rm -fr ${COVERAGE_CASES_DIR}/cover_db
+
+testclean:
+	rm -f ${TEST_DIFF}
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
