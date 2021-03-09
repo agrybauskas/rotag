@@ -565,9 +565,9 @@ sub calc_favourable_angles
             my ( $last_angle_name ) =
                 sort { $b cmp $a } keys %{ $rotatable_bonds->{$atom_id} };
 
-            if( exists $angles->{$last_angle_name} ) {
+            if( exists $angles->{'*'}{$last_angle_name} ) {
                 @default_allowed_angles =
-                    map { [ $_ ] } @{ $angles->{$last_angle_name} };
+                    map { [ $_ ] } @{ $angles->{'*'}{$last_angle_name} };
             } elsif( exists $angles->{'*'}{'*'} ) {
                 if( defined $rand_count && defined $rand_seed ) {
                     if( $rand_count > scalar @{$angles->{'*'}{'*'}} ) {
