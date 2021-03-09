@@ -150,21 +150,21 @@ sub sample_angles_qs_parsing_new
 
     my %angles;
     my %angles_new;
-    for my $residue_name ( keys %{ $dihedral_angle_restraints } ) {
-        for my $angle ( keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
-            my $angle_info = $dihedral_angle_restraints->{$residue_name}{$angle};
-
-            my $angle_name = $angle;
-            if( $angle_name eq '.' ) {
-                $angle_name = '*';
-            }
-
+    for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
+        for my $angle_name ( sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
+            # my $angle_name = $angle;
+            # if( $angle_name eq '.' ) {
+            #     $angle_name = '*'
+            # }
             my ( $angle_start, $angle_step, $angle_end ) =
-                @{ retrieve_dihedral_angle_params( $dihedral_angle_restraints,
-                                                   $residue_name,
-                                                   $angle,
-                                                   [ 'range_from', 'range_start' ] ) };
+                retrieve_dihedral_angle_params( $dihedral_angle_restraints,
+                                                $residue_name,
+                                                $angle_name,
+                                                [ 'range_from', 'step', 'range_to' ] );
 
+            use Data::Dumper;
+            print STDERR Dumper $angle_start, $angle_step, $angle_end;
+            print STDERR Dumper "-----";
             # if( $in_radians ) {
             #     $angles_new{$residue_name}{$angle_name} =
             #         sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
@@ -227,46 +227,39 @@ sub retrieve_dihedral_angle_params
 {
     my ( $dihedral_angle_restraints, $residue_name, $angle_name, $params ) = @_;
 
-    my @params = ();
+    my %params = ();
     for my $param ( @{ $params } ) {
         my $angle_specific =
             $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
         my $residue_specific =
             $dihedral_angle_restraints->{$residue_name}{'.'}{$param};
         my $nonspecific =
-            $dihedral_angle_restraints->{'.'}{$param};
+            $dihedral_angle_restraints->{'.'}{'.'}{$param};
 
         if( defined $angle_specific && $angle_specific ne '.' ) {
-            push @params, $angle_specific;
+            $params{$param} = $angle_specific;
         } elsif( defined $angle_specific ) {
             if( defined $residue_specific && $residue_specific ne '.' ) {
-                push @params, $residue_specific;
+                $params{$param} = $residue_specific;
             } elsif( defined $residue_specific ) {
                 if( defined $nonspecific ) {
-                    push @params, $nonspecific;
-                } else {
-                    push @params, undef;
+                    $params{$param} = $nonspecific;
                 }
             }
         } elsif( defined $residue_specific && $residue_specific ne '.' ) {
-            push @params, $residue_specific;
+            $params{$param} = $residue_specific;
         } elsif( defined $residue_specific ) {
             if( defined $nonspecific ) {
-                push @params, $nonspecific;
-            } else {
-                push @params, undef;
+                $params{$param} = $nonspecific;
             }
         } elsif( defined $nonspecific ) {
-            push @params, $nonspecific;
+            $params{$param} = $nonspecific;
         } else {
-            push @params, undef;
+            $params{$param} = undef;
         }
     }
 
-    # use Data::Dumper;
-    # print STDERR Dumper \@params;
-
-    return \@params;
+    return map { $params{$_} } @{ $params };
 }
 
 1;
