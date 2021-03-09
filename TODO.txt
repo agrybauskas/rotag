@@ -84,7 +84,7 @@
 !! Make sure that only pdbx_PDB_model_num and label_alt_id are used to isolate
    calculations.
 ++ Fix wrong pairwise interaction display in rotag_energy.
-!! Reduce the quantity of calculations by reducing the number of potential angles
+++ Reduce the quantity of calculations by reducing the number of potential angles
    for those amino acids that have more than one symmetry: arginine (chi4),
    aspartic acid (chi2), glutamic acid (chi3), phenylalanine (chi2) and tyrosine
    (chi2).
