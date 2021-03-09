@@ -22,7 +22,7 @@ use PDBxParser qw( determine_residue_keys
                    to_csv
                    to_pdbx );
 use PseudoAtoms qw( generate_library );
-use Sampling qw( sample_angles_qs_parsing sample_angles_qs_parsing_new );
+use Sampling qw( sample_angles_qs_parsing );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
