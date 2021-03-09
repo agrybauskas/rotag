@@ -568,18 +568,19 @@ sub calc_favourable_angles
             if( exists $angles->{$last_angle_name} ) {
                 @default_allowed_angles =
                     map { [ $_ ] } @{ $angles->{$last_angle_name} };
-            } elsif( exists $angles->{'*'} ) {
+            } elsif( exists $angles->{'*'}{'*'} ) {
                 if( defined $rand_count && defined $rand_seed ) {
-                    if( $rand_count > scalar @{$angles->{'*'}} ) {
+                    if( $rand_count > scalar @{$angles->{'*'}{'*'}} ) {
                         die 'number of randomly selected angles is greater that ' .
                             "possible angles.\n";
                     }
-                    my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}} );
+                    my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}{'*'}} );
                     @default_allowed_angles =
-                        map { [ $angles->{'*'}[$_] ] }
+                        map { [ $angles->{'*'}{'*'}[$_] ] }
                             @shuffled_idxs[0..$rand_count-1];
                 } else {
-                    @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
+                    @default_allowed_angles =
+                        map { [ $_ ] } @{ $angles->{'*'}{'*'} };
                 }
             } else {
                 @default_allowed_angles =
