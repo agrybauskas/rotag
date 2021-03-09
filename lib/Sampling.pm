@@ -229,16 +229,42 @@ sub retrieve_dihedral_angle_params
 
     my @params = ();
     for my $param ( @{ $params } ) {
-        # if( defined $dihedral_angle_restraints->{$residue_name}{$angle_name}{'range_from'} &&
-        #     $dihedral_angle_restraints->{$residue_name}{$name}{'range_from'} &&
-        #     $dihedral_angle_restraints->{$residue_name}{$name}{'range_from'} ne '.' ) {
-        #     $angle_start =
-        #         $dihedral_angle_restraints->{$residue_name}{'.'}{'range_from'};
-        #     } elsif( defined $dihedral_angle_restraints->{'.'}{'range_from'} ne '.' ) {
-        # #         $angle_start = $dihedral_angle_restraints->{'.'}{'range_from'};
-        # #     }
-        # }
+        my $angle_specific =
+            $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
+        my $residue_specific =
+            $dihedral_angle_restraints->{$residue_name}{'.'}{$param};
+        my $nonspecific =
+            $dihedral_angle_restraints->{'.'}{$param};
+
+        if( defined $angle_specific && $angle_specific ne '.' ) {
+            push @params, $angle_specific;
+        } elsif( defined $angle_specific ) {
+            if( defined $residue_specific && $residue_specific ne '.' ) {
+                push @params, $residue_specific;
+            } elsif( defined $residue_specific ) {
+                if( defined $nonspecific ) {
+                    push @params, $nonspecific;
+                } else {
+                    push @params, undef;
+                }
+            }
+        } elsif( defined $residue_specific && $residue_specific ne '.' ) {
+            push @params, $residue_specific;
+        } elsif( defined $residue_specific ) {
+            if( defined $nonspecific ) {
+                push @params, $nonspecific;
+            } else {
+                push @params, undef;
+            }
+        } elsif( defined $nonspecific ) {
+            push @params, $nonspecific;
+        } else {
+            push @params, undef;
+        }
     }
+
+    # use Data::Dumper;
+    # print STDERR Dumper \@params;
 
     return \@params;
 }
