@@ -92,8 +92,8 @@ our $VERSION = $VERSION;
 #*                        print out additional information about the occuring
 #*                        scanning of the angles, such as residue name, accepted
 #*                        angle count and etc.
-#    -n, --threads <int>
-#                        number of threads.
+#*    -n, --threads <int>
+#*                        number of threads.
 #*    -v, --version
 #*                        print version.
 
