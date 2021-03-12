@@ -331,6 +331,7 @@ sub generate_library
     $conf_model //= 'rotation_only';
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => $interaction_atom_names };
+    $options //= {};
 
     # Selection of potential function.
     my %potential_functions =
