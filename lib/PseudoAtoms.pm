@@ -21,6 +21,7 @@ use List::Util qw( max
                    shuffle );
 use List::MoreUtils qw( any
                         uniq );
+use Logging qw( info );
 use threads;
 
 use Combinatorics qw( permutation );
@@ -319,6 +320,7 @@ sub generate_library
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
     my $threads = $args->{'threads'};
+    my $program_called_by = $args->{'program_called_by'};
     my $options = $args->{'options'};
 
     my $edge_length_interaction =
@@ -416,6 +418,7 @@ sub generate_library
 
                 # First, checks angles by step-by-step adding atoms to sidechains.
                 # This is called growing side chain.
+                my %options = %{ $options };
                 my @allowed_angles =
                     @{ calc_favourable_angles(
                            { 'parameters' => $parameters,
@@ -510,7 +513,7 @@ sub calc_favourable_angles
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
          $angles, $small_angle, $non_bonded_potential, $bonded_potential,
-         $threads, $rand_count, $rand_seed ) = (
+         $threads, $rand_count, $rand_seed, $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
@@ -522,6 +525,8 @@ sub calc_favourable_angles
         $args->{'threads'},
         $args->{'options'}{'rand_count'},
         $args->{'options'}{'rand_seed'},
+        $args->{'options'}{'program_called_by'},
+        $args->{'options'}{'verbose'},
     );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
@@ -654,6 +659,12 @@ sub calc_favourable_angles
             if( scalar @{ $next_allowed_angles } > 0 ) {
                 @allowed_angles = @{ $next_allowed_angles };
                 @allowed_energies = @{ $next_allowed_energies };
+                print info(
+                    { message => "${residue_name} " . $residue_site->{$atom_id}{'label_atom_id'} . " $last_angle_name " . scalar( @allowed_angles ) . "\n",
+                      # "${residue_id} ${residue_name} ${residue_chain} ${alt_id}; " .
+                      # "Current angle count -  " . scalar( keys %{ $angles } ) . "\n",
+                      program => $program_called_by }
+                    ) if $verbose;
             } else {
                 return [];
             }
