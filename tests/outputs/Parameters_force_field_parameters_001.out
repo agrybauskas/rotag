@@ -4419,6 +4419,126 @@ $VAR1 = bless( {
       }
     }
   },
+  '_[local]_dihedral_angle_restraints' => {
+    '.' => {
+      '.' => {
+        'angle' => '.',
+        'label_comp_id' => '.',
+        'range_from' => '-180.0',
+        'range_to' => '180.0',
+        'step' => '10.0',
+        'type' => 'degrees'
+      }
+    },
+    'ARG' => {
+      '.' => {
+        'angle' => '.',
+        'label_comp_id' => 'ARG',
+        'range_from' => '.',
+        'range_to' => '.',
+        'step' => '36.0',
+        'type' => 'degrees'
+      }
+    },
+    'ASN' => {
+      'chi2' => {
+        'angle' => 'chi2',
+        'label_comp_id' => 'ASN',
+        'range_from' => '-90.0',
+        'range_to' => '90.0',
+        'step' => '.',
+        'type' => 'degrees'
+      }
+    },
+    'ASP' => {
+      'chi2' => {
+        'angle' => 'chi2',
+        'label_comp_id' => 'ASP',
+        'range_from' => '-90.0',
+        'range_to' => '90.0',
+        'step' => '.',
+        'type' => 'degrees'
+      }
+    },
+    'GLN' => {
+      '.' => {
+        'angle' => '.',
+        'label_comp_id' => 'GLN',
+        'range_from' => '.',
+        'range_to' => '.',
+        'step' => '18.0',
+        'type' => 'degrees'
+      }
+    },
+    'GLU' => {
+      '.' => {
+        'angle' => '.',
+        'label_comp_id' => 'GLU',
+        'range_from' => '.',
+        'range_to' => '.',
+        'step' => '18.0',
+        'type' => 'degrees'
+      },
+      'chi3' => {
+        'angle' => 'chi3',
+        'label_comp_id' => 'GLU',
+        'range_from' => '-90.0',
+        'range_to' => '90.0',
+        'step' => '.',
+        'type' => 'degrees'
+      }
+    },
+    'LYS' => {
+      '.' => {
+        'angle' => '.',
+        'label_comp_id' => 'LYS',
+        'range_from' => '.',
+        'range_to' => '.',
+        'step' => '36.0',
+        'type' => 'degrees'
+      }
+    },
+    'MET' => {
+      '.' => {
+        'angle' => '.',
+        'label_comp_id' => 'MET',
+        'range_from' => '.',
+        'range_to' => '.',
+        'step' => '18.0',
+        'type' => 'degrees'
+      }
+    },
+    'PHE' => {
+      'chi2' => {
+        'angle' => 'chi2',
+        'label_comp_id' => 'PHE',
+        'range_from' => '-90',
+        'range_to' => '90.0',
+        'step' => '.',
+        'type' => 'degrees'
+      }
+    },
+    'PRO' => {
+      '.' => {
+        'angle' => '.',
+        'label_comp_id' => 'PRO',
+        'range_from' => '.',
+        'range_to' => '.',
+        'step' => '18.0',
+        'type' => 'degrees'
+      }
+    },
+    'TYR' => {
+      'chi2' => {
+        'angle' => 'chi2',
+        'label_comp_id' => 'TYR',
+        'range_from' => '-90',
+        'range_to' => '90.0',
+        'step' => '.',
+        'type' => 'degrees'
+      }
+    }
+  },
   '_[local]_force_field' => {
     'c_k' => '100.0',
     'cutoff_atom' => '50.0',

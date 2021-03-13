@@ -84,7 +84,7 @@
 !! Make sure that only pdbx_PDB_model_num and label_alt_id are used to isolate
    calculations.
 ++ Fix wrong pairwise interaction display in rotag_energy.
-!! Reduce the quantity of calculations by reducing the number of potential angles
+++ Reduce the quantity of calculations by reducing the number of potential angles
    for those amino acids that have more than one symmetry: arginine (chi4),
    aspartic acid (chi2), glutamic acid (chi3), phenylalanine (chi2) and tyrosine
    (chi2).
@@ -110,3 +110,6 @@
 -- Have to make sure that if no connections are determined, it should be tried
    to be implied from atom distances.
 ++ Error and warning messages should point out filenames in all rotag scripts.
+-- There are errors when both '.' and integer 'altid' are used in 'rotag_select'.
+!! There should be something done if no solutions are found. Maybe the angle
+   should be decreased automatically and recalculated.

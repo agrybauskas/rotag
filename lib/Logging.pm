@@ -46,14 +46,19 @@ sub info
 {
     my ( $args ) = @_;
 
-    my ( $type, $message ) = (
+    my ( $type, $message, $program ) = (
         $args->{'type'},
         $args->{'message'},
+        $args->{'program'},
     );
 
     $type //= 'Info';
 
-    print {*STDERR} "$type: $message";
+    if( defined $program ) {
+        print {*STDERR} "$type: " . basename( $program ) . ": $message";
+    } else {
+        print {*STDERR} "$type: $message";
+    }
 
     return;
 }
