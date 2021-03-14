@@ -157,8 +157,15 @@ for my $pdbx_file ( @ARGV ) {
                  @rotamer_ids;
 
         if( $min_max_ratio ) {
+            my $min_rotamer_id = $current_rotamers[0];
+            my $max_rotamer_id = $current_rotamers[-1];
             my $min_max_energy_cutoff =
-                ( $current_rotamers[-1] - $current_rotamers[0] ) / 2;
+                $rotamer_energy->{$min_rotamer_id}{'value'} +
+                ( $rotamer_energy->{$max_rotamer_id}{'value'} -
+                  $rotamer_energy->{$min_rotamer_id}{'value'} ) * $min_max_ratio;
+            @current_rotamers =
+                grep { $rotamer_energy->{$_}{'value'} < $min_max_energy_cutoff }
+                @current_rotamers;
         } else {
             @current_rotamers = @current_rotamers[0..$current_top_rank-1];
         }
