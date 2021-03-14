@@ -36,6 +36,9 @@ our $VERSION = $VERSION;
 #*    -T, --top-ratio <float>
 #*                        top rotamers according to the value of energies
 #*                        [default: 1.0].
+#*    -M, --min-max-ratio <float>
+#*                        ratio of the lowest energies in the range of min/max
+#*                        energy values [default: 1.0].
 #*    --tags <tag>[,<tag>...]
 #*                        output only specified PDBx tags
 #*                        (default: '_atom_site,_[local]_rotamer_angle').
@@ -49,6 +52,7 @@ our $VERSION = $VERSION;
 
 my $top_rank;
 my $top_ratio;
+my $min_max_ratio;
 my $tags = '_atom_site,_[local]_rotamer_angle';
 my $output_format = 'pdbx';
 my @category_list = ( '_atom_site', '_[local]_rotamer_angle',
@@ -69,6 +73,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'top-rank|t=s' => \$top_rank,
     'top-ratio|T=s' => \$top_ratio,
+    'min-max-ratio|M=s' => \$min_max_ratio,
     'tags=s' => \$tags,
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -141,7 +146,7 @@ for my $pdbx_file ( @ARGV ) {
         } elsif( $top_ratio ) {
             $current_top_rank = int( scalar( @rotamer_ids ) * $top_ratio );
             $current_top_rank = $current_top_rank == 0 ? 1 : $current_top_rank;
-        } else {
+        } elsif( ! $min_max_ratio ) {
             push @rotamers, @rotamer_ids;
             next;
         }
@@ -150,7 +155,13 @@ for my $pdbx_file ( @ARGV ) {
             sort { $rotamer_energy->{$a}{'value'} <=>
                    $rotamer_energy->{$b}{'value'} }
                  @rotamer_ids;
-        @current_rotamers = @current_rotamers[0..$current_top_rank-1];
+
+        if( $min_max_ratio ) {
+            my $min_max_energy_cutoff =
+                ( $current_rotamers[-1] - $current_rotamers[0] ) / 2;
+        } else {
+            @current_rotamers = @current_rotamers[0..$current_top_rank-1];
+        }
 
         # TODO: frequency part will change in the future, because it can change
         # according to different strategies of calculations.
