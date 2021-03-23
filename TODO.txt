@@ -51,7 +51,7 @@
 -- Check if vector lengths when adding hydrogens all are 1.0.
 ++ Add debug checks on the absence of connection, conformation, hybridization
    and certain parameters for interaction functions.
--- Generalize atom_site data structure, because it can be used even with other
+++ Generalize atom_site data structure, because it can be used even with other
    types of data.
 ++ Add option to mutate with given dihedral angle.
 !! 'label_alt_id' probably should be used only when main-chain has one.
