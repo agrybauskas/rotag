@@ -26,8 +26,10 @@ sub new
     my $constants = constants( $force_field );
     my $bond_types = bond_types( $force_field );
     my $covalent_bond_combinations = covalent_bond_combinations( $force_field );
+    my $dihedral_angle_restraints = dihedral_angle_restraints( $force_field );
     my $self = { %{ $constants }, %{ $bond_types }, %{ $force_field },
-                 %{ $covalent_bond_combinations } };
+                 %{ $covalent_bond_combinations },
+                 %{ $dihedral_angle_restraints } };
 
     return bless $self, $class;
 }
@@ -325,6 +327,19 @@ sub force_field
                                        {$atom_name_2} }, $atom_name_1;
     }
 
+    # Restructuring parameters of Lennard-Jones.
+    my $dihedral_angle_restraints =
+        pdbx_loop_to_array( $force_field_data, '_[local]_dihedral_angle' );
+
+    for my $dihedral_angle_restraint ( @{ $dihedral_angle_restraints } ) {
+        my $residue_name = $dihedral_angle_restraint->{'label_comp_id'};
+        my $angle_name = $dihedral_angle_restraint->{'angle'};
+
+        $force_field_parameters{'_[local]_dihedral_angle_restraints'}
+                               {$residue_name}{$angle_name} =
+            $dihedral_angle_restraint;
+    }
+
     # Restructuring parameters of interaction atom names.
     $force_field_parameters{'_[local]_interaction_atom_names'} =
         $force_field_data->{'_[local]_interaction_atom_names'}{'data'};
@@ -461,6 +476,13 @@ sub covalent_bond_combinations
     }
 
     return \%covalent_bond_combinations;
+}
+
+sub dihedral_angle_restraints
+{
+    my ( $force_field ) = @_;
+    return { '_[local]_dihedral_angle_restraints' =>
+                 $force_field->{'_[local]_dihedral_angle_restraints'} };
 }
 
 sub set_parameter_values

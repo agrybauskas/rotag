@@ -2,4 +2,4 @@
 
 pdbx_file=$(dirname "$0")/../inputs/amino-acids/phenylalanine-001.cif
 
-rotag_scan ${pdbx_file} 2>&1
+rotag_scan --angles '-180.0..36.0..180.0' ${pdbx_file} 2>&1

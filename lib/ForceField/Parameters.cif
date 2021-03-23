@@ -2541,6 +2541,26 @@ TYR HD1  HD2
 TYR HE1  HE2
 #
 loop_
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.angle
+_[local]_dihedral_angle.range_from
+_[local]_dihedral_angle.range_to
+_[local]_dihedral_angle.step
+_[local]_dihedral_angle.type
+.   .    -180.0 180.0 10.0 degrees
+ARG .    .      .     36.0 degrees
+ASN chi2 -90.0  90.0  .    degrees
+ASP chi2 -90.0  90.0  .    degrees
+GLN .    .      .     18.0 degrees
+GLU .    .      .     18.0 degrees
+GLU chi3 -90.0  90.0  .    degrees
+LYS .    .      .     36.0 degrees
+MET .    .      .     18.0 degrees
+PHE chi2 -90    90.0  .    degrees
+PRO .    .      .     18.0 degrees
+TYR chi2 -90    90.0  .    degrees
+#
+loop_
 _[local]_interaction_atom_names.label_atom_id
 N CA C O OXT CB H H2 HA HA2 HA3 HXT XA XA2
 #

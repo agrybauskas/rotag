@@ -18,8 +18,6 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-3 ASP 49 A 1 . 453 N 454 CA 457 CB 458 CG chi1 54.790 degrees
-4 ASP 49 A 1 . 454 CA 457 CB 458 CG 459 OD1 chi2 -63.880 degrees
 1 ASP 137 B 1 . 5206 N 5207 CA 5210 CB 5211 CG chi1 -75.491 degrees
 2 ASP 137 B 1 . 5207 CA 5210 CB 5211 CG 5212 OD1 chi2 -26.577 degrees
 #

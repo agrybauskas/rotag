@@ -57,5 +57,11 @@ Options:
     -F, --format <format>
                         output format. Only one category can be present if csv
                         is select (default: pdbx | csv).
+    --verbose
+                        print out additional information about the occuring
+                        scanning of the angles, such as residue name, accepted
+                        angle count and etc.
+    -n, --threads <int>
+                        number of threads.
     -v, --version
                         print version.

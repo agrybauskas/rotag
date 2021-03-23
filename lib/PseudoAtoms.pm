@@ -21,6 +21,7 @@ use List::Util qw( max
                    shuffle );
 use List::MoreUtils qw( any
                         uniq );
+use Logging qw( info );
 use threads;
 
 use Combinatorics qw( permutation );
@@ -319,6 +320,7 @@ sub generate_library
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
     my $threads = $args->{'threads'};
+    my $program_called_by = $args->{'program_called_by'};
     my $options = $args->{'options'};
 
     my $edge_length_interaction =
@@ -329,6 +331,7 @@ sub generate_library
     $conf_model //= 'rotation_only';
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => $interaction_atom_names };
+    $options //= {};
 
     # Selection of potential function.
     my %potential_functions =
@@ -416,6 +419,7 @@ sub generate_library
 
                 # First, checks angles by step-by-step adding atoms to sidechains.
                 # This is called growing side chain.
+                my %options = %{ $options };
                 my @allowed_angles =
                     @{ calc_favourable_angles(
                            { 'parameters' => $parameters,
@@ -510,7 +514,7 @@ sub calc_favourable_angles
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
          $angles, $small_angle, $non_bonded_potential, $bonded_potential,
-         $threads, $rand_count, $rand_seed ) = (
+         $threads, $rand_count, $rand_seed, $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
@@ -522,6 +526,8 @@ sub calc_favourable_angles
         $args->{'threads'},
         $args->{'options'}{'rand_count'},
         $args->{'options'}{'rand_seed'},
+        $args->{'options'}{'program_called_by'},
+        $args->{'options'}{'verbose'},
     );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
@@ -532,6 +538,9 @@ sub calc_favourable_angles
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
+
+    my ( $any_key ) = keys %{ $residue_site };
+    my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
     my $rotatable_bonds = rotatable_bonds( $residue_site );
     if( ! %{ $rotatable_bonds } ) { return []; }
@@ -565,21 +574,28 @@ sub calc_favourable_angles
             my ( $last_angle_name ) =
                 sort { $b cmp $a } keys %{ $rotatable_bonds->{$atom_id} };
 
-            if( exists $angles->{$last_angle_name} ) {
+            if( exists $angles->{$residue_name}{$last_angle_name} ) {
                 @default_allowed_angles =
-                    map { [ $_ ] } @{ $angles->{$last_angle_name} };
-            } elsif( exists $angles->{'*'} ) {
+                    map { [ $_ ] } @{ $angles->{$residue_name}{$last_angle_name} };
+            } elsif( exists $angles->{$residue_name}{'*'} ) {
+                @default_allowed_angles =
+                    map { [ $_ ] } @{ $angles->{$residue_name}{'*'} };
+            } elsif( exists $angles->{'*'}{$last_angle_name} ) {
+                @default_allowed_angles =
+                    map { [ $_ ] } @{ $angles->{'*'}{$last_angle_name} };
+            } elsif( exists $angles->{'*'}{'*'} ) {
                 if( defined $rand_count && defined $rand_seed ) {
-                    if( $rand_count > scalar @{$angles->{'*'}} ) {
+                    if( $rand_count > scalar @{$angles->{'*'}{'*'}} ) {
                         die 'number of randomly selected angles is greater that ' .
                             "possible angles.\n";
                     }
-                    my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}} );
+                    my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}{'*'}} );
                     @default_allowed_angles =
-                        map { [ $angles->{'*'}[$_] ] }
+                        map { [ $angles->{'*'}{'*'}[$_] ] }
                             @shuffled_idxs[0..$rand_count-1];
                 } else {
-                    @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
+                    @default_allowed_angles =
+                        map { [ $_ ] } @{ $angles->{'*'}{'*'} };
                 }
             } else {
                 @default_allowed_angles =
@@ -644,6 +660,12 @@ sub calc_favourable_angles
             if( scalar @{ $next_allowed_angles } > 0 ) {
                 @allowed_angles = @{ $next_allowed_angles };
                 @allowed_energies = @{ $next_allowed_energies };
+                print info(
+                    { message => "${residue_name} " . $residue_site->{$atom_id}{'label_atom_id'} . " $last_angle_name " . scalar( @allowed_angles ) . "\n",
+                      # "${residue_id} ${residue_name} ${residue_chain} ${alt_id}; " .
+                      # "Current angle count -  " . scalar( keys %{ $angles } ) . "\n",
+                      program => $program_called_by }
+                    ) if $verbose;
             } else {
                 return [];
             }
