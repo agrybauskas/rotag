@@ -38,5 +38,5 @@ my $selected_atom_site =
 my %pdbx =();
 $pdbx{'_atom_site'}{'data'} = $selected_atom_site;
 $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-$pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 to_pdbx( \%pdbx );

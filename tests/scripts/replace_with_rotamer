@@ -39,6 +39,6 @@ replace_with_rotamer($parameters,$atom_site,$residue_unique_key,\%angle_values);
 my %pdbx =();
 $pdbx{'_atom_site'}{'data'} = $atom_site;
 $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-$pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
 to_pdbx( \%pdbx );

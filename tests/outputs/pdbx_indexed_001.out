@@ -23,8 +23,8 @@ $VAR1 = {
         'name',
         'pdbx_ordinal'
       ],
-      'is_indexed' => 1,
-      'is_loop' => 1
+      'is_loop' => 1,
+      'type' => 'indexed'
     }
   },
   '_audit_conform' => {
@@ -37,8 +37,8 @@ $VAR1 = {
       'attributes' => [
         'dict_name'
       ],
-      'is_indexed' => 1,
-      'is_loop' => 1
+      'is_loop' => 1,
+      'type' => 'indexed'
     }
   },
   '_entity_poly' => {
@@ -60,8 +60,8 @@ WKNWKLELYVRKMWDWKKLIKEQEFEIFPNSKPLQPKPEK
       'attributes' => [
         'pdbx_seq_one_letter_code'
       ],
-      'is_indexed' => 1,
-      'is_loop' => 1
+      'is_loop' => 1,
+      'type' => 'indexed'
     }
   }
 };

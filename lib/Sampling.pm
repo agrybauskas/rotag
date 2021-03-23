@@ -38,7 +38,7 @@ sub sample_angles
     my $max_angle;
 
     if( defined $rand_count ) {
-
+        # TODO: add random sampling.
     } else {
         # Devides full circle (2*pi) into even intervals by $small_angle value.
         $small_angle = # Adjusts angle so, it could be devided evenly.
@@ -85,11 +85,45 @@ sub sample_angles_qs_parsing
     my ( $parameters, $query_string, $in_radians, $small_angle ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $dihedral_angle_restraints =
+        $parameters->{'_[local]_dihedral_angle_restraints'};
 
     $query_string =~ s/\s//g;
     $small_angle = 36.0;
 
     my %angles;
+    for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
+        for my $angle_name ( sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
+            if( $residue_name eq '.' ) {
+                $residue_name = '*'
+            }
+            if( $angle_name eq '.' ) {
+                $angle_name = '*'
+            }
+            my ( $angle_start, $angle_step, $angle_end ) =
+                retrieve_dihedral_angle_params( $dihedral_angle_restraints,
+                                                $residue_name,
+                                                $angle_name,
+                                                [ 'range_from', 'step', 'range_to' ] );
+
+            if( $in_radians ) {
+                $angles{$residue_name}{$angle_name} =
+                    sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
+                                   $angle_step );
+            } else {
+                $angles{$residue_name}{$angle_name} =
+                    sample_angles( $parameters,
+                                   [ [ $angle_start * $pi / 180.0,
+                                       $angle_end * $pi / 180.0 ] ],
+                                   $angle_step * $pi / 180.0 );
+            }
+        }
+    }
+
+    # Query overwrites on top.
+    if( $query_string ) {
+        undef %angles;
+    }
     for my $angle ( split /,/, $query_string ) {
         my $angle_name;
         my $angle_start;
@@ -119,11 +153,11 @@ sub sample_angles_qs_parsing
         $angle_end //= 180.0;
 
         if( $in_radians ) {
-            $angles{$angle_name} =
+            $angles{'*'}{$angle_name} =
                 sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
                                $angle_step );
         } else {
-            $angles{$angle_name} =
+            $angles{'*'}{$angle_name} =
                 sample_angles( $parameters,
                                [ [ $angle_start * $pi / 180.0,
                                    $angle_end * $pi / 180.0 ] ],
@@ -132,6 +166,31 @@ sub sample_angles_qs_parsing
     }
 
     return \%angles;
+}
+
+sub retrieve_dihedral_angle_params
+{
+    my ( $dihedral_angle_restraints, $residue_name, $angle_name, $params ) = @_;
+
+    my %params = ();
+    for my $param ( @{ $params } ) {
+        my $angle_specific =
+            $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
+        my $residue_specific =
+            $dihedral_angle_restraints->{$residue_name}{'.'}{$param};
+        my $nonspecific =
+            $dihedral_angle_restraints->{'.'}{'.'}{$param};
+
+        if( defined $angle_specific && $angle_specific ne '.' ) {
+            $params{$param} = $angle_specific;
+        } elsif( defined $residue_specific && $residue_specific ne '.' ) {
+            $params{$param} = $residue_specific;
+        } else {
+            $params{$param} = $nonspecific;
+        }
+    }
+
+    return map { $params{$_} } @{ $params };
 }
 
 1;

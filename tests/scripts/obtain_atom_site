@@ -21,7 +21,7 @@ foreach my $pdbx_file ( @ARGV ) {
     my %pdbx =();
     $pdbx{'_atom_site'}{'data'} = $atom_site;
     $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-    $pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+    $pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
     if( %{ $atom_site } ) {
         to_pdbx( \%pdbx );

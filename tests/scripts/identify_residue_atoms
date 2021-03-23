@@ -30,6 +30,6 @@ $pdbx{'_atom_site'}{'data'} =
               'include' =>
                   { 'id' => $residue_atom_ids->{$unique_residue_key} } } );
 $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-$pdbx{'_atom_site'}{'metadata'}{'is_indexed'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
 to_pdbx( \%pdbx );
