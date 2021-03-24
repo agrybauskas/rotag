@@ -714,6 +714,9 @@ sub calc_favourable_angles_new
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
 
+    my ( $any_key ) = keys %{ $residue_site };
+    my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
+
     my $rotatable_bonds = rotatable_bonds( $residue_site );
     if( ! %{ $rotatable_bonds } ) { return []; }
 
@@ -747,18 +750,18 @@ sub calc_favourable_angles_new
         if( exists $angles->{$last_angle_name} ) {
             @default_allowed_angles =
                 map { [ $_ ] } @{ $angles->{$last_angle_name} };
-        } elsif( exists $angles->{'*'} ) {
+        } elsif( exists $angles->{$residue_name}{'*'} ) {
             if( defined $rand_count && defined $rand_seed ) {
-                if( $rand_count > scalar @{$angles->{'*'}} ) {
+                if( $rand_count > scalar @{$angles->{$residue_name}{'*'}} ) {
                     die 'number of randomly selected angles is greater that ' .
                         "possible angles.\n";
                 }
-                my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}} );
+                my @shuffled_idxs = shuffle( 0..$#{$angles->{$residue_name}{'*'}} );
                 @default_allowed_angles =
-                    map { [ $angles->{'*'}[$_] ] }
+                    map { [ $angles->{$residue_name}{'*'}[$_] ] }
                         @shuffled_idxs[0..$rand_count-1];
             } else {
-                @default_allowed_angles = map { [ $_ ] } @{ $angles->{'*'} };
+                @default_allowed_angles = map { [ $_ ] } @{ $angles->{$residue_name}{'*'} };
             }
         } else {
             @default_allowed_angles =
