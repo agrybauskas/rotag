@@ -10,4 +10,5 @@ use Interactions;
 $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Indent = 1;
 
-my $interaction = Interactions->new();
+my $interactions = Interactions->new;
+$interactions->add;
