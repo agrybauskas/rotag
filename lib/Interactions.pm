@@ -20,13 +20,25 @@ use Digest::MD5;
 # list and etc. The overall structure is in this form:
 #
 # { interactions => {
-#     md5hex1 => {
-#       'atom_ids' => [ atom1_id, atom2_id, ... ],
-#       'unique_residue_ids' => [ unique_residue1_id, unique_residue2_id, ... ],
+#     hex1 => {
+#       atom_ids => [ atom_id1, atom_id2, ... ],
+#       unique_residue_ids => [ unique_residue_id1, unique_residue_id2, ... ],
+#       energy_func => \&energy_func,
+#       energy_value => 1.0
 #     },
-#     md5hex2 => {
+#     hex2 => {
 #       ...
 #     },
+#     ...
+#   },
+#   atom_ids => {
+#     id1 => [hex1, hex2, ...],
+#     id2 => [hex1],
+#     ...
+#   },
+#   unique_reisdue_ids => {
+#     unique_reisdue_id1 => [hex1, hex2, ...],
+#     unique_reisdue_id2 => [hex1],
 #     ...
 #   }
 # }
@@ -42,7 +54,7 @@ use Digest::MD5;
 sub new
 {
     my ( $class, $args ) = @_;
-    my $self = { 'interactions' => {} };
+    my $self = {};
     return bless $self, $class;
 }
 
