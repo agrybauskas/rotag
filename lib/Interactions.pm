@@ -69,7 +69,8 @@ sub new
 sub add
 {
     my ( $self, $atom_site, $options ) = @_;
-    my $no_calculations = $options->{'no_calculations'};
+    my ( $filter, $no_calculations ) =
+        ( $options->{'filter'}, $options->{'no_calculations'} );
 
     # MD5 hex creation for memoization purposes.
     my $md5hex = Digest::MD5->new;
