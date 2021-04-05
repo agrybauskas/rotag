@@ -7,6 +7,8 @@ use strict;
 use warnings;
 
 use Data::Dumper;
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
 
 use PDBxParser qw( raw2indexed
                    obtain_pdbx_data );
@@ -22,4 +24,6 @@ my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
 
 my $interactions = Interactions->new;
 $interactions->add( $pdbx_data );
+
+print Dumper $interactions;
 END
