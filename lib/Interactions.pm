@@ -5,14 +5,6 @@ use warnings;
 
 use Digest::MD5;
 
-# # Example.
-# $ctx = Digest::MD5->new;
-# $ctx->add($data);
-# $ctx->addfile($file_handle);
-# $digest = $ctx->digest;
-# $digest = $ctx->hexdigest;
-# $digest = $ctx->b64digest;
-
 # ------------------------- Constructors/Destructors -------------------------- #
 
 #
@@ -76,7 +68,7 @@ sub add
     my $md5hex = Digest::MD5->new;
     $md5hex->add( join ',', sort ( 1, 2, 3 ) );
 
-    $self->{'interactions'}{$md5hex};
+    $self->{'interactions'}{$md5hex->hexdigest} = '';
 }
 
 1;
