@@ -661,9 +661,14 @@ sub calc_favourable_angles
                 @allowed_angles = @{ $next_allowed_angles };
                 @allowed_energies = @{ $next_allowed_energies };
                 print info(
-                    { message => "${residue_name} " . $residue_site->{$atom_id}{'label_atom_id'} . " $last_angle_name " . scalar( @allowed_angles ) . "\n",
-                      # "${residue_id} ${residue_name} ${residue_chain} ${alt_id}; " .
-                      # "Current angle count -  " . scalar( keys %{ $angles } ) . "\n",
+                    { message =>
+                          $residue_site->{$atom_id}{'pdbx_PDB_model_num'} . " " .
+                          $residue_site->{$atom_id}{'label_asym_id'} . " " .
+                          $residue_site->{$atom_id}{'label_seq_id'} . " " .
+                          $residue_site->{$atom_id}{'label_alt_id'} . " " .
+                          "${residue_name} " .
+                          $residue_site->{$atom_id}{'label_atom_id'} . " " .
+                          "${last_angle_name} " . scalar( @allowed_angles ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
             } else {
