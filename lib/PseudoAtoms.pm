@@ -451,7 +451,7 @@ sub generate_library
                                  $potential_functions{$interactions}{'bonded'},
                              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                              'options' => $options },
-                           [ @allowed_angles ],
+                           [ \@allowed_angles ],
                            $threads ) };
 
                 # my ( $allowed_angles, $energy_sums ) =
@@ -827,7 +827,7 @@ sub calc_full_atom_energy
 
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
-    my @checkable_angles = @{ $array_blocks };
+    my @checkable_angles = @{ $array_blocks->[0] };
     my @allowed_angles;
     my @energy_sums;
     my @rmsd_averages;

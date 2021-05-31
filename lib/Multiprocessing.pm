@@ -36,7 +36,7 @@ sub divide_arrays_into_blocks
     my $array_length;
     my @list_of_array_blocks;
     for my $array ( @{ $arrays } ) {
-        my @array = @{ $array };
+        my ( @array ) = @{ $array };
 
         # Arrays have to have equal lengths.
         if( defined $array_length && scalar( @array ) ne $array_length ) {
