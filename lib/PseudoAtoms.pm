@@ -316,6 +316,7 @@ sub generate_library
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
     my $angles = $args->{'angles'};
+    my $add_B_iso = $args->{'add_B_iso'};
     my $rmsd = $args->{'rmsd'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
