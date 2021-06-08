@@ -142,7 +142,7 @@ for my $pdbx_file ( @ARGV ) {
     raw2indexed( $pdbx,
                  { 'attributes' => { '_atom_site' => [ 'id' ],
                                      '_[local]_rotamer_angle' => [ 'id' ],
-                                     ( $add_B_iso ? ( '_[local]_rotamer_energy' => [ 'id' ] ) : () ) } } );
+                                     ( $add_B_iso ? ( '_[local]_rotamer_energy' => [ 'rotamer_id' ] ) : () ) } } );
 
     # Reads file path, stdin and '-' operator.
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
@@ -380,12 +380,22 @@ for my $pdbx_file ( @ARGV ) {
                                 # TODO: check if it is a good idea to have
                                 # $rotamer_id as 'label_alt_id'.
                                'alt_group_id' => $rotamer_id,
-                               'selection_state' => 'T' } ) } );
+                                   'selection_state' => 'T' } ) } );
                 $last_atom_id++;
             }
 
             if( ! $keep_original ) {
                 delete $atom_site->{$atom_id};
+            }
+        }
+
+        if( $add_B_iso ) {
+            for my $atom_id ( keys %rotamer_atom_site ) {
+                next if ! defined $rotamer_atom_site{$atom_id}{'label_alt_id'};
+
+                $rotamer_atom_site{$atom_id}{'B_iso_or_equiv'} =
+                    $rotamer_energy->{$rotamer_atom_site{$atom_id}{'label_alt_id'}}
+                                     {'value'};
             }
         }
 
