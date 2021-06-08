@@ -387,7 +387,8 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( $pdbx,
                  { 'tags' => \@tags,
                    'add_attributes' =>
-                       { '_atom_site' => [ '[local]_selection_state' ] } } );
+                       { '_atom_site' => [ ( $add_B_iso ? ( 'B_iso_or_equiv' ) : () ),
+                                           '[local]_selection_state',] } } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $target_atom_site } ) {
