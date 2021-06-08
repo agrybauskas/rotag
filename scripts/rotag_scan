@@ -83,9 +83,6 @@ our $VERSION = $VERSION;
 #*                        set a seed for random angle selection.
 #*    -X, --rand-count <int>
 #*                        number of random angles.
-#*    -b, --b-factor
-#*                        adds 'B_iso_or_equiv' as energy value to the PDBx
-#*                        'atom_site' loop.
 #*    --tags <tag>[,<tag>...]
 #*                        output only specified PDBx categories.
 #*    -F, --format <format>
@@ -107,7 +104,6 @@ my $angles = '';
 my $in_radians = 0;
 my $rand_seed;
 my $rand_count;
-my $add_B_iso = 0;
 my $threads = 1;
 my $verbose = 0;
 my $tags = '_atom_site,_[local]_rotamer_angle,_[local]_rotamer_energy';
@@ -136,7 +132,6 @@ GetOptions(
     'rand-seed|x=s' => \$rand_seed,
     'rand-count|X=s' => \$rand_count,
     'radians|r' => sub { $in_radians = 1 },
-    'b-factor|b' => sub { $add_B_iso = 1 },
     'tags=s' => \$tags,
     'format|F=s' => \$output_format,
     'threads|n=s' => \$threads,

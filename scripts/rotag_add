@@ -64,6 +64,9 @@ our $VERSION = $VERSION;
 #*                        add only those hydrogens that have clear positions from
 #*                        the current structure (applicable for --hydrogens
 #*                        option).
+#*    -b, --b-factor
+#*                        adds 'B_iso_or_equiv' as energy value to the PDBx
+#*                        'atom_site' loop.
 #*    -v, --version
 #*                        print version.
 
@@ -77,6 +80,7 @@ my $include_selected = 0;
 my $tags = '_atom_site';
 my $add_clear_positions = 0;
 my $keep_original = 0;
+my $add_B_iso = 0;
 my @category_list = ( '_atom_site', '_[local]_rotamer_angle' );
 my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
@@ -103,6 +107,7 @@ GetOptions(
     'tags=s' => \$tags,
     'keep-original|k' => sub { $keep_original = 1 },
     'clear-positions|c' => sub { $add_clear_positions = 1 },
+    'b-factor|b' => sub { $add_B_iso = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
