@@ -107,7 +107,8 @@ GetOptions(
     'tags=s' => \$tags,
     'keep-original|k' => sub { $keep_original = 1 },
     'clear-positions|c' => sub { $add_clear_positions = 1 },
-    'b-factor|b' => sub { $add_B_iso = 1 },
+    'b-factor|b' => sub { $add_B_iso = 1;
+                          push @category_list, '_[local]_rotamer_energy' },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -140,7 +141,8 @@ for my $pdbx_file ( @ARGV ) {
     my $pdbx = obtain_pdbx_data( $pdbx_file, \@category_list );
     raw2indexed( $pdbx,
                  { 'attributes' => { '_atom_site' => [ 'id' ],
-                                     '_[local]_rotamer_angle' => [ 'id' ] } } );
+                                     '_[local]_rotamer_angle' => [ 'id' ],
+                                     ( $add_B_iso ? ( '_[local]_rotamer_energy' => [ 'id' ] ) : () ) } } );
 
     # Reads file path, stdin and '-' operator.
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
@@ -187,6 +189,7 @@ for my $pdbx_file ( @ARGV ) {
 
     if( $add_sidechains ) {
         my $rotamer_angle;
+        my $rotamer_energy;
         if( defined $rotamer_angle_data_json ) {
             $rotamer_angle = $rotamer_angle_data_json->{'rotamer_angle'};
         } elsif( $rotamer_angle_file  ) {
@@ -200,6 +203,10 @@ for my $pdbx_file ( @ARGV ) {
                 $pdbx_rotamer_angle->{'_[local]_rotamer_angle'}{'data'};
         } else {
             $rotamer_angle = $pdbx->{'_[local]_rotamer_angle'}{'data'};
+        }
+
+        if( $add_B_iso ) {
+            $rotamer_energy = $pdbx->{'_[local]_rotamer_energy'}{'data'};
         }
 
         if( ! defined $rotamer_angle ) {
@@ -388,7 +395,7 @@ for my $pdbx_file ( @ARGV ) {
                  { 'tags' => \@tags,
                    'add_attributes' =>
                        { '_atom_site' => [ ( $add_B_iso ? ( 'B_iso_or_equiv' ) : () ),
-                                           '[local]_selection_state',] } } );
+                                           '[local]_selection_state'] } } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $target_atom_site } ) {
