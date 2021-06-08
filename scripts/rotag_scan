@@ -249,7 +249,6 @@ for my $pdbx_file ( @ARGV ) {
                   'include_interactions' =>
                       { 'id' => [ keys %{ $current_atom_site } ] },
                   'angles' => \%angles,
-                  'add_B_iso' => $add_B_iso,
                   'interactions' => $interactions,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
