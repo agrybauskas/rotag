@@ -72,6 +72,7 @@ loop_
 _[local]_partial_charge.label_comp_id
 _[local]_partial_charge.label_atom_id
 _[local]_partial_charge.value
+.   .    0.00
 ALA C    0.57
 ALA CA   -0.028
 ALA CB   -0.23
