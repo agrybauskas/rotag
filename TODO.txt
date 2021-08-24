@@ -113,3 +113,4 @@
 ++ There are errors when both '.' and integer 'altid' are used in 'rotag_select'.
 !! There should be something done if no solutions are found. Maybe the angle
    should be decreased automatically and recalculated.
+-- Have a possibility to include parameter files.
