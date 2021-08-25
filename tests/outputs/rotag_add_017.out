@@ -28,5 +28,8 @@ Options:
                         add only those hydrogens that have clear positions from
                         the current structure (applicable for --hydrogens
                         option).
+    -b, --b-factor
+                        adds 'B_iso_or_equiv' as energy value to the PDBx
+                        'atom_site' loop.
     -v, --version
                         print version.
