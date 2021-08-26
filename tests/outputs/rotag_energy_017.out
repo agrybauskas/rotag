@@ -45,7 +45,5 @@ Options:
                         'atom_site' loop.
     -F, --format <format>
                         output format (default: pdbx | csv).
-    -s, --selected <format>
-                        adding selected atoms for the energy calculations.
     -v, --version
                         print version.

@@ -81,8 +81,6 @@ our $VERSION = $VERSION;
 #*                        'atom_site' loop.
 #*    -F, --format <format>
 #*                        output format (default: pdbx | csv).
-#    -s, --selected <format>
-#                        adding selected atoms for the energy calculations.
 #    -n, --threads <int>
 #                        number of threads.
 #*    -v, --version
@@ -96,7 +94,6 @@ my $parameters_json_cmd = '{}';
 my $do_sidechain = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
-my $calc_selected = 0;
 my $add_B_iso = 0;
 my $output_format = 'pdbx';
 my $threads = 1;
@@ -121,7 +118,6 @@ GetOptions(
     'pairwise|P' => sub { $do_pairwise = 1 },
     'decompose|d' => sub { $do_decompose = 1 },
     'b-factor|b' => sub { $add_B_iso = 1 },
-    'selected|s' => sub { $calc_selected = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -223,7 +219,6 @@ for my $pdbx_file ( @ARGV ) {
                         { 'target_atom_ids' => $target_atom_ids,
                           'selected_atom_ids' => $selected_atom_ids,
                           'only_sidechains' => $do_sidechain,
-                          'selected_atoms_also' => $calc_selected,
                           'decompose' => $do_decompose,
                           'pairwise' => $do_pairwise } ) };
     }
