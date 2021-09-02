@@ -464,6 +464,7 @@ sub generate_library
                 #                  $potential_functions{$interactions}{'non_bonded'},
                 #              'bonded_potential' =>
                 #                  $potential_functions{$interactions}{'bonded'},
+                #              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                 #              'options' => $options },
                 #            [ @allowed_angles ] ) };
 
