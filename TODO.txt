@@ -114,3 +114,5 @@
 !! There should be something done if no solutions are found. Maybe the angle
    should be decreased automatically and recalculated.
 -- Have a possibility to include parameter files.
+!! It was noticed that 'around' selection selects also from different
+   'pdbx_PDB_model_num'.
