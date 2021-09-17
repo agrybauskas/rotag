@@ -445,7 +445,85 @@ sub stretchable_bonds
 
 sub bendable_angles
 {
-    return;
+    my ( $atom_site, $start_atom_id, $next_atom_id ) = @_;
+
+    # By default, CA is starting atom and CB next.
+    $start_atom_id //= filter( { 'atom_site' => $atom_site,
+                                 'include' => { 'label_atom_id' => [ 'CA' ] },
+                                 'data' => [ 'id' ],
+                                 'is_list' => 1 } )->[0];
+    $next_atom_id //=  filter( { 'atom_site' => $atom_site,
+                                 'include' => { 'label_atom_id' => [ 'CB' ] },
+                                 'data' => [ 'id' ],
+                                 'is_list' => 1 } )->[0];
+
+    if( ! $start_atom_id || ! $next_atom_id ) { return {}; }
+
+    my %atom_site = %{ $atom_site }; # Copy of the variable.
+    my @atom_ids = keys %atom_site;
+    my @visited_atom_ids = ( $start_atom_id );
+    my @next_atom_ids = ( $next_atom_id );
+    my %parent_atom_ids;
+
+    my %bendable_angles;
+
+    # Marks parent atom for next atom id.
+    $parent_atom_ids{$next_atom_id} = $start_atom_id;
+
+    # Exists if there are no atoms that is not already visited.
+    while( scalar( @next_atom_ids ) != 0 ) {
+        # Iterates through every neighbouring atom if it was not visited
+        # before.
+        my @neighbour_atom_ids;
+        for my $atom_id ( @next_atom_ids ) {
+            my $parent_atom_id = $parent_atom_ids{$atom_id};
+
+            # Detects grand parent atom if it exists.
+            my $grand_parent_atom_id;
+            if( exists $parent_atom_ids{$parent_atom_id} ) {
+                $grand_parent_atom_id = $parent_atom_ids{$parent_atom_id};
+            } elsif(  ) {
+
+            }
+
+            push @{ $bendable_angles{$atom_id} },
+                [ undef, $parent_atom_id, $atom_id ];
+            # if( exists $bendable_angles{$parent_atom_id} ) {
+            #     unshift @{ $bendable_angles{$atom_id} },
+            #         @{ $bendable_angles{$parent_atom_id} };
+            # }
+
+            # Marks visited atoms.
+            push @visited_atom_ids, $atom_id;
+
+            if( ! exists $atom_site{$atom_id}{'connections'} ) {
+                confess "atom with id $atom_id lacks 'connections' key"
+            }
+
+            # Marks neighbouring atoms.
+            push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
+
+            # Marks parent atoms for each neighbouring atom.
+            for my $neighbour_atom_id ( @neighbour_atom_ids ) {
+                if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                    # HACK: this exception might produce unexpected results.
+                    ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
+                    $parent_atom_ids{$neighbour_atom_id} = $atom_id;
+                }
+            }
+        }
+
+        # Determines next atoms that should be visited.
+        @next_atom_ids = (); # Resets value for the new ones to be appended.
+        for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
+                push @next_atom_ids, $neighbour_atom_id;
+            }
+        }
+    }
+
+    return \%bendable_angles;
 }
 
 #
