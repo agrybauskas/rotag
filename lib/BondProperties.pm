@@ -6,8 +6,10 @@ use warnings;
 use Exporter qw( import );
 BEGIN {
     our @EXPORT_OK = qw( bond_type
+                         bendable_angles
                          hybridization
                          rotatable_bonds
+                         stretchable_bonds
                          unique_rotatables );
 }
 
@@ -363,6 +365,16 @@ sub rotatable_bonds
     }
 
     return \%named_rotatable_bonds;
+}
+
+sub stretchable_bonds
+{
+    return;
+}
+
+sub bendable_angles
+{
+    return;
 }
 
 #
