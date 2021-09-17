@@ -403,6 +403,13 @@ sub stretchable_bonds
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
+            push @{ $stretchable_bonds{$atom_id} },
+                [ $parent_atom_id, $atom_id ];
+            if( exists $stretchable_bonds{$parent_atom_id} ) {
+                unshift @{ $stretchable_bonds{$atom_id} },
+                    @{ $stretchable_bonds{$parent_atom_id} };
+            }
+
             # Marks visited atoms.
             push @visited_atom_ids, $atom_id;
 
@@ -433,7 +440,7 @@ sub stretchable_bonds
         }
     }
 
-    return;
+    return \%stretchable_bonds;
 }
 
 sub bendable_angles
