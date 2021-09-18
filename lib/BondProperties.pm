@@ -445,7 +445,7 @@ sub stretchable_bonds
 
 sub bendable_angles
 {
-    my ( $atom_site, $start_atom_id, $next_atom_id ) = @_;
+    my ( $atom_site, $start_atom_id, $next_atom_id, $previous_atom_id ) = @_;
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
@@ -456,19 +456,24 @@ sub bendable_angles
                                  'include' => { 'label_atom_id' => [ 'CB' ] },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
+    $previous_atom_id //=  filter( { 'atom_site' => $atom_site,
+                                     'include' => { 'label_atom_id' => [ 'N' ] },
+                                     'data' => [ 'id' ],
+                                     'is_list' => 1 } )->[0];
 
     if( ! $start_atom_id || ! $next_atom_id ) { return {}; }
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
-    my @visited_atom_ids = ( $start_atom_id );
+    my @visited_atom_ids = ( $previous_atom_id, $start_atom_id );
     my @next_atom_ids = ( $next_atom_id );
     my %parent_atom_ids;
 
     my %bendable_angles;
 
-    # Marks parent atom for next atom id.
+    # Marks parent and grandparent atoms for next atom id.
     $parent_atom_ids{$next_atom_id} = $start_atom_id;
+    $parent_atom_ids{$start_atom_id} = $previous_atom_id;
 
     # Exists if there are no atoms that is not already visited.
     while( scalar( @next_atom_ids ) != 0 ) {
@@ -482,8 +487,6 @@ sub bendable_angles
             my $grandparent_atom_id;
             if( exists $parent_atom_ids{$parent_atom_id} ) {
                 $grandparent_atom_id = $parent_atom_ids{$parent_atom_id};
-            } else {
-                next;
             }
 
             push @{ $bendable_angles{$atom_id} },
