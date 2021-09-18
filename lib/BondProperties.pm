@@ -478,20 +478,20 @@ sub bendable_angles
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
-            # Detects grand parent atom if it exists.
-            my $grand_parent_atom_id;
+            # Detects grandparent atom if it exists.
+            my $grandparent_atom_id;
             if( exists $parent_atom_ids{$parent_atom_id} ) {
-                $grand_parent_atom_id = $parent_atom_ids{$parent_atom_id};
-            } elsif(  ) {
-
+                $grandparent_atom_id = $parent_atom_ids{$parent_atom_id};
+            } else {
+                next;
             }
 
             push @{ $bendable_angles{$atom_id} },
-                [ undef, $parent_atom_id, $atom_id ];
-            # if( exists $bendable_angles{$parent_atom_id} ) {
-            #     unshift @{ $bendable_angles{$atom_id} },
-            #         @{ $bendable_angles{$parent_atom_id} };
-            # }
+                [ $grandparent_atom_id, $parent_atom_id, $atom_id ];
+            if( exists $bendable_angles{$parent_atom_id} ) {
+                unshift @{ $bendable_angles{$atom_id} },
+                    @{ $bendable_angles{$parent_atom_id} };
+            }
 
             # Marks visited atoms.
             push @visited_atom_ids, $atom_id;
