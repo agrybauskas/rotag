@@ -467,7 +467,30 @@ sub all_dihedral
 
 sub all_bond_angles
 {
+    my ( $atom_site, $options ) = @_;
+    my ( $calc_mainchain, $reference_atom_site ) = (
+        $options->{'calc_mainchain'},
+        $options->{'reference_atom_site'},
+    );
 
+    $calc_mainchain //= 0;
+    $reference_atom_site //= $atom_site;
+
+    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
+
+    my $residue_groups =
+        split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
+
+    # Iterates through residue ids and, according to the parameter file,
+    # calculates bond lengths of each side-chain bond.
+    my %residue_bond_lengths;
+
+    for my $residue_unique_key ( keys %{ $residue_groups } ) {
+        my $residue_site =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' =>
+                          { 'id' => $residue_groups->{$residue_unique_key} } } );
+    }
 }
 
 #
