@@ -5,7 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 BEGIN {
-    our @EXPORT_OK = qw( all_bond_lengths
+    our @EXPORT_OK = qw( all_bond_angles
+                         all_bond_lengths
                          all_dihedral
                          around_distance
                          bond_angle
@@ -449,6 +450,27 @@ sub all_dihedral
 }
 
 #
+# Calculates bond angles for all given atoms that are described in atom site
+# data structure (produced by obtain_atom_site or functions that uses it). Usage
+# of connect_atoms is necessary for correct calculations.
+# Input:
+#     $atom_site - atom data structure.
+#     $options->{'calc_mainchain'} - additionally calculates mainchain bond
+#     angles.
+# Output:
+#     $bond_length - data structure that relates residue id and bond lengths.
+#     Ex.:
+#       resi_id, atom_1_id, atom_2_id, atom_3_id, type, value
+#     { '18,A,1,.' => { 245 => { 264 => { 247 => { value => 120.0 } } },
+#                       264 => { 245 => { 247 => { value => 120.0 } } } } }
+#
+
+sub all_bond_angles
+{
+
+}
+
+#
 # Calculates bond lengths for all given atoms that are described in atom site
 # data structure (produced by obtain_atom_site or functions that uses it). Usage
 # of connect_atoms is necessary for correct calculations.
@@ -460,8 +482,8 @@ sub all_dihedral
 #     $bond_length - data structure that relates residue id and bond lengths.
 #     Ex.:
 #       resi_id, atom_1_id, atom_2_id, value
-#     { '18,A,1,.' => { 245 => { 264 => 1.6 },
-#                       264 => { 245 => 1.6 } } }
+#     { '18,A,1,.' => { 245 => { 264 => { value => 1.6 } },
+#                       264 => { 245 => { value => 1.6  } } } }
 #
 
 sub all_bond_lengths
@@ -543,7 +565,7 @@ sub all_bond_lengths
 
             # Calculates main-chain bonds.
             if( defined $prev_c_atom_id && defined $n_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$prev_c_atom_id}{$n_atom_id} =
+                $residue_bond_lengths{$residue_unique_key}{$prev_c_atom_id}{$n_atom_id}{'value'} =
                     bond_length(
                         [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
                             $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
@@ -554,7 +576,7 @@ sub all_bond_lengths
             }
 
             if( defined $c_atom_id && defined $next_n_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$c_atom_id}{$next_n_atom_id} =
+                $residue_bond_lengths{$residue_unique_key}{$c_atom_id}{$next_n_atom_id}{'value'} =
                     bond_length(
                         [ [ $reference_atom_site->{$c_atom_id}{'Cartn_x'},
                             $reference_atom_site->{$c_atom_id}{'Cartn_y'},
@@ -565,7 +587,7 @@ sub all_bond_lengths
             }
 
             if( defined $n_atom_id && defined $ca_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$n_atom_id}{$ca_atom_id} =
+                $residue_bond_lengths{$residue_unique_key}{$n_atom_id}{$ca_atom_id}{'value'} =
                     bond_length(
                         [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
                             $atom_site->{$n_atom_id}{'Cartn_y'},
@@ -576,7 +598,7 @@ sub all_bond_lengths
             }
 
             if( defined $ca_atom_id && defined $c_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$ca_atom_id}{$c_atom_id} =
+                $residue_bond_lengths{$residue_unique_key}{$ca_atom_id}{$c_atom_id}{'value'} =
                     bond_length(
                         [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
                             $atom_site->{$ca_atom_id}{'Cartn_y'},
@@ -587,7 +609,7 @@ sub all_bond_lengths
             }
 
             if( defined $c_atom_id && defined $o_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$c_atom_id}{$o_atom_id} =
+                $residue_bond_lengths{$residue_unique_key}{$c_atom_id}{$o_atom_id}{'value'} =
                     bond_length(
                         [ [ $atom_site->{$c_atom_id}{'Cartn_x'},
                             $atom_site->{$c_atom_id}{'Cartn_y'},
@@ -600,7 +622,7 @@ sub all_bond_lengths
 
         for my $first_atom_id ( keys %{ $stretchable_bonds } ) {
             for my $bond ( @{ $stretchable_bonds->{$first_atom_id} } ){
-                $residue_bond_lengths{$residue_unique_key}{$bond->[0]}{$bond->[1]} =
+                $residue_bond_lengths{$residue_unique_key}{$bond->[0]}{$bond->[1]}{'value'} =
                     bond_length(
                         [ [ $residue_site->{$bond->[0]}{'Cartn_x'},
                             $residue_site->{$bond->[0]}{'Cartn_y'},
