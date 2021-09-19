@@ -12,7 +12,8 @@ use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use Measure qw( all_bond_lengths );
+use Measure qw( all_bond_lengths
+                bond_length );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    mark_selection
@@ -168,72 +169,62 @@ for my $pdbx_file ( @ARGV ) {
         }
 
     } else {
-#         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
-#             [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_atom_2_id',
-#               'atom_2_id', 'label_atom_3_id', 'atom_3_id', 'label_atom_4_id',
-#               'atom_4_id', 'value', 'units' ];
-#         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'is_loop'} = 1;
-#         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'type'} = 'record';
+        $pdbx->{'_[local]_length'}{'metadata'}{'attributes'} =
+            [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_atom_2_id',
+              'atom_2_id', 'value' ];
+        $pdbx->{'_[local]_length'}{'metadata'}{'is_loop'} = 1;
+        $pdbx->{'_[local]_length'}{'metadata'}{'type'} = 'record';
 
-#         my $dihedral_site =
-#             filter( { 'atom_site' => $atom_site,
-#                       'include' => { '[local]_selection_state' => [ 'T' ] },
-#                       'exclude' => { '[local]_selection_group' => [ q{?} ] } } );
+        my $length_site =
+            filter( { 'atom_site' => $atom_site,
+                      'include' => { '[local]_selection_state' => [ 'T' ] },
+                      'exclude' => { '[local]_selection_group' => [ q{?} ] } } );
 
-#         if( ! %{ $dihedral_site } ) {
-#             warning( { 'program' => $0,
-#                        'message' => 'no atoms were selected for calculating ' .
-#                                     "dihedral angles.\n" } );
-#             next;
-#         }
+        if( ! %{ $length_site } ) {
+            warning( { 'program' => $0,
+                       'message' => 'no atoms were selected for calculating ' .
+                                    "dihedral angles.\n" } );
+            next;
+        }
 
-#         my @dihedral_atom_ids =
-#             sort { $dihedral_site->{"$a"}{'[local]_selection_group'} <=>
-#                    $dihedral_site->{"$b"}{'[local]_selection_group'} ||
-#                    $dihedral_site->{"$a"}{'id'} <=>
-#                    $dihedral_site->{"$b"}{'id'}  }
-#             keys %{ $dihedral_site };
+        my @length_atom_ids =
+            sort { $length_site->{"$a"}{'[local]_selection_group'} <=>
+                   $length_site->{"$b"}{'[local]_selection_group'} ||
+                   $length_site->{"$a"}{'id'} <=>
+                   $length_site->{"$b"}{'id'}  }
+            keys %{ $length_site };
 
-#         my $dihedral_id = 1;
-#         for( my $i = 0; $i <= $#dihedral_atom_ids; $i = $i + 4 ) {
-#             my $first_atom_id = $dihedral_atom_ids[$i];
-#             my $second_atom_id = $dihedral_atom_ids[$i+1];
-#             my $third_atom_id = $dihedral_atom_ids[$i+2];
-#             my $fourth_atom_id = $dihedral_atom_ids[$i+3];
-#             my $dihedral_angle =
-#                 dihedral_angle(
-#                     [ map { [ $dihedral_site->{$_}{'Cartn_x'},
-#                               $dihedral_site->{$_}{'Cartn_y'},
-#                               $dihedral_site->{$_}{'Cartn_z'} ] }
-#                       ( $first_atom_id, $second_atom_id,
-#                         $third_atom_id, $fourth_atom_id ) ] );
+        my $length_id = 1;
+        for( my $i = 0; $i <= $#length_atom_ids; $i = $i + 2 ) {
+            my $first_atom_id = $length_atom_ids[$i];
+            my $second_atom_id = $length_atom_ids[$i+1];
+            my $length =
+                bond_length(
+                    [ map { [ $length_site->{$_}{'Cartn_x'},
+                              $length_site->{$_}{'Cartn_y'},
+                              $length_site->{$_}{'Cartn_z'} ] }
+                      ( $first_atom_id, $second_atom_id ) ] );
 
-#             push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
-#                   { 'id' => $dihedral_id,
-#                     'label_atom_1_id' => $first_atom_id,
-#                     'atom_1_id' =>
-#                         $dihedral_site->{$first_atom_id}{'label_atom_id'},
-#                     'label_atom_2_id' => $second_atom_id,
-#                     'atom_2_id' =>
-#                         $dihedral_site->{$second_atom_id}{'label_atom_id'},
-#                     'label_atom_3_id' => $third_atom_id,
-#                     'atom_3_id' =>
-#                         $dihedral_site->{$third_atom_id}{'label_atom_id'},
-#                     'label_atom_4_id' => $fourth_atom_id,
-#                     'atom_4_id' =>
-#                         $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
-#                     'value' =>
-#                         ( $in_radians ? sprintf $sig_figs_max, $dihedral_angle :
-#                           sprintf $sig_figs_min, $dihedral_angle * 180 / $pi ),
-#                     'units' => ( $in_radians ? 'radians' : 'degrees' ) };
+            push @{ $pdbx->{'_[local]_length'}{'data'} },
+                  { 'id' => $length_id,
+                    'label_atom_1_id' => $first_atom_id,
+                    'atom_1_id' =>
+                        $length_site->{$first_atom_id}{'label_atom_id'},
+                    'label_atom_2_id' => $second_atom_id,
+                    'atom_2_id' =>
+                        $length_site->{$second_atom_id}{'label_atom_id'},
+                    'value' =>
+                        sprintf $sig_figs_max, $length };
 
-#             $dihedral_id++;
-#         }
+            $length_id++;
+        }
     }
 
     if( $output_format eq 'pdbx' ) {
-        to_pdbx( $pdbx, { 'tags' => [ '_[local]_bond_length' ] } );
+        to_pdbx( $pdbx, { 'tags' => [ '_[local]_bond_length',
+                                      '_[local]_length' ] } );
     } elsif( $output_format eq 'csv' ) {
+        # TODO: extend to '_[local]_length'.
         to_csv( $pdbx, { 'category' => '_[local]_bond_length' } );
     } else {
         error(
