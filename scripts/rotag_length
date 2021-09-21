@@ -35,9 +35,9 @@ our $VERSION = $VERSION;
 #*
 #*Options:
 #*    -S, --side-chains
-#*                        calculates chi angles of the side-chain atoms.
+#*                        calculates bond lengths between the side-chain atoms.
 #*    -M, --main-chains
-#*                        calculates phi and psi angles of the main-chain atoms.
+#*                        calculates bond lengths between the main-chain atoms.
 #*    -F, --format <format>
 #*                        output format (default: pdbx | csv).
 #*    -v, --version
