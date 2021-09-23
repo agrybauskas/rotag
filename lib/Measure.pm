@@ -462,8 +462,8 @@ sub all_dihedral
 #     $bond_length - data structure that relates residue id and bond lengths.
 #     Ex.:
 #       resi_id, atom_1_id, atom_2_id, atom_3_id, type, value
-#     { '18,A,1,.' => { 245 => { 264 => { 247 => { value => 120.0 } } },
-#                       264 => { 245 => { 247 => { value => 120.0 } } } } }
+#     { '18,A,1,.' => { 245 => { 264 => { 247 => { value => 1.9 } } },
+#                       264 => { 245 => { 247 => { value => 1.9 } } } } }
 #
 
 sub all_bond_angles
@@ -547,8 +547,6 @@ sub all_bond_angles
             if( defined $prev_c_atom_id && defined $n_atom_id &&
                 defined $ca_atom_id ) {
                 $residue_bond_angles{$residue_unique_key}{$prev_c_atom_id}
-                                    {$n_atom_id}{$ca_atom_id}{'type'} = 'radians';
-                $residue_bond_angles{$residue_unique_key}{$prev_c_atom_id}
                                     {$n_atom_id}{$ca_atom_id}{'value'} =
                     bond_angle(
                         [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
@@ -564,8 +562,6 @@ sub all_bond_angles
 
             if( defined $n_atom_id && defined $ca_atom_id && defined $c_atom_id ) {
                 $residue_bond_angles{$residue_unique_key}{$n_atom_id}
-                                    {$ca_atom_id}{$c_atom_id}{'type'} = 'radians';
-                $residue_bond_angles{$residue_unique_key}{$n_atom_id}
                                     {$ca_atom_id}{$c_atom_id}{'value'} =
                     bond_angle(
                         [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
@@ -580,8 +576,6 @@ sub all_bond_angles
             }
 
             if( defined $ca_atom_id && defined $c_atom_id && defined $o_atom_id ) {
-                $residue_bond_angles{$residue_unique_key}{$ca_atom_id}
-                                    {$c_atom_id}{$o_atom_id}{'type'} = 'radians';
                 $residue_bond_angles{$residue_unique_key}{$ca_atom_id}
                                     {$c_atom_id}{$o_atom_id}{'value'} =
                     bond_angle(
@@ -599,8 +593,6 @@ sub all_bond_angles
             if( defined $ca_atom_id && defined $c_atom_id &&
                 defined $next_n_atom_id ) {
                 $residue_bond_angles{$residue_unique_key}{$ca_atom_id}
-                                    {$c_atom_id}{$next_n_atom_id}{'type'} = 'radians';
-                $residue_bond_angles{$residue_unique_key}{$ca_atom_id}
                                     {$c_atom_id}{$next_n_atom_id}{'value'} =
                     bond_angle(
                         [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
@@ -616,8 +608,6 @@ sub all_bond_angles
 
             if( defined $o_atom_id && defined $c_atom_id &&
                 defined $next_n_atom_id ) {
-                $residue_bond_angles{$residue_unique_key}{$o_atom_id}
-                                    {$c_atom_id}{$next_n_atom_id}{'type'} = 'radians';
                 $residue_bond_angles{$residue_unique_key}{$o_atom_id}
                                     {$c_atom_id}{$next_n_atom_id}{'value'} =
                     bond_angle(
@@ -635,8 +625,6 @@ sub all_bond_angles
 
         for my $first_atom_id ( keys %{ $bendable_angles } ) {
             for my $bonds ( @{ $bendable_angles->{$first_atom_id} } ){
-                $residue_bond_angles{$residue_unique_key}{$bonds->[0]}
-                                    {$bonds->[1]}{$bonds->[2]}{'type'} = 'radians';
                 $residue_bond_angles{$residue_unique_key}{$bonds->[0]}
                                     {$bonds->[1]}{$bonds->[2]}{'value'} =
                     bond_angle(
