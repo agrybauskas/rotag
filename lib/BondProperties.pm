@@ -440,7 +440,62 @@ sub stretchable_bonds
         }
     }
 
-    return \%stretchable_bonds;
+    # Removes bonds, if they have the id of the target atom. Also, remove ids,
+    # which have no rotatable bonds after previous filtering.
+    for my $atom_id ( keys %stretchable_bonds ) {
+        my $last_bond_idx = $#{ $stretchable_bonds{$atom_id} };
+        if( ( $atom_id == $stretchable_bonds{$atom_id}[$last_bond_idx][0] ||
+              $atom_id == $stretchable_bonds{$atom_id}[$last_bond_idx][1] ) ) {
+            pop @{ $stretchable_bonds{$atom_id} };
+        }
+        if( ! @{ $stretchable_bonds{$atom_id} } ) {
+            delete $stretchable_bonds{$atom_id};
+        }
+    }
+
+    # Asigns names for rotatables bonds by first filtering out redundant bonds.
+    # TODO: the whole process of naming bonds might be implemented in the while
+    # loop above.
+    my @unique_bonds;
+    for my $bond ( map { @{ $stretchable_bonds{$_} } } keys %stretchable_bonds ) {
+        if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
+                   @unique_bonds ){
+            push @unique_bonds, $bond;
+        }
+    }
+
+    # Sorts bonds by naming priority.
+    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
+                                                         # bond.
+    my @second_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@bond_second_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+
+    my %bond_names; # Names by second atom priority.
+    my $bond_name_id = 1;
+    for my $second_name ( @second_names_sorted ) {
+        my $second_atom_id =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' => { 'label_atom_id' => [ $second_name ] },
+                      'data' => [ 'id' ],
+                      'is_list' => 1 } )->[0];
+        $bond_names{"$second_atom_id"} = "r$bond_name_id";
+        $bond_name_id++;
+    }
+
+    # Iterates through rotatable bonds and assigns names by second atom.
+    my %named_stretchable_bonds;
+    for my $atom_id ( keys %stretchable_bonds ) {
+        for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
+            my $bond_name = $bond_names{"$bond->[1]"};
+            $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+        }
+    }
+
+    return \%named_stretchable_bonds;
 }
 
 sub bendable_angles
