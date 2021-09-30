@@ -440,7 +440,7 @@ sub stretchable_bonds
         }
     }
 
-    # Asigns names for rotatables bonds by first filtering out redundant bonds.
+    # Asigns names for stretchable bonds by first filtering out redundant bonds.
     # TODO: the whole process of naming bonds might be implemented in the while
     # loop above.
     my @unique_bonds;
@@ -473,7 +473,7 @@ sub stretchable_bonds
         $bond_name_id++;
     }
 
-    # Iterates through rotatable bonds and assigns names by second atom.
+    # Iterates through stretchable bonds and assigns names by second atom.
     my %named_stretchable_bonds;
     for my $atom_id ( keys %stretchable_bonds ) {
         for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
@@ -568,7 +568,58 @@ sub bendable_angles
         }
     }
 
-    return \%bendable_angles;
+    # Asigns names for bendable angles by first filtering out redundant angles.
+    # TODO: the whole process of naming bonds might be implemented in the while
+    # loop above.
+    my @unique_bonds;
+    for my $bond ( map { @{ $bendable_angles{$_} } } keys %bendable_angles ) {
+        if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
+                   @unique_bonds ){
+            push @unique_bonds, $bond;
+        }
+    }
+
+    # Sorts bonds by naming priority.
+    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
+                                                         # bond.
+    my @bond_third_ids  = map { $_->[2] } @unique_bonds; # Second atom in the
+                                                         # bond.
+
+    my @second_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@bond_second_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+    my @third_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@bond_third_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+
+    my %angle_names; # Names by second atom priority.
+    my $angle_name_id = 1;
+    for my $second_name ( @second_names_sorted ) {
+        my $second_atom_id =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' => { 'label_atom_id' => [ $second_name ] },
+                      'data' => [ 'id' ],
+                      'is_list' => 1 } )->[0];
+        $angle_names{"$second_atom_id"} = "theta$angle_name_id";
+        $angle_name_id++;
+    }
+
+    # Iterates through bendable angles and assigns names by second atom.
+    my %named_bendable_angles;
+    for my $atom_id ( keys %bendable_angles ) {
+        for my $angle ( @{ $bendable_angles{"$atom_id"} } ) {
+            my $angle_name = $angle_names{"$angle->[1]"};
+            $named_bendable_angles{"$atom_id"}{"$angle_name"} = $angle;
+        }
+    }
+
+    return \%named_bendable_angles;
 }
 
 #
