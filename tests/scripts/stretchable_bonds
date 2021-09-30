@@ -20,16 +20,18 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
+stretchable_bonds( $atom_site );
+
 my %stretchable_bonds =
     %{ stretchable_bonds( $atom_site ) };
 
 for my $atom_id ( sort { $a cmp $b } keys( %stretchable_bonds ) ) {
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
     for my $bond ( sort { $a cmp $b } keys %{ $stretchable_bonds{$atom_id} } ) {
-        # my $first_atom_id = $bond->[0];
-        # my $second_atom_id = $bond->[1];
-        # print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
-        #        "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
+        my $first_atom_id = $stretchable_bonds{$atom_id}{$bond}->[0];
+        my $second_atom_id = $stretchable_bonds{$atom_id}{$bond}->[1];
+        print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
+               "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
     }
     print( "\n" );
 }

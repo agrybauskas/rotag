@@ -440,19 +440,6 @@ sub stretchable_bonds
         }
     }
 
-    # Removes bonds, if they have the id of the target atom. Also, remove ids,
-    # which have no rotatable bonds after previous filtering.
-    for my $atom_id ( keys %stretchable_bonds ) {
-        my $last_bond_idx = $#{ $stretchable_bonds{$atom_id} };
-        if( ( $atom_id == $stretchable_bonds{$atom_id}[$last_bond_idx][0] ||
-              $atom_id == $stretchable_bonds{$atom_id}[$last_bond_idx][1] ) ) {
-            pop @{ $stretchable_bonds{$atom_id} };
-        }
-        if( ! @{ $stretchable_bonds{$atom_id} } ) {
-            delete $stretchable_bonds{$atom_id};
-        }
-    }
-
     # Asigns names for rotatables bonds by first filtering out redundant bonds.
     # TODO: the whole process of naming bonds might be implemented in the while
     # loop above.
