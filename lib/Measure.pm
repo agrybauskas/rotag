@@ -687,6 +687,17 @@ sub all_bond_lengths
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $stretchable_bonds = stretchable_bonds( $residue_site );
+        my %uniq_stretchable_bonds; # Unique stretchable bonds.
+        for my $atom_id ( keys %{ $stretchable_bonds } ) {
+            for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){
+                if( ! exists $uniq_stretchable_bonds{"$bond_name"} ) {
+                    $uniq_stretchable_bonds{"$bond_name"} =
+                        $stretchable_bonds->{"$atom_id"}{"$bond_name"};
+                }
+            }
+        }
+
+        my %length_values;
 
         if( $calc_mainchain ) {
             # TODO: hydrogens should be added or automatic search implemented.
@@ -739,7 +750,9 @@ sub all_bond_lengths
 
             # Calculates main-chain bonds.
             if( defined $prev_c_atom_id && defined $n_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$prev_c_atom_id}{$n_atom_id}{'value'} =
+                $length_values{'d1'}{'atom_ids'} =
+                    [ $prev_c_atom_id, $n_atom_id ];
+                $length_values{'d1'}{'value'} =
                     bond_length(
                         [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
                             $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
@@ -750,7 +763,9 @@ sub all_bond_lengths
             }
 
             if( defined $c_atom_id && defined $next_n_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$c_atom_id}{$next_n_atom_id}{'value'} =
+                $length_values{'d2'}{'atom_ids'} =
+                    [ $c_atom_id, $next_n_atom_id ];
+                $length_values{'d2'}{'value'} =
                     bond_length(
                         [ [ $reference_atom_site->{$c_atom_id}{'Cartn_x'},
                             $reference_atom_site->{$c_atom_id}{'Cartn_y'},
@@ -761,7 +776,9 @@ sub all_bond_lengths
             }
 
             if( defined $n_atom_id && defined $ca_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$n_atom_id}{$ca_atom_id}{'value'} =
+                $length_values{'d3'}{'atom_ids'} =
+                    [ $n_atom_id, $ca_atom_id ];
+                $length_values{'d3'}{'value'} =
                     bond_length(
                         [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
                             $atom_site->{$n_atom_id}{'Cartn_y'},
@@ -772,7 +789,9 @@ sub all_bond_lengths
             }
 
             if( defined $ca_atom_id && defined $c_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$ca_atom_id}{$c_atom_id}{'value'} =
+                $length_values{'d4'}{'atom_ids'} =
+                    [ $ca_atom_id, $c_atom_id ];
+                $length_values{'d4'}{'value'} =
                     bond_length(
                         [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
                             $atom_site->{$ca_atom_id}{'Cartn_y'},
@@ -783,7 +802,9 @@ sub all_bond_lengths
             }
 
             if( defined $c_atom_id && defined $o_atom_id ) {
-                $residue_bond_lengths{$residue_unique_key}{$c_atom_id}{$o_atom_id}{'value'} =
+                $length_values{'d5'}{'atom_ids'} =
+                    [ $c_atom_id, $o_atom_id ];
+                $length_values{'d5'}{'value'} =
                     bond_length(
                         [ [ $atom_site->{$c_atom_id}{'Cartn_x'},
                             $atom_site->{$c_atom_id}{'Cartn_y'},
@@ -794,17 +815,28 @@ sub all_bond_lengths
             }
         }
 
-        for my $first_atom_id ( keys %{ $stretchable_bonds } ) {
-            for my $bond ( @{ $stretchable_bonds->{$first_atom_id} } ){
-                $residue_bond_lengths{$residue_unique_key}{$bond->[0]}{$bond->[1]}{'value'} =
-                    bond_length(
-                        [ [ $residue_site->{$bond->[0]}{'Cartn_x'},
-                            $residue_site->{$bond->[0]}{'Cartn_y'},
-                            $residue_site->{$bond->[0]}{'Cartn_z'} ],
-                          [ $residue_site->{$bond->[1]}{'Cartn_x'},
-                            $residue_site->{$bond->[1]}{'Cartn_y'},
-                            $residue_site->{$bond->[1]}{'Cartn_z'} ] ] );
-            }
+        for my $bond_name ( keys %uniq_stretchable_bonds ) {
+            my $first_atom_id = $uniq_stretchable_bonds{$bond_name}->[0];
+            my $second_atom_id = $uniq_stretchable_bonds{$bond_name}->[1];
+
+            # Extracts coordinates for bond length calculations.
+            my $first_atom_coord =
+                [ $residue_site->{$first_atom_id}{'Cartn_x'},
+                  $residue_site->{$first_atom_id}{'Cartn_y'},
+                  $residue_site->{$first_atom_id}{'Cartn_z'}];
+            my $second_atom_coord =
+                [ $residue_site->{$second_atom_id}{'Cartn_x'},
+                  $residue_site->{$second_atom_id}{'Cartn_y'},
+                  $residue_site->{$second_atom_id}{'Cartn_z'}];
+
+            $length_values{$bond_name}{'atom_ids'} =
+                [ $first_atom_id, $second_atom_id ];
+            $length_values{$bond_name}{'value'} =
+                bond_length( [ $first_atom_coord, $second_atom_coord ] );
+        }
+
+        if( %length_values ) {
+            %{ $residue_bond_lengths{$residue_unique_key} } = %length_values;
         }
     }
 

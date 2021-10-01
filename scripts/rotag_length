@@ -108,7 +108,7 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'attributes'} =
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
               'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
-              'atom_2_id', 'label_atom_2_id', 'value' ];
+              'atom_2_id', 'label_atom_2_id', 'type', 'value' ];
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'type'} = 'record';
 
@@ -139,32 +139,30 @@ for my $pdbx_file ( @ARGV ) {
                 split( /,/sxm, $residue_unique_key ),
             my $residue_name = $residue_site->{$residue_id}{'label_comp_id'};
 
-            for my $first_atom_id (
+            for my $bond_name (
                 sort keys %{ $bond_lengths->{$residue_unique_key} } ) {
-                for my $second_atom_id (
-                    sort keys %{ $bond_lengths->{$residue_unique_key}
-                                                {$first_atom_id} } ) {
-                    push @{ $pdbx->{'_[local]_bond_length'}{'data'} },
+                my @atom_ids = @{ $bond_lengths->{$residue_unique_key}
+                                                 {$bond_name}{'atom_ids'} };
+                push @{ $pdbx->{'_[local]_bond_length'}{'data'} },
                     { 'id' => $bond_length_id,
                       'label_comp_id' => $residue_name,
                       'label_seq_id' => $label_seq_id,
                       'label_asym_id' => $chain_id,
                       'pdbx_PDB_model_num' => $model_id,
                       'label_alt_id' => $alt_id,
-                      'atom_1_id' => $first_atom_id,
+                      'atom_1_id' => $atom_ids[0],
                       'label_atom_1_id' =>
-                          $bond_length_site->{$first_atom_id}{'label_atom_id'},
-                      'atom_2_id' => $second_atom_id,
+                          $bond_length_site->{$atom_ids[0]}{'label_atom_id'},
+                      'atom_2_id' => $atom_ids[1],
                       'label_atom_2_id' =>
-                          $bond_length_site->{$second_atom_id}{'label_atom_id'},
+                          $bond_length_site->{$atom_ids[1]}{'label_atom_id'},
+                      'type' => $bond_name,
                       'value' =>
                           sprintf $sig_figs_max,
                                   $bond_lengths->{$residue_unique_key}
-                                                 {$first_atom_id}
-                                                 {$second_atom_id}{'value'}
-                    };
-                    $bond_length_id++;
-                }
+                                                 {$bond_name}
+                                                 {'value'} };
+                $bond_length_id++;
             }
         }
 
