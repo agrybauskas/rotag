@@ -113,7 +113,7 @@ for my $pdbx_file ( @ARGV ) {
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
               'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
               'atom_2_id', 'label_atom_2_id', 'atom_3_id', 'label_atom_3_id',
-              'value', 'units' ];
+              'type', 'value', 'units' ];
         $pdbx->{'_[local]_bond_angle'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_bond_angle'}{'metadata'}{'type'} = 'record';
 
@@ -144,53 +144,38 @@ for my $pdbx_file ( @ARGV ) {
                 split( /,/sxm, $residue_unique_key ),
             my $residue_name = $residue_site->{$residue_id}{'label_comp_id'};
 
-            for my $first_atom_id (
+            for my $angle_name (
                 sort keys %{ $bond_angles->{$residue_unique_key} } ) {
-                for my $second_atom_id (
-                    sort keys %{ $bond_angles->{$residue_unique_key}
-                                               {$first_atom_id} } ) {
-                    for my $third_atom_id (
-                        sort keys %{ $bond_angles->{$residue_unique_key}
-                                                   {$first_atom_id}
-                                                   {$second_atom_id} } ) {
-                        push @{ $pdbx->{'_[local]_bond_angle'}{'data'} },
-                        { 'id' => $bond_angle_id,
-                          'label_comp_id' => $residue_name,
-                          'label_seq_id' => $label_seq_id,
-                          'label_asym_id' => $chain_id,
-                          'pdbx_PDB_model_num' => $model_id,
-                          'label_alt_id' => $alt_id,
-                          'atom_1_id' => $first_atom_id,
-                          'label_atom_1_id' =>
-                              $bond_angle_site->{$first_atom_id}{'label_atom_id'},
-                          'atom_2_id' => $second_atom_id,
-                          'label_atom_2_id' =>
-                              $bond_angle_site->{$second_atom_id}{'label_atom_id'},
-                          'atom_3_id' => $third_atom_id,
-                          'label_atom_3_id' =>
-                              $bond_angle_site->{$third_atom_id}{'label_atom_id'},
-                          'type' =>
-                              $bond_angles->{$residue_unique_key}
-                                            {$first_atom_id}
-                                            {$second_atom_id}
-                                            {$third_atom_id}{'type'},
-                          'value' => ( $in_radians ?
-                                       sprintf $sig_figs_max,
-                                               $bond_angles->{$residue_unique_key}
-                                                             {$first_atom_id}
-                                                             {$second_atom_id}
-                                                             {$second_atom_id}
-                                                             {'value'} :
-                                       sprintf $sig_figs_min,
-                                               $bond_angles->{$residue_unique_key}
-                                                             {$first_atom_id}
-                                                             {$second_atom_id}
-                                                             {$third_atom_id}
-                                                             {'value'} * 180 / $pi ),
-                          'units' => ( $in_radians ? 'radians': 'degrees' ) };
-                        $bond_angle_id++;
-                    }
-                }
+                my @atom_ids = @{ $bond_angles->{$residue_unique_key}
+                                                {$angle_name}{'atom_ids'} };
+                push @{ $pdbx->{'_[local]_bond_angle'}{'data'} },
+                    { 'id' => $bond_angle_id,
+                      'label_comp_id' => $residue_name,
+                      'label_seq_id' => $label_seq_id,
+                      'label_asym_id' => $chain_id,
+                      'pdbx_PDB_model_num' => $model_id,
+                      'label_alt_id' => $alt_id,
+                      'atom_1_id' => $atom_ids[0],
+                      'label_atom_1_id' =>
+                          $bond_angle_site->{$atom_ids[0]}{'label_atom_id'},
+                      'atom_2_id' => $atom_ids[1],
+                      'label_atom_2_id' =>
+                          $bond_angle_site->{$atom_ids[1]}{'label_atom_id'},
+                      'atom_3_id' => $atom_ids[2],
+                      'label_atom_3_id' =>
+                          $bond_angle_site->{$atom_ids[2]}{'label_atom_id'},
+                      'type' => $angle_name,
+                      'value' => ( $in_radians ?
+                                   sprintf $sig_figs_max,
+                                           $bond_angles->{$residue_unique_key}
+                                                         {$angle_name}
+                                                         {'value'} :
+                                   sprintf $sig_figs_min,
+                                           $bond_angles->{$residue_unique_key}
+                                                         {$angle_name}
+                                                         {'value'} * 180 / $pi ),
+                      'units' => ( $in_radians ? 'radians': 'degrees' ) };
+                $bond_angle_id++;
             }
         }
 

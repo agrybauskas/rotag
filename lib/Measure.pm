@@ -493,6 +493,17 @@ sub all_bond_angles
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $bendable_angles = bendable_angles( $residue_site );
+        my %uniq_bendable_angles; # Unique bendable angles.
+        for my $atom_id ( keys %{ $bendable_angles } ) {
+            for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
+                if( ! exists $uniq_bendable_angles{"$angle_name"} ) {
+                    $uniq_bendable_angles{"$angle_name"} =
+                        $bendable_angles->{"$atom_id"}{"$angle_name"};
+                }
+            }
+        }
+
+        my %angle_values;
 
         if( $calc_mainchain ) {
             my ( $n_atom_id, $ca_atom_id, $c_atom_id, $o_atom_id ) =
@@ -546,8 +557,9 @@ sub all_bond_angles
             # Calculates main-chain bonds.
             if( defined $prev_c_atom_id && defined $n_atom_id &&
                 defined $ca_atom_id ) {
-                $residue_bond_angles{$residue_unique_key}{$prev_c_atom_id}
-                                    {$n_atom_id}{$ca_atom_id}{'value'} =
+                $angle_values{'eta1'}{'atom_ids'} =
+                    [ $prev_c_atom_id, $n_atom_id, $ca_atom_id ];
+                $angle_values{'eta1'}{'value'} =
                     bond_angle(
                         [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
                             $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
@@ -561,8 +573,9 @@ sub all_bond_angles
             }
 
             if( defined $n_atom_id && defined $ca_atom_id && defined $c_atom_id ) {
-                $residue_bond_angles{$residue_unique_key}{$n_atom_id}
-                                    {$ca_atom_id}{$c_atom_id}{'value'} =
+                $angle_values{'eta2'}{'atom_ids'} =
+                    [ $n_atom_id, $ca_atom_id, $c_atom_id ];
+                $angle_values{'eta2'}{'value'} =
                     bond_angle(
                         [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
                             $atom_site->{$n_atom_id}{'Cartn_y'},
@@ -576,8 +589,9 @@ sub all_bond_angles
             }
 
             if( defined $ca_atom_id && defined $c_atom_id && defined $o_atom_id ) {
-                $residue_bond_angles{$residue_unique_key}{$ca_atom_id}
-                                    {$c_atom_id}{$o_atom_id}{'value'} =
+                $angle_values{'eta3'}{'atom_ids'} =
+                    [ $ca_atom_id, $c_atom_id, $o_atom_id ];
+                $angle_values{'eta3'}{'value'} =
                     bond_angle(
                         [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
                             $atom_site->{$ca_atom_id}{'Cartn_y'},
@@ -592,8 +606,9 @@ sub all_bond_angles
 
             if( defined $ca_atom_id && defined $c_atom_id &&
                 defined $next_n_atom_id ) {
-                $residue_bond_angles{$residue_unique_key}{$ca_atom_id}
-                                    {$c_atom_id}{$next_n_atom_id}{'value'} =
+                $angle_values{'eta4'}{'atom_ids'} =
+                    [ $ca_atom_id, $c_atom_id, $next_n_atom_id ];
+                $angle_values{'eta4'}{'value'} =
                     bond_angle(
                         [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
                             $atom_site->{$ca_atom_id}{'Cartn_y'},
@@ -608,8 +623,9 @@ sub all_bond_angles
 
             if( defined $o_atom_id && defined $c_atom_id &&
                 defined $next_n_atom_id ) {
-                $residue_bond_angles{$residue_unique_key}{$o_atom_id}
-                                    {$c_atom_id}{$next_n_atom_id}{'value'} =
+                $angle_values{'eta5'}{'atom_ids'} =
+                    [ $o_atom_id, $c_atom_id, $next_n_atom_id ];
+                $angle_values{'eta5'}{'value'} =
                     bond_angle(
                         [ [ $atom_site->{$o_atom_id}{'Cartn_x'},
                             $atom_site->{$o_atom_id}{'Cartn_y'},
@@ -623,21 +639,34 @@ sub all_bond_angles
             }
         }
 
-        for my $first_atom_id ( keys %{ $bendable_angles } ) {
-            for my $bonds ( @{ $bendable_angles->{$first_atom_id} } ){
-                $residue_bond_angles{$residue_unique_key}{$bonds->[0]}
-                                    {$bonds->[1]}{$bonds->[2]}{'value'} =
-                    bond_angle(
-                        [ [ $residue_site->{$bonds->[0]}{'Cartn_x'},
-                            $residue_site->{$bonds->[0]}{'Cartn_y'},
-                            $residue_site->{$bonds->[0]}{'Cartn_z'} ],
-                          [ $residue_site->{$bonds->[1]}{'Cartn_x'},
-                            $residue_site->{$bonds->[1]}{'Cartn_y'},
-                            $residue_site->{$bonds->[1]}{'Cartn_z'} ],
-                          [ $residue_site->{$bonds->[2]}{'Cartn_x'},
-                            $residue_site->{$bonds->[2]}{'Cartn_y'},
-                            $residue_site->{$bonds->[2]}{'Cartn_z'} ] ] );
-            }
+        for my $angle_name ( keys %uniq_bendable_angles ) {
+            my $first_atom_id = $uniq_bendable_angles{$angle_name}->[0];
+            my $second_atom_id = $uniq_bendable_angles{$angle_name}->[1];
+            my $third_atom_id = $uniq_bendable_angles{$angle_name}->[2];
+
+            # Extracts coordinates for bond angle calculations.
+            my $first_atom_coord =
+                [ $residue_site->{$first_atom_id}{'Cartn_x'},
+                  $residue_site->{$first_atom_id}{'Cartn_y'},
+                  $residue_site->{$first_atom_id}{'Cartn_z'}];
+            my $second_atom_coord =
+                [ $residue_site->{$second_atom_id}{'Cartn_x'},
+                  $residue_site->{$second_atom_id}{'Cartn_y'},
+                  $residue_site->{$second_atom_id}{'Cartn_z'}];
+            my $third_atom_coord =
+                [ $residue_site->{$third_atom_id}{'Cartn_x'},
+                  $residue_site->{$third_atom_id}{'Cartn_y'},
+                  $residue_site->{$third_atom_id}{'Cartn_z'}];
+
+            $angle_values{$angle_name}{'atom_ids'} =
+                [ $first_atom_id, $second_atom_id, $third_atom_id ];
+            $angle_values{$angle_name}{'value'} =
+                bond_angle( [ $first_atom_coord, $second_atom_coord,
+                              $third_atom_coord ] );
+        }
+
+        if( %angle_values ) {
+            %{ $residue_bond_angles{$residue_unique_key} } = %angle_values;
         }
     }
 
