@@ -10,7 +10,8 @@ use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use PDBxParser qw( obtain_atom_site );
-use SidechainModels qw( rotation_only );
+use SidechainModels qw( rotation_only
+                        rotation_translation );
 
 $Data::Dumper::Indent = 1;
 $Data::Dumper::Sortkeys = 1;
@@ -32,6 +33,7 @@ GetOptions(
     "c" => sub { $is_connected = 1 },
     "h" => sub { $is_hybridized = 1 },
     "r" => sub { $apply_rotation_only = 1 },
+    "rt" => sub { $apply_rotation_translation = 1 },
 ) or die "Error in command line argument.";
 
 @ARGV = ( "-" ) unless @ARGV;
@@ -53,6 +55,10 @@ foreach my $pdbx_file ( @ARGV ) {
 
     if( $apply_rotation_only ) {
         rotation_only( $parameters, $atom_site );
+    }
+
+    if( $apply_rotation_only ) {
+        rotation_translation( $parameters, $atom_site );
     }
 
     my $cif_dump_structure = Dumper( $atom_site );

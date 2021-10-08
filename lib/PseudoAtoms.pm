@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      calc_full_atom_energy
                      generate_library
                      generate_pseudo
+                     generate_pseudo_hetatom
                      generate_rotamer
                      library_to_csv
                      lowest_energy_state
@@ -187,6 +188,11 @@ sub generate_pseudo
     }
 
     return \%pseudo_atom_site;
+}
+
+sub generate_pseudo_hetatom
+{
+    return generate_pseudo_hetatom( @_ );
 }
 
 #
