@@ -28,6 +28,7 @@ my %options;
 my $is_connected = 0;
 my $is_hybridized = 0;
 my $apply_rotation_only = 0;
+my $apply_rotation_translation = 0;
 
 GetOptions(
     "c" => sub { $is_connected = 1 },
@@ -57,7 +58,7 @@ foreach my $pdbx_file ( @ARGV ) {
         rotation_only( $parameters, $atom_site );
     }
 
-    if( $apply_rotation_only ) {
+    if( $apply_rotation_translation ) {
         rotation_translation( $parameters, $atom_site );
     }
 
