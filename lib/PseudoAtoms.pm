@@ -282,7 +282,10 @@ sub generate_pseudo_hetatom
                 map { ( $dihedral_angle_names[$_] => $dihedral_angle_comb->[$_] ) }
                     0..$#dihedral_angle_names;
 
-            # # Evaluates matrices.
+            # Evaluates matrices.
+            my $partially_evaluated_matrix =
+                mult_matrix_product( $conformation, \%dihedral_angle_values );
+
             # my ( $transf_atom_coord ) =
             #     @{ mult_matrix_product( $conformation, \%dihedral_angle_values ) };
 
