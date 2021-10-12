@@ -283,60 +283,55 @@ sub generate_pseudo_hetatom
                     0..$#dihedral_angle_names;
 
             # Evaluates matrices.
-            my $partially_evaluated_matrix =
-                mult_matrix_product( $conformation, \%dihedral_angle_values );
-            $partially_evaluated_matrix =
-                mult_matrix_product( $conformation, { 'eta' => 0.0 } );
+            my ( $transf_atom_coord ) =
+                @{ mult_matrix_product( $conformation,
+                                        { %dihedral_angle_values,
+                                          'eta' => 0.0, 'r1' => 0.0, 'r2' => 0.0,
+                                          'theta1' => 0.0, 'theta2' => 0.0 } ) };
 
-            # use Data::Dumper;
-            # print STDERR Dumper $partially_evaluated_matrix;
-
-            # my ( $transf_atom_coord ) =
-            #     @{ mult_matrix_product( $conformation, \%dihedral_angle_values ) };
-
-            # # Adds necessary PDBx entries to pseudo atom site.
-            # $last_atom_id++;
-            # create_pdbx_entry(
-            #     { 'group_PDB' => 'HETATM',
-            #       'atom_site' => \%pseudo_atom_site,
-            #       'id' => $last_atom_id,
-            #       'type_symbol' => $atom_site{$atom_id}{'type_symbol'},
-            #       'label_atom_id' => $atom_site{$atom_id}{'label_atom_id'},
-            #       'label_alt_id' => $alt_group_id,
-            #       'label_comp_id' => $atom_site{$atom_id}{'label_comp_id'},
-            #       'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
-            #       'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
-            #       'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
-            #       'cartn_x' => sprintf( $sig_figs_max, $transf_atom_coord->[0][0] ),
-            #       'cartn_y' => sprintf( $sig_figs_max, $transf_atom_coord->[1][0] ),
-            #       'cartn_z' => sprintf( $sig_figs_max, $transf_atom_coord->[2][0] ),
-            #       'pdbx_PDB_model_num' =>
-            #           $atom_site{$atom_id}{'pdbx_PDB_model_num'},
-            #     } );
-            # # Adds atom id that pseudo atoms was made of.
-            # $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
-            # # Adds hybridization, connection, conformation data from origin atom.
-            # $pseudo_atom_site{$last_atom_id}{'hybridization'} =
-            #     $atom_site{$atom_id}{'hybridization'};
-            # # FIXME: be careful - it might produce contradictions between new
-            # # and old pseudo atoms.
-            # $pseudo_atom_site{$last_atom_id}{'connections'} =
-            #     $atom_site{$atom_id}{'connections'};
-            # $pseudo_atom_site{$last_atom_id}{'conformation'} =
-            #     $atom_site{$atom_id}{'conformation'};
-            # # Adds information about used dihedral angle values and names.
+            # Adds necessary PDBx entries to pseudo atom site.
+            $last_atom_id++;
+            create_pdbx_entry(
+                { 'group_PDB' => 'HETATM',
+                  'atom_site' => \%pseudo_atom_site,
+                  'id' => $last_atom_id,
+                  'type_symbol' => $atom_site{$atom_id}{'type_symbol'},
+                  'label_atom_id' => $atom_site{$atom_id}{'label_atom_id'},
+                  'label_alt_id' => $alt_group_id,
+                  'label_comp_id' => $atom_site{$atom_id}{'label_comp_id'},
+                  'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
+                  'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
+                  'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
+                  'cartn_x' => sprintf( $sig_figs_max, $transf_atom_coord->[0][0] ),
+                  'cartn_y' => sprintf( $sig_figs_max, $transf_atom_coord->[1][0] ),
+                  'cartn_z' => sprintf( $sig_figs_max, $transf_atom_coord->[2][0] ),
+                  'pdbx_PDB_model_num' =>
+                      $atom_site{$atom_id}{'pdbx_PDB_model_num'},
+                } );
+            # Adds atom id that pseudo atoms was made of.
+            $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
+            # Adds hybridization, connection, conformation data from origin atom.
+            $pseudo_atom_site{$last_atom_id}{'hybridization'} =
+                $atom_site{$atom_id}{'hybridization'};
+            # FIXME: be careful - it might produce contradictions between new
+            # and old pseudo atoms.
+            $pseudo_atom_site{$last_atom_id}{'connections'} =
+                $atom_site{$atom_id}{'connections'};
+            $pseudo_atom_site{$last_atom_id}{'conformation'} =
+                $atom_site{$atom_id}{'conformation'};
+            # Adds information about used dihedral angle values and names.
             # $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
             # $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
             #     { map { ( $_ => $angle_values{$_} +
             #                     $angles{$residue_unique_key}{$_}{'value'} ) }
             #           @angle_names };
-            # # Adds additional pseudo-atom flag for future filtering.
-            # $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
-            # # Adds selection state if it is defined.
-            # if( defined $selection_state ) {
-            #     $pseudo_atom_site{$last_atom_id}{'[local]_selection_state'} =
-            #         $selection_state;
-            # }
+            # Adds additional pseudo-atom flag for future filtering.
+            $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
+            # Adds selection state if it is defined.
+            if( defined $selection_state ) {
+                $pseudo_atom_site{$last_atom_id}{'[local]_selection_state'} =
+                    $selection_state;
+            }
         }
     }
 
