@@ -344,6 +344,7 @@ sub identify_residue_atoms
 sub create_pdbx_entry
 {
     my ( $args ) = @_;
+    my $group_PDB = $args->{'group_PDB'};
     my $atom_site = $args->{'atom_site'};
     my $atom_id = $args->{'id'};
     my $type_symbol = $args->{'type_symbol'};
@@ -360,7 +361,9 @@ sub create_pdbx_entry
     my $cartn_z = $args->{'cartn_z'};
     my $pdbx_model_num = $args->{'pdbx_PDB_model_num'};
 
-    $atom_site->{$atom_id}{'group_PDB'} = 'ATOM';
+    $group_PDB //= 'ATOM';
+
+    $atom_site->{$atom_id}{'group_PDB'} = $group_PDB;
     $atom_site->{$atom_id}{'id'} = $atom_id;
     $atom_site->{$atom_id}{'type_symbol'} = $type_symbol;
     $atom_site->{$atom_id}{'label_atom_id'} = $label_atom_id;

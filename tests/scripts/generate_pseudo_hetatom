@@ -55,23 +55,17 @@ for my $angle_or_length ( sort keys %angle_and_length_ranges ) {
                        $small_angle_or_length );
 }
 
-generate_pseudo_hetatom(
-    { 'parameters' => $parameters,
-      'atom_site' => $atom_site,
-      'atom_specifier' => { "id" => [ $atom_id ] },
-      'angle_and_bond_values' => \%num_angle_and_length_values }
-);
+%{ $atom_site } =
+    ( %{ $atom_site },
+      %{ generate_pseudo_hetatom(
+             { 'parameters' => $parameters,
+               'atom_site' => $atom_site,
+               'atom_specifier' => { "id" => [ $atom_id ] },
+               'angle_and_bond_values' => \%num_angle_and_length_values } ) } );
 
-# %{ $atom_site } =
-#     ( %{ $atom_site },
-#        %{ generate_pseudo( { 'parameters' => $parameters,
-#                              'atom_site' => $atom_site,
-#                              'atom_specifier' => { "id" => [ $atom_id ] },
-#                              'angle_values' => \%num_angle_values } ) } );
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} = $atom_site;
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
-# my %pdbx =();
-# $pdbx{'_atom_site'}{'data'} = $atom_site;
-# $pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-# $pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
-
-# to_pdbx( \%pdbx );
+to_pdbx( \%pdbx );

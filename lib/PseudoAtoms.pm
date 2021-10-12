@@ -285,6 +285,11 @@ sub generate_pseudo_hetatom
             # Evaluates matrices.
             my $partially_evaluated_matrix =
                 mult_matrix_product( $conformation, \%dihedral_angle_values );
+            $partially_evaluated_matrix =
+                mult_matrix_product( $conformation, { 'eta' => 0.0 } );
+
+            # use Data::Dumper;
+            # print STDERR Dumper $partially_evaluated_matrix;
 
             # my ( $transf_atom_coord ) =
             #     @{ mult_matrix_product( $conformation, \%dihedral_angle_values ) };
@@ -292,7 +297,8 @@ sub generate_pseudo_hetatom
             # # Adds necessary PDBx entries to pseudo atom site.
             # $last_atom_id++;
             # create_pdbx_entry(
-            #     { 'atom_site' => \%pseudo_atom_site,
+            #     { 'group_PDB' => 'HETATM',
+            #       'atom_site' => \%pseudo_atom_site,
             #       'id' => $last_atom_id,
             #       'type_symbol' => $atom_site{$atom_id}{'type_symbol'},
             #       'label_atom_id' => $atom_site{$atom_id}{'label_atom_id'},
@@ -334,7 +340,7 @@ sub generate_pseudo_hetatom
         }
     }
 
-    # return \%pseudo_atom_site;
+    return \%pseudo_atom_site;
 }
 
 #
