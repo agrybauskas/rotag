@@ -6,6 +6,7 @@ use warnings;
 use autodie;
 use File::Basename;
 use Getopt::Long;
+use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
 use ConnectAtoms qw( connect_atoms );
@@ -19,6 +20,7 @@ use PDBxParser qw( filter
                    mark_selection
                    obtain_pdbx_data
                    raw2indexed
+                   split_by
                    to_csv
                    to_pdbx );
 use Version qw( $VERSION );
@@ -31,13 +33,20 @@ our $VERSION = $VERSION;
 #*    calculate distance between selected atoms or bonds in residues.
 #*
 #*Usage:
-#*    rotag_length input.cif > output.cif
+#*    rotag_length -S input.cif > output.cif
+#*    rotag_length -c '1,2;3,4' > output.cif
 #*
 #*Options:
 #*    -S, --side-chains
 #*                        calculates bond lengths between the side-chain atoms.
 #*    -M, --main-chains
 #*                        calculates bond lengths between the main-chain atoms.
+#*    -c, --compare <group>,<group>[;<group>,<group>;...]
+#*                        calculates distances between selected groups of atoms.
+#*                        If active, -S and -M options are ignored. Use
+#*                        carefully, because it compares combinatorically.
+#*
+#*                        Example: --compare '1, 2' or --compare '3, 4; 5, 7'
 #*    -F, --format <format>
 #*                        output format (default: pdbx | csv).
 #*    -v, --version
@@ -47,6 +56,7 @@ our $VERSION = $VERSION;
 
 my $calc_sidechain = 0;
 my $calc_mainchain = 0;
+my $comparison = q{};
 my $output_format = 'pdbx';
 
 local $SIG{__WARN__} = sub {
@@ -64,6 +74,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $calc_sidechain = 1 },
     'main-chains|M' => sub { $calc_mainchain = 1 },
+    'compare|c=s' => \$comparison,
     'format|F=s' => \$output_format,
     'help|h' => sub {
                         open my $fh, '<', $0;
@@ -86,6 +97,9 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+$comparison =~ s/ //g;
+my @comparison_groups = map { [ split /,/, $_ ] } ( split /;/, $comparison );
+
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
@@ -104,11 +118,95 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     # Calculates distance between side-chain bonds.
-    if( $calc_sidechain ) {
+    if( $comparison ) {
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'attributes'} =
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
-              'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
-              'atom_2_id', 'label_atom_2_id', 'type', 'value' ];
+              'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id',
+              'label_atom_1_id', 'atom_2_id', 'label_atom_2_id', 'type',
+              'value' ];
+        $pdbx->{'_[local]_bond_length'}{'metadata'}{'is_loop'} = 1;
+        $pdbx->{'_[local]_bond_length'}{'metadata'}{'type'} = 'record';
+
+        my %atom_site_groups = ();
+
+        # Assigns filters atoms and assigns to specified groups.
+        my @group_ids =
+            uniq( @{ filter( { 'atom_site' => $atom_site,
+                               'data' => [ '[local]_selection_group' ],
+                               'is_list' => 1 } ) } );
+
+        for my $group_id ( @group_ids ) {
+            if( ! exists $atom_site_groups{$group_id} ) {
+                my $group_atom_site =
+                    filter( { 'atom_site' => $atom_site,
+                              'include' =>
+                                  { '[local]_selection_state' => [ 'T' ],
+                                    '[local]_selection_group' => [$group_id] }});
+                $atom_site_groups{$group_id} = $group_atom_site;
+            } else {
+                error( { 'program' => $0,
+                         'message' => 'there are multiple instances of the group ' .
+                                      "in different files.\n" } );
+            }
+        }
+
+        exit if ! %atom_site_groups;
+
+        for my $comparison_group ( @comparison_groups ) {
+            if( scalar @{ $comparison_group } != 2 ) {
+                error( { 'program' => $0,
+                         'message' => 'there has to be two groups of atoms to ' .
+                                      "be compared against.\n" } );
+            }
+
+            # Checks if these groups exist.
+            for my $group ( @{ $comparison_group } ) {
+                if( ! exists $atom_site_groups{$group} ) {
+                    error( { 'program' => $0,
+                             'message' =>
+                                 "group $group is not present in pdbx.\n" } );
+                }
+            }
+
+            # Generates the comparison pairs.
+            my $first_atom_groups =
+                split_by( { 'atom_site' =>
+                                $atom_site_groups{$comparison_group->[0]},
+                            'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                              'pdbx_PDB_model_num' ] } );
+            my $second_atom_groups =
+                split_by( { 'atom_site' =>
+                                $atom_site_groups{$comparison_group->[1]},
+                            'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                              'pdbx_PDB_model_num' ] } );
+
+            for my $first_group_key ( sort keys %{ $first_atom_groups } ) {
+                my $first_group_atom_ids =
+                    $first_atom_groups->{$first_group_key};
+                my $first_group_atom_site =
+                    filter( { 'atom_site' =>
+                                  $atom_site_groups{$comparison_group->[0]},
+                              'include' => { 'id' => $first_group_atom_ids } } );
+
+                my @current_comparisons = ();
+                for my $second_group_key ( sort keys %{ $second_atom_groups } ) {
+                    my $second_group_atom_ids =
+                        $second_atom_groups->{$second_group_key};
+                    my $second_group_atom_site =
+                        filter( { 'atom_site' =>
+                                      $atom_site_groups{$comparison_group->[1]},
+                                  'include' =>
+                                      { 'id' => $second_group_atom_ids } } );
+                }
+            }
+        }
+
+    } elsif( $calc_sidechain ) {
+        $pdbx->{'_[local]_bond_length'}{'metadata'}{'attributes'} =
+            [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
+              'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id',
+              'label_atom_1_id', 'atom_2_id', 'label_atom_2_id', 'type',
+              'value' ];
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'type'} = 'record';
 
