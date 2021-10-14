@@ -120,10 +120,11 @@ for my $pdbx_file ( @ARGV ) {
     # Calculates distance between side-chain bonds.
     if( $comparison ) {
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'attributes'} =
-            [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
-              'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id',
-              'label_atom_1_id', 'atom_2_id', 'label_atom_2_id', 'type',
-              'value' ];
+            [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id', 'label_seq_1_id',
+              'label_comp_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
+              'label_alt_1_id', 'group_2_id', 'atom_2_id', 'label_atom_2_id',
+              'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
+              'pdbx_PDB_model_num_2', 'label_alt_2_id', 'type', 'value'];
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'type'} = 'record';
 
@@ -180,6 +181,7 @@ for my $pdbx_file ( @ARGV ) {
                             'attributes' => [ 'label_seq_id', 'label_asym_id',
                                               'pdbx_PDB_model_num' ] } );
 
+            my $bond_length_id = 1;
             for my $first_group_key ( sort keys %{ $first_atom_groups } ) {
                 my $first_group_atom_ids =
                     $first_atom_groups->{$first_group_key};
@@ -197,6 +199,79 @@ for my $pdbx_file ( @ARGV ) {
                                       $atom_site_groups{$comparison_group->[1]},
                                   'include' =>
                                       { 'id' => $second_group_atom_ids } } );
+
+                    for my $first_group_atom_id ( @{ $first_group_atom_ids } ) {
+                        for my $second_group_atom_id ( @{ $second_group_atom_ids } ) {
+                            push @{ $pdbx->{'_[local]_bond_length'}{'data'} },
+                                 { 'id' => $bond_length_id,
+                                   'group_1_id' =>
+                                       $first_group_atom_site->{$first_group_atom_id}
+                                                               {'[local]_selection_group'},
+                                   'atom_1_id' =>
+                                       $first_group_atom_site->{$first_group_atom_id}
+                                                               {'id'},
+                                   'label_atom_1_id' =>
+                                       $first_group_atom_site->{$first_group_atom_id}
+                                                               {'label_atom_id'},
+                                   'label_seq_1_id' =>
+                                       $first_group_atom_site->{$first_group_atom_id}
+                                                               {'label_seq_id'},
+                                   'label_comp_1_id' =>
+                                       $first_group_atom_site->{$first_group_atom_id}
+                                                               {'label_comp_id'},
+                                   'label_asym_1_id' =>
+                                       $first_group_atom_site->{$first_group_atom_id}
+                                                               {'label_asym_id'},
+                                   'pdbx_PDB_model_num_1' =>
+                                       $first_group_atom_site->{$first_group_atom_id}
+                                                               {'pdbx_PDB_model_num'},
+                                   'label_alt_1_id' =>
+                                       $first_group_atom_site->{$first_group_atom_id}
+                                                               {'label_alt_id'},
+                                   'group_2_id' =>
+                                       $second_group_atom_site->{$second_group_atom_id}
+                                                               {'[local]_selection_group'},
+                                   'atom_2_id' =>
+                                       $second_group_atom_site->{$second_group_atom_id}
+                                                                {'id'},
+                                   'label_atom_2_id' =>
+                                       $second_group_atom_site->{$second_group_atom_id}
+                                                                {'label_atom_id'},
+                                   'label_seq_2_id' =>
+                                       $second_group_atom_site->{$second_group_atom_id}
+                                                                {'label_seq_id'},
+                                   'label_comp_2_id' =>
+                                       $second_group_atom_site->{$second_group_atom_id}
+                                                                {'label_comp_id'},
+                                   'label_asym_2_id' =>
+                                       $second_group_atom_site->{$second_group_atom_id}
+                                                                {'label_asym_id'},
+                                   'pdbx_PDB_model_num_2' =>
+                                       $second_group_atom_site->{$second_group_atom_id}
+                                                                {'pdbx_PDB_model_num'},
+                                   'label_alt_2_id' =>
+                                       $second_group_atom_site->{$second_group_atom_id}
+                                                                {'label_alt_id'},
+                                   'type' => '.',
+                                   'value' =>
+                                       sprintf $sig_figs_min,
+                                       bond_length( [
+                                           [ $first_group_atom_site->{$first_group_atom_id}
+                                                                     {'Cartn_x'},
+                                             $first_group_atom_site->{$first_group_atom_id}
+                                                                     {'Cartn_y'},
+                                             $first_group_atom_site->{$first_group_atom_id}
+                                                                     {'Cartn_z'} ],
+                                           [ $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'Cartn_x'},
+                                             $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'Cartn_y'},
+                                             $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'Cartn_z'} ]
+                                       ] ) };
+                            $bond_length_id++;
+                        }
+                    }
                 }
             }
         }
