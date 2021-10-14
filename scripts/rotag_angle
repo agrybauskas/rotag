@@ -6,6 +6,7 @@ use warnings;
 use autodie;
 use File::Basename;
 use Getopt::Long;
+use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
 use ConnectAtoms qw( connect_atoms );
@@ -19,6 +20,7 @@ use PDBxParser qw( filter
                    mark_selection
                    obtain_pdbx_data
                    raw2indexed
+                   split_by
                    to_csv
                    to_pdbx );
 use Version qw( $VERSION );
@@ -38,6 +40,17 @@ our $VERSION = $VERSION;
 #*                        calculates angles between bonds in the side-chain atoms.
 #*    -M, --main-chains
 #*                        calculates angles between bonds in the main-chain atoms.
+#*    -c, --compare <group>,<group>[;<group>,<group>;...]
+#*                        calculates angles between selected groups of atoms.
+#*                        It should be noted that there can be two or three
+#*                        groups. If two are present, at least two atoms have to
+#*                        be connected. Use carefully with three groups, because
+#*                        it compares combinatorically. If active, -S and -M
+#*                        options are ignored.
+#*
+#*                        Example: --compare '1, 2' or --compare '3, 4; 5, 7, 8'
+#*    --cutoff
+#*                        RMSD cutoff for --compare option.
 #*    -r, --radians
 #*                        angles are in radians.
 #*    -F, --format <format>
@@ -49,6 +62,7 @@ our $VERSION = $VERSION;
 
 my $calc_sidechain = 0;
 my $calc_mainchain = 0;
+my $comparison = q{};
 my $in_radians = 0;
 my $output_format = 'pdbx';
 
@@ -67,6 +81,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $calc_sidechain = 1 },
     'main-chains|M' => sub { $calc_mainchain = 1 },
+    'compare|c=s' => \$comparison,
     'radians|r' => sub { $in_radians = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -90,6 +105,9 @@ GetOptions(
 
 local @ARGV = ( q{-} ) unless @ARGV;
 
+$comparison =~ s/ //g;
+my @comparison_groups = map { [ split /,/, $_ ] } ( split /;/, $comparison );
+
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
@@ -108,7 +126,83 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     # Calculates distance between side-chain bonds.
-    if( $calc_sidechain ) {
+    if( $comparison ) {
+        $pdbx->{'_[local]_bond_angle'}{'metadata'}{'attributes'} =
+            [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id', 'label_seq_1_id',
+              'label_comp_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
+              'label_alt_1_id', 'group_2_id', 'atom_2_id', 'label_atom_2_id',
+              'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
+              'pdbx_PDB_model_num_2', 'label_alt_2_id', 'group_3_id',
+              'atom_3_id', 'label_atom_3_id', 'label_seq_3_id',
+              'label_comp_3_id', 'label_asym_3_id', 'pdbx_PDB_model_num_3',
+              'label_alt_3_id', 'type', 'value'];
+        $pdbx->{'_[local]_bond_angle'}{'metadata'}{'is_loop'} = 1;
+        $pdbx->{'_[local]_bond_angle'}{'metadata'}{'type'} = 'record';
+
+        my %atom_site_groups = ();
+
+        # Assigns filters atoms and assigns to specified groups.
+        my @group_ids =
+            uniq( @{ filter( { 'atom_site' => $atom_site,
+                               'data' => [ '[local]_selection_group' ],
+                               'is_list' => 1 } ) } );
+
+        for my $group_id ( @group_ids ) {
+            if( ! exists $atom_site_groups{$group_id} ) {
+                my $group_atom_site =
+                    filter( { 'atom_site' => $atom_site,
+                              'include' =>
+                                  { '[local]_selection_state' => [ 'T' ],
+                                    '[local]_selection_group' => [$group_id] }});
+                $atom_site_groups{$group_id} = $group_atom_site;
+            } else {
+                error( { 'program' => $0,
+                         'message' => 'there are multiple instances of the group ' .
+                                      "in different files.\n" } );
+            }
+        }
+
+        exit if ! %atom_site_groups;
+
+        for my $comparison_group ( @comparison_groups ) {
+            if( scalar @{ $comparison_group } != 2 && scalar @{ $comparison_group } != 3 ) {
+                error( { 'program' => $0,
+                         'message' => 'there has to be two or three groups of atoms ' .
+                                      "to be compared against.\n" } );
+            }
+
+            # Checks if these groups exist.
+            for my $group ( @{ $comparison_group } ) {
+                if( ! exists $atom_site_groups{$group} ) {
+                    error( { 'program' => $0,
+                             'message' =>
+                                 "group $group is not present in pdbx.\n" } );
+                }
+            }
+
+            # Generates the comparison pairs.
+            my $first_atom_groups =
+                split_by( { 'atom_site' =>
+                                $atom_site_groups{$comparison_group->[0]},
+                            'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                              'pdbx_PDB_model_num' ] } );
+            my $second_atom_groups =
+                split_by( { 'atom_site' =>
+                                $atom_site_groups{$comparison_group->[1]},
+                            'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                              'pdbx_PDB_model_num' ] } );
+
+            my $third_atom_groups = {};
+            if( scalar @{ $comparison_group } > 2 ) {
+                $third_atom_groups =
+                    split_by( { 'atom_site' =>
+                                    $atom_site_groups{$comparison_group->[2]},
+                                'attributes' => [ 'label_seq_id', 'label_asym_id',
+                                                  'pdbx_PDB_model_num' ] } );
+            }
+        }
+
+    } elsif( $calc_sidechain ) {
         $pdbx->{'_[local]_bond_angle'}{'metadata'}{'attributes'} =
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
               'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
