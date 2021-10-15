@@ -190,7 +190,6 @@ for my $pdbx_file ( @ARGV ) {
                                   $atom_site_groups{$comparison_group->[0]},
                               'include' => { 'id' => $first_group_atom_ids } } );
 
-                my @current_comparisons = ();
                 for my $second_group_key ( sort keys %{ $second_atom_groups } ) {
                     my $second_group_atom_ids =
                         $second_atom_groups->{$second_group_key};
