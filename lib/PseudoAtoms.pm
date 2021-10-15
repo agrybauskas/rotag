@@ -451,7 +451,7 @@ sub generate_library
                                  $potential_functions{$interactions}{'bonded'},
                              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                              'options' => $options },
-                           [ @allowed_angles ],
+                           [ \@allowed_angles ],
                            $threads ) };
 
                 # my ( $allowed_angles, $energy_sums ) =
@@ -464,6 +464,7 @@ sub generate_library
                 #                  $potential_functions{$interactions}{'non_bonded'},
                 #              'bonded_potential' =>
                 #                  $potential_functions{$interactions}{'bonded'},
+                #              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                 #              'options' => $options },
                 #            [ @allowed_angles ] ) };
 
@@ -661,9 +662,14 @@ sub calc_favourable_angles
                 @allowed_angles = @{ $next_allowed_angles };
                 @allowed_energies = @{ $next_allowed_energies };
                 print info(
-                    { message => "${residue_name} " . $residue_site->{$atom_id}{'label_atom_id'} . " $last_angle_name " . scalar( @allowed_angles ) . "\n",
-                      # "${residue_id} ${residue_name} ${residue_chain} ${alt_id}; " .
-                      # "Current angle count -  " . scalar( keys %{ $angles } ) . "\n",
+                    { message =>
+                          $residue_site->{$atom_id}{'pdbx_PDB_model_num'} . " " .
+                          $residue_site->{$atom_id}{'label_asym_id'} . " " .
+                          $residue_site->{$atom_id}{'label_seq_id'} . " " .
+                          $residue_site->{$atom_id}{'label_alt_id'} . " " .
+                          "${residue_name} " .
+                          $residue_site->{$atom_id}{'label_atom_id'} . " " .
+                          "${last_angle_name} " . scalar( @allowed_angles ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
             } else {
@@ -822,7 +828,7 @@ sub calc_full_atom_energy
 
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
-    my @checkable_angles = @{ $array_blocks };
+    my @checkable_angles = @{ $array_blocks->[0] };
     my @allowed_angles;
     my @energy_sums;
     my @rmsd_averages;

@@ -387,14 +387,7 @@ exp
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
         }
-    | 'altid' str_ope
-        {
-            return filter_new( $_[0]->{USER}{ATOM_SITE},
-                               { 'include' => { 'label_alt_id' => $_[2] },
-                                 'group_id' => $_[0]->{USER}{GROUP_ID},
-                                 'return_data' => 'id' } );
-        }
-    | 'altid' num_ope
+    | 'altid' any_ope
         {
             return filter_new( $_[0]->{USER}{ATOM_SITE},
                                { 'include' => { 'label_alt_id' => $_[2] },
@@ -421,6 +414,13 @@ map_ope
     : map_ope ',' map_ope      { return { %{ $_[1] }, %{ $_[3] } }; }
     | STR '=' FLOAT '..' FLOAT { return { $_[1] => { 'min' => $_[3],
                                                      'max' => $_[5] } }; }
+;
+
+any_ope
+    : num_ope ',' str_ope
+    | str_ope ',' num_ope
+    | num_ope
+    | str_ope
 ;
 
 num_ope

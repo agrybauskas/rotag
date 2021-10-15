@@ -832,16 +832,24 @@ sub rmsd_sidechains
 sub energy
 {
     my ( $parameters, $atom_site, $potential, $options  ) = @_;
-    my ( $target_atom_ids, $only_sidechains, $decompose, $pairwise ) = (
+    my ( $target_atom_ids, $selected_atom_ids, $only_sidechains, $decompose,
+         $pairwise, $selected_atoms_also ) = (
         $options->{'target_atom_ids'},
+        $options->{'selected_atom_ids'},
         $options->{'only_sidechains'},
         $options->{'decompose'},
         $options->{'pairwise'},
+        $options->{'selected_atoms_also'}
     );
 
     $target_atom_ids //= [ sort keys %{ $atom_site } ];
+    $selected_atom_ids //= [];
     $only_sidechains //= 0;
     $decompose //= 0;
+
+    if( $selected_atoms_also ) {
+        $target_atom_ids = [ uniq ( @$target_atom_ids, @$selected_atom_ids ) ];
+    }
 
     my $edge_length_interaction =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};

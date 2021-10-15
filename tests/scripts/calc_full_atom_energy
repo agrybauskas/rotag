@@ -57,7 +57,7 @@ my ( $favourable_angles, $favourable_energies, $rmsds ) =
                                 'non_bonded_potential' => \&hard_sphere,
                                 ( defined $rmsd ? ( 'rmsd' => 1 ): () )
                               },
-                              [ @checkable_angles ],
+                              [ \@checkable_angles ],
                               'threads' => 1 ) };
 
 my $angle_id = 1;
