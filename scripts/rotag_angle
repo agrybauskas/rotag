@@ -379,6 +379,33 @@ for my $pdbx_file ( @ARGV ) {
                             }
                         }
                     } else {
+                        for my $first_group_atom_id ( @{ $first_group_atom_ids } ) {
+                            for my $second_group_atom_id ( @{ $second_group_atom_ids } ) {
+                                if( defined $cutoff ) {
+                                    my $first_second_bond_length =
+                                        bond_length( [
+                                            [ $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'Cartn_x'},
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'Cartn_y'},
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'Cartn_z'} ],
+                                            [ $second_group_atom_site->{$second_group_atom_id}
+                                                                       {'Cartn_x'},
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                       {'Cartn_y'},
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                       {'Cartn_z'} ] ] );
+
+                                    next if $first_second_bond_length > $cutoff;
+                                }
+
+                                # NOTE: not sure how to do with a cutoff. In one
+                                # hand it should work in both cases, however, the
+                                # second and third atoms are connected. For now,
+                                # choosing latter.
+                            }
+                        }
 
                     }
                 }
