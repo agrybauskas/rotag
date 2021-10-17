@@ -60,7 +60,8 @@ sub is_connected
                              {$neighbour_atom->{'type_symbol'}}
                              {'error'};
 
-    if( ! defined $bond_length_comb || ! defined $length_error_comb ) {
+    if( ( ! defined $bond_length_comb || ! defined $length_error_comb ) &&
+        ! $only_covalent_radii ) {
         confess sprintf 'bond between %s and %s atoms is not characterized ' .
                         'in the current force field description',
                         $target_atom->{'type_symbol'},

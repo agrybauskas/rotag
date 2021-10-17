@@ -156,7 +156,10 @@ for my $pdbx_file ( @ARGV ) {
                     filter( { 'atom_site' => $atom_site,
                               'include' =>
                                   { '[local]_selection_state' => [ 'T' ],
-                                    '[local]_selection_group' => [$group_id] }});
+                                        '[local]_selection_group' => [$group_id] }});
+
+                connect_atoms( $parameters, $group_atom_site, { 'only_covalent_radii' => 1 } );
+
                 $atom_site_groups{$group_id} = $group_atom_site;
             } else {
                 error( { 'program' => $0,
@@ -380,6 +383,7 @@ for my $pdbx_file ( @ARGV ) {
                         }
                     } else {
                         for my $first_group_atom_id ( @{ $first_group_atom_ids } ) {
+                            my %visited_second_and_third = ();
                             for my $second_group_atom_id ( @{ $second_group_atom_ids } ) {
                                 if( defined $cutoff ) {
                                     my $first_second_bond_length =
@@ -404,6 +408,135 @@ for my $pdbx_file ( @ARGV ) {
                                 # hand it should work in both cases, however, the
                                 # second and third atoms are connected. For now,
                                 # choosing latter.
+                                my $second_atom_connections =
+                                    $second_group_atom_site->{$second_group_atom_id}
+                                                             {'connections'};
+                                if( defined $second_atom_connections ) {
+                                    for my $third_group_atom_id ( @{ $second_atom_connections } ) {
+                                        next if $third_group_atom_id eq $first_group_atom_id ||
+                                                $visited_second_and_third{$second_group_atom_id}
+                                                                         {$third_group_atom_id};
+
+                                        # NOTE: the third atom cannot be already
+                                        # visited, because there will be too
+                                        # much duplications. For now, this
+                                        # strategy will be applied until the
+                                        # different application is suggested.
+                                        $visited_second_and_third{$second_group_atom_id}
+                                                                 {$third_group_atom_id} = 1;
+                                        $visited_second_and_third{$third_group_atom_id}
+                                                                 {$second_group_atom_id} = 1;
+
+                                        # TODO: needs to be refactored, because
+                                        # the code is almost repeated.
+                                        my $angle = bond_angle(
+                                            [ [ $first_group_atom_site->{$first_group_atom_id}
+                                                                        {'Cartn_x'},
+                                                $first_group_atom_site->{$first_group_atom_id}
+                                                                        {'Cartn_y'},
+                                                $first_group_atom_site->{$first_group_atom_id}
+                                                                        {'Cartn_z'} ],
+                                              [ $second_group_atom_site->{$second_group_atom_id}
+                                                                         {'Cartn_x'},
+                                                $second_group_atom_site->{$second_group_atom_id}
+                                                                         {'Cartn_y'},
+                                                $second_group_atom_site->{$second_group_atom_id}
+                                                                         {'Cartn_z'} ],
+                                              [ $second_group_atom_site->{$third_group_atom_id}
+                                                                         {'Cartn_x'},
+                                                $second_group_atom_site->{$third_group_atom_id}
+                                                                         {'Cartn_y'},
+                                                $second_group_atom_site->{$third_group_atom_id}
+                                                                         {'Cartn_z'} ] ],
+                                        );
+
+                                        push @{ $pdbx->{'_[local]_bond_angle'}{'data'} },
+                                        { 'id' => $bond_angle_id,
+                                          'group_1_id' =>
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'[local]_selection_group'},
+                                          'atom_1_id' =>
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'id'},
+                                          'label_atom_1_id' =>
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'label_atom_id'},
+                                          'label_seq_1_id' =>
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'label_seq_id'},
+                                          'label_comp_1_id' =>
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'label_comp_id'},
+                                          'label_asym_1_id' =>
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'label_asym_id'},
+                                          'pdbx_PDB_model_num_1' =>
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'pdbx_PDB_model_num'},
+                                          'label_alt_1_id' =>
+                                              $first_group_atom_site->{$first_group_atom_id}
+                                                                      {'label_alt_id'},
+                                          'group_2_id' =>
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'[local]_selection_group'},
+                                          'atom_2_id' =>
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'id'},
+                                          'label_atom_2_id' =>
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'label_atom_id'},
+                                          'label_seq_2_id' =>
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'label_seq_id'},
+                                          'label_comp_2_id' =>
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'label_comp_id'},
+                                          'label_asym_2_id' =>
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'label_asym_id'},
+                                          'pdbx_PDB_model_num_2' =>
+                                              $second_group_atom_site->{$second_group_atom_id}
+                                                                      {'pdbx_PDB_model_num'},
+                                          'label_alt_2_id' =>
+                                              $second_group_atom_site->{$first_group_atom_id}
+                                                                      {'label_alt_id'},
+                                          'group_3_id' =>
+                                              $second_group_atom_site->{$third_group_atom_id}
+                                                                       {'[local]_selection_group'},
+                                          'atom_3_id' =>
+                                              $second_group_atom_site->{$third_group_atom_id}
+                                                                       {'id'},
+                                          'label_atom_3_id' =>
+                                              $second_group_atom_site->{$third_group_atom_id}
+                                                                       {'label_atom_id'},
+                                          'label_seq_3_id' =>
+                                              $second_group_atom_site->{$third_group_atom_id}
+                                                                       {'label_seq_id'},
+                                          'label_comp_3_id' =>
+                                              $second_group_atom_site->{$third_group_atom_id}
+                                                                      {'label_comp_id'},
+                                          'label_asym_3_id' =>
+                                              $second_group_atom_site->{$third_group_atom_id}
+                                                                      {'label_asym_id'},
+                                          'pdbx_PDB_model_num_3' =>
+                                              $second_group_atom_site->{$third_group_atom_id}
+                                                                      {'pdbx_PDB_model_num'},
+                                          'label_alt_3_id' =>
+                                              $second_group_atom_site->{$third_group_atom_id}
+                                                                      {'label_alt_id'},
+                                          'value' =>
+                                              ( $in_radians ?
+                                                sprintf $sig_figs_max, $angle :
+                                                sprintf $sig_figs_min, 180 * $angle / $pi ),
+                                          'type' => '.',
+                                          'units' =>
+                                              ( $in_radians ? 'radians': 'degrees' )
+                                        };
+                                        $bond_angle_id++;
+                                    }
+                                } else {
+                                    next;
+                                }
                             }
                         }
 
