@@ -131,14 +131,6 @@ for my $pdbx_file ( @ARGV ) {
                                   'rotamer_energies' => $rotamer_energies,
                                   'parameters' => $parameters } );
 
-        # my $sidechain_prediction =
-        #     PredictSidechains->new( { 'rotamer_angles' => $rotamer_angles,
-        #                               'rotamer_energies' => $rotamer_energies,
-        #                               'atom_site' => $selected_atom_site,
-        #                               'parameters' => $parameters } );
-        # $sidechain_prediction->interaction_graph();
-        # $sidechain_prediction->choose();
-
         # if( $print_adjacency_matrix ) {
         #     # ...
         # }

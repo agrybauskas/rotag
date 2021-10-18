@@ -22,40 +22,34 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
-# ------------------------- Constructors/Destructors -------------------------- #
+# ----------------------------- Simple functions ------------------------------ #
 
-sub new
+sub predict_sidechains
 {
-    my ( $class, $args ) = @_;
-    my $self = {
-        'atom_site' => $args->{'atom_site'},
-        'grid_box' => undef,
-        'neighbouring_cells' => undef,
-        'grid_ca_atom_pos_by_unique_key' => undef,
-        'rotamer_angles' => $args->{'rotamer_angles'},
-        'rotamer_energies' => $args->{'rotamer_energies'},
-        'rotamer_look_up_tbls' => {
-            'angle_id' => {
-            },
-            'rotamer_id' => {
-            },
-            'unique_residue_key' => {
-            }
-        },
-        'interaction_graph' => undef,
-        'parameters' => $args->{'parameters'}
-    };
+    my ( $args ) = @_;
 
-    if( ! defined $self->{'rotamer_angles'} ) {
+    my ( $atom_site, $rotamer_energies, $rotamer_angles, $parameters ) = (
+        $args->{'atom_site'}, $args->{'rotamer_energies'},
+        $args->{'rotamer_angles'}, $args->{'parameters'}
+    );
+
+    # Error messages for missing arguments.
+    if( ! defined $atom_site ) {
+        die "atom site is not supplied.\n";
+    }
+    if( ! defined $rotamer_angles ) {
         die "rotamer angles are not supplied by '_[local]_rotamer_angle' tag.\n";
     }
-    if( ! defined $self->{'rotamer_energies'} ) {
+    if( ! defined $rotamer_energies ) {
         die "rotamer energies are not supplied by '_[local]_rotamer_energy'" .
             " tag.\n";
     }
+    if( ! defined $parameters ) {
+        die "parameters are not set.\n";
+    }
 
-    # Generates lookup tables for easier data reachability.
-    my $rotamer_angles = $self->{'rotamer_angles'};
+    # Generates look up tables for easier data accesibility.
+    my %rotamer_look_up_tbls = ();
     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
         my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
         my $rotamer_id = $rotamer_angle->{'rotamer_id'};
@@ -66,48 +60,28 @@ sub new
             $rotamer_angle->{'pdbx_PDB_model_num'},
             $rotamer_angle->{'label_alt_id'};
 
-        $self->{'rotamer_look_up_tbls'}{'angle_id'}{$rotamer_angle_id}
-                                                   {'rotamer_id'} =
+        $rotamer_look_up_tbls{'angle_id'}{$rotamer_angle_id}
+                             {'rotamer_id'} =
             $rotamer_id;
-        $self->{'rotamer_look_up_tbls'}{'angle_id'}{$rotamer_angle_id}
-                                                   {'unique_residue_key'} =
+        $rotamer_look_up_tbls{'angle_id'}{$rotamer_angle_id}
+                             {'unique_residue_key'} =
             $unique_residue_key;
 
-        push @{ $self->{'rotamer_look_up_tbls'}{'rotamer_id'}{$rotamer_id}
-                                                             {'angle_ids'} },
+        push @{ $rotamer_look_up_tbls{'rotamer_id'}{$rotamer_id}
+                                     {'angle_ids'} },
             $rotamer_angle_id;
-        $self->{'rotamer_look_up_tbls'}{'rotamer_id'}{$rotamer_id}
-                                                     {'unique_residue_key'} =
+        $rotamer_look_up_tbls{'rotamer_id'}{$rotamer_id}{'unique_residue_key'} =
             $unique_residue_key;
 
-        push @{$self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
-                                              {$unique_residue_key}{'angle_ids'}},
+        push @{ $rotamer_look_up_tbls{'unique_residue_key'}{$unique_residue_key}
+                                     {'angle_ids'} },
             $rotamer_angle_id;
-        push @{$self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
-                                              {$unique_residue_key}{'rotamer_ids'}},
+        push @{ $rotamer_look_up_tbls{'unique_residue_key'}{$unique_residue_key}
+                                     {'rotamer_ids'} },
             $rotamer_id;
     }
 
-    return bless $self, $class;
-}
-
-# ----------------------------- Setters/Getters ------------------------------- #
-
-# --------------------------------- Methods ----------------------------------- #
-
-sub interaction_graph
-{
-    my ( $self ) = @_;
-
-    my ( $parameters, $atom_site )=($self->{'parameters'}, $self->{'atom_site'});
-
-    if( ! defined $parameters ) {
-        die "parameters are not set.\n";
-    }
-    if( ! defined $atom_site ) {
-        die "atom site is not supplied.\n";
-    }
-
+    # Determining interaction grid.
     my $edge_length_interaction =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
 
@@ -137,16 +111,14 @@ sub interaction_graph
             my $unique_residue_key =
                 unique_residue_key( $atom_site_cas->{$atom_id} );
             if ( ! exists $grid_ca_atom_pos_by_unique_key{$unique_residue_key} ||
-                 ! defined $grid_ca_atom_pos_by_unique_key{$unique_residue_key} ) {
-                $grid_ca_atom_pos_by_unique_key{$unique_residue_key} = $grid_index;
+                 ! defined $grid_ca_atom_pos_by_unique_key{$unique_residue_key}){
+                $grid_ca_atom_pos_by_unique_key{$unique_residue_key} =
+                    $grid_index;
             }
         }
     }
 
-    $self->{'grid_box'} = $grid_box;
-    $self->{'grid_ca_atom_pos_by_unique_key'} = \%grid_ca_atom_pos_by_unique_key;
-    $self->{'neighbouring_cells'} = $neighbouring_cells;
-
+    # Building interaction graphs.
     my $interaction_graph = Graph->new();
     for my $cell ( keys %{ $grid_box_cas } ) {
         my $neighbour_cell_atom_ids = $neighbouring_cells_cas->{$cell};
@@ -170,37 +142,11 @@ sub interaction_graph
 
             $interaction_graph->set_vertex_attribute(
                 $unique_residue_key, 'rotamer_angle_count',
-                scalar( @{ $self->{'rotamer_look_up_tbls'}{'unique_residue_key'}
-                                  {$unique_residue_key}{'angle_ids'} } )
+                scalar( @{ $rotamer_look_up_tbls{'unique_residue_key'}
+                                                {$unique_residue_key}
+                                                {'angle_ids'} } )
             );
         }
-    }
-
-    $self->{'interaction_graph'} = $interaction_graph;
-
-    return;
-}
-
-sub choose
-{
-    my ( $self ) = @_;
-
-    my ( $parameters, $atom_site, $interaction_graph, $rotamer_angles,
-         $rotamer_energies, $rotamer_look_up_tbls, $grid_box,
-         $neighbouring_cells, $grid_ca_atom_pos_by_unique_key ) = (
-        $self->{'parameters'},
-        $self->{'atom_site'},
-        $self->{'interaction_graph'},
-        $self->{'rotamer_angles'},
-        $self->{'rotamer_energies'},
-        $self->{'rotamer_angles'},
-        $self->{'grid_box'},
-        $self->{'neighbouring_cells'},
-        $self->{'grid_ca_atom_pos_by_unique_key'}
-    );
-
-    if( ! defined $interaction_graph ) {
-        $self->interaction_graph();
     }
 
     my @nodes = ();
@@ -209,7 +155,7 @@ sub choose
         push @nodes, $vertex;
     }
 
-    # Sorting by rotamer count.
+    # Sorting rotamers by their counts.
     @nodes = sort {
         $interaction_graph->get_vertex_attribute($a, 'rotamer_angle_count') <=>
         $interaction_graph->get_vertex_attribute($b, 'rotamer_angle_count')
@@ -226,18 +172,6 @@ sub choose
 
         }
     }
-}
-
-# ----------------------------- Simple functions ------------------------------ #
-
-sub predict_sidechains
-{
-    my ( $args ) = @_;
-
-    my ( $atom_site, $rotamer_energies, $rotamer_anlges, $parameters ) = (
-        $args->{'atom_site'}, $args->{'rotamer_energies'},
-        $args->{'rotamer_angles'}, $args->{'parameters'}
-    );
 }
 
 1;
