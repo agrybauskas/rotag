@@ -3,6 +3,9 @@ package PredictSidechains;
 use strict;
 use warnings;
 
+use Exporter qw( import );
+our @EXPORT_OK = qw( predict_sidechains );
+
 use Clone qw( clone );
 use Graph;
 
@@ -220,9 +223,21 @@ sub choose
         } @neighbours;
 
         for my $neighbour ( @neighbours ) {
-            # replace_with_rotamer( $parameters, $self->{'atom_site'} } );
+
         }
     }
+}
+
+# ----------------------------- Simple functions ------------------------------ #
+
+sub predict_sidechains
+{
+    my ( $args ) = @_;
+
+    my ( $atom_site, $rotamer_energies, $rotamer_anlges, $parameters ) = (
+        $args->{'atom_site'}, $args->{'rotamer_energies'},
+        $args->{'rotamer_angles'}, $args->{'parameters'}
+    );
 }
 
 1;

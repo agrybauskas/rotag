@@ -14,7 +14,7 @@ use PDBxParser qw( filter
                    obtain_pdbx_data
                    raw2indexed
                    to_pdbx );
-use PredictSidechains;
+use PredictSidechains qw( predict_sidechains );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -125,17 +125,23 @@ for my $pdbx_file ( @ARGV ) {
             next;
         }
 
-        my $sidechain_prediction =
-            PredictSidechains->new( { 'rotamer_angles' => $rotamer_angles,
-                                      'rotamer_energies' => $rotamer_energies,
-                                      'atom_site' => $selected_atom_site,
-                                      'parameters' => $parameters } );
-        $sidechain_prediction->interaction_graph();
-        $sidechain_prediction->choose();
+        # my $sidechain_predictions =
+            predict_sidechains( { 'atom_site' => $selected_atom_site,
+                                  'rotamer_angles' => $rotamer_angles,
+                                  'rotamer_energies' => $rotamer_energies,
+                                  'parameters' => $parameters } );
 
-        if( $print_adjacency_matrix ) {
-            # ...
-        }
+        # my $sidechain_prediction =
+        #     PredictSidechains->new( { 'rotamer_angles' => $rotamer_angles,
+        #                               'rotamer_energies' => $rotamer_energies,
+        #                               'atom_site' => $selected_atom_site,
+        #                               'parameters' => $parameters } );
+        # $sidechain_prediction->interaction_graph();
+        # $sidechain_prediction->choose();
+
+        # if( $print_adjacency_matrix ) {
+        #     # ...
+        # }
     } else {
         error(
             { 'program' => $0,
