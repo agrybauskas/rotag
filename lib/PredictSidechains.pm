@@ -155,21 +155,16 @@ sub predict_sidechains
         push @nodes, $vertex;
     }
 
-    # Sorting rotamers by their counts.
-    @nodes = sort {
-        $interaction_graph->get_vertex_attribute($a, 'rotamer_angle_count') <=>
-        $interaction_graph->get_vertex_attribute($b, 'rotamer_angle_count')
-    } @nodes;
-
-    for my $unique_residue_key ( @nodes  ) {
-        my @neighbours = $interaction_graph->neighbours( $unique_residue_key );
-        @neighbours = sort {
-            $interaction_graph->get_vertex_attribute($a, 'rotamer_angle_count') <=>
-            $interaction_graph->get_vertex_attribute($b, 'rotamer_angle_count')
-        } @neighbours;
-
-        for my $neighbour ( @neighbours ) {
-
+    my $combination_id = 0;
+    for my $first_residue_key ( @nodes  ) {
+        my @first_rotamer_ids =
+            @{ $rotamer_look_up_tbls{'unique_residue_key'}{$first_residue_key}
+                                    {'rotamer_ids'} };
+        my @neighbours = $interaction_graph->neighbours( $first_residue_key );
+        for my $second_residue_key ( @neighbours ) {
+            my @second_rotamer_ids =
+                @{ $rotamer_look_up_tbls{'unique_residue_key'}{$second_residue_key}
+                                        {'rotamer_ids'} };
         }
     }
 }
