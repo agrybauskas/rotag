@@ -5,15 +5,16 @@ use warnings;
 
 use List::Util qw( max );
 
-use AtomProperties qw( %ATOMS );
-use Constants qw( $SIG_FIGS );
+# use AtomProperties qw( %ATOMS );
+# use Constants qw( $SIG_FIGS );
 use Grid qw( create_box
              grid_box );
+use ForceField::Parameters;
 use PDBxParser qw( filter
                    obtain_atom_site );
 
 #
-# Unit test: ConnectAtoms::create_box.
+# Unit test: ConnectAtoms::grid_box.
 #
 # Creates smallest possible box that surrounds all selected atoms.
 #                     cif         edge length
@@ -22,8 +23,10 @@ use PDBxParser qw( filter
 
 my ( $pdbx_file, $edge_length ) = @ARGV;
 
+my $parameters = Parameters->new();
+my $SIG_FIGS = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 $edge_length //=
-    max( map { @{ $ATOMS{$_}{"covalent_radius"}{"length"} } } keys %ATOMS ) * 2;
+    $parameters->{'_[local]_constants'}{'edge_length_interaction'};
 
 my $atom_site = obtain_atom_site( $pdbx_file );
 
@@ -43,7 +46,7 @@ for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
 print "end \"model\"\n";
 
 # In Jmol, generates box around the molecule.
-my ( $grid_box ) = grid_box( $atom_site, $edge_length );
+my ( $grid_box ) = grid_box( $parameters, $atom_site, $edge_length );
 
 my $atom_data = filter( { 'atom_site' => $atom_site,
                           'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
