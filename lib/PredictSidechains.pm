@@ -117,8 +117,27 @@ sub predict_sidechains
         }
     }
 
+    # Sort
 
+    # Breadth-first search in grid box.
     my $combination_id = 0;
+    # TODO: choose better starting point.
+    my @all_grid_cells = sort keys %{ $grid_box_cas };
+    my @next_grid_cells = ( $all_grid_cells[0] );
+    my %visited_grid_cell = ( map { ( $_ => 1 ) } @next_grid_cells );
+    while( @next_grid_cells ) {
+        my @grid_cells = @next_grid_cells;
+        @next_grid_cells = (); # Reseting.
+        for my $grid_cell ( @next_grid_cells ) {
+            $visited_grid_cell{$grid_cell} = 1;
+        }
+
+        # Selecting next grid cells.
+    }
+
+    print 'Number of all grid cells: ', scalar @all_grid_cells, "\n";
+    print 'Number of Visited grid cells: ',
+        scalar( grep { $visited_grid_cell{$_}  } keys %visited_grid_cell ), "\n";
 }
 
 1;
