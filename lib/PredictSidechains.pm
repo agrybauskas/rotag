@@ -7,7 +7,6 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( predict_sidechains );
 
 use Clone qw( clone );
-use Graph;
 
 use Measure qw( energy );
 use PDBxParser qw( extract
@@ -118,55 +117,8 @@ sub predict_sidechains
         }
     }
 
-    # Building interaction graphs.
-    my $interaction_graph = Graph->new();
-    for my $cell ( keys %{ $grid_box_cas } ) {
-        my $neighbour_cell_atom_ids = $neighbouring_cells_cas->{$cell};
-        for my $atom_id ( @{ $grid_box_cas->{$cell} } ) {
-            my $unique_residue_key =
-                unique_residue_key( $atom_site_cas->{$atom_id} );
-
-            $interaction_graph->add_vertex( $unique_residue_key );
-
-            my $neighbour_atom_ids =
-                [ grep { $atom_id ne $_ } @{ $neighbour_cell_atom_ids }  ];
-
-            for my $neighbour_atom_id ( @{ $neighbour_atom_ids } ) {
-                my $neighbour_residue_key =
-                    unique_residue_key( $atom_site_cas->{$neighbour_atom_id} );
-
-                $interaction_graph->add_vertex( $unique_residue_key );
-                $interaction_graph->add_edge( $unique_residue_key,
-                                              $neighbour_residue_key );
-            }
-
-            $interaction_graph->set_vertex_attribute(
-                $unique_residue_key, 'rotamer_angle_count',
-                scalar( @{ $rotamer_look_up_tbls{'unique_residue_key'}
-                                                {$unique_residue_key}
-                                                {'angle_ids'} } )
-            );
-        }
-    }
-
-    my @nodes = ();
-
-    for my $vertex ( $interaction_graph->vertices ) {
-        push @nodes, $vertex;
-    }
 
     my $combination_id = 0;
-    for my $first_residue_key ( @nodes  ) {
-        my @first_rotamer_ids =
-            @{ $rotamer_look_up_tbls{'unique_residue_key'}{$first_residue_key}
-                                    {'rotamer_ids'} };
-        my @neighbours = $interaction_graph->neighbours( $first_residue_key );
-        for my $second_residue_key ( @neighbours ) {
-            my @second_rotamer_ids =
-                @{ $rotamer_look_up_tbls{'unique_residue_key'}{$second_residue_key}
-                                        {'rotamer_ids'} };
-        }
-    }
 }
 
 1;
