@@ -59,25 +59,12 @@ sub predict_sidechains
             $rotamer_angle->{'pdbx_PDB_model_num'},
             $rotamer_angle->{'label_alt_id'};
 
-        $rotamer_look_up_tbls{'angle_id'}{$rotamer_angle_id}
-                             {'rotamer_id'} =
-            $rotamer_id;
-        $rotamer_look_up_tbls{'angle_id'}{$rotamer_angle_id}
-                             {'unique_residue_key'} =
-            $unique_residue_key;
+        $rotamer_look_up_tbls{'unique_residue_key'}{$unique_residue_key}
+                             {'rotamer_id'}{$rotamer_id} = 1;
 
         push @{ $rotamer_look_up_tbls{'rotamer_id'}{$rotamer_id}
-                                     {'angle_ids'} },
+                                     {'angle_id'} },
             $rotamer_angle_id;
-        $rotamer_look_up_tbls{'rotamer_id'}{$rotamer_id}{'unique_residue_key'} =
-            $unique_residue_key;
-
-        push @{ $rotamer_look_up_tbls{'unique_residue_key'}{$unique_residue_key}
-                                     {'angle_ids'} },
-            $rotamer_angle_id;
-        push @{ $rotamer_look_up_tbls{'unique_residue_key'}{$unique_residue_key}
-                                     {'rotamer_ids'} },
-            $rotamer_id;
     }
 
     # Determining interaction grid.
@@ -105,21 +92,24 @@ sub predict_sidechains
         identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
 
     my %grid_ca_atom_pos_by_unique_key = ();
-    for my $grid_index ( keys %{ $grid_ca_atom_pos } ) {
-        for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_index} } ) {
+    for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
+        for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
             my $unique_residue_key =
                 unique_residue_key( $atom_site_cas->{$atom_id} );
             if ( ! exists $grid_ca_atom_pos_by_unique_key{$unique_residue_key} ||
                  ! defined $grid_ca_atom_pos_by_unique_key{$unique_residue_key}){
                 $grid_ca_atom_pos_by_unique_key{$unique_residue_key} =
-                    $grid_index;
+                    $grid_id;
+                # Adds quick acces in the look up table.
+                $rotamer_look_up_tbls{'unique_residue_key'}{$unique_residue_key}
+                                     {'grid_id'} = $grid_id;
             }
         }
     }
 
-    # Sort
+    # Sort by rotamer number.
 
-    # Breadth-first search in grid box.
+    # Least-rotamer search in grid box.
     my $combination_id = 0;
     # TODO: choose better starting point.
     my @all_grid_cells = sort keys %{ $grid_box_cas };
