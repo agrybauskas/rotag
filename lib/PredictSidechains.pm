@@ -107,7 +107,14 @@ sub predict_sidechains
         }
     }
 
-    # Sort by rotamer number.
+    # Residues sorte by rotamer number.
+    my @sorted_unique_residue_keys =
+        sort { scalar( keys %{ $rotamer_look_up_tbls{'unique_residue_key'}
+                                                    {$a}{'rotamer_id'} } ) cmp
+               scalar( keys %{ $rotamer_look_up_tbls{'unique_residue_key'}
+                                                    {$b}{'rotamer_id'} } ) }
+        keys %{ $rotamer_look_up_tbls{'unique_residue_key'} };
+    # my @sorted_grid_ids = map {} ;
 
     # Least-rotamer search in grid box.
     my $combination_id = 0;
