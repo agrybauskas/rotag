@@ -77,32 +77,32 @@ sub predict_sidechains
                                     { 'include' =>
                                           { 'label_atom_id' => [ 'CA' ] } } );
 
-    # TODO: grid box should be built once.
-    my ( $grid_box, $grid_atom_pos ) =
-        grid_box( $parameters, $atom_site, $edge_length_interaction,
-                  extract( $atom_site_cas,
-                           { 'data' => [ 'id' ], 'is_list' => 1 } ) );
     my ( $grid_box_cas, $grid_ca_atom_pos ) =
         grid_box( $parameters, $atom_site_cas, $edge_length_interaction,
                   extract( $atom_site_cas,
                            { 'data' => [ 'id' ], 'is_list' => 1 } ) );
-    my $neighbouring_cells =
-        identify_neighbour_cells( $grid_box, $grid_ca_atom_pos );
+
     my $neighbouring_cells_cas =
         identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
 
-    my %grid_ca_atom_pos_by_unique_key = ();
+    my %residue_pairs = ();
     for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
         for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
             my $unique_residue_key =
                 unique_residue_key( $atom_site_cas->{$atom_id} );
-            if ( ! exists $grid_ca_atom_pos_by_unique_key{$unique_residue_key} ||
-                 ! defined $grid_ca_atom_pos_by_unique_key{$unique_residue_key}){
-                $grid_ca_atom_pos_by_unique_key{$unique_residue_key} =
-                    $grid_id;
-                # Adds quick acces in the look up table.
-                $rotamer_look_up_tbls{'unique_residue_key'}{$unique_residue_key}
-                                     {'grid_id'} = $grid_id;
+            for my $neighbour_atom_id ( @{ $neighbouring_cells_cas->{$grid_id} } ) {
+                my $neighbour_unique_residue_key =
+                    unique_residue_key( $atom_site_cas->{$neighbour_atom_id} );
+
+                next if $unique_residue_key eq $neighbour_unique_residue_key ||
+                    ( defined $residue_pairs{$unique_residue_key} &&
+                      defined $residue_pairs{$unique_residue_key}
+                                            {$neighbour_unique_residue_key} &&
+                      $residue_pairs{$unique_residue_key}
+                                    {$neighbour_unique_residue_key} );
+
+                $residue_pairs{$unique_residue_key}
+                              {$neighbour_unique_residue_key} = 1;
             }
         }
     }
@@ -115,36 +115,13 @@ sub predict_sidechains
                                                     {$b}{'rotamer_id'} } ) }
         keys %{ $rotamer_look_up_tbls{'unique_residue_key'} };
 
-    # Grid sorted by rotamer number.
-    my %grid_rotamer_sum = ();
-    for my $grid_box_ca_atom_pos ( keys %{ $grid_ca_atom_pos } ) {
-        if( ! defined $grid_rotamer_sum{$grid_box_ca_atom_pos} ) {
-            $grid_rotamer_sum{$grid_box_ca_atom_pos} = 0
-        }
-
-        for my $residue_id ( @{ $grid_box_cas->{$grid_box_ca_atom_pos} } ) {
-        }
-    }
-
-    # Least-rotamer search in grid box.
+    # Least-rotamer search in side-chain pairs.
     my $combination_id = 0;
-    # TODO: choose better starting point.
-    my @all_grid_cells = sort keys %{ $grid_box_cas };
-    my @next_grid_cells = ( $all_grid_cells[0] );
-    my %visited_grid_cell = ( map { ( $_ => 1 ) } @next_grid_cells );
-    while( @next_grid_cells ) {
-        my @grid_cells = @next_grid_cells;
-        @next_grid_cells = (); # Reseting.
-        for my $grid_cell ( @next_grid_cells ) {
-            $visited_grid_cell{$grid_cell} = 1;
-        }
-
-        # Selecting next grid cells.
+    my @all_residues = @sorted_unique_residue_keys;
+    my @next_residues = ( $all_residues[0] );
+    while( @next_residues ) {
+        @next_residues = (); # Reseting.
     }
-
-    print 'Number of all grid cells: ', scalar @all_grid_cells, "\n";
-    print 'Number of Visited grid cells: ',
-        scalar( grep { $visited_grid_cell{$_}  } keys %visited_grid_cell ), "\n";
 }
 
 1;
