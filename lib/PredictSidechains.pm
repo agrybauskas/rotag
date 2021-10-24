@@ -118,7 +118,7 @@ sub predict_sidechains
     # Least-rotamer search in side-chain pairs.
     my $combination_id = 0;
     my @all_residues = @sorted_unique_residue_keys;
-    my @next_residues = ( $all_residues[0] );
+    my @next_residues = ( $sorted_unique_residue_keys[0] );
     while( @next_residues ) {
         @next_residues = (); # Reseting.
     }
