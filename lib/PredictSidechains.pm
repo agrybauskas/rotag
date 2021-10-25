@@ -120,6 +120,27 @@ sub predict_sidechains
     my @all_residues = @sorted_unique_residue_keys;
     my @next_residues = ( $sorted_unique_residue_keys[0] );
     while( @next_residues ) {
+        for my $unique_residue_key ( @next_residues ) {
+            my @rotamer_ids =
+                keys %{ $rotamer_look_up_tbls{'unique_residue_key'}
+                                             {$unique_residue_key}
+                                             {'rotamer_id'} };
+
+            for my $rotamer_id ( @rotamer_ids ) {
+                for my $neighbour_unique_residue_key (
+                    keys %{ $residue_pairs{$unique_residue_key} } ) {
+                    my @neighbour_rotamer_ids =
+                        keys %{ $rotamer_look_up_tbls{'unique_residue_key'}
+                                                     {$unique_residue_key}
+                                                     {'rotamer_id'} };
+
+                    for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
+                        print $rotamer_id, "\t", $neighbour_rotamer_id, "\n";
+                    }
+                }
+            }
+        }
+
         @next_residues = (); # Reseting.
     }
 }
