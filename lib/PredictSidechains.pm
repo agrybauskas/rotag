@@ -8,14 +8,18 @@ our @EXPORT_OK = qw( predict_sidechains );
 
 use Clone qw( clone );
 
+use BondProperties qw( hybridization );
+use ConnectAtoms qw( connect_atoms );
 use Measure qw( energy );
 use PDBxParser qw( extract
                    filter_new
+                   filter_by_unique_residue_key
                    unique_residue_key
                    to_pdbx );
 use PseudoAtoms qw( replace_with_rotamer );
 use Grid qw( grid_box
              identify_neighbour_cells );
+use SidechainModels qw( rotation_only );
 
 use Version qw( $VERSION );
 
@@ -125,6 +129,14 @@ sub predict_sidechains
                 keys %{ $rotamer_look_up_tbls{'unique_residue_key'}
                                              {$unique_residue_key}
                                              {'rotamer_id'} };
+            my $rotamer_site =
+                filter_by_unique_residue_key( $atom_site,
+                                              $unique_residue_key,
+                                              1 );
+
+            connect_atoms( $parameters, $rotamer_site );
+            hybridization( $parameters, $rotamer_site );
+            rotation_only( $parameters, $rotamer_site );
 
             for my $rotamer_id ( @rotamer_ids ) {
                 my @angle_ids =
@@ -135,7 +147,10 @@ sub predict_sidechains
                     map { $rotamer_angles->{$_}{'type'} =>
                           $rotamer_angles->{$_}{'value'} }
                         @angle_ids;
-                my %rotamer_site = ();
+
+                my %rotamer_site = %{ $rotamer_site };
+                replace_with_rotamer( $parameters, \%rotamer_site,
+                                      $unique_residue_key, \%angles );
 
                 for my $neighbour_unique_residue_key (
                     keys %{ $residue_pairs{$unique_residue_key} } ) {
@@ -143,6 +158,15 @@ sub predict_sidechains
                         keys %{ $rotamer_look_up_tbls{'unique_residue_key'}
                                                      {$unique_residue_key}
                                                      {'rotamer_id'} };
+                    my $neighbour_rotamer_site =
+                        filter_by_unique_residue_key( $atom_site,
+                                                      $neighbour_unique_residue_key,
+                                                      1 );
+
+                    # TODO: move code so, it would be calculated once.
+                    connect_atoms( $parameters, $neighbour_rotamer_site );
+                    hybridization( $parameters, $neighbour_rotamer_site );
+                    rotation_only( $parameters, $neighbour_rotamer_site );
 
                     for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                         my @neighbour_angle_ids =
@@ -153,7 +177,13 @@ sub predict_sidechains
                             map { $rotamer_angles->{$_}{'type'} =>
                                   $rotamer_angles->{$_}{'value'} }
                                 @neighbour_angle_ids;
-                        my %neighbour_rotamer_site = ();
+
+                        my %neighbour_rotamer_site = %{ $neighbour_rotamer_site };
+                        replace_with_rotamer( $parameters, \%neighbour_rotamer_site,
+                                              $neighbour_unique_residue_key, \%angles );
+
+                        # Calculate pairwise energy.
+
                     }
                 }
             }
