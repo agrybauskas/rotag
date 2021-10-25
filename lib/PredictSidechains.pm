@@ -127,6 +127,16 @@ sub predict_sidechains
                                              {'rotamer_id'} };
 
             for my $rotamer_id ( @rotamer_ids ) {
+                my @angle_ids =
+                    @{ $rotamer_look_up_tbls{'rotamer_id'}
+                                            {$rotamer_id}
+                                            {'angle_id'} };
+                my %angles =
+                    map { $rotamer_angles->{$_}{'type'} =>
+                          $rotamer_angles->{$_}{'value'} }
+                        @angle_ids;
+                my %rotamer_site = ();
+
                 for my $neighbour_unique_residue_key (
                     keys %{ $residue_pairs{$unique_residue_key} } ) {
                     my @neighbour_rotamer_ids =
@@ -135,7 +145,15 @@ sub predict_sidechains
                                                      {'rotamer_id'} };
 
                     for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                        print $rotamer_id, "\t", $neighbour_rotamer_id, "\n";
+                        my @neighbour_angle_ids =
+                            @{ $rotamer_look_up_tbls{'rotamer_id'}
+                                                    {$neighbour_rotamer_id}
+                                                    {'angle_id'} };
+                        my %neighbour_angles =
+                            map { $rotamer_angles->{$_}{'type'} =>
+                                  $rotamer_angles->{$_}{'value'} }
+                                @neighbour_angle_ids;
+                        my %neighbour_rotamer_site = ();
                     }
                 }
             }
