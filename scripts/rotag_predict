@@ -5,7 +5,6 @@ use warnings;
 
 use autodie;
 use Getopt::Long;
-use Graph::AdjacencyMatrix;
 
 use ForceField::Parameters();
 use Logging qw( error
