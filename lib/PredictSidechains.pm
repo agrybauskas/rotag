@@ -119,6 +119,8 @@ sub predict_sidechains
                                                     {$b}{'rotamer_id'} } ) }
         keys %{ $rotamer_look_up_tbls{'unique_residue_key'} };
 
+    my %predicted_rotamers = ();
+
     # Least-rotamer search in side-chain pairs.
     my $combination_id = 0;
     my @all_residues = @sorted_unique_residue_keys;
@@ -183,7 +185,6 @@ sub predict_sidechains
                                               $neighbour_unique_residue_key, \%angles );
 
                         # Calculate pairwise energy.
-
                     }
                 }
             }
@@ -191,6 +192,8 @@ sub predict_sidechains
 
         @next_residues = (); # Reseting.
     }
+
+    return \%predicted_rotamers;
 }
 
 1;

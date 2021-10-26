@@ -125,10 +125,21 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         # my $sidechain_predictions =
+        # my $pdbx;
+        # $pdbx->{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+        # $pdbx->{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+        # $pdbx->{'_atom_site'}{'data'} =
+        use Data::Dumper;
+        print STDERR Dumper
             predict_sidechains( { 'atom_site' => $selected_atom_site,
                                   'rotamer_angles' => $rotamer_angles,
                                   'rotamer_energies' => $rotamer_energies,
                                   'parameters' => $parameters } );
+
+        # # Prints out the PDBx.
+        # to_pdbx( $pdbx, { 'add_attributes' =>
+        #                       { '_atom_site' => [ '[local]_selection_state',
+        #                                           '[local]_selection_group' ] } } );
 
         # if( $print_adjacency_matrix ) {
         #     # ...
