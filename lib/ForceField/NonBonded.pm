@@ -178,7 +178,7 @@ sub lennard_jones
 #
 # Coulomb potential function. Described as:
 #
-#                         k * q_i * q_j / r ** 2
+#                         k * q_i * q_j / r
 #
 # where:
 #     r           - distance between center of atoms;
@@ -265,7 +265,9 @@ sub coulomb
         }
     }
 
-    return $c_k * $partial_charge_i * $partial_charge_j / $r_squared;
+    # TODO: must change $r_squared to simple distance due to more effective
+    # calculations.
+    return $c_k * $partial_charge_i * $partial_charge_j / sqrt( $r_squared );
 }
 
 #
