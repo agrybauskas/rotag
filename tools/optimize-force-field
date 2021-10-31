@@ -48,11 +48,13 @@ our $VERSION = $VERSION;
 #*
 #*    -p, --parameters <str>      parameters and parameter steps that should be
 #*                                used to explore the them.
-#*                                Ex.: '_[local]_force_field:t_k=0.5..0.25..1.0'.
+#*                                Ex.: '_[local]_force_field:t_k=0.5,1.0'.
 #*
 #*    -i, --iterations <int>      number of iterations.
 #*
 #*    -n, --threads <int>         number of threads.
+#*
+#*    --verbose                   print parameters when searching.
 #*
 #*    -v, --version               print version.
 
@@ -61,6 +63,7 @@ my $angles = '-180.0..36.0..180.0';
 my $parameters_cmd = '';
 my $max_iterations = 1;
 my $particle_num = 10;
+my $verbose = 0;
 
 local $SIG{__WARN__} = sub {
     # warning( { 'message' => @_ } );
@@ -76,6 +79,7 @@ GetOptions(
     'particle_num|P=s' => \$particle_num,
     'iterations|i=s' => \$max_iterations,
     'threads|n=s' => \$threads,
+    'verbose' => sub { $verbose = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
