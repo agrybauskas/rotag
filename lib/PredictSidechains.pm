@@ -31,9 +31,10 @@ sub predict_sidechains
 {
     my ( $args ) = @_;
 
-    my ( $atom_site, $rotamer_energies, $rotamer_angles, $parameters ) = (
-        $args->{'atom_site'}, $args->{'rotamer_energies'},
-        $args->{'rotamer_angles'}, $args->{'parameters'}
+    my ( $parameters, $atom_site, $rotamer_energies, $rotamer_angles,
+         $non_bonded_potential, $bonded_potential ) = (
+        $args->{'parameters'}, $args->{'atom_site'}, $args->{'rotamer_energies'},
+        $args->{'rotamer_angles'},
     );
 
     # Error messages for missing arguments.
@@ -150,7 +151,7 @@ sub predict_sidechains
                           $rotamer_angles->{$_}{'value'} }
                         @angle_ids;
 
-                my %rotamer_site = %{ $rotamer_site };
+                my %rotamer_site = %{ clone( $rotamer_site ) };
                 replace_with_rotamer( $parameters, \%rotamer_site,
                                       $unique_residue_key, \%angles );
 
@@ -180,11 +181,21 @@ sub predict_sidechains
                                   $rotamer_angles->{$_}{'value'} }
                                 @neighbour_angle_ids;
 
-                        my %neighbour_rotamer_site = %{ $neighbour_rotamer_site };
+                        my %neighbour_rotamer_site =
+                            %{ clone( $neighbour_rotamer_site ) };
                         replace_with_rotamer( $parameters, \%neighbour_rotamer_site,
                                               $neighbour_unique_residue_key, \%angles );
 
                         # Calculate pairwise energy.
+                        my $rotamer_energy_sum = 0;
+                        if( defined $bonded_potential ) {
+                            # $rotamer_energy_sum += $bonded_potential->(
+                            #     $parameters,
+                            #     $rotamer_interaction_site{$rotamer_atom_id},
+                            #     $options
+                            # );
+                        }
+
                     }
                 }
             }

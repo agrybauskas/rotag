@@ -7,6 +7,8 @@ use autodie;
 use Getopt::Long;
 
 use ForceField::Parameters();
+use ForceField::Bonded qw( general );
+use ForceField::NonBonded qw( general );
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter
@@ -134,7 +136,12 @@ for my $pdbx_file ( @ARGV ) {
             predict_sidechains( { 'atom_site' => $selected_atom_site,
                                   'rotamer_angles' => $rotamer_angles,
                                   'rotamer_energies' => $rotamer_energies,
-                                  'parameters' => $parameters } );
+                                  'parameters' => $parameters,
+                                  'non_bonded_potential' =>
+                                      \&ForceField::NonBonded::general,
+                                  'bonded_potential' =>
+                                      \&ForceField::Bonded::general,
+                                } );
 
         # # Prints out the PDBx.
         # to_pdbx( $pdbx, { 'add_attributes' =>
