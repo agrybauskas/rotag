@@ -12,6 +12,7 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      generate_rotamer
                      library_to_csv
                      lowest_energy_state
+                     pairwise_rotamer_energy
                      replace_with_rotamer );
 
 use B qw( svref_2object );
@@ -986,6 +987,57 @@ sub replace_with_rotamer
     }
 
     return;
+}
+
+sub pairwise_rotamer_energy
+{
+    my ( $parameters, $rotamer_site, $interaction_site, $bonded_potential,
+         $non_bonded_potential ) = @_;
+
+    my $energy_cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+
+    my @rotamer_atom_ids =
+        sort keys %{ filter_new( $rotamer_site,
+                                 { 'exclude' =>
+                                       { 'label_atom_id' =>
+                                             $interaction_atom_names } } ) };
+
+    # HACK: make sure that $interaction_site atom ids are updated by
+    # %rotamer_site.
+    my %rotamer_interaction_site = ( %{ $interaction_site }, %{ $rotamer_site } );
+
+    my $rotamer_energy_sum = 0;
+    for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+        # Calculation of potential energy of bonded atoms.
+        if( defined $bonded_potential ) {
+            $rotamer_energy_sum += $bonded_potential->(
+                $parameters,
+                $rotamer_interaction_site{$rotamer_atom_id},
+                { 'atom_site' => \%rotamer_interaction_site }
+            );
+        }
+
+        # Calculation of potential energy of non-bonded atoms.
+        for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
+            if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
+                ( ! is_neighbour( \%rotamer_interaction_site,
+                                  $rotamer_atom_id,
+                                  $neighbour_atom_id ) ) &&
+                ( ! is_second_neighbour( \%rotamer_interaction_site,
+                                         $rotamer_atom_id,
+                                         $neighbour_atom_id ) ) ){
+                # $rotamer_energy_sum +=
+                #     $non_bonded_potential->(
+                #         $parameters,
+                #         $rotamer_interaction_site{$rotamer_atom_id},
+                #         $rotamer_interaction_site{$neighbour_atom_id}
+                #     );
+            }
+        }
+    }
+
+    return $rotamer_energy_sum;
 }
 
 1;

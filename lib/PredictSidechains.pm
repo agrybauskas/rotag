@@ -10,13 +10,17 @@ use Clone qw( clone );
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
+use ForceField::Parameters;
+use ForceField::Bonded qw( general );
+use ForceField::NonBonded qw( general );
 use Measure qw( energy );
 use PDBxParser qw( extract
                    filter_new
                    filter_by_unique_residue_key
                    unique_residue_key
                    to_pdbx );
-use PseudoAtoms qw( replace_with_rotamer );
+use PseudoAtoms qw( pairwise_rotamer_energy
+                    replace_with_rotamer );
 use Grid qw( grid_box
              identify_neighbour_cells );
 use SidechainModels qw( rotation_only );
@@ -32,9 +36,10 @@ sub predict_sidechains
     my ( $args ) = @_;
 
     my ( $parameters, $atom_site, $rotamer_energies, $rotamer_angles,
-         $non_bonded_potential, $bonded_potential ) = (
+         $non_bonded_potential, $bonded_potential, $options ) = (
         $args->{'parameters'}, $args->{'atom_site'}, $args->{'rotamer_energies'},
-        $args->{'rotamer_angles'},
+        $args->{'rotamer_angles'}, $args->{'non_bonded_potential'},
+        $args->{'bonded_potential'}, $args->{'options'}
     );
 
     # Error messages for missing arguments.
@@ -187,15 +192,14 @@ sub predict_sidechains
                                               $neighbour_unique_residue_key, \%angles );
 
                         # Calculate pairwise energy.
-                        my $rotamer_energy_sum = 0;
-                        if( defined $bonded_potential ) {
-                            # $rotamer_energy_sum += $bonded_potential->(
-                            #     $parameters,
-                            #     $rotamer_interaction_site{$rotamer_atom_id},
-                            #     $options
-                            # );
-                        }
-
+                        my $rotamer_energy_sum =
+                            pairwise_rotamer_energy( $parameters,
+                                                     \%rotamer_site,
+                                                     \%neighbour_rotamer_site,
+                                                     \&ForceField::Bonded::general,
+                                                     \&ForceField::NonBonded::general,
+                            );
+                        print $rotamer_energy_sum, "\n";
                     }
                 }
             }
