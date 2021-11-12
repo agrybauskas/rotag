@@ -327,7 +327,6 @@ sub generate_library
     my $edge_length_interaction =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
-    my $cutoff_atom = $parameters->{'_[local]_constants'}{'cutoff_atom'};
 
     $conf_model //= 'rotation_only';
     $threads //= 1;
@@ -1027,12 +1026,13 @@ sub pairwise_rotamer_energy
                 ( ! is_second_neighbour( \%rotamer_interaction_site,
                                          $rotamer_atom_id,
                                          $neighbour_atom_id ) ) ){
-                # $rotamer_energy_sum +=
-                #     $non_bonded_potential->(
-                #         $parameters,
-                #         $rotamer_interaction_site{$rotamer_atom_id},
-                #         $rotamer_interaction_site{$neighbour_atom_id}
-                #     );
+                $rotamer_energy_sum +=
+                    $non_bonded_potential->(
+                        $parameters,
+                        $rotamer_interaction_site{$rotamer_atom_id},
+                        $rotamer_interaction_site{$neighbour_atom_id},
+                        { 'atom_site' => \%rotamer_interaction_site }
+                    );
             }
         }
     }

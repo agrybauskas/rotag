@@ -192,14 +192,18 @@ sub predict_sidechains
                                               $neighbour_unique_residue_key, \%angles );
 
                         # Calculate pairwise energy.
-                        my $rotamer_energy_sum =
+                        my $pairwise_energy_sum =
                             pairwise_rotamer_energy( $parameters,
                                                      \%rotamer_site,
                                                      \%neighbour_rotamer_site,
                                                      \&ForceField::Bonded::general,
                                                      \&ForceField::NonBonded::general,
                             );
-                        print $rotamer_energy_sum, "\n";
+
+                        # HACK: can be optimizied for searching for those
+                        # rotamers that have no possible solutions.
+                        # if( $pairwise_energy_sum >= $cutoff_atom  ) {
+                        # }
                     }
                 }
             }

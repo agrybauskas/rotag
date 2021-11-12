@@ -126,13 +126,12 @@ for my $pdbx_file ( @ARGV ) {
             next;
         }
 
-        # my $sidechain_predictions =
-        # my $pdbx;
-        # $pdbx->{'_atom_site'}{'metadata'}{'type'} = 'indexed';
-        # $pdbx->{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+        my $pdbx;
+        $pdbx->{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+        $pdbx->{'_atom_site'}{'metadata'}{'is_loop'} = 1;
         # $pdbx->{'_atom_site'}{'data'} =
-        # use Data::Dumper;
-        # print STDERR Dumper
+
+        my $sidechain_predictions =
             predict_sidechains( { 'atom_site' => $selected_atom_site,
                                   'rotamer_angles' => $rotamer_angles,
                                   'rotamer_energies' => $rotamer_energies,
