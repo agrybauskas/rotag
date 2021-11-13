@@ -81,6 +81,9 @@ sub predict_sidechains
     my $edge_length_interaction =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
 
+    my $cutoff_atom =
+        $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+
     # Chooses only CA atoms, because from them, boundary interaction conditions
     # are measured.
     my $atom_site_cas = filter_new( $atom_site,
@@ -202,8 +205,8 @@ sub predict_sidechains
 
                         # HACK: can be optimizied for searching for those
                         # rotamers that have no possible solutions.
-                        # if( $pairwise_energy_sum >= $cutoff_atom  ) {
-                        # }
+                        if( $pairwise_energy_sum <= $cutoff_atom  ) {
+                        }
                     }
                 }
             }
