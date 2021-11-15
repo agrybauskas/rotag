@@ -132,6 +132,7 @@ sub predict_sidechains
 
     # Least-rotamer search in side-chain pairs.
     my $combination_id = 0;
+    my %combination = ();
     my @all_residues = @sorted_unique_residue_keys;
     my @next_residues = ( $sorted_unique_residue_keys[0] );
     while( @next_residues ) {
@@ -206,6 +207,8 @@ sub predict_sidechains
                         # HACK: can be optimizied for searching for those
                         # rotamers that have no possible solutions.
                         if( $pairwise_energy_sum <= $cutoff_atom  ) {
+                            $combination{$rotamer_id}{$neighbour_rotamer_id} = 1;
+                            $combination{$neighbour_rotamer_id}{$rotamer_id} = 1;
                         }
                     }
                 }
