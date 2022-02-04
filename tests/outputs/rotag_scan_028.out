@@ -80,23 +80,23 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 0.018566
-2 2 composite 0.021381
-3 3 composite 0.024184
-4 4 composite 0.026693
-5 5 composite 0.028563
-6 6 composite 0.029439
-7 7 composite 0.029056
-8 8 composite 0.027353
-9 9 composite 0.024532
-10 10 composite 0.021033
-11 11 composite 0.017427
-12 12 composite 0.014272
-13 13 composite 0.011994
-14 14 composite 0.010812
-15 15 composite 0.010732
-16 16 composite 0.011610
-17 17 composite 0.013238
-18 18 composite 0.015407
-19 19 composite 0.017934
+1 1 composite 0.089862
+2 2 composite 0.093237
+3 3 composite 0.096547
+4 4 composite 0.099440
+5 5 composite 0.101524
+6 6 composite 0.102425
+7 7 composite 0.101891
+8 8 composite 0.099889
+9 9 composite 0.096659
+10 10 composite 0.092683
+11 11 composite 0.088575
+12 12 composite 0.084943
+13 13 composite 0.082260
+14 14 composite 0.080792
+15 15 composite 0.080584
+16 16 composite 0.081517
+17 17 composite 0.083379
+18 18 composite 0.085938
+19 19 composite 0.088957
 #
