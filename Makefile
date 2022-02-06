@@ -1,3 +1,8 @@
+# Environmental variables.
+
+export PERL5LIB:=${PWD}/lib:${PERL5LIB}
+export PATH:=${PWD}/scripts:${PATH}
+
 all:
 
 #
@@ -16,13 +21,12 @@ GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 all: ${GRAMMAR_MODULES}
 
 #
-# Instalation of dependencies.
+# Build rule.
 #
 
 .PHONY: build
 
-build:
-	./dependencies/$$(lsb_release -is)-$$(lsb_release -rs)/install.sh
+build: all
 
 #
 # Unit tests.
