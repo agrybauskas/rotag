@@ -13,7 +13,7 @@ GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} plugins
+all: ${GRAMMAR_MODULES}
 
 #
 # Instalation of dependencies.
@@ -67,21 +67,6 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	fi
 
 #
-# Plugins
-#
-
-PLUGIN_DIR=plugins
-PLUGINS=${PLUGIN_DIR}/pymol2-rotag
-PLUGINS_ZIP=${PLUGINS:%=%.zip}
-
-.PHONY: plugins
-
-plugins: ${PLUGINS_ZIP}
-
-%.zip: %
-	zip -r $@ $<
-
-#
 # Coverage.
 #
 
@@ -120,4 +105,3 @@ testclean:
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
-	rm -f ${PLUGINS_ZIP}
