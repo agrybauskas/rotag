@@ -43,6 +43,8 @@ endef
 
 test: ${GRAMMAR_MODULES} | ${TEST_DIFF}
 
+check: test
+
 listdiff:
 	@-find ${TEST_OUT_DIR} -type f -name '*.diff' -size +0 | sort -u
 
