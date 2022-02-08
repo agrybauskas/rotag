@@ -89,7 +89,7 @@ our %sidechains = (
             'Cartn_y' => 0.446,
             'Cartn_z' => 1.769,
             'pdbx_PDB_model_num' => 1,
-        },
+        }
     },
     'PHE' => {
         1 => {
@@ -224,9 +224,9 @@ our %sidechains = (
             'label_asym_id' => 'A',
             'label_entity_id' => 1,
             'label_seq_id' => q{.},
-            'Cartn_x' => ,
-            'Cartn_y' => ,
-            'Cartn_z' => ,
+            'Cartn_x' => 2.192,
+            'Cartn_y' => -1.361,
+            'Cartn_z' => -0.429,
             'pdbx_PDB_model_num' => 1,
         },
         2 => {
@@ -239,9 +239,9 @@ our %sidechains = (
             'label_asym_id' => 'A',
             'label_entity_id' => 1,
             'label_seq_id' => q{.},
-            'Cartn_x' => ,
-            'Cartn_y' => ,
-            'Cartn_z' => ,
+            'Cartn_x' => 1.688,
+            'Cartn_y' => -0.573,
+            'Cartn_z' => 0.812,
             'pdbx_PDB_model_num' => 1,
         },
         3 => {
@@ -254,9 +254,9 @@ our %sidechains = (
             'label_asym_id' => 'A',
             'label_entity_id' => 1,
             'label_seq_id' => q{.},
-            'Cartn_x' => ,
-            'Cartn_y' => ,
-            'Cartn_z' => ,
+            'Cartn_x' => 0.182,
+            'Cartn_y' => -0.294,
+            'Cartn_z' => 0.826,
             'pdbx_PDB_model_num' => 1,
         },
         4 => {
@@ -269,9 +269,9 @@ our %sidechains = (
             'label_asym_id' => 'A',
             'label_entity_id' => 1,
             'label_seq_id' => q{.},
-            'Cartn_x' => ,
-            'Cartn_y' => ,
-            'Cartn_z' => ,
+            'Cartn_x' => -0.790,
+            'Cartn_y' => -1.060,
+            'Cartn_z' => 1.502,
             'pdbx_PDB_model_num' => 1,
         },
         5 => {
