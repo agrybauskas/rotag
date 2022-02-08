@@ -1,0 +1,29 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 2165 N N . TYR A 1 315 39.274 -16.345 34.147 1
+ATOM 2166 C CA . TYR A 1 315 39.567 -16.445 32.729 1
+ATOM 2167 C C . TYR A 1 315 40.085 -17.842 32.455 1
+ATOM 2168 O O . TYR A 1 315 40.821 -18.393 33.263 1
+ATOM 2183 C CB . TYR A 1 315 38.279 -16.234 31.880 1
+ATOM 2184 C CG . TYR A 1 315 37.958863 -14.793786 31.461169 1
+ATOM 2185 C CD1 . TYR A 1 315 38.798944 -13.739880 31.836496 1
+ATOM 2186 C CD2 . TYR A 1 315 36.824701 -14.530239 30.689814 1
+ATOM 2187 C CE1 . TYR A 1 315 38.505872 -12.438744 31.437867 1
+ATOM 2188 C CE2 . TYR A 1 315 36.533519 -13.228800 30.292713 1
+ATOM 2189 C CZ . TYR A 1 315 37.374661 -12.183318 30.667085 1
+ATOM 2190 O OH . TYR A 1 315 37.092812 -10.905142 30.276128 1
+#

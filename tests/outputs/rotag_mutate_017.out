@@ -1,0 +1,31 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 8409 N N . TRP B 1 546 -2.622 35.396 50.174 1
+ATOM 8410 C CA . TRP B 1 546 -3.888 36.087 50.407 1
+ATOM 8411 C C . TRP B 1 546 -5.068 35.294 49.856 1
+ATOM 8412 O O . TRP B 1 546 -6.155 35.313 50.423 1
+ATOM 8417 C CZ3 . TRP B 1 546 -3.438302 38.182122 56.157203 1
+ATOM 8418 C CH2 . TRP B 1 546 -2.761728 39.410103 56.137916 1
+ATOM 8419 C CB . TRP B 1 546 -4.018 36.312 51.939 1
+ATOM 8420 C CG . TRP B 1 546 -3.425454 37.630798 52.445350 1
+ATOM 8421 C CD1 . TRP B 1 546 -2.797654 38.610406 51.647589 1
+ATOM 8422 C CD2 . TRP B 1 546 -3.306151 38.070772 53.747158 1
+ATOM 8423 C CE2 . TRP B 1 546 -2.614820 39.307748 53.726720 1
+ATOM 8424 C CE3 . TRP B 1 546 -3.716576 37.494214 54.976979 1
+ATOM 8425 N NE1 . TRP B 1 546 -2.288503 39.666325 52.427451 1
+ATOM 8426 C CZ2 . TRP B 1 546 -2.338846 39.982173 54.935420 1
+#
