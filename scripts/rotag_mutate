@@ -103,15 +103,8 @@ for( my $i = 0; $i <= $#mutations_stmt; $i++ ) {
     my $statement = $mutations_stmt[$i];
 
     my $group_id;
-    if( $statement =~ s/^(\w+)\:// ) {
+    if( $statement =~ s/^(\w+)?\:// ) {
         $group_id = $1;
-    } else {
-        # TODO: should allow to edit every amino acid if no group is present.
-        # However, only one statement has to be present.
-        warning( { 'program' => $0,
-                   'message' => 'selection group was not specified in ' .
-                                "'${statement}'\n" } );
-        next;
     }
 
     my $moiety;
@@ -183,32 +176,37 @@ for my $pdbx_file ( @ARGV ) {
 
     if( @mutations ) {
         for( my $i = 0; $i <= $#mutations; $i++ ) {
-            my $ca_atom_id =
+            my $ca_atom_ids =
                 filter( { 'atom_site' => $selected_atom_site,
                           'include' =>
                               { 'label_atom_id' => [ 'CA' ],
                                 '[local]_selection_group' =>
-                                    [ $mutations[$i]{'group_id'} ] },
+                                    ( defined $mutations[$i]{'group_id'} ?
+                                      [ $mutations[$i]{'group_id'} ] :
+                                      [ @group_ids ] ) },
                           'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $unique_residue_key =
-                unique_residue_key( $selected_atom_site->{$ca_atom_id} );
+                          'is_list' => 1 } );
 
-            replace_with_moiety( $parameters,
-                                 $selected_atom_site,
-                                 $unique_residue_key,
-                                 $mutations[$i]{'moiety'},
-                                 { 'angles' => $mutations[$i]{'angles'},
-                                   'append_moieties' => \%append_moieties } );
+            for my $ca_atom_id ( @$ca_atom_ids ) {
+                my $unique_residue_key =
+                    unique_residue_key( $selected_atom_site->{$ca_atom_id} );
 
-            my %current_pdbx = ();
-            $current_pdbx{'_atom_site'} = $pdbx->{'_atom_site'};
-            $current_pdbx{'_atom_site'}{'data'} = $selected_atom_site;
-            $current_pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
-            $current_pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
-
-            to_pdbx( \%current_pdbx );
+                replace_with_moiety( $parameters,
+                                     $selected_atom_site,
+                                     $unique_residue_key,
+                                     $mutations[$i]{'moiety'},
+                                     { 'angles' => $mutations[$i]{'angles'},
+                                       'append_moieties' => \%append_moieties });
+            }
         }
+
+        my %pdbx_mutated = ();
+        $pdbx_mutated{'_atom_site'} = $pdbx->{'_atom_site'};
+        $pdbx_mutated{'_atom_site'}{'data'} = $selected_atom_site;
+        $pdbx_mutated{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+        $pdbx_mutated{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+
+        to_pdbx( \%pdbx_mutated );
     } else {
         error( { 'program' => $0,
                  'filename' => $pdbx_file,
