@@ -1,0 +1,44 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 25 N N . PHE A 1 20 -16.661 -19.920 -12.790 1
+ATOM 26 C CA . PHE A 1 20 -16.456 -18.723 -11.989 1
+ATOM 27 C C . PHE A 1 20 -17.547 -18.748 -10.931 1
+ATOM 28 O O . PHE A 1 20 -18.642 -19.214 -11.200 1
+ATOM 34 H H . PHE A 1 20 -16.815 -19.774 -13.622 1
+ATOM 35 H HA . PHE A 1 20 -15.585 -18.772 -11.543 1
+ATOM 47 N N . PHE A 1 21 -17.238 -18.272 -9.730 1
+ATOM 48 C CA . PHE A 1 21 -18.170 -18.345 -8.601 1
+ATOM 49 C C . PHE A 1 21 -18.583 -16.929 -8.240 1
+ATOM 50 O O . PHE A 1 21 -17.732 -16.089 -7.921 1
+ATOM 54 H H . PHE A 1 21 -16.489 -17.901 -9.526 1
+ATOM 55 H HA . PHE A 1 21 -18.962 -18.837 -8.868 1
+ATOM 69 C CA . PHE A 1 21 -18.170 -18.345 -8.601 1
+ATOM 70 C CB . PHE A 1 21 -19.454 -19.138 -8.991 1
+ATOM 71 C CG . PHE A 1 21 -19.757 -20.401 -8.168 1
+ATOM 72 C CD1 . PHE A 1 21 -20.514 -20.295 -6.996 1
+ATOM 73 C CD2 . PHE A 1 21 -19.233 -21.640 -8.542 1
+ATOM 74 C CE1 . PHE A 1 21 -20.728 -21.413 -6.197 1
+ATOM 75 C CE2 . PHE A 1 21 -19.458 -22.762 -7.747 1
+ATOM 69 C CA . PHE A 1 21 -18.170 -18.345 -8.601 1
+ATOM 70 C CB . PHE A 1 21 -19.454 -19.138 -8.991 1
+ATOM 71 C CG . PHE A 1 21 -19.757 -20.401 -8.168 1
+ATOM 72 C CD1 . PHE A 1 21 -20.514 -20.295 -6.996 1
+ATOM 73 C CD2 . PHE A 1 21 -19.233 -21.640 -8.542 1
+ATOM 74 C CE1 . PHE A 1 21 -20.728 -21.413 -6.197 1
+ATOM 75 C CE2 . PHE A 1 21 -19.458 -22.762 -7.747 1
+ATOM 76 C CZ . PHE A 1 21 -20.202 -22.647 -6.574 1
+#
