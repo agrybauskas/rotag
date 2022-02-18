@@ -158,12 +158,13 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    my $selected_atom_site =
+    my $target_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
                   'exclude' => { '[local]_selection_group' => [ q{?} ] } } );
+
     my @group_ids =
-        uniq( @{ filter( { 'atom_site' => $selected_atom_site,
+        uniq( @{ filter( { 'atom_site' => $target_atom_site,
                            'data' => [ '[local]_selection_group' ],
                            'is_list' => 1 } ) } );
 
@@ -178,7 +179,7 @@ for my $pdbx_file ( @ARGV ) {
     if( @mutations ) {
         for( my $i = 0; $i <= $#mutations; $i++ ) {
             my $ca_atom_ids =
-                filter( { 'atom_site' => $selected_atom_site,
+                filter( { 'atom_site' => $target_atom_site,
                           'include' =>
                               { 'label_atom_id' => [ 'CA' ],
                                 '[local]_selection_group' =>
@@ -190,22 +191,22 @@ for my $pdbx_file ( @ARGV ) {
 
             for my $ca_atom_id ( @$ca_atom_ids ) {
                 my $unique_residue_key =
-                    unique_residue_key( $selected_atom_site->{$ca_atom_id} );
+                    unique_residue_key( $target_atom_site->{$ca_atom_id} );
 
                 replace_with_moiety( $parameters,
-                                     $selected_atom_site,
+                                     $target_atom_site,
                                      $unique_residue_key,
                                      $mutations[$i]{'moiety'},
                                      { 'angles' => $mutations[$i]{'angles'},
                                        'append_moieties' => \%append_moieties,
                                        'last_atom_id' =>
-                                           max( keys %{ $selected_atom_site } ) } );
+                                           max( keys %{ $target_atom_site } ) } );
             }
         }
 
         my %pdbx_mutated = ();
         # $pdbx_mutated{'_atom_site'} = $pdbx->{'_atom_site'};
-        $pdbx_mutated{'_atom_site'}{'data'} = $selected_atom_site;
+        $pdbx_mutated{'_atom_site'}{'data'} = $target_atom_site;
         $pdbx_mutated{'_atom_site'}{'metadata'}{'is_loop'} = 1;
         $pdbx_mutated{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
