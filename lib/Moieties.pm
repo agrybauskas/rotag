@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( %atoms
-                     %sidechain
+                     %sidechains
                      replace_with_moiety );
 
 use List::Util qw( max );
@@ -13,6 +13,7 @@ use Math::Trig qw( acos );
 
 use AlterMolecule qw( bond_torsion );
 use BondProperties qw( hybridization );
+use Clone qw( clone );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use PDBxParser qw( filter
@@ -546,6 +547,8 @@ sub replace_with_moiety
     $append_moieties //= {};
     $last_atom_id //= max( keys %{ $atom_site } );
 
+    $last_atom_id++; # The counter is incresed, because the next will be used.
+
     my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
@@ -632,7 +635,13 @@ sub replace_with_moiety
 
     # Adds moiety.
     for my $atom_id ( sort keys %{ $all_sidechains{$moiety} } ) {
-        my $moiety_atom = $all_sidechains{$moiety}{$atom_id};
+        my $moiety_atom = clone $all_sidechains{$moiety}{$atom_id};
+
+        # CA in sidechain will be skipped, because it will take from mainchain.
+        # However, it was left before, because it is necessary to calculate
+        # rotational transformation angles.
+        next if $moiety_atom->{'label_atom_id'} eq 'CA';
+
         my ( $transf_atom_coord ) =
             @{ mult_matrix_product( [ @{ $rotational_matrix },
                                       $transf_matrix,
@@ -658,7 +667,6 @@ sub replace_with_moiety
             sprintf $sig_figs_min, $transf_atom_coord->[1][0];
         $moiety_atom->{'Cartn_z'}=
             sprintf $sig_figs_min, $transf_atom_coord->[2][0];
-
         $atom_site->{$last_atom_id} = $moiety_atom;
         $last_atom_id++;
     }

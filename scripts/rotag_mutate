@@ -6,6 +6,7 @@ use warnings;
 use autodie;
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
+use List::Util qw( max );
 use Try::Tiny;
 
 use ForceField::Parameters;
@@ -196,12 +197,14 @@ for my $pdbx_file ( @ARGV ) {
                                      $unique_residue_key,
                                      $mutations[$i]{'moiety'},
                                      { 'angles' => $mutations[$i]{'angles'},
-                                       'append_moieties' => \%append_moieties });
+                                       'append_moieties' => \%append_moieties,
+                                       'last_atom_id' =>
+                                           max( keys %{ $selected_atom_site } ) } );
             }
         }
 
         my %pdbx_mutated = ();
-        $pdbx_mutated{'_atom_site'} = $pdbx->{'_atom_site'};
+        # $pdbx_mutated{'_atom_site'} = $pdbx->{'_atom_site'};
         $pdbx_mutated{'_atom_site'}{'data'} = $selected_atom_site;
         $pdbx_mutated{'_atom_site'}{'metadata'}{'is_loop'} = 1;
         $pdbx_mutated{'_atom_site'}{'metadata'}{'type'} = 'indexed';
