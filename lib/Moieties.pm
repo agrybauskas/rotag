@@ -541,7 +541,7 @@ sub replace_with_moiety
           $options->{'append_moieties'},
           $options->{'last_atom_id'}, );
 
-    $isomer //= 'R';
+    $isomer //= 'S';
     $angles //= {};
     $append_moieties //= {};
     $last_atom_id //= max( keys %{ $atom_site } );
