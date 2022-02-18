@@ -193,20 +193,21 @@ for my $pdbx_file ( @ARGV ) {
                 my $unique_residue_key =
                     unique_residue_key( $target_atom_site->{$ca_atom_id} );
 
+                # TODO: calculating $atom_site could be done once.
                 replace_with_moiety( $parameters,
-                                     $target_atom_site,
+                                     $atom_site,
                                      $unique_residue_key,
                                      $mutations[$i]{'moiety'},
                                      { 'angles' => $mutations[$i]{'angles'},
                                        'append_moieties' => \%append_moieties,
                                        'last_atom_id' =>
-                                           max( keys %{ $target_atom_site } ) } );
+                                           max( keys %{ $atom_site } ) } );
             }
         }
 
         my %pdbx_mutated = ();
-        # $pdbx_mutated{'_atom_site'} = $pdbx->{'_atom_site'};
-        $pdbx_mutated{'_atom_site'}{'data'} = $target_atom_site;
+        $pdbx_mutated{'_atom_site'} = $pdbx->{'_atom_site'};
+        $pdbx_mutated{'_atom_site'}{'data'} = $atom_site;
         $pdbx_mutated{'_atom_site'}{'metadata'}{'is_loop'} = 1;
         $pdbx_mutated{'_atom_site'}{'metadata'}{'type'} = 'indexed';
 
