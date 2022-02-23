@@ -33,8 +33,10 @@ our $VERSION = $VERSION;
 # Checks if atoms are connected.
 # Input:
 #     ${target,neighbour}_atom - atom data structure (see PDBxParser.pm).
-#     $options->{'only_covalent_radii'} - if on, connection is determined only
-#     with covalent radii and ForceField::Parameters is ignored.
+#     $options->{'with_connection_list'} - if on, connection is determined with
+#     ForceField::Parameters connection list.
+#     $options->{'with_covalent_radii'} - if on, connection is determined with
+#     covalent radii.
 # Output:
 #     $is_connected - boolean: 0 (for not connected) or 1 (for connected).
 #
@@ -43,8 +45,10 @@ sub is_connected
 {
     my ( $parameters, $target_atom, $neighbour_atom, $options ) = @_;
 
-    my ( $only_covalent_radii ) = ( $options->{'only_covalent_radii'}, );
-    $only_covalent_radii //= 0;
+    my ( $with_connection_list, $with_covalent_radii ) =
+        ( $options->{'with_connection_list'}, $options->{'with_covalent_radii'} );
+    $with_connection_list //= 1;
+    $with_covalent_radii //= 1;
 
     my $covalent_bond_comb = $parameters->{'_[local]_covalent_bond_combinations'};
     my $connectivity = $parameters->{'_[local]_connectivity'};
@@ -87,11 +91,12 @@ sub is_connected
     for my $i ( 0..$#{ $bond_length_comb } ) {
         $bond_length = $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
         $length_error = $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
-        if( ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
+        if( $with_covalent_radii &&
+            ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
             ( $distance_squared <= ( $bond_length + $length_error ) ** 2 ) ) {
             return 1;
         }
-        if( ( ! $only_covalent_radii ) &&
+        if( $with_connection_list &&
             ( $target_residue_key eq $neighbour_residue_key ) &&
             ( exists $connectivity->{$target_residue_name}
                                     {$target_atom_name} &&
@@ -222,13 +227,15 @@ sub connect_atoms
 {
     my ( $parameters, $atom_site, $options ) = @_;
 
-    my ( $append_connections, $only_covalent_radii ) = (
+    my ( $append_connections, $with_connection_list, $with_covalent_radii ) = (
         $options->{'append_connections'},
-        $options->{'only_covalent_radii'},
+        $options->{'with_connection_list'},
+        $options->{'with_covalent_radii'},
     );
 
     $append_connections //= 0;
-    $only_covalent_radii //= 0;
+    $with_connection_list //= 1;
+    $with_covalent_radii //= 1;
 
     # Removes all previously described connections if certain flags are not on.
     if( ! $append_connections ) {
@@ -250,8 +257,10 @@ sub connect_atoms
                 if( ( is_connected( $parameters,
                                     $atom_site->{"$atom_id"},
                                     $atom_site->{"$neighbour_id"},
-                                    { 'only_covalent_radii' =>
-                                          $only_covalent_radii } ) ) &&
+                                    { 'with_connection_list' =>
+                                          $with_connection_list,
+                                      'with_covalent_radii' =>
+                                          $with_covalent_radii } ) ) &&
                     ( ( ! exists $atom_site->{$atom_id}{'connections'} ) ||
                       ( ! any { $neighbour_id eq $_ }
                              @{ $atom_site->{$atom_id}{'connections'} } ) ) ){
