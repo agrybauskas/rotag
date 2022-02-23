@@ -83,29 +83,26 @@ sub is_connected
     # Checks, if distance between atom pairs is in one of the combinations.
     my $bond_length;
     my $length_error;
-    my $is_connected;
 
     for my $i ( 0..$#{ $bond_length_comb } ) {
         $bond_length = $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
         $length_error = $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
         if( ( $distance_squared >= ( $bond_length - $length_error ) ** 2 ) &&
             ( $distance_squared <= ( $bond_length + $length_error ) ** 2 ) ) {
-            $is_connected = 1;
-            last;
-        } elsif( ( ! $only_covalent_radii ) &&
-                 ( $target_residue_key eq $neighbour_residue_key ) &&
-                 ( exists $connectivity->{$target_residue_name}
-                                         {$target_atom_name} &&
-                   any { $neighbour_atom_name eq $_  }
-                      @{ $connectivity->{$target_residue_name}
-                                        {$target_atom_name} } ) ) {
-            $is_connected = 1;
-        } else {
-            $is_connected = 0;
+            return 1;
+        }
+        if( ( ! $only_covalent_radii ) &&
+            ( $target_residue_key eq $neighbour_residue_key ) &&
+            ( exists $connectivity->{$target_residue_name}
+                                    {$target_atom_name} &&
+              any { $neighbour_atom_name eq $_  }
+                 @{ $connectivity->{$target_residue_name}
+                                   {$target_atom_name} } ) ) {
+            return 1;
         }
     }
 
-    return $is_connected;
+    return 0;
 }
 
 #
