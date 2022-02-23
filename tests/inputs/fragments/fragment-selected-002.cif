@@ -1,0 +1,35 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 899 N N . ASN A 1 116 29.851 8.546 15.796 1 S 1
+ATOM 900 C CA . ASN A 1 116 30.028 7.793 17.057 1 S 1
+ATOM 901 C C . ASN A 1 116 29.302 6.491 16.956 1 S 1
+ATOM 902 O O . ASN A 1 116 28.067 6.416 16.797 1 S 1
+ATOM 903 C CB . ASN A 1 116 29.356 8.730 18.115 1 S 1
+ATOM 925 N N . PHE A 1 119 25.997 5.345 19.177 1 T 1
+ATOM 926 C CA . PHE A 1 119 24.691 5.918 18.821 1 T 1
+ATOM 927 C C . PHE A 1 119 23.724 4.784 18.429 1 T 1
+ATOM 928 O O . PHE A 1 119 22.506 4.915 18.329 1 T 1
+ATOM 3023 C CB . PHE A 1 119 24.861 6.894 17.617 1 T 1
+ATOM 3024 C CG . PHE A 1 119 26.285221 7.059305 17.064812 1 T 1
+ATOM 3025 C CD1 . PHE A 1 119 27.339311 6.347918 17.648382 1 T 1
+ATOM 3026 C CD2 . PHE A 1 119 26.550840 7.958367 16.029083 1 T 1
+ATOM 3027 C CE1 . PHE A 1 119 28.645140 6.547627 17.213759 1 T 1
+ATOM 3028 C CE2 . PHE A 1 119 27.857799 8.149830 15.586929 1 T 1
+ATOM 3029 C CZ . PHE A 1 119 28.904148 7.446945 16.181803 1 T 1
+#
