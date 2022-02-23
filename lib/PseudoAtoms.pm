@@ -844,7 +844,7 @@ sub calc_full_atom_energy
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
                               \%angles );
 
-        # connect_atoms($parameters,\%rotamer_site,{'with_connection_list' =>0});
+        # connect_atoms($parameters,\%rotamer_site,{'no_connection_list' => 1 });
 
         # next if !retains_connections( $parameters,$residue_site,\%rotamer_site );
 
