@@ -1,5 +1,5 @@
 #!/bin/bash
 
-pdbx_file=$(dirname "$0")/../inputs/3qek.cif
+pdbx_file=$(dirname "$0")/../inputs/3qek-reduced.cif
 
-rotag_select -t 'id 1' ${pdbx_file}
+rotag_select ${pdbx_file}
