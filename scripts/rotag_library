@@ -134,8 +134,12 @@ for my $pdbx_file ( @ARGV ) {
 
     # Generates a new collection of residue angles with defined frequencies.
     my $residue_angle_groups = split_by( { 'atom_site' => $rotamer_angles } );
-    my @rotamers;
+    my @attributes =
+        ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
+          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
+          'units' );
 
+    my @rotamers;
     my %frequencies = ();
     for my $residue_unique_key ( sort keys %{ $residue_angle_groups } ) {
         my @angle_ids = @{ $residue_angle_groups->{$residue_unique_key} };
@@ -174,6 +178,29 @@ for my $pdbx_file ( @ARGV ) {
             @current_rotamers = @current_rotamers[0..$current_top_rank-1];
         }
 
+        # # Duplicated angles can appear when the terminal angles are removed, such
+        # # as terminal hydrogen in SER. The scan itself is very useful in order to
+        # # check the energy values, however, the final results usually does not
+        # # contain these angles.
+        # if( $only_unique_angles ) {
+        #     my @unique_current_rotamers = ();
+        #     my %visited_rotamers = ();
+        #     use Data::Dumper;
+        #     print STDERR Dumper $residue_angle_groups;
+        #     # for my $angle_id ( @current_rotamers ) {
+        #     #     use Data::Dumper;
+        #     #     print STDERR Dumper $;
+        #     #     # my @rotamer_data = ();
+        #     #     # for my $attribute ( @attributes ) {
+        #     #     #     if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
+        #     #     #         push @rotamer_data, $rotamer_angles->{$angle_id}{$attribute};
+        #     #     #     } else {
+        #     #     #         push @rotamer_data, '?';
+        #     #     #     }
+        #     #     # }
+        #     # }
+        # }
+
         # TODO: frequency part will change in the future, because it can change
         # according to different strategies of calculations.
         for my $rotamer_id ( @current_rotamers ) {
@@ -186,10 +213,6 @@ for my $pdbx_file ( @ARGV ) {
 
     my %pdbx_data;
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
-    my @attributes =
-        ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
-          'units' );
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'}=\@attributes;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
@@ -197,6 +220,8 @@ for my $pdbx_file ( @ARGV ) {
     for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
         my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
         if( any { $rotamer_id eq $_ } @rotamers ) {
+            # TODO: refactoring is needed, because there is a repeating code
+            # snippet.
             my @rotamer_data = ();
             for my $attribute ( @attributes ) {
                 if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
