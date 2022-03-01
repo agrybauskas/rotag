@@ -134,6 +134,9 @@ for my $pdbx_file ( @ARGV ) {
 
     # Generates a new collection of residue angles with defined frequencies.
     my $residue_angle_groups = split_by( { 'atom_site' => $rotamer_angles } );
+    my $rotamer_angle_groups = split_by( { 'atom_site' => $rotamer_angles,
+                                           'attributes' => [ 'rotamer_id' ] } );
+
     my @attributes =
         ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
           'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
@@ -178,28 +181,27 @@ for my $pdbx_file ( @ARGV ) {
             @current_rotamers = @current_rotamers[0..$current_top_rank-1];
         }
 
-        # # Duplicated angles can appear when the terminal angles are removed, such
-        # # as terminal hydrogen in SER. The scan itself is very useful in order to
-        # # check the energy values, however, the final results usually does not
-        # # contain these angles.
-        # if( $only_unique_angles ) {
-        #     my @unique_current_rotamers = ();
-        #     my %visited_rotamers = ();
-        #     use Data::Dumper;
-        #     print STDERR Dumper $residue_angle_groups;
-        #     # for my $angle_id ( @current_rotamers ) {
-        #     #     use Data::Dumper;
-        #     #     print STDERR Dumper $;
-        #     #     # my @rotamer_data = ();
-        #     #     # for my $attribute ( @attributes ) {
-        #     #     #     if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
-        #     #     #         push @rotamer_data, $rotamer_angles->{$angle_id}{$attribute};
-        #     #     #     } else {
-        #     #     #         push @rotamer_data, '?';
-        #     #     #     }
-        #     #     # }
-        #     # }
-        # }
+        # Duplicated angles can appear when the terminal angles are removed, such
+        # as terminal hydrogen in SER. The scan itself is very useful in order to
+        # check the energy values, however, the final results usually does not
+        # contain these angles.
+        if( $only_unique_angles ) {
+            my @unique_current_rotamers = ();
+            my %visited_rotamers = ();
+            for my $rotamer_id ( @current_rotamers ) {
+                # HACK: should be adjusted so, the order would not matter.
+                my $unique_angle_key =
+                    join( ',', map { $rotamer_angles->{$_}{'type'},
+                                     $rotamer_angles->{$_}{'value'} }
+                          @{ $rotamer_angle_groups->{$rotamer_id} } );
+                if( ! defined $visited_rotamers{$unique_angle_key} &&
+                    ! $visited_rotamers{$unique_angle_key} ) {
+                    $visited_rotamers{$unique_angle_key} = 1;
+                    push @unique_current_rotamers, $rotamer_id;
+                }
+            }
+            @current_rotamers = @unique_current_rotamers;
+        }
 
         # TODO: frequency part will change in the future, because it can change
         # according to different strategies of calculations.
