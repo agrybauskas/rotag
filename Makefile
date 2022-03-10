@@ -16,16 +16,22 @@ GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 	yapp -o $@ $<
 
-CPP_DIR=src/
+BIN_DIR=bin/
+LIB_DIR=src/
 OBJ_DIR=obj/
-CPP_SRCS=${wildcard ${CPP_DIR}/*.cpp}
-CPP_OBJS=${CPP_SRCS:${CPP_DIR}/%.cpp=${OBJ_DIR}/%.o}
-CPP_LIBS=-lboost_regex
+LIB_SRC=${wildcard ${LIB_DIR}/*.cpp}
+BIN_SRC=$(wildcard ${BIN_DIR}/*.cpp)
+CPP_OBJS=${LIB_SRC:${LIB_DIR}/%.cpp=${OBJ_DIR}/%.o}
+CPP_BIN=${BIN_SRC:${BIN_DIR}/%.cpp=${BIN_DIR}/%}
+CPP_LIB=-lboost_regex
 
-.PRECIOUS: ${CPP_OBJS}
+.PRECIOUS: ${CPP_OBJ}
 
-${OBJ_DIR}/%.o: ${CPP_DIR}/%.cpp
-	g++ ${CPP_LIBS} -c $< -o $@
+${OBJ_DIR}/%.o: ${LIB_DIR}/%.cpp
+	g++ ${CPP_LIB} -c $< -o $@
+
+${BIN_DIR}/%: ${BIN_SRC}/%.cpp
+	g++ ${CPP_LIB} $< -o $@
 
 .PHONY: all
 
@@ -123,3 +129,4 @@ testclean:
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${CPP_OBJS}
+	rm -f ${CPP_BIN}
