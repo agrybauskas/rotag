@@ -16,13 +16,17 @@ GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 	yapp -o $@ $<
 
-BIN_DIR=bin/
-LIB_DIR=src/
-OBJ_DIR=obj/
+#
+# C++ library and program compilation.
+#
+
+BIN_DIR=bin
+LIB_DIR=src
+OBJ_DIR=obj
 LIB_SRC=${wildcard ${LIB_DIR}/*.cpp}
-BIN_SRC=$(wildcard ${BIN_DIR}/*.cpp)
+BIN_SRC=$(wildcard ${LIB_DIR}/scripts/*.cpp)
 CPP_OBJS=${LIB_SRC:${LIB_DIR}/%.cpp=${OBJ_DIR}/%.o}
-CPP_BIN=${BIN_SRC:${BIN_DIR}/%.cpp=${BIN_DIR}/%}
+CPP_BIN=${BIN_SRC:${LIB_DIR}/scripts/%.cpp=${BIN_DIR}/%}
 CPP_LIB=-lboost_regex
 
 .PRECIOUS: ${CPP_OBJ}
@@ -30,12 +34,12 @@ CPP_LIB=-lboost_regex
 ${OBJ_DIR}/%.o: ${LIB_DIR}/%.cpp
 	g++ ${CPP_LIB} -c $< -o $@
 
-${BIN_DIR}/%: ${BIN_SRC}/%.cpp
+${BIN_DIR}/%: ${LIB_DIR}/scripts/%.cpp ${CPP_OBJS}
 	g++ ${CPP_LIB} $< -o $@
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} | ${CPP_OBJS}
+all: ${GRAMMAR_MODULES} | ${CPP_BIN}
 
 #
 # Build rule.
