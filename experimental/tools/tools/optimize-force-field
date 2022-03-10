@@ -43,24 +43,26 @@ our $VERSION = $VERSION;
 #*    optimize-force-field structure.cif > output.cif
 #*
 #*Options:
-#*    -a, --angle-step <float>    angle that each dihedral angle is turned by
-#*                                (default: 0.1).
+#*    -a, --angle-step <float>    angle that each dihedral angle is turned by.
 #*
 #*    -p, --parameters <str>      parameters and parameter steps that should be
 #*                                used to explore the them.
-#*                                Ex.: '_[local]_force_field:t_k=0.5..0.25..1.0'.
+#*                                Ex.: '_[local]_force_field:t_k=0.5,1.0'.
 #*
 #*    -i, --iterations <int>      number of iterations.
 #*
 #*    -n, --threads <int>         number of threads.
 #*
+#*    --verbose                   print parameters when searching.
+#*
 #*    -v, --version               print version.
 
 my $threads = 1;
-my $angles = '-180.0..36.0..180.0';
+my $angles = '';
 my $parameters_cmd = '';
 my $max_iterations = 1;
 my $particle_num = 10;
+my $verbose = 0;
 
 local $SIG{__WARN__} = sub {
     # warning( { 'message' => @_ } );
@@ -76,6 +78,7 @@ GetOptions(
     'particle_num|P=s' => \$particle_num,
     'iterations|i=s' => \$max_iterations,
     'threads|n=s' => \$threads,
+    'verbose' => sub { $verbose = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -251,13 +254,12 @@ sub run_calculations
                     { 'parameters' => $current_parameters,
                       'atom_site' => $current_atom_site,
                       'residue_unique_keys' => $residue_unique_keys,
+                      'interactions' => 'composite',
                       'include_interactions' =>
                           { 'id' => [ keys %{ $current_atom_site } ] },
                       'angles' => \%angles,
-                      'rmsd' => 1,
-                      'conf_model' => 'rotation_only',
-                      'interactions' => 'composite'
-                    } );
+                      'rmsd' => 1 }
+                );
             };
 
             for my $residue_unique_key ( keys %{ $rotamer_library } ) {
@@ -265,8 +267,6 @@ sub run_calculations
                     $rotamer_library->{$residue_unique_key};
             }
         }
-
-        next if ! %rotamer_library;
 
         $pm->finish( 0, \%rotamer_library );
     }

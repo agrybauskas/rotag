@@ -133,9 +133,21 @@ sub lennard_jones
     my $lj_k = $parameters->{'_[local]_force_field'}{'lj_k'};
     my $lennard_jones = $parameters->{'_[local]_lennard_jones'};
 
-    my $lj_epsilon = $lennard_jones->{$atom_i->{'type_symbol'}}
-                                     {$atom_j->{'type_symbol'}}
-                                     {'epsilon'};
+    my $lj_epsilon;
+    if( defined $lennard_jones->{$atom_i->{'type_symbol'}} ) {
+        if( defined $lennard_jones->{$atom_i->{'type_symbol'}}
+                                    {$atom_j->{'type_symbol'}}) {
+            $lj_epsilon = $lennard_jones->{$atom_i->{'type_symbol'}}
+                                          {$atom_j->{'type_symbol'}}
+                                          {'epsilon'};
+        } else {
+            $lj_epsilon = $lennard_jones->{$atom_i->{'type_symbol'}}
+                                          {'.'}
+                                          {'epsilon'};
+        }
+    } else {
+        $lj_epsilon = $lennard_jones->{'.'}{'.'}{'epsilon'};
+    }
 
     if( $is_optimal ) {
         return ( -1 ) * $lj_k * $lj_epsilon;
@@ -143,9 +155,21 @@ sub lennard_jones
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
-    my $sigma = $lennard_jones->{$atom_i->{'type_symbol'}}
-                                {$atom_j->{'type_symbol'}}
-                                {'sigma'};
+    my $sigma;
+    if( defined $lennard_jones->{$atom_i->{'type_symbol'}} ) {
+        if( defined $lennard_jones->{$atom_i->{'type_symbol'}}
+                                    {$atom_j->{'type_symbol'}}) {
+            $sigma = $lennard_jones->{$atom_i->{'type_symbol'}}
+                                     {$atom_j->{'type_symbol'}}
+                                     {'sigma'};
+        } else {
+            $sigma = $lennard_jones->{$atom_i->{'type_symbol'}}
+                                     {'.'}
+                                     {'sigma'};
+        }
+    } else {
+        $sigma = $lennard_jones->{'.'}{'.'}{'sigma'};
+    }
 
     return 4 * $lj_k * $lj_epsilon * ( ( $sigma ** 12 / $r_squared ** 6 ) -
                                        ( $sigma ** 6  / $r_squared ** 3 ) );
@@ -154,7 +178,7 @@ sub lennard_jones
 #
 # Coulomb potential function. Described as:
 #
-#                         k * q_i * q_j / r ** 2
+#                         k * q_i * q_j / r
 #
 # where:
 #     r           - distance between center of atoms;
@@ -181,10 +205,40 @@ sub coulomb
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
     # Extracts partial charges.
-    my $partial_charge_i =
-        $partial_charge->{$atom_i->{'label_comp_id'}}{$atom_i->{'label_atom_id'}};
-    my $partial_charge_j =
-        $partial_charge->{$atom_j->{'label_comp_id'}}{$atom_j->{'label_atom_id'}};
+    my $partial_charge_i;
+    my $partial_charge_j;
+    # HACK: try to incorporate actual partial charges as soon as possible,
+    # because using '.' might be misleading if left.
+    if( defined $partial_charge->{$atom_i->{'label_comp_id'}} ) {
+        if( defined $partial_charge->{$atom_i->{'label_comp_id'}}
+                                     {$atom_i->{'label_atom_id'}} ) {
+            $partial_charge_i = $partial_charge->{$atom_i->{'label_comp_id'}}
+                                                 {$atom_i->{'label_atom_id'}};
+        } else {
+            $partial_charge_i = $partial_charge->{$atom_i->{'label_comp_id'}}{'.'};
+        }
+    } else {
+        if( defined $partial_charge->{'.'}{$atom_i->{'label_atom_id'}} ) {
+            $partial_charge_i = $partial_charge->{'.'}{$atom_i->{'label_atom_id'}};
+        } else {
+            $partial_charge_i = $partial_charge->{'.'}{'.'};
+        }
+    }
+    if( defined $partial_charge->{$atom_j->{'label_comp_id'}} ) {
+        if( defined $partial_charge->{$atom_j->{'label_comp_id'}}
+                                     {$atom_j->{'label_atom_id'}} ) {
+            $partial_charge_j = $partial_charge->{$atom_j->{'label_comp_id'}}
+                                                 {$atom_j->{'label_atom_id'}};
+        } else {
+            $partial_charge_j = $partial_charge->{$atom_j->{'label_comp_id'}}{'.'};
+        }
+    } else {
+        if( defined $partial_charge->{'.'}{$atom_j->{'label_atom_id'}} ) {
+            $partial_charge_j = $partial_charge->{'.'}{$atom_j->{'label_atom_id'}};
+        } else {
+            $partial_charge_j = $partial_charge->{'.'}{'.'};
+        }
+    }
 
     if( ! defined $partial_charge_i ) {
         confess $atom_i->{'label_atom_id'} . ' atom with id ' . $atom_i->{'id'} .
@@ -211,7 +265,9 @@ sub coulomb
         }
     }
 
-    return $c_k * $partial_charge_i * $partial_charge_j / $r_squared;
+    # TODO: must change $r_squared to simple distance due to more effective
+    # calculations.
+    return $c_k * $partial_charge_i * $partial_charge_j / sqrt( $r_squared );
 }
 
 #

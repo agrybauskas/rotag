@@ -3,7 +3,7 @@ data_general
 _[local]_force_field.soft_epsilon 1.0
 _[local]_force_field.soft_n       12.0
 _[local]_force_field.lj_k         0.25
-_[local]_force_field.c_k          100.0
+_[local]_force_field.c_k          62.0
 _[local]_force_field.h_k          10.0
 _[local]_force_field.t_k          2.5
 _[local]_force_field.cutoff_atom  50.0
@@ -28,7 +28,7 @@ N sp2  0.60 0.06 1.66 1    3
 O sp3  0.66 0.02 1.5  2    2
 O sp2  0.57 0.07 1.5  2    2
 S sp3  1.05 0.03 1.89 2    2
-P ?    1.07 0.03 1.9  0    5
+P .    1.07 0.03 1.9  0    5
 BR sp3 1.20 0.05 1.85 3    1
 X sp3  1    0.05 0    0    0
 X sp2  0.5  0.05 0    0    0
@@ -72,6 +72,7 @@ loop_
 _[local]_partial_charge.label_comp_id
 _[local]_partial_charge.label_atom_id
 _[local]_partial_charge.value
+.   .    0.00
 ALA C    0.57
 ALA CA   -0.028
 ALA CB   -0.23

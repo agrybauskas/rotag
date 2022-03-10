@@ -1,3 +1,8 @@
+# Environmental variables.
+
+export PERL5LIB:=${PWD}/lib:${PERL5LIB}
+export PATH:=${PWD}/scripts:${PATH}
+
 all:
 
 #
@@ -55,16 +60,15 @@ SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} plugins | ${CPP_OBJS} ${PM_FILES} ${WRAP_OBJS} ${SHARED_OBJS}
+all: ${GRAMMAR_MODULES} | ${CPP_OBJS} ${PM_FILES} ${WRAP_OBJS} ${SHARED_OBJS}
 
 #
-# Instalation of dependencies.
+# Build rule.
 #
 
 .PHONY: build
 
-build:
-	./dependencies/$$(lsb_release -is)-$$(lsb_release -rs)/install.sh
+build: all
 
 #
 # Unit tests.
@@ -84,6 +88,8 @@ endef
 .PHONY: test listdiff
 
 test: ${GRAMMAR_MODULES} | ${TEST_DIFF}
+
+check: test
 
 listdiff:
 	@-find ${TEST_OUT_DIR} -type f -name '*.diff' -size +0 | sort -u
@@ -107,21 +113,6 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	    ${TEST_CASES_DIR}/$*.chk; \
 	    touch $@; \
 	fi
-
-#
-# Plugins
-#
-
-PLUGIN_DIR=plugins
-PLUGINS=${PLUGIN_DIR}/pymol2-rotag
-PLUGINS_ZIP=${PLUGINS:%=%.zip}
-
-.PHONY: plugins
-
-plugins: ${PLUGINS_ZIP}
-
-%.zip: %
-	zip -r $@ $<
 
 #
 # Coverage.
@@ -169,4 +160,3 @@ cleanAll distclean: clean
 	rm -f ${SHARED_OBJS}
 	rm -f ${WRAP_FILES}
 	rm -f ${WRAP_OBJS}
-	rm -f ${PLUGINS_ZIP}

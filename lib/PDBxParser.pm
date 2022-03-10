@@ -200,7 +200,7 @@ sub obtain_pdbx_loop
             push @categories, [];
             push @attributes, [];
             push @data, [];
-        } elsif( /($category_regexp)[.](.+)$/x ) {
+        } elsif( /^($category_regexp)[.](.+)$/x ) {
             if( !@{ $categories[-1] } || $categories[-1][-1] ne $1 ) {
                 push @{ $categories[-1] }, $1;
                 push @{ $attributes[-1] }, [];
