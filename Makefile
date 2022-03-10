@@ -16,17 +16,7 @@ GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
 ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 	yapp -o $@ $<
 
-#
-# Compiling CPP and linking to Perl5 with SWIG.
-#
-
-# ${CPP_DIR}/%.o: ${CPP_DIR}/%.cpp
-# 	g++ -c -I${CPP_DIR} $< -o $@
-# CPP_OBJS=${CPP_FILES:%.cpp=%.o}
-
-LIB_DIR=lib
-CPP_DIR=${LIB_DIR}/CPP
-SWIG_FILES=${wildcard ${CPP_DIR}/*.i}
+CPP_DIR=src/
 CPP_FILES=${SWIG_FILES:%.i=%.cpp}
 CPP_OBJS=${SWIG_FILES:%.i=%.o}
 CPP_LIBS=-lboost_regex
@@ -35,28 +25,10 @@ WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
 WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
 SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
-# CPP_TEST_SRC=tests/src
-# CPP_TEST_BIN=tests/bin
-# CPP_TEST_FILES=${wildcard ${CPP_TEST_SRC}/*.cpp}
-# CPP_TEST_BINS=${CPP_TEST_FILES:${CPP_TEST_SRC}/%.cpp=${CPP_TEST_BIN}/%}
-
 .PRECIOUS: ${CPP_OBJS}
-
-%.pm: %.i
-	swig -c++ -perl $<
-
-%_wrap.cxx: %.i
-	swig -c++ -perl $<
 
 %.o: %.cpp
 	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
-
-%_wrap.o: %_wrap.cxx
-	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE \
-	    -o $@
-
-%.so: %_wrap.o %.o
-	g++ -shared $^ -L ${CPP_DIR} -o $@
 
 .PHONY: all
 
@@ -153,10 +125,4 @@ testclean:
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
-	rm -f ${PERL_MODULE}
-	rm -f ${PERL_FORCE_FIELD_MODULE}
 	rm -f ${CPP_OBJS}
-	rm -f ${CPP_TEST_BINS}
-	rm -f ${SHARED_OBJS}
-	rm -f ${WRAP_FILES}
-	rm -f ${WRAP_OBJS}
