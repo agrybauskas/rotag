@@ -17,22 +17,19 @@ ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 	yapp -o $@ $<
 
 CPP_DIR=src/
-CPP_FILES=${SWIG_FILES:%.i=%.cpp}
-CPP_OBJS=${SWIG_FILES:%.i=%.o}
+OBJ_DIR=obj/
+CPP_SRCS=${wildcard ${CPP_DIR}/*.cpp}
+CPP_OBJS=${CPP_SRCS:${CPP_DIR}/%.cpp=${OBJ_DIR}/%.o}
 CPP_LIBS=-lboost_regex
-PM_FILES=${SWIG_FILES:%.i=%.pm}
-WRAP_FILES=${SWIG_FILES:%.i=%_wrap.cxx}
-WRAP_OBJS=${WRAP_FILES:%.cxx=%.o}
-SHARED_OBJS=${CPP_OBJS:%.o=%.so}
 
 .PRECIOUS: ${CPP_OBJS}
 
-%.o: %.cpp
-	g++ -c -fPIC $< -I$$(perl -e 'use Config; print $$Config{archlib};')/CORE -o $@
+${OBJ_DIR}/%.o: ${CPP_DIR}/%.cpp
+	g++ ${CPP_LIBS} -c $< -o $@
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} | ${CPP_OBJS} ${PM_FILES} ${WRAP_OBJS} ${SHARED_OBJS}
+all: ${GRAMMAR_MODULES} | ${CPP_OBJS}
 
 #
 # Build rule.
