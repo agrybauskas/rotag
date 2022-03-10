@@ -3,16 +3,12 @@
 
 #include "PseudoAtoms.h"
 
-#include "EXTERN.h"
-#include "perl.h"
-#include "XSUB.h"
-
 #include <map>
 #include <iostream>
 #include <math.h>
 #include <string>
 #include <vector>
 
-void generate_library(SV* options_ptr);
+void generate_library();
 
 #endif
