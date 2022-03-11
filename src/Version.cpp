@@ -1,8 +1,8 @@
-#include "Version.h"
-
 #include <iostream>
 #include <string>
 
-std::string generate_library() {
+#include "Version.h"
+
+std::string version() {
   return "rotag: 0.1.0";
 }
