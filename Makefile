@@ -21,8 +21,8 @@ ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 #
 
 BIN_DIR=bin
-LIB_DIR=src
-OBJ_DIR=obj
+LIB_DIR=src/lib
+OBJ_DIR=src/lib
 LIB_SRC=${wildcard ${LIB_DIR}/*.cpp}
 BIN_SRC=$(wildcard ${LIB_DIR}/scripts/*.cpp)
 CPP_OBJS=${LIB_SRC:${LIB_DIR}/%.cpp=${OBJ_DIR}/%.o}
