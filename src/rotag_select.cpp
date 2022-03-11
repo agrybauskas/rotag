@@ -1,6 +1,7 @@
 #include <getopt.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "lib/Version.h"
 
@@ -21,9 +22,27 @@ int main(int argc, char *argv[]) {
   int index;
   int iarg = 0;
 
+  std::string target_cmds;
+  std::string select_cmds;
+  std::string tags =
+      "_atom_site,_[local]_rotamer_angle,_[local]_dihedral_angle,"
+      "_[local]_rotamer_energy,_[local]_pairwise_energy,_[local]_energy,"
+      "_[local]_rmsd";
+  bool is_related = false;
+  bool is_pdb = false;
+  bool keep_ignored = false;
+  int randon_seed = 23;
+  std::vector<std::string> category_list = {
+      "_atom_site", "_[local]_rotamer_angle", "_[local]_dihedral_angle",
+      "_[local]_rotamer_energy", "_[local]_pairwise_energy", "_[local]_energy",
+      "_[local]_rmsd"
+  };
+
   while(iarg != -1) {
     iarg = getopt_long(argc, argv, "tsrpkxh:v:", longopts, &index);
     switch(iarg) {
+      case 't':
+
       case 'h':
         std::cout << "rotag_select [options] [--] <cif-file>...\n"
           "    select and mark atoms of interest by adding selection state [T|S|I] to\n"
@@ -110,7 +129,7 @@ int main(int argc, char *argv[]) {
           "        print version" << std::endl;
         break;
       case 'v':
-        std::cout << "???" << std::endl;
+        std::cout << version() << std::endl;
         break;
     }
   }
