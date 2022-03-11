@@ -30,7 +30,7 @@ CPP_OBJS=${LIB_SRC:%.cpp=%.o}
 CPP_BIN=${BIN_SRC:${SRC_DIR}/%.cpp=${BIN_DIR}/%}
 CPP_LIB=-lboost_regex
 
-.PRECIOUS: ${CPP_OBJ}
+.PRECIOUS: ${CPP_OBJS}
 
 ${LIB_DIR}/%.o: ${LIB_DIR}/%.cpp
 	g++ ${CPP_LIB} -c $< -o $@
