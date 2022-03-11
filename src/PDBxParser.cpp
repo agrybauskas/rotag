@@ -105,9 +105,9 @@ std::vector<pdbx_loop_data> obtain_pdbx_loop( std::string pdbx_file,
       pdbx_loop_unique - special data structure.
 */
 
-pdbx_unique_entry pdbx_loop_unique( std::vector<pdbx_loop_data> pdbx_loop_data,
-                                    std::vector<std::string> unique_keys,
-                                    bool read_until_end = false )
-{
+// pdbx_unique_entry pdbx_loop_unique( std::vector<pdbx_loop_data> pdbx_loop_data,
+//                                     std::vector<std::string> unique_keys,
+//                                     bool read_until_end = false )
+// {
 
-}
+// }
