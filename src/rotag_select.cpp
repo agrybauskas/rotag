@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include <Version.h>
+#include "lib/Version.h"
 
 int main(int argc, char *argv[]) {
   const struct option longopts[] = {

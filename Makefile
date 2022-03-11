@@ -21,20 +21,21 @@ ${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
 #
 
 BIN_DIR=bin
-LIB_DIR=src/lib
-OBJ_DIR=src/lib
+SRC_DIR=src
+LIB_DIR=${SRC_DIR}/lib
+OBJ_DIR=${SRC_DIR}/lib
 LIB_SRC=${wildcard ${LIB_DIR}/*.cpp}
-BIN_SRC=$(wildcard ${LIB_DIR}/scripts/*.cpp)
-CPP_OBJS=${LIB_SRC:${LIB_DIR}/%.cpp=${OBJ_DIR}/%.o}
-CPP_BIN=${BIN_SRC:${LIB_DIR}/scripts/%.cpp=${BIN_DIR}/%}
+BIN_SRC=$(wildcard ${SRC_DIR}/*.cpp)
+CPP_OBJS=${LIB_SRC:%.cpp=%.o}
+CPP_BIN=${BIN_SRC:${SRC_DIR}/%.cpp=${BIN_DIR}/%}
 CPP_LIB=-lboost_regex
 
 .PRECIOUS: ${CPP_OBJ}
 
-${OBJ_DIR}/%.o: ${LIB_DIR}/%.cpp
+${LIB_DIR}/%.o: ${LIB_DIR}/%.cpp
 	g++ ${CPP_LIB} -c $< -o $@
 
-${BIN_DIR}/%: ${LIB_DIR}/scripts/%.cpp ${CPP_OBJS}
+${BIN_DIR}/%: ${SRC_DIR}/%.cpp ${CPP_OBJS}
 	g++ ${CPP_LIB} $< -o $@
 
 .PHONY: all
