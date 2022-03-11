@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+#include <Version.h>
+
 int main(int argc, char *argv[]) {
   const struct option longopts[] = {
     {"target",         0, 0, 't'},
@@ -20,7 +22,7 @@ int main(int argc, char *argv[]) {
   int iarg = 0;
 
   while(iarg != -1) {
-    iarg = getopt_long(argc, argv, "h", longopts, &index);
+    iarg = getopt_long(argc, argv, "tsrpkxhv:", longopts, &index);
     switch(iarg) {
       case 'h':
         std::string help_message =
