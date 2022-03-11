@@ -22,11 +22,10 @@ int main(int argc, char *argv[]) {
   int iarg = 0;
 
   while(iarg != -1) {
-    iarg = getopt_long(argc, argv, "tsrpkxhv:", longopts, &index);
+    iarg = getopt_long(argc, argv, "tsrpkxh:v:", longopts, &index);
     switch(iarg) {
       case 'h':
-        std::string help_message =
-          "rotag_select [options] [--] <cif-file>...\n"
+        std::cout << "rotag_select [options] [--] <cif-file>...\n"
           "    select and mark atoms of interest by adding selection state [T|S|I] to\n"
           "    _atom_site category in PDBx.\n"
           "\n"
@@ -108,8 +107,10 @@ int main(int argc, char *argv[]) {
           "    -x, --rand-seed <int>\n"
           "        set a seed for random (rand) selection.\n"
           "    -v, --version\n"
-          "        print version";
-        std::cout << help_message << std::endl;
+          "        print version" << std::endl;
+        break;
+      case 'v':
+        std::cout << "???" << std::endl;
         break;
     }
   }
