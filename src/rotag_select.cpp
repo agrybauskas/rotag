@@ -5,15 +5,18 @@
 #include <boost/algorithm/string/replace.hpp>
 #include "lib/Version.h"
 
+extern char *optarg;
+extern int optind, opterr, optopt;
+
 int main(int argc, char *argv[]) {
   const struct option longopts[] = {
-    {"target",         0, 0, 't'},
-    {"select",         0, 0, 's'},
-    {"tags",           0, 0, 0  },
+    {"target",         1, 0, 't'},
+    {"select",         1, 0, 's'},
+    {"tags",           1, 0, 0  },
     {"related-data",   0, 0, 'r'},
     {"pdb",            0, 0, 'p'},
     {"keep-ignored",   0, 0, 'k'},
-    {"random-seed",    0, 0, 'x'},
+    {"random-seed",    1, 0, 'x'},
     {"help",           0, 0, 'h'},
     {"version",        0, 0, 'v'},
     {0,                0, 0, 0  },
@@ -46,13 +49,13 @@ int main(int argc, char *argv[]) {
     iarg = getopt_long(argc, argv, "t:s:0:rpkx:hv", longopts, &index);
     switch(iarg) {
       case 't':
-        // target_cmds = argv[index];
+        target_cmds = optarg;
         break;
       case 's':
-        // select_cmds = argv[index];
+        select_cmds = optarg;
         break;
       case 0:
-        // tags = argv[index];
+        tags = optarg;
         break;
       case 'r':
         is_related = true;
@@ -64,7 +67,7 @@ int main(int argc, char *argv[]) {
         keep_ignored = true;
         break;
       case 'x':
-        // random_seed = argv[index];
+        random_seed = atoi(optarg);
         break;
       case 'h':
         std::cout << "rotag_select [options] [--] <cif-file>...\n"
@@ -158,8 +161,6 @@ int main(int argc, char *argv[]) {
   }
 
   boost::replace_all(tags, " ", "");
-
-  std::cout << random_seed << std::endl;
 
   return 0;
 }
