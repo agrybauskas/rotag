@@ -2,14 +2,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include <boost/algorithm/string/replace.hpp>
 #include "lib/Version.h"
 
 int main(int argc, char *argv[]) {
   const struct option longopts[] = {
     {"target",         0, 0, 't'},
     {"select",         0, 0, 's'},
-    {"tags",           0, 0     },
+    {"tags",           0, 0, 0  },
     {"related-data",   0, 0, 'r'},
     {"pdb",            0, 0, 'p'},
     {"keep-ignored",   0, 0, 'k'},
@@ -31,18 +31,41 @@ int main(int argc, char *argv[]) {
   bool is_related = false;
   bool is_pdb = false;
   bool keep_ignored = false;
-  int randon_seed = 23;
+  int random_seed = 23;
   std::vector<std::string> category_list = {
       "_atom_site", "_[local]_rotamer_angle", "_[local]_dihedral_angle",
       "_[local]_rotamer_energy", "_[local]_pairwise_energy", "_[local]_energy",
       "_[local]_rmsd"
   };
 
+  /*
+    NOTE: Error messages have to be addressed here.
+   */
+
   while(iarg != -1) {
-    iarg = getopt_long(argc, argv, "tsrpkxh:v:", longopts, &index);
+    iarg = getopt_long(argc, argv, "t:s:0:rpkx:hv", longopts, &index);
     switch(iarg) {
       case 't':
-
+        // target_cmds = argv[index];
+        break;
+      case 's':
+        // select_cmds = argv[index];
+        break;
+      case 0:
+        // tags = argv[index];
+        break;
+      case 'r':
+        is_related = true;
+        break;
+      case 'p':
+        is_pdb = true;
+        break;
+      case 'k':
+        keep_ignored = true;
+        break;
+      case 'x':
+        // random_seed = argv[index];
+        break;
       case 'h':
         std::cout << "rotag_select [options] [--] <cif-file>...\n"
           "    select and mark atoms of interest by adding selection state [T|S|I] to\n"
@@ -133,6 +156,10 @@ int main(int argc, char *argv[]) {
         break;
     }
   }
+
+  boost::replace_all(tags, " ", "");
+
+  std::cout << random_seed << std::endl;
 
   return 0;
 }
