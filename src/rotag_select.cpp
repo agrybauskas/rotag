@@ -4,6 +4,7 @@
 #include <vector>
 #include <boost/algorithm/string/replace.hpp>
 #include "lib/Version.h"
+#include "lib/ForceField/Parameters.h"
 
 extern char *optarg;
 extern int optind, opterr, optopt;
@@ -161,6 +162,10 @@ int main(int argc, char *argv[]) {
   }
 
   boost::replace_all(tags, " ", "");
+
+  parameters parameters;
+
+  std::cout << parameters.file_path << std::endl;
 
   return 0;
 }

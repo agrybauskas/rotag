@@ -1,8 +1,11 @@
 #ifndef _PARAMETERS_H_
 #define _PARAMETERS_H_
 
-#include <map>
 #include <string>
-#include <vector>
+
+struct parameters {
+  std::string file_path = "Parameters.cif";
+
+};
 
 #endif
