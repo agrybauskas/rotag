@@ -166,5 +166,9 @@ int main(int argc, char *argv[]) {
 
   parameters parameters;
 
+  std::vector<pdbx_loop_data> pdbx_loop =
+      obtain_pdbx_loop("lib/ForceField/Parameters.cif",
+                       {"_[local]_lennard_jones"});
+
   return 0;
 }
