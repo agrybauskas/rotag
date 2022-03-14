@@ -3,8 +3,9 @@
 #include <string>
 #include <vector>
 #include <boost/algorithm/string/replace.hpp>
-#include "lib/Version.h"
 #include "lib/ForceField/Parameters.h"
+#include "lib/PDBxParser.h"
+#include "lib/Version.h"
 
 extern char *optarg;
 extern int optind, opterr, optopt;
