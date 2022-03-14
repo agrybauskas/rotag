@@ -26,13 +26,14 @@ LIB_DIR=${SRC_DIR}/lib
 OBJ_DIR=${SRC_DIR}/lib
 LIB_SRC=${wildcard ${LIB_DIR}/*.cpp ${LIB_DIR}/ForceField/*.cpp}
 BIN_SRC=$(wildcard ${SRC_DIR}/*.cpp)
+HEADERS=${LIB_SRC:%.cpp=%.h}
 CPP_OBJS=${LIB_SRC:%.cpp=%.o}
 CPP_BIN=${BIN_SRC:${SRC_DIR}/%.cpp=${BIN_DIR}/%}
 CPP_LIB=-lboost_regex
 
 .PRECIOUS: ${CPP_OBJS}
 
-%.o: %.cpp
+%.o: %.cpp %.h
 	g++ -c -o $@ $< ${CPP_LIB}
 
 ${BIN_DIR}/%: ${SRC_DIR}/%.cpp ${CPP_OBJS}
