@@ -165,7 +165,5 @@ int main(int argc, char *argv[]) {
 
   parameters parameters;
 
-  std::cout << parameters.file_path << std::endl;
-
   return 0;
 }

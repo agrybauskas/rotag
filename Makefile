@@ -33,10 +33,10 @@ CPP_LIB=-lboost_regex
 .PRECIOUS: ${CPP_OBJS}
 
 %.o: %.cpp
-	g++ -c ${CPP_LIB} -o $@ $<
+	g++ -c -o $@ $< ${CPP_LIB}
 
 ${BIN_DIR}/%: ${SRC_DIR}/%.cpp ${CPP_OBJS}
-	g++ ${CPP_LIB} -o $@ $< ${CPP_OBJS}
+	g++ -o $@ $< ${CPP_OBJS} ${CPP_LIB}
 
 .PHONY: all
 

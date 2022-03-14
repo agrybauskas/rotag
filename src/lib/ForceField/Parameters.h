@@ -5,7 +5,6 @@
 
 struct parameters {
   std::string file_path = "Parameters.cif";
-
 };
 
 #endif
