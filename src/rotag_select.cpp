@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include "lib/ForceField/Parameters.h"
 #include "lib/PDBxParser.h"
 #include "lib/Version.h"
@@ -162,13 +164,15 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  std::vector<std::string> tags_list;
   boost::replace_all(tags, " ", "");
+  boost::split(tags_list, tags, boost::is_any_of(","));
 
   parameters parameters;
 
-  std::vector<pdbx_loop_data> pdbx_loop =
-      obtain_pdbx_loop("lib/ForceField/Parameters.cif",
-                       {"_[local]_lennard_jones"});
+  // std::vector<pdbx_loop_data> pdbx_loop =
+  //     obtain_pdbx_loop("lib/ForceField/Parameters.cif",
+  //                      {"_[local]_lennard_jones"});
 
   return 0;
 }
