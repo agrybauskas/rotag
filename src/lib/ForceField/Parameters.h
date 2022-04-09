@@ -3,8 +3,12 @@
 
 #include <string>
 
-struct parameters {
-  std::string file_path = "Parameters.cif";
+class Parameters {
+  private:
+    std::string force_field_file;
+
+  public:
+    Parameters();
 };
 
 #endif

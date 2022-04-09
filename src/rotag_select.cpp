@@ -168,11 +168,7 @@ int main(int argc, char *argv[]) {
   boost::replace_all(tags, " ", "");
   boost::split(tags_list, tags, boost::is_any_of(","));
 
-  parameters parameters;
-
-  // std::vector<pdbx_loop_data> pdbx_loop =
-  //     obtain_pdbx_loop("lib/ForceField/Parameters.cif",
-  //                      {"_[local]_lennard_jones"});
+  Parameters parameters;
 
   return 0;
 }
