@@ -7,6 +7,9 @@ class Parameters {
   private:
     std::string force_field_file;
 
+    void _retrieve_constants();
+    void _retrieve_bond_data();
+
   public:
     Parameters();
 };
