@@ -29,7 +29,7 @@ BIN_SRC=$(wildcard ${SRC_DIR}/*.cpp)
 HEADERS=${LIB_SRC:%.cpp=%.h}
 CPP_OBJS=${LIB_SRC:%.cpp=%.o}
 CPP_BIN=${BIN_SRC:${SRC_DIR}/%.cpp=${BIN_DIR}/%}
-CPP_LIB=-lboost_regex
+CPP_LIB=-lboost_regex -lboost_system -lboost_filesystem
 
 .PRECIOUS: ${CPP_OBJS}
 

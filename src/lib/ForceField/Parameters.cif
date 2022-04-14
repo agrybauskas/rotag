@@ -1,23 +1,21 @@
 data_general
 #
-_[local]_force_field.soft_epsilon 1.0
-_[local]_force_field.soft_n       12.0
-_[local]_force_field.lj_k         0.25
-_[local]_force_field.c_k          62.0
-_[local]_force_field.h_k          10.0
-_[local]_force_field.t_k          2.5
-_[local]_force_field.cutoff_atom  50.0
-_[local]_force_field.cutoff_start 2.5
-_[local]_force_field.cutoff_end   5.0
+_rotag_force_field.lj_k         0.25
+_rotag_force_field.c_k          62.0
+_rotag_force_field.h_k          10.0
+_rotag_force_field.t_k          2.5
+_rotag_force_field.cutoff_atom  50.0
+_rotag_force_field.cutoff_start 2.5
+_rotag_force_field.cutoff_end   5.0
 #
 loop_
-_[local]_atom_properties.type_symbol
-_[local]_atom_properties.hybridization
-_[local]_atom_properties.covalent_radius_value
-_[local]_atom_properties.covalent_radius_error
-_[local]_atom_properties.vdw_radius
-_[local]_atom_properties.lone_pair_count
-_[local]_atom_properties.valence
+_rotag_atom_properties.type_symbol
+_rotag_atom_properties.hybridization
+_rotag_atom_properties.covalent_radius_value
+_rotag_atom_properties.covalent_radius_error
+_rotag_atom_properties.vdw_radius
+_rotag_atom_properties.lone_pair_count
+_rotag_atom_properties.valence
 . sp3  0    0    0    0    0
 C sp3  0.76 0.03 1.77 0    4
 C sp2  0.70 0.03 1.77 0    4
@@ -35,10 +33,10 @@ X sp2  0.5  0.05 0    0    0
 X sp   0.25 0.05 0    0    0
 #
 loop_
-_[local]_lennard_jones.type_symbol_1
-_[local]_lennard_jones.type_symbol_2
-_[local]_lennard_jones.sigma
-_[local]_lennard_jones.epsilon
+_rotag_lennard_jones.type_symbol_1
+_rotag_lennard_jones.type_symbol_2
+_rotag_lennard_jones.sigma
+_rotag_lennard_jones.epsilon
 . . 0.00 0.000
 . C 2.00 0.000
 . H 1.00 0.000
@@ -69,9 +67,9 @@ S X 2.05 0.105
 X X 0.10 0.010
 #
 loop_
-_[local]_partial_charge.label_comp_id
-_[local]_partial_charge.label_atom_id
-_[local]_partial_charge.value
+_rotag_partial_charge.label_comp_id
+_rotag_partial_charge.label_atom_id
+_rotag_partial_charge.value
 .   .    0.00
 ALA C    0.57
 ALA CA   -0.028
@@ -450,9 +448,9 @@ XAA XA   0
 XAA XA2  0
 #
 loop_
-_[local]_torsional_atom_names.label_comp_id
-_[local]_torsional_atom_names.label_atom_id
-_[local]_torsional_atom_names.alt_atom_name
+_rotag_torsional_atom_names.label_comp_id
+_rotag_torsional_atom_names.label_atom_id
+_rotag_torsional_atom_names.alt_atom_name
 ALA C ?
 ALA CA CT
 ALA CB CT
@@ -843,13 +841,13 @@ XAA HB3 HC
 XAA HG HO
 #
 loop_
-_[local]_torsional.label_atom_1_id
-_[local]_torsional.label_atom_2_id
-_[local]_torsional.label_atom_3_id
-_[local]_torsional.label_atom_4_id
-_[local]_torsional.epsilon
-_[local]_torsional.phase
-_[local]_torsional.gamma
+_rotag_torsional.label_atom_1_id
+_rotag_torsional.label_atom_2_id
+_rotag_torsional.label_atom_3_id
+_rotag_torsional.label_atom_4_id
+_rotag_torsional.epsilon
+_rotag_torsional.phase
+_rotag_torsional.gamma
 N  CT C  N   2.000 2.0 180.0
 C  N  CT C   0.800 1.0   0.0
 CT CT N  C   0.53 1.0    0.0
@@ -970,17 +968,17 @@ H4 CM OS LP  0.00 2.0  180.0
 ?  OS P  ?    0.75 3.0   0.0
 #
 loop_
-_[local]_h_bond.type_symbol
-_[local]_h_bond.sigma
-_[local]_h_bond.epsilon
+_rotag_h_bond.type_symbol
+_rotag_h_bond.sigma
+_rotag_h_bond.epsilon
 N 1.90 5.00
 O 1.90 5.00
 S 2.50 1.00
 #
 loop_
-_[local]_residue_atom_necessity.label_comp_id
-_[local]_residue_atom_necessity.label_atom_id
-_[local]_residue_atom_necessity.value
+_rotag_residue_atom_necessity.label_comp_id
+_rotag_residue_atom_necessity.label_atom_id
+_rotag_residue_atom_necessity.value
 ALA C    mandatory
 ALA CA   mandatory
 ALA CB   mandatory
@@ -1378,9 +1376,9 @@ XAA HB3  optional
 XAA HG   optional
 #
 loop_
-_[local]_clear_hybridization.label_comp_id
-_[local]_clear_hybridization.label_atom_id
-_[local]_clear_hybridization.type
+_rotag_clear_hybridization.label_comp_id
+_rotag_clear_hybridization.label_atom_id
+_rotag_clear_hybridization.type
 ALA C    sp2
 ALA CA   sp3
 ALA CB   sp3
@@ -1556,9 +1554,9 @@ XAA XA   sp3
 XAA XA2  sp3
 #
 loop_
-_[local]_connectivity.label_comp_id
-_[local]_connectivity.label_atom_1_id
-_[local]_connectivity.label_atom_2_id
+_rotag_connectivity.label_comp_id
+_rotag_connectivity.label_atom_1_id
+_rotag_connectivity.label_atom_2_id
 ALA CA   C
 ALA O    C
 ALA OXT  C
@@ -2319,9 +2317,9 @@ XAA CA   XA
 XAA CA   XA2
 #
 loop_
-_[local]_hydrogen_names.label_comp_id
-_[local]_hydrogen_names.label_atom_id
-_[local]_hydrogen_names.label_hydrogen_atom_id
+_rotag_hydrogen_names.label_comp_id
+_rotag_hydrogen_names.label_atom_id
+_rotag_hydrogen_names.label_hydrogen_atom_id
 ALA CA   HA
 ALA CB   HB1
 ALA CB   HB2
@@ -2524,9 +2522,9 @@ XAA CB   HB3
 XAA OG   HG
 #
 loop_
-_[local]_symmetrical_atom_names.label_comp_id
-_[local]_symmetrical_atom_names.label_atom_1_id
-_[local]_symmetrical_atom_names.label_atom_2_id
+_rotag_symmetrical_atom_names.label_comp_id
+_rotag_symmetrical_atom_names.label_atom_1_id
+_rotag_symmetrical_atom_names.label_atom_2_id
 ARG NH1  NH2
 ARG HH11 HH21
 ARG HH12 HH22
@@ -2542,12 +2540,12 @@ TYR HD1  HD2
 TYR HE1  HE2
 #
 loop_
-_[local]_dihedral_angle.label_comp_id
-_[local]_dihedral_angle.angle
-_[local]_dihedral_angle.range_from
-_[local]_dihedral_angle.range_to
-_[local]_dihedral_angle.step
-_[local]_dihedral_angle.type
+_rotag_dihedral_angle.label_comp_id
+_rotag_dihedral_angle.angle
+_rotag_dihedral_angle.range_from
+_rotag_dihedral_angle.range_to
+_rotag_dihedral_angle.step
+_rotag_dihedral_angle.type
 .   .    -180.0 180.0 10.0 degrees
 ARG .    .      .     36.0 degrees
 ASN chi2 -90.0  90.0  .    degrees
@@ -2562,20 +2560,20 @@ PRO .    .      .     18.0 degrees
 TYR chi2 -90    90.0  .    degrees
 #
 loop_
-_[local]_interaction_atom_names.label_atom_id
+_rotag_interaction_atom_names.label_atom_id
 N CA C O OXT CB H H2 HA HA2 HA3 HXT XA XA2
 #
 loop_
-_[local]_mainchain_atom_names.label_atom_id
+_rotag_mainchain_atom_names.label_atom_id
 N CA C O OXT H H2 HA HA2 HA3 HXT XA XA2
 #
 loop_
-_[local]_sidechain_atom_names.label_atom_id
+_rotag_sidechain_atom_names.label_atom_id
 CB CD CD1 CD2 CE CE1 CE2 CE3 CG CG1 CG2 CH2 CZ CZ2 CZ3 HB HB1 HB2 HB3 HD1 HD11
 HD12 HD13 HD2 HD21 HD22 HD23 HD3 HE HE1 HE2 HE21 HE22 HE3 HG HG1 HG11 HG12 HG13
 HG2 HG21 HG22 HG23 HG3 HH HH11 HH12 HH2 HH21 HH22 HZ HZ1 HZ2 HZ3 ND1 ND2 NE NE1
 NE2 NH1 NH2 NZ OD1 OD2 OE1 OE2 OG OG1 OH SD SG
 #
 loop_
-_[local]_rotatable_residue_names.label_comp_id
+_rotag_rotatable_residue_names.label_comp_id
 XAA SER ARG HIS LYS ASP GLU CYS VAL ILE LEU MET PHE TYR TRP THR ASN GLN

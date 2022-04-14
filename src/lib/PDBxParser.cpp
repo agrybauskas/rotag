@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -7,7 +8,6 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/regex.hpp>
-
 #include "PDBxParser.h"
 
 /*
@@ -23,7 +23,22 @@
 void obtain_pdbx_data(std::string pdbx_file,
                       std::vector<std::string> data_identifier,
                       bool read_stream) {
+  std::vector<std::string> pdbx_data;
 
+  if(data_identifier.size() > 0) {
+    std::vector<std::string> pdbxs;
+
+    // Slurp whole pdbx file/files.
+    int pdbx_counter = 0;
+    std::string pdbx_line;
+    std::ifstream fh(pdbx_file);
+    if(fh.is_open()) {
+      while(getline(fh, pdbx_line)){
+        std::cout << pdbx_line << std::endl;
+      }
+    }
+    fh.close();
+  }
 }
 
 // /*
