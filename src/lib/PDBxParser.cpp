@@ -36,9 +36,8 @@ void obtain_pdbx_data(std::string pdbx_file,
     if(fh.is_open()) {
       while(getline(fh, pdbx_line, '\0')){
         std::vector<std::string> pdbx_split;
-        // TODO: change \S.
         boost::algorithm::split_regex(pdbx_split, pdbx_line,
-                                      boost::regex("(?<!\S)data_"));
+                                      boost::regex("(?<!\\S)data_"));
         for(int i = 0; i < pdbx_split.size(); i++) {
           if(pdbx_split[i] != "") {
               pdbxs.push_back("data_" + pdbx_split[i]);
@@ -59,16 +58,16 @@ void obtain_pdbx_data(std::string pdbx_file,
 }
 
 /*
-  Obtains pdbx loops for a specified categories.
+  Obtains pdbx lines for a specified items.
   Input:
       pdbx_file - PDBx file path;
-      categories - list of specified categories.
+      items - list of specified items.
   Output:
-      pdbx_loop_data - data structure for loop data or list of data structure.
+      pdbx_line_data - data structure for list of pdbx data structure.
 */
 
 void obtain_pdbx_line(std::string pdbx_file,
-                      std::vector<std::string> data_identifier) {
+                      std::vector<std::string> items) {
 }
 
 
