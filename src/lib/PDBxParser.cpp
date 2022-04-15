@@ -68,8 +68,16 @@ void obtain_pdbx_data(std::string pdbx_file,
 
 void obtain_pdbx_line(std::string pdbx_file,
                       std::vector<std::string> items) {
+    std::string item_regexp = boost::algorithm::join(items, "|");
+    boost::regex single_line_re{"(" + item_regexp + "|" + item_regexp +
+                                ".\\S+)\\s+(?!;)('.+'|\\S+)"};
+    boost::regex multi_line_re{"(" + item_regexp + "|" + item_regexp +
+                               ".\\S+)\\s+(\n;[^;]+;)"};
+    boost::smatch found;
+    if(boost::regex_search(pdbx_file, found, single_line_re)) {
+      std::cout << found[] << std::endl;
+    }
 }
-
 
 // /*
 //   Obtains pdbx loops for a specified categories.
