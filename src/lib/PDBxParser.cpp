@@ -29,6 +29,7 @@ void obtain_pdbx_data(std::string pdbx_file,
     std::vector<std::string> pdbxs;
 
     // Slurp whole pdbx file/files.
+    // TODO: check if slurps multiple PDBxs in stream.
     int pdbx_counter = 0;
     std::string pdbx_line;
     std::ifstream fh(pdbx_file);

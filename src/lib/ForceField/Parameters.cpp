@@ -8,8 +8,10 @@
 #include "../PDBxParser.h"
 
 Parameters::Parameters() {
-  // TODO: have to implement relative path to current module.
-  force_field_file = "src/lib/ForceField/Parameters.cif";
+  // NOTE: not sure if getenv() is ok here.
+  std::vector<std::string> path =
+    {std::getenv("ROTAG_SRC"), "src/lib/ForceField/Parameters.cif"};
+  force_field_file = boost::join(path, "/");
 
   std::vector<std::string> data_identifier = {
     "_rotag_force_field.lj_k","_rotag_force_field.c_k", "_rotag_force_field.h_k",
