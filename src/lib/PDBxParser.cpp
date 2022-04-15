@@ -7,6 +7,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/regex.hpp>
 #include <boost/regex.hpp>
 #include "PDBxParser.h"
 
@@ -21,8 +22,7 @@
 */
 
 void obtain_pdbx_data(std::string pdbx_file,
-                      std::vector<std::string> data_identifier,
-                      bool read_stream) {
+                      std::vector<std::string> data_identifier) {
   std::vector<std::string> pdbx_data;
 
   if(data_identifier.size() > 0) {
@@ -34,8 +34,16 @@ void obtain_pdbx_data(std::string pdbx_file,
     std::string pdbx_line;
     std::ifstream fh(pdbx_file);
     if(fh.is_open()) {
-      while(getline(fh, pdbx_line)){
-        std::cout << pdbx_line << std::endl;
+      while(getline(fh, pdbx_line, '\0')){
+        std::vector<std::string> pdbx_split;
+        // TODO: change \S.
+        boost::algorithm::split_regex(pdbx_split, pdbx_line,
+                                      boost::regex("(?<!\S)data_"));
+        for(int i = 0; i < pdbx_split.size(); i++) {
+          if(pdbx_split[i] != "") {
+              pdbxs.push_back("data_" + pdbx_split[i]);
+          }
+        }
       }
     }
     fh.close();
