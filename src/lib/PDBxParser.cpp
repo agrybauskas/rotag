@@ -47,8 +47,30 @@ void obtain_pdbx_data(std::string pdbx_file,
       }
     }
     fh.close();
+
+    // TODO: add warning.
+    if(pdbx_counter == 0) {
+    }
+
+    for(int i; i < pdbxs.size(); i++) {
+      obtain_pdbx_line(pdbxs[i], data_identifier);
+    }
   }
 }
+
+/*
+  Obtains pdbx loops for a specified categories.
+  Input:
+      pdbx_file - PDBx file path;
+      categories - list of specified categories.
+  Output:
+      pdbx_loop_data - data structure for loop data or list of data structure.
+*/
+
+void obtain_pdbx_line(std::string pdbx_file,
+                      std::vector<std::string> data_identifier) {
+}
+
 
 // /*
 //   Obtains pdbx loops for a specified categories.
