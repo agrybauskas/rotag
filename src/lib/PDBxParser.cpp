@@ -68,15 +68,25 @@ void obtain_pdbx_data(std::string pdbx_file,
 
 void obtain_pdbx_line(std::string pdbx_file,
                       std::vector<std::string> items) {
+    std::string pdbx_file_single = pdbx_file;
+    std::string pdbx_file_multi = pdbx_file;
+
     std::string item_regexp = boost::algorithm::join(items, "|");
     boost::regex single_line_re{"(" + item_regexp + "|" + item_regexp +
                                 ".\\S+)\\s+(?!;)('.+'|\\S+)"};
     boost::regex multi_line_re{"(" + item_regexp + "|" + item_regexp +
                                ".\\S+)\\s+(\n;[^;]+;)"};
-    boost::smatch matches;
-    while(boost::regex_search(pdbx_file, matches, single_line_re)) {
-      std::cout << matches.str(1) << std::endl;
-      pdbx_file = matches.suffix().str();
+
+    boost::smatch matches_single;
+    while(boost::regex_search(pdbx_file_single, matches_single, single_line_re)) {
+      std::cout << matches_single.str(1) << std::endl;
+      pdbx_file_single = matches_single.suffix().str();
+    }
+
+    boost::smatch matches_multi;
+    while(boost::regex_search(pdbx_file_multi, matches_multi, multi_line_re)) {
+      std::cout << matches_multi.str(1) << std::endl;
+      pdbx_file_multi = matches_multi.suffix().str();
     }
 }
 
