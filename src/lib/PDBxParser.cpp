@@ -66,7 +66,7 @@ void obtain_pdbx_data(std::string pdbx_file,
       pdbx_line_data - data structure for list of pdbx data structure.
 */
 
-void obtain_pdbx_line(std::string pdbx_file,
+pdbx_data obtain_pdbx_line(std::string pdbx_file,
                       std::vector<std::string> items) {
     std::string pdbx_file_single = pdbx_file;
     std::string pdbx_file_multi = pdbx_file;
@@ -77,17 +77,22 @@ void obtain_pdbx_line(std::string pdbx_file,
     boost::regex multi_line_re{"(" + item_regexp + "|" + item_regexp +
                                ".\\S+)\\s+(\n;[^;]+;)"};
 
+    pdbx_data pdbx_data;
+
     boost::smatch matches_single;
     while(boost::regex_search(pdbx_file_single, matches_single, single_line_re)) {
-      std::cout << matches_single.str(1) << std::endl;
+      std::vector<std::string> keys;
+      boost::algorithm::split_regex(keys, matches_single.str(1), boost::regex("\\."));
+      pdbx_data[keys[0]]["metadata"]["attributes"][keys[1]] = "1";
       pdbx_file_single = matches_single.suffix().str();
     }
 
-    boost::smatch matches_multi;
-    while(boost::regex_search(pdbx_file_multi, matches_multi, multi_line_re)) {
-      std::cout << matches_multi.str(1) << std::endl;
-      pdbx_file_multi = matches_multi.suffix().str();
-    }
+    // boost::smatch matches_multi;
+    // while(boost::regex_search(pdbx_file_multi, matches_multi, multi_line_re)) {
+    //   pdbx_file_multi = matches_multi.suffix().str();
+    // }
+
+    return pdbx_data;
 }
 
 // /*
