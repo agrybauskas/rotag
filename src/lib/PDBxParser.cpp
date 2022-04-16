@@ -73,9 +73,10 @@ void obtain_pdbx_line(std::string pdbx_file,
                                 ".\\S+)\\s+(?!;)('.+'|\\S+)"};
     boost::regex multi_line_re{"(" + item_regexp + "|" + item_regexp +
                                ".\\S+)\\s+(\n;[^;]+;)"};
-    boost::smatch found;
-    if(boost::regex_search(pdbx_file, found, single_line_re)) {
-      std::cout << found[] << std::endl;
+    boost::smatch matches;
+    while(boost::regex_search(pdbx_file, matches, single_line_re)) {
+      std::cout << matches.str(1) << std::endl;
+      pdbx_file = matches.suffix().str();
     }
 }
 
