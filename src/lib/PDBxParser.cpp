@@ -83,7 +83,6 @@ pdbx_data obtain_pdbx_line(std::string pdbx_file,
     while(boost::regex_search(pdbx_file_single, matches_single, single_line_re)) {
       std::vector<std::string> keys;
       boost::algorithm::split_regex(keys, matches_single.str(1), boost::regex("\\."));
-      pdbx_data[keys[0]]["metadata"]["attributes"][keys[1]] = "1";
       pdbx_file_single = matches_single.suffix().str();
     }
 
