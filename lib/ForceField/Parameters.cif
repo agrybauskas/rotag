@@ -2579,3 +2579,7 @@ NE2 NH1 NH2 NZ OD1 OD2 OE1 OE2 OG OG1 OH SD SG
 loop_
 _[local]_rotatable_residue_names.label_comp_id
 XAA SER ARG HIS LYS ASP GLU CYS VAL ILE LEU MET PHE TYR TRP THR ASN GLN
+#
+loop_
+_[local]_sidechain_hetatom_extension.label_comp_id
+MG
