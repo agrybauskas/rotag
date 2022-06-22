@@ -356,6 +356,10 @@ sub force_field
     $force_field_parameters{'_[local]_rotatable_residue_names'} =
         $force_field_data->{'_[local]_rotatable_residue_names'}{'data'};
 
+    # Restructuring parameters of rotatable residue names.
+    $force_field_parameters{'_[local]_sidechain_hetatom_extension'} =
+        $force_field_data->{'_[local]_sidechain_hetatom_extension'}{'data'};
+
     return \%force_field_parameters;
 }
 
