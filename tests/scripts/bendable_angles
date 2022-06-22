@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use BondProperties qw( bendable_angles );
+
+#
+# Unit test: BondProperties::bendable_angles
+# Example: ./bendable_angles structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my %bendable_angles =
+    %{ bendable_angles( $atom_site ) };
+
+for my $atom_id ( sort { $a cmp $b } keys( %bendable_angles ) ) {
+    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
+    for my $angle ( sort { $a cmp $b } keys %{ $bendable_angles{$atom_id} } ) {
+        my $first_atom_id  = $bendable_angles{$atom_id}{$angle}->[0];
+        my $second_atom_id = $bendable_angles{$atom_id}{$angle}->[1];
+        my $third_atom_id  = $bendable_angles{$atom_id}{$angle}->[2];
+        print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
+               "$atom_site->{$second_atom_id}{\"label_atom_id\"}," .
+               "$atom_site->{$third_atom_id}{\"label_atom_id\"} " );
+    }
+    print( "\n" );
+}
