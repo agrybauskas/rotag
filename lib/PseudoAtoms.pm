@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      calc_full_atom_energy
                      generate_library
                      generate_pseudo
+                     generate_pseudo_hetatom
                      generate_rotamer
                      library_to_csv
                      lowest_energy_state
@@ -178,6 +179,206 @@ sub generate_pseudo
                       @angle_names };
             # Adds additional pseudo-atom flag for future filtering.
             $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
+            # Adds selection state if it is defined.
+            if( defined $selection_state ) {
+                $pseudo_atom_site{$last_atom_id}{'[local]_selection_state'} =
+                    $selection_state;
+            }
+        }
+    }
+
+    return \%pseudo_atom_site;
+}
+
+#
+# Generates hetero pseudo-atoms from atom models that are written in list of
+# analytical matrices.
+# Input:
+#     $args->{atom_site} - atom site data structure (see PDBxParser). Must have
+#     any sidechain model function applied to it (see SidechainModels.pm);
+#     $args->{atom_specifier} - hash of hashes for selecting atoms by attributes
+#     (see PDBxParser.pm);
+#     $args->{angle_and_bond_values} - hash of arrays that describe possible
+#     values of dihedral angles, bond lengths and angles:
+#     Ex.: { 'chi1' => [ 0, 0.4, 1.5, 2.0 ],
+#            'chi2' => [ 0, 2 ] };
+#     $args->{last_atom_id} - last atom id for assigning new ids for pseud
+#     atoms;
+#     $args->{alt_group_id} - alternative group id that is used to distinguish
+#     pseudo atoms. Very useful when generating rotamers.
+#     $args->{selection_state} - adds/changes '[local]_selection_state' to
+#     specified value.
+# Output:
+#     $pseudo_hetatom_site - atom site data structure for pseudo-atoms with
+#     additional 'conformation' attribute.
+#
+
+sub generate_pseudo_hetatom
+{
+    my ( $args ) = @_;
+    my ( $parameters, $atom_site, $atom_specifier, $angle_and_bond_values,
+         $last_atom_id, $alt_group_id, $selection_state ) =
+        ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'atom_specifier'},
+          $args->{'angle_and_bond_values'}, $args->{'last_atom_id'},
+          $args->{'alt_group_id'}, $args->{'selection_state'}, );
+
+    $last_atom_id //= max( keys %{ $atom_site } );
+    $alt_group_id //= 1;
+
+    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
+
+    my %atom_site = %{ clone( $atom_site ) };
+    my %pseudo_atom_site;
+
+    my @atom_ids =
+        @{ filter_new( \%atom_site,
+                   { 'include' => $atom_specifier,
+                     'return_data' => 'id' } ) };
+
+    for my $atom_id ( @atom_ids ) {
+        my $conformation = $atom_site{"$atom_id"}{'conformation'};
+
+        confess "atom with id $atom_id lacks 'conformation' key."
+            if ! defined $conformation;
+
+        # Calculates current dihedral angles of rotatable bonds, bond lengths
+        # and angle between bonds. Will be used for reseting dihedral angles to 0
+        # degree angle and pinpointing the correct bond length and angle changes.
+        my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
+
+        my %dihedral_angles =
+            %{ all_dihedral(
+                   filter_by_unique_residue_key( $atom_site,
+                                                 $residue_unique_key, 1 ) ) };
+        my %bond_lengths =
+            %{ all_bond_lengths(
+                   filter_by_unique_residue_key( $atom_site,
+                                                 $residue_unique_key, 1 ) ) };
+        my %bond_angles =
+            %{ all_bond_angles(
+                   filter_by_unique_residue_key( $atom_site,
+                                                 $residue_unique_key, 1 ) ) };
+
+        # Iterates through combinations of angles, lengths and evaluates
+        # conformational model.
+        my @dihedral_angle_names =
+            grep { exists $dihedral_angles{$residue_unique_key}{$_} }
+                   sort { $a cmp $b }
+                   keys %{ $angle_and_bond_values };
+        my @bond_length_names =
+            grep { exists $bond_lengths{$residue_unique_key}{$_} }
+                   sort { $a cmp $b }
+                   keys %{ $angle_and_bond_values };
+        my @bond_angle_names =
+            grep { exists $bond_angles{$residue_unique_key}{$_} }
+                   sort { $a cmp $b }
+                   keys %{ $angle_and_bond_values };
+
+        # Adjust changes to the existing values of the bond and angle parameters.
+        my @dihedral_angle_values;
+        for my $angle_name ( @dihedral_angle_names ) {
+            push @dihedral_angle_values,
+                 [ map { $_ - $dihedral_angles{$residue_unique_key}
+                                     {"$angle_name"}{'value'} }
+                      @{ $angle_and_bond_values->{"$angle_name"} } ];
+        }
+        my @bond_length_values;
+        for my $bond_name ( @bond_length_names ) {
+            push @bond_length_values,
+                 [ map { $_ - $bond_lengths{$residue_unique_key}
+                                     {"$bond_name"}{'value'} }
+                      @{ $angle_and_bond_values->{"$bond_name"} } ];
+        }
+        my @bond_angle_values;
+        for my $angle_name ( @bond_angle_names ) {
+            push @bond_angle_values,
+                 [ map { $_ - $bond_angles{$residue_unique_key}
+                                     {"$angle_name"}{'value'} }
+                      @{ $angle_and_bond_values->{"$angle_name"} } ];
+        }
+
+        my @angle_and_length_names =
+            ( @dihedral_angle_names, @bond_length_names, @bond_angle_names );
+        my @angle_and_length_values =
+            ( @dihedral_angle_values, @bond_length_values, @bond_angle_values );
+
+        for my $angle_and_length_comb ( # Abreviation of dihedral angle combinations.
+            @{ permutation( scalar( @angle_and_length_names ), [],
+                            \@angle_and_length_values, [] ) } ){
+            my %angle_and_length_values =
+                map { ( $angle_and_length_names[$_] =>
+                        $angle_and_length_comb->[$_] ) }
+                    0..$#angle_and_length_names;
+
+            # Evaluates matrices.
+            my ( $transf_atom_coord ) = @{
+                mult_matrix_product( $conformation,
+                                     { %angle_and_length_values, 'eta' => 0.0 } )
+            };
+
+            # Adds necessary PDBx entries to pseudo atom site.
+            $last_atom_id++;
+            create_pdbx_entry(
+                { 'group_PDB' => 'HETATM',
+                  'atom_site' => \%pseudo_atom_site,
+                  'id' => $last_atom_id,
+                  'type_symbol' => $atom_site{$atom_id}{'type_symbol'},
+                  'label_atom_id' => $atom_site{$atom_id}{'label_atom_id'},
+                  'label_alt_id' => $alt_group_id,
+                  'label_comp_id' => $atom_site{$atom_id}{'label_comp_id'},
+                  'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
+                  'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
+                  'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
+                  'cartn_x' => sprintf( $sig_figs_max, $transf_atom_coord->[0][0] ),
+                  'cartn_y' => sprintf( $sig_figs_max, $transf_atom_coord->[1][0] ),
+                  'cartn_z' => sprintf( $sig_figs_max, $transf_atom_coord->[2][0] ),
+                  'pdbx_PDB_model_num' =>
+                      $atom_site{$atom_id}{'pdbx_PDB_model_num'},
+                } );
+            # Adds atom id that pseudo atoms was made of.
+            $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
+
+            # Adds hybridization, connection, conformation data from origin atom.
+            $pseudo_atom_site{$last_atom_id}{'hybridization'} =
+                $atom_site{$atom_id}{'hybridization'};
+
+            # FIXME: be careful - it might produce contradictions between new
+            # and old pseudo atoms.
+            $pseudo_atom_site{$last_atom_id}{'connections'} =
+                $atom_site{$atom_id}{'connections'};
+            $pseudo_atom_site{$last_atom_id}{'conformation'} =
+                $atom_site{$atom_id}{'conformation'};
+
+            # Adds information about used dihedral angle, bond length and bond angles
+            # values and names.
+            if( @dihedral_angle_names ) {
+                $pseudo_atom_site{$last_atom_id}{'dihedral_names'} =
+                    \@dihedral_angle_names;
+                $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
+                    { map { ( $_ => $angle_and_length_values{$_} +
+                                    $dihedral_angles{$residue_unique_key}{$_}{'value'} ) }
+                          @dihedral_angle_names };
+            }
+            if( @bond_angle_names ) {
+                $pseudo_atom_site{$last_atom_id}{'bond_length_names'} =
+                    \@bond_length_names;
+                $pseudo_atom_site{$last_atom_id}{'bond_lengths'} =
+                    { map { ( $_ => $angle_and_length_values{$_} +
+                                    $bond_lengths{$residue_unique_key}{$_}{'value'} ) }
+                          @bond_length_names };
+            }
+            if( @bond_angle_names ) {
+                $pseudo_atom_site{$last_atom_id}{'bond_angle_names'} =
+                    \@bond_length_names;
+                $pseudo_atom_site{$last_atom_id}{'bond_angles'} =
+                    { map { ( $_ => $angle_and_length_values{$_} +
+                                    $bond_angles{$residue_unique_key}{$_}{'value'} ) }
+                          @bond_angle_names };
+            }
+
+            # Adds additional pseudo-atom flag for future filtering.
+            $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
+
             # Adds selection state if it is defined.
             if( defined $selection_state ) {
                 $pseudo_atom_site{$last_atom_id}{'[local]_selection_state'} =
