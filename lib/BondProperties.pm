@@ -6,8 +6,10 @@ use warnings;
 use Exporter qw( import );
 BEGIN {
     our @EXPORT_OK = qw( bond_type
+                         bendable_angles
                          hybridization
                          rotatable_bonds
+                         stretchable_bonds
                          unique_rotatables );
 }
 
@@ -363,6 +365,298 @@ sub rotatable_bonds
     }
 
     return \%named_rotatable_bonds;
+}
+
+#
+# Identifies bonds that can be stretched.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     ${start,next}_atom_id - starting atom id and the next one that is followed
+#     in order to identify the direction of the search for rotatable bonds.
+# Output:
+#     %named_stretchable_bonds - data structure that describes stretchable bonds
+#     and the constituent atom ids of the bond. Ex.:
+#     {
+#       $atom_id_3 => {
+#                       $stretchable_bond_name_1 => [ $atom_id_1, $atom_id_2 ],
+#                       ...
+#                     },
+#       ...
+#     }
+#
+
+sub stretchable_bonds
+{
+    my ( $atom_site, $start_atom_id, $next_atom_id ) = @_;
+
+    # By default, CA is starting atom and CB next.
+    $start_atom_id //= filter( { 'atom_site' => $atom_site,
+                                 'include' => { 'label_atom_id' => [ 'CA' ] },
+                                 'data' => [ 'id' ],
+                                 'is_list' => 1 } )->[0];
+    $next_atom_id //=  filter( { 'atom_site' => $atom_site,
+                                 'include' => { 'label_atom_id' => [ 'CB' ] },
+                                 'data' => [ 'id' ],
+                                 'is_list' => 1 } )->[0];
+
+    if( ! $start_atom_id || ! $next_atom_id ) { return {}; }
+
+
+    my %atom_site = %{ $atom_site }; # Copy of the variable.
+    my @atom_ids = keys %atom_site;
+    my @visited_atom_ids = ( $start_atom_id );
+    my @next_atom_ids = ( $next_atom_id );
+    my %parent_atom_ids;
+
+    my %stretchable_bonds;
+
+    # Marks parent atom for next atom id.
+    $parent_atom_ids{$next_atom_id} = $start_atom_id;
+
+    # Exists if there are no atoms that is not already visited.
+    while( scalar( @next_atom_ids ) != 0 ) {
+        # Iterates through every neighbouring atom if it was not visited
+        # before.
+        my @neighbour_atom_ids;
+        for my $atom_id ( @next_atom_ids ) {
+            my $parent_atom_id = $parent_atom_ids{$atom_id};
+
+            push @{ $stretchable_bonds{$atom_id} },
+                [ $parent_atom_id, $atom_id ];
+            if( exists $stretchable_bonds{$parent_atom_id} ) {
+                unshift @{ $stretchable_bonds{$atom_id} },
+                    @{ $stretchable_bonds{$parent_atom_id} };
+            }
+
+            # Marks visited atoms.
+            push @visited_atom_ids, $atom_id;
+
+            if( ! exists $atom_site{$atom_id}{'connections'} ) {
+                confess "atom with id $atom_id lacks 'connections' key"
+            }
+
+            # Marks neighbouring atoms.
+            push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
+
+            # Marks parent atoms for each neighbouring atom.
+            for my $neighbour_atom_id ( @neighbour_atom_ids ) {
+                if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                    # HACK: this exception might produce unexpected results.
+                    ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
+                    $parent_atom_ids{$neighbour_atom_id} = $atom_id;
+                }
+            }
+        }
+
+        # Determines next atoms that should be visited.
+        @next_atom_ids = (); # Resets value for the new ones to be appended.
+        for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
+                push @next_atom_ids, $neighbour_atom_id;
+            }
+        }
+    }
+
+    # Asigns names for stretchable bonds by first filtering out redundant bonds.
+    # TODO: the whole process of naming bonds might be implemented in the while
+    # loop above.
+    my @unique_bonds;
+    for my $bond ( map { @{ $stretchable_bonds{$_} } } keys %stretchable_bonds ) {
+        if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
+                   @unique_bonds ){
+            push @unique_bonds, $bond;
+        }
+    }
+
+    # Sorts bonds by naming priority.
+    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
+                                                         # bond.
+    my @second_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@bond_second_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+
+    my %bond_names; # Names by second atom priority.
+    my $bond_name_id = 1;
+    for my $second_name ( @second_names_sorted ) {
+        my $second_atom_id =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' => { 'label_atom_id' => [ $second_name ] },
+                      'data' => [ 'id' ],
+                      'is_list' => 1 } )->[0];
+        $bond_names{"$second_atom_id"} = "r$bond_name_id";
+        $bond_name_id++;
+    }
+
+    # Iterates through stretchable bonds and assigns names by second atom.
+    my %named_stretchable_bonds;
+    for my $atom_id ( keys %stretchable_bonds ) {
+        for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
+            my $bond_name = $bond_names{"$bond->[1]"};
+            $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+        }
+    }
+
+    return \%named_stretchable_bonds;
+}
+
+#
+# Identifies bonds that can be bent.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     ${start,next}_atom_id - starting atom id and the next one that is followed
+#     in order to identify the direction of the search for rotatable bonds.
+# Output:
+#     %named_bendable_angles - data structure that describes bendable angles
+#     and the constituent atom ids of the bond. Ex.:
+#     {
+#       $atom_id_3 => {
+#                       $bendable_angle_name_1 =>
+#                           [ $atom_id_1, $atom_id_2, $atom_id_3 ],
+#                       ...
+#                     },
+#       ...
+#     }
+#
+
+sub bendable_angles
+{
+    my ( $atom_site, $start_atom_id, $next_atom_id, $previous_atom_id ) = @_;
+
+    # By default, CA is starting atom and CB next.
+    $start_atom_id //= filter( { 'atom_site' => $atom_site,
+                                 'include' => { 'label_atom_id' => [ 'CA' ] },
+                                 'data' => [ 'id' ],
+                                 'is_list' => 1 } )->[0];
+    $next_atom_id //=  filter( { 'atom_site' => $atom_site,
+                                 'include' => { 'label_atom_id' => [ 'CB' ] },
+                                 'data' => [ 'id' ],
+                                 'is_list' => 1 } )->[0];
+    $previous_atom_id //=  filter( { 'atom_site' => $atom_site,
+                                     'include' => { 'label_atom_id' => [ 'N' ] },
+                                     'data' => [ 'id' ],
+                                     'is_list' => 1 } )->[0];
+
+    if( ! $start_atom_id || ! $next_atom_id ) { return {}; }
+
+    my %atom_site = %{ $atom_site }; # Copy of the variable.
+    my @atom_ids = keys %atom_site;
+    my @visited_atom_ids = ( $previous_atom_id, $start_atom_id );
+    my @next_atom_ids = ( $next_atom_id );
+    my %parent_atom_ids;
+
+    my %bendable_angles;
+
+    # Marks parent and grandparent atoms for next atom id.
+    $parent_atom_ids{$next_atom_id} = $start_atom_id;
+    $parent_atom_ids{$start_atom_id} = $previous_atom_id;
+
+    # Exists if there are no atoms that is not already visited.
+    while( scalar( @next_atom_ids ) != 0 ) {
+        # Iterates through every neighbouring atom if it was not visited
+        # before.
+        my @neighbour_atom_ids;
+        for my $atom_id ( @next_atom_ids ) {
+            my $parent_atom_id = $parent_atom_ids{$atom_id};
+
+            # Detects grandparent atom if it exists.
+            my $grandparent_atom_id;
+            if( exists $parent_atom_ids{$parent_atom_id} ) {
+                $grandparent_atom_id = $parent_atom_ids{$parent_atom_id};
+            }
+
+            push @{ $bendable_angles{$atom_id} },
+                [ $grandparent_atom_id, $parent_atom_id, $atom_id ];
+            if( exists $bendable_angles{$parent_atom_id} ) {
+                unshift @{ $bendable_angles{$atom_id} },
+                    @{ $bendable_angles{$parent_atom_id} };
+            }
+
+            # Marks visited atoms.
+            push @visited_atom_ids, $atom_id;
+
+            if( ! exists $atom_site{$atom_id}{'connections'} ) {
+                confess "atom with id $atom_id lacks 'connections' key"
+            }
+
+            # Marks neighbouring atoms.
+            push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
+
+            # Marks parent atoms for each neighbouring atom.
+            for my $neighbour_atom_id ( @neighbour_atom_ids ) {
+                if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                    # HACK: this exception might produce unexpected results.
+                    ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
+                    $parent_atom_ids{$neighbour_atom_id} = $atom_id;
+                }
+            }
+        }
+
+        # Determines next atoms that should be visited.
+        @next_atom_ids = (); # Resets value for the new ones to be appended.
+        for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
+                push @next_atom_ids, $neighbour_atom_id;
+            }
+        }
+    }
+
+    # Asigns names for bendable angles by first filtering out redundant angles.
+    # TODO: the whole process of naming bonds might be implemented in the while
+    # loop above.
+    my @unique_bonds;
+    for my $bond ( map { @{ $bendable_angles{$_} } } keys %bendable_angles ) {
+        if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
+                   @unique_bonds ){
+            push @unique_bonds, $bond;
+        }
+    }
+
+    # Sorts bonds by naming priority.
+    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
+                                                         # bond.
+    my @bond_third_ids  = map { $_->[2] } @unique_bonds; # Second atom in the
+                                                         # bond.
+
+    my @second_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@bond_second_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+    my @third_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@bond_third_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+
+    my %angle_names; # Names by second atom priority.
+    my $angle_name_id = 1;
+    for my $second_name ( @second_names_sorted ) {
+        my $second_atom_id =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' => { 'label_atom_id' => [ $second_name ] },
+                      'data' => [ 'id' ],
+                      'is_list' => 1 } )->[0];
+        $angle_names{"$second_atom_id"} = "theta$angle_name_id";
+        $angle_name_id++;
+    }
+
+    # Iterates through bendable angles and assigns names by second atom.
+    my %named_bendable_angles;
+    for my $atom_id ( keys %bendable_angles ) {
+        for my $angle ( @{ $bendable_angles{"$atom_id"} } ) {
+            my $angle_name = $angle_names{"$angle->[1]"};
+            $named_bendable_angles{"$atom_id"}{"$angle_name"} = $angle;
+        }
+    }
+
+    return \%named_bendable_angles;
 }
 
 #
