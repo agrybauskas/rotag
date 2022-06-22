@@ -5,7 +5,9 @@ use warnings;
 
 use Exporter qw( import );
 BEGIN {
-    our @EXPORT_OK = qw( all_dihedral
+    our @EXPORT_OK = qw( all_bond_angles
+                         all_bond_lengths
+                         all_dihedral
                          around_distance
                          bond_angle
                          bond_length
@@ -39,7 +41,9 @@ use PDBxParser qw( filter
                    unique_residue_keys );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
-use BondProperties qw( rotatable_bonds );
+use BondProperties qw( bendable_angles
+                       rotatable_bonds
+                       stretchable_bonds );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -444,6 +448,428 @@ sub all_dihedral
     }
 
     return \%residue_angles;
+}
+
+#
+# Calculates bond angles for all given atoms that are described in atom site
+# data structure (produced by obtain_atom_site or functions that uses it). Usage
+# of connect_atoms is necessary for correct calculations.
+# Input:
+#     $atom_site - atom data structure.
+#     $options->{'calc_mainchain'} - additionally calculates mainchain bond
+#     angles.
+# Output:
+#     $bond_length - data structure that relates residue id and bond lengths.
+#     Ex.:
+#       resi_id, atom_1_id, atom_2_id, atom_3_id, type, value
+#     { '18,A,1,.' => { 245 => { 264 => { 247 => { value => 1.9 } } },
+#                       264 => { 245 => { 247 => { value => 1.9 } } } } }
+#
+
+sub all_bond_angles
+{
+    my ( $atom_site, $options ) = @_;
+    my ( $calc_mainchain, $reference_atom_site ) = (
+        $options->{'calc_mainchain'},
+        $options->{'reference_atom_site'},
+    );
+
+    $calc_mainchain //= 0;
+    $reference_atom_site //= $atom_site;
+
+    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
+
+    my $residue_groups =
+        split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
+
+    # Iterates through residue ids and, according to the parameter file,
+    # calculates bond lengths of each side-chain bond.
+    my %residue_bond_angles;
+
+    for my $residue_unique_key ( keys %{ $residue_groups } ) {
+        my $residue_site =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' =>
+                          { 'id' => $residue_groups->{$residue_unique_key} } } );
+
+        my $bendable_angles = bendable_angles( $residue_site );
+        my %uniq_bendable_angles; # Unique bendable angles.
+        for my $atom_id ( keys %{ $bendable_angles } ) {
+            for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
+                if( ! exists $uniq_bendable_angles{"$angle_name"} ) {
+                    $uniq_bendable_angles{"$angle_name"} =
+                        $bendable_angles->{"$atom_id"}{"$angle_name"};
+                }
+            }
+        }
+
+        my %angle_values;
+
+        if( $calc_mainchain ) {
+            my ( $n_atom_id, $ca_atom_id, $c_atom_id, $o_atom_id ) =
+                map {
+                    filter( { 'atom_site' => $residue_site,
+                              'include' => { 'label_atom_id' => [ "$_" ] },
+                              'data' => [ 'id' ],
+                              'is_list' => 1 } )->[0]
+                } ( 'N', 'CA', 'C', 'O' );
+
+            # TODO: look if these filter slow down calculations drastically.
+            my $prev_c_atom_id;
+            if( defined $n_atom_id &&
+                defined $residue_site->{$n_atom_id}{'connections'} ) {
+                $prev_c_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $residue_site->{$n_atom_id}{'connections'},
+                            'label_atom_id' => [ 'C' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
+
+            my $next_n_atom_id;
+            if( defined $c_atom_id &&
+                defined $residue_site->{$c_atom_id}{'connections'} ) {
+                $next_n_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $residue_site->{$c_atom_id}{'connections'},
+                            'label_atom_id' => [ 'N' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
+
+            my $next_ca_atom_id;
+            if( defined $next_n_atom_id &&
+                defined $reference_atom_site->{$next_n_atom_id}{'connections'} ) {
+                $next_ca_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $reference_atom_site->{$next_n_atom_id}{'connections'},
+                            'label_atom_id' => [ 'CA' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
+
+            # Calculates main-chain bonds.
+            if( defined $prev_c_atom_id && defined $n_atom_id &&
+                defined $ca_atom_id ) {
+                $angle_values{'eta1'}{'atom_ids'} =
+                    [ $prev_c_atom_id, $n_atom_id, $ca_atom_id ];
+                $angle_values{'eta1'}{'value'} =
+                    bond_angle(
+                        [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$n_atom_id}{'Cartn_x'},
+                            $atom_site->{$n_atom_id}{'Cartn_y'},
+                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+                            $atom_site->{$ca_atom_id}{'Cartn_y'},
+                            $atom_site->{$ca_atom_id}{'Cartn_z'} ] ] );
+            }
+
+            if( defined $n_atom_id && defined $ca_atom_id && defined $c_atom_id ) {
+                $angle_values{'eta2'}{'atom_ids'} =
+                    [ $n_atom_id, $ca_atom_id, $c_atom_id ];
+                $angle_values{'eta2'}{'value'} =
+                    bond_angle(
+                        [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
+                            $atom_site->{$n_atom_id}{'Cartn_y'},
+                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+                            $atom_site->{$ca_atom_id}{'Cartn_y'},
+                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
+                            $atom_site->{$c_atom_id}{'Cartn_y'},
+                            $atom_site->{$c_atom_id}{'Cartn_z'} ] ] );
+            }
+
+            if( defined $ca_atom_id && defined $c_atom_id && defined $o_atom_id ) {
+                $angle_values{'eta3'}{'atom_ids'} =
+                    [ $ca_atom_id, $c_atom_id, $o_atom_id ];
+                $angle_values{'eta3'}{'value'} =
+                    bond_angle(
+                        [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+                            $atom_site->{$ca_atom_id}{'Cartn_y'},
+                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
+                            $atom_site->{$c_atom_id}{'Cartn_y'},
+                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$o_atom_id}{'Cartn_x'},
+                            $atom_site->{$o_atom_id}{'Cartn_y'},
+                            $atom_site->{$o_atom_id}{'Cartn_z'} ] ] );
+            }
+
+            if( defined $ca_atom_id && defined $c_atom_id &&
+                defined $next_n_atom_id ) {
+                $angle_values{'eta4'}{'atom_ids'} =
+                    [ $ca_atom_id, $c_atom_id, $next_n_atom_id ];
+                $angle_values{'eta4'}{'value'} =
+                    bond_angle(
+                        [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+                            $atom_site->{$ca_atom_id}{'Cartn_y'},
+                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
+                            $atom_site->{$c_atom_id}{'Cartn_y'},
+                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
+                          [ $reference_atom_site->{$next_n_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$next_n_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$next_n_atom_id}{'Cartn_z'} ] ] );
+            }
+
+            if( defined $o_atom_id && defined $c_atom_id &&
+                defined $next_n_atom_id ) {
+                $angle_values{'eta5'}{'atom_ids'} =
+                    [ $o_atom_id, $c_atom_id, $next_n_atom_id ];
+                $angle_values{'eta5'}{'value'} =
+                    bond_angle(
+                        [ [ $atom_site->{$o_atom_id}{'Cartn_x'},
+                            $atom_site->{$o_atom_id}{'Cartn_y'},
+                            $atom_site->{$o_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
+                            $atom_site->{$c_atom_id}{'Cartn_y'},
+                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
+                          [ $reference_atom_site->{$next_n_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$next_n_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$next_n_atom_id}{'Cartn_z'} ] ] );
+            }
+        }
+
+        for my $angle_name ( keys %uniq_bendable_angles ) {
+            my $first_atom_id = $uniq_bendable_angles{$angle_name}->[0];
+            my $second_atom_id = $uniq_bendable_angles{$angle_name}->[1];
+            my $third_atom_id = $uniq_bendable_angles{$angle_name}->[2];
+
+            # Extracts coordinates for bond angle calculations.
+            my $first_atom_coord =
+                [ $residue_site->{$first_atom_id}{'Cartn_x'},
+                  $residue_site->{$first_atom_id}{'Cartn_y'},
+                  $residue_site->{$first_atom_id}{'Cartn_z'}];
+            my $second_atom_coord =
+                [ $residue_site->{$second_atom_id}{'Cartn_x'},
+                  $residue_site->{$second_atom_id}{'Cartn_y'},
+                  $residue_site->{$second_atom_id}{'Cartn_z'}];
+            my $third_atom_coord =
+                [ $residue_site->{$third_atom_id}{'Cartn_x'},
+                  $residue_site->{$third_atom_id}{'Cartn_y'},
+                  $residue_site->{$third_atom_id}{'Cartn_z'}];
+
+            $angle_values{$angle_name}{'atom_ids'} =
+                [ $first_atom_id, $second_atom_id, $third_atom_id ];
+            $angle_values{$angle_name}{'value'} =
+                bond_angle( [ $first_atom_coord, $second_atom_coord,
+                              $third_atom_coord ] );
+        }
+
+        if( %angle_values ) {
+            %{ $residue_bond_angles{$residue_unique_key} } = %angle_values;
+        }
+    }
+
+    return \%residue_bond_angles;
+}
+
+#
+# Calculates bond lengths for all given atoms that are described in atom site
+# data structure (produced by obtain_atom_site or functions that uses it). Usage
+# of connect_atoms is necessary for correct calculations.
+# Input:
+#     $atom_site - atom data structure.
+#     $options->{'calc_mainchain'} - additionally calculates mainchain bond
+#     angles.
+# Output:
+#     $bond_length - data structure that relates residue id and bond lengths.
+#     Ex.:
+#       resi_id, atom_1_id, atom_2_id, value
+#     { '18,A,1,.' => { 245 => { 264 => { value => 1.6 } },
+#                       264 => { 245 => { value => 1.6  } } } }
+#
+
+sub all_bond_lengths
+{
+    my ( $atom_site, $options ) = @_;
+    my ( $calc_mainchain, $reference_atom_site ) = (
+        $options->{'calc_mainchain'},
+        $options->{'reference_atom_site'},
+    );
+
+    $calc_mainchain //= 0;
+    $reference_atom_site //= $atom_site;
+
+    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
+
+    my $residue_groups =
+        split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
+
+    # Iterates through residue ids and, according to the parameter file,
+    # calculates bond lengths of each side-chain bond.
+    my %residue_bond_lengths;
+
+    for my $residue_unique_key ( keys %{ $residue_groups } ) {
+        my $residue_site =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' =>
+                          { 'id' => $residue_groups->{$residue_unique_key} } } );
+
+        my $stretchable_bonds = stretchable_bonds( $residue_site );
+        my %uniq_stretchable_bonds; # Unique stretchable bonds.
+        for my $atom_id ( keys %{ $stretchable_bonds } ) {
+            for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){
+                if( ! exists $uniq_stretchable_bonds{"$bond_name"} ) {
+                    $uniq_stretchable_bonds{"$bond_name"} =
+                        $stretchable_bonds->{"$atom_id"}{"$bond_name"};
+                }
+            }
+        }
+
+        my %length_values;
+
+        if( $calc_mainchain ) {
+            # TODO: hydrogens should be added or automatic search implemented.
+            my $n_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'N' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            my $ca_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'CA' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            my $c_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'C' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            my $o_atom_id =
+                filter( { 'atom_site' => $residue_site,
+                          'include' => { 'label_atom_id' => [ 'O' ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+
+            # TODO: look if these filter slow down calculations drastically.
+            my $prev_c_atom_id;
+            if( defined $n_atom_id &&
+                defined $residue_site->{$n_atom_id}{'connections'} ) {
+                $prev_c_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $residue_site->{$n_atom_id}{'connections'},
+                            'label_atom_id' => [ 'C' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
+            my $next_n_atom_id;
+            if( defined $c_atom_id &&
+                defined $residue_site->{$c_atom_id}{'connections'} ) {
+                $next_n_atom_id = filter(
+                    { 'atom_site' => $reference_atom_site,
+                      'include' =>
+                          { 'id' => $residue_site->{$c_atom_id}{'connections'},
+                            'label_atom_id' => [ 'N' ] },
+                            'data' => [ 'id' ],
+                            'is_list' => 1 }
+                )->[0];
+            }
+
+            # Calculates main-chain bonds.
+            if( defined $prev_c_atom_id && defined $n_atom_id ) {
+                $length_values{'d1'}{'atom_ids'} =
+                    [ $prev_c_atom_id, $n_atom_id ];
+                $length_values{'d1'}{'value'} =
+                    bond_length(
+                        [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$n_atom_id}{'Cartn_x'},
+                            $atom_site->{$n_atom_id}{'Cartn_y'},
+                            $atom_site->{$n_atom_id}{'Cartn_z'} ] ] );
+            }
+
+            if( defined $c_atom_id && defined $next_n_atom_id ) {
+                $length_values{'d2'}{'atom_ids'} =
+                    [ $c_atom_id, $next_n_atom_id ];
+                $length_values{'d2'}{'value'} =
+                    bond_length(
+                        [ [ $reference_atom_site->{$c_atom_id}{'Cartn_x'},
+                            $reference_atom_site->{$c_atom_id}{'Cartn_y'},
+                            $reference_atom_site->{$c_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$next_n_atom_id}{'Cartn_x'},
+                            $atom_site->{$next_n_atom_id}{'Cartn_y'},
+                            $atom_site->{$next_n_atom_id}{'Cartn_z'} ] ] );
+            }
+
+            if( defined $n_atom_id && defined $ca_atom_id ) {
+                $length_values{'d3'}{'atom_ids'} =
+                    [ $n_atom_id, $ca_atom_id ];
+                $length_values{'d3'}{'value'} =
+                    bond_length(
+                        [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
+                            $atom_site->{$n_atom_id}{'Cartn_y'},
+                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+                            $atom_site->{$ca_atom_id}{'Cartn_y'},
+                            $atom_site->{$ca_atom_id}{'Cartn_z'} ] ] );
+            }
+
+            if( defined $ca_atom_id && defined $c_atom_id ) {
+                $length_values{'d4'}{'atom_ids'} =
+                    [ $ca_atom_id, $c_atom_id ];
+                $length_values{'d4'}{'value'} =
+                    bond_length(
+                        [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
+                            $atom_site->{$ca_atom_id}{'Cartn_y'},
+                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
+                            $atom_site->{$c_atom_id}{'Cartn_y'},
+                            $atom_site->{$c_atom_id}{'Cartn_z'} ] ] );
+            }
+
+            if( defined $c_atom_id && defined $o_atom_id ) {
+                $length_values{'d5'}{'atom_ids'} =
+                    [ $c_atom_id, $o_atom_id ];
+                $length_values{'d5'}{'value'} =
+                    bond_length(
+                        [ [ $atom_site->{$c_atom_id}{'Cartn_x'},
+                            $atom_site->{$c_atom_id}{'Cartn_y'},
+                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
+                          [ $atom_site->{$o_atom_id}{'Cartn_x'},
+                            $atom_site->{$o_atom_id}{'Cartn_y'},
+                            $atom_site->{$o_atom_id}{'Cartn_z'} ] ] );
+            }
+        }
+
+        for my $bond_name ( keys %uniq_stretchable_bonds ) {
+            my $first_atom_id = $uniq_stretchable_bonds{$bond_name}->[0];
+            my $second_atom_id = $uniq_stretchable_bonds{$bond_name}->[1];
+
+            # Extracts coordinates for bond length calculations.
+            my $first_atom_coord =
+                [ $residue_site->{$first_atom_id}{'Cartn_x'},
+                  $residue_site->{$first_atom_id}{'Cartn_y'},
+                  $residue_site->{$first_atom_id}{'Cartn_z'}];
+            my $second_atom_coord =
+                [ $residue_site->{$second_atom_id}{'Cartn_x'},
+                  $residue_site->{$second_atom_id}{'Cartn_y'},
+                  $residue_site->{$second_atom_id}{'Cartn_z'}];
+
+            $length_values{$bond_name}{'atom_ids'} =
+                [ $first_atom_id, $second_atom_id ];
+            $length_values{$bond_name}{'value'} =
+                bond_length( [ $first_atom_coord, $second_atom_coord ] );
+        }
+
+        if( %length_values ) {
+            %{ $residue_bond_lengths{$residue_unique_key} } = %length_values;
+        }
+    }
+
+    return \%residue_bond_lengths;
 }
 
 #

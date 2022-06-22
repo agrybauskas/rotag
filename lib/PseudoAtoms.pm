@@ -40,6 +40,8 @@ use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product );
 use Measure qw( all_dihedral
+                all_bond_angles
+                all_bond_lengths
                 rmsd_sidechains );
 use BondProperties qw( hybridization
                        rotatable_bonds
