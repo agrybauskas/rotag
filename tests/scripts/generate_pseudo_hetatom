@@ -1,0 +1,80 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ForceField::Parameters;
+use PseudoAtoms qw( generate_pseudo_hetatom );
+use Sampling qw( sample_angles );
+use PDBxParser qw( to_pdbx );
+
+#
+# Unit test: PseudoAtoms::generate_pseudo_hetatom,
+#                                    atom_id range                    num of pseudo atoms
+# Example: ./generate_pseudo_hetatom 12      "chi0 0,2*pi & r1 0,0.25" "chi0 20" structure.dump
+#
+
+my ( $atom_id, $angle_and_length_ranges, $num_of_angles_and_lengths, $pdbx_dump_file, $no_full_range ) = @ARGV;
+
+$no_full_range //= 0;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+# Parses angle and bond ranges.
+my %angle_and_length_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
+                     map { [ split( " ", $_ ) ] }
+                     split( "&", $angle_and_length_ranges ) );
+
+# Parsed number of rotations that will be done for each dihedral angle, bond
+# angle and length.
+my %num_of_angles_and_lengths = ( map { $_->[0] => $_->[1] }
+                                  map { [ split( " ", $_ ) ] }
+                                  split( "&", $num_of_angles_and_lengths ) );
+
+# Calculates angles and lengths that will be modified.
+my %num_angle_and_length_values; # Numeric angle and length values.
+for my $angle_or_length ( sort keys %angle_and_length_ranges ) {
+    my $min_angle_or_length = $angle_and_length_ranges{"$angle_or_length"}[0];
+    my $max_angle_or_length = $angle_and_length_ranges{"$angle_or_length"}[1];
+    $min_angle_or_length =~ s/pi/\$pi/g;
+    $max_angle_or_length =~ s/pi/\$pi/g;
+    $min_angle_or_length = eval( $min_angle_or_length );
+    $max_angle_or_length = eval( $max_angle_or_length );
+    my $small_angle_or_length;
+    if( $no_full_range ) {
+        $small_angle_or_length = # Change of parameter in each step.
+            ( $max_angle_or_length - $min_angle_or_length ) /
+            $num_of_angles_and_lengths{$angle_or_length};
+    } else {
+        $small_angle_or_length = # Change of parameter in each step.
+            2 * $pi / $num_of_angles_and_lengths{$angle_or_length};
+    }
+    $num_angle_and_length_values{"$angle_or_length"} =
+        sample_angles( $parameters,
+                       [ [ $min_angle_or_length, $max_angle_or_length ] ],
+                       $small_angle_or_length );
+}
+
+%{ $atom_site } =
+    ( %{ $atom_site },
+      %{ generate_pseudo_hetatom(
+             { 'parameters' => $parameters,
+               'atom_site' => $atom_site,
+               'atom_specifier' => { "id" => [ $atom_id ] },
+               'angle_and_bond_values' => \%num_angle_and_length_values } ) } );
+
+my %pdbx =();
+$pdbx{'_atom_site'}{'data'} = $atom_site;
+$pdbx{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+$pdbx{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+
+to_pdbx( \%pdbx );
