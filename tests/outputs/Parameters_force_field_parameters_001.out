@@ -6351,14 +6351,16 @@ $VAR1 = bless( {
   ],
   '_[local]_sidechain_hetatom_extension' => [
     'MG',
-    'MN',
-    'CO',
-    'ZN',
-    'NI',
-    'CU',
     'CA',
+    'NA',
     'ZN',
-    'FE'
+    'K',
+    'MN',
+    'FE',
+    'CU',
+    'NI',
+    'CO',
+    'CD'
   ],
   '_[local]_symmetrical_atom_names' => {
     'ARG' => {

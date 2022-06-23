@@ -2582,4 +2582,4 @@ XAA SER ARG HIS LYS ASP GLU CYS VAL ILE LEU MET PHE TYR TRP THR ASN GLN
 #
 loop_
 _[local]_sidechain_hetatom_extension.label_comp_id
-MG MN CO ZN NI CU CA ZN FE
+MG CA NA ZN K MN FE CU NI CO CD
