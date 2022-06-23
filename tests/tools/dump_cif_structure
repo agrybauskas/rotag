@@ -10,7 +10,8 @@ use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use PDBxParser qw( obtain_atom_site );
-use SidechainModels qw( rotation_only );
+use SidechainModels qw( rotation_only
+                        rotation_translation );
 
 $Data::Dumper::Indent = 1;
 $Data::Dumper::Sortkeys = 1;
@@ -27,11 +28,15 @@ my %options;
 my $is_connected = 0;
 my $is_hybridized = 0;
 my $apply_rotation_only = 0;
+my $apply_length_translation_only = 0;
+my $apply_angle_bending_only = 0;
 
 GetOptions(
     "c" => sub { $is_connected = 1 },
     "h" => sub { $is_hybridized = 1 },
     "r" => sub { $apply_rotation_only = 1 },
+    "l" => sub { $apply_length_translation_only = 1 },
+    "a" => sub { $apply_angle_bending_only = 1 }
 ) or die "Error in command line argument.";
 
 @ARGV = ( "-" ) unless @ARGV;
@@ -51,8 +56,14 @@ foreach my $pdbx_file ( @ARGV ) {
         hybridization( $parameters, $atom_site );
     }
 
-    if( $apply_rotation_only ) {
-        rotation_only( $parameters, $atom_site );
+    if( $apply_rotation_only || $apply_length_translation_only ||
+        $apply_angle_bending_only ) {
+        rotation_translation( $parameters, $atom_site,
+                              { 'do_bond_torsion' => $apply_rotation_only,
+                                'do_bond_stretching' =>
+                                    $apply_length_translation_only,
+                                'do_angle_bending' =>
+                                    $apply_angle_bending_only } );
     }
 
     my $cif_dump_structure = Dumper( $atom_site );
