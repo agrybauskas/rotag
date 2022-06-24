@@ -116,6 +116,8 @@ sub constants
     $constants{'_[local]_constants'}{'edge_length_connection'} =
         max( map { @{ $force_field->{'_[local]_atom_properties'}{$_}
                                     {'covalent_radius'}{'length'} } }
+             grep { $force_field->{'_[local]_atom_properties'}{$_}
+                                  {'covalent_radius'}{'length'}[0] ne '.' }
              keys %{ $force_field->{'_[local]_atom_properties'} } ) * 2;
 
     # Arginine model is used for calculating the interaction cutoff.

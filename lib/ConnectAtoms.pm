@@ -89,6 +89,9 @@ sub is_connected
     my $length_error;
 
     for my $i ( 0..$#{ $bond_length_comb } ) {
+        next if $bond_length_comb->[$i][0] eq '.' ||
+                $bond_length_comb->[$i][1] eq '.';
+
         $bond_length = $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
         $length_error = $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
         if( ( ! $no_covalent_radii ) &&
