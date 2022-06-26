@@ -7,6 +7,7 @@ BEGIN{
 use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
                      connect_atoms
+                     connect_atoms_explicitly
                      connect_two_atoms
                      is_connected
                      is_neighbour
@@ -271,6 +272,30 @@ sub connect_atoms
                         "$neighbour_id";
                 }
             }
+        }
+    }
+
+    return;
+}
+
+# Input:
+#     $atom_site - atom data structure.
+#     $first_atom_id_list - first atom id list.
+#     $second_atom_id_list - second atom id list.
+# Output:
+#     none - connects atoms by adding "connection" key and values to atom site
+#     data structure.
+
+sub connect_atoms_explicitly
+{
+    my ( $atom_site, $first_atom_id_list, $second_atom_id_list ) = @_;
+
+    for my $first_atom_id ( @{ $first_atom_id_list } ) {
+        for my $second_atom_id ( @{ $second_atom_id_list } ) {
+            push @{ $atom_site->{$first_atom_id}{'connections'} },
+                "$second_atom_id";
+            push @{ $atom_site->{$second_atom_id}{'connections'} },
+                "$first_atom_id";
         }
     }
 
