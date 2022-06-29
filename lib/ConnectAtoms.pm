@@ -12,6 +12,7 @@ our @EXPORT_OK = qw( append_connections
                      is_connected
                      is_neighbour
                      is_second_neighbour
+                     remove_connections
                      retains_connections );
 }
 
@@ -278,6 +279,7 @@ sub connect_atoms
     return;
 }
 
+# Adds connections explicitly.
 # Input:
 #     $atom_site - atom data structure.
 #     $first_atom_id_list - first atom id list.
@@ -293,6 +295,40 @@ sub connect_atoms_explicitly
     for my $first_atom_id ( @{ $first_atom_id_list } ) {
         for my $second_atom_id ( @{ $second_atom_id_list } ) {
             push @{ $atom_site->{$first_atom_id}{'connections'} },
+                "$second_atom_id";
+            push @{ $atom_site->{$second_atom_id}{'connections'} },
+                "$first_atom_id";
+        }
+    }
+
+    return;
+}
+
+# Removes connections explicitly.
+# Input:
+#     $atom_site - atom data structure.
+#     $first_atom_id_list - first atom id list.
+#     $second_atom_id_list - second atom id list.
+# Output:
+#     none - removes atom connections by deleting "connection" key and values to
+#     atom site data structure.
+
+sub remove_connections
+{
+    my ( $atom_site, $first_atom_id_list, $second_atom_id_list ) = @_;
+
+    for my $first_atom_id ( @{ $first_atom_id_list } ) {
+        for my $second_atom_id ( @{ $second_atom_id_list } ) {
+            my @first_atom_id_idxs =
+                grep { $first_atom_id eq
+                       $atom_site->{$first_atom_id}{'connections'}[$_]  }
+                     (0..$#{ $atom_site->{$first_atom_id}{'connections'} });
+            my @second_atom_id_idxs =
+                grep { $second_atom_id eq
+                       $atom_site->{$first_atom_id}{'connections'}[$_]  }
+                     (0..$#{ $atom_site->{$second_atom_id}{'connections'} });
+
+            split @{ $atom_site->{$first_atom_id}{'connections'} },
                 "$second_atom_id";
             push @{ $atom_site->{$second_atom_id}{'connections'} },
                 "$first_atom_id";
