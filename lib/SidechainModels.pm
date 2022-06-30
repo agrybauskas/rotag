@@ -138,15 +138,18 @@ sub rotation_only
 sub rotation_translation
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $do_bond_torsion, $do_bond_stretching, $do_angle_bending ) = (
+    my ( $do_bond_torsion, $do_bond_stretching, $do_angle_bending,
+         $do_hetatoms_only ) = (
         $options->{do_bond_torsion},
         $options->{do_bond_stretching},
         $options->{do_angle_bending},
+        $options->{do_hetatoms_only},
     );
 
     $do_bond_torsion //= 1;
     $do_bond_stretching //= 1;
     $do_angle_bending //= 1;
+    $do_hetatoms_only //= 0;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -159,6 +162,14 @@ sub rotation_translation
     for my $residue_unique_key ( @residue_unique_keys ) {
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
+
+        if( $do_hetatoms_only ) {
+            $residue_site =
+                filter_new( $residue_site,
+                            { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
+        }
+
+        next if ! %{ $residue_site };
 
         my $bendable_angles = bendable_angles( $residue_site );
         my $rotatable_bonds = rotatable_bonds( $residue_site );

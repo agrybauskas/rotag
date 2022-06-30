@@ -29,6 +29,6 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-rotation_translation( $parameters, $atom_site );
+rotation_translation( $parameters, $atom_site, { 'do_hetatoms_only' => 1 } );
 
 print Dumper $atom_site->{$atom_id}{"conformation"};
