@@ -171,9 +171,26 @@ sub rotation_translation
 
         next if ! %{ $residue_site };
 
-        my $bendable_angles = bendable_angles( $residue_site );
-        my $rotatable_bonds = rotatable_bonds( $residue_site );
-        my $stretchable_bonds = stretchable_bonds( $residue_site );
+
+        my $bendable_angles = {};
+        my $rotatable_bonds = {};
+        my $stretchable_bonds = {};
+
+        if( $do_hetatoms_only ) {
+            # HACK: probably will not work with multiple hetero atoms.
+            my ( $next_atom_id ) = sort keys %{ $residue_site };
+
+            $bendable_angles =
+                bendable_angles( $residue_site, undef, $next_atom_id, undef );
+            $rotatable_bonds =
+                rotatable_bonds( $residue_site, undef, $next_atom_id, undef );
+            $stretchable_bonds =
+                stretchable_bonds( $residue_site, undef, $next_atom_id, undef );
+        } else {
+            $bendable_angles = bendable_angles( $residue_site );
+            $rotatable_bonds = rotatable_bonds( $residue_site );
+            $stretchable_bonds = stretchable_bonds( $residue_site );
+        }
 
         if( ! ( %{ $rotatable_bonds } &&
                 %{ $stretchable_bonds } &&
