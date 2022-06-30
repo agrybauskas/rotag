@@ -319,19 +319,23 @@ sub remove_connections
 
     for my $first_atom_id ( @{ $first_atom_id_list } ) {
         for my $second_atom_id ( @{ $second_atom_id_list } ) {
-            my @first_atom_id_idxs =
+            my ( $first_atom_id_idx ) =
                 grep { $first_atom_id eq
-                       $atom_site->{$first_atom_id}{'connections'}[$_]  }
-                     (0..$#{ $atom_site->{$first_atom_id}{'connections'} });
-            my @second_atom_id_idxs =
+                       $atom_site->{$second_atom_id}{'connections'}[$_]  }
+                     (0..$#{ $atom_site->{$second_atom_id}{'connections'} });
+            my ( $second_atom_id_idx ) =
                 grep { $second_atom_id eq
                        $atom_site->{$first_atom_id}{'connections'}[$_]  }
-                     (0..$#{ $atom_site->{$second_atom_id}{'connections'} });
+                     (0..$#{ $atom_site->{$first_atom_id}{'connections'} });
 
-            split @{ $atom_site->{$first_atom_id}{'connections'} },
-                "$second_atom_id";
-            push @{ $atom_site->{$second_atom_id}{'connections'} },
-                "$first_atom_id";
+            if( defined $second_atom_id_idx ) {
+                splice @{ $atom_site->{$first_atom_id}{'connections'} },
+                    $second_atom_id_idx, 1;
+            }
+            if( defined $first_atom_id_idx ) {
+                splice @{ $atom_site->{$second_atom_id}{'connections'} },
+                    $first_atom_id_idx, 1;
+            }
         }
     }
 
