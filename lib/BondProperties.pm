@@ -219,17 +219,25 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_id, $options ) = @_;
-    my ( $do_hetatoms ) = ( $options->{'do_hetatoms'} );
+    my ( $do_hetatoms, $ignore_connections ) =
+        ( $options->{'do_hetatoms'}, $options->{'ignore_connections'} );
 
     $do_hetatoms //= 0;
+    $ignore_connections = [];
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
-                                 'include' => { 'label_atom_id' => [ 'CA' ] },
+                                 'include' =>
+                                 { $do_hetatoms ?
+                                   ( 'label_atom_id' =>[ 'N' ] ) :
+                                   ( 'label_atom_id' =>[ 'CA' ] ) },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
     $next_atom_id //=  filter( { 'atom_site' => $atom_site,
-                                 'include' => { 'label_atom_id' => [ 'CB' ] },
+                                 'include' =>
+                                 { $do_hetatoms ?
+                                   ( 'label_atom_id' => [ 'CA' ] ) :
+                                   ( 'label_atom_id' => [ 'CB' ] ) },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
 
@@ -237,7 +245,7 @@ sub rotatable_bonds
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
-    my @visited_atom_ids = ( $start_atom_id );
+    my @visited_atom_ids = ( $start_atom_id, @{ $ignore_connections } );
     my @next_atom_ids = ( $next_atom_id );
     my %parent_atom_ids;
 
@@ -265,6 +273,8 @@ sub rotatable_bonds
                         "hybridization"
             }
 
+            use Data::Dumper;
+            print STDERR Dumper $atom_site->{$parent_atom_id}{'hybridization'};
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site{$atom_id}{'hybridization'} eq 'sp3' ||
                 ($atom_site{$atom_id}{'hybridization'} eq '.' && $do_hetatoms) ){

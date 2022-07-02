@@ -164,6 +164,7 @@ sub rotation_translation
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
         my $hetatom_site;
+        my $ignore_connections = [];
         if( $do_hetatoms_only ) {
             $hetatom_site =
                 filter_new( $residue_site,
@@ -184,7 +185,12 @@ sub rotation_translation
                 bendable_angles( $residue_site, undef, $next_atom_id );
             $rotatable_bonds =
                 rotatable_bonds( $residue_site, undef, $next_atom_id,
-                                 { 'do_hetatoms' => $do_hetatoms_only } );
+                                 { 'do_hetatoms' => $do_hetatoms_only,
+                                   'ignore_connections' =>
+                                       filter_new( $residue_site,
+                                                   { 'include' =>
+                                                     { 'label_atom_id' =>
+                                                           [ 'CB', 'C' ] } } )});
             $stretchable_bonds =
                 stretchable_bonds( $residue_site, undef, $next_atom_id );
         } else {
