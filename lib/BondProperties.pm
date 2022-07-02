@@ -218,7 +218,10 @@ sub hybridization
 
 sub rotatable_bonds
 {
-    my ( $atom_site, $start_atom_id, $next_atom_id ) = @_;
+    my ( $atom_site, $start_atom_id, $next_atom_id, $options ) = @_;
+    my ( $do_hetatoms ) = ( $options->{'do_hetatoms'} );
+
+    $do_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
@@ -251,17 +254,20 @@ sub rotatable_bonds
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
-            if( ! exists $atom_site{$atom_id}{'hybridization'} ) {
+            if( ( ! exists $atom_site{$atom_id}{'hybridization'} ) &&
+                ( ! $do_hetatoms ) ) {
                 confess "atom with id $atom_id lacks information about " .
                         "hybridization"
             }
-            if( ! exists $atom_site{$parent_atom_id}{'hybridization'} ) {
+            if( ( ! exists $atom_site{$parent_atom_id}{'hybridization'} ) &&
+                ( ! $do_hetatoms ) ) {
                 confess "atom with id $parent_atom_id lacks information about " .
                         "hybridization"
             }
 
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
-                $atom_site{$atom_id}{'hybridization'} eq 'sp3' ) {
+                $atom_site{$atom_id}{'hybridization'} eq 'sp3' ||
+                ($atom_site{$atom_id}{'hybridization'} eq '.' && $do_hetatoms) ){
                 # If last visited atom was sp3, then rotatable bonds from
                 # previous atom are copied and the new one is appended.
                 push @{ $rotatable_bonds{$atom_id} },

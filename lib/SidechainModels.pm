@@ -163,14 +163,14 @@ sub rotation_translation
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
+        my $hetatom_site;
         if( $do_hetatoms_only ) {
-            $residue_site =
+            $hetatom_site =
                 filter_new( $residue_site,
                             { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
         }
 
         next if ! %{ $residue_site };
-
 
         my $bendable_angles = {};
         my $rotatable_bonds = {};
@@ -178,14 +178,15 @@ sub rotation_translation
 
         if( $do_hetatoms_only ) {
             # HACK: probably will not work with multiple hetero atoms.
-            my ( $next_atom_id ) = sort keys %{ $residue_site };
+            my ( $next_atom_id ) = sort keys %{ $hetatom_site };
 
             $bendable_angles =
-                bendable_angles( $residue_site, undef, $next_atom_id, undef );
+                bendable_angles( $residue_site, undef, $next_atom_id );
             $rotatable_bonds =
-                rotatable_bonds( $residue_site, undef, $next_atom_id, undef );
+                rotatable_bonds( $residue_site, undef, $next_atom_id,
+                                 { 'do_hetatoms' => $do_hetatoms_only } );
             $stretchable_bonds =
-                stretchable_bonds( $residue_site, undef, $next_atom_id, undef );
+                stretchable_bonds( $residue_site, undef, $next_atom_id );
         } else {
             $bendable_angles = bendable_angles( $residue_site );
             $rotatable_bonds = rotatable_bonds( $residue_site );
