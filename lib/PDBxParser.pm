@@ -345,6 +345,8 @@ sub create_pdbx_entry
 {
     my ( $args ) = @_;
     my $atom_site = $args->{'atom_site'};
+    my $group_PDB = $args->{'group_PDB'};
+    $group_PDB //= 'ATOM';
     my $atom_id = $args->{'id'};
     my $type_symbol = $args->{'type_symbol'};
     my $label_atom_id = $args->{'label_atom_id'};
@@ -360,7 +362,7 @@ sub create_pdbx_entry
     my $cartn_z = $args->{'cartn_z'};
     my $pdbx_model_num = $args->{'pdbx_PDB_model_num'};
 
-    $atom_site->{$atom_id}{'group_PDB'} = 'ATOM';
+    $atom_site->{$atom_id}{'group_PDB'} = $group_PDB;
     $atom_site->{$atom_id}{'id'} = $atom_id;
     $atom_site->{$atom_id}{'type_symbol'} = $type_symbol;
     $atom_site->{$atom_id}{'label_atom_id'} = $label_atom_id;
