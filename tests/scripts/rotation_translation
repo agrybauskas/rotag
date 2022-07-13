@@ -19,7 +19,8 @@ $Data::Dumper::Deparse = 1;
 # Example: ./rotation_translation 12 structure.dump
 #
 
-my ( $atom_id, $pdbx_dump_file ) = @ARGV;
+my ( $atom_id, $pdbx_dump_file, $do_bond_torsion, $do_bond_stretching,
+     $do_angle_bending ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -31,6 +32,10 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-rotation_translation( $parameters, $atom_site, { 'do_hetatoms_only' => 1 } );
+rotation_translation( $parameters, $atom_site,
+                      { 'do_hetatoms_only' => 1,
+                        'do_bond_torsion' => $do_bond_torsion,
+                        'do_bond_stretching' => $do_bond_stretching,
+                        'do_angle_bending' => $do_angle_bending } );
 
 print Dumper $atom_site->{$atom_id}{"conformation"};
