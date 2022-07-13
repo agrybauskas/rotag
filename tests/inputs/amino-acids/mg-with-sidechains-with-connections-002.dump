@@ -15,7 +15,8 @@
     'label_seq_id' => '27',
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'N',
-    'connections' => ['149']
+    'connections' => ['149'],
+    'hybridization' => 'sp3'
   },
   '149' => {
     'Cartn_x' => '-32.444',
@@ -34,7 +35,7 @@
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'C',
     'connections' => ['148', '1925'],
-    'hybridization' => '.'
+    'hybridization' => 'sp3'
   },
   '150' => {
     'Cartn_x' => '-33.790',
