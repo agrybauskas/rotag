@@ -361,7 +361,7 @@ sub generate_pseudo_hetatom
                                     $dihedral_angles{$residue_unique_key}{$_}{'value'} ) }
                           @dihedral_angle_names };
             }
-            if( @bond_angle_names ) {
+            if( @bond_length_names ) {
                 $pseudo_atom_site{$last_atom_id}{'bond_length_names'} =
                     \@bond_length_names;
                 $pseudo_atom_site{$last_atom_id}{'bond_lengths'} =
