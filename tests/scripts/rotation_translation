@@ -10,6 +10,8 @@ use SidechainModels qw( rotation_translation );
 
 $Data::Dumper::Indent = 1;
 $Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Deepcopy = 1;
+$Data::Dumper::Deparse = 1;
 
 #
 # Unit test: SidechainModels::rotation_translation
