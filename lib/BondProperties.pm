@@ -273,8 +273,6 @@ sub rotatable_bonds
                         "hybridization"
             }
 
-            use Data::Dumper;
-            print STDERR Dumper $atom_site->{$parent_atom_id}{'hybridization'};
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site{$atom_id}{'hybridization'} eq 'sp3' ||
                 ($atom_site{$atom_id}{'hybridization'} eq '.' && $do_hetatoms) ){
