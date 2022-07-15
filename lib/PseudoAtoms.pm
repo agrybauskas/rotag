@@ -281,21 +281,21 @@ sub generate_pseudo_hetatom
         for my $angle_name ( @dihedral_angle_names ) {
             push @dihedral_angle_values,
                  [ map { $_ - $dihedral_angles{$residue_unique_key}
-                                     {"$angle_name"}{'value'} }
+                                              {"$angle_name"}{'value'} }
                       @{ $angle_and_bond_values->{"$angle_name"} } ];
         }
         my @bond_length_values;
         for my $bond_name ( @bond_length_names ) {
             push @bond_length_values,
                  [ map { $_ - $bond_lengths{$residue_unique_key}
-                                     {"$bond_name"}{'value'} }
+                                           {"$bond_name"}{'value'} }
                       @{ $angle_and_bond_values->{"$bond_name"} } ];
         }
         my @bond_angle_values;
         for my $angle_name ( @bond_angle_names ) {
             push @bond_angle_values,
                  [ map { $_ - $bond_angles{$residue_unique_key}
-                                     {"$angle_name"}{'value'} }
+                                          {"$angle_name"}{'value'} }
                       @{ $angle_and_bond_values->{"$angle_name"} } ];
         }
 
