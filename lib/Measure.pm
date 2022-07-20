@@ -692,13 +692,16 @@ sub all_bond_angles
 sub all_bond_lengths
 {
     my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $reference_atom_site ) = (
+    my ( $calc_mainchain, $calc_hetatoms, $reference_atom_site, $allow_hetatoms ) = (
         $options->{'calc_mainchain'},
+        $options->{'calc_hetatoms'},
         $options->{'reference_atom_site'},
+        $options->{'allow_hetatoms'},
     );
 
     $calc_mainchain //= 0;
     $reference_atom_site //= $atom_site;
+    $allow_hetatoms //= 0;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
