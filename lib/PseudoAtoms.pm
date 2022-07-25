@@ -256,7 +256,7 @@ sub generate_pseudo_hetatom
             %{ all_bond_lengths(
                    filter_by_unique_residue_key( $atom_site,
                                                  $residue_unique_key, 1 ),
-                   { 'allow_hetatoms' => 1 } ) };
+                   { 'calc_hetatoms' => 1 } ) };
         my %bond_angles =
             %{ all_bond_angles(
                    filter_by_unique_residue_key( $atom_site,

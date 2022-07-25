@@ -692,16 +692,15 @@ sub all_bond_angles
 sub all_bond_lengths
 {
     my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $calc_hetatoms, $reference_atom_site, $allow_hetatoms ) = (
+    my ( $calc_mainchain, $calc_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
         $options->{'calc_hetatoms'},
         $options->{'reference_atom_site'},
-        $options->{'allow_hetatoms'},
     );
 
     $calc_mainchain //= 0;
+    $calc_hetatoms //= 0;
     $reference_atom_site //= $atom_site;
-    $allow_hetatoms //= 0;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -718,7 +717,20 @@ sub all_bond_lengths
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        my $stretchable_bonds = stretchable_bonds( $residue_site );
+        my $next_atom_ids;
+        if( $calc_hetatoms ) {
+            $next_atom_ids =
+                filter( { 'atom_site' => \%atom_site,
+                          'include' =>
+                              { 'id' =>
+                                    $residue_groups->{$residue_unique_key},
+                                    'group_PDB' => [ 'HETATM' ] },
+                          'is_list' => 1,
+                          'data' => [ 'id' ] } );
+        }
+
+        my $stretchable_bonds =
+            stretchable_bonds( $residue_site, undef, $next_atom_ids );
         my %uniq_stretchable_bonds; # Unique stretchable bonds.
         for my $atom_id ( keys %{ $stretchable_bonds } ) {
             for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){

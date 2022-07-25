@@ -2,12 +2,14 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-translation-001.dump
-atom_id=152
-angle_and_length_ranges="chi1 -pi,pi & r1 1,2 & r2 1,2 & theta1 -0.1*pi,0.1*pi & theta2 -pi,pi"
-num_of_angles_and_lengths="chi1 20 & r1 5 & r2 5 & theta1 20 & theta2 20"
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/mg-with-sidechains-with-connections-002.dump
+atom_id=1925
+angle_and_length_ranges="r1 0.5,1.0"
+num_of_angles_and_lengths="r1 5"
+no_full_range=1
 
 $(dirname "$0")/../scripts/generate_pseudo_hetatom "${atom_id}" \
                                                    "${angle_and_length_ranges}" \
                                                    "${num_of_angles_and_lengths}" \
-                                                   ${pdbx_dump_file}
+                                                   ${pdbx_dump_file} \
+                                                   ${no_full_range}

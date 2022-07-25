@@ -2,10 +2,10 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-bond-stretching-only-001.dump
-atom_id=152
-angle_and_length_ranges="r1 1,2 & r2 1,2"
-num_of_angles_and_lengths="r1 5 & r2 5"
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/mg-with-sidechains-with-connections-002.dump
+atom_id=1925
+angle_and_length_ranges="r1 0.5,1.0"
+num_of_angles_and_lengths="r1 5"
 no_full_range=1
 
 $(dirname "$0")/../scripts/generate_pseudo_hetatom "${atom_id}" \
