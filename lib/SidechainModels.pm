@@ -179,24 +179,35 @@ sub rotation_translation
 
         if( $do_hetatoms_only ) {
             # HACK: probably will not work with multiple hetero atoms.
-            my ( $next_atom_id ) = sort keys %{ $hetatom_site };
-
-            $bendable_angles =
-                bendable_angles( $residue_site, undef, $next_atom_id );
-            $rotatable_bonds =
-                rotatable_bonds( $residue_site, undef, $next_atom_id,
-                                 { 'do_hetatoms' => $do_hetatoms_only,
-                                   'ignore_connections' =>
-                                       filter_new( $residue_site,
-                                                   { 'include' =>
-                                                     { 'label_atom_id' =>
-                                                           [ 'CB', 'C' ] } } )});
-            $stretchable_bonds =
-                stretchable_bonds( $residue_site, undef, $next_atom_id );
+            my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
+            if( $do_angle_bending ) {
+                $bendable_angles =
+                    bendable_angles( $residue_site, undef, $next_atom_ids );
+            }
+            if( $do_bond_torsion ) {
+                $rotatable_bonds =
+                    rotatable_bonds( $residue_site, undef, $next_atom_ids,
+                                     { 'do_hetatoms' => $do_hetatoms_only,
+                                       'ignore_connections' =>
+                                           filter_new( $residue_site,
+                                                       { 'include' =>
+                                                         { 'label_atom_id' =>
+                                                               ['CB', 'C'] }})});
+            }
+            if( $do_bond_stretching ) {
+                $stretchable_bonds =
+                    stretchable_bonds( $residue_site, undef, $next_atom_ids );
+            }
         } else {
-            $bendable_angles = bendable_angles( $residue_site );
-            $rotatable_bonds = rotatable_bonds( $residue_site );
-            $stretchable_bonds = stretchable_bonds( $residue_site );
+            if( $do_angle_bending ) {
+                $bendable_angles = bendable_angles( $residue_site );
+            }
+            if( $do_bond_torsion ) {
+                $rotatable_bonds = rotatable_bonds( $residue_site );
+            }
+            if( $do_bond_stretching ) {
+                $stretchable_bonds = stretchable_bonds( $residue_site );
+            }
         }
 
         if( ! ( %{ $rotatable_bonds } &&
