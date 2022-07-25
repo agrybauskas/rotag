@@ -2,7 +2,7 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/mg-with-sidechains-with-connections-002.dump
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/mg-with-sidechains-with-connections-003.dump
 atom_id=1925
 angle_and_length_ranges="theta1 0.5*pi,1.0*pi"
 num_of_angles_and_lengths="theta1 5"
