@@ -469,12 +469,14 @@ sub all_dihedral
 sub all_bond_angles
 {
     my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $reference_atom_site ) = (
+    my ( $calc_mainchain, $calc_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
+        $options->{'calc_hetatoms'},
         $options->{'reference_atom_site'},
     );
 
     $calc_mainchain //= 0;
+    $calc_hetatoms //= 0;
     $reference_atom_site //= $atom_site;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
@@ -492,7 +494,20 @@ sub all_bond_angles
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        my $bendable_angles = bendable_angles( $residue_site );
+        my $next_atom_ids;
+        if( $calc_hetatoms ) {
+            $next_atom_ids =
+                filter( { 'atom_site' => \%atom_site,
+                          'include' =>
+                              { 'id' =>
+                                    $residue_groups->{$residue_unique_key},
+                                    'group_PDB' => [ 'HETATM' ] },
+                          'is_list' => 1,
+                          'data' => [ 'id' ] } );
+        }
+
+        my $bendable_angles =
+            bendable_angles( $residue_site, undef, $next_atom_ids, undef );
         my %uniq_bendable_angles; # Unique bendable angles.
         for my $atom_id ( keys %{ $bendable_angles } ) {
             for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
