@@ -210,8 +210,8 @@ sub rotation_translation
             }
         }
 
-        if( ! ( %{ $rotatable_bonds } &&
-                %{ $stretchable_bonds } &&
+        if( ! ( %{ $rotatable_bonds } ||
+                %{ $stretchable_bonds } ||
                 %{ $bendable_angles } ) ) { next; }
 
         for my $atom_id ( keys %{ $residue_site }  ) {
