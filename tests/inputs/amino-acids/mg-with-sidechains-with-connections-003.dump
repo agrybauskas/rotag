@@ -280,10 +280,23 @@
             use warnings;
             use strict;
             my($svar) = @_;
-            return [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, $svar], [0, 0, 0, 1]];
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
         },
         'symbols' => [
-          'r1'
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'theta1'
         ]
       }, 'Symbolic' ),
       [
