@@ -169,6 +169,10 @@ sub rotation_translation
             $hetatom_site =
                 filter_new( $residue_site,
                             { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
+            $ignore_connections =
+                filter_new( $residue_site,
+                            { 'include' => { 'label_atom_id' => [ 'CB', 'C' ] },
+                              'return_data' => 'id' } );
         }
 
         next if ! %{ $residue_site };
@@ -189,10 +193,7 @@ sub rotation_translation
                     rotatable_bonds( $residue_site, undef, $next_atom_ids,
                                      { 'do_hetatoms' => $do_hetatoms_only,
                                        'ignore_connections' =>
-                                           filter_new( $residue_site,
-                                                       { 'include' =>
-                                                         { 'label_atom_id' =>
-                                                               ['CB', 'C'] }})});
+                                           $ignore_connections } );
             }
             if( $do_bond_stretching ) {
                 $stretchable_bonds =
@@ -210,9 +211,9 @@ sub rotation_translation
             }
         }
 
-        if( ! ( %{ $rotatable_bonds } ||
-                %{ $stretchable_bonds } ||
-                %{ $bendable_angles } ) ) { next; }
+        if( ! %{ $rotatable_bonds } &&
+            ! %{ $stretchable_bonds } &&
+            ! %{ $bendable_angles } ) { next; }
 
         for my $atom_id ( keys %{ $residue_site }  ) {
             my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
@@ -236,11 +237,13 @@ sub rotation_translation
                     # rotatable bond ends with terminal atom, then this bond is
                     # excluded.
                     my $up_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[1];
-                    if( scalar( @{ $residue_site->{$up_atom_id}
+                    if( ! $do_hetatoms_only &&
+                        scalar( @{ $residue_site->{$up_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }
 
                     my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
-                    if( scalar( @{ $residue_site->{$mid_atom_id}
+                    if( ! $do_hetatoms_only &&
+                        scalar( @{ $residue_site->{$mid_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }
 
                     my @mid_connections = # Excludes up atom.

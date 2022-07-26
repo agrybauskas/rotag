@@ -218,7 +218,7 @@ sub hybridization
 
 sub rotatable_bonds
 {
-    my ( $atom_site, $start_atom_id, $next_atom_id, $options ) = @_;
+    my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
     my ( $do_hetatoms, $ignore_connections ) =
         ( $options->{'do_hetatoms'}, $options->{'ignore_connections'} );
 
@@ -233,26 +233,28 @@ sub rotatable_bonds
                                    ( 'label_atom_id' =>[ 'CA' ] ) },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
-    $next_atom_id //=  filter( { 'atom_site' => $atom_site,
-                                 'include' =>
-                                 { $do_hetatoms ?
-                                   ( 'label_atom_id' => [ 'CA' ] ) :
-                                   ( 'label_atom_id' => [ 'CB' ] ) },
-                                 'data' => [ 'id' ],
-                                 'is_list' => 1 } )->[0];
+    $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
+                                  'include' =>
+                                  { $do_hetatoms ?
+                                    ( 'label_atom_id' => [ 'CA' ] ) :
+                                    ( 'label_atom_id' => [ 'CB' ] ) },
+                                  'data' => [ 'id' ],
+                                  'is_list' => 1 } );
 
-    if( ! $start_atom_id || ! $next_atom_id ) { return {}; }
+    if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
     my @visited_atom_ids = ( $start_atom_id, @{ $ignore_connections } );
-    my @next_atom_ids = ( $next_atom_id );
+    my @next_atom_ids = ( @{ $next_atom_ids } );
     my %parent_atom_ids;
 
     my %rotatable_bonds;
 
     # Marks parent atom for next atom id.
-    $parent_atom_ids{$next_atom_id} = $start_atom_id;
+    for my $next_atom_id ( @{ $next_atom_ids } ) {
+        $parent_atom_ids{$next_atom_id} = $start_atom_id;
+    }
 
     # Exists if there are no atoms that is not already visited.
     while( scalar( @next_atom_ids ) != 0 ) {
