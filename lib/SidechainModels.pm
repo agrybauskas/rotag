@@ -171,7 +171,7 @@ sub rotation_translation
                             { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
             $ignore_connections =
                 filter_new( $residue_site,
-                            { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                            { 'include' => { 'label_atom_id' => [ 'CA', 'O' ] },
                               'return_data' => 'id' } );
         }
 
@@ -190,7 +190,7 @@ sub rotation_translation
             }
             if( $do_bond_torsion ) {
                 $rotatable_bonds =
-                    rotatable_bonds( $residue_site, undef, $next_atom_ids,
+                    rotatable_bonds( $residue_site, undef, undef,
                                      { 'do_hetatoms' => $do_hetatoms_only,
                                        'ignore_connections' =>
                                            $ignore_connections } );
