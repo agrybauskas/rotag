@@ -223,20 +223,20 @@ sub rotatable_bonds
         ( $options->{'do_hetatoms'}, $options->{'ignore_connections'} );
 
     $do_hetatoms //= 0;
-    $ignore_connections = [];
+    $ignore_connections //= [];
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
                                  'include' =>
                                  { $do_hetatoms ?
-                                   ( 'label_atom_id' =>[ 'N' ] ) :
+                                   ( 'label_atom_id' =>[ 'C' ] ) :
                                    ( 'label_atom_id' =>[ 'CA' ] ) },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
     $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
                                   'include' =>
                                   { $do_hetatoms ?
-                                    ( 'label_atom_id' => [ 'CA' ] ) :
+                                    ( 'label_atom_id' => [ 'N' ] ) :
                                     ( 'label_atom_id' => [ 'CB' ] ) },
                                   'data' => [ 'id' ],
                                   'is_list' => 1 } );
@@ -298,12 +298,16 @@ sub rotatable_bonds
             # Marks visited atoms.
             push @visited_atom_ids, $atom_id;
 
-            if( ! exists $atom_site{$atom_id}{'connections'} ) {
+            if( ! exists $atom_site{$atom_id}{'connections'} ){
                 confess "atom with id $atom_id lacks 'connections' key"
             }
 
             # Marks neighbouring atoms.
             push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
+            if($do_hetatoms && exists $atom_site{$atom_id}{'pseudo_connections'}){
+                push @neighbour_atom_ids,
+                     @{ $atom_site{$atom_id}{'pseudo_connections'} };
+            }
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {

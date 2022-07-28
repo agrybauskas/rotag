@@ -171,7 +171,7 @@ sub rotation_translation
                             { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
             $ignore_connections =
                 filter_new( $residue_site,
-                            { 'include' => { 'label_atom_id' => [ 'CB', 'C' ] },
+                            { 'include' => { 'label_atom_id' => [ 'CA' ] },
                               'return_data' => 'id' } );
         }
 
