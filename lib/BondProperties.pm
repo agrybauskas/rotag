@@ -304,11 +304,6 @@ sub rotatable_bonds
 
             # Marks neighbouring atoms.
             push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
-            if( $calc_hetatoms &&
-                exists $atom_site{$atom_id}{'pseudo_connections'} ){
-                push @neighbour_atom_ids,
-                     @{ $atom_site{$atom_id}{'pseudo_connections'} };
-            }
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
