@@ -219,23 +219,23 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $do_hetatoms, $ignore_connections ) =
-        ( $options->{'do_hetatoms'}, $options->{'ignore_connections'} );
+    my ( $calc_hetatoms, $ignore_connections ) =
+        ( $options->{'calc_hetatoms'}, $options->{'ignore_connections'} );
 
-    $do_hetatoms //= 0;
+    $calc_hetatoms //= 0;
     $ignore_connections //= [];
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
                                  'include' =>
-                                 { $do_hetatoms ?
+                                 { $calc_hetatoms ?
                                    ( 'label_atom_id' =>[ 'C' ] ) :
                                    ( 'label_atom_id' =>[ 'CA' ] ) },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
     $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
                                   'include' =>
-                                  { $do_hetatoms ?
+                                  { $calc_hetatoms ?
                                     ( 'label_atom_id' => [ 'N' ] ) :
                                     ( 'label_atom_id' => [ 'CB' ] ) },
                                   'data' => [ 'id' ],
@@ -265,19 +265,19 @@ sub rotatable_bonds
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
             if( ( ! exists $atom_site{$atom_id}{'hybridization'} ) &&
-                ( ! $do_hetatoms ) ) {
+                ( ! $calc_hetatoms ) ) {
                 confess "atom with id $atom_id lacks information about " .
                         "hybridization"
             }
             if( ( ! exists $atom_site{$parent_atom_id}{'hybridization'} ) &&
-                ( ! $do_hetatoms ) ) {
+                ( ! $calc_hetatoms ) ) {
                 confess "atom with id $parent_atom_id lacks information about " .
                         "hybridization"
             }
 
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site{$atom_id}{'hybridization'} eq 'sp3' ||
-                ($atom_site{$atom_id}{'hybridization'} eq '.' && $do_hetatoms) ){
+                ($atom_site{$atom_id}{'hybridization'} eq '.' && $calc_hetatoms)){
                 # If last visited atom was sp3, then rotatable bonds from
                 # previous atom are copied and the new one is appended.
                 push @{ $rotatable_bonds{$atom_id} },
@@ -304,7 +304,8 @@ sub rotatable_bonds
 
             # Marks neighbouring atoms.
             push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
-            if($do_hetatoms && exists $atom_site{$atom_id}{'pseudo_connections'}){
+            if( $calc_hetatoms &&
+                exists $atom_site{$atom_id}{'pseudo_connections'} ){
                 push @neighbour_atom_ids,
                      @{ $atom_site{$atom_id}{'pseudo_connections'} };
             }
