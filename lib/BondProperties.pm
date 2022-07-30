@@ -403,8 +403,6 @@ sub rotatable_bonds
 
 sub stretchable_bonds
 {
-    # TODO: it seems that $next_atom_ids should be applied to bond rotation and
-    # angle bending functions.
     my ( $atom_site, $start_atom_id, $next_atom_ids ) = @_;
 
     # By default, CA is starting atom and CB next.
