@@ -403,7 +403,10 @@ sub rotatable_bonds
 
 sub stretchable_bonds
 {
-    my ( $atom_site, $start_atom_id, $next_atom_ids ) = @_;
+    my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
+    my ( $ignore_connections ) = ( $options->{'ignore_connections'} );
+
+    $ignore_connections //= [];
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
@@ -419,7 +422,7 @@ sub stretchable_bonds
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
-    my @visited_atom_ids = ( $start_atom_id );
+    my @visited_atom_ids = ( $start_atom_id, @{ $ignore_connections } );
     my @next_atom_ids = ( @{ $next_atom_ids } );
     my %parent_atom_ids;
 
@@ -541,7 +544,11 @@ sub stretchable_bonds
 
 sub bendable_angles
 {
-    my ( $atom_site, $start_atom_id, $next_atom_ids, $previous_atom_id ) = @_;
+    my ( $atom_site, $start_atom_id, $next_atom_ids, $previous_atom_id,
+         $options ) = @_;
+    my ( $ignore_connections ) = ( $options->{'ignore_connections'} );
+
+    $ignore_connections //= [];
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,

@@ -169,10 +169,6 @@ sub rotation_translation
             $hetatom_site =
                 filter_new( $residue_site,
                             { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
-            $ignore_connections =
-                filter_new( $residue_site,
-                            { 'include' => { 'label_atom_id' => [ 'CA', 'O' ] },
-                              'return_data' => 'id' } );
         }
 
         next if ! %{ $residue_site };
@@ -183,21 +179,30 @@ sub rotation_translation
 
         if( $do_hetatoms_only ) {
             # HACK: probably will not work with multiple hetero atoms.
-            my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
-            if( $do_angle_bending ) {
-                $bendable_angles =
-                    bendable_angles( $residue_site, undef, $next_atom_ids );
-            }
-            if( $do_bond_torsion ) {
-                $rotatable_bonds =
-                    rotatable_bonds( $residue_site, undef, undef,
-                                     { 'do_hetatoms' => $do_hetatoms_only,
-                                       'ignore_connections' =>
-                                           $ignore_connections } );
-            }
+            # if( $do_angle_bending ) {
+            #     $bendable_angles =
+            #         bendable_angles( $residue_site, undef, $next_atom_ids );
+            # }
+            # if( $do_bond_torsion ) {
+            #     $ignore_connections =
+            #         filter_new( $residue_site,
+            #                     { 'include' => {'label_atom_id' => ['CA', 'O']},
+            #                       'return_data' => 'id' } );
+            #     $rotatable_bonds =
+            #         rotatable_bonds( $residue_site, undef, undef,
+            #                          { 'do_hetatoms' => $do_hetatoms_only,
+            #                            'ignore_connections' =>
+            #                                $ignore_connections } );
+            # }
             if( $do_bond_stretching ) {
+                my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
+                my $ignore_connections =
+                    filter_new( $residue_site,
+                                { 'include' => {'label_atom_id' => ['N', 'C']},
+                                  'return_data' => 'id' } );
                 $stretchable_bonds =
-                    stretchable_bonds( $residue_site, undef, $next_atom_ids );
+                    stretchable_bonds( $residue_site, undef, $next_atom_ids,
+                                       {''} );
             }
         } else {
             if( $do_angle_bending ) {
