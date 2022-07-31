@@ -179,10 +179,11 @@ sub rotation_translation
 
         if( $do_hetatoms_only ) {
             # HACK: probably will not work with multiple hetero atoms.
-            # if( $do_angle_bending ) {
-            #     $bendable_angles =
-            #         bendable_angles( $residue_site, undef, $next_atom_ids );
-            # }
+            if( $do_angle_bending ) {
+                my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
+                $bendable_angles =
+                    bendable_angles( $residue_site, undef, $next_atom_ids );
+            }
             # if( $do_bond_torsion ) {
             #     $ignore_connections =
             #         filter_new( $residue_site,
@@ -198,11 +199,13 @@ sub rotation_translation
                 my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
                 my $ignore_connections =
                     filter_new( $residue_site,
-                                { 'include' => {'label_atom_id' => ['N', 'C']},
+                                { 'include' =>
+                                      { 'label_atom_id' => [ 'N', 'C', 'CB' ] },
                                   'return_data' => 'id' } );
                 $stretchable_bonds =
                     stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                                       {''} );
+                                       { 'ignore_connections' =>
+                                             $ignore_connections } );
             }
         } else {
             if( $do_angle_bending ) {

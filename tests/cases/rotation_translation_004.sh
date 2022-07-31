@@ -2,7 +2,7 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/mg-with-sidechains-with-connections-002.dump
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/mg-with-sidechains-with-connections-005.dump
 atom_id=1925
 do_hetatoms_only=1
 do_bond_torsion=1
