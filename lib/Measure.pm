@@ -35,6 +35,7 @@ use Energy;
 use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
+                   filter_new
                    filter_by_unique_residue_key
                    split_by
                    unique_residue_key
@@ -733,6 +734,7 @@ sub all_bond_lengths
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $next_atom_ids;
+        my $ignore_connections;
         if( $calc_hetatoms ) {
             $next_atom_ids =
                 filter( { 'atom_site' => \%atom_site,
@@ -742,10 +744,16 @@ sub all_bond_lengths
                                     'group_PDB' => [ 'HETATM' ] },
                           'is_list' => 1,
                           'data' => [ 'id' ] } );
+            $ignore_connections =
+                filter_new( \%atom_site,
+                            { 'include' =>
+                              { 'label_atom_id' => [ 'N', 'C', 'CB' ] },
+                                'return_data' => 'id' } );
         }
 
         my $stretchable_bonds =
-            stretchable_bonds( $residue_site, undef, $next_atom_ids );
+            stretchable_bonds( $residue_site, undef, $next_atom_ids,
+                               { 'ignore_connections' => $ignore_connections } );
         my %uniq_stretchable_bonds; # Unique stretchable bonds.
         for my $atom_id ( keys %{ $stretchable_bonds } ) {
             for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){

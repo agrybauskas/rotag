@@ -184,17 +184,17 @@ sub rotation_translation
                 $bendable_angles =
                     bendable_angles( $residue_site, undef, $next_atom_ids );
             }
-            # if( $do_bond_torsion ) {
-            #     $ignore_connections =
-            #         filter_new( $residue_site,
-            #                     { 'include' => {'label_atom_id' => ['CA', 'O']},
-            #                       'return_data' => 'id' } );
-            #     $rotatable_bonds =
-            #         rotatable_bonds( $residue_site, undef, undef,
-            #                          { 'do_hetatoms' => $do_hetatoms_only,
-            #                            'ignore_connections' =>
-            #                                $ignore_connections } );
-            # }
+            if( $do_bond_torsion ) {
+                $ignore_connections =
+                    filter_new( $residue_site,
+                                { 'include' => {'label_atom_id' => ['CA', 'O']},
+                                  'return_data' => 'id' } );
+                $rotatable_bonds =
+                    rotatable_bonds( $residue_site, undef, undef,
+                                     { 'do_hetatoms' => $do_hetatoms_only,
+                                       'ignore_connections' =>
+                                           $ignore_connections } );
+            }
             if( $do_bond_stretching ) {
                 my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
                 my $ignore_connections =
