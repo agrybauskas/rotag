@@ -15,7 +15,7 @@
     'label_seq_id' => '27',
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'N',
-    'connections' => ['149'],
+    'connections' => ['149', '1925', '150'],
     'hybridization' => 'sp3'
   },
   '149' => {
@@ -34,7 +34,7 @@
     'label_seq_id' => '27',
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'C',
-    'connections' => ['148', '1925'],
+    'connections' => ['148', '150'],
     'hybridization' => 'sp3'
   },
   '150' => {
@@ -53,7 +53,7 @@
     'label_seq_id' => '27',
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'C',
-    'connections' => [],
+    'connections' => ['149', '148'],
     'hybridization' => '.'
   },
   '151' => {
@@ -243,7 +243,7 @@
     'label_seq_id' => '27',
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'MG',
-    'connections' => ['149'],
+    'connections' => ['148'],
     'hybridization' => '.',
     'conformation' =>
     [

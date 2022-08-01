@@ -219,25 +219,23 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $calc_hetatoms, $ignore_connections ) =
-        ( $options->{'calc_hetatoms'}, $options->{'ignore_connections'} );
+    my ( $ignore_connections, $calc_hetatoms ) =
+        ( $options->{'ignore_connections'}, $options->{'calc_hetatoms'} );
 
-    $calc_hetatoms //= 0;
     $ignore_connections //= [];
+    $calc_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
-                                 'include' =>
-                                 { $calc_hetatoms ?
-                                   ( 'label_atom_id' =>[ 'C' ] ) :
-                                   ( 'label_atom_id' =>[ 'CA' ] ) },
+                                 'include' => { $calc_hetatoms ?
+                                                ( 'label_atom_id' =>[ 'C' ] ) :
+                                                ( 'label_atom_id' =>[ 'CA' ] ) },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
     $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
-                                  'include' =>
-                                  { $calc_hetatoms ?
-                                    ( 'label_atom_id' => [ 'N' ] ) :
-                                    ( 'label_atom_id' => [ 'CB' ] ) },
+                                  'include' => { $calc_hetatoms ?
+                                                 ( 'label_atom_id' => [ 'N' ] ):
+                                                 ( 'label_atom_id' => [ 'CB' ])},
                                   'data' => [ 'id' ],
                                   'is_list' => 1 } );
 

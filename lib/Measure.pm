@@ -247,12 +247,14 @@ sub dihedral_angle
 sub all_dihedral
 {
     my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $reference_atom_site ) = (
+    my ( $calc_mainchain, $calc_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
+        $options->{'calc_hetatoms'},
         $options->{'reference_atom_site'},
     );
 
     $calc_mainchain //= 0;
+    $calc_hetatoms //= 0;
     $reference_atom_site //= $atom_site;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
@@ -270,7 +272,20 @@ sub all_dihedral
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        my $rotatable_bonds = rotatable_bonds( $residue_site );
+        my $ignore_connections;
+        if( $calc_hetatoms ) {
+            $ignore_connections =
+                filter_new( \%atom_site,
+                            { 'include' =>
+                              { 'label_atom_id' => [ 'CA' ] },
+                                'return_data' => 'id' } );
+        }
+
+        my $rotatable_bonds =
+            rotatable_bonds( $residue_site, undef, undef,
+                             { 'ignore_connections' => $ignore_connections,
+                               'calc_hetatoms' => $calc_hetatoms } );
+
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
         for my $atom_id ( keys %{ $rotatable_bonds } ) {
             for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){

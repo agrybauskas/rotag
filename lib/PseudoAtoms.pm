@@ -251,7 +251,10 @@ sub generate_pseudo_hetatom
         my %dihedral_angles =
             %{ all_dihedral(
                    filter_by_unique_residue_key( $atom_site,
-                                                 $residue_unique_key, 1 ) ) };
+                                                 $residue_unique_key, 1 ),
+                   { 'calc_hetatoms' => 1 } ) };
+        use Data::Dumper;
+        print STDERR Dumper \%dihedral_angles;
         my %bond_lengths =
             %{ all_bond_lengths(
                    filter_by_unique_residue_key( $atom_site,

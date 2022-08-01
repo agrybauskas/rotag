@@ -187,11 +187,11 @@ sub rotation_translation
             if( $do_bond_torsion ) {
                 $ignore_connections =
                     filter_new( $residue_site,
-                                { 'include' => {'label_atom_id' => ['CA', 'O']},
+                                { 'include' => { 'label_atom_id' => ['CA', 'O']},
                                   'return_data' => 'id' } );
                 $rotatable_bonds =
                     rotatable_bonds( $residue_site, undef, undef,
-                                     { 'do_hetatoms' => $do_hetatoms_only,
+                                     { 'calc_hetatoms' => $do_hetatoms_only,
                                        'ignore_connections' =>
                                            $ignore_connections } );
             }
