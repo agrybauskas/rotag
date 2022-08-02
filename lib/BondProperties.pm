@@ -359,13 +359,14 @@ sub rotatable_bonds
 
     my %bond_names; # Names by second atom priority.
     my $bond_name_id = 1;
+    my $bond_stem = $calc_hetatoms ? 'tau' : 'chi';
     for my $second_name ( @second_names_sorted ) {
         my $second_atom_id =
             filter( { 'atom_site' => \%atom_site,
                       'include' => { 'label_atom_id' => [ $second_name ] },
                       'data' => [ 'id' ],
                       'is_list' => 1 } )->[0];
-        $bond_names{"$second_atom_id"} = "chi$bond_name_id";
+        $bond_names{"$second_atom_id"} = "${bond_stem}${bond_name_id}";
         $bond_name_id++;
     }
 
