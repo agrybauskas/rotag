@@ -1,0 +1,20 @@
+data_rotag
+#
+loop_
+_[local]_bond_length.id
+_[local]_bond_length.label_comp_id
+_[local]_bond_length.label_seq_id
+_[local]_bond_length.label_asym_id
+_[local]_bond_length.pdbx_PDB_model_num
+_[local]_bond_length.label_alt_id
+_[local]_bond_length.atom_1_id
+_[local]_bond_length.label_atom_1_id
+_[local]_bond_length.atom_2_id
+_[local]_bond_length.label_atom_2_id
+_[local]_bond_length.type
+_[local]_bond_length.value
+1 ILE 555 B 1 . 8482 CA 8485 CB r1 1.562416
+2 ILE 555 B 1 . 8485 CB 8486 CG1 r2 1.531918
+3 ILE 555 B 1 . 8485 CB 8487 CG2 r3 1.529053
+4 ILE 555 B 1 . 8486 CG1 8488 CD1 r4 1.526589
+#

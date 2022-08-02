@@ -40,6 +40,9 @@ our $VERSION = $VERSION;
 #*                        calculates chi angles of the side-chain atoms.
 #*    -M, --main-chains
 #*                        calculates phi and psi angles of the main-chain atoms.
+#*    -H, --hetero-atoms
+#*                        calculates improper dihedral angles between CA-C-N-X,
+#*                        when X is a heteroatom.
 #*    -r, --radians
 #*                        angles are in radians.
 #*    -F, --format <format>
@@ -51,6 +54,7 @@ our $VERSION = $VERSION;
 
 my $calc_sidechain = 0;
 my $calc_mainchain = 0;
+my $calc_hetatoms = 0;
 my $in_radians = 0;
 my $output_format = 'pdbx';
 
@@ -69,6 +73,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $calc_sidechain = 1 },
     'main-chains|M' => sub { $calc_mainchain = 1 },
+    'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
     'radians|r' => sub { $in_radians = 1 },
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -133,9 +138,8 @@ for my $pdbx_file ( @ARGV ) {
         connect_atoms( $parameters, $dihedral_site );
         hybridization( $parameters, $dihedral_site );
 
-        my $dihedral_angles = all_dihedral( $dihedral_site,
-                                            { 'calc_mainchain' =>
-                                                  ( $calc_mainchain ? 1 : 0 ) });
+        my $dihedral_angles =
+            all_dihedral( $dihedral_site, {'calc_mainchain' => $calc_mainchain});
 
         my $dihedral_id = 1;
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
