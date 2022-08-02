@@ -415,10 +415,15 @@ sub all_dihedral
             my @third_connections = # Third atom connections, except second.
                 grep { $_ ne $second_atom_id }
                 @{ $residue_site->{$third_atom_id}{'connections'} };
+            # HACK: it might not work with hetero atoms, because there might be
+            # more than one atom name.
             my $fourth_atom_name =
                 sort_atom_names(
                 filter( { 'atom_site' => $residue_site,
-                          'include' => { 'id' => \@third_connections },
+                          'include' => { 'id' => \@third_connections,
+                                         ( $calc_hetatoms ?
+                                           ( 'group_PDB' => [ 'HETATM' ] ) :
+                                           () ) },
                           'data' => [ 'label_atom_id' ],
                           'is_list' => 1 } ) )->[0];
             my $fourth_atom_id =

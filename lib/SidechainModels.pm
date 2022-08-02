@@ -139,17 +139,17 @@ sub rotation_translation
 {
     my ( $parameters, $atom_site, $options ) = @_;
     my ( $do_bond_torsion, $do_bond_stretching, $do_angle_bending,
-         $do_hetatoms_only ) = (
+         $calc_hetatoms ) = (
         $options->{do_bond_torsion},
         $options->{do_bond_stretching},
         $options->{do_angle_bending},
-        $options->{do_hetatoms_only},
+        $options->{calc_hetatoms},
     );
 
     $do_bond_torsion //= 1;
     $do_bond_stretching //= 1;
     $do_angle_bending //= 1;
-    $do_hetatoms_only //= 0;
+    $calc_hetatoms //= 0;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -165,7 +165,7 @@ sub rotation_translation
 
         my $hetatom_site;
         my $ignore_connections = [];
-        if( $do_hetatoms_only ) {
+        if( $calc_hetatoms ) {
             $hetatom_site =
                 filter_new( $residue_site,
                             { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
@@ -177,7 +177,7 @@ sub rotation_translation
         my $rotatable_bonds = {};
         my $stretchable_bonds = {};
 
-        if( $do_hetatoms_only ) {
+        if( $calc_hetatoms ) {
             # HACK: probably will not work with multiple hetero atoms.
             if( $do_angle_bending ) {
                 my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
@@ -191,7 +191,7 @@ sub rotation_translation
                                   'return_data' => 'id' } );
                 $rotatable_bonds =
                     rotatable_bonds( $residue_site, undef, undef,
-                                     { 'calc_hetatoms' => $do_hetatoms_only,
+                                     { 'calc_hetatoms' => $calc_hetatoms,
                                        'ignore_connections' =>
                                            $ignore_connections } );
             }
@@ -245,12 +245,12 @@ sub rotation_translation
                     # rotatable bond ends with terminal atom, then this bond is
                     # excluded.
                     my $up_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[1];
-                    if( ! $do_hetatoms_only &&
+                    if( ! $calc_hetatoms &&
                         scalar( @{ $residue_site->{$up_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }
 
                     my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
-                    if( ! $do_hetatoms_only &&
+                    if( ! $calc_hetatoms &&
                         scalar( @{ $residue_site->{$mid_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }
 
