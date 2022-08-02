@@ -245,6 +245,114 @@
     'type_symbol' => 'MG',
     'connections' => ['148'],
     'hybridization' => '.',
+    'conformation' =>
+    [
+  [
+    [
+      '0.657564503615811',
+      '0.678760820670826',
+      '0.326944447738083',
+      '-32.444'
+    ],
+    [
+      '0.0977691328822119',
+      '-0.507169092116212',
+      '0.856283077409263',
+      '-9.886'
+    ],
+    [
+      '0.747027523080611',
+      '-0.531096281595235',
+      '-0.399858249178083',
+      '0.303'
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'eta'
+    ]
+  }, 'Symbolic' ),
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'theta1'
+    ]
+  }, 'Symbolic' ),
+  [
+    [
+      1,
+      0,
+      0,
+      '0'
+    ],
+    [
+      0,
+      1,
+      0,
+      '0'
+    ],
+    [
+      0,
+      0,
+      '1',
+      '3.5527136788005e-15'
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, $svar], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'r1'
+    ]
+  }, 'Symbolic' ),
+  [
+    [
+      '0'
+    ],
+    [
+      '3.5527136788005e-15'
+    ],
+    [
+      '3.85386572158398'
+    ],
+    [
+      1
+    ]
+  ]
+]
   },
   '883' => {
     'Cartn_x' => '-29.098',
