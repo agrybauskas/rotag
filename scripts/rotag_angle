@@ -631,7 +631,7 @@ for my $pdbx_file ( @ARGV ) {
         if( ! %{ $angle_site } ) {
             warning( { 'program' => $0,
                        'message' => 'no atoms were selected for calculating ' .
-                                    "dihedral angles.\n" } );
+                                    "bond angles.\n" } );
             next;
         }
 
