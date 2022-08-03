@@ -237,6 +237,8 @@ sub dihedral_angle
 #     $atom_site - atom data structure.
 #     $options->{'calc_mainchain'} - additionally calculates phi and psi
 #     mainchain dihedral angles.
+#     $options->{'calc_hetatoms'} - additionally calculates dihedral angles for
+#     hetero atoms.
 # Output:
 #     $residue_angles - data structure that relates residue id and angle values.
 #     Ex.:
@@ -479,6 +481,8 @@ sub all_dihedral
 #     $atom_site - atom data structure.
 #     $options->{'calc_mainchain'} - additionally calculates mainchain bond
 #     angles.
+#     $options->{'calc_hetatoms'} - additionally calculates bond angles for
+#     hetero atoms.
 # Output:
 #     $bond_length - data structure that relates residue id and bond lengths.
 #     Ex.:
@@ -717,6 +721,8 @@ sub all_bond_angles
 #     $atom_site - atom data structure.
 #     $options->{'calc_mainchain'} - additionally calculates mainchain bond
 #     angles.
+#     $options->{'calc_hetatoms'} - additionally calculates bond lengths for
+#     hetero atoms.
 # Output:
 #     $bond_length - data structure that relates residue id and bond lengths.
 #     Ex.:
