@@ -634,11 +634,16 @@ sub bendable_angles
     # TODO: the whole process of naming bonds might be implemented in the while
     # loop above.
     my @unique_bonds;
-    for my $bond ( map { @{ $bendable_angles{$_} } } keys %bendable_angles ) {
-        if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
-                   @unique_bonds ){
-            push @unique_bonds, $bond;
+    for my $bond_terminal_id ( sort keys %bendable_angles ) {
+        # print STDERR "$bond_terminal_id\n";
+        for my $bond ( @{ $bendable_angles{$bond_terminal_id} } ) {
+            # print STDERR "$atom_site{$bond->[0]}{'label_atom_id'},$atom_site{$bond->[1]}{'label_atom_id'},$atom_site{$bond->[2]}{'label_atom_id'}\n";
+            if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
+                       @unique_bonds ){
+                push @unique_bonds, $bond;
+            }
         }
+        # print STDERR "---\n";
     }
 
     # Sorts bonds by naming priority.
