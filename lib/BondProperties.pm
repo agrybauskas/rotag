@@ -633,24 +633,26 @@ sub bendable_angles
     # Asigns names for bendable angles by first filtering out redundant angles.
     # TODO: the whole process of naming bonds might be implemented in the while
     # loop above.
-    my @unique_bonds;
-    for my $bond_terminal_id ( sort keys %bendable_angles ) {
-        # print STDERR "$bond_terminal_id\n";
+    my %unique_bonds;
+    for my $bond_terminal_id ( keys %bendable_angles ) {
+        # print STDERR "$atom_site{$bond_terminal_id}{'label_atom_id'} ($bond_terminal_id)\n";
         for my $bond ( @{ $bendable_angles{$bond_terminal_id} } ) {
-            # print STDERR "$atom_site{$bond->[0]}{'label_atom_id'},$atom_site{$bond->[1]}{'label_atom_id'},$atom_site{$bond->[2]}{'label_atom_id'}\n";
-            if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
-                       @unique_bonds ){
-                push @unique_bonds, $bond;
-            }
+            my $key = join ',', @{ $bond };
+
+            next if defined $key &&
+                    defined $unique_bonds{$key} &&
+                    $unique_bonds{$key};
+
+            $unique_bonds{$key} = 1;
         }
-        # print STDERR "---\n";
     }
 
     # Sorts bonds by naming priority.
-    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
-                                                         # bond.
-    my @bond_third_ids  = map { $_->[2] } @unique_bonds; # Second atom in the
-                                                         # bond.
+    my @unique_bonds = map { [ split ',', $_ ] } sort keys %unique_bonds;
+    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in
+                                                         # the bond.
+    my @bond_third_ids  = map { $_->[2] } @unique_bonds; # Second atom in
+                                                         # the bond.
 
     my @second_names_sorted =
         @{ sort_atom_names(
