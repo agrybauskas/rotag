@@ -11,7 +11,7 @@ use ForceField::Parameters;
 # Example: ./connect_atoms structure.dump
 #
 
-my ( $pdbx_dump_file, $no_connection_list ) = @ARGV;
+my ( $pdbx_dump_file, $no_connection_list, $assign_hetatoms ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -24,7 +24,8 @@ $atom_site = eval( $atom_site );
 my $parameters = Parameters->new();
 
 connect_atoms( $parameters, $atom_site,
-               { 'no_connection_list' => $no_connection_list } );
+               { 'no_connection_list' => $no_connection_list,
+                 'assign_hetatoms' => $assign_hetatoms } );
 
 my @atom_coord;
 my @parent_atom;
