@@ -223,6 +223,12 @@ sub connect_two_atoms
 #     $atom_site - atom data structure.
 #     $options->{'append_connections'} - only appends connections and not
 #     recalculates the old ones.
+#     $options->{'no_connection_list'} - tries to connect atoms without prior
+#     knowledge about possible connections.
+#     $options->{'no_covalent_radii'} - tries to connect atoms only using list
+#     of connections.
+#     $options->{'assign_hetatoms'} - includes hetatoms in connection
+#     calculations.
 # Output:
 #     none - connects atoms by adding "connection" key and values to atom site
 #     data structure.
@@ -232,15 +238,18 @@ sub connect_atoms
 {
     my ( $parameters, $atom_site, $options ) = @_;
 
-    my ( $append_connections, $no_connection_list, $no_covalent_radii ) = (
+    my ( $append_connections, $no_connection_list, $no_covalent_radii,
+         $assign_hetatoms ) = (
         $options->{'append_connections'},
         $options->{'no_connection_list'},
         $options->{'no_covalent_radii'},
+        $options->{'assign_hetatoms'}
     );
 
     $append_connections //= 0;
     $no_connection_list //= 0;
     $no_covalent_radii //= 0;
+    $assign_radii //= 0;
 
     # Removes all previously described connections if certain flags are not on.
     if( ! $append_connections ) {
