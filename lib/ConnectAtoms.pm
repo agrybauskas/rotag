@@ -39,6 +39,7 @@ our $VERSION = $VERSION;
 #     ForceField::Parameters connection list.
 #     $options->{'no_covalent_radii'} - if on, connection is determined without
 #     covalent radii.
+#     $options->{'assign_hetatoms'} - if on, hetatoms are included.
 # Output:
 #     $is_connected - boolean: 0 (for not connected) or 1 (for connected).
 #
@@ -47,10 +48,13 @@ sub is_connected
 {
     my ( $parameters, $target_atom, $neighbour_atom, $options ) = @_;
 
-    my ( $no_connection_list, $no_covalent_radii ) =
-        ( $options->{'no_connection_list'}, $options->{'no_covalent_radii'} );
+    my ( $no_connection_list, $no_covalent_radii, $assign_hetatoms ) =
+        ( $options->{'no_connection_list'},
+          $options->{'no_covalent_radii'},
+          $options->{'assign_hetatoms'} );
     $no_connection_list //= 0;
     $no_covalent_radii //= 0;
+    $assign_hetatoms //= 0;
 
     my $covalent_bond_comb = $parameters->{'_[local]_covalent_bond_combinations'};
     my $connectivity = $parameters->{'_[local]_connectivity'};
@@ -249,7 +253,7 @@ sub connect_atoms
     $append_connections //= 0;
     $no_connection_list //= 0;
     $no_covalent_radii //= 0;
-    $assign_radii //= 0;
+    $assign_hetatoms //= 0;
 
     # Removes all previously described connections if certain flags are not on.
     if( ! $append_connections ) {
@@ -274,7 +278,9 @@ sub connect_atoms
                                     { 'no_connection_list' =>
                                           $no_connection_list,
                                       'no_covalent_radii' =>
-                                          $no_covalent_radii } ) ) &&
+                                          $no_covalent_radii,
+                                      'assign_hetatoms' =>
+                                          $assign_hetatoms } ) ) &&
                     ( ( ! exists $atom_site->{$atom_id}{'connections'} ) ||
                       ( ! any { $neighbour_id eq $_ }
                              @{ $atom_site->{$atom_id}{'connections'} } ) ) ){
