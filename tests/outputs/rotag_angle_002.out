@@ -1,0 +1,21 @@
+data_rotag
+#
+loop_
+_[local]_bond_angle.id
+_[local]_bond_angle.label_comp_id
+_[local]_bond_angle.label_seq_id
+_[local]_bond_angle.label_asym_id
+_[local]_bond_angle.pdbx_PDB_model_num
+_[local]_bond_angle.label_alt_id
+_[local]_bond_angle.atom_1_id
+_[local]_bond_angle.label_atom_1_id
+_[local]_bond_angle.atom_2_id
+_[local]_bond_angle.label_atom_2_id
+_[local]_bond_angle.atom_3_id
+_[local]_bond_angle.label_atom_3_id
+_[local]_bond_angle.type
+_[local]_bond_angle.value
+_[local]_bond_angle.units
+1 SER 18 A 1 . 147 N 148 CA 151 CB theta1 110.180 degrees
+2 SER 18 A 1 . 148 CA 151 CB 152 OG theta2 110.597 degrees
+#
