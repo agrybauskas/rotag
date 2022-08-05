@@ -632,45 +632,40 @@ sub bendable_angles
 
     # Asigns names for bendable angles by first filtering out redundant angles.
     my %unique_bonds;
+    my @bond_second_ids = ();
+    my @bond_third_ids = ();
     for my $bond_terminal_id ( keys %bendable_angles ) {
         for my $bond ( @{ $bendable_angles{$bond_terminal_id} } ) {
             next if defined $unique_bonds{$bond->[0]}{$bond->[1]}{$bond->[2]} &&
                     $unique_bonds{$bond->[0]}{$bond->[1]}{$bond->[2]};
 
+            push @bond_second_ids, $bond->[1];
+            push @bond_second_ids, $bond->[2];
+
             $unique_bonds{$bond->[0]}{$bond->[1]}{$bond->[2]} = 1;
         }
     }
 
-    # # Sorts bonds by naming priority.
-    # my @unique_bonds = map { [ split ',', $_ ] } sort keys %unique_bonds;
-    # my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in
-    #                                                      # the bond.
-    # my @bond_third_ids  = map { $_->[2] } @unique_bonds; # Second atom in
-    #                                                      # the bond.
+    @bond_second_ids = uniq @bond_second_ids;
+    @bond_third_ids = uniq @bond_second_ids;
 
-    # TODO: just convert list to hash. Much simpler solution, but currently
-    # it will not be implemented in sort_atom_names(), due to other possible
-    # interactions.
-    # TODO: also, would be helpful just to convert names to atom id.
+    # Sorts bonds by naming priority.
     my @second_names_sorted =
         @{ sort_atom_names(
                filter( { 'atom_site' => \%atom_site,
-                         'include' => { 'id' => [ map {keys %{$unique_bonds{$_}}}
-                                                      keys %unique_bonds ] },
+                         'include' => { 'id' => \@bond_second_ids },
                          'data' => [ 'label_atom_id' ],
                          'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
-    # my @third_names_sorted =
-    #     @{ sort_atom_names(
-    #            filter( { 'atom_site' => \%atom_site,
-    #                      'include' => { 'id' => [ map {keys %{$unique_bonds{$_}{$_}}}
-    #                                               map {keys %{$unique_bonds{$_}}}
-    #                                                   keys %unique_bonds ] },
-    #                      'data' => [ 'label_atom_id' ],
-    #                      'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+    my @third_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@bond_third_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
     my %second_names_order =
         map { $second_names_sorted[$_] => $_ + 1 } 0..$#second_names_sorted;
-    # my %third_names_order =
-    #     map { $third_names_sorted[$_] => $_ + 1 } 0..$#third_names_sorted;
+    my %third_names_order =
+        map { $third_names_sorted[$_] => $_ + 1 } 0..$#third_names_sorted;
 
     my %angle_names; # Names by second atom priority.
     my $angle_name_id = 1;
