@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( connect_hetatoms );
 use ForceField::Parameters;
 
 #
-# Unit test: ConnectAtoms::connect_atoms
-# Example: ./connect_atoms structure.dump
+# Unit test: ConnectAtoms::connect_hetatoms
+# Example: ./connect_hetatoms structure.dump
 #
 
 my ( $pdbx_dump_file, $no_connection_list ) = @ARGV;
@@ -23,8 +23,8 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-connect_atoms( $parameters, $atom_site,
-               { 'no_connection_list' => $no_connection_list } );
+connect_hetatoms( $parameters, $atom_site,
+                  { 'no_connection_list' => $no_connection_list } );
 
 my @atom_coord;
 my @parent_atom;
