@@ -11,14 +11,14 @@ bash dependencies/Ubuntu-20.04/install.sh
 ```
 
 ## Installation
-In order to install rotag, the following commands have to be executed in the
+In order to build rotag, the following commands have to be executed in the
 top rotag directory.
 
 ```bash
 make
 ```
 
-After the installation the environment has to be set. The commands can be placed
+After the installation, the environment has to be set. The commands can be placed
 in `~/.bashrc` file.
 
 ```bash
