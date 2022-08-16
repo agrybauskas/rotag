@@ -17,4 +17,7 @@ perl -e '
         }
         print( "\n" ) if $matrix_id != $#{ $matrix_product };
     }
-' 2>&1 | sed 's/line\s*[0-9]*.$/line <row>./g' | sed 's/0x[0-9a-f]\{12\}/<hex>/g'
+' 2>&1 | \
+    sed 's/line\s*[0-9]*.$/line <row>./g' | \
+    sed 's/0x[0-9a-f]\{12\}/<hex>/g' | \
+    sed 's/at .*\/lib/at <rotag-path>\/lib/g'

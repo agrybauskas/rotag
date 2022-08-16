@@ -5,8 +5,8 @@ use warnings;
 
 use List::Util qw( max );
 
-# use AtomProperties qw( %ATOMS );
-# use Constants qw( $SIG_FIGS );
+use AtomProperties qw( %ATOMS );
+use Constants qw( $SIG_FIGS );
 use Grid qw( create_box
              grid_box );
 use ForceField::Parameters;
@@ -24,9 +24,9 @@ use PDBxParser qw( filter
 my ( $pdbx_file, $edge_length ) = @ARGV;
 
 my $parameters = Parameters->new();
-my $SIG_FIGS = $parameters->{'_[local]_constants'}{'sig_figs_max'};
-$edge_length //=
-    $parameters->{'_[local]_constants'}{'edge_length_interaction'};
+$edge_length //= $parameters->{'_[local]_constants'}{'edge_length_connection'};
+
+my $SIG_FIGS = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
 my $atom_site = obtain_atom_site( $pdbx_file );
 

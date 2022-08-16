@@ -1,4 +1,4 @@
-data_1:chi1:-1.571;chi2:-3.142;chi3:-1.571;E:2.482
+data_1:chi1:-1.571;chi2:-3.142;chi3:-1.571;E:2.518
 #
 loop_
 _atom_site.group_PDB
@@ -24,7 +24,7 @@ ATOM 84 C CD . GLU A 1 14 4.612898 5.108518 78.968753 1
 ATOM 85 O OE1 . GLU A 1 14 5.335762 5.870025 79.666402 1
 ATOM 86 O OE2 . GLU A 1 14 3.599548 5.530769 78.364967 1
 #
-data_2:chi1:-1.571;chi2:-3.142;chi3:1.571;E:2.797
+data_2:chi1:-1.571;chi2:-3.142;chi3:1.571;E:2.833
 #
 loop_
 _atom_site.group_PDB

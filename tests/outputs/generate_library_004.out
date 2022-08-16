@@ -1,4 +1,4 @@
-data_1:chi1:-2.513;E:0.711
+data_1:chi1:-2.513;E:0.793
 #
 loop_
 _atom_site.group_PDB
@@ -21,7 +21,7 @@ ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1
 ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 1
 ATOM 152 O OG . SER A 1 18 -53.503727 -111.908191 -4.165470 1
 #
-data_2:chi1:-2.199;E:0.003
+data_2:chi1:-2.199;E:0.085
 #
 loop_
 _atom_site.group_PDB
@@ -44,7 +44,7 @@ ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1
 ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 1
 ATOM 152 O OG . SER A 1 18 -53.751707 -111.655191 -3.948279 1
 #
-data_3:chi1:-1.885;E:-0.107
+data_3:chi1:-1.885;E:-0.026
 #
 loop_
 _atom_site.group_PDB
@@ -67,7 +67,7 @@ ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1
 ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 1
 ATOM 152 O OG . SER A 1 18 -54.085588 -111.444156 -3.819194 1
 #
-data_4:chi1:-1.571;E:0.205
+data_4:chi1:-1.571;E:0.287
 #
 loop_
 _atom_site.group_PDB

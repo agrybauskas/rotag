@@ -4540,7 +4540,7 @@ $VAR1 = bless( {
     }
   },
   '_[local]_force_field' => {
-    'c_k' => '100.0',
+    'c_k' => '62.0',
     'cutoff_atom' => '50.0',
     'cutoff_end' => '5.0',
     'cutoff_start' => '2.5',

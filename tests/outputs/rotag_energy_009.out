@@ -8,6 +8,6 @@ _[local]_rotamer_energy.pdbx_PDB_model_num
 _[local]_rotamer_energy.label_alt_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 5 A 1 . composite 5.424962
-2 5 B 1 A composite 7.211665
+1 5 A 1 . composite 9.484349
+2 5 B 1 A composite 10.873918
 #
