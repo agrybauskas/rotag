@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( predict_sidechains );
 
 use Clone qw( clone );
+use Graph::Undirected;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
@@ -113,6 +114,30 @@ sub predict_sidechains
             $residue_to_grid{$unique_residue_key} = $grid_id;
         }
     }
+
+    # Generates graph for protein.
+    # TODO: make sure that interactions are in both ways.
+    my $interaction_graph = new Graph::Undirected;
+    for my $unique_residue_key ( keys %residue_pairs ) {
+        if( ! $interaction_graph->has_vertex( $unique_residue_key ) ) {
+            $interaction_graph->add_vertex( $unique_residue_key );
+        }
+
+        for my $neighbour_unique_residue_key (
+            keys %{ $residue_pairs{$unique_residue_key} } ) {
+            if( ! $interaction_graph->has_vertex($neighbour_unique_residue_key)){
+                $interaction_graph->add_vertex( $neighbour_unique_residue_key );
+            }
+
+            if( ! $interaction_graph->has_edge( $unique_residue_key,
+                                                $neighbour_unique_residue_key )){
+                $interaction_graph->add_edge( $unique_residue_key,
+                                              $neighbour_unique_residue_key );
+            }
+        }
+    }
+
+    print $interaction_graph;
 
     #     for my $unique_residue_key ( @next_residues ) {
     #         my @rotamer_ids =
