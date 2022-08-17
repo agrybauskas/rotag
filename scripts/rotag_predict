@@ -160,10 +160,19 @@ for my $pdbx_file ( @ARGV ) {
                     split ',', $node2;
 
                 # TODO: Have to include or split by chains and PDB num.
-                $graphviz->add_node( "$residue_id1,$chain_id1" );
-                $graphviz->add_node( "$residue_id2,$chain_id2" );
+                $graphviz->add_node( "$residue_id1,$chain_id1",
+                                     shape => 'circle',
+                                     style => 'filled',
+                                     fillcolor => 'steelblue',
+                                     fontcolor => 'white' );
+                $graphviz->add_node( "$residue_id2,$chain_id2",
+                                     shape => 'circle',
+                                     style => 'filled',
+                                     fillcolor => 'steelblue',
+                                     fontcolor => 'white' );
                 $graphviz->add_edge( "$residue_id1,$chain_id1" =>
-                                     "$residue_id2,$chain_id2", dir => 'both' );
+                                     "$residue_id2,$chain_id2",
+                                     dir => 'both');
             }
             print $graphviz->as_svg;
         }
