@@ -2,6 +2,7 @@
 
 sudo apt-get install -y \
      libclone-perl \
+     libgraph-perl \
      liblist-moreutils-perl \
      liblist-allutils-perl \
      libparse-yapp-perl \
