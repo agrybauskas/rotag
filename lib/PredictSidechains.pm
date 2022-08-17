@@ -226,7 +226,7 @@ sub predict_sidechains
 
     my %predicted_rotamers = ();
 
-    return \%predicted_rotamers;
+    return \%predicted_rotamers, $interaction_sptg_graph;
 }
 
 1;
