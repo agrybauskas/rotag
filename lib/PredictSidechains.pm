@@ -116,29 +116,32 @@ sub predict_sidechains
     for my $ca_atom_id ( keys %residue_pairs ) {
         if( ! $interaction_graph->has_vertex( $ca_atom_id ) ) {
             $interaction_graph->add_vertex( $ca_atom_id );
+            $interaction_graph->set_vertex_attribute( $ca_atom_id, 'visited', 0);
         }
 
         for my $neighbour_ca_atom_id (
             keys %{ $residue_pairs{$ca_atom_id} } ) {
             if( ! $interaction_graph->has_vertex( $neighbour_ca_atom_id ) ) {
                 $interaction_graph->add_vertex( $neighbour_ca_atom_id );
+                $interaction_graph->set_vertex_attribute( $neighbour_ca_atom_id,
+                                                          'visited', 0);
             }
 
             if( ! $interaction_graph->has_edge( $ca_atom_id,
                                                 $neighbour_ca_atom_id ) ) {
                 $interaction_graph->add_edge( $ca_atom_id,
                                               $neighbour_ca_atom_id );
+                $interaction_graph->set_edge_attribute( $ca_atom_id,
+                                                        $neighbour_ca_atom_id,
+                                                        'visited', 0);
             }
         }
     }
 
-    # Travels from one node to another through edges and calculates rotamer
-    # and interaction energies.
-    my $interaction_sptg_graph = # Creates shortest path trees.
-        $interaction_graph->SPT_Dijkstra( $interaction_graph->random_vertex );
-
-    # Adds attributes to nodes and edges that will denote if they were visited or
-    # not.
+    # Starts at random vertex and travels bread-first.
+    # TODO: there will definately be problems with unconnected graphs. Have to
+    # enter the second graph and etc.
+    my $start_node = $interaction_graph->random_vertex;
 
     # for my $unique_residue_key ( @next_residues ) {
     #     my @rotamer_ids =
@@ -221,7 +224,7 @@ sub predict_sidechains
 
     my %predicted_rotamers = ();
 
-    return \%predicted_rotamers, $interaction_sptg_graph;
+    return \%predicted_rotamers, $interaction_graph;
 }
 
 1;
