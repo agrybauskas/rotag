@@ -163,7 +163,7 @@ for my $pdbx_file ( @ARGV ) {
                 $graphviz->add_node( "$residue_id1,$chain_id1" );
                 $graphviz->add_node( "$residue_id2,$chain_id2" );
                 $graphviz->add_edge( "$residue_id1,$chain_id1" =>
-                                     "$residue_id1,$chain_id2" );
+                                     "$residue_id2,$chain_id2", dir => 'both' );
             }
             print $graphviz->as_svg;
         }
