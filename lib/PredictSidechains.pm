@@ -95,44 +95,39 @@ sub predict_sidechains
     my %residue_to_grid = ();
     for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
         for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
-            my $unique_residue_key =
-                unique_residue_key( $atom_site_cas->{$atom_id} );
             for my $neighbour_atom_id ( @{ $neighbouring_cells_cas->{$grid_id} } ) {
-                my $neighbour_unique_residue_key =
-                    unique_residue_key( $atom_site_cas->{$neighbour_atom_id} );
+                next if $atom_id eq $neighbour_atom_id ||
+                    ( defined $residue_pairs{$atom_id} &&
+                      defined $residue_pairs{$atom_id}
+                                            {$neighbour_atom_id} &&
+                      $residue_pairs{$atom_id}
+                                    {$neighbour_atom_id} );
 
-                next if $unique_residue_key eq $neighbour_unique_residue_key ||
-                    ( defined $residue_pairs{$unique_residue_key} &&
-                      defined $residue_pairs{$unique_residue_key}
-                                            {$neighbour_unique_residue_key} &&
-                      $residue_pairs{$unique_residue_key}
-                                    {$neighbour_unique_residue_key} );
-
-                $residue_pairs{$unique_residue_key}
-                              {$neighbour_unique_residue_key} = 1;
+                $residue_pairs{$atom_id}
+                              {$neighbour_atom_id} = 1;
             }
-            $residue_to_grid{$unique_residue_key} = $grid_id;
+            $residue_to_grid{$atom_id} = $grid_id;
         }
     }
 
     # Generates graph for protein.
     # TODO: make sure that interactions are in both ways.
     my $interaction_graph = new Graph::Undirected;
-    for my $unique_residue_key ( keys %residue_pairs ) {
-        if( ! $interaction_graph->has_vertex( $unique_residue_key ) ) {
-            $interaction_graph->add_vertex( $unique_residue_key );
+    for my $ca_atom_id ( keys %residue_pairs ) {
+        if( ! $interaction_graph->has_vertex( $ca_atom_id ) ) {
+            $interaction_graph->add_vertex( $ca_atom_id );
         }
 
-        for my $neighbour_unique_residue_key (
-            keys %{ $residue_pairs{$unique_residue_key} } ) {
-            if( ! $interaction_graph->has_vertex($neighbour_unique_residue_key)){
-                $interaction_graph->add_vertex( $neighbour_unique_residue_key );
+        for my $neighbour_ca_atom_id (
+            keys %{ $residue_pairs{$ca_atom_id} } ) {
+            if( ! $interaction_graph->has_vertex( $neighbour_ca_atom_id ) ) {
+                $interaction_graph->add_vertex( $neighbour_ca_atom_id );
             }
 
-            if( ! $interaction_graph->has_edge( $unique_residue_key,
-                                                $neighbour_unique_residue_key )){
-                $interaction_graph->add_edge( $unique_residue_key,
-                                              $neighbour_unique_residue_key );
+            if( ! $interaction_graph->has_edge( $ca_atom_id,
+                                                $neighbour_ca_atom_id ) ) {
+                $interaction_graph->add_edge( $ca_atom_id,
+                                              $neighbour_ca_atom_id );
             }
         }
     }

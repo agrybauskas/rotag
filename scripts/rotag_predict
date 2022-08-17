@@ -152,26 +152,28 @@ for my $pdbx_file ( @ARGV ) {
         if( $draw_interaction_graph ) {
             my $graphviz = GraphViz->new();
             for my $edge ( $interaction_graph->edges() ) {
-                my ( $node1, $node2 ) = @{ $edge };
+                my ( $ca_atom_id1, $ca_atom_id2 ) = @{ $edge };
 
-                my ( $residue_id1, $chain_id1, $alt_id1, $pdb_num1) =
-                    split ',', $node1;
-                my ( $residue_id2, $chain_id2, $alt_id2, $pdb_num2) =
-                    split ',', $node2;
+                my ( $residue_id1, $residue_name1 ) =
+                    ( $selected_atom_site->{$ca_atom_id1}{'label_seq_id'},
+                      $selected_atom_site->{$ca_atom_id1}{'label_comp_id'} );
+                my ( $residue_id2, $residue_name2 ) =
+                    ( $selected_atom_site->{$ca_atom_id2}{'label_seq_id'},
+                      $selected_atom_site->{$ca_atom_id2}{'label_comp_id'} );
 
                 # TODO: Have to include or split by chains and PDB num.
-                $graphviz->add_node( "$residue_id1,$chain_id1",
+                $graphviz->add_node( "$residue_name1$residue_id1",
                                      shape => 'circle',
                                      style => 'filled',
                                      fillcolor => 'steelblue',
                                      fontcolor => 'white' );
-                $graphviz->add_node( "$residue_id2,$chain_id2",
+                $graphviz->add_node( "$residue_name2$residue_id2",
                                      shape => 'circle',
                                      style => 'filled',
                                      fillcolor => 'steelblue',
                                      fontcolor => 'white' );
-                $graphviz->add_edge( "$residue_id1,$chain_id1" =>
-                                     "$residue_id2,$chain_id2",
+                $graphviz->add_edge( "$residue_name1$residue_id1" =>
+                                     "$residue_name2$residue_id2",
                                      dir => 'both');
             }
             print $graphviz->as_svg;
