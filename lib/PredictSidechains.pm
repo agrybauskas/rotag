@@ -61,6 +61,7 @@ sub predict_sidechains
     # Generates look up table for easier data accesibility.
     my %rotamer_to_residue = ();
     my %residue_to_rotamer = ();
+    my %rotamer_to_angles = ();
     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
         my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
         my $rotamer_id = $rotamer_angle->{'rotamer_id'};
@@ -73,6 +74,7 @@ sub predict_sidechains
 
         $rotamer_to_residue{$rotamer_id}{$unique_residue_key} = 1;
         $residue_to_rotamer{$unique_residue_key}{$rotamer_id} = 1;
+        $rotamer_to_angles{$rotamer_id}{$rotamer_angle_id} = 1;
     }
 
     # Determining interaction grid.
@@ -161,67 +163,60 @@ sub predict_sidechains
             rotation_only( $parameters, $rotamer_site );
 
             for my $rotamer_id ( @rotamer_ids ) {
-                # my @angle_ids =
-                #     @{ $rotamer_look_up_tbls{'rotamer_id'}
-                #                             {$rotamer_id}
-                #                             {'angle_id'} };
-                # my %angles =
-                #     map { $rotamer_angles->{$_}{'type'} =>
-                #           $rotamer_angles->{$_}{'value'} }
-                #         @angle_ids;
+                my @angle_ids = keys %{ $rotamer_to_angles{$rotamer_id} };
+                my %angles =
+                    map { $rotamer_angles->{$_}{'type'} =>
+                          $rotamer_angles->{$_}{'value'} }
+                        @angle_ids;
 
-                # my %rotamer_site = %{ clone( $rotamer_site ) };
-                # replace_with_rotamer( $parameters, \%rotamer_site,
-                #                       $unique_residue_key, \%angles );
+                my %rotamer_site = %{ clone( $rotamer_site ) };
+                replace_with_rotamer( $parameters, \%rotamer_site,
+                                      $unique_residue_key, \%angles );
 
-                # for my $neighbour_unique_residue_key (
-                #     keys %{ $residue_pairs{$unique_residue_key} } ) {
-                #     my @neighbour_rotamer_ids =
-                #         keys %{ $rotamer_look_up_tbls{'unique_residue_key'}
-                #                                      {$unique_residue_key}
-                #                                      {'rotamer_id'} };
-                #     my $neighbour_rotamer_site =
-                #         filter_by_unique_residue_key( $atom_site,
-                #                                       $neighbour_unique_residue_key,
-                #                                       1 );
+                for my $neighbour_unique_residue_key (
+                    keys %{ $residue_pairs{$unique_residue_key} } ) {
+                    my @neighbour_rotamer_ids =
+                        keys %{$residue_to_rotamer{$neighbour_unique_residue_key}};
+                    my $neighbour_rotamer_site = filter_by_unique_residue_key(
+                        $atom_site,
+                        $neighbour_unique_residue_key,
+                        1
+                    );
 
-                #     # TODO: move code so, it would be calculated once.
-                #     connect_atoms( $parameters, $neighbour_rotamer_site );
-                #     hybridization( $parameters, $neighbour_rotamer_site );
-                #     rotation_only( $parameters, $neighbour_rotamer_site );
+                    # TODO: move code so, it would be calculated once.
+                    connect_atoms( $parameters, $neighbour_rotamer_site );
+                    hybridization( $parameters, $neighbour_rotamer_site );
+                    rotation_only( $parameters, $neighbour_rotamer_site );
 
-                #     for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                #         my @neighbour_angle_ids =
-                #             @{ $rotamer_look_up_tbls{'rotamer_id'}
-                #                                     {$neighbour_rotamer_id}
-                #                                     {'angle_id'} };
-                #         my %neighbour_angles =
-                #             map { $rotamer_angles->{$_}{'type'} =>
-                #                   $rotamer_angles->{$_}{'value'} }
-                #                 @neighbour_angle_ids;
+                    for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
+                        my @neighbour_angle_ids =
+                            keys %{ $rotamer_to_angles{$neighbour_rotamer_id} };
+                        my %neighbour_angles =
+                            map { $rotamer_angles->{$_}{'type'} =>
+                                  $rotamer_angles->{$_}{'value'} }
+                                @neighbour_angle_ids;
 
-                #         my %neighbour_rotamer_site =
-                #             %{ clone( $neighbour_rotamer_site ) };
-                #         replace_with_rotamer( $parameters, \%neighbour_rotamer_site,
-                #                               $neighbour_unique_residue_key, \%angles );
+                        my %neighbour_rotamer_site =
+                            %{ clone( $neighbour_rotamer_site ) };
+                        replace_with_rotamer( $parameters,
+                                              \%neighbour_rotamer_site,
+                                              $neighbour_unique_residue_key,
+                                              \%angles );
 
-                #         # Calculate pairwise energy.
-                #         my $pairwise_energy_sum =
-                #             pairwise_rotamer_energy( $parameters,
-                #                                      \%rotamer_site,
-                #                                      \%neighbour_rotamer_site,
-                #                                      \&ForceField::Bonded::general,
-                #                                      \&ForceField::NonBonded::general,
-                #             );
+                        # Calculate pairwise energy.
+                        my $pairwise_energy_sum = pairwise_rotamer_energy(
+                            $parameters,
+                            \%rotamer_site,
+                            \%neighbour_rotamer_site,
+                            \&ForceField::Bonded::general,
+                            \&ForceField::NonBonded::general,
+                        );
 
-                #         # HACK: can be optimizied for searching for those
-                #         # rotamers that have no possible solutions.
-                #         if( $pairwise_energy_sum <= $cutoff_atom  ) {
-                #             $combination{$rotamer_id}{$neighbour_rotamer_id} = 1;
-                #             $combination{$neighbour_rotamer_id}{$rotamer_id} = 1;
-                #         }
-                #     }
-                # }
+                        # Does not reach cut off limit.
+                        if( $pairwise_energy_sum <= $cutoff_atom  ) {
+                        }
+                    }
+                }
             }
         }
 
