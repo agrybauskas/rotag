@@ -148,6 +148,9 @@ sub predict_sidechains
     my $start_node = $interaction_graph->random_vertex;
     my @next_nodes = $interaction_graph->neighbours( $start_node );
 
+    # Keeps structure data if it was already calculated.
+    my %rotamer_to_atom_site = ();
+
     while( @next_nodes ) {
         for my $node ( @next_nodes ) {
             my $unique_residue_key = unique_residue_key($atom_site_cas->{$node});
@@ -169,12 +172,19 @@ sub predict_sidechains
                           $rotamer_angles->{$_}{'value'} }
                         @angle_ids;
 
-                my %rotamer_site = %{ clone( $rotamer_site ) };
-                replace_with_rotamer( $parameters, \%rotamer_site,
-                                      $unique_residue_key, \%angles );
+                my %rotamer_site;
+                if( ! defined $rotamer_to_atom_site{$rotamer_id} ) {
+                    %rotamer_site = %{ clone( $rotamer_site ) };
+                    replace_with_rotamer( $parameters, \%rotamer_site,
+                                          $unique_residue_key, \%angles );
+                    $rotamer_to_atom_site{$rotamer_id} = { %rotamer_site };
+                } else {
+                    %rotamer_site = %{ $rotamer_to_atom_site{$rotamer_id} };
+                }
 
-                for my $neighbour_unique_residue_key (
-                    keys %{ $residue_pairs{$unique_residue_key} } ) {
+                for my $neighbour_node ( keys %{ $residue_pairs{$node} } ) {
+                    my $neighbour_unique_residue_key =
+                        unique_residue_key( $atom_site_cas->{$neighbour_node} );
                     my @neighbour_rotamer_ids =
                         keys %{$residue_to_rotamer{$neighbour_unique_residue_key}};
                     my $neighbour_rotamer_site = filter_by_unique_residue_key(
@@ -196,12 +206,21 @@ sub predict_sidechains
                                   $rotamer_angles->{$_}{'value'} }
                                 @neighbour_angle_ids;
 
-                        my %neighbour_rotamer_site =
-                            %{ clone( $neighbour_rotamer_site ) };
-                        replace_with_rotamer( $parameters,
-                                              \%neighbour_rotamer_site,
-                                              $neighbour_unique_residue_key,
-                                              \%angles );
+                        my %neighbour_rotamer_site;
+                        if(!defined $rotamer_to_atom_site{$neighbour_rotamer_id}){
+                            %neighbour_rotamer_site =
+                                %{ clone( $neighbour_rotamer_site ) };
+                            replace_with_rotamer( $parameters,
+                                                  \%neighbour_rotamer_site,
+                                                  $neighbour_unique_residue_key,
+                                                  \%angles );
+                            $rotamer_to_atom_site{$neighbour_rotamer_id} =
+                                { %neighbour_rotamer_site };
+                        } else {
+                            %rotamer_site =
+                                %{ $rotamer_to_atom_site{$neighbour_rotamer_id}};
+                        }
+
 
                         # Calculate pairwise energy.
                         my $pairwise_energy_sum = pairwise_rotamer_energy(
@@ -214,6 +233,8 @@ sub predict_sidechains
 
                         # Does not reach cut off limit.
                         if( $pairwise_energy_sum <= $cutoff_atom  ) {
+                            print 'Pairwise energy sum: ', $pairwise_energy_sum,
+                                "\n";
                         }
                     }
                 }
