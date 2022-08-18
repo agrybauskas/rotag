@@ -150,6 +150,7 @@ sub predict_sidechains
 
     # Keeps structure data if it was already calculated.
     my %rotamer_to_atom_site = ();
+    my %predicted_rotamer_pairs = ();
 
     while( @next_nodes ) {
         for my $node ( @next_nodes ) {
@@ -233,13 +234,12 @@ sub predict_sidechains
 
                         # Does not reach cut off limit.
                         if( $pairwise_energy_sum <= $cutoff_atom  ) {
-                            print 'First rotamer id: ', $rotamer_id,
-                                "\n";
-                            print 'Second rotamer id: ', $neighbour_rotamer_id,
-                                "\n";
-                            print 'Pairwise energy sum: ', $pairwise_energy_sum,
-                                "\n";
-                            print "-----\n";
+                            $predicted_rotamer_pairs{$rotamer_id}
+                                                    {$neighbour_rotamer_id} =
+                                $pairwise_energy_sum;
+                            $predicted_rotamer_pairs{$neighbour_rotamer_id}
+                                                    {$rotamer_id} =
+                                $pairwise_energy_sum;
                         }
                     }
                 }
@@ -249,9 +249,7 @@ sub predict_sidechains
         @next_nodes = (); # Temporare reset.
     }
 
-    my %predicted_rotamers = ();
-
-    return \%predicted_rotamers, $interaction_graph;
+    return \%predicted_rotamer_pairs, $interaction_graph;
 }
 
 1;
