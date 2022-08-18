@@ -233,8 +233,13 @@ sub predict_sidechains
 
                         # Does not reach cut off limit.
                         if( $pairwise_energy_sum <= $cutoff_atom  ) {
+                            print 'First rotamer id: ', $rotamer_id,
+                                "\n";
+                            print 'Second rotamer id: ', $neighbour_rotamer_id,
+                                "\n";
                             print 'Pairwise energy sum: ', $pairwise_energy_sum,
                                 "\n";
+                            print "-----\n";
                         }
                     }
                 }
