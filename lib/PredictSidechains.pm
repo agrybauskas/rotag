@@ -217,7 +217,7 @@ sub predict_sidechains
                             $rotamer_to_atom_site{$neighbour_rotamer_id} =
                                 { %neighbour_rotamer_site };
                         } else {
-                            %rotamer_site =
+                            %neighbour_rotamer_site =
                                 %{ $rotamer_to_atom_site{$neighbour_rotamer_id}};
                         }
 
