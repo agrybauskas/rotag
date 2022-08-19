@@ -150,6 +150,8 @@ sub predict_sidechains
 
     # Keeps structure data if it was already calculated.
     my %rotamer_to_atom_site = ();
+    my %rotamer_interaction_counter = (); # Will be used to remove rotamers with
+                                          # no interacting candidates.
     my %predicted_rotamer_pairs = ();
 
     while( @next_nodes ) {
@@ -172,6 +174,10 @@ sub predict_sidechains
                     map { $rotamer_angles->{$_}{'type'} =>
                           $rotamer_angles->{$_}{'value'} }
                         @angle_ids;
+
+                if( ! defined $rotamer_interaction_counter{$rotamer_id} ) {
+                    $rotamer_interaction_counter{$rotamer_id} = 0;
+                }
 
                 my %rotamer_site;
                 if( ! defined $rotamer_to_atom_site{$rotamer_id} ) {
@@ -222,7 +228,6 @@ sub predict_sidechains
                                 %{ $rotamer_to_atom_site{$neighbour_rotamer_id}};
                         }
 
-
                         # Calculate pairwise energy.
                         my $pairwise_energy_sum = pairwise_rotamer_energy(
                             $parameters,
@@ -234,12 +239,19 @@ sub predict_sidechains
 
                         # Does not reach cut off limit.
                         if( $pairwise_energy_sum <= $cutoff_atom  ) {
+                            # Stores energy value.
                             $predicted_rotamer_pairs{$rotamer_id}
                                                     {$neighbour_rotamer_id} =
                                 $pairwise_energy_sum;
                             $predicted_rotamer_pairs{$neighbour_rotamer_id}
                                                     {$rotamer_id} =
                                 $pairwise_energy_sum;
+
+                            # Increases the counter in order to track removable
+                            # rotamers.
+                            $rotamer_interaction_counter{$rotamer_id} += 1;
+                            $rotamer_interaction_counter{$neighbour_rotamer_id}
+                                                                            += 1;
                         }
                     }
                 }
