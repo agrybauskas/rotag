@@ -34,14 +34,17 @@ our $VERSION = $VERSION;
 #*    -S, --side-chains
 #*                        predicts all probable side-chain positions according to
 #*                        the given energy threshold.
-#*    --draw-interaction-graph
+#*    -g, --draw-interaction-graph
 #*                        draws sidechain interaction graph.
+#*    -l, --print-adjacency-list
+#*                        prints out the adjacency list.
 #*    -v, --version
-#*                        print version.
+#*                        prints version.
 
 # --------------------------------- Options ----------------------------------- #
 
 my $predict_sidechains = 0;
+my $print_adjacency_list = 0;
 my $draw_interaction_graph = 0;
 my $output_categories = '_atom_site';
 my @category_list =
@@ -60,7 +63,8 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'side-chains|S' => sub { $predict_sidechains = 1 },
-    'draw-interaction-graph|d' => sub { $draw_interaction_graph = 1 },
+    'print-adjacency-list|l' => sub { $print_adjacency_list = 1 },
+    'draw-interaction-graph|g' => sub { $draw_interaction_graph = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -177,6 +181,9 @@ for my $pdbx_file ( @ARGV ) {
                                      dir => 'both');
             }
             print $graphviz->as_svg;
+        # TODO: figure out the order -S -d and -g options
+        } elsif( $print_adjacency_list ) {
+
         }
     } else {
         error(
