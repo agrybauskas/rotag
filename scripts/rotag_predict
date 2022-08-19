@@ -60,7 +60,7 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'side-chains|S' => sub { $predict_sidechains = 1 },
-    'draw_interaction_graph|d' => sub { $draw_interaction_graph = 1 },
+    'draw-interaction-graph|d' => sub { $draw_interaction_graph = 1 },
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
