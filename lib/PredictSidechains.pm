@@ -122,8 +122,8 @@ sub predict_sidechains
         }
     }
 
-    # # Generates graph for protein.
-    # # TODO: make sure that interactions are in both ways.
+    # Generates graph for protein.
+    # TODO: make sure that interactions are in both ways.
     my $interaction_graph = new Graph::Undirected;
     for my $ca_atom_id ( keys %residue_pairs ) {
         if( ! $interaction_graph->has_vertex( $ca_atom_id ) ) {
