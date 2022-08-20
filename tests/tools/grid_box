@@ -5,8 +5,6 @@ use warnings;
 
 use List::Util qw( max );
 
-use AtomProperties qw( %ATOMS );
-use Constants qw( $SIG_FIGS );
 use Grid qw( create_box
              grid_box );
 use ForceField::Parameters;
