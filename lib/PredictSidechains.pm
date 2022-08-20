@@ -14,7 +14,8 @@ use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
 use ForceField::NonBonded qw( general );
-use Measure qw( energy );
+use Measure qw( bond_length
+                energy );
 use PDBxParser qw( extract
                    filter_new
                    filter_by_unique_residue_key
@@ -107,6 +108,13 @@ sub predict_sidechains
                       $residue_pairs{$atom_id}
                                     {$neighbour_atom_id} );
 
+                next if bond_length(
+                    [ [ map { $atom_site->{$atom_id}{$_} }
+                          ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
+                      [ map { $atom_site->{$neighbour_atom_id}{$_} }
+                          ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ] ) >=
+                    $edge_length_interaction;
+
                 $residue_pairs{$atom_id}
                               {$neighbour_atom_id} = 1;
             }
@@ -114,8 +122,8 @@ sub predict_sidechains
         }
     }
 
-    # Generates graph for protein.
-    # TODO: make sure that interactions are in both ways.
+    # # Generates graph for protein.
+    # # TODO: make sure that interactions are in both ways.
     my $interaction_graph = new Graph::Undirected;
     for my $ca_atom_id ( keys %residue_pairs ) {
         if( ! $interaction_graph->has_vertex( $ca_atom_id ) ) {
