@@ -261,6 +261,20 @@ sub predict_sidechains
                             $rotamer_interaction_counter{$rotamer_id} += 1;
                             $rotamer_interaction_counter{$neighbour_rotamer_id}
                                                                             += 1;
+
+                            # HACK: not sure where to include counter -- to
+                            # separate data structure or graph. For now, keeping
+                            # both.
+                            $interaction_graph->set_edge_attribute(
+                                $node,
+                                $neighbour_node,
+                                'interaction_num',
+                                $interaction_graph->get_edge_attribute(
+                                    $node,
+                                    $neighbour_node,
+                                    'interaction_num'
+                                ) + 1
+                            );
                         }
                     }
                 }
