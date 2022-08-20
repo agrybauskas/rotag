@@ -145,7 +145,7 @@ sub predict_sidechains
                                               $neighbour_ca_atom_id );
                 $interaction_graph->set_edge_attribute( $ca_atom_id,
                                                         $neighbour_ca_atom_id,
-                                                        'visited', 0);
+                                                        'interaction_num', 0);
             }
         }
     }
@@ -164,6 +164,7 @@ sub predict_sidechains
 
     while( @next_nodes ) {
         for my $node ( @next_nodes ) {
+            $interaction_graph->set_vertex_attribute( $node, 'visited', 1 );
             my $unique_residue_key = unique_residue_key($atom_site_cas->{$node});
             my @rotamer_ids =
                 keys %{ $residue_to_rotamer{$unique_residue_key} };

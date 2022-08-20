@@ -169,15 +169,27 @@ for my $pdbx_file ( @ARGV ) {
                 $graphviz->add_node( "$residue_name1$residue_id1",
                                      shape => 'circle',
                                      style => 'filled',
-                                     fillcolor => 'steelblue',
+                                     fillcolor =>
+                                         ( $interaction_graph->
+                                               get_vertex_attribute($ca_atom_id1,
+                                                                    'visited' ) ?
+                                           'steelblue' : 'firebrick' ),
                                      fontcolor => 'white' );
                 $graphviz->add_node( "$residue_name2$residue_id2",
                                      shape => 'circle',
                                      style => 'filled',
-                                     fillcolor => 'steelblue',
+                                     fillcolor =>
+                                         ( $interaction_graph->
+                                               get_vertex_attribute($ca_atom_id2,
+                                                                    'visited' ) ?
+                                           'steelblue' : 'firebrick' ),
                                      fontcolor => 'white' );
                 $graphviz->add_edge( "$residue_name1$residue_id1" =>
                                      "$residue_name2$residue_id2",
+                                     label => $interaction_graph->
+                                         get_edge_attribute( $ca_atom_id1,
+                                                             $ca_atom_id2,
+                                                             'interaction_num' ),
                                      dir => 'both');
             }
             print $graphviz->as_svg;
