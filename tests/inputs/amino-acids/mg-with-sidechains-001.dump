@@ -1,37 +1,308 @@
-data_rotag
-#
-loop_
-_atom_site.group_PDB
-_atom_site.id
-_atom_site.type_symbol
-_atom_site.label_atom_id
-_atom_site.label_alt_id
-_atom_site.label_comp_id
-_atom_site.label_asym_id
-_atom_site.label_entity_id
-_atom_site.label_seq_id
-_atom_site.Cartn_x
-_atom_site.Cartn_y
-_atom_site.Cartn_z
-_atom_site.pdbx_PDB_model_num
-_atom_site.[local]_selection_state
-_atom_site.[local]_selection_group
-ATOM 148 N N . ASP A 1 27 -31.459 -9.382 -0.630 1 T 1
-ATOM 149 C CA . ASP A 1 27 -32.444 -9.886 0.303 1 T 1
-ATOM 150 C C . ASP A 1 27 -33.790 -10.232 -0.318 1 T 1
-ATOM 151 O O . ASP A 1 27 -34.560 -10.956 0.317 1 T 1
-ATOM 152 C CB . ASP A 1 27 -32.650 -8.892 1.445 1 T 1
-ATOM 153 C CG . ASP A 1 27 -33.510 -7.732 1.055 1 T 1
-ATOM 154 O OD1 . ASP A 1 27 -33.182 -7.066 0.057 1 T 1
-ATOM 155 O OD2 . ASP A 1 27 -34.527 -7.497 1.737 1 T 1
-ATOM 883 N N . LYS A 1 72 -29.098 -2.262 -0.794 1 T 1
-ATOM 884 C CA . LYS A 1 72 -30.255 -2.208 0.102 1 T 1
-ATOM 885 C C . LYS A 1 72 -30.295 -3.515 0.864 1 T 1
-ATOM 886 O O . LYS A 1 72 -30.932 -4.484 0.452 1 T 1
-ATOM 887 C CB . LYS A 1 72 -31.539 -1.981 -0.687 1 T 1
-ATOM 888 C CG . LYS A 1 72 -32.832 -2.074 0.125 1 T 1
-ATOM 889 C CD . LYS A 1 72 -34.051 -2.172 -0.802 1 T 1
-ATOM 890 C CE . LYS A 1 72 -35.333 -2.416 -0.028 1 T 1
-ATOM 891 N NZ . LYS A 1 72 -35.447 -3.823 0.439 1 T 1
-HETATM 1925 MG MG . MG B 2 . -31.184 -6.586 -1.238 1 T 1
-#
+{
+  '148' => {
+    'Cartn_x' => '-31.459',
+    'Cartn_y' => '-9.382',
+    'Cartn_z' => '-0.630',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '148',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'N',
+    'label_comp_id' => 'ASP',
+    'label_entity_id' => '1',
+    'label_seq_id' => '27',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'N'
+  },
+  '149' => {
+    'Cartn_x' => '-32.444',
+    'Cartn_y' => '-9.886',
+    'Cartn_z' => '0.303',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '149',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CA',
+    'label_comp_id' => 'ASP',
+    'label_entity_id' => '1',
+    'label_seq_id' => '27',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '150' => {
+    'Cartn_x' => '-33.790',
+    'Cartn_y' => '-10.232',
+    'Cartn_z' => '-0.318',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '150',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'C',
+    'label_comp_id' => 'ASP',
+    'label_entity_id' => '1',
+    'label_seq_id' => '27',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '151' => {
+    'Cartn_x' => '-34.560',
+    'Cartn_y' => '-10.956',
+    'Cartn_z' => '0.317',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '151',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'O',
+    'label_comp_id' => 'ASP',
+    'label_entity_id' => '1',
+    'label_seq_id' => '27',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'O'
+  },
+  '152' => {
+    'Cartn_x' => '-32.650',
+    'Cartn_y' => '-8.892',
+    'Cartn_z' => '1.445',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '152',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CB',
+    'label_comp_id' => 'ASP',
+    'label_entity_id' => '1',
+    'label_seq_id' => '27',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '153' => {
+    'Cartn_x' => '-33.510',
+    'Cartn_y' => '-7.732',
+    'Cartn_z' => '1.055',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '153',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CG',
+    'label_comp_id' => 'ASP',
+    'label_entity_id' => '1',
+    'label_seq_id' => '27',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '154' => {
+    'Cartn_x' => '-33.182',
+    'Cartn_y' => '-7.066',
+    'Cartn_z' => '0.057',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '154',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'OD1',
+    'label_comp_id' => 'ASP',
+    'label_entity_id' => '1',
+    'label_seq_id' => '27',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'O'
+  },
+  '155' => {
+    'Cartn_x' => '-34.527',
+    'Cartn_y' => '-7.497',
+    'Cartn_z' => '1.737',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '155',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'OD2',
+    'label_comp_id' => 'ASP',
+    'label_entity_id' => '1',
+    'label_seq_id' => '27',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'O'
+  },
+  '1925' => {
+    'Cartn_x' => '-31.184',
+    'Cartn_y' => '-6.586',
+    'Cartn_z' => '-1.238',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'HETATM',
+    'id' => '1925',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'B',
+    'label_atom_id' => 'MG',
+    'label_comp_id' => 'MG',
+    'label_entity_id' => '2',
+    'label_seq_id' => '.',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'MG'
+  },
+  '883' => {
+    'Cartn_x' => '-29.098',
+    'Cartn_y' => '-2.262',
+    'Cartn_z' => '-0.794',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '883',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'N',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'N'
+  },
+  '884' => {
+    'Cartn_x' => '-30.255',
+    'Cartn_y' => '-2.208',
+    'Cartn_z' => '0.102',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '884',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CA',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '885' => {
+    'Cartn_x' => '-30.295',
+    'Cartn_y' => '-3.515',
+    'Cartn_z' => '0.864',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '885',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'C',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '886' => {
+    'Cartn_x' => '-30.932',
+    'Cartn_y' => '-4.484',
+    'Cartn_z' => '0.452',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '886',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'O',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'O'
+  },
+  '887' => {
+    'Cartn_x' => '-31.539',
+    'Cartn_y' => '-1.981',
+    'Cartn_z' => '-0.687',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '887',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CB',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '888' => {
+    'Cartn_x' => '-32.832',
+    'Cartn_y' => '-2.074',
+    'Cartn_z' => '0.125',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '888',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CG',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '889' => {
+    'Cartn_x' => '-34.051',
+    'Cartn_y' => '-2.172',
+    'Cartn_z' => '-0.802',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '889',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CD',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '890' => {
+    'Cartn_x' => '-35.333',
+    'Cartn_y' => '-2.416',
+    'Cartn_z' => '-0.028',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '890',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CE',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'C'
+  },
+  '891' => {
+    'Cartn_x' => '-35.447',
+    'Cartn_y' => '-3.823',
+    'Cartn_z' => '0.439',
+    '[local]_selection_group' => '1',
+    '[local]_selection_state' => 'T',
+    'group_PDB' => 'ATOM',
+    'id' => '891',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'NZ',
+    'label_comp_id' => 'LYS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '72',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'N'
+  }
+}
