@@ -7,6 +7,7 @@ BEGIN{
 use Exporter qw( import );
 our @EXPORT_OK = qw( append_connections
                      connect_atoms
+                     connect_hetatoms
                      connect_atoms_explicitly
                      connect_two_atoms
                      is_connected
@@ -291,6 +292,12 @@ sub connect_atoms
         }
     }
 
+    return;
+}
+
+sub connect_hetatoms
+{
+    my ( $parameters, $atom_site ) = @_;
     return;
 }
 
