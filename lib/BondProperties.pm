@@ -633,97 +633,58 @@ sub bendable_angles
     }
 
     # Asigns names for bendable angles by first filtering out redundant angles.
-    # TODO: must be refactored to a simpler code, because there are three-times-
-    # repeating code.
     my %unique_angles;
-    my @angle_first_atom_ids = ();
-    my @angle_second_atom_ids = ();
-    my @angle_third_atom_ids = ();
+    my @angle_terminal_atom_ids = ();
     for my $angle_terminal_id ( keys %bendable_angles ) {
         for my $angle ( @{ $bendable_angles{$angle_terminal_id} } ) {
             next if
                 defined $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]} &&
                         $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]};
-
-            push @angle_first_atom_ids, $angle->[0];
-            push @angle_second_atom_ids, $angle->[1];
-            push @angle_third_atom_ids, $angle->[2];
-
+            push @angle_terminal_atom_ids, $angle->[2];
             $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]} = 1;
         }
     }
 
-    @angle_first_atom_ids = uniq @angle_first_atom_ids;
-    @angle_second_atom_ids = uniq @angle_second_atom_ids;
-    @angle_third_atom_ids = uniq @angle_third_atom_ids;
+    @angle_terminal_atom_ids = uniq @angle_terminal_atom_ids;
 
     # Sorts angles by naming priority.
-    my @first_names_sorted =
+    my @terminal_names_sorted =
         @{ sort_atom_names(
                filter( { 'atom_site' => \%atom_site,
-                         'include' => { 'id' => \@angle_first_atom_ids },
+                         'include' => { 'id' => \@angle_terminal_atom_ids },
                          'data' => [ 'label_atom_id' ],
                          'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
-    my @second_names_sorted =
-        @{ sort_atom_names(
-               filter( { 'atom_site' => \%atom_site,
-                         'include' => { 'id' => \@angle_second_atom_ids },
-                         'data' => [ 'label_atom_id' ],
-                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
-    my @third_names_sorted =
-        @{ sort_atom_names(
-               filter( { 'atom_site' => \%atom_site,
-                         'include' => { 'id' => \@angle_third_atom_ids },
-                         'data' => [ 'label_atom_id' ],
-                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+    my %terminal_names_order =
+        map { $terminal_names_sorted[$_] => $_ + 1 } 0..$#terminal_names_sorted;
 
-    my %first_names_order =
-        map { $first_names_sorted[$_] => $_ + 1 } 0..$#first_names_sorted;
-    my %second_names_order =
-        map { $second_names_sorted[$_] => $_ + 1 } 0..$#second_names_sorted;
-    my %third_names_order =
-        map { $third_names_sorted[$_] => $_ + 1 } 0..$#third_names_sorted;
-
-    # Converts names to atom ids for easier handling later.
-    for my $first_atom_name ( keys %first_names_order ) {
+    for my $terminal_atom_name ( keys %terminal_names_order ) {
         # HACK: what if the same name repeats?
-        my ( $first_atom_id ) =
+        my ( $terminal_atom_id ) =
             keys %{ filter_new( \%atom_site,
                                 { 'include' =>
-                                  { 'label_atom_id' => [ $first_atom_name ] }})};
-        $first_names_order{$first_atom_id} =
-            delete $first_names_order{$first_atom_name}
-    }
-    for my $second_atom_name ( keys %second_names_order ) {
-        # HACK: what if the same name repeats?
-        my ( $second_atom_id ) =
-            keys %{ filter_new( \%atom_site,
-                                { 'include' =>
-                                  { 'label_atom_id' => [ $second_atom_name ]}})};
-        $second_names_order{$second_atom_id} =
-            delete $second_names_order{$second_atom_name}
-    }
-    for my $third_atom_name ( keys %third_names_order ) {
-        # HACK: what if the same name repeats?
-        my ( $third_atom_id ) =
-            keys %{ filter_new( \%atom_site,
-                                { 'include' =>
-                                  { 'label_atom_id' => [ $third_atom_name ] }})};
-        $third_names_order{$third_atom_id} =
-            delete $third_names_order{$third_atom_name}
+                                  { 'label_atom_id' => [$terminal_atom_name]}})};
+        $terminal_names_order{$terminal_atom_id} =
+            delete $terminal_names_order{$terminal_atom_name}
     }
 
     # Iterates through bendable angles and assigns names by first, second and
-    # third atoms.
+    # terminal atoms.
     my %named_bendable_angles;
-    # my $angle_name_id = 1;
-    # for my $atom_id ( keys %bendable_angles ) {
-    #     use Data::Dumper;
-    #     print STDERR Dumper $atom_id;
-    # #     for my $angle ( @{ $bendable_angles{"$atom_id"} } ) {
-    # #         $named_bendable_angles{$atom_id}{"theta$angle_name_id"} = $angle;
-    # #     }
-    # }
+    my %angle_names = ();
+    my $angle_name_id = 1;
+    for my $atom_id ( sort { $terminal_names_order{$a} <=>
+                             $terminal_names_order{$b} }
+                           keys %bendable_angles ) {
+        for my $angle ( @{ $bendable_angles{"$atom_id"} } ) {
+            my $angle_name_key = "$angle->[0],$angle->[1],$angle->[2]";
+            if( ! exists $angle_names{$angle_name_key} ) {
+                $angle_names{$angle_name_key} = "theta${angle_name_id}";
+                $angle_name_id++;
+            }
+            my $angle_name = $angle_names{$angle_name_key};
+            $named_bendable_angles{$atom_id}{$angle_name} = $angle;
+        }
+    }
 
     return \%named_bendable_angles;
 }
