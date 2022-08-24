@@ -297,7 +297,8 @@ sub connect_atoms
 
 sub connect_hetatoms
 {
-    my ( $parameters, $atom_site ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
+    my ( $struct_conn ) = ( $options->{'struct_conn'} );
     return;
 }
 
