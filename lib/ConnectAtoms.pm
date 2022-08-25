@@ -309,12 +309,13 @@ sub connect_hetatoms
     # 'ptnr2_pdbx_PDB_model_num' and 'ptnr2_label_alt_id'.
     # TODO: split_by() should be more generalized. But at the moment, the
     # '_atom_site' will be used as an option.
+    my $hetatom_names =
+        $parameters->{'_[local]_sidechain_hetatom_extension'};
     my $struct_conn_groups =
         split_by( { 'atom_site' => $struct_conn,
                     'attributes' => [ 'ptnr2_label_seq_id','ptnr2_label_comp_id',
                                       'ptnr2_label_asym_id' ] } );
 
-    # TODO: do not forget to filter out non-ionic/metal atoms.
     for my $struct_conn_key ( keys %{ $struct_conn_groups } ) {
         for my $struct_conn_id ( @{ $struct_conn_groups->{$struct_conn_key} } ) {
             my ($ptnr1_label_seq_id, $ptnr1_label_comp_id, $ptnr1_label_asym_id,
@@ -333,6 +334,8 @@ sub connect_hetatoms
                           $ptnr1_label_asym_id, $ptnr1_label_atom_id,
                           $ptnr2_label_seq_id, $ptnr2_label_comp_id,
                           $ptnr2_label_asym_id, $ptnr2_label_atom_id );
+
+            next if any { $ptnr1_label_atom_id eq $_ } @{ $hetatom_names };
 
             # TODO: could be optimized by just storing already used hetatom
             # coordinates.
@@ -376,8 +379,6 @@ sub connect_hetatoms
     my $interaction_atom_site =
         filter_new( $atom_site, { 'include' => { 'label_atom_id' => [ 'CA' ] }});
 
-    my $hetatom_names =
-        $parameters->{'_[local]_sidechain_hetatom_extension'};
     my $hetatom_ids =
         filter_new( $atom_site,
                     { 'include' => { 'label_comp_id' => $hetatom_names },
