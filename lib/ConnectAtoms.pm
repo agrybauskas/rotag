@@ -309,6 +309,7 @@ sub connect_hetatoms
     # 'ptnr2_pdbx_PDB_model_num' and 'ptnr2_label_alt_id'.
     # TODO: split_by() should be more generalized. But at the moment, the
     # '_atom_site' will be used as an option.
+    # TODO: think about if the distance cutoff should be implemented.
     my $hetatom_names =
         $parameters->{'_[local]_sidechain_hetatom_extension'};
     my $struct_conn_groups =
@@ -379,16 +380,21 @@ sub connect_hetatoms
     my $interaction_atom_site =
         filter_new( $atom_site, { 'include' => { 'label_atom_id' => [ 'CA' ] }});
 
-    my $hetatom_ids =
+    my $hetatom_site =
         filter_new( $atom_site,
-                    { 'include' => { 'label_comp_id' => $hetatom_names },
-                          'return_data' => 'id' } );
+                    { 'include' => { 'label_comp_id' => $hetatom_names } } );
 
-    for my $hetatom_id ( @{ $hetatom_ids } ) {
-        around_distance( $parameters,
-                         $interaction_atom_site,
-                         { 'id' => [ $hetatom_id ] },
-                         $interaction_distance );
+    for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
+        my $around_site =
+            around_distance( $parameters,
+                             { $hetatom_id => $hetatom_site->{$hetatom_id},
+                               %{ $interaction_atom_site } },
+                             { 'id' => [ $hetatom_id ] },
+                             $interaction_distance );
+
+        connect_atoms_explicitly( $atom_site,
+                                  [ $hetatom_id ],
+                                  [ keys %{ $around_site } ] );
     }
 
     return;
