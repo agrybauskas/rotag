@@ -314,6 +314,7 @@ sub connect_hetatoms
                     'attributes' => [ 'ptnr2_label_seq_id','ptnr2_label_comp_id',
                                       'ptnr2_label_asym_id' ] } );
 
+    # TODO: do not forget to filter out non-ionic/metal atoms.
     for my $struct_conn_key ( keys %{ $struct_conn_groups } ) {
         for my $struct_conn_id ( @{ $struct_conn_groups->{$struct_conn_key} } ) {
             my ($ptnr1_label_seq_id, $ptnr1_label_comp_id, $ptnr1_label_asym_id,
@@ -370,7 +371,24 @@ sub connect_hetatoms
 
     # If hetatoms have no explicit connection, then they are connected to the
     # closest CAs.
-    # around_distance( $parameters, $atom_site, $atom_specifier, $distance );
+    my $interaction_distance =
+        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
+    my $interaction_atom_site =
+        filter_new( $atom_site, { 'include' => { 'label_atom_id' => [ 'CA' ] }});
+
+    my $hetatom_names =
+        $parameters->{'_[local]_sidechain_hetatom_extension'};
+    my $hetatom_ids =
+        filter_new( $atom_site,
+                    { 'include' => { 'label_comp_id' => $hetatom_names },
+                          'return_data' => 'id' } );
+
+    for my $hetatom_id ( @{ $hetatom_ids } ) {
+        around_distance( $parameters,
+                         $interaction_atom_site,
+                         { 'id' => [ $hetatom_id ] },
+                         $interaction_distance );
+    }
 
     return;
 }
