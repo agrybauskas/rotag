@@ -23,7 +23,8 @@ use List::Util qw( any );
 
 use Grid qw( identify_neighbour_cells
              grid_box );
-use Measure qw( distance_squared );
+use Measure qw( around_distance
+                distance_squared );
 use PDBxParser qw( filter
                    filter_new
                    split_by
@@ -334,6 +335,7 @@ sub connect_hetatoms
 
             # TODO: could be optimized by just storing already used hetatom
             # coordinates.
+            # TODO: check if these data items specify exact atoms.
             my $hetatom_id =
                 filter_new( $atom_site,
                             { 'include' =>
@@ -365,6 +367,10 @@ sub connect_hetatoms
             connect_atoms_explicitly( $atom_site, $hetatom_id, $residue_atom_id);
         }
     }
+
+    # If hetatoms have no explicit connection, then they are connected to the
+    # closest CAs.
+    # around_distance( $parameters, $atom_site, $atom_specifier, $distance );
 
     return;
 }
