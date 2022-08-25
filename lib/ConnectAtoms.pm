@@ -328,9 +328,24 @@ sub connect_hetatoms
 
             next if any { ! defined $_ }
                         ( $ptnr1_label_seq_id, $ptnr1_label_comp_id,
-                          $ptnr1_label_asym_id, $ptnr1_label_atom_id );
+                          $ptnr1_label_asym_id, $ptnr1_label_atom_id,
+                          $ptnr2_label_seq_id, $ptnr2_label_comp_id,
+                          $ptnr2_label_asym_id, $ptnr2_label_atom_id );
 
-            my $residue_atom =
+            # TODO: could be optimized by just storing already used hetatom
+            # coordinates.
+            my $hetatom_id =
+                filter_new( $atom_site,
+                            { 'include' =>
+                              { 'label_seq_id'  => [ $ptnr2_label_seq_id ],
+                                'label_comp_id' => [ $ptnr2_label_comp_id ],
+                                'label_asym_id' => [ $ptnr2_label_asym_id ],
+                                'label_atom_id' => [ $ptnr2_label_atom_id ],
+                                'label_alt_id'  => [ defined $ptnr2_label_alt_id?
+                                                     $ptnr2_label_alt_id :
+                                                     '.' ] },
+                               'return_data' => 'id' } );
+            my $residue_atom_id =
                 filter_new( $atom_site,
                             { 'include' =>
                               { 'label_seq_id'  => [ $ptnr1_label_seq_id ],
@@ -339,14 +354,15 @@ sub connect_hetatoms
                                 'label_atom_id' => [ $ptnr1_label_atom_id ],
                                 'label_alt_id'  => [ defined $ptnr1_label_alt_id?
                                                      $ptnr1_label_alt_id :
-                                                     '.' ] } } );
+                                                     '.' ] },
+                              'return_data' => 'id' } );
 
             # NOTE: for now, if multiple residue atoms are present, it should be
             # skipped and standard connection with 'CA' will be performed.
-            next if ! %{ $residue_atom } || scalar( keys %{ $residue_atom } ) > 1;
+            next if ! @{ $hetatom_id }      || scalar( @{ $hetatom_id } ) > 1 ||
+                    ! @{ $residue_atom_id } || scalar( @{ $residue_atom_id } )>1;
 
-
-            # use Data::Dumper; print STDERR Dumper ( $ptnr1_label_seq_id, $ptnr1_label_comp_id, $ptnr1_label_asym_id, $ptnr2_label_seq_id, $ptnr2_label_comp_id, $ptnr2_label_asym_id );
+            connect_atoms_explicitly( $atom_site, $hetatom_id, $residue_atom_id);
         }
     }
 
