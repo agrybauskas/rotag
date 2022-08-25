@@ -25,6 +25,8 @@ use Grid qw( identify_neighbour_cells
              grid_box );
 use Measure qw( distance_squared );
 use PDBxParser qw( filter
+                   filter_new
+                   split_by
                    unique_residue_key );
 use Version qw( $VERSION );
 
@@ -295,10 +297,59 @@ sub connect_atoms
     return;
 }
 
+# NOTE: for now, hetatoms will be usually metal ions.
 sub connect_hetatoms
 {
     my ( $parameters, $atom_site, $options ) = @_;
     my ( $struct_conn ) = ( $options->{'struct_conn'} );
+
+    # Connecting atoms with heteroatoms using $struct_conn.
+    # NOTE: what about different models? PDBx's '_struct_conn' does not have
+    # 'ptnr2_pdbx_PDB_model_num' and 'ptnr2_label_alt_id'.
+    # TODO: split_by() should be more generalized. But at the moment, the
+    # '_atom_site' will be used as an option.
+    my $struct_conn_groups =
+        split_by( { 'atom_site' => $struct_conn,
+                    'attributes' => [ 'ptnr2_label_seq_id','ptnr2_label_comp_id',
+                                      'ptnr2_label_asym_id' ] } );
+
+    for my $struct_conn_key ( keys %{ $struct_conn_groups } ) {
+        for my $struct_conn_id ( @{ $struct_conn_groups->{$struct_conn_key} } ) {
+            my ($ptnr1_label_seq_id, $ptnr1_label_comp_id, $ptnr1_label_asym_id,
+                $ptnr1_label_atom_id, $ptnr1_label_alt_id,
+                $ptnr2_label_seq_id, $ptnr2_label_comp_id, $ptnr2_label_asym_id,
+                $ptnr2_label_atom_id, $ptnr2_label_alt_id )=
+                map { $struct_conn->{$struct_conn_id}{$_} }
+                    ( 'ptnr1_label_seq_id',  'ptnr1_label_comp_id',
+                      'ptnr1_label_asym_id', 'ptnr1_label_atom_id',
+                      'ptnr1_label_alt_id',  'ptnr2_label_seq_id',
+                      'ptnr2_label_comp_id', 'ptnr2_label_asym_id',
+                      'ptnr2_label_atom_id', 'ptnr2_label_alt_id' );
+
+            next if any { ! defined $_ }
+                        ( $ptnr1_label_seq_id, $ptnr1_label_comp_id,
+                          $ptnr1_label_asym_id, $ptnr1_label_atom_id );
+
+            my $residue_atom =
+                filter_new( $atom_site,
+                            { 'include' =>
+                              { 'label_seq_id'  => [ $ptnr1_label_seq_id ],
+                                'label_comp_id' => [ $ptnr1_label_comp_id ],
+                                'label_asym_id' => [ $ptnr1_label_asym_id ],
+                                'label_atom_id' => [ $ptnr1_label_atom_id ],
+                                'label_alt_id'  => [ defined $ptnr1_label_alt_id?
+                                                     $ptnr1_label_alt_id :
+                                                     '.' ] } } );
+
+            # NOTE: for now, if multiple residue atoms are present, it should be
+            # skipped and standard connection with 'CA' will be performed.
+            next if ! %{ $residue_atom } || scalar( keys %{ $residue_atom } ) > 1;
+
+
+            # use Data::Dumper; print STDERR Dumper ( $ptnr1_label_seq_id, $ptnr1_label_comp_id, $ptnr1_label_asym_id, $ptnr2_label_seq_id, $ptnr2_label_comp_id, $ptnr2_label_asym_id );
+        }
+    }
+
     return;
 }
 
