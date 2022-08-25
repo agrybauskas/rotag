@@ -312,6 +312,8 @@ sub connect_hetatoms
     # TODO: think about if the distance cutoff should be implemented.
     my $hetatom_names =
         $parameters->{'_[local]_sidechain_hetatom_extension'};
+    my %connected_hetatoms = ();
+
     my $struct_conn_groups =
         split_by( { 'atom_site' => $struct_conn,
                     'attributes' => [ 'ptnr2_label_seq_id','ptnr2_label_comp_id',
@@ -369,6 +371,9 @@ sub connect_hetatoms
             next if ! @{ $hetatom_id }      || scalar( @{ $hetatom_id } ) > 1 ||
                     ! @{ $residue_atom_id } || scalar( @{ $residue_atom_id } )>1;
 
+            # Marks that hetatom is connected.
+            $connected_hetatoms{$hetatom_id->[0]} = 1;
+
             connect_atoms_explicitly( $atom_site, $hetatom_id, $residue_atom_id);
         }
     }
@@ -382,7 +387,8 @@ sub connect_hetatoms
 
     my $hetatom_site =
         filter_new( $atom_site,
-                    { 'include' => { 'label_comp_id' => $hetatom_names } } );
+                    { 'include' => { 'label_comp_id' => $hetatom_names },
+                      'exclude' => { 'id' => [ keys %connected_hetatoms ] } } );
 
     for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
         my $around_site =
