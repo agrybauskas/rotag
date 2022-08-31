@@ -10,7 +10,8 @@ use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
 use BondProperties qw( hybridization );
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( connect_atoms
+                     connect_hetatoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -136,6 +137,7 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         connect_atoms( $parameters, $dihedral_site );
+        connect_hetatoms( $parameters, $dihedral_site ) if $calc_hetatoms;
         hybridization( $parameters, $dihedral_site );
 
         my $dihedral_angles =
