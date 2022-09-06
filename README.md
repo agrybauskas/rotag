@@ -1,5 +1,5 @@
 # rotag
-rotag - a collection of tools that generate and analyse side-chain rotamer
+rotag &ndash; a collection of tools that generate and analyse side-chain rotamer
 libraries from protein structure data.
 
 ## Dependencies
