@@ -182,7 +182,7 @@ sub rotation_translation
             if( $do_angle_bending ) {
                 my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
                 $bendable_angles =
-                    bendable_angles( $residue_site, undef, $next_atom_ids,
+                    bendable_angles( $residue_site, undef, $next_atom_ids, undef,
                                      { 'include_hetatoms' => 1 } );
             }
             if( $do_bond_torsion ) {
