@@ -182,7 +182,8 @@ sub rotation_translation
             if( $do_angle_bending ) {
                 my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
                 $bendable_angles =
-                    bendable_angles( $residue_site, undef, $next_atom_ids );
+                    bendable_angles( $residue_site, undef, $next_atom_ids,
+                                     { 'include_hetatoms' => 1 } );
             }
             if( $do_bond_torsion ) {
                 $ignore_connections =
@@ -191,9 +192,9 @@ sub rotation_translation
                                   'return_data' => 'id' } );
                 $rotatable_bonds =
                     rotatable_bonds( $residue_site, undef, undef,
-                                     { 'include_hetatoms' => $calc_hetatoms,
-                                       'ignore_connections' =>
-                                           $ignore_connections } );
+                                     { 'ignore_connections' =>
+                                           $ignore_connections,
+                                       'include_hetatoms' => 1 } );
             }
             if( $do_bond_stretching ) {
                 my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
@@ -205,7 +206,8 @@ sub rotation_translation
                 $stretchable_bonds =
                     stretchable_bonds( $residue_site, undef, $next_atom_ids,
                                        { 'ignore_connections' =>
-                                             $ignore_connections } );
+                                             $ignore_connections,
+                                         'include_hetatoms' => 1 } );
             }
         } else {
             if( $do_angle_bending ) {
