@@ -1,13 +1,3 @@
-
-# /
-/a.out
-
-# /lib/
-/lib/
-
-# /lib/ForceField/
-/lib/ForceField/
-
 # /lib/Grammar/
 /lib/Grammar/*.pm
 
