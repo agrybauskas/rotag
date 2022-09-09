@@ -191,7 +191,7 @@ sub rotation_translation
                                   'return_data' => 'id' } );
                 $rotatable_bonds =
                     rotatable_bonds( $residue_site, undef, undef,
-                                     { 'calc_hetatoms' => $calc_hetatoms,
+                                     { 'include_hetatoms' => $calc_hetatoms,
                                        'ignore_connections' =>
                                            $ignore_connections } );
             }

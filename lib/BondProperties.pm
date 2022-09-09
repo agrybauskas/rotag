@@ -220,21 +220,21 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $ignore_connections, $calc_hetatoms ) =
-        ( $options->{'ignore_connections'}, $options->{'calc_hetatoms'} );
+    my ( $ignore_connections, $include_hetatoms ) =
+        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
 
     $ignore_connections //= [];
-    $calc_hetatoms //= 0;
+    $include_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
-                                 'include' => { $calc_hetatoms ?
+                                 'include' => { $include_hetatoms ?
                                                 ( 'label_atom_id' =>[ 'C' ] ) :
                                                 ( 'label_atom_id' =>[ 'CA' ] ) },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
     $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
-                                  'include' => { $calc_hetatoms ?
+                                  'include' => { $include_hetatoms ?
                                                  ( 'label_atom_id' => [ 'N' ] ):
                                                  ( 'label_atom_id' => [ 'CB' ])},
                                   'data' => [ 'id' ],
@@ -264,19 +264,20 @@ sub rotatable_bonds
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
             if( ( ! exists $atom_site{$atom_id}{'hybridization'} ) &&
-                ( ! $calc_hetatoms ) ) {
+                ( ! $include_hetatoms ) ) {
                 confess "atom with id $atom_id lacks information about " .
                         "hybridization"
             }
             if( ( ! exists $atom_site{$parent_atom_id}{'hybridization'} ) &&
-                ( ! $calc_hetatoms ) ) {
+                ( ! $include_hetatoms ) ) {
                 confess "atom with id $parent_atom_id lacks information about " .
                         "hybridization"
             }
 
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site{$atom_id}{'hybridization'} eq 'sp3' ||
-                ($atom_site{$atom_id}{'hybridization'} eq '.' && $calc_hetatoms)){
+                ( $atom_site{$atom_id}{'hybridization'} eq '.' &&
+                  $include_hetatoms ) ){
                 # If last visited atom was sp3, then rotatable bonds from
                 # previous atom are copied and the new one is appended.
                 push @{ $rotatable_bonds{$atom_id} },
@@ -297,12 +298,26 @@ sub rotatable_bonds
             # Marks visited atoms.
             push @visited_atom_ids, $atom_id;
 
-            if( ! exists $atom_site{$atom_id}{'connections'} ){
+            if( $include_hetatoms &&
+                ( $atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ||
+                  $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM' ) &&
+                ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
+                confess "atom with id $atom_id lacks 'connections_hetatom' key"
+            }
+
+            if( ! $include_hetatoms &&
+                ! exists $atom_site{$atom_id}{'connections'} ) {
                 confess "atom with id $atom_id lacks 'connections' key"
             }
 
             # Marks neighbouring atoms.
-            push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
+            if( $include_hetatoms ) {
+                push @neighbour_atom_ids,
+                    @{ $atom_site{$atom_id}{'connections_hetatom'} };
+            } else {
+                push @neighbour_atom_ids,
+                    @{ $atom_site{$atom_id}{'connections'} };
+            }
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
@@ -361,7 +376,7 @@ sub rotatable_bonds
     # Names by second atom priority.
     my %bond_names;
     my $bond_name_id = 1;
-    my $bond_stem = $calc_hetatoms ? 'tau' : 'chi';
+    my $bond_stem = $include_hetatoms ? 'tau' : 'chi';
     for my $second_name ( @second_names_sorted ) {
         my $second_atom_id =
             filter( { 'atom_site' => \%atom_site,
@@ -405,9 +420,11 @@ sub rotatable_bonds
 sub stretchable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $ignore_connections ) = ( $options->{'ignore_connections'} );
+    my ( $ignore_connections, $include_hetatoms ) =
+        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
 
     $ignore_connections //= [];
+    $include_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
@@ -452,12 +469,26 @@ sub stretchable_bonds
             # Marks visited atoms.
             push @visited_atom_ids, $atom_id;
 
-            if( ! exists $atom_site{$atom_id}{'connections'} ) {
+            if( $include_hetatoms &&
+                ( $atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ||
+                  $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM' ) &&
+                ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
+                confess "atom with id $atom_id lacks 'connections_hetatom' key"
+            }
+
+            if( ! $include_hetatoms &&
+                ! exists $atom_site{$atom_id}{'connections'} ) {
                 confess "atom with id $atom_id lacks 'connections' key"
             }
 
             # Marks neighbouring atoms.
-            push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
+            if( $include_hetatoms ) {
+                push @neighbour_atom_ids,
+                    @{ $atom_site{$atom_id}{'connections_hetatom'} };
+            } else {
+                push @neighbour_atom_ids,
+                    @{ $atom_site{$atom_id}{'connections'} };
+            }
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
@@ -547,9 +578,11 @@ sub bendable_angles
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $previous_atom_id,
          $options ) = @_;
-    my ( $ignore_connections ) = ( $options->{'ignore_connections'} );
+    my ( $ignore_connections, $include_hetatoms ) =
+        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
 
     $ignore_connections //= [];
+    $include_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
@@ -605,12 +638,26 @@ sub bendable_angles
             # Marks visited atoms.
             push @visited_atom_ids, $atom_id;
 
-            if( ! exists $atom_site{$atom_id}{'connections'} ) {
+            if( $include_hetatoms &&
+                ( $atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ||
+                  $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM' ) &&
+                ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
+                confess "atom with id $atom_id lacks 'connections_hetatom' key"
+            }
+
+            if( ! $include_hetatoms &&
+                ! exists $atom_site{$atom_id}{'connections'} ) {
                 confess "atom with id $atom_id lacks 'connections' key"
             }
 
             # Marks neighbouring atoms.
-            push @neighbour_atom_ids, @{ $atom_site{$atom_id}{'connections'} };
+            if( $include_hetatoms ) {
+                push @neighbour_atom_ids,
+                    @{ $atom_site{$atom_id}{'connections_hetatom'} };
+            } else {
+                push @neighbour_atom_ids,
+                    @{ $atom_site{$atom_id}{'connections'} };
+            }
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {

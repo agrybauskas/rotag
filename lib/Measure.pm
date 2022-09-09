@@ -533,7 +533,8 @@ sub all_bond_angles
 
         my $bendable_angles =
             bendable_angles( $residue_site, undef, $next_atom_ids, undef,
-                             { 'calc_hetatoms' => $calc_hetatoms } );
+                             { 'calc_hetatoms' => $calc_hetatoms,
+                               'include_hetatoms' => $calc_hetatoms } );
         my %uniq_bendable_angles; # Unique bendable angles.
         for my $atom_id ( keys %{ $bendable_angles } ) {
             for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
@@ -780,7 +781,8 @@ sub all_bond_lengths
 
         my $stretchable_bonds =
             stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                               { 'ignore_connections' => $ignore_connections } );
+                               { 'ignore_connections' => $ignore_connections,
+                                 'include_hetatoms' => $calc_hetatoms } );
         my %uniq_stretchable_bonds; # Unique stretchable bonds.
         for my $atom_id ( keys %{ $stretchable_bonds } ) {
             for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){
