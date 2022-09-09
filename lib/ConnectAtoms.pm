@@ -296,6 +296,12 @@ sub connect_atoms
 #     $atom_site - atom data structure.
 #     $options->{'struct_conn'} - reads 'struc_conn' and assings connections
 #     appropriately.
+#     $options->{'do_bond_stretching'} - connects to proper atoms so bond
+#     stretching could be applied.
+#     $options->{'do_angle_bending'} - connects to proper atoms so angle bending
+#     could be applied.
+#     $options->{'do_bond_rotation'} - connects to proper atoms so bond rotation
+#     could be applied.
 # Output:
 #     none - connects atoms by adding "connection_hetatom" key and values to atom
 #     site data structure.
@@ -304,7 +310,18 @@ sub connect_atoms
 sub connect_hetatoms
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $struct_conn ) = ( $options->{'struct_conn'} );
+    my ( $struct_conn, $do_bond_stretching, $do_angle_bending,
+         $do_bond_rotation ) = (
+        $options->{'struct_conn'},
+        $options->{'do_bond_stretching'},
+        $options->{'do_angle_bending'},
+        $options->{'do_bond_rotation'},
+
+    );
+
+    $do_bond_stretching //= 0;
+    $do_angle_bending //= 0;
+    $do_bond_rotation //= 0;
 
     # Connecting atoms with heteroatoms using $struct_conn.
     # NOTE: what about different models? PDBx's '_struct_conn' does not have
@@ -377,12 +394,17 @@ sub connect_hetatoms
         }
     }
 
-    # If hetatoms have no explicit connection, then they are connected to the
-    # closest CAs.
+    # If hetatoms have no explicit connection, then they are connected to
+    # appropriate application.
+    return if ! $do_bond_stretching && ! $do_angle_bending && !$do_bond_rotation;
+
     my $interaction_distance =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
     my $interaction_atom_site =
-        filter_new( $atom_site, { 'include' => { 'label_atom_id' => [ 'CA' ] }});
+        filter_new( $atom_site,
+                    { 'include' => { 'label_atom_id' =>
+                                         ( $do_bond_rotation ?
+                                           [ 'N' ] : [ 'CA' ] ) } } );
 
     my $hetatom_site =
         filter_new( $atom_site,

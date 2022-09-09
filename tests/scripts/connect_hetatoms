@@ -8,10 +8,11 @@ use ForceField::Parameters;
 
 #
 # Unit test: ConnectAtoms::connect_hetatoms
-# Example: ./connect_hetatoms structure-and-struct-conn.dump
+# Example: ./connect_hetatoms structure-and-struct-conn.dump 0 0 1
 #
 
-my ( $pdbx_struct_conn_dump_file, $no_connection_list ) = @ARGV;
+my ( $pdbx_struct_conn_dump_file, $do_bond_stretching, $do_angle_bending,
+     $do_bond_rotation ) = @ARGV;
 
 my $pdbx_struct_conn;
 open( my $fh, "<", $pdbx_struct_conn_dump_file );
@@ -27,7 +28,9 @@ my $struct_conn = $pdbx_struct_conn->{'_struct_conn'};
 
 connect_hetatoms( $parameters, $atom_site,
                   { 'struct_conn' => $struct_conn,
-                    'no_connection_list' => $no_connection_list } );
+                    'do_bond_stretching' => $do_bond_stretching,
+                    'do_angle_bending' => $do_angle_bending,
+                    'do_bond_rotation' => $do_bond_rotation } );
 
 my @atom_coord;
 my @parent_atom;
