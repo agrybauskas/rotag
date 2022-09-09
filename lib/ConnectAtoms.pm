@@ -298,7 +298,20 @@ sub connect_atoms
     return;
 }
 
-# NOTE: for now, hetatoms will be usually metal ions.
+
+#
+# Connects heteroatoms to the side-chain or main-chain atoms. If not explicitly
+# sated in 'struct_conn', connects to 'CA' for bond length and angle bending
+# calculations and to 'N' for dihedral angles.
+# Input:
+#     $atom_site - atom data structure.
+#     $options->{'struct_conn'} - reads 'struc_conn' and assings connections
+#     appropriately.
+# Output:
+#     none - connects atoms by adding "connection_hetatom" key and values to atom
+#     site data structure.
+#
+
 sub connect_hetatoms
 {
     my ( $parameters, $atom_site, $options ) = @_;
