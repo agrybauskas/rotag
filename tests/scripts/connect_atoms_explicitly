@@ -31,7 +31,8 @@ my @child_atom;
 
 for my $parent_id ( keys %{ $atom_site } ) {
     @parent_atom = ( $parent_id, $atom_site->{$parent_id}{"label_atom_id"} );
-    for my $child_id ( @{ $atom_site->{$parent_id}{"connections"} } ) {
+    for my $child_id ( @{ $atom_site->{$parent_id}{"connections"} },
+                       @{ $atom_site->{$parent_id}{"connections_hetatom"} } ) {
         @child_atom = ( $child_id, $atom_site->{$child_id}{"label_atom_id"} );
         print( "$parent_atom[0] $parent_atom[1]:" );
         print( "$child_atom[0] $child_atom[1]\n" );

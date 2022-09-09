@@ -288,7 +288,6 @@ sub connect_atoms
     return;
 }
 
-
 #
 # Connects heteroatoms to the side-chain or main-chain atoms. If not explicitly
 # sated in 'struct_conn', connects to 'CA' for bond length and angle bending
@@ -310,9 +309,6 @@ sub connect_hetatoms
     # Connecting atoms with heteroatoms using $struct_conn.
     # NOTE: what about different models? PDBx's '_struct_conn' does not have
     # 'ptnr2_pdbx_PDB_model_num' and 'ptnr2_label_alt_id'.
-    # TODO: split_by() should be more generalized. But at the moment, the
-    # '_atom_site' will be used as an option.
-    # TODO: think about if the distance cutoff should be implemented.
     my $hetatom_names =
         $parameters->{'_[local]_sidechain_hetatom_extension'};
     my %connected_hetatoms = ();
@@ -423,10 +419,18 @@ sub connect_atoms_explicitly
     my ( $atom_site, $first_atom_id_list, $second_atom_id_list ) = @_;
 
     for my $first_atom_id ( @{ $first_atom_id_list } ) {
+        my $first_atom_group_PDB = $atom_site->{$first_atom_id}{'group_PDB'};
         for my $second_atom_id ( @{ $second_atom_id_list } ) {
-            push @{ $atom_site->{$first_atom_id}{'connections'} },
+            my $second_atom_group_PDB =
+                $atom_site->{$second_atom_id}{'group_PDB'};
+            my $connection_type = 'connections';
+            if( $first_atom_group_PDB eq 'HETATM' ||
+                $second_atom_group_PDB eq 'HETATM' ) {
+                $connection_type = 'connections_hetatom'
+            }
+            push @{ $atom_site->{$first_atom_id}{$connection_type} },
                 "$second_atom_id";
-            push @{ $atom_site->{$second_atom_id}{'connections'} },
+            push @{ $atom_site->{$second_atom_id}{$connection_type} },
                 "$first_atom_id";
         }
     }
