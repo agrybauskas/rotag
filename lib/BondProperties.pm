@@ -228,9 +228,7 @@ sub rotatable_bonds
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
-                                 'include' => { $include_hetatoms ?
-                                                ( 'label_atom_id' =>[ 'C' ] ) :
-                                                ( 'label_atom_id' =>[ 'CA' ] ) },
+                                 'include' => { 'label_atom_id' =>[ 'CA' ] },
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
     $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
