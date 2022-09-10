@@ -171,15 +171,24 @@ sub rotation_translation
                                   { 'include' => { 'group_PDB' => [ 'HETATM' ] },
                                     'return_data' => 'id' } ) } ] : undef;
 
-        my $bendable_angles =
-            bendable_angles( $residue_site, undef, $next_atom_ids, undef,
-                             { 'include_hetatoms' => $calc_hetatoms } );
-        my $rotatable_bonds =
-            rotatable_bonds( $residue_site, undef, undef,
-                             { 'include_hetatoms' => $calc_hetatoms } );
-        my $stretchable_bonds =
-            stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                               { 'include_hetatoms' => $calc_hetatoms } );
+        my $bendable_angles = {};
+        if( $do_angle_bending ) {
+            $bendable_angles =
+                bendable_angles( $residue_site, undef, $next_atom_ids, undef,
+                                 { 'include_hetatoms' => $calc_hetatoms } );
+        }
+        my $rotatable_bonds = {};
+        if( $do_bond_torsion ) {
+            $rotatable_bonds =
+                rotatable_bonds( $residue_site, undef, undef,
+                                 { 'include_hetatoms' => $calc_hetatoms } );
+        }
+        my $stretchable_bonds = {};
+        if( $do_bond_stretching ) {
+            $stretchable_bonds =
+                stretchable_bonds( $residue_site, undef, $next_atom_ids,
+                                   { 'include_hetatoms' => $calc_hetatoms } );
+        }
 
         if( ! %{ $rotatable_bonds } &&
             ! %{ $stretchable_bonds } &&
