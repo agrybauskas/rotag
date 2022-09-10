@@ -232,9 +232,7 @@ sub rotatable_bonds
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
     $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
-                                  'include' => { $include_hetatoms ?
-                                                 ( 'label_atom_id' => [ 'N' ] ):
-                                                 ( 'label_atom_id' => [ 'CB' ])},
+                                  'include' => { 'label_atom_id' => [ 'CB' ] },
                                   'data' => [ 'id' ],
                                   'is_list' => 1 } );
 
