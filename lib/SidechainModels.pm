@@ -227,21 +227,14 @@ sub rotation_translation
                     my $side_atom_id =
                         filter_new( $residue_site,
                                 {  'include' =>
-                                       { 'label_atom_id' => [ $side_atom_name ] },
+                                       { 'label_atom_id' => [ $side_atom_name ]},
                                    'return_data' => 'id' } )->[0];
 
-                    my $mid_atom_coord =
-                        [ $residue_site->{$mid_atom_id}{'Cartn_x'},
-                          $residue_site->{$mid_atom_id}{'Cartn_y'},
-                          $residue_site->{$mid_atom_id}{'Cartn_z'} ];
-                    my $up_atom_coord =
-                        [ $residue_site->{$up_atom_id}{'Cartn_x'},
-                          $residue_site->{$up_atom_id}{'Cartn_y'},
-                          $residue_site->{$up_atom_id}{'Cartn_z'} ];
-                    my $side_atom_coord =
-                        [ $residue_site->{$side_atom_id}{'Cartn_x'},
-                          $residue_site->{$side_atom_id}{'Cartn_y'},
-                          $residue_site->{$side_atom_id}{'Cartn_z'} ];
+                    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+                        map { [ $residue_site->{$_}{'Cartn_x'},
+                                $residue_site->{$_}{'Cartn_y'},
+                                $residue_site->{$_}{'Cartn_z'} ] }
+                            ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
                 # Creates and appends matrices to a list of matrices that later
                 # will be multiplied.
@@ -257,8 +250,10 @@ sub rotation_translation
             if( $do_bond_stretching ) {
                 for my $bond_name ( sort { $a cmp $b }
                                      keys %{ $stretchable_bonds->{$atom_id} } ) {
-                    my $up_atom_id = $stretchable_bonds->{$atom_id}{$bond_name}[1];
-                    my $mid_atom_id = $stretchable_bonds->{$atom_id}{$bond_name}[0];
+                    my $up_atom_id =
+                        $stretchable_bonds->{$atom_id}{$bond_name}[1];
+                    my $mid_atom_id =
+                        $stretchable_bonds->{$atom_id}{$bond_name}[0];
 
                     my @mid_connections = # Excludes up atom.
                         grep { $_ ne $up_atom_id }
@@ -274,18 +269,11 @@ sub rotation_translation
                                        { 'label_atom_id' => [ $side_atom_name ] },
                                    'return_data' => 'id' } )->[0];
 
-                    my $mid_atom_coord =
-                        [ $residue_site->{$mid_atom_id}{'Cartn_x'},
-                          $residue_site->{$mid_atom_id}{'Cartn_y'},
-                          $residue_site->{$mid_atom_id}{'Cartn_z'} ];
-                    my $up_atom_coord =
-                        [ $residue_site->{$up_atom_id}{'Cartn_x'},
-                          $residue_site->{$up_atom_id}{'Cartn_y'},
-                          $residue_site->{$up_atom_id}{'Cartn_z'} ];
-                    my $side_atom_coord =
-                        [ $residue_site->{$side_atom_id}{'Cartn_x'},
-                          $residue_site->{$side_atom_id}{'Cartn_y'},
-                          $residue_site->{$side_atom_id}{'Cartn_z'} ];
+                    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+                        map { [ $residue_site->{$_}{'Cartn_x'},
+                                $residue_site->{$_}{'Cartn_y'},
+                                $residue_site->{$_}{'Cartn_z'} ] }
+                            ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
                 # Creates and appends matrices to a list of matrices that later
                 # will be multiplied.
@@ -301,22 +289,18 @@ sub rotation_translation
             if( $do_angle_bending ) {
                 for my $angle_name ( sort { $a cmp $b }
                                      keys %{ $bendable_angles->{$atom_id} } ) {
-                    my $up_atom_id = $bendable_angles->{$atom_id}{$angle_name}[2];
-                    my $mid_atom_id = $bendable_angles->{$atom_id}{$angle_name}[1];
-                    my $side_atom_id = $bendable_angles->{$atom_id}{$angle_name}[0];
+                    my $up_atom_id =
+                        $bendable_angles->{$atom_id}{$angle_name}[2];
+                    my $mid_atom_id =
+                        $bendable_angles->{$atom_id}{$angle_name}[1];
+                    my $side_atom_id =
+                        $bendable_angles->{$atom_id}{$angle_name}[0];
 
-                    my $mid_atom_coord =
-                        [ $residue_site->{$mid_atom_id}{'Cartn_x'},
-                          $residue_site->{$mid_atom_id}{'Cartn_y'},
-                          $residue_site->{$mid_atom_id}{'Cartn_z'} ];
-                    my $up_atom_coord =
-                        [ $residue_site->{$up_atom_id}{'Cartn_x'},
-                          $residue_site->{$up_atom_id}{'Cartn_y'},
-                          $residue_site->{$up_atom_id}{'Cartn_z'} ];
-                    my $side_atom_coord =
-                        [ $residue_site->{$side_atom_id}{'Cartn_x'},
-                          $residue_site->{$side_atom_id}{'Cartn_y'},
-                          $residue_site->{$side_atom_id}{'Cartn_z'} ];
+                    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+                        map { [ $residue_site->{$_}{'Cartn_x'},
+                                $residue_site->{$_}{'Cartn_y'},
+                                $residue_site->{$_}{'Cartn_z'} ] }
+                            ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
                 # Creates and appends matrices to a list of matrices that later
                 # will be multiplied.
