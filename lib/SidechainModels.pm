@@ -188,26 +188,15 @@ sub rotation_translation
             }
             # FIX: have to address 'struct_conn'.
             if( $do_bond_torsion ) {
-                # $ignore_connections =
-                #     filter_new( $residue_site,
-                #                 { 'include' => { 'label_atom_id' => ['CA', 'O']},
-                #                   'return_data' => 'id' } );
                 $rotatable_bonds =
                     rotatable_bonds( $residue_site, undef, undef,
                                      { 'include_hetatoms' => 1 } );
             }
             # FIX: have to address 'struct_conn'.
             if( $do_bond_stretching ) {
-                my $ignore_connections =
-                    filter_new( $residue_site,
-                                { 'include' =>
-                                      { 'label_atom_id' => [ 'N', 'C', 'CB' ] },
-                                  'return_data' => 'id' } );
                 $stretchable_bonds =
                     stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                                       { 'ignore_connections' =>
-                                             $ignore_connections,
-                                         'include_hetatoms' => 1 } );
+                                       { 'include_hetatoms' => 1 } );
             }
         } else {
             if( $do_angle_bending ) {
