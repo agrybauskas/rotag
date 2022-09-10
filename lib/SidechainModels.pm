@@ -163,18 +163,13 @@ sub rotation_translation
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
-        my $hetatom_site;
-        my $ignore_connections = [];
-        if( $calc_hetatoms ) {
-            $hetatom_site =
-                filter_new( $residue_site,
-                            { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
-        }
-
         next if ! %{ $residue_site };
 
         my $next_atom_ids =
-            $calc_hetatoms ? [ sort keys %{ $hetatom_site } ] : undef;
+            $calc_hetatoms ?
+            [ sort @{ filter_new( $residue_site,
+                                  { 'include' => { 'group_PDB' => [ 'HETATM' ] },
+                                    'return_data' => 'id' } ) } ] : undef;
 
         my $bendable_angles =
             bendable_angles( $residue_site, undef, $next_atom_ids, undef,
