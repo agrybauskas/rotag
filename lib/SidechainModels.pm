@@ -179,12 +179,14 @@ sub rotation_translation
 
         if( $calc_hetatoms ) {
             # HACK: probably will not work with multiple hetero atoms.
+            # FIX: have to address 'struct_conn'.
             if( $do_angle_bending ) {
                 my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
                 $bendable_angles =
                     bendable_angles( $residue_site, undef, $next_atom_ids, undef,
                                      { 'include_hetatoms' => 1 } );
             }
+            # FIX: have to address 'struct_conn'.
             if( $do_bond_torsion ) {
                 $ignore_connections =
                     filter_new( $residue_site,
@@ -196,6 +198,7 @@ sub rotation_translation
                                            $ignore_connections,
                                        'include_hetatoms' => 1 } );
             }
+            # FIX: have to address 'struct_conn'.
             if( $do_bond_stretching ) {
                 my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
                 my $ignore_connections =
