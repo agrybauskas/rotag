@@ -165,11 +165,6 @@ sub rotation_translation
 
         next if ! %{ $residue_site };
 
-        my $start_atom_ids = # NOTE: Only temporary.
-            $calc_hetatoms ?
-            [ sort @{ filter_new( $residue_site,
-                                  { 'include' => { 'group_PDB' => [ 'HETATM' ] },
-                                    'return_data' => 'id' } ) } ] : undef;
         my $next_atom_ids =
             $calc_hetatoms ?
             [ sort @{ filter_new( $residue_site,
@@ -185,7 +180,7 @@ sub rotation_translation
         my $rotatable_bonds = {};
         if( $do_bond_torsion ) {
             $rotatable_bonds =
-                rotatable_bonds( $residue_site, $start_atom_ids, undef,
+                rotatable_bonds( $residue_site, undef, $next_atom_ids,
                                  { 'include_hetatoms' => $calc_hetatoms } );
         }
         my $stretchable_bonds = {};
