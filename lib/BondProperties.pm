@@ -311,10 +311,12 @@ sub rotatable_bonds
             }
 
             # Marks neighbouring atoms.
-            if( $include_hetatoms ) {
+            if( $include_hetatoms &&
+                defined $atom_site{$atom_id}{'connections_hetatom'} ) {
                 push @neighbour_atom_ids,
                     @{ $atom_site{$atom_id}{'connections_hetatom'} };
-            } else {
+            }
+            if( defined $atom_site{$atom_id}{'connections'} ) {
                 push @neighbour_atom_ids,
                     @{ $atom_site{$atom_id}{'connections'} };
             }
@@ -482,10 +484,12 @@ sub stretchable_bonds
             }
 
             # Marks neighbouring atoms.
-            if( $include_hetatoms ) {
+            if( $include_hetatoms &&
+                defined $atom_site{$atom_id}{'connections_hetatom'} ) {
                 push @neighbour_atom_ids,
                     @{ $atom_site{$atom_id}{'connections_hetatom'} };
-            } else {
+            }
+            if( defined $atom_site{$atom_id}{'connections'} ) {
                 push @neighbour_atom_ids,
                     @{ $atom_site{$atom_id}{'connections'} };
             }
@@ -651,10 +655,12 @@ sub bendable_angles
             }
 
             # Marks neighbouring atoms.
-            if( $include_hetatoms ) {
+            if( $include_hetatoms &&
+                defined $atom_site{$atom_id}{'connections_hetatom'} ) {
                 push @neighbour_atom_ids,
                     @{ $atom_site{$atom_id}{'connections_hetatom'} };
-            } else {
+            }
+            if( defined $atom_site{$atom_id}{'connections'} ) {
                 push @neighbour_atom_ids,
                     @{ $atom_site{$atom_id}{'connections'} };
             }
