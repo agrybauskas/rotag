@@ -173,42 +173,18 @@ sub rotation_translation
 
         next if ! %{ $residue_site };
 
-        my $bendable_angles = {};
-        my $rotatable_bonds = {};
-        my $stretchable_bonds = {};
+        my $next_atom_ids =
+            $calc_hetatoms ? [ sort keys %{ $hetatom_site } ] : undef;
 
-        if( $calc_hetatoms ) {
-            # HACK: probably will not work with multiple hetero atoms.
-            # FIX: have to address 'struct_conn'.
-            my $next_atom_ids = [ sort keys %{ $hetatom_site } ];
-            if( $do_angle_bending ) {
-                $bendable_angles =
-                    bendable_angles( $residue_site, undef, $next_atom_ids, undef,
-                                     { 'include_hetatoms' => 1 } );
-            }
-            # FIX: have to address 'struct_conn'.
-            if( $do_bond_torsion ) {
-                $rotatable_bonds =
-                    rotatable_bonds( $residue_site, undef, undef,
-                                     { 'include_hetatoms' => 1 } );
-            }
-            # FIX: have to address 'struct_conn'.
-            if( $do_bond_stretching ) {
-                $stretchable_bonds =
-                    stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                                       { 'include_hetatoms' => 1 } );
-            }
-        } else {
-            if( $do_angle_bending ) {
-                $bendable_angles = bendable_angles( $residue_site );
-            }
-            if( $do_bond_torsion ) {
-                $rotatable_bonds = rotatable_bonds( $residue_site );
-            }
-            if( $do_bond_stretching ) {
-                $stretchable_bonds = stretchable_bonds( $residue_site );
-            }
-        }
+        my $bendable_angles =
+            bendable_angles( $residue_site, undef, $next_atom_ids, undef,
+                             { 'include_hetatoms' => $calc_hetatoms } );
+        my $rotatable_bonds =
+            rotatable_bonds( $residue_site, undef, undef,
+                             { 'include_hetatoms' => $calc_hetatoms } );
+        my $stretchable_bonds =
+            stretchable_bonds( $residue_site, undef, $next_atom_ids,
+                               { 'include_hetatoms' => $calc_hetatoms } );
 
         if( ! %{ $rotatable_bonds } &&
             ! %{ $stretchable_bonds } &&
