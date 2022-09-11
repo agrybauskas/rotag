@@ -185,9 +185,18 @@ sub rotation_translation
         }
         my $stretchable_bonds = {};
         if( $do_bond_stretching ) {
+            # NOTE: now it becomes a bit tricky to handle, because we have to
+            # think where other pseudo-connections might introduce errors.
+            my $ignore_connections =
+                filter_new( $residue_site,
+                            { 'include' => { 'label_atom_id' => [ 'N' ] },
+                              'return_data' => 'id' } );
             $stretchable_bonds =
                 stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                                   { 'include_hetatoms' => $calc_hetatoms } );
+                                   { 'include_hetatoms' => $calc_hetatoms,
+                                     ( $calc_hetatoms ?
+                                       ( 'ignore_connections' =>
+                                             $ignore_connections ) : () ) } );
         }
 
         if( ! %{ $rotatable_bonds } &&
