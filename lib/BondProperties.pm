@@ -220,11 +220,13 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $ignore_connections, $include_hetatoms ) =
-        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
+    my ( $ignore_connections, $include_hetatoms, $reverse_order ) =
+        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'},
+          $options->{'reverse_order'} );
 
     $ignore_connections //= [];
     $include_hetatoms //= 0;
+    $reverse_order //= 0;
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
@@ -390,7 +392,12 @@ sub rotatable_bonds
     for my $atom_id ( keys %rotatable_bonds ) {
         for my $bond ( @{ $rotatable_bonds{"$atom_id"} } ) {
             my $bond_name = $bond_names{"$bond->[1]"};
-            $named_rotatable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+            if( $reverse_order ) {
+                $named_rotatable_bonds{"$bond->[1]"}{"$bond_name"} =
+                    [ $bond->[0], $atom_id ];
+            } else {
+                $named_rotatable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+            }
         }
     }
 
