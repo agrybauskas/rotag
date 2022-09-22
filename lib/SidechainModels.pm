@@ -139,17 +139,17 @@ sub rotation_translation
 {
     my ( $parameters, $atom_site, $options ) = @_;
     my ( $do_bond_torsion, $do_bond_stretching, $do_angle_bending,
-         $calc_hetatoms ) = (
+         $include_hetatoms ) = (
         $options->{do_bond_torsion},
         $options->{do_bond_stretching},
         $options->{do_angle_bending},
-        $options->{calc_hetatoms},
+        $options->{include_hetatoms},
     );
 
     $do_bond_torsion //= 1;
     $do_bond_stretching //= 1;
     $do_angle_bending //= 1;
-    $calc_hetatoms //= 0;
+    $include_hetatoms //= 0;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
@@ -166,7 +166,7 @@ sub rotation_translation
         next if ! %{ $residue_site };
 
         my $next_atom_ids =
-            $calc_hetatoms ?
+            $include_hetatoms ?
             [ sort @{ filter_new( $residue_site,
                                   { 'include' => { 'group_PDB' => [ 'HETATM' ] },
                                     'return_data' => 'id' } ) } ] : undef;
@@ -175,14 +175,14 @@ sub rotation_translation
         if( $do_angle_bending ) {
             $bendable_angles =
                 bendable_angles( $residue_site, undef, $next_atom_ids, undef,
-                                 { 'include_hetatoms' => $calc_hetatoms } );
+                                 { 'include_hetatoms' => $include_hetatoms } );
         }
         my $rotatable_bonds = {};
         if( $do_bond_torsion ) {
             $rotatable_bonds =
                 rotatable_bonds( $residue_site, undef, $next_atom_ids,
-                                 { 'include_hetatoms' => $calc_hetatoms,
-                                   'reverse_order' => ($calc_hetatoms ? 1 : 0)});
+                                 { 'include_hetatoms' => $include_hetatoms,
+                                   'reverse_order' => ($include_hetatoms ?1:0)});
         }
         my $stretchable_bonds = {};
         if( $do_bond_stretching ) {
@@ -194,8 +194,8 @@ sub rotation_translation
                               'return_data' => 'id' } );
             $stretchable_bonds =
                 stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                                   { 'include_hetatoms' => $calc_hetatoms,
-                                     ( $calc_hetatoms ?
+                                   { 'include_hetatoms' => $include_hetatoms,
+                                     ( $include_hetatoms ?
                                        ( 'ignore_connections' =>
                                              $ignore_connections ) : () ) } );
         }
@@ -226,12 +226,12 @@ sub rotation_translation
                     # rotatable bond ends with terminal atom, then this bond is
                     # excluded.
                     my $up_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[1];
-                    if( ! $calc_hetatoms &&
+                    if( ! $include_hetatoms &&
                         scalar( @{ $residue_site->{$up_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }
 
                     my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
-                    if( ! $calc_hetatoms &&
+                    if( ! $include_hetatoms &&
                         scalar( @{ $residue_site->{$mid_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }
 

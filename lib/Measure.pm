@@ -539,8 +539,7 @@ sub all_bond_angles
 
         my $bendable_angles =
             bendable_angles( $residue_site, undef, $next_atom_ids, undef,
-                             { 'calc_hetatoms' => $calc_hetatoms,
-                               'include_hetatoms' => $calc_hetatoms } );
+                             { 'include_hetatoms' => $calc_hetatoms } );
         my %uniq_bendable_angles; # Unique bendable angles.
         for my $atom_id ( keys %{ $bendable_angles } ) {
             for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
