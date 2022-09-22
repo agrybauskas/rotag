@@ -292,7 +292,7 @@ sub all_dihedral
         my $rotatable_bonds =
             rotatable_bonds( $residue_site, undef, $next_atom_ids,
                              { 'ignore_connections' => $ignore_connections,
-                               'calc_hetatoms' => $calc_hetatoms } );
+                               'include_hetatoms' => $calc_hetatoms } );
 
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
         for my $atom_id ( keys %{ $rotatable_bonds } ) {
