@@ -259,6 +259,8 @@ sub rotatable_bonds
         # before.
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
+            my $is_atom_hetatom =
+                $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ? 1 : 0;
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
             if( ( ! exists $atom_site{$atom_id}{'hybridization'} ) &&
