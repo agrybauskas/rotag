@@ -220,7 +220,7 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $ignore_connections, $include_hetatoms, $reverse_order ) =
+    my ( $ignore_connections, $include_hetatoms ) =
         ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
 
     $ignore_connections //= [];
