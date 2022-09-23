@@ -398,13 +398,26 @@ sub all_dihedral
             # First, checks if rotatable bond has fourth atom produce dihedral
             # angle. It is done by looking at atom connections - if rotatable
             # bond ends with terminal atom, then this bond is excluded.
-            if( scalar( @{ $residue_site->
-                               {$uniq_rotatable_bonds{$angle_name}->[1]}
-                               {'connections'} } ) < 2 ){ next; }
+            my $connection_count =
+                defined $residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
+                                       {'connections'} ?
+                scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
+                                        {'connections'} } ) : 0;
+            my $hetatom_connection_count =
+                defined $residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
+                                       {'connections_hetatom'} ?
+                scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
+                                        {'connections_hetatom'} } ) : 0;
+
+            if( $connection_count < 2 ||
+                ( $include_hetatoms &&
+                  $connection_count + $hetatom_connection_count < 2 ) ){ next; }
 
             # Chooses proper atom ids for calculating dihedral angles.
             my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
             my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
+            # NOTE: for second and third connections 'connections_hetatom'
+            # should be included when dealing with multi-atom hetatoms.
             my @second_connections = # Second atom connections, except third.
                 grep { $_ ne $third_atom_id }
                 @{ $residue_site->{$second_atom_id}{'connections'} };
