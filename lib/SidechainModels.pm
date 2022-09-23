@@ -181,8 +181,7 @@ sub rotation_translation
         if( $do_bond_torsion ) {
             $rotatable_bonds =
                 rotatable_bonds( $residue_site, undef, $next_atom_ids,
-                                 { 'include_hetatoms' => $include_hetatoms,
-                                   'reverse_order' => ($include_hetatoms ?1:0)});
+                                 { 'include_hetatoms' => $include_hetatoms } );
         }
         my $stretchable_bonds = {};
         if( $do_bond_stretching ) {

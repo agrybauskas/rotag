@@ -221,12 +221,10 @@ sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
     my ( $ignore_connections, $include_hetatoms, $reverse_order ) =
-        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'},
-          $options->{'reverse_order'} );
+        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
 
     $ignore_connections //= [];
     $include_hetatoms //= 0;
-    $reverse_order //= 0;
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
@@ -259,17 +257,22 @@ sub rotatable_bonds
         # before.
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
-            my $is_atom_hetatom =
-                $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ? 1 : 0;
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
+            my $is_hetatom = $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
+            my $is_parent_hetatom =
+                $atom_site->{$parent_atom_id}{'group_PDB'} eq 'HETATM' ;
+
+            # NOTE: this hetatom exception currently will work on single atoms.
+            # NOTE: make sure that interaction between 'is_hetatom' and
+            # 'include_hetatoms' is correct.
             if( ( ! exists $atom_site{$atom_id}{'hybridization'} ) &&
-                ( ! $include_hetatoms ) ) {
+                ( ! $is_hetatom ) ) {
                 confess "atom with id $atom_id lacks information about " .
                         "hybridization"
             }
             if( ( ! exists $atom_site{$parent_atom_id}{'hybridization'} ) &&
-                ( ! $include_hetatoms ) ) {
+                ( ! $is_parent_hetatom ) ) {
                 confess "atom with id $parent_atom_id lacks information about " .
                         "hybridization"
             }
@@ -277,7 +280,7 @@ sub rotatable_bonds
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site{$atom_id}{'hybridization'} eq 'sp3' ||
                 ( $atom_site{$atom_id}{'hybridization'} eq '.' &&
-                  $include_hetatoms ) ){
+                  $is_hetatom && $include_hetatoms ) ){
                 # If last visited atom was sp3, then rotatable bonds from
                 # previous atom are copied and the new one is appended.
                 push @{ $rotatable_bonds{$atom_id} },
@@ -299,8 +302,7 @@ sub rotatable_bonds
             push @visited_atom_ids, $atom_id;
 
             if( $include_hetatoms &&
-                ( $atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ||
-                  $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM' ) &&
+                ( $is_hetatom || $is_parent_hetatom ) &&
                 ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
                 confess "atom with id $atom_id lacks 'connections_hetatom' key"
             }
@@ -394,7 +396,7 @@ sub rotatable_bonds
     for my $atom_id ( keys %rotatable_bonds ) {
         for my $bond ( @{ $rotatable_bonds{"$atom_id"} } ) {
             my $bond_name = $bond_names{"$bond->[1]"};
-            if( $reverse_order ) {
+            if( $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
                 $named_rotatable_bonds{"$bond->[1]"}{"$bond_name"} =
                     [ $bond->[0], $atom_id ];
             } else {
