@@ -252,17 +252,17 @@ sub generate_pseudo_hetatom
             %{ all_dihedral(
                    filter_by_unique_residue_key( $atom_site,
                                                  $residue_unique_key, 1 ),
-                   { 'calc_hetatoms' => 1 } ) };
+                   { 'include_hetatoms' => 1 } ) };
         my %bond_lengths =
             %{ all_bond_lengths(
                    filter_by_unique_residue_key( $atom_site,
                                                  $residue_unique_key, 1 ),
-                   { 'calc_hetatoms' => 1 } ) };
+                   { 'include_hetatoms' => 1 } ) };
         my %bond_angles =
             %{ all_bond_angles(
                    filter_by_unique_residue_key( $atom_site,
                                                  $residue_unique_key, 1 ),
-                   { 'calc_hetatoms' => 1 } ) };
+                   { 'include_hetatoms' => 1 } ) };
 
         # Iterates through combinations of angles, lengths and evaluates
         # conformational model.

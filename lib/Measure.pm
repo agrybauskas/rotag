@@ -237,7 +237,7 @@ sub dihedral_angle
 #     $atom_site - atom data structure.
 #     $options->{'calc_mainchain'} - additionally calculates phi and psi
 #     mainchain dihedral angles.
-#     $options->{'calc_hetatoms'} - additionally calculates dihedral angles for
+#     $options->{'include_hetatoms'} - additionally calculates dihedral angles for
 #     hetero atoms.
 # Output:
 #     $residue_angles - data structure that relates residue id and angle values.
@@ -249,14 +249,14 @@ sub dihedral_angle
 sub all_dihedral
 {
     my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $calc_hetatoms, $reference_atom_site ) = (
+    my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
-        $options->{'calc_hetatoms'},
+        $options->{'include_hetatoms'},
         $options->{'reference_atom_site'},
     );
 
     $calc_mainchain //= 0;
-    $calc_hetatoms //= 0;
+    $include_hetatoms //= 0;
     $reference_atom_site //= $atom_site;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
@@ -276,9 +276,9 @@ sub all_dihedral
 
         my $next_atom_ids;
         my $ignore_connections;
-        if( $calc_hetatoms ) {
+        if( $include_hetatoms ) {
             $next_atom_ids =
-                $calc_hetatoms ?
+                $include_hetatoms ?
                 [ sort @{ filter_new( $residue_site,
                                       { 'include' => {'group_PDB' => ['HETATM']},
                                         'return_data' => 'id' } ) } ] : undef;
@@ -292,7 +292,7 @@ sub all_dihedral
         my $rotatable_bonds =
             rotatable_bonds( $residue_site, undef, $next_atom_ids,
                              { 'ignore_connections' => $ignore_connections,
-                               'include_hetatoms' => $calc_hetatoms } );
+                               'include_hetatoms' => $include_hetatoms } );
 
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
         for my $atom_id ( keys %{ $rotatable_bonds } ) {
@@ -429,7 +429,7 @@ sub all_dihedral
                 sort_atom_names(
                 filter( { 'atom_site' => $residue_site,
                           'include' => { 'id' => \@third_connections,
-                                         ( $calc_hetatoms ?
+                                         ( $include_hetatoms ?
                                            ( 'group_PDB' => [ 'HETATM' ] ) :
                                            () ) },
                           'data' => [ 'label_atom_id' ],
@@ -487,7 +487,7 @@ sub all_dihedral
 #     $atom_site - atom data structure.
 #     $options->{'calc_mainchain'} - additionally calculates mainchain bond
 #     angles.
-#     $options->{'calc_hetatoms'} - additionally calculates bond angles for
+#     $options->{'include_hetatoms'} - additionally calculates bond angles for
 #     hetero atoms.
 # Output:
 #     $bond_length - data structure that relates residue id and bond lengths.
@@ -500,14 +500,14 @@ sub all_dihedral
 sub all_bond_angles
 {
     my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $calc_hetatoms, $reference_atom_site ) = (
+    my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
-        $options->{'calc_hetatoms'},
+        $options->{'include_hetatoms'},
         $options->{'reference_atom_site'},
     );
 
     $calc_mainchain //= 0;
-    $calc_hetatoms //= 0;
+    $include_hetatoms //= 0;
     $reference_atom_site //= $atom_site;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
@@ -526,7 +526,7 @@ sub all_bond_angles
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $next_atom_ids;
-        if( $calc_hetatoms ) {
+        if( $include_hetatoms ) {
             $next_atom_ids =
                 filter( { 'atom_site' => \%atom_site,
                           'include' =>
@@ -539,7 +539,7 @@ sub all_bond_angles
 
         my $bendable_angles =
             bendable_angles( $residue_site, undef, $next_atom_ids, undef,
-                             { 'include_hetatoms' => $calc_hetatoms } );
+                             { 'include_hetatoms' => $include_hetatoms } );
         my %uniq_bendable_angles; # Unique bendable angles.
         for my $atom_id ( keys %{ $bendable_angles } ) {
             for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
@@ -728,7 +728,7 @@ sub all_bond_angles
 #     $atom_site - atom data structure.
 #     $options->{'calc_mainchain'} - additionally calculates mainchain bond
 #     angles.
-#     $options->{'calc_hetatoms'} - additionally calculates bond lengths for
+#     $options->{'include_hetatoms'} - additionally calculates bond lengths for
 #     hetero atoms.
 # Output:
 #     $bond_length - data structure that relates residue id and bond lengths.
@@ -741,14 +741,14 @@ sub all_bond_angles
 sub all_bond_lengths
 {
     my ( $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $calc_hetatoms, $reference_atom_site ) = (
+    my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
-        $options->{'calc_hetatoms'},
+        $options->{'include_hetatoms'},
         $options->{'reference_atom_site'},
     );
 
     $calc_mainchain //= 0;
-    $calc_hetatoms //= 0;
+    $include_hetatoms //= 0;
     $reference_atom_site //= $atom_site;
 
     my %atom_site = %{ $atom_site }; # Copy of $atom_site.
@@ -768,7 +768,7 @@ sub all_bond_lengths
 
         my $next_atom_ids;
         my $ignore_connections;
-        if( $calc_hetatoms ) {
+        if( $include_hetatoms ) {
             $next_atom_ids =
                 filter( { 'atom_site' => \%atom_site,
                           'include' =>
@@ -787,7 +787,7 @@ sub all_bond_lengths
         my $stretchable_bonds =
             stretchable_bonds( $residue_site, undef, $next_atom_ids,
                                { 'ignore_connections' => $ignore_connections,
-                                 'include_hetatoms' => $calc_hetatoms } );
+                                 'include_hetatoms' => $include_hetatoms } );
         my %uniq_stretchable_bonds; # Unique stretchable bonds.
         for my $atom_id ( keys %{ $stretchable_bonds } ) {
             for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){
