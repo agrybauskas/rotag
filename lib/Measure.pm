@@ -275,23 +275,28 @@ sub all_dihedral
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $next_atom_ids;
-        my $ignore_atoms;
+        my $ignore_connections;
         if( $include_hetatoms ) {
             $next_atom_ids =
-                $include_hetatoms ?
                 [ sort @{ filter_new( $residue_site,
                                       { 'include' => {'group_PDB' => ['HETATM']},
-                                        'return_data' => 'id' } ) } ] : undef;
-            $ignore_atoms =
+                                        'return_data' => 'id' } ) } ];
+            my $ignore_atom_1 =
+                filter_new( \%atom_site,
+                            { 'include' =>
+                              { 'label_atom_id' => [ 'N' ] },
+                                'return_data' => 'id' } )->[0];
+            my $ignore_atom_2 =
                 filter_new( \%atom_site,
                             { 'include' =>
                               { 'label_atom_id' => [ 'CA' ] },
-                                'return_data' => 'id' } );
+                                'return_data' => 'id' } )->[0];
+            $ignore_connections->{$ignore_atom_1}{$ignore_atom_2} = 1;
         }
 
         my $rotatable_bonds =
             rotatable_bonds( $residue_site, undef, $next_atom_ids,
-                             { 'ignore_atoms' => $ignore_atoms,
+                             { 'ignore_connections' => $ignore_connections,
                                'include_hetatoms' => $include_hetatoms } );
 
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
