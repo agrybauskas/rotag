@@ -220,10 +220,10 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $ignore_connections, $include_hetatoms ) =
-        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
+    my ( $ignore_atoms, $include_hetatoms ) =
+        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
 
-    $ignore_connections //= [];
+    $ignore_atoms //= [];
     $include_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.
@@ -240,7 +240,7 @@ sub rotatable_bonds
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
-    my @visited_atom_ids = ( $start_atom_id, @{ $ignore_connections } );
+    my @visited_atom_ids = ( $start_atom_id, @{ $ignore_atoms } );
     my @next_atom_ids = ( @{ $next_atom_ids } );
     my %parent_atom_ids;
 
@@ -429,10 +429,10 @@ sub rotatable_bonds
 sub stretchable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $ignore_connections, $include_hetatoms ) =
-        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
+    my ( $ignore_atoms, $include_hetatoms ) =
+        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
 
-    $ignore_connections //= [];
+    $ignore_atoms //= [];
     $include_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.
@@ -449,7 +449,7 @@ sub stretchable_bonds
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
-    my @visited_atom_ids = ( $start_atom_id, @{ $ignore_connections } );
+    my @visited_atom_ids = ( $start_atom_id, @{ $ignore_atoms } );
     my @next_atom_ids = ( @{ $next_atom_ids } );
     my %parent_atom_ids;
 
@@ -589,10 +589,10 @@ sub bendable_angles
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $previous_atom_id,
          $options ) = @_;
-    my ( $ignore_connections, $include_hetatoms ) =
-        ( $options->{'ignore_connections'}, $options->{'include_hetatoms'} );
+    my ( $ignore_atoms, $include_hetatoms ) =
+        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
 
-    $ignore_connections //= [];
+    $ignore_atoms //= [];
     $include_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.

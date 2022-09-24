@@ -275,14 +275,14 @@ sub all_dihedral
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $next_atom_ids;
-        my $ignore_connections;
+        my $ignore_atoms;
         if( $include_hetatoms ) {
             $next_atom_ids =
                 $include_hetatoms ?
                 [ sort @{ filter_new( $residue_site,
                                       { 'include' => {'group_PDB' => ['HETATM']},
                                         'return_data' => 'id' } ) } ] : undef;
-            $ignore_connections =
+            $ignore_atoms =
                 filter_new( \%atom_site,
                             { 'include' =>
                               { 'label_atom_id' => [ 'CA' ] },
@@ -291,7 +291,7 @@ sub all_dihedral
 
         my $rotatable_bonds =
             rotatable_bonds( $residue_site, undef, $next_atom_ids,
-                             { 'ignore_connections' => $ignore_connections,
+                             { 'ignore_atoms' => $ignore_atoms,
                                'include_hetatoms' => $include_hetatoms } );
 
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
@@ -780,7 +780,7 @@ sub all_bond_lengths
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $next_atom_ids;
-        my $ignore_connections;
+        my $ignore_atoms;
         if( $include_hetatoms ) {
             $next_atom_ids =
                 filter( { 'atom_site' => \%atom_site,
@@ -790,7 +790,7 @@ sub all_bond_lengths
                                     'group_PDB' => [ 'HETATM' ] },
                           'is_list' => 1,
                           'data' => [ 'id' ] } );
-            $ignore_connections =
+            $ignore_atoms =
                 filter_new( \%atom_site,
                             { 'include' =>
                               { 'label_atom_id' => [ 'N', 'C', 'CB' ] },
@@ -799,7 +799,7 @@ sub all_bond_lengths
 
         my $stretchable_bonds =
             stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                               { 'ignore_connections' => $ignore_connections,
+                               { 'ignore_atoms' => $ignore_atoms,
                                  'include_hetatoms' => $include_hetatoms } );
         my %uniq_stretchable_bonds; # Unique stretchable bonds.
         for my $atom_id ( keys %{ $stretchable_bonds } ) {
