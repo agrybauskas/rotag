@@ -327,6 +327,9 @@ sub rotatable_bonds
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
+                # It is not symmetric intentionally.
+                next if $ignore_connections->{$atom_id}{$neighbour_atom_id};
+
                 if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
                     # HACK: this exception might produce unexpected results.
                     ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
