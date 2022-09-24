@@ -220,11 +220,13 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $ignore_atoms, $include_hetatoms ) =
-        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
+    my ( $ignore_atoms, $include_hetatoms, $ignore_connections ) =
+        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
+          $options->{'ignore_connections'} );
 
     $ignore_atoms //= [];
     $include_hetatoms //= 0;
+    $ignore_connections //= {};
 
     # By default, CA is starting atom and CB next.
     $start_atom_id //= filter( { 'atom_site' => $atom_site,
