@@ -274,13 +274,15 @@ sub all_dihedral
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        my $next_atom_id;
+        my $start_atom_id;
+        my $next_atom_ids;
         my $ignore_connections;
         if( $include_hetatoms ) {
-            $next_atom_id =
-                filter_new( $residue_site,
-                            { 'include' => { 'group_PDB' => ['HETATM'] },
-                              'return_data' => 'id' } )->[0];
+            $next_atom_ids =
+                [ sort @{ filter_new( $residue_site,
+                                      { 'include' => {'group_PDB' => ['HETATM']},
+                                        'return_data' => 'id' } ) } ];
+            $start_atom_id = $next_atom_ids->[0];
             my $ignore_atom_1 =
                 filter_new( \%atom_site,
                             { 'include' =>
@@ -295,7 +297,7 @@ sub all_dihedral
         }
 
         my $rotatable_bonds =
-            rotatable_bonds( $residue_site, $next_atom_id, $next_atom_id,
+            rotatable_bonds( $residue_site, $start_atom_id, $next_atom_ids,
                              { 'ignore_connections' => $ignore_connections,
                                'include_hetatoms' => $include_hetatoms } );
 
