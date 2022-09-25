@@ -261,6 +261,9 @@ sub rotatable_bonds
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
+            # The direction of bond matters here and is intentional.
+            next if $ignore_connections->{$parent_atom_id}{$atom_id};
+
             my $is_hetatom = $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
             my $is_parent_hetatom =
                 $atom_site->{$parent_atom_id}{'group_PDB'} eq 'HETATM' ;
@@ -327,9 +330,8 @@ sub rotatable_bonds
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
-                # It is not symmetric intentionally.
-                next if $ignore_connections->{$atom_id}{$neighbour_atom_id};
-
+                # # It is not symmetric intentionally.
+                # next if $ignore_connections->{$atom_id}{$neighbour_atom_id};
                 if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
                     # HACK: this exception might produce unexpected results.
                     ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
@@ -349,7 +351,6 @@ sub rotatable_bonds
                 push @next_atom_ids, $neighbour_atom_id;
             }
         }
-        # print "------------------------------\n";
     }
 
     # Removes bonds, if they have the id of the target atom. Also, remove ids,
@@ -400,6 +401,11 @@ sub rotatable_bonds
         $bond_name_id++;
     }
 
+    # use Data::Dumper;
+    # print "Rotatable bonds: \n";
+    # print Dumper \%rotatable_bonds;
+    # print "------------------------------\n";
+
     # Iterates through rotatable bonds and assigns names by second atom.
     my %named_rotatable_bonds;
     for my $atom_id ( keys %rotatable_bonds ) {
@@ -414,7 +420,7 @@ sub rotatable_bonds
         }
     }
 
-    # use Data::Dumper;
+    # print "Named rotatable bonds: \n";
     # print Dumper \%named_rotatable_bonds;
     # print "------------------------------\n";
 
