@@ -336,6 +336,9 @@ sub rotatable_bonds
                     $parent_atom_ids{$neighbour_atom_id} = $atom_id;
                 }
             }
+
+            # print $atom_site->{$atom_id}{'label_atom_id'}, ", ", $atom_id,
+            #     ' -> ', '[', join(', ', uniq(@neighbour_atom_ids)) ,']', "\n";
         }
 
         # Determines next atoms that should be visited.
@@ -346,6 +349,7 @@ sub rotatable_bonds
                 push @next_atom_ids, $neighbour_atom_id;
             }
         }
+        # print "------------------------------\n";
     }
 
     # Removes bonds, if they have the id of the target atom. Also, remove ids,
