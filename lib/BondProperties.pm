@@ -414,6 +414,10 @@ sub rotatable_bonds
         }
     }
 
+    # use Data::Dumper;
+    # print Dumper \%named_rotatable_bonds;
+    # print "------------------------------\n";
+
     return \%named_rotatable_bonds;
 }
 
