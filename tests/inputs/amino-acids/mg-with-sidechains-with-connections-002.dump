@@ -55,7 +55,7 @@
     'label_seq_id' => '27',
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'C',
-    'connections' => ['151'],
+    'connections' => ['149', '151'],
     'connections_hetatom' => ['148'],
     'hybridization' => '.'
   },

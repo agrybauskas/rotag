@@ -261,6 +261,10 @@ sub rotatable_bonds
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
+            # print "atom_id: ", $atom_id, "\n";
+            # use Data::Dumper;
+            # print STDERR Dumper \%parent_atom_ids;
+
             # The direction of bond matters here and is intentional.
             next if $ignore_connections->{$parent_atom_id}{$atom_id};
 
@@ -330,12 +334,10 @@ sub rotatable_bonds
 
             # Marks parent atoms for each neighbouring atom.
             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
-                # It is not symmetric intentionally.
-                next if $ignore_connections->{$atom_id}{$neighbour_atom_id};
-
                 if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
                     # HACK: this exception might produce unexpected results.
-                    ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
+                    ( ! exists $parent_atom_ids{$neighbour_atom_id} ) &&
+                    ( ! $ignore_connections->{$atom_id}{$neighbour_atom_id} ) ) {
                     $parent_atom_ids{$neighbour_atom_id} = $atom_id;
                 }
             }
