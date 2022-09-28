@@ -240,20 +240,6 @@ sub rotatable_bonds
 
     if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
 
-    # HACK: special case handling when start and next atoms are the same.
-    if( $start_atom_id eq $next_atom_ids->[0] ) {
-        $next_atom_ids = [];
-        if( defined $atom_site->{$start_atom_id}{'connections'} ) {
-            push @{ $next_atom_ids },
-                 @{ $atom_site->{$start_atom_id}{'connections'} };
-        }
-        if( $include_hetatoms &&
-            defined $atom_site->{$start_atom_id}{'connections_hetatom'} ) {
-            push @{ $next_atom_ids },
-                 @{ $atom_site->{$start_atom_id}{'connections_hetatom'} };
-        }
-    }
-
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
     my @visited_atom_ids = ( $start_atom_id, @{ $ignore_atoms } );
@@ -360,20 +346,6 @@ sub rotatable_bonds
             if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
                 ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
                 push @next_atom_ids, $neighbour_atom_id;
-            }
-        }
-    }
-
-    # Reversing order of the bond rotations if heteroatom is present and the
-    # appropriate flag is on.
-    for my $atom_id ( keys %rotatable_bonds ) {
-        my $first_bond_atom_id = $rotatable_bonds{$atom_id}[0][0];
-        my $is_last_hetatom =
-            $atom_site->{$first_bond_atom_id}{'group_PDB'} eq 'HETATM';
-        if( $include_hetatoms && $is_last_hetatom ) {
-            # NOTE: check for situations when the keys clash.
-            if( ! exists $rotatable_bonds{$first_bond_atom_id} ) {
-                # delete $rotatable_bonds{$atom_id};
             }
         }
     }
