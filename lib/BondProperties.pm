@@ -238,6 +238,20 @@ sub rotatable_bonds
                                   'data' => [ 'id' ],
                                   'is_list' => 1 } );
 
+    # HACK: special case handling.
+    if( $start_atom_id eq $next_atom_ids->[0] ) {
+        $next_atom_ids = [];
+        if( defined $atom_site->{$start_atom_id}{'connections'} ) {
+            push @{ $next_atom_ids },
+                 @{ $atom_site->{$start_atom_id}{'connections'} };
+        }
+        if( $include_hetatoms &&
+            defined $atom_site->{$start_atom_id}{'connections_hetatom'} ) {
+            push @{ $next_atom_ids },
+                 @{ $atom_site->{$start_atom_id}{'connections_hetatom'} };
+        }
+    }
+
     if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
@@ -261,7 +275,7 @@ sub rotatable_bonds
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
-            # print "atom_id: ", $atom_id, "\n";
+            # print STDERR "atom_id: ", $atom_id, "\n";
             # use Data::Dumper;
             # print STDERR Dumper \%parent_atom_ids;
 
@@ -270,7 +284,7 @@ sub rotatable_bonds
 
             my $is_hetatom = $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
             my $is_parent_hetatom =
-                $atom_site->{$parent_atom_id}{'group_PDB'} eq 'HETATM' ;
+                $atom_site->{$parent_atom_id}{'group_PDB'} eq 'HETATM';
 
             # NOTE: this hetatom exception currently will work on single atoms.
             # NOTE: make sure that interaction between 'is_hetatom' and
@@ -288,8 +302,9 @@ sub rotatable_bonds
 
             if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site{$atom_id}{'hybridization'} eq 'sp3' ||
-                ( $atom_site{$atom_id}{'hybridization'} eq '.' &&
-                  $is_hetatom && $include_hetatoms ) ){
+                ( $include_hetatoms &&
+                  ( $is_hetatom || $is_parent_hetatom ) &&
+                  $atom_site{$atom_id}{'hybridization'} eq '.' ) ) {
                 # If last visited atom was sp3, then rotatable bonds from
                 # previous atom are copied and the new one is appended.
                 push @{ $rotatable_bonds{$atom_id} },
@@ -342,7 +357,7 @@ sub rotatable_bonds
                 }
             }
 
-            # print $atom_site->{$atom_id}{'label_atom_id'}, ", ", $atom_id,
+            # print STDERR $atom_site->{$atom_id}{'label_atom_id'}, ", ", $atom_id,
             #     ' -> ', '[', join(', ', uniq(@neighbour_atom_ids)) ,']', "\n";
         }
 
@@ -405,9 +420,9 @@ sub rotatable_bonds
     }
 
     # use Data::Dumper;
-    # print "Rotatable bonds: \n";
-    # print Dumper \%rotatable_bonds;
-    # print "------------------------------\n";
+    # print STDERR "Rotatable bonds: \n";
+    # print STDERR Dumper \%rotatable_bonds;
+    # print STDERR "------------------------------\n";
 
     # Iterates through rotatable bonds and assigns names by second atom.
     my %named_rotatable_bonds;
@@ -423,9 +438,9 @@ sub rotatable_bonds
         }
     }
 
-    # print "Named rotatable bonds: \n";
-    # print Dumper \%named_rotatable_bonds;
-    # print "------------------------------\n";
+    # print STDERR "Named rotatable bonds: \n";
+    # print STDERR Dumper \%named_rotatable_bonds;
+    # print STDERR "------------------------------\n";
 
     return \%named_rotatable_bonds;
 }
