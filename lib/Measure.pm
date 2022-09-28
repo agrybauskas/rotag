@@ -427,7 +427,13 @@ sub all_dihedral
             # should be included when dealing with multi-atom hetatoms.
             my @second_connections = # Second atom connections, except third.
                 grep { $_ ne $third_atom_id }
-                @{ $residue_site->{$second_atom_id}{'connections'} };
+                ( @{ $residue_site->{$second_atom_id}{'connections'} },
+                  ( $include_hetatoms &&
+                    defined $residue_site->{$second_atom_id}
+                                           {'connections_hetatom'} ?
+                    @{ $residue_site->{$second_atom_id}
+                                      {'connections_hetatom'} }: () ) );
+
             my $first_atom_name =
                 sort_atom_names(
                 filter( { 'atom_site' => $residue_site,
@@ -442,16 +448,19 @@ sub all_dihedral
                           'is_list' => 1 } )->[0];
             my @third_connections = # Third atom connections, except second.
                 grep { $_ ne $second_atom_id }
-                @{ $residue_site->{$third_atom_id}{'connections'} };
+                ( @{ $residue_site->{$third_atom_id}{'connections'} },
+                  ( $include_hetatoms &&
+                    defined $residue_site->{$third_atom_id}
+                                           {'connections_hetatom'} ?
+                    @{ $residue_site->{$third_atom_id}
+                                      {'connections_hetatom'} }: () ) );
+
             # HACK: it might not work with hetero atoms, because there might be
             # more than one atom name.
             my $fourth_atom_name =
                 sort_atom_names(
                 filter( { 'atom_site' => $residue_site,
-                          'include' => { 'id' => \@third_connections,
-                                         ( $include_hetatoms ?
-                                           ( 'group_PDB' => [ 'HETATM' ] ) :
-                                           () ) },
+                          'include' => { 'id' => \@third_connections },
                           'data' => [ 'label_atom_id' ],
                           'is_list' => 1 } ) )->[0];
             my $fourth_atom_id =
