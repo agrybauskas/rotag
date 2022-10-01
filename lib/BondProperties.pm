@@ -377,25 +377,35 @@ sub rotatable_bonds
     # Sorts bonds by naming priority.
     my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
                                                          # bond.
-    my @second_names_sorted =
-        @{ sort_atom_names(
-               filter( { 'atom_site' => \%atom_site,
-                         'include' => { 'id' => \@bond_second_ids },
-                         'data' => [ 'label_atom_id' ],
-                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
-
-    # Names by second atom priority.
     my %bond_names;
     my $bond_name_id = 1;
     my $bond_stem = $include_hetatoms ? 'tau' : 'chi';
-    for my $second_name ( @second_names_sorted ) {
-        my $second_atom_id =
-            filter( { 'atom_site' => \%atom_site,
-                      'include' => { 'label_atom_id' => [ $second_name ] },
-                      'data' => [ 'id' ],
-                      'is_list' => 1 } )->[0];
-        $bond_names{"$second_atom_id"} = "${bond_stem}${bond_name_id}";
-        $bond_name_id++;
+
+    if( $include_hetatoms ) {
+        # Heteroatom names are sorted according to rotatable bond direction.
+        # Names by second atom priority.
+        for my $second_atom_id ( @bond_second_ids ) {
+            $bond_names{"$second_atom_id"} = "${bond_stem}${bond_name_id}";
+            $bond_name_id++;
+        }
+    } else {
+        my @second_names_sorted =
+            @{ sort_atom_names(
+                   filter( { 'atom_site' => \%atom_site,
+                             'include' => { 'id' => \@bond_second_ids },
+                             'data' => [ 'label_atom_id' ],
+                             'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+
+        # Names by second atom priority.
+        for my $second_name ( @second_names_sorted ) {
+            my $second_atom_id =
+                filter( { 'atom_site' => \%atom_site,
+                          'include' => { 'label_atom_id' => [ $second_name ] },
+                          'data' => [ 'id' ],
+                          'is_list' => 1 } )->[0];
+            $bond_names{"$second_atom_id"} = "${bond_stem}${bond_name_id}";
+            $bond_name_id++;
+        }
     }
 
     # Iterates through rotatable bonds and assigns names by second atom.
