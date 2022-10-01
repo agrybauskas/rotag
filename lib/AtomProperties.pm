@@ -34,14 +34,24 @@ sub sort_atom_names
     # First priority is decided by atom type: S > P > O > N > C > H.
     # Second priority - by greek letter: A > B > G > D > E > Z > H.
     # TODO: look for more greek letters that are in PDBx.
+    # TODO: hetatoms.
+    # TODO: other atoms.
     # Third priority - by numeration: 1 > 2 > 3 and etc.
     # This priority is achieved by assinging first, second and third priorities
     # to numbers. Then iteratively is sorted by priorities.
     my %atom_type_priority =
-        ( 'H' => 1, 'X' => 2, 'C' => 3, 'N' => 4, 'O' => 5, 'P' => 6, 'S' => 7,);
+        ( 'H' => 1, 'X' => 2, 'C' => 3, 'N' => 4, 'O' => 5, 'P' => 6, 'S' => 7,
+          'MG' => 8 );
     my %greek_letter_priority =
         ( 'H' => 1, 'Z' => 2, 'E' => 3, 'D' => 4, 'G' => 5, 'B' => 6, 'A' => 7,
           q() => 8, );
+
+    my @atom_types =
+        sort { $atom_type_priority{$a} <=> $atom_type_priority{$b} }
+        keys %atom_type_priority;
+    my @greek_letters =
+        sort { $greek_letter_priority{$a} <=> $greek_letter_priority{$b} }
+        keys %greek_letter_priority;
 
     # Decomposes each atom name by its components.
     my %atom_names;
