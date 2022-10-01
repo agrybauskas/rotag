@@ -46,6 +46,7 @@ sub sort_atom_names
         ( 'H' => 1, 'Z' => 2, 'E' => 3, 'D' => 4, 'G' => 5, 'B' => 6, 'A' => 7,
           q() => 8, );
 
+    # TODO: refactor, because hash and list seems redundant.
     my @atom_types =
         sort { $atom_type_priority{$a} <=> $atom_type_priority{$b} }
         keys %atom_type_priority;
