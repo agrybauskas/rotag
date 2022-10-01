@@ -416,7 +416,7 @@ sub all_dihedral
                 scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
                                         {'connections_hetatom'} } ) : 0;
 
-            if( $connection_count < 2 ||
+            if( ( ! $include_hetatoms && $connection_count < 2 ) ||
                 ( $include_hetatoms &&
                   $connection_count + $hetatom_connection_count < 2 ) ){ next; }
 
