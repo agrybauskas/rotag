@@ -54,6 +54,9 @@ sub sort_atom_names
         sort { $greek_letter_priority{$a} <=> $greek_letter_priority{$b} }
         keys %greek_letter_priority;
 
+    my $atom_types_re = join @atom_types, "|";
+    my $gree_letters_re = join @greek_letters, "|";
+
     # Decomposes each atom name by its components.
     my %atom_names;
     for my $atom_name ( @{ $atom_names } ) {
