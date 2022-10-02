@@ -141,8 +141,9 @@ for my $pdbx_file ( @ARGV ) {
         hybridization( $parameters, $dihedral_site );
 
         my $dihedral_angles =
-            all_dihedral( $dihedral_site, { 'calc_mainchain' => $calc_mainchain,
-                                            'calc_hetatoms' => $calc_hetatoms });
+            all_dihedral( $dihedral_site,
+                          { 'calc_mainchain' => $calc_mainchain,
+                            'include_hetatoms' => $calc_hetatoms } );
 
         my $dihedral_id = 1;
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
