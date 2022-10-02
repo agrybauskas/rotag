@@ -34,38 +34,35 @@ sub sort_atom_names
     # First priority is decided by atom type: S > P > O > N > C > H.
     # Second priority - by greek letter: A > B > G > D > E > Z > H.
     # TODO: look for more greek letters that are in PDBx.
-    # TODO: hetatoms.
-    # TODO: other atoms.
+    # NOTE: atom types and greek letters share "H".
     # Third priority - by numeration: 1 > 2 > 3 and etc.
     # This priority is achieved by assinging first, second and third priorities
     # to numbers. Then iteratively is sorted by priorities.
     my %atom_type_priority =
         ( 'H' => 1, 'X' => 2, 'C' => 3, 'N' => 4, 'O' => 5, 'P' => 6, 'S' => 7,
-          'MG' => 8 );
+          q() => 8, );
     my %greek_letter_priority =
         ( 'H' => 1, 'Z' => 2, 'E' => 3, 'D' => 4, 'G' => 5, 'B' => 6, 'A' => 7,
           q() => 8, );
 
-    # TODO: refactor, because hash and list seems redundant.
-    my @atom_types =
+    my $atom_types_re =
+        join "|",
         sort { $atom_type_priority{$a} <=> $atom_type_priority{$b} }
         keys %atom_type_priority;
-    my @greek_letters =
+    my $greek_letters_re =
+        join "|",
         sort { $greek_letter_priority{$a} <=> $greek_letter_priority{$b} }
         keys %greek_letter_priority;
-
-    my $atom_types_re = join @atom_types, "|";
-    my $gree_letters_re = join @greek_letters, "|";
 
     # Decomposes each atom name by its components.
     my %atom_names;
     for my $atom_name ( @{ $atom_names } ) {
         my ( $atom_type ) =
-            $atom_name =~ /(^\p{IsAlphabetic})\p{IsAlphabetic}?\d?/smx;
+            $atom_name =~ /^(${atom_types_re})(?:${greek_letters_re})\d?/smx;
         my ( $greek_letter ) =
-            $atom_name =~ /^\p{IsAlphabetic}(\p{IsAlphabetic}?)\d?/smx;
+            $atom_name =~ /^(?:${atom_types_re})(${greek_letters_re})\d?/smx;
         my ( $number ) =
-            $atom_name =~ /^\p{IsAlphabetic}\p{IsAlphabetic}?(\d?)/smx;
+            $atom_name =~ /^(?:${atom_types_re})(?:${greek_letters_re})(\d?)/smx;
         $atom_names{$atom_name}{'type'} =
             $atom_type_priority{$atom_type};
         $atom_names{$atom_name}{'greek_letter'} =
