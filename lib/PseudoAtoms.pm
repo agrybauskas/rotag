@@ -269,39 +269,48 @@ sub generate_pseudo_hetatom
         # Iterates through combinations of angles, lengths and evaluates
         # conformational model.
         my @dihedral_angle_names =
-            grep { exists $dihedral_angles{$residue_unique_key}{$_} }
-                   sort { $a cmp $b }
-                   keys %{ $angle_and_bond_values };
+            sort keys %{ $dihedral_angles{$residue_unique_key} };
         my @bond_length_names =
-            grep { exists $bond_lengths{$residue_unique_key}{$_} }
-                   sort { $a cmp $b }
-                   keys %{ $angle_and_bond_values };
+            sort keys %{ $bond_lengths{$residue_unique_key} };
         my @bond_angle_names =
-            grep { exists $bond_angles{$residue_unique_key}{$_} }
-                   sort { $a cmp $b }
-                   keys %{ $angle_and_bond_values };
+            sort keys %{ $bond_angles{$residue_unique_key} };
 
         # Adjust changes to the existing values of the bond and angle parameters.
+        # TODO: refactor due to repetition of code.
         my @dihedral_angle_values;
         for my $angle_name ( @dihedral_angle_names ) {
-            push @dihedral_angle_values,
-                 [ map { $_ - $dihedral_angles{$residue_unique_key}
-                                              {"$angle_name"}{'value'} }
-                      @{ $angle_and_bond_values->{"$angle_name"} } ];
+            if( exists $angle_and_bond_values->{"$angle_name"} ) {
+                push @dihedral_angle_values,
+                     [ map { $_ - $dihedral_angles{$residue_unique_key}
+                                                  {"$angle_name"}{'value'} }
+                          @{ $angle_and_bond_values->{"$angle_name"} } ];
+            } else {
+                push @dihedral_angle_values, [ 0.0 ];
+            }
         }
+
         my @bond_length_values;
         for my $bond_name ( @bond_length_names ) {
-            push @bond_length_values,
-                 [ map { $_ - $bond_lengths{$residue_unique_key}
-                                           {"$bond_name"}{'value'} }
-                      @{ $angle_and_bond_values->{"$bond_name"} } ];
+            if( exists $angle_and_bond_values->{"$bond_name"} ) {
+                push @bond_length_values,
+                     [ map { $_ - $bond_lengths{$residue_unique_key}
+                                               {"$bond_name"}{'value'} }
+                          @{ $angle_and_bond_values->{"$bond_name"} } ];
+            } else {
+                push @bond_length_values, [ 0.0 ];
+            }
         }
+
         my @bond_angle_values;
         for my $angle_name ( @bond_angle_names ) {
-            push @bond_angle_values,
-                 [ map { $_ - $bond_angles{$residue_unique_key}
-                                          {"$angle_name"}{'value'} }
-                      @{ $angle_and_bond_values->{"$angle_name"} } ];
+            if( exists $angle_and_bond_values->{"$angle_name"} ) {
+                push @bond_angle_values,
+                     [ map { $_ - $bond_angles{$residue_unique_key}
+                                              {"$angle_name"}{'value'} }
+                          @{ $angle_and_bond_values->{"$angle_name"} } ];
+            } else {
+                push @bond_angle_values, [ 0.0 ];
+            }
         }
 
         my @angle_and_length_names =
