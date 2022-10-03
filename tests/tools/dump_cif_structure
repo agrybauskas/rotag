@@ -59,7 +59,8 @@ foreach my $pdbx_file ( @ARGV ) {
     if( $apply_rotation_only || $apply_length_translation_only ||
         $apply_angle_bending_only ) {
         rotation_translation( $parameters, $atom_site,
-                              { 'do_bond_torsion' => $apply_rotation_only,
+                              { 'do_bond_torsion' =>
+                                    $apply_rotation_only,
                                 'do_bond_stretching' =>
                                     $apply_length_translation_only,
                                 'do_angle_bending' =>
