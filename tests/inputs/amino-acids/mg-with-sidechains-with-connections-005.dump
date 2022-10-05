@@ -16,7 +16,7 @@
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'N',
     'connections' => ['149'],
-    'connections_hetatom' => ['1925'],
+    'connections_hetatom' => ['150'],
     'hybridization' => 'sp3'
   },
   '149' => {
@@ -246,7 +246,7 @@
     'label_seq_id' => '27',
     'pdbx_PDB_model_num' => '1',
     'type_symbol' => 'MG',
-    'connections_hetatom' => ['148','149'],
+    'connections_hetatom' => ['149'],
     'hybridization' => '.',
   },
   '883' => {
