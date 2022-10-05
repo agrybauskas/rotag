@@ -165,26 +165,46 @@ sub rotation_translation
 
         next if ! %{ $residue_site };
 
-        my $next_atom_ids =
-            $include_hetatoms ?
-            [ sort @{ filter_new( $residue_site,
-                                  { 'include' => { 'group_PDB' => [ 'HETATM' ] },
-                                    'return_data' => 'id' } ) } ] : undef;
-
         my $bendable_angles = {};
         if( $do_angle_bending ) {
+            my $next_atom_ids =
+                $include_hetatoms ?
+                [ sort @{ filter_new( $residue_site,
+                                      { 'include' => {'group_PDB' => ['HETATM']},
+                                        'return_data' => 'id' } ) } ] : undef;
             $bendable_angles =
                 bendable_angles( $residue_site, undef, $next_atom_ids, undef,
                                  { 'include_hetatoms' => $include_hetatoms } );
         }
+
         my $rotatable_bonds = {};
         if( $do_bond_torsion ) {
+            my $start_atom_id;
+            my $next_atom_ids;
+            if( $include_hetatoms ) {
+                $start_atom_id =
+                    filter_new( \%atom_site,
+                                { 'include' =>
+                                  { 'label_atom_id' => [ 'C' ] },
+                                    'return_data' => 'id' } )->[0];
+                $next_atom_ids =
+                    filter_new( \%atom_site,
+                                { 'include' =>
+                                  { 'label_atom_id' => [ 'N' ] },
+                                    'return_data' => 'id' } );
+            }
             $rotatable_bonds =
-                rotatable_bonds( $residue_site, undef, $next_atom_ids,
+                rotatable_bonds( $residue_site, $start_atom_id, $next_atom_ids,
                                  { 'include_hetatoms' => $include_hetatoms } );
         }
+
         my $stretchable_bonds = {};
         if( $do_bond_stretching ) {
+            my $next_atom_ids =
+                $include_hetatoms ?
+                [ sort @{ filter_new( $residue_site,
+                                      { 'include' => {'group_PDB' => ['HETATM']},
+                                        'return_data' => 'id' } ) } ] : undef;
             # NOTE: now it becomes a bit tricky to handle, because we have to
             # think where other pseudo-connections might introduce errors.
             my $ignore_atoms =
