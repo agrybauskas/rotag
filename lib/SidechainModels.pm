@@ -199,6 +199,7 @@ sub rotation_translation
                                   { 'label_atom_id' => [ 'C', 'CB' ] },
                                     'return_data' => 'id' } );
             }
+
             $rotatable_bonds =
                 rotatable_bonds( $residue_site, $start_atom_id, $next_atom_ids,
                                  { 'include_hetatoms' => $include_hetatoms,
