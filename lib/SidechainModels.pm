@@ -378,9 +378,9 @@ sub rotation_translation
 
             $atom_site->{$atom_id}{'conformation'} =
                 mult_matrix_product(
-                    [ @angle_bending_matrices,
+                    [ @bond_torsion_matrices,
+                      @angle_bending_matrices,
                       @bond_stretching_matrices,
-                      @bond_torsion_matrices,
                       @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
         }
     }
