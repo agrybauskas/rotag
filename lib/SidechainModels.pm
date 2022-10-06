@@ -274,14 +274,14 @@ sub rotation_translation
                                 $residue_site->{$_}{'Cartn_z'} ] }
                             ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-                # Creates and appends matrices to a list of matrices that later
-                # will be multiplied.
-                push @bond_torsion_matrices,
-                     @{ bond_torsion( $parameters,
-                                      $mid_atom_coord,
-                                      $up_atom_coord,
-                                      $side_atom_coord,
-                                      $angle_name ) };
+                    # Creates and appends matrices to a list of matrices that
+                    # later will be multiplied.
+                    push @bond_torsion_matrices,
+                         @{ bond_torsion( $parameters,
+                                          $mid_atom_coord,
+                                          $up_atom_coord,
+                                          $side_atom_coord,
+                                          $angle_name ) };
                 }
             }
 
@@ -313,14 +313,14 @@ sub rotation_translation
                                 $residue_site->{$_}{'Cartn_z'} ] }
                             ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-                # Creates and appends matrices to a list of matrices that later
-                # will be multiplied.
-                push @bond_stretching_matrices,
-                     @{ bond_stretching( $parameters,
-                                         $mid_atom_coord,
-                                         $up_atom_coord,
-                                         $side_atom_coord,
-                                         $bond_name ) };
+                    # Creates and appends matrices to a list of matrices that
+                    # later will be multiplied.
+                    push @bond_stretching_matrices,
+                         @{ bond_stretching( $parameters,
+                                             $mid_atom_coord,
+                                             $up_atom_coord,
+                                             $side_atom_coord,
+                                             $bond_name ) };
                 }
             }
 
