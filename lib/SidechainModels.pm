@@ -183,12 +183,12 @@ sub rotation_translation
             my $next_atom_ids;
             if( $include_hetatoms ) {
                 $start_atom_id =
-                    filter_new( \%atom_site,
+                    filter_new( $residue_site,
                                 { 'include' =>
                                   { 'label_atom_id' => [ 'C' ] },
                                     'return_data' => 'id' } )->[0];
                 $next_atom_ids =
-                    filter_new( \%atom_site,
+                    filter_new( $residue_site,
                                 { 'include' =>
                                   { 'label_atom_id' => [ 'N' ] },
                                     'return_data' => 'id' } );
@@ -340,15 +340,15 @@ sub rotation_translation
                                 $residue_site->{$_}{'Cartn_z'} ] }
                             ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-                # Creates and appends matrices to a list of matrices that later
-                # will be multiplied.
-                push @angle_bending_matrices,
-                     @{ angle_bending( $parameters,
-                                       $mid_atom_coord,
-                                       $up_atom_coord,
-                                       $side_atom_coord,
-                                       $angle_name,
-                                       'eta' ) }; # 'eta' should equal to 0.
+                    # Creates and appends matrices to a list of matrices that
+                    # later will be multiplied.
+                    push @angle_bending_matrices,
+                         @{ angle_bending( $parameters,
+                                           $mid_atom_coord,
+                                           $up_atom_coord,
+                                           $side_atom_coord,
+                                           $angle_name,
+                                           'eta' ) }; # 'eta' should equal to 0.
                 }
             }
 
