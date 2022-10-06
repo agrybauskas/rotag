@@ -181,6 +181,7 @@ sub rotation_translation
         if( $do_bond_torsion ) {
             my $start_atom_id;
             my $next_atom_ids;
+            my $ignore_connections;
             if( $include_hetatoms ) {
                 $start_atom_id =
                     filter_new( $residue_site,
@@ -195,7 +196,8 @@ sub rotation_translation
             }
             $rotatable_bonds =
                 rotatable_bonds( $residue_site, $start_atom_id, $next_atom_ids,
-                                 { 'include_hetatoms' => $include_hetatoms } );
+                                 { 'include_hetatoms' => $include_hetatoms,
+                                   'ignore_connections' => $ignore_connections});
         }
 
         my $stretchable_bonds = {};
