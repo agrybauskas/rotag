@@ -276,42 +276,29 @@ sub all_dihedral
 
         my $start_atom_id;
         my $next_atom_ids;
-        my $ignore_connections;
         my $ignore_atoms;
         if( $include_hetatoms ) {
             $start_atom_id =
                 filter_new( \%atom_site,
                             { 'include' =>
-                              { 'label_atom_id' => [ 'C' ] },
+                              { 'label_atom_id' => [ 'N' ] },
                                 'return_data' => 'id' } )->[0];
             $next_atom_ids =
                 filter_new( \%atom_site,
                             { 'include' =>
-                              { 'label_atom_id' => [ 'N' ] },
-                                'return_data' => 'id' } );
-            my $ignore_atom_1 =
-                filter_new( \%atom_site,
-                            { 'include' =>
                               { 'label_atom_id' => [ 'CA' ] },
-                                'return_data' => 'id' } )->[0];
-            my $ignore_atom_2 =
+                                'return_data' => 'id' } );
+            $ignore_atoms =
                 filter_new( \%atom_site,
                             { 'include' =>
-                              { 'label_atom_id' => [ 'C' ] },
-                                'return_data' => 'id' } )->[0];
-            my $ignore_atom_3 =
-                filter_new( \%atom_site,
-                            { 'include' =>
-                              { 'label_atom_id' => [ 'CB' ] },
-                                'return_data' => 'id' } )->[0];
-            $ignore_connections->{$ignore_atom_1}{$ignore_atom_2} = 1;
-            $ignore_atoms = [ $ignore_atom_3 ];
+                              { 'label_atom_id' => [ 'C', 'CB' ] },
+                                'return_data' => 'id' } );
         }
 
         my $rotatable_bonds =
             rotatable_bonds( $residue_site, $start_atom_id, $next_atom_ids,
                              { 'include_hetatoms' => $include_hetatoms,
-                               'ignore_connections' => $ignore_connections } );
+                               'ignore_atoms' => $ignore_atoms } );
 
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
         for my $atom_id ( keys %{ $rotatable_bonds } ) {
