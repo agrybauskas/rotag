@@ -182,6 +182,7 @@ sub rotation_translation
             my $start_atom_id;
             my $next_atom_ids;
             my $ignore_connections;
+            my $ignore_atoms;
             if( $include_hetatoms ) {
                 $start_atom_id =
                     filter_new( $residue_site,
@@ -193,10 +194,28 @@ sub rotation_translation
                                 { 'include' =>
                                   { 'label_atom_id' => [ 'N' ] },
                                     'return_data' => 'id' } );
+                my $ignore_atom_1 =
+                    filter_new( $residue_site,
+                                { 'include' =>
+                                  { 'label_atom_id' => [ 'CA' ] },
+                                    'return_data' => 'id' } )->[0];
+                my $ignore_atom_2 =
+                    filter_new( $residue_site,
+                                { 'include' =>
+                                  { 'label_atom_id' => [ 'C' ] },
+                                    'return_data' => 'id' } )->[0];
+                my $ignore_atom_3 =
+                    filter_new( $residue_site,
+                                { 'include' =>
+                                  { 'label_atom_id' => [ 'CB' ] },
+                                    'return_data' => 'id' } )->[0];
+                $ignore_connections->{$ignore_atom_1}{$ignore_atom_2} = 1;
+                $ignore_atoms = [ $ignore_atom_3 ];
             }
             $rotatable_bonds =
                 rotatable_bonds( $residue_site, $start_atom_id, $next_atom_ids,
                                  { 'include_hetatoms' => $include_hetatoms,
+                                   'ignore_atoms' => $ignore_atoms,
                                    'ignore_connections' => $ignore_connections});
         }
 
@@ -240,16 +259,26 @@ sub rotation_translation
             my @angle_bending_matrices;
 
             if( $do_bond_torsion ) {
+                # TODO: code block is similar to all_dihedral(). The code should
+                # be moved to separate function.
                 for my $angle_name ( sort { $a cmp $b }
                                      keys %{ $rotatable_bonds->{$atom_id} } ) {
                     # First, checks if rotatable bond has fourth atom produce
-                    # dihedral angle. It is done by looking at atom connections: if
-                    # rotatable bond ends with terminal atom, then this bond is
-                    # excluded.
-                    my $up_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[1];
-                    if( ! $include_hetatoms &&
-                        scalar( @{ $residue_site->{$up_atom_id}
-                                                  {'connections'} } ) < 2 ){ next; }
+                    # dihedral angle. It is done by looking at atom connections:
+                    # if rotatable bond ends with terminal atom, then this bond
+                    # is excluded.
+                    my $up_atom_id =$rotatable_bonds->{$atom_id}{$angle_name}[1];
+
+                    my $connection_count =
+                        defined $residue_site->{$up_atom_id}{'connections'} ?
+                        scalar( @{ $residue_site->{$up_atom_id}{'connections'} } ) : 0;
+                    my $hetatom_connection_count =
+                        defined $residue_site->{$up_atom_id}{'connections_hetatom'} ?
+                        scalar( @{ $residue_site->{$up_atom_id}{'connections_hetatom'} } ) : 0;
+
+                    if( ( ! $include_hetatoms && $connection_count < 2 ) ||
+                        ( $include_hetatoms &&
+                          $connection_count + $hetatom_connection_count < 2 ) ){ next; }
 
                     my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
                     if( ! $include_hetatoms &&
@@ -258,10 +287,16 @@ sub rotation_translation
 
                     my @mid_connections = # Excludes up atom.
                         grep { $_ ne $up_atom_id }
-                            @{ $residue_site->{$mid_atom_id}{'connections'} };
+                             ( @{ $residue_site->{$mid_atom_id}{'connections'} },
+                               ( $include_hetatoms &&
+                                 defined $residue_site->{$mid_atom_id}
+                                                        {'connections_hetatom'} ?
+                                 @{ $residue_site->{$mid_atom_id}
+                                                   {'connections_hetatom'} }: () ) );
                     my @mid_connection_names = # Excludes up atom.
                         map { $residue_site->{$_}{'label_atom_id'} }
                             @mid_connections;
+
                     my $side_atom_name =
                         sort_atom_names( \@mid_connection_names )->[0];
                     my $side_atom_id =

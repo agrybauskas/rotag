@@ -277,6 +277,7 @@ sub all_dihedral
         my $start_atom_id;
         my $next_atom_ids;
         my $ignore_connections;
+        my $ignore_atoms;
         if( $include_hetatoms ) {
             $start_atom_id =
                 filter_new( \%atom_site,
@@ -288,6 +289,23 @@ sub all_dihedral
                             { 'include' =>
                               { 'label_atom_id' => [ 'N' ] },
                                 'return_data' => 'id' } );
+            my $ignore_atom_1 =
+                filter_new( \%atom_site,
+                            { 'include' =>
+                              { 'label_atom_id' => [ 'CA' ] },
+                                'return_data' => 'id' } )->[0];
+            my $ignore_atom_2 =
+                filter_new( \%atom_site,
+                            { 'include' =>
+                              { 'label_atom_id' => [ 'C' ] },
+                                'return_data' => 'id' } )->[0];
+            my $ignore_atom_3 =
+                filter_new( \%atom_site,
+                            { 'include' =>
+                              { 'label_atom_id' => [ 'CB' ] },
+                                'return_data' => 'id' } )->[0];
+            $ignore_connections->{$ignore_atom_1}{$ignore_atom_2} = 1;
+            $ignore_atoms = [ $ignore_atom_3 ];
         }
 
         my $rotatable_bonds =
@@ -399,6 +417,8 @@ sub all_dihedral
             # First, checks if rotatable bond has fourth atom produce dihedral
             # angle. It is done by looking at atom connections - if rotatable
             # bond ends with terminal atom, then this bond is excluded.
+            # TODO: code block  is similar to rotation_translation(). The code
+            # should be moved to separate function.
             my $connection_count =
                 defined $residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
                                        {'connections'} ?
