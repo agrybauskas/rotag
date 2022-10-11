@@ -96,7 +96,26 @@
     'label_entity_id' => '1',
     'label_seq_id' => '18',
     'pdbx_PDB_model_num' => '1',
-    'type_symbol' => 'C',
+    'type_symbol' => 'C'
+  },
+  '152' => {
+    'Cartn_x' => '-53.714',
+    'Cartn_y' => '-108.288',
+    'Cartn_z' => '-5.112',
+    'connections' => [
+      '151'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
+    'id' => '152',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'OG',
+    'label_comp_id' => 'SER',
+    'label_entity_id' => '1',
+    'label_seq_id' => '18',
+    'pdbx_PDB_model_num' => '1',
+    'type_symbol' => 'O',
     'conformation' =>
 [
   [
@@ -140,38 +159,57 @@
   }, 'Symbolic' ),
   [
     [
+      '0.374130118720282',
+      '0.32624185438099',
+      '0.868097291043119',
       '-1.4210854715202e-14'
     ],
     [
+      '-0.927376220455511',
+      '0.131615304575237',
+      '0.350215301400752',
       '0'
     ],
     [
+      '8.32667268468867e-17',
+      '-0.936078877045957',
+      '0.351790187396379',
       '1.53075536909071'
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, $svar], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'r2'
+    ]
+  }, 'Symbolic' ),
+  [
+    [
+      '-2.1316282072803e-14'
+    ],
+    [
+      '-2.8421709430404e-14'
+    ],
+    [
+      '1.41886222023141'
     ],
     [
       1
     ]
   ]
 ]
-    ,
-  },
-  '152' => {
-    'Cartn_x' => '-53.714',
-    'Cartn_y' => '-108.288',
-    'Cartn_z' => '-5.112',
-    'connections' => [
-      '151'
-    ],
-    'group_PDB' => 'ATOM',
-    'hybridization' => 'sp3',
-    'id' => '152',
-    'label_alt_id' => '.',
-    'label_asym_id' => 'A',
-    'label_atom_id' => 'OG',
-    'label_comp_id' => 'SER',
-    'label_entity_id' => '1',
-    'label_seq_id' => '18',
-    'pdbx_PDB_model_num' => '1',
-    'type_symbol' => 'O'
   }
 }
