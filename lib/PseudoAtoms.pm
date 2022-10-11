@@ -9,7 +9,7 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      calc_full_atom_energy
                      generate_library
                      generate_pseudo
-                     generate_pseudo_hetatom
+                     generate_pseudo_new
                      generate_rotamer
                      library_to_csv
                      lowest_energy_state
@@ -217,7 +217,7 @@ sub generate_pseudo
 #     additional 'conformation' attribute.
 #
 
-sub generate_pseudo_hetatom
+sub generate_pseudo_new
 {
     my ( $args ) = @_;
     my ( $parameters, $atom_site, $atom_specifier, $angle_and_bond_values,
