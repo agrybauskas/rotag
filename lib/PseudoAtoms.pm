@@ -15,7 +15,6 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      lowest_energy_state
                      replace_with_rotamer );
 
-use B qw( svref_2object );
 use Carp;
 use Clone qw( clone );
 use List::Util qw( max
