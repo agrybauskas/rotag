@@ -208,23 +208,9 @@ sub rotation_translation
 
         my $stretchable_bonds = {};
         if( $do_bond_stretching ) {
-            my $next_atom_ids =
-                $include_hetatoms ?
-                [ sort @{ filter_new( $residue_site,
-                                      { 'include' => {'group_PDB' => ['HETATM']},
-                                        'return_data' => 'id' } ) } ] : undef;
-            # NOTE: now it becomes a bit tricky to handle, because we have to
-            # think where other pseudo-connections might introduce errors.
-            my $ignore_atoms =
-                filter_new( $residue_site,
-                            { 'include' => { 'label_atom_id' => [ 'N' ] },
-                              'return_data' => 'id' } );
             $stretchable_bonds =
-                stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                                   { 'include_hetatoms' => $include_hetatoms,
-                                     ( $include_hetatoms ?
-                                       ( 'ignore_atoms' =>
-                                             $ignore_atoms ) : () ) } );
+                stretchable_bonds( $residue_site, undef, undef,
+                                   { 'include_hetatoms' => $include_hetatoms } );
         }
 
         if( ! %{ $rotatable_bonds } &&

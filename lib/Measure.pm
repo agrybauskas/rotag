@@ -796,28 +796,10 @@ sub all_bond_lengths
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        my $next_atom_ids;
-        my $ignore_atoms;
-        if( $include_hetatoms ) {
-            $next_atom_ids =
-                filter( { 'atom_site' => \%atom_site,
-                          'include' =>
-                              { 'id' =>
-                                    $residue_groups->{$residue_unique_key},
-                                    'group_PDB' => [ 'HETATM' ] },
-                          'is_list' => 1,
-                          'data' => [ 'id' ] } );
-            $ignore_atoms =
-                filter_new( \%atom_site,
-                            { 'include' =>
-                              { 'label_atom_id' => [ 'N', 'C', 'CB' ] },
-                                'return_data' => 'id' } );
-        }
-
         my $stretchable_bonds =
-            stretchable_bonds( $residue_site, undef, $next_atom_ids,
-                               { 'ignore_atoms' => $ignore_atoms,
-                                 'include_hetatoms' => $include_hetatoms } );
+            stretchable_bonds( $residue_site, undef, undef,
+                               { 'include_hetatoms' => $include_hetatoms } );
+
         my %uniq_stretchable_bonds; # Unique stretchable bonds.
         for my $atom_id ( keys %{ $stretchable_bonds } ) {
             for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){
