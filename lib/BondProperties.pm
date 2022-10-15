@@ -466,6 +466,7 @@ sub stretchable_bonds
     my %parent_atom_ids;
 
     my %stretchable_bonds;
+    my %unique_bonds;
 
     # Marks parent atom for next atom id.
     for my $next_atom_id ( @{ $next_atom_ids } ) {
@@ -480,8 +481,20 @@ sub stretchable_bonds
         for my $atom_id ( @next_atom_ids ) {
             my $parent_atom_id = $parent_atom_ids{$atom_id};
 
-            push @{ $stretchable_bonds{$atom_id} },
-                [ $parent_atom_id, $atom_id ];
+            my $is_atom_hetatom =
+                $atom_site{$atom_id}{'group_PDB'} eq 'HETATM';
+            my $is_parent_atom_hetatom =
+                $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM';
+
+            push @{ $stretchable_bonds{$atom_id} }, [$parent_atom_id, $atom_id];
+
+            # Marks unique bonds.
+            if( ! defined $unique_bonds{$parent_atom_id}{$atom_id} ||
+                ! $unique_bonds{$parent_atom_id}{$atom_id} ) {
+                $unique_bonds{$parent_atom_id}{$atom_id} = 1;
+            }
+
+            # Adds bond if it is a continuation of identified bonds.
             if( exists $stretchable_bonds{$parent_atom_id} ) {
                 unshift @{ $stretchable_bonds{$atom_id} },
                     @{ $stretchable_bonds{$parent_atom_id} };
@@ -491,13 +504,13 @@ sub stretchable_bonds
             push @visited_atom_ids, $atom_id;
 
             if( $include_hetatoms &&
-                ( $atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ||
-                  $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM' ) &&
+                ( $is_atom_hetatom || $is_parent_atom_hetatom ) &&
                 ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
                 confess "atom with id $atom_id lacks 'connections_hetatom' key"
             }
 
             if( ! $include_hetatoms &&
+                ! ( $is_atom_hetatom || $is_parent_atom_hetatom ) &&
                 ! exists $atom_site{$atom_id}{'connections'} ) {
                 confess "atom with id $atom_id lacks 'connections' key"
             }
@@ -533,47 +546,38 @@ sub stretchable_bonds
         }
     }
 
-    # Asigns names for stretchable bonds by first filtering out redundant bonds.
-    # TODO: the whole process of naming bonds might be implemented in the while
-    # loop above.
-    my @unique_bonds;
-    for my $bond ( map { @{ $stretchable_bonds{$_} } } keys %stretchable_bonds ) {
-        if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
-                   @unique_bonds ){
-            push @unique_bonds, $bond;
-        }
-    }
-
-    # Sorts bonds by naming priority.
-    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
-                                                         # bond.
+    # Sorts bonds by naming priority with reference to the name of the
+    # second atom in the bond.
+    my @bond_second_atom_ids =
+        map { keys %{ $unique_bonds{$_} } }
+        keys %unique_bonds;
     my @second_names_sorted =
         @{ sort_atom_names(
                filter( { 'atom_site' => \%atom_site,
-                         'include' => { 'id' => \@bond_second_ids },
+                         'include' => { 'id' => \@bond_second_atom_ids },
                          'data' => [ 'label_atom_id' ],
                          'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
 
-    my %bond_names; # Names by second atom priority.
-    my $bond_name_id = 1;
-    for my $second_name ( @second_names_sorted ) {
-        my $second_atom_id =
-            filter( { 'atom_site' => \%atom_site,
-                      'include' => { 'label_atom_id' => [ $second_name ] },
-                      'data' => [ 'id' ],
-                      'is_list' => 1 } )->[0];
-        $bond_names{"$second_atom_id"} = "r$bond_name_id";
-        $bond_name_id++;
-    }
+    # my %bond_names; # Names by second atom priority.
+    # my $bond_name_id = 1;
+    # for my $second_name ( @second_names_sorted ) {
+    #     my $second_atom_id =
+    #         filter( { 'atom_site' => \%atom_site,
+    #                   'include' => { 'label_atom_id' => [ $second_name ] },
+    #                   'data' => [ 'id' ],
+    #                   'is_list' => 1 } )->[0];
+    #     $bond_names{"$second_atom_id"} = "r$bond_name_id";
+    #     $bond_name_id++;
+    # }
 
     # Iterates through stretchable bonds and assigns names by second atom.
     my %named_stretchable_bonds;
-    for my $atom_id ( keys %stretchable_bonds ) {
-        for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
-            my $bond_name = $bond_names{"$bond->[1]"};
-            $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
-        }
-    }
+    # for my $atom_id ( keys %stretchable_bonds ) {
+    #     for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
+    #         my $bond_name = $bond_names{"$bond->[1]"};
+    #         $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+    #     }
+    # }
 
     return \%named_stretchable_bonds;
 }
