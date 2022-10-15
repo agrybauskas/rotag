@@ -453,7 +453,7 @@ sub stretchable_bonds
                                  'data' => [ 'id' ],
                                  'is_list' => 1 } )->[0];
     $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
-                                  'include' => { 'label_atom_id' => [ 'CB' ] },
+                                  'include' => { 'label_atom_id' => ['CB', 'C']},
                                   'data' => [ 'id' ],
                                   'is_list' => 1 } );
 
@@ -461,7 +461,7 @@ sub stretchable_bonds
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
     my @atom_ids = keys %atom_site;
-    my @visited_atom_ids = ( $start_atom_id, @{ $ignore_atoms } );
+    my @visited_atom_ids = ( @{ $ignore_atoms } );
     my @next_atom_ids = ( @{ $next_atom_ids } );
     my %parent_atom_ids;
 
