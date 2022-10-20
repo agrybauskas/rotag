@@ -580,21 +580,27 @@ sub stretchable_bonds
     }
 
     my $named_stretchable_bonds_new =
-        name_stretchable_bonds( \%stretchable_bonds );
+        name_stretchable_bonds( $parameters, \%atom_site, \%stretchable_bonds );
 
-    use Data::Dumper;
-    print STDERR Dumper \%named_stretchable_bonds;
-    print STDERR "----------------\n";
+    # use Data::Dumper;
+    # print STDERR Dumper \%named_stretchable_bonds;
+    # print STDERR "----------------\n";
 
     return \%named_stretchable_bonds;
 }
 
 sub name_stretchable_bonds
 {
-    my ( $parameters, $stretchable_bonds ) = @_;
-    use Data::Dumper;
-    print STDERR Dumper $stretchable_bonds;
+    my ( $parameters, $atom_site, $stretchable_bonds ) = @_;
+    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+
     my %named_stretchable_bonds = ();
+    for my $atom_id ( sort keys %{ $stretchable_bonds } ) {
+        for my $bond ( @{ $stretchable_bonds->{$atom_id} } ) {
+            my ( $first_atom_id, $second_atom_id ) = ( $bond->[0], $bond->[1] );
+        }
+    }
+
     return \%named_stretchable_bonds;
 }
 
