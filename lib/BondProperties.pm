@@ -440,7 +440,7 @@ sub rotatable_bonds
 
 sub stretchable_bonds
 {
-    my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
+    my ( $parameters, $atom_site, $start_atom_id, $next_atom_ids, $options ) =@_;
     my ( $ignore_atoms, $include_hetatoms ) =
         ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
 
@@ -584,7 +584,6 @@ sub stretchable_bonds
 
     use Data::Dumper;
     print STDERR Dumper \%named_stretchable_bonds;
-    print STDERR Dumper $named_stretchable_bonds_new;
     print STDERR "----------------\n";
 
     return \%named_stretchable_bonds;
@@ -592,7 +591,9 @@ sub stretchable_bonds
 
 sub name_stretchable_bonds
 {
-    my ( $stretchable_bonds ) = @_;
+    my ( $parameters, $stretchable_bonds ) = @_;
+    use Data::Dumper;
+    print STDERR Dumper $stretchable_bonds;
     my %named_stretchable_bonds = ();
     return \%named_stretchable_bonds;
 }

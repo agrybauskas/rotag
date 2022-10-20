@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use BondProperties qw( stretchable_bonds );
+use ForceField::Parameters;
 
 #
 # Unit test: BondProperties::stretchable_bonds
@@ -20,10 +21,10 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-stretchable_bonds( $atom_site );
+my $parameters = Parameters->new();
 
 my %stretchable_bonds =
-    %{ stretchable_bonds( $atom_site ) };
+    %{ stretchable_bonds( $parameters, $atom_site ) };
 
 for my $atom_id ( sort { $a cmp $b } keys( %stretchable_bonds ) ) {
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
