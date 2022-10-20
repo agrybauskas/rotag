@@ -546,41 +546,54 @@ sub stretchable_bonds
         }
     }
 
-    # # Sorts bonds by naming priority with reference to the name of the
-    # # second atom in the bond.
-    # my @bond_second_atom_ids =
-    #     map { keys %{ $unique_bonds{$_} } }
-    #     keys %unique_bonds;
-    # my @second_names_sorted =
-    #     @{ sort_atom_names(
-    #            filter( { 'atom_site' => \%atom_site,
-    #                      'include' => { 'id' => \@bond_second_atom_ids },
-    #                      'data' => [ 'label_atom_id' ],
-    #                      'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+    # Sorts bonds by naming priority with reference to the name of the
+    # second atom in the bond.
+    my @bond_second_atom_ids =
+        map { keys %{ $unique_bonds{$_} } }
+        keys %unique_bonds;
+    my @second_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@bond_second_atom_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
 
-    # my %bond_names; # Names by second atom priority.
-    # my $bond_name_id = 1;
-    # for my $second_name ( @second_names_sorted ) {
-    #     my $second_atom_id =
-    #         filter( { 'atom_site' => \%atom_site,
-    #                   'include' => { 'label_atom_id' => [ $second_name ] },
-    #                   'data' => [ 'id' ],
-    #                   'is_list' => 1 } )->[0];
-    #     $bond_names{"$second_atom_id"} = "r$bond_name_id";
-    #     $bond_name_id++;
-    # }
+    my %bond_names; # Names by second atom priority.
+    my $bond_name_id = 1;
+    for my $second_name ( @second_names_sorted ) {
+        my $second_atom_id =
+            filter( { 'atom_site' => \%atom_site,
+                      'include' => { 'label_atom_id' => [ $second_name ] },
+                      'data' => [ 'id' ],
+                      'is_list' => 1 } )->[0];
+        $bond_names{"$second_atom_id"} = "r$bond_name_id";
+        $bond_name_id++;
+    }
 
     # Iterates through stretchable bonds and assigns names by second atom.
     my %named_stretchable_bonds;
-    # my %named_stretchable_bonds =
-    #     name_stretchable_bonds( \%stretchable_bonds );
-    # for my $atom_id ( keys %stretchable_bonds ) {
-    #     for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
-    #         my $bond_name = $bond_names{"$bond->[1]"};
-    #         $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
-    #     }
-    # }
+    for my $atom_id ( keys %stretchable_bonds ) {
+        for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
+            my $bond_name = $bond_names{"$bond->[1]"};
+            $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+        }
+    }
 
+    my $named_stretchable_bonds_new =
+        name_stretchable_bonds( \%stretchable_bonds );
+
+    use Data::Dumper;
+    print STDERR Dumper \%named_stretchable_bonds;
+    print STDERR Dumper $named_stretchable_bonds_new;
+    print STDERR "----------------\n";
+
+    return \%named_stretchable_bonds;
+}
+
+sub name_stretchable_bonds
+{
+    my ( $stretchable_bonds ) = @_;
+    my %named_stretchable_bonds = ();
     return \%named_stretchable_bonds;
 }
 
