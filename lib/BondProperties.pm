@@ -812,7 +812,7 @@ sub bond_depth_first_search
         }
 
         my @sorted_neighbour_atom_ids =
-            sort_atom_ids_by_name( \@neighbour_atom_ids, \%atom_site );
+            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, \%atom_site ) };
     }
 }
 

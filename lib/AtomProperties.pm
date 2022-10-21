@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( sort_atom_names
 
 use Carp qw( confess );
 
+use PDBxParser qw( split_by );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -105,7 +106,11 @@ sub sort_atom_names
 sub sort_atom_ids_by_name
 {
     my ( $atom_ids, $atom_site ) = @_;
-    my @sorted_atom_ids = ();
+    my $atom_names_to_ids = split_by( { 'atom_site' => $atom_site,
+                                        'attributes' => [ 'label_atom_id' ] } );
+    my @atom_names = map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
+    @atom_names = @{ sort_atom_names( \@atom_names ) };
+    my @sorted_atom_ids = map { sort @{ $atom_names_to_ids->{$_} } } @atom_names;
     return \@sorted_atom_ids;
 }
 
