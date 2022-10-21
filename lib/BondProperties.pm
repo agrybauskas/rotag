@@ -17,7 +17,8 @@ use Carp;
 use List::Util qw( any );
 use List::MoreUtils qw( uniq );
 
-use AtomProperties qw( sort_atom_names );
+use AtomProperties qw( sort_atom_names
+                       sort_atom_ids_by_name );
 use Measure qw( dihedral_angle );
 use PDBxParser qw( filter
                    filter_new );
@@ -810,7 +811,8 @@ sub bond_depth_first_search
                 @{ $atom_site{$atom_id}{'connections_hetatom'} };
         }
 
-        # sort_by_atom_names( \%atom_site, \@neighbour_atom_ids );
+        my @sorted_neighbour_atom_ids =
+            sort_atom_ids_by_name( \@neighbour_atom_ids, \%atom_site );
     }
 }
 

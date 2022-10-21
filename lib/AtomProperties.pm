@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( sort_atom_names );
+our @EXPORT_OK = qw( sort_atom_names
+                     sort_atom_ids_by_name );
 
 use Carp qw( confess );
 
@@ -90,6 +91,22 @@ sub sort_atom_names
     }
 
     return \@sorted_names;
+}
+
+#
+# Sorts atom ids by atom names according to hierarchical rules.
+# Input:
+#     $atom_ids - list of atom ids;
+#     $atom_site - PDBx atom site data structure;
+# Output:
+#     @sorted_atom_ids - sorted list of atom ids.
+#
+
+sub sort_atom_ids_by_name
+{
+    my ( $atom_ids, $atom_site ) = @_;
+    my @sorted_atom_ids = ();
+    return \@sorted_atom_ids;
 }
 
 1;
