@@ -582,10 +582,6 @@ sub stretchable_bonds
     my $named_stretchable_bonds_new =
         name_stretchable_bonds( $parameters, \%atom_site, \%stretchable_bonds );
 
-    use Data::Dumper;
-    print STDERR Dumper \%named_stretchable_bonds;
-    print STDERR "----------------\n";
-
     return \%named_stretchable_bonds;
 }
 
@@ -598,9 +594,6 @@ sub name_stretchable_bonds
     my @all_stretchable_bonds =
         map { @{ $stretchable_bonds->{$_} } }
         keys %{ $stretchable_bonds };
-
-    use Data::Dumper;
-    print STDERR Dumper @all_stretchable_bonds;
 
     return \%named_stretchable_bonds;
 }
