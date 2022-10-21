@@ -787,11 +787,30 @@ sub bond_depth_first_search
     my @next_atom_ids = ( @{ $next_atom_ids } );
     my %parent_atom_ids;
 
+    my %bonds = ();
+
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
-        for my $atom_id ( @next_atom_ids ) {
-            @next_atom_ids = ();
+        my ( $atom_id ) = pop @next_atom_ids;
+        $visited_atom_ids{$atom_id} = 1;
+
+        # Marks neighbouring atoms.
+        my @neighbour_atom_ids = ();
+        if( defined $atom_site{$atom_id}{'connections'} ) {
+            push @neighbour_atom_ids,
+                grep { ! $ignore_connections->{$atom_id}{$_} }
+                grep { ! $ignore_atoms->{$_} }
+                @{ $atom_site{$atom_id}{'connections'} };
         }
+        if( $include_hetatoms &&
+            defined $atom_site{$atom_id}{'connections_hetatom'} ) {
+            push @neighbour_atom_ids,
+                grep { ! $ignore_connections->{$atom_id}{$_} }
+                grep { ! $ignore_atoms->{$_} }
+                @{ $atom_site{$atom_id}{'connections_hetatom'} };
+        }
+
+        # sort_by_atom_names( \%atom_site, \@neighbour_atom_ids );
     }
 }
 
