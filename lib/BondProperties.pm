@@ -765,6 +765,18 @@ sub bendable_angles
     return \%named_bendable_angles;
 }
 
+sub bond_walk
+{
+    my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
+        my ( $ignore_atoms, $include_hetatoms, $ignore_connections ) =
+        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
+          $options->{'ignore_connections'} );
+
+    $ignore_atoms //= [];
+    $include_hetatoms //= 0;
+    $ignore_connections //= {};
+}
+
 #
 # Identifies unique rotatable bonds in selected group of residue atoms.
 # Input:
