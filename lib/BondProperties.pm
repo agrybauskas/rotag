@@ -115,21 +115,13 @@ sub hybridization
             scalar @{ $atom_site->{$atom_id}{'connections'} } == 3 ) {
             my ( $left_atom_id, $right_atom_id, $up_atom_id ) =
                 @{ $atom_site->{$atom_id}{'connections'} };
-            $dihedral_angle =
-                    dihedral_angle(
-                        [ [ $atom_site->{$left_atom_id}{'Cartn_x'},
-                            $atom_site->{$left_atom_id}{'Cartn_y'},
-                            $atom_site->{$left_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$right_atom_id}{'Cartn_x'},
-                            $atom_site->{$right_atom_id}{'Cartn_y'},
-                            $atom_site->{$right_atom_id}{'Cartn_z'}],
-                          [ $atom_site->{$atom_id}{'Cartn_x'},
-                            $atom_site->{$atom_id}{'Cartn_y'},
-                            $atom_site->{$atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$up_atom_id}{'Cartn_x'},
-                            $atom_site->{$up_atom_id}{'Cartn_y'},
-                            $atom_site->{$up_atom_id}{'Cartn_z'} ],
-                        ] );
+            $dihedral_angle = dihedral_angle(
+                [ map { [ $atom_site->{$_}{'Cartn_x'},
+                          $atom_site->{$_}{'Cartn_y'},
+                          $atom_site->{$_}{'Cartn_z' } ] }
+                  ( $left_atom_id, $right_atom_id, $atom_id,
+                    $up_atom_id ) ]
+            );
 
         } elsif( exists $atom_site->{$atom_id}{'connections'} &&
                  scalar @{ $atom_site->{$atom_id}{'connections'} } == 2 ) {
@@ -148,21 +140,13 @@ sub hybridization
             @neighbours_neighbours = uniq @neighbours_neighbours;
 
             for my $neighbours_neighbour ( @neighbours_neighbours ) {
-                my $current_dihedral_angle =
-                    dihedral_angle(
-                        [ [ $atom_site->{$left_atom_id}{'Cartn_x'},
-                            $atom_site->{$left_atom_id}{'Cartn_y'},
-                            $atom_site->{$left_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$right_atom_id}{'Cartn_x'},
-                            $atom_site->{$right_atom_id}{'Cartn_y'},
-                            $atom_site->{$right_atom_id}{'Cartn_z'}],
-                          [ $atom_site->{$atom_id}{'Cartn_x'},
-                            $atom_site->{$atom_id}{'Cartn_y'},
-                            $atom_site->{$atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$neighbours_neighbour}{'Cartn_x'},
-                            $atom_site->{$neighbours_neighbour}{'Cartn_y'},
-                            $atom_site->{$neighbours_neighbour}{'Cartn_z'} ],
-                        ] );
+                my $current_dihedral_angle = dihedral_angle(
+                    [ map { [ $atom_site->{$_}{'Cartn_x'},
+                              $atom_site->{$_}{'Cartn_y'},
+                              $atom_site->{$_}{'Cartn_z'} ] }
+                      ( $left_atom_id, $right_atom_id, $atom_id,
+                        $neighbours_neighbour) ]
+                );
                 if( ( $current_dihedral_angle >=  0.95 * $pi &&
                       $current_dihedral_angle <=  1.05 * $pi ) ||
                     ( $current_dihedral_angle >= -0.05 * $pi &&
