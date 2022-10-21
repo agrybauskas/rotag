@@ -425,138 +425,51 @@ sub rotatable_bonds
 
 sub stretchable_bonds
 {
-    my ( $parameters, $atom_site, $start_atom_id, $next_atom_ids, $options ) =@_;
-    my ( $ignore_atoms, $include_hetatoms ) =
-        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
+    my ( $parameters, $atom_site, $start_atom_id, $options ) =@_;
+    my ( $include_hetatoms ) = ( $options->{'include_hetatoms'} );
 
-    $ignore_atoms //= {};
     $include_hetatoms //= 0;
 
     # By default, N is starting atom for main-chain calculations.
-    $start_atom_id //= filter( { 'atom_site' => $atom_site,
-                                 'include' => { 'label_atom_id' => [ 'N' ] },
-                                 'data' => [ 'id' ],
-                                 'is_list' => 1 } );
-    # $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
-    #                               'include' => { 'label_atom_id' => [ 'CA' ] },
-    #                               'data' => [ 'id' ],
-    #                               'is_list' => 1 } );
+    my $mc_start_atom_id =
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { 'label_atom_id' => [ 'N' ] },
+                  'data' => [ 'id' ],
+                  'is_list' => 1 } );
+    my $mc_ignore_atoms = {
+        map { $_ => 1 }
+           @{ filter( { 'atom_site' => $atom_site,
+                        'include' => { 'label_atom_id' => [ 'CB' ] },
+                        'data' => [ 'id' ],
+                        'is_list' => 1 } ) } };
+    my $mc_bond_path =
+        bond_path_search( $atom_site, $mc_start_atom_id,
+                          { 'type' => 'depth_first',
+                            'ignore_atoms' => $mc_ignore_atoms,
+                            'include_hetatoms' => $include_hetatoms } );
 
-    bond_depth_first_search( $atom_site, $start_atom_id,
-                             { 'ignore_atoms' => $ignore_atoms,
-                               'include_hetatoms' => $include_hetatoms } );
+    # By default, CA is starting atom for side-chain calculations.
+    my $sc_start_atom_id =
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { 'label_atom_id' => [ 'CA' ] },
+                  'data' => [ 'id' ],
+                  'is_list' => 1 } );
+    my $sc_ignore_atoms = {
+        map { $_ => 1 }
+           @{ filter( { 'atom_site' => $atom_site,
+                        'include' => { 'label_atom_id' => [ 'N', 'C' ] },
+                        'data' => [ 'id' ],
+                        'is_list' => 1 } ) } };
+    my $sc_bond_path =
+        bond_path_search( $atom_site, $mc_start_atom_id,
+                          { 'type' => 'breadth_first',
+                            'ignore_atoms' => $mc_ignore_atoms,
+                            'include_hetatoms' => $include_hetatoms } );
 
-    # if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
-
-    # my %atom_site = %{ $atom_site }; # Copy of the variable.
-    # my @atom_ids = keys %atom_site;
-    # my @visited_atom_ids = ( @{ $ignore_atoms } );
-    # my @next_atom_ids = ( @{ $next_atom_ids } );
-    # my %parent_atom_ids;
-
-    # my %stretchable_bonds;
-    # my %unique_bonds;
-
-    # # Marks parent atom for next atom id.
-    # for my $next_atom_id ( @{ $next_atom_ids } ) {
-    #     $parent_atom_ids{$next_atom_id} = $start_atom_id;
-    # }
-
-    # # Exists if there are no atoms that is not already visited.
-    # while( scalar( @next_atom_ids ) != 0 ) {
-    #     # Iterates through every neighbouring atom if it was not visited
-    #     # before.
-    #     my @neighbour_atom_ids;
-    #     for my $atom_id ( @next_atom_ids ) {
-    #         my $parent_atom_id = $parent_atom_ids{$atom_id};
-
-    #         my $is_atom_hetatom =
-    #             $atom_site{$atom_id}{'group_PDB'} eq 'HETATM';
-    #         my $is_parent_atom_hetatom =
-    #             $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM';
-
-    #         push @{ $stretchable_bonds{$atom_id} }, [$parent_atom_id, $atom_id];
-
-    #         # Marks unique bonds.
-    #         if( ! defined $unique_bonds{$parent_atom_id}{$atom_id} ||
-    #             ! $unique_bonds{$parent_atom_id}{$atom_id} ) {
-    #             $unique_bonds{$parent_atom_id}{$atom_id} = 1;
-    #         }
-
-    #         # Adds bond if it is a continuation of identified bonds.
-    #         if( exists $stretchable_bonds{$parent_atom_id} ) {
-    #             unshift @{ $stretchable_bonds{$atom_id} },
-    #                 @{ $stretchable_bonds{$parent_atom_id} };
-    #         }
-
-    #         # Marks visited atoms.
-    #         push @visited_atom_ids, $atom_id;
-
-    #         if( $include_hetatoms &&
-    #             ( $is_atom_hetatom || $is_parent_atom_hetatom ) &&
-    #             ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
-    #             confess "atom with id $atom_id lacks 'connections_hetatom' key"
-    #         }
-
-    #         if( ! $include_hetatoms &&
-    #             ! ( $is_atom_hetatom || $is_parent_atom_hetatom ) &&
-    #             ! exists $atom_site{$atom_id}{'connections'} ) {
-    #             confess "atom with id $atom_id lacks 'connections' key"
-    #         }
-
-    #         # Marks neighbouring atoms.
-    #         if( $include_hetatoms &&
-    #             defined $atom_site{$atom_id}{'connections_hetatom'} ) {
-    #             push @neighbour_atom_ids,
-    #                 @{ $atom_site{$atom_id}{'connections_hetatom'} };
-    #         }
-    #         if( defined $atom_site{$atom_id}{'connections'} ) {
-    #             push @neighbour_atom_ids,
-    #                 @{ $atom_site{$atom_id}{'connections'} };
-    #         }
-
-    #         # Marks parent atoms for each neighbouring atom.
-    #         for my $neighbour_atom_id ( @neighbour_atom_ids ) {
-    #             if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
-    #                 # HACK: this exception might produce unexpected results.
-    #                 ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
-    #                 $parent_atom_ids{$neighbour_atom_id} = $atom_id;
-    #             }
-    #         }
-    #     }
-
-    #     # Determines next atoms that should be visited.
-    #     @next_atom_ids = (); # Resets value for the new ones to be appended.
-    #     for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-    #         if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
-    #             ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
-    #             push @next_atom_ids, $neighbour_atom_id;
-    #         }
-    #     }
-    # }
-
-    # # Sorts bonds by naming priority with reference to the name of the
-    # # second atom in the bond.
-    # my @bond_second_atom_ids =
-    #     map { keys %{ $unique_bonds{$_} } }
-    #     keys %unique_bonds;
-    # my @second_names_sorted =
-    #     @{ sort_atom_names(
-    #            filter( { 'atom_site' => \%atom_site,
-    #                      'include' => { 'id' => \@bond_second_atom_ids },
-    #                      'data' => [ 'label_atom_id' ],
-    #                      'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
-
-    # my %bond_names; # Names by second atom priority.
-    # my $bond_name_id = 1;
-    # for my $second_name ( @second_names_sorted ) {
-    #     my $second_atom_id =
-    #         filter( { 'atom_site' => \%atom_site,
-    #                   'include' => { 'label_atom_id' => [ $second_name ] },
-    #                   'data' => [ 'id' ],
-    #                   'is_list' => 1 } )->[0];
-    #     $bond_names{"$second_atom_id"} = "r$bond_name_id";
-    #     $bond_name_id++;
+    # # Adds bond if it is a continuation of identified bonds.
+    # if( exists $stretchable_bonds{$parent_atom_id} ) {
+    #     unshift @{ $stretchable_bonds{$atom_id} },
+    #         @{ $stretchable_bonds{$parent_atom_id} };
     # }
 
     # # Iterates through stretchable bonds and assigns names by second atom.
@@ -770,13 +683,14 @@ sub bendable_angles
     return \%named_bendable_angles;
 }
 
-sub bond_depth_first_search
+sub bond_path_search
 {
     my ( $atom_site, $start_atom_ids, $options ) = @_;
-        my ( $ignore_atoms, $include_hetatoms, $ignore_connections ) =
-        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
-          $options->{'ignore_connections'} );
+    my ( $type, $ignore_atoms, $include_hetatoms, $ignore_connections ) =
+        ( $options->{'type'}, $options->{'ignore_atoms'},
+          $options->{'include_hetatoms'}, $options->{'ignore_connections'} );
 
+    $type //= 'depth_first'; # 'depth_first'/'breadth_first'.
     $ignore_atoms //= {};
     $include_hetatoms //= 0;
     $ignore_connections //= {};
@@ -793,7 +707,9 @@ sub bond_depth_first_search
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
         my ( $atom_id ) = pop @next_atom_ids;
-        print STDERR "$atom_id: $atom_site{$atom_id}{'label_atom_id'} \n";
+
+        next if $visited_atom_ids{$atom_id};
+
         $visited_atom_ids{$atom_id} = 1;
 
         # Marks neighbouring atoms.
