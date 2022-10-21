@@ -769,7 +769,7 @@ sub bendable_angles
     return \%named_bendable_angles;
 }
 
-sub bond_breadth_first_search
+sub bond_depth_first_search
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
         my ( $ignore_atoms, $include_hetatoms, $ignore_connections ) =
@@ -799,6 +799,7 @@ sub bond_breadth_first_search
         # before.
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
+            my $parent_atom_id = $parent_atom_ids{$atom_id};
         }
     }
 }
