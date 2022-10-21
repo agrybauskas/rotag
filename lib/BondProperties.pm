@@ -441,10 +441,9 @@ sub stretchable_bonds
                                   'data' => [ 'id' ],
                                   'is_list' => 1 } );
 
-    bond_search( $atom_site, $start_atom_id, $next_atom_ids,
-                 { 'ignore_atoms' => $ignore_atoms,
-                   'include_hetatoms' => $include_hetatoms,
-                   'search_type' => 'depth_first' } );
+    bond_bread_first_search( $atom_site, $start_atom_id, $next_atom_ids,
+                             { 'ignore_atoms' => $ignore_atoms,
+                               'include_hetatoms' => $include_hetatoms } );
 
     # if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
 
@@ -770,17 +769,38 @@ sub bendable_angles
     return \%named_bendable_angles;
 }
 
-sub bond_search
+sub bond_breadth_first_search
 {
     my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-        my ($ignore_atoms, $include_hetatoms, $ignore_connections, $search_type)=
+        my ( $ignore_atoms, $include_hetatoms, $ignore_connections ) =
         ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
-          $options->{'ignore_connections'}, $options->{'search_type'} );
+          $options->{'ignore_connections'} );
 
     $ignore_atoms //= [];
     $include_hetatoms //= 0;
     $ignore_connections //= {};
-    $search_type //= 'bread_first';
+
+    if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
+
+    my %atom_site = %{ $atom_site }; # Copy of the variable.
+    my @atom_ids = keys %atom_site;
+    my @visited_atom_ids = ( @{ $ignore_atoms } );
+    my @next_atom_ids = ( @{ $next_atom_ids } );
+    my %parent_atom_ids;
+
+    # Marks parent atom for next atom id.
+    for my $next_atom_id ( @{ $next_atom_ids } ) {
+        $parent_atom_ids{$next_atom_id} = $start_atom_id;
+    }
+
+    # Exists if there are no atoms that is not already visited.
+    while( scalar( @next_atom_ids ) != 0 ) {
+        # Iterates through every neighbouring atom if it was not visited
+        # before.
+        my @neighbour_atom_ids;
+        for my $atom_id ( @next_atom_ids ) {
+        }
+    }
 }
 
 #
