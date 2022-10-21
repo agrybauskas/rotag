@@ -428,7 +428,7 @@ sub stretchable_bonds
     my ( $ignore_atoms, $include_hetatoms ) =
         ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
 
-    $ignore_atoms //= [];
+    $ignore_atoms //= {};
     $include_hetatoms //= 0;
 
     # By default, CA is starting atom and CB next.
@@ -441,7 +441,7 @@ sub stretchable_bonds
                                   'data' => [ 'id' ],
                                   'is_list' => 1 } );
 
-    bond_bread_first_search( $atom_site, $start_atom_id, $next_atom_ids,
+    bond_depth_first_search( $atom_site, $start_atom_id, $next_atom_ids,
                              { 'ignore_atoms' => $ignore_atoms,
                                'include_hetatoms' => $include_hetatoms } );
 
@@ -776,30 +776,21 @@ sub bond_depth_first_search
         ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
           $options->{'ignore_connections'} );
 
-    $ignore_atoms //= [];
+    $ignore_atoms //= {};
     $include_hetatoms //= 0;
     $ignore_connections //= {};
 
     if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
-    my @atom_ids = keys %atom_site;
-    my @visited_atom_ids = ( @{ $ignore_atoms } );
+    my %visited_atom_ids = ( %{ $ignore_atoms } );
     my @next_atom_ids = ( @{ $next_atom_ids } );
     my %parent_atom_ids;
 
-    # Marks parent atom for next atom id.
-    for my $next_atom_id ( @{ $next_atom_ids } ) {
-        $parent_atom_ids{$next_atom_id} = $start_atom_id;
-    }
-
     # Exists if there are no atoms that is not already visited.
-    while( scalar( @next_atom_ids ) != 0 ) {
-        # Iterates through every neighbouring atom if it was not visited
-        # before.
-        my @neighbour_atom_ids;
+    while( @next_atom_ids ) {
         for my $atom_id ( @next_atom_ids ) {
-            my $parent_atom_id = $parent_atom_ids{$atom_id};
+            @next_atom_ids = ();
         }
     }
 }
