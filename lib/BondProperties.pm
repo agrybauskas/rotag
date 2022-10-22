@@ -694,6 +694,8 @@ sub bond_path_search
 
         next if $visited_atom_ids{$atom_id};
 
+        print STDERR "$atom_id: $atom_site->{$atom_id}{'label_atom_id'}\n";
+
         $visited_atom_ids{$atom_id} = 1;
 
         # Marks neighbouring atoms.
@@ -724,10 +726,17 @@ sub bond_path_search
 
             $parent_atom_ids{$sorted_neighbour_atom_id} = $atom_id;
 
-            if( $i == 0 ) {
+            if( $type eq 'breadth_first' ) {
                 push @next_atom_ids, $sorted_neighbour_atom_id;
-            } else {
-                unshift @next_atom_ids, $sorted_neighbour_atom_id;
+                next;
+            }
+
+            if( $type eq 'depth_first' ) {
+                if( $i == 0 ) {
+                    push @next_atom_ids, $sorted_neighbour_atom_id;
+                } else {
+                    unshift @next_atom_ids, $sorted_neighbour_atom_id;
+                }
             }
         }
     }
