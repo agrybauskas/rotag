@@ -426,45 +426,29 @@ sub rotatable_bonds
 sub stretchable_bonds
 {
     my ( $parameters, $atom_site, $start_atom_id, $options ) =@_;
-    my ( $include_hetatoms ) = ( $options->{'include_hetatoms'} );
+    my ( $include_hetatoms, $ignore_atoms, $ignore_connections ) =
+        ( $options->{'include_hetatoms'}, $options->{'ignore_atoms'},
+          $options->{'ignore_connections'} );
 
     $include_hetatoms //= 0;
+    $ignore_atoms //= {};
+    $ignore_connections //= {};
 
     # By default, N is starting atom for main-chain calculations.
-    my $mc_start_atom_id =
+    $start_atom_id //=
         filter( { 'atom_site' => $atom_site,
                   'include' => { 'label_atom_id' => [ 'N' ] },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
-    my $mc_ignore_atoms = {
-        map { $_ => 1 }
-           @{ filter( { 'atom_site' => $atom_site,
-                        'include' => { 'label_atom_id' => [ 'CB' ] },
-                        'data' => [ 'id' ],
-                        'is_list' => 1 } ) } };
-    my $mc_bond_path =
-        bond_path_search( $atom_site, $mc_start_atom_id,
+    my $bond_path =
+        bond_path_search( $atom_site, $start_atom_id,
                           { 'type' => 'depth_first',
-                            'ignore_atoms' => $mc_ignore_atoms,
-                            'include_hetatoms' => $include_hetatoms } );
+                            'include_hetatoms' => $include_hetatoms,
+                            'ignore_atoms' => $ignore_atoms,
+                            'ignore_connections' => $ignore_connections } );
 
-    # By default, CA is starting atom for side-chain calculations.
-    my $sc_start_atom_id =
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_atom_id' => [ 'CA' ] },
-                  'data' => [ 'id' ],
-                  'is_list' => 1 } );
-    my $sc_ignore_atoms = {
-        map { $_ => 1 }
-           @{ filter( { 'atom_site' => $atom_site,
-                        'include' => { 'label_atom_id' => [ 'N', 'C' ] },
-                        'data' => [ 'id' ],
-                        'is_list' => 1 } ) } };
-    my $sc_bond_path =
-        bond_path_search( $atom_site, $mc_start_atom_id,
-                          { 'type' => 'breadth_first',
-                            'ignore_atoms' => $mc_ignore_atoms,
-                            'include_hetatoms' => $include_hetatoms } );
+    use Data::Dumper;
+    print STDERR Dumper $bond_path;
 
     # # Adds bond if it is a continuation of identified bonds.
     # if( exists $stretchable_bonds{$parent_atom_id} ) {
