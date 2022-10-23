@@ -442,7 +442,7 @@ sub stretchable_bonds
                   'is_list' => 1 } );
     my $bond_path =
         bond_path_search( $atom_site, $start_atom_id,
-                          { 'type' => 'depth_first',
+                          { 'type' => 'breadth_first',
                             'include_hetatoms' => $include_hetatoms,
                             'ignore_atoms' => $ignore_atoms,
                             'ignore_connections' => $ignore_connections } );
@@ -727,7 +727,7 @@ sub bond_path_search
             $parent_atom_ids{$sorted_neighbour_atom_id} = $atom_id;
 
             if( $type eq 'breadth_first' ) {
-                push @next_atom_ids, $sorted_neighbour_atom_id;
+                unshift @next_atom_ids, $sorted_neighbour_atom_id;
                 next;
             }
 
