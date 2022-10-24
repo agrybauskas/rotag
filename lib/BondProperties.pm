@@ -469,21 +469,43 @@ sub append_stretchable_bonds
 
 sub name_stretchable_bonds
 {
-    my ( $parameters, $atom_site, $stretchable_bonds ) = @_;
-    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+    my ( $parameters, $atom_site, $stretchable_bonds, $options ) = @_;
+    my ( $mainchain_distance_symbol, $sidechain_distance_symbol,
+         $hetatom_symbol ) = (
+        $options->{'mainchain_distance_symbol'},
+        $options->{'sidechain_distance_symbol'},
+        $options->{'hetatom_symbol'}
+    );
+
+    $mainchain_distance_symbol //= 'd';
+    $sidechain_distance_symbol //= 'r';
+    $hetatom_symbol //= '*';
 
     my %named_stretchable_bonds = ();
     my %unique_stretchable_bonds =
         map { $_->[0] => { $_->[1] => 1 } }
         map { @{ $stretchable_bonds->{$_} } }
         keys %{ $stretchable_bonds };
+    my @unique_stretchable_bonds =
+        map { [ $_, keys %{ $unique_stretchable_bonds{$_} } ] }
+        keys %unique_stretchable_bonds;
 
-    # for my $atom_id ( keys %stretchable_bonds ) {
-    #     for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
-    #         my $bond_name = $bond_names{"$bond->[1]"};
-    #         $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
-    #     }
-    # }
+    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+
+    for my $atom_id ( keys %{ $stretchable_bonds } ) {
+        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+        my $is_mainchain_atom =
+            any { $atom_name eq $_ }
+               @{ $mainchain_atom_names };
+
+        my $bond_id = 1;
+    }
+
+    for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
+        my $bond_name = $bond_names{"$bond->[1]"};
+        $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+    }
+
 
     return \%named_stretchable_bonds;
 }
