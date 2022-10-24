@@ -440,7 +440,7 @@ sub stretchable_bonds
                   'include' => { 'label_atom_id' => [ 'N' ] },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
-    my $bond_path =
+    my $stretchable_bonds =
         bond_path_search( $atom_site, $start_atom_id,
                           { 'type' => 'breadth_first',
                             'append_func' =>
@@ -449,19 +449,7 @@ sub stretchable_bonds
                             'ignore_atoms' => $ignore_atoms,
                             'ignore_connections' => $ignore_connections } );
 
-    # # Iterates through stretchable bonds and assigns names by second atom.
-    my %named_stretchable_bonds;
-    # for my $atom_id ( keys %stretchable_bonds ) {
-    #     for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
-    #         my $bond_name = $bond_names{"$bond->[1]"};
-    #         $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
-    #     }
-    # }
-
-    # my $named_stretchable_bonds_new =
-    #     name_stretchable_bonds( $parameters, \%atom_site, \%stretchable_bonds );
-
-    return \%named_stretchable_bonds;
+    return name_stretchable_bonds( $parameters, $atom_site, $stretchable_bonds );
 }
 
 sub append_stretchable_bonds
@@ -488,6 +476,16 @@ sub name_stretchable_bonds
     my @all_stretchable_bonds =
         map { @{ $stretchable_bonds->{$_} } }
         keys %{ $stretchable_bonds };
+
+    use Data::Dumper;
+    print STDERR Dumper \@all_stretchable_bonds;
+
+    # for my $atom_id ( keys %stretchable_bonds ) {
+    #     for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
+    #         my $bond_name = $bond_names{"$bond->[1]"};
+    #         $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+    #     }
+    # }
 
     return \%named_stretchable_bonds;
 }
@@ -678,9 +676,9 @@ sub bendable_angles
 sub bond_path_search
 {
     my ( $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $type, $retrieve_func, $ignore_atoms, $include_hetatoms,
+    my ( $type, $append_func, $ignore_atoms, $include_hetatoms,
          $ignore_connections ) =
-        ( $options->{'type'}, $options->{'retrieve_func'},
+        ( $options->{'type'}, $options->{'append_func'},
           $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
           $options->{'ignore_connections'} );
 
@@ -696,7 +694,7 @@ sub bond_path_search
     my @next_atom_ids = ( @{ $start_atom_ids } );
     my %parent_atom_ids;
 
-    my %bonds = ();
+    my %bond_paths = ();
 
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
@@ -704,6 +702,10 @@ sub bond_path_search
 
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = 1;
+
+        if( defined $parent_atom_ids{$atom_id} ) {
+            $append_func->( \%bond_paths, $atom_id, $parent_atom_ids{$atom_id} );
+        }
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
@@ -747,6 +749,8 @@ sub bond_path_search
             }
         }
     }
+
+    return \%bond_paths;
 }
 
 #
