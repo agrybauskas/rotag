@@ -491,11 +491,10 @@ sub name_stretchable_bonds
 
     for my $atom_ids ( map { @{ $stretchable_bonds->{$_} } }
                        keys %{ $stretchable_bonds } ) {
-        # NOTE: could be refactored.
-        my $first_atom_id = $atom_ids->[0];
-        my $first_atom_name = $atom_site->{$first_atom_id};
-        my $second_atom_id = $atom_ids->[1];
-        my $second_atom_name = $atom_site->{$second_atom_id};
+        my ( $first_atom_id, $second_atom_id ) = @{ $atom_ids };
+        my ( $first_atom_name, $second_atom_name ) =
+            map { $atom_site->{$_}{'label_atom_id'} }
+               @{ $atom_ids };
 
         my $are_any_mainchain_atoms =
             any { $first_atom_name eq $_ || $second_atom_name eq $_ }
@@ -503,13 +502,26 @@ sub name_stretchable_bonds
         my $are_any_hetatoms =
             grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 
-        # Modifying bond names according
-        my $bond_name = "";
         # Adding bond names.
-        $bond_name .= $mainchain_distance_symbol if $are_any_mainchain_atoms;
-        $bond_name .= $sidechain_distance_symbol if ! $are_any_mainchain_atoms;
-        $bond_name .= $hetatom_symbol if $hetatom_symbol;
-        # Adding enumeration.
+        my $bond_name = "";
+        if( $are_any_mainchain_atoms ) {
+            $bond_name .=
+                $mainchain_distance_symbol .
+                $bond_counter{$mainchain_distance_symbol};
+            $bond_counter{$mainchain_distance_symbol}++;
+        }
+
+        if( ! $are_any_mainchain_atoms ) {
+            $bond_name .=
+                $sidechain_distance_symbol .
+                $bond_counter{$sidechain_distance_symbol};
+            $bond_counter{$sidechain_distance_symbol}++;
+        }
+
+        # Adding symbol for hetatoms.
+        if( $are_any_hetatoms ) {
+            $bond_name .= $hetatom_symbol;
+        }
     }
 
     my %named_stretchable_bonds = ();
