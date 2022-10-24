@@ -481,31 +481,34 @@ sub name_stretchable_bonds
     $sidechain_distance_symbol //= 'r';
     $hetatom_symbol //= '*';
 
-    my %named_stretchable_bonds = ();
-    my %unique_stretchable_bonds =
-        map { $_->[0] => { $_->[1] => 1 } }
-        map { @{ $stretchable_bonds->{$_} } }
-        keys %{ $stretchable_bonds };
-    my @unique_stretchable_bonds =
-        map { [ $_, keys %{ $unique_stretchable_bonds{$_} } ] }
-        keys %unique_stretchable_bonds;
-
     my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
 
-    for my $atom_id ( keys %{ $stretchable_bonds } ) {
-        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
-        my $is_mainchain_atom =
-            any { $atom_name eq $_ }
+    my %bond_names = ();
+    my %bond_counter = (
+        "$mainchain_distance_symbol" => 1,
+        "$sidechain_distance_symbol" => 1
+    );
+
+    for my $atom_ids ( map { @{ $stretchable_bonds->{$_} } }
+                       keys %{ $stretchable_bonds } ) {
+        my $first_atom_id = $atom_ids->[0];
+        my $first_atom_name = $atom_site->{$first_atom_id};
+        my $second_atom_id = $atom_ids->[1];
+        my $second_atom_name = $atom_site->{$second_atom_id};
+
+        my $are_any_mainchain_atoms =
+            any { $first_atom_name eq $_ || $second_atom_name eq $_ }
                @{ $mainchain_atom_names };
-
-        my $bond_id = 1;
+        my $are_any_hetatoms =
+            grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
     }
 
-    for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
-        my $bond_name = $bond_names{"$bond->[1]"};
-        $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
-    }
+    my %named_stretchable_bonds = ();
 
+    # for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
+    #     my $bond_name = $bond_names{"$bond->[1]"};
+    #     $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+    # }
 
     return \%named_stretchable_bonds;
 }
