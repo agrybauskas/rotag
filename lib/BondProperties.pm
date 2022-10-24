@@ -473,12 +473,10 @@ sub name_stretchable_bonds
     my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
 
     my %named_stretchable_bonds = ();
-    my @all_stretchable_bonds =
+    my %unique_stretchable_bonds =
+        map { $_->[0] => { $_->[1] => 1 } }
         map { @{ $stretchable_bonds->{$_} } }
         keys %{ $stretchable_bonds };
-
-    use Data::Dumper;
-    print STDERR Dumper \@all_stretchable_bonds;
 
     # for my $atom_id ( keys %stretchable_bonds ) {
     #     for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
