@@ -443,18 +443,11 @@ sub stretchable_bonds
     my $bond_path =
         bond_path_search( $atom_site, $start_atom_id,
                           { 'type' => 'breadth_first',
+                            'append_func' =>
+                                \&BondProperties::append_stretchable_bonds,
                             'include_hetatoms' => $include_hetatoms,
                             'ignore_atoms' => $ignore_atoms,
                             'ignore_connections' => $ignore_connections } );
-
-    use Data::Dumper;
-    print STDERR Dumper $bond_path;
-
-    # # Adds bond if it is a continuation of identified bonds.
-    # if( exists $stretchable_bonds{$parent_atom_id} ) {
-    #     unshift @{ $stretchable_bonds{$atom_id} },
-    #         @{ $stretchable_bonds{$parent_atom_id} };
-    # }
 
     # # Iterates through stretchable bonds and assigns names by second atom.
     my %named_stretchable_bonds;
@@ -469,6 +462,21 @@ sub stretchable_bonds
     #     name_stretchable_bonds( $parameters, \%atom_site, \%stretchable_bonds );
 
     return \%named_stretchable_bonds;
+}
+
+sub append_stretchable_bonds
+{
+    my ( $bonds, $atom_id, $parent_atom_id ) = @_;
+
+    push @{ $bonds->{$atom_id} }, [ $parent_atom_id, $atom_id ];
+
+    # Adds bond if it is a continuation of identified bonds.
+    if( exists $bonds->{$parent_atom_id} ) {
+        unshift @{ $bonds->{$atom_id} },
+            @{ $bonds->{$parent_atom_id} };
+    }
+
+    return;
 }
 
 sub name_stretchable_bonds
@@ -670,13 +678,13 @@ sub bendable_angles
 sub bond_path_search
 {
     my ( $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $type, $filter_func, $ignore_atoms, $include_hetatoms,
+    my ( $type, $retrieve_func, $ignore_atoms, $include_hetatoms,
          $ignore_connections ) =
-        ( $options->{'type'}, $options->{'filter_func'},
+        ( $options->{'type'}, $options->{'retrieve_func'},
           $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
           $options->{'ignore_connections'} );
 
-    $type //= 'depth_first'; # 'depth_first'/'breadth_first'.
+    $type //= 'depth_first'; # ['depth_first', 'breadth_first'].
     $ignore_atoms //= {};
     $include_hetatoms //= 0;
     $ignore_connections //= {};
@@ -695,16 +703,7 @@ sub bond_path_search
         my ( $atom_id ) = pop @next_atom_ids;
 
         next if $visited_atom_ids{$atom_id};
-
-        # print STDERR "$atom_id: $atom_site->{$atom_id}{'label_atom_id'}\n";
-
         $visited_atom_ids{$atom_id} = 1;
-
-        # # Adds bond if it is a continuation of identified bonds.
-        # if( exists $stretchable_bonds{$parent_atom_id} ) {
-        #     unshift @{ $stretchable_bonds{$atom_id} },
-        #         @{ $stretchable_bonds{$parent_atom_id} };
-        # }
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
@@ -748,9 +747,6 @@ sub bond_path_search
             }
         }
     }
-
-    use Data::Dumper;
-    print STDERR Dumper \%bonds;
 }
 
 #
