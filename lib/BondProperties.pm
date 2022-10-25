@@ -500,7 +500,10 @@ sub name_bond_parameters
 
         next if $is_visited;
 
-        %visited_bonds = %{populate_multi_hash( \%visited_bonds, $atom_ids, 1 )};
+        %visited_bonds = (
+            %visited_bonds,
+            %{ populate_multi_hash( \%visited_bonds, $atom_ids, 1 ) }
+        );
 
         my $are_any_mainchain_atoms =
             any { $mainchain_atom_names{$_} }
@@ -532,14 +535,15 @@ sub name_bond_parameters
             $bond_parameter_name .= $hetatom_symbol;
         }
 
-        %bond_parameter_names =
-            %{ populate_multi_hash( \%visited_bonds,
+        %bond_parameter_names = (
+            %bond_parameter_names,
+            %{ populate_multi_hash( \%bond_parameter_names,
                                     $atom_ids,
-                                    $bond_parameter_name ) };
-        %bond_parameter_names =
-            %{ populate_multi_hash( \%visited_bonds,
+                                    $bond_parameter_name ) },
+            %{ populate_multi_hash( \%bond_parameter_names,
                                     [ reverse @$atom_ids ],
-                                    $bond_parameter_name ) };
+                                    $bond_parameter_name ) }
+        );
     }
 
     my %named_bond_parameters = ();
