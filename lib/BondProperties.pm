@@ -22,8 +22,8 @@ use AtomProperties qw( sort_atom_names
 use Measure qw( dihedral_angle );
 use PDBxParser qw( filter
                    filter_new );
-use Utils qw( populate_multi_hash_value
-              retrieve_multi_hash_value );
+use Utils qw( populate_multi_hash
+              retrieve_multi_hash );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -488,6 +488,10 @@ sub name_bond_parameters
     );
 
     for my $atom_ids ( map { @{ $bonds->{$_} } } keys %{ $bonds } ) {
+        my $is_visited =
+            retrieve_multi_hash(\%visited_bonds, $atom_ids, { 'default' => 0 });
+
+        # next if $is_visited;
         # my ( $first_atom_id, $second_atom_id, $third_atom_id ) = @{ $atom_ids };
 
         # next if $visited_bonds{$first_atom_id}{$second_atom_id}{$third_atom_id};
