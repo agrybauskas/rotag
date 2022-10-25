@@ -458,7 +458,6 @@ sub append_stretchable_bonds
     my ( $bonds, $atom_id, $parent_atom_ids ) = @_;
 
     my $parent_atom_id = $parent_atom_ids->{$atom_id};
-
     return if ! defined $parent_atom_id;
 
     push @{ $bonds->{$atom_id} }, [ $parent_atom_id, $atom_id ];
@@ -608,12 +607,19 @@ sub append_bendable_angles
 {
     my ( $angles, $atom_id, $parent_atom_ids ) = @_;
 
-    # push @{ $bonds->{$atom_id} }, [ $parent_atom_id, $atom_id ];
+    my $parent_atom_id = $parent_atom_ids->{$atom_id};
+    return if ! defined $parent_atom_id;
 
-    # # Adds bond if it is a continuation of identified bonds.
-    # if( exists $bonds->{$parent_atom_id} ) {
-    #     unshift @{ $bonds->{$atom_id} }, @{ $bonds->{$parent_atom_id} };
-    # }
+    my $grandparent_atom_id = $parent_atom_ids->{$parent_atom_id};
+    return if ! defined $grandparent_atom_id;
+
+    push @{ $angles->{$atom_id} },
+        [ $grandparent_atom_id, $parent_atom_id, $atom_id ];
+
+    # Adds angles if it is a continuation of identified bonds.
+    if( exists $angles->{$parent_atom_id} ) {
+        unshift @{ $angles->{$atom_id} }, @{ $angles->{$parent_atom_id} };
+    }
 
     return;
 }
