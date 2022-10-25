@@ -22,6 +22,8 @@ use AtomProperties qw( sort_atom_names
 use Measure qw( dihedral_angle );
 use PDBxParser qw( filter
                    filter_new );
+use Utils qw( populate_multi_hash_value
+              retrieve_multi_hash_value );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
