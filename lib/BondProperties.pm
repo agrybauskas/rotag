@@ -207,7 +207,6 @@ sub rotatable_bonds
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
-    $options{'naming_func'} = \&BondProperties::name_bonds;
     $options{'ignore_terminal_repetition'} = 1;
     my $rotatable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
@@ -288,7 +287,6 @@ sub stretchable_bonds
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_stretchable_bonds;
-    $options{'naming_func'} = \&BondProperties::name_bonds;
     my $stretchable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $stretchable_bonds;
@@ -309,90 +307,6 @@ sub append_stretchable_bonds
     }
 
     return;
-}
-
-sub name_bonds
-{
-    my ( $parameters, $atom_site, $stretchable_bonds, $options ) = @_;
-    my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol,
-         $hetatom_symbol ) = (
-        $options->{'do_mainchain'},
-        $options->{'mainchain_symbol'},
-        $options->{'sidechain_symbol'},
-        $options->{'hetatom_symbol'}
-    );
-
-    $do_mainchain //= 0;
-    $mainchain_symbol //= 'd';
-    $sidechain_symbol //= 'r';
-    $hetatom_symbol //= '*';
-
-    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
-
-    my %bond_names = ();
-    my %visited_bonds = ();
-    my %bond_counter = (
-        "$mainchain_symbol" => 1,
-        "$sidechain_symbol" => 1
-    );
-
-    for my $atom_ids ( map { @{ $stretchable_bonds->{$_} } }
-                       keys %{ $stretchable_bonds } ) {
-        my ( $first_atom_id, $second_atom_id ) = @{ $atom_ids };
-
-        next if $visited_bonds{$first_atom_id}{$second_atom_id};
-
-        $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
-
-        my ( $first_atom_name, $second_atom_name ) =
-            map { $atom_site->{$_}{'label_atom_id'} }
-               @{ $atom_ids };
-        my $are_any_mainchain_atoms =
-            ( any { $first_atom_name eq $_ } @{ $mainchain_atom_names } ) &&
-            ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } );
-        my $are_any_hetatoms =
-            grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
-
-        next if ! $do_mainchain && $are_any_mainchain_atoms;
-
-        # Adding bond names.
-        my $bond_name = "";
-        if( $are_any_mainchain_atoms ) {
-            $bond_name .=
-                $mainchain_symbol .
-                $bond_counter{$mainchain_symbol};
-            $bond_counter{$mainchain_symbol}++;
-        }
-
-        if( ! $are_any_mainchain_atoms ) {
-            $bond_name .=
-                $sidechain_symbol .
-                $bond_counter{$sidechain_symbol};
-            $bond_counter{$sidechain_symbol}++;
-        }
-
-        # Adding symbol for hetatoms.
-        if( $are_any_hetatoms ) {
-            $bond_name .= $hetatom_symbol;
-        }
-
-        $bond_names{$first_atom_id}{$second_atom_id} = $bond_name;
-        $bond_names{$second_atom_id}{$first_atom_id} = $bond_name;
-    }
-
-    my %named_stretchable_bonds = ();
-
-    for my $atom_id ( keys %{ $stretchable_bonds } ) {
-        for my $bond ( @{ $stretchable_bonds->{$atom_id} } ) {
-            my $bond_name = $bond_names{$bond->[0]}{$bond->[1]};
-
-            next if ! defined $bond_name;
-
-            $named_stretchable_bonds{$atom_id}{$bond_name} = $bond;
-        }
-    }
-
-    return \%named_stretchable_bonds;
 }
 
 #
@@ -419,7 +333,6 @@ sub bendable_angles
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_bendable_angles;
-    $options{'naming_func'} = \&BondProperties::name_angles;
     my $bendable_angles =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $bendable_angles;
@@ -446,99 +359,12 @@ sub append_bendable_angles
     return;
 }
 
-sub name_angles
-{
-    my ( $parameters, $atom_site, $bendable_angles, $options ) = @_;
-    my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol,
-         $hetatom_symbol ) = (
-        $options->{'do_mainchain'},
-        $options->{'mainchain_symbol'},
-        $options->{'sidechain_symbol'},
-        $options->{'hetatom_symbol'}
-    );
-
-    $do_mainchain //= 0;
-    $mainchain_symbol //= 'theta';
-    $sidechain_symbol //= 'eta';
-    $hetatom_symbol //= '*';
-
-    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
-
-    my %angle_names = ();
-    my %visited_angles = ();
-    my %angle_counter = (
-        "$mainchain_symbol" => 1,
-        "$sidechain_symbol" => 1
-    );
-
-    for my $atom_ids ( map { @{ $bendable_angles->{$_} } }
-                       keys %{ $bendable_angles } ) {
-        my ( $first_atom_id, $second_atom_id, $third_atom_id ) = @{ $atom_ids };
-
-        next if $visited_angles{$first_atom_id}{$second_atom_id}{$third_atom_id};
-        $visited_angles{$first_atom_id}{$second_atom_id}{$third_atom_id} = 1;
-
-        my ( $first_atom_name, $second_atom_name, $third_atom_name ) =
-            map { $atom_site->{$_}{'label_atom_id'} }
-               @{ $atom_ids };
-        my $are_any_mainchain_atoms =
-            ( any { $first_atom_name eq $_ }  @{ $mainchain_atom_names } ) &&
-            ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } ) &&
-            ( any { $third_atom_name eq $_ }  @{ $mainchain_atom_names } );
-        my $are_any_hetatoms =
-            grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
-
-        next if ! $do_mainchain && $are_any_mainchain_atoms;
-
-        # Adding angle names.
-        my $angle_name = "";
-        if( $are_any_mainchain_atoms ) {
-            $angle_name .=
-                $mainchain_symbol .
-                $angle_counter{$mainchain_symbol};
-            $angle_counter{$mainchain_symbol}++;
-        }
-
-        if( ! $are_any_mainchain_atoms ) {
-            $angle_name .=
-                $sidechain_symbol .
-                $angle_counter{$sidechain_symbol};
-            $angle_counter{$sidechain_symbol}++;
-        }
-
-        # Adding symbol for hetatoms.
-        if( $are_any_hetatoms ) {
-            $angle_name .= $hetatom_symbol;
-        }
-
-        $angle_names{$first_atom_id}{$second_atom_id}{$third_atom_id} =
-            $angle_name;
-        $angle_names{$third_atom_id}{$second_atom_id}{$first_atom_id} =
-            $angle_name;
-    }
-
-    my %named_bendable_angles = ();
-
-    for my $atom_id ( keys %{ $bendable_angles } ) {
-        for my $angle ( @{ $bendable_angles->{$atom_id} } ) {
-            my $angle_name = $angle_names{$angle->[0]}{$angle->[1]}{$angle->[2]};
-
-            next if ! defined $angle_name;
-
-            $named_bendable_angles{$atom_id}{$angle_name} = $angle;
-        }
-    }
-
-    return \%named_bendable_angles;
-}
-
 sub bond_path_search
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $append_func, $naming_func, $ignore_terminal_repetition, $ignore_atoms,
+    my ( $append_func, $ignore_terminal_repetition, $ignore_atoms,
          $include_hetatoms, $ignore_connections ) = (
         $options->{'append_func'},
-        $options->{'naming_func'},
         $options->{'ignore_terminal_repetition'},
         $options->{'ignore_atoms'},
         $options->{'include_hetatoms'},
@@ -631,7 +457,91 @@ sub bond_path_search
         }
     }
 
-    return $naming_func->( $parameters, $atom_site, \%bond_paths );
+    return name_bond_parameters( $parameters, $atom_site, \%bond_paths );
+}
+
+sub name_bond_parameters
+{
+    my ( $parameters, $atom_site, $bonds, $options ) = @_;
+    my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol,
+         $hetatom_symbol ) = (
+        $options->{'do_mainchain'},
+        $options->{'mainchain_symbol'},
+        $options->{'sidechain_symbol'},
+        $options->{'hetatom_symbol'}
+    );
+
+    $do_mainchain //= 0;
+    $mainchain_symbol //= 'x';
+    $sidechain_symbol //= 'y';
+    $hetatom_symbol //= '*';
+
+    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+
+    my %bond_parameter_names = ();
+    my %visited_bonds = ();
+    my %name_counter = (
+        "$mainchain_symbol" => 1,
+        "$sidechain_symbol" => 1
+    );
+
+    for my $atom_ids ( map { @{ $bonds->{$_} } } keys %{ $bonds } ) {
+        # my ( $first_atom_id, $second_atom_id, $third_atom_id ) = @{ $atom_ids };
+
+        # next if $visited_bonds{$first_atom_id}{$second_atom_id}{$third_atom_id};
+        # next if $visited_bonds{$first_atom_id}{$second_atom_id};
+        # $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
+        # $visited_bonds{$first_atom_id}{$second_atom_id}{$third_atom_id} = 1;
+
+        # my ( $first_atom_name, $second_atom_name, $third_atom_name ) =
+        #     map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
+        # my $are_any_mainchain_atoms =
+        #     ( any { $first_atom_name eq $_ }  @{ $mainchain_atom_names } ) &&
+        #     ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } ) &&
+        #     ( any { $third_atom_name eq $_ }  @{ $mainchain_atom_names } );
+        # my $are_any_hetatoms =
+        #     grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
+
+        # next if ! $do_mainchain && $are_any_mainchain_atoms;
+
+        # # Adding parameter names.
+        # my $bond_parameter_name = "";
+        # if( $are_any_mainchain_atoms ) {
+        #     $bond_parameter_name .=
+        #         $mainchain_symbol .
+        #         $name_counter{$mainchain_symbol};
+        #     $name_counter{$mainchain_symbol}++;
+        # }
+
+        # if( ! $are_any_mainchain_atoms ) {
+        #     $bond_parameter_name .=
+        #         $sidechain_symbol .
+        #         $name_counter{$sidechain_symbol};
+        #     $name_counter{$sidechain_symbol}++;
+        # }
+
+        # # Adding symbol for hetatoms.
+        # if( $are_any_hetatoms ) {
+        #     $bond_parameter_name .= $hetatom_symbol;
+        # }
+
+        # $bond_parameter_names{$first_atom_id}{$second_atom_id} = $bond_name;
+        # $bond_parameter_names{$second_atom_id}{$first_atom_id} = $bond_name;
+    }
+
+    my %named_bond_parameters = ();
+
+    # for my $atom_id ( keys %{ $bonds } ) {
+    #     for my $bond ( @{ $bonds->{$atom_id} } ) {
+    #         my $bond_paramter_name = $bond_paramter_names{$bond->[0]}{$bond->[1]};
+
+    #         next if ! defined $bond_name;
+
+    #         $named_stretchable_bonds{$atom_id}{$bond_name} = $bond;
+    #     }
+    # }
+
+    return \%named_bond_parameters;
 }
 
 #
