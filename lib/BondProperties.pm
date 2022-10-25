@@ -204,29 +204,13 @@ sub hybridization
 
 sub rotatable_bonds
 {
-    my ( $parameters, $atom_site, $start_atom_id, $options ) = @_;
-    my ( $include_hetatoms, $ignore_atoms, $ignore_connections ) =
-        ( $options->{'include_hetatoms'}, $options->{'ignore_atoms'},
-          $options->{'ignore_connections'} );
-
-    $include_hetatoms //= 0;
-    $ignore_atoms //= {};
-    $ignore_connections //= {};
-
-    # By default, N is starting atom for main-chain calculations.
-    $start_atom_id //=
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_atom_id' => [ 'N' ] },
-                  'data' => [ 'id' ],
-                  'is_list' => 1 } );
+    my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+    my %options = defined $options ? %{ $options } : ();
+    $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
+    $options{'naming_func'} = \&BondProperties::name_bonds;
+    $options{'ignore_terminal_repetition'} = 1;
     my $rotatable_bonds =
-        bond_path_search( $parameters, $atom_site, $start_atom_id,
-                          { %{ $options },
-                            'append_func' =>
-                                \&BondProperties::append_rotatable_bonds,
-                            'naming_func' =>
-                                \&BondProperties::name_bonds } );
-
+        bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $rotatable_bonds;
 }
 
@@ -301,29 +285,12 @@ sub append_rotatable_bonds
 
 sub stretchable_bonds
 {
-    my ( $parameters, $atom_site, $start_atom_id, $options ) = @_;
-    my ( $include_hetatoms, $ignore_atoms, $ignore_connections ) =
-        ( $options->{'include_hetatoms'}, $options->{'ignore_atoms'},
-          $options->{'ignore_connections'} );
-
-    $include_hetatoms //= 0;
-    $ignore_atoms //= {};
-    $ignore_connections //= {};
-
-    # By default, N is starting atom for main-chain calculations.
-    $start_atom_id //=
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_atom_id' => [ 'N' ] },
-                  'data' => [ 'id' ],
-                  'is_list' => 1 } );
+    my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+    my %options = defined $options ? %{ $options } : ();
+    $options{'append_func'} = \&BondProperties::append_stretchable_bonds;
+    $options{'naming_func'} = \&BondProperties::name_bonds;
     my $stretchable_bonds =
-        bond_path_search( $parameters, $atom_site, $start_atom_id,
-                          { %{ $options },
-                            'append_func' =>
-                                \&BondProperties::append_stretchable_bonds,
-                            'naming_func' =>
-                                \&BondProperties::name_bonds } );
-
+        bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $stretchable_bonds;
 }
 
@@ -449,29 +416,12 @@ sub name_bonds
 
 sub bendable_angles
 {
-    my ( $parameters, $atom_site, $start_atom_id, $options ) = @_;
-    my ( $include_hetatoms, $ignore_atoms, $ignore_connections ) =
-        ( $options->{'include_hetatoms'}, $options->{'ignore_atoms'},
-          $options->{'ignore_connections'} );
-
-    $include_hetatoms //= 0;
-    $ignore_atoms //= {};
-    $ignore_connections //= {};
-
-    # By default, N is starting atom for main-chain calculations.
-    $start_atom_id //=
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_atom_id' => [ 'N' ] },
-                  'data' => [ 'id' ],
-                  'is_list' => 1 } );
+    my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+    my %options = defined $options ? %{ $options } : ();
+    $options{'append_func'} = \&BondProperties::append_bendable_angles;
+    $options{'naming_func'} = \&BondProperties::name_angles;
     my $bendable_angles =
-        bond_path_search( $parameters, $atom_site, $start_atom_id,
-                          { %{ $options },
-                            'append_func' =>
-                                \&BondProperties::append_bendable_angles,
-                            'naming_func' =>
-                                \&BondProperties::name_angles } );
-
+        bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $bendable_angles;
 }
 
@@ -585,18 +535,27 @@ sub name_angles
 sub bond_path_search
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $append_func, $naming_func, $ignore_atoms, $include_hetatoms,
-         $ignore_connections ) = (
+    my ( $append_func, $naming_func, $ignore_terminal_repetition, $ignore_atoms,
+         $include_hetatoms, $ignore_connections ) = (
         $options->{'append_func'},
         $options->{'naming_func'},
+        $options->{'ignore_terminal_repetition'},
         $options->{'ignore_atoms'},
         $options->{'include_hetatoms'},
         $options->{'ignore_connections'}
     );
 
+    $ignore_terminal_repetition //= 0;
     $ignore_atoms //= {};
     $include_hetatoms //= 0;
     $ignore_connections //= {};
+
+    # By default, N is starting atom for main-chain calculations.
+    $start_atom_ids //=
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { 'label_atom_id' => [ 'N' ] },
+                  'data' => [ 'id' ],
+                  'is_list' => 1 } );
 
     if( ! @{ $start_atom_ids } ) { return {}; }
 
