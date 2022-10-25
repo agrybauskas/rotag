@@ -539,9 +539,12 @@ sub name_bond_parameters
             %bond_parameter_names,
             %{ populate_multi_hash( \%bond_parameter_names,
                                     $atom_ids,
-                                    $bond_parameter_name ) },
+                                    $bond_parameter_name ) }
+        );
+        %bond_parameter_names = (
+            %bond_parameter_names,
             %{ populate_multi_hash( \%bond_parameter_names,
-                                    [ reverse @$atom_ids ],
+                                    [ reverse @{ $atom_ids } ],
                                     $bond_parameter_name ) }
         );
     }
