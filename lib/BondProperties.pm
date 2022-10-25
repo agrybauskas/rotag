@@ -470,13 +470,15 @@ sub append_stretchable_bonds
 sub name_stretchable_bonds
 {
     my ( $parameters, $atom_site, $stretchable_bonds, $options ) = @_;
-    my ( $mainchain_distance_symbol, $sidechain_distance_symbol,
+    my ( $do_mainchain, $mainchain_distance_symbol, $sidechain_distance_symbol,
          $hetatom_symbol ) = (
+        $options->{'do_mainchain'},
         $options->{'mainchain_distance_symbol'},
         $options->{'sidechain_distance_symbol'},
         $options->{'hetatom_symbol'}
     );
 
+    $do_mainchain //= 0;
     $mainchain_distance_symbol //= 'd';
     $sidechain_distance_symbol //= 'r';
     $hetatom_symbol //= '*';
@@ -496,6 +498,8 @@ sub name_stretchable_bonds
 
         next if $visited_bonds{$first_atom_id}{$second_atom_id};
 
+        $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
+
         my ( $first_atom_name, $second_atom_name ) =
             map { $atom_site->{$_}{'label_atom_id'} }
                @{ $atom_ids };
@@ -504,6 +508,8 @@ sub name_stretchable_bonds
             ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } );
         my $are_any_hetatoms =
             grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
+
+        next if ! $do_mainchain && $are_any_mainchain_atoms;
 
         # Adding bond names.
         my $bond_name = "";
@@ -526,17 +532,21 @@ sub name_stretchable_bonds
             $bond_name .= $hetatom_symbol;
         }
 
-        print STDERR $first_atom_id, "\t", $first_atom_name, "\t", $second_atom_id, "\t", $second_atom_name, "\t", $bond_name, "\n";
-
-        $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
+        $bond_names{$first_atom_id}{$second_atom_id} = $bond_name;
+        $bond_names{$second_atom_id}{$first_atom_id} = $bond_name;
     }
 
     my %named_stretchable_bonds = ();
 
-    # for my $bond ( @{ $stretchable_bonds{"$atom_id"} } ) {
-    #     my $bond_name = $bond_names{"$bond->[1]"};
-    #     $named_stretchable_bonds{"$atom_id"}{"$bond_name"} = $bond;
-    # }
+    for my $atom_id ( keys %{ $stretchable_bonds } ) {
+        for my $bond ( @{ $stretchable_bonds->{$atom_id} } ) {
+            my $bond_name = $bond_names{$bond->[0]}{$bond->[1]};
+
+            next if ! defined $bond_name;
+
+            $named_stretchable_bonds{$atom_id}{$bond_name} = $bond;
+        }
+    }
 
     return \%named_stretchable_bonds;
 }
