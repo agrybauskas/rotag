@@ -224,7 +224,7 @@ sub rotatable_bonds
                           { 'append_func' =>
                                 \&BondProperties::append_rotatable_bonds,
                             'naming_func' =>
-                                \&BondProperties::name_rotatable_bonds,
+                                \&BondProperties::name_bonds,
                             'include_hetatoms' => $include_hetatoms,
                             'ignore_atoms' => $ignore_atoms,
                             'ignore_connections' => $ignore_connections } );
@@ -283,90 +283,6 @@ sub append_rotatable_bonds
     return;
 }
 
-sub name_rotatable_bonds
-{
-    my ( $parameters, $atom_site, $rotatable_bonds, $options ) = @_;
-    my ( $do_mainchain, $mainchain_bond_symbol, $sidechain_bond_symbol,
-         $hetatom_symbol ) = (
-        $options->{'do_mainchain'},
-        $options->{'mainchain_bond_symbol'},
-        $options->{'sidechain_bond_symbol'},
-        $options->{'hetatom_symbol'}
-    );
-
-    $do_mainchain //= 0;
-    $mainchain_bond_symbol //= 'tau';
-    $sidechain_bond_symbol //= 'chi';
-    $hetatom_symbol //= '*';
-
-    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
-
-    my %bond_names = ();
-    my %visited_bonds = ();
-    my %bond_counter = (
-        "$mainchain_bond_symbol" => 1,
-        "$sidechain_bond_symbol" => 1
-    );
-
-    for my $atom_ids ( map { @{ $rotatable_bonds->{$_} } }
-                       keys %{ $rotatable_bonds } ) {
-        my ( $first_atom_id, $second_atom_id ) = @{ $atom_ids };
-
-        next if $visited_bonds{$first_atom_id}{$second_atom_id};
-
-        $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
-
-        my ( $first_atom_name, $second_atom_name ) =
-            map { $atom_site->{$_}{'label_atom_id'} }
-               @{ $atom_ids };
-        my $are_any_mainchain_atoms =
-            ( any { $first_atom_name eq $_ } @{ $mainchain_atom_names } ) &&
-            ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } );
-        my $are_any_hetatoms =
-            grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
-
-        next if ! $do_mainchain && $are_any_mainchain_atoms;
-
-        # Adding bond names.
-        my $bond_name = "";
-        if( $are_any_mainchain_atoms ) {
-            $bond_name .=
-                $mainchain_bond_symbol .
-                $bond_counter{$mainchain_bond_symbol};
-            $bond_counter{$mainchain_bond_symbol}++;
-        }
-
-        if( ! $are_any_mainchain_atoms ) {
-            $bond_name .=
-                $sidechain_bond_symbol .
-                $bond_counter{$sidechain_bond_symbol};
-            $bond_counter{$sidechain_bond_symbol}++;
-        }
-
-        # Adding symbol for hetatoms.
-        if( $are_any_hetatoms ) {
-            $bond_name .= $hetatom_symbol;
-        }
-
-        $bond_names{$first_atom_id}{$second_atom_id} = $bond_name;
-        $bond_names{$second_atom_id}{$first_atom_id} = $bond_name;
-    }
-
-    my %named_rotatable_bonds = ();
-
-    for my $atom_id ( keys %{ $rotatable_bonds } ) {
-        for my $bond ( @{ $rotatable_bonds->{$atom_id} } ) {
-            my $bond_name = $bond_names{$bond->[0]}{$bond->[1]};
-
-            next if ! defined $bond_name;
-
-            $named_rotatable_bonds{$atom_id}{$bond_name} = $bond;
-        }
-    }
-
-    return \%named_rotatable_bonds;
-}
-
 #
 # Identifies bonds that can be stretched.
 # Input:
@@ -407,7 +323,7 @@ sub stretchable_bonds
                           { 'append_func' =>
                                 \&BondProperties::append_stretchable_bonds,
                             'naming_func' =>
-                                \&BondProperties::name_stretchable_bonds,
+                                \&BondProperties::name_bonds,
                             'include_hetatoms' => $include_hetatoms,
                             'ignore_atoms' => $ignore_atoms,
                             'ignore_connections' => $ignore_connections } );
@@ -432,7 +348,7 @@ sub append_stretchable_bonds
     return;
 }
 
-sub name_stretchable_bonds
+sub name_bonds
 {
     my ( $parameters, $atom_site, $stretchable_bonds, $options ) = @_;
     my ( $do_mainchain, $mainchain_distance_symbol, $sidechain_distance_symbol,
@@ -557,7 +473,7 @@ sub bendable_angles
                           { 'append_func' =>
                                 \&BondProperties::append_bendable_angles,
                             'naming_func' =>
-                                \&BondProperties::name_bendable_angles,
+                                \&BondProperties::name_angles,
                             'include_hetatoms' => $include_hetatoms,
                             'ignore_atoms' => $ignore_atoms,
                             'ignore_connections' => $ignore_connections } );
@@ -586,7 +502,7 @@ sub append_bendable_angles
     return;
 }
 
-sub name_bendable_angles
+sub name_angles
 {
     my ( $parameters, $atom_site, $bendable_angles, $options ) = @_;
     my ( $do_mainchain, $mainchain_angle_symbol, $sidechain_angle_symbol,
