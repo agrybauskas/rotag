@@ -209,6 +209,8 @@ sub rotatable_bonds
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
+    $options{'mainchain_symbol'} = '';
+    $options{'sidechain_symbol'} = 'chi';
     $options{'ignore_terminal_repetition'} = 1;
     my $rotatable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
@@ -289,6 +291,8 @@ sub stretchable_bonds
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_stretchable_bonds;
+    $options{'mainchain_symbol'} = 'd';
+    $options{'sidechain_symbol'} = 'r';
     my $stretchable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $stretchable_bonds;
@@ -335,6 +339,8 @@ sub bendable_angles
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_bendable_angles;
+    $options{'mainchain_symbol'} = 'theta';
+    $options{'sidechain_symbol'} = 'eta';
     my $bendable_angles =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $bendable_angles;
@@ -459,7 +465,7 @@ sub bond_path_search
         }
     }
 
-    return name_bond_parameters( $parameters, $atom_site, \%bond_paths );
+    return name_bond_parameters($parameters, $atom_site, \%bond_paths, $options);
 }
 
 sub name_bond_parameters
@@ -478,7 +484,8 @@ sub name_bond_parameters
     $sidechain_symbol //= 'y';
     $hetatom_symbol //= '*';
 
-    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+    my %mainchain_atom_names =
+        map { $_ => 1 } @{ $parameters->{'_[local]_mainchain_atom_names'} };
 
     my %bond_parameter_names = ();
     my %visited_bonds = ();
@@ -491,61 +498,62 @@ sub name_bond_parameters
         my $is_visited =
             retrieve_multi_hash(\%visited_bonds, $atom_ids, { 'default' => 0 });
 
-        # next if $is_visited;
-        # my ( $first_atom_id, $second_atom_id, $third_atom_id ) = @{ $atom_ids };
+        next if $is_visited;
 
-        # next if $visited_bonds{$first_atom_id}{$second_atom_id}{$third_atom_id};
-        # next if $visited_bonds{$first_atom_id}{$second_atom_id};
-        # $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
-        # $visited_bonds{$first_atom_id}{$second_atom_id}{$third_atom_id} = 1;
+        %visited_bonds = %{populate_multi_hash( \%visited_bonds, $atom_ids, 1 )};
 
-        # my ( $first_atom_name, $second_atom_name, $third_atom_name ) =
-        #     map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
-        # my $are_any_mainchain_atoms =
-        #     ( any { $first_atom_name eq $_ }  @{ $mainchain_atom_names } ) &&
-        #     ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } ) &&
-        #     ( any { $third_atom_name eq $_ }  @{ $mainchain_atom_names } );
-        # my $are_any_hetatoms =
-        #     grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
+        my $are_any_mainchain_atoms =
+            any { $mainchain_atom_names{$_} }
+            grep { $atom_site->{$_}{'label_atom_id'} }
+            @{ $atom_ids };
+        my $are_any_hetatoms =
+            grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 
-        # next if ! $do_mainchain && $are_any_mainchain_atoms;
+        next if ! $do_mainchain && $are_any_mainchain_atoms;
 
-        # # Adding parameter names.
-        # my $bond_parameter_name = "";
-        # if( $are_any_mainchain_atoms ) {
-        #     $bond_parameter_name .=
-        #         $mainchain_symbol .
-        #         $name_counter{$mainchain_symbol};
-        #     $name_counter{$mainchain_symbol}++;
-        # }
+        # Adding parameter names.
+        my $bond_parameter_name = "";
+        if( $are_any_mainchain_atoms ) {
+            $bond_parameter_name .=
+                $mainchain_symbol .
+                $name_counter{$mainchain_symbol};
+            $name_counter{$mainchain_symbol}++;
+        }
 
-        # if( ! $are_any_mainchain_atoms ) {
-        #     $bond_parameter_name .=
-        #         $sidechain_symbol .
-        #         $name_counter{$sidechain_symbol};
-        #     $name_counter{$sidechain_symbol}++;
-        # }
+        if( ! $are_any_mainchain_atoms ) {
+            $bond_parameter_name .=
+                $sidechain_symbol .
+                $name_counter{$sidechain_symbol};
+            $name_counter{$sidechain_symbol}++;
+        }
 
-        # # Adding symbol for hetatoms.
-        # if( $are_any_hetatoms ) {
-        #     $bond_parameter_name .= $hetatom_symbol;
-        # }
+        # Adding symbol for hetatoms.
+        if( $are_any_hetatoms ) {
+            $bond_parameter_name .= $hetatom_symbol;
+        }
 
-        # $bond_parameter_names{$first_atom_id}{$second_atom_id} = $bond_name;
-        # $bond_parameter_names{$second_atom_id}{$first_atom_id} = $bond_name;
+        %bond_parameter_names =
+            %{ populate_multi_hash( \%visited_bonds,
+                                    $atom_ids,
+                                    $bond_parameter_name ) };
+        %bond_parameter_names =
+            %{ populate_multi_hash( \%visited_bonds,
+                                    [ reverse @$atom_ids ],
+                                    $bond_parameter_name ) };
     }
 
     my %named_bond_parameters = ();
 
-    # for my $atom_id ( keys %{ $bonds } ) {
-    #     for my $bond ( @{ $bonds->{$atom_id} } ) {
-    #         my $bond_paramter_name = $bond_paramter_names{$bond->[0]}{$bond->[1]};
+    for my $atom_id ( keys %{ $bonds } ) {
+        for my $atom_ids ( @{ $bonds->{$atom_id} } ) {
+            my $bond_parameter_name =
+                retrieve_multi_hash( \%bond_parameter_names, $atom_ids );
 
-    #         next if ! defined $bond_name;
+            next if ! defined $bond_parameter_name;
 
-    #         $named_stretchable_bonds{$atom_id}{$bond_name} = $bond;
-    #     }
-    # }
+            $named_bond_parameters{$atom_id}{$bond_parameter_name} = $atom_ids;
+        }
+    }
 
     return \%named_bond_parameters;
 }
