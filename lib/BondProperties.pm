@@ -759,8 +759,9 @@ sub bond_path_search
     my @next_atom_ids = ( @{ $start_atom_ids } );
     my %parent_atom_ids;
 
+    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+
     my %bond_paths = ();
-    my $type = 'depth_first';
 
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
@@ -804,17 +805,22 @@ sub bond_path_search
             # Depending on if it is mainchain or sidechain bonds, the bond
             # search changes from deapth-first search to breadth-first search
             # accordingly.
-            if( $type eq 'breadth_first' ) {
+            my $are_any_sidechain_atoms =
+                ! ( any { $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'} eq $_ }
+                       @{ $mainchain_atom_names } ) ||
+                ! ( any { $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'} }
+                       @{ $mainchain_atom_names } );
+
+            # Bread-first search.
+            if( $are_any_sidechain_atoms ) {
                 unshift @next_atom_ids, $sorted_neighbour_atom_id;
                 next;
             }
 
-            if( $type eq 'depth_first' ) {
-                if( $i == 0 ) {
-                    push @next_atom_ids, $sorted_neighbour_atom_id;
-                } else {
-                    unshift @next_atom_ids, $sorted_neighbour_atom_id;
-                }
+            if( $i == 0 ) {
+                push @next_atom_ids, $sorted_neighbour_atom_id;
+            } else {
+                unshift @next_atom_ids, $sorted_neighbour_atom_id;
             }
         }
     }
