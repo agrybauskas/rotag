@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use BondProperties qw( bendable_angles );
+use ForceField::Parameters;
 
 #
 # Unit test: BondProperties::bendable_angles
@@ -20,8 +21,10 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
+my $parameters = Parameters->new();
+
 my %bendable_angles =
-    %{ bendable_angles( $atom_site ) };
+    %{ bendable_angles( $parameters, $atom_site ) };
 
 for my $atom_id ( sort { $a cmp $b } keys( %bendable_angles ) ) {
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
