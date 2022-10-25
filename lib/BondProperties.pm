@@ -442,8 +442,7 @@ sub stretchable_bonds
                   'is_list' => 1 } );
     my $stretchable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_id,
-                          { 'type' => 'breadth_first',
-                            'append_func' =>
+                          { 'append_func' =>
                                 \&BondProperties::append_stretchable_bonds,
                             'naming_func' =>
                                 \&BondProperties::name_stretchable_bonds,
@@ -462,8 +461,7 @@ sub append_stretchable_bonds
 
     # Adds bond if it is a continuation of identified bonds.
     if( exists $bonds->{$parent_atom_id} ) {
-        unshift @{ $bonds->{$atom_id} },
-            @{ $bonds->{$parent_atom_id} };
+        unshift @{ $bonds->{$atom_id} }, @{ $bonds->{$parent_atom_id} };
     }
 
     return;
@@ -588,19 +586,17 @@ sub bendable_angles
                   'include' => { 'label_atom_id' => [ 'N' ] },
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
-    my $stretchable_bonds = {};
-    # my $stretchable_bonds =
-    #     bond_path_search( $parameters, $atom_site, $start_atom_id,
-    #                       { 'type' => 'breadth_first',
-    #                         'append_func' =>
-    #                             \&BondProperties::append_stretchable_bonds,
-    #                         'naming_func' =>
-    #                             \&BondProperties::name_stretchable_bonds,
-    #                         'include_hetatoms' => $include_hetatoms,
-    #                         'ignore_atoms' => $ignore_atoms,
-    #                         'ignore_connections' => $ignore_connections } );
+    my $bendable_angles =
+        bond_path_search( $parameters, $atom_site, $start_atom_id,
+                          { # 'append_func' =>
+                            #     \&BondProperties::append_stretchable_bonds,
+                            # 'naming_func' =>
+                            #     \&BondProperties::name_stretchable_bonds,
+                            'include_hetatoms' => $include_hetatoms,
+                            'ignore_atoms' => $ignore_atoms,
+                            'ignore_connections' => $ignore_connections } );
 
-    return $stretchable_bonds;
+    return $bendable_angles;
 
 }
 
