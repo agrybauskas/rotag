@@ -493,15 +493,15 @@ sub name_stretchable_bonds
     for my $atom_ids ( map { @{ $stretchable_bonds->{$_} } }
                        keys %{ $stretchable_bonds } ) {
         my ( $first_atom_id, $second_atom_id ) = @{ $atom_ids };
-        my ( $first_atom_name, $second_atom_name ) =
-            map { $atom_site->{$_}{'label_atom_id'} }
-               @{ $atom_ids };
 
         next if $visited_bonds{$first_atom_id}{$second_atom_id};
 
+        my ( $first_atom_name, $second_atom_name ) =
+            map { $atom_site->{$_}{'label_atom_id'} }
+               @{ $atom_ids };
         my $are_any_mainchain_atoms =
-            any { $first_atom_name eq $_ || $second_atom_name eq $_ }
-               @{ $mainchain_atom_names };
+            ( any { $first_atom_name eq $_ } @{ $mainchain_atom_names } ) &&
+            ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } );
         my $are_any_hetatoms =
             grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 
@@ -525,6 +525,8 @@ sub name_stretchable_bonds
         if( $are_any_hetatoms ) {
             $bond_name .= $hetatom_symbol;
         }
+
+        print STDERR $first_atom_id, "\t", $first_atom_name, "\t", $second_atom_id, "\t", $second_atom_name, "\t", $bond_name, "\n";
 
         $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
     }
