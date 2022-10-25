@@ -28,7 +28,7 @@ sub retrieve_multi_hash
                $hash->{$keys->[0]} :
                $options->{'default'};
     }
-    return retrieve_multi_hash( $hash,
+    return retrieve_multi_hash( $hash->{$keys->[0]},
                                 [ map { $keys->[$_] } 1..$#{ $keys } ],
                                 $options );
 }
