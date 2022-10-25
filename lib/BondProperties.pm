@@ -581,8 +581,9 @@ sub bendable_angles
         ( $options->{'include_hetatoms'}, $options->{'ignore_atoms'},
           $options->{'ignore_connections'} );
 
-    $ignore_atoms //= [];
     $include_hetatoms //= 0;
+    $ignore_atoms //= {};
+    $ignore_connections //= {};
 
     # By default, N is starting atom for main-chain calculations.
     $start_atom_id //=
@@ -884,7 +885,7 @@ sub bond_path_search
     if( ! @{ $start_atom_ids } ) { return {}; }
 
     my %atom_site = %{ $atom_site }; # Copy of the variable.
-    my %visited_atom_ids = ( %{ $ignore_atoms } );
+    my %visited_atom_ids = %{ $ignore_atoms };
     my @next_atom_ids = ( @{ $start_atom_ids } );
     my %parent_atom_ids;
 
@@ -933,9 +934,11 @@ sub bond_path_search
             # search changes from deapth-first search to breadth-first search
             # accordingly.
             my $are_any_sidechain_atoms =
-                ! ( any { $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'} eq $_ }
+                ! ( any { $atom_site->{$sorted_neighbour_atom_id}
+                                      {'label_atom_id'} eq $_ }
                        @{ $mainchain_atom_names } ) ||
-                ! ( any { $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'} }
+                ! ( any { $atom_site->{$sorted_neighbour_atom_id}
+                                      {'label_atom_id'} eq $_ }
                        @{ $mainchain_atom_names } );
 
             # Bread-first search.
