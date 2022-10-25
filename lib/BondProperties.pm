@@ -484,6 +484,7 @@ sub name_stretchable_bonds
     my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
 
     my %bond_names = ();
+    my %visited_bonds = ();
     my %bond_counter = (
         "$mainchain_distance_symbol" => 1,
         "$sidechain_distance_symbol" => 1
@@ -495,6 +496,8 @@ sub name_stretchable_bonds
         my ( $first_atom_name, $second_atom_name ) =
             map { $atom_site->{$_}{'label_atom_id'} }
                @{ $atom_ids };
+
+        next if $visited_bonds{$first_atom_id}{$second_atom_id};
 
         my $are_any_mainchain_atoms =
             any { $first_atom_name eq $_ || $second_atom_name eq $_ }
@@ -522,6 +525,8 @@ sub name_stretchable_bonds
         if( $are_any_hetatoms ) {
             $bond_name .= $hetatom_symbol;
         }
+
+        $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
     }
 
     my %named_stretchable_bonds = ();
