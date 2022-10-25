@@ -221,13 +221,11 @@ sub rotatable_bonds
                   'is_list' => 1 } );
     my $rotatable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_id,
-                          { 'append_func' =>
+                          { %{ $options },
+                            'append_func' =>
                                 \&BondProperties::append_rotatable_bonds,
                             'naming_func' =>
-                                \&BondProperties::name_bonds,
-                            'include_hetatoms' => $include_hetatoms,
-                            'ignore_atoms' => $ignore_atoms,
-                            'ignore_connections' => $ignore_connections } );
+                                \&BondProperties::name_bonds } );
 
     return $rotatable_bonds;
 }
@@ -320,13 +318,11 @@ sub stretchable_bonds
                   'is_list' => 1 } );
     my $stretchable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_id,
-                          { 'append_func' =>
+                          { %{ $options },
+                            'append_func' =>
                                 \&BondProperties::append_stretchable_bonds,
                             'naming_func' =>
-                                \&BondProperties::name_bonds,
-                            'include_hetatoms' => $include_hetatoms,
-                            'ignore_atoms' => $ignore_atoms,
-                            'ignore_connections' => $ignore_connections } );
+                                \&BondProperties::name_bonds } );
 
     return $stretchable_bonds;
 }
@@ -351,17 +347,17 @@ sub append_stretchable_bonds
 sub name_bonds
 {
     my ( $parameters, $atom_site, $stretchable_bonds, $options ) = @_;
-    my ( $do_mainchain, $mainchain_distance_symbol, $sidechain_distance_symbol,
+    my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol,
          $hetatom_symbol ) = (
         $options->{'do_mainchain'},
-        $options->{'mainchain_distance_symbol'},
-        $options->{'sidechain_distance_symbol'},
+        $options->{'mainchain_symbol'},
+        $options->{'sidechain_symbol'},
         $options->{'hetatom_symbol'}
     );
 
     $do_mainchain //= 0;
-    $mainchain_distance_symbol //= 'd';
-    $sidechain_distance_symbol //= 'r';
+    $mainchain_symbol //= 'd';
+    $sidechain_symbol //= 'r';
     $hetatom_symbol //= '*';
 
     my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
@@ -369,8 +365,8 @@ sub name_bonds
     my %bond_names = ();
     my %visited_bonds = ();
     my %bond_counter = (
-        "$mainchain_distance_symbol" => 1,
-        "$sidechain_distance_symbol" => 1
+        "$mainchain_symbol" => 1,
+        "$sidechain_symbol" => 1
     );
 
     for my $atom_ids ( map { @{ $stretchable_bonds->{$_} } }
@@ -396,16 +392,16 @@ sub name_bonds
         my $bond_name = "";
         if( $are_any_mainchain_atoms ) {
             $bond_name .=
-                $mainchain_distance_symbol .
-                $bond_counter{$mainchain_distance_symbol};
-            $bond_counter{$mainchain_distance_symbol}++;
+                $mainchain_symbol .
+                $bond_counter{$mainchain_symbol};
+            $bond_counter{$mainchain_symbol}++;
         }
 
         if( ! $are_any_mainchain_atoms ) {
             $bond_name .=
-                $sidechain_distance_symbol .
-                $bond_counter{$sidechain_distance_symbol};
-            $bond_counter{$sidechain_distance_symbol}++;
+                $sidechain_symbol .
+                $bond_counter{$sidechain_symbol};
+            $bond_counter{$sidechain_symbol}++;
         }
 
         # Adding symbol for hetatoms.
@@ -470,13 +466,11 @@ sub bendable_angles
                   'is_list' => 1 } );
     my $bendable_angles =
         bond_path_search( $parameters, $atom_site, $start_atom_id,
-                          { 'append_func' =>
+                          { %{ $options },
+                            'append_func' =>
                                 \&BondProperties::append_bendable_angles,
                             'naming_func' =>
-                                \&BondProperties::name_angles,
-                            'include_hetatoms' => $include_hetatoms,
-                            'ignore_atoms' => $ignore_atoms,
-                            'ignore_connections' => $ignore_connections } );
+                                \&BondProperties::name_angles } );
 
     return $bendable_angles;
 }
@@ -505,17 +499,17 @@ sub append_bendable_angles
 sub name_angles
 {
     my ( $parameters, $atom_site, $bendable_angles, $options ) = @_;
-    my ( $do_mainchain, $mainchain_angle_symbol, $sidechain_angle_symbol,
+    my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol,
          $hetatom_symbol ) = (
         $options->{'do_mainchain'},
-        $options->{'mainchain_distance_symbol'},
-        $options->{'sidechain_distance_symbol'},
+        $options->{'mainchain_symbol'},
+        $options->{'sidechain_symbol'},
         $options->{'hetatom_symbol'}
     );
 
     $do_mainchain //= 0;
-    $mainchain_angle_symbol //= 'theta';
-    $sidechain_angle_symbol //= 'eta';
+    $mainchain_symbol //= 'theta';
+    $sidechain_symbol //= 'eta';
     $hetatom_symbol //= '*';
 
     my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
@@ -523,8 +517,8 @@ sub name_angles
     my %angle_names = ();
     my %visited_angles = ();
     my %angle_counter = (
-        "$mainchain_angle_symbol" => 1,
-        "$sidechain_angle_symbol" => 1
+        "$mainchain_symbol" => 1,
+        "$sidechain_symbol" => 1
     );
 
     for my $atom_ids ( map { @{ $bendable_angles->{$_} } }
@@ -550,16 +544,16 @@ sub name_angles
         my $angle_name = "";
         if( $are_any_mainchain_atoms ) {
             $angle_name .=
-                $mainchain_angle_symbol .
-                $angle_counter{$mainchain_angle_symbol};
-            $angle_counter{$mainchain_angle_symbol}++;
+                $mainchain_symbol .
+                $angle_counter{$mainchain_symbol};
+            $angle_counter{$mainchain_symbol}++;
         }
 
         if( ! $are_any_mainchain_atoms ) {
             $angle_name .=
-                $sidechain_angle_symbol .
-                $angle_counter{$sidechain_angle_symbol};
-            $angle_counter{$sidechain_angle_symbol}++;
+                $sidechain_symbol .
+                $angle_counter{$sidechain_symbol};
+            $angle_counter{$sidechain_symbol}++;
         }
 
         # Adding symbol for hetatoms.
