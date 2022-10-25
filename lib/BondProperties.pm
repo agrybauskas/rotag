@@ -441,15 +441,17 @@ sub stretchable_bonds
                   'data' => [ 'id' ],
                   'is_list' => 1 } );
     my $stretchable_bonds =
-        bond_path_search( $atom_site, $start_atom_id,
+        bond_path_search( $parameters, $atom_site, $start_atom_id,
                           { 'type' => 'breadth_first',
                             'append_func' =>
                                 \&BondProperties::append_stretchable_bonds,
+                            'naming_func' =>
+                                \&BondProperties::name_stretchable_bonds,
                             'include_hetatoms' => $include_hetatoms,
                             'ignore_atoms' => $ignore_atoms,
                             'ignore_connections' => $ignore_connections } );
 
-    return name_stretchable_bonds( $parameters, $atom_site, $stretchable_bonds );
+    return $stretchable_bonds;
 }
 
 sub append_stretchable_bonds
@@ -736,14 +738,16 @@ sub bendable_angles
 
 sub bond_path_search
 {
-    my ( $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $type, $append_func, $ignore_atoms, $include_hetatoms,
-         $ignore_connections ) =
-        ( $options->{'type'}, $options->{'append_func'},
-          $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
-          $options->{'ignore_connections'} );
+    my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+    my ( $append_func, $naming_func, $ignore_atoms, $include_hetatoms,
+         $ignore_connections ) = (
+        $options->{'append_func'},
+        $options->{'naming_func'},
+        $options->{'ignore_atoms'},
+        $options->{'include_hetatoms'},
+        $options->{'ignore_connections'}
+    );
 
-    $type //= 'depth_first'; # ['depth_first', 'breadth_first'].
     $ignore_atoms //= {};
     $include_hetatoms //= 0;
     $ignore_connections //= {};
@@ -756,6 +760,7 @@ sub bond_path_search
     my %parent_atom_ids;
 
     my %bond_paths = ();
+    my $type = 'depth_first';
 
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
@@ -796,6 +801,9 @@ sub bond_path_search
 
             $parent_atom_ids{$sorted_neighbour_atom_id} = $atom_id;
 
+            # Depending on if it is mainchain or sidechain bonds, the bond
+            # search changes from deapth-first search to breadth-first search
+            # accordingly.
             if( $type eq 'breadth_first' ) {
                 unshift @next_atom_ids, $sorted_neighbour_atom_id;
                 next;
@@ -811,7 +819,7 @@ sub bond_path_search
         }
     }
 
-    return \%bond_paths;
+    return $naming_func->( $parameters, $atom_site, \%bond_paths );
 }
 
 #
