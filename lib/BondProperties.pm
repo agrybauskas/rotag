@@ -455,7 +455,11 @@ sub stretchable_bonds
 
 sub append_stretchable_bonds
 {
-    my ( $bonds, $atom_id, $parent_atom_id ) = @_;
+    my ( $bonds, $atom_id, $parent_atom_ids ) = @_;
+
+    my $parent_atom_id = $parent_atom_ids->{$atom_id};
+
+    return if ! defined $parent_atom_id;
 
     push @{ $bonds->{$atom_id} }, [ $parent_atom_id, $atom_id ];
 
@@ -588,181 +592,278 @@ sub bendable_angles
                   'is_list' => 1 } );
     my $bendable_angles =
         bond_path_search( $parameters, $atom_site, $start_atom_id,
-                          { # 'append_func' =>
-                            #     \&BondProperties::append_stretchable_bonds,
-                            # 'naming_func' =>
-                            #     \&BondProperties::name_stretchable_bonds,
+                          { 'append_func' =>
+                                \&BondProperties::append_bendable_angles,
+                            'naming_func' =>
+                                \&BondProperties::name_bendable_angles,
                             'include_hetatoms' => $include_hetatoms,
                             'ignore_atoms' => $ignore_atoms,
                             'ignore_connections' => $ignore_connections } );
 
     return $bendable_angles;
-
 }
 
-# sub bendable_angles_old
-# {
-#     my ( $atom_site, $start_atom_id, $next_atom_ids, $previous_atom_id,
-#          $options ) = @_;
-#     my ( $ignore_atoms, $include_hetatoms ) =
-#         ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
+sub append_bendable_angles
+{
+    my ( $angles, $atom_id, $parent_atom_ids ) = @_;
 
-#     $ignore_atoms //= [];
-#     $include_hetatoms //= 0;
+    # push @{ $bonds->{$atom_id} }, [ $parent_atom_id, $atom_id ];
 
-#     # By default, CA is starting atom and CB next.
-#     $start_atom_id //= filter( { 'atom_site' => $atom_site,
-#                                  'include' => { 'label_atom_id' => [ 'CA' ] },
-#                                  'data' => [ 'id' ],
-#                                  'is_list' => 1 } )->[0];
-#     $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
-#                                   'include' => { 'label_atom_id' => [ 'CB' ] },
-#                                   'data' => [ 'id' ],
-#                                   'is_list' => 1 } );
-#     $previous_atom_id //=  filter( { 'atom_site' => $atom_site,
-#                                      'include' => { 'label_atom_id' => [ 'N' ] },
-#                                      'data' => [ 'id' ],
-#                                      'is_list' => 1 } )->[0];
+    # # Adds bond if it is a continuation of identified bonds.
+    # if( exists $bonds->{$parent_atom_id} ) {
+    #     unshift @{ $bonds->{$atom_id} }, @{ $bonds->{$parent_atom_id} };
+    # }
 
-#     if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
+    return;
+}
 
-#     my %atom_site = %{ $atom_site }; # Copy of the variable.
-#     my @atom_ids = keys %atom_site;
-#     my @visited_atom_ids = ( $previous_atom_id, $start_atom_id );
-#     my @next_atom_ids = ( @{ $next_atom_ids } );
-#     my %parent_atom_ids;
+sub name_bendable_angles
+{
+    # my ( $parameters, $atom_site, $stretchable_bonds, $options ) = @_;
+    # my ( $do_mainchain, $mainchain_distance_symbol, $sidechain_distance_symbol,
+    #      $hetatom_symbol ) = (
+    #     $options->{'do_mainchain'},
+    #     $options->{'mainchain_distance_symbol'},
+    #     $options->{'sidechain_distance_symbol'},
+    #     $options->{'hetatom_symbol'}
+    # );
 
-#     my %bendable_angles;
+    # $do_mainchain //= 0;
+    # $mainchain_distance_symbol //= 'd';
+    # $sidechain_distance_symbol //= 'r';
+    # $hetatom_symbol //= '*';
 
-#     # Marks parent and grandparent atoms for next atom id.
-#     for my $next_atom_id ( @{ $next_atom_ids } ) {
-#         $parent_atom_ids{$next_atom_id} = $start_atom_id;
-#     }
-#     $parent_atom_ids{$start_atom_id} = $previous_atom_id;
+    # my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
 
-#     # Exists if there are no atoms that is not already visited.
-#     while( scalar( @next_atom_ids ) != 0 ) {
-#         # Iterates through every neighbouring atom if it was not visited
-#         # before.
-#         my @neighbour_atom_ids;
-#         for my $atom_id ( @next_atom_ids ) {
-#             my $parent_atom_id = $parent_atom_ids{$atom_id};
+    # my %bond_names = ();
+    # my %visited_bonds = ();
+    # my %bond_counter = (
+    #     "$mainchain_distance_symbol" => 1,
+    #     "$sidechain_distance_symbol" => 1
+    # );
 
-#             # Detects grandparent atom if it exists.
-#             my $grandparent_atom_id;
-#             if( exists $parent_atom_ids{$parent_atom_id} ) {
-#                 $grandparent_atom_id = $parent_atom_ids{$parent_atom_id};
-#             }
+    # for my $atom_ids ( map { @{ $stretchable_bonds->{$_} } }
+    #                    keys %{ $stretchable_bonds } ) {
+    #     my ( $first_atom_id, $second_atom_id ) = @{ $atom_ids };
 
-#             push @{ $bendable_angles{$atom_id} },
-#                 [ $grandparent_atom_id, $parent_atom_id, $atom_id ];
-#             if( exists $bendable_angles{$parent_atom_id} ) {
-#                 unshift @{ $bendable_angles{$atom_id} },
-#                     @{ $bendable_angles{$parent_atom_id} };
-#             }
+    #     next if $visited_bonds{$first_atom_id}{$second_atom_id};
 
-#             # Marks visited atoms.
-#             push @visited_atom_ids, $atom_id;
+    #     $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
 
-#             if( $include_hetatoms &&
-#                 ( $atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ||
-#                   $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM' ) &&
-#                 ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
-#                 confess "atom with id $atom_id lacks 'connections_hetatom' key"
-#             }
+    #     my ( $first_atom_name, $second_atom_name ) =
+    #         map { $atom_site->{$_}{'label_atom_id'} }
+    #            @{ $atom_ids };
+    #     my $are_any_mainchain_atoms =
+    #         ( any { $first_atom_name eq $_ } @{ $mainchain_atom_names } ) &&
+    #         ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } );
+    #     my $are_any_hetatoms =
+    #         grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 
-#             if( ! $include_hetatoms &&
-#                 ! exists $atom_site{$atom_id}{'connections'} ) {
-#                 confess "atom with id $atom_id lacks 'connections' key"
-#             }
+    #     next if ! $do_mainchain && $are_any_mainchain_atoms;
 
-#             # Marks neighbouring atoms.
-#             if( $include_hetatoms &&
-#                 defined $atom_site{$atom_id}{'connections_hetatom'} ) {
-#                 push @neighbour_atom_ids,
-#                     @{ $atom_site{$atom_id}{'connections_hetatom'} };
-#             }
-#             if( defined $atom_site{$atom_id}{'connections'} ) {
-#                 push @neighbour_atom_ids,
-#                     @{ $atom_site{$atom_id}{'connections'} };
-#             }
+    #     # Adding bond names.
+    #     my $bond_name = "";
+    #     if( $are_any_mainchain_atoms ) {
+    #         $bond_name .=
+    #             $mainchain_distance_symbol .
+    #             $bond_counter{$mainchain_distance_symbol};
+    #         $bond_counter{$mainchain_distance_symbol}++;
+    #     }
 
-#             # Marks parent atoms for each neighbouring atom.
-#             for my $neighbour_atom_id ( @neighbour_atom_ids ) {
-#                 if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
-#                     # HACK: this exception might produce unexpected results.
-#                     ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
-#                     $parent_atom_ids{$neighbour_atom_id} = $atom_id;
-#                 }
-#             }
-#         }
+    #     if( ! $are_any_mainchain_atoms ) {
+    #         $bond_name .=
+    #             $sidechain_distance_symbol .
+    #             $bond_counter{$sidechain_distance_symbol};
+    #         $bond_counter{$sidechain_distance_symbol}++;
+    #     }
 
-#         # Determines next atoms that should be visited.
-#         @next_atom_ids = (); # Resets value for the new ones to be appended.
-#         for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-#             if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
-#                 ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
-#                 push @next_atom_ids, $neighbour_atom_id;
-#             }
-#         }
-#     }
+    #     # Adding symbol for hetatoms.
+    #     if( $are_any_hetatoms ) {
+    #         $bond_name .= $hetatom_symbol;
+    #     }
 
-#     # Asigns names for bendable angles by first filtering out redundant angles.
-#     my %unique_angles;
-#     my @angle_terminal_atom_ids = ();
-#     for my $angle_terminal_id ( keys %bendable_angles ) {
-#         for my $angle ( @{ $bendable_angles{$angle_terminal_id} } ) {
-#             next if
-#                 defined $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]} &&
-#                         $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]};
-#             push @angle_terminal_atom_ids, $angle->[2];
-#             $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]} = 1;
-#         }
-#     }
+    #     $bond_names{$first_atom_id}{$second_atom_id} = $bond_name;
+    #     $bond_names{$second_atom_id}{$first_atom_id} = $bond_name;
+    # }
 
-#     @angle_terminal_atom_ids = uniq @angle_terminal_atom_ids;
+    my %named_stretchable_bonds = ();
 
-#     # Sorts angles by naming priority.
-#     my @terminal_names_sorted =
-#         @{ sort_atom_names(
-#                filter( { 'atom_site' => \%atom_site,
-#                          'include' => { 'id' => \@angle_terminal_atom_ids },
-#                          'data' => [ 'label_atom_id' ],
-#                          'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
-#     my %terminal_names_order =
-#         map { $terminal_names_sorted[$_] => $_ + 1 } 0..$#terminal_names_sorted;
+    # for my $atom_id ( keys %{ $stretchable_bonds } ) {
+    #     for my $bond ( @{ $stretchable_bonds->{$atom_id} } ) {
+    #         my $bond_name = $bond_names{$bond->[0]}{$bond->[1]};
 
-#     for my $terminal_atom_name ( keys %terminal_names_order ) {
-#         # HACK: what if the same name repeats?
-#         my ( $terminal_atom_id ) =
-#             keys %{ filter_new( \%atom_site,
-#                                 { 'include' =>
-#                                   { 'label_atom_id' => [$terminal_atom_name]}})};
-#         $terminal_names_order{$terminal_atom_id} =
-#             delete $terminal_names_order{$terminal_atom_name}
-#     }
+    #         next if ! defined $bond_name;
 
-#     # Iterates through bendable angles and assigns names by first, second and
-#     # terminal atoms.
-#     my %named_bendable_angles;
-#     my %angle_names = ();
-#     my $angle_name_id = 1;
-#     for my $atom_id ( sort { $terminal_names_order{$a} <=>
-#                              $terminal_names_order{$b} }
-#                            keys %bendable_angles ) {
-#         for my $angle ( @{ $bendable_angles{"$atom_id"} } ) {
-#             my $angle_name_key = "$angle->[0],$angle->[1],$angle->[2]";
-#             if( ! exists $angle_names{$angle_name_key} ) {
-#                 $angle_names{$angle_name_key} = "theta${angle_name_id}";
-#                 $angle_name_id++;
-#             }
-#             my $angle_name = $angle_names{$angle_name_key};
-#             $named_bendable_angles{$atom_id}{$angle_name} = $angle;
-#         }
-#     }
+    #         $named_stretchable_bonds{$atom_id}{$bond_name} = $bond;
+    #     }
+    # }
 
-#     return \%named_bendable_angles;
-# }
+    return \%named_stretchable_bonds;
+}
+
+sub bendable_angles_old
+{
+    my ( $atom_site, $start_atom_id, $next_atom_ids, $previous_atom_id,
+         $options ) = @_;
+    my ( $ignore_atoms, $include_hetatoms ) =
+        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'} );
+
+    $ignore_atoms //= [];
+    $include_hetatoms //= 0;
+
+    # By default, CA is starting atom and CB next.
+    $start_atom_id //= filter( { 'atom_site' => $atom_site,
+                                 'include' => { 'label_atom_id' => [ 'CA' ] },
+                                 'data' => [ 'id' ],
+                                 'is_list' => 1 } )->[0];
+    $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
+                                  'include' => { 'label_atom_id' => [ 'CB' ] },
+                                  'data' => [ 'id' ],
+                                  'is_list' => 1 } );
+    $previous_atom_id //=  filter( { 'atom_site' => $atom_site,
+                                     'include' => { 'label_atom_id' => [ 'N' ] },
+                                     'data' => [ 'id' ],
+                                     'is_list' => 1 } )->[0];
+
+    if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
+
+    my %atom_site = %{ $atom_site }; # Copy of the variable.
+    my @atom_ids = keys %atom_site;
+    my @visited_atom_ids = ( $previous_atom_id, $start_atom_id );
+    my @next_atom_ids = ( @{ $next_atom_ids } );
+    my %parent_atom_ids;
+
+    my %bendable_angles;
+
+    # Marks parent and grandparent atoms for next atom id.
+    for my $next_atom_id ( @{ $next_atom_ids } ) {
+        $parent_atom_ids{$next_atom_id} = $start_atom_id;
+    }
+    $parent_atom_ids{$start_atom_id} = $previous_atom_id;
+
+    # Exists if there are no atoms that is not already visited.
+    while( scalar( @next_atom_ids ) != 0 ) {
+        # Iterates through every neighbouring atom if it was not visited
+        # before.
+        my @neighbour_atom_ids;
+        for my $atom_id ( @next_atom_ids ) {
+            my $parent_atom_id = $parent_atom_ids{$atom_id};
+
+            # Detects grandparent atom if it exists.
+            my $grandparent_atom_id;
+            if( exists $parent_atom_ids{$parent_atom_id} ) {
+                $grandparent_atom_id = $parent_atom_ids{$parent_atom_id};
+            }
+
+            push @{ $bendable_angles{$atom_id} },
+                [ $grandparent_atom_id, $parent_atom_id, $atom_id ];
+            if( exists $bendable_angles{$parent_atom_id} ) {
+                unshift @{ $bendable_angles{$atom_id} },
+                    @{ $bendable_angles{$parent_atom_id} };
+            }
+
+            # Marks visited atoms.
+            push @visited_atom_ids, $atom_id;
+
+            if( $include_hetatoms &&
+                ( $atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ||
+                  $atom_site{$parent_atom_id}{'group_PDB'} eq 'HETATM' ) &&
+                ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
+                confess "atom with id $atom_id lacks 'connections_hetatom' key"
+            }
+
+            if( ! $include_hetatoms &&
+                ! exists $atom_site{$atom_id}{'connections'} ) {
+                confess "atom with id $atom_id lacks 'connections' key"
+            }
+
+            # Marks neighbouring atoms.
+            if( $include_hetatoms &&
+                defined $atom_site{$atom_id}{'connections_hetatom'} ) {
+                push @neighbour_atom_ids,
+                    @{ $atom_site{$atom_id}{'connections_hetatom'} };
+            }
+            if( defined $atom_site{$atom_id}{'connections'} ) {
+                push @neighbour_atom_ids,
+                    @{ $atom_site{$atom_id}{'connections'} };
+            }
+
+            # Marks parent atoms for each neighbouring atom.
+            for my $neighbour_atom_id ( @neighbour_atom_ids ) {
+                if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                    # HACK: this exception might produce unexpected results.
+                    ( ! exists $parent_atom_ids{$neighbour_atom_id} ) ) {
+                    $parent_atom_ids{$neighbour_atom_id} = $atom_id;
+                }
+            }
+        }
+
+        # Determines next atoms that should be visited.
+        @next_atom_ids = (); # Resets value for the new ones to be appended.
+        for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
+            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
+                ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
+                push @next_atom_ids, $neighbour_atom_id;
+            }
+        }
+    }
+
+    # Asigns names for bendable angles by first filtering out redundant angles.
+    my %unique_angles;
+    my @angle_terminal_atom_ids = ();
+    for my $angle_terminal_id ( keys %bendable_angles ) {
+        for my $angle ( @{ $bendable_angles{$angle_terminal_id} } ) {
+            next if
+                defined $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]} &&
+                        $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]};
+            push @angle_terminal_atom_ids, $angle->[2];
+            $unique_angles{$angle->[0]}{$angle->[1]}{$angle->[2]} = 1;
+        }
+    }
+
+    @angle_terminal_atom_ids = uniq @angle_terminal_atom_ids;
+
+    # Sorts angles by naming priority.
+    my @terminal_names_sorted =
+        @{ sort_atom_names(
+               filter( { 'atom_site' => \%atom_site,
+                         'include' => { 'id' => \@angle_terminal_atom_ids },
+                         'data' => [ 'label_atom_id' ],
+                         'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
+    my %terminal_names_order =
+        map { $terminal_names_sorted[$_] => $_ + 1 } 0..$#terminal_names_sorted;
+
+    for my $terminal_atom_name ( keys %terminal_names_order ) {
+        # HACK: what if the same name repeats?
+        my ( $terminal_atom_id ) =
+            keys %{ filter_new( \%atom_site,
+                                { 'include' =>
+                                  { 'label_atom_id' => [$terminal_atom_name]}})};
+        $terminal_names_order{$terminal_atom_id} =
+            delete $terminal_names_order{$terminal_atom_name}
+    }
+
+    # Iterates through bendable angles and assigns names by first, second and
+    # terminal atoms.
+    my %named_bendable_angles;
+    my %angle_names = ();
+    my $angle_name_id = 1;
+    for my $atom_id ( sort { $terminal_names_order{$a} <=>
+                             $terminal_names_order{$b} }
+                           keys %bendable_angles ) {
+        for my $angle ( @{ $bendable_angles{"$atom_id"} } ) {
+            my $angle_name_key = "$angle->[0],$angle->[1],$angle->[2]";
+            if( ! exists $angle_names{$angle_name_key} ) {
+                $angle_names{$angle_name_key} = "theta${angle_name_id}";
+                $angle_name_id++;
+            }
+            my $angle_name = $angle_names{$angle_name_key};
+            $named_bendable_angles{$atom_id}{$angle_name} = $angle;
+        }
+    }
+
+    return \%named_bendable_angles;
+}
 
 sub bond_path_search
 {
@@ -798,9 +899,7 @@ sub bond_path_search
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = 1;
 
-        if( defined $parent_atom_ids{$atom_id} ) {
-            $append_func->( \%bond_paths, $atom_id, $parent_atom_ids{$atom_id} );
-        }
+        $append_func->( \%bond_paths, $atom_id, \%parent_atom_ids );
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
