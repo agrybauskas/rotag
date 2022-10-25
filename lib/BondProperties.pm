@@ -204,201 +204,163 @@ sub hybridization
 
 sub rotatable_bonds
 {
-    my ( $atom_site, $start_atom_id, $next_atom_ids, $options ) = @_;
-    my ( $ignore_atoms, $include_hetatoms, $ignore_connections ) =
-        ( $options->{'ignore_atoms'}, $options->{'include_hetatoms'},
+    my ( $parameters, $atom_site, $start_atom_id, $options ) = @_;
+    my ( $include_hetatoms, $ignore_atoms, $ignore_connections ) =
+        ( $options->{'include_hetatoms'}, $options->{'ignore_atoms'},
           $options->{'ignore_connections'} );
 
-    $ignore_atoms //= [];
     $include_hetatoms //= 0;
+    $ignore_atoms //= {};
     $ignore_connections //= {};
 
-    # By default, CA is starting atom and CB next.
-    $start_atom_id //= filter( { 'atom_site' => $atom_site,
-                                 'include' => { 'label_atom_id' =>[ 'CA' ] },
-                                 'data' => [ 'id' ],
-                                 'is_list' => 1 } )->[0];
-    $next_atom_ids //=  filter( { 'atom_site' => $atom_site,
-                                  'include' => { 'label_atom_id' => [ 'CB' ] },
-                                  'data' => [ 'id' ],
-                                  'is_list' => 1 } );
+    # By default, N is starting atom for main-chain calculations.
+    $start_atom_id //=
+        filter( { 'atom_site' => $atom_site,
+                  'include' => { 'label_atom_id' => [ 'N' ] },
+                  'data' => [ 'id' ],
+                  'is_list' => 1 } );
+    my $rotatable_bonds =
+        bond_path_search( $parameters, $atom_site, $start_atom_id,
+                          { 'append_func' =>
+                                \&BondProperties::append_rotatable_bonds,
+                            'naming_func' =>
+                                \&BondProperties::name_rotatable_bonds,
+                            'include_hetatoms' => $include_hetatoms,
+                            'ignore_atoms' => $ignore_atoms,
+                            'ignore_connections' => $ignore_connections } );
 
-    if( ! $start_atom_id || ! @{ $next_atom_ids } ) { return {}; }
+    return $rotatable_bonds;
+}
 
-    my %atom_site = %{ $atom_site }; # Copy of the variable.
-    my @atom_ids = keys %atom_site;
-    my @visited_atom_ids = ( $start_atom_id, @{ $ignore_atoms } );
-    my @next_atom_ids = ( @{ $next_atom_ids } );
-    my %parent_atom_ids;
+sub append_rotatable_bonds
+{
+    my ( $rotatable_bonds, $atom_site, $atom_id, $parent_atom_ids,
+         $include_hetatoms ) = @_;
 
-    my %rotatable_bonds;
+    my $parent_atom_id = $parent_atom_ids->{$atom_id};
+    return if ! defined $parent_atom_id;
 
-    # Marks parent atom for next atom id.
-    for my $next_atom_id ( @{ $next_atom_ids } ) {
-        $parent_atom_ids{$next_atom_id} = $start_atom_id;
+    my $is_hetatom = $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
+    my $is_parent_hetatom =
+        $atom_site->{$parent_atom_id}{'group_PDB'} eq 'HETATM';
+
+    # NOTE: this hetatom exception currently will work on single atoms.
+    # NOTE: make sure that interaction between 'is_hetatom' and
+    # 'include_hetatoms' is correct.
+    if( ( ! exists $atom_site->{$atom_id}{'hybridization'} ) &&
+        ( ! $is_hetatom ) ) {
+        confess "atom with id $atom_id lacks information about " .
+            "hybridization"
+    }
+    if( ( ! exists $atom_site->{$parent_atom_id}{'hybridization'} ) &&
+        ( ! $is_parent_hetatom ) ) {
+        confess "atom with id $parent_atom_id lacks information about " .
+            "hybridization"
     }
 
-    # Exists if there are no atoms that is not already visited.
-    while( scalar( @next_atom_ids ) != 0 ) {
-        # Iterates through every neighbouring atom if it was not visited
-        # before.
-        my @neighbour_atom_ids;
-        for my $atom_id ( @next_atom_ids ) {
-            my $parent_atom_id = $parent_atom_ids{$atom_id};
-
-            # The direction of bond matters here and is intentional.
-            next if $ignore_connections->{$parent_atom_id}{$atom_id};
-
-            my $is_hetatom = $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
-            my $is_parent_hetatom =
-                $atom_site->{$parent_atom_id}{'group_PDB'} eq 'HETATM';
-
-            # NOTE: this hetatom exception currently will work on single atoms.
-            # NOTE: make sure that interaction between 'is_hetatom' and
-            # 'include_hetatoms' is correct.
-            if( ( ! exists $atom_site{$atom_id}{'hybridization'} ) &&
-                ( ! $is_hetatom ) ) {
-                confess "atom with id $atom_id lacks information about " .
-                        "hybridization"
-            }
-            if( ( ! exists $atom_site{$parent_atom_id}{'hybridization'} ) &&
-                ( ! $is_parent_hetatom ) ) {
-                confess "atom with id $parent_atom_id lacks information about " .
-                        "hybridization"
-            }
-
-            if( $atom_site{$parent_atom_id}{'hybridization'} eq 'sp3' ||
-                $atom_site{$atom_id}{'hybridization'} eq 'sp3' ||
-                ( $include_hetatoms &&
-                  ( $is_hetatom || $is_parent_hetatom ) &&
-                  $atom_site{$atom_id}{'hybridization'} eq '.' ) ) {
-                # If last visited atom was sp3, then rotatable bonds from
-                # previous atom are copied and the new one is appended.
-                push @{ $rotatable_bonds{$atom_id} },
-                     [ $parent_atom_id, $atom_id ];
-                if( exists $rotatable_bonds{$parent_atom_id} ) {
-                    unshift @{ $rotatable_bonds{$atom_id} },
-                            @{ $rotatable_bonds{$parent_atom_id} };
-                }
-            } else {
-                # If last visited atom is sp2 or sp, inherits its rotatable
-                # bonds, because double or triple bonds do not rotate.
-                if( exists $rotatable_bonds{$parent_atom_id} ) {
-                    unshift @{ $rotatable_bonds{$atom_id} },
-                            @{ $rotatable_bonds{$parent_atom_id} };
-                }
-            }
-
-            # Marks visited atoms.
-            push @visited_atom_ids, $atom_id;
-
-            if( $include_hetatoms &&
-                ( $is_hetatom || $is_parent_hetatom ) &&
-                ! exists $atom_site{$atom_id}{'connections_hetatom'} ) {
-                confess "atom with id $atom_id lacks 'connections_hetatom' key"
-            }
-
-            if( ! $include_hetatoms &&
-                ! exists $atom_site{$atom_id}{'connections'} ) {
-                confess "atom with id $atom_id lacks 'connections' key"
-            }
-
-            # Marks neighbouring atoms.
-            if( $include_hetatoms &&
-                defined $atom_site{$atom_id}{'connections_hetatom'} ) {
-                push @neighbour_atom_ids,
-                    @{ $atom_site{$atom_id}{'connections_hetatom'} };
-            }
-            if( defined $atom_site{$atom_id}{'connections'} ) {
-                push @neighbour_atom_ids,
-                    @{ $atom_site{$atom_id}{'connections'} };
-            }
-
-            # Marks parent atoms for each neighbouring atom.
-            for my $neighbour_atom_id ( @neighbour_atom_ids ) {
-                if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
-                    # HACK: this exception might produce unexpected results.
-                    ( ! exists $parent_atom_ids{$neighbour_atom_id} ) &&
-                    ( ! $ignore_connections->{$atom_id}{$neighbour_atom_id} ) ) {
-                    $parent_atom_ids{$neighbour_atom_id} = $atom_id;
-                }
-            }
-        }
-
-        # Determines next atoms that should be visited.
-        @next_atom_ids = (); # Resets value for the new ones to be appended.
-        for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) &&
-                ( any { $neighbour_atom_id eq $_ } @atom_ids ) ) {
-                push @next_atom_ids, $neighbour_atom_id;
-            }
-        }
-    }
-
-    # Removes bonds, if they have the id of the target atom. Also, remove ids,
-    # which have no rotatable bonds after previous filtering.
-    for my $atom_id ( keys %rotatable_bonds ) {
-        my $last_bond_idx = $#{ $rotatable_bonds{$atom_id} };
-        if( ( $atom_id == $rotatable_bonds{$atom_id}[$last_bond_idx][0] ||
-              $atom_id == $rotatable_bonds{$atom_id}[$last_bond_idx][1] ) ) {
-            pop @{ $rotatable_bonds{$atom_id} };
-        }
-        if( ! @{ $rotatable_bonds{$atom_id} } ) {
-            delete $rotatable_bonds{$atom_id};
-        }
-    }
-
-    # Asigns names for rotatables bonds by first filtering out redundant bonds.
-    # TODO: the whole process of naming bonds might be implemented in the while
-    # loop above.
-    my @unique_bonds;
-    for my $bond ( map { @{ $rotatable_bonds{$_} } } keys %rotatable_bonds ) {
-        if( ! any { $bond->[0] eq $_->[0] && $bond->[1] eq $_->[1] }
-                   @unique_bonds ){
-            push @unique_bonds, $bond;
-        }
-    }
-
-    # Sorts bonds by naming priority.
-    my @bond_second_ids = map { $_->[1] } @unique_bonds; # Second atom in the
-                                                         # bond.
-    my %bond_names;
-    my $bond_name_id = 1;
-    my $bond_stem = $include_hetatoms ? 'tau' : 'chi';
-
-    if( $include_hetatoms ) {
-        # Heteroatom names are sorted according to rotatable bond direction.
-        # Names by second atom priority.
-        for my $second_atom_id ( @bond_second_ids ) {
-            $bond_names{"$second_atom_id"} = "${bond_stem}${bond_name_id}";
-            $bond_name_id++;
+    if( $atom_site->{$parent_atom_id}{'hybridization'} eq 'sp3' ||
+        $atom_site->{$atom_id}{'hybridization'} eq 'sp3' ||
+        ( $include_hetatoms &&
+          ( $is_hetatom || $is_parent_hetatom ) &&
+          $atom_site->{$atom_id}{'hybridization'} eq '.' ) ) {
+        # If last visited atom was sp3, then rotatable bonds from
+        # previous atom are copied and the new one is appended.
+        push @{ $rotatable_bonds->{$atom_id} },
+            [ $parent_atom_id, $atom_id ];
+        if( exists $rotatable_bonds->{$parent_atom_id} ) {
+            unshift @{ $rotatable_bonds->{$atom_id} },
+                @{ $rotatable_bonds->{$parent_atom_id} };
         }
     } else {
-        my @second_names_sorted =
-            @{ sort_atom_names(
-                   filter( { 'atom_site' => \%atom_site,
-                             'include' => { 'id' => \@bond_second_ids },
-                             'data' => [ 'label_atom_id' ],
-                             'is_list' => 1 } ), { 'sort_type' => 'gn' } ) };
-
-        # Names by second atom priority.
-        for my $second_name ( @second_names_sorted ) {
-            my $second_atom_id =
-                filter( { 'atom_site' => \%atom_site,
-                          'include' => { 'label_atom_id' => [ $second_name ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            $bond_names{"$second_atom_id"} = "${bond_stem}${bond_name_id}";
-            $bond_name_id++;
+        # If last visited atom is sp2 or sp, inherits its rotatable
+        # bonds, because double or triple bonds do not rotate.
+        if( exists $rotatable_bonds->{$parent_atom_id} ) {
+            unshift @{ $rotatable_bonds->{$atom_id} },
+                @{ $rotatable_bonds->{$parent_atom_id} };
         }
     }
 
-    # Iterates through rotatable bonds and assigns names by second atom.
-    my %named_rotatable_bonds;
-    for my $atom_id ( keys %rotatable_bonds ) {
-        for my $bond ( @{ $rotatable_bonds{"$atom_id"} } ) {
-            my $bond_name = $bond_names{"$bond->[1]"};
-                $named_rotatable_bonds{"$atom_id"}{"$bond_name"} = $bond;
+    return;
+}
+
+sub name_rotatable_bonds
+{
+    my ( $parameters, $atom_site, $rotatable_bonds, $options ) = @_;
+    my ( $do_mainchain, $mainchain_bond_symbol, $sidechain_bond_symbol,
+         $hetatom_symbol ) = (
+        $options->{'do_mainchain'},
+        $options->{'mainchain_bond_symbol'},
+        $options->{'sidechain_bond_symbol'},
+        $options->{'hetatom_symbol'}
+    );
+
+    $do_mainchain //= 0;
+    $mainchain_bond_symbol //= 'tau';
+    $sidechain_bond_symbol //= 'chi';
+    $hetatom_symbol //= '*';
+
+    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+
+    my %bond_names = ();
+    my %visited_bonds = ();
+    my %bond_counter = (
+        "$mainchain_bond_symbol" => 1,
+        "$sidechain_bond_symbol" => 1
+    );
+
+    for my $atom_ids ( map { @{ $rotatable_bonds->{$_} } }
+                       keys %{ $rotatable_bonds } ) {
+        my ( $first_atom_id, $second_atom_id ) = @{ $atom_ids };
+
+        next if $visited_bonds{$first_atom_id}{$second_atom_id};
+
+        $visited_bonds{$first_atom_id}{$second_atom_id} = 1;
+
+        my ( $first_atom_name, $second_atom_name ) =
+            map { $atom_site->{$_}{'label_atom_id'} }
+               @{ $atom_ids };
+        my $are_any_mainchain_atoms =
+            ( any { $first_atom_name eq $_ } @{ $mainchain_atom_names } ) &&
+            ( any { $second_atom_name eq $_ } @{ $mainchain_atom_names } );
+        my $are_any_hetatoms =
+            grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
+
+        next if ! $do_mainchain && $are_any_mainchain_atoms;
+
+        # Adding bond names.
+        my $bond_name = "";
+        if( $are_any_mainchain_atoms ) {
+            $bond_name .=
+                $mainchain_bond_symbol .
+                $bond_counter{$mainchain_bond_symbol};
+            $bond_counter{$mainchain_bond_symbol}++;
+        }
+
+        if( ! $are_any_mainchain_atoms ) {
+            $bond_name .=
+                $sidechain_bond_symbol .
+                $bond_counter{$sidechain_bond_symbol};
+            $bond_counter{$sidechain_bond_symbol}++;
+        }
+
+        # Adding symbol for hetatoms.
+        if( $are_any_hetatoms ) {
+            $bond_name .= $hetatom_symbol;
+        }
+
+        $bond_names{$first_atom_id}{$second_atom_id} = $bond_name;
+        $bond_names{$second_atom_id}{$first_atom_id} = $bond_name;
+    }
+
+    my %named_rotatable_bonds = ();
+
+    for my $atom_id ( keys %{ $rotatable_bonds } ) {
+        for my $bond ( @{ $rotatable_bonds->{$atom_id} } ) {
+            my $bond_name = $bond_names{$bond->[0]}{$bond->[1]};
+
+            next if ! defined $bond_name;
+
+            $named_rotatable_bonds{$atom_id}{$bond_name} = $bond;
         }
     }
 
@@ -455,7 +417,7 @@ sub stretchable_bonds
 
 sub append_stretchable_bonds
 {
-    my ( $bonds, $atom_id, $parent_atom_ids ) = @_;
+    my ( $bonds, $atom_site, $atom_id, $parent_atom_ids ) = @_;
 
     my $parent_atom_id = $parent_atom_ids->{$atom_id};
     return if ! defined $parent_atom_id;
@@ -605,7 +567,7 @@ sub bendable_angles
 
 sub append_bendable_angles
 {
-    my ( $angles, $atom_id, $parent_atom_ids ) = @_;
+    my ( $angles, $atom_site, $atom_id, $parent_atom_ids ) = @_;
 
     my $parent_atom_id = $parent_atom_ids->{$atom_id};
     return if ! defined $parent_atom_id;
@@ -744,7 +706,8 @@ sub bond_path_search
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = 1;
 
-        $append_func->( \%bond_paths, $atom_id, \%parent_atom_ids );
+        $append_func->( \%bond_paths, $atom_site, $atom_id, \%parent_atom_ids,
+                        $include_hetatoms );
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
