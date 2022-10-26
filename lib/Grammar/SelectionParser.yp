@@ -244,6 +244,7 @@ exp
 
             my $dihedral_angles =
                 all_dihedral(
+                    $parameters,
                     filter_new( $clone_atom_site,
                                 { 'calc_mainchain' => 1,
                                   'reference_atom_site' => $clone_atom_site } ) );

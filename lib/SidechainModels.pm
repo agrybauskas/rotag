@@ -52,7 +52,7 @@ sub rotation_only
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
-        my $rotatable_bonds = rotatable_bonds( $residue_site );
+        my $rotatable_bonds = rotatable_bonds( $parameters, $residue_site );
 
         if( ! %{ $rotatable_bonds } ) { next; }
 
@@ -167,15 +167,15 @@ sub rotation_translation
 
         my $bendable_angles =
             $do_angle_bending ?
-            bendable_angles( $residue_site, undef, undef, undef,
+            bendable_angles( $parameters, $residue_site, undef, undef, undef,
                              { 'include_hetatoms' => $include_hetatoms } ) : {};
         my $rotatable_bonds =
             $do_bond_torsion ?
-            rotatable_bonds( $residue_site, undef, undef,
+            rotatable_bonds( $parameters, $residue_site, undef, undef,
                              { 'include_hetatoms' => $include_hetatoms } ) : {};
         my $stretchable_bonds =
             $do_bond_stretching ?
-            stretchable_bonds( $residue_site, undef, undef,
+            stretchable_bonds( $parameters, $residue_site, undef, undef,
                                { 'include_hetatoms' => $include_hetatoms } ): {};
 
         if( ! %{ $rotatable_bonds } &&

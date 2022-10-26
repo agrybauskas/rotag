@@ -117,6 +117,7 @@ sub generate_pseudo
 
         my %angles =
             %{ all_dihedral(
+                   $parameters,
                    filter_by_unique_residue_key( $atom_site,
                                                  $residue_unique_key, 1 ) ) };
 
@@ -251,16 +252,19 @@ sub generate_pseudo_new
 
         my %dihedral_angles =
             %{ all_dihedral(
+                   $parameters,
                    filter_by_unique_residue_key( $atom_site,
                                                  $residue_unique_key, 1 ),
                    { 'include_hetatoms' => 1 } ) };
         my %bond_lengths =
             %{ all_bond_lengths(
+                   $parameters,
                    filter_by_unique_residue_key( $atom_site,
                                                  $residue_unique_key, 1 ),
                    { 'include_hetatoms' => 1 } ) };
         my %bond_angles =
             %{ all_bond_angles(
+                   $parameters,
                    filter_by_unique_residue_key( $atom_site,
                                                  $residue_unique_key, 1 ),
                    { 'include_hetatoms' => 1 } ) };
@@ -449,7 +453,7 @@ sub generate_rotamer
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
-        my $rotatable_bonds = rotatable_bonds( $residue_site );
+        my $rotatable_bonds = rotatable_bonds( $parameters, $residue_site );
 
         for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
             if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
@@ -759,7 +763,7 @@ sub calc_favourable_angles
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
-    my $rotatable_bonds = rotatable_bonds( $residue_site );
+    my $rotatable_bonds = rotatable_bonds( $parameters, $residue_site );
     if( ! %{ $rotatable_bonds } ) { return []; }
 
     # Goes through each atom in side chain and calculates interaction

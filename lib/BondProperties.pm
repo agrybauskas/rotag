@@ -569,9 +569,9 @@ sub name_bond_parameters
 
 sub unique_rotatables
 {
-    my ( $atom_site ) = @_;
+    my ( $parameters, $atom_site ) = @_;
 
-    my $rotatable_bonds = rotatable_bonds( $atom_site );
+    my $rotatable_bonds = rotatable_bonds( $parameters, $atom_site );
 
     my %unique_rotatable_bonds;
     for my $atom_id ( keys %{ $rotatable_bonds } ) {
