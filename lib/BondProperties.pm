@@ -502,7 +502,7 @@ sub name_bond_parameters
 
         my $are_any_mainchain_atoms =
             any { $mainchain_atom_names{$_} }
-            grep { $atom_site->{$_}{'label_atom_id'} }
+            map { $atom_site->{$_}{'label_atom_id'} }
             @{ $atom_ids };
         my $are_any_hetatoms =
             grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
