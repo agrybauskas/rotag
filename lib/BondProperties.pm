@@ -22,8 +22,6 @@ use AtomProperties qw( sort_atom_names
 use Measure qw( dihedral_angle );
 use PDBxParser qw( filter
                    filter_new );
-use Utils qw( populate_multi_hash
-              retrieve_multi_hash );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -496,15 +494,11 @@ sub name_bond_parameters
     );
 
     for my $atom_ids ( map { @{ $bonds->{$_} } } keys %{ $bonds } ) {
-        my $is_visited =
-            retrieve_multi_hash(\%visited_bonds, $atom_ids, { 'default' => 0 });
+        my $is_visited = $visited_bonds{join(',',@{$atom_ids})};
 
-        next if $is_visited;
+        next if defined $is_visited && $is_visited;
 
-        %visited_bonds = (
-            %visited_bonds,
-            %{ populate_multi_hash( \%visited_bonds, $atom_ids, 1 ) }
-        );
+        $visited_bonds{join(',',@{$atom_ids})} = 1;
 
         my $are_any_mainchain_atoms =
             any { $mainchain_atom_names{$_} }
@@ -536,18 +530,10 @@ sub name_bond_parameters
             $bond_parameter_name .= $hetatom_symbol;
         }
 
-        %bond_parameter_names = (
-            %bond_parameter_names,
-            %{ populate_multi_hash( \%bond_parameter_names,
-                                    $atom_ids,
-                                    $bond_parameter_name ) }
-        );
-        %bond_parameter_names = (
-            %bond_parameter_names,
-            %{ populate_multi_hash( \%bond_parameter_names,
-                                    [ reverse @{ $atom_ids } ],
-                                    $bond_parameter_name ) }
-        );
+        $bond_parameter_names{join(',',@{$atom_ids})} =
+            $bond_parameter_name;
+        $bond_parameter_names{join(',',reverse @{$atom_ids})} =
+            $bond_parameter_name;
     }
 
     my %named_bond_parameters = ();
@@ -555,7 +541,7 @@ sub name_bond_parameters
     for my $atom_id ( keys %{ $bonds } ) {
         for my $atom_ids ( @{ $bonds->{$atom_id} } ) {
             my $bond_parameter_name =
-                retrieve_multi_hash( \%bond_parameter_names, $atom_ids );
+                $bond_parameter_names{join(',',@{$atom_ids})};
 
             next if ! defined $bond_parameter_name;
 
