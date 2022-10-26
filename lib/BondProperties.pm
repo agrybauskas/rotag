@@ -209,7 +209,7 @@ sub rotatable_bonds
     $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
     $options{'mainchain_symbol'} = '';
     $options{'sidechain_symbol'} = 'chi';
-    $options{'ignore_terminal_repetition'} = 1;
+    $options{'skip_if_terminal'} = 1;
     my $rotatable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $rotatable_bonds;
@@ -368,16 +368,13 @@ sub append_bendable_angles
 sub bond_path_search
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $append_func, $ignore_terminal_repetition, $ignore_atoms,
-         $include_hetatoms, $ignore_connections ) = (
+    my ( $append_func, $ignore_atoms, $include_hetatoms, $ignore_connections ) =(
         $options->{'append_func'},
-        $options->{'ignore_terminal_repetition'},
         $options->{'ignore_atoms'},
         $options->{'include_hetatoms'},
         $options->{'ignore_connections'}
     );
 
-    $ignore_terminal_repetition //= 0;
     $ignore_atoms //= {};
     $include_hetatoms //= 0;
     $ignore_connections //= {};
@@ -471,11 +468,12 @@ sub name_bond_parameters
 {
     my ( $parameters, $atom_site, $bonds, $options ) = @_;
     my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol,
-         $hetatom_symbol ) = (
+         $hetatom_symbol, $skip_if_terminal ) = (
         $options->{'do_mainchain'},
         $options->{'mainchain_symbol'},
         $options->{'sidechain_symbol'},
-        $options->{'hetatom_symbol'}
+        $options->{'hetatom_symbol'},
+        $options->{'skip_if_terminal'},
     );
 
     $do_mainchain //= 0;
@@ -500,25 +498,26 @@ sub name_bond_parameters
 
         $visited_bonds{join(',',@{$atom_ids})} = 1;
 
-        my $are_any_mainchain_atoms =
-            any { $mainchain_atom_names{$_} }
-            map { $atom_site->{$_}{'label_atom_id'} }
-            @{ $atom_ids };
+        my $are_any_sidechain_atoms =
+            scalar( grep { $mainchain_atom_names{$_} }
+                    map  { $atom_site->{$_}{'label_atom_id'} }
+                        @{ $atom_ids } ) <
+            scalar( @{ $atom_ids } );
         my $are_any_hetatoms =
             grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 
-        next if ! $do_mainchain && $are_any_mainchain_atoms;
+        next if ! $do_mainchain && ! $are_any_sidechain_atoms;
 
         # Adding parameter names.
         my $bond_parameter_name = "";
-        if( $are_any_mainchain_atoms ) {
+        if( ! $are_any_sidechain_atoms ) {
             $bond_parameter_name .=
                 $mainchain_symbol .
                 $name_counter{$mainchain_symbol};
             $name_counter{$mainchain_symbol}++;
         }
 
-        if( ! $are_any_mainchain_atoms ) {
+        if( $are_any_sidechain_atoms ) {
             $bond_parameter_name .=
                 $sidechain_symbol .
                 $name_counter{$sidechain_symbol};
@@ -539,11 +538,16 @@ sub name_bond_parameters
     my %named_bond_parameters = ();
 
     for my $atom_id ( keys %{ $bonds } ) {
+        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         for my $atom_ids ( @{ $bonds->{$atom_id} } ) {
+            my $terminal_atom_id = $atom_ids->[$#{$atom_ids}];
+            my $terminal_atom_name =
+                $atom_site->{$terminal_atom_id}{'label_atom_id'};
             my $bond_parameter_name =
                 $bond_parameter_names{join(',',@{$atom_ids})};
 
             next if ! defined $bond_parameter_name;
+            next if $skip_if_terminal && $atom_name eq $terminal_atom_name;
 
             $named_bond_parameters{$atom_id}{$bond_parameter_name} = $atom_ids;
         }
