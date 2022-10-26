@@ -20,8 +20,7 @@ use List::MoreUtils qw( uniq );
 use AtomProperties qw( sort_atom_names
                        sort_atom_ids_by_name );
 use Measure qw( dihedral_angle );
-use PDBxParser qw( filter
-                   filter_new );
+use PDBxParser qw( filter_new );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -381,10 +380,9 @@ sub bond_path_search
 
     # By default, N is starting atom for main-chain calculations.
     $start_atom_ids //=
-        filter( { 'atom_site' => $atom_site,
-                  'include' => { 'label_atom_id' => [ 'N' ] },
-                  'data' => [ 'id' ],
-                  'is_list' => 1 } );
+        filter_new( $atom_site,
+                    { 'include' => { 'label_atom_id' => [ 'N' ] },
+                      'return_data' => 'id' } );
 
     if( ! @{ $start_atom_ids } ) { return {}; }
 
