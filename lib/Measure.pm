@@ -248,7 +248,7 @@ sub dihedral_angle
 
 sub all_dihedral
 {
-    my ( $atom_site, $options ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
     my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
         $options->{'include_hetatoms'},
@@ -296,7 +296,8 @@ sub all_dihedral
         }
 
         my $rotatable_bonds =
-            rotatable_bonds( $residue_site, $start_atom_id, $next_atom_ids,
+            rotatable_bonds( $parameters, $residue_site, $start_atom_id,
+                             $next_atom_ids,
                              { 'include_hetatoms' => $include_hetatoms,
                                'ignore_atoms' => $ignore_atoms } );
 

@@ -19,7 +19,7 @@ $atom_site = eval( $atom_site );
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-my $dihedral_angles = all_dihedral( $atom_site,
+my $dihedral_angles = all_dihedral( $parameters, $atom_site,
                                     { 'calc_mainchain' => $calc_mainchain } );
 
 for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
