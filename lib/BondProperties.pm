@@ -451,12 +451,13 @@ sub bond_path_search
                                       {'label_atom_id'} eq $_ }
                        @{ $mainchain_atom_names } );
 
-            # Bread-first search.
+            # Depth-first search.
             if( $are_any_sidechain_atoms ) {
                 unshift @next_atom_ids, $sorted_neighbour_atom_id;
                 next;
             }
 
+            # Bread-first search.
             if( $i == 0 ) {
                 push @next_atom_ids, $sorted_neighbour_atom_id;
             } else {
