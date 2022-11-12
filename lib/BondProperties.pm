@@ -479,7 +479,10 @@ sub name_bond_parameters
     $do_mainchain //= 0;
     $mainchain_symbol //= 'x';
     $sidechain_symbol //= 'y';
-    $explicit_symbol //= {};
+    $explicit_symbol //= {
+        'N'  => { 'CA' => 'phi' },
+        'CA' => { 'C'  => 'psi' }
+    };
     $hetatom_symbol //= '*';
 
     my %mainchain_atom_names =
