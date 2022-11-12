@@ -208,6 +208,7 @@ sub rotatable_bonds
     $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
     $options{'mainchain_symbol'} = '';
     $options{'sidechain_symbol'} = 'chi';
+    $options{'explicit_symbol'} = {};
     $options{'skip_if_terminal'} = 1;
     my $rotatable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
@@ -465,11 +466,12 @@ sub bond_path_search
 sub name_bond_parameters
 {
     my ( $parameters, $atom_site, $bonds, $options ) = @_;
-    my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol,
+    my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol, $explicit_symbol,
          $hetatom_symbol, $skip_if_terminal ) = (
         $options->{'do_mainchain'},
         $options->{'mainchain_symbol'},
         $options->{'sidechain_symbol'},
+        $options->{'explicit_symbol'},
         $options->{'hetatom_symbol'},
         $options->{'skip_if_terminal'},
     );
@@ -477,6 +479,7 @@ sub name_bond_parameters
     $do_mainchain //= 0;
     $mainchain_symbol //= 'x';
     $sidechain_symbol //= 'y';
+    $explicit_symbol //= {};
     $hetatom_symbol //= '*';
 
     my %mainchain_atom_names =

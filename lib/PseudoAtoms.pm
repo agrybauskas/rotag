@@ -454,47 +454,49 @@ sub generate_rotamer
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
         my $rotatable_bonds = rotatable_bonds( $parameters, $residue_site );
+        use Data::Dumper;
+        print STDERR Dumper map { sort keys %{ $rotatable_bonds->{$_} } } ( '2175');
 
-        for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
-            if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
+    #     for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
+    #         if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
-            my %angles;
-            for my $angle_name ( keys %{ $rotatable_bonds->{$atom_id} } ) {
-                if( exists $angle_values->{"$residue_unique_key"}{$angle_name} &&
-                    defined $angle_values->{"$residue_unique_key"}{$angle_name}){
-                    $angles{$angle_name} =
-                        [ $angle_values->{"$residue_unique_key"}{$angle_name} ];
-                } else {
-                    if( $set_missing_angles_to_zero ) {
-                        $angles{$angle_name} = [ 0.0 ];
-                    } else {
-                        confess "no values for $angle_name were assigned.";
-                    }
-                }
-            }
+    #         my %angles;
+    #         for my $angle_name ( keys %{ $rotatable_bonds->{$atom_id} } ) {
+    #             if( exists $angle_values->{"$residue_unique_key"}{$angle_name} &&
+    #                 defined $angle_values->{"$residue_unique_key"}{$angle_name}){
+    #                 $angles{$angle_name} =
+    #                     [ $angle_values->{"$residue_unique_key"}{$angle_name} ];
+    #             } else {
+    #                 if( $set_missing_angles_to_zero ) {
+    #                     $angles{$angle_name} = [ 0.0 ];
+    #                 } else {
+    #                     confess "no values for $angle_name were assigned.";
+    #                 }
+    #             }
+    #         }
 
-            %rotamer_atom_site =
-                ( %rotamer_atom_site,
-                  %{ generate_pseudo( {
-                      'parameters' => $parameters,
-                      'atom_site' => { ( %atom_site, %rotamer_atom_site ) },
-                      'atom_specifier' => { 'id' => [ $atom_id ] },
-                      'angle_values' => \%angles,
-                      'last_atom_id' => $last_atom_id,
-                      'alt_group_id' => $residue_alt_id } ) } );
-            $last_atom_id++;
-        }
+    #         %rotamer_atom_site =
+    #             ( %rotamer_atom_site,
+    #               %{ generate_pseudo( {
+    #                   'parameters' => $parameters,
+    #                   'atom_site' => { ( %atom_site, %rotamer_atom_site ) },
+    #                   'atom_specifier' => { 'id' => [ $atom_id ] },
+    #                   'angle_values' => \%angles,
+    #                   'last_atom_id' => $last_atom_id,
+    #                   'alt_group_id' => $residue_alt_id } ) } );
+    #         $last_atom_id++;
+    #     }
     }
 
-    if( $keep_origin_id ) {
-        my %rotamer_atom_site_old_ids;
-        for my $atom_id ( keys %rotamer_atom_site ) {
-            my $origin_id = $rotamer_atom_site{$atom_id}{'origin_atom_id'};
-            $rotamer_atom_site{$atom_id}{'id'} = $origin_id;
-            $rotamer_atom_site_old_ids{$origin_id}= $rotamer_atom_site{$atom_id};
-        }
-        return \%rotamer_atom_site_old_ids;
-    }
+    # if( $keep_origin_id ) {
+    #     my %rotamer_atom_site_old_ids;
+    #     for my $atom_id ( keys %rotamer_atom_site ) {
+    #         my $origin_id = $rotamer_atom_site{$atom_id}{'origin_atom_id'};
+    #         $rotamer_atom_site{$atom_id}{'id'} = $origin_id;
+    #         $rotamer_atom_site_old_ids{$origin_id}= $rotamer_atom_site{$atom_id};
+    #     }
+    #     return \%rotamer_atom_site_old_ids;
+    # }
 
     return \%rotamer_atom_site;
 }
