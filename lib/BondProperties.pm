@@ -481,7 +481,7 @@ sub name_bond_parameters
     $sidechain_symbol //= 'y';
     $explicit_symbol //= {
         'N'  => { 'CA' => 'phi' },
-        'CA' => { 'C'  => 'psi' }
+        'CA' => { 'C'  => 'psi' },
     };
     $hetatom_symbol //= '*';
 
@@ -511,6 +511,19 @@ sub name_bond_parameters
             grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 
         next if ! $do_mainchain && ! $are_any_sidechain_atoms;
+
+        # Explicit atom names.
+        # TODO: it could be enhanced by adding third atom name.
+        my ( $first_atom_name, $second_atom_name ) =
+            map { $atom_site->{$_}{'label_atom_id'} }
+               @{ $atom_ids };
+        if( $explicit_symbol->{$first_atom_name}{$second_atom_name} ) {
+            $bond_parameter_names{join(',',@{$atom_ids})} =
+                $explicit_symbol->{$first_atom_name}{$second_atom_name};
+            $bond_parameter_names{join(',',reverse @{$atom_ids})} =
+                $explicit_symbol->{$first_atom_name}{$second_atom_name};
+            next;
+        }
 
         # Adding parameter names.
         my $bond_parameter_name = "";
