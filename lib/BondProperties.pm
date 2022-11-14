@@ -517,6 +517,7 @@ sub name_bond_parameters
         my ( $first_atom_name, $second_atom_name ) =
             map { $atom_site->{$_}{'label_atom_id'} }
                @{ $atom_ids };
+
         if( $explicit_symbol->{$first_atom_name}{$second_atom_name} ) {
             $bond_parameter_names{join(',',@{$atom_ids})} =
                 $explicit_symbol->{$first_atom_name}{$second_atom_name};
