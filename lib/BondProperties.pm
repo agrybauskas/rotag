@@ -230,13 +230,13 @@ sub append_rotatable_bonds
     # NOTE: this hetatom exception currently will work on single atoms.
     # NOTE: make sure that interaction between 'is_hetatom' and
     # 'include_hetatoms' is correct.
-    if( ( ! exists $atom_site->{$atom_id}{'hybridization'} ) &&
-        ( ! $is_hetatom ) ) {
+    if( ( ! $is_hetatom ) &&
+        ( ! exists $atom_site->{$atom_id}{'hybridization'} ) ) {
         confess "atom with id $atom_id lacks information about " .
             "hybridization"
     }
-    if( ( ! exists $atom_site->{$parent_atom_id}{'hybridization'} ) &&
-        ( ! $is_parent_hetatom ) ) {
+    if( ( ! $is_parent_hetatom ) &&
+        ( ! exists $atom_site->{$parent_atom_id}{'hybridization'} ) ) {
         confess "atom with id $parent_atom_id lacks information about " .
             "hybridization"
     }
