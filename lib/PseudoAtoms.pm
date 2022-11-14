@@ -454,8 +454,6 @@ sub generate_rotamer
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
         my $rotatable_bonds = rotatable_bonds( $parameters, $residue_site );
-        # use Data::Dumper;
-        # print STDERR Dumper map { sort keys %{ $rotatable_bonds->{$_} } } ( '2175');
 
         for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
             if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
