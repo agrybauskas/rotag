@@ -503,6 +503,8 @@ sub name_bond_parameters
 
             $visited_bonds{join(',',@{$bond_atom_ids})} = 1;
 
+            # next if $atom_id eq $bond_atom_ids->[$#{$bond_atom_ids}];
+
             my $are_any_sidechain_atoms =
                 scalar( grep { $mainchain_atom_names{$_} }
                         map  { $atom_site->{$_}{'label_atom_id'} }
