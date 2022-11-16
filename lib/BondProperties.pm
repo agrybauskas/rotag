@@ -500,10 +500,10 @@ sub name_bond_parameters
             my $is_visited = $visited_bonds{join(',',@{$bond_atom_ids})};
 
             next if defined $is_visited && $is_visited;
+            # next if $skip_if_terminal &&
+            #     $atom_id eq $bonds->{$atom_id}->[$#{$bonds->{$atom_id}}];
 
             $visited_bonds{join(',',@{$bond_atom_ids})} = 1;
-
-            # next if $atom_id eq $bond_atom_ids->[$#{$bond_atom_ids}];
 
             my $are_any_sidechain_atoms =
                 scalar( grep { $mainchain_atom_names{$_} }
@@ -563,14 +563,10 @@ sub name_bond_parameters
     for my $atom_id ( keys %{ $bonds } ) {
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         for my $bond_atom_ids ( @{ $bonds->{$atom_id} } ) {
-            my $terminal_atom_id = $bond_atom_ids->[$#{$bond_atom_ids}];
-            my $terminal_atom_name =
-                $atom_site->{$terminal_atom_id}{'label_atom_id'};
             my $bond_parameter_name =
                 $bond_parameter_names{join(',',@{$bond_atom_ids})};
 
             next if ! defined $bond_parameter_name;
-            next if $skip_if_terminal && $atom_name eq $terminal_atom_name;
 
             $named_bond_parameters{$atom_id}{$bond_parameter_name} =
                 $bond_atom_ids;
