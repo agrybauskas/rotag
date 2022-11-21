@@ -498,10 +498,11 @@ sub name_bond_parameters
     for my $atom_id ( keys %{ $bonds } ) {
         for my $bond_atom_ids ( @{ $bonds->{$atom_id} } ) {
             my $is_visited = $visited_bonds{join(',',@{$bond_atom_ids})};
+            my $terminal_bond = $bonds->{$atom_id}[$#{$bonds->{$atom_id}}];
+            my $terminal_atom_id = $terminal_bond->[$#{$terminal_bond}];
 
             next if defined $is_visited && $is_visited;
-            # next if $skip_if_terminal &&
-            #     $atom_id eq $bonds->{$atom_id}->[$#{$bonds->{$atom_id}}];
+            next if $skip_if_terminal && $atom_id eq $terminal_atom_id;
 
             $visited_bonds{join(',',@{$bond_atom_ids})} = 1;
 
@@ -572,6 +573,9 @@ sub name_bond_parameters
                 $bond_atom_ids;
         }
     }
+
+    use Data::Dumper;
+    print STDERR Dumper \%named_bond_parameters;
 
     return \%named_bond_parameters;
 }
