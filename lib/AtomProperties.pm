@@ -110,7 +110,7 @@ sub sort_atom_ids_by_name
                                         'attributes' => [ 'label_atom_id' ] } );
     my @atom_names = map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
     @atom_names = @{ sort_atom_names( \@atom_names ) };
-    my @sorted_atom_ids = map { sort @{ $atom_names_to_ids->{$_} } } @atom_names;
+    my @sorted_atom_ids = map { @{ $atom_names_to_ids->{$_} } } @atom_names;
     return \@sorted_atom_ids;
 }
 
