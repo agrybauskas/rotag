@@ -502,6 +502,9 @@ sub name_bond_parameters
 
             next if defined $is_visited && $is_visited;
 
+            next if $skip_if_terminal &&
+                $atom_id eq $bond_atom_ids->[$#{$bond_atom_ids}];
+
             $visited_bonds{join(',',@{$bond_atom_ids})} = 1;
 
             my $are_any_sidechain_atoms =
@@ -559,9 +562,14 @@ sub name_bond_parameters
 
     my %named_bond_parameters = ();
 
+    # TODO: might be used inside the loop above, because nested conditionals
+    # are the same.
     for my $atom_id ( keys %{ $bonds } ) {
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         for my $bond_atom_ids ( @{ $bonds->{$atom_id} } ) {
+            next if $skip_if_terminal &&
+                $atom_id eq $bond_atom_ids->[$#{$bond_atom_ids}];
+
             my $bond_parameter_name =
                 $bond_parameter_names{join(',',@{$bond_atom_ids})};
 
