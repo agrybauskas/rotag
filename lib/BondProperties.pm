@@ -368,16 +368,19 @@ sub append_bendable_angles
 sub bond_path_search
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $append_func, $ignore_atoms, $include_hetatoms, $ignore_connections ) =(
+    my ( $append_func, $ignore_atoms, $include_hetatoms, $ignore_connections,
+        $skip_if_terminal ) =(
         $options->{'append_func'},
         $options->{'ignore_atoms'},
         $options->{'include_hetatoms'},
-        $options->{'ignore_connections'}
+        $options->{'ignore_connections'},
+        $options->{'skip_if_terminal'},
     );
 
     $ignore_atoms //= {};
     $include_hetatoms //= 0;
     $ignore_connections //= {};
+    $skip_if_terminal //= 0;
 
     # By default, N is starting atom for main-chain calculations.
     $start_atom_ids //=
@@ -467,13 +470,12 @@ sub name_bond_parameters
 {
     my ( $parameters, $atom_site, $bonds, $options ) = @_;
     my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol, $explicit_symbol,
-         $hetatom_symbol, $skip_if_terminal ) = (
+         $hetatom_symbol ) = (
         $options->{'do_mainchain'},
         $options->{'mainchain_symbol'},
         $options->{'sidechain_symbol'},
         $options->{'explicit_symbol'},
         $options->{'hetatom_symbol'},
-        $options->{'skip_if_terminal'},
     );
 
     $do_mainchain //= 0;
@@ -498,11 +500,8 @@ sub name_bond_parameters
     for my $atom_id ( keys %{ $bonds } ) {
         for my $bond_atom_ids ( @{ $bonds->{$atom_id} } ) {
             my $is_visited = $visited_bonds{join(',',@{$bond_atom_ids})};
-            my $terminal_bond = $bonds->{$atom_id}[$#{$bonds->{$atom_id}}];
-            my $terminal_atom_id = $terminal_bond->[$#{$terminal_bond}];
 
             next if defined $is_visited && $is_visited;
-            next if $skip_if_terminal && $atom_id eq $terminal_atom_id;
 
             $visited_bonds{join(',',@{$bond_atom_ids})} = 1;
 
@@ -573,9 +572,6 @@ sub name_bond_parameters
                 $bond_atom_ids;
         }
     }
-
-    use Data::Dumper;
-    print STDERR Dumper \%named_bond_parameters;
 
     return \%named_bond_parameters;
 }
