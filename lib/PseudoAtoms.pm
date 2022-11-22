@@ -113,6 +113,7 @@ sub generate_pseudo
 
         # Calculates current dihedral angles of rotatable bonds. Will be used
         # for reseting dihedral angles to 0 degree angle.
+        # FIXME: move before the loop. Repeating the same calculations!!!
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
         my %angles =
