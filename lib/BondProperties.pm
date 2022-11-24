@@ -395,6 +395,8 @@ sub bond_path_search
     my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
 
     my %bond_paths = ();
+    my %atom_order = ();
+    my $atom_order_idx = 1;
 
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
@@ -402,6 +404,8 @@ sub bond_path_search
 
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = 1;
+
+        $atom_order{$atom_id} = $atom_order_idx;
 
         $append_func->( \%bond_paths, $atom_site, $atom_id, \%parent_atom_ids,
                         $include_hetatoms );
@@ -458,14 +462,17 @@ sub bond_path_search
                 unshift @next_atom_ids, $sorted_neighbour_atom_id;
             }
         }
+
+        $atom_order_idx++;
     }
 
-    return name_bond_parameters($parameters, $atom_site, \%bond_paths, $options);
+    return name_bond_parameters($parameters, $atom_site, \%bond_paths,
+                                \%atom_order, $options);
 }
 
 sub name_bond_parameters
 {
-    my ( $parameters, $atom_site, $bonds, $options ) = @_;
+    my ( $parameters, $atom_site, $bonds, $atom_order, $options ) = @_;
     my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol, $explicit_symbol,
          $hetatom_symbol, $skip_if_terminal ) = (
         $options->{'do_mainchain'},
@@ -496,7 +503,8 @@ sub name_bond_parameters
         "$sidechain_symbol" => 1
     );
 
-    for my $atom_id ( keys %{ $bonds } ) {
+    for my $atom_id ( sort { $atom_order->{$a} <=> $atom_order->{$b} }
+                      keys %{ $bonds } ) {
         for my $bond_atom_ids ( @{ $bonds->{$atom_id} } ) {
             my $is_visited = $visited_bonds{join(',',@{$bond_atom_ids})};
 
@@ -564,7 +572,8 @@ sub name_bond_parameters
 
     # TODO: might be used inside the loop above, because nested conditionals
     # are the same.
-    for my $atom_id ( keys %{ $bonds } ) {
+    for my $atom_id ( sort { $atom_order->{$a} <=> $atom_order->{$b} }
+                      keys %{ $bonds } ) {
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         for my $bond_atom_ids ( @{ $bonds->{$atom_id} } ) {
             next if $skip_if_terminal &&
