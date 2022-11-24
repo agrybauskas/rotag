@@ -521,7 +521,7 @@ sub all_dihedral
 
 sub all_bond_angles
 {
-    my ( $atom_site, $options ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
     my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
         $options->{'include_hetatoms'},
@@ -560,7 +560,7 @@ sub all_bond_angles
         }
 
         my $bendable_angles =
-            bendable_angles( $residue_site, undef, $next_atom_ids, undef,
+            bendable_angles( $parameters, $residue_site, undef, undef,
                              { 'include_hetatoms' => $include_hetatoms } );
         my %uniq_bendable_angles; # Unique bendable angles.
         for my $atom_id ( keys %{ $bendable_angles } ) {
