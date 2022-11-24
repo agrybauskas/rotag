@@ -762,7 +762,7 @@ sub all_bond_angles
 
 sub all_bond_lengths
 {
-    my ( $atom_site, $options ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
     my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
         $options->{'calc_mainchain'},
         $options->{'include_hetatoms'},
@@ -789,7 +789,7 @@ sub all_bond_lengths
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $stretchable_bonds =
-            stretchable_bonds( $residue_site, undef, undef,
+            stretchable_bonds( $parameters, $residue_site, undef, undef,
                                { 'include_hetatoms' => $include_hetatoms } );
 
         my %uniq_stretchable_bonds; # Unique stretchable bonds.
