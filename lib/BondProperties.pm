@@ -379,10 +379,12 @@ sub bond_path_search
     $include_hetatoms //= 0;
     $ignore_connections //= {};
 
-    # By default, N is starting atom for main-chain calculations.
+    # By default, N is starting atom for main-chain calculations. XA is added
+    # for debugging and test purposes.
+    # TODO: think about more general rule -- how to choose the starting atom.
     $start_atom_ids //=
         filter_new( $atom_site,
-                    { 'include' => { 'label_atom_id' => [ 'N' ] },
+                    { 'include' => { 'label_atom_id' => [ 'N', 'XA' ] },
                       'return_data' => 'id' } );
 
     if( ! @{ $start_atom_ids } ) { return {}; }
