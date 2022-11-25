@@ -274,20 +274,8 @@ sub all_dihedral
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        my $start_atom_id;
-        my $next_atom_ids;
         my $ignore_atoms;
         if( $include_hetatoms ) {
-            $start_atom_id =
-                filter_new( \%atom_site,
-                            { 'include' =>
-                              { 'label_atom_id' => [ 'N' ] },
-                                'return_data' => 'id' } )->[0];
-            $next_atom_ids =
-                filter_new( \%atom_site,
-                            { 'include' =>
-                              { 'label_atom_id' => [ 'CA' ] },
-                                'return_data' => 'id' } );
             $ignore_atoms =
                 filter_new( \%atom_site,
                             { 'include' =>
@@ -296,8 +284,7 @@ sub all_dihedral
         }
 
         my $rotatable_bonds =
-            rotatable_bonds( $parameters, $residue_site, $start_atom_id,
-                             $next_atom_ids,
+            rotatable_bonds( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms,
                                'ignore_atoms' => $ignore_atoms } );
 
