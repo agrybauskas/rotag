@@ -458,6 +458,8 @@ sub bond_path_search
             }
 
             # Depth-first search.
+            # FIXME: there should be splice in $i > 0. However, test cases have
+            # to be made.
             if( $i == 0 ) {
                 push @next_atom_ids, $sorted_neighbour_atom_id;
             } else {
