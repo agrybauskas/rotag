@@ -16,8 +16,8 @@ _[local]_bond_angle.label_atom_3_id
 _[local]_bond_angle.type
 _[local]_bond_angle.value
 _[local]_bond_angle.units
-1 ILE 555 B 1 . 8481 N 8482 CA 8485 CB theta1 112.658 degrees
-2 ILE 555 B 1 . 8482 CA 8485 CB 8486 CG1 theta2 111.059 degrees
-3 ILE 555 B 1 . 8482 CA 8485 CB 8487 CG2 theta3 111.982 degrees
-4 ILE 555 B 1 . 8485 CB 8486 CG1 8488 CD1 theta4 114.615 degrees
+1 ILE 555 B 1 . 8481 N 8482 CA 8485 CB eta1 112.658 degrees
+2 ILE 555 B 1 . 8482 CA 8485 CB 8486 CG1 eta2 111.059 degrees
+3 ILE 555 B 1 . 8482 CA 8485 CB 8487 CG2 eta3 111.982 degrees
+4 ILE 555 B 1 . 8485 CB 8486 CG1 8488 CD1 eta4 114.615 degrees
 #

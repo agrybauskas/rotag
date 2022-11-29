@@ -16,11 +16,11 @@ _[local]_bond_angle.label_atom_3_id
 _[local]_bond_angle.type
 _[local]_bond_angle.value
 _[local]_bond_angle.units
-1 ARG 315 A 1 . 2165 N 2166 CA 2169 CB theta1 112.137 degrees
-2 ARG 315 A 1 . 2166 CA 2169 CB 2170 CG theta2 114.821 degrees
-3 ARG 315 A 1 . 2169 CB 2170 CG 2171 CD theta3 110.243 degrees
-4 ARG 315 A 1 . 2170 CG 2171 CD 2172 NE theta4 110.274 degrees
-5 ARG 315 A 1 . 2171 CD 2172 NE 2173 CZ theta5 124.547 degrees
-6 ARG 315 A 1 . 2172 NE 2173 CZ 2174 NH1 theta6 120.250 degrees
-7 ARG 315 A 1 . 2172 NE 2173 CZ 2175 NH2 theta7 119.915 degrees
+1 ARG 315 A 1 . 2165 N 2166 CA 2169 CB eta1 112.137 degrees
+2 ARG 315 A 1 . 2166 CA 2169 CB 2170 CG eta2 114.821 degrees
+3 ARG 315 A 1 . 2169 CB 2170 CG 2171 CD eta3 110.243 degrees
+4 ARG 315 A 1 . 2170 CG 2171 CD 2172 NE eta4 110.274 degrees
+5 ARG 315 A 1 . 2171 CD 2172 NE 2173 CZ eta5 124.547 degrees
+6 ARG 315 A 1 . 2172 NE 2173 CZ 2174 NH1 eta6 120.250 degrees
+7 ARG 315 A 1 . 2172 NE 2173 CZ 2175 NH2 eta7 119.915 degrees
 #
