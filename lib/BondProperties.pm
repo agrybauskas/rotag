@@ -438,7 +438,9 @@ sub bond_path_search
             next if $ignore_connections->{$atom_id}{$sorted_neighbour_atom_id};
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
 
-            $parent_atom_ids{$sorted_neighbour_atom_id} = $atom_id;
+            if( ! exists $parent_atom_ids{$sorted_neighbour_atom_id} ) {
+                $parent_atom_ids{$sorted_neighbour_atom_id} = $atom_id;
+            }
 
             # Depending on if it is mainchain or sidechain bonds, the bond
             # search changes from deapth-first search to breadth-first search
