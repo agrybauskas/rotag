@@ -212,7 +212,6 @@ sub rotatable_bonds
         'N'  => { 'CA' => 'phi' },
         'CA' => { 'C'  => 'psi' },
     };
-
     $options{'skip_if_terminal'} = 1;
     my $rotatable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
