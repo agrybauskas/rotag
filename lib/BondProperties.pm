@@ -470,8 +470,8 @@ sub bond_path_search
         $atom_order_idx++;
     }
 
-    return name_bond_parameters($parameters, $atom_site, \%bond_paths,
-                                \%atom_order, $options);
+    return name_bond_parameters( $parameters, $atom_site, \%bond_paths,
+                                 \%atom_order, $options );
 }
 
 sub name_bond_parameters
