@@ -212,6 +212,9 @@ sub rotatable_bonds
         'N'  => { 'CA' => 'phi' },
         'CA' => { 'C'  => 'psi' },
     };
+    $options{'ignore_connections'} = {
+        'N' => { 'CD' => 1 }
+    };
     $options{'skip_if_terminal'} = 1;
     my $rotatable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
@@ -419,15 +422,17 @@ sub bond_path_search
         my @neighbour_atom_ids = ();
         if( defined $atom_site{$atom_id}{'connections'} ) {
             push @neighbour_atom_ids,
-                grep { ! $ignore_connections->{$atom_id}{$_} }
-                grep { ! $ignore_atoms->{$_} }
+                grep { ! $ignore_connections->{$atom_site{$atom_id}{'label_atom_id'}}
+                                              {$atom_site{$_}{'label_atom_id'}} }
+                grep { ! $ignore_atoms->{$atom_site{$_}{'label_atom_id'}} }
                 @{ $atom_site{$atom_id}{'connections'} };
         }
         if( $include_hetatoms &&
             defined $atom_site{$atom_id}{'connections_hetatom'} ) {
             push @neighbour_atom_ids,
-                grep { ! $ignore_connections->{$atom_id}{$_} }
-                grep { ! $ignore_atoms->{$_} }
+                grep { ! $ignore_connections->{$atom_site{$atom_id}{'label_atom_id'}}
+                                              {$atom_site{$_}{'label_atom_id'}} }
+                grep { ! $ignore_atoms->{$atom_site{$_}{'label_atom_id'}} }
                 @{ $atom_site{$atom_id}{'connections_hetatom'} };
         }
 
@@ -437,8 +442,9 @@ sub bond_path_search
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
 
-            next if $ignore_atoms->{$sorted_neighbour_atom_id};
-            next if $ignore_connections->{$atom_id}{$sorted_neighbour_atom_id};
+            next if $ignore_atoms->{$atom_site{$sorted_neighbour_atom_id}{'label_atom_id'}};
+            next if $ignore_connections->{$atom_site{$atom_id}{'label_atom_id'}}
+                                         {$atom_site{$sorted_neighbour_atom_id}{'label_atom_id'}};
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
 
             if( ! exists $parent_atom_ids{$sorted_neighbour_atom_id} ) {
