@@ -302,46 +302,38 @@ sub all_dihedral
         my %angle_values;
 
         # Calculates main-chain phi, psi angles.
+        # HACK: rotatable bonds should be determined in rotatable_bonds() -- not
+        # outside. However, for now, the old code is being kept.
         if( $calc_mainchain ) {
-            my $n_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'N' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $ca_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'CA' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $c_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'C' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
+            my ( $n_atom_id, $ca_atom_id, $c_atom_id ) =
+                map { filter_new( $residue_site,
+                                  { 'include' =>
+                                        { 'label_atom_id' => [ "$_" ] },
+                                          'return_data' => 'id' } )->[0] }
+                ( 'N', 'CA', 'C' );
 
             # TODO: look if these filter slow down calculations drastically.
+            # TODO: also, look for the way to refactor.
             my $prev_c_atom_id;
             if( defined $n_atom_id &&
                 defined $residue_site->{$n_atom_id}{'connections'} ) {
-                $prev_c_atom_id = filter(
-                    { 'atom_site' => $reference_atom_site,
-                      'include' =>
+                $prev_c_atom_id = filter_new(
+                    $reference_atom_site,
+                    { 'include' =>
                           { 'id' => $residue_site->{$n_atom_id}{'connections'},
                             'label_atom_id' => [ 'C' ] },
-                            'data' => [ 'id' ],
-                            'is_list' => 1 }
+                            'return_data' => 'id' }
                 )->[0];
             }
             my $next_n_atom_id;
             if( defined $c_atom_id &&
                 defined $residue_site->{$c_atom_id}{'connections'} ) {
-                $next_n_atom_id = filter(
-                    { 'atom_site' => $reference_atom_site,
-                      'include' =>
+                $next_n_atom_id = filter_new(
+                    $reference_atom_site,
+                    { 'include' =>
                           { 'id' => $residue_site->{$c_atom_id}{'connections'},
                             'label_atom_id' => [ 'N' ] },
-                            'data' => [ 'id' ],
-                            'is_list' => 1 }
+                            'return_data' => 'id' }
                 )->[0];
             }
 

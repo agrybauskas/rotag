@@ -972,6 +972,8 @@ sub filter_new
     }
 
     # Return object handle or atom ids depending on the flag.
+    # FIXME: filtering does not obey order! Should be fixed when all functions
+    # are moved to filter_new function.
     if( defined $return_data && $return_data eq 'id' ) {
         return [ keys %filtered_atoms ];
     } elsif( defined $return_data ) {
