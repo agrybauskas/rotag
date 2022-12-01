@@ -26,7 +26,7 @@ use List::MoreUtils qw( any
                         uniq );
 use List::Util qw( sum );
 
-use AtomProperties qw( sort_atom_names );
+use AtomProperties qw( sort_atom_ids_by_name );
 use ConnectAtoms qw( is_neighbour
                      is_second_neighbour );
 use Grid qw( grid_box
@@ -387,6 +387,7 @@ sub all_dihedral
             # bond ends with terminal atom, then this bond is excluded.
             # TODO: code block  is similar to rotation_translation(). The code
             # should be moved to separate function.
+            # TODO: refactoring is needed.
             my $connection_count =
                 defined $residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
                                        {'connections'} ?
@@ -403,10 +404,11 @@ sub all_dihedral
                   $connection_count + $hetatom_connection_count < 2 ) ){ next; }
 
             # Chooses proper atom ids for calculating dihedral angles.
-            my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
-            my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
             # NOTE: for second and third connections 'connections_hetatom'
             # should be included when dealing with multi-atom hetatoms.
+            my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
+            my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
+
             my @second_connections = # Second atom connections, except third.
                 grep { $_ ne $third_atom_id }
                 ( @{ $residue_site->{$second_atom_id}{'connections'} },
@@ -415,19 +417,6 @@ sub all_dihedral
                                            {'connections_hetatom'} ?
                     @{ $residue_site->{$second_atom_id}
                                       {'connections_hetatom'} }: () ) );
-
-            my $first_atom_name =
-                sort_atom_names(
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'id' => \@second_connections },
-                          'data' => [ 'label_atom_id' ],
-                          'is_list' => 1 } ) )->[0];
-            my $first_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' =>
-                              { 'label_atom_id' => [ $first_atom_name ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
             my @third_connections = # Third atom connections, except second.
                 grep { $_ ne $second_atom_id }
                 ( @{ $residue_site->{$third_atom_id}{'connections'} },
@@ -439,18 +428,10 @@ sub all_dihedral
 
             # HACK: it might not work with hetero atoms, because there might be
             # more than one atom name.
-            my $fourth_atom_name =
-                sort_atom_names(
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'id' => \@third_connections },
-                          'data' => [ 'label_atom_id' ],
-                          'is_list' => 1 } ) )->[0];
+            my $first_atom_id =
+                sort_atom_ids_by_name( \@second_connections, $residue_site)->[0];
             my $fourth_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' =>
-                              { 'label_atom_id' => [ $fourth_atom_name ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
+                sort_atom_ids_by_name( \@third_connections, $residue_site )->[0];
 
             # Extracts coordinates for dihedral angle calculations.
             my ( $first_atom_coord, $second_atom_coord, $third_atom_coord,
