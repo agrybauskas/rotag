@@ -376,19 +376,16 @@ sub append_bendable_angles
 sub bond_path_search
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $append_func, $ignore_atoms, $include_hetatoms, $ignore_connections,
-         $reference_atom_site ) =(
+    my ( $append_func, $ignore_atoms, $include_hetatoms, $ignore_connections ) =(
         $options->{'append_func'},
         $options->{'ignore_atoms'},
         $options->{'include_hetatoms'},
         $options->{'ignore_connections'},
-        $options->{'reference_atom_site'},
     );
 
     $ignore_atoms //= {};
     $include_hetatoms //= 0;
     $ignore_connections //= {};
-    $reference_atom_site //= $atom_site;
 
     # By default, N is starting atom for main-chain calculations. XA is added
     # for debugging and test purposes.
@@ -426,17 +423,19 @@ sub bond_path_search
         my @neighbour_atom_ids = ();
         if( defined $atom_site->{$atom_id}{'connections'} ) {
             push @neighbour_atom_ids,
-                grep { ! $ignore_connections->{$reference_atom_site->{$atom_id}{'label_atom_id'}}
-                                              {$reference_atom_site->{$_}{'label_atom_id'}} }
-                grep { ! $ignore_atoms->{$reference_atom_site->{$_}{'label_atom_id'}} }
+                grep { ! $ignore_connections->
+                             {$atom_site->{$atom_id}{'label_atom_id'}}
+                             {$atom_site->{$_}{'label_atom_id'}} }
+                grep { ! $ignore_atoms->{$atom_site->{$_}{'label_atom_id'}} }
                     @{ $atom_site->{$atom_id}{'connections'} };
         }
         if( $include_hetatoms &&
             defined $atom_site->{$atom_id}{'connections_hetatom'} ) {
             push @neighbour_atom_ids,
-                grep { ! $ignore_connections->{$reference_atom_site->{$atom_id}{'label_atom_id'}}
-                                              {$reference_atom_site->{$_}{'label_atom_id'}} }
-                grep { ! $ignore_atoms->{$reference_atom_site->{$_}{'label_atom_id'}} }
+                grep { ! $ignore_connections->
+                             {$atom_site->{$atom_id}{'label_atom_id'}}
+                             {$atom_site->{$_}{'label_atom_id'}} }
+                grep { ! $ignore_atoms->{$atom_site->{$_}{'label_atom_id'}} }
                     @{ $atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
@@ -446,9 +445,9 @@ sub bond_path_search
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
 
-            next if $ignore_atoms->{$reference_atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
-            next if $ignore_connections->{$reference_atom_site->{$atom_id}{'label_atom_id'}}
-                                         {$reference_atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
+            next if $ignore_atoms->{$atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
+            next if $ignore_connections->{$atom_site->{$atom_id}{'label_atom_id'}}
+                                         {$atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
 
             if( ! exists $parent_atom_ids{$sorted_neighbour_atom_id} ) {
