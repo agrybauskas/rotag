@@ -249,20 +249,16 @@ sub dihedral_angle
 sub all_dihedral
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
+    my ( $calc_mainchain, $include_hetatoms ) = (
         $options->{'calc_mainchain'},
         $options->{'include_hetatoms'},
-        $options->{'reference_atom_site'},
     );
 
     $calc_mainchain //= 0;
     $include_hetatoms //= 0;
-    $reference_atom_site //= $atom_site;
-
-    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
     my $residue_groups =
-        split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
+        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     # Iterates through residue ids and, according to the parameter file,
     # calculates dihedral angles of each rotatable bond.
@@ -270,14 +266,14 @@ sub all_dihedral
 
     for my $residue_unique_key ( keys %{ $residue_groups } ) {
         my $residue_site =
-            filter( { 'atom_site' => \%atom_site,
+            filter( { 'atom_site' => $atom_site,
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $ignore_atoms;
         if( $include_hetatoms ) {
             $ignore_atoms =
-                filter_new( \%atom_site,
+                filter_new( $atom_site,
                             { 'include' =>
                               { 'label_atom_id' => [ 'C', 'CB' ] },
                                 'return_data' => 'id' } );
@@ -287,7 +283,7 @@ sub all_dihedral
             rotatable_bonds( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms,
                                'ignore_atoms' => $ignore_atoms,
-                               'reference_atom_site' => $reference_atom_site  });
+                               'reference_atom_site' => $atom_site  });
 
         my %uniq_rotatable_bonds; # Unique rotatable bonds.
         for my $atom_id ( keys %{ $rotatable_bonds } ) {
@@ -318,7 +314,7 @@ sub all_dihedral
             if( defined $n_atom_id &&
                 defined $residue_site->{$n_atom_id}{'connections'} ) {
                 $prev_c_atom_id = filter_new(
-                    $reference_atom_site,
+                    $atom_site,
                     { 'include' =>
                           { 'id' => $residue_site->{$n_atom_id}{'connections'},
                             'label_atom_id' => [ 'C' ] },
@@ -329,7 +325,7 @@ sub all_dihedral
             if( defined $c_atom_id &&
                 defined $residue_site->{$c_atom_id}{'connections'} ) {
                 $next_n_atom_id = filter_new(
-                    $reference_atom_site,
+                    $atom_site,
                     { 'include' =>
                           { 'id' => $residue_site->{$c_atom_id}{'connections'},
                             'label_atom_id' => [ 'N' ] },
@@ -344,18 +340,12 @@ sub all_dihedral
                     [ $prev_c_atom_id, $n_atom_id, $ca_atom_id, $c_atom_id ];
                 $angle_values{'phi'}{'value'} =
                     dihedral_angle(
-                        [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
-                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
-                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_z'}, ],
-                          [ $atom_site->{$n_atom_id}{'Cartn_x'},
-                            $atom_site->{$n_atom_id}{'Cartn_y'},
-                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ], ] );
+                        [ map { [ $atom_site->{$_}{'Cartn_x'},
+                                  $atom_site->{$_}{'Cartn_y'},
+                                  $atom_site->{$_}{'Cartn_z'} ] }
+                              ( $prev_c_atom_id, $n_atom_id, $ca_atom_id,
+                                $c_atom_id ) ]
+                    );
             }
 
             # Calculates psi angle.
@@ -365,18 +355,12 @@ sub all_dihedral
                     [ $n_atom_id, $ca_atom_id, $c_atom_id, $next_n_atom_id ];
                 $angle_values{'psi'}{'value'} =
                     dihedral_angle(
-                        [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
-                            $atom_site->{$n_atom_id}{'Cartn_y'},
-                            $atom_site->{$n_atom_id}{'Cartn_z'}, ],
-                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $reference_atom_site->{$next_n_atom_id}{'Cartn_x'},
-                            $reference_atom_site->{$next_n_atom_id}{'Cartn_y'},
-                            $reference_atom_site->{$next_n_atom_id}{'Cartn_z'} ], ] );
+                        [ map { [ $atom_site->{$_}{'Cartn_x'},
+                                  $atom_site->{$_}{'Cartn_y'},
+                                  $atom_site->{$_}{'Cartn_z'} ] }
+                              ( $n_atom_id, $ca_atom_id, $c_atom_id,
+                                $next_n_atom_id ) ]
+                    );
             }
         }
 
