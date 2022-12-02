@@ -400,7 +400,6 @@ sub bond_path_search
 
     if( ! @{ $start_atom_ids } ) { return {}; }
 
-    my %atom_site = %{ $atom_site }; # Copy of the variable.
     my %visited_atom_ids = %{ $ignore_atoms };
     my @next_atom_ids = ( @{ $start_atom_ids } );
     my %parent_atom_ids;
@@ -425,24 +424,24 @@ sub bond_path_search
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
-        if( defined $atom_site{$atom_id}{'connections'} ) {
+        if( defined $atom_site->{$atom_id}{'connections'} ) {
             push @neighbour_atom_ids,
                 grep { ! $ignore_connections->{$reference_atom_site->{$atom_id}{'label_atom_id'}}
                                               {$reference_atom_site->{$_}{'label_atom_id'}} }
                 grep { ! $ignore_atoms->{$reference_atom_site->{$_}{'label_atom_id'}} }
-                    @{ $atom_site{$atom_id}{'connections'} };
+                    @{ $atom_site->{$atom_id}{'connections'} };
         }
         if( $include_hetatoms &&
-            defined $atom_site{$atom_id}{'connections_hetatom'} ) {
+            defined $atom_site->{$atom_id}{'connections_hetatom'} ) {
             push @neighbour_atom_ids,
                 grep { ! $ignore_connections->{$reference_atom_site->{$atom_id}{'label_atom_id'}}
                                               {$reference_atom_site->{$_}{'label_atom_id'}} }
                 grep { ! $ignore_atoms->{$reference_atom_site->{$_}{'label_atom_id'}} }
-                    @{ $atom_site{$atom_id}{'connections_hetatom'} };
+                    @{ $atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
         my @sorted_neighbour_atom_ids =
-            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, \%atom_site ) };
+            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, $atom_site ) };
 
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
