@@ -394,6 +394,7 @@ sub all_dihedral
 
             my @second_connections = # Second atom connections, except third.
                 grep { $_ ne $third_atom_id }
+                grep { defined $residue_site->{$_} }
                 ( @{ $residue_site->{$second_atom_id}{'connections'} },
                   ( $include_hetatoms &&
                     defined $residue_site->{$second_atom_id}
@@ -402,6 +403,7 @@ sub all_dihedral
                                       {'connections_hetatom'} }: () ) );
             my @third_connections = # Third atom connections, except second.
                 grep { $_ ne $second_atom_id }
+                grep { defined $residue_site->{$_} }
                 ( @{ $residue_site->{$third_atom_id}{'connections'} },
                   ( $include_hetatoms &&
                     defined $residue_site->{$third_atom_id}
