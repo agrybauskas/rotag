@@ -427,6 +427,7 @@ sub bond_path_search
                              {$atom_site->{$atom_id}{'label_atom_id'}}
                              {$atom_site->{$_}{'label_atom_id'}} }
                 grep { ! $ignore_atoms->{$atom_site->{$_}{'label_atom_id'}} }
+                grep { defined $atom_site->{$_} }
                     @{ $atom_site->{$atom_id}{'connections'} };
         }
         if( $include_hetatoms &&
@@ -436,6 +437,7 @@ sub bond_path_search
                              {$atom_site->{$atom_id}{'label_atom_id'}}
                              {$atom_site->{$_}{'label_atom_id'}} }
                 grep { ! $ignore_atoms->{$atom_site->{$_}{'label_atom_id'}} }
+                grep { defined $atom_site->{$_} }
                     @{ $atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
