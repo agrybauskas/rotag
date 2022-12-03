@@ -301,7 +301,7 @@ sub all_dihedral
                                   { 'include' =>
                                         { 'label_atom_id' => [ "$_" ] },
                                           'return_data' => 'id' } )->[0] }
-                ( 'N', 'CA', 'C' );
+                    ( 'N', 'CA', 'C' );
 
             # TODO: look if these filter slow down calculations drastically.
             # TODO: also, look for the way to refactor.
@@ -705,20 +705,16 @@ sub all_bond_angles
 sub all_bond_lengths
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
+    my ( $calc_mainchain, $include_hetatoms ) = (
         $options->{'calc_mainchain'},
         $options->{'include_hetatoms'},
-        $options->{'reference_atom_site'},
     );
 
     $calc_mainchain //= 0;
     $include_hetatoms //= 0;
-    $reference_atom_site //= $atom_site;
-
-    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
     my $residue_groups =
-        split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
+        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     # Iterates through residue ids and, according to the parameter file,
     # calculates bond lengths of each side-chain bond.
@@ -726,7 +722,7 @@ sub all_bond_lengths
 
     for my $residue_unique_key ( keys %{ $residue_groups } ) {
         my $residue_site =
-            filter( { 'atom_site' => \%atom_site,
+            filter( { 'atom_site' => $atom_site,
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
@@ -748,50 +744,34 @@ sub all_bond_lengths
 
         if( $calc_mainchain ) {
             # TODO: hydrogens should be added or automatic search implemented.
-            my $n_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'N' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $ca_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'CA' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $c_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'C' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
-            my $o_atom_id =
-                filter( { 'atom_site' => $residue_site,
-                          'include' => { 'label_atom_id' => [ 'O' ] },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } )->[0];
+            my ( $n_atom_id, $ca_atom_id, $c_atom_id, $o_atom_id ) =
+                map { filter_new( $residue_site,
+                                  { 'include' =>
+                                        { 'label_atom_id' => [ "$_" ] },
+                                          'return_data' => 'id' } )->[0] }
+                    ( 'N', 'CA', 'C', 'O' );
 
             # TODO: look if these filter slow down calculations drastically.
             my $prev_c_atom_id;
             if( defined $n_atom_id &&
                 defined $residue_site->{$n_atom_id}{'connections'} ) {
-                $prev_c_atom_id = filter(
-                    { 'atom_site' => $reference_atom_site,
-                      'include' =>
+                $prev_c_atom_id = filter_new(
+                    $atom_site,
+                    { 'include' =>
                           { 'id' => $residue_site->{$n_atom_id}{'connections'},
                             'label_atom_id' => [ 'C' ] },
-                            'data' => [ 'id' ],
-                            'is_list' => 1 }
+                            'return_data' => 'id' }
                 )->[0];
             }
             my $next_n_atom_id;
             if( defined $c_atom_id &&
                 defined $residue_site->{$c_atom_id}{'connections'} ) {
-                $next_n_atom_id = filter(
-                    { 'atom_site' => $reference_atom_site,
-                      'include' =>
+                $next_n_atom_id = filter_new(
+                    $atom_site,
+                    { 'include' =>
                           { 'id' => $residue_site->{$c_atom_id}{'connections'},
                             'label_atom_id' => [ 'N' ] },
-                            'data' => [ 'id' ],
-                            'is_list' => 1 }
+                            'return_data' => 'id' }
                 )->[0];
             }
 
@@ -801,12 +781,11 @@ sub all_bond_lengths
                     [ $prev_c_atom_id, $n_atom_id ];
                 $length_values{'d1'}{'value'} =
                     bond_length(
-                        [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
-                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
-                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$n_atom_id}{'Cartn_x'},
-                            $atom_site->{$n_atom_id}{'Cartn_y'},
-                            $atom_site->{$n_atom_id}{'Cartn_z'} ] ] );
+                        [ map { [ $atom_site->{$_}{'Cartn_x'},
+                                  $atom_site->{$_}{'Cartn_y'},
+                                  $atom_site->{$_}{'Cartn_z'} ] }
+                              ( $prev_c_atom_id, $n_atom_id ) ]
+                    );
             }
 
             if( defined $c_atom_id && defined $next_n_atom_id ) {
@@ -814,51 +793,11 @@ sub all_bond_lengths
                     [ $c_atom_id, $next_n_atom_id ];
                 $length_values{'d2'}{'value'} =
                     bond_length(
-                        [ [ $reference_atom_site->{$c_atom_id}{'Cartn_x'},
-                            $reference_atom_site->{$c_atom_id}{'Cartn_y'},
-                            $reference_atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$next_n_atom_id}{'Cartn_x'},
-                            $atom_site->{$next_n_atom_id}{'Cartn_y'},
-                            $atom_site->{$next_n_atom_id}{'Cartn_z'} ] ] );
-            }
-
-            if( defined $n_atom_id && defined $ca_atom_id ) {
-                $length_values{'d3'}{'atom_ids'} =
-                    [ $n_atom_id, $ca_atom_id ];
-                $length_values{'d3'}{'value'} =
-                    bond_length(
-                        [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
-                            $atom_site->{$n_atom_id}{'Cartn_y'},
-                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ] ] );
-            }
-
-            if( defined $ca_atom_id && defined $c_atom_id ) {
-                $length_values{'d4'}{'atom_ids'} =
-                    [ $ca_atom_id, $c_atom_id ];
-                $length_values{'d4'}{'value'} =
-                    bond_length(
-                        [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ] ] );
-            }
-
-            if( defined $c_atom_id && defined $o_atom_id ) {
-                $length_values{'d5'}{'atom_ids'} =
-                    [ $c_atom_id, $o_atom_id ];
-                $length_values{'d5'}{'value'} =
-                    bond_length(
-                        [ [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$o_atom_id}{'Cartn_x'},
-                            $atom_site->{$o_atom_id}{'Cartn_y'},
-                            $atom_site->{$o_atom_id}{'Cartn_z'} ] ] );
+                        [ map { [ $atom_site->{$_}{'Cartn_x'},
+                                  $atom_site->{$_}{'Cartn_y'},
+                                  $atom_site->{$_}{'Cartn_z'} ] }
+                              ( $c_atom_id, $next_n_atom_id ) ]
+                    );
             }
         }
 
