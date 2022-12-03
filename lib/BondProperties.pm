@@ -301,6 +301,11 @@ sub stretchable_bonds
     $options{'append_func'} = \&BondProperties::append_stretchable_bonds;
     $options{'mainchain_symbol'} = 'd';
     $options{'sidechain_symbol'} = 'r';
+    $options{'ignore_connections'} = {
+        'label_atom_id' => {
+            'N' => { 'C' => 1 }, # Pseudo connection for heteroatoms.
+        },
+    };
     my $stretchable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
     return $stretchable_bonds;
@@ -399,7 +404,20 @@ sub bond_path_search
 
     if( ! @{ $start_atom_ids } ) { return {}; }
 
-    my %visited_atom_ids = %{ $ignore_atoms };
+    my %visited_atom_ids = ();
+    # TODO: maybe %visted_atom_ids should be moved to different function.
+    for my $atom_site_item ( keys %{ $ignore_atoms } ) {
+        my @ignore_atom_ids =
+            @{ filter_new(
+                   $atom_site,
+                   { 'include' =>
+                         { map { $_ => [ keys %{ $ignore_atoms->{$_} } ] }
+                           keys %{ $ignore_atoms } },
+                     'return_data' => 'id' } ) };
+        for my $ignore_atom_id ( @ignore_atom_ids ) {
+            $visited_atom_ids{$ignore_atom_id} = 1;
+        }
+    }
     my @next_atom_ids = ( @{ $start_atom_ids } );
     my %parent_atom_ids;
 
