@@ -464,20 +464,16 @@ sub all_dihedral
 sub all_bond_angles
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $include_hetatoms, $reference_atom_site ) = (
+    my ( $calc_mainchain, $include_hetatoms ) = (
         $options->{'calc_mainchain'},
         $options->{'include_hetatoms'},
-        $options->{'reference_atom_site'},
     );
 
     $calc_mainchain //= 0;
     $include_hetatoms //= 0;
-    $reference_atom_site //= $atom_site;
-
-    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
     my $residue_groups =
-        split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
+        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     # Iterates through residue ids and, according to the parameter file,
     # calculates bond lengths of each side-chain bond.
@@ -485,25 +481,14 @@ sub all_bond_angles
 
     for my $residue_unique_key ( keys %{ $residue_groups } ) {
         my $residue_site =
-            filter( { 'atom_site' => \%atom_site,
+            filter( { 'atom_site' => $atom_site,
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
-
-        my $next_atom_ids;
-        if( $include_hetatoms ) {
-            $next_atom_ids =
-                filter( { 'atom_site' => \%atom_site,
-                          'include' =>
-                              { 'id' =>
-                                    $residue_groups->{$residue_unique_key},
-                                    'group_PDB' => [ 'HETATM' ] },
-                          'is_list' => 1,
-                          'data' => [ 'id' ] } );
-        }
 
         my $bendable_angles =
             bendable_angles( $parameters, $residue_site, undef, undef,
                              { 'include_hetatoms' => $include_hetatoms } );
+
         my %uniq_bendable_angles; # Unique bendable angles.
         for my $atom_id ( keys %{ $bendable_angles } ) {
             for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
@@ -518,50 +503,46 @@ sub all_bond_angles
 
         if( $calc_mainchain ) {
             my ( $n_atom_id, $ca_atom_id, $c_atom_id, $o_atom_id ) =
-                map {
-                    filter( { 'atom_site' => $residue_site,
-                              'include' => { 'label_atom_id' => [ "$_" ] },
-                              'data' => [ 'id' ],
-                              'is_list' => 1 } )->[0]
-                } ( 'N', 'CA', 'C', 'O' );
+                map { filter_new( $residue_site,
+                                  { 'include' =>
+                                        { 'label_atom_id' => [ "$_" ] },
+                                          'return_data' => 'id' } )->[0] }
+                    ( 'N', 'CA', 'C', 'O' );
 
             # TODO: look if these filter slow down calculations drastically.
             my $prev_c_atom_id;
             if( defined $n_atom_id &&
                 defined $residue_site->{$n_atom_id}{'connections'} ) {
-                $prev_c_atom_id = filter(
-                    { 'atom_site' => $reference_atom_site,
-                      'include' =>
+                $prev_c_atom_id = filter_new(
+                    $atom_site,
+                    { 'include' =>
                           { 'id' => $residue_site->{$n_atom_id}{'connections'},
                             'label_atom_id' => [ 'C' ] },
-                            'data' => [ 'id' ],
-                            'is_list' => 1 }
+                            'return_data' => 'id' }
                 )->[0];
             }
 
             my $next_n_atom_id;
             if( defined $c_atom_id &&
                 defined $residue_site->{$c_atom_id}{'connections'} ) {
-                $next_n_atom_id = filter(
-                    { 'atom_site' => $reference_atom_site,
-                      'include' =>
+                $next_n_atom_id = filter_new(
+                    $atom_site,
+                    { 'include' =>
                           { 'id' => $residue_site->{$c_atom_id}{'connections'},
                             'label_atom_id' => [ 'N' ] },
-                            'data' => [ 'id' ],
-                            'is_list' => 1 }
+                            'return_data' => 'id' }
                 )->[0];
             }
 
             my $next_ca_atom_id;
             if( defined $next_n_atom_id &&
-                defined $reference_atom_site->{$next_n_atom_id}{'connections'} ) {
-                $next_ca_atom_id = filter(
-                    { 'atom_site' => $reference_atom_site,
-                      'include' =>
-                          { 'id' => $reference_atom_site->{$next_n_atom_id}{'connections'},
+                defined $atom_site->{$next_n_atom_id}{'connections'} ) {
+                $next_ca_atom_id = filter_new(
+                    $atom_site,
+                    { 'include' =>
+                          { 'id' => $atom_site->{$next_n_atom_id}{'connections'},
                             'label_atom_id' => [ 'CA' ] },
-                            'data' => [ 'id' ],
-                            'is_list' => 1 }
+                            'return_data' => 'id' }
                 )->[0];
             }
 
@@ -572,47 +553,11 @@ sub all_bond_angles
                     [ $prev_c_atom_id, $n_atom_id, $ca_atom_id ];
                 $angle_values{'eta1'}{'value'} =
                     bond_angle(
-                        [ [ $reference_atom_site->{$prev_c_atom_id}{'Cartn_x'},
-                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_y'},
-                            $reference_atom_site->{$prev_c_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$n_atom_id}{'Cartn_x'},
-                            $atom_site->{$n_atom_id}{'Cartn_y'},
-                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ] ] );
-            }
-
-            if( defined $n_atom_id && defined $ca_atom_id && defined $c_atom_id ) {
-                $angle_values{'eta2'}{'atom_ids'} =
-                    [ $n_atom_id, $ca_atom_id, $c_atom_id ];
-                $angle_values{'eta2'}{'value'} =
-                    bond_angle(
-                        [ [ $atom_site->{$n_atom_id}{'Cartn_x'},
-                            $atom_site->{$n_atom_id}{'Cartn_y'},
-                            $atom_site->{$n_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ] ] );
-            }
-
-            if( defined $ca_atom_id && defined $c_atom_id && defined $o_atom_id ) {
-                $angle_values{'eta3'}{'atom_ids'} =
-                    [ $ca_atom_id, $c_atom_id, $o_atom_id ];
-                $angle_values{'eta3'}{'value'} =
-                    bond_angle(
-                        [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$o_atom_id}{'Cartn_x'},
-                            $atom_site->{$o_atom_id}{'Cartn_y'},
-                            $atom_site->{$o_atom_id}{'Cartn_z'} ] ] );
+                        [ map { [ $atom_site->{$_}{'Cartn_x'},
+                                  $atom_site->{$_}{'Cartn_y'},
+                                  $atom_site->{$_}{'Cartn_z'} ] }
+                              ( $prev_c_atom_id, $n_atom_id, $ca_atom_id ) ]
+                    );
             }
 
             if( defined $ca_atom_id && defined $c_atom_id &&
@@ -621,15 +566,11 @@ sub all_bond_angles
                     [ $ca_atom_id, $c_atom_id, $next_n_atom_id ];
                 $angle_values{'eta4'}{'value'} =
                     bond_angle(
-                        [ [ $atom_site->{$ca_atom_id}{'Cartn_x'},
-                            $atom_site->{$ca_atom_id}{'Cartn_y'},
-                            $atom_site->{$ca_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $reference_atom_site->{$next_n_atom_id}{'Cartn_x'},
-                            $reference_atom_site->{$next_n_atom_id}{'Cartn_y'},
-                            $reference_atom_site->{$next_n_atom_id}{'Cartn_z'} ] ] );
+                        [ map { [ $atom_site->{$_}{'Cartn_x'},
+                                  $atom_site->{$_}{'Cartn_y'},
+                                  $atom_site->{$_}{'Cartn_z'} ] }
+                              ( $ca_atom_id, $c_atom_id, $next_n_atom_id ) ]
+                    );
             }
 
             if( defined $o_atom_id && defined $c_atom_id &&
@@ -638,15 +579,11 @@ sub all_bond_angles
                     [ $o_atom_id, $c_atom_id, $next_n_atom_id ];
                 $angle_values{'eta5'}{'value'} =
                     bond_angle(
-                        [ [ $atom_site->{$o_atom_id}{'Cartn_x'},
-                            $atom_site->{$o_atom_id}{'Cartn_y'},
-                            $atom_site->{$o_atom_id}{'Cartn_z'} ],
-                          [ $atom_site->{$c_atom_id}{'Cartn_x'},
-                            $atom_site->{$c_atom_id}{'Cartn_y'},
-                            $atom_site->{$c_atom_id}{'Cartn_z'} ],
-                          [ $reference_atom_site->{$next_n_atom_id}{'Cartn_x'},
-                            $reference_atom_site->{$next_n_atom_id}{'Cartn_y'},
-                            $reference_atom_site->{$next_n_atom_id}{'Cartn_z'} ] ] );
+                        [ map { [ $atom_site->{$_}{'Cartn_x'},
+                                  $atom_site->{$_}{'Cartn_y'},
+                                  $atom_site->{$_}{'Cartn_z'} ] }
+                              ( $o_atom_id, $c_atom_id, $next_n_atom_id ) ]
+                    );
             }
         }
 
@@ -659,15 +596,15 @@ sub all_bond_angles
             my $first_atom_coord =
                 [ $residue_site->{$first_atom_id}{'Cartn_x'},
                   $residue_site->{$first_atom_id}{'Cartn_y'},
-                  $residue_site->{$first_atom_id}{'Cartn_z'}];
+                  $residue_site->{$first_atom_id}{'Cartn_z'} ];
             my $second_atom_coord =
                 [ $residue_site->{$second_atom_id}{'Cartn_x'},
                   $residue_site->{$second_atom_id}{'Cartn_y'},
-                  $residue_site->{$second_atom_id}{'Cartn_z'}];
+                  $residue_site->{$second_atom_id}{'Cartn_z'} ];
             my $third_atom_coord =
                 [ $residue_site->{$third_atom_id}{'Cartn_x'},
                   $residue_site->{$third_atom_id}{'Cartn_y'},
-                  $residue_site->{$third_atom_id}{'Cartn_z'}];
+                  $residue_site->{$third_atom_id}{'Cartn_z'} ];
 
             $angle_values{$angle_name}{'atom_ids'} =
                 [ $first_atom_id, $second_atom_id, $third_atom_id ];
