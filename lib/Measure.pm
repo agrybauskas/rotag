@@ -272,11 +272,7 @@ sub all_dihedral
 
         my $ignore_atoms;
         if( $include_hetatoms ) {
-            $ignore_atoms =
-                filter_new( $atom_site,
-                            { 'include' =>
-                              { 'label_atom_id' => [ 'C', 'CB' ] },
-                                'return_data' => 'id' } );
+            $ignore_atoms = { 'label_atom_id' => { 'C' => 1, 'CB' => 1 } };
         }
 
         my $rotatable_bonds =

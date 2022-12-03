@@ -213,9 +213,11 @@ sub rotatable_bonds
         'CA' => { 'C'  => 'psi' },
     };
     $options{'ignore_connections'} = {
-        'N' => { 'CD' => 1, # For PRO.
-                 'C' => 1 },
-        'C' => { 'N' => 1 },
+        'label_atom_id' => {
+            'N' => { 'CD' => 1, # For PRO.
+                     'C' => 1 },
+            'C' => { 'N' => 1 },
+        },
     };
     $options{'skip_if_terminal'} = 1;
     my $rotatable_bonds =
@@ -424,9 +426,11 @@ sub bond_path_search
         if( defined $atom_site->{$atom_id}{'connections'} ) {
             push @neighbour_atom_ids,
                 grep { ! $ignore_connections->
+                             {'label_atom_id'}
                              {$atom_site->{$atom_id}{'label_atom_id'}}
                              {$atom_site->{$_}{'label_atom_id'}} }
-                grep { ! $ignore_atoms->{$atom_site->{$_}{'label_atom_id'}} }
+                grep { ! $ignore_atoms->
+                     {'label_atom_id'}{$atom_site->{$_}{'label_atom_id'}} }
                 grep { defined $atom_site->{$_} }
                     @{ $atom_site->{$atom_id}{'connections'} };
         }
@@ -434,9 +438,12 @@ sub bond_path_search
             defined $atom_site->{$atom_id}{'connections_hetatom'} ) {
             push @neighbour_atom_ids,
                 grep { ! $ignore_connections->
+                             {'label_atom_id'}
                              {$atom_site->{$atom_id}{'label_atom_id'}}
                              {$atom_site->{$_}{'label_atom_id'}} }
-                grep { ! $ignore_atoms->{$atom_site->{$_}{'label_atom_id'}} }
+                grep { ! $ignore_atoms->
+                             {'label_atom_id'}
+                             {$atom_site->{$_}{'label_atom_id'}} }
                 grep { defined $atom_site->{$_} }
                     @{ $atom_site->{$atom_id}{'connections_hetatom'} };
         }
@@ -447,9 +454,13 @@ sub bond_path_search
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
 
-            next if $ignore_atoms->{$atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
-            next if $ignore_connections->{$atom_site->{$atom_id}{'label_atom_id'}}
-                                         {$atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
+            next if $ignore_atoms->
+                        {'label_atom_id'}
+                        {$atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
+            next if $ignore_connections->
+                        {'label_atom_id'}
+                        {$atom_site->{$atom_id}{'label_atom_id'}}
+                        {$atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
 
             if( ! exists $parent_atom_ids{$sorted_neighbour_atom_id} ) {
