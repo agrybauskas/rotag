@@ -250,6 +250,8 @@ sub generate_pseudo_new
         # and angle between bonds. Will be used for reseting dihedral angles to 0
         # degree angle and pinpointing the correct bond length and angle changes.
         # TODO: bond_path_search should be a separate object.
+        # TODO: dihedral angle, bond length and bond angle parsing could be
+        # separate functions.
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
         my %dihedral_angles =
