@@ -280,7 +280,8 @@ sub all_dihedral
                              { 'include_hetatoms' => $include_hetatoms,
                                'ignore_atoms' => $ignore_atoms } );
 
-        my %uniq_rotatable_bonds; # Unique rotatable bonds.
+        # TODO: make a function.
+        my %uniq_rotatable_bonds;
         for my $atom_id ( keys %{ $rotatable_bonds } ) {
             for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
                 if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
@@ -594,18 +595,11 @@ sub all_bond_angles
             my $third_atom_id = $uniq_bendable_angles{$angle_name}->[2];
 
             # Extracts coordinates for bond angle calculations.
-            my $first_atom_coord =
-                [ $residue_site->{$first_atom_id}{'Cartn_x'},
-                  $residue_site->{$first_atom_id}{'Cartn_y'},
-                  $residue_site->{$first_atom_id}{'Cartn_z'} ];
-            my $second_atom_coord =
-                [ $residue_site->{$second_atom_id}{'Cartn_x'},
-                  $residue_site->{$second_atom_id}{'Cartn_y'},
-                  $residue_site->{$second_atom_id}{'Cartn_z'} ];
-            my $third_atom_coord =
-                [ $residue_site->{$third_atom_id}{'Cartn_x'},
-                  $residue_site->{$third_atom_id}{'Cartn_y'},
-                  $residue_site->{$third_atom_id}{'Cartn_z'} ];
+            my ( $first_atom_coord, $second_atom_coord, $third_atom_coord ) =
+                map { [ $residue_site->{$_}{'Cartn_x'},
+                        $residue_site->{$_}{'Cartn_y'},
+                        $residue_site->{$_}{'Cartn_z'} ] }
+                    ( $first_atom_id, $second_atom_id, $third_atom_id );
 
             $angle_values{$angle_name}{'atom_ids'} =
                 [ $first_atom_id, $second_atom_id, $third_atom_id ];
