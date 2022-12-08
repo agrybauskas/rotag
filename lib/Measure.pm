@@ -489,8 +489,8 @@ sub all_bond_angles
             bendable_angles( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms } );
 
-        # TODO: make a function
-        my %uniq_bendable_angles; # Unique bendable angles.
+        # TODO: make a function.
+        my %uniq_bendable_angles;
         for my $atom_id ( keys %{ $bendable_angles } ) {
             for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
                 if( ! exists $uniq_bendable_angles{"$angle_name"} ) {
@@ -669,7 +669,7 @@ sub all_bond_lengths
                                { 'include_hetatoms' => $include_hetatoms } );
 
         # TODO: make a function.
-        my %uniq_stretchable_bonds; # Unique stretchable bonds.
+        my %uniq_stretchable_bonds;
         for my $atom_id ( keys %{ $stretchable_bonds } ) {
             for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){
                 if( ! exists $uniq_stretchable_bonds{"$bond_name"} ) {
