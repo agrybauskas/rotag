@@ -587,6 +587,7 @@ sub name_bond_parameters
             }
 
             # Adding parameter names.
+            # TODO: refactor this conditional mess.
             my $bond_parameter_name = "";
             if( ! $are_any_sidechain_atoms ) {
                 $bond_parameter_name .=
@@ -599,7 +600,9 @@ sub name_bond_parameters
                 $bond_parameter_name .=
                     $sidechain_symbol .
                     $name_counter{$sidechain_symbol};
-                $name_counter{$sidechain_symbol}++;
+                if( ! $are_any_hetatoms ) {
+                    $name_counter{$sidechain_symbol}++;
+                }
             }
 
             # Adding symbol for hetatoms.
