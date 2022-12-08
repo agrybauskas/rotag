@@ -380,6 +380,7 @@ sub append_bendable_angles
     return;
 }
 
+# NOTE: Maybe should be converted to struct.
 sub bond_path_search
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;

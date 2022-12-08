@@ -286,7 +286,7 @@
           return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
       },
       'symbols' => [
-        'tau1'
+        'chi1*'
       ]
     }, 'Symbolic' ),
     [
