@@ -486,7 +486,7 @@ sub all_bond_angles
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $bendable_angles =
-            bendable_angles( $parameters, $residue_site, undef, undef,
+            bendable_angles( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms } );
 
         my %uniq_bendable_angles; # Unique bendable angles.
@@ -664,7 +664,7 @@ sub all_bond_lengths
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $stretchable_bonds =
-            stretchable_bonds( $parameters, $residue_site, undef, undef,
+            stretchable_bonds( $parameters, $residue_site, undef,
                                { 'include_hetatoms' => $include_hetatoms } );
 
         my %uniq_stretchable_bonds; # Unique stretchable bonds.
