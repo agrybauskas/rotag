@@ -271,12 +271,13 @@ sub all_dihedral
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $ignore_atoms;
+        my $next_atom_ids;
         if( $include_hetatoms ) {
             $ignore_atoms = { 'label_atom_id' => { 'C' => 1, 'CB' => 1 } };
         }
 
         my $rotatable_bonds =
-            rotatable_bonds( $parameters, $residue_site, undef,
+            rotatable_bonds( $parameters, $residue_site, $next_atom_ids,
                              { 'include_hetatoms' => $include_hetatoms,
                                'ignore_atoms' => $ignore_atoms } );
 
