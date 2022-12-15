@@ -204,6 +204,7 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
     $options{'mainchain_symbol'} = '';
@@ -216,12 +217,21 @@ sub rotatable_bonds
         'label_atom_id' => {
             'N' => { 'CD' => 1, # For PRO.
                      'C' => 1 },
-            'C' => { 'N' => 1 },
+            ( $options->{'include_hetatoms'} ? () : ('C' => { 'N' => 1 }) ),
         },
     };
     $options{'skip_if_terminal'} = 1;
+
+    if( $options->{'include_hetatoms'} ) {
+        $start_atom_ids =
+            filter_new( $atom_site,
+                        { 'include' => { 'label_atom_id' => [ 'C' ] },
+                          'return_data' => 'id' } );
+    }
+
     my $rotatable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
+
     return $rotatable_bonds;
 }
 
@@ -297,6 +307,7 @@ sub append_rotatable_bonds
 sub stretchable_bonds
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_stretchable_bonds;
     $options{'mainchain_symbol'} = 'd';
@@ -306,8 +317,10 @@ sub stretchable_bonds
             'N' => { 'C' => 1 }, # Pseudo connection for heteroatoms.
         },
     };
+
     my $stretchable_bonds =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
+
     return $stretchable_bonds;
 }
 
@@ -350,12 +363,15 @@ sub append_stretchable_bonds
 sub bendable_angles
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_bendable_angles;
     $options{'mainchain_symbol'} = 'theta';
     $options{'sidechain_symbol'} = 'eta';
+
     my $bendable_angles =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
+
     return $bendable_angles;
 }
 
