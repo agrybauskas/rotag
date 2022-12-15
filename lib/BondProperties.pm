@@ -207,7 +207,7 @@ sub rotatable_bonds
 
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
-    $options{'mainchain_symbol'} = '';
+    $options{'mainchain_symbol'} = 'tau';
     $options{'sidechain_symbol'} = 'chi';
     $options{'explicit_symbol'} = {
         'N'  => { 'CA' => 'phi' },
@@ -585,9 +585,9 @@ sub name_bond_parameters
                 scalar( @{ $bond_atom_ids } );
             my $are_any_hetatoms =
                 grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' }
-                    @{ $bond_atom_ids };
+                    ( @{ $bond_atom_ids }, $atom_id );
 
-            next if ! $do_mainchain && ! $are_any_sidechain_atoms;
+            next if ( ! $do_mainchain && ! $are_any_sidechain_atoms );
 
             # Explicit atom names.
             # TODO: it could be enhanced by adding third atom name.
