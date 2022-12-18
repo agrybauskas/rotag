@@ -2565,12 +2565,53 @@ TYR chi2 -90    90.0  .    degrees
 #
 loop_
 _[local]_dihedral_angle_name.label_comp_id
-_[local]_dihedral_angle_name.angle
-_[local]_dihedral_angle_name.range_from
-.   N-CA  phi
-.   CA-C  psi
-.   C-N   omega
-SER CA-CB chi1
+_[local]_dihedral_angle_name.label_atom_1_id
+_[local]_dihedral_angle_name.label_atom_2_id
+_[local]_dihedral_angle_name.name
+.   N  CA  phi
+.   CA C   psi
+.   C  N   omega
+ARG CA CB  chi1
+ARG CB CG  chi2
+ARG CG CD  chi3
+ARG CD NE  chi4
+ASN CA CB  chi1
+ASN CB CG  chi2
+ASP CA CB  chi1
+ASP CB CG  chi2
+CYS CA CB  chi1
+GLN CA CB  chi1
+GLN CB CG  chi2
+GLN CG CD  chi3
+GLU CA CB  chi1
+GLU CB CG  chi2
+GLU CG CD  chi3
+HIS CA CB  chi1
+HIS CB CG  chi2
+ILE CA CB  chi1
+ILE CB CG1 chi2
+LEU CA CB  chi1
+LEU CB CG  chi2
+LYS CA CB  chi1
+LYS CB CG  chi2
+LYS CG CD  chi3
+LYS CD CE  chi4
+MET CA CB  chi1
+MET CB CG  chi2
+MET CG CD  chi3
+PHE CA CB  chi1
+PHE CB CG  chi2
+PRO CA CB  chi1
+PRO CB CG  chi2
+PRO CG CD  chi3
+SER CA CB  chi1
+THR CA CB  chi1
+TRP CA CB  chi1
+TRP CB CG  chi2
+TYR CA CB  chi1
+TYR CB CG  chi2
+VAL CA CB  chi1
+XAA CA CB  chi1
 #
 loop_
 _[local]_interaction_atom_names.label_atom_id
