@@ -539,21 +539,12 @@ sub bond_path_search
 sub name_bond_parameters
 {
     my ( $parameters, $atom_site, $bonds, $atom_order, $options ) = @_;
-    my ( $do_mainchain, $mainchain_symbol, $sidechain_symbol, $explicit_symbol,
-         $hetatom_symbol, $skip_if_terminal ) = (
+    my ( $do_mainchain, $skip_if_terminal ) = (
         $options->{'do_mainchain'},
-        $options->{'mainchain_symbol'},
-        $options->{'sidechain_symbol'},
-        $options->{'explicit_symbol'},
-        $options->{'hetatom_symbol'},
         $options->{'skip_if_terminal'},
     );
 
     $do_mainchain //= 0;
-    $mainchain_symbol //= 'x';
-    $sidechain_symbol //= 'y';
-    $explicit_symbol //= {};
-    $hetatom_symbol //= '*';
     $skip_if_terminal //= 0;
 
     my %mainchain_atom_names =
@@ -561,10 +552,6 @@ sub name_bond_parameters
 
     my %bond_parameter_names = ();
     my %visited_bonds = ();
-    my %name_counter = (
-        "$mainchain_symbol" => 1,
-        "$sidechain_symbol" => 1
-    );
 
     for my $atom_id ( sort { $atom_order->{$a} <=> $atom_order->{$b} }
                       keys %{ $bonds } ) {
@@ -583,49 +570,12 @@ sub name_bond_parameters
                         map  { $atom_site->{$_}{'label_atom_id'} }
                             @{ $bond_atom_ids } ) <
                 scalar( @{ $bond_atom_ids } );
-            my $are_any_hetatoms =
-                grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' }
-                    ( @{ $bond_atom_ids }, $atom_id );
 
             next if ( ! $do_mainchain && ! $are_any_sidechain_atoms );
 
-            # Explicit atom names.
-            # TODO: it could be enhanced by adding third atom name.
-            my ( $first_atom_name, $second_atom_name ) =
-                map { $atom_site->{$_}{'label_atom_id'} }
-                   @{ $bond_atom_ids };
-
-            if( $explicit_symbol->{$first_atom_name}{$second_atom_name} ) {
-                $bond_parameter_names{join(',',@{$bond_atom_ids})} =
-                    $explicit_symbol->{$first_atom_name}{$second_atom_name};
-                $bond_parameter_names{join(',',reverse @{$bond_atom_ids})} =
-                    $explicit_symbol->{$first_atom_name}{$second_atom_name};
-                next;
-            }
-
-            # Adding parameter names.
-            # TODO: refactor this conditional mess.
-            my $bond_parameter_name = "";
-            if( ! $are_any_sidechain_atoms ) {
-                $bond_parameter_name .=
-                    $mainchain_symbol .
-                    $name_counter{$mainchain_symbol};
-                $name_counter{$mainchain_symbol}++;
-            }
-
-            if( $are_any_sidechain_atoms ) {
-                $bond_parameter_name .=
-                    $sidechain_symbol .
-                    $name_counter{$sidechain_symbol};
-                if( ! $are_any_hetatoms ) {
-                    $name_counter{$sidechain_symbol}++;
-                }
-            }
-
-            # Adding symbol for hetatoms.
-            if( $are_any_hetatoms ) {
-                $bond_parameter_name .= $hetatom_symbol;
-            }
+            my $bond_parameter_name =
+                join( '-', map { $atom_site->{$_}{'label_atom_id'} }
+                              @{ $bond_atom_ids } );
 
             $bond_parameter_names{join(',',@{$bond_atom_ids})} =
                 $bond_parameter_name;
