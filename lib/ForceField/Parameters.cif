@@ -2564,6 +2564,15 @@ PRO .    .      .     18.0 degrees
 TYR chi2 -90    90.0  .    degrees
 #
 loop_
+_[local]_dihedral_angle_name.label_comp_id
+_[local]_dihedral_angle_name.angle
+_[local]_dihedral_angle_name.range_from
+.   N-CA  phi
+.   CA-C  psi
+.   C-N   omega
+SER CA-CB chi1
+#
+loop_
 _[local]_interaction_atom_names.label_atom_id
 N CA C O OXT CB H H2 HA HA2 HA3 HXT XA XA2
 #
