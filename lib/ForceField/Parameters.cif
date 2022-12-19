@@ -2567,7 +2567,7 @@ loop_
 _[local]_dihedral_angle_name.label_comp_id
 _[local]_dihedral_angle_name.label_atom_1_id
 _[local]_dihedral_angle_name.label_atom_2_id
-_[local]_dihedral_angle_name.name
+_[local]_dihedral_angle_name.value
 .   N  CA  phi
 .   CA C   psi
 .   C  N   omega

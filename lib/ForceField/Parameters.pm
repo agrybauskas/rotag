@@ -342,6 +342,21 @@ sub force_field
             $dihedral_angle_restraint;
     }
 
+    # Restructuring parameters of dihedral angle names.
+    my $dihedral_angle_names =
+        pdbx_loop_to_array( $force_field_data, '_[local]_dihedral_angle_name' );
+
+    for my $dihedral_angle_name ( @{ $dihedral_angle_names } ) {
+        my $residue_name = $dihedral_angle_name->{'label_comp_id'};
+        my $atom_name_1 = $dihedral_angle_name->{'label_atom_1_id'};
+        my $atom_name_2 = $dihedral_angle_name->{'label_atom_2_id'};
+        my $angle_name = $dihedral_angle_name->{'value'};
+
+        $force_field_parameters{'_[local]_dihedral_angle_name'}
+                               {$residue_name}{$atom_name_1}{$atom_name_2} =
+            $angle_name;
+    }
+
     # Restructuring parameters of interaction atom names.
     $force_field_parameters{'_[local]_interaction_atom_names'} =
         $force_field_data->{'_[local]_interaction_atom_names'}{'data'};
