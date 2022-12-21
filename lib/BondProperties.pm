@@ -530,8 +530,9 @@ sub bond_path_search
 sub name_bond_parameters
 {
     my ( $parameters, $atom_site, $bonds, $atom_order, $options ) = @_;
-    my ( $do_mainchain, $skip_if_terminal ) = (
+    my ( $do_mainchain, $explicit_symbol, $skip_if_terminal ) = (
         $options->{'do_mainchain'},
+        $options->{'explicit_symbol'},
         $options->{'skip_if_terminal'},
     );
 
@@ -564,9 +565,19 @@ sub name_bond_parameters
 
             next if ( ! $do_mainchain && ! $are_any_sidechain_atoms );
 
+            my ( $residue_name ) =
+                map { $atom_site->{$_}{'label_comp_id'} }
+                   @{ $bond_atom_ids };
             my $bond_parameter_name =
                 join( '-', map { $atom_site->{$_}{'label_atom_id'} }
                               @{ $bond_atom_ids } );
+
+            # If it can be changed, the bond parameter name is changed to the
+            # explicit one.
+            if( defined $explicit_symbol->{$residue_name}{$bond_parameter_name}){
+                $bond_parameter_name =
+                    $explicit_symbol->{$residue_name}{$bond_parameter_name};
+            }
 
             $bond_parameter_names{join(',',@{$bond_atom_ids})} =
                 $bond_parameter_name;
