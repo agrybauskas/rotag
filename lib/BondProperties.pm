@@ -207,15 +207,12 @@ sub rotatable_bonds
 
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
-    $options{'explicit_symbol'} = {
-        'N'  => { 'CA' => 'phi' },
-        'CA' => { 'C'  => 'psi' },
-    };
+    $options{'explicit_symbol'} = $parameters->{'_[local]_dihedral_angle_name'};
     $options{'ignore_connections'} = {
         'label_atom_id' => {
             'N' => { 'CD' => 1, # For PRO.
                      'C' => 1 },
-            ( $options->{'include_hetatoms'} ? () : ('C' => { 'N' => 1 }) ),
+            ( $options->{'include_hetatoms'} ? () : ( 'C' => { 'N' => 1 } ) ),
         },
     };
     $options{'skip_if_terminal'} = 1;
