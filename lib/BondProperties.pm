@@ -207,8 +207,6 @@ sub rotatable_bonds
 
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
-    $options{'mainchain_symbol'} = 'tau';
-    $options{'sidechain_symbol'} = 'chi';
     $options{'explicit_symbol'} = {
         'N'  => { 'CA' => 'phi' },
         'CA' => { 'C'  => 'psi' },
@@ -310,8 +308,6 @@ sub stretchable_bonds
 
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_stretchable_bonds;
-    $options{'mainchain_symbol'} = 'd';
-    $options{'sidechain_symbol'} = 'r';
     $options{'ignore_connections'} = {
         'label_atom_id' => {
             'N' => { 'C' => 1 }, # Pseudo connection for heteroatoms.
@@ -366,8 +362,6 @@ sub bendable_angles
 
     my %options = defined $options ? %{ $options } : ();
     $options{'append_func'} = \&BondProperties::append_bendable_angles;
-    $options{'mainchain_symbol'} = 'theta';
-    $options{'sidechain_symbol'} = 'eta';
 
     my $bendable_angles =
         bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
