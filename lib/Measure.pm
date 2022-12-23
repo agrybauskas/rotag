@@ -600,6 +600,8 @@ sub all_bond_angles
             $angle_values{$angle_name}{'value'} =
                 bond_angle( [ $first_atom_coord, $second_atom_coord,
                               $third_atom_coord ] );
+            $angle_values{$angle_name}{'order'} =
+                $uniq_bendable_angles{$angle_name}{'order'};
         }
 
         if( %angle_values ) {

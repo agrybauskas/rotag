@@ -582,7 +582,9 @@ for my $pdbx_file ( @ARGV ) {
             my $residue_name = $residue_site->{$residue_id}{'label_comp_id'};
 
             for my $angle_name (
-                sort keys %{ $bond_angles->{$residue_unique_key} } ) {
+                sort { $bond_angles->{$residue_unique_key}{$a}{'order'} <=>
+                       $bond_angles->{$residue_unique_key}{$b}{'order'} }
+                keys %{ $bond_angles->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $bond_angles->{$residue_unique_key}
                                                 {$angle_name}{'atom_ids'} };
                 push @{ $pdbx->{'_[local]_bond_angle'}{'data'} },
