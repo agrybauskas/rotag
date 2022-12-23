@@ -584,9 +584,9 @@ sub all_bond_angles
         }
 
         for my $angle_name ( keys %uniq_bendable_angles ) {
-            my $first_atom_id = $uniq_bendable_angles{$angle_name}->[0];
-            my $second_atom_id = $uniq_bendable_angles{$angle_name}->[1];
-            my $third_atom_id = $uniq_bendable_angles{$angle_name}->[2];
+            my $first_atom_id = $uniq_bendable_angles{$angle_name}{'atoms'}->[0];
+            my $second_atom_id = $uniq_bendable_angles{$angle_name}{'atoms'}->[1];
+            my $third_atom_id = $uniq_bendable_angles{$angle_name}{'atoms'}->[2];
 
             # Extracts coordinates for bond angle calculations.
             my ( $first_atom_coord, $second_atom_coord, $third_atom_coord ) =
@@ -729,8 +729,10 @@ sub all_bond_lengths
         }
 
         for my $bond_name ( keys %uniq_stretchable_bonds ) {
-            my $first_atom_id = $uniq_stretchable_bonds{$bond_name}->[0];
-            my $second_atom_id = $uniq_stretchable_bonds{$bond_name}->[1];
+            my $first_atom_id =
+                $uniq_stretchable_bonds{$bond_name}{'atoms'}->[0];
+            my $second_atom_id =
+                $uniq_stretchable_bonds{$bond_name}{'atoms'}->[1];
 
             # Extracts coordinates for bond length calculations.
             my $first_atom_coord =

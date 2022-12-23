@@ -267,12 +267,13 @@ sub rotation_translation
             }
 
             if( $do_bond_stretching ) {
-                for my $bond_name ( sort { $a cmp $b }
+                for my $bond_name ( sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
+                                           $stretchable_bonds->{$atom_id}{$b}{'order'} }
                                      keys %{ $stretchable_bonds->{$atom_id} } ) {
                     my $up_atom_id =
-                        $stretchable_bonds->{$atom_id}{$bond_name}[1];
+                        $stretchable_bonds->{$atom_id}{$bond_name}{'atoms'}[1];
                     my $mid_atom_id =
-                        $stretchable_bonds->{$atom_id}{$bond_name}[0];
+                        $stretchable_bonds->{$atom_id}{$bond_name}{'atoms'}[0];
 
                     my @mid_connections = # Excludes up atom.
                         grep { $_ ne $up_atom_id }
@@ -306,14 +307,15 @@ sub rotation_translation
             }
 
             if( $do_angle_bending ) {
-                for my $angle_name ( sort { $a cmp $b }
+                for my $angle_name ( sort { $bendable_angles->{$atom_id}{$a}{'order'} <=>
+                                            $bendable_angles->{$atom_id}{$b}{'order'} }
                                      keys %{ $bendable_angles->{$atom_id} } ) {
                     my $up_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}[2];
+                        $bendable_angles->{$atom_id}{$angle_name}{'atoms'}[2];
                     my $mid_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}[1];
+                        $bendable_angles->{$atom_id}{$angle_name}{'atoms'}[1];
                     my $side_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}[0];
+                        $bendable_angles->{$atom_id}{$angle_name}{'atoms'}[0];
 
                     my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
                         map { [ $residue_site->{$_}{'Cartn_x'},
