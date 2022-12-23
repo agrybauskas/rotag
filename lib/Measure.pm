@@ -510,45 +510,6 @@ sub all_bond_angles
                              [ $ca_atom_id, $c_atom_id, $next_n_atom_id ] );
             add_bond_angles( \%angle_values, $atom_site,
                              [ $o_atom_id, $c_atom_id, $next_n_atom_id ] );
-
-            # if( defined $prev_c_atom_id && defined $n_atom_id &&
-            #     defined $ca_atom_id ) {
-            #     $angle_values{'eta1'}{'atom_ids'} =
-            #         [ $prev_c_atom_id, $n_atom_id, $ca_atom_id ];
-            #     $angle_values{'eta1'}{'value'} =
-            #         bond_angle(
-            #             [ map { [ $atom_site->{$_}{'Cartn_x'},
-            #                       $atom_site->{$_}{'Cartn_y'},
-            #                       $atom_site->{$_}{'Cartn_z'} ] }
-            #                   ( $prev_c_atom_id, $n_atom_id, $ca_atom_id ) ]
-            #         );
-            # }
-
-            # if( defined $ca_atom_id && defined $c_atom_id &&
-            #     defined $next_n_atom_id ) {
-            #     $angle_values{'eta4'}{'atom_ids'} =
-            #         [ $ca_atom_id, $c_atom_id, $next_n_atom_id ];
-            #     $angle_values{'eta4'}{'value'} =
-            #         bond_angle(
-            #             [ map { [ $atom_site->{$_}{'Cartn_x'},
-            #                       $atom_site->{$_}{'Cartn_y'},
-            #                       $atom_site->{$_}{'Cartn_z'} ] }
-            #                   ( $ca_atom_id, $c_atom_id, $next_n_atom_id ) ]
-            #         );
-            # }
-
-            # if( defined $o_atom_id && defined $c_atom_id &&
-            #     defined $next_n_atom_id ) {
-            #     $angle_values{'eta5'}{'atom_ids'} =
-            #         [ $o_atom_id, $c_atom_id, $next_n_atom_id ];
-            #     $angle_values{'eta5'}{'value'} =
-            #         bond_angle(
-            #             [ map { [ $atom_site->{$_}{'Cartn_x'},
-            #                       $atom_site->{$_}{'Cartn_y'},
-            #                       $atom_site->{$_}{'Cartn_z'} ] }
-            #                   ( $o_atom_id, $c_atom_id, $next_n_atom_id ) ]
-            #         );
-            # }
         }
 
         for my $angle_name ( keys %{ $unique_bendable_angles } ) {
