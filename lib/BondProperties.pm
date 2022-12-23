@@ -586,10 +586,10 @@ sub name_bond_parameters
         }
     }
 
-    my %named_bond_parameters = ();
-
     # TODO: might be used inside the loop above, because nested conditionals
     # are the same.
+    my %named_bond_parameters = ();
+    my $bond_id = 1;
     for my $atom_id ( sort { $atom_order->{$a} <=> $atom_order->{$b} }
                       keys %{ $bonds } ) {
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
@@ -602,8 +602,12 @@ sub name_bond_parameters
 
             next if ! defined $bond_parameter_name;
 
-            $named_bond_parameters{$atom_id}{$bond_parameter_name} =
+            $named_bond_parameters{$atom_id}{$bond_parameter_name}{'atoms'} =
                 $bond_atom_ids;
+            $named_bond_parameters{$atom_id}{$bond_parameter_name}{'order'} =
+                $bond_id;
+
+            $bond_id++;
         }
     }
 
