@@ -65,17 +65,20 @@ sub rotation_only
 
             my @transf_matrices; # Matrices for transforming atom coordinates.
 
-            for my $angle_name ( sort { $a cmp $b }
+            for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
+                                        $rotatable_bonds->{$atom_id}{$b}{'order'} }
                                  keys %{ $rotatable_bonds->{$atom_id} } ) {
                 # First, checks if rotatable bond has fourth atom produce
                 # dihedral angle. It is done by looking at atom connections: if
                 # rotatable bond ends with terminal atom, then this bond is
                 # excluded.
-                my $up_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[1];
+                my $up_atom_id =
+                    $rotatable_bonds->{$atom_id}{$angle_name}{'atoms'}[1];
                 if( scalar( @{ $residue_site->{$up_atom_id}
                                               {'connections'} } ) < 2 ){ next; }
 
-                my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
+                my $mid_atom_id =
+                    $rotatable_bonds->{$atom_id}{$angle_name}{'atoms'}[0];
                 if( scalar( @{ $residue_site->{$mid_atom_id}
                                               {'connections'} } ) < 2 ){ next; }
 
