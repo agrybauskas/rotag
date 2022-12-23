@@ -273,17 +273,8 @@ sub all_dihedral
         my $rotatable_bonds =
             rotatable_bonds( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms } );
-
-        # TODO: make a function.
-        my %uniq_rotatable_bonds;
-        for my $atom_id ( keys %{ $rotatable_bonds } ) {
-            for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
-                if( ! exists $uniq_rotatable_bonds{"$angle_name"} ) {
-                    $uniq_rotatable_bonds{"$angle_name"} =
-                        $rotatable_bonds->{"$atom_id"}{"$angle_name"};
-                }
-            }
-        }
+        my $unique_rotatable_bonds=
+            unique_bond_parameters( $rotatable_bonds );
 
         my %angle_values;
 
@@ -355,7 +346,7 @@ sub all_dihedral
         }
 
         # Calculates every side-chain dihedral angle.
-        for my $angle_name ( keys %uniq_rotatable_bonds ) {
+        for my $angle_name ( keys %{ $unique_rotatable_bonds } ) {
             # First, checks if rotatable bond has fourth atom produce dihedral
             # angle. It is done by looking at atom connections - if rotatable
             # bond ends with terminal atom, then this bond is excluded.
@@ -363,14 +354,14 @@ sub all_dihedral
             # should be moved to separate function.
             # TODO: refactoring is needed.
             my $connection_count =
-                defined $residue_site->{$uniq_rotatable_bonds{$angle_name}{'atom_ids'}->[1]}
+                defined $residue_site->{$unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1]}
                                        {'connections'} ?
-                scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}{'atom_ids'}->[1]}
+                scalar(@{$residue_site->{$unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1]}
                                         {'connections'} } ) : 0;
             my $hetatom_connection_count =
-                defined $residue_site->{$uniq_rotatable_bonds{$angle_name}{'atom_ids'}->[1]}
+                defined $residue_site->{$unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1]}
                                        {'connections_hetatom'} ?
-                scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}{'atom_ids'}->[1]}
+                scalar(@{$residue_site->{$unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1]}
                                         {'connections_hetatom'} } ) : 0;
 
             if( ( ! $include_hetatoms && $connection_count < 2 ) ||
@@ -380,8 +371,10 @@ sub all_dihedral
             # Chooses proper atom ids for calculating dihedral angles.
             # NOTE: for second and third connections 'connections_hetatom'
             # should be included when dealing with multi-atom hetatoms.
-            my $second_atom_id = $uniq_rotatable_bonds{$angle_name}{'atom_ids'}->[0];
-            my $third_atom_id = $uniq_rotatable_bonds{$angle_name}{'atom_ids'}->[1];
+            my $second_atom_id =
+                $unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[0];
+            my $third_atom_id =
+                $unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1];
 
             my @second_connections = # Second atom connections, except third.
                 grep { $_ ne $third_atom_id }
@@ -652,17 +645,8 @@ sub all_bond_lengths
         my $stretchable_bonds =
             stretchable_bonds( $parameters, $residue_site, undef,
                                { 'include_hetatoms' => $include_hetatoms } );
-
-        # TODO: make a function.
-        my %uniq_stretchable_bonds;
-        for my $atom_id ( keys %{ $stretchable_bonds } ) {
-            for my $bond_name ( keys %{ $stretchable_bonds->{"$atom_id"} } ){
-                if( ! exists $uniq_stretchable_bonds{"$bond_name"} ) {
-                    $uniq_stretchable_bonds{"$bond_name"} =
-                        $stretchable_bonds->{"$atom_id"}{"$bond_name"};
-                }
-            }
-        }
+        my $unique_stretchable_bonds =
+            unique_bond_parameters( $stretchable_bonds );
 
         my %length_values;
 
@@ -725,11 +709,11 @@ sub all_bond_lengths
             }
         }
 
-        for my $bond_name ( keys %uniq_stretchable_bonds ) {
+        for my $bond_name ( keys %{ $unique_stretchable_bonds } ) {
             my $first_atom_id =
-                $uniq_stretchable_bonds{$bond_name}{'atom_ids'}->[0];
+                $unique_stretchable_bonds->{$bond_name}{'atom_ids'}->[0];
             my $second_atom_id =
-                $uniq_stretchable_bonds{$bond_name}{'atom_ids'}->[1];
+                $unique_stretchable_bonds->{$bond_name}{'atom_ids'}->[1];
 
             # Extracts coordinates for bond length calculations.
             my $first_atom_coord =
