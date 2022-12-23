@@ -28,9 +28,11 @@ my %stretchable_bonds =
 
 for my $atom_id ( sort { $a cmp $b } keys( %stretchable_bonds ) ) {
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
-    for my $bond ( sort { $a cmp $b } keys %{ $stretchable_bonds{$atom_id} } ) {
-        my $first_atom_id = $stretchable_bonds{$atom_id}{$bond}->[0];
-        my $second_atom_id = $stretchable_bonds{$atom_id}{$bond}->[1];
+    for my $bond ( sort { $stretchable_bonds{$atom_id}{$a}{'order'} <=>
+                          $stretchable_bonds{$atom_id}{$b}{'order'} }
+                   keys %{ $stretchable_bonds{$atom_id} } ) {
+        my $first_atom_id = $stretchable_bonds{$atom_id}{$bond}{'atoms'}->[0];
+        my $second_atom_id = $stretchable_bonds{$atom_id}{$bond}{'atoms'}->[1];
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
                "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
     }
