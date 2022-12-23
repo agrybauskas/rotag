@@ -484,17 +484,8 @@ sub all_bond_angles
             bendable_angles( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms,
                                'calc_mainchain' => $calc_mainchain } );
-
-        # TODO: make a function.
-        my %uniq_bendable_angles;
-        for my $atom_id ( keys %{ $bendable_angles } ) {
-            for my $angle_name ( keys %{ $bendable_angles->{"$atom_id"} } ){
-                if( ! exists $uniq_bendable_angles{"$angle_name"} ) {
-                    $uniq_bendable_angles{"$angle_name"} =
-                        $bendable_angles->{"$atom_id"}{"$angle_name"};
-                }
-            }
-        }
+        my $unique_bendable_angles =
+            unique_bond_parameters( $bendable_angles );
 
         my %angle_values;
 
@@ -584,10 +575,13 @@ sub all_bond_angles
             }
         }
 
-        for my $angle_name ( keys %uniq_bendable_angles ) {
-            my $first_atom_id = $uniq_bendable_angles{$angle_name}{'atom_ids'}->[0];
-            my $second_atom_id = $uniq_bendable_angles{$angle_name}{'atom_ids'}->[1];
-            my $third_atom_id = $uniq_bendable_angles{$angle_name}{'atom_ids'}->[2];
+        for my $angle_name ( keys %{ $unique_bendable_angles } ) {
+            my $first_atom_id =
+                $unique_bendable_angles->{$angle_name}{'atom_ids'}->[0];
+            my $second_atom_id =
+                $unique_bendable_angles->{$angle_name}{'atom_ids'}->[1];
+            my $third_atom_id =
+                $unique_bendable_angles->{$angle_name}{'atom_ids'}->[2];
 
             # Extracts coordinates for bond angle calculations.
             my ( $first_atom_coord, $second_atom_coord, $third_atom_coord ) =
@@ -602,7 +596,7 @@ sub all_bond_angles
                 bond_angle( [ $first_atom_coord, $second_atom_coord,
                               $third_atom_coord ] );
             $angle_values{$angle_name}{'order'} =
-                $uniq_bendable_angles{$angle_name}{'order'};
+                $unique_bendable_angles->{$angle_name}{'order'};
         }
 
         if( %angle_values ) {
@@ -759,6 +753,21 @@ sub all_bond_lengths
     }
 
     return \%residue_bond_lengths;
+}
+
+sub unique_bond_parameters
+{
+    my ( $bond_parameters ) = @_;
+    my %unique_bond_parameters;
+    for my $atom_id ( keys %{ $bond_parameters } ) {
+        for my $parameter_name ( keys %{ $bond_parameters->{"$atom_id"} } ) {
+            if( ! exists $unique_bond_parameters{"$parameter_name"} ) {
+                $unique_bond_parameters{"$parameter_name"} =
+                    $bond_parameters->{"$atom_id"}{"$parameter_name"};
+            }
+        }
+    }
+    return \%unique_bond_parameters;
 }
 
 #
