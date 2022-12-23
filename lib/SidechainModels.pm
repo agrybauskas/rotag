@@ -202,13 +202,15 @@ sub rotation_translation
             if( $do_bond_torsion ) {
                 # TODO: code block is similar to all_dihedral(). The code should
                 # be moved to separate function.
-                for my $angle_name ( sort { $a cmp $b }
+                for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
+                                            $rotatable_bonds->{$atom_id}{$b}{'order'} }
                                      keys %{ $rotatable_bonds->{$atom_id} } ) {
                     # First, checks if rotatable bond has fourth atom produce
                     # dihedral angle. It is done by looking at atom connections:
                     # if rotatable bond ends with terminal atom, then this bond
                     # is excluded.
-                    my $up_atom_id =$rotatable_bonds->{$atom_id}{$angle_name}[1];
+                    my $up_atom_id =
+                        $rotatable_bonds->{$atom_id}{$angle_name}{'atoms'}[1];
 
                     my $connection_count =
                         defined $residue_site->{$up_atom_id}{'connections'} ?
@@ -221,7 +223,8 @@ sub rotation_translation
                         ( $include_hetatoms &&
                           $connection_count + $hetatom_connection_count < 2 ) ){ next; }
 
-                    my $mid_atom_id = $rotatable_bonds->{$atom_id}{$angle_name}[0];
+                    my $mid_atom_id =
+                        $rotatable_bonds->{$atom_id}{$angle_name}{'atoms'}[0];
                     if( ! $include_hetatoms &&
                         scalar( @{ $residue_site->{$mid_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }

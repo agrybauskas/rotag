@@ -797,7 +797,9 @@ sub calc_favourable_angles
             # prefix. It will be important if large quantity of dihedral angles
             # are analyzed.
             my ( $last_angle_name ) =
-                sort { $b cmp $a } keys %{ $rotatable_bonds->{$atom_id} };
+                sort { $rotatable_bonds->{$atom_id}{$b}{'order'} <=>
+                       $rotatable_bonds->{$atom_id}{$a}{'order'} }
+               keys %{ $rotatable_bonds->{$atom_id} };
 
             if( exists $angles->{$residue_name}{$last_angle_name} ) {
                 @default_allowed_angles =
