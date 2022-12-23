@@ -28,9 +28,11 @@ my %rotatable_bonds =
 
 for my $atom_id ( sort { $a cmp $b } keys( %rotatable_bonds ) ) {
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
-    for my $angle ( sort { $a cmp $b } keys %{ $rotatable_bonds{$atom_id} } ) {
-        my $first_atom_id = $rotatable_bonds{$atom_id}{$angle}->[0];
-        my $second_atom_id = $rotatable_bonds{$atom_id}{$angle}->[1];
+    for my $angle ( sort { $rotatable_bonds{$atom_id}{$a}{'order'} <=>
+                           $rotatable_bonds{$atom_id}{$b}{'order'} }
+                    keys %{ $rotatable_bonds{$atom_id} } ) {
+        my $first_atom_id = $rotatable_bonds{$atom_id}{$angle}{'atoms'}->[0];
+        my $second_atom_id = $rotatable_bonds{$atom_id}{$angle}{'atoms'}->[1];
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
                "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
     }
