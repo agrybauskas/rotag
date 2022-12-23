@@ -602,7 +602,7 @@ sub name_bond_parameters
 
             next if ! defined $bond_parameter_name;
 
-            $named_bond_parameters{$atom_id}{$bond_parameter_name}{'atoms'} =
+            $named_bond_parameters{$atom_id}{$bond_parameter_name}{'atom_ids'} =
                 $bond_atom_ids;
             $named_bond_parameters{$atom_id}{$bond_parameter_name}{'order'} =
                 $bond_id;

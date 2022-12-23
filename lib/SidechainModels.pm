@@ -73,12 +73,12 @@ sub rotation_only
                 # rotatable bond ends with terminal atom, then this bond is
                 # excluded.
                 my $up_atom_id =
-                    $rotatable_bonds->{$atom_id}{$angle_name}{'atoms'}[1];
+                    $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[1];
                 if( scalar( @{ $residue_site->{$up_atom_id}
                                               {'connections'} } ) < 2 ){ next; }
 
                 my $mid_atom_id =
-                    $rotatable_bonds->{$atom_id}{$angle_name}{'atoms'}[0];
+                    $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[0];
                 if( scalar( @{ $residue_site->{$mid_atom_id}
                                               {'connections'} } ) < 2 ){ next; }
 
@@ -210,7 +210,7 @@ sub rotation_translation
                     # if rotatable bond ends with terminal atom, then this bond
                     # is excluded.
                     my $up_atom_id =
-                        $rotatable_bonds->{$atom_id}{$angle_name}{'atoms'}[1];
+                        $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[1];
 
                     my $connection_count =
                         defined $residue_site->{$up_atom_id}{'connections'} ?
@@ -224,7 +224,7 @@ sub rotation_translation
                           $connection_count + $hetatom_connection_count < 2 ) ){ next; }
 
                     my $mid_atom_id =
-                        $rotatable_bonds->{$atom_id}{$angle_name}{'atoms'}[0];
+                        $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[0];
                     if( ! $include_hetatoms &&
                         scalar( @{ $residue_site->{$mid_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }
@@ -271,9 +271,9 @@ sub rotation_translation
                                            $stretchable_bonds->{$atom_id}{$b}{'order'} }
                                      keys %{ $stretchable_bonds->{$atom_id} } ) {
                     my $up_atom_id =
-                        $stretchable_bonds->{$atom_id}{$bond_name}{'atoms'}[1];
+                        $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[1];
                     my $mid_atom_id =
-                        $stretchable_bonds->{$atom_id}{$bond_name}{'atoms'}[0];
+                        $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[0];
 
                     my @mid_connections = # Excludes up atom.
                         grep { $_ ne $up_atom_id }
@@ -311,11 +311,11 @@ sub rotation_translation
                                             $bendable_angles->{$atom_id}{$b}{'order'} }
                                      keys %{ $bendable_angles->{$atom_id} } ) {
                     my $up_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}{'atoms'}[2];
+                        $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[2];
                     my $mid_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}{'atoms'}[1];
+                        $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[1];
                     my $side_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}{'atoms'}[0];
+                        $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[0];
 
                     my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
                         map { [ $residue_site->{$_}{'Cartn_x'},

@@ -31,9 +31,9 @@ for my $atom_id ( sort { $a cmp $b } keys( %bendable_angles ) ) {
     for my $angle ( sort { $bendable_angles{$atom_id}{$a}{'order'} <=>
                            $bendable_angles{$atom_id}{$b}{'order'} }
                     keys %{ $bendable_angles{$atom_id} } ) {
-        my $first_atom_id  = $bendable_angles{$atom_id}{$angle}{'atoms'}->[0];
-        my $second_atom_id = $bendable_angles{$atom_id}{$angle}{'atoms'}->[1];
-        my $third_atom_id  = $bendable_angles{$atom_id}{$angle}{'atoms'}->[2];
+        my $first_atom_id  = $bendable_angles{$atom_id}{$angle}{'atom_ids'}->[0];
+        my $second_atom_id = $bendable_angles{$atom_id}{$angle}{'atom_ids'}->[1];
+        my $third_atom_id  = $bendable_angles{$atom_id}{$angle}{'atom_ids'}->[2];
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
                "$atom_site->{$second_atom_id}{\"label_atom_id\"}," .
                "$atom_site->{$third_atom_id}{\"label_atom_id\"} " );
