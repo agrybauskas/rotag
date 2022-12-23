@@ -482,7 +482,8 @@ sub all_bond_angles
 
         my $bendable_angles =
             bendable_angles( $parameters, $residue_site, undef,
-                             { 'include_hetatoms' => $include_hetatoms } );
+                             { 'include_hetatoms' => $include_hetatoms,
+                               'calc_mainchain' => $calc_mainchain } );
 
         # TODO: make a function.
         my %uniq_bendable_angles;

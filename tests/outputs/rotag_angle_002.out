@@ -16,6 +16,6 @@ _[local]_bond_angle.label_atom_3_id
 _[local]_bond_angle.type
 _[local]_bond_angle.value
 _[local]_bond_angle.units
-1 SER 18 A 1 . 147 N 148 CA 151 CB eta1 110.180 degrees
-2 SER 18 A 1 . 148 CA 151 CB 152 OG eta2 110.597 degrees
+1 SER 18 A 1 . 147 N 148 CA 151 CB N-CA-CB 110.180 degrees
+2 SER 18 A 1 . 148 CA 151 CB 152 OG CA-CB-OG 110.597 degrees
 #
