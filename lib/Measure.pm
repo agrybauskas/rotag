@@ -363,14 +363,14 @@ sub all_dihedral
             # should be moved to separate function.
             # TODO: refactoring is needed.
             my $connection_count =
-                defined $residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
+                defined $residue_site->{$uniq_rotatable_bonds{$angle_name}{'atoms'}->[1]}
                                        {'connections'} ?
-                scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
+                scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}{'atoms'}->[1]}
                                         {'connections'} } ) : 0;
             my $hetatom_connection_count =
-                defined $residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
+                defined $residue_site->{$uniq_rotatable_bonds{$angle_name}{'atoms'}->[1]}
                                        {'connections_hetatom'} ?
-                scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}->[1]}
+                scalar(@{$residue_site->{$uniq_rotatable_bonds{$angle_name}{'atoms'}->[1]}
                                         {'connections_hetatom'} } ) : 0;
 
             if( ( ! $include_hetatoms && $connection_count < 2 ) ||
@@ -380,8 +380,8 @@ sub all_dihedral
             # Chooses proper atom ids for calculating dihedral angles.
             # NOTE: for second and third connections 'connections_hetatom'
             # should be included when dealing with multi-atom hetatoms.
-            my $second_atom_id = $uniq_rotatable_bonds{$angle_name}->[0];
-            my $third_atom_id = $uniq_rotatable_bonds{$angle_name}->[1];
+            my $second_atom_id = $uniq_rotatable_bonds{$angle_name}{'atoms'}->[0];
+            my $third_atom_id = $uniq_rotatable_bonds{$angle_name}{'atoms'}->[1];
 
             my @second_connections = # Second atom connections, except third.
                 grep { $_ ne $third_atom_id }
