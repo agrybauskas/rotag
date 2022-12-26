@@ -563,9 +563,11 @@ sub name_bond_parameters
                             @{ $bond_atom_ids } ) <
                 scalar( @{ $bond_atom_ids } );
             my $are_any_heteroatoms =
-                grep { $atom_site->{$_}{'group_PDB'} } @{ $bond_atom_ids };
+                grep { $atom_site->{$_}{'group_PDB'} eq 'HEATM' } @{ $bond_atom_ids };
 
-            next if ( ! $do_mainchain && ! $are_any_sidechain_atoms );
+            next if ! $do_mainchain &&
+                    ! $are_any_sidechain_atoms &&
+                    ! $are_any_heteroatoms;
 
             my ( $residue_name ) =
                 map { $atom_site->{$_}{'label_comp_id'} }
