@@ -350,10 +350,13 @@ sub force_field
         my $residue_name = $dihedral_angle_name->{'label_comp_id'};
         my $atom_name_1 = $dihedral_angle_name->{'label_atom_1_id'};
         my $atom_name_2 = $dihedral_angle_name->{'label_atom_2_id'};
+        my $atom_name_3 = $dihedral_angle_name->{'label_atom_3_id'};
+        my $atom_name_4 = $dihedral_angle_name->{'label_atom_4_id'};
         my $angle_name = $dihedral_angle_name->{'value'};
 
         $force_field_parameters{'_[local]_dihedral_angle_name'}
-                               {$residue_name}{"${atom_name_1}-${atom_name_2}"} =
+                               {$residue_name}
+                               {"${atom_name_1}-${atom_name_2}-${atom_name_3}-${atom_name_4}"} =
             $angle_name;
     }
 
