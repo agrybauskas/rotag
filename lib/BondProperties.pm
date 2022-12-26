@@ -532,13 +532,13 @@ sub bond_path_search
 sub name_bond_parameters
 {
     my ( $parameters, $atom_site, $bonds, $atom_order, $options ) = @_;
-    my ( $do_mainchain, $explicit_symbol, $skip_if_terminal ) = (
-        $options->{'do_mainchain'},
+    my ( $calc_mainchain, $explicit_symbol, $skip_if_terminal ) = (
+        $options->{'calc_mainchain'},
         $options->{'explicit_symbol'},
         $options->{'skip_if_terminal'},
     );
 
-    $do_mainchain //= 0;
+    $calc_mainchain //= 0;
     $skip_if_terminal //= 0;
 
     my %mainchain_atom_names =
@@ -568,7 +568,7 @@ sub name_bond_parameters
                 grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' }
                      ( @{ $bond_atom_ids }, $atom_id );
 
-            next if ! $do_mainchain &&
+            next if ! $calc_mainchain &&
                     ! $are_any_sidechain_atoms &&
                     ! $are_any_heteroatoms;
 
