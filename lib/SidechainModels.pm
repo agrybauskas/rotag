@@ -170,15 +170,15 @@ sub rotation_translation
 
         my $bendable_angles =
             $do_angle_bending ?
-            bendable_angles( $parameters, $residue_site, undef, undef, undef,
+            bendable_angles( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms } ) : {};
         my $rotatable_bonds =
             $do_bond_torsion ?
-            rotatable_bonds( $parameters, $residue_site, undef, undef,
+            rotatable_bonds( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms } ) : {};
         my $stretchable_bonds =
             $do_bond_stretching ?
-            stretchable_bonds( $parameters, $residue_site, undef, undef,
+            stretchable_bonds( $parameters, $residue_site, undef,
                                { 'include_hetatoms' => $include_hetatoms } ): {};
 
         if( ! %{ $rotatable_bonds } &&

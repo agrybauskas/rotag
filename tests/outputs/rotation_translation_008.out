@@ -48,7 +48,7 @@ $VAR1 = [
         return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
     },
     'symbols' => [
-      'theta1'
+      'N-CA-MG'
     ]
   }, 'Symbolic' ),
   [
@@ -87,7 +87,7 @@ $VAR1 = [
         return [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, $svar], [0, 0, 0, 1]];
     },
     'symbols' => [
-      'r1'
+      'CA-MG'
     ]
   }, 'Symbolic' ),
   [
