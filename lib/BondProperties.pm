@@ -562,6 +562,8 @@ sub name_bond_parameters
                         map  { $atom_site->{$_}{'label_atom_id'} }
                             @{ $bond_atom_ids } ) <
                 scalar( @{ $bond_atom_ids } );
+            my $are_any_heteroatoms =
+                grep { $atom_site->{$_}{'group_PDB'} } @{ $bond_atom_ids };
 
             next if ( ! $do_mainchain && ! $are_any_sidechain_atoms );
 
