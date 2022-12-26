@@ -478,6 +478,7 @@ sub all_bond_angles
             bendable_angles( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms,
                                'calc_mainchain' => $calc_mainchain } );
+
         my $unique_bendable_angles =
             unique_bond_parameters( $bendable_angles );
 
@@ -706,7 +707,7 @@ sub unique_bond_parameters
 {
     my ( $bond_parameters ) = @_;
     my %unique_bond_parameters;
-    for my $atom_id ( keys %{ $bond_parameters } ) {
+    for my $atom_id ( sort keys %{ $bond_parameters } ) {
         for my $parameter_name ( keys %{ $bond_parameters->{"$atom_id"} } ) {
             if( ! exists $unique_bond_parameters{"$parameter_name"} ) {
                 $unique_bond_parameters{"$parameter_name"} =
