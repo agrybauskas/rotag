@@ -563,7 +563,8 @@ sub name_bond_parameters
                             @{ $bond_atom_ids } ) <
                 scalar( @{ $bond_atom_ids } );
             my $are_any_heteroatoms =
-                grep { $atom_site->{$_}{'group_PDB'} eq 'HEATM' } @{ $bond_atom_ids };
+                grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' }
+                     ( @{ $bond_atom_ids }, $atom_id );
 
             next if ! $do_mainchain &&
                     ! $are_any_sidechain_atoms &&
