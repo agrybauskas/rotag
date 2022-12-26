@@ -109,14 +109,14 @@ sub rotation_only
                       $residue_site->{$side_atom_id}{'Cartn_y'},
                       $residue_site->{$side_atom_id}{'Cartn_z'} ];
 
-            # Creates and appends matrices to a list of matrices that later
-            # will be multiplied.
-            push @transf_matrices,
-                 @{ bond_torsion( $parameters,
-                                  $mid_atom_coord,
-                                  $up_atom_coord,
-                                  $side_atom_coord,
-                                  $angle_name ) };
+                # Creates and appends matrices to a list of matrices that later
+                # will be multiplied.
+                push @transf_matrices,
+                    @{ bond_torsion( $parameters,
+                                     $mid_atom_coord,
+                                     $up_atom_coord,
+                                     $side_atom_coord,
+                                     $angle_name ) };
             }
 
             $atom_site->{$atom_id}{'conformation'} =
