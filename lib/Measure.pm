@@ -348,60 +348,10 @@ sub all_dihedral
 
         # Calculates every side-chain dihedral angle.
         for my $angle_name ( keys %{ $unique_rotatable_bonds } ) {
-            # First, checks if rotatable bond has fourth atom produce dihedral
-            # angle. It is done by looking at atom connections - if rotatable
-            # bond ends with terminal atom, then this bond is excluded.
-            # TODO: code block  is similar to rotation_translation(). The code
-            # should be moved to separate function.
-            # TODO: refactoring is needed.
-            my $connection_count =
-                defined $residue_site->{$unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1]}
-                                       {'connections'} ?
-                scalar(@{$residue_site->{$unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1]}
-                                        {'connections'} } ) : 0;
-            my $hetatom_connection_count =
-                defined $residue_site->{$unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1]}
-                                       {'connections_hetatom'} ?
-                scalar(@{$residue_site->{$unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1]}
-                                        {'connections_hetatom'} } ) : 0;
-
-            if( ( ! $include_hetatoms && $connection_count < 2 ) ||
-                ( $include_hetatoms &&
-                  $connection_count + $hetatom_connection_count < 2 ) ){ next; }
-
-            # Chooses proper atom ids for calculating dihedral angles.
-            # NOTE: for second and third connections 'connections_hetatom'
-            # should be included when dealing with multi-atom hetatoms.
-            my $second_atom_id =
-                $unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[0];
-            my $third_atom_id =
-                $unique_rotatable_bonds->{$angle_name}{'atom_ids'}->[1];
-
-            my @second_connections = # Second atom connections, except third.
-                grep { $_ ne $third_atom_id }
-                grep { defined $residue_site->{$_} }
-                ( @{ $residue_site->{$second_atom_id}{'connections'} },
-                  ( $include_hetatoms &&
-                    defined $residue_site->{$second_atom_id}
-                                           {'connections_hetatom'} ?
-                    @{ $residue_site->{$second_atom_id}
-                                      {'connections_hetatom'} }: () ) );
-            my @third_connections = # Third atom connections, except second.
-                grep { $_ ne $second_atom_id }
-                grep { defined $residue_site->{$_} }
-                ( @{ $residue_site->{$third_atom_id}{'connections'} },
-                  ( $include_hetatoms &&
-                    defined $residue_site->{$third_atom_id}
-                                           {'connections_hetatom'} ?
-                    @{ $residue_site->{$third_atom_id}
-                                      {'connections_hetatom'} }: () ) );
-
             # HACK: it might not work with hetero atoms, because there might be
             # more than one atom name.
-            my $first_atom_id =
-                sort_atom_ids_by_name( \@second_connections, $residue_site)->[0];
-            my $fourth_atom_id =
-                sort_atom_ids_by_name( \@third_connections, $residue_site )->[0];
+            my ( $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id ) =
+                @{ $unique_rotatable_bonds->{$angle_name}{'atom_ids'} };
 
             # Extracts coordinates for dihedral angle calculations.
             my ( $first_atom_coord, $second_atom_coord, $third_atom_coord,

@@ -240,43 +240,51 @@ sub append_rotatable_bonds
     my $parent_atom_id = $parent_atom_ids->{$atom_id};
     return if ! defined $parent_atom_id;
 
-    my $is_hetatom = $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
+    my $grandparent_atom_id = $parent_atom_ids->{$parent_atom_id};
+    return if ! defined $grandparent_atom_id;
+
+    my $great_grandparent_atom_id = $parent_atom_ids->{$grandparent_atom_id};
+    return if ! defined $great_grandparent_atom_id;
+
     my $is_parent_hetatom =
         $atom_site->{$parent_atom_id}{'group_PDB'} eq 'HETATM';
+    my $is_grandparent_hetatom =
+        $atom_site->{$grandparent_atom_id}{'group_PDB'} eq 'HETATM';
 
     # NOTE: this hetatom exception currently will work on single atoms.
     # NOTE: make sure that interaction between 'is_hetatom' and
     # 'include_hetatoms' is correct.
-    if( ( ! $is_hetatom ) &&
-        ( ! exists $atom_site->{$atom_id}{'hybridization'} ) ) {
-        confess "atom with id $atom_id lacks information about " .
-            "hybridization"
-    }
     if( ( ! $is_parent_hetatom ) &&
         ( ! exists $atom_site->{$parent_atom_id}{'hybridization'} ) ) {
-        confess "atom with id $parent_atom_id lacks information about " .
+        confess "atom with id ${parent_atom_id} lacks information about " .
+            "hybridization"
+    }
+    if( ( ! $is_grandparent_hetatom ) &&
+        ( ! exists $atom_site->{$grandparent_atom_id}{'hybridization'} ) ) {
+        confess "atom with id ${grandparent_atom_id} lacks information about " .
             "hybridization"
     }
 
-    if( $atom_site->{$parent_atom_id}{'hybridization'} eq 'sp3' ||
-        $atom_site->{$atom_id}{'hybridization'} eq 'sp3' ||
+    if( $atom_site->{$grandparent_atom_id}{'hybridization'} eq 'sp3' ||
+        $atom_site->{$parent_atom_id}{'hybridization'} eq 'sp3' ||
         ( $include_hetatoms &&
-          ( $is_hetatom || $is_parent_hetatom ) &&
-          $atom_site->{$atom_id}{'hybridization'} eq '.' ) ) {
+          ( $is_grandparent_hetatom || $is_parent_hetatom ) &&
+          $atom_site->{$parent_atom_id}{'hybridization'} eq '.' ) ) {
         # If last visited atom was sp3, then rotatable bonds from
         # previous atom are copied and the new one is appended.
-        push @{ $rotatable_bonds->{$atom_id} },
-            [ $parent_atom_id, $atom_id ];
-        if( exists $rotatable_bonds->{$parent_atom_id} ) {
-            unshift @{ $rotatable_bonds->{$atom_id} },
-                @{ $rotatable_bonds->{$parent_atom_id} };
+        push @{ $rotatable_bonds->{$parent_atom_id} },
+            [ $great_grandparent_atom_id, $grandparent_atom_id,
+              $parent_atom_id, $atom_id ];
+        if( exists $rotatable_bonds->{$grandparent_atom_id} ) {
+            unshift @{ $rotatable_bonds->{$parent_atom_id} },
+                @{ $rotatable_bonds->{$grandparent_atom_id} };
         }
     } else {
         # If last visited atom is sp2 or sp, inherits its rotatable
         # bonds, because double or triple bonds do not rotate.
-        if( exists $rotatable_bonds->{$parent_atom_id} ) {
-            unshift @{ $rotatable_bonds->{$atom_id} },
-                @{ $rotatable_bonds->{$parent_atom_id} };
+        if( exists $rotatable_bonds->{$grandparent_atom_id} ) {
+            unshift @{ $rotatable_bonds->{$parent_atom_id} },
+                @{ $rotatable_bonds->{$grandparent_atom_id} };
         }
     }
 
@@ -578,12 +586,24 @@ sub name_bond_parameters
             my $bond_parameter_name =
                 join( '-', map { $atom_site->{$_}{'label_atom_id'} }
                               @{ $bond_atom_ids } );
+            my $alt_bond_parameter_name = "";
+            # HACK: maybe there is a more universal way to do specifically for
+            # rotatable bonds.
+            if( scalar @{ $bond_atom_ids } == 4 ) {
+                $alt_bond_parameter_name =
+                    join '-',
+                    ( '.', $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
+                      $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'}, '.' );
+            }
 
             # If it can be changed, the bond parameter name is changed to the
             # explicit one.
-            if( defined $explicit_symbol->{$residue_name}{$bond_parameter_name}){
-                $bond_parameter_name =
-                    $explicit_symbol->{$residue_name}{$bond_parameter_name};
+            if( defined $explicit_symbol->{$residue_name}{$bond_parameter_name} ||
+                defined $explicit_symbol->{$residue_name}{$alt_bond_parameter_name} ){
+                ( $bond_parameter_name ) =
+                    grep { defined $_ }
+                    ($explicit_symbol->{$residue_name}{$bond_parameter_name},
+                     $explicit_symbol->{$residue_name}{$alt_bond_parameter_name});
             }
 
             $bond_parameter_names{join(',',@{$bond_atom_ids})} =
