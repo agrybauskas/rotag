@@ -3,13 +3,6 @@ package BondPath;
 use strict;
 use warnings;
 
-use Exporter qw( import );
-BEGIN {
-    our @EXPORT_OK = qw( bendable_angles
-                         rotatable_bonds
-                         stretchable_bonds );
-}
-
 use AtomProperties qw( sort_atom_ids_by_name );
 use PDBxParser qw( filter_new );
 
@@ -86,23 +79,6 @@ sub new
     }
 
     return bless $self, $class;
-}
-
-# ------------------------- Struct-related functions -------------------------- #
-
-sub bendable_angles
-{
-
-}
-
-sub rotatable_bonds
-{
-
-}
-
-sub stretchable_bonds
-{
-
 }
 
 1;
