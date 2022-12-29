@@ -252,8 +252,6 @@ sub append_rotatable_bonds
         $atom_site->{$grandparent_atom_id}{'group_PDB'} eq 'HETATM';
 
     # NOTE: this hetatom exception currently will work on single atoms.
-    # NOTE: make sure that interaction between 'is_hetatom' and
-    # 'include_hetatoms' is correct.
     if( ( ! $is_parent_hetatom ) &&
         ( ! exists $atom_site->{$parent_atom_id}{'hybridization'} ) ) {
         confess "atom with id ${parent_atom_id} lacks information about " .
