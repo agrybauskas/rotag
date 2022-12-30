@@ -256,6 +256,7 @@ sub rotatable_bonds
                @{ sort_atom_ids_by_name( [ keys %{ $atom_connections{$previous_atom->{'id'}} } ],
                                          $atom_site ) };
 
+        # Check on hybridization.
         if( ( ! $first_atom->{'id'} ) &&
             ( ! exists $atom_site->{$first_atom->{'id'}}{'hybridization'} ) ) {
             confess "atom with id $first_atom->{'id'} lacks information " .
@@ -267,6 +268,7 @@ sub rotatable_bonds
                 "about hybridization";
         }
 
+        # Appending dihedral angles.
         if( $previous_atom->{'hybridization'} eq 'sp3' ||
             $first_atom->{'hybridization' eq 'sp3' ||
             ( $include_hetatoms &&
