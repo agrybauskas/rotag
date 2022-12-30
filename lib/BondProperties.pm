@@ -237,12 +237,20 @@ sub rotatable_bonds
 
     my %atom_connections = ();
     my %rotatable_bonds = ();
-    for my $bond_path ( @{ $bond_paths } ) {
-        my $first_atom = $atom_site->{$bond_path->{'first_atom_id'}};
-        my $second_atom = $atom_site->{$bond_path->{'second_atom_id'}};
+    for my $i ( 0..$#{ $bond_paths } ) {
+        my $first_atom = $atom_site->{$bond_paths->[$i]{'first_atom_id'}};
+        my $second_atom = $atom_site->{$bond_paths->[$i]{'second_atom_id'}};
 
         $atom_connections{$first_atom->{'id'}}{$second_atom->{'id'}} = 1;
         $atom_connections{$second_atom->{'id'}}{$second_atom->{'id'}} = 1;
+
+        # At least 4 atoms are mandatory to calculate dihedral angles.
+        next if $i < 3;
+
+        # my $previous_atom =
+        #     $atom_site->{$atom_connections{$first_atom->{'id'}}};
+        # my $next_to_previous_atom =
+        #     $atom_site->{$atom_connections{$previous_atom->{'id'}}};
     };
 
     return \%rotatable_bonds;
