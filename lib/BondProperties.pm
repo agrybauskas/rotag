@@ -188,7 +188,8 @@ sub hybridization
 # Identifies bonds that can be rotated by torsional angle.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $start_atom_ids - starting atom ids.
+#     $start_atom_ids - starting atom ids;
+#     $options->{'include_hetatoms'} - includes heteroatoms.
 # Output:
 #     %rotatable_bonds - data structure that describes rotatable bonds and
 #     the constituent atom ids of the bond. Ex.:
@@ -234,11 +235,15 @@ sub rotatable_bonds
         'start_atom_ids' => $start_atom_ids
     } );
 
+    my %atom_connections = ();
     my %rotatable_bonds = ();
     for my $bond_path ( @{ $bond_paths } ) {
         my $first_atom = $atom_site->{$bond_path->{'first_atom_id'}};
         my $second_atom = $atom_site->{$bond_path->{'second_atom_id'}};
-    }
+
+        $atom_connections{$first_atom->{'id'}}{$second_atom->{'id'}} = 1;
+        $atom_connections{$second_atom->{'id'}}{$second_atom->{'id'}} = 1;
+    };
 
     return \%rotatable_bonds;
 }
