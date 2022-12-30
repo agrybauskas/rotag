@@ -63,8 +63,8 @@ sub new
 
             if( ! exists $bond_paths{$sorted_neighbour_atom_id} ) {
                 push @{ $self },
-                    { 'first_atom' => { 'id' => $atom_id },
-                      'second_atom' => { 'id' => $sorted_neighbour_atom_id } };
+                    { 'first_atom_id' => $atom_id,
+                      'second_atom_id' => $sorted_neighbour_atom_id };
             }
 
             # Depth-first search.

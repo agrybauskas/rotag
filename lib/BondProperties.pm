@@ -235,6 +235,10 @@ sub rotatable_bonds
     } );
 
     my %rotatable_bonds = ();
+    for my $bond_path ( @{ $bond_paths } ) {
+        my $first_atom = $atom_site->{$bond_path->{'first_atom_id'}};
+        my $second_atom = $atom_site->{$bond_path->{'second_atom_id'}};
+    }
 
     return \%rotatable_bonds;
 }
