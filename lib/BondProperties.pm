@@ -241,6 +241,8 @@ sub rotatable_bonds
         my $first_atom = $atom_site->{$bond_paths->[$i]{'first_atom_id'}};
         my $second_atom = $atom_site->{$bond_paths->[$i]{'second_atom_id'}};
 
+        # print STDERR $first_atom->{'label_atom_id'}, " -> ",  $second_atom->{'label_atom_id'}, "\n";
+
         $atom_connections{$first_atom->{'id'}}{$second_atom->{'id'}} = 1;
         $atom_connections{$second_atom->{'id'}}{$first_atom->{'id'}} = 1;
 
