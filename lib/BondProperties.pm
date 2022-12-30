@@ -19,6 +19,7 @@ use List::MoreUtils qw( uniq );
 
 use AtomProperties qw( sort_atom_names
                        sort_atom_ids_by_name );
+use BondPath;
 use Measure qw( dihedral_angle );
 use PDBxParser qw( filter_new );
 use Version qw( $VERSION );
@@ -187,14 +188,15 @@ sub hybridization
 # Identifies bonds that can be rotated by torsional angle.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     ${start,next}_atom_id - starting atom id and the next one that is followed
-#     in order to identify the direction of the search for rotatable bonds.
+#     $start_atom_ids - starting atom ids.
 # Output:
-#     %named_rotatable_bonds - data structure that describes rotatable bonds and
+#     %rotatable_bonds - data structure that describes rotatable bonds and
 #     the constituent atom ids of the bond. Ex.:
 #     {
 #       $atom_id_3 => {
-#                       $rotatable_bond_name_1 => [ $atom_id_1, $atom_id_2 ],
+#                       $rotatable_bond_name_1 => [
+#                           $atom_id_1, $atom_id_2, $atom_id_3, $atom_id_4
+#                       ],
 #                       ...
 #                     },
 #       ...
@@ -204,32 +206,37 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+    my ( $include_hetatoms ) = ( $options->{'include_hetatoms'} );
 
-    my %options = defined $options ? %{ $options } : ();
-    $options{'append_func'} = \&BondProperties::append_rotatable_bonds;
-    $options{'explicit_symbol'} = $parameters->{'_[local]_dihedral_angle_name'};
-    $options{'ignore_connections'} = {
+    $include_hetatoms //= 0;
+
+    my $explicit_dihedral_names = $parameters->{'_[local]_dihedral_angle_name'};
+    my $ignore_connections = {
         'label_atom_id' => {
             'N' => { 'CD' => 1, # For PRO.
                      'C' => 1 },
-            ( $options->{'include_hetatoms'} ?
+            ( $include_hetatoms ?
               ( 'C' => { 'CA' => 1 } ) :
               ( 'C' => { 'N' => 1 } ) ),
         },
     };
-    $options{'skip_if_terminal'} = 1;
 
-    if( $options->{'include_hetatoms'} ) {
-        $start_atom_ids =
-            filter_new( $atom_site,
-                        { 'include' => { 'label_atom_id' => [ 'C' ] },
-                          'return_data' => 'id' } );
+    if( $include_hetatoms ) {
+        $start_atom_ids = filter_new(
+            $atom_site,
+            { 'include' => { 'label_atom_id' => [ 'C' ] },
+              'return_data' => 'id'
+        } );
     }
 
-    my $rotatable_bonds =
-        bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
+    my $bond_paths = BondPath->new( {
+        'atom_site' => $atom_site,
+        'start_atom_ids' => $start_atom_ids
+    } );
 
-    return $rotatable_bonds;
+    my %rotatable_bonds = ();
+
+    return \%rotatable_bonds;
 }
 
 sub append_rotatable_bonds
