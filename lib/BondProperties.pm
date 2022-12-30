@@ -242,18 +242,23 @@ sub rotatable_bonds
         my $second_atom = $atom_site->{$bond_paths->[$i]{'second_atom_id'}};
 
         $atom_connections{$first_atom->{'id'}}{$second_atom->{'id'}} = 1;
-        $atom_connections{$second_atom->{'id'}}{$second_atom->{'id'}} = 1;
+        $atom_connections{$second_atom->{'id'}}{$first_atom->{'id'}} = 1;
 
         # At least 4 atoms are mandatory to calculate dihedral angles.
         next if $i < 3;
 
         my ( $previous_atom ) =
             map { $atom_site->{$_} }
-               @{ sort_atom_ids_by_name( [ keys %{ $atom_connections{$first_atom->{'id'}} } ],
+               @{ sort_atom_ids_by_name( [ grep { $_ ne $first_atom->{'id'} }
+                                           grep { $_ ne $second_atom->{'id'} }
+                                           keys %{ $atom_connections{$first_atom->{'id'}} } ],
                                          $atom_site ) };
         my ( $next_to_previous_atom ) =
             map { $atom_site->{$_} }
-               @{ sort_atom_ids_by_name( [ keys %{ $atom_connections{$previous_atom->{'id'}} } ],
+               @{ sort_atom_ids_by_name( [ grep { $_ ne $first_atom->{'id'} }
+                                           grep { $_ ne $second_atom->{'id'} }
+                                           grep { $_ ne $previous_atom->{'id'} }
+                                           keys %{ $atom_connections{$previous_atom->{'id'}} } ],
                                          $atom_site ) };
 
         # Check on hybridization.
