@@ -247,10 +247,47 @@ sub rotatable_bonds
         # At least 4 atoms are mandatory to calculate dihedral angles.
         next if $i < 3;
 
-        # my $previous_atom =
-        #     $atom_site->{$atom_connections{$first_atom->{'id'}}};
-        # my $next_to_previous_atom =
-        #     $atom_site->{$atom_connections{$previous_atom->{'id'}}};
+        my ( $previous_atom ) =
+            map { $atom_site->{$_} }
+               @{ sort_atom_ids_by_name( [ keys %{ $atom_connections{$first_atom->{'id'}} } ],
+                                         $atom_site ) };
+        my ( $next_to_previous_atom ) =
+            map { $atom_site->{$_} }
+               @{ sort_atom_ids_by_name( [ keys %{ $atom_connections{$previous_atom->{'id'}} } ],
+                                         $atom_site ) };
+
+        if( ( ! $first_atom->{'id'} ) &&
+            ( ! exists $atom_site->{$first_atom->{'id'}}{'hybridization'} ) ) {
+            confess "atom with id $first_atom->{'id'} lacks information " .
+                "about hybridization";
+        }
+        if( ( ! $previous_atom->{'id'} ) &&
+            ( ! exists $atom_site->{$previous_atom->{'id'}}{'hybridization'} ) ){
+            confess "atom with id $previous_atom->{'id'} lacks information " .
+                "about hybridization";
+        }
+
+        if( $previous_atom->{'hybridization'} eq 'sp3' ||
+            $first_atom->{'hybridization' eq 'sp3' ||
+            ( $include_hetatoms &&
+              ( $previous_atom->{'group_PDB'} eq 'HETATM' ||
+                $first_atom->{'group_PDB'} eq 'HETATM' ) &&
+              $first_atom->{'hybridization'} eq '.' ) } ) {
+            # If last visited atom was sp3, then rotatable bonds from
+            # previous atom are copied and the new one is appended.
+            push @{ $rotatable_bonds{$previous_atom->{'id'}} },
+                [ $next_to_previous_atom->{'id'},
+                  $previous_atom->{'id'},
+                  $first_atom->{'id'},
+                  $second_atom->{'id'} ];
+        } else {
+            # If last visited atom is sp2 or sp, inherits its rotatable
+            # bonds, because double or triple bonds do not rotate.
+            if( exists $rotatable_bonds{$previous_atom->{'id'}} ) {
+                unshift @{ $rotatable_bonds{$first_atom->{'id'}} },
+                    @{ $rotatable_bonds{$previous_atom->{'id'}} };
+            }
+        }
     };
 
     return \%rotatable_bonds;
