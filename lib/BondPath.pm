@@ -62,10 +62,11 @@ sub new
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
 
             if( ! exists $bond_paths{$sorted_neighbour_atom_id} ) {
-                $self->{'connections'}{$atom_id}{$sorted_neighbour_atom_id} =
-                    { 'order' => $atom_order_idx };
-                $self->{'order'}{$atom_order_idx} =
-                    [ $atom_id, $sorted_neighbour_atom_id ];
+                $self->{'connections'}{$atom_id}{$sorted_neighbour_atom_id} = 1;
+                $self->{'order'}{$atom_order_idx} = [
+                    $atom_id,
+                    $sorted_neighbour_atom_id
+                ];
             }
 
             # Depth-first search.
