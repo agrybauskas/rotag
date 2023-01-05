@@ -207,11 +207,18 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) =
-        ( $options->{'include_mainchain'}, $options->{'include_hetatoms'} );
+    my ( $bond_paths, $include_mainchain, $include_hetatoms ) = (
+        $options->{'bond_paths'},
+        $options->{'include_mainchain'},
+        $options->{'include_hetatoms'}
+    );
 
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
+    $bond_paths //= BondPath->new( {
+        'atom_site' => $atom_site,
+        'start_atom_ids' => $start_atom_ids
+    } );
 
     my $explicit_dihedral_names = $parameters->{'_[local]_dihedral_angle_name'};
     my $ignore_connections = {
@@ -231,11 +238,6 @@ sub rotatable_bonds
               'return_data' => 'id'
         } );
     }
-
-    my $bond_paths = BondPath->new( {
-        'atom_site' => $atom_site,
-        'start_atom_ids' => $start_atom_ids
-    } );
 
     my %rotatable_bonds = ();
     my $bond_counter = 0;
