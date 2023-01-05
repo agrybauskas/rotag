@@ -302,6 +302,11 @@ sub rotatable_bonds
             my $rotatable_bond_name =
                 join '-', map { $atom_site->{$_}{'label_atom_id'} }
                              @{ $bond_atom_ids };
+            my $simplified_rotatable_bond_name =
+                join '-', ( '.',
+                            $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
+                            $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
+                            '.');
 
             if( exists $explicit_dihedral_names->{$residue_name}
                                                  {$rotatable_bond_name} ) {
@@ -309,10 +314,10 @@ sub rotatable_bonds
                     $explicit_dihedral_names->{$residue_name}
                                               {$rotatable_bond_name};
             } elsif( exists $explicit_dihedral_names->{$residue_name}
-                                                      {".-$bond_atom_ids->[1]-$bond_atom_ids->[2]-."} ) {
+                                                      {$simplified_rotatable_bond_name} ) {
                 $rotatable_bond_name =
                     $explicit_dihedral_names->{$residue_name}
-                                              {".-$bond_atom_ids->[1]-$bond_atom_ids->[2]-."};
+                                              {$simplified_rotatable_bond_name};
             }
 
             $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
