@@ -64,6 +64,8 @@ sub new
             if( ! exists $bond_paths{$sorted_neighbour_atom_id} ) {
                 $self->{'connections'}{$atom_id}{$sorted_neighbour_atom_id} =
                     $atom_order_idx;
+                $self->{'connections'}{$sorted_neighbour_atom_id}{$atom_id} =
+                    $atom_order_idx;
                 $self->{'order'}{$atom_order_idx} = [
                     $atom_id,
                     $sorted_neighbour_atom_id
