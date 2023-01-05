@@ -240,6 +240,7 @@ sub rotatable_bonds
     for my $order ( sort keys %{ $bond_paths->{'order'} } ) {
         my $first_atom_id = $bond_paths->{'order'}{$order}[0];
         my $second_atom_id = $bond_paths->{'order'}{$order}[1];
+
         my $minus_one_atom_id = sort_atom_ids_by_name(
             [ grep { $_ ne $first_atom_id }
               grep { $_ ne $second_atom_id }
@@ -249,15 +250,15 @@ sub rotatable_bonds
 
         next if ! defined $minus_one_atom_id;
 
-        my $minus_two_atom_id = sort_atom_ids_by_name(
+        my $plus_one_atom_id = sort_atom_ids_by_name(
             [ grep { $_ ne $minus_one_atom_id }
               grep { $_ ne $first_atom_id }
               grep { $_ ne $second_atom_id }
-              keys %{ $bond_paths->{'connections'}{$minus_one_atom_id} } ],
+              keys %{ $bond_paths->{'connections'}{$second_atom_id} } ],
             $atom_site
         )->[0];
 
-        next if ! defined $minus_two_atom_id;
+        next if ! defined $plus_one_atom_id;
 
         # Check on hybridization.
         if( ! exists $atom_site->{$minus_one_atom_id}{'hybridization'} ){
@@ -279,8 +280,8 @@ sub rotatable_bonds
             # If last visited atom was sp3, then rotatable bonds from
             # previous atom are copied and the new one is appended.
             push @{ $rotatable_bonds{$minus_one_atom_id} },
-                [ $minus_two_atom_id, $minus_one_atom_id, $first_atom_id,
-                  $second_atom_id ];
+                [ $minus_one_atom_id, $first_atom_id, $second_atom_id,
+                  $plus_one_atom_id ];
         } else {
             # If last visited atom is sp2 or sp, inherits its rotatable
             # bonds, because double or triple bonds do not rotate.
