@@ -367,6 +367,9 @@ sub force_field
     # Restructuring parameters of mainchain atom names.
     $force_field_parameters{'_[local]_mainchain_atom_names'} =
         $force_field_data->{'_[local]_mainchain_atom_names'}{'data'};
+    $force_field_parameters{'_[local]_mainchain_atom_names_table'} =
+        { map { $_ => 1 }
+             @{ $force_field_parameters{'_[local]_mainchain_atom_names'} } };
 
     # Restructuring parameters of sidechain atom names.
     $force_field_parameters{'_[local]_sidechain_atom_names'} =

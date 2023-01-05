@@ -207,8 +207,10 @@ sub hybridization
 sub rotatable_bonds
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $include_hetatoms ) = ( $options->{'include_hetatoms'} );
+    my ( $include_mainchain, $include_hetatoms ) =
+        ( $options->{'include_mainchain'}, $options->{'include_hetatoms'} );
 
+    $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
     my $explicit_dihedral_names = $parameters->{'_[local]_dihedral_angle_name'};
@@ -259,6 +261,16 @@ sub rotatable_bonds
         )->[0];
 
         next if ! defined $plus_one_atom_id;
+
+        # Checks for mainchains and heteroatoms.
+        next if ! $include_hetatoms &&
+            contains_sidechain_atoms( $parameters,
+                                      $atom_site,
+                                      [ $minus_one_atom_id, $first_atom_id,
+                                        $second_atom_id, $plus_one_atom_id ] ) &&
+            contains_hetatoms( $atom_site,
+                               [ $minus_one_atom_id, $first_atom_id,
+                                 $second_atom_id, $plus_one_atom_id ] );
 
         # Check on hybridization.
         if( ! exists $atom_site->{$minus_one_atom_id}{'hybridization'} ){
@@ -329,6 +341,21 @@ sub rotatable_bonds
     }
 
     return \%named_rotatable_bonds;
+}
+
+sub contains_sidechain_atoms
+{
+    my ( $paramters, $atom_site, $atom_ids ) = @_;
+    return scalar( grep { $paramters->{'_[local]_mainchain_atom_names_table'}{$_} }
+                   map  { $atom_site->{$_}{'label_atom_id'} }
+                       @{ $atom_ids } ) <
+           scalar( @{ $atom_ids } );
+}
+
+sub contains_hetatoms
+{
+    my ( $atom_site, $atom_ids ) = @_;
+    return grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 }
 
 #
