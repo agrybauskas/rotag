@@ -296,63 +296,6 @@ sub rotatable_bonds
     return \%rotatable_bonds;
 }
 
-sub append_rotatable_bonds
-{
-    my ( $rotatable_bonds, $atom_site, $atom_id, $parent_atom_ids,
-         $include_hetatoms ) = @_;
-
-    my $parent_atom_id = $parent_atom_ids->{$atom_id};
-    return if ! defined $parent_atom_id;
-
-    my $grandparent_atom_id = $parent_atom_ids->{$parent_atom_id};
-    return if ! defined $grandparent_atom_id;
-
-    my $great_grandparent_atom_id = $parent_atom_ids->{$grandparent_atom_id};
-    return if ! defined $great_grandparent_atom_id;
-
-    my $is_parent_hetatom =
-        $atom_site->{$parent_atom_id}{'group_PDB'} eq 'HETATM';
-    my $is_grandparent_hetatom =
-        $atom_site->{$grandparent_atom_id}{'group_PDB'} eq 'HETATM';
-
-    # NOTE: this hetatom exception currently will work on single atoms.
-    if( ( ! $is_parent_hetatom ) &&
-        ( ! exists $atom_site->{$parent_atom_id}{'hybridization'} ) ) {
-        confess "atom with id ${parent_atom_id} lacks information about " .
-            "hybridization"
-    }
-    if( ( ! $is_grandparent_hetatom ) &&
-        ( ! exists $atom_site->{$grandparent_atom_id}{'hybridization'} ) ) {
-        confess "atom with id ${grandparent_atom_id} lacks information about " .
-            "hybridization"
-    }
-
-    if( $atom_site->{$grandparent_atom_id}{'hybridization'} eq 'sp3' ||
-        $atom_site->{$parent_atom_id}{'hybridization'} eq 'sp3' ||
-        ( $include_hetatoms &&
-          ( $is_grandparent_hetatom || $is_parent_hetatom ) &&
-          $atom_site->{$parent_atom_id}{'hybridization'} eq '.' ) ) {
-        # If last visited atom was sp3, then rotatable bonds from
-        # previous atom are copied and the new one is appended.
-        push @{ $rotatable_bonds->{$parent_atom_id} },
-            [ $great_grandparent_atom_id, $grandparent_atom_id,
-              $parent_atom_id, $atom_id ];
-        if( exists $rotatable_bonds->{$grandparent_atom_id} ) {
-            unshift @{ $rotatable_bonds->{$parent_atom_id} },
-                @{ $rotatable_bonds->{$grandparent_atom_id} };
-        }
-    } else {
-        # If last visited atom is sp2 or sp, inherits its rotatable
-        # bonds, because double or triple bonds do not rotate.
-        if( exists $rotatable_bonds->{$grandparent_atom_id} ) {
-            unshift @{ $rotatable_bonds->{$parent_atom_id} },
-                @{ $rotatable_bonds->{$grandparent_atom_id} };
-        }
-    }
-
-    return;
-}
-
 #
 # Identifies bonds that can be stretched.
 # Input:
