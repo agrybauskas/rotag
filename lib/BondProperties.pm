@@ -273,33 +273,33 @@ sub rotatable_bonds
                                    $second_atom_id, $plus_one_atom_id ] );
 
         # Check on hybridization.
-        if( ! exists $atom_site->{$minus_one_atom_id}{'hybridization'} ){
-            confess "atom with id $minus_one_atom_id lacks information " .
-                "about hybridization";
-        }
         if( ! exists $atom_site->{$first_atom_id}{'hybridization'} ) {
             confess "atom with id $first_atom_id lacks information about " .
                 "hybridization";
         }
+        if( ! exists $atom_site->{$second_atom_id}{'hybridization'} ){
+            confess "atom with id $second_atom_id lacks information " .
+                "about hybridization";
+        }
 
         # Appending dihedral angles.
-        if( $atom_site->{$minus_one_atom_id}{'hybridization'} eq 'sp3' ||
-            $atom_site->{$first_atom_id}{'hybridization'} eq 'sp3' ||
+        if( $atom_site->{$first_atom_id}{'hybridization'} eq 'sp3' ||
+            $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
             ( $include_hetatoms &&
-              ( $atom_site->{$minus_one_atom_id}{'group_PDB'} eq 'HETATM' ||
-                $atom_site->{$first_atom_id}{'group_PDB'} eq 'HETATM' ) &&
-              $atom_site->{$first_atom_id}{'hybridization'} eq '.' ) ) {
+              ( $atom_site->{$first_atom_id}{'group_PDB'} eq 'HETATM' ||
+                $atom_site->{$second_atom_id}{'group_PDB'} eq 'HETATM' ) &&
+              $atom_site->{$second_atom_id}{'hybridization'} eq '.' ) ) {
             # If last visited atom was sp3, then rotatable bonds from
             # previous atom are copied and the new one is appended.
-            push @{ $rotatable_bonds{$minus_one_atom_id} },
+            push @{ $rotatable_bonds{$first_atom_id} },
                 [ $minus_one_atom_id, $first_atom_id, $second_atom_id,
                   $plus_one_atom_id ];
         } else {
             # If last visited atom is sp2 or sp, inherits its rotatable
             # bonds, because double or triple bonds do not rotate.
-            if( exists $rotatable_bonds{$minus_one_atom_id} ) {
-                unshift @{ $rotatable_bonds{$first_atom_id} },
-                    @{ $rotatable_bonds{$minus_one_atom_id} };
+            if( exists $rotatable_bonds{$first_atom_id} ) {
+                unshift @{ $rotatable_bonds{$second_atom_id} },
+                    @{ $rotatable_bonds{$first_atom_id} };
             }
         }
 
