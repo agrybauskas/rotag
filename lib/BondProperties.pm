@@ -293,7 +293,19 @@ sub rotatable_bonds
         $bond_counter++;
     }
 
-    return \%rotatable_bonds;
+    # Naming the rotatable bonds.
+    my %named_rotatable_bonds = ();
+    for my $atom_id ( keys %rotatable_bonds ) {
+        for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
+            my $rotatable_bond_name =
+                join '-', map { $atom_site->{$_}{'label_atom_id'} }
+                             @{ $bond_atom_ids };
+            $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} =
+                $bond_atom_ids;
+        }
+    }
+
+    return \%named_rotatable_bonds;
 }
 
 #
