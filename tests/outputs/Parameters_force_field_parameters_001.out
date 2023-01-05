@@ -5791,6 +5791,21 @@ $VAR1 = bless( {
     'XA',
     'XA2'
   ],
+  '_[local]_mainchain_atom_names_table' => {
+    'C' => 1,
+    'CA' => 1,
+    'H' => 1,
+    'H2' => 1,
+    'HA' => 1,
+    'HA2' => 1,
+    'HA3' => 1,
+    'HXT' => 1,
+    'N' => 1,
+    'O' => 1,
+    'OXT' => 1,
+    'XA' => 1,
+    'XA2' => 1
+  },
   '_[local]_partial_charge' => {
     '.' => {
       '.' => '0.00'
