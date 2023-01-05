@@ -238,60 +238,58 @@ sub rotatable_bonds
     my %rotatable_bonds = ();
     my $bond_counter = 0;
     for my $order ( sort keys %{ $bond_paths->{'order'} } ) {
-        my $first_atom = $atom_site->{$bond_paths->{'order'}{$order}[0]};
-        my $second_atom = $atom_site->{$bond_paths->{'order'}{$order}[1]};
+        my $first_atom_id = $bond_paths->{'order'}{$order}[0];
+        my $second_atom_id = $bond_paths->{'order'}{$order}[1];
+        my $minus_one_atom_id = sort_atom_ids_by_name(
+            [ grep { $_ ne $first_atom_id }
+              grep { $_ ne $second_atom_id }
+              keys %{ $bond_paths->{'connections'}{$first_atom_id} } ],
+            $atom_site
+        )->[0];
 
-        # At least 4 atoms are mandatory to calculate dihedral angles.
-        next if $bond_counter < 3;
+        next if ! defined $minus_one_atom_id;
 
-    #     my ( $previous_atom ) =
-    #         map { $atom_site->{$_} }
-    #            @{ sort_atom_ids_by_name( [ grep { $_ ne $first_atom->{'id'} }
-    #                                        grep { $_ ne $second_atom->{'id'} }
-    #                                        keys %{ $atom_connections{$first_atom->{'id'}} } ],
-    #                                      $atom_site ) };
-    #     my ( $next_to_previous_atom ) =
-    #         map { $atom_site->{$_} }
-    #            @{ sort_atom_ids_by_name( [ grep { $_ ne $first_atom->{'id'} }
-    #                                        grep { $_ ne $second_atom->{'id'} }
-    #                                        grep { $_ ne $previous_atom->{'id'} }
-    #                                        keys %{ $atom_connections{$previous_atom->{'id'}} } ],
-    #                                      $atom_site ) };
+        my $minus_two_atom_id = sort_atom_ids_by_name(
+            [ grep { $_ ne $minus_one_atom_id }
+              grep { $_ ne $first_atom_id }
+              grep { $_ ne $second_atom_id }
+              keys %{ $bond_paths->{'connections'}{$minus_one_atom_id} } ],
+            $atom_site
+        )->[0];
 
-    #     # Check on hybridization.
-    #     if( ( ! $first_atom->{'id'} ) &&
-    #         ( ! exists $atom_site->{$first_atom->{'id'}}{'hybridization'} ) ) {
-    #         confess "atom with id $first_atom->{'id'} lacks information " .
-    #             "about hybridization";
-    #     }
-    #     if( ( ! $previous_atom->{'id'} ) &&
-    #         ( ! exists $atom_site->{$previous_atom->{'id'}}{'hybridization'} ) ){
-    #         confess "atom with id $previous_atom->{'id'} lacks information " .
-    #             "about hybridization";
-    #     }
+        next if ! defined $minus_two_atom_id;
 
-    #     # Appending dihedral angles.
-    #     if( $previous_atom->{'hybridization'} eq 'sp3' ||
-    #         $first_atom->{'hybridization' eq 'sp3' ||
-    #         ( $include_hetatoms &&
-    #           ( $previous_atom->{'group_PDB'} eq 'HETATM' ||
-    #             $first_atom->{'group_PDB'} eq 'HETATM' ) &&
-    #           $first_atom->{'hybridization'} eq '.' ) } ) {
-    #         # If last visited atom was sp3, then rotatable bonds from
-    #         # previous atom are copied and the new one is appended.
-    #         push @{ $rotatable_bonds{$previous_atom->{'id'}} },
-    #             [ $next_to_previous_atom->{'id'},
-    #               $previous_atom->{'id'},
-    #               $first_atom->{'id'},
-    #               $second_atom->{'id'} ];
-    #     } else {
-    #         # If last visited atom is sp2 or sp, inherits its rotatable
-    #         # bonds, because double or triple bonds do not rotate.
-    #         if( exists $rotatable_bonds{$previous_atom->{'id'}} ) {
-    #             unshift @{ $rotatable_bonds{$first_atom->{'id'}} },
-    #                 @{ $rotatable_bonds{$previous_atom->{'id'}} };
-    #         }
-    #     }
+        # Check on hybridization.
+        if( ! exists $atom_site->{$minus_one_atom_id}{'hybridization'} ){
+            confess "atom with id $minus_one_atom_id lacks information " .
+                "about hybridization";
+        }
+        if( ! exists $atom_site->{$first_atom_id}{'hybridization'} ) {
+            confess "atom with id $first_atom_id lacks information about " .
+                "hybridization";
+        }
+
+        # Appending dihedral angles.
+        if( $atom_site->{$minus_one_atom_id}{'hybridization'} eq 'sp3' ||
+            $atom_site->{$first_atom_id}{'hybridization'} eq 'sp3' ||
+            ( $include_hetatoms &&
+              ( $atom_site->{$minus_one_atom_id}{'group_PDB'} eq 'HETATM' ||
+                $atom_site->{$first_atom_id}{'group_PDB'} eq 'HETATM' ) &&
+              $atom_site->{$first_atom_id}{'hybridization'} eq '.' ) ) {
+            # If last visited atom was sp3, then rotatable bonds from
+            # previous atom are copied and the new one is appended.
+            push @{ $rotatable_bonds{$minus_one_atom_id} },
+                [ $minus_two_atom_id, $minus_one_atom_id, $first_atom_id,
+                  $second_atom_id ];
+        } else {
+            # If last visited atom is sp2 or sp, inherits its rotatable
+            # bonds, because double or triple bonds do not rotate.
+            if( exists $rotatable_bonds{$minus_one_atom_id} ) {
+                unshift @{ $rotatable_bonds{$first_atom_id} },
+                    @{ $rotatable_bonds{$minus_one_atom_id} };
+            }
+        }
+
         $bond_counter++;
     }
 
