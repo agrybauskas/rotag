@@ -264,13 +264,13 @@ sub rotatable_bonds
 
         # Checks for mainchains and heteroatoms.
         next if ! $include_hetatoms &&
-            contains_sidechain_atoms( $parameters,
-                                      $atom_site,
-                                      [ $minus_one_atom_id, $first_atom_id,
-                                        $second_atom_id, $plus_one_atom_id ] ) &&
-            contains_hetatoms( $atom_site,
-                               [ $minus_one_atom_id, $first_atom_id,
-                                 $second_atom_id, $plus_one_atom_id ] );
+            ! contains_sidechain_atoms( $parameters,
+                                        $atom_site,
+                                        [ $minus_one_atom_id, $first_atom_id,
+                                          $second_atom_id, $plus_one_atom_id ] ) &&
+            ! contains_hetatoms( $atom_site,
+                                 [ $minus_one_atom_id, $first_atom_id,
+                                   $second_atom_id, $plus_one_atom_id ] );
 
         # Check on hybridization.
         if( ! exists $atom_site->{$minus_one_atom_id}{'hybridization'} ){
