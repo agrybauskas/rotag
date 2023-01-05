@@ -300,8 +300,11 @@ sub rotatable_bonds
             my $rotatable_bond_name =
                 join '-', map { $atom_site->{$_}{'label_atom_id'} }
                              @{ $bond_atom_ids };
-            $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} =
-                $bond_atom_ids;
+            $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
+                'order' => $bond_paths->{'connections'}{$bond_atom_ids->[1]}
+                                                       {$bond_atom_ids->[2]},
+                'atom_ids' => $bond_atom_ids
+            };
         }
     }
 
