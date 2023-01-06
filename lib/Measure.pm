@@ -273,7 +273,8 @@ sub all_dihedral
 
         my $rotatable_bonds =
             rotatable_bonds( $parameters, $residue_site, undef,
-                             { 'include_hetatoms' => $include_hetatoms } );
+                             { 'include_hetatoms' => $include_hetatoms,
+                               'include_mainchain' => $calc_mainchain } );
         my $unique_rotatable_bonds=
             unique_bond_parameters( $rotatable_bonds );
 
