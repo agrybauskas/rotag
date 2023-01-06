@@ -247,8 +247,7 @@ sub rotatable_bonds
         my $fourth_atom_id = $bond_paths->{'order'}{$order}[1];
 
         my $second_atom_id = sort_atom_ids_by_name(
-            [ grep { $_ ne $third_atom_id }
-              grep { $_ ne $fourth_atom_id }
+            [ grep { $_ ne $fourth_atom_id }
               keys %{ $bond_paths->{'connections'}{$third_atom_id} } ],
             $atom_site
         )->[0];
@@ -256,8 +255,7 @@ sub rotatable_bonds
         next if ! defined $second_atom_id;
 
         my $first_atom_id = sort_atom_ids_by_name(
-            [ grep { $_ ne $second_atom_id }
-              grep { $_ ne $third_atom_id }
+            [ grep { $_ ne $third_atom_id }
               grep { $_ ne $fourth_atom_id }
               keys %{ $bond_paths->{'connections'}{$second_atom_id} } ],
             $atom_site
