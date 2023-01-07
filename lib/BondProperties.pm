@@ -243,7 +243,7 @@ sub rotatable_bonds
     my %rotatable_bonds = ();
     my %parent_atom_ids = ();
     my %order = ();
-    for my $order ( sort keys %{ $bond_paths } ) {
+    for my $order ( sort { $a <=> $b } keys %{ $bond_paths } ) {
         my ( $third_atom_id ) = keys %{ $bond_paths->{$order} };
         my $fourth_atom_id = $bond_paths->{$order}{$third_atom_id};
 
