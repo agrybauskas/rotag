@@ -241,25 +241,20 @@ sub rotatable_bonds
     } );
 
     my %rotatable_bonds = ();
-    my $bond_counter = 0;
-    for my $order ( sort keys %{ $bond_paths->{'order'} } ) {
-        my $third_atom_id = $bond_paths->{'order'}{$order}[0];
-        my $fourth_atom_id = $bond_paths->{'order'}{$order}[1];
+    my %parent_atom_ids = ();
+    my %order = ();
+    for my $order ( sort keys %{ $bond_paths } ) {
+        my ( $third_atom_id ) = keys %{ $bond_paths->{$order} };
+        my $fourth_atom_id = $bond_paths->{$order}{$third_atom_id};
 
-        my $second_atom_id = sort_atom_ids_by_name(
-            [ grep { $_ ne $fourth_atom_id }
-              keys %{ $bond_paths->{'connections'}{$third_atom_id} } ],
-            $atom_site
-        )->[0];
+        $parent_atom_ids{$fourth_atom_id} = $third_atom_id;
+        $order{$third_atom_id}{$fourth_atom_id} = $order;
+
+        my $second_atom_id = $parent_atom_ids{$third_atom_id};
 
         next if ! defined $second_atom_id;
 
-        my $first_atom_id = sort_atom_ids_by_name(
-            [ grep { $_ ne $third_atom_id }
-              grep { $_ ne $fourth_atom_id }
-              keys %{ $bond_paths->{'connections'}{$second_atom_id} } ],
-            $atom_site
-        )->[0];
+        my $first_atom_id = $parent_atom_ids{$second_atom_id};
 
         next if ! defined $first_atom_id;
 
@@ -303,8 +298,6 @@ sub rotatable_bonds
                     @{ $rotatable_bonds{$third_atom_id} };
             }
         }
-
-        $bond_counter++;
     }
 
     # Naming the rotatable bonds.
@@ -334,8 +327,7 @@ sub rotatable_bonds
             }
 
             $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
-                'order' => $bond_paths->{'connections'}{$bond_atom_ids->[1]}
-                                                       {$bond_atom_ids->[2]},
+                'order' => $order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
                 'atom_ids' => $bond_atom_ids
             };
         }
