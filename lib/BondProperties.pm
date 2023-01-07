@@ -282,9 +282,8 @@ sub rotatable_bonds
         if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
             $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
             ( $include_hetatoms &&
-              ( $atom_site->{$second_atom_id}{'group_PDB'} eq 'HETATM' ||
-                $atom_site->{$third_atom_id}{'group_PDB'} eq 'HETATM' ) &&
-              $atom_site->{$third_atom_id}{'hybridization'} eq '.' ) ) {
+              $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
+              $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
             # If last visited atom was sp3, then rotatable bonds from
             # previous atom are copied and the new one is appended.
             push @{ $rotatable_bonds{$fourth_atom_id} },
