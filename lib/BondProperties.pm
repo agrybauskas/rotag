@@ -242,6 +242,7 @@ sub rotatable_bonds
 
     my %rotatable_bonds = ();
     my %parent_atom_ids = ();
+    my %shared_bonds = ();
     my %order = ();
     for my $order ( sort { $a <=> $b } keys %{ $bond_paths } ) {
         my ( $third_atom_id ) = keys %{ $bond_paths->{$order} };
@@ -278,6 +279,18 @@ sub rotatable_bonds
                 "about hybridization";
         }
 
+        # Bonds have to be tracked, because one dihedral angle might describe
+        # multiple atom positions -- such as OD2 in ASP depends on the
+        # CA-CB-CG-CD1 angle.
+        if( ! exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
+            $shared_bonds{$second_atom_id}{$third_atom_id} = [
+                $first_atom_id,
+                $second_atom_id,
+                $third_atom_id,
+                $fourth_atom_id
+            ];
+        }
+
         # Appending dihedral angles.
         if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
             $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
@@ -286,9 +299,14 @@ sub rotatable_bonds
               $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
             # If last visited atom was sp3, then rotatable bonds from
             # previous atom are copied and the new one is appended.
-            push @{ $rotatable_bonds{$fourth_atom_id} },
-                [ $first_atom_id, $second_atom_id, $third_atom_id,
-                  $fourth_atom_id ];
+            if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
+                push @{ $rotatable_bonds{$fourth_atom_id} },
+                    $shared_bonds{$second_atom_id}{$third_atom_id};
+            } else {
+                push @{ $rotatable_bonds{$fourth_atom_id} },
+                    [ $first_atom_id, $second_atom_id, $third_atom_id,
+                      $fourth_atom_id ];
+            }
         } else {
             # If last visited atom is sp2 or sp, inherits its rotatable
             # bonds, because double or triple bonds do not rotate.
