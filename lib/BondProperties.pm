@@ -288,8 +288,8 @@ sub rotatable_bonds
             # If last visited atom was sp3, then rotatable bonds from
             # previous atom are copied and the new one is appended.
             if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-                push @{ $rotatable_bonds{$fourth_atom_id} },
-                    $shared_bonds{$second_atom_id}{$third_atom_id};
+                unshift @{ $rotatable_bonds{$fourth_atom_id} },
+                    @{ $shared_bonds{$second_atom_id}{$third_atom_id} };
             } else {
                 push @{ $rotatable_bonds{$fourth_atom_id} },
                     [ $first_atom_id, $second_atom_id, $third_atom_id,
@@ -299,7 +299,7 @@ sub rotatable_bonds
             # If last visited atom is sp2 or sp, inherits its rotatable
             # bonds, because double or triple bonds do not rotate.
             if( exists $rotatable_bonds{$third_atom_id} ) {
-                unshift @{ $rotatable_bonds{$fourth_atom_id} },
+                push @{ $rotatable_bonds{$fourth_atom_id} },
                     @{ $rotatable_bonds{$third_atom_id} };
             }
         }
@@ -308,12 +308,8 @@ sub rotatable_bonds
         # multiple atom positions -- such as OD2 in ASP depends on the
         # CA-CB-CG-CD1 angle.
         if( ! exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-            $shared_bonds{$second_atom_id}{$third_atom_id} = [
-                $first_atom_id,
-                $second_atom_id,
-                $third_atom_id,
-                $fourth_atom_id
-            ];
+            $shared_bonds{$second_atom_id}{$third_atom_id} =
+                $rotatable_bonds{$fourth_atom_id};
         }
     }
 
