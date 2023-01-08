@@ -31,8 +31,8 @@ for my $atom_id ( sort { $a cmp $b } keys( %rotatable_bonds ) ) {
     for my $angle ( sort { $rotatable_bonds{$atom_id}{$a}{'order'} <=>
                            $rotatable_bonds{$atom_id}{$b}{'order'} }
                     keys %{ $rotatable_bonds{$atom_id} } ) {
-        my $first_atom_id = $rotatable_bonds{$atom_id}{$angle}{'atom_ids'}->[0];
-        my $second_atom_id = $rotatable_bonds{$atom_id}{$angle}{'atom_ids'}->[1];
+        my $first_atom_id = $rotatable_bonds{$atom_id}{$angle}{'atom_ids'}->[1];
+        my $second_atom_id = $rotatable_bonds{$atom_id}{$angle}{'atom_ids'}->[2];
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
                "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
     }
