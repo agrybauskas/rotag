@@ -340,7 +340,7 @@ sub rotatable_bonds
 
             $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
                 'order' => $order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
-                'atom_ids' => $bond_atom_ids
+                'atom_ids' => $bond_atom_ids,
             };
         }
     }
@@ -384,36 +384,71 @@ sub contains_hetatoms
 sub stretchable_bonds
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
+    my ( $bond_paths, $include_mainchain, $include_hetatoms ) = (
+        $options->{'bond_paths'},
+        $options->{'include_mainchain'},
+        $options->{'include_hetatoms'}
+    );
 
-    my %options = defined $options ? %{ $options } : ();
-    $options{'append_func'} = \&BondProperties::append_stretchable_bonds;
-    $options{'ignore_connections'} = {
+    $include_mainchain //= 0;
+    $include_hetatoms //= 0;
+
+    my $ignore_connections = {
         'label_atom_id' => {
             'N' => { 'C' => 1 }, # Pseudo connection for heteroatoms.
         },
     };
 
-    my $stretchable_bonds =
-        bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
+    $bond_paths //= BondPath->new( {
+        'atom_site' => $atom_site,
+        'start_atom_ids' => $start_atom_ids
+    } );
 
-    return $stretchable_bonds;
-}
+    my %stretchable_bonds = ();
+    my %parent_atom_ids = ();
+    my %order = ();
+    for my $order ( sort { $a <=> $b } keys %{ $bond_paths } ) {
+        my ( $first_atom_id ) = keys %{ $bond_paths->{$order} };
+        my $second_atom_id = $bond_paths->{$order}{$first_atom_id};
 
-sub append_stretchable_bonds
-{
-    my ( $bonds, $atom_site, $atom_id, $parent_atom_ids ) = @_;
+        $parent_atom_ids{$second_atom_id} = $first_atom_id;
 
-    my $parent_atom_id = $parent_atom_ids->{$atom_id};
-    return if ! defined $parent_atom_id;
+        # Checks for mainchains and heteroatoms.
+        next if ! $include_hetatoms &&
+            ! contains_sidechain_atoms( $parameters,
+                                        $atom_site,
+                                        [ $first_atom_id, $second_atom_id ] ) &&
+            ! contains_hetatoms( $atom_site,
+                                 [ $first_atom_id, $second_atom_id ] );
 
-    push @{ $bonds->{$atom_id} }, [ $parent_atom_id, $atom_id ];
+        push @{ $stretchable_bonds{$second_atom_id} },
+            [ $first_atom_id, $second_atom_id ];
 
-    # Adds bond if it is a continuation of identified bonds.
-    if( exists $bonds->{$parent_atom_id} ) {
-        unshift @{ $bonds->{$atom_id} }, @{ $bonds->{$parent_atom_id} };
+        # Adds bond if it is a continuation of identified bonds.
+        if( exists $parent_atom_ids{$first_atom_id} &&
+            exists $stretchable_bonds{$parent_atom_ids{$first_atom_id}} ) {
+            unshift @{ $stretchable_bonds{$second_atom_id} },
+                @{ $stretchable_bonds{$parent_atom_ids{$first_atom_id}} };
+        }
     }
 
-    return;
+    # Naming the stretchable bonds.
+    my %named_stretchable_bonds = ();
+    for my $atom_id ( keys %stretchable_bonds ) {
+        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
+        for my $bond_atom_ids ( @{ $stretchable_bonds{$atom_id} } ) {
+            my $stretchable_bond_name =
+                join '-', map { $atom_site->{$_}{'label_atom_id'} }
+                             @{ $bond_atom_ids };
+
+            $named_stretchable_bonds{$atom_id}{$stretchable_bond_name} = {
+                'order' => $order{$bond_atom_ids->[0]}{$bond_atom_ids->[1]},
+                'atom_ids' => $bond_atom_ids,
+            };
+        }
+    }
+
+    return \%named_stretchable_bonds;
 }
 
 #
