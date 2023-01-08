@@ -285,15 +285,18 @@ sub rotatable_bonds
             ( $include_hetatoms &&
               $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
               $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
-            # If last visited atom was sp3, then rotatable bonds from
-            # previous atom are copied and the new one is appended.
             if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-                unshift @{ $rotatable_bonds{$fourth_atom_id} },
-                    @{ $shared_bonds{$second_atom_id}{$third_atom_id} };
+                push @{ $rotatable_bonds{$fourth_atom_id} },
+                    $shared_bonds{$second_atom_id}{$third_atom_id};
             } else {
                 push @{ $rotatable_bonds{$fourth_atom_id} },
                     [ $first_atom_id, $second_atom_id, $third_atom_id,
                       $fourth_atom_id ];
+            }
+
+            if( exists $rotatable_bonds{$third_atom_id} ) {
+                unshift @{ $rotatable_bonds{$fourth_atom_id} },
+                    @{ $rotatable_bonds{$third_atom_id} };
             }
         } else {
             # If last visited atom is sp2 or sp, inherits its rotatable
@@ -304,12 +307,10 @@ sub rotatable_bonds
             }
         }
 
-        # Bonds have to be tracked, because one dihedral angle might describe
-        # multiple atom positions -- such as OD2 in ASP depends on the
-        # CA-CB-CG-CD1 angle.
         if( ! exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-            $shared_bonds{$second_atom_id}{$third_atom_id} =
-                $rotatable_bonds{$fourth_atom_id};
+            $shared_bonds{$second_atom_id}{$third_atom_id} = [
+                $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id
+            ];
         }
     }
 
