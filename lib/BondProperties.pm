@@ -285,6 +285,9 @@ sub rotatable_bonds
             ( $include_hetatoms &&
               $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
               $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
+            # If at least one of the last visited bond atoms are sp3, it is
+            # rotatable. It is worth mentioning that specific dihedral angle
+            # is described by one set of dihedral angles.
             if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
                 push @{ $rotatable_bonds{$fourth_atom_id} },
                     $shared_bonds{$second_atom_id}{$third_atom_id};
@@ -299,7 +302,7 @@ sub rotatable_bonds
                     @{ $rotatable_bonds{$third_atom_id} };
             }
         } else {
-            # If last visited atom is sp2 or sp, inherits its rotatable
+            # If last visited bond atoms are sp2 or sp, inherits its rotatable
             # bonds, because double or triple bonds do not rotate.
             if( exists $rotatable_bonds{$third_atom_id} ) {
                 push @{ $rotatable_bonds{$fourth_atom_id} },
