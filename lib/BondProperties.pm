@@ -279,18 +279,6 @@ sub rotatable_bonds
                 "about hybridization";
         }
 
-        # Bonds have to be tracked, because one dihedral angle might describe
-        # multiple atom positions -- such as OD2 in ASP depends on the
-        # CA-CB-CG-CD1 angle.
-        if( ! exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-            $shared_bonds{$second_atom_id}{$third_atom_id} = [
-                $first_atom_id,
-                $second_atom_id,
-                $third_atom_id,
-                $fourth_atom_id
-            ];
-        }
-
         # Appending dihedral angles.
         if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
             $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
@@ -314,6 +302,18 @@ sub rotatable_bonds
                 unshift @{ $rotatable_bonds{$fourth_atom_id} },
                     @{ $rotatable_bonds{$third_atom_id} };
             }
+        }
+
+        # Bonds have to be tracked, because one dihedral angle might describe
+        # multiple atom positions -- such as OD2 in ASP depends on the
+        # CA-CB-CG-CD1 angle.
+        if( ! exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
+            $shared_bonds{$second_atom_id}{$third_atom_id} = [
+                $first_atom_id,
+                $second_atom_id,
+                $third_atom_id,
+                $fourth_atom_id
+            ];
         }
     }
 
