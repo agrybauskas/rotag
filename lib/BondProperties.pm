@@ -296,8 +296,8 @@ sub rotatable_bonds
             }
         }
 
-        # If bond atoms are sp2 or sp, inherits its rotatable bonds, because
-        # double or triple bonds do not rotate.
+        # If bond atoms are sp2/sp (do not rotate) or just is a continuation of
+        # the bond chain, inherits its previous atom's rotatable bonds.
         if( exists $rotatable_bonds{$third_atom_id} ) {
             unshift @{ $rotatable_bonds{$fourth_atom_id} },
                 @{ $rotatable_bonds{$third_atom_id} };
