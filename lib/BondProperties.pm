@@ -348,21 +348,6 @@ sub rotatable_bonds
     return \%named_rotatable_bonds;
 }
 
-sub contains_sidechain_atoms
-{
-    my ( $paramters, $atom_site, $atom_ids ) = @_;
-    return scalar( grep { $paramters->{'_[local]_mainchain_atom_names_table'}{$_} }
-                   map  { $atom_site->{$_}{'label_atom_id'} }
-                       @{ $atom_ids } ) <
-           scalar( @{ $atom_ids } );
-}
-
-sub contains_hetatoms
-{
-    my ( $atom_site, $atom_ids ) = @_;
-    return grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
-}
-
 #
 # Identifies bonds that can be stretched.
 # Input:
@@ -412,6 +397,7 @@ sub stretchable_bonds
         my $second_atom_id = $bond_paths->{$order}{$first_atom_id};
 
         $parent_atom_ids{$second_atom_id} = $first_atom_id;
+        $order{$first_atom_id}{$second_atom_id} = $order;
 
         # Checks for mainchains and heteroatoms.
         next if ! $include_hetatoms &&
@@ -473,279 +459,73 @@ sub stretchable_bonds
 sub bendable_angles
 {
     my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-
-    my %options = defined $options ? %{ $options } : ();
-    $options{'append_func'} = \&BondProperties::append_bendable_angles;
-
-    my $bendable_angles =
-        bond_path_search( $parameters, $atom_site, $start_atom_ids, \%options );
-
-    return $bendable_angles;
-}
-
-sub append_bendable_angles
-{
-    my ( $angles, $atom_site, $atom_id, $parent_atom_ids ) = @_;
-
-    my $parent_atom_id = $parent_atom_ids->{$atom_id};
-    return if ! defined $parent_atom_id;
-
-    my $grandparent_atom_id = $parent_atom_ids->{$parent_atom_id};
-    return if ! defined $grandparent_atom_id;
-
-    push @{ $angles->{$atom_id} },
-        [ $grandparent_atom_id, $parent_atom_id, $atom_id ];
-
-    # Adds angles if it is a continuation of identified bonds.
-    if( exists $angles->{$parent_atom_id} ) {
-        unshift @{ $angles->{$atom_id} }, @{ $angles->{$parent_atom_id} };
-    }
-
-    return;
-}
-
-# NOTE: Maybe should be converted to struct.
-sub bond_path_search
-{
-    my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    my ( $append_func, $ignore_atoms, $include_hetatoms, $ignore_connections ) =(
-        $options->{'append_func'},
-        $options->{'ignore_atoms'},
-        $options->{'include_hetatoms'},
-        $options->{'ignore_connections'},
+    my ( $bond_paths, $include_mainchain, $include_hetatoms ) = (
+        $options->{'bond_paths'},
+        $options->{'include_mainchain'},
+        $options->{'include_hetatoms'}
     );
 
-    $ignore_atoms //= {};
+    $include_mainchain //= 0;
     $include_hetatoms //= 0;
-    $ignore_connections //= {};
 
-    # By default, N is starting atom for main-chain calculations. XA is added
-    # for debugging and test purposes.
-    # TODO: think about more general rule -- how to choose the starting atom.
-    $start_atom_ids //=
-        filter_new( $atom_site,
-                    { 'include' => { 'label_atom_id' => [ 'N', 'XA' ] },
-                      'return_data' => 'id' } );
+    $bond_paths //= BondPath->new( {
+        'atom_site' => $atom_site,
+        'start_atom_ids' => $start_atom_ids
+    } );
 
-    if( ! @{ $start_atom_ids } ) { return {}; }
+    my %bendable_angles = ();
+    my %parent_atom_ids = ();
+    my %order = ();
+    for my $order ( sort { $a <=> $b } keys %{ $bond_paths } ) {
+        my ( $second_atom_id ) = keys %{ $bond_paths->{$order} };
+        my $third_atom_id = $bond_paths->{$order}{$second_atom_id};
 
-    my %visited_atom_ids = ();
-    # TODO: maybe %visted_atom_ids should be moved to different function.
-    for my $atom_site_item ( keys %{ $ignore_atoms } ) {
-        my @ignore_atom_ids =
-            @{ filter_new(
-                   $atom_site,
-                   { 'include' =>
-                         { map { $_ => [ keys %{ $ignore_atoms->{$_} } ] }
-                           keys %{ $ignore_atoms } },
-                     'return_data' => 'id' } ) };
-        for my $ignore_atom_id ( @ignore_atom_ids ) {
-            $visited_atom_ids{$ignore_atom_id} = 1;
-        }
-    }
-    my @next_atom_ids = ( @{ $start_atom_ids } );
-    my %parent_atom_ids;
+        $parent_atom_ids{$third_atom_id} = $second_atom_id;
 
-    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+        my $first_atom_id = $parent_atom_ids{$second_atom_id};
 
-    my %bond_paths = ();
-    my %atom_order = ();
-    my $atom_order_idx = 1;
+        next if ! defined $first_atom_id;
 
-    # Exists if there are no atoms that is not already visited.
-    while( @next_atom_ids ) {
-        my ( $atom_id ) = pop @next_atom_ids;
+        $order{$first_atom_id}{$second_atom_id}{$third_atom_id} = $order;
 
-        next if $visited_atom_ids{$atom_id};
-        $visited_atom_ids{$atom_id} = 1;
+        # Checks for mainchains and heteroatoms.
+        next if ! $include_hetatoms &&
+            ! contains_sidechain_atoms( $parameters,
+                                        $atom_site,
+                                        [ $first_atom_id, $second_atom_id,
+                                          $third_atom_id ] ) &&
+            ! contains_hetatoms( $atom_site,
+                                 [ $first_atom_id, $second_atom_id,
+                                   $third_atom_id ] );
 
-        $atom_order{$atom_id} = $atom_order_idx;
+        push @{ $bendable_angles{$third_atom_id} },
+            [ $first_atom_id, $second_atom_id, $third_atom_id ];
 
-        $append_func->( \%bond_paths, $atom_site, $atom_id, \%parent_atom_ids,
-                        $include_hetatoms );
-
-        # Marks neighbouring atoms.
-        my @neighbour_atom_ids = ();
-        if( defined $atom_site->{$atom_id}{'connections'} ) {
-            push @neighbour_atom_ids,
-                grep { ! $ignore_connections->
-                             {'label_atom_id'}
-                             {$atom_site->{$atom_id}{'label_atom_id'}}
-                             {$atom_site->{$_}{'label_atom_id'}} }
-                grep { ! $ignore_atoms->
-                     {'label_atom_id'}{$atom_site->{$_}{'label_atom_id'}} }
-                grep { defined $atom_site->{$_} }
-                    @{ $atom_site->{$atom_id}{'connections'} };
-        }
-        if( $include_hetatoms &&
-            defined $atom_site->{$atom_id}{'connections_hetatom'} ) {
-            push @neighbour_atom_ids,
-                grep { ! $ignore_connections->
-                             {'label_atom_id'}
-                             {$atom_site->{$atom_id}{'label_atom_id'}}
-                             {$atom_site->{$_}{'label_atom_id'}} }
-                grep { ! $ignore_atoms->
-                             {'label_atom_id'}
-                             {$atom_site->{$_}{'label_atom_id'}} }
-                grep { defined $atom_site->{$_} }
-                    @{ $atom_site->{$atom_id}{'connections_hetatom'} };
-        }
-
-        my @sorted_neighbour_atom_ids =
-            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, $atom_site ) };
-
-        for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
-            my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
-
-            next if $ignore_atoms->
-                        {'label_atom_id'}
-                        {$atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
-            next if $ignore_connections->
-                        {'label_atom_id'}
-                        {$atom_site->{$atom_id}{'label_atom_id'}}
-                        {$atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'}};
-            next if $visited_atom_ids{$sorted_neighbour_atom_id};
-
-            if( ! exists $parent_atom_ids{$sorted_neighbour_atom_id} ) {
-                $parent_atom_ids{$sorted_neighbour_atom_id} = $atom_id;
-            }
-
-            # Depending on if it is mainchain or sidechain bonds, the bond
-            # search changes from deapth-first search to breadth-first search
-            # accordingly.
-            my $are_any_sidechain_atoms =
-                ! ( any { $atom_site->{$sorted_neighbour_atom_id}
-                                      {'label_atom_id'} eq $_ }
-                       @{ $mainchain_atom_names } ) ||
-                ! ( any { $atom_site->{$sorted_neighbour_atom_id}
-                                      {'label_atom_id'} eq $_ }
-                       @{ $mainchain_atom_names } );
-
-            # Breadth-first search.
-            if( $are_any_sidechain_atoms ) {
-                unshift @next_atom_ids, $sorted_neighbour_atom_id;
-                next;
-            }
-
-            # Depth-first search.
-            # FIXME: there should be splice in $i > 0. However, test cases have
-            # to be made.
-            if( $i == 0 ) {
-                push @next_atom_ids, $sorted_neighbour_atom_id;
-            } else {
-                unshift @next_atom_ids, $sorted_neighbour_atom_id;
-            }
-        }
-
-        $atom_order_idx++;
-    }
-
-    return name_bond_parameters( $parameters, $atom_site, \%bond_paths,
-                                 \%atom_order, $options );
-}
-
-sub name_bond_parameters
-{
-    my ( $parameters, $atom_site, $bonds, $atom_order, $options ) = @_;
-    my ( $calc_mainchain, $explicit_symbol, $skip_if_terminal ) = (
-        $options->{'calc_mainchain'},
-        $options->{'explicit_symbol'},
-        $options->{'skip_if_terminal'},
-    );
-
-    $calc_mainchain //= 0;
-    $skip_if_terminal //= 0;
-
-    my %mainchain_atom_names =
-        map { $_ => 1 } @{ $parameters->{'_[local]_mainchain_atom_names'} };
-
-    my %bond_parameter_names = ();
-    my %visited_bonds = ();
-
-    for my $atom_id ( sort { $atom_order->{$a} <=> $atom_order->{$b} }
-                      keys %{ $bonds } ) {
-        for my $bond_atom_ids ( @{ $bonds->{$atom_id} } ) {
-            my $is_visited = $visited_bonds{join(',',@{$bond_atom_ids})};
-
-            next if defined $is_visited && $is_visited;
-
-            next if $skip_if_terminal &&
-                $atom_id eq $bond_atom_ids->[$#{$bond_atom_ids}];
-
-            $visited_bonds{join(',',@{$bond_atom_ids})} = 1;
-
-            my $are_any_sidechain_atoms =
-                scalar( grep { $mainchain_atom_names{$_} }
-                        map  { $atom_site->{$_}{'label_atom_id'} }
-                            @{ $bond_atom_ids } ) <
-                scalar( @{ $bond_atom_ids } );
-            my $are_any_heteroatoms =
-                grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' }
-                     ( @{ $bond_atom_ids }, $atom_id );
-
-            next if ! $calc_mainchain &&
-                    ! $are_any_sidechain_atoms &&
-                    ! $are_any_heteroatoms;
-
-            my ( $residue_name ) =
-                map { $atom_site->{$_}{'label_comp_id'} }
-                   @{ $bond_atom_ids };
-            my $bond_parameter_name =
-                join( '-', map { $atom_site->{$_}{'label_atom_id'} }
-                              @{ $bond_atom_ids } );
-            my $alt_bond_parameter_name = "";
-            # HACK: maybe there is a more universal way to do specifically for
-            # rotatable bonds.
-            if( scalar @{ $bond_atom_ids } == 4 ) {
-                $alt_bond_parameter_name =
-                    join '-',
-                    ( '.', $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
-                      $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'}, '.' );
-            }
-
-            # If it can be changed, the bond parameter name is changed to the
-            # explicit one.
-            if( defined $explicit_symbol->{$residue_name}{$bond_parameter_name} ||
-                defined $explicit_symbol->{$residue_name}{$alt_bond_parameter_name} ){
-                ( $bond_parameter_name ) =
-                    grep { defined $_ }
-                    ($explicit_symbol->{$residue_name}{$bond_parameter_name},
-                     $explicit_symbol->{$residue_name}{$alt_bond_parameter_name});
-            }
-
-            $bond_parameter_names{join(',',@{$bond_atom_ids})} =
-                $bond_parameter_name;
-            $bond_parameter_names{join(',',reverse @{$bond_atom_ids})} =
-                $bond_parameter_name;
+        # Adds bond if it is a continuation of identified bonds.
+        if( exists $bendable_angles{$second_atom_id} ) {
+            unshift @{ $bendable_angles{$third_atom_id} },
+                @{ $bendable_angles{$second_atom_id} };
         }
     }
 
-    # TODO: might be used inside the loop above, because nested conditionals
-    # are the same.
-    my %named_bond_parameters = ();
-    my $bond_id = 1;
-    for my $atom_id ( sort { $atom_order->{$a} <=> $atom_order->{$b} }
-                      keys %{ $bonds } ) {
-        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
-        for my $bond_atom_ids ( @{ $bonds->{$atom_id} } ) {
-            next if $skip_if_terminal &&
-                $atom_id eq $bond_atom_ids->[$#{$bond_atom_ids}];
+    my %named_bendable_angles = ();
+    for my $atom_id ( keys %bendable_angles ) {
+        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
+        for my $bond_atom_ids ( @{ $bendable_angles{$atom_id} } ) {
+            my $bendable_angle_name =
+                join '-', map { $atom_site->{$_}{'label_atom_id'} }
+                             @{ $bond_atom_ids };
 
-            my $bond_parameter_name =
-                $bond_parameter_names{join(',',@{$bond_atom_ids})};
-
-            next if ! defined $bond_parameter_name;
-
-            $named_bond_parameters{$atom_id}{$bond_parameter_name}{'atom_ids'} =
-                $bond_atom_ids;
-            $named_bond_parameters{$atom_id}{$bond_parameter_name}{'order'} =
-                $bond_id;
-
-            $bond_id++;
+            $named_bendable_angles{$atom_id}{$bendable_angle_name} = {
+                'order' => $order{$bond_atom_ids->[0]}
+                                 {$bond_atom_ids->[1]}
+                                 {$bond_atom_ids->[2]},
+                'atom_ids' => $bond_atom_ids,
+            };
         }
     }
 
-    return \%named_bond_parameters;
+    return \%named_bendable_angles;
 }
 
 #
@@ -776,6 +556,21 @@ sub unique_rotatables
     }
 
     return \%unique_rotatable_bonds;
+}
+
+sub contains_sidechain_atoms
+{
+    my ( $paramters, $atom_site, $atom_ids ) = @_;
+    return scalar( grep { $paramters->{'_[local]_mainchain_atom_names_table'}{$_} }
+                   map  { $atom_site->{$_}{'label_atom_id'} }
+                       @{ $atom_ids } ) <
+           scalar( @{ $atom_ids } );
+}
+
+sub contains_hetatoms
+{
+    my ( $atom_site, $atom_ids ) = @_;
+    return grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 }
 
 1;
