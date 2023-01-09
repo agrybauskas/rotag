@@ -68,46 +68,14 @@ sub rotation_only
             for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
                                         $rotatable_bonds->{$atom_id}{$b}{'order'} }
                                  keys %{ $rotatable_bonds->{$atom_id} } ) {
-                # First, checks if rotatable bond has fourth atom produce
-                # dihedral angle. It is done by looking at atom connections: if
-                # rotatable bond ends with terminal atom, then this bond is
-                # excluded.
-                my $up_atom_id =
-                    $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[2];
-                if( scalar( @{ $residue_site->{$up_atom_id}
-                                              {'connections'} } ) < 2 ){ next; }
-
-                my $mid_atom_id =
-                    $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[1];
-                if( scalar( @{ $residue_site->{$mid_atom_id}
-                                              {'connections'} } ) < 2 ){ next; }
-
-                my @mid_connections = # Excludes up atom.
-                    grep { $_ ne $up_atom_id }
-                        @{ $residue_site->{$mid_atom_id}{'connections'} };
-                my @mid_connection_names = # Excludes up atom.
-                    map { $residue_site->{$_}{'label_atom_id'} }
-                        @mid_connections;
-                my $side_atom_name =
-                    sort_atom_names( \@mid_connection_names )->[0];
-                my $side_atom_id =
-                    filter_new( $residue_site,
-                            {  'include' =>
-                                   { 'label_atom_id' => [ $side_atom_name ] },
-                               'return_data' => 'id' } )->[0];
-
-                my $mid_atom_coord =
-                    [ $residue_site->{$mid_atom_id}{'Cartn_x'},
-                      $residue_site->{$mid_atom_id}{'Cartn_y'},
-                      $residue_site->{$mid_atom_id}{'Cartn_z'} ];
-                my $up_atom_coord =
-                    [ $residue_site->{$up_atom_id}{'Cartn_x'},
-                      $residue_site->{$up_atom_id}{'Cartn_y'},
-                      $residue_site->{$up_atom_id}{'Cartn_z'} ];
-                my $side_atom_coord =
-                    [ $residue_site->{$side_atom_id}{'Cartn_x'},
-                      $residue_site->{$side_atom_id}{'Cartn_y'},
-                      $residue_site->{$side_atom_id}{'Cartn_z'} ];
+                my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
+                    map { $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
+                        ( 2, 1, 0 );
+                my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+                    map { [ $residue_site->{$_}{'Cartn_x'},
+                            $residue_site->{$_}{'Cartn_y'},
+                            $residue_site->{$_}{'Cartn_z'} ] }
+                        ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
                 # Creates and appends matrices to a list of matrices that later
                 # will be multiplied.
