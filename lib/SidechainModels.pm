@@ -154,13 +154,13 @@ sub rotation_translation
             ! %{ $bendable_angles } ) { next; }
 
         for my $atom_id ( keys %{ $residue_site }  ) {
-            my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
-                               $atom_site{"$atom_id"}{'Cartn_y'},
-                               $atom_site{"$atom_id"}{'Cartn_z'}, );
-
             if( ! exists $rotatable_bonds->{$atom_id} &&
                 ! exists $stretchable_bonds->{$atom_id} &&
                 ! exists $bendable_angles->{$atom_id} ) { next; }
+
+            my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
+                               $atom_site{"$atom_id"}{'Cartn_y'},
+                               $atom_site{"$atom_id"}{'Cartn_z'}, );
 
             # Matrices for transforming atom coordinates.
             my @bond_torsion_matrices;
