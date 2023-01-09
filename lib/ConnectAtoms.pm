@@ -565,6 +565,7 @@ sub retains_connections
     return 1;
 }
 
+# NOTE: maybe this for should be used instead of array in $atom_site.
 sub retrieve_connections
 {
     my ( $atom_site ) = @_;
