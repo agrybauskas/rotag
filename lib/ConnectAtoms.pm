@@ -14,7 +14,8 @@ our @EXPORT_OK = qw( append_connections
                      is_neighbour
                      is_second_neighbour
                      remove_connections
-                     retains_connections );
+                     retains_connections
+                     retrieve_connections );
 }
 
 use Carp qw( confess );
@@ -562,6 +563,22 @@ sub retains_connections
     }
 
     return 1;
+}
+
+sub retrieve_connections
+{
+    my ( $atom_site ) = @_;
+    my %connections = ();
+    for my $atom_id ( keys %{ $atom_site } ) {
+        next if ! defined $atom_site->{$atom_id}{'connections'} ||
+            ! @{ $atom_site->{$atom_id}{'connections'} };
+
+        for my $connected_atom_id ( @{ $atom_site->{$atom_id}{'connections'} } ){
+            $connections{$atom_id}{$connected_atom_id} = 1;
+            $connections{$connected_atom_id}{$atom_id} = 1;
+        }
+    }
+    return \%connections;
 }
 
 sub original_atom_id
