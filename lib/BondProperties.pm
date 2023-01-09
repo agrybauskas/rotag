@@ -261,7 +261,7 @@ sub rotatable_bonds
         next if ! defined $first_atom_id;
 
         # Checks for mainchains and heteroatoms.
-        next if ! $include_hetatoms &&
+        next if ! $include_mainchain &&
             ! contains_sidechain_atoms( $parameters,
                                         $atom_site,
                                         [ $first_atom_id, $second_atom_id,
@@ -401,7 +401,7 @@ sub stretchable_bonds
         $order{$first_atom_id}{$second_atom_id} = $order;
 
         # Checks for mainchains and heteroatoms.
-        next if ! $include_hetatoms &&
+        next if ! $include_mainchain &&
             ! contains_sidechain_atoms( $parameters,
                                         $atom_site,
                                         [ $first_atom_id, $second_atom_id ] ) &&
@@ -490,7 +490,7 @@ sub bendable_angles
         $order{$first_atom_id}{$second_atom_id}{$third_atom_id} = $order;
 
         # Checks for mainchains and heteroatoms.
-        next if ! $include_hetatoms &&
+        next if ! $include_mainchain &&
             ! contains_sidechain_atoms( $parameters,
                                         $atom_site,
                                         [ $first_atom_id, $second_atom_id,
