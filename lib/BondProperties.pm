@@ -217,10 +217,12 @@ sub rotatable_bonds
     $include_hetatoms //= 0;
 
     my $explicit_dihedral_names = $parameters->{'_[local]_dihedral_angle_name'};
+    # TODO: maybe it should be moved to force field parameter file?
     my $ignore_connections = {
         'label_atom_id' => {
             'N' => { 'CD' => 1, # For PRO.
                      'C' => 1 },
+            'C' => { 'O' => 1 },
             ( $include_hetatoms ?
               ( 'C' => { 'CA' => 1 } ) :
               ( 'C' => { 'N' => 1 } ) ),
@@ -239,6 +241,7 @@ sub rotatable_bonds
         'atom_site' => $atom_site,
         'start_atom_ids' => $start_atom_ids,
         'include_hetatoms' => $include_hetatoms,
+        'ignore_connections' => $ignore_connections,
     } );
 
     my %rotatable_bonds = ();
@@ -388,6 +391,7 @@ sub stretchable_bonds
         'atom_site' => $atom_site,
         'start_atom_ids' => $start_atom_ids,
         'include_hetatoms' => $include_hetatoms,
+        'ignore_connections' => $ignore_connections,
     } );
 
     my %stretchable_bonds = ();

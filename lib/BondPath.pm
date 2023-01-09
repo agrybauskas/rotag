@@ -11,10 +11,11 @@ use PDBxParser qw( filter_new );
 sub new
 {
     my ( $class, $args ) = @_;
-    my ( $atom_site, $start_atom_ids, $include_hetatoms ) =
+    my ( $atom_site, $start_atom_ids, $include_hetatoms, $ignore_connections ) =
         ( $args->{'atom_site'},
           $args->{'start_atom_ids'},
-          $args->{'include_hetatoms'} );
+          $args->{'include_hetatoms'},
+          $args->{'ignore_connections'} );
 
     my $self = {};
 
