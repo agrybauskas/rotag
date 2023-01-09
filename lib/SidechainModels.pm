@@ -57,11 +57,11 @@ sub rotation_only
         if( ! %{ $rotatable_bonds } ) { next; }
 
         for my $atom_id ( keys %{ $residue_site }  ) {
+            if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
+
             my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
                                $atom_site{"$atom_id"}{'Cartn_y'},
                                $atom_site{"$atom_id"}{'Cartn_z'}, );
-
-            if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
 
             my @transf_matrices; # Matrices for transforming atom coordinates.
 
