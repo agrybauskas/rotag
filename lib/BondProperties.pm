@@ -387,7 +387,8 @@ sub stretchable_bonds
 
     $bond_paths //= BondPath->new( {
         'atom_site' => $atom_site,
-        'start_atom_ids' => $start_atom_ids
+        'start_atom_ids' => $start_atom_ids,
+        'include_hetatoms' => $include_hetatoms,
     } );
 
     my %stretchable_bonds = ();
@@ -471,7 +472,8 @@ sub bendable_angles
 
     $bond_paths //= BondPath->new( {
         'atom_site' => $atom_site,
-        'start_atom_ids' => $start_atom_ids
+        'start_atom_ids' => $start_atom_ids,
+        'include_hetatoms' => $include_hetatoms,
     } );
 
     my %bendable_angles = ();
