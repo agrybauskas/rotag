@@ -222,10 +222,8 @@ sub rotatable_bonds
         'label_atom_id' => {
             'N' => { 'CD' => 1, # For PRO.
                      'C' => 1 },
-            'C' => { 'O' => 1 },
-            ( $include_hetatoms ?
-              ( 'C' => { 'CA' => 1 } ) :
-              ( 'C' => { 'N' => 1 } ) ),
+            'C' => { 'O' => 1,
+                     ( $include_hetatoms ? ( 'CA' => 1 ) : ( 'N' => 1 ) ) },
         },
     };
 

@@ -26,6 +26,7 @@ sub new
         filter_new( $atom_site,
                     { 'include' => { 'label_atom_id' => [ 'N', 'XA' ] },
                       'return_data' => 'id' } );
+    $ignore_connections //= {};
 
     my %visited_atom_ids = ();
     my @next_atom_ids = ( grep { defined $_ } @{ $start_atom_ids } );
@@ -36,6 +37,7 @@ sub new
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
         my ( $atom_id ) = pop @next_atom_ids;
+        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = 1;
@@ -59,8 +61,18 @@ sub new
 
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
+            my $sorted_neighbour_atom_name =
+                $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'};
 
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
+
+            next if exists $ignore_connections->{'label_atom_id'}{$atom_name} &&
+                exists $ignore_connections->{'label_atom_id'}
+                                            {$atom_name}
+                                            {$sorted_neighbour_atom_name} &&
+                $ignore_connections->{'label_atom_id'}
+                                     {$atom_name}
+                                     {$sorted_neighbour_atom_name};
 
             if( ! exists $bond_paths{$sorted_neighbour_atom_id} ) {
                 $self->{$atom_order_idx}{$atom_id} = $sorted_neighbour_atom_id;
