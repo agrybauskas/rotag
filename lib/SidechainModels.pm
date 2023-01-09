@@ -73,12 +73,12 @@ sub rotation_only
                 # rotatable bond ends with terminal atom, then this bond is
                 # excluded.
                 my $up_atom_id =
-                    $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[1];
+                    $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[2];
                 if( scalar( @{ $residue_site->{$up_atom_id}
                                               {'connections'} } ) < 2 ){ next; }
 
                 my $mid_atom_id =
-                    $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[0];
+                    $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[1];
                 if( scalar( @{ $residue_site->{$mid_atom_id}
                                               {'connections'} } ) < 2 ){ next; }
 
@@ -210,7 +210,7 @@ sub rotation_translation
                     # if rotatable bond ends with terminal atom, then this bond
                     # is excluded.
                     my $up_atom_id =
-                        $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[1];
+                        $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[2];
 
                     my $connection_count =
                         defined $residue_site->{$up_atom_id}{'connections'} ?
@@ -224,7 +224,7 @@ sub rotation_translation
                           $connection_count + $hetatom_connection_count < 2 ) ){ next; }
 
                     my $mid_atom_id =
-                        $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[0];
+                        $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[1];
                     if( ! $include_hetatoms &&
                         scalar( @{ $residue_site->{$mid_atom_id}
                                                   {'connections'} } ) < 2 ){ next; }
