@@ -353,8 +353,7 @@ sub rotatable_bonds
 # Identifies bonds that can be stretched.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     ${start,next}_atom_id - starting atom id and the next one that is followed
-#     in order to identify the direction of the search for rotatable bonds.
+#     $start_atom_ids - starting atom ids.
 # Output:
 #     %named_stretchable_bonds - data structure that describes stretchable bonds
 #     and the constituent atom ids of the bond. Ex.:
@@ -443,8 +442,7 @@ sub stretchable_bonds
 # Identifies bonds that can be bent.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     ${start,next}_atom_id - starting atom id and the next one that is followed
-#     in order to identify the direction of the search for rotatable bonds.
+#     $start_atom_ids - starting atom ids.
 # Output:
 #     %named_bendable_angles - data structure that describes bendable angles
 #     and the constituent atom ids of the bond. Ex.:
