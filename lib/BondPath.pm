@@ -29,7 +29,7 @@ sub new
     $include_hetatoms //= 0;
     $ignore_connections //= {};
 
-    my %visited_atom_ids = ();
+    my %visited_atom_ids = (); # Contains visited atom order.
     my @next_atom_ids = ( grep { defined $_ } @{ $start_atom_ids } );
 
     my %bond_paths = ();
@@ -41,7 +41,8 @@ sub new
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 
         next if $visited_atom_ids{$atom_id};
-        $visited_atom_ids{$atom_id} = 1;
+        $visited_atom_ids{$atom_id} = $atom_order_idx;
+        $atom_order_idx++;
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
@@ -75,20 +76,16 @@ sub new
                                      {$atom_name}
                                      {$sorted_neighbour_atom_name};
 
-            if( ! exists $bond_paths{$sorted_neighbour_atom_id} ) {
-                $self->{$atom_order_idx}{$atom_id} = $sorted_neighbour_atom_id;
-            }
-
             # Depth-first search.
             if( $i == 0 ) {
                 push @next_atom_ids, $sorted_neighbour_atom_id;
             } else {
                 unshift @next_atom_ids, $sorted_neighbour_atom_id;
             }
-
-            $atom_order_idx++;
         }
     }
+
+    $self->{'atom_order'} = \%visited_atom_ids;
 
     return bless $self, $class;
 }
