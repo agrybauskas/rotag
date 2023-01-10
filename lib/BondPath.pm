@@ -26,6 +26,7 @@ sub new
         filter_new( $atom_site,
                     { 'include' => { 'label_atom_id' => [ 'N', 'XA' ] },
                       'return_data' => 'id' } );
+    $include_hetatoms //= 0;
     $ignore_connections //= {};
 
     my %visited_atom_ids = ();
