@@ -289,7 +289,7 @@ for my $pdbx_file ( @ARGV ) {
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) ) {
                 my $dihedral_angles = all_dihedral(
                     $residue_site,
-                    { 'calc_mainchain' => 1,
+                    { 'include_mainchain' => 1,
                       'reference_atom_site' => $selected_atom_site }
                 );
 

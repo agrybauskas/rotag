@@ -236,7 +236,7 @@ sub dihedral_angle
 # calculations.
 # Input:
 #     $atom_site - atom data structure.
-#     $options->{'calc_mainchain'} - additionally calculates phi and psi
+#     $options->{'include_mainchain'} - additionally calculates phi and psi
 #     mainchain dihedral angles.
 #     $options->{'include_hetatoms'} - additionally calculates dihedral angles for
 #     hetero atoms.
@@ -250,12 +250,12 @@ sub dihedral_angle
 sub all_dihedral
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $include_hetatoms ) = (
-        $options->{'calc_mainchain'},
+    my ( $include_mainchain, $include_hetatoms ) = (
+        $options->{'include_mainchain'},
         $options->{'include_hetatoms'},
     );
 
-    $calc_mainchain //= 0;
+    $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
     my $residue_groups =
@@ -274,7 +274,7 @@ sub all_dihedral
         my $rotatable_bonds =
             rotatable_bonds( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms,
-                               'include_mainchain' => $calc_mainchain } );
+                               'include_mainchain' => $include_mainchain } );
         my $unique_rotatable_bonds=
             unique_bond_parameters( $rotatable_bonds );
 
@@ -283,7 +283,7 @@ sub all_dihedral
         # Calculates main-chain phi, psi angles.
         # HACK: rotatable bonds should be determined in rotatable_bonds() -- not
         # outside. However, for now, the old code is being kept.
-        if( $calc_mainchain ) {
+        if( $include_mainchain ) {
             my ( $n_atom_id, $ca_atom_id, $c_atom_id ) =
                 map { filter_new( $residue_site,
                                   { 'include' =>
@@ -389,7 +389,7 @@ sub all_dihedral
 # of connect_atoms is necessary for correct calculations.
 # Input:
 #     $atom_site - atom data structure.
-#     $options->{'calc_mainchain'} - additionally calculates mainchain bond
+#     $options->{'include_mainchain'} - additionally calculates mainchain bond
 #     angles.
 #     $options->{'include_hetatoms'} - additionally calculates bond angles for
 #     hetero atoms.
@@ -404,12 +404,12 @@ sub all_dihedral
 sub all_bond_angles
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $include_hetatoms ) = (
-        $options->{'calc_mainchain'},
+    my ( $include_mainchain, $include_hetatoms ) = (
+        $options->{'include_mainchain'},
         $options->{'include_hetatoms'},
     );
 
-    $calc_mainchain //= 0;
+    $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
     my $residue_groups =
@@ -428,14 +428,14 @@ sub all_bond_angles
         my $bendable_angles =
             bendable_angles( $parameters, $residue_site, undef,
                              { 'include_hetatoms' => $include_hetatoms,
-                               'calc_mainchain' => $calc_mainchain } );
+                               'include_mainchain' => $include_mainchain } );
 
         my $unique_bendable_angles =
             unique_bond_parameters( $bendable_angles );
 
         my %angle_values;
 
-        if( $calc_mainchain ) {
+        if( $include_mainchain ) {
             my ( $n_atom_id, $ca_atom_id, $c_atom_id, $o_atom_id ) =
                 map { filter_new( $residue_site,
                                   { 'include' =>
@@ -521,7 +521,7 @@ sub add_bond_angles
 # of connect_atoms is necessary for correct calculations.
 # Input:
 #     $atom_site - atom data structure.
-#     $options->{'calc_mainchain'} - additionally calculates mainchain bond
+#     $options->{'include_mainchain'} - additionally calculates mainchain bond
 #     angles.
 #     $options->{'include_hetatoms'} - additionally calculates bond lengths for
 #     hetero atoms.
@@ -536,12 +536,12 @@ sub add_bond_angles
 sub all_bond_lengths
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $calc_mainchain, $include_hetatoms ) = (
-        $options->{'calc_mainchain'},
+    my ( $include_mainchain, $include_hetatoms ) = (
+        $options->{'include_mainchain'},
         $options->{'include_hetatoms'},
     );
 
-    $calc_mainchain //= 0;
+    $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
     my $residue_groups =
@@ -565,7 +565,7 @@ sub all_bond_lengths
 
         my %length_values;
 
-        if( $calc_mainchain ) {
+        if( $include_mainchain ) {
             # TODO: hydrogens should be added or automatic search implemented.
             my ( $n_atom_id, $ca_atom_id, $c_atom_id, $o_atom_id ) =
                 map { filter_new( $residue_site,

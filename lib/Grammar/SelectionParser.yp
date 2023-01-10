@@ -242,6 +242,7 @@ exp
             connect_atoms( $parameters, $clone_atom_site );
             hybridization( $parameters, $clone_atom_site );
 
+            # FIXME: it looks like the usage of functions are old.
             my $dihedral_angles =
                 all_dihedral(
                     $parameters,
