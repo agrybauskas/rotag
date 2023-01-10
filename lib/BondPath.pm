@@ -11,11 +11,13 @@ use PDBxParser qw( filter_new );
 sub new
 {
     my ( $class, $args ) = @_;
-    my ( $atom_site, $start_atom_ids, $include_hetatoms, $ignore_connections ) =
+    my ( $atom_site, $start_atom_ids, $include_hetatoms, $ignore_connections,
+         $include_visited ) =
         ( $args->{'atom_site'},
           $args->{'start_atom_ids'},
           $args->{'include_hetatoms'},
-          $args->{'ignore_connections'} );
+          $args->{'ignore_connections'},
+          $args->{'include_visited'} );
 
     my $self = {};
 
@@ -28,6 +30,7 @@ sub new
                       'return_data' => 'id' } );
     $include_hetatoms //= 0;
     $ignore_connections //= {};
+    $include_visited //= 0;
 
     my %visited_atom_ids = (); # Contains visited atom order.
     my @next_atom_ids = ( grep { defined $_ } @{ $start_atom_ids } );
@@ -38,11 +41,10 @@ sub new
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
         my ( $atom_id ) = pop @next_atom_ids;
-        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = $atom_order_idx;
-        $atom_order_idx++;
+        $self->{'atom_order'}{$atom_order_idx} = $atom_id;
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
@@ -63,18 +65,8 @@ sub new
 
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
-            my $sorted_neighbour_atom_name =
-                $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'};
 
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
-
-            next if exists $ignore_connections->{'label_atom_id'}{$atom_name} &&
-                exists $ignore_connections->{'label_atom_id'}
-                                            {$atom_name}
-                                            {$sorted_neighbour_atom_name} &&
-                $ignore_connections->{'label_atom_id'}
-                                     {$atom_name}
-                                     {$sorted_neighbour_atom_name};
 
             # Depth-first search.
             if( $i == 0 ) {
@@ -83,9 +75,37 @@ sub new
                 unshift @next_atom_ids, $sorted_neighbour_atom_id;
             }
         }
+
+        $atom_order_idx++;
     }
 
-    $self->{'atom_order'} = \%visited_atom_ids;
+    # Prepares connection information.
+    for my $order ( sort { $a <=> $b } keys %{ $self->{'atom_order'} } ) {
+        my $atom_id = $self->{'atom_order'}{$order};
+        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+        my $atom_connections = $atom_site->{$atom_id}{'connections'};
+
+        next if ! defined $atom_connections;
+
+        for my $neighbour_atom_id ( @{ $atom_connections } ) {
+            my $neighbour_atom_name =
+                $atom_site->{$neighbour_atom_id}{'label_atom_id'};
+
+            next if exists $ignore_connections->{'label_atom_id'}{$atom_name} &&
+                exists $ignore_connections->{'label_atom_id'}
+                                            {$atom_name}
+                                            {$neighbour_atom_name} &&
+                $ignore_connections->{'label_atom_id'}
+                                     {$atom_name}
+                                     {$neighbour_atom_name};
+
+            next if ! $include_visited &&
+                $visited_atom_ids{$atom_id} > $visited_atom_ids{$neighbour_atom_id};
+
+            $self->{'connections'}{$atom_id}{$neighbour_atom_id} =
+                $visited_atom_ids{$neighbour_atom_id};
+        }
+    }
 
     return bless $self, $class;
 }
