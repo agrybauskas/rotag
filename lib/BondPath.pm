@@ -85,7 +85,7 @@ sub new
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         my $atom_connections = $atom_site->{$atom_id}{'connections'};
 
-        next if ! defined $atom_connections;
+        next if ! defined $atom_connections || ! @{ $atom_connections };
 
         for my $neighbour_atom_id ( @{ $atom_connections } ) {
             my $neighbour_atom_name =
@@ -104,6 +104,8 @@ sub new
 
             $self->{'connections'}{$atom_id}{$neighbour_atom_id} =
                 $visited_atom_ids{$neighbour_atom_id};
+            $self->{'connections'}{$neighbour_atom_id}{$atom_id} =
+                $visited_atom_ids{$atom_id};
         }
     }
 

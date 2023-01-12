@@ -419,6 +419,9 @@ sub stretchable_bonds
         }
     }
 
+    # use Data::Dumper;
+    # print STDERR Dumper \%stretchable_bonds;
+
     # Naming the stretchable bonds.
     my %named_stretchable_bonds = ();
     for my $atom_id ( keys %stretchable_bonds ) {
