@@ -249,6 +249,7 @@ sub rotatable_bonds
 
     my %rotatable_bonds = ();
     my %visited_atom_ids = ();
+    my %shared_rotatable_bonds = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
     for my $second_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
@@ -300,28 +301,35 @@ sub rotatable_bonds
             }
 
             # Appending dihedral angles.
+
+            # If one of the bond atoms are sp3, it is rotatable.
             if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
                 ( $include_hetatoms &&
                   $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
                   $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
-                # If one of the bond atoms are sp3, it is rotatable.
-                if( exists $rotatable_bonds{$third_atom_id} ) {
+                if( exists $shared_rotatable_bonds{$second_atom_id}{$third_atom_id} ) {
                     push @{ $rotatable_bonds{$fourth_atom_id} },
-                        @{ $rotatable_bonds{$third_atom_id} };
+                        @{ $shared_rotatable_bonds{$second_atom_id}{$third_atom_id} };
                 } else {
                     push @{ $rotatable_bonds{$fourth_atom_id} },
                         [ $first_atom_id, $second_atom_id, $third_atom_id,
                           $fourth_atom_id ];
                 }
-            } else {
-                # If bond atoms are sp2/sp (do not rotate) or just is a
-                # continuation of the bond chain, inherits its previous atom's
-                # rotatable bonds.
-                if( exists $rotatable_bonds{$third_atom_id} ) {
-                    unshift @{ $rotatable_bonds{$fourth_atom_id} },
-                        @{ $rotatable_bonds{$third_atom_id} };
-                }
+            }
+
+            # If bond atoms are sp2/sp (do not rotate) or just is a
+            # continuation of the bond chain, inherits its previous atom's
+            # rotatable bonds.
+            if( exists $rotatable_bonds{$third_atom_id} ) {
+                unshift @{ $rotatable_bonds{$fourth_atom_id} },
+                    @{ $rotatable_bonds{$third_atom_id} };
+            }
+
+            # Caching dihedral angle data.
+            if( ! exists $shared_rotatable_bonds{$second_atom_id}{$third_atom_id} ) {
+                $shared_rotatable_bonds{$second_atom_id}{$third_atom_id} =
+                    $rotatable_bonds{$fourth_atom_id};
             }
 
             $visited_atom_ids{$third_atom_id} = 1;
@@ -332,41 +340,42 @@ sub rotatable_bonds
         }
     }
 
-    use Data::Dumper;
-    print STDERR Dumper \%rotatable_bonds;
+    # use Data::Dumper;
+    # print STDERR Dumper \%rotatable_bonds;
+    # print STDERR Dumper \%shared_rotatable_bonds;
 
     # Naming the rotatable bonds.
     my %named_rotatable_bonds = ();
-    # for my $atom_id ( keys %rotatable_bonds ) {
-    #     my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
-    #     for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
-    #         my $rotatable_bond_name =
-    #             join '-', map { $atom_site->{$_}{'label_atom_id'} }
-    #                          @{ $bond_atom_ids };
-    #         my $simplified_rotatable_bond_name =
-    #             join '-', ( '.',
-    #                         $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
-    #                         $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
-    #                         '.');
+    for my $atom_id ( keys %rotatable_bonds ) {
+        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
+        for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
+            my $rotatable_bond_name =
+                join '-', map { $atom_site->{$_}{'label_atom_id'} }
+                             @{ $bond_atom_ids };
+            my $simplified_rotatable_bond_name =
+                join '-', ( '.',
+                            $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
+                            $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
+                            '.');
 
-    #         if( exists $explicit_dihedral_names->{$residue_name}
-    #                                              {$rotatable_bond_name} ) {
-    #             $rotatable_bond_name =
-    #                 $explicit_dihedral_names->{$residue_name}
-    #                                           {$rotatable_bond_name};
-    #         } elsif( exists $explicit_dihedral_names->{$residue_name}
-    #                                                   {$simplified_rotatable_bond_name} ) {
-    #             $rotatable_bond_name =
-    #                 $explicit_dihedral_names->{$residue_name}
-    #                                           {$simplified_rotatable_bond_name};
-    #         }
+            if( exists $explicit_dihedral_names->{$residue_name}
+                                                 {$rotatable_bond_name} ) {
+                $rotatable_bond_name =
+                    $explicit_dihedral_names->{$residue_name}
+                                              {$rotatable_bond_name};
+            } elsif( exists $explicit_dihedral_names->{$residue_name}
+                                                      {$simplified_rotatable_bond_name} ) {
+                $rotatable_bond_name =
+                    $explicit_dihedral_names->{$residue_name}
+                                              {$simplified_rotatable_bond_name};
+            }
 
-    #         $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
-    #             'order' => $order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
-    #             'atom_ids' => $bond_atom_ids,
-    #         };
-    #     }
-    # }
+            $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
+                'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
+                'atom_ids' => $bond_atom_ids,
+            };
+        }
+    }
 
     return \%named_rotatable_bonds;
 }
