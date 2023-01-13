@@ -189,15 +189,20 @@ sub hybridization
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $start_atom_ids - starting atom ids;
-#     $options->{'include_hetatoms'} - includes heteroatoms.
+#     $options{'bond_paths'} - pre-calculated BondPath object (see BondPath.pm);
+#     $options{'include_mainchain'} - flag that includes main-chain atoms;
+#     $options{'include_hetatoms'} - flag that includes heteroatoms.
 # Output:
 #     %rotatable_bonds - data structure that describes rotatable bonds and
 #     the constituent atom ids of the bond. Ex.:
 #     {
 #       $atom_id_3 => {
-#                       $rotatable_bond_name_1 => [
+#                       $rotatable_bond_name_1 => {
+#                         'atom_ids' => [
 #                           $atom_id_1, $atom_id_2, $atom_id_3, $atom_id_4
-#                       ],
+#                         ],
+#                         'order' => 1
+#                       },
 #                       ...
 #                     },
 #       ...
@@ -243,109 +248,112 @@ sub rotatable_bonds
     } );
 
     my %rotatable_bonds = ();
-    my %parent_atom_ids = ();
-    my %shared_bonds = ();
-    my %order = ();
-    for my $order ( sort { $a <=> $b } keys %{ $bond_paths } ) {
-        my ( $third_atom_id ) = keys %{ $bond_paths->{$order} };
-        my $fourth_atom_id = $bond_paths->{$order}{$third_atom_id};
+    my %visited_atom_ids = ();
+    my %bond_order = ();
+    my $bond_order_idx = 1;
+    for my $atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
+                             $bond_paths->{'atom_order'}{$b} }
+                      keys %{ $bond_paths->{'atom_order'} } ) {
+        my $order = $bond_paths->{'atom_order'}{$atom_id};
+    #     my ( $third_atom_id ) = keys %{ $bond_paths->{$order} };
+    #     my $fourth_atom_id = $bond_paths->{$order}{$third_atom_id};
 
-        $parent_atom_ids{$fourth_atom_id} = $third_atom_id;
-        $order{$third_atom_id}{$fourth_atom_id} = $order;
+    #     $parent_atom_ids{$fourth_atom_id} = $third_atom_id;
+    #     $order{$third_atom_id}{$fourth_atom_id} = $order;
 
-        my $second_atom_id = $parent_atom_ids{$third_atom_id};
+    #     my $second_atom_id = $parent_atom_ids{$third_atom_id};
 
-        next if ! defined $second_atom_id;
+    #     next if ! defined $second_atom_id;
 
-        my $first_atom_id = $parent_atom_ids{$second_atom_id};
+    #     my $first_atom_id = $parent_atom_ids{$second_atom_id};
 
-        next if ! defined $first_atom_id;
+    #     next if ! defined $first_atom_id;
 
-        # Checks for mainchains and heteroatoms.
-        next if ! $include_mainchain &&
-            ! contains_sidechain_atoms( $parameters,
-                                        $atom_site,
-                                        [ $first_atom_id, $second_atom_id,
-                                          $third_atom_id, $fourth_atom_id ] ) &&
-            ! contains_hetatoms( $atom_site,
-                                 [ $first_atom_id, $second_atom_id,
-                                   $third_atom_id, $fourth_atom_id ] );
+    #     # Checks for mainchains and heteroatoms.
+    #     next if ! $include_mainchain &&
+    #         ! contains_sidechain_atoms( $parameters,
+    #                                     $atom_site,
+    #                                     [ $first_atom_id, $second_atom_id,
+    #                                       $third_atom_id, $fourth_atom_id ] ) &&
+    #         ! contains_hetatoms( $atom_site,
+    #                              [ $first_atom_id, $second_atom_id,
+    #                                $third_atom_id, $fourth_atom_id ] );
 
-        # Check on hybridization.
-        if( ! exists $atom_site->{$second_atom_id}{'hybridization'} ) {
-            confess "atom with id $second_atom_id lacks information about " .
-                "hybridization";
-        }
-        if( ! exists $atom_site->{$third_atom_id}{'hybridization'} ){
-            confess "atom with id $third_atom_id lacks information " .
-                "about hybridization";
-        }
+    #     # Check on hybridization.
+    #     if( ! exists $atom_site->{$second_atom_id}{'hybridization'} ) {
+    #         confess "atom with id $second_atom_id lacks information about " .
+    #             "hybridization";
+    #     }
+    #     if( ! exists $atom_site->{$third_atom_id}{'hybridization'} ){
+    #         confess "atom with id $third_atom_id lacks information " .
+    #             "about hybridization";
+    #     }
 
-        # Appending dihedral angles.
-        if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
-            $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
-            ( $include_hetatoms &&
-              $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
-              $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
-            # If at one of the bond atoms are sp3, it is rotatable.
-            if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-                push @{ $rotatable_bonds{$fourth_atom_id} },
-                    $shared_bonds{$second_atom_id}{$third_atom_id};
-            } else {
-                push @{ $rotatable_bonds{$fourth_atom_id} },
-                    [ $first_atom_id, $second_atom_id, $third_atom_id,
-                      $fourth_atom_id ];
-            }
-        }
+    #     # Appending dihedral angles.
+    #     if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
+    #         $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
+    #         ( $include_hetatoms &&
+    #           $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
+    #           $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
+    #         # If at one of the bond atoms are sp3, it is rotatable.
+    #         if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
+    #             push @{ $rotatable_bonds{$fourth_atom_id} },
+    #                 $shared_bonds{$second_atom_id}{$third_atom_id};
+    #         } else {
+    #             push @{ $rotatable_bonds{$fourth_atom_id} },
+    #                 [ $first_atom_id, $second_atom_id, $third_atom_id,
+    #                   $fourth_atom_id ];
+    #         }
+    #     }
 
-        # If bond atoms are sp2/sp (do not rotate) or just is a continuation of
-        # the bond chain, inherits its previous atom's rotatable bonds.
-        if( exists $rotatable_bonds{$third_atom_id} ) {
-            unshift @{ $rotatable_bonds{$fourth_atom_id} },
-                @{ $rotatable_bonds{$third_atom_id} };
-        }
+    #     # If bond atoms are sp2/sp (do not rotate) or just is a continuation of
+    #     # the bond chain, inherits its previous atom's rotatable bonds.
+    #     if( exists $rotatable_bonds{$third_atom_id} ) {
+    #         unshift @{ $rotatable_bonds{$fourth_atom_id} },
+    #             @{ $rotatable_bonds{$third_atom_id} };
+    #     }
 
-        # Specific dihedral angle are unique and are described by one set of
-        # dihedral angles that are determined by the order (name hierarchy).
-        if( ! exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-            $shared_bonds{$second_atom_id}{$third_atom_id} = [
-                $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id
-            ];
-        }
+    #     # Specific dihedral angle are unique and are described by one set of
+    #     # dihedral angles that are determined by the order (name hierarchy).
+    #     if( ! exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
+    #         $shared_bonds{$second_atom_id}{$third_atom_id} = [
+    #             $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id
+    #         ];
+    #     }
     }
 
     # Naming the rotatable bonds.
     my %named_rotatable_bonds = ();
-    for my $atom_id ( keys %rotatable_bonds ) {
-        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
-        for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
-            my $rotatable_bond_name =
-                join '-', map { $atom_site->{$_}{'label_atom_id'} }
-                             @{ $bond_atom_ids };
-            my $simplified_rotatable_bond_name =
-                join '-', ( '.',
-                            $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
-                            $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
-                            '.');
+    # for my $atom_id ( keys %rotatable_bonds ) {
+    #     my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
+    #     for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
+    #         my $rotatable_bond_name =
+    #             join '-', map { $atom_site->{$_}{'label_atom_id'} }
+    #                          @{ $bond_atom_ids };
+    #         my $simplified_rotatable_bond_name =
+    #             join '-', ( '.',
+    #                         $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
+    #                         $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
+    #                         '.');
 
-            if( exists $explicit_dihedral_names->{$residue_name}
-                                                 {$rotatable_bond_name} ) {
-                $rotatable_bond_name =
-                    $explicit_dihedral_names->{$residue_name}
-                                              {$rotatable_bond_name};
-            } elsif( exists $explicit_dihedral_names->{$residue_name}
-                                                      {$simplified_rotatable_bond_name} ) {
-                $rotatable_bond_name =
-                    $explicit_dihedral_names->{$residue_name}
-                                              {$simplified_rotatable_bond_name};
-            }
+    #         if( exists $explicit_dihedral_names->{$residue_name}
+    #                                              {$rotatable_bond_name} ) {
+    #             $rotatable_bond_name =
+    #                 $explicit_dihedral_names->{$residue_name}
+    #                                           {$rotatable_bond_name};
+    #         } elsif( exists $explicit_dihedral_names->{$residue_name}
+    #                                                   {$simplified_rotatable_bond_name} ) {
+    #             $rotatable_bond_name =
+    #                 $explicit_dihedral_names->{$residue_name}
+    #                                           {$simplified_rotatable_bond_name};
+    #         }
 
-            $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
-                'order' => $order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
-                'atom_ids' => $bond_atom_ids,
-            };
-        }
-    }
+    #         $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
+    #             'order' => $order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
+    #             'atom_ids' => $bond_atom_ids,
+    #         };
+    #     }
+    # }
 
     return \%named_rotatable_bonds;
 }
@@ -355,18 +363,18 @@ sub rotatable_bonds
 # Input:
 #     $parameters - force field parameter structure;
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $start_atom_ids - starting atom ids.
+#     $start_atom_ids - starting atom ids;
 #     $options{'bond_paths'} - pre-calculated BondPath object (see BondPath.pm);
 #     $options{'include_mainchain'} - flag that includes main-chain atoms;
-#     $options{'include_hetatoms'} - flag that includes heteroatoms;
+#     $options{'include_hetatoms'} - flag that includes heteroatoms.
 # Output:
 #     %named_stretchable_bonds - data structure that describes stretchable bonds
 #     and the constituent atom ids of the bond. Ex.:
 #     {
 #       $atom_id_3 => {
 #                       $stretchable_bond_name_1 => {
-#                         "atom_ids" => [ $atom_id_1, $atom_id_2 ],
-#                         "order" => 1,
+#                         'atom_ids' => [ $atom_id_1, $atom_id_2 ],
+#                         'order' => 1
 #                       },
 #                       ...
 #                     },
