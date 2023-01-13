@@ -255,8 +255,6 @@ sub rotatable_bonds
     for my $second_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
                                     $bond_paths->{'atom_order'}{$b} }
                              keys %{ $bond_paths->{'atom_order'} } ) {
-        my $order = $bond_paths->{'atom_order'}{$second_atom_id};
-
         next if ! defined $bond_paths->{'connections'}{'from'}{$second_atom_id};
 
         for my $third_atom_id (
@@ -432,8 +430,6 @@ sub stretchable_bonds
     for my $first_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
                              $bond_paths->{'atom_order'}{$b} }
                       keys %{ $bond_paths->{'atom_order'} } ) {
-        my $order = $bond_paths->{'atom_order'}{$first_atom_id};
-
         next if ! defined $bond_paths->{'connections'}{'from'}{$first_atom_id};
 
         for my $second_atom_id (
@@ -524,37 +520,49 @@ sub bendable_angles
     } );
 
     my %bendable_angles = ();
-    my %parent_atom_ids = ();
-    my %order = ();
-    for my $order ( sort { $a <=> $b } keys %{ $bond_paths } ) {
-        my ( $second_atom_id ) = keys %{ $bond_paths->{$order} };
-        my $third_atom_id = $bond_paths->{$order}{$second_atom_id};
+    my %bond_order = ();
+    my $bond_order_idx = 1;
 
-        $parent_atom_ids{$third_atom_id} = $second_atom_id;
+    for my $first_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
+                                   $bond_paths->{'atom_order'}{$b} }
+                            keys %{ $bond_paths->{'atom_order'} } ) {
+        next if ! defined $bond_paths->{'connections'}{'from'}{$first_atom_id};
 
-        my $first_atom_id = $parent_atom_ids{$second_atom_id};
+        for my $second_atom_id (
+            sort { $bond_paths->{'atom_order'}{$a} <=>
+                   $bond_paths->{'atom_order'}{$b} }
+            keys %{ $bond_paths->{'connections'}{'from'}{$first_atom_id} } ) {
 
-        next if ! defined $first_atom_id;
+            my ( $third_atom_id ) =
+                sort { $bond_paths->{'atom_order'}{$a} <=>
+                       $bond_paths->{'atom_order'}{$b} }
+                keys %{ $bond_paths->{'connections'}{'from'}{$second_atom_id} };
 
-        $order{$first_atom_id}{$second_atom_id}{$third_atom_id} = $order;
+            next if ! defined $third_atom_id;
 
-        # Checks for mainchains and heteroatoms.
-        next if ! $include_mainchain &&
-            ! contains_sidechain_atoms( $parameters,
-                                        $atom_site,
-                                        [ $first_atom_id, $second_atom_id,
-                                          $third_atom_id ] ) &&
-            ! contains_hetatoms( $atom_site,
-                                 [ $first_atom_id, $second_atom_id,
-                                   $third_atom_id ] );
+            # Checks for mainchains and heteroatoms.
+            next if ! $include_mainchain &&
+                ! contains_sidechain_atoms( $parameters,
+                                            $atom_site,
+                                            [ $first_atom_id, $second_atom_id,
+                                              $third_atom_id ] ) &&
+                ! contains_hetatoms( $atom_site,
+                                     [ $first_atom_id, $second_atom_id,
+                                       $third_atom_id ] );
 
-        push @{ $bendable_angles{$third_atom_id} },
-            [ $first_atom_id, $second_atom_id, $third_atom_id ];
+            push @{ $bendable_angles{$third_atom_id} },
+                [ $first_atom_id, $second_atom_id, $third_atom_id ];
 
-        # Adds bond if it is a continuation of identified bonds.
-        if( exists $bendable_angles{$second_atom_id} ) {
-            unshift @{ $bendable_angles{$third_atom_id} },
-                @{ $bendable_angles{$second_atom_id} };
+            # Adds bond if it is a continuation of identified bonds.
+            if( exists $bendable_angles{$second_atom_id} ) {
+                unshift @{ $bendable_angles{$third_atom_id} },
+                    @{ $bendable_angles{$second_atom_id} };
+            }
+
+            $bond_order{$first_atom_id}{$second_atom_id}{$third_atom_id} =
+                $bond_order_idx;
+
+            $bond_order_idx++;
         }
     }
 
@@ -567,9 +575,9 @@ sub bendable_angles
                              @{ $bond_atom_ids };
 
             $named_bendable_angles{$atom_id}{$bendable_angle_name} = {
-                'order' => $order{$bond_atom_ids->[0]}
-                                 {$bond_atom_ids->[1]}
-                                 {$bond_atom_ids->[2]},
+                'order' => $bond_order{$bond_atom_ids->[0]}
+                                      {$bond_atom_ids->[1]}
+                                      {$bond_atom_ids->[2]},
                 'atom_ids' => $bond_atom_ids,
             };
         }
