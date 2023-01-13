@@ -393,12 +393,18 @@ sub stretchable_bonds
     } );
 
     my %stretchable_bonds = ();
-    for my $order ( sort { $a <=> $b } keys %{ $bond_paths->{'atom_order'} } ) {
-        my $atom_id = $bond_paths->{'atom_order'}{$order};
+    my %visited_atom_ids = ();
+    for my $atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
+                             $bond_paths->{'atom_order'}{$b} }
+                      keys %{ $bond_paths->{'atom_order'} } ) {
+        my $order = $bond_paths->{'atom_order'}{$atom_id};
+
+        next if ! defined $bond_paths->{'connections'}{'from'}{$atom_id};
+
         for my $neighbour_atom_id (
-            sort { $bond_paths->{'connections'}{$atom_id}{$a} <=>
-                   $bond_paths->{'connections'}{$atom_id}{$b} }
-            keys %{ $bond_paths->{'connections'}{$atom_id} } ) {
+            sort { $bond_paths->{'atom_order'}{$a} <=>
+                   $bond_paths->{'atom_order'}{$b} }
+            keys %{ $bond_paths->{'connections'}{'from'}{$atom_id} } ) {
 
             # Checks for mainchains and heteroatoms.
             next if ! $include_mainchain &&
@@ -420,6 +426,7 @@ sub stretchable_bonds
     }
 
     # use Data::Dumper;
+    # # print STDERR Dumper $bond_paths;
     # print STDERR Dumper \%stretchable_bonds;
 
     # Naming the stretchable bonds.

@@ -44,7 +44,7 @@ sub new
 
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = $atom_order_idx;
-        $self->{'atom_order'}{$atom_order_idx} = $atom_id;
+        $self->{'atom_order'}{$atom_id} = $atom_order_idx;
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
@@ -80,8 +80,10 @@ sub new
     }
 
     # Prepares connection information.
-    for my $order ( sort { $a <=> $b } keys %{ $self->{'atom_order'} } ) {
-        my $atom_id = $self->{'atom_order'}{$order};
+    for my $atom_id ( sort { $self->{'atom_order'}{$a} <=>
+                             $self->{'atom_order'}{$b} }
+                      keys %{ $self->{'atom_order'} } ) {
+        my $order = $self->{'atom_order'}{$atom_id};
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
         my $atom_connections = $atom_site->{$atom_id}{'connections'};
 
@@ -102,10 +104,8 @@ sub new
             next if ! $include_visited &&
                 $visited_atom_ids{$atom_id} > $visited_atom_ids{$neighbour_atom_id};
 
-            $self->{'connections'}{$atom_id}{$neighbour_atom_id} =
-                $visited_atom_ids{$neighbour_atom_id};
-            $self->{'connections'}{$neighbour_atom_id}{$atom_id} =
-                $visited_atom_ids{$atom_id};
+            $self->{'connections'}{'from'}{$atom_id}{$neighbour_atom_id} = 1;
+            $self->{'connections'}{'to'}{$neighbour_atom_id}{$atom_id} = 1;
         }
     }
 
