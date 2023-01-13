@@ -305,7 +305,7 @@ sub rotatable_bonds
                 ( $include_hetatoms &&
                   $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
                   $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
-                # # If at one of the bond atoms are sp3, it is rotatable.
+                # If one of the bond atoms are sp3, it is rotatable.
                 # if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
                 #     push @{ $rotatable_bonds{$fourth_atom_id} },
                 #         $shared_bonds{$second_atom_id}{$third_atom_id};
@@ -315,6 +315,12 @@ sub rotatable_bonds
                 #           $fourth_atom_id ];
                 # }
             }
+
+            $visited_atom_ids{$second_atom_id} = 1;
+
+            $bond_order{$first_atom_id}{$second_atom_id} = $bond_order_idx;
+
+            $bond_order_idx++;
 
             # # If bond atoms are sp2/sp (do not rotate) or just is a continuation of
             # # the bond chain, inherits its previous atom's rotatable bonds.
