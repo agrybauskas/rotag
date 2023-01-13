@@ -324,9 +324,9 @@ sub rotatable_bonds
                 }
             }
 
-            $visited_atom_ids{$second_atom_id} = 1;
+            $visited_atom_ids{$third_atom_id} = 1;
 
-            $bond_order{$first_atom_id}{$second_atom_id} = $bond_order_idx;
+            $bond_order{$second_atom_id}{$third_atom_id} = $bond_order_idx;
 
             $bond_order_idx++;
         }
