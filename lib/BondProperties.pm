@@ -520,25 +520,28 @@ sub bendable_angles
     } );
 
     my %bendable_angles = ();
+    my %visited_atom_ids = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
-    for my $first_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
+    for my $third_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
                                    $bond_paths->{'atom_order'}{$b} }
                             keys %{ $bond_paths->{'atom_order'} } ) {
-        next if ! defined $bond_paths->{'connections'}{'from'}{$first_atom_id};
+        next if ! defined $bond_paths->{'connections'}{'to'}{$third_atom_id};
 
         for my $second_atom_id (
             sort { $bond_paths->{'atom_order'}{$a} <=>
                    $bond_paths->{'atom_order'}{$b} }
-            keys %{ $bond_paths->{'connections'}{'from'}{$first_atom_id} } ) {
+            keys %{ $bond_paths->{'connections'}{'to'}{$third_atom_id} } ) {
 
-            my ( $third_atom_id ) =
+            next if $visited_atom_ids{$third_atom_id};
+
+            my ( $first_atom_id ) =
                 sort { $bond_paths->{'atom_order'}{$a} <=>
                        $bond_paths->{'atom_order'}{$b} }
-                keys %{ $bond_paths->{'connections'}{'from'}{$second_atom_id} };
+                keys %{ $bond_paths->{'connections'}{'to'}{$second_atom_id} };
 
-            next if ! defined $third_atom_id;
+            next if ! defined $first_atom_id;
 
             # Checks for mainchains and heteroatoms.
             next if ! $include_mainchain &&
@@ -558,6 +561,8 @@ sub bendable_angles
                 unshift @{ $bendable_angles{$third_atom_id} },
                     @{ $bendable_angles{$second_atom_id} };
             }
+
+            $visited_atom_ids{$third_atom_id} = 1;
 
             $bond_order{$first_atom_id}{$second_atom_id}{$third_atom_id} =
                 $bond_order_idx;
