@@ -411,40 +411,40 @@ sub stretchable_bonds
     my %visited_atom_ids = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
-    for my $atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
+    for my $first_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
                              $bond_paths->{'atom_order'}{$b} }
                       keys %{ $bond_paths->{'atom_order'} } ) {
-        my $order = $bond_paths->{'atom_order'}{$atom_id};
+        my $order = $bond_paths->{'atom_order'}{$first_atom_id};
 
-        next if ! defined $bond_paths->{'connections'}{'from'}{$atom_id};
+        next if ! defined $bond_paths->{'connections'}{'from'}{$first_atom_id};
 
-        for my $neighbour_atom_id (
+        for my $second_atom_id (
             sort { $bond_paths->{'atom_order'}{$a} <=>
                    $bond_paths->{'atom_order'}{$b} }
-            keys %{ $bond_paths->{'connections'}{'from'}{$atom_id} } ) {
+            keys %{ $bond_paths->{'connections'}{'from'}{$first_atom_id} } ) {
 
-            next if $visited_atom_ids{$neighbour_atom_id};
+            next if $visited_atom_ids{$second_atom_id};
 
             # Checks for mainchains and heteroatoms.
             next if ! $include_mainchain &&
                 ! contains_sidechain_atoms( $parameters,
                                             $atom_site,
-                                            [ $atom_id, $neighbour_atom_id ] ) &&
+                                            [ $first_atom_id, $second_atom_id ] ) &&
                 ! contains_hetatoms( $atom_site,
-                                     [ $atom_id, $neighbour_atom_id ] );
+                                     [ $first_atom_id, $second_atom_id ] );
 
-            push @{ $stretchable_bonds{$neighbour_atom_id} },
-                [ $atom_id, $neighbour_atom_id ];
+            push @{ $stretchable_bonds{$second_atom_id} },
+                [ $first_atom_id, $second_atom_id ];
 
             # Adds bond if it is a continuation of identified bonds.
-            if( exists $stretchable_bonds{$atom_id} ) {
-                unshift @{ $stretchable_bonds{$neighbour_atom_id} },
-                    @{ $stretchable_bonds{$atom_id} };
+            if( exists $stretchable_bonds{$first_atom_id} ) {
+                unshift @{ $stretchable_bonds{$second_atom_id} },
+                    @{ $stretchable_bonds{$first_atom_id} };
             }
 
-            $visited_atom_ids{$neighbour_atom_id} = 1;
+            $visited_atom_ids{$second_atom_id} = 1;
 
-            $bond_order{$atom_id}{$neighbour_atom_id} = $bond_order_idx;
+            $bond_order{$first_atom_id}{$second_atom_id} = $bond_order_idx;
 
             $bond_order_idx++;
         }
