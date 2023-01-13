@@ -253,71 +253,71 @@ sub rotatable_bonds
     for my $fourth_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
                                     $bond_paths->{'atom_order'}{$b} }
                              keys %{ $bond_paths->{'atom_order'} } ) {
-        next if ! defined $bond_paths->{'connections'}{'to'}{$fourth_atom_id};
 
-        for my $third_atom_id (
+        my ( $third_atom_id ) =
             sort { $bond_paths->{'atom_order'}{$a} <=>
                    $bond_paths->{'atom_order'}{$b} }
-            keys %{ $bond_paths->{'connections'}{'to'}{$fourth_atom_id} } ) {
+            keys %{ $bond_paths->{'connections'}{'to'}{$fourth_atom_id} };
 
-            my ( $second_atom_id ) =
-                sort { $bond_paths->{'atom_order'}{$a} <=>
-                       $bond_paths->{'atom_order'}{$b} }
-                keys %{ $bond_paths->{'connections'}{'to'}{$third_atom_id} };
+        next if ! defined $third_atom_id;
 
-            next if ! defined $second_atom_id;
+        my ( $second_atom_id ) =
+            sort { $bond_paths->{'atom_order'}{$a} <=>
+                   $bond_paths->{'atom_order'}{$b} }
+            keys %{ $bond_paths->{'connections'}{'to'}{$third_atom_id} };
 
-            my ( $first_atom_id ) =
-                sort { $bond_paths->{'atom_order'}{$a} <=>
-                       $bond_paths->{'atom_order'}{$b} }
-                keys %{ $bond_paths->{'connections'}{'to'}{$second_atom_id} };
+        next if ! defined $second_atom_id;
 
-            next if ! defined $first_atom_id;
+        my ( $first_atom_id ) =
+            sort { $bond_paths->{'atom_order'}{$a} <=>
+                   $bond_paths->{'atom_order'}{$b} }
+            keys %{ $bond_paths->{'connections'}{'to'}{$second_atom_id} };
 
-            # Checks for mainchains and heteroatoms.
-            next if ! $include_mainchain &&
-                ! contains_sidechain_atoms( $parameters,
-                                            $atom_site,
-                                            [ $first_atom_id, $second_atom_id,
-                                              $third_atom_id, $fourth_atom_id ] ) &&
-                ! contains_hetatoms( $atom_site,
-                                     [ $first_atom_id, $second_atom_id,
-                                       $third_atom_id, $fourth_atom_id ] );
+        next if ! defined $first_atom_id;
 
-            # Check on hybridization.
-            if( ! exists $atom_site->{$second_atom_id}{'hybridization'} ) {
-                confess "atom with id $second_atom_id lacks information about " .
-                    "hybridization";
-            }
-            if( ! exists $atom_site->{$third_atom_id}{'hybridization'} ){
-                confess "atom with id $third_atom_id lacks information " .
-                    "about hybridization";
-            }
+        # Checks for mainchains and heteroatoms.
+        next if ! $include_mainchain &&
+            ! contains_sidechain_atoms( $parameters,
+                                        $atom_site,
+                                        [ $first_atom_id, $second_atom_id,
+                                          $third_atom_id, $fourth_atom_id ] ) &&
+            ! contains_hetatoms( $atom_site,
+                                 [ $first_atom_id, $second_atom_id,
+                                   $third_atom_id, $fourth_atom_id ] );
 
-            # Appending dihedral angles.
-
-            # If one of the bond atoms are sp3, it is rotatable.
-            if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
-                $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
-                ( $include_hetatoms &&
-                  $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
-                  $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
-                push @{ $rotatable_bonds{$fourth_atom_id} },
-                    [ $first_atom_id, $second_atom_id, $third_atom_id,
-                      $fourth_atom_id ];
-            }
-
-            # If bond atoms are sp2/sp (do not rotate) or just is a
-            # continuation of the bond chain, inherits its previous atom's
-            # rotatable bonds.
-            if( exists $rotatable_bonds{$third_atom_id} ) {
-                unshift @{ $rotatable_bonds{$fourth_atom_id} },
-                    @{ $rotatable_bonds{$third_atom_id} };
-            }
-
-            $bond_order{$second_atom_id}{$third_atom_id} = $bond_order_idx;
-            $bond_order_idx++;
+        # Check on hybridization.
+        if( ! exists $atom_site->{$second_atom_id}{'hybridization'} ) {
+            confess "atom with id $second_atom_id lacks information about " .
+                "hybridization";
         }
+        if( ! exists $atom_site->{$third_atom_id}{'hybridization'} ){
+            confess "atom with id $third_atom_id lacks information " .
+                "about hybridization";
+        }
+
+        # Appending dihedral angles.
+
+        # If one of the bond atoms are sp3, it is rotatable.
+        if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
+            $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
+            ( $include_hetatoms &&
+              $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
+              $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
+            push @{ $rotatable_bonds{$fourth_atom_id} },
+                [ $first_atom_id, $second_atom_id, $third_atom_id,
+                  $fourth_atom_id ];
+        }
+
+        # If bond atoms are sp2/sp (do not rotate) or just is a
+        # continuation of the bond chain, inherits its previous atom's
+        # rotatable bonds.
+        if( exists $rotatable_bonds{$third_atom_id} ) {
+            unshift @{ $rotatable_bonds{$fourth_atom_id} },
+                @{ $rotatable_bonds{$third_atom_id} };
+        }
+
+        $bond_order{$second_atom_id}{$third_atom_id} = $bond_order_idx;
+        $bond_order_idx++;
     }
 
     # Naming the rotatable bonds.
