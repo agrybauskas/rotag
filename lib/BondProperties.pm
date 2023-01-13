@@ -306,14 +306,22 @@ sub rotatable_bonds
                   $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
                   $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
                 # If one of the bond atoms are sp3, it is rotatable.
-                # if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-                #     push @{ $rotatable_bonds{$fourth_atom_id} },
-                #         $shared_bonds{$second_atom_id}{$third_atom_id};
-                # } else {
-                #     push @{ $rotatable_bonds{$fourth_atom_id} },
-                #         [ $first_atom_id, $second_atom_id, $third_atom_id,
-                #           $fourth_atom_id ];
-                # }
+                if( exists $rotatable_bonds{$third_atom_id} ) {
+                    push @{ $rotatable_bonds{$fourth_atom_id} },
+                        @{ $rotatable_bonds{$third_atom_id} };
+                } else {
+                    push @{ $rotatable_bonds{$fourth_atom_id} },
+                        [ $first_atom_id, $second_atom_id, $third_atom_id,
+                          $fourth_atom_id ];
+                }
+            } else {
+                # If bond atoms are sp2/sp (do not rotate) or just is a
+                # continuation of the bond chain, inherits its previous atom's
+                # rotatable bonds.
+                if( exists $rotatable_bonds{$third_atom_id} ) {
+                    unshift @{ $rotatable_bonds{$fourth_atom_id} },
+                        @{ $rotatable_bonds{$third_atom_id} };
+                }
             }
 
             $visited_atom_ids{$second_atom_id} = 1;
@@ -321,13 +329,6 @@ sub rotatable_bonds
             $bond_order{$first_atom_id}{$second_atom_id} = $bond_order_idx;
 
             $bond_order_idx++;
-
-            # # If bond atoms are sp2/sp (do not rotate) or just is a continuation of
-            # # the bond chain, inherits its previous atom's rotatable bonds.
-            # if( exists $rotatable_bonds{$third_atom_id} ) {
-            #     unshift @{ $rotatable_bonds{$fourth_atom_id} },
-            #         @{ $rotatable_bonds{$third_atom_id} };
-            # }
         }
     }
 
