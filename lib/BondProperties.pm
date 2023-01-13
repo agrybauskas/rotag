@@ -340,10 +340,6 @@ sub rotatable_bonds
         }
     }
 
-    # use Data::Dumper;
-    # print STDERR Dumper \%rotatable_bonds;
-    # print STDERR Dumper \%shared_rotatable_bonds;
-
     # Naming the rotatable bonds.
     my %named_rotatable_bonds = ();
     for my $atom_id ( keys %rotatable_bonds ) {
