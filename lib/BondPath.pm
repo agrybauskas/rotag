@@ -104,7 +104,6 @@ sub new
             next if ! $include_visited &&
                 $visited_atom_ids{$atom_id} > $visited_atom_ids{$neighbour_atom_id};
 
-            $self->{'connections'}{'from'}{$atom_id}{$neighbour_atom_id} = 1;
             $self->{'connections'}{'to'}{$neighbour_atom_id}{$atom_id} = 1;
         }
     }
