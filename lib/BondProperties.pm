@@ -251,11 +251,40 @@ sub rotatable_bonds
     my %visited_atom_ids = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
-    for my $atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
-                             $bond_paths->{'atom_order'}{$b} }
-                      keys %{ $bond_paths->{'atom_order'} } ) {
-        my $order = $bond_paths->{'atom_order'}{$atom_id};
-    #     my ( $third_atom_id ) = keys %{ $bond_paths->{$order} };
+    for my $second_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
+                                    $bond_paths->{'atom_order'}{$b} }
+                             keys %{ $bond_paths->{'atom_order'} } ) {
+        my $order = $bond_paths->{'atom_order'}{$second_atom_id};
+
+        next if ! defined $bond_paths->{'connections'}{'from'}{$second_atom_id};
+
+        for my $third_atom_id (
+            sort { $bond_paths->{'atom_order'}{$a} <=>
+                   $bond_paths->{'atom_order'}{$b} }
+            keys %{ $bond_paths->{'connections'}{'from'}{$second_atom_id} } ) {
+
+            next if $visited_atom_ids{$third_atom_id};
+
+            #     # Checks for mainchains and heteroatoms.
+            #     next if ! $include_mainchain &&
+            #         ! contains_sidechain_atoms( $parameters,
+            #                                     $atom_site,
+            #                                     [ $first_atom_id, $second_atom_id,
+            #                                       $third_atom_id, $fourth_atom_id ] ) &&
+            #         ! contains_hetatoms( $atom_site,
+            #                              [ $first_atom_id, $second_atom_id,
+            #                                $third_atom_id, $fourth_atom_id ] );
+
+            #     # Check on hybridization.
+            #     if( ! exists $atom_site->{$second_atom_id}{'hybridization'} ) {
+            #         confess "atom with id $second_atom_id lacks information about " .
+            #             "hybridization";
+            #     }
+            #     if( ! exists $atom_site->{$third_atom_id}{'hybridization'} ){
+            #         confess "atom with id $third_atom_id lacks information " .
+            #             "about hybridization";
+            #     }
+        }
     #     my $fourth_atom_id = $bond_paths->{$order}{$third_atom_id};
 
     #     $parent_atom_ids{$fourth_atom_id} = $third_atom_id;
@@ -268,26 +297,6 @@ sub rotatable_bonds
     #     my $first_atom_id = $parent_atom_ids{$second_atom_id};
 
     #     next if ! defined $first_atom_id;
-
-    #     # Checks for mainchains and heteroatoms.
-    #     next if ! $include_mainchain &&
-    #         ! contains_sidechain_atoms( $parameters,
-    #                                     $atom_site,
-    #                                     [ $first_atom_id, $second_atom_id,
-    #                                       $third_atom_id, $fourth_atom_id ] ) &&
-    #         ! contains_hetatoms( $atom_site,
-    #                              [ $first_atom_id, $second_atom_id,
-    #                                $third_atom_id, $fourth_atom_id ] );
-
-    #     # Check on hybridization.
-    #     if( ! exists $atom_site->{$second_atom_id}{'hybridization'} ) {
-    #         confess "atom with id $second_atom_id lacks information about " .
-    #             "hybridization";
-    #     }
-    #     if( ! exists $atom_site->{$third_atom_id}{'hybridization'} ){
-    #         confess "atom with id $third_atom_id lacks information " .
-    #             "about hybridization";
-    #     }
 
     #     # Appending dihedral angles.
     #     if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
