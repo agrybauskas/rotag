@@ -298,24 +298,24 @@ sub rotatable_bonds
                     confess "atom with id $third_atom_id lacks information " .
                         "about hybridization";
                 }
-        }
 
-    #     # Appending dihedral angles.
-    #     if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
-    #         $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
-    #         ( $include_hetatoms &&
-    #           $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
-    #           $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
-    #         # If at one of the bond atoms are sp3, it is rotatable.
-    #         if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
-    #             push @{ $rotatable_bonds{$fourth_atom_id} },
-    #                 $shared_bonds{$second_atom_id}{$third_atom_id};
-    #         } else {
-    #             push @{ $rotatable_bonds{$fourth_atom_id} },
-    #                 [ $first_atom_id, $second_atom_id, $third_atom_id,
-    #                   $fourth_atom_id ];
-    #         }
-    #     }
+                # Appending dihedral angles.
+                if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
+                    $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
+                    ( $include_hetatoms &&
+                      $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
+                      $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
+                    # If at one of the bond atoms are sp3, it is rotatable.
+                    if( exists $shared_bonds{$second_atom_id}{$third_atom_id} ) {
+                        # push @{ $rotatable_bonds{$fourth_atom_id} },
+                        #     $shared_bonds{$second_atom_id}{$third_atom_id};
+                    } else {
+                        # push @{ $rotatable_bonds{$fourth_atom_id} },
+                        #     [ $first_atom_id, $second_atom_id, $third_atom_id,
+                        #       $fourth_atom_id ];
+                    }
+                }
+        }
 
     #     # If bond atoms are sp2/sp (do not rotate) or just is a continuation of
     #     # the bond chain, inherits its previous atom's rotatable bonds.
