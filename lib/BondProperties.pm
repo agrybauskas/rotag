@@ -487,14 +487,19 @@ sub stretchable_bonds
 # Identifies bonds that can be bent.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $start_atom_ids - starting atom ids.
+#     $start_atom_ids - starting atom ids;
+#     $options{'bond_paths'} - pre-calculated BondPath object (see BondPath.pm);
+#     $options{'include_mainchain'} - flag that includes main-chain atoms;
+#     $options{'include_hetatoms'} - flag that includes heteroatoms.
 # Output:
 #     %named_bendable_angles - data structure that describes bendable angles
 #     and the constituent atom ids of the bond. Ex.:
 #     {
 #       $atom_id_3 => {
-#                       $bendable_angle_name_1 =>
-#                           [ $atom_id_1, $atom_id_2, $atom_id_3 ],
+#                       $bendable_angle_name_1 => {
+#                         'atom_ids' => [ $atom_id_1, $atom_id_2, $atom_id_3 ],
+#                         'order' => 1
+#                       },
 #                       ...
 #                     },
 #       ...
