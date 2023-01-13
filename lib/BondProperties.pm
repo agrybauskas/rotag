@@ -507,55 +507,48 @@ sub bendable_angles
     } );
 
     my %bendable_angles = ();
-    my %visited_atom_ids = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
     for my $third_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
                                    $bond_paths->{'atom_order'}{$b} }
                             keys %{ $bond_paths->{'atom_order'} } ) {
-        next if ! defined $bond_paths->{'connections'}{'to'}{$third_atom_id};
 
-        for my $second_atom_id (
+        my ( $second_atom_id ) =
             sort { $bond_paths->{'atom_order'}{$a} <=>
                    $bond_paths->{'atom_order'}{$b} }
-            keys %{ $bond_paths->{'connections'}{'to'}{$third_atom_id} } ) {
+            keys %{ $bond_paths->{'connections'}{'to'}{$third_atom_id} };
 
-            next if $visited_atom_ids{$third_atom_id};
+        next if ! defined $second_atom_id;
 
-            my ( $first_atom_id ) =
-                sort { $bond_paths->{'atom_order'}{$a} <=>
-                       $bond_paths->{'atom_order'}{$b} }
-                keys %{ $bond_paths->{'connections'}{'to'}{$second_atom_id} };
+        my ( $first_atom_id ) =
+            sort { $bond_paths->{'atom_order'}{$a} <=>
+                   $bond_paths->{'atom_order'}{$b} }
+            keys %{ $bond_paths->{'connections'}{'to'}{$second_atom_id} };
 
-            next if ! defined $first_atom_id;
+        next if ! defined $first_atom_id;
 
-            # Checks for mainchains and heteroatoms.
-            next if ! $include_mainchain &&
-                ! contains_sidechain_atoms( $parameters,
-                                            $atom_site,
-                                            [ $first_atom_id, $second_atom_id,
-                                              $third_atom_id ] ) &&
-                ! contains_hetatoms( $atom_site,
-                                     [ $first_atom_id, $second_atom_id,
-                                       $third_atom_id ] );
+        # Checks for mainchains and heteroatoms.
+        next if ! $include_mainchain &&
+            ! contains_sidechain_atoms( $parameters,
+                                        $atom_site,
+                                        [ $first_atom_id, $second_atom_id,
+                                          $third_atom_id ] ) &&
+            ! contains_hetatoms( $atom_site,
+                                 [ $first_atom_id, $second_atom_id,
+                                   $third_atom_id ] );
 
-            push @{ $bendable_angles{$third_atom_id} },
-                [ $first_atom_id, $second_atom_id, $third_atom_id ];
+        push @{ $bendable_angles{$third_atom_id} },
+            [ $first_atom_id, $second_atom_id, $third_atom_id ];
 
-            # Adds bond if it is a continuation of identified bonds.
-            if( exists $bendable_angles{$second_atom_id} ) {
-                unshift @{ $bendable_angles{$third_atom_id} },
-                    @{ $bendable_angles{$second_atom_id} };
-            }
-
-            $visited_atom_ids{$third_atom_id} = 1;
-
-            $bond_order{$first_atom_id}{$second_atom_id}{$third_atom_id} =
-                $bond_order_idx;
-
-            $bond_order_idx++;
+        # Adds bond if it is a continuation of identified bonds.
+        if( exists $bendable_angles{$second_atom_id} ) {
+            unshift @{ $bendable_angles{$third_atom_id} },
+                @{ $bendable_angles{$second_atom_id} };
         }
+
+        $bond_order{$first_atom_id}{$second_atom_id}{$third_atom_id} = $bond_order_idx;
+        $bond_order_idx++;
     }
 
     my %named_bendable_angles = ();
