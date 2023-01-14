@@ -238,6 +238,9 @@ sub generate_pseudo_new
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
     my %atom_site = %{ clone( $atom_site ) };
+    my %dihedral_angles_cache = ();
+    my %bond_lengths_cache = ();
+    my %bond_angles_cache = ();
     my %pseudo_atom_site;
 
     my @atom_ids =
@@ -259,24 +262,33 @@ sub generate_pseudo_new
         # separate functions.
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
-        my %dihedral_angles =
-            %{ all_dihedral(
-                   $parameters,
-                   filter_by_unique_residue_key( $atom_site,
-                                                 $residue_unique_key, 1 ),
-                   { 'include_hetatoms' => 1 } ) };
-        my %bond_lengths =
-            %{ all_bond_lengths(
-                   $parameters,
-                   filter_by_unique_residue_key( $atom_site,
-                                                 $residue_unique_key, 1 ),
-                   { 'include_hetatoms' => 1 } ) };
-        my %bond_angles =
-            %{ all_bond_angles(
-                   $parameters,
-                   filter_by_unique_residue_key( $atom_site,
-                                                 $residue_unique_key, 1 ),
-                   { 'include_hetatoms' => 1 } ) };
+        if( ! exists $dihedral_angles_cache{$residue_unique_key} ) {
+            $dihedral_angles_cache{$residue_unique_key} = all_dihedral(
+                $parameters,
+                filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
+                { 'include_hetatoms' => 1 }
+            );
+        }
+
+        if( ! exists $bond_lengths_cache{$residue_unique_key} ) {
+            $bond_lengths_cache{$residue_unique_key} = all_bond_lengths(
+                $parameters,
+                filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
+                { 'include_hetatoms' => 1 }
+            );
+        }
+
+        if( ! exists $bond_angles_cache{$residue_unique_key} ) {
+            $bond_angles_cache{$residue_unique_key} = all_bond_angles(
+                $parameters,
+                filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
+                { 'include_hetatoms' => 1 }
+            );
+        }
+
+        my %dihedral_angles = %{ $dihedral_angles_cache{$residue_unique_key} };
+        my %bond_lengths = %{ $bond_lengths_cache{$residue_unique_key} };
+        my %bond_angles = %{ $bond_angles_cache{$residue_unique_key} };
 
         # Iterates through combinations of angles, lengths and evaluates
         # conformational model.
