@@ -95,9 +95,15 @@ sub new
     for my $atom_id ( sort { $self->{'atom_order'}{$a} <=>
                              $self->{'atom_order'}{$b} }
                       keys %{ $self->{'atom_order'} } ) {
-        my $order = $self->{'atom_order'}{$atom_id};
+
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+
         my $atom_connections = $atom_site->{$atom_id}{'connections'};
+        if( $include_hetatoms &&
+            defined $atom_site->{$atom_id}{'connections_hetatom'} ){
+            push @{ $atom_connections },
+                @{ $atom_site->{$atom_id}{'connections_hetatom'} };
+        }
 
         next if ! defined $atom_connections || ! @{ $atom_connections };
 
