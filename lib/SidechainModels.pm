@@ -118,36 +118,16 @@ sub rotation_translation
                                $atom_site{"$atom_id"}{'Cartn_z'}, );
 
             # Matrices for transforming atom coordinates.
-            my @bond_torsion_matrices;
-            my @bond_stretching_matrices;
-            my @angle_bending_matrices;
+            my @bond_torsion_matrices = ();
+            my @bond_stretching_matrices = ();
+            my @angle_bending_matrices = ();
 
             if( $do_bond_torsion ) {
-                # TODO: code block is similar to all_dihedral(). The code should
-                # be moved to separate function.
-                for my $angle_name (
-                    sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
-                           $rotatable_bonds->{$atom_id}{$b}{'order'} }
-                    keys %{ $rotatable_bonds->{$atom_id} } ) {
-                    my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
-                        map { $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
-                            ( 2, 1, 0 );
-
-                    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-                        map { [ $residue_site->{$_}{'Cartn_x'},
-                                $residue_site->{$_}{'Cartn_y'},
-                                $residue_site->{$_}{'Cartn_z'} ] }
-                            ( $mid_atom_id, $up_atom_id, $side_atom_id );
-
-                    # Creates and appends matrices to a list of matrices that
-                    # later will be multiplied.
-                    push @bond_torsion_matrices,
-                         @{ bond_torsion( $parameters,
-                                          $mid_atom_coord,
-                                          $up_atom_coord,
-                                          $side_atom_coord,
-                                          $angle_name ) };
-                }
+                @bond_torsion_matrices =
+                    @{ bond_torsion_matrices( $parameters,
+                                              $residue_site,
+                                              $atom_id,
+                                              $rotatable_bonds ) };
             }
 
             if( $do_bond_stretching ) {
@@ -228,6 +208,35 @@ sub rotation_translation
     }
 
     return;
+}
+
+sub bond_torsion_matrices
+{
+    my ( $parameters, $atom_site, $atom_id, $rotatable_bonds ) = @_;
+
+    my @bond_torsion_matrices = ();
+    for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
+                                $rotatable_bonds->{$atom_id}{$b}{'order'} }
+                         keys %{ $rotatable_bonds->{$atom_id} } ) {
+
+        my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
+            map { $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
+                ( 2, 1, 0 );
+        my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+            map { [ $atom_site->{$_}{'Cartn_x'},
+                    $atom_site->{$_}{'Cartn_y'},
+                    $atom_site->{$_}{'Cartn_z'} ] }
+                ( $mid_atom_id, $up_atom_id, $side_atom_id );
+
+        push @bond_torsion_matrices,
+            @{ bond_torsion( $parameters,
+                             $mid_atom_coord,
+                             $up_atom_coord,
+                             $side_atom_coord,
+                             $angle_name ) };
+    }
+
+    return \@bond_torsion_matrices;
 }
 
 1;
