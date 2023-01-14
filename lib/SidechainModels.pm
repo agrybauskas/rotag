@@ -91,10 +91,6 @@ sub rotation_translation
 
         next if ! %{ $residue_site };
 
-        my $bendable_angles =
-            $do_angle_bending ?
-            bendable_angles( $parameters, $residue_site, undef,
-                             { 'include_hetatoms' => $include_hetatoms } ) : {};
         my $rotatable_bonds =
             $do_bond_torsion ?
             rotatable_bonds( $parameters, $residue_site, undef,
@@ -103,6 +99,10 @@ sub rotation_translation
             $do_bond_stretching ?
             stretchable_bonds( $parameters, $residue_site, undef,
                                { 'include_hetatoms' => $include_hetatoms } ): {};
+        my $bendable_angles =
+            $do_angle_bending ?
+            bendable_angles( $parameters, $residue_site, undef,
+                             { 'include_hetatoms' => $include_hetatoms } ) : {};
 
         if( ! %{ $rotatable_bonds } &&
             ! %{ $stretchable_bonds } &&
