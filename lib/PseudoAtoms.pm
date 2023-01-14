@@ -114,7 +114,6 @@ sub generate_pseudo
 
         # Calculates current dihedral angles of rotatable bonds. Will be used
         # for reseting dihedral angles to 0 degree angle.
-        # FIXME: move before the loop. Repeating the same calculations!!!
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
         if( ! exists $angles_cache{$residue_unique_key} ) {
@@ -257,9 +256,6 @@ sub generate_pseudo_new
         # Calculates current dihedral angles of rotatable bonds, bond lengths
         # and angle between bonds. Will be used for reseting dihedral angles to 0
         # degree angle and pinpointing the correct bond length and angle changes.
-        # TODO: bond_path_search should be a separate object.
-        # TODO: dihedral angle, bond length and bond angle parsing could be
-        # separate functions.
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
         if( ! exists $dihedral_angles_cache{$residue_unique_key} ) {
