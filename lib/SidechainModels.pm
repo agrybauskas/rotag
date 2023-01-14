@@ -192,15 +192,13 @@ sub rotation_translation
             }
 
             if( $do_angle_bending ) {
-                for my $angle_name ( sort { $bendable_angles->{$atom_id}{$a}{'order'} <=>
-                                            $bendable_angles->{$atom_id}{$b}{'order'} }
-                                     keys %{ $bendable_angles->{$atom_id} } ) {
-                    my $up_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[2];
-                    my $mid_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[1];
-                    my $side_atom_id =
-                        $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[0];
+                for my $angle_name (
+                    sort { $bendable_angles->{$atom_id}{$a}{'order'} <=>
+                           $bendable_angles->{$atom_id}{$b}{'order'} }
+                    keys %{ $bendable_angles->{$atom_id} } ) {
+                    my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
+                        map { $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
+                            ( 2, 1, 0 );
 
                     my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
                         map { [ $residue_site->{$_}{'Cartn_x'},
