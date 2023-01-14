@@ -44,6 +44,7 @@ sub rotation_only
                                  { 'do_bond_torsion' => 1,
                                    'do_bond_stretching' => 0,
                                    'do_angle_bending' => 0 } );
+}
 
 #
 # Model that uses rotation around single bonds, angle bending and stretching.
