@@ -49,7 +49,13 @@ sub rotation_only
 #
 # Model that uses rotation around single bonds, angle bending and stretching.
 # Input:
-#     $atom_site - atom data structure.
+#     $parameters - force-field parameters (see Parameters.pm);
+#     $atom_site - atom data structure;
+#     $options{'do_bond_torsion'} - calculates bond torsion matrices;
+#     $options{'do_bond_stretching'} - calculates bond stretching  matrices;
+#     $options{'do_angle_bending'} - calculates angle bending matrices;
+#     $options{'include_hetatoms'} - includes heteroatoms to the calculations.
+#
 # Output:
 #     adds conformation variable for each atom as list of transformation
 #     matrices.
