@@ -30,6 +30,7 @@ our $VERSION = $VERSION;
 #
 # Model that uses only rotation around single bonds.
 # Input:
+#     $parameters - force-field parameters (see Parameters.pm);
 #     $atom_site - atom data structure.
 # Output:
 #     adds conformation variable for each atom as list of transformation
@@ -39,63 +40,10 @@ our $VERSION = $VERSION;
 sub rotation_only
 {
     my ( $parameters, $atom_site ) = @_;
-
-    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
-
-    # Determines all residue ids present in atom site.
-    my @residue_unique_keys =
-        @{ determine_residue_keys( $atom_site, { 'exclude_dot' => 1 } ) };
-
-    # Iterates through target residues and their atom ids and assigns
-    # conformational equations which can produce pseudo-atoms later.
-    for my $residue_unique_key ( @residue_unique_keys ) {
-        my $residue_site =
-            filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
-
-        my $rotatable_bonds = rotatable_bonds( $parameters, $residue_site );
-
-        if( ! %{ $rotatable_bonds } ) { next; }
-
-        for my $atom_id ( keys %{ $residue_site }  ) {
-            if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
-
-            my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
-                               $atom_site{"$atom_id"}{'Cartn_y'},
-                               $atom_site{"$atom_id"}{'Cartn_z'}, );
-
-            my @transf_matrices; # Matrices for transforming atom coordinates.
-
-            for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
-                                        $rotatable_bonds->{$atom_id}{$b}{'order'} }
-                                 keys %{ $rotatable_bonds->{$atom_id} } ) {
-                my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
-                    map { $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
-                        ( 2, 1, 0 );
-                my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-                    map { [ $residue_site->{$_}{'Cartn_x'},
-                            $residue_site->{$_}{'Cartn_y'},
-                            $residue_site->{$_}{'Cartn_z'} ] }
-                        ( $mid_atom_id, $up_atom_id, $side_atom_id );
-
-                # Creates and appends matrices to a list of matrices that later
-                # will be multiplied.
-                push @transf_matrices,
-                    @{ bond_torsion( $parameters,
-                                     $mid_atom_coord,
-                                     $up_atom_coord,
-                                     $side_atom_coord,
-                                     $angle_name ) };
-            }
-
-            $atom_site->{$atom_id}{'conformation'} =
-                mult_matrix_product(
-                    [ @transf_matrices,
-                      @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
-        }
-    }
-
-    return;
-}
+    return rotation_translation( $parameters, $atom_site,
+                                 { 'do_bond_torsion' => 1,
+                                   'do_bond_stretching' => 0,
+                                   'do_angle_bending' => 0 } );
 
 #
 # Model that uses rotation around single bonds, angle bending and stretching.
@@ -170,52 +118,13 @@ sub rotation_translation
             if( $do_bond_torsion ) {
                 # TODO: code block is similar to all_dihedral(). The code should
                 # be moved to separate function.
-                for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
-                                            $rotatable_bonds->{$atom_id}{$b}{'order'} }
-                                     keys %{ $rotatable_bonds->{$atom_id} } ) {
-                    # First, checks if rotatable bond has fourth atom produce
-                    # dihedral angle. It is done by looking at atom connections:
-                    # if rotatable bond ends with terminal atom, then this bond
-                    # is excluded.
-                    my $up_atom_id =
-                        $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[2];
-
-                    my $connection_count =
-                        defined $residue_site->{$up_atom_id}{'connections'} ?
-                        scalar( @{ $residue_site->{$up_atom_id}{'connections'} } ) : 0;
-                    my $hetatom_connection_count =
-                        defined $residue_site->{$up_atom_id}{'connections_hetatom'} ?
-                        scalar( @{ $residue_site->{$up_atom_id}{'connections_hetatom'} } ) : 0;
-
-                    if( ( ! $include_hetatoms && $connection_count < 2 ) ||
-                        ( $include_hetatoms &&
-                          $connection_count + $hetatom_connection_count < 2 ) ){ next; }
-
-                    my $mid_atom_id =
-                        $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[1];
-                    if( ! $include_hetatoms &&
-                        scalar( @{ $residue_site->{$mid_atom_id}
-                                                  {'connections'} } ) < 2 ){ next; }
-
-                    my @mid_connections = # Excludes up atom.
-                        grep { $_ ne $up_atom_id }
-                             ( @{ $residue_site->{$mid_atom_id}{'connections'} },
-                               ( $include_hetatoms &&
-                                 defined $residue_site->{$mid_atom_id}
-                                                        {'connections_hetatom'} ?
-                                 @{ $residue_site->{$mid_atom_id}
-                                                   {'connections_hetatom'} }: () ) );
-                    my @mid_connection_names = # Excludes up atom.
-                        map { $residue_site->{$_}{'label_atom_id'} }
-                            @mid_connections;
-
-                    my $side_atom_name =
-                        sort_atom_names( \@mid_connection_names )->[0];
-                    my $side_atom_id =
-                        filter_new( $residue_site,
-                                {  'include' =>
-                                       { 'label_atom_id' => [ $side_atom_name ]},
-                                   'return_data' => 'id' } )->[0];
+                for my $angle_name (
+                    sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
+                           $rotatable_bonds->{$atom_id}{$b}{'order'} }
+                    keys %{ $rotatable_bonds->{$atom_id} } ) {
+                    my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
+                        map { $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
+                            ( 2, 1, 0 );
 
                     my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
                         map { [ $residue_site->{$_}{'Cartn_x'},
@@ -235,9 +144,10 @@ sub rotation_translation
             }
 
             if( $do_bond_stretching ) {
-                for my $bond_name ( sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
-                                           $stretchable_bonds->{$atom_id}{$b}{'order'} }
-                                     keys %{ $stretchable_bonds->{$atom_id} } ) {
+                for my $bond_name (
+                    sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
+                           $stretchable_bonds->{$atom_id}{$b}{'order'} }
+                    keys %{ $stretchable_bonds->{$atom_id} } ) {
                     my $up_atom_id =
                         $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[1];
                     my $mid_atom_id =
