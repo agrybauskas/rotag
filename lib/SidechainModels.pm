@@ -131,45 +131,13 @@ sub rotation_translation
             }
 
             if( $do_bond_stretching ) {
-                for my $bond_name (
-                    sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
-                           $stretchable_bonds->{$atom_id}{$b}{'order'} }
-                    keys %{ $stretchable_bonds->{$atom_id} } ) {
-                    my $up_atom_id =
-                        $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[1];
-                    my $mid_atom_id =
-                        $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[0];
-
-                    my @mid_connections = # Excludes up atom.
-                        grep { $_ ne $up_atom_id }
-                            @{ $residue_site->{$mid_atom_id}{'connections'} };
-                    my @mid_connection_names = # Excludes up atom.
-                        map { $residue_site->{$_}{'label_atom_id'} }
-                            @mid_connections;
-                    my $side_atom_name =
-                        sort_atom_names( \@mid_connection_names )->[0];
-                    my $side_atom_id =
-                        filter_new( $residue_site,
-                                {  'include' =>
-                                       { 'label_atom_id' => [ $side_atom_name ] },
-                                   'return_data' => 'id' } )->[0];
-
-                    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-                        map { [ $residue_site->{$_}{'Cartn_x'},
-                                $residue_site->{$_}{'Cartn_y'},
-                                $residue_site->{$_}{'Cartn_z'} ] }
-                            ( $mid_atom_id, $up_atom_id, $side_atom_id );
-
-                    # Creates and appends matrices to a list of matrices that
-                    # later will be multiplied.
-                    push @bond_stretching_matrices,
-                         @{ bond_stretching( $parameters,
-                                             $mid_atom_coord,
-                                             $up_atom_coord,
-                                             $side_atom_coord,
-                                             $bond_name ) };
-                }
+                @bond_stretching_matrices =
+                    @{ bond_stretching_matrices( $parameters,
+                                                 $residue_site,
+                                                 $atom_id,
+                                                 $rotatable_bonds ) };
             }
+
 
             if( $do_angle_bending ) {
                 for my $angle_name (
@@ -237,6 +205,48 @@ sub bond_torsion_matrices
     }
 
     return \@bond_torsion_matrices;
+}
+
+sub bond_stretching_matrices
+{
+    my ( $parameters, $atom_site, $atom_id, $stretchable_bonds ) = @_;
+
+    my @bond_stretching_matrices = ();
+    for my $bond_name ( sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
+                               $stretchable_bonds->{$atom_id}{$b}{'order'} }
+                        keys %{ $stretchable_bonds->{$atom_id} } ) {
+
+        my ( $up_atom_id, $mid_atom_id ) =
+            map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] } ( 1, 0 );
+
+        my @mid_connections = # Excludes up atom.
+            grep { $_ ne $up_atom_id }
+                @{ $atom_site->{$mid_atom_id}{'connections'} };
+        my @mid_connection_names = # Excludes up atom.
+            map { $atom_site->{$_}{'label_atom_id'} }
+                @mid_connections;
+
+        my $side_atom_name = sort_atom_names( \@mid_connection_names )->[0];
+        my $side_atom_id =
+            filter_new( $atom_site,
+                    {  'include' => { 'label_atom_id' => [ $side_atom_name ] },
+                       'return_data' => 'id' } )->[0];
+
+        my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+            map { [ $atom_site->{$_}{'Cartn_x'},
+                    $atom_site->{$_}{'Cartn_y'},
+                    $atom_site->{$_}{'Cartn_z'} ] }
+                ( $mid_atom_id, $up_atom_id, $side_atom_id );
+
+        push @bond_stretching_matrices,
+             @{ bond_stretching( $parameters,
+                                 $mid_atom_coord,
+                                 $up_atom_coord,
+                                 $side_atom_coord,
+                                 $bond_name ) };
+    }
+
+    return \@bond_stretching_matrices;
 }
 
 1;
