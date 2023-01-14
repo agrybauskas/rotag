@@ -91,6 +91,7 @@ sub new
     }
 
     # Prepares connection information.
+    # HACK: needs to be optimized and moved with previous code if possible.
     for my $atom_id ( sort { $self->{'atom_order'}{$a} <=>
                              $self->{'atom_order'}{$b} }
                       keys %{ $self->{'atom_order'} } ) {
@@ -101,6 +102,8 @@ sub new
         next if ! defined $atom_connections || ! @{ $atom_connections };
 
         for my $neighbour_atom_id ( @{ $atom_connections } ) {
+            next if ! exists $atom_site->{$neighbour_atom_id};
+
             my $neighbour_atom_name =
                 $atom_site->{$neighbour_atom_id}{'label_atom_id'};
 
