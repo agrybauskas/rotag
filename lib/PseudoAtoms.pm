@@ -98,6 +98,7 @@ sub generate_pseudo
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
     my %atom_site = %{ clone( $atom_site ) };
+    my %angles_cache = ();
     my %pseudo_atom_site;
 
     my @atom_ids =
@@ -116,11 +117,15 @@ sub generate_pseudo
         # FIXME: move before the loop. Repeating the same calculations!!!
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
-        my %angles =
-            %{ all_dihedral(
-                   $parameters,
-                   filter_by_unique_residue_key( $atom_site,
-                                                 $residue_unique_key, 1 ) ) };
+        if( ! exists $angles_cache{$residue_unique_key} ) {
+            $angles_cache{$residue_unique_key} = all_dihedral(
+                $parameters,
+                filter_by_unique_residue_key( $atom_site,
+                                              $residue_unique_key, 1 )
+            );
+        }
+
+        my %angles = %{ $angles_cache{$residue_unique_key} };
 
         # Iterates through combinations of angles and evaluates conformational
         # model.
