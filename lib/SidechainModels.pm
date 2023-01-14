@@ -135,35 +135,15 @@ sub rotation_translation
                     @{ bond_stretching_matrices( $parameters,
                                                  $residue_site,
                                                  $atom_id,
-                                                 $rotatable_bonds ) };
+                                                 $stretchable_bonds ) };
             }
 
-
             if( $do_angle_bending ) {
-                for my $angle_name (
-                    sort { $bendable_angles->{$atom_id}{$a}{'order'} <=>
-                           $bendable_angles->{$atom_id}{$b}{'order'} }
-                    keys %{ $bendable_angles->{$atom_id} } ) {
-                    my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
-                        map { $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
-                            ( 2, 1, 0 );
-
-                    my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-                        map { [ $residue_site->{$_}{'Cartn_x'},
-                                $residue_site->{$_}{'Cartn_y'},
-                                $residue_site->{$_}{'Cartn_z'} ] }
-                            ( $mid_atom_id, $up_atom_id, $side_atom_id );
-
-                    # Creates and appends matrices to a list of matrices that
-                    # later will be multiplied.
-                    push @angle_bending_matrices,
-                         @{ angle_bending( $parameters,
-                                           $mid_atom_coord,
-                                           $up_atom_coord,
-                                           $side_atom_coord,
-                                           $angle_name,
-                                           'eta' ) }; # 'eta' should equal to 0.
-                }
+                @angle_bending_matrices =
+                    @{ angle_bending_matrices( $parameters,
+                                               $residue_site,
+                                               $atom_id,
+                                               $bendable_angles ) };
             }
 
             $atom_site->{$atom_id}{'conformation'} =
@@ -247,6 +227,37 @@ sub bond_stretching_matrices
     }
 
     return \@bond_stretching_matrices;
+}
+
+sub angle_bending_matrices
+{
+    my ( $parameters, $atom_site, $atom_id, $bendable_angles ) = @_;
+
+    my @angle_bending_matrices = ();
+    for my $angle_name ( sort { $bendable_angles->{$atom_id}{$a}{'order'} <=>
+                                $bendable_angles->{$atom_id}{$b}{'order'} }
+                         keys %{ $bendable_angles->{$atom_id} } ) {
+
+        my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
+            map { $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
+                ( 2, 1, 0 );
+
+        my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+            map { [ $atom_site->{$_}{'Cartn_x'},
+                    $atom_site->{$_}{'Cartn_y'},
+                    $atom_site->{$_}{'Cartn_z'} ] }
+                ( $mid_atom_id, $up_atom_id, $side_atom_id );
+
+        push @angle_bending_matrices,
+             @{ angle_bending( $parameters,
+                               $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               $angle_name,
+                               'eta' ) }; # 'eta' should be equal to 0.
+    }
+
+    return \@angle_bending_matrices;
 }
 
 1;
