@@ -279,9 +279,15 @@ sub generate_pseudo_new
             )->{$residue_unique_key};
         }
 
-        my %dihedral_angles = %{ $dihedral_angles_cache{$residue_unique_key} };
-        my %bond_lengths = %{ $bond_lengths_cache{$residue_unique_key} };
-        my %bond_angles = %{ $bond_angles_cache{$residue_unique_key} };
+        my %dihedral_angles =
+            defined $dihedral_angles_cache{$residue_unique_key} ?
+            %{ $dihedral_angles_cache{$residue_unique_key} } : ();
+        my %bond_lengths =
+            defined $bond_lengths_cache{$residue_unique_key} ?
+            %{ $bond_lengths_cache{$residue_unique_key} } : ();
+        my %bond_angles =
+            defined $bond_angles_cache{$residue_unique_key} ?
+            %{ $bond_angles_cache{$residue_unique_key} } : ();
 
         # Iterates through combinations of angles, lengths and evaluates
         # conformational model.
