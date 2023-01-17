@@ -12,7 +12,7 @@ use List::MoreUtils qw( uniq );
 use AlterMolecule qw( angle_bending
                       bond_stretching
                       bond_torsion );
-use AtomProperties qw( sort_atom_names );
+use AtomProperties qw( sort_atom_ids_by_name );
 use BondProperties qw( bendable_angles
                        rotatable_bonds
                        stretchable_bonds );
@@ -197,20 +197,13 @@ sub bond_stretching_matrices
                         keys %{ $stretchable_bonds->{$atom_id} } ) {
 
         my ( $up_atom_id, $mid_atom_id ) =
-            map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] } ( 1, 0 );
-
+            map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] }
+                ( 1, 0 );
         my @mid_connections = # Excludes up atom.
             grep { $_ ne $up_atom_id }
                 @{ $atom_site->{$mid_atom_id}{'connections'} };
-        my @mid_connection_names = # Excludes up atom.
-            map { $atom_site->{$_}{'label_atom_id'} }
-                @mid_connections;
-
-        my $side_atom_name = sort_atom_names( \@mid_connection_names )->[0];
-        my $side_atom_id =
-            filter_new( $atom_site,
-                    {  'include' => { 'label_atom_id' => [ $side_atom_name ] },
-                       'return_data' => 'id' } )->[0];
+        my ( $side_atom_id ) =
+            @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $atom_site->{$_}{'Cartn_x'},
