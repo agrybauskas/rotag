@@ -119,22 +119,20 @@ sub generate_pseudo
         if( ! exists $angles_cache{$residue_unique_key} ) {
             $angles_cache{$residue_unique_key} = all_dihedral(
                 $parameters,
-                filter_by_unique_residue_key( $atom_site,
-                                              $residue_unique_key, 1 )
-            );
+                filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1)
+            )->{$residue_unique_key};
         }
 
         my %angles = %{ $angles_cache{$residue_unique_key} };
 
         # Iterates through combinations of angles and evaluates conformational
         # model.
-        my @angle_names = sort keys %{ $angles{$residue_unique_key} };
+        my @angle_names = sort keys %angles;
         my @angle_values;
         for my $angle_name ( @angle_names ) {
             if( exists $angle_values->{"$angle_name"} ) {
                 push @angle_values,
-                     [ map { $_ - $angles{$residue_unique_key}
-                                         {"$angle_name"}{'value'} }
+                     [ map { $_ - $angles{"$angle_name"}{'value'} }
                           @{ $angle_values->{"$angle_name"} } ];
             } else {
                 push @angle_values, [ 0.0 ];
@@ -183,8 +181,7 @@ sub generate_pseudo
             # Adds information about used dihedral angle values and names.
             $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
             $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
-                { map { ( $_ => $angle_values{$_} +
-                                $angles{$residue_unique_key}{$_}{'value'} ) }
+                { map { ( $_ => $angle_values{$_} + $angles{$_}{'value'} ) }
                       @angle_names };
             # Adds additional pseudo-atom flag for future filtering.
             $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
