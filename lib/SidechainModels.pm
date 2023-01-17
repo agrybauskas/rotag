@@ -191,6 +191,7 @@ sub bond_stretching_matrices
 {
     my ( $parameters, $atom_site, $atom_id, $stretchable_bonds ) = @_;
 
+    # TODO: it is possible to cache here.
     my @bond_stretching_matrices = ();
     for my $bond_name ( sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
                                $stretchable_bonds->{$atom_id}{$b}{'order'} }
