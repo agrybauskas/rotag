@@ -248,6 +248,7 @@ sub rotatable_bonds
     } );
 
     my %rotatable_bonds = ();
+    my %rotatable_bonds_cache = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
     for my $fourth_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
@@ -292,9 +293,17 @@ sub rotatable_bonds
             ( $include_hetatoms &&
               $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
               $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
-            push @{ $rotatable_bonds{$fourth_atom_id} },
-                [ $first_atom_id, $second_atom_id, $third_atom_id,
-                  $fourth_atom_id ];
+            if( exists $rotatable_bonds_cache{$second_atom_id}{$third_atom_id} ) {
+                push @{ $rotatable_bonds{$fourth_atom_id} },
+                    $rotatable_bonds_cache{$second_atom_id}{$third_atom_id};
+            } else {
+                push @{ $rotatable_bonds{$fourth_atom_id} },
+                    [ $first_atom_id, $second_atom_id, $third_atom_id,
+                      $fourth_atom_id ];
+                $rotatable_bonds_cache{$second_atom_id}{$third_atom_id} =
+                    [ $first_atom_id, $second_atom_id, $third_atom_id,
+                      $fourth_atom_id ];
+            }
         }
 
         # If bond atoms are sp2/sp (do not rotate) or just is a continuation of
