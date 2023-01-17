@@ -335,7 +335,7 @@ sub generate_pseudo_new
         my @angle_and_length_values =
             ( @dihedral_angle_values, @bond_length_values, @bond_angle_values );
 
-        for my $angle_and_length_comb ( # Abreviation of dihedral angle combinations.
+        for my $angle_and_length_comb (
             @{ permutation( scalar( @angle_and_length_names ), [],
                             \@angle_and_length_values, [] ) } ){
             my %angle_and_length_values =
