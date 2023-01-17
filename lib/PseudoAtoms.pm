@@ -260,7 +260,7 @@ sub generate_pseudo_new
                 $parameters,
                 filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
                 { 'include_hetatoms' => 1 }
-            );
+            )->{$residue_unique_key};
         }
 
         if( ! exists $bond_lengths_cache{$residue_unique_key} ) {
@@ -268,7 +268,7 @@ sub generate_pseudo_new
                 $parameters,
                 filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
                 { 'include_hetatoms' => 1 }
-            );
+            )->{$residue_unique_key};
         }
 
         if( ! exists $bond_angles_cache{$residue_unique_key} ) {
@@ -276,7 +276,7 @@ sub generate_pseudo_new
                 $parameters,
                 filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
                 { 'include_hetatoms' => 1 }
-            );
+            )->{$residue_unique_key};
         }
 
         my %dihedral_angles = %{ $dihedral_angles_cache{$residue_unique_key} };
@@ -285,12 +285,9 @@ sub generate_pseudo_new
 
         # Iterates through combinations of angles, lengths and evaluates
         # conformational model.
-        my @dihedral_angle_names =
-            sort keys %{ $dihedral_angles{$residue_unique_key} };
-        my @bond_length_names =
-            sort keys %{ $bond_lengths{$residue_unique_key} };
-        my @bond_angle_names =
-            sort keys %{ $bond_angles{$residue_unique_key} };
+        my @dihedral_angle_names = sort keys %dihedral_angles;
+        my @bond_length_names = sort keys %bond_lengths;
+        my @bond_angle_names = sort keys %bond_angles;
 
         # Adjust changes to the existing values of the bond and angle parameters.
         # TODO: refactor due to repetition of code.
@@ -298,8 +295,7 @@ sub generate_pseudo_new
         for my $angle_name ( @dihedral_angle_names ) {
             if( exists $angle_and_bond_values->{"$angle_name"} ) {
                 push @dihedral_angle_values,
-                     [ map { $_ - $dihedral_angles{$residue_unique_key}
-                                                  {"$angle_name"}{'value'} }
+                     [ map { $_ - $dihedral_angles{"$angle_name"}{'value'} }
                           @{ $angle_and_bond_values->{"$angle_name"} } ];
             } else {
                 push @dihedral_angle_values, [ 0.0 ];
@@ -310,8 +306,7 @@ sub generate_pseudo_new
         for my $bond_name ( @bond_length_names ) {
             if( exists $angle_and_bond_values->{"$bond_name"} ) {
                 push @bond_length_values,
-                     [ map { $_ - $bond_lengths{$residue_unique_key}
-                                               {"$bond_name"}{'value'} }
+                     [ map { $_ - $bond_lengths{"$bond_name"}{'value'} }
                           @{ $angle_and_bond_values->{"$bond_name"} } ];
             } else {
                 push @bond_length_values, [ 0.0 ];
@@ -322,8 +317,7 @@ sub generate_pseudo_new
         for my $angle_name ( @bond_angle_names ) {
             if( exists $angle_and_bond_values->{"$angle_name"} ) {
                 push @bond_angle_values,
-                     [ map { $_ - $bond_angles{$residue_unique_key}
-                                              {"$angle_name"}{'value'} }
+                     [ map { $_ - $bond_angles{"$angle_name"}{'value'} }
                           @{ $angle_and_bond_values->{"$angle_name"} } ];
             } else {
                 push @bond_angle_values, [ 0.0 ];
@@ -389,7 +383,7 @@ sub generate_pseudo_new
                     \@dihedral_angle_names;
                 $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
                     { map { ( $_ => $angle_and_length_values{$_} +
-                                    $dihedral_angles{$residue_unique_key}{$_}{'value'} ) }
+                                    $dihedral_angles{$_}{'value'} ) }
                           @dihedral_angle_names };
             }
             if( @bond_length_names ) {
@@ -397,7 +391,7 @@ sub generate_pseudo_new
                     \@bond_length_names;
                 $pseudo_atom_site{$last_atom_id}{'bond_lengths'} =
                     { map { ( $_ => $angle_and_length_values{$_} +
-                                    $bond_lengths{$residue_unique_key}{$_}{'value'} ) }
+                                    $bond_lengths{$_}{'value'} ) }
                           @bond_length_names };
             }
             if( @bond_angle_names ) {
@@ -405,7 +399,7 @@ sub generate_pseudo_new
                     \@bond_length_names;
                 $pseudo_atom_site{$last_atom_id}{'bond_angles'} =
                     { map { ( $_ => $angle_and_length_values{$_} +
-                                    $bond_angles{$residue_unique_key}{$_}{'value'} ) }
+                                    $bond_angles{$_}{'value'} ) }
                           @bond_angle_names };
             }
 
