@@ -191,7 +191,7 @@ for my $pdbx_file ( @ARGV ) {
             for my $rotamer_id ( @current_rotamers ) {
                 # HACK: should be adjusted so, the order would not matter.
                 my $unique_angle_key =
-                    join( ',', map { $rotamer_angles->{$_}{'type'},
+                    join( ',', map { $rotamer_angles->{$_}{'type'} =>
                                      $rotamer_angles->{$_}{'value'} }
                           @{ $rotamer_angle_groups->{$rotamer_id} } );
                 if( ! defined $visited_rotamers{$unique_angle_key} &&
