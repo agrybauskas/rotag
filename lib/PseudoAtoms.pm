@@ -352,7 +352,7 @@ sub generate_pseudo_new
             # Adds necessary PDBx entries to pseudo atom site.
             $last_atom_id++;
             create_pdbx_entry(
-                { 'group_PDB' => 'HETATM',
+                { 'group_PDB' => $atom_site->{$atom_id}{'group_PDB'},
                   'atom_site' => \%pseudo_atom_site,
                   'id' => $last_atom_id,
                   'type_symbol' => $atom_site{$atom_id}{'type_symbol'},
