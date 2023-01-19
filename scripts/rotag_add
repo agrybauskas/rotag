@@ -375,7 +375,7 @@ for my $pdbx_file ( @ARGV ) {
                              { 'parameters' => $parameters,
                                'atom_site' => $selected_atom_site,
                                'atom_specifier' => { 'id' => [ $atom_id ] },
-                               'angle_values' => $rotamer_angles,
+                               'bond_parameter_values' => $rotamer_angles,
                                'last_atom_id' => $last_atom_id,
                                 # TODO: check if it is a good idea to have
                                 # $rotamer_id as 'label_alt_id'.

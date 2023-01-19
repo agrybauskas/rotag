@@ -57,7 +57,7 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
        %{ generate_pseudo( { 'parameters' => $parameters,
                              'atom_site' => $atom_site,
                              'atom_specifier' => { "id" => [ $atom_id ] },
-                             'angle_values' => \%num_angle_values } ) } );
+                             'bond_parameter_values' => \%num_angle_values } ) } );
 
 my %pdbx =();
 $pdbx{'_atom_site'}{'data'} = $atom_site;

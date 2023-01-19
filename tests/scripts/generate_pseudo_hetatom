@@ -10,7 +10,7 @@ use PDBxParser qw( to_pdbx );
 
 #
 # Unit test: PseudoAtoms::generate_pseudo_hetatom,
-#                                    atom_id range                    num of pseudo atoms
+#                                    atom_id range                     num of pseudo atoms
 # Example: ./generate_pseudo_hetatom 12      "chi0 0,2*pi & r1 0,0.25" "chi0 20" structure.dump
 #
 
@@ -70,7 +70,7 @@ for my $angle_or_length ( sort keys %angle_and_length_ranges ) {
              { 'parameters' => $parameters,
                'atom_site' => $atom_site,
                'atom_specifier' => { "id" => [ $atom_id ] },
-               'angle_values' => \%num_angle_and_length_values,
+               'bond_parameter_values' => \%num_angle_and_length_values,
                'include_hetatoms' => 1 } ) } );
 
 my %pdbx =();

@@ -60,142 +60,6 @@ our $VERSION = $VERSION;
 # --------------------------- Generation of pseudo-atoms ---------------------- #
 
 #
-# Generates pseudo-atoms from side chain models that are written in list of
-# analytical matrices.
-# Input:
-#     $args->{atom_site} - atom site data structure (see PDBxParser). Must have
-#     any sidechain model function applied to it (see SidechainModels.pm);
-#     $args->{atom_specifier} - hash of hashes for selecting atoms by attributes
-#     (see PDBxParser.pm);
-#     $args->{angle_values} - hash of arrays that describe possible values of
-#     dihedral angles:
-#     Ex.: { 'chi1' => [ 0, 0.4, 1.5, 2.0 ],
-#            'chi2' => [ 0, 2 ] };
-#     $args->{last_atom_id} - last atom id for assigning new ids for pseud
-#     atoms;
-#     $args->{alt_group_id} - alternative group id that is used to distinguish
-#     pseudo atoms. Very useful when generating rotamers.
-#     $args->{selection_state} - adds/changes '[local]_selection_state' to
-#     specified value.
-# Output:
-#     $pseudo_atom_site - atom site data structure for pseudo-atoms with
-#     additional 'conformation' attribute.
-#
-
-sub generate_pseudo_old
-{
-    my ( $args ) = @_;
-    my ( $parameters, $atom_site, $atom_specifier, $angle_values, $last_atom_id,
-         $alt_group_id, $selection_state ) =
-        ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'atom_specifier'},
-          $args->{'angle_values'}, $args->{'last_atom_id'},
-          $args->{'alt_group_id'}, $args->{'selection_state'}, );
-
-    $last_atom_id //= max( keys %{ $atom_site } );
-    $alt_group_id //= 1;
-
-    my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
-
-    my %atom_site = %{ clone( $atom_site ) };
-    my %angles_cache = ();
-    my %pseudo_atom_site;
-
-    my @atom_ids =
-        @{ filter_new( \%atom_site,
-                   { 'include' => $atom_specifier,
-                     'return_data' => 'id' } ) };
-
-    for my $atom_id ( @atom_ids ) {
-        my $conformation = $atom_site{"$atom_id"}{'conformation'};
-
-        confess "atom with id $atom_id lacks 'conformation' key."
-            if ! defined $conformation;
-
-        # Calculates current dihedral angles of rotatable bonds. Will be used
-        # for reseting dihedral angles to 0 degree angle.
-        my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
-
-        if( ! exists $angles_cache{$residue_unique_key} ) {
-            $angles_cache{$residue_unique_key} = all_dihedral(
-                $parameters,
-                filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1)
-            )->{$residue_unique_key};
-        }
-
-        my %angles = %{ $angles_cache{$residue_unique_key} };
-
-        # Iterates through combinations of angles and evaluates conformational
-        # model.
-        my @angle_names = sort keys %angles;
-        my @angle_values;
-        for my $angle_name ( @angle_names ) {
-            if( exists $angle_values->{"$angle_name"} ) {
-                push @angle_values,
-                     [ map { $_ - $angles{"$angle_name"}{'value'} }
-                          @{ $angle_values->{"$angle_name"} } ];
-            } else {
-                push @angle_values, [ 0.0 ];
-            }
-        }
-
-        for my $angle_comb ( # Abreviation of angle combinations.
-            @{ permutation( scalar( @angle_names ), [], \@angle_values, [] ) } ){
-            my %angle_values =
-                map { ( $angle_names[$_] => $angle_comb->[$_] ) }
-                    0..$#angle_names;
-
-            # Evaluates matrices.
-            my ( $transf_atom_coord ) =
-                @{ mult_matrix_product( $conformation, \%angle_values ) };
-
-            # Adds necessary PDBx entries to pseudo atom site.
-            $last_atom_id++;
-            create_pdbx_entry(
-                { 'atom_site' => \%pseudo_atom_site,
-                  'id' => $last_atom_id,
-                  'type_symbol' => $atom_site{$atom_id}{'type_symbol'},
-                  'label_atom_id' => $atom_site{$atom_id}{'label_atom_id'},
-                  'label_alt_id' => $alt_group_id,
-                  'label_comp_id' => $atom_site{$atom_id}{'label_comp_id'},
-                  'label_asym_id' => $atom_site{$atom_id}{'label_asym_id'},
-                  'label_entity_id' => $atom_site{$atom_id}{'label_entity_id'},
-                  'label_seq_id' => $atom_site{$atom_id}{'label_seq_id'},
-                  'cartn_x' => sprintf( $sig_figs_max, $transf_atom_coord->[0][0] ),
-                  'cartn_y' => sprintf( $sig_figs_max, $transf_atom_coord->[1][0] ),
-                  'cartn_z' => sprintf( $sig_figs_max, $transf_atom_coord->[2][0] ),
-                  'pdbx_PDB_model_num' =>
-                      $atom_site{$atom_id}{'pdbx_PDB_model_num'},
-                } );
-            # Adds atom id that pseudo atoms was made of.
-            $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
-            # Adds hybridization, connection, conformation data from origin atom.
-            $pseudo_atom_site{$last_atom_id}{'hybridization'} =
-                $atom_site{$atom_id}{'hybridization'};
-            # FIXME: be careful - it might produce contradictions between new
-            # and old pseudo atoms.
-            $pseudo_atom_site{$last_atom_id}{'connections'} =
-                $atom_site{$atom_id}{'connections'};
-            $pseudo_atom_site{$last_atom_id}{'conformation'} =
-                $atom_site{$atom_id}{'conformation'};
-            # Adds information about used dihedral angle values and names.
-            $pseudo_atom_site{$last_atom_id}{'dihedral_names'} = \@angle_names;
-            $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
-                { map { ( $_ => $angle_values{$_} + $angles{$_}{'value'} ) }
-                      @angle_names };
-            # Adds additional pseudo-atom flag for future filtering.
-            $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
-            # Adds selection state if it is defined.
-            if( defined $selection_state ) {
-                $pseudo_atom_site{$last_atom_id}{'[local]_selection_state'} =
-                    $selection_state;
-            }
-        }
-    }
-
-    return \%pseudo_atom_site;
-}
-
-#
 # Generates hetero pseudo-atoms from atom models that are written in list of
 # analytical matrices.
 # Input:
@@ -221,11 +85,11 @@ sub generate_pseudo_old
 sub generate_pseudo
 {
     my ( $args ) = @_;
-    my ( $parameters, $atom_site, $atom_specifier, $angle_and_bond_values,
+    my ( $parameters, $atom_site, $atom_specifier, $bond_parameter_values,
          $last_atom_id, $alt_group_id, $selection_state,
          $include_hetatoms ) =
         ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'atom_specifier'},
-          $args->{'angle_values'}, $args->{'last_atom_id'},
+          $args->{'bond_parameter_values'}, $args->{'last_atom_id'},
           $args->{'alt_group_id'}, $args->{'selection_state'},
           $args->{'include_hetatoms'}, );
 
@@ -301,10 +165,10 @@ sub generate_pseudo
         # TODO: refactor due to repetition of code.
         my @dihedral_angle_values = ();
         for my $angle_name ( @dihedral_angle_names ) {
-            if( exists $angle_and_bond_values->{"$angle_name"} ) {
+            if( exists $bond_parameter_values->{"$angle_name"} ) {
                 push @dihedral_angle_values,
                      [ map { $_ - $dihedral_angles{"$angle_name"}{'value'} }
-                          @{ $angle_and_bond_values->{"$angle_name"} } ];
+                          @{ $bond_parameter_values->{"$angle_name"} } ];
             } else {
                 push @dihedral_angle_values, [ 0.0 ];
             }
@@ -312,10 +176,10 @@ sub generate_pseudo
 
         my @bond_length_values = ();
         for my $bond_name ( @bond_length_names ) {
-            if( exists $angle_and_bond_values->{"$bond_name"} ) {
+            if( exists $bond_parameter_values->{"$bond_name"} ) {
                 push @bond_length_values,
                      [ map { $_ - $bond_lengths{"$bond_name"}{'value'} }
-                          @{ $angle_and_bond_values->{"$bond_name"} } ];
+                          @{ $bond_parameter_values->{"$bond_name"} } ];
             } else {
                 push @bond_length_values, [ 0.0 ];
             }
@@ -323,10 +187,10 @@ sub generate_pseudo
 
         my @bond_angle_values = ();
         for my $angle_name ( @bond_angle_names ) {
-            if( exists $angle_and_bond_values->{"$angle_name"} ) {
+            if( exists $bond_parameter_values->{"$angle_name"} ) {
                 push @bond_angle_values,
                      [ map { $_ - $bond_angles{"$angle_name"}{'value'} }
-                          @{ $angle_and_bond_values->{"$angle_name"} } ];
+                          @{ $bond_parameter_values->{"$angle_name"} } ];
             } else {
                 push @bond_angle_values, [ 0.0 ];
             }
@@ -495,7 +359,7 @@ sub generate_rotamer
                       'parameters' => $parameters,
                       'atom_site' => { ( %atom_site, %rotamer_atom_site ) },
                       'atom_specifier' => { 'id' => [ $atom_id ] },
-                      'angle_values' => \%angles,
+                      'bond_parameter_values' => \%angles,
                       'last_atom_id' => $last_atom_id,
                       'alt_group_id' => $residue_alt_id } ) } );
             $last_atom_id++;
@@ -980,7 +844,7 @@ sub calc_favourable_angle
             generate_pseudo( { 'parameters' => $parameters,
                                'atom_site' => $atom_site,
                                'atom_specifier' => { 'id' => [ "$atom_id" ] },
-                               'angle_values' => \%angles } );
+                               'bond_parameter_values' => \%angles } );
         my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
         my $pseudo_origin_id =
             $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
