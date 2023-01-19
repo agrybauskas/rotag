@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::Parameters;
-use PseudoAtoms qw( generate_pseudo_new );
+use PseudoAtoms qw( generate_pseudo );
 use Sampling qw( sample_angles );
 use PDBxParser qw( to_pdbx );
 
@@ -66,11 +66,12 @@ for my $angle_or_length ( sort keys %angle_and_length_ranges ) {
 
 %{ $atom_site } =
     ( %{ $atom_site },
-      %{ generate_pseudo_new(
+      %{ generate_pseudo(
              { 'parameters' => $parameters,
                'atom_site' => $atom_site,
                'atom_specifier' => { "id" => [ $atom_id ] },
-               'angle_and_bond_values' => \%num_angle_and_length_values } ) } );
+               'angle_values' => \%num_angle_and_length_values,
+               'include_hetatoms' => 1 } ) } );
 
 my %pdbx =();
 $pdbx{'_atom_site'}{'data'} = $atom_site;

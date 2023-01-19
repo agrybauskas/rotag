@@ -9,7 +9,6 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      calc_full_atom_energy
                      generate_library
                      generate_pseudo
-                     generate_pseudo_new
                      generate_rotamer
                      library_to_csv
                      lowest_energy_state
@@ -83,7 +82,7 @@ our $VERSION = $VERSION;
 #     additional 'conformation' attribute.
 #
 
-sub generate_pseudo
+sub generate_pseudo_old
 {
     my ( $args ) = @_;
     my ( $parameters, $atom_site, $atom_specifier, $angle_values, $last_atom_id,
@@ -219,17 +218,20 @@ sub generate_pseudo
 #     additional 'conformation' attribute.
 #
 
-sub generate_pseudo_new
+sub generate_pseudo
 {
     my ( $args ) = @_;
     my ( $parameters, $atom_site, $atom_specifier, $angle_and_bond_values,
-         $last_atom_id, $alt_group_id, $selection_state ) =
+         $last_atom_id, $alt_group_id, $selection_state,
+         $include_hetatoms ) =
         ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'atom_specifier'},
-          $args->{'angle_and_bond_values'}, $args->{'last_atom_id'},
-          $args->{'alt_group_id'}, $args->{'selection_state'}, );
+          $args->{'angle_values'}, $args->{'last_atom_id'},
+          $args->{'alt_group_id'}, $args->{'selection_state'},
+          $args->{'include_hetatoms'}, );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
+    $include_hetatoms //= 0;
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
@@ -259,7 +261,7 @@ sub generate_pseudo_new
             $dihedral_angles_cache{$residue_unique_key} = all_dihedral(
                 $parameters,
                 filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
-                { 'include_hetatoms' => 1 }
+                { 'include_hetatoms' => $include_hetatoms }
             )->{$residue_unique_key};
         }
 
@@ -267,7 +269,7 @@ sub generate_pseudo_new
             $bond_lengths_cache{$residue_unique_key} = all_bond_lengths(
                 $parameters,
                 filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
-                { 'include_hetatoms' => 1 }
+                { 'include_hetatoms' => $include_hetatoms }
             )->{$residue_unique_key};
         }
 
@@ -275,7 +277,7 @@ sub generate_pseudo_new
             $bond_angles_cache{$residue_unique_key} = all_bond_angles(
                 $parameters,
                 filter_by_unique_residue_key($atom_site, $residue_unique_key, 1),
-                { 'include_hetatoms' => 1 }
+                { 'include_hetatoms' => $include_hetatoms }
             )->{$residue_unique_key};
         }
 
