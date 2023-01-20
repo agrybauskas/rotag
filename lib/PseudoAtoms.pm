@@ -45,8 +45,7 @@ use Measure qw( all_dihedral
                 add_all_bond_lengths
                 rmsd_sidechains );
 use BondProperties qw( hybridization
-                       rotatable_bonds
-                       unique_rotatables );
+                       rotatable_bonds );
 use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys

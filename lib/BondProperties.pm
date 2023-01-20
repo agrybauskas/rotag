@@ -9,8 +9,7 @@ BEGIN {
                          bendable_angles
                          hybridization
                          rotatable_bonds
-                         stretchable_bonds
-                         unique_rotatables );
+                         stretchable_bonds );
 }
 
 use Carp;
@@ -550,36 +549,6 @@ sub bendable_angles
     }
 
     return \%named_bendable_angles;
-}
-
-#
-# Identifies unique rotatable bonds in selected group of residue atoms.
-# Input:
-#     $atom_site - atom data structure (see PDBxParser.pm).
-# Output:
-#     %unique_rotatable_bonds - hash of arrays that point to unique rotatable
-#     bonds.
-#     Ex.: { 'chi1' => [ 1, 2 ],
-#            'chi2' => [ 2, 3 ] }
-#
-
-sub unique_rotatables
-{
-    my ( $parameters, $atom_site ) = @_;
-
-    my $rotatable_bonds = rotatable_bonds( $parameters, $atom_site );
-
-    my %unique_rotatable_bonds;
-    for my $atom_id ( keys %{ $rotatable_bonds } ) {
-        for my $angle_name ( keys %{ $rotatable_bonds->{"$atom_id"} } ){
-            if( ! exists $unique_rotatable_bonds{"$angle_name"} ) {
-                $unique_rotatable_bonds{"$angle_name"} =
-                    $rotatable_bonds->{"$atom_id"}{"$angle_name"};
-            }
-        }
-    }
-
-    return \%unique_rotatable_bonds;
 }
 
 sub contains_sidechain_atoms
