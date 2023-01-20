@@ -37,7 +37,8 @@ use Grid qw( grid_box
 use Energy;
 use ForceField::Bonded;
 use ForceField::NonBonded;
-use PDBxParser qw( filter
+use PDBxParser qw( expand
+                   filter
                    filter_connected
                    filter_new
                    filter_by_unique_residue_key
@@ -273,6 +274,8 @@ sub all_dihedral
             filter( { 'atom_site' => $atom_site,
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
+
+        expand( $residue_site, 1 );
 
         my $rotatable_bonds =
             rotatable_bonds( $parameters, $residue_site, undef,

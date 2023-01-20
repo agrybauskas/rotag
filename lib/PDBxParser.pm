@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( create_pdbx_entry
                      determine_residue_keys
+                     expand
                      extract
                      filter
                      filter_by_unique_residue_key
@@ -1059,6 +1060,20 @@ sub determine_residue_keys
     }
 
     return \@residue_unique_keys;
+}
+
+#
+# Expands atom site by certain number of connected atoms.
+# Input:
+#     $atom_site - atom data structure;
+#     $number - number of steps (parents) to be followed along.
+# Output:
+#
+
+sub expand
+{
+    my ( $atom_site, $number ) = @_;
+    return;
 }
 
 #
