@@ -71,7 +71,10 @@ for my $angle_or_length ( sort keys %angle_and_length_ranges ) {
                'atom_site' => $atom_site,
                'atom_specifier' => { "id" => [ $atom_id ] },
                'bond_parameter_values' => \%num_angle_and_length_values,
-               'include_hetatoms' => 1 } ) } );
+               'include_hetatoms' => 1,
+               'do_bond_stretching' => 1,
+               'do_angle_bending' => 1,
+               'do_bond_torsion' => 1 } ) } );
 
 my %pdbx =();
 $pdbx{'_atom_site'}{'data'} = $atom_site;
