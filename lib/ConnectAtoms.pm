@@ -436,44 +436,6 @@ sub connect_atoms_explicitly
     return;
 }
 
-# Removes connections explicitly.
-# Input:
-#     $atom_site - atom data structure.
-#     $first_atom_id_list - first atom id list.
-#     $second_atom_id_list - second atom id list.
-# Output:
-#     none - removes atom connections by deleting "connection" key and values to
-#     atom site data structure.
-
-sub remove_connections
-{
-    my ( $atom_site, $first_atom_id_list, $second_atom_id_list ) = @_;
-
-    for my $first_atom_id ( @{ $first_atom_id_list } ) {
-        for my $second_atom_id ( @{ $second_atom_id_list } ) {
-            my ( $first_atom_id_idx ) =
-                grep { $first_atom_id eq
-                       $atom_site->{$second_atom_id}{'connections'}[$_]  }
-                     (0..$#{ $atom_site->{$second_atom_id}{'connections'} });
-            my ( $second_atom_id_idx ) =
-                grep { $second_atom_id eq
-                       $atom_site->{$first_atom_id}{'connections'}[$_]  }
-                     (0..$#{ $atom_site->{$first_atom_id}{'connections'} });
-
-            if( defined $second_atom_id_idx ) {
-                splice @{ $atom_site->{$first_atom_id}{'connections'} },
-                    $second_atom_id_idx, 1;
-            }
-            if( defined $first_atom_id_idx ) {
-                splice @{ $atom_site->{$second_atom_id}{'connections'} },
-                    $first_atom_id_idx, 1;
-            }
-        }
-    }
-
-    return;
-}
-
 #
 # Appends one's atom ids to the others list of connections.
 # Input:
