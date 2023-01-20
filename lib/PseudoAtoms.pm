@@ -10,7 +10,6 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      generate_library
                      generate_pseudo
                      generate_rotamer
-                     library_to_csv
                      lowest_energy_state
                      replace_with_rotamer );
 
