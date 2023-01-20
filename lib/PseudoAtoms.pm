@@ -398,14 +398,6 @@ sub generate_library
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
-        # Generates conformational models before checking for
-        # clashes/interactions for given residues.
-        if( $conf_model eq 'rotation_only' ) {
-            rotation_only( $parameters, $current_atom_site );
-        } else {
-            confess 'conformational model was not defined.';
-        }
-
         # Finds where CA of target residues are.
         my @target_ca_ids;
         for my $residue_unique_key ( @{ $residue_unique_keys } ) {
@@ -451,6 +443,14 @@ sub generate_library
                 my $residue_unique_key =
                     determine_residue_keys( $residue_site,
                                             { 'exclude_dot' => 1 } )->[0];
+
+                # Generates conformational models before checking for
+                # clashes/interactions for given residues.
+                if( $conf_model eq 'rotation_only' ) {
+                    rotation_only( $parameters, $residue_site );
+                } else {
+                    confess 'conformational model was not defined.';
+                }
 
                 my %interaction_site =
                     %{ filter_new( $current_atom_site,
