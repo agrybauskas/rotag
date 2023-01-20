@@ -250,12 +250,13 @@ sub generate_pseudo
 sub generate_rotamer
 {
     my ( $args ) = @_;
-    my ( $parameters, $atom_site, $angle_values, $last_atom_id, $alt_group_id,
-         $set_missing_angles_to_zero, $keep_origin_id, $keep_origin_alt_id ) =
+    my ( $parameters, $atom_site, $angle_values, $bond_parameters,
+         $last_atom_id, $alt_group_id, $set_missing_angles_to_zero,
+         $keep_origin_id, $keep_origin_alt_id ) =
         ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'angle_values'},
-          $args->{'last_atom_id'}, $args->{'last_atom_id'},
-          $args->{'set_missing_angles_to_zero'}, $args->{'keep_origin_id'},
-          $args->{'keep_origin_alt_id'}, );
+          $args->{'bond_parameters'}, $args->{'last_atom_id'},
+          $args->{'last_atom_id'}, $args->{'set_missing_angles_to_zero'},
+          $args->{'keep_origin_id'}, $args->{'keep_origin_alt_id'}, );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -300,6 +301,7 @@ sub generate_rotamer
                       'parameters' => $parameters,
                       'atom_site' => { ( %atom_site, %rotamer_atom_site ) },
                       'atom_specifier' => { 'id' => [ $atom_id ] },
+                      'bond_parameters' => $bond_parameters,
                       'bond_parameter_values' => \%angles,
                       'last_atom_id' => $last_atom_id,
                       'alt_group_id' => $residue_alt_id } ) } );
@@ -506,6 +508,7 @@ sub generate_library
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
+                             'bond_parameters' => \%bond_parameters,
                              'interaction_site' => \%interaction_site,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
@@ -877,11 +880,13 @@ sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $rmsd, $options ) = (
+    my ( $parameters, $atom_site, $residue_unique_key, $bond_parameters,
+         $interaction_site, $non_bonded_potential, $bonded_potential, $rmsd,
+         $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
+        $args->{'bond_parameters'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
@@ -911,11 +916,7 @@ sub calc_full_atom_energy
 
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
-                              \%angles );
-
-        # connect_atoms($parameters,\%rotamer_site,{'no_connection_list' => 1 });
-
-        # next if !retains_connections( $parameters,$residue_site,\%rotamer_site );
+                              \%angles, $bond_parameters );
 
         my @rotamer_atom_ids =
             sort keys %{ filter_new( \%rotamer_site,
@@ -926,14 +927,9 @@ sub calc_full_atom_energy
         # HACK: make sure that $interaction_site atom ids are updated by
         # %rotamer_site.
         my %rotamer_interaction_site = ( %{ $interaction_site }, %rotamer_site );
-
-        # HACK: should connect_atoms() be used here?
-        # connect_atoms( \%rotamer_interaction_site );
-
         $options->{'atom_site'} = \%rotamer_interaction_site;
 
         my $rotamer_energy_sum = 0;
-
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
             # Calculation of potential energy of bonded atoms.
             if( defined $bonded_potential ) {
@@ -1031,12 +1027,14 @@ sub lowest_energy_state
 
 sub replace_with_rotamer
 {
-    my ( $parameters, $atom_site, $residue_unique_key, $angle_values ) = @_;
+    my ( $parameters, $atom_site, $residue_unique_key, $angle_values,
+         $bond_parameters ) = @_;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
     my $residue_site =
         generate_rotamer( { 'parameters' => $parameters,
                             'atom_site' => $atom_site,
+                            'bond_parameters' => $bond_parameters,
                             'angle_values' =>
                                 { $residue_unique_key => $angle_values  },
                             'alt_group_id' => 'X', # HACK: $keep_origin_alt_id
