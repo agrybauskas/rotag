@@ -154,15 +154,13 @@ sub generate_pseudo
             %{ $bond_parameter_cache{$residue_unique_key} } : ();
 
         # Adjust changes to the existing values of the bond and angle parameters.
-        my @bond_parameter_names =
-            sort keys %{ $bond_parameters{$residue_unique_key} };
+        my @bond_parameter_names = sort keys %bond_parameters;
         my @bond_parameter_values = ();
         for my $bond_parameter_name ( @bond_parameter_names  ) {
-            if( exists $bond_parameter_values->{"$bond_parameter_name"} ) {
+            if( exists $bond_parameters{"$bond_parameter_name"} ) {
                 push @bond_parameter_values,
-                    [ map { $_ - $bond_parameter_values->{"$bond_parameter_name"}
-                                                         {'value'} }
-                         @{ $bond_parameter_values->{"$bond_parameter_name"} } ];
+                    [ map { $_ - $bond_parameters{"$bond_parameter_name"}{'value'} }
+                          @{ $bond_parameter_values->{"$bond_parameter_name"} } ];
             } else {
                 push @bond_parameter_values, [ 0.0 ];
             }
@@ -173,6 +171,7 @@ sub generate_pseudo
         for my $bond_parameter_comb (
             @{ permutation( scalar( @bond_parameter_names ), [],
                             \@bond_parameter_values, [] ) } ){
+
             my %bond_parameter_values =
                 map {( $bond_parameter_names[$_] => $bond_parameter_comb->[$_] )}
                     0..$#bond_parameter_names;
