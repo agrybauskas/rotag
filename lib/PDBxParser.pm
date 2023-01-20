@@ -1083,7 +1083,7 @@ sub expand
             next if ! defined $neighbour_atom_ids || ! @{ $neighbour_atom_ids };
 
             for my $neighbour_atom_id ( @{ $neighbour_atom_ids } ) {
-                next if exists $expanded_atom_site->{$atom_id};
+                next if exists $expanded_atom_site->{$neighbour_atom_id};
 
                 $expanded_atom_site->{$neighbour_atom_id} =
                     $reference_atom_site->{$neighbour_atom_id};
