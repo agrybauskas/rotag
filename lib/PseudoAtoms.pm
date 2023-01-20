@@ -362,6 +362,9 @@ sub generate_library
     my $interactions = $args->{'interactions'};
     my $threads = $args->{'threads'};
     my $program_called_by = $args->{'program_called_by'};
+    my $do_bond_torsion = $args->{'do_bond_torsion'};
+    my $do_bond_stretching = $args->{'do_bond_stretching'};
+    my $do_angle_bending = $args->{'do_angle_bending'};
     my $options = $args->{'options'};
 
     my $edge_length_interaction =
@@ -372,6 +375,9 @@ sub generate_library
     $conf_model //= 'rotation_only';
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => $interaction_atom_names };
+    $do_bond_torsion //= 1;
+    $do_bond_stretching //= 0;
+    $do_angle_bending //= 0;
     $options //= {};
 
     # Selection of potential function.
@@ -452,6 +458,20 @@ sub generate_library
                     confess 'conformational model was not defined.';
                 }
 
+                my %bond_parameters = ();
+                if( $do_bond_torsion ) {
+                    add_all_dihedral_angles( $parameters, \%bond_parameters,
+                                             $current_atom_site, $residue_unique_key );
+                }
+                if( $do_bond_stretching ) {
+                    add_all_bond_lengths( $parameters, \%bond_parameters,
+                                          $current_atom_site, $residue_unique_key );
+                }
+                if( $do_angle_bending ) {
+                    add_all_bond_angles( $parameters, \%bond_parameters,
+                                         $current_atom_site, $residue_unique_key );
+                }
+
                 my %interaction_site =
                     %{ filter_new( $current_atom_site,
                                { 'include' =>
@@ -466,6 +486,7 @@ sub generate_library
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
+                             'bond_parameters' => \%bond_parameters,
                              'interaction_site' => \%interaction_site,
                              'angles' => $angles,
                              'non_bonded_potential' =>
@@ -554,12 +575,14 @@ sub calc_favourable_angles
 {
     my ( $args ) = @_;
 
-    my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $angles, $small_angle, $non_bonded_potential, $bonded_potential,
-         $threads, $rand_count, $rand_seed, $program_called_by, $verbose ) = (
+    my ( $parameters, $atom_site, $residue_unique_key, $bond_parameters,
+         $interaction_site, $angles, $small_angle, $non_bonded_potential,
+         $bonded_potential, $threads, $rand_count, $rand_seed,
+         $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
+        $args->{'bond_parameters'},
         $args->{'interaction_site'},
         $args->{'angles'},
         $args->{'small_angle'},
