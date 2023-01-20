@@ -11,7 +11,6 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      filter_by_unique_residue_key
                      filter_connected
                      filter_new
-                     identify_residue_atoms
                      indexed2raw
                      mark_selection
                      obtain_pdbx_data
@@ -282,56 +281,6 @@ sub pdbx_loop_to_array
     }
 
     return \@pdbx_loops;
-}
-
-#
-# Creates a hash where for each unique residue key proper atom ids are assigned.
-# Input:
-#     $atom_site - $atom_site - atom data structure.
-# Output:
-#     %residue_atom_ids - hash of unique residue key and corresponding atom ids.
-#
-
-sub identify_residue_atoms
-{
-    my ( $atom_site, $options ) = @_;
-    my ( $check_atom_names ) = $options->{'check_atom_names'};
-
-    my $split_groups = split_by( { 'atom_site' => $atom_site,
-                                   'attributes' => [ 'label_seq_id',
-                                                     'label_asym_id',
-                                                     'pdbx_PDB_model_num', ] } );
-
-    my %residue_atom_ids;
-    for my $atom_id ( keys %{ $atom_site } ) {
-        my $unique_residue_key = unique_residue_key( $atom_site->{$atom_id} );
-        my ( $residue_id, $residue_chain, $pdbx_model, $alt_id ) =
-            split /,/, $unique_residue_key;
-        my $split_group_entry = "${residue_id},${residue_chain},${pdbx_model}";
-        my $related_residue_atom_ids = $split_groups->{$split_group_entry};
-
-        # Splits related residues into alt id groups. Atom ids can be redundant.
-        for my $related_atom_id ( @{ $related_residue_atom_ids } ) {
-            my $related_alt_id =
-                $atom_site->{$related_atom_id}{'label_alt_id'};
-
-            if( $atom_id ne $related_atom_id ) {
-                next if( $check_atom_names &&
-                         $atom_site->{$atom_id}{'label_atom_id'} eq
-                         $atom_site->{$related_atom_id}{'label_atom_id'} );
-
-                if( $alt_id eq '.' ) {
-                    push @{ $residue_atom_ids{$unique_residue_key} },
-                        $related_atom_id;
-                } elsif( $alt_id eq $related_alt_id || $related_alt_id eq '.') {
-                    push @{ $residue_atom_ids{$unique_residue_key} },
-                        $related_atom_id;
-                }
-            }
-        }
-    }
-
-    return \%residue_atom_ids;
 }
 
 #
