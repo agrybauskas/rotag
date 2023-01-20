@@ -1075,10 +1075,23 @@ sub expand
 {
     my ( $atom_site, $reference_atom_site, $number ) = @_;
     $number //= 1;
-    my %visited_atom_ids = ();
+    my $expanded_atom_site = clone $atom_site;
     while( $number > 0 ) {
+        for my $atom_id ( keys %{ $expanded_atom_site } ) {
+            my $neighbour_atom_ids =
+                $reference_atom_site->{$atom_id}{'connections'};
+            next if ! defined $neighbour_atom_ids || ! @{ $neighbour_atom_ids };
+
+            for my $neighbour_atom_id ( @{ $neighbour_atom_ids } ) {
+                next if exists $expanded_atom_site->{$atom_id};
+
+                $expanded_atom_site->{$neighbour_atom_id} =
+                    $reference_atom_site->{$neighbour_atom_id};
+            }
+        }
         $number--;
     }
+    $atom_site = $expanded_atom_site;
     return;
 }
 
