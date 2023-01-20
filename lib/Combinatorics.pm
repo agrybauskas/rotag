@@ -4,8 +4,7 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( adjacent
-                     permutation );
+our @EXPORT_OK = qw( permutation );
 
 use List::Util qw( max );
 
@@ -41,29 +40,6 @@ sub permutation
     }
 
     return $permuted_list;
-}
-
-sub adjacent
-{
-    my ( $lists ) = @_;
-
-    # Find list with max items.
-    my $max_item_count = max( map { scalar( @{ $_ } ) } @{ $lists } );
-
-    my @list = ();
-    for my $i ( 0..$max_item_count-1 ) {
-        my @current_list = ();
-        # If the list has less items than the list that has the most items,
-        # it circulary chooses next.
-        for my $list ( @{ $lists } ) {
-            my $item_count = scalar @{ $list };
-            my $i_updated = ( ( $i + 1 ) % $item_count ) - 1;
-            push @current_list, $list->[$i_updated];
-        }
-        push @list, \@current_list;
-    }
-
-    return \@list;
 }
 
 1;

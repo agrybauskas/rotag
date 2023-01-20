@@ -9,7 +9,6 @@ our @EXPORT_OK = qw( append_connections
                      connect_atoms
                      connect_hetatoms
                      connect_atoms_explicitly
-                     connect_two_atoms
                      is_connected
                      is_neighbour
                      is_second_neighbour
@@ -194,30 +193,6 @@ sub is_second_neighbour
 }
 
 # ------------------------------ Connect atoms -------------------------------- #
-
-#
-# Connects two atoms by including ids to 'connections' attribute in both atom
-# data structure.
-# Input:
-#     $atom_site - $atom_site - atom site data structure (see PDBxParser.pm);
-#     ${first,second}_atom_id - atom ids.
-# Output:
-#     none
-#
-
-sub connect_two_atoms
-{
-    my ( $parameters, $atom_site, $first_atom_id, $second_atom_id ) = @_;
-
-    if( is_connected( $parameters,
-                      $atom_site->{"$first_atom_id"},
-                      $atom_site->{"$second_atom_id"} ) ) {
-        push @{ $atom_site->{$first_atom_id}{'connections'} }, "$second_atom_id";
-        push @{ $atom_site->{$second_atom_id}{'connections'} }, "$first_atom_id";
-    }
-
-    return;
-}
 
 #
 # Divides box into grid of cubes that has length of the desired bond. If box
