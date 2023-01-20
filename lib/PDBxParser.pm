@@ -1066,13 +1066,19 @@ sub determine_residue_keys
 # Expands atom site by certain number of connected atoms.
 # Input:
 #     $atom_site - atom data structure;
+#     $reference_atom_site - reference atom data structure;
 #     $number - number of steps (parents) to be followed along.
 # Output:
 #
 
 sub expand
 {
-    my ( $atom_site, $number ) = @_;
+    my ( $atom_site, $reference_atom_site, $number ) = @_;
+    $number //= 1;
+    my %visited_atom_ids = ();
+    while( $number > 0 ) {
+        $number--;
+    }
     return;
 }
 

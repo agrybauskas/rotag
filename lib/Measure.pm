@@ -275,7 +275,7 @@ sub all_dihedral
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        expand( $residue_site, 1 );
+        expand( $residue_site, $atom_site );
 
         my $rotatable_bonds =
             rotatable_bonds( $parameters, $residue_site, undef,
