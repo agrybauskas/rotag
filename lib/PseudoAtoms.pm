@@ -201,6 +201,7 @@ sub generate_pseudo
                   'pdbx_PDB_model_num' =>
                       $atom_site{$atom_id}{'pdbx_PDB_model_num'},
                 } );
+
             # Adds atom id that pseudo atoms was made of.
             $pseudo_atom_site{$last_atom_id}{'origin_atom_id'} = $atom_id;
 
@@ -214,33 +215,6 @@ sub generate_pseudo
                 $atom_site{$atom_id}{'connections'};
             $pseudo_atom_site{$last_atom_id}{'conformation'} =
                 $atom_site{$atom_id}{'conformation'};
-
-            # Adds information about used dihedral angle, bond length and bond angles
-            # values and names.
-            # if( @dihedral_angle_names ) {
-            #     $pseudo_atom_site{$last_atom_id}{'dihedral_names'} =
-            #         \@dihedral_angle_names;
-            #     $pseudo_atom_site{$last_atom_id}{'dihedral_angles'} =
-            #         { map { ( $_ => $angle_and_length_values{$_} +
-            #                         $dihedral_angles{$_}{'value'} ) }
-            #               @dihedral_angle_names };
-            # }
-            # if( @bond_length_names ) {
-            #     $pseudo_atom_site{$last_atom_id}{'bond_length_names'} =
-            #         \@bond_length_names;
-            #     $pseudo_atom_site{$last_atom_id}{'bond_lengths'} =
-            #         { map { ( $_ => $angle_and_length_values{$_} +
-            #                         $bond_lengths{$_}{'value'} ) }
-            #               @bond_length_names };
-            # }
-            # if( @bond_angle_names ) {
-            #     $pseudo_atom_site{$last_atom_id}{'bond_angle_names'} =
-            #         \@bond_length_names;
-            #     $pseudo_atom_site{$last_atom_id}{'bond_angles'} =
-            #         { map { ( $_ => $angle_and_length_values{$_} +
-            #                         $bond_angles{$_}{'value'} ) }
-            #               @bond_angle_names };
-            # }
 
             # Adds additional pseudo-atom flag for future filtering.
             $pseudo_atom_site{$last_atom_id}{'is_pseudo_atom'} = 1;
