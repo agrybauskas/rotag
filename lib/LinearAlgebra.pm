@@ -13,7 +13,6 @@ our @EXPORT_OK = qw( create_ref_frame
                      matrix_sub
                      normalize
                      reshape
-                     scalar_multipl
                      switch_ref_frame
                      translation
                      transpose
@@ -473,31 +472,6 @@ sub matrix_sub
     }
 
     return \@matrix_sub;
-}
-
-#
-# Multiplies matrix by scalar.
-# Input:
-#     $matrix - matrix.
-#     $scalar - scalar value.
-# Output:
-#     @matrix - matrix multiplied by scalar.
-#
-
-sub scalar_multipl
-{
-    my ( $matrix, $scalar ) = @_;
-
-    my @matrix_multipl;
-
-    for my $i ( 0..$#{ $matrix } ) {
-        for my $j ( 0..$#{ $matrix->[$i] } ) {
-            $matrix_multipl[$i][$j] =
-                $matrix->[$i][$j] * $scalar;
-        }
-    }
-
-    return \@matrix_multipl;
 }
 
 # ------------------------- Symbolic linear algebra --------------------------- #
