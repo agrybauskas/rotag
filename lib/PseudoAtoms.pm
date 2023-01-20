@@ -24,11 +24,9 @@ use Logging qw( info );
 use threads;
 
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( append_connections
-                     connect_atoms
+use ConnectAtoms qw( connect_atoms
                      is_neighbour
-                     is_second_neighbour
-                     retains_connections );
+                     is_second_neighbour );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
 use ForceField::NonBonded qw( general
