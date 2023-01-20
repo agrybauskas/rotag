@@ -110,10 +110,9 @@ sub generate_pseudo
     my %bond_parameter_cache = ();
     my %pseudo_atom_site;
 
-    my @atom_ids =
-        @{ filter_new( \%atom_site,
-                   { 'include' => $atom_specifier,
-                     'return_data' => 'id' } ) };
+    my @atom_ids = @{ filter_new( \%atom_site,
+                                  { 'include' => $atom_specifier,
+                                    'return_data' => 'id' } ) };
 
     for my $atom_id ( @atom_ids ) {
         my $conformation = $atom_site{"$atom_id"}{'conformation'};
@@ -155,31 +154,33 @@ sub generate_pseudo
             %{ $bond_parameter_cache{$residue_unique_key} } : ();
 
         # Adjust changes to the existing values of the bond and angle parameters.
+        my @bond_parameter_names =
+            sort keys %{ $bond_parameters{$residue_unique_key} };
         my @bond_parameter_values = ();
-        for my $bond_parameter_name ( sort keys %bond_parameter_names ) {
-            if( exists $bond_parameter_values->{"$angle_name"} ) {
-                push @dihedral_angle_values,
-                     [ map { $_ - $dihedral_angles{"$angle_name"}{'value'} }
-                          @{ $bond_parameter_values->{"$angle_name"} } ];
+        for my $bond_parameter_name ( @bond_parameter_names  ) {
+            if( exists $bond_parameter_values->{"$bond_parameter_name"} ) {
+                push @bond_parameter_values,
+                    [ map { $_ - $bond_parameter_values->{"$bond_parameter_name"}
+                                                         {'value'} }
+                         @{ $bond_parameter_values->{"$bond_parameter_name"} } ];
             } else {
-                push @dihedral_angle_values, [ 0.0 ];
+                push @bond_parameter_values, [ 0.0 ];
             }
         }
 
         # Iterates through combinations of angles, lengths and evaluates
         # conformational model.
-        for my $angle_and_length_comb (
-            @{ permutation( scalar( @angle_and_length_names ), [],
-                            \@angle_and_length_values, [] ) } ){
-            my %angle_and_length_values =
-                map { ( $angle_and_length_names[$_] =>
-                        $angle_and_length_comb->[$_] ) }
-                    0..$#angle_and_length_names;
+        for my $bond_parameter_comb (
+            @{ permutation( scalar( @bond_parameter_names ), [],
+                            \@bond_parameter_values, [] ) } ){
+            my %bond_parameter_values =
+                map {( $bond_parameter_names[$_] => $bond_parameter_comb->[$_] )}
+                    0..$#bond_parameter_names;
 
             # Evaluates matrices.
             my ( $transf_atom_coord ) = @{
                 mult_matrix_product( $conformation,
-                                     { %angle_and_length_values, 'eta' => 0.0 } )
+                                     { %bond_parameter_values, 'eta' => 0.0 } )
             };
 
             # Adds necessary PDBx entries to pseudo atom site.
