@@ -731,6 +731,14 @@ sub add_all_bond_lengths
     return;
 }
 
+sub add_all_bond_parameters
+{
+    my ( $parameters, $atom_site, $residue_unique_key, $options ) = @_;
+    my ( $include_hetatoms ) = ( $options->{'include_hetatoms'} );
+
+    $include_hetatoms //= 0;
+}
+
 sub unique_bond_parameters
 {
     my ( $bond_parameters ) = @_;
