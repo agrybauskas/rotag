@@ -400,7 +400,7 @@ sub add_all_dihedral_angles
                                                     $residue_unique_key, 1 ),
                       { 'include_hetatoms' => $include_hetatoms } );
 
-    for my $dihedral_angle_name ( %{ $all_dihedral_angles->{$residue_unique_key} } ) {
+    for my $dihedral_angle_name ( keys %{ $all_dihedral_angles->{$residue_unique_key} } ) {
         next if defined $bond_parameter_cache->{$residue_unique_key}
                                                {$dihedral_angle_name};
 
@@ -557,7 +557,7 @@ sub add_all_bond_angles
                                                        $residue_unique_key, 1 ),
                          { 'include_hetatoms' => $include_hetatoms } );
 
-    for my $bond_angle_name ( %{ $all_bond_angles->{$residue_unique_key} } ) {
+    for my $bond_angle_name ( keys %{ $all_bond_angles->{$residue_unique_key} } ) {
         next if defined $bond_parameter_cache->{$residue_unique_key}
                                                {$bond_angle_name};
 
@@ -721,7 +721,7 @@ sub add_all_bond_lengths
                                                         $residue_unique_key, 1 ),
                           { 'include_hetatoms' => $include_hetatoms } );
 
-    for my $bond_name ( %{ $all_bond_lengths->{$residue_unique_key} } ) {
+    for my $bond_name ( keys %{ $all_bond_lengths->{$residue_unique_key} } ) {
         next if defined $bond_parameter_cache->{$residue_unique_key}{$bond_name};
 
         $bond_parameter_cache->{$residue_unique_key}{$bond_name} =
