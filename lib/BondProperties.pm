@@ -321,26 +321,20 @@ sub rotatable_bonds
     for my $atom_id ( keys %rotatable_bonds ) {
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
-            my $rotatable_bond_name =
-                join '-', map { $atom_site->{$_}{'label_atom_id'} }
-                             @{ $bond_atom_ids };
-            my $simplified_rotatable_bond_name =
-                join '-', ( '.',
-                            $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
-                            $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
-                            '.');
-
-            if( exists $explicit_dihedral_names->{$residue_name}
-                                                 {$rotatable_bond_name} ) {
-                $rotatable_bond_name =
-                    $explicit_dihedral_names->{$residue_name}
-                                              {$rotatable_bond_name};
-            } elsif( exists $explicit_dihedral_names->{$residue_name}
-                                                      {$simplified_rotatable_bond_name} ) {
-                $rotatable_bond_name =
-                    $explicit_dihedral_names->{$residue_name}
-                                              {$simplified_rotatable_bond_name};
-            }
+            my @rotatable_bond_name_keys =
+                ( join( '-', map { $atom_site->{$_}{'label_atom_id'} }
+                                @{ $bond_atom_ids } ),
+                  join( '-', ( '.',
+                               $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
+                               $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
+                               '.' ) ) );
+            my ( $rotatable_bond_name ) =
+                grep { defined $_ }
+                     ( ( map { $explicit_dihedral_names->{$residue_name}{$_} }
+                             @rotatable_bond_name_keys ),
+                       ( map { $explicit_dihedral_names->{'.'}{$_} }
+                             @rotatable_bond_name_keys ),
+                       $rotatable_bond_name_keys[0] );
 
             $named_rotatable_bonds{$atom_id}{$rotatable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
