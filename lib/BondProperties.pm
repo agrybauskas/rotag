@@ -227,7 +227,7 @@ sub rotatable_bonds
             'N' => { 'CD' => 1, # For PRO.
                      'C' => 1 },
             'C' => { 'O' => 1,
-                     ( $include_hetatoms ? ( 'CA' => 1 ) : ( 'N' => 1 ) ) },
+                     ( $include_hetatoms ? ( 'CA' => 1 ) : () ) },
         },
     };
 
