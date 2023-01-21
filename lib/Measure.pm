@@ -416,12 +416,9 @@ sub all_bond_angles
 
         my %angle_values;
         for my $angle_name ( keys %{ $unique_bendable_angles } ) {
-            my $first_atom_id =
-                $unique_bendable_angles->{$angle_name}{'atom_ids'}->[0];
-            my $second_atom_id =
-                $unique_bendable_angles->{$angle_name}{'atom_ids'}->[1];
-            my $third_atom_id =
-                $unique_bendable_angles->{$angle_name}{'atom_ids'}->[2];
+            my ( $first_atom_id, $second_atom_id, $third_atom_id ) =
+                map { $unique_bendable_angles->{$angle_name}{'atom_ids'}->[$_] }
+                    ( 0, 1, 2 );
 
             # Extracts coordinates for bond angle calculations.
             my ( $first_atom_coord, $second_atom_coord, $third_atom_coord ) =
@@ -552,20 +549,16 @@ sub all_bond_lengths
 
         my %length_values;
         for my $bond_name ( keys %{ $unique_stretchable_bonds } ) {
-            my $first_atom_id =
-                $unique_stretchable_bonds->{$bond_name}{'atom_ids'}->[0];
-            my $second_atom_id =
-                $unique_stretchable_bonds->{$bond_name}{'atom_ids'}->[1];
+            my ( $first_atom_id, $second_atom_id, $third_atom_id ) =
+                map { $unique_stretchable_bonds->{$bond_name}{'atom_ids'}->[$_] }
+                    ( 0, 1 );
 
             # Extracts coordinates for bond length calculations.
-            my $first_atom_coord =
-                [ $atom_site->{$first_atom_id}{'Cartn_x'},
-                  $atom_site->{$first_atom_id}{'Cartn_y'},
-                  $atom_site->{$first_atom_id}{'Cartn_z'}];
-            my $second_atom_coord =
-                [ $atom_site->{$second_atom_id}{'Cartn_x'},
-                  $atom_site->{$second_atom_id}{'Cartn_y'},
-                  $atom_site->{$second_atom_id}{'Cartn_z'}];
+            my ( $first_atom_coord, $second_atom_coord ) =
+                map { [ $atom_site->{$_}{'Cartn_x'},
+                        $atom_site->{$_}{'Cartn_y'},
+                        $atom_site->{$_}{'Cartn_z'} ] }
+                    ( $first_atom_id, $second_atom_id );
 
             $length_values{$bond_name}{'atom_ids'} =
                 [ $first_atom_id, $second_atom_id ];
