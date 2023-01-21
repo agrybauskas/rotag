@@ -275,12 +275,19 @@ sub all_dihedral
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
+        my $start_atom_ids;
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
+            $start_atom_ids =
+                filter_new( $residue_site,
+                            { 'include' => { 'id' => \@expanded_atom_ids,
+                                             'label_atom_id' => [ 'C' ] },
+                              'return_data' => 'id' } );
+            $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
 
         my $rotatable_bonds =
-            rotatable_bonds( $parameters, $residue_site, undef,
+            rotatable_bonds( $parameters, $residue_site, $start_atom_ids,
                              { 'include_hetatoms' => $include_hetatoms,
                                'include_mainchain' => $include_mainchain } );
         my $unique_rotatable_bonds =
