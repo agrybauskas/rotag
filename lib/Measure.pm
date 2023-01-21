@@ -278,10 +278,16 @@ sub all_dihedral
         my $start_atom_ids;
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
+            my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
+                split ',', $residue_unique_key;
             $start_atom_ids =
                 filter_new( $residue_site,
                             { 'include' => { 'id' => \@expanded_atom_ids,
-                                             'label_atom_id' => [ 'C' ] },
+                                             'label_atom_id' => [ 'C' ],
+                                             'label_asym_id' => [ $chain_id ],
+                                             'pdbx_PDB_model_num' => [ $pdbx_model_id ],
+                                             'label_alt_id' => [ $alt_id ] },
+                              'exclude' => { 'label_seq_id' => [ $residue_id ] },
                               'return_data' => 'id' } );
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
@@ -398,11 +404,17 @@ sub all_bond_angles
 
         my $start_atom_ids;
         if( $include_mainchain ) {
-            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 2 ) };
+            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
+            my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
+                split ',', $residue_unique_key;
             $start_atom_ids =
                 filter_new( $residue_site,
                             { 'include' => { 'id' => \@expanded_atom_ids,
-                                             'label_atom_id' => [ 'C' ] },
+                                             'label_atom_id' => [ 'CA' ],
+                                             'label_asym_id' => [ $chain_id ],
+                                             'pdbx_PDB_model_num' => [ $pdbx_model_id ],
+                                             'label_alt_id' => [ $alt_id ] },
+                              'exclude' => { 'label_seq_id' => [ $residue_id ] },
                               'return_data' => 'id' } );
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
@@ -533,10 +545,16 @@ sub all_bond_lengths
         my $start_atom_ids;
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
+            my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
+                split ',', $residue_unique_key;
             $start_atom_ids =
                 filter_new( $residue_site,
                             { 'include' => { 'id' => \@expanded_atom_ids,
-                                             'label_atom_id' => [ 'C' ] },
+                                             'label_atom_id' => [ 'C' ],
+                                             'label_asym_id' => [ $chain_id ],
+                                             'pdbx_PDB_model_num' => [ $pdbx_model_id ],
+                                             'label_alt_id' => [ $alt_id ] },
+                              'exclude' => { 'label_seq_id' => [ $residue_id ] },
                               'return_data' => 'id' } );
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
