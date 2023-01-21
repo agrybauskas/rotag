@@ -4798,9 +4798,9 @@ $VAR1 = bless( {
   },
   '_[local]_dihedral_angle_name' => {
     '.' => {
-      '.-C-N-.' => 'omega',
-      '.-CA-C-.' => 'psi',
-      '.-N-CA-.' => 'phi'
+      'C-N-CA-C' => 'phi',
+      'CA-C-N-CA' => 'omega',
+      'N-CA-C-N' => 'psi'
     },
     'ALA' => {
       '.-CA-CB-.' => 'chi1'
