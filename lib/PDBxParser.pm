@@ -1069,30 +1069,33 @@ sub determine_residue_keys
 #     $reference_atom_site - reference atom data structure;
 #     $number - number of steps (parents) to be followed along.
 # Output:
+#     none - modifies atom site by adding atom site items after the expansion.
+#     @expanded_atom_ids - atom ids that were added during the expansion;
 #
 
 sub expand
 {
     my ( $atom_site, $reference_atom_site, $number ) = @_;
     $number //= 1;
-    my $expanded_atom_site = clone $atom_site;
+    my @expanded_atom_ids = ();
     while( $number > 0 ) {
-        for my $atom_id ( keys %{ $expanded_atom_site } ) {
+        for my $atom_id ( keys %{ $atom_site } ) {
             my $neighbour_atom_ids =
                 $reference_atom_site->{$atom_id}{'connections'};
             next if ! defined $neighbour_atom_ids || ! @{ $neighbour_atom_ids };
 
             for my $neighbour_atom_id ( @{ $neighbour_atom_ids } ) {
-                next if exists $expanded_atom_site->{$neighbour_atom_id};
+                next if exists $atom_site->{$neighbour_atom_id};
 
-                $expanded_atom_site->{$neighbour_atom_id} =
+                push @expanded_atom_ids, $neighbour_atom_id;
+
+                $atom_site->{$neighbour_atom_id} =
                     $reference_atom_site->{$neighbour_atom_id};
             }
         }
         $number--;
     }
-    $atom_site = $expanded_atom_site;
-    return;
+    return \@expanded_atom_ids;
 }
 
 #
