@@ -396,45 +396,25 @@ sub all_bond_angles
                       'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
+        my $start_atom_ids;
+        if( $include_mainchain ) {
+            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 2 ) };
+            $start_atom_ids =
+                filter_new( $residue_site,
+                            { 'include' => { 'id' => \@expanded_atom_ids,
+                                             'label_atom_id' => [ 'C' ] },
+                              'return_data' => 'id' } );
+            $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
+        }
+
         my $bendable_angles =
-            bendable_angles( $parameters, $residue_site, undef,
+            bendable_angles( $parameters, $residue_site, $start_atom_ids,
                              { 'include_hetatoms' => $include_hetatoms,
                                'include_mainchain' => $include_mainchain } );
-
         my $unique_bendable_angles =
             unique_bond_parameters( $bendable_angles );
 
         my %angle_values;
-
-        if( $include_mainchain ) {
-            my ( $n_atom_id, $ca_atom_id, $c_atom_id, $o_atom_id ) =
-                map { filter_new( $residue_site,
-                                  { 'include' =>
-                                        { 'label_atom_id' => [ "$_" ] },
-                                    'return_data' => 'id' } )->[0] }
-                    ( 'N', 'CA', 'C', 'O' );
-
-            my $prev_c_atom_id =
-                filter_connected( $atom_site,
-                                  $n_atom_id,
-                                  { 'label_atom_id' => [ 'C' ] } )->[0];
-            my $next_n_atom_id =
-                filter_connected( $atom_site,
-                                  $c_atom_id,
-                                  { 'label_atom_id' => [ 'N' ] } )->[0];
-            my $next_ca_atom_id =
-                filter_connected( $atom_site,
-                                  $next_n_atom_id,
-                                  { 'label_atom_id' => [ 'CA' ] } )->[0];
-
-            add_bond_angles( \%angle_values, $atom_site,
-                             [ $prev_c_atom_id, $n_atom_id, $ca_atom_id ] );
-            add_bond_angles( \%angle_values, $atom_site,
-                             [ $ca_atom_id, $c_atom_id, $next_n_atom_id ] );
-            add_bond_angles( \%angle_values, $atom_site,
-                             [ $o_atom_id, $c_atom_id, $next_n_atom_id ] );
-        }
-
         for my $angle_name ( keys %{ $unique_bendable_angles } ) {
             my $first_atom_id =
                 $unique_bendable_angles->{$angle_name}{'atom_ids'}->[0];
