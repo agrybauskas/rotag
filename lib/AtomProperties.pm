@@ -6,7 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( sort_atom_names
                      sort_atom_ids_by_name
-                     sort_atom_ids_by_residue );
+                     sort_by_unique_residue_key );
 
 use Carp qw( confess );
 
@@ -115,9 +115,10 @@ sub sort_atom_ids_by_name
     return \@sorted_atom_ids;
 }
 
-sub sort_atom_ids_by_residue
+sub sort_by_unique_residue_key
 {
     my ( $atom_ids, $atom_site ) = @_;
+    return [];
 }
 
 1;

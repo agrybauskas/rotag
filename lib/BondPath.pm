@@ -3,7 +3,8 @@ package BondPath;
 use strict;
 use warnings;
 
-use AtomProperties qw( sort_atom_ids_by_name );
+use AtomProperties qw( sort_atom_ids_by_name
+                       sort_by_unique_residue_key );
 use PDBxParser qw( filter_new );
 
 # ------------------------- Constructors/Destructors -------------------------- #
@@ -35,7 +36,7 @@ sub new
     my %visited_atom_ids = (); # Contains visited atom order.
     # FIXME: important to sort by unique residues.
     my @next_atom_ids =
-        ( grep { defined $_ } sort { $a <=> $b } @{ $start_atom_ids } );
+        @{ sort_by_unique_residue_key( $start_atom_ids, $atom_site ) };
 
     my %bond_paths = ();
     my $atom_order_idx = 1;
