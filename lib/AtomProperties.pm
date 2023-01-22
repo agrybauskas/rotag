@@ -118,6 +118,14 @@ sub sort_atom_ids_by_name
 sub sort_by_unique_residue_key
 {
     my ( $atom_ids, $atom_site ) = @_;
+    my @unique_residue_keys =
+        map { [ $atom_site->{$_}{'label_seq_id'},
+                $atom_site->{$_}{'label_asym_id'},
+                $atom_site->{$_}{'pdbx_PDB_model_num'},
+                $atom_site->{$_}{'label_alt_id'},
+                $_ ] }
+           @{ $atom_ids };
+    my @sorted_unique_residue_keys = ();
     return [];
 }
 
