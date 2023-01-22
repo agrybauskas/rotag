@@ -33,6 +33,7 @@ sub new
     $include_visited //= 0;
 
     my %visited_atom_ids = (); # Contains visited atom order.
+    # FIXME: important to sort by unique residues.
     my @next_atom_ids = ( grep { defined $_ } @{ $start_atom_ids } );
 
     my %bond_paths = ();
