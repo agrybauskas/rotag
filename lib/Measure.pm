@@ -269,7 +269,7 @@ sub all_dihedral
     # calculates dihedral angles of each rotatable bond.
     my %residue_angles;
 
-    for my $residue_unique_key ( keys %{ $residue_groups } ) {
+    for my $residue_unique_key ( sort keys %{ $residue_groups } ) {
         my $residue_site =
             filter( { 'atom_site' => $atom_site,
                       'include' =>
@@ -330,6 +330,8 @@ sub all_dihedral
         if( %angle_values ) {
             %{ $residue_angles{$residue_unique_key} } = %angle_values;
         }
+
+        last;
     }
 
     return \%residue_angles;

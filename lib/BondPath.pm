@@ -34,7 +34,8 @@ sub new
 
     my %visited_atom_ids = (); # Contains visited atom order.
     # FIXME: important to sort by unique residues.
-    my @next_atom_ids = ( grep { defined $_ } @{ $start_atom_ids } );
+    my @next_atom_ids =
+        ( grep { defined $_ } sort { $a <=> $b } @{ $start_atom_ids } );
 
     my %bond_paths = ();
     my $atom_order_idx = 1;

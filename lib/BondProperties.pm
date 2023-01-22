@@ -246,6 +246,10 @@ sub rotatable_bonds
         'ignore_connections' => $ignore_connections,
     } );
 
+    use Data::Dumper;
+    print STDERR Dumper $bond_paths;
+    print STDERR Dumper [ map { "$_, $atom_site->{$_}{'label_seq_id'}, $atom_site->{$_}{'label_atom_id'}" } sort { $bond_paths->{'atom_order'}{$a} <=> $bond_paths->{'atom_order'}{$b} } keys %{ $bond_paths->{'atom_order'} } ];
+
     my %rotatable_bonds = ();
     my %rotatable_bonds_cache = ();
     my %bond_order = ();
