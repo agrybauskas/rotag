@@ -128,7 +128,7 @@ sub sort_by_unique_residue_key
     my @sorted_unique_residue_keys =
         sort { $a->[2] <=> $b->[2] ||
                $a->[1] cmp $b->[1] ||
-               $a->[0] cmp $b->[0] ||
+               $a->[0] <=> $b->[0] ||
                $a->[3] cmp $b->[3] } @unique_residue_keys;
     return [];
 }
