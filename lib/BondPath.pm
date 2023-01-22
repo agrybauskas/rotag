@@ -79,12 +79,7 @@ sub new
                                      {$atom_name}
                                      {$sorted_neighbour_atom_name};
 
-            # Depth-first search.
-            if( $i == 0 ) {
-                push @next_atom_ids, $sorted_neighbour_atom_id;
-            } else {
-                unshift @next_atom_ids, $sorted_neighbour_atom_id;
-            }
+            unshift @next_atom_ids, $sorted_neighbour_atom_id;
         }
 
         $atom_order_idx++;
