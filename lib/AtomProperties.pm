@@ -9,8 +9,7 @@ our @EXPORT_OK = qw( sort_atom_names
 
 use Carp qw( confess );
 
-use PDBxParser qw( filter_new
-                   split_by );
+use PDBxParser qw( split_by );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -107,27 +106,11 @@ sub sort_atom_names
 sub sort_atom_ids_by_name
 {
     my ( $atom_ids, $atom_site ) = @_;
-    my $atom_id_groups_by_residue =
-        split_by( { 'atom_site' => $atom_site,
-                    'attributes' => [ 'label_seq_id',
-                                      'label_asym_id',
-                                      'pdbx_PDB_model_num',
-                                      'label_atom_id' ] } );
-    my @sorted_atom_ids = ();
-    # HACK: groups needs to be also sorted.
-    for my $unique_residue_key ( sort keys %{ $atom_id_groups_by_residue } ) {
-        my $residue_site =
-            filter_new( $atom_site,
-                        { 'include' => { 'id' => $atom_id_groups_by_residue->{$unique_residue_key} } } );
-        my $atom_names_to_ids =
-            split_by( { 'atom_site' => $residue_site,
-                        'attributes' => [ 'label_atom_id' ] } );
-        my @atom_names =
-            map { $residue_site->{$_}{'label_atom_id'} }
-               @{ $atom_id_groups_by_residue->{$unique_residue_key} };
-        @atom_names = @{ sort_atom_names( \@atom_names ) };
-        push @sorted_atom_ids, map { @{ $atom_names_to_ids->{$_} } } @atom_names;
-    }
+    my $atom_names_to_ids = split_by( { 'atom_site' => $atom_site,
+                                        'attributes' => [ 'label_atom_id' ] } );
+    my @atom_names = map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
+    @atom_names = @{ sort_atom_names( \@atom_names ) };
+    my @sorted_atom_ids = map { @{ $atom_names_to_ids->{$_} } } @atom_names;
     return \@sorted_atom_ids;
 }
 
