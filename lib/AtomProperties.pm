@@ -125,7 +125,11 @@ sub sort_by_unique_residue_key
                 $atom_site->{$_}{'label_alt_id'},
                 $_ ] }
            @{ $atom_ids };
-    my @sorted_unique_residue_keys = ();
+    my @sorted_unique_residue_keys =
+        sort { $a->[2] <=> $b->[2] ||
+               $a->[1] cmp $b->[1] ||
+               $a->[0] cmp $b->[0] ||
+               $a->[3] cmp $b->[3] } @unique_residue_keys;
     return [];
 }
 
