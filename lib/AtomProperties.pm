@@ -9,8 +9,10 @@ our @EXPORT_OK = qw( sort_atom_names
                      sort_by_unique_residue_key );
 
 use Carp qw( confess );
+use List::Util qw( uniq );
 
-use PDBxParser qw( split_by );
+use PDBxParser qw( filter_new
+                   split_by );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -107,42 +109,62 @@ sub sort_atom_names
 sub sort_atom_ids_by_name
 {
     my ( $atom_ids, $atom_site ) = @_;
-    my $atom_names_to_ids = split_by( { 'atom_site' => $atom_site,
-                                        'attributes' => [ 'label_atom_id' ] } );
-    my @atom_names = map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
+    my $atom_names_to_ids =
+        split_by( { 'atom_site' => $atom_site,
+                    'attributes' => [ 'label_atom_id' ] } );
+    my @atom_names =
+        uniq map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
     @atom_names = @{ sort_atom_names( \@atom_names ) };
     my @sorted_atom_ids = map { @{ $atom_names_to_ids->{$_} } } @atom_names;
     return \@sorted_atom_ids;
 }
 
+#
+# Sorts atom ids by unique residue keys and then by atom names according to
+# hierarchical rules.
+# Input:
+#     $atom_ids - list of atom ids;
+#     $atom_site - PDBx atom site data structure;
+# Output:
+#     @sorted_atom_ids - sorted list of atom ids.
+#
+
+# HACK: it seems that it definately could be omptimized.
 sub sort_by_unique_residue_key
 {
     my ( $atom_ids, $atom_site ) = @_;
-    my @sorted_unique_residue_keys =
-        sort { $a->[2] <=> $b->[2] ||
-               $a->[1] cmp $b->[1] ||
-               $a->[0] <=> $b->[0] ||
-               $a->[3] cmp $b->[3] }
-        map { [ $atom_site->{$_}{'label_seq_id'},
-                $atom_site->{$_}{'label_asym_id'},
-                $atom_site->{$_}{'pdbx_PDB_model_num'},
-                $atom_site->{$_}{'label_alt_id'} ] }
-           @{ $atom_ids };
 
-    my %unique_residue_key_order = ();
-    my $order_idx = 1;
-    for my $sorted_unique_residue_key ( @sorted_unique_residue_keys ) {
-        my $unique_residue_key =
-            join ',', ( $sorted_unique_residue_key->[0],
-                        $sorted_unique_residue_key->[1],
-                        $sorted_unique_residue_key->[2],
-                        $sorted_unique_residue_key->[3] );
-        next if $unique_residue_key_order{$unique_residue_key};
-        $unique_residue_key_order{$unique_residue_key} = $order_idx;
-        $order_idx++;
-    }
+    my $selected_atom_site =
+        filter_new( $atom_site, { 'include' => { 'id' => $atom_ids } } );
+    my @ordered_unique_residue_keys =
+        uniq
+        map { join( ',', ( $_->{'pdbx_PDB_model_num'},
+                           $_->{'label_asym_id'},
+                           $_->{'label_seq_id'},
+                           $_->{'label_alt_id'} ) ) }
+        sort { $a->{'pdbx_PDB_model_num'} <=> $b->{'pdbx_PDB_model_num'} ||
+               $a->{'label_asym_id'} cmp $b->{'label_asym_id'} ||
+               $a->{'label_seq_id'} <=> $b->{'label_seq_id'} ||
+               $a->{'label_alt_id'} cmp $b->{'label_alt_id'} }
+        map { $selected_atom_site->{$_} }
+           @{ $atom_ids };
+    my $atom_id_groups =
+        split_by( { 'atom_site' => $selected_atom_site,
+                    'attributes' => [ 'pdbx_PDB_model_num',
+                                      'label_asym_id',
+                                      'label_seq_id',
+                                      'label_alt_id' ] } );
 
     my @sorted_atom_ids = ();
+    for my $unique_residue_key ( @ordered_unique_residue_keys ) {
+        my $residue_atom_site =
+            filter_new( $selected_atom_site,
+                        { 'include' => { 'id' => $atom_id_groups->{$unique_residue_key} } } );
+        push @sorted_atom_ids,
+            @{ sort_atom_ids_by_name( $atom_id_groups->{$unique_residue_key},
+                                      $residue_atom_site ) };
+    }
+
     return \@sorted_atom_ids;
 }
 
