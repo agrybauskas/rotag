@@ -561,7 +561,8 @@ sub all_bond_lengths
 
         my $stretchable_bonds =
             stretchable_bonds( $parameters, $residue_site, undef,
-                               { 'include_hetatoms' => $include_hetatoms } );
+                               { 'include_hetatoms' => $include_hetatoms,
+                                 'include_mainchain' => $include_mainchain } );
         my $unique_stretchable_bonds =
             unique_bond_parameters( $stretchable_bonds );
 
