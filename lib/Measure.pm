@@ -330,8 +330,6 @@ sub all_dihedral
         if( %angle_values ) {
             %{ $residue_angles{$residue_unique_key} } = %angle_values;
         }
-
-        last;
     }
 
     return \%residue_angles;
