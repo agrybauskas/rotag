@@ -410,7 +410,7 @@ sub all_bond_angles
             $start_atom_ids =
                 filter_new( $residue_site,
                             { 'include' => { 'id' => \@expanded_atom_ids,
-                                             'label_atom_id' => [ 'CA' ],
+                                             'label_atom_id' => [ 'C' ],
                                              'label_asym_id' => [ $chain_id ],
                                              'pdbx_PDB_model_num' => [ $pdbx_model_id ],
                                              'label_alt_id' => [ $alt_id ] },
