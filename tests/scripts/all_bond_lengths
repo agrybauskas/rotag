@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ForceField::Parameters;
+use Measure qw( all_bond_lengths );
+
+my ( $pdbx_dump_file, $include_mainchain ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+my $bond_lengths = all_bond_lengths(
+    $parameters, $atom_site, { 'include_mainchain' => $include_mainchain }
+);
+
+for my $residue_unique_key ( sort keys %{ $bond_lengths } ) {
+    for my $bond_name ( sort { $a cmp $b }
+                        keys %{ $bond_lengths->{$residue_unique_key} } ) {
+        print( join( " ", split( ",", $residue_unique_key ), $bond_name ), " " );
+        printf( "%.1f\n",
+                $bond_lengths->{$residue_unique_key}{$bond_name}{'value'} * 180 /
+                $pi );
+    }
+}

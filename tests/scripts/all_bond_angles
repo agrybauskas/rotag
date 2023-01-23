@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ForceField::Parameters;
+use Measure qw( all_bond_angles );
+
+my ( $pdbx_dump_file, $include_mainchain ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+my $bond_angles = all_bond_angles( $parameters, $atom_site,
+                                   { 'include_mainchain' => $include_mainchain } );
+
+for my $residue_unique_key ( sort keys %{ $bond_angles } ) {
+    for my $angle ( sort { $a cmp $b }
+                    keys %{ $bond_angles->{$residue_unique_key} } ) {
+        print( join( " ", split( ",", $residue_unique_key ), $angle ), " " );
+        printf( "%.1f\n",
+                $bond_angles->{$residue_unique_key}{$angle}{'value'} * 180 /
+                $pi );
+    }
+}
