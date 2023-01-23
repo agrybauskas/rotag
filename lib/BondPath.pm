@@ -35,7 +35,7 @@ sub new
 
     my %visited_atom_ids = (); # Contains visited atom order.
     my @next_atom_ids =
-        reverse @{ sort_by_unique_residue_key( $start_atom_ids, $atom_site ) };
+        ( shift @{ sort_by_unique_residue_key( $start_atom_ids, $atom_site ) } );
 
     my %bond_paths = ();
     my $atom_order_idx = 1;

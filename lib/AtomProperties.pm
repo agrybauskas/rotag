@@ -134,6 +134,8 @@ sub sort_by_unique_residue_key
 {
     my ( $atom_ids, $atom_site ) = @_;
 
+    return $atom_ids if ! $#{ $atom_ids };
+
     my $selected_atom_site =
         filter_new( $atom_site, { 'include' => { 'id' => $atom_ids } } );
     my @ordered_unique_residue_keys =
