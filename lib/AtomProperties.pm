@@ -11,7 +11,8 @@ our @EXPORT_OK = qw( sort_atom_names
 use Carp qw( confess );
 use List::Util qw( uniq );
 
-use PDBxParser qw( filter_new
+use PDBxParser qw( filter_by_unique_residue_key
+                   filter_new
                    split_by );
 use Version qw( $VERSION );
 
@@ -140,30 +141,27 @@ sub sort_by_unique_residue_key
         filter_new( $atom_site, { 'include' => { 'id' => $atom_ids } } );
     my @ordered_unique_residue_keys =
         uniq
-        map { join( ',', ( $_->{'pdbx_PDB_model_num'},
-                           $_->{'label_asym_id'},
-                           $_->{'label_seq_id'},
-                           $_->{'label_alt_id'} ) ) }
-        sort { $a->{'pdbx_PDB_model_num'} <=> $b->{'pdbx_PDB_model_num'} ||
-               $a->{'label_asym_id'} cmp $b->{'label_asym_id'} ||
-               $a->{'label_seq_id'} <=> $b->{'label_seq_id'} ||
-               $a->{'label_alt_id'} cmp $b->{'label_alt_id'} }
-        map { $selected_atom_site->{$_} }
-           @{ $atom_ids };
-    my $atom_id_groups =
-        split_by( { 'atom_site' => $selected_atom_site,
-                    'attributes' => [ 'pdbx_PDB_model_num',
-                                      'label_asym_id',
-                                      'label_seq_id',
-                                      'label_alt_id' ] } );
+        map { join( ',', ( $selected_atom_site->{$_}{'pdbx_PDB_model_num'},
+                           $selected_atom_site->{$_}->{'label_asym_id'},
+                           $selected_atom_site->{$_}->{'label_seq_id'},
+                           $selected_atom_site->{$_}->{'label_alt_id'} ) ) }
+        sort { $selected_atom_site->{$a}{'pdbx_PDB_model_num'} <=>
+               $selected_atom_site->{$b}{'pdbx_PDB_model_num'} ||
+               $selected_atom_site->{$a}{'label_asym_id'} cmp
+               $selected_atom_site->{$b}->{'label_asym_id'} ||
+               $selected_atom_site->{$a}{'label_seq_id'} <=>
+               $selected_atom_site->{$b}{'label_seq_id'} ||
+               $selected_atom_site->{$a}{'label_alt_id'} cmp
+               $selected_atom_site->{$b}{'label_alt_id'} }
+        keys %{ $selected_atom_site };
 
     my @sorted_atom_ids = ();
     for my $unique_residue_key ( @ordered_unique_residue_keys ) {
         my $residue_atom_site =
-            filter_new( $selected_atom_site,
-                        { 'include' => { 'id' => $atom_id_groups->{$unique_residue_key} } } );
+            filter_by_unique_residue_key( $selected_atom_site,
+                                          $unique_residue_key );
         push @sorted_atom_ids,
-            @{ sort_atom_ids_by_name( $atom_id_groups->{$unique_residue_key},
+            @{ sort_atom_ids_by_name( [ keys %{ $residue_atom_site } ],
                                       $residue_atom_site ) };
     }
 
