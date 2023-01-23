@@ -130,7 +130,6 @@ sub sort_atom_ids_by_name
 #     @sorted_atom_ids - sorted list of atom ids.
 #
 
-# HACK: it seems that it definately could be omptimized.
 sub sort_by_unique_residue_key
 {
     my ( $atom_ids, $atom_site ) = @_;
@@ -154,6 +153,9 @@ sub sort_by_unique_residue_key
                $selected_atom_site->{$a}{'label_alt_id'} cmp
                $selected_atom_site->{$b}{'label_alt_id'} }
         keys %{ $selected_atom_site };
+
+    return sort_atom_ids_by_name( $atom_ids, $selected_atom_site )
+        if ! $#ordered_unique_residue_keys;
 
     my @sorted_atom_ids = ();
     for my $unique_residue_key ( @ordered_unique_residue_keys ) {
