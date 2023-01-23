@@ -118,19 +118,32 @@ sub sort_atom_ids_by_name
 sub sort_by_unique_residue_key
 {
     my ( $atom_ids, $atom_site ) = @_;
-    my @unique_residue_keys =
-        map { [ $atom_site->{$_}{'label_seq_id'},
-                $atom_site->{$_}{'label_asym_id'},
-                $atom_site->{$_}{'pdbx_PDB_model_num'},
-                $atom_site->{$_}{'label_alt_id'},
-                $_ ] }
-           @{ $atom_ids };
     my @sorted_unique_residue_keys =
         sort { $a->[2] <=> $b->[2] ||
                $a->[1] cmp $b->[1] ||
                $a->[0] <=> $b->[0] ||
-               $a->[3] cmp $b->[3] } @unique_residue_keys;
-    return [];
+               $a->[3] cmp $b->[3] }
+        map { [ $atom_site->{$_}{'label_seq_id'},
+                $atom_site->{$_}{'label_asym_id'},
+                $atom_site->{$_}{'pdbx_PDB_model_num'},
+                $atom_site->{$_}{'label_alt_id'} ] }
+           @{ $atom_ids };
+
+    my %unique_residue_key_order = ();
+    my $order_idx = 1;
+    for my $sorted_unique_residue_key ( @sorted_unique_residue_keys ) {
+        my $unique_residue_key =
+            join ',', ( $sorted_unique_residue_key->[0],
+                        $sorted_unique_residue_key->[1],
+                        $sorted_unique_residue_key->[2],
+                        $sorted_unique_residue_key->[3] );
+        next if $unique_residue_key_order{$unique_residue_key};
+        $unique_residue_key_order{$unique_residue_key} = $order_idx;
+        $order_idx++;
+    }
+
+    my @sorted_atom_ids = ();
+    return \@sorted_atom_ids;
 }
 
 1;
