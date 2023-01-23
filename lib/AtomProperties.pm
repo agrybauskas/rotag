@@ -111,7 +111,9 @@ sub sort_atom_ids_by_name
 {
     my ( $atom_ids, $atom_site ) = @_;
     my $atom_names_to_ids =
-        split_by( { 'atom_site' => $atom_site,
+        split_by( { 'atom_site' =>
+                        filter_new( $atom_site,
+                                    { 'include' => { 'id' => $atom_ids } } ),
                     'attributes' => [ 'label_atom_id' ] } );
     my @atom_names =
         uniq map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };

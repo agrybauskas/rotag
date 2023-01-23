@@ -49,9 +49,6 @@ sub new
         $visited_atom_ids{$atom_id} = $atom_order_idx;
         $self->{'atom_order'}{$atom_id} = $atom_order_idx;
 
-        # print STDERR $atom_id, "\n";
-        # print STDERR $atom_name, "\n";
-
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
         if( defined $atom_site->{$atom_id}{'connections'} ) {
@@ -75,9 +72,6 @@ sub new
                 $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'};
 
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
-
-            # print STDERR $sorted_neighbour_atom_id, "?\n";
-            # print STDERR $sorted_neighbour_atom_name, "?\n";
 
             next if exists $ignore_connections->{'label_atom_id'}{$atom_name} &&
                 exists $ignore_connections->{'label_atom_id'}
