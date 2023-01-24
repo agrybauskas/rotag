@@ -8,9 +8,6 @@ BEGIN {
     our @EXPORT_OK = qw( all_bond_angles
                          all_bond_lengths
                          all_dihedral
-                         add_all_bond_angles
-                         add_all_bond_lengths
-                         add_all_dihedral_angles
                          around_distance
                          bond_angle
                          bond_length
@@ -329,31 +326,6 @@ sub all_dihedral
     return \%residue_angles;
 }
 
-sub add_all_dihedral_angles
-{
-    my ( $parameters, $bond_parameter_cache, $atom_site, $residue_unique_key,
-         $options ) = @_;
-    my ( $include_hetatoms ) = ( $options->{'include_hetatoms'} );
-
-    $include_hetatoms //= 0;
-
-    my $all_dihedral_angles = all_dihedral(
-        $parameters,
-        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 ),
-        { 'include_hetatoms' => $include_hetatoms }
-    )->{'dihedral_angles'}{'residue_unique_key'};
-
-    for my $dihedral_angle_name ( keys %{ $all_dihedral_angles->{$residue_unique_key} } ) {
-        next if defined $bond_parameter_cache->{$residue_unique_key}
-                                               {$dihedral_angle_name};
-
-        $bond_parameter_cache->{$residue_unique_key}{$dihedral_angle_name} =
-            $all_dihedral_angles->{$residue_unique_key}{$dihedral_angle_name};
-    }
-
-    return;
-}
-
 #
 # Calculates bond angles for all given atoms that are described in atom site
 # data structure (produced by obtain_atom_site or functions that uses it). Usage
@@ -447,31 +419,6 @@ sub all_bond_angles
     return \%residue_bond_angles;
 }
 
-sub add_all_bond_angles
-{
-    my ( $parameters, $bond_parameter_cache, $atom_site, $residue_unique_key,
-         $options ) = @_;
-    my ( $include_hetatoms ) = ( $options->{'include_hetatoms'} );
-
-    $include_hetatoms //= 0;
-
-    my $all_bond_angles = all_bond_angles(
-        $parameters,
-        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 ),
-        { 'include_hetatoms' => $include_hetatoms }
-    )->{'bond_angles'}{'residue_unique_key'};
-
-    for my $bond_angle_name ( keys %{ $all_bond_angles->{$residue_unique_key} } ) {
-        next if defined $bond_parameter_cache->{$residue_unique_key}
-                                               {$bond_angle_name};
-
-        $bond_parameter_cache->{$residue_unique_key}{$bond_angle_name} =
-            $all_bond_angles->{$residue_unique_key}{$bond_angle_name};
-    }
-
-    return;
-}
-
 #
 # Calculates bond lengths for all given atoms that are described in atom site
 # data structure (produced by obtain_atom_site or functions that uses it). Usage
@@ -563,30 +510,6 @@ sub all_bond_lengths
     }
 
     return \%residue_bond_lengths;
-}
-
-sub add_all_bond_lengths
-{
-    my ( $parameters, $bond_parameter_cache, $atom_site, $residue_unique_key,
-         $options ) = @_;
-    my ( $include_hetatoms ) = ( $options->{'include_hetatoms'} );
-
-    $include_hetatoms //= 0;
-
-    my $all_bond_lengths = all_bond_lengths(
-        $parameters,
-        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 ),
-        { 'include_hetatoms' => $include_hetatoms }
-    )->{'bond_lengths'}{'residue_unique_key'};
-
-    for my $bond_name ( keys %{ $all_bond_lengths->{$residue_unique_key} } ) {
-        next if defined $bond_parameter_cache->{$residue_unique_key}{$bond_name};
-
-        $bond_parameter_cache->{$residue_unique_key}{$bond_name} =
-            $all_bond_lengths->{$residue_unique_key}{$bond_name};
-    }
-
-    return;
 }
 
 sub unique_bond_parameters

@@ -37,9 +37,6 @@ use LinearAlgebra qw( mult_matrix_product );
 use Measure qw( all_dihedral
                 all_bond_angles
                 all_bond_lengths
-                add_all_dihedral_angles
-                add_all_bond_angles
-                add_all_bond_lengths
                 rmsd_sidechains );
 use BondProperties qw( hybridization
                        rotatable_bonds );
