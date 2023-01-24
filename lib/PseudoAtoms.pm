@@ -455,16 +455,19 @@ sub generate_library
 
                 my %bond_parameters = ();
                 if( $do_bond_torsion ) {
-                    add_all_dihedral_angles( $parameters, \%bond_parameters,
-                                             $current_atom_site, $residue_unique_key );
+                    %bond_parameters =
+                        ( %bond_parameters,
+                          %{ all_dihedral( $parameters, $residue_site ) } );
                 }
                 if( $do_bond_stretching ) {
-                    add_all_bond_lengths( $parameters, \%bond_parameters,
-                                          $current_atom_site, $residue_unique_key );
+                    %bond_parameters =
+                        ( %bond_parameters,
+                          %{ all_bond_lengths( $parameters, $residue_site ) } );
                 }
                 if( $do_angle_bending ) {
-                    add_all_bond_angles( $parameters, \%bond_parameters,
-                                         $current_atom_site, $residue_unique_key );
+                    %bond_parameters =
+                        ( %bond_parameters,
+                          %{ all_bond_angles( $parameters, $residue_site ) } );
                 }
 
                 my %interaction_site =
