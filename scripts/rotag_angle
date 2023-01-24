@@ -569,7 +569,8 @@ for my $pdbx_file ( @ARGV ) {
 
         my $bond_angles =
             all_bond_angles( $parameters, $bond_angle_site,
-                             { 'include_mainchain' => ( $calc_mainchain ? 1 : 0 ) } );
+                             { 'include_mainchain' => ( $calc_mainchain ? 1 : 0 ) } )
+            ->{'bond_angles'}{'residue_unique_key'};
 
         my $bond_angle_id = 1;
         for my $residue_unique_key ( sort keys %{ $bond_angles } ) {

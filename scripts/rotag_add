@@ -291,7 +291,7 @@ for my $pdbx_file ( @ARGV ) {
                     $residue_site,
                     { 'include_mainchain' => 1,
                       'reference_atom_site' => $selected_atom_site }
-                );
+                )->{'dihedral_angles'}{'residue_unique_key'};
 
                 # Calculates phi and psi angles.
                 my $phi;

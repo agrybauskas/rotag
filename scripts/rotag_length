@@ -299,7 +299,8 @@ for my $pdbx_file ( @ARGV ) {
 
         my $bond_lengths =
             all_bond_lengths( $parameters, $bond_length_site,
-                              { 'include_mainchain' => ( $calc_mainchain ? 1 : 0 ) } );
+                              { 'include_mainchain' => ( $calc_mainchain ? 1 : 0 ) } )
+            ->{'bond_lengths'}{'residue_unique_key'};
 
         my $bond_length_id = 1;
         for my $residue_unique_key ( sort keys %{ $bond_lengths } ) {

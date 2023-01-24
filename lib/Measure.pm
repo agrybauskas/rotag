@@ -345,11 +345,11 @@ sub add_all_dihedral_angles
 
     $include_hetatoms //= 0;
 
-    my $all_dihedral_angles =
-        all_dihedral( $parameters,
-                      filter_by_unique_residue_key( $atom_site,
-                                                    $residue_unique_key, 1 ),
-                      { 'include_hetatoms' => $include_hetatoms } );
+    my $all_dihedral_angles = all_dihedral(
+        $parameters,
+        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 ),
+        { 'include_hetatoms' => $include_hetatoms }
+    )->{'dihedral_angles'}{'residue_unique_key'};
 
     for my $dihedral_angle_name ( keys %{ $all_dihedral_angles->{$residue_unique_key} } ) {
         next if defined $bond_parameter_cache->{$residue_unique_key}
@@ -468,11 +468,11 @@ sub add_all_bond_angles
 
     $include_hetatoms //= 0;
 
-    my $all_bond_angles =
-        all_bond_angles( $parameters,
-                         filter_by_unique_residue_key( $atom_site,
-                                                       $residue_unique_key, 1 ),
-                         { 'include_hetatoms' => $include_hetatoms } );
+    my $all_bond_angles = all_bond_angles(
+        $parameters,
+        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 ),
+        { 'include_hetatoms' => $include_hetatoms }
+    )->{'bond_angles'}{'residue_unique_key'};
 
     for my $bond_angle_name ( keys %{ $all_bond_angles->{$residue_unique_key} } ) {
         next if defined $bond_parameter_cache->{$residue_unique_key}
@@ -588,11 +588,11 @@ sub add_all_bond_lengths
 
     $include_hetatoms //= 0;
 
-    my $all_bond_lengths =
-        all_bond_lengths( $parameters,
-                          filter_by_unique_residue_key( $atom_site,
-                                                        $residue_unique_key, 1 ),
-                          { 'include_hetatoms' => $include_hetatoms } );
+    my $all_bond_lengths = all_bond_lengths(
+        $parameters,
+        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 ),
+        { 'include_hetatoms' => $include_hetatoms }
+    )->{'bond_lengths'}{'residue_unique_key'};
 
     for my $bond_name ( keys %{ $all_bond_lengths->{$residue_unique_key} } ) {
         next if defined $bond_parameter_cache->{$residue_unique_key}{$bond_name};

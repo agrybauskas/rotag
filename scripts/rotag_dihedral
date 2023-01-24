@@ -144,7 +144,8 @@ for my $pdbx_file ( @ARGV ) {
             all_dihedral( $parameters, $dihedral_site,
                           { 'include_mainchain' => $calc_mainchain,
                             'include_hetatoms' => $calc_hetatoms,
-                            'reference_atom_site' => $atom_site } );
+                            'reference_atom_site' => $atom_site } )
+            ->{'dihedral_angles'}{'residue_unique_key'};
 
         my $dihedral_id = 1;
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
