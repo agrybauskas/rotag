@@ -121,7 +121,6 @@ sub generate_pseudo
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
         my %bond_parameters = ();
-
         if( $do_bond_torsion ) {
             %bond_parameters = (
                 %bond_parameters,
@@ -129,7 +128,6 @@ sub generate_pseudo
                                                         {$residue_unique_key} }
             );
         };
-
         if( $do_bond_stretching ) {
             %bond_parameters = (
                 %bond_parameters,
@@ -137,7 +135,6 @@ sub generate_pseudo
                                                      {$residue_unique_key} }
             );
         };
-
         if( $do_angle_bending ) {
             %bond_parameters = (
                 %bond_parameters,
