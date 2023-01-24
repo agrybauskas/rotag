@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::Parameters;
+use Measure qw( all_dihedral );
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( replace_with_rotamer );
 
@@ -34,7 +35,10 @@ for my $angle_value ( keys %angle_values ) {
     $angle_values{$angle_value} = eval( $angle_values{$angle_value} );
 }
 
-replace_with_rotamer($parameters,$atom_site,$residue_unique_key,\%angle_values);
+replace_with_rotamer(
+    $parameters, $atom_site, $residue_unique_key, \%angle_values,
+    all_dihedral( $parameters, $atom_site ),
+);
 
 my %pdbx =();
 $pdbx{'_atom_site'}{'data'} = $atom_site;
