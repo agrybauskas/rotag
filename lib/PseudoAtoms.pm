@@ -84,18 +84,21 @@ our $VERSION = $VERSION;
 sub generate_pseudo
 {
     my ( $args ) = @_;
-    my ( $parameters, $atom_site, $atom_specifier, $bond_parameter_values,
-         $last_atom_id, $alt_group_id, $selection_state, $include_hetatoms,
-         $do_bond_torsion, $do_bond_stretching, $do_angle_bending ) =
+    my ( $parameters, $atom_site, $atom_specifier, $bond_parameters,
+         $bond_parameter_values, $last_atom_id, $alt_group_id, $selection_state,
+         $include_hetatoms, $do_bond_torsion, $do_bond_stretching,
+         $do_angle_bending ) =
         ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'atom_specifier'},
-          $args->{'bond_parameter_values'}, $args->{'last_atom_id'},
-          $args->{'alt_group_id'}, $args->{'selection_state'},
-          $args->{'include_hetatoms'}, $args->{'do_bond_torsion'},
-          $args->{'do_bond_stretching'}, $args->{'do_angle_bending'});
+          $args->{'bond_parameters'}, $args->{'bond_parameter_values'},
+          $args->{'last_atom_id'}, $args->{'alt_group_id'},
+          $args->{'selection_state'}, $args->{'include_hetatoms'},
+          $args->{'do_bond_torsion'}, $args->{'do_bond_stretching'},
+          $args->{'do_angle_bending'});
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
     $include_hetatoms //= 0;
+    $bond_parameters //= {};
     $do_bond_torsion //= 1;
     $do_bond_stretching //= 0;
     $do_angle_bending //= 0;
@@ -103,7 +106,6 @@ sub generate_pseudo
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
     my %atom_site = %{ clone( $atom_site ) };
-    my %bond_parameter_cache = ();
     my %pseudo_atom_site;
 
     my @atom_ids = @{ filter_new( \%atom_site,
@@ -121,33 +123,31 @@ sub generate_pseudo
         # degree angle and pinpointing the correct bond length and angle changes.
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
+        my %bond_parameters = ();
+
         if( $do_bond_torsion ) {
-            add_all_dihedral_angles( $parameters,
-                                     \%bond_parameter_cache,
-                                     $atom_site,
-                                     $residue_unique_key,
-                                     { 'include_hetatoms' => $include_hetatoms});
+            %bond_parameters = (
+                %bond_parameters,
+                %{ $bond_parameters->{'dihedral_angles'}{'residue_unique_key'}
+                                                        {$residue_unique_key} }
+            );
         };
 
         if( $do_bond_stretching ) {
-            add_all_bond_lengths( $parameters,
-                                  \%bond_parameter_cache,
-                                  $atom_site,
-                                  $residue_unique_key,
-                                  { 'include_hetatoms' => $include_hetatoms } );
+            %bond_parameters = (
+                %bond_parameters,
+                %{ $bond_parameters->{'bond_lengths'}{'residue_unique_key'}
+                                                     {$residue_unique_key} }
+            );
         };
 
         if( $do_angle_bending ) {
-            add_all_bond_angles( $parameters,
-                                 \%bond_parameter_cache,
-                                 $atom_site,
-                                 $residue_unique_key,
-                                 { 'include_hetatoms' => $include_hetatoms } );
+            %bond_parameters = (
+                %bond_parameters,
+                %{ $bond_parameters->{'bond_angles'}{'residue_unique_key'}
+                                                    {$residue_unique_key} }
+            );
         };
-
-        my %bond_parameters =
-            defined $bond_parameter_cache{$residue_unique_key} ?
-            %{ $bond_parameter_cache{$residue_unique_key} } : ();
 
         # Adjust changes to the existing values of the bond and angle parameters.
         my @bond_parameter_names = sort keys %bond_parameters;
@@ -271,7 +271,7 @@ sub generate_rotamer
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
-        my $rotatable_bonds = rotatable_bonds( $parameters, $residue_site );
+        my $rotatable_bonds = $bond_parameters->{'dihedral_angles'}{'id'};
 
         for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
             if( ! exists $rotatable_bonds->{$atom_id} ) { next; }

@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ForceField::Parameters;
+use Measure qw( all_dihedral );
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_rotamer );
 
@@ -37,6 +38,8 @@ for my $angle_value ( keys %angle_values ) {
 %{ $atom_site } =
     ( %{ $atom_site },
       %{ generate_rotamer( { 'parameters' => $parameters,
+                             'bond_parameters' =>
+                                 all_dihedral( $parameters, $atom_site ),
                              'atom_site' => $atom_site,
                              'angle_values' =>
                                  { $residue_unique_key => \%angle_values } } ) } );

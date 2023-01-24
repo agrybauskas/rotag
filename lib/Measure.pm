@@ -299,11 +299,14 @@ sub all_dihedral
         my $unique_rotatable_bonds =
             unique_bond_parameters( $rotatable_bonds );
 
+        $residue_angles{'dihedral_angles'}{'id'} = $rotatable_bonds;
+        $residue_angles{'dihedral_angles'}{'residue_unique_key'}
+                                          {$residue_unique_key} =
+            $unique_rotatable_bonds;
+
         # Calculates every side-chain dihedral angle.
-        my %angle_values;
         for my $angle_name ( keys %{ $unique_rotatable_bonds } ) {
-            my ( $first_atom_id, $second_atom_id, $third_atom_id,
-                 $fourth_atom_id ) =
+            my ( $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id ) =
                 @{ $unique_rotatable_bonds->{$angle_name}{'atom_ids'} };
 
             # Extracts coordinates for dihedral angle calculations.
@@ -314,23 +317,12 @@ sub all_dihedral
                         $atom_site->{$_}{'Cartn_z'} ] }
                     ( $first_atom_id, $second_atom_id, $third_atom_id,
                       $fourth_atom_id );
-
-            $angle_values{$angle_name}{'atom_ids'} =
-                [ $first_atom_id,
-                  $second_atom_id,
-                  $third_atom_id,
-                  $fourth_atom_id ];
-            $angle_values{$angle_name}{'value'} =
+            $residue_angles{'dihedral_angles'}{'residue_unique_key'}
+                           {$residue_unique_key}{$angle_name}{'value'} =
                 dihedral_angle( [ $first_atom_coord,
                                   $second_atom_coord,
                                   $third_atom_coord,
                                   $fourth_atom_coord ] );
-        }
-
-        if( %angle_values ) {
-            %{ $residue_angles{'dihedral_angles'}{'residue_unique_key'}
-                                                 {$residue_unique_key} } =
-                %angle_values;
         }
     }
 
@@ -428,7 +420,11 @@ sub all_bond_angles
         my $unique_bendable_angles =
             unique_bond_parameters( $bendable_angles );
 
-        my %angle_values;
+        $residue_bond_angles{'bond_angles'}{'id'} = $bendable_angles;
+        $residue_bond_angles{'bond_angles'}{'residue_unique_key'}
+                                           {$residue_unique_key} =
+            $unique_bendable_angles;
+
         for my $angle_name ( keys %{ $unique_bendable_angles } ) {
             my ( $first_atom_id, $second_atom_id, $third_atom_id ) =
                 map { $unique_bendable_angles->{$angle_name}{'atom_ids'}->[$_] }
@@ -441,19 +437,10 @@ sub all_bond_angles
                         $atom_site->{$_}{'Cartn_z'} ] }
                     ( $first_atom_id, $second_atom_id, $third_atom_id );
 
-            $angle_values{$angle_name}{'atom_ids'} =
-                [ $first_atom_id, $second_atom_id, $third_atom_id ];
-            $angle_values{$angle_name}{'value'} =
+            $residue_bond_angles{'bond_angles'}{'residue_unique_key'}
+                                {$residue_unique_key}{$angle_name}{'value'} =
                 bond_angle( [ $first_atom_coord, $second_atom_coord,
                               $third_atom_coord ] );
-            $angle_values{$angle_name}{'order'} =
-                $unique_bendable_angles->{$angle_name}{'order'};
-        }
-
-        if( %angle_values ) {
-            %{ $residue_bond_angles{'bond_angles'}{'residue_unique_key'}
-                                                  {$residue_unique_key} } =
-                %angle_values;
         }
     }
 
@@ -551,6 +538,11 @@ sub all_bond_lengths
         my $unique_stretchable_bonds =
             unique_bond_parameters( $stretchable_bonds );
 
+        $residue_bond_lengths{'bond_length'}{'id'} = $stretchable_bonds;
+        $residue_bond_lengths{'bond_length'}{'residue_unique_key'}
+                                            {$residue_unique_key} =
+            $unique_stretchable_bonds;
+
         my %length_values;
         for my $bond_name ( keys %{ $unique_stretchable_bonds } ) {
             my ( $first_atom_id, $second_atom_id, $third_atom_id ) =
@@ -564,16 +556,9 @@ sub all_bond_lengths
                         $atom_site->{$_}{'Cartn_z'} ] }
                     ( $first_atom_id, $second_atom_id );
 
-            $length_values{$bond_name}{'atom_ids'} =
-                [ $first_atom_id, $second_atom_id ];
-            $length_values{$bond_name}{'value'} =
+            $residue_bond_lengths{'bond_length'}{'residue_unique_key'}
+                                 {$residue_unique_key}{$bond_name}{'value'} =
                 bond_length( [ $first_atom_coord, $second_atom_coord ] );
-        }
-
-        if( %length_values ) {
-            %{ $residue_bond_lengths{'bond_lengths'}{'residue_unique_key'}
-                                                    {$residue_unique_key} } =
-                %length_values;
         }
     }
 
