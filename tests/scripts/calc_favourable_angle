@@ -5,6 +5,7 @@ use warnings;
 
 use ForceField::NonBonded qw( hard_sphere );
 use ForceField::Parameters;
+use Measure qw( all_dihedral );
 use PDBxParser qw( filter
                    to_pdbx );
 use PseudoAtoms qw( calc_favourable_angle );
@@ -50,6 +51,8 @@ my ( $favourable_angles, $favourable_energies ) =
     @{ calc_favourable_angle( { 'parameters' => $parameters,
                                 'atom_site' => $atom_site,
                                 'atom_id' => $atom_id,
+                                'bond_parameters' =>
+                                    all_dihedral( $parameters, $atom_site ),
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
                                 'threads' => 1,

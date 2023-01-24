@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Measure qw( all_dihedral );
 use ForceField::Parameters;
 use ForceField::NonBonded qw( hard_sphere );
 use PDBxParser qw( filter
@@ -53,6 +54,8 @@ my ( $favourable_angles, $favourable_energies, $rmsds ) =
                                 'residue_unique_key' =>
                                     "${residue_id},${residue_chain},".
                                     "${pdbx_model},${residue_alt}",
+                                'bond_parameters' =>
+                                    all_dihedral( $parameters, $atom_site ),
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
                                 ( defined $rmsd ? ( 'rmsd' => 1 ): () )
