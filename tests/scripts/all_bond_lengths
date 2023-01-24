@@ -21,7 +21,7 @@ my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 my $bond_lengths = all_bond_lengths(
     $parameters, $atom_site, { 'include_mainchain' => $include_mainchain }
-);
+)->{'bond_lengths'}{'residue_unique_key'};
 
 for my $residue_unique_key ( sort keys %{ $bond_lengths } ) {
     for my $bond_name ( sort { $a cmp $b }

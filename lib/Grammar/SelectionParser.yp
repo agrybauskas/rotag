@@ -252,7 +252,8 @@ exp
 
             my @residue_unique_keys = (); # Residue unique keys that passes the
                                           # criteria.
-            for my $residue_unique_key ( %{ $dihedral_angles } ) {
+            for my $residue_unique_key ( %{ $dihedral_angles->{'dihedral_angles'}
+                                                              {'residue_unique_key'} } ) {
                 my $is_valid_angle = 0;
                 for my $angle ( keys %{ $_[3] } ) {
                     my $min_angle = $_[3]->{$angle}{'min'} * $pi / 180;

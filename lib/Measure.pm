@@ -328,7 +328,9 @@ sub all_dihedral
         }
 
         if( %angle_values ) {
-            %{ $residue_angles{$residue_unique_key} } = %angle_values;
+            %{ $residue_angles{'dihedral_angles'}{'residue_unique_key'}
+                                                 {$residue_unique_key} } =
+                %angle_values;
         }
     }
 
@@ -449,7 +451,9 @@ sub all_bond_angles
         }
 
         if( %angle_values ) {
-            %{ $residue_bond_angles{$residue_unique_key} } = %angle_values;
+            %{ $residue_bond_angles{'bond_angles'}{'residue_unique_key'}
+                                                  {$residue_unique_key} } =
+                %angle_values;
         }
     }
 
@@ -586,7 +590,9 @@ sub all_bond_lengths
         }
 
         if( %length_values ) {
-            %{ $residue_bond_lengths{$residue_unique_key} } = %length_values;
+            %{ $residue_bond_lengths{'bond_lengths'}{'residue_unique_key'}
+                                                    {$residue_unique_key} } =
+                %length_values;
         }
     }
 
