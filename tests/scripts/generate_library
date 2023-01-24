@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Measure qw( all_dihedral );
 use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_library
@@ -59,7 +60,8 @@ for my $residue_unique_key ( sort keys %{ $rotamer_library } ) {
         replace_with_rotamer( $parameters,
                               \%rotamer_site,
                               $residue_unique_key,
-                              $rotamer->{'angles'} );
+                              $rotamer->{'angles'},
+                              all_dihedral( $parameters, \%rotamer_site ) );
 
         my %pdbx =();
         $pdbx{'_atom_site'}{'data'} = \%rotamer_site;

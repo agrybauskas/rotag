@@ -603,7 +603,7 @@ sub calc_favourable_angles
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
-    my $rotatable_bonds = rotatable_bonds( $parameters, $residue_site );
+    my $rotatable_bonds = $bond_parameters->{'dihedral_angles'}{'id'};
     if( ! %{ $rotatable_bonds } ) { return []; }
 
     # Goes through each atom in side chain and calculates interaction
