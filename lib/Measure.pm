@@ -460,25 +460,6 @@ sub all_bond_angles
     return \%residue_bond_angles;
 }
 
-sub add_bond_angles
-{
-    my ( $bond_angles, $atom_site, $atom_ids ) = @_;
-    if( scalar( @{ $atom_ids } ) !=
-        scalar( grep { defined $_ } @{ $atom_ids } )){
-        return;
-    }
-    my $bond_angle_name =
-        join '-', map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
-    $bond_angles->{$bond_angle_name}{'atom_ids'} = $atom_ids;
-    $bond_angles->{$bond_angle_name}{'value'} =
-        bond_angle(
-            [ map { [ $atom_site->{$_}{'Cartn_x'},
-                      $atom_site->{$_}{'Cartn_y'},
-                      $atom_site->{$_}{'Cartn_z'} ] }
-              @{ $atom_ids } ] );
-    return;
-}
-
 sub add_all_bond_angles
 {
     my ( $parameters, $bond_parameter_cache, $atom_site, $residue_unique_key,
