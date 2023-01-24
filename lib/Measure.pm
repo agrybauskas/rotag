@@ -485,9 +485,9 @@ sub all_bond_lengths
         my $unique_stretchable_bonds =
             unique_bond_parameters( $stretchable_bonds );
 
-        $residue_bond_lengths{'bond_length'}{'id'} = $stretchable_bonds;
-        $residue_bond_lengths{'bond_length'}{'residue_unique_key'}
-                                            {$residue_unique_key} =
+        $residue_bond_lengths{'bond_lengths'}{'id'} = $stretchable_bonds;
+        $residue_bond_lengths{'bond_lengths'}{'residue_unique_key'}
+                                             {$residue_unique_key} =
             $unique_stretchable_bonds;
 
         my %length_values;
@@ -503,7 +503,7 @@ sub all_bond_lengths
                         $atom_site->{$_}{'Cartn_z'} ] }
                     ( $first_atom_id, $second_atom_id );
 
-            $residue_bond_lengths{'bond_length'}{'residue_unique_key'}
+            $residue_bond_lengths{'bond_lengths'}{'residue_unique_key'}
                                  {$residue_unique_key}{$bond_name}{'value'} =
                 bond_length( [ $first_atom_coord, $second_atom_coord ] );
         }
