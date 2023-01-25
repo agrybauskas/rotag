@@ -24,7 +24,6 @@ sub new
 
     # By default, N is starting atom for main-chain calculations. XA is added
     # for debugging and test purposes.
-    # TODO: think about more general rule -- how to choose the starting atom.
     $start_atom_ids //=
         filter_new( $atom_site,
                     { 'include' => { 'label_atom_id' => [ 'N', 'XA' ] },
@@ -35,7 +34,9 @@ sub new
 
     my %visited_atom_ids = (); # Contains visited atom order.
     my @next_atom_ids =
-        ( shift @{ sort_by_unique_residue_key( $start_atom_ids, $atom_site ) } );
+        grep { defined $_ }
+             ( shift @{ sort_by_unique_residue_key( $start_atom_ids,
+                                                    $atom_site ) } );
 
     my %bond_paths = ();
     my $atom_order_idx = 1;
