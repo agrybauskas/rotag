@@ -3,6 +3,8 @@ package BondParameters;
 use strict;
 use warnings;
 
+use BondPath;
+
 # ------------------------- Constructors/Destructors -------------------------- #
 
 sub new
@@ -46,6 +48,8 @@ sub set_rotatable_bonds
 
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
+
+    my $atom_site = $self->{'atom_site'};
 
     my $explicit_dihedral_names =
         $self->{'parameters'}{'_[local]_dihedral_angle_name'};

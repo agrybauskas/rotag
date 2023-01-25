@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+
+use BondParameters;
+use ForceField::Parameters;
+
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Indent = 1;
+
+#
+# Unit test: BondParameters->set_rotatable_bonds()
+# Example: ./BondParameters_set_rotatable_bonds structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $PARAMETERS = Parameters->new();
+my $bond_parameters = BondParameters->new( $PARAMETERS, $atom_site );
+
+$bond_parameters->set_rotatable_bonds();

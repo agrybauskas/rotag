@@ -1,18 +1,7 @@
 #!/bin/bash
 
-perl <<"END"
-    use strict;
-    use warnings;
+export PERL5LIB=$(dirname "$0")/../../lib
 
-    use Data::Dumper;
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/arginine-001.dump
 
-    use ForceField::Parameters;
-
-    $Data::Dumper::Sortkeys = 1;
-    $Data::Dumper::Indent = 1;
-
-    my $PARAMETERS = Parameters->new();
-    my $bond_parameters = BondParameters->new( $PARAMETERS );
-
-    print Dumper $PARAMETERS;
-END
+$(dirname "$0")/../scripts/BondParameters_set_rotatable_bonds ${pdbx_dump_file}
