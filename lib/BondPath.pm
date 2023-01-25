@@ -142,4 +142,12 @@ sub get_atom_order
              keys %{ $self->{'atom_order'} } ];
 }
 
+sub get_atom_id_to
+{
+    my ( $self, $atom_id ) = @_;
+    return $self->{'to'}{$atom_id};
+}
+
+# --------------------------------- Methods ----------------------------------- #
+
 1;
