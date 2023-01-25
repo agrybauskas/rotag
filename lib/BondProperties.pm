@@ -7,6 +7,8 @@ use Exporter qw( import );
 BEGIN {
     our @EXPORT_OK = qw( bond_type
                          bendable_angles
+                         contains_hetatoms
+                         contains_sidechain_atoms
                          hybridization
                          rotatable_bonds
                          stretchable_bonds );
