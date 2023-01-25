@@ -3,13 +3,8 @@
 use strict;
 use warnings;
 
-use Data::Dumper;
-
 use BondParameters;
 use ForceField::Parameters;
-
-$Data::Dumper::Sortkeys = 1;
-$Data::Dumper::Indent = 1;
 
 #
 # Unit test: BondParameters->set_rotatable_bonds()
