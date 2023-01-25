@@ -296,7 +296,10 @@ sub all_dihedral
         my $unique_rotatable_bonds =
             unique_bond_parameters( $rotatable_bonds );
 
-        $residue_angles{'dihedral_angles'}{'id'} = $rotatable_bonds;
+        for my $atom_id ( keys %{ $rotatable_bonds } ) {
+            $residue_angles{'dihedral_angles'}{'id'}{$atom_id} =
+                $rotatable_bonds->{$atom_id};
+        }
         $residue_angles{'dihedral_angles'}{'residue_unique_key'}
                                           {$residue_unique_key} =
             $unique_rotatable_bonds;
@@ -392,7 +395,10 @@ sub all_bond_angles
         my $unique_bendable_angles =
             unique_bond_parameters( $bendable_angles );
 
-        $residue_bond_angles{'bond_angles'}{'id'} = $bendable_angles;
+        for my $atom_id ( keys %{ $bendable_angles } ) {
+            $residue_bond_angles{'bond_angles'}{'id'}{$atom_id} =
+                $bendable_angles->{$atom_id};
+        }
         $residue_bond_angles{'bond_angles'}{'residue_unique_key'}
                                            {$residue_unique_key} =
             $unique_bendable_angles;
@@ -485,7 +491,10 @@ sub all_bond_lengths
         my $unique_stretchable_bonds =
             unique_bond_parameters( $stretchable_bonds );
 
-        $residue_bond_lengths{'bond_lengths'}{'id'} = $stretchable_bonds;
+        for my $atom_id ( keys %{ $stretchable_bonds } ) {
+            $residue_bond_lengths{'bond_lengths'}{'id'}{$atom_id} =
+                $stretchable_bonds->{$atom_id};
+        }
         $residue_bond_lengths{'bond_lengths'}{'residue_unique_key'}
                                              {$residue_unique_key} =
             $unique_stretchable_bonds;
