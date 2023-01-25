@@ -79,15 +79,17 @@ sub set_rotatable_bonds
         'include_hetatoms' => $include_hetatoms,
         'ignore_connections' => $ignore_connections,
     } );
-}
 
-#     my %rotatable_bonds = ();
-#     my %rotatable_bonds_cache = ();
-#     my %bond_order = ();
-#     my $bond_order_idx = 1;
-#     for my $fourth_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
-#                                     $bond_paths->{'atom_order'}{$b} }
-#                              keys %{ $bond_paths->{'atom_order'} } ) {
+    my %rotatable_bonds = ();
+    my %rotatable_bonds_cache = (); # ?
+    my %bond_order = (); # ?
+    my $bond_order_idx = 1;
+
+    for my $fourth_atom_id ( @{ $bond_paths->get_atom_order } ) {
+
+    }
+
+}
 
 #         my $third_atom_id = $bond_paths->{'to'}{$fourth_atom_id};
 

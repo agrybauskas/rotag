@@ -133,4 +133,13 @@ sub new
     return bless $self, $class;
 }
 
+# ----------------------------- Setters/Getters ------------------------------- #
+
+sub get_atom_order
+{
+    my ( $self ) = @_;
+    return [ sort { $self->{'atom_order'}{$a} <=> $self->{'atom_order'}{$a} }
+             keys %{ $self->{'atom_order'} } ];
+}
+
 1;
