@@ -191,6 +191,34 @@ sub set_bendable_angles
 
 }
 
+sub get_rotatable_bonds
+{
+    my ( $self ) = @_;
+    return $self->{'dihedral_angles'}{'id'};
+}
+
+sub get_rotatable_bond_all_atom_ids
+{
+    my ( $self ) = @_;
+    return [ keys %{ $self->{'dihedral_angles'}{'id'} } ];
+}
+
+sub get_rotatable_bond_atom_ids
+{
+    my ( $self, $atom_id, $rotatable_bond_name ) = @_;
+    return $self->{'dihedral_angles'}{'id'}{$atom_id}{$rotatable_bond_name}{'atom_ids'};
+}
+
+sub get_rotatable_bond_order
+{
+    my ( $self, $atom_id ) = @_;
+    return [
+        sort { $self->{'dihedral_angles'}{'id'}{$atom_id}{$a}{'order'} <=>
+               $self->{'dihedral_angles'}{'id'}{$atom_id}{$b}{'order'} }
+        keys %{ $self->{'dihedral_angles'}{'id'}{$atom_id} }
+    ];
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 sub calculate_dihedral_angles
