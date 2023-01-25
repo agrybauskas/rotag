@@ -9,7 +9,8 @@ use BondPath;
 use BondProperties qw( contains_hetatoms
                        contains_sidechain_atoms );
 use PDBxParser qw( expand
-                   filter_new );
+                   filter_new
+                   split_by );
 
 # ------------------------- Constructors/Destructors -------------------------- #
 
@@ -260,8 +261,8 @@ sub calculate_dihedral_angles
 
     for my $residue_unique_key ( sort keys %{ $residue_groups } ) {
         my $residue_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' =>
+            filter_new( $atom_site,
+                        { 'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
         my $start_atom_ids;
