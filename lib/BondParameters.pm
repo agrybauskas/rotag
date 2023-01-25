@@ -209,7 +209,7 @@ sub get_rotatable_bond_atom_ids
     return $self->{'dihedral_angles'}{'id'}{$atom_id}{$rotatable_bond_name}{'atom_ids'};
 }
 
-sub get_rotatable_bond_order
+sub get_rotatable_bond_name_order
 {
     my ( $self, $atom_id ) = @_;
     return [

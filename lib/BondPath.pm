@@ -138,14 +138,14 @@ sub new
 sub get_atom_order
 {
     my ( $self ) = @_;
-    return [ sort { $self->{'atom_order'}{$a} <=> $self->{'atom_order'}{$a} }
+    return [ sort { $self->{'atom_order'}{$a} <=> $self->{'atom_order'}{$b} }
              keys %{ $self->{'atom_order'} } ];
 }
 
 sub get_atom_id_to
 {
     my ( $self, $atom_id ) = @_;
-    return $self->{'to'}{$atom_id};
+    return $self->{'to'}{$atom_id}
 }
 
 # --------------------------------- Methods ----------------------------------- #

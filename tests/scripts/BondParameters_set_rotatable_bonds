@@ -35,7 +35,7 @@ my $rotatable_bonds = $bond_parameters->get_rotatable_bonds();
 for my $atom_id ( sort { $a <=> $b }
                       @{ $bond_parameters->get_rotatable_bond_all_atom_ids } ) {
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
-    for my $angle ( @{ $bond_parameters->get_rotatable_bond_order( $atom_id ) } ) {
+    for my $angle ( @{ $bond_parameters->get_rotatable_bond_name_order( $atom_id ) } ) {
         my $first_atom_id =
             $bond_parameters->get_rotatable_bond_atom_ids( $atom_id, $angle )->[1];
         my $second_atom_id =
