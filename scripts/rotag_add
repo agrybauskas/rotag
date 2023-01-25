@@ -137,6 +137,7 @@ my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
+# NOTE: the whole script needs thorough refactoring.
 for my $pdbx_file ( @ARGV ) {
     my $pdbx = obtain_pdbx_data( $pdbx_file, \@category_list );
     raw2indexed( $pdbx,
@@ -375,6 +376,9 @@ for my $pdbx_file ( @ARGV ) {
                              { 'parameters' => $parameters,
                                'atom_site' => $selected_atom_site,
                                'atom_specifier' => { 'id' => [ $atom_id ] },
+                               'bond_parameters' =>
+                                   all_dihedral( $parameters,
+                                                 $selected_atom_site ),
                                'bond_parameter_values' => $rotamer_angles,
                                'last_atom_id' => $last_atom_id,
                                 # TODO: check if it is a good idea to have

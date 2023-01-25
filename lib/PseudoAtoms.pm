@@ -128,6 +128,7 @@ sub generate_pseudo
                                                         {$residue_unique_key} }
             );
         };
+
         if( $do_bond_stretching ) {
             %bond_parameters = (
                 %bond_parameters,
@@ -135,6 +136,7 @@ sub generate_pseudo
                                                      {$residue_unique_key} }
             );
         };
+
         if( $do_angle_bending ) {
             %bond_parameters = (
                 %bond_parameters,
