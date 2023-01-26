@@ -16,7 +16,8 @@ BEGIN {
                          distance_squared
                          rmsd
                          rmsd_sidechains
-                         energy );
+                         energy
+                         unique_bond_parameters );
 }
 
 use Carp;

@@ -8,6 +8,8 @@ use Carp;
 use BondPath;
 use BondProperties qw( contains_hetatoms
                        contains_sidechain_atoms );
+use Measure qw( dihedral_angle
+                unique_bond_parameters );
 use PDBxParser qw( expand
                    filter_new
                    split_by );
@@ -222,6 +224,12 @@ sub get_rotatable_bond_name_order
     ];
 }
 
+sub get_dihedral_angles
+{
+    my ( $self ) = @_;
+    return $self->{'dihedral_angles'};
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 #
@@ -257,8 +265,6 @@ sub calculate_dihedral_angles
 
     # Iterates through residue ids and, according to the parameter file,
     # calculates dihedral angles of each rotatable bond.
-    my %residue_angles;
-
     for my $residue_unique_key ( sort keys %{ $residue_groups } ) {
         my $residue_site =
             filter_new( $atom_site,
@@ -281,48 +287,41 @@ sub calculate_dihedral_angles
                               'return_data' => 'id' } );
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
+
+        # NOTE: think about using a some sort of update function.
+        if( ! exists $self->{'dihedral_angles'}{'id'} ) {
+            $self->set_rotatable_bonds( $start_atom_ids );
+        }
+
+        my $unique_rotatable_bonds =
+            unique_bond_parameters( $self->{'dihedral_angles'}{'id'} );
+        $self->{'dihedral_angles'}{'residue_unique_key'}{$residue_unique_key} =
+            $unique_rotatable_bonds;
+
+        # Calculates every side-chain dihedral angle.
+        for my $angle_name ( keys %{ $unique_rotatable_bonds } ) {
+            my ( $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id ) =
+                @{ $unique_rotatable_bonds->{$angle_name}{'atom_ids'} };
+
+            # Extracts coordinates for dihedral angle calculations.
+            my ( $first_atom_coord, $second_atom_coord, $third_atom_coord,
+                 $fourth_atom_coord ) =
+                map { [ $atom_site->{$_}{'Cartn_x'},
+                        $atom_site->{$_}{'Cartn_y'},
+                        $atom_site->{$_}{'Cartn_z'} ] }
+                    ( $first_atom_id, $second_atom_id, $third_atom_id,
+                      $fourth_atom_id );
+            $self->{'dihedral_angles'}{'residue_unique_key'}
+                   {$residue_unique_key}{$angle_name}{'value'} =
+                dihedral_angle( [ $first_atom_coord,
+                                  $second_atom_coord,
+                                  $third_atom_coord,
+                                  $fourth_atom_coord ] );
+        }
     }
+
+    return;
 }
-
-    #     my $rotatable_bonds =
-    #         rotatable_bonds( $parameters, $residue_site, $start_atom_ids,
-    #                          { 'include_hetatoms' => $include_hetatoms,
-    #                            'include_mainchain' => $include_mainchain } );
-    #     my $unique_rotatable_bonds =
-    #         unique_bond_parameters( $rotatable_bonds );
-
-    #     for my $atom_id ( keys %{ $rotatable_bonds } ) {
-    #         $residue_angles{'dihedral_angles'}{'id'}{$atom_id} =
-    #             $rotatable_bonds->{$atom_id};
-    #     }
-    #     $residue_angles{'dihedral_angles'}{'residue_unique_key'}
-    #                                       {$residue_unique_key} =
-    #         $unique_rotatable_bonds;
-
-    #     # Calculates every side-chain dihedral angle.
-    #     for my $angle_name ( keys %{ $unique_rotatable_bonds } ) {
-    #         my ( $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id ) =
-    #             @{ $unique_rotatable_bonds->{$angle_name}{'atom_ids'} };
-
-    #         # Extracts coordinates for dihedral angle calculations.
-    #         my ( $first_atom_coord, $second_atom_coord, $third_atom_coord,
-    #              $fourth_atom_coord ) =
-    #             map { [ $atom_site->{$_}{'Cartn_x'},
-    #                     $atom_site->{$_}{'Cartn_y'},
-    #                     $atom_site->{$_}{'Cartn_z'} ] }
-    #                 ( $first_atom_id, $second_atom_id, $third_atom_id,
-    #                   $fourth_atom_id );
-    #         $residue_angles{'dihedral_angles'}{'residue_unique_key'}
-    #                        {$residue_unique_key}{$angle_name}{'value'} =
-    #             dihedral_angle( [ $first_atom_coord,
-    #                               $second_atom_coord,
-    #                               $third_atom_coord,
-    #                               $fourth_atom_coord ] );
-    #     }
-    # }
-
-    # return \%residue_angles;
-
 
 sub calculate_bond_lengths
 {
@@ -333,5 +332,8 @@ sub calculate_bond_angles
 {
 
 }
+
+# ----------------------------- Static functions ------------------------------ #
+
 
 1;
