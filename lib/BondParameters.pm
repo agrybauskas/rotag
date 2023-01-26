@@ -238,6 +238,13 @@ sub get_dihedral_angles
     return $self->{'dihedral_angles'}{'unique_residue_key'}{$unique_residue_key};
 }
 
+sub get_dihedral_angle_value
+{
+    my ( $self, $unique_residue_key, $angle_name ) = @_;
+    return $self->{'dihedral_angles'}{'unique_residue_key'}{$unique_residue_key}
+                                                           {$angle_name}{'value'};
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 #
