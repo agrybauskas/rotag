@@ -8,8 +8,7 @@ use Carp;
 use BondPath;
 use BondProperties qw( contains_hetatoms
                        contains_sidechain_atoms );
-use Measure qw( dihedral_angle
-                unique_bond_parameters );
+use Measure qw( dihedral_angle );
 use PDBxParser qw( expand
                    filter_new
                    split_by );
@@ -335,5 +334,19 @@ sub calculate_bond_angles
 
 # ----------------------------- Static functions ------------------------------ #
 
+sub unique_bond_parameters
+{
+    my ( $bond_parameters ) = @_;
+    my %unique_bond_parameters;
+    for my $atom_id ( sort keys %{ $bond_parameters } ) {
+        for my $parameter_name ( keys %{ $bond_parameters->{"$atom_id"} } ) {
+            if( ! exists $unique_bond_parameters{"$parameter_name"} ) {
+                $unique_bond_parameters{"$parameter_name"} =
+                    $bond_parameters->{"$atom_id"}{"$parameter_name"};
+            }
+        }
+    }
+    return \%unique_bond_parameters;
+}
 
 1;
