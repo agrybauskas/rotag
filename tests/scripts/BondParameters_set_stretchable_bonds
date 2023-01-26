@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use BondProperties qw( stretchable_bonds );
+use BondParameters;
 use ForceField::Parameters;
 
 #
-# Unit test: BondProperties::stretchable_bonds
-# Example: ./stretchable_bonds structure.dump
+# Unit test: BondParameters->set_stretchable_bonds()
+# Example: ./BondParameters_set_stretchable_bonds structure.dump
 #
 
 my ( $pdbx_dump_file ) = @ARGV;
@@ -21,20 +21,21 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $parameters = Parameters->new();
+my $PARAMETERS = Parameters->new();
+my $bond_parameters = BondParameters->new( $PARAMETERS, $atom_site );
 
-my %stretchable_bonds =
-    %{ stretchable_bonds( $parameters, $atom_site ) };
+$bond_parameters->set_stretchable_bonds();
+# my $rotatable_bonds = $bond_parameters->get_rotatable_bonds();
 
-for my $atom_id ( sort { $a cmp $b } keys( %stretchable_bonds ) ) {
-    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
-    for my $bond ( sort { $stretchable_bonds{$atom_id}{$a}{'order'} <=>
-                          $stretchable_bonds{$atom_id}{$b}{'order'} }
-                   keys %{ $stretchable_bonds{$atom_id} } ) {
-        my $first_atom_id = $stretchable_bonds{$atom_id}{$bond}{'atom_ids'}->[0];
-        my $second_atom_id = $stretchable_bonds{$atom_id}{$bond}{'atom_ids'}->[1];
-        print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
-               "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
-    }
-    print( "\n" );
-}
+# for my $atom_id ( sort { $a cmp $b } keys( %stretchable_bonds ) ) {
+#     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
+#     for my $bond ( sort { $stretchable_bonds{$atom_id}{$a}{'order'} <=>
+#                           $stretchable_bonds{$atom_id}{$b}{'order'} }
+#                    keys %{ $stretchable_bonds{$atom_id} } ) {
+#         my $first_atom_id = $stretchable_bonds{$atom_id}{$bond}{'atom_ids'}->[0];
+#         my $second_atom_id = $stretchable_bonds{$atom_id}{$bond}{'atom_ids'}->[1];
+#         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
+#                "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
+#     }
+#     print( "\n" );
+# }

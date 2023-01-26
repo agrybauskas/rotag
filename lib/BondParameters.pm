@@ -185,6 +185,18 @@ sub set_rotatable_bonds
     return;
 }
 
+#
+# Identifies bonds that can be stretched.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $start_atom_ids - starting atom ids;
+#     $self->{'include_mainchain'} - flag that includes main-chain atoms;
+#     $self->{'include_hetatoms'} - flag that includes heteroatoms.
+# Output:
+#     data structure that describes stretchable bonds and the constituent atom
+#     ids of the bond.
+#
+
 sub set_stretchable_bonds
 {
     my ( $self, $start_atom_ids ) = @_;
@@ -196,15 +208,66 @@ sub set_stretchable_bonds
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
+    my $parameters = $self->{'parameters'};
+    my $atom_site = $self->{'atom_site'};
+
     my $ignore_connections = {
         'label_atom_id' => {
             'N' => { 'C' => 1 }, # Pseudo connection for heteroatoms.
         },
     };
 
+    my $bond_paths = BondPath->new( {
+        'atom_site' => $atom_site,
+        'start_atom_ids' => $start_atom_ids,
+        'include_hetatoms' => $include_hetatoms,
+        'ignore_connections' => $ignore_connections,
+    } );
+
     my %stretchable_bonds = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
+
+    for my $second_atom_id ( @{ $bond_paths->get_atom_order } ) {
+        my $first_atom_id = $bond_paths->get_atom_id_to( $second_atom_id );
+
+        next if ! defined $first_atom_id;
+
+        # Checks for mainchains and heteroatoms.
+        next if ! $include_mainchain &&
+            ! contains_sidechain_atoms( $parameters,
+                                        $atom_site,
+                                        [ $first_atom_id, $second_atom_id ] ) &&
+            ! contains_hetatoms( $atom_site,
+                                 [ $first_atom_id, $second_atom_id ] );
+
+        push @{ $stretchable_bonds{$second_atom_id} },
+            [ $first_atom_id, $second_atom_id ];
+
+        # Adds bond if it is a continuation of identified bonds.
+        if( exists $stretchable_bonds{$first_atom_id} ) {
+            unshift @{ $stretchable_bonds{$second_atom_id} },
+                @{ $stretchable_bonds{$first_atom_id} };
+        }
+
+        $bond_order{$first_atom_id}{$second_atom_id} = $bond_order_idx;
+        $bond_order_idx++;
+    }
+
+    # Naming the stretchable bonds.
+    for my $atom_id ( keys %stretchable_bonds ) {
+        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
+        for my $bond_atom_ids ( @{ $stretchable_bonds{$atom_id} } ) {
+            my $stretchable_bond_name =
+                join '-', map { $atom_site->{$_}{'label_atom_id'} }
+                             @{ $bond_atom_ids };
+
+            $self->{'bond_lengths'}{'id'}{$atom_id}{$stretchable_bond_name} = {
+                'order' => $bond_order{$bond_atom_ids->[0]}{$bond_atom_ids->[1]},
+                'atom_ids' => $bond_atom_ids,
+            };
+        }
+    }
 
     return;
 }
