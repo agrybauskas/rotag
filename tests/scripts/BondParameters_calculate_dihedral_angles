@@ -34,9 +34,8 @@ for my $residue_unique_key ( sort @{ $bond_parameters->get_residue_unique_keys }
                     keys %{ $bond_parameters->get_dihedral_angles( $residue_unique_key ) } ) {
         print( join( " ", split( ",", $residue_unique_key ), $angle_name ), " " );
         printf( "%.1f\n",
-                $bond_parameters->get_dihedral_angle_value(
+                $bond_parameters->get_dihedral_angle(
                     $residue_unique_key, $angle_name
-                ) * 180 /
-                $pi );
+                )->{'value'} * 180 / $pi );
     }
 }

@@ -283,19 +283,13 @@ sub get_rotatable_bonds
     return $self->{'dihedral_angles'}{'id'};
 }
 
-sub get_rotatable_bond_all_atom_ids
-{
-    my ( $self ) = @_;
-    return [ keys %{ $self->{'dihedral_angles'}{'id'} } ];
-}
-
 sub get_rotatable_bond_atom_ids
 {
     my ( $self, $atom_id, $rotatable_bond_name ) = @_;
     return $self->{'dihedral_angles'}{'id'}{$atom_id}{$rotatable_bond_name}{'atom_ids'};
 }
 
-sub get_rotatable_bond_name_order
+sub get_rotatable_bond_ordered_names
 {
     my ( $self, $atom_id ) = @_;
     return [
@@ -303,13 +297,6 @@ sub get_rotatable_bond_name_order
                $self->{'dihedral_angles'}{'id'}{$atom_id}{$b}{'order'} }
         keys %{ $self->{'dihedral_angles'}{'id'}{$atom_id} }
     ];
-}
-
-sub get_residue_unique_keys
-{
-    my ( $self ) = @_;
-    return [] if ! exists $self->{'dihedral_angles'}{'residue_unique_key'};
-    return [ keys %{ $self->{'dihedral_angles'}{'residue_unique_key'} } ];
 }
 
 sub get_dihedral_angles
@@ -320,11 +307,40 @@ sub get_dihedral_angles
     return $self->{'dihedral_angles'}{'residue_unique_key'}{$residue_unique_key};
 }
 
-sub get_dihedral_angle_value
+sub get_dihedral_angle
 {
     my ( $self, $residue_unique_key, $angle_name ) = @_;
     return $self->{'dihedral_angles'}{'residue_unique_key'}{$residue_unique_key}
-                                                           {$angle_name}{'value'};
+                                                           {$angle_name};
+}
+
+sub get_stretchable_bonds
+{
+    my ( $self ) = @_;
+    return $self->{'bond_lengths'}{'id'};
+}
+
+sub get_stretchable_bond_atom_ids
+{
+    my ( $self, $atom_id, $stretchable_bond_name ) = @_;
+    return $self->{'bond_lengths'}{'id'}{$atom_id}{$stretchable_bond_name}{'atom_ids'};
+}
+
+sub get_stretchable_bond_ordered_names
+{
+    my ( $self, $atom_id ) = @_;
+    return [
+        sort { $self->{'bond_lengths'}{'id'}{$atom_id}{$a}{'order'} <=>
+               $self->{'bond_lengths'}{'id'}{$atom_id}{$b}{'order'} }
+        keys %{ $self->{'bond_lengths'}{'id'}{$atom_id} }
+    ];
+}
+
+sub get_residue_unique_keys
+{
+    my ( $self ) = @_;
+    return [] if ! exists $self->{'dihedral_angles'}{'residue_unique_key'};
+    return [ keys %{ $self->{'dihedral_angles'}{'residue_unique_key'} } ];
 }
 
 # --------------------------------- Methods ----------------------------------- #
