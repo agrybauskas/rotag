@@ -29,7 +29,7 @@ my $bond_parameters = BondParameters->new(
 
 $bond_parameters->calculate_dihedral_angles();
 
-for my $residue_unique_key ( sort @{ $bond_parameters->get_unique_residue_keys } ) {
+for my $residue_unique_key ( sort @{ $bond_parameters->get_residue_unique_keys } ) {
     for my $angle_name ( sort { $a cmp $b }
                     keys %{ $bond_parameters->get_dihedral_angles( $residue_unique_key ) } ) {
         print( join( " ", split( ",", $residue_unique_key ), $angle_name ), " " );

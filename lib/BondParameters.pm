@@ -223,25 +223,25 @@ sub get_rotatable_bond_name_order
     ];
 }
 
-sub get_unique_residue_keys
+sub get_residue_unique_keys
 {
     my ( $self ) = @_;
-    return [] if ! exists $self->{'dihedral_angles'}{'unique_residue_key'};
-    return [ keys %{ $self->{'dihedral_angles'}{'unique_residue_key'} } ];
+    return [] if ! exists $self->{'dihedral_angles'}{'residue_unique_key'};
+    return [ keys %{ $self->{'dihedral_angles'}{'residue_unique_key'} } ];
 }
 
 sub get_dihedral_angles
 {
-    my ( $self, $unique_residue_key ) = @_;
-    return {} if ! exists $self->{'dihedral_angles'}{'unique_residue_key'}
-                                                    {$unique_residue_key};
-    return $self->{'dihedral_angles'}{'unique_residue_key'}{$unique_residue_key};
+    my ( $self, $residue_unique_key ) = @_;
+    return {} if ! exists $self->{'dihedral_angles'}{'residue_unique_key'}
+                                                    {$residue_unique_key};
+    return $self->{'dihedral_angles'}{'residue_unique_key'}{$residue_unique_key};
 }
 
 sub get_dihedral_angle_value
 {
-    my ( $self, $unique_residue_key, $angle_name ) = @_;
-    return $self->{'dihedral_angles'}{'unique_residue_key'}{$unique_residue_key}
+    my ( $self, $residue_unique_key, $angle_name ) = @_;
+    return $self->{'dihedral_angles'}{'residue_unique_key'}{$residue_unique_key}
                                                            {$angle_name}{'value'};
 }
 
