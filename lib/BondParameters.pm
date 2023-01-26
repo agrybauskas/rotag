@@ -187,7 +187,26 @@ sub set_rotatable_bonds
 
 sub set_stretchable_bonds
 {
+    my ( $self, $start_atom_ids ) = @_;
+    my ( $include_mainchain, $include_hetatoms ) = (
+        $self->{'include_mainchain'},
+        $self->{'include_hetatoms'}
+    );
 
+    $include_mainchain //= 0;
+    $include_hetatoms //= 0;
+
+    my $ignore_connections = {
+        'label_atom_id' => {
+            'N' => { 'C' => 1 }, # Pseudo connection for heteroatoms.
+        },
+    };
+
+    my %stretchable_bonds = ();
+    my %bond_order = ();
+    my $bond_order_idx = 1;
+
+    return;
 }
 
 sub set_bendable_angles
