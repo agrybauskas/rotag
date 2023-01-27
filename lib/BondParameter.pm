@@ -7,7 +7,7 @@ use warnings;
 
 sub new
 {
-    my ( $class ) = @_;
+    my ( $class,  ) = @_;
 
     my $self = {};
 
@@ -16,7 +16,7 @@ sub new
 
 # ----------------------------- Setters/Getters ------------------------------- #
 
-sub get_atom_ids
+sub get_parameter_atom_ids
 {
     my ( $self, $atom_id, $parameter_name ) = @_;
     return $self->{'id'}{$atom_id}{$parameter_name}{'atom_ids'};
