@@ -27,7 +27,8 @@ sub new
     my $self = { 'parameters' => $parameters,
                  'atom_site'  => $atom_site,
                  'include_mainchain' => $include_mainchain,
-                 'include_hetatoms' => $include_hetatoms };
+                 'include_hetatoms' => $include_hetatoms,
+                 'parameters' => {} };
 
     return bless $self, $class;
 }
