@@ -3,6 +3,8 @@ package BondParameters;
 use strict;
 use warnings;
 
+use Carp;
+
 use BondPath;
 use BondProperties qw( contains_hetatoms
                        contains_sidechain_atoms );
