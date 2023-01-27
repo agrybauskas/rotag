@@ -1,4 +1,4 @@
-package BondParameters;
+package BondParameter;
 
 use strict;
 use warnings;
