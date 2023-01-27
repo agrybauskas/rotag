@@ -6,6 +6,7 @@ use warnings;
 use Carp;
 
 use BondPath;
+use BondParameter;
 use BondProperties qw( contains_hetatoms
                        contains_sidechain_atoms );
 use Measure qw( dihedral_angle );
@@ -176,10 +177,16 @@ sub set_rotatable_bonds
                              @rotatable_bond_name_keys ),
                        $rotatable_bond_name_keys[0] );
 
-            $self->{'dihedral_angles'}{'id'}{$atom_id}{$rotatable_bond_name} = {
+            $self->update_parameters( {
+                'name' => 'dihedral_angles',
+                'attribute' => 'id',
                 'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
                 'atom_ids' => $bond_atom_ids,
-            };
+            } );
+            # $self->{'parameters'}{'dihedral_angles'}{'id'}{$atom_id}{$rotatable_bond_name} = {
+            #     'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
+            #     'atom_ids' => $bond_atom_ids,
+            # };
         }
     }
 
