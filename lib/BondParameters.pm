@@ -6,7 +6,6 @@ use warnings;
 use Carp;
 
 use BondPath;
-use BondParameter;
 use BondProperties qw( contains_hetatoms
                        contains_sidechain_atoms );
 use Measure qw( dihedral_angle );
@@ -29,7 +28,10 @@ sub new
                  'atom_site'  => $atom_site,
                  'include_mainchain' => $include_mainchain,
                  'include_hetatoms' => $include_hetatoms,
-                 'parameters' => {} };
+                 'dihedral_angles' => undef,
+                 'bond_lengths' => undef,
+                 'bond_angles' => undef,
+    };
 
     return bless $self, $class;
 }
@@ -177,16 +179,10 @@ sub set_rotatable_bonds
                              @rotatable_bond_name_keys ),
                        $rotatable_bond_name_keys[0] );
 
-            $self->update_parameters( {
-                'name' => 'dihedral_angles',
-                'attribute' => 'id',
+            $self->{'dihedral_angles'}{'id'}{$atom_id}{$rotatable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
                 'atom_ids' => $bond_atom_ids,
-            } );
-            # $self->{'parameters'}{'dihedral_angles'}{'id'}{$atom_id}{$rotatable_bond_name} = {
-            #     'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
-            #     'atom_ids' => $bond_atom_ids,
-            # };
+            };
         }
     }
 
@@ -403,6 +399,42 @@ sub unique_bond_parameters
         }
     }
     return \%unique_bond_parameters;
+}
+
+sub get_parameter_atom_ids
+{
+    my ( $bond_parameter, $atom_id, $parameter_name ) = @_;
+    return $bond_parameter->{'id'}{$atom_id}{$parameter_name}{'atom_ids'};
+}
+
+sub get_ordered_parameter_names
+{
+    my ( $bond_parameter, $atom_id ) = @_;
+    return [
+        sort { $bond_parameter->{'id'}{$atom_id}{$a}{'order'} <=>
+               $bond_parameter->{'id'}{$atom_id}{$b}{'order'} }
+        keys %{ $bond_parameter->{'id'}{$atom_id} }
+    ];
+}
+
+sub get_parameters
+{
+    my ( $bond_parameter, $residue_unique_key ) = @_;
+    return {} if ! exists $bond_parameter->{'residue_unique_key'}{$residue_unique_key};
+    return $bond_parameter->{'residue_unique_key'}{$residue_unique_key};
+}
+
+sub get_parameter
+{
+    my ( $bond_parameter, $residue_unique_key, $parameter_name ) = @_;
+    return $bond_parameter->{'residue_unique_key'}{$residue_unique_key}{$parameter_name};
+}
+
+sub get_residue_unique_keys
+{
+    my ( $bond_parameter ) = @_;
+    return [] if ! exists $bond_parameter->{'residue_unique_key'};
+    return [ keys %{ $bond_parameter->{'residue_unique_key'} } ];
 }
 
 1;

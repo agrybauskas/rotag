@@ -25,7 +25,7 @@ my $PARAMETERS = Parameters->new();
 my $bond_parameters = BondParameters->new( $PARAMETERS, $atom_site );
 
 $bond_parameters->set_rotatable_bonds();
-# my $rotatable_bonds = $bond_parameters->get_rotatable_bonds();
+# my $rotatable_bonds = $bond_parameters->get_rotatable_bonds->get_atom_ids;
 
 # for my $atom_id ( sort { $a cmp $b } keys %{ $rotatable_bonds }  ) {
 #     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
