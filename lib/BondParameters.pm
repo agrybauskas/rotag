@@ -281,6 +281,11 @@ sub set_bendable_angles
 
 }
 
+sub get_rotatable_bonds
+{
+
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 #
