@@ -380,6 +380,12 @@ sub calculate_dihedral_angles
     return;
 }
 
+sub dihedral_angles
+{
+    my ( $self ) = @_;
+    return $self->{'dihedral_angles'}{'residue_unique_key'};
+}
+
 sub calculate_bond_lengths
 {
 

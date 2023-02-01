@@ -28,14 +28,14 @@ my $bond_parameters = BondParameters->new(
 );
 
 $bond_parameters->calculate_dihedral_angles();
+my $dihedral_angles = $bond_parameters->dihedral_angles;
 
-for my $residue_unique_key ( sort @{ $bond_parameters->get_residue_unique_keys } ) {
+for my $residue_unique_key ( sort %{ $dihedral_angles } ) {
     for my $angle_name ( sort { $a cmp $b }
-                    keys %{ $bond_parameters->get_dihedral_angles( $residue_unique_key ) } ) {
+                         keys %{ $dihedral_angles->{$residue_unique_key} } ) {
         print( join( " ", split( ",", $residue_unique_key ), $angle_name ), " " );
         printf( "%.1f\n",
-                $bond_parameters->get_dihedral_angle(
-                    $residue_unique_key, $angle_name
-                )->{'value'} * 180 / $pi );
+                $dihedral_angles->{$residue_unique_key}{$angle_name}{'value'} *
+                180 / $pi );
     }
 }
