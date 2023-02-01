@@ -346,7 +346,7 @@ sub calculate_dihedral_angles
 
         # NOTE: think about using a some sort of update function.
         if( ! exists $self->{'dihedral_angles'}{'id'} ) {
-            $self->set_rotatable_bonds( $start_atom_ids );
+            $self->find_rotatable_bonds( $start_atom_ids );
         }
 
         my $unique_rotatable_bonds =
