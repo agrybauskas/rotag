@@ -7,8 +7,8 @@ use BondParameters;
 use ForceField::Parameters;
 
 #
-# Unit test: BondParameters->set_rotatable_bonds()
-# Example: ./BondParameters_set_rotatable_bonds structure.dump
+# Unit test: BondParameters->find_rotatable_bonds()
+# Example: ./BondParameters_find_rotatable_bonds structure.dump
 #
 
 my ( $pdbx_dump_file ) = @ARGV;
@@ -24,8 +24,8 @@ $atom_site = eval( $atom_site );
 my $PARAMETERS = Parameters->new();
 my $bond_parameters = BondParameters->new( $PARAMETERS, $atom_site );
 
-$bond_parameters->set_rotatable_bonds();
-my $rotatable_bonds = $bond_parameters->get_rotatable_bonds;
+$bond_parameters->find_rotatable_bonds();
+# my $rotatable_bonds = $bond_parameters->get_rotatable_bonds;
 
 # for my $atom_id ( sort { $a cmp $b } keys %{ $rotatable_bonds }  ) {
 #     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );

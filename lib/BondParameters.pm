@@ -50,7 +50,7 @@ sub new
 #     of the bond.
 #
 
-sub set_rotatable_bonds
+sub find_rotatable_bonds
 {
     my ( $self, $start_atom_ids ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
@@ -201,7 +201,7 @@ sub set_rotatable_bonds
 #     ids of the bond.
 #
 
-sub set_stretchable_bonds
+sub find_stretchable_bonds
 {
     my ( $self, $start_atom_ids ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
@@ -276,12 +276,12 @@ sub set_stretchable_bonds
     return;
 }
 
-sub set_bendable_angles
+sub find_bendable_angles
 {
 
 }
 
-sub get_rotatable_bonds
+sub rotatable_bonds
 {
 
 }
