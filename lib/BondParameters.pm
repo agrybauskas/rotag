@@ -283,7 +283,8 @@ sub find_bendable_angles
 
 sub rotatable_bonds
 {
-
+    my ( $self ) = @_;
+    return $self->{'dihedral_angles'}{'id'};
 }
 
 # --------------------------------- Methods ----------------------------------- #
@@ -404,42 +405,6 @@ sub unique_bond_parameters
         }
     }
     return \%unique_bond_parameters;
-}
-
-sub get_parameter_atom_ids
-{
-    my ( $bond_parameter, $atom_id, $parameter_name ) = @_;
-    return $bond_parameter->{'id'}{$atom_id}{$parameter_name}{'atom_ids'};
-}
-
-sub get_ordered_parameter_names
-{
-    my ( $bond_parameter, $atom_id ) = @_;
-    return [
-        sort { $bond_parameter->{'id'}{$atom_id}{$a}{'order'} <=>
-               $bond_parameter->{'id'}{$atom_id}{$b}{'order'} }
-        keys %{ $bond_parameter->{'id'}{$atom_id} }
-    ];
-}
-
-sub get_parameters
-{
-    my ( $bond_parameter, $residue_unique_key ) = @_;
-    return {} if ! exists $bond_parameter->{'residue_unique_key'}{$residue_unique_key};
-    return $bond_parameter->{'residue_unique_key'}{$residue_unique_key};
-}
-
-sub get_parameter
-{
-    my ( $bond_parameter, $residue_unique_key, $parameter_name ) = @_;
-    return $bond_parameter->{'residue_unique_key'}{$residue_unique_key}{$parameter_name};
-}
-
-sub get_residue_unique_keys
-{
-    my ( $bond_parameter ) = @_;
-    return [] if ! exists $bond_parameter->{'residue_unique_key'};
-    return [ keys %{ $bond_parameter->{'residue_unique_key'} } ];
 }
 
 1;
