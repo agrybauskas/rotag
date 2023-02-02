@@ -287,6 +287,12 @@ sub rotatable_bonds
     return $self->{'dihedral_angles'}{'id'};
 }
 
+sub stretchable_bonds
+{
+    my ( $self ) = @_;
+    return $self->{'bond_lengths'}{'id'};
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 #
