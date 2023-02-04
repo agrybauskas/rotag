@@ -34,8 +34,7 @@ for my $residue_unique_key ( sort keys %{ $bond_lengths } ) {
     for my $bond_name ( sort { $a cmp $b }
                         keys %{ $bond_lengths->{$residue_unique_key} } ) {
         print( join( " ", split( ",", $residue_unique_key ), $bond_name ), " " );
-        printf( "%.1f\n",
-                $bond_lengths->{$residue_unique_key}{$bond_name}{'value'} * 180 /
-                $pi );
+        printf( "%.3f\n",
+                $bond_lengths->{$residue_unique_key}{$bond_name}{'value'} );
     }
 }
