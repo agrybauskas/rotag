@@ -3,8 +3,13 @@
 use strict;
 use warnings;
 
+use BondParameters;
 use ForceField::Parameters;
-use Measure qw( all_bond_lengths );
+
+#
+# Unit test: BondParameters->calculate_bond_lengths()
+# Example: ./BondParameters_calculate_bond_lengths structure.dump 1
+#
 
 my ( $pdbx_dump_file, $include_mainchain ) = @ARGV;
 
@@ -16,12 +21,14 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $parameters = Parameters->new();
-my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $PARAMETERS = Parameters->new();
+my $pi = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $bond_parameters = BondParameters->new(
+    $PARAMETERS, $atom_site, { 'include_mainchain' => $include_mainchain }
+);
 
-my $bond_lengths = all_bond_lengths(
-    $parameters, $atom_site, { 'include_mainchain' => $include_mainchain }
-)->{'bond_lengths'}{'residue_unique_key'};
+$bond_parameters->calculate_bond_lengths();
+my $bond_lengths = $bond_parameters->bond_lengths;
 
 for my $residue_unique_key ( sort keys %{ $bond_lengths } ) {
     for my $bond_name ( sort { $a cmp $b }
