@@ -40,6 +40,47 @@ sub new
 
 # ----------------------------- Setters/Getters ------------------------------- #
 
+sub rotatable_bonds
+{
+    my ( $self ) = @_;
+    return $self->{'dihedral_angles'}{'id'} if defined $self->{'dihedral_angles'}{'id'};
+    return {};
+}
+
+sub stretchable_bonds
+{
+    my ( $self ) = @_;
+    return $self->{'bond_lengths'}{'id'} if defined $self->{'bond_lengths'}{'id'};
+    return {};
+}
+
+sub bendable_angles
+{
+    my ( $self ) = @_;
+    return $self->{'bond_angles'}{'id'} if defined $self->{'bond_angles'}{'id'};
+    return {};
+}
+
+sub dihedral_angles
+{
+    my ( $self ) = @_;
+    return $self->{'dihedral_angles'}{'residue_unique_key'};
+}
+
+sub bond_lengths
+{
+    my ( $self ) = @_;
+    return $self->{'bond_lengths'}{'residue_unique_key'};
+}
+
+sub bond_angles
+{
+    my ( $self ) = @_;
+    return $self->{'bond_angles'}{'residue_unique_key'};
+}
+
+# --------------------------------- Methods ----------------------------------- #
+
 #
 # Identifies bonds that can be rotated by torsional angle.
 # Input:
@@ -366,29 +407,6 @@ sub find_bendable_angles
     return;
 }
 
-sub rotatable_bonds
-{
-    my ( $self ) = @_;
-    return $self->{'dihedral_angles'}{'id'} if defined $self->{'dihedral_angles'}{'id'};
-    return {};
-}
-
-sub stretchable_bonds
-{
-    my ( $self ) = @_;
-    return $self->{'bond_lengths'}{'id'} if defined $self->{'bond_lengths'}{'id'};
-    return {};
-}
-
-sub bendable_angles
-{
-    my ( $self ) = @_;
-    return $self->{'bond_angles'}{'id'} if defined $self->{'bond_angles'}{'id'};
-    return {};
-}
-
-# --------------------------------- Methods ----------------------------------- #
-
 #
 # Calculates dihedral angles for all given atoms that are described in atom site
 # data structure (produced by obtain_atom_site or functions that uses it). Usage
@@ -646,24 +664,6 @@ sub calculate_bond_angles
     }
 
     return;
-}
-
-sub dihedral_angles
-{
-    my ( $self ) = @_;
-    return $self->{'dihedral_angles'}{'residue_unique_key'};
-}
-
-sub bond_lengths
-{
-    my ( $self ) = @_;
-    return $self->{'bond_lengths'}{'residue_unique_key'};
-}
-
-sub bond_angles
-{
-    my ( $self ) = @_;
-    return $self->{'bond_angles'}{'residue_unique_key'};
 }
 
 # ----------------------------- Static functions ------------------------------ #
