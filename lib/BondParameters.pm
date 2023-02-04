@@ -390,7 +390,6 @@ sub bendable_angles
 # of connect_atoms and hybridization functions are necessary for correct
 # calculations.
 # Input:
-#     $atom_site - atom data structure;
 #     $self->{'include_mainchain'} - additionally calculates phi and psi
 #     mainchain dihedral angles;
 #     $self->{'include_hetatoms'} - additionally calculates dihedral angles for
@@ -475,12 +474,6 @@ sub calculate_dihedral_angles
     return;
 }
 
-sub dihedral_angles
-{
-    my ( $self ) = @_;
-    return $self->{'dihedral_angles'}{'residue_unique_key'};
-}
-
 sub calculate_bond_lengths
 {
 
@@ -489,6 +482,25 @@ sub calculate_bond_lengths
 sub calculate_bond_angles
 {
 
+}
+
+
+sub dihedral_angles
+{
+    my ( $self ) = @_;
+    return $self->{'dihedral_angles'}{'residue_unique_key'};
+}
+
+sub bond_lengths
+{
+    my ( $self ) = @_;
+    return $self->{'bond_lengths'}{'residue_unique_key'};
+}
+
+sub bond_angles
+{
+    my ( $self ) = @_;
+    return $self->{'bond_angles'}{'residue_unique_key'};
 }
 
 # ----------------------------- Static functions ------------------------------ #
