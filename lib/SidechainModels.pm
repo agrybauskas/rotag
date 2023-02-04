@@ -71,7 +71,7 @@ sub rotation_translation
             my @bond_stretching_matrices = ();
             my @angle_bending_matrices = ();
 
-            if( $do_bond_torsion ) {
+            if( %{ $rotatable_bonds } ) {
                 @bond_torsion_matrices =
                     @{ bond_torsion_matrices( $parameters,
                                               $residue_site,
@@ -79,7 +79,7 @@ sub rotation_translation
                                               $rotatable_bonds ) };
             }
 
-            if( $do_bond_stretching ) {
+            if( %{ $stretchable_bonds } ) {
                 @bond_stretching_matrices =
                     @{ bond_stretching_matrices( $parameters,
                                                  $residue_site,
@@ -87,7 +87,7 @@ sub rotation_translation
                                                  $stretchable_bonds ) };
             }
 
-            if( $do_angle_bending ) {
+            if( %{ $bendable_angles } ) {
                 @angle_bending_matrices =
                     @{ angle_bending_matrices( $parameters,
                                                $residue_site,

@@ -27,7 +27,13 @@ $VAR1 = [
   ],
   bless( {
     'is_evaluated' => undef,
-    'matrix' => sub { "DUMMY" },
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+    },
     'symbols' => [
       'chi1'
     ]
@@ -60,7 +66,13 @@ $VAR1 = [
   ],
   bless( {
     'is_evaluated' => undef,
-    'matrix' => $VAR1->[1]{'matrix'},
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+    },
     'symbols' => [
       'chi2'
     ]
@@ -93,7 +105,13 @@ $VAR1 = [
   ],
   bless( {
     'is_evaluated' => undef,
-    'matrix' => $VAR1->[1]{'matrix'},
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+    },
     'symbols' => [
       'chi3'
     ]
@@ -126,7 +144,13 @@ $VAR1 = [
   ],
   bless( {
     'is_evaluated' => undef,
-    'matrix' => $VAR1->[1]{'matrix'},
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+    },
     'symbols' => [
       'chi4'
     ]
