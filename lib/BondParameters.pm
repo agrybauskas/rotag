@@ -290,25 +290,27 @@ sub find_stretchable_bonds
 
 sub find_bendable_angles
 {
-    # my ( $parameters, $atom_site, $start_atom_ids, $options ) = @_;
-    # my ( $bond_paths, $include_mainchain, $include_hetatoms ) = (
-    #     $options->{'bond_paths'},
-    #     $options->{'include_mainchain'},
-    #     $options->{'include_hetatoms'}
-    # );
+    my ( $include_mainchain, $include_hetatoms ) = (
+        $self->{'include_mainchain'},
+        $self->{'include_hetatoms'}
+    );
 
-    # $include_mainchain //= 0;
-    # $include_hetatoms //= 0;
+    $include_mainchain //= 0;
+    $include_hetatoms //= 0;
 
-    # $bond_paths //= BondPath->new( {
-    #     'atom_site' => $atom_site,
-    #     'start_atom_ids' => $start_atom_ids,
-    #     'include_hetatoms' => $include_hetatoms,
-    # } );
+    my $parameters = $self->{'parameters'};
+    my $atom_site = $self->{'atom_site'};
 
-    # my %bendable_angles = ();
-    # my %bond_order = ();
-    # my $bond_order_idx = 1;
+    my $bond_paths //= BondPath->new( {
+        'atom_site' => $atom_site,
+        'start_atom_ids' => $start_atom_ids,
+        'include_hetatoms' => $include_hetatoms,
+        'ignore_connections' => $ignore_connections,
+    } );
+
+    my %bendable_angles = ();
+    my %bond_order = ();
+    my $bond_order_idx = 1;
 
     # for my $third_atom_id ( sort { $bond_paths->{'atom_order'}{$a} <=>
     #                                $bond_paths->{'atom_order'}{$b} }
