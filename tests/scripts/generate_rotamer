@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 
+use BondParameters;
 use ForceField::Parameters;
-use Measure qw( all_dihedral );
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_rotamer );
 
@@ -25,6 +25,8 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $bond_parameters = BondParameters->new( $parameters, $atom_site );
+$bond_parameters->calculate_dihedral_angles();
 
 # Parses angles for pseudo-rotamers.
 my %angle_values = ( map { $_->[0] => $_->[1] }
@@ -38,8 +40,7 @@ for my $angle_value ( keys %angle_values ) {
 %{ $atom_site } =
     ( %{ $atom_site },
       %{ generate_rotamer( { 'parameters' => $parameters,
-                             'bond_parameters' =>
-                                 all_dihedral( $parameters, $atom_site ),
+                             'bond_parameters' => $bond_parameters,
                              'atom_site' => $atom_site,
                              'angle_values' =>
                                  { $residue_unique_key => \%angle_values } } ) } );
