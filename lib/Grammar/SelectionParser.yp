@@ -6,10 +6,10 @@
     use List::MoreUtils qw( uniq );
     use List::Util qw( any );
 
+    use BondParameters;
     use BondProperties qw( hybridization );
     use ConnectAtoms qw( connect_atoms );
-    use Measure qw( all_dihedral
-                    around_distance );
+    use Measure qw( around_distance );
     use PDBxParser qw( extract
                        filter_by_unique_residue_key
                        filter_new );
@@ -242,13 +242,12 @@ exp
             connect_atoms( $parameters, $clone_atom_site );
             hybridization( $parameters, $clone_atom_site );
 
-            # FIXME: it looks like the usage of functions are old.
-            my $dihedral_angles =
-                all_dihedral(
-                    $parameters,
-                    filter_new( $clone_atom_site,
-                                { 'calc_mainchain' => 1,
-                                  'reference_atom_site' => $clone_atom_site } ) );
+            my $bond_parameters =
+                BondParameters->new( $parameters, $clone_atom_site,
+                                     { 'include_mainchain' => 1 } );
+            $bond_parameters->calculate_dihedral_angles();
+
+            my $dihedral_angles = $bond_parameters->dihedral_angles;
 
             my @residue_unique_keys = (); # Residue unique keys that passes the
                                           # criteria.
