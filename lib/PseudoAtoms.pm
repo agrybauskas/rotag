@@ -34,12 +34,8 @@ use ForceField::NonBonded qw( general
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product );
-use Measure qw( all_dihedral
-                all_bond_angles
-                all_bond_lengths
-                rmsd_sidechains );
-use BondProperties qw( hybridization
-                       rotatable_bonds );
+use Measure qw( rmsd_sidechains );
+use BondProperties qw( hybridization );
 use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys
@@ -48,7 +44,6 @@ use PDBxParser qw( create_pdbx_entry
                    split_by
                    unique_residue_key );
 use Sampling qw( sample_angles );
-use SidechainModels qw( rotation_only );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -124,24 +119,21 @@ sub generate_pseudo
         if( $do_bond_torsion ) {
             %bond_parameters = (
                 %bond_parameters,
-                %{ $bond_parameters->{'dihedral_angles'}{'residue_unique_key'}
-                                                        {$residue_unique_key} }
+                %{ $bond_parameters->dihedral_angles->{$residue_unique_key} }
             );
         };
 
         if( $do_bond_stretching ) {
             %bond_parameters = (
                 %bond_parameters,
-                %{ $bond_parameters->{'bond_lengths'}{'residue_unique_key'}
-                                                     {$residue_unique_key} }
+                %{ $bond_parameters->bond_lengths->{$residue_unique_key} }
             );
         };
 
         if( $do_angle_bending ) {
             %bond_parameters = (
                 %bond_parameters,
-                %{ $bond_parameters->{'bond_angles'}{'residue_unique_key'}
-                                                    {$residue_unique_key} }
+                %{ $bond_parameters->bond_angles->{$residue_unique_key} }
             );
         };
 
@@ -447,7 +439,8 @@ sub generate_library
                 # Generates conformational models before checking for
                 # clashes/interactions for given residues.
                 if( $conf_model eq 'rotation_only' ) {
-                    rotation_only( $parameters, $residue_site );
+                    # rotation_translation( $parameters, $residue_site,
+                    #                       $bond_parameters );
                 } else {
                     confess 'conformational model was not defined.';
                 }

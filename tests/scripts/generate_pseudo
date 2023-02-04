@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 
+use BondParameters;
 use ForceField::Parameters;
-use Measure qw( all_dihedral );
 use PseudoAtoms qw( generate_pseudo );
 use Sampling qw( sample_angles );
 use PDBxParser qw( to_pdbx );
@@ -27,6 +27,9 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $bond_parameters = BondParameters->new( $parameters, $atom_site );
+
+$bond_parameters->calculate_dihedral_angles();
 
 # Parses angle ranges for
 my %angle_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
@@ -58,8 +61,7 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
        %{ generate_pseudo( { 'parameters' => $parameters,
                              'atom_site' => $atom_site,
                              'atom_specifier' => { "id" => [ $atom_id ] },
-                             'bond_parameters' =>
-                                 all_dihedral( $parameters, $atom_site ),
+                             'bond_parameters' => $bond_parameters,
                              'bond_parameter_values' => \%num_angle_values } ) } );
 
 my %pdbx =();
