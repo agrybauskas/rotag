@@ -427,9 +427,6 @@ sub generate_library
                     confess 'conformational model was not defined.';
                 }
 
-                my %bond_parameters =
-                    %{ $bond_parameters->all_parameters->{$residue_unique_key} };
-
                 my %interaction_site =
                     %{ filter_new( $current_atom_site,
                                { 'include' =>
@@ -444,7 +441,7 @@ sub generate_library
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'bond_parameters' => \%bond_parameters,
+                             'bond_parameters' => $bond_parameters,
                              'interaction_site' => \%interaction_site,
                              'angles' => $angles,
                              'non_bonded_potential' =>
@@ -464,7 +461,7 @@ sub generate_library
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'bond_parameters' => \%bond_parameters,
+                             'bond_parameters' => $bond_parameters,
                              'interaction_site' => \%interaction_site,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
@@ -566,7 +563,7 @@ sub calc_favourable_angles
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
-    my $rotatable_bonds = $bond_parameters->{'dihedral_angles'}{'id'};
+    my $rotatable_bonds = $bond_parameters->rotatable_bonds;
     if( ! %{ $rotatable_bonds } ) { return []; }
 
     # Goes through each atom in side chain and calculates interaction
