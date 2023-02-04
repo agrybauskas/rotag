@@ -4,7 +4,9 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( sort_atom_names
+our @EXPORT_OK = qw( contains_hetatoms
+                     contains_sidechain_atoms
+                     sort_atom_names
                      sort_atom_ids_by_name
                      sort_by_unique_residue_key );
 
@@ -170,6 +172,42 @@ sub sort_by_unique_residue_key
     }
 
     return \@sorted_atom_ids;
+}
+
+#
+# Checks if the atoms contain at least one side-chain atom.
+# Input:
+#     $parameters - standard parameter file;
+#     $atom_site - PDBx atom site data structure;
+#     $atom_ids - list of atom ids;
+# Output:
+#     true/false - boolean if there are side-chain atoms in the defined atom id
+#     list.
+#
+
+sub contains_sidechain_atoms
+{
+    my ( $parameters, $atom_site, $atom_ids ) = @_;
+    return scalar( grep { $parameters->{'_[local]_mainchain_atom_names_table'}{$_} }
+                   map  { $atom_site->{$_}{'label_atom_id'} }
+                       @{ $atom_ids } ) <
+           scalar( @{ $atom_ids } );
+}
+
+#
+# Checks if the atoms contain at least one heteroatom.
+# Input:
+#     $parameters - standard parameter file;
+#     $atom_site - PDBx atom site data structure;
+#     $atom_ids - list of atom ids;
+# Output:
+#     true/false - boolean if there are heteroatoms in the defined atom id list.
+#
+
+sub contains_hetatoms
+{
+    my ( $atom_site, $atom_ids ) = @_;
+    return grep { $atom_site->{$_}{'group_PDB'} eq 'HETATM' } @{ $atom_ids };
 }
 
 1;
