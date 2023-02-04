@@ -79,6 +79,41 @@ sub bond_angles
     return $self->{'bond_angles'}{'residue_unique_key'};
 }
 
+sub all_parameters
+{
+    my ( $self ) = @_;
+
+    my $dihedral_angles =
+        defined $self->dihedral_angles ? $self->dihedral_angles : {};
+    my $bond_lengths =
+        defined $self->bond_lengths ? $self->bond_lengths : {};
+    my $bond_angles =
+        defined $self->bond_angles ? $self->bond_angles : {};
+
+    my %bond_parameters = ();
+    for my $residue_unique_key ( keys %{ $dihedral_angles },
+                                 keys %{ $bond_lengths },
+                                 keys %{ $bond_angles } ) {
+        my $residue_dihedral_angles =
+            defined $dihedral_angles->{$residue_unique_key} ?
+            $dihedral_angles->{$residue_unique_key} : {};
+        my $residue_bond_lengths =
+            defined $bond_lengths->{$residue_unique_key} ?
+            $bond_lengths->{$residue_unique_key} : {};
+        my $residue_bond_angles =
+            defined $bond_angles->{$residue_unique_key} ?
+            $bond_angles->{$residue_unique_key} : {};
+
+        $bond_parameters{$residue_unique_key} = {
+            %{ $residue_dihedral_angles },
+            %{ $residue_bond_lengths },
+            %{ $residue_bond_angles },
+        }
+    }
+
+    return \%bond_parameters;
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 #
