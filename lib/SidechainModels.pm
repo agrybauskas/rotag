@@ -4,8 +4,7 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( rotation_only
-                     rotation_translation );
+our @EXPORT_OK = qw( rotation_translation );
 
 use List::MoreUtils qw( uniq );
 
@@ -24,36 +23,11 @@ our $VERSION = $VERSION;
 # ----------------------- Idealistic sidechain models ------------------------- #
 
 #
-# Model that uses only rotation around single bonds.
-# Input:
-#     $parameters - force-field parameters (see Parameters.pm);
-#     $atom_site - atom data structure;
-#     $bond_parameters - bond parameters (see BondParameters.pm).
-# Output:
-#     adds conformation variable for each atom as list of transformation
-#     matrices.
-#
-
-sub rotation_only
-{
-    my ( $parameters, $atom_site, $bond_parameters ) = @_;
-    return rotation_translation( $parameters, $atom_site, $bond_parameters,
-                                 { 'do_bond_torsion' => 1,
-                                   'do_bond_stretching' => 0,
-                                   'do_angle_bending' => 0 } );
-}
-
-#
 # Model that uses rotation around single bonds, angle bending and stretching.
 # Input:
 #     $parameters - force-field parameters (see Parameters.pm);
 #     $atom_site - atom data structure;
 #     $bond_parameters - bond parameters (see BondParameters.pm);
-#     $options{'do_bond_torsion'} - calculates bond torsion matrices;
-#     $options{'do_bond_stretching'} - calculates bond stretching  matrices;
-#     $options{'do_angle_bending'} - calculates angle bending matrices;
-#     $options{'include_hetatoms'} - includes heteroatoms to the calculations.
-#
 # Output:
 #     adds conformation variable for each atom as list of transformation
 #     matrices.
@@ -62,20 +36,6 @@ sub rotation_only
 sub rotation_translation
 {
     my ( $parameters, $atom_site, $bond_parameters, $options ) = @_;
-    my ( $do_bond_torsion, $do_bond_stretching, $do_angle_bending,
-         $include_hetatoms ) = (
-        $options->{do_bond_torsion},
-        $options->{do_bond_stretching},
-        $options->{do_angle_bending},
-        $options->{include_hetatoms},
-    );
-
-    $do_bond_torsion //= 1;
-    $do_bond_stretching //= 1;
-    $do_angle_bending //= 1;
-    $include_hetatoms //= 0;
-
-    my %atom_site = %{ $atom_site }; # Copy of $atom_site.
 
     # Determines all residue ids present in atom site.
     my @residue_unique_keys =
@@ -85,7 +45,7 @@ sub rotation_translation
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_unique_key ( @residue_unique_keys ) {
         my $residue_site =
-            filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
+            filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
 
         next if ! %{ $residue_site };
 
@@ -102,9 +62,9 @@ sub rotation_translation
                 ! exists $stretchable_bonds->{$atom_id} &&
                 ! exists $bendable_angles->{$atom_id} ) { next; }
 
-            my @atom_coord = ( $atom_site{"$atom_id"}{'Cartn_x'},
-                               $atom_site{"$atom_id"}{'Cartn_y'},
-                               $atom_site{"$atom_id"}{'Cartn_z'}, );
+            my @atom_coord = ( $atom_site->{"$atom_id"}{'Cartn_x'},
+                               $atom_site->{"$atom_id"}{'Cartn_y'},
+                               $atom_site->{"$atom_id"}{'Cartn_z'}, );
 
             # Matrices for transforming atom coordinates.
             my @bond_torsion_matrices = ();
