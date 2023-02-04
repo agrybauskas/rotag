@@ -369,19 +369,22 @@ sub find_bendable_angles
 sub rotatable_bonds
 {
     my ( $self ) = @_;
-    return $self->{'dihedral_angles'}{'id'};
+    return $self->{'dihedral_angles'}{'id'} if defined $self->{'dihedral_angles'}{'id'};
+    return {};
 }
 
 sub stretchable_bonds
 {
     my ( $self ) = @_;
-    return $self->{'bond_lengths'}{'id'};
+    return $self->{'bond_lengths'}{'id'} if defined $self->{'bond_lengths'}{'id'};
+    return {};
 }
 
 sub bendable_angles
 {
     my ( $self ) = @_;
-    return $self->{'bond_angles'}{'id'};
+    return $self->{'bond_angles'}{'id'} if defined $self->{'bond_angles'}{'id'};
+    return {};
 }
 
 # --------------------------------- Methods ----------------------------------- #

@@ -5,6 +5,7 @@ use warnings;
 
 use Data::Dumper;
 
+use BondParameters;
 use ForceField::Parameters;
 use SidechainModels qw( rotation_only );
 
@@ -28,7 +29,11 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
+my $bond_parameters = BondParameters->new( {
+    'parameters' => $parameters,
+    'atom_site' => $atom_site
+} );
 
-rotation_only( $parameters, $atom_site );
+rotation_only( $parameters, $atom_site, $bond_parameters );
 
 print Dumper $atom_site->{$atom_id}{"conformation"};

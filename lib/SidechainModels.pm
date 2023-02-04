@@ -13,13 +13,9 @@ use AlterMolecule qw( angle_bending
                       bond_stretching
                       bond_torsion );
 use AtomProperties qw( sort_atom_ids_by_name );
-use BondProperties qw( bendable_angles
-                       rotatable_bonds
-                       stretchable_bonds );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( determine_residue_keys
-                   filter_new
                    filter_by_unique_residue_key );
 use Version qw( $VERSION );
 
@@ -31,7 +27,8 @@ our $VERSION = $VERSION;
 # Model that uses only rotation around single bonds.
 # Input:
 #     $parameters - force-field parameters (see Parameters.pm);
-#     $atom_site - atom data structure.
+#     $atom_site - atom data structure;
+#     $bond_parameters - bond parameters (see BondParameters.pm).
 # Output:
 #     adds conformation variable for each atom as list of transformation
 #     matrices.
@@ -39,8 +36,8 @@ our $VERSION = $VERSION;
 
 sub rotation_only
 {
-    my ( $parameters, $atom_site ) = @_;
-    return rotation_translation( $parameters, $atom_site,
+    my ( $parameters, $atom_site, $bond_parameters ) = @_;
+    return rotation_translation( $parameters, $atom_site, $bond_parameters,
                                  { 'do_bond_torsion' => 1,
                                    'do_bond_stretching' => 0,
                                    'do_angle_bending' => 0 } );
@@ -51,6 +48,7 @@ sub rotation_only
 # Input:
 #     $parameters - force-field parameters (see Parameters.pm);
 #     $atom_site - atom data structure;
+#     $bond_parameters - bond parameters (see BondParameters.pm);
 #     $options{'do_bond_torsion'} - calculates bond torsion matrices;
 #     $options{'do_bond_stretching'} - calculates bond stretching  matrices;
 #     $options{'do_angle_bending'} - calculates angle bending matrices;
@@ -63,7 +61,7 @@ sub rotation_only
 
 sub rotation_translation
 {
-    my ( $parameters, $atom_site, $options ) = @_;
+    my ( $parameters, $atom_site, $bond_parameters, $options ) = @_;
     my ( $do_bond_torsion, $do_bond_stretching, $do_angle_bending,
          $include_hetatoms ) = (
         $options->{do_bond_torsion},
@@ -91,18 +89,9 @@ sub rotation_translation
 
         next if ! %{ $residue_site };
 
-        my $rotatable_bonds =
-            $do_bond_torsion ?
-            rotatable_bonds( $parameters, $residue_site, undef,
-                             { 'include_hetatoms' => $include_hetatoms } ) : {};
-        my $stretchable_bonds =
-            $do_bond_stretching ?
-            stretchable_bonds( $parameters, $residue_site, undef,
-                               { 'include_hetatoms' => $include_hetatoms } ): {};
-        my $bendable_angles =
-            $do_angle_bending ?
-            bendable_angles( $parameters, $residue_site, undef,
-                             { 'include_hetatoms' => $include_hetatoms } ) : {};
+        my $rotatable_bonds = $bond_parameters->rotatable_bonds;
+        my $stretchable_bonds = $bond_parameters->stretchable_bonds;
+        my $bendable_angles = $bond_parameters->bendable_angles;
 
         if( ! %{ $rotatable_bonds } &&
             ! %{ $stretchable_bonds } &&
