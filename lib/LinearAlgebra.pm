@@ -25,6 +25,7 @@ our @EXPORT_OK = qw( create_ref_frame
 use Carp qw( confess );
 use Clone qw( clone );
 use ForceField::Parameters;
+use Symbolic;
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
