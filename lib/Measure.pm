@@ -5,10 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 BEGIN {
-    our @EXPORT_OK = qw( all_bond_angles
-                         all_bond_lengths
-                         all_dihedral
-                         around_distance
+    our @EXPORT_OK = qw( around_distance
                          bond_angle
                          bond_length
                          dihedral_angle
@@ -20,13 +17,11 @@ BEGIN {
 }
 
 use Carp;
-use Clone qw( clone );
 use Math::Trig;
 use List::MoreUtils qw( any
                         uniq );
 use List::Util qw( sum );
 
-use AtomProperties qw( sort_atom_ids_by_name );
 use ConnectAtoms qw( is_neighbour
                      is_second_neighbour );
 use Grid qw( grid_box
@@ -34,19 +29,11 @@ use Grid qw( grid_box
 use Energy;
 use ForceField::Bonded;
 use ForceField::NonBonded;
-use PDBxParser qw( expand
-                   filter
-                   filter_connected
-                   filter_new
-                   filter_by_unique_residue_key
+use PDBxParser qw( filter
                    split_by
-                   unique_residue_key
                    unique_residue_keys );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
-use BondProperties qw( bendable_angles
-                       rotatable_bonds
-                       stretchable_bonds );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -228,312 +215,6 @@ sub dihedral_angle
                 $normal_vector_ab[2] * $normal_vector_bc[2];
 
     return $dihedral_angle;
-}
-
-#
-# Calculates dihedral angles for all given atoms that are described in atom site
-# data structure (produced by obtain_atom_site or functions that uses it).
-# Usage of connect_atoms and hybridization functions are necessary for correct
-# calculations.
-# Input:
-#     $atom_site - atom data structure.
-#     $options->{'include_mainchain'} - additionally calculates phi and psi
-#     mainchain dihedral angles.
-#     $options->{'include_hetatoms'} - additionally calculates dihedral angles for
-#     hetero atoms.
-# Output:
-#     $residue_angles - data structure that relates residue id and angle values.
-#     Ex.:
-#       resi_id, angle_name, angle value
-#     { 18 => { 'chi1' => '-3.14' } }
-#
-
-sub all_dihedral
-{
-    my ( $parameters, $atom_site, $options ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) = (
-        $options->{'include_mainchain'},
-        $options->{'include_hetatoms'},
-    );
-
-    $include_mainchain //= 0;
-    $include_hetatoms //= 0;
-
-    my $residue_groups =
-        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
-
-    # Iterates through residue ids and, according to the parameter file,
-    # calculates dihedral angles of each rotatable bond.
-    my %residue_angles;
-
-    for my $residue_unique_key ( sort keys %{ $residue_groups } ) {
-        my $residue_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' =>
-                          { 'id' => $residue_groups->{$residue_unique_key} } } );
-
-        my $start_atom_ids;
-        if( $include_mainchain ) {
-            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
-            my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
-                split ',', $residue_unique_key;
-            $start_atom_ids =
-                filter_new( $residue_site,
-                            { 'include' => { 'id' => \@expanded_atom_ids,
-                                             'label_atom_id' => [ 'C' ],
-                                             'label_asym_id' => [ $chain_id ],
-                                             'pdbx_PDB_model_num' => [ $pdbx_model_id ],
-                                             'label_alt_id' => [ $alt_id ] },
-                              'exclude' => { 'label_seq_id' => [ $residue_id ] },
-                              'return_data' => 'id' } );
-            $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
-        }
-
-        my $rotatable_bonds =
-            rotatable_bonds( $parameters, $residue_site, $start_atom_ids,
-                             { 'include_hetatoms' => $include_hetatoms,
-                               'include_mainchain' => $include_mainchain } );
-        my $unique_rotatable_bonds =
-            unique_bond_parameters( $rotatable_bonds );
-
-        for my $atom_id ( keys %{ $rotatable_bonds } ) {
-            $residue_angles{'dihedral_angles'}{'id'}{$atom_id} =
-                $rotatable_bonds->{$atom_id};
-        }
-        $residue_angles{'dihedral_angles'}{'residue_unique_key'}
-                                          {$residue_unique_key} =
-            $unique_rotatable_bonds;
-
-        # Calculates every side-chain dihedral angle.
-        for my $angle_name ( keys %{ $unique_rotatable_bonds } ) {
-            my ( $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id ) =
-                @{ $unique_rotatable_bonds->{$angle_name}{'atom_ids'} };
-
-            # Extracts coordinates for dihedral angle calculations.
-            my ( $first_atom_coord, $second_atom_coord, $third_atom_coord,
-                 $fourth_atom_coord ) =
-                map { [ $atom_site->{$_}{'Cartn_x'},
-                        $atom_site->{$_}{'Cartn_y'},
-                        $atom_site->{$_}{'Cartn_z'} ] }
-                    ( $first_atom_id, $second_atom_id, $third_atom_id,
-                      $fourth_atom_id );
-            $residue_angles{'dihedral_angles'}{'residue_unique_key'}
-                           {$residue_unique_key}{$angle_name}{'value'} =
-                dihedral_angle( [ $first_atom_coord,
-                                  $second_atom_coord,
-                                  $third_atom_coord,
-                                  $fourth_atom_coord ] );
-        }
-    }
-
-    return \%residue_angles;
-}
-
-#
-# Calculates bond angles for all given atoms that are described in atom site
-# data structure (produced by obtain_atom_site or functions that uses it). Usage
-# of connect_atoms is necessary for correct calculations.
-# Input:
-#     $atom_site - atom data structure.
-#     $options->{'include_mainchain'} - additionally calculates mainchain bond
-#     angles.
-#     $options->{'include_hetatoms'} - additionally calculates bond angles for
-#     hetero atoms.
-# Output:
-#     $bond_length - data structure that relates residue id and bond lengths.
-#     Ex.:
-#       resi_id, atom_1_id, atom_2_id, atom_3_id, type, value
-#     { '18,A,1,.' => { 245 => { 264 => { 247 => { value => 1.9 } } },
-#                       264 => { 245 => { 247 => { value => 1.9 } } } } }
-#
-
-sub all_bond_angles
-{
-    my ( $parameters, $atom_site, $options ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) = (
-        $options->{'include_mainchain'},
-        $options->{'include_hetatoms'},
-    );
-
-    $include_mainchain //= 0;
-    $include_hetatoms //= 0;
-
-    my $residue_groups =
-        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
-
-    # Iterates through residue ids and, according to the parameter file,
-    # calculates bond lengths of each side-chain bond.
-    my %residue_bond_angles;
-
-    for my $residue_unique_key ( keys %{ $residue_groups } ) {
-        my $residue_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' =>
-                          { 'id' => $residue_groups->{$residue_unique_key} } } );
-
-        my $start_atom_ids;
-        if( $include_mainchain ) {
-            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
-            my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
-                split ',', $residue_unique_key;
-            $start_atom_ids =
-                filter_new( $residue_site,
-                            { 'include' => { 'id' => \@expanded_atom_ids,
-                                             'label_atom_id' => [ 'C' ],
-                                             'label_asym_id' => [ $chain_id ],
-                                             'pdbx_PDB_model_num' => [ $pdbx_model_id ],
-                                             'label_alt_id' => [ $alt_id ] },
-                              'exclude' => { 'label_seq_id' => [ $residue_id ] },
-                              'return_data' => 'id' } );
-            $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
-        }
-
-        my $bendable_angles =
-            bendable_angles( $parameters, $residue_site, $start_atom_ids,
-                             { 'include_hetatoms' => $include_hetatoms,
-                               'include_mainchain' => $include_mainchain } );
-        my $unique_bendable_angles =
-            unique_bond_parameters( $bendable_angles );
-
-        for my $atom_id ( keys %{ $bendable_angles } ) {
-            $residue_bond_angles{'bond_angles'}{'id'}{$atom_id} =
-                $bendable_angles->{$atom_id};
-        }
-        $residue_bond_angles{'bond_angles'}{'residue_unique_key'}
-                                           {$residue_unique_key} =
-            $unique_bendable_angles;
-
-        for my $angle_name ( keys %{ $unique_bendable_angles } ) {
-            my ( $first_atom_id, $second_atom_id, $third_atom_id ) =
-                map { $unique_bendable_angles->{$angle_name}{'atom_ids'}->[$_] }
-                    ( 0, 1, 2 );
-
-            # Extracts coordinates for bond angle calculations.
-            my ( $first_atom_coord, $second_atom_coord, $third_atom_coord ) =
-                map { [ $atom_site->{$_}{'Cartn_x'},
-                        $atom_site->{$_}{'Cartn_y'},
-                        $atom_site->{$_}{'Cartn_z'} ] }
-                    ( $first_atom_id, $second_atom_id, $third_atom_id );
-
-            $residue_bond_angles{'bond_angles'}{'residue_unique_key'}
-                                {$residue_unique_key}{$angle_name}{'value'} =
-                bond_angle( [ $first_atom_coord, $second_atom_coord,
-                              $third_atom_coord ] );
-        }
-    }
-
-    return \%residue_bond_angles;
-}
-
-#
-# Calculates bond lengths for all given atoms that are described in atom site
-# data structure (produced by obtain_atom_site or functions that uses it). Usage
-# of connect_atoms is necessary for correct calculations.
-# Input:
-#     $atom_site - atom data structure.
-#     $options->{'include_mainchain'} - additionally calculates mainchain bond
-#     angles.
-#     $options->{'include_hetatoms'} - additionally calculates bond lengths for
-#     hetero atoms.
-# Output:
-#     $bond_length - data structure that relates residue id and bond lengths.
-#     Ex.:
-#       resi_id, atom_1_id, atom_2_id, value
-#     { '18,A,1,.' => { 245 => { 264 => { value => 1.6 } },
-#                       264 => { 245 => { value => 1.6  } } } }
-#
-
-sub all_bond_lengths
-{
-    my ( $parameters, $atom_site, $options ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) = (
-        $options->{'include_mainchain'},
-        $options->{'include_hetatoms'},
-    );
-
-    $include_mainchain //= 0;
-    $include_hetatoms //= 0;
-
-    my $residue_groups =
-        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
-
-    # Iterates through residue ids and, according to the parameter file,
-    # calculates bond lengths of each side-chain bond.
-    my %residue_bond_lengths;
-
-    for my $residue_unique_key ( keys %{ $residue_groups } ) {
-        my $residue_site =
-            filter( { 'atom_site' => $atom_site,
-                      'include' =>
-                          { 'id' => $residue_groups->{$residue_unique_key} } } );
-
-        my $start_atom_ids;
-        if( $include_mainchain ) {
-            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
-            my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
-                split ',', $residue_unique_key;
-            $start_atom_ids =
-                filter_new( $residue_site,
-                            { 'include' => { 'id' => \@expanded_atom_ids,
-                                             'label_atom_id' => [ 'C' ],
-                                             'label_asym_id' => [ $chain_id ],
-                                             'pdbx_PDB_model_num' => [ $pdbx_model_id ],
-                                             'label_alt_id' => [ $alt_id ] },
-                              'exclude' => { 'label_seq_id' => [ $residue_id ] },
-                              'return_data' => 'id' } );
-            $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
-        }
-
-        my $stretchable_bonds =
-            stretchable_bonds( $parameters, $residue_site, undef,
-                               { 'include_hetatoms' => $include_hetatoms,
-                                 'include_mainchain' => $include_mainchain } );
-        my $unique_stretchable_bonds =
-            unique_bond_parameters( $stretchable_bonds );
-
-        for my $atom_id ( keys %{ $stretchable_bonds } ) {
-            $residue_bond_lengths{'bond_lengths'}{'id'}{$atom_id} =
-                $stretchable_bonds->{$atom_id};
-        }
-        $residue_bond_lengths{'bond_lengths'}{'residue_unique_key'}
-                                             {$residue_unique_key} =
-            $unique_stretchable_bonds;
-
-        my %length_values;
-        for my $bond_name ( keys %{ $unique_stretchable_bonds } ) {
-            my ( $first_atom_id, $second_atom_id, $third_atom_id ) =
-                map { $unique_stretchable_bonds->{$bond_name}{'atom_ids'}->[$_] }
-                    ( 0, 1 );
-
-            # Extracts coordinates for bond length calculations.
-            my ( $first_atom_coord, $second_atom_coord ) =
-                map { [ $atom_site->{$_}{'Cartn_x'},
-                        $atom_site->{$_}{'Cartn_y'},
-                        $atom_site->{$_}{'Cartn_z'} ] }
-                    ( $first_atom_id, $second_atom_id );
-
-            $residue_bond_lengths{'bond_lengths'}{'residue_unique_key'}
-                                 {$residue_unique_key}{$bond_name}{'value'} =
-                bond_length( [ $first_atom_coord, $second_atom_coord ] );
-        }
-    }
-
-    return \%residue_bond_lengths;
-}
-
-sub unique_bond_parameters
-{
-    my ( $bond_parameters ) = @_;
-    my %unique_bond_parameters;
-    for my $atom_id ( sort keys %{ $bond_parameters } ) {
-        for my $parameter_name ( keys %{ $bond_parameters->{"$atom_id"} } ) {
-            if( ! exists $unique_bond_parameters{"$parameter_name"} ) {
-                $unique_bond_parameters{"$parameter_name"} =
-                    $bond_parameters->{"$atom_id"}{"$parameter_name"};
-            }
-        }
-    }
-    return \%unique_bond_parameters;
 }
 
 #
