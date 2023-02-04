@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 
 use BondPath;
-use BondProperties qw( contains_hetatoms
+use AtomProperties qw( contains_hetatoms
                        contains_sidechain_atoms );
 use Measure qw( bond_angle
                 bond_length
