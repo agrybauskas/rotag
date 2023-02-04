@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 
-use Measure qw( all_dihedral );
 use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_library

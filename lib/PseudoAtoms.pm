@@ -22,6 +22,7 @@ use List::MoreUtils qw( any
 use Logging qw( info );
 use threads;
 
+use BondParameters;
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
@@ -44,6 +45,7 @@ use PDBxParser qw( create_pdbx_entry
                    split_by
                    unique_residue_key );
 use Sampling qw( sample_angles );
+use SidechainModels qw( rotation_translation );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -364,6 +366,12 @@ sub generate_library
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
+        my $bond_parameters =
+            BondParameters->new( $parameters, $current_atom_site );
+        $bond_parameters->calculate_dihedral_angles() if $do_bond_torsion;
+        $bond_parameters->calculate_bond_lengths() if $do_bond_stretching;
+        $bond_parameters->calculate_bond_angles() if $do_angle_bending;
+
         # Finds where CA of target residues are.
         my @target_ca_ids;
         for my $residue_unique_key ( @{ $residue_unique_keys } ) {
@@ -372,8 +380,8 @@ sub generate_library
                                               $residue_unique_key, 1 );
             my $atom_ca_id =
                 filter_new( $residue_site,
-                        { 'include' => { 'label_atom_id' => [ 'CA' ] },
-                          'return_data' => 'id' } )->[0];
+                            { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                              'return_data' => 'id' } )->[0];
 
             if( ! defined $atom_ca_id ) { next; }
 
@@ -401,7 +409,7 @@ sub generate_library
                     $current_atom_site->{$ca_atom_id}{'label_asym_id'};
                 my $residue_site =
                     filter_new( $current_atom_site,
-                            { 'include' =>
+                                { 'include' =>
                                   { 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                                     'label_alt_id' => [ $alt_id, q{.} ],
                                     'label_seq_id' => [ $residue_id ],
@@ -413,28 +421,14 @@ sub generate_library
                 # Generates conformational models before checking for
                 # clashes/interactions for given residues.
                 if( $conf_model eq 'rotation_only' ) {
-                    # rotation_translation( $parameters, $residue_site,
-                    #                       $bond_parameters );
+                    rotation_translation( $parameters, $residue_site,
+                                          $bond_parameters );
                 } else {
                     confess 'conformational model was not defined.';
                 }
 
-                my %bond_parameters = ();
-                if( $do_bond_torsion ) {
-                    %bond_parameters =
-                        ( %bond_parameters,
-                          %{ all_dihedral( $parameters, $residue_site ) } );
-                }
-                if( $do_bond_stretching ) {
-                    %bond_parameters =
-                        ( %bond_parameters,
-                          %{ all_bond_lengths( $parameters, $residue_site ) } );
-                }
-                if( $do_angle_bending ) {
-                    %bond_parameters =
-                        ( %bond_parameters,
-                          %{ all_bond_angles( $parameters, $residue_site ) } );
-                }
+                my %bond_parameters =
+                    %{ $bond_parameters->all_parameters->{$residue_unique_key} };
 
                 my %interaction_site =
                     %{ filter_new( $current_atom_site,
