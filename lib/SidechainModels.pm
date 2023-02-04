@@ -107,6 +107,17 @@ sub rotation_translation
     return;
 }
 
+#
+# Creates bond torsion matrices that are used to transform atom coordinates.
+# Input:
+#     $parameters - force-field parameters (see Parameters.pm);
+#     $atom_site - atom data structure;
+#     $atom_id - atom id;
+#     $rotatable_bonds - rotatable bonds data structure in BondParameters.pm.
+# Output:
+#     \@bond_torsion_matrices - bond torsion matrices.
+#
+
 sub bond_torsion_matrices
 {
     my ( $parameters, $atom_site, $atom_id, $rotatable_bonds ) = @_;
@@ -135,6 +146,17 @@ sub bond_torsion_matrices
 
     return \@bond_torsion_matrices;
 }
+
+#
+# Creates bond stretching matrices that are used to transform atom coordinates.
+# Input:
+#     $parameters - force-field parameters (see Parameters.pm);
+#     $atom_site - atom data structure;
+#     $atom_id - atom id;
+#     $stretchable_bonds - stretchable bonds data structure in BondParameters.pm.
+# Output:
+#     \@bond_stretching_matrices - bond stretching matrices.
+#
 
 sub bond_stretching_matrices
 {
@@ -171,6 +193,17 @@ sub bond_stretching_matrices
 
     return \@bond_stretching_matrices;
 }
+
+#
+# Creates angle bending matrices that are used to transform atom coordinates.
+# Input:
+#     $parameters - force-field parameters (see Parameters.pm);
+#     $atom_site - atom data structure;
+#     $atom_id - atom id;
+#     $bendable_angles - bendable angles data structure in BondParameters.pm.
+# Output:
+#     \@angle_bending_matrices - bond stretching matrices.
+#
 
 sub angle_bending_matrices
 {
