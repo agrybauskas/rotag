@@ -42,41 +42,56 @@ sub new
 
 sub rotatable_bonds
 {
-    my ( $self ) = @_;
+    my ( $self, $subset_atom_site ) = @_;
+    return { map { $_ => $self->{'dihedral_angles'}{'id'}{$_} }
+             grep { defined $self->{'dihedral_angles'}{'id'}{$_} }
+             keys %{ $subset_atom_site } } if defined $subset_atom_site;
     return $self->{'dihedral_angles'}{'id'} if defined $self->{'dihedral_angles'}{'id'};
     return {};
 }
 
 sub stretchable_bonds
 {
-    my ( $self ) = @_;
+    my ( $self, $subset_atom_site ) = @_;
+    return { map { $_ => $self->{'bond_lengths'}{'id'}{$_} }
+             grep { defined $self->{'bond_lengths'}{'id'}{$_} }
+             keys %{ $subset_atom_site } } if defined $subset_atom_site;
     return $self->{'bond_lengths'}{'id'} if defined $self->{'bond_lengths'}{'id'};
     return {};
 }
 
 sub bendable_angles
 {
-    my ( $self ) = @_;
+    my ( $self, $subset_atom_site ) = @_;
+    return { map { $_ => $self->{'bond_angles'}{'id'}{$_} }
+             grep { defined $self->{'bond_angles'}{'id'}{$_} }
+             keys %{ $subset_atom_site } } if defined $subset_atom_site;
     return $self->{'bond_angles'}{'id'} if defined $self->{'bond_angles'}{'id'};
     return {};
 }
 
 sub dihedral_angles
 {
-    my ( $self ) = @_;
-    return $self->{'dihedral_angles'}{'residue_unique_key'};
+    my ( $self, $residue_unique_key ) = @_;
+    return $self->{'dihedral_angles'}{'residue_unique_key'}
+        if defined $self->{'dihedral_angles'}{'residue_unique_key'};
+    return {};
 }
 
 sub bond_lengths
 {
-    my ( $self ) = @_;
-    return $self->{'bond_lengths'}{'residue_unique_key'};
+    my ( $self, $residue_unique_key ) = @_;
+    return $self->{'bond_lengths'}{'residue_unique_key'}
+        if defined $self->{'bond_lengths'}{'residue_unique_key'};
+    return {};
 }
 
 sub bond_angles
 {
-    my ( $self ) = @_;
-    return $self->{'bond_angles'}{'residue_unique_key'};
+    my ( $self, $residue_unique_key ) = @_;
+    return $self->{'bond_angles'}{'residue_unique_key'}
+        if defined $self->{'bond_angles'}{'residue_unique_key'};
+    return {};
 }
 
 sub all_parameters

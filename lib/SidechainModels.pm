@@ -49,9 +49,12 @@ sub rotation_translation
 
         next if ! %{ $residue_site };
 
-        my $rotatable_bonds = $bond_parameters->rotatable_bonds;
-        my $stretchable_bonds = $bond_parameters->stretchable_bonds;
-        my $bendable_angles = $bond_parameters->bendable_angles;
+        my $rotatable_bonds =
+            $bond_parameters->rotatable_bonds( $residue_site );
+        my $stretchable_bonds =
+            $bond_parameters->stretchable_bonds( $residue_site );
+        my $bendable_angles =
+            $bond_parameters->bendable_angles( $residue_site );
 
         if( ! %{ $rotatable_bonds } &&
             ! %{ $stretchable_bonds } &&
