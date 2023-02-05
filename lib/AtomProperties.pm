@@ -15,7 +15,8 @@ use List::Util qw( uniq );
 
 use PDBxParser qw( filter_by_unique_residue_key
                    filter_new
-                   split_by );
+                   split_by
+                   unique_residue_key );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -144,10 +145,7 @@ sub sort_by_unique_residue_key
         filter_new( $atom_site, { 'include' => { 'id' => $atom_ids } } );
     my @ordered_unique_residue_keys =
         uniq
-        map { join( ',', ( $selected_atom_site->{$_}{'pdbx_PDB_model_num'},
-                           $selected_atom_site->{$_}->{'label_asym_id'},
-                           $selected_atom_site->{$_}->{'label_seq_id'},
-                           $selected_atom_site->{$_}->{'label_alt_id'} ) ) }
+        map { unique_residue_key( $selected_atom_site->{$_} ) }
         sort { $selected_atom_site->{$a}{'pdbx_PDB_model_num'} <=>
                $selected_atom_site->{$b}{'pdbx_PDB_model_num'} ||
                $selected_atom_site->{$a}{'label_asym_id'} cmp
