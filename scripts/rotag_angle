@@ -9,12 +9,12 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
+use BondParameters;
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use Measure qw( all_bond_angles
-                bond_angle
+use Measure qw( bond_angle
                 bond_length );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
@@ -567,10 +567,11 @@ for my $pdbx_file ( @ARGV ) {
 
         connect_atoms( $parameters, $bond_angle_site );
 
-        my $bond_angles =
-            all_bond_angles( $parameters, $bond_angle_site,
-                             { 'include_mainchain' => ( $calc_mainchain ? 1 : 0 ) } )
-            ->{'bond_angles'}{'residue_unique_key'};
+        my $bond_parameters =
+            BondParameters->new( $parameters, $bond_angle_site,
+                                 { 'include_mainchain' => $calc_mainchain } );
+        $bond_parameters->calculate_bond_angles();
+        my $bond_angles = $bond_parameters->bond_angles;
 
         my $bond_angle_id = 1;
         for my $residue_unique_key ( sort keys %{ $bond_angles } ) {
