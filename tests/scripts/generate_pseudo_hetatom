@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use BondParameters;
 use ForceField::Parameters;
 use PseudoAtoms qw( generate_pseudo );
 use Sampling qw( sample_angles );
@@ -28,6 +29,11 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my $bond_parameters =
+    BondParameters->new( $parameters, $atom_site, { 'include_hetatoms' => 1 } );
+$bond_parameters->calculate_dihedral_angles();
+$bond_parameters->calculate_bond_lengths();
+$bond_parameters->calculate_bond_angles();
 
 # Parses angle and bond ranges.
 my %angle_and_length_ranges = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
@@ -70,6 +76,7 @@ for my $angle_or_length ( sort keys %angle_and_length_ranges ) {
              { 'parameters' => $parameters,
                'atom_site' => $atom_site,
                'atom_specifier' => { "id" => [ $atom_id ] },
+               'bond_parameters' => $bond_parameters,
                'bond_parameter_values' => \%num_angle_and_length_values,
                'include_hetatoms' => 1,
                'do_bond_stretching' => 1,
