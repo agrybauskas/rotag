@@ -500,9 +500,7 @@ sub calculate_dihedral_angles
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
 
-        if( ! exists $self->{'dihedral_angles'}{'id'} ) {
-            $self->find_rotatable_bonds( $start_atom_ids );
-        }
+        $self->find_rotatable_bonds( $start_atom_ids, $residue_site );
 
         my $unique_rotatable_bonds = unique_bond_parameters(
             { map { ( $_ => $self->{'dihedral_angles'}{'id'}{$_} ) }
@@ -591,9 +589,7 @@ sub calculate_bond_lengths
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
 
-        if( ! exists $self->{'bond_lengths'}{'id'} ) {
-            $self->find_stretchable_bonds( $start_atom_ids );
-        }
+        $self->find_stretchable_bonds( $start_atom_ids, $residue_site );
 
         my $unique_stretchable_bonds = unique_bond_parameters(
             { map { ( $_ => $self->{'bond_lengths'}{'id'}{$_} ) }
@@ -678,9 +674,7 @@ sub calculate_bond_angles
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
 
-        if( ! exists $self->{'bond_angles'}{'id'} ) {
-            $self->find_bendable_angles( $start_atom_ids );
-        }
+        $self->find_bendable_angles( $start_atom_ids, $residue_site );
 
         my $unique_bendable_angles = unique_bond_parameters(
             { map { ( $_ => $self->{'bond_angles'}{'id'}{$_} ) }
