@@ -57,10 +57,10 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	    ./$< | diff -a -B -w $(basename $@).out - > $@; \
 	    if [ $$? -eq 0 ]; \
 	    then echo "$<" \
-	         | awk '{ printf "%-50s \033[1m[OK]\033[m\n",    $$1 }' \
+	         | awk '{ printf "%-60s \033[1m[OK]\033[m\n",    $$1 }' \
 	         | sed -e 's/ /./g'; \
 	    else echo "$<" \
-	         | awk '{ printf "%-50s \033[1m[ERROR]\033[m\n", $$1 }' \
+	         | awk '{ printf "%-60s \033[1m[ERROR]\033[m\n", $$1 }' \
 	         | sed -e 's/ /./g'; \
                    cat $@; \
 	    fi \
