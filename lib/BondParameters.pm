@@ -271,7 +271,7 @@ sub find_rotatable_bonds
 #
 # Identifies bonds that can be stretched.
 # Input:
-#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $subset_atom_site - atom site data structure (see PDBxParser.pm);
 #     $start_atom_ids - starting atom ids;
 #     $self->{'include_mainchain'} - flag that includes main-chain atoms;
 #     $self->{'include_hetatoms'} - flag that includes heteroatoms.
@@ -282,12 +282,13 @@ sub find_rotatable_bonds
 
 sub find_stretchable_bonds
 {
-    my ( $self, $start_atom_ids ) = @_;
+    my ( $self, $subset_atom_site, $start_atom_ids ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
         $self->{'include_mainchain'},
         $self->{'include_hetatoms'}
     );
 
+    $subset_atom_site //= $self->{'atom_site'};
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
@@ -301,7 +302,7 @@ sub find_stretchable_bonds
     };
 
     my $bond_paths = BondPath->new( {
-        'atom_site' => $atom_site,
+        'atom_site' => $subset_atom_site,
         'start_atom_ids' => $start_atom_ids,
         'include_hetatoms' => $include_hetatoms,
         'ignore_connections' => $ignore_connections,
@@ -358,7 +359,7 @@ sub find_stretchable_bonds
 #
 # Identifies bonds that can be bended.
 # Input:
-#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $subset_atom_site - atom site data structure (see PDBxParser.pm);
 #     $start_atom_ids - starting atom ids;
 #     $self->{'include_mainchain'} - flag that includes main-chain atoms;
 #     $self->{'include_hetatoms'} - flag that includes heteroatoms.
@@ -369,12 +370,13 @@ sub find_stretchable_bonds
 
 sub find_bendable_angles
 {
-    my ( $self, $start_atom_ids ) = @_;
+    my ( $self, $subset_atom_site, $start_atom_ids ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
         $self->{'include_mainchain'},
         $self->{'include_hetatoms'}
     );
 
+    $subset_atom_site //= $self->{'atom_site'};
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
@@ -382,7 +384,7 @@ sub find_bendable_angles
     my $atom_site = $self->{'atom_site'};
 
     my $bond_paths //= BondPath->new( {
-        'atom_site' => $atom_site,
+        'atom_site' => $subset_atom_site,
         'start_atom_ids' => $start_atom_ids,
         'include_hetatoms' => $include_hetatoms,
     } );
