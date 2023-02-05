@@ -21,8 +21,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $bond_parameters = BondParameters->new( $PARAMETERS, $atom_site );
+my $parameters = Parameters->new();
+my $bond_parameters = BondParameters->new( $parameters, $atom_site );
 
 $bond_parameters->find_stretchable_bonds();
 my $stretchable_bonds = $bond_parameters->stretchable_bonds;

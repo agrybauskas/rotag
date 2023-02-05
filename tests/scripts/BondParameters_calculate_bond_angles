@@ -21,10 +21,10 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $pi = $PARAMETERS->{'_[local]_constants'}{'pi'};
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $bond_parameters = BondParameters->new(
-    $PARAMETERS, $atom_site, { 'include_mainchain' => $include_mainchain }
+    $parameters, $atom_site, { 'include_mainchain' => $include_mainchain }
 );
 
 $bond_parameters->calculate_bond_angles();

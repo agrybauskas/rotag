@@ -21,8 +21,8 @@ while( <$fh> ) {
 close( $fh );
 $atom_site = eval( $atom_site );
 
-my $PARAMETERS = Parameters->new();
-my $bond_parameters = BondParameters->new( $PARAMETERS, $atom_site );
+my $parameters = Parameters->new();
+my $bond_parameters = BondParameters->new( $parameters, $atom_site );
 
 $bond_parameters->find_bendable_angles();
 my $bendable_angles = $bond_parameters->bendable_angles;
