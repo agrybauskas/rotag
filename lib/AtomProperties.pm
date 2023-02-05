@@ -165,7 +165,7 @@ sub sort_by_unique_residue_key
     for my $unique_residue_key ( @ordered_unique_residue_keys ) {
         my $residue_atom_site =
             filter_by_unique_residue_key( $selected_atom_site,
-                                          $unique_residue_key );
+                                          $unique_residue_key, 1 );
         push @sorted_atom_ids,
             @{ sort_atom_ids_by_name( [ keys %{ $residue_atom_site } ],
                                       $residue_atom_site ) };
