@@ -9,14 +9,14 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
+use BondParameters;
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms
                      connect_hetatoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use Measure qw( all_dihedral
-                dihedral_angle );
+use Measure qw( dihedral_angle );
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    mark_selection
@@ -140,12 +140,12 @@ for my $pdbx_file ( @ARGV ) {
         connect_hetatoms( $parameters, $dihedral_site ) if $calc_hetatoms;
         hybridization( $parameters, $dihedral_site );
 
-        my $dihedral_angles =
-            all_dihedral( $parameters, $dihedral_site,
-                          { 'include_mainchain' => $calc_mainchain,
-                            'include_hetatoms' => $calc_hetatoms,
-                            'reference_atom_site' => $atom_site } )
-            ->{'dihedral_angles'}{'residue_unique_key'};
+        my $bond_parameters =
+            BondParameters->new( $parameters, $atom_site,
+                                 { 'include_mainchain' => $calc_mainchain,
+                                   'include_hetatoms' => $calc_hetatoms } );
+        $bond_parameters->calculate_dihedral_angles();
+        my $dihedral_angles = $bond_parameters->dihedral_angles;
 
         my $dihedral_id = 1;
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
