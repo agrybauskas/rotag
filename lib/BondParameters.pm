@@ -130,7 +130,7 @@ sub all_parameters
 
 sub find_rotatable_bonds
 {
-    my ( $self, $subset_atom_site, $start_atom_ids ) = @_;
+    my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
         $self->{'include_mainchain'},
         $self->{'include_hetatoms'}
@@ -282,7 +282,7 @@ sub find_rotatable_bonds
 
 sub find_stretchable_bonds
 {
-    my ( $self, $subset_atom_site, $start_atom_ids ) = @_;
+    my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
         $self->{'include_mainchain'},
         $self->{'include_hetatoms'}
@@ -370,7 +370,7 @@ sub find_stretchable_bonds
 
 sub find_bendable_angles
 {
-    my ( $self, $subset_atom_site, $start_atom_ids ) = @_;
+    my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
         $self->{'include_mainchain'},
         $self->{'include_hetatoms'}
