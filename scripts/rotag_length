@@ -297,9 +297,11 @@ for my $pdbx_file ( @ARGV ) {
 
         connect_atoms( $parameters, $bond_length_site );
 
-        my $bond_parameters =
-            BondParameters->new( $parameters, $bond_length_site,
-                                 { 'include_mainchain' => $calc_mainchain } );
+        my $bond_parameters = BondParameters->new(
+            $parameters,
+            $bond_length_site,
+            { 'include_mainchain' => $calc_mainchain }
+        );
         $bond_parameters->calculate_bond_lengths();
         my $bond_lengths = $bond_parameters->bond_lengths;
 

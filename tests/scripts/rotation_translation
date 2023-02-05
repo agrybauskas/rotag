@@ -32,9 +32,9 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
-my $bond_parameters =
-    BondParameters->new( $parameters, $atom_site,
-                         { 'include_hetatoms' => $include_hetatoms } );
+my $bond_parameters = BondParameters->new(
+    $parameters, $atom_site, { 'include_hetatoms' => $include_hetatoms }
+);
 
 $bond_parameters->find_rotatable_bonds() if $do_bond_torsion;
 $bond_parameters->find_stretchable_bonds() if $do_bond_stretching;

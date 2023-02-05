@@ -366,8 +366,10 @@ sub generate_library
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
-        my $bond_parameters =
-            BondParameters->new( $parameters, $current_atom_site );
+        my $bond_parameters = BondParameters->new(
+            $parameters, $current_atom_site
+        );
+
         $bond_parameters->calculate_dihedral_angles() if $do_bond_torsion;
         $bond_parameters->calculate_bond_lengths() if $do_bond_stretching;
         $bond_parameters->calculate_bond_angles() if $do_angle_bending;

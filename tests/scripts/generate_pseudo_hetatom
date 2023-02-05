@@ -29,8 +29,9 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
-my $bond_parameters =
-    BondParameters->new( $parameters, $atom_site, { 'include_hetatoms' => 1 } );
+my $bond_parameters = BondParameters->new(
+    $parameters, $atom_site, { 'include_hetatoms' => 1 }
+);
 $bond_parameters->calculate_dihedral_angles();
 $bond_parameters->calculate_bond_lengths();
 $bond_parameters->calculate_bond_angles();

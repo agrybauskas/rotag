@@ -242,11 +242,10 @@ exp
             connect_atoms( $parameters, $clone_atom_site );
             hybridization( $parameters, $clone_atom_site );
 
-            my $bond_parameters =
-                BondParameters->new( $parameters, $clone_atom_site,
-                                     { 'include_mainchain' => 1 } );
+            my $bond_parameters = BondParameters->new(
+                $parameters, $clone_atom_site, { 'include_mainchain' => 1 }
+            );
             $bond_parameters->calculate_dihedral_angles();
-
             my $dihedral_angles = $bond_parameters->dihedral_angles;
 
             my @residue_unique_keys = (); # Residue unique keys that passes the

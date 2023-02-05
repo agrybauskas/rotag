@@ -216,8 +216,9 @@ for my $pdbx_file ( @ARGV ) {
             next;
         }
 
-        my $bond_parameters =
-            BondParameters->new( $parameters, $selected_atom_site );
+        my $bond_parameters = BondParameters->new(
+            $parameters, $selected_atom_site
+        );
         $bond_parameters->calculate_dihedral_angles();
 
         # Determines, how to split rotamer angles into groups.
@@ -292,9 +293,9 @@ for my $pdbx_file ( @ARGV ) {
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi_min'} &&
                        exists $rotamer_angle->{$rotamer_ids[0]}{'phi_max'} &&
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) ) {
-                my $residue_bond_parameters =
-                    BondParameters->new( $parameters, $residue_site,
-                                         { 'include_mainchain' => 1 } );
+                my $residue_bond_parameters = BondParameters->new(
+                    $parameters, $residue_site, { 'include_mainchain' => 1 }
+                );
                 $residue_bond_parameters->calculate_dihedral_angles();
                 my $dihedral_angles = $residue_bond_parameters->dihedral_angles;
 

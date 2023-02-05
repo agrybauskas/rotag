@@ -140,10 +140,12 @@ for my $pdbx_file ( @ARGV ) {
         connect_hetatoms( $parameters, $dihedral_site ) if $calc_hetatoms;
         hybridization( $parameters, $dihedral_site );
 
-        my $bond_parameters =
-            BondParameters->new( $parameters, $dihedral_site,
-                                 { 'include_mainchain' => $calc_mainchain,
-                                   'include_hetatoms' => $calc_hetatoms } );
+        my $bond_parameters = BondParameters->new(
+            $parameters,
+            $dihedral_site,
+            { 'include_mainchain' => $calc_mainchain,
+              'include_hetatoms' => $calc_hetatoms }
+        );
         $bond_parameters->calculate_dihedral_angles();
         my $dihedral_angles = $bond_parameters->dihedral_angles;
 
