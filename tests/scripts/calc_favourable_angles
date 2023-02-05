@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Measure qw( all_dihedral );
+use BondParameters;
 use ForceField::NonBonded qw( hard_sphere );
 use ForceField::Parameters;
 use PDBxParser qw( filter
@@ -31,6 +31,8 @@ $atom_site = eval( $atom_site );
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
+my $bond_parameters = BondParameters->new( $parameters, $atom_site );
+$bond_parameters->calculate_dihedral_angles();
 
 $angles =~ s/\s//g;
 $angles = sample_angles_qs_parsing( $parameters, $angles );
@@ -47,8 +49,7 @@ my $favourable_angles =
                               'residue_unique_key' =>
                                   "${residue_id},${residue_chain},".
                                   "${pdbx_model},${residue_alt}",
-                              'bond_parameters' =>
-                                  all_dihedral( $parameters, $atom_site ),
+                              'bond_parameters' => $bond_parameters,
                               'interaction_site' => $interaction_site,
                               'angles' => $angles,
                               'non_bonded_potential' => \&hard_sphere,
