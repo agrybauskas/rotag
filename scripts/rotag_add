@@ -10,13 +10,13 @@ use JSON;
 use List::Util qw( max );
 use Try::Tiny;
 
+use BondParameters;
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
                 warning );
-use Measure qw( all_dihedral );
 use PDBxParser qw( extract
                    filter
                    filter_by_unique_residue_key
@@ -27,7 +27,7 @@ use PDBxParser qw( extract
                    to_pdbx
                    unique_residue_key );
 use PseudoAtoms qw( generate_pseudo );
-use SidechainModels qw( rotation_only  );
+use SidechainModels qw( rotation_translation  );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -216,6 +216,10 @@ for my $pdbx_file ( @ARGV ) {
             next;
         }
 
+        my $bond_parameters =
+            BondParameters->new( $parameters, $selected_atom_site );
+        $bond_parameters->calculate_dihedral_angles();
+
         # Determines, how to split rotamer angles into groups.
         my $rotamer_angle_split_groups = {};
         my @rotamer_ids = sort keys %{ $rotamer_angle };
@@ -268,7 +272,7 @@ for my $pdbx_file ( @ARGV ) {
             connect_atoms( $parameters, $target_atom_site );
 
             # Generates rotational model.
-            rotation_only( $parameters, $residue_site );
+            rotation_translation( $parameters, $residue_site, $bond_parameters );
 
             # Determines the key that will connect 'atom_site' and
             # '_[local]_rotamer_angle' data.
@@ -288,11 +292,14 @@ for my $pdbx_file ( @ARGV ) {
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi_min'} &&
                        exists $rotamer_angle->{$rotamer_ids[0]}{'phi_max'} &&
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) ) {
-                my $dihedral_angles = all_dihedral(
-                    $residue_site,
-                    { 'include_mainchain' => 1,
-                      'reference_atom_site' => $selected_atom_site }
-                )->{'dihedral_angles'}{'residue_unique_key'};
+                my $dihedral_angles =
+                    $bond_parameters->dihedral_angles( $residue_site,
+                                                       { 'include_mainchain' => 1 } );
+                # my $dihedral_angles = all_dihedral(
+                #     $residue_site,
+                #     { 'include_mainchain' => 1,
+                #       'reference_atom_site' => $selected_atom_site }
+                # )->{'dihedral_angles'}{'residue_unique_key'};
 
                 # Calculates phi and psi angles.
                 my $phi;
@@ -376,9 +383,7 @@ for my $pdbx_file ( @ARGV ) {
                              { 'parameters' => $parameters,
                                'atom_site' => $selected_atom_site,
                                'atom_specifier' => { 'id' => [ $atom_id ] },
-                               'bond_parameters' =>
-                                   all_dihedral( $parameters,
-                                                 $selected_atom_site ),
+                               'bond_parameters' => $bond_parameters,
                                'bond_parameter_values' => $rotamer_angles,
                                'last_atom_id' => $last_atom_id,
                                 # TODO: check if it is a good idea to have
