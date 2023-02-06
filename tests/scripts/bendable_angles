@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use BondParameters qw( bendable_angles );
+use ForceField::Parameters;
+
+#
+# Unit test: bendable_angles()
+# Example: ./bendable_angles structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $parameters = Parameters->new();
+bendable_angles( $parameters, $atom_site );
+
+for my $atom_id ( sort { $a cmp $b }
+                  grep { defined $atom_site->{$_}{'bendable_angles'} }
+                  keys %{ $atom_site } ) {
+    my $bendable_angles = $atom_site->{$atom_id}{'bendable_angles'};
+    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
+    for my $angle_name ( sort { $bendable_angles->{$a}{'order'} <=>
+                                $bendable_angles->{$b}{'order'} }
+                         keys %{ $bendable_angles } ) {
+        my $first_atom_id  = $bendable_angles->{$angle_name}{'atom_ids'}[0];
+        my $second_atom_id = $bendable_angles->{$angle_name}{'atom_ids'}[1];
+        my $third_atom_id  = $bendable_angles->{$angle_name}{'atom_ids'}[2];
+        print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
+               "$atom_site->{$second_atom_id}{\"label_atom_id\"}," .
+               "$atom_site->{$third_atom_id}{\"label_atom_id\"} " );
+    }
+    print( "\n" );
+}

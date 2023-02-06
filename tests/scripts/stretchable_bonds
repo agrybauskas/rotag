@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use BondParameters qw( stretchable_bonds );
+use ForceField::Parameters;
+
+#
+# Unit test: stretchable_bonds()
+# Example: ./stretchable_bonds structure.dump
+#
+
+my ( $pdbx_dump_file ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $parameters = Parameters->new();
+stretchable_bonds( $parameters, $atom_site );
+
+for my $atom_id ( sort { $a cmp $b }
+                  grep { defined $atom_site->{$_}{'stretchable_bonds'} }
+                  keys %{ $atom_site } ) {
+    my $stretchable_bonds = $atom_site->{$atom_id}{'stretchable_bonds'};
+    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
+    for my $bond_name ( sort { $stretchable_bonds->{$a}{'order'} <=>
+                               $stretchable_bonds->{$b}{'order'} }
+                        keys %{ $stretchable_bonds } ) {
+        my $first_atom_id = $stretchable_bonds->{$bond_name}{'atom_ids'}->[0];
+        my $second_atom_id = $stretchable_bonds->{$bond_name}{'atom_ids'}->[1];
+        print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
+               "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
+    }
+    print( "\n" );
+}

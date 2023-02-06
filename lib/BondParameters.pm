@@ -21,10 +21,11 @@ use PDBxParser qw( expand
 #
 # Identifies bonds that can be rotated by torsional angle.
 # Input:
+#     $parameters - parameter data structure (see Parameters.pm);
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $start_atom_ids - starting atom ids;
-#     $include_mainchain - flag that includes main-chain atoms;
-#     $include_hetatoms - flag that includes heteroatoms.
+#     $options->{'start_atom_ids'} - starting atom ids;
+#     $options->{'include_mainchain'} - flag that includes main-chain atoms;
+#     $options->{'include_hetatoms'} - flag that includes heteroatoms.
 # Output:
 #     adds data structure that describes rotatable bonds and the constituent atom
 #     ids of the bond.
@@ -168,10 +169,11 @@ sub rotatable_bonds
 #
 # Identifies bonds that can be stretched.
 # Input:
+#     $parameters - parameter data structure (see Parameters.pm);
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $start_atom_ids - starting atom ids;
-#     $include_mainchain - flag that includes main-chain atoms;
-#     $include_hetatoms - flag that includes heteroatoms.
+#     $options->{'start_atom_ids'} - starting atom ids;
+#     $options->{'include_mainchain'} - flag that includes main-chain atoms;
+#     $options->{'include_hetatoms'} - flag that includes heteroatoms.
 # Output:
 #     adds data structure that describes stretchable bonds and the constituent
 #     atom ids of the bond.
@@ -179,18 +181,15 @@ sub rotatable_bonds
 
 sub stretchable_bonds
 {
-    my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) = (
-        $self->{'include_mainchain'},
-        $self->{'include_hetatoms'}
+    my ( $parameters, $atom_site, $options  ) = @_;
+    my ( $start_atom_ids, $include_mainchain, $include_hetatoms ) = (
+        $options->{'start_atom_ids'},
+        $options->{'include_mainchain'},
+        $options->{'include_hetatoms'}
     );
 
-    $subset_atom_site //= $self->{'atom_site'};
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
-
-    my $parameters = $self->{'parameters'};
-    my $atom_site = $self->{'atom_site'};
 
     my $ignore_connections = {
         'label_atom_id' => {
@@ -199,7 +198,7 @@ sub stretchable_bonds
     };
 
     my $bond_paths = BondPath->new( {
-        'atom_site' => $subset_atom_site,
+        'atom_site' => $atom_site,
         'start_atom_ids' => $start_atom_ids,
         'include_hetatoms' => $include_hetatoms,
         'ignore_connections' => $ignore_connections,
@@ -243,7 +242,7 @@ sub stretchable_bonds
                 join '-', map { $atom_site->{$_}{'label_atom_id'} }
                              @{ $bond_atom_ids };
 
-            $self->{'bond_lengths'}{'id'}{$atom_id}{$stretchable_bond_name} = {
+            $atom_site->{$atom_id}{'stretchable_bonds'}{$stretchable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[0]}{$bond_atom_ids->[1]},
                 'atom_ids' => $bond_atom_ids,
             };
@@ -256,10 +255,11 @@ sub stretchable_bonds
 #
 # Identifies bonds that can be bended.
 # Input:
+#     $parameters - parameter data structure (see Parameters.pm);
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $start_atom_ids - starting atom ids;
-#     $include_mainchain - flag that includes main-chain atoms;
-#     $include_hetatoms - flag that includes heteroatoms.
+#     $options->{'start_atom_ids'} - starting atom ids;
+#     $options->{'include_mainchain'} - flag that includes main-chain atoms;
+#     $options->{'include_hetatoms'} - flag that includes heteroatoms.
 # Output:
 #     adds data structure that describes bendable bonds and the constituent atom
 #     ids of the bond.
@@ -267,21 +267,18 @@ sub stretchable_bonds
 
 sub bendable_angles
 {
-    my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) = (
-        $self->{'include_mainchain'},
-        $self->{'include_hetatoms'}
+    my ( $parameters, $atom_site, $options ) = @_;
+    my ( $start_atom_ids, $include_mainchain, $include_hetatoms ) = (
+        $options->{'start_atom_ids'},
+        $options->{'include_mainchain'},
+        $options->{'include_hetatoms'}
     );
 
-    $subset_atom_site //= $self->{'atom_site'};
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
-    my $parameters = $self->{'parameters'};
-    my $atom_site = $self->{'atom_site'};
-
     my $bond_paths //= BondPath->new( {
-        'atom_site' => $subset_atom_site,
+        'atom_site' => $atom_site,
         'start_atom_ids' => $start_atom_ids,
         'include_hetatoms' => $include_hetatoms,
     } );
@@ -330,7 +327,7 @@ sub bendable_angles
                 join '-', map { $atom_site->{$_}{'label_atom_id'} }
                              @{ $bond_atom_ids };
 
-            $self->{'bond_angles'}{'id'}{$atom_id}{$bendable_angle_name} = {
+            $atom_site->{$atom_id}{'bendable_angles'}{$bendable_angle_name} = {
                 'order' => $bond_order{$bond_atom_ids->[0]}
                                       {$bond_atom_ids->[1]}
                                       {$bond_atom_ids->[2]},

@@ -27,13 +27,13 @@ rotatable_bonds( $parameters, $atom_site );
 for my $atom_id ( sort { $a cmp $b }
                   grep { defined $atom_site->{$_}{'rotatable_bonds'} }
                   keys %{ $atom_site } ) {
-    my $rotatable_bonds = $atom_site->{$atom_site}{'rotatable_bonds'};
+    my $rotatable_bonds = $atom_site->{$atom_id}{'rotatable_bonds'};
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
-    for my $angle ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
-                           $rotatable_bonds->{$atom_id}{$b}{'order'} }
-                    keys %{ $rotatable_bonds->{$atom_id} } ) {
-        my $first_atom_id = $rotatable_bonds->{$atom_id}{$angle}{'atom_ids'}[1];
-        my $second_atom_id = $rotatable_bonds->{$atom_id}{$angle}{'atom_ids'}[2];
+    for my $angle_name ( sort { $rotatable_bonds->{$a}{'order'} <=>
+                           $rotatable_bonds->{$b}{'order'} }
+                    keys %{ $rotatable_bonds } ) {
+        my $first_atom_id = $rotatable_bonds->{$angle_name}{'atom_ids'}[1];
+        my $second_atom_id = $rotatable_bonds->{$angle_name}{'atom_ids'}[2];
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
                "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
     }
