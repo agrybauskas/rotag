@@ -1,7 +1,10 @@
-package BondParameters;
-
 use strict;
 use warnings;
+
+use Exporter qw( import );
+our @EXPORT_OK = qw( bendable_angles
+                     rotatable_bonds
+                     stretchable_bonds );
 
 use Carp;
 
@@ -15,135 +18,19 @@ use PDBxParser qw( expand
                    filter_new
                    split_by );
 
-# ------------------------- Constructors/Destructors -------------------------- #
-
-sub new
-{
-    my ( $class, $parameters, $atom_site, $options ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) =
-        ( $options->{'include_mainchain'}, $options->{'include_hetatoms'} );
-
-    $include_mainchain //= 0;
-    $include_hetatoms //= 0;
-
-    my $self = { 'parameters' => $parameters,
-                 'atom_site'  => $atom_site,
-                 'include_mainchain' => $include_mainchain,
-                 'include_hetatoms' => $include_hetatoms,
-                 'dihedral_angles' => undef,
-                 'bond_lengths' => undef,
-                 'bond_angles' => undef,
-    };
-
-    return bless $self, $class;
-}
-
-# ----------------------------- Setters/Getters ------------------------------- #
-
-sub rotatable_bonds
-{
-    my ( $self, $subset_atom_site ) = @_;
-    return { map { $_ => $self->{'dihedral_angles'}{'id'}{$_} }
-             grep { defined $self->{'dihedral_angles'}{'id'}{$_} }
-             keys %{ $subset_atom_site } } if defined $subset_atom_site;
-    return $self->{'dihedral_angles'}{'id'} if defined $self->{'dihedral_angles'}{'id'};
-    return {};
-}
-
-sub stretchable_bonds
-{
-    my ( $self, $subset_atom_site ) = @_;
-    return { map { $_ => $self->{'bond_lengths'}{'id'}{$_} }
-             grep { defined $self->{'bond_lengths'}{'id'}{$_} }
-             keys %{ $subset_atom_site } } if defined $subset_atom_site;
-    return $self->{'bond_lengths'}{'id'} if defined $self->{'bond_lengths'}{'id'};
-    return {};
-}
-
-sub bendable_angles
-{
-    my ( $self, $subset_atom_site ) = @_;
-    return { map { $_ => $self->{'bond_angles'}{'id'}{$_} }
-             grep { defined $self->{'bond_angles'}{'id'}{$_} }
-             keys %{ $subset_atom_site } } if defined $subset_atom_site;
-    return $self->{'bond_angles'}{'id'} if defined $self->{'bond_angles'}{'id'};
-    return {};
-}
-
-sub dihedral_angles
-{
-    my ( $self, $residue_unique_key ) = @_;
-    return $self->{'dihedral_angles'}{'residue_unique_key'}
-        if defined $self->{'dihedral_angles'}{'residue_unique_key'};
-    return {};
-}
-
-sub bond_lengths
-{
-    my ( $self, $residue_unique_key ) = @_;
-    return $self->{'bond_lengths'}{'residue_unique_key'}
-        if defined $self->{'bond_lengths'}{'residue_unique_key'};
-    return {};
-}
-
-sub bond_angles
-{
-    my ( $self, $residue_unique_key ) = @_;
-    return $self->{'bond_angles'}{'residue_unique_key'}
-        if defined $self->{'bond_angles'}{'residue_unique_key'};
-    return {};
-}
-
-sub all_parameters
-{
-    my ( $self ) = @_;
-
-    my $dihedral_angles =
-        defined $self->dihedral_angles ? $self->dihedral_angles : {};
-    my $bond_lengths =
-        defined $self->bond_lengths ? $self->bond_lengths : {};
-    my $bond_angles =
-        defined $self->bond_angles ? $self->bond_angles : {};
-
-    my %bond_parameters = ();
-    for my $residue_unique_key ( keys %{ $dihedral_angles },
-                                 keys %{ $bond_lengths },
-                                 keys %{ $bond_angles } ) {
-        my $residue_dihedral_angles =
-            defined $dihedral_angles->{$residue_unique_key} ?
-            $dihedral_angles->{$residue_unique_key} : {};
-        my $residue_bond_lengths =
-            defined $bond_lengths->{$residue_unique_key} ?
-            $bond_lengths->{$residue_unique_key} : {};
-        my $residue_bond_angles =
-            defined $bond_angles->{$residue_unique_key} ?
-            $bond_angles->{$residue_unique_key} : {};
-
-        $bond_parameters{$residue_unique_key} = {
-            %{ $residue_dihedral_angles },
-            %{ $residue_bond_lengths },
-            %{ $residue_bond_angles },
-        }
-    }
-
-    return \%bond_parameters;
-}
-
-# --------------------------------- Methods ----------------------------------- #
-
 #
 # Identifies bonds that can be rotated by torsional angle.
 # Input:
-#     $subset_atom_site - atom site data structure (see PDBxParser.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $start_atom_ids - starting atom ids;
-#     $self->{'include_mainchain'} - flag that includes main-chain atoms;
-#     $self->{'include_hetatoms'} - flag that includes heteroatoms.
+#     $include_mainchain - flag that includes main-chain atoms;
+#     $include_hetatoms - flag that includes heteroatoms.
 # Output:
-#     data structure that describes rotatable bonds and the constituent atom ids
-#     of the bond.
+#     adds data structure that describes rotatable bonds and the constituent atom
+#     ids of the bond.
 #
 
-sub find_rotatable_bonds
+sub rotatable_bonds
 {
     my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
@@ -286,16 +173,16 @@ sub find_rotatable_bonds
 #
 # Identifies bonds that can be stretched.
 # Input:
-#     $subset_atom_site - atom site data structure (see PDBxParser.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $start_atom_ids - starting atom ids;
-#     $self->{'include_mainchain'} - flag that includes main-chain atoms;
-#     $self->{'include_hetatoms'} - flag that includes heteroatoms.
+#     $include_mainchain - flag that includes main-chain atoms;
+#     $include_hetatoms - flag that includes heteroatoms.
 # Output:
-#     data structure that describes stretchable bonds and the constituent atom
-#     ids of the bond.
+#     adds data structure that describes stretchable bonds and the constituent
+#     atom ids of the bond.
 #
 
-sub find_stretchable_bonds
+sub stretchable_bonds
 {
     my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
@@ -374,16 +261,16 @@ sub find_stretchable_bonds
 #
 # Identifies bonds that can be bended.
 # Input:
-#     $subset_atom_site - atom site data structure (see PDBxParser.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $start_atom_ids - starting atom ids;
-#     $self->{'include_mainchain'} - flag that includes main-chain atoms;
-#     $self->{'include_hetatoms'} - flag that includes heteroatoms.
+#     $include_mainchain - flag that includes main-chain atoms;
+#     $include_hetatoms - flag that includes heteroatoms.
 # Output:
-#     data structure that describes bendable bonds and the constituent atom
+#     adds data structure that describes bendable bonds and the constituent atom
 #     ids of the bond.
 #
 
-sub find_bendable_angles
+sub bendable_angles
 {
     my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
     my ( $include_mainchain, $include_hetatoms ) = (
@@ -466,12 +353,12 @@ sub find_bendable_angles
 # of connect_atoms and hybridization functions are necessary for correct
 # calculations.
 # Input:
-#     $self->{'include_mainchain'} - additionally calculates phi and psi
-#     mainchain dihedral angles;
-#     $self->{'include_hetatoms'} - additionally calculates dihedral angles for
-#     hetero atoms.
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $include_mainchain - additionally calculates phi and psi mainchain dihedral
+#     angles;
+#     $include_hetatoms - additionally calculates dihedral angles for heteroatoms.
 # Output:
-#     data structure that relates residue id and angle values.
+#     adds data structure that relates residue id and angle values.
 
 sub calculate_dihedral_angles
 {
@@ -554,12 +441,11 @@ sub calculate_dihedral_angles
 # data structure (produced by obtain_atom_site or functions that uses it). Usage
 # of connect_atoms is necessary for correct calculations.
 # Input:
-#     $self->{'include_mainchain'} - additionally calculates mainchain bond
-#     angles.
-#     $self->{'include_hetatoms'} - additionally calculates bond lengths for
-#     hetero atoms.
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $include_mainchain - additionally calculates mainchain bond angles;
+#     $include_hetatoms - additionally calculates bond lengths for heteroatoms.
 # Output:
-#     data structure that relates residue id and bond lengths.
+#     adds data structure that relates residue id and bond lengths.
 #
 
 sub calculate_bond_lengths
@@ -639,12 +525,11 @@ sub calculate_bond_lengths
 # data structure (produced by obtain_atom_site or functions that uses it). Usage
 # of connect_atoms is necessary for correct calculations.
 # Input:
-#     $self->{'include_mainchain'} - additionally calculates mainchain bond
-#     angles.
-#     $self->{'include_hetatoms'} - additionally calculates bond angles for
-#     hetero atoms.
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $include_mainchain - additionally calculates mainchain bond angles;
+#     $include_hetatoms - additionally calculates bond angles for heteroatoms.
 # Output:
-#     data structure that relates residue id and bond angles.
+#     adds data structure that relates residue id and bond angles.
 #
 
 sub calculate_bond_angles
@@ -718,8 +603,6 @@ sub calculate_bond_angles
 
     return;
 }
-
-# ----------------------------- Static functions ------------------------------ #
 
 sub unique_bond_parameters
 {
