@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use BondParameters;
+use BondParameters qw( rotatable_bonds );
 use ForceField::Parameters;
 
 #
-# Unit test: BondParameters->find_rotatable_bonds()
-# Example: ./BondParameters_find_rotatable_bonds structure.dump
+# Unit test: rotatable_bonds()
+# Example: ./rotatable_bonds structure.dump
 #
 
 my ( $pdbx_dump_file ) = @ARGV;
@@ -22,12 +22,12 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
-my $bond_parameters = BondParameters->new( $parameters, $atom_site );
+rotatable_bonds( $parameters, $atom_site );
 
-$bond_parameters->find_rotatable_bonds();
-my $rotatable_bonds = $bond_parameters->rotatable_bonds;
-
-for my $atom_id ( sort { $a cmp $b } keys %{ $rotatable_bonds } ) {
+for my $atom_id ( sort { $a cmp $b }
+                  grep { defined $atom_site->{$_}{'rotatable_bonds'} }
+                  keys %{ $atom_site } ) {
+    my $rotatable_bonds = $atom_site->{$atom_site}{'rotatable_bonds'};
     print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
     for my $angle ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
                            $rotatable_bonds->{$atom_id}{$b}{'order'} }

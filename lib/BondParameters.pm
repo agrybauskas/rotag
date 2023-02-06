@@ -32,22 +32,17 @@ use PDBxParser qw( expand
 
 sub rotatable_bonds
 {
-    my ( $self, $start_atom_ids, $subset_atom_site ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) = (
-        $self->{'include_mainchain'},
-        $self->{'include_hetatoms'}
+    my ( $parameters, $atom_site, $options ) = @_;
+    my ( $start_atom_ids, $include_mainchain, $include_hetatoms ) = (
+        $options->{'start_atom_ids'},
+        $options->{'include_mainchain'},
+        $options->{'include_hetatoms'}
     );
 
-    $subset_atom_site //= $self->{'atom_site'};
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
-    my $parameters = $self->{'parameters'};
-    my $atom_site = $self->{'atom_site'};
-
-    my $explicit_dihedral_names =
-        $self->{'parameters'}{'_[local]_dihedral_angle_name'};
-
+    my $explicit_dihedral_names = $parameters->{'_[local]_dihedral_angle_name'};
     my $ignore_connections = {
         'label_atom_id' => {
             'N' => { 'CD' => 1, # For PRO.
@@ -59,14 +54,14 @@ sub rotatable_bonds
 
     if( $include_hetatoms ) {
         $start_atom_ids = filter_new(
-            $subset_atom_site,
+            $atom_site,
             { 'include' => { 'label_atom_id' => [ 'C' ] },
-              'return_data' => 'id'
-        } );
+              'return_data' => 'id' }
+        );
     }
 
     my $bond_paths = BondPath->new( {
-        'atom_site' => $subset_atom_site,
+        'atom_site' => $atom_site,
         'start_atom_ids' => $start_atom_ids,
         'include_hetatoms' => $include_hetatoms,
         'ignore_connections' => $ignore_connections,
@@ -160,7 +155,7 @@ sub rotatable_bonds
                              @rotatable_bond_name_keys ),
                        $rotatable_bond_name_keys[0] );
 
-            $self->{'dihedral_angles'}{'id'}{$atom_id}{$rotatable_bond_name} = {
+            $atom_site->{$atom_id}{'rotatable_bonds'}{$rotatable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
                 'atom_ids' => $bond_atom_ids,
             };
