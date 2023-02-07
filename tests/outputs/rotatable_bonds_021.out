@@ -1,4 +1,1 @@
-CG: CA,CB 
-CD: CA,CB CB,CG 
-OE1: CA,CB CB,CG CG,CD 
-NE2: CA,CB CB,CG CG,CD 
+18 A 1 . chi1 -68.0
