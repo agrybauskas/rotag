@@ -346,49 +346,75 @@ sub bendable_angles
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
-    my $bond_paths //= BondPath->new( {
-        'atom_site' => $atom_site,
-        'start_atom_ids' => $start_atom_ids,
-        'include_hetatoms' => $include_hetatoms,
-    } );
+    my $residue_groups =
+        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     my %bendable_angles = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
-    for my $third_atom_id ( @{ $bond_paths->get_atom_order } ) {
-        my $second_atom_id = $bond_paths->get_atom_id_to( $third_atom_id );
+    for my $residue_unique_key ( sort keys %{ $residue_groups } ) {
+        my $residue_site =
+            filter_new( $atom_site,
+                        { 'include' =>
+                          { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        next if ! defined $second_atom_id;
-
-        my $first_atom_id = $bond_paths->get_atom_id_to( $second_atom_id );
-
-        next if ! defined $first_atom_id;
-
-        # Checks for mainchains and heteroatoms.
-        next if ! $include_mainchain &&
-            ! contains_sidechain_atoms( $parameters,
-                                        $atom_site,
-                                        [ $first_atom_id, $second_atom_id,
-                                          $third_atom_id ] ) &&
-            ! contains_hetatoms( $atom_site,
-                                 [ $first_atom_id, $second_atom_id,
-                                   $third_atom_id ] );
-
-        push @{ $bendable_angles{$third_atom_id} },
-            [ $first_atom_id, $second_atom_id, $third_atom_id ];
-
-        # Adds bond if it is a continuation of identified bonds.
-        if( exists $bendable_angles{$second_atom_id} ) {
-            unshift @{ $bendable_angles{$third_atom_id} },
-                @{ $bendable_angles{$second_atom_id} };
+        if( $include_mainchain ) {
+            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
+            my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
+                split ',', $residue_unique_key;
+            $start_atom_ids =
+                filter_new( $residue_site,
+                            { 'include' => { 'id' => \@expanded_atom_ids,
+                                             'label_atom_id' => [ 'C' ],
+                                             'label_asym_id' => [ $chain_id ],
+                                             'pdbx_PDB_model_num' => [ $pdbx_model_id ],
+                                             'label_alt_id' => [ $alt_id ] },
+                              'exclude' => { 'label_seq_id' => [ $residue_id ] },
+                              'return_data' => 'id' } );
+            $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
 
-        $bond_order{$first_atom_id}{$second_atom_id}{$third_atom_id} = $bond_order_idx;
-        $bond_order_idx++;
+        my $bond_paths //= BondPath->new( {
+            'atom_site' => $residue_site,
+            'start_atom_ids' => $start_atom_ids,
+            'include_hetatoms' => $include_hetatoms,
+        } );
+
+        for my $third_atom_id ( @{ $bond_paths->get_atom_order } ) {
+            my $second_atom_id = $bond_paths->get_atom_id_to( $third_atom_id );
+
+            next if ! defined $second_atom_id;
+
+            my $first_atom_id = $bond_paths->get_atom_id_to( $second_atom_id );
+
+            next if ! defined $first_atom_id;
+
+            # Checks for mainchains and heteroatoms.
+            next if ! $include_mainchain &&
+                ! contains_sidechain_atoms( $parameters,
+                                            $atom_site,
+                                            [ $first_atom_id, $second_atom_id,
+                                              $third_atom_id ] ) &&
+                ! contains_hetatoms( $atom_site,
+                                     [ $first_atom_id, $second_atom_id,
+                                       $third_atom_id ] );
+
+            push @{ $bendable_angles{$third_atom_id} },
+                [ $first_atom_id, $second_atom_id, $third_atom_id ];
+
+            # Adds bond if it is a continuation of identified bonds.
+            if( exists $bendable_angles{$second_atom_id} ) {
+                unshift @{ $bendable_angles{$third_atom_id} },
+                    @{ $bendable_angles{$second_atom_id} };
+            }
+
+            $bond_order{$first_atom_id}{$second_atom_id}{$third_atom_id} = $bond_order_idx;
+            $bond_order_idx++;
+        }
     }
 
-    # Naming the bendable angles.
+    # Naming the bendable angles and calculating their values.
     for my $atom_id ( keys %bendable_angles ) {
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $bendable_angles{$atom_id} } ) {
@@ -396,11 +422,20 @@ sub bendable_angles
                 join '-', map { $atom_site->{$_}{'label_atom_id'} }
                              @{ $bond_atom_ids };
 
+            # Calculates bond angle.
+            my $bond_angle = bond_angle(
+                [ map { [ $atom_site->{$_}{'Cartn_x'},
+                          $atom_site->{$_}{'Cartn_y'},
+                          $atom_site->{$_}{'Cartn_z'} ] }
+                     @{ $bond_atom_ids } ]
+            );
+
             $atom_site->{$atom_id}{'bendable_angles'}{$bendable_angle_name} = {
                 'order' => $bond_order{$bond_atom_ids->[0]}
                                       {$bond_atom_ids->[1]}
                                       {$bond_atom_ids->[2]},
                 'atom_ids' => $bond_atom_ids,
+                'value' => $bond_angle
             };
         }
     }

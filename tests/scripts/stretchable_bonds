@@ -23,7 +23,8 @@ $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
 
-stretchable_bonds( $parameters, $atom_site );
+stretchable_bonds( $parameters, $atom_site,
+                   { 'include_mainchain' => $include_mainchain } );
 
 for my $atom_id ( sort { $a cmp $b }
                   grep { defined $atom_site->{$_}{'stretchable_bonds'} }
@@ -46,7 +47,7 @@ for my $atom_id ( sort { $a cmp $b }
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
                "$atom_site->{$second_atom_id}{\"label_atom_id\"} " ) if ! $show_values;
 
-        print( join( " ", split( ",", $residue_unique_key ), $bond_name ), " " ) if $show_values;
+        print( join( " ", $residue_unique_key, $bond_name ), " " ) if $show_values;
         printf( "%.3f\n", $stretchable_bonds->{$bond_name}{'value'} ) if $show_values;
 
     }

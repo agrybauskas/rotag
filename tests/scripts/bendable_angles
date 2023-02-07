@@ -11,7 +11,7 @@ use ForceField::Parameters;
 # Example: ./bendable_angles structure.dump
 #
 
-my ( $pdbx_dump_file ) = @ARGV;
+my ( $pdbx_dump_file, $include_mainchain, $show_values ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -22,22 +22,36 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
-bendable_angles( $parameters, $atom_site );
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+bendable_angles( $parameters, $atom_site,
+                 { 'include_mainchain' => $include_mainchain } );
 
 for my $atom_id ( sort { $a cmp $b }
                   grep { defined $atom_site->{$_}{'bendable_angles'} }
                   keys %{ $atom_site } ) {
     my $bendable_angles = $atom_site->{$atom_id}{'bendable_angles'};
-    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
+    my $residue_unique_key =
+        join ' ', ( $atom_site->{$atom_id}{'label_seq_id'},
+                    $atom_site->{$atom_id}{'label_asym_id'},
+                    $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
+                    $atom_site->{$atom_id}{'label_alt_id'} );
+
+    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  ) if ! $show_values;
+
     for my $angle_name ( sort { $bendable_angles->{$a}{'order'} <=>
                                 $bendable_angles->{$b}{'order'} }
                          keys %{ $bendable_angles } ) {
         my $first_atom_id  = $bendable_angles->{$angle_name}{'atom_ids'}[0];
         my $second_atom_id = $bendable_angles->{$angle_name}{'atom_ids'}[1];
         my $third_atom_id  = $bendable_angles->{$angle_name}{'atom_ids'}[2];
+
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
                "$atom_site->{$second_atom_id}{\"label_atom_id\"}," .
-               "$atom_site->{$third_atom_id}{\"label_atom_id\"} " );
+               "$atom_site->{$third_atom_id}{\"label_atom_id\"} " ) if ! $show_values;
+
+        print( join( " ", $residue_unique_key, $angle_name ), " " ) if $show_values;
+        printf( "%.1f\n", $bendable_angles->{$angle_name}{'value'} * 180 / $pi ) if $show_values;
     }
-    print( "\n" );
+    print( "\n" ) if ! $show_values;
 }
