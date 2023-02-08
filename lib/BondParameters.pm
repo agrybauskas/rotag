@@ -58,6 +58,7 @@ sub rotatable_bonds
 
     my %rotatable_bonds = ();
     my %rotatable_bonds_cache = ();
+    my %dihedral_angles_cache = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
@@ -181,18 +182,21 @@ sub rotatable_bonds
                              @rotatable_bond_name_keys ),
                        $rotatable_bond_name_keys[0] );
 
-            # Calculates dihedral angle.
-            my $dihedral_angle = dihedral_angle(
-                [ map { [ $atom_site->{$_}{'Cartn_x'},
-                          $atom_site->{$_}{'Cartn_y'},
-                          $atom_site->{$_}{'Cartn_z'} ] }
-                     @{ $bond_atom_ids } ]
-            );
+            # Calculates dihedral angle if it is not already calculated.
+            my $dihedral_angle_key = join ",", @{ $bond_atom_ids };
+            if( ! defined $dihedral_angles_cache{$dihedral_angle_key} ) {
+                $dihedral_angles_cache{$dihedral_angle_key} = dihedral_angle(
+                    [ map { [ $atom_site->{$_}{'Cartn_x'},
+                              $atom_site->{$_}{'Cartn_y'},
+                              $atom_site->{$_}{'Cartn_z'} ] }
+                         @{ $bond_atom_ids } ]
+                    );
+            }
 
             $atom_site->{$atom_id}{'rotatable_bonds'}{$rotatable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
                 'atom_ids' => $bond_atom_ids,
-                'value' => $dihedral_angle
+                'value' => $dihedral_angles_cache{$dihedral_angle_key}
             };
         }
     }
@@ -302,7 +306,7 @@ sub stretchable_bonds
                 join '-', map { $atom_site->{$_}{'label_atom_id'} }
                              @{ $bond_atom_ids };
 
-            # Calculates bond length.
+            # Calculates bond length if it is not already calculated.
             my $bond_length = bond_length(
                 [ map { [ $atom_site->{$_}{'Cartn_x'},
                           $atom_site->{$_}{'Cartn_y'},
@@ -422,7 +426,7 @@ sub bendable_angles
                 join '-', map { $atom_site->{$_}{'label_atom_id'} }
                              @{ $bond_atom_ids };
 
-            # Calculates bond angle.
+            # Calculates bond angle if it is not already calculated.
             my $bond_angle = bond_angle(
                 [ map { [ $atom_site->{$_}{'Cartn_x'},
                           $atom_site->{$_}{'Cartn_y'},
