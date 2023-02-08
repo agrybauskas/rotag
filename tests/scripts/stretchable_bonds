@@ -11,7 +11,7 @@ use ForceField::Parameters;
 # Example: ./stretchable_bonds structure.dump
 #
 
-my ( $pdbx_dump_file, $include_mainchain, $show_values ) = @ARGV;
+my ( $pdbx_dump_file, $include_mainchain ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -36,7 +36,7 @@ for my $atom_id ( sort { $a cmp $b }
                     $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
                     $atom_site->{$atom_id}{'label_alt_id'} );
 
-    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  ) if ! $show_values;
+    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  );
 
     for my $bond_name ( sort { $stretchable_bonds->{$a}{'order'} <=>
                                $stretchable_bonds->{$b}{'order'} }
@@ -45,11 +45,7 @@ for my $atom_id ( sort { $a cmp $b }
         my $second_atom_id = $stretchable_bonds->{$bond_name}{'atom_ids'}->[1];
 
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
-               "$atom_site->{$second_atom_id}{\"label_atom_id\"} " ) if ! $show_values;
-
-        print( join( " ", $residue_unique_key, $bond_name ), " " ) if $show_values;
-        printf( "%.3f\n", $stretchable_bonds->{$bond_name}{'value'} ) if $show_values;
-
+               "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
     }
-    print( "\n" ) if ! $show_values;
+    print( "\n" );
 }

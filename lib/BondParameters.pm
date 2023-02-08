@@ -3,6 +3,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( bendable_angles
+                     collect_bond_lengths
                      collect_dihedral_angles
                      rotatable_bonds
                      stretchable_bonds );
@@ -464,7 +465,7 @@ sub bendable_angles
 #     'rotatable_bonds' value must be present that is generated with
 #     rotatable_bonds().
 # Output:
-#     %dihedral_angles - return dihedral non-redundant dihedral angles.
+#     %dihedral_angles - returns non-redundant dihedral angles.
 
 sub collect_dihedral_angles
 {
@@ -491,87 +492,37 @@ sub collect_dihedral_angles
 }
 
 #
-# Calculates bond lengths for all given atoms that are described in atom site
-# data structure (produced by obtain_atom_site or functions that uses it). Usage
-# of connect_atoms is necessary for correct calculations.
+# Collects bond lengths for all given atoms that are described in atom site
+# data structure (produced by obtain_atom_site or functions that uses it).
 # Input:
-#     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $include_mainchain - additionally calculates mainchain bond angles;
-#     $include_hetatoms - additionally calculates bond lengths for heteroatoms.
+#     $atom_site - atom site data structure (see PDBxParser.pm).
+#     'stretchable_bonds' value must be present that is generated with
+#     stretchable_bonds().
 # Output:
-#     adds data structure that relates residue id and bond lengths.
-#
+#     %bond_lengths - returns non-redundant bond lengths.
 
-sub calculate_bond_lengths
+sub collect_bond_lengths
 {
-    my ( $self ) = @_;
-    my ( $include_mainchain, $include_hetatoms ) = (
-        $self->{'include_mainchain'},
-        $self->{'include_hetatoms'},
-    );
-
-    $include_mainchain //= 0;
-    $include_hetatoms //= 0;
-
-    my $parameters = $self->{'parameters'};
-    my $atom_site = $self->{'atom_site'};
+    my ( $atom_site ) = @_;
 
     my $residue_groups =
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
-    # Iterates through residue ids and, according to the parameter file,
-    # calculates bond lengths of each side-chain bond.
+    my %bond_lengths = ();
     for my $residue_unique_key ( sort keys %{ $residue_groups } ) {
         my $residue_site =
             filter_new( $atom_site,
                         { 'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
-
-        my $start_atom_ids;
-        if( $include_mainchain ) {
-            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
-            my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
-                split ',', $residue_unique_key;
-            $start_atom_ids =
-                filter_new( $residue_site,
-                            { 'include' => { 'id' => \@expanded_atom_ids,
-                                             'label_atom_id' => [ 'C' ],
-                                             'label_asym_id' => [ $chain_id ],
-                                             'pdbx_PDB_model_num' => [ $pdbx_model_id ],
-                                             'label_alt_id' => [ $alt_id ] },
-                              'exclude' => { 'label_seq_id' => [ $residue_id ] },
-                              'return_data' => 'id' } );
-            $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
-        }
-
-        $self->find_stretchable_bonds( $start_atom_ids, $residue_site );
-
         my $unique_stretchable_bonds = unique_bond_parameters(
-            { map { ( $_ => $self->{'bond_lengths'}{'id'}{$_} ) }
-                 @{ $residue_groups->{$residue_unique_key} } }
+            { map { ( $_ => $atom_site->{$_}{'stretchable_bonds'} ) }
+              grep { defined $atom_site->{$_}{'stretchable_bonds'} }
+                  @{ $residue_groups->{$residue_unique_key} } }
         );
-        $self->{'bond_lengths'}{'residue_unique_key'}{$residue_unique_key} =
-            $unique_stretchable_bonds;
-
-        # Calculates every side-chain bond length.
-        for my $bond_name ( keys %{ $unique_stretchable_bonds } ) {
-            my ( $first_atom_id, $second_atom_id ) =
-                @{ $unique_stretchable_bonds->{$bond_name}{'atom_ids'} };
-
-            my ( $first_atom_coord, $second_atom_coord ) =
-                map { [ $atom_site->{$_}{'Cartn_x'},
-                        $atom_site->{$_}{'Cartn_y'},
-                        $atom_site->{$_}{'Cartn_z'} ] }
-                    ( $first_atom_id, $second_atom_id );
-
-            $self->{'bond_lengths'}{'residue_unique_key'}
-                   {$residue_unique_key}{$bond_name}{'value'} =
-                bond_length( [ $first_atom_coord,
-                               $second_atom_coord ] );
-        }
+        $bond_lengths{$residue_unique_key} = $unique_stretchable_bonds;
     }
 
-    return;
+    return \%bond_lengths;
 }
 
 #
