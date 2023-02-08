@@ -75,7 +75,7 @@ sub rotatable_bonds
 
         if( $include_hetatoms ) {
             $start_atom_ids = filter_new(
-                $atom_site,
+                $residue_site,
                 { 'include' => { 'label_atom_id' => [ 'C' ] },
                   'return_data' => 'id' }
             );
