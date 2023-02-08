@@ -239,6 +239,7 @@ sub stretchable_bonds
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     my %stretchable_bonds = ();
+    my %bond_lengths_cache = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
@@ -307,17 +308,20 @@ sub stretchable_bonds
                              @{ $bond_atom_ids };
 
             # Calculates bond length if it is not already calculated.
-            my $bond_length = bond_length(
-                [ map { [ $atom_site->{$_}{'Cartn_x'},
-                          $atom_site->{$_}{'Cartn_y'},
-                          $atom_site->{$_}{'Cartn_z'} ] }
-                     @{ $bond_atom_ids } ]
-            );
+            my $bond_length_key = join ",", @{ $bond_atom_ids };
+            if( ! defined $bond_lengths_cache{$bond_length_key} ) {
+                $bond_lengths_cache{$bond_length_key} = bond_length(
+                    [ map { [ $atom_site->{$_}{'Cartn_x'},
+                              $atom_site->{$_}{'Cartn_y'},
+                              $atom_site->{$_}{'Cartn_z'} ] }
+                         @{ $bond_atom_ids } ]
+                );
+            }
 
             $atom_site->{$atom_id}{'stretchable_bonds'}{$stretchable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[0]}{$bond_atom_ids->[1]},
                 'atom_ids' => $bond_atom_ids,
-                'value' => $bond_length
+                'value' => $bond_lengths_cache{$bond_length_key}
             };
         }
     }
