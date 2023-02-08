@@ -6,12 +6,13 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( rotation_translation );
 
-use List::MoreUtils qw( uniq );
-
 use AlterMolecule qw( angle_bending
                       bond_stretching
                       bond_torsion );
 use AtomProperties qw( sort_atom_ids_by_name );
+use BondParameters qw( collect_bond_angles
+                       collect_bond_lengths
+                       collect_dihedral_angles );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( determine_residue_keys
@@ -35,7 +36,7 @@ our $VERSION = $VERSION;
 
 sub rotation_translation
 {
-    my ( $parameters, $atom_site, $bond_parameters, $options ) = @_;
+    my ( $parameters, $atom_site ) = @_;
 
     # Determines all residue ids present in atom site.
     my @residue_unique_keys =
@@ -50,11 +51,17 @@ sub rotation_translation
         next if ! %{ $residue_site };
 
         my $rotatable_bonds =
-            $bond_parameters->rotatable_bonds( $residue_site );
+            { map { $_ => $residue_site->{$_}{'rotatable_bonds'} }
+              grep { defined $residue_site->{$_}{'rotatable_bonds'} }
+              keys %{ $residue_site } };
         my $stretchable_bonds =
-            $bond_parameters->stretchable_bonds( $residue_site );
+            { map { $_ => $residue_site->{$_}{'stretchable_bonds'} }
+              grep { defined $residue_site->{$_}{'stretchable_bonds'} }
+              keys %{ $residue_site } };
         my $bendable_angles =
-            $bond_parameters->bendable_angles( $residue_site );
+            { map { $_ => $residue_site->{$_}{'bendable_angles'} }
+              grep { defined $residue_site->{$_}{'bendable_angles'} }
+              keys %{ $residue_site } };
 
         if( ! %{ $rotatable_bonds } &&
             ! %{ $stretchable_bonds } &&

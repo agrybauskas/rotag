@@ -5,7 +5,9 @@ use warnings;
 
 use Data::Dumper;
 
-use BondParameters;
+use BondParameters qw( bendable_angles
+                       rotatable_bonds
+                       stretchable_bonds );
 use ForceField::Parameters;
 use SidechainModels qw( rotation_translation );
 
@@ -32,14 +34,17 @@ close( $fh );
 $atom_site = eval( $atom_site );
 
 my $parameters = Parameters->new();
-my $bond_parameters = BondParameters->new(
+
+rotatable_bonds(
     $parameters, $atom_site, { 'include_hetatoms' => $include_hetatoms }
-);
+) if $do_bond_torsion;
+stretchable_bonds(
+    $parameters, $atom_site, { 'include_hetatoms' => $include_hetatoms }
+) if $do_bond_stretching;
+bendable_angles(
+    $parameters, $atom_site, { 'include_hetatoms' => $include_hetatoms }
+) if $do_angle_bending;
 
-$bond_parameters->find_rotatable_bonds() if $do_bond_torsion;
-$bond_parameters->find_stretchable_bonds() if $do_bond_stretching;
-$bond_parameters->find_bendable_angles() if $do_angle_bending;
-
-rotation_translation( $parameters, $atom_site, $bond_parameters );
+rotation_translation( $parameters, $atom_site );
 
 print Dumper $atom_site->{$atom_id}{"conformation"};
