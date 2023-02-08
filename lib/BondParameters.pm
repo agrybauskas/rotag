@@ -358,6 +358,7 @@ sub bendable_angles
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     my %bendable_angles = ();
+    my %bond_angles_cache = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
@@ -431,19 +432,22 @@ sub bendable_angles
                              @{ $bond_atom_ids };
 
             # Calculates bond angle if it is not already calculated.
-            my $bond_angle = bond_angle(
-                [ map { [ $atom_site->{$_}{'Cartn_x'},
-                          $atom_site->{$_}{'Cartn_y'},
-                          $atom_site->{$_}{'Cartn_z'} ] }
-                     @{ $bond_atom_ids } ]
-            );
+            my $bond_angle_key = join ",", @{ $bond_atom_ids };
+            if( ! defined $bond_angles_cache{$bond_angle_key} ) {
+                $bond_angles_cache{$bond_angle_key} = bond_angle(
+                    [ map { [ $atom_site->{$_}{'Cartn_x'},
+                              $atom_site->{$_}{'Cartn_y'},
+                              $atom_site->{$_}{'Cartn_z'} ] }
+                         @{ $bond_atom_ids } ]
+                );
+            }
 
             $atom_site->{$atom_id}{'bendable_angles'}{$bendable_angle_name} = {
                 'order' => $bond_order{$bond_atom_ids->[0]}
                                       {$bond_atom_ids->[1]}
                                       {$bond_atom_ids->[2]},
                 'atom_ids' => $bond_atom_ids,
-                'value' => $bond_angle
+                'value' => $bond_angles_cache{$bond_angle_key}
             };
         }
     }
