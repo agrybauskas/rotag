@@ -6,7 +6,8 @@
     use List::MoreUtils qw( uniq );
     use List::Util qw( any );
 
-    use BondParameters;
+    use BondParameters qw( collect_dihedral_angles
+                           rotatable_bonds );
     use BondProperties qw( hybridization );
     use ConnectAtoms qw( connect_atoms );
     use Measure qw( around_distance );
@@ -242,11 +243,9 @@ exp
             connect_atoms( $parameters, $clone_atom_site );
             hybridization( $parameters, $clone_atom_site );
 
-            my $bond_parameters = BondParameters->new(
-                $parameters, $clone_atom_site, { 'include_mainchain' => 1 }
-            );
-            $bond_parameters->calculate_dihedral_angles();
-            my $dihedral_angles = $bond_parameters->dihedral_angles;
+            rotatable_bonds( $parameters, $clone_atom_site,
+                             { 'include_mainchain' => 1 } );
+            my $dihedral_angles = collect_dihedral_angles( $clone_atom_site );
 
             my @residue_unique_keys = (); # Residue unique keys that passes the
                                           # criteria.
