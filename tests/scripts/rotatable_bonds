@@ -11,7 +11,7 @@ use ForceField::Parameters;
 # Example: ./rotatable_bonds structure.dump
 #
 
-my ( $pdbx_dump_file, $include_mainchain, $show_values ) = @ARGV;
+my ( $pdbx_dump_file, $include_mainchain ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -31,13 +31,8 @@ for my $atom_id ( sort { $a cmp $b }
                   grep { defined $atom_site->{$_}{'rotatable_bonds'} }
                   keys %{ $atom_site } ) {
     my $rotatable_bonds = $atom_site->{$atom_id}{'rotatable_bonds'};
-    my $residue_unique_key =
-        join ' ', ( $atom_site->{$atom_id}{'label_seq_id'},
-                    $atom_site->{$atom_id}{'label_asym_id'},
-                    $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
-                    $atom_site->{$atom_id}{'label_alt_id'} );
 
-    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: "  ) if ! $show_values;
+    print( "$atom_site->{$atom_id}{\"label_atom_id\"}: " );
 
     for my $angle_name ( sort { $rotatable_bonds->{$a}{'order'} <=>
                            $rotatable_bonds->{$b}{'order'} }
@@ -46,10 +41,7 @@ for my $atom_id ( sort { $a cmp $b }
         my $second_atom_id = $rotatable_bonds->{$angle_name}{'atom_ids'}[2];
 
         print( "$atom_site->{$first_atom_id}{\"label_atom_id\"}," .
-               "$atom_site->{$second_atom_id}{\"label_atom_id\"} " ) if ! $show_values;
-
-        print( join( " ", $residue_unique_key, $angle_name ), " " ) if $show_values;
-        printf( "%.1f\n", $rotatable_bonds->{$angle_name}{'value'} * 180 / $pi ) if $show_values;
+               "$atom_site->{$second_atom_id}{\"label_atom_id\"} " );
     }
-    print( "\n" ) if ! $show_values;
+    print( "\n" );
 }

@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use BondParameters qw( collect_dihedral_angles
+                       rotatable_bonds );
+use ForceField::Parameters;
+
+#
+# Unit test: collect_dihedral_angles()
+# Example: ./collect_dihedral_angles structure.dump
+#
+
+my ( $pdbx_dump_file, $include_mainchain ) = @ARGV;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $parameters = Parameters->new();
+my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+rotatable_bonds( $parameters, $atom_site,
+                 { 'include_mainchain' => $include_mainchain } );
+
+my $dihedral_angles = collect_dihedral_angles( $atom_site );
+for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
+    for my $angle_name ( sort { $a cmp $b }
+                         keys %{ $dihedral_angles->{$residue_unique_key} } ) {
+        print( join( " ", split( ",", $residue_unique_key ), $angle_name ), " " );
+        printf( "%.1f\n",
+                $dihedral_angles->{$residue_unique_key}{$angle_name}{'value'} *
+                180 / $pi );
+    }
+}
