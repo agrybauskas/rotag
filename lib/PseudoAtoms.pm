@@ -22,7 +22,12 @@ use List::MoreUtils qw( any
 use Logging qw( info );
 use threads;
 
-use BondParameters;
+use BondParameters qw( collect_bond_lengths
+                       collect_bond_angles
+                       collect_dihedral_angles
+                       bendable_angles
+                       rotatable_bonds
+                       stretchable_bonds );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      is_neighbour
