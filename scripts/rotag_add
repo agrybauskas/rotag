@@ -217,11 +217,6 @@ for my $pdbx_file ( @ARGV ) {
             next;
         }
 
-        my $bond_parameters = BondParameters->new(
-            $parameters, $selected_atom_site
-        );
-        $bond_parameters->calculate_dihedral_angles();
-
         # Determines, how to split rotamer angles into groups.
         my $rotamer_angle_split_groups = {};
         my @rotamer_ids = sort keys %{ $rotamer_angle };
@@ -270,8 +265,9 @@ for my $pdbx_file ( @ARGV ) {
                 filter_by_unique_residue_key( $current_target_atom_site,
                                               $residue_unique_key, 1 );
 
-            hybridization( $parameters, $target_atom_site );
-            connect_atoms( $parameters, $target_atom_site );
+            hybridization( $parameters, $residue_site );
+            connect_atoms( $parameters, $residue_site );
+            rotatable_bonds( $parameters, $residue_site );
 
             # Generates rotational model.
             rotation_translation( $parameters, $residue_site );
@@ -294,11 +290,9 @@ for my $pdbx_file ( @ARGV ) {
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi_min'} &&
                        exists $rotamer_angle->{$rotamer_ids[0]}{'phi_max'} &&
                        exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) ) {
-                my $residue_bond_parameters = BondParameters->new(
-                    $parameters, $residue_site, { 'include_mainchain' => 1 }
-                );
-                $residue_bond_parameters->calculate_dihedral_angles();
-                my $dihedral_angles = $residue_bond_parameters->dihedral_angles;
+                rotatable_bonds( $parameters, $residue_site,
+                                 { 'include_mainchain' => 1 } );
+                my $dihedral_angles = collect_dihedral_angles( $residue_site );
 
                 # Calculates phi and psi angles.
                 my $phi;
@@ -382,7 +376,6 @@ for my $pdbx_file ( @ARGV ) {
                              { 'parameters' => $parameters,
                                'atom_site' => $selected_atom_site,
                                'atom_specifier' => { 'id' => [ $atom_id ] },
-                               'bond_parameters' => $bond_parameters,
                                'bond_parameter_values' => $rotamer_angles,
                                'last_atom_id' => $last_atom_id,
                                 # TODO: check if it is a good idea to have
