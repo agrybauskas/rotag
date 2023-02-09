@@ -12,6 +12,7 @@ use List::Util qw( max );
 use Math::Trig qw( acos );
 
 use AlterMolecule qw( bond_torsion );
+use BondParameters qw( rotatable_bonds );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
@@ -21,7 +22,7 @@ use LinearAlgebra qw( mult_matrix_product
                       switch_ref_frame );
 use Measure qw( bond_angle );
 use PseudoAtoms qw( replace_with_rotamer );
-use SidechainModels qw( rotation_only );
+use SidechainModels qw( rotation_translation );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -254,8 +255,9 @@ sub replace_with_moiety
 
         connect_atoms( $parameters, $residue_site );
         hybridization( $parameters, $residue_site );
+        rotatable_bonds( $parameters, $residue_site );
 
-        rotation_only( $parameters, $residue_site );
+        rotation_translation( $parameters, $residue_site );
 
         replace_with_rotamer( $parameters, $residue_site, $unique_residue_key,
                               $angles );
