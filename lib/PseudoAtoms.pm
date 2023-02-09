@@ -219,13 +219,12 @@ sub generate_pseudo
 sub generate_rotamer
 {
     my ( $args ) = @_;
-    my ( $parameters, $atom_site, $angle_values, $bond_parameters,
-         $last_atom_id, $alt_group_id, $set_missing_angles_to_zero,
-         $keep_origin_id, $keep_origin_alt_id ) =
+    my ( $parameters, $atom_site, $angle_values, $last_atom_id, $alt_group_id,
+         $set_missing_angles_to_zero, $keep_origin_id, $keep_origin_alt_id ) =
         ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'angle_values'},
-          $args->{'bond_parameters'}, $args->{'last_atom_id'},
-          $args->{'last_atom_id'}, $args->{'set_missing_angles_to_zero'},
-          $args->{'keep_origin_id'}, $args->{'keep_origin_alt_id'}, );
+          $args->{'last_atom_id'}, $args->{'last_atom_id'},
+          $args->{'set_missing_angles_to_zero'}, $args->{'keep_origin_id'},
+          $args->{'keep_origin_alt_id'}, );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -244,13 +243,13 @@ sub generate_rotamer
         my $residue_site =
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
-        my $rotatable_bonds = $bond_parameters->rotatable_bonds;
-
         for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
-            if( ! exists $rotatable_bonds->{$atom_id} ) { next; }
+            my $rotatable_bonds = $atom_site->{$atom_id}{'rotatable_bonds'};
+
+            if( ! defined $rotatable_bonds ) { next; }
 
             my %angles;
-            for my $angle_name ( keys %{ $rotatable_bonds->{$atom_id} } ) {
+            for my $angle_name ( keys %{ $rotatable_bonds } ) {
                 if( exists $angle_values->{"$residue_unique_key"}{$angle_name} &&
                     defined $angle_values->{"$residue_unique_key"}{$angle_name}){
                     $angles{$angle_name} =
@@ -270,7 +269,6 @@ sub generate_rotamer
                       'parameters' => $parameters,
                       'atom_site' => { ( %atom_site, %rotamer_atom_site ) },
                       'atom_specifier' => { 'id' => [ $atom_id ] },
-                      'bond_parameters' => $bond_parameters,
                       'bond_parameter_values' => \%angles,
                       'last_atom_id' => $last_atom_id,
                       'alt_group_id' => $residue_alt_id } ) } );
