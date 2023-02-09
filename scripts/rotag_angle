@@ -9,7 +9,8 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
-use BondParameters;
+use BondParameters qw( bendable_angles
+                       collect_bond_angles );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
@@ -567,13 +568,9 @@ for my $pdbx_file ( @ARGV ) {
 
         connect_atoms( $parameters, $bond_angle_site );
 
-        my $bond_parameters = BondParameters->new(
-            $parameters,
-            $bond_angle_site,
-            { 'include_mainchain' => $calc_mainchain }
-        );
-        $bond_parameters->calculate_bond_angles();
-        my $bond_angles = $bond_parameters->bond_angles;
+        bendable_angles( $parameters, $bond_angle_site,
+                         { 'include_mainchain' => $calc_mainchain } );
+        my $bond_angles = collect_bond_angles( $bond_angle_site );
 
         my $bond_angle_id = 1;
         for my $residue_unique_key ( sort keys %{ $bond_angles } ) {
