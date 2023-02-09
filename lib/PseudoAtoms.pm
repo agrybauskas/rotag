@@ -373,13 +373,9 @@ sub generate_library
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
-        my $bond_parameters = BondParameters->new(
-            $parameters, $current_atom_site
-        );
-
-        $bond_parameters->calculate_dihedral_angles() if $do_bond_torsion;
-        $bond_parameters->calculate_bond_lengths() if $do_bond_stretching;
-        $bond_parameters->calculate_bond_angles() if $do_angle_bending;
+        rotatable_bonds( $parameters, $current_atom_site ) if $do_bond_torsion;
+        stretchable_bonds( $parameters, $current_atom_site ) if $do_bond_stretching;
+        bendable_angles( $parameters, $current_atom_site ) if $do_angle_bending;
 
         # Finds where CA of target residues are.
         my @target_ca_ids;
@@ -430,8 +426,7 @@ sub generate_library
                 # Generates conformational models before checking for
                 # clashes/interactions for given residues.
                 if( $conf_model eq 'rotation_only' ) {
-                    rotation_translation( $parameters, $residue_site,
-                                          $bond_parameters );
+                    rotation_translation( $parameters, $residue_site );
                 } else {
                     confess 'conformational model was not defined.';
                 }
@@ -450,7 +445,6 @@ sub generate_library
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'bond_parameters' => $bond_parameters,
                              'interaction_site' => \%interaction_site,
                              'angles' => $angles,
                              'non_bonded_potential' =>
@@ -470,7 +464,6 @@ sub generate_library
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'bond_parameters' => $bond_parameters,
                              'interaction_site' => \%interaction_site,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
