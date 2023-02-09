@@ -841,13 +841,11 @@ sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $parameters, $atom_site, $residue_unique_key, $bond_parameters,
-         $interaction_site, $non_bonded_potential, $bonded_potential, $rmsd,
-         $options ) = (
+    my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
+         $non_bonded_potential, $bonded_potential, $rmsd, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
-        $args->{'bond_parameters'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
@@ -877,7 +875,7 @@ sub calc_full_atom_energy
 
         my %rotamer_site = %{ $residue_site };
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
-                              \%angles, $bond_parameters );
+                              \%angles );
 
         my @rotamer_atom_ids =
             sort keys %{ filter_new( \%rotamer_site,
