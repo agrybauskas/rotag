@@ -18,7 +18,7 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 ALA 1 A 1 . 1 N 2 CA 3 C 6 N psi -62.252 degrees
-2 CYS 2 A 1 . 6 N 7 CA 10 CB 11 SG chi1 -164.629 degrees
-3 CYS 2 A 1 . 3 C 6 N 7 CA 8 C phi -90.475 degrees
+1 CYS 2 A 1 . 6 N 7 CA 10 CB 11 SG chi1 -164.629 degrees
+2 CYS 2 A 1 . 3 C 6 N 7 CA 8 C phi -90.475 degrees
+3 CYS 2 A 1 . 1 N 2 CA 3 C 6 N psi -62.252 degrees
 #
