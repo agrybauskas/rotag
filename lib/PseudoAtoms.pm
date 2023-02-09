@@ -540,14 +540,12 @@ sub calc_favourable_angles
 {
     my ( $args ) = @_;
 
-    my ( $parameters, $atom_site, $residue_unique_key, $bond_parameters,
-         $interaction_site, $angles, $small_angle, $non_bonded_potential,
-         $bonded_potential, $threads, $rand_count, $rand_seed,
-         $program_called_by, $verbose ) = (
+    my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
+         $angles, $small_angle, $non_bonded_potential, $bonded_potential,
+         $threads, $rand_count, $rand_seed, $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
-        $args->{'bond_parameters'},
         $args->{'interaction_site'},
         $args->{'angles'},
         $args->{'small_angle'},
@@ -572,7 +570,11 @@ sub calc_favourable_angles
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
-    my $rotatable_bonds = $bond_parameters->rotatable_bonds;
+    my $rotatable_bonds = {
+        map { $_ => $residue_site->{$_}{'rotatable_bonds'} }
+        grep { defined $residue_site->{$_}{'rotatable_bonds'} }
+        keys %{ $residue_site }
+    };
     if( ! %{ $rotatable_bonds } ) { return []; }
 
     # Goes through each atom in side chain and calculates interaction
@@ -673,7 +675,6 @@ sub calc_favourable_angles
                        { 'parameters' => $parameters,
                          'atom_site' => $atom_site,
                          'atom_id' => $atom_id,
-                         'bond_parameters' => $bond_parameters,
                          'interaction_site' => $interaction_site,
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential },
