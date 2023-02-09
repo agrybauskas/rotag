@@ -388,9 +388,10 @@ sub bendable_angles
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
 
-        my $bond_paths //= BondPath->new( {
+        my $bond_paths = BondPath->new( {
             'atom_site' => $residue_site,
             'start_atom_ids' => $start_atom_ids,
+            'include_hetatoms' => $include_hetatoms,
             'include_hetatoms' => $include_hetatoms,
         } );
 
