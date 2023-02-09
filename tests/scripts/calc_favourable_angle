@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use BondParameters;
+use BondParameters qw( rotatable_bonds );
 use ForceField::NonBonded qw( hard_sphere );
 use ForceField::Parameters;
 use PDBxParser qw( filter
@@ -26,8 +26,8 @@ $atom_site = eval( $atom_site );
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
-my $bond_parameters = BondParameters->new( $parameters, $atom_site );
-$bond_parameters->calculate_dihedral_angles();
+
+rotatable_bonds( $parameters, $atom_site );
 
 my @checkable_angles;
 my @checkable_energies;
@@ -53,7 +53,6 @@ my ( $favourable_angles, $favourable_energies ) =
     @{ calc_favourable_angle( { 'parameters' => $parameters,
                                 'atom_site' => $atom_site,
                                 'atom_id' => $atom_id,
-                                'bond_parameters' => $bond_parameters,
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
                                 'threads' => 1,

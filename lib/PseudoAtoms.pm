@@ -745,12 +745,11 @@ sub calc_favourable_angle
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $parameters, $atom_site, $atom_id, $bond_parameters, $interaction_site,
+    my ( $parameters, $atom_site, $atom_id, $interaction_site,
          $non_bonded_potential, $bonded_potential, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'atom_id'},
-        $args->{'bond_parameters'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
@@ -775,7 +774,6 @@ sub calc_favourable_angle
             generate_pseudo( { 'parameters' => $parameters,
                                'atom_site' => $atom_site,
                                'atom_specifier' => { 'id' => [ "$atom_id" ] },
-                               'bond_parameters' => $bond_parameters,
                                'bond_parameter_values' => \%angles } );
         my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
         my $pseudo_origin_id =
