@@ -10,7 +10,8 @@ use JSON;
 use List::Util qw( max );
 use Try::Tiny;
 
-use BondParameters;
+use BondParameters qw( collect_dihedral_angles
+                       rotatable_bonds );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters();
@@ -273,7 +274,7 @@ for my $pdbx_file ( @ARGV ) {
             connect_atoms( $parameters, $target_atom_site );
 
             # Generates rotational model.
-            rotation_translation( $parameters, $residue_site, $bond_parameters );
+            rotation_translation( $parameters, $residue_site );
 
             # Determines the key that will connect 'atom_site' and
             # '_[local]_rotamer_angle' data.
