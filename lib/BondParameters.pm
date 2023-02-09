@@ -62,7 +62,6 @@ sub rotatable_bonds
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     my %rotatable_bonds = ();
-    my %rotatable_bonds_cache = ();
     my %dihedral_angles_cache = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
@@ -104,6 +103,7 @@ sub rotatable_bonds
             'ignore_connections' => $ignore_connections,
         } );
 
+        my %rotatable_bonds_cache = ();
         for my $fourth_atom_id ( @{ $bond_paths->get_atom_order } ) {
             my $third_atom_id = $bond_paths->get_atom_id_to( $fourth_atom_id );
 
