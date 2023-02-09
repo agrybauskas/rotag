@@ -62,7 +62,6 @@ sub rotatable_bonds
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     my %rotatable_bonds = ();
-    my %dihedral_angles_cache = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
@@ -169,6 +168,7 @@ sub rotatable_bonds
     }
 
     # Naming the rotatable bonds and calculating their values.
+    my %dihedral_angles_cache = ();
     for my $atom_id ( keys %rotatable_bonds ) {
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
@@ -244,7 +244,6 @@ sub stretchable_bonds
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     my %stretchable_bonds = ();
-    my %bond_lengths_cache = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
@@ -305,6 +304,7 @@ sub stretchable_bonds
     }
 
     # Naming the stretchable bonds and calculating their values.
+    my %bond_lengths_cache = ();
     for my $atom_id ( keys %stretchable_bonds ) {
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $stretchable_bonds{$atom_id} } ) {
@@ -363,7 +363,6 @@ sub bendable_angles
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
     my %bendable_angles = ();
-    my %bond_angles_cache = ();
     my %bond_order = ();
     my $bond_order_idx = 1;
 
@@ -429,6 +428,7 @@ sub bendable_angles
     }
 
     # Naming the bendable angles and calculating their values.
+    my %bond_angles_cache = ();
     for my $atom_id ( keys %bendable_angles ) {
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $bendable_angles{$atom_id} } ) {
