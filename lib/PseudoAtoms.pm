@@ -989,14 +989,12 @@ sub lowest_energy_state
 
 sub replace_with_rotamer
 {
-    my ( $parameters, $atom_site, $residue_unique_key, $angle_values,
-         $bond_parameters ) = @_;
+    my ( $parameters, $atom_site, $residue_unique_key, $angle_values ) = @_;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
     my $residue_site =
         generate_rotamer( { 'parameters' => $parameters,
                             'atom_site' => $atom_site,
-                            'bond_parameters' => $bond_parameters,
                             'angle_values' =>
                                 { $residue_unique_key => $angle_values  },
                             'alt_group_id' => 'X', # HACK: $keep_origin_alt_id
