@@ -9,7 +9,8 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
-use BondParameters;
+use BondParameters qw( collect_bond_lengths
+                       stretchable_bonds );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
@@ -297,13 +298,9 @@ for my $pdbx_file ( @ARGV ) {
 
         connect_atoms( $parameters, $bond_length_site );
 
-        my $bond_parameters = BondParameters->new(
-            $parameters,
-            $bond_length_site,
-            { 'include_mainchain' => $calc_mainchain }
-        );
-        $bond_parameters->calculate_bond_lengths();
-        my $bond_lengths = $bond_parameters->bond_lengths;
+        stretchable_bonds( $parameters, $bond_length_site,
+                           { 'include_mainchain' => $calc_mainchain } );
+        my $bond_lengths = collect_bond_lengths( $bond_length_site );
 
         my $bond_length_id = 1;
         for my $residue_unique_key ( sort keys %{ $bond_lengths } ) {
