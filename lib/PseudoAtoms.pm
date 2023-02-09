@@ -83,17 +83,14 @@ our $VERSION = $VERSION;
 sub generate_pseudo
 {
     my ( $args ) = @_;
-    my ( $parameters, $atom_site, $atom_specifier, $bond_parameters,
-         $bond_parameter_values, $last_atom_id, $alt_group_id,
-         $selection_state ) =
+    my ( $parameters, $atom_site, $atom_specifier, $bond_parameter_values,
+         $last_atom_id, $alt_group_id, $selection_state ) =
         ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'atom_specifier'},
-          $args->{'bond_parameters'}, $args->{'bond_parameter_values'},
-          $args->{'last_atom_id'}, $args->{'alt_group_id'},
-          $args->{'selection_state'} );
+          $args->{'bond_parameter_values'}, $args->{'last_atom_id'},
+          $args->{'alt_group_id'}, $args->{'selection_state'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
-    $bond_parameters //= {};
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
@@ -116,7 +113,12 @@ sub generate_pseudo
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
         my %bond_parameters =
-            %{ $bond_parameters->all_parameters->{$residue_unique_key} };
+            ( %{ collect_dihedral_angles( { $atom_id => $atom_site->{$atom_id} } )
+                 ->{$residue_unique_key} },
+              %{ collect_bond_lengths( { $atom_id => $atom_site->{$atom_id} } )
+                 ->{$residue_unique_key} },
+              %{ collect_bond_angles( { $atom_id => $atom_site->{$atom_id} } )
+                 ->{$residue_unique_key} } );
 
         # Adjust changes to the existing values of the bond and angle parameters.
         my @bond_parameter_names = sort keys %bond_parameters;
@@ -178,6 +180,8 @@ sub generate_pseudo
             # and old pseudo atoms.
             $pseudo_atom_site{$last_atom_id}{'connections'} =
                 $atom_site{$atom_id}{'connections'};
+            $pseudo_atom_site{$last_atom_id}{'connections_hetatom'} =
+                $atom_site{$atom_id}{'connections_hetatom'};
             $pseudo_atom_site{$last_atom_id}{'conformation'} =
                 $atom_site{$atom_id}{'conformation'};
 
