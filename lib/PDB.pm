@@ -46,32 +46,22 @@ sub obtain_pdb_atom_site
                  $occupancy, $B_iso_or_equiv_esd, $type_symbol,
                  $pdbx_formal_charge ) = @atom_data;
 
-            $atom_site{'data'}{$id}{'group_PDB'} = $group_pdb;
-            $atom_site{'data'}{$id}{'id'} = $id;
-            $atom_site{'data'}{$id}{'type_symbol'} = $type_symbol;
-            $atom_site{'data'}{$id}{'label_atom_id'} = $label_atom_id;
-            $atom_site{'data'}{$id}{'label_alt_id'} = '.' unless $label_alt_id;
-            $atom_site{'data'}{$id}{'label_comp_id'} = $label_comp_id;
-            $atom_site{'data'}{$id}{'label_asym_id'} = $label_asym_id;
-            $atom_site{'data'}{$id}{'label_seq_id'} = $label_seq_id;
-            $atom_site{'data'}{$id}{'Cartn_x'} = $cartn_x;
-            $atom_site{'data'}{$id}{'Cartn_y'} = $cartn_y;
-            $atom_site{'data'}{$id}{'Cartn_z'} = $cartn_z;
-            $atom_site{'data'}{$id}{'occupancy'} = $occupancy;
-            $atom_site{'data'}{$id}{'B_iso_or_equiv_esd'} = $B_iso_or_equiv_esd;
-            $atom_site{'data'}{$id}{'pdbx_formal_charge'} = $pdbx_formal_charge;
-            $atom_site{'data'}{$id}{'pdbx_PDB_model_num'} = $pdbx_PDB_model_num;
+            $atom_site{$id}{'group_PDB'} = $group_pdb;
+            $atom_site{$id}{'id'} = $id;
+            $atom_site{$id}{'type_symbol'} = $type_symbol;
+            $atom_site{$id}{'label_atom_id'} = $label_atom_id;
+            $atom_site{$id}{'label_alt_id'} = '.' unless $label_alt_id;
+            $atom_site{$id}{'label_comp_id'} = $label_comp_id;
+            $atom_site{$id}{'label_asym_id'} = $label_asym_id;
+            $atom_site{$id}{'label_seq_id'} = $label_seq_id;
+            $atom_site{$id}{'Cartn_x'} = $cartn_x;
+            $atom_site{$id}{'Cartn_y'} = $cartn_y;
+            $atom_site{$id}{'Cartn_z'} = $cartn_z;
+            $atom_site{$id}{'occupancy'} = $occupancy;
+            $atom_site{$id}{'B_iso_or_equiv_esd'} = $B_iso_or_equiv_esd;
+            $atom_site{$id}{'pdbx_formal_charge'} = $pdbx_formal_charge;
+            $atom_site{$id}{'pdbx_PDB_model_num'} = $pdbx_PDB_model_num;
         }
-    }
-
-    if( %{ $atom_site{'data'} } ) {
-        $atom_site{'attributes'} = [
-            'group_PDB', 'id', 'type_symbol', 'label_atom_id', 'label_alt_id',
-            'label_comp_id', 'label_asym_id', 'label_seq_id', 'Cartn_x',
-            'Cartn_y', 'Cartn_z', 'occupancy', 'B_iso_or_equiv_esd',
-            'pdbx_formal_charge', 'pdbx_PDB_model_num'
-        ];
-        $atom_site{'is_loop'} = 1;
     }
 
     return \%atom_site;

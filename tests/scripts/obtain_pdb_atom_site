@@ -3,11 +3,11 @@
 use strict;
 use warnings;
 
-use PDBxParser qw( obtain_pdb_atom_site
-                   to_pdbx );
+use PDB qw( obtain_pdb_atom_site );
+use PDBxParser qw( to_pdbx );
 
 #
-# Unit test: PDBxParser::obtain_pdb_atom_site
+# Unit test: PDB::obtain_pdb_atom_site
 # Example: ./obtain_pdb_atom_site structure.cif
 #
 
