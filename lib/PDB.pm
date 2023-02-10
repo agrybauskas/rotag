@@ -12,6 +12,14 @@ our $VERSION = $VERSION;
 
 # --------------------------------- PDB parser -------------------------------- #
 
+#
+# Obtains pdb data and converts to atom site data structure.
+# Input:
+#     $pdb_file - PDB file path.
+# Output:
+#     %atom_site - atom site data structure.
+#
+
 sub obtain_pdb_atom_site
 {
     my ( $pdbx_file ) = @_;
