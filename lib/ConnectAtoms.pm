@@ -432,6 +432,13 @@ sub connect_atoms_explicitly
     return;
 }
 
+# Returns original atom id.
+# Input:
+#     $atom_site - atom data structure;
+#     $atom_id - atom id.
+# Output:
+#     $original_atom_id - return original atom id.
+
 sub original_atom_id
 {
     my ( $atom_site, $atom_id ) = @_;
