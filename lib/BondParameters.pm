@@ -432,9 +432,6 @@ sub bendable_angles
         }
     }
 
-    use Data::Dumper;
-    print STDERR Dumper \%bendable_angles;
-
     # Naming the bendable angles and calculating their values.
     my %bond_angles_cache = ();
     for my $atom_id ( keys %bendable_angles ) {
