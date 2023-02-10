@@ -395,7 +395,6 @@ sub bendable_angles
             'atom_site' => $residue_site,
             'start_atom_ids' => $start_atom_ids,
             'include_hetatoms' => $include_hetatoms,
-            'include_hetatoms' => $include_hetatoms,
         } );
 
         for my $third_atom_id ( @{ $bond_paths->get_atom_order } ) {
