@@ -160,6 +160,7 @@ sub rotatable_bonds
             # of the bond chain, inherits its previous atom's rotatable bonds.
             if( exists $rotatable_bonds{$third_atom_id} ) {
                 unshift @{ $rotatable_bonds{$fourth_atom_id} },
+                    grep { scalar( grep { defined $residue_site->{$_} } @{ $_ } ) == 4 }
                     @{ $rotatable_bonds{$third_atom_id} };
             }
 
@@ -296,6 +297,7 @@ sub stretchable_bonds
             # Adds bond if it is a continuation of identified bonds.
             if( exists $stretchable_bonds{$first_atom_id} ) {
                 unshift @{ $stretchable_bonds{$second_atom_id} },
+                    grep { scalar( grep { defined $residue_site->{$_} } @{ $_ } ) == 2 }
                     @{ $stretchable_bonds{$first_atom_id} };
             }
 
@@ -421,6 +423,7 @@ sub bendable_angles
             # Adds bond if it is a continuation of identified bonds.
             if( exists $bendable_angles{$second_atom_id} ) {
                 unshift @{ $bendable_angles{$third_atom_id} },
+                    grep { scalar( grep { defined $residue_site->{$_} } @{ $_ } ) == 3 }
                     @{ $bendable_angles{$second_atom_id} };
             }
 
@@ -428,6 +431,9 @@ sub bendable_angles
             $bond_order_idx++;
         }
     }
+
+    use Data::Dumper;
+    print STDERR Dumper \%bendable_angles;
 
     # Naming the bendable angles and calculating their values.
     my %bond_angles_cache = ();
