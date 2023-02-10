@@ -161,7 +161,7 @@ sub rotatable_bonds
             if( exists $rotatable_bonds{$third_atom_id} ) {
                 unshift @{ $rotatable_bonds{$fourth_atom_id} },
                     grep { scalar( grep { defined $residue_site->{$_} } @{ $_ } ) == 4 }
-                    @{ $rotatable_bonds{$third_atom_id} };
+                        @{ $rotatable_bonds{$third_atom_id} };
             }
 
             $bond_order{$second_atom_id}{$third_atom_id} = $bond_order_idx;
@@ -298,7 +298,7 @@ sub stretchable_bonds
             if( exists $stretchable_bonds{$first_atom_id} ) {
                 unshift @{ $stretchable_bonds{$second_atom_id} },
                     grep { scalar( grep { defined $residue_site->{$_} } @{ $_ } ) == 2 }
-                    @{ $stretchable_bonds{$first_atom_id} };
+                        @{ $stretchable_bonds{$first_atom_id} };
             }
 
             $bond_order{$first_atom_id}{$second_atom_id} = $bond_order_idx;
@@ -423,7 +423,7 @@ sub bendable_angles
             if( exists $bendable_angles{$second_atom_id} ) {
                 unshift @{ $bendable_angles{$third_atom_id} },
                     grep { scalar( grep { defined $residue_site->{$_} } @{ $_ } ) == 3 }
-                    @{ $bendable_angles{$second_atom_id} };
+                        @{ $bendable_angles{$second_atom_id} };
             }
 
             $bond_order{$first_atom_id}{$second_atom_id}{$third_atom_id} = $bond_order_idx;
