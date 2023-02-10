@@ -12,7 +12,7 @@ our @EXPORT_OK = qw( bendable_angles
                      stretchable_bonds );
 
 use Carp;
-use List::Util qw( any );
+use List::Util qw( any none );
 
 use BondPath;
 use AtomProperties qw( contains_hetatoms
@@ -159,14 +159,8 @@ sub rotatable_bonds
             # If bond atoms are sp2/sp (do not rotate) or just is a continuation
             # of the bond chain, inherits its previous atom's rotatable bonds.
             if( exists $rotatable_bonds{$third_atom_id} ) {
-                my @rotatable_bonds_continuation = ();
-                for my $rotatable_bonds ( @{ $rotatable_bonds{$third_atom_id} } ) {
-                    next if ! any { defined $residue_site->{$_} }
-                                 @{ $rotatable_bonds };
-                    push @rotatable_bonds_continuation, $rotatable_bonds;
-                }
                 unshift @{ $rotatable_bonds{$fourth_atom_id} },
-                    @rotatable_bonds_continuation;
+                    @{ $rotatable_bonds{$third_atom_id} };
             }
 
             $bond_order{$second_atom_id}{$third_atom_id} = $bond_order_idx;
@@ -301,15 +295,8 @@ sub stretchable_bonds
 
             # Adds bond if it is a continuation of identified bonds.
             if( exists $stretchable_bonds{$first_atom_id} ) {
-                my @stretchable_bonds_continuation = ();
-                for my $stretchable_bonds ( @{ $stretchable_bonds{$first_atom_id} } ) {
-                    next if ! any { defined $residue_site->{$_} }
-                                 @{ $stretchable_bonds };
-                    push @stretchable_bonds_continuation, $stretchable_bonds;
-                }
-
                 unshift @{ $stretchable_bonds{$second_atom_id} },
-                    @stretchable_bonds_continuation;
+                    @{ $stretchable_bonds{$first_atom_id} };
             }
 
             $bond_order{$first_atom_id}{$second_atom_id} = $bond_order_idx;
@@ -433,14 +420,8 @@ sub bendable_angles
 
             # Adds bond if it is a continuation of identified bonds.
             if( exists $bendable_angles{$second_atom_id} ) {
-                my @bendable_angles_continuation = ();
-                for my $bendable_angles ( @{ $bendable_angles{$second_atom_id} } ) {
-                    next if ! any { defined $residue_site->{$_} }
-                                 @{ $bendable_angles };
-                    push @bendable_angles_continuation, $bendable_angles;
-                }
                 unshift @{ $bendable_angles{$third_atom_id} },
-                    @bendable_angles_continuation;
+                    @{ $bendable_angles{$second_atom_id} };
             }
 
             $bond_order{$first_atom_id}{$second_atom_id}{$third_atom_id} = $bond_order_idx;
