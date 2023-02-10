@@ -66,7 +66,7 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 	    fi \
 	else \
 	    echo "$<" \
-	        | awk '{ printf "%-50s \033[1m[SKIP]\033[m ", $$1 }' \
+	        | awk '{ printf "%-60s \033[1m[SKIP]\033[m ", $$1 }' \
 	        | sed -e 's/ /./g'; \
 	    ${TEST_CASES_DIR}/$*.chk; \
 	    touch $@; \
