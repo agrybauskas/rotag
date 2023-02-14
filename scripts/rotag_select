@@ -176,8 +176,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     if( $is_pdb ) {
         $atom_site = obtain_pdb_atom_site( $pdbx_file );
     } else {
-        $pdbx =
-            obtain_pdbx_data( $pdbx_file, \@category_list,
+        $pdbx = obtain_pdbx_data( $pdbx_file, \@category_list,
                                   { 'ignore_missing_categories' => 1 } );
         raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
         $atom_site = $pdbx->{'_atom_site'}{'data'};
