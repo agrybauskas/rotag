@@ -9,7 +9,8 @@ use LinearAlgebra qw( find_euler_angles
                       translation
                       x_axis_rotation
                       z_axis_rotation );
-use PDBxParser qw( filter
+use PDBxParser qw( extract
+                   filter_new
                    obtain_atom_site );
 
 #
@@ -36,9 +37,8 @@ foreach ( split '&', $atom_specifier_str ) {
 }
 
 my $atom_data =
-    filter( { 'atom_site' => $atom_site,
-              'include' => \%atom_specifier,
-              'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+    extract( filter_new( $atom_site, { 'include' => \%atom_specifier } ),
+             { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
 # Finds Euler angles and makes rotational matrices.
 my @mid_atom_coord =  ( $atom_data->[1][0],
@@ -62,15 +62,18 @@ chomp( my @pdbx_lines = <$fh> );
 close( $fh );
 
 print( "data \"model\"\n" );
-print( scalar( grep { /ATOM/ } @pdbx_lines ) + 3, "\n" );
+print( scalar( keys %{ $atom_site } ) + 3, "\n" );
 print( "testing\n" );
 
-for my $pdbx_line ( grep( /^ATOM/, @pdbx_lines ) ){
-    my @atom_data = split( " ", $pdbx_line );
-    my $atom_name = $atom_data[2];
-    my @atom_coord = ( [ $atom_data[10] ],
-                       [ $atom_data[11] ],
-                       [ $atom_data[12] ],
+for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+    my @atom_data = ( $atom_site->{$atom_id}{'type_symbol'},
+                      $atom_site->{$atom_id}{'Cartn_x'},
+                      $atom_site->{$atom_id}{'Cartn_y'},
+                      $atom_site->{$atom_id}{'Cartn_z'});
+    my $atom_name = $atom_data[0];
+    my @atom_coord = ( [ $atom_data[1] ],
+                       [ $atom_data[2] ],
+                       [ $atom_data[3] ],
                        [ 1 ] );
     my ( $tranf_atom_coord ) =
         @{ mult_matrix_product(
