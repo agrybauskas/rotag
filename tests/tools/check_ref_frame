@@ -3,34 +3,42 @@
 use strict;
 use warnings;
 
-use lib "../../lib";
-use LinearAlgebra qw( create_ref_frame
-                      find_euler_angles
+use ForceField::Parameters;
+use LinearAlgebra qw( find_euler_angles
                       mult_matrix_product
                       translation
                       x_axis_rotation
                       z_axis_rotation );
-
-use lib "../lib";
-use Constants qw( $SIG_FIG );
-use Utils qw( select_atom_data );
+use PDBxParser qw( filter
+                   obtain_atom_site );
 
 #
 # Unit test: LinearAlgebra::create_ref_frame
 #            LinearAlgebra::find_euler_angles.
 #
-# Bring molecule's local frame of reference to global.
+# Bring molecule's local frame of reference to global and visualizes it.
 #
-# Example: ./check_ref_frame "label_atom_id CA,N,CB,OG" \
-#                            "Cartn_x,Cartn_y,Cartn_z" example.cif
+# Example: ./check_ref_frame "label_atom_id CA,N,CB,OG" example.cif
 #
 
-my ( $atom_specifier, $data_specifier, $pdbx_file ) = @ARGV;
+my ( $atom_specifier_str, $pdbx_file ) = @ARGV;
+
+my $atom_site = obtain_atom_site( $pdbx_file );
+
+my $parameters = Parameters->new();
+my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 # Selects atom's data for further analysis.
-my $atom_data = select_atom_data( $pdbx_file,
-                                  $atom_specifier,
-                                  $data_specifier );
+my %atom_specifier = ();
+foreach ( split '&', $atom_specifier_str ) {
+    my ( $label, $data ) = split ' ', $_;
+    $atom_specifier{$label} = [ split ',', $data ];
+}
+
+my $atom_data =
+    filter( { 'atom_site' => $atom_site,
+              'include' => \%atom_specifier,
+              'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
 # Finds Euler angles and makes rotational matrices.
 my @mid_atom_coord =  ( $atom_data->[1][0],
@@ -43,11 +51,8 @@ my @side_atom_coord = ( $atom_data->[0][0],
                         $atom_data->[0][1],
                         $atom_data->[0][2] );
 
-my $local_ref_frame = create_ref_frame( \@mid_atom_coord,
-                                        \@up_atom_coord,
-                                        \@side_atom_coord );
-
-my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( \@mid_atom_coord,
+my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( $parameters,
+                                                     \@mid_atom_coord,
                                                      \@up_atom_coord,
                                                      \@side_atom_coord ) };
 
@@ -76,7 +81,7 @@ for my $pdbx_line ( grep( /^ATOM/, @pdbx_lines ) ){
                                 - $mid_atom_coord[1],
                                 - $mid_atom_coord[2] ) ),
                  \@atom_coord ] ) };
-    printf( "%s $SIG_FIG $SIG_FIG $SIG_FIG\n",
+    printf( "%s $sig_figs_max $sig_figs_max $sig_figs_max\n",
             $atom_name,
             $tranf_atom_coord->[0][0],
             $tranf_atom_coord->[1][0],
