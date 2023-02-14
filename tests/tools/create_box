@@ -3,23 +3,24 @@
 use strict;
 use warnings;
 
-use lib "../../lib"
-use Constants qw( $SIG_FIGS );
-use ConnectAtoms qw( create_box );
-use PDBxParser qw( obtain_atom_site );
-
-use lib "../lib";
-use Utils qw( select_atom_data );
+use Grid qw( create_box );
+use ForceField::Parameters;
+use PDBxParser qw( filter
+                   obtain_atom_site );
 
 #
-# Unit test: ConnectAtoms::create_box.
+# Unit test: Grid::create_box.
 #
 # Creates smallest possible box that surrounds all selected atoms.
 #
 # Example: ./create_box example.cif
 #
 
-my ( $atom_specifier, $pdbx_file ) = @ARGV;
+my ( $pdbx_file ) = @ARGV;
+
+my $parameters = Parameters->new();
+
+my $SIG_FIGS = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
 my $atom_site = obtain_atom_site( $pdbx_file );
 
@@ -30,7 +31,7 @@ print( "testing\n" );
 
 for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
     printf( "$atom_site->{$atom_id}{\"type_symbol\"}" .
-            "\t$SIG_FIG\t$SIG_FIG\t$SIG_FIG\n",
+            "\t$SIG_FIGS\t$SIG_FIGS\t$SIG_FIGS\n",
             $atom_site->{$atom_id}{"Cartn_x"},
             $atom_site->{$atom_id}{"Cartn_y"},
             $atom_site->{$atom_id}{"Cartn_z"} );
@@ -38,11 +39,10 @@ for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
 
 print( "end \"model\"\n" );
 
-# In Jmol, generates box around the molecule.
-my $atom_data =
-    select_atom_data( $pdbx_file, $atom_specifier, "Cartn_x,Cartn_y,Cartn_z" );
-
-my $boundary_box = create_box( $atom_data );
+my $boundary_box = create_box(
+    filter( { 'atom_site' => $atom_site,
+              'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )
+);
 
 print( "draw line1",
        "{$boundary_box->[1], $boundary_box->[2], $boundary_box->[5]}",
