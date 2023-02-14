@@ -18,7 +18,7 @@ use PDBxParser qw( filter
 #
 # Bring molecule's local frame of reference to global and visualizes it.
 #
-# Example: ./check_ref_frame "label_atom_id CA,N,CB,OG" example.cif
+# Example: ./check_ref_frame "label_atom_id N,CA,CB" example.cif
 #
 
 my ( $atom_specifier_str, $pdbx_file ) = @ARGV;
