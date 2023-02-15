@@ -2,7 +2,7 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-001.dump
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-003.dump
 atom_id=152
 calc_hetatoms=0
 do_bond_torsion=1
