@@ -1,1 +1,120 @@
-# A placeholder for future data.
+$VAR1 = [
+  [
+    [
+      '0.44702199888768',
+      '-0.656577407234858',
+      '0.607517440753115',
+      '-54.128'
+    ],
+    [
+      '0.279555966879214',
+      '0.747676292164127',
+      '0.602352574094218',
+      '-110.543'
+    ],
+    [
+      '-0.849717478867353',
+      '-0.0994297261610143',
+      '0.517777882554726',
+      '-6.071'
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'eta'
+    ]
+  }, 'Symbolic' ),
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'N-CA-CB'
+    ]
+  }, 'Symbolic' ),
+  [
+    [
+      '0.99999990103153',
+      '0.000173211885090951',
+      '0.000409798211007895',
+      '-7.105427357601e-15'
+    ],
+    [
+      '-0.000444901034930278',
+      '0.389326736395724',
+      '0.92109961154618',
+      '0'
+    ],
+    [
+      0,
+      '-0.921099702706008',
+      '0.3893267749268',
+      '1.54892672518748'
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'eta'
+    ]
+  }, 'Symbolic' ),
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'CA-CB-OG'
+    ]
+  }, 'Symbolic' ),
+  [
+    [
+      '-7.105427357601e-15'
+    ],
+    [
+      '-1.4210854715202e-14'
+    ],
+    [
+      '1.4318037575031'
+    ],
+    [
+      1
+    ]
+  ]
+];
