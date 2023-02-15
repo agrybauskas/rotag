@@ -2,7 +2,7 @@
 
 export PERL5LIB=$(dirname "$0")/../../lib
 
-pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-007.dump
+pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-008.dump
 atom_id=152
 angle_and_length_ranges="chi1 0.0,0.5*pi"
 num_of_angles_and_lengths="chi1 5"
