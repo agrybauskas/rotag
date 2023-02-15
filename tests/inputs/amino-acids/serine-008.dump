@@ -6,6 +6,7 @@
     'connections' => [
       '148'
     ],
+    'connections_hetatom' => ['149'],
     'group_PDB' => 'ATOM',
     'hybridization' => 'sp3',
     'id' => '147',
@@ -47,6 +48,7 @@
       '148',
       '150'
     ],
+    'connections_hetatom' => ['147'],
     'group_PDB' => 'ATOM',
     'hybridization' => 'sp2',
     'id' => '149',
