@@ -9,13 +9,19 @@ use BondParameters qw( bendable_angles
 use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_rotamer );
+use SidechainModels qw( rotation_translation );
 
 #
 # Unit test: PseudoAtoms::generate_rotamer
 # Example: ./generate_rotamer "12,A,1,." "chi1 0" structure.dump
 #
 
-my ( $residue_unique_key, $angle_values, $pdbx_dump_file ) = @ARGV;
+my ( $residue_unique_key, $angle_values, $pdbx_dump_file, $do_angle_bending,
+     $do_bond_torsion, $do_bond_stretching ) = @ARGV;
+
+$do_angle_bending //= 0;
+$do_bond_torsion //= 1;
+$do_bond_stretching //= 0;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -28,9 +34,11 @@ $atom_site = eval( $atom_site );
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-bendable_angles( $parameters, $atom_site );
-rotatable_bonds( $parameters, $atom_site );
-stretchable_bonds( $parameters, $atom_site );
+bendable_angles( $parameters, $atom_site ) if $do_angle_bending;
+rotatable_bonds( $parameters, $atom_site ) if $do_bond_torsion;
+stretchable_bonds( $parameters, $atom_site ) if $do_bond_stretching;
+
+rotation_translation( $parameters, $atom_site );
 
 # Parses angles for pseudo-rotamers.
 my %angle_values = ( map { $_->[0] => $_->[1] }

@@ -245,11 +245,19 @@ sub generate_rotamer
 
         for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
             my $rotatable_bonds = $atom_site->{$atom_id}{'rotatable_bonds'};
+            my $stretchable_bonds = $atom_site->{$atom_id}{'stretchable_bonds'};
+            my $bendable_angles = $atom_site->{$atom_id}{'bendable_angles'};
 
-            if( ! defined $rotatable_bonds ) { next; }
+            my %bond_parameters = (
+                ( defined $rotatable_bonds ? %{ $rotatable_bonds } : () ),
+                ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
+                ( defined $bendable_angles ? %{ $bendable_angles } : () )
+            );
+
+            if( ! %bond_parameters ) { next; }
 
             my %angles;
-            for my $angle_name ( keys %{ $rotatable_bonds } ) {
+            for my $angle_name ( keys %bond_parameters ) {
                 if( exists $angle_values->{"$residue_unique_key"}{$angle_name} &&
                     defined $angle_values->{"$residue_unique_key"}{$angle_name}){
                     $angles{$angle_name} =
@@ -258,7 +266,8 @@ sub generate_rotamer
                     if( $set_missing_angles_to_zero ) {
                         $angles{$angle_name} = [ 0.0 ];
                     } else {
-                        confess "no values for $angle_name were assigned.";
+                        $angles{$angle_name} =
+                            [ $bond_parameters{$angle_name}{'value'} ];
                     }
                 }
             }
