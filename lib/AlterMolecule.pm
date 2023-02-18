@@ -21,7 +21,7 @@ our $VERSION = $VERSION;
 # Input:
 #     ${mid,up,side}_atom_coord - Cartesian coordinates in array form that define
 #     user-selected mid, up, side atoms;
-#     $angle_name - name of the dihedral angle.
+#     $angle_name_z - name of the dihedral angle.
 # Output:
 #     $rot_matrix_z - matrix defining coordinates in analytical form.
 #
@@ -32,12 +32,12 @@ sub bond_torsion
          $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
-         $angle_name ) = @_;
+         $angle_name_z ) = @_;
 
     # Rotation matrix around the bond.
     my $rot_matrix_z =
         Symbolic->new(
-            { 'symbols' => [ $angle_name ],
+            { 'symbols' => [ $angle_name_z ],
               'matrix' => sub { my ( $svar ) = @_;
                                 return [ [ cos( $svar ),-sin( $svar ), 0, 0 ],
                                          [ sin( $svar ), cos( $svar ), 0, 0 ],
