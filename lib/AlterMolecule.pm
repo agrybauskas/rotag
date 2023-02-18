@@ -23,7 +23,7 @@ our $VERSION = $VERSION;
 #     user-selected mid, up, side atoms;
 #     $angle_name - name of the dihedral angle.
 # Output:
-#     $rot_matrix - matrix defining coordinates in analytical form.
+#     $rot_matrix_z - matrix defining coordinates in analytical form.
 #
 
 sub bond_torsion
@@ -35,7 +35,7 @@ sub bond_torsion
          $angle_name ) = @_;
 
     # Rotation matrix around the bond.
-    my $rot_matrix =
+    my $rot_matrix_z =
         Symbolic->new(
             { 'symbols' => [ $angle_name ],
               'matrix' => sub { my ( $svar ) = @_;
@@ -43,20 +43,20 @@ sub bond_torsion
                                          [ sin( $svar ), cos( $svar ), 0, 0 ],
                                          [ 0, 0, 1, 0 ],
                                          [ 0, 0, 0, 1 ], ]; } } );
-    my @rot_matrix =
+    my @rot_matrix_z =
         ( @{ switch_ref_frame( $parameters,
                                $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
                                'global' ) },
-          $rot_matrix,
+          $rot_matrix_z,
           @{ switch_ref_frame( $parameters,
                                $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
                                'local' ) }, );
 
-    return \@rot_matrix;
+    return \@rot_matrix_z;
 }
 
 #
