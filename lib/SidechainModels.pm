@@ -138,12 +138,12 @@ sub bond_torsion_matrices
          $bendable_angles ) = @_;
 
     my @bond_torsion_matrices = ();
-    for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
-                                $rotatable_bonds->{$atom_id}{$b}{'order'} }
-                         keys %{ $rotatable_bonds->{$atom_id} } ) {
+    for my $angle_name_z ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
+                                  $rotatable_bonds->{$atom_id}{$b}{'order'} }
+                           keys %{ $rotatable_bonds->{$atom_id} } ) {
 
         my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
-            map { $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
+            map { $rotatable_bonds->{$atom_id}{$angle_name_z}{'atom_ids'}[$_] }
                 ( 2, 1, 0 );
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $atom_site->{$_}{'Cartn_x'},
@@ -151,12 +151,15 @@ sub bond_torsion_matrices
                     $atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
+        my $angle_name_x;
+
         push @bond_torsion_matrices,
             @{ bond_torsion( $parameters,
                              $mid_atom_coord,
                              $up_atom_coord,
                              $side_atom_coord,
-                             $angle_name ) };
+                             $angle_name_z,
+                             $angle_name_x ) };
     }
 
     return \@bond_torsion_matrices;
