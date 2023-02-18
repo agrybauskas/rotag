@@ -86,7 +86,8 @@ sub rotation_translation
                     @{ bond_torsion_matrices( $parameters,
                                               $residue_site,
                                               $atom_id,
-                                              $rotatable_bonds ) };
+                                              $rotatable_bonds,
+                                              $bendable_angles ) };
             }
 
             if( %{ $stretchable_bonds } ) {
@@ -123,14 +124,18 @@ sub rotation_translation
 #     $parameters - force-field parameters (see Parameters.pm);
 #     $atom_site - atom data structure;
 #     $atom_id - atom id;
-#     $rotatable_bonds - rotatable bonds data structure in BondParameters.pm.
+#     $rotatable_bonds - rotatable bonds data structure in BondParameters.pm;
+#     $bendable_angles - bendable angle data structure in BondParameters.pm that
+#     is used in those situations where bendable angle transformations are
+#     applied.
 # Output:
 #     \@bond_torsion_matrices - bond torsion matrices.
 #
 
 sub bond_torsion_matrices
 {
-    my ( $parameters, $atom_site, $atom_id, $rotatable_bonds ) = @_;
+    my ( $parameters, $atom_site, $atom_id, $rotatable_bonds,
+         $bendable_angles ) = @_;
 
     my @bond_torsion_matrices = ();
     for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
