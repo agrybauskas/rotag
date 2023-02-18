@@ -152,6 +152,13 @@ sub bond_torsion_matrices
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
         my $angle_name_x;
+        # if( defined $bendable_angles &&
+        #     defined $bendable_angles->{$up_atom_id} ) {
+        #     ( $angle_name_x ) =
+        #         sort { $bendable_angles->{$up_atom_id}{$b}{'order'} <=>
+        #                $bendable_angles->{$up_atom_id}{$a}{'order'} }
+        #        keys %{ $bendable_angles->{$up_atom_id} };
+        # }
 
         push @bond_torsion_matrices,
             @{ bond_torsion( $parameters,
