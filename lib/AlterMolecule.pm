@@ -32,7 +32,8 @@ sub bond_torsion
          $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
-         $angle_name_z ) = @_;
+         $angle_name_z,
+         $angle_name_x ) = @_;
 
     # Rotation matrix around the bond.
     my $rot_matrix_z =
@@ -43,6 +44,18 @@ sub bond_torsion
                                          [ sin( $svar ), cos( $svar ), 0, 0 ],
                                          [ 0, 0, 1, 0 ],
                                          [ 0, 0, 0, 1 ], ]; } } );
+    # x-axis rotation is used in combination with bond angle transformation,
+    # because it changes the atom positions that are used to calculate the
+    # frame of reference.
+    my $rot_matrix_x =
+        Symbolic->new(
+            { 'symbols' => [ $angle_name_x ],
+              'matrix' => sub { my ( $svar ) = @_;
+                                return [ [ 1, 0, 0, 0 ],
+                                         [ 0, cos( $svar ), -sin( $svar ), 0 ],
+                                         [ 0, sin( $svar ), cos( $svar ), 0 ],
+                                         [ 0, 0, 0, 1 ], ]; } } );
+
     my @rot_matrix_z =
         ( @{ switch_ref_frame( $parameters,
                                $mid_atom_coord,
@@ -50,6 +63,7 @@ sub bond_torsion
                                $side_atom_coord,
                                'global' ) },
           $rot_matrix_z,
+          ( defined $angle_name_x ? $rot_matrix_x : ()),
           @{ switch_ref_frame( $parameters,
                                $mid_atom_coord,
                                $up_atom_coord,
