@@ -1,0 +1,1477 @@
+{
+  '725' => {
+    'B_iso_or_equiv' => '46.75',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '26.424',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-4.327',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '63.571',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'N',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'connections' => [
+      '726'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
+    'id' => '725',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'N',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'N'
+  },
+  '726' => {
+    'B_iso_or_equiv' => '33.56',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '25.591',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-4.709',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '64.716',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'CA',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'connections' => [
+      '729',
+      '725',
+      '727'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
+    'id' => '726',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CA',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '727' => {
+    'B_iso_or_equiv' => '34.49',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '24.964',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-6.065',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '64.533',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'C',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'connections' => [
+      '728',
+      '726'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '727',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'C',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '728' => {
+    'B_iso_or_equiv' => '44.38',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '24.454',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-6.380',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '63.466',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'O',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'connections' => [
+      '727'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '728',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'O',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'O'
+  },
+  '729' => {
+    'B_iso_or_equiv' => '39.05',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '24.493',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-3.665',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '64.938',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'CB',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'bendable_angles' => {
+      'N-CA-CB' => {
+        'atom_ids' => [
+          '725',
+          '726',
+          '729'
+        ],
+        'order' => 1,
+        'value' => '1.920776210271'
+      }
+    },
+    'conformation' => [
+      [
+        [
+          '0.60683733133966',
+          '0.342918386614609',
+          '-0.717046325849448',
+          '25.591'
+        ],
+        [
+          '0.508287840652759',
+          '0.526134120804604',
+          '0.681781752447014',
+          '-4.709'
+        ],
+        [
+          '0.611058036799382',
+          '-0.778196547825034',
+          '0.144976579543336',
+          '64.716'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'N-CA-CB'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '1.4210854715202e-14'
+        ],
+        [
+          '-7.105427357601e-15'
+        ],
+        [
+          '1.531281815996'
+        ],
+        [
+          1
+        ]
+      ]
+    ],
+    'connections' => [
+      '730',
+      '726'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp3',
+    'id' => '729',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CB',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '730' => {
+    'B_iso_or_equiv' => '42.82',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '23.809',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-3.792',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '66.257',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'CG',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'bendable_angles' => {
+      'CA-CB-CG' => {
+        'atom_ids' => [
+          '726',
+          '729',
+          '730'
+        ],
+        'order' => 2,
+        'value' => '1.98129514062715'
+      },
+      'N-CA-CB' => {
+        'atom_ids' => [
+          '725',
+          '726',
+          '729'
+        ],
+        'order' => 1,
+        'value' => '1.920776210271'
+      }
+    },
+    'conformation' => [
+      [
+        [
+          '0.60683733133966',
+          '0.342918386614609',
+          '-0.717046325849448',
+          '25.591'
+        ],
+        [
+          '0.508287840652759',
+          '0.526134120804604',
+          '0.681781752447014',
+          '-4.709'
+        ],
+        [
+          '0.611058036799382',
+          '-0.778196547825034',
+          '0.144976579543336',
+          '64.716'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'N-CA-CB'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.971098139662125',
+          '0.0952494700903986',
+          '0.218851414416857',
+          '1.4210854715202e-14'
+        ],
+        [
+          '-0.238680546221849',
+          '-0.387532979426884',
+          '-0.890421128855196',
+          '-7.105427357601e-15'
+        ],
+        [
+          '2.42861286636753e-16',
+          '-0.91692187688157',
+          '0.399066750927686',
+          '1.531281815996'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CA-CB-CG'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '0'
+        ],
+        [
+          '3.5527136788005e-15'
+        ],
+        [
+          '1.49122298802024'
+        ],
+        [
+          1
+        ]
+      ]
+    ],
+    'connections' => [
+      '731',
+      '729',
+      '732'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '730',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CG',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '731' => {
+    'B_iso_or_equiv' => '41.85',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '22.794',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-4.699',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '66.485',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'ND1',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'bendable_angles' => {
+      'CA-CB-CG' => {
+        'atom_ids' => [
+          '726',
+          '729',
+          '730'
+        ],
+        'order' => 2,
+        'value' => '1.98129514062715'
+      },
+      'CB-CG-ND1' => {
+        'atom_ids' => [
+          '729',
+          '730',
+          '731'
+        ],
+        'order' => 3,
+        'value' => '2.14053393547034'
+      },
+      'N-CA-CB' => {
+        'atom_ids' => [
+          '725',
+          '726',
+          '729'
+        ],
+        'order' => 1,
+        'value' => '1.920776210271'
+      }
+    },
+    'conformation' => [
+      [
+        [
+          '0.60683733133966',
+          '0.342918386614609',
+          '-0.717046325849448',
+          '25.591'
+        ],
+        [
+          '0.508287840652759',
+          '0.526134120804604',
+          '0.681781752447014',
+          '-4.709'
+        ],
+        [
+          '0.611058036799382',
+          '-0.778196547825034',
+          '0.144976579543336',
+          '64.716'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'N-CA-CB'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.971098139662125',
+          '0.0952494700903986',
+          '0.218851414416857',
+          '1.4210854715202e-14'
+        ],
+        [
+          '-0.238680546221849',
+          '-0.387532979426884',
+          '-0.890421128855196',
+          '-7.105427357601e-15'
+        ],
+        [
+          '2.42861286636753e-16',
+          '-0.91692187688157',
+          '0.399066750927686',
+          '1.531281815996'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CA-CB-CG'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '0.145095811487878',
+          '0.533702863371666',
+          '0.833131717747896',
+          '0'
+        ],
+        [
+          '-0.989417609247316',
+          '0.0782662945661798',
+          '0.122176845785958',
+          '3.5527136788005e-15'
+        ],
+        [
+          '5.55111512312578e-17',
+          '-0.842042540946575',
+          '0.53941112264787',
+          '1.49122298802024'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CB-CG-ND1'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '0'
+        ],
+        [
+          '0'
+        ],
+        [
+          '1.3801659320531'
+        ],
+        [
+          1
+        ]
+      ]
+    ],
+    'connections' => [
+      '733',
+      '730'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '731',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'ND1',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'N'
+  },
+  '732' => {
+    'B_iso_or_equiv' => '43.06',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '23.977',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-3.115',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '67.417',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'CD2',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'bendable_angles' => {
+      'CA-CB-CG' => {
+        'atom_ids' => [
+          '726',
+          '729',
+          '730'
+        ],
+        'order' => 2,
+        'value' => '1.98129514062715'
+      },
+      'CB-CG-CD2' => {
+        'atom_ids' => [
+          '729',
+          '730',
+          '732'
+        ],
+        'order' => 4,
+        'value' => '2.28960898288876'
+      },
+      'N-CA-CB' => {
+        'atom_ids' => [
+          '725',
+          '726',
+          '729'
+        ],
+        'order' => 1,
+        'value' => '1.920776210271'
+      }
+    },
+    'conformation' => [
+      [
+        [
+          '0.60683733133966',
+          '0.342918386614609',
+          '-0.717046325849448',
+          '25.591'
+        ],
+        [
+          '0.508287840652759',
+          '0.526134120804604',
+          '0.681781752447014',
+          '-4.709'
+        ],
+        [
+          '0.611058036799382',
+          '-0.778196547825034',
+          '0.144976579543336',
+          '64.716'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'N-CA-CB'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.971098139662125',
+          '0.0952494700903986',
+          '0.218851414416857',
+          '1.4210854715202e-14'
+        ],
+        [
+          '-0.238680546221849',
+          '-0.387532979426884',
+          '-0.890421128855196',
+          '-7.105427357601e-15'
+        ],
+        [
+          '2.42861286636753e-16',
+          '-0.91692187688157',
+          '0.399066750927686',
+          '1.531281815996'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CA-CB-CG'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.164424894631993',
+          '-0.649529225652654',
+          '-0.742345094311481',
+          '0'
+        ],
+        [
+          '0.986389605594695',
+          '-0.108272404618405',
+          '-0.123744221573738',
+          '3.5527136788005e-15'
+        ],
+        [
+          '5.55111512312578e-17',
+          '-0.752588115386639',
+          '0.658491555434682',
+          '1.49122298802024'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CB-CG-CD2'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '0'
+        ],
+        [
+          '5.32907051820075e-15'
+        ],
+        [
+          '1.35357046362574'
+        ],
+        [
+          1
+        ]
+      ]
+    ],
+    'connections' => [
+      '730',
+      '734'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '732',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CD2',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '733' => {
+    'B_iso_or_equiv' => '41.15',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '22.381',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-4.587',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '67.733',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'CE1',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'bendable_angles' => {
+      'CA-CB-CG' => {
+        'atom_ids' => [
+          '726',
+          '729',
+          '730'
+        ],
+        'order' => 2,
+        'value' => '1.98129514062715'
+      },
+      'CB-CG-ND1' => {
+        'atom_ids' => [
+          '729',
+          '730',
+          '731'
+        ],
+        'order' => 3,
+        'value' => '2.14053393547034'
+      },
+      'CG-ND1-CE1' => {
+        'atom_ids' => [
+          '730',
+          '731',
+          '733'
+        ],
+        'order' => 5,
+        'value' => '1.90783442893684'
+      },
+      'N-CA-CB' => {
+        'atom_ids' => [
+          '725',
+          '726',
+          '729'
+        ],
+        'order' => 1,
+        'value' => '1.920776210271'
+      }
+    },
+    'conformation' => [
+      [
+        [
+          '0.60683733133966',
+          '0.342918386614609',
+          '-0.717046325849448',
+          '25.591'
+        ],
+        [
+          '0.508287840652759',
+          '0.526134120804604',
+          '0.681781752447014',
+          '-4.709'
+        ],
+        [
+          '0.611058036799382',
+          '-0.778196547825034',
+          '0.144976579543336',
+          '64.716'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'N-CA-CB'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.971098139662125',
+          '0.0952494700903986',
+          '0.218851414416857',
+          '1.4210854715202e-14'
+        ],
+        [
+          '-0.238680546221849',
+          '-0.387532979426884',
+          '-0.890421128855196',
+          '-7.105427357601e-15'
+        ],
+        [
+          '2.42861286636753e-16',
+          '-0.91692187688157',
+          '0.399066750927686',
+          '1.531281815996'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CA-CB-CG'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '0.145095811487878',
+          '0.533702863371666',
+          '0.833131717747896',
+          '0'
+        ],
+        [
+          '-0.989417609247316',
+          '0.0782662945661798',
+          '0.122176845785958',
+          '3.5527136788005e-15'
+        ],
+        [
+          '5.55111512312578e-17',
+          '-0.842042540946575',
+          '0.53941112264787',
+          '1.49122298802024'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CB-CG-ND1'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.999999836685777',
+          '0.000188995893589436',
+          '0.000539359779546333',
+          '0'
+        ],
+        [
+          '-0.000571514146444352',
+          '-0.330693236378984',
+          '-0.943738129347741',
+          '0'
+        ],
+        [
+          '1.52655665885959e-16',
+          '-0.943738283473626',
+          '0.330693290385902',
+          '1.3801659320531'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CG-ND1-CE1'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '0'
+        ],
+        [
+          '7.105427357601e-15'
+        ],
+        [
+          '1.31932444834469'
+        ],
+        [
+          1
+        ]
+      ]
+    ],
+    'connections' => [
+      '731',
+      '734'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '733',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'CE1',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'C'
+  },
+  '734' => {
+    'B_iso_or_equiv' => '49.35',
+    'B_iso_or_equiv_esd' => '?',
+    'Cartn_x' => '23.077',
+    'Cartn_x_esd' => '?',
+    'Cartn_y' => '-3.629',
+    'Cartn_y_esd' => '?',
+    'Cartn_z' => '68.317',
+    'Cartn_z_esd' => '?',
+    'auth_asym_id' => 'A',
+    'auth_atom_id' => 'NE2',
+    'auth_comp_id' => 'HIS',
+    'auth_seq_id' => '139',
+    'bendable_angles' => {
+      'CA-CB-CG' => {
+        'atom_ids' => [
+          '726',
+          '729',
+          '730'
+        ],
+        'order' => 2,
+        'value' => '1.98129514062715'
+      },
+      'CB-CG-CD2' => {
+        'atom_ids' => [
+          '729',
+          '730',
+          '732'
+        ],
+        'order' => 4,
+        'value' => '2.28960898288876'
+      },
+      'CG-CD2-NE2' => {
+        'atom_ids' => [
+          '730',
+          '732',
+          '734'
+        ],
+        'order' => 6,
+        'value' => '1.86840157933317'
+      },
+      'N-CA-CB' => {
+        'atom_ids' => [
+          '725',
+          '726',
+          '729'
+        ],
+        'order' => 1,
+        'value' => '1.920776210271'
+      }
+    },
+    'conformation' => [
+      [
+        [
+          '0.60683733133966',
+          '0.342918386614609',
+          '-0.717046325849448',
+          '25.591'
+        ],
+        [
+          '0.508287840652759',
+          '0.526134120804604',
+          '0.681781752447014',
+          '-4.709'
+        ],
+        [
+          '0.611058036799382',
+          '-0.778196547825034',
+          '0.144976579543336',
+          '64.716'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'N-CA-CB'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.971098139662125',
+          '0.0952494700903986',
+          '0.218851414416857',
+          '1.4210854715202e-14'
+        ],
+        [
+          '-0.238680546221849',
+          '-0.387532979426884',
+          '-0.890421128855196',
+          '-7.105427357601e-15'
+        ],
+        [
+          '2.42861286636753e-16',
+          '-0.91692187688157',
+          '0.399066750927686',
+          '1.531281815996'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CA-CB-CG'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.164424894631993',
+          '-0.649529225652654',
+          '-0.742345094311481',
+          '0'
+        ],
+        [
+          '0.986389605594695',
+          '-0.108272404618405',
+          '-0.123744221573738',
+          '3.5527136788005e-15'
+        ],
+        [
+          '5.55111512312578e-17',
+          '-0.752588115386639',
+          '0.658491555434682',
+          '1.49122298802024'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CB-CG-CD2'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '-0.999963769664096',
+          '-0.00249607696711934',
+          '-0.00813811765373035',
+          '0'
+        ],
+        [
+          '0.00851230633681252',
+          '-0.293220947960727',
+          '-0.956006807673377',
+          '5.32907051820075e-15'
+        ],
+        [
+          '5.55111512312578e-17',
+          '-0.956041445376081',
+          '0.293231571839073',
+          '1.35357046362574'
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'eta'
+        ]
+      }, 'Symbolic' ),
+      bless( {
+        'is_evaluated' => undef,
+        'matrix' => sub {
+            package AlterMolecule;
+            use warnings;
+            use strict;
+            my($svar) = @_;
+            return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        },
+        'symbols' => [
+          'CG-CD2-NE2'
+        ]
+      }, 'Symbolic' ),
+      [
+        [
+          '0'
+        ],
+        [
+          '-7.105427357601e-15'
+        ],
+        [
+          '1.37266019101596'
+        ],
+        [
+          1
+        ]
+      ]
+    ],
+    'connections' => [
+      '733',
+      '732'
+    ],
+    'group_PDB' => 'ATOM',
+    'hybridization' => 'sp2',
+    'id' => '734',
+    'label_alt_id' => '.',
+    'label_asym_id' => 'A',
+    'label_atom_id' => 'NE2',
+    'label_comp_id' => 'HIS',
+    'label_entity_id' => '1',
+    'label_seq_id' => '94',
+    'occupancy' => '1.00',
+    'occupancy_esd' => '?',
+    'pdbx_PDB_ins_code' => '?',
+    'pdbx_PDB_model_num' => '1',
+    'pdbx_formal_charge' => '?',
+    'type_symbol' => 'N'
+  }
+}
