@@ -6,12 +6,14 @@ use warnings;
 use Data::Dumper;
 use Getopt::Long;
 
+use BondParameters qw( bendable_angles
+                       rotatable_bonds
+                       stretchable_bonds );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use PDBxParser qw( obtain_atom_site );
-use SidechainModels qw( rotation_only
-                        rotation_translation );
+use SidechainModels qw( rotation_translation );
 
 $Data::Dumper::Indent = 1;
 $Data::Dumper::Sortkeys = 1;
@@ -56,15 +58,13 @@ foreach my $pdbx_file ( @ARGV ) {
         hybridization( $parameters, $atom_site );
     }
 
+    bendable_angles( $parameters, $atom_site ) if $apply_angle_bending_only;
+    rotatable_bonds( $parameters, $atom_site ) if $apply_rotation_only;
+    stretchable_bonds( $parameters, $atom_site ) if $apply_length_translation_only;
+
     if( $apply_rotation_only || $apply_length_translation_only ||
         $apply_angle_bending_only ) {
-        rotation_translation( $parameters, $atom_site,
-                              { 'do_bond_torsion' =>
-                                    $apply_rotation_only,
-                                'do_bond_stretching' =>
-                                    $apply_length_translation_only,
-                                'do_angle_bending' =>
-                                    $apply_angle_bending_only } );
+        rotation_translation( $parameters, $atom_site );
     }
 
     my $cif_dump_structure = Dumper( $atom_site );
