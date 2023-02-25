@@ -405,8 +405,11 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( $pdbx, { 'tags' => [ '_[local]_bond_length',
                                       '_[local]_length' ] } );
     } elsif( $output_format eq 'csv' ) {
-        # TODO: extend to '_[local]_length'.
-        to_csv( $pdbx, { 'category' => '_[local]_bond_length' } );
+        if( $comparison || $calc_sidechain ) {
+            to_csv( $pdbx, { 'category' => '_[local]_bond_length' } );
+        } else {
+            to_csv( $pdbx, { 'category' => '_[local]_length' } );
+        }
     } else {
         error(
             { 'program' => $0,
