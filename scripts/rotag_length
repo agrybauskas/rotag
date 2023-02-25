@@ -366,28 +366,38 @@ for my $pdbx_file ( @ARGV ) {
             keys %{ $length_site };
 
         my $length_id = 1;
-        for( my $i = 0; $i <= $#length_atom_ids; $i = $i + 2 ) {
-            my $first_atom_id = $length_atom_ids[$i];
-            my $second_atom_id = $length_atom_ids[$i+1];
-            my $length =
-                bond_length(
-                    [ map { [ $length_site->{$_}{'Cartn_x'},
-                              $length_site->{$_}{'Cartn_y'},
-                              $length_site->{$_}{'Cartn_z'} ] }
-                      ( $first_atom_id, $second_atom_id ) ] );
+        my %visited_comparisons = ();
+        for( my $i = 0; $i <= $#length_atom_ids; $i++ ) {
+            for( my $j = 0; $j <= $#length_atom_ids; $j++ ) {
+                my $first_atom_id = $length_atom_ids[$i];
+                my $second_atom_id = $length_atom_ids[$j];
 
-            push @{ $pdbx->{'_[local]_length'}{'data'} },
-                  { 'id' => $length_id,
-                    'label_atom_1_id' => $first_atom_id,
-                    'atom_1_id' =>
-                        $length_site->{$first_atom_id}{'label_atom_id'},
-                    'label_atom_2_id' => $second_atom_id,
-                    'atom_2_id' =>
-                        $length_site->{$second_atom_id}{'label_atom_id'},
-                    'value' =>
-                        sprintf $sig_figs_max, $length };
+                next if $first_atom_id eq $second_atom_id;
+                next if defined $visited_comparisons{$first_atom_id}{$second_atom_id};
 
-            $length_id++;
+                $visited_comparisons{$first_atom_id}{$second_atom_id} = 1;
+                $visited_comparisons{$second_atom_id}{$first_atom_id} = 1;
+
+                my $length =
+                    bond_length(
+                        [ map { [ $length_site->{$_}{'Cartn_x'},
+                                  $length_site->{$_}{'Cartn_y'},
+                                  $length_site->{$_}{'Cartn_z'} ] }
+                          ( $first_atom_id, $second_atom_id ) ] );
+
+                push @{ $pdbx->{'_[local]_length'}{'data'} },
+                      { 'id' => $length_id,
+                        'label_atom_1_id' => $first_atom_id,
+                        'atom_1_id' =>
+                            $length_site->{$first_atom_id}{'label_atom_id'},
+                        'label_atom_2_id' => $second_atom_id,
+                        'atom_2_id' =>
+                            $length_site->{$second_atom_id}{'label_atom_id'},
+                        'value' =>
+                            sprintf $sig_figs_max, $length };
+
+                $length_id++;
+            }
         }
     }
 
