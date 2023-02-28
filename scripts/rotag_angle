@@ -653,7 +653,7 @@ for my $pdbx_file ( @ARGV ) {
 
         my $angle_id = 1;
         my $angle_atom_ids_comb =
-            permutation( 3, [], [ map { \@angle_atom_ids } 0..3 ], [] );
+            permutation( 3, [], [ map { \@angle_atom_ids } 0..2 ], [] );
         my %visited_comparisons = ();
         for my $angle_atom_ids ( @{ $angle_atom_ids_comb } ) {
             my $first_atom_id = $angle_atom_ids->[0];
