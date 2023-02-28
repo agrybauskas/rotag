@@ -12,6 +12,7 @@ use Try::Tiny;
 use BondParameters qw( collect_dihedral_angles
                        rotatable_bonds );
 use BondProperties qw( hybridization );
+use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      connect_hetatoms );
 use ForceField::Parameters;
@@ -196,9 +197,15 @@ for my $pdbx_file ( @ARGV ) {
 
     } else {
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
-            [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_atom_2_id',
-              'atom_2_id', 'label_atom_3_id', 'atom_3_id', 'label_atom_4_id',
-              'atom_4_id', 'value', 'units' ];
+            [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_comp_1_id',
+              'label_seq_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
+              'label_alt_1_id', 'label_atom_2_id', 'atom_2_id', 'label_comp_2_id',
+              'label_seq_2_id', 'label_asym_2_id', 'pdbx_PDB_model_num_2',
+              'label_alt_2_id', 'label_atom_3_id', 'atom_3_id', 'label_comp_3_id',
+              'label_seq_3_id', 'label_asym_3_id', 'pdbx_PDB_model_num_3',
+              'label_alt_3_id', 'label_atom_4_id', 'atom_4_id', 'label_comp_4_id',
+              'label_seq_4_id', 'label_asym_4_id', 'pdbx_PDB_model_num_4',
+              'label_alt_4_id', 'value', 'units' ];
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'type'} = 'record';
 
@@ -222,11 +229,29 @@ for my $pdbx_file ( @ARGV ) {
             keys %{ $dihedral_site };
 
         my $dihedral_id = 1;
-        for( my $i = 0; $i <= $#dihedral_atom_ids; $i = $i + 4 ) {
-            my $first_atom_id = $dihedral_atom_ids[$i];
-            my $second_atom_id = $dihedral_atom_ids[$i+1];
-            my $third_atom_id = $dihedral_atom_ids[$i+2];
-            my $fourth_atom_id = $dihedral_atom_ids[$i+3];
+        my $dihedral_atom_ids_comb =
+            permutation( 4, [], [ map { \@dihedral_atom_ids } 0..3 ], [] );
+        my %visited_comparisons = ();
+        for my $dihedral_atom_ids ( @{ $dihedral_atom_ids_comb } ) {
+            my $first_atom_id = $dihedral_atom_ids->[0];
+            my $second_atom_id = $dihedral_atom_ids->[1];
+            my $third_atom_id = $dihedral_atom_ids->[2];
+            my $fourth_atom_id = $dihedral_atom_ids->[3];
+
+            next if $first_atom_id == $second_atom_id ||
+                    $first_atom_id == $third_atom_id ||
+                    $first_atom_id == $fourth_atom_id ||
+                    $second_atom_id == $third_atom_id ||
+                    $second_atom_id == $fourth_atom_id ||
+                    $third_atom_id == $fourth_atom_id;
+            next if defined $visited_comparisons{$first_atom_id}{$second_atom_id}
+                                                {$third_atom_id}{$fourth_atom_id};
+
+            $visited_comparisons{$first_atom_id}{$second_atom_id}
+                                {$third_atom_id}{$fourth_atom_id} = 1;
+            $visited_comparisons{$fourth_atom_id}{$third_atom_id}
+                                {$second_atom_id}{$first_atom_id} = 1;
+
             my $dihedral_angle =
                 dihedral_angle(
                     [ map { [ $dihedral_site->{$_}{'Cartn_x'},
@@ -240,15 +265,55 @@ for my $pdbx_file ( @ARGV ) {
                     'label_atom_1_id' => $first_atom_id,
                     'atom_1_id' =>
                         $dihedral_site->{$first_atom_id}{'label_atom_id'},
+                    'label_comp_1_id' =>
+                        $dihedral_site->{$first_atom_id}{'label_comp_id'},
+                    'label_seq_1_id' =>
+                        $dihedral_site->{$first_atom_id}{'label_seq_id'},
+                    'label_asym_1_id' =>
+                        $dihedral_site->{$first_atom_id}{'label_asym_id'},
+                    'pdbx_PDB_model_num_1' =>
+                        $dihedral_site->{$first_atom_id}{'pdbx_PDB_model_num'},
+                    'label_alt_1_id' =>
+                        $dihedral_site->{$first_atom_id}{'label_alt_id'},
                     'label_atom_2_id' => $second_atom_id,
                     'atom_2_id' =>
                         $dihedral_site->{$second_atom_id}{'label_atom_id'},
+                    'label_comp_2_id' =>
+                        $dihedral_site->{$second_atom_id}{'label_comp_id'},
+                    'label_seq_2_id' =>
+                        $dihedral_site->{$second_atom_id}{'label_seq_id'},
+                    'label_asym_2_id' =>
+                        $dihedral_site->{$second_atom_id}{'label_asym_id'},
+                    'pdbx_PDB_model_num_2' =>
+                        $dihedral_site->{$second_atom_id}{'pdbx_PDB_model_num'},
+                    'label_alt_2_id' =>
+                        $dihedral_site->{$second_atom_id}{'label_alt_id'},
                     'label_atom_3_id' => $third_atom_id,
                     'atom_3_id' =>
                         $dihedral_site->{$third_atom_id}{'label_atom_id'},
+                    'label_comp_3_id' =>
+                        $dihedral_site->{$third_atom_id}{'label_comp_id'},
+                    'label_seq_3_id' =>
+                        $dihedral_site->{$third_atom_id}{'label_seq_id'},
+                    'label_asym_3_id' =>
+                        $dihedral_site->{$third_atom_id}{'label_asym_id'},
+                    'pdbx_PDB_model_num_3' =>
+                        $dihedral_site->{$third_atom_id}{'pdbx_PDB_model_num'},
+                    'label_alt_3_id' =>
+                        $dihedral_site->{$third_atom_id}{'label_alt_id'},
                     'label_atom_4_id' => $fourth_atom_id,
                     'atom_4_id' =>
                         $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
+                    'label_comp_4_id' =>
+                        $dihedral_site->{$fourth_atom_id}{'label_comp_id'},
+                    'label_seq_4_id' =>
+                        $dihedral_site->{$fourth_atom_id}{'label_seq_id'},
+                    'label_asym_4_id' =>
+                        $dihedral_site->{$fourth_atom_id}{'label_asym_id'},
+                    'pdbx_PDB_model_num_4' =>
+                        $dihedral_site->{$fourth_atom_id}{'pdbx_PDB_model_num'},
+                    'label_alt_4_id' =>
+                        $dihedral_site->{$fourth_atom_id}{'label_alt_id'},
                     'value' =>
                         ( $in_radians ? sprintf $sig_figs_max, $dihedral_angle :
                           sprintf $sig_figs_min, $dihedral_angle * 180 / $pi ),

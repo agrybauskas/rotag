@@ -375,7 +375,7 @@ for my $pdbx_file ( @ARGV ) {
                 my $first_atom_id = $length_atom_ids[$i];
                 my $second_atom_id = $length_atom_ids[$j];
 
-                next if $first_atom_id eq $second_atom_id;
+                next if $first_atom_id == $second_atom_id;
                 next if defined $visited_comparisons{$first_atom_id}{$second_atom_id};
 
                 $visited_comparisons{$first_atom_id}{$second_atom_id} = 1;
