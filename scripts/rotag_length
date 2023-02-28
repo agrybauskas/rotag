@@ -345,7 +345,7 @@ for my $pdbx_file ( @ARGV ) {
               'label_seq_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
               'label_alt_1_id', 'label_atom_2_id', 'atom_2_id', 'label_comp_2_id',
               'label_seq_2_id', 'label_asym_2_id', 'pdbx_PDB_model_num_2',
-              'value' ];
+              'label_alt_2_id', 'value' ];
         $pdbx->{'_[local]_length'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_length'}{'metadata'}{'type'} = 'record';
 
@@ -401,6 +401,8 @@ for my $pdbx_file ( @ARGV ) {
                             $length_site->{$first_atom_id}{'label_asym_id'},
                         'pdbx_PDB_model_num_1' =>
                             $length_site->{$first_atom_id}{'pdbx_PDB_model_num'},
+                        'label_alt_1_id' =>
+                            $length_site->{$first_atom_id}{'label_alt_id'},
                         'label_atom_2_id' => $second_atom_id,
                         'atom_2_id' =>
                             $length_site->{$second_atom_id}{'label_atom_id'},
@@ -412,6 +414,8 @@ for my $pdbx_file ( @ARGV ) {
                             $length_site->{$second_atom_id}{'label_asym_id'},
                         'pdbx_PDB_model_num_2' =>
                             $length_site->{$second_atom_id}{'pdbx_PDB_model_num'},
+                        'label_alt_2_id' =>
+                            $length_site->{$second_atom_id}{'label_alt_id'},
                         'value' =>
                             sprintf $sig_figs_max, $length };
 
