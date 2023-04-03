@@ -21,9 +21,9 @@ our $VERSION = $VERSION;
 # Input:
 #     ${mid,up,side}_atom_coord - Cartesian coordinates in array form that define
 #     user-selected mid, up, side atoms;
-#     $angle_name_z - name of the dihedral angle.
+#     $angle_name - name of the dihedral angle.
 # Output:
-#     $rot_matrix_z - matrix defining coordinates in analytical form.
+#     $rot_matrix - matrix defining coordinates in analytical form.
 #
 
 sub bond_torsion
@@ -32,45 +32,32 @@ sub bond_torsion
          $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
-         $angle_name_z,
-         $angle_name_x ) = @_;
+         $angle_name ) = @_;
 
     # Rotation matrix around the bond.
-    my $rot_matrix_z =
+    my $rot_matrix =
         Symbolic->new(
-            { 'symbols' => [ $angle_name_z ],
+            { 'symbols' => [ $angle_name ],
               'matrix' => sub { my ( $svar ) = @_;
                                 return [ [ cos( $svar ),-sin( $svar ), 0, 0 ],
                                          [ sin( $svar ), cos( $svar ), 0, 0 ],
                                          [ 0, 0, 1, 0 ],
                                          [ 0, 0, 0, 1 ], ]; } } );
-    # x-axis rotation is used in combination with bond angle transformation,
-    # because it changes the atom positions that are used to calculate the
-    # frame of reference.
-    my $rot_matrix_x =
-        Symbolic->new(
-            { 'symbols' => [ $angle_name_x ],
-              'matrix' => sub { my ( $svar ) = @_;
-                                return [ [ 1, 0, 0, 0 ],
-                                         [ 0, cos( $svar ), -sin( $svar ), 0 ],
-                                         [ 0, sin( $svar ), cos( $svar ), 0 ],
-                                         [ 0, 0, 0, 1 ], ]; } } );
 
-    my @rot_matrix_z =
+    my @rot_matrix =
         ( @{ switch_ref_frame( $parameters,
                                $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
                                'global' ) },
-          $rot_matrix_z,
-          ( defined $angle_name_x ? $rot_matrix_x : ()),
+          $rot_matrix,
           @{ switch_ref_frame( $parameters,
                                $mid_atom_coord,
                                $up_atom_coord,
                                $side_atom_coord,
                                'local' ) }, );
 
-    return \@rot_matrix_z;
+    return \@rot_matrix;
 }
 
 #
