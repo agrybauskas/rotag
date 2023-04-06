@@ -98,7 +98,67 @@
     'label_entity_id' => '1',
     'label_seq_id' => '18',
     'pdbx_PDB_model_num' => '1',
-    'type_symbol' => 'C'
+    'type_symbol' => 'C',
+    'conformation' =>
+[
+  [
+    [
+      '0.44702199888768',
+      '-0.656577407234858',
+      '0.607517440753115',
+      '-54.128'
+    ],
+    [
+      '0.279555966879214',
+      '0.747676292164127',
+      '0.602352574094218',
+      '-110.543'
+    ],
+    [
+      '-0.849717478867353',
+      '-0.0994297261610143',
+      '0.517777882554726',
+      '-6.071'
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar1, $svar2) = @_;
+        return [[1, 0, 0, 0],
+                [0, cos($svar1), -sin($svar1), 0],
+                [0, sin($svar1),  cos($svar1), $svar2],
+                [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'N-CA-CB',
+      'CA-CB'
+    ]
+  }, 'Symbolic' ),
+  [
+    [
+      '-7.105427357601e-15'
+    ],
+    [
+      '0'
+    ],
+    [
+      '1.54892672518748'
+    ],
+    [
+      1
+    ]
+  ]
+]
   },
   '152' => {
     'Cartn_x' => '-53.714',
@@ -145,7 +205,26 @@
                 [0, 0, 0, 1]];
     },
     'symbols' => [
-      'CA-CB-OG', 'chi1', 'CB-OG'
+      'CA-CB-OG',
+      'chi1',
+      'CB-OG'
+    ]
+  }, 'Symbolic' ),
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar1, $svar2) = @_;
+        return [[1, 0, 0, 0],
+                [0, cos($svar1), -sin($svar1), 0],
+                [0, sin($svar1),  cos($svar1), $svar2],
+                [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'N-CA-CB',
+      'CA-CB'
     ]
   }, 'Symbolic' ),
   [
