@@ -138,14 +138,14 @@
         package AlterMolecule;
         use warnings;
         use strict;
-        my($svar1, $svar2) = @_;
+        my($svar1, $svar2, $svar3) = @_;
         return [[cos($svar2), -cos($svar1)*sin($svar2),  sin($svar1)*sin($svar2), $svar1*cos($svar2)],
                 [sin($svar2),  cos($svar1)*sin($svar2), -sin($svar1)*cos($svar2), $svar1*sin($svar2)],
-                [0, sin($svar1), cos($svar1), 0],
+                [0, sin($svar1), cos($svar1), $svar3],
                 [0, 0, 0, 1]];
     },
     'symbols' => [
-      'CA-CB-OG', 'chi1'
+      'CA-CB-OG', 'chi1', 'CB-OG'
     ]
   }, 'Symbolic' ),
   [
