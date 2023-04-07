@@ -326,7 +326,8 @@ sub angle_bending_matrices
 
 sub conformation_matrices
 {
-
+    my ( $parameters, $atom_site, $stretchable_bonds, $bendable_angles,
+         $rotatable_bonds ) = @_;
 }
 
 1;

@@ -182,6 +182,7 @@ sub bond_altering
          $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
+         $prev_ref_coord,
          $dihedral_angle_name,
          $bond_angle_name,
          $bond_name ) = @_;
