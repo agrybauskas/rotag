@@ -178,7 +178,38 @@ sub angle_bending
 
 sub bond_altering
 {
+    my ( $parameters,
+         $mid_atom_coord,
+         $up_atom_coord,
+         $side_atom_coord,
+         $dihedral_angle_name,
+         $bond_angle_name,
+         $bond_name ) = @_;
 
+    # Rotation matrix around the bond.
+    my $bond_altering_matrix =
+        Symbolic->new(
+            { 'symbols' => [ $dihedral_angle_name ],
+              'matrix' => sub { my ( $svar ) = @_;
+                                return [ [ cos( $svar ),-sin( $svar ), 0, 0 ],
+                                         [ sin( $svar ), cos( $svar ), 0, 0 ],
+                                         [ 0, 0, 1, 0 ],
+                                         [ 0, 0, 0, 1 ], ]; } } );
+
+    my @bond_altering_matrix =
+        ( @{ switch_ref_frame( $parameters,
+                               $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               'global' ) },
+          $bond_altering_matrix,
+          @{ switch_ref_frame( $parameters,
+                               $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               'local' ) }, );
+
+    return \@bond_altering_matrix;
 }
 
 1;
