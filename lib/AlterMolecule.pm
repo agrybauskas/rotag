@@ -182,7 +182,6 @@ sub bond_altering
          $mid_atom_coord,
          $up_atom_coord,
          $side_atom_coord,
-         $prev_ref_coord,
          $dihedral_angle_name,
          $bond_angle_name,
          $bond_name ) = @_;
@@ -194,7 +193,7 @@ sub bond_altering
             { 'symbols' => [ $dihedral_angle_name, $bond_angle_name, $bond_name ],
               'matrix' =>
                   sub { my ( $svar1, $svar2, $svar3 ) = @_;
-                        return [ [ cos( $svar1 ), -sin( $svar1 ), 0, 0 ],
+                        return [ [ cos( $svar1 ), -sin( $svar1 ), 0, $up_atom_coord->[2] - $mid_atom_coord->[2] ],
                                  [ sin( $svar1 ) * cos( $svar2 ), cos( $svar1 ) * cos( $svar2 ), -sin( $svar2 ), 0 ],
                                  [ sin( $svar1 ) * sin( $svar2 ), cos( $svar1 ) * sin( $svar2 ),  cos( $svar2 ), 0 ],
                                  [ 0, 0, 0, 1 ], ]; } } );

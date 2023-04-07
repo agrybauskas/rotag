@@ -170,10 +170,10 @@ sub rotation_translation_new
                                           $bendable_angles,
                                           $rotatable_bonds ) };
 
-            $atom_site->{$atom_id}{'conformation'} =
-                mult_matrix_product(
-                    [ @conformation_matrices,
-                      @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
+            # $atom_site->{$atom_id}{'conformation'} =
+            #     mult_matrix_product(
+            #         [ @conformation_matrices,
+            #           @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
         }
     }
 
@@ -326,8 +326,35 @@ sub angle_bending_matrices
 
 sub conformation_matrices
 {
-    my ( $parameters, $atom_site, $stretchable_bonds, $bendable_angles,
+    my ( $parameters, $atom_site, $atom_id, $stretchable_bonds, $bendable_angles,
          $rotatable_bonds ) = @_;
+
+    my @conformation_matrices = ();
+    for my $bond_angle_name ( sort { $bendable_angles->{$atom_id}{$a}{'order'} <=>
+                                     $bendable_angles->{$atom_id}{$b}{'order'} }
+                              keys %{ $bendable_angles->{$atom_id} } ) {
+
+        my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
+            map { $bendable_angles->{$atom_id}{$bond_angle_name}{'atom_ids'}[$_] }
+                ( 2, 1, 0 );
+
+        my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+            map { [ $atom_site->{$_}{'Cartn_x'},
+                    $atom_site->{$_}{'Cartn_y'},
+                    $atom_site->{$_}{'Cartn_z'} ] }
+                ( $mid_atom_id, $up_atom_id, $side_atom_id );
+
+        push @conformation_matrices,
+             @{ bond_altering( $parameters,
+                               $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               $dihedral_angle_name,
+                               $bond_angle_name,
+                               $bond_name ) };
+    }
+
+    return \@conformation_matrices;
 }
 
 1;
