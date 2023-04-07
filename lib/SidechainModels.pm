@@ -247,4 +247,23 @@ sub angle_bending_matrices
     return \@angle_bending_matrices;
 }
 
+#
+# Creates generalized series of matrices that are used to transform atom
+# coordinates by changing bond length, bond and dihedral angles.
+# Input:
+#     $parameters - force-field parameters (see Parameters.pm);
+#     $atom_site - atom data structure;
+#     $atom_id - atom id;
+#     $stretchable_bonds - stretchable bonds data structure in BondParameters.pm;
+#     $bendable_angles - bendable angles data structure in BondParameters.pm;
+#     $rotatable_bonds - rotatable bonds data structure in BondParameters.pm.
+# Output:
+#     \@conformation_matrices - bond stretching matrices.
+#
+
+sub conformation_matrices
+{
+
+}
+
 1;
