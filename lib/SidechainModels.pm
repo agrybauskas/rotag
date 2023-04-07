@@ -344,14 +344,14 @@ sub conformation_matrices
                     $atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-        push @conformation_matrices,
-             @{ bond_altering( $parameters,
-                               $mid_atom_coord,
-                               $up_atom_coord,
-                               $side_atom_coord,
-                               $dihedral_angle_name,
-                               $bond_angle_name,
-                               $bond_name ) };
+        # push @conformation_matrices,
+        #      @{ bond_altering( $parameters,
+        #                        $mid_atom_coord,
+        #                        $up_atom_coord,
+        #                        $side_atom_coord,
+        #                        $dihedral_angle_name,
+        #                        $bond_angle_name,
+        #                        $bond_name ) };
     }
 
     return \@conformation_matrices;
