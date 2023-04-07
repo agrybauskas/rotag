@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( angle_bending
+                     bond_altering
                      bond_stretching
                      bond_torsion );
 
@@ -159,6 +160,25 @@ sub angle_bending
                                'local' ) }, );
 
     return \@rot_matrix;
+}
+
+#
+# Makes a transformation matrix for changing bond lengths, angles and dihedral
+# angles.
+# Input:
+#     ${mid,up,side}_atom_coord - Cartesian coordinates in array form that define
+#     user-selected mid, up, side atoms;
+#     $dihedral_angle_name - name of the dihedral angle that will be rotated in
+#     z-axis;
+#     $bond_angle_name - name of the bond angle that will be rotated in y-axis;
+#     $bond_name - name of the bond that will be translated along z-axis.
+# Output:
+#     $altering_matrix - matrix defining coordinates in analytical form.
+#
+
+sub bond_altering
+{
+
 }
 
 1;

@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( rotation_translation );
 
 use AlterMolecule qw( angle_bending
+                      bond_altering
                       bond_stretching
                       bond_torsion );
 use AtomProperties qw( sort_atom_ids_by_name );
