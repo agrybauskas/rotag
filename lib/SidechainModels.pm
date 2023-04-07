@@ -330,13 +330,18 @@ sub conformation_matrices
          $rotatable_bonds ) = @_;
 
     my @conformation_matrices = ();
-    for my $bond_angle_name ( sort { $bendable_angles->{$atom_id}{$a}{'order'} <=>
-                                     $bendable_angles->{$atom_id}{$b}{'order'} }
-                              keys %{ $bendable_angles->{$atom_id} } ) {
+    for my $bond_name ( sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
+                               $stretchable_bonds->{$atom_id}{$b}{'order'} }
+                        keys %{ $stretchable_bonds->{$atom_id} } ) {
 
-        my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
-            map { $bendable_angles->{$atom_id}{$bond_angle_name}{'atom_ids'}[$_] }
-                ( 2, 1, 0 );
+        my ( $up_atom_id, $mid_atom_id ) =
+            map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] }
+                ( 1, 0 );
+        my @mid_connections = # Excludes up atom.
+            grep { $_ ne $up_atom_id }
+                @{ $atom_site->{$mid_atom_id}{'connections'} };
+        my ( $side_atom_id ) =
+            @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $atom_site->{$_}{'Cartn_x'},
