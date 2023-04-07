@@ -187,14 +187,16 @@ sub bond_altering
          $bond_name ) = @_;
 
     # Rotation matrix around the bond.
+    # TODO: a_{i-1}, - d_i * sin(alpha_{i-1}, d_i * cos(alpha_{i-1}).
     my $bond_altering_matrix =
         Symbolic->new(
-            { 'symbols' => [ $dihedral_angle_name ],
-              'matrix' => sub { my ( $svar ) = @_;
-                                return [ [ cos( $svar ),-sin( $svar ), 0, 0 ],
-                                         [ sin( $svar ), cos( $svar ), 0, 0 ],
-                                         [ 0, 0, 1, 0 ],
-                                         [ 0, 0, 0, 1 ], ]; } } );
+            { 'symbols' => [ $dihedral_angle_name, $bond_angle_name, $bond_name ],
+              'matrix' =>
+                  sub { my ( $svar1, $svar2, $svar3 ) = @_;
+                        return [ [ cos( $svar1 ), -sin( $svar1 ), 0, 0 ],
+                                 [ sin( $svar1 ) * cos( $svar2 ), cos( $svar1 ) * cos( $svar2 ), -sin( $svar2 ), 0 ],
+                                 [ sin( $svar1 ) * sin( $svar2 ), cos( $svar1 ) * sin( $svar2 ),  cos( $svar2 ), 0 ],
+                                 [ 0, 0, 0, 1 ], ]; } } );
 
     my @bond_altering_matrix =
         ( @{ switch_ref_frame( $parameters,
