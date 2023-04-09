@@ -64,7 +64,7 @@ rotag_add -S 4dhw-rotag-library.cif > 4dhw-rotag-add.cif
 One more important factor when calculating side-chain rotations is hydrogens. Sometimes they are missing in the structural data. It could be added with the ```-H``` option in ```rotag_add``` script.
 
 ```bash
-rotag_add -H -c -s | rotag_add -H
+rotag_add -H -c -s 4dhw-rotag-select.cif > 4dhw-rotag-select-H.cif
 ```
 
 However, when doing more precise and sensitive calculations, we suggest using external tools for this application.
