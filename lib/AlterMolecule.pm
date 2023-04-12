@@ -186,19 +186,40 @@ sub bond_altering
          $bond_angle_name,
          $bond_name ) = @_;
 
-    # Rotation matrix around the bond.
-    my $bond_altering_matrix =
-        Symbolic->new(
-            { 'symbols' => [ $dihedral_angle_name, $bond_angle_name, $bond_name ],
-              'matrix' =>
-                  sub { my ( $svar1, $svar2, $svar3 ) = @_;
-                        $svar1 //= 0.0;
-                        $svar2 //= 0.0;
-                        $svar3 //= 0.0;
-                        return [ [ cos( $svar1 ), -sin( $svar1 ), 0, $up_atom_coord->[2] - $mid_atom_coord->[2] ],
-                                 [ sin( $svar1 ) * cos( $svar2 ), cos( $svar1 ) * cos( $svar2 ), -sin( $svar2 ), 0 ],
-                                 [ sin( $svar1 ) * sin( $svar2 ), cos( $svar1 ) * sin( $svar2 ),  cos( $svar2 ), 0 ],
-                                 [ 0, 0, 0, 1 ], ]; } } );
+    my $bond_altering_matrix = [ [ 1, 0, 0, 0 ],
+                                 [ 0, 1, 0, 0 ],
+                                 [ 0, 0, 1, 0 ],
+                                 [ 0, 0, 0, 1 ] ];
+    if( defined $dihedral_angle_name && defined $bond_angle_name && defined $bond_name ) {
+        $bond_altering_matrix =
+            Symbolic->new(
+                { 'symbols' => [ $dihedral_angle_name, $bond_angle_name, $bond_name ],
+                  'matrix' =>
+                      sub { my ( $svar1, $svar2, $svar3 ) = @_;
+                            return [ [ cos( $svar1 ), -sin( $svar1 ), 0, $up_atom_coord->[2] - $mid_atom_coord->[2] ],
+                                     [ sin( $svar1 ) * cos( $svar2 ), cos( $svar1 ) * cos( $svar2 ), -sin( $svar2 ), 0 ],
+                                     [ sin( $svar1 ) * sin( $svar2 ), cos( $svar1 ) * sin( $svar2 ),  cos( $svar2 ), 0 ],
+                                     [ 0, 0, 0, 1 ], ]; } } );
+    } elsif( defined $bond_angle_name && defined $bond_name ) {
+        $bond_altering_matrix =
+            Symbolic->new(
+                { 'symbols' => [ $dihedral_angle_name, $bond_angle_name, $bond_name ],
+                  'matrix' =>
+                      sub { my ( $svar1, $svar2, $svar3 ) = @_;
+                            return [ [ cos( $svar1 ), -sin( $svar1 ), 0, $up_atom_coord->[2] - $mid_atom_coord->[2] ],
+                                     [ sin( $svar1 ) * cos( $svar2 ), cos( $svar1 ) * cos( $svar2 ), -sin( $svar2 ), 0 ],
+                                     [ sin( $svar1 ) * sin( $svar2 ), cos( $svar1 ) * sin( $svar2 ),  cos( $svar2 ), 0 ],
+                                     [ 0, 0, 0, 1 ], ]; } } );
+    } elsif( defined $bond_name ) {
+        $bond_altering_matrix =
+            Symbolic->new(
+                { 'symbols' => [ $bond_name ],
+                  'matrix' => sub { my ( $svar ) = @_;
+                                    return [ [ 1, 0, 0, 0 ],
+                                             [ 0, 1, 0, 0 ],
+                                             [ 0, 0, 1, $svar ],
+                                             [ 0, 0, 0, 1 ], ]; } } );
+    }
 
     my @bond_altering_matrix =
         ( @{ switch_ref_frame( $parameters,

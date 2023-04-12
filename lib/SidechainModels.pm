@@ -170,10 +170,10 @@ sub rotation_translation_new
                                           $bendable_angles,
                                           $rotatable_bonds ) };
 
-            # $atom_site->{$atom_id}{'conformation'} =
-            #     mult_matrix_product(
-            #         [ @conformation_matrices,
-            #           @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
+            $atom_site->{$atom_id}{'conformation'} =
+                mult_matrix_product(
+                    [ @conformation_matrices,
+                      @{ reshape( [ @atom_coord, 1 ], [ 4, 1 ] ) } ] );
         }
     }
 
@@ -349,14 +349,24 @@ sub conformation_matrices
                     $atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-        # push @conformation_matrices,
-        #      @{ bond_altering( $parameters,
-        #                        $mid_atom_coord,
-        #                        $up_atom_coord,
-        #                        $side_atom_coord,
-        #                        $dihedral_angle_name,
-        #                        $bond_angle_name,
-        #                        $bond_name ) };
+        my ( $bond_angle_name ) =
+            sort { $bendable_angles->{$up_atom_id}{$b}{'order'} <=>
+                   $bendable_angles->{$up_atom_id}{$a}{'order'} }
+            keys %{ $bendable_angles->{$up_atom_id} };
+
+        my ( $dihedral_angle_name ) =
+            sort { $rotatable_bonds->{$up_atom_id}{$b}{'order'} <=>
+                   $rotatable_bonds->{$up_atom_id}{$a}{'order'} }
+            keys %{ $rotatable_bonds->{$up_atom_id} };
+
+        push @conformation_matrices,
+             @{ bond_altering( $parameters,
+                               $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               $dihedral_angle_name,
+                               $bond_angle_name,
+                               $bond_name ) };
     }
 
     return \@conformation_matrices;
