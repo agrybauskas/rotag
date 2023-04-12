@@ -350,13 +350,13 @@ sub conformation_matrices
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
         my ( $bond_angle_name ) =
-            sort { $bendable_angles->{$up_atom_id}{$b}{'order'} <=>
-                   $bendable_angles->{$up_atom_id}{$a}{'order'} }
+            sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
+                   $bendable_angles->{$up_atom_id}{$b}{'order'} }
             keys %{ $bendable_angles->{$up_atom_id} };
 
         my ( $dihedral_angle_name ) =
-            sort { $rotatable_bonds->{$up_atom_id}{$b}{'order'} <=>
-                   $rotatable_bonds->{$up_atom_id}{$a}{'order'} }
+            sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
+                   $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
             keys %{ $rotatable_bonds->{$up_atom_id} };
 
         push @conformation_matrices,

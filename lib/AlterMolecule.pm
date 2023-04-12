@@ -190,25 +190,26 @@ sub bond_altering
                                  [ 0, 1, 0, 0 ],
                                  [ 0, 0, 1, 0 ],
                                  [ 0, 0, 0, 1 ] ];
+
     if( defined $dihedral_angle_name && defined $bond_angle_name && defined $bond_name ) {
         $bond_altering_matrix =
             Symbolic->new(
                 { 'symbols' => [ $dihedral_angle_name, $bond_angle_name, $bond_name ],
                   'matrix' =>
                       sub { my ( $svar1, $svar2, $svar3 ) = @_;
-                            return [ [ cos( $svar1 ), -sin( $svar1 ), 0, $up_atom_coord->[2] - $mid_atom_coord->[2] ],
+                            return [ [ cos( $svar1 ), -sin( $svar1 ), 0, $up_atom_coord->[2] - $mid_atom_coord->[2] - $svar3 ],
                                      [ sin( $svar1 ) * cos( $svar2 ), cos( $svar1 ) * cos( $svar2 ), -sin( $svar2 ), 0 ],
                                      [ sin( $svar1 ) * sin( $svar2 ), cos( $svar1 ) * sin( $svar2 ),  cos( $svar2 ), 0 ],
                                      [ 0, 0, 0, 1 ], ]; } } );
-    } elsif( defined $bond_angle_name && defined $bond_name ) {
+    } elsif( defined defined $bond_angle_name && defined $bond_name ) {
         $bond_altering_matrix =
             Symbolic->new(
                 { 'symbols' => [ $bond_angle_name, $bond_name ],
                   'matrix' =>
                       sub { my ( $svar1, $svar2 ) = @_;
-                            return [ [ cos( $svar1 ), -sin( $svar1 ), 0, $up_atom_coord->[2] - $mid_atom_coord->[2] ],
-                                     [ sin( $svar1 ) * cos( $svar2 ), cos( $svar1 ) * cos( $svar2 ), -sin( $svar2 ), 0 ],
-                                     [ sin( $svar1 ) * sin( $svar2 ), cos( $svar1 ) * sin( $svar2 ),  cos( $svar2 ), 0 ],
+                            return [ [ 1, 0, 0, $up_atom_coord->[2] - $mid_atom_coord->[2] - $svar2 ],
+                                     [ cos( $svar1 ), cos( $svar1 ), -sin( $svar1 ), 0 ],
+                                     [ sin( $svar1 ), sin( $svar1 ),  cos( $svar1 ), 0 ],
                                      [ 0, 0, 0, 1 ], ]; } } );
     } elsif( defined $bond_name ) {
         $bond_altering_matrix =
