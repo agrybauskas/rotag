@@ -265,9 +265,10 @@ sub force_field
         my $atom_name = $residue_atoms->{'label_atom_id'};
         my $necessity_value = $residue_atoms->{'value'};
 
-        push @{ $force_field_parameters{'_[local]_residue_atom_necessity'}
-                                       {$residue_name}
-                                       {$necessity_value} }, $atom_name;
+        $force_field_parameters{'_[local]_residue_atom_necessity'}
+                               {$residue_name}
+                               {$necessity_value}
+                               {$atom_name} = 1;
     }
 
     # Restructuring parameters of clear hybridizations.
