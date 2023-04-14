@@ -1,3 +1,8 @@
+rotag (unreleased)
+
+  * Added check on presence of mandatory residue atoms for rotamer scanning
+    calculations.
+
 rotag (0.1.0)
 
   * Initial release.
