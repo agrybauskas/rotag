@@ -287,13 +287,17 @@ sub missing_atom_names
 
     my %mandatory_residue_atoms =
         map { $_ => 0 }
-        $parameters->{'_[local]_residue_atom_necessity'}{$residue_name}{'mandatory'};
+        keys %{ $parameters->{'_[local]_residue_atom_necessity'}{$residue_name}{'mandatory'} };
+
+    for my $atom_name ( map { $residue_site->{$_}{'label_atom_id'} }
+                        keys %{ $residue_site } ) {
+        $mandatory_residue_atoms{$atom_name} = 1;
+    }
 
     my @missing_atom_names =
+        sort
         grep { ! $mandatory_residue_atoms{$_} }
-        grep { defined $mandatory_residue_atoms{$_} }
-        map { $residue_site->{$_}{'label_atom_id'} }
-        keys %{ $residue_site };
+        keys %mandatory_residue_atoms;
 
     return \@missing_atom_names;
 }

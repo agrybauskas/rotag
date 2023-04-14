@@ -1,1 +1,2 @@
-# A placeholder for future output.
+Warning: rotag_scan: ./tests/cases/../inputs/amino-acids/threonine-003.cif - missing atoms in the residue THR340: CG2, OG1
+Warning: no possible rotamer solutions were detected.
