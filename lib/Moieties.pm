@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( %atoms
                      %sidechain
+                     missing_atom_names
                      replace_with_moiety );
 
 use List::Util qw( max );
@@ -20,7 +21,6 @@ use PDBxParser qw( filter
 use LinearAlgebra qw( mult_matrix_product
                       switch_ref_frame );
 use Measure qw( bond_angle );
-use PseudoAtoms qw( replace_with_rotamer );
 use SidechainModels qw( rotation_only );
 use Version qw( $VERSION );
 
@@ -266,6 +266,36 @@ sub replace_with_moiety
     }
 
     return;
+}
+
+#
+# Checks if there are all mandatory atoms in the residue.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $unique_residue_key - key that can determine unique residue
+#     (see PDBxParser::unique_residue_key).
+# Output:
+#     outputs true or false.
+#
+
+sub missing_atom_names
+{
+    my ( $parameters, $residue_site ) = @_;
+
+    my @atom_ids = keys %{ $residue_site };
+    my $residue_name = $residue_site->{$atom_ids[0]}{'label_comp_id'};
+
+    my %mandatory_residue_atoms =
+        map { $_ => 0 }
+        $parameters->{'_[local]_residue_atom_necessity'}{$residue_name}{'mandatory'};
+
+    my @missing_atom_names =
+        grep { ! $mandatory_residue_atoms{$_} }
+        grep { defined $mandatory_residue_atoms{$_} }
+        map { $residue_site->{$_}{'label_atom_id'} }
+        keys %{ $residue_site };
+
+    return \@missing_atom_names;
 }
 
 1;
