@@ -222,6 +222,7 @@ sub bond_altering
                                $up_atom_coord,
                                $side_atom_coord,
                                'global' ) },
+          ( defined $dihedral_angle_name ? ( $rot_matrix_z ) : () ),
           ( defined $bond_name ? ( $transl_matrix ) : () ),
           @{ switch_ref_frame( $parameters,
                                $mid_atom_coord,
