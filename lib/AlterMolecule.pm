@@ -186,33 +186,18 @@ sub bond_altering
          $bond_angle_name,
          $bond_name ) = @_;
 
-    my $bond_altering_matrix = [ [ 1, 0, 0, 0 ],
-                                 [ 0, 1, 0, 0 ],
-                                 [ 0, 0, 1, 0 ],
-                                 [ 0, 0, 0, 1 ] ];
+    # Dihedral angle rotation matrix around the bond.
+    my $rot_matrix_z =
+        Symbolic->new(
+            { 'symbols' => [ $dihedral_angle_name ],
+              'matrix' => sub { my ( $svar ) = @_;
+                                return [ [ cos( $svar ),-sin( $svar ), 0, 0 ],
+                                         [ sin( $svar ), cos( $svar ), 0, 0 ],
+                                         [ 0, 0, 1, 0 ],
+                                         [ 0, 0, 0, 1 ], ]; } } );
 
-    if( defined $dihedral_angle_name && defined $bond_angle_name && defined $bond_name ) {
-        $bond_altering_matrix =
-            Symbolic->new(
-                { 'symbols' => [ $dihedral_angle_name, $bond_angle_name, $bond_name ],
-                  'matrix' =>
-                      sub { my ( $svar1, $svar2, $svar3 ) = @_;
-                            return [ [ cos( $svar1 ), -sin( $svar1 ), 0, $up_atom_coord->[2] - $mid_atom_coord->[2] - $svar3 ],
-                                     [ sin( $svar1 ) * cos( $svar2 ), cos( $svar1 ) * cos( $svar2 ), -sin( $svar2 ), 0 ],
-                                     [ sin( $svar1 ) * sin( $svar2 ), cos( $svar1 ) * sin( $svar2 ),  cos( $svar2 ), 0 ],
-                                     [ 0, 0, 0, 1 ], ]; } } );
-    } elsif( defined defined $bond_angle_name && defined $bond_name ) {
-        $bond_altering_matrix =
-            Symbolic->new(
-                { 'symbols' => [ $bond_angle_name, $bond_name ],
-                  'matrix' =>
-                      sub { my ( $svar1, $svar2 ) = @_;
-                            return [ [ 1, 0, 0, $up_atom_coord->[2] - $mid_atom_coord->[2] - $svar2 ],
-                                     [ cos( $svar1 ), cos( $svar1 ), -sin( $svar1 ), 0 ],
-                                     [ sin( $svar1 ), sin( $svar1 ),  cos( $svar1 ), 0 ],
-                                     [ 0, 0, 0, 1 ], ]; } } );
-    } elsif( defined $bond_name ) {
-        $bond_altering_matrix =
+    # Translation of the coordinates of the bond.
+    my $transl_matrix =
             Symbolic->new(
                 { 'symbols' => [ $bond_name ],
                   'matrix' => sub { my ( $svar ) = @_;
@@ -220,7 +205,16 @@ sub bond_altering
                                              [ 0, 1, 0, 0 ],
                                              [ 0, 0, 1, $svar ],
                                              [ 0, 0, 0, 1 ], ]; } } );
-    }
+
+    # Bond angle matrices that rotates along x axis.
+    my $rot_matrix_x =
+        Symbolic->new(
+            { 'symbols' => [ $bond_angle_name ],
+              'matrix' => sub { my ( $svar ) = @_;
+                                return [ [ 1, 0, 0, 0 ],
+                                         [ 0, cos( $svar ), -sin( $svar ), 0 ],
+                                         [ 0, sin( $svar ), cos( $svar ), 0 ],
+                                         [ 0, 0, 0, 1 ], ]; } } );
 
     my @bond_altering_matrix =
         ( @{ switch_ref_frame( $parameters,
@@ -228,7 +222,7 @@ sub bond_altering
                                $up_atom_coord,
                                $side_atom_coord,
                                'global' ) },
-          $bond_altering_matrix,
+          ( defined $bond_name ? ( $transl_matrix ) : () ),
           @{ switch_ref_frame( $parameters,
                                $mid_atom_coord,
                                $up_atom_coord,
