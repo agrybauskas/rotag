@@ -8,6 +8,7 @@ our @EXPORT_OK = qw( bendable_angles
                      collect_bond_angles
                      collect_bond_lengths
                      collect_dihedral_angles
+                     restructure_by_atom_ids
                      rotatable_bonds
                      stretchable_bonds );
 
@@ -587,6 +588,25 @@ sub unique_bond_parameters
         }
     }
     return \%unique_bond_parameters;
+}
+
+#
+# Restructures bond parameters by atom ids.
+# Input:
+#     $bond_parameters - bond parameter data structure produced by
+#     rotatable_bonds(), stretchable_bonds() or bendable_angles().
+# Output:
+#     %restructured_bond_parameters - restructure bond parameter values.
+
+sub restructure_by_atom_ids
+{
+    my ( $bond_parameters ) = @_;
+    my ( $unique_residue_key ) = keys %{ $bond_parameters };
+    return { map { join( ',', @{ $bond_parameters->{$unique_residue_key}{$_}
+                                                   {'atom_ids'} } ) =>
+                   { %{ $bond_parameters->{$unique_residue_key}{$_} },
+                        'name' => $_ } }
+             keys %{ $bond_parameters->{$unique_residue_key} } };
 }
 
 1;

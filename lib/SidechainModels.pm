@@ -14,7 +14,8 @@ use AlterMolecule qw( angle_bending
 use AtomProperties qw( sort_atom_ids_by_name );
 use BondParameters qw( collect_bond_angles
                        collect_bond_lengths
-                       collect_dihedral_angles );
+                       collect_dihedral_angles
+                       restructure_by_atom_ids );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( determine_residue_keys
@@ -336,19 +337,10 @@ sub conformation_matrices
     my $dihedral_angles =
         collect_dihedral_angles( { $atom_id => $atom_site->{$atom_id} } );
 
-    my ( $unique_residue_key ) = (
-        keys %{ $bond_lengths },
-        keys %{ $bond_angles },
-        keys %{ $dihedral_angles }
-    );
-
     # Restructuring data structure for easier search by atom ids.
-    my $bond_lengths_by_atom_ids =
-        $bond_lengths->{$unique_residue_key};
-    my $bond_angles_by_atom_ids =
-        $bond_angles->{$unique_residue_key};
-    my $dihedral_angles_by_atom_ids =
-        $dihedral_angles->{$unique_residue_key};
+    my $bond_lengths_by_atom_ids = restructure_by_atom_ids( $bond_lengths );
+    my $bond_angles_by_atom_ids = restructure_by_atom_ids( $bond_angles );
+    my $dihedral_angles_by_atom_ids = restructure_by_atom_ids( $dihedral_angles);
 
     my @conformation_matrices = ();
     # for my $bond_name ( sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
