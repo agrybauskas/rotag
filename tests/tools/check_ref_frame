@@ -56,11 +56,6 @@ my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( $parameters,
                                                      \@up_atom_coord,
                                                      \@side_atom_coord ) };
 
-# Transforms given atom coordinates and prepares data for Jmol.
-open( my $fh, "<", $pdbx_file );
-chomp( my @pdbx_lines = <$fh> );
-close( $fh );
-
 print( "data \"model\"\n" );
 print( scalar( keys %{ $atom_site } ) + 3, "\n" );
 print( "testing\n" );
