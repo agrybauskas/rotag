@@ -329,12 +329,26 @@ sub conformation_matrices
     my ( $parameters, $atom_site, $atom_id, $stretchable_bonds, $bendable_angles,
          $rotatable_bonds ) = @_;
 
-    my $all_bond_lengths =
+    my $bond_lengths =
         collect_bond_lengths( { $atom_id => $atom_site->{$atom_id} } );
-    my $all_bond_angles =
+    my $bond_angles =
         collect_bond_angles( { $atom_id => $atom_site->{$atom_id} } );
-    my $all_dihedral_angles =
+    my $dihedral_angles =
         collect_dihedral_angles( { $atom_id => $atom_site->{$atom_id} } );
+
+    my ( $unique_residue_key ) = (
+        keys %{ $bond_lengths },
+        keys %{ $bond_angles },
+        keys %{ $dihedral_angles }
+    );
+
+    # Restructuring data structure for easier search by atom ids.
+    my $bond_lengths_by_atom_ids =
+        $bond_lengths->{$unique_residue_key};
+    my $bond_angles_by_atom_ids =
+        $bond_angles->{$unique_residue_key};
+    my $dihedral_angles_by_atom_ids =
+        $dihedral_angles->{$unique_residue_key};
 
     my @conformation_matrices = ();
     # for my $bond_name ( sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
