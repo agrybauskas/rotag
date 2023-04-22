@@ -42,14 +42,14 @@ foreach my $pdbx_file ( @ARGV ) {
     my $atom_site = obtain_atom_site( $pdbx_file );
 
     # Selects atom's data for further analysis.
-    my %atom_specifier = ();
+    my %target_atom_specifier = ();
     foreach ( split '&', $target_query ) {
         my ( $label, $data ) = split ' ', $_;
-        $atom_specifier{$label} = [ split ',', $data ];
+        $target_atom_specifier{$label} = [ split ',', $data ];
     }
 
     my $atom_data =
-        extract( filter_new( $atom_site, { 'include' => \%atom_specifier } ),
+        extract( filter_new( $atom_site, { 'include' => \%target_atom_specifier } ),
                  { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
     # Finds Euler angles and makes rotational matrices.
