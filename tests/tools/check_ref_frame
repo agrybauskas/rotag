@@ -87,14 +87,14 @@ foreach my $pdbx_file ( @ARGV ) {
                      { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
         @ref_mid_atom_coord =  ( $ref_atom_data->[1][0],
-                                    $ref_atom_data->[1][1],
-                                    $ref_atom_data->[1][2] );
+                                 $ref_atom_data->[1][1],
+                                 $ref_atom_data->[1][2] );
         @ref_up_atom_coord =   ( $ref_atom_data->[2][0],
-                                    $ref_atom_data->[2][1],
-                                    $ref_atom_data->[2][2] );
+                                 $ref_atom_data->[2][1],
+                                 $ref_atom_data->[2][2] );
         @ref_side_atom_coord = ( $ref_atom_data->[0][0],
-                                    $ref_atom_data->[0][1],
-                                    $ref_atom_data->[0][2] );
+                                 $ref_atom_data->[0][1],
+                                 $ref_atom_data->[0][2] );
 
         ( $ref_alpha, $ref_beta, $ref_gamma ) =
             @{ find_euler_angles( $parameters,
