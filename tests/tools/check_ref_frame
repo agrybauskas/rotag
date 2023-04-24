@@ -196,10 +196,11 @@ sub transform_coord
         @{ mult_matrix_product(
                [ translation( $mid_atom_coord->[0],
                               $mid_atom_coord->[1],
-                              $mid_atom_coord->[2] + $bond_length ),
+                              $mid_atom_coord->[2] ),
                  z_axis_rotation( - $gamma ),
                  x_axis_rotation( - $beta + ( $pi * $bond_angle / 180.0 ) ),
                  z_axis_rotation( - $alpha ),
+                 translation( 0.0, 0.0, $bond_length ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
 }
