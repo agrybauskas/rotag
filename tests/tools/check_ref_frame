@@ -128,6 +128,11 @@ foreach my $pdbx_file ( @ARGV ) {
     my @y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
     my @z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
 
+    transform_coord( \@origin_coord, \@mid_atom_coord, $alpha, $beta, $gamma );
+    transform_coord( \@x_axis_coord, \@mid_atom_coord, $alpha, $beta, $gamma );
+    transform_coord( \@y_axis_coord, \@mid_atom_coord, $alpha, $beta, $gamma );
+    transform_coord( \@z_axis_coord, \@mid_atom_coord, $alpha, $beta, $gamma );
+
     # Draws atoms on the end of axes.
     print( "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
            "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
@@ -154,13 +159,15 @@ foreach my $pdbx_file ( @ARGV ) {
 
 sub transform_coord
 {
-    # my ( $tranf_atom_coord ) =
-    #     @{ mult_matrix_product(
-    #            [ z_axis_rotation( $alpha ),
-    #              x_axis_rotation( $beta ),
-    #              z_axis_rotation( $gamma ),
-    #              translation( ( - $mid_atom_coord[0],
-    #                             - $mid_atom_coord[1],
-    #                             - $mid_atom_coord[2] ) ),
-    #              \@atom_coord ] ) };
+    my ( $atom_coord, $mid_atom_coord, $alpha, $beta, $gamma ) = @_;
+    $atom_coord =
+        mult_matrix_product(
+            [ z_axis_rotation( $alpha ),
+              x_axis_rotation( $beta ),
+              z_axis_rotation( $gamma ),
+              translation( ( - $mid_atom_coord->[0],
+                             - $mid_atom_coord->[1],
+                             - $mid_atom_coord->[2] ) ),
+              $atom_coord ] );
+    return;
 }
