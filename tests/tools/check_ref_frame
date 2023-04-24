@@ -69,6 +69,7 @@ foreach my $pdbx_file ( @ARGV ) {
                                                          \@side_atom_coord ) };
 
     # Determines the references frame where transformations might happen.
+    my $ref_atom_data;
     my @ref_mid_atom_coord;
     my @ref_up_atom_coord;
     my @ref_side_atom_coord;
@@ -80,22 +81,22 @@ foreach my $pdbx_file ( @ARGV ) {
             $ref_atom_specifier{$label} = [ split ',', $data ];
         }
 
-        my $ref_atom_data =
+        $ref_atom_data =
             extract( filter_new( $atom_site,
                                  { 'include' => \%ref_atom_specifier } ),
                      { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
-        my @ref_mid_atom_coord =  ( $ref_atom_data->[1][0],
+        @ref_mid_atom_coord =  ( $ref_atom_data->[1][0],
                                     $ref_atom_data->[1][1],
                                     $ref_atom_data->[1][2] );
-        my @ref_up_atom_coord =   ( $ref_atom_data->[2][0],
+        @ref_up_atom_coord =   ( $ref_atom_data->[2][0],
                                     $ref_atom_data->[2][1],
                                     $ref_atom_data->[2][2] );
-        my @ref_side_atom_coord = ( $ref_atom_data->[0][0],
+        @ref_side_atom_coord = ( $ref_atom_data->[0][0],
                                     $ref_atom_data->[0][1],
                                     $ref_atom_data->[0][2] );
 
-        my ( $ref_alpha, $ref_beta, $ref_gamma ) =
+        ( $ref_alpha, $ref_beta, $ref_gamma ) =
             @{ find_euler_angles( $parameters,
                                   \@ref_mid_atom_coord,
                                   \@ref_up_atom_coord,
