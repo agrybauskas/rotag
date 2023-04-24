@@ -27,10 +27,16 @@ use PDBxParser qw( extract
 my %options;
 my $target_query;
 my $reference_query;
+my $bond_angle_query;
+my $dihedral_angle_query;
+my $bond_length_query;
 
 GetOptions(
     "q=s" => \$target_query,
     "r=s" => \$reference_query,
+    "a=s" => \$bond_angle_query,
+    "d=s" => \$dihedral_angle_query,
+    "l=s" => \$bond_length_query,
 ) or die "Error in command line argument.";
 
 @ARGV = ( "-" ) unless @ARGV;
