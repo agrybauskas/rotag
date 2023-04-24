@@ -10,7 +10,6 @@ use LinearAlgebra qw( find_euler_angles
                       mult_matrix_product
                       translation
                       x_axis_rotation
-                      y_axis_rotation
                       z_axis_rotation );
 use PDBxParser qw( extract
                    filter_new
@@ -153,16 +152,20 @@ foreach my $pdbx_file ( @ARGV ) {
 
     @origin_coord =
         @{ transform_coord( \@origin_coord, \@mid_atom_coord,
-                            $alpha, $beta, $gamma )->[0] };
+                            $alpha, $beta, $gamma,
+                            $bond_angle, $dihedral_angle, $bond_length )->[0] };
     @x_axis_coord =
         @{ transform_coord( \@x_axis_coord, \@mid_atom_coord,
-                             $alpha, $beta, $gamma )->[0] };
+                            $alpha, $beta, $gamma,
+                            $bond_angle, $dihedral_angle, $bond_length )->[0] };
     @y_axis_coord =
         @{ transform_coord( \@y_axis_coord, \@mid_atom_coord,
-                            $alpha, $beta, $gamma )->[0] };
+                            $alpha, $beta, $gamma,
+                            $bond_angle, $dihedral_angle, $bond_length )->[0] };
     @z_axis_coord =
         @{ transform_coord( \@z_axis_coord, \@mid_atom_coord,
-                            $alpha, $beta, $gamma )->[0] };
+                            $alpha, $beta, $gamma,
+                            $bond_angle, $dihedral_angle, $bond_length )->[0] };
 
     # Draws atoms on the end of axes.
     print( "X $origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]\n" .
@@ -183,7 +186,7 @@ foreach my $pdbx_file ( @ARGV ) {
            . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
            . "{$z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]}\n" );
 
-    # # Colors axes.
+    # Colors axes.
     print( "color \$global_x_axis red\n" );
     print( "color \$global_y_axis green\n" );
     print( "color \$global_z_axis blue\n" );
@@ -191,7 +194,8 @@ foreach my $pdbx_file ( @ARGV ) {
 
 sub transform_coord
 {
-    my ( $atom_coord, $mid_atom_coord, $alpha, $beta, $gamma ) = @_;
+    my ( $atom_coord, $mid_atom_coord, $alpha, $beta, $gamma, $bond_angle,
+         $dihedral_angle, $bond_length ) = @_;
     my @transformed_atom_coord =
         @{ mult_matrix_product(
                [ translation( $mid_atom_coord->[0],
@@ -199,7 +203,7 @@ sub transform_coord
                               $mid_atom_coord->[2] ),
                  z_axis_rotation( - $gamma ),
                  x_axis_rotation( - $beta + ( $pi * $bond_angle / 180.0 ) ),
-                 z_axis_rotation( - $alpha ),
+                 z_axis_rotation( - $alpha + ( $pi * $dihedral_angle / 180.0 ) ),
                  translation( 0.0, 0.0, $bond_length ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
