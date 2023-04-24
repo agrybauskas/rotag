@@ -148,21 +148,21 @@ foreach my $pdbx_file ( @ARGV ) {
 
     print( "end \"model\"\n" );
 
-    # # Draws global axes.
-    # print( "draw global_x_axis vector "
-    #        . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-    #        . "{$x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]}\n" );
-    # print( "draw global_y_axis vector "
-    #        . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-    #        . "{$y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]}\n" );
-    # print( "draw global_z_axis vector "
-    #        . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-    #        . "{$z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]}\n" );
+    # Draws global axes.
+    print( "draw global_x_axis arrow "
+           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+           . "{$x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]}\n" );
+    print( "draw global_y_axis arrow "
+           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+           . "{$y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]}\n" );
+    print( "draw global_z_axis arrow "
+           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+           . "{$z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]}\n" );
 
     # # Colors axes.
-    # print( "color \$global_x_axis red\n" );
-    # print( "color \$global_y_axis green\n" );
-    # print( "color \$global_z_axis blue\n" );
+    print( "color \$global_x_axis red\n" );
+    print( "color \$global_y_axis green\n" );
+    print( "color \$global_z_axis blue\n" );
 }
 
 sub transform_coord
