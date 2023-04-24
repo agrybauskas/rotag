@@ -128,41 +128,44 @@ foreach my $pdbx_file ( @ARGV ) {
     my @y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
     my @z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
 
+    use Data::Dumper;
+    print STDERR Dumper \@origin_coord;
+
     @origin_coord =
         @{ transform_coord( \@origin_coord, \@mid_atom_coord,
-                            $alpha, $beta, $gamma ) };
+                            $alpha, $beta, $gamma )->[0] };
     @x_axis_coord =
         @{ transform_coord( \@x_axis_coord, \@mid_atom_coord,
-                             $alpha, $beta, $gamma ) };
+                             $alpha, $beta, $gamma )->[0] };
     @y_axis_coord =
         @{ transform_coord( \@y_axis_coord, \@mid_atom_coord,
-                            $alpha, $beta, $gamma ) };
+                            $alpha, $beta, $gamma )->[0] };
     @z_axis_coord =
         @{ transform_coord( \@z_axis_coord, \@mid_atom_coord,
-                            $alpha, $beta, $gamma ) };
+                            $alpha, $beta, $gamma )->[0] };
 
     # Draws atoms on the end of axes.
-    print( "X $x_axis_coord[0][0][0] $x_axis_coord[0][1][0] $x_axis_coord[0][2][0]\n" .
-           "X $y_axis_coord[0][0][0] $y_axis_coord[0][1][0] $y_axis_coord[0][2][0]\n" .
-           "X $z_axis_coord[0][0][0] $z_axis_coord[0][1][0] $z_axis_coord[0][2][0]\n" );
+    print( "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
+           "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
+           "X $z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]\n" );
 
     print( "end \"model\"\n" );
 
-    # Draws global axes.
-    print( "draw global_x_axis vector "
-           . "{$origin_coord[0][0][0] $origin_coord[0][1][0] $origin_coord[0][2][0]} "
-           . "{$x_axis_coord[0][0][0] $x_axis_coord[0][1][0] $x_axis_coord[0][2][0]}\n" );
-    print( "draw global_y_axis vector "
-           . "{$origin_coord[0][0][0] $origin_coord[0][1][0] $origin_coord[0][2][0]} "
-           . "{$y_axis_coord[0][0][0] $y_axis_coord[0][1][0] $y_axis_coord[0][2][0]}\n" );
-    print( "draw global_z_axis vector "
-           . "{$origin_coord[0][0][0] $origin_coord[0][1][0] $origin_coord[0][2][0]} "
-           . "{$z_axis_coord[0][0][0] $z_axis_coord[0][1][0] $z_axis_coord[0][2][0]}\n" );
+    # # Draws global axes.
+    # print( "draw global_x_axis vector "
+    #        . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+    #        . "{$x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]}\n" );
+    # print( "draw global_y_axis vector "
+    #        . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+    #        . "{$y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]}\n" );
+    # print( "draw global_z_axis vector "
+    #        . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+    #        . "{$z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]}\n" );
 
-    # Colors axes.
-    print( "color \$global_x_axis red\n" );
-    print( "color \$global_y_axis green\n" );
-    print( "color \$global_z_axis blue\n" );
+    # # Colors axes.
+    # print( "color \$global_x_axis red\n" );
+    # print( "color \$global_y_axis green\n" );
+    # print( "color \$global_z_axis blue\n" );
 }
 
 sub transform_coord
