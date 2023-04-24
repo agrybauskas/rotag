@@ -128,9 +128,6 @@ foreach my $pdbx_file ( @ARGV ) {
     my @y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
     my @z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
 
-    use Data::Dumper;
-    print STDERR Dumper \@origin_coord;
-
     @origin_coord =
         @{ transform_coord( \@origin_coord, \@mid_atom_coord,
                             $alpha, $beta, $gamma )->[0] };
@@ -173,12 +170,12 @@ sub transform_coord
     my ( $atom_coord, $mid_atom_coord, $alpha, $beta, $gamma ) = @_;
     my @transformed_atom_coord =
         @{ mult_matrix_product(
-               [ z_axis_rotation( $alpha ),
-                 x_axis_rotation( $beta ),
-                 z_axis_rotation( $gamma ),
-                 translation( ( - $mid_atom_coord->[0],
-                                - $mid_atom_coord->[1],
-                                - $mid_atom_coord->[2] ) ),
+               [ # z_axis_rotation( $alpha ),
+                 # x_axis_rotation( $beta ),
+                 # z_axis_rotation( $gamma ),
+                 translation( ( $mid_atom_coord->[0],
+                                $mid_atom_coord->[1],
+                                $mid_atom_coord->[2] ) ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
 }
