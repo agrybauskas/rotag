@@ -10,6 +10,7 @@ use LinearAlgebra qw( find_euler_angles
                       mult_matrix_product
                       translation
                       x_axis_rotation
+                      y_axis_rotation
                       z_axis_rotation );
 use PDBxParser qw( extract
                    filter_new
@@ -54,10 +55,10 @@ my ( $dihedral_angle, $ref_dihedral_angle ) = split /;/, $dihedral_angle_query;
 my ( $bond_length, $ref_bond_length ) = split /;/, $bond_length_query;
 
 $bond_angle //= 0.0;
-$ref_bond_angle //= 0.0;
 $dihedral_angle //= 0.0;
-$ref_dihedral_angle //= 0.0;
 $bond_length //= 0.0;
+$ref_bond_angle //= 0.0;
+$ref_dihedral_angle //= 0.0;
 $ref_bond_length //= 0.0;
 
 foreach my $pdbx_file ( @ARGV ) {
@@ -202,8 +203,10 @@ sub transform_coord
                               $mid_atom_coord->[1],
                               $mid_atom_coord->[2] ),
                  z_axis_rotation( - $gamma ),
-                 x_axis_rotation( - $beta + ( $pi * $bond_angle / 180.0 ) ),
-                 z_axis_rotation( - $alpha + ( $pi * $dihedral_angle / 180.0 ) ),
+                 x_axis_rotation( $pi * $bond_angle / 180.0 ),
+                 x_axis_rotation( - $beta ),
+                 z_axis_rotation( $pi * $dihedral_angle / 180.0 ),
+                 z_axis_rotation( - $alpha ),
                  translation( 0.0, 0.0, $bond_length ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
