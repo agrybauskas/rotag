@@ -152,20 +152,24 @@ foreach my $pdbx_file ( @ARGV ) {
     my @z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
 
     @origin_coord =
-        @{ transform_coord( \@origin_coord, \@mid_atom_coord,
+        @{ transform_coord( \@origin_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
                             $alpha, $beta, $gamma,
+                            $ref_alpha, $ref_beta, $ref_gamma,
                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
     @x_axis_coord =
-        @{ transform_coord( \@x_axis_coord, \@mid_atom_coord,
+        @{ transform_coord( \@x_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
                             $alpha, $beta, $gamma,
+                            $ref_alpha, $ref_beta, $ref_gamma,
                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
     @y_axis_coord =
-        @{ transform_coord( \@y_axis_coord, \@mid_atom_coord,
+        @{ transform_coord( \@y_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
                             $alpha, $beta, $gamma,
+                            $ref_alpha, $ref_beta, $ref_gamma,
                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
     @z_axis_coord =
-        @{ transform_coord( \@z_axis_coord, \@mid_atom_coord,
+        @{ transform_coord( \@z_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
                             $alpha, $beta, $gamma,
+                            $ref_alpha, $ref_beta, $ref_gamma,
                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
 
     # Draws atoms on the end of axes.
@@ -195,23 +199,25 @@ foreach my $pdbx_file ( @ARGV ) {
 
 sub transform_coord
 {
-    my ( $atom_coord, $mid_atom_coord, $alpha, $beta, $gamma, $bond_angle,
-         $dihedral_angle, $bond_length ) = @_;
+    my ( $atom_coord, $mid_atom_coord, $ref_mid_atom_coord, $alpha, $beta, $gamma,
+         $ref_alpha, $ref_beta, $ref_gamma, $bond_angle, $dihedral_angle,
+         $bond_length ) = @_;
     my @transformed_atom_coord =
         @{ mult_matrix_product(
-               [ translation( $mid_atom_coord->[0],
-                              $mid_atom_coord->[1],
-                              $mid_atom_coord->[2] ),
-                 [ [ 1, 0, 0, 0 ],
-                   [ 0, 1, 0, 0 ],
-                   [ 0, 0, 1, 0 ],
-                   [ 0, 0, 0, 1 ] ],
-                 # z_axis_rotation( - $gamma ),
-                 # x_axis_rotation( $pi * $bond_angle / 180.0 ),
-                 # x_axis_rotation( - $beta ),
-                 # z_axis_rotation( $pi * $dihedral_angle / 180.0 ),
-                 # z_axis_rotation( - $alpha ),
-                 # translation( 0.0, 0.0, $bond_length ),
+               [ translation( $ref_mid_atom_coord->[0],
+                              $ref_mid_atom_coord->[1],
+                              $ref_mid_atom_coord->[2] ),
+                 # z_axis_rotation( - $ref_alpha + $alpha ),
+                 # [ [ 1, 0, 0, 0 ],
+                 #   [ 0, 1, 0, 0 ],
+                 #   [ 0, 0, 1, 0 ],
+                 #   [ 0, 0, 0, 1 ] ],
+                 z_axis_rotation( - $ref_gamma ),
+                 x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
+                 x_axis_rotation( - $ref_beta ),
+                 z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
+                 z_axis_rotation( - $ref_alpha ),
+                 translation( 0.0, 0.0, $ref_bond_length ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
 }
