@@ -22,7 +22,7 @@ use PDBxParser qw( extract
 #
 # Bring molecule's local frame of reference to global and visualizes it.
 #
-# Example: ./check_ref_frame -q 'label_atom_id N,CA,CB' example.cif
+# Example: ./check_ref_frame -t 'label_atom_id N,CA,CB' example.cif
 #
 
 my %options;
@@ -33,8 +33,8 @@ my $dihedral_angle_query = '';
 my $bond_length_query = '';
 
 GetOptions(
-    "q=s" => \$target_query,
-    "r=s" => \$reference_query,
+    "t=s" => \$target_query,
+    "f=s" => \$reference_query,
     "a=s" => \$bond_angle_query,
     "d=s" => \$dihedral_angle_query,
     "l=s" => \$bond_length_query,
@@ -50,174 +50,174 @@ $bond_angle_query =~ s/ //g;
 $dihedral_angle_query =~ s/ //g;
 $bond_length_query =~ s/ //g;
 
-my ( $bond_angle, $ref_bond_angle ) = split /;/, $bond_angle_query;
-my ( $dihedral_angle, $ref_dihedral_angle ) = split /;/, $dihedral_angle_query;
-my ( $bond_length, $ref_bond_length ) = split /;/, $bond_length_query;
+my ( $to_bond_angle, $from_bond_angle ) = split /;/, $bond_angle_query;
+my ( $to_dihedral_angle, $from_dihedral_angle ) = split /;/, $dihedral_angle_query;
+my ( $to_bond_length, $from_bond_length ) = split /;/, $bond_length_query;
 
-$bond_angle //= 0.0;
-$dihedral_angle //= 0.0;
-$bond_length //= 0.0;
-$ref_bond_angle //= 0.0;
-$ref_dihedral_angle //= 0.0;
-$ref_bond_length //= 0.0;
+$to_bond_angle //= 0.0;
+$to_dihedral_angle //= 0.0;
+$to_bond_length //= 0.0;
+$from_bond_angle //= 0.0;
+$from_dihedral_angle //= 0.0;
+$from_bond_length //= 0.0;
 
 foreach my $pdbx_file ( @ARGV ) {
     my $atom_site = obtain_atom_site( $pdbx_file );
 
-    # Selects atom's data for further analysis.
-    my %target_atom_specifier = ();
-    foreach ( split '&', $target_query ) {
-        my ( $label, $data ) = split ' ', $_;
-        $target_atom_specifier{$label} = [ split ',', $data ];
-    }
+    # # Selects atom's data for further analysis.
+    # my %target_atom_specifier = ();
+    # foreach ( split '&', $target_query ) {
+    #     my ( $label, $data ) = split ' ', $_;
+    #     $target_atom_specifier{$label} = [ split ',', $data ];
+    # }
 
-    my $atom_data =
-        extract( filter_new( $atom_site, { 'include' => \%target_atom_specifier } ),
-                 { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+#     my $atom_data =
+#         extract( filter_new( $atom_site, { 'include' => \%target_atom_specifier } ),
+#                  { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
-    # Finds Euler angles and makes rotational matrices.
-    my @mid_atom_coord =  ( $atom_data->[1][0],
-                            $atom_data->[1][1],
-                            $atom_data->[1][2] );
-    my @up_atom_coord =   ( $atom_data->[2][0],
-                            $atom_data->[2][1],
-                            $atom_data->[2][2] );
-    my @side_atom_coord = ( $atom_data->[0][0],
-                            $atom_data->[0][1],
-                            $atom_data->[0][2] );
+#     # Finds Euler angles and makes rotational matrices.
+#     my @mid_atom_coord =  ( $atom_data->[1][0],
+#                             $atom_data->[1][1],
+#                             $atom_data->[1][2] );
+#     my @up_atom_coord =   ( $atom_data->[2][0],
+#                             $atom_data->[2][1],
+#                             $atom_data->[2][2] );
+#     my @side_atom_coord = ( $atom_data->[0][0],
+#                             $atom_data->[0][1],
+#                             $atom_data->[0][2] );
 
-    my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( $parameters,
-                                                         \@mid_atom_coord,
-                                                         \@up_atom_coord,
-                                                         \@side_atom_coord ) };
+#     my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( $parameters,
+#                                                          \@mid_atom_coord,
+#                                                          \@up_atom_coord,
+#                                                          \@side_atom_coord ) };
 
-    # Determines the references frame where transformations might happen.
-    my $ref_atom_data;
-    my @ref_mid_atom_coord;
-    my @ref_up_atom_coord;
-    my @ref_side_atom_coord;
-    my ( $ref_alpha, $ref_beta, $ref_gamma );
-    if( $reference_query ) {
-        my %ref_atom_specifier = ();
-        foreach ( split '&', $reference_query ) {
-            my ( $label, $data ) = split ' ', $_;
-            $ref_atom_specifier{$label} = [ split ',', $data ];
-        }
+#     # Determines the references frame where transformations might happen.
+#     my $ref_atom_data;
+#     my @ref_mid_atom_coord;
+#     my @ref_up_atom_coord;
+#     my @ref_side_atom_coord;
+#     my ( $ref_alpha, $ref_beta, $ref_gamma );
+#     if( $reference_query ) {
+#         my %ref_atom_specifier = ();
+#         foreach ( split '&', $reference_query ) {
+#             my ( $label, $data ) = split ' ', $_;
+#             $ref_atom_specifier{$label} = [ split ',', $data ];
+#         }
 
-        $ref_atom_data =
-            extract( filter_new( $atom_site,
-                                 { 'include' => \%ref_atom_specifier } ),
-                     { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+#         $ref_atom_data =
+#             extract( filter_new( $atom_site,
+#                                  { 'include' => \%ref_atom_specifier } ),
+#                      { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
-        @ref_mid_atom_coord =  ( $ref_atom_data->[1][0],
-                                 $ref_atom_data->[1][1],
-                                 $ref_atom_data->[1][2] );
-        @ref_up_atom_coord =   ( $ref_atom_data->[2][0],
-                                 $ref_atom_data->[2][1],
-                                 $ref_atom_data->[2][2] );
-        @ref_side_atom_coord = ( $ref_atom_data->[0][0],
-                                 $ref_atom_data->[0][1],
-                                 $ref_atom_data->[0][2] );
+#         @ref_mid_atom_coord =  ( $ref_atom_data->[1][0],
+#                                  $ref_atom_data->[1][1],
+#                                  $ref_atom_data->[1][2] );
+#         @ref_up_atom_coord =   ( $ref_atom_data->[2][0],
+#                                  $ref_atom_data->[2][1],
+#                                  $ref_atom_data->[2][2] );
+#         @ref_side_atom_coord = ( $ref_atom_data->[0][0],
+#                                  $ref_atom_data->[0][1],
+#                                  $ref_atom_data->[0][2] );
 
-        ( $ref_alpha, $ref_beta, $ref_gamma ) =
-            @{ find_euler_angles( $parameters,
-                                  \@ref_mid_atom_coord,
-                                  \@ref_up_atom_coord,
-                                  \@ref_side_atom_coord ) };
-    }
+#         ( $ref_alpha, $ref_beta, $ref_gamma ) =
+#             @{ find_euler_angles( $parameters,
+#                                   \@ref_mid_atom_coord,
+#                                   \@ref_up_atom_coord,
+#                                   \@ref_side_atom_coord ) };
+#     }
 
-    print( "data \"model\"\n" );
-    print( scalar( keys %{ $atom_site } ) + 4, "\n" );
-    print( "testing\n" );
+#     print( "data \"model\"\n" );
+#     print( scalar( keys %{ $atom_site } ) + 4, "\n" );
+#     print( "testing\n" );
 
-    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-        my @atom_data = ( $atom_site->{$atom_id}{'type_symbol'},
-                          $atom_site->{$atom_id}{'Cartn_x'},
-                          $atom_site->{$atom_id}{'Cartn_y'},
-                          $atom_site->{$atom_id}{'Cartn_z'});
-        my $atom_name = $atom_data[0];
-        my @atom_coord = ( [ $atom_data[1] ],
-                           [ $atom_data[2] ],
-                           [ $atom_data[3] ] );
-        printf( "%s $sig_figs_max $sig_figs_max $sig_figs_max\n",
-                $atom_name,
-                $atom_coord[0][0],
-                $atom_coord[1][0],
-                $atom_coord[2][0] );
-    }
+#     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+#         my @atom_data = ( $atom_site->{$atom_id}{'type_symbol'},
+#                           $atom_site->{$atom_id}{'Cartn_x'},
+#                           $atom_site->{$atom_id}{'Cartn_y'},
+#                           $atom_site->{$atom_id}{'Cartn_z'});
+#         my $atom_name = $atom_data[0];
+#         my @atom_coord = ( [ $atom_data[1] ],
+#                            [ $atom_data[2] ],
+#                            [ $atom_data[3] ] );
+#         printf( "%s $sig_figs_max $sig_figs_max $sig_figs_max\n",
+#                 $atom_name,
+#                 $atom_coord[0][0],
+#                 $atom_coord[1][0],
+#                 $atom_coord[2][0] );
+#     }
 
-    my @origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
-    my @x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
-    my @y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
-    my @z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
+#     my @origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+#     my @x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+#     my @y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
+#     my @z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
 
-    @origin_coord =
-        @{ transform_coord( \@origin_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
-                            $alpha, $beta, $gamma,
-                            $ref_alpha, $ref_beta, $ref_gamma,
-                            $bond_angle, $dihedral_angle, $bond_length )->[0] };
-    @x_axis_coord =
-        @{ transform_coord( \@x_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
-                            $alpha, $beta, $gamma,
-                            $ref_alpha, $ref_beta, $ref_gamma,
-                            $bond_angle, $dihedral_angle, $bond_length )->[0] };
-    @y_axis_coord =
-        @{ transform_coord( \@y_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
-                            $alpha, $beta, $gamma,
-                            $ref_alpha, $ref_beta, $ref_gamma,
-                            $bond_angle, $dihedral_angle, $bond_length )->[0] };
-    @z_axis_coord =
-        @{ transform_coord( \@z_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
-                            $alpha, $beta, $gamma,
-                            $ref_alpha, $ref_beta, $ref_gamma,
-                            $bond_angle, $dihedral_angle, $bond_length )->[0] };
+#     @origin_coord =
+#         @{ transform_coord( \@origin_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
+#                             $alpha, $beta, $gamma,
+#                             $ref_alpha, $ref_beta, $ref_gamma,
+#                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
+#     @x_axis_coord =
+#         @{ transform_coord( \@x_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
+#                             $alpha, $beta, $gamma,
+#                             $ref_alpha, $ref_beta, $ref_gamma,
+#                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
+#     @y_axis_coord =
+#         @{ transform_coord( \@y_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
+#                             $alpha, $beta, $gamma,
+#                             $ref_alpha, $ref_beta, $ref_gamma,
+#                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
+#     @z_axis_coord =
+#         @{ transform_coord( \@z_axis_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
+#                             $alpha, $beta, $gamma,
+#                             $ref_alpha, $ref_beta, $ref_gamma,
+#                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
 
-    # Draws atoms on the end of axes.
-    print( "X $origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]\n" .
-           "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
-           "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
-           "X $z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]\n" );
+#     # Draws atoms on the end of axes.
+#     print( "X $origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]\n" .
+#            "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
+#            "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
+#            "X $z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]\n" );
 
-    print( "end \"model\"\n" );
+#     print( "end \"model\"\n" );
 
-    # Draws global axes.
-    print( "draw global_x_axis arrow "
-           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-           . "{$x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]}\n" );
-    print( "draw global_y_axis arrow "
-           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-           . "{$y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]}\n" );
-    print( "draw global_z_axis arrow "
-           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-           . "{$z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]}\n" );
+#     # Draws global axes.
+#     print( "draw global_x_axis arrow "
+#            . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+#            . "{$x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]}\n" );
+#     print( "draw global_y_axis arrow "
+#            . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+#            . "{$y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]}\n" );
+#     print( "draw global_z_axis arrow "
+#            . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+#            . "{$z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]}\n" );
 
-    # Colors axes.
-    print( "color \$global_x_axis red\n" );
-    print( "color \$global_y_axis green\n" );
-    print( "color \$global_z_axis blue\n" );
+#     # Colors axes.
+#     print( "color \$global_x_axis red\n" );
+#     print( "color \$global_y_axis green\n" );
+#     print( "color \$global_z_axis blue\n" );
 }
 
-sub transform_coord
-{
-    my ( $atom_coord, $mid_atom_coord, $ref_mid_atom_coord, $alpha, $beta, $gamma,
-         $ref_alpha, $ref_beta, $ref_gamma, $bond_angle, $dihedral_angle,
-         $bond_length ) = @_;
-    my @transformed_atom_coord =
-        @{ mult_matrix_product(
-               [ translation( $mid_atom_coord->[0],
-                              $mid_atom_coord->[1],
-                              $mid_atom_coord->[2] ),
-                 # z_axis_rotation( - $ref_alpha + $alpha ),
-                 # [ [ 1, 0, 0, 0 ],
-                 #   [ 0, 1, 0, 0 ],
-                 #   [ 0, 0, 1, 0 ],
-                 #   [ 0, 0, 0, 1 ] ],
-                 z_axis_rotation( - $ref_gamma + $gamma ),
-                 # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
-                 x_axis_rotation( - $ref_beta + $beta ),
-                 # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
-                 z_axis_rotation( - $ref_alpha + $alpha ),
-                 # translation( 0.0, 0.0, $ref_bond_length ),
-                 $atom_coord ] ) };
-    return \@transformed_atom_coord;
-}
+# sub transform_coord
+# {
+#     my ( $atom_coord, $mid_atom_coord, $ref_mid_atom_coord, $alpha, $beta, $gamma,
+#          $ref_alpha, $ref_beta, $ref_gamma, $bond_angle, $dihedral_angle,
+#          $bond_length ) = @_;
+#     my @transformed_atom_coord =
+#         @{ mult_matrix_product(
+#                [ translation( $mid_atom_coord->[0],
+#                               $mid_atom_coord->[1],
+#                               $mid_atom_coord->[2] ),
+#                  # z_axis_rotation( - $ref_alpha + $alpha ),
+#                  # [ [ 1, 0, 0, 0 ],
+#                  #   [ 0, 1, 0, 0 ],
+#                  #   [ 0, 0, 1, 0 ],
+#                  #   [ 0, 0, 0, 1 ] ],
+#                  z_axis_rotation( - $ref_gamma + $gamma ),
+#                  # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
+#                  x_axis_rotation( - $ref_beta + $beta ),
+#                  # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
+#                  z_axis_rotation( - $ref_alpha + $alpha ),
+#                  # translation( 0.0, 0.0, $ref_bond_length ),
+#                  $atom_coord ] ) };
+#     return \@transformed_atom_coord;
+# }
