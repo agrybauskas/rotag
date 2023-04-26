@@ -177,11 +177,11 @@ foreach my $pdbx_file ( @ARGV ) {
 #                             $ref_alpha, $ref_beta, $ref_gamma,
 #                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
 
-    # Draws atoms on the end of axes.
-    print( "X $origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]\n" .
-           "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
-           "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
-           "X $z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]\n" );
+    # # Draws atoms on the end of axes.
+    # print( "X $origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]\n" .
+    #        "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
+    #        "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
+    #        "X $z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]\n" );
 
     print( "end \"model\"\n" );
 
@@ -226,3 +226,8 @@ foreach my $pdbx_file ( @ARGV ) {
 #                  $atom_coord ] ) };
 #     return \@transformed_atom_coord;
 # }
+
+sub draw_reference_axes
+{
+
+}
