@@ -204,20 +204,20 @@ sub transform_coord
          $bond_length ) = @_;
     my @transformed_atom_coord =
         @{ mult_matrix_product(
-               [ translation( $ref_mid_atom_coord->[0],
-                              $ref_mid_atom_coord->[1],
-                              $ref_mid_atom_coord->[2] ),
+               [ translation( $mid_atom_coord->[0],
+                              $mid_atom_coord->[1],
+                              $mid_atom_coord->[2] ),
                  # z_axis_rotation( - $ref_alpha + $alpha ),
                  # [ [ 1, 0, 0, 0 ],
                  #   [ 0, 1, 0, 0 ],
                  #   [ 0, 0, 1, 0 ],
                  #   [ 0, 0, 0, 1 ] ],
                  z_axis_rotation( - $ref_gamma ),
-                 x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
+                 # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
                  x_axis_rotation( - $ref_beta ),
-                 z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
+                 # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
                  z_axis_rotation( - $ref_alpha ),
-                 translation( 0.0, 0.0, $ref_bond_length ),
+                 # translation( 0.0, 0.0, $ref_bond_length ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
 }
