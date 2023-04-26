@@ -212,11 +212,11 @@ sub transform_coord
                  #   [ 0, 1, 0, 0 ],
                  #   [ 0, 0, 1, 0 ],
                  #   [ 0, 0, 0, 1 ] ],
-                 z_axis_rotation( - $ref_gamma ),
+                 z_axis_rotation( - $ref_gamma + $gamma ),
                  # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
-                 x_axis_rotation( - $ref_beta ),
+                 x_axis_rotation( - $ref_beta + $beta ),
                  # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
-                 z_axis_rotation( - $ref_alpha ),
+                 z_axis_rotation( - $ref_alpha + $alpha ),
                  # translation( 0.0, 0.0, $ref_bond_length ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
