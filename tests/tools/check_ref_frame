@@ -126,30 +126,35 @@ foreach my $pdbx_file ( @ARGV ) {
                                   \@from_side_atom_coord ) };
     }
 
-#     print( "data \"model\"\n" );
-#     print( scalar( keys %{ $atom_site } ) + 4, "\n" );
-#     print( "testing\n" );
+    print( "data \"model\"\n" );
+    print( scalar( keys %{ $atom_site } ) + 4, "\n" );
+    print( "testing\n" );
 
-#     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
-#         my @atom_data = ( $atom_site->{$atom_id}{'type_symbol'},
-#                           $atom_site->{$atom_id}{'Cartn_x'},
-#                           $atom_site->{$atom_id}{'Cartn_y'},
-#                           $atom_site->{$atom_id}{'Cartn_z'});
-#         my $atom_name = $atom_data[0];
-#         my @atom_coord = ( [ $atom_data[1] ],
-#                            [ $atom_data[2] ],
-#                            [ $atom_data[3] ] );
-#         printf( "%s $sig_figs_max $sig_figs_max $sig_figs_max\n",
-#                 $atom_name,
-#                 $atom_coord[0][0],
-#                 $atom_coord[1][0],
-#                 $atom_coord[2][0] );
-#     }
+    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+        my @atom_data = ( $atom_site->{$atom_id}{'type_symbol'},
+                          $atom_site->{$atom_id}{'Cartn_x'},
+                          $atom_site->{$atom_id}{'Cartn_y'},
+                          $atom_site->{$atom_id}{'Cartn_z'});
+        my $atom_name = $atom_data[0];
+        my @atom_coord = ( [ $atom_data[1] ],
+                           [ $atom_data[2] ],
+                           [ $atom_data[3] ] );
+        printf( "%s $sig_figs_max $sig_figs_max $sig_figs_max\n",
+                $atom_name,
+                $atom_coord[0][0],
+                $atom_coord[1][0],
+                $atom_coord[2][0] );
+    }
 
-#     my @origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
-#     my @x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
-#     my @y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
-#     my @z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
+    my @from_origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+    my @from_x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+    my @from_y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
+    my @from_z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
+
+    my @to_origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+    my @to_x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+    my @to_y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
+    my @to_z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
 
 #     @origin_coord =
 #         @{ transform_coord( \@origin_coord, \@mid_atom_coord, \@ref_mid_atom_coord,
@@ -172,13 +177,13 @@ foreach my $pdbx_file ( @ARGV ) {
 #                             $ref_alpha, $ref_beta, $ref_gamma,
 #                             $bond_angle, $dihedral_angle, $bond_length )->[0] };
 
-#     # Draws atoms on the end of axes.
-#     print( "X $origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]\n" .
-#            "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
-#            "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
-#            "X $z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]\n" );
+    # Draws atoms on the end of axes.
+    print( "X $origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]\n" .
+           "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
+           "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
+           "X $z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]\n" );
 
-#     print( "end \"model\"\n" );
+    print( "end \"model\"\n" );
 
 #     # Draws global axes.
 #     print( "draw global_x_axis arrow "
