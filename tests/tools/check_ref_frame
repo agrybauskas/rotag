@@ -26,15 +26,15 @@ use PDBxParser qw( extract
 #
 
 my %options;
-my $target_query;
-my $reference_query = '';
+my $to_query;
+my $from_query = '';
 my $bond_angle_query = '';
 my $dihedral_angle_query = '';
 my $bond_length_query = '';
 
 GetOptions(
-    "t=s" => \$target_query,
-    "f=s" => \$reference_query,
+    "t=s" => \$to_query,
+    "f=s" => \$from_query,
     "a=s" => \$bond_angle_query,
     "d=s" => \$dihedral_angle_query,
     "l=s" => \$bond_length_query,
@@ -64,67 +64,67 @@ $from_bond_length //= 0.0;
 foreach my $pdbx_file ( @ARGV ) {
     my $atom_site = obtain_atom_site( $pdbx_file );
 
-    # # Selects atom's data for further analysis.
-    # my %target_atom_specifier = ();
-    # foreach ( split '&', $target_query ) {
-    #     my ( $label, $data ) = split ' ', $_;
-    #     $target_atom_specifier{$label} = [ split ',', $data ];
-    # }
+    # Selects atom's data for further analysis.
+    my %to_atom_specifier = ();
+    foreach ( split '&', $to_query ) {
+        my ( $label, $data ) = split ' ', $_;
+        $to_atom_specifier{$label} = [ split ',', $data ];
+    }
 
-#     my $atom_data =
-#         extract( filter_new( $atom_site, { 'include' => \%target_atom_specifier } ),
-#                  { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+    my $to_atom_data =
+        extract( filter_new( $atom_site, { 'include' => \%to_atom_specifier } ),
+                 { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
-#     # Finds Euler angles and makes rotational matrices.
-#     my @mid_atom_coord =  ( $atom_data->[1][0],
-#                             $atom_data->[1][1],
-#                             $atom_data->[1][2] );
-#     my @up_atom_coord =   ( $atom_data->[2][0],
-#                             $atom_data->[2][1],
-#                             $atom_data->[2][2] );
-#     my @side_atom_coord = ( $atom_data->[0][0],
-#                             $atom_data->[0][1],
-#                             $atom_data->[0][2] );
+    # Finds Euler angles and makes rotational matrices.
+    my @to_mid_atom_coord =  ( $to_atom_data->[1][0],
+                               $to_atom_data->[1][1],
+                               $to_atom_data->[1][2] );
+    my @to_up_atom_coord =   ( $to_atom_data->[2][0],
+                               $to_atom_data->[2][1],
+                               $to_atom_data->[2][2] );
+    my @to_side_atom_coord = ( $to_atom_data->[0][0],
+                               $to_atom_data->[0][1],
+                               $to_atom_data->[0][2] );
 
-#     my ( $alpha, $beta, $gamma ) = @{ find_euler_angles( $parameters,
-#                                                          \@mid_atom_coord,
-#                                                          \@up_atom_coord,
-#                                                          \@side_atom_coord ) };
+    my ( $to_alpha, $to_beta, $to_gamma ) =
+        @{ find_euler_angles( $parameters,
+                              \@to_mid_atom_coord,
+                              \@to_up_atom_coord,
+                              \@to_side_atom_coord ) };
 
-#     # Determines the references frame where transformations might happen.
-#     my $ref_atom_data;
-#     my @ref_mid_atom_coord;
-#     my @ref_up_atom_coord;
-#     my @ref_side_atom_coord;
-#     my ( $ref_alpha, $ref_beta, $ref_gamma );
-#     if( $reference_query ) {
-#         my %ref_atom_specifier = ();
-#         foreach ( split '&', $reference_query ) {
-#             my ( $label, $data ) = split ' ', $_;
-#             $ref_atom_specifier{$label} = [ split ',', $data ];
-#         }
+    # Determines the references frame where transformations might happen.
+    my @from_mid_atom_coord;
+    my @from_up_atom_coord;
+    my @from_side_atom_coord;
+    my ( $from_alpha, $from_beta, $from_gamma );
+    if( $from_query ) {
+        my %from_atom_specifier = ();
+        foreach ( split '&', $from_query ) {
+            my ( $label, $data ) = split ' ', $_;
+            $from_atom_specifier{$label} = [ split ',', $data ];
+        }
 
-#         $ref_atom_data =
-#             extract( filter_new( $atom_site,
-#                                  { 'include' => \%ref_atom_specifier } ),
-#                      { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
+        my $from_atom_data =
+            extract( filter_new( $atom_site,
+                                 { 'include' => \%from_atom_specifier } ),
+                     { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
-#         @ref_mid_atom_coord =  ( $ref_atom_data->[1][0],
-#                                  $ref_atom_data->[1][1],
-#                                  $ref_atom_data->[1][2] );
-#         @ref_up_atom_coord =   ( $ref_atom_data->[2][0],
-#                                  $ref_atom_data->[2][1],
-#                                  $ref_atom_data->[2][2] );
-#         @ref_side_atom_coord = ( $ref_atom_data->[0][0],
-#                                  $ref_atom_data->[0][1],
-#                                  $ref_atom_data->[0][2] );
+        @from_mid_atom_coord =  ( $from_atom_data->[1][0],
+                                  $from_atom_data->[1][1],
+                                  $from_atom_data->[1][2] );
+        @from_up_atom_coord =   ( $from_atom_data->[2][0],
+                                  $from_atom_data->[2][1],
+                                  $from_atom_data->[2][2] );
+        @from_side_atom_coord = ( $from_atom_data->[0][0],
+                                  $from_atom_data->[0][1],
+                                  $from_atom_data->[0][2] );
 
-#         ( $ref_alpha, $ref_beta, $ref_gamma ) =
-#             @{ find_euler_angles( $parameters,
-#                                   \@ref_mid_atom_coord,
-#                                   \@ref_up_atom_coord,
-#                                   \@ref_side_atom_coord ) };
-#     }
+        ( $from_alpha, $from_beta, $from_gamma ) =
+            @{ find_euler_angles( $parameters,
+                                  \@from_mid_atom_coord,
+                                  \@from_up_atom_coord,
+                                  \@from_side_atom_coord ) };
+    }
 
 #     print( "data \"model\"\n" );
 #     print( scalar( keys %{ $atom_site } ) + 4, "\n" );
