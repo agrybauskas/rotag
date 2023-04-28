@@ -127,7 +127,7 @@ foreach my $pdbx_file ( @ARGV ) {
     }
 
     print( "data \"model\"\n" );
-    print( scalar( keys %{ $atom_site } ) + 4, "\n" );
+    print( scalar( keys %{ $atom_site } ) + 8, "\n" );
     print( "testing\n" );
 
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
@@ -172,29 +172,45 @@ foreach my $pdbx_file ( @ARGV ) {
                             $from_alpha, $from_beta, $from_gamma,
                             $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
 
-    # # Draws atoms on the end of axes.
-    # print( "X $to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]\n" .
-    #        "X $to_x_axis_coord[0][0] $to_x_axis_coord[1][0] $to_x_axis_coord[2][0]\n" .
-    #        "X $to_y_axis_coord[0][0] $to_y_axis_coord[1][0] $to_y_axis_coord[2][0]\n" .
-    #        "X $to_z_axis_coord[0][0] $to_z_axis_coord[1][0] $to_z_axis_coord[2][0]\n" );
+    # Draws atoms on the end of axes.
+    print( "X $from_origin_coord[0][0] $from_origin_coord[1][0] $from_origin_coord[2][0]\n" .
+           "X $from_x_axis_coord[0][0] $from_x_axis_coord[1][0] $from_x_axis_coord[2][0]\n" .
+           "X $from_y_axis_coord[0][0] $from_y_axis_coord[1][0] $from_y_axis_coord[2][0]\n" .
+           "X $from_z_axis_coord[0][0] $from_z_axis_coord[1][0] $from_z_axis_coord[2][0]\n" );
+    print( "X $to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]\n" .
+           "X $to_x_axis_coord[0][0] $to_x_axis_coord[1][0] $to_x_axis_coord[2][0]\n" .
+           "X $to_y_axis_coord[0][0] $to_y_axis_coord[1][0] $to_y_axis_coord[2][0]\n" .
+           "X $to_z_axis_coord[0][0] $to_z_axis_coord[1][0] $to_z_axis_coord[2][0]\n" );
 
     print( "end \"model\"\n" );
 
-#     # Draws global axes.
-#     print( "draw global_x_axis arrow "
-#            . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-#            . "{$x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]}\n" );
-#     print( "draw global_y_axis arrow "
-#            . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-#            . "{$y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]}\n" );
-#     print( "draw global_z_axis arrow "
-#            . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
-#            . "{$z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]}\n" );
+    # Draws global axes.
+    print( "draw from_global_x_axis arrow "
+           . "{$from_origin_coord[0][0] $from_origin_coord[1][0] $from_origin_coord[2][0]} "
+           . "{$from_x_axis_coord[0][0] $from_x_axis_coord[1][0] $from_x_axis_coord[2][0]}\n" );
+    print( "draw from_global_y_axis arrow "
+           . "{$from_origin_coord[0][0] $from_origin_coord[1][0] $from_origin_coord[2][0]} "
+           . "{$from_y_axis_coord[0][0] $from_y_axis_coord[1][0] $from_y_axis_coord[2][0]}\n" );
+    print( "draw from_global_z_axis arrow "
+           . "{$from_origin_coord[0][0] $from_origin_coord[1][0] $from_origin_coord[2][0]} "
+           . "{$from_z_axis_coord[0][0] $from_z_axis_coord[1][0] $from_z_axis_coord[2][0]}\n" );
+    print( "draw to_global_x_axis arrow "
+           . "{$to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]} "
+           . "{$to_x_axis_coord[0][0] $to_x_axis_coord[1][0] $to_x_axis_coord[2][0]}\n" );
+    print( "draw to_global_y_axis arrow "
+           . "{$to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]} "
+           . "{$to_y_axis_coord[0][0] $to_y_axis_coord[1][0] $to_y_axis_coord[2][0]}\n" );
+    print( "draw to_global_z_axis arrow "
+           . "{$to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]} "
+           . "{$to_z_axis_coord[0][0] $to_z_axis_coord[1][0] $to_z_axis_coord[2][0]}\n" );
 
-#     # Colors axes.
-#     print( "color \$global_x_axis red\n" );
-#     print( "color \$global_y_axis green\n" );
-#     print( "color \$global_z_axis blue\n" );
+    # Colors axes.
+    print( "color \$from_global_x_axis red\n" );
+    print( "color \$from_global_y_axis green\n" );
+    print( "color \$from_global_z_axis blue\n" );
+    print( "color \$to_global_x_axis red\n" );
+    print( "color \$to_global_y_axis green\n" );
+    print( "color \$to_global_z_axis blue\n" );
 }
 
 sub transform_coord
@@ -203,25 +219,24 @@ sub transform_coord
          $to_alpha, $to_beta, $to_gamma,
          $from_alpha, $from_beta, $from_gamma,
          $to_bond_angle, $to_dihedral_angle, $to_bond_length ) = @_;
-#     my @transformed_atom_coord =
-#         @{ mult_matrix_product(
-#                [ translation( $mid_atom_coord->[0],
-#                               $mid_atom_coord->[1],
-#                               $mid_atom_coord->[2] ),
-#                  # z_axis_rotation( - $ref_alpha + $alpha ),
-#                  # [ [ 1, 0, 0, 0 ],
-#                  #   [ 0, 1, 0, 0 ],
-#                  #   [ 0, 0, 1, 0 ],
-#                  #   [ 0, 0, 0, 1 ] ],
-#                  z_axis_rotation( - $ref_gamma + $gamma ),
-#                  # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
-#                  x_axis_rotation( - $ref_beta + $beta ),
-#                  # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
-#                  z_axis_rotation( - $ref_alpha + $alpha ),
-#                  # translation( 0.0, 0.0, $ref_bond_length ),
-#                  $atom_coord ] ) };
-#     return \@transformed_atom_coord;
-    return [[]];
+    my @transformed_atom_coord =
+        @{ mult_matrix_product(
+               [ translation( $to_mid_atom_coord->[0],
+                              $to_mid_atom_coord->[1],
+                              $to_mid_atom_coord->[2] ),
+                 # z_axis_rotation( - $ref_alpha + $alpha ),
+                 # [ [ 1, 0, 0, 0 ],
+                 #   [ 0, 1, 0, 0 ],
+                 #   [ 0, 0, 1, 0 ],
+                 #   [ 0, 0, 0, 1 ] ],
+                 z_axis_rotation( - $from_gamma + $to_gamma ),
+                 # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
+                 x_axis_rotation( - $from_beta + $to_beta ),
+                 # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
+                 z_axis_rotation( - $from_alpha + $to_alpha ),
+                 # translation( 0.0, 0.0, $ref_bond_length ),
+                 $atom_coord ] ) };
+    return \@transformed_atom_coord;
 }
 
 sub draw_reference_axes
