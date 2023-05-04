@@ -64,21 +64,15 @@ $from_bond_length //= 0.0;
 foreach my $pdbx_file ( @ARGV ) {
     my $atom_site = obtain_atom_site( $pdbx_file );
 
-    # Selects atom's data for further analysis.
-    my %to_atom_specifier = ();
-    foreach ( split '&', $to_query ) {
-        my ( $label, $data ) = split ' ', $_;
-        $to_atom_specifier{$label} = [ split ',', $data ];
-    }
-
-    my $to_atom_data =
-        extract( filter_new( $atom_site, { 'include' => \%to_atom_specifier } ),
-                 { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
-
     # Origin reference frame.
     my @from_mid_atom_coord =  ( 0.0, 0.0, 0.0 );
     my @from_up_atom_coord = ( 0.0, 0.0, 1.0 );
     my @from_side_atom_coord = ( 1.0, 0.0, 0.0 );
+
+    my @from_origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+    my @from_x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+    my @from_y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
+    my @from_z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
 
     # Determines the references frame where transformations might happen.
     my $from_alpha = 0.0;
@@ -112,7 +106,46 @@ foreach my $pdbx_file ( @ARGV ) {
                                   \@from_mid_atom_coord,
                                   \@from_up_atom_coord,
                                   \@from_side_atom_coord ) };
+
+        @from_origin_coord =
+            @{ transform_coord( \@from_origin_coord,
+                                \@from_mid_atom_coord,
+                                \@from_mid_atom_coord,
+                                0.0, 0.0, 0.0,
+                                $from_alpha, $from_beta, $from_gamma,
+                                0.0, 0.0, 0.0 )->[0] };
+        @from_x_axis_coord =
+            @{ transform_coord( \@from_x_axis_coord,
+                                \@from_mid_atom_coord,
+                                \@from_mid_atom_coord,
+                                0.0, 0.0, 0.0,
+                                $from_alpha, $from_beta, $from_gamma,
+                                0.0, 0.0, 0.0 )->[0] };
+        @from_y_axis_coord =
+            @{ transform_coord( \@from_y_axis_coord,
+                                \@from_mid_atom_coord,
+                                \@from_mid_atom_coord,
+                                0.0, 0.0, 0.0,
+                                $from_alpha, $from_beta, $from_gamma,
+                                0.0, 0.0, 0.0 )->[0] };
+        @from_z_axis_coord =
+            @{ transform_coord( \@from_z_axis_coord,
+                                \@from_mid_atom_coord,
+                                \@from_mid_atom_coord, 0.0, 0.0, 0.0,
+                                $from_alpha, $from_beta, $from_gamma,
+                                0.0, 0.0, 0.0 )->[0] };
     }
+
+    # Selects atom's data for further analysis.
+    my %to_atom_specifier = ();
+    foreach ( split '&', $to_query ) {
+        my ( $label, $data ) = split ' ', $_;
+        $to_atom_specifier{$label} = [ split ',', $data ];
+    }
+
+    my $to_atom_data =
+        extract( filter_new( $atom_site, { 'include' => \%to_atom_specifier } ),
+                 { 'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } );
 
     # Finds Euler angles and makes rotational matrices.
     my @to_mid_atom_coord =  ( $to_atom_data->[1][0],
@@ -149,34 +182,6 @@ foreach my $pdbx_file ( @ARGV ) {
                 $atom_coord[0][0],
                 $atom_coord[1][0],
                 $atom_coord[2][0] );
-    }
-
-    my @from_origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
-    my @from_x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
-    my @from_y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
-    my @from_z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
-
-    if( $from_query ) {
-        @from_origin_coord =
-            @{ transform_coord( \@from_origin_coord, \@from_mid_atom_coord,
-                                \@from_mid_atom_coord, $to_alpha, $to_beta, $to_gamma,
-                                $from_alpha, $from_beta, $from_gamma,
-                                $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
-        @from_x_axis_coord =
-            @{ transform_coord( \@from_x_axis_coord, \@from_mid_atom_coord,
-                                \@from_mid_atom_coord, $to_alpha, $to_beta, $to_gamma,
-                                $from_alpha, $from_beta, $from_gamma,
-                                $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
-        @from_y_axis_coord =
-            @{ transform_coord( \@from_y_axis_coord, \@from_mid_atom_coord,
-                                \@from_mid_atom_coord, $to_alpha, $to_beta, $to_gamma,
-                                $from_alpha, $from_beta, $from_gamma,
-                                $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
-        @from_z_axis_coord =
-            @{ transform_coord( \@from_z_axis_coord, \@from_mid_atom_coord,
-                                \@from_mid_atom_coord, $to_alpha, $to_beta, $to_gamma,
-                                $from_alpha, $from_beta, $from_gamma,
-                                $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
     }
 
     my @to_origin_coord =
