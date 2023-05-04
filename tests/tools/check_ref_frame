@@ -110,24 +110,28 @@ foreach my $pdbx_file ( @ARGV ) {
         @from_origin_coord =
             @{ transform_coord( \@from_origin_coord,
                                 \@from_mid_atom_coord,
+                                [ 0.0, 0.0, 0.0 ],
                                 $from_alpha, $from_beta, $from_gamma,
                                 0.0, 0.0, 0.0,
                                 0.0, 0.0, 0.0 )->[0] };
         @from_x_axis_coord =
             @{ transform_coord( \@from_x_axis_coord,
                                 \@from_mid_atom_coord,
+                                [ 0.0, 0.0, 0.0 ],
                                 $from_alpha, $from_beta, $from_gamma,
                                 0.0, 0.0, 0.0,
                                 0.0, 0.0, 0.0 )->[0] };
         @from_y_axis_coord =
             @{ transform_coord( \@from_y_axis_coord,
                                 \@from_mid_atom_coord,
+                                [ 0.0, 0.0, 0.0 ],
                                 $from_alpha, $from_beta, $from_gamma,
                                 0.0, 0.0, 0.0,
                                 0.0, 0.0, 0.0 )->[0] };
         @from_z_axis_coord =
             @{ transform_coord( \@from_z_axis_coord,
                                 \@from_mid_atom_coord,
+                                [ 0.0, 0.0, 0.0 ],
                                 $from_alpha, $from_beta, $from_gamma,
                                 0.0, 0.0, 0.0,
                                 0.0, 0.0, 0.0 )->[0] };
@@ -184,24 +188,28 @@ foreach my $pdbx_file ( @ARGV ) {
     my @to_origin_coord =
         @{ transform_coord( \@from_origin_coord,
                             \@to_mid_atom_coord,
+                            [ 0.0, 0.0, 0.0 ],
                             $to_alpha, $to_beta, $to_gamma,
                             $from_alpha, $from_beta, $from_gamma,
                             $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
     my @to_x_axis_coord =
         @{ transform_coord( \@from_x_axis_coord,
                             \@to_mid_atom_coord,
+                            [ 0.0, 0.0, 0.0 ],
                             $to_alpha, $to_beta, $to_gamma,
                             $from_alpha, $from_beta, $from_gamma,
                             $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
     my @to_y_axis_coord =
         @{ transform_coord( \@from_y_axis_coord,
                             \@to_mid_atom_coord,
+                            [ 0.0, 0.0, 0.0 ],
                             $to_alpha, $to_beta, $to_gamma,
                             $from_alpha, $from_beta, $from_gamma,
                             $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
     my @to_z_axis_coord =
         @{ transform_coord( \@from_z_axis_coord,
                             \@to_mid_atom_coord,
+                            [ 0.0, 0.0, 0.0 ],
                             $to_alpha, $to_beta, $to_gamma,
                             $from_alpha, $from_beta, $from_gamma,
                             $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
@@ -251,14 +259,15 @@ sub transform_coord
 {
     my ( $atom_coord,
          $to_mid_atom_coord,
+         $from_mid_atom_coord,
          $to_alpha, $to_beta, $to_gamma,
          $from_alpha, $from_beta, $from_gamma,
          $to_bond_angle, $to_dihedral_angle, $to_bond_length ) = @_;
     my @transformed_atom_coord =
         @{ mult_matrix_product(
-               [ translation( $to_mid_atom_coord->[0],
-                              $to_mid_atom_coord->[1],
-                              $to_mid_atom_coord->[2]),
+               [ translation( $to_mid_atom_coord->[0] - $from_mid_atom_coord->[0],
+                              $to_mid_atom_coord->[1] - $from_mid_atom_coord->[1],
+                              $to_mid_atom_coord->[2] - $from_mid_atom_coord->[2] ),
                  z_axis_rotation( - $to_gamma ),
                  # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
                  x_axis_rotation( - $to_beta ),
