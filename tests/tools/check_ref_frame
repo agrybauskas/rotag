@@ -265,15 +265,18 @@ sub transform_coord
          $to_bond_angle, $to_dihedral_angle, $to_bond_length ) = @_;
     my @transformed_atom_coord =
         @{ mult_matrix_product(
-               [ translation( $to_mid_atom_coord->[0] - $from_mid_atom_coord->[0],
-                              $to_mid_atom_coord->[1] - $from_mid_atom_coord->[1],
-                              $to_mid_atom_coord->[2] - $from_mid_atom_coord->[2] ),
+               [ translation( $to_mid_atom_coord->[0],
+                              $to_mid_atom_coord->[1],
+                              $to_mid_atom_coord->[2] ),
                  z_axis_rotation( - $to_gamma ),
                  # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
                  x_axis_rotation( - $to_beta ),
                  # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
                  z_axis_rotation( - $to_alpha ),
                  # translation( 0.0, 0.0, $ref_bond_length ),
+                 translation( - $from_mid_atom_coord->[0],
+                              - $from_mid_atom_coord->[1],
+                              - $from_mid_atom_coord->[2] ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
 }
