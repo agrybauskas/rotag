@@ -263,12 +263,28 @@ sub transform_coord
          $to_alpha, $to_beta, $to_gamma,
          $from_alpha, $from_beta, $from_gamma,
          $to_bond_angle, $to_dihedral_angle, $to_bond_length ) = @_;
+    my $alpha = $to_beta - $from_beta;
+    my $theta = $to_gamma - $from_gamma;
+    my $a = $to_mid_atom_coord->[0] - $from_mid_atom_coord->[0];
+    my $d = $to_mid_atom_coord->[1] - $from_mid_atom_coord->[1];
     my @transformed_atom_coord =
         @{ mult_matrix_product(
-               [ [ [ cos(),               - sin(),   0.0,     $to_mid_atom_coord->[0] - $from_mid_atom_coord->[0] ],
-                   [ sin() * cos(), cos() * cos(), sin(), - ( $to_mid_atom_coord->[2] - $from_mid_atom_coord->[2] ) * sin() ],
-                   [ sin() * sin(), cos() * sin(), cos(),   ( $to_mid_atom_coord->[2] - $from_mid_atom_coord->[2] ) * cos() ],
-                   [ 0.0, 0.0, 0.0, 1.0 ] ],
+               [ [ [ cos( $theta ),
+                     - sin( $theta ),
+                     0.0,
+                     $a ],
+                   [ sin( $theta ) * cos( $alpha ),
+                     cos( $theta ) * cos( $alpha ),
+                     - sin( $alpha ),
+                     - $d * sin( $alpha ) ],
+                   [ sin( $theta ) * sin( $alpha ),
+                     cos( $theta ) * sin( $alpha ),
+                     cos( $alpha ),
+                     $d * cos( $alpha ) ],
+                   [ 0.0,
+                     0.0,
+                     0.0,
+                     1.0 ] ],
                  # translation( $to_mid_atom_coord->[0],
                  #              $to_mid_atom_coord->[1],
                  #              $to_mid_atom_coord->[2] ),
