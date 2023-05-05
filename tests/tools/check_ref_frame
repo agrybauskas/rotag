@@ -6,12 +6,9 @@ use warnings;
 use Getopt::Long;
 
 use ForceField::Parameters;
-use LinearAlgebra qw( find_euler_angles
-                      mult_matrix_product
-                      translation
-                      x_axis_rotation
-                      y_axis_rotation
-                      z_axis_rotation );
+use LinearAlgebra qw( create_ref_frame
+                      find_euler_angles
+                      mult_matrix_product );
 use PDBxParser qw( extract
                    filter_new
                    obtain_atom_site );
@@ -64,20 +61,15 @@ $from_bond_length //= 0.0;
 foreach my $pdbx_file ( @ARGV ) {
     my $atom_site = obtain_atom_site( $pdbx_file );
 
-    # Origin reference frame.
+    my @origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+    my @x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
+    my @y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
+    my @z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
+
+    # Defines starting reference frame.
     my @from_mid_atom_coord =  ( 0.0, 0.0, 0.0 );
     my @from_up_atom_coord = ( 0.0, 0.0, 1.0 );
     my @from_side_atom_coord = ( 1.0, 0.0, 0.0 );
-
-    my @from_origin_coord = ( [ 0.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
-    my @from_x_axis_coord = ( [ 2.0 ], [ 0.0 ], [ 0.0 ], [ 1 ] );
-    my @from_y_axis_coord = ( [ 0.0 ], [ 2.0 ], [ 0.0 ], [ 1 ] );
-    my @from_z_axis_coord = ( [ 0.0 ], [ 0.0 ], [ 2.0 ], [ 1 ] );
-
-    # Determines the references frame where transformations might happen.
-    my $from_alpha = 0.0;
-    my $from_beta = 0.0;
-    my $from_gamma = 0.0;
 
     if( $from_query ) {
         my %from_atom_specifier = ();
@@ -100,41 +92,6 @@ foreach my $pdbx_file ( @ARGV ) {
         @from_side_atom_coord = ( $from_atom_data->[0][0],
                                   $from_atom_data->[0][1],
                                   $from_atom_data->[0][2] );
-
-        ( $from_alpha, $from_beta, $from_gamma ) =
-            @{ find_euler_angles( $parameters,
-                                  \@from_mid_atom_coord,
-                                  \@from_up_atom_coord,
-                                  \@from_side_atom_coord ) };
-
-        @from_origin_coord =
-            @{ transform_coord( \@from_origin_coord,
-                                \@from_mid_atom_coord,
-                                [ 0.0, 0.0, 0.0 ],
-                                $from_alpha, $from_beta, $from_gamma,
-                                0.0, 0.0, 0.0,
-                                0.0, 0.0, 0.0 )->[0] };
-        @from_x_axis_coord =
-            @{ transform_coord( \@from_x_axis_coord,
-                                \@from_mid_atom_coord,
-                                [ 0.0, 0.0, 0.0 ],
-                                $from_alpha, $from_beta, $from_gamma,
-                                0.0, 0.0, 0.0,
-                                0.0, 0.0, 0.0 )->[0] };
-        @from_y_axis_coord =
-            @{ transform_coord( \@from_y_axis_coord,
-                                \@from_mid_atom_coord,
-                                [ 0.0, 0.0, 0.0 ],
-                                $from_alpha, $from_beta, $from_gamma,
-                                0.0, 0.0, 0.0,
-                                0.0, 0.0, 0.0 )->[0] };
-        @from_z_axis_coord =
-            @{ transform_coord( \@from_z_axis_coord,
-                                \@from_mid_atom_coord,
-                                [ 0.0, 0.0, 0.0 ],
-                                $from_alpha, $from_beta, $from_gamma,
-                                0.0, 0.0, 0.0,
-                                0.0, 0.0, 0.0 )->[0] };
     }
 
     # Selects atom's data for further analysis.
@@ -159,14 +116,8 @@ foreach my $pdbx_file ( @ARGV ) {
                                $to_atom_data->[0][1],
                                $to_atom_data->[0][2] );
 
-    my ( $to_alpha, $to_beta, $to_gamma ) =
-        @{ find_euler_angles( $parameters,
-                              \@to_mid_atom_coord,
-                              \@to_up_atom_coord,
-                              \@to_side_atom_coord ) };
-
     print( "data \"model\"\n" );
-    print( scalar( keys %{ $atom_site } ) + 8, "\n" );
+    print( scalar( keys %{ $atom_site } ) + 4, "\n" );
     print( "testing\n" );
 
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
@@ -185,88 +136,78 @@ foreach my $pdbx_file ( @ARGV ) {
                 $atom_coord[2][0] );
     }
 
-    my @to_origin_coord =
-        @{ transform_coord( \@from_origin_coord,
-                            \@to_mid_atom_coord,
-                            \@from_mid_atom_coord,
-                            $to_alpha, $to_beta, $to_gamma,
-                            $from_alpha, $from_beta, $from_gamma,
-                            $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
-    my @to_x_axis_coord =
-        @{ transform_coord( \@from_x_axis_coord,
-                            \@to_mid_atom_coord,
-                            \@from_mid_atom_coord,
-                            $to_alpha, $to_beta, $to_gamma,
-                            $from_alpha, $from_beta, $from_gamma,
-                            $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
-    my @to_y_axis_coord =
-        @{ transform_coord( \@from_y_axis_coord,
-                            \@to_mid_atom_coord,
-                            \@from_mid_atom_coord,
-                            $to_alpha, $to_beta, $to_gamma,
-                            $from_alpha, $from_beta, $from_gamma,
-                            $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
-    my @to_z_axis_coord =
-        @{ transform_coord( \@from_z_axis_coord,
-                            \@to_mid_atom_coord,
-                            \@from_mid_atom_coord,
-                            $to_alpha, $to_beta, $to_gamma,
-                            $from_alpha, $from_beta, $from_gamma,
-                            $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
+    my $from_local_ref_frame =
+        create_ref_frame( \@from_mid_atom_coord,
+                          \@from_up_atom_coord,
+                          \@from_side_atom_coord );
+    my $to_local_ref_frame =
+        create_ref_frame( \@to_mid_atom_coord,
+                          \@to_up_atom_coord,
+                          \@to_side_atom_coord );
+
+    @origin_coord =
+        @{ transform_coord(
+               $parameters,
+               \@origin_coord,
+               $from_local_ref_frame, $to_local_ref_frame,
+               $from_bond_angle, $from_dihedral_angle, $from_bond_length,
+               $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
+    @x_axis_coord =
+        @{ transform_coord(
+               $parameters,
+               \@x_axis_coord,
+               $from_local_ref_frame, $to_local_ref_frame,
+               $from_bond_angle, $from_dihedral_angle, $from_bond_length,
+               $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
+    @y_axis_coord =
+        @{ transform_coord(
+               $parameters,
+               \@y_axis_coord,
+               $from_local_ref_frame, $to_local_ref_frame,
+               $from_bond_angle, $from_dihedral_angle, $from_bond_length,
+               $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
+    @z_axis_coord =
+        @{ transform_coord(
+               $parameters,
+               \@z_axis_coord,
+               $from_local_ref_frame, $to_local_ref_frame,
+               $from_bond_angle, $from_dihedral_angle, $from_bond_length,
+               $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
 
     # Draws atoms on the end of axes.
-    print( "X $from_origin_coord[0][0] $from_origin_coord[1][0] $from_origin_coord[2][0]\n" .
-           "X $from_x_axis_coord[0][0] $from_x_axis_coord[1][0] $from_x_axis_coord[2][0]\n" .
-           "X $from_y_axis_coord[0][0] $from_y_axis_coord[1][0] $from_y_axis_coord[2][0]\n" .
-           "X $from_z_axis_coord[0][0] $from_z_axis_coord[1][0] $from_z_axis_coord[2][0]\n" );
-    print( "X $to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]\n" .
-           "X $to_x_axis_coord[0][0] $to_x_axis_coord[1][0] $to_x_axis_coord[2][0]\n" .
-           "X $to_y_axis_coord[0][0] $to_y_axis_coord[1][0] $to_y_axis_coord[2][0]\n" .
-           "X $to_z_axis_coord[0][0] $to_z_axis_coord[1][0] $to_z_axis_coord[2][0]\n" );
+    print( "X $origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]\n" .
+           "X $x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]\n" .
+           "X $y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]\n" .
+           "X $z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]\n" );
 
     print( "end \"model\"\n" );
 
     # Draws global axes.
-    print( "draw from_global_x_axis arrow "
-           . "{$from_origin_coord[0][0] $from_origin_coord[1][0] $from_origin_coord[2][0]} "
-           . "{$from_x_axis_coord[0][0] $from_x_axis_coord[1][0] $from_x_axis_coord[2][0]}\n" );
-    print( "draw from_global_y_axis arrow "
-           . "{$from_origin_coord[0][0] $from_origin_coord[1][0] $from_origin_coord[2][0]} "
-           . "{$from_y_axis_coord[0][0] $from_y_axis_coord[1][0] $from_y_axis_coord[2][0]}\n" );
-    print( "draw from_global_z_axis arrow "
-           . "{$from_origin_coord[0][0] $from_origin_coord[1][0] $from_origin_coord[2][0]} "
-           . "{$from_z_axis_coord[0][0] $from_z_axis_coord[1][0] $from_z_axis_coord[2][0]}\n" );
-    print( "draw to_global_x_axis arrow "
-           . "{$to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]} "
-           . "{$to_x_axis_coord[0][0] $to_x_axis_coord[1][0] $to_x_axis_coord[2][0]}\n" );
-    print( "draw to_global_y_axis arrow "
-           . "{$to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]} "
-           . "{$to_y_axis_coord[0][0] $to_y_axis_coord[1][0] $to_y_axis_coord[2][0]}\n" );
-    print( "draw to_global_z_axis arrow "
-           . "{$to_origin_coord[0][0] $to_origin_coord[1][0] $to_origin_coord[2][0]} "
-           . "{$to_z_axis_coord[0][0] $to_z_axis_coord[1][0] $to_z_axis_coord[2][0]}\n" );
+    print( "draw global_x_axis arrow "
+           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+           . "{$x_axis_coord[0][0] $x_axis_coord[1][0] $x_axis_coord[2][0]}\n" );
+    print( "draw global_y_axis arrow "
+           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+           . "{$y_axis_coord[0][0] $y_axis_coord[1][0] $y_axis_coord[2][0]}\n" );
+    print( "draw global_z_axis arrow "
+           . "{$origin_coord[0][0] $origin_coord[1][0] $origin_coord[2][0]} "
+           . "{$z_axis_coord[0][0] $z_axis_coord[1][0] $z_axis_coord[2][0]}\n" );
 
     # Colors axes.
-    print( "color \$from_global_x_axis red\n" );
-    print( "color \$from_global_y_axis green\n" );
-    print( "color \$from_global_z_axis blue\n" );
-    print( "color \$to_global_x_axis red\n" );
-    print( "color \$to_global_y_axis green\n" );
-    print( "color \$to_global_z_axis blue\n" );
+    print( "color \$global_x_axis red\n" );
+    print( "color \$global_y_axis green\n" );
+    print( "color \$global_z_axis blue\n" );
 }
 
 sub transform_coord
 {
-    my ( $atom_coord,
-         $to_mid_atom_coord,
-         $from_mid_atom_coord,
-         $to_alpha, $to_beta, $to_gamma,
-         $from_alpha, $from_beta, $from_gamma,
+    my ( $parameters, $atom_coord, $from_local_ref_frame, $to_local_ref_frame,
+         $from_bond_angle, $from_dihedral_angle, $from_bond_length,
          $to_bond_angle, $to_dihedral_angle, $to_bond_length ) = @_;
-    my $alpha = $to_beta - $from_beta;
-    my $theta = $to_gamma - $from_gamma;
-    my $a = $to_mid_atom_coord->[0] - $from_mid_atom_coord->[0];
-    my $d = $to_mid_atom_coord->[1] - $from_mid_atom_coord->[1];
+    my $alpha = 0.0;
+    my $theta = 0.0;
+    my $a = 0.0;
+    my $d = 0.0;
     my @transformed_atom_coord =
         @{ mult_matrix_product(
                [ [ [ cos( $theta ),
@@ -285,23 +226,6 @@ sub transform_coord
                      0.0,
                      0.0,
                      1.0 ] ],
-                 # translation( $to_mid_atom_coord->[0],
-                 #              $to_mid_atom_coord->[1],
-                 #              $to_mid_atom_coord->[2] ),
-                 # z_axis_rotation( - $to_gamma ),
-                 # # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
-                 # x_axis_rotation( - $to_beta ),
-                 # # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
-                 # z_axis_rotation( - $to_alpha ),
-                 # z_axis_rotation( $from_alpha ),
-                 # # x_axis_rotation( $pi * $ref_bond_angle / 180.0 ),
-                 # x_axis_rotation( $from_beta ),
-                 # # z_axis_rotation( $pi * $ref_dihedral_angle / 180.0 ),
-                 # z_axis_rotation( $from_gamma ),
-                 # # translation( 0.0, 0.0, $ref_bond_length ),
-                 # translation( - $from_mid_atom_coord->[0],
-                 #              - $from_mid_atom_coord->[1],
-                 #              - $from_mid_atom_coord->[2] ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
 }
