@@ -9,7 +9,8 @@ use ForceField::Parameters;
 use LinearAlgebra qw( create_ref_frame
                       find_euler_angles
                       mult_matrix_product
-                      vector_cross );
+                      vector_cross
+                      vector_length );
 use PDBxParser qw( extract
                    filter_new
                    obtain_atom_site );
@@ -214,7 +215,9 @@ sub transform_coord
 
     my $alpha = 0.0;
     my $theta = 0.0;
-    my $a = 0.0;
+    my $a = vector_length( [ [ $common_normal->[0] ],
+                             [ $common_normal->[1] ],
+                             [ $common_normal->[2] ] ] );
     my $d = 0.0;
     my @transformed_atom_coord =
         @{ mult_matrix_product(
