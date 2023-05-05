@@ -211,7 +211,7 @@ sub transform_coord
     my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
     my $common_normal =
-        vector_cross( $from_local_ref_frame->[0], $to_local_ref_frame->[0] );
+        vector_cross( $from_local_ref_frame->[2], $to_local_ref_frame->[2] );
 
     my $alpha = 0.0;
     my $theta = 0.0;
