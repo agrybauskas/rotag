@@ -124,7 +124,7 @@ foreach my $pdbx_file ( @ARGV ) {
         my @atom_data = ( $atom_site->{$atom_id}{'type_symbol'},
                           $atom_site->{$atom_id}{'Cartn_x'},
                           $atom_site->{$atom_id}{'Cartn_y'},
-                          $atom_site->{$atom_id}{'Cartn_z'});
+                          $atom_site->{$atom_id}{'Cartn_z'} );
         my $atom_name = $atom_data[0];
         my @atom_coord = ( [ $atom_data[1] ],
                            [ $atom_data[2] ],
@@ -204,6 +204,12 @@ sub transform_coord
     my ( $parameters, $atom_coord, $from_local_ref_frame, $to_local_ref_frame,
          $from_bond_angle, $from_dihedral_angle, $from_bond_length,
          $to_bond_angle, $to_dihedral_angle, $to_bond_length ) = @_;
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
+
+    my $common_normal;
+
     my $alpha = 0.0;
     my $theta = 0.0;
     my $a = 0.0;
