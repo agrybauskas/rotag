@@ -8,7 +8,8 @@ use Getopt::Long;
 use ForceField::Parameters;
 use LinearAlgebra qw( create_ref_frame
                       find_euler_angles
-                      mult_matrix_product );
+                      mult_matrix_product
+                      vector_cross );
 use PDBxParser qw( extract
                    filter_new
                    obtain_atom_site );
@@ -208,7 +209,8 @@ sub transform_coord
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
-    my $common_normal;
+    my $common_normal =
+        vector_cross( $from_local_ref_frame->[0], $to_local_ref_frame->[0] );
 
     my $alpha = 0.0;
     my $theta = 0.0;
