@@ -9,6 +9,7 @@ use ForceField::Parameters;
 use LinearAlgebra qw( create_ref_frame
                       find_euler_angles
                       mult_matrix_product
+                      normalize
                       vector_cross
                       vector_length );
 use PDBxParser qw( extract
@@ -212,6 +213,10 @@ sub transform_coord
 
     my $common_normal =
         vector_cross( $from_local_ref_frame->[2], $to_local_ref_frame->[2] );
+    my $common_normal_normalized =
+        normalize( [ [ $common_normal->[0] ],
+                     [ $common_normal->[1] ],
+                     [ $common_normal->[2] ] ] );
 
     my $alpha = 0.0;
     my $theta = 0.0;
