@@ -219,7 +219,7 @@ sub transform_coord
     my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
     my $alpha = $pi / 2;
-    my $theta = 0.0;
+    my $theta = 2 * $pi;
     my $a = 0.0;
     my $d = bond_length( [ $from_mid_atom_coord, $to_mid_atom_coord ] );
     my @transformed_atom_coord =
