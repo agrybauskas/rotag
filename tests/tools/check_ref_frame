@@ -12,6 +12,7 @@ use LinearAlgebra qw( create_ref_frame
                       normalize
                       vector_cross
                       vector_length );
+use Measure qw( bond_length );
 use PDBxParser qw( extract
                    filter_new
                    obtain_atom_site );
@@ -152,6 +153,7 @@ foreach my $pdbx_file ( @ARGV ) {
         @{ transform_coord(
                $parameters,
                \@origin_coord,
+               \@from_mid_atom_coord, \@to_mid_atom_coord,
                $from_local_ref_frame, $to_local_ref_frame,
                $from_bond_angle, $from_dihedral_angle, $from_bond_length,
                $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
@@ -159,6 +161,7 @@ foreach my $pdbx_file ( @ARGV ) {
         @{ transform_coord(
                $parameters,
                \@x_axis_coord,
+               \@from_mid_atom_coord, \@to_mid_atom_coord,
                $from_local_ref_frame, $to_local_ref_frame,
                $from_bond_angle, $from_dihedral_angle, $from_bond_length,
                $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
@@ -166,6 +169,7 @@ foreach my $pdbx_file ( @ARGV ) {
         @{ transform_coord(
                $parameters,
                \@y_axis_coord,
+               \@from_mid_atom_coord, \@to_mid_atom_coord,
                $from_local_ref_frame, $to_local_ref_frame,
                $from_bond_angle, $from_dihedral_angle, $from_bond_length,
                $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
@@ -173,6 +177,7 @@ foreach my $pdbx_file ( @ARGV ) {
         @{ transform_coord(
                $parameters,
                \@z_axis_coord,
+               \@from_mid_atom_coord, \@to_mid_atom_coord,
                $from_local_ref_frame, $to_local_ref_frame,
                $from_bond_angle, $from_dihedral_angle, $from_bond_length,
                $to_bond_angle, $to_dihedral_angle, $to_bond_length )->[0] };
@@ -204,26 +209,19 @@ foreach my $pdbx_file ( @ARGV ) {
 
 sub transform_coord
 {
-    my ( $parameters, $atom_coord, $from_local_ref_frame, $to_local_ref_frame,
+    my ( $parameters, $atom_coord,
+         $from_mid_atom_coord, $to_mid_atom_coord,
+         $from_local_ref_frame, $to_local_ref_frame,
          $from_bond_angle, $from_dihedral_angle, $from_bond_length,
          $to_bond_angle, $to_dihedral_angle, $to_bond_length ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
-    my $common_normal =
-        vector_cross( $from_local_ref_frame->[2], $to_local_ref_frame->[2] );
-    my $common_normal_normalized =
-        normalize( [ [ $common_normal->[0] ],
-                     [ $common_normal->[1] ],
-                     [ $common_normal->[2] ] ] );
-
-    my $alpha = 0.0;
+    my $alpha = $pi / 2;
     my $theta = 0.0;
-    my $a = vector_length( [ [ $common_normal->[0] ],
-                             [ $common_normal->[1] ],
-                             [ $common_normal->[2] ] ] );
-    my $d = 0.0;
+    my $a = 0.0;
+    my $d = bond_length( [ $from_mid_atom_coord, $to_mid_atom_coord ] );
     my @transformed_atom_coord =
         @{ mult_matrix_product(
                [ [ [ cos( $theta ),
