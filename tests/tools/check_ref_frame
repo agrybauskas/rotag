@@ -218,6 +218,9 @@ sub transform_coord
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
+    my $common_normal =
+        vector_cross( @{ $from_local_ref_frame }, @{ $to_local_ref_frame } );
+
     my $alpha = $pi / 2;
     my $theta = 2 * $pi;
     my $a = 0.0;
