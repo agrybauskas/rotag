@@ -233,7 +233,11 @@ sub transform_coord
     my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
     my $common_normal =
-        vector_cross( @{ $from_local_ref_frame }, @{ $to_local_ref_frame } );
+        vector_cross( $from_local_ref_frame->[2], $to_local_ref_frame->[2] );
+
+    use Data::Dumper;
+    print STDERR Dumper $from_mid_atom_coord;
+    print STDERR Dumper $common_normal;
 
     my ( $from_alpha, $from_beta, $from_gamma ) =
         @{ find_euler_angles( $parameters,
