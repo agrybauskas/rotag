@@ -13,8 +13,7 @@ use LinearAlgebra qw( create_ref_frame
                       vector_cross
                       vector_length );
 use Measure qw( bond_length
-                bond_angle
-                dihedral_angle );
+                bond_angle );
 use PDBxParser qw( extract
                    filter_new
                    obtain_atom_site );
@@ -252,23 +251,18 @@ sub transform_coord
     my $a = bond_length( [ $cn_start, $cn_end ] );
     my $d = bond_length( [ $cn_end, $to_mid_atom_coord ] );
 
-    # my $alpha = $to_alpha - $from_alpha;
-    # my $theta = $to_beta - $from_beta;
     my $alpha =
-        dihedral_angle( [ [ $from_local_ref_frame->[0][0] + $from_mid_atom_coord->[0],
-                            $from_local_ref_frame->[0][1] + $from_mid_atom_coord->[1],
-                            $from_local_ref_frame->[0][2] + $from_mid_atom_coord->[2] ],
-                          $from_mid_atom_coord,
-                          $to_mid_atom_coord,
-                          [ $to_local_ref_frame->[0][0] + $to_mid_atom_coord->[0],
-                            $to_local_ref_frame->[0][1] + $to_mid_atom_coord->[1],
-                            $to_local_ref_frame->[0][2] + $to_mid_atom_coord->[2] ] ] );
+        bond_angle( [ [ $cn_start->[0] + $from_local_ref_frame->[0][0],
+                        $cn_start->[1] + $from_local_ref_frame->[0][1],
+                        $cn_start->[2] + $from_local_ref_frame->[0][2] ],
+                      $cn_start,
+                      $cn_end ] );
     my $theta =
-        bond_angle( [ $from_mid_atom_coord,
-                      $to_mid_atom_coord,
-                      [ $to_local_ref_frame->[2][0] + $to_mid_atom_coord->[0],
-                        $to_local_ref_frame->[2][1] + $to_mid_atom_coord->[1],
-                        $to_local_ref_frame->[2][2] + $to_mid_atom_coord->[2] ] ] );
+        bond_angle( [ [ $cn_end->[0] + $to_local_ref_frame->[2][0],
+                        $cn_end->[1] + $to_local_ref_frame->[2][1],
+                        $cn_end->[2] + $to_local_ref_frame->[2][2] ],
+                      $cn_end,
+                      $to_mid_atom_coord ] );
 
     # Homogeneous transformation:
     # H = Rot_{x,\alpha} \cdot Trans_{x,a} \cdot Rot_{z,\theta}
