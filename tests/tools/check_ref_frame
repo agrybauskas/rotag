@@ -246,6 +246,9 @@ sub transform_coord
                               $to_local_ref_frame->[2],
                               $to_local_ref_frame->[1] ) };
 
+    my $a = 0.0;
+    my $d = 0.0;
+
     # In order to get DH parameters the system of equations has to be solved.
     #
     # A_i = A_0 + a * A
@@ -273,8 +276,7 @@ sub transform_coord
                       [ $to_local_ref_frame->[2][0] + $to_mid_atom_coord->[0],
                         $to_local_ref_frame->[2][1] + $to_mid_atom_coord->[1],
                         $to_local_ref_frame->[2][2] + $to_mid_atom_coord->[2] ] ] );
-    my $a = 0.0;
-    my $d = bond_length( [ $from_mid_atom_coord, $to_mid_atom_coord ] );
+
     # Homogeneous transformation:
     # H = Rot_{x,\alpha} \cdot Trans_{x,a} \cdot Rot_{z,\theta}
     my @transformed_atom_coord =
