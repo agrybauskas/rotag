@@ -246,6 +246,16 @@ sub transform_coord
                               $to_local_ref_frame->[2],
                               $to_local_ref_frame->[1] ) };
 
+    # In order to get DH parameters the system of equations has to be solved.
+    #
+    # A_i = A_0 + a * A
+    # B_i = B_0 + b * B
+    # A * (B_i - A_i) = 0
+    # B * (B_i - A_i) = 0
+    #
+    # We are trying to find a vector that is perpendicular to both A and B
+    # vectors.
+
     # my $alpha = $to_alpha - $from_alpha;
     # my $theta = $to_beta - $from_beta;
     my $alpha =
