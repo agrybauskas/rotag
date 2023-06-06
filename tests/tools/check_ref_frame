@@ -11,7 +11,11 @@ use LinearAlgebra qw( create_ref_frame
                       mult_matrix_product
                       normalize
                       vector_cross
-                      vector_length );
+                      vector_length
+                      translation
+                      x_axis_rotation
+                      y_axis_rotation
+                      z_axis_rotation );
 use Measure qw( bond_length
                 bond_angle );
 use PDBxParser qw( extract
@@ -269,22 +273,10 @@ sub transform_coord
     # H = Rot_{x,\alpha} \cdot Trans_{x,a} \cdot Rot_{z,\theta}
     my @transformed_atom_coord =
         @{ mult_matrix_product(
-               [ [ [ cos( $theta ),
-                     - sin( $theta ) * cos( $alpha ),
-                     sin( $theta ) * sin( $alpha ),
-                     $a * cos( $theta ) ],
-                   [ sin( $theta ),
-                     cos( $theta ) * cos( $alpha ),
-                     - cos( $theta ) * sin( $alpha ),
-                     $a * sin( $theta ) ],
-                   [ 0,
-                     sin( $alpha ),
-                     cos( $alpha ),
-                     $d ],
-                   [ 0.0,
-                     0.0,
-                     0.0,
-                     1.0 ] ],
+               [ # z_axis_rotation( - $theta ),
+                 # translation( 0.0, 0.0, - $d ),
+                 # translation( 0.0, $a, 0.0 ),
+                 # y_axis_rotation( $alpha ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
 }
