@@ -248,9 +248,9 @@ sub transform_coord
                        $to_mid_atom_coord,
                        $to_local_ref_frame->[2] );
 
-    my $r_y = bond_length( [ $cn_start, $cn_end ] );
-    my $r_z = bond_length( [ $cn_end, $to_mid_atom_coord ] );
-    my $r_x = $r_z;
+    my $r_y = - bond_length( [ $cn_start, $cn_end ] );
+    my $r_z = - bond_length( [ $cn_end, $to_mid_atom_coord ] );
+    my $r_x = - $r_z;
 
     my $theta_y =
         bond_angle( [ [ $cn_end->[0] + $from_local_ref_frame->[2][0],
@@ -261,11 +261,11 @@ sub transform_coord
                         $to_mid_atom_coord->[1] + $to_local_ref_frame->[2][1],
                         $to_mid_atom_coord->[2] + $to_local_ref_frame->[2][2] ] ] );
     my $theta_z =
-        bond_angle( [ [ $cn_start->[0] + $from_local_ref_frame->[0][0],
-                        $cn_start->[1] + $from_local_ref_frame->[0][1],
-                        $cn_start->[2] + $from_local_ref_frame->[0][2] ],
-                      $cn_start,
-                      $cn_end ] );
+        - bond_angle( [ [ $cn_start->[0] + $from_local_ref_frame->[0][0],
+                          $cn_start->[1] + $from_local_ref_frame->[0][1],
+                          $cn_start->[2] + $from_local_ref_frame->[0][2] ],
+                        $cn_start,
+                        $cn_end ] );
 
     my $sin_theta_y = sin( $theta_y );
     my $cos_theta_y = cos( $theta_y );
