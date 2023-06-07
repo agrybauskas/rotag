@@ -73,7 +73,7 @@ foreach my $pdbx_file ( @ARGV ) {
     # Defines starting reference frame.
     my @from_mid_atom_coord =  ( 0.0, 0.0, 0.0 );
     my @from_up_atom_coord = ( 0.0, 0.0, 1.0 );
-    my @from_side_atom_coord = ( 1.0, 0.0, 0.0 );
+    my @from_side_atom_coord = ( 0.0, 1.0, 0.0 );
 
     if( $from_query ) {
         my %from_atom_specifier = ();
