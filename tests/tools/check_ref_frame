@@ -252,9 +252,8 @@ sub transform_coord
                        $to_mid_atom_coord,
                        $to_local_ref_frame->[2] );
 
-    my $r_y = - bond_length( [ $cn_start, $cn_end ] );
-    my $r_z = - bond_length( [ $cn_end, $to_mid_atom_coord ] );
-    my $r_x = - $r_z;
+    my $a = bond_length( [ $cn_start, $cn_end ] );
+    my $d = bond_length( [ $cn_end, $to_mid_atom_coord ] );
 
     my $theta_y =
         bond_angle( [ [ $cn_end->[0] + $from_local_ref_frame->[2][0],
@@ -275,10 +274,9 @@ sub transform_coord
     # H = Rot_{x,\alpha} \cdot Trans_{x,a} \cdot Rot_{z,\theta}
     my @transformed_atom_coord =
         @{ mult_matrix_product(
-               [ # z_axis_rotation( - $theta ),
-                 # translation( 0.0, 0.0, - $d ),
-                 # translation( 0.0, $a, 0.0 ),
-                 # y_axis_rotation( $alpha ),
+               [ z_axis_rotation( $theta_z ),
+                 translation( $a, 0.0, $d ),
+                 y_axis_rotation( $theta_y ),
                  $atom_coord ] ) };
     return \@transformed_atom_coord;
 }
