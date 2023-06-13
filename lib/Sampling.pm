@@ -144,7 +144,7 @@ sub sample_angles_qs_parsing
                 ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
             } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
                 ( $angle_start, $angle_end ) = ( $1, $2 );
-            }else {
+            } else {
                 die "Syntax '$angle' is incorrect\n"
             }
 
