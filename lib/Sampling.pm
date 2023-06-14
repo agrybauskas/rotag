@@ -131,6 +131,9 @@ sub sample_angles_qs_parsing
         my $residue_name = "*";
         my $residue_name_regexp =
             '(' . join( '|', @{ $rotatable_residue_names } ) . ')';
+        if( scalar( split /:/, $query_string ) > 1 ) {
+
+        }
         for my $angle ( split /,/, $query_string ) {
             my $angle_name;
             my $angle_start;
