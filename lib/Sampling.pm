@@ -87,6 +87,8 @@ sub sample_angles_qs_parsing
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $dihedral_angle_restraints =
         $parameters->{'_[local]_dihedral_angle_restraints'};
+    my $rotatable_residue_names =
+        $parameters->{'_[local]_rotatable_residue_names'};
 
     $query_strings =~ s/\s//g;
     $small_angle = 36.0;
@@ -125,6 +127,10 @@ sub sample_angles_qs_parsing
         undef %angles;
     }
     for my $query_string ( split /;/, $query_strings ) {
+        # HACK: it should be moved to grammar module and generalized.
+        my $residue_name = "*";
+        my $residue_name_regexp =
+            '(' . join( '|', @{ $rotatable_residue_names } ) . ')';
         for my $angle ( split /,/, $query_string ) {
             my $angle_name;
             my $angle_start;
@@ -154,11 +160,11 @@ sub sample_angles_qs_parsing
             $angle_end //= 180.0;
 
             if( $in_radians ) {
-                $angles{'*'}{$angle_name} =
+                $angles{$residue_name}{$angle_name} =
                     sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
                                    $angle_step );
             } else {
-                $angles{'*'}{$angle_name} =
+                $angles{$residue_name}{$angle_name} =
                     sample_angles( $parameters,
                                    [ [ $angle_start * $pi / 180.0,
                                        $angle_end * $pi / 180.0 ] ],
