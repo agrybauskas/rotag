@@ -24,7 +24,7 @@ After the installation, the environment has to be set. The commands can be place
 in `~/.bashrc` file.
 
 ```bash
-export ROTAG_SRC=~/src/rotag
+ROTAG_SRC=~/src/rotag
 export PERL5LIB=${ROTAG_SRC}/lib:${PERL5LIB}
 export PATH=${ROTAG_SRC}/scripts:${PATH}
 ```
