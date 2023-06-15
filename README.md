@@ -49,6 +49,12 @@ The rotations around the dihedral angles of selected residues are performed with
 rotag_scan 4dhw-rotag-select.cif > 4dhw-rotag-scan.cif
 ```
 
+There is a way to control the dihedral angle steps with ```-a``` option:
+
+```bash
+rotag_scan -a 'THR: -180.0..36.0..180.0' 4dhw-rotag-select.cif > 4dhw-rotag-scan.cif
+```
+
 If too many dihedral angle choices are suggested, there are some filtering capabilities.
 
 ```bash
