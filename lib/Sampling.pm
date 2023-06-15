@@ -91,7 +91,6 @@ sub sample_angles_qs_parsing
         $parameters->{'_[local]_rotatable_residue_names'};
 
     $query_strings =~ s/\s//g;
-    $query_strings = uc $query_strings;
     $small_angle = 36.0;
 
     my %angles;
@@ -136,7 +135,7 @@ sub sample_angles_qs_parsing
             '(' . join( '|', @{ $rotatable_residue_names } ) . ')';
         my @query_string_decomposed = split /:/, $query_string;
         if( scalar @query_string_decomposed == 2 ) {
-            if( $query_string =~ m/^(ASP|THR):(.+)$/ ) {
+            if( $query_string =~ m/^((?:ASP|THR),?(?:ASP|THR)*):(.+)$/ ) {
                 $residue_names = [ split /,/, $1 ];
                 $angle_string = $2;
             } else {
