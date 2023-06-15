@@ -134,7 +134,7 @@ sub sample_angles_qs_parsing
         my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
         my @query_string_decomposed = split /:/, $query_string;
         if( scalar @query_string_decomposed == 2 ) {
-            if( $query_string =~ m/^((?:${residue_names_regexp}),?(?:${residue_names_regexp})*):(.+)$/i ) {
+            if( $query_string =~ m/^((?:${residue_names_regexp})(?:,(?:${residue_names_regexp}))+):(.+)$/i ) {
                 $residue_names = [ split /,/, uc( $1 ) ];
                 $angle_string = $2;
             } else {
