@@ -138,6 +138,8 @@ sub sample_angles_qs_parsing
             if( $query_string =~ m/^(ASP):(.+)$/ ) {
                 $residue_names = [ split /,/, $1 ];
                 $angle_string = $2;
+            } else {
+                die "Syntax '$query_string' is incorrect\n"
             }
         } elsif( scalar @query_string_decomposed == 1 ) {
             $angle_string = $query_string;
