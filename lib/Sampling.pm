@@ -128,13 +128,24 @@ sub sample_angles_qs_parsing
     }
     for my $query_string ( split /;/, $query_strings ) {
         # HACK: it should be moved to grammar module and generalized.
-        my $residue_name = "*";
+        my $residue_names;
+        my $angle_string;
+
         my $residue_name_regexp =
             '(' . join( '|', @{ $rotatable_residue_names } ) . ')';
-        if( scalar( split /:/, $query_string ) > 1 ) {
+        my @query_string_decomposed = split /:/, $residue_name_regexp;
+        if( scalar @query_string_decomposed == 2 ) {
 
+        } elsif( scalar @query_string_decomposed == 1 ) {
+
+        } else {
+            die "Syntax '$query_string' is incorrect\n"
         }
-        for my $angle ( split /,/, $query_string ) {
+
+        $residue_names //= [ "*" ];
+        $angle_string //= "";
+
+        for my $angle ( split /,/, $angle_string ) {
             my $angle_name;
             my $angle_start;
             my $angle_step;
@@ -162,16 +173,19 @@ sub sample_angles_qs_parsing
             $angle_step //= $small_angle;
             $angle_end //= 180.0;
 
-            if( $in_radians ) {
-                $angles{$residue_name}{$angle_name} =
-                    sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
-                                   $angle_step );
-            } else {
-                $angles{$residue_name}{$angle_name} =
-                    sample_angles( $parameters,
-                                   [ [ $angle_start * $pi / 180.0,
-                                       $angle_end * $pi / 180.0 ] ],
-                                   $angle_step * $pi / 180.0 );
+            for my $residue_name ( @{ $residue_names } ) {
+                if( $in_radians ) {
+                    $angles{$residue_name}{$angle_name} =
+                        sample_angles( $parameters,
+                                       [ [ $angle_start, $angle_end ] ],
+                                       $angle_step );
+                } else {
+                    $angles{$residue_name}{$angle_name} =
+                        sample_angles( $parameters,
+                                       [ [ $angle_start * $pi / 180.0,
+                                           $angle_end * $pi / 180.0 ] ],
+                                       $angle_step * $pi / 180.0 );
+                }
             }
         }
     }
