@@ -131,12 +131,11 @@ sub sample_angles_qs_parsing
         my $residue_names;
         my $angle_string;
 
-        my $residue_name_regexp =
-            '(' . join( '|', @{ $rotatable_residue_names } ) . ')';
+        my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
         my @query_string_decomposed = split /:/, $query_string;
         if( scalar @query_string_decomposed == 2 ) {
-            if( $query_string =~ m/^((?:ASP|THR),?(?:ASP|THR)*):(.+)$/ ) {
-                $residue_names = [ split /,/, $1 ];
+            if( $query_string =~ m/^((?:${residue_names_regexp}),?(?:${residue_names_regexp})*):(.+)$/i ) {
+                $residue_names = [ split /,/, uc( $1 ) ];
                 $angle_string = $2;
             } else {
                 die "Syntax '$query_string' is incorrect\n"
