@@ -364,6 +364,9 @@ sub are_in_same_plane
     my $c = [ $second_vector->[1][0] - $first_vector->[0][0],
               $second_vector->[1][1] - $first_vector->[0][1],
               $second_vector->[1][2] - $first_vector->[0][2] ];
-    my $determinant;
+    my $determinant =
+        $a->[0] * ( $b->[1] * $c->[2] - $b->[2] * $c->[1] ) -
+        $a->[1] * ( $b->[0] * $c->[2] - $b->[2] * $c->[0] ) +
+        $a->[2] * ( $b->[0] * $c->[1] - $b->[1] * $c->[0] );
     return abs( $determinant ) > $epsilon ? 0 : 1;
 }
