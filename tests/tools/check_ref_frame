@@ -354,6 +354,16 @@ sub are_in_same_plane
 {
     my ( $parameters, $first_vector, $second_vector ) = @_;
     my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
-
-    return 0;
+    # A simple check if the three points are in the same plane.
+    my $a = [ $first_vector->[1][0] - $first_vector->[0][0],
+              $first_vector->[1][1] - $first_vector->[0][1],
+              $first_vector->[1][2] - $first_vector->[0][2] ];
+    my $b = [ $second_vector->[0][0] - $first_vector->[0][0],
+              $second_vector->[0][1] - $first_vector->[0][1],
+              $second_vector->[0][2] - $first_vector->[0][2] ];
+    my $c = [ $second_vector->[1][0] - $first_vector->[0][0],
+              $second_vector->[1][1] - $first_vector->[0][1],
+              $second_vector->[1][2] - $first_vector->[0][2] ];
+    my $determinant;
+    return abs( $determinant ) > $epsilon ? 0 : 1;
 }
