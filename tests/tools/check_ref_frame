@@ -253,20 +253,21 @@ sub transform_coord
     # Initializing key booleans that will be used to quickly determine the
     # direction types of the vectors.
     my $are_parallel =
-        vector_cross( $from_local_ref_frame->[2],
-                      $to_local_ref_frame->[2] ) > $epsilon ? 0 : 1;
+        abs( vector_cross( $from_local_ref_frame->[2],
+                           $to_local_ref_frame->[2] ) ) > $epsilon ? 0 : 1;
     my $are_colinear =
-        vector_cross( $from_local_ref_frame->[2],
-                      [ $to_mid_atom_coord->[0] -
-                        $from_mid_atom_coord->[0] -
-                        $from_local_ref_frame->[2][0],
-                        $to_mid_atom_coord->[1] -
-                        $from_mid_atom_coord->[1] -
-                        $from_local_ref_frame->[2][1],
-                        $to_mid_atom_coord->[2] -
-                        $from_mid_atom_coord->[2] -
-                        $from_local_ref_frame->[2][2] ] ) > $epsilon ? 0 : 1;
-    my $are_in_same_plane = 0;
+        abs( vector_cross( $from_local_ref_frame->[2],
+                           [ $to_mid_atom_coord->[0] -
+                             $from_mid_atom_coord->[0] -
+                             $from_local_ref_frame->[2][0],
+                             $to_mid_atom_coord->[1] -
+                             $from_mid_atom_coord->[1] -
+                             $from_local_ref_frame->[2][1],
+                             $to_mid_atom_coord->[2] -
+                             $from_mid_atom_coord->[2] -
+                             $from_local_ref_frame->[2][2] ] ) ) > $epsilon ? 0 : 1;
+    my $are_in_same_plane =
+        are_in_same_plane( $parameters, $first_vector, $second_vector );
 
     # By writing down a table of three types of booleans that determine if two
     # vectors are parallel, colinear or in the same plane, the DH parameters
@@ -347,4 +348,12 @@ sub common_normal
                 $B_0->[2] + $b * $B->[2] ];
 
     return $A_i, $B_i;
+}
+
+sub are_in_same_plane
+{
+    my ( $parameters, $first_vector, $second_vector ) = @_;
+    my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
+
+    return 0;
 }
