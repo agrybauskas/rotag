@@ -368,5 +368,8 @@ sub are_in_same_plane
         $a->[0] * ( $b->[1] * $c->[2] - $b->[2] * $c->[1] ) -
         $a->[1] * ( $b->[0] * $c->[2] - $b->[2] * $c->[0] ) +
         $a->[2] * ( $b->[0] * $c->[1] - $b->[1] * $c->[0] );
-    return abs( $determinant ) > $epsilon ? 0 : 1;
+    # TODO: check if machine epsilon has been properly adjusted according to
+    # determinant's formula, because errors can add up or decrease in size
+    # depending on the operations performed on them.
+    return abs( $determinant ) > 3 * $epsilon ? 0 : 1;
 }
