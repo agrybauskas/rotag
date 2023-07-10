@@ -352,39 +352,48 @@ sub conformation_matrices
     for my $parameter_name ( sort { $bond_parameters->{$atom_id}{$a}{'order'} <=>
                                     $bond_parameters->{$atom_id}{$b}{'order'} }
                              keys %{ $bond_parameters->{$atom_id} } ) {
-    #     my ( $up_atom_id, $mid_atom_id ) =
-    #         map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] }
-    #             ( 1, 0 );
-    #     my @mid_connections = # Excludes up atom.
-    #         grep { $_ ne $up_atom_id }
-    #             @{ $atom_site->{$mid_atom_id}{'connections'} };
-    #     my ( $side_atom_id ) =
-    #         @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
+        my $parameter_data = $bond_parameters->{$atom_id}{$parameter_name};
+        my $atom_ids = $parameter_data->{'atom_ids'};
 
-    #     my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-    #         map { [ $atom_site->{$_}{'Cartn_x'},
-    #                 $atom_site->{$_}{'Cartn_y'},
-    #                 $atom_site->{$_}{'Cartn_z'} ] }
-    #             ( $mid_atom_id, $up_atom_id, $side_atom_id );
+        my @ref_frame_atom_idxs = scalar @{ $atom_ids } > 3 ? ( 2, 1 ) :( 1, 0 );
+        my ( $up_atom_id, $mid_atom_id ) =
+            map { $atom_ids->[$_] }
+                @ref_frame_atom_idxs;
+        my @mid_connections = # Excludes up atom.
+            grep { $_ ne $up_atom_id }
+                @{ $atom_site->{$mid_atom_id}{'connections'} };
+        my ( $side_atom_id ) =
+            @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
 
-    #     my ( $bond_angle_name ) =
-    #         sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
-    #                $bendable_angles->{$up_atom_id}{$b}{'order'} }
-    #         keys %{ $bendable_angles->{$up_atom_id} };
+        my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+            map { [ $atom_site->{$_}{'Cartn_x'},
+                    $atom_site->{$_}{'Cartn_y'},
+                    $atom_site->{$_}{'Cartn_z'} ] }
+                ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-    #     my ( $dihedral_angle_name ) =
-    #         sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
-    #                $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
-    #         keys %{ $rotatable_bonds->{$up_atom_id} };
+        # my ( $bond_length_name ) =
+        #     sort { $stretchable_bonds->{$up_atom_id}{$a}{'order'} <=>
+        #            $stretchable_bonds->{$up_atom_id}{$b}{'order'} }
+        #     keys %{ $stretchable_bonds->{$up_atom_id} };
 
-    #     push @conformation_matrices,
-    #          @{ bond_altering( $parameters,
-    #                            $mid_atom_coord,
-    #                            $up_atom_coord,
-    #                            $side_atom_coord,
-    #                            $dihedral_angle_name,
-    #                            $bond_angle_name,
-    #                            $bond_name ) };
+        # my ( $bond_angle_name ) =
+        #     sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
+        #            $bendable_angles->{$up_atom_id}{$b}{'order'} }
+        #     keys %{ $bendable_angles->{$up_atom_id} };
+
+        # my ( $dihedral_angle_name ) =
+        #     sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
+        #            $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
+        #     keys %{ $rotatable_bonds->{$up_atom_id} };
+
+        # push @conformation_matrices,
+        #      @{ bond_altering( $parameters,
+        #                        $mid_atom_coord,
+        #                        $up_atom_coord,
+        #                        $side_atom_coord,
+        #                        $dihedral_angle_name,
+        #                        $bond_angle_name,
+        #                        $bond_name ) };
     }
 
     return \@conformation_matrices;
