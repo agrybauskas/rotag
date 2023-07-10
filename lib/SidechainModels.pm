@@ -345,7 +345,8 @@ sub conformation_matrices
     # Sorting by the priority: bond length > bond angle > dihedral angle, because
     # the other parameters can be derived from the previous parameter.
     my ( $bond_parameters ) =
-        ( $stretchable_bonds, $bendable_angles, $rotatable_bonds );
+        grep { %{ $_ } }
+             ( $stretchable_bonds, $bendable_angles, $rotatable_bonds );
 
     my @conformation_matrices = ();
     for my $parameter_name ( sort { $bond_parameters->{$atom_id}{$a}{'order'} <=>
