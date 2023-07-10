@@ -602,11 +602,12 @@ sub restructure_by_atom_ids
 {
     my ( $bond_parameters ) = @_;
     my ( $unique_residue_key ) = keys %{ $bond_parameters };
-    return { map { join( ',', @{ $bond_parameters->{$unique_residue_key}{$_}
-                                                   {'atom_ids'} } ) =>
-                   { %{ $bond_parameters->{$unique_residue_key}{$_} },
-                        'name' => $_ } }
-             keys %{ $bond_parameters->{$unique_residue_key} } };
+    my %restructured = ();
+    for my $parameter_name ( keys %{ $bond_parameters->{$unique_residue_key} } ){
+        #     { %{ $bond_parameters->{$unique_residue_key}{$parameter_name} },
+        #       'name' => $parameter_name },
+    }
+    return \%restructured;
 }
 
 1;

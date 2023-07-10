@@ -342,6 +342,9 @@ sub conformation_matrices
     my $bond_angles_by_atom_ids = restructure_by_atom_ids( $bond_angles );
     my $dihedral_angles_by_atom_ids = restructure_by_atom_ids( $dihedral_angles);
 
+    # use Data::Dumper;
+    # print STDERR Dumper $bond_lengths_by_atom_ids;
+
     # Sorting by the priority: bond length > bond angle > dihedral angle, because
     # the other parameters can be derived from the previous parameter.
     my ( $bond_parameters ) =
@@ -371,20 +374,24 @@ sub conformation_matrices
                     $atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-        my ( $bond_name ) =
-            sort { $stretchable_bonds->{$up_atom_id}{$a}{'order'} <=>
-                   $stretchable_bonds->{$up_atom_id}{$b}{'order'} }
-            keys %{ $stretchable_bonds->{$up_atom_id} };
+        my $bond_name;
+        my $bond_angle_name;
+        my $dihedral_angle_name;
 
-        my ( $bond_angle_name ) =
-            sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
-                   $bendable_angles->{$up_atom_id}{$b}{'order'} }
-            keys %{ $bendable_angles->{$up_atom_id} };
+        # my ( $bond_name ) =
+        #     sort { $stretchable_bonds->{$up_atom_id}{$a}{'order'} <=>
+        #            $stretchable_bonds->{$up_atom_id}{$b}{'order'} }
+        #     keys %{ $stretchable_bonds->{$up_atom_id} };
 
-        my ( $dihedral_angle_name ) =
-            sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
-                   $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
-            keys %{ $rotatable_bonds->{$up_atom_id} };
+        # my ( $bond_angle_name ) =
+        #     sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
+        #            $bendable_angles->{$up_atom_id}{$b}{'order'} }
+        #     keys %{ $bendable_angles->{$up_atom_id} };
+
+        # my ( $dihedral_angle_name ) =
+        #     sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
+        #            $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
+        #     keys %{ $rotatable_bonds->{$up_atom_id} };
 
         push @conformation_matrices,
              @{ bond_altering( $parameters,
