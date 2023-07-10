@@ -371,29 +371,29 @@ sub conformation_matrices
                     $atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-        # my ( $bond_length_name ) =
-        #     sort { $stretchable_bonds->{$up_atom_id}{$a}{'order'} <=>
-        #            $stretchable_bonds->{$up_atom_id}{$b}{'order'} }
-        #     keys %{ $stretchable_bonds->{$up_atom_id} };
+        my ( $bond_name ) =
+            sort { $stretchable_bonds->{$up_atom_id}{$a}{'order'} <=>
+                   $stretchable_bonds->{$up_atom_id}{$b}{'order'} }
+            keys %{ $stretchable_bonds->{$up_atom_id} };
 
-        # my ( $bond_angle_name ) =
-        #     sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
-        #            $bendable_angles->{$up_atom_id}{$b}{'order'} }
-        #     keys %{ $bendable_angles->{$up_atom_id} };
+        my ( $bond_angle_name ) =
+            sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
+                   $bendable_angles->{$up_atom_id}{$b}{'order'} }
+            keys %{ $bendable_angles->{$up_atom_id} };
 
-        # my ( $dihedral_angle_name ) =
-        #     sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
-        #            $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
-        #     keys %{ $rotatable_bonds->{$up_atom_id} };
+        my ( $dihedral_angle_name ) =
+            sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
+                   $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
+            keys %{ $rotatable_bonds->{$up_atom_id} };
 
-        # push @conformation_matrices,
-        #      @{ bond_altering( $parameters,
-        #                        $mid_atom_coord,
-        #                        $up_atom_coord,
-        #                        $side_atom_coord,
-        #                        $dihedral_angle_name,
-        #                        $bond_angle_name,
-        #                        $bond_name ) };
+        push @conformation_matrices,
+             @{ bond_altering( $parameters,
+                               $mid_atom_coord,
+                               $up_atom_coord,
+                               $side_atom_coord,
+                               $dihedral_angle_name,
+                               $bond_angle_name,
+                               $bond_name ) };
     }
 
     return \@conformation_matrices;
