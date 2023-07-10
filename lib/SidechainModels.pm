@@ -342,44 +342,48 @@ sub conformation_matrices
     my $bond_angles_by_atom_ids = restructure_by_atom_ids( $bond_angles );
     my $dihedral_angles_by_atom_ids = restructure_by_atom_ids( $dihedral_angles);
 
+    # Sorting by the priority: bond length > bond angle > dihedral angle, because
+    # the other parameters can be derived from the previous parameter.
+    my ( $bond_parameters ) =
+        ( $stretchable_bonds, $bendable_angles, $rotatable_bonds );
+
     my @conformation_matrices = ();
-    for my $bond_name ( sort { $stretchable_bonds->{$atom_id}{$a}{'order'} <=>
-                               $stretchable_bonds->{$atom_id}{$b}{'order'} }
-                        keys %{ $stretchable_bonds->{$atom_id} } ) {
+    for my $parameter_name ( sort { $bond_parameters->{$atom_id}{$a}{'order'} <=>
+                                    $bond_parameters->{$atom_id}{$b}{'order'} }
+                             keys %{ $bond_parameters->{$atom_id} } ) {
+    #     my ( $up_atom_id, $mid_atom_id ) =
+    #         map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] }
+    #             ( 1, 0 );
+    #     my @mid_connections = # Excludes up atom.
+    #         grep { $_ ne $up_atom_id }
+    #             @{ $atom_site->{$mid_atom_id}{'connections'} };
+    #     my ( $side_atom_id ) =
+    #         @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
 
-        my ( $up_atom_id, $mid_atom_id ) =
-            map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] }
-                ( 1, 0 );
-        my @mid_connections = # Excludes up atom.
-            grep { $_ ne $up_atom_id }
-                @{ $atom_site->{$mid_atom_id}{'connections'} };
-        my ( $side_atom_id ) =
-            @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
+    #     my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
+    #         map { [ $atom_site->{$_}{'Cartn_x'},
+    #                 $atom_site->{$_}{'Cartn_y'},
+    #                 $atom_site->{$_}{'Cartn_z'} ] }
+    #             ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-        my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-            map { [ $atom_site->{$_}{'Cartn_x'},
-                    $atom_site->{$_}{'Cartn_y'},
-                    $atom_site->{$_}{'Cartn_z'} ] }
-                ( $mid_atom_id, $up_atom_id, $side_atom_id );
+    #     my ( $bond_angle_name ) =
+    #         sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
+    #                $bendable_angles->{$up_atom_id}{$b}{'order'} }
+    #         keys %{ $bendable_angles->{$up_atom_id} };
 
-        my ( $bond_angle_name ) =
-            sort { $bendable_angles->{$up_atom_id}{$a}{'order'} <=>
-                   $bendable_angles->{$up_atom_id}{$b}{'order'} }
-            keys %{ $bendable_angles->{$up_atom_id} };
+    #     my ( $dihedral_angle_name ) =
+    #         sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
+    #                $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
+    #         keys %{ $rotatable_bonds->{$up_atom_id} };
 
-        my ( $dihedral_angle_name ) =
-            sort { $rotatable_bonds->{$up_atom_id}{$a}{'order'} <=>
-                   $rotatable_bonds->{$up_atom_id}{$b}{'order'} }
-            keys %{ $rotatable_bonds->{$up_atom_id} };
-
-        push @conformation_matrices,
-             @{ bond_altering( $parameters,
-                               $mid_atom_coord,
-                               $up_atom_coord,
-                               $side_atom_coord,
-                               $dihedral_angle_name,
-                               $bond_angle_name,
-                               $bond_name ) };
+    #     push @conformation_matrices,
+    #          @{ bond_altering( $parameters,
+    #                            $mid_atom_coord,
+    #                            $up_atom_coord,
+    #                            $side_atom_coord,
+    #                            $dihedral_angle_name,
+    #                            $bond_angle_name,
+    #                            $bond_name ) };
     }
 
     return \@conformation_matrices;
