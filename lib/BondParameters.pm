@@ -602,26 +602,24 @@ sub restructure_by_atom_ids
 {
     my ( $bond_parameters ) = @_;
     my ( $unique_residue_key ) = keys %{ $bond_parameters };
-    my %restructured = ();
+    my $restructured = {};
     for my $parameter_name ( keys %{ $bond_parameters->{$unique_residue_key} } ){
         my $parameter_data =
             { %{ $bond_parameters->{$unique_residue_key}{$parameter_name} },
               'name' => $parameter_name };
         my $atom_ids = $parameter_data->{'atom_ids'};
-        my $last_hash_addr;
+        my $last_hash_addr = \$restructured;
         my $last_atom_id;
         for my $atom_id ( @{ $atom_ids } ) {
-            if( ! defined $restructured{$atom_id} ) {
-                $restructured{$atom_id} = {};
+            if( ! defined ${ $last_hash_addr }->{$atom_id} ) {
+                ${ $last_hash_addr }->{$atom_id} = {};
             }
-            $last_hash_addr = \$restructured{$atom_id};
+            $last_hash_addr = \${ $last_hash_addr }->{$atom_id};
             $last_atom_id = $atom_id;
         }
-        ${ $last_hash_addr }->{$last_atom_id} = $parameter_data;
+        ${ $last_hash_addr } = $parameter_data;
     }
-    use Data::Dumper;
-    print STDERR Dumper \%restructured;
-    return \%restructured;
+    return $restructured;
 }
 
 1;
