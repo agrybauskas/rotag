@@ -35,8 +35,8 @@ $atom_site = eval( $atom_site );
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-# bendable_angles( $parameters, $atom_site ) if $do_angle_bending;
-# rotatable_bonds( $parameters, $atom_site ) if $do_bond_torsion;
+bendable_angles( $parameters, $atom_site ) if $do_angle_bending;
+rotatable_bonds( $parameters, $atom_site ) if $do_bond_torsion;
 stretchable_bonds( $parameters, $atom_site ) if $do_bond_stretching;
 
 rotation_translation_new( $parameters, $atom_site );
