@@ -342,9 +342,6 @@ sub conformation_matrices
     my $bond_angles_by_atom_ids = restructure_by_atom_ids( $bond_angles );
     my $dihedral_angles_by_atom_ids = restructure_by_atom_ids( $dihedral_angles);
 
-    # use Data::Dumper;
-    # print STDERR Dumper $bond_lengths_by_atom_ids;
-
     # Sorting by the priority: bond length > bond angle > dihedral angle, because
     # the other parameters can be derived from the previous parameter.
     my ( $bond_parameters ) =
