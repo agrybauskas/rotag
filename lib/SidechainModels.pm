@@ -371,8 +371,10 @@ sub conformation_matrices
                     $atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
-        my $bond_name;
-        my $bond_angle_name;
+        my $bond_name =
+            $bond_lengths_by_atom_ids->{$mid_atom_id}{$up_atom_id}{'name'};
+        my $bond_angle_name =
+            $bond_lengths_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{'name'};
         my $dihedral_angle_name;
 
         push @conformation_matrices,
