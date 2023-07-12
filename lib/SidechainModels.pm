@@ -375,7 +375,9 @@ sub conformation_matrices
             $bond_lengths_by_atom_ids->{$mid_atom_id}{$up_atom_id}{'name'};
         my $bond_angle_name =
             $bond_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{'name'};
-        my $dihedral_angle_name;
+        my ( $dihedral_angle_name ) =
+            map { $dihedral_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{$_}{'name'} }
+            keys %{ $dihedral_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id} };
 
         push @conformation_matrices,
              @{ bond_altering( $parameters,
