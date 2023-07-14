@@ -355,7 +355,7 @@ sub conformation_matrices
         my $parameter_data = $bond_parameters->{$atom_id}{$parameter_name};
         my $atom_ids = $parameter_data->{'atom_ids'};
 
-        my @ref_frame_atom_idxs = scalar @{ $atom_ids } > 3 ? ( 2, 1 ) :( 1, 0 );
+        my @ref_frame_atom_idxs = scalar @{ $atom_ids } > 2 ? ( 2, 1 ) :( 1, 0 );
         my ( $up_atom_id, $mid_atom_id ) =
             map { $atom_ids->[$_] }
                 @ref_frame_atom_idxs;
