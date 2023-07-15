@@ -355,15 +355,19 @@ sub conformation_matrices
         my $parameter_data = $bond_parameters->{$atom_id}{$parameter_name};
         my $atom_ids = $parameter_data->{'atom_ids'};
 
-        my @ref_frame_atom_idxs = scalar @{ $atom_ids } > 2 ? ( 2, 1 ) :( 1, 0 );
-        my ( $up_atom_id, $mid_atom_id ) =
+        my @ref_frame_atom_idxs =
+            scalar @{ $atom_ids } > 2 ? ( 2, 1, 0 ) :( 1, 0 );
+        my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
             map { $atom_ids->[$_] }
                 @ref_frame_atom_idxs;
-        my @mid_connections = # Excludes up atom.
-            grep { $_ ne $up_atom_id }
-                @{ $atom_site->{$mid_atom_id}{'connections'} };
-        my ( $side_atom_id ) =
-            @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
+
+        if( ! defined $side_atom_id ) {
+            my @mid_connections =
+                grep { $_ ne $up_atom_id }
+                    @{ $atom_site->{$mid_atom_id}{'connections'} };
+            ( $side_atom_id ) =
+                @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
+        }
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $atom_site->{$_}{'Cartn_x'},
@@ -374,10 +378,13 @@ sub conformation_matrices
         my $bond_name =
             $bond_lengths_by_atom_ids->{$mid_atom_id}{$up_atom_id}{'name'};
         my $bond_angle_name =
-            $bond_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{'name'};
+            $bond_angles_by_atom_ids
+                ->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{'name'};
         my ( $dihedral_angle_name ) =
-            map { $dihedral_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{$_}{'name'} }
-            keys %{ $dihedral_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id} };
+            map { $dihedral_angles_by_atom_ids
+                      ->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{$_}{'name'} }
+            keys %{ $dihedral_angles_by_atom_ids
+                        ->{$side_atom_id}{$mid_atom_id}{$up_atom_id} };
 
         push @conformation_matrices,
              @{ bond_altering( $parameters,
