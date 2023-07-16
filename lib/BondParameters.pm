@@ -572,6 +572,14 @@ sub unique_bond_parameters
             if( ! exists $unique_bond_parameters{"$parameter_name"} ) {
                 $unique_bond_parameters{"$parameter_name"} =
                     $bond_parameters->{"$atom_id"}{"$parameter_name"};
+            } else {
+                # Sometimes there might be bond parameter namespace clashes so,
+                # the bond parameters with highest order are used.
+                $unique_bond_parameters{"$parameter_name"} =
+                    $bond_parameters->{"$atom_id"}{"$parameter_name"}{'order'} >
+                    $unique_bond_parameters{"$parameter_name"}{'order'} ?
+                    $bond_parameters->{"$atom_id"}{"$parameter_name"} :
+                    $unique_bond_parameters{"$parameter_name"};
             }
         }
     }
