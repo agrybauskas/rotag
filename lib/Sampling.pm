@@ -30,7 +30,7 @@ sub sample_angles
     my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift,
          $rand_count ) = @_;
     return sample_bond_parameters( $parameters, $angle_ranges, $small_angle,
-                                   $angle_phase_shift );
+                                   $angle_phase_shift, undef, 0, 1 );
 }
 
 sub sample_bond_parameters
@@ -42,7 +42,7 @@ sub sample_bond_parameters
 
     $angle_phase_shift //= - $pi;
     $inclusive_start //= 1;
-    $inclusive_end //= 0;
+    $inclusive_end //= 1;
 
     my @angles;
     my $min_angle;
