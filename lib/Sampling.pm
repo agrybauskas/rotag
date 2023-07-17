@@ -27,11 +27,13 @@ our $VERSION = $VERSION;
 
 sub sample_angles
 {
-    my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift, $rand_count ) = @_;
+    my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift,
+         $rand_count, $no_full_range ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     $angle_phase_shift //= - $pi;
+    $no_full_range //= 0;
 
     my @angles;
     my $min_angle;
