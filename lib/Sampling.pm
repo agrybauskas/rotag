@@ -30,54 +30,52 @@ sub sample_angles
 {
     my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift,
          $rand_count ) = @_;
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    $angle_phase_shift //= - $pi;
     return sample_bond_parameters( $parameters, $angle_ranges, $small_angle,
-                                   $angle_phase_shift, undef, 0, 1 );
+                                   $angle_phase_shift, $rand_count, 0, 1 );
 }
 
 sub sample_bond_parameters
 {
-    my ( $parameters, $bond_parameter_ranges, $small_angle, $angle_phase_shift,
+    my ( $parameters, $bond_parameter_ranges, $small_value, $bond_parameter_shift,
          $rand_count, $inclusive_start, $inclusive_end ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    $angle_phase_shift //= - $pi;
+    $bond_parameter_shift //= 0;
     $inclusive_start //= 1;
     $inclusive_end //= 1;
 
-    my @angles;
-    my $min_angle;
-    my $max_angle;
+    my @bond_parameter_values;
+    my $min_value;
+    my $max_value;
 
     if( defined $rand_count ) {
         # TODO: add random sampling.
     } else {
-        # Devides full circle (2*pi) into even intervals by $small_angle value.
-        $small_angle = # Adjusts angle so, it could be devided evenly.
-            2 * $pi / floor( 2 * $pi / $small_angle );
-        my @small_angles =
-            map { $_ * $small_angle + $angle_phase_shift }
-                ( 0..( floor( 2 * $pi / $small_angle ) - 1 ) );
+        $small_value = 2 * $pi / floor( 2 * $pi / $small_value );
+        my @small_bond_parameter_values =
+            map { $_ * $small_value + $bond_parameter_shift }
+                ( 0..( floor( 2 * $pi / $small_value ) - 1 ) );
 
-        # Iterates around the circle and adds evenly spaced angles, if they are
-        # inside intervals ($bond_parameter_ranges).
-        for my $angle ( @small_angles ) {
+        for my $angle ( @small_bond_parameter_values ) {
             # TODO: might speed up calculation by eliminating previous elements
             # from $bond_parameter_ranges array.
-            for my $angle_range ( @{ $bond_parameter_ranges } ) {
-                $min_angle = $angle_range->[0];
-                $max_angle = $angle_range->[1];
-                if( $angle >= $min_angle && $angle <= $max_angle ) {
-                    push @angles, $angle;
+            for my $bond_parameter_range ( @{ $bond_parameter_ranges } ) {
+                $min_value = $bond_parameter_range->[0];
+                $max_value = $bond_parameter_range->[1];
+                if( $angle >= $min_value && $angle <= $max_value ) {
+                    push @bond_parameter_values, $angle;
                     last;
-                } elsif( $min_angle == $max_angle ) {
-                    push @angles, $min_angle;
+                } elsif( $min_value == $max_value ) {
+                    push @bond_parameter_values, $min_value;
                 }
             }
         }
     }
 
-    return \@angles;
+    return \@bond_parameter_values;
 }
 
 #
