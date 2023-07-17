@@ -1,0 +1,8 @@
+nav:
+    - Home: 'index.md'
+    - Installation: 'installation.md'
+    - Documentation:
+        - Tutorials:
+            - 'Adding hydrogens': 'adding-hydrogens.md'
+    - License: 'license.md'
+    - Cite: 'cite.md'
