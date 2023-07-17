@@ -18,3 +18,6 @@
 # /tests/outputs/
 /tests/outputs/*.diff
 /tests/outputs/*.jmol
+
+# /doc/site/
+/doc/site
