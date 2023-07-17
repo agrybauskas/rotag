@@ -36,7 +36,7 @@ sub sample_angles
 
 sub sample_bond_parameters
 {
-    my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift,
+    my ( $parameters, $bond_parameter_ranges, $small_angle, $angle_phase_shift,
          $rand_count, $inclusive_start, $inclusive_end ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
@@ -60,11 +60,11 @@ sub sample_bond_parameters
                 ( 0..( floor( 2 * $pi / $small_angle ) - 1 ) );
 
         # Iterates around the circle and adds evenly spaced angles, if they are
-        # inside intervals ($angle_ranges).
+        # inside intervals ($bond_parameter_ranges).
         for my $angle ( @small_angles ) {
             # TODO: might speed up calculation by eliminating previous elements
-            # from $angle_ranges array.
-            for my $angle_range ( @{ $angle_ranges } ) {
+            # from $bond_parameter_ranges array.
+            for my $angle_range ( @{ $bond_parameter_ranges } ) {
                 $min_angle = $angle_range->[0];
                 $max_angle = $angle_range->[1];
                 if( $angle >= $min_angle && $angle <= $max_angle ) {
