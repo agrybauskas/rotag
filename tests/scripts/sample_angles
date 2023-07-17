@@ -4,11 +4,11 @@ use strict;
 use warnings;
 
 use ForceField::Parameters;
-use Sampling qw( sample_angles );
+use Sampling qw( sample_bond_parameters );
 
 #
-# Unit test: Sampling::sample_angles
-# Example: ./sample_angles "0-1,3-4" 0.5 1 1
+# Unit test: Sampling::sample_bond_parameters
+# Example: ./sample_bond_parameters "0-1,3-4" 0.5 1 1
 #
 
 my $parameters = Parameters->new();
@@ -20,12 +20,12 @@ my @angle_ranges = ( map { [ $_->[0],  $_->[1] ] }
                      map { [ split( '\.\.', $_ ) ] }
                      split( ',', $angle_ranges ) );
 
-my $sampled_angles =
-    sample_angles( $parameters, \@angle_ranges, $small_angle,
-                   $inclusive_start, $inclusive_end );
+my $sampled_bond_parameters =
+    sample_bond_parameters( $parameters, \@angle_ranges, $small_angle,
+                            $inclusive_start, $inclusive_end );
 
-for my $angle ( @{ $sampled_angles } ) {
-    printf( "$sig_figs_min ", $angle );
+for my $bond_parameter ( @{ $sampled_bond_parameters } ) {
+    printf( "$sig_figs_min ", $bond_parameter );
 }
 
 print "\n";
