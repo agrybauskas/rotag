@@ -38,10 +38,9 @@ sub sample_angles
 
 sub sample_bond_parameters
 {
-    my ( $parameters, $bond_parameter_ranges, $small_value, $bond_parameter_shift,
-         $rand_count, $inclusive_start, $inclusive_end ) = @_;
-
-    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my ( $parameters, $bond_parameter_ranges, $small_change_count,
+         $bond_parameter_shift, $rand_count, $inclusive_start,
+         $inclusive_end ) = @_;
 
     $bond_parameter_shift //= 0;
     $inclusive_start //= 1;
@@ -54,19 +53,20 @@ sub sample_bond_parameters
     if( defined $rand_count ) {
         # TODO: add random sampling.
     } else {
-        $small_value = 2 * $pi / floor( 2 * $pi / $small_value );
+        my $small_value =
+            ( $bond_parameter_ranges->[0][1] - $bond_parameter_ranges->[0][0] ) /
+            $small_change_count;
         my @small_bond_parameter_values =
             map { $_ * $small_value + $bond_parameter_shift }
-                ( 0..( floor( 2 * $pi / $small_value ) - 1 ) );
+                ( 0..$small_change_count - 1 );
 
-        for my $angle ( @small_bond_parameter_values ) {
-            # TODO: might speed up calculation by eliminating previous elements
-            # from $bond_parameter_ranges array.
+        for my $bond_parameter ( @small_bond_parameter_values ) {
             for my $bond_parameter_range ( @{ $bond_parameter_ranges } ) {
                 $min_value = $bond_parameter_range->[0];
                 $max_value = $bond_parameter_range->[1];
-                if( $angle >= $min_value && $angle <= $max_value ) {
-                    push @bond_parameter_values, $angle;
+                if( $bond_parameter >= $min_value &&
+                    $bond_parameter <= $max_value ) {
+                    push @bond_parameter_values, $bond_parameter;
                     last;
                 } elsif( $min_value == $max_value ) {
                     push @bond_parameter_values, $min_value;
