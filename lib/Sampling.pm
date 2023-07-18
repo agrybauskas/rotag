@@ -20,7 +20,7 @@ our $VERSION = $VERSION;
 # Produces angle values that are separated by even intervals.
 # Input:
 #     $angle_ranges - boundary between which angles can be sampled.
-#     $small_angle - smallest angle increment.
+#     $angle_count - sampling count.
 # Output:
 #     @angles - sampled angles.
 #
@@ -28,17 +28,17 @@ our $VERSION = $VERSION;
 
 sub sample_angles
 {
-    my ( $parameters, $angle_ranges, $small_angle, $angle_phase_shift,
+    my ( $parameters, $angle_ranges, $angle_count, $angle_phase_shift,
          $rand_count ) = @_;
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     $angle_phase_shift //= - $pi;
-    return sample_bond_parameters( $parameters, $angle_ranges, $small_angle,
+    return sample_bond_parameters( $parameters, $angle_ranges, $angle_count,
                                    $angle_phase_shift, $rand_count, 0, 1 );
 }
 
 sub sample_bond_parameters
 {
-    my ( $parameters, $bond_parameter_ranges, $small_change_count,
+    my ( $parameters, $bond_parameter_ranges, $sampling_count,
          $bond_parameter_shift, $rand_count, $inclusive_start,
          $inclusive_end ) = @_;
 
@@ -55,10 +55,10 @@ sub sample_bond_parameters
     } else {
         my $small_value =
             ( $bond_parameter_ranges->[0][1] - $bond_parameter_ranges->[0][0] ) /
-            $small_change_count;
+            $sampling_count;
         my @small_bond_parameter_values =
             map { $_ * $small_value + $bond_parameter_shift }
-                ( 0..$small_change_count - 1 );
+                ( 0..$sampling_count - 1 );
 
         for my $bond_parameter ( @small_bond_parameter_values ) {
             for my $bond_parameter_range ( @{ $bond_parameter_ranges } ) {
