@@ -1,4 +1,7 @@
-site_name: "rotag"
+site_name: ""
+site_favicon: favicon.ico
+extra_css:
+    - css/extra.css
 nav:
     - Home: 'index.md'
     - Installation: 'installation.md'
