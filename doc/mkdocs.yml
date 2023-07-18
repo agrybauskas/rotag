@@ -1,5 +1,7 @@
 site_name: ""
 site_favicon: favicon.ico
+theme:
+    name: material
 extra_css:
     - css/extra.css
 nav:
