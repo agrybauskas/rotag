@@ -1,13 +1,13 @@
 :root {
-    --md-primary-fg-color:        rgb(52, 58, 64);
-    --md-accent-fg-color:         gray;
-    --md-footer-fg-color:         gray;
-    --md-footer-fg-color--light:         rgb(2000, 35, 51);
-    --md-footer-fg-color--lighter:       black;
-    --md-footer-bg-color:                white;
-    --md-footer-bg-color--dark:          white;
+    --md-primary-fg-color:         rgb(52, 58, 64);
+    --md-accent-fg-color:          gray;
+    --md-footer-fg-color:          gray;
+    --md-footer-fg-color--light:   rgb(2000, 35, 51);
+    --md-footer-fg-color--lighter: black;
+    --md-footer-bg-color:          white;
+    --md-footer-bg-color--dark:    white;
 }
 
 .md-header__topic {
-    visibility: hidden;
+    visibility:                    hidden;
 }
