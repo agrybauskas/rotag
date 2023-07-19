@@ -1,6 +1,9 @@
 site_name: ""
 theme:
     name: material
+    features:
+        - navigation.path
+        - toc.integrate
     logo: assets/rotag-logo-dark-bg.svg
     favicon: assets/favicon.ico
     icon:
