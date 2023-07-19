@@ -1,9 +1,9 @@
 site_name: ""
-site_favicon: favicon.ico
 theme:
     name: material
+    favicon: assets/favicon.ico
 extra_css:
-    - css/extra.css
+    - stylesheets/extra.css
 nav:
     - Home: 'index.md'
     - Installation: 'installation.md'
