@@ -58,10 +58,12 @@ sub sample_bond_parameters
         my $small_change =
             ( $max_value - $min_value ) / $updated_sampling_count;
 
-        my $sampling_adjustment =
-            ( ! $inclusive_start ? $small_change : 0 );
-        $sampling_adjustment =
-            ( ! $inclusive_start && ! $inclusive_end ? (1/2) * $small_change : 0 );
+        my $sampling_adjustment = 0;
+        if( ! $inclusive_start && ! $inclusive_end ) {
+            $sampling_adjustment = $small_change / 2;
+        } elsif( ! $inclusive_start ) {
+            $sampling_adjustment = $small_change;
+        }
 
         @bond_parameter_values =
             map { $min_value + $_ * $small_change + $sampling_adjustment +
