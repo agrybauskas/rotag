@@ -16,7 +16,7 @@ $(dirname "$0")/../scripts/calc_favourable_angles \
                ${residue_chain} \
                ${pdbx_model_num} \
                ${residue_alt} \
-	       ${angles} \
-	       ${potential} \
+	           ${angles} \
+	           ${potential} \
                "${interaction_specifier}" \
-	       ${pdbx_dump_file}
+	           ${pdbx_dump_file}
