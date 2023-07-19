@@ -14,7 +14,7 @@ use Sampling qw( sample_bond_parameters );
 my $parameters = Parameters->new();
 my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
-my ( $angle_ranges, $small_change_count, undef, $inclusive_start,
+my ( $angle_ranges, $small_change_count, $inclusive_start,
      $inclusive_end ) = @ARGV;
 
 my @angle_ranges = ( map { [ $_->[0],  $_->[1] ] }
