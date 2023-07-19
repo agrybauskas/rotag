@@ -126,16 +126,18 @@ sub sample_angles_qs_parsing
                                                 $angle_name,
                                                 [ 'range_from', 'step', 'range_to' ] );
 
+            my $angle_count = int( ( $angle_end - $angle_start ) / $angle_step );
+
             if( $in_radians ) {
                 $angles{$residue_name}{$angle_name} =
                     sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
-                                   $angle_step );
+                                   $angle_count );
             } else {
                 $angles{$residue_name}{$angle_name} =
                     sample_angles( $parameters,
                                    [ [ $angle_start * $pi / 180.0,
                                        $angle_end * $pi / 180.0 ] ],
-                                   $angle_step * $pi / 180.0 );
+                                   $angle_count );
             }
         }
     }
@@ -172,16 +174,18 @@ sub sample_angles_qs_parsing
         $angle_step //= $small_angle;
         $angle_end //= 180.0;
 
+        my $angle_count = int( ( $angle_end - $angle_start ) / $angle_step );
+
         if( $in_radians ) {
             $angles{'*'}{$angle_name} =
                 sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
-                               $angle_step );
+                               $angle_count );
         } else {
             $angles{'*'}{$angle_name} =
                 sample_angles( $parameters,
                                [ [ $angle_start * $pi / 180.0,
                                    $angle_end * $pi / 180.0 ] ],
-                               $angle_step * $pi / 180.0 );
+                               $angle_count );
         }
     }
 
