@@ -14,16 +14,16 @@ use Sampling qw( sample_bond_parameters );
 my $parameters = Parameters->new();
 my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 
-my ( $angle_ranges, $small_change_count, $inclusive_start,
-     $inclusive_end ) = @ARGV;
+my ( $angle_ranges, $small_change_count, $inclusive_start, $inclusive_end ) =
+    @ARGV;
 
 my @angle_ranges = ( map { [ $_->[0],  $_->[1] ] }
                      map { [ split( '\.\.', $_ ) ] }
                      split( ',', $angle_ranges ) );
 
 my $sampled_bond_parameters =
-    sample_bond_parameters( $parameters, \@angle_ranges, $small_change_count,
-                            undef, undef, $inclusive_start, $inclusive_end );
+    sample_bond_parameters( \@angle_ranges, $small_change_count, undef,
+                            $inclusive_start, $inclusive_end );
 
 for my $bond_parameter ( @{ $sampled_bond_parameters } ) {
     printf( "$sig_figs_min ", $bond_parameter );

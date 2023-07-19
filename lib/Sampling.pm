@@ -19,57 +19,51 @@ our $VERSION = $VERSION;
 #
 # Produces angle values that are separated by even intervals.
 # Input:
-#     $angle_ranges - boundary between which angles can be sampled.
+#     $parameters - data structure from Parameters.pm;
+#     $angle_ranges - boundary between which angles can be sampled;
 #     $angle_count - sampling count.
 # Output:
-#     @angles - sampled angles.
+#     sampled angles.
 #
 #
 
 sub sample_angles
 {
-    my ( $parameters, $angle_ranges, $angle_count, $angle_phase_shift,
-         $rand_count ) = @_;
+    my ( $parameters, $angle_ranges, $angle_count ) = @_;
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
-    $angle_phase_shift //= - $pi;
-    return sample_bond_parameters( $parameters, $angle_ranges, $angle_count,
-                                   $angle_phase_shift, $rand_count, 0, 1 );
+    return sample_bond_parameters( $angle_ranges, $angle_count, - $pi, 0, 1 );
 }
 
 sub sample_bond_parameters
 {
-    my ( $parameters, $bond_parameter_ranges, $sampling_count,
-         $bond_parameter_shift, $rand_count, $inclusive_start,
-         $inclusive_end ) = @_;
+    my ( $bond_parameter_ranges, $sampling_count, $bond_parameter_shift,
+         $inclusive_start, $inclusive_end ) = @_;
 
     $bond_parameter_shift //= 0;
     $inclusive_start //= 1;
     $inclusive_end //= 1;
 
     my @bond_parameter_values;
-    if( defined $rand_count ) {
-        # TODO: add random sampling.
-    } else {
-        my $min_value = $bond_parameter_ranges->[0][0];
-        my $max_value = $bond_parameter_ranges->[0][1];
 
-        my $updated_sampling_count =
-            $sampling_count + ( $inclusive_start && $inclusive_end ? -1 : 0 );
-        my $small_change =
-            ( $max_value - $min_value ) / $updated_sampling_count;
+    my $min_value = $bond_parameter_ranges->[0][0];
+    my $max_value = $bond_parameter_ranges->[0][1];
 
-        my $sampling_adjustment = 0;
-        if( ! $inclusive_start && ! $inclusive_end ) {
-            $sampling_adjustment = $small_change / 2;
-        } elsif( ! $inclusive_start ) {
-            $sampling_adjustment = $small_change;
-        }
+    my $updated_sampling_count =
+        $sampling_count + ( $inclusive_start && $inclusive_end ? -1 : 0 );
+    my $small_change =
+        ( $max_value - $min_value ) / $updated_sampling_count;
 
-        @bond_parameter_values =
-            map { $min_value + $_ * $small_change + $sampling_adjustment +
-                  $bond_parameter_shift }
-                ( 0..$sampling_count - 1 );
+    my $sampling_adjustment = 0;
+    if( ! $inclusive_start && ! $inclusive_end ) {
+        $sampling_adjustment = $small_change / 2;
+    } elsif( ! $inclusive_start ) {
+        $sampling_adjustment = $small_change;
     }
+
+    @bond_parameter_values =
+        map { $min_value + $_ * $small_change + $sampling_adjustment +
+              $bond_parameter_shift }
+            ( 0..$sampling_count - 1 );
 
     return \@bond_parameter_values;
 }
