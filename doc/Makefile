@@ -1,11 +1,11 @@
 ENV = .venv
 
-all: build | env
+all: build
 
 serve:
 	${ENV}/bin/mkdocs serve
 
-build:
+build: .venv
 	${ENV}/bin/mkdocs build
 
 env: .venv

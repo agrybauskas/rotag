@@ -2,7 +2,6 @@ site_name: "rotag"
 theme:
     name: material
     features:
-        - navigation.path
         - toc.integrate
     logo: assets/rotag-logo-dark-bg.svg
     favicon: assets/favicon.ico
@@ -10,16 +9,22 @@ theme:
         repo: fontawesome/brands/github
 extra_css:
     - stylesheets/extra.css
+extra_javascript:
+    - javascripts/extra.js
 markdown_extensions:
   - pymdownx.highlight:
-      anchor_linenums: true
+        anchor_linenums: true
   - pymdownx.superfences
   - pymdownx.inlinehilite
+  - pymdownx.arithmatex:
+        generic: true
 repo_name: agrybauskas/rotag
 nav:
     - Home: 'index.md'
     - Installation: 'installation.md'
     - Documentation:
+        - Model:
+            - 'Potentials': 'potentials.md'
         - Tutorials:
             - 'Adding hydrogens': 'adding-hydrogens.md'
     - License: 'license.md'
