@@ -1,18 +1,22 @@
+ENV = .venv
+
 all: build
 
 serve:
-	mkdocs serve
+	${ENV}/bin/mkdocs serve
 
 build:
-	mkdocs build
+	${ENV}/bin/mkdocs build
 
 env: .venv
 
 .venv:
-	python3 -m venv .venv
+	python3 -m venv ${ENV}
+	.venv/bin/python3 -m pip install mkdocs
+	.venv/bin/python3 -m pip install mkdocs-material
 
 clean-env:
-	rm -rf .venv
+	rm -rf ${ENV}
 
 clean-site:
 	rm -rf site
