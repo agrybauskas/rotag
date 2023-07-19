@@ -45,6 +45,8 @@ sub sample_bond_parameters
     $bond_parameter_shift //= 0;
     $inclusive_start //= 1;
     $inclusive_end //= 1;
+    $inclusive_start = $inclusive_start < 0 ? 0 : 1;
+    $inclusive_end = $inclusive_end < 0 ? 0 : 1;
 
     my @bond_parameter_values;
     if( defined $rand_count ) {
