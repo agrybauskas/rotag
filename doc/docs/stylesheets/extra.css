@@ -7,3 +7,7 @@
     --md-footer-bg-color:                white;
     --md-footer-bg-color--dark:          white;
 }
+
+.md-header__topic {
+    visibility: hidden;
+}
