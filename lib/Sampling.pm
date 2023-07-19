@@ -31,7 +31,7 @@ sub sample_angles
 {
     my ( $parameters, $angle_ranges, $angle_count ) = @_;
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
-    return sample_bond_parameters( $angle_ranges, $angle_count, - $pi, 1, 0 );
+    return sample_bond_parameters( $angle_ranges, $angle_count, undef, 1, 0 );
 }
 
 #
@@ -81,8 +81,7 @@ sub sample_bond_parameters
     }
 
     @bond_parameter_values =
-        map { $min_value + $_ * $small_change + $sampling_adjustment +
-              $bond_parameter_shift }
+        map { $min_value + $_ * $small_change + $sampling_adjustment }
             ( 0..$sampling_count - 1 );
 
     return \@bond_parameter_values;
