@@ -54,7 +54,7 @@ sub sample_bond_parameters
         my $max_value = $bond_parameter_ranges->[0][1];
 
         my $updated_sampling_count =
-            $sampling_count + ( $inclusive_start || $inclusive_end ? -1 : 0 );
+            $sampling_count + ( $inclusive_start && $inclusive_end ? -1 : 0 );
         my $small_change =
             ( $max_value - $min_value ) / $updated_sampling_count;
 
