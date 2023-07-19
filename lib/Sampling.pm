@@ -47,15 +47,15 @@ sub sample_bond_parameters
     $inclusive_end //= 1;
 
     my @bond_parameter_values;
-    my $min_value = $bond_parameter_ranges->[0][0];
-    my $max_value = $bond_parameter_ranges->[0][1];
 
     if( defined $rand_count ) {
         # TODO: add random sampling.
     } else {
-        my $small_value = ( $max_value - $min_value ) / $sampling_count;
+        my $min_value = $bond_parameter_ranges->[0][0];
+        my $max_value = $bond_parameter_ranges->[0][1];
+        my $small_change = ( $max_value - $min_value ) / $sampling_count;
         @bond_parameter_values =
-            map { $_ * $small_value + $bond_parameter_shift }
+            map { $min_value + $_ * $small_change + $bond_parameter_shift }
                 ( 0..$sampling_count - 1 );
     }
 
