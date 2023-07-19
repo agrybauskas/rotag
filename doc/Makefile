@@ -6,9 +6,15 @@ serve:
 build:
 	mkdocs build
 
-env:
-	python -m venv .venv
+env: .venv
 
-clean:
+.venv:
+	python3 -m venv .venv
+
+clean-env:
 	rm -rf .venv
+
+clean-site:
 	rm -rf site
+
+clean: clean-env clean-site
