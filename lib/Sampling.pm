@@ -39,6 +39,8 @@ sub sample_bond_parameters
     my ( $bond_parameter_ranges, $sampling_count, $bond_parameter_shift,
          $inclusive_start, $inclusive_end ) = @_;
 
+    return [] if ! $sampling_count;
+
     $bond_parameter_shift //= 0;
     $inclusive_start //= 1;
     $inclusive_end //= 1;
@@ -49,7 +51,8 @@ sub sample_bond_parameters
     my $max_value = $bond_parameter_ranges->[0][1];
 
     my $updated_sampling_count =
-        $sampling_count + ( $inclusive_start && $inclusive_end ? -1 : 0 );
+        $sampling_count +
+        ( $inclusive_start && $inclusive_end && $sampling_count > 1 ? -1 : 0 );
     my $small_change =
         ( $max_value - $min_value ) / $updated_sampling_count;
 
