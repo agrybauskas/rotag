@@ -1,6 +1,6 @@
 ENV = .venv
 
-all: build
+all: build | env
 
 serve:
 	${ENV}/bin/mkdocs serve
