@@ -543,14 +543,14 @@ sub calc_favourable_angles
     my ( $args ) = @_;
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $angles, $small_angle, $non_bonded_potential, $bonded_potential,
+         $angles, $angle_count, $non_bonded_potential, $bonded_potential,
          $threads, $rand_count, $rand_seed, $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'angles'},
-        $args->{'small_angle'},
+        $args->{'angle_count'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'threads'},
@@ -562,8 +562,8 @@ sub calc_favourable_angles
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    # TODO: look how separate $angles and $small_angle influence on the function.
-    $small_angle //= 0.1 * 2 * $pi;
+    # TODO: look how separate $angles and $angle_count influence on the function.
+    $angle_count //= 20;
     $rand_seed //= 23;
 
     my $residue_site =
@@ -638,7 +638,7 @@ sub calc_favourable_angles
                     map { [ $_ ] }
                        @{ sample_angles( $parameters,
                                          [ [ 0, 2 * $pi ] ],
-                                         $small_angle ) };
+                                         $angle_count ) };
             }
 
             my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;

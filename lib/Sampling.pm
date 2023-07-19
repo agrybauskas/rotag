@@ -31,7 +31,7 @@ sub sample_angles
 {
     my ( $parameters, $angle_ranges, $angle_count ) = @_;
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
-    return sample_bond_parameters( $angle_ranges, $angle_count, - $pi, 0, 1 );
+    return sample_bond_parameters( $angle_ranges, $angle_count, - $pi, 1, 0 );
 }
 
 #
