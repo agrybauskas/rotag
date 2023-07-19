@@ -34,6 +34,23 @@ sub sample_angles
     return sample_bond_parameters( $angle_ranges, $angle_count, - $pi, 0, 1 );
 }
 
+#
+# Produces bond parameter values that are separated by even intervals.
+# Input:
+#     $bond_parameter_ranges - boundary between which bond parameters can be
+#     sampled;
+#     $sampling_count - sampling count;
+#     $bond_parameter_shift - used when the values have to be moved by certain
+#     value;
+#     $inclusive_start - inclusive range start and related to mathematical
+#     notation (0, 2];
+#     $inclusive_end -
+#     $inclusive_end - inclusive range end and related to mathematical notation
+#     [0, 2).
+# Output:
+#     \@bond_parameter_values - sampled bond parameter values.
+#
+
 sub sample_bond_parameters
 {
     my ( $bond_parameter_ranges, $sampling_count, $bond_parameter_shift,
