@@ -1,4 +1,4 @@
-site_name: ""
+site_name: "rotag"
 theme:
     name: material
     features:
@@ -10,6 +10,10 @@ theme:
         repo: fontawesome/brands/github
 extra_css:
     - stylesheets/extra.css
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
 repo_name: agrybauskas/rotag
 nav:
     - Home: 'index.md'
