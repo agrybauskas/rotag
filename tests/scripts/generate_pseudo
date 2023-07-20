@@ -49,10 +49,10 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     $max_angle =~ s/pi/\$pi/g;
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
-    my $small_angle = # Change of angle in each rotation step.
-        2 * $pi / $num_of_angles{$dihedral_angle};
     $num_angle_values{"$dihedral_angle"} =
-        sample_angles( $parameters, [ [ $min_angle, $max_angle ] ], $small_angle );
+        sample_angles( $parameters,
+                       [ [ $min_angle, $max_angle ] ],
+                       $num_of_angles{$dihedral_angle} );
 }
 
 %{ $atom_site } =

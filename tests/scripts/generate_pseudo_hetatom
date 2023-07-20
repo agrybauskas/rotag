@@ -8,7 +8,7 @@ use BondParameters qw( bendable_angles
                        stretchable_bonds );
 use ForceField::Parameters;
 use PseudoAtoms qw( generate_pseudo );
-use Sampling qw( sample_angles );
+use Sampling qw( sample_bond_parameters );
 use PDBxParser qw( to_pdbx );
 
 #
@@ -57,22 +57,10 @@ for my $bond_parameter ( sort keys %bond_parameter_ranges ) {
     $max_bond_parameter =~ s/pi/\$pi/g;
     $min_bond_parameter = eval( $min_bond_parameter );
     $max_bond_parameter = eval( $max_bond_parameter );
-    my $small_bond_parameter;
-    if( $no_full_range ) {
-        $small_bond_parameter = # Change of parameter in each step.
-            ( $max_bond_parameter - $min_bond_parameter ) /
-            $num_of_bond_parameter_instances{$bond_parameter};
-    } else {
-        $small_bond_parameter = # Change of parameter in each step.
-            2 * $pi / $num_of_bond_parameter_instances{$bond_parameter};
-    }
-    $num_of_bond_parameter_values{"$bond_parameter"} =
-        sample_angles( $parameters,
-                       [ [ $min_bond_parameter, $max_bond_parameter ] ],
-                       $small_bond_parameter,
-                       undef,
-                       undef,
-                       $no_full_range );
+    $num_of_bond_parameter_values{"$bond_parameter"} = sample_bond_parameters(
+        [ [ $min_bond_parameter, $max_bond_parameter ] ],
+        $num_of_bond_parameter_instances{$bond_parameter}
+    );
 }
 
 %{ $atom_site } =
