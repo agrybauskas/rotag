@@ -19,7 +19,6 @@ our $VERSION = $VERSION;
 #
 # Produces angle values that are separated by even intervals.
 # Input:
-#     $parameters - data structure from Parameters.pm;
 #     $angle_ranges - boundary between which angles can be sampled;
 #     $angle_count - sampling count.
 # Output:
@@ -29,9 +28,8 @@ our $VERSION = $VERSION;
 
 sub sample_angles
 {
-    my ( $parameters, $angle_ranges, $angle_count ) = @_;
-    my $pi = $parameters->{'_[local]_constants'}{'pi'};
-    return sample_bond_parameters( $angle_ranges, $angle_count, undef, 1, 0 );
+    my ( $angle_ranges, $angle_count ) = @_;
+    return sample_bond_parameters( $angle_ranges, $angle_count, 1, 0 );
 }
 
 #
@@ -53,12 +51,11 @@ sub sample_angles
 
 sub sample_bond_parameters
 {
-    my ( $bond_parameter_ranges, $sampling_count, $bond_parameter_shift,
-         $inclusive_start, $inclusive_end ) = @_;
+    my ( $bond_parameter_ranges, $sampling_count, $inclusive_start,
+         $inclusive_end ) = @_;
 
     return [] if ! $sampling_count;
 
-    $bond_parameter_shift //= 0;
     $inclusive_start //= 1;
     $inclusive_end //= 1;
 
@@ -129,12 +126,11 @@ sub sample_angles_qs_parsing
 
             if( $in_radians ) {
                 $angles{$residue_name}{$angle_name} =
-                    sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
+                    sample_angles( [ [ $angle_start, $angle_end ] ],
                                    $angle_count );
             } else {
                 $angles{$residue_name}{$angle_name} =
-                    sample_angles( $parameters,
-                                   [ [ $angle_start * $pi / 180.0,
+                    sample_angles( [ [ $angle_start * $pi / 180.0,
                                        $angle_end * $pi / 180.0 ] ],
                                    $angle_count );
             }
@@ -177,12 +173,11 @@ sub sample_angles_qs_parsing
 
         if( $in_radians ) {
             $angles{'*'}{$angle_name} =
-                sample_angles( $parameters, [ [ $angle_start, $angle_end ] ],
+                sample_angles( [ [ $angle_start, $angle_end ] ],
                                $angle_count );
         } else {
             $angles{'*'}{$angle_name} =
-                sample_angles( $parameters,
-                               [ [ $angle_start * $pi / 180.0,
+                sample_angles( [ [ $angle_start * $pi / 180.0,
                                    $angle_end * $pi / 180.0 ] ],
                                $angle_count );
         }

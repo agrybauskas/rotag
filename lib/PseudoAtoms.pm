@@ -636,9 +636,7 @@ sub calc_favourable_angles
             } else {
                 @default_allowed_angles =
                     map { [ $_ ] }
-                       @{ sample_angles( $parameters,
-                                         [ [ 0, 2 * $pi ] ],
-                                         $angle_count ) };
+                       @{ sample_angles( [ [ 0, 2 * $pi ] ], $angle_count ) };
             }
 
             my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
