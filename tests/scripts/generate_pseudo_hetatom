@@ -59,7 +59,9 @@ for my $bond_parameter ( sort keys %bond_parameter_ranges ) {
     $max_bond_parameter = eval( $max_bond_parameter );
     $num_of_bond_parameter_values{"$bond_parameter"} = sample_bond_parameters(
         [ [ $min_bond_parameter, $max_bond_parameter ] ],
-        $num_of_bond_parameter_instances{$bond_parameter}
+        $num_of_bond_parameter_instances{$bond_parameter},
+        1,
+        ! $no_full_range
     );
 }
 
