@@ -6,6 +6,7 @@
     --md-footer-fg-color--lighter: black;
     --md-footer-bg-color:          white;
     --md-footer-bg-color--dark:    white;
+    --md-typeset-a-color:          rgb(2000, 35, 51);
 }
 
 .md-header__topic {
