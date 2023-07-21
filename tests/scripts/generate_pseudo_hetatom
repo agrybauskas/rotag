@@ -13,13 +13,11 @@ use PDBxParser qw( to_pdbx );
 
 #
 # Unit test: PseudoAtoms::generate_pseudo_hetatom,
-# Example: ./generate_pseudo_hetatom 12 "chi1 0,2*pi & CA-CB 0,0.25" "chi1 20 & CA-CB" structure.dump 1
+# Example: ./generate_pseudo_hetatom 12 "chi1 0,2*pi & CA-CB 0,0.25" "chi1 20 & CA-CB" structure.dump "chi1 0"
 #
 
 my ( $atom_id, $bond_parameter_ranges, $num_of_bond_parameter_instances,
-     $pdbx_dump_file, $no_full_range ) = @ARGV;
-
-$no_full_range //= 0;
+     $pdbx_dump_file, $full_range ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -48,6 +46,11 @@ my %num_of_bond_parameter_instances =
       map { [ split( " ", $_ ) ] }
       split( "&", $num_of_bond_parameter_instances ) );
 
+my %full_range =
+    ( map { $_->[0] => $_->[1] }
+      map { [ split( " ", $_ ) ] }
+      split( "&", $full_range ) );
+
 # Calculates angles and lengths that will be modified.
 my %num_of_bond_parameter_values;
 for my $bond_parameter ( sort keys %bond_parameter_ranges ) {
@@ -61,7 +64,8 @@ for my $bond_parameter ( sort keys %bond_parameter_ranges ) {
         [ [ $min_bond_parameter, $max_bond_parameter ] ],
         $num_of_bond_parameter_instances{$bond_parameter},
         1,
-        ! $no_full_range
+        ( %full_range && defined $full_range{$bond_parameter} ?
+          $full_range{$bond_parameter} : 1 ),
     );
 }
 
