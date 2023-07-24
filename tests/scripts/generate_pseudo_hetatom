@@ -19,6 +19,8 @@ use PDBxParser qw( to_pdbx );
 my ( $atom_id, $bond_parameter_ranges, $num_of_bond_parameter_instances,
      $pdbx_dump_file, $full_range ) = @ARGV;
 
+$full_range //= "";
+
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
 while( <$fh> ) {
