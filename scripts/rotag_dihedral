@@ -148,6 +148,7 @@ for my $pdbx_file ( @ARGV ) {
         my $dihedral_angles = collect_dihedral_angles( $dihedral_site );
 
         my $dihedral_id = 1;
+        my %visited_dihedral_angles = ();
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
             my $residue_site =
                 filter_by_unique_residue_key( $dihedral_site,
@@ -161,6 +162,11 @@ for my $pdbx_file ( @ARGV ) {
                 sort keys %{ $dihedral_angles->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $dihedral_angles->{$residue_unique_key}
                                                     {$angle_name}{'atom_ids'} };
+                my $angle_key = join ',', @atom_ids;
+
+                next if $visited_dihedral_angles{$angle_key};
+                $visited_dihedral_angles{$angle_key} = 1;
+
                 push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                     { 'id' => $dihedral_id,
                       'label_comp_id' => $residue_name,
