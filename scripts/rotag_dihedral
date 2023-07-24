@@ -150,14 +150,6 @@ for my $pdbx_file ( @ARGV ) {
         my $dihedral_id = 1;
         my %visited_dihedral_angles = ();
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
-            my $residue_site =
-                filter_by_unique_residue_key( $dihedral_site,
-                                              $residue_unique_key );
-            my ( $residue_id ) = keys %{ $residue_site };
-            my ( $label_seq_id, $chain_id, $model_id, $alt_id ) =
-                split( /,/sxm, $residue_unique_key ),
-            my $residue_name = $residue_site->{$residue_id}{'label_comp_id'};
-
             for my $angle_name (
                 sort keys %{ $dihedral_angles->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $dihedral_angles->{$residue_unique_key}
@@ -169,11 +161,16 @@ for my $pdbx_file ( @ARGV ) {
 
                 push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                     { 'id' => $dihedral_id,
-                      'label_comp_id' => $residue_name,
-                      'label_seq_id' => $label_seq_id,
-                      'label_asym_id' => $chain_id,
-                      'pdbx_PDB_model_num' => $model_id,
-                      'label_alt_id' => $alt_id,
+                      'label_comp_id' =>
+                          $dihedral_site->{$atom_ids[2]}{'label_comp_id'},
+                      'label_seq_id' =>
+                          $dihedral_site->{$atom_ids[2]}{'label_seq_id'},
+                      'label_asym_id' =>
+                          $dihedral_site->{$atom_ids[2]}{'label_asym_id'},
+                      'pdbx_PDB_model_num' =>
+                          $dihedral_site->{$atom_ids[2]}{'pdbx_PDB_model_num'},
+                      'label_alt_id' =>
+                          $dihedral_site->{$atom_ids[2]}{'label_alt_id'},
                       'atom_1_id' => $atom_ids[0],
                       'label_atom_1_id' =>
                           $dihedral_site->{$atom_ids[0]}{'label_atom_id'},
