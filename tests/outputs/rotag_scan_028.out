@@ -36,44 +36,42 @@ _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 _[local]_rotamer_angle.units
-1 1 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-2 1 219 ASP A 1 . 0.052632 chi2 -90.000 degrees
-3 2 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-4 2 219 ASP A 1 . 0.052632 chi2 -80.000 degrees
-5 3 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-6 3 219 ASP A 1 . 0.052632 chi2 -70.000 degrees
-7 4 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-8 4 219 ASP A 1 . 0.052632 chi2 -60.000 degrees
-9 5 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-10 5 219 ASP A 1 . 0.052632 chi2 -50.000 degrees
-11 6 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-12 6 219 ASP A 1 . 0.052632 chi2 -40.000 degrees
-13 7 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-14 7 219 ASP A 1 . 0.052632 chi2 -30.000 degrees
-15 8 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-16 8 219 ASP A 1 . 0.052632 chi2 -20.000 degrees
-17 9 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-18 9 219 ASP A 1 . 0.052632 chi2 -10.000 degrees
-19 10 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-20 10 219 ASP A 1 . 0.052632 chi2 0.000 degrees
-21 11 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-22 11 219 ASP A 1 . 0.052632 chi2 10.000 degrees
-23 12 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-24 12 219 ASP A 1 . 0.052632 chi2 20.000 degrees
-25 13 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-26 13 219 ASP A 1 . 0.052632 chi2 30.000 degrees
-27 14 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-28 14 219 ASP A 1 . 0.052632 chi2 40.000 degrees
-29 15 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-30 15 219 ASP A 1 . 0.052632 chi2 50.000 degrees
-31 16 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-32 16 219 ASP A 1 . 0.052632 chi2 60.000 degrees
-33 17 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-34 17 219 ASP A 1 . 0.052632 chi2 70.000 degrees
-35 18 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-36 18 219 ASP A 1 . 0.052632 chi2 80.000 degrees
-37 19 219 ASP A 1 . 0.052632 chi1 60.000 degrees
-38 19 219 ASP A 1 . 0.052632 chi2 90.000 degrees
+1 1 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+2 1 219 ASP A 1 . 0.055556 chi2 -90.000 degrees
+3 2 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+4 2 219 ASP A 1 . 0.055556 chi2 -80.000 degrees
+5 3 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+6 3 219 ASP A 1 . 0.055556 chi2 -70.000 degrees
+7 4 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+8 4 219 ASP A 1 . 0.055556 chi2 -60.000 degrees
+9 5 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+10 5 219 ASP A 1 . 0.055556 chi2 -50.000 degrees
+11 6 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+12 6 219 ASP A 1 . 0.055556 chi2 -40.000 degrees
+13 7 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+14 7 219 ASP A 1 . 0.055556 chi2 -30.000 degrees
+15 8 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+16 8 219 ASP A 1 . 0.055556 chi2 -20.000 degrees
+17 9 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+18 9 219 ASP A 1 . 0.055556 chi2 -10.000 degrees
+19 10 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+20 10 219 ASP A 1 . 0.055556 chi2 0.000 degrees
+21 11 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+22 11 219 ASP A 1 . 0.055556 chi2 10.000 degrees
+23 12 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+24 12 219 ASP A 1 . 0.055556 chi2 20.000 degrees
+25 13 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+26 13 219 ASP A 1 . 0.055556 chi2 30.000 degrees
+27 14 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+28 14 219 ASP A 1 . 0.055556 chi2 40.000 degrees
+29 15 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+30 15 219 ASP A 1 . 0.055556 chi2 50.000 degrees
+31 16 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+32 16 219 ASP A 1 . 0.055556 chi2 60.000 degrees
+33 17 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+34 17 219 ASP A 1 . 0.055556 chi2 70.000 degrees
+35 18 219 ASP A 1 . 0.055556 chi1 60.000 degrees
+36 18 219 ASP A 1 . 0.055556 chi2 80.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
@@ -98,5 +96,4 @@ _[local]_rotamer_energy.value
 16 16 composite 0.081517
 17 17 composite 0.083379
 18 18 composite 0.085938
-19 19 composite 0.088957
 #
