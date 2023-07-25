@@ -366,8 +366,8 @@ sub connect_hetatoms
     }
 
     # If hetatoms have no explicit connection, then they are connected to
-    # appropriate application.
-    return if ! $do_bond_stretching && ! $do_angle_bending && !$do_bond_rotation;
+    # appropriate application else -- does not continue.
+    return if %connected_hetatoms;
 
     my $interaction_distance =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
