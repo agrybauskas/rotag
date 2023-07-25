@@ -159,18 +159,28 @@ for my $pdbx_file ( @ARGV ) {
                 next if $visited_dihedral_angles{$angle_key};
                 $visited_dihedral_angles{$angle_key} = 1;
 
+                # The destinction between main-chain and side-chain dihedral
+                # angles is that different from side-chain, main-chain dihedral
+                # angles span multiple residues. So, it has to be dealt with.
+                # HACK: for now, only 'alt_id' is checked.
+                my $residue_atom_id =
+                    scalar( uniq map { $dihedral_site->{$_}{'label_alt_id'} }
+                                     @atom_ids ) > 1 ?
+                    $atom_ids[3] :
+                    $atom_ids[2];
+
                 push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                     { 'id' => $dihedral_id,
                       'label_comp_id' =>
-                          $dihedral_site->{$atom_ids[2]}{'label_comp_id'},
+                          $dihedral_site->{$residue_atom_id}{'label_comp_id'},
                       'label_seq_id' =>
-                          $dihedral_site->{$atom_ids[2]}{'label_seq_id'},
+                          $dihedral_site->{$residue_atom_id}{'label_seq_id'},
                       'label_asym_id' =>
-                          $dihedral_site->{$atom_ids[2]}{'label_asym_id'},
+                          $dihedral_site->{$residue_atom_id}{'label_asym_id'},
                       'pdbx_PDB_model_num' =>
-                          $dihedral_site->{$atom_ids[2]}{'pdbx_PDB_model_num'},
+                          $dihedral_site->{$residue_atom_id}{'pdbx_PDB_model_num'},
                       'label_alt_id' =>
-                          $dihedral_site->{$atom_ids[2]}{'label_alt_id'},
+                          $dihedral_site->{$residue_atom_id}{'label_alt_id'},
                       'atom_1_id' => $atom_ids[0],
                       'label_atom_1_id' =>
                           $dihedral_site->{$atom_ids[0]}{'label_atom_id'},
