@@ -1,4 +1,7 @@
+# Project information.
 site_name: "rotag"
+
+# Theme and style.
 theme:
     name: material
     features:
@@ -9,6 +12,8 @@ theme:
         repo: fontawesome/brands/github
 extra_css:
     - stylesheets/extra.css
+
+# Extra functionality.
 extra_javascript:
     - javascripts/extra.js
     - https://polyfill.io/v3/polyfill.min.js?features=es6
@@ -20,7 +25,12 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.arithmatex:
         generic: true
+
+# Repository information.
 repo_name: agrybauskas/rotag
+repo_url: https://github.com/agrybauskas/rotag
+
+# Navigation.
 nav:
     - Home: 'index.md'
     - Installation: 'installation.md'
