@@ -288,7 +288,6 @@ sub connect_hetatoms
         $options->{'do_bond_stretching'},
         $options->{'do_angle_bending'},
         $options->{'do_bond_rotation'},
-
     );
 
     $do_bond_stretching //= 0;
