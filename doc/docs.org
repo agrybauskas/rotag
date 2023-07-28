@@ -1,0 +1,120 @@
+* Site
+
+** Config
+
+#+BEGIN_SRC yaml :tangle mkdocs.yml
+# Project information.
+site_name: "rotag"
+
+# Theme and style.
+theme:
+    name: material
+    features:
+        - toc.integrate
+    logo: assets/rotag-logo-dark-bg.svg
+    favicon: assets/favicon.ico
+    icon:
+        repo: fontawesome/brands/github
+extra_css:
+    - stylesheets/extra.css
+
+# Extra functionality.
+extra_javascript:
+    - javascripts/extra.js
+    - https://polyfill.io/v3/polyfill.min.js?features=es6
+    - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+markdown_extensions:
+  - pymdownx.highlight:
+        anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.arithmatex:
+        generic: true
+
+# Repository information.
+repo_name: agrybauskas/rotag
+repo_url: https://github.com/agrybauskas/rotag
+
+# Navigation.
+nav:
+    - Home: 'index.md'
+    - Installation: 'installation.md'
+    - Documentation:
+        - Model:
+            - 'Potentials': 'potentials.md'
+        - Tutorials:
+            - 'Adding hydrogens': 'adding-hydrogens.md'
+    - License: 'license.md'
+    - Citing: 'citing.md'
+#+END_SRC
+
+** Body
+
+*** Home
+
+#+BEGIN_SRC markdown :tangle docs/index.md
+***rotag*** – a collection of tools that generate and analyse side-chain rotamer libraries from protein structure data.
+#+END_SRC
+
+*** Installation
+
+#+BEGIN_SRC markdown :tangle docs/installation.md
+## Dependencies
+
+Dependencies have to be met before starting the installation. Some of the
+installation scripts for specific Linux distributions are provided.
+
+```bash
+bash dependencies/Ubuntu-22.04/install.sh
+```
+
+## Installation
+In order to build rotag, the following commands have to be executed in the
+top rotag directory.
+
+```bash
+make
+```
+
+After the installation, the environment has to be set. The commands can be placed
+in `~/.bashrc` file.
+
+```bash
+ROTAG_SRC=~/src/rotag
+export PERL5LIB=${ROTAG_SRC}/lib:${PERL5LIB}
+export PATH=${ROTAG_SRC}/scripts:${PATH}
+```
+
+It is recommended to perform tests before using rotag tools.
+
+```
+make test
+```
+#+END_SRC
+
+*** Documentation
+
+#+BEGIN_SRC markdown :tangle docs/potentials.md
+## Composite
+
+$$
+E_\text{Total} = \sum_{i} \sum_{j \neq i} Q_{ij} (w_{1} E^{LJ}_{ij} + w_{2}  E^{C}_{ij} + w_{3}  E^{H}_{ij}) + \sum_\text{d} w_{4}  E^{T}_{d}
+$$
+#+END_SRC
+
+#+BEGIN_SRC markdown :tangle docs/adding-hydrogens.md
+
+#+END_SRC
+*** License
+
+#+BEGIN_SRC markdown :tangle docs/license.md
+***rotag*** is licensed under [**LGPL-3**](https://opensource.org/license/lgpl-3-0/) free software license.
+#+END_SRC
+
+*** Citing
+
+#+BEGIN_SRC markdown :tangle docs/citing.md
+If you use ***rotag*** in your research, please cite:
+
+\* Algirdas Grybauskas, Saulius Gražulis, Building protein structure-specific rotamer libraries, Bioinformatics, Volume 39, Issue 7, July 2023, btad429. DOI: [https://doi.org/10.1093/bioinformatics/btad429](https://doi.org/10.1093/bioinformatics/btad429)
+#+END_SRC
