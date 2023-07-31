@@ -403,24 +403,28 @@ sub connect_hetatoms
 #     $atom_site - atom data structure.
 #     $first_atom_id_list - first atom id list.
 #     $second_atom_id_list - second atom id list.
+#     $options->{'connection_type'} - connection type
+#     (connections|connections_hetatom).
 # Output:
 #     none - connects atoms by adding "connection" key and values to atom site
 #     data structure.
 
 sub connect_atoms_explicitly
 {
-    my ( $atom_site, $first_atom_id_list, $second_atom_id_list ) = @_;
+    my ( $atom_site, $first_atom_id_list, $second_atom_id_list, $options ) = @_;
+    my ( $connection_type ) = ( $options->{'connection_type'} );
 
     for my $first_atom_id ( @{ $first_atom_id_list } ) {
         my $first_atom_group_PDB = $atom_site->{$first_atom_id}{'group_PDB'};
         for my $second_atom_id ( @{ $second_atom_id_list } ) {
             my $second_atom_group_PDB =
                 $atom_site->{$second_atom_id}{'group_PDB'};
-            my $connection_type = 'connections';
-            if( $first_atom_group_PDB eq 'HETATM' ||
-                $second_atom_group_PDB eq 'HETATM' ) {
+            if( ( $first_atom_group_PDB eq 'HETATM' ||
+                  $second_atom_group_PDB eq 'HETATM' ) &&
+                ! defined $connection_type ) {
                 $connection_type = 'connections_hetatom'
             }
+            $connection_type //= 'connections';
             push @{ $atom_site->{$first_atom_id}{$connection_type} },
                 "$second_atom_id";
             push @{ $atom_site->{$second_atom_id}{$connection_type} },
