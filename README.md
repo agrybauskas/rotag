@@ -1,6 +1,6 @@
 # rotag
 
-rotag &ndash; a collection of tools that generate and analyse side-chain rotamer
+*rotag* &ndash; a collection of tools that generate and analyse side-chain rotamer
 libraries from protein structure data.
 
 ## Dependencies
@@ -13,8 +13,8 @@ bash dependencies/Ubuntu-20.04/install.sh
 ```
 
 ## Installation
-In order to build rotag, the following commands have to be executed in the
-top rotag directory.
+In order to build *rotag*, the following commands have to be executed in the
+top *rotag* directory.
 
 ```bash
 make
@@ -29,7 +29,7 @@ export PERL5LIB=${ROTAG_SRC}/lib:${PERL5LIB}
 export PATH=${ROTAG_SRC}/scripts:${PATH}
 ```
 
-It is recommended to perform tests before using rotag tools.
+It is recommended to perform tests before using *rotag* tools.
 
 ```
 make test
@@ -86,3 +86,8 @@ rotag_select -t 'resid 20 && chain A' -s 'target around 5' -k tests/inputs/4dhw.
 ```
 
 For more detailed information about scripts, each script has ```--help``` argument.
+
+## Citing
+
+If you use *rotag* in your research, please cite:
+* Algirdas Grybauskas, Saulius Gražulis, Building protein structure-specific rotamer libraries, Bioinformatics, Volume 39, Issue 7, July 2023, btad429. DOI: https://doi.org/10.1093/bioinformatics/btad429
