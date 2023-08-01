@@ -139,7 +139,8 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         connect_atoms( $parameters, $dihedral_site );
-        connect_hetatoms( $parameters, $dihedral_site ) if $calc_hetatoms;
+        connect_hetatoms( $parameters, $dihedral_site,
+                          { 'do_bond_rotation' => 1 } ) if $calc_hetatoms;
         hybridization( $parameters, $dihedral_site );
 
         rotatable_bonds( $parameters, $dihedral_site,

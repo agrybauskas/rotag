@@ -395,36 +395,12 @@ sub connect_hetatoms
 
         next if ! %{ $around_site };
 
-        # Connects heteroatoms with CA.
+        # Connects heteroatoms with CA as default.
         connect_atoms_explicitly(
             $atom_site,
             [ $hetatom_id ],
             [ keys %{ $around_site } ]
         );
-
-        next if ! $do_bond_rotation;
-
-        for my $around_atom_id ( keys %{ $around_site } ) {
-            # TODO: check when this condition fails.
-            next if defined $atom_site->{$around_atom_id}{'connection_hetatom'} &&
-                @{ $atom_site->{$around_atom_id}{'connection_hetatom'} };
-
-            my $around_unique_residue_key =
-                unique_residue_key( $around_site->{$around_atom_id} );
-            my ( $around_c_atom_id ) =
-                @{ filter_new( filter_by_unique_residue_key( $atom_site,
-                                                             $around_unique_residue_key ),
-                               { 'include' => { 'label_atom_id' => [ 'C' ] },
-                                 'return_data' => 'id' } ) };
-
-            # TODO: should be moved so, the hetatom connection would be removed.
-            connect_atoms_explicitly(
-                $atom_site,
-                [ $around_atom_id ],
-                [ $around_c_atom_id ],
-                { 'connection_type' => 'connections_hetatom' }
-            );
-        }
     }
 
     return;
