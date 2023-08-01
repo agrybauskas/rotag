@@ -390,9 +390,22 @@ sub connect_hetatoms
                              { 'id' => [ $hetatom_id ] },
                              $interaction_distance );
 
-        connect_atoms_explicitly( $atom_site,
-                                  [ $hetatom_id ],
-                                  [ keys %{ $around_site } ] );
+        next if ! %{ $around_site };
+
+        # Connects heteroatoms with CA.
+        connect_atoms_explicitly(
+            $atom_site,
+            [ $hetatom_id ],
+            [ keys %{ $around_site } ]
+        );
+
+        # Creates linkage/pseudo connection between N and C.
+        connect_atoms_explicitly(
+            $atom_site,
+            [ $hetatom_id ],
+            [ ],
+            { 'connection_type' => 'connections_hetatom' }
+        );
     }
 
     return;
