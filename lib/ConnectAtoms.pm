@@ -22,6 +22,7 @@ use Grid qw( identify_neighbour_cells
 use Measure qw( around_distance
                 distance_squared );
 use PDBxParser qw( filter
+                   filter_by_unique_residue_key
                    filter_new
                    split_by
                    unique_residue_key );
@@ -384,13 +385,6 @@ sub connect_hetatoms
 
     return if ! %{ $hetatom_site };
 
-    # connect_atoms_explicitly(
-    #     $atom_site,
-    #     [ $hetatom_id ],
-    #     [ ],
-    #     { 'connection_type' => 'connections_hetatom' }
-    # );
-
     for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
         my $around_site =
             around_distance( $parameters,
@@ -400,6 +394,27 @@ sub connect_hetatoms
                              $interaction_distance );
 
         next if ! %{ $around_site };
+
+        for my $around_atom_id ( keys %{ $around_site } ) {
+            # TODO: check when this condition fails.
+            next if defined $atom_site->{$around_atom_id}{'connection_hetatom'} &&
+                @{ $atom_site->{$around_atom_id}{'connection_hetatom'} };
+
+            my $around_unique_residue_key =
+                unique_residue_key( $around_site->{$around_atom_id} );
+            my ( $around_c_atom_id ) =
+                @{ filter_new( filter_by_unique_residue_key( $atom_site,
+                                                             $around_unique_residue_key ),
+                               { 'include' => { 'label_atom_id' => [ 'C' ] },
+                                 'return_data' => 'id' } ) };
+
+            connect_atoms_explicitly(
+                $atom_site,
+                [ $around_atom_id ],
+                [ $around_c_atom_id ],
+                { 'connection_type' => 'connections_hetatom' }
+            );
+        }
 
         # Connects heteroatoms with CA.
         connect_atoms_explicitly(
