@@ -417,6 +417,7 @@ sub connect_hetatoms
                                { 'include' => { 'label_atom_id' => [ 'C' ] },
                                  'return_data' => 'id' } ) };
 
+            # TODO: should be moved so, the hetatom connection would be removed.
             connect_atoms_explicitly(
                 $atom_site,
                 [ $around_atom_id ],
