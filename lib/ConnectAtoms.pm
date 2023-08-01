@@ -382,6 +382,15 @@ sub connect_hetatoms
                     { 'include' => { 'label_comp_id' => $hetatom_names },
                       'exclude' => { 'id' => [ keys %connected_hetatoms ] } } );
 
+    return if ! %{ $hetatom_site };
+
+    # connect_atoms_explicitly(
+    #     $atom_site,
+    #     [ $hetatom_id ],
+    #     [ ],
+    #     { 'connection_type' => 'connections_hetatom' }
+    # );
+
     for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
         my $around_site =
             around_distance( $parameters,
@@ -397,14 +406,6 @@ sub connect_hetatoms
             $atom_site,
             [ $hetatom_id ],
             [ keys %{ $around_site } ]
-        );
-
-        # Creates linkage/pseudo connection between N and C.
-        connect_atoms_explicitly(
-            $atom_site,
-            [ $hetatom_id ],
-            [ ],
-            { 'connection_type' => 'connections_hetatom' }
         );
     }
 
