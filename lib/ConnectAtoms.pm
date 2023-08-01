@@ -395,6 +395,15 @@ sub connect_hetatoms
 
         next if ! %{ $around_site };
 
+        # Connects heteroatoms with CA.
+        connect_atoms_explicitly(
+            $atom_site,
+            [ $hetatom_id ],
+            [ keys %{ $around_site } ]
+        );
+
+        next if ! $do_bond_rotation;
+
         for my $around_atom_id ( keys %{ $around_site } ) {
             # TODO: check when this condition fails.
             next if defined $atom_site->{$around_atom_id}{'connection_hetatom'} &&
@@ -415,13 +424,6 @@ sub connect_hetatoms
                 { 'connection_type' => 'connections_hetatom' }
             );
         }
-
-        # Connects heteroatoms with CA.
-        connect_atoms_explicitly(
-            $atom_site,
-            [ $hetatom_id ],
-            [ keys %{ $around_site } ]
-        );
     }
 
     return;
