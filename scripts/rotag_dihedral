@@ -15,7 +15,7 @@ use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      connect_hetatoms
-                     disconnect_hetatoms );
+                     disconnect_atoms_explicitly );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -152,7 +152,6 @@ for my $pdbx_file ( @ARGV ) {
                             { 'include' => { 'label_atom_id' => [ 'N' ] },
                               'return_data' => 'id' } );
             for my $n_atom_id ( @{ $n_atom_ids } ) {
-
             }
         }
 

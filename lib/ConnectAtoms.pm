@@ -8,7 +8,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( connect_atoms
                      connect_hetatoms
                      connect_atoms_explicitly
-                     disconnect_hetatoms
+                     disconnect_atoms_explicitly
                      is_connected
                      is_neighbour
                      is_second_neighbour );
@@ -407,11 +407,6 @@ sub connect_hetatoms
     return;
 }
 
-sub disconnect_hetatoms
-{
-
-}
-
 # Adds connections explicitly.
 # Input:
 #     $atom_site - atom data structure.
@@ -447,6 +442,23 @@ sub connect_atoms_explicitly
     }
 
     return;
+}
+
+# Removes connections explicitly.
+# Input:
+#     $atom_site - atom data structure.
+#     $first_atom_id_list - first atom id list.
+#     $second_atom_id_list - second atom id list.
+#     $options->{'connection_type'} - connection type
+#     (connections|connections_hetatom).
+# Output:
+#     none - removes connections between atoms by removing "connection" key and
+#     values to atom site data structure.
+
+sub disconnect_atoms_explicitly
+{
+    my ( $atom_site, $first_atom_id_list, $second_atom_id_list, $options ) = @_;
+    my ( $connection_type ) = ( $options->{'connection_type'} );
 }
 
 # Returns original atom id.
