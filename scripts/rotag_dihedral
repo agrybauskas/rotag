@@ -21,6 +21,7 @@ use Logging qw( error
                 warning );
 use Measure qw( dihedral_angle );
 use PDBxParser qw( filter
+                   filter_new
                    filter_by_unique_residue_key
                    mark_selection
                    obtain_pdbx_data
@@ -143,6 +144,17 @@ for my $pdbx_file ( @ARGV ) {
         connect_hetatoms( $parameters, $dihedral_site,
                           { 'do_bond_rotation' => 1 } ) if $calc_hetatoms;
         hybridization( $parameters, $dihedral_site );
+
+        # Connecting N and C for heteroatom calculations.
+        if( $calc_hetatoms ) {
+            my $n_atom_ids =
+                filter_new( $dihedral_site,
+                            { 'include' => { 'label_atom_id' => [ 'N' ] },
+                              'return_data' => 'id' } );
+            for my $n_atom_id ( @{ $n_atom_ids } ) {
+
+            }
+        }
 
         rotatable_bonds( $parameters, $dihedral_site,
                          { 'include_mainchain' => $calc_mainchain,
