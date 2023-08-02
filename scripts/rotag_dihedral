@@ -14,7 +14,8 @@ use BondParameters qw( collect_dihedral_angles
 use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
-                     connect_hetatoms );
+                     connect_hetatoms
+                     disconnect_hetatoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -147,6 +148,8 @@ for my $pdbx_file ( @ARGV ) {
                          { 'include_mainchain' => $calc_mainchain,
                            'include_hetatoms' => $calc_hetatoms } );
         my $dihedral_angles = collect_dihedral_angles( $dihedral_site );
+
+        disconnect_hetatoms( $dihedral_site ) if $calc_hetatoms;
 
         my $dihedral_id = 1;
         my %visited_dihedral_angles = ();

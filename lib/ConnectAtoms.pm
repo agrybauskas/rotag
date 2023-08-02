@@ -8,6 +8,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( connect_atoms
                      connect_hetatoms
                      connect_atoms_explicitly
+                     disconnect_hetatoms
                      is_connected
                      is_neighbour
                      is_second_neighbour );
@@ -404,6 +405,11 @@ sub connect_hetatoms
     }
 
     return;
+}
+
+sub disconnect_hetatoms
+{
+
 }
 
 # Adds connections explicitly.
