@@ -466,12 +466,13 @@ sub disconnect_atoms_explicitly
             ! defined $atom_site->{$atom_id}{$connection_type};
 
         for my $connection_id ( @{ $atom_site->{$atom_id}{$connection_type} } ) {
-            for my $connection_idx ( 0..$#{ $atom_site->{$connection_id}{$connection_type} } ) {
-                if( $atom_id eq $atom_site->{$connection_id}{$connection_type}[$connection_idx] ) {
-                    delete $atom_site->{$connection_id}{$connection_type}[$connection_idx];
-                    last;
-                }
-            }
+            next if ! defined $atom_site->{$connection_id} ||
+                ! defined $atom_site->{$connection_id}{$connection_type};
+
+            $atom_site->{$connection_id}{$connection_type} = [
+                grep { ! $atom_id eq $_  }
+                    @{  $atom_site->{$connection_id}{$connection_type} }
+            ]
         }
 
         delete $atom_site->{$atom_id}{$connection_type};
