@@ -447,8 +447,7 @@ sub connect_atoms_explicitly
 # Removes connections explicitly.
 # Input:
 #     $atom_site - atom data structure.
-#     $first_atom_id_list - first atom id list.
-#     $second_atom_id_list - second atom id list.
+#     $atom_id_list - first atom id list.
 #     $options->{'connection_type'} - connection type
 #     (connections|connections_hetatom).
 # Output:
@@ -457,8 +456,20 @@ sub connect_atoms_explicitly
 
 sub disconnect_atoms_explicitly
 {
-    my ( $atom_site, $first_atom_id_list, $second_atom_id_list, $options ) = @_;
+    my ( $atom_site, $atom_id_list, $options ) = @_;
     my ( $connection_type ) = ( $options->{'connection_type'} );
+
+    $connection_type //= 'connection';
+
+    for my $atom_id ( @{ $atom_id_list } ) {
+        my @updated_connections = ();
+
+        next if ! defined $atom_site->{$atom_id} ||
+            ! defined $atom_site->{$atom_id}{$connection_type};
+
+        for my $connection_id ( @{ $atom_site->{$atom_id}{$connection_type} } ) {
+        }
+    }
 }
 
 # Returns original atom id.
