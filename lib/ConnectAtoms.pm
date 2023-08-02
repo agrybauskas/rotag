@@ -465,10 +465,19 @@ sub disconnect_atoms_explicitly
         next if ! defined $atom_site->{$atom_id} ||
             ! defined $atom_site->{$atom_id}{$connection_type};
 
-        for my $connection_idx ( 0..$#{ $atom_site->{$atom_id}{$connection_type} } ) {
-
+        for my $connection_id ( @{ $atom_site->{$atom_id}{$connection_type} } ) {
+            for my $connection_idx ( 0.. $#{ $atom_site->{$_}{$connection_type} } ) {
+                if( $atom_id eq $atom_site->{$_}{$connection_type}[$connection_idx] ) {
+                    delete $atom_site->{$_}{$connection_type}[$connection_idx];
+                    last;
+                }
+            }
         }
+
+        delete $atom_site->{$atom_id}{$connection_type};
     }
+
+    return;
 }
 
 # Returns original atom id.
