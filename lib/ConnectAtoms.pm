@@ -465,9 +465,7 @@ sub disconnect_atoms_explicitly
         next if ! defined $atom_site->{$atom_id} ||
             ! defined $atom_site->{$atom_id}{$connection_type};
 
-        my @from_updated_connections = ();
-        my @to_updated_connections = ();
-        for my $connection_id ( @{ $atom_site->{$atom_id}{$connection_type} } ) {
+        for my $connection_idx ( 0..$#{ $atom_site->{$atom_id}{$connection_type} } ) {
 
         }
     }

@@ -146,6 +146,7 @@ for my $pdbx_file ( @ARGV ) {
         hybridization( $parameters, $dihedral_site );
 
         # Connecting N and C for heteroatom calculations.
+        my @disconnect_atom_ids = ();
         if( $calc_hetatoms ) {
             my $n_atom_ids =
                 filter_new( $dihedral_site,
@@ -160,7 +161,10 @@ for my $pdbx_file ( @ARGV ) {
                            'include_hetatoms' => $calc_hetatoms } );
         my $dihedral_angles = collect_dihedral_angles( $dihedral_site );
 
-        disconnect_hetatoms( $dihedral_site ) if $calc_hetatoms;
+        disconnect_atoms_explicitly( $dihedral_site,
+                                     \@disconnect_atom_ids,
+                                     { 'connection_type' => 'connection_hetatoms' } )
+            if $calc_hetatoms;
 
         my $dihedral_id = 1;
         my %visited_dihedral_angles = ();
