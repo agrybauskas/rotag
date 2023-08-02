@@ -459,16 +459,16 @@ sub disconnect_atoms_explicitly
     my ( $atom_site, $atom_id_list, $options ) = @_;
     my ( $connection_type ) = ( $options->{'connection_type'} );
 
-    $connection_type //= 'connection';
+    $connection_type //= 'connections';
 
     for my $atom_id ( @{ $atom_id_list } ) {
         next if ! defined $atom_site->{$atom_id} ||
             ! defined $atom_site->{$atom_id}{$connection_type};
 
         for my $connection_id ( @{ $atom_site->{$atom_id}{$connection_type} } ) {
-            for my $connection_idx ( 0.. $#{ $atom_site->{$_}{$connection_type} } ) {
-                if( $atom_id eq $atom_site->{$_}{$connection_type}[$connection_idx] ) {
-                    delete $atom_site->{$_}{$connection_type}[$connection_idx];
+            for my $connection_idx ( 0..$#{ $atom_site->{$connection_id}{$connection_type} } ) {
+                if( $atom_id eq $atom_site->{$connection_id}{$connection_type}[$connection_idx] ) {
+                    delete $atom_site->{$connection_id}{$connection_type}[$connection_idx];
                     last;
                 }
             }
