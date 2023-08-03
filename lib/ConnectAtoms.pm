@@ -375,9 +375,7 @@ sub connect_hetatoms
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
     my $interaction_atom_site =
         filter_new( $atom_site,
-                    { 'include' => { 'label_atom_id' =>
-                                         ( $do_bond_rotation ?
-                                           [ 'N' ] : [ 'CA' ] ) } } );
+                    { 'include' => { 'label_atom_id' => [ 'CA' ] } } );
 
     my $hetatom_site =
         filter_new( $atom_site,
