@@ -3,6 +3,8 @@ package BondPath;
 use strict;
 use warnings;
 
+use Clone qw( clone );
+
 use AtomProperties qw( sort_atom_ids_by_name
                        sort_by_unique_residue_key );
 use PDBxParser qw( filter_new );
@@ -96,7 +98,7 @@ sub new
 
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 
-        my $atom_connections = $atom_site->{$atom_id}{'connections'};
+        my $atom_connections = clone $atom_site->{$atom_id}{'connections'};
         if( $include_hetatoms &&
             defined $atom_site->{$atom_id}{'connections_hetatom'} ){
             push @{ $atom_connections },
