@@ -28,7 +28,7 @@ our $VERSION = $VERSION;
 #*    predict side-chain positions.
 #*
 #*Usage:
-#*    rotag_add --side-chains input.cif > output.cif
+#*    rotag_predict --side-chains input.cif > output.cif
 #*
 #*Options:
 #*    -S, --side-chains
