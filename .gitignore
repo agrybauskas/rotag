@@ -1,6 +1,3 @@
-# /lib/ForceField/
-/lib/ForceField/
-
 # /lib/Grammar/
 /lib/Grammar/*.pm
 
@@ -10,4 +7,3 @@
 
 # /tests/outputs/
 /tests/outputs/*.diff
-/tests/outputs/*.jmol
