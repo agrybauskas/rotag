@@ -1,3 +1,13 @@
+rotag (0.1.2)
+
+  * Added a capability to control the angle step size and range while scanning
+    rotamer dihedral angles.
+
+rotag (0.1.1)
+
+  * Added check on presence of mandatory residue atoms for rotamer scanning
+    calculations.
+
 rotag (0.1.0)
 
   * Initial release.

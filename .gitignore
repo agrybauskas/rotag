@@ -1,9 +1,3 @@
-#/
-tags
-
-#/lib
-/lib/TAGS
-
 # /lib/Grammar/
 /lib/Grammar/*.pm
 
@@ -13,4 +7,3 @@ tags
 
 # /tests/outputs/
 /tests/outputs/*.diff
-/tests/outputs/*.jmol

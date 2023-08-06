@@ -85,10 +85,10 @@ sub sample_bond_parameters
 }
 
 #
-# Parses query string and generates data structure suited for generating
+# Parses query strings and generates data structure suited for generating
 # rotamers.
 # Input:
-#     $query_string - query string.
+#     $query_strings - query strings.
 #     E.g. '0..36.0..360.0', '0..18.0..180.0', '0..90.0', 'chi1=0..36.0',
 #          'chi1=90.0..90.0, chi2=0.0..10.0..360.0'.
 # Output:
@@ -98,13 +98,15 @@ sub sample_bond_parameters
 
 sub sample_angles_qs_parsing
 {
-    my ( $parameters, $query_string, $in_radians, $small_angle ) = @_;
+    my ( $parameters, $query_strings, $in_radians, $small_angle ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $dihedral_angle_restraints =
         $parameters->{'_[local]_dihedral_angle_restraints'};
+    my $rotatable_residue_names =
+        $parameters->{'_[local]_rotatable_residue_names'};
 
-    $query_string =~ s/\s//g;
+    $query_strings =~ s/\s//g;
     $small_angle = 36.0;
 
     my %angles;
@@ -138,48 +140,74 @@ sub sample_angles_qs_parsing
     }
 
     # Query overwrites on top.
-    if( $query_string ) {
+    if( $query_strings ) {
         undef %angles;
     }
-    for my $angle ( split /,/, $query_string ) {
-        my $angle_name;
-        my $angle_start;
-        my $angle_step;
-        my $angle_end;
+    for my $query_string ( split /;/, $query_strings ) {
+        # HACK: it should be moved to grammar module and generalized.
+        my $residue_names;
+        my $angle_string;
 
-        if( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
-            ( $angle_name, $angle_start, $angle_step, $angle_end ) =
-                ( $1, $2, $3, $4 );
-        } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
-            ( $angle_name, $angle_start, $angle_end ) = ( $1, $2, $3 );
-        } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)$/ ) {
-            ( $angle_name, $angle_step ) = ( $1, $2 );
-        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
-            ( $angle_step ) = ( $1 );
-        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
-            ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
-        } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
-            ( $angle_start, $angle_end ) = ( $1, $2 );
-        }else {
-            die "Syntax '$angle' is incorrect\n"
+        my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
+        my @query_string_decomposed = split /:/, $query_string;
+        if( scalar @query_string_decomposed == 2 ) {
+            if( $query_string =~ m/^((?:${residue_names_regexp})(?:,(?:${residue_names_regexp}))*):(.+)$/i ) {
+                $residue_names = [ split /,/, uc( $1 ) ];
+                $angle_string = $2;
+            } else {
+                die "Syntax '$query_string' is incorrect\n"
+            }
+        } elsif( scalar @query_string_decomposed == 1 ) {
+            $angle_string = $query_string;
+        } else {
+            die "Syntax '$query_string' is incorrect\n"
         }
 
-        $angle_name //= '*';
-        $angle_start //= - 180.0;
-        $angle_step //= $small_angle;
-        $angle_end //= 180.0;
+        $residue_names //= [ "*" ];
+        $angle_string //= "";
 
-        my $angle_count = int( ( $angle_end - $angle_start ) / $angle_step );
+        for my $angle ( split /,/, $angle_string ) {
+            my $angle_name;
+            my $angle_start;
+            my $angle_step;
+            my $angle_end;
 
-        if( $in_radians ) {
-            $angles{'*'}{$angle_name} =
-                sample_angles( [ [ $angle_start, $angle_end ] ],
-                               $angle_count );
-        } else {
-            $angles{'*'}{$angle_name} =
-                sample_angles( [ [ $angle_start * $pi / 180.0,
-                                   $angle_end * $pi / 180.0 ] ],
-                               $angle_count );
+            if( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+                ( $angle_name, $angle_start, $angle_step, $angle_end ) =
+                    ( $1, $2, $3, $4 );
+            } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+                ( $angle_name, $angle_start, $angle_end ) = ( $1, $2, $3 );
+            } elsif( $angle =~ m/^(\w+)=(-?\d+(?:\.\d+)?)$/ ) {
+                ( $angle_name, $angle_step ) = ( $1, $2 );
+            } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
+                ( $angle_step ) = ( $1 );
+            } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+                ( $angle_start, $angle_step, $angle_end ) = ( $1, $2, $3 );
+            } elsif( $angle =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+                ( $angle_start, $angle_end ) = ( $1, $2 );
+            } else {
+                die "Syntax '$angle' is incorrect\n"
+            }
+
+            $angle_name //= '*';
+            $angle_start //= - 180.0;
+            $angle_step //= $small_angle;
+            $angle_end //= 180.0;
+
+            my $angle_count = int( ( $angle_end - $angle_start ) / $angle_step );
+
+            for my $residue_name ( @{ $residue_names } ) {
+                if( $in_radians ) {
+                    $angles{$residue_name}{$angle_name} =
+                        sample_angles( [ [ $angle_start, $angle_end ] ],
+                                       $angle_count );
+                } else {
+                    $angles{$residue_name}{$angle_name} =
+                        sample_angles( [ [ $angle_start * $pi / 180.0,
+                                           $angle_end * $pi / 180.0 ] ],
+                                       $angle_count );
+                }
+            }
         }
     }
 
