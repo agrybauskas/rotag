@@ -73,14 +73,6 @@ sub rotatable_bonds
                         { 'include' =>
                           { 'id' => $residue_groups->{$residue_unique_key} } } );
 
-        if( $include_hetatoms ) {
-            $start_atom_ids = filter_new(
-                $residue_site,
-                { 'include' => { 'label_atom_id' => [ 'C' ] },
-                  'return_data' => 'id' }
-            );
-        }
-
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
             my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
@@ -95,6 +87,16 @@ sub rotatable_bonds
                               'exclude' => { 'label_seq_id' => [ $residue_id ] },
                               'return_data' => 'id' } );
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
+        }
+
+        # HACK: it should be investigated more thoroughly, because start atom
+        # ids are being changed in three different parts.
+        if( $include_hetatoms ) {
+            $start_atom_ids //= filter_new(
+                $residue_site,
+                { 'include' => { 'label_atom_id' => [ 'C' ] },
+                  'return_data' => 'id' }
+            );
         }
 
         my $bond_paths = BondPath->new( {
