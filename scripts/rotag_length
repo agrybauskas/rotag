@@ -11,7 +11,8 @@ use Try::Tiny;
 
 use BondParameters qw( collect_bond_lengths
                        stretchable_bonds );
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( connect_atoms
+                     connect_hetatoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -41,7 +42,9 @@ our $VERSION = $VERSION;
 #*    -S, --side-chains
 #*                        calculates bond lengths between the side-chain atoms.
 #*    -M, --main-chains
-#*                        calculates bond lengths between the main-chain atoms.
+#*                        calculates bond lengths between the main-chain atom
+#*    -H, --hetero-atoms
+#*                        calculates pseudo bond lengths for heteroatoms.
 #*    -c, --compare <group>,<group>[;<group>,<group>;...]
 #*                        calculates distances between selected groups of atoms.
 #*                        If active, -S and -M options are ignored. Use
@@ -57,6 +60,7 @@ our $VERSION = $VERSION;
 
 my $calc_sidechain = 0;
 my $calc_mainchain = 0;
+my $calc_hetatoms = 0;
 my $comparison = q{};
 my $output_format = 'pdbx';
 
@@ -75,6 +79,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $calc_sidechain = 1 },
     'main-chains|M' => sub { $calc_mainchain = 1 },
+    'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
     'compare|c=s' => \$comparison,
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -297,6 +302,8 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         connect_atoms( $parameters, $bond_length_site );
+        connect_hetatoms( $parameters, $bond_length_site,
+                          { 'do_bond_stretching' => 1 } ) if $calc_hetatoms;
 
         stretchable_bonds( $parameters, $bond_length_site,
                            { 'include_mainchain' => $calc_mainchain } );
