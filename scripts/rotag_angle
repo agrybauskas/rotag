@@ -12,7 +12,8 @@ use Try::Tiny;
 use BondParameters qw( bendable_angles
                        collect_bond_angles );
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( connect_atoms
+                     connect_hetatoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -43,6 +44,8 @@ our $VERSION = $VERSION;
 #*                        calculates angles between bonds in the side-chain atoms.
 #*    -M, --main-chains
 #*                        calculates angles between bonds in the main-chain atoms.
+#*    -H, --hetero-atoms
+#*                        calculates pseudo bond angles for heteroatoms.
 #*    -c, --compare <group>,<group>[;<group>,<group>;...]
 #*                        calculates angles between selected groups of atoms.
 #*                        It should be noted that there can be two or three
@@ -65,6 +68,7 @@ our $VERSION = $VERSION;
 
 my $calc_sidechain = 0;
 my $calc_mainchain = 0;
+my $calc_hetatoms = 0;
 my $comparison = q{};
 my $cutoff;
 my $in_radians = 0;
@@ -85,6 +89,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $calc_sidechain = 1 },
     'main-chains|M' => sub { $calc_mainchain = 1 },
+    'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
     'compare|c=s' => \$comparison,
     'cutoff=s' => \$cutoff,
     'radians|r' => sub { $in_radians = 1 },
@@ -568,9 +573,12 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         connect_atoms( $parameters, $bond_angle_site );
+        connect_hetatoms( $parameters, $bond_angle_site,
+                          { 'do_angle_bending' => 1 } ) if $calc_hetatoms;
 
         bendable_angles( $parameters, $bond_angle_site,
-                         { 'include_mainchain' => $calc_mainchain } );
+                         { 'include_mainchain' => $calc_mainchain,
+                           'include_hetatoms' => $calc_hetatoms } );
         my $bond_angles = collect_bond_angles( $bond_angle_site );
 
         my $bond_angle_id = 1;

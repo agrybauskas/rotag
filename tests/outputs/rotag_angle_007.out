@@ -1,0 +1,48 @@
+data_rotag
+#
+loop_
+_[local]_bond_angle.id
+_[local]_bond_angle.label_comp_id
+_[local]_bond_angle.label_seq_id
+_[local]_bond_angle.label_asym_id
+_[local]_bond_angle.pdbx_PDB_model_num
+_[local]_bond_angle.label_alt_id
+_[local]_bond_angle.atom_1_id
+_[local]_bond_angle.label_atom_1_id
+_[local]_bond_angle.atom_2_id
+_[local]_bond_angle.label_atom_2_id
+_[local]_bond_angle.atom_3_id
+_[local]_bond_angle.label_atom_3_id
+_[local]_bond_angle.type
+_[local]_bond_angle.value
+_[local]_bond_angle.units
+1 ASP 27 A 1 . 148 N 149 CA 1925 MG N-CA-MG 38.881 degrees
+2 ASP 27 A 1 . 148 N 149 CA 150 C N-CA-C 114.706 degrees
+3 ASP 27 A 1 . 148 N 149 CA 152 CB N-CA-CB 110.305 degrees
+4 ASP 27 A 1 . 148 N 149 CA 157 HA N-CA-HA 107.970 degrees
+5 ASP 27 A 1 . 149 CA 150 C 151 O CA-C-O 118.397 degrees
+6 ASP 27 A 1 . 149 CA 152 CB 153 CG CA-CB-CG 112.777 degrees
+7 ASP 27 A 1 . 149 CA 152 CB 158 HB2 CA-CB-HB2 109.031 degrees
+8 ASP 27 A 1 . 149 CA 152 CB 159 HB3 CA-CB-HB3 109.036 degrees
+9 ASP 27 A 1 . 152 CB 153 CG 154 OD1 CB-CG-OD1 118.218 degrees
+10 ASP 27 A 1 . 152 CB 153 CG 155 OD2 CB-CG-OD2 118.198 degrees
+11 LYS 72 A 1 . 883 N 884 CA 885 C N-CA-C 107.284 degrees
+12 LYS 72 A 1 . 883 N 884 CA 887 CB N-CA-CB 110.756 degrees
+13 LYS 72 A 1 . 883 N 884 CA 893 HA N-CA-HA 109.737 degrees
+14 LYS 72 A 1 . 884 CA 885 C 886 O CA-C-O 121.676 degrees
+15 LYS 72 A 1 . 884 CA 887 CB 888 CG CA-CB-CG 115.359 degrees
+16 LYS 72 A 1 . 884 CA 887 CB 894 HB2 CA-CB-HB2 108.465 degrees
+17 LYS 72 A 1 . 884 CA 887 CB 895 HB3 CA-CB-HB3 108.416 degrees
+18 LYS 72 A 1 . 887 CB 888 CG 889 CD CB-CG-CD 110.774 degrees
+19 LYS 72 A 1 . 887 CB 888 CG 896 HG2 CB-CG-HG2 109.435 degrees
+20 LYS 72 A 1 . 887 CB 888 CG 897 HG3 CB-CG-HG3 109.437 degrees
+21 LYS 72 A 1 . 888 CG 889 CD 890 CE CG-CD-CE 111.919 degrees
+22 LYS 72 A 1 . 888 CG 889 CD 898 HD2 CG-CD-HD2 109.104 degrees
+23 LYS 72 A 1 . 888 CG 889 CD 899 HD3 CG-CD-HD3 109.203 degrees
+24 LYS 72 A 1 . 889 CD 890 CE 891 NZ CD-CE-NZ 112.159 degrees
+25 LYS 72 A 1 . 889 CD 890 CE 900 HE2 CD-CE-HE2 109.146 degrees
+26 LYS 72 A 1 . 889 CD 890 CE 901 HE3 CD-CE-HE3 109.140 degrees
+27 LYS 72 A 1 . 890 CE 891 NZ 902 HZ1 CE-NZ-HZ1 109.927 degrees
+28 LYS 72 A 1 . 890 CE 891 NZ 903 HZ2 CE-NZ-HZ2 109.968 degrees
+29 LYS 72 A 1 . 890 CE 891 NZ 904 HZ3 CE-NZ-HZ3 109.909 degrees
+#

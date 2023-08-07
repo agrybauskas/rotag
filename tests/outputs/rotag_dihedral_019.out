@@ -10,7 +10,7 @@ Options:
     -M, --main-chains
                         calculates phi and psi angles of the main-chain atoms.
     -H, --hetero-atoms
-                        calculates dihedral angles for heteroatoms.
+                        calculates pseudo dihedral angles for heteroatoms.
     -r, --radians
                         angles are in radians.
     -F, --format <format>
