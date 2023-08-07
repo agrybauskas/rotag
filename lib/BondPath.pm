@@ -3,8 +3,6 @@ package BondPath;
 use strict;
 use warnings;
 
-use Clone qw( clone );
-
 use AtomProperties qw( sort_atom_ids_by_name
                        sort_by_unique_residue_key );
 use PDBxParser qw( filter_new );
@@ -98,16 +96,22 @@ sub new
 
         my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 
-        my $atom_connections = clone $atom_site->{$atom_id}{'connections'};
+        my @atom_connections =
+            map { [ $_, 'connections' ] }
+               @{ $atom_site->{$atom_id}{'connections'} };
         if( $include_hetatoms &&
             defined $atom_site->{$atom_id}{'connections_hetatom'} ){
-            push @{ $atom_connections },
-                @{ $atom_site->{$atom_id}{'connections_hetatom'} };
+            push @atom_connections,
+                map { [ $_, 'connections_hetatom' ] }
+                   @{ $atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
-        next if ! defined $atom_connections || ! @{ $atom_connections };
+        next if ! @atom_connections;
 
-        for my $neighbour_atom_id ( @{ $atom_connections } ) {
+        for my $atom_connection ( @atom_connections ) {
+            my $neighbour_atom_id = $atom_connection->[0];
+            my $connection_type = $atom_connection->[1];
+
             next if ! exists $atom_site->{$neighbour_atom_id};
 
             my $neighbour_atom_name =
@@ -129,6 +133,11 @@ sub new
                 $self->{'atom_order'}{$self->{'to'}{$neighbour_atom_id}} ) {
                 $self->{'to'}{$neighbour_atom_id} = $atom_id;
             }
+
+            $self->{'connection_type'}{$atom_id}{$neighbour_atom_id} =
+                $connection_type;
+            $self->{'connection_type'}{$neighbour_atom_id}{$atom_id} =
+                $connection_type;
         }
     }
 

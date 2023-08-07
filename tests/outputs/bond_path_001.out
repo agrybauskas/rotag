@@ -11,6 +11,48 @@ $VAR1 = bless( {
     '733' => 9,
     '734' => 10
   },
+  'connection_type' => {
+    '725' => {
+      '726' => 'connections'
+    },
+    '726' => {
+      '725' => 'connections',
+      '727' => 'connections',
+      '729' => 'connections'
+    },
+    '727' => {
+      '726' => 'connections',
+      '728' => 'connections'
+    },
+    '728' => {
+      '727' => 'connections'
+    },
+    '729' => {
+      '726' => 'connections',
+      '730' => 'connections'
+    },
+    '730' => {
+      '729' => 'connections',
+      '731' => 'connections',
+      '732' => 'connections'
+    },
+    '731' => {
+      '730' => 'connections',
+      '733' => 'connections'
+    },
+    '732' => {
+      '730' => 'connections',
+      '734' => 'connections'
+    },
+    '733' => {
+      '731' => 'connections',
+      '734' => 'connections'
+    },
+    '734' => {
+      '732' => 'connections',
+      '733' => 'connections'
+    }
+  },
   'to' => {
     '726' => '725',
     '727' => '726',
