@@ -307,7 +307,7 @@ for my $pdbx_file ( @ARGV ) {
 
         stretchable_bonds( $parameters, $bond_length_site,
                            { 'include_mainchain' => $calc_mainchain,
-                             'include_hetatom' => $calc_hetatoms } );
+                             'include_hetatoms' => $calc_hetatoms } );
         my $bond_lengths = collect_bond_lengths( $bond_length_site );
 
         my $bond_length_id = 1;
