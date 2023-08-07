@@ -150,6 +150,12 @@ sub get_atom_id_to
     return $self->{'to'}{$atom_id}
 }
 
+sub get_connection_type
+{
+    my ( $self, $atom_id_from, $atom_id_to ) = @_;
+    return $self->{'connection_type'}{$atom_id_from}{$atom_id_to};
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 1;
