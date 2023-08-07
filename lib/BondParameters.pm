@@ -13,7 +13,8 @@ our @EXPORT_OK = qw( bendable_angles
                      stretchable_bonds );
 
 use Carp;
-use List::Util qw( any none );
+use List::Util qw( any
+                   none );
 
 use BondPath;
 use AtomProperties qw( contains_hetatoms
@@ -129,6 +130,17 @@ sub rotatable_bonds
                 ! contains_hetatoms( $atom_site,
                                      [ $first_atom_id, $second_atom_id,
                                        $third_atom_id, $fourth_atom_id ] );
+
+            # In order not to get unnecessary bond parameters, there should be
+            # no bond parameters that contains pseudo connections, but do not
+            # contain heteroatoms.
+            next if ! contains_hetatoms( $atom_site,
+                                         [ $first_atom_id, $second_atom_id,
+                                           $third_atom_id, $fourth_atom_id ] ) &&
+                any { $bond_paths->get_connection_type( $_->[0], $_->[1] ) eq 'connections_hetatom' }
+                     ( [ $first_atom_id, $second_atom_id ],
+                       [ $second_atom_id, $third_atom_id ],
+                       [ $third_atom_id, $fourth_atom_id ] );
 
             # Check on hybridization.
             if( ! exists $atom_site->{$second_atom_id}{'hybridization'} ) {
