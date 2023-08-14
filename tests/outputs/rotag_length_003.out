@@ -1,0 +1,17 @@
+data_rotag
+#
+loop_
+_[local]_bond_length.id
+_[local]_bond_length.label_comp_id
+_[local]_bond_length.label_seq_id
+_[local]_bond_length.label_asym_id
+_[local]_bond_length.pdbx_PDB_model_num
+_[local]_bond_length.label_alt_id
+_[local]_bond_length.atom_1_id
+_[local]_bond_length.label_atom_1_id
+_[local]_bond_length.atom_2_id
+_[local]_bond_length.label_atom_2_id
+_[local]_bond_length.type
+_[local]_bond_length.value
+1 ASP 27 A 1 . 149 CA 1925 MG CA-MG 3.853866
+#

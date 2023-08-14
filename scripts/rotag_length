@@ -292,11 +292,15 @@ for my $pdbx_file ( @ARGV ) {
 
         my $bond_length_site =
             filter( { 'atom_site' => $atom_site,
+                      'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+        my $target_bond_length_site =
+            filter( { 'atom_site' => $bond_length_site,
                       'include' => { '[local]_selection_state' => [ 'T' ] } } );
 
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $bond_length_site } ) {
             $bond_length_site = $atom_site;
+            $target_bond_length_site = $atom_site;
             mark_selection( $bond_length_site,
                             { 'target' => [ keys %{ $bond_length_site } ] } );
         }
@@ -324,6 +328,11 @@ for my $pdbx_file ( @ARGV ) {
                 sort keys %{ $bond_lengths->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $bond_lengths->{$residue_unique_key}
                                                  {$bond_name}{'atom_ids'} };
+
+                my ( $last_atom_id ) = reverse @atom_ids;
+
+                next if ! defined $target_bond_length_site->{$last_atom_id};
+
                 push @{ $pdbx->{'_[local]_bond_length'}{'data'} },
                     { 'id' => $bond_length_id,
                       'label_comp_id' => $residue_name,
