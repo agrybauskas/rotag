@@ -210,6 +210,8 @@ for my $pdbx_file ( @ARGV ) {
                     $atom_ids[3] :
                     $atom_ids[2];
 
+                # next if ! defined $target_dihedral_site->{$atom_ids[3]};
+
                 push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                     { 'id' => $dihedral_id,
                       'label_comp_id' =>
