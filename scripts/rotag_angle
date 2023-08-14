@@ -563,11 +563,15 @@ for my $pdbx_file ( @ARGV ) {
 
         my $bond_angle_site =
             filter( { 'atom_site' => $atom_site,
+                      'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+        my $target_bond_angle_site =
+            filter( { 'atom_site' => $bond_angle_site,
                       'include' => { '[local]_selection_state' => [ 'T' ] } } );
 
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $bond_angle_site } ) {
             $bond_angle_site = $atom_site;
+            $target_bond_angle_site = $atom_site;
             mark_selection( $bond_angle_site,
                             { 'target' => [ keys %{ $bond_angle_site } ] } );
         }
@@ -584,8 +588,11 @@ for my $pdbx_file ( @ARGV ) {
         my $bond_angle_id = 1;
         for my $residue_unique_key ( sort keys %{ $bond_angles } ) {
             my $residue_site =
-                filter_by_unique_residue_key( $bond_angle_site,
+                filter_by_unique_residue_key( $target_bond_angle_site,
                                               $residue_unique_key );
+
+            next if ! %{ $residue_site };
+
             my ( $residue_id ) = keys %{ $residue_site };
             my ( $label_seq_id, $chain_id, $model_id, $alt_id ) =
                 split( /,/sxm, $residue_unique_key ),
@@ -597,6 +604,11 @@ for my $pdbx_file ( @ARGV ) {
                 keys %{ $bond_angles->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $bond_angles->{$residue_unique_key}
                                                 {$angle_name}{'atom_ids'} };
+
+                my ( $last_atom_id ) = reverse @atom_ids;
+
+                next if ! defined $target_bond_angle_site->{$last_atom_id};
+
                 push @{ $pdbx->{'_[local]_bond_angle'}{'data'} },
                     { 'id' => $bond_angle_id,
                       'label_comp_id' => $residue_name,

@@ -1,1 +1,20 @@
-# A placeholder for the future data.
+data_rotag
+#
+loop_
+_[local]_bond_angle.id
+_[local]_bond_angle.label_comp_id
+_[local]_bond_angle.label_seq_id
+_[local]_bond_angle.label_asym_id
+_[local]_bond_angle.pdbx_PDB_model_num
+_[local]_bond_angle.label_alt_id
+_[local]_bond_angle.atom_1_id
+_[local]_bond_angle.label_atom_1_id
+_[local]_bond_angle.atom_2_id
+_[local]_bond_angle.label_atom_2_id
+_[local]_bond_angle.atom_3_id
+_[local]_bond_angle.label_atom_3_id
+_[local]_bond_angle.type
+_[local]_bond_angle.value
+_[local]_bond_angle.units
+1 MG 27 A 1 . 148 N 149 CA 1925 MG N-CA-MG 38.881 degrees
+#
