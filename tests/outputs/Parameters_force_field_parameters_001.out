@@ -7329,6 +7329,7 @@ $VAR1 = bless( {
     'cutoff_atom' => '50.0',
     'cutoff_end' => '5.0',
     'cutoff_start' => '2.5',
+    'description' => '\'Parameter weigths were optimized using particle swarm optimization algorithm.\'',
     'h_k' => '10.0',
     'lj_k' => '0.25',
     'soft_epsilon' => '1.0',

@@ -9,6 +9,7 @@ _[local]_force_field.t_k          2.5
 _[local]_force_field.cutoff_atom  50.0
 _[local]_force_field.cutoff_start 2.5
 _[local]_force_field.cutoff_end   5.0
+_[local]_force_field.description  'Parameter weigths were optimized using particle swarm optimization algorithm.'
 #
 loop_
 _[local]_atom_properties.type_symbol
