@@ -317,8 +317,11 @@ for my $pdbx_file ( @ARGV ) {
         my $bond_length_id = 1;
         for my $residue_unique_key ( sort keys %{ $bond_lengths } ) {
             my $residue_site =
-                filter_by_unique_residue_key( $bond_length_site,
+                filter_by_unique_residue_key( $target_bond_length_site,
                                               $residue_unique_key );
+
+            next if ! %{ $residue_site };
+
             my ( $residue_id ) = keys %{ $residue_site };
             my ( $label_seq_id, $chain_id, $model_id, $alt_id ) =
                 split( /,/sxm, $residue_unique_key ),
