@@ -132,11 +132,15 @@ for my $pdbx_file ( @ARGV ) {
 
         my $dihedral_site =
             filter( { 'atom_site' => $atom_site,
+                      'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+        my $target_dihedral_site =
+            filter( { 'atom_site' => $dihedral_site,
                       'include' => { '[local]_selection_state' => [ 'T' ] } } );
 
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $dihedral_site } ) {
             $dihedral_site = $atom_site;
+            $target_dihedral_site = $atom_site;
             mark_selection( $dihedral_site,
                             { 'target' => [ keys %{ $dihedral_site } ] } );
         }
