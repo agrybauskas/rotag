@@ -865,124 +865,125 @@ _[local]_torsional.label_atom_4_id
 _[local]_torsional.epsilon
 _[local]_torsional.phase
 _[local]_torsional.gamma
-N  CT C  N   2.000 2.0 180.0
-C  N  CT C   0.800 1.0   0.0
-CT CT N  C   0.53 1.0    0.0
-CT CT C  N   0.07 2.0    0.0
-H  N  C  O   2.00 1.0    0.0
-CT S  S  CT  0.60 3.0    0.0
-OH P  OS CT  1.20 2.0    0.0
-OS P  OS CT  1.20 2.0    0.0
-H1 CT C  O   0.08 3.0  180.0
-HC CT C  O   0.08 3.0  180.0
-HC CT CT HC  0.15 3.0    0.0
-HC CT CT CT  0.16 3.0    0.0
-HC CT CM CM  1.15 1.0    0.0
-HO OH CT CT  0.25 1.0    0.0
-HO OH C  O   1.90 1.0    0.0
-CM CM C  O   0.30 3.0    0.0
-CT CM CM CT  1.90 1.0  180.0
-CT CT CT CT  0.20 1.0  180.0
-CT CT NT CT  0.48 2.0  180.0
-CT CT OS CT  0.1 2.0   180.0
-CT CT OS C   0.80 1.0  180.0
-CT OS CT OS  1.35 1.0  180.0
-CT OS CT N   0.65 2.0    0.0
-CT CZ CZ HZ  0.00 1.0    0.0
-O  C  OS CT  1.40 1.0  180.0
-OS CT N* CK  2.50 1.0    0.0
-OS CT N* CM  2.50 1.0    0.0
-OS CT CT OS  1.175 2.0   0.0
-OS CT CT OH  1.175 2.0   0.0
-OH CT CT OH  1.175 2.0   0.0
-F  CT CT F   1.20 1.0  180.0
-Cl CT CT Cl  0.45 1.0  180.0
-Br CT CT Br  0.00 1.0  180.0
-H1 CT CT OS  0.25 1.0    0.0
-H1 CT CT OH  0.25 1.0    0.0
-H1 CT CT F   0.19 1.0    0.0
-H1 CT CT Cl  0.25 1.0    0.0
-H1 CT CT Br  0.55 1.0    0.0
-HC CT CT OS  0.25 1.0    0.0
-HC CT CT OH  0.25 1.0    0.0
-HC CT CT F   0.19 1.0    0.0
-HC CT CT Cl  0.25 1.0    0.0
-HC CT CT Br  0.55 1.0    0.0
-H1 CT NT LP  0.00 3.0    0.0
-CT CT NT LP  0.00 3.0    0.0
-CT C  N  LP  0.00 2.0  180.0
-O  C  N  LP  0.00 2.0  180.0
-H1 CT OH LP  0.00 3.0    0.0
-CT CT OH LP  0.00 3.0    0.0
-H1 CT OS LP  0.00 3.0    0.0
-H2 CT OS LP  0.00 3.0    0.0
-CT CT OS LP  0.00 3.0    0.0
-CM CM OS LP  0.00 2.0  180.0
-HA CM OS LP  0.00 2.0  180.0
-H4 CM OS LP  0.00 2.0  180.0
-?  C  C  ?   14.50 2.0 180.0
-?  C  CA ?   14.50 2.0 180.0
-?  C  CB ?   12.00 2.0 180.0
-?  C  CM ?    8.70 2.0 180.0
-?  C  CT ?    0.00 2.0   0.0
-?  C  N  ?   10.00 2.0 180.0
-?  C  N* ?    5.80 2.0 180.0
-?  C  NA ?    5.40 2.0 180.0
-?  C  NC ?    8.00 2.0 180.0
-?  C  O  ?   11.20 2.0 180.0
-?  C  OH ?    4.60 2.0 180.0
-?  C  OS ?    5.40 2.0 180.0
-?  CA CA ?   14.50 2.0 180.0
-?  CA CB ?   14.00 2.0 180.0
-?  CA CM ?   10.20 2.0 180.0
-?  CA CN ?   14.50 2.0 180.0
-?  CA CT ?    0.00 2.0   0.0
-?  CA N2 ?    9.60 2.0 180.0
-?  CA NA ?    6.00 2.0 180.0
-?  CA NC ?    9.60 2.0 180.0
-?  CA OH ?    1.80 2.0 180.0
-?  CB CB ?   21.80 2.0 180.0
-?  CB CN ?   12.00 2.0 180.0
-?  CB N* ?    6.60 2.0 180.0
-?  CB NB ?    5.10 2.0 180.0
-?  CB NC ?    8.30 2.0 180.0
-?  CC CT ?    0.00 2.0   0.0
-?  CC CV ?   20.60 2.0 180.0
-?  CC CW ?   21.50 2.0 180.0
-?  CC NA ?    5.60 2.0 180.0
-?  CC NB ?    4.80 2.0 180.0
-?  CD CD ?    4.00 2.0 180.0
-?  CD CT ?    0.00 2.0   0.0
-?  CD CM ?   26.60 2.0 180.0
-?  CK N* ?    6.80 2.0 180.0
-?  CK NB ?   20.00 2.0 180.0
-?  CM CM ?   26.60 2.0 180.0
-?  CM CT ?    0.00 3.0   0.0
-?  CM N* ?    7.40 2.0 180.0
-?  CM OS ?    2.10 2.0 180.0
-?  CN NA ?    6.10 2.0 180.0
-?  CQ NC ?   13.60 2.0 180.0
-?  CT CT ?    1.40 3.0   0.0
-?  CT CY ?    0.00 1.0   0.0
-?  CT CZ ?    0.00 1.0   0.0
-?  CT N  ?    0.00 2.0   0.0
-?  CT N* ?    0.00 2.0   0.0
-?  CT N2 ?    0.00 3.0   0.0
-?  CT NT ?    1.80 3.0   0.0
-?  CT N3 ?    1.40 3.0   0.0
-?  CT OH ?    0.50 3.0   0.0
-?  CT OS ?    1.15 3.0   0.0
-?  CT S  ?    1.00 3.0   0.0
-?  CT SH ?    0.75 3.0   0.0
-?  C* CB ?    6.70 2.0 180.0
-?  C* CT ?    0.00 2.0   0.0
-?  C* CW ?   26.10 2.0 180.0
-?  CR NA ?    9.30 2.0 180.0
-?  CR NB ?   10.00 2.0 180.0
-?  CV NB ?    4.80 2.0 180.0
-?  CW NA ?    6.00 2.0 180.0
-?  OH P  ?    0.75 3.0   0.0
-?  OS P  ?    0.75 3.0   0.0
+_[local]_torsional.description
+N  CT C  N   2.000 2.0 180.0 'Maier et al., 2015'
+C  N  CT C   0.800 1.0   0.0 'Maier et al., 2015'
+CT CT N  C   0.53 1.0    0.0 'Maier et al., 2015'
+CT CT C  N   0.07 2.0    0.0 'Maier et al., 2015'
+H  N  C  O   2.00 1.0    0.0 'Maier et al., 2015'
+CT S  S  CT  0.60 3.0    0.0 'Maier et al., 2015'
+OH P  OS CT  1.20 2.0    0.0 'Maier et al., 2015'
+OS P  OS CT  1.20 2.0    0.0 'Maier et al., 2015'
+H1 CT C  O   0.08 3.0  180.0 'Maier et al., 2015'
+HC CT C  O   0.08 3.0  180.0 'Maier et al., 2015'
+HC CT CT HC  0.15 3.0    0.0 'Maier et al., 2015'
+HC CT CT CT  0.16 3.0    0.0 'Maier et al., 2015'
+HC CT CM CM  1.15 1.0    0.0 'Maier et al., 2015'
+HO OH CT CT  0.25 1.0    0.0 'Maier et al., 2015'
+HO OH C  O   1.90 1.0    0.0 'Maier et al., 2015'
+CM CM C  O   0.30 3.0    0.0 'Maier et al., 2015'
+CT CM CM CT  1.90 1.0  180.0 'Maier et al., 2015'
+CT CT CT CT  0.20 1.0  180.0 'Maier et al., 2015'
+CT CT NT CT  0.48 2.0  180.0 'Maier et al., 2015'
+CT CT OS CT  0.1 2.0   180.0 'Maier et al., 2015'
+CT CT OS C   0.80 1.0  180.0 'Maier et al., 2015'
+CT OS CT OS  1.35 1.0  180.0 'Maier et al., 2015'
+CT OS CT N   0.65 2.0    0.0 'Maier et al., 2015'
+CT CZ CZ HZ  0.00 1.0    0.0 'Maier et al., 2015'
+O  C  OS CT  1.40 1.0  180.0 'Maier et al., 2015'
+OS CT N* CK  2.50 1.0    0.0 'Maier et al., 2015'
+OS CT N* CM  2.50 1.0    0.0 'Maier et al., 2015'
+OS CT CT OS  1.175 2.0   0.0 'Maier et al., 2015'
+OS CT CT OH  1.175 2.0   0.0 'Maier et al., 2015'
+OH CT CT OH  1.175 2.0   0.0 'Maier et al., 2015'
+F  CT CT F   1.20 1.0  180.0 'Maier et al., 2015'
+Cl CT CT Cl  0.45 1.0  180.0 'Maier et al., 2015'
+Br CT CT Br  0.00 1.0  180.0 'Maier et al., 2015'
+H1 CT CT OS  0.25 1.0    0.0 'Maier et al., 2015'
+H1 CT CT OH  0.25 1.0    0.0 'Maier et al., 2015'
+H1 CT CT F   0.19 1.0    0.0 'Maier et al., 2015'
+H1 CT CT Cl  0.25 1.0    0.0 'Maier et al., 2015'
+H1 CT CT Br  0.55 1.0    0.0 'Maier et al., 2015'
+HC CT CT OS  0.25 1.0    0.0 'Maier et al., 2015'
+HC CT CT OH  0.25 1.0    0.0 'Maier et al., 2015'
+HC CT CT F   0.19 1.0    0.0 'Maier et al., 2015'
+HC CT CT Cl  0.25 1.0    0.0 'Maier et al., 2015'
+HC CT CT Br  0.55 1.0    0.0 'Maier et al., 2015'
+H1 CT NT LP  0.00 3.0    0.0 'Maier et al., 2015'
+CT CT NT LP  0.00 3.0    0.0 'Maier et al., 2015'
+CT C  N  LP  0.00 2.0  180.0 'Maier et al., 2015'
+O  C  N  LP  0.00 2.0  180.0 'Maier et al., 2015'
+H1 CT OH LP  0.00 3.0    0.0 'Maier et al., 2015'
+CT CT OH LP  0.00 3.0    0.0 'Maier et al., 2015'
+H1 CT OS LP  0.00 3.0    0.0 'Maier et al., 2015'
+H2 CT OS LP  0.00 3.0    0.0 'Maier et al., 2015'
+CT CT OS LP  0.00 3.0    0.0 'Maier et al., 2015'
+CM CM OS LP  0.00 2.0  180.0 'Maier et al., 2015'
+HA CM OS LP  0.00 2.0  180.0 'Maier et al., 2015'
+H4 CM OS LP  0.00 2.0  180.0 'Maier et al., 2015'
+?  C  C  ?   14.50 2.0 180.0 'Maier et al., 2015'
+?  C  CA ?   14.50 2.0 180.0 'Maier et al., 2015'
+?  C  CB ?   12.00 2.0 180.0 'Maier et al., 2015'
+?  C  CM ?    8.70 2.0 180.0 'Maier et al., 2015'
+?  C  CT ?    0.00 2.0   0.0 'Maier et al., 2015'
+?  C  N  ?   10.00 2.0 180.0 'Maier et al., 2015'
+?  C  N* ?    5.80 2.0 180.0 'Maier et al., 2015'
+?  C  NA ?    5.40 2.0 180.0 'Maier et al., 2015'
+?  C  NC ?    8.00 2.0 180.0 'Maier et al., 2015'
+?  C  O  ?   11.20 2.0 180.0 'Maier et al., 2015'
+?  C  OH ?    4.60 2.0 180.0 'Maier et al., 2015'
+?  C  OS ?    5.40 2.0 180.0 'Maier et al., 2015'
+?  CA CA ?   14.50 2.0 180.0 'Maier et al., 2015'
+?  CA CB ?   14.00 2.0 180.0 'Maier et al., 2015'
+?  CA CM ?   10.20 2.0 180.0 'Maier et al., 2015'
+?  CA CN ?   14.50 2.0 180.0 'Maier et al., 2015'
+?  CA CT ?    0.00 2.0   0.0 'Maier et al., 2015'
+?  CA N2 ?    9.60 2.0 180.0 'Maier et al., 2015'
+?  CA NA ?    6.00 2.0 180.0 'Maier et al., 2015'
+?  CA NC ?    9.60 2.0 180.0 'Maier et al., 2015'
+?  CA OH ?    1.80 2.0 180.0 'Maier et al., 2015'
+?  CB CB ?   21.80 2.0 180.0 'Maier et al., 2015'
+?  CB CN ?   12.00 2.0 180.0 'Maier et al., 2015'
+?  CB N* ?    6.60 2.0 180.0 'Maier et al., 2015'
+?  CB NB ?    5.10 2.0 180.0 'Maier et al., 2015'
+?  CB NC ?    8.30 2.0 180.0 'Maier et al., 2015'
+?  CC CT ?    0.00 2.0   0.0 'Maier et al., 2015'
+?  CC CV ?   20.60 2.0 180.0 'Maier et al., 2015'
+?  CC CW ?   21.50 2.0 180.0 'Maier et al., 2015'
+?  CC NA ?    5.60 2.0 180.0 'Maier et al., 2015'
+?  CC NB ?    4.80 2.0 180.0 'Maier et al., 2015'
+?  CD CD ?    4.00 2.0 180.0 'Maier et al., 2015'
+?  CD CT ?    0.00 2.0   0.0 'Maier et al., 2015'
+?  CD CM ?   26.60 2.0 180.0 'Maier et al., 2015'
+?  CK N* ?    6.80 2.0 180.0 'Maier et al., 2015'
+?  CK NB ?   20.00 2.0 180.0 'Maier et al., 2015'
+?  CM CM ?   26.60 2.0 180.0 'Maier et al., 2015'
+?  CM CT ?    0.00 3.0   0.0 'Maier et al., 2015'
+?  CM N* ?    7.40 2.0 180.0 'Maier et al., 2015'
+?  CM OS ?    2.10 2.0 180.0 'Maier et al., 2015'
+?  CN NA ?    6.10 2.0 180.0 'Maier et al., 2015'
+?  CQ NC ?   13.60 2.0 180.0 'Maier et al., 2015'
+?  CT CT ?    1.40 3.0   0.0 'Maier et al., 2015'
+?  CT CY ?    0.00 1.0   0.0 'Maier et al., 2015'
+?  CT CZ ?    0.00 1.0   0.0 'Maier et al., 2015'
+?  CT N  ?    0.00 2.0   0.0 'Maier et al., 2015'
+?  CT N* ?    0.00 2.0   0.0 'Maier et al., 2015'
+?  CT N2 ?    0.00 3.0   0.0 'Maier et al., 2015'
+?  CT NT ?    1.80 3.0   0.0 'Maier et al., 2015'
+?  CT N3 ?    1.40 3.0   0.0 'Maier et al., 2015'
+?  CT OH ?    0.50 3.0   0.0 'Maier et al., 2015'
+?  CT OS ?    1.15 3.0   0.0 'Maier et al., 2015'
+?  CT S  ?    1.00 3.0   0.0 'Maier et al., 2015'
+?  CT SH ?    0.75 3.0   0.0 'Maier et al., 2015'
+?  C* CB ?    6.70 2.0 180.0 'Maier et al., 2015'
+?  C* CT ?    0.00 2.0   0.0 'Maier et al., 2015'
+?  C* CW ?   26.10 2.0 180.0 'Maier et al., 2015'
+?  CR NA ?    9.30 2.0 180.0 'Maier et al., 2015'
+?  CR NB ?   10.00 2.0 180.0 'Maier et al., 2015'
+?  CV NB ?    4.80 2.0 180.0 'Maier et al., 2015'
+?  CW NA ?    6.00 2.0 180.0 'Maier et al., 2015'
+?  OH P  ?    0.75 3.0   0.0 'Maier et al., 2015'
+?  OS P  ?    0.75 3.0   0.0 'Maier et al., 2015'
 #
 loop_
 _[local]_h_bond.type_symbol
