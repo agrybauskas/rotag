@@ -41,3 +41,15 @@ nav:
             - 'Adding hydrogens': 'adding-hydrogens.md'
     - License: 'license.md'
     - Citing: 'citing.md'
+
+# Plugins.
+plugins:
+  - search
+  - mkdoxy:
+      projects:
+        librotag:
+          src-dirs: ../lib
+          full-doc: True # if you want to generate full documentation
+          doxy-cfg:
+            FILE_PATTERNS: "*.pm"
+            RECURSIVE: True

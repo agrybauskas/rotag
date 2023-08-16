@@ -14,6 +14,7 @@ env: .venv
 	python3 -m venv ${ENV}
 	.venv/bin/python3 -m pip install mkdocs
 	.venv/bin/python3 -m pip install mkdocs-material
+	.venv/bin/python3 -m pip install mkdoxy
 
 clean-env:
 	rm -rf ${ENV}
