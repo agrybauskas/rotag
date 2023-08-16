@@ -46,421 +46,423 @@ _[local]_lennard_jones.type_symbol_1
 _[local]_lennard_jones.type_symbol_2
 _[local]_lennard_jones.sigma
 _[local]_lennard_jones.epsilon
-. . 0.00 0.000
-. C 2.00 0.000
-. H 1.00 0.000
-. N 1.75 0.000
-. O 1.60 0.000
-. S 2.00 0.000
-. X 0.05 0.000
-C C 4.00 0.150
-C H 3.00 0.055
-C N 3.75 0.155
-C O 3.60 0.173
-C S 4.00 0.173
-C X 2.05 0.080
-H H 2.00 0.020
-H N 2.75 0.057
-H O 2.60 0.063
-H S 3.00 0.063
-H X 1.05 0.015
-N N 3.50 0.160
-N O 3.35 0.179
-N S 3.75 0.179
-N X 1.80 0.085
-O O 3.20 0.200
-O S 3.60 0.200
-O X 1.65 0.105
-S S 4.00 0.200
-S X 2.05 0.105
-X X 0.10 0.010
+_[local]_lennard_jones.description
+. . 0.00 0.000 'Lennard-Jones parameters between two dummy points.'
+. C 2.00 0.000 'Lennard-Jones parameters between a dummy point and an atom.'
+. H 1.00 0.000 'Lennard-Jones parameters between a dummy point and an atom.'
+. N 1.75 0.000 'Lennard-Jones parameters between a dummy point and an atom.'
+. O 1.60 0.000 'Lennard-Jones parameters between a dummy point and an atom.'
+. S 2.00 0.000 'Lennard-Jones parameters between a dummy point and an atom.'
+. X 0.05 0.000 'Lennard-Jones parameters between a dummy point and a dummy atom.'
+C C 4.00 0.150 'Huey et al., 2007'
+C H 3.00 0.055 'Huey et al., 2007'
+C N 3.75 0.155 'Huey et al., 2007'
+C O 3.60 0.173 'Huey et al., 2007'
+C S 4.00 0.173 'Huey et al., 2007'
+C X 2.05 0.080 'Huey et al., 2007'
+H H 2.00 0.020 'Huey et al., 2007'
+H N 2.75 0.057 'Huey et al., 2007'
+H O 2.60 0.063 'Huey et al., 2007'
+H S 3.00 0.063 'Huey et al., 2007'
+H X 1.05 0.015 'Huey et al., 2007'
+N N 3.50 0.160 'Huey et al., 2007'
+N O 3.35 0.179 'Huey et al., 2007'
+N S 3.75 0.179 'Huey et al., 2007'
+N X 1.80 0.085 'Huey et al., 2007'
+O O 3.20 0.200 'Huey et al., 2007'
+O S 3.60 0.200 'Huey et al., 2007'
+O X 1.65 0.105 'Huey et al., 2007'
+S S 4.00 0.200 'Huey et al., 2007'
+S X 2.05 0.105 'Huey et al., 2007'
+X X 0.10 0.010 'Lennard-Jones parameters between two dummy atoms.'
 #
 loop_
 _[local]_partial_charge.label_comp_id
 _[local]_partial_charge.label_atom_id
 _[local]_partial_charge.value
-.   .    0.00
-ALA C    0.57
-ALA CA   -0.028
-ALA CB   -0.23
-ALA H    0.294
-ALA H2   0.345
-ALA HA   0.121
-ALA HB1  0.077
-ALA HB2  0.077
-ALA HB3  0.077
-ALA N    -0.405
-ALA O    -0.555
-ALA OXT  -0.581
-ARG C    0.73
-ARG CA   -0.131
-ARG CB   0.037
-ARG CD   0.126
-ARG CG   0.012
-ARG CZ   0.566
-ARG H    0.234
-ARG H2   0.345
-ARG HA   0.053
-ARG HB2  0.028
-ARG HB3  0.028
-ARG HD2  0.068
-ARG HD3  0.068
-ARG HE   0.326
-ARG HG2  0.003
-ARG HG3  0.003
-ARG HH11 0.391
-ARG HH12 0.391
-ARG HH21 0.391
-ARG HH22 0.391
-ARG N    -0.301
-ARG NE   0.465
-ARG NH1  -0.686
-ARG NH2  -0.686
-ARG O    -0.578
-ARG OXT  -0.581
-ASN C    0.617
-ASN CA   0.045
-ASN CB   -0.094
-ASN CG   0.584
-ASN H    0.255
-ASN H2   0.345
-ASN HA   0.06
-ASN HB2  0.043
-ASN HB3  0.043
-ASN HD21 0.355
-ASN HD22 0.355
-ASN N    -0.43
-ASN ND2  -0.782
-ASN O    -0.524
-ASN OD1  -0.527
-ASN OXT  -0.581
-ASP C    0.443
-ASP CA   0.007
-ASP CB   -0.048
-ASP CG   0.745
-ASP H    0.32
-ASP H2   0.345
-ASP HA   0.082
-ASP HB2  -0.015
-ASP HB3  -0.015
-ASP N    -0.558
-ASP O    -0.501
-ASP OD1  -0.73
-ASP OD2  -0.73
-ASP OXT  -0.581
-CYS C    0.643
-CYS CA   -0.074
-CYS CB   -0.221
-CYS H    0.295
-CYS H2   0.345
-CYS HA   0.141
-CYS HB2  0.147
-CYS HB3  0.147
-CYS HG   0.189
-CYS N    -0.396
-CYS O    -0.585
-CYS OXT  -0.581
-CYS SG   -0.285
-GLN C    0.419
-GLN CA   0.037
-GLN CB   -0.032
-GLN CD   0.668
-GLN CG   -0.02
-GLN H    0.301
-GLN H2   0.345
-GLN HA   0.152
-GLN HB2  0.031
-GLN HB3  0.031
-GLN HE21 0.408
-GLN HE22 0.408
-GLN HG2  -0.031
-GLN HG3  0.031
-GLN N    -0.387
-GLN NE2  -0.883
-GLN O    -0.565
-GLN OE1  -0.628
-GLN OXT  -0.581
-GLU C    0.47
-GLU CA   0.032
-GLU CB   0.075
-GLU CD   0.765
-GLU CG   -0.034
-GLU H    0.307
-GLU H2   0.345
-GLU HA   0.065
-GLU HB2  -0.004
-GLU HB3  -0.004
-GLU HG2  -0.004
-GLU HG3  -0.004
-GLU N    -0.423
-GLU O    -0.593
-GLU OE1  -0.824
-GLU OE2  -0.824
-GLU OXT  -0.581
-GLY C    0.581
-GLY CA   -0.129
-GLY H    0.254
-GLY H2   0.345
-GLY HA2  0.089
-GLY HA3  0.089
-GLY N    -0.374
-GLY O    -0.509
-GLY OXT  -0.581
-HIS C    0.662
-HIS CA   0.031
-HIS CB   -0.152
-HIS CD2  -0.298
-HIS CE1  0.026
-HIS CG   0.278
-HIS H    0.282
-HIS H2   0.345
-HIS HA   0.085
-HIS HB2  0.055
-HIS HB3  0.055
-HIS HD1  0.16
-HIS HD2  0.16
-HIS HE1  0.127
-HIS HE2  0.267
-HIS N    -0.528
-HIS ND1  -0.423
-HIS NE2  -0.098
-HIS O    -0.529
-HIS OXT  -0.581
-ILE C    0.569
-ILE CA   -0.102
-ILE CB   0.062
-ILE CD1  -0.101
-ILE CG1  0.022
-ILE CG2  -0.13
-ILE H    0.329
-ILE H2   0.345
-ILE HA   0.174
-ILE HB   0.062
-ILE HD11 0.024
-ILE HD12 0.024
-ILE HD13 0.024
-ILE HG12 0.012
-ILE HG13 0.012
-ILE HG21 0.03
-ILE HG22 0.03
-ILE HG23 0.03
-ILE N    -0.451
-ILE O    -0.62
-ILE OXT  -0.581
-LEU C    0.573
-LEU CA   -0.101
-LEU CB   -0.144
-LEU CD1  -0.123
-LEU CD2  -0.123
-LEU CG   0.192
-LEU H    0.262
-LEU H2   0.345
-LEU HA   0.137
-LEU HB2  0.053
-LEU HB3  0.053
-LEU HD11 0.022
-LEU HD12 0.022
-LEU HD13 0.022
-LEU HD21 0.022
-LEU HD22 0.022
-LEU HD23 0.022
-LEU HG   0.001
-LEU N    -0.355
-LEU O    -0.558
-LEU OXT  -0.581
-LYS C    0.725
-LYS CA   -0.039
-LYS CB   -0.108
-LYS CD   -0.048
-LYS CE   -0.07
-LYS CG   0.033
-LYS H    0.251
-LYS H2   0.345
-LYS HA   0.129
-LYS HB2  0.045
-LYS HB3  0.045
-LYS HD2  0.071
-LYS HD3  0.071
-LYS HE2  0.12
-LYS HE3  0.12
-LYS HG2  0.01
-LYS HG3  0.01
-LYS HZ1  0.295
-LYS HZ2  0.295
-LYS HZ3  0.295
-LYS N    -0.436
-LYS NZ   -0.25
-LYS O    -0.563
-LYS OXT  -0.581
-MET C    0.6
-MET CA   -0.088
-MET CB   0.019
-MET CE   -0.285
-MET CG   -0.208
-MET H    0.281
-MET H2   0.345
-MET HA   0.123
-MET HB2  0.049
-MET HB3  0.049
-MET HE1  0.128
-MET HE2  0.128
-MET HE3  0.128
-MET HG2  0.124
-MET HG3  0.124
-MET N    -0.395
-MET O    -0.566
-MET OXT  -0.581
-MET SD   -0.212
-PHE C    0.548
-PHE CA   -0.03
-PHE CB   -0.099
-PHE CD1  -0.083
-PHE CD2  -0.083
-PHE CE1  -0.157
-PHE CE2  -0.157
-PHE CG   0.021
-PHE CZ   -0.1
-PHE H    0.234
-PHE H2   0.345
-PHE HA   0.102
-PHE HB2  0.061
-PHE HB3  0.061
-PHE HD1  0.098
-PHE HD2  0.098
-PHE HE1  0.124
-PHE HE2  0.124
-PHE HZ   0.115
-PHE N    -0.371
-PHE O    -0.507
-PHE OXT  -0.581
-PRO C    0.334
-PRO CA   -0.035
-PRO CB   -0.003
-PRO CD   -0.012
-PRO CG   0.013
-PRO H    0.345
-PRO HA   0.06
-PRO HB2  0.019
-PRO HB3  0.019
-PRO HD2  0.044
-PRO HD3  0.044
-PRO HG2  0.02
-PRO HG3  0.02
-PRO N    -0.088
-PRO O    -0.435
-PRO OXT  -0.581
-SER C    0.483
-SER CA   0.118
-SER CB   0.147
-SER H    0.345
-SER H2   0.345
-SER HA   0.142
-SER HB2  0.04
-SER HB3  0.04
-SER HG   0.446
-SER N    -0.541
-SER O    -0.581
-SER OG   -0.64
-SER OXT  -0.581
-THR C    0.56
-THR CA   -0.271
-THR CB   0.238
-THR CG2  -0.176
-THR H    0.255
-THR H2   0.345
-THR HA   0.164
-THR HB   0.045
-THR HG1  0.405
-THR HG21 0.06
-THR HG22 0.06
-THR HG23 0.06
-THR N    -0.245
-THR O    -0.552
-THR OG1  -0.602
-THR OXT  -0.581
-TRP C    0.584
-TRP CA   -0.02
-TRP CB   -0.098
-TRP CD1  -0.174
-TRP CD2  0.09
-TRP CE2  0.142
-TRP CE3  -0.154
-TRP CG   -0.1
-TRP CH2  -0.133
-TRP CZ2  -0.211
-TRP CZ3  -0.164
-TRP H    0.242
-TRP H2   0.345
-TRP HA   0.107
-TRP HB2  0.065
-TRP HB3  0.065
-TRP HD1  0.171
-TRP HE1  0.322
-TRP HE3  0.123
-TRP HH2  0.119
-TRP HZ2  0.126
-TRP HZ3  0.119
-TRP N    -0.428
-TRP NE1  -0.298
-TRP O    -0.495
-TRP OXT  -0.581
-TYR C    0.622
-TYR CA   0.01
-TYR CB   -0.052
-TYR CD1  -0.183
-TYR CD2  -0.183
-TYR CE1  -0.182
-TYR CE2  -0.182
-TYR CG   0.113
-TYR CZ   0.206
-TYR H    0.264
-TYR H2   0.345
-TYR HA   0.096
-TYR HB2  0.019
-TYR HB3  0.019
-TYR HD1  0.133
-TYR HD2  0.133
-TYR HE1  0.137
-TYR HE2  0.137
-TYR HH   0.33
-TYR N    -0.488
-TYR O    -0.527
-TYR OH   -0.421
-TYR OXT  -0.581
-VAL C    0.447
-VAL CA   -0.052
-VAL CB   0.395
-VAL CG1  -0.09
-VAL CG2  -0.09
-VAL H    0.44
-VAL H2   0.345
-VAL HA   -0.026
-VAL HB   -0.116
-VAL HG11 -0.009
-VAL HG12 -0.009
-VAL HG13 -0.009
-VAL HG21 -0.009
-VAL HG22 -0.009
-VAL HG23 -0.009
-VAL N    -0.45
-VAL O    -0.405
-VAL OXT  -0.581
-MG  MG   2.000
-CA  CA   2.000
-NA  NA   1.000
-ZN  ZN   2.000
-K   K    1.000
-CD  CD   2.000
-XAA CA   0.118
-XAA CB   0.147
-XAA CG   0.147
-XAA HA   0.142
-XAA HB2  0.04
-XAA HB3  0.04
-XAA HG   0.446
-XAA OG   -0.64
-XAA XA   0
-XAA XA2  0
+_[local]_partial_charge.description
+.   .    0.00    'Partial charge between two dummy points.'
+ALA C    0.57    'Duan et al., 2003'
+ALA CA   -0.028  'Duan et al., 2003'
+ALA CB   -0.23   'Duan et al., 2003'
+ALA H    0.294   'Duan et al., 2003'
+ALA H2   0.345   'Duan et al., 2003'
+ALA HA   0.121   'Duan et al., 2003'
+ALA HB1  0.077   'Duan et al., 2003'
+ALA HB2  0.077   'Duan et al., 2003'
+ALA HB3  0.077   'Duan et al., 2003'
+ALA N    -0.405  'Duan et al., 2003'
+ALA O    -0.555  'Duan et al., 2003'
+ALA OXT  -0.581  'Duan et al., 2003'
+ARG C    0.73    'Duan et al., 2003'
+ARG CA   -0.131  'Duan et al., 2003'
+ARG CB   0.037   'Duan et al., 2003'
+ARG CD   0.126   'Duan et al., 2003'
+ARG CG   0.012   'Duan et al., 2003'
+ARG CZ   0.566   'Duan et al., 2003'
+ARG H    0.234   'Duan et al., 2003'
+ARG H2   0.345   'Duan et al., 2003'
+ARG HA   0.053   'Duan et al., 2003'
+ARG HB2  0.028   'Duan et al., 2003'
+ARG HB3  0.028   'Duan et al., 2003'
+ARG HD2  0.068   'Duan et al., 2003'
+ARG HD3  0.068   'Duan et al., 2003'
+ARG HE   0.326   'Duan et al., 2003'
+ARG HG2  0.003   'Duan et al., 2003'
+ARG HG3  0.003   'Duan et al., 2003'
+ARG HH11 0.391   'Duan et al., 2003'
+ARG HH12 0.391   'Duan et al., 2003'
+ARG HH21 0.391   'Duan et al., 2003'
+ARG HH22 0.391   'Duan et al., 2003'
+ARG N    -0.301  'Duan et al., 2003'
+ARG NE   0.465   'Duan et al., 2003'
+ARG NH1  -0.686  'Duan et al., 2003'
+ARG NH2  -0.686  'Duan et al., 2003'
+ARG O    -0.578  'Duan et al., 2003'
+ARG OXT  -0.581  'Duan et al., 2003'
+ASN C    0.617   'Duan et al., 2003'
+ASN CA   0.045   'Duan et al., 2003'
+ASN CB   -0.094  'Duan et al., 2003'
+ASN CG   0.584   'Duan et al., 2003'
+ASN H    0.255   'Duan et al., 2003'
+ASN H2   0.345   'Duan et al., 2003'
+ASN HA   0.06    'Duan et al., 2003'
+ASN HB2  0.043   'Duan et al., 2003'
+ASN HB3  0.043   'Duan et al., 2003'
+ASN HD21 0.355   'Duan et al., 2003'
+ASN HD22 0.355   'Duan et al., 2003'
+ASN N    -0.43   'Duan et al., 2003'
+ASN ND2  -0.782  'Duan et al., 2003'
+ASN O    -0.524  'Duan et al., 2003'
+ASN OD1  -0.527  'Duan et al., 2003'
+ASN OXT  -0.581  'Duan et al., 2003'
+ASP C    0.443   'Duan et al., 2003'
+ASP CA   0.007   'Duan et al., 2003'
+ASP CB   -0.048  'Duan et al., 2003'
+ASP CG   0.745   'Duan et al., 2003'
+ASP H    0.32    'Duan et al., 2003'
+ASP H2   0.345   'Duan et al., 2003'
+ASP HA   0.082   'Duan et al., 2003'
+ASP HB2  -0.015  'Duan et al., 2003'
+ASP HB3  -0.015  'Duan et al., 2003'
+ASP N    -0.558  'Duan et al., 2003'
+ASP O    -0.501  'Duan et al., 2003'
+ASP OD1  -0.73   'Duan et al., 2003'
+ASP OD2  -0.73   'Duan et al., 2003'
+ASP OXT  -0.581  'Duan et al., 2003'
+CYS C    0.643   'Duan et al., 2003'
+CYS CA   -0.074  'Duan et al., 2003'
+CYS CB   -0.221  'Duan et al., 2003'
+CYS H    0.295   'Duan et al., 2003'
+CYS H2   0.345   'Duan et al., 2003'
+CYS HA   0.141   'Duan et al., 2003'
+CYS HB2  0.147   'Duan et al., 2003'
+CYS HB3  0.147   'Duan et al., 2003'
+CYS HG   0.189   'Duan et al., 2003'
+CYS N    -0.396  'Duan et al., 2003'
+CYS O    -0.585  'Duan et al., 2003'
+CYS OXT  -0.581  'Duan et al., 2003'
+CYS SG   -0.285  'Duan et al., 2003'
+GLN C    0.419   'Duan et al., 2003'
+GLN CA   0.037   'Duan et al., 2003'
+GLN CB   -0.032  'Duan et al., 2003'
+GLN CD   0.668   'Duan et al., 2003'
+GLN CG   -0.02   'Duan et al., 2003'
+GLN H    0.301   'Duan et al., 2003'
+GLN H2   0.345   'Duan et al., 2003'
+GLN HA   0.152   'Duan et al., 2003'
+GLN HB2  0.031   'Duan et al., 2003'
+GLN HB3  0.031   'Duan et al., 2003'
+GLN HE21 0.408   'Duan et al., 2003'
+GLN HE22 0.408   'Duan et al., 2003'
+GLN HG2  -0.031  'Duan et al., 2003'
+GLN HG3  0.031   'Duan et al., 2003'
+GLN N    -0.387  'Duan et al., 2003'
+GLN NE2  -0.883  'Duan et al., 2003'
+GLN O    -0.565  'Duan et al., 2003'
+GLN OE1  -0.628  'Duan et al., 2003'
+GLN OXT  -0.581  'Duan et al., 2003'
+GLU C    0.47    'Duan et al., 2003'
+GLU CA   0.032   'Duan et al., 2003'
+GLU CB   0.075   'Duan et al., 2003'
+GLU CD   0.765   'Duan et al., 2003'
+GLU CG   -0.034  'Duan et al., 2003'
+GLU H    0.307   'Duan et al., 2003'
+GLU H2   0.345   'Duan et al., 2003'
+GLU HA   0.065   'Duan et al., 2003'
+GLU HB2  -0.004  'Duan et al., 2003'
+GLU HB3  -0.004  'Duan et al., 2003'
+GLU HG2  -0.004  'Duan et al., 2003'
+GLU HG3  -0.004  'Duan et al., 2003'
+GLU N    -0.423  'Duan et al., 2003'
+GLU O    -0.593  'Duan et al., 2003'
+GLU OE1  -0.824  'Duan et al., 2003'
+GLU OE2  -0.824  'Duan et al., 2003'
+GLU OXT  -0.581  'Duan et al., 2003'
+GLY C    0.581   'Duan et al., 2003'
+GLY CA   -0.129  'Duan et al., 2003'
+GLY H    0.254   'Duan et al., 2003'
+GLY H2   0.345   'Duan et al., 2003'
+GLY HA2  0.089   'Duan et al., 2003'
+GLY HA3  0.089   'Duan et al., 2003'
+GLY N    -0.374  'Duan et al., 2003'
+GLY O    -0.509  'Duan et al., 2003'
+GLY OXT  -0.581  'Duan et al., 2003'
+HIS C    0.662   'Duan et al., 2003'
+HIS CA   0.031   'Duan et al., 2003'
+HIS CB   -0.152  'Duan et al., 2003'
+HIS CD2  -0.298  'Duan et al., 2003'
+HIS CE1  0.026   'Duan et al., 2003'
+HIS CG   0.278   'Duan et al., 2003'
+HIS H    0.282   'Duan et al., 2003'
+HIS H2   0.345   'Duan et al., 2003'
+HIS HA   0.085   'Duan et al., 2003'
+HIS HB2  0.055   'Duan et al., 2003'
+HIS HB3  0.055   'Duan et al., 2003'
+HIS HD1  0.16    'Duan et al., 2003'
+HIS HD2  0.16    'Duan et al., 2003'
+HIS HE1  0.127   'Duan et al., 2003'
+HIS HE2  0.267   'Duan et al., 2003'
+HIS N    -0.528  'Duan et al., 2003'
+HIS ND1  -0.423  'Duan et al., 2003'
+HIS NE2  -0.098  'Duan et al., 2003'
+HIS O    -0.529  'Duan et al., 2003'
+HIS OXT  -0.581  'Duan et al., 2003'
+ILE C    0.569   'Duan et al., 2003'
+ILE CA   -0.102  'Duan et al., 2003'
+ILE CB   0.062   'Duan et al., 2003'
+ILE CD1  -0.101  'Duan et al., 2003'
+ILE CG1  0.022   'Duan et al., 2003'
+ILE CG2  -0.13   'Duan et al., 2003'
+ILE H    0.329   'Duan et al., 2003'
+ILE H2   0.345   'Duan et al., 2003'
+ILE HA   0.174   'Duan et al., 2003'
+ILE HB   0.062   'Duan et al., 2003'
+ILE HD11 0.024   'Duan et al., 2003'
+ILE HD12 0.024   'Duan et al., 2003'
+ILE HD13 0.024   'Duan et al., 2003'
+ILE HG12 0.012   'Duan et al., 2003'
+ILE HG13 0.012   'Duan et al., 2003'
+ILE HG21 0.03    'Duan et al., 2003'
+ILE HG22 0.03    'Duan et al., 2003'
+ILE HG23 0.03    'Duan et al., 2003'
+ILE N    -0.451  'Duan et al., 2003'
+ILE O    -0.62   'Duan et al., 2003'
+ILE OXT  -0.581  'Duan et al., 2003'
+LEU C    0.573   'Duan et al., 2003'
+LEU CA   -0.101  'Duan et al., 2003'
+LEU CB   -0.144  'Duan et al., 2003'
+LEU CD1  -0.123  'Duan et al., 2003'
+LEU CD2  -0.123  'Duan et al., 2003'
+LEU CG   0.192   'Duan et al., 2003'
+LEU H    0.262   'Duan et al., 2003'
+LEU H2   0.345   'Duan et al., 2003'
+LEU HA   0.137   'Duan et al., 2003'
+LEU HB2  0.053   'Duan et al., 2003'
+LEU HB3  0.053   'Duan et al., 2003'
+LEU HD11 0.022   'Duan et al., 2003'
+LEU HD12 0.022   'Duan et al., 2003'
+LEU HD13 0.022   'Duan et al., 2003'
+LEU HD21 0.022   'Duan et al., 2003'
+LEU HD22 0.022   'Duan et al., 2003'
+LEU HD23 0.022   'Duan et al., 2003'
+LEU HG   0.001   'Duan et al., 2003'
+LEU N    -0.355  'Duan et al., 2003'
+LEU O    -0.558  'Duan et al., 2003'
+LEU OXT  -0.581  'Duan et al., 2003'
+LYS C    0.725   'Duan et al., 2003'
+LYS CA   -0.039  'Duan et al., 2003'
+LYS CB   -0.108  'Duan et al., 2003'
+LYS CD   -0.048  'Duan et al., 2003'
+LYS CE   -0.07   'Duan et al., 2003'
+LYS CG   0.033   'Duan et al., 2003'
+LYS H    0.251   'Duan et al., 2003'
+LYS H2   0.345   'Duan et al., 2003'
+LYS HA   0.129   'Duan et al., 2003'
+LYS HB2  0.045   'Duan et al., 2003'
+LYS HB3  0.045   'Duan et al., 2003'
+LYS HD2  0.071   'Duan et al., 2003'
+LYS HD3  0.071   'Duan et al., 2003'
+LYS HE2  0.12    'Duan et al., 2003'
+LYS HE3  0.12    'Duan et al., 2003'
+LYS HG2  0.01    'Duan et al., 2003'
+LYS HG3  0.01    'Duan et al., 2003'
+LYS HZ1  0.295   'Duan et al., 2003'
+LYS HZ2  0.295   'Duan et al., 2003'
+LYS HZ3  0.295   'Duan et al., 2003'
+LYS N    -0.436  'Duan et al., 2003'
+LYS NZ   -0.25   'Duan et al., 2003'
+LYS O    -0.563  'Duan et al., 2003'
+LYS OXT  -0.581  'Duan et al., 2003'
+MET C    0.6     'Duan et al., 2003'
+MET CA   -0.088  'Duan et al., 2003'
+MET CB   0.019   'Duan et al., 2003'
+MET CE   -0.285  'Duan et al., 2003'
+MET CG   -0.208  'Duan et al., 2003'
+MET H    0.281   'Duan et al., 2003'
+MET H2   0.345   'Duan et al., 2003'
+MET HA   0.123   'Duan et al., 2003'
+MET HB2  0.049   'Duan et al., 2003'
+MET HB3  0.049   'Duan et al., 2003'
+MET HE1  0.128   'Duan et al., 2003'
+MET HE2  0.128   'Duan et al., 2003'
+MET HE3  0.128   'Duan et al., 2003'
+MET HG2  0.124   'Duan et al., 2003'
+MET HG3  0.124   'Duan et al., 2003'
+MET N    -0.395  'Duan et al., 2003'
+MET O    -0.566  'Duan et al., 2003'
+MET OXT  -0.581  'Duan et al., 2003'
+MET SD   -0.212  'Duan et al., 2003'
+PHE C    0.548   'Duan et al., 2003'
+PHE CA   -0.03   'Duan et al., 2003'
+PHE CB   -0.099  'Duan et al., 2003'
+PHE CD1  -0.083  'Duan et al., 2003'
+PHE CD2  -0.083  'Duan et al., 2003'
+PHE CE1  -0.157  'Duan et al., 2003'
+PHE CE2  -0.157  'Duan et al., 2003'
+PHE CG   0.021   'Duan et al., 2003'
+PHE CZ   -0.1    'Duan et al., 2003'
+PHE H    0.234   'Duan et al., 2003'
+PHE H2   0.345   'Duan et al., 2003'
+PHE HA   0.102   'Duan et al., 2003'
+PHE HB2  0.061   'Duan et al., 2003'
+PHE HB3  0.061   'Duan et al., 2003'
+PHE HD1  0.098   'Duan et al., 2003'
+PHE HD2  0.098   'Duan et al., 2003'
+PHE HE1  0.124   'Duan et al., 2003'
+PHE HE2  0.124   'Duan et al., 2003'
+PHE HZ   0.115   'Duan et al., 2003'
+PHE N    -0.371  'Duan et al., 2003'
+PHE O    -0.507  'Duan et al., 2003'
+PHE OXT  -0.581  'Duan et al., 2003'
+PRO C    0.334   'Duan et al., 2003'
+PRO CA   -0.035  'Duan et al., 2003'
+PRO CB   -0.003  'Duan et al., 2003'
+PRO CD   -0.012  'Duan et al., 2003'
+PRO CG   0.013   'Duan et al., 2003'
+PRO H    0.345   'Duan et al., 2003'
+PRO HA   0.06    'Duan et al., 2003'
+PRO HB2  0.019   'Duan et al., 2003'
+PRO HB3  0.019   'Duan et al., 2003'
+PRO HD2  0.044   'Duan et al., 2003'
+PRO HD3  0.044   'Duan et al., 2003'
+PRO HG2  0.02    'Duan et al., 2003'
+PRO HG3  0.02    'Duan et al., 2003'
+PRO N    -0.088  'Duan et al., 2003'
+PRO O    -0.435  'Duan et al., 2003'
+PRO OXT  -0.581  'Duan et al., 2003'
+SER C    0.483   'Duan et al., 2003'
+SER CA   0.118   'Duan et al., 2003'
+SER CB   0.147   'Duan et al., 2003'
+SER H    0.345   'Duan et al., 2003'
+SER H2   0.345   'Duan et al., 2003'
+SER HA   0.142   'Duan et al., 2003'
+SER HB2  0.04    'Duan et al., 2003'
+SER HB3  0.04    'Duan et al., 2003'
+SER HG   0.446   'Duan et al., 2003'
+SER N    -0.541  'Duan et al., 2003'
+SER O    -0.581  'Duan et al., 2003'
+SER OG   -0.64   'Duan et al., 2003'
+SER OXT  -0.581  'Duan et al., 2003'
+THR C    0.56    'Duan et al., 2003'
+THR CA   -0.271  'Duan et al., 2003'
+THR CB   0.238   'Duan et al., 2003'
+THR CG2  -0.176  'Duan et al., 2003'
+THR H    0.255   'Duan et al., 2003'
+THR H2   0.345   'Duan et al., 2003'
+THR HA   0.164   'Duan et al., 2003'
+THR HB   0.045   'Duan et al., 2003'
+THR HG1  0.405   'Duan et al., 2003'
+THR HG21 0.06    'Duan et al., 2003'
+THR HG22 0.06    'Duan et al., 2003'
+THR HG23 0.06    'Duan et al., 2003'
+THR N    -0.245  'Duan et al., 2003'
+THR O    -0.552  'Duan et al., 2003'
+THR OG1  -0.602  'Duan et al., 2003'
+THR OXT  -0.581  'Duan et al., 2003'
+TRP C    0.584   'Duan et al., 2003'
+TRP CA   -0.02   'Duan et al., 2003'
+TRP CB   -0.098  'Duan et al., 2003'
+TRP CD1  -0.174  'Duan et al., 2003'
+TRP CD2  0.09    'Duan et al., 2003'
+TRP CE2  0.142   'Duan et al., 2003'
+TRP CE3  -0.154  'Duan et al., 2003'
+TRP CG   -0.1    'Duan et al., 2003'
+TRP CH2  -0.133  'Duan et al., 2003'
+TRP CZ2  -0.211  'Duan et al., 2003'
+TRP CZ3  -0.164  'Duan et al., 2003'
+TRP H    0.242   'Duan et al., 2003'
+TRP H2   0.345   'Duan et al., 2003'
+TRP HA   0.107   'Duan et al., 2003'
+TRP HB2  0.065   'Duan et al., 2003'
+TRP HB3  0.065   'Duan et al., 2003'
+TRP HD1  0.171   'Duan et al., 2003'
+TRP HE1  0.322   'Duan et al., 2003'
+TRP HE3  0.123   'Duan et al., 2003'
+TRP HH2  0.119   'Duan et al., 2003'
+TRP HZ2  0.126   'Duan et al., 2003'
+TRP HZ3  0.119   'Duan et al., 2003'
+TRP N    -0.428  'Duan et al., 2003'
+TRP NE1  -0.298  'Duan et al., 2003'
+TRP O    -0.495  'Duan et al., 2003'
+TRP OXT  -0.581  'Duan et al., 2003'
+TYR C    0.622   'Duan et al., 2003'
+TYR CA   0.01    'Duan et al., 2003'
+TYR CB   -0.052  'Duan et al., 2003'
+TYR CD1  -0.183  'Duan et al., 2003'
+TYR CD2  -0.183  'Duan et al., 2003'
+TYR CE1  -0.182  'Duan et al., 2003'
+TYR CE2  -0.182  'Duan et al., 2003'
+TYR CG   0.113   'Duan et al., 2003'
+TYR CZ   0.206   'Duan et al., 2003'
+TYR H    0.264   'Duan et al., 2003'
+TYR H2   0.345   'Duan et al., 2003'
+TYR HA   0.096   'Duan et al., 2003'
+TYR HB2  0.019   'Duan et al., 2003'
+TYR HB3  0.019   'Duan et al., 2003'
+TYR HD1  0.133   'Duan et al., 2003'
+TYR HD2  0.133   'Duan et al., 2003'
+TYR HE1  0.137   'Duan et al., 2003'
+TYR HE2  0.137   'Duan et al., 2003'
+TYR HH   0.33    'Duan et al., 2003'
+TYR N    -0.488  'Duan et al., 2003'
+TYR O    -0.527  'Duan et al., 2003'
+TYR OH   -0.421  'Duan et al., 2003'
+TYR OXT  -0.581  'Duan et al., 2003'
+VAL C    0.447   'Duan et al., 2003'
+VAL CA   -0.052  'Duan et al., 2003'
+VAL CB   0.395   'Duan et al., 2003'
+VAL CG1  -0.09   'Duan et al., 2003'
+VAL CG2  -0.09   'Duan et al., 2003'
+VAL H    0.44    'Duan et al., 2003'
+VAL H2   0.345   'Duan et al., 2003'
+VAL HA   -0.026  'Duan et al., 2003'
+VAL HB   -0.116  'Duan et al., 2003'
+VAL HG11 -0.009  'Duan et al., 2003'
+VAL HG12 -0.009  'Duan et al., 2003'
+VAL HG13 -0.009  'Duan et al., 2003'
+VAL HG21 -0.009  'Duan et al., 2003'
+VAL HG22 -0.009  'Duan et al., 2003'
+VAL HG23 -0.009  'Duan et al., 2003'
+VAL N    -0.45   'Duan et al., 2003'
+VAL O    -0.405  'Duan et al., 2003'
+VAL OXT  -0.581  'Duan et al., 2003'
+MG  MG   2.000   ?
+CA  CA   2.000   ?
+NA  NA   1.000   ?
+ZN  ZN   2.000   ?
+K   K    1.000   ?
+CD  CD   2.000   ?
+XAA CA   0.118   'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA CB   0.147   'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA CG   0.147   'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA HA   0.142   'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA HB2  0.04    'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA HB3  0.04    'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA HG   0.446   'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA OG   -0.64   'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA XA   0       'Partial charge of the atom of the dummy residue for testing purposes.'
+XAA XA2  0       'Partial charge of the atom of the dummy residue for testing purposes.'
 #
 loop_
 _[local]_torsional_atom_names.label_comp_id
@@ -986,9 +988,10 @@ loop_
 _[local]_h_bond.type_symbol
 _[local]_h_bond.sigma
 _[local]_h_bond.epsilon
-N 1.90 5.00
-O 1.90 5.00
-S 2.50 1.00
+_[local]_h_bond.description
+N 1.90 5.00 'Huey et al., 2007'
+O 1.90 5.00 'Huey et al., 2007'
+S 2.50 1.00 'Huey et al., 2007'
 #
 loop_
 _[local]_residue_atom_necessity.label_comp_id
