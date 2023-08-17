@@ -75,6 +75,12 @@ O S 3.60 0.200 'Huey et al., 2007'
 O X 1.65 0.105 'Huey et al., 2007'
 S S 4.00 0.200 'Huey et al., 2007'
 S X 2.05 0.105 'Huey et al., 2007'
+MG MG 1.360 0.010 'Li et al., 2013'
+CA CA 1.649 0.106 'Li et al., 2013'
+NA NA 1.475 0.032 'Li et al., 2015'
+ZN ZN 1.271 0.003 'Li et al., 2015'
+K  K  1.719 0.151 'Li et al., 2015'
+CD CD 1.412 0.018 'Li et al., 2013'
 X X 0.10 0.010 'Lennard-Jones parameters between two dummy atoms.'
 #
 loop_
