@@ -8686,6 +8686,16 @@ $VAR1 = bless( {
         'OXT' => 1
       }
     },
+    'CA' => {
+      'mandatory' => {
+        'CA' => 1
+      }
+    },
+    'CD' => {
+      'mandatory' => {
+        'CD' => 1
+      }
+    },
     'CYS' => {
       'mandatory' => {
         'C' => 1,
@@ -8827,6 +8837,11 @@ $VAR1 = bless( {
         'OXT' => 1
       }
     },
+    'K' => {
+      'mandatory' => {
+        'K' => 1
+      }
+    },
     'LEU' => {
       'mandatory' => {
         'C' => 1,
@@ -8909,6 +8924,16 @@ $VAR1 = bless( {
         'HG3' => 1,
         'HXT' => 1,
         'OXT' => 1
+      }
+    },
+    'MG' => {
+      'mandatory' => {
+        'MG' => 1
+      }
+    },
+    'NA' => {
+      'mandatory' => {
+        'NA' => 1
       }
     },
     'PHE' => {
@@ -9108,6 +9133,11 @@ $VAR1 = bless( {
         'HB3' => 1,
         'HG' => 1,
         'OG' => 1
+      }
+    },
+    'ZN' => {
+      'mandatory' => {
+        'ZN' => 1
       }
     }
   },

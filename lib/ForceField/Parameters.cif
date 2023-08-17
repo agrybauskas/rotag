@@ -1390,6 +1390,12 @@ VAL HG22 optional
 VAL HG23 optional
 VAL HXT  optional
 VAL OXT  optional
+MG  MG   mandatory
+CA  CA   mandatory
+NA  NA   mandatory
+ZN  ZN   mandatory
+K   K    mandatory
+CD  CD   mandatory
 XAA CA   mandatory
 XAA CB   mandatory
 XAA OG   optional
