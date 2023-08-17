@@ -1396,6 +1396,9 @@ NA  NA   mandatory
 ZN  ZN   mandatory
 K   K    mandatory
 CD  CD   mandatory
+HOH O    mandatory
+HOH H1   optional
+HOH H2   optional
 XAA CA   mandatory
 XAA CB   mandatory
 XAA OG   optional

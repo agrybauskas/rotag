@@ -8809,6 +8809,15 @@ $VAR1 = bless( {
         'OXT' => 1
       }
     },
+    'HOH' => {
+      'mandatory' => {
+        'O' => 1
+      },
+      'optional' => {
+        'H1' => 1,
+        'H2' => 1
+      }
+    },
     'ILE' => {
       'mandatory' => {
         'C' => 1,
