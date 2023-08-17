@@ -1581,6 +1581,9 @@ VAL CG1  sp3
 VAL CG2  sp3
 VAL O    sp2
 VAL OXT  sp2
+HOH O    sp3
+HOH H1   sp3
+HOH H2   sp3
 XAA CA   sp3
 XAA CB   sp3
 XAA CG   sp3
@@ -2336,6 +2339,10 @@ VAL H2   N
 VAL C    O
 VAL C    OXT
 VAL HXT  OXT
+HOH O    H1
+HOH O    H2
+HOH H1   O
+HOH H2   O
 XAA CB   CA
 XAA XA   CA
 XAA XA2  CA
@@ -2551,6 +2558,8 @@ VAL CG2  HG23
 VAL N    H
 VAL N    H2
 VAL OXT  HXT
+HOH O    H1
+HOH O    H2
 XAA CA   HA
 XAA CB   HB2
 XAA CB   HB3
@@ -2682,4 +2691,4 @@ XAA SER ARG HIS LYS ASP GLU CYS VAL ILE LEU MET PHE TYR TRP THR ASN GLN
 #
 loop_
 _[local]_sidechain_hetatom_extension.label_comp_id
-MG CA NA ZN K MN FE CU NI CO CD
+MG CA NA ZN K MN FE CU NI CO CD HOH

@@ -463,6 +463,11 @@ $VAR1 = bless( {
       'O' => 'sp2',
       'OXT' => 'sp2'
     },
+    'HOH' => {
+      'H1' => 'sp3',
+      'H2' => 'sp3',
+      'O' => 'sp3'
+    },
     'ILE' => {
       'C' => 'sp2',
       'CA' => 'sp3',
@@ -1220,6 +1225,18 @@ $VAR1 = bless( {
       'OXT' => [
         'C',
         'HXT'
+      ]
+    },
+    'HOH' => {
+      'H1' => [
+        'O'
+      ],
+      'H2' => [
+        'O'
+      ],
+      'O' => [
+        'H1',
+        'H2'
       ]
     },
     'ILE' => {
@@ -7540,6 +7557,12 @@ $VAR1 = bless( {
         'HXT'
       ]
     },
+    'HOH' => {
+      'O' => [
+        'H1',
+        'H2'
+      ]
+    },
     'ILE' => {
       'CA' => [
         'HA'
@@ -9254,7 +9277,8 @@ $VAR1 = bless( {
     'CU',
     'NI',
     'CO',
-    'CD'
+    'CD',
+    'HOH'
   ],
   '_[local]_symmetrical_atom_names' => {
     'ARG' => {
