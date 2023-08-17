@@ -454,12 +454,12 @@ VAL HG23 -0.009  'Duan et al., 2003'
 VAL N    -0.45   'Duan et al., 2003'
 VAL O    -0.405  'Duan et al., 2003'
 VAL OXT  -0.581  'Duan et al., 2003'
-MG  MG   2.000   ?
-CA  CA   2.000   ?
-NA  NA   1.000   ?
-ZN  ZN   2.000   ?
-K   K    1.000   ?
-CD  CD   2.000   ?
+MG  MG   2.000   '+2 as in ion form.'
+CA  CA   2.000   '+2 as in ion form.'
+NA  NA   1.000   '+1 as in ion form.'
+ZN  ZN   2.000   '+2 as in ion form.'
+K   K    1.000   '+1 as in ion form.'
+CD  CD   2.000   '+2 as in ion form.'
 XAA CA   0.118   'Partial charge of the atom of the dummy residue for testing purposes.'
 XAA CB   0.147   'Partial charge of the atom of the dummy residue for testing purposes.'
 XAA CG   0.147   'Partial charge of the atom of the dummy residue for testing purposes.'
