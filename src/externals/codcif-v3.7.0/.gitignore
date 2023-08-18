@@ -1,0 +1,9 @@
+cifparse
+cifvalues
+cif_list_tags
+.*.d
+*.a
+*.tab.*
+*.lex.*
+*.output
+version.h
