@@ -1,6 +1,9 @@
 # /src/lib/
 /src/lib/*.o
 
+# /src/lib/ForceField/
+/src/lib/ForceField/*.o
+
 # /lib/Grammar/
 /lib/Grammar/*.pm
 
