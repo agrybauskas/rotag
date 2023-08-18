@@ -7,6 +7,9 @@
 # /lib/Grammar/
 /lib/Grammar/*.pm
 
+# /tests/outputs/
+/tests/outputs/*.diff
+
 # /tests/coverage/
 /tests/coverage/cover_db
 /tests/coverage/*.out
