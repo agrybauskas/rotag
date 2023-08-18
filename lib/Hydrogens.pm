@@ -112,7 +112,7 @@ sub add_hydrogens
 
         # TODO: should be pre-determined as constant variable.
         my @mandatory_residue_atoms =
-            @{ $residue_atoms->{$residue_name}{'mandatory'} };
+            keys %{ $residue_atoms->{$residue_name}{'mandatory'} };
         my @mandatory_connections = ();
         for my $mandatory_atom ( @mandatory_residue_atoms ) {
             if( any { $mandatory_atom eq $_ }

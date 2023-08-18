@@ -67,16 +67,16 @@ our $VERSION = $VERSION;
 #*    -a, --angles <angles>
 #*                        angles that each dihedral angle is turned by in degrees
 #*                        expressed in special grammar:
-#*                            <float>..<float>..<float>
-#*                                defined steps that are performed by
-#*                                defined range;
-#*                            <angle> = <float>[,<float>...]
-#*                                defined steps that are performed by
-#*                                defined range for specific angle;
+#*                            <residue>:<angle>=<start>..<step>..<end>
+#*                                defined steps that are performed by defined
+#*                                range. Residue, angle name, angle start and end
+#*                                are optional.
 #*
 #*                        Example: '0..36.0..360.0', '0..18.0..180.0',
 #*                                 '0..90.0', 'chi1=0..36.0',
-#*                                 'chi1=90.0..90.0, chi2=0.0..10.0..360.0'.
+#*                                 'chi1=90.0..90.0, chi2=0.0..10.0..360.0',
+#*                                 'LYS,LEU,ILE:-180.0..20.0..180.0',
+#*                                 'SER: 10.0; CYS,THR: 20.0'.
 #*    -r, --radians
 #*                        angle value is in radians.
 #*    -x, --rand-seed <int>

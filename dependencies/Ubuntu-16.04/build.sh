@@ -11,4 +11,5 @@ sudo apt-get install -y \
      libsort-naturally-perl \
      libparallel-forkmanager-perl \
      libjson-perl \
+     make \
      zip

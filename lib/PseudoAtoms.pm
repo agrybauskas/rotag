@@ -21,7 +21,8 @@ use List::Util qw( max
                    shuffle );
 use List::MoreUtils qw( any
                         uniq );
-use Logging qw( info );
+use Logging qw( info
+                warning );
 use threads;
 
 use Combinatorics qw( permutation );
@@ -43,6 +44,7 @@ use Measure qw( all_dihedral
 use BondProperties qw( hybridization
                        rotatable_bonds
                        unique_rotatables );
+use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry
                    determine_residue_keys
@@ -398,6 +400,8 @@ sub generate_library
             for my $ca_atom_id ( @{ $target_cell_idxs->{$cell} } ) {
                 my $residue_id =
                     $current_atom_site->{$ca_atom_id}{'label_seq_id'};
+                my $residue_name =
+                    $current_atom_site->{$ca_atom_id}{'label_comp_id'};
                 my $residue_chain =
                     $current_atom_site->{$ca_atom_id}{'label_asym_id'};
                 my $residue_site =
@@ -410,6 +414,16 @@ sub generate_library
                 my $residue_unique_key =
                     determine_residue_keys( $residue_site,
                                             { 'exclude_dot' => 1 } )->[0];
+
+                my @missing_atom_names =
+                    @{ missing_atom_names( $parameters, $residue_site ) };
+
+                if( @missing_atom_names ) {
+                    warn 'missing ' .
+                        ( $#missing_atom_names > 0 ? 'atoms' : 'atom' ) .
+                        ' in the residue ' . uc( $residue_name ) . $residue_id .
+                        ': ' . join( ', ',  @missing_atom_names ) . "\n";
+                }
 
                 my %interaction_site =
                     %{ filter_new( $current_atom_site,
