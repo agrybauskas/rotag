@@ -5,7 +5,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/join.hpp>
 
-#include "../PDBxParser.h"
+// #include "../../externals/codcif/"
 
 Parameters::Parameters() {
   // NOTE: not sure if getenv() is ok here.
@@ -40,7 +40,7 @@ Parameters::Parameters() {
     "_rotag_rotatable_residue_names"
   };
 
-  obtain_pdbx_data(force_field_file, data_identifier);
+
 }
 
 void Parameters::_retrieve_constants() {
