@@ -1,12 +1,8 @@
+# /bin
+/bin/*
 
-# /
-/a.out
-
-# /lib/
-/lib/
-
-# /lib/ForceField/
-/lib/ForceField/
+# /src/lib/
+/src/lib/*.o
 
 # /lib/Grammar/
 /lib/Grammar/*.pm
@@ -14,7 +10,3 @@
 # /tests/coverage/
 /tests/coverage/cover_db
 /tests/coverage/*.out
-
-# /tests/outputs/
-/tests/outputs/*.diff
-/tests/outputs/*.jmol
