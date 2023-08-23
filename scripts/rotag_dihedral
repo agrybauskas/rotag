@@ -213,8 +213,12 @@ for my $pdbx_file ( @ARGV ) {
                 my $residue_atom_id =
                     scalar( uniq map { $dihedral_site->{$_}{'label_alt_id'} }
                                      @atom_ids ) > 1 ?
-                    $atom_ids[3] :
+                    $atom_ids[3]:
                     $atom_ids[2];
+
+                my ( $last_atom_id ) = reverse @atom_ids;
+
+                next if ! defined $target_dihedral_site->{$last_atom_id};
 
                 push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                     { 'id' => $dihedral_id,
