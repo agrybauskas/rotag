@@ -191,6 +191,12 @@ for my $pdbx_file ( @ARGV ) {
         my $dihedral_id = 1;
         my %visited_dihedral_angles = ();
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
+            my $residue_site =
+                filter_by_unique_residue_key( $target_dihedral_site,
+                                              $residue_unique_key );
+
+            next if ! %{ $residue_site };
+
             for my $angle_name (
                 sort keys %{ $dihedral_angles->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $dihedral_angles->{$residue_unique_key}
@@ -209,8 +215,6 @@ for my $pdbx_file ( @ARGV ) {
                                      @atom_ids ) > 1 ?
                     $atom_ids[3] :
                     $atom_ids[2];
-
-                # next if ! defined $target_dihedral_site->{$atom_ids[3]};
 
                 push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                     { 'id' => $dihedral_id,
