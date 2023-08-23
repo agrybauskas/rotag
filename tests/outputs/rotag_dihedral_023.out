@@ -19,4 +19,5 @@ _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
 1 ASP 27 A 1 . 150 C 148 N 149 CA 1925 MG C-N-CA-MG -89.522 degrees
+# Here should another dihedral angle.
 #
