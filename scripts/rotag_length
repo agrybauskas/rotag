@@ -332,17 +332,32 @@ for my $pdbx_file ( @ARGV ) {
                 my @atom_ids = @{ $bond_lengths->{$residue_unique_key}
                                                  {$bond_name}{'atom_ids'} };
 
+                # The destinction between main-chain and side-chain dihedral
+                # angles is that different from side-chain, main-chain dihedral
+                # angles span multiple residues. So, it has to be dealt with.
+                # HACK: for now, only 'alt_id' is checked.
+                my $residue_atom_id =
+                    scalar( uniq map { $bond_length_site->{$_}{'label_alt_id'} }
+                                     @atom_ids ) > 1 ?
+                    $atom_ids[1]:
+                    $atom_ids[0];
+
                 my ( $last_atom_id ) = reverse @atom_ids;
 
                 next if ! defined $target_bond_length_site->{$last_atom_id};
 
                 push @{ $pdbx->{'_[local]_bond_length'}{'data'} },
                     { 'id' => $bond_length_id,
-                      'label_comp_id' => $residue_name,
-                      'label_seq_id' => $label_seq_id,
-                      'label_asym_id' => $chain_id,
-                      'pdbx_PDB_model_num' => $model_id,
-                      'label_alt_id' => $alt_id,
+                      'label_comp_id' =>
+                          $bond_length_site->{$residue_atom_id}{'label_comp_id'},
+                      'label_seq_id' =>
+                          $bond_length_site->{$residue_atom_id}{'label_seq_id'},
+                      'label_asym_id' =>
+                          $bond_length_site->{$residue_atom_id}{'label_asym_id'},
+                      'pdbx_PDB_model_num' =>
+                          $bond_length_site->{$residue_atom_id}{'pdbx_PDB_model_num'},
+                      'label_alt_id' =>
+                          $bond_length_site->{$residue_atom_id}{'label_alt_id'},
                       'atom_1_id' => $atom_ids[0],
                       'label_atom_1_id' =>
                           $bond_length_site->{$atom_ids[0]}{'label_atom_id'},
