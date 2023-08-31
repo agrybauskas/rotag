@@ -1034,14 +1034,19 @@ sub replace_with_rotamer
 # assigning to the existing one. Duplicated heteroatoms are to be expected.
 # Input:
 #     $parameters - general parameters (see Parameters.pm);
-#     $atom_site - atom site data structure (see PDBxParser.pm).
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $options->{'struct_conn'} - reads 'struc_conn' and assings connections
+#     appropriately.
 # Output:
 #     atom site with assigned heteroatoms if applicable.
 #
 
 sub assign_hetatoms_to_residues
 {
-    my ( $parameters, $atom_site ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
+    my ( $struct_conn ) = ( $options->{'struct_conn'} );
+    $struct_conn //= {};
+
     my $hetatom_site =
         filter_new( $atom_site,
                     { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
