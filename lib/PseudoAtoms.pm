@@ -1042,6 +1042,9 @@ sub replace_with_rotamer
 sub assign_hetatoms_to_residues
 {
     my ( $parameters, $atom_site ) = @_;
+    my $hetatom_site =
+        filter_new( $atom_site,
+                    { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
     return;
 }
 
