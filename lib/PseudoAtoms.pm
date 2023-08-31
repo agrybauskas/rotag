@@ -1041,6 +1041,7 @@ sub replace_with_rotamer
 
 sub assign_hetatoms_to_residues
 {
+    my ( $parameters, $atom_site ) = @_;
     return;
 }
 
