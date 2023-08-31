@@ -1029,6 +1029,16 @@ sub replace_with_rotamer
     return;
 }
 
+#
+# Assigns heteroatoms to specific residues -- either creating the new one or
+# assigning to the existing one. Duplicated heteroatoms are to be expected.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm).
+# Output:
+#     atom site with assigned heteroatoms if applicable.
+#
+
 sub assign_hetatoms_to_residues
 {
     return;
