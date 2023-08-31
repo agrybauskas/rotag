@@ -5,7 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 BEGIN {
-our @EXPORT_OK = qw( calc_favourable_angle
+our @EXPORT_OK = qw( assign_hetatoms_to_residues
+                     calc_favourable_angle
                      calc_favourable_angles
                      calc_full_atom_energy
                      generate_library
@@ -1025,6 +1026,11 @@ sub replace_with_rotamer
             $residue_site->{$residue_atom_id};
     }
 
+    return;
+}
+
+sub assign_hetatoms_to_residues
+{
     return;
 }
 

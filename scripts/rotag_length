@@ -25,6 +25,7 @@ use PDBxParser qw( filter
                    split_by
                    to_csv
                    to_pdbx );
+use PseudoAtoms qw( assign_hetatoms_to_residues );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -306,8 +307,9 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         connect_atoms( $parameters, $bond_length_site );
-        connect_hetatoms( $parameters, $bond_length_site,
-                          { 'do_bond_stretching' => 1 } ) if $calc_hetatoms;
+
+        assign_hetatoms_to_residues( $parameters,
+                                     $bond_length_site ) if $calc_hetatoms;
 
         stretchable_bonds( $parameters, $bond_length_site,
                            { 'include_mainchain' => $calc_mainchain,
