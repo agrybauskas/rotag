@@ -1,7 +1,10 @@
 #include <getopt.h>
+
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
+
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -10,8 +13,8 @@
 #include "lib/PDBxParser.h"
 #include "lib/Version.h"
 
-extern char *optarg;
-extern int optind, opterr, optopt;
+char *optarg;
+int optind, opterr, optopt;
 
 int main(int argc, char *argv[]) {
   const struct option longopts[] = {
