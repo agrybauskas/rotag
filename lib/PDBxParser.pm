@@ -20,6 +20,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      obtain_pdb_atom_site
                      obtain_atom_site
                      obtain_atom_sites
+                     obtain_struct_conn
                      pdbx_indexed
                      pdbx_loop_to_array
                      pdbx_raw
@@ -719,6 +720,33 @@ sub obtain_atom_sites
     }
 
     return \@atom_sites;
+}
+
+#
+# From PDBx file, obtains data only from _struct_conn category and outputs
+# special data structure that represents atom data.
+# Input:
+#     $pdbx_file - PDBx file.
+# Output:
+#     %struct_conn - indexed data structure.
+#     E.g.: { metalc1 => { 'id' => 'metalc1',
+#                          'conn_type_id' => 'metalc',
+#                          ... }
+#             ... }
+#
+
+sub obtain_struct_conn
+{
+    my ( $pdbx_file, $options ) = @_;
+    my $struct_conn =
+        pdbx_indexed( $pdbx_file,
+                      [ '_struct_conn' ],
+                      { 'attributes' => { '_struct_conn' => [ 'id' ] } } );
+    if( defined $struct_conn && %{ $struct_conn } ) {
+        return $struct_conn->{'_struct_conn'}{'data'};
+    } else {
+        return {};
+    }
 }
 
 #
