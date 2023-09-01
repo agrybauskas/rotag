@@ -113,10 +113,12 @@ my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
-    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
-    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
+    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site', '_struct_conn' ] );
+    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ],
+                                            '_struct_conn' => [ 'id' ], } } );
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
+    my $struct_conn = $pdbx->{'_struct_conn'}{'data'};
 
     if( ! defined $atom_site ) {
         warning( { 'program' => $0,
@@ -309,7 +311,9 @@ for my $pdbx_file ( @ARGV ) {
         connect_atoms( $parameters, $bond_length_site );
 
         assign_hetatoms_to_residues( $parameters,
-                                     $bond_length_site ) if $calc_hetatoms;
+                                     $bond_length_site,
+                                     { 'struct_conn' => $struct_conn } )
+            if $calc_hetatoms;
 
         stretchable_bonds( $parameters, $bond_length_site,
                            { 'include_mainchain' => $calc_mainchain,
