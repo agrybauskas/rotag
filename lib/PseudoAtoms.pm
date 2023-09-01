@@ -1050,6 +1050,13 @@ sub assign_hetatoms_to_residues
     my $hetatom_site =
         filter_new( $atom_site,
                     { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
+
+    for my $hetatom_id ( %{ $hetatom_site } ) {
+        my $hetatom_connections =
+            filter_new( $struct_conn,
+                        { 'include' => { 'id' => [ 'metalc1' ] } } );
+    }
+
     return;
 }
 
