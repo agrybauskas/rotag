@@ -34,6 +34,7 @@ use BondParameters qw( collect_bond_lengths
                        stretchable_bonds );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
+                     connect_atoms_explicitly
                      is_neighbour
                      is_second_neighbour );
 use ForceField::Parameters;
@@ -1081,7 +1082,9 @@ sub assign_hetatoms_to_residues
             # Iteration has to be performed, because '_struct_conn' does not
             # have 'pdbx_PDB_model_num' and 'label_alt_id' entries.
             for my $connected_atom_id ( keys %{ $connected_atom_site } ) {
-
+                connect_atoms_explicitly( $atom_site,
+                                          [ $hetatom_id ],
+                                          [ $connected_atom_id ] );
             }
         }
     }
