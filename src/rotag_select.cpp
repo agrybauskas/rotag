@@ -29,8 +29,8 @@ int main(int argc, char *argv[]) {
   int index;
   int iarg = 0;
 
-  std::string target_cmds;
-  std::string select_cmds;
+  std::string target_cmds = "all";
+  std::string select_cmds = "target";
   std::string tags =
       "_atom_site,_[local]_rotamer_angle,_[local]_dihedral_angle,"
       "_[local]_rotamer_energy,_[local]_pairwise_energy,_[local]_energy,"
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 
   /*
     NOTE: Error messages have to be addressed here.
-   */
+  */
 
   while(iarg != -1) {
     iarg = getopt_long(argc, argv, "t:s:0:rpkx:hv", longopts, &index);
@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
   boost::replace_all(tags, " ", "");
   boost::split(tags_list, tags, boost::is_any_of(","));
 
-  Parameters parameters;
+  // Parameters parameters;
 
   return 0;
 }
