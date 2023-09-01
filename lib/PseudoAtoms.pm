@@ -1051,10 +1051,39 @@ sub assign_hetatoms_to_residues
         filter_new( $atom_site,
                     { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
 
-    for my $hetatom_id ( %{ $hetatom_site } ) {
-        my $hetatom_connections =
+    # Uses '_struct_conn' category to determine connections.
+    for my $hetatom_id ( keys %{ $hetatom_site } ) {
+        my ( $hetatom_label_seq_id, $hetatom_label_asym_id ) =
+            map { $hetatom_site->{$hetatom_id}{$_} }
+                ( 'label_seq_id',
+                  'label_asym_id' );
+        my $hetatom_struct_conn =
             filter_new( $struct_conn,
-                        { 'include' => { 'id' => [ 'metalc1' ] } } );
+                        { 'include' =>
+                          { 'ptnr2_label_seq_id' => [ $hetatom_label_seq_id ],
+                            'ptnr2_label_asym_id' => [ $hetatom_label_asym_id ] } } );
+        for my $hetatom_struct_conn_id ( keys %{ $hetatom_struct_conn } ) {
+            my $connected_atom_site =
+                filter_new( $atom_site,
+                            { 'include' =>
+                              { 'label_seq_id' => [
+                                    $hetatom_struct_conn->{$hetatom_struct_conn_id}
+                                                          {'ptnr1_label_seq_id'}
+                                ],
+                                'label_asym_id' => [
+                                        $hetatom_struct_conn->{$hetatom_struct_conn_id}
+                                                              {'ptnr1_label_asym_id'}
+                                ],
+                                'label_atom_id' => [
+                                    $hetatom_struct_conn->{$hetatom_struct_conn_id}
+                                                          {'ptnr1_label_atom_id'}
+                                ] } } );
+            # Iteration has to be performed, because '_struct_conn' does not
+            # have 'pdbx_PDB_model_num' and 'label_alt_id' entries.
+            for my $connected_atom_id ( keys %{ $connected_atom_site } ) {
+
+            }
+        }
     }
 
     return;
