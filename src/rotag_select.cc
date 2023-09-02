@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
   boost::replace_all(tags, " ", "");
   boost::split(tags_list, tags, boost::is_any_of(","));
 
-  Parameters parameters;
+  std::unique_ptr<Parameters> parameters;
 
   return 0;
 }
