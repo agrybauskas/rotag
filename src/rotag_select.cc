@@ -13,26 +13,8 @@
 #include "lib/PDBxParser.h"
 #include "lib/Version.h"
 
-char *optarg;
-int optind, opterr, optopt;
-
 int main(int argc, char *argv[]) {
-  const struct option longopts[] = {
-    {"target",         1, 0, 't'},
-    {"select",         1, 0, 's'},
-    {"tags",           1, 0, 0  },
-    {"related-data",   0, 0, 'r'},
-    {"pdb",            0, 0, 'p'},
-    {"keep-ignored",   0, 0, 'k'},
-    {"random-seed",    1, 0, 'x'},
-    {"help",           0, 0, 'h'},
-    {"version",        0, 0, 'v'},
-    {0,                0, 0, 0  },
-  };
-
-  int index;
-  int iarg = 0;
-
+  // Defaults.
   std::string target_cmds = "all";
   std::string select_cmds = "target";
   std::string tags =
@@ -48,6 +30,23 @@ int main(int argc, char *argv[]) {
       "_[local]_rotamer_energy", "_[local]_pairwise_energy", "_[local]_energy",
       "_[local]_rmsd"
   };
+
+  const struct option longopts[] = {
+    {"target",         1, 0, 't'},
+    {"select",         1, 0, 's'},
+    {"tags",           1, 0, 0  },
+    {"related-data",   0, 0, 'r'},
+    {"pdb",            0, 0, 'p'},
+    {"keep-ignored",   0, 0, 'k'},
+    {"random-seed",    1, 0, 'x'},
+    {"help",           0, 0, 'h'},
+    {"version",        0, 0, 'v'},
+    {0,                0, 0, 0  },
+  };
+
+  char *optarg;
+  int index;
+  int iarg = 0;
 
   /*
     NOTE: Error messages have to be addressed here.
