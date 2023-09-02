@@ -4,9 +4,6 @@
 #include <string>
 
 class Parameters {
-  private:
-    std::string force_field_file;
-
   public:
     Parameters();
 };
