@@ -13,6 +13,9 @@
 #include "lib/PDBxParser.h"
 #include "lib/Version.h"
 
+extern char *optarg;
+extern int optind, opterr, optopt;
+
 int main(int argc, char *argv[]) {
   // Defaults.
   std::string target_cmds = "all";
@@ -44,13 +47,8 @@ int main(int argc, char *argv[]) {
     {0,                0, 0, 0  },
   };
 
-  char *optarg;
   int index;
   int iarg = 0;
-
-  /*
-    NOTE: Error messages have to be addressed here.
-  */
 
   while(iarg != -1) {
     iarg = getopt_long(argc, argv, "t:s:0:rpkx:hv", longopts, &index);
