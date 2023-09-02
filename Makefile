@@ -24,24 +24,24 @@ BIN_DIR=bin
 SRC_DIR=src
 LIB_DIR=${SRC_DIR}/lib
 OBJ_DIR=${SRC_DIR}/lib
-LIB_SRC=${wildcard ${LIB_DIR}/*.cpp ${LIB_DIR}/ForceField/*.cpp}
-BIN_SRC=$(wildcard ${SRC_DIR}/*.cpp)
-HEADERS=${LIB_SRC:%.cpp=%.h}
-CPP_OBJS=${LIB_SRC:%.cpp=%.o}
-CPP_BIN=${BIN_SRC:${SRC_DIR}/%.cpp=${BIN_DIR}/%}
-CPP_LIB=-lboost_regex
+LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc}
+BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
+HEADERS=${LIB_SRC:%.cc=%.h}
+CC_OBJS=${LIB_SRC:%.cc=%.o}
+CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
+CC_LIB=-lboost_regex
 
-.PRECIOUS: ${CPP_OBJS}
+.PRECIOUS: ${CC_OBJS}
 
-%.o: %.cpp %.h
-	g++ -c -o $@ $< ${CPP_LIB}
+%.o: %.cc %.h
+	g++ -c -o $@ $< ${CC_LIB}
 
-${BIN_DIR}/%: ${SRC_DIR}/%.cpp ${CPP_OBJS}
-	g++ -o $@ $< ${CPP_OBJS} ${CPP_LIB}
+${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
+	g++ -o $@ $< ${CC_OBJS} ${CC_LIB}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} | ${CPP_BIN}
+all: ${GRAMMAR_MODULES} | ${CC_BIN}
 
 #
 # Build rule.
@@ -134,5 +134,5 @@ testclean:
 
 cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
-	rm -f ${CPP_OBJS}
-	rm -f ${CPP_BIN}
+	rm -f ${CC_OBJS}
+	rm -f ${CC_BIN}
