@@ -40,14 +40,4 @@ Parameters::Parameters() {
     "_rotag_sidechain_atom_names",
     "_rotag_rotatable_residue_names"
   };
-
-
 }
-
-void Parameters::_retrieve_constants() {
-
-};
-
-void Parameters::_retrieve_bond_data() {
-
-};
