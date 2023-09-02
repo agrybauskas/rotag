@@ -18,17 +18,17 @@ int main(int argc, char *argv[]) {
   std::string target_cmds = "all";
   std::string select_cmds = "target";
   std::string tags =
-      "_atom_site,_[local]_rotamer_angle,_[local]_dihedral_angle,"
-      "_[local]_rotamer_energy,_[local]_pairwise_energy,_[local]_energy,"
-      "_[local]_rmsd";
+    "_atom_site,_[local]_rotamer_angle,_[local]_dihedral_angle,"
+    "_[local]_rotamer_energy,_[local]_pairwise_energy,_[local]_energy,"
+    "_[local]_rmsd";
   bool is_related = false;
   bool is_pdb = false;
   bool keep_ignored = false;
   int random_seed = 23;
   std::vector<std::string> category_list = {
-      "_atom_site", "_[local]_rotamer_angle", "_[local]_dihedral_angle",
-      "_[local]_rotamer_energy", "_[local]_pairwise_energy", "_[local]_energy",
-      "_[local]_rmsd"
+    "_atom_site", "_[local]_rotamer_angle", "_[local]_dihedral_angle",
+    "_[local]_rotamer_energy", "_[local]_pairwise_energy", "_[local]_energy",
+    "_[local]_rmsd"
   };
 
   const struct option longopts[] = {
