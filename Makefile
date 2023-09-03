@@ -30,11 +30,12 @@ HEADERS=${LIB_SRC:%.cc=%.h}
 CC_OBJS=${LIB_SRC:%.cc=%.o}
 CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
 CC_LIB=-lboost_regex
+CC_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/getoptions
 
 .PRECIOUS: ${CC_OBJS}
 
 %.o: %.cc %.h
-	g++ -c -o $@ $< ${CC_LIB}
+	g++ -c -o $@ $< ${CC_LIB} ${CC_LIBDIR}
 
 ${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
 	g++ -o $@ $< ${CC_OBJS} ${CC_LIB}
