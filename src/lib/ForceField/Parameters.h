@@ -5,7 +5,7 @@
 
 class Parameters {
   public:
-    Parameters();
+    Parameters(std::string parameter_file);
 };
 
 #endif
