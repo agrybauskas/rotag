@@ -5,8 +5,13 @@
 
 class Parameters {
   public:
+    double PI = pi();
+
     Parameters(char* parameter_file);
     ~Parameters();
+
+  private:
+    double pi();
 };
 
 #endif

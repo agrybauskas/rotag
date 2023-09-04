@@ -1,5 +1,6 @@
 #include "Parameters.h"
 
+#include <cmath>
 #include <iostream>
 
 extern "C" {
@@ -14,8 +15,10 @@ Parameters::Parameters(char* parameter_file) {
   cexception_t inner;
   CIF* parameters =
     new_cif_from_cif_file(parameter_file, compiler_options, &inner);
-
-  std::cout << parameters->minor_version << std::endl;
 }
 
 Parameters::~Parameters() {};
+
+double Parameters::pi() {
+  return 4 * std::atan2(1, 1);
+}
