@@ -1,6 +1,5 @@
 #include "Version.h"
 
-#include <iostream>
 #include <string>
 
 std::string version() {
