@@ -31,7 +31,7 @@ CC_OBJS=${LIB_SRC:%.cc=%.o}
 CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
 CC_LIB=-lboost_regex
 C_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/getoptions
-C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o
+C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o
 
 .PRECIOUS: ${CC_OBJS}
 
