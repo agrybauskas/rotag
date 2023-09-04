@@ -61,7 +61,7 @@ If too many dihedral angle choices are suggested, there are some filtering capab
 rotag_library -M 0.1 4dhw-rotag-scan.cif > 4dhw-rotag-library.cif
 ```
 
-The outputs are stored in separate CIF data blocks in order not to interfere with geometry data. The addition of atoms have to be explicitly stated.
+The outputs are stored in separate CIF data blocks in order not to interfere with geometry data. The addition of atoms has to be explicitly stated.
 
 ```bash
 rotag_add -S 4dhw-rotag-library.cif > 4dhw-rotag-add.cif
