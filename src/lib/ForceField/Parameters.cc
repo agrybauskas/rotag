@@ -1,7 +1,9 @@
 #include "Parameters.h"
 
-// #include "cif_compiler.h"
-#include "cif_options.h"
+extern "C" {
+  // #include "cif_compiler.h"
+  #include "cif_options.h"
+}
 
 Parameters::Parameters(std::string parameter_file) {
     // cif_option_t compiler_options =
