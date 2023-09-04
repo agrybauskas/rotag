@@ -5,8 +5,8 @@
 
 class Parameters {
   public:
-    double EPSILON = epsilon();
-    double PI = pi();
+    const double EPSILON = epsilon();
+    const double PI = pi();
 
     Parameters(char* parameter_file);
     ~Parameters();
