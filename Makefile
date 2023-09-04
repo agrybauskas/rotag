@@ -125,6 +125,9 @@ ${COVERAGE_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
 
 .PHONY: clean cleanAll distclean
 
+tags:
+	find src/ -name '*.[cc]' | xargs etags -a
+
 clean: testclean
 	rm -f ${COVERAGE_CASES}
 	rm -f ${COVERAGE_OUTS}
