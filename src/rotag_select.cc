@@ -16,7 +16,11 @@
 extern char *optarg;
 extern int optind, opterr, optopt;
 
+char* progname;
+
 int main(int argc, char *argv[]) {
+  progname = argv[0];
+
   // Defaults.
   std::string target_cmds = "all";
   std::string select_cmds = "target";

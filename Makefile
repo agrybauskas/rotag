@@ -36,10 +36,10 @@ C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/
 .PRECIOUS: ${CC_OBJS}
 
 %.o: %.cc %.h
-	g++ -c -o $@ $< ${CC_LIB} ${C_LIBDIR}
+	g++ -c -Wall -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
 
 ${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
-	g++ -o $@ $< ${CC_OBJS} ${C_OBJS} ${CC_LIB}
+	g++ -Wall -g -o $@ $< ${CC_OBJS} ${C_OBJS} ${CC_LIB}
 
 .PHONY: all
 
