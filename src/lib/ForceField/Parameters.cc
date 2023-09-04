@@ -7,6 +7,8 @@ extern "C" {
   #include "cif_options.h"
 }
 
+#include "cif.h"
+
 Parameters::Parameters(char* parameter_file) {
     cif_option_t compiler_options = cif_option_default();
     cexception_t inner;
