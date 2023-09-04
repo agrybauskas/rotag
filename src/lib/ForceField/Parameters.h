@@ -6,6 +6,7 @@
 class Parameters {
   public:
     Parameters(char* parameter_file);
+    ~Parameters();
 };
 
 #endif

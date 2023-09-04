@@ -17,3 +17,5 @@ Parameters::Parameters(char* parameter_file) {
 
     std::cout << parameters->minor_version << std::endl;
 }
+
+Parameters::~Parameters(){};
