@@ -5,12 +5,14 @@
 
 class Parameters {
   public:
+    double EPSILON = epsilon();
     double PI = pi();
 
     Parameters(char* parameter_file);
     ~Parameters();
 
   private:
+    double epsilon();
     double pi();
 };
 

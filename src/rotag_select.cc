@@ -180,7 +180,8 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters("lib/ForceField/Parameters.cif");
 
-  std::cout << printf("%f.6", parameters.PI) << std::endl;
+  std::cout << parameters.PI << std::endl;
+  std::cout << parameters.EPSILON << std::endl;
 
   return 0;
 }

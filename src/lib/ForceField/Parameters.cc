@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <memory>
 
 extern "C" {
   #include "cif_compiler.h"
@@ -18,6 +19,14 @@ Parameters::Parameters(char* parameter_file) {
 }
 
 Parameters::~Parameters() {};
+
+double Parameters::epsilon() {
+  double epsilon = 1.0;
+  while((1.0 + 0.5 * epsilon) != 1.0) {
+      epsilon = 0.5 * epsilon;
+  }
+  return epsilon;
+}
 
 double Parameters::pi() {
   return 4 * std::atan2(1, 1);
