@@ -1,5 +1,6 @@
 #include <getopt.h>
 
+#include <cstdio>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -182,6 +183,10 @@ int main(int argc, char *argv[]) {
 
   std::cout << parameters.PI << std::endl;
   std::cout << parameters.EPSILON << std::endl;
+  printf(parameters.SIG_FIG_MIN, parameters.PI);
+  std::cout << std::endl;
+  printf(parameters.SIG_FIG_MAX, parameters.PI);
+  std::cout << std::endl;
 
   return 0;
 }
