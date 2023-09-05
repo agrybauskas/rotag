@@ -1,6 +1,8 @@
 #ifndef _PARAMETERS_H_
 #define _PARAMETERS_H_
 
+typedef
+
 class Parameters {
   public:
     const double EPSILON = epsilon();

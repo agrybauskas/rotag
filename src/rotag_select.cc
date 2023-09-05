@@ -181,18 +181,5 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters("lib/ForceField/Parameters.cif");
 
-  std::cout << parameters.PI << std::endl;
-  std::cout << parameters.EPSILON << std::endl;
-  printf(parameters.SIG_FIG_MIN, parameters.PI);
-  std::cout << std::endl;
-  printf(parameters.SIG_FIG_MAX, parameters.PI);
-  std::cout << std::endl;
-  std::cout << parameters.SP3_ANGLE << std::endl;
-  std::cout << parameters.SP2_ANGLE << std::endl;
-  std::cout << parameters.SP_ANGLE << std::endl;
-  std::cout << parameters.SP3_ANGLE_ERR << std::endl;
-  std::cout << parameters.SP2_ANGLE_ERR << std::endl;
-  std::cout << parameters.SP_ANGLE_ERR << std::endl;
-
   return 0;
 }

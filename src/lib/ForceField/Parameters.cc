@@ -7,6 +7,7 @@
 extern "C" {
   #include "cif_compiler.h"
   #include "cif_options.h"
+  #include "datablock.h"
 }
 
 #include "CIF.h"
@@ -16,6 +17,7 @@ Parameters::Parameters(char* parameter_file) {
   cexception_t inner;
   CIF* parameters =
     new_cif_from_cif_file(parameter_file, compiler_options, &inner);
+  datablock_dump(parameters->datablock_list);
 }
 
 Parameters::~Parameters() {};
