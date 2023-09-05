@@ -179,7 +179,7 @@ int main(int argc, char *argv[]) {
   boost::replace_all(tags, " ", "");
   boost::split(tags_list, tags, boost::is_any_of(","));
 
-  Parameters parameters("lib/ForceField/Parameters.cif");
+  Parameters parameters("./lib/ForceField/Parameters.cif");
 
   return 0;
 }

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <memory>
 
+#include <boost/filesystem.hpp>
+
 extern "C" {
   #include "cif_compiler.h"
 }
@@ -13,7 +15,7 @@ Parameters::Parameters(char* parameter_file) {
   cexception_t inner;
   CIF* parameters =
     new_cif_from_cif_file(parameter_file, compiler_options, &inner);
-  std::cout << cif_tag_index(parameters, "_[local]_atom_properties.type_symbol") << std::endl;
+  std::cout << cif_tag_index(parameters, "_rotag_atom_properties.type_symbol") << std::endl;
 }
 
 Parameters::~Parameters() {};
