@@ -7,6 +7,12 @@ class Parameters {
     const double PI = pi();
     const char* SIG_FIG_MIN = "%.3f";
     const char* SIG_FIG_MAX = "%.6f";
+    const double SP3_ANGLE = 109.5 * this->PI / 180.0;
+    const double SP2_ANGLE = 120.0 * this->PI / 180.0;
+    const double SP_ANGLE = this->PI / 180.0;
+    const double SP3_ANGLE_ERR = 5.0 * this->PI / 180.0;
+    const double SP2_ANGLE_ERR = 5.0 * this->PI / 180.0;
+    const double SP_ANGLE_ERR = 5.0 * this->PI / 180.0;
 
     Parameters(char* parameter_file);
     ~Parameters();
