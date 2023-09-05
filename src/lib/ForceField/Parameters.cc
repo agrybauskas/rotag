@@ -15,7 +15,8 @@ Parameters::Parameters(char* parameter_file) {
   cexception_t inner;
   CIF* parameters =
     new_cif_from_cif_file(parameter_file, compiler_options, &inner);
-  std::cout << cif_tag_index(parameters, "_rotag_atom_properties.type_symbol") << std::endl;
+  // std::cout << cif_tag_index(parameters, "_rotag_atom_properties.type_symbol") << std::endl;
+  std::cout << boost::filesystem::current_path() << std::endl;
 }
 
 Parameters::~Parameters() {};
