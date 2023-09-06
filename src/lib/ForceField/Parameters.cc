@@ -10,10 +10,10 @@ extern "C" {
   #include "cif_compiler.h"
 }
 
-Parameters::Parameters(char* parameter_file) {
+Parameters::Parameters() {
   // boost::filesystem::path parameter_file_path{parameter_file};
   // std::cout << boost::filesystem::current_path() << std::endl;
-
+    // char* parameter_file "./lib/ForceField/Parameters.cif"
   cif_option_t compiler_options = cif_option_default();
   cexception_t inner;
   // std::cout << __FILE__ << std::endl;

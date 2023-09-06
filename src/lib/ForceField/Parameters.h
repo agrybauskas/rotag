@@ -14,7 +14,7 @@ class Parameters {
     const double SP2_ANGLE_ERR = 5.0 * this->PI / 180.0;
     const double SP_ANGLE_ERR = 5.0 * this->PI / 180.0;
 
-    Parameters(char* parameter_file);
+    Parameters();
     ~Parameters();
 
   private:
