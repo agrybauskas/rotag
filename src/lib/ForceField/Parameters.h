@@ -1,9 +1,10 @@
 #ifndef _PARAMETERS_H_
 #define _PARAMETERS_H_
 
+#include <map>
 #include <string>
 
-struct atom_properties {
+struct AtomProperties {
   std::string type_symbol;
   std::string hybridization;
   double covalent_radius_value;
@@ -12,6 +13,8 @@ struct atom_properties {
   double lone_pair_count;
   double valence;
 };
+
+typedef std::map<std::string, AtomProperties> AtomsProperties;
 
 class Parameters {
   public:
