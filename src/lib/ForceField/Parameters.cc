@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 #include <boost/filesystem.hpp>
 
@@ -12,9 +13,9 @@ extern "C" {
 
 Parameters::Parameters(char* program_file_path) {
   boost::filesystem::path parameter_file =
-      boost::filesystem::canonical(program_file_path).parent_path().parent_path() /
-      boost::filesystem::path(__FILE__).parent_path() /
-      "Parameters.cif";
+    boost::filesystem::canonical(program_file_path).parent_path().parent_path() /
+    boost::filesystem::path(__FILE__).parent_path() /
+    "Parameters.cif";
   cif_option_t compiler_options = cif_option_default();
   cexception_t inner;
 
@@ -23,7 +24,15 @@ Parameters::Parameters(char* program_file_path) {
                           compiler_options,
                           &inner);
 
-
+  std::vector<std::string> atom_properties_items = {
+    "_[local]_atom_properties.type_symbol",
+    "_[local]_atom_properties.hybridization",
+    "_[local]_atom_properties.covalent_radius_value",
+    "_[local]_atom_properties.covalent_radius_error",
+    "_[local]_atom_properties.vdw_radius",
+    "_[local]_atom_properties.lone_pair_count",
+    "_[local]_atom_properties.valence"
+  };
 }
 
 Parameters::~Parameters() {};
