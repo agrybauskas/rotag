@@ -19,9 +19,9 @@ Parameters::Parameters(char* program_file_path) {
   cexception_t inner;
 
   CIF* parameters =
-    new_cif_from_cif_file((char*) parameter_file.c_str(), compiler_options, &inner);
-
-  std::cout << cif_tag_index(parameters, "_rotag_atom_properties.type_symbol") << std::endl;
+    new_cif_from_cif_file((char*) parameter_file.c_str(),
+                          compiler_options,
+                          &inner);
 }
 
 Parameters::~Parameters() {};
