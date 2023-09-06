@@ -19,20 +19,24 @@ Parameters::Parameters(char* program_file_path) {
   cif_option_t compiler_options = cif_option_default();
   cexception_t inner;
 
-  CIF* parameters =
+  const CIF* parameters =
     new_cif_from_cif_file((char*) parameter_file.c_str(),
                           compiler_options,
                           &inner);
 
-  std::vector<std::string> atom_properties_items = {
-    "_[local]_atom_properties.type_symbol",
-    "_[local]_atom_properties.hybridization",
-    "_[local]_atom_properties.covalent_radius_value",
-    "_[local]_atom_properties.covalent_radius_error",
-    "_[local]_atom_properties.vdw_radius",
-    "_[local]_atom_properties.lone_pair_count",
-    "_[local]_atom_properties.valence"
+  const std::vector<std::string> atom_properties_items = {
+    "_rotag_atom_properties.type_symbol",
+    "_rotag_atom_properties.hybridization",
+    "_rotag_atom_properties.covalent_radius_value",
+    "_rotag_atom_properties.covalent_radius_error",
+    "_rotag_atom_properties.vdw_radius",
+    "_rotag_atom_properties.lone_pair_count",
+    "_rotag_atom_properties.valence"
   };
+
+  for(const std::string atom_properties_item: atom_properties_items) {
+    std::cout << atom_properties_item << std::endl;
+  }
 }
 
 Parameters::~Parameters() {};
