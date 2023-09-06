@@ -9,6 +9,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/filesystem.hpp>
 
 #include "lib/ForceField/Parameters.h"
 #include "lib/PDBxParser.h"
@@ -179,7 +180,7 @@ int main(int argc, char *argv[]) {
   boost::replace_all(tags, " ", "");
   boost::split(tags_list, tags, boost::is_any_of(","));
 
-  Parameters parameters();
+  Parameters parameters(argv[0]);
 
   return 0;
 }

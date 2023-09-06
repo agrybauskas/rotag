@@ -10,16 +10,18 @@ extern "C" {
   #include "cif_compiler.h"
 }
 
-Parameters::Parameters() {
-  // boost::filesystem::path parameter_file_path{parameter_file};
-  // std::cout << boost::filesystem::current_path() << std::endl;
-    // char* parameter_file "./lib/ForceField/Parameters.cif"
+Parameters::Parameters(char* program_file_path) {
+  boost::filesystem::path parameter_file =
+      boost::filesystem::canonical(program_file_path).parent_path().parent_path() /
+      boost::filesystem::path(__FILE__).parent_path() /
+      "Parameters.cif";
   cif_option_t compiler_options = cif_option_default();
   cexception_t inner;
-  // std::cout << __FILE__ << std::endl;
-  // CIF* parameters =
-  //   new_cif_from_cif_file(parameter_file, compiler_options, &inner);
-  // std::cout << cif_tag_index(parameters, "_rotag_atom_properties.type_symbol") << std::endl;
+
+  CIF* parameters =
+    new_cif_from_cif_file((char*) parameter_file.c_str(), compiler_options, &inner);
+
+  std::cout << cif_tag_index(parameters, "_rotag_atom_properties.type_symbol") << std::endl;
 }
 
 Parameters::~Parameters() {};
