@@ -1,6 +1,18 @@
 #ifndef _PARAMETERS_H_
 #define _PARAMETERS_H_
 
+#include <string>
+
+struct atom_properties {
+  std::string type_symbol;
+  std::string hybridization;
+  double covalent_radius_value;
+  double covalent_radius_error;
+  double vdw_radius;
+  double lone_pair_count;
+  double valence;
+};
+
 class Parameters {
   public:
     const double EPSILON = epsilon();
