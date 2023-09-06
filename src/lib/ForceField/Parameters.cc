@@ -22,6 +22,8 @@ Parameters::Parameters(char* program_file_path) {
     new_cif_from_cif_file((char*) parameter_file.c_str(),
                           compiler_options,
                           &inner);
+
+
 }
 
 Parameters::~Parameters() {};

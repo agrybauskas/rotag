@@ -5,8 +5,6 @@
 #include <string>
 
 struct AtomProperties {
-  std::string type_symbol;
-  std::string hybridization;
   double covalent_radius_value;
   double covalent_radius_error;
   double vdw_radius;
@@ -14,7 +12,10 @@ struct AtomProperties {
   double valence;
 };
 
-typedef std::map<std::string, AtomProperties> AtomsProperties;
+typedef std::map<std::string,
+                 std::map<std::string,
+                          std::map<std::string,
+                                   AtomProperties>>> AtomsProperties;
 
 class Parameters {
   public:
