@@ -19,7 +19,7 @@ Parameters::Parameters(char* program_file_path) {
   cif_option_t compiler_options = cif_option_default();
   cexception_t inner;
 
-  const CIF* parameters =
+  CIF* parameters =
     new_cif_from_cif_file((char*) parameter_file.c_str(),
                           compiler_options,
                           &inner);
@@ -35,7 +35,8 @@ Parameters::Parameters(char* program_file_path) {
   };
 
   for(const std::string atom_properties_item: atom_properties_items) {
-    std::cout << atom_properties_item << std::endl;
+    const ssize_t atom_properties_item_index =
+      cif_tag_index(parameters, (char*) atom_properties_item.c_str());
   }
 }
 
