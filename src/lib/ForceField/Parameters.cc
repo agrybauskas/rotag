@@ -34,9 +34,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_atom_properties.valence"
   };
 
-  for(const std::string atom_properties_item: atom_properties_items) {
-    const ssize_t atom_properties_item_index =
+  for(std::string atom_properties_item: atom_properties_items) {
+    const ssize_t data_item_index =
       cif_tag_index(parameters, (char*) atom_properties_item.c_str());
+    std::cout << data_item_index << std::endl;
   }
 }
 
