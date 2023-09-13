@@ -43,7 +43,12 @@ ${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
 
 .PHONY: all
 
-all: ${GRAMMAR_MODULES} | ${CC_BIN}
+all: build-externals | ${CC_BIN}
+
+build-externals:
+	make -C src/externals/cexceptions
+	make -C src/externals/codcif
+	make -C src/externals/getoptions
 
 #
 # Build rule.
