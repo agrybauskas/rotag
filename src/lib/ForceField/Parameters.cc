@@ -9,6 +9,7 @@
 
 extern "C" {
   #include "cif_compiler.h"
+  #include "datablock.h"
 }
 
 Parameters::Parameters(char* program_file_path) {
@@ -35,9 +36,12 @@ Parameters::Parameters(char* program_file_path) {
   };
 
   for(std::string atom_properties_item: atom_properties_items) {
-    const ssize_t data_item_index =
-      cif_tag_index(parameters, (char*) atom_properties_item.c_str());
-    std::cout << data_item_index << std::endl;
+    std::cout << parameters->minor_version << std::endl;
+    // DATABLOCK* datablock;
+    // foreach_datablock(datablock, parameters->datablock_list) {
+    // }
+    // const ssize_t data_item_index =
+    //   cif_tag_index(parameters, (char*) atom_properties_item.c_str());
   }
 }
 
