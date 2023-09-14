@@ -40,6 +40,7 @@ Parameters::Parameters(char* program_file_path) {
     foreach_datablock(datablock, cif_datablock_list(parameters)) {
       const ssize_t tag_index =
         datablock_tag_index(datablock, (char*) atom_properties_item.c_str());
+      std::cout << datablock_length(datablock) << std::endl;
     }
   }
 }
