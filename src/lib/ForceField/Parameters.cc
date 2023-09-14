@@ -35,13 +35,12 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_atom_properties.valence"
   };
 
-  for(std::string atom_properties_item: atom_properties_items) {
-    std::cout << parameters->minor_version << std::endl;
-    // DATABLOCK* datablock;
-    // foreach_datablock(datablock, parameters->datablock_list) {
-    // }
-    // const ssize_t data_item_index =
-    //   cif_tag_index(parameters, (char*) atom_properties_item.c_str());
+  for(const std::string &atom_properties_item: atom_properties_items) {
+    DATABLOCK* datablock;
+    foreach_datablock(datablock, cif_datablock_list(parameters)) {
+      const ssize_t tag_index =
+        datablock_tag_index(datablock, (char*) atom_properties_item.c_str());
+    }
   }
 }
 
@@ -50,7 +49,7 @@ Parameters::~Parameters() {};
 double Parameters::epsilon() {
   double epsilon = 1.0;
   while((1.0 + 0.5 * epsilon) != 1.0) {
-      epsilon = 0.5 * epsilon;
+    epsilon = 0.5 * epsilon;
   }
   return epsilon;
 }
