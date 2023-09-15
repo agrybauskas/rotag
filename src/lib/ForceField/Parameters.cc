@@ -35,12 +35,16 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_atom_properties.valence"
   };
 
-  for(const std::string &atom_properties_item: atom_properties_items) {
-    DATABLOCK* datablock;
-    foreach_datablock(datablock, cif_datablock_list(parameters)) {
+  DATABLOCK* datablock;
+  foreach_datablock(datablock, cif_datablock_list(parameters)) {
+    for(const std::string &atom_properties_item: atom_properties_items) {
       const ssize_t tag_index =
         datablock_tag_index(datablock, (char*) atom_properties_item.c_str());
-      std::cout << datablock_length(datablock) << std::endl;
+      const ssize_t tag_value_lengths =
+        datablock_value_lengths(datablock)[tag_index];
+      for(int i = 0; i < tag_value_lengths; i++) {
+        value_dump(datablock_cifvalue(datablock, tag_index, i));
+      }
     }
   }
 }
