@@ -25,28 +25,22 @@ Parameters::Parameters(char* program_file_path) {
                           compiler_options,
                           &inner);
 
-  const std::vector<std::string> atom_properties_items = {
-    "_rotag_atom_properties.type_symbol",
-    "_rotag_atom_properties.hybridization",
-    "_rotag_atom_properties.covalent_radius_value",
-    "_rotag_atom_properties.covalent_radius_error",
-    "_rotag_atom_properties.vdw_radius",
-    "_rotag_atom_properties.lone_pair_count",
-    "_rotag_atom_properties.valence"
-  };
+  // self->AtomsProperties()
 
-  DATABLOCK* datablock;
-  foreach_datablock(datablock, cif_datablock_list(parameters)) {
-    for(const std::string &atom_properties_item: atom_properties_items) {
-      const ssize_t tag_index =
-        datablock_tag_index(datablock, (char*) atom_properties_item.c_str());
-      const ssize_t tag_value_lengths =
-        datablock_value_lengths(datablock)[tag_index];
-      for(int i = 0; i < tag_value_lengths; i++) {
-        value_dump(datablock_cifvalue(datablock, tag_index, i));
-      }
-    }
-  }
+  // DATABLOCK* datablock;
+  // foreach_datablock(datablock, cif_datablock_list(parameters)) {
+  //   // for(const std::string &atom_properties_item: atom_properties_items) {
+  //   //   const ssize_t tag_index =
+  //   //     datablock_tag_index(datablock, (char*) atom_properties_item.c_str());
+  //   //   const ssize_t tag_value_lengths =
+  //   //     datablock_value_lengths(datablock)[tag_index];
+  //   //   for(int i = 0; i < tag_value_lengths; i++) {
+  //   //     if(atom_properties_item == "_rotag_atom_properties.type_symbol") {
+  //   //       value_dump(datablock_cifvalue(datablock, tag_index, i));
+  //   //     }
+  //   //   }
+  //   // }
+  // }
 }
 
 Parameters::~Parameters() {};
@@ -61,4 +55,16 @@ double Parameters::epsilon() {
 
 double Parameters::pi() {
   return 4 * std::atan2(1, 1);
+}
+
+AtomsProperties atoms_properties(CIF* parameters) {
+  const std::vector<std::string> atom_properties_items = {
+    "_rotag_atom_properties.type_symbol",
+    "_rotag_atom_properties.hybridization",
+    "_rotag_atom_properties.covalent_radius_value",
+    "_rotag_atom_properties.covalent_radius_error",
+    "_rotag_atom_properties.vdw_radius",
+    "_rotag_atom_properties.lone_pair_count",
+    "_rotag_atom_properties.valence"
+  };
 }
