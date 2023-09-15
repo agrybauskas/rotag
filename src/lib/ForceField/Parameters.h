@@ -38,7 +38,6 @@ class Parameters {
   private:
     double epsilon();
     double pi();
-    AtomsProperties atoms_properties(CIF* parameters);
 };
 
 #endif
