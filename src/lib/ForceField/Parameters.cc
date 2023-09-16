@@ -43,8 +43,21 @@ Parameters::Parameters(char* program_file_path) {
       const ssize_t tag_value_lengths =
         datablock_value_lengths(datablock)[tag_index];
       for(int i = 0; i < tag_value_lengths; i++) {
+        // "_rotag_atom_properties" category.
         if(atom_properties_item == "_rotag_atom_properties.type_symbol") {
           value_dump(datablock_cifvalue(datablock, tag_index, i));
+        } else if(atom_properties_item == "_rotag_atom_properties.hybridization") {
+
+        } else if(atom_properties_item == "_rotag_atom_properties.covalent_radius_value") {
+
+        } else if(atom_properties_item == "_rotag_atom_properties.covalent_radius_error") {
+
+        } else if(atom_properties_item == "_rotag_atom_properties.vdw_radius") {
+
+        } else if(atom_properties_item == "_rotag_atom_properties.lone_pair_count") {
+
+        } else if(atom_properties_item == "_rotag_atom_properties.valence") {
+
         }
       }
     }
