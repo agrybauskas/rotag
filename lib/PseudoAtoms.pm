@@ -1082,6 +1082,7 @@ sub assign_hetatoms_to_residues
             # Iteration has to be performed, because '_struct_conn' does not
             # have 'pdbx_PDB_model_num' and 'label_alt_id' entries.
             my %visited_residues_by_hetatom = ();
+            my $last_atom_id = max( keys %{ $atom_site } );
             for my $connected_atom_id ( keys %{ $connected_atom_site } ) {
                 my $connected_unique_residue_key = unique_residue_key(
                     $connected_atom_site->{$connected_atom_id}
@@ -1102,6 +1103,9 @@ sub assign_hetatoms_to_residues
                          'pdbx_PDB_model_num' ) {
                     $current_hetatom->{$_} = $atom_site->{$connected_atom_id}{$_};
                 }
+                $atom_site->{$last_atom_id} = $current_hetatom;
+
+                $last_atom_id++;
             }
         }
     }
