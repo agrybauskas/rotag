@@ -1081,10 +1081,17 @@ sub assign_hetatoms_to_residues
                                 ] } } );
             # Iteration has to be performed, because '_struct_conn' does not
             # have 'pdbx_PDB_model_num' and 'label_alt_id' entries.
+            my %visited_residues = ();
             for my $connected_atom_id ( keys %{ $connected_atom_site } ) {
+                my $connected_unique_residue_key =
+                    unique_residue_key( $connected_atom_site->{$connected_atom_id} );
+
                 connect_atoms_explicitly( $atom_site,
                                           [ $hetatom_id ],
                                           [ $connected_atom_id ] );
+
+                next if $visited_residues{$connected_unique_residue_key};
+                $visited_residues{$connected_unique_residue_key} = 1;
             }
         }
     }
