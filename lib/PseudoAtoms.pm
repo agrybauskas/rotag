@@ -1094,6 +1094,14 @@ sub assign_hetatoms_to_residues
                 connect_atoms_explicitly( $atom_site,
                                           [ $hetatom_id ],
                                           [ $connected_atom_id ] );
+
+                # Heteroatom inherits residue information from the atom that is
+                # connected to.
+                my $current_hetatom = clone $atom_site->{$hetatom_id};
+                foreach( 'label_seq_id', 'label_asym_id', 'label_alt_id',
+                         'pdbx_PDB_model_num' ) {
+                    $current_hetatom->{$_} = $atom_site->{$connected_atom_id}{$_};
+                }
             }
         }
     }
