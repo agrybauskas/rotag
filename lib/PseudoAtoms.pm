@@ -1053,7 +1053,7 @@ sub assign_hetatoms_to_residues
                     { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
 
     # Uses '_struct_conn' category to determine connections.
-    my $last_atom_id = max( keys %{ $atom_site } );
+    my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     for my $hetatom_id ( keys %{ $hetatom_site } ) {
         my ( $hetatom_label_seq_id, $hetatom_label_asym_id ) =
             map { $hetatom_site->{$hetatom_id}{$_} }
@@ -1103,6 +1103,7 @@ sub assign_hetatoms_to_residues
                          'pdbx_PDB_model_num' ) {
                     $current_hetatom->{$_} = $atom_site->{$connected_atom_id}{$_};
                 }
+                $current_hetatom->{'id'} = $last_atom_id;
                 $atom_site->{$last_atom_id} = $current_hetatom;
                 # Makes sure that it only keeps the connections that are related
                 # to the interacting residue.
