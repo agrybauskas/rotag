@@ -1053,6 +1053,7 @@ sub assign_hetatoms_to_residues
                     { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
 
     # Uses '_struct_conn' category to determine connections.
+    my $last_atom_id = max( keys %{ $atom_site } );
     for my $hetatom_id ( keys %{ $hetatom_site } ) {
         my ( $hetatom_label_seq_id, $hetatom_label_asym_id ) =
             map { $hetatom_site->{$hetatom_id}{$_} }
@@ -1082,7 +1083,6 @@ sub assign_hetatoms_to_residues
             # Iteration has to be performed, because '_struct_conn' does not
             # have 'pdbx_PDB_model_num' and 'label_alt_id' entries.
             my %visited_residues_by_hetatom = ();
-            my $last_atom_id = max( keys %{ $atom_site } );
             for my $connected_atom_id ( keys %{ $connected_atom_site } ) {
                 my $connected_unique_residue_key = unique_residue_key(
                     $connected_atom_site->{$connected_atom_id}
