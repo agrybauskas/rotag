@@ -25,7 +25,14 @@ Parameters::Parameters(char* program_file_path) {
                           compiler_options,
                           &inner);
 
-  const std::vector<std::string> atom_properties_items = {
+  const std::vector<std::string> cif_tags = {
+    "_rotag_force_field.lj_k",
+    "_rotag_force_field.c_k",
+    "_rotag_force_field.h_k",
+    "_rotag_force_field.t_k",
+    "_rotag_force_field.cutoff_atom",
+    "_rotag_force_field.cutoff_start",
+    "_rotag_force_field.cutoff_end",
     "_rotag_atom_properties.type_symbol",
     "_rotag_atom_properties.hybridization",
     "_rotag_atom_properties.covalent_radius_value",
@@ -37,27 +44,19 @@ Parameters::Parameters(char* program_file_path) {
 
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(parameters)) {
-    for(const std::string &atom_properties_item: atom_properties_items) {
+    // std::map<std::string, std::map<unsigned long long int, char>> cif_data_lookup_table;
+    for(const std::string &cif_tag: cif_tags) {
       const ssize_t tag_index =
-        datablock_tag_index(datablock, (char*) atom_properties_item.c_str());
+        datablock_tag_index(datablock, (char*) cif_tag.c_str());
       const ssize_t tag_value_lengths =
         datablock_value_lengths(datablock)[tag_index];
       for(int i = 0; i < tag_value_lengths; i++) {
+        // "_rotag_force_field" category.
+        if(cif_tag == "_rotag_force_field.lj_k") {
+          std::cout << value_scalar(datablock_cifvalue(datablock, tag_index, i)) << std::endl;
         // "_rotag_atom_properties" category.
-        if(atom_properties_item == "_rotag_atom_properties.type_symbol") {
-          value_dump(datablock_cifvalue(datablock, tag_index, i));
-        } else if(atom_properties_item == "_rotag_atom_properties.hybridization") {
-
-        } else if(atom_properties_item == "_rotag_atom_properties.covalent_radius_value") {
-
-        } else if(atom_properties_item == "_rotag_atom_properties.covalent_radius_error") {
-
-        } else if(atom_properties_item == "_rotag_atom_properties.vdw_radius") {
-
-        } else if(atom_properties_item == "_rotag_atom_properties.lone_pair_count") {
-
-        } else if(atom_properties_item == "_rotag_atom_properties.valence") {
-
+        } else if(cif_tag == "_rotag_atom_properties.type_symbol") {
+          std::cout << value_scalar(datablock_cifvalue(datablock, tag_index, i)) << std::endl;
         }
       }
     }
