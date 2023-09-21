@@ -44,14 +44,13 @@ Parameters::Parameters(char* program_file_path) {
 
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(parameters)) {
-    // std::map<std::string, std::map<unsigned long long int, char>> cif_data_lookup_table;
     for(const std::string &cif_tag: cif_tags) {
       const ssize_t tag_index =
         datablock_tag_index(datablock, (char*) cif_tag.c_str());
       const ssize_t tag_value_lengths =
         datablock_value_lengths(datablock)[tag_index];
-      for(int i = 0; i < tag_value_lengths; i++) {
 
+      for(int i = 0; i < tag_value_lengths; i++) {
         // "_rotag_force_field" category.
         if(cif_tag == "_rotag_force_field.lj_k") {
           this->lj_k =
