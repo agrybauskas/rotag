@@ -316,12 +316,6 @@ for my $pdbx_file ( @ARGV ) {
                                      { 'struct_conn' => $struct_conn } )
             if $calc_hetatoms;
 
-        use Data::Dumper;
-        print STDERR Dumper
-            map { $bond_length_site->{$_} }
-            grep { $bond_length_site->{$_}{'group_PDB'} eq 'HETATM' }
-            keys %$bond_length_site;
-
         stretchable_bonds( $parameters, $bond_length_site,
                            { 'include_mainchain' => $calc_mainchain,
                              'include_hetatoms' => $calc_hetatoms } );

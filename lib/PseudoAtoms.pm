@@ -1104,6 +1104,11 @@ sub assign_hetatoms_to_residues
                     $current_hetatom->{$_} = $atom_site->{$connected_atom_id}{$_};
                 }
                 $atom_site->{$last_atom_id} = $current_hetatom;
+                # Makes sure that it only keeps the connections that are related
+                # to the interacting residue.
+                $atom_site->{$last_atom_id}{'connections_hetatom'} =
+                    [ grep { defined $connected_atom_site->{$_} }
+                          @{ $atom_site->{$last_atom_id}{'connections_hetatom'} } ];
 
                 $last_atom_id++;
             }
