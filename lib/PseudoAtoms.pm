@@ -1114,6 +1114,8 @@ sub assign_hetatoms_to_residues
                 $last_atom_id++;
             }
         }
+
+        delete $atom_site->{$hetatom_id};
     }
 
     return;
