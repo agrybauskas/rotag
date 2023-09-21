@@ -30,6 +30,14 @@ class Parameters {
     const double SP2_ANGLE_ERR = 5.0 * this->PI / 180.0;
     const double SP_ANGLE_ERR = 5.0 * this->PI / 180.0;
 
+    double lj_k;
+    double c_k;
+    double h_k;
+    double t_k;
+    double cutoff_atom;
+    double cutoff_start;
+    double cutoff_end;
+
     const AtomProperties ATOM_PROPERTIES = {};
 
     Parameters(char* program_file_path);
