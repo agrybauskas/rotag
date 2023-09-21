@@ -35,6 +35,7 @@ use BondParameters qw( collect_bond_lengths
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      connect_atoms_explicitly
+                     disconnect_atoms_explicitly
                      is_neighbour
                      is_second_neighbour );
 use ForceField::Parameters;
@@ -1092,10 +1093,6 @@ sub assign_hetatoms_to_residues
                     $visited_residues_by_hetatom{$connected_unique_residue_key} == $hetatom_id;
                 $visited_residues_by_hetatom{$connected_unique_residue_key} = $hetatom_id;
 
-                connect_atoms_explicitly( $atom_site,
-                                          [ $hetatom_id ],
-                                          [ $connected_atom_id ] );
-
                 # Heteroatom inherits residue information from the atom that is
                 # connected to.
                 my $current_hetatom = clone $atom_site->{$hetatom_id};
@@ -1105,11 +1102,13 @@ sub assign_hetatoms_to_residues
                 }
                 $current_hetatom->{'id'} = $last_atom_id;
                 $atom_site->{$last_atom_id} = $current_hetatom;
-                # Makes sure that it only keeps the connections that are related
-                # to the interacting residue.
-                $atom_site->{$last_atom_id}{'connections_hetatom'} =
-                    [ grep { defined $connected_atom_site->{$_} }
-                          @{ $atom_site->{$last_atom_id}{'connections_hetatom'} } ];
+
+                connect_atoms_explicitly( $atom_site,
+                                          [ $last_atom_id ],
+                                          [ $connected_atom_id ] );
+                connect_atoms_explicitly( $atom_site,
+                                          [ $hetatom_id ],
+                                          [ $connected_atom_id ] );
 
                 $last_atom_id++;
             }
