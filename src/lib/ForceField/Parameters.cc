@@ -81,16 +81,20 @@ Parameters::Parameters(char* program_file_path) {
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"], i));
       std::string hybridization =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.hybridization"], i));
-      double covalent_radius_value =
+
+      AtomProperties atom_properties;
+      atom_properties.covalent_radius_value =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_value"], i)));
-      double covalent_radius_error =
+      atom_properties.covalent_radius_error =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_error"], i)));
-      double vdw_radius =
+      atom_properties.vdw_radius =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.vdw_radius"], i)));
-      double lone_pair_count =
+      atom_properties.lone_pair_count =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.lone_pair_count"], i)));
-      double valence =
+      atom_properties.valence =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
+
+      // this->ATOM_PROPERTIES[type_symbol][hybridization] = atom_properties;
     }
   }
 }

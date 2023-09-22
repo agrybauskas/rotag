@@ -38,7 +38,7 @@ class Parameters {
     double cutoff_start;
     double cutoff_end;
 
-    const AtomProperties ATOM_PROPERTIES = {};
+    const AtomsProperties ATOM_PROPERTIES;
 
     Parameters(char* program_file_path);
     ~Parameters();
