@@ -74,7 +74,10 @@ Parameters::Parameters(char* program_file_path) {
 
     // "_rotag_atom_properties" category.
     /* NOTE: "codcif" parser should catch errors if the length of tag values does
-       not have the same size. */
+       not have the same size so, it is enough to choose any column for
+       iterating. */
+    for(int i = 0; i < cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"]; i++ ) {
+    }
   }
 }
 
