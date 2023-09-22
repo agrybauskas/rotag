@@ -73,6 +73,8 @@ Parameters::Parameters(char* program_file_path) {
       atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.cutoff_end"], 0)));
 
     // "_rotag_atom_properties" category.
+    /* NOTE: "codcif" parser should catch errors if the length of tag values does
+       not have the same size. */
   }
 }
 
