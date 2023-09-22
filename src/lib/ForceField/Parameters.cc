@@ -77,7 +77,20 @@ Parameters::Parameters(char* program_file_path) {
        not have the same size in the loop so, it is enough to choose any column
        for iterating. */
     for(int i = 0; i < cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"]; i++ ) {
-
+      std::string type_symbol =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"], i));
+      std::string hybridization =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.hybridization"], i));
+      double covalent_radius_value =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_value"], i)));
+      double covalent_radius_error =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_error"], i)));
+      double vdw_radius =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.vdw_radius"], i)));
+      double lone_pair_count =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.lone_pair_count"], i)));
+      double valence =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
     }
   }
 }
