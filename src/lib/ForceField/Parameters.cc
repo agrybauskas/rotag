@@ -84,7 +84,7 @@ Parameters::Parameters(char* program_file_path) {
 
       AtomProperties atom_properties;
       atom_properties.covalent_radius_value =
-          atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_value"], i)));
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_value"], i)));
       atom_properties.covalent_radius_error =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_error"], i)));
       atom_properties.vdw_radius =
