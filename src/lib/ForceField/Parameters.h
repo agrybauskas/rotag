@@ -13,9 +13,7 @@ struct AtomProperties {
 };
 
 typedef std::map<std::string,
-                 std::map<std::string,
-                          std::map<std::string,
-                                   AtomProperties>>> AtomsProperties;
+                 std::map<std::string, AtomProperties>> AtomsProperties;
 
 class Parameters {
   public:
@@ -38,7 +36,7 @@ class Parameters {
     double cutoff_start;
     double cutoff_end;
 
-    const AtomsProperties ATOM_PROPERTIES;
+    AtomsProperties ATOM_PROPERTIES;
 
     Parameters(char* program_file_path);
     ~Parameters();
