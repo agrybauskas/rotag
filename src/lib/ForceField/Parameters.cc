@@ -44,41 +44,35 @@ Parameters::Parameters(char* program_file_path) {
 
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(parameters)) {
+    std::map<std::string, ssize_t> cif_tag_index_lookup_table;
+    std::map<std::string, ssize_t> cif_value_length_lookup_table;
+
+    // Generating lookup tables first.
     for(const std::string &cif_tag: cif_tags) {
-      const ssize_t tag_index =
+      cif_tag_index_lookup_table[cif_tag] =
         datablock_tag_index(datablock, (char*) cif_tag.c_str());
-      const ssize_t tag_value_lengths =
-        datablock_value_lengths(datablock)[tag_index];
-
-      for(int i = 0; i < tag_value_lengths; i++) {
-        // "_rotag_force_field" category.
-        if(cif_tag == "_rotag_force_field.lj_k") {
-          this->lj_k =
-            atof(value_scalar(datablock_cifvalue(datablock, tag_index, i)));
-        } else if(cif_tag == "_rotag_force_field.c_k") {
-          this->c_k =
-            atof(value_scalar(datablock_cifvalue(datablock, tag_index, i)));
-        } else if(cif_tag == "_rotag_force_field.h_k") {
-          this->h_k =
-            atof(value_scalar(datablock_cifvalue(datablock, tag_index, i)));
-        } else if(cif_tag == "_rotag_force_field.t_k") {
-          this->t_k =
-            atof(value_scalar(datablock_cifvalue(datablock, tag_index, i)));
-        } else if(cif_tag == "_rotag_force_field.cutoff_atom") {
-          this->cutoff_atom =
-            atof(value_scalar(datablock_cifvalue(datablock, tag_index, i)));
-        } else if(cif_tag == "_rotag_force_field.cutoff_start") {
-          this->cutoff_start =
-            atof(value_scalar(datablock_cifvalue(datablock, tag_index, i)));
-        } else if(cif_tag == "_rotag_force_field.cutoff_end") {
-          this->cutoff_end =
-            atof(value_scalar(datablock_cifvalue(datablock, tag_index, i)));
-
-        // "_rotag_atom_properties" category.
-        } else if(cif_tag == "_rotag_atom_properties.type_symbol") {
-        }
-      }
+      cif_value_length_lookup_table[cif_tag] =
+        datablock_value_lengths(datablock)[cif_tag_index_lookup_table[cif_tag]];
     }
+
+    // Parsing tags per case basis.
+    // "_rotag_force_field" category.
+    this->lj_k =
+      atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.lj_k"], 0)));
+    this->c_k =
+      atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.c_k"], 0)));
+    this->h_k =
+      atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.h_k"], 0)));
+    this->t_k =
+      atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.t_k"], 0)));
+    this->cutoff_atom =
+      atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.cutoff_atom"], 0)));
+    this->cutoff_start =
+      atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.cutoff_start"], 0)));
+    this->cutoff_end =
+      atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.cutoff_end"], 0)));
+
+    // "_rotag_atom_properties" category.
   }
 }
 
