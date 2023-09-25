@@ -317,6 +317,16 @@ for my $pdbx_file ( @ARGV ) {
                                          { 'struct_conn' => $struct_conn } );
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.
+            for my $atom_id ( keys %{ $bond_length_site } ) {
+                my $origin_atom_id =
+                    $bond_length_site->{$atom_id}{'origin_atom_id'};
+
+                next if ! defined $origin_atom_id ||
+                    ! exists $target_bond_length_site->{$origin_atom_id};
+
+                $target_bond_length_site->{$atom_id} =
+                    $bond_length_site->{$atom_id};
+            }
         }
 
         stretchable_bonds( $parameters, $bond_length_site,
