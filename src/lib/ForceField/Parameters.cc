@@ -76,7 +76,7 @@ Parameters::Parameters(char* program_file_path) {
     /* NOTE: "codcif" parser should catch errors if the length of tag values does
        not have the same size in the loop so, it is enough to choose any column
        for iterating. */
-    for(int i = 0; i < cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"]; i++ ) {
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"]; i++ ) {
       std::string type_symbol =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"], i));
       std::string hybridization =
