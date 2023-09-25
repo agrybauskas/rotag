@@ -94,6 +94,7 @@ Parameters::Parameters(char* program_file_path) {
       atom_properties.valence =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
 
+      // Used for edge length of the grid during cubing procedure algorithm.
       if(atom_properties.covalent_radius[hybridization].value >
          this->max_connection_length) {
         this->max_connection_length =
