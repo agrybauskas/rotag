@@ -310,11 +310,14 @@ for my $pdbx_file ( @ARGV ) {
 
         connect_atoms( $parameters, $bond_length_site );
 
-        # NOTE: heteroatom assignment increase the atom number in the atom site.
-        assign_hetatoms_to_residues( $parameters,
-                                     $bond_length_site,
-                                     { 'struct_conn' => $struct_conn } )
-            if $calc_hetatoms;
+        # Heteroatom assignment increases the atom number in the atom site.
+        if( $calc_hetatoms ) {
+            assign_hetatoms_to_residues( $parameters,
+                                         $bond_length_site,
+                                         { 'struct_conn' => $struct_conn } );
+            # Updating the target's atom site as there more duplicated pseudo
+            # atoms.
+        }
 
         stretchable_bonds( $parameters, $bond_length_site,
                            { 'include_mainchain' => $calc_mainchain,
