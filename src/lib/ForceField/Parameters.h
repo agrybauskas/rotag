@@ -4,16 +4,17 @@
 #include <map>
 #include <string>
 
+struct CovalentRadius {
+  double value;
+  double error;
+};
+
 struct AtomProperties {
-  double covalent_radius_value;
-  double covalent_radius_error;
+  std::map<std::string, CovalentRadius> covalent_radius;
   double vdw_radius;
   double lone_pair_count;
   double valence;
 };
-
-typedef std::map<std::string,
-                 std::map<std::string, AtomProperties>> AtomsProperties;
 
 class Parameters {
   public:
@@ -36,7 +37,7 @@ class Parameters {
     double cutoff_start;
     double cutoff_end;
 
-    AtomsProperties ATOM_PROPERTIES;
+    std::map<std::string, AtomProperties> ATOM_PROPERTIES;
 
     Parameters(char* program_file_path);
     ~Parameters();

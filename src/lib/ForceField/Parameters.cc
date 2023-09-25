@@ -83,9 +83,9 @@ Parameters::Parameters(char* program_file_path) {
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.hybridization"], i));
 
       AtomProperties atom_properties;
-      atom_properties.covalent_radius_value =
+      atom_properties.covalent_radius[hybridization].value =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_value"], i)));
-      atom_properties.covalent_radius_error =
+      atom_properties.covalent_radius[hybridization].error =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_error"], i)));
       atom_properties.vdw_radius =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.vdw_radius"], i)));
@@ -94,7 +94,7 @@ Parameters::Parameters(char* program_file_path) {
       atom_properties.valence =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
 
-      this->ATOM_PROPERTIES[type_symbol][hybridization] = atom_properties;
+      this->ATOM_PROPERTIES[type_symbol] = atom_properties;
     }
   }
 }
