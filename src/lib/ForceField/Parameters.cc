@@ -94,9 +94,21 @@ Parameters::Parameters(char* program_file_path) {
       atom_properties.valence =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
 
+      if(atom_properties.covalent_radius[hybridization].value >
+         this->max_connection_length) {
+        this->max_connection_length =
+          atom_properties.covalent_radius[hybridization].value;
+      }
+
       this->ATOM_PROPERTIES[type_symbol] = atom_properties;
     }
   }
+
+  // Arginine model is used for calculating the interaction cutoff.
+  this->max_interaction_length =
+      9 * this->ATOM_PROPERTIES["C"].covalent_radius["sp3"].value +
+      2 * this->ATOM_PROPERTIES["N"].covalent_radius["sp3"].value +
+          this->ATOM_PROPERTIES["H"].covalent_radius["sp3"].value;
 }
 
 Parameters::~Parameters() {};

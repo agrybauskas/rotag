@@ -182,5 +182,8 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
+  std::cout << parameters.max_connection_length << std::endl;
+  std::cout << parameters.max_interaction_length << std::endl;
+
   return 0;
 }

@@ -39,6 +39,9 @@ class Parameters {
 
     std::map<std::string, AtomProperties> ATOM_PROPERTIES;
 
+    double max_connection_length;
+    double max_interaction_length;
+
     Parameters(char* program_file_path);
     ~Parameters();
 
