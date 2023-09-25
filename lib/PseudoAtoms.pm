@@ -1101,6 +1101,7 @@ sub assign_hetatoms_to_residues
                     $current_hetatom->{$_} = $atom_site->{$connected_atom_id}{$_};
                 }
                 $current_hetatom->{'id'} = $last_atom_id;
+                $current_hetatom->{'origin_atom_id'} = $hetatom_id;
                 $atom_site->{$last_atom_id} = $current_hetatom;
 
                 connect_atoms_explicitly( $atom_site,
