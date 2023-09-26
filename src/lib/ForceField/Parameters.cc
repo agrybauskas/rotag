@@ -72,10 +72,11 @@ Parameters::Parameters(char* program_file_path) {
     this->cutoff_end =
       atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_force_field.cutoff_end"], 0)));
 
-    // "_rotag_atom_properties" category.
     /* NOTE: "codcif" parser should catch errors if the length of tag values does
        not have the same size in the loop so, it is enough to choose any column
        for iterating. */
+
+    // "_rotag_atom_properties" category.
     for(int i = 0; i < cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"]; i++ ) {
       std::string type_symbol =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"], i));
@@ -99,36 +100,53 @@ Parameters::Parameters(char* program_file_path) {
         this->max_connection_length =
           this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value;
       }
-
-      // "_rotag_partial_charge" category.
-
-      // "_rotag_partial_charge" category.
-
-      /* "_rotag_torsional_atom_names" and "_rotag_torsional" categories. Combining
-         them to more useful structure. */
-
-      // "_rotag_h_bond" category.
-
-      // "_rotag_residue_atom_necessity" category.
-
-      // "_rotag_clear_hybridization" category.
-
-      // "_rotag_connectivity" category.
-
-      // "_rotag_hydrogen_names" category.
-
-      // "_rotag_symmetrical_atom_names" category.
-
-      // "_rotag_dihedral_angle" category.
-
-      // "_rotag_interaction_atom_names" category.
-
-      // "_rotag_mainchain_atom_names" category.
-
-      // "_rotag_sidechain_atom_names" category.
-
-      // "_rotag_rotatable_residue_names" category.
     }
+
+    // "_rotag_partial_charge" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_lennard_jones.type_symbol_1"]; i++ ) {
+      std::string type_symbol_1 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_lennard_jones.type_symbol_1"], i));
+      std::string type_symbol_2 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_lennard_jones.type_symbol_2"], i));
+      double sigma =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_lennard_jones.sigma"], i)));
+      double epsilon =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_lennard_jones.epsilon"], i)));
+
+      this->LENNARD_JONES[type_symbol_1][type_symbol_2].sigma = sigma;
+      this->LENNARD_JONES[type_symbol_2][type_symbol_1].sigma = sigma;
+      this->LENNARD_JONES[type_symbol_1][type_symbol_2].epsilon = epsilon;
+      this->LENNARD_JONES[type_symbol_2][type_symbol_1].epsilon = epsilon;
+    }
+
+    // "_rotag_partial_charge" category.
+
+    // "_rotag_partial_charge" category.
+
+    /* "_rotag_torsional_atom_names" and "_rotag_torsional" categories. Combining
+       them to more useful structure. */
+
+    // "_rotag_h_bond" category.
+
+    // "_rotag_residue_atom_necessity" category.
+
+    // "_rotag_clear_hybridization" category.
+
+    // "_rotag_connectivity" category.
+
+    // "_rotag_hydrogen_names" category.
+
+    // "_rotag_symmetrical_atom_names" category.
+
+    // "_rotag_dihedral_angle" category.
+
+    // "_rotag_interaction_atom_names" category.
+
+    // "_rotag_mainchain_atom_names" category.
+
+    // "_rotag_sidechain_atom_names" category.
+
+    // "_rotag_rotatable_residue_names" category.
   }
 
   // Arginine model is used for calculating the interaction cutoff.

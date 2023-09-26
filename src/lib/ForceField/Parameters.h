@@ -9,6 +9,11 @@ struct CovalentRadius {
   double error;
 };
 
+struct LennardJones {
+  double sigma;
+  double epsilon;
+};
+
 struct AtomProperties {
   std::map<std::string, CovalentRadius> covalent_radius;
   double vdw_radius;
@@ -38,6 +43,7 @@ class Parameters {
     double cutoff_end;
 
     std::map<std::string, AtomProperties> ATOM_PROPERTIES;
+    std::map<std::string, std::map<std::string, LennardJones>> LENNARD_JONES;
 
     double max_connection_length;
     double max_interaction_length;

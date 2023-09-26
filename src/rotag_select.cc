@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.max_interaction_length << std::endl;
+  std::cout << parameters.LENNARD_JONES["C"]["N"].sigma << std::endl;
 
   return 0;
 }
