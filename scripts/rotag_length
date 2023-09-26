@@ -380,12 +380,11 @@ for my $pdbx_file ( @ARGV ) {
                       'atom_1_id' => $atom_ids[0],
                       'label_atom_1_id' =>
                           $bond_length_site->{$atom_ids[0]}{'label_atom_id'},
-                      'atom_2_id' => ( $calc_hetatoms &&
-                                       defined $bond_length_site->{$atom_ids[1]}
-                                                                  {'origin_atom_id'} ) ?
-                                       $bond_length_site->{$atom_ids[1]}
-                                                          {'origin_atom_id'} :
-                                       $atom_ids[1],
+                      'atom_2_id' =>
+                          ( $calc_hetatoms &&
+                            defined $bond_length_site->{$atom_ids[1]}{'origin_atom_id'} ) ?
+                            $bond_length_site->{$atom_ids[1]}{'origin_atom_id'} :
+                            $atom_ids[1],
                       'label_atom_2_id' =>
                           $bond_length_site->{$atom_ids[1]}{'label_atom_id'},
                       'type' => $bond_name,

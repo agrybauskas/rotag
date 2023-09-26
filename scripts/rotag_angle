@@ -656,7 +656,11 @@ for my $pdbx_file ( @ARGV ) {
                       'atom_2_id' => $atom_ids[1],
                       'label_atom_2_id' =>
                           $bond_angle_site->{$atom_ids[1]}{'label_atom_id'},
-                      'atom_3_id' => $atom_ids[2],
+                      'atom_3_id' =>
+                          ( $calc_hetatoms &&
+                            defined $bond_angle_site->{$atom_ids[2]}{'origin_atom_id'} ) ?
+                          $bond_angle_site->{$atom_ids[2]}{'origin_atom_id'} :
+                          $atom_ids[2],
                       'label_atom_3_id' =>
                           $bond_angle_site->{$atom_ids[2]}{'label_atom_id'},
                       'type' => $angle_name,
