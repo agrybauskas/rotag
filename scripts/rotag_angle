@@ -12,8 +12,7 @@ use Try::Tiny;
 use BondParameters qw( bendable_angles
                        collect_bond_angles );
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( connect_atoms
-                     connect_hetatoms );
+use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -27,6 +26,7 @@ use PDBxParser qw( filter
                    split_by
                    to_csv
                    to_pdbx );
+use PseudoAtoms qw( assign_hetatoms_to_residues );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -124,10 +124,12 @@ my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
-    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
-    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
+    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site', '_struct_conn' ] );
+    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ],
+                                            '_struct_conn' => [ 'id' ] } } );
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
+    my $struct_conn = $pdbx->{'_struct_conn'}{'data'};
 
     if( ! defined $atom_site ) {
         warning( { 'program' => $0,
@@ -577,8 +579,25 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         connect_atoms( $parameters, $bond_angle_site );
-        connect_hetatoms( $parameters, $bond_angle_site,
-                          { 'do_angle_bending' => 1 } ) if $calc_hetatoms;
+
+        # Heteroatom assignment increases the atom number in the atom site.
+        if( $calc_hetatoms ) {
+            assign_hetatoms_to_residues( $parameters,
+                                         $bond_angle_site,
+                                         { 'struct_conn' => $struct_conn } );
+            # Updating the target's atom site as there more duplicated pseudo
+            # atoms.
+            for my $atom_id ( keys %{ $bond_angle_site } ) {
+                my $origin_atom_id =
+                    $bond_angle_site->{$atom_id}{'origin_atom_id'};
+
+                next if ! defined $origin_atom_id ||
+                    ! exists $target_bond_angle_site->{$origin_atom_id};
+
+                $target_bond_angle_site->{$atom_id} =
+                    $bond_angle_site->{$atom_id};
+            }
+        }
 
         bendable_angles( $parameters, $bond_angle_site,
                          { 'include_mainchain' => $calc_mainchain,

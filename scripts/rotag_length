@@ -11,8 +11,7 @@ use Try::Tiny;
 
 use BondParameters qw( collect_bond_lengths
                        stretchable_bonds );
-use ConnectAtoms qw( connect_atoms
-                     connect_hetatoms );
+use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
