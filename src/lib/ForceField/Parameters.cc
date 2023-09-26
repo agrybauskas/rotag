@@ -76,32 +76,29 @@ Parameters::Parameters(char* program_file_path) {
     /* NOTE: "codcif" parser should catch errors if the length of tag values does
        not have the same size in the loop so, it is enough to choose any column
        for iterating. */
-    AtomProperties atom_properties;
     for(int i = 0; i < cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"]; i++ ) {
       std::string type_symbol =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"], i));
       std::string hybridization =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.hybridization"], i));
 
-      atom_properties.covalent_radius[hybridization].value =
+      this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_value"], i)));
-      atom_properties.covalent_radius[hybridization].error =
+      this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_error"], i)));
-      atom_properties.vdw_radius =
+      this->ATOM_PROPERTIES[type_symbol].vdw_radius =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.vdw_radius"], i)));
-      atom_properties.lone_pair_count =
+      this->ATOM_PROPERTIES[type_symbol].lone_pair_count =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.lone_pair_count"], i)));
-      atom_properties.valence =
+      this->ATOM_PROPERTIES[type_symbol].valence =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
 
       // Used for edge length of the grid during cubing procedure algorithm.
-      if(atom_properties.covalent_radius[hybridization].value >
+      if(this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value >
          this->max_connection_length) {
         this->max_connection_length =
-          atom_properties.covalent_radius[hybridization].value;
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value;
       }
-
-      this->ATOM_PROPERTIES[type_symbol] = atom_properties;
     }
   }
 
