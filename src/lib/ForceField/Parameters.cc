@@ -100,6 +100,35 @@ Parameters::Parameters(char* program_file_path) {
           this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value;
       }
     }
+
+    // "_rotag_lennard_jones" category.
+
+    // "_rotag_partial_charge" category.
+
+    /* "_rotag_torsional_atom_names" and "_rotag_torsional" categories. Combining
+       them to more useful structure. */
+
+    // "_rotag_h_bond" category.
+
+    // "_rotag_residue_atom_necessity" category.
+
+    // "_rotag_clear_hybridization" category.
+
+    // "_rotag_connectivity" category.
+
+    // "_rotag_hydrogen_names" category.
+
+    // "_rotag_symmetrical_atom_names" category.
+
+    // "_rotag_dihedral_angle" category.
+
+    // "_rotag_interaction_atom_names" category.
+
+    // "_rotag_mainchain_atom_names" category.
+
+    // "_rotag_sidechain_atom_names" category.
+
+    // "_rotag_rotatable_residue_names" category.
   }
 
   // Arginine model is used for calculating the interaction cutoff.
