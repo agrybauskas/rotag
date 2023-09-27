@@ -15,7 +15,6 @@ use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      connect_atoms_explicitly
-                     connect_hetatoms
                      disconnect_atoms_explicitly );
 use ForceField::Parameters;
 use Logging qw( error
@@ -146,8 +145,6 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         connect_atoms( $parameters, $dihedral_site );
-        connect_hetatoms( $parameters, $dihedral_site,
-                          { 'do_bond_rotation' => 1 } ) if $calc_hetatoms;
         hybridization( $parameters, $dihedral_site );
 
         # Connecting N and C for heteroatom calculations.
