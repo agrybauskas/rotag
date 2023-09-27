@@ -149,43 +149,43 @@ for my $pdbx_file ( @ARGV ) {
         connect_atoms( $parameters, $dihedral_site );
         hybridization( $parameters, $dihedral_site );
 
-        # Connecting N and C for heteroatom calculations.
-        my @disconnect_atom_ids = ();
-        if( $calc_hetatoms ) {
-            my $n_atom_ids =
-                filter_new( $dihedral_site,
-                            { 'include' => { 'label_atom_id' => [ 'N' ] },
-                              'return_data' => 'id' } );
+        # # Connecting N and C for heteroatom calculations.
+        # my @disconnect_atom_ids = ();
+        # if( $calc_hetatoms ) {
+        #     my $n_atom_ids =
+        #         filter_new( $dihedral_site,
+        #                     { 'include' => { 'label_atom_id' => [ 'N' ] },
+        #                       'return_data' => 'id' } );
 
-            for my $n_atom_id ( @{ $n_atom_ids } ) {
-                my ( $c_atom_id ) =
-                    @{ filter_new( filter_by_unique_residue_key(
-                                       $dihedral_site,
-                                       unique_residue_key( $dihedral_site->{$n_atom_id} ),
-                                       1 ),
-                                   { 'include' => { 'label_atom_id' => [ 'C' ] },
-                                     'return_data' => 'id' } ) };
+        #     for my $n_atom_id ( @{ $n_atom_ids } ) {
+        #         my ( $c_atom_id ) =
+        #             @{ filter_new( filter_by_unique_residue_key(
+        #                                $dihedral_site,
+        #                                unique_residue_key( $dihedral_site->{$n_atom_id} ),
+        #                                1 ),
+        #                            { 'include' => { 'label_atom_id' => [ 'C' ] },
+        #                              'return_data' => 'id' } ) };
 
-                connect_atoms_explicitly( $dihedral_site,
-                                          [ $n_atom_id ],
-                                          [ $c_atom_id ],
-                                          { 'connection_type' =>
-                                                'connections_hetatom' } );
+        #         connect_atoms_explicitly( $dihedral_site,
+        #                                   [ $n_atom_id ],
+        #                                   [ $c_atom_id ],
+        #                                   { 'connection_type' =>
+        #                                         'connections_hetatom' } );
 
-                push @disconnect_atom_ids, $n_atom_id;
-            }
-        }
+        #         push @disconnect_atom_ids, $n_atom_id;
+        #     }
+        # }
 
         rotatable_bonds( $parameters, $dihedral_site,
                          { 'include_mainchain' => $calc_mainchain,
                            'include_hetatoms' => $calc_hetatoms } );
         my $dihedral_angles = collect_dihedral_angles( $dihedral_site );
 
-        disconnect_atoms_explicitly( $dihedral_site,
-                                     \@disconnect_atom_ids,
-                                     { 'connection_type' =>
-                                           'connections_hetatom' } )
-            if $calc_hetatoms;
+        # disconnect_atoms_explicitly( $dihedral_site,
+        #                              \@disconnect_atom_ids,
+        #                              { 'connection_type' =>
+        #                                    'connections_hetatom' } )
+        #     if $calc_hetatoms;
 
         my $dihedral_id = 1;
         my %visited_dihedral_angles = ();
