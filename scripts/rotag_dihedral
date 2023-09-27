@@ -109,7 +109,7 @@ my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
 my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
 for my $pdbx_file ( @ARGV ) {
-    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site' ] );
+    my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site', '_struct_conn' ] );
     raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ],
                                             '_struct_conn' => [ 'id' ] } } );
 
