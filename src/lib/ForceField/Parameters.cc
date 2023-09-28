@@ -46,7 +46,17 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_lennard_jones.epsilon",
     "_rotag_partial_charge.label_comp_id",
     "_rotag_partial_charge.label_atom_id",
-    "_rotag_partial_charge.value"
+    "_rotag_partial_charge.value",
+    "_rotag_torsional_atom_names.label_comp_id",
+    "_rotag_torsional_atom_names.label_atom_id",
+    "_rotag_torsional_atom_names.alt_atom_name",
+    "_rotag_torsional.label_atom_1_id",
+    "_rotag_torsional.label_atom_2_id",
+    "_rotag_torsional.label_atom_3_id",
+    "_rotag_torsional.label_atom_4_id",
+    "_rotag_torsional.epsilon",
+    "_rotag_torsional.phase",
+    "_rotag_torsional.gamma"
   };
 
   DATABLOCK* datablock;
@@ -138,10 +148,23 @@ Parameters::Parameters(char* program_file_path) {
       this->PARTIAL_CHARGE[residue_name][atom_name].value = partial_charge_value;
     }
 
-    // "_rotag_partial_charge" category.
+    // "_rotag_torsional_atom_names" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_torsional_atom_names.label_comp_id"]; i++ ) {
+      std::string residue_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional_atom_names.label_comp_id"], i));
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional_atom_names.label_atom_id"], i));
+      std::string alt_atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional_atom_names.alt_atom_name"], i));
 
-    /* "_rotag_torsional_atom_names" and "_rotag_torsional" categories. Combining
-       them to more useful structure. */
+      this->TORSIONAL_ATOM_NAMES[residue_name][atom_name].alt_name =
+        alt_atom_name;
+    }
+
+    // // "_rotag_torsional" category,
+    // for(int i = 0; i < cif_value_length_lookup_table["_rotag_torsional.label_atom_1_id"]; i++ ) {
+
+    // }
 
     // "_rotag_h_bond" category.
 

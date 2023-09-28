@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.PARTIAL_CHARGE["ASP"]["OD1"].value << std::endl;
+  std::cout << parameters.TORSIONAL_ATOM_NAMES["ASP"]["OD1"].alt_name << std::endl;
 
   return 0;
 }

@@ -25,6 +25,10 @@ struct AtomProperties {
   double valence;
 };
 
+struct AltName {
+  std::string alt_name;
+};
+
 class Parameters {
   public:
     const double EPSILON = epsilon();
@@ -49,6 +53,7 @@ class Parameters {
     std::map<std::string, AtomProperties> ATOM_PROPERTIES;
     std::map<std::string, std::map<std::string, LennardJones>> LENNARD_JONES;
     std::map<std::string, std::map<std::string, PartialCharge>> PARTIAL_CHARGE;
+    std::map<std::string, std::map<std::string, AltName>> TORSIONAL_ATOM_NAMES;
 
     double max_connection_length;
     double max_interaction_length;
