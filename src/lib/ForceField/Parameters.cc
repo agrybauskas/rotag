@@ -56,7 +56,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_torsional.label_atom_4_id",
     "_rotag_torsional.epsilon",
     "_rotag_torsional.phase",
-    "_rotag_torsional.gamma"
+    "_rotag_torsional.gamma",
+    "_rotag_h_bond.type_symbol",
+    "_rotag_h_bond.sigma",
+    "_rotag_h_bond.epsilon"
   };
 
   DATABLOCK* datablock;
@@ -187,6 +190,16 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_h_bond" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_h_bond.type_symbol"]; i++ ) {
+      std::string type_symbol =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_h_bond.type_symbol"], i));
+      double sigma =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.sigma"], i)));
+      double epsilon =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.epsilon"], i)));
+
+      this->H_BOND[type_symbol] = {sigma, epsilon};
+    }
 
     // "_rotag_residue_atom_necessity" category.
 

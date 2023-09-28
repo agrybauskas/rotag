@@ -24,6 +24,12 @@ struct Torsional {
   double gamma;
 };
 
+struct HBond {
+  double epsilon;
+  double phase;
+  double gamma;
+};
+
 struct AltName {
   std::string alt_name;
 };
@@ -61,6 +67,7 @@ class Parameters {
     std::map<std::string, std::map<std::string, PartialCharge>> PARTIAL_CHARGE;
     std::map<std::string, std::map<std::string, AltName>> TORSIONAL_ATOM_NAMES;
     std::map<std::string, Torsional> TORSIONAL;
+    std::map<std::string, HBond> H_BOND;
 
     double max_connection_length;
     double max_interaction_length;
