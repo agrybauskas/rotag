@@ -39,7 +39,11 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_atom_properties.covalent_radius_error",
     "_rotag_atom_properties.vdw_radius",
     "_rotag_atom_properties.lone_pair_count",
-    "_rotag_atom_properties.valence"
+    "_rotag_atom_properties.valence",
+    "_rotag_lennard_jones.type_symbol_1",
+    "_rotag_lennard_jones.type_symbol_2",
+    "_rotag_lennard_jones.sigma",
+    "_rotag_lennard_jones.epsilon"
   };
 
   DATABLOCK* datablock;
