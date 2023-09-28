@@ -68,6 +68,7 @@ class Parameters {
     std::map<std::string, std::map<std::string, AltName>> TORSIONAL_ATOM_NAMES;
     std::map<std::string, Torsional> TORSIONAL;
     std::map<std::string, HBond> H_BOND;
+    std::map<std::string, std::map<std::string, bool>> RESIDUE_ATOM_NECESSITY;
 
     double max_connection_length;
     double max_interaction_length;

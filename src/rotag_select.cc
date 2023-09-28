@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.ATOM_PROPERTIES["N"].valence << std::endl;
+  std::cout << parameters.RESIDUE_ATOM_NECESSITY["ASP"]["H1"] << std::endl;
 
   return 0;
 }

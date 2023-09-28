@@ -59,7 +59,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_torsional.gamma",
     "_rotag_h_bond.type_symbol",
     "_rotag_h_bond.sigma",
-    "_rotag_h_bond.epsilon"
+    "_rotag_h_bond.epsilon",
+    "_rotag_residue_atom_necessity.label_comp_id",
+    "_rotag_residue_atom_necessity.label_atom_id",
+    "_rotag_residue_atom_necessity.value"
   };
 
   DATABLOCK* datablock;
@@ -185,8 +188,8 @@ Parameters::Parameters(char* program_file_path) {
       double gamma =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.gamma"], i)));
 
-      this->TORSIONAL[key_forward] = { epsilon, phase, gamma };
-      this->TORSIONAL[key_reverse] = { epsilon, phase, gamma };
+      this->TORSIONAL[key_forward] = {epsilon, phase, gamma};
+      this->TORSIONAL[key_reverse] = {epsilon, phase, gamma};
     }
 
     // "_rotag_h_bond" category.
@@ -194,14 +197,25 @@ Parameters::Parameters(char* program_file_path) {
       std::string type_symbol =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_h_bond.type_symbol"], i));
       double sigma =
-        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.sigma"], i)));
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_h_bond.sigma"], i)));
       double epsilon =
-        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.epsilon"], i)));
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_h_bond.epsilon"], i)));
 
       this->H_BOND[type_symbol] = {sigma, epsilon};
     }
 
     // "_rotag_residue_atom_necessity" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_residue_atom_necessity.label_comp_id"]; i++ ) {
+      std::string residue_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_residue_atom_necessity.label_comp_id"], i));
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_residue_atom_necessity.label_atom_id"], i));
+      std::string necessity_value =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_residue_atom_necessity.value"], i));
+
+      this->RESIDUE_ATOM_NECESSITY[residue_name][atom_name] =
+        necessity_value == "mandatory" ? true : false;
+    }
 
     // "_rotag_clear_hybridization" category.
 
