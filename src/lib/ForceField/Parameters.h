@@ -31,8 +31,8 @@ struct AltName {
 struct AtomProperties {
   std::map<std::string, CovalentRadius> covalent_radius;
   double vdw_radius;
-  double lone_pair_count;
-  double valence;
+  int lone_pair_count;
+  int valence;
 };
 
 class Parameters {

@@ -107,9 +107,9 @@ Parameters::Parameters(char* program_file_path) {
       this->ATOM_PROPERTIES[type_symbol].vdw_radius =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.vdw_radius"], i)));
       this->ATOM_PROPERTIES[type_symbol].lone_pair_count =
-        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.lone_pair_count"], i)));
+        std::stoi(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.lone_pair_count"], i)));
       this->ATOM_PROPERTIES[type_symbol].valence =
-        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
+        std::stoi(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
 
       // Used for edge length of the grid during cubing procedure algorithm.
       if(this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value >
@@ -130,10 +130,8 @@ Parameters::Parameters(char* program_file_path) {
       double epsilon =
         atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_lennard_jones.epsilon"], i)));
 
-      this->LENNARD_JONES[type_symbol_1][type_symbol_2].sigma = sigma;
-      this->LENNARD_JONES[type_symbol_2][type_symbol_1].sigma = sigma;
-      this->LENNARD_JONES[type_symbol_1][type_symbol_2].epsilon = epsilon;
-      this->LENNARD_JONES[type_symbol_2][type_symbol_1].epsilon = epsilon;
+      this->LENNARD_JONES[type_symbol_1][type_symbol_2] = {sigma, epsilon};
+      this->LENNARD_JONES[type_symbol_2][type_symbol_1] = {sigma, epsilon};
     }
 
     // "_rotag_partial_charge" category.

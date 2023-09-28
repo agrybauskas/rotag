@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.TORSIONAL["N,CT,C,N"].epsilon << std::endl;
+  std::cout << parameters.ATOM_PROPERTIES["N"].valence << std::endl;
 
   return 0;
 }
