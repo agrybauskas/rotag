@@ -43,7 +43,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_lennard_jones.type_symbol_1",
     "_rotag_lennard_jones.type_symbol_2",
     "_rotag_lennard_jones.sigma",
-    "_rotag_lennard_jones.epsilon"
+    "_rotag_lennard_jones.epsilon",
+    "_rotag_partial_charge.label_comp_id",
+    "_rotag_partial_charge.label_atom_id",
+    "_rotag_partial_charge.value"
   };
 
   DATABLOCK* datablock;
@@ -124,6 +127,16 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_partial_charge" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_partial_charge.label_comp_id"]; i++ ) {
+      std::string residue_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_partial_charge.label_comp_id"], i));
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_partial_charge.label_atom_id"], i));
+      double partial_charge_value =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_partial_charge.value"], i)));
+
+      this->PARTIAL_CHARGE[residue_name][atom_name].value = partial_charge_value;
+    }
 
     // "_rotag_partial_charge" category.
 
