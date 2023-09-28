@@ -18,15 +18,21 @@ struct PartialCharge {
   double value;
 };
 
+struct Torsional {
+  double epsilon;
+  double phase;
+  double gamma;
+};
+
+struct AltName {
+  std::string alt_name;
+};
+
 struct AtomProperties {
   std::map<std::string, CovalentRadius> covalent_radius;
   double vdw_radius;
   double lone_pair_count;
   double valence;
-};
-
-struct AltName {
-  std::string alt_name;
 };
 
 class Parameters {
@@ -54,6 +60,7 @@ class Parameters {
     std::map<std::string, std::map<std::string, LennardJones>> LENNARD_JONES;
     std::map<std::string, std::map<std::string, PartialCharge>> PARTIAL_CHARGE;
     std::map<std::string, std::map<std::string, AltName>> TORSIONAL_ATOM_NAMES;
+    std::map<std::string, Torsional> TORSIONAL;
 
     double max_connection_length;
     double max_interaction_length;

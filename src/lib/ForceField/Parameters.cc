@@ -161,10 +161,32 @@ Parameters::Parameters(char* program_file_path) {
         alt_atom_name;
     }
 
-    // // "_rotag_torsional" category,
-    // for(int i = 0; i < cif_value_length_lookup_table["_rotag_torsional.label_atom_1_id"]; i++ ) {
+    // "_rotag_torsional" category,
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_torsional.label_atom_1_id"]; i++ ) {
+      std::string atom_name_1 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.label_atom_1_id"], i));
+      std::string atom_name_2 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.label_atom_2_id"], i));
+      std::string atom_name_3 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.label_atom_3_id"], i));
+      std::string atom_name_4 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.label_atom_4_id"], i));
 
-    // }
+      std::string key_forward =
+        atom_name_1 + "," + atom_name_2 + "," + atom_name_3 + "," + atom_name_4;
+      std::string key_reverse =
+        atom_name_4 + "," + atom_name_3 + "," + atom_name_2 + "," + atom_name_1;
+
+      double epsilon =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.epsilon"], i)));
+      double phase =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.phase"], i)));
+      double gamma =
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.gamma"], i)));
+
+      this->TORSIONAL[key_forward] = { epsilon, phase, gamma };
+      this->TORSIONAL[key_reverse] = { epsilon, phase, gamma };
+    }
 
     // "_rotag_h_bond" category.
 

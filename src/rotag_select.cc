@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.TORSIONAL_ATOM_NAMES["ASP"]["OD1"].alt_name << std::endl;
+  std::cout << parameters.TORSIONAL["N,CT,C,N"].epsilon << std::endl;
 
   return 0;
 }
