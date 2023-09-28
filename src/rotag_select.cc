@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.RESIDUE_ATOM_NECESSITY["ASP"]["H1"] << std::endl;
+  std::cout << parameters.CLEAR_HYBRIDIZATION["ASP"]["OD1"].type << std::endl;
 
   return 0;
 }

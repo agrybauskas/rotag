@@ -34,6 +34,10 @@ struct AltName {
   std::string alt_name;
 };
 
+struct ClearHybridization {
+  std::string type;
+};
+
 struct AtomProperties {
   std::map<std::string, CovalentRadius> covalent_radius;
   double vdw_radius;
@@ -69,6 +73,7 @@ class Parameters {
     std::map<std::string, Torsional> TORSIONAL;
     std::map<std::string, HBond> H_BOND;
     std::map<std::string, std::map<std::string, bool>> RESIDUE_ATOM_NECESSITY;
+    std::map<std::string, std::map<std::string, ClearHybridization>> CLEAR_HYBRIDIZATION;
 
     double max_connection_length;
     double max_interaction_length;

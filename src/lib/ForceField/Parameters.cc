@@ -62,7 +62,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_h_bond.epsilon",
     "_rotag_residue_atom_necessity.label_comp_id",
     "_rotag_residue_atom_necessity.label_atom_id",
-    "_rotag_residue_atom_necessity.value"
+    "_rotag_residue_atom_necessity.value",
+    "_rotag_clear_hybridization.label_comp_id",
+    "_rotag_clear_hybridization.label_atom_id",
+    "_rotag_clear_hybridization.type"
   };
 
   DATABLOCK* datablock;
@@ -218,6 +221,16 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_clear_hybridization" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_clear_hybridization.label_comp_id"]; i++ ) {
+      std::string residue_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_clear_hybridization.label_comp_id"], i));
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_clear_hybridization.label_atom_id"], i));
+      std::string type =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_clear_hybridization.type"], i));
+
+      this->CLEAR_HYBRIDIZATION[residue_name][atom_name].type = type;
+    }
 
     // "_rotag_connectivity" category.
 
