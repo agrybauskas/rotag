@@ -1107,9 +1107,6 @@ sub assign_hetatoms_to_residues
                 connect_atoms_explicitly( $atom_site,
                                           [ $last_atom_id ],
                                           [ $connected_atom_id ] );
-                connect_atoms_explicitly( $atom_site,
-                                          [ $hetatom_id ],
-                                          [ $connected_atom_id ] );
 
                 $last_atom_id++;
             }
