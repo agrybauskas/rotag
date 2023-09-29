@@ -77,6 +77,7 @@ class Parameters {
     std::map<std::string, std::map<std::string, ClearHybridization>> CLEAR_HYBRIDIZATION;
     std::map<std::string, std::map<std::string, std::vector<std::string>>> CONNECTIVITY;
     std::map<std::string, std::map<std::string, std::vector<std::string>>> HYDROGEN_NAMES;
+    std::map<std::string, std::map<std::string, std::vector<std::string>>> SYMMETRICAL_ATOM_NAMES;
 
     double max_connection_length;
     double max_interaction_length;

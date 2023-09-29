@@ -182,7 +182,5 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.HYDROGEN_NAMES["ASP"]["CA"][0] << std::endl;
-
   return 0;
 }

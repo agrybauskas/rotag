@@ -71,7 +71,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_connectivity.label_atom_2_id",
     "_rotag_hydrogen_names.label_comp_id",
     "_rotag_hydrogen_names.label_atom_id",
-    "_rotag_hydrogen_names.label_hydrogen_atom_id"
+    "_rotag_hydrogen_names.label_hydrogen_atom_id",
+    "_rotag_symmetrical_atom_names.label_comp_id",
+    "_rotag_symmetrical_atom_names.label_atom_1_id",
+    "_rotag_symmetrical_atom_names.label_atom_2_id"
   };
 
   DATABLOCK* datablock;
@@ -263,6 +266,17 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_symmetrical_atom_names" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_symmetrical_atom_names.label_comp_id"]; i++ ) {
+      std::string residue_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_symmetrical_atom_names.label_comp_id"], i));
+      std::string atom_name_1 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_symmetrical_atom_names.label_atom_1_id"], i));
+      std::string atom_name_2 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_symmetrical_atom_names.label_atom_2_id"], i));
+
+      this->SYMMETRICAL_ATOM_NAMES[residue_name][atom_name_1].push_back(atom_name_2);
+      this->SYMMETRICAL_ATOM_NAMES[residue_name][atom_name_2].push_back(atom_name_1);
+    }
 
     // "_rotag_dihedral_angle" category.
 
