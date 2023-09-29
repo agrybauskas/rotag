@@ -46,6 +46,11 @@ struct DihedralAngleRestraint {
   std::string type;
 };
 
+struct BondType {
+  double min_length;
+  double max_length;
+};
+
 struct AtomProperties {
   std::map<std::string, CovalentRadius> covalent_radius;
   double vdw_radius;
@@ -90,6 +95,7 @@ class Parameters {
     std::vector<std::string> MAINCHAIN_ATOM_NAMES;
     std::vector<std::string> SIDECHAIN_ATOM_NAMES;
     std::vector<std::string> ROTATABLE_RESIDUE_NAMES;
+    std::map<std::string, std::map<std::string, std::map<std::string, BondType>>> BOND_TYPE;
 
     double max_connection_length;
     double max_interaction_length;

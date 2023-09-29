@@ -355,6 +355,58 @@ Parameters::Parameters(char* program_file_path) {
     9 * this->ATOM_PROPERTIES["C"].covalent_radius["sp3"].value +
     2 * this->ATOM_PROPERTIES["N"].covalent_radius["sp3"].value +
         this->ATOM_PROPERTIES["H"].covalent_radius["sp3"].value;
+
+  // Determining min/max bond lengths for specific bond types.
+  // Single bonds.
+  const std::vector<std::string> atom_symbols_single = {"C", "H", "N", "O", "S"};
+  for(const std::string &first_atom_symbol: atom_symbols_single) {
+    for(const std::string &second_atom_symbol: atom_symbols_single) {
+      this->BOND_TYPE["single"][first_atom_symbol][second_atom_symbol] = {
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp3"].value +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp3"].value -
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp3"].error -
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp3"].error,
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp3"].value +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp3"].value +
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp3"].error +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp3"].error
+      };
+    }
+  }
+
+  // Double bonds.
+  const std::vector<std::string> atom_symbols_double = {"C", "N", "O"};
+  for(const std::string &first_atom_symbol: atom_symbols_double) {
+    for(const std::string &second_atom_symbol: atom_symbols_double) {
+      this->BOND_TYPE["double"][first_atom_symbol][second_atom_symbol] = {
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp2"].value +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp2"].value -
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp2"].error -
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp2"].error,
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp2"].value +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp2"].value +
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp2"].error +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp2"].error
+      };
+    }
+  }
+
+  // Triple bonds.
+  const std::vector<std::string> atom_symbols_triple = {"C"};
+  for(const std::string &first_atom_symbol: atom_symbols_triple) {
+    for(const std::string &second_atom_symbol: atom_symbols_triple) {
+      this->BOND_TYPE["triple"][first_atom_symbol][second_atom_symbol] = {
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp"].value +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp"].value -
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp"].error -
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp"].error,
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp"].value +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp"].value +
+        this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp"].error +
+        this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp"].error
+      };
+    }
+  }
 }
 
 Parameters::~Parameters() {};
