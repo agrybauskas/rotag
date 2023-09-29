@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 struct CovalentRadius {
   double value;
@@ -74,6 +75,7 @@ class Parameters {
     std::map<std::string, HBond> H_BOND;
     std::map<std::string, std::map<std::string, bool>> RESIDUE_ATOM_NECESSITY;
     std::map<std::string, std::map<std::string, ClearHybridization>> CLEAR_HYBRIDIZATION;
+    std::map<std::string, std::map<std::string, std::vector<std::string>>> CONNECTIVITY;
 
     double max_connection_length;
     double max_interaction_length;

@@ -65,7 +65,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_residue_atom_necessity.value",
     "_rotag_clear_hybridization.label_comp_id",
     "_rotag_clear_hybridization.label_atom_id",
-    "_rotag_clear_hybridization.type"
+    "_rotag_clear_hybridization.type",
+    "_rotag_connectivity.label_comp_id",
+    "_rotag_connectivity.label_atom_1_id",
+    "_rotag_connectivity.label_atom_2_id"
   };
 
   DATABLOCK* datablock;
@@ -233,6 +236,16 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_connectivity" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_connectivity.label_comp_id"]; i++ ) {
+      std::string residue_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_connectivity.label_comp_id"], i));
+      std::string atom_name_1 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_connectivity.label_atom_1_id"], i));
+      std::string atom_name_2 =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_connectivity.label_atom_2_id"], i));
+
+      this->CONNECTIVITY[residue_name][atom_name_1].push_back(atom_name_2);
+    }
 
     // "_rotag_hydrogen_names" category.
 

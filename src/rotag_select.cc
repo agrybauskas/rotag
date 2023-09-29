@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.CLEAR_HYBRIDIZATION["ASP"]["OD1"].type << std::endl;
+  std::cout << parameters.CONNECTIVITY["ASP"]["N"][0] << std::endl;
 
   return 0;
 }
