@@ -68,7 +68,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_clear_hybridization.type",
     "_rotag_connectivity.label_comp_id",
     "_rotag_connectivity.label_atom_1_id",
-    "_rotag_connectivity.label_atom_2_id"
+    "_rotag_connectivity.label_atom_2_id",
+    "_rotag_hydrogen_names.label_comp_id",
+    "_rotag_hydrogen_names.label_atom_id",
+    "_rotag_hydrogen_names.label_hydrogen_atom_id"
   };
 
   DATABLOCK* datablock;
@@ -248,6 +251,16 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_hydrogen_names" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_hydrogen_names.label_comp_id"]; i++ ) {
+      std::string residue_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_hydrogen_names.label_comp_id"], i));
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_hydrogen_names.label_atom_id"], i));
+      std::string hydrogen_atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_hydrogen_names.label_hydrogen_atom_id"], i));
+
+      this->HYDROGEN_NAMES[residue_name][atom_name].push_back(hydrogen_atom_name);
+    }
 
     // "_rotag_symmetrical_atom_names" category.
 
