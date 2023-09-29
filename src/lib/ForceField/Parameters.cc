@@ -81,6 +81,10 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_dihedral_angle.range_to",
     "_rotag_dihedral_angle.step",
     "_rotag_dihedral_angle.type",
+    "_rotag_interaction_atom_names.label_atom_id",
+    "_rotag_mainchain_atom_names.label_atom_id",
+    "_rotag_sidechain_atom_names.label_atom_id",
+    "_rotag_rotatable_residue_names.label_comp_id"
   };
 
   DATABLOCK* datablock;
@@ -314,19 +318,43 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_interaction_atom_names" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_interaction_atom_names.label_atom_id"]; i++ ) {
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_interaction_atom_names.label_atom_id"], i));
+
+      this->INTERACTION_ATOM_NAMES.push_back(atom_name);
+    }
 
     // "_rotag_mainchain_atom_names" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_mainchain_atom_names.label_atom_id"]; i++ ) {
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_mainchain_atom_names.label_atom_id"], i));
+
+      this->MAINCHAIN_ATOM_NAMES.push_back(atom_name);
+    }
 
     // "_rotag_sidechain_atom_names" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_sidechain_atom_names.label_atom_id"]; i++ ) {
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_sidechain_atom_names.label_atom_id"], i));
+
+      this->SIDECHAIN_ATOM_NAMES.push_back(atom_name);
+    }
 
     // "_rotag_rotatable_residue_names" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_rotatable_residue_names.label_comp_id"]; i++ ) {
+      std::string atom_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_rotatable_residue_names.label_comp_id"], i));
+
+      this->ROTATABLE_RESIDUE_NAMES.push_back(atom_name);
+    }
   }
 
   // Arginine model is used for calculating the interaction cutoff.
   this->max_interaction_length =
-      9 * this->ATOM_PROPERTIES["C"].covalent_radius["sp3"].value +
-      2 * this->ATOM_PROPERTIES["N"].covalent_radius["sp3"].value +
-          this->ATOM_PROPERTIES["H"].covalent_radius["sp3"].value;
+    9 * this->ATOM_PROPERTIES["C"].covalent_radius["sp3"].value +
+    2 * this->ATOM_PROPERTIES["N"].covalent_radius["sp3"].value +
+        this->ATOM_PROPERTIES["H"].covalent_radius["sp3"].value;
 }
 
 Parameters::~Parameters() {};

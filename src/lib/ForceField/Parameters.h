@@ -86,6 +86,10 @@ class Parameters {
     std::map<std::string, std::map<std::string, std::vector<std::string>>> HYDROGEN_NAMES;
     std::map<std::string, std::map<std::string, std::vector<std::string>>> SYMMETRICAL_ATOM_NAMES;
     std::map<std::string, std::map<std::string, DihedralAngleRestraint>> DIHEDRAL_ANGLE;
+    std::vector<std::string> INTERACTION_ATOM_NAMES;
+    std::vector<std::string> MAINCHAIN_ATOM_NAMES;
+    std::vector<std::string> SIDECHAIN_ATOM_NAMES;
+    std::vector<std::string> ROTATABLE_RESIDUE_NAMES;
 
     double max_connection_length;
     double max_interaction_length;
