@@ -74,7 +74,13 @@ Parameters::Parameters(char* program_file_path) {
     "_rotag_hydrogen_names.label_hydrogen_atom_id",
     "_rotag_symmetrical_atom_names.label_comp_id",
     "_rotag_symmetrical_atom_names.label_atom_1_id",
-    "_rotag_symmetrical_atom_names.label_atom_2_id"
+    "_rotag_symmetrical_atom_names.label_atom_2_id",
+    "_rotag_dihedral_angle.label_comp_id",
+    "_rotag_dihedral_angle.angle",
+    "_rotag_dihedral_angle.range_from",
+    "_rotag_dihedral_angle.range_to",
+    "_rotag_dihedral_angle.step",
+    "_rotag_dihedral_angle.type",
   };
 
   DATABLOCK* datablock;
@@ -279,6 +285,33 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_dihedral_angle" category.
+    for(int i = 0; i < cif_value_length_lookup_table["_rotag_dihedral_angle.label_comp_id"]; i++ ) {
+      std::string residue_name =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.label_comp_id"], i));
+      std::string angle =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.angle"], i));
+      double range_from =
+        (std::string) value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.range_from"], i)) == "." ?
+        NULL :
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.range_from"], i)));
+      double range_to =
+        (std::string) value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.range_to"], i)) == "." ?
+        NULL :
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.range_to"], i)));
+      double step =
+        (std::string) value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.step"], i)) == "." ?
+        NULL :
+        atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.step"], i)));
+      std::string type =
+        value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.type"], i));
+
+      this->DIHEDRAL_ANGLE[residue_name][angle] = {
+        range_from,
+        range_to,
+        step,
+        type
+      };
+    }
 
     // "_rotag_interaction_atom_names" category.
 

@@ -182,5 +182,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
+  std::cout << parameters.DIHEDRAL_ANGLE["."]["."].step << std::endl;
+
   return 0;
 }

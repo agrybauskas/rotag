@@ -39,6 +39,13 @@ struct ClearHybridization {
   std::string type;
 };
 
+struct DihedralAngleRestraint {
+  double range_from;
+  double range_to;
+  double step;
+  std::string type;
+};
+
 struct AtomProperties {
   std::map<std::string, CovalentRadius> covalent_radius;
   double vdw_radius;
@@ -78,6 +85,7 @@ class Parameters {
     std::map<std::string, std::map<std::string, std::vector<std::string>>> CONNECTIVITY;
     std::map<std::string, std::map<std::string, std::vector<std::string>>> HYDROGEN_NAMES;
     std::map<std::string, std::map<std::string, std::vector<std::string>>> SYMMETRICAL_ATOM_NAMES;
+    std::map<std::string, std::map<std::string, DihedralAngleRestraint>> DIHEDRAL_ANGLE;
 
     double max_connection_length;
     double max_interaction_length;
