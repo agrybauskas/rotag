@@ -18,6 +18,11 @@ struct ClearHybridization {
   std::string type;
 };
 
+struct CovalentBond {
+  double value;
+  double error;
+};
+
 struct CovalentRadius {
   double value;
   double error;
@@ -96,7 +101,8 @@ class Parameters {
     std::vector<std::string> SIDECHAIN_ATOM_NAMES;
     std::vector<std::string> ROTATABLE_RESIDUE_NAMES;
     std::map<std::string, std::map<std::string, std::map<std::string, BondType>>> BOND_TYPE;
-    std::map<std::string, std::map<std::string, std::map<std::string, BondType>>> COVALENT_BOND_COMBINATIONS;
+    std::map<std::string, std::map<std::string, CovalentBond>> COVALENT_BOND_COMBINATIONS;
+
     double max_connection_length;
     double max_interaction_length;
 
