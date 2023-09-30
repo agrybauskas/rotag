@@ -5,9 +5,35 @@
 #include <string>
 #include <vector>
 
+struct AltName {
+  std::string alt_name;
+};
+
+struct BondType {
+  double min_length;
+  double max_length;
+};
+
+struct ClearHybridization {
+  std::string type;
+};
+
 struct CovalentRadius {
   double value;
   double error;
+};
+
+struct DihedralAngleRestraint {
+  double range_from;
+  double range_to;
+  double step;
+  std::string type;
+};
+
+struct HBond {
+  double epsilon;
+  double phase;
+  double gamma;
 };
 
 struct LennardJones {
@@ -23,32 +49,6 @@ struct Torsional {
   double epsilon;
   double phase;
   double gamma;
-};
-
-struct HBond {
-  double epsilon;
-  double phase;
-  double gamma;
-};
-
-struct AltName {
-  std::string alt_name;
-};
-
-struct ClearHybridization {
-  std::string type;
-};
-
-struct DihedralAngleRestraint {
-  double range_from;
-  double range_to;
-  double step;
-  std::string type;
-};
-
-struct BondType {
-  double min_length;
-  double max_length;
 };
 
 struct AtomProperties {
@@ -96,7 +96,7 @@ class Parameters {
     std::vector<std::string> SIDECHAIN_ATOM_NAMES;
     std::vector<std::string> ROTATABLE_RESIDUE_NAMES;
     std::map<std::string, std::map<std::string, std::map<std::string, BondType>>> BOND_TYPE;
-
+    std::map<std::string, std::map<std::string, std::map<std::string, BondType>>> COVALENT_BOND_COMBINATIONS;
     double max_connection_length;
     double max_interaction_length;
 
