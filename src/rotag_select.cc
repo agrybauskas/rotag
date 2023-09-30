@@ -182,12 +182,5 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::cout << parameters.BOND_TYPE["single"]["C"]["C"].min_length << std::endl;
-  std::cout << parameters.BOND_TYPE["single"]["C"]["C"].max_length << std::endl;
-  std::cout << parameters.BOND_TYPE["double"]["C"]["C"].min_length << std::endl;
-  std::cout << parameters.BOND_TYPE["double"]["C"]["C"].max_length << std::endl;
-  std::cout << parameters.BOND_TYPE["triple"]["C"]["C"].min_length << std::endl;
-  std::cout << parameters.BOND_TYPE["triple"]["C"]["C"].max_length << std::endl;
-
   return 0;
 }
