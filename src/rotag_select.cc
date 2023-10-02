@@ -182,5 +182,12 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
+  int size = 3;
+  std::vector<std::vector<double>> base = {{}};
+  std::vector<double> list = {1, 2, 3};
+  std::vector<std::vector<double>> permuted_list = {{}};
+
+  permutation(size, base, list, permuted_list);
+
   return 0;
 }
