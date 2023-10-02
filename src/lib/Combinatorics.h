@@ -14,8 +14,9 @@ std::vector<std::vector<T>>
     permuted_list.push_back(base[0]);
   } else {
     for(size_t i = 0; i < list.size(); i++) {
-      const std::vector<std::vector<T>> updated_base = base;
-      /* permutation(size, updated_base, list, permuted_list); */
+      std::vector<std::vector<T>> updated_base = base;
+      updated_base.push_back(base[0]);
+      permutation(size, updated_base, list, permuted_list);
     }
   }
   return permuted_list;

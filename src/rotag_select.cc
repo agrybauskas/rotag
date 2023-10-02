@@ -184,10 +184,11 @@ int main(int argc, char *argv[]) {
 
   int size = 3;
   std::vector<std::vector<double>> base = {{}};
-  std::vector<double> list = {1, 2, 3};
+  std::vector<double> list = {1.0, 2.0, 3.0};
   std::vector<std::vector<double>> permuted_list = {{}};
 
-  permutation<double>(size, base, list, permuted_list);
+  std::vector<std::vector<double>> updated_permuted_list =
+    permutation<double>(size, base, list, permuted_list);
 
   return 0;
 }
