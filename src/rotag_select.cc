@@ -190,5 +190,11 @@ int main(int argc, char *argv[]) {
   std::vector<std::vector<double>> updated_permuted_list =
     permutation<double>(size, base, list, permuted_list);
 
+  for(size_t i = 0; i < updated_permuted_list.size(); i++) {
+    for(size_t j = 0; j < updated_permuted_list[i].size(); j++) {
+      std::cout << updated_permuted_list[i][j] << std::endl;
+    }
+  }
+
   return 0;
 }
