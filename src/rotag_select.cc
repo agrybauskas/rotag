@@ -2,7 +2,6 @@
 
 #include <cstdio>
 #include <iostream>
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -11,6 +10,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/filesystem.hpp>
 
+#include "lib/Combinatorics.h"
 #include "lib/ForceField/Parameters.h"
 #include "lib/PDBxParser.h"
 #include "lib/Version.h"
