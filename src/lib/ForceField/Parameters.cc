@@ -12,6 +12,8 @@ extern "C" {
   #include "datablock.h"
 }
 
+#include "../Combinatorics.h"
+
 Parameters::Parameters(char* program_file_path) {
   boost::filesystem::path parameter_file =
     boost::filesystem::canonical(program_file_path).parent_path().parent_path() /
@@ -405,6 +407,21 @@ Parameters::Parameters(char* program_file_path) {
         this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp"].error +
         this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp"].error
       };
+    }
+  }
+
+  // Precalculating covalent bond combinations.
+  std::vector<std::string> atom_symbols = {};
+  for(std::map<std::string, AtomProperties>::iterator it = this->ATOM_PROPERTIES.begin();
+      it != this->ATOM_PROPERTIES.end();
+      ++it ) {
+    atom_symbols.push_back(it->first);
+  }
+
+  for(const std::string &first_atom_symbol: atom_symbols) {
+    for(const std::string &second_atom_symbol: atom_symbols) {
+      // length_combinations
+      // error_combinations
     }
   }
 }
