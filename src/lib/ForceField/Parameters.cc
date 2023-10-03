@@ -147,6 +147,20 @@ Parameters::Parameters(char* program_file_path) {
         this->max_connection_length =
           this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value;
       }
+
+      /* Covalent radii are stored in list as it will be much more easier and
+         cleaner to calculate bond length combinations. */
+      if(this->COVALENT_RADII.count(type_symbol) > 0) {
+        this->COVALENT_RADII[type_symbol].push_back(CovalentBond({
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value,
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error
+        }));
+      } else {
+        this->COVALENT_RADII[type_symbol] = std::vector<CovalentBond>({{
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value,
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error
+        }});
+      }
     }
 
     // "_rotag_partial_charge" category.

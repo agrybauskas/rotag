@@ -182,5 +182,8 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
+  std::cout << parameters.COVALENT_RADII["C"][2].value << std::endl;
+  std::cout << parameters.COVALENT_RADII["C"][2].error << std::endl;
+
   return 0;
 }
