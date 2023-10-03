@@ -6,9 +6,9 @@
 template <class T>
 std::vector<std::vector<T>>
   permutation(int size,
-              std::vector<std::vector<T>> base,
+              std::vector<std::vector<T>> base = {},
               std::vector<T> list,
-              std::vector<std::vector<T>> permuted_list) {
+              std::vector<std::vector<T>> permuted_list = {{}}) {
   const int base_size = base.size();
   if(base_size == size) {
     permuted_list.push_back(base);
