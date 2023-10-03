@@ -412,14 +412,10 @@ Parameters::Parameters(char* program_file_path) {
 
   // Precalculating covalent bond combinations.
   std::vector<std::string> atom_symbols = {};
-  for(std::map<std::string, AtomProperties>::iterator it = this->ATOM_PROPERTIES.begin();
-      it != this->ATOM_PROPERTIES.end();
-      ++it ) {
-    atom_symbols.push_back(it->first);
-  }
-
-  for(const std::string &first_atom_symbol: atom_symbols) {
-    for(const std::string &second_atom_symbol: atom_symbols) {
+  for(std::map<std::string, AtomProperties>::iterator it_i = this->ATOM_PROPERTIES.begin(); it_i != this->ATOM_PROPERTIES.end(); ++it_i ) {
+    std::string first_atom_symbol = it_i->first;
+    for(std::map<std::string, AtomProperties>::iterator it_j = this->ATOM_PROPERTIES.begin(); it_j != this->ATOM_PROPERTIES.end(); ++it_j ) {
+      std::string second_atom_symbol = it_j->first;
       std::vector<std::vector<double>> length_combinations = {{}};
       std::vector<std::vector<double>> error_combinations = {{}};
     }
