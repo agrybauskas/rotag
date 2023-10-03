@@ -182,12 +182,16 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(argv[0]);
 
-  std::vector<std::vector<double>> updated_permuted_list =
-    permutation<double>(3, std::vector<std::vector<double>>{{1.0, 2.0, 3.0}});
+  // std::vector<std::vector<double>> permuted_list = {{}};
+  std::vector<std::vector<double>> permuted_list =
+  permutation<double>(
+    3,
+    std::vector<std::vector<double>>{{1.2, 3.4, 5.6}}
+  );
 
-  for(size_t i = 0; i < updated_permuted_list.size(); i++) {
-    for(size_t j = 0; j < updated_permuted_list[i].size(); j++) {
-      std::cout << updated_permuted_list[i][j] << std::endl;
+  for(size_t i = 0; i < permuted_list.size(); i++) {
+    for(size_t j = 0; j < permuted_list[i].size(); j++) {
+      std::cout << permuted_list[i][j] << std::endl;
     }
   }
 
