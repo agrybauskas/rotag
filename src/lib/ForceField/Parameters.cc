@@ -420,8 +420,8 @@ Parameters::Parameters(char* program_file_path) {
 
   for(const std::string &first_atom_symbol: atom_symbols) {
     for(const std::string &second_atom_symbol: atom_symbols) {
-      // length_combinations
-      // error_combinations
+      std::vector<std::vector<double>> length_combinations = {{}};
+      std::vector<std::vector<double>> error_combinations = {{}};
     }
   }
 }
