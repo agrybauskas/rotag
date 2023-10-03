@@ -56,9 +56,9 @@ int main(int argc, char *argv[]) {
   int index;
   int iarg = 0;
 
-  while(iarg != -1) {
+  while (iarg != -1) {
     iarg = getopt_long(argc, argv, "t:s:0:rpkx:hv", longopts, &index);
-    switch(iarg) {
+    switch (iarg) {
       case 't':
         target_cmds = optarg;
         break;
