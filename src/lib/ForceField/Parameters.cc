@@ -150,16 +150,21 @@ Parameters::Parameters(char* program_file_path) {
 
       /* Covalent radii are stored in list as it will be much more easier and
          cleaner to calculate bond length combinations. */
-      if(this->COVALENT_RADII.count(type_symbol) > 0) {
-        this->COVALENT_RADII[type_symbol].push_back(CovalentBond({
-          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value,
+      // NOTE: values and errors should have the count in list.
+      if(this->COVALENT_RADII_VALUES.count(type_symbol) > 0) {
+        this->COVALENT_RADII_VALUES[type_symbol].push_back(
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value
+        );
+        this->COVALENT_RADII_ERRORS[type_symbol].push_back(
           this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error
-        }));
+        );
       } else {
-        this->COVALENT_RADII[type_symbol] = std::vector<CovalentBond>({{
-          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value,
+        this->COVALENT_RADII_VALUES[type_symbol] = std::vector<double>{
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value
+        };
+        this->COVALENT_RADII_ERRORS[type_symbol] = std::vector<double>{
           this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error
-        }});
+        };
       }
     }
 
@@ -432,6 +437,27 @@ Parameters::Parameters(char* program_file_path) {
       std::string second_atom_symbol = it_j->first;
       std::vector<std::vector<double>> length_combinations = {{}};
       std::vector<std::vector<double>> error_combinations = {{}};
+
+      permutation(
+        2,
+        std::vector<std::vector<double>>({
+          this->COVALENT_RADII_VALUES[first_atom_symbol],
+          this->COVALENT_RADII_VALUES[second_atom_symbol],
+        }),
+        &length_combinations
+      );
+      permutation(2,
+          std::vector<std::vector<double>>({
+          this->COVALENT_RADII_ERRORS[first_atom_symbol],
+          this->COVALENT_RADII_ERRORS[second_atom_symbol],
+              }),
+        &error_combinations
+      );
+
+      this->COVALENT_BOND_COMBINATIONS[first_atom_symbol][second_atom_symbol].values =
+        length_combinations;
+      this->COVALENT_BOND_COMBINATIONS[first_atom_symbol][second_atom_symbol].errors =
+        error_combinations;
     }
   }
 }
