@@ -11,11 +11,11 @@ std::vector<std::vector<T>>
               std::vector<std::vector<T>> permuted_list) {
   const int base_size = base.size();
   if(base_size == size) {
-    permuted_list.push_back(base[0]);
+    permuted_list.push_back(base);
   } else {
-    for(size_t i = 0; i < list.size(); i++) {
+    for(size_t i = 0; i < list[base_size].size(); i++) {
       std::vector<std::vector<T>> updated_base = base;
-      updated_base.push_back(base[0]);
+      updated_base.push_back(list[base_size]);
       permutation(size, updated_base, list, permuted_list);
     }
   }
