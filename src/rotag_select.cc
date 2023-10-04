@@ -10,6 +10,10 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/filesystem.hpp>
 
+extern "C" {
+  #include "cif_compiler.h"
+}
+
 #include "lib/Combinatorics.h"
 #include "lib/ForceField/Parameters.h"
 #include "lib/PDBxParser.h"
@@ -183,15 +187,12 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(progname);
 
-  if (is_pdb) {
-  } else {
-    for (int index = optind; index < argc; index++) {
-      // cif_option_t compiler_options = cif_option_default();
-      // cexception_t inner;
-      // CIF* mmCIF =
-      //   new_cif_from_cif_file((char*) argv[index].c_str(),
-      //                         compiler_options,
-      //                         &inner);
+  for (int index = optind; index < argc; index++) {
+    if (is_pdb) {
+    } else {
+      cif_option_t compiler_options = cif_option_default();
+      cexception_t inner;
+      CIF* mmCIF = new_cif_from_cif_file(argv[index], compiler_options, &inner);
     }
   }
 
