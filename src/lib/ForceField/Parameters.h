@@ -1,5 +1,5 @@
-#ifndef _PARAMETERS_H_
-#define _PARAMETERS_H_
+#ifndef SRC_LIB_FORCEFIELD_PARAMETERS_H_
+#define SRC_LIB_FORCEFIELD_PARAMETERS_H_
 
 #include <map>
 #include <string>
@@ -64,7 +64,7 @@ struct AtomProperties {
 };
 
 class Parameters {
-  public:
+ public:
     const double EPSILON = epsilon();
     const double PI = pi();
     const char* SIG_FIG_MIN = "%.3f";
@@ -91,29 +91,38 @@ class Parameters {
     std::map<std::string, Torsional> TORSIONAL;
     std::map<std::string, HBond> H_BOND;
     std::map<std::string, std::map<std::string, bool>> RESIDUE_ATOM_NECESSITY;
-    std::map<std::string, std::map<std::string, ClearHybridization>> CLEAR_HYBRIDIZATION;
-    std::map<std::string, std::map<std::string, std::vector<std::string>>> CONNECTIVITY;
-    std::map<std::string, std::map<std::string, std::vector<std::string>>> HYDROGEN_NAMES;
-    std::map<std::string, std::map<std::string, std::vector<std::string>>> SYMMETRICAL_ATOM_NAMES;
-    std::map<std::string, std::map<std::string, DihedralAngleRestraint>> DIHEDRAL_ANGLE;
+    std::map<std::string, std::map<std::string,
+                                   ClearHybridization>> CLEAR_HYBRIDIZATION;
+    std::map<std::string, std::map<std::string,
+                                   std::vector<std::string>>> CONNECTIVITY;
+    std::map<std::string, std::map<std::string,
+                                   std::vector<std::string>>> HYDROGEN_NAMES;
+    std::map<std::string,
+             std::map<std::string,
+                      std::vector<std::string>>> SYMMETRICAL_ATOM_NAMES;
+    std::map<std::string, std::map<std::string,
+                                   DihedralAngleRestraint>> DIHEDRAL_ANGLE;
     std::vector<std::string> INTERACTION_ATOM_NAMES;
     std::vector<std::string> MAINCHAIN_ATOM_NAMES;
     std::vector<std::string> SIDECHAIN_ATOM_NAMES;
     std::vector<std::string> ROTATABLE_RESIDUE_NAMES;
-    std::map<std::string, std::map<std::string, std::map<std::string, BondType>>> BOND_TYPE;
+    std::map<std::string, std::map<std::string, std::map<std::string,
+                                                         BondType>>> BOND_TYPE;
     std::map<std::string, std::vector<double>> COVALENT_RADII_VALUES;
     std::map<std::string, std::vector<double>> COVALENT_RADII_ERRORS;
-    std::map<std::string, std::map<std::string, CovalentBondCombinations>> COVALENT_BOND_COMBINATIONS;
+    std::map<std::string,
+             std::map<std::string,
+                      CovalentBondCombinations>> COVALENT_BOND_COMBINATIONS;
 
     double max_connection_length = 0.0;
     double max_interaction_length = 0.0;
 
-    Parameters(char* program_file_path);
+    explicit Parameters(char* program_file_path);
     ~Parameters();
 
-  private:
+ private:
     double epsilon();
     double pi();
 };
 
-#endif
+#endif  // SRC_LIB_FORCEFIELD_PARAMETERS_H_
