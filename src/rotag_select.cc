@@ -183,6 +183,8 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(progname);
 
+  std::cout << parameters.lj_k << std::endl;
+
   if (is_pdb) {
 
   } else {

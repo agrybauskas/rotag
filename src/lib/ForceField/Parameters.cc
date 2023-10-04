@@ -101,8 +101,8 @@ Parameters::Parameters(char* program_file_path) {
 
     // Parsing tags per case basis.
     // "_rotag_force_field" category.
-    this->lj_k = atof(value_scalar(datablock_cifvalue(
-      datablock, cif_tag_index_lookup_table["_rotag_force_field.lj_k"], 0)));
+    this->lj_k = cifvalue_to_double(
+      datablock, cif_tag_index_lookup_table, "_rotag_force_field.lj_k");
     this->c_k = atof(value_scalar(datablock_cifvalue(
       datablock, cif_tag_index_lookup_table["_rotag_force_field.c_k"], 0)));
     this->h_k = atof(value_scalar(datablock_cifvalue(
@@ -628,4 +628,22 @@ double Parameters::epsilon() {
 
 double Parameters::pi() {
   return 4 * std::atan2(1, 1);
+}
+
+double Parameters::cifvalue_to_double(
+  DATABLOCK* datablock,
+  std::map<std::string, ssize_t> cif_tag_index_lookup_table,
+  std::string cif_tag,
+  size_t index) {
+  return atof(value_scalar(datablock_cifvalue(
+    datablock, cif_tag_index_lookup_table[cif_tag], index)));
+}
+
+std::string Parameters::cifvalue_to_string(
+  DATABLOCK* datablock,
+  std::map<std::string, ssize_t> cif_tag_index_lookup_table,
+  std::string cif_tag,
+  size_t index) {
+  return value_scalar(datablock_cifvalue(
+    datablock, cif_tag_index_lookup_table[cif_tag], index));
 }
