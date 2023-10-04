@@ -1,8 +1,8 @@
-#ifndef _PDBXPARSER_H_
-#define _PDBXPARSER_H_
+#ifndef SRC_LIB_PDBXPARSER_H_
+#define SRC_LIB_PDBXPARSER_H_
 
 #include <map>
 #include <string>
 #include <vector>
 
-#endif
+#endif  // SRC_LIB_PDBXPARSER_H_
