@@ -183,10 +183,7 @@ int main(int argc, char *argv[]) {
 
   Parameters parameters(progname);
 
-  std::cout << parameters.lj_k << std::endl;
-
   if (is_pdb) {
-
   } else {
     for (int index = optind; index < argc; index++) {
       // cif_option_t compiler_options = cif_option_default();

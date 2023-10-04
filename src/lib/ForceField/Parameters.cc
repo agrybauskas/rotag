@@ -103,24 +103,18 @@ Parameters::Parameters(char* program_file_path) {
     // "_rotag_force_field" category.
     this->lj_k = cifvalue_to_double(
       datablock, cif_tag_index_lookup_table, "_rotag_force_field.lj_k");
-    this->c_k = atof(value_scalar(datablock_cifvalue(
-      datablock, cif_tag_index_lookup_table["_rotag_force_field.c_k"], 0)));
-    this->h_k = atof(value_scalar(datablock_cifvalue(
-      datablock, cif_tag_index_lookup_table["_rotag_force_field.h_k"], 0)));
-    this->t_k = atof(value_scalar(datablock_cifvalue(
-      datablock, cif_tag_index_lookup_table["_rotag_force_field.t_k"], 0)));
-    this->cutoff_atom = atof(value_scalar(datablock_cifvalue(
-      datablock,
-      cif_tag_index_lookup_table["_rotag_force_field.cutoff_atom"],
-      0)));
-    this->cutoff_start = atof(value_scalar(datablock_cifvalue(
-      datablock,
-      cif_tag_index_lookup_table["_rotag_force_field.cutoff_start"],
-      0)));
-    this->cutoff_end = atof(value_scalar(datablock_cifvalue(
-      datablock,
-      cif_tag_index_lookup_table["_rotag_force_field.cutoff_end"],
-      0)));
+    this->c_k = cifvalue_to_double(
+      datablock, cif_tag_index_lookup_table, "_rotag_force_field.c_k");
+    this->h_k = cifvalue_to_double(
+      datablock, cif_tag_index_lookup_table, "_rotag_force_field.h_k");
+    this->t_k = cifvalue_to_double(
+      datablock, cif_tag_index_lookup_table, "_rotag_force_field.t_k");
+    this->cutoff_atom = cifvalue_to_double(
+      datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_atom");
+    this->cutoff_start = cifvalue_to_double(
+      datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_start");
+    this->cutoff_end = cifvalue_to_double(
+      datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_end");
 
     /* NOTE: "codcif" parser should catch errors if the length of tag values
        does not have the same size in the loop so, it is enough to choose any
@@ -130,40 +124,46 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i <cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"];
          i++) {
-      std::string type_symbol = value_scalar(datablock_cifvalue(
+      std::string type_symbol = cifvalue_to_string(
+        datablock, cif_tag_index_lookup_table,
+        "_rotag_atom_properties.type_symbol",
+        i);
+      std::string hybridization = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"],
-        i));
-      std::string hybridization = value_scalar(datablock_cifvalue(
-        datablock,
-        cif_tag_index_lookup_table["_rotag_atom_properties.hybridization"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_atom_properties.hybridization",
+        i);
 
       this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value =
-        atof(value_scalar(datablock_cifvalue(
+        cifvalue_to_double(
           datablock,
-          cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_value"],
-          i)));
+          cif_tag_index_lookup_table,
+          "_rotag_atom_properties.covalent_radius_value",
+          i);
       this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error =
-        atof(value_scalar(datablock_cifvalue(
+        cifvalue_to_double(
           datablock,
-          cif_tag_index_lookup_table["_rotag_atom_properties.covalent_radius_error"],
-          i)));
+          cif_tag_index_lookup_table,
+          "_rotag_atom_properties.covalent_radius_error",
+          i);
       this->ATOM_PROPERTIES[type_symbol].vdw_radius =
-        atof(value_scalar(datablock_cifvalue(
+        cifvalue_to_double(
           datablock,
-          cif_tag_index_lookup_table["_rotag_atom_properties.vdw_radius"],
-          i)));
+          cif_tag_index_lookup_table,
+          "_rotag_atom_properties.vdw_radius",
+          i);
       this->ATOM_PROPERTIES[type_symbol].lone_pair_count =
-        std::stoi(value_scalar(datablock_cifvalue(
+        std::stoi(cifvalue_to_string(
           datablock,
-          cif_tag_index_lookup_table["_rotag_atom_properties.lone_pair_count"],
-          i)));
+          cif_tag_index_lookup_table,
+          "_rotag_atom_properties.lone_pair_count",
+          i));
       this->ATOM_PROPERTIES[type_symbol].valence =
-        std::stoi(value_scalar(datablock_cifvalue(
+        std::stoi(cifvalue_to_string(
           datablock,
-          cif_tag_index_lookup_table["_rotag_atom_properties.valence"],
-          i)));
+          cif_tag_index_lookup_table,
+          "_rotag_atom_properties.valence",
+          i));
 
       // Used for edge length of the grid during cubing procedure algorithm.
       if (this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value >
@@ -194,22 +194,26 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_lennard_jones.type_symbol_1"];
          i++) {
-      std::string type_symbol_1 = value_scalar(datablock_cifvalue(
+      std::string type_symbol_1 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_lennard_jones.type_symbol_1"],
-        i));
-      std::string type_symbol_2 = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_lennard_jones.type_symbol_1",
+        i);
+      std::string type_symbol_2 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_lennard_jones.type_symbol_2"],
-        i));
-      double sigma = atof(value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_lennard_jones.type_symbol_2",
+        i);
+      double sigma = cifvalue_to_double(
         datablock,
-        cif_tag_index_lookup_table["_rotag_lennard_jones.sigma"],
-        i)));
-      double epsilon = atof(value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_lennard_jones.sigma",
+        i);
+      double epsilon = cifvalue_to_double(
         datablock,
-        cif_tag_index_lookup_table["_rotag_lennard_jones.epsilon"],
-        i)));
+        cif_tag_index_lookup_table,
+        "_rotag_lennard_jones.epsilon",
+        i);
 
       this->LENNARD_JONES[type_symbol_1][type_symbol_2] = {sigma, epsilon};
       this->LENNARD_JONES[type_symbol_2][type_symbol_1] = {sigma, epsilon};
@@ -219,18 +223,21 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_partial_charge.label_comp_id"];
          i++) {
-      std::string residue_name = value_scalar(datablock_cifvalue(
+      std::string residue_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_partial_charge.label_comp_id"],
-        i));
-      std::string atom_name = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_partial_charge.label_comp_id",
+        i);
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_partial_charge.label_atom_id"],
-        i));
-      double partial_charge_value = atof(value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_partial_charge.label_atom_id",
+        i);
+      double partial_charge_value = cifvalue_to_double(
         datablock,
-        cif_tag_index_lookup_table["_rotag_partial_charge.value"],
-        i)));
+        cif_tag_index_lookup_table,
+        "_rotag_partial_charge.value",
+        i);
 
       this->PARTIAL_CHARGE[residue_name][atom_name].value =
         partial_charge_value;
@@ -240,18 +247,21 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_torsional_atom_names.label_comp_id"];
          i++) {
-      std::string residue_name = value_scalar(datablock_cifvalue(
+      std::string residue_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_torsional_atom_names.label_comp_id"],
-        i));
-      std::string atom_name = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_torsional_atom_names.label_comp_id",
+        i);
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_torsional_atom_names.label_atom_id"],
-        i));
-      std::string alt_atom_name = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_torsional_atom_names.label_atom_id",
+        i);
+      std::string alt_atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_torsional_atom_names.alt_atom_name"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_torsional_atom_names.alt_atom_name",
+        i);
 
       this->TORSIONAL_ATOM_NAMES[residue_name][atom_name].alt_name =
         alt_atom_name;
@@ -261,38 +271,38 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_torsional.label_atom_1_id"];
          i++) {
-      std::string atom_name_1 = value_scalar(datablock_cifvalue(
+      std::string atom_name_1 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_torsional.label_atom_1_id"],
-        i));
-      std::string atom_name_2 = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_torsional.label_atom_1_id",
+        i);
+      std::string atom_name_2 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_torsional.label_atom_2_id"],
-        i));
-      std::string atom_name_3 = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_torsional.label_atom_2_id",
+        i);
+      std::string atom_name_3 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_torsional.label_atom_3_id"],
-        i));
-      std::string atom_name_4 = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_torsional.label_atom_3_id",
+        i);
+      std::string atom_name_4 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_torsional.label_atom_4_id"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_torsional.label_atom_4_id",
+        i);
 
       std::string key_forward =
         atom_name_1 + "," + atom_name_2 + "," + atom_name_3 + "," + atom_name_4;
       std::string key_reverse =
         atom_name_4 + "," + atom_name_3 + "," + atom_name_2 + "," + atom_name_1;
 
-      double epsilon = atof(value_scalar(datablock_cifvalue(
-        datablock,
-        cif_tag_index_lookup_table["_rotag_torsional.epsilon"],
-        i)));
-      double phase = atof(value_scalar(datablock_cifvalue(
-        datablock,
-        cif_tag_index_lookup_table["_rotag_torsional.phase"],
-        i)));
-      double gamma = atof(value_scalar(datablock_cifvalue(
-        datablock, cif_tag_index_lookup_table["_rotag_torsional.gamma"], i)));
+      double epsilon = cifvalue_to_double(
+        datablock, cif_tag_index_lookup_table, "_rotag_torsional.epsilon", i);
+      double phase = cifvalue_to_double(
+        datablock, cif_tag_index_lookup_table, "_rotag_torsional.phase", i);
+      double gamma = cifvalue_to_double(
+        datablock, cif_tag_index_lookup_table, "_rotag_torsional.gamma", i);
 
       this->TORSIONAL[key_forward] = {epsilon, phase, gamma};
       this->TORSIONAL[key_reverse] = {epsilon, phase, gamma};
@@ -302,12 +312,12 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_h_bond.type_symbol"];
          i++) {
-      std::string type_symbol = value_scalar(datablock_cifvalue(
-        datablock, cif_tag_index_lookup_table["_rotag_h_bond.type_symbol"], i));
-      double sigma = atof(value_scalar(datablock_cifvalue(
-        datablock, cif_tag_index_lookup_table["_rotag_h_bond.sigma"], i)));
-      double epsilon = atof(value_scalar(datablock_cifvalue(
-        datablock, cif_tag_index_lookup_table["_rotag_h_bond.epsilon"], i)));
+      std::string type_symbol = cifvalue_to_string(
+        datablock, cif_tag_index_lookup_table, "_rotag_h_bond.type_symbol", i);
+      double sigma = cifvalue_to_double(
+        datablock, cif_tag_index_lookup_table, "_rotag_h_bond.sigma", i);
+      double epsilon = cifvalue_to_double(
+        datablock, cif_tag_index_lookup_table, "_rotag_h_bond.epsilon", i);
 
       this->H_BOND[type_symbol] = {sigma, epsilon};
     }
@@ -316,18 +326,21 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_residue_atom_necessity.label_comp_id"];
          i++) {
-      std::string residue_name = value_scalar(datablock_cifvalue(
+      std::string residue_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_residue_atom_necessity.label_comp_id"],
-        i));
-      std::string atom_name = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_residue_atom_necessity.label_comp_id",
+        i);
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_residue_atom_necessity.label_atom_id"],
-        i));
-      std::string necessity_value = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_residue_atom_necessity.label_atom_id",
+        i);
+      std::string necessity_value = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_residue_atom_necessity.value"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_residue_atom_necessity.value",
+        i);
 
       this->RESIDUE_ATOM_NECESSITY[residue_name][atom_name] =
         necessity_value == "mandatory" ? true : false;
@@ -337,18 +350,21 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_clear_hybridization.label_comp_id"];
          i++) {
-      std::string residue_name = value_scalar(datablock_cifvalue(
+      std::string residue_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_clear_hybridization.label_comp_id"],
-        i));
-      std::string atom_name = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_clear_hybridization.label_comp_id",
+        i);
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_clear_hybridization.label_atom_id"],
-        i));
-      std::string type = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_clear_hybridization.label_atom_id",
+        i);
+      std::string type = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_clear_hybridization.type"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_clear_hybridization.type",
+        i);
 
       this->CLEAR_HYBRIDIZATION[residue_name][atom_name].type = type;
     }
@@ -357,18 +373,21 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_connectivity.label_comp_id"];
          i++) {
-      std::string residue_name = value_scalar(datablock_cifvalue(
+      std::string residue_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_connectivity.label_comp_id"],
-        i));
-      std::string atom_name_1 = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_connectivity.label_comp_id",
+        i);
+      std::string atom_name_1 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_connectivity.label_atom_1_id"],
-        i));
-      std::string atom_name_2 = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_connectivity.label_atom_1_id",
+        i);
+      std::string atom_name_2 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_connectivity.label_atom_2_id"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_connectivity.label_atom_2_id",
+        i);
 
       this->CONNECTIVITY[residue_name][atom_name_1].push_back(atom_name_2);
     }
@@ -377,18 +396,21 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_hydrogen_names.label_comp_id"];
          i++) {
-      std::string residue_name = value_scalar(datablock_cifvalue(
+      std::string residue_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_hydrogen_names.label_comp_id"],
-        i));
-      std::string atom_name = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_hydrogen_names.label_comp_id",
+        i);
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_hydrogen_names.label_atom_id"],
-        i));
-      std::string hydrogen_atom_name = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_hydrogen_names.label_atom_id",
+        i);
+      std::string hydrogen_atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_hydrogen_names.label_hydrogen_atom_id"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_hydrogen_names.label_hydrogen_atom_id",
+        i);
 
       this->HYDROGEN_NAMES[residue_name][atom_name].push_back(
         hydrogen_atom_name);
@@ -398,18 +420,21 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_symmetrical_atom_names.label_comp_id"];
          i++) {
-      std::string residue_name = value_scalar(datablock_cifvalue(
+      std::string residue_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_symmetrical_atom_names.label_comp_id"],
-        i));
-      std::string atom_name_1 = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_symmetrical_atom_names.label_comp_id",
+        i);
+      std::string atom_name_1 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_symmetrical_atom_names.label_atom_1_id"],
-        i));
-      std::string atom_name_2 = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_symmetrical_atom_names.label_atom_1_id",
+        i);
+      std::string atom_name_2 = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_symmetrical_atom_names.label_atom_2_id"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_symmetrical_atom_names.label_atom_2_id",
+        i);
 
       this->SYMMETRICAL_ATOM_NAMES[residue_name][atom_name_1].push_back(
         atom_name_2);
@@ -421,48 +446,54 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_dihedral_angle.label_comp_id"];
          i++) {
-      std::string residue_name = value_scalar(datablock_cifvalue(
+      std::string residue_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_dihedral_angle.label_comp_id"],
-        i));
-      std::string angle = value_scalar(datablock_cifvalue(
+        cif_tag_index_lookup_table,
+        "_rotag_dihedral_angle.label_comp_id",
+        i);
+      std::string angle = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_dihedral_angle.angle"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_dihedral_angle.angle",
+        i);
       double range_from =
-        (std::string) value_scalar(datablock_cifvalue(
+        (std::string) cifvalue_to_string(
           datablock,
-          cif_tag_index_lookup_table["_rotag_dihedral_angle.range_from"],
-          i)) == "." ?
+          cif_tag_index_lookup_table,
+          "_rotag_dihedral_angle.range_from",
+          i) == "." ?
         NULL :
-        atof(value_scalar(datablock_cifvalue(
+        cifvalue_to_double(
           datablock,
-          cif_tag_index_lookup_table["_rotag_dihedral_angle.range_from"],
-          i)));
+          cif_tag_index_lookup_table,
+          "_rotag_dihedral_angle.range_from",
+          i);
       double range_to =
-        (std::string) value_scalar(datablock_cifvalue(
+        (std::string) cifvalue_to_string(
           datablock,
-          cif_tag_index_lookup_table["_rotag_dihedral_angle.range_to"],
-          i)) == "." ?
+          cif_tag_index_lookup_table,
+          "_rotag_dihedral_angle.range_to",
+          i) == "." ?
         NULL :
-        atof(value_scalar(datablock_cifvalue(
+        cifvalue_to_double(
           datablock,
-          cif_tag_index_lookup_table["_rotag_dihedral_angle.range_to"],
-          i)));
+          cif_tag_index_lookup_table,
+          "_rotag_dihedral_angle.range_to",
+          i);
       double step =
-        (std::string) value_scalar(datablock_cifvalue(
+        (std::string) cifvalue_to_string(
           datablock,
-          cif_tag_index_lookup_table["_rotag_dihedral_angle.step"],
-          i)) == "." ?
+          cif_tag_index_lookup_table,
+          "_rotag_dihedral_angle.step",
+          i) == "." ?
         NULL :
-        atof(value_scalar(datablock_cifvalue(
+        cifvalue_to_double(
           datablock,
-          cif_tag_index_lookup_table["_rotag_dihedral_angle.step"],
-          i)));
-      std::string type = value_scalar(datablock_cifvalue(
-        datablock,
-        cif_tag_index_lookup_table["_rotag_dihedral_angle.type"],
-        i));
+          cif_tag_index_lookup_table,
+          "_rotag_dihedral_angle.step",
+          i);
+      std::string type = cifvalue_to_string(
+        datablock, cif_tag_index_lookup_table, "_rotag_dihedral_angle.type", i);
 
       this->DIHEDRAL_ANGLE[residue_name][angle] = {
         range_from,
@@ -476,10 +507,11 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_interaction_atom_names.label_atom_id"];
          i++) {
-      std::string atom_name = value_scalar(datablock_cifvalue(
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_interaction_atom_names.label_atom_id"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_interaction_atom_names.label_atom_id",
+        i);
 
       this->INTERACTION_ATOM_NAMES.push_back(atom_name);
     }
@@ -488,10 +520,11 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_mainchain_atom_names.label_atom_id"];
          i++) {
-      std::string atom_name = value_scalar(datablock_cifvalue(
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_mainchain_atom_names.label_atom_id"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_mainchain_atom_names.label_atom_id",
+        i);
 
       this->MAINCHAIN_ATOM_NAMES.push_back(atom_name);
     }
@@ -500,10 +533,11 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_sidechain_atom_names.label_atom_id"];
          i++) {
-      std::string atom_name = value_scalar(datablock_cifvalue(
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_sidechain_atom_names.label_atom_id"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_sidechain_atom_names.label_atom_id",
+        i);
 
       this->SIDECHAIN_ATOM_NAMES.push_back(atom_name);
     }
@@ -512,10 +546,11 @@ Parameters::Parameters(char* program_file_path) {
     for (int i = 0;
          i < cif_value_length_lookup_table["_rotag_rotatable_residue_names.label_comp_id"];
          i++) {
-      std::string atom_name = value_scalar(datablock_cifvalue(
+      std::string atom_name = cifvalue_to_string(
         datablock,
-        cif_tag_index_lookup_table["_rotag_rotatable_residue_names.label_comp_id"],
-        i));
+        cif_tag_index_lookup_table,
+        "_rotag_rotatable_residue_names.label_comp_id",
+        i);
 
       this->ROTATABLE_RESIDUE_NAMES.push_back(atom_name);
     }
