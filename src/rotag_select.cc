@@ -193,7 +193,8 @@ int main(int argc, char *argv[]) {
     } else {
       cif_option_t compiler_options = cif_option_default();
       cexception_t inner;
-      CIF* mmCIF = new_cif_from_cif_file(argv[index], compiler_options, &inner);
+      CIF* mmcif = new_cif_from_cif_file(argv[index], compiler_options, &inner);
+      atom_site = mmcif_to_atom_site(mmcif);
     }
   }
 

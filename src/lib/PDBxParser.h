@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+extern "C" {
+  #include "cif_compiler.h"
+}
+
 struct Atom {
   std::string group_PDB;                // "ATOM" or "HETATM".
   unsigned long int id;                 // Atom id.
@@ -26,5 +30,7 @@ struct Atom {
 };
 
 typedef std::map<unsigned int, Atom> AtomSite;
+
+AtomSite mmcif_to_atom_site(CIF* mmcif);
 
 #endif  // SRC_LIB_PDBXPARSER_H_
