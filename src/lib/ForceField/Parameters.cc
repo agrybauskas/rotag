@@ -16,7 +16,7 @@ extern "C" {
 
 Parameters::Parameters(char* program_file_path) {
   boost::filesystem::path parameter_file =
-    boost::filesystem::canonical(program_file_path).parent_path().parent_path() /
+    boost::filesystem::canonical(program_file_path).parent_path().parent_path()/
     boost::filesystem::path(__FILE__).parent_path() /
     "Parameters.cif";
   cif_option_t compiler_options = cif_option_default();
@@ -95,7 +95,7 @@ Parameters::Parameters(char* program_file_path) {
     std::map<std::string, ssize_t> cif_value_length_lookup_table;
 
     // Generating lookup tables first.
-    for(const std::string &cif_tag: cif_tags) {
+    for (const std::string &cif_tag : cif_tags) {
       cif_tag_index_lookup_table[cif_tag] =
         datablock_tag_index(datablock, (char*) cif_tag.c_str());
       cif_value_length_lookup_table[cif_tag] =
@@ -124,7 +124,7 @@ Parameters::Parameters(char* program_file_path) {
        for iterating. */
 
     // "_rotag_atom_properties" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"]; i++) {
       std::string type_symbol =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.type_symbol"], i));
       std::string hybridization =
@@ -142,8 +142,8 @@ Parameters::Parameters(char* program_file_path) {
         std::stoi(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_atom_properties.valence"], i)));
 
       // Used for edge length of the grid during cubing procedure algorithm.
-      if(this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value >
-         this->max_connection_length) {
+      if (this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value >
+          this->max_connection_length) {
         this->max_connection_length =
           this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value;
       }
@@ -151,13 +151,11 @@ Parameters::Parameters(char* program_file_path) {
       /* Covalent radii are stored in list as it will be much more easier and
          cleaner to calculate bond length combinations. */
       // NOTE: values and errors should have the count in list.
-      if(this->COVALENT_RADII_VALUES.count(type_symbol) > 0) {
+      if (this->COVALENT_RADII_VALUES.count(type_symbol) > 0) {
         this->COVALENT_RADII_VALUES[type_symbol].push_back(
-          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value
-        );
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value);
         this->COVALENT_RADII_ERRORS[type_symbol].push_back(
-          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error
-        );
+          this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error);
       } else {
         this->COVALENT_RADII_VALUES[type_symbol] = std::vector<double>{
           this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value
@@ -169,7 +167,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_partial_charge" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_lennard_jones.type_symbol_1"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_lennard_jones.type_symbol_1"]; i++) {
       std::string type_symbol_1 =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_lennard_jones.type_symbol_1"], i));
       std::string type_symbol_2 =
@@ -184,7 +182,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_partial_charge" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_partial_charge.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_partial_charge.label_comp_id"]; i++) {
       std::string residue_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_partial_charge.label_comp_id"], i));
       std::string atom_name =
@@ -196,7 +194,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_torsional_atom_names" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_torsional_atom_names.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_torsional_atom_names.label_comp_id"]; i++) {
       std::string residue_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional_atom_names.label_comp_id"], i));
       std::string atom_name =
@@ -209,7 +207,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_torsional" category,
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_torsional.label_atom_1_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_torsional.label_atom_1_id"]; i++) {
       std::string atom_name_1 =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_torsional.label_atom_1_id"], i));
       std::string atom_name_2 =
@@ -236,7 +234,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_h_bond" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_h_bond.type_symbol"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_h_bond.type_symbol"]; i++) {
       std::string type_symbol =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_h_bond.type_symbol"], i));
       double sigma =
@@ -248,7 +246,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_residue_atom_necessity" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_residue_atom_necessity.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_residue_atom_necessity.label_comp_id"]; i++) {
       std::string residue_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_residue_atom_necessity.label_comp_id"], i));
       std::string atom_name =
@@ -261,7 +259,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_clear_hybridization" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_clear_hybridization.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_clear_hybridization.label_comp_id"]; i++) {
       std::string residue_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_clear_hybridization.label_comp_id"], i));
       std::string atom_name =
@@ -273,7 +271,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_connectivity" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_connectivity.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_connectivity.label_comp_id"]; i++) {
       std::string residue_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_connectivity.label_comp_id"], i));
       std::string atom_name_1 =
@@ -285,7 +283,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_hydrogen_names" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_hydrogen_names.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_hydrogen_names.label_comp_id"]; i++) {
       std::string residue_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_hydrogen_names.label_comp_id"], i));
       std::string atom_name =
@@ -297,7 +295,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_symmetrical_atom_names" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_symmetrical_atom_names.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_symmetrical_atom_names.label_comp_id"]; i++) {
       std::string residue_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_symmetrical_atom_names.label_comp_id"], i));
       std::string atom_name_1 =
@@ -310,7 +308,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_dihedral_angle" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_dihedral_angle.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_dihedral_angle.label_comp_id"]; i++) {
       std::string residue_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_dihedral_angle.label_comp_id"], i));
       std::string angle =
@@ -339,7 +337,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_interaction_atom_names" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_interaction_atom_names.label_atom_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_interaction_atom_names.label_atom_id"]; i++) {
       std::string atom_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_interaction_atom_names.label_atom_id"], i));
 
@@ -347,7 +345,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_mainchain_atom_names" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_mainchain_atom_names.label_atom_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_mainchain_atom_names.label_atom_id"]; i++) {
       std::string atom_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_mainchain_atom_names.label_atom_id"], i));
 
@@ -355,7 +353,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_sidechain_atom_names" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_sidechain_atom_names.label_atom_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_sidechain_atom_names.label_atom_id"]; i++) {
       std::string atom_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_sidechain_atom_names.label_atom_id"], i));
 
@@ -363,7 +361,7 @@ Parameters::Parameters(char* program_file_path) {
     }
 
     // "_rotag_rotatable_residue_names" category.
-    for(int i = 0; i < cif_value_length_lookup_table["_rotag_rotatable_residue_names.label_comp_id"]; i++ ) {
+    for (int i = 0; i < cif_value_length_lookup_table["_rotag_rotatable_residue_names.label_comp_id"]; i++) {
       std::string atom_name =
         value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup_table["_rotag_rotatable_residue_names.label_comp_id"], i));
 
@@ -379,9 +377,9 @@ Parameters::Parameters(char* program_file_path) {
 
   // Determining min/max bond lengths for specific bond types.
   // Single bonds.
-  const std::vector<std::string> atom_symbols_single = {"C", "H", "N", "O", "S"};
-  for(const std::string &first_atom_symbol: atom_symbols_single) {
-    for(const std::string &second_atom_symbol: atom_symbols_single) {
+  const std::vector<std::string> atom_symbols_single ={"C", "H", "N", "O", "S"};
+  for (const std::string &first_atom_symbol : atom_symbols_single) {
+    for (const std::string &second_atom_symbol : atom_symbols_single) {
       this->BOND_TYPE["single"][first_atom_symbol][second_atom_symbol] = {
         this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp3"].value +
         this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp3"].value -
@@ -397,8 +395,8 @@ Parameters::Parameters(char* program_file_path) {
 
   // Double bonds.
   const std::vector<std::string> atom_symbols_double = {"C", "N", "O"};
-  for(const std::string &first_atom_symbol: atom_symbols_double) {
-    for(const std::string &second_atom_symbol: atom_symbols_double) {
+  for (const std::string &first_atom_symbol : atom_symbols_double) {
+    for (const std::string &second_atom_symbol : atom_symbols_double) {
       this->BOND_TYPE["double"][first_atom_symbol][second_atom_symbol] = {
         this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp2"].value +
         this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp2"].value -
@@ -414,8 +412,8 @@ Parameters::Parameters(char* program_file_path) {
 
   // Triple bonds.
   const std::vector<std::string> atom_symbols_triple = {"C"};
-  for(const std::string &first_atom_symbol: atom_symbols_triple) {
-    for(const std::string &second_atom_symbol: atom_symbols_triple) {
+  for (const std::string &first_atom_symbol : atom_symbols_triple) {
+    for (const std::string &second_atom_symbol : atom_symbols_triple) {
       this->BOND_TYPE["triple"][first_atom_symbol][second_atom_symbol] = {
         this->ATOM_PROPERTIES[first_atom_symbol].covalent_radius["sp"].value +
         this->ATOM_PROPERTIES[second_atom_symbol].covalent_radius["sp"].value -
@@ -431,9 +429,9 @@ Parameters::Parameters(char* program_file_path) {
 
   // Precalculating covalent bond combinations.
   std::vector<std::string> atom_symbols = {};
-  for(std::map<std::string, AtomProperties>::iterator it_i = this->ATOM_PROPERTIES.begin(); it_i != this->ATOM_PROPERTIES.end(); ++it_i ) {
+  for (std::map<std::string, AtomProperties>::iterator it_i = this->ATOM_PROPERTIES.begin(); it_i != this->ATOM_PROPERTIES.end(); ++it_i) {
     std::string first_atom_symbol = it_i->first;
-    for(std::map<std::string, AtomProperties>::iterator it_j = this->ATOM_PROPERTIES.begin(); it_j != this->ATOM_PROPERTIES.end(); ++it_j ) {
+    for (std::map<std::string, AtomProperties>::iterator it_j = this->ATOM_PROPERTIES.begin(); it_j != this->ATOM_PROPERTIES.end(); ++it_j) {
       std::string second_atom_symbol = it_j->first;
       std::vector<std::vector<double>> length_combinations = {};
       std::vector<std::vector<double>> error_combinations = {};
@@ -444,15 +442,13 @@ Parameters::Parameters(char* program_file_path) {
           this->COVALENT_RADII_VALUES[first_atom_symbol],
           this->COVALENT_RADII_VALUES[second_atom_symbol],
         }),
-        &length_combinations
-      );
+        &length_combinations);
       permutation(2,
           std::vector<std::vector<double>>({
           this->COVALENT_RADII_ERRORS[first_atom_symbol],
           this->COVALENT_RADII_ERRORS[second_atom_symbol],
               }),
-        &error_combinations
-      );
+        &error_combinations);
 
       this->COVALENT_BOND_COMBINATIONS[first_atom_symbol][second_atom_symbol].values =
         length_combinations;
@@ -462,11 +458,11 @@ Parameters::Parameters(char* program_file_path) {
   }
 }
 
-Parameters::~Parameters() {};
+Parameters::~Parameters() {}
 
 double Parameters::epsilon() {
   double epsilon = 1.0;
-  while((1.0 + 0.5 * epsilon) != 1.0) {
+  while ((1.0 + 0.5 * epsilon) != 1.0) {
     epsilon = 0.5 * epsilon;
   }
   return epsilon;
