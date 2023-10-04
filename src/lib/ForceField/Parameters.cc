@@ -435,8 +435,8 @@ Parameters::Parameters(char* program_file_path) {
     std::string first_atom_symbol = it_i->first;
     for(std::map<std::string, AtomProperties>::iterator it_j = this->ATOM_PROPERTIES.begin(); it_j != this->ATOM_PROPERTIES.end(); ++it_j ) {
       std::string second_atom_symbol = it_j->first;
-      std::vector<std::vector<double>> length_combinations = {{}};
-      std::vector<std::vector<double>> error_combinations = {{}};
+      std::vector<std::vector<double>> length_combinations = {};
+      std::vector<std::vector<double>> error_combinations = {};
 
       permutation(
         2,
