@@ -188,6 +188,7 @@ int main(int argc, char *argv[]) {
   Parameters parameters(progname);
 
   for (int index = optind; index < argc; index++) {
+    std::unique_ptr<AtomSite> atom_site;
     if (is_pdb) {
     } else {
       cif_option_t compiler_options = cif_option_default();
