@@ -1,15 +1,12 @@
 #include "Parameters.h"
 
 #include <cmath>
-#include <iostream>
 #include <memory>
-#include <vector>
 
 #include <boost/filesystem.hpp>
 
 extern "C" {
   #include "cif_compiler.h"
-  #include "datablock.h"
 }
 
 #include "../Combinatorics.h"

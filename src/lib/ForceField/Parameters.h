@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+extern "C" {
+  #include "datablock.h"
+}
+
 struct AltName {
   std::string alt_name;
 };
