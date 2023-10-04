@@ -105,8 +105,8 @@ class Parameters {
     std::map<std::string, std::vector<double>> COVALENT_RADII_ERRORS;
     std::map<std::string, std::map<std::string, CovalentBondCombinations>> COVALENT_BOND_COMBINATIONS;
 
-    double max_connection_length;
-    double max_interaction_length;
+    double max_connection_length = 0.0;
+    double max_interaction_length = 0.0;
 
     Parameters(char* program_file_path);
     ~Parameters();
