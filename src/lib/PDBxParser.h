@@ -5,10 +5,6 @@
 #include <string>
 #include <vector>
 
-extern "C" {
-  #include "cif_compiler.h"
-}
-
 struct Atom {
   // "_atom_site" category-related.
   std::string group_PDB;                // "ATOM" or "HETATM".

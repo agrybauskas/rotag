@@ -1,5 +1,9 @@
 #include "PDBxParser.h"
 
+extern "C" {
+  #include "cif_compiler.h"
+}
+
 #include "CIFTag.h"
 
 AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
@@ -37,8 +41,8 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
   foreach_datablock(datablock, cif_datablock_list(mmcif)) {
     std::map<std::string, ssize_t> cif_tag_index_lookup =
       cif_tag_index_lookup(datablock, cif_tags);
-    std::map<std::string, ssize_t> cif_value_length_lookup =
-      cif_value_length_lookup(datablock, cif_tags);
+    // std::map<std::string, ssize_t> cif_value_length_lookup =
+    //   cif_value_length_lookup(datablock, cif_tags);
   }
 
   return atom_site;
