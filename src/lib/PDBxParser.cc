@@ -28,7 +28,9 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
     "_atom_site.auth_comp_id",
     "_atom_site.auth_asym_id",
     "_atom_site.auth_atom_id",
-    "_atom_site.pdbx_PDB_model_num"
+    "_atom_site.pdbx_PDB_model_num",
+    "_atom_site.rotag_selection_state",
+    "_atom_site.rotag_selection_group"
   };
 
   DATABLOCK* datablock;
