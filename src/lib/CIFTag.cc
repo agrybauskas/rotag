@@ -20,6 +20,15 @@ std::map<std::string, ssize_t> cif_value_length_lookup(
   return cif_value_length_lookup;
 }
 
+long int cifvalue_to_long(
+  DATABLOCK* datablock,
+  std::map<std::string, ssize_t> cif_tag_index_lookup,
+  std::string cif_tag,
+  size_t index) {
+  return atoi(value_scalar(datablock_cifvalue(
+    datablock, cif_tag_index_lookup[cif_tag], index)));
+}
+
 double cifvalue_to_double(
   DATABLOCK* datablock,
   std::map<std::string, ssize_t> cif_tag_index_lookup,

@@ -126,7 +126,8 @@ Parameters::Parameters(char* program_file_path) {
          i <cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"];
          i++) {
       std::string type_symbol = cifvalue_to_string(
-        datablock, cif_tag_index_lookup_table,
+        datablock,
+        cif_tag_index_lookup_table,
         "_rotag_atom_properties.type_symbol",
         i);
       std::string hybridization = cifvalue_to_string(

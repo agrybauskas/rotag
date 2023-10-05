@@ -26,7 +26,7 @@ struct Atom {
   unsigned long int pdbx_PDB_model_num; // Model id.
 
   // Selection.
-  char selection_state;                 // Marks selection state: T, S ir H.
+  std::string selection_state;          // Marks selection state: T, S ir H.
   std::string selection_group;          // Selection group id.
 };
 
