@@ -188,7 +188,6 @@ int main(int argc, char *argv[]) {
     if (is_pdb) {
     } else {
       atom_site = mmcif_to_atom_site(argv[index]);
-      std::cout << atom_site[147].id << std::endl;
     }
   }
 
