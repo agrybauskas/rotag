@@ -1,5 +1,7 @@
 #include "CIFTag.h"
 
+#include <iostream>
+
 std::map<std::string, ssize_t> cif_tag_index_lookup(
   DATABLOCK* datablock, std::vector<std::string> cif_tags) {
   std::map<std::string, ssize_t> cif_tag_index_lookup;
