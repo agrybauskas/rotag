@@ -22,18 +22,18 @@ std::map<std::string, ssize_t> cif_value_length_lookup(
 
 double cifvalue_to_double(
   DATABLOCK* datablock,
-  std::map<std::string, ssize_t> cif_tag_index_lookup_table,
+  std::map<std::string, ssize_t> cif_tag_index_lookup,
   std::string cif_tag,
   size_t index) {
   return atof(value_scalar(datablock_cifvalue(
-    datablock, cif_tag_index_lookup_table[cif_tag], index)));
+    datablock, cif_tag_index_lookup[cif_tag], index)));
 }
 
 std::string cifvalue_to_string(
   DATABLOCK* datablock,
-  std::map<std::string, ssize_t> cif_tag_index_lookup_table,
+  std::map<std::string, ssize_t> cif_tag_index_lookup,
   std::string cif_tag,
   size_t index) {
   return value_scalar(datablock_cifvalue(
-    datablock, cif_tag_index_lookup_table[cif_tag], index));
+    datablock, cif_tag_index_lookup[cif_tag], index));
 }

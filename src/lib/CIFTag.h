@@ -17,13 +17,13 @@ std::map<std::string, ssize_t> cif_value_length_lookup(
 
 double cifvalue_to_double(
   DATABLOCK* datablock,
-  std::map<std::string, ssize_t> cif_tag_index_lookup_table,
+  std::map<std::string, ssize_t> cif_tag_index_lookup,
   std::string cif_tag,
   size_t index = 0);
 
 std::string cifvalue_to_string(
   DATABLOCK* datablock,
-  std::map<std::string, ssize_t> cif_tag_index_lookup_table,
+  std::map<std::string, ssize_t> cif_tag_index_lookup,
   std::string cif_tag,
   size_t index = 0);
 
