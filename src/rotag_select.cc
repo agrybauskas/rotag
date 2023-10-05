@@ -24,8 +24,8 @@ int main(int argc, char *argv[]) {
   progname = argv[0];
 
   // Defaults.
-  std::string target_cmds = "all";
-  std::string select_cmds = "target";
+  std::string target_cmd = "all";
+  std::string select_cmd = "target";
   std::string tags =
     "_atom_site,_rotag_rotamer_angle,_rotag_dihedral_angle,"
     "_rotag_rotamer_energy,_rotag_pairwise_energy,_rotag_energy,"
@@ -60,10 +60,10 @@ int main(int argc, char *argv[]) {
     iarg = getopt_long(argc, argv, "t:s:0:rpkx:hv", longopts, &index);
     switch (iarg) {
       case 't':
-        target_cmds = optarg;
+        target_cmd = optarg;
         break;
       case 's':
-        select_cmds = optarg;
+        select_cmd = optarg;
         break;
       case 0:
         tags = optarg;
