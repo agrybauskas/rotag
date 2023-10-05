@@ -9,6 +9,7 @@ extern "C" {
   #include "cif_compiler.h"
 }
 
+#include "../CIFTag.h"
 #include "../Combinatorics.h"
 
 Parameters::Parameters(char* program_file_path) {
@@ -663,22 +664,4 @@ double Parameters::epsilon() {
 
 double Parameters::pi() {
   return 4 * std::atan2(1, 1);
-}
-
-double Parameters::cifvalue_to_double(
-  DATABLOCK* datablock,
-  std::map<std::string, ssize_t> cif_tag_index_lookup_table,
-  std::string cif_tag,
-  size_t index) {
-  return atof(value_scalar(datablock_cifvalue(
-    datablock, cif_tag_index_lookup_table[cif_tag], index)));
-}
-
-std::string Parameters::cifvalue_to_string(
-  DATABLOCK* datablock,
-  std::map<std::string, ssize_t> cif_tag_index_lookup_table,
-  std::string cif_tag,
-  size_t index) {
-  return value_scalar(datablock_cifvalue(
-    datablock, cif_tag_index_lookup_table[cif_tag], index));
 }
