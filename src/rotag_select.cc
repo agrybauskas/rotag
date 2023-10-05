@@ -10,10 +10,6 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/filesystem.hpp>
 
-extern "C" {
-  #include "cif_compiler.h"
-}
-
 #include "lib/Combinatorics.h"
 #include "lib/ForceField/Parameters.h"
 #include "lib/PDBxParser.h"
@@ -31,17 +27,17 @@ int main(int argc, char *argv[]) {
   std::string target_cmds = "all";
   std::string select_cmds = "target";
   std::string tags =
-    "_atom_site,_[local]_rotamer_angle,_[local]_dihedral_angle,"
-    "_[local]_rotamer_energy,_[local]_pairwise_energy,_[local]_energy,"
-    "_[local]_rmsd";
+    "_atom_site,_rotag_rotamer_angle,_rotag_dihedral_angle,"
+    "_rotag_rotamer_energy,_rotag_pairwise_energy,_rotag_energy,"
+    "_rotag_rmsd";
   bool is_related = false;
   bool is_pdb = false;
   bool keep_ignored = false;
   int random_seed = 23;
   std::vector<std::string> category_list = {
-    "_atom_site", "_[local]_rotamer_angle", "_[local]_dihedral_angle",
-    "_[local]_rotamer_energy", "_[local]_pairwise_energy", "_[local]_energy",
-    "_[local]_rmsd"
+    "_atom_site", "_rotag_rotamer_angle", "_rotag_dihedral_angle",
+    "_rotag_rotamer_energy", "_rotag_pairwise_energy", "_rotag_energy",
+    "_rotag_rmsd"
   };
 
   const struct option longopts[] = {
@@ -157,12 +153,12 @@ int main(int argc, char *argv[]) {
 "    --tags <tag>[,<tag>...]\n"
 "                        select PDBx tag that will be in the output\n"
 "                        (default: '_atom_site,\n"
-"                                   _[local]_rotamer_angle,\n"
-"                                   _[local]_dihedral_angle,\n"
-"                                   _[local]_rotamer_energy,\n"
-"                                   _[local]_pairwise_energy,\n"
-"                                   _[local]_energy,\n"
-"                                   _[local]_rmsd').\n"
+"                                   _rotag_rotamer_angle,\n"
+"                                   _rotag_dihedral_angle,\n"
+"                                   _rotag_rotamer_energy,\n"
+"                                   _rotag_pairwise_energy,\n"
+"                                   _rotag_energy,\n"
+"                                   _rotag_rmsd').\n"
 "    -r, --related-data\n"
 "                        only related data records from other categories are\n"
 "                        shown when '_atom_site' records are selected.\n"
@@ -188,13 +184,10 @@ int main(int argc, char *argv[]) {
   Parameters parameters(progname);
 
   for (int index = optind; index < argc; index++) {
-    std::unique_ptr<AtomSite> atom_site;
+    AtomSite atom_site;
     if (is_pdb) {
     } else {
-      cif_option_t compiler_options = cif_option_default();
-      cexception_t inner;
-      CIF* mmcif = new_cif_from_cif_file(argv[index], compiler_options, &inner);
-      atom_site = mmcif_to_atom_site(mmcif);
+      atom_site = mmcif_to_atom_site(argv[index]);
     }
   }
 

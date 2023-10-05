@@ -10,6 +10,7 @@ extern "C" {
 }
 
 struct Atom {
+  // "_atom_site" category-related.
   std::string group_PDB;                // "ATOM" or "HETATM".
   unsigned long int id;                 // Atom id.
   std::string type_symbol;              // Chemical element.
@@ -27,10 +28,14 @@ struct Atom {
   std::string auth_asym_id;             // Author's chain name.
   std::string auth_atom_id;             // Author's atom label.
   unsigned long int pdbx_PDB_model_num; // Model id.
+
+  // Selection.
+  char selection_state;                 // Marks selection state: T, S ir H.
+  std::string selection_group;          // Selection group id.
 };
 
 typedef std::map<unsigned int, Atom> AtomSite;
 
-AtomSite mmcif_to_atom_site(CIF* mmcif);
+AtomSite mmcif_to_atom_site(char* mmcif_file_path);
 
 #endif  // SRC_LIB_PDBXPARSER_H_
