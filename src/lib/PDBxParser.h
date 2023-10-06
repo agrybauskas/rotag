@@ -31,22 +31,22 @@ struct Atom {
 };
 
 struct Selector {
-  std::vector<std::string> group_pdb;
-  std::vector<unsigned long int> id;
-  std::vector<std::string> type_symbol;
-  std::vector<std::string> label_atom_id;
-  std::vector<std::string> label_alt_id;
-  std::vector<std::string> label_comp_id;
-  std::vector<std::string> label_asym_id;
-  std::vector<unsigned long int> label_entity_id;
-  std::vector<unsigned long int> label_seq_id;
-  std::vector<unsigned long int> auth_seq_id;
-  std::vector<std::string> auth_comp_id;
-  std::vector<std::string> auth_asym_id;
-  std::vector<std::string> auth_atom_id;
-  std::vector<unsigned long int> pdbx_pdb_model_num;
-  std::vector<std::string> selection_state;
-  std::vector<std::string> selection_group;
+  std::map<std::string, bool> group_pdb;
+  std::map<unsigned long int, bool> id;
+  std::map<std::string, bool> type_symbol;
+  std::map<std::string, bool> label_atom_id;
+  std::map<std::string, bool> label_alt_id;
+  std::map<std::string, bool> label_comp_id;
+  std::map<std::string, bool> label_asym_id;
+  std::map<unsigned long int, bool> label_entity_id;
+  std::map<unsigned long int, bool> label_seq_id;
+  std::map<unsigned long int, bool> auth_seq_id;
+  std::map<std::string, bool> auth_comp_id;
+  std::map<std::string, bool> auth_asym_id;
+  std::map<std::string, bool> auth_atom_id;
+  std::map<unsigned long int, bool> pdbx_pdb_model_num;
+  std::map<std::string, bool> selection_state;
+  std::map<std::string, bool> selection_group;
 };
 
 typedef std::map<unsigned int, Atom> AtomSite;
