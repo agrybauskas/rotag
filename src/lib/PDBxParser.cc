@@ -158,5 +158,11 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
 
 std::vector<unsigned long int>
   filter(AtomSite atom_site, Selector include, Selector exclude) {
+
+  if (atom_site.empty()) {
+    /* TODO: Error or warning. Message: no atom were loaded to the AtomSite data
+       structure. */
+  }
+
   return std::vector<unsigned long int>{};
 }
