@@ -1,6 +1,7 @@
 #!/bin/sh
 
 sudo apt-get install -y \
+     bison \
      flex \
      libclone-perl \
      liblist-moreutils-perl \
