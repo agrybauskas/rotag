@@ -34,4 +34,8 @@ typedef std::map<unsigned int, Atom> AtomSite;
 
 AtomSite mmcif_to_atom_site(char* mmcif_file_path);
 
+AtomSite filter(AtomSite atom_site);
+
+AtomSite extract(AtomSite atom_site);
+
 #endif  // SRC_LIB_PDBXPARSER_H_
