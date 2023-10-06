@@ -164,5 +164,7 @@ std::vector<unsigned long int>
        structure. */
   }
 
-  return std::vector<unsigned long int>{};
+  std::vector<unsigned long int> filtered_atom_ids = {};
+
+  return filtered_atom_ids;
 }
