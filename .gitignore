@@ -7,6 +7,10 @@
 # /src/lib/ForceField/
 /src/lib/ForceField/*.o
 
+# /src/lib/Grammar/
+/src/lib/Grammar/*.tab.c
+/src/lib/Grammar/*.tab.h
+
 # /lib/Grammar/
 /lib/Grammar/*.pm
 
