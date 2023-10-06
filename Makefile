@@ -24,7 +24,7 @@ BIN_DIR=bin
 SRC_DIR=src
 LIB_DIR=${SRC_DIR}/lib
 OBJ_DIR=${SRC_DIR}/lib
-LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc}
+LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc ${LIB_DIR}/Grammar/*.cc}
 BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
 HEADERS=${LIB_SRC:%.cc=%.h}
 CC_OBJS=${LIB_SRC:%.cc=%.o}
@@ -32,6 +32,7 @@ CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
 CC_LIB=-lboost_filesystem
 C_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/getoptions
 C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o
+TAGS=${SRC_DIR}/TAGS
 
 .PRECIOUS: ${CC_OBJS}
 
@@ -131,8 +132,11 @@ ${COVERAGE_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
 
 .PHONY: clean cleanAll distclean
 
-tags:
-	find src/ -name '*.cc' -or -name '*.c' | xargs etags -a -o ${SRC_DIR}/TAGS
+tags: ${TAGS}
+
+${SRC_DIR}/TAGS: ${LIB_SRC} ${BIN_SRC} ${HEADERS}
+	rm -rf $@
+	find src/ -name '*.cc' -or -name '*.c' -or -name '*.h' | xargs etags -a -o $@
 
 clean: testclean
 	rm -f ${COVERAGE_CASES}
