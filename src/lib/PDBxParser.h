@@ -30,12 +30,19 @@ struct Atom {
   std::string selection_group;          // Selection group id.
 };
 
+struct Selector {
+
+};
+
 typedef std::map<unsigned int, Atom> AtomSite;
 
 AtomSite mmcif_to_atom_site(char* mmcif_file_path);
 
-AtomSite filter(AtomSite atom_site);
+std::vector<unsigned long int>
+  filter(AtomSite atom_site, Selector include={}, Selector exclude={});
 
 AtomSite extract(AtomSite atom_site);
+
+void mark_selection(AtomSite atom_site);
 
 #endif  // SRC_LIB_PDBXPARSER_H_
