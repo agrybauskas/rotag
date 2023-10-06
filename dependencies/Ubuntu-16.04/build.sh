@@ -1,6 +1,7 @@
 #!/bin/sh
 
 sudo apt-get install -y \
+     flex \
      libclone-perl \
      liblist-moreutils-perl \
      liblist-allutils-perl \
