@@ -31,7 +31,22 @@ struct Atom {
 };
 
 struct Selector {
-
+  std::vector<std::string> group_pdb;
+  std::vector<unsigned long int> id;
+  std::vector<std::string> type_symbol;
+  std::vector<std::string> label_atom_id;
+  std::vector<std::string> label_alt_id;
+  std::vector<std::string> label_comp_id;
+  std::vector<std::string> label_asym_id;
+  std::vector<unsigned long int> label_entity_id;
+  std::vector<unsigned long int> label_seq_id;
+  std::vector<unsigned long int> auth_seq_id;
+  std::vector<std::string> auth_comp_id;
+  std::vector<std::string> auth_asym_id;
+  std::vector<std::string> auth_atom_id;
+  std::vector<unsigned long int> pdbx_pdb_model_num;
+  std::vector<std::string> selection_state;
+  std::vector<std::string> selection_group;
 };
 
 typedef std::map<unsigned int, Atom> AtomSite;

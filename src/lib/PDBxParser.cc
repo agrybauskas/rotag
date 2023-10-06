@@ -158,4 +158,5 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
 
 std::vector<unsigned long int>
   filter(AtomSite atom_site, Selector include, Selector exclude) {
+  return std::vector<unsigned long int>{};
 }
