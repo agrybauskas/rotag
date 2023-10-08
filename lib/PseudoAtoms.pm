@@ -1102,6 +1102,11 @@ sub assign_hetatoms_to_residues
                 }
                 $current_hetatom->{'id'} = $last_atom_id;
                 $current_hetatom->{'origin_atom_id'} = $hetatom_id;
+                # HACK: Carefully analyse when assigning heteroatom-heteroatom
+                # connections.
+                if( defined $current_hetatom->{'hybridization'} ) {
+                    $current_hetatom->{'hybridization'} = '.';
+                }
                 $atom_site->{$last_atom_id} = $current_hetatom;
 
                 connect_atoms_explicitly( $atom_site,
