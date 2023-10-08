@@ -5,6 +5,30 @@
 #include <string>
 #include <vector>
 
+const std::vector<std::string> ATOM_SITE_TAGS = {
+  "_atom_site.group_pdb",
+  "_atom_site.id",
+  "_atom_site.type_symbol",
+  "_atom_site.label_atom_id",
+  "_atom_site.label_alt_id",
+  "_atom_site.label_comp_id",
+  "_atom_site.label_asym_id",
+  "_atom_site.label_entity_id",
+  "_atom_site.label_seq_id",
+  "_atom_site.cartn_x",
+  "_atom_site.cartn_y",
+  "_atom_site.cartn_z",
+  "_atom_site.occupancy",
+  "_atom_site.b_iso_or_equiv",
+  "_atom_site.auth_seq_id",
+  "_atom_site.auth_comp_id",
+  "_atom_site.auth_asym_id",
+  "_atom_site.auth_atom_id",
+  "_atom_site.pdbx_pdb_model_num",
+  "_atom_site.rotag_selection_state",
+  "_atom_site.rotag_selection_group"
+};
+
 struct Atom {
   // "_atom_site" category-related.
   std::string group_pdb;                // "ATOM" or "HETATM".

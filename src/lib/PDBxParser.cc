@@ -15,36 +15,12 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
   cexception_t inner;
   CIF* mmcif = new_cif_from_cif_file(mmcif_file_path, compiler_options, &inner);
 
-  const std::vector<std::string> cif_tags = {
-    "_atom_site.group_pdb",
-    "_atom_site.id",
-    "_atom_site.type_symbol",
-    "_atom_site.label_atom_id",
-    "_atom_site.label_alt_id",
-    "_atom_site.label_comp_id",
-    "_atom_site.label_asym_id",
-    "_atom_site.label_entity_id",
-    "_atom_site.label_seq_id",
-    "_atom_site.cartn_x",
-    "_atom_site.cartn_y",
-    "_atom_site.cartn_z",
-    "_atom_site.occupancy",
-    "_atom_site.b_iso_or_equiv",
-    "_atom_site.auth_seq_id",
-    "_atom_site.auth_comp_id",
-    "_atom_site.auth_asym_id",
-    "_atom_site.auth_atom_id",
-    "_atom_site.pdbx_pdb_model_num",
-    "_atom_site.rotag_selection_state",
-    "_atom_site.rotag_selection_group"
-  };
-
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(mmcif)) {
     std::map<std::string, ssize_t> cif_tag_index_lookup_table =
-      cif_tag_index_lookup(datablock, cif_tags);
+      cif_tag_index_lookup(datablock, ATOM_SITE_TAGS);
     std::map<std::string, ssize_t> cif_value_length_lookup_table =
-      cif_value_length_lookup(datablock, cif_tags);
+      cif_value_length_lookup(datablock, ATOM_SITE_TAGS);
 
     // "_atom_site" category.
     for (int i = 0; i < cif_value_length_lookup_table["_atom_site.id"]; i++) {
@@ -166,6 +142,9 @@ std::vector<unsigned long int>
   std::vector<unsigned long int> filtered_atom_ids = {};
   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
     bool keep_atom = true;
+    // for () {
+
+    // }
   }
 
   return filtered_atom_ids;
