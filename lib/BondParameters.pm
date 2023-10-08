@@ -90,15 +90,15 @@ sub rotatable_bonds
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
 
-        # HACK: it should be investigated more thoroughly, because start atom
-        # ids are being changed in three different parts.
-        if( $include_hetatoms ) {
-            $start_atom_ids //= filter_new(
-                $residue_site,
-                { 'include' => { 'label_atom_id' => [ 'C' ] },
-                  'return_data' => 'id' }
-            );
-        }
+        # # HACK: it should be investigated more thoroughly, because start atom
+        # # ids are being changed in three different parts.
+        # if( $include_hetatoms ) {
+        #     $start_atom_ids //= filter_new(
+        #         $residue_site,
+        #         { 'include' => { 'label_atom_id' => [ 'C' ] },
+        #           'return_data' => 'id' }
+        #     );
+        # }
 
         my $bond_paths = BondPath->new( {
             'atom_site' => $residue_site,
@@ -106,6 +106,10 @@ sub rotatable_bonds
             'include_hetatoms' => $include_hetatoms,
             'ignore_connections' => $ignore_connections,
         } );
+
+        # use Data::Dumper;
+        # print STDERR Dumper $bond_paths;
+        # print STDERR Dumper map { $_ } grep { defined $residue_site->{$_}{'connections_hetatom'}  } %{ $residue_site };
 
         my %rotatable_bonds_cache = ();
         for my $fourth_atom_id ( @{ $bond_paths->get_atom_order } ) {
