@@ -107,10 +107,6 @@ sub rotatable_bonds
             'ignore_connections' => $ignore_connections,
         } );
 
-        # use Data::Dumper;
-        # print STDERR Dumper $bond_paths;
-        # print STDERR Dumper map { $_ } grep { defined $residue_site->{$_}{'connections_hetatom'}  } %{ $residue_site };
-
         my %rotatable_bonds_cache = ();
         for my $fourth_atom_id ( @{ $bond_paths->get_atom_order } ) {
             my $third_atom_id = $bond_paths->get_atom_id_to( $fourth_atom_id );

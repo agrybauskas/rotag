@@ -172,9 +172,6 @@ for my $pdbx_file ( @ARGV ) {
                            'include_hetatoms' => $calc_hetatoms } );
         my $dihedral_angles = collect_dihedral_angles( $dihedral_site );
 
-        # use Data::Dumper;
-        # print STDERR Dumper $dihedral_angles;
-
         my $dihedral_id = 1;
         my %visited_dihedral_angles = ();
         for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
