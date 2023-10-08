@@ -165,7 +165,7 @@ std::vector<unsigned long int>
 
   std::vector<unsigned long int> filtered_atom_ids = {};
   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
-    std::cout << it->first << std::endl;
+    bool keep_atom = true;
   }
 
   return filtered_atom_ids;
