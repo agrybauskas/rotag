@@ -160,11 +160,13 @@ std::vector<unsigned long int>
   filter(AtomSite atom_site, Selector include, Selector exclude) {
 
   if (atom_site.empty()) {
-    /* TODO: Error or warning. Message: no atom were loaded to the AtomSite data
-       structure. */
+    // TODO: Error or warning. Message: no atoms were loaded from "_atom_site".
   }
 
   std::vector<unsigned long int> filtered_atom_ids = {};
+  for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
+    std::cout << it->first << std::endl;
+  }
 
   return filtered_atom_ids;
 }
