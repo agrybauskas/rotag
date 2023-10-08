@@ -29,6 +29,30 @@ const std::vector<std::string> ATOM_SITE_TAGS = {
   "_atom_site.rotag_selection_group"
 };
 
+enum ATOM_SITE_TAG {
+  GROUP_PDB = 1,
+  ID = 2,
+  TYPE_SYMBOL = 3,
+  LABEL_ATOM_ID = 4,
+  LABEL_ALT_ID = 5,
+  LABEL_COMP_ID = 6,
+  LABEL_ASYM_ID = 7,
+  LABEL_ENTITY_ID = 8,
+  LABEL_SEQ_ID = 9,
+  CARTN_X = 10,
+  CARTN_Y = 11,
+  CARTN_Z = 12,
+  OCCUPANCY = 13,
+  B_ISO_OR_EQUIV = 14,
+  AUTH_SEQ_ID = 15,
+  AUTH_COMP_ID = 16,
+  AUTH_ASYM_ID = 17,
+  AUTH_ATOM_ID = 18,
+  PDBX_PDB_MODEL_NUM = 19,
+  SELECTION_STATE = 20,
+  SELECTION_GROUP = 21,
+};
+
 struct Atom {
   // "_atom_site" category-related.
   std::string group_pdb;                // "ATOM" or "HETATM".
