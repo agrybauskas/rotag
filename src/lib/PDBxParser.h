@@ -45,7 +45,7 @@ std::vector<std::vector<std::string>> extract(
 
 void mark_selection(
   AtomSite atom_site,
-  std::vector<std::string> target_atom_ids,
-  std::vector<std::string> selected_atom_ids);
+  std::vector<std::string> target_atom_ids = {},
+  std::vector<std::string> selected_atom_ids = {});
 
 #endif  // SRC_LIB_PDBXPARSER_H_
