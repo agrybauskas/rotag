@@ -46,10 +46,30 @@ std::vector<std::string>
 
   std::vector<std::string> filtered_atom_ids = {};
   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
+    std::string id = it->first;
     bool keep_atom = true;
-    // for () {
+    for (const std::string &cif_tag : ATOM_SITE_TAGS) {
+      std::string value = atom_site[id][cif_tag];
+      if (include.size() > 0 &&
+          include[cif_tag].size() > 0 &&
+          include[cif_tag][value]) {
+        keep_atom = false;
+        break;
+      }
 
-    // }
+      if (exclude.size() > 0 &&
+          exclude[cif_tag].size() > 0 &&
+          exclude[cif_tag][value]) {
+        keep_atom = false;
+        break;
+      }
+    }
+
+    if (!keep_atom) {
+      continue;
+    }
+
+    filtered_atom_ids.push_back(id);
   }
 
   return filtered_atom_ids;

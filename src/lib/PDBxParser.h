@@ -33,12 +33,12 @@ const std::vector<std::string> ATOM_SITE_TAGS = {
 };
 
 typedef std::map<std::string, std::map<std::string, std::string>> AtomSite;
-typedef std::map<std::string, bool> Selector;
+typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
 AtomSite mmcif_to_atom_site(char* mmcif_file_path);
 
 std::vector<std::string>
-  filter(AtomSite atom_site, Selector include={}, Selector exclude={});
+  filter(AtomSite atom_site, Selector include={{}}, Selector exclude={{}});
 
 AtomSite extract(AtomSite atom_site);
 
