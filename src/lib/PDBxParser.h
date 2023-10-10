@@ -40,7 +40,8 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path);
 AtomSite filter(
   AtomSite atom_site, Selector include={{}}, Selector exclude={{}});
 
-std::string extract(AtomSite atom_site);
+std::vector<std::vector<std::string>> extract(
+  AtomSite atom_site, std::vector<std::string> cif_tags);
 
 void mark_selection(AtomSite atom_site);
 
