@@ -6,102 +6,38 @@
 #include <vector>
 
 const std::vector<std::string> ATOM_SITE_TAGS = {
-  "_atom_site.group_pdb",
-  "_atom_site.id",
-  "_atom_site.type_symbol",
-  "_atom_site.label_atom_id",
-  "_atom_site.label_alt_id",
-  "_atom_site.label_comp_id",
-  "_atom_site.label_asym_id",
-  "_atom_site.label_entity_id",
-  "_atom_site.label_seq_id",
-  "_atom_site.cartn_x",
-  "_atom_site.cartn_y",
-  "_atom_site.cartn_z",
-  "_atom_site.occupancy",
-  "_atom_site.b_iso_or_equiv",
-  "_atom_site.auth_seq_id",
-  "_atom_site.auth_comp_id",
-  "_atom_site.auth_asym_id",
-  "_atom_site.auth_atom_id",
-  "_atom_site.pdbx_pdb_model_num",
-  "_atom_site.rotag_selection_state",
-  "_atom_site.rotag_selection_group"
-};
-
-enum ATOM_SITE_TAG {
-  GROUP_PDB = 1,
-  ID = 2,
-  TYPE_SYMBOL = 3,
-  LABEL_ATOM_ID = 4,
-  LABEL_ALT_ID = 5,
-  LABEL_COMP_ID = 6,
-  LABEL_ASYM_ID = 7,
-  LABEL_ENTITY_ID = 8,
-  LABEL_SEQ_ID = 9,
-  CARTN_X = 10,
-  CARTN_Y = 11,
-  CARTN_Z = 12,
-  OCCUPANCY = 13,
-  B_ISO_OR_EQUIV = 14,
-  AUTH_SEQ_ID = 15,
-  AUTH_COMP_ID = 16,
-  AUTH_ASYM_ID = 17,
-  AUTH_ATOM_ID = 18,
-  PDBX_PDB_MODEL_NUM = 19,
-  SELECTION_STATE = 20,
-  SELECTION_GROUP = 21,
-};
-
-struct Atom {
   // "_atom_site" category-related.
-  std::string group_pdb;                // "ATOM" or "HETATM".
-  unsigned long int id;                 // Atom id.
-  std::string type_symbol;              // Chemical element.
-  std::string label_atom_id;            // Atom label.
-  std::string label_alt_id;             // Related to alternative atom position.
-  std::string label_comp_id;            // Residue name.
-  std::string label_asym_id;            // Chain name.
-  unsigned long int label_entity_id;    // Molecular entity.
-  unsigned long int label_seq_id;       // Residue id.
-  double cartn_x, cartn_y, cartn_z;     // Cartesian coordinates of the atom.
-  double occupancy;                     // The fraction present in the site.
-  double b_iso_or_equiv;                // Isotropic displacement.
-  unsigned long int auth_seq_id;        // Author's residue id.
-  std::string auth_comp_id;             // Author's residue name.
-  std::string auth_asym_id;             // Author's chain name.
-  std::string auth_atom_id;             // Author's atom label.
-  unsigned long int pdbx_pdb_model_num; // Model id.
+  "_atom_site.group_pdb",             // "ATOM" or "HETATM".
+  "_atom_site.id",                    // Atom id.
+  "_atom_site.type_symbol",           // Chemical element.
+  "_atom_site.label_atom_id",         // Atom label.
+  "_atom_site.label_alt_id",          // Related to alternative atom position.
+  "_atom_site.label_comp_id",         // Residue name.
+  "_atom_site.label_asym_id",         // Chain name.
+  "_atom_site.label_entity_id",       // Molecular entity.
+  "_atom_site.label_seq_id",          // Residue id.
+  "_atom_site.cartn_x",               // Cartesian x coordinates of the atom.
+  "_atom_site.cartn_y",               // Cartesian y coordinates of the atom.
+  "_atom_site.cartn_z",               // Cartesian z coordinates of the atom.
+  "_atom_site.occupancy",             // The fraction present in the site.
+  "_atom_site.b_iso_or_equiv",        // Isotropic displacement.
+  "_atom_site.auth_seq_id",           // Author's residue id.
+  "_atom_site.auth_comp_id",          // Author's residue name.
+  "_atom_site.auth_asym_id",          // Author's chain name.
+  "_atom_site.auth_atom_id",          // Author's atom label.
+  "_atom_site.pdbx_pdb_model_num",    // Model id.
 
-  // Selection.
-  std::string selection_state;          // Marks selection state: T, S ir H.
-  std::string selection_group;          // Selection group id.
+  // Selection that is specific to rotag.
+  "_atom_site.rotag_selection_state", // Marks selection state: T, S ir H.
+  "_atom_site.rotag_selection_group"  // Selection group id.
 };
 
-struct Selector {
-  std::map<std::string, bool> group_pdb;
-  std::map<unsigned long int, bool> id;
-  std::map<std::string, bool> type_symbol;
-  std::map<std::string, bool> label_atom_id;
-  std::map<std::string, bool> label_alt_id;
-  std::map<std::string, bool> label_comp_id;
-  std::map<std::string, bool> label_asym_id;
-  std::map<unsigned long int, bool> label_entity_id;
-  std::map<unsigned long int, bool> label_seq_id;
-  std::map<unsigned long int, bool> auth_seq_id;
-  std::map<std::string, bool> auth_comp_id;
-  std::map<std::string, bool> auth_asym_id;
-  std::map<std::string, bool> auth_atom_id;
-  std::map<unsigned long int, bool> pdbx_pdb_model_num;
-  std::map<std::string, bool> selection_state;
-  std::map<std::string, bool> selection_group;
-};
-
-typedef std::map<unsigned int, Atom> AtomSite;
+typedef std::map<std::string, std::map<std::string, std::string>> AtomSite;
+typedef std::map<std::string, bool> Selector;
 
 AtomSite mmcif_to_atom_site(char* mmcif_file_path);
 
-std::vector<unsigned long int>
+std::vector<std::string>
   filter(AtomSite atom_site, Selector include={}, Selector exclude={});
 
 AtomSite extract(AtomSite atom_site);

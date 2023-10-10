@@ -22,124 +22,27 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
     std::map<std::string, ssize_t> cif_value_length_lookup_table =
       cif_value_length_lookup(datablock, ATOM_SITE_TAGS);
 
-    // "_atom_site" category.
-    for (int i = 0; i < cif_value_length_lookup_table["_atom_site.id"]; i++) {
-      Atom atom = {};
-      if(cif_tag_index_lookup_table["_atom_site.group_pdb"] > 0) {
-        atom.group_pdb = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.group_pdb", i);
+    for (const std::string &cif_tag : ATOM_SITE_TAGS) {
+      for (int i = 0; i < cif_value_length_lookup_table["_atom_site.id"]; i++) {
+        if(cif_tag_index_lookup_table[cif_tag] > 0) {
+          atom_site["_atom_site.id"][cif_tag] = value_scalar(datablock_cifvalue(
+            datablock, cif_tag_index_lookup_table[cif_tag], i));
+        }
       }
-      if(cif_tag_index_lookup_table["_atom_site.id"] > 0) {
-        atom.id = cifvalue_to_long(
-          datablock, cif_tag_index_lookup_table, "_atom_site.id", i);
-      }
-      if(cif_tag_index_lookup_table["_site.type_symbol"] > 0) {
-        atom.type_symbol = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.type_symbol", i);
-      }
-      if(cif_tag_index_lookup_table[".label_atom_id"] > 0) {
-        atom.label_atom_id = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.label_atom_id", i);
-      }
-      if(cif_tag_index_lookup_table[".label_alt_id"] > 0) {
-        atom.label_alt_id = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.label_alt_id", i);
-      }
-      if(cif_tag_index_lookup_table[".label_comp_id"] > 0) {
-        atom.label_comp_id = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.label_comp_id", i);
-      }
-      if(cif_tag_index_lookup_table[".label_asym_id"] > 0) {
-        atom.label_asym_id = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.label_asym_id", i);
-      }
-      if(cif_tag_index_lookup_table[".label_entity_id"] > 0) {
-        atom.label_entity_id = cifvalue_to_long(
-          datablock,
-          cif_tag_index_lookup_table,
-          "_atom_site.label_entity_id",
-          i);
-      }
-      if(cif_tag_index_lookup_table[".label_seq_id"] > 0) {
-        atom.label_seq_id = cifvalue_to_long(
-          datablock, cif_tag_index_lookup_table, "_atom_site.label_seq_id", i);
-      }
-      if(cif_tag_index_lookup_table["_site.cartn_x"] > 0) {
-        atom.cartn_x = cifvalue_to_double(
-          datablock, cif_tag_index_lookup_table, "_atom_site.cartn_x", i);
-      }
-      if(cif_tag_index_lookup_table["_site.cartn_y"] > 0) {
-        atom.cartn_y = cifvalue_to_double(
-          datablock, cif_tag_index_lookup_table, "_atom_site.cartn_y", i);
-      }
-      if(cif_tag_index_lookup_table["_site.cartn_z"] > 0) {
-        atom.cartn_z = cifvalue_to_double(
-          datablock, cif_tag_index_lookup_table, "_atom_site.cartn_z", i);
-      }
-      if(cif_tag_index_lookup_table["_atom_site.occupancy"] > 0) {
-        atom.occupancy = cifvalue_to_double(
-          datablock, cif_tag_index_lookup_table, "_atom_site.occupancy", i);
-      }
-      if(cif_tag_index_lookup_table["_iso_or_equiv"] > 0) {
-        atom.b_iso_or_equiv = cifvalue_to_double(
-          datablock,
-          cif_tag_index_lookup_table,
-          "_atom_site.b_iso_or_equiv",
-          i);
-      }
-      if(cif_tag_index_lookup_table[".auth_seq_id"] > 0) {
-        atom.auth_seq_id = cifvalue_to_long(
-          datablock, cif_tag_index_lookup_table, "_atom_site.auth_seq_id", i);
-      }
-      if(cif_tag_index_lookup_table[".auth_comp_id"] > 0) {
-        atom.auth_comp_id = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.auth_comp_id", i);
-      }
-      if(cif_tag_index_lookup_table[".auth_asym_id"] > 0) {
-        atom.auth_asym_id = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.auth_asym_id", i);
-      }
-      if(cif_tag_index_lookup_table[".auth_atom_id"] > 0) {
-        atom.auth_atom_id = cifvalue_to_string(
-          datablock, cif_tag_index_lookup_table, "_atom_site.auth_atom_id", i);
-      }
-      if(cif_tag_index_lookup_table["_atom_site.pdbx_pdb_model_num"] > 0) {
-        atom.pdbx_pdb_model_num = cifvalue_to_long(
-          datablock,
-          cif_tag_index_lookup_table,
-          "_atom_site.pdbx_pdb_model_num",
-          i);
-      }
-      if(cif_tag_index_lookup_table["_atom_site.rotag_selection_state"] > 0) {
-        atom.selection_state = cifvalue_to_string(
-          datablock,
-          cif_tag_index_lookup_table,
-          "_atom_site.rotag_selection_state",
-          i);
-      }
-      if(cif_tag_index_lookup_table["_atom_site.rotag_selection_group"] > 0) {
-        atom.selection_group = cifvalue_to_string(
-          datablock,
-          cif_tag_index_lookup_table,
-          "_atom_site.rotag_selection_group",
-          i);
-      }
-
-      atom_site[atom.id] = atom;
     }
   }
 
   return atom_site;
 }
 
-std::vector<unsigned long int>
+std::vector<std::string>
   filter(AtomSite atom_site, Selector include, Selector exclude) {
 
   if (atom_site.empty()) {
     // TODO: Error or warning. Message: no atoms were loaded from "_atom_site".
   }
 
-  std::vector<unsigned long int> filtered_atom_ids = {};
+  std::vector<std::string> filtered_atom_ids = {};
   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
     bool keep_atom = true;
     // for () {
