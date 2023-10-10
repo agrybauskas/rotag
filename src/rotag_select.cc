@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
     // std::vector<unsigned long int> target_atom_ids =
     //     selection_parser(target_cmd);
 
-    // filter(atom_site);
+    // std::cout << filter(atom_site)[filter(atom_site).size()-1] << std::endl;
   }
 
   return 0;
