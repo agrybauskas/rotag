@@ -50,16 +50,12 @@ std::vector<std::string>
     bool keep_atom = true;
     for (const std::string &cif_tag : ATOM_SITE_TAGS) {
       std::string value = atom_site[id][cif_tag];
-      if (include.size() > 0 &&
-          include[cif_tag].size() > 0 &&
-          include[cif_tag][value]) {
+      if (! include[cif_tag].empty() && ! include[cif_tag][value]) {
         keep_atom = false;
         break;
       }
 
-      if (exclude.size() > 0 &&
-          exclude[cif_tag].size() > 0 &&
-          exclude[cif_tag][value]) {
+      if (! exclude[cif_tag].empty() && exclude[cif_tag][value]) {
         keep_atom = false;
         break;
       }
