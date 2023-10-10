@@ -82,3 +82,23 @@ std::vector<std::vector<std::string>>
   }
   return atoms_data;
 }
+
+void mark_selection(
+  AtomSite atom_site,
+  std::vector<std::string> target_atom_ids,
+  std::vector<std::string> selected_atom_ids) {
+  for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
+    std::string id = it->first;
+    atom_site[id]["_atom_site.rotag_selection_state"] = "I";
+  }
+
+  for (const std::string &selected_atom_id : selected_atom_ids) {
+    atom_site[selected_atom_id]["_atom_site.rotag_selection_state"] = "S";
+  }
+
+  for (const std::string &target_atom_id : target_atom_ids) {
+    atom_site[target_atom_id]["_atom_site.rotag_selection_state"] = "T";
+  }
+
+  return;
+}
