@@ -37,14 +37,12 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
   return atom_site;
 }
 
-std::vector<std::string>
-  filter(AtomSite atom_site, Selector include, Selector exclude) {
-
+AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
   if (atom_site.empty()) {
     // TODO: Error or warning. Message: no atoms were loaded from "_atom_site".
   }
 
-  std::vector<std::string> filtered_atom_ids = {};
+  AtomSite filtered_atom_site = {};
   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
     std::string id = it->first;
     bool keep_atom = true;
@@ -65,8 +63,8 @@ std::vector<std::string>
       continue;
     }
 
-    filtered_atom_ids.push_back(id);
+    filtered_atom_site[id] = atom_site[id];
   }
 
-  return filtered_atom_ids;
+  return filtered_atom_site;
 }

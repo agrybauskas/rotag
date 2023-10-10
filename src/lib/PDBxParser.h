@@ -37,10 +37,10 @@ typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
 AtomSite mmcif_to_atom_site(char* mmcif_file_path);
 
-std::vector<std::string>
-  filter(AtomSite atom_site, Selector include={{}}, Selector exclude={{}});
+AtomSite filter(
+  AtomSite atom_site, Selector include={{}}, Selector exclude={{}});
 
-AtomSite extract(AtomSite atom_site);
+std::string extract(AtomSite atom_site);
 
 void mark_selection(AtomSite atom_site);
 
