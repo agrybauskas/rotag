@@ -24,8 +24,10 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
 
     for (const std::string &cif_tag : ATOM_SITE_TAGS) {
       for (int i = 0; i < cif_value_length_lookup_table["_atom_site.id"]; i++) {
+        std::string id = value_scalar(datablock_cifvalue(
+          datablock, cif_tag_index_lookup_table["_atom_site.id"], i));
         if(cif_tag_index_lookup_table[cif_tag] > 0) {
-          atom_site["_atom_site.id"][cif_tag] = value_scalar(datablock_cifvalue(
+          atom_site[id][cif_tag] = value_scalar(datablock_cifvalue(
             datablock, cif_tag_index_lookup_table[cif_tag], i));
         }
       }
