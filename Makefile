@@ -37,10 +37,10 @@ TAGS=${SRC_DIR}/TAGS
 .PRECIOUS: ${CC_OBJS}
 
 %.o: %.cc %.h
-	g++ -c -Wall -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
+	g++ -c -Wall -std=c++11 -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
 
 ${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
-	g++ -Wall -g -o $@ $< ${CC_OBJS} ${C_OBJS} ${CC_LIB} ${C_LIBDIR}
+	g++ -Wall -std=c++11 -g -o $@ $< ${CC_OBJS} ${C_OBJS} ${CC_LIB} ${C_LIBDIR}
 
 .PHONY: all
 
