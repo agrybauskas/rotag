@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
       atom_site = mmcif_to_atom_site(argv[index]);
     }
 
-    std::vector<std::string> target_atom_ids = selection_parser(target_cmd);
+    // std::vector<std::string> target_atom_ids = selection_parser(target_cmd);
   }
 
   return 0;
