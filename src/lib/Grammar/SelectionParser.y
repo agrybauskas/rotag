@@ -1,5 +1,3 @@
-/* SelectionParser.l */
-
 %{
 #include "SelectionParser.h"
 %}
