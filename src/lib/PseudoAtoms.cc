@@ -1,12 +1,11 @@
 #include "PseudoAtoms.h"
 
+#include <math.h>
+
 #include <map>
 #include <iostream>
-#include <math.h>
 #include <string>
 #include <vector>
 
-void generate_library()
-{
-
+void generate_library() {
 }
