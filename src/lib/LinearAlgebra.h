@@ -1,5 +1,5 @@
-#ifndef _LINEARALGEBRA_H_
-#define _LINEARALGEBRA_H_
+#ifndef SRC_LIB_LINEARALGEBRA_H_
+#define SRC_LIB_LINEARALGEBRA_H_
 
 #include <map>
 #include <string>
@@ -7,7 +7,7 @@
 
 #include "AlgebraicMatrix.h"
 
-/* ------------------------- Numeric linear algebra -------------------------- */
+// ------------------------- Numeric linear algebra ----------------------------
 
 /*
   Creates local reference frame for any three given atoms positions in cartesian
@@ -18,9 +18,10 @@
       local_ref_frame - Cartesian coordinates of points on x, y and z axis.
 */
 
-std::vector< std::vector<double> > create_ref_frame( std::vector<double> mid_atom_coord,
-                                                     std::vector<double> up_atom_coord,
-                                                     std::vector<double> side_atom_coord );
+std::vector<std::vector<double>>
+create_ref_frame(std::vector<double> mid_atom_coord,
+                 std::vector<double> up_atom_coord,
+                 std::vector<double> side_atom_coord);
 
 /*
   Function calculates Euler rotational angles (alpha, beta, gamma) that are used
@@ -31,9 +32,9 @@ std::vector< std::vector<double> > create_ref_frame( std::vector<double> mid_ato
       euler angles (alpha, beta, gamma) in radians.
 */
 
-std::vector<double> find_euler_angle( std::vector<double> mid_atom_coord,
-                                      std::vector<double> up_atom_coord,
-                                      std::vector<double> side_atom_coord );
+std::vector<double> find_euler_angle(std::vector<double> mid_atom_coord,
+                                     std::vector<double> up_atom_coord,
+                                     std::vector<double> side_atom_coord);
 
 /*
   Calculates vector length.
@@ -43,9 +44,9 @@ std::vector<double> find_euler_angle( std::vector<double> mid_atom_coord,
       vector length.
 */
 
-double calc_vector_length( std::vector<double> vector );
+double calc_vector_length(std::vector<double> vector);
 
-/* ------------------------ Symbolic linear algebra -------------------------- */
+// ------------------------ Symbolic linear algebra ----------------------------
 
 /*
   Performs basic linear algebra on symbolic expressions.
@@ -65,7 +66,8 @@ double calc_vector_length( std::vector<double> vector );
       transposed_matrix - transposed matrix.
 */
 
-std::vector< std::vector<double> > transpose( std::vector< std::vector<double> > matrix );
+std::vector<std::vector<double>>
+transpose(std::vector<std::vector<double>> matrix);
 
 /*
   Calculates matrix product of two matrices.
@@ -76,9 +78,9 @@ std::vector< std::vector<double> > transpose( std::vector< std::vector<double> >
       matrix_product - matrix product.
 */
 
-AlgebraicMatrix matrix_product( AlgebraicMatrix left_matrix,
-                                AlgebraicMatrix right_matrix,
-                                std::map<std::string, double> symbol_values );
+AlgebraicMatrix matrix_product(AlgebraicMatrix left_matrix,
+                               AlgebraicMatrix right_matrix,
+                               std::map<std::string, double> symbol_values);
 
 /*
   Calculates matrix product of list of any size of matrices.
@@ -89,7 +91,8 @@ AlgebraicMatrix matrix_product( AlgebraicMatrix left_matrix,
       mult_matrix_product - matrix product.
 */
 
-std::vector<AlgebraicMatrix> mult_matrix_product(
-  std::vector<AlgebraicMatrix> matrices, std::map<std::string, double> symbol_values );
+std::vector<AlgebraicMatrix>
+mult_matrix_product(std::vector<AlgebraicMatrix> matrices,
+                    std::map<std::string, double> symbol_values);
 
-#endif
+#endif  // SRC_LIB_LINEARALGEBRA_H_
