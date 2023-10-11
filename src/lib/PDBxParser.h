@@ -41,10 +41,10 @@ AtomSite
 filter(AtomSite atom_site, Selector include = {{}}, Selector exclude = {{}});
 
 std::vector<std::vector<std::string>>
-extract(AtomSite* atom_site, std::vector<std::string> cif_tags);
+extract(AtomSite atom_site, std::vector<std::string> cif_tags);
 
 void mark_selection(
-  AtomSite atom_site,
+  AtomSite* atom_site,
   std::vector<std::string> target_atom_ids = {},
   std::vector<std::string> selected_atom_ids = {});
 

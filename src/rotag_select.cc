@@ -188,9 +188,6 @@ int main(int argc, char *argv[]) {
 
     // std::vector<unsigned long int> target_atom_ids =
     //     selection_parser(target_cmd);
-
-    mark_selection(atom_site, std::vector<std::string>{"151"});
-    std::cout << atom_site["151"]["_atom_site.rotag_selection_state"] << std::endl;
   }
 
   return 0;
