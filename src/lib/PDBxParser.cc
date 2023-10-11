@@ -70,7 +70,7 @@ AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
 }
 
 std::vector<std::vector<std::string>>
-  extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {
+extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {
   std::vector<std::vector<std::string>> atoms_data = {};
   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
     std::string id = it->first;
