@@ -5,6 +5,7 @@
 %}
 
 %token NUM
+%token FLOAT
 %token STR
 
 %left ","
@@ -21,8 +22,7 @@ exp
 ;
 
 any_ope
-    : num_ope "," str_ope
-    | str_ope "," num_ope
+    : any_ope "," any_ope
     | num_ope
     | str_ope
 ;
