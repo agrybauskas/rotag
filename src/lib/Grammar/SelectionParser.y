@@ -1,5 +1,10 @@
 %{
 #include "SelectionLexer.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void yyerror(const char *msg);
 %}
 
 %token NUM
@@ -34,3 +39,4 @@ str_ope
 ;
 
 %%
+void yyerror(const char *msg) {}
