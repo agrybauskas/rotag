@@ -26,7 +26,13 @@ LIB_DIR=${SRC_DIR}/lib
 OBJ_DIR=${SRC_DIR}/lib
 LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc ${LIB_DIR}/Grammar/*.cc}
 BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
+PARSER=$(wildcard ${SRC_DIR}/Grammar/*.y)
+LEXER=$(wildcard ${SRC_DIR}/Grammar/*.l)
+PARSER_SRC=$(PARSER:%.y=%.cc)
+LEXER_SRC=$(LEXER:%.l=%.cc)
 HEADERS=${LIB_SRC:%.cc=%.h}
+PARSER_HEADERS=${PARSER_SRC:%.cc=%.h}
+LEXER_HEADERS=${LEXER_SRC:%.cc=%.h}
 CC_OBJS=${LIB_SRC:%.cc=%.o}
 CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
 CC_LIB=-lboost_filesystem
