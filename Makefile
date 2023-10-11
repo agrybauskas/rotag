@@ -162,3 +162,6 @@ cleanAll distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${CC_OBJS}
 	rm -f ${CC_BIN}
+	rm -f ${LIB_DIR}/Grammar/*.cc
+	rm -f ${LIB_DIR}/Grammar/*.h
+	rm -f ${LIB_DIR}/Grammar/*.o
