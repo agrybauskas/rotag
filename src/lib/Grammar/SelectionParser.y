@@ -4,7 +4,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <string>
+#include <vector>
+
+#include "../PDBxParser.h"
+
 void yyerror(const char *msg);
+
+std::vector<std::string>
+selection_parser(AtomSite atom_site, std::string cmd_line);
+
 %}
 
 %token NUM
@@ -20,6 +29,7 @@ void yyerror(const char *msg);
 /* %left ':' */
 
 %%
+
 exp
     : any_ope
 ;
@@ -39,4 +49,10 @@ str_ope
 ;
 
 %%
+
 void yyerror(const char *msg) {}
+
+std::vector<std::string>
+selection_parser(AtomSite atom_site, std::string cmd_line) {
+  return std::vector<std::string>{};
+}
