@@ -1,8 +1,8 @@
-#ifndef _VERSION_H_
-#define _VERSION_H_
+#ifndef SRC_LIB_VERSION_H_
+#define SRC_LIB_VERSION_H_
 
 #include <string>
 
 std::string version();
 
-#endif
+#endif  // SRC_LIB_VERSION_H_
