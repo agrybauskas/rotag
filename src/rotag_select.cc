@@ -12,7 +12,7 @@
 
 #include "lib/Combinatorics.h"
 #include "lib/ForceField/Parameters.h"
-// #include "lib/Grammar/SelectionParser.h"
+#include "lib/Grammar/SelectionParser.h"
 #include "lib/PDBxParser.h"
 #include "lib/Version.h"
 
@@ -187,8 +187,7 @@ int main(int argc, char *argv[]) {
       atom_site = mmcif_to_atom_site(argv[index]);
     }
 
-    // std::vector<unsigned long int> target_atom_ids =
-    //     selection_parser(target_cmd);
+    std::vector<std::string> target_atom_ids = selection_parser(target_cmd);
   }
 
   return 0;

@@ -1,5 +1,5 @@
 %{
-#include "SelectionParser.tab.h"
+#include "SelectionParser.h"
 %}
 %%
 [0-9]+ {return NUM;}

@@ -1,5 +1,5 @@
 %{
-#include "SelectionParser.h"
+#include "SelectionLexer.h"
 %}
 
 %token NUM
