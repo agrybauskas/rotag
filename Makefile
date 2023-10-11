@@ -34,13 +34,15 @@ HEADERS=${LIB_SRC:%.cc=%.h}
 PARSER_HEADERS=${PARSER_SRC:%.cc=%.h}
 LEXER_HEADERS=${LEXER_SRC:%.cc=%.h}
 CC_OBJS=${LIB_SRC:%.cc=%.o}
+PARSER_OBJS=$(PARSER:%.y=%.o)
+LEXER_OBJS=$(LEXER:%.l=%.o)
 CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
 CC_LIB=-lboost_filesystem
 C_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/getoptions
 C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o ${LIB_DIR}/Grammar/*.o
 TAGS=${SRC_DIR}/TAGS
 
-.PRECIOUS: ${CC_OBJS} ${PARSER_HEADERS} ${LEXER_HEADERS}
+.PRECIOUS: ${CC_OBJS} ${PARSER_SRC} ${LEXER_SRC} ${PARSER_HEADERS} ${LEXER_HEADERS}
 
 %.cc: %.l
 	flex --header-file=$(basename $@).h -o $@ $<
@@ -51,12 +53,12 @@ TAGS=${SRC_DIR}/TAGS
 %.o: %.cc %.h
 	g++ -c -Wall -std=c++11 -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
 
-${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
+${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS} ${LEXER_SRC} ${PARSER_SRC}
 	g++ -Wall -std=c++11 -g -o $@ $< ${CC_OBJS} ${C_OBJS} ${CC_LIB} ${C_LIBDIR}
 
 .PHONY: all
 
-all: build-externals ${LEXER_SRC} ${PARSER_SRC} | ${CC_BIN}
+all: build-externals ${CC_BIN}
 
 build-externals:
 	make -C src/externals/cexceptions
