@@ -5,8 +5,10 @@
 %}
 
 %token NUM
+%token STR
+
 %left ","
-/* %left '..' '=' */
+%left ".." "="
 /* %left 'around' 'rand' 'angles' */
 /* %right 'byres' 'expand' */
 /* %left '!' */
@@ -14,6 +16,23 @@
 /* %left ':' */
 
 %%
-line
+exp
+    : any_ope
+;
+
+any_ope
+    : num_ope "," str_ope
+    | str_ope "," num_ope
+    | num_ope
+    | str_ope
+;
+
+num_ope
     : NUM
+;
+
+str_ope
+    : STR
+;
+
 %%
