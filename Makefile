@@ -26,8 +26,8 @@ LIB_DIR=${SRC_DIR}/lib
 OBJ_DIR=${SRC_DIR}/lib
 LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc ${LIB_DIR}/Grammar/*.cc}
 BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
-PARSER=$(wildcard ${SRC_DIR}/Grammar/*.y)
-LEXER=$(wildcard ${SRC_DIR}/Grammar/*.l)
+PARSER=$(wildcard ${LIB_DIR}/Grammar/*.y)
+LEXER=$(wildcard ${LIB_DIR}/Grammar/*.l)
 PARSER_SRC=$(PARSER:%.y=%.cc)
 LEXER_SRC=$(LEXER:%.l=%.cc)
 HEADERS=${LIB_SRC:%.cc=%.h}
@@ -40,7 +40,13 @@ C_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/geto
 C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o
 TAGS=${SRC_DIR}/TAGS
 
-.PRECIOUS: ${CC_OBJS}
+.PRECIOUS: ${CC_OBJS} ${PARSER_HEADERS} ${LEXER_HEADERS}
+
+%.cc: %.l
+	flex --header-file=$(basename $@).h -o $@ $<
+
+%.cc: %.y
+	bison --defines=$(basename $@).h -o $@ $<
 
 %.o: %.cc %.h
 	g++ -c -Wall -std=c++11 -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
@@ -50,7 +56,7 @@ ${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
 
 .PHONY: all
 
-all: build-externals | ${CC_BIN}
+all: build-externals ${LEXER_SRC} ${PARSER_SRC} | ${CC_BIN}
 
 build-externals:
 	make -C src/externals/cexceptions

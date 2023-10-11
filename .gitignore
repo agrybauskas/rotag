@@ -8,8 +8,9 @@
 /src/lib/ForceField/*.o
 
 # /src/lib/Grammar/
-/src/lib/Grammar/*.tab.c
-/src/lib/Grammar/*.tab.h
+/src/lib/Grammar/*.cc
+/src/lib/Grammar/*.h
+/src/lib/Grammar/*.o
 
 # /lib/Grammar/
 /lib/Grammar/*.pm
