@@ -26,7 +26,7 @@ AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
       for (int i = 0; i < cif_value_length_lookup_table["_atom_site.id"]; i++) {
         std::string id = value_scalar(datablock_cifvalue(
           datablock, cif_tag_index_lookup_table["_atom_site.id"], i));
-        if(cif_tag_index_lookup_table[cif_tag] > 0) {
+        if (cif_tag_index_lookup_table[cif_tag] > 0) {
           atom_site[id][cif_tag] = value_scalar(datablock_cifvalue(
             datablock, cif_tag_index_lookup_table[cif_tag], i));
         }
@@ -48,12 +48,12 @@ AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
     bool keep_atom = true;
     for (const std::string &cif_tag : ATOM_SITE_TAGS) {
       std::string value = atom_site[id][cif_tag];
-      if (! include[cif_tag].empty() && ! include[cif_tag][value]) {
+      if (!include[cif_tag].empty() && !include[cif_tag][value]) {
         keep_atom = false;
         break;
       }
 
-      if (! exclude[cif_tag].empty() && exclude[cif_tag][value]) {
+      if (!exclude[cif_tag].empty() && exclude[cif_tag][value]) {
         keep_atom = false;
         break;
       }
@@ -84,7 +84,7 @@ extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {
 }
 
 void mark_selection(
-  AtomSite atom_site,
+  AtomSite* atom_site,
   std::vector<std::string> target_atom_ids,
   std::vector<std::string> selected_atom_ids) {
   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
