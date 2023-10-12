@@ -2,7 +2,7 @@
 #include "SelectionParser.h"
 %}
 
-%option noyywrap
+%option noyywrap yylineno
 
 %%
 

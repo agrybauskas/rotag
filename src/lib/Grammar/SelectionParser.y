@@ -1,9 +1,11 @@
-%code requires{
+%{
 #include "SelectionLexer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+%}
 
+%code requires{
 #include <string>
 #include <vector>
 
@@ -18,7 +20,7 @@ selection_parser(AtomSite atom_site, std::string cmd_line);
 %token STR
 
 %left ","
-%left ".." "="
+/* %left ".." "=" */
 /* %left 'around' 'rand' 'angles' */
 /* %right 'byres' 'expand' */
 /* %left '!' */
