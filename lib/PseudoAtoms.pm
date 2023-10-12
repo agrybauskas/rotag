@@ -1118,6 +1118,10 @@ sub assign_hetatoms_to_residues
         }
 
         delete $atom_site->{$hetatom_id};
+
+        # If hetatoms have no explicit connection, then they are connected to
+        # N, O and S atoms in the residue.
+        next if %{ $struct_conn };
     }
 
     return;
