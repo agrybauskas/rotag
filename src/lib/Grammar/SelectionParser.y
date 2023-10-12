@@ -1,4 +1,4 @@
-%{
+%code requires{
 #include "SelectionLexer.h"
 
 #include <stdio.h>
@@ -9,12 +9,9 @@
 
 #include "../PDBxParser.h"
 
-void yyerror(const char *msg);
-
 std::vector<std::string>
 selection_parser(AtomSite atom_site, std::string cmd_line);
-
-%}
+}
 
 %token NUM
 %token FLOAT
@@ -49,8 +46,6 @@ str_ope
 ;
 
 %%
-
-void yyerror(const char *msg) {}
 
 std::vector<std::string>
 selection_parser(AtomSite atom_site, std::string cmd_line) {
