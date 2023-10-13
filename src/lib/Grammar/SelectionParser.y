@@ -1,3 +1,5 @@
+%require "3.2"
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +12,7 @@
 #include "../PDBxParser.h"
 
 void yyerror(const char* message);
+virtual int yyFlexLexer::yylex();
 %}
 
 %token NUM FLOAT STR
@@ -45,3 +48,7 @@ str_ope
 %%
 
 void yyerror(const char* message) {}
+
+virtual int yyFlexLexer::yylex() {
+  return 1;
+}
