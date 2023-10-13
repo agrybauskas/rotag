@@ -26,29 +26,29 @@ LIB_DIR=${SRC_DIR}/lib
 OBJ_DIR=${SRC_DIR}/lib
 LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc ${LIB_DIR}/Grammar/*.cc}
 BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
-# PARSER=$(wildcard ${LIB_DIR}/Grammar/*.y)
-# LEXER=$(wildcard ${LIB_DIR}/Grammar/*.l)
-# PARSER_SRC=$(PARSER:%.y=%.cc)
-# LEXER_SRC=$(LEXER:%.l=%.cc)
+PARSER=$(wildcard ${LIB_DIR}/Grammar/*.y)
+LEXER=$(wildcard ${LIB_DIR}/Grammar/*.l)
+PARSER_SRC=$(PARSER:%.y=%.cc)
+LEXER_SRC=$(LEXER:%.l=%.cc)
 HEADERS=${LIB_SRC:%.cc=%.h}
-# PARSER_HEADERS=${PARSER_SRC:%.cc=%.h}
-# LEXER_HEADERS=${LEXER_SRC:%.cc=%.h}
+PARSER_HEADERS=${PARSER_SRC:%.cc=%.h}
+LEXER_HEADERS=${LEXER_SRC:%.cc=%.h}
 CC_OBJS=${LIB_SRC:%.cc=%.o}
 PARSER_OBJS=$(PARSER:%.y=%.o)
 LEXER_OBJS=$(LEXER:%.l=%.o)
 CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
 CC_LIB=-lboost_filesystem
 C_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/getoptions
-C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o # ${LIB_DIR}/Grammar/*.o
+C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o ${LIB_DIR}/Grammar/*.o
 TAGS=${SRC_DIR}/TAGS
 
 .PRECIOUS: ${CC_OBJS} ${PARSER_SRC} ${LEXER_SRC} ${PARSER_HEADERS} ${LEXER_HEADERS}
 
-# %.cc: %.l
-# 	flex --c++ --header-file=$(basename $@).h -o $@ $<
+%.cc: %.l
+	flex++ --header-file=$(basename $@).h -o $@ $<
 
-# %.cc: %.y
-# 	bison --language=c++ --defines=$(basename $@).h -o $@ $<
+%.cc: %.y
+	bison --language=c++ --defines=$(basename $@).h -o $@ $<
 
 %.o: %.cc %.h
 	g++ -c -Wall -std=c++11 -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
@@ -164,6 +164,6 @@ cleanAll cleanall distclean: clean
 	rm -f ${GRAMMAR_MODULES}
 	rm -f ${CC_OBJS}
 	rm -f ${CC_BIN}
-	# rm -f ${LIB_DIR}/Grammar/*.cc
-	# rm -f ${LIB_DIR}/Grammar/*.h
-	# rm -f ${LIB_DIR}/Grammar/*.o
+	rm -f ${LIB_DIR}/Grammar/*.cc
+	rm -f ${LIB_DIR}/Grammar/*.h
+	rm -f ${LIB_DIR}/Grammar/*.o

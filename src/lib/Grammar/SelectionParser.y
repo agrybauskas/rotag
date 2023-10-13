@@ -1,3 +1,5 @@
+%require "3.2"
+
 %{
 #include "SelectionLexer.h"
 
