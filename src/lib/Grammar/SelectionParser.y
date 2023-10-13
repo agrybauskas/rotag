@@ -1,25 +1,17 @@
-%require "3.2"
-
 %{
 #include "SelectionLexer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-%}
-
-%code requires{
 #include <string>
 #include <vector>
 
 #include "../PDBxParser.h"
 
-std::vector<std::string>
-selection_parser(AtomSite atom_site, std::string cmd_line);
-}
+void yyerror(const char* message);
+%}
 
-%token NUM
-%token FLOAT
-%token STR
+%token NUM FLOAT STR
 
 %left ","
 /* %left ".." "=" */
@@ -51,7 +43,4 @@ str_ope
 
 %%
 
-std::vector<std::string>
-selection_parser(AtomSite atom_site, std::string cmd_line) {
-  return std::vector<std::string>{};
-}
+void yyerror(const char* message) {}

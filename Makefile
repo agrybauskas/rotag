@@ -45,7 +45,7 @@ TAGS=${SRC_DIR}/TAGS
 .PRECIOUS: ${CC_OBJS} ${PARSER_SRC} ${LEXER_SRC} ${PARSER_HEADERS} ${LEXER_HEADERS}
 
 %.cc: %.l
-	flex++ --header-file=$(basename $@).h -o $@ $<
+	flex --c++ --header-file=$(basename $@).h -o $@ $<
 
 %.cc: %.y
 	bison --language=c++ --defines=$(basename $@).h -o $@ $<
