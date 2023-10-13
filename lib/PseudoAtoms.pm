@@ -1056,10 +1056,12 @@ sub assign_hetatoms_to_residues
 
     my $interaction_distance =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
-    my $interaction_atom_site = %{ $struct_conn } ?
+    my $interaction_atom_site =
+        %{ $struct_conn } ?
+        {} :
         filter_new( $atom_site,
                     { 'include' =>
-                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } ) : {};
+                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
 
     # Uses '_struct_conn' category to determine connections.
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
