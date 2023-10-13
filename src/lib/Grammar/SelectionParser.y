@@ -48,7 +48,3 @@ str_ope
 %%
 
 void yyerror(const char* message) {}
-
-virtual int yyFlexLexer::yylex() {
-  return 1;
-}
