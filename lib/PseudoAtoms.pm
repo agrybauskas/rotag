@@ -32,6 +32,7 @@ use BondParameters qw( collect_bond_lengths
                        bendable_angles
                        rotatable_bonds
                        stretchable_bonds );
+use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( connect_atoms
                      connect_atoms_explicitly
@@ -46,8 +47,8 @@ use ForceField::NonBonded qw( general
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product );
-use Measure qw( rmsd_sidechains );
-use BondProperties qw( hybridization );
+use Measure qw( around_distance
+                rmsd_sidechains );
 use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry
@@ -1053,6 +1054,13 @@ sub assign_hetatoms_to_residues
         filter_new( $atom_site,
                     { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
 
+    my $interaction_distance =
+        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
+    my $interaction_atom_site = %{ $struct_conn } ?
+        filter_new( $atom_site,
+                    { 'include' =>
+                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } ) : {};
+
     # Uses '_struct_conn' category to determine connections.
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     for my $hetatom_id ( keys %{ $hetatom_site } ) {
@@ -1122,6 +1130,15 @@ sub assign_hetatoms_to_residues
         # If hetatoms have no explicit connection, then they are connected to
         # N, O and S atoms in the residue.
         next if %{ $struct_conn };
+
+        my $around_site =
+            around_distance( $parameters,
+                             { $hetatom_id => $hetatom_site->{$hetatom_id},
+                               %{ $interaction_atom_site } },
+                             { 'id' => [ $hetatom_id ] },
+                             $interaction_distance );
+
+        next if ! %{ $around_site };
     }
 
     return;
