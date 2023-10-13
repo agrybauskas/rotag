@@ -1,10 +1,11 @@
 %{
-#include "SelectionLexer.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <string>
 #include <vector>
+
+#include "SelectionLexer.h"
 
 #include "../PDBxParser.h"
 
