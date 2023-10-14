@@ -1141,6 +1141,40 @@ sub assign_hetatoms_to_residues
                              $interaction_distance );
 
         next if ! %{ $around_site };
+
+        # HACK: duplicated code. Needs to be moved to separate function.
+        my %visited_residues_by_hetatom = ();
+        for my $around_atom_id ( keys %{ $around_site } ) {
+                my $around_unique_residue_key = unique_residue_key(
+                    $around_site->{$around_atom_id}
+                );
+
+                next if defined $visited_residues_by_hetatom{$around_unique_residue_key} &&
+                    $visited_residues_by_hetatom{$around_unique_residue_key} == $hetatom_id;
+                $visited_residues_by_hetatom{$around_unique_residue_key} = $hetatom_id;
+
+                # Heteroatom inherits residue information from the atom that is
+                # connected to.
+                my $current_hetatom = clone $atom_site->{$hetatom_id};
+                foreach( 'label_seq_id', 'label_asym_id', 'label_alt_id',
+                         'pdbx_PDB_model_num' ) {
+                    $current_hetatom->{$_} = $atom_site->{$around_atom_id}{$_};
+                }
+                $current_hetatom->{'id'} = $last_atom_id;
+                $current_hetatom->{'origin_atom_id'} = $hetatom_id;
+                # HACK: Carefully analyse when assigning heteroatom-heteroatom
+                # connections.
+                if( defined $current_hetatom->{'hybridization'} ) {
+                    $current_hetatom->{'hybridization'} = '.';
+                }
+                # $atom_site->{$last_atom_id} = $current_hetatom;
+
+                # connect_atoms_explicitly( $atom_site,
+                #                           [ $last_atom_id ],
+                #                           [ $around_atom_id ] );
+
+                # $last_atom_id++;
+        }
     }
 
     return;
