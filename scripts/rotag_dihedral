@@ -29,7 +29,8 @@ use PDBxParser qw( filter
                    to_csv
                    to_pdbx
                    unique_residue_key );
-use PseudoAtoms qw( assign_hetatoms_to_residues );
+use PseudoAtoms qw( assign_hetatoms_no_struct_conn
+                    assign_hetatoms_with_struct_conn );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -151,9 +152,12 @@ for my $pdbx_file ( @ARGV ) {
         hybridization( $parameters, $dihedral_site );
 
         if( $calc_hetatoms ) {
-            assign_hetatoms_to_residues( $parameters,
-                                         $dihedral_site,
-                                         { 'struct_conn' => $struct_conn } );
+            assign_hetatoms_with_struct_conn( $parameters,
+                                              $dihedral_site,
+                                              $struct_conn );
+            assign_hetatoms_no_struct_conn( $parameters, $dihedral_site )
+                if ! defined $struct_conn || ! %{ $struct_conn };
+
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.
             for my $atom_id ( keys %{ $dihedral_site } ) {

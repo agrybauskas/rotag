@@ -5,7 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 BEGIN {
-our @EXPORT_OK = qw( assign_hetatoms_to_residues
+our @EXPORT_OK = qw( assign_hetatoms_with_struct_conn
+                     assign_hetatoms_no_struct_conn
                      calc_favourable_angle
                      calc_favourable_angles
                      calc_full_atom_energy
@@ -1033,37 +1034,28 @@ sub replace_with_rotamer
 }
 
 #
-# Assigns heteroatoms to specific residues -- either creating the new one or
-# assigning to the existing one. Duplicated heteroatoms are to be expected.
+# Assigns heteroatoms to specific residues according to "_struct_conn" -- either
+# creating the new one or assigning to the existing one. Duplicated heteroatoms
+# are to be expected.
 # Input:
 #     $parameters - general parameters (see Parameters.pm);
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $options->{'struct_conn'} - reads 'struc_conn' and assings connections
-#     appropriately.
+#     $struct_conn - reads 'struc_conn' and assings connections appropriately.
 # Output:
-#     atom site with assigned heteroatoms if applicable.
+#     atom site with assigned heteroatoms.
 #
 
-sub assign_hetatoms_to_residues
+sub assign_hetatoms_with_struct_conn
 {
-    my ( $parameters, $atom_site, $options ) = @_;
-    my ( $struct_conn ) = ( $options->{'struct_conn'} );
+    my ( $parameters, $atom_site, $struct_conn ) = @_;
     $struct_conn //= {};
+
+    return if ! %{ $struct_conn };
 
     my $hetatom_site =
         filter_new( $atom_site,
                     { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
 
-    my $interaction_distance =
-        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
-    my $interaction_atom_site =
-        %{ $struct_conn } ?
-        {} :
-        filter_new( $atom_site,
-                    { 'include' =>
-                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
-
-    # Uses '_struct_conn' category to determine connections.
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     for my $hetatom_id ( keys %{ $hetatom_site } ) {
         my ( $hetatom_label_seq_id, $hetatom_label_asym_id ) =
@@ -1128,11 +1120,39 @@ sub assign_hetatoms_to_residues
         }
 
         delete $atom_site->{$hetatom_id};
+    }
 
-        # If hetatoms have no explicit connection, then they are connected to
-        # N, O and S atoms in the residue.
-        next if %{ $struct_conn };
+    return;
+}
 
+#
+# Assigns heteroatoms to specific residues connecting them to N, O, P, S
+# atoms -- either creating the new one or assigning to the existing one.
+# Duplicated heteroatoms are to be expected.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+# Output:
+#     atom site with assigned heteroatoms.
+#
+
+sub assign_hetatoms_no_struct_conn
+{
+    my ( $parameters, $atom_site ) = @_;
+
+    my $hetatom_site =
+        filter_new( $atom_site,
+                    { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
+
+    my $interaction_distance =
+        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
+    my $interaction_atom_site =
+        filter_new( $atom_site,
+                    { 'include' =>
+                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
+
+    my $last_atom_id = max( keys %{ $atom_site } ) + 1;
+    for my $hetatom_id ( keys %{ $hetatom_site } ) {
         my $around_site =
             around_distance( $parameters,
                              { $hetatom_id => $hetatom_site->{$hetatom_id},
@@ -1142,7 +1162,6 @@ sub assign_hetatoms_to_residues
 
         next if ! %{ $around_site };
 
-        # HACK: duplicated code. Needs to be moved to separate function.
         my %visited_residues_by_hetatom = ();
         for my $around_atom_id ( keys %{ $around_site } ) {
             my $around_unique_residue_key = unique_residue_key(
