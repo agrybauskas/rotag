@@ -6,6 +6,7 @@ pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/glutamic-acid-rotation-only
 residue_unique_key="14,A,1,."
 angle_values="chi1 0 & chi2 0.5*pi & chi3 pi"
 
-$(dirname "$0")/../scripts/replace_with_rotamer "${residue_unique_key}" \
-	                                        "${angle_values}" \
-					        ${pdbx_dump_file}
+$(dirname "$0")/../scripts/replace_with_rotamer \
+               "${residue_unique_key}" \
+	           "${angle_values}" \
+			   ${pdbx_dump_file}

@@ -6,6 +6,7 @@ pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-rotation-only-001.du
 residue_unique_key="18,A,1,."
 angle_values="chi1 0.5*pi"
 
-$(dirname "$0")/../scripts/replace_with_rotamer "${residue_unique_key}" \
-     	                                        "${angle_values}" \
-		                     			        ${pdbx_dump_file}
+$(dirname "$0")/../scripts/replace_with_rotamer \
+               "${residue_unique_key}" \
+     	       "${angle_values}" \
+		       ${pdbx_dump_file}
