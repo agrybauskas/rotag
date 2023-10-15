@@ -1143,9 +1143,6 @@ sub assign_hetatoms_no_struct_conn
     my $hetatom_site =
         filter_new( $atom_site,
                     { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
-
-    my $interaction_distance =
-        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
     my $interaction_atom_site =
         filter_new( $atom_site,
                     { 'include' =>
@@ -1153,6 +1150,14 @@ sub assign_hetatoms_no_struct_conn
 
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     for my $hetatom_id ( keys %{ $hetatom_site } ) {
+        # NOTE: phosphorus is chosen as max interaction distance as it has the
+        # largest vdW radius.
+        my $interaction_distance =
+            $parameters->{'_[local]_force_field'}{'cutoff_end'} *
+            ( $parameters->{'_[local]_atom_properties'}
+                           {$hetatom_site->{$hetatom_id}{'type_symbol'}}
+                           {'vdw_radius'} +
+              $parameters->{'_[local]_atom_properties'}{'P'}{'vdw_radius'} );
         my $around_site =
             around_distance( $parameters,
                              { $hetatom_id => $hetatom_site->{$hetatom_id},
