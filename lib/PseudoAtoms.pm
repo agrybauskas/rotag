@@ -1067,7 +1067,8 @@ sub assign_hetatoms_with_struct_conn
                         { 'include' =>
                           { 'ptnr2_label_seq_id' => [ $hetatom_label_seq_id ],
                             'ptnr2_label_asym_id' => [ $hetatom_label_asym_id ] } } );
-        for my $hetatom_struct_conn_id ( keys %{ $hetatom_struct_conn } ) {
+        for my $hetatom_struct_conn_id ( sort { $a <=> $b }
+                                         keys %{ $hetatom_struct_conn } ) {
             my $connected_atom_site =
                 filter_new( $atom_site,
                             { 'include' =>
@@ -1149,15 +1150,16 @@ sub assign_hetatoms_no_struct_conn
                       { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
 
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
-    for my $hetatom_id ( keys %{ $hetatom_site } ) {
+    for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
         # NOTE: phosphorus is chosen as max interaction distance as it has the
         # largest vdW radius.
         my $interaction_distance =
-            $parameters->{'_[local]_force_field'}{'cutoff_end'} *
-            ( $parameters->{'_[local]_atom_properties'}
-                           {$hetatom_site->{$hetatom_id}{'type_symbol'}}
-                           {'vdw_radius'} +
-              $parameters->{'_[local]_atom_properties'}{'P'}{'vdw_radius'} );
+            $parameters->{'_[local]_force_field'}{'cutoff_start'} *
+            ( ( $parameters->{'_[local]_atom_properties'}
+                             {$hetatom_site->{$hetatom_id}{'type_symbol'}}
+                             {'vdw_radius'} / 2 ) +
+              ( $parameters->{'_[local]_atom_properties'}
+                             {'P'}{'vdw_radius'} / 2 ) );
         my $around_site =
             around_distance( $parameters,
                              { $hetatom_id => $hetatom_site->{$hetatom_id},
@@ -1168,7 +1170,7 @@ sub assign_hetatoms_no_struct_conn
         next if ! %{ $around_site };
 
         my %visited_residues_by_hetatom = ();
-        for my $around_atom_id ( keys %{ $around_site } ) {
+        for my $around_atom_id ( sort { $a <=> $b } keys %{ $around_site } ) {
             my $around_unique_residue_key = unique_residue_key(
                 $around_site->{$around_atom_id}
             );
