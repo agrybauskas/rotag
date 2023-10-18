@@ -1067,8 +1067,7 @@ sub assign_hetatoms_with_struct_conn
                         { 'include' =>
                           { 'ptnr2_label_seq_id' => [ $hetatom_label_seq_id ],
                             'ptnr2_label_asym_id' => [ $hetatom_label_asym_id ] } } );
-        for my $hetatom_struct_conn_id ( sort { $a <=> $b }
-                                         keys %{ $hetatom_struct_conn } ) {
+        for my $hetatom_struct_conn_id ( sort keys %{ $hetatom_struct_conn } ) {
             my $connected_atom_site =
                 filter_new( $atom_site,
                             { 'include' =>

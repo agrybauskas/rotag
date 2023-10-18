@@ -24,7 +24,8 @@ use PDBxParser qw( filter
                    split_by
                    to_csv
                    to_pdbx );
-use PseudoAtoms qw( assign_hetatoms_to_residues );
+use PseudoAtoms qw( assign_hetatoms_no_struct_conn
+                    assign_hetatoms_with_struct_conn );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -311,9 +312,12 @@ for my $pdbx_file ( @ARGV ) {
 
         # Heteroatom assignment increases the atom number in the atom site.
         if( $calc_hetatoms ) {
-            assign_hetatoms_to_residues( $parameters,
-                                         $bond_length_site,
-                                         { 'struct_conn' => $struct_conn } );
+            assign_hetatoms_with_struct_conn( $parameters,
+                                              $bond_length_site,
+                                              $struct_conn );
+            assign_hetatoms_no_struct_conn( $parameters, $bond_length_site )
+                if ! defined $struct_conn || ! %{ $struct_conn };
+
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.
             for my $atom_id ( keys %{ $bond_length_site } ) {
