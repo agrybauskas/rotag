@@ -1,1 +1,25 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_[local]_dihedral_angle.id
+_[local]_dihedral_angle.label_comp_id
+_[local]_dihedral_angle.label_seq_id
+_[local]_dihedral_angle.label_asym_id
+_[local]_dihedral_angle.pdbx_PDB_model_num
+_[local]_dihedral_angle.label_alt_id
+_[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.label_atom_1_id
+_[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.label_atom_2_id
+_[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.label_atom_3_id
+_[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.label_atom_4_id
+_[local]_dihedral_angle.type
+_[local]_dihedral_angle.value
+_[local]_dihedral_angle.units
+1 GLU 192 A 1 . 1420 CG 1421 CD 1422 OE1 2545 ZN CG-CD-OE1-ZN -48.569 degrees
+2 HIS 194 A 1 . 1433 CB 1434 CG 1435 ND1 2546 ZN CB-CG-ND1-ZN -2.910 degrees
+3 GLU 197 A 1 . 1459 CG 1460 CD 1462 OE2 2547 ZN CG-CD-OE2-ZN 171.680 degrees
+4 HIS 199 A 1 . 1474 CB 1475 CG 1476 ND1 2548 ZN CB-CG-ND1-ZN -0.901 degrees
+#

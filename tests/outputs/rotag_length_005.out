@@ -1,1 +1,20 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_[local]_bond_length.id
+_[local]_bond_length.label_comp_id
+_[local]_bond_length.label_seq_id
+_[local]_bond_length.label_asym_id
+_[local]_bond_length.pdbx_PDB_model_num
+_[local]_bond_length.label_alt_id
+_[local]_bond_length.atom_1_id
+_[local]_bond_length.label_atom_1_id
+_[local]_bond_length.atom_2_id
+_[local]_bond_length.label_atom_2_id
+_[local]_bond_length.type
+_[local]_bond_length.value
+1 GLU 192 A 1 . 1422 OE1 2544 ZN OE1-ZN 2.215785
+2 HIS 194 A 1 . 1435 ND1 2544 ZN ND1-ZN 2.232855
+3 GLU 197 A 1 . 1461 OE1 2544 ZN OE1-ZN 2.729824
+4 HIS 199 A 1 . 1476 ND1 2544 ZN ND1-ZN 2.065553
+#

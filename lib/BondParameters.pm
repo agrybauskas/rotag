@@ -54,10 +54,7 @@ sub rotatable_bonds
     my $explicit_dihedral_names = $parameters->{'_[local]_dihedral_angle_name'};
     my $ignore_connections = {
         'label_atom_id' => {
-            'N' => { 'CD' => 1, # For PRO.
-                     'C' => 1 },
-            'C' => { 'O' => 1,
-                     ( $include_hetatoms ? ( 'CA' => 1 ) : () ) },
+            'N' => { 'CD' => 1 },
         },
     };
 
@@ -89,16 +86,6 @@ sub rotatable_bonds
                               'return_data' => 'id' } );
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
-
-        # # HACK: it should be investigated more thoroughly, because start atom
-        # # ids are being changed in three different parts.
-        # if( $include_hetatoms ) {
-        #     $start_atom_ids //= filter_new(
-        #         $residue_site,
-        #         { 'include' => { 'label_atom_id' => [ 'C' ] },
-        #           'return_data' => 'id' }
-        #     );
-        # }
 
         my $bond_paths = BondPath->new( {
             'atom_site' => $residue_site,

@@ -1,1 +1,23 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_[local]_bond_angle.id
+_[local]_bond_angle.label_comp_id
+_[local]_bond_angle.label_seq_id
+_[local]_bond_angle.label_asym_id
+_[local]_bond_angle.pdbx_PDB_model_num
+_[local]_bond_angle.label_alt_id
+_[local]_bond_angle.atom_1_id
+_[local]_bond_angle.label_atom_1_id
+_[local]_bond_angle.atom_2_id
+_[local]_bond_angle.label_atom_2_id
+_[local]_bond_angle.atom_3_id
+_[local]_bond_angle.label_atom_3_id
+_[local]_bond_angle.type
+_[local]_bond_angle.value
+_[local]_bond_angle.units
+1 GLU 192 A 1 . 1421 CD 1422 OE1 2544 ZN CD-OE1-ZN 123.610 degrees
+2 HIS 194 A 1 . 1434 CG 1435 ND1 2544 ZN CG-ND1-ZN 134.459 degrees
+3 GLU 197 A 1 . 1460 CD 1461 OE1 2544 ZN CD-OE1-ZN 80.222 degrees
+4 HIS 199 A 1 . 1475 CG 1476 ND1 2544 ZN CG-ND1-ZN 134.194 degrees
+#

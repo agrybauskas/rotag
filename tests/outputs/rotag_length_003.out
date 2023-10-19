@@ -13,6 +13,6 @@ _[local]_bond_length.atom_2_id
 _[local]_bond_length.label_atom_2_id
 _[local]_bond_length.type
 _[local]_bond_length.value
-1 ASP 27 A 1 . 149 CA 1925 MG CA-MG 3.853866
-# Here should be another bond length.
+1 ASP 27 A 1 . 148 N 1925 MG N-MG 1.915961
+2 LYS 72 A 1 . 886 O 1925 MG O-MG 3.541470
 #
