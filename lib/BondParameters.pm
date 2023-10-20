@@ -478,7 +478,12 @@ sub bendable_angles
 
 sub collect_dihedral_angles
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $options ) = @_;
+    my ( $ignore_dihedral_angles ) = ( $options->{'ignore_dihedral_angles'} );
+
+    $ignore_dihedral_angles //= {
+        'N-CA-C-O' => 1,
+    };
 
     my $residue_groups =
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
@@ -490,7 +495,12 @@ sub collect_dihedral_angles
               grep { defined $atom_site->{$_}{'rotatable_bonds'} }
                   @{ $residue_groups->{$residue_unique_key} } }
         );
-        $dihedral_angles{$residue_unique_key} = $unique_rotatable_bonds;
+        $dihedral_angles{$residue_unique_key} = {
+            map { ( $_ => $unique_rotatable_bonds->{$_} ) }
+            grep { ! ( defined $ignore_dihedral_angles->{$_} &&
+                       $ignore_dihedral_angles->{$_} ) }
+            keys %{ $unique_rotatable_bonds }
+        };
     }
 
     return \%dihedral_angles;
