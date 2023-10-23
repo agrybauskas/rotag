@@ -7,7 +7,6 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( predict_sidechains );
 
 use Clone qw( clone );
-use Graph::Undirected;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
@@ -121,40 +120,6 @@ sub predict_sidechains
             $residue_to_grid{$atom_id} = $grid_id;
         }
     }
-
-    # Generates graph for protein.
-    # TODO: make sure that interactions are in both ways.
-    my $interaction_graph = new Graph::Undirected;
-    for my $ca_atom_id ( keys %residue_pairs ) {
-        if( ! $interaction_graph->has_vertex( $ca_atom_id ) ) {
-            $interaction_graph->add_vertex( $ca_atom_id );
-            $interaction_graph->set_vertex_attribute( $ca_atom_id, 'visited', 0);
-        }
-
-        for my $neighbour_ca_atom_id (
-            keys %{ $residue_pairs{$ca_atom_id} } ) {
-            if( ! $interaction_graph->has_vertex( $neighbour_ca_atom_id ) ) {
-                $interaction_graph->add_vertex( $neighbour_ca_atom_id );
-                $interaction_graph->set_vertex_attribute( $neighbour_ca_atom_id,
-                                                          'visited', 0);
-            }
-
-            if( ! $interaction_graph->has_edge( $ca_atom_id,
-                                                $neighbour_ca_atom_id ) ) {
-                $interaction_graph->add_edge( $ca_atom_id,
-                                              $neighbour_ca_atom_id );
-                $interaction_graph->set_edge_attribute( $ca_atom_id,
-                                                        $neighbour_ca_atom_id,
-                                                        'interaction_num', 0);
-            }
-        }
-    }
-
-    # Starts at random vertex and travels bread-first.
-    # TODO: there will definately be problems with unconnected graphs. Have to
-    # enter the second graph and etc.
-    my $start_node = $interaction_graph->random_vertex;
-    my @next_nodes = $interaction_graph->neighbours( $start_node );
 
     # Keeps structure data if it was already calculated.
     my %rotamer_to_atom_site = ();
@@ -284,7 +249,7 @@ sub predict_sidechains
     #     @next_nodes = (); # Temporare reset.
     # }
 
-    return \%predicted_rotamer_pairs, $interaction_graph;
+    return \%predicted_rotamer_pairs;
 }
 
 1;
