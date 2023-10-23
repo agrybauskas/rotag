@@ -93,6 +93,7 @@ sub rotatable_bonds
         my $bond_paths = BondPath->new( {
             'atom_site' => $residue_site,
             'start_atom_ids' => $start_atom_ids,
+            'start_atom_names' => $start_atom_names,
             'include_hetatoms' => $include_hetatoms,
             'ignore_connections' => $ignore_connections,
         } );
