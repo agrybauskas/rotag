@@ -126,42 +126,39 @@ sub predict_sidechains
     my %rotamer_interaction_counter = (); # Will be used to remove rotamers with
                                           # no interacting candidates.
     my %predicted_rotamer_pairs = ();
+    for my $ca_atom_id ( sort keys %residue_pairs ) {
+        my $unique_residue_key =
+            unique_residue_key( $atom_site->{$ca_atom_id} );
+        my @rotamer_ids = keys %{ $residue_to_rotamer{$unique_residue_key} };
+        my $rotamer_site =
+            filter_by_unique_residue_key( $atom_site,
+                                          $unique_residue_key,
+                                          1 );
 
-    # while( @next_nodes ) {
-    #     for my $node ( @next_nodes ) {
-    #         $interaction_graph->set_vertex_attribute( $node, 'visited', 1 );
-    #         my $unique_residue_key = unique_residue_key($atom_site_cas->{$node});
-    #         my @rotamer_ids =
-    #             keys %{ $residue_to_rotamer{$unique_residue_key} };
-    #         my $rotamer_site =
-    #             filter_by_unique_residue_key( $atom_site,
-    #                                           $unique_residue_key,
-    #                                           1 );
+        connect_atoms( $parameters, $rotamer_site );
+        hybridization( $parameters, $rotamer_site );
+        rotation_only( $parameters, $rotamer_site );
 
-    #         connect_atoms( $parameters, $rotamer_site );
-    #         hybridization( $parameters, $rotamer_site );
-    #         rotation_only( $parameters, $rotamer_site );
+        for my $rotamer_id ( @rotamer_ids ) {
+            my @angle_ids = keys %{ $rotamer_to_angles{$rotamer_id} };
+            my %angles =
+                map { $rotamer_angles->{$_}{'type'} =>
+                      $rotamer_angles->{$_}{'value'} }
+                    @angle_ids;
 
-    #         for my $rotamer_id ( @rotamer_ids ) {
-    #             my @angle_ids = keys %{ $rotamer_to_angles{$rotamer_id} };
-    #             my %angles =
-    #                 map { $rotamer_angles->{$_}{'type'} =>
-    #                       $rotamer_angles->{$_}{'value'} }
-    #                     @angle_ids;
+            if( ! defined $rotamer_interaction_counter{$rotamer_id} ) {
+                $rotamer_interaction_counter{$rotamer_id} = 0;
+            }
 
-    #             if( ! defined $rotamer_interaction_counter{$rotamer_id} ) {
-    #                 $rotamer_interaction_counter{$rotamer_id} = 0;
-    #             }
-
-    #             my %rotamer_site;
-    #             if( ! defined $rotamer_to_atom_site{$rotamer_id} ) {
-    #                 %rotamer_site = %{ clone( $rotamer_site ) };
-    #                 replace_with_rotamer( $parameters, \%rotamer_site,
-    #                                       $unique_residue_key, \%angles );
-    #                 $rotamer_to_atom_site{$rotamer_id} = { %rotamer_site };
-    #             } else {
-    #                 %rotamer_site = %{ $rotamer_to_atom_site{$rotamer_id} };
-    #             }
+            my %rotamer_site;
+            if( ! defined $rotamer_to_atom_site{$rotamer_id} ) {
+                %rotamer_site = %{ clone( $rotamer_site ) };
+                replace_with_rotamer( $parameters, \%rotamer_site,
+                                      $unique_residue_key, \%angles );
+                $rotamer_to_atom_site{$rotamer_id} = { %rotamer_site };
+            } else {
+                %rotamer_site = %{ $rotamer_to_atom_site{$rotamer_id} };
+            }
 
     #             for my $neighbour_node ( keys %{ $residue_pairs{$node} } ) {
     #                 my $neighbour_unique_residue_key =
@@ -242,12 +239,8 @@ sub predict_sidechains
     #                         );
     #                     }
     #                 }
-    #             }
-    #         }
-    #     }
-
-    #     @next_nodes = (); # Temporare reset.
-    # }
+        }
+    }
 
     return \%predicted_rotamer_pairs;
 }
