@@ -178,7 +178,7 @@ for my $pdbx_file ( @ARGV ) {
         rotatable_bonds( $parameters, $dihedral_site,
                          { 'start_atom_names' => [ 'C' ],
                            'include_mainchain' => $calc_mainchain,
-                               'include_hetatoms' => $calc_hetatoms } )
+                           'include_hetatoms' => $calc_hetatoms } )
             if $calc_hetatoms;
         my $dihedral_angles = collect_dihedral_angles( $dihedral_site );
 
