@@ -12,10 +12,11 @@ use PDBxParser qw( filter_new );
 sub new
 {
     my ( $class, $args ) = @_;
-    my ( $atom_site, $start_atom_ids, $include_hetatoms, $ignore_connections,
-         $include_visited ) =
+    my ( $atom_site, $start_atom_ids, $start_atom_names, $include_hetatoms,
+         $ignore_connections, $include_visited ) =
         ( $args->{'atom_site'},
           $args->{'start_atom_ids'},
+          $args->{'start_atom_names'},
           $args->{'include_hetatoms'},
           $args->{'ignore_connections'},
           $args->{'include_visited'} );
@@ -24,9 +25,10 @@ sub new
 
     # By default, N is starting atom for main-chain calculations. XA is added
     # for debugging and test purposes.
+    $start_atom_names //= [ 'N', 'XA' ];
     $start_atom_ids //=
         filter_new( $atom_site,
-                    { 'include' => { 'label_atom_id' => [ 'N', 'XA' ] },
+                    { 'include' => { 'label_atom_id' => $start_atom_names },
                       'return_data' => 'id' } );
     $include_hetatoms //= 0;
     $ignore_connections //= {};

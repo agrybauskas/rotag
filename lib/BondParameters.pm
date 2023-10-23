@@ -43,8 +43,10 @@ use PDBxParser qw( expand
 sub rotatable_bonds
 {
     my ( $parameters, $atom_site, $options ) = @_;
-    my ( $start_atom_ids, $include_mainchain, $include_hetatoms ) = (
+    my ( $start_atom_ids, $start_atom_names, $include_mainchain,
+         $include_hetatoms ) = (
         $options->{'start_atom_ids'},
+        $options->{'start_atom_names'},
         $options->{'include_mainchain'},
         $options->{'include_hetatoms'}
     );
