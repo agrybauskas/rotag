@@ -34,10 +34,6 @@ our $VERSION = $VERSION;
 #*    -S, --side-chains
 #*                        predicts all probable side-chain positions according to
 #*                        the given energy threshold.
-#*    -g, --draw-interaction-graph
-#*                        draws sidechain interaction graph.
-#*    -l, --print-adjacency-list
-#*                        prints out the adjacency list.
 #*    -v, --version
 #*                        prints version.
 
