@@ -115,6 +115,7 @@ sub predict_sidechains
     }
 
     my %rotamer_to_atom_site = ();
+    my %visited_rotamer_pairs = ();
     my %predicted_rotamer_pairs = ();
     for my $ca_atom_id ( sort keys %residue_pairs ) {
         my $unique_residue_key =
