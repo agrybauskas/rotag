@@ -30,6 +30,16 @@ use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
 
+sub new
+{
+    my ( $class, $args ) = @_;
+    my $self = {
+        "nodes" => undef
+        "edges" => undef
+    };
+    return bless $self, $class;
+}
+
 # ----------------------------- Simple functions ------------------------------ #
 
 # sub predict_sidechains
