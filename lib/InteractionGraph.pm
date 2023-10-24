@@ -55,10 +55,19 @@ sub predict_sidechains
             " tag.\n";
     }
 
+    my %residue_to_rotamer = ();
     my %rotamer_to_angles = ();
     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
         my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
         my $rotamer_id = $rotamer_angle->{'rotamer_id'};
+        my $unique_residue_key =
+            sprintf '%s,%s,%s,%s',
+            $rotamer_angle->{'label_seq_id'},
+            $rotamer_angle->{'label_asym_id'},
+            $rotamer_angle->{'pdbx_PDB_model_num'},
+            $rotamer_angle->{'label_alt_id'};
+
+        $residue_to_rotamer{$unique_residue_key}{$rotamer_id} = 1;
         $rotamer_to_angles{$rotamer_id}{$rotamer_angle_id} = 1;
     }
 
@@ -105,23 +114,19 @@ sub predict_sidechains
         }
     }
 
-    # # Keeps structure data if it was already calculated.
-    # my %rotamer_to_atom_site = ();
-    # my %rotamer_interaction_counter = (); # Will be used to remove rotamers with
-    #                                       # no interacting candidates.
     my %predicted_rotamer_pairs = ();
-    # for my $ca_atom_id ( sort keys %residue_pairs ) {
-    #     my $unique_residue_key =
-    #         unique_residue_key( $atom_site->{$ca_atom_id} );
-    #     my @rotamer_ids = keys %{ $residue_to_rotamer{$unique_residue_key} };
-    #     my $rotamer_site =
-    #         filter_by_unique_residue_key( $atom_site,
-    #                                       $unique_residue_key,
-    #                                       1 );
+    for my $ca_atom_id ( sort keys %residue_pairs ) {
+        my $unique_residue_key =
+            unique_residue_key( $atom_site->{$ca_atom_id} );
+        my @rotamer_ids = keys %{ $residue_to_rotamer{$unique_residue_key} };
+        my $rotamer_site =
+            filter_by_unique_residue_key( $atom_site,
+                                          $unique_residue_key,
+                                          1 );
 
-    #     connect_atoms( $parameters, $rotamer_site );
-    #     hybridization( $parameters, $rotamer_site );
-    #     rotation_only( $parameters, $rotamer_site );
+        connect_atoms( $parameters, $rotamer_site );
+        hybridization( $parameters, $rotamer_site );
+        rotation_only( $parameters, $rotamer_site );
 
     #     for my $rotamer_id ( @rotamer_ids ) {
     #         my @angle_ids = keys %{ $rotamer_to_angles{$rotamer_id} };
@@ -214,7 +219,7 @@ sub predict_sidechains
     #             }
     #         }
     #     }
-    # }
+    }
 
     return \%predicted_rotamer_pairs;
 }
