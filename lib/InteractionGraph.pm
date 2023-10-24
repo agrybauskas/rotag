@@ -108,15 +108,14 @@ sub predict_sidechains
                           ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ] ) >=
                     $edge_length_interaction;
 
-                $residue_pairs{$atom_id}
-                              {$neighbour_atom_id} = 1;
+                $residue_pairs{$atom_id}{$neighbour_atom_id} = 1;
+                $residue_pairs{$neighbour_atom_id}{$atom_id} = 1;
             }
         }
     }
 
     my %rotamer_to_atom_site = ();
-    my %visited_rotamer_pairs = ();
-    my %predicted_rotamer_pairs = ();
+    my %rotamer_pair_energy = ();
     for my $ca_atom_id ( sort keys %residue_pairs ) {
         my $unique_residue_key =
             unique_residue_key( $atom_site->{$ca_atom_id} );
@@ -164,6 +163,11 @@ sub predict_sidechains
                 rotation_only( $parameters, $neighbour_rotamer_site );
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
+                    next if exists $rotamer_pair_energy{$rotamer_id}
+                                                       {$neighbour_rotamer_id} ||
+                                   $rotamer_pair_energy{$neighbour_rotamer_id}
+                                                       {$rotamer_id};
+
                     my @neighbour_angle_ids =
                         keys %{ $rotamer_to_angles{$neighbour_rotamer_id} };
                     my %neighbour_angles =
@@ -198,11 +202,9 @@ sub predict_sidechains
                     # Does not reach cut off limit.
                     if( $pairwise_energy_sum <= $cutoff_atom  ) {
                         # Stores energy value.
-                        $predicted_rotamer_pairs{$rotamer_id}
-                                                {$neighbour_rotamer_id} =
+                        $rotamer_pair_energy{$rotamer_id}{$neighbour_rotamer_id}=
                             $pairwise_energy_sum;
-                        $predicted_rotamer_pairs{$neighbour_rotamer_id}
-                                                {$rotamer_id} =
+                        $rotamer_pair_energy{$neighbour_rotamer_id}{$rotamer_id}=
                             $pairwise_energy_sum;
                     }
                 }
@@ -210,7 +212,7 @@ sub predict_sidechains
         }
     }
 
-    return \%predicted_rotamer_pairs;
+    return \%rotamer_pair_energy;
 }
 
 1;
