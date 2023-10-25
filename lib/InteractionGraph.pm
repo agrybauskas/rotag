@@ -105,17 +105,21 @@ sub new
                     $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
                 }
 
-                # if( ! $self->{'graph'}->has_edge( $unique_residue_key,
-                #                                   $neighbour_unique_residue_key ) &&
-                #     bond_length(
-                #         [ [ map { $atom_site->{$atom_id}{$_} }
-                #                 ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
-                #           [ map { $atom_site->{$neighbour_atom_id}{$_} }
-                #                 ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
-                #     ) >= $edge_length_interaction ) {
-                #     $self->{'graph'}->add_edge( $unique_residue_key,
-                #                                 $neighbour_unique_residue_key );
-                # }
+                next if $self->{'graph'}->has_edge(
+                    $unique_residue_key, $neighbour_unique_residue_key
+                );
+
+                my $bond_length = bond_length(
+                    [ [ map { $atom_site->{$atom_id}{$_} }
+                            ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
+                      [ map { $atom_site->{$neighbour_atom_id}{$_} }
+                            ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
+                );
+
+                next if $bond_length > $edge_length_interaction;
+
+                # $self->{'graph'}->add_edge( $unique_residue_key,
+                #                             $neighbour_unique_residue_key );
             }
         }
     }
