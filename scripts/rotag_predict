@@ -122,8 +122,9 @@ for my $pdbx_file ( @ARGV ) {
             next;
         }
 
-        my $interaction_graph =
-            InteractionGraph->new( $parameters, $atom_site );
+        my $interaction_graph = InteractionGraph->new(
+            $parameters, $atom_site, $rotamer_angles, $rotamer_energies
+        );
 
         # $interaction_graph->predict_sidechains( {
         #     'rotamer_angles' => $rotamer_angles,

@@ -47,7 +47,26 @@ sub new
             " tag.\n";
     }
 
-    my $self = { 'graph' => Graph::Undirected->new };
+    my $self = { 'graph' => Graph::Undirected->new,
+                 'angles' => {},
+                 'energies' => {} };
+
+    for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
+        my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
+        my $rotamer_id = $rotamer_angle->{'rotamer_id'};
+        my $unique_residue_key =
+            sprintf '%s,%s,%s,%s',
+            $rotamer_angle->{'label_seq_id'},
+            $rotamer_angle->{'label_asym_id'},
+            $rotamer_angle->{'pdbx_PDB_model_num'},
+            $rotamer_angle->{'label_alt_id'};
+        $self->{'angles'}{$unique_residue_key}{$rotamer_id}{$rotamer_angle_id} =
+            $rotamer_angle;
+        if( ! exists $self->{'energies'}{$unique_residue_key}{$rotamer_id} ) {
+            $self->{'energies'}{$unique_residue_key}{$rotamer_id} =
+                $rotamer_energies->{$rotamer_id};
+        }
+    }
 
     # Determining interaction grid.
     my $edge_length_interaction =
@@ -106,85 +125,7 @@ sub new
 # sub predict_sidechains
 # {
 #     my ( $args ) = @_;
-
-#     my ( $parameters, $atom_site, $rotamer_energies, $rotamer_angles,
-#          $non_bonded_potential, $bonded_potential, $options ) = (
-#         $args->{'parameters'}, $args->{'atom_site'}, $args->{'rotamer_energies'},
-#         $args->{'rotamer_angles'}, $args->{'non_bonded_potential'},
-#         $args->{'bonded_potential'}, $args->{'options'}
-#     );
-
-#     # Error messages for missing arguments.
-#     if( ! defined $atom_site ) {
-#         die "atom site is not supplied.\n";
-#     }
-#     if( ! defined $rotamer_angles ) {
-#         die "rotamer angles are not supplied by '_[local]_rotamer_angle' tag.\n";
-#     }
-#     if( ! defined $rotamer_energies ) {
-#         die "rotamer energies are not supplied by '_[local]_rotamer_energy'" .
-#             " tag.\n";
-#     }
-
-#     my %residue_to_rotamer = ();
-#     my %rotamer_to_angles = ();
-#     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
-#         my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
-#         my $rotamer_id = $rotamer_angle->{'rotamer_id'};
-#         my $unique_residue_key =
-#             sprintf '%s,%s,%s,%s',
-#             $rotamer_angle->{'label_seq_id'},
-#             $rotamer_angle->{'label_asym_id'},
-#             $rotamer_angle->{'pdbx_PDB_model_num'},
-#             $rotamer_angle->{'label_alt_id'};
-
-#         $residue_to_rotamer{$unique_residue_key}{$rotamer_id} = 1;
-#         $rotamer_to_angles{$rotamer_id}{$rotamer_angle_id} = 1;
-#     }
-
-#     # Determining interaction grid.
-#     my $edge_length_interaction =
-#         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
-#     my $cutoff_atom =
-#         $parameters->{'_[local]_force_field'}{'cutoff_atom'};
-
-#     # Chooses only CA atoms, because from them, boundary interaction conditions
-#     # are measured.
-#     my $atom_site_cas =
-#         filter_new( $atom_site,
-#                     { 'include' =>
-#                       { 'label_atom_id' => [ 'CA' ] } } );
-#     my ( $grid_box_cas, $grid_ca_atom_pos ) =
-#         grid_box( $parameters, $atom_site_cas, $edge_length_interaction,
-#                   extract( $atom_site_cas,
-#                            { 'data' => [ 'id' ], 'is_list' => 1 } ) );
-#     my $neighbouring_cells_cas =
-#         identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
-
-#     my %residue_pairs = ();
-#     for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
-#         for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
-#             for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
-#                 next if $atom_id eq $neighbour_atom_id ||
-#                     ( defined $residue_pairs{$atom_id} &&
-#                       defined $residue_pairs{$atom_id}
-#                                             {$neighbour_atom_id} &&
-#                       $residue_pairs{$atom_id}
-#                                     {$neighbour_atom_id} );
-
-#                 next if bond_length(
-#                     [ [ map { $atom_site->{$atom_id}{$_} }
-#                           ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
-#                       [ map { $atom_site->{$neighbour_atom_id}{$_} }
-#                           ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ] ) >=
-#                     $edge_length_interaction;
-
-#                 $residue_pairs{$atom_id}{$neighbour_atom_id} = 1;
-#                 $residue_pairs{$neighbour_atom_id}{$atom_id} = 1;
-#             }
-#         }
-#     }
-
+#
 #     my %residue_to_atom_site = ();
 #     my %rotamer_to_atom_site = ();
 #     my %rotamer_pair_energy = ();
