@@ -33,10 +33,7 @@ our $VERSION = $VERSION;
 sub new
 {
     my ( $class, $args ) = @_;
-    my $self = {
-        "nodes" => undef
-        "edges" => undef
-    };
+    my $self = {};
     return bless $self, $class;
 }
 

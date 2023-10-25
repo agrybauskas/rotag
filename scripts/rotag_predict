@@ -15,7 +15,7 @@ use PDBxParser qw( filter
                    obtain_pdbx_data
                    raw2indexed
                    to_pdbx );
-use InteractionGraph qw( predict_sidechains );
+use InteractionGraph;
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -125,16 +125,14 @@ for my $pdbx_file ( @ARGV ) {
         my $interaction_graph =
             InteractionGraph->new( $parameters, $atom_site );
 
-        # my $sidechain_predictions =
-        #     predict_sidechains( { 'atom_site' => $selected_atom_site,
-        #                           'rotamer_angles' => $rotamer_angles,
-        #                           'rotamer_energies' => $rotamer_energies,
-        #                           'parameters' => $parameters,
-        #                           'non_bonded_potential' =>
-        #                               \&ForceField::NonBonded::general,
-        #                           'bonded_potential' =>
-        #                               \&ForceField::Bonded::general,
-        #                         } );
+        # $interaction_graph->predict_sidechains( {
+        #     'rotamer_angles' => $rotamer_angles,
+        #     'rotamer_energies' => $rotamer_energies,
+        #     'non_bonded_potential' =>
+        #         \&ForceField::NonBonded::general,
+        #     'bonded_potential' =>
+        #         \&ForceField::Bonded::general,
+        # } );
 
         # # Prints out the PDBx.
         # to_pdbx( $pdbx, { 'add_attributes' =>
