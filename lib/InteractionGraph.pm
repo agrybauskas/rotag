@@ -118,8 +118,11 @@ sub new
 
                 next if $bond_length > $edge_length_interaction;
 
-                # $self->{'graph'}->add_edge( $unique_residue_key,
-                #                             $neighbour_unique_residue_key );
+                if( ! $self->{'graph'}->has_edge( $unique_residue_key,
+                                                  $neighbour_unique_residue_key ) ) {
+                    $self->{'graph'}->add_edge( $unique_residue_key,
+                                                $neighbour_unique_residue_key );
+                }
             }
         }
     }
