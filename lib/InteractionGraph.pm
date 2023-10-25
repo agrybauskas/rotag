@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( predict_sidechains );
 
 use Clone qw( clone );
+use Graph::Undirected;
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
@@ -33,12 +34,12 @@ our $VERSION = $VERSION;
 sub new
 {
     my ( $class, $parameters, $atom_site ) = @_;
-    my $self = {};
 
-    # Error messages for missing arguments.
     if( ! defined $atom_site ) {
         die "atom site is not supplied.\n";
     }
+
+    my $self = { 'graph' => Graph::Undirected->new };
 
     # Determining interaction grid.
     my $edge_length_interaction =
@@ -59,26 +60,32 @@ sub new
     my $neighbouring_cells_cas =
         identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
 
-    my %residue_pairs = ();
     for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
         for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
+            my $unique_residue_key =
+                unique_residue_key( $atom_site->{$atom_id} );
+            if( ! $self->{'graph'}->has_vertex( $unique_residue_key ) ) {
+                $self->{'graph'}->has_vertex( $unique_residue_key );
+            }
+
             for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
-                next if $atom_id eq $neighbour_atom_id ||
-                    ( defined $residue_pairs{$atom_id} &&
-                      defined $residue_pairs{$atom_id}
-                                            {$neighbour_atom_id} &&
-                      $residue_pairs{$atom_id}
-                                    {$neighbour_atom_id} );
+                my $neighbour_unique_residue_key =
+                    unique_residue_key( $atom_site->{$neighbour_atom_id} );
+                if( ! $self->{'graph'}->has_vertex( $neighbour_unique_residue_key ) ) {
+                    $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
+                }
 
-                next if bond_length(
-                    [ [ map { $atom_site->{$atom_id}{$_} }
-                          ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
-                      [ map { $atom_site->{$neighbour_atom_id}{$_} }
-                          ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ] ) >=
-                    $edge_length_interaction;
-
-                $residue_pairs{$atom_id}{$neighbour_atom_id} = 1;
-                $residue_pairs{$neighbour_atom_id}{$atom_id} = 1;
+                if( ! $self->{'graph'}->has_edge( $unique_residue_key,
+                                                  $neighbour_unique_residue_key ) &&
+                    bond_length(
+                        [ [ map { $atom_site->{$atom_id}{$_} }
+                                ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
+                          [ map { $atom_site->{$neighbour_atom_id}{$_} }
+                                ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
+                    ) >= $edge_length_interaction ) {
+                    $self->{'graph'}->add_edge( $unique_residue_key,
+                                                $neighbour_unique_residue_key );
+                }
             }
         }
     }
@@ -86,7 +93,7 @@ sub new
     return bless $self, $class;
 }
 
-# ----------------------------- Simple functions ------------------------------ #
+# --------------------------------- Methods ---------------------------------- #
 
 # sub predict_sidechains
 # {
