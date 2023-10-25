@@ -48,7 +48,7 @@ sub new
     }
 
     my $self = { 'graph' => Graph::Undirected->new,
-                 'residue' => {} };
+                 'residue' => undef };
 
     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
         my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
