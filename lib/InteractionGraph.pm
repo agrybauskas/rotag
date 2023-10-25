@@ -33,10 +33,18 @@ our $VERSION = $VERSION;
 
 sub new
 {
-    my ( $class, $parameters, $atom_site ) = @_;
+    my ( $class, $parameters, $atom_site, $rotamer_angles,
+         $rotamer_energies ) = @_;
 
     if( ! defined $atom_site ) {
         die "atom site is not supplied.\n";
+    }
+    if( ! defined $rotamer_angles ) {
+        die "rotamer angles are not supplied by '_[local]_rotamer_angle' tag.\n";
+    }
+    if( ! defined $rotamer_energies ) {
+        die "rotamer energies are not supplied by '_[local]_rotamer_energy'" .
+            " tag.\n";
     }
 
     my $self = { 'graph' => Graph::Undirected->new };
