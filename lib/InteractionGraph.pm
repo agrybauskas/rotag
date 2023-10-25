@@ -48,8 +48,7 @@ sub new
     }
 
     my $self = { 'graph' => Graph::Undirected->new,
-                 'angles' => {},
-                 'energies' => {} };
+                 'residue' => {} };
 
     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
         my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
@@ -60,10 +59,12 @@ sub new
             $rotamer_angle->{'label_asym_id'},
             $rotamer_angle->{'pdbx_PDB_model_num'},
             $rotamer_angle->{'label_alt_id'};
-        $self->{'angles'}{$unique_residue_key}{$rotamer_id}{$rotamer_angle_id} =
+        $self->{'residue'}{$unique_residue_key}{$rotamer_id}{'angles'}
+                                                            {$rotamer_angle_id} =
             $rotamer_angle;
-        if( ! exists $self->{'energies'}{$unique_residue_key}{$rotamer_id} ) {
-            $self->{'energies'}{$unique_residue_key}{$rotamer_id} =
+        if( ! exists $self->{'residue'}{$unique_residue_key}{$rotamer_id}
+                                                            {'energy'} ) {
+            $self->{'residue'}{$unique_residue_key}{$rotamer_id}{'energy'} =
                 $rotamer_energies->{$rotamer_id};
         }
     }
@@ -91,6 +92,7 @@ sub new
         for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
             my $unique_residue_key =
                 unique_residue_key( $atom_site->{$atom_id} );
+
             if( ! $self->{'graph'}->has_vertex( $unique_residue_key ) ) {
                 $self->{'graph'}->has_vertex( $unique_residue_key );
             }
@@ -98,21 +100,22 @@ sub new
             for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
                 my $neighbour_unique_residue_key =
                     unique_residue_key( $atom_site->{$neighbour_atom_id} );
+
                 if( ! $self->{'graph'}->has_vertex( $neighbour_unique_residue_key ) ) {
                     $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
                 }
 
-                if( ! $self->{'graph'}->has_edge( $unique_residue_key,
-                                                  $neighbour_unique_residue_key ) &&
-                    bond_length(
-                        [ [ map { $atom_site->{$atom_id}{$_} }
-                                ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
-                          [ map { $atom_site->{$neighbour_atom_id}{$_} }
-                                ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
-                    ) >= $edge_length_interaction ) {
-                    $self->{'graph'}->add_edge( $unique_residue_key,
-                                                $neighbour_unique_residue_key );
-                }
+                # if( ! $self->{'graph'}->has_edge( $unique_residue_key,
+                #                                   $neighbour_unique_residue_key ) &&
+                #     bond_length(
+                #         [ [ map { $atom_site->{$atom_id}{$_} }
+                #                 ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
+                #           [ map { $atom_site->{$neighbour_atom_id}{$_} }
+                #                 ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
+                #     ) >= $edge_length_interaction ) {
+                #     $self->{'graph'}->add_edge( $unique_residue_key,
+                #                                 $neighbour_unique_residue_key );
+                # }
             }
         }
     }
