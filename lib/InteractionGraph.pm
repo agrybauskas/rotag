@@ -101,6 +101,8 @@ sub new
                 my $neighbour_unique_residue_key =
                     unique_residue_key( $atom_site->{$neighbour_atom_id} );
 
+                next if $unique_residue_key eq $neighbour_unique_residue_key;
+
                 if( ! $self->{'graph'}->has_vertex( $neighbour_unique_residue_key ) ) {
                     $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
                 }
@@ -132,13 +134,13 @@ sub new
 
 # --------------------------------- Methods ---------------------------------- #
 
-sub to_csv
+sub to_tsv
 {
     my ( $self ) = @_;
-    printf "%s,%s\n", 'node1', 'node2';
+    printf "%s\t%s\n", 'node1', 'node2';
     for my $vertex ( $self->{'graph'}->vertices ) {
         for my $neighbour ( $self->{'graph'}->neighbours( $vertex ) ) {
-            printf "%s,%s\n", $vertex, $neighbour;
+            printf "%s\t%s\n", $vertex, $neighbour;
         }
     }
 }
