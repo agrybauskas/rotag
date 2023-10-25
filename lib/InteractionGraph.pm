@@ -132,6 +132,17 @@ sub new
 
 # --------------------------------- Methods ---------------------------------- #
 
+sub to_csv
+{
+    my ( $self ) = @_;
+    printf "%s,%s\n", 'node1', 'node2';
+    for my $vertex ( $self->{'graph'}->vertices ) {
+        for my $neighbour ( $self->{'graph'}->neighbours( $vertex ) ) {
+            printf "%s,%s\n", $vertex, $neighbour;
+        }
+    }
+}
+
 # sub predict_sidechains
 # {
 #     my ( $args ) = @_;
