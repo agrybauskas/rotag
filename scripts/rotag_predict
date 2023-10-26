@@ -131,14 +131,12 @@ for my $pdbx_file ( @ARGV ) {
             $parameters, $atom_site, $rotamer_angles, $rotamer_energies
         );
 
-        # $interaction_graph->predict_sidechains( {
-        #     'rotamer_angles' => $rotamer_angles,
-        #     'rotamer_energies' => $rotamer_energies,
-        #     'non_bonded_potential' =>
-        #         \&ForceField::NonBonded::general,
-        #     'bonded_potential' =>
-        #         \&ForceField::Bonded::general,
-        # } );
+        $sidechain_interactions->predict( {
+            'non_bonded_potential' =>
+                \&ForceField::NonBonded::general,
+            'bonded_potential' =>
+                \&ForceField::Bonded::general,
+        } );
 
         if( $output_format eq 'pdbx' ) {
             # # Prints out the PDBx.

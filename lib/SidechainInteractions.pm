@@ -168,8 +168,9 @@ sub new
 
 sub predict
 {
-    # my ( $self ) = @_;
-    # my $interaction_graph = $self->{'graph'};
+    my ( $self, $options ) = @_;
+    my ( $non_bonded_potential, $bonded_potential ) =
+        ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
 }
 
 sub to_tsv
