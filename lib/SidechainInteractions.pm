@@ -47,6 +47,7 @@ sub new
     }
 
     my $self = { 'residue_pairs' => undef,
+                 'residue_atom_site' => undef,
                  'residue_energies' => undef,
                  'residue_to_rotamers' => undef,
                  'rotamer_pairs' => undef,
@@ -69,50 +70,39 @@ sub new
             $rotamer_energies->{$rotamer_id};
     }
 
-    # # Determining interaction grid.
-    # my $edge_length_interaction =
-    #     $parameters->{'_[local]_constants'}{'edge_length_interaction'};
-    # my $cutoff_atom =
-    #     $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    # Determining interaction grid.
+    my $edge_length_interaction =
+        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
+    my $cutoff_atom =
+        $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
-    # # Chooses only CA atoms, because from them, boundary interaction conditions
-    # # are measured.
-    # my $atom_site_cas =
-    #     filter_new( $atom_site,
-    #                 { 'include' =>
-    #                   { 'label_atom_id' => [ 'CA' ] } } );
-    # my ( $grid_box_cas, $grid_ca_atom_pos ) =
-    #     grid_box( $parameters, $atom_site_cas, $edge_length_interaction,
-    #               extract( $atom_site_cas,
-    #                        { 'data' => [ 'id' ], 'is_list' => 1 } ) );
-    # my $neighbouring_cells_cas =
-    #     identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
+    # Chooses only CA atoms, because from them, boundary interaction conditions
+    # are measured.
+    my $atom_site_cas =
+        filter_new( $atom_site,
+                    { 'include' =>
+                      { 'label_atom_id' => [ 'CA' ] } } );
+    my ( $grid_box_cas, $grid_ca_atom_pos ) =
+        grid_box( $parameters, $atom_site_cas, $edge_length_interaction,
+                  extract( $atom_site_cas,
+                           { 'data' => [ 'id' ], 'is_list' => 1 } ) );
+    my $neighbouring_cells_cas =
+        identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
 
-    # for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
-    #     for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
-    #         my $unique_residue_key =
-    #             unique_residue_key( $atom_site->{$atom_id} );
+    for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
+        for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
+            my $unique_residue_key =
+                unique_residue_key( $atom_site->{$atom_id} );
 
-    #         $self->{'graph'}->add_vertex( $unique_residue_key );
-    #         $self->{'graph'}->set_vertex_attribute(
-    #             $unique_residue_key,
-    #             'type',
-    #             'residue'
-    #         );
+            my $residue_site =
+                filter_by_unique_residue_key( $atom_site,
+                                              $unique_residue_key,
+                                              1 );
+            connect_atoms( $parameters, $residue_site );
+            hybridization( $parameters, $residue_site );
+            rotation_only( $parameters, $residue_site );
 
-    #         my $residue_site =
-    #             filter_by_unique_residue_key( $atom_site,
-    #                                           $unique_residue_key,
-    #                                           1 );
-    #         connect_atoms( $parameters, $residue_site );
-    #         hybridization( $parameters, $residue_site );
-    #         rotation_only( $parameters, $residue_site );
-
-    #         $self->{'graph'}->set_vertex_attribute(
-    #             $unique_residue_key,
-    #             'atom_site',
-    #             $residue_site
-    #         );
+            $self->{'residue_atom_site'}{$unique_residue_key} = $residue_site;
 
     #         my @rotamer_ids = keys %{ $rotamer_to_angles{$unique_residue_key} };
 
@@ -181,8 +171,7 @@ sub new
     #                 );
     #                 $self->{'graph'}->add_edge( $rotamer_id,
     #                                             $unique_residue_key );
-
-
+    #
     #                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
     #                     $self->{'graph'}->add_vertex( $neighbour_rotamer_id );
     #                     $self->{'graph'}->set_vertex_attribute(
@@ -208,8 +197,8 @@ sub new
     #                 }
     #             }
     #         }
-    #     }
-    # }
+        }
+    }
 
     return bless $self, $class;
 }
