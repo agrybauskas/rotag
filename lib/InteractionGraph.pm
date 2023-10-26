@@ -90,6 +90,20 @@ sub new
 
             $self->{'graph'}->add_vertex( $unique_residue_key );
 
+            my $residue_site =
+                filter_by_unique_residue_key( $atom_site,
+                                              $unique_residue_key,
+                                              1 );
+            connect_atoms( $parameters, $residue_site );
+            hybridization( $parameters, $residue_site );
+            rotation_only( $parameters, $residue_site );
+
+            $self->{'graph'}->set_vertex_attribute(
+                $unique_residue_key,
+                'atom_site',
+                $residue_site
+            );
+
             my @rotamer_ids = keys %{ $rotamer_to_angles{$unique_residue_key} };
 
             for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
@@ -99,6 +113,20 @@ sub new
                 next if $unique_residue_key eq $neighbour_unique_residue_key;
 
                 $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
+
+                my $neighbour_residue_site =
+                    filter_by_unique_residue_key( $atom_site,
+                                                  $neighbour_unique_residue_key,
+                                                  1 );
+                connect_atoms( $parameters, $neighbour_residue_site );
+                hybridization( $parameters, $neighbour_residue_site );
+                rotation_only( $parameters, $neighbour_residue_site );
+
+                $self->{'graph'}->set_vertex_attribute(
+                    $neighbour_unique_residue_key,
+                    'atom_site',
+                    $neighbour_residue_site
+                );
 
                 next if $self->{'graph'}->has_edge(
                     $unique_residue_key, $neighbour_unique_residue_key
