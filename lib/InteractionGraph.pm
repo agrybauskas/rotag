@@ -93,7 +93,7 @@ sub new
             my $unique_residue_key =
                 unique_residue_key( $atom_site->{$atom_id} );
 
-            $self->{'graph'}->has_vertex( $unique_residue_key );
+            $self->{'graph'}->add_vertex( $unique_residue_key );
 
             my @rotamer_ids = keys %{ $self->{'residue'}{$unique_residue_key} };
 
