@@ -127,7 +127,7 @@ for my $pdbx_file ( @ARGV ) {
             next;
         }
 
-        my $interaction_graph = SidechainInteractions->new(
+        my $sidechain_interactions = SidechainInteractions->new(
             $parameters, $atom_site, $rotamer_angles, $rotamer_energies
         );
 
@@ -146,7 +146,7 @@ for my $pdbx_file ( @ARGV ) {
             #                       { '_atom_site' => [ '[local]_selection_state',
             #                                           '[local]_selection_group' ] } } );
         } elsif( $output_format eq 'tsv' ) {
-            $interaction_graph->to_tsv();
+            # $interaction_graph->to_tsv();
         }
     } else {
         error(

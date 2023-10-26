@@ -35,18 +35,23 @@ sub new
     my ( $class, $parameters, $atom_site, $rotamer_angles,
          $rotamer_energies ) = @_;
 
-    # if( ! defined $atom_site ) {
-    #     die "atom site is not supplied.\n";
-    # }
-    # if( ! defined $rotamer_angles ) {
-    #     die "rotamer angles are not supplied by '_[local]_rotamer_angle' tag.\n";
-    # }
-    # if( ! defined $rotamer_energies ) {
-    #     die "rotamer energies are not supplied by '_[local]_rotamer_energy'" .
-    #         " tag.\n";
-    # }
+    if( ! defined $atom_site ) {
+        die "atom site is not supplied.\n";
+    }
+    if( ! defined $rotamer_angles ) {
+        die "rotamer angles are not supplied by '_[local]_rotamer_angle' tag.\n";
+    }
+    if( ! defined $rotamer_energies ) {
+        die "rotamer energies are not supplied by '_[local]_rotamer_energy'" .
+            " tag.\n";
+    }
 
-    my $self = {};
+    my $self = { 'residue_pairs' => undef,
+                 'residue_energies' => undef,
+                 'residue_to_rotamers' => undef,
+                 'rotamer_pairs' => undef,
+                 'rotamer_angles' => undef,
+                 'rotamer_energies' => undef };
 
     # my %rotamer_to_angles = ();
     # for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
