@@ -48,7 +48,6 @@ sub new
 
     my $self = { 'residue_pairs' => undef,
                  'residue_atom_site' => undef,
-                 'residue_energies' => undef,
                  'residue_to_rotamers' => undef,
                  'rotamer_pairs' => undef,
                  'rotamer_angles' => undef,
@@ -64,7 +63,9 @@ sub new
             $rotamer_angle->{'label_asym_id'},
             $rotamer_angle->{'pdbx_PDB_model_num'},
             $rotamer_angle->{'label_alt_id'};
-        $self->{'rotamer_to_angles'}{$rotamer_id}{$rotamer_angle_id} =
+
+        $self->{'residue_to_rotamers'}{$unique_residue_key}{$rotamer_id} = 1;
+        $self->{'rotamer_angles'}{$rotamer_id}{$rotamer_angle_id} =
             $rotamer_angle;
         $self->{'rotamer_energies'}{$rotamer_id} =
             $rotamer_energies->{$rotamer_id};
@@ -94,109 +95,69 @@ sub new
             my $unique_residue_key =
                 unique_residue_key( $atom_site->{$atom_id} );
 
-            my $residue_site =
-                filter_by_unique_residue_key( $atom_site,
-                                              $unique_residue_key,
-                                              1 );
-            connect_atoms( $parameters, $residue_site );
-            hybridization( $parameters, $residue_site );
-            rotation_only( $parameters, $residue_site );
+            if( ! exists $self->{'residue_atom_site'}{$unique_residue_key} ) {
+                my $residue_site =
+                    filter_by_unique_residue_key( $atom_site,
+                                                  $unique_residue_key,
+                                                  1 );
 
-            $self->{'residue_atom_site'}{$unique_residue_key} = $residue_site;
+                connect_atoms( $parameters, $residue_site );
+                hybridization( $parameters, $residue_site );
+                rotation_only( $parameters, $residue_site );
 
-    #         my @rotamer_ids = keys %{ $rotamer_to_angles{$unique_residue_key} };
+                $self->{'residue_atom_site'}{$unique_residue_key} =
+                    $residue_site;
+            }
 
-    #         for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
-    #             my $neighbour_unique_residue_key =
-    #                 unique_residue_key( $atom_site->{$neighbour_atom_id} );
+            my @rotamer_ids =
+                keys %{ $self->{'residue_to_rotamers'}{$unique_residue_key} };
 
-    #             next if $unique_residue_key eq $neighbour_unique_residue_key;
+            for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
+                my $neighbour_unique_residue_key =
+                    unique_residue_key( $atom_site->{$neighbour_atom_id} );
 
-    #             $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
-    #             $self->{'graph'}->set_vertex_attribute(
-    #                 $neighbour_unique_residue_key,
-    #                 'type',
-    #                 'residue'
-    #             );
+                next if $unique_residue_key eq $neighbour_unique_residue_key;
 
-    #             my $neighbour_residue_site =
-    #                 filter_by_unique_residue_key( $atom_site,
-    #                                               $neighbour_unique_residue_key,
-    #                                               1 );
-    #             connect_atoms( $parameters, $neighbour_residue_site );
-    #             hybridization( $parameters, $neighbour_residue_site );
-    #             rotation_only( $parameters, $neighbour_residue_site );
+                $self->{'residue_pairs'}{$unique_residue_key}
+                                        {$neighbour_unique_residue_key} = 1;
+                $self->{'residue_pairs'}{$neighbour_unique_residue_key}
+                                        {$unique_residue_key} = 1;
 
-    #             $self->{'graph'}->set_vertex_attribute(
-    #                 $neighbour_unique_residue_key,
-    #                 'atom_site',
-    #                 $neighbour_residue_site
-    #             );
+                if( ! exists $self->{'residue_atom_site'}{$neighbour_unique_residue_key} ) {
+                    my $neighbour_residue_site =
+                        filter_by_unique_residue_key( $atom_site,
+                                                      $neighbour_unique_residue_key,
+                                                      1 );
 
-    #             next if $self->{'graph'}->has_edge(
-    #                 $unique_residue_key, $neighbour_unique_residue_key
-    #             );
+                    connect_atoms( $parameters, $neighbour_residue_site );
+                    hybridization( $parameters, $neighbour_residue_site );
+                    rotation_only( $parameters, $neighbour_residue_site );
 
-    #             my $bond_length = bond_length(
-    #                 [ [ map { $atom_site->{$atom_id}{$_} }
-    #                         ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
-    #                   [ map { $atom_site->{$neighbour_atom_id}{$_} }
-    #                         ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
-    #             );
+                    $self->{'residue_atom_site'}{$neighbour_unique_residue_key}=
+                        $neighbour_residue_site;
+                }
 
-    #             next if $bond_length > $edge_length_interaction;
+                my $bond_length = bond_length(
+                    [ [ map { $atom_site->{$atom_id}{$_} }
+                            ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
+                      [ map { $atom_site->{$neighbour_atom_id}{$_} }
+                            ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
+                );
 
-    #             $self->{'graph'}->add_edge( $unique_residue_key,
-    #                                         $neighbour_unique_residue_key );
+                next if $bond_length > $edge_length_interaction;
 
-    #             my @neighbour_rotamer_ids =
-    #                 keys %{ $rotamer_to_angles{$neighbour_unique_residue_key} };
+                my @neighbour_rotamer_ids =
+                    keys %{ $self->{'residue_to_rotamers'}{$neighbour_unique_residue_key} };
 
-    #             for my $rotamer_id ( @rotamer_ids ) {
-    #                 $self->{'graph'}->add_vertex( $rotamer_id );
-    #                 $self->{'graph'}->set_vertex_attribute(
-    #                     $rotamer_id,
-    #                     'type',
-    #                     'rotamer'
-    #                 );
-    #                 $self->{'graph'}->set_vertex_attribute(
-    #                     $rotamer_id,
-    #                     'angles',
-    #                     $rotamer_to_angles{$unique_residue_key}{$rotamer_id}
-    #                 );
-    #                 $self->{'graph'}->set_vertex_attribute(
-    #                     $rotamer_id,
-    #                     'energy',
-    #                     $rotamer_energies->{$rotamer_id}
-    #                 );
-    #                 $self->{'graph'}->add_edge( $rotamer_id,
-    #                                             $unique_residue_key );
-    #
-    #                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-    #                     $self->{'graph'}->add_vertex( $neighbour_rotamer_id );
-    #                     $self->{'graph'}->set_vertex_attribute(
-    #                         $neighbour_rotamer_id,
-    #                         'type',
-    #                         'rotamer'
-    #                     );
-    #                     $self->{'graph'}->set_vertex_attribute(
-    #                         $neighbour_rotamer_id,
-    #                         'angles',
-    #                         $rotamer_to_angles{$neighbour_unique_residue_key}
-    #                                           {$neighbour_rotamer_id}
-    #                     );
-    #                     $self->{'graph'}->set_vertex_attribute(
-    #                         $neighbour_rotamer_id,
-    #                         'energy',
-    #                         $rotamer_energies->{$neighbour_rotamer_id}
-    #                     );
-    #                     $self->{'graph'}->add_edge( $neighbour_rotamer_id,
-    #                                                 $neighbour_unique_residue_key );
-    #                     $self->{'graph'}->add_edge( $rotamer_id,
-    #                                                 $neighbour_rotamer_id );
-    #                 }
-    #             }
-    #         }
+                for my $rotamer_id ( @rotamer_ids ) {
+                    for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
+                        $self->{'rotamer_pairs'}{$rotamer_id}{$neighbour_rotamer_id} =
+                            1;
+                        $self->{'rotamer_pairs'}{$neighbour_rotamer_id}{$rotamer_id} =
+                            1;
+                    }
+                }
+            }
         }
     }
 
