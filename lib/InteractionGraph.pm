@@ -89,6 +89,11 @@ sub new
                 unique_residue_key( $atom_site->{$atom_id} );
 
             $self->{'graph'}->add_vertex( $unique_residue_key );
+            $self->{'graph'}->set_vertex_attribute(
+                $unique_residue_key,
+                'type',
+                'residue'
+            );
 
             my $residue_site =
                 filter_by_unique_residue_key( $atom_site,
@@ -113,6 +118,11 @@ sub new
                 next if $unique_residue_key eq $neighbour_unique_residue_key;
 
                 $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
+                $self->{'graph'}->set_vertex_attribute(
+                    $neighbour_unique_residue_key,
+                    'type',
+                    'residue'
+                );
 
                 my $neighbour_residue_site =
                     filter_by_unique_residue_key( $atom_site,
@@ -151,6 +161,11 @@ sub new
                     $self->{'graph'}->add_vertex( $rotamer_id );
                     $self->{'graph'}->set_vertex_attribute(
                         $rotamer_id,
+                        'type',
+                        'rotamer'
+                    );
+                    $self->{'graph'}->set_vertex_attribute(
+                        $rotamer_id,
                         'angles',
                         $rotamer_to_angles{$unique_residue_key}{$rotamer_id}
                     );
@@ -165,6 +180,11 @@ sub new
 
                     for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                         $self->{'graph'}->add_vertex( $neighbour_rotamer_id );
+                        $self->{'graph'}->set_vertex_attribute(
+                            $neighbour_rotamer_id,
+                            'type',
+                            'rotamer'
+                        );
                         $self->{'graph'}->set_vertex_attribute(
                             $neighbour_rotamer_id,
                             'angles',
