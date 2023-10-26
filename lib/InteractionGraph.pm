@@ -50,6 +50,7 @@ sub new
     my $self = { 'graph' => Graph::Undirected->new,
                  'residue' => undef };
 
+    my %rotamer_to_angles = ();
     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
         my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
         my $rotamer_id = $rotamer_angle->{'rotamer_id'};
@@ -59,14 +60,8 @@ sub new
             $rotamer_angle->{'label_asym_id'},
             $rotamer_angle->{'pdbx_PDB_model_num'},
             $rotamer_angle->{'label_alt_id'};
-        $self->{'residue'}{$unique_residue_key}{$rotamer_id}{'angles'}
-                                                            {$rotamer_angle_id} =
+        $rotamer_to_angles{$unique_residue_key}{$rotamer_id}{$rotamer_angle_id}=
             $rotamer_angle;
-        if( ! exists $self->{'residue'}{$unique_residue_key}{$rotamer_id}
-                                                            {'energy'} ) {
-            $self->{'residue'}{$unique_residue_key}{$rotamer_id}{'energy'} =
-                $rotamer_energies->{$rotamer_id};
-        }
     }
 
     # Determining interaction grid.
@@ -95,7 +90,7 @@ sub new
 
             $self->{'graph'}->add_vertex( $unique_residue_key );
 
-            my @rotamer_ids = keys %{ $self->{'residue'}{$unique_residue_key} };
+            my @rotamer_ids = keys %{ $rotamer_to_angles{$unique_residue_key} };
 
             for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
                 my $neighbour_unique_residue_key =
@@ -122,15 +117,26 @@ sub new
                                             $neighbour_unique_residue_key );
 
                 my @neighbour_rotamer_ids =
-                    keys %{ $self->{'residue'}{$neighbour_unique_residue_key} };
+                    keys %{ $rotamer_to_angles{$neighbour_unique_residue_key} };
 
                 for my $rotamer_id ( @rotamer_ids ) {
                     $self->{'graph'}->add_vertex( $rotamer_id );
+                    $self->{'graph'}->set_vertex_attribute(
+                        $rotamer_id,
+                        'energy',
+                        $rotamer_energies->{$rotamer_id}
+                    );
                     $self->{'graph'}->add_edge( $rotamer_id,
                                                 $unique_residue_key );
 
+
                     for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                         $self->{'graph'}->add_vertex( $neighbour_rotamer_id );
+                        $self->{'graph'}->set_vertex_attribute(
+                            $neighbour_rotamer_id,
+                            'energy',
+                            $rotamer_energies->{$neighbour_rotamer_id}
+                        );
                         $self->{'graph'}->add_edge( $neighbour_rotamer_id,
                                                     $neighbour_unique_residue_key );
                         $self->{'graph'}->add_edge( $rotamer_id,
@@ -145,6 +151,11 @@ sub new
 }
 
 # --------------------------------- Methods ---------------------------------- #
+
+sub predict
+{
+
+}
 
 sub to_tsv
 {
