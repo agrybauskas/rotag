@@ -93,9 +93,7 @@ sub new
             my $unique_residue_key =
                 unique_residue_key( $atom_site->{$atom_id} );
 
-            if( ! $self->{'graph'}->has_vertex( $unique_residue_key ) ) {
-                $self->{'graph'}->has_vertex( $unique_residue_key );
-            }
+            $self->{'graph'}->has_vertex( $unique_residue_key );
 
             my @rotamer_ids = keys %{ $self->{'residue'}{$unique_residue_key} };
 
@@ -105,9 +103,7 @@ sub new
 
                 next if $unique_residue_key eq $neighbour_unique_residue_key;
 
-                if( ! $self->{'graph'}->has_vertex( $neighbour_unique_residue_key ) ) {
-                    $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
-                }
+                $self->{'graph'}->add_vertex( $neighbour_unique_residue_key );
 
                 next if $self->{'graph'}->has_edge(
                     $unique_residue_key, $neighbour_unique_residue_key
@@ -122,39 +118,23 @@ sub new
 
                 next if $bond_length > $edge_length_interaction;
 
-                if( ! $self->{'graph'}->has_edge( $unique_residue_key,
-                                                  $neighbour_unique_residue_key ) ) {
-                    $self->{'graph'}->add_edge( $unique_residue_key,
-                                                $neighbour_unique_residue_key );
-                }
+                $self->{'graph'}->add_edge( $unique_residue_key,
+                                            $neighbour_unique_residue_key );
 
                 my @neighbour_rotamer_ids =
                     keys %{ $self->{'residue'}{$neighbour_unique_residue_key} };
 
                 for my $rotamer_id ( @rotamer_ids ) {
-                    if( ! $self->{'graph'}->has_vertex( $rotamer_id ) ) {
-                        $self->{'graph'}->add_vertex( $rotamer_id );
-                    }
-                    if( ! $self->{'graph'}->has_edge( $rotamer_id,
-                                                      $unique_residue_key ) ) {
-                        $self->{'graph'}->add_edge( $rotamer_id,
-                                                    $unique_residue_key );
-                    }
+                    $self->{'graph'}->add_vertex( $rotamer_id );
+                    $self->{'graph'}->add_edge( $rotamer_id,
+                                                $unique_residue_key );
 
                     for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                        if( ! $self->{'graph'}->has_vertex( $neighbour_rotamer_id ) ) {
-                            $self->{'graph'}->add_vertex( $neighbour_rotamer_id );
-                        }
-                        if( ! $self->{'graph'}->has_edge( $neighbour_rotamer_id,
-                                                          $neighbour_unique_residue_key ) ) {
-                            $self->{'graph'}->add_edge( $neighbour_rotamer_id,
-                                                        $neighbour_unique_residue_key );
-                        }
-                        if( ! $self->{'graph'}->has_edge( $rotamer_id,
-                                                          $neighbour_rotamer_id ) ) {
-                            $self->{'graph'}->add_edge( $rotamer_id,
-                                                        $neighbour_rotamer_id );
-                        }
+                        $self->{'graph'}->add_vertex( $neighbour_rotamer_id );
+                        $self->{'graph'}->add_edge( $neighbour_rotamer_id,
+                                                    $neighbour_unique_residue_key );
+                        $self->{'graph'}->add_edge( $rotamer_id,
+                                                    $neighbour_rotamer_id );
                     }
                 }
             }
