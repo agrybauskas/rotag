@@ -54,18 +54,20 @@ sub new
                  'rotamer_energies' => undef };
 
     # my %rotamer_to_angles = ();
-    # for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
-    #     my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
-    #     my $rotamer_id = $rotamer_angle->{'rotamer_id'};
-    #     my $unique_residue_key =
-    #         sprintf '%s,%s,%s,%s',
-    #         $rotamer_angle->{'label_seq_id'},
-    #         $rotamer_angle->{'label_asym_id'},
-    #         $rotamer_angle->{'pdbx_PDB_model_num'},
-    #         $rotamer_angle->{'label_alt_id'};
-    #     $rotamer_to_angles{$unique_residue_key}{$rotamer_id}{$rotamer_angle_id}=
-    #         $rotamer_angle;
-    # }
+    for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
+        my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
+        my $rotamer_id = $rotamer_angle->{'rotamer_id'};
+        my $unique_residue_key =
+            sprintf '%s,%s,%s,%s',
+            $rotamer_angle->{'label_seq_id'},
+            $rotamer_angle->{'label_asym_id'},
+            $rotamer_angle->{'pdbx_PDB_model_num'},
+            $rotamer_angle->{'label_alt_id'};
+        $self->{'rotamer_to_angles'}{$rotamer_id}{$rotamer_angle_id} =
+            $rotamer_angle;
+        $self->{'rotamer_energies'}{$rotamer_id} =
+            $rotamer_energies->{$rotamer_id};
+    }
 
     # # Determining interaction grid.
     # my $edge_length_interaction =
