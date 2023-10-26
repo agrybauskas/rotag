@@ -176,8 +176,16 @@ sub predict
 
     my %visited_residues = ();
     my %visited_rotamers = ();
-    my $residue_count = scalar keys %{ $residue_pairs };
-    my $rotamer_count = scalar keys %{ $rotamer_pairs };
+
+    my @next_pairs = ();
+
+    while( @next_pairs ) {
+
+        # Reset.
+        @next_pairs = ();
+    }
+
+    return;
 }
 
 sub to_tsv
