@@ -47,8 +47,7 @@ sub new
             " tag.\n";
     }
 
-    my $self = { 'graph' => Graph::Undirected->new,
-                 'residue' => undef };
+    my $self = { 'graph' => Graph::Undirected->new };
 
     my %rotamer_to_angles = ();
     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
@@ -213,7 +212,8 @@ sub new
 
 sub predict
 {
-
+    my ( $self ) = @_;
+    my $interaction_graph = $self->{'graph'};
 }
 
 sub to_tsv
