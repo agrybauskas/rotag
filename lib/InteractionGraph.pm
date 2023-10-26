@@ -123,6 +123,11 @@ sub new
                     $self->{'graph'}->add_vertex( $rotamer_id );
                     $self->{'graph'}->set_vertex_attribute(
                         $rotamer_id,
+                        'angles',
+                        $rotamer_to_angles{$unique_residue_key}{$rotamer_id}
+                    );
+                    $self->{'graph'}->set_vertex_attribute(
+                        $rotamer_id,
                         'energy',
                         $rotamer_energies->{$rotamer_id}
                     );
@@ -132,6 +137,12 @@ sub new
 
                     for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                         $self->{'graph'}->add_vertex( $neighbour_rotamer_id );
+                        $self->{'graph'}->set_vertex_attribute(
+                            $neighbour_rotamer_id,
+                            'angles',
+                            $rotamer_to_angles{$neighbour_unique_residue_key}
+                                              {$neighbour_rotamer_id}
+                        );
                         $self->{'graph'}->set_vertex_attribute(
                             $neighbour_rotamer_id,
                             'energy',
