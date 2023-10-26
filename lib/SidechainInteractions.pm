@@ -169,8 +169,15 @@ sub new
 sub predict
 {
     my ( $self, $options ) = @_;
+    my ( $residue_pairs, $rotamer_pairs ) =
+        ( $self->{'residue_pairs'}, $self->{'rotamer_pairs'} );
     my ( $non_bonded_potential, $bonded_potential ) =
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
+
+    my %visited_residues = ();
+    my %visited_rotamers = ();
+    my $residue_count = scalar keys %{ $residue_pairs };
+    my $rotamer_count = scalar keys %{ $rotamer_pairs };
 }
 
 sub to_tsv
