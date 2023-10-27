@@ -181,23 +181,24 @@ sub predict
     my ( $non_bonded_potential, $bonded_potential ) =
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
 
-    my %rotamer_neighbour_counter = ();
-    my %visited_rotamers = ();
-
-    my @sorted_residues =
+    my @sorted_unique_residue_ids =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
                scalar( keys %{ $rotamer_pairs->{$b} } ) }
         keys %{ $residue_pairs };
-    my @next_rotamer_ids =
-        keys %{ $rotamer_pairs->{$sorted_residues[0]} };
 
-    while( @next_rotamer_ids ) {
-        my $rotamer_id = shift @next_rotamer_ids;
-
-        next if $visited_rotamers{$rotamer_id};
-
-        $visited_rotamers{$rotamer_id} = 1;
+    while( @sorted_unique_residue_ids ) {
+        my $unique_residue_id = shift @sorted_unique_residue_ids;
+        my @rotamer_ids = keys %{ $rotamer_pairs->{$unique_residue_id} };
+        my @neighbour_unique_residue_ids =
+            map { $_ }
+            sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
+                   scalar( keys %{ $rotamer_pairs->{$b} } ) }
+            keys %{ $residue_pairs->{$unique_residue_id} };
+        for my $neighbour_unique_residue_id ( @neighbour_unique_residue_ids ) {
+            my @neighbour_rotamer_ids =
+                keys %{ $rotamer_pairs->{$neighbour_unique_residue_id} };
+        }
     }
 
     return;
