@@ -174,10 +174,12 @@ sub predict
     my ( $non_bonded_potential, $bonded_potential ) =
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
 
+    my %residue_neighbour_counter = ();
+    my %rotamer_neighbour_counter = ();
     my %visited_residues = ();
     my %visited_rotamers = ();
 
-    my @next_pairs = ();
+    my @next_pairs = (); # Stack-based queue.
 
     while( @next_pairs ) {
 
