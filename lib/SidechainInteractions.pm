@@ -181,6 +181,7 @@ sub predict
     my ( $non_bonded_potential, $bonded_potential ) =
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
 
+    my %visited_rotamer_pairs = ();
     my @sorted_unique_residue_ids =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
