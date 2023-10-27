@@ -46,7 +46,8 @@ sub new
             " tag.\n";
     }
 
-    my $self = { 'residue_pairs' => undef,
+    my $self = { 'parameters' => $parameters,
+                 'residue_pairs' => undef,
                  'residue_atom_site' => undef,
                  'rotamer_pairs' => undef,
                  'rotamer_atom_site' => undef,
@@ -178,9 +179,10 @@ sub new
 sub predict
 {
     my ( $self, $options ) = @_;
-    my ( $residue_pairs, $rotamer_pairs, $rotamer_angles, $residue_atom_site,
-         $rotamer_atom_site ) =
-        ( $self->{'residue_pairs'},
+    my ( $parameters, $residue_pairs, $rotamer_pairs, $rotamer_angles,
+         $residue_atom_site, $rotamer_atom_site ) =
+        ( $self->{'parameters'},
+          $self->{'residue_pairs'},
           $self->{'rotamer_pairs'},
           $self->{'rotamer_angles'},
           $self->{'residue_atom_site'},
@@ -189,29 +191,37 @@ sub predict
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
 
     my %visited_rotamer_pairs = ();
-    my @sorted_unique_residue_ids =
+    my @sorted_unique_residue_keys =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
                scalar( keys %{ $rotamer_pairs->{$b} } ) }
         keys %{ $residue_pairs };
 
-    while( @sorted_unique_residue_ids ) {
-        my $unique_residue_id = shift @sorted_unique_residue_ids;
-        my @rotamer_ids = keys %{ $rotamer_pairs->{$unique_residue_id} };
-        my @neighbour_unique_residue_ids =
+    while( @sorted_unique_residue_keys ) {
+        my $unique_residue_key = shift @sorted_unique_residue_keys;
+        my @rotamer_ids = keys %{ $rotamer_pairs->{$unique_residue_key} };
+        my @neighbour_unique_residue_keys =
             map { $_ }
             sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
                    scalar( keys %{ $rotamer_pairs->{$b} } ) }
-            keys %{ $residue_pairs->{$unique_residue_id} };
-        for my $neighbour_unique_residue_id ( @neighbour_unique_residue_ids ) {
+            keys %{ $residue_pairs->{$unique_residue_key} };
+        for my $neighbour_unique_residue_key ( @neighbour_unique_residue_keys ){
             my @neighbour_rotamer_ids =
-                keys %{ $rotamer_pairs->{$neighbour_unique_residue_id} };
+                keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
             for my $rotamer_id ( @rotamer_ids ) {
                 my %angles =
                     map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
                           $rotamer_angles->{$rotamer_id}{$_}{'value'} }
                     keys %{ $rotamer_angles->{$rotamer_id} };
+
+                if( ! exists $rotamer_atom_site->{$rotamer_id} ) {
+                    my %rotamer_site =
+                        %{ clone( $residue_atom_site->{$unique_residue_key} ) };
+                    replace_with_rotamer( $parameters, \%rotamer_site,
+                                          $unique_residue_key, \%angles );
+                    $rotamer_atom_site->{$rotamer_id} = { %rotamer_site };
+                }
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                     next if $visited_rotamer_pairs{$rotamer_id}
