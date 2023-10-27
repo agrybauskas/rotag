@@ -210,12 +210,11 @@ sub predict
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
             for my $rotamer_id ( @rotamer_ids ) {
-                my %angles =
-                    map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
-                          $rotamer_angles->{$rotamer_id}{$_}{'value'} }
-                    keys %{ $rotamer_angles->{$rotamer_id} };
-
                 if( ! exists $rotamer_atom_site->{$rotamer_id} ) {
+                    my %angles =
+                        map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
+                              $rotamer_angles->{$rotamer_id}{$_}{'value'} }
+                        keys %{ $rotamer_angles->{$rotamer_id} };
                     my %rotamer_site =
                         %{ clone( $residue_atom_site->{$unique_residue_key} ) };
                     replace_with_rotamer( $parameters, \%rotamer_site,
@@ -233,6 +232,21 @@ sub predict
                         1;
                     $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} =
                         1;
+
+                    if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} ) {
+                        my %neighbour_angles =
+                            map { $rotamer_angles->{$neighbour_rotamer_id}{$_}{'type'} =>
+                                  $rotamer_angles->{$neighbour_rotamer_id}{$_}{'value'} }
+                            keys %{ $rotamer_angles->{$neighbour_rotamer_id} };
+                        my %neighbour_rotamer_site =
+                            %{ clone( $residue_atom_site->{$neighbour_unique_residue_key} ) };
+                        replace_with_rotamer( $parameters,
+                                              \%neighbour_rotamer_site,
+                                              $unique_residue_key,
+                                              \%neighbour_angles );
+                        $rotamer_atom_site->{$neighbour_rotamer_id} =
+                            { %neighbour_rotamer_site };
+                    }
                 }
             }
         }
