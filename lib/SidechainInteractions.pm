@@ -47,7 +47,9 @@ sub new
     }
 
     my $self = { 'residue_pairs' => undef,
+                 'residue_atom_site' => undef,
                  'rotamer_pairs' => undef,
+                 'rotamer_atom_site' => undef,
                  'rotamer_angles' => undef,
                  'rotamer_energies' => undef };
 
@@ -176,8 +178,13 @@ sub new
 sub predict
 {
     my ( $self, $options ) = @_;
-    my ( $residue_pairs, $rotamer_pairs ) =
-        ( $self->{'residue_pairs'}, $self->{'rotamer_pairs'} );
+    my ( $residue_pairs, $rotamer_pairs, $rotamer_angles, $residue_atom_site,
+         $rotamer_atom_site ) =
+        ( $self->{'residue_pairs'},
+          $self->{'rotamer_pairs'},
+          $self->{'rotamer_angles'},
+          $self->{'residue_atom_site'},
+          $self->{'rotamer_atom_site'} );
     my ( $non_bonded_potential, $bonded_potential ) =
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
 
@@ -201,6 +208,11 @@ sub predict
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_id} };
 
             for my $rotamer_id ( @rotamer_ids ) {
+                my %angles =
+                    map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
+                          $rotamer_angles->{$rotamer_id}{$_}{'value'} }
+                        keys %{ $rotamer_angles->{$rotamer_id} };
+
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                     next if $visited_rotamer_pairs{$rotamer_id}
                                                   {$neighbour_rotamer_id} ||
