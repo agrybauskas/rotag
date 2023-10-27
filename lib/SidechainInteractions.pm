@@ -199,6 +199,16 @@ sub predict
         for my $neighbour_unique_residue_id ( @neighbour_unique_residue_ids ) {
             my @neighbour_rotamer_ids =
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_id} };
+
+            for my $rotamer_id ( @rotamer_ids ) {
+                for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
+                    next if $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} ||
+                        $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id};
+
+                    $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} = 1;
+                    $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} = 1;
+                }
+            }
         }
     }
 
