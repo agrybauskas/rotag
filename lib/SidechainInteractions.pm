@@ -179,12 +179,17 @@ sub predict
     my %visited_residues = ();
     my %visited_rotamers = ();
 
-    my @next_pairs = (); # Stack-based queue.
+    # Stack-based queue.
+    my @next_pairs =
+        map { $_ }
+        sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
+               scalar( keys %{ $rotamer_pairs->{$b} } ) }
+        keys %{ $residue_pairs };
 
     while( @next_pairs ) {
-
-        # Reset.
-        @next_pairs = ();
+        # First, residues with lowest count of rotamers are calculated.
+        my ( $first_rotamer_id ) = shift @next_pairs;
+        my ( $second_rotamer_id ) = shift @next_pairs;
     }
 
     return;
