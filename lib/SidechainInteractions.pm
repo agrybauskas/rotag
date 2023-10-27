@@ -211,13 +211,13 @@ sub predict
                 my %angles =
                     map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
                           $rotamer_angles->{$rotamer_id}{$_}{'value'} }
-                        keys %{ $rotamer_angles->{$rotamer_id} };
+                    keys %{ $rotamer_angles->{$rotamer_id} };
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                     next if $visited_rotamer_pairs{$rotamer_id}
                                                   {$neighbour_rotamer_id} ||
-                        $visited_rotamer_pairs{$neighbour_rotamer_id}
-                                              {$rotamer_id};
+                            $visited_rotamer_pairs{$neighbour_rotamer_id}
+                                                  {$rotamer_id};
 
                     $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} =
                         1;
