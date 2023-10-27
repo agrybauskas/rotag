@@ -47,13 +47,11 @@ sub new
     }
 
     my $self = { 'residue_pairs' => undef,
-                 'residue_atom_site' => undef,
-                 'residue_to_rotamers' => undef,
                  'rotamer_pairs' => undef,
                  'rotamer_angles' => undef,
                  'rotamer_energies' => undef };
 
-    # my %rotamer_to_angles = ();
+    my %residue_to_rotamers = ();
     for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
         my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
         my $rotamer_id = $rotamer_angle->{'rotamer_id'};
@@ -64,7 +62,7 @@ sub new
             $rotamer_angle->{'pdbx_PDB_model_num'},
             $rotamer_angle->{'label_alt_id'};
 
-        $self->{'residue_to_rotamers'}{$unique_residue_key}{$rotamer_id} = 1;
+        $residue_to_rotamers{$unique_residue_key}{$rotamer_id} = 1;
         $self->{'rotamer_angles'}{$rotamer_id}{$rotamer_angle_id} =
             $rotamer_angle;
         $self->{'rotamer_energies'}{$rotamer_id} =
@@ -110,7 +108,7 @@ sub new
             }
 
             my @rotamer_ids =
-                keys %{ $self->{'residue_to_rotamers'}{$unique_residue_key} };
+                keys %{ $residue_to_rotamers{$unique_residue_key} };
 
             for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
                 my $neighbour_unique_residue_key =
@@ -123,11 +121,14 @@ sub new
                 $self->{'residue_pairs'}{$neighbour_unique_residue_key}
                                         {$unique_residue_key} = 1;
 
-                if( ! exists $self->{'residue_atom_site'}{$neighbour_unique_residue_key} ) {
+                if( ! exists $self->{'residue_atom_site'}
+                                    {$neighbour_unique_residue_key} ) {
                     my $neighbour_residue_site =
-                        filter_by_unique_residue_key( $atom_site,
-                                                      $neighbour_unique_residue_key,
-                                                      1 );
+                        filter_by_unique_residue_key(
+                            $atom_site,
+                            $neighbour_unique_residue_key,
+                            1
+                        );
 
                     connect_atoms( $parameters, $neighbour_residue_site );
                     hybridization( $parameters, $neighbour_residue_site );
@@ -147,13 +148,19 @@ sub new
                 next if $bond_length > $edge_length_interaction;
 
                 my @neighbour_rotamer_ids =
-                    keys %{ $self->{'residue_to_rotamers'}{$neighbour_unique_residue_key} };
+                    keys %{$residue_to_rotamers{$neighbour_unique_residue_key}};
 
                 for my $rotamer_id ( @rotamer_ids ) {
                     for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                        $self->{'rotamer_pairs'}{$rotamer_id}{$neighbour_rotamer_id} =
+                        $self->{'rotamer_pairs'}
+                               {$unique_residue_key}
+                               {$rotamer_id}
+                               {$neighbour_rotamer_id} =
                             1;
-                        $self->{'rotamer_pairs'}{$neighbour_rotamer_id}{$rotamer_id} =
+                        $self->{'rotamer_pairs'}
+                               {$neighbour_unique_residue_key}
+                               {$neighbour_rotamer_id}
+                               {$rotamer_id} =
                             1;
                     }
                 }
@@ -174,22 +181,23 @@ sub predict
     my ( $non_bonded_potential, $bonded_potential ) =
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
 
-    my %residue_neighbour_counter = ();
     my %rotamer_neighbour_counter = ();
-    my %visited_residues = ();
     my %visited_rotamers = ();
 
-    # Stack-based queue.
-    my @next_pairs =
+    my @sorted_residues =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
                scalar( keys %{ $rotamer_pairs->{$b} } ) }
         keys %{ $residue_pairs };
+    my @next_rotamer_ids =
+        keys %{ $rotamer_pairs->{$sorted_residues[0]} };
 
-    while( @next_pairs ) {
-        # First, residues with lowest count of rotamers are calculated.
-        my ( $first_rotamer_id ) = shift @next_pairs;
-        my ( $second_rotamer_id ) = shift @next_pairs;
+    while( @next_rotamer_ids ) {
+        my $rotamer_id = shift @next_rotamer_ids;
+
+        next if $visited_rotamers{$rotamer_id};
+
+        $visited_rotamers{$rotamer_id} = 1;
     }
 
     return;
