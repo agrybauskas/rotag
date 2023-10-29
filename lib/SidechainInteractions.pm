@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( predict_sidechains );
 
 use Clone qw( clone );
 
