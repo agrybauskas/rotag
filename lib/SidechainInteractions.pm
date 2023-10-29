@@ -276,6 +276,11 @@ sub dump
 {
     my ( $self ) = @_;
     my ( $rotamer_energies ) = ( $self->{'rotamer_energies'} );
+
+    my %pdbx_data = ();
+    $pdbx_data{'_[local]_pairwise_energy'}{'metadata'}{'attributes'} =
+        [ 'id', 'rotamer_id_1', 'rotamer_id_2', 'type', 'value' ];
+
     my %visited_rotamer_pairs = ();
     for my $rotamer_id ( sort keys %{ $rotamer_energies } ) {
         for my $neighbour_rotamer_id (
