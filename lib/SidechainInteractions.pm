@@ -272,15 +272,21 @@ sub predict
     return;
 }
 
-sub to_tsv
+sub dump
 {
-    # my ( $self ) = @_;
-    # printf "%s\t%s\n", 'node1', 'node2';
-    # for my $vertex ( $self->{'graph'}->vertices ) {
-    #     for my $neighbour ( $self->{'graph'}->neighbours( $vertex ) ) {
-    #         printf "%s\t%s\n", $vertex, $neighbour;
-    #     }
-    # }
+    my ( $self ) = @_;
+    my ( $rotamer_energies ) = ( $self->{'rotamer_energies'} );
+    my %visited_rotamer_pairs = ();
+    for my $rotamer_id ( sort keys %{ $rotamer_energies } ) {
+        for my $neighbour_rotamer_id (
+            sort keys %{ $rotamer_energies->{$rotamer_id} } ) {
+            next if $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id}||
+                $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id};
+
+            $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} = 1;
+            $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} = 1;
+        }
+    }
 }
 
 1;
