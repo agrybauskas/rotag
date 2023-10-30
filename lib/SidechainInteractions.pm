@@ -188,7 +188,7 @@ sub predict
     my $cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %visited_rotamer_pairs = ();
-    my %residue_interaction_counter = ();
+    my %residue_interaction_flag = ();
     my @sorted_unique_residue_keys =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
@@ -265,6 +265,14 @@ sub predict
                                {$neighbour_rotamer_id}
                                {$rotamer_id} =
                             $pairwise_energy_sum;
+
+                        # Marks that there are at least one interacting rotamer.
+                        $residue_interaction_flag{$unique_residue_key}
+                                                 {$neighbour_unique_residue_key}
+                                                 {$rotamer_id} = 1;
+                        $residue_interaction_flag{$neighbour_unique_residue_key}
+                                                 {$unique_residue_key}
+                                                 {$neighbour_rotamer_id} = 1;
                     }
                 }
             }
