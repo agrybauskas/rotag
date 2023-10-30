@@ -138,9 +138,8 @@ for my $pdbx_file ( @ARGV ) {
                 \&ForceField::Bonded::general,
         } );
 
-        my $pdbx_data = $sidechain_interactions->pdbx_data();
         if( $output_format eq 'pdbx' ) {
-            to_pdbx( $pdbx_data );
+            to_pdbx( $sidechain_interactions->get_rotamer_energies() );
         } elsif( $output_format eq 'tsv' ) {
 
         }

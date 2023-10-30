@@ -273,7 +273,7 @@ sub predict
     return;
 }
 
-sub pdbx_data
+sub get_rotamer_energies
 {
     my ( $self ) = @_;
     my ( $rotamer_energies ) = ( $self->{'rotamer_energies'} );
