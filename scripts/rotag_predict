@@ -138,8 +138,13 @@ for my $pdbx_file ( @ARGV ) {
                 \&ForceField::Bonded::general,
         } );
 
+        my $updated_rotamer_angles =
+            $sidechain_interactions->get_rotamer_angles();
+        my $predicted_pairwise_rotamer_energies =
+            $sidechain_interactions->get_pairwise_rotamer_energies();
+
         if( $output_format eq 'pdbx' ) {
-            to_pdbx( $sidechain_interactions->get_rotamer_energies() );
+            to_pdbx( $updated_rotamer_angles );
         } elsif( $output_format eq 'tsv' ) {
 
         }

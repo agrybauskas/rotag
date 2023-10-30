@@ -273,7 +273,7 @@ sub predict
     return;
 }
 
-sub get_rotamer_energies
+sub get_pairwise_rotamer_energies
 {
     my ( $self ) = @_;
     my ( $rotamer_energies ) = ( $self->{'rotamer_energies'} );
@@ -310,6 +310,21 @@ sub get_rotamer_energies
         }
     }
 
+    return \%pdbx_data;
+}
+
+sub get_rotamer_angles
+{
+    my ( $self ) = @_;
+    my ( $rotamer_angles ) = ( $self->{'rotamer_angles'} );
+    my %pdbx_data = ();
+    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'} =
+        [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
+          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
+          'units' ];
+    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
+    # $pdbx_data{'_[local]_rotamer_angle'}{'data'} = $rotamer_angles;
     return \%pdbx_data;
 }
 
