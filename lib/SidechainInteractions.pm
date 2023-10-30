@@ -188,6 +188,7 @@ sub predict
     my $cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %visited_rotamer_pairs = ();
+    my %residue_interaction_counter = ();
     my @sorted_unique_residue_keys =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
