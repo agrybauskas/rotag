@@ -138,13 +138,10 @@ for my $pdbx_file ( @ARGV ) {
                 \&ForceField::Bonded::general,
         } );
 
+        my $pdbx_data = $sidechain_interactions->pdbx_data();
         if( $output_format eq 'pdbx' ) {
-            # # Prints out the PDBx.
-            # to_pdbx( $pdbx, { 'add_attributes' =>
-            #                       { '_atom_site' => [ '[local]_selection_state',
-            #                                           '[local]_selection_group' ] } } );
+            to_pdbx( $pdbx_data );
         } elsif( $output_format eq 'tsv' ) {
-            # $interaction_graph->to_tsv();
         }
     } else {
         error(

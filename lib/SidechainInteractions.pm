@@ -272,7 +272,7 @@ sub predict
     return;
 }
 
-sub dump
+sub pdbx_data
 {
     my ( $self ) = @_;
     my ( $rotamer_energies ) = ( $self->{'rotamer_energies'} );
@@ -280,18 +280,36 @@ sub dump
     my %pdbx_data = ();
     $pdbx_data{'_[local]_pairwise_energy'}{'metadata'}{'attributes'} =
         [ 'id', 'rotamer_id_1', 'rotamer_id_2', 'type', 'value' ];
+    $pdbx_data{'_[local]_pairwise_energy'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_pairwise_energy'}{'metadata'}{'type'} = 'record';
 
     my %visited_rotamer_pairs = ();
-    for my $rotamer_id ( sort keys %{ $rotamer_energies } ) {
-        for my $neighbour_rotamer_id (
-            sort keys %{ $rotamer_energies->{$rotamer_id} } ) {
+    my $id = 1;
+    for my $rotamer_id ( sort { $a <=> $b }
+                         keys %{ $rotamer_energies } ) {
+        for my $neighbour_rotamer_id ( sort { $a <=> $b }
+                                       keys %{ $rotamer_energies->{$rotamer_id} } ) {
             next if $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id}||
                 $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id};
 
             $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} = 1;
             $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} = 1;
+
+            use Data::Dumper;
+            print STDERR Dumper $rotamer_id;
+
+            # push @{ $pdbx_data{'_[local]_pairwise_energy'}{'data'} },
+            #     { 'id' => $id,
+            #       'rotamer_id_1' => $rotamer_id,
+            #       'rotamer_id_2' => $neighbour_rotamer_id,
+            #       'type' => undef,
+            #       'value' => undef };
+
+            $id++;
         }
     }
+
+    return \%pdbx_data;
 }
 
 1;
