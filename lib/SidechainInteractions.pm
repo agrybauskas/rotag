@@ -177,14 +177,13 @@ sub predict
 {
     my ( $self, $options ) = @_;
     my ( $parameters, $residue_pairs, $rotamer_pairs, $rotamer_angles,
-         $residue_atom_site, $rotamer_atom_site, $rotamer_energies ) =
+         $residue_atom_site, $rotamer_atom_site ) =
         ( $self->{'parameters'},
           $self->{'residue_pairs'},
           $self->{'rotamer_pairs'},
           $self->{'rotamer_angles'},
           $self->{'residue_atom_site'},
-          $self->{'rotamer_atom_site'},
-          $self->{'rotamer_energies'} );
+          $self->{'rotamer_atom_site'} );
     my ( $non_bonded_potential, $bonded_potential ) =
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
 
@@ -259,10 +258,10 @@ sub predict
 
                     # Under the cutoff limit.
                     if( $pairwise_energy_sum <= $cutoff_atom  ) {
-                        $rotamer_energies->{$rotamer_id}{$neighbour_rotamer_id}=
-                            $pairwise_energy_sum;
-                        $rotamer_energies->{$neighbour_rotamer_id}{$rotamer_id}=
-                            $pairwise_energy_sum;
+                    #     $rotamer_energies->{$rotamer_id}{$neighbour_rotamer_id}=
+                    #         $pairwise_energy_sum;
+                    #     $rotamer_energies->{$neighbour_rotamer_id}{$rotamer_id}=
+                    #         $pairwise_energy_sum;
                     }
                 }
             }
@@ -285,29 +284,26 @@ sub pdbx_data
 
     my %visited_rotamer_pairs = ();
     my $id = 1;
-    for my $rotamer_id ( sort { $a <=> $b }
-                         keys %{ $rotamer_energies } ) {
-        for my $neighbour_rotamer_id ( sort { $a <=> $b }
-                                       keys %{ $rotamer_energies->{$rotamer_id} } ) {
-            next if $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id}||
-                $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id};
+    # for my $rotamer_id ( sort { $a <=> $b }
+    #                      keys %{ $rotamer_energies } ) {
+    #     for my $neighbour_rotamer_id ( sort { $a <=> $b }
+    #                                    keys %{ $rotamer_energies->{$rotamer_id} } ) {
+    #         next if $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id}||
+    #             $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id};
 
-            $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} = 1;
-            $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} = 1;
+    #         $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} = 1;
+    #         $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} = 1;
 
-            use Data::Dumper;
-            print STDERR Dumper $rotamer_id;
+    #         # push @{ $pdbx_data{'_[local]_pairwise_energy'}{'data'} },
+    #         #     { 'id' => $id,
+    #         #       'rotamer_id_1' => $rotamer_id,
+    #         #       'rotamer_id_2' => $neighbour_rotamer_id,
+    #         #       'type' => undef,
+    #         #       'value' => undef };
 
-            # push @{ $pdbx_data{'_[local]_pairwise_energy'}{'data'} },
-            #     { 'id' => $id,
-            #       'rotamer_id_1' => $rotamer_id,
-            #       'rotamer_id_2' => $neighbour_rotamer_id,
-            #       'type' => undef,
-            #       'value' => undef };
-
-            $id++;
-        }
-    }
+    #         $id++;
+    #     }
+    # }
 
     return \%pdbx_data;
 }
