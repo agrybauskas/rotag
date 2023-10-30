@@ -89,14 +89,14 @@ my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
 for my $pdbx_file ( @ARGV ) {
-    my $pdbx = obtain_pdbx_data( $pdbx_file, \@category_list );
-    raw2indexed( $pdbx,
+    my $pdbx_data = obtain_pdbx_data( $pdbx_file, \@category_list );
+    raw2indexed( $pdbx_data,
                  { 'attributes' => { '_atom_site' => [ 'id' ],
                                      '_[local]_rotamer_angle' => [ 'id' ],
                                      '_[local]_rotamer_energy' => [ 'id' ] } } );
 
     # Reads file path, stdin and '-' operator.
-    my $atom_site = $pdbx->{'_atom_site'}{'data'};
+    my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
 
     if( ! defined $atom_site ) {
         warning( { 'program' => $0,
@@ -118,8 +118,8 @@ for my $pdbx_file ( @ARGV ) {
                   'is_list' => 1 } );
 
     if( $predict_sidechains ) {
-        my $rotamer_angles = $pdbx->{'_[local]_rotamer_angle'}{'data'};
-        my $rotamer_energies = $pdbx->{'_[local]_rotamer_energy'}{'data'};
+        my $rotamer_angles = $pdbx_data->{'_[local]_rotamer_angle'}{'data'};
+        my $rotamer_energies = $pdbx_data->{'_[local]_rotamer_energy'}{'data'};
 
         if( ! defined $rotamer_angles ) {
             warning( { 'program' => $0,
@@ -144,7 +144,7 @@ for my $pdbx_file ( @ARGV ) {
             $sidechain_interactions->get_pairwise_rotamer_energies();
 
         if( $output_format eq 'pdbx' ) {
-            to_pdbx( $predicted_pairwise_rotamer_energies );
+            to_pdbx( $pdbx_data );
         } elsif( $output_format eq 'tsv' ) {
 
         }
