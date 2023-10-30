@@ -67,8 +67,6 @@ sub new
         $residue_to_rotamers{$unique_residue_key}{$rotamer_id} = 1;
         $self->{'rotamer_angles'}{$rotamer_id}{$rotamer_angle_id} =
             $rotamer_angle;
-        $self->{'rotamer_energies'}{$rotamer_id} =
-            $rotamer_energies->{$rotamer_id};
     }
 
     # Determining interaction grid.
@@ -258,10 +256,14 @@ sub predict
 
                     # Under the cutoff limit.
                     if( $pairwise_energy_sum <= $cutoff_atom  ) {
-                    #     $rotamer_energies->{$rotamer_id}{$neighbour_rotamer_id}=
-                    #         $pairwise_energy_sum;
-                    #     $rotamer_energies->{$neighbour_rotamer_id}{$rotamer_id}=
-                    #         $pairwise_energy_sum;
+                        $self->{'rotamer_energies'}
+                               {$rotamer_id}
+                               {$neighbour_rotamer_id} =
+                            $pairwise_energy_sum;
+                        $self->{'rotamer_energies'}
+                               {$neighbour_rotamer_id}
+                               {$rotamer_id} =
+                            $pairwise_energy_sum;
                     }
                 }
             }
@@ -284,26 +286,27 @@ sub pdbx_data
 
     my %visited_rotamer_pairs = ();
     my $id = 1;
-    # for my $rotamer_id ( sort { $a <=> $b }
-    #                      keys %{ $rotamer_energies } ) {
-    #     for my $neighbour_rotamer_id ( sort { $a <=> $b }
-    #                                    keys %{ $rotamer_energies->{$rotamer_id} } ) {
-    #         next if $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id}||
-    #             $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id};
+    for my $rotamer_id ( sort { $a <=> $b }
+                         keys %{ $rotamer_energies } ) {
+        for my $neighbour_rotamer_id ( sort { $a <=> $b }
+                                       keys %{ $rotamer_energies->{$rotamer_id} } ) {
+            next if $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id}||
+                $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id};
 
-    #         $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} = 1;
-    #         $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} = 1;
+            $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} = 1;
+            $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} = 1;
 
-    #         # push @{ $pdbx_data{'_[local]_pairwise_energy'}{'data'} },
-    #         #     { 'id' => $id,
-    #         #       'rotamer_id_1' => $rotamer_id,
-    #         #       'rotamer_id_2' => $neighbour_rotamer_id,
-    #         #       'type' => undef,
-    #         #       'value' => undef };
+            push @{ $pdbx_data{'_[local]_pairwise_energy'}{'data'} },
+                { 'id' => $id,
+                  'rotamer_id_1' => $rotamer_id,
+                  'rotamer_id_2' => $neighbour_rotamer_id,
+                  'type' => undef,
+                  'value' =>
+                      $rotamer_energies->{$rotamer_id}{$neighbour_rotamer_id} };
 
-    #         $id++;
-    #     }
-    # }
+            $id++;
+        }
+    }
 
     return \%pdbx_data;
 }
