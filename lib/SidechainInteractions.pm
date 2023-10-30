@@ -266,7 +266,8 @@ sub predict
                                {$rotamer_id} =
                             $pairwise_energy_sum;
 
-                        # Marks that there are at least one interacting rotamer.
+                        # Marks that there are at least one interacting rotamer
+                        # per residue.
                         $residue_interaction_flag{$unique_residue_key}
                                                  {$neighbour_unique_residue_key}
                                                  {$rotamer_id} = 1;
