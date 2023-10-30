@@ -143,6 +143,10 @@ for my $pdbx_file ( @ARGV ) {
         my $predicted_pairwise_rotamer_energies =
             $sidechain_interactions->get_pairwise_rotamer_energies();
 
+        $pdbx_data->{'_[local]_pairwise_energy'} =
+            $sidechain_interactions->get_pairwise_rotamer_energies()
+                                   ->{'_[local]_pairwise_energy'};
+
         if( $output_format eq 'pdbx' ) {
             to_pdbx( $pdbx_data );
         } elsif( $output_format eq 'tsv' ) {
