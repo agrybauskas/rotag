@@ -300,7 +300,9 @@ sub pdbx_data
                 { 'id' => $id,
                   'rotamer_id_1' => $rotamer_id,
                   'rotamer_id_2' => $neighbour_rotamer_id,
-                  'type' => undef,
+                  # HACK: for now, the value is hardcoded until the options are
+                  # added.
+                  'type' => 'composite',
                   'value' =>
                       $rotamer_energies->{$rotamer_id}{$neighbour_rotamer_id} };
 
