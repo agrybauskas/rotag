@@ -229,7 +229,7 @@ sub predict
                 }
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                    # next if $ignore_rotamer{$neighbour_rotamer_id};
+                    next if $ignore_rotamer{$neighbour_rotamer_id};
 
                     if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} ) {
                         my %neighbour_angles =
@@ -240,7 +240,7 @@ sub predict
                             %{ clone( $residue_atom_site->{$neighbour_unique_residue_key} ) };
                         replace_with_rotamer( $parameters,
                                               \%neighbour_rotamer_site,
-                                              $unique_residue_key,
+                                              $neighbour_unique_residue_key,
                                               \%neighbour_angles );
                         $rotamer_atom_site->{$neighbour_rotamer_id} =
                             { %neighbour_rotamer_site };
