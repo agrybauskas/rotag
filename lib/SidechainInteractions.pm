@@ -187,7 +187,7 @@ sub predict
 
     my $cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
-    my %visited_residues = ();
+    my %visited_residue_pairs = ();
     my %ignore_rotamer = ();
     my @sorted_unique_residue_keys =
         map { $_ }
@@ -197,9 +197,6 @@ sub predict
 
     while( @sorted_unique_residue_keys ) {
         my $unique_residue_key = shift @sorted_unique_residue_keys;
-
-        $visited_residues{$unique_residue_key} = 1;
-
         my @rotamer_ids = keys %{ $rotamer_pairs->{$unique_residue_key} };
         my @neighbour_unique_residue_keys =
             map { $_ }
@@ -208,7 +205,11 @@ sub predict
             keys %{ $residue_pairs->{$unique_residue_key} };
 
         for my $neighbour_unique_residue_key ( @neighbour_unique_residue_keys ){
-            # next if $visited_residues{$neighbour_unique_residue_key};
+            next if $visited_residue_pairs{$neighbour_unique_residue_key}
+                                          {$unique_residue_key};
+
+            $visited_residue_pairs{$unique_residue_key}
+                                  {$neighbour_unique_residue_key} = 1;
 
             my @neighbour_rotamer_ids =
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
