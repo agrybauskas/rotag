@@ -277,11 +277,11 @@ sub predict
                         $pairwise_rotamer_count{$neighbour_rotamer_id} += 0;
                     }
                 }
+            }
 
-                for my $rotamer_id ( keys %pairwise_rotamer_count ) {
-                    if( ! $pairwise_rotamer_count{$rotamer_id} ) {
-                        $ignore_rotamers{$rotamer_id} = 1;
-                    }
+            for my $rotamer_id ( keys %pairwise_rotamer_count ) {
+                if( ! $pairwise_rotamer_count{$rotamer_id} ) {
+                    $ignore_rotamers{$rotamer_id} = 1;
                 }
             }
         }
