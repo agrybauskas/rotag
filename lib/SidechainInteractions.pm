@@ -12,8 +12,7 @@ use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
 use ForceField::NonBonded qw( general );
-use Measure qw( bond_length
-                energy );
+use Measure qw( bond_length );
 use PDBxParser qw( extract
                    filter_new
                    filter_by_unique_residue_key
