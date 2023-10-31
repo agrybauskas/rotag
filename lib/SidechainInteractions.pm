@@ -214,6 +214,7 @@ sub predict
             $visited_residue_pairs{$neighbour_unique_residue_key}
                                   {$unique_residue_key} = 1;
 
+            my %pairwise_rotamer_count = ();
             my @neighbour_rotamer_ids =
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
@@ -269,6 +270,11 @@ sub predict
                                {$neighbour_rotamer_id}
                                {$rotamer_id} =
                             $pairwise_energy_sum;
+                        $pairwise_rotamer_count{$rotamer_id} += 1;
+                        $pairwise_rotamer_count{$neighbour_rotamer_id} += 1;
+                    } else {
+                        $pairwise_rotamer_count{$rotamer_id} += 0;
+                        $pairwise_rotamer_count{$neighbour_rotamer_id} += 0;
                     }
                 }
             }
