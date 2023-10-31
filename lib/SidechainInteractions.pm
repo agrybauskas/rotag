@@ -252,13 +252,19 @@ sub predict
                     }
 
                     # Calculate pairwise energy.
-                    my $pairwise_energy_sum = pairwise_rotamer_energy(
-                        $parameters,
-                        $rotamer_atom_site->{$rotamer_id},
-                        $rotamer_atom_site->{$neighbour_rotamer_id},
-                        \&ForceField::Bonded::general,
-                        \&ForceField::NonBonded::general,
-                    );
+                    my $pairwise_energy_sum =
+                        ( pairwise_rotamer_energy(
+                              $parameters,
+                              $rotamer_atom_site->{$rotamer_id},
+                              $rotamer_atom_site->{$neighbour_rotamer_id},
+                              \&ForceField::Bonded::general,
+                              \&ForceField::NonBonded::general ) +
+                          pairwise_rotamer_energy(
+                              $parameters,
+                              $rotamer_atom_site->{$neighbour_rotamer_id},
+                              $rotamer_atom_site->{$rotamer_id},
+                              \&ForceField::Bonded::general,
+                              \&ForceField::NonBonded::general ) ) / 2;
 
                     # Under the cutoff limit.
                     if( $pairwise_energy_sum <= $cutoff_atom  ) {
