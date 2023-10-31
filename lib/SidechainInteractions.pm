@@ -205,11 +205,15 @@ sub predict
             keys %{ $residue_pairs->{$unique_residue_key} };
 
         for my $neighbour_unique_residue_key ( @neighbour_unique_residue_keys ){
-            next if $visited_residue_pairs{$neighbour_unique_residue_key}
+            next if $visited_residue_pairs{$unique_residue_key}
+                                          {$neighbour_unique_residue_key} ||
+                    $visited_residue_pairs{$neighbour_unique_residue_key}
                                           {$unique_residue_key};
 
             $visited_residue_pairs{$unique_residue_key}
                                   {$neighbour_unique_residue_key} = 1;
+            $visited_residue_pairs{$neighbour_unique_residue_key}
+                                  {$unique_residue_key} = 1;
 
             my @neighbour_rotamer_ids =
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
@@ -294,10 +298,12 @@ sub get_pairwise_rotamer_energies
 
     my %visited_rotamer_pairs = ();
     my $id = 1;
-    for my $rotamer_id ( sort { $a <=> $b }
-                         keys %{ $rotamer_energies } ) {
-        for my $neighbour_rotamer_id ( sort { $a <=> $b }
-                                       keys %{ $rotamer_energies->{$rotamer_id} } ) {
+    for my $rotamer_id (
+        sort { $a <=> $b }
+        keys %{ $rotamer_energies } ) {
+        for my $neighbour_rotamer_id (
+            sort { $a <=> $b }
+            keys %{ $rotamer_energies->{$rotamer_id} } ) {
             next if $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id}||
                 $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id};
 
