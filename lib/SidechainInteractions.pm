@@ -208,7 +208,7 @@ sub predict
             keys %{ $residue_pairs->{$unique_residue_key} };
 
         for my $neighbour_unique_residue_key ( @neighbour_unique_residue_keys ){
-            next if $visited_residues{$neighbour_unique_residue_key};
+            # next if $visited_residues{$neighbour_unique_residue_key};
 
             my @neighbour_rotamer_ids =
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
@@ -229,7 +229,7 @@ sub predict
                 }
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                    next if $ignore_rotamer{$neighbour_rotamer_id};
+                    # next if $ignore_rotamer{$neighbour_rotamer_id};
 
                     if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} ) {
                         my %neighbour_angles =
