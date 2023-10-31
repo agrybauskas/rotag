@@ -187,7 +187,7 @@ sub predict
     my $cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %visited_residue_pairs = ();
-    my %ignore_rotamer = ();
+    my %ignore_rotamers = ();
     my @sorted_unique_residue_keys =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
@@ -218,7 +218,7 @@ sub predict
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
             for my $rotamer_id ( @rotamer_ids ) {
-                my $include_rotamer = 0;
+                next if $ignore_rotamers{$rotamer_id};
 
                 if( ! exists $rotamer_atom_site->{$rotamer_id} ) {
                     my %angles =
@@ -233,7 +233,7 @@ sub predict
                 }
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                    next if $ignore_rotamer{$neighbour_rotamer_id};
+                    next if $ignore_rotamers{$neighbour_rotamer_id};
 
                     if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} ) {
                         my %neighbour_angles =
@@ -269,13 +269,7 @@ sub predict
                                {$neighbour_rotamer_id}
                                {$rotamer_id} =
                             $pairwise_energy_sum;
-
-                        $include_rotamer = 1;
                     }
-                }
-
-                if( ! $include_rotamer ) {
-                    $ignore_rotamer{$rotamer_id} = 1;
                 }
             }
         }
