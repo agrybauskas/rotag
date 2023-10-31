@@ -187,8 +187,8 @@ sub predict
 
     my $cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
-    my %visited_rotamer_pairs = ();
-    my %residue_interaction_flag = ();
+    my %visited_residues = ();
+    my %ignore_rotamer = ();
     my @sorted_unique_residue_keys =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
@@ -197,17 +197,25 @@ sub predict
 
     while( @sorted_unique_residue_keys ) {
         my $unique_residue_key = shift @sorted_unique_residue_keys;
+
+        $visited_residues{$unique_residue_key} = 1;
+
         my @rotamer_ids = keys %{ $rotamer_pairs->{$unique_residue_key} };
         my @neighbour_unique_residue_keys =
             map { $_ }
             sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
                    scalar( keys %{ $rotamer_pairs->{$b} } ) }
             keys %{ $residue_pairs->{$unique_residue_key} };
+
         for my $neighbour_unique_residue_key ( @neighbour_unique_residue_keys ){
+            next if $visited_residues{$neighbour_unique_residue_key};
+
             my @neighbour_rotamer_ids =
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
             for my $rotamer_id ( @rotamer_ids ) {
+                my $include_rotamer = 0;
+
                 if( ! exists $rotamer_atom_site->{$rotamer_id} ) {
                     my %angles =
                         map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
@@ -221,15 +229,7 @@ sub predict
                 }
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                    next if $visited_rotamer_pairs{$rotamer_id}
-                                                  {$neighbour_rotamer_id} ||
-                            $visited_rotamer_pairs{$neighbour_rotamer_id}
-                                                  {$rotamer_id};
-
-                    $visited_rotamer_pairs{$rotamer_id}{$neighbour_rotamer_id} =
-                        1;
-                    $visited_rotamer_pairs{$neighbour_rotamer_id}{$rotamer_id} =
-                        1;
+                    next if $ignore_rotamer{$neighbour_rotamer_id};
 
                     if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} ) {
                         my %neighbour_angles =
@@ -266,15 +266,12 @@ sub predict
                                {$rotamer_id} =
                             $pairwise_energy_sum;
 
-                        # Marks that there are at least one interacting rotamer
-                        # per residue.
-                        $residue_interaction_flag{$unique_residue_key}
-                                                 {$neighbour_unique_residue_key}
-                                                 {$rotamer_id} = 1;
-                        $residue_interaction_flag{$neighbour_unique_residue_key}
-                                                 {$unique_residue_key}
-                                                 {$neighbour_rotamer_id} = 1;
+                        $include_rotamer = 1;
                     }
+                }
+
+                if( ! $include_rotamer ) {
+                    $ignore_rotamer{$rotamer_id} = 1;
                 }
             }
         }
