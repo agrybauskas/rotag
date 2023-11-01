@@ -138,12 +138,16 @@ for my $pdbx_file ( @ARGV ) {
 
         my $updated_rotamer_angles =
             $sidechain_interactions->get_rotamer_angles();
-        my $predicted_pairwise_rotamer_energies =
+        my $pairwise_rotamer_energies =
             $sidechain_interactions->get_pairwise_rotamer_energies();
 
-        $pdbx_data->{'_[local]_pairwise_energy'} =
-            $sidechain_interactions->get_pairwise_rotamer_energies()
-                                   ->{'_[local]_pairwise_energy'};
+        use Data::Dumper;
+        print STDERR Dumper $pairwise_rotamer_energies;
+
+        if( exists $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}{'data'} ) {
+            $pdbx_data->{'_[local]_pairwise_energy'} =
+                $pairwise_rotamer_energies->{'_[local]_pairwise_energy'};
+        }
 
         if( $output_format eq 'pdbx' ) {
             to_pdbx( $pdbx_data );
