@@ -134,8 +134,6 @@ for my $pdbx_file ( @ARGV ) {
         $sidechain_interactions->predict( {
             'non_bonded_potential' =>
                 \&ForceField::NonBonded::general,
-            'bonded_potential' =>
-                \&ForceField::Bonded::general,
         } );
 
         my $updated_rotamer_angles =
