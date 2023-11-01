@@ -1030,13 +1030,6 @@ sub pairwise_rotamer_energy
 
     my $rotamer_energy_sum = 0;
     for my $rotamer_atom_id ( @rotamer_atom_ids ) {
-        # lowest_energy_state( $parameters,
-        #                      $rotamer_interaction_site{$rotamer_atom_id},
-        #                      [ map { $rotamer_interaction_site{$_} }
-        #                            @interaction_atom_ids ],
-        #                      $non_bonded_potential );
-
-        # Calculation of potential energy of non-bonded atoms.
         for my $neighbour_atom_id ( @interaction_atom_ids ) {
             if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
                 ( ! is_neighbour( \%rotamer_interaction_site,
