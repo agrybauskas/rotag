@@ -56,7 +56,7 @@ my $top_rank;
 my $top_ratio;
 my $min_max_ratio;
 my $only_unique_angles = 0;
-my $tags = '_atom_site,_[local]_rotamer_angle';
+my $tags = '_atom_site,_[local]_rotamer_angle,_[local]_rotamer_energy';
 my $output_format = 'pdbx';
 my @category_list = ( '_atom_site', '_[local]_rotamer_angle',
                       '_[local]_rotamer_energy' );
@@ -141,6 +141,8 @@ for my $pdbx_file ( @ARGV ) {
         ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
           'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
           'units' );
+    my @attributes_energies =
+        ( 'id', 'rotamer_id', 'calculation_method', 'value');
 
     my @rotamers;
     my %frequencies = ();
@@ -217,8 +219,12 @@ for my $pdbx_file ( @ARGV ) {
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'} =
         \@attributes_angles;
+    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'attributes'} =
+        \@attributes_energies;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
+    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'type'} = 'record';
 
     for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
         my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
