@@ -54,3 +54,13 @@ _[local]_rotamer_angle.units
 15 4 572 LYS B 1 . 0.250000 chi3 -180.000000 degrees
 16 4 572 LYS B 1 . 0.250000 chi4 0.000000 degrees
 #
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 23.365689
+2 2 composite 114.592592
+3 3 composite 37.537217
+4 4 composite 129.280770
+#

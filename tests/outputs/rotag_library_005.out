@@ -42,3 +42,11 @@ _[local]_rotamer_angle.units
 1 1 246 PHE A 1 . 1.000000 chi1 -108.000000 degrees
 2 1 246 PHE A 1 . 1.000000 chi2 -72.000000 degrees
 #
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 289.839570
+2 2 composite 308.097094
+#
