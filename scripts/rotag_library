@@ -256,7 +256,7 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     for my $energy_id ( sort { $a <=> $b } keys %{ $rotamer_energy } ) {
-        my $rotamer_id = $rotamer_angles->{$energy_id}{'rotamer_id'};
+        my $rotamer_id = $rotamer_energy->{$energy_id}{'rotamer_id'};
         if( any { $rotamer_id eq $_ } @rotamers ) {
             # TODO: refactoring is needed, because there is a repeating code
             # snippet.
