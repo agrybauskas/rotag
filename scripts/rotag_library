@@ -255,6 +255,28 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
+    for my $energy_id ( sort { $a <=> $b } keys %{ $rotamer_energy } ) {
+        my $rotamer_id = $rotamer_angles->{$energy_id}{'rotamer_id'};
+        if( any { $rotamer_id eq $_ } @rotamers ) {
+            # TODO: refactoring is needed, because there is a repeating code
+            # snippet.
+            my @energy_data = ();
+            for my $attribute ( @attributes_energies ) {
+                if( exists $rotamer_energy->{$energy_id}{$attribute} ) {
+                    push @energy_data, $rotamer_energy->{$energy_id}{$attribute};
+                } else {
+                    push @energy_data, '?';
+                }
+            }
+
+            push @{ $pdbx_data{'_[local]_rotamer_energy'}{'data'} },
+                { 'id' => $energy_data[0],
+                  'rotamer_id' => $energy_data[1],
+                  'calculation_method' => $energy_data[2],
+                  'value' => $energy_data[3] };
+        }
+    }
+
     if( $output_format eq 'pdbx' ) {
         to_pdbx( \%pdbx_data,
                  { 'add_attributes' =>
