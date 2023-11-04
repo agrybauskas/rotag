@@ -1,1 +1,127 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+ATOM 36 N N . TYR A 1 3 -4.354 3.455 -0.111 1
+ATOM 37 C CA . TYR A 1 3 -3.690 2.738 0.981 1
+ATOM 38 C C . TYR A 1 3 -4.102 1.256 1.074 1
+ATOM 39 O O . TYR A 1 3 -3.291 0.409 1.442 1
+ATOM 40 C CB . TYR A 1 3 -3.964 3.472 2.302 1
+ATOM 41 C CG . TYR A 1 3 -2.824 3.339 3.290 1
+ATOM 42 C CD1 . TYR A 1 3 -2.746 2.217 4.138 1
+ATOM 43 C CD2 . TYR A 1 3 -1.820 4.326 3.332 1
+ATOM 44 C CE1 . TYR A 1 3 -1.657 2.076 5.018 1
+ATOM 45 C CE2 . TYR A 1 3 -0.725 4.185 4.205 1
+ATOM 46 C CZ . TYR A 1 3 -0.639 3.053 5.043 1
+ATOM 47 O OH . TYR A 1 3 0.433 2.881 5.861 1
+ATOM 93 N N . TRP A 1 6 -2.074 -0.459 -1.528 1
+ATOM 94 C CA . TRP A 1 6 -0.716 -0.631 -0.993 1
+ATOM 95 C C . TRP A 1 6 -0.631 -1.766 0.044 1
+ATOM 96 O O . TRP A 1 6 0.295 -2.579 -0.004 1
+ATOM 97 C CB . TRP A 1 6 -0.221 0.703 -0.417 1
+ATOM 98 C CG . TRP A 1 6 1.148 0.652 0.194 1
+ATOM 99 C CD1 . TRP A 1 6 2.319 0.664 -0.482 1
+ATOM 100 C CD2 . TRP A 1 6 1.508 0.564 1.606 1
+ATOM 101 N NE1 . TRP A 1 6 3.371 0.560 0.411 1
+ATOM 102 C CE2 . TRP A 1 6 2.928 0.515 1.710 1
+ATOM 103 C CE3 . TRP A 1 6 0.779 0.524 2.812 1
+ATOM 104 C CZ2 . TRP A 1 6 3.599 0.445 2.938 1
+ATOM 105 C CZ3 . TRP A 1 6 1.439 0.433 4.053 1
+ATOM 106 C CH2 . TRP A 1 6 2.842 0.407 4.120 1
+ATOM 117 N N . LEU A 1 7 -1.600 -1.860 0.967 1
+ATOM 118 C CA . LEU A 1 7 -1.641 -2.932 1.963 1
+ATOM 119 C C . LEU A 1 7 -1.847 -4.319 1.342 1
+ATOM 120 O O . LEU A 1 7 -1.144 -5.248 1.742 1
+ATOM 121 C CB . LEU A 1 7 -2.710 -2.645 3.033 1
+ATOM 122 C CG . LEU A 1 7 -2.301 -1.579 4.069 1
+ATOM 123 C CD1 . LEU A 1 7 -3.475 -1.323 5.018 1
+ATOM 124 C CD2 . LEU A 1 7 -1.093 -2.007 4.914 1
+#
+loop_
+_[local]_rotamer_angle.id
+_[local]_rotamer_angle.rotamer_id
+_[local]_rotamer_angle.label_seq_id
+_[local]_rotamer_angle.label_comp_id
+_[local]_rotamer_angle.label_asym_id
+_[local]_rotamer_angle.pdbx_PDB_model_num
+_[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
+_[local]_rotamer_angle.type
+_[local]_rotamer_angle.value
+_[local]_rotamer_angle.units
+51 26 3 TYR A 1 . 1.000000 chi1 -80.000 degrees
+52 26 3 TYR A 1 . 1.000000 chi2 90.000 degrees
+879 440 6 TRP A 1 . 0.333333 chi1 -120.000 degrees
+880 440 6 TRP A 1 . 0.333333 chi2 -100.000 degrees
+881 441 6 TRP A 1 . 0.333333 chi1 -120.000 degrees
+882 441 6 TRP A 1 . 0.333333 chi2 -90.000 degrees
+923 462 6 TRP A 1 . 0.333333 chi1 -110.000 degrees
+924 462 6 TRP A 1 . 0.333333 chi2 -100.000 degrees
+1813 907 7 LEU A 1 . 0.200000 chi1 -130.000 degrees
+1814 907 7 LEU A 1 . 0.200000 chi2 130.000 degrees
+1815 908 7 LEU A 1 . 0.200000 chi1 -130.000 degrees
+1816 908 7 LEU A 1 . 0.200000 chi2 140.000 degrees
+1887 944 7 LEU A 1 . 0.200000 chi1 -120.000 degrees
+1888 944 7 LEU A 1 . 0.200000 chi2 140.000 degrees
+1889 945 7 LEU A 1 . 0.200000 chi1 -120.000 degrees
+1890 945 7 LEU A 1 . 0.200000 chi2 150.000 degrees
+1961 981 7 LEU A 1 . 0.200000 chi1 -110.000 degrees
+1962 981 7 LEU A 1 . 0.200000 chi2 150.000 degrees
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+26 26 composite 78.066775
+440 440 composite 85.084606
+441 441 composite 85.133979
+462 462 composite 85.158128
+907 907 composite 1.931322
+908 908 composite 1.921016
+944 944 composite 1.907712
+945 945 composite 1.909439
+981 981 composite 1.940949
+#
+loop_
+_[local]_pairwise_energy.id
+_[local]_pairwise_energy.rotamer_id_1
+_[local]_pairwise_energy.rotamer_id_2
+_[local]_pairwise_energy.type
+_[local]_pairwise_energy.value
+1 26 440 composite 2.44447912585667
+2 26 441 composite 2.91558336552254
+3 26 462 composite 2.20715024742544
+4 26 907 composite 0.121080370209405
+5 26 908 composite 0.156137439833985
+6 26 944 composite 0.690976503647331
+7 26 945 composite 0.271256047591103
+8 26 981 composite 0.0575759492253604
+9 440 907 composite 0.144727963715633
+10 440 908 composite 0.0768707321417691
+11 440 944 composite 0.125168178765766
+12 440 945 composite 0.234679551080471
+13 440 981 composite 0.0885412701916251
+14 441 907 composite 0.167701497474498
+15 441 908 composite 0.095811757091953
+16 441 944 composite 0.11703271934065
+17 441 945 composite 0.227598465720534
+18 441 981 composite 0.0904396589386267
+19 462 907 composite 0.120293153399245
+20 462 908 composite 0.0957077122876123
+21 462 944 composite 0.0468608244182113
+22 462 945 composite 0.178748581127407
+23 462 981 composite 0.151932314493861
+#

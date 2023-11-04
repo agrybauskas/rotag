@@ -44,460 +44,82 @@ _[local]_rotamer_angle.frequency
 _[local]_rotamer_angle.type
 _[local]_rotamer_angle.value
 _[local]_rotamer_angle.units
-1 1 43 ASN A 1 . 0.011364 chi1 -180.000 degrees
-2 1 43 ASN A 1 . 0.011364 chi2 -144.000 degrees
-3 2 43 ASN A 1 . 0.011364 chi1 -180.000 degrees
-4 2 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-5 3 43 ASN A 1 . 0.011364 chi1 -180.000 degrees
-6 3 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-7 4 43 ASN A 1 . 0.011364 chi1 -180.000 degrees
-8 4 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-9 5 43 ASN A 1 . 0.011364 chi1 -180.000 degrees
-10 5 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-11 6 43 ASN A 1 . 0.011364 chi1 -180.000 degrees
-12 6 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-13 7 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-14 7 43 ASN A 1 . 0.011364 chi2 -180.000 degrees
-15 8 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-16 8 43 ASN A 1 . 0.011364 chi2 -144.000 degrees
-17 9 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-18 9 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-19 10 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-20 10 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-21 11 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-22 11 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-23 12 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-24 12 43 ASN A 1 . 0.011364 chi2 0.000 degrees
-25 13 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-26 13 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-27 14 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-28 14 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-29 15 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-30 15 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-31 16 43 ASN A 1 . 0.011364 chi1 -144.000 degrees
-32 16 43 ASN A 1 . 0.011364 chi2 144.000 degrees
-33 17 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-34 17 43 ASN A 1 . 0.011364 chi2 -180.000 degrees
-35 18 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-36 18 43 ASN A 1 . 0.011364 chi2 -144.000 degrees
-37 19 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-38 19 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-39 20 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-40 20 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-41 21 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-42 21 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-43 22 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-44 22 43 ASN A 1 . 0.011364 chi2 0.000 degrees
-45 23 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-46 23 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-47 24 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-48 24 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-49 25 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-50 25 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-51 26 43 ASN A 1 . 0.011364 chi1 -108.000 degrees
-52 26 43 ASN A 1 . 0.011364 chi2 144.000 degrees
-53 27 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-54 27 43 ASN A 1 . 0.011364 chi2 -180.000 degrees
-55 28 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-56 28 43 ASN A 1 . 0.011364 chi2 -144.000 degrees
-57 29 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-58 29 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-59 30 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-60 30 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-61 31 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-62 31 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-63 32 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-64 32 43 ASN A 1 . 0.011364 chi2 0.000 degrees
-65 33 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-66 33 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-67 34 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-68 34 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-69 35 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-70 35 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-71 36 43 ASN A 1 . 0.011364 chi1 -72.000 degrees
-72 36 43 ASN A 1 . 0.011364 chi2 144.000 degrees
-73 37 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-74 37 43 ASN A 1 . 0.011364 chi2 -180.000 degrees
-75 38 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-76 38 43 ASN A 1 . 0.011364 chi2 -144.000 degrees
-77 39 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-78 39 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-79 40 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-80 40 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-81 41 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-82 41 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-83 42 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-84 42 43 ASN A 1 . 0.011364 chi2 0.000 degrees
-85 43 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-86 43 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-87 44 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-88 44 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-89 45 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-90 45 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-91 46 43 ASN A 1 . 0.011364 chi1 -36.000 degrees
-92 46 43 ASN A 1 . 0.011364 chi2 144.000 degrees
-93 47 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-94 47 43 ASN A 1 . 0.011364 chi2 -144.000 degrees
-95 48 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-96 48 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-97 49 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-98 49 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-99 50 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-100 50 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-101 51 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-102 51 43 ASN A 1 . 0.011364 chi2 0.000 degrees
-103 52 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-104 52 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-105 53 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-106 53 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-107 54 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-108 54 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-109 55 43 ASN A 1 . 0.011364 chi1 0.000 degrees
-110 55 43 ASN A 1 . 0.011364 chi2 144.000 degrees
-111 56 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-112 56 43 ASN A 1 . 0.011364 chi2 -180.000 degrees
-113 57 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-114 57 43 ASN A 1 . 0.011364 chi2 -144.000 degrees
-115 58 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-116 58 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-117 59 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-118 59 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-119 60 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-120 60 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-121 61 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-122 61 43 ASN A 1 . 0.011364 chi2 0.000 degrees
-123 62 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-124 62 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-125 63 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-126 63 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-127 64 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-128 64 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-129 65 43 ASN A 1 . 0.011364 chi1 36.000 degrees
-130 65 43 ASN A 1 . 0.011364 chi2 144.000 degrees
-131 66 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-132 66 43 ASN A 1 . 0.011364 chi2 -180.000 degrees
-133 67 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-134 67 43 ASN A 1 . 0.011364 chi2 -144.000 degrees
-135 68 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-136 68 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-137 69 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-138 69 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-139 70 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-140 70 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-141 71 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-142 71 43 ASN A 1 . 0.011364 chi2 0.000 degrees
-143 72 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-144 72 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-145 73 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-146 73 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-147 74 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-148 74 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-149 75 43 ASN A 1 . 0.011364 chi1 72.000 degrees
-150 75 43 ASN A 1 . 0.011364 chi2 144.000 degrees
-151 76 43 ASN A 1 . 0.011364 chi1 108.000 degrees
-152 76 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-153 77 43 ASN A 1 . 0.011364 chi1 108.000 degrees
-154 77 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-155 78 43 ASN A 1 . 0.011364 chi1 108.000 degrees
-156 78 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-157 79 43 ASN A 1 . 0.011364 chi1 108.000 degrees
-158 79 43 ASN A 1 . 0.011364 chi2 0.000 degrees
-159 80 43 ASN A 1 . 0.011364 chi1 108.000 degrees
-160 80 43 ASN A 1 . 0.011364 chi2 36.000 degrees
-161 81 43 ASN A 1 . 0.011364 chi1 108.000 degrees
-162 81 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-163 82 43 ASN A 1 . 0.011364 chi1 108.000 degrees
-164 82 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-165 83 43 ASN A 1 . 0.011364 chi1 108.000 degrees
-166 83 43 ASN A 1 . 0.011364 chi2 144.000 degrees
-167 84 43 ASN A 1 . 0.011364 chi1 144.000 degrees
-168 84 43 ASN A 1 . 0.011364 chi2 -108.000 degrees
-169 85 43 ASN A 1 . 0.011364 chi1 144.000 degrees
-170 85 43 ASN A 1 . 0.011364 chi2 -72.000 degrees
-171 86 43 ASN A 1 . 0.011364 chi1 144.000 degrees
-172 86 43 ASN A 1 . 0.011364 chi2 -36.000 degrees
-173 87 43 ASN A 1 . 0.011364 chi1 144.000 degrees
-174 87 43 ASN A 1 . 0.011364 chi2 72.000 degrees
-175 88 43 ASN A 1 . 0.011364 chi1 144.000 degrees
-176 88 43 ASN A 1 . 0.011364 chi2 108.000 degrees
-177 89 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-178 89 44 ASN A 1 . 0.016129 chi2 -180.000 degrees
-179 90 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-180 90 44 ASN A 1 . 0.016129 chi2 -144.000 degrees
-181 91 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-182 91 44 ASN A 1 . 0.016129 chi2 -108.000 degrees
-183 92 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-184 92 44 ASN A 1 . 0.016129 chi2 -72.000 degrees
-185 93 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-186 93 44 ASN A 1 . 0.016129 chi2 -36.000 degrees
-187 94 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-188 94 44 ASN A 1 . 0.016129 chi2 0.000 degrees
-189 95 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-190 95 44 ASN A 1 . 0.016129 chi2 36.000 degrees
-191 96 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-192 96 44 ASN A 1 . 0.016129 chi2 72.000 degrees
-193 97 44 ASN A 1 . 0.016129 chi1 -180.000 degrees
-194 97 44 ASN A 1 . 0.016129 chi2 108.000 degrees
-195 98 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-196 98 44 ASN A 1 . 0.016129 chi2 -180.000 degrees
-197 99 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-198 99 44 ASN A 1 . 0.016129 chi2 -144.000 degrees
-199 100 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-200 100 44 ASN A 1 . 0.016129 chi2 -108.000 degrees
-201 101 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-202 101 44 ASN A 1 . 0.016129 chi2 -72.000 degrees
-203 102 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-204 102 44 ASN A 1 . 0.016129 chi2 -36.000 degrees
-205 103 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-206 103 44 ASN A 1 . 0.016129 chi2 0.000 degrees
-207 104 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-208 104 44 ASN A 1 . 0.016129 chi2 36.000 degrees
-209 105 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-210 105 44 ASN A 1 . 0.016129 chi2 72.000 degrees
-211 106 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-212 106 44 ASN A 1 . 0.016129 chi2 108.000 degrees
-213 107 44 ASN A 1 . 0.016129 chi1 -144.000 degrees
-214 107 44 ASN A 1 . 0.016129 chi2 144.000 degrees
-215 108 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-216 108 44 ASN A 1 . 0.016129 chi2 -180.000 degrees
-217 109 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-218 109 44 ASN A 1 . 0.016129 chi2 -144.000 degrees
-219 110 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-220 110 44 ASN A 1 . 0.016129 chi2 -108.000 degrees
-221 111 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-222 111 44 ASN A 1 . 0.016129 chi2 -72.000 degrees
-223 112 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-224 112 44 ASN A 1 . 0.016129 chi2 -36.000 degrees
-225 113 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-226 113 44 ASN A 1 . 0.016129 chi2 0.000 degrees
-227 114 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-228 114 44 ASN A 1 . 0.016129 chi2 36.000 degrees
-229 115 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-230 115 44 ASN A 1 . 0.016129 chi2 72.000 degrees
-231 116 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-232 116 44 ASN A 1 . 0.016129 chi2 108.000 degrees
-233 117 44 ASN A 1 . 0.016129 chi1 -108.000 degrees
-234 117 44 ASN A 1 . 0.016129 chi2 144.000 degrees
-235 118 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-236 118 44 ASN A 1 . 0.016129 chi2 -180.000 degrees
-237 119 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-238 119 44 ASN A 1 . 0.016129 chi2 -144.000 degrees
-239 120 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-240 120 44 ASN A 1 . 0.016129 chi2 -108.000 degrees
-241 121 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-242 121 44 ASN A 1 . 0.016129 chi2 -72.000 degrees
-243 122 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-244 122 44 ASN A 1 . 0.016129 chi2 -36.000 degrees
-245 123 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-246 123 44 ASN A 1 . 0.016129 chi2 0.000 degrees
-247 124 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-248 124 44 ASN A 1 . 0.016129 chi2 36.000 degrees
-249 125 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-250 125 44 ASN A 1 . 0.016129 chi2 72.000 degrees
-251 126 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-252 126 44 ASN A 1 . 0.016129 chi2 108.000 degrees
-253 127 44 ASN A 1 . 0.016129 chi1 -72.000 degrees
-254 127 44 ASN A 1 . 0.016129 chi2 144.000 degrees
-255 128 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-256 128 44 ASN A 1 . 0.016129 chi2 -180.000 degrees
-257 129 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-258 129 44 ASN A 1 . 0.016129 chi2 -144.000 degrees
-259 130 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-260 130 44 ASN A 1 . 0.016129 chi2 -108.000 degrees
-261 131 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-262 131 44 ASN A 1 . 0.016129 chi2 -72.000 degrees
-263 132 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-264 132 44 ASN A 1 . 0.016129 chi2 -36.000 degrees
-265 133 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-266 133 44 ASN A 1 . 0.016129 chi2 0.000 degrees
-267 134 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-268 134 44 ASN A 1 . 0.016129 chi2 36.000 degrees
-269 135 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-270 135 44 ASN A 1 . 0.016129 chi2 72.000 degrees
-271 136 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-272 136 44 ASN A 1 . 0.016129 chi2 108.000 degrees
-273 137 44 ASN A 1 . 0.016129 chi1 -36.000 degrees
-274 137 44 ASN A 1 . 0.016129 chi2 144.000 degrees
-275 138 44 ASN A 1 . 0.016129 chi1 0.000 degrees
-276 138 44 ASN A 1 . 0.016129 chi2 -72.000 degrees
-277 139 44 ASN A 1 . 0.016129 chi1 0.000 degrees
-278 139 44 ASN A 1 . 0.016129 chi2 -36.000 degrees
-279 140 44 ASN A 1 . 0.016129 chi1 0.000 degrees
-280 140 44 ASN A 1 . 0.016129 chi2 108.000 degrees
-281 141 44 ASN A 1 . 0.016129 chi1 0.000 degrees
-282 141 44 ASN A 1 . 0.016129 chi2 144.000 degrees
-283 142 44 ASN A 1 . 0.016129 chi1 36.000 degrees
-284 142 44 ASN A 1 . 0.016129 chi2 -72.000 degrees
-285 143 44 ASN A 1 . 0.016129 chi1 36.000 degrees
-286 143 44 ASN A 1 . 0.016129 chi2 108.000 degrees
-287 144 44 ASN A 1 . 0.016129 chi1 72.000 degrees
-288 144 44 ASN A 1 . 0.016129 chi2 -108.000 degrees
-289 145 44 ASN A 1 . 0.016129 chi1 72.000 degrees
-290 145 44 ASN A 1 . 0.016129 chi2 36.000 degrees
-291 146 44 ASN A 1 . 0.016129 chi1 72.000 degrees
-292 146 44 ASN A 1 . 0.016129 chi2 72.000 degrees
-293 147 44 ASN A 1 . 0.016129 chi1 108.000 degrees
-294 147 44 ASN A 1 . 0.016129 chi2 -72.000 degrees
-295 148 44 ASN A 1 . 0.016129 chi1 108.000 degrees
-296 148 44 ASN A 1 . 0.016129 chi2 108.000 degrees
-297 149 44 ASN A 1 . 0.016129 chi1 144.000 degrees
-298 149 44 ASN A 1 . 0.016129 chi2 -108.000 degrees
-299 150 44 ASN A 1 . 0.016129 chi1 144.000 degrees
-300 150 44 ASN A 1 . 0.016129 chi2 72.000 degrees
+17 9 43 ASN A 1 . 0.083333 chi1 -144.000 degrees
+18 9 43 ASN A 1 . 0.083333 chi2 -108.000 degrees
+19 10 43 ASN A 1 . 0.083333 chi1 -144.000 degrees
+20 10 43 ASN A 1 . 0.083333 chi2 -72.000 degrees
+27 14 43 ASN A 1 . 0.083333 chi1 -144.000 degrees
+28 14 43 ASN A 1 . 0.083333 chi2 72.000 degrees
+29 15 43 ASN A 1 . 0.083333 chi1 -144.000 degrees
+30 15 43 ASN A 1 . 0.083333 chi2 108.000 degrees
+37 19 43 ASN A 1 . 0.083333 chi1 -108.000 degrees
+38 19 43 ASN A 1 . 0.083333 chi2 -108.000 degrees
+39 20 43 ASN A 1 . 0.083333 chi1 -108.000 degrees
+40 20 43 ASN A 1 . 0.083333 chi2 -72.000 degrees
+47 24 43 ASN A 1 . 0.083333 chi1 -108.000 degrees
+48 24 43 ASN A 1 . 0.083333 chi2 72.000 degrees
+49 25 43 ASN A 1 . 0.083333 chi1 -108.000 degrees
+50 25 43 ASN A 1 . 0.083333 chi2 108.000 degrees
+57 29 43 ASN A 1 . 0.083333 chi1 -72.000 degrees
+58 29 43 ASN A 1 . 0.083333 chi2 -108.000 degrees
+59 30 43 ASN A 1 . 0.083333 chi1 -72.000 degrees
+60 30 43 ASN A 1 . 0.083333 chi2 -72.000 degrees
+67 34 43 ASN A 1 . 0.083333 chi1 -72.000 degrees
+68 34 43 ASN A 1 . 0.083333 chi2 72.000 degrees
+69 35 43 ASN A 1 . 0.083333 chi1 -72.000 degrees
+70 35 43 ASN A 1 . 0.083333 chi2 108.000 degrees
+199 100 44 ASN A 1 . 0.083333 chi1 -144.000 degrees
+200 100 44 ASN A 1 . 0.083333 chi2 -108.000 degrees
+201 101 44 ASN A 1 . 0.083333 chi1 -144.000 degrees
+202 101 44 ASN A 1 . 0.083333 chi2 -72.000 degrees
+209 105 44 ASN A 1 . 0.083333 chi1 -144.000 degrees
+210 105 44 ASN A 1 . 0.083333 chi2 72.000 degrees
+211 106 44 ASN A 1 . 0.083333 chi1 -144.000 degrees
+212 106 44 ASN A 1 . 0.083333 chi2 108.000 degrees
+219 110 44 ASN A 1 . 0.083333 chi1 -108.000 degrees
+220 110 44 ASN A 1 . 0.083333 chi2 -108.000 degrees
+221 111 44 ASN A 1 . 0.083333 chi1 -108.000 degrees
+222 111 44 ASN A 1 . 0.083333 chi2 -72.000 degrees
+229 115 44 ASN A 1 . 0.083333 chi1 -108.000 degrees
+230 115 44 ASN A 1 . 0.083333 chi2 72.000 degrees
+231 116 44 ASN A 1 . 0.083333 chi1 -108.000 degrees
+232 116 44 ASN A 1 . 0.083333 chi2 108.000 degrees
+239 120 44 ASN A 1 . 0.083333 chi1 -72.000 degrees
+240 120 44 ASN A 1 . 0.083333 chi2 -108.000 degrees
+241 121 44 ASN A 1 . 0.083333 chi1 -72.000 degrees
+242 121 44 ASN A 1 . 0.083333 chi2 -72.000 degrees
+249 125 44 ASN A 1 . 0.083333 chi1 -72.000 degrees
+250 125 44 ASN A 1 . 0.083333 chi2 72.000 degrees
+251 126 44 ASN A 1 . 0.083333 chi1 -72.000 degrees
+252 126 44 ASN A 1 . 0.083333 chi2 108.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 34.478120
-2 2 composite 14.925986
-3 3 composite 23.557166
-4 4 composite 28.078479
-5 5 composite 14.420234
-6 6 composite 27.492084
-7 7 composite 36.322860
-8 8 composite 17.227423
 9 9 composite 4.695983
 10 10 composite 5.489952
-11 11 composite 16.459281
-12 12 composite 32.353438
-13 13 composite 13.995826
 14 14 composite 4.427700
 15 15 composite 4.878165
-16 16 composite 14.777446
-17 17 composite 34.077787
-18 18 composite 15.886837
 19 19 composite 3.334884
 20 20 composite 2.729104
-21 21 composite 12.521790
-22 22 composite 30.205100
-23 23 composite 12.608522
 24 24 composite 2.729829
 25 25 composite 3.059346
-26 26 composite 13.646585
-27 27 composite 35.939556
-28 28 composite 17.873418
 29 29 composite 4.570873
 30 30 composite 3.581620
-31 31 composite 13.423839
-32 32 composite 31.625984
-33 33 composite 14.127107
 34 34 composite 3.514731
 35 35 composite 3.690885
-36 36 composite 14.605226
-37 37 composite 59.793948
-38 38 composite 39.232184
-39 39 composite 18.170063
-40 40 composite 17.075009
-41 41 composite 27.713813
-42 42 composite 49.083003
-43 43 composite 29.038483
-44 44 composite 16.207367
-45 45 composite 17.247117
-46 46 composite 30.081771
-47 47 composite 67.237271
-48 48 composite 40.501545
-49 49 composite 39.028743
-50 50 composite 51.792579
-51 51 composite 87.144692
-52 52 composite 51.730820
-53 53 composite 38.919151
-54 54 composite 40.222269
-55 55 composite 62.227729
-56 56 composite 61.250350
-57 57 composite 32.382680
-58 58 composite 17.726750
-59 59 composite 16.897259
-60 60 composite 29.801901
-61 61 composite 49.726686
-62 62 composite 28.101209
-63 63 composite 17.450710
-64 64 composite 18.548983
-65 65 composite 36.702802
-66 66 composite 40.184454
-67 67 composite 27.835898
-68 68 composite 10.300214
-69 69 composite 8.142112
-70 70 composite 18.368363
-71 71 composite 36.672363
-72 72 composite 21.046949
-73 73 composite 8.890426
-74 74 composite 8.882412
-75 75 composite 19.938734
-76 76 composite 31.585884
-77 77 composite 22.954180
-78 78 composite 38.078421
-79 79 composite 100.314704
-80 80 composite 77.856386
-81 81 composite 29.224104
-82 82 composite 22.946653
-83 83 composite 42.061152
-84 84 composite 42.313975
-85 85 composite 35.235588
-86 86 composite 101.967754
-87 87 composite 37.228335
-88 88 composite 36.805507
-89 89 composite 52.057455
-90 90 composite 21.715614
-91 91 composite 11.220161
-92 92 composite 26.698230
-93 93 composite 51.120897
-94 94 composite 43.140975
-95 95 composite 19.911571
-96 96 composite 12.454676
-97 97 composite 37.736989
-98 98 composite 32.691830
-99 99 composite 13.764709
 100 100 composite 2.857058
 101 101 composite 2.717896
-102 102 composite 12.324612
-103 103 composite 29.549751
-104 104 composite 12.183284
 105 105 composite 2.706681
 106 106 composite 2.953073
-107 107 composite 14.103251
-108 108 composite 32.252327
-109 109 composite 13.659824
 110 110 composite 2.509667
 111 111 composite 1.939707
-112 112 composite 11.514862
-113 113 composite 29.051392
-114 114 composite 11.680837
 115 115 composite 1.852634
 116 116 composite 1.965714
-117 117 composite 13.006556
-118 118 composite 34.458293
-119 119 composite 16.009375
 120 120 composite 4.229667
 121 121 composite 3.246261
-122 122 composite 12.845532
-123 123 composite 30.715945
-124 124 composite 13.488472
 125 125 composite 3.111950
 126 126 composite 3.119109
-127 127 composite 14.521803
-128 128 composite 60.581975
-129 129 composite 52.485748
-130 130 composite 25.295671
-131 131 composite 18.073563
-132 132 composite 28.042107
-133 133 composite 50.582655
-134 134 composite 36.394741
-135 135 composite 20.514540
-136 136 composite 17.923396
-137 137 composite 30.834112
-138 138 composite 60.806521
-139 139 composite 80.458590
-140 140 composite 59.565471
-141 141 composite 99.060715
-142 142 composite 109.383541
-143 143 composite 121.565558
-144 144 composite 68.586284
-145 145 composite 91.199629
-146 146 composite 62.356711
-147 147 composite 75.159957
-148 148 composite 70.675662
-149 149 composite 67.550882
-150 150 composite 67.736517
 #
