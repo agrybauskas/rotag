@@ -137,7 +137,7 @@ for my $pdbx_file ( @ARGV ) {
     my $rotamer_angle_groups = split_by( { 'atom_site' => $rotamer_angles,
                                            'attributes' => [ 'rotamer_id' ] } );
 
-    my @attributes =
+    my @attributes_angles =
         ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
           'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
           'units' );
@@ -215,7 +215,8 @@ for my $pdbx_file ( @ARGV ) {
 
     my %pdbx_data;
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
-    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'}=\@attributes;
+    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'} =
+        \@attributes_angles;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
 
@@ -225,7 +226,7 @@ for my $pdbx_file ( @ARGV ) {
             # TODO: refactoring is needed, because there is a repeating code
             # snippet.
             my @rotamer_data = ();
-            for my $attribute ( @attributes ) {
+            for my $attribute ( @attributes_angles ) {
                 if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
                     push @rotamer_data, $rotamer_angles->{$angle_id}{$attribute};
                 } else {
