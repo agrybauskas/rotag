@@ -103,7 +103,7 @@ for my $pdbx_file ( @ARGV ) {
     raw2indexed( $pdbx_data,
                  { 'attributes' => { '_atom_site' => [ 'id' ],
                                      '_[local]_rotamer_angle' => [ 'id' ],
-                                     '_[local]_rotamer_energy' => [ 'id' ] } } );
+                                     '_[local]_rotamer_energy' => [ 'id' ] } });
 
     # Reads file path, stdin and '-' operator.
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
@@ -151,15 +151,20 @@ for my $pdbx_file ( @ARGV ) {
         my $pairwise_rotamer_energies =
             $sidechain_interactions->get_pairwise_rotamer_energies();
 
-        if( exists $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}{'data'} ) {
+        if( exists $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}
+                                               {'data'} ) {
             $pdbx_data->{'_[local]_pairwise_energy'} =
                 $pairwise_rotamer_energies->{'_[local]_pairwise_energy'};
         }
 
         if( $graphs_csv ) {
             my %visited_pairwise_energy_ids = ();
-            for my $pairwise_energy_id ( keys %{ $pairwise_rotamer_energies } ){
-
+            for my $pairwise_energy (
+                @{ $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}
+                                               {'data'} } ) {
+                my ( $rotamer_id_1, $rotamer_id_2 ) =
+                    ( $pairwise_energy->{'rotamer_id_1'},
+                      $pairwise_energy->{'rotamer_id_2'} );
             }
         } elsif( $output_format eq 'pdbx' ) {
             to_pdbx( $pdbx_data, { 'tags' => \@tags } );
