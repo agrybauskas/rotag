@@ -14,6 +14,8 @@ use Logging qw( error
 use PDBxParser qw( filter
                    obtain_pdbx_data
                    raw2indexed
+                   record2raw
+                   split_by
                    to_csv
                    to_pdbx );
 use SidechainInteractions;
@@ -146,8 +148,6 @@ for my $pdbx_file ( @ARGV ) {
                 \&ForceField::NonBonded::general,
         } );
 
-        my $updated_rotamer_angles =
-            $sidechain_interactions->get_rotamer_angles();
         my $pairwise_rotamer_energies =
             $sidechain_interactions->get_pairwise_rotamer_energies();
 
@@ -158,7 +158,7 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         if( $graphs_csv ) {
-            my %visited_pairwise_energy_ids = ();
+            my %visited_pairwise_rotamer_ids = ();
             for my $pairwise_energy (
                 @{ $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}
                                                {'data'} } ) {
