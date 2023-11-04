@@ -34,7 +34,7 @@ our $VERSION = $VERSION;
 #*                        the given energy threshold.
 #*    -F, --format <format>
 #*                        print out graph data in specified formats
-#*                        (default: tsv).
+#*                        (default: pdbx, csv).
 #*    -v, --version
 #*                        prints version.
 
@@ -148,7 +148,7 @@ for my $pdbx_file ( @ARGV ) {
 
         if( $output_format eq 'pdbx' ) {
             to_pdbx( $pdbx_data );
-        } elsif( $output_format eq 'tsv' ) {
+        } elsif( $output_format eq 'csv' ) {
 
         }
     } else {
