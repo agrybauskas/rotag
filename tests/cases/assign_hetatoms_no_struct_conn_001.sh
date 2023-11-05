@@ -7,6 +7,6 @@ do_bond_stretching=0
 do_angle_bending=1
 do_bond_rotation=0
 
-$(dirname "$0")/../scripts/connect_hetatoms \
+$(dirname "$0")/../scripts/assign_hetatoms_no_struct_conn \
     ${pdbx_struct_conn_dump_file} ${do_bond_stretching} ${do_angle_bending} ${do_bond_rotation} \
     | sort -k 1 -n

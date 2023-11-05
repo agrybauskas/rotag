@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PseudoAtoms qw( assign_hetatoms_no_struct_conn );
+use ForceField::Parameters;
+
+#
+# Unit test: PseudoAtoms::assign_hetatoms_no_struct_conn
+# Example: ./assign_hetatoms_no_struct_conn structure-no-struct-conn.dump 0 0 1
+#
+
+my ( $pdbx_dump_file, $do_bond_stretching, $do_angle_bending,
+     $do_bond_rotation ) = @ARGV;
+
+my $pdbx;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $pdbx .= "$_" ;
+}
+close( $fh );
+$pdbx = eval( $pdbx );
+
+my $parameters = Parameters->new();
+my $atom_site = $pdbx->{'_atom_site'};
+
+assign_hetatoms_no_struct_conn( $parameters, $atom_site );
+
+my @atom_coord;
+my @parent_atom;
+my @child_atom;
+
+for my $parent_id ( keys %{ $atom_site } ) {
+    @parent_atom = ( $parent_id, $atom_site->{$parent_id}{"label_atom_id"} );
+    for my $child_id ( @{ $atom_site->{$parent_id}{"connections_hetatom"} } ) {
+        @child_atom = ( $child_id, $atom_site->{$child_id}{"label_atom_id"} );
+        print( "$parent_atom[0] $parent_atom[1]:" );
+        print( "$child_atom[0] $child_atom[1]\n" );
+    }
+}
