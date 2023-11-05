@@ -1168,15 +1168,10 @@ sub assign_hetatoms_no_struct_conn
 
         next if ! %{ $around_site };
 
-        my %visited_residues_by_hetatom = ();
         for my $around_atom_id ( sort { $a <=> $b } keys %{ $around_site } ) {
             my $around_unique_residue_key = unique_residue_key(
                 $around_site->{$around_atom_id}
             );
-
-            next if defined $visited_residues_by_hetatom{$around_unique_residue_key} &&
-                $visited_residues_by_hetatom{$around_unique_residue_key} == $hetatom_id;
-            $visited_residues_by_hetatom{$around_unique_residue_key} = $hetatom_id;
 
             # Heteroatom inherits residue information from the atom that is
             # connected to.
@@ -1187,8 +1182,6 @@ sub assign_hetatoms_no_struct_conn
             }
             $current_hetatom->{'id'} = $last_atom_id;
             $current_hetatom->{'origin_atom_id'} = $hetatom_id;
-            # HACK: Carefully analyse when assigning heteroatom-heteroatom
-            # connections.
             if( defined $current_hetatom->{'hybridization'} ) {
                 $current_hetatom->{'hybridization'} = '.';
             }
