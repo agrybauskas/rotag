@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use ConnectAtoms qw( connect_hetatoms );
+use PseudoAtoms qw( assign_hetatoms_with_struct_conn );
 use ForceField::Parameters;
 
 #
-# Unit test: ConnectAtoms::connect_hetatoms
-# Example: ./connect_hetatoms structure-and-struct-conn.dump 0 0 1
+# Unit test: PseudoAtoms::assign_hetatoms_with_struct_conn
+# Example: ./assign_hetatoms_with_struct_conn structure-and-struct-conn.dump 0 0 1
 #
 
 my ( $pdbx_struct_conn_dump_file, $do_bond_stretching, $do_angle_bending,
@@ -26,11 +26,9 @@ my $parameters = Parameters->new();
 my $atom_site = $pdbx_struct_conn->{'_atom_site'};
 my $struct_conn = $pdbx_struct_conn->{'_struct_conn'};
 
-connect_hetatoms( $parameters, $atom_site,
-                  { 'struct_conn' => $struct_conn,
-                    'do_bond_stretching' => $do_bond_stretching,
-                    'do_angle_bending' => $do_angle_bending,
-                    'do_bond_rotation' => $do_bond_rotation } );
+assign_hetatoms_with_struct_conn( $parameters,
+                                  $atom_site,
+                                  $struct_conn );
 
 my @atom_coord;
 my @parent_atom;
