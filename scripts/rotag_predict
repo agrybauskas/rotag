@@ -158,13 +158,38 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         if( $graphs_csv ) {
+            my %rotamer_to_unique_residue_key = ();
+            for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
+                my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
+                my $rotamer_id = $rotamer_angle->{'rotamer_id'};
+                my $unique_residue_key =
+                    sprintf '%s,%s,%s,%s',
+                    $rotamer_angle->{'label_seq_id'},
+                    $rotamer_angle->{'label_asym_id'},
+                    $rotamer_angle->{'pdbx_PDB_model_num'},
+                    $rotamer_angle->{'label_alt_id'};
+                $rotamer_to_unique_residue_key{$rotamer_id} =
+                    $unique_residue_key;
+            }
+
             my %visited_pairwise_rotamer_ids = ();
             for my $pairwise_energy (
                 @{ $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}
                                                {'data'} } ) {
-                my ( $rotamer_id_1, $rotamer_id_2 ) =
-                    ( $pairwise_energy->{'rotamer_id_1'},
-                      $pairwise_energy->{'rotamer_id_2'} );
+                my ( $unique_residue_key_1, $unique_residue_key_2 ) =
+                    map { $rotamer_to_unique_residue_key{$_} }
+                        ( $pairwise_energy->{'rotamer_id_1'},
+                          $pairwise_energy->{'rotamer_id_2'} );
+                if( ! ( exists $visited_pairwise_rotamer_ids{$unique_residue_key_1}
+                                                            {$unique_residue_key_2} ||
+                        exists $visited_pairwise_rotamer_ids{$unique_residue_key_2}
+                                                            {$unique_residue_key_1} ) ) {
+                    $visited_pairwise_rotamer_ids{$unique_residue_key_1}
+                                                 {$unique_residue_key_2} = 1;
+                    printf "\"%s\",\"%s\"\n",
+                        $unique_residue_key_1,
+                        $unique_residue_key_2;
+                }
             }
         } elsif( $output_format eq 'pdbx' ) {
             to_pdbx( $pdbx_data, { 'tags' => \@tags } );
