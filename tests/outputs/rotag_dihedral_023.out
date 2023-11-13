@@ -18,6 +18,8 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 ASP 27 A 1 . 150 C 148 N 149 CA 1925 MG C-N-CA-MG -89.522 degrees
-# Here should another dihedral angle.
+1 ASP 27 A 1 . 150 C 149 CA 148 N 1926 MG C-CA-N-MG 85.760 degrees
+2 ASP 27 A 1 . 152 CB 153 CG 154 OD1 1927 MG CB-CG-OD1-MG -0.791 degrees
+3 ASP 27 A 1 . 152 CB 153 CG 155 OD2 1928 MG CB-CG-OD2-MG -178.380 degrees
+4 LYS 72 A 1 . 884 CA 885 C 886 O 1929 MG CA-C-O-MG 97.676 degrees
 #
