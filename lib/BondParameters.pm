@@ -44,22 +44,23 @@ sub rotatable_bonds
 {
     my ( $parameters, $atom_site, $options ) = @_;
     my ( $start_atom_ids, $start_atom_names, $include_mainchain,
-         $include_hetatoms ) = (
+         $include_hetatoms, $ignore_connections ) = (
         $options->{'start_atom_ids'},
         $options->{'start_atom_names'},
         $options->{'include_mainchain'},
-        $options->{'include_hetatoms'}
+        $options->{'include_hetatoms'},
+        $options->{'ignore_connections'}
     );
 
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
-
-    my $explicit_dihedral_names = $parameters->{'_[local]_dihedral_angle_name'};
-    my $ignore_connections = {
+    $ignore_connections //= {
         'label_atom_id' => {
             'N' => { 'CD' => 1 },
         },
     };
+
+    my $explicit_dihedral_names = $parameters->{'_[local]_dihedral_angle_name'};
 
     my $residue_groups =
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
