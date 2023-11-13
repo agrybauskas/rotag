@@ -606,6 +606,10 @@ for my $pdbx_file ( @ARGV ) {
         bendable_angles( $parameters, $bond_angle_site,
                          { 'include_mainchain' => $calc_mainchain,
                            'include_hetatoms' => $calc_hetatoms } );
+        bendable_angles( $parameters, $bond_angle_site,
+                         { 'include_mainchain' => $calc_mainchain,
+                           'include_hetatoms' => $calc_hetatoms,
+                           'start_atom_names' => [ 'CA' ] } ) if $calc_hetatoms;
         my $bond_angles = collect_bond_angles( $bond_angle_site );
 
         my $bond_angle_id = 1;

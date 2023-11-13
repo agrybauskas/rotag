@@ -16,6 +16,8 @@ _[local]_bond_angle.label_atom_3_id
 _[local]_bond_angle.type
 _[local]_bond_angle.value
 _[local]_bond_angle.units
-1 ASP 27 A 1 . 148 N 149 CA 1925 MG N-CA-MG 38.881 degrees
-# Here should be another bond angle.
+1 ASP 27 A 1 . 149 CA 148 N 1925 MG CA-N-MG 128.953 degrees
+2 ASP 27 A 1 . 153 CG 154 OD1 1925 MG CG-OD1-MG 121.890 degrees
+3 ASP 27 A 1 . 153 CG 155 OD2 1925 MG CG-OD2-MG 12.446 degrees
+4 LYS 72 A 1 . 885 C 886 O 1925 MG C-O-MG 152.409 degrees
 #
