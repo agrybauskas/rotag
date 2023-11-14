@@ -171,6 +171,8 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
 
+        # HACK: it is a bit messy to run twice/three times the function. Should
+        # be refactored.
         rotatable_bonds( $parameters, $dihedral_site,
                          { 'include_mainchain' => $calc_mainchain,
                            'include_hetatoms' => $calc_hetatoms,
@@ -178,11 +180,14 @@ for my $pdbx_file ( @ARGV ) {
                                'label_atom_id' => {
                                    'N' => { 'CD' => 1 },
                                    'C' => { 'O' => 1 } } } } );
-        # HACK: there should be more optimal way to do it.
         rotatable_bonds( $parameters, $dihedral_site,
                          { 'start_atom_names' => [ 'C' ],
                            'include_mainchain' => $calc_mainchain,
-                           'include_hetatoms' => $calc_hetatoms } )
+                           'include_hetatoms' => $calc_hetatoms,
+                           'ignore_connections' => {
+                               'label_atom_id' => {
+                                   'N' => { 'CD' => 1 },
+                                   'CA' => { 'CB' => 1 } } } } )
             if $calc_hetatoms;
         rotatable_bonds( $parameters, $dihedral_site,
                          { 'include_mainchain' => $calc_mainchain,
@@ -190,8 +195,7 @@ for my $pdbx_file ( @ARGV ) {
                            'ignore_connections' => {
                                'label_atom_id' => {
                                    'N' => { 'CD' => 1 },
-                                   'CA' => { 'CB' => 1 },
-                                   'C' => { 'O' => 1 } } } } )
+                                   'CA' => { 'CB' => 1 } } } } )
             if $calc_hetatoms;
 
         my $dihedral_angles = collect_dihedral_angles( $dihedral_site );
