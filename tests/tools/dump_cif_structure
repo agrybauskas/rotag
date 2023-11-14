@@ -47,9 +47,11 @@ GetOptions(
 my $parameters = Parameters->new();
 
 my $atom_site;
+my $struct_conn;
 
 foreach my $pdbx_file ( @ARGV ) {
     $atom_site = obtain_atom_site( $pdbx_file );
+    $struct_conn = obtain_struct_conn( $pdbx_file );
 
     if( $is_connected ) {
         connect_atoms( $parameters, $atom_site );
