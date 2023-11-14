@@ -9,7 +9,7 @@ _struct_conn.ptnr1_label_atom_id
 _struct_conn.ptnr2_label_seq_id
 _struct_conn.ptnr2_label_asym_id
 _struct_conn.ptnr2_label_atom_id
-metalc1 metalc 192 A OE1 . C ZN
+metalc1 metalc 27 A OD1 27 A MG
 #
 loop_
 _atom_site.group_PDB
