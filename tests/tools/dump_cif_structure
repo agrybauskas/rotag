@@ -12,7 +12,8 @@ use BondParameters qw( bendable_angles
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
 use ForceField::Parameters;
-use PDBxParser qw( obtain_atom_site );
+use PDBxParser qw( obtain_atom_site
+                   obtain_struct_conn );
 use SidechainModels qw( rotation_translation );
 
 $Data::Dumper::Indent = 1;
