@@ -72,8 +72,6 @@ sub bond_type
 # hybridizations of the connected atoms.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm).
-#     $options->{'calculate_hybridization'} - ignores hybridizations from
-#     parameter file;
 # Output:
 #     writes 'sp3', 'sp2' or 'sp' value to 'hybridization' key in atom data
 #     structure.
@@ -82,10 +80,7 @@ sub bond_type
 sub hybridization
 {
     # Use connect_atoms before using hybridization function.
-    my ( $parameters, $atom_site, $options ) = @_;
-
-    my ( $calculate_hybridization ) = ( $options->{'calculate_hybridization'} );
-    $calculate_hybridization //= 0;
+    my ( $parameters, $atom_site ) = @_;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $clear_hybridization = $parameters->{'_[local]_clear_hybridization'};
