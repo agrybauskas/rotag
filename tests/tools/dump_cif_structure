@@ -61,6 +61,12 @@ foreach my $pdbx_file ( @ARGV ) {
         hybridization( $parameters, $atom_site );
     }
 
+    if( $is_connected && defined $struct_conn && %{ $struct_conn }  ) {
+        assign_hetatoms_with_struct_conn( $parameters,
+                                          $atom_site,
+                                          $struct_conn );
+    }
+
     bendable_angles( $parameters, $atom_site ) if $apply_angle_bending_only;
     rotatable_bonds( $parameters, $atom_site ) if $apply_rotation_only;
     stretchable_bonds( $parameters, $atom_site ) if $apply_length_translation_only;
