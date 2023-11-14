@@ -26,7 +26,9 @@ my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 rotatable_bonds( $parameters, $atom_site,
-                 { 'include_mainchain' => $include_mainchain } );
+                 { 'include_mainchain' => $include_mainchain,
+                   'ignore_connections' =>
+                   { 'label_atom_id' => { 'C' => { 'O' => 1 } } } } );
 
 my $dihedral_angles = collect_dihedral_angles( $atom_site );
 for my $residue_unique_key ( sort keys %{ $dihedral_angles } ) {
