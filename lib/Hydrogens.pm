@@ -251,7 +251,10 @@ sub add_hydrogens_sp3
         $atom_properties->{$atom_type}{'covalent_radius'}{'length'}[0] +
         $atom_properties->{'H'}{'covalent_radius'}{'length'}[0];
 
-    my @connection_ids = @{ $reference_atom_site->{"$atom_id"}{'connections'} };
+    my @connection_ids =
+        exists $reference_atom_site->{"$atom_id"}{'connections'} ?
+        @{ $reference_atom_site->{"$atom_id"}{'connections'} } :
+        ();
     my %atom_coord =
         %{ filter( { 'atom_site' => $reference_atom_site,
                      'include' => { 'id' => \@connection_ids },
