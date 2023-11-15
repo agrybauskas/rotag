@@ -12,6 +12,8 @@ Options:
                         interactions between selected residues and atoms that
                         are reachable or described (default: composite |
                         hard_sphere | soft_sphere).
+    -H, --hetero-atoms
+                        includes selected heteroatoms in the scanning process.
     -p, --parameters <parameter>=<float>[,<parameter>=<float>...]
                         parameter values.
  
