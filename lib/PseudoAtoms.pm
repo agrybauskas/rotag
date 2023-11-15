@@ -341,6 +341,7 @@ sub generate_library
     my ( $args ) = @_;
     my $parameters = $args->{'parameters'};
     my $atom_site = $args->{'atom_site'};
+    my $struct_conn = $args->{'struct_conn'};
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
     my $include_hetatoms = $args->{'include_hetatoms'};
@@ -360,9 +361,11 @@ sub generate_library
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
     my $cutoff_atom = $parameters->{'_[local]_constants'}{'cutoff_atom'};
 
+    $struct_conn //= {};
     $conf_model //= 'rotation_only';
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => $interaction_atom_names };
+    $include_hetatoms //= 0;
     $do_bond_torsion //= 1;
     $do_bond_stretching //= 0;
     $do_angle_bending //= 0;
@@ -392,9 +395,30 @@ sub generate_library
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
-        rotatable_bonds( $parameters, $current_atom_site ) if $do_bond_torsion;
-        stretchable_bonds( $parameters, $current_atom_site ) if $do_bond_stretching;
-        bendable_angles( $parameters, $current_atom_site ) if $do_angle_bending;
+        if( $include_hetatoms ) {
+            if( %{ $struct_conn } ) {
+                assign_hetatoms_with_struct_conn(
+                    $parameters, $current_atom_site, $struct_conn
+                )
+            } else {
+                assign_hetatoms_no_struct_conn(
+                    $parameters, $current_atom_site
+                )
+            }
+        }
+
+        rotatable_bonds( $parameters,
+                         $current_atom_site,
+                         { 'include_hetatoms' => $include_hetatoms } )
+            if $do_bond_torsion;
+        stretchable_bonds( $parameters,
+                           $current_atom_site,
+                           { 'include_hetatoms' => $include_hetatoms } )
+            if $do_bond_stretching;
+        bendable_angles( $parameters,
+                         $current_atom_site,
+                         { 'include_hetatoms' => $include_hetatoms } )
+            if $do_angle_bending;
 
         # Finds where CA of target residues are.
         my @target_ca_ids;
