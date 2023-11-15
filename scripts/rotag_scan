@@ -43,6 +43,8 @@ our $VERSION = $VERSION;
 #*                        interactions between selected residues and atoms that
 #*                        are reachable or described (default: composite |
 #*                        hard_sphere | soft_sphere).
+#*    -H, --hetero-atoms
+#*                        includes selected heteroatoms in the scanning process.
 #*    -p, --parameters <parameter>=<float>[,<parameter>=<float>...]
 #*                        parameter values.
 #*
@@ -100,6 +102,7 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
+my $calc_hetatoms = 0;
 my $angles = '';
 my $in_radians = 0;
 my $rand_seed;
@@ -126,6 +129,7 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'potential|u=s' => \$interactions,
+    'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
     'parameters|p=s' => \$parameters_cmd,
     'json-parameters|j=s' => \$parameters_json_cmd,
     'angles|a=s' => \$angles,
@@ -243,6 +247,7 @@ for my $pdbx_file ( @ARGV ) {
                   'residue_unique_keys' => $residue_unique_keys,
                   'include_interactions' =>
                       { 'id' => [ keys %{ $current_atom_site } ] },
+                  'include_hetatoms' => $calc_hetatoms,
                   'angles' => \%angles,
                   'interactions' => $interactions,
                   'threads' => $threads,

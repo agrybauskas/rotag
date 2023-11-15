@@ -343,6 +343,7 @@ sub generate_library
     my $atom_site = $args->{'atom_site'};
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
+    my $include_hetatoms = $args->{'include_hetatoms'};
     my $angles = $args->{'angles'};
     my $rmsd = $args->{'rmsd'};
     my $conf_model = $args->{'conf_model'};
