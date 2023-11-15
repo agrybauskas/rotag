@@ -517,17 +517,16 @@ sub add_hydrogens_sp3
     } elsif( scalar @connection_ids == 0 && ! $add_only_clear_positions ) {
         # TODO: should be refactored as similar instances of code can be
         # observed.
-        # Calculates current angle between atoms that are connected to
-        # target atom.
         my ( $up_atom_coord,
              $mid_atom_coord,
-             $side_coord ) = # Coordinate that only will be used for
-                 # defining a local reference frame.
-                 ( $atom_coord{$connection_ids[0]},
-                   $atom_coord{$atom_id},
-                   [ $atom_site->{$atom_id}{'Cartn_x'},
-                     $atom_site->{$atom_id}{'Cartn_y'} + 1,
-                     $atom_site->{$atom_id}{'Cartn_z'}, ], );
+             $side_coord ) =
+            ( [ $atom_site->{$atom_id}{'Cartn_x'},
+                $atom_site->{$atom_id}{'Cartn_y'},
+                $atom_site->{$atom_id}{'Cartn_z'} + 1, ],
+              $atom_coord{$atom_id},
+              [ $atom_site->{$atom_id}{'Cartn_x'},
+                $atom_site->{$atom_id}{'Cartn_y'} + 1,
+                $atom_site->{$atom_id}{'Cartn_z'}, ], );
 
         # Generates transformation matrix for transfering atoms to local
         # reference frame.
@@ -545,47 +544,47 @@ sub add_hydrogens_sp3
             $bond_angle = 109.5 * $pi / 180;
         }
 
-        # if( scalar @{ $missing_hydrogens } >= 3 ) {
-        #     ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
-        #         @{ mult_matrix_product(
-        #                [ $transf_matrix,
-        #                  [ [ $bond_length * sin $bond_angle ],
-        #                    [ 0 ],
-        #                    [ $bond_length * cos $bond_angle ],
-        #                    [ 1 ] ] ] ) };
-        #     shift @{ $missing_hydrogens };
-        # }
+        if( scalar @{ $missing_hydrogens } >= 3 ) {
+            ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
+                @{ mult_matrix_product(
+                       [ $transf_matrix,
+                         [ [ $bond_length * sin $bond_angle ],
+                           [ 0 ],
+                           [ $bond_length * cos $bond_angle ],
+                           [ 1 ] ] ] ) };
+            shift @{ $missing_hydrogens };
+        }
 
-        # if( scalar @{ $missing_hydrogens } >= 2 ) {
-        #     ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
-        #         @{ mult_matrix_product(
-        #                [ $transf_matrix,
-        #                  [ [ $bond_length *
-        #                      cos( 2 * $pi / 3 ) *
-        #                      sin $bond_angle ],
-        #                    [ $bond_length *
-        #                      sin( 2 * $pi / 3 ) *
-        #                      sin $bond_angle ],
-        #                    [ $bond_length *
-        #                      cos $bond_angle ],
-        #                    [ 1 ] ] ] ) };
-        #     shift @{ $missing_hydrogens };
-        # }
+        if( scalar @{ $missing_hydrogens } >= 2 ) {
+            ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
+                @{ mult_matrix_product(
+                       [ $transf_matrix,
+                         [ [ $bond_length *
+                             cos( 2 * $pi / 3 ) *
+                             sin $bond_angle ],
+                           [ $bond_length *
+                             sin( 2 * $pi / 3 ) *
+                             sin $bond_angle ],
+                           [ $bond_length *
+                             cos $bond_angle ],
+                           [ 1 ] ] ] ) };
+            shift @{ $missing_hydrogens };
+        }
 
-        # if( scalar @{ $missing_hydrogens } == 1 ) {
-        #     ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
-        #         @{ mult_matrix_product(
-        #                [ $transf_matrix,
-        #                  [ [ $bond_length *
-        #                      cos( 4 * $pi / 3 ) *
-        #                      sin $bond_angle ],
-        #                    [ $bond_length *
-        #                      sin( 4 * $pi / 3 ) *
-        #                      sin $bond_angle ],
-        #                    [ $bond_length *
-        #                      cos $bond_angle ],
-        #                    [ 1 ] ] ] ) };
-        # }
+        if( scalar @{ $missing_hydrogens } == 1 ) {
+            ( $hydrogen_coord->{$missing_hydrogens->[0]} ) =
+                @{ mult_matrix_product(
+                       [ $transf_matrix,
+                         [ [ $bond_length *
+                             cos( 4 * $pi / 3 ) *
+                             sin $bond_angle ],
+                           [ $bond_length *
+                             sin( 4 * $pi / 3 ) *
+                             sin $bond_angle ],
+                           [ $bond_length *
+                             cos $bond_angle ],
+                           [ 1 ] ] ] ) };
+        }
     }
 
     return;
