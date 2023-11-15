@@ -167,7 +167,8 @@ sub add_hydrogens
             # Adds necessary PDBx entries to pseudo atom site.
             $last_atom_id++;
             create_pdbx_entry(
-                { 'atom_site' => \%hydrogen_site,
+                { 'group_PDB' => $atom_site->{$atom_id}{'group_PDB'},
+                  'atom_site' => \%hydrogen_site,
                   'id' => $last_atom_id,
                   'type_symbol' => 'H',
                   'label_atom_id' => $hydrogen_name,
