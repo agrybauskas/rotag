@@ -49,14 +49,14 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -0.058247
-2 2 composite -0.041210
-3 3 composite -0.038723
-4 4 composite -0.051071
-5 5 composite 0.409843
-6 6 composite 1.310750
-7 7 composite 0.392234
-8 8 composite 0.043867
-9 9 composite 1.175892
-10 10 composite 0.834112
+1 1 composite -0.028395
+2 2 composite -0.020090
+3 3 composite -0.018877
+4 4 composite -0.024897
+5 5 composite 0.447689
+6 6 composite 1.356490
+7 7 composite 0.439104
+8 8 composite 0.090372
+9 9 composite 1.222702
+10 10 composite 0.875478
 #

@@ -175,20 +175,29 @@ sub force_field
     my $lennard_jones_loop =
         pdbx_loop_to_array( $force_field_data, '_[local]_lennard_jones' );
 
-    for my $lennard_jones ( @{ $lennard_jones_loop } ) {
-        my $type_symbol_1 = $lennard_jones->{'type_symbol_1'};
-        my $type_symbol_2 = $lennard_jones->{'type_symbol_2'};
-        my $sigma = $lennard_jones->{'sigma'};
-        my $epsilon = $lennard_jones->{'epsilon'};
+    for my $lennard_jones_i ( @{ $lennard_jones_loop } ) {
+        for my $lennard_jones_j ( @{ $lennard_jones_loop } ) {
+            my $type_symbol_1 = $lennard_jones_i->{'type_symbol'};
+            my $type_symbol_2 = $lennard_jones_j->{'type_symbol'};
 
-        $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_1}
-                               {$type_symbol_2}{'sigma'} = $sigma;
-        $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_1}
-                               {$type_symbol_2}{'epsilon'} = $epsilon;
-        $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_2}
-                               {$type_symbol_1}{'sigma'} = $sigma;
-        $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_2}
-                               {$type_symbol_1}{'epsilon'} = $epsilon;
+            my $sigma =
+                sprintf "%.3f",
+                ( $lennard_jones_i->{'sigma'} +
+                  $lennard_jones_j->{'sigma'} ) / 2;
+            my $epsilon =
+                sprintf "%.3f",
+                sqrt( $lennard_jones_i->{'epsilon'} *
+                      $lennard_jones_j->{'epsilon'} );
+
+            $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_1}
+                                   {$type_symbol_2}{'sigma'} = $sigma;
+            $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_1}
+                                   {$type_symbol_2}{'epsilon'} = $epsilon;
+            $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_2}
+                                   {$type_symbol_1}{'sigma'} = $sigma;
+            $force_field_parameters{'_[local]_lennard_jones'}{$type_symbol_2}
+                                   {$type_symbol_1}{'epsilon'} = $epsilon;
+        }
     }
 
     # Restructuring parameters of partial charge.
