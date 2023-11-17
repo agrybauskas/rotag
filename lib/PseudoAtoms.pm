@@ -502,6 +502,7 @@ sub generate_library
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site,
                              'angles' => $angles,
+                             'include_hetatoms' => $include_hetatoms,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
@@ -589,13 +590,15 @@ sub calc_favourable_angles
     my ( $args ) = @_;
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $angles, $angle_count, $non_bonded_potential, $bonded_potential,
-         $threads, $rand_count, $rand_seed, $program_called_by, $verbose ) = (
+         $angles, $include_hetatoms, $angle_count, $non_bonded_potential,
+         $bonded_potential, $threads, $rand_count, $rand_seed,
+         $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
         $args->{'angles'},
+        $args->{'include_hetatoms'},
         $args->{'angle_count'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
@@ -611,6 +614,7 @@ sub calc_favourable_angles
     # TODO: look how separate $angles and $angle_count influence on the function.
     $angle_count //= 20;
     $rand_seed //= 23;
+    $include_hetatoms //= 0;
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
@@ -640,7 +644,11 @@ sub calc_favourable_angles
     my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     my @next_atom_ids =
         grep { $_ ne $ca_atom_id }
-            @{ $residue_site->{$cb_atom_id}{'connections'} };
+             ( @{ $residue_site->{$cb_atom_id}{'connections'} },
+               @{ $include_hetatoms &&
+                  defined $residue_site->{$cb_atom_id}{'connections_hetatom'} ?
+                  $residue_site->{$cb_atom_id}{'connections_hetatom'} :
+                  [] } );
 
     my @allowed_angles;
     my @allowed_energies;
@@ -713,6 +721,9 @@ sub calc_favourable_angles
 
             # Marks neighbouring atoms.
             push @neighbour_atom_ids, @{ $atom_site->{$atom_id}{'connections'} };
+            push @neighbour_atom_ids, @{ $atom_site->{$atom_id}{'connections_hetatom'} }
+                if $include_hetatoms &&
+                   defined $atom_site->{$atom_id}{'connections_hetatom'};
 
             # Starts calculating potential energy.
             my ( $next_allowed_angles, $next_allowed_energies ) =
