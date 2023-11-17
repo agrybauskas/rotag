@@ -819,7 +819,8 @@ sub calc_favourable_angle
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
 
-    my @angles =
+    # TODO: not optimal. Angles should be passed.
+    my @angle_names =
         sort { $atom_site->{$atom_id}{'rotatable_bonds'}{$a}{'order'} <=>
                $atom_site->{$atom_id}{'rotatable_bonds'}{$b}{'order'} }
         keys %{ $atom_site->{$atom_id}{'rotatable_bonds'} };
@@ -830,7 +831,7 @@ sub calc_favourable_angle
         my $angles = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
         my %angles =
-            map { $angles[$_] => [ $angles->[$_] ] }
+            map { $angle_names[$_] => [ $angles->[$_] ] }
                 ( 0..$#{ $angles } );
 
         my $pseudo_atom_site =
@@ -921,6 +922,13 @@ sub calc_full_atom_energy
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
 
+    my $dihedral_angles =
+        collect_dihedral_angles( $residue_site )->{$residue_unique_key};
+    my @angle_names =
+        sort { $dihedral_angles->{$a}{'order'} <=>
+               $dihedral_angles->{$b}{'order'} }
+        keys %{ $dihedral_angles };
+
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
     my @checkable_angles = @{ $array_blocks->[0] };
@@ -930,12 +938,10 @@ sub calc_full_atom_energy
 
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
-        my %angles =
-            map { my $angle_id = $_ + 1;
-                  ( "chi$angle_id" => $checkable_angles[$i][$_] ) }
-                ( 0..$#{ $checkable_angles[$i] } );
-
         my %rotamer_site = %{ $residue_site };
+        my %angles =
+            map { ( $angle_names[$i] => $checkable_angles[$i][$_] ) }
+                ( 0..$#{ $checkable_angles[$i] } );
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
                               \%angles );
 
