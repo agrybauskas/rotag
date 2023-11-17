@@ -819,13 +819,18 @@ sub calc_favourable_angle
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
 
+    my @angles =
+        sort { $atom_site->{$atom_id}{'rotatable_bonds'}{$a}{'order'} <=>
+               $atom_site->{$atom_id}{'rotatable_bonds'}{$b}{'order'} }
+        keys %{ $atom_site->{$atom_id}{'rotatable_bonds'} };
+
     my @allowed_angles;
     my @allowed_energies;
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
         my $angles = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
         my %angles =
-            map { my $angle_id = $_ + 1; ( "chi$angle_id" => [ $angles->[$_] ] )}
+            map { $angles[$_] => [ $angles->[$_] ] }
                 ( 0..$#{ $angles } );
 
         my $pseudo_atom_site =
