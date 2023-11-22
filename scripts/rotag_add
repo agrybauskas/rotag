@@ -283,7 +283,11 @@ for my $pdbx_file ( @ARGV ) {
             #     );
             # }
 
-            rotatable_bonds( $parameters, $residue_site );
+            rotatable_bonds( $parameters,
+                             $residue_site,
+                             { ( 'include_hetatoms' =>
+                                     ( defined $struct_conn &&
+                                       %{ $struct_conn } ? 1 : 0 ) ) } );
 
             # Generates rotational model.
             rotation_translation( $parameters, $residue_site );
