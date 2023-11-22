@@ -399,11 +399,11 @@ sub generate_library
             if( %{ $struct_conn } ) {
                 assign_hetatoms_with_struct_conn(
                     $parameters, $current_atom_site, $struct_conn
-                )
+                );
             } else {
                 assign_hetatoms_no_struct_conn(
                     $parameters, $current_atom_site
-                )
+                );
             }
         }
 

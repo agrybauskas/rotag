@@ -27,7 +27,8 @@ use PDBxParser qw( extract
                    split_by
                    to_pdbx
                    unique_residue_key );
-use PseudoAtoms qw( generate_pseudo );
+use PseudoAtoms qw( assign_hetatoms_with_struct_conn
+                    generate_pseudo );
 use SidechainModels qw( rotation_translation  );
 use Version qw( $VERSION );
 
@@ -269,6 +270,17 @@ for my $pdbx_file ( @ARGV ) {
 
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
+
+            if( defined $struct_conn && %{ $struct_conn } ) {
+                assign_hetatoms_with_struct_conn(
+                    $parameters, $residue_site, $struct_conn
+                );
+            }#  else {
+            #     assign_hetatoms_no_struct_conn(
+            #         $parameters, $residue_site
+            #     );
+            # }
+
             rotatable_bonds( $parameters, $residue_site );
 
             # Generates rotational model.
