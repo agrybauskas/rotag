@@ -940,7 +940,7 @@ sub calc_full_atom_energy
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
         my %rotamer_site = %{ $residue_site };
         my %angles =
-            map { ( $angle_names[$i] => $checkable_angles[$i][$_] ) }
+            map { ( $angle_names[$_] => $checkable_angles[$i][$_] ) }
                 ( 0..$#{ $checkable_angles[$i] } );
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
                               \%angles );

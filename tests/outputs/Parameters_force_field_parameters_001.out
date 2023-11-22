@@ -7120,105 +7120,45 @@ $VAR1 = bless( {
   },
   '_[local]_dihedral_angle_name' => {
     '.' => {
+      '.-CA-CB-.' => 'chi1',
+      '.-CB-CG-.' => 'chi2',
+      '.-CB-CG1-.' => 'chi2',
+      '.-CB-CG2-.' => 'chi3',
+      '.-CG-CD-.' => 'chi3',
       'C-N-CA-C' => 'phi',
       'CA-C-N-CA' => 'omega',
       'N-CA-C-N' => 'psi'
     },
-    'ALA' => {
-      '.-CA-CB-.' => 'chi1'
-    },
     'ARG' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
-      '.-CD-NE-.' => 'chi4',
-      '.-CG-CD-.' => 'chi3'
-    },
-    'ASN' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2'
-    },
-    'ASP' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2'
+      '.-CD-NE-.' => 'chi4'
     },
     'CYS' => {
-      '.-CA-CB-.' => 'chi1',
       '.-CB-SG-.' => 'chi2'
     },
-    'GLN' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
-      '.-CG-CD-.' => 'chi3'
-    },
-    'GLU' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
-      '.-CG-CD-.' => 'chi3'
-    },
-    'HIS' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2'
-    },
     'ILE' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG1-.' => 'chi2',
-      '.-CB-CG2-.' => 'chi3',
       '.-CG1-CD1-.' => 'chi4'
     },
     'LEU' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
       '.-CG-CD1-.' => 'chi3',
       '.-CG-CD2-.' => 'chi4'
     },
     'LYS' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
       '.-CD-CE-.' => 'chi4',
-      '.-CE-NZ-.' => 'chi5',
-      '.-CG-CD-.' => 'chi3'
+      '.-CE-NZ-.' => 'chi5'
     },
     'MET' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
       '.-CG-SD-.' => 'chi3',
       '.-SD-CE-.' => 'chi4'
     },
-    'PHE' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2'
-    },
-    'PRO' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
-      '.-CG-CD-.' => 'chi3'
-    },
     'SER' => {
-      '.-CA-CB-.' => 'chi1',
       '.-CB-OG-.' => 'chi2'
     },
     'THR' => {
-      '.-CA-CB-.' => 'chi1',
       '.-CB-CG2-.' => 'chi3',
       '.-CB-OG1-.' => 'chi2'
     },
-    'TRP' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2'
-    },
     'TYR' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
       '.-CZ-OH-.' => 'chi3'
-    },
-    'VAL' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG1-.' => 'chi2',
-      '.-CB-CG2-.' => 'chi3'
-    },
-    'XAA' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-OG-.' => 'chi2'
     }
   },
   '_[local]_dihedral_angle_restraints' => {
