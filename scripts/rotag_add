@@ -271,6 +271,8 @@ for my $pdbx_file ( @ARGV ) {
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
 
+            # TODO: do not forget to deal with situation where "_struct_conn"
+            # is absent.
             if( defined $struct_conn && %{ $struct_conn } ) {
                 assign_hetatoms_with_struct_conn(
                     $parameters, $residue_site, $struct_conn
