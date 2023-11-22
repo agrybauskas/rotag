@@ -468,6 +468,13 @@ sub generate_library
                     determine_residue_keys( $residue_site,
                                             { 'exclude_dot' => 1 } )->[0];
 
+                my $dihedral_angles =
+                    collect_dihedral_angles( $residue_site )->{$residue_unique_key};
+                my @angle_names =
+                    sort { $dihedral_angles->{$a}{'order'} <=>
+                           $dihedral_angles->{$b}{'order'} }
+                    keys %{ $dihedral_angles };
+
                 my @missing_atom_names =
                     @{ missing_atom_names( $parameters, $residue_site ) };
 
@@ -547,7 +554,7 @@ sub generate_library
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                     my %angles =
                         map { my $angle_id = $_ + 1;
-                              ( "chi$angle_id" => $allowed_angles->[$i][$_] ) }
+                              ( $angle_names[$_] => $allowed_angles->[$i][$_] ) }
                             ( 0..$#{ $allowed_angles->[$i] } );
                     my $rotamer_energy_sum = $energy_sums->[$i];
                     if( defined $rotamer_energy_sum ) {
@@ -922,6 +929,7 @@ sub calc_full_atom_energy
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
 
+    # TODO: not optimal. Angles should be passed.
     my $dihedral_angles =
         collect_dihedral_angles( $residue_site )->{$residue_unique_key};
     my @angle_names =
