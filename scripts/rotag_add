@@ -82,7 +82,7 @@ my $tags = '_atom_site';
 my $add_clear_positions = 0;
 my $keep_original = 0;
 my $add_B_iso = 0;
-my @category_list = ( '_atom_site', '_[local]_rotamer_angle' );
+my @category_list = ( '_atom_site', '_[local]_rotamer_angle', '_struct_conn' );
 my @attribute_list =
     ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
       'rotamer_id', 'type', 'value', );
@@ -144,10 +144,12 @@ for my $pdbx_file ( @ARGV ) {
     raw2indexed( $pdbx,
                  { 'attributes' => { '_atom_site' => [ 'id' ],
                                      '_[local]_rotamer_angle' => [ 'id' ],
+                                     '_struct_conn' => [ 'id' ],
                                      ( $add_B_iso ? ( '_[local]_rotamer_energy' => [ 'rotamer_id' ] ) : () ) } } );
 
     # Reads file path, stdin and '-' operator.
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
+    my $struct_conn = $pdbx->{'_struct_conn'}{'data'};
 
     if( ! defined $atom_site ) {
         warning( { 'program' => $0,

@@ -7159,6 +7159,9 @@ $VAR1 = bless( {
     },
     'TYR' => {
       '.-CZ-OH-.' => 'chi3'
+    },
+    'XAA' => {
+      '.-CB-OG-.' => 'chi2'
     }
   },
   '_[local]_dihedral_angle_restraints' => {
