@@ -345,7 +345,9 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( $pdbx_data,
                  { 'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] },
-                   'tags' => \@tags } );
+                   'tags' => [ @tags,
+                               ( defined $struct_conn ?
+                                 ( '_struct_conn' ) : () ) ] } );
     } elsif( $output_format eq 'csv' ) {
             if( scalar @tags == 1 ) {
                 to_csv( $pdbx_data, { 'category' => $tags[0] } );

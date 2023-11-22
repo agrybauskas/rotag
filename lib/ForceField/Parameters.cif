@@ -2612,6 +2612,7 @@ SER .  CB  OG  .  chi2
 THR .  CB  OG1 .  chi2
 THR .  CB  CG2 .  chi3
 TYR .  CZ  OH  .  chi3
+XAA .  CB  OG  .  chi2
 #
 loop_
 _[local]_interaction_atom_names.label_atom_id
