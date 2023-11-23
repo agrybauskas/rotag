@@ -283,6 +283,19 @@ for my $pdbx_file ( @ARGV ) {
             #     );
             # }
 
+            # Updating the target's atom site as there more duplicated pseudo
+            # atoms.
+            for my $atom_id ( keys %{ $residue_site } ) {
+                my $origin_atom_id =
+                    $residue_site->{$atom_id}{'origin_atom_id'};
+
+                next if ! defined $origin_atom_id ||
+                    ! exists $target_atom_site->{$origin_atom_id};
+
+                $target_atom_site->{$atom_id} = $residue_site->{$atom_id};
+                $selected_atom_site->{$atom_id} = $residue_site->{$atom_id};
+            }
+
             rotatable_bonds( $parameters,
                              $residue_site,
                              { ( 'include_hetatoms' =>
