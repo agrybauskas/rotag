@@ -22,7 +22,8 @@ use PDBxParser qw( determine_residue_keys
                    to_csv
                    to_pdbx );
 use PseudoAtoms qw( generate_library );
-use Sampling qw( sample_angles_qs_parsing );
+use Sampling qw( sample_angles_qs_parsing
+                 sample_bond_parameters );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -176,6 +177,8 @@ if( defined $rand_seed ) {
 }
 
 # Parses string describing angles.
+# TODO: angles should be changed to bond parameters as the functionality is
+# being extended.
 my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
 
 # Parses parameter string.
