@@ -295,6 +295,8 @@ for my $pdbx_file ( @ARGV ) {
                 $target_atom_site->{$atom_id} = $residue_site->{$atom_id};
                 $selected_atom_site->{$atom_id} = $residue_site->{$atom_id};
 
+                push @{ $target_atom_ids }, $atom_id;
+
                 delete $target_atom_site->{$origin_atom_id};
                 delete $selected_atom_site->{$origin_atom_id};
             }
@@ -400,6 +402,8 @@ for my $pdbx_file ( @ARGV ) {
         my %rotamer_atom_site;
         my $last_atom_id = max( keys %{ $atom_site } );
         for my $atom_id ( @{ $target_atom_ids } ) {
+            next if ! defined $target_atom_site->{$atom_id};
+
             my $residue_unique_key =
                 unique_residue_key( $selected_atom_site->{$atom_id} );
             for my $rotamer_id ( sort { $a <=> $b }
