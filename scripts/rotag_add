@@ -294,6 +294,9 @@ for my $pdbx_file ( @ARGV ) {
 
                 $target_atom_site->{$atom_id} = $residue_site->{$atom_id};
                 $selected_atom_site->{$atom_id} = $residue_site->{$atom_id};
+
+                delete $target_atom_site->{$origin_atom_id};
+                delete $selected_atom_site->{$origin_atom_id};
             }
 
             rotatable_bonds( $parameters,
