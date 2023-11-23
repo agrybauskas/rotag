@@ -23,7 +23,7 @@ use PDBxParser qw( determine_residue_keys
                    to_pdbx );
 use PseudoAtoms qw( generate_library );
 use Sampling qw( sample_angles_qs_parsing
-                 sample_bond_parameters );
+                 sample_bond_parameters_qs_parsing );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -179,7 +179,9 @@ if( defined $rand_seed ) {
 # Parses string describing angles.
 # TODO: angles should be changed to bond parameters as the functionality is
 # being extended.
-my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
+# my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
+my %bond_parameters =
+    %{ sample_bond_parameters_qs_parsing( $parameters, $angles ) };
 
 # Parses parameter string.
 $parameters_cmd =~ s/\s//g;
@@ -254,7 +256,7 @@ for my $pdbx_file ( @ARGV ) {
                   'include_interactions' =>
                       { 'id' => [ keys %{ $current_atom_site } ] },
                   'include_hetatoms' => $calc_hetatoms,
-                  'angles' => \%angles,
+                  'angles' => \%bond_parameters,
                   'interactions' => $interactions,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
