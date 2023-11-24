@@ -285,6 +285,45 @@ sub sample_bond_parameters_qs_parsing
 
         $residue_names //= [ "*" ];
         $bond_parameter_string //= "";
+
+        for my $bond_parameter ( split /,/, $bond_parameter_string ) {
+            my $bond_parameter_name;
+            my $bond_parameter_start;
+            my $bond_parameter_step;
+            my $bond_parameter_end;
+
+            if( $bond_parameter =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+                ( $bond_parameter_name,
+                  $bond_parameter_start,
+                  $bond_parameter_step,
+                  $bond_parameter_end ) = ( $1, $2, $3, $4 );
+            } elsif( $bond_parameter =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+                ( $bond_parameter_name,
+                  $bond_parameter_start,
+                  $bond_parameter_end ) = ( $1, $2, $3 );
+            } elsif( $bond_parameter =~ m/^(\w+)=(-?\d+(?:\.\d+)?)$/ ) {
+                ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
+            } elsif( $bond_parameter =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
+                ( $bond_parameter_step ) = ( $1 );
+            } elsif( $bond_parameter =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+                ( $bond_parameter_start,
+                  $bond_parameter_step,
+                  $bond_parameter_end ) = ( $1, $2, $3 );
+            } elsif( $bond_parameter =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+                ( $bond_parameter_start, $bond_parameter_end ) = ( $1, $2 );
+            } else {
+                die "Syntax '$bond_parameter' is incorrect\n"
+            }
+
+            $bond_parameter_name //= '*';
+            $bond_parameter_start //= - 180.0;
+            $bond_parameter_step //= 36.0;
+            $bond_parameter_end //= 180.0;
+
+            my $bond_parameter_count =
+                int( ( $bond_parameter_end - $bond_parameter_start ) /
+                     $bond_parameter_step );
+        }
     }
 
     return \%bond_parameters;
