@@ -176,10 +176,8 @@ if( defined $rand_seed ) {
     srand( $rand_seed );
 }
 
-# Parses string describing angles.
-# TODO: angles should be changed to bond parameters as the functionality is
-# being extended.
-# my %angles = %{ sample_angles_qs_parsing( $parameters, $angles ) };
+# Parses string describing bond parameters: dihedral angles, bond angles and
+# bond lengths.
 my %bond_parameters =
     %{ sample_bond_parameters_qs_parsing( $parameters, $angles ) };
 
