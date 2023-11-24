@@ -259,6 +259,34 @@ sub sample_bond_parameters_qs_parsing
         }
     }
 
+    # Query overwrites on top.
+    if( $query_strings ) {
+        undef %bond_parameters;
+    }
+
+    for my $query_string ( split /;/, $query_strings ) {
+        my $residue_names;
+        my $bond_parameter_string;
+
+        my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
+        my @query_string_decomposed = split /:/, $query_string;
+        if( scalar @query_string_decomposed == 2 ) {
+            if( $query_string =~ m/^((?:${residue_names_regexp})(?:,(?:${residue_names_regexp}))*):(.+)$/i ) {
+                $residue_names = [ split /,/, uc( $1 ) ];
+                $bond_parameter_string = $2;
+            } else {
+                die "Syntax '$query_string' is incorrect\n"
+            }
+        } elsif( scalar @query_string_decomposed == 1 ) {
+            $bond_parameter_string = $query_string;
+        } else {
+            die "Syntax '$query_string' is incorrect\n"
+        }
+
+        $residue_names //= [ "*" ];
+        $bond_parameter_string //= "";
+    }
+
     return \%bond_parameters;
 }
 
