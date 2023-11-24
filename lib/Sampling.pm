@@ -217,6 +217,8 @@ sub sample_angles_qs_parsing
 
 sub sample_bond_parameters_qs_parsing
 {
+    my %bond_parameters;
+    return \%bond_parameters;
 }
 
 sub retrieve_dihedral_angle_params
