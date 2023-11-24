@@ -217,7 +217,48 @@ sub sample_angles_qs_parsing
 
 sub sample_bond_parameters_qs_parsing
 {
+    my ( $parameters, $query_strings, $options ) = @_;
+
+    my ( $in_radians ) = ( $options->{'in_radians'} );
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $dihedral_angle_restraints =
+        $parameters->{'_[local]_dihedral_angle_restraints'};
+    my $rotatable_residue_names =
+        $parameters->{'_[local]_rotatable_residue_names'};
+
+    $query_strings =~ s/\s//g;
+
     my %bond_parameters;
+    for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
+        for my $angle_name ( sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
+            if( $residue_name eq '.' ) {
+                $residue_name = '*'
+            }
+            if( $angle_name eq '.' ) {
+                $angle_name = '*'
+            }
+            my ( $angle_start, $angle_step, $angle_end ) =
+                retrieve_dihedral_angle_params( $dihedral_angle_restraints,
+                                                $residue_name,
+                                                $angle_name,
+                                                [ 'range_from', 'step', 'range_to' ] );
+
+            my $angle_count = int( ( $angle_end - $angle_start ) / $angle_step );
+
+            if( $in_radians ) {
+                $bond_parameters{'dihedral_angles'}{$residue_name}{$angle_name}=
+                    sample_angles( [ [ $angle_start, $angle_end ] ],
+                                   $angle_count );
+            } else {
+                $bond_parameters{'dihedral_angles'}{$residue_name}{$angle_name}=
+                    sample_angles( [ [ $angle_start * $pi / 180.0,
+                                       $angle_end * $pi / 180.0 ] ],
+                                   $angle_count );
+            }
+        }
+    }
+
     return \%bond_parameters;
 }
 
