@@ -247,11 +247,11 @@ sub sample_bond_parameters_qs_parsing
             my $angle_count = int( ( $angle_end - $angle_start ) / $angle_step );
 
             if( $in_radians ) {
-                $bond_parameters{'dihedral_angles'}{$residue_name}{$angle_name}=
+                $bond_parameters{$residue_name}{$angle_name}=
                     sample_angles( [ [ $angle_start, $angle_end ] ],
                                    $angle_count );
             } else {
-                $bond_parameters{'dihedral_angles'}{$residue_name}{$angle_name}=
+                $bond_parameters{$residue_name}{$angle_name}=
                     sample_angles( [ [ $angle_start * $pi / 180.0,
                                        $angle_end * $pi / 180.0 ] ],
                                    $angle_count );
@@ -323,6 +323,20 @@ sub sample_bond_parameters_qs_parsing
             my $bond_parameter_count =
                 int( ( $bond_parameter_end - $bond_parameter_start ) /
                      $bond_parameter_step );
+
+            for my $residue_name ( @{ $residue_names } ) {
+                if( $in_radians ) {
+                    $bond_parameters{$residue_name}{$bond_parameter_name} =
+                        sample_angles( [ [ $bond_parameter_start,
+                                           $bond_parameter_end ] ],
+                                       $bond_parameter_count );
+                } else {
+                    $bond_parameters{$residue_name}{$bond_parameter_name} =
+                        sample_angles( [ [ $bond_parameter_start * $pi / 180.0,
+                                           $bond_parameter_end * $pi / 180.0 ] ],
+                                       $bond_parameter_count );
+                }
+            }
         }
     }
 
