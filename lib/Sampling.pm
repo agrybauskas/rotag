@@ -235,30 +235,38 @@ sub sample_bond_parameters_qs_parsing
     # and bond length changes.
     my %bond_parameters;
     for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
-        for my $angle_name ( sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
+        for my $dihedral_angle_name (
+            sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
             if( $residue_name eq '.' ) {
                 $residue_name = '*'
             }
-            if( $angle_name eq '.' ) {
-                $angle_name = '*'
+            if( $dihedral_angle_name eq '.' ) {
+                $dihedral_angle_name = '*'
             }
-            my ( $angle_start, $angle_step, $angle_end ) =
+            my ( $dihedral_angle_start,
+                 $dihedral_angle_step,
+                 $dihedral_angle_end ) =
                 retrieve_dihedral_angle_params( $dihedral_angle_restraints,
                                                 $residue_name,
-                                                $angle_name,
-                                                [ 'range_from', 'step', 'range_to' ] );
+                                                $dihedral_angle_name,
+                                                [ 'range_from',
+                                                  'step',
+                                                  'range_to' ] );
 
-            my $angle_count = int( ( $angle_end - $angle_start ) / $angle_step );
+            my $dihedral_angle_count =
+                int( ( $dihedral_angle_end - $dihedral_angle_start ) /
+                     $dihedral_angle_step );
 
             if( $in_radians ) {
-                $bond_parameters{$residue_name}{$angle_name}=
-                    sample_angles( [ [ $angle_start, $angle_end ] ],
-                                   $angle_count );
+                $bond_parameters{$residue_name}{$dihedral_angle_name} =
+                    sample_angles( [ [ $dihedral_angle_start,
+                                       $dihedral_angle_end ] ],
+                                   $dihedral_angle_count );
             } else {
-                $bond_parameters{$residue_name}{$angle_name}=
-                    sample_angles( [ [ $angle_start * $pi / 180.0,
-                                       $angle_end * $pi / 180.0 ] ],
-                                   $angle_count );
+                $bond_parameters{$residue_name}{$dihedral_angle_name} =
+                    sample_angles( [ [ $dihedral_angle_start * $pi / 180.0,
+                                       $dihedral_angle_end * $pi / 180.0 ] ],
+                                   $dihedral_angle_count );
             }
         }
     }
