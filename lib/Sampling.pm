@@ -229,6 +229,10 @@ sub sample_bond_parameters_qs_parsing
 
     $query_strings =~ s/\s//g;
 
+    # Dihedral angle calculations are first preditermined and then updated. For
+    # bond angle and bond length parameters, there are no defaults and they
+    # have to be declared as it is not desirable to calculate each bond angle
+    # and bond length changes.
     my %bond_parameters;
     for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
         for my $angle_name ( sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
