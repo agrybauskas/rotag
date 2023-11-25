@@ -287,12 +287,12 @@ sub sample_bond_parameters_qs_parsing
                 $residue_names = [ split /,/, uc( $1 ) ];
                 $bond_parameter_string = $2;
             } else {
-                die "Syntax '$query_string' is incorrect\n"
+                die "Syntax '$query_string' is incorrect\n";
             }
         } elsif( scalar @query_string_decomposed == 1 ) {
             $bond_parameter_string = $query_string;
         } else {
-            die "Syntax '$query_string' is incorrect\n"
+            die "Syntax '$query_string' is incorrect\n";
         }
 
         $residue_names //= [ "*" ];
@@ -324,7 +324,7 @@ sub sample_bond_parameters_qs_parsing
             } elsif( $bond_parameter =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
                 ( $bond_parameter_start, $bond_parameter_end ) = ( $1, $2 );
             } else {
-                die "Syntax '$bond_parameter' is incorrect\n"
+                die "Syntax '$bond_parameter' is incorrect\n";
             }
 
             $bond_parameter_name //= '*';
