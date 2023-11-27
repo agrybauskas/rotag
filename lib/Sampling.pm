@@ -304,16 +304,16 @@ sub sample_bond_parameters_qs_parsing
             my $bond_parameter_step;
             my $bond_parameter_end;
 
-            if( $bond_parameter =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            if( $bond_parameter =~ m/^([A-Za-z0-9\-]+)=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
                 ( $bond_parameter_name,
                   $bond_parameter_start,
                   $bond_parameter_step,
                   $bond_parameter_end ) = ( $1, $2, $3, $4 );
-            } elsif( $bond_parameter =~ m/^(\w+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            } elsif( $bond_parameter =~ m/^([A-Za-z0-9\-]+)=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
                 ( $bond_parameter_name,
                   $bond_parameter_start,
                   $bond_parameter_end ) = ( $1, $2, $3 );
-            } elsif( $bond_parameter =~ m/^(\w+)=(-?\d+(?:\.\d+)?)$/ ) {
+            } elsif( $bond_parameter =~ m/^([A-Za-z0-9\-]+)=(-?\d+(?:\.\d+)?)$/ ) {
                 ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
             } elsif( $bond_parameter =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
                 ( $bond_parameter_step ) = ( $1 );
