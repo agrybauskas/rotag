@@ -67,6 +67,7 @@ our $VERSION = $VERSION;
 #*                            soft_n       - soft sphere n.
 #*
 #*                        Example: 'lj_k=0.01, c_k=0.4'.
+# TODO: update help message for bond parameters.
 #*    -a, --angles <angles>
 #*                        angles that each dihedral angle is turned by in degrees
 #*                        expressed in special grammar:
