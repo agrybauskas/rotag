@@ -183,6 +183,17 @@ if( defined $rand_seed ) {
 my %bond_parameters =
     %{ sample_bond_parameters_qs_parsing( $parameters, $angles ) };
 
+my $do_angle_bending =
+    any { scalar @{ $_ } == 3 }
+    map { [ split /-/, $_ ] }
+    map { keys %{ $bond_parameters{$_} } }
+    keys %bond_parameters ? 1 : undef;
+my $do_bond_stretching =
+    any { scalar @{ $_ } == 2 }
+    map { [ split /-/, $_ ] }
+    map { keys %{ $bond_parameters{$_} } }
+    keys %bond_parameters ? 1 : undef;
+
 # Parses parameter string.
 $parameters_cmd =~ s/\s//g;
 for my $parameter_pair ( split /,/sxm, $parameters_cmd ) {
@@ -258,6 +269,8 @@ for my $pdbx_file ( @ARGV ) {
                   'include_hetatoms' => $calc_hetatoms,
                   'angles' => \%bond_parameters,
                   'interactions' => $interactions,
+                  'do_angle_bending' => $do_angle_bending,
+                  'do_bond_stretching' => $do_bond_stretching,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
                                  'rand_count' => $rand_count,
