@@ -187,12 +187,12 @@ my $do_angle_bending =
     any { scalar @{ $_ } == 3 }
     map { [ split /-/, $_ ] }
     map { keys %{ $bond_parameters{$_} } }
-    keys %bond_parameters ? 1 : undef;
+    keys %bond_parameters;
 my $do_bond_stretching =
     any { scalar @{ $_ } == 2 }
     map { [ split /-/, $_ ] }
     map { keys %{ $bond_parameters{$_} } }
-    keys %bond_parameters ? 1 : undef;
+    keys %bond_parameters;
 
 # Parses parameter string.
 $parameters_cmd =~ s/\s//g;
