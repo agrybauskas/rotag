@@ -634,7 +634,20 @@ sub calc_favourable_angles
         grep { defined $residue_site->{$_}{'rotatable_bonds'} }
         keys %{ $residue_site }
     };
-    if( ! %{ $rotatable_bonds } ) { return []; }
+    my $bendable_angles = {
+        map { $_ => $residue_site->{$_}{'bendable_angles'} }
+        grep { defined $residue_site->{$_}{'bendable_angles'} }
+        keys %{ $residue_site }
+    };
+    my $stretchable_bonds = {
+        map { $_ => $residue_site->{$_}{'stretchable_bonds'} }
+        grep { defined $residue_site->{$_}{'stretchable_bonds'} }
+        keys %{ $residue_site }
+    };
+
+    if( ! %{ $rotatable_bonds } &&
+        ! %{ $rotatable_bonds } &&
+        ! %{ $rotatable_bonds } ) { return []; }
 
     # Goes through each atom in side chain and calculates interaction
     # potential with surrounding atoms. CA and CB are non-movable atoms
