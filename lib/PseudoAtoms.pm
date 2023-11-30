@@ -499,6 +499,8 @@ sub generate_library
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
+                # TODO: change "angles" to "bond parameters" as not only
+                # dihedral angles are involved here.
                 # First, checks angles by step-by-step adding atoms to sidechains.
                 # This is called growing side chain.
                 my %options = %{ $options };
