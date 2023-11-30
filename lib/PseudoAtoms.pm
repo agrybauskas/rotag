@@ -646,8 +646,8 @@ sub calc_favourable_angles
     };
 
     if( ! %{ $rotatable_bonds } &&
-        ! %{ $rotatable_bonds } &&
-        ! %{ $rotatable_bonds } ) { return []; }
+        ! %{ $bendable_angles } &&
+        ! %{ $stretchable_bonds } ) { return []; }
 
     # Goes through each atom in side chain and calculates interaction
     # potential with surrounding atoms. CA and CB are non-movable atoms
