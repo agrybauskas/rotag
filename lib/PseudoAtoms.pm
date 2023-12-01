@@ -734,10 +734,12 @@ sub calc_favourable_angles
             push @visited_atom_ids, $atom_id;
 
             # Marks neighbouring atoms.
-            push @neighbour_atom_ids, @{ $atom_site->{$atom_id}{'connections'} };
-            push @neighbour_atom_ids, @{ $atom_site->{$atom_id}{'connections_hetatom'} }
-                if $include_hetatoms &&
-                   defined $atom_site->{$atom_id}{'connections_hetatom'};
+            push @neighbour_atom_ids,
+                @{ $atom_site->{$atom_id}{'connections'} };
+            push @neighbour_atom_ids,
+                @{ $atom_site->{$atom_id}{'connections_hetatom'} }
+            if $include_hetatoms &&
+                defined $atom_site->{$atom_id}{'connections_hetatom'};
 
             # Starts calculating potential energy.
             my ( $next_allowed_angles, $next_allowed_energies ) =
