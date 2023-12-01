@@ -631,26 +631,6 @@ sub calc_favourable_angles
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
-    my $rotatable_bonds = {
-        map { $_ => $residue_site->{$_}{'rotatable_bonds'} }
-        grep { defined $residue_site->{$_}{'rotatable_bonds'} }
-        keys %{ $residue_site }
-    };
-    my $bendable_angles = {
-        map { $_ => $residue_site->{$_}{'bendable_angles'} }
-        grep { defined $residue_site->{$_}{'bendable_angles'} }
-        keys %{ $residue_site }
-    };
-    my $stretchable_bonds = {
-        map { $_ => $residue_site->{$_}{'stretchable_bonds'} }
-        grep { defined $residue_site->{$_}{'stretchable_bonds'} }
-        keys %{ $residue_site }
-    };
-
-    if( ! %{ $rotatable_bonds } &&
-        ! %{ $bendable_angles } &&
-        ! %{ $stretchable_bonds } ) { return []; }
-
     # Goes through each atom in side chain and calculates interaction
     # potential with surrounding atoms. CA and CB are non-movable atoms
     # so, they are marked as starting atoms.
@@ -677,14 +657,26 @@ sub calc_favourable_angles
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
+            my $rotatable_bonds = $residue_site->{$atom_id}{'rotatable_bonds'};
+            my $stretchable_bonds = $residue_site->{$atom_id}{'stretchable_bonds'};
+            my $bendable_angles = $residue_site->{$atom_id}{'bendable_angles'};
+
+            my %bond_parameters = (
+                ( defined $rotatable_bonds ? %{ $rotatable_bonds } : () ),
+                ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
+                ( defined $bendable_angles ? %{ $bendable_angles } : () )
+            );
+
+            next if ! %bond_parameters;
+
             my @default_allowed_angles;
             # TODO: last angle should be sorted with <=> by first removing chi
             # prefix. It will be important if large quantity of dihedral angles
             # are analyzed.
             my ( $last_angle_name ) =
-                sort { $rotatable_bonds->{$atom_id}{$b}{'order'} <=>
-                       $rotatable_bonds->{$atom_id}{$a}{'order'} }
-               keys %{ $rotatable_bonds->{$atom_id} };
+                sort { $bond_parameters{$b}{'order'} <=>
+                       $bond_parameters{$a}{'order'} }
+                keys %bond_parameters;
 
             if( exists $angles->{$residue_name}{$last_angle_name} ) {
                 @default_allowed_angles =
@@ -721,7 +713,7 @@ sub calc_favourable_angles
             # rotatable bonds.
             if( @allowed_angles &&
                 scalar( @{ $allowed_angles[0] } ) <
-                scalar( keys %{ $rotatable_bonds->{$atom_id} } ) ) {
+                scalar( keys %{ $bond_parameters{$atom_id} } ) ) {
                 @allowed_angles =
                     @{ permutation( 2, [], [ \@allowed_angles,
                                              \@default_allowed_angles ], [] ) };
