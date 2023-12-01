@@ -836,10 +836,19 @@ sub calc_favourable_angle
     $options{'atom_site'} = $atom_site;
 
     # TODO: not optimal. Angles should be passed.
+    my $rotatable_bonds = $atom_site->{$atom_id}{'rotatable_bonds'};
+    my $stretchable_bonds = $atom_site->{$atom_id}{'stretchable_bonds'};
+    my $bendable_angles = $atom_site->{$atom_id}{'bendable_angles'};
+
+    my %bond_parameters = (
+        ( defined $rotatable_bonds ? %{ $rotatable_bonds } : () ),
+        ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
+        ( defined $bendable_angles ? %{ $bendable_angles } : () )
+    );
+
     my @angle_names =
-        sort { $atom_site->{$atom_id}{'rotatable_bonds'}{$a}{'order'} <=>
-               $atom_site->{$atom_id}{'rotatable_bonds'}{$b}{'order'} }
-        keys %{ $atom_site->{$atom_id}{'rotatable_bonds'} };
+        sort { $bond_parameters{$a}{'order'} <=> $bond_parameters{$b}{'order'} }
+        keys %bond_parameters;
 
     my @allowed_angles;
     my @allowed_energies;
