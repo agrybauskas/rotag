@@ -97,6 +97,15 @@ sub hybridization
             next;
         }
 
+        # Dealing with heteroatoms.
+        if( ( ! exists $atom_site->{$atom_id}{'connections'} ||
+              ! defined $atom_site->{$atom_id}{'connections'} ||
+              ! @{ $atom_site->{$atom_id}{'connections'} } ) &&
+            $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
+            $atom_site->{$atom_id}{'hybridization'} = '.';
+            next;
+        }
+
         # Determines if the connected atoms sits in one plane.
         my $dihedral_angle;
         if( exists $atom_site->{$atom_id}{'connections'} &&
