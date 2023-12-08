@@ -294,11 +294,21 @@ for my $pdbx_file ( @ARGV ) {
         [ 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
           'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
           'units' ];
+    $pdbx_data->{'_[local]_rotamer_bond_angle'}{'metadata'}{'attributes'} =
+        $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'attributes'};
+    $pdbx_data->{'_[local]_rotamer_bond_length'}{'metadata'}{'attributes'} =
+        $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'attributes'};
     $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'attributes'} =
         [ 'id', 'rotamer_id', 'calculation_method', 'value'];
+
     $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data->{'_[local]_rotamer_bond_angle'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data->{'_[local]_rotamer_bond_length'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
+
     $pdbx_data->{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
+    $pdbx_data->{'_[local]_rotamer_bond_angle'}{'metadata'}{'type'} = 'record';
+    $pdbx_data->{'_[local]_rotamer_bond_length'}{'metadata'}{'type'} = 'record';
     $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'type'} = 'record';
 
     my $angle_id = 1;
@@ -329,8 +339,40 @@ for my $pdbx_file ( @ARGV ) {
                 my @angle_name_parts = split /\-/, $angle_name;
 
                 if( scalar @angle_name_parts == 3 ) {
+                    push @{ $pdbx_data->{'_[local]_rotamer_bond_angle'}{'data'} },
+                        { 'id' => $angle_id,
+                          'rotamer_id' => $rotamer_id,
+                          'label_seq_id' => $residue_id,
+                          'label_comp_id' => $residue_name[0],
+                          'label_asym_id' => $residue_chain,
+                          'pdbx_PDB_model_num' => $pdbx_model,
+                          'label_alt_id' => $residue_alt,
+                          'frequency' =>
+                              sprintf( $sig_figs_max, $rotamer_frequency ),
+                          'type' => $angle_name,
+                          'value' =>
+                              ( $in_radians ? sprintf( $sig_figs_max,
+                                                       $angle_value ) :
+                                              sprintf( $sig_figs_min,
+                                                       180.0 * $angle_value /
+                                                       $pi )),
+                          'units' =>
+                              ( $in_radians ? 'radians' : 'degrees' ) };
 
                 } elsif( scalar @angle_name_parts == 2 ) {
+                    push @{ $pdbx_data->{'_[local]_rotamer_bond_length'}{'data'} },
+                        { 'id' => $angle_id,
+                          'rotamer_id' => $rotamer_id,
+                          'label_seq_id' => $residue_id,
+                          'label_comp_id' => $residue_name[0],
+                          'label_asym_id' => $residue_chain,
+                          'pdbx_PDB_model_num' => $pdbx_model,
+                          'label_alt_id' => $residue_alt,
+                          'frequency' =>
+                              sprintf( $sig_figs_max, $rotamer_frequency ),
+                          'type' => $angle_name,
+                          'value' => sprintf( $sig_figs_max, $angle_value ),
+                          'units' => 'angstroms' };
 
                 } else {
                     push @{ $pdbx_data->{'_[local]_rotamer_angle'}{'data'} },
