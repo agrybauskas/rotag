@@ -713,7 +713,7 @@ sub calc_favourable_angles
             # rotatable bonds.
             if( @allowed_angles &&
                 scalar( @{ $allowed_angles[0] } ) <
-                scalar( keys %{ $bond_parameters{$atom_id} } ) ) {
+                scalar( keys %bond_parameters ) ) {
                 @allowed_angles =
                     @{ permutation( 2, [], [ \@allowed_angles,
                                              \@default_allowed_angles ], [] ) };
