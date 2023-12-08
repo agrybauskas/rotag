@@ -950,10 +950,20 @@ sub calc_full_atom_energy
     # TODO: not optimal. Angles should be passed.
     my $dihedral_angles =
         collect_dihedral_angles( $residue_site )->{$residue_unique_key};
+    my $bendable_angles =
+        collect_bond_angles( $residue_site )->{$residue_unique_key};
+    my $stretchable_bonds =
+        collect_bond_lengths( $residue_site )->{$residue_unique_key};
+
+    my %bond_parameters = (
+        ( defined $dihedral_angles ? %{ $dihedral_angles } : () ),
+        ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
+        ( defined $bendable_angles ? %{ $bendable_angles } : () ),
+    );
+
     my @angle_names =
-        sort { $dihedral_angles->{$a}{'order'} <=>
-               $dihedral_angles->{$b}{'order'} }
-        keys %{ $dihedral_angles };
+        sort { $bond_parameters{$a}{'order'} <=> $bond_parameters{$b}{'order'} }
+        keys %bond_parameters;
 
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
