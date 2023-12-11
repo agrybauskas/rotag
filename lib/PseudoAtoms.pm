@@ -641,6 +641,21 @@ sub calc_favourable_angles
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
+    my $dihedral_angles =
+        collect_dihedral_angles( $residue_site )->{$residue_unique_key};
+    my $bendable_angles =
+        collect_bond_angles( $residue_site )->{$residue_unique_key};
+    my $stretchable_bonds =
+        collect_bond_lengths( $residue_site )->{$residue_unique_key};
+
+    my %bond_parameters = (
+        ( defined $dihedral_angles ? %{ $dihedral_angles } : () ),
+        ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
+        ( defined $bendable_angles ? %{ $bendable_angles } : () ),
+    );
+
+    if( ! %bond_parameters ) { return []; }
+
     # Goes through each atom in side chain and calculates interaction
     # potential with surrounding atoms. CA and CB are non-movable atoms
     # so, they are marked as starting atoms.
@@ -667,18 +682,6 @@ sub calc_favourable_angles
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
-            my $rotatable_bonds = $residue_site->{$atom_id}{'rotatable_bonds'};
-            my $stretchable_bonds = $residue_site->{$atom_id}{'stretchable_bonds'};
-            my $bendable_angles = $residue_site->{$atom_id}{'bendable_angles'};
-
-            my %bond_parameters = (
-                ( defined $rotatable_bonds ? %{ $rotatable_bonds } : () ),
-                ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
-                ( defined $bendable_angles ? %{ $bendable_angles } : () )
-            );
-
-            next if ! %bond_parameters;
-
             my @default_allowed_angles;
             # TODO: last angle should be sorted with <=> by first removing chi
             # prefix. It will be important if large quantity of dihedral angles
