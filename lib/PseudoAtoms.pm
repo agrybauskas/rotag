@@ -366,6 +366,16 @@ sub generate_library
     $include_hetatoms //= 0;
     $options //= {};
 
+    my $do_bond_torsion =
+        any { exists $bond_parameters->{$_}{'rotatable_bonds'} }
+        keys %{ $bond_parameters };
+    my $do_bond_stretching =
+        any { exists $bond_parameters->{$_}{'stretchable_bonds'} }
+        keys %{ $bond_parameters };
+    my $do_angle_bending =
+        any { exists $bond_parameters->{$_}{'bendable_angles'} }
+        keys %{ $bond_parameters };
+
     # Selection of potential function.
     my %potential_functions =
         ( 'composite'   => { 'non_bonded' => \&ForceField::NonBonded::general,
@@ -386,10 +396,6 @@ sub generate_library
             filter_new( $atom_site,
                     { 'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
-
-        my $do_bond_torsion = 1;
-        my $do_bond_stretching = 0;
-        my $do_angle_bending = 0;
 
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
