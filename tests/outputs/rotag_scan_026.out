@@ -35,25 +35,26 @@ Options:
                             soft_n       - soft sphere n.
  
                         Example: 'lj_k=0.01, c_k=0.4'.
-    -a, --angles <angles>
-                        angles that each dihedral angle is turned by in degrees
-                        expressed in special grammar:
-                            <residue>:<angle>=<start>..<step>..<end>
+    -a, --bond-parameters <bond-parameters>
+                        bond parameters that each bond parameter is changed by
+                        and expressed in special grammar:
+                            <residue>:<bond-parameter>=<start>..<step>..<end>
                                 defined steps that are performed by defined
-                                range. Residue, angle name, angle start and end
-                                are optional.
+                                range. Residue, bond parameter name, bond
+                                parameter start and end are optional.
  
                         Example: '0..36.0..360.0', '0..18.0..180.0',
                                  '0..90.0', 'chi1=0..36.0',
                                  'chi1=90.0..90.0, chi2=0.0..10.0..360.0',
                                  'LYS,LEU,ILE:-180.0..20.0..180.0',
-                                 'SER: 10.0; CYS,THR: 20.0'.
+                                 'SER: 10.0; CYS,THR: 20.0',
+                                 'OD1-MG: 0.5..0.1..1.0'.
     -r, --radians
                         angle value is in radians.
     -x, --rand-seed <int>
-                        set a seed for random angle selection.
+                        set a seed for random bond parameter selection.
     -X, --rand-count <int>
-                        number of random angles.
+                        number of random bond parameters.
     --tags <tag>[,<tag>...]
                         output only specified PDBx categories.
     -F, --format <format>
@@ -61,8 +62,8 @@ Options:
                         is select (default: pdbx | csv).
     --verbose
                         print out additional information about the occuring
-                        scanning of the angles, such as residue name, accepted
-                        angle count and etc.
+                        scanning of the bond parameters, such as residue name,
+                        accepted bond parameter count and etc.
     -n, --threads <int>
                         number of threads.
     -v, --version
