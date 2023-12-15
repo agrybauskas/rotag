@@ -258,12 +258,16 @@ sub sample_bond_parameters_qs_parsing
                      $dihedral_angle_step );
 
             if( $in_radians ) {
-                $bond_parameters{$residue_name}{$dihedral_angle_name} =
+                $bond_parameters{$residue_name}
+                                {'rotatable_bonds'}
+                                {$dihedral_angle_name} =
                     sample_angles( [ [ $dihedral_angle_start,
                                        $dihedral_angle_end ] ],
                                    $dihedral_angle_count );
             } else {
-                $bond_parameters{$residue_name}{$dihedral_angle_name} =
+                $bond_parameters{$residue_name}
+                                {'rotatable_bonds'}
+                                {$dihedral_angle_name} =
                     sample_angles( [ [ $dihedral_angle_start * $pi / 180.0,
                                        $dihedral_angle_end * $pi / 180.0 ] ],
                                    $dihedral_angle_count );
@@ -332,18 +336,34 @@ sub sample_bond_parameters_qs_parsing
             $bond_parameter_step //= 36.0;
             $bond_parameter_end //= 180.0;
 
+            # Determine bond parameter type.
+            # my $do_angle_bending = #
+            #     ( any { scalar @{ $_ } == 3 }
+            #       map { [ split /-/, $_ ] }
+            #       map { keys %{ $bond_parameters{$_} } }
+            #       keys %bond_parameters ) ? 1 : 0;
+            # my $do_bond_stretching =
+            #     ( any { scalar @{ $_ } == 2 }
+            #       map { [ split /-/, $_ ] }
+            #       map { keys %{ $bond_parameters{$_} } }
+            #       keys %bond_parameters ) ? 1 : 0;
+
             my $bond_parameter_count =
                 int( ( $bond_parameter_end - $bond_parameter_start ) /
                      $bond_parameter_step );
 
             for my $residue_name ( @{ $residue_names } ) {
                 if( $in_radians ) {
-                    $bond_parameters{$residue_name}{$bond_parameter_name} =
+                    $bond_parameters{$residue_name}
+                                    {$bond_parameter_type}
+                                    {$bond_parameter_name} =
                         sample_angles( [ [ $bond_parameter_start,
                                            $bond_parameter_end ] ],
                                        $bond_parameter_count );
                 } else {
-                    $bond_parameters{$residue_name}{$bond_parameter_name} =
+                    $bond_parameters{$residue_name}
+                                    {$bond_parameter_type}
+                                    {$bond_parameter_name} =
                         sample_angles( [ [ $bond_parameter_start * $pi / 180.0,
                                            $bond_parameter_end * $pi / 180.0 ] ],
                                        $bond_parameter_count );
