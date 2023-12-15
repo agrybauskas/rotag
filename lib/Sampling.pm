@@ -337,16 +337,16 @@ sub sample_bond_parameters_qs_parsing
             $bond_parameter_end //= 180.0;
 
             # Determine bond parameter type.
-            # my $do_angle_bending = #
-            #     ( any { scalar @{ $_ } == 3 }
-            #       map { [ split /-/, $_ ] }
-            #       map { keys %{ $bond_parameters{$_} } }
-            #       keys %bond_parameters ) ? 1 : 0;
-            # my $do_bond_stretching =
-            #     ( any { scalar @{ $_ } == 2 }
-            #       map { [ split /-/, $_ ] }
-            #       map { keys %{ $bond_parameters{$_} } }
-            #       keys %bond_parameters ) ? 1 : 0;
+            # HACK: later, probably should also check force field
+            # parameter file.
+            my $bond_parameter_type;
+            if( scalar( split( /-/, $bond_parameter_name ) ) == 3 ) {
+                $bond_parameter_type = 'rotatable_bonds';
+            } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
+                $bond_parameter_type = 'rotatable_bonds';
+            } else {
+                $bond_parameter_type = 'rotatable_bonds';
+            }
 
             my $bond_parameter_count =
                 int( ( $bond_parameter_end - $bond_parameter_start ) /

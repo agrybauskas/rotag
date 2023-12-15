@@ -256,8 +256,6 @@ for my $pdbx_file ( @ARGV ) {
                   'include_hetatoms' => $calc_hetatoms,
                   'angles' => \%bond_parameters,
                   'interactions' => $interactions,
-                  # 'do_angle_bending' => $do_angle_bending,
-                  # 'do_bond_stretching' => $do_bond_stretching,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
                                  'rand_count' => $rand_count,

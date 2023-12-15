@@ -351,9 +351,6 @@ sub generate_library
     my $interactions = $args->{'interactions'};
     my $threads = $args->{'threads'};
     my $program_called_by = $args->{'program_called_by'};
-    my $do_bond_torsion = $args->{'do_bond_torsion'};
-    my $do_bond_stretching = $args->{'do_bond_stretching'};
-    my $do_angle_bending = $args->{'do_angle_bending'};
     my $options = $args->{'options'};
 
     my $edge_length_interaction =
@@ -366,9 +363,6 @@ sub generate_library
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => $interaction_atom_names };
     $include_hetatoms //= 0;
-    $do_bond_torsion //= 1;
-    $do_bond_stretching //= 0;
-    $do_angle_bending //= 0;
     $options //= {};
 
     # Selection of potential function.
@@ -391,6 +385,13 @@ sub generate_library
             filter_new( $atom_site,
                     { 'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
+
+        use Data::Dumper;
+        print STDERR Dumper $atom_site_identifier;
+
+        # my $do_bond_torsion = 1;
+        # my $do_bond_stretching = 0;
+        # my $do_angle_bending = 0;
 
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
