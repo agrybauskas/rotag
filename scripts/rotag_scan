@@ -104,7 +104,7 @@ our $VERSION = $VERSION;
 
 my $interactions = 'composite';
 my $calc_hetatoms = 0;
-my $angles = '';
+my $bond_paramters = '';
 my $in_radians = 0;
 my $rand_seed;
 my $rand_count;
@@ -133,7 +133,7 @@ GetOptions(
     'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
     'parameters|p=s' => \$parameters_cmd,
     'json-parameters|j=s' => \$parameters_json_cmd,
-    'angles|a=s' => \$angles,
+    'bond-parameters|a=s' => \$bond_paramters,
     'rand-seed|x=s' => \$rand_seed,
     'rand-count|X=s' => \$rand_count,
     'radians|r' => sub { $in_radians = 1 },
@@ -179,7 +179,7 @@ if( defined $rand_seed ) {
 # Parses string describing bond parameters: dihedral angles, bond angles and
 # bond lengths.
 my %bond_parameters =
-    %{ sample_bond_parameters_qs_parsing( $parameters, $angles ) };
+    %{ sample_bond_parameters_qs_parsing( $parameters, $bond_paramters ) };
 
 my $do_angle_bending =
     ( any { scalar @{ $_ } == 3 }
