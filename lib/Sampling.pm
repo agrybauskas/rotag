@@ -341,9 +341,9 @@ sub sample_bond_parameters_qs_parsing
             # parameter file.
             my $bond_parameter_type;
             if( scalar( split( /-/, $bond_parameter_name ) ) == 3 ) {
-                $bond_parameter_type = 'rotatable_bonds';
+                $bond_parameter_type = 'bendable_angles';
             } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
-                $bond_parameter_type = 'rotatable_bonds';
+                $bond_parameter_type = 'stretchable_bonds';
             } else {
                 $bond_parameter_type = 'rotatable_bonds';
             }

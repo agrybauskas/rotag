@@ -66,7 +66,7 @@ our $VERSION = $VERSION;
 #*                            soft_n       - soft sphere n.
 #*
 #*                        Example: 'lj_k=0.01, c_k=0.4'.
-#*    -a, --bond-parameters <bond-parameters>
+#*    -a, -b, --angles, --bond-parameters <bond-parameters>
 #*                        bond parameters that each bond parameter is changed by
 #*                        and expressed in special grammar:
 #*                            <residue>:<bond-parameter>=<start>..<step>..<end>
@@ -133,7 +133,7 @@ GetOptions(
     'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
     'parameters|p=s' => \$parameters_cmd,
     'json-parameters|j=s' => \$parameters_json_cmd,
-    'bond-parameters|a=s' => \$bond_parameters_qs,
+    'bond-parameters|angles|b|a=s' => \$bond_parameters_qs,
     'rand-seed|x=s' => \$rand_seed,
     'rand-count|X=s' => \$rand_count,
     'radians|r' => sub { $in_radians = 1 },
@@ -179,7 +179,7 @@ if( defined $rand_seed ) {
 # Parses string describing bond parameters: dihedral angles, bond angles and
 # bond lengths.
 my $bond_parameters =
-    sample_bond_parameters_qs_parsing( $parameters, $bond_paramters_qs );
+    sample_bond_parameters_qs_parsing( $parameters, $bond_parameters_qs );
 
 # Parses parameter string.
 $parameters_cmd =~ s/\s//g;
@@ -254,7 +254,7 @@ for my $pdbx_file ( @ARGV ) {
                   'include_interactions' =>
                       { 'id' => [ keys %{ $current_atom_site } ] },
                   'include_hetatoms' => $calc_hetatoms,
-                  'angles' => \%bond_parameters,
+                  'bond_parameters' => $bond_parameters,
                   'interactions' => $interactions,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,

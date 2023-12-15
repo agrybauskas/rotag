@@ -317,7 +317,8 @@ sub generate_rotamer
 #     $args->{include_interactions} - selection data structure
 #     (see PDBxParser::filter) that is used to select atoms that will be included
 #     into calculations of energy;
-#     $args->{angles} - angle data structure by which rotation is made:
+#     $args->{bond_parameters} - bond parameter data structure by which rotation
+#     or/and translation is made:
 #     {
 #       'chi1' => {
 #           'angle_start' => 0.0,
@@ -345,7 +346,7 @@ sub generate_library
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
     my $include_hetatoms = $args->{'include_hetatoms'};
-    my $angles = $args->{'angles'};
+    my $bond_parameters = $args->{'bond_parameters'};
     my $rmsd = $args->{'rmsd'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
@@ -386,12 +387,9 @@ sub generate_library
                     { 'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}}});
 
-        use Data::Dumper;
-        print STDERR Dumper $atom_site_identifier;
-
-        # my $do_bond_torsion = 1;
-        # my $do_bond_stretching = 0;
-        # my $do_angle_bending = 0;
+        my $do_bond_torsion = 1;
+        my $do_bond_stretching = 0;
+        my $do_angle_bending = 0;
 
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
@@ -521,7 +519,7 @@ sub generate_library
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site,
-                             'angles' => $angles,
+                             'angles' => $bond_parameters,
                              'include_hetatoms' => $include_hetatoms,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
