@@ -486,8 +486,9 @@ sub generate_library
                     ( defined $bendable_angles ? %{ $bendable_angles } : () ),
                 );
 
-                my @angle_names =
-                    sort { $bond_parameters{$a}{'order'} <=> $bond_parameters{$b}{'order'} }
+                my @bond_parameter_names =
+                    sort { $bond_parameters{$a}{'order'} <=>
+                           $bond_parameters{$b}{'order'} }
                     keys %bond_parameters;
 
                 my @missing_atom_names =
@@ -571,7 +572,7 @@ sub generate_library
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                     my %angles =
                         map { my $angle_id = $_ + 1;
-                              ( $angle_names[$_] => $allowed_angles->[$i][$_] ) }
+                              ( $bond_parameter_names[$_] => $allowed_angles->[$i][$_] ) }
                             ( 0..$#{ $allowed_angles->[$i] } );
                     my $rotamer_energy_sum = $energy_sums->[$i];
                     if( defined $rotamer_energy_sum ) {
