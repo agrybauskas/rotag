@@ -515,10 +515,9 @@ sub generate_library
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
-                # TODO: change "angles" to "bond parameters" as not only
-                # dihedral angles are involved here.
-                # First, checks angles by step-by-step adding atoms to sidechains.
-                # This is called growing side chain.
+                # First, checks bond, dihedral angles and bond length changes
+                # by step-by-step adding atoms to sidechains. This is called
+                # growing side chain.
                 my %options = %{ $options };
                 my @allowed_angles =
                     @{ calc_favourable_angles(
@@ -526,7 +525,7 @@ sub generate_library
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
                              'interaction_site' => \%interaction_site,
-                             'angles' => $bond_parameters,
+                             'bond_parameters' => $bond_parameters,
                              'include_hetatoms' => $include_hetatoms,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
