@@ -590,14 +590,16 @@ sub generate_library
 }
 
 #
-# Calculates favourable rotamer angles for a given residue.
+# Calculates favourable rotamer dihedral, bond angles and bond length changes
+# for a given residue.
 # Input:
 #     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
 #     $args->{residue_unique_key} - unique residue key
 #     (see PDBxParser::unique_residue_key);
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
-#     $args->{angles} - angle data structure by which rotation is made.
+#     $args->{bond_parameters_angles} - bond parameter data structure by which
+#     conformation is made.
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of non-bonded atoms;
 #     $args->{non_bonded_potential} - reference to the potential function that is
@@ -605,7 +607,7 @@ sub generate_library
 #     $args->{parameters} - parameters that are passed to interaction function;
 #     $args->{threads} - number of threads.
 # Output:
-#     @allowed_angles - list of groups of allowed angles.
+#     @allowed_bond_parameters - list of groups of allowed bond parameters.
 #     Ex.: ( [ 0.00, 3.14 ], [ 3.14, 6.28 ] ).
 #
 
@@ -614,14 +616,14 @@ sub calc_favourable_angles
     my ( $args ) = @_;
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $angles, $include_hetatoms, $angle_count, $non_bonded_potential,
-         $bonded_potential, $threads, $rand_count, $rand_seed,
-         $program_called_by, $verbose ) = (
+         $bond_parameters, $include_hetatoms, $angle_count,
+         $non_bonded_potential, $bonded_potential, $threads, $rand_count,
+         $rand_seed, $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
         $args->{'interaction_site'},
-        $args->{'angles'},
+        $args->{'bond_parameters'},
         $args->{'include_hetatoms'},
         $args->{'angle_count'},
         $args->{'non_bonded_potential'},
@@ -635,7 +637,6 @@ sub calc_favourable_angles
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    # TODO: look how separate $angles and $angle_count influence on the function.
     $angle_count //= 20;
     $rand_seed //= 23;
     $include_hetatoms //= 0;
@@ -682,12 +683,12 @@ sub calc_favourable_angles
                   $residue_site->{$cb_atom_id}{'connections_hetatom'} :
                   [] } );
 
-    my @allowed_angles;
+    my @allowed_bond_parameters;
     my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
-            my @default_allowed_angles;
+            my @default_allowed_bond_parameters;
             # TODO: last angle should be sorted with <=> by first removing chi
             # prefix. It will be important if large quantity of dihedral angles
             # are analyzed.
@@ -696,55 +697,63 @@ sub calc_favourable_angles
                        $bond_parameters{$a}{'order'} }
                 keys %bond_parameters;
 
-            if( exists $angles->{$residue_name}{$last_angle_name} ) {
-                @default_allowed_angles =
-                    map { [ $_ ] } @{ $angles->{$residue_name}{$last_angle_name} };
-            } elsif( exists $angles->{$residue_name}{'*'} ) {
-                @default_allowed_angles =
-                    map { [ $_ ] } @{ $angles->{$residue_name}{'*'} };
-            } elsif( exists $angles->{'*'}{$last_angle_name} ) {
-                @default_allowed_angles =
-                    map { [ $_ ] } @{ $angles->{'*'}{$last_angle_name} };
-            } elsif( exists $angles->{'*'}{'*'} ) {
+            if( exists $bond_parameters->{$residue_name}{$last_angle_name} ) {
+                @default_allowed_bond_parameters =
+                    map { [ $_ ] }
+                       @{ $bond_parameters->{$residue_name}{$last_angle_name} };
+            } elsif( exists $bond_parameters->{$residue_name}{'*'} ) {
+                @default_allowed_bond_parameters =
+                    map { [ $_ ] }
+                       @{ $bond_parameters->{$residue_name}{'*'} };
+            } elsif( exists $bond_parameters->{'*'}{$last_angle_name} ) {
+                @default_allowed_bond_parameters =
+                    map { [ $_ ] }
+                       @{ $bond_parameters->{'*'}{$last_angle_name} };
+            } elsif( exists $bond_parameters->{'*'}{'*'} ) {
                 if( defined $rand_count && defined $rand_seed ) {
-                    if( $rand_count > scalar @{$angles->{'*'}{'*'}} ) {
-                        die 'number of randomly selected angles is greater that ' .
-                            "possible angles.\n";
+                    if( $rand_count > scalar @{$bond_parameters->{'*'}{'*'}} ) {
+                        die 'number of randomly selected angles is greater ' .
+                            "that possible angles.\n";
                     }
-                    my @shuffled_idxs = shuffle( 0..$#{$angles->{'*'}{'*'}} );
-                    @default_allowed_angles =
-                        map { [ $angles->{'*'}{'*'}[$_] ] }
+                    my @shuffled_idxs =
+                        shuffle( 0..$#{$bond_parameters->{'*'}{'*'}} );
+                    @default_allowed_bond_parameters =
+                        map { [ $bond_parameters->{'*'}{'*'}[$_] ] }
                             @shuffled_idxs[0..$rand_count-1];
                 } else {
-                    @default_allowed_angles =
-                        map { [ $_ ] } @{ $angles->{'*'}{'*'} };
+                    @default_allowed_bond_parameters =
+                        map { [ $_ ] } @{ $bond_parameters->{'*'}{'*'} };
                 }
             } else {
-                @default_allowed_angles =
+                @default_allowed_bond_parameters =
                     map { [ $_ ] }
                        @{ sample_angles( [ [ 0, 2 * $pi ] ], $angle_count ) };
             }
 
-            my @default_allowed_energies = map { [ 0 ] } @default_allowed_angles;
+            my @default_allowed_energies =
+                map { [ 0 ] } @default_allowed_bond_parameters;
 
             # Adds more angle combinations if there are more than one
             # rotatable bonds.
-            if( @allowed_angles &&
-                scalar( @{ $allowed_angles[0] } ) <
+            if( @allowed_bond_parameters &&
+                scalar( @{ $allowed_bond_parameters[0] } ) <
                 scalar( keys %bond_parameters ) ) {
-                @allowed_angles =
-                    @{ permutation( 2, [], [ \@allowed_angles,
-                                             \@default_allowed_angles ], [] ) };
+                @allowed_bond_parameters =
+                    @{ permutation( 2, [],
+                                    [ \@allowed_bond_parameters,
+                                      \@default_allowed_bond_parameters ], [])};
                 @allowed_energies =
-                    @{ permutation( 2, [], [ \@allowed_energies,
-                                             \@default_allowed_energies ], [] ) };
+                    @{ permutation( 2, [],
+                                    [ \@allowed_energies,
+                                      \@default_allowed_energies ], [] ) };
                 # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-                @allowed_angles =
-                    map { [ @{ $_->[0] }, @{ $_->[1] } ] } @allowed_angles;
+                @allowed_bond_parameters =
+                    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
+                        @allowed_bond_parameters;
                 @allowed_energies =
                     map { [ $_->[0][0] ] } @allowed_energies;
-            } elsif( ! @allowed_angles ) {
-                @allowed_angles = @default_allowed_angles;
+            } elsif( ! @allowed_bond_parameters ) {
+                @allowed_bond_parameters = @default_allowed_bond_parameters;
                 @allowed_energies = @default_allowed_energies;
             }
 
@@ -760,7 +769,7 @@ sub calc_favourable_angles
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
 
             # Starts calculating potential energy.
-            my ( $next_allowed_angles, $next_allowed_energies ) =
+            my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
                 @{ threading(
                        \&calc_favourable_angle,
                        { 'parameters' => $parameters,
@@ -769,10 +778,10 @@ sub calc_favourable_angles
                          'interaction_site' => $interaction_site,
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential },
-                       [ \@allowed_angles, \@allowed_energies ],
+                       [ \@allowed_bond_parameters, \@allowed_energies ],
                        $threads ) };
 
-            # my ( $next_allowed_angles, $next_allowed_energies ) =
+            # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
             #     @{ calc_favourable_angle(
             #            { 'parameters' => $parameters,
             #              'atom_site' => $atom_site,
@@ -780,20 +789,21 @@ sub calc_favourable_angles
             #              'interaction_site' => $interaction_site,
             #              'non_bonded_potential' => $non_bonded_potential,
             #              'bonded_potential' => $bonded_potential },
-            #            [ \@allowed_angles, \@allowed_energies ] ) };
+            #            [ \@allowed_bond_parameters, \@allowed_energies ] ) };
 
-            if( scalar @{ $next_allowed_angles } > 0 ) {
-                @allowed_angles = @{ $next_allowed_angles };
+            if( scalar @{ $next_allowed_bond_parameters } > 0 ) {
+                @allowed_bond_parameters = @{ $next_allowed_bond_parameters };
                 @allowed_energies = @{ $next_allowed_energies };
                 print info(
                     { message =>
-                          $residue_site->{$atom_id}{'pdbx_PDB_model_num'} . " " .
+                          $residue_site->{$atom_id}{'pdbx_PDB_model_num'} . " ".
                           $residue_site->{$atom_id}{'label_asym_id'} . " " .
                           $residue_site->{$atom_id}{'label_seq_id'} . " " .
                           $residue_site->{$atom_id}{'label_alt_id'} . " " .
                           "${residue_name} " .
                           $residue_site->{$atom_id}{'label_atom_id'} . " " .
-                          "${last_angle_name} " . scalar( @allowed_angles ) . "\n",
+                          "${last_angle_name} " .
+                          scalar( @allowed_bond_parameters ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
             } else {
@@ -811,7 +821,7 @@ sub calc_favourable_angles
         }
     }
 
-    return \@allowed_angles;
+    return \@allowed_bond_parameters;
 }
 
 #
