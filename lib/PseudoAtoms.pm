@@ -616,7 +616,7 @@ sub calc_favourable_angles
     my ( $args ) = @_;
 
     my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $bond_parameters, $include_hetatoms, $angle_count,
+         $bond_parameters, $include_hetatoms, $bond_parameter_count,
          $non_bonded_potential, $bonded_potential, $threads, $rand_count,
          $rand_seed, $program_called_by, $verbose ) = (
         $args->{'parameters'},
@@ -625,7 +625,7 @@ sub calc_favourable_angles
         $args->{'interaction_site'},
         $args->{'bond_parameters'},
         $args->{'include_hetatoms'},
-        $args->{'angle_count'},
+        $args->{'bond_parameter_count'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'threads'},
@@ -637,7 +637,7 @@ sub calc_favourable_angles
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    $angle_count //= 20;
+    $bond_parameter_count //= 20;
     $rand_seed //= 23;
     $include_hetatoms //= 0;
 
@@ -727,7 +727,8 @@ sub calc_favourable_angles
             } else {
                 @default_allowed_bond_parameters =
                     map { [ $_ ] }
-                       @{ sample_angles( [ [ 0, 2 * $pi ] ], $angle_count ) };
+                       @{ sample_angles( [ [ 0, 2 * $pi ] ],
+                                         $bond_parameter_count ) };
             }
 
             my @default_allowed_energies =
