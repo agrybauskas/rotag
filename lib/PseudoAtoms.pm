@@ -689,9 +689,7 @@ sub calc_favourable_angles
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
             my @default_allowed_bond_parameters;
-            # TODO: last angle should be sorted with <=> by first removing chi
-            # prefix. It will be important if large quantity of dihedral angles
-            # are analyzed.
+
             my ( $last_angle_name ) =
                 sort { $bond_parameters{$b}{'order'} <=>
                        $bond_parameters{$a}{'order'} }
