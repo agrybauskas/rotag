@@ -1323,6 +1323,7 @@ sub default_bond_parameter_values
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
+    # Both residue and parameter names defined.
     if( exists $bond_parameters->{$residue_name}{$bond_parameter_name} ) {
         return [ map { [ $_ ] }
                     @{ $bond_parameters->{$residue_name}
@@ -1330,16 +1331,29 @@ sub default_bond_parameter_values
                                          {'values'} } ];
     }
 
-    # } elsif( exists $bond_parameters->{$residue_name}{'*-*'} ||
-    #          exists $bond_parameters->{$residue_name}{'*-*-*'} ||
+    # Only residue name defined.
+    if( exists $bond_parameters->{$residue_name}{'*-*-*-*'} ) {
+        return [ map { [ $_ ] }
+                    @{ $bond_parameters->{$residue_name}{'*-*-*-*'}{'values'} } ];
+
+    }
+
+    # Only parameter name defined.
+    if( exists $bond_parameters->{'*'}{$bond_parameter_name} ) {
+        return [ map { [ $_ ] }
+                    @{ $bond_parameters->{'*'}{$bond_parameter_name}{'values'} } ];
+    }
+
+    # Neither residue nor parameter names are defined.
+    if( exists $bond_parameters->{'*'}{'*-*-*-*'} ) {
+        return [ map { [ $_ ] } @{ $bond_parameters->{'*'}{'*-*-*-*'}{'values'} } ];
+    }
+
+    # } elsif( exists $bond_parameters->{$residue_name}{'*-*-*'} ||
     #          exists $bond_parameters->{$residue_name}{'*-*-*-*'} ) {
     #     @values =
     #         map { [ $_ ] }
     #            @{ $bond_parameters->{$residue_name}{'*'} };
-    # } elsif( exists $bond_parameters->{'*'}{$bond_parameter_name} ) {
-    #     @values =
-    #         map { [ $_ ] }
-    #            @{ $bond_parameters->{'*'}{$bond_parameter_name} };
     # } elsif( exists $bond_parameters->{'*'}{'*'} ) {
     #     if( defined $rand_count && defined $rand_seed ) {
     #         if( $rand_count > scalar @{$bond_parameters->{'*'}{'*'}} ) {
