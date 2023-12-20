@@ -258,19 +258,23 @@ sub sample_bond_parameters_qs_parsing
                      $dihedral_angle_step );
 
             if( $in_radians ) {
-                $bond_parameters{$residue_name}
-                                {'rotatable_bonds'}
-                                {$dihedral_angle_name} =
-                    sample_angles( [ [ $dihedral_angle_start,
-                                       $dihedral_angle_end ] ],
-                                   $dihedral_angle_count );
+                $bond_parameters{$residue_name}{$dihedral_angle_name} = {
+                    'values' =>
+                        sample_angles( [ [ $dihedral_angle_start,
+                                           $dihedral_angle_end ] ],
+                                       $dihedral_angle_count ),
+                    'type' => 'dihedral_angle',
+                    'units' => 'radians'
+                };
             } else {
-                $bond_parameters{$residue_name}
-                                {'rotatable_bonds'}
-                                {$dihedral_angle_name} =
-                    sample_angles( [ [ $dihedral_angle_start * $pi / 180.0,
-                                       $dihedral_angle_end * $pi / 180.0 ] ],
-                                   $dihedral_angle_count );
+                $bond_parameters{$residue_name}{$dihedral_angle_name} = {
+                    'values' =>
+                        sample_angles( [ [ $dihedral_angle_start * $pi / 180.0,
+                                           $dihedral_angle_end * $pi / 180.0 ] ],
+                                       $dihedral_angle_count ),
+                    'type' => 'dihedral_angle',
+                    'units' => 'degrees'
+                };
             }
         }
     }
@@ -341,11 +345,11 @@ sub sample_bond_parameters_qs_parsing
             # parameter file.
             my $bond_parameter_type;
             if( scalar( split( /-/, $bond_parameter_name ) ) == 3 ) {
-                $bond_parameter_type = 'bendable_angles';
+                $bond_parameter_type = 'bond_length';
             } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
-                $bond_parameter_type = 'stretchable_bonds';
+                $bond_parameter_type = 'bond_angle';
             } else {
-                $bond_parameter_type = 'rotatable_bonds';
+                $bond_parameter_type = 'dihedral_angle';
             }
 
             my $bond_parameter_count =
@@ -354,19 +358,25 @@ sub sample_bond_parameters_qs_parsing
 
             for my $residue_name ( @{ $residue_names } ) {
                 if( $in_radians ) {
-                    $bond_parameters{$residue_name}
-                                    {$bond_parameter_type}
-                                    {$bond_parameter_name} =
-                        sample_angles( [ [ $bond_parameter_start,
-                                           $bond_parameter_end ] ],
-                                       $bond_parameter_count );
+                    $bond_parameters{$residue_name}{$bond_parameter_name} = {
+                        'values' =>
+                            sample_angles( [ [ $bond_parameter_start,
+                                               $bond_parameter_end ] ],
+                                           $bond_parameter_count ),
+                        'type' => $bond_parameter_type,
+                        'units' => 'radians'
+                    };
                 } else {
-                    $bond_parameters{$residue_name}
-                                    {$bond_parameter_type}
-                                    {$bond_parameter_name} =
-                        sample_angles( [ [ $bond_parameter_start * $pi / 180.0,
-                                           $bond_parameter_end * $pi / 180.0 ] ],
-                                       $bond_parameter_count );
+                    $bond_parameters{$residue_name}{$bond_parameter_name} = {
+                        'values' =>
+                            sample_angles( [ [ $bond_parameter_start * $pi /
+                                               180.0,
+                                               $bond_parameter_end * $pi /
+                                               180.0 ] ],
+                                           $bond_parameter_count ),
+                        'type' => $bond_parameter_type,
+                        'units' => 'degrees'
+                    };
                 }
             }
         }
