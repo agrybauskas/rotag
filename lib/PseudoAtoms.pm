@@ -367,14 +367,11 @@ sub generate_library
     $options //= {};
 
     my $do_bond_torsion =
-        any { exists $bond_parameters->{$_}{'rotatable_bonds'} }
-        keys %{ $bond_parameters };
-    my $do_bond_stretching =
-        any { exists $bond_parameters->{$_}{'stretchable_bonds'} }
-        keys %{ $bond_parameters };
-    my $do_angle_bending =
-        any { exists $bond_parameters->{$_}{'bendable_angles'} }
-        keys %{ $bond_parameters };
+        is_bond_parameter_present( $bond_parameters, 'dihedral_angle' );
+    my $do_bond_stretching = 0;
+        is_bond_parameter_present( $bond_parameters, 'bond_length' );
+    my $do_angle_bending = 0;
+        is_bond_parameter_present( $bond_parameters, 'bond_angle' );
 
     # Selection of potential function.
     my %potential_functions =
@@ -1308,6 +1305,29 @@ sub assign_hetatoms_no_struct_conn
     }
 
     return;
+}
+
+#
+# Quickly determines if the
+# Input:
+#     $bond_parameters - bond parameter data structure;
+#     $bond_parameter_type - bond parameter type;
+# Output:
+#     if the bond parameter is present or not.
+#
+
+sub is_bond_parameter_present
+{
+    my ( $bond_parameters, $bond_parameter_type ) = @_;
+    for my $residue_name ( keys %{ $bond_parameters } ) {
+        for my $bond_parameter_name ( keys %{ $bond_parameters->{$residue_name} } ) {
+            if( $bond_parameters->{$residue_name}{$bond_parameter_name}{'type'} eq
+                $bond_parameter_type ) {
+                return 1 if exists $bond_parameters->{$residue_name};
+            }
+        }
+    }
+    return 0;
 }
 
 1;
