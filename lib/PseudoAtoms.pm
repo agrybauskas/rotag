@@ -409,18 +409,21 @@ sub generate_library
             }
         }
 
-        rotatable_bonds( $parameters,
-                         $current_atom_site,
-                         { 'include_hetatoms' => $include_hetatoms } )
-            if $do_bond_torsion;
-        stretchable_bonds( $parameters,
-                           $current_atom_site,
-                           { 'include_hetatoms' => $include_hetatoms } )
-            if $do_bond_stretching;
-        bendable_angles( $parameters,
-                         $current_atom_site,
-                         { 'include_hetatoms' => $include_hetatoms } )
-            if $do_angle_bending;
+        if( $do_bond_torsion ) {
+            rotatable_bonds( $parameters,
+                             $current_atom_site,
+                             { 'include_hetatoms' => $include_hetatoms } );
+        }
+        if( $do_bond_stretching ) {
+            stretchable_bonds( $parameters,
+                               $current_atom_site,
+                               { 'include_hetatoms' => $include_hetatoms } );
+        }
+        if( $do_angle_bending ) {
+            bendable_angles( $parameters,
+                             $current_atom_site,
+                             { 'include_hetatoms' => $include_hetatoms } );
+        }
 
         # Finds where CA of target residues are.
         my @target_ca_ids;
