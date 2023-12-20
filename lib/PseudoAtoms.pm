@@ -1346,7 +1346,8 @@ sub default_bond_parameter_values
 
     # Neither residue nor parameter names are defined.
     if( exists $bond_parameters->{'*'}{'*-*-*-*'} ) {
-        return [ map { [ $_ ] } @{ $bond_parameters->{'*'}{'*-*-*-*'}{'values'} } ];
+        return [ map { [ $_ ] }
+                    @{ $bond_parameters->{'*'}{'*-*-*-*'}{'values'} } ];
     }
 
     # } elsif( exists $bond_parameters->{$residue_name}{'*-*-*'} ||
