@@ -335,19 +335,19 @@ sub sample_bond_parameters_qs_parsing
                 die "Syntax '$bond_parameter' is incorrect\n";
             }
 
-            $bond_parameter_name //= '*';
             $bond_parameter_start //= - 180.0;
             $bond_parameter_step //= 36.0;
             $bond_parameter_end //= 180.0;
+            $bond_parameter_name //= '*-*-*-*';
 
             # Determine bond parameter type.
             # HACK: later, probably should also check force field
             # parameter file.
             my $bond_parameter_type;
             if( scalar( split( /-/, $bond_parameter_name ) ) == 3 ) {
-                $bond_parameter_type = 'bond_length';
-            } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
                 $bond_parameter_type = 'bond_angle';
+            } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
+                $bond_parameter_type = 'bond_length';
             } else {
                 $bond_parameter_type = 'dihedral_angle';
             }
