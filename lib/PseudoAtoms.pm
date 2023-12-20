@@ -635,8 +635,6 @@ sub calc_favourable_angles
         $args->{'options'}{'verbose'},
     );
 
-    my $pi = $parameters->{'_[local]_constants'}{'pi'};
-
     $bond_parameter_count //= 20;
     $rand_seed //= 23;
     $include_hetatoms //= 0;
@@ -688,46 +686,19 @@ sub calc_favourable_angles
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
-            my @default_allowed_bond_parameters;
-
-            my ( $last_angle_name ) =
+            my ( $last_parameter_name ) =
                 sort { $bond_parameters{$b}{'order'} <=>
                        $bond_parameters{$a}{'order'} }
                 keys %bond_parameters;
 
-            if( exists $bond_parameters->{$residue_name}{$last_angle_name} ) {
-                @default_allowed_bond_parameters =
-                    map { [ $_ ] }
-                       @{ $bond_parameters->{$residue_name}{$last_angle_name} };
-            } elsif( exists $bond_parameters->{$residue_name}{'*'} ) {
-                @default_allowed_bond_parameters =
-                    map { [ $_ ] }
-                       @{ $bond_parameters->{$residue_name}{'*'} };
-            } elsif( exists $bond_parameters->{'*'}{$last_angle_name} ) {
-                @default_allowed_bond_parameters =
-                    map { [ $_ ] }
-                       @{ $bond_parameters->{'*'}{$last_angle_name} };
-            } elsif( exists $bond_parameters->{'*'}{'*'} ) {
-                if( defined $rand_count && defined $rand_seed ) {
-                    if( $rand_count > scalar @{$bond_parameters->{'*'}{'*'}} ) {
-                        die 'number of randomly selected angles is greater ' .
-                            "that possible angles.\n";
-                    }
-                    my @shuffled_idxs =
-                        shuffle( 0..$#{$bond_parameters->{'*'}{'*'}} );
-                    @default_allowed_bond_parameters =
-                        map { [ $bond_parameters->{'*'}{'*'}[$_] ] }
-                            @shuffled_idxs[0..$rand_count-1];
-                } else {
-                    @default_allowed_bond_parameters =
-                        map { [ $_ ] } @{ $bond_parameters->{'*'}{'*'} };
-                }
-            } else {
-                @default_allowed_bond_parameters =
-                    map { [ $_ ] }
-                       @{ sample_angles( [ [ 0, 2 * $pi ] ],
-                                         $bond_parameter_count ) };
-            }
+            my @default_allowed_bond_parameters =
+                @{ default_bond_parameter_values( $parameters,
+                                                  $bond_parameters,
+                                                  $residue_name,
+                                                  $last_parameter_name,
+                                                  $bond_parameter_count,
+                                                  { 'rand_seed' => $rand_seed,
+                                                    'rand_count' => $rand_count } ) };
 
             my @default_allowed_energies =
                 map { [ 0 ] } @default_allowed_bond_parameters;
@@ -801,7 +772,7 @@ sub calc_favourable_angles
                           $residue_site->{$atom_id}{'label_alt_id'} . " " .
                           "${residue_name} " .
                           $residue_site->{$atom_id}{'label_atom_id'} . " " .
-                          "${last_angle_name} " .
+                          "${last_parameter_name} " .
                           scalar( @allowed_bond_parameters ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
@@ -1331,6 +1302,67 @@ sub is_bond_parameter_present
         }
     }
     return 0;
+}
+
+#
+# Assign default bond parameter values.
+# Input:
+#     $bond_parameters - bond parameter data structure;
+#     $residue_name - residue_name;
+#     $bond_parameter_name - bond parameter name;
+# Output:
+#     \@values - values of the bond parameters.
+#
+
+sub default_bond_parameter_values
+{
+    my ( $parameters, $bond_parameters, $residue_name, $bond_parameter_name,
+         $bond_parameter_count, $options ) = @_;
+    my ( $rand_seed, $rand_count ) =
+        ( $options->{'rand_seed'}, $options->{'rand_count'} );
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+    my @values;
+    if( exists $bond_parameters->{$residue_name}{$bond_parameter_name} ) {
+        @values =
+            map { [ $_ ] }
+               @{ $bond_parameters->{$residue_name}
+                                    {$bond_parameter_name}
+                                    {'values'} };
+    } elsif( exists $bond_parameters->{$residue_name}{'*-*'} ||
+             exists $bond_parameters->{$residue_name}{'*-*-*'} ||
+             exists $bond_parameters->{$residue_name}{'*-*-*-*'} ) {
+        @values =
+            map { [ $_ ] }
+               @{ $bond_parameters->{$residue_name}{'*'} };
+    } elsif( exists $bond_parameters->{'*'}{$bond_parameter_name} ) {
+        @values =
+            map { [ $_ ] }
+               @{ $bond_parameters->{'*'}{$bond_parameter_name} };
+    } elsif( exists $bond_parameters->{'*'}{'*'} ) {
+        if( defined $rand_count && defined $rand_seed ) {
+            if( $rand_count > scalar @{$bond_parameters->{'*'}{'*'}} ) {
+                die 'number of randomly selected angles is greater ' .
+                    "that possible angles.\n";
+            }
+            my @shuffled_idxs =
+                shuffle( 0..$#{$bond_parameters->{'*'}{'*'}} );
+            @values =
+                map { [ $bond_parameters->{'*'}{'*'}[$_] ] }
+                    @shuffled_idxs[0..$rand_count-1];
+        } else {
+            @values =
+                map { [ $_ ] } @{ $bond_parameters->{'*'}{'*'} };
+        }
+    } else {
+        @values =
+            map { [ $_ ] }
+               @{ sample_angles( [ [ 0, 2 * $pi ] ],
+                                 $bond_parameter_count ) };
+    }
+
+    return \@values;
 }
 
 1;
