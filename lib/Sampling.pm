@@ -238,10 +238,10 @@ sub sample_bond_parameters_qs_parsing
         for my $dihedral_angle_name (
             sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
             if( $residue_name eq '.' ) {
-                $residue_name = '*'
+                $residue_name = '*';
             }
             if( $dihedral_angle_name eq '.' ) {
-                $dihedral_angle_name = '*'
+                $dihedral_angle_name = '*-*-*-*';
             }
             my ( $dihedral_angle_start,
                  $dihedral_angle_step,
