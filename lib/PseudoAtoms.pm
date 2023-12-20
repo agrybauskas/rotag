@@ -1323,46 +1323,42 @@ sub default_bond_parameter_values
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    my @values;
     if( exists $bond_parameters->{$residue_name}{$bond_parameter_name} ) {
-        @values =
-            map { [ $_ ] }
-               @{ $bond_parameters->{$residue_name}
-                                    {$bond_parameter_name}
-                                    {'values'} };
-    } elsif( exists $bond_parameters->{$residue_name}{'*-*'} ||
-             exists $bond_parameters->{$residue_name}{'*-*-*'} ||
-             exists $bond_parameters->{$residue_name}{'*-*-*-*'} ) {
-        @values =
-            map { [ $_ ] }
-               @{ $bond_parameters->{$residue_name}{'*'} };
-    } elsif( exists $bond_parameters->{'*'}{$bond_parameter_name} ) {
-        @values =
-            map { [ $_ ] }
-               @{ $bond_parameters->{'*'}{$bond_parameter_name} };
-    } elsif( exists $bond_parameters->{'*'}{'*'} ) {
-        if( defined $rand_count && defined $rand_seed ) {
-            if( $rand_count > scalar @{$bond_parameters->{'*'}{'*'}} ) {
-                die 'number of randomly selected angles is greater ' .
-                    "that possible angles.\n";
-            }
-            my @shuffled_idxs =
-                shuffle( 0..$#{$bond_parameters->{'*'}{'*'}} );
-            @values =
-                map { [ $bond_parameters->{'*'}{'*'}[$_] ] }
-                    @shuffled_idxs[0..$rand_count-1];
-        } else {
-            @values =
-                map { [ $_ ] } @{ $bond_parameters->{'*'}{'*'} };
-        }
-    } else {
-        @values =
-            map { [ $_ ] }
-               @{ sample_angles( [ [ 0, 2 * $pi ] ],
-                                 $bond_parameter_count ) };
+        return [ map { [ $_ ] }
+                    @{ $bond_parameters->{$residue_name}
+                                         {$bond_parameter_name}
+                                         {'values'} } ];
     }
 
-    return \@values;
+    # } elsif( exists $bond_parameters->{$residue_name}{'*-*'} ||
+    #          exists $bond_parameters->{$residue_name}{'*-*-*'} ||
+    #          exists $bond_parameters->{$residue_name}{'*-*-*-*'} ) {
+    #     @values =
+    #         map { [ $_ ] }
+    #            @{ $bond_parameters->{$residue_name}{'*'} };
+    # } elsif( exists $bond_parameters->{'*'}{$bond_parameter_name} ) {
+    #     @values =
+    #         map { [ $_ ] }
+    #            @{ $bond_parameters->{'*'}{$bond_parameter_name} };
+    # } elsif( exists $bond_parameters->{'*'}{'*'} ) {
+    #     if( defined $rand_count && defined $rand_seed ) {
+    #         if( $rand_count > scalar @{$bond_parameters->{'*'}{'*'}} ) {
+    #             die 'number of randomly selected angles is greater ' .
+    #                 "that possible angles.\n";
+    #         }
+    #         my @shuffled_idxs =
+    #             shuffle( 0..$#{$bond_parameters->{'*'}{'*'}} );
+    #         @values =
+    #             map { [ $bond_parameters->{'*'}{'*'}[$_] ] }
+    #                 @shuffled_idxs[0..$rand_count-1];
+    #     } else {
+    #         @values =
+    #             map { [ $_ ] } @{ $bond_parameters->{'*'}{'*'} };
+    #     }
+    # }
+
+    return [ map { [ $_ ] }
+                @{ sample_angles( [ [ 0, 2 * $pi ] ], $bond_parameter_count ) } ];
 }
 
 1;
