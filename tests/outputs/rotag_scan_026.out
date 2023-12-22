@@ -35,7 +35,7 @@ Options:
                             soft_n       - soft sphere n.
  
                         Example: 'lj_k=0.01, c_k=0.4'.
-    -a, --bond-parameters <bond-parameters>
+    -a, -b, --angles, --bond-parameters <bond-parameters>
                         bond parameters that each bond parameter is changed by
                         and expressed in special grammar:
                             <residue>:<bond-parameter>=<start>..<step>..<end>
