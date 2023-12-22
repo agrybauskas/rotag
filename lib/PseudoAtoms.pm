@@ -1335,7 +1335,14 @@ sub default_bond_parameter_values
     if( exists $bond_parameters->{$residue_name}{'*-*-*-*'} ) {
         return [ map { [ $_ ] }
                     @{ $bond_parameters->{$residue_name}{'*-*-*-*'}{'values'} } ];
-
+    }
+    if( exists $bond_parameters->{$residue_name}{'*-*-*'} ) {
+        return [ map { [ $_ ] }
+                    @{ $bond_parameters->{$residue_name}{'*-*-*'}{'values'} } ];
+    }
+    if( exists $bond_parameters->{$residue_name}{'*-*'} ) {
+        return [ map { [ $_ ] }
+                    @{ $bond_parameters->{$residue_name}{'*-*'}{'values'} } ];
     }
 
     # Only parameter name defined.
@@ -1349,12 +1356,15 @@ sub default_bond_parameter_values
         return [ map { [ $_ ] }
                     @{ $bond_parameters->{'*'}{'*-*-*-*'}{'values'} } ];
     }
+    if( exists $bond_parameters->{'*'}{'*-*-*'} ) {
+        return [ map { [ $_ ] }
+                    @{ $bond_parameters->{'*'}{'*-*-*'}{'values'} } ];
+    }
+    if( exists $bond_parameters->{'*'}{'*-*'} ) {
+        return [ map { [ $_ ] }
+                    @{ $bond_parameters->{'*'}{'*-*'}{'values'} } ];
+    }
 
-    # } elsif( exists $bond_parameters->{$residue_name}{'*-*-*'} ||
-    #          exists $bond_parameters->{$residue_name}{'*-*-*-*'} ) {
-    #     @values =
-    #         map { [ $_ ] }
-    #            @{ $bond_parameters->{$residue_name}{'*'} };
     # } elsif( exists $bond_parameters->{'*'}{'*'} ) {
     #     if( defined $rand_count && defined $rand_seed ) {
     #         if( $rand_count > scalar @{$bond_parameters->{'*'}{'*'}} ) {
