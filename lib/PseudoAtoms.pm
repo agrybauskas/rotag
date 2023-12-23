@@ -1307,9 +1307,12 @@ sub is_bond_parameter_present
 #
 # Assign default bond parameter values.
 # Input:
+#     $parameters - general parameters (see Parameters.pm);
 #     $bond_parameters - bond parameter data structure;
 #     $residue_name - residue_name;
 #     $bond_parameter_name - bond parameter name;
+#     $options{'rand_seed'} - random seed;
+#     $options{'rand_count'} - count of random parameter values;
 # Output:
 #     \@values - values of the bond parameters.
 #
