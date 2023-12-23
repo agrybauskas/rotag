@@ -1356,23 +1356,31 @@ sub default_bond_parameter_values
             defined $rand_count &&
             defined $rand_seed ) {
             if( $rand_count >
-                scalar @{ $bond_parameters->{'*'}{$any_bond_parameter_name} } ){
+                scalar @{ $bond_parameters->{'*'}
+                                            {$any_bond_parameter_name}
+                                            {'values'} } ){
                 die 'number of randomly bond parameter values is greater than '.
                     "possible values.\n";
             }
             my @shuffled_idxs =
-                shuffle( 0..$#{ $bond_parameters->{'*'}{$any_bond_parameter_name} } );
-            return [ map { [ $bond_parameters->{'*'}{$any_bond_parameter_name}[$_] ] }
+                shuffle( 0..$#{ $bond_parameters->{'*'}
+                                                  {$any_bond_parameter_name}
+                                                  {'values'} } );
+            return [ map { [ $bond_parameters->{'*'}
+                                               {$any_bond_parameter_name}
+                                               {'values'}[$_] ] }
                          @shuffled_idxs[0..$rand_count-1] ];
         }
 
         # Neither residue nor parameter names are defined.
         return [ map { [ $_ ] }
-                    @{ $bond_parameters->{'*'}{$any_bond_parameter_name}{'values'} } ];
+                 @{ $bond_parameters->{'*'}
+                                      {$any_bond_parameter_name}
+                                      {'values'} } ];
     }
 
     return [ map { [ $_ ] }
-                @{ sample_angles( [ [ 0, 2 * $pi ] ], $bond_parameter_count ) } ];
+                @{ sample_angles( [ [ 0, 2 * $pi ] ], $bond_parameter_count )}];
 }
 
 1;
