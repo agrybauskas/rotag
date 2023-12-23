@@ -1332,75 +1332,40 @@ sub default_bond_parameter_values
     }
 
     # Only residue name defined.
-    if( exists $bond_parameters->{$residue_name}{'*-*-*-*'} ) {
-        return [ map { [ $_ ] }
-                    @{ $bond_parameters->{$residue_name}{'*-*-*-*'}{'values'} } ];
-    }
-    if( exists $bond_parameters->{$residue_name}{'*-*-*'} ) {
-        return [ map { [ $_ ] }
-                    @{ $bond_parameters->{$residue_name}{'*-*-*'}{'values'} } ];
-    }
-    if( exists $bond_parameters->{$residue_name}{'*-*'} ) {
-        return [ map { [ $_ ] }
-                    @{ $bond_parameters->{$residue_name}{'*-*'}{'values'} } ];
+    for my $any_bond_parameter_name ( '*-*-*-*', '*-*-*', '*-*' ) {
+        if( exists $bond_parameters->{$residue_name}{$any_bond_parameter_name}){
+            return [ map { [ $_ ] }
+                        @{ $bond_parameters->{$residue_name}
+                                             {$any_bond_parameter_name}
+                                             {'values'} } ];
+        }
     }
 
     # Only parameter name defined.
     if( exists $bond_parameters->{'*'}{$bond_parameter_name} ) {
         return [ map { [ $_ ] }
-                    @{ $bond_parameters->{'*'}{$bond_parameter_name}{'values'} } ];
+                 @{ $bond_parameters->{'*'}{$bond_parameter_name}{'values'} } ];
     }
 
-    # Random cound and seed parameters are present.
-    if( exists $bond_parameters->{'*'}{'*-*-*-*'} &&
-        defined $rand_count &&
-        defined $rand_seed ) {
-        if( $rand_count > scalar @{$bond_parameters->{'*'}{'*-*-*-*'}} ) {
-            die 'number of randomly selected dihedral angles is greater ' .
-                "than possible angles.\n";
+    for my $any_bond_parameter_name ( '*-*-*-*', '*-*-*', '*-*' ) {
+        # Random cound and seed parameters are present.
+        if( exists $bond_parameters->{'*'}{$any_bond_parameter_name} &&
+            defined $rand_count &&
+            defined $rand_seed ) {
+            if( $rand_count >
+                scalar @{ $bond_parameters->{'*'}{$any_bond_parameter_name} } ){
+                die 'number of randomly bond parameter values is greater than '.
+                    "possible values.\n";
+            }
+            my @shuffled_idxs =
+                shuffle( 0..$#{ $bond_parameters->{'*'}{$any_bond_parameter_name} } );
+            return [ map { [ $bond_parameters->{'*'}{$any_bond_parameter_name}[$_] ] }
+                         @shuffled_idxs[0..$rand_count-1] ];
         }
-        my @shuffled_idxs =
-            shuffle( 0..$#{$bond_parameters->{'*'}{'*-*-*-*'} } );
-        return [ map { [ $bond_parameters->{'*'}{'*-*-*-*'}[$_] ] }
-                     @shuffled_idxs[0..$rand_count-1] ];
-    }
-    if( exists $bond_parameters->{'*'}{'*-*-*'} &&
-        defined $rand_count &&
-        defined $rand_seed ) {
-        if( $rand_count > scalar @{ $bond_parameters->{'*'}{'*-*-*'} } ) {
-            die 'number of randomly selected bond angles is greater ' .
-                "than possible angles.\n";
-        }
-        my @shuffled_idxs =
-            shuffle( 0..$#{$bond_parameters->{'*'}{'*-*-*'} } );
-        return [ map { [ $bond_parameters->{'*'}{'*-*-*'}[$_] ] }
-                     @shuffled_idxs[0..$rand_count-1] ];
-    }
-    if( exists $bond_parameters->{'*'}{'*-*'} &&
-        defined $rand_count &&
-        defined $rand_seed ) {
-        if( $rand_count > scalar @{ $bond_parameters->{'*'}{'*-*'} } ) {
-            die 'number of randomly selected bond lengths is greater ' .
-                "than possible lengths.\n";
-        }
-        my @shuffled_idxs =
-            shuffle( 0..$#{$bond_parameters->{'*'}{'*-*'} } );
-        return [ map { [ $bond_parameters->{'*'}{'*-*'}[$_] ] }
-                     @shuffled_idxs[0..$rand_count-1] ];
-    }
 
-    # Neither residue nor parameter names are defined.
-    if( exists $bond_parameters->{'*'}{'*-*-*-*'} ) {
+        # Neither residue nor parameter names are defined.
         return [ map { [ $_ ] }
-                    @{ $bond_parameters->{'*'}{'*-*-*-*'}{'values'} } ];
-    }
-    if( exists $bond_parameters->{'*'}{'*-*-*'} ) {
-        return [ map { [ $_ ] }
-                    @{ $bond_parameters->{'*'}{'*-*-*'}{'values'} } ];
-    }
-    if( exists $bond_parameters->{'*'}{'*-*'} ) {
-        return [ map { [ $_ ] }
-                    @{ $bond_parameters->{'*'}{'*-*'}{'values'} } ];
+                    @{ $bond_parameters->{'*'}{$any_bond_parameter_name}{'values'} } ];
     }
 
     return [ map { [ $_ ] }
