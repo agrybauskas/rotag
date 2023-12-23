@@ -8,14 +8,14 @@ use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_library
                     replace_with_rotamer );
-use Sampling qw( sample_angles_qs_parsing );
+use Sampling qw( sample_bond_parameters_qs_parsing );
 
 my ( $residue_id,
      $residue_chain,
      $pdbx_model,
      $residue_alt,
      $conf_model,
-     $angles,
+     $bond_parameters_qs,
      $potential,
      $pdbx_dump_file,
      $parameters_cmd,
@@ -40,7 +40,8 @@ if( defined $parameters_cmd ) {
     );
 }
 
-$angles = sample_angles_qs_parsing( $parameters, $angles );
+my $bond_parameters =
+    sample_bond_parameters_qs_parsing( $parameters, $bond_parameters_qs );
 
 my $rotamer_library =
     generate_library( { "parameters" => $parameters,
@@ -48,7 +49,7 @@ my $rotamer_library =
                         "residue_unique_keys" =>
                             [ "$residue_id,$residue_chain,$pdbx_model," .
                               "$residue_alt" ],
-                        "angles" => $angles,
+                        "bond_parameters" => $bond_parameters,
                         "conf_model" => $conf_model,
                         "interactions"  => $potential,
                         "threads" => $threads } );
