@@ -795,7 +795,7 @@ sub calc_favourable_angles
 }
 
 #
-# Calculates energy values for given rotamer angles.
+# Calculates energy values for given rotamer bond parameters.
 # Input:
 #     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
 #     $args->{atom_id} - atom id;
@@ -807,9 +807,9 @@ sub calc_favourable_angles
 #     used for calculating energy of bonded atoms;
 #     $args->{parameters} - parameters that are passed to interaction function.
 # Output:
-#     @allowed_angles - list of groups of allowed angles.
+#     @allowed_bond_parameters - list of groups of allowed bond parameters.
 #     Ex.: ( [ 0.00, 3.14 ], [ 3.14, 6.28 ] );
-#     @allowed_energies - list of energies of the allowed angles.
+#     @allowed_energies - list of energies of the allowed bond parameters.
 #     Ex.: ( [ -2.32 ], [ -15.01 ] ).
 #
 
@@ -828,7 +828,7 @@ sub calc_favourable_angle
         $args->{'options'},
     );
 
-    my $energy_cutoff_atom= $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    my $energy_cutoff_atom=$parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
@@ -844,24 +844,24 @@ sub calc_favourable_angle
         ( defined $bendable_angles ? %{ $bendable_angles } : () )
     );
 
-    my @angle_names =
+    my @bond_parameter_names =
         sort { $bond_parameters{$a}{'order'} <=> $bond_parameters{$b}{'order'} }
         keys %bond_parameters;
 
-    my @allowed_angles;
+    my @allowed_bond_parameters;
     my @allowed_energies;
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
-        my $angles = $array_blocks->[0][$i];
+        my $bond_parameters = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
-        my %angles =
-            map { $angle_names[$_] => [ $angles->[$_] ] }
-                ( 0..$#{ $angles } );
+        my %bond_parameters =
+            map { $bond_parameter_names[$_] => [ $bond_parameters->[$_] ] }
+                ( 0..$#{ $bond_parameters } );
 
         my $pseudo_atom_site =
             generate_pseudo( { 'parameters' => $parameters,
                                'atom_site' => $atom_site,
                                'atom_specifier' => { 'id' => [ "$atom_id" ] },
-                               'bond_parameter_values' => \%angles } );
+                               'bond_parameter_values' => \%bond_parameters } );
         my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
         my $pseudo_origin_id =
             $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
@@ -888,18 +888,18 @@ sub calc_favourable_angle
             }
         }
 
-        # Writes allowed angles to @next_allowed_angles that will
-        # be passed to more global @allowed_angles. Checks the
+        # Writes allowed angles to @next_allowed_bond_parameters that will
+        # be passed to more global @allowed_bond_parameters. Checks the
         # last calculated potential. If potential was greater
         # than the cutoff, then calculation was halted, but the
         # value remained.
         if( $potential_energy <= $energy_cutoff_atom ) {
-            push @allowed_angles, $angles;
+            push @allowed_bond_parameters, $bond_parameters;
             push @allowed_energies, [ $energies + $potential_sum ];
         }
     }
 
-    return [ \@allowed_angles, \@allowed_energies ];
+    return [ \@allowed_bond_parameters, \@allowed_energies ];
 }
 
 #
