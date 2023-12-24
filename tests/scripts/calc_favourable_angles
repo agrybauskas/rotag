@@ -3,7 +3,10 @@
 use strict;
 use warnings;
 
-use BondParameters qw( rotatable_bonds );
+use BondParameters qw( collect_dihedral_angles
+                       collect_bond_angles
+                       collect_bond_lengths
+                       rotatable_bonds );
 use ForceField::NonBonded qw( hard_sphere );
 use ForceField::Parameters;
 use PDBxParser qw( filter
@@ -44,26 +47,42 @@ my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
+my $residue_unique_key =
+    "${residue_id},${residue_chain},${pdbx_model},${residue_alt}";
 my $favourable_bond_parameters =
     calc_favourable_angles( { 'parameters' => $parameters,
                               'atom_site' => $atom_site,
-                              'residue_unique_key' =>
-                                  "${residue_id},${residue_chain},".
-                                  "${pdbx_model},${residue_alt}",
+                              'residue_unique_key' => $residue_unique_key,
                               'interaction_site' => $interaction_site,
                               'bond_parameters' => $bond_parameters,
                               'non_bonded_potential' => \&hard_sphere,
                               'threads' => 1
                             } );
 
+my $dihedral_angles =
+    collect_dihedral_angles( $atom_site )->{$residue_unique_key};
+my $bendable_angles =
+    collect_bond_angles( $atom_site )->{$residue_unique_key};
+my $stretchable_bonds =
+    collect_bond_lengths( $atom_site )->{$residue_unique_key};
+
+my %bond_parameters = (
+    ( defined $dihedral_angles ? %{ $dihedral_angles } : () ),
+    ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
+    ( defined $bendable_angles ? %{ $bendable_angles } : () ),
+);
+
+my @bond_parameter_names =
+    sort { $bond_parameters{$a}{'order'} <=>
+           $bond_parameters{$b}{'order'} }
+    keys %bond_parameters;
+
 my $bond_parameter_id = 1;
 for my $bond_parameter_values ( @{ $favourable_bond_parameters } ) {
-    use Data::Dumper;
-    print STDERR Dumper $bond_parameter;
-    # my @angle_names = map { "chi${_}" } 1..$#{ $angles }+1;
-    # for my $i ( 0..$#{ $angles } ) {
-    #     print $angle_id, ', ', $angle_names[$i], ', ',
-    #         sprintf( $sig_figs_min, 180 * $angles->[$i] / $pi ), "\n";
-    # }
+    for my $i ( 0..$#{ $bond_parameter_values } ) {
+        print $bond_parameter_id, ', ', $bond_parameter_names[$i], ', ',
+            sprintf( $sig_figs_min, 180 * $bond_parameter_values->[$i] / $pi ),
+            "\n";
+    }
     $bond_parameter_id++;
 }
