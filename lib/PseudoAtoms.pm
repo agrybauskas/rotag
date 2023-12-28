@@ -1343,70 +1343,40 @@ sub default_bond_parameter_values
 
     for my $residue_and_bond_name_pair ( @{ $residue_and_bond_name_pairs } ) {
         my $current_residue_name = $residue_and_bond_name_pair->[0];
-        my $current_bond_paramter_name = $residue_and_bond_name_pair->[1];
+        my $current_bond_parameter_name = $residue_and_bond_name_pair->[1];
 
         next if ! defined $current_residue_name ||
-                ! defined $current_bond_paramter_name;
+                ! defined $current_bond_parameter_name;
+
+        if( defined $rand_count &&
+            defined $rand_seed &&
+            exists $bond_parameters->{$current_residue_name}
+                                     {$current_bond_parameter_name} ) {
+            if( $rand_count >
+                scalar @{ $bond_parameters->{$current_residue_name}
+                                            {$current_bond_parameter_name}
+                                            {'values'} } ){
+                die 'number of randomly bond parameter values is greater than '.
+                    "possible values.\n";
+            }
+            my @shuffled_idxs =
+                shuffle( 0..$#{ $bond_parameters->{$current_residue_name}
+                                                  {$current_bond_parameter_name}
+                                                  {'values'} } );
+            return [ map { [ $bond_parameters->{$current_residue_name}
+                                               {$current_bond_parameter_name}
+                                               {'values'}[$_] ] }
+                         @shuffled_idxs[0..$rand_count-1] ];
+        }
 
         if( exists $bond_parameters->{$current_residue_name}
-                                     {$current_bond_paramter_name} ) {
+                                     {$current_bond_parameter_name} ) {
             return [ map { [ $_ ] }
                         @{ $bond_parameters->{$current_residue_name}
-                                             {$current_bond_paramter_name}
+                                             {$current_bond_parameter_name}
                                              {'values'} } ];
         }
     }
-
-    # # Random count and seed parameters are present.
-    # if( defined $rand_count && defined $rand_seed ) {
-    #     if( $rand_count >
-    #         scalar @{ $bond_parameters->{'*'}
-    #                                     {$any_bond_parameter_name}
-    #                                     {'values'} } ){
-    #         die 'number of randomly bond parameter values is greater than '.
-    #             "possible values.\n";
-    #     }
-    #     my @shuffled_idxs =
-    #         shuffle( 0..$#{ $bond_parameters->{'*'}
-    #                                           {$any_bond_parameter_name}
-    #                                           {'values'} } );
-    #     return [ map { [ $bond_parameters->{'*'}
-    #                                        {$any_bond_parameter_name}
-    #                                        {'values'}[$_] ] }
-    #                  @shuffled_idxs[0..$rand_count-1] ];
-    # }
-
-    # # Both residue and parameter names defined.
-    # if( exists $bond_parameters->{$residue_name}{$bond_parameter_name} ) {
-    #     return [ map { [ $_ ] }
-    #                 @{ $bond_parameters->{$residue_name}
-    #                                      {$bond_parameter_name}
-    #                                      {'values'} } ];
-    # }
-
-    # # Only residue name defined.
-    # for my $any_bond_parameter_name ( '*-*-*-*', '*-*-*', '*-*' ) {
-    #     if( exists $bond_parameters->{$residue_name}{$any_bond_parameter_name}){
-    #         return [ map { [ $_ ] }
-    #                     @{ $bond_parameters->{$residue_name}
-    #                                          {$any_bond_parameter_name}
-    #                                          {'values'} } ];
-    #     }
-    # }
-
-    # # Only parameter name defined.
-    # if( exists $bond_parameters->{'*'}{$bond_parameter_name} ) {
-    #     return [ map { [ $_ ] }
-    #              @{ $bond_parameters->{'*'}{$bond_parameter_name}{'values'} } ];
-    # }
-
-    # for my $any_bond_parameter_name ( '*-*-*-*', '*-*-*', '*-*' ) {
-    #     # Neither residue nor parameter names are defined.
-    #     return [ map { [ $_ ] }
-    #              @{ $bond_parameters->{'*'}
-    #                                   {$any_bond_parameter_name}
-    #                                   {'values'} } ];
-    # }
 
     return [ map { [ $_ ] }
                 @{ sample_angles( [ [ 0, 2 * $pi ] ], $bond_parameter_count )}];
