@@ -853,8 +853,11 @@ sub calc_favourable_angle
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
         my $bond_parameters = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
+        # HACK: make sure that grep filter will not produce strange
+        # behaviour.
         my %bond_parameters =
             map { $bond_parameter_names[$_] => [ $bond_parameters->[$_] ] }
+           grep { defined $bond_parameter_names[$_] }
                 ( 0..$#{ $bond_parameters } );
 
         my $pseudo_atom_site =
