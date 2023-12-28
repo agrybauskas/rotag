@@ -888,8 +888,8 @@ sub calc_favourable_angle
             }
         }
 
-        # Writes allowed angles to @next_allowed_bond_parameters that will
-        # be passed to more global @allowed_bond_parameters. Checks the
+        # Writes allowed bond parameters to @next_allowed_bond_parameters that
+        # will be passed to more global @allowed_bond_parameters. Checks the
         # last calculated potential. If potential was greater
         # than the cutoff, then calculation was halted, but the
         # value remained.
