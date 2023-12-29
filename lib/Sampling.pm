@@ -343,10 +343,11 @@ sub sample_bond_parameters_qs_parsing
             # Determine bond parameter type.
             # HACK: later, probably should also check force field
             # parameter file.
+            my @bond_parameter_split_parts = split /-/, $bond_parameter_name;
             my $bond_parameter_type;
-            if( scalar( split( /-/, $bond_parameter_name ) ) == 3 ) {
+            if( scalar @bond_parameter_split_parts == 3 ) {
                 $bond_parameter_type = 'bond_angle';
-            } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
+            } elsif( scalar @bond_parameter_split_parts == 2 ) {
                 $bond_parameter_type = 'bond_length';
             } else {
                 $bond_parameter_type = 'dihedral_angle';
