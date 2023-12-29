@@ -368,9 +368,9 @@ sub generate_library
 
     my $do_bond_torsion =
         is_bond_parameter_present( $bond_parameters, 'dihedral_angle' );
-    my $do_bond_stretching = 0;
+    my $do_bond_stretching =
         is_bond_parameter_present( $bond_parameters, 'bond_length' );
-    my $do_angle_bending = 0;
+    my $do_angle_bending =
         is_bond_parameter_present( $bond_parameters, 'bond_angle' );
 
     # Selection of potential function.
