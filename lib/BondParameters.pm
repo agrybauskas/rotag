@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( bendable_angles
                      collect_bond_lengths
                      collect_dihedral_angles
                      combine_bond_parameters
+                     filter_bond_parameters
                      restructure_by_atom_ids
                      rotatable_bonds
                      stretchable_bonds );
@@ -650,6 +651,21 @@ sub combine_bond_parameters
         }
     }
     return \%combined_bond_parameters;
+}
+
+sub filter_bond_parameters
+{
+    my ( $bond_parameters, $bond_parameter_names ) = @_;
+    my %filtered_bond_parameters = ();
+    for my $bond_parameter_name ( @{ $bond_parameter_names } ) {
+        for my $parameter_name ( keys %{ $bond_parameter_name } ) {
+    #         next if exists $combined_bond_parameters{$parameter_name};
+
+    #         $combined_bond_parameters{$parameter_name} =
+    #             $bond_parameter->{$parameter_name};
+        }
+    }
+    return \%filtered_bond_parameters;
 }
 
 1;

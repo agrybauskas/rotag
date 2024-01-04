@@ -658,6 +658,9 @@ sub calc_favourable_angles
         ( defined $bendable_angles ? %{ $bendable_angles } : () ),
     );
 
+    %bond_parameters =
+        %{ filter_bond_parameters( %bond_parameters, [] ) };
+
     if( ! %bond_parameters ) { return []; }
 
     # Goes through each atom in side chain and calculates interaction
