@@ -31,6 +31,7 @@ use BondParameters qw( collect_bond_lengths
                        collect_bond_angles
                        collect_dihedral_angles
                        bendable_angles
+                       filter_bond_parameters
                        rotatable_bonds
                        stretchable_bonds );
 use BondProperties qw( hybridization );
@@ -659,7 +660,10 @@ sub calc_favourable_angles
     );
 
     %bond_parameters =
-        %{ filter_bond_parameters( %bond_parameters, [] ) };
+        %{ filter_bond_parameters( $parameters,
+                                   \%bond_parameters,
+                                   $bond_parameters,
+                                   $residue_unique_key ) };
 
     if( ! %bond_parameters ) { return []; }
 

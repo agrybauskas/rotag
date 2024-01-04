@@ -655,17 +655,18 @@ sub combine_bond_parameters
 
 sub filter_bond_parameters
 {
-    my ( $bond_parameters, $bond_parameter_names ) = @_;
+    my ( $parameters, $bond_parameters, $bond_parameters_filtered_by,
+         $residue_unique_key ) = @_;
     my %filtered_bond_parameters = ();
-    for my $bond_parameter_name ( @{ $bond_parameter_names } ) {
-        for my $parameter_name ( keys %{ $bond_parameter_name } ) {
-    #         next if exists $combined_bond_parameters{$parameter_name};
+    # for my $bond_parameter_name ( @{ $bond_parameter_names } ) {
+    #     for my $parameter_name ( keys %{ $bond_parameter_name } ) {
+    # #         next if exists $combined_bond_parameters{$parameter_name};
 
-    #         $combined_bond_parameters{$parameter_name} =
-    #             $bond_parameter->{$parameter_name};
-        }
-    }
-    return \%filtered_bond_parameters;
+    # #         $combined_bond_parameters{$parameter_name} =
+    # #             $bond_parameter->{$parameter_name};
+    #     }
+    # }
+    return $bond_parameters;
 }
 
 1;
