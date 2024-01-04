@@ -663,7 +663,7 @@ sub calc_favourable_angles
         %{ filter_bond_parameters( $parameters,
                                    \%bond_parameters,
                                    $bond_parameters,
-                                   $residue_unique_key ) };
+                                   $residue_name ) };
 
     if( ! %bond_parameters ) { return []; }
 
