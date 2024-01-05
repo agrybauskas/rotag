@@ -658,17 +658,27 @@ sub filter_bond_parameters
 {
     my ( $parameters, $bond_parameters, $bond_parameters_filtered_by,
          $residue_name ) = @_;
-    my %filtered_bond_parameters = ();
-    my @bond_parameter_names =
+
+    my %bond_parameters_in_residue =
         defined $bond_parameters_filtered_by->{$residue_name} ?
-        keys %{ $bond_parameters_filtered_by->{$residue_name} } :
-        keys %{ $bond_parameters_filtered_by->{'*'} };
+        %{ $bond_parameters_filtered_by->{$residue_name} } :
+        %{ $bond_parameters_filtered_by->{'*'} };
+
+    my %filtered_bond_parameters = ();
     for my $bond_parameter_name ( keys %{ $bond_parameters } ) {
         my ( $bond_parameter_type, $contains_hetatom ) =
             detect_bond_parameter_type( $parameters, $bond_parameter_name );
+
+        next if $contains_hetatom &&
+            ! exists $bond_parameters_in_residue{$bond_parameter_name};
+        next if ( $bond_parameter_type eq 'bond_length' ||
+                  $bond_parameter_type eq 'bond_angle' ) &&
+            ! exists $bond_parameters_in_residue{$bond_parameter_name};
+
         $filtered_bond_parameters{$bond_parameter_name} =
             $bond_parameters->{$bond_parameter_name};
     }
+
     return \%filtered_bond_parameters;
 }
 
