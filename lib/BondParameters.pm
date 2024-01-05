@@ -666,14 +666,12 @@ sub filter_bond_parameters
         keys %{ $bond_parameters_filtered_by->{$residue_name} } :
         keys %{ $bond_parameters_filtered_by->{'*'} };
     for my $bond_parameter_name ( keys %{ $bond_parameters } ) {
-    #     for my $parameter_name ( keys %{ $bond_parameter_name } ) {
-    #         next if exists $combined_bond_parameters{$parameter_name};
-
-    #         $combined_bond_parameters{$parameter_name} =
-    #             $bond_parameter->{$parameter_name};
-    #     }
+        my $bond_parameter_type =
+            detect_bond_parameter_type( $parameters, $bond_parameter_name );
+        $filtered_bond_parameters{$bond_parameter_name} =
+            $bond_parameters->{$bond_parameter_name};
     }
-    return $bond_parameters;
+    return \%filtered_bond_parameters;
 }
 
 sub detect_bond_parameter_type
