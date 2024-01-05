@@ -679,9 +679,10 @@ sub detect_bond_parameter_type
     my ( $parameters, $bond_parameter_name ) = @_;
     my $bond_parameter_type;
     my $contains_hetatom = 0;
-    if( scalar( split( /-/, $bond_parameter_name ) ) == 3 ) {
+    my @bond_parameter_name_parts = split /-/, $bond_parameter_name;
+    if( scalar @bond_parameter_name_parts == 3 ) {
         $bond_parameter_type = 'bond_angle';
-    } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
+    } elsif( scalar @bond_parameter_name_parts == 2 ) {
         $bond_parameter_type = 'bond_length';
     } else {
         $bond_parameter_type = 'dihedral_angle';
