@@ -658,8 +658,6 @@ sub filter_bond_parameters
 {
     my ( $parameters, $bond_parameters, $bond_parameters_filtered_by,
          $residue_name ) = @_;
-    my $hetatom_names =
-        $parameters->{'_[local]_sidechain_hetatom_extension'};
     my %filtered_bond_parameters = ();
     my @bond_parameter_names =
         defined $bond_parameters_filtered_by->{$residue_name} ?
@@ -674,12 +672,14 @@ sub filter_bond_parameters
     return \%filtered_bond_parameters;
 }
 
+# TODO: think if it should not be split into two functions.
 sub detect_bond_parameter_type
 {
     my ( $parameters, $bond_parameter_name ) = @_;
-    my $bond_parameter_type;
-    my $contains_hetatom = 0;
+
     my @bond_parameter_name_parts = split /-/, $bond_parameter_name;
+
+    my $bond_parameter_type;
     if( scalar @bond_parameter_name_parts == 3 ) {
         $bond_parameter_type = 'bond_angle';
     } elsif( scalar @bond_parameter_name_parts == 2 ) {
@@ -687,6 +687,17 @@ sub detect_bond_parameter_type
     } else {
         $bond_parameter_type = 'dihedral_angle';
     }
+
+    my $contains_hetatom = 0;
+    my $hetatom_names =
+        $parameters->{'_[local]_sidechain_hetatom_extension'};
+    for my $bond_parameter_name_part ( @bond_parameter_name_parts ) {
+        if( any { $bond_parameter_name_part eq $_ } @{ $hetatom_names } ) {
+            $contains_hetatom = 1;
+            last;
+        }
+    }
+
     return $bond_parameter_type, $contains_hetatom;
 }
 
