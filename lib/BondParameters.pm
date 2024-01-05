@@ -666,7 +666,7 @@ sub filter_bond_parameters
         keys %{ $bond_parameters_filtered_by->{$residue_name} } :
         keys %{ $bond_parameters_filtered_by->{'*'} };
     for my $bond_parameter_name ( keys %{ $bond_parameters } ) {
-        my $bond_parameter_type =
+        my ( $bond_parameter_type, $contains_hetatom ) =
             detect_bond_parameter_type( $parameters, $bond_parameter_name );
         $filtered_bond_parameters{$bond_parameter_name} =
             $bond_parameters->{$bond_parameter_name};
@@ -678,6 +678,7 @@ sub detect_bond_parameter_type
 {
     my ( $parameters, $bond_parameter_name ) = @_;
     my $bond_parameter_type;
+    my $contains_hetatom = 0;
     if( scalar( split( /-/, $bond_parameter_name ) ) == 3 ) {
         $bond_parameter_type = 'bond_angle';
     } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
@@ -685,7 +686,7 @@ sub detect_bond_parameter_type
     } else {
         $bond_parameter_type = 'dihedral_angle';
     }
-    return $bond_parameter_type;
+    return $bond_parameter_type, $contains_hetatom;
 }
 
 1;

@@ -341,7 +341,7 @@ sub sample_bond_parameters_qs_parsing
             $bond_parameter_end //= 180.0;
             $bond_parameter_name //= '*-*-*-*';
 
-            my $bond_parameter_type =
+            my ( $bond_parameter_type ) =
                 detect_bond_parameter_type( $parameters, $bond_parameter_name );
             my $bond_parameter_count =
                 int( ( $bond_parameter_end - $bond_parameter_start ) /

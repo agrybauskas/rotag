@@ -1389,7 +1389,7 @@ sub default_bond_parameter_values
         }
     }
 
-    my $bond_parameter_type =
+    my ( $bond_parameter_type ) =
         detect_bond_parameter_type( $parameters, $bond_parameter_name );
 
     return [ map { [ $_ ] }
