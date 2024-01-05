@@ -657,12 +657,14 @@ sub filter_bond_parameters
 {
     my ( $parameters, $bond_parameters, $bond_parameters_filtered_by,
          $residue_name ) = @_;
+    my $hetatom_names =
+        $parameters->{'_[local]_sidechain_hetatom_extension'};
     my %filtered_bond_parameters = ();
     my @bond_parameter_names =
         defined $bond_parameters_filtered_by->{$residue_name} ?
         keys %{ $bond_parameters_filtered_by->{$residue_name} } :
         keys %{ $bond_parameters_filtered_by->{'*'} };
-    for my $bond_parameter_name ( @bond_parameter_names ) {
+    for my $bond_parameter_name ( keys %{ $bond_parameters } ) {
     #     for my $parameter_name ( keys %{ $bond_parameter_name } ) {
     #         next if exists $combined_bond_parameters{$parameter_name};
 
@@ -671,6 +673,20 @@ sub filter_bond_parameters
     #     }
     }
     return $bond_parameters;
+}
+
+sub detect_bond_parameter_type
+{
+    my ( $parameters, $bond_parameter_name ) = @_;
+    my $bond_parameter_type;
+    if( scalar( split( /-/, $bond_parameter_name ) ) == 3 ) {
+        $bond_parameter_type = 'bond_angle';
+    } elsif( scalar( split( /-/, $bond_parameter_name ) ) == 2 ) {
+        $bond_parameter_type = 'bond_length';
+    } else {
+        $bond_parameter_type = 'dihedral_angle';
+    }
+    return $bond_parameter_type;
 }
 
 1;
