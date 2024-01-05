@@ -11,6 +11,7 @@ our @EXPORT_OK = qw( sample_angles
 
 use POSIX;
 
+use BondParameters qw( detect_bond_parameter_type );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -340,19 +341,8 @@ sub sample_bond_parameters_qs_parsing
             $bond_parameter_end //= 180.0;
             $bond_parameter_name //= '*-*-*-*';
 
-            # Determine bond parameter type.
-            # HACK: later, probably should also check force field
-            # parameter file.
-            my @bond_parameter_split_parts = split /-/, $bond_parameter_name;
-            my $bond_parameter_type;
-            if( scalar @bond_parameter_split_parts == 3 ) {
-                $bond_parameter_type = 'bond_angle';
-            } elsif( scalar @bond_parameter_split_parts == 2 ) {
-                $bond_parameter_type = 'bond_length';
-            } else {
-                $bond_parameter_type = 'dihedral_angle';
-            }
-
+            my $bond_parameter_type =
+                detect_bond_parameter_type( $parameters, $bond_parameter_name );
             my $bond_parameter_count =
                 int( ( $bond_parameter_end - $bond_parameter_start ) /
                      $bond_parameter_step );

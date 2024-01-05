@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( bendable_angles
                      collect_bond_lengths
                      collect_dihedral_angles
                      combine_bond_parameters
+                     detect_bond_parameter_type
                      filter_bond_parameters
                      restructure_by_atom_ids
                      rotatable_bonds
