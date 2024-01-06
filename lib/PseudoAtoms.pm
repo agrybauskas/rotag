@@ -647,27 +647,6 @@ sub calc_favourable_angles
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
-    my $dihedral_angles =
-        collect_dihedral_angles( $residue_site )->{$residue_unique_key};
-    my $bendable_angles =
-        collect_bond_angles( $residue_site )->{$residue_unique_key};
-    my $stretchable_bonds =
-        collect_bond_lengths( $residue_site )->{$residue_unique_key};
-
-    my %bond_parameters = (
-        ( defined $dihedral_angles ? %{ $dihedral_angles } : () ),
-        ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
-        ( defined $bendable_angles ? %{ $bendable_angles } : () ),
-    );
-
-    %bond_parameters =
-        %{ filter_bond_parameters( $parameters,
-                                   \%bond_parameters,
-                                   $bond_parameters,
-                                   $residue_name ) };
-
-    if( ! %bond_parameters ) { return []; }
-
     # Goes through each atom in side chain and calculates interaction
     # potential with surrounding atoms. CA and CB are non-movable atoms
     # so, they are marked as starting atoms.
@@ -694,6 +673,22 @@ sub calc_favourable_angles
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
+            my %bond_parameters = (
+                ( defined $residue_site->{$atom_id}{'rotatable_bonds'} ?
+                  %{ $residue_site->{$atom_id}{'rotatable_bonds'} } : () ),
+                ( defined $residue_site->{$atom_id}{'stretchable_bonds'} ?
+                  %{ $residue_site->{$atom_id}{'stretchable_bonds'} } : () ),
+                ( defined $residue_site->{$atom_id}{'bendable_angles'} ?
+                  %{ $residue_site->{$atom_id}{'bendable_angles'} } : () ),
+            );
+            %bond_parameters =
+                %{ filter_bond_parameters( $parameters,
+                                           \%bond_parameters,
+                                           $bond_parameters,
+                                           $residue_name ) };
+
+            next if ! %bond_parameters;
+
             my ( $last_parameter_name ) =
                 sort { $bond_parameters{$b}{'order'} <=>
                        $bond_parameters{$a}{'order'} }
