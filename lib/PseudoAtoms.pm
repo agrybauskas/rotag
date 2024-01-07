@@ -600,7 +600,7 @@ sub generate_library
 #     (see PDBxParser::unique_residue_key);
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
-#     $args->{bond_parameters_angles} - bond parameter data structure by which
+#     $args->{bond_parameters} - bond parameter data structure by which
 #     conformation is made.
 #     $args->{non_bonded_potential} - reference to the potential function that is
 #     used for calculating energy of non-bonded atoms;
@@ -706,7 +706,7 @@ sub calc_favourable_angles
             my @default_allowed_energies =
                 map { [ 0 ] } @default_allowed_bond_parameters;
 
-            # Adds more angle combinations if there are more than one
+            # Adds more bond parameter combinations if there are more than one
             # rotatable bonds.
             if( @allowed_bond_parameters &&
                 scalar( @{ $allowed_bond_parameters[0] } ) <
@@ -719,7 +719,7 @@ sub calc_favourable_angles
                     @{ permutation( 2, [],
                                     [ \@allowed_energies,
                                       \@default_allowed_energies ], [] ) };
-                # Flattens angle pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+                # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
                 @allowed_bond_parameters =
                     map { [ @{ $_->[0] }, @{ $_->[1] } ] }
                         @allowed_bond_parameters;
