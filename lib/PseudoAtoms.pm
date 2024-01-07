@@ -546,6 +546,7 @@ sub generate_library
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
+                             'bond_parameters' => $bond_parameters,
                              'interaction_site' => \%interaction_site,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
@@ -905,6 +906,7 @@ sub calc_favourable_angle
 #     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
 #     $args->{residue_unique_keys} - array of unique residue keys
 #     (see PDBxParser::unique_residue_key);
+#     $args->{bond_parameters} - user defined bond parameters;
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
 #     $args->{angles} - angle data structure by which rotation is made.
@@ -924,11 +926,13 @@ sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $rmsd, $options ) = (
+    my ( $parameters, $atom_site, $residue_unique_key, $bond_parameters,
+         $interaction_site, $non_bonded_potential, $bonded_potential, $rmsd,
+         $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
+        $args->{'bond_parameters'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
@@ -941,8 +945,11 @@ sub calc_full_atom_energy
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
+    my ( $any_key ) = keys %{ $residue_site };
+    my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
-    # TODO: not optimal. Angles should be passed.
+    # TODO: not optimal. Angles should be passed properly. Lots of
+    # similar code.
     my $dihedral_angles =
         collect_dihedral_angles( $residue_site )->{$residue_unique_key};
     my $bendable_angles =
@@ -955,6 +962,11 @@ sub calc_full_atom_energy
         ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
         ( defined $bendable_angles ? %{ $bendable_angles } : () ),
     );
+    %bond_parameters =
+        %{ filter_bond_parameters( $parameters,
+                                   \%bond_parameters,
+                                   $bond_parameters,
+                                   $residue_name ) };
 
     my @angle_names =
         sort { $bond_parameters{$a}{'order'} <=> $bond_parameters{$b}{'order'} }
