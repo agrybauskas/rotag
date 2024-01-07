@@ -748,6 +748,7 @@ sub calc_favourable_angles
                        { 'parameters' => $parameters,
                          'atom_site' => $atom_site,
                          'atom_id' => $atom_id,
+                         'bond_parameters' => \%bond_parameters,
                          'interaction_site' => $interaction_site,
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential },
@@ -802,6 +803,7 @@ sub calc_favourable_angles
 # Input:
 #     $args->{atom_site} - atom site data structure (see PDBxParser.pm);
 #     $args->{atom_id} - atom id;
+#     $args->{bond_parameters} - bond parameter data structure;
 #     $args->{interaction_site} - atom data structure that is included into
 #     energy calculations;
 #     $args->{non_bonded_potential} - reference to the potential function that is
@@ -820,11 +822,12 @@ sub calc_favourable_angle
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $parameters, $atom_site, $atom_id, $interaction_site,
+    my ( $parameters, $atom_site, $atom_id, $bond_parameters, $interaction_site,
          $non_bonded_potential, $bonded_potential, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'atom_id'},
+        $args->{'bond_parameters'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
@@ -836,32 +839,20 @@ sub calc_favourable_angle
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
 
-    # TODO: not optimal. Angles should be passed.
-    my $rotatable_bonds = $atom_site->{$atom_id}{'rotatable_bonds'};
-    my $stretchable_bonds = $atom_site->{$atom_id}{'stretchable_bonds'};
-    my $bendable_angles = $atom_site->{$atom_id}{'bendable_angles'};
-
-    my %bond_parameters = (
-        ( defined $rotatable_bonds ? %{ $rotatable_bonds } : () ),
-        ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
-        ( defined $bendable_angles ? %{ $bendable_angles } : () )
-    );
-
     my @bond_parameter_names =
-        sort { $bond_parameters{$a}{'order'} <=> $bond_parameters{$b}{'order'} }
-        keys %bond_parameters;
+        sort { $bond_parameters->{$a}{'order'} <=>
+               $bond_parameters->{$b}{'order'} }
+        keys %{ $bond_parameters };
 
     my @allowed_bond_parameters;
     my @allowed_energies;
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
         my $bond_parameters = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
-        # HACK: make sure that grep filter will not produce strange
-        # behaviour.
+
         my %bond_parameters =
             map { $bond_parameter_names[$_] => [ $bond_parameters->[$_] ] }
-           grep { defined $bond_parameter_names[$_] }
-                ( 0..$#{ $bond_parameters } );
+                ( 0..$#bond_parameter_names );
 
         my $pseudo_atom_site =
             generate_pseudo( { 'parameters' => $parameters,
