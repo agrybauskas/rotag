@@ -532,7 +532,7 @@ sub generate_library
                 my @bond_parameter_names =
                     sort { $bond_parameters{$a}{'order'} <=>
                            $bond_parameters{$b}{'order'} }
-                   keys %bond_parameters;
+                    keys %bond_parameters;
 
                 my ( $allowed_angles, $energy_sums, $rmsds ) =
                     @{ threading(

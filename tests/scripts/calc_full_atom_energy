@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use BondParameters qw( rotatable_bonds );
+use BondParameters qw( collect_bond_parameters
+                       rotatable_bonds );
 use ForceField::Parameters;
 use ForceField::NonBonded qw( hard_sphere );
 use PDBxParser qw( filter
@@ -50,12 +51,21 @@ my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
+my $residue_unique_key =
+    "${residue_id},${residue_chain},${pdbx_model},${residue_alt}";
+my %bond_parameters =
+    %{ collect_bond_parameters( $atom_site )->{$residue_unique_key} };
+my @bond_parameter_names =
+    sort { $bond_parameters{$a}{'order'} <=>
+           $bond_parameters{$b}{'order'} }
+    keys %bond_parameters;
+
 my ( $favourable_angles, $favourable_energies, $rmsds ) =
     @{ calc_full_atom_energy( { 'parameters' => $parameters,
                                 'atom_site' => $atom_site,
                                 'residue_unique_key' =>
-                                    "${residue_id},${residue_chain},".
-                                    "${pdbx_model},${residue_alt}",
+                                    $residue_unique_key,
+                                'bond_parameter_names' => \@bond_parameter_names,
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
                                 ( defined $rmsd ? ( 'rmsd' => 1 ): () )
