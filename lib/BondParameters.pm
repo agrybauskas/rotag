@@ -7,6 +7,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( bendable_angles
                      collect_bond_angles
                      collect_bond_lengths
+                     collect_bond_parameters
                      collect_dihedral_angles
                      combine_bond_parameters
                      detect_bond_parameter_type
@@ -16,6 +17,7 @@ our @EXPORT_OK = qw( bendable_angles
                      stretchable_bonds );
 
 use Carp;
+use Clone qw( clone );
 use List::Util qw( any
                    none );
 
@@ -574,6 +576,47 @@ sub collect_bond_angles
     }
 
     return \%bond_angles;
+}
+
+#
+# Collects bond parameters for all given atoms that are described in atom site
+# data structure (produced by obtain_atom_site or functions that uses it).
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm).
+#     'rotatable_bonds', 'bendable_angles' or 'stretchable_bonds' values must be
+#     present.
+# Output:
+#     %bond_parameters - returns non-redundant bond parameters.
+
+sub collect_bond_parameters
+{
+    my ( $atom_site, $atom_id ) = @_;
+
+    my %atom_site =
+        defined $atom_id && exists $atom_site->{$atom_id} ?
+        ( $atom_id => $atom_site->{$atom_id} ) :
+        %{ clone $atom_site };
+
+    my $dihedral_angles = collect_dihedral_angles( $atom_site );
+    my $bendable_angles = collect_bond_angles( $atom_site );
+    my $stretchable_bonds = collect_bond_lengths( $atom_site );
+
+    my $residue_groups =
+        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
+
+    my %bond_parameters = ();
+    for my $residue_unique_key ( sort keys %{ $residue_groups } ) {
+        $bond_parameters{$residue_unique_key} = {
+            ( defined $dihedral_angles->{$residue_unique_key} ?
+              %{ $dihedral_angles->{$residue_unique_key} } : () ),
+            ( defined $bendable_angles->{$residue_unique_key} ?
+              %{ $bendable_angles->{$residue_unique_key} } : () ),
+            ( defined $stretchable_bonds->{$residue_unique_key} ?
+              %{ $stretchable_bonds->{$residue_unique_key} } : () ),
+        };
+    }
+
+    return \%bond_parameters;
 }
 
 #

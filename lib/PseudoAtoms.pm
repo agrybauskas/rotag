@@ -29,6 +29,7 @@ use threads;
 
 use BondParameters qw( collect_bond_lengths
                        collect_bond_angles
+                       collect_bond_parameters
                        collect_dihedral_angles
                        detect_bond_parameter_type
                        bendable_angles
@@ -475,18 +476,9 @@ sub generate_library
                     determine_residue_keys( $residue_site,
                                             { 'exclude_dot' => 1 } )->[0];
 
-                my $dihedral_angles =
-                    collect_dihedral_angles( $residue_site )->{$residue_unique_key};
-                my $bendable_angles =
-                    collect_bond_angles( $residue_site )->{$residue_unique_key};
-                my $stretchable_bonds =
-                    collect_bond_lengths( $residue_site )->{$residue_unique_key};
-
-                my %bond_parameters = (
-                    ( defined $dihedral_angles ? %{ $dihedral_angles } : () ),
-                    ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
-                    ( defined $bendable_angles ? %{ $bendable_angles } : () ),
-                );
+                my %bond_parameters =
+                    %{ collect_bond_parameters( $residue_site )
+                           ->{$residue_unique_key} };
 
                 my @bond_parameter_names =
                     sort { $bond_parameters{$a}{'order'} <=>
