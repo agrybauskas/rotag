@@ -213,7 +213,8 @@ sub generate_pseudo
 #     $args->{'atom_site'} - atom site data structure (see PDBxParser);
 #     $args->{'bond_parameter_values'} - name and value of bond parameters in
 #     hash form.
-#     $args->{'last_atom_id'} - last atom id for assigning new ids for pseudo atoms;
+#     $args->{'last_atom_id'} - last atom id for assigning new ids for pseudo
+#     atoms;
 #     $args->{'alt_group_id'} - alternative group id that is used to distinguish
 #     pseudo atoms;
 #     $args->{'set_missing_angles_to_zero'} - if angles are unknown, they are
