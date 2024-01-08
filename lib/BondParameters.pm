@@ -593,16 +593,16 @@ sub collect_bond_parameters
     my ( $atom_site, $atom_id ) = @_;
 
     my %atom_site =
-        defined $atom_id && exists $atom_site->{$atom_id} ?
-        ( $atom_id => $atom_site->{$atom_id} ) :
-        %{ clone $atom_site };
+        ( defined $atom_id && exists $atom_site->{$atom_id} ?
+          ( $atom_id => $atom_site->{$atom_id} ) :
+          ( %{ clone $atom_site } ) );
 
-    my $dihedral_angles = collect_dihedral_angles( $atom_site );
-    my $bendable_angles = collect_bond_angles( $atom_site );
-    my $stretchable_bonds = collect_bond_lengths( $atom_site );
+    my $dihedral_angles = collect_dihedral_angles( \%atom_site );
+    my $bendable_angles = collect_bond_angles( \%atom_site );
+    my $stretchable_bonds = collect_bond_lengths( \%atom_site );
 
     my $residue_groups =
-        split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
+        split_by( { 'atom_site' => \%atom_site, 'append_dot' => 1 } );
 
     my %bond_parameters = ();
     for my $residue_unique_key ( sort keys %{ $residue_groups } ) {
