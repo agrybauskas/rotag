@@ -666,14 +666,9 @@ sub calc_favourable_angles
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
-            my %bond_parameters = (
-                ( defined $residue_site->{$atom_id}{'rotatable_bonds'} ?
-                  %{ $residue_site->{$atom_id}{'rotatable_bonds'} } : () ),
-                ( defined $residue_site->{$atom_id}{'stretchable_bonds'} ?
-                  %{ $residue_site->{$atom_id}{'stretchable_bonds'} } : () ),
-                ( defined $residue_site->{$atom_id}{'bendable_angles'} ?
-                  %{ $residue_site->{$atom_id}{'bendable_angles'} } : () ),
-            );
+            my %bond_parameters =
+                %{ collect_bond_parameters( $residue_site, $atom_id )
+                       ->{$residue_unique_key} };
             %bond_parameters =
                 %{ filter_bond_parameters( $parameters,
                                            \%bond_parameters,
