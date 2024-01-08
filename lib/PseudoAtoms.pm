@@ -1053,7 +1053,7 @@ sub lowest_energy_state
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $residue_unique_key - unique residue key
 #     (see PDBxParser::unique_residue_key);
-#     $bond_parameter_values - name and value of angles in hash form.
+#     $bond_parameter_values - name and value of bond parameters in hash form.
 # Output:
 #     changes coordinates of selected residue due to bond transformations.
 #
@@ -1075,8 +1075,8 @@ sub replace_with_rotamer
                             'set_missing_angles_to_zero' => 1 } );
 
     for my $residue_atom_id ( keys %{ $residue_site } ) {
-        my $residue_origin_atom_id = $residue_site->{$residue_atom_id}
-                                                    {'origin_atom_id'};
+        my $residue_origin_atom_id =
+            $residue_site->{$residue_atom_id}{'origin_atom_id'};
         $residue_site->{$residue_atom_id}{'id'} = $residue_origin_atom_id;
         $residue_site->{$residue_atom_id}{'label_alt_id'} = $alt_group_id;
         $residue_site->{$residue_atom_id}{'connections'} =
