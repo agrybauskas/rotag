@@ -1043,26 +1043,28 @@ sub lowest_energy_state
 }
 
 #
-# Rotates residue bonds by specified dihedral angles.
+# Transforms residue bonds by specified bond parameters.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $residue_unique_key - unique residue key
 #     (see PDBxParser::unique_residue_key);
-#     $angle_values - name and value of angles in hash form.
+#     $bond_parameter_values - name and value of angles in hash form.
 # Output:
-#     changes coordinates of selected residue due to bond rotations.
+#     changes coordinates of selected residue due to bond transformations.
 #
 
 sub replace_with_rotamer
 {
-    my ( $parameters, $atom_site, $residue_unique_key, $angle_values ) = @_;
+    my ( $parameters, $atom_site, $residue_unique_key,
+         $bond_parameter_values ) = @_;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
     my $residue_site =
         generate_rotamer( { 'parameters' => $parameters,
                             'atom_site' => $atom_site,
                             'angle_values' =>
-                                { $residue_unique_key => $angle_values  },
+                                { $residue_unique_key =>
+                                      $bond_parameter_values  },
                             'alt_group_id' => 'X', # HACK: $keep_origin_alt_id
                                                    # should be used.
                             'set_missing_angles_to_zero' => 1 } );
