@@ -1071,9 +1071,8 @@ sub replace_with_rotamer
                             'bond_parameter_values' =>
                                 { $residue_unique_key =>
                                       $bond_parameter_values  },
-                            'alt_group_id' => 'X', # HACK: $keep_origin_alt_id
-                                                   # should be used.
-                            'set_missing_angles_to_zero' => 1 } );
+                            # HACK: $keep_origin_alt_id should be used.
+                            'alt_group_id' => 'X' } );
 
     for my $residue_atom_id ( keys %{ $residue_site } ) {
         my $residue_origin_atom_id =
