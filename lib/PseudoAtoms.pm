@@ -1324,6 +1324,7 @@ sub default_bond_parameter_values
 
         if( defined $rand_count &&
             defined $rand_seed &&
+            exists $bond_parameters->{$current_residue_name} &&
             exists $bond_parameters->{$current_residue_name}
                                      {$current_bond_parameter_name} ) {
             if( $rand_count >
@@ -1343,7 +1344,8 @@ sub default_bond_parameter_values
                          @shuffled_idxs[0..$rand_count-1] ];
         }
 
-        if( exists $bond_parameters->{$current_residue_name}
+        if( exists $bond_parameters->{$current_residue_name} &&
+            exists $bond_parameters->{$current_residue_name}
                                      {$current_bond_parameter_name} ) {
             return [ map { [ $_ ] }
                         @{ $bond_parameters->{$current_residue_name}
