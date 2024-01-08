@@ -252,14 +252,11 @@ sub generate_rotamer
             filter_by_unique_residue_key( \%atom_site, $residue_unique_key, 1 );
 
         for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
-            my $rotatable_bonds = $atom_site->{$atom_id}{'rotatable_bonds'};
-            my $stretchable_bonds = $atom_site->{$atom_id}{'stretchable_bonds'};
-            my $bendable_angles = $atom_site->{$atom_id}{'bendable_angles'};
-
+            my $bond_parameters =
+                collect_bond_parameters( $atom_site, $atom_id )
+                    ->{$residue_unique_key};
             my %bond_parameters = (
-                ( defined $rotatable_bonds ? %{ $rotatable_bonds } : () ),
-                ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
-                ( defined $bendable_angles ? %{ $bendable_angles } : () )
+                ( defined $bond_parameters ? %{ $bond_parameters } : () ),
             );
 
             if( ! %bond_parameters ) { next; }
