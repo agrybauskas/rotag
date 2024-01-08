@@ -345,7 +345,6 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( $output_format eq 'pdbx' ) {
-        # TODO: remember that now all three bond parameters might exist or not.
         to_pdbx( $pdbx_data,
                  { 'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] },
