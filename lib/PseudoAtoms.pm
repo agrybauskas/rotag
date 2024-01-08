@@ -211,7 +211,8 @@ sub generate_pseudo
 # Generates rotamers according to given angle values.
 # Input:
 #     $args->{'atom_site'} - atom site data structure (see PDBxParser);
-#     $args->{'angle_values'} - name and value of angles in hash form.
+#     $args->{'bond_parameter_values'} - name and value of bond parameters in
+#     hash form.
 #     $args->{'last_atom_id'} - last atom id for assigning new ids for pseudo atoms;
 #     $args->{'alt_group_id'} - alternative group id that is used to distinguish
 #     pseudo atoms;
@@ -227,12 +228,13 @@ sub generate_pseudo
 sub generate_rotamer
 {
     my ( $args ) = @_;
-    my ( $parameters, $atom_site, $angle_values, $last_atom_id, $alt_group_id,
-         $set_missing_angles_to_zero, $keep_origin_id, $keep_origin_alt_id ) =
-        ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'angle_values'},
-          $args->{'last_atom_id'}, $args->{'last_atom_id'},
-          $args->{'set_missing_angles_to_zero'}, $args->{'keep_origin_id'},
-          $args->{'keep_origin_alt_id'}, );
+    my ( $parameters, $atom_site, $bond_parameter_values, $last_atom_id,
+         $alt_group_id, $set_missing_angles_to_zero, $keep_origin_id,
+         $keep_origin_alt_id ) =
+        ( $args->{'parameters'}, $args->{'atom_site'},
+          $args->{'bond_parameter_values'}, $args->{'last_atom_id'},
+          $args->{'last_atom_id'}, $args->{'set_missing_angles_to_zero'},
+          $args->{'keep_origin_id'}, $args->{'keep_origin_alt_id'}, );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
@@ -243,7 +245,7 @@ sub generate_rotamer
     my %atom_site = %{ clone( $atom_site ) };
     my %rotamer_atom_site;
 
-    for my $residue_unique_key ( keys %{ $angle_values } ) {
+    for my $residue_unique_key ( keys %{ $bond_parameter_values } ) {
         my ( undef, undef, undef, $residue_alt_id ) =
             split /,/, $residue_unique_key;
         $residue_alt_id =
@@ -261,17 +263,20 @@ sub generate_rotamer
 
             if( ! %bond_parameters ) { next; }
 
-            my %angles;
+            my %bond_values;
             for my $angle_name ( keys %bond_parameters ) {
-                if( exists $angle_values->{"$residue_unique_key"}{$angle_name} &&
-                    defined $angle_values->{"$residue_unique_key"}{$angle_name}){
-                    $angles{$angle_name} =
-                        [ $angle_values->{"$residue_unique_key"}{$angle_name} ];
+                if( exists $bond_parameter_values->{"$residue_unique_key"}
+                                                   {$angle_name} &&
+                    defined $bond_parameter_values->{"$residue_unique_key"}
+                                                    {$angle_name} ) {
+                    $bond_values{$angle_name} =
+                        [ $bond_parameter_values->{"$residue_unique_key"}
+                                                  {$angle_name} ];
                 } else {
                     if( $set_missing_angles_to_zero ) {
-                        $angles{$angle_name} = [ 0.0 ];
+                        $bond_values{$angle_name} = [ 0.0 ];
                     } else {
-                        $angles{$angle_name} =
+                        $bond_values{$angle_name} =
                             [ $bond_parameters{$angle_name}{'value'} ];
                     }
                 }
@@ -283,7 +288,7 @@ sub generate_rotamer
                       'parameters' => $parameters,
                       'atom_site' => { ( %atom_site, %rotamer_atom_site ) },
                       'atom_specifier' => { 'id' => [ $atom_id ] },
-                      'bond_parameter_values' => \%angles,
+                      'bond_parameter_values' => \%bond_values,
                       'last_atom_id' => $last_atom_id,
                       'alt_group_id' => $residue_alt_id } ) } );
             $last_atom_id++;
@@ -1062,7 +1067,7 @@ sub replace_with_rotamer
     my $residue_site =
         generate_rotamer( { 'parameters' => $parameters,
                             'atom_site' => $atom_site,
-                            'angle_values' =>
+                            'bond_parameter_values' =>
                                 { $residue_unique_key =>
                                       $bond_parameter_values  },
                             'alt_group_id' => 'X', # HACK: $keep_origin_alt_id
