@@ -523,13 +523,26 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
+                my %bond_parameters =
+                    %{ collect_bond_parameters( $residue_site )
+                           ->{$residue_unique_key} };
+                %bond_parameters =
+                    %{ filter_bond_parameters( $parameters,
+                                               \%bond_parameters,
+                                               $bond_parameters,
+                                               $residue_name ) };
+                my @bond_parameter_names =
+                    sort { $bond_parameters{$a}{'order'} <=>
+                           $bond_parameters{$b}{'order'} }
+                   keys %bond_parameters;
+
                 my ( $allowed_angles, $energy_sums, $rmsds ) =
                     @{ threading(
                            \&calc_full_atom_energy,
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_key' => $residue_unique_key,
-                             'bond_parameters' => $bond_parameters,
+                             'bond_parameter_names' => \@bond_parameter_names,
                              'interaction_site' => \%interaction_site,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
@@ -553,15 +566,6 @@ sub generate_library
                 #              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                 #              'options' => $options },
                 #            [ @allowed_angles ] ) };
-
-                my %bond_parameters =
-                    %{ collect_bond_parameters( $residue_site )
-                           ->{$residue_unique_key} };
-
-                my @bond_parameter_names =
-                    sort { $bond_parameters{$a}{'order'} <=>
-                           $bond_parameters{$b}{'order'} }
-                    keys %bond_parameters;
 
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                     my %angles =
@@ -913,13 +917,13 @@ sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $parameters, $atom_site, $residue_unique_key, $bond_parameters,
+    my ( $parameters, $atom_site, $residue_unique_key, $bond_parameter_names,
          $interaction_site, $non_bonded_potential, $bonded_potential, $rmsd,
          $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_key'},
-        $args->{'bond_parameters'},
+        $args->{'bond_parameter_names'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
@@ -932,32 +936,6 @@ sub calc_full_atom_energy
 
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
-    my ( $any_key ) = keys %{ $residue_site };
-    my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
-
-    # TODO: not optimal. Angles should be passed properly. Lots of
-    # similar code.
-    my $dihedral_angles =
-        collect_dihedral_angles( $residue_site )->{$residue_unique_key};
-    my $bendable_angles =
-        collect_bond_angles( $residue_site )->{$residue_unique_key};
-    my $stretchable_bonds =
-        collect_bond_lengths( $residue_site )->{$residue_unique_key};
-
-    my %bond_parameters = (
-        ( defined $dihedral_angles ? %{ $dihedral_angles } : () ),
-        ( defined $stretchable_bonds ? %{ $stretchable_bonds } : () ),
-        ( defined $bendable_angles ? %{ $bendable_angles } : () ),
-    );
-    %bond_parameters =
-        %{ filter_bond_parameters( $parameters,
-                                   \%bond_parameters,
-                                   $bond_parameters,
-                                   $residue_name ) };
-
-    my @angle_names =
-        sort { $bond_parameters{$a}{'order'} <=> $bond_parameters{$b}{'order'} }
-        keys %bond_parameters;
 
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
@@ -970,7 +948,7 @@ sub calc_full_atom_energy
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
         my %rotamer_site = %{ $residue_site };
         my %angles =
-            map { ( $angle_names[$_] => $checkable_angles[$i][$_] ) }
+            map { ( $bond_parameter_names->[$_] => $checkable_angles[$i][$_] ) }
                 ( 0..$#{ $checkable_angles[$i] } );
         replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
                               \%angles );
