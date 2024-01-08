@@ -125,12 +125,8 @@ sub generate_pseudo
         my $residue_unique_key = unique_residue_key( $atom_site{$atom_id} );
 
         my %bond_parameters =
-            ( %{ collect_dihedral_angles( { $atom_id => $atom_site->{$atom_id} } )
-                 ->{$residue_unique_key} },
-              %{ collect_bond_lengths( { $atom_id => $atom_site->{$atom_id} } )
-                 ->{$residue_unique_key} },
-              %{ collect_bond_angles( { $atom_id => $atom_site->{$atom_id} } )
-                 ->{$residue_unique_key} } );
+            %{ collect_bond_parameters( $atom_site, $atom_id )
+                   ->{$residue_unique_key} };
 
         # Adjust changes to the existing values of the bond and angle parameters.
         my @bond_parameter_names = sort keys %bond_parameters;
