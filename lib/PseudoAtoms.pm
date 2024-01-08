@@ -476,15 +476,6 @@ sub generate_library
                     determine_residue_keys( $residue_site,
                                             { 'exclude_dot' => 1 } )->[0];
 
-                my %bond_parameters =
-                    %{ collect_bond_parameters( $residue_site )
-                           ->{$residue_unique_key} };
-
-                my @bond_parameter_names =
-                    sort { $bond_parameters{$a}{'order'} <=>
-                           $bond_parameters{$b}{'order'} }
-                    keys %bond_parameters;
-
                 my @missing_atom_names =
                     @{ missing_atom_names( $parameters, $residue_site ) };
 
@@ -562,6 +553,15 @@ sub generate_library
                 #              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                 #              'options' => $options },
                 #            [ @allowed_angles ] ) };
+
+                my %bond_parameters =
+                    %{ collect_bond_parameters( $residue_site )
+                           ->{$residue_unique_key} };
+
+                my @bond_parameter_names =
+                    sort { $bond_parameters{$a}{'order'} <=>
+                           $bond_parameters{$b}{'order'} }
+                    keys %bond_parameters;
 
                 for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
                     my %angles =
