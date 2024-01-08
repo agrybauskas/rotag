@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use BondParameters qw( rotatable_bonds );
+use BondParameters qw( collect_bond_parameters
+                       rotatable_bonds );
 use ForceField::NonBonded qw( hard_sphere );
 use ForceField::Parameters;
 use PDBxParser qw( filter
@@ -49,10 +50,14 @@ my %interaction_specifier = ( map { $_->[0] => [ split( ",", @$_[1] ) ] }
 my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
+my $bond_parameters = collect_bond_parameters( $atom_site, $atom_id );
+my ( $any_key ) = keys %{ $bond_parameters };
+
 my ( $favourable_angles, $favourable_energies ) =
     @{ calc_favourable_angle( { 'parameters' => $parameters,
                                 'atom_site' => $atom_site,
                                 'atom_id' => $atom_id,
+                                'bond_parameters' => $bond_parameters->{$any_key},
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,
                                 'threads' => 1,
