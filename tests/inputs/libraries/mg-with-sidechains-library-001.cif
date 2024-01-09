@@ -52,17 +52,17 @@ ATOM 904 H HZ3 . LYS A 1 72 -34.764 -4.021 0.974 1 S
 HETATM 1925 MG MG . MG A 1 27 -31.184 -6.586 -1.238 1 T
 #
 loop_
-_[local]_rotamer_angle.id
-_[local]_rotamer_angle.rotamer_id
-_[local]_rotamer_angle.label_seq_id
-_[local]_rotamer_angle.label_comp_id
-_[local]_rotamer_angle.label_asym_id
-_[local]_rotamer_angle.pdbx_PDB_model_num
-_[local]_rotamer_angle.label_alt_id
-_[local]_rotamer_angle.frequency
-_[local]_rotamer_angle.type
-_[local]_rotamer_angle.value
-_[local]_rotamer_angle.units
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
 1 1 27 ASP A 1 . 0.001792 CB-CG-OD1-MG -180.000 degrees
 2 1 27 ASP A 1 . 0.001792 chi1 -108.000 degrees
 3 1 27 ASP A 1 . 0.001792 chi2 -180.000 degrees

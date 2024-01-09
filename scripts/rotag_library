@@ -56,9 +56,9 @@ my $top_rank;
 my $top_ratio;
 my $min_max_ratio;
 my $only_unique_angles = 0;
-my $tags = '_atom_site,_[local]_rotamer_angle';
+my $tags = '_atom_site,_[local]_rotamer_bond_parameter';
 my $output_format = 'pdbx';
-my @category_list = ( '_atom_site', '_[local]_rotamer_angle',
+my @category_list = ( '_atom_site', '_[local]_rotamer_bond_parameter',
                       '_[local]_rotamer_energy' );
 
 local $SIG{__WARN__} = sub {
@@ -113,7 +113,7 @@ for my $pdbx_file ( @ARGV ) {
     my $pdbx = obtain_pdbx_data( $pdbx_file, \@category_list );
 
     if( ! exists $pdbx->{'_atom_site'} ||
-        ! exists $pdbx->{'_[local]_rotamer_angle'} ||
+        ! exists $pdbx->{'_[local]_rotamer_bond_parameter'} ||
         ! exists $pdbx->{'_[local]_rotamer_energy'} ) {
         warning( { 'program' => $0,
                    'message' => 'no atom sites, rotamer angles or energies ' .
@@ -124,12 +124,12 @@ for my $pdbx_file ( @ARGV ) {
     raw2indexed( $pdbx,
                  { 'attributes' =>
                        { '_atom_site' => [ 'id' ],
-                         '_[local]_rotamer_angle' => [ 'id' ],
+                         '_[local]_rotamer_bond_parameter' => [ 'id' ],
                          '_[local]_rotamer_energy' => [ 'rotamer_id' ] },
                    'read_until_end' => 1 } );
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
-    my $rotamer_angles = $pdbx->{'_[local]_rotamer_angle'}{'data'};
+    my $rotamer_angles = $pdbx->{'_[local]_rotamer_bond_parameter'}{'data'};
     my $rotamer_energy = $pdbx->{'_[local]_rotamer_energy'}{'data'};
 
     # Generates a new collection of residue angles with defined frequencies.
@@ -215,9 +215,9 @@ for my $pdbx_file ( @ARGV ) {
 
     my %pdbx_data;
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
-    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'attributes'}=\@attributes;
-    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'is_loop'} = 1;
-    $pdbx_data{'_[local]_rotamer_angle'}{'metadata'}{'type'} = 'record';
+    $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'attributes'}=\@attributes;
+    $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'type'} = 'record';
 
     for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
         my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
@@ -233,7 +233,7 @@ for my $pdbx_file ( @ARGV ) {
                 }
             }
 
-            push @{ $pdbx_data{'_[local]_rotamer_angle'}{'data'} },
+            push @{ $pdbx_data{'_[local]_rotamer_bond_parameter'}{'data'} },
                 { 'id' => $rotamer_data[0],
                   'rotamer_id' => $rotamer_data[1],
                   'label_seq_id' => $rotamer_data[2],
