@@ -315,6 +315,12 @@ for my $pdbx_file ( @ARGV ) {
                 my $angle_value = $rotamer->{'angles'}{$angle_name};
                 my ( $angle_type ) =
                     detect_bond_parameter_type( $parameters, $angle_name );
+                my $value =
+                    ( $in_radians ?
+                      sprintf( $sig_figs_max, $angle_value ) :
+                      sprintf( $sig_figs_min,
+                               180.0 * $angle_value / $pi ) );
+                my $units = ( $in_radians ? 'radians' : 'degrees' );
                 push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'}},
                     { 'id' => $angle_id,
                       'rotamer_id' => $rotamer_id,
@@ -325,11 +331,8 @@ for my $pdbx_file ( @ARGV ) {
                       'label_alt_id' => $residue_alt,
                       'frequency' => sprintf($sig_figs_max, $rotamer_frequency),
                       'type' => $angle_name,
-                      'value' => ( $in_radians ?
-                                   sprintf( $sig_figs_max, $angle_value ) :
-                                   sprintf( $sig_figs_min,
-                                            180.0 * $angle_value / $pi ) ),
-                      'units' => ( $in_radians ? 'radians' : 'degrees' ) };
+                      'value' => $value,
+                      'units' => $units };
                 $angle_id++;
             }
 
