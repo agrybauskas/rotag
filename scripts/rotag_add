@@ -199,6 +199,7 @@ for my $pdbx_file ( @ARGV ) {
         my $rotamer_angle;
         my $rotamer_energy;
         if( defined $rotamer_angle_data_json ) {
+            # NOTE: should be changed to rotamer_bond_parameter.
             $rotamer_angle = $rotamer_angle_data_json->{'rotamer_angle'};
         } elsif( $rotamer_angle_file  ) {
             my $pdbx_rotamer_angle =
