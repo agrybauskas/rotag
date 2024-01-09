@@ -59,7 +59,7 @@ my $only_unique_angles = 0;
 my $tags = '_atom_site,_[local]_rotamer_bond_parameter';
 my $output_format = 'pdbx';
 my @category_list = ( '_atom_site', '_[local]_rotamer_bond_parameter',
-                      '_[local]_rotamer_energy' );
+                      '_[local]_rotamer_energy', '_struct_conn' );
 
 local $SIG{__WARN__} = sub {
     warning( { 'program' => $0,
@@ -125,12 +125,14 @@ for my $pdbx_file ( @ARGV ) {
                  { 'attributes' =>
                        { '_atom_site' => [ 'id' ],
                          '_[local]_rotamer_bond_parameter' => [ 'id' ],
-                         '_[local]_rotamer_energy' => [ 'rotamer_id' ] },
+                         '_[local]_rotamer_energy' => [ 'rotamer_id' ],
+                         '_struct_conn' => [ 'id' ] },
                    'read_until_end' => 1 } );
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
     my $rotamer_angles = $pdbx->{'_[local]_rotamer_bond_parameter'}{'data'};
     my $rotamer_energy = $pdbx->{'_[local]_rotamer_energy'}{'data'};
+    my $struct_conn = $pdbx->{'_struct_conn'}{'data'};
 
     # Generates a new collection of residue angles with defined frequencies.
     my $residue_angle_groups = split_by( { 'atom_site' => $rotamer_angles } );
@@ -215,6 +217,7 @@ for my $pdbx_file ( @ARGV ) {
 
     my %pdbx_data;
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
+    $pdbx_data{'_struct_conn'} = $pdbx->{'_struct_conn'};
     $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'attributes'}=\@attributes;
     $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'type'} = 'record';
@@ -252,7 +255,9 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( \%pdbx_data,
                  { 'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] },
-                   'tags' => \@tags } );
+                   'tags' => [ @tags,
+                               ( defined $struct_conn ?
+                                 ( '_struct_conn' ) : () ) ] } );
     } elsif( $output_format eq 'csv' ) {
         if( scalar @tags == 1 ) {
             to_csv( \%pdbx_data, { 'category' => $tags[0] } );
