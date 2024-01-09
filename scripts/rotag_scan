@@ -10,6 +10,7 @@ use List::MoreUtils qw( uniq );
 use List::Util qw( any );
 use Try::Tiny;
 
+use BondParameters qw( detect_bond_parameter_type );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -312,6 +313,8 @@ for my $pdbx_file ( @ARGV ) {
             for my $angle_name ( sort { $a cmp $b }
                                  keys %{ $rotamer->{'angles'} } ) {
                 my $angle_value = $rotamer->{'angles'}{$angle_name};
+                my ( $angle_type ) =
+                    detect_bond_parameter_type( $parameters, $angle_name );
                 push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'}},
                     { 'id' => $angle_id,
                       'rotamer_id' => $rotamer_id,
