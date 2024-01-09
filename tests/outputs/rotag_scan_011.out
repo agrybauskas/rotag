@@ -25,17 +25,123 @@ ATOM 7 O O . SER A 1 19 -54.903 -115.198 -3.857 1 S
 ATOM 8 O O . SER A 1 20 -51.150 -113.446 -5.056 1 S
 #
 loop_
-_[local]_rotamer_angle.id
-_[local]_rotamer_angle.rotamer_id
-_[local]_rotamer_angle.label_seq_id
-_[local]_rotamer_angle.label_comp_id
-_[local]_rotamer_angle.label_asym_id
-_[local]_rotamer_angle.pdbx_PDB_model_num
-_[local]_rotamer_angle.label_alt_id
-_[local]_rotamer_angle.frequency
-_[local]_rotamer_angle.type
-_[local]_rotamer_angle.value
-_[local]_rotamer_angle.units
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite -0.009067
+2 2 composite -0.011213
+3 3 composite -0.070572
+4 4 composite -0.111764
+5 5 composite -0.005990
+6 6 composite 0.000000
+7 7 composite 0.000000
+8 8 composite 0.000000
+9 9 composite 0.000000
+10 10 composite -0.000104
+11 11 composite -0.003606
+12 12 composite -0.002259
+13 13 composite -0.002845
+14 14 composite -0.001405
+15 15 composite -0.000001
+16 16 composite 0.000000
+17 17 composite 0.000000
+18 18 composite 0.000000
+19 19 composite 0.000000
+20 20 composite -0.000121
+21 21 composite -0.002523
+22 22 composite -0.000470
+23 23 composite -0.000011
+24 24 composite -0.000000
+25 25 composite 0.000000
+26 26 composite 0.000000
+27 27 composite 0.000000
+28 28 composite 0.000000
+29 29 composite 0.000000
+30 30 composite -0.000369
+31 31 composite -0.003249
+32 32 composite -0.000140
+33 33 composite 0.000000
+34 34 composite 0.000000
+35 35 composite 0.000000
+36 36 composite 0.000000
+37 37 composite 0.000000
+38 38 composite 0.000000
+39 39 composite -0.000001
+40 40 composite -0.001625
+41 41 composite -0.007469
+42 42 composite -0.000096
+43 43 composite 0.000000
+44 44 composite 0.000000
+45 45 composite 0.000000
+46 46 composite 0.000000
+47 47 composite 0.000000
+48 48 composite 0.000000
+49 49 composite -0.000140
+50 50 composite -0.007982
+51 51 composite -0.026486
+52 52 composite -0.000324
+53 53 composite 0.000000
+54 54 composite 0.000000
+55 55 composite 0.000000
+56 56 composite 0.000000
+57 57 composite 0.000000
+58 58 composite -0.000000
+59 59 composite -0.001152
+60 60 composite -0.034181
+61 61 composite -0.098538
+62 62 composite -0.003724
+63 63 composite 0.000000
+64 64 composite 0.000000
+65 65 composite 0.000000
+66 66 composite 0.000000
+67 67 composite -0.000000
+68 68 composite -0.001182
+69 69 composite -0.003660
+70 70 composite -0.076207
+71 71 composite -0.191941
+72 72 composite -0.033483
+73 73 composite -0.000000
+74 74 composite 0.000000
+75 75 composite 0.000000
+76 76 composite 0.000000
+77 77 composite -0.005085
+78 78 composite -0.101176
+79 79 composite -0.066358
+80 80 composite -0.044121
+81 81 composite -0.118307
+82 82 composite -0.077348
+83 83 composite -0.000857
+84 84 composite 0.000000
+85 85 composite 0.000000
+86 86 composite -0.001189
+87 87 composite -0.056421
+88 88 composite -0.075682
+89 89 composite -0.004588
+90 90 composite -0.005764
+91 91 composite -0.033629
+92 92 composite -0.041932
+93 93 composite -0.004328
+94 94 composite -0.061256
+95 95 composite -0.052740
+96 96 composite -0.001485
+97 97 composite 0.000000
+98 98 composite 0.000000
+99 99 composite 0.000000
+100 100 composite -0.000469
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
 1 1 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
 2 1 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
 3 2 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
@@ -236,110 +342,4 @@ _[local]_rotamer_angle.units
 198 99 18 XAA A 1 . 0.010000 chi2 108.000 degrees
 199 100 18 XAA A 1 . 0.010000 chi1 144.000 degrees
 200 100 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-#
-loop_
-_[local]_rotamer_energy.id
-_[local]_rotamer_energy.rotamer_id
-_[local]_rotamer_energy.calculation_method
-_[local]_rotamer_energy.value
-1 1 composite -0.009067
-2 2 composite -0.011213
-3 3 composite -0.070572
-4 4 composite -0.111764
-5 5 composite -0.005990
-6 6 composite 0.000000
-7 7 composite 0.000000
-8 8 composite 0.000000
-9 9 composite 0.000000
-10 10 composite -0.000104
-11 11 composite -0.003606
-12 12 composite -0.002259
-13 13 composite -0.002845
-14 14 composite -0.001405
-15 15 composite -0.000001
-16 16 composite 0.000000
-17 17 composite 0.000000
-18 18 composite 0.000000
-19 19 composite 0.000000
-20 20 composite -0.000121
-21 21 composite -0.002523
-22 22 composite -0.000470
-23 23 composite -0.000011
-24 24 composite -0.000000
-25 25 composite 0.000000
-26 26 composite 0.000000
-27 27 composite 0.000000
-28 28 composite 0.000000
-29 29 composite 0.000000
-30 30 composite -0.000369
-31 31 composite -0.003249
-32 32 composite -0.000140
-33 33 composite 0.000000
-34 34 composite 0.000000
-35 35 composite 0.000000
-36 36 composite 0.000000
-37 37 composite 0.000000
-38 38 composite 0.000000
-39 39 composite -0.000001
-40 40 composite -0.001625
-41 41 composite -0.007469
-42 42 composite -0.000096
-43 43 composite 0.000000
-44 44 composite 0.000000
-45 45 composite 0.000000
-46 46 composite 0.000000
-47 47 composite 0.000000
-48 48 composite 0.000000
-49 49 composite -0.000140
-50 50 composite -0.007982
-51 51 composite -0.026486
-52 52 composite -0.000324
-53 53 composite 0.000000
-54 54 composite 0.000000
-55 55 composite 0.000000
-56 56 composite 0.000000
-57 57 composite 0.000000
-58 58 composite -0.000000
-59 59 composite -0.001152
-60 60 composite -0.034181
-61 61 composite -0.098538
-62 62 composite -0.003724
-63 63 composite 0.000000
-64 64 composite 0.000000
-65 65 composite 0.000000
-66 66 composite 0.000000
-67 67 composite -0.000000
-68 68 composite -0.001182
-69 69 composite -0.003660
-70 70 composite -0.076207
-71 71 composite -0.191941
-72 72 composite -0.033483
-73 73 composite -0.000000
-74 74 composite 0.000000
-75 75 composite 0.000000
-76 76 composite 0.000000
-77 77 composite -0.005085
-78 78 composite -0.101176
-79 79 composite -0.066358
-80 80 composite -0.044121
-81 81 composite -0.118307
-82 82 composite -0.077348
-83 83 composite -0.000857
-84 84 composite 0.000000
-85 85 composite 0.000000
-86 86 composite -0.001189
-87 87 composite -0.056421
-88 88 composite -0.075682
-89 89 composite -0.004588
-90 90 composite -0.005764
-91 91 composite -0.033629
-92 92 composite -0.041932
-93 93 composite -0.004328
-94 94 composite -0.061256
-95 95 composite -0.052740
-96 96 composite -0.001485
-97 97 composite 0.000000
-98 98 composite 0.000000
-99 99 composite 0.000000
-100 100 composite -0.000469
 #

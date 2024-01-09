@@ -28,17 +28,77 @@ ATOM 1616 C CE2 . PHE A 1 246 42.632 -10.942 47.430 1 T
 ATOM 1617 C CZ . PHE A 1 246 41.766 -10.052 48.029 1 T
 #
 loop_
-_[local]_rotamer_angle.id
-_[local]_rotamer_angle.rotamer_id
-_[local]_rotamer_angle.label_seq_id
-_[local]_rotamer_angle.label_comp_id
-_[local]_rotamer_angle.label_asym_id
-_[local]_rotamer_angle.pdbx_PDB_model_num
-_[local]_rotamer_angle.label_alt_id
-_[local]_rotamer_angle.frequency
-_[local]_rotamer_angle.type
-_[local]_rotamer_angle.value
-_[local]_rotamer_angle.units
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 77.083888
+2 2 composite 73.695052
+3 3 composite 78.265229
+4 4 composite 83.691180
+5 5 composite 80.737535
+6 6 composite 75.265394
+7 7 composite 74.715543
+8 8 composite 79.380321
+9 9 composite 85.493255
+10 10 composite 82.640901
+11 11 composite 75.932246
+12 12 composite 74.825438
+13 13 composite 78.921898
+14 14 composite 117.922663
+15 15 composite 110.669568
+16 16 composite 83.466974
+17 17 composite 80.654848
+18 18 composite 88.953312
+19 19 composite 123.215847
+20 20 composite 120.783348
+21 21 composite 85.087002
+22 22 composite 80.850749
+23 23 composite 88.715927
+24 24 composite 119.959342
+25 25 composite 89.241883
+26 26 composite 90.099438
+27 27 composite 132.467526
+28 28 composite 132.606427
+29 29 composite 90.313179
+30 30 composite 90.528613
+31 31 composite 131.696094
+32 32 composite 114.796955
+33 33 composite 89.188176
+34 34 composite 82.003462
+35 35 composite 85.939414
+36 36 composite 121.721697
+37 37 composite 124.973977
+38 38 composite 91.891511
+39 39 composite 82.713776
+40 40 composite 86.263693
+41 41 composite 117.095156
+42 42 composite 110.310586
+43 43 composite 114.903340
+44 44 composite 87.168644
+45 45 composite 82.775759
+46 46 composite 91.430309
+47 47 composite 113.896793
+48 48 composite 124.435503
+49 49 composite 89.684792
+50 50 composite 82.979003
+51 51 composite 90.581625
+52 52 composite 107.894769
+53 53 composite 100.617302
+54 54 composite 149.532146
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
 1 1 246 PHE A 1 . 0.018519 chi1 -108.000 degrees
 2 1 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
 3 2 246 PHE A 1 . 0.018519 chi1 -108.000 degrees
@@ -147,64 +207,4 @@ _[local]_rotamer_angle.units
 106 53 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
 107 54 246 PHE A 1 . 0.018519 chi1 108.000 degrees
 108 54 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
-#
-loop_
-_[local]_rotamer_energy.id
-_[local]_rotamer_energy.rotamer_id
-_[local]_rotamer_energy.calculation_method
-_[local]_rotamer_energy.value
-1 1 composite 77.083888
-2 2 composite 73.695052
-3 3 composite 78.265229
-4 4 composite 83.691180
-5 5 composite 80.737535
-6 6 composite 75.265394
-7 7 composite 74.715543
-8 8 composite 79.380321
-9 9 composite 85.493255
-10 10 composite 82.640901
-11 11 composite 75.932246
-12 12 composite 74.825438
-13 13 composite 78.921898
-14 14 composite 117.922663
-15 15 composite 110.669568
-16 16 composite 83.466974
-17 17 composite 80.654848
-18 18 composite 88.953312
-19 19 composite 123.215847
-20 20 composite 120.783348
-21 21 composite 85.087002
-22 22 composite 80.850749
-23 23 composite 88.715927
-24 24 composite 119.959342
-25 25 composite 89.241883
-26 26 composite 90.099438
-27 27 composite 132.467526
-28 28 composite 132.606427
-29 29 composite 90.313179
-30 30 composite 90.528613
-31 31 composite 131.696094
-32 32 composite 114.796955
-33 33 composite 89.188176
-34 34 composite 82.003462
-35 35 composite 85.939414
-36 36 composite 121.721697
-37 37 composite 124.973977
-38 38 composite 91.891511
-39 39 composite 82.713776
-40 40 composite 86.263693
-41 41 composite 117.095156
-42 42 composite 110.310586
-43 43 composite 114.903340
-44 44 composite 87.168644
-45 45 composite 82.775759
-46 46 composite 91.430309
-47 47 composite 113.896793
-48 48 composite 124.435503
-49 49 composite 89.684792
-50 50 composite 82.979003
-51 51 composite 90.581625
-52 52 composite 107.894769
-53 53 composite 100.617302
-54 54 composite 149.532146
 #

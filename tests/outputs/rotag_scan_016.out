@@ -37,27 +37,6 @@ ATOM 1579 H HB3 A ASP A 1 97 19.921 22.553 16.081 1 S
 ATOM 1580 H HB3 B ASP A 1 97 21.149 21.118 16.381 1 T
 #
 loop_
-_[local]_rotamer_angle.id
-_[local]_rotamer_angle.rotamer_id
-_[local]_rotamer_angle.label_seq_id
-_[local]_rotamer_angle.label_comp_id
-_[local]_rotamer_angle.label_asym_id
-_[local]_rotamer_angle.pdbx_PDB_model_num
-_[local]_rotamer_angle.label_alt_id
-_[local]_rotamer_angle.frequency
-_[local]_rotamer_angle.type
-_[local]_rotamer_angle.value
-_[local]_rotamer_angle.units
-1 1 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
-2 1 97 ASP A 1 B 0.250000 chi2 -180.000 degrees
-3 2 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
-4 2 97 ASP A 1 B 0.250000 chi2 -90.000 degrees
-5 3 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
-6 3 97 ASP A 1 B 0.250000 chi2 0.000 degrees
-7 4 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
-8 4 97 ASP A 1 B 0.250000 chi2 90.000 degrees
-#
-loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
@@ -66,4 +45,25 @@ _[local]_rotamer_energy.value
 2 2 composite 16.353694
 3 3 composite 33.427144
 4 4 composite 16.396039
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
+2 1 97 ASP A 1 B 0.250000 chi2 -180.000 degrees
+3 2 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
+4 2 97 ASP A 1 B 0.250000 chi2 -90.000 degrees
+5 3 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
+6 3 97 ASP A 1 B 0.250000 chi2 0.000 degrees
+7 4 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
+8 4 97 ASP A 1 B 0.250000 chi2 90.000 degrees
 #

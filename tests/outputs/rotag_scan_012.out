@@ -30,49 +30,6 @@ ATOM 12 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 2 T
 ATOM 13 C C . SER A 1 19 -56.270 -110.188 -0.743 2 S
 #
 loop_
-_[local]_rotamer_angle.id
-_[local]_rotamer_angle.rotamer_id
-_[local]_rotamer_angle.label_seq_id
-_[local]_rotamer_angle.label_comp_id
-_[local]_rotamer_angle.label_asym_id
-_[local]_rotamer_angle.pdbx_PDB_model_num
-_[local]_rotamer_angle.label_alt_id
-_[local]_rotamer_angle.frequency
-_[local]_rotamer_angle.type
-_[local]_rotamer_angle.value
-_[local]_rotamer_angle.units
-1 1 18 XAA A 1 A 0.100000 chi1 -180.000 degrees
-2 2 18 XAA A 1 A 0.100000 chi1 -144.000 degrees
-3 3 18 XAA A 1 A 0.100000 chi1 -108.000 degrees
-4 4 18 XAA A 1 A 0.100000 chi1 -72.000 degrees
-5 5 18 XAA A 1 A 0.100000 chi1 -36.000 degrees
-6 6 18 XAA A 1 A 0.100000 chi1 0.000 degrees
-7 7 18 XAA A 1 A 0.100000 chi1 36.000 degrees
-8 8 18 XAA A 1 A 0.100000 chi1 72.000 degrees
-9 9 18 XAA A 1 A 0.100000 chi1 108.000 degrees
-10 10 18 XAA A 1 A 0.100000 chi1 144.000 degrees
-11 11 18 XAA A 1 B 0.100000 chi1 -180.000 degrees
-12 12 18 XAA A 1 B 0.100000 chi1 -144.000 degrees
-13 13 18 XAA A 1 B 0.100000 chi1 -108.000 degrees
-14 14 18 XAA A 1 B 0.100000 chi1 -72.000 degrees
-15 15 18 XAA A 1 B 0.100000 chi1 -36.000 degrees
-16 16 18 XAA A 1 B 0.100000 chi1 0.000 degrees
-17 17 18 XAA A 1 B 0.100000 chi1 36.000 degrees
-18 18 18 XAA A 1 B 0.100000 chi1 72.000 degrees
-19 19 18 XAA A 1 B 0.100000 chi1 108.000 degrees
-20 20 18 XAA A 1 B 0.100000 chi1 144.000 degrees
-21 21 18 XAA A 2 . 0.100000 chi1 -180.000 degrees
-22 22 18 XAA A 2 . 0.100000 chi1 -144.000 degrees
-23 23 18 XAA A 2 . 0.100000 chi1 -108.000 degrees
-24 24 18 XAA A 2 . 0.100000 chi1 -72.000 degrees
-25 25 18 XAA A 2 . 0.100000 chi1 -36.000 degrees
-26 26 18 XAA A 2 . 0.100000 chi1 0.000 degrees
-27 27 18 XAA A 2 . 0.100000 chi1 36.000 degrees
-28 28 18 XAA A 2 . 0.100000 chi1 72.000 degrees
-29 29 18 XAA A 2 . 0.100000 chi1 108.000 degrees
-30 30 18 XAA A 2 . 0.100000 chi1 144.000 degrees
-#
-loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
@@ -107,4 +64,47 @@ _[local]_rotamer_energy.value
 28 28 composite 0.061318
 29 29 composite 1.184282
 30 30 composite 0.801560
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 18 XAA A 1 A 0.100000 chi1 -180.000 degrees
+2 2 18 XAA A 1 A 0.100000 chi1 -144.000 degrees
+3 3 18 XAA A 1 A 0.100000 chi1 -108.000 degrees
+4 4 18 XAA A 1 A 0.100000 chi1 -72.000 degrees
+5 5 18 XAA A 1 A 0.100000 chi1 -36.000 degrees
+6 6 18 XAA A 1 A 0.100000 chi1 0.000 degrees
+7 7 18 XAA A 1 A 0.100000 chi1 36.000 degrees
+8 8 18 XAA A 1 A 0.100000 chi1 72.000 degrees
+9 9 18 XAA A 1 A 0.100000 chi1 108.000 degrees
+10 10 18 XAA A 1 A 0.100000 chi1 144.000 degrees
+11 11 18 XAA A 1 B 0.100000 chi1 -180.000 degrees
+12 12 18 XAA A 1 B 0.100000 chi1 -144.000 degrees
+13 13 18 XAA A 1 B 0.100000 chi1 -108.000 degrees
+14 14 18 XAA A 1 B 0.100000 chi1 -72.000 degrees
+15 15 18 XAA A 1 B 0.100000 chi1 -36.000 degrees
+16 16 18 XAA A 1 B 0.100000 chi1 0.000 degrees
+17 17 18 XAA A 1 B 0.100000 chi1 36.000 degrees
+18 18 18 XAA A 1 B 0.100000 chi1 72.000 degrees
+19 19 18 XAA A 1 B 0.100000 chi1 108.000 degrees
+20 20 18 XAA A 1 B 0.100000 chi1 144.000 degrees
+21 21 18 XAA A 2 . 0.100000 chi1 -180.000 degrees
+22 22 18 XAA A 2 . 0.100000 chi1 -144.000 degrees
+23 23 18 XAA A 2 . 0.100000 chi1 -108.000 degrees
+24 24 18 XAA A 2 . 0.100000 chi1 -72.000 degrees
+25 25 18 XAA A 2 . 0.100000 chi1 -36.000 degrees
+26 26 18 XAA A 2 . 0.100000 chi1 0.000 degrees
+27 27 18 XAA A 2 . 0.100000 chi1 36.000 degrees
+28 28 18 XAA A 2 . 0.100000 chi1 72.000 degrees
+29 29 18 XAA A 2 . 0.100000 chi1 108.000 degrees
+30 30 18 XAA A 2 . 0.100000 chi1 144.000 degrees
 #
