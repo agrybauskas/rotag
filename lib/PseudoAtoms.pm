@@ -838,11 +838,11 @@ sub calc_favourable_angle
     my @allowed_bond_parameters;
     my @allowed_energies;
     for( my $i = 0; $i <= $#{ $array_blocks->[0] }; $i++ ) {
-        my $bond_parameters = $array_blocks->[0][$i];
+        my $bond_parameter_values = $array_blocks->[0][$i];
         my $energies = $array_blocks->[1][$i][0];
 
         my %bond_parameters =
-            map { $bond_parameter_names[$_] => [ $bond_parameters->[$_] ] }
+            map { $bond_parameter_names[$_] => [ $bond_parameter_values->[$_] ] }
                 ( 0..$#bond_parameter_names );
 
         my $pseudo_atom_site =
@@ -882,7 +882,7 @@ sub calc_favourable_angle
         # than the cutoff, then calculation was halted, but the
         # value remained.
         if( $potential_energy <= $energy_cutoff_atom ) {
-            push @allowed_bond_parameters, $bond_parameters;
+            push @allowed_bond_parameters, $bond_parameter_values;
             push @allowed_energies, [ $energies + $potential_sum ];
         }
     }
