@@ -316,7 +316,7 @@ for my $pdbx_file ( @ARGV ) {
                 my ( $angle_type ) =
                     detect_bond_parameter_type( $parameters, $angle_name );
                 my $value =
-                    ( $in_radians || $angle_type ne 'dihedral_angle' ?
+                    ( $in_radians || $angle_type eq 'bond_length' ?
                       sprintf( $sig_figs_max, $angle_value ) :
                       sprintf( $sig_figs_min,
                                180.0 * $angle_value / $pi ) );
