@@ -532,7 +532,9 @@ sub generate_library
                                                $residue_name ) };
                 my @bond_parameter_names =
                     sort { $bond_parameters{$a}{'order'} <=>
-                           $bond_parameters{$b}{'order'} }
+                           $bond_parameters{$b}{'order'} ||
+                           $bond_parameters{$b}{'rank'} <=>
+                           $bond_parameters{$a}{'rank'}}
                     keys %bond_parameters;
 
                 my ( $allowed_angles, $energy_sums, $rmsds ) =
@@ -682,7 +684,9 @@ sub calc_favourable_angles
 
             my ( $last_parameter_name ) =
                 sort { $bond_parameters{$b}{'order'} <=>
-                       $bond_parameters{$a}{'order'} }
+                       $bond_parameters{$a}{'order'} ||
+                       $bond_parameters{$a}{'rank'} <=>
+                       $bond_parameters{$b}{'rank'} }
                 keys %bond_parameters;
 
             my @default_allowed_bond_parameters =
@@ -832,7 +836,9 @@ sub calc_favourable_angle
 
     my @bond_parameter_names =
         sort { $bond_parameters->{$a}{'order'} <=>
-               $bond_parameters->{$b}{'order'} }
+               $bond_parameters->{$b}{'order'} ||
+               $bond_parameters->{$b}{'rank'} <=>
+               $bond_parameters->{$a}{'rank'} }
         keys %{ $bond_parameters };
 
     my @allowed_bond_parameters;
