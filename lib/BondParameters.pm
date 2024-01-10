@@ -644,7 +644,9 @@ sub unique_bond_parameters
                 # the bond parameters with highest order are used.
                 $unique_bond_parameters{"$parameter_name"} =
                     $bond_parameters->{"$atom_id"}{"$parameter_name"}{'order'} >
-                    $unique_bond_parameters{"$parameter_name"}{'order'} ?
+                    $unique_bond_parameters{"$parameter_name"}{'order'} ||
+                    $bond_parameters->{"$atom_id"}{"$parameter_name"}{'rank'} <
+                    $unique_bond_parameters{"$parameter_name"}{'rank'} ?
                     $bond_parameters->{"$atom_id"}{"$parameter_name"} :
                     $unique_bond_parameters{"$parameter_name"};
             }
