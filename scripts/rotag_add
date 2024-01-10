@@ -10,7 +10,9 @@ use JSON;
 use List::Util qw( max );
 use Try::Tiny;
 
-use BondParameters qw( collect_dihedral_angles
+use BondParameters qw( bendable_angles
+                       collect_dihedral_angles
+                       stretchable_bonds
                        rotatable_bonds );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
@@ -306,6 +308,16 @@ for my $pdbx_file ( @ARGV ) {
             }
 
             rotatable_bonds( $parameters,
+                             $residue_site,
+                             { ( 'include_hetatoms' =>
+                                     ( defined $struct_conn &&
+                                       %{ $struct_conn } ? 1 : 0 ) ) } );
+            stretchable_bonds( $parameters,
+                               $residue_site,
+                               { ( 'include_hetatoms' =>
+                                   ( defined $struct_conn &&
+                                     %{ $struct_conn } ? 1 : 0 ) ) } );
+            bendable_angles( $parameters,
                              $residue_site,
                              { ( 'include_hetatoms' =>
                                      ( defined $struct_conn &&
