@@ -213,8 +213,9 @@ sub rotatable_bonds
 
             $atom_site->{$atom_id}{'rotatable_bonds'}{$rotatable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
+                'parameter_order' => 3,
                 'atom_ids' => $bond_atom_ids,
-                'value' => $dihedral_angles_cache{$dihedral_angle_key}
+                'value' => $dihedral_angles_cache{$dihedral_angle_key},
             };
         }
     }
@@ -339,6 +340,7 @@ sub stretchable_bonds
 
             $atom_site->{$atom_id}{'stretchable_bonds'}{$stretchable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[0]}{$bond_atom_ids->[1]},
+                'parameter_order' => 1,
                 'atom_ids' => $bond_atom_ids,
                 'value' => $bond_lengths_cache{$bond_length_key}
             };
@@ -469,6 +471,7 @@ sub bendable_angles
                 'order' => $bond_order{$bond_atom_ids->[0]}
                                       {$bond_atom_ids->[1]}
                                       {$bond_atom_ids->[2]},
+                'parameter_order' => 2,
                 'atom_ids' => $bond_atom_ids,
                 'value' => $bond_angles_cache{$bond_angle_key}
             };
