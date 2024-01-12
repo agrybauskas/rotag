@@ -682,108 +682,110 @@ sub calc_favourable_angles
 
             next if ! %bond_parameters;
 
-            my ( $last_parameter_name ) =
+            my @parameter_names_sorted =
                 sort { $bond_parameters{$b}{'order'} <=>
                        $bond_parameters{$a}{'order'} ||
                        $bond_parameters{$a}{'rank'} <=>
                        $bond_parameters{$b}{'rank'} }
                 keys %bond_parameters;
 
-            my @default_allowed_bond_parameters =
-                @{ default_bond_parameter_values(
-                       $parameters,
-                       $bond_parameters,
-                       $residue_name,
-                       $last_parameter_name,
-                       $bond_parameter_count,
-                       { 'rand_seed' => $rand_seed,
-                         'rand_count' => $rand_count } ) };
+            for my $last_parameter_name ( @parameter_names_sorted ) {
+                my @default_allowed_bond_parameters =
+                    @{ default_bond_parameter_values(
+                           $parameters,
+                           $bond_parameters,
+                           $residue_name,
+                           $last_parameter_name,
+                           $bond_parameter_count,
+                           { 'rand_seed' => $rand_seed,
+                             'rand_count' => $rand_count } ) };
 
-            my @default_allowed_energies =
-                map { [ 0 ] }
-                @default_allowed_bond_parameters;
-
-            # Adds more bond parameter combinations if there are more than one
-            # rotatable bonds.
-            if( @allowed_bond_parameters &&
-                scalar( @{ $allowed_bond_parameters[0] } ) <
-                scalar( keys %bond_parameters ) ) {
-                @allowed_bond_parameters =
-                    @{ permutation(
-                           2, [],
-                           [ \@allowed_bond_parameters,
-                             \@default_allowed_bond_parameters ], [] ) };
-                @allowed_energies =
-                    @{ permutation(
-                           2, [],
-                           [ \@allowed_energies,
-                             \@default_allowed_energies ], [] ) };
-                # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-                @allowed_bond_parameters =
-                    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
-                    @allowed_bond_parameters;
-                @allowed_energies =
-                    map { [ $_->[0][0] ] }
-                    @allowed_energies;
-            } elsif( ! @allowed_bond_parameters ) {
-                @allowed_bond_parameters =
+                my @default_allowed_energies =
+                    map { [ 0 ] }
                     @default_allowed_bond_parameters;
-                @allowed_energies =
-                    @default_allowed_energies;
-            }
 
-            # Marks visited atoms.
-            push @visited_atom_ids, $atom_id;
+                # Adds more bond parameter combinations if there are more than
+                # one rotatable bonds.
+                if( @allowed_bond_parameters &&
+                    scalar( @{ $allowed_bond_parameters[0] } ) <
+                    scalar( keys %bond_parameters ) ) {
+                    @allowed_bond_parameters =
+                        @{ permutation(
+                               2, [],
+                               [ \@allowed_bond_parameters,
+                                 \@default_allowed_bond_parameters ], [] ) };
+                    @allowed_energies =
+                        @{ permutation(
+                               2, [],
+                               [ \@allowed_energies,
+                                 \@default_allowed_energies ], [] ) };
+                    # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+                    @allowed_bond_parameters =
+                        map { [ @{ $_->[0] }, @{ $_->[1] } ] }
+                        @allowed_bond_parameters;
+                    @allowed_energies =
+                        map { [ $_->[0][0] ] }
+                        @allowed_energies;
+                } elsif( ! @allowed_bond_parameters ) {
+                    @allowed_bond_parameters =
+                        @default_allowed_bond_parameters;
+                    @allowed_energies =
+                        @default_allowed_energies;
+                }
 
-            # Marks neighbouring atoms.
-            push @neighbour_atom_ids,
-                @{ $atom_site->{$atom_id}{'connections'} };
-            push @neighbour_atom_ids,
-                @{ $atom_site->{$atom_id}{'connections_hetatom'} }
-            if $include_hetatoms &&
-                defined $atom_site->{$atom_id}{'connections_hetatom'};
+                # Marks visited atoms.
+                push @visited_atom_ids, $atom_id;
 
-            # Starts calculating potential energy.
-            my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
-                @{ threading(
-                       \&calc_favourable_angle,
-                       { 'parameters' => $parameters,
-                         'atom_site' => $atom_site,
-                         'atom_id' => $atom_id,
-                         'bond_parameters' => \%bond_parameters,
-                         'interaction_site' => $interaction_site,
-                         'non_bonded_potential' => $non_bonded_potential,
-                         'bonded_potential' => $bonded_potential },
-                       [ \@allowed_bond_parameters, \@allowed_energies ],
-                       $threads ) };
+                # Marks neighbouring atoms.
+                push @neighbour_atom_ids,
+                    @{ $atom_site->{$atom_id}{'connections'} };
+                push @neighbour_atom_ids,
+                    @{ $atom_site->{$atom_id}{'connections_hetatom'} }
+                if $include_hetatoms &&
+                    defined $atom_site->{$atom_id}{'connections_hetatom'};
 
-            # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
-            #     @{ calc_favourable_angle(
-            #            { 'parameters' => $parameters,
-            #              'atom_site' => $atom_site,
-            #              'atom_id' => $atom_id,
-            #              'interaction_site' => $interaction_site,
-            #              'non_bonded_potential' => $non_bonded_potential,
-            #              'bonded_potential' => $bonded_potential },
-            #            [ \@allowed_bond_parameters, \@allowed_energies ] ) };
+                # Starts calculating potential energy.
+                my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
+                    @{ threading(
+                           \&calc_favourable_angle,
+                           { 'parameters' => $parameters,
+                             'atom_site' => $atom_site,
+                             'atom_id' => $atom_id,
+                             'bond_parameters' => \%bond_parameters,
+                             'interaction_site' => $interaction_site,
+                             'non_bonded_potential' => $non_bonded_potential,
+                             'bonded_potential' => $bonded_potential },
+                           [ \@allowed_bond_parameters, \@allowed_energies ],
+                           $threads ) };
 
-            if( scalar @{ $next_allowed_bond_parameters } > 0 ) {
-                @allowed_bond_parameters = @{ $next_allowed_bond_parameters };
-                @allowed_energies = @{ $next_allowed_energies };
-                print info(
-                    { message =>
-                          $residue_site->{$atom_id}{'pdbx_PDB_model_num'} . " ".
-                          $residue_site->{$atom_id}{'label_asym_id'} . " " .
-                          $residue_site->{$atom_id}{'label_seq_id'} . " " .
-                          $residue_site->{$atom_id}{'label_alt_id'} . " " .
-                          "${residue_name} " .
-                          $residue_site->{$atom_id}{'label_atom_id'} . " " .
-                          "${last_parameter_name} " .
-                          scalar( @allowed_bond_parameters ) . "\n",
-                      program => $program_called_by }
-                    ) if $verbose;
-            } else {
-                return [];
+                # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
+                #     @{ calc_favourable_angle(
+                #            { 'parameters' => $parameters,
+                #              'atom_site' => $atom_site,
+                #              'atom_id' => $atom_id,
+                #              'interaction_site' => $interaction_site,
+                #              'non_bonded_potential' => $non_bonded_potential,
+                #              'bonded_potential' => $bonded_potential },
+                #            [ \@allowed_bond_parameters, \@allowed_energies ] ) };
+
+                if( scalar @{ $next_allowed_bond_parameters } > 0 ) {
+                    @allowed_bond_parameters = @{ $next_allowed_bond_parameters };
+                    @allowed_energies = @{ $next_allowed_energies };
+                    print info(
+                        { message =>
+                              $residue_site->{$atom_id}{'pdbx_PDB_model_num'} . " " .
+                              $residue_site->{$atom_id}{'label_asym_id'} . " " .
+                              $residue_site->{$atom_id}{'label_seq_id'} . " " .
+                              $residue_site->{$atom_id}{'label_alt_id'} . " " .
+                              "${residue_name} " .
+                              $residue_site->{$atom_id}{'label_atom_id'} . " " .
+                              "${last_parameter_name} " .
+                              scalar( @allowed_bond_parameters ) . "\n",
+                          program => $program_called_by }
+                        ) if $verbose;
+                } else {
+                    return [];
+                }
             }
         }
 
