@@ -690,16 +690,18 @@ sub calc_favourable_angles
                 keys %bond_parameters;
 
             my @default_allowed_bond_parameters =
-                @{ default_bond_parameter_values( $parameters,
-                                                  $bond_parameters,
-                                                  $residue_name,
-                                                  $last_parameter_name,
-                                                  $bond_parameter_count,
-                                                  { 'rand_seed' => $rand_seed,
-                                                    'rand_count' => $rand_count } ) };
+                @{ default_bond_parameter_values(
+                       $parameters,
+                       $bond_parameters,
+                       $residue_name,
+                       $last_parameter_name,
+                       $bond_parameter_count,
+                       { 'rand_seed' => $rand_seed,
+                         'rand_count' => $rand_count } ) };
 
             my @default_allowed_energies =
-                map { [ 0 ] } @default_allowed_bond_parameters;
+                map { [ 0 ] }
+                @default_allowed_bond_parameters;
 
             # Adds more bond parameter combinations if there are more than one
             # rotatable bonds.
@@ -707,22 +709,28 @@ sub calc_favourable_angles
                 scalar( @{ $allowed_bond_parameters[0] } ) <
                 scalar( keys %bond_parameters ) ) {
                 @allowed_bond_parameters =
-                    @{ permutation( 2, [],
-                                    [ \@allowed_bond_parameters,
-                                      \@default_allowed_bond_parameters ], [])};
+                    @{ permutation(
+                           2, [],
+                           [ \@allowed_bond_parameters,
+                             \@default_allowed_bond_parameters ], [] ) };
                 @allowed_energies =
-                    @{ permutation( 2, [],
-                                    [ \@allowed_energies,
-                                      \@default_allowed_energies ], [] ) };
+                    @{ permutation(
+                           2, [],
+                           [ \@allowed_energies,
+                             \@default_allowed_energies ], [] ) };
                 # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
                 @allowed_bond_parameters =
-                    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
-                        @allowed_bond_parameters;
+                    map { [ @{ $_->[0] },
+                            @{ $_->[1] } ] }
+                    @allowed_bond_parameters;
                 @allowed_energies =
-                    map { [ $_->[0][0] ] } @allowed_energies;
+                    map { [ $_->[0][0] ] }
+                    @allowed_energies;
             } elsif( ! @allowed_bond_parameters ) {
-                @allowed_bond_parameters = @default_allowed_bond_parameters;
-                @allowed_energies = @default_allowed_energies;
+                @allowed_bond_parameters =
+                    @default_allowed_bond_parameters;
+                @allowed_energies =
+                    @default_allowed_energies;
             }
 
             # Marks visited atoms.
