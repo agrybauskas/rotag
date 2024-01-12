@@ -720,8 +720,7 @@ sub calc_favourable_angles
                              \@default_allowed_energies ], [] ) };
                 # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
                 @allowed_bond_parameters =
-                    map { [ @{ $_->[0] },
-                            @{ $_->[1] } ] }
+                    map { [ @{ $_->[0] }, @{ $_->[1] } ] }
                     @allowed_bond_parameters;
                 @allowed_energies =
                     map { [ $_->[0][0] ] }
