@@ -178,12 +178,11 @@ for my $pdbx_file ( @ARGV ) {
         filter( { 'atom_site' => $selected_atom_site,
                   'include' => { '[local]_selection_state' =>
                                  ( $include_selected ? [ 'T', 'S' ] : [ 'T' ] ) } } );
-    my $target_atom_ids =
+    # TODO: seek for refactoring as it is a bit messy.
+    my $target_atom_site_only =
         filter( { 'atom_site' => $target_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
-                  'exclude' => { 'label_atom_id' => $interaction_atom_names },
-                  'data' => [ 'id' ],
-                  'is_list' => 1 } );
+                  'exclude' => { 'label_atom_id' => $interaction_atom_names } } );
 
     my $rotamer_angle_data_json;
     if( $rotamer_angle_json_file ) {
@@ -299,11 +298,11 @@ for my $pdbx_file ( @ARGV ) {
                     ! exists $target_atom_site->{$origin_atom_id};
 
                 $target_atom_site->{$atom_id} = $residue_site->{$atom_id};
+                $target_atom_site_only->{$atom_id} = $residue_site->{$atom_id};
                 $selected_atom_site->{$atom_id} = $residue_site->{$atom_id};
 
-                push @{ $target_atom_ids }, $atom_id;
-
                 delete $target_atom_site->{$origin_atom_id};
+                delete $target_atom_site_only->{$origin_atom_id};
                 delete $selected_atom_site->{$origin_atom_id};
             }
 
@@ -417,7 +416,9 @@ for my $pdbx_file ( @ARGV ) {
 
         my %rotamer_atom_site;
         my $last_atom_id = max( keys %{ $atom_site } );
-        for my $atom_id ( @{ $target_atom_ids } ) {
+        for my $atom_id ( sort { $target_atom_site_only->{$a}{'id'} <=>
+                                 $target_atom_site_only->{$b}{'id'} }
+                          keys %{ $target_atom_site_only } ) {
             next if ! defined $target_atom_site->{$atom_id};
 
             my $residue_unique_key =
