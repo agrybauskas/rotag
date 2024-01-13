@@ -419,8 +419,6 @@ for my $pdbx_file ( @ARGV ) {
         for my $atom_id ( sort { $target_atom_site_only->{$a}{'id'} <=>
                                  $target_atom_site_only->{$b}{'id'} }
                           keys %{ $target_atom_site_only } ) {
-            next if ! defined $target_atom_site->{$atom_id};
-
             my $residue_unique_key =
                 unique_residue_key( $selected_atom_site->{$atom_id} );
             for my $rotamer_id ( sort { $a <=> $b }
@@ -457,7 +455,9 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
 
-        $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %rotamer_atom_site };
+        $pdbx->{'_atom_site'}{'data'} = {
+            %{ $atom_site }, %rotamer_atom_site
+        };
 
         to_pdbx( $pdbx,
                  { 'tags' => \@tags,
