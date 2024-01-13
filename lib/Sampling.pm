@@ -343,43 +343,37 @@ sub sample_bond_parameters_qs_parsing
 
             my ( $bond_parameter_type ) =
                 detect_bond_parameter_type( $parameters, $bond_parameter_name );
+
             my $bond_parameter_count =
                 int( ( $bond_parameter_end - $bond_parameter_start ) /
                      $bond_parameter_step );
+            my $do_inclusive_end = 0;
+            if( $bond_parameter_type eq 'bond_length' ||
+                $bond_parameter_type eq 'bond_angle' ) {
+                $bond_parameter_count++;
+                $do_inclusive_end = 1;
+            }
+
+            my $bond_parameter_units = 'radians';
+            if( $bond_parameter_type eq 'bond_length' ) {
+                $bond_parameter_units = 'angstrom';
+            } elsif( ! $in_radians ) {
+                $bond_parameter_units = 'degrees';
+                $bond_parameter_start = $bond_parameter_start * $pi / 180.0;
+                $bond_parameter_end = $bond_parameter_end * $pi / 180.0;
+            }
 
             for my $residue_name ( @{ $residue_names } ) {
-                if( $bond_parameter_type eq 'bond_length' ) {
-                    $bond_parameters{$residue_name}{$bond_parameter_name} = {
-                        'values' =>
-                            sample_bond_parameters( [ [ $bond_parameter_start,
-                                                        $bond_parameter_end ] ],
-                                                    $bond_parameter_count,
-                                                    1,
-                                                    1 ),
-                        'type' => $bond_parameter_type,
-                        'units' => 'angstroms'
-                    };
-                } elsif( $in_radians ) {
-                    $bond_parameters{$residue_name}{$bond_parameter_name} = {
-                        'values' =>
-                            sample_angles( [ [ $bond_parameter_start,
-                                               $bond_parameter_end ] ],
-                                           $bond_parameter_count ),
-                        'type' => $bond_parameter_type,
-                        'units' => 'radians'
-                    };
-                } else {
-                    $bond_parameters{$residue_name}{$bond_parameter_name} = {
-                        'values' =>
-                            sample_angles( [ [ $bond_parameter_start * $pi /
-                                               180.0,
-                                               $bond_parameter_end * $pi /
-                                               180.0 ] ],
-                                           $bond_parameter_count ),
-                        'type' => $bond_parameter_type,
-                        'units' => 'degrees'
-                    };
-                }
+                $bond_parameters{$residue_name}{$bond_parameter_name} = {
+                    'values' => sample_bond_parameters(
+                        [ [ $bond_parameter_start, $bond_parameter_end ] ],
+                        $bond_parameter_count,
+                        1,
+                        $do_inclusive_end
+                    ),
+                    'type' => $bond_parameter_type,
+                    'units' => $bond_parameter_units
+                };
             }
         }
     }
