@@ -785,7 +785,7 @@ sub calc_favourable_angles
                           $residue_site->{$atom_id}{'label_alt_id'} . " " .
                           "${residue_name} " .
                           $residue_site->{$atom_id}{'label_atom_id'} . " " .
-                          "${$last_parameter_names_sorted[0]} " .
+                          join( ',', @last_parameter_names_sorted) . " " .
                           scalar( @allowed_bond_parameters ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
