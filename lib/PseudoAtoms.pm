@@ -690,8 +690,8 @@ sub calc_favourable_angles
             my @last_parameter_names_sorted =
                 sort { $bond_parameters{$b}{'order'} <=>
                        $bond_parameters{$a}{'order'} ||
-                       $bond_parameters{$a}{'rank'} <=>
-                       $bond_parameters{$b}{'rank'} }
+                       $bond_parameters{$b}{'rank'} <=>
+                       $bond_parameters{$a}{'rank'} }
                 keys %bond_parameters;
             @last_parameter_names_sorted =
                 @last_parameter_names_sorted[0..$parameter_count_diff-1];
