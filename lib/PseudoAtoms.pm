@@ -696,19 +696,22 @@ sub calc_favourable_angles
             @last_parameter_names_sorted =
                 @last_parameter_names_sorted[0..$parameter_count_diff-1];
 
-            my @default_allowed_bond_parameters =
-                @{ default_bond_parameter_values(
-                       $parameters,
-                       $bond_parameters,
-                       $residue_name,
-                       $last_parameter_names_sorted[0],
-                       $bond_parameter_count,
-                       { 'rand_seed' => $rand_seed,
-                         'rand_count' => $rand_count } ) };
-
-            my @default_allowed_energies =
-                map { [ 0 ] }
-                @default_allowed_bond_parameters;
+            my @default_allowed_bond_parameters = ();
+            my @default_allowed_energies = ();
+            for my $last_parameter_name ( @last_parameter_names_sorted ) {
+                @default_allowed_bond_parameters =
+                    @{ default_bond_parameter_values(
+                           $parameters,
+                           $bond_parameters,
+                           $residue_name,
+                           $last_parameter_names_sorted[0],
+                           $bond_parameter_count,
+                           { 'rand_seed' => $rand_seed,
+                             'rand_count' => $rand_count } ) };
+                @default_allowed_energies =
+                    map { [ 0 ] }
+                    @default_allowed_bond_parameters;
+            }
 
             # Adds more bond parameter combinations if there are more than
             # one rotatable bonds.
