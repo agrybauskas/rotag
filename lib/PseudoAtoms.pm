@@ -699,18 +699,16 @@ sub calc_favourable_angles
             my @default_allowed_bond_parameters = ();
             my @default_allowed_energies = ();
             for my $last_parameter_name ( @last_parameter_names_sorted ) {
-                @default_allowed_bond_parameters =
-                    @{ default_bond_parameter_values(
-                           $parameters,
-                           $bond_parameters,
-                           $residue_name,
-                           $last_parameter_names_sorted[0],
-                           $bond_parameter_count,
-                           { 'rand_seed' => $rand_seed,
-                             'rand_count' => $rand_count } ) };
-                @default_allowed_energies =
-                    map { [ 0 ] }
-                    @default_allowed_bond_parameters;
+                push @default_allowed_bond_parameters,
+                    default_bond_parameter_values(
+                        $parameters,
+                        $bond_parameters,
+                        $residue_name,
+                        $last_parameter_name,
+                        $bond_parameter_count,
+                        { 'rand_seed' => $rand_seed,
+                          'rand_count' => $rand_count } );
+                push @default_allowed_energies, [ 0 ];
             }
 
             # Adds more bond parameter combinations if there are more than
