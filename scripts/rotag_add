@@ -149,9 +149,12 @@ for my $pdbx_file ( @ARGV ) {
     my $pdbx = obtain_pdbx_data( $pdbx_file, \@category_list );
     raw2indexed( $pdbx,
                  { 'attributes' => { '_atom_site' => [ 'id' ],
-                                     '_[local]_rotamer_bond_parameter' => [ 'id' ],
+                                     '_[local]_rotamer_bond_parameter' =>
+                                         [ 'id' ],
                                      '_struct_conn' => [ 'id' ],
-                                     ( $add_B_iso ? ( '_[local]_rotamer_energy' => [ 'rotamer_id' ] ) : () ) } } );
+                                     ( $add_B_iso ?
+                                       ( '_[local]_rotamer_energy' =>
+                                             [ 'rotamer_id' ] ) : () ) } } );
 
     # Reads file path, stdin and '-' operator.
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
@@ -165,7 +168,8 @@ for my $pdbx_file ( @ARGV ) {
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
-                  'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
+                  'include' => { '[local]_selection_state' =>
+                                     [ 'T', 'S' ] } } );
 
     # Selects all atoms if no specific atoms are selected.
     if( ! %{ $selected_atom_site } ) {
@@ -177,12 +181,14 @@ for my $pdbx_file ( @ARGV ) {
     my $target_atom_site =
         filter( { 'atom_site' => $selected_atom_site,
                   'include' => { '[local]_selection_state' =>
-                                 ( $include_selected ? [ 'T', 'S' ] : [ 'T' ] ) } } );
+                                 ( $include_selected ?
+                                   [ 'T', 'S' ] : [ 'T' ] ) } } );
     # TODO: seek for refactoring as it is a bit messy.
     my $target_atom_site_only =
         filter( { 'atom_site' => $target_atom_site,
                   'include' => { '[local]_selection_state' => [ 'T' ] },
-                  'exclude' => { 'label_atom_id' => $interaction_atom_names } } );
+                  'exclude' => { 'label_atom_id' =>
+                                     $interaction_atom_names } } );
 
     my $rotamer_angle_data_json;
     if( $rotamer_angle_json_file ) {
@@ -208,7 +214,8 @@ for my $pdbx_file ( @ARGV ) {
                                   [ '_[local]_rotamer_bond_parameter' ] );
             raw2indexed( $pdbx_rotamer_angle,
                          { 'attributes' =>
-                               { '_[local]_rotamer_bond_parameter' => [ 'id' ] } } );
+                               { '_[local]_rotamer_bond_parameter' =>
+                                     [ 'id' ] } } );
             $rotamer_angle =
                 $pdbx_rotamer_angle->{'_[local]_rotamer_bond_parameter'}{'data'};
         } else {
@@ -244,16 +251,22 @@ for my $pdbx_file ( @ARGV ) {
                  exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) {
             $rotamer_angle_split_groups =
                 split_by( { 'atom_site' => $rotamer_angle,
-                            'attributes' => [ 'label_comp_id', 'phi_min', 'psi_min' ] } );
+                            'attributes' => [ 'label_comp_id',
+                                              'phi_min',
+                                              'psi_min' ] } );
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
                  exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) {
             $rotamer_angle_split_groups =
-                # TODO: 'atom_site' should be changed to 'loop_site' in the future.
+                # TODO: 'atom_site' should be changed to 'loop_site' in the
+                # future.
                 split_by( { 'atom_site' => $rotamer_angle,
-                            'attributes' => [ 'label_comp_id', 'phi', 'psi' ] } );
+                            'attributes' => [ 'label_comp_id',
+                                              'phi',
+                                              'psi' ] } );
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ) {
             $rotamer_angle_split_groups =
-                # TODO: 'atom_site' should be changed to 'loop_site' in the future.
+                # TODO: 'atom_site' should be changed to 'loop_site' in the
+                # future.
                 split_by( { 'atom_site' => $rotamer_angle,
                             'attributes' => [ 'label_comp_id' ] } );
         }
@@ -268,7 +281,7 @@ for my $pdbx_file ( @ARGV ) {
                 filter( { 'atom_site' => $atom_site,
                           'include' =>
                           { 'id' =>
-                                $atom_site_split_groups->{$residue_unique_key}}});
+                                $atom_site_split_groups->{$residue_unique_key} } } );
             my $residue_site =
                 filter_by_unique_residue_key( $current_target_atom_site,
                                               $residue_unique_key, 1 );
@@ -331,7 +344,7 @@ for my $pdbx_file ( @ARGV ) {
             if( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
                 exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
                 exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
-                exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ){
+                exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'}){
                 $residue_angle_key = $residue_unique_key;
                 # HACK: check if all values in 'phi_min' and 'psi_min' has length
                 # to 'phi_max' and 'psi_max' of 10 accordingly.
@@ -422,7 +435,7 @@ for my $pdbx_file ( @ARGV ) {
             my $residue_unique_key =
                 unique_residue_key( $selected_atom_site->{$atom_id} );
             for my $rotamer_id ( sort { $a <=> $b }
-                                 keys %{ $rotamer_angles{$residue_unique_key} }){
+                                 keys %{ $rotamer_angles{$residue_unique_key}}){
                 my $rotamer_angles =
                     $rotamer_angles{$residue_unique_key}{$rotamer_id};
                 %rotamer_atom_site =
@@ -462,8 +475,9 @@ for my $pdbx_file ( @ARGV ) {
         to_pdbx( $pdbx,
                  { 'tags' => \@tags,
                    'add_attributes' =>
-                       { '_atom_site' => [ ( $add_B_iso ? ( 'B_iso_or_equiv' ) : () ),
-                                           '[local]_selection_state'] } } );
+                       { '_atom_site' =>
+                             [ ( $add_B_iso ? ( 'B_iso_or_equiv' ) : () ),
+                               '[local]_selection_state' ] } } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
         if( ! %{ $target_atom_site } ) {
@@ -475,13 +489,14 @@ for my $pdbx_file ( @ARGV ) {
 
         my $atom_site_split_groups =
             split_by( { 'atom_site' => $selected_atom_site,
-                        'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
+                        'attributes' => [ 'pdbx_PDB_model_num',
+                                          'label_alt_id' ],
                         'append_dot' => 1 } );
 
         my %hydrogen_site;
         my $last_atom_id = max( keys %{ $atom_site } );
         my @visited_atom_ids;
-        for my $atom_site_identifier ( sort keys %{ $atom_site_split_groups } ) {
+        for my $atom_site_identifier ( sort keys %{ $atom_site_split_groups } ){
             my $current_atom_site =
                 filter( { 'atom_site' => $target_atom_site,
                           'include' =>
@@ -511,7 +526,7 @@ for my $pdbx_file ( @ARGV ) {
                                  'add_only_clear_positions' =>
                                      $add_clear_positions,
                                  'exclude_by_atom_ids' => \@visited_atom_ids,
-                                 'reference_atom_site' => $reference_atom_site});
+                                 'reference_atom_site' => $reference_atom_site} );
             %hydrogen_site = ( %hydrogen_site, %{ $hydrogen_site } );
 
             push @visited_atom_ids, keys %{ $current_atom_site };
