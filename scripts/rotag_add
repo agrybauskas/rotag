@@ -454,7 +454,7 @@ for my $pdbx_file ( @ARGV ) {
             }
 
             if( ! $keep_original ) {
-                delete $atom_site->{$atom_id};
+                delete $target_atom_site->{$atom_id};
             }
         }
 
@@ -469,7 +469,7 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         $pdbx->{'_atom_site'}{'data'} = {
-            %{ $atom_site }, %rotamer_atom_site
+            %{ $target_atom_site }, %rotamer_atom_site
         };
 
         to_pdbx( $pdbx,
