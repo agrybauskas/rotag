@@ -712,7 +712,7 @@ sub calc_favourable_angles
             }
 
             # Adds more bond parameter combinations if there are more than
-            # one rotatable bonds.
+            # one bond parameter.
             if( @allowed_bond_parameters &&
                 scalar( @{ $allowed_bond_parameters[0] } ) <
                 scalar( keys %bond_parameters ) ) {
