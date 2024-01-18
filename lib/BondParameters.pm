@@ -340,7 +340,7 @@ sub stretchable_bonds
 
             $atom_site->{$atom_id}{'stretchable_bonds'}{$stretchable_bond_name} = {
                 'order' => $bond_order{$bond_atom_ids->[0]}{$bond_atom_ids->[1]},
-                'rank' => 1,
+                'rank' => 3,
                 'atom_ids' => $bond_atom_ids,
                 'value' => $bond_lengths_cache{$bond_length_key}
             };
