@@ -687,22 +687,22 @@ sub calc_favourable_angles
                 ( defined $allowed_bond_parameters[0] ?
                   scalar( @{ $allowed_bond_parameters[0] } ) : 0 );
 
-            my @last_parameter_names_sorted =
+            my @parameter_names_sorted =
                 sort { $bond_parameters{$b}{'order'} <=>
                        $bond_parameters{$a}{'order'} ||
                        $bond_parameters{$b}{'rank'} <=>
                        $bond_parameters{$a}{'rank'} }
                 keys %bond_parameters;
-            @last_parameter_names_sorted =
-                @last_parameter_names_sorted[0..$parameter_count_diff-1];
+            @parameter_names_sorted =
+                @parameter_names_sorted[0..$parameter_count_diff-1];
 
-            for my $last_parameter_name ( @last_parameter_names_sorted ) {
+            for my $parameter_name ( @parameter_names_sorted ) {
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
                         $parameters,
                         $bond_parameters,
                         $residue_name,
-                        $last_parameter_name,
+                        $parameter_name,
                         $bond_parameter_count,
                         { 'rand_seed' => $rand_seed,
                           'rand_count' => $rand_count } ) };
@@ -785,7 +785,7 @@ sub calc_favourable_angles
                           $residue_site->{$atom_id}{'label_alt_id'} . " " .
                           "${residue_name} " .
                           $residue_site->{$atom_id}{'label_atom_id'} . " " .
-                          join( ',', @last_parameter_names_sorted) . " " .
+                          join( ',', @parameter_names_sorted) . " " .
                           scalar( @allowed_bond_parameters ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
