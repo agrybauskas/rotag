@@ -56,30 +56,17 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -50.609855
-2 2 composite -40.291640
-3 3 composite -34.633952
-4 4 composite -44.985816
-5 5 composite -57.248440
-6 6 composite -54.108441
-7 7 composite -51.136985
-8 8 composite -52.454856
-9 9 composite 7.731531
-10 10 composite -10.416860
-11 11 composite -8.695978
-12 12 composite 1.246023
-13 13 composite 17.581069
-14 14 composite -26.715409
-15 15 composite -41.944661
-16 16 composite -31.654275
-17 17 composite -5.770444
-18 18 composite -7.475462
-19 19 composite -7.205074
-20 20 composite -16.257056
-21 21 composite -38.146014
-22 22 composite -46.494100
-23 23 composite -47.725889
-24 24 composite -41.081557
+1 1 composite -13.192121
+2 2 composite -33.878943
+3 3 composite -40.208789
+4 4 composite -37.278234
+5 5 composite -47.361170
+6 6 composite -49.970123
+7 7 composite -48.613651
+8 8 composite -24.312659
+9 9 composite -42.846924
+10 10 composite -47.637604
+11 11 composite -39.082548
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -93,78 +80,39 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -180.000 degrees
-2 1 27 ASP A 1 . 0.041667 chi1 -90.000 degrees
-3 1 27 ASP A 1 . 0.041667 chi2 -180.000 degrees
-4 2 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -90.000 degrees
-5 2 27 ASP A 1 . 0.041667 chi1 -90.000 degrees
-6 2 27 ASP A 1 . 0.041667 chi2 -180.000 degrees
-7 3 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 0.000 degrees
-8 3 27 ASP A 1 . 0.041667 chi1 -90.000 degrees
-9 3 27 ASP A 1 . 0.041667 chi2 -180.000 degrees
-10 4 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 90.000 degrees
-11 4 27 ASP A 1 . 0.041667 chi1 -90.000 degrees
-12 4 27 ASP A 1 . 0.041667 chi2 -180.000 degrees
-13 5 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -180.000 degrees
-14 5 27 ASP A 1 . 0.041667 chi1 -90.000 degrees
-15 5 27 ASP A 1 . 0.041667 chi2 0.000 degrees
-16 6 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -90.000 degrees
-17 6 27 ASP A 1 . 0.041667 chi1 -90.000 degrees
-18 6 27 ASP A 1 . 0.041667 chi2 0.000 degrees
-19 7 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 0.000 degrees
-20 7 27 ASP A 1 . 0.041667 chi1 -90.000 degrees
-21 7 27 ASP A 1 . 0.041667 chi2 0.000 degrees
-22 8 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 90.000 degrees
-23 8 27 ASP A 1 . 0.041667 chi1 -90.000 degrees
-24 8 27 ASP A 1 . 0.041667 chi2 0.000 degrees
-25 9 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -180.000 degrees
-26 9 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-27 9 27 ASP A 1 . 0.041667 chi2 -180.000 degrees
-28 10 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -90.000 degrees
-29 10 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-30 10 27 ASP A 1 . 0.041667 chi2 -180.000 degrees
-31 11 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 0.000 degrees
-32 11 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-33 11 27 ASP A 1 . 0.041667 chi2 -180.000 degrees
-34 12 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 90.000 degrees
-35 12 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-36 12 27 ASP A 1 . 0.041667 chi2 -180.000 degrees
-37 13 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -180.000 degrees
-38 13 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-39 13 27 ASP A 1 . 0.041667 chi2 -90.000 degrees
-40 14 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -90.000 degrees
-41 14 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-42 14 27 ASP A 1 . 0.041667 chi2 -90.000 degrees
-43 15 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 0.000 degrees
-44 15 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-45 15 27 ASP A 1 . 0.041667 chi2 -90.000 degrees
-46 16 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 90.000 degrees
-47 16 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-48 16 27 ASP A 1 . 0.041667 chi2 -90.000 degrees
-49 17 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -180.000 degrees
-50 17 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-51 17 27 ASP A 1 . 0.041667 chi2 0.000 degrees
-52 18 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -90.000 degrees
-53 18 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-54 18 27 ASP A 1 . 0.041667 chi2 0.000 degrees
-55 19 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 0.000 degrees
-56 19 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-57 19 27 ASP A 1 . 0.041667 chi2 0.000 degrees
-58 20 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 90.000 degrees
-59 20 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-60 20 27 ASP A 1 . 0.041667 chi2 0.000 degrees
-61 21 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -180.000 degrees
-62 21 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-63 21 27 ASP A 1 . 0.041667 chi2 90.000 degrees
-64 22 27 ASP A 1 . 0.041667 CB-CG-OD1-MG -90.000 degrees
-65 22 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-66 22 27 ASP A 1 . 0.041667 chi2 90.000 degrees
-67 23 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 0.000 degrees
-68 23 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-69 23 27 ASP A 1 . 0.041667 chi2 90.000 degrees
-70 24 27 ASP A 1 . 0.041667 CB-CG-OD1-MG 90.000 degrees
-71 24 27 ASP A 1 . 0.041667 chi1 90.000 degrees
-72 24 27 ASP A 1 . 0.041667 chi2 90.000 degrees
+1 1 27 ASP A 1 . 0.090909 CB-CG-OD1-MG -180.000 degrees
+2 1 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+3 1 27 ASP A 1 . 0.090909 chi2 -180.000 degrees
+4 2 27 ASP A 1 . 0.090909 CB-CG-OD1-MG -90.000 degrees
+5 2 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+6 2 27 ASP A 1 . 0.090909 chi2 -180.000 degrees
+7 3 27 ASP A 1 . 0.090909 CB-CG-OD1-MG 0.000 degrees
+8 3 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+9 3 27 ASP A 1 . 0.090909 chi2 -180.000 degrees
+10 4 27 ASP A 1 . 0.090909 CB-CG-OD1-MG 90.000 degrees
+11 4 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+12 4 27 ASP A 1 . 0.090909 chi2 -180.000 degrees
+13 5 27 ASP A 1 . 0.090909 CB-CG-OD1-MG -180.000 degrees
+14 5 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+15 5 27 ASP A 1 . 0.090909 chi2 -60.000 degrees
+16 6 27 ASP A 1 . 0.090909 CB-CG-OD1-MG 0.000 degrees
+17 6 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+18 6 27 ASP A 1 . 0.090909 chi2 -60.000 degrees
+19 7 27 ASP A 1 . 0.090909 CB-CG-OD1-MG 90.000 degrees
+20 7 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+21 7 27 ASP A 1 . 0.090909 chi2 -60.000 degrees
+22 8 27 ASP A 1 . 0.090909 CB-CG-OD1-MG -180.000 degrees
+23 8 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+24 8 27 ASP A 1 . 0.090909 chi2 60.000 degrees
+25 9 27 ASP A 1 . 0.090909 CB-CG-OD1-MG -90.000 degrees
+26 9 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+27 9 27 ASP A 1 . 0.090909 chi2 60.000 degrees
+28 10 27 ASP A 1 . 0.090909 CB-CG-OD1-MG 0.000 degrees
+29 10 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+30 10 27 ASP A 1 . 0.090909 chi2 60.000 degrees
+31 11 27 ASP A 1 . 0.090909 CB-CG-OD1-MG 90.000 degrees
+32 11 27 ASP A 1 . 0.090909 chi1 60.000 degrees
+33 11 27 ASP A 1 . 0.090909 chi2 60.000 degrees
 #
 loop_
 _struct_conn.id
