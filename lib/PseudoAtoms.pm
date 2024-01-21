@@ -556,11 +556,12 @@ sub generate_library
 
                 # NOTE: Keeping commented code for coverage tests as
                 # multi-threading cannot be processed.
-                # my ( $allowed_angles, $energy_sums ) =
+                # my ( $allowed_angles, $energy_sums, $rmsds ) =
                 #     @{ calc_full_atom_energy(
                 #            { 'parameters' => $parameters,
                 #              'atom_site' => $current_atom_site,
                 #              'residue_unique_key' => $residue_unique_key,
+                #              'bond_parameter_names' => \@bond_parameter_names,
                 #              'interaction_site' => \%interaction_site,
                 #              'non_bonded_potential' =>
                 #                  $potential_functions{$interactions}{'non_bonded'},
@@ -773,6 +774,7 @@ sub calc_favourable_angles
             #            { 'parameters' => $parameters,
             #              'atom_site' => $atom_site,
             #              'atom_id' => $atom_id,
+            #              'bond_parameters' => \%bond_parameters,
             #              'interaction_site' => $interaction_site,
             #              'non_bonded_potential' => $non_bonded_potential,
             #              'bonded_potential' => $bonded_potential },
