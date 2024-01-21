@@ -554,6 +554,8 @@ sub generate_library
                            [ \@allowed_angles ],
                            $threads ) };
 
+                # NOTE: Keeping commented code for coverage tests as
+                # multi-threading cannot be processed.
                 # my ( $allowed_angles, $energy_sums ) =
                 #     @{ calc_full_atom_energy(
                 #            { 'parameters' => $parameters,
@@ -764,6 +766,8 @@ sub calc_favourable_angles
                        [ \@allowed_bond_parameters, \@allowed_energies ],
                        $threads ) };
 
+            # NOTE: Keeping commented code for coverage tests as
+            # multi-threading cannot be processed.
             # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
             #     @{ calc_favourable_angle(
             #            { 'parameters' => $parameters,
