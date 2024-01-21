@@ -688,19 +688,13 @@ sub calc_favourable_angles
                   scalar( @{ $allowed_bond_parameters[0] } ) : 0 );
 
             my @parameter_names_sorted =
-                sort { $bond_parameters{$b}{'order'} <=>
-                       $bond_parameters{$a}{'order'} ||
-                       $bond_parameters{$a}{'rank'} <=>
-                       $bond_parameters{$b}{'rank'} }
-                keys %bond_parameters;
-            @parameter_names_sorted =
-                @parameter_names_sorted[0..$parameter_count_diff-1];
-            @parameter_names_sorted =
                 sort { $bond_parameters{$a}{'order'} <=>
                        $bond_parameters{$b}{'order'} ||
                        $bond_parameters{$a}{'rank'} <=>
                        $bond_parameters{$b}{'rank'} }
-                @parameter_names_sorted;
+                keys %bond_parameters;
+            @parameter_names_sorted =
+                @parameter_names_sorted[$#parameter_names_sorted-$parameter_count_diff+1..$#parameter_names_sorted];
 
             for my $parameter_name ( @parameter_names_sorted ) {
                 my @default_allowed_bond_parameters =
