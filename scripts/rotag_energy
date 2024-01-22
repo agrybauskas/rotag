@@ -164,11 +164,9 @@ $parameters->set_parameter_values( \$parameters,
 
 for my $pdbx_file ( @ARGV ) {
     my $pdbx = obtain_pdbx_data( $pdbx_file, [ '_atom_site', '_struct_conn' ] );
-    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ],
-                                            '_struct_conn' => [ 'id' ] } } );
+    raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
 
     my $atom_site = $pdbx->{'_atom_site'}{'data'};
-    my $struct_conn = $pdbx->{'_struct_conn'}{'data'};
 
     next if ! defined $atom_site || ! %{ $atom_site };
 
