@@ -118,6 +118,7 @@ sub constants
                                     {'covalent_radius'}{'length'} } }
              grep { $force_field->{'_[local]_atom_properties'}{$_}
                                   {'covalent_radius'}{'length'}[0] ne '.' }
+             grep { !$force_field->{'_[local]_sidechain_hetatom_extension'}{$_} }
              keys %{ $force_field->{'_[local]_atom_properties'} } ) * 2;
 
     # Arginine model is used for calculating the interaction cutoff.
