@@ -71,6 +71,8 @@ our $VERSION = $VERSION;
 #*    -S, --side-chains
 #*                        calculate energy of the side-chain atoms for each
 #*                        selected residue.
+#*    -H, --hetero-atoms
+#*                        includes selected heteroatoms in the scanning process.
 #*    -d, --decompose
 #*                        decompose composite energy values into their
 #*                        constituent energy values.
@@ -92,6 +94,7 @@ my $interactions = 'composite';
 my $parameters_cmd = '';
 my $parameters_json_cmd = '{}';
 my $do_sidechain = 0;
+my $calc_hetatoms = 0;
 my $do_pairwise = 0;
 my $do_decompose = 0;
 my $add_B_iso = 0;
@@ -113,6 +116,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'potential|u=s' => \$interactions,
     'parameters|p=s' => \$parameters_cmd,
+    'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
     'json-parameters|j=s' => \$parameters_json_cmd,
     'side-chains|S' => sub { $do_sidechain = 1 },
     'pairwise|P' => sub { $do_pairwise = 1 },

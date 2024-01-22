@@ -35,6 +35,8 @@ Options:
     -S, --side-chains
                         calculate energy of the side-chain atoms for each
                         selected residue.
+    -H, --hetero-atoms
+                        includes selected heteroatoms in the scanning process.
     -d, --decompose
                         decompose composite energy values into their
                                 constituent energy values.
