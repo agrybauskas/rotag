@@ -84,7 +84,9 @@ sub torsion_components
     # connections.
     my $atom_name = $reference_atom_site->{$atom_i_id}{'label_atom_id'};
     my $residue_name = $reference_atom_site->{$atom_i_id}{'label_comp_id'};
-    my @connection_ids = @{ $reference_atom_site->{$atom_i_id}{'connections'} };
+    my @connection_ids =
+        exists $reference_atom_site->{$atom_i_id}{'connections'} ?
+        ( @{ $reference_atom_site->{$atom_i_id}{'connections'} } ) : ();
     my @torsion_potentials = ();
     for my $neighbour_id ( @connection_ids ) {
         my $neighbour_atom_name =
