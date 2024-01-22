@@ -1,14 +1,15 @@
 data_general
 #
-_[local]_force_field.soft_epsilon 1.0
-_[local]_force_field.soft_n       12.0
-_[local]_force_field.lj_k         0.25
-_[local]_force_field.c_k          62.0
-_[local]_force_field.h_k          10.0
-_[local]_force_field.t_k          2.5
-_[local]_force_field.cutoff_atom  50.0
-_[local]_force_field.cutoff_start 2.5
-_[local]_force_field.cutoff_end   5.0
+_[local]_force_field.soft_epsilon       1.00
+_[local]_force_field.soft_n             12.0
+_[local]_force_field.lj_k               0.25
+_[local]_force_field.c_k                62.0
+_[local]_force_field.h_k                10.0
+_[local]_force_field.t_k                2.50
+_[local]_force_field.cutoff_atom        50.0
+_[local]_force_field.cutoff_start       2.50
+_[local]_force_field.cutoff_end         5.00
+_[local]_force_field.cutoff_salt_bridge 1.50
 _[local]_force_field.description  'Parameter weights were optimized using particle swarm optimization algorithm.'
 #
 loop_
