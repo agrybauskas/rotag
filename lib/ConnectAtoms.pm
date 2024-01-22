@@ -136,7 +136,7 @@ sub is_neighbour
         confess "atom with id $target_atom_id does not exist in the atom site";
     }
     if( ! exists $atom_site->{"$target_atom_id"}{'connections'} ) {
-        confess "atom with id $target_atom_id does not have 'connection' key";
+        confess "atom with id $target_atom_id does not have 'connections' key";
     }
 
     my $is_neighbour = 0;
@@ -168,13 +168,13 @@ sub is_second_neighbour
         confess "atom with id $target_atom_id does not exist in the atom site";
     }
     if( ! exists $atom_site->{"$target_atom_id"}{'connections'} ) {
-        confess "atom with id $target_atom_id does not have 'connection' key";
+        confess "atom with id $target_atom_id does not have 'connections' key";
     }
 
     my $is_sec_neighbour = 0;
     foreach my $i ( @{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
         if( ! exists $atom_site->{$i}{'connections'} ) {
-            confess "atom with id $i does not have 'connection' key";
+            confess "atom with id $i does not have 'connections' key";
         }
 
         foreach my $j ( @{ $atom_site->{$i}{'connections'} } ) {
