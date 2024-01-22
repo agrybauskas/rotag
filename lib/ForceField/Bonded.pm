@@ -45,13 +45,16 @@ sub torsion
 
     my ( $reference_atom_site ) = ( $options->{'atom_site'} );
 
+    my @connection_ids = @{ $reference_atom_site->{$atom_i_id}{'connections'} };
+
+    return 0 if ! @connection_ids;
+
     my $t_k = $parameters->{'_[local]_force_field'}{'t_k'};
     my $torsional = $parameters->{'_[local]_torsional'};
 
     # Determines all dihedral angles by searching third neighbours following the
     # connections.
     my $atom_name = $reference_atom_site->{$atom_i_id}{'type_symbol'};
-    my @connection_ids = @{ $reference_atom_site->{$atom_i_id}{'connections'} };
 
     my $torsion_potential_sum = 0;
     my $torsion_potentials =
