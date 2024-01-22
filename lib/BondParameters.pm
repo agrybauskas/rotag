@@ -750,7 +750,8 @@ sub detect_bond_parameter_type
     my $hetatom_names =
         $parameters->{'_[local]_sidechain_hetatom_extension'};
     for my $bond_parameter_name_part ( @bond_parameter_name_parts ) {
-        if( any { $bond_parameter_name_part eq $_ } @{ $hetatom_names } ) {
+        if( exists $hetatom_names->{$bond_parameter_name_part} &&
+            $hetatom_names->{$bond_parameter_name_part} ) {
             $contains_hetatom = 1;
             last;
         }
