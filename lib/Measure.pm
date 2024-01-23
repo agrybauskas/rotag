@@ -600,6 +600,7 @@ sub rmsd_sidechains
 # Output:
 #
 
+# TODO: should be refactored.
 sub energy
 {
     my ( $parameters, $atom_site, $potential, $options  ) = @_;
