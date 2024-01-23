@@ -1,1 +1,26 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_[local]_pairwise_energy.id
+_[local]_pairwise_energy.atom_1_id
+_[local]_pairwise_energy.type_symbol_1
+_[local]_pairwise_energy.label_atom_1_id
+_[local]_pairwise_energy.label_seq_1_id
+_[local]_pairwise_energy.label_comp_1_id
+_[local]_pairwise_energy.label_asym_1_id
+_[local]_pairwise_energy.pdbx_PDB_model_num_1
+_[local]_pairwise_energy.label_alt_1_id
+_[local]_pairwise_energy.atom_2_id
+_[local]_pairwise_energy.type_symbol_2
+_[local]_pairwise_energy.label_atom_2_id
+_[local]_pairwise_energy.label_seq_2_id
+_[local]_pairwise_energy.label_comp_2_id
+_[local]_pairwise_energy.label_asym_2_id
+_[local]_pairwise_energy.pdbx_PDB_model_num_2
+_[local]_pairwise_energy.label_alt_2_id
+_[local]_pairwise_energy.calculation_method
+_[local]_pairwise_energy.value
+1 153 O OG 18 SER A 1 7 147 N N 18 SER A 1 7 composite 6.207547
+2 153 O OG 18 SER A 1 7 149 C C 18 SER A 1 7 composite -5.451107
+3 153 O OG 18 SER A 1 7 150 O O 18 SER A 1 7 composite 6.142736
+#

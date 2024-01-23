@@ -20,7 +20,7 @@ ATOM 148 C CA . SER A 1 18 -54.128 -110.543 -6.071 1 T
 ATOM 149 C C . SER A 1 18 -53.415 -111.063 -7.316 1 T
 ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1 T
 ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 1 T
-ATOM 157 O OG 5 SER A 1 18 -53.351780 -112.439342 -4.772586 1 T
+ATOM 153 O OG 7 SER A 1 18 -53.854925 -111.579057 -3.894644 1 T
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -34,12 +34,12 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-5 5 18 SER A 1 . 0.142857 chi1 180.000000 degrees
+7 7 18 SER A 1 . 1.000000 chi1 -120.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-5 5 composite 8.176096
+7 7 composite 6.899176
 #
