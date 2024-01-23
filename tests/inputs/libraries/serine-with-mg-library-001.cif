@@ -20,15 +20,15 @@ ATOM 148 C CA . SER A 1 18 -54.128 -110.543 -6.071 1 T
 ATOM 149 C C . SER A 1 18 -53.415 -111.063 -7.316 1 T
 ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1 T
 ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 1 T
-ATOM 153 O OG . SER A 1 18 -53.854925 -111.579057 -3.894644 1 T
-HETATM 1925 MG MG . MG A 1 18 -53.794258 -112.429428 -2.035122 1 T
+ATOM 1926 O OG 26 SER A 1 18 -53.351780 -112.439342 -4.772586 1 T
+HETATM 1927 MG MG 26 MG A 1 18 -52.233149 -112.632779 -5.753018 1 T
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-265 265 composite -14.747323
+26 26 composite -102.578316
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -42,10 +42,10 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1057 265 18 SER A 1 . 1.000000 CA-CB-OG 180.000 degrees
-1058 265 18 SER A 1 . 1.000000 CA-CB-OG-MG 90.000 degrees
-1059 265 18 SER A 1 . 1.000000 OG-MG 1.500000 angstrom
-1060 265 18 SER A 1 . 1.000000 chi1 60.000 degrees
+101 26 18 SER A 1 . 0.001715 CA-CB-OG-MG -36.000 degrees
+102 26 18 SER A 1 . 0.001715 CB-OG-MG 120.000 degrees
+103 26 18 SER A 1 . 0.001715 OG-MG 1.500000 angstrom
+104 26 18 SER A 1 . 0.001715 chi1 -180.000 degrees
 #
 loop_
 _struct_conn.id

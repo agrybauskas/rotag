@@ -45,7 +45,9 @@ sub torsion
 
     my ( $reference_atom_site ) = ( $options->{'atom_site'} );
 
-    my @connection_ids = @{ $reference_atom_site->{$atom_i_id}{'connections'} };
+    my @connection_ids =
+        exists $reference_atom_site->{$atom_i_id}{'connections'} ?
+        ( @{ $reference_atom_site->{$atom_i_id}{'connections'} } ) : ();
 
     return 0 if ! @connection_ids;
 
