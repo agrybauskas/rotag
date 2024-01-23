@@ -96,6 +96,13 @@ sub is_connected
         next if $bond_length_comb->[$i][0] eq '.' ||
                 $bond_length_comb->[$i][1] eq '.';
 
+        # NOTE: connections between hetero- and other atoms have pseudo
+        # connections for now.
+        next if ( $target_atom->{'group_PDB'} eq 'HETATM' &&
+                  $neighbour_atom->{'group_PDB'} ne 'HETATM' ) ||
+            ( $target_atom->{'group_PDB'} ne 'HETATM' &&
+                  $neighbour_atom->{'group_PDB'} eq 'HETATM' );
+
         $bond_length = $bond_length_comb->[$i][0] + $bond_length_comb->[$i][1];
         $length_error = $length_error_comb->[$i][0] + $length_error_comb->[$i][1];
         if( ( ! $no_covalent_radii ) &&
