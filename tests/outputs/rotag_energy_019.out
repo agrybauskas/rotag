@@ -1,1 +1,15 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.label_seq_id
+_[local]_rotamer_energy.label_asym_id
+_[local]_rotamer_energy.pdbx_PDB_model_num
+_[local]_rotamer_energy.label_alt_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 27 A 1 222 coulomb -114.861153
+2 27 A 1 222 h_bond -0.000228
+3 27 A 1 222 lennard_jones 25.809192
+4 27 A 1 222 torsion 0.122633
+#
