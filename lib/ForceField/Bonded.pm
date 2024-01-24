@@ -222,7 +222,6 @@ sub general
         return 0;
     } else {
         my $torsion = torsion( $parameters, $atom_i->{'id'}, $options );
-
         if( $decompose ) {
             return { 'torsion' => $torsion };
         } else {
