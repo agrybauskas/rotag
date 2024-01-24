@@ -655,9 +655,9 @@ sub general
                  ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
 
         if( $decompose ) {
-            return { 'lennard_jones' => $lennard_jones,
-                     'coulomb' => $coulomb,
-                     'h_bond' => $h_bond };
+            return { 'lennard_jones' => $lennard_jones * $cutoff_function,
+                     'coulomb' => $coulomb * $cutoff_function,
+                     'h_bond' => $h_bond * $cutoff_function };
         } else {
             return ( $lennard_jones + $coulomb + $h_bond ) * $cutoff_function;
         }
