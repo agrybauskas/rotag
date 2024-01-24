@@ -218,7 +218,6 @@ sub general
     my ( $parameters, $atom_i, $options ) = @_;
     my ( $decompose, $is_optimal ) =
         ( $options->{'decompose'}, $options->{'is_optimal'} );
-
     if( $is_optimal ) {
         return 0;
     } else {
