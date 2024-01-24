@@ -971,7 +971,6 @@ sub calc_full_atom_energy
 
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
-        # next if $i != 229;
         my %rotamer_site = %{ $residue_site };
         my %angles =
             map { ( $bond_parameter_names->[$_] => $checkable_angles[$i][$_] ) }
@@ -999,17 +998,6 @@ sub calc_full_atom_energy
                     $rotamer_interaction_site{$rotamer_atom_id},
                     $options
                 );
-                # print STDERR
-                #     $rotamer_interaction_site{$rotamer_atom_id}{'label_atom_id'} ."\t" .
-                #     $rotamer_interaction_site{$rotamer_atom_id}{'label_comp_id'} ."\t" .
-                #     $rotamer_interaction_site{$rotamer_atom_id}{'label_atom_id'} ."\t" .
-                #     $rotamer_interaction_site{$rotamer_atom_id}{'label_comp_id'} ."\t" .
-                #     $bonded_potential->(
-                #         $parameters,
-                #         $rotamer_interaction_site{$rotamer_atom_id},
-                #         $options
-                #     ) . "\t" .
-                #     "torsion". "\n";
             }
 
             # Calculation of potential energy of non-bonded atoms.
@@ -1033,18 +1021,6 @@ sub calc_full_atom_energy
                         if $rotamer_atom_energy > $energy_cutoff_atom;
 
                     $rotamer_energy_sum += $rotamer_atom_energy;
-                    # print STDERR
-                    #     $rotamer_interaction_site{$rotamer_atom_id}{'label_atom_id'} ."\t" .
-                    #     $rotamer_interaction_site{$rotamer_atom_id}{'label_comp_id'} ."\t" .
-                    #     $rotamer_interaction_site{$neighbour_atom_id}{'label_atom_id'} ."\t" .
-                    #     $rotamer_interaction_site{$neighbour_atom_id}{'label_comp_id'} ."\t" .
-                    #     $non_bonded_potential->(
-                    #         $parameters,
-                    #         $rotamer_interaction_site{$rotamer_atom_id},
-                    #         $rotamer_interaction_site{$neighbour_atom_id},
-                    #         $options
-                    #     ) . "\t" .
-                    #     "composite" . "\n";
                 }
             }
         }
