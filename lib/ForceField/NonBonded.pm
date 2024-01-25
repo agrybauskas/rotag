@@ -11,6 +11,7 @@ our @EXPORT_OK = qw( coulomb
                      h_bond_implicit
                      hard_sphere
                      lennard_jones
+                     smooth_cutoff
                      soft_sphere );
 
 use Carp;
@@ -39,8 +40,8 @@ our $VERSION = $VERSION;
 #     Inf - infinity.
 #
 # Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
 #     $atom_{i,j} - atom data structure (see PDBxParser.pm);
-#     $parameters - hash of parameters' values.
 # Output:
 #     0 or 'Inf' (infinity).
 #
@@ -76,8 +77,8 @@ sub hard_sphere
 #     n       - number that increases the slope of the potential.
 #
 # Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
 #     $atom_{i,j} - atom data structure (see PDBxParser.pm);
-#     $parameters - hash of parameters' values.
 # Output:
 #     0 or energy value.
 #
@@ -115,8 +116,8 @@ sub soft_sphere
 #     sigma   - sum of van der Waals radii of two atoms;
 #     k       - weight/adjustment constant.
 # Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
 #     $atom_{i,j} - atom data structure (see PDBxParser.pm);
-#     $parameters - hash of parameters' values.
 # Output:
 #     energy value.
 #
@@ -185,8 +186,8 @@ sub lennard_jones
 #     k           - weight/adjustment constant;
 #     q_{i,j}     - charge of the particle.
 # Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
 #     $atom_{i,j} - atom data structure (see PDBxParser.pm);
-#     $parameters - hash of parameters' values.
 # Output:
 #     energy value.
 #
@@ -377,9 +378,9 @@ sub h_bond
 #                                          |
 #
 # Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
 #     $donor_atom - donor atom data structure (see PDBxParser.pm);
 #     $acceptor atom - acceptor atom data structure (see PDBxParser.pm);
-#     $parameters - hash of parameters' values.
 # Output:
 #     energy value.
 #
@@ -522,10 +523,10 @@ sub h_bond_implicit
 #                        (H donor) O       O (H acceptor)
 #
 # Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
 #     $donor_atom - donor atom data structure (see PDBxParser.pm);
 #     $hydrogen_atom - hydrogen atom data structure (see PDBxParser.pm);
 #     $acceptor_atom - acceptor atom data structure (see PDBxParser.pm);
-#     $parameters - hash of parameters' values.
 # Output:
 #     energy value.
 #
@@ -575,10 +576,8 @@ sub h_bond_explicit
 }
 
 #
-# Combines Lennard-Jones, Coulomb, hydrogen bond potentials with smoothly
-# decreasing cutoff distance.
-#
-#         general = lennard_jones + coulomb + h_bond * cutoff_function
+# Smooth cutoff function that returns a value [0, 1] and serves as a multiplier
+# to smoothly transition energy potentials to zero value at long distances.
 #
 # cutoff_function =
 #     cos( ( pi * ( r - cutoff_start * sigma ) ) /
@@ -590,8 +589,45 @@ sub h_bond_explicit
 #     sigma              - sum of van der Waals radii of two atoms.
 #
 # Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
 #     $atom_{i,j} - atom data structure (see PDBxParser.pm);
-#     $parameters - hash of parameters' values.
+# Output:
+#     energy value.
+
+sub smooth_cutoff
+{
+    my ( $parameters, $atom_i, $atom_j, $options ) = @_;
+    my ( $r_squared, $sigma ) = ( $options->{'r_squared'}, $options->{'sigma'} );
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $cutoff_start = $parameters->{'_[local]_force_field'}{'cutoff_start'};
+    my $cutoff_end = $parameters->{'_[local]_force_field'}{'cutoff_end'};
+    my $atom_properties = $parameters->{'_[local]_atom_properties'};
+
+    $r_squared //= distance_squared( $atom_i, $atom_j );
+    $sigma //= $atom_properties->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
+               $atom_properties->{$atom_j->{'type_symbol'}}{'vdw_radius'};
+
+    if( $r_squared < ( $cutoff_start * $sigma ) ** 2 ) {
+        return 1;
+    } elsif( ( $r_squared >= ( $cutoff_start * $sigma ) ** 2 ) &&
+             ( $r_squared <= ( $cutoff_end   * $sigma ) ** 2 ) ) {
+        return cos( ( $pi * ( sqrt( $r_squared ) - $cutoff_start * $sigma ) ) /
+                    ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
+    } else {
+        return 0;
+    }
+}
+
+#
+# Combines Lennard-Jones, Coulomb, hydrogen bond potentials with smoothly
+# decreasing cutoff distance.
+#
+#         general = lennard_jones + coulomb + h_bond * cutoff_function
+#
+# Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
+#     $atom_{i,j} - atom data structure (see PDBxParser.pm);
 # Output:
 #     energy value.
 
@@ -599,69 +635,19 @@ sub general
 {
     my ( $parameters, $atom_i, $atom_j, $options ) = @_;
 
-    my ( $r_squared, $sigma, $decompose, $is_optimal ) = (
-        $options->{'r_squared'},
-        $options->{'sigma'},
+    my (  $decompose, $is_optimal ) = (
         $options->{'decompose'}, # Returns hash of the energy function
                                  # component values.
         $options->{'is_optimal'},
     );
 
-    my $pi = $parameters->{'_[local]_constants'}{'pi'};
-    my $cutoff_start = $parameters->{'_[local]_force_field'}{'cutoff_start'};
-    my $cutoff_end = $parameters->{'_[local]_force_field'}{'cutoff_end'};
-    my $atom_properties = $parameters->{'_[local]_atom_properties'};
-
     $decompose //= 0;
     $is_optimal //= 0;
 
-    # Calculates squared distance between two atoms.
-    $r_squared //= distance_squared( $atom_i, $atom_j );
+    my $cutoff_function =
+        smooth_cutoff( $parameters, $atom_i, $atom_j, $options );
 
-    my %options = %{ $options };
-    $options{'r_squared'} = $r_squared;
-
-    # Calculates Van der Waals distance of given atoms.
-    $sigma //= $atom_properties->{$atom_i->{'type_symbol'}}{'vdw_radius'} +
-               $atom_properties->{$atom_j->{'type_symbol'}}{'vdw_radius'};
-
-    if( $r_squared < ( $cutoff_start * $sigma ) ** 2 ) {
-        my $lennard_jones =
-            lennard_jones( $parameters, $atom_i, $atom_j,
-                           { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $coulomb = coulomb( $parameters, $atom_i, $atom_j,
-                               { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $h_bond =  h_bond( $parameters, $atom_i, $atom_j,
-                              { %options, ( 'is_optimal' => $is_optimal ) } );
-
-        if( $decompose ) {
-            return { 'lennard_jones' => $lennard_jones,
-                     'coulomb' => $coulomb,
-                     'h_bond' => $h_bond };
-        } else {
-            return $lennard_jones + $coulomb + $h_bond;
-        }
-    } elsif( ( $r_squared >= ( $cutoff_start * $sigma ) ** 2 ) &&
-             ( $r_squared <= ( $cutoff_end   * $sigma ) ** 2 ) ) {
-        my $lennard_jones =
-            lennard_jones( $parameters, $atom_i, $atom_j,
-                           { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $coulomb = coulomb( $parameters, $atom_i, $atom_j,
-                               { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $h_bond =  h_bond( $parameters, $atom_i, $atom_j,
-                              { %options, ( 'is_optimal' => $is_optimal ) } );
-        my $cutoff_function =
-            cos( ( $pi * ( sqrt( $r_squared ) - $cutoff_start * $sigma ) ) /
-                 ( 2 * ( $cutoff_end * $sigma - $cutoff_start * $sigma ) ) );
-
-        if( $decompose ) {
-            return { 'lennard_jones' => $lennard_jones * $cutoff_function,
-                     'coulomb' => $coulomb * $cutoff_function,
-                     'h_bond' => $h_bond * $cutoff_function };
-        } else {
-            return ( $lennard_jones + $coulomb + $h_bond ) * $cutoff_function;
-        }
-    } else {
+    if( $cutoff_function == 0 ) {
         if( $decompose ) {
             return { 'lennard_jones' => 0,
                      'coulomb' => 0,
@@ -669,6 +655,24 @@ sub general
         } else {
             return 0;
         }
+    }
+
+    my $lennard_jones =
+        lennard_jones( $parameters, $atom_i, $atom_j,
+                       { %{ $options }, ( 'is_optimal' => $is_optimal ) } );
+    my $coulomb =
+        coulomb( $parameters, $atom_i, $atom_j,
+                 { %{ $options }, ( 'is_optimal' => $is_optimal ) } );
+    my $h_bond =
+        h_bond( $parameters, $atom_i, $atom_j,
+                { %{ $options }, ( 'is_optimal' => $is_optimal ) } );
+
+    if( $decompose ) {
+        return { 'lennard_jones' => $lennard_jones * $cutoff_function,
+                 'coulomb' => $coulomb * $cutoff_function,
+                 'h_bond' => $h_bond * $cutoff_function };
+    } else {
+        return ( $lennard_jones + $coulomb + $h_bond ) * $cutoff_function;
     }
 }
 
