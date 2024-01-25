@@ -1,3 +1,8 @@
+rotag (unreleased)
+
+  * Fixed the absence of cutoff function when calculating with 'rotag_energy'
+    script.
+
 rotag (0.1.2)
 
   * Added a capability to control the angle step size and range while scanning
