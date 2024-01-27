@@ -370,7 +370,8 @@ sub original_atom_id
 sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn ) = @_;
-    $struct_conn //= {};
+
+    $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
 
     return if ! %{ $struct_conn };
 
@@ -463,62 +464,62 @@ sub create_hetatom_struct_conn
 {
     my ( $parameters, $atom_site ) = @_;
 
-    my $hetatom_site =
-        filter_new( $atom_site,
-                    { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
-    my $interaction_atom_site =
-        filter_new( $atom_site,
-                    { 'include' =>
-                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
+    # my $hetatom_site =
+    #     filter_new( $atom_site,
+    #                 { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
+    # my $interaction_atom_site =
+    #     filter_new( $atom_site,
+    #                 { 'include' =>
+    #                   { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
 
-    my $last_atom_id = max( keys %{ $atom_site } ) + 1;
-    for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
-        # NOTE: phosphorus is chosen as max interaction distance as it has the
-        # largest vdW radius.
-        my $interaction_distance =
-            $parameters->{'_[local]_force_field'}{'cutoff_start'} *
-            ( ( $parameters->{'_[local]_atom_properties'}
-                             {$hetatom_site->{$hetatom_id}{'type_symbol'}}
-                             {'vdw_radius'} / 2 ) +
-              ( $parameters->{'_[local]_atom_properties'}
-                             {'P'}{'vdw_radius'} / 2 ) );
-        my $around_site =
-            around_distance( $parameters,
-                             { $hetatom_id => $hetatom_site->{$hetatom_id},
-                               %{ $interaction_atom_site } },
-                             { 'id' => [ $hetatom_id ] },
-                             $interaction_distance );
+    # my $last_atom_id = max( keys %{ $atom_site } ) + 1;
+    # for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
+    #     # NOTE: phosphorus is chosen as max interaction distance as it has the
+    #     # largest vdW radius.
+    #     my $interaction_distance =
+    #         $parameters->{'_[local]_force_field'}{'cutoff_start'} *
+    #         ( ( $parameters->{'_[local]_atom_properties'}
+    #                          {$hetatom_site->{$hetatom_id}{'type_symbol'}}
+    #                          {'vdw_radius'} / 2 ) +
+    #           ( $parameters->{'_[local]_atom_properties'}
+    #                          {'P'}{'vdw_radius'} / 2 ) );
+    #     my $around_site =
+    #         around_distance( $parameters,
+    #                          { $hetatom_id => $hetatom_site->{$hetatom_id},
+    #                            %{ $interaction_atom_site } },
+    #                          { 'id' => [ $hetatom_id ] },
+    #                          $interaction_distance );
 
-        next if ! %{ $around_site };
+    #     next if ! %{ $around_site };
 
-        for my $around_atom_id ( sort { $a <=> $b } keys %{ $around_site } ) {
-            my $around_unique_residue_key = unique_residue_key(
-                $around_site->{$around_atom_id}
-            );
+    #     for my $around_atom_id ( sort { $a <=> $b } keys %{ $around_site } ) {
+    #         my $around_unique_residue_key = unique_residue_key(
+    #             $around_site->{$around_atom_id}
+    #         );
 
-            # Heteroatom inherits residue information from the atom that is
-            # connected to.
-            my $current_hetatom = clone $atom_site->{$hetatom_id};
-            foreach( 'label_seq_id', 'label_asym_id', 'label_alt_id',
-                     'pdbx_PDB_model_num' ) {
-                $current_hetatom->{$_} = $atom_site->{$around_atom_id}{$_};
-            }
-            $current_hetatom->{'id'} = $last_atom_id;
-            $current_hetatom->{'origin_atom_id'} = $hetatom_id;
-            if( defined $current_hetatom->{'hybridization'} ) {
-                $current_hetatom->{'hybridization'} = '.';
-            }
-            $atom_site->{$last_atom_id} = $current_hetatom;
+    #         # Heteroatom inherits residue information from the atom that is
+    #         # connected to.
+    #         my $current_hetatom = clone $atom_site->{$hetatom_id};
+    #         foreach( 'label_seq_id', 'label_asym_id', 'label_alt_id',
+    #                  'pdbx_PDB_model_num' ) {
+    #             $current_hetatom->{$_} = $atom_site->{$around_atom_id}{$_};
+    #         }
+    #         $current_hetatom->{'id'} = $last_atom_id;
+    #         $current_hetatom->{'origin_atom_id'} = $hetatom_id;
+    #         if( defined $current_hetatom->{'hybridization'} ) {
+    #             $current_hetatom->{'hybridization'} = '.';
+    #         }
+    #         $atom_site->{$last_atom_id} = $current_hetatom;
 
-            connect_atoms_explicitly( $atom_site,
-                                      [ $last_atom_id ],
-                                      [ $around_atom_id ] );
+    #         connect_atoms_explicitly( $atom_site,
+    #                                   [ $last_atom_id ],
+    #                                   [ $around_atom_id ] );
 
-            $last_atom_id++;
-        }
+    #         $last_atom_id++;
+    #     }
 
-        delete $atom_site->{$hetatom_id};
-    }
+    #     delete $atom_site->{$hetatom_id};
+    # }
 
     return;
 }
