@@ -464,16 +464,16 @@ sub create_hetatom_struct_conn
 {
     my ( $parameters, $atom_site ) = @_;
 
-    # my $hetatom_site =
-    #     filter_new( $atom_site,
-    #                 { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
-    # my $interaction_atom_site =
-    #     filter_new( $atom_site,
-    #                 { 'include' =>
-    #                   { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
+    my $hetatom_site =
+        filter_new( $atom_site,
+                    { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
+    my $interaction_atom_site =
+        filter_new( $atom_site,
+                    { 'include' =>
+                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
 
-    # my $last_atom_id = max( keys %{ $atom_site } ) + 1;
-    # for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
+    my %struct_conn = ();
+    for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
     #     # NOTE: phosphorus is chosen as max interaction distance as it has the
     #     # largest vdW radius.
     #     my $interaction_distance =
@@ -519,9 +519,9 @@ sub create_hetatom_struct_conn
     #     }
 
     #     delete $atom_site->{$hetatom_id};
-    # }
+    }
 
-    return;
+    return \%struct_conn;
 }
 
 1;
