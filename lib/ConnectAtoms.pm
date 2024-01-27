@@ -470,7 +470,7 @@ sub create_hetatom_struct_conn
     my $interaction_atom_site =
         filter_new( $atom_site,
                     { 'include' =>
-                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
+                      { 'type_symbol' => [ 'H', 'N', 'O', 'P', 'S' ] } } );
 
     my %struct_conn = ();
     for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
