@@ -11,7 +11,9 @@ use Try::Tiny;
 
 use BondParameters qw( collect_bond_lengths
                        stretchable_bonds );
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( assign_hetatoms_no_struct_conn
+                     assign_hetatoms_with_struct_conn
+                     connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
@@ -24,8 +26,6 @@ use PDBxParser qw( filter
                    split_by
                    to_csv
                    to_pdbx );
-use PseudoAtoms qw( assign_hetatoms_no_struct_conn
-                    assign_hetatoms_with_struct_conn );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );

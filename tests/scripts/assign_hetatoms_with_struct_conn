@@ -3,11 +3,11 @@
 use strict;
 use warnings;
 
-use PseudoAtoms qw( assign_hetatoms_with_struct_conn );
+use ConnectAtoms qw( assign_hetatoms_with_struct_conn );
 use ForceField::Parameters;
 
 #
-# Unit test: PseudoAtoms::assign_hetatoms_with_struct_conn
+# Unit test: ConnectAtoms::assign_hetatoms_with_struct_conn
 # Example: ./assign_hetatoms_with_struct_conn structure-and-struct-conn.dump 0 0 1
 #
 

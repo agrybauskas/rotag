@@ -15,7 +15,8 @@ use BondParameters qw( bendable_angles
                        stretchable_bonds
                        rotatable_bonds );
 use BondProperties qw( hybridization );
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( assign_hetatoms_with_struct_conn
+                     connect_atoms );
 use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
@@ -29,8 +30,7 @@ use PDBxParser qw( extract
                    split_by
                    to_pdbx
                    unique_residue_key );
-use PseudoAtoms qw( assign_hetatoms_with_struct_conn
-                    generate_pseudo );
+use PseudoAtoms qw( generate_pseudo );
 use SidechainModels qw( rotation_translation  );
 use Version qw( $VERSION );
 

@@ -10,11 +10,11 @@ use BondParameters qw( bendable_angles
                        rotatable_bonds
                        stretchable_bonds );
 use BondProperties qw( hybridization );
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( assign_hetatoms_with_struct_conn
+                     connect_atoms );
 use ForceField::Parameters;
 use PDBxParser qw( obtain_atom_site
                    obtain_struct_conn );
-use PseudoAtoms qw( assign_hetatoms_with_struct_conn );
 use SidechainModels qw( rotation_translation );
 
 $Data::Dumper::Indent = 1;

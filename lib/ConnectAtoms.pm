@@ -5,7 +5,9 @@ use warnings;
 
 BEGIN{
 use Exporter qw( import );
-our @EXPORT_OK = qw( connect_atoms
+our @EXPORT_OK = qw( assign_hetatoms_with_struct_conn
+                     assign_hetatoms_no_struct_conn
+                     connect_atoms
                      connect_atoms_explicitly
                      disconnect_atoms_explicitly
                      is_connected
@@ -14,8 +16,10 @@ our @EXPORT_OK = qw( connect_atoms
 }
 
 use Carp qw( confess );
+use Clone qw( clone );
 use Digest::MD5 qw( md5_hex );
-use List::Util qw( any );
+use List::Util qw( any
+                   max );
 
 use Grid qw( identify_neighbour_cells
              grid_box );
@@ -348,6 +352,174 @@ sub original_atom_id
     } else {
         return $atom_id;
     }
+}
+
+
+#
+# Assigns heteroatoms to specific residues according to "_struct_conn" -- either
+# creating the new one or assigning to the existing one. Duplicated heteroatoms
+# are to be expected.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $struct_conn - reads 'struc_conn' and assings connections appropriately.
+# Output:
+#     atom site with assigned heteroatoms.
+#
+
+sub assign_hetatoms_with_struct_conn
+{
+    my ( $parameters, $atom_site, $struct_conn ) = @_;
+    $struct_conn //= {};
+
+    return if ! %{ $struct_conn };
+
+    my $hetatom_site =
+        filter_new( $atom_site,
+                    { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
+
+    my $last_atom_id = max( keys %{ $atom_site } ) + 1;
+    for my $hetatom_id ( keys %{ $hetatom_site } ) {
+        my ( $hetatom_label_seq_id, $hetatom_label_asym_id ) =
+            map { $hetatom_site->{$hetatom_id}{$_} }
+                ( 'label_seq_id',
+                  'label_asym_id' );
+        my $hetatom_struct_conn =
+            filter_new( $struct_conn,
+                        { 'include' =>
+                          { 'ptnr2_label_seq_id' => [ $hetatom_label_seq_id ],
+                            'ptnr2_label_asym_id' => [ $hetatom_label_asym_id ] } } );
+        for my $hetatom_struct_conn_id ( sort keys %{ $hetatom_struct_conn } ) {
+            my $connected_atom_site =
+                filter_new( $atom_site,
+                            { 'include' =>
+                              { 'label_seq_id' => [
+                                    $hetatom_struct_conn->{$hetatom_struct_conn_id}
+                                                          {'ptnr1_label_seq_id'}
+                                ],
+                                'label_asym_id' => [
+                                        $hetatom_struct_conn->{$hetatom_struct_conn_id}
+                                                              {'ptnr1_label_asym_id'}
+                                ],
+                                'label_atom_id' => [
+                                    $hetatom_struct_conn->{$hetatom_struct_conn_id}
+                                                          {'ptnr1_label_atom_id'}
+                                ] } } );
+            # Iteration has to be performed, because '_struct_conn' does not
+            # have 'pdbx_PDB_model_num' and 'label_alt_id' entries.
+            my %visited_residues_by_hetatom = ();
+            for my $connected_atom_id ( keys %{ $connected_atom_site } ) {
+                my $connected_unique_residue_key = unique_residue_key(
+                    $connected_atom_site->{$connected_atom_id}
+                );
+
+                next if defined $visited_residues_by_hetatom{$connected_unique_residue_key} &&
+                    $visited_residues_by_hetatom{$connected_unique_residue_key} == $hetatom_id;
+                $visited_residues_by_hetatom{$connected_unique_residue_key} = $hetatom_id;
+
+                # Heteroatom inherits residue information from the atom that is
+                # connected to.
+                my $current_hetatom = clone $atom_site->{$hetatom_id};
+                foreach( 'label_seq_id', 'label_asym_id', 'label_alt_id',
+                         'pdbx_PDB_model_num' ) {
+                    $current_hetatom->{$_} = $atom_site->{$connected_atom_id}{$_};
+                }
+                $current_hetatom->{'id'} = $last_atom_id;
+                $current_hetatom->{'origin_atom_id'} = $hetatom_id;
+                # HACK: Carefully analyse when assigning heteroatom-heteroatom
+                # connections.
+                if( defined $current_hetatom->{'hybridization'} ) {
+                    $current_hetatom->{'hybridization'} = '.';
+                }
+                $atom_site->{$last_atom_id} = $current_hetatom;
+
+                connect_atoms_explicitly( $atom_site,
+                                          [ $last_atom_id ],
+                                          [ $connected_atom_id ] );
+
+                $last_atom_id++;
+            }
+        }
+
+        delete $atom_site->{$hetatom_id};
+    }
+
+    return;
+}
+
+#
+# Assigns heteroatoms to specific residues connecting them to N, O, P, S
+# atoms -- either creating the new one or assigning to the existing one.
+# Duplicated heteroatoms are to be expected.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+# Output:
+#     atom site with assigned heteroatoms.
+#
+
+sub assign_hetatoms_no_struct_conn
+{
+    my ( $parameters, $atom_site ) = @_;
+
+    my $hetatom_site =
+        filter_new( $atom_site,
+                    { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
+    my $interaction_atom_site =
+        filter_new( $atom_site,
+                    { 'include' =>
+                      { 'type_symbol' => [ 'N', 'O', 'P', 'S' ] } } );
+
+    my $last_atom_id = max( keys %{ $atom_site } ) + 1;
+    for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
+        # NOTE: phosphorus is chosen as max interaction distance as it has the
+        # largest vdW radius.
+        my $interaction_distance =
+            $parameters->{'_[local]_force_field'}{'cutoff_start'} *
+            ( ( $parameters->{'_[local]_atom_properties'}
+                             {$hetatom_site->{$hetatom_id}{'type_symbol'}}
+                             {'vdw_radius'} / 2 ) +
+              ( $parameters->{'_[local]_atom_properties'}
+                             {'P'}{'vdw_radius'} / 2 ) );
+        my $around_site =
+            around_distance( $parameters,
+                             { $hetatom_id => $hetatom_site->{$hetatom_id},
+                               %{ $interaction_atom_site } },
+                             { 'id' => [ $hetatom_id ] },
+                             $interaction_distance );
+
+        next if ! %{ $around_site };
+
+        for my $around_atom_id ( sort { $a <=> $b } keys %{ $around_site } ) {
+            my $around_unique_residue_key = unique_residue_key(
+                $around_site->{$around_atom_id}
+            );
+
+            # Heteroatom inherits residue information from the atom that is
+            # connected to.
+            my $current_hetatom = clone $atom_site->{$hetatom_id};
+            foreach( 'label_seq_id', 'label_asym_id', 'label_alt_id',
+                     'pdbx_PDB_model_num' ) {
+                $current_hetatom->{$_} = $atom_site->{$around_atom_id}{$_};
+            }
+            $current_hetatom->{'id'} = $last_atom_id;
+            $current_hetatom->{'origin_atom_id'} = $hetatom_id;
+            if( defined $current_hetatom->{'hybridization'} ) {
+                $current_hetatom->{'hybridization'} = '.';
+            }
+            $atom_site->{$last_atom_id} = $current_hetatom;
+
+            connect_atoms_explicitly( $atom_site,
+                                      [ $last_atom_id ],
+                                      [ $around_atom_id ] );
+
+            $last_atom_id++;
+        }
+
+        delete $atom_site->{$hetatom_id};
+    }
+
+    return;
 }
 
 1;
