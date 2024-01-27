@@ -399,8 +399,7 @@ sub generate_library
         hybridization( $parameters, $current_atom_site );
 
         if( %{ $struct_conn } ) {
-            assign_hetatoms_with_struct_conn(
-                $parameters, $current_atom_site, $struct_conn );
+            assign_hetatoms( $parameters, $current_atom_site, $struct_conn );
         }
 
         if( $do_bond_torsion ) {
