@@ -130,6 +130,30 @@ sub constants
             $force_field->{'_[local]_atom_properties'}{'H'}{'covalent_radius'}
                           {'length'}->[0];
 
+    # Metal coordination cutoff. Phosphorus is chosen as max interaction
+    # distance as it has the largest vdW radius.
+    for my $metalc_atom (
+        grep { $_ ne 'HOH' }
+        sort keys %{ $force_field->{'_[local]_sidechain_hetatom_extension'} } ){
+        my $metal_vdw_radius =
+            $force_field->{'_[local]_atom_properties'}{$metalc_atom}
+                          {'vdw_radius'};
+
+        next if ! defined $metal_vdw_radius;
+
+        $constants{'_[local]_constants'}{'metalc_length'}{$metalc_atom} =
+            $force_field->{'_[local]_force_field'}{'cutoff_metalc'} *
+            ( ( $metal_vdw_radius / 2 ) +
+              ( $force_field->{'_[local]_atom_properties'}{'P'}
+                              {'vdw_radius'} / 2 ) );
+    }
+
+    # Hydrogen water coordination cutoff.
+    $constants{'_[local]_constants'}{'hydrog_length'} =
+        $force_field->{'_[local]_force_field'}{'cutoff_hydrog'} *
+        ( ( $force_field->{'_[local]_atom_properties'}{'O'}{'vdw_radius'} / 2 )+
+          ( $force_field->{'_[local]_atom_properties'}{'H'}{'vdw_radius'} / 2));
+
     return \%constants;
 }
 
