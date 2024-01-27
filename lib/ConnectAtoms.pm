@@ -8,6 +8,7 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( assign_hetatoms
                      connect_atoms
                      connect_atoms_explicitly
+                     create_hetatom_struct_conn
                      disconnect_atoms_explicitly
                      is_connected
                      is_neighbour
@@ -447,17 +448,18 @@ sub assign_hetatoms
 }
 
 #
-# Assigns heteroatoms to specific residues connecting them to N, O, P, S
-# atoms -- either creating the new one or assigning to the existing one.
-# Duplicated heteroatoms are to be expected.
+# Creates "_struct_conn" data structure that shows explicit interactions between
+# heteroatoms  specific residues connecting them to N, O, P, S atoms -- either
+# creating the new one or assigning to the existing one.
 # Input:
 #     $parameters - general parameters (see Parameters.pm);
 #     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $atom_ids - atom ids.
 # Output:
-#     atom site with assigned heteroatoms.
+#     "_struct_conn" data structure.
 #
 
-sub assign_hetatoms_no_struct_conn
+sub create_hetatom_struct_conn
 {
     my ( $parameters, $atom_site ) = @_;
 
