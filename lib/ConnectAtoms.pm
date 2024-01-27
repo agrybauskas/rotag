@@ -172,9 +172,7 @@ sub is_second_neighbour
 
     my $is_sec_neighbour = 0;
     foreach my $i ( @{ $atom_site->{"$target_atom_id"}{'connections'} } ) {
-        if( ! exists $atom_site->{$i}{'connections'} ) {
-            confess "atom with id $i does not have 'connections' key";
-        }
+        next if ! exists $atom_site->{$i}{'connections'};
 
         foreach my $j ( @{ $atom_site->{$i}{'connections'} } ) {
             if( "$sec_neighbour_atom_id" eq "$j" ) {
