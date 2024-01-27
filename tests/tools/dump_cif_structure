@@ -10,7 +10,7 @@ use BondParameters qw( bendable_angles
                        rotatable_bonds
                        stretchable_bonds );
 use BondProperties qw( hybridization );
-use ConnectAtoms qw( assign_hetatoms_with_struct_conn
+use ConnectAtoms qw( assign_hetatoms
                      connect_atoms );
 use ForceField::Parameters;
 use PDBxParser qw( obtain_atom_site
@@ -65,9 +65,7 @@ foreach my $pdbx_file ( @ARGV ) {
     }
 
     if( $is_connected && defined $struct_conn && %{ $struct_conn }  ) {
-        assign_hetatoms_with_struct_conn( $parameters,
-                                          $atom_site,
-                                          $struct_conn );
+        assign_hetatoms( $parameters, $atom_site, $struct_conn );
     }
 
     bendable_angles( $parameters, $atom_site,

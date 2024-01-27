@@ -13,8 +13,7 @@ use BondParameters qw( collect_dihedral_angles
                        rotatable_bonds );
 use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( assign_hetatoms_no_struct_conn
-                     assign_hetatoms_with_struct_conn
+use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
                      connect_atoms_explicitly
                      disconnect_atoms_explicitly );
@@ -152,11 +151,7 @@ for my $pdbx_file ( @ARGV ) {
         hybridization( $parameters, $dihedral_site );
 
         if( $calc_hetatoms ) {
-            assign_hetatoms_with_struct_conn( $parameters,
-                                              $dihedral_site,
-                                              $struct_conn );
-            assign_hetatoms_no_struct_conn( $parameters, $dihedral_site )
-                if ! defined $struct_conn || ! %{ $struct_conn };
+            assign_hetatoms( $parameters, $dihedral_site, $struct_conn );
 
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.

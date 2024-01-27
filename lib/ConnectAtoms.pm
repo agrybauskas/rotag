@@ -5,8 +5,7 @@ use warnings;
 
 BEGIN{
 use Exporter qw( import );
-our @EXPORT_OK = qw( assign_hetatoms_with_struct_conn
-                     assign_hetatoms_no_struct_conn
+our @EXPORT_OK = qw( assign_hetatoms
                      connect_atoms
                      connect_atoms_explicitly
                      disconnect_atoms_explicitly
@@ -367,7 +366,7 @@ sub original_atom_id
 #     atom site with assigned heteroatoms.
 #
 
-sub assign_hetatoms_with_struct_conn
+sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn ) = @_;
     $struct_conn //= {};

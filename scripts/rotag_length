@@ -11,8 +11,7 @@ use Try::Tiny;
 
 use BondParameters qw( collect_bond_lengths
                        stretchable_bonds );
-use ConnectAtoms qw( assign_hetatoms_no_struct_conn
-                     assign_hetatoms_with_struct_conn
+use ConnectAtoms qw( assign_hetatoms
                      connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
@@ -312,11 +311,7 @@ for my $pdbx_file ( @ARGV ) {
 
         # Heteroatom assignment increases the atom number in the atom site.
         if( $calc_hetatoms ) {
-            assign_hetatoms_with_struct_conn( $parameters,
-                                              $bond_length_site,
-                                              $struct_conn );
-            assign_hetatoms_no_struct_conn( $parameters, $bond_length_site )
-                if ! defined $struct_conn || ! %{ $struct_conn };
+            assign_hetatoms( $parameters, $bond_length_site, $struct_conn );
 
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.

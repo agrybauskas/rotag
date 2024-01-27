@@ -36,8 +36,7 @@ use BondParameters qw( collect_bond_lengths
                        stretchable_bonds );
 use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( assign_hetatoms_with_struct_conn
-                     assign_hetatoms_no_struct_conn
+use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
                      connect_atoms_explicitly
                      disconnect_atoms_explicitly
@@ -399,16 +398,9 @@ sub generate_library
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
-        if( $include_hetatoms ) {
-            if( %{ $struct_conn } ) {
-                assign_hetatoms_with_struct_conn(
-                    $parameters, $current_atom_site, $struct_conn
-                );
-            } else {
-                assign_hetatoms_no_struct_conn(
-                    $parameters, $current_atom_site
-                );
-            }
+        if( %{ $struct_conn } ) {
+            assign_hetatoms_with_struct_conn(
+                $parameters, $current_atom_site, $struct_conn );
         }
 
         if( $do_bond_torsion ) {

@@ -15,7 +15,7 @@ use BondParameters qw( bendable_angles
                        stretchable_bonds
                        rotatable_bonds );
 use BondProperties qw( hybridization );
-use ConnectAtoms qw( assign_hetatoms_with_struct_conn
+use ConnectAtoms qw( assign_hetatoms
                      connect_atoms );
 use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
@@ -289,17 +289,9 @@ for my $pdbx_file ( @ARGV ) {
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
 
-            # TODO: do not forget to deal with situation where "_struct_conn"
-            # is absent.
             if( defined $struct_conn && %{ $struct_conn } ) {
-                assign_hetatoms_with_struct_conn(
-                    $parameters, $residue_site, $struct_conn
-                );
-            }#  else {
-            #     assign_hetatoms_no_struct_conn(
-            #         $parameters, $residue_site
-            #     );
-            # }
+                assign_hetatoms( $parameters, $residue_site, $struct_conn );
+            }
 
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.
