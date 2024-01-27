@@ -25,7 +25,8 @@ my $parameters = Parameters->new();
 my $atom_site = $atom_site_struct_conn->{'_atom_site'};
 my $struct_conn = $atom_site_struct_conn->{'_struct_conn'};
 
-assign_hetatoms( $parameters, $atom_site, $struct_conn );
+assign_hetatoms( $parameters, $atom_site,
+                 ( %{ $struct_conn } ? $struct_conn : undef ) );
 
 my @atom_coord;
 my @parent_atom;
