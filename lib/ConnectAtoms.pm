@@ -509,6 +509,12 @@ sub create_hetatom_struct_conn
         next if ! %{ $around_site };
 
         for my $around_atom_id ( sort { $a <=> $b } keys %{ $around_site } ) {
+            next if $atom_site->{$around_atom_id}{'type_symbol'} eq 'H' &&
+                ! any { $atom_site->{$_}{'type_symbol'} eq 'N' ||
+                        $atom_site->{$_}{'type_symbol'} eq 'O' ||
+                        $atom_site->{$_}{'type_symbol'} eq 'S' }
+                     @{ $atom_site->{$around_atom_id}{'connections'} };
+
             my $struct_conn_id =
                 $struct_conn_type .
                 ( $struct_conn_type eq 'metalc' ?
