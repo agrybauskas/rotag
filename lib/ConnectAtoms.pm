@@ -470,7 +470,7 @@ sub create_hetatom_struct_conn
     my $interaction_atom_site =
         filter_new( $atom_site,
                     { 'include' =>
-                      { 'type_symbol' => [ 'H', 'N', 'O', 'P', 'S' ] } } );
+                      { 'type_symbol' => [ 'H', 'N', 'O', 'S' ] } } );
 
     my %struct_conn = ();
     for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
@@ -480,7 +480,9 @@ sub create_hetatom_struct_conn
         if( $residue_name eq 'HOH' ) {
             $interaction_distance =
                 $parameters->{'_[local]_constants'}{'hydrog_length'}
-                             {$hetatom_site->{$hetatom_id}{'type_symbol'}};;
+                             {$hetatom_site->{$hetatom_id}{'type_symbol'}};
+            # NOTE: study which atoms should be included -- are we looking
+            # at hydrogen bonding or induced non-covalent bonding.
             $residue_interaction_site = $interaction_atom_site;
         } else {
             $interaction_distance =
