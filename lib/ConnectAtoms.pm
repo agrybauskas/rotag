@@ -473,7 +473,8 @@ sub create_hetatom_struct_conn
                       { 'type_symbol' => [ 'H', 'N', 'O', 'S' ] } } );
 
     my %struct_conn = ();
-    my %struct_conn_id_counter = ();
+    my $metalc_counter = 1;
+    my $hydrog_counter = 1;
     for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
         my $residue_name = $hetatom_site->{$hetatom_id}{'type_symbol'};
         my $struct_conn_type = $residue_name eq 'HOH' ? 'hydrog' : 'metalc';
@@ -508,6 +509,8 @@ sub create_hetatom_struct_conn
         next if ! %{ $around_site };
 
         for my $around_atom_id ( sort { $a <=> $b } keys %{ $around_site } ) {
+            $metalc_counter++ if $struct_conn_type eq 'metalc';
+            $hydrog_counter++ if $struct_conn_type eq 'hydrog';
         }
     }
 
