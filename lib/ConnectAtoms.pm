@@ -515,7 +515,24 @@ sub create_hetatom_struct_conn
                   $metalc_counter : $hydrog_counter );
 
             $struct_conn{$struct_conn_id} = {
-
+                'id' => $struct_conn_id,
+                'conn_type_id' => $struct_conn_type,
+                'ptnr1_label_atom_id' =>
+                    $atom_site->{$around_atom_id}{'label_atom_id'},
+                'ptnr1_label_asym_id' =>
+                    $atom_site->{$around_atom_id}{'label_asym_id'},
+                'ptnr1_label_comp_id' =>
+                    $atom_site->{$around_atom_id}{'label_comp_id'},
+                'ptnr1_label_seq_id' =>
+                    $atom_site->{$around_atom_id}{'label_seq_id'},
+                'ptnr2_label_atom_id' =>
+                    $atom_site->{$hetatom_id}{'label_atom_id'},
+                'ptnr2_label_asym_id' =>
+                    $atom_site->{$hetatom_id}{'label_asym_id'},
+                'ptnr2_label_comp_id' =>
+                    $atom_site->{$hetatom_id}{'label_comp_id'},
+                'ptnr2_label_seq_id' =>
+                    $atom_site->{$hetatom_id}{'label_seq_id'},
             };
 
             $metalc_counter++ if $struct_conn_type eq 'metalc';

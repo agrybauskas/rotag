@@ -69,6 +69,15 @@ $VAR1 = bless( {
       'valence' => '0',
       'vdw_radius' => '1.58'
     },
+    'CO' => {
+      'covalent_radius' => {}
+    },
+    'CU' => {
+      'covalent_radius' => {}
+    },
+    'FE' => {
+      'covalent_radius' => {}
+    },
     'H' => {
       'covalent_radius' => {
         'error' => [
@@ -108,6 +117,9 @@ $VAR1 = bless( {
       'valence' => '0',
       'vdw_radius' => '1.73'
     },
+    'MN' => {
+      'covalent_radius' => {}
+    },
     'N' => {
       'covalent_radius' => {
         'error' => [
@@ -135,6 +147,9 @@ $VAR1 = bless( {
       'lone_pairs' => '0',
       'valence' => '0',
       'vdw_radius' => '2.27'
+    },
+    'NI' => {
+      'covalent_radius' => {}
     },
     'O' => {
       'covalent_radius' => {
@@ -2198,6 +2213,15 @@ $VAR1 = bless( {
     'edge_length_connection' => '2.4',
     'edge_length_interaction' => '8.57',
     'epsilon' => '2.22044604925031e-16',
+    'hydrog_length' => '2.025',
+    'metalc_length' => {
+      'CA' => '3.1575',
+      'CD' => '2.61',
+      'K' => '3.4875',
+      'MG' => '2.7225',
+      'NA' => '3.1275',
+      'ZN' => '2.4675'
+    },
     'pi' => '3.14159265358979',
     'sig_figs_max' => '%.6f',
     'sig_figs_min' => '%.3f',
@@ -2296,6 +2320,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -2338,6 +2374,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -2373,6 +2413,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -2556,6 +2600,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -2598,6 +2654,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -2633,6 +2693,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -2928,6 +2992,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -3018,6 +3094,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -3101,6 +3181,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -3412,6 +3496,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -3454,6 +3550,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -3489,6 +3589,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -3672,6 +3776,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -3714,6 +3830,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -3749,6 +3869,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -3845,6 +3969,252 @@ $VAR1 = bless( {
         ]
       }
     },
+    'CO' => {
+      '.' => {
+        'error' => [],
+        'length' => []
+      },
+      'BR' => {
+        'error' => [],
+        'length' => []
+      },
+      'C' => {
+        'error' => [],
+        'length' => []
+      },
+      'CA' => {
+        'error' => [],
+        'length' => []
+      },
+      'CD' => {
+        'error' => [],
+        'length' => []
+      },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
+      'H' => {
+        'error' => [],
+        'length' => []
+      },
+      'K' => {
+        'error' => [],
+        'length' => []
+      },
+      'MG' => {
+        'error' => [],
+        'length' => []
+      },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
+      'N' => {
+        'error' => [],
+        'length' => []
+      },
+      'NA' => {
+        'error' => [],
+        'length' => []
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
+      },
+      'O' => {
+        'error' => [],
+        'length' => []
+      },
+      'P' => {
+        'error' => [],
+        'length' => []
+      },
+      'S' => {
+        'error' => [],
+        'length' => []
+      },
+      'X' => {
+        'error' => [],
+        'length' => []
+      },
+      'ZN' => {
+        'error' => [],
+        'length' => []
+      }
+    },
+    'CU' => {
+      '.' => {
+        'error' => [],
+        'length' => []
+      },
+      'BR' => {
+        'error' => [],
+        'length' => []
+      },
+      'C' => {
+        'error' => [],
+        'length' => []
+      },
+      'CA' => {
+        'error' => [],
+        'length' => []
+      },
+      'CD' => {
+        'error' => [],
+        'length' => []
+      },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
+      'H' => {
+        'error' => [],
+        'length' => []
+      },
+      'K' => {
+        'error' => [],
+        'length' => []
+      },
+      'MG' => {
+        'error' => [],
+        'length' => []
+      },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
+      'N' => {
+        'error' => [],
+        'length' => []
+      },
+      'NA' => {
+        'error' => [],
+        'length' => []
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
+      },
+      'O' => {
+        'error' => [],
+        'length' => []
+      },
+      'P' => {
+        'error' => [],
+        'length' => []
+      },
+      'S' => {
+        'error' => [],
+        'length' => []
+      },
+      'X' => {
+        'error' => [],
+        'length' => []
+      },
+      'ZN' => {
+        'error' => [],
+        'length' => []
+      }
+    },
+    'FE' => {
+      '.' => {
+        'error' => [],
+        'length' => []
+      },
+      'BR' => {
+        'error' => [],
+        'length' => []
+      },
+      'C' => {
+        'error' => [],
+        'length' => []
+      },
+      'CA' => {
+        'error' => [],
+        'length' => []
+      },
+      'CD' => {
+        'error' => [],
+        'length' => []
+      },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
+      'H' => {
+        'error' => [],
+        'length' => []
+      },
+      'K' => {
+        'error' => [],
+        'length' => []
+      },
+      'MG' => {
+        'error' => [],
+        'length' => []
+      },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
+      'N' => {
+        'error' => [],
+        'length' => []
+      },
+      'NA' => {
+        'error' => [],
+        'length' => []
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
+      },
+      'O' => {
+        'error' => [],
+        'length' => []
+      },
+      'P' => {
+        'error' => [],
+        'length' => []
+      },
+      'S' => {
+        'error' => [],
+        'length' => []
+      },
+      'X' => {
+        'error' => [],
+        'length' => []
+      },
+      'ZN' => {
+        'error' => [],
+        'length' => []
+      }
+    },
     'H' => {
       '.' => {
         'error' => [
@@ -3932,6 +4302,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -3974,6 +4356,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -4009,6 +4395,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -4192,6 +4582,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -4234,6 +4636,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -4269,6 +4675,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -4452,6 +4862,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -4494,6 +4916,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -4529,6 +4955,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -4623,6 +5053,88 @@ $VAR1 = bless( {
             '1.18'
           ]
         ]
+      }
+    },
+    'MN' => {
+      '.' => {
+        'error' => [],
+        'length' => []
+      },
+      'BR' => {
+        'error' => [],
+        'length' => []
+      },
+      'C' => {
+        'error' => [],
+        'length' => []
+      },
+      'CA' => {
+        'error' => [],
+        'length' => []
+      },
+      'CD' => {
+        'error' => [],
+        'length' => []
+      },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
+      'H' => {
+        'error' => [],
+        'length' => []
+      },
+      'K' => {
+        'error' => [],
+        'length' => []
+      },
+      'MG' => {
+        'error' => [],
+        'length' => []
+      },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
+      'N' => {
+        'error' => [],
+        'length' => []
+      },
+      'NA' => {
+        'error' => [],
+        'length' => []
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
+      },
+      'O' => {
+        'error' => [],
+        'length' => []
+      },
+      'P' => {
+        'error' => [],
+        'length' => []
+      },
+      'S' => {
+        'error' => [],
+        'length' => []
+      },
+      'X' => {
+        'error' => [],
+        'length' => []
+      },
+      'ZN' => {
+        'error' => [],
+        'length' => []
       }
     },
     'N' => {
@@ -4768,6 +5280,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -4834,6 +5358,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -4893,6 +5421,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -5140,6 +5672,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -5182,6 +5726,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -5217,6 +5765,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -5311,6 +5863,88 @@ $VAR1 = bless( {
             '1.18'
           ]
         ]
+      }
+    },
+    'NI' => {
+      '.' => {
+        'error' => [],
+        'length' => []
+      },
+      'BR' => {
+        'error' => [],
+        'length' => []
+      },
+      'C' => {
+        'error' => [],
+        'length' => []
+      },
+      'CA' => {
+        'error' => [],
+        'length' => []
+      },
+      'CD' => {
+        'error' => [],
+        'length' => []
+      },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
+      'H' => {
+        'error' => [],
+        'length' => []
+      },
+      'K' => {
+        'error' => [],
+        'length' => []
+      },
+      'MG' => {
+        'error' => [],
+        'length' => []
+      },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
+      'N' => {
+        'error' => [],
+        'length' => []
+      },
+      'NA' => {
+        'error' => [],
+        'length' => []
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
+      },
+      'O' => {
+        'error' => [],
+        'length' => []
+      },
+      'P' => {
+        'error' => [],
+        'length' => []
+      },
+      'S' => {
+        'error' => [],
+        'length' => []
+      },
+      'X' => {
+        'error' => [],
+        'length' => []
+      },
+      'ZN' => {
+        'error' => [],
+        'length' => []
       }
     },
     'O' => {
@@ -5456,6 +6090,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -5522,6 +6168,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -5581,6 +6231,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -5828,6 +6482,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -5870,6 +6536,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -5905,6 +6575,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -6088,6 +6762,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -6130,6 +6816,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -6165,6 +6855,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -6460,6 +7154,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -6550,6 +7256,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -6633,6 +7343,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -6944,6 +7658,18 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'CO' => {
+        'error' => [],
+        'length' => []
+      },
+      'CU' => {
+        'error' => [],
+        'length' => []
+      },
+      'FE' => {
+        'error' => [],
+        'length' => []
+      },
       'H' => {
         'error' => [
           [
@@ -6986,6 +7712,10 @@ $VAR1 = bless( {
           ]
         ]
       },
+      'MN' => {
+        'error' => [],
+        'length' => []
+      },
       'N' => {
         'error' => [
           [
@@ -7021,6 +7751,10 @@ $VAR1 = bless( {
             '1.55'
           ]
         ]
+      },
+      'NI' => {
+        'error' => [],
+        'length' => []
       },
       'O' => {
         'error' => [
@@ -7288,7 +8022,8 @@ $VAR1 = bless( {
     'c_k' => '62.0',
     'cutoff_atom' => '50.0',
     'cutoff_end' => '5.00',
-    'cutoff_salt_bridge' => '1.50',
+    'cutoff_hydrog' => '1.50',
+    'cutoff_metalc' => '1.50',
     'cutoff_start' => '2.50',
     'description' => '\'Parameter weights were optimized using particle swarm optimization algorithm.\'',
     'h_k' => '10.0',
