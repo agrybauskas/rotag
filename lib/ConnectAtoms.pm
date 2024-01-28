@@ -473,11 +473,13 @@ sub create_hetatom_struct_conn
                       { 'type_symbol' => [ 'H', 'N', 'O', 'S' ] } } );
 
     my %struct_conn = ();
+    my %struct_conn_id_counter = ();
     for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
         my $residue_name = $hetatom_site->{$hetatom_id}{'type_symbol'};
+        my $struct_conn_type = $residue_name eq 'HOH' ? 'hydrog' : 'metalc';
         my $residue_interaction_site;
         my $interaction_distance;
-        if( $residue_name eq 'HOH' ) {
+        if( $struct_conn_type eq 'hydrog' ) {
             $interaction_distance =
                 $parameters->{'_[local]_constants'}{'hydrog_length'}
                              {$hetatom_site->{$hetatom_id}{'type_symbol'}};
