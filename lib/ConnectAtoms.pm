@@ -509,6 +509,15 @@ sub create_hetatom_struct_conn
         next if ! %{ $around_site };
 
         for my $around_atom_id ( sort { $a <=> $b } keys %{ $around_site } ) {
+            my $struct_conn_id =
+                $struct_conn_type .
+                ( $struct_conn_type eq 'metalc' ?
+                  $metalc_counter : $hydrog_counter );
+
+            $struct_conn{$struct_conn_id} = {
+
+            };
+
             $metalc_counter++ if $struct_conn_type eq 'metalc';
             $hydrog_counter++ if $struct_conn_type eq 'hydrog';
         }
