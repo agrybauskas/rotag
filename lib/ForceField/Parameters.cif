@@ -9,7 +9,7 @@ _[local]_force_field.t_k                2.50
 _[local]_force_field.cutoff_atom        50.0
 _[local]_force_field.cutoff_start       2.50
 _[local]_force_field.cutoff_end         5.00
-_[local]_force_field.cutoff_metalc      1.50
+_[local]_force_field.cutoff_metalc      2.50
 _[local]_force_field.cutoff_hydrog      1.50
 _[local]_force_field.description  'Parameter weights were optimized using particle swarm optimization algorithm.'
 #

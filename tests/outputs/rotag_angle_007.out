@@ -17,6 +17,8 @@ _[local]_bond_angle.type
 _[local]_bond_angle.value
 _[local]_bond_angle.units
 1 ASP 27 A 1 . 149 CA 148 N 1925 MG CA-N-MG 122.696 degrees
-2 ASP 27 A 1 . 153 CG 154 OD1 1925 MG CG-OD1-MG 138.636 degrees
-3 LYS 72 A 1 . 885 C 886 O 1925 MG C-O-MG 150.228 degrees
+2 ASP 27 A 1 . 148 N 156 H 1925 MG N-H-MG 169.784 degrees
+3 ASP 27 A 1 . 153 CG 154 OD1 1925 MG CG-OD1-MG 138.636 degrees
+4 LYS 72 A 1 . 883 N 892 H 1925 MG N-H-MG 114.125 degrees
+5 LYS 72 A 1 . 885 C 886 O 1925 MG C-O-MG 150.228 degrees
 #

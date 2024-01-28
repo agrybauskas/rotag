@@ -13,7 +13,9 @@ _[local]_bond_length.atom_2_id
 _[local]_bond_length.label_atom_2_id
 _[local]_bond_length.type
 _[local]_bond_length.value
-1 ASP 27 A 1 . 148 N 1925 MG N-MG 2.874527
-2 ASP 27 A 1 . 154 OD1 1925 MG OD1-MG 2.428874
-3 LYS 72 A 1 . 886 O 1925 MG O-MG 2.708876
+1 ASP 27 A 1 . 156 H 1925 MG H-MG 2.023655
+2 ASP 27 A 1 . 148 N 1925 MG N-MG 2.874527
+3 ASP 27 A 1 . 154 OD1 1925 MG OD1-MG 2.428874
+4 LYS 72 A 1 . 892 H 1925 MG H-MG 4.405379
+5 LYS 72 A 1 . 886 O 1925 MG O-MG 2.708876
 #
