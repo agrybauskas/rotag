@@ -475,15 +475,17 @@ sub create_hetatom_struct_conn
     my %struct_conn = ();
     for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
         my $residue_name = $hetatom_site->{$hetatom_id}{'type_symbol'};
-        my $residue_interaction_site = $interaction_atom_site;
-        my $interaction_distance =
-            $parameters->{'_[local]_constants'}{'metalc_length'}
-                         {$hetatom_site->{$hetatom_id}{'type_symbol'}};
-
+        my $residue_interaction_site;
+        my $interaction_distance;
         if( $residue_name eq 'HOH' ) {
             $interaction_distance =
                 $parameters->{'_[local]_constants'}{'hydrog_length'}
                              {$hetatom_site->{$hetatom_id}{'type_symbol'}};;
+            $residue_interaction_site = $interaction_atom_site;
+        } else {
+            $interaction_distance =
+                $parameters->{'_[local]_constants'}{'metalc_length'}
+                             {$hetatom_site->{$hetatom_id}{'type_symbol'}};
             $residue_interaction_site =
                 { map { ( $_ => $interaction_atom_site->{$_} ) }
                   grep { $interaction_atom_site->{$_}{'type_symbol'} ne 'H'  }
