@@ -325,9 +325,9 @@ sub disconnect_atoms_explicitly
                 ! defined $atom_site->{$connection_id}{$connection_type};
 
             $atom_site->{$connection_id}{$connection_type} = [
-                grep { ! $atom_id eq $_  }
-                    @{  $atom_site->{$connection_id}{$connection_type} }
-            ]
+                grep { $atom_id ne $_  }
+                    @{ $atom_site->{$connection_id}{$connection_type} }
+            ];
         }
 
         delete $atom_site->{$atom_id}{$connection_type};
