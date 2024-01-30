@@ -398,7 +398,8 @@ sub assign_hetatoms
                 $atom_site->{$last_atom_id} = $current_hetatom;
 
                 replace_atom_site_ids( $atom_site,
-                                       { $hetatom_id => $last_atom_id } );
+                                       [ { 'from' => $hetatom_id,
+                                           'to' => $last_atom_id } ] );
                 connect_atoms_explicitly( $atom_site,
                                           [ $last_atom_id ],
                                           [ $connected_atom_id ] );

@@ -382,7 +382,11 @@ sub related_category_data
 sub replace_atom_site_ids
 {
     my ( $atom_site, $rules ) = @_;
-    $rules //= {};
+    $rules //= [];
+    for my $rule ( @{ $rules } ) {
+        my $from_atom_id = $rule->{'from'};
+        my $to_atom_id = $rule->{'to'};
+    }
     return;
 }
 
