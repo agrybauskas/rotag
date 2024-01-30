@@ -372,17 +372,7 @@ sub assign_hetatoms
 
             # Iteration has to be performed, because '_struct_conn' does not
             # have 'pdbx_PDB_model_num' and 'label_alt_id' entries.
-            my %visited_residues_by_hetatom = ();
             for my $connected_atom_id ( keys %{ $connected_atom_site } ) {
-                my $connected_unique_residue_key = unique_residue_key(
-                    $connected_atom_site->{$connected_atom_id}
-                );
-
-                next if defined $visited_residues_by_hetatom{$connected_unique_residue_key} &&
-                    $visited_residues_by_hetatom{$connected_unique_residue_key} == $hetatom_id;
-                $visited_residues_by_hetatom{$connected_unique_residue_key} =
-                    $hetatom_id;
-
                 # Heteroatom inherits residue information from the atom that is
                 # connected to.
                 my %inherited_data_items =
