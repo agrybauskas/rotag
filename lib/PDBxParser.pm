@@ -400,14 +400,14 @@ sub replace_atom_site_ids
                     $_ =~ s/^${from_atom_id}$/${to_atom_id}/g;
                 }
             }
-
-            # ID change is performed the last as it changes the reverse search of
-            # IDs.
-            $atom_site->{$to_atom_id}{'id'} = $to_atom_id;
-            $atom_site->{$to_atom_id}{'origin_atom_id'} = $from_atom_id;
-
-            delete $atom_site->{$from_atom_id};
         }
+
+        # ID change is performed the last as it changes the reverse search of
+        # IDs.
+        $atom_site->{$to_atom_id}{'id'} = $to_atom_id;
+        $atom_site->{$to_atom_id}{'origin_atom_id'} = $from_atom_id;
+
+        delete $atom_site->{$from_atom_id};
     }
 
     return;
