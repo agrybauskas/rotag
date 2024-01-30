@@ -332,7 +332,7 @@ sub original_atom_id
 
 sub assign_hetatoms
 {
-    my ( $parameters, $atom_site, $struct_conn ) = @_;
+    my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
 
@@ -382,7 +382,8 @@ sub assign_hetatoms
 
                 replace_atom_site_ids( $atom_site,
                                        [ { 'from' => $hetatom_id,
-                                           'to' => $last_atom_id } ] );
+                                           'to' => $last_atom_id } ],
+                                       $options );
                 connect_atoms_explicitly( $atom_site,
                                           [ $last_atom_id ],
                                           [ $connected_atom_id ] );

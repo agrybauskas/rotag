@@ -381,8 +381,10 @@ sub related_category_data
 
 sub replace_atom_site_ids
 {
-    my ( $atom_site, $rules ) = @_;
+    my ( $atom_site, $rules, $options ) = @_;
+    my ( $keep_original ) = ( $options->{'keep_original'} );
     $rules //= [];
+    $keep_original //= 1;
     for my $rule ( @{ $rules } ) {
         my $from_atom_id = $rule->{'from'};
         my $to_atom_id = $rule->{'to'};
@@ -407,7 +409,7 @@ sub replace_atom_site_ids
         $atom_site->{$to_atom_id}{'id'} = $to_atom_id;
         $atom_site->{$to_atom_id}{'origin_atom_id'} = $from_atom_id;
 
-        delete $atom_site->{$from_atom_id};
+        delete $atom_site->{$from_atom_id} if ! $keep_original;
     }
 
     return;
