@@ -38,8 +38,6 @@ use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
-                     connect_atoms_explicitly
-                     disconnect_atoms_explicitly
                      is_neighbour
                      is_second_neighbour );
 use ForceField::Parameters;

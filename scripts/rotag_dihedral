@@ -14,9 +14,7 @@ use BondParameters qw( collect_dihedral_angles
 use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( assign_hetatoms
-                     connect_atoms
-                     connect_atoms_explicitly
-                     disconnect_atoms_explicitly );
+                     connect_atoms );
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
