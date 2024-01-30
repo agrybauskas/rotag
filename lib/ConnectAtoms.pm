@@ -388,7 +388,6 @@ sub assign_hetatoms
                     map { $_ => $atom_site->{$connected_atom_id}{$_} }
                     ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                       'pdbx_PDB_model_num' );
-                $inherited_data_items{'origin_atom_id'} = $hetatom_id;
 
                 replace_atom_site_ids( $atom_site,
                                        [ { 'from' => $hetatom_id,
