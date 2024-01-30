@@ -9,7 +9,6 @@ our @EXPORT_OK = qw( assign_hetatoms
                      connect_atoms
                      connect_atoms_explicitly
                      create_hetatom_struct_conn
-                     disconnect_atoms_explicitly
                      is_connected
                      is_neighbour
                      is_second_neighbour );
@@ -299,43 +298,6 @@ sub connect_atoms_explicitly
     return;
 }
 
-# Removes connections explicitly.
-# Input:
-#     $atom_site - atom data structure.
-#     $atom_id_list - first atom id list.
-#     $options->{'connection_type'} - connection type
-#     (connections|connections_hetatom).
-# Output:
-#     none - removes connections between atoms by removing "connection" key and
-#     values to atom site data structure.
-
-sub disconnect_atoms_explicitly
-{
-    my ( $atom_site, $atom_id_list, $options ) = @_;
-    my ( $connection_type ) = ( $options->{'connection_type'} );
-
-    $connection_type //= 'connections';
-
-    for my $atom_id ( @{ $atom_id_list } ) {
-        next if ! defined $atom_site->{$atom_id} ||
-            ! defined $atom_site->{$atom_id}{$connection_type};
-
-        for my $connection_id ( @{ $atom_site->{$atom_id}{$connection_type} } ) {
-            next if ! defined $atom_site->{$connection_id} ||
-                ! defined $atom_site->{$connection_id}{$connection_type};
-
-            $atom_site->{$connection_id}{$connection_type} = [
-                grep { $atom_id ne $_  }
-                    @{ $atom_site->{$connection_id}{$connection_type} }
-            ];
-        }
-
-        delete $atom_site->{$atom_id}{$connection_type};
-    }
-
-    return;
-}
-
 # Returns original atom id.
 # Input:
 #     $atom_site - atom data structure;
@@ -434,8 +396,6 @@ sub assign_hetatoms
                 }
                 $atom_site->{$last_atom_id} = $current_hetatom;
 
-                disconnect_atoms_explicitly( $atom_site,
-                                             [ $hetatom_id ] );
                 connect_atoms_explicitly( $atom_site,
                                           [ $last_atom_id ],
                                           [ $connected_atom_id ] );
