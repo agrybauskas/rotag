@@ -408,8 +408,6 @@ sub assign_hetatoms
                 $last_atom_id++;
             }
         }
-
-        delete $atom_site->{$hetatom_id};
     }
 
     return;

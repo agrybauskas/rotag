@@ -391,6 +391,8 @@ sub replace_atom_site_ids
 
         # Changes atom id occurences that are related to connected atoms.
         # NOTE: could be optimised with early break.
+        # NOTE: it could be implemented with more broader application, such as
+        # bond parameter changes.
         for my $connection_id ( @{ $atom_site->{$to_atom_id}{'connections'} } ){
             foreach( @{ $atom_site->{$connection_id}{'connections'} } ) {
                 $_ =~ s/^${from_atom_id}$/${to_atom_id}/g;
