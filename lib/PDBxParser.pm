@@ -28,6 +28,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      raw2indexed
                      raw2record
                      record2raw
+                     replace_atom_site_ids
                      related_category_data
                      split_by
                      to_csv
@@ -376,6 +377,13 @@ sub related_category_data
     }
 
     return \%related_category_data;
+}
+
+sub replace_atom_site_ids
+{
+    my ( $atom_site, $rules ) = @_;
+    $rules //= {};
+    return;
 }
 
 # -------------------- Conversions between data structures -------------------- #

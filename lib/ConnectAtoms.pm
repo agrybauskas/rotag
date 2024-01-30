@@ -27,6 +27,7 @@ use Measure qw( around_distance
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    filter_new
+                   replace_atom_site_ids
                    split_by
                    unique_residue_key );
 use Version qw( $VERSION );
@@ -396,6 +397,8 @@ sub assign_hetatoms
                 }
                 $atom_site->{$last_atom_id} = $current_hetatom;
 
+                replace_atom_site_ids( $atom_site,
+                                       { $hetatom_id => $last_atom_id } );
                 connect_atoms_explicitly( $atom_site,
                                           [ $last_atom_id ],
                                           [ $connected_atom_id ] );
