@@ -386,6 +386,18 @@ sub replace_atom_site_ids
     for my $rule ( @{ $rules } ) {
         my $from_atom_id = $rule->{'from'};
         my $to_atom_id = $rule->{'to'};
+        $atom_site->{$to_atom_id} = clone $atom_site->{$from_atom_id};
+        $atom_site->{$to_atom_id}{'id'} = $to_atom_id;
+
+        # Changes atom id occurences that are related to connected atoms.
+        # NOTE: could be optimised with early break.
+        for my $connection_id ( @{ $atom_site->{$to_atom_id}{'connections'} } ){
+            foreach( @{ $atom_site->{$connection_id}{'connections'} } ) {
+                $_ =~ s/^${from_atom_id}$/${to_atom_id}/g;
+            }
+        }
+
+        delete $atom_site->{$from_atom_id};
     }
     return;
 }

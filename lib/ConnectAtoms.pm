@@ -379,23 +379,24 @@ sub assign_hetatoms
 
                 next if defined $visited_residues_by_hetatom{$connected_unique_residue_key} &&
                     $visited_residues_by_hetatom{$connected_unique_residue_key} == $hetatom_id;
-                $visited_residues_by_hetatom{$connected_unique_residue_key} = $hetatom_id;
+                $visited_residues_by_hetatom{$connected_unique_residue_key} =
+                    $hetatom_id;
 
-                # Heteroatom inherits residue information from the atom that is
-                # connected to.
-                my $current_hetatom = clone $atom_site->{$hetatom_id};
-                foreach( 'label_seq_id', 'label_asym_id', 'label_alt_id',
-                         'pdbx_PDB_model_num' ) {
-                    $current_hetatom->{$_} = $atom_site->{$connected_atom_id}{$_};
-                }
-                $current_hetatom->{'id'} = $last_atom_id;
-                $current_hetatom->{'origin_atom_id'} = $hetatom_id;
-                # HACK: Carefully analyse when assigning heteroatom-heteroatom
-                # connections.
-                if( defined $current_hetatom->{'hybridization'} ) {
-                    $current_hetatom->{'hybridization'} = '.';
-                }
-                $atom_site->{$last_atom_id} = $current_hetatom;
+                # # Heteroatom inherits residue information from the atom that is
+                # # connected to.
+                # my $current_hetatom = clone $atom_site->{$hetatom_id};
+                # foreach( 'label_seq_id', 'label_asym_id', 'label_alt_id',
+                #          'pdbx_PDB_model_num' ) {
+                #     $current_hetatom->{$_} = $atom_site->{$connected_atom_id}{$_};
+                # }
+                # $current_hetatom->{'id'} = $last_atom_id;
+                # $current_hetatom->{'origin_atom_id'} = $hetatom_id;
+                # # HACK: Carefully analyse when assigning heteroatom-heteroatom
+                # # connections.
+                # if( defined $current_hetatom->{'hybridization'} ) {
+                #     $current_hetatom->{'hybridization'} = '.';
+                # }
+                # $atom_site->{$last_atom_id} = $current_hetatom;
 
                 replace_atom_site_ids( $atom_site,
                                        [ { 'from' => $hetatom_id,
