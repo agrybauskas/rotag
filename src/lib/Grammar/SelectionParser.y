@@ -1,5 +1,3 @@
-%require "3.2"
-
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,13 +9,18 @@
 
 #include "../PDBxParser.h"
 
-void yyerror(const char* message);
-virtual int yyFlexLexer::yylex();
+void selection_parser(AtomSite atom_site, std::string query);
+
+extern "C" {
+  int yylex(void);
+  int yyerror(char *message);
+}
 %}
 
-%token NUM FLOAT STR
+%token NUM STR
 
-%left ","
+/* %token NUM FLOAT STR */
+%left COMMA
 /* %left ".." "=" */
 /* %left 'around' 'rand' 'angles' */
 /* %right 'byres' 'expand' */
@@ -47,4 +50,5 @@ str_ope
 
 %%
 
-void yyerror(const char* message) {}
+void selection_parser(AtomSite atom_site, std::string query) {
+}

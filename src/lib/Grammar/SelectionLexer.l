@@ -6,7 +6,8 @@
 
 %%
 
+","       {return COMMA;}
 [0-9]+    {return NUM;}
-[A-Za-z]+ {return STR;}
+[A-Za-z]+ {return;}
 
 %%
