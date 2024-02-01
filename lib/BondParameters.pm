@@ -152,8 +152,7 @@ sub rotatable_bonds
             if( $atom_site->{$second_atom_id}{'hybridization'} eq 'sp3' ||
                 $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
                 ( $include_hetatoms &&
-                  $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' &&
-                  $atom_site->{$fourth_atom_id}{'hybridization'} eq '.' ) ) {
+                  $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' ) ) {
                 if( exists $rotatable_bonds_cache{$second_atom_id}{$third_atom_id} ) {
                     push @{ $rotatable_bonds{$fourth_atom_id} },
                         $rotatable_bonds_cache{$second_atom_id}{$third_atom_id};
