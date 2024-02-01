@@ -747,16 +747,7 @@ sub detect_bond_parameter_type
         $bond_parameter_type = 'dihedral_angle';
     }
 
-    my $contains_hetatom = 0;
-    my $hetatom_names =
-        $parameters->{'_[local]_sidechain_hetatom_extension'};
-    for my $bond_parameter_name_part ( @bond_parameter_name_parts ) {
-        if( exists $hetatom_names->{$bond_parameter_name_part} &&
-            $hetatom_names->{$bond_parameter_name_part} ) {
-            $contains_hetatom = 1;
-            last;
-        }
-    }
+    my $contains_hetatom = ( $bond_parameter_name =~ m/\./g ) ? 1 : 0;
 
     return $bond_parameter_type, $contains_hetatom;
 }
