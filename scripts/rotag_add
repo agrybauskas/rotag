@@ -7,11 +7,14 @@ use autodie;
 use Clone qw( clone );
 use Getopt::Long;
 use JSON;
-use List::Util qw( max );
+use List::Util qw( any
+                   max
+                   uniq );
 use Try::Tiny;
 
 use BondParameters qw( bendable_angles
                        collect_dihedral_angles
+                       detect_bond_parameter_type
                        stretchable_bonds
                        rotatable_bonds );
 use BondProperties qw( hybridization );
@@ -271,6 +274,21 @@ for my $pdbx_file ( @ARGV ) {
                             'attributes' => [ 'label_comp_id' ] } );
         }
 
+        my @bond_parameter_types =
+            map { [ detect_bond_parameter_type( $parameters, $_ ) ] }
+            uniq sort
+            map { $rotamer_angle->{$_}{'type'} }
+            keys %{ $rotamer_angle };
+
+        my $include_hetatoms =
+            any { $_->[1] } @bond_parameter_types;
+        my $do_rotable_bonds =
+            any { $_->[0] eq 'dihedral_angle' } @bond_parameter_types;
+        my $do_stretchable_bonds =
+            any { $_->[0] eq 'bond_length' } @bond_parameter_types;
+        my $do_bendable_angles =
+            any { $_->[0] eq 'bond_angle' } @bond_parameter_types;
+
         my $atom_site_split_groups =
             split_by( { 'atom_site' => $target_atom_site,
                         'append_dot' => 1 } );
@@ -311,21 +329,30 @@ for my $pdbx_file ( @ARGV ) {
                 delete $selected_atom_site->{$origin_atom_id};
             }
 
-            rotatable_bonds( $parameters,
-                             $residue_site,
-                             { ( 'include_hetatoms' =>
+            if( $do_rotable_bonds ) {
+                rotatable_bonds( $parameters,
+                                 $residue_site,
+                                 { ( 'include_hetatoms' =>
                                      ( defined $struct_conn &&
-                                       %{ $struct_conn } ? 1 : 0 ) ) } );
-            stretchable_bonds( $parameters,
-                               $residue_site,
-                               { ( 'include_hetatoms' =>
-                                   ( defined $struct_conn &&
-                                     %{ $struct_conn } ? 1 : 0 ) ) } );
-            bendable_angles( $parameters,
-                             $residue_site,
-                             { ( 'include_hetatoms' =>
-                                     ( defined $struct_conn &&
-                                       %{ $struct_conn } ? 1 : 0 ) ) } );
+                                       %{ $struct_conn } &&
+                                       $include_hetatoms ? 1 : 0 ) ) } );
+            }
+            if( $do_stretchable_bonds ) {
+                stretchable_bonds( $parameters,
+                                   $residue_site,
+                                   { ( 'include_hetatoms' =>
+                                       ( defined $struct_conn &&
+                                         %{ $struct_conn } &&
+                                         $include_hetatoms ? 1 : 0 ) ) } );
+            }
+            if( $do_bendable_angles ) {
+                bendable_angles( $parameters,
+                                 $residue_site,
+                                 { ( 'include_hetatoms' =>
+                                         ( defined $struct_conn &&
+                                           %{ $struct_conn } &&
+                                           $include_hetatoms ? 1 : 0 ) ) } );
+            }
 
             # Generates rotational model.
             rotation_translation( $parameters, $residue_site );
