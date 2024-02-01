@@ -736,7 +736,7 @@ sub detect_bond_parameter_type
 {
     my ( $parameters, $bond_parameter_name ) = @_;
 
-    my @bond_parameter_name_parts = split /-,/, $bond_parameter_name;
+    my @bond_parameter_name_parts = split /-|\./, $bond_parameter_name;
 
     my $bond_parameter_type;
     if( scalar @bond_parameter_name_parts == 3 ) {

@@ -72,13 +72,13 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 27 ASP A 1 . 0.333333 OD1-MG 1.500000 angstrom
+1 1 27 ASP A 1 . 0.333333 OD1.MG 1.500000 angstrom
 2 1 27 ASP A 1 . 0.333333 chi1 60.000 degrees
 3 1 27 ASP A 1 . 0.333333 chi2 -180.000 degrees
-4 2 27 ASP A 1 . 0.333333 OD1-MG 1.500000 angstrom
+4 2 27 ASP A 1 . 0.333333 OD1.MG 1.500000 angstrom
 5 2 27 ASP A 1 . 0.333333 chi1 60.000 degrees
 6 2 27 ASP A 1 . 0.333333 chi2 -60.000 degrees
-7 3 27 ASP A 1 . 0.333333 OD1-MG 1.500000 angstrom
+7 3 27 ASP A 1 . 0.333333 OD1.MG 1.500000 angstrom
 8 3 27 ASP A 1 . 0.333333 chi1 60.000 degrees
 9 3 27 ASP A 1 . 0.333333 chi2 60.000 degrees
 #

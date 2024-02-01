@@ -77,36 +77,36 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 27 ASP A 1 . 0.125000 CG-OD1-MG -180.000 degrees
-2 1 27 ASP A 1 . 0.125000 OD1-MG 1.500000 angstrom
+1 1 27 ASP A 1 . 0.125000 CG-OD1.MG -180.000 degrees
+2 1 27 ASP A 1 . 0.125000 OD1.MG 1.500000 angstrom
 3 1 27 ASP A 1 . 0.125000 chi1 60.000 degrees
 4 1 27 ASP A 1 . 0.125000 chi2 -180.000 degrees
-5 2 27 ASP A 1 . 0.125000 CG-OD1-MG -90.000 degrees
-6 2 27 ASP A 1 . 0.125000 OD1-MG 1.500000 angstrom
+5 2 27 ASP A 1 . 0.125000 CG-OD1.MG -90.000 degrees
+6 2 27 ASP A 1 . 0.125000 OD1.MG 1.500000 angstrom
 7 2 27 ASP A 1 . 0.125000 chi1 60.000 degrees
 8 2 27 ASP A 1 . 0.125000 chi2 -180.000 degrees
-9 3 27 ASP A 1 . 0.125000 CG-OD1-MG 180.000 degrees
-10 3 27 ASP A 1 . 0.125000 OD1-MG 1.500000 angstrom
+9 3 27 ASP A 1 . 0.125000 CG-OD1.MG 180.000 degrees
+10 3 27 ASP A 1 . 0.125000 OD1.MG 1.500000 angstrom
 11 3 27 ASP A 1 . 0.125000 chi1 60.000 degrees
 12 3 27 ASP A 1 . 0.125000 chi2 -180.000 degrees
-13 4 27 ASP A 1 . 0.125000 CG-OD1-MG -180.000 degrees
-14 4 27 ASP A 1 . 0.125000 OD1-MG 1.500000 angstrom
+13 4 27 ASP A 1 . 0.125000 CG-OD1.MG -180.000 degrees
+14 4 27 ASP A 1 . 0.125000 OD1.MG 1.500000 angstrom
 15 4 27 ASP A 1 . 0.125000 chi1 60.000 degrees
 16 4 27 ASP A 1 . 0.125000 chi2 -60.000 degrees
-17 5 27 ASP A 1 . 0.125000 CG-OD1-MG 90.000 degrees
-18 5 27 ASP A 1 . 0.125000 OD1-MG 1.500000 angstrom
+17 5 27 ASP A 1 . 0.125000 CG-OD1.MG 90.000 degrees
+18 5 27 ASP A 1 . 0.125000 OD1.MG 1.500000 angstrom
 19 5 27 ASP A 1 . 0.125000 chi1 60.000 degrees
 20 5 27 ASP A 1 . 0.125000 chi2 -60.000 degrees
-21 6 27 ASP A 1 . 0.125000 CG-OD1-MG 180.000 degrees
-22 6 27 ASP A 1 . 0.125000 OD1-MG 1.500000 angstrom
+21 6 27 ASP A 1 . 0.125000 CG-OD1.MG 180.000 degrees
+22 6 27 ASP A 1 . 0.125000 OD1.MG 1.500000 angstrom
 23 6 27 ASP A 1 . 0.125000 chi1 60.000 degrees
 24 6 27 ASP A 1 . 0.125000 chi2 -60.000 degrees
-25 7 27 ASP A 1 . 0.125000 CG-OD1-MG -180.000 degrees
-26 7 27 ASP A 1 . 0.125000 OD1-MG 1.500000 angstrom
+25 7 27 ASP A 1 . 0.125000 CG-OD1.MG -180.000 degrees
+26 7 27 ASP A 1 . 0.125000 OD1.MG 1.500000 angstrom
 27 7 27 ASP A 1 . 0.125000 chi1 60.000 degrees
 28 7 27 ASP A 1 . 0.125000 chi2 60.000 degrees
-29 8 27 ASP A 1 . 0.125000 CG-OD1-MG 180.000 degrees
-30 8 27 ASP A 1 . 0.125000 OD1-MG 1.500000 angstrom
+29 8 27 ASP A 1 . 0.125000 CG-OD1.MG 180.000 degrees
+30 8 27 ASP A 1 . 0.125000 OD1.MG 1.500000 angstrom
 31 8 27 ASP A 1 . 0.125000 chi1 60.000 degrees
 32 8 27 ASP A 1 . 0.125000 chi2 60.000 degrees
 #
