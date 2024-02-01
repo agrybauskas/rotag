@@ -1,26 +1,28 @@
+%code requires{
+  #include <string>
+  #include <vector>
+
+  #include "../PDBxParser.h"
+
+  void selection_parser(AtomSite atom_site, std::string query);
+}
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <string>
-#include <vector>
-
 #include "SelectionLexer.h"
 
-#include "../PDBxParser.h"
-
-void selection_parser(AtomSite atom_site, std::string query);
-
-extern "C" {
-  int yylex(void);
-  int yyerror(char *message);
-}
+int yyparse();
+int yylex(void);
+void yyerror(std::string message){}
 %}
 
-%token NUM STR
+%token NUM STR COMMA
 
 /* %token NUM FLOAT STR */
 %left COMMA
+%left NUM STR
 /* %left ".." "=" */
 /* %left 'around' 'rand' 'angles' */
 /* %right 'byres' 'expand' */
@@ -35,7 +37,7 @@ exp
 ;
 
 any_ope
-    : any_ope "," any_ope
+    : any_ope COMMA any_ope
     | num_ope
     | str_ope
 ;
