@@ -71,9 +71,9 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1106 222 27 ASP A 1 44 1.000000 CB-CG-OD1-MG -180.000 degrees
-1107 222 27 ASP A 1 44 1.000000 CG-OD1-MG 90.000 degrees
-1108 222 27 ASP A 1 44 1.000000 OD1-MG 1.500000 angstrom
+1106 222 27 ASP A 1 44 1.000000 CB-CG-OD1.MG -180.000 degrees
+1107 222 27 ASP A 1 44 1.000000 CG-OD1.MG 90.000 degrees
+1108 222 27 ASP A 1 44 1.000000 OD1.MG 1.500000 angstrom
 1109 222 27 ASP A 1 44 1.000000 chi1 -180.000 degrees
 1110 222 27 ASP A 1 44 1.000000 chi2 72.000 degrees
 #

@@ -265,7 +265,7 @@
         'order' => 5,
         'value' => '2.06329862624437'
       },
-      'CG-OD1-MG' => {
+      'CG-OD1.MG' => {
         'atom_ids' => [
           '153',
           '154',
@@ -399,7 +399,7 @@
             return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
         },
         'symbols' => [
-          'CB-CG-OD1-MG'
+          'CB-CG-OD1.MG'
         ]
       }, 'Symbolic' ),
       [
@@ -607,7 +607,7 @@
             return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
         },
         'symbols' => [
-          'CG-OD1-MG'
+          'CG-OD1.MG'
         ]
       }, 'Symbolic' ),
       [
@@ -636,7 +636,7 @@
         'order' => 5,
         'value' => '-0.953947403471068'
       },
-      'CB-CG-OD1-MG' => {
+      'CB-CG-OD1.MG' => {
         'atom_ids' => [
           '152',
           '153',

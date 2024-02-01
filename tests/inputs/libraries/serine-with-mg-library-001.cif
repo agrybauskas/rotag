@@ -42,9 +42,9 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-101 26 18 SER A 1 . 0.001715 CA-CB-OG-MG -36.000 degrees
-102 26 18 SER A 1 . 0.001715 CB-OG-MG 120.000 degrees
-103 26 18 SER A 1 . 0.001715 OG-MG 1.500000 angstrom
+101 26 18 SER A 1 . 0.001715 CA-CB-OG.MG -36.000 degrees
+102 26 18 SER A 1 . 0.001715 CB-OG.MG 120.000 degrees
+103 26 18 SER A 1 . 0.001715 OG.MG 1.500000 angstrom
 104 26 18 SER A 1 . 0.001715 chi1 -180.000 degrees
 #
 loop_

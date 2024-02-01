@@ -74,7 +74,7 @@ $VAR1 = [
         return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
     },
     'symbols' => [
-      'CB-CG-OD1-MG'
+      'CB-CG-OD1.MG'
     ]
   }, 'Symbolic' ),
   [
@@ -230,7 +230,7 @@ $VAR1 = [
         return [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, $svar], [0, 0, 0, 1]];
     },
     'symbols' => [
-      'OD1-MG'
+      'OD1.MG'
     ]
   }, 'Symbolic' ),
   [
