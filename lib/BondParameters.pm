@@ -186,12 +186,9 @@ sub rotatable_bonds
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
             my @rotatable_bond_name_keys =
-                ( join( '-', map { $atom_site->{$_}{'label_atom_id'} }
-                                @{ $bond_atom_ids } ),
-                  join( '-', ( '.',
-                               $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
-                               $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
-                               '.' ) ) );
+                @{ bond_parameter_name_keys( $parameters,
+                                             $atom_site,
+                                             $bond_atom_ids ) };
             my ( $rotatable_bond_name ) =
                 grep { defined $_ }
                      ( ( map { $explicit_dihedral_names->{$residue_name}{$_} }
@@ -758,6 +755,19 @@ sub detect_bond_parameter_type
     }
 
     return $bond_parameter_type, $contains_hetatom;
+}
+
+sub bond_parameter_name_keys
+{
+    my ( $parameters, $atom_site, $bond_atom_ids, $options ) = @_;
+    my @bond_parameter_name_keys =
+        ( join( '-', map { $atom_site->{$_}{'label_atom_id'} }
+                        @{ $bond_atom_ids } ),
+          join( '-', ( '.',
+                       $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
+                       $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
+                       '.' ) ) );
+    return \@bond_parameter_name_keys;
 }
 
 1;
