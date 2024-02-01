@@ -186,9 +186,15 @@ sub rotatable_bonds
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $rotatable_bonds{$atom_id} } ) {
             my @rotatable_bond_name_keys =
-                @{ bond_parameter_name_keys( $parameters,
-                                             $atom_site,
-                                             $bond_atom_ids ) };
+                ( bond_parameter_name_key(
+                      $parameters,
+                      $atom_site,
+                      $bond_atom_ids ),
+                  bond_parameter_name_key(
+                      $parameters,
+                      $atom_site,
+                      $bond_atom_ids,
+                      { 'add_any_trailing_atoms' => 1 } ) );
             my ( $rotatable_bond_name ) =
                 grep { defined $_ }
                      ( ( map { $explicit_dihedral_names->{$residue_name}{$_} }
@@ -320,9 +326,10 @@ sub stretchable_bonds
     for my $atom_id ( keys %stretchable_bonds ) {
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $stretchable_bonds{$atom_id} } ) {
-            my $stretchable_bond_name =
-                join '-', map { $atom_site->{$_}{'label_atom_id'} }
-                             @{ $bond_atom_ids };
+            my ( $stretchable_bond_name ) =
+                ( bond_parameter_name_key( $parameters,
+                                           $atom_site,
+                                           $bond_atom_ids ) );
 
             # Calculates bond length if it is not already calculated.
             my $bond_length_key = join ",", @{ $bond_atom_ids };
@@ -449,9 +456,10 @@ sub bendable_angles
     for my $atom_id ( keys %bendable_angles ) {
         my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $bendable_angles{$atom_id} } ) {
-            my $bendable_angle_name =
-                join '-', map { $atom_site->{$_}{'label_atom_id'} }
-                             @{ $bond_atom_ids };
+            my ( $bendable_angle_name ) =
+                ( bond_parameter_name_key( $parameters,
+                                           $atom_site,
+                                           $bond_atom_ids ) );
 
             # Calculates bond angle if it is not already calculated.
             my $bond_angle_key = join ",", @{ $bond_atom_ids };
@@ -757,17 +765,20 @@ sub detect_bond_parameter_type
     return $bond_parameter_type, $contains_hetatom;
 }
 
-sub bond_parameter_name_keys
+sub bond_parameter_name_key
 {
     my ( $parameters, $atom_site, $bond_atom_ids, $options ) = @_;
-    my @bond_parameter_name_keys =
-        ( join( '-', map { $atom_site->{$_}{'label_atom_id'} }
-                        @{ $bond_atom_ids } ),
-          join( '-', ( '.',
-                       $atom_site->{$bond_atom_ids->[1]}{'label_atom_id'},
-                       $atom_site->{$bond_atom_ids->[2]}{'label_atom_id'},
-                       '.' ) ) );
-    return \@bond_parameter_name_keys;
+    my ( $add_any_trailing_atoms ) = ( $options->{'add_any_trailing_atoms'} );
+    $add_any_trailing_atoms //= 0;
+    my @bond_parameter_name_key_parts = ();
+    for my $i ( 0..$#{ $bond_atom_ids } ) {
+        my $atom_symbol =
+            $add_any_trailing_atoms && ( $i == 0 || $i == $#{ $bond_atom_ids })?
+            '.' : $atom_site->{$bond_atom_ids->[$i]}{'label_atom_id'};
+        my $bond_symbol = $i == $#{ $bond_atom_ids } ? '': '-';
+        push @bond_parameter_name_key_parts, $atom_symbol, $bond_symbol;
+    }
+    return join '', @bond_parameter_name_key_parts;
 }
 
 1;
