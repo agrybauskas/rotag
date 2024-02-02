@@ -339,9 +339,10 @@ sub assign_hetatoms
     return if ! %{ $struct_conn };
 
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
+    my $current_atom_site = clone $atom_site;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my $hetatom_atom_site = filter_new(
-            $atom_site,
+            $current_atom_site,
             { 'include' =>
               { 'group_PDB' => [ 'HETATM' ],
                 'label_seq_id' => [
@@ -359,7 +360,7 @@ sub assign_hetatoms
         next if ! %{ $connected_hetatom_site };
 
         my $connected_atom_site = filter_new(
-            $atom_site,
+            $current_atom_site,
             { 'include' =>
               { 'label_seq_id' => [
                     $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
@@ -371,14 +372,13 @@ sub assign_hetatoms
 
         next if ! %{ $connected_atom_site };
 
-        # HACK: the connected atom ids should not be dependent on sorting.
         my ( $connected_atom_id ) = keys %{ $connected_atom_site };
         my ( $connected_hetatom_id ) = sort keys %{ $connected_hetatom_site };
 
         # Heteroatom inherits residue information from the atom that is
         # connected to.
         my %inherited_data_items =
-            map { $_ => $atom_site->{$connected_atom_id}{$_} }
+            map { $_ => $current_atom_site->{$connected_atom_id}{$_} }
                 ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                   'pdbx_PDB_model_num' );
 
