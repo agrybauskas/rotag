@@ -338,66 +338,67 @@ sub assign_hetatoms
 
     return if ! %{ $struct_conn };
 
-    my $hetatom_site =
-        filter_new( $atom_site,
-                    { 'include' => { 'group_PDB' => [ 'HETATM' ] } } );
-
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
-    for my $hetatom_id ( keys %{ $hetatom_site } ) {
-        my ( $hetatom_label_seq_id,
-             $hetatom_label_asym_id,
-             $hetatom_label_atom_id ) =
-            map { $hetatom_site->{$hetatom_id}{$_} }
-                ( 'label_seq_id', 'label_asym_id', 'label_atom_id' );
-        my $hetatom_struct_conn = filter_new(
-            $struct_conn,
+    for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
+        my $hetatom_atom_site = filter_new(
+            $atom_site,
             { 'include' =>
-                  { 'ptnr2_label_seq_id' => [ $hetatom_label_seq_id ],
-                    'ptnr2_label_asym_id' => [ $hetatom_label_asym_id ],
-                    'ptnr2_label_atom_id' => [ $hetatom_label_atom_id ] } }
+              { 'group_PDB' => [ 'HETATM' ],
+                'label_seq_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} ],
+                'label_asym_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] } }
         );
-        for my $hetatom_struct_conn_id ( sort keys %{ $hetatom_struct_conn } ) {
-            my $connected_atom_site = filter_new(
-                $atom_site,
-                { 'include' =>
-                  { 'label_seq_id' => [
-                        $hetatom_struct_conn->{$hetatom_struct_conn_id}
-                                              {'ptnr1_label_seq_id'}
-                    ],
-                    'label_asym_id' => [
-                        $hetatom_struct_conn->{$hetatom_struct_conn_id}
-                                              {'ptnr1_label_asym_id'}
-                    ],
-                    'label_atom_id' => [
-                        $hetatom_struct_conn->{$hetatom_struct_conn_id}
-                                              {'ptnr1_label_atom_id'} ] } }
-            );
+        my $connected_hetatom_site = filter_new(
+            $hetatom_atom_site,
+            { 'include' =>
+              { 'label_atom_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ] } }
+        );
 
-            # Iteration has to be performed, because '_struct_conn' does not
-            # have 'pdbx_PDB_model_num' and 'label_alt_id' entries.
-            for my $connected_atom_id ( keys %{ $connected_atom_site } ) {
-                # Heteroatom inherits residue information from the atom that is
-                # connected to.
-                my %inherited_data_items =
-                    map { $_ => $atom_site->{$connected_atom_id}{$_} }
-                    ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
-                      'pdbx_PDB_model_num' );
+        next if ! %{ $connected_hetatom_site };
 
-                replace_atom_site_ids( $atom_site,
-                                       [ { 'from' => $hetatom_id,
-                                           'to' => $last_atom_id } ],
-                                       $options );
+        my $connected_atom_site = filter_new(
+            $atom_site,
+            { 'include' =>
+              { 'label_seq_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
+                'label_asym_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ],
+                'label_atom_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] } }
+        );
+
+        next if ! %{ $connected_atom_site };
+
+        my ( $connected_atom_id ) = keys %{ $connected_atom_site };
+        my ( $connected_hetatom_id ) = keys %{ $connected_hetatom_site };
+
+        # Heteroatom inherits residue information from the atom that is
+        # connected to.
+        my %inherited_data_items =
+            map { $_ => $atom_site->{$connected_atom_id}{$_} }
+                ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
+                  'pdbx_PDB_model_num' );
+
+        for my $hetatom_id ( keys %{ $hetatom_atom_site } ) {
+            replace_atom_site_ids( $atom_site,
+                                   [ { 'from' => $hetatom_id,
+                                       'to' => $last_atom_id } ],
+                                   $options );
+
+            if( $hetatom_id eq $connected_hetatom_id ) {
                 connect_atoms_explicitly( $atom_site,
                                           [ $last_atom_id ],
                                           [ $connected_atom_id ] );
-
-                for my $attribute ( keys %inherited_data_items ) {
-                    $atom_site->{$last_atom_id}{$attribute} =
-                        $inherited_data_items{$attribute};
-                }
-
-                $last_atom_id++;
             }
+
+            for my $attribute ( keys %inherited_data_items ) {
+                $atom_site->{$last_atom_id}{$attribute} =
+                    $inherited_data_items{$attribute};
+            }
+
+            $last_atom_id++;
         }
     }
 
