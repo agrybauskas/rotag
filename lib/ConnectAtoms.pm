@@ -371,8 +371,9 @@ sub assign_hetatoms
 
         next if ! %{ $connected_atom_site };
 
+        # HACK: the connected atom ids should not be dependent on sorting.
         my ( $connected_atom_id ) = keys %{ $connected_atom_site };
-        my ( $connected_hetatom_id ) = keys %{ $connected_hetatom_site };
+        my ( $connected_hetatom_id ) = sort keys %{ $connected_hetatom_site };
 
         # Heteroatom inherits residue information from the atom that is
         # connected to.
@@ -381,7 +382,7 @@ sub assign_hetatoms
                 ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                   'pdbx_PDB_model_num' );
 
-        for my $hetatom_id ( keys %{ $hetatom_atom_site } ) {
+        for my $hetatom_id ( sort keys %{ $hetatom_atom_site } ) {
             replace_atom_site_ids( $atom_site,
                                    [ { 'from' => $hetatom_id,
                                        'to' => $last_atom_id } ],
