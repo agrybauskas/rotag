@@ -279,8 +279,12 @@ sub connect_atoms_explicitly
     my ( $connection_type ) = ( $options->{'connection_type'} );
 
     for my $first_atom_id ( @{ $first_atom_id_list } ) {
+        next if ! exists $atom_site->{$first_atom_id};
+
         my $first_atom_group_PDB = $atom_site->{$first_atom_id}{'group_PDB'};
         for my $second_atom_id ( @{ $second_atom_id_list } ) {
+            next if ! exists $atom_site->{$second_atom_id};
+
             my $second_atom_group_PDB =
                 $atom_site->{$second_atom_id}{'group_PDB'};
             if( ( $first_atom_group_PDB eq 'HETATM' ||
