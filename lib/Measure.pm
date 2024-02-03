@@ -53,7 +53,8 @@ my %potentials = (
             'lennard_jones' => \&ForceField::NonBonded::lennard_jones,
             'coulomb' => \&ForceField::NonBonded::coulomb,
             'h_bond' => \&ForceField::NonBonded::h_bond,
-        }
+        },
+        'cutoff' => \&ForceField::NonBonded::smooth_cutoff,
     },
     'torsion' => {
         'bonded' => {
@@ -826,7 +827,11 @@ sub rmsd_sidechains
 #
 # Calculates energy values of the given structure.
 # Input:
+#     $parameters - parameter data structure (see ForceField::Parameters.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $potential - name of the potential.
 # Output:
+#     \@energies - list of energy data structure objects (see Energy.pm).
 #
 
 sub energy
@@ -874,6 +879,11 @@ sub energy
     my %non_bonded_potentials = ();
     if( exists $potentials{$potential}{'non_bonded'} ) {
         %non_bonded_potentials = %{ $potentials{$potential}{'non_bonded'} };
+    }
+
+    my $cutoff = sub { return 1; };
+    if( exists $potentials{$potential}{'cutoff'} ) {
+        $cutoff = $potentials{$potential}{'cutoff'};
     }
 
     my %options = ();
@@ -930,6 +940,12 @@ sub energy
                             $non_bonded_potential,
                             [ $atom_id, $neighbour_atom_id ],
                             $non_bonded_potentials{$non_bonded_potential}(
+                                $parameters,
+                                $atom_site->{$atom_id},
+                                $atom_site->{$neighbour_atom_id},
+                                \%options
+                            ) *
+                            $cutoff->(
                                 $parameters,
                                 $atom_site->{$atom_id},
                                 $atom_site->{$neighbour_atom_id},
