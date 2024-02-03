@@ -388,6 +388,9 @@ sub replace_atom_site_ids
     for my $rule ( @{ $rules } ) {
         my $from_atom_id = $rule->{'from'};
         my $to_atom_id = $rule->{'to'};
+
+        next if ! exists $atom_site->{$from_atom_id};
+
         $atom_site->{$to_atom_id} = clone $atom_site->{$from_atom_id};
 
         if( defined $atom_site->{$to_atom_id}{'connections'} &&
