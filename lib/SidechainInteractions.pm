@@ -241,7 +241,8 @@ sub predict
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                     next if $ignore_rotamers{$neighbour_rotamer_id};
 
-                    if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} ) {
+                    if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} &&
+                        ! $dry_run ) {
                         my %neighbour_angles =
                             map { $rotamer_angles->{$neighbour_rotamer_id}{$_}{'type'} =>
                                   $rotamer_angles->{$neighbour_rotamer_id}{$_}{'value'} }
@@ -262,7 +263,7 @@ sub predict
                             $parameters,
                             $rotamer_atom_site->{$rotamer_id},
                             $rotamer_atom_site->{$neighbour_rotamer_id},
-                            \&ForceField::NonBonded::general ) / 2;
+                            \&ForceField::NonBonded::general ) / 2 if !$dry_run;
 
                     # Under the cutoff limit.
                     if( $pairwise_energy_sum <= $cutoff_atom  ) {
