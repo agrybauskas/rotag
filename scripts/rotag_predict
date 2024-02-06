@@ -155,6 +155,7 @@ for my $pdbx_file ( @ARGV ) {
 
         $sidechain_interactions->predict( {
             'non_bonded_potential' => \&ForceField::NonBonded::general,
+            'program_called_by' => $0,
             'dry_run' => $dry_run,
             'verbose' => $verbose,
         } );

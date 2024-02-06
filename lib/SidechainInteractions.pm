@@ -9,6 +9,7 @@ use Clone qw( clone );
 
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( connect_atoms );
+use Logging qw( info );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
 use ForceField::NonBonded qw( general );
@@ -174,13 +175,15 @@ sub predict
 {
     my ( $self, $options ) = @_;
     my ( $parameters, $residue_pairs, $rotamer_pairs, $rotamer_angles,
-         $residue_atom_site, $rotamer_atom_site, $dry_run, $verbose ) =
+         $residue_atom_site, $rotamer_atom_site, $program_called_by, $dry_run,
+         $verbose ) =
         ( $self->{'parameters'},
           $self->{'residue_pairs'},
           $self->{'rotamer_pairs'},
           $self->{'rotamer_angles'},
           $self->{'residue_atom_site'},
           $self->{'rotamer_atom_site'},
+          $self->{'program_called_by'},
           $self->{'dry_run'},
           $self->{'verbose'} );
 
@@ -259,11 +262,12 @@ sub predict
 
                     # Calculate pairwise energy.
                     my $pairwise_energy_sum =
-                        pairwise_rotamer_energy(
-                            $parameters,
-                            $rotamer_atom_site->{$rotamer_id},
-                            $rotamer_atom_site->{$neighbour_rotamer_id},
-                            \&ForceField::NonBonded::general ) / 2 if !$dry_run;
+                        ( pairwise_rotamer_energy(
+                              $parameters,
+                              $rotamer_atom_site->{$rotamer_id},
+                              $rotamer_atom_site->{$neighbour_rotamer_id},
+                              \&ForceField::NonBonded::general ) / 2 )
+                        if !$dry_run;
 
                     # Under the cutoff limit.
                     if( $pairwise_energy_sum <= $cutoff_atom  ) {
@@ -289,6 +293,13 @@ sub predict
                     $ignore_rotamers{$rotamer_id} = 1;
                 }
             }
+
+            print info(
+                { message =>
+                      $unique_residue_key . " " .
+                      $neighbour_unique_residue_key . "\n",
+                  program => $program_called_by }
+            ) if $verbose;
         }
     }
 
