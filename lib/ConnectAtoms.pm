@@ -344,7 +344,7 @@ sub assign_hetatoms
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     my $current_atom_site = clone $atom_site;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
-        my $hetatom_atom_site = filter_new(
+        my $hetatom_site = filter_new(
             $current_atom_site,
             { 'include' =>
               { 'group_PDB' => [ 'HETATM' ],
@@ -354,7 +354,7 @@ sub assign_hetatoms
                     $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] } }
         );
         my $connected_hetatom_site = filter_new(
-            $hetatom_atom_site,
+            $hetatom_site,
             { 'include' =>
               { 'label_atom_id' => [
                     $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ] } }
@@ -385,7 +385,7 @@ sub assign_hetatoms
                 ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                   'pdbx_PDB_model_num' );
 
-        for my $hetatom_id ( sort keys %{ $hetatom_atom_site } ) {
+        for my $hetatom_id ( sort keys %{ $hetatom_site } ) {
             replace_atom_site_ids( $atom_site,
                                    [ { 'from' => $hetatom_id,
                                        'to' => $last_atom_id } ],
