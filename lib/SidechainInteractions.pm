@@ -298,8 +298,11 @@ sub predict
             }
 
             print info(
-                { message => $unique_residue_key . " " .
-                      $neighbour_unique_residue_key . "\n",
+                { message =>
+                      $unique_residue_key . " " .
+                      scalar( keys %{ $rotamer_pairs->{$unique_residue_key} } ) . " " .
+                      $neighbour_unique_residue_key . " " .
+                      scalar( keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} } ) . "\n",
                   program => $program_called_by }
             ) if $verbose;
         }
