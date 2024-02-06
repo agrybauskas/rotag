@@ -174,15 +174,20 @@ sub predict
 {
     my ( $self, $options ) = @_;
     my ( $parameters, $residue_pairs, $rotamer_pairs, $rotamer_angles,
-         $residue_atom_site, $rotamer_atom_site ) =
+         $residue_atom_site, $rotamer_atom_site, $dry_run, $verbose ) =
         ( $self->{'parameters'},
           $self->{'residue_pairs'},
           $self->{'rotamer_pairs'},
           $self->{'rotamer_angles'},
           $self->{'residue_atom_site'},
-          $self->{'rotamer_atom_site'} );
+          $self->{'rotamer_atom_site'},
+          $self->{'dry_run'},
+          $self->{'verbose'} );
+
     my ( $non_bonded_potential, $bonded_potential ) =
         ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
+    $dry_run //= 0;
+    $verbose //= 0;
 
     my $cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
