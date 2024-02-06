@@ -175,20 +175,22 @@ sub predict
 {
     my ( $self, $options ) = @_;
     my ( $parameters, $residue_pairs, $rotamer_pairs, $rotamer_angles,
-         $residue_atom_site, $rotamer_atom_site, $program_called_by, $dry_run,
-         $verbose ) =
+         $residue_atom_site, $rotamer_atom_site ) =
         ( $self->{'parameters'},
           $self->{'residue_pairs'},
           $self->{'rotamer_pairs'},
           $self->{'rotamer_angles'},
           $self->{'residue_atom_site'},
-          $self->{'rotamer_atom_site'},
-          $self->{'program_called_by'},
-          $self->{'dry_run'},
-          $self->{'verbose'} );
+          $self->{'rotamer_atom_site'} );
 
-    my ( $non_bonded_potential, $bonded_potential ) =
-        ( $options->{'non_bonded_potential'}, $options->{'bonded_potential'} );
+    my ( $non_bonded_potential, $bonded_potential, $program_called_by,
+         $dry_run, $verbose ) =
+        ( $options->{'non_bonded_potential'},
+          $options->{'bonded_potential'},
+          $options->{'program_called_by'},
+          $options->{'dry_run'},
+          $options->{'verbose'} );
+
     $dry_run //= 0;
     $verbose //= 0;
 
@@ -262,12 +264,13 @@ sub predict
 
                     # Calculate pairwise energy.
                     my $pairwise_energy_sum =
-                        ( pairwise_rotamer_energy(
+                        $dry_run ?
+                        0.0 :
+                        pairwise_rotamer_energy(
                               $parameters,
                               $rotamer_atom_site->{$rotamer_id},
                               $rotamer_atom_site->{$neighbour_rotamer_id},
-                              \&ForceField::NonBonded::general ) / 2 )
-                        if !$dry_run;
+                              \&ForceField::NonBonded::general ) / 2;
 
                     # Under the cutoff limit.
                     if( $pairwise_energy_sum <= $cutoff_atom  ) {
@@ -295,8 +298,7 @@ sub predict
             }
 
             print info(
-                { message =>
-                      $unique_residue_key . " " .
+                { message => $unique_residue_key . " " .
                       $neighbour_unique_residue_key . "\n",
                   program => $program_called_by }
             ) if $verbose;
