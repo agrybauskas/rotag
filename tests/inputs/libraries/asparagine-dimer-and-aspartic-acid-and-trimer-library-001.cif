@@ -1,0 +1,390 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 312 N N . ASN A 1 43 18.799 30.637 43.888 1 T
+ATOM 313 C CA . ASN A 1 43 19.557 31.249 42.798 1 T
+ATOM 314 C C . ASN A 1 43 20.778 30.496 42.290 1 T
+ATOM 315 O O . ASN A 1 43 21.347 30.860 41.265 1 T
+ATOM 316 C CB . ASN A 1 43 19.933 32.676 43.183 1 T
+ATOM 317 C CG . ASN A 1 43 18.719 33.525 43.494 1 T
+ATOM 318 O OD1 . ASN A 1 43 17.783 33.602 42.699 1 T
+ATOM 319 N ND2 . ASN A 1 43 18.715 34.145 44.666 1 T
+ATOM 320 N N . ASN A 1 44 21.153 29.427 42.984 1 T
+ATOM 321 C CA . ASN A 1 44 22.312 28.618 42.621 1 T
+ATOM 322 C C . ASN A 1 44 23.608 29.436 42.670 1 T
+ATOM 323 O O . ASN A 1 44 24.386 29.465 41.709 1 T
+ATOM 324 C CB . ASN A 1 44 22.113 27.956 41.244 1 T
+ATOM 325 C CG . ASN A 1 44 23.156 26.883 40.950 1 T
+ATOM 326 O OD1 . ASN A 1 44 23.780 26.332 41.866 1 T
+ATOM 327 N ND2 . ASN A 1 44 23.349 26.581 39.671 1 T
+ATOM 1408 N N . ASP A 1 219 33.629 1.247 41.706 1 T
+ATOM 1409 C CA . ASP A 1 219 34.297 2.104 42.669 1 T
+ATOM 1410 C C . ASP A 1 219 34.468 1.397 44.005 1 T
+ATOM 1411 O O . ASP A 1 219 35.468 1.582 44.696 1 T
+ATOM 1412 C CB . ASP A 1 219 33.528 3.419 42.840 1 T
+ATOM 1413 C CG . ASP A 1 219 34.379 4.518 43.459 1 T
+ATOM 1414 O OD1 . ASP A 1 219 35.358 4.940 42.808 1 T
+ATOM 1415 O OD2 . ASP A 1 219 34.073 4.971 44.584 1 T
+ATOM 2153 N N . PHE B 1 43 5.565 1.433 1.647 1 T
+ATOM 2154 C CA . PHE B 1 43 6.266 0.296 2.190 1 T
+ATOM 2155 C C . PHE B 1 43 7.742 0.622 2.273 1 T
+ATOM 2156 O O . PHE B 1 43 8.314 1.166 1.346 1 T
+ATOM 2157 C CB . PHE B 1 43 6.005 -0.941 1.309 1 T
+ATOM 2158 C CG . PHE B 1 43 4.668 -1.569 1.569 1 T
+ATOM 2159 C CD1 . PHE B 1 43 4.571 -2.658 2.426 1 T
+ATOM 2160 C CD2 . PHE B 1 43 3.500 -1.029 1.057 1 T
+ATOM 2161 C CE1 . PHE B 1 43 3.366 -3.232 2.725 1 T
+ATOM 2162 C CE2 . PHE B 1 43 2.286 -1.614 1.339 1 T
+ATOM 2163 C CZ . PHE B 1 43 2.211 -2.722 2.192 1 T
+ATOM 2369 N N . LEU B 1 59 4.622 -2.256 -4.068 1 T
+ATOM 2370 C CA . LEU B 1 59 3.511 -2.406 -3.126 1 T
+ATOM 2371 C C . LEU B 1 59 2.913 -1.079 -2.676 1 T
+ATOM 2372 O O . LEU B 1 59 1.819 -1.052 -2.086 1 T
+ATOM 2373 C CB . LEU B 1 59 3.974 -3.189 -1.887 1 T
+ATOM 2374 C CG . LEU B 1 59 4.479 -4.630 -2.075 1 T
+ATOM 2375 C CD1 . LEU B 1 59 5.171 -5.057 -0.765 1 T
+ATOM 2376 C CD2 . LEU B 1 59 3.392 -5.625 -2.478 1 T
+ATOM 2592 N N . THR B 1 74 -3.239 -3.083 -2.849 1 T
+ATOM 2593 C CA . THR B 1 74 -1.975 -3.721 -3.118 1 T
+ATOM 2594 C C . THR B 1 74 -2.256 -5.224 -3.161 1 T
+ATOM 2595 O O . THR B 1 74 -2.709 -5.806 -2.173 1 T
+ATOM 2596 C CB . THR B 1 74 -0.981 -3.408 -2.007 1 T
+ATOM 2597 O OG1 . THR B 1 74 -0.729 -1.990 -1.960 1 T
+ATOM 2598 C CG2 . THR B 1 74 0.297 -4.172 -2.193 1 T
+#
+loop_
+_[local]_rotamer_angle.id
+_[local]_rotamer_angle.rotamer_id
+_[local]_rotamer_angle.label_seq_id
+_[local]_rotamer_angle.label_comp_id
+_[local]_rotamer_angle.label_asym_id
+_[local]_rotamer_angle.pdbx_PDB_model_num
+_[local]_rotamer_angle.label_alt_id
+_[local]_rotamer_angle.frequency
+_[local]_rotamer_angle.type
+_[local]_rotamer_angle.value
+_[local]_rotamer_angle.units
+17 9 43 ASN A 1 . 0.083333 chi1 -144.000 degrees
+18 9 43 ASN A 1 . 0.083333 chi2 -108.000 degrees
+19 10 43 ASN A 1 . 0.083333 chi1 -144.000 degrees
+20 10 43 ASN A 1 . 0.083333 chi2 -72.000 degrees
+27 14 43 ASN A 1 . 0.083333 chi1 -144.000 degrees
+28 14 43 ASN A 1 . 0.083333 chi2 72.000 degrees
+29 15 43 ASN A 1 . 0.083333 chi1 -144.000 degrees
+30 15 43 ASN A 1 . 0.083333 chi2 108.000 degrees
+37 19 43 ASN A 1 . 0.083333 chi1 -108.000 degrees
+38 19 43 ASN A 1 . 0.083333 chi2 -108.000 degrees
+39 20 43 ASN A 1 . 0.083333 chi1 -108.000 degrees
+40 20 43 ASN A 1 . 0.083333 chi2 -72.000 degrees
+47 24 43 ASN A 1 . 0.083333 chi1 -108.000 degrees
+48 24 43 ASN A 1 . 0.083333 chi2 72.000 degrees
+49 25 43 ASN A 1 . 0.083333 chi1 -108.000 degrees
+50 25 43 ASN A 1 . 0.083333 chi2 108.000 degrees
+57 29 43 ASN A 1 . 0.083333 chi1 -72.000 degrees
+58 29 43 ASN A 1 . 0.083333 chi2 -108.000 degrees
+59 30 43 ASN A 1 . 0.083333 chi1 -72.000 degrees
+60 30 43 ASN A 1 . 0.083333 chi2 -72.000 degrees
+67 34 43 ASN A 1 . 0.083333 chi1 -72.000 degrees
+68 34 43 ASN A 1 . 0.083333 chi2 72.000 degrees
+69 35 43 ASN A 1 . 0.083333 chi1 -72.000 degrees
+70 35 43 ASN A 1 . 0.083333 chi2 108.000 degrees
+199 100 44 ASN A 1 . 0.083333 chi1 -144.000 degrees
+200 100 44 ASN A 1 . 0.083333 chi2 -108.000 degrees
+201 101 44 ASN A 1 . 0.083333 chi1 -144.000 degrees
+202 101 44 ASN A 1 . 0.083333 chi2 -72.000 degrees
+209 105 44 ASN A 1 . 0.083333 chi1 -144.000 degrees
+210 105 44 ASN A 1 . 0.083333 chi2 72.000 degrees
+211 106 44 ASN A 1 . 0.083333 chi1 -144.000 degrees
+212 106 44 ASN A 1 . 0.083333 chi2 108.000 degrees
+219 110 44 ASN A 1 . 0.083333 chi1 -108.000 degrees
+220 110 44 ASN A 1 . 0.083333 chi2 -108.000 degrees
+221 111 44 ASN A 1 . 0.083333 chi1 -108.000 degrees
+222 111 44 ASN A 1 . 0.083333 chi2 -72.000 degrees
+229 115 44 ASN A 1 . 0.083333 chi1 -108.000 degrees
+230 115 44 ASN A 1 . 0.083333 chi2 72.000 degrees
+231 116 44 ASN A 1 . 0.083333 chi1 -108.000 degrees
+232 116 44 ASN A 1 . 0.083333 chi2 108.000 degrees
+239 120 44 ASN A 1 . 0.083333 chi1 -72.000 degrees
+240 120 44 ASN A 1 . 0.083333 chi2 -108.000 degrees
+241 121 44 ASN A 1 . 0.083333 chi1 -72.000 degrees
+242 121 44 ASN A 1 . 0.083333 chi2 -72.000 degrees
+249 125 44 ASN A 1 . 0.083333 chi1 -72.000 degrees
+250 125 44 ASN A 1 . 0.083333 chi2 72.000 degrees
+251 126 44 ASN A 1 . 0.083333 chi1 -72.000 degrees
+252 126 44 ASN A 1 . 0.083333 chi2 108.000 degrees
+253 253 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+254 253 45 ASP A 1 . 0.037037 chi2 -3.141593 radians
+255 254 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+256 254 45 ASP A 1 . 0.037037 chi2 -2.513274 radians
+257 255 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+258 255 45 ASP A 1 . 0.037037 chi2 -1.884956 radians
+259 256 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+260 256 45 ASP A 1 . 0.037037 chi2 -1.256637 radians
+261 257 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+262 257 45 ASP A 1 . 0.037037 chi2 -0.628319 radians
+263 258 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+264 258 45 ASP A 1 . 0.037037 chi2 0.628319 radians
+265 259 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+266 259 45 ASP A 1 . 0.037037 chi2 1.256637 radians
+267 260 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+268 260 45 ASP A 1 . 0.037037 chi2 1.884956 radians
+269 261 45 ASP A 1 . 0.037037 chi1 -2.513274 radians
+270 261 45 ASP A 1 . 0.037037 chi2 2.513274 radians
+271 262 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+272 262 45 ASP A 1 . 0.037037 chi2 -3.141593 radians
+273 263 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+274 263 45 ASP A 1 . 0.037037 chi2 -2.513274 radians
+275 264 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+276 264 45 ASP A 1 . 0.037037 chi2 -1.884956 radians
+277 265 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+278 265 45 ASP A 1 . 0.037037 chi2 -1.256637 radians
+279 266 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+280 266 45 ASP A 1 . 0.037037 chi2 -0.628319 radians
+281 267 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+282 267 45 ASP A 1 . 0.037037 chi2 0.628319 radians
+283 268 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+284 268 45 ASP A 1 . 0.037037 chi2 1.256637 radians
+285 269 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+286 269 45 ASP A 1 . 0.037037 chi2 1.884956 radians
+287 270 45 ASP A 1 . 0.037037 chi1 -1.884956 radians
+288 270 45 ASP A 1 . 0.037037 chi2 2.513274 radians
+289 271 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+290 271 45 ASP A 1 . 0.037037 chi2 -3.141593 radians
+291 272 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+292 272 45 ASP A 1 . 0.037037 chi2 -2.513274 radians
+293 273 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+294 273 45 ASP A 1 . 0.037037 chi2 -1.884956 radians
+295 274 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+296 274 45 ASP A 1 . 0.037037 chi2 -1.256637 radians
+297 275 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+298 275 45 ASP A 1 . 0.037037 chi2 -0.628319 radians
+299 276 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+300 276 45 ASP A 1 . 0.037037 chi2 0.628319 radians
+301 277 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+302 277 45 ASP A 1 . 0.037037 chi2 1.256637 radians
+303 278 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+304 278 45 ASP A 1 . 0.037037 chi2 1.884956 radians
+305 279 45 ASP A 1 . 0.037037 chi1 -1.256637 radians
+306 279 45 ASP A 1 . 0.037037 chi2 2.513274 radians
+63 32 43 PHE B 1 . 0.090909 chi1 -170.000 degrees
+64 32 43 PHE B 1 . 0.090909 chi2 80.000 degrees
+65 33 43 PHE B 1 . 0.090909 chi1 -170.000 degrees
+66 33 43 PHE B 1 . 0.090909 chi2 90.000 degrees
+83 42 43 PHE B 1 . 0.090909 chi1 -160.000 degrees
+84 42 43 PHE B 1 . 0.090909 chi2 70.000 degrees
+85 43 43 PHE B 1 . 0.090909 chi1 -160.000 degrees
+86 43 43 PHE B 1 . 0.090909 chi2 80.000 degrees
+87 44 43 PHE B 1 . 0.090909 chi1 -160.000 degrees
+88 44 43 PHE B 1 . 0.090909 chi2 90.000 degrees
+99 50 43 PHE B 1 . 0.090909 chi1 -150.000 degrees
+100 50 43 PHE B 1 . 0.090909 chi2 70.000 degrees
+101 51 43 PHE B 1 . 0.090909 chi1 -150.000 degrees
+102 51 43 PHE B 1 . 0.090909 chi2 80.000 degrees
+103 52 43 PHE B 1 . 0.090909 chi1 -150.000 degrees
+104 52 43 PHE B 1 . 0.090909 chi2 90.000 degrees
+109 55 43 PHE B 1 . 0.090909 chi1 -140.000 degrees
+110 55 43 PHE B 1 . 0.090909 chi2 70.000 degrees
+111 56 43 PHE B 1 . 0.090909 chi1 -140.000 degrees
+112 56 43 PHE B 1 . 0.090909 chi2 80.000 degrees
+113 57 43 PHE B 1 . 0.090909 chi1 -140.000 degrees
+114 57 43 PHE B 1 . 0.090909 chi2 90.000 degrees
+621 311 59 LEU B 1 . 0.026316 chi1 -100.000 degrees
+622 311 59 LEU B 1 . 0.026316 chi2 70.000 degrees
+623 312 59 LEU B 1 . 0.026316 chi1 -100.000 degrees
+624 312 59 LEU B 1 . 0.026316 chi2 80.000 degrees
+625 313 59 LEU B 1 . 0.026316 chi1 -100.000 degrees
+626 313 59 LEU B 1 . 0.026316 chi2 90.000 degrees
+627 314 59 LEU B 1 . 0.026316 chi1 -100.000 degrees
+628 314 59 LEU B 1 . 0.026316 chi2 100.000 degrees
+629 315 59 LEU B 1 . 0.026316 chi1 -100.000 degrees
+630 315 59 LEU B 1 . 0.026316 chi2 110.000 degrees
+673 337 59 LEU B 1 . 0.026316 chi1 -90.000 degrees
+674 337 59 LEU B 1 . 0.026316 chi2 70.000 degrees
+675 338 59 LEU B 1 . 0.026316 chi1 -90.000 degrees
+676 338 59 LEU B 1 . 0.026316 chi2 80.000 degrees
+677 339 59 LEU B 1 . 0.026316 chi1 -90.000 degrees
+678 339 59 LEU B 1 . 0.026316 chi2 90.000 degrees
+679 340 59 LEU B 1 . 0.026316 chi1 -90.000 degrees
+680 340 59 LEU B 1 . 0.026316 chi2 100.000 degrees
+681 341 59 LEU B 1 . 0.026316 chi1 -90.000 degrees
+682 341 59 LEU B 1 . 0.026316 chi2 110.000 degrees
+743 372 59 LEU B 1 . 0.026316 chi1 -80.000 degrees
+744 372 59 LEU B 1 . 0.026316 chi2 80.000 degrees
+745 373 59 LEU B 1 . 0.026316 chi1 -80.000 degrees
+746 373 59 LEU B 1 . 0.026316 chi2 90.000 degrees
+747 374 59 LEU B 1 . 0.026316 chi1 -80.000 degrees
+748 374 59 LEU B 1 . 0.026316 chi2 100.000 degrees
+749 375 59 LEU B 1 . 0.026316 chi1 -80.000 degrees
+750 375 59 LEU B 1 . 0.026316 chi2 110.000 degrees
+751 376 59 LEU B 1 . 0.026316 chi1 -80.000 degrees
+752 376 59 LEU B 1 . 0.026316 chi2 120.000 degrees
+815 408 59 LEU B 1 . 0.026316 chi1 -70.000 degrees
+816 408 59 LEU B 1 . 0.026316 chi2 80.000 degrees
+817 409 59 LEU B 1 . 0.026316 chi1 -70.000 degrees
+818 409 59 LEU B 1 . 0.026316 chi2 90.000 degrees
+819 410 59 LEU B 1 . 0.026316 chi1 -70.000 degrees
+820 410 59 LEU B 1 . 0.026316 chi2 100.000 degrees
+821 411 59 LEU B 1 . 0.026316 chi1 -70.000 degrees
+822 411 59 LEU B 1 . 0.026316 chi2 110.000 degrees
+823 412 59 LEU B 1 . 0.026316 chi1 -70.000 degrees
+824 412 59 LEU B 1 . 0.026316 chi2 120.000 degrees
+825 413 59 LEU B 1 . 0.026316 chi1 -70.000 degrees
+826 413 59 LEU B 1 . 0.026316 chi2 130.000 degrees
+827 414 59 LEU B 1 . 0.026316 chi1 -70.000 degrees
+828 414 59 LEU B 1 . 0.026316 chi2 140.000 degrees
+889 445 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+890 445 59 LEU B 1 . 0.026316 chi2 90.000 degrees
+891 446 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+892 446 59 LEU B 1 . 0.026316 chi2 100.000 degrees
+893 447 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+894 447 59 LEU B 1 . 0.026316 chi2 110.000 degrees
+895 448 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+896 448 59 LEU B 1 . 0.026316 chi2 120.000 degrees
+897 449 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+898 449 59 LEU B 1 . 0.026316 chi2 130.000 degrees
+899 450 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+900 450 59 LEU B 1 . 0.026316 chi2 140.000 degrees
+901 451 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+902 451 59 LEU B 1 . 0.026316 chi2 150.000 degrees
+903 452 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+904 452 59 LEU B 1 . 0.026316 chi2 160.000 degrees
+905 453 59 LEU B 1 . 0.026316 chi1 -60.000 degrees
+906 453 59 LEU B 1 . 0.026316 chi2 170.000 degrees
+963 482 59 LEU B 1 . 0.026316 chi1 -50.000 degrees
+964 482 59 LEU B 1 . 0.026316 chi2 100.000 degrees
+965 483 59 LEU B 1 . 0.026316 chi1 -50.000 degrees
+966 483 59 LEU B 1 . 0.026316 chi2 110.000 degrees
+967 484 59 LEU B 1 . 0.026316 chi1 -50.000 degrees
+968 484 59 LEU B 1 . 0.026316 chi2 120.000 degrees
+969 485 59 LEU B 1 . 0.026316 chi1 -50.000 degrees
+970 485 59 LEU B 1 . 0.026316 chi2 130.000 degrees
+971 486 59 LEU B 1 . 0.026316 chi1 -50.000 degrees
+972 486 59 LEU B 1 . 0.026316 chi2 140.000 degrees
+973 487 59 LEU B 1 . 0.026316 chi1 -50.000 degrees
+974 487 59 LEU B 1 . 0.026316 chi2 150.000 degrees
+975 488 59 LEU B 1 . 0.026316 chi1 -50.000 degrees
+976 488 59 LEU B 1 . 0.026316 chi2 160.000 degrees
+1497 755 74 THR B 1 . 0.500000 chi1 -60.000 degrees
+1498 756 74 THR B 1 . 0.500000 chi1 -50.000 degrees
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+9 9 composite 4.695983
+10 10 composite 5.489952
+14 14 composite 4.427700
+15 15 composite 4.878165
+19 19 composite 3.334884
+20 20 composite 2.729104
+24 24 composite 2.729829
+25 25 composite 3.059346
+29 29 composite 4.570873
+30 30 composite 3.581620
+34 34 composite 3.514731
+35 35 composite 3.690885
+100 100 composite 2.857058
+101 101 composite 2.717896
+105 105 composite 2.706681
+106 106 composite 2.953073
+110 110 composite 2.509667
+111 111 composite 1.939707
+115 115 composite 1.852634
+116 116 composite 1.965714
+120 120 composite 4.229667
+121 121 composite 3.246261
+125 125 composite 3.111950
+126 126 composite 3.119109
+253 253 composite 18.331171
+254 254 composite 11.549075
+255 255 composite 5.384848
+256 256 composite 6.446537
+257 257 composite 14.729133
+258 258 composite 12.511797
+259 259 composite 5.522728
+260 260 composite 6.023648
+261 261 composite 13.117266
+262 262 composite 15.547492
+263 263 composite 9.517431
+264 264 composite 3.286745
+265 265 composite 3.410653
+266 266 composite 10.429025
+267 267 composite 10.541596
+268 268 composite 3.441154
+269 269 composite 3.121068
+270 270 composite 9.131803
+271 271 composite 20.414974
+272 272 composite 15.862752
+273 273 composite 7.675277
+274 274 composite 6.817458
+275 275 composite 13.878921
+276 276 composite 17.341994
+277 277 composite 7.946307
+278 278 composite 6.551962
+279 279 composite 12.621743
+32 32 composite 82.210443
+33 33 composite 82.269013
+42 42 composite 81.983208
+43 43 composite 81.475836
+44 44 composite 81.398846
+50 50 composite 81.744205
+51 51 composite 81.160156
+52 52 composite 80.987530
+55 55 composite 81.783216
+56 56 composite 81.139148
+57 57 composite 80.903456
+311 311 composite 3.539489
+312 312 composite 3.047366
+313 313 composite 2.866726
+314 314 composite 3.011083
+315 315 composite 3.791085
+337 337 composite 3.401777
+338 338 composite 2.672051
+339 339 composite 2.273253
+340 340 composite 2.202428
+341 341 composite 2.626706
+372 372 composite 2.861927
+373 373 composite 2.255844
+374 374 composite 1.999458
+375 375 composite 2.105035
+376 376 composite 2.733690
+408 408 composite 3.438476
+409 409 composite 2.577038
+410 410 composite 2.149667
+411 411 composite 2.041378
+412 412 composite 2.218106
+413 413 composite 2.700874
+414 414 composite 3.484269
+445 445 composite 3.124162
+446 446 composite 2.541659
+447 447 composite 2.307109
+448 448 composite 2.294599
+449 449 composite 2.442515
+450 450 composite 2.708809
+451 451 composite 3.045904
+452 452 composite 3.415159
+453 453 composite 3.829370
+482 482 composite 3.352751
+483 483 composite 3.053597
+484 484 composite 2.976539
+485 485 composite 3.037194
+486 486 composite 3.197377
+487 487 composite 3.443791
+488 488 composite 3.785379
+755 755 composite 21.418556
+756 756 composite 21.546503
