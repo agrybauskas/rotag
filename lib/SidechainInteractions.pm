@@ -198,7 +198,6 @@ sub predict
 
     my %visited_residue_pairs = ();
     my $step_count = 1;
-    my %ignore_rotamers = ();
     my @sorted_unique_residue_keys =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
@@ -243,8 +242,6 @@ sub predict
                 }
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-                    next if $ignore_rotamers{$neighbour_rotamer_id};
-
                     if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} &&
                         ! $dry_run ) {
                         my %neighbour_angles =
@@ -296,9 +293,28 @@ sub predict
                     delete $residue_pairs->{$unique_residue_key}{$rotamer_id};
                 }
             }
+
+            if( $verbose ){
+                my $rotamer_count =
+                    scalar( keys %{ $rotamer_pairs->{$unique_residue_key} } );
+                my $neighbour_rotamer_count =
+                    scalar( keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} } );
+
+                print info(
+                    { message =>
+                          "rotamer pairs: " .
+                          $unique_residue_key . " " .
+                          $rotamer_count . " " .
+                          $neighbour_unique_residue_key . " " .
+                          $neighbour_rotamer_count . " " .
+                          $rotamer_count * $neighbour_rotamer_count . "\n",
+                      program => $program_called_by }
+                );
+            }
         }
 
         if( $verbose ) {
+            # Total count of rotamers for reach residue.
             for my $current_unique_residue_key ( sort keys %{ $rotamer_pairs } ) {
                 print info(
                     { message =>
