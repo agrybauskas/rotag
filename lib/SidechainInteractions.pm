@@ -197,6 +197,7 @@ sub predict
     my $cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %visited_residue_pairs = ();
+    my $step_count = 1;
     my %ignore_rotamers = ();
     my @sorted_unique_residue_keys =
         map { $_ }
@@ -229,8 +230,6 @@ sub predict
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
             for my $rotamer_id ( @rotamer_ids ) {
-                next if $ignore_rotamers{$rotamer_id};
-
                 if( ! exists $rotamer_atom_site->{$rotamer_id} ) {
                     my %angles =
                         map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
@@ -291,21 +290,28 @@ sub predict
                 }
             }
 
-            for my $rotamer_id ( keys %pairwise_rotamer_count ) {
+            # NOTE: need refactoring. Too much loops.
+            for my $rotamer_id ( sort keys %pairwise_rotamer_count ) {
                 if( ! $pairwise_rotamer_count{$rotamer_id} ) {
-                    $ignore_rotamers{$rotamer_id} = 1;
+                    delete $residue_pairs->{$unique_residue_key}{$rotamer_id};
                 }
             }
-
-            print info(
-                { message =>
-                      $unique_residue_key . " " .
-                      scalar( keys %{ $rotamer_pairs->{$unique_residue_key} } ) . " " .
-                      $neighbour_unique_residue_key . " " .
-                      scalar( keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} } ) . "\n",
-                  program => $program_called_by }
-            ) if $verbose;
         }
+
+        if( $verbose ) {
+            for my $current_unique_residue_key ( sort keys %{ $rotamer_pairs } ) {
+                print info(
+                    { message =>
+                          "rotamer count: " .
+                          $step_count . " " .
+                          $current_unique_residue_key . " " .
+                          scalar( keys %{ $rotamer_pairs->{$current_unique_residue_key} } ) . "\n",
+                      program => $program_called_by }
+                )
+            }
+        }
+
+        $step_count++;
     }
 
     return;
