@@ -163,7 +163,9 @@ for my $pdbx_file ( @ARGV ) {
                                                {'data'} ) {
             $pdbx_data->{'_[local]_pairwise_energy'} =
                 $pairwise_rotamer_energies->{'_[local]_pairwise_energy'};
-        } elsif( $output_format eq 'pdbx' ) {
+        }
+
+        if( $output_format eq 'pdbx' ) {
             to_pdbx( $pdbx_data, { 'tags' => \@tags } );
         } elsif( $output_format eq 'csv' ) {
             if( scalar @tags == 1 ) {
