@@ -15,7 +15,6 @@ our @EXPORT_OK = qw( assign_hetatoms
 }
 
 use Carp qw( confess );
-use Clone qw( clone );
 use Digest::MD5 qw( md5_hex );
 use List::Util qw( any
                    max );
@@ -342,10 +341,9 @@ sub assign_hetatoms
     return if ! %{ $struct_conn };
 
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
-    my $current_atom_site = clone $atom_site;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my $hetatom_site = filter_new(
-            $current_atom_site,
+            $atom_site,
             { 'include' =>
               { 'group_PDB' => [ 'HETATM' ],
                 'label_seq_id' => [
@@ -363,7 +361,7 @@ sub assign_hetatoms
         next if ! %{ $connected_hetatom_site };
 
         my $connected_atom_site = filter_new(
-            $current_atom_site,
+            $atom_site,
             { 'include' =>
               { 'label_seq_id' => [
                     $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
@@ -381,7 +379,7 @@ sub assign_hetatoms
         # Heteroatom inherits residue information from the atom that is
         # connected to.
         my %inherited_data_items =
-            map { $_ => $current_atom_site->{$connected_atom_id}{$_} }
+            map { $_ => $atom_site->{$connected_atom_id}{$_} }
                 ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                   'pdbx_PDB_model_num' );
 
