@@ -225,6 +225,7 @@ for my $pdbx_file ( @ARGV ) {
 
                 next if ! defined $target_dihedral_site->{$last_atom_id};
 
+                # TODO: needs refactoring.
                 push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                     { 'id' => $dihedral_id,
                       'label_comp_id' =>
@@ -237,16 +238,32 @@ for my $pdbx_file ( @ARGV ) {
                           $dihedral_site->{$residue_atom_id}{'pdbx_PDB_model_num'},
                       'label_alt_id' =>
                           $dihedral_site->{$residue_atom_id}{'label_alt_id'},
-                      'atom_1_id' => $atom_ids[0],
+                      'atom_1_id' =>
+                          ( $calc_hetatoms &&
+                            defined $dihedral_site->{$atom_ids[0]}{'origin_atom_id'} ) ?
+                          $dihedral_site->{$atom_ids[0]}{'origin_atom_id'} :
+                          $atom_ids[0],
                       'label_atom_1_id' =>
                           $dihedral_site->{$atom_ids[0]}{'label_atom_id'},
-                      'atom_2_id' => $atom_ids[1],
+                      'atom_2_id' =>
+                          ( $calc_hetatoms &&
+                            defined $dihedral_site->{$atom_ids[1]}{'origin_atom_id'} ) ?
+                          $dihedral_site->{$atom_ids[1]}{'origin_atom_id'} :
+                          $atom_ids[1],
                       'label_atom_2_id' =>
                           $dihedral_site->{$atom_ids[1]}{'label_atom_id'},
-                      'atom_3_id' => $atom_ids[2],
+                      'atom_3_id' =>
+                          ( $calc_hetatoms &&
+                            defined $dihedral_site->{$atom_ids[2]}{'origin_atom_id'} ) ?
+                          $dihedral_site->{$atom_ids[2]}{'origin_atom_id'} :
+                          $atom_ids[2],
                       'label_atom_3_id' =>
                           $dihedral_site->{$atom_ids[2]}{'label_atom_id'},
-                      'atom_4_id' => $atom_ids[3],
+                      'atom_4_id' =>
+                          ( $calc_hetatoms &&
+                            defined $dihedral_site->{$atom_ids[3]}{'origin_atom_id'} ) ?
+                          $dihedral_site->{$atom_ids[3]}{'origin_atom_id'} :
+                          $atom_ids[3],
                       'label_atom_4_id' =>
                           $dihedral_site->{$atom_ids[3]}{'label_atom_id'},
                       'type' => $angle_name,
