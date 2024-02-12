@@ -342,6 +342,7 @@ sub assign_hetatoms
     return if ! %{ $struct_conn };
 
     my %origin_atom_site = %{ clone $atom_site };
+    my %track_renamed_atom_ids = ();
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my $hetatom_site = filter_new(
@@ -383,6 +384,8 @@ sub assign_hetatoms
                                    [ { 'from' => $hetatom_id,
                                        'to' => $last_atom_id } ],
                                    $options );
+
+            $track_renamed_atom_ids{$hetatom_id} = $last_atom_id;
 
             if( $hetatom_id eq $connected_hetatom_id ) {
                 connect_atoms_explicitly( $atom_site,
