@@ -5,11 +5,15 @@ _struct_conn.id
 _struct_conn.conn_type_id
 _struct_conn.ptnr1_label_seq_id
 _struct_conn.ptnr1_label_asym_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
 _struct_conn.ptnr1_label_atom_id
 _struct_conn.ptnr2_label_seq_id
 _struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.ptnr2_auth_asym_id
 _struct_conn.ptnr2_label_atom_id
-metalc1 metalc 27 A OD1 27 A MG
+metalc1 metalc 27 A 27 A OD1 . B 101 A MG
 #
 loop_
 _atom_site.group_PDB
