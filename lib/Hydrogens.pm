@@ -188,6 +188,8 @@ sub add_hydrogens
                   'cartn_z' =>
                       sprintf( $sig_figs_min,
                                $hydrogen_coord{$hydrogen_name}->[2][0] ),
+                  'auth_seq_id' => $atom_site->{$atom_id}{'auth_seq_id'},
+                  'auth_asym_id' => $atom_site->{$atom_id}{'auth_asym_id'},
                   'pdbx_PDB_model_num' =>
                       $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
                 } );

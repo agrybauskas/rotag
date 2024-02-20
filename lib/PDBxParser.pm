@@ -313,6 +313,8 @@ sub create_pdbx_entry
     my $cartn_x = $args->{'cartn_x'};
     my $cartn_y = $args->{'cartn_y'};
     my $cartn_z = $args->{'cartn_z'};
+    my $auth_seq_id = $args->{'auth_seq_id'};
+    my $auth_asym_id = $args->{'auth_asym_id'};
     my $pdbx_model_num = $args->{'pdbx_PDB_model_num'};
 
     $atom_site->{$atom_id}{'group_PDB'} = $group_PDB;
@@ -327,6 +329,8 @@ sub create_pdbx_entry
     $atom_site->{$atom_id}{'Cartn_x'} = $cartn_x;
     $atom_site->{$atom_id}{'Cartn_y'} = $cartn_y;
     $atom_site->{$atom_id}{'Cartn_z'} = $cartn_z;
+    $atom_site->{$atom_id}{'auth_seq_id'} = $auth_seq_id;
+    $atom_site->{$atom_id}{'auth_asym_id'} = $auth_asym_id;
     $atom_site->{$atom_id}{'pdbx_PDB_model_num'} = $pdbx_model_num;
 
     return;
