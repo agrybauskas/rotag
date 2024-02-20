@@ -13,8 +13,10 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 8410 C CA . LEU B 1 546 -3.888 36.087 50.407 1 T 1
+ATOM 8410 C CA . LEU B 1 546 -3.888 36.087 50.407 B 591 1 T 1
 #

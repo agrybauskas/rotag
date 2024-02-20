@@ -13,9 +13,11 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 8642 C CA . LYS B 1 572 8.688 29.233 59.109 1 T 3
-ATOM 8645 C CB . LYS B 1 572 9.502 27.943 59.054 1 T 2
+ATOM 8642 C CA . LYS B 1 572 8.688 29.233 59.109 B 617 1 T 3
+ATOM 8645 C CB . LYS B 1 572 9.502 27.943 59.054 B 617 1 T 2
 #

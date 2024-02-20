@@ -13,15 +13,17 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 8481 N N . ILE B 1 555 -4.932 22.577 40.493 1 I ?
-ATOM 8482 C CA . ILE B 1 555 -3.875 21.585 40.348 1 T 1
-ATOM 8483 C C . ILE B 1 555 -2.599 22.316 39.939 1 I ?
-ATOM 8484 O O . ILE B 1 555 -1.509 21.981 40.397 1 I ?
-ATOM 8485 C CB . ILE B 1 555 -4.236 20.467 39.318 1 I ?
-ATOM 8486 C CG1 . ILE B 1 555 -3.100 19.447 39.192 1 I ?
-ATOM 8487 C CG2 . ILE B 1 555 -4.600 21.045 37.950 1 I ?
-ATOM 8488 C CD1 . ILE B 1 555 -2.857 18.608 40.444 1 I ?
+ATOM 8481 N N . ILE B 1 555 -4.932 22.577 40.493 B 600 1 I ?
+ATOM 8482 C CA . ILE B 1 555 -3.875 21.585 40.348 B 600 1 T 1
+ATOM 8483 C C . ILE B 1 555 -2.599 22.316 39.939 B 600 1 I ?
+ATOM 8484 O O . ILE B 1 555 -1.509 21.981 40.397 B 600 1 I ?
+ATOM 8485 C CB . ILE B 1 555 -4.236 20.467 39.318 B 600 1 I ?
+ATOM 8486 C CG1 . ILE B 1 555 -3.100 19.447 39.192 B 600 1 I ?
+ATOM 8487 C CG2 . ILE B 1 555 -4.600 21.045 37.950 B 600 1 I ?
+ATOM 8488 C CD1 . ILE B 1 555 -2.857 18.608 40.444 B 600 1 I ?
 #

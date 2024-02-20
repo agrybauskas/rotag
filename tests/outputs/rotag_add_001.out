@@ -13,14 +13,16 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 1 T
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 1 T
-ATOM 3 C CG . XAA A 1 18 -55.001 -111.179 -3.789 1 T
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 1 T
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 1 T
-ATOM 6 H HA . XAA A 1 18 -54.172 -109.624 -5.524 1 T
-ATOM 7 H HB2 . XAA A 1 18 -53.648 -112.324 -4.992 1 T
-ATOM 8 H HB3 . XAA A 1 18 -55.285 -112.278 -5.606 1 T
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 1 T
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 1 T
+ATOM 3 C CG . XAA A 1 18 -55.001 -111.179 -3.789 A 18 1 T
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 1 T
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 1 T
+ATOM 6 H HA . XAA A 1 18 -54.172 -109.624 -5.524 A 18 1 T
+ATOM 7 H HB2 . XAA A 1 18 -53.648 -112.324 -4.992 A 18 1 T
+ATOM 8 H HB3 . XAA A 1 18 -55.285 -112.278 -5.606 A 18 1 T
 #

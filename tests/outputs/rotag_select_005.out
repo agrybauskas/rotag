@@ -13,8 +13,10 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 4198 C CA . TRP A 1 564 -3.631 -39.065 28.083 1 T 1
+ATOM 4198 C CA . TRP A 1 564 -3.631 -39.065 28.083 A 609 1 T 1
 #

@@ -13,10 +13,12 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 3 C C . ALA A 1 1 18.718 3.917 50.506 1 T 1
-ATOM 6 N N . CYS A 1 2 20.031 4.014 50.715 1 T 1
-ATOM 7 C CA . CYS A 1 2 20.687 5.291 50.992 1 T 1
+ATOM 3 C C . ALA A 1 1 18.718 3.917 50.506 A 1 1 T 1
+ATOM 6 N N . CYS A 1 2 20.031 4.014 50.715 A 2 1 T 1
+ATOM 7 C CA . CYS A 1 2 20.687 5.291 50.992 A 2 1 T 1
 #

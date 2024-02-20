@@ -14,14 +14,16 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
-ATOM 2391 N N . THR A 1 340 38.805 -32.549 49.769 1 T
-ATOM 2392 C CA . THR A 1 340 39.528 -31.340 49.420 1 T
-ATOM 2393 C C . THR A 1 340 39.802 -31.285 47.924 1 T
-ATOM 2394 O O . THR A 1 340 38.950 -30.813 47.158 1 T
-ATOM 2395 C CB . THR A 1 340 40.844 -31.233 50.234 1 T
-ATOM 2396 O OG1 . THR A 1 340 41.651 -32.392 50.025 1 T
+ATOM 2391 N N . THR A 1 340 38.805 -32.549 49.769 A 385 1 T
+ATOM 2392 C CA . THR A 1 340 39.528 -31.340 49.420 A 385 1 T
+ATOM 2393 C C . THR A 1 340 39.802 -31.285 47.924 A 385 1 T
+ATOM 2394 O O . THR A 1 340 38.950 -30.813 47.158 A 385 1 T
+ATOM 2395 C CB . THR A 1 340 40.844 -31.233 50.234 A 385 1 T
+ATOM 2396 O OG1 . THR A 1 340 41.651 -32.392 50.025 A 385 1 T
 #
 loop_
 _[local]_rotamer_energy.id
