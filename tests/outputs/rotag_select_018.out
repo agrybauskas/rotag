@@ -13,11 +13,13 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 972 C CA . ASN A 1 135 20.266 8.863 45.114 1 S ?
-ATOM 973 C C . ASN A 1 135 20.461 8.617 46.594 1 T 1
+ATOM 972 C CA . ASN A 1 135 20.266 8.863 45.114 A 180 1 S ?
+ATOM 973 C C . ASN A 1 135 20.461 8.617 46.594 A 180 1 T 1
 #
 data_rotag
 #
@@ -34,8 +36,10 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 8641 N N . LYS B 1 572 7.318 28.972 58.662 1 T 1
+ATOM 8641 N N . LYS B 1 572 7.318 28.972 58.662 B 617 1 T 1
 #

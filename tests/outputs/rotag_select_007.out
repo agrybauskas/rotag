@@ -13,11 +13,13 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 4205 N NE1 . TRP A 1 564 -0.995 -41.706 30.316 1 T 1
-ATOM 4206 C CE2 . TRP A 1 564 -1.543 -42.769 29.648 1 S ?
+ATOM 4205 N NE1 . TRP A 1 564 -0.995 -41.706 30.316 A 609 1 T 1
+ATOM 4206 C CE2 . TRP A 1 564 -1.543 -42.769 29.648 A 609 1 S ?
 #
 data_rotag
 #
@@ -34,9 +36,11 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 57 C CB . GLN A 1 4 29.030 -0.526 39.497 1 T 1
-ATOM 58 C CG . GLN A 1 4 29.824 -1.808 39.282 1 S ?
+ATOM 57 C CB . GLN A 1 4 29.030 -0.526 39.497 A 5 1 T 1
+ATOM 58 C CG . GLN A 1 4 29.824 -1.808 39.282 A 5 1 S ?
 #
