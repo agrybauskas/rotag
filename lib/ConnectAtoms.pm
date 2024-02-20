@@ -350,11 +350,10 @@ sub assign_hetatoms
         my $related_atom_site_1 = filter_new(
             \%origin_atom_site,
             { 'include' =>
-              { 'group_PDB' => [ 'HETATM' ],
-                'label_seq_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} ],
-                'label_asym_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] } }
+              { 'auth_asym_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr2_auth_asym_id'} ],
+                'auth_seq_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} ] } }
         );
         my $connected_atom_site_1 = filter_new(
             $related_atom_site_1,
@@ -368,10 +367,10 @@ sub assign_hetatoms
         my $connected_atom_site_2 = filter_new(
             \%origin_atom_site,
             { 'include' =>
-              { 'label_seq_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
-                'label_asym_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ],
+              { 'auth_seq_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
+                'auth_asym_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'} ],
                 'label_atom_id' => [
                     $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] } }
         );
@@ -380,6 +379,7 @@ sub assign_hetatoms
 
         my ( $connected_atom_id_1 ) = keys %{ $connected_atom_site_1 };
         my ( $connected_atom_id_2 ) = keys %{ $connected_atom_site_2 };
+
         # # Especially important when there are heteroatoms connected to another
         # # heteroatoms
         # if( exists $track_renamed_atom_ids{$connected_atom_id_1} ) {
