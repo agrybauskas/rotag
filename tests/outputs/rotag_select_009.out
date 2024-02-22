@@ -13,12 +13,14 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 1417 C CG 2 ASP A 1 219 34.449 4.611 43.054 1 T 1
-ATOM 1444 O OD1 2 ASP A 1 219 34.072 5.513 43.832 1 T 1
-ATOM 1471 O OD2 2 ASP A 1 219 35.549 4.651 42.460 1 T 1
+ATOM 1417 C CG 2 ASP A 1 219 34.449 4.611 43.054 ? ? 1 T 1
+ATOM 1444 O OD1 2 ASP A 1 219 34.072 5.513 43.832 ? ? 1 T 1
+ATOM 1471 O OD2 2 ASP A 1 219 35.549 4.651 42.460 ? ? 1 T 1
 #
 loop_
 _[local]_rotamer_angle.id

@@ -13,16 +13,18 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 1 N N . GLN A 1 5 29.387 3.534 66.356 1 T 1
-ATOM 2 C CA . GLN A 1 5 27.956 3.819 66.294 1 T 1
-ATOM 3 C C . GLN A 1 5 27.172 2.619 66.782 1 T 1
-ATOM 4 O O . GLN A 1 5 26.210 2.228 66.146 1 T 1
-ATOM 5 C CB . GLN A 1 5 27.529 4.185 64.864 1 T 1
-ATOM 6 C CG . GLN A 1 5 28.426 5.232 64.165 1 T 1
-ATOM 7 C CD . GLN A 1 5 29.206 4.679 62.955 1 T 1
-ATOM 8 O OE1 . GLN A 1 5 28.618 4.166 61.995 1 T 1
-ATOM 9 N NE2 . GLN A 1 5 30.536 4.801 62.999 1 T 1
+ATOM 1 N N . GLN A 1 5 29.387 3.534 66.356 ? ? 1 T 1
+ATOM 2 C CA . GLN A 1 5 27.956 3.819 66.294 ? ? 1 T 1
+ATOM 3 C C . GLN A 1 5 27.172 2.619 66.782 ? ? 1 T 1
+ATOM 4 O O . GLN A 1 5 26.210 2.228 66.146 ? ? 1 T 1
+ATOM 5 C CB . GLN A 1 5 27.529 4.185 64.864 ? ? 1 T 1
+ATOM 6 C CG . GLN A 1 5 28.426 5.232 64.165 ? ? 1 T 1
+ATOM 7 C CD . GLN A 1 5 29.206 4.679 62.955 ? ? 1 T 1
+ATOM 8 O OE1 . GLN A 1 5 28.618 4.166 61.995 ? ? 1 T 1
+ATOM 9 N NE2 . GLN A 1 5 30.536 4.801 62.999 ? ? 1 T 1
 #
