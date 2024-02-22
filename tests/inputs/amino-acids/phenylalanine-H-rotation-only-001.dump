@@ -1,16 +1,10 @@
 {
   '1607' => {
-    'B_iso_or_equiv' => '41.41',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '46.863',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-11.209',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '51.724',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'N',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'connections' => [
       '1608',
@@ -26,29 +20,19 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'N'
   },
   '1608' => {
-    'B_iso_or_equiv' => '42.34',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '45.611',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-11.319',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '50.999',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CA',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'connections' => [
-      '1620',
       '1609',
+      '1620',
       '1607',
       '1611'
     ],
@@ -61,25 +45,15 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'C'
   },
   '1609' => {
-    'B_iso_or_equiv' => '46.87',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '45.219',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-12.790',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '50.797',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'C',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'connections' => [
       '1610',
@@ -94,25 +68,15 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'C'
   },
   '1610' => {
-    'B_iso_or_equiv' => '51.13',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '44.029',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-13.130',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '50.829',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'O',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'connections' => [
       '1609'
@@ -126,25 +90,15 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'O'
   },
   '1611' => {
-    'B_iso_or_equiv' => '39.45',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '45.673',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-10.611',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '49.656',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CB',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'connections' => [
       '1612',
@@ -161,25 +115,15 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'C'
   },
   '1612' => {
-    'B_iso_or_equiv' => '46.56',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '44.320',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-10.410',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '49.060',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CG',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'conformation' => [
       [
@@ -250,25 +194,28 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      }
+    },
     'type_symbol' => 'C'
   },
   '1613' => {
-    'B_iso_or_equiv' => '50.17',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '43.433',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-9.522',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '49.651',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CD1',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'conformation' => [
       [
@@ -378,25 +325,39 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'C'
   },
   '1614' => {
-    'B_iso_or_equiv' => '51.72',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '43.906',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-11.131',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '47.952',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CD2',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'conformation' => [
       [
@@ -506,25 +467,39 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'C'
   },
   '1615' => {
-    'B_iso_or_equiv' => '47.75',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '42.167',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-9.337',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '49.140',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CE1',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'conformation' => [
       [
@@ -634,25 +609,39 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'C'
   },
   '1616' => {
-    'B_iso_or_equiv' => '50.39',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '42.632',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-10.942',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '47.430',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CE2',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'conformation' => [
       [
@@ -762,25 +751,39 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'C'
   },
   '1617' => {
-    'B_iso_or_equiv' => '50.59',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '41.766',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '-10.052',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '48.029',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CZ',
-    'auth_comp_id' => 'PHE',
     'auth_seq_id' => '291',
     'conformation' => [
       [
@@ -890,26 +893,40 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'C'
   },
   '1618' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '47.309',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-10.344',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '51.419',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'connections' => [
       '1607'
     ],
@@ -922,26 +939,16 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
     'type_symbol' => 'H'
   },
   '1619' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '47.420',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-12.029',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '51.483',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'connections' => [
       '1607'
     ],
@@ -954,26 +961,16 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
     'type_symbol' => 'H'
   },
   '1620' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '44.857',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-10.841',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '51.589',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'connections' => [
       '1608'
     ],
@@ -986,26 +983,16 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
     'type_symbol' => 'H'
   },
   '1621' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '46.255',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-11.201',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '48.979',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'conformation' => [
       [
         [
@@ -1073,26 +1060,29 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      }
+    },
     'type_symbol' => 'H'
   },
   '1622' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '46.128',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-9.652',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '49.790',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'conformation' => [
       [
         [
@@ -1160,26 +1150,29 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      }
+    },
     'type_symbol' => 'H'
   },
   '1623' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '43.728',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-8.988',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '50.493',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'conformation' => [
       [
         [
@@ -1286,26 +1279,40 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'H'
   },
   '1624' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '44.551',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-11.816',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '47.509',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'conformation' => [
       [
         [
@@ -1412,26 +1419,40 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'H'
   },
   '1625' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '41.516',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-8.662',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '49.589',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'conformation' => [
       [
         [
@@ -1538,26 +1559,40 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'H'
   },
   '1626' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '42.332',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-11.472',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '46.587',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'conformation' => [
       [
         [
@@ -1664,26 +1699,40 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'H'
   },
   '1627' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '40.809',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '-9.919',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '47.643',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '291',
     'conformation' => [
       [
         [
@@ -1790,11 +1839,31 @@
     'label_comp_id' => 'PHE',
     'label_entity_id' => '1',
     'label_seq_id' => '246',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '1607',
+          '1608',
+          '1611',
+          '1612'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-2.88510423624172'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '1608',
+          '1611',
+          '1612',
+          '1613'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '1.1986804555559'
+      }
+    },
     'type_symbol' => 'H'
   }
 }

@@ -1,16 +1,10 @@
 {
   '971' => {
-    'B_iso_or_equiv' => '61.66',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '19.336',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '7.920',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '44.511',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'N',
-    'auth_comp_id' => 'ASN',
     'auth_seq_id' => '180',
     'connections' => [
       '972',
@@ -26,31 +20,21 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'N'
   },
   '972' => {
-    'B_iso_or_equiv' => '64.85',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '20.266',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '8.863',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '45.114',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CA',
-    'auth_comp_id' => 'ASN',
     'auth_seq_id' => '180',
     'connections' => [
       '971',
+      '973',
       '975',
-      '981',
-      '973'
+      '981'
     ],
     'group_PDB' => 'ATOM',
     'hybridization' => 'sp3',
@@ -61,25 +45,15 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'C'
   },
   '973' => {
-    'B_iso_or_equiv' => '60.41',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '20.461',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '8.617',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '46.594',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'C',
-    'auth_comp_id' => 'ASN',
     'auth_seq_id' => '180',
     'connections' => [
       '972',
@@ -94,25 +68,15 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'C'
   },
   '974' => {
-    'B_iso_or_equiv' => '60.99',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '21.534',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '8.883',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '47.145',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'O',
-    'auth_comp_id' => 'ASN',
     'auth_seq_id' => '180',
     'connections' => [
       '973'
@@ -126,25 +90,15 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'O'
   },
   '975' => {
-    'B_iso_or_equiv' => '84.44',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '19.797',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '10.296',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '44.865',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CB',
-    'auth_comp_id' => 'ASN',
     'auth_seq_id' => '180',
     'connections' => [
       '972',
@@ -161,25 +115,15 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
     'type_symbol' => 'C'
   },
   '976' => {
-    'B_iso_or_equiv' => '99.22',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '19.993',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '10.719',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '43.424',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'CG',
-    'auth_comp_id' => 'ASN',
     'auth_seq_id' => '180',
     'conformation' => [
       [
@@ -250,25 +194,28 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '971',
+          '972',
+          '975',
+          '976'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-1.26679805047811'
+      }
+    },
     'type_symbol' => 'C'
   },
   '977' => {
-    'B_iso_or_equiv' => '102.47',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '21.047',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '11.237',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '43.063',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'OD1',
-    'auth_comp_id' => 'ASN',
     'auth_seq_id' => '180',
     'conformation' => [
       [
@@ -376,25 +323,39 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '971',
+          '972',
+          '975',
+          '976'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-1.26679805047811'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '972',
+          '975',
+          '976',
+          '977'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '-1.55599936238666'
+      }
+    },
     'type_symbol' => 'O'
   },
   '978' => {
-    'B_iso_or_equiv' => '102.81',
-    'B_iso_or_equiv_esd' => '?',
     'Cartn_x' => '18.987',
-    'Cartn_x_esd' => '?',
     'Cartn_y' => '10.479',
-    'Cartn_y_esd' => '?',
     'Cartn_z' => '42.586',
-    'Cartn_z_esd' => '?',
+    '[local]_selection_state' => 'T',
     'auth_asym_id' => 'A',
-    'auth_atom_id' => 'ND2',
-    'auth_comp_id' => 'ASN',
     'auth_seq_id' => '180',
     'conformation' => [
       [
@@ -504,26 +465,40 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '1.00',
-    'occupancy_esd' => '?',
-    'pdbx_PDB_ins_code' => '?',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '?',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '971',
+          '972',
+          '975',
+          '976'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-1.26679805047811'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '972',
+          '975',
+          '976',
+          '977'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '-1.55599936238666'
+      }
+    },
     'type_symbol' => 'N'
   },
   '979' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '18.421',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '8.370',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '44.499',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '180',
     'connections' => [
       '971'
     ],
@@ -536,26 +511,16 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
     'type_symbol' => 'H'
   },
   '980' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '19.339',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '7.083',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '45.094',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '180',
     'connections' => [
       '971'
     ],
@@ -568,26 +533,16 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
     'type_symbol' => 'H'
   },
   '981' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '21.213',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '8.725',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '44.636',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '180',
     'connections' => [
       '972'
     ],
@@ -600,26 +555,16 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
     'type_symbol' => 'H'
   },
   '982' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '20.358',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '10.959',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '45.491',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '180',
     'conformation' => [
       [
         [
@@ -687,26 +632,29 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '971',
+          '972',
+          '975',
+          '976'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-1.26679805047811'
+      }
+    },
     'type_symbol' => 'H'
   },
   '983' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '18.755',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '10.366',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '45.099',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '180',
     'conformation' => [
       [
         [
@@ -774,26 +722,29 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '971',
+          '972',
+          '975',
+          '976'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-1.26679805047811'
+      }
+    },
     'type_symbol' => 'H'
   },
   '984' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '18.222',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '10.093',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '42.892',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '180',
     'conformation' => [
       [
         [
@@ -900,26 +851,40 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '971',
+          '972',
+          '975',
+          '976'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-1.26679805047811'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '972',
+          '975',
+          '976',
+          '977'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '-1.55599936238666'
+      }
+    },
     'type_symbol' => 'H'
   },
   '985' => {
-    'B_iso_or_equiv' => '.',
-    'B_iso_or_equiv_esd' => '.',
     'Cartn_x' => '19.064',
-    'Cartn_x_esd' => '.',
     'Cartn_y' => '10.701',
-    'Cartn_y_esd' => '.',
     'Cartn_z' => '41.707',
-    'Cartn_z_esd' => '.',
-    'auth_asym_id' => '.',
-    'auth_atom_id' => '.',
-    'auth_comp_id' => '.',
-    'auth_seq_id' => '.',
+    '[local]_selection_state' => 'T',
+    'auth_asym_id' => 'A',
+    'auth_seq_id' => '180',
     'conformation' => [
       [
         [
@@ -1026,11 +991,31 @@
     'label_comp_id' => 'ASN',
     'label_entity_id' => '1',
     'label_seq_id' => '135',
-    'occupancy' => '.',
-    'occupancy_esd' => '.',
-    'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
-    'pdbx_formal_charge' => '.',
+    'rotatable_bonds' => {
+      'chi1' => {
+        'atom_ids' => [
+          '971',
+          '972',
+          '975',
+          '976'
+        ],
+        'order' => 3,
+        'rank' => 1,
+        'value' => '-1.26679805047811'
+      },
+      'chi2' => {
+        'atom_ids' => [
+          '972',
+          '975',
+          '976',
+          '977'
+        ],
+        'order' => 5,
+        'rank' => 1,
+        'value' => '-1.55599936238666'
+      }
+    },
     'type_symbol' => 'H'
   }
 }
