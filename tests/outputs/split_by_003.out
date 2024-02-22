@@ -13,16 +13,18 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 N N . GLN A 1 5 29.387 3.534 66.356 1
-ATOM 2 C CA . GLN A 1 5 27.956 3.819 66.294 1
-ATOM 3 C C . GLN A 1 5 27.172 2.619 66.782 1
-ATOM 4 O O . GLN A 1 5 26.210 2.228 66.146 1
-ATOM 5 C CB . GLN A 1 5 27.529 4.185 64.864 1
-ATOM 6 C CG . GLN A 1 5 28.426 5.232 64.165 1
-ATOM 7 C CD . GLN A 1 5 29.206 4.679 62.955 1
-ATOM 8 O OE1 . GLN A 1 5 28.618 4.166 61.995 1
-ATOM 9 N NE2 . GLN A 1 5 30.536 4.801 62.999 1
+ATOM 1 N N . GLN A 1 5 29.387 3.534 66.356 ? ? 1
+ATOM 2 C CA . GLN A 1 5 27.956 3.819 66.294 ? ? 1
+ATOM 3 C C . GLN A 1 5 27.172 2.619 66.782 ? ? 1
+ATOM 4 O O . GLN A 1 5 26.210 2.228 66.146 ? ? 1
+ATOM 5 C CB . GLN A 1 5 27.529 4.185 64.864 ? ? 1
+ATOM 6 C CG . GLN A 1 5 28.426 5.232 64.165 ? ? 1
+ATOM 7 C CD . GLN A 1 5 29.206 4.679 62.955 ? ? 1
+ATOM 8 O OE1 . GLN A 1 5 28.618 4.166 61.995 ? ? 1
+ATOM 9 N NE2 . GLN A 1 5 30.536 4.801 62.999 ? ? 1
 #
 data_rotag
 #
@@ -39,14 +41,16 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
-ATOM 4444 N N . GLN B 1 5 -8.486 -5.520 -4.825 1
-ATOM 4445 C CA . GLN B 1 5 -8.914 -6.421 -5.891 1
-ATOM 4446 C C . GLN B 1 5 -9.276 -7.820 -5.376 1
-ATOM 4447 O O . GLN B 1 5 -10.079 -8.518 -5.998 1
-ATOM 4448 C CB . GLN B 1 5 -7.824 -6.538 -6.964 1
-ATOM 4449 C CG A GLN B 1 5 -8.267 -7.257 -8.223 1
-ATOM 4450 C CD A GLN B 1 5 -7.144 -7.436 -9.231 1
-ATOM 4451 O OE1 A GLN B 1 5 -6.165 -6.675 -9.245 1
-ATOM 4452 N NE2 A GLN B 1 5 -7.274 -8.456 -10.080 1
+ATOM 4444 N N . GLN B 1 5 -8.486 -5.520 -4.825 ? ? 1
+ATOM 4445 C CA . GLN B 1 5 -8.914 -6.421 -5.891 ? ? 1
+ATOM 4446 C C . GLN B 1 5 -9.276 -7.820 -5.376 ? ? 1
+ATOM 4447 O O . GLN B 1 5 -10.079 -8.518 -5.998 ? ? 1
+ATOM 4448 C CB . GLN B 1 5 -7.824 -6.538 -6.964 ? ? 1
+ATOM 4449 C CG A GLN B 1 5 -8.267 -7.257 -8.223 ? ? 1
+ATOM 4450 C CD A GLN B 1 5 -7.144 -7.436 -9.231 ? ? 1
+ATOM 4451 O OE1 A GLN B 1 5 -6.165 -6.675 -9.245 ? ? 1
+ATOM 4452 N NE2 A GLN B 1 5 -7.274 -8.456 -10.080 ? ? 1
 #
