@@ -13,11 +13,13 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
-ATOM 696 C CB . ASP A 1 91 -16.086 41.561 90.153 1
-ATOM 2651 C CG 2 ASP A 1 91 -16.988 42.773 90.015 1
-ATOM 2652 O OD1 2 ASP A 1 91 -18.072 42.692 89.391 1
-ATOM 2653 O OD2 2 ASP A 1 91 -16.623 43.851 90.543 1
+ATOM 696 C CB . ASP A 1 91 -16.086 41.561 90.153 ? ? 1
+ATOM 2651 C CG 2 ASP A 1 91 -16.988 42.773 90.015 ? ? 1
+ATOM 2652 O OD1 2 ASP A 1 91 -18.072 42.692 89.391 ? ? 1
+ATOM 2653 O OD2 2 ASP A 1 91 -16.623 43.851 90.543 ? ? 1
 #
 data_rotag
 #
@@ -34,9 +36,11 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
-ATOM 696 C CB . ASP A 1 91 -16.086 41.561 90.153 1
-ATOM 697 C CG . ASP A 1 91 -16.036 42.868 90.921 1
-ATOM 698 O OD1 . ASP A 1 91 -15.828 43.950 90.324 1
-ATOM 699 O OD2 . ASP A 1 91 -16.211 42.837 92.163 1
+ATOM 696 C CB . ASP A 1 91 -16.086 41.561 90.153 ? ? 1
+ATOM 697 C CG . ASP A 1 91 -16.036 42.868 90.921 ? ? 1
+ATOM 698 O OD1 . ASP A 1 91 -15.828 43.950 90.324 ? ? 1
+ATOM 699 O OD2 . ASP A 1 91 -16.211 42.837 92.163 ? ? 1
 #
