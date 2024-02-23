@@ -345,16 +345,23 @@ sub assign_hetatoms
     my %track_renamed_atom_ids = ();
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
+        my %related_atom_selection_1 = (
+            $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} eq '.' ?
+            ( 'auth_seq_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} ],
+              'auth_asym_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_auth_asym_id'} ] ) :
+            ( 'label_seq_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} ],
+              'label_asym_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] )
+        );
+
         # Related atom site is used as the connected molecule will inherit
         # some data items.
-        my $related_atom_site_1 = filter_new(
-            \%origin_atom_site,
-            { 'include' =>
-              { 'auth_asym_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr2_auth_asym_id'} ],
-                'auth_seq_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} ] } }
-        );
+        my $related_atom_site_1 =
+            filter_new( \%origin_atom_site,
+                        { 'include' => \%related_atom_selection_1 } );
         my $connected_atom_site_1 = filter_new(
             $related_atom_site_1,
             { 'include' =>
