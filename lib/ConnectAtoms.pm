@@ -371,13 +371,24 @@ sub assign_hetatoms
 
         next if ! %{ $connected_atom_site_1 };
 
+        my %related_atom_selection_2 = (
+            $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} eq '.' ?
+            ( 'auth_seq_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
+              'auth_asym_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'} ] ) :
+            ( 'label_seq_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
+              'label_asym_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ),
+            ( 'label_atom_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] )
+        );
+
         my $connected_atom_site_2 = filter_new(
             \%origin_atom_site,
             { 'include' =>
-              { 'auth_seq_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
-                'auth_asym_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'} ],
+              { $related_atom_selection_2,
                 'label_atom_id' => [
                     $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] } }
         );
