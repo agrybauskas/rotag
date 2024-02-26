@@ -346,7 +346,7 @@ sub assign_hetatoms
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my %related_atom_selection_1 = (
-            $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} eq '.' ?
+            $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} eq '.' ?
             ( 'auth_seq_id' => [
                   $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} ],
               'auth_asym_id' => [
@@ -372,25 +372,22 @@ sub assign_hetatoms
         next if ! %{ $connected_atom_site_1 };
 
         my %related_atom_selection_2 = (
-            $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} eq '.' ?
-            ( 'auth_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
-              'auth_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'} ] ) :
-            ( 'label_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
-              'label_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ),
+            ( $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} eq '.' ?
+              ( 'auth_seq_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
+                'auth_asym_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'} ] ) :
+              ( 'label_seq_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
+                'label_asym_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ) ),
             ( 'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] )
+                  $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] )
         );
 
         my $connected_atom_site_2 = filter_new(
             \%origin_atom_site,
-            { 'include' =>
-              { $related_atom_selection_2,
-                'label_atom_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] } }
+            { 'include' => \%related_atom_selection_2 }
         );
 
         next if ! %{ $connected_atom_site_2 };
