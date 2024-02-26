@@ -516,6 +516,10 @@ sub create_hetatom_struct_conn
                     $atom_site->{$around_atom_id}{'label_comp_id'},
                 'ptnr1_label_seq_id' =>
                     $atom_site->{$around_atom_id}{'label_seq_id'},
+                'ptnr1_auth_asym_id' =>
+                    $atom_site->{$around_atom_id}{'auth_asym_id'},
+                'ptnr1_auth_comp_id' =>
+                    $atom_site->{$around_atom_id}{'auth_comp_id'},
                 'ptnr2_label_atom_id' =>
                     $atom_site->{$hetatom_id}{'label_atom_id'},
                 'ptnr2_label_asym_id' =>
@@ -524,6 +528,10 @@ sub create_hetatom_struct_conn
                     $atom_site->{$hetatom_id}{'label_comp_id'},
                 'ptnr2_label_seq_id' =>
                     $atom_site->{$hetatom_id}{'label_seq_id'},
+                'ptnr2_auth_asym_id' =>
+                    $atom_site->{$hetatom_id}{'auth_asym_id'},
+                'ptnr2_auth_comp_id' =>
+                    $atom_site->{$hetatom_id}{'auth_comp_id'},
             };
 
             $metalc_counter++ if $struct_conn_type eq 'metalc';
