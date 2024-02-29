@@ -1397,26 +1397,26 @@ sub to_pdbx
         for my $category  ( @{ $categories } ) {
             next if defined $tags && ! any { $category eq $_ } @{ $tags };
 
-            my $category_attribute_order = $attribute_order->{$category};
-            if( ! defined $category_attribute_order ) {
-                $category_attribute_order =
-                    $pdbx_data->{$category}{'metadata'}{'attributes'};
-            }
-
-            my @append_attributes = ();
-            for my $add_attribute ( @{ $add_attributes->{$category} } ) {
-                if( ! any { $add_attributes eq $_ }
-                         @{ $category_attribute_order } ) {
-                    push @append_attributes, $add_attribute;
-                }
-            }
-            push @{ $category_attribute_order }, @append_attributes;
-
-            my ( undef, $current_attribute_order_table ) =
-                sort_by_list( $category_attribute_order );
-
             if( $pdbx_data->{$category}{'metadata'}{'is_loop'} ) {
                 print {$fh} "loop_\n";
+
+                my $category_attribute_order = $attribute_order->{$category};
+                if( ! defined $category_attribute_order ) {
+                    $category_attribute_order =
+                        $pdbx_data->{$category}{'metadata'}{'attributes'};
+                }
+
+                my @append_attributes = ();
+                for my $add_attribute ( @{ $add_attributes->{$category} } ) {
+                    if( ! any { $add_attributes eq $_ }
+                             @{ $category_attribute_order } ) {
+                        push @append_attributes, $add_attribute;
+                    }
+                }
+                push @{ $category_attribute_order }, @append_attributes;
+
+                my ( undef, $current_attribute_order_table ) =
+                    sort_by_list( $category_attribute_order );
 
                 foreach( @{ $category_attribute_order } ) {
                     print {$fh} "$category.$_\n";
