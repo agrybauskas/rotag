@@ -1434,10 +1434,11 @@ sub to_pdbx
                                       $category => $category_attribute_order}});
                 }
 
-                my $attribute_array_length =
-                    $#{ $pdbx_data->{$category}{'metadata'}{'attributes'} };
-                my $data_array_length =
-                    $#{ $pdbx_data->{$category}{'data'} };
+                my $attributes = $pdbx_data->{$category}{'metadata'}{'attributes'};
+                my $attribute_array_length = $#{ $attributes };
+                my $data_array = $pdbx_data->{$category}{'data'};
+                my $data_array_length = $#{ $data_array };
+
                 for( my $i = 0;
                      $i <= $data_array_length;
                      $i += $attribute_array_length + 1 ) {
