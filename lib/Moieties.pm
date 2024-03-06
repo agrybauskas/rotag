@@ -174,10 +174,13 @@ sub replace_with_moiety
         filter( { 'atom_site' => $residue_site,
                   'include' => { 'label_atom_id' => [ 'N' ] },
                   'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
-    my $ca_atom_coord =
+    my $ca_atom_id =
         filter( { 'atom_site' => $residue_site,
                   'include' => { 'label_atom_id' => [ 'CA' ] },
-                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+                  'data' => [ 'id' ] } )->[0][0];
+    my $ca_atom_coord =
+        [ map { $residue_site->{$ca_atom_id}{$_} }
+              ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ];
     my $c_atom_coord =
         filter( { 'atom_site' => $residue_site,
                   'include' => { 'label_atom_id' => [ 'C' ] },
@@ -226,6 +229,10 @@ sub replace_with_moiety
         $moiety_atom->{'id'} = $last_atom_id;
         $moiety_atom->{'label_seq_id'} = $residue_id;
         $moiety_atom->{'label_asym_id'} = $residue_chain;
+        $moiety_atom->{'auth_seq_id'} =
+            $residue_site->{$ca_atom_id}{'auth_seq_id'};
+        $moiety_atom->{'auth_asym_id'} =
+            $residue_site->{$ca_atom_id}{'auth_asym_id'};
         $moiety_atom->{'pdbx_PDB_model_num'} = $pdbx_model;
         # TODO: check if there will be situations when non '.' label_alt_id is
         # needed.
