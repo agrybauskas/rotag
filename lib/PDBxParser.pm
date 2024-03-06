@@ -1415,11 +1415,10 @@ sub to_pdbx
                 }
                 push @{ $category_attribute_order }, @append_attributes;
 
-                my $attributes = $pdbx_data->{$category}{'metadata'}{'attributes'};
-                my $data_array = $pdbx_data->{$category}{'data'};
-
-                my ( undef, $current_attribute_order_table ) =
-                    sort_by_list( $category_attribute_order, $attributes );
+                my ( undef, $current_attribute_order_table ) = sort_by_list(
+                    $category_attribute_order,
+                    $pdbx_data->{$category}{'metadata'}{'attributes'}
+                );
 
                 foreach( @{ $category_attribute_order } ) {
                     print {$fh} "$category.$_\n";
@@ -1437,22 +1436,17 @@ sub to_pdbx
                                       $category => $category_attribute_order}});
                 }
 
-                my $attribute_array_length =
-                    $#{ $pdbx_data->{$category}{'metadata'}{'attributes'} };
-                my $data_array_length = $#{ $pdbx_data->{$category}{'data'} };
-
                 for( my $i = 0;
-                     $i <= $data_array_length;
-                     $i += $attribute_array_length + 1 ) {
+                     $i <= $#{ $pdbx_data->{$category}{'data'} };
+                     $i += $#{ $pdbx_data->{$category}{'metadata'}{'attributes'} } + 1 ) {
                     my @current_data_list = ();
-                    for my $j ( 0..$#{ $category_attribute_order } ) {
-                        my $attribute = $category_attribute_order->[$j];
+                    for my $attribute ( @{ $category_attribute_order } ) {
                         my $pos = $current_attribute_order_table->{$attribute};
                         if( defined $pos ) {
                             push @current_data_list,
-                                $pdbx_data->{$category}{'data'}[$i+$pos];
+                                $pdbx_data->{$category}{'data'}->[$i+$pos];
                         } else {
-                            push @current_data_list, '?'
+                            push @current_data_list, '?';
                         }
                     }
                     print {$fh} join( q{ }, @current_data_list ), "\n" ;
