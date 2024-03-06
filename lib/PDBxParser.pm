@@ -1415,8 +1415,6 @@ sub to_pdbx
                 }
                 push @{ $category_attribute_order }, @append_attributes;
 
-                my %current_attribute_order_table = ();
-
                 foreach( @{ $category_attribute_order } ) {
                     print {$fh} "$category.$_\n";
                 }
@@ -1433,9 +1431,25 @@ sub to_pdbx
                                       $category => $category_attribute_order}});
                 }
 
+                # Collecting data and attributes after the change to raw data.
+                my $current_attributes =
+                    $pdbx_data->{$category}{'metadata'}{'attributes'};
+                my $current_data =
+                    $pdbx_data->{$category}{'data'};
+
+                my %current_attribute_order_table = ();
+                for my $attribute ( @{ $category_attribute_order } ) {
+                    for my $i ( 0..$#{ $current_attributes } ) {
+                        if( $attribute eq $current_attributes->[$i] ) {
+                            $current_attribute_order_table{$attribute} = $i;
+                            last;
+                        }
+                    }
+                }
+
                 for( my $i = 0;
-                     $i <= $#{ $pdbx_data->{$category}{'data'} };
-                     $i += $#{ $pdbx_data->{$category}{'metadata'}{'attributes'} } + 1 ) {
+                     $i <= $#{ $current_data };
+                     $i += $#{ $current_attributes } + 1 ) {
                     my @current_data_list = ();
                     for my $attribute ( @{ $category_attribute_order } ) {
                         my $pos = $current_attribute_order_table{$attribute};
@@ -1446,6 +1460,7 @@ sub to_pdbx
                             push @current_data_list, '?';
                         }
                     }
+
                     print {$fh} join( q{ }, @current_data_list ), "\n" ;
                 }
             } else { # PDBx line data.
