@@ -1415,10 +1415,7 @@ sub to_pdbx
                 }
                 push @{ $category_attribute_order }, @append_attributes;
 
-                my ( undef, $current_attribute_order_table ) = sort_by_list(
-                    $category_attribute_order,
-                    $pdbx_data->{$category}{'metadata'}{'attributes'}
-                );
+                my %current_attribute_order_table = ();
 
                 foreach( @{ $category_attribute_order } ) {
                     print {$fh} "$category.$_\n";
@@ -1441,7 +1438,7 @@ sub to_pdbx
                      $i += $#{ $pdbx_data->{$category}{'metadata'}{'attributes'} } + 1 ) {
                     my @current_data_list = ();
                     for my $attribute ( @{ $category_attribute_order } ) {
-                        my $pos = $current_attribute_order_table->{$attribute};
+                        my $pos = $current_attribute_order_table{$attribute};
                         if( defined $pos ) {
                             push @current_data_list,
                                 $pdbx_data->{$category}{'data'}->[$i+$pos];
