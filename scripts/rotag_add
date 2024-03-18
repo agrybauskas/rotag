@@ -308,7 +308,8 @@ for my $pdbx_file ( @ARGV ) {
             connect_atoms( $parameters, $residue_site );
 
             if( defined $struct_conn && %{ $struct_conn } ) {
-                assign_hetatoms( $parameters, $residue_site, $struct_conn );
+                assign_hetatoms( $parameters, $residue_site, $struct_conn,
+                                 { 'ref_atom_site' => $target_atom_site } );
             }
 
             # Updating the target's atom site as there more duplicated pseudo

@@ -336,8 +336,10 @@ sub original_atom_id
 sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
+    $ref_atom_site //= $atom_site;
 
     return if ! %{ $struct_conn };
 
