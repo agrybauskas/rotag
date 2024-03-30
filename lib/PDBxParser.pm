@@ -1221,6 +1221,8 @@ sub extract
 #     $args->{atom_site} - atom site data structure;
 #     $args->{attributes} - list of attributes that atom site will be split by;
 #     $args->{append_dot} - atoms that has 'label_alt_id' eq '.' to
+#     $args->{alt_attributes} - alternative list of attributes that atom site
+#     will be split by;
 #     corresponding groups.
 # Output:
 #     %split_groups - hash of atom site data structures.
@@ -1229,11 +1231,14 @@ sub extract
 sub split_by
 {
     my ( $args ) = @_;
-    my ( $atom_site, $attributes, $append_dot ) =
-        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'} );
+    my ( $atom_site, $attributes, $append_dot, $alt_attributes ) =
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'},
+          $args->{'alt_attributes'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
+    $alt_attributes //=
+        [ 'auth_seq_id', 'auth_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
     $append_dot //= 0;
 
     my %split_groups;
