@@ -1232,14 +1232,10 @@ sub split_by
 {
     my ( $args ) = @_;
     my ( $atom_site, $attributes, $append_dot, $alt_attributes ) =
-        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'},
-          $args->{'alt_attributes'} );
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
-    $alt_attributes //=
-        { 'label_seq_id' => 'auth_seq_id',
-          'label_asym_id' => 'auth_asym_id' };
     $append_dot //= 0;
 
     my %split_groups;
@@ -1247,7 +1243,17 @@ sub split_by
         # Creates group determining key that is used to sort atoms.
         my @attribute_values;
         for my $attribute ( @{ $attributes } ) {
-            push @attribute_values, $atom_site->{$atom_id}{$attribute};
+            if( $attribute eq 'label_seq_id' &&
+                $atom_site->{$atom_id}{$attribute} eq '.' &&
+                $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
+                push @attribute_values, $atom_site->{$atom_id}{'auth_seq_id'};
+            } elsif( $attribute eq 'label_asym_id' &&
+                     $atom_site->{$atom_id}{$attribute} eq '.' &&
+                     $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
+                push @attribute_values, $atom_site->{$atom_id}{'auth_asym_id'};
+            } else {
+                push @attribute_values, $atom_site->{$atom_id}{$attribute};
+            }
         }
 
         my $group_key = join q{,}, @attribute_values;
