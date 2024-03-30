@@ -1245,28 +1245,28 @@ sub split_by
     my %split_groups;
     for my $atom_id ( sort keys %{ $atom_site } ) {
         # Creates group determining key that is used to sort atoms.
+        my @attribute_order;
         my @attribute_values;
         for my $attribute ( @{ $attributes } ) {
             if( $attribute eq 'label_seq_id' &&
                 $atom_site->{$atom_id}{$attribute} eq '.' &&
                 $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
+                push @attribute_order, 'auth_seq_id';
                 push @attribute_values, $atom_site->{$atom_id}{'auth_seq_id'};
             } elsif( $attribute eq 'label_asym_id' &&
-                     $atom_site->{$atom_id}{$attribute} eq '.' &&
+                     $atom_site->{$atom_id}{'label_seq_id'} eq '.' &&
                      $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
+                push @attribute_order, 'auth_asym_id';
                 push @attribute_values, $atom_site->{$atom_id}{'auth_asym_id'};
             } else {
+                push @attribute_order, $attribute;
                 push @attribute_values, $atom_site->{$atom_id}{$attribute};
             }
         }
 
         my $group_key = join q{,}, @attribute_values;
 
-        if( exists $split_groups{$group_key} ) {
-            push @{ $split_groups{$group_key} }, $atom_id;
-        } else {
-            $split_groups{$group_key} = [ $atom_id ];
-        }
+        $split_groups{$group_key}{$atom_id} = \@attribute_order;
     }
 
     if( $append_dot ) {
