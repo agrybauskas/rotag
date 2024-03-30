@@ -1227,9 +1227,9 @@ sub extract
 # Output:
 #     %split_groups - hash of atom site data structures.
 #     Data structure example:
-#     { '12,A,1,.' => [ {
+#     { '12,A,1,.' => {
 #           1 => [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
-#                  'label_alt_id' ] } ] }
+#                  'label_alt_id' ] } }
 #
 
 sub split_by
