@@ -320,7 +320,6 @@ sub original_atom_id
     }
 }
 
-
 #
 # Assigns heteroatoms to specific residues according to "_struct_conn" -- either
 # creating the new one or assigning to the existing one. Duplicated heteroatoms
