@@ -265,7 +265,7 @@ sub stretchable_bonds
         my $residue_site =
             filter_new( $atom_site,
                         { 'include' =>
-                          { 'id' => $residue_groups->{$residue_unique_key} } } );
+                          { 'id' => [ keys %{ $residue_groups->{$residue_unique_key} } ] } } );
 
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
@@ -388,7 +388,7 @@ sub bendable_angles
         my $residue_site =
             filter_new( $atom_site,
                         { 'include' =>
-                          { 'id' => $residue_groups->{$residue_unique_key} } } );
+                          { 'id' => [ keys %{ $residue_groups->{$residue_unique_key} } ] } } );
 
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
