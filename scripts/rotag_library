@@ -147,7 +147,7 @@ for my $pdbx_file ( @ARGV ) {
     my @rotamers;
     my %frequencies = ();
     for my $residue_unique_key ( sort keys %{ $residue_angle_groups } ) {
-        my @angle_ids = @{ $residue_angle_groups->{$residue_unique_key} };
+        my @angle_ids = keys %{ $residue_angle_groups->{$residue_unique_key} };
         my @rotamer_ids =
             uniq map { $rotamer_angles->{$_}{'rotamer_id'} } @angle_ids;
 
@@ -195,7 +195,7 @@ for my $pdbx_file ( @ARGV ) {
                 my $unique_angle_key =
                     join( ',', map { $rotamer_angles->{$_}{'type'} =>
                                      $rotamer_angles->{$_}{'value'} }
-                          @{ $rotamer_angle_groups->{$rotamer_id} } );
+                          keys %{ $rotamer_angle_groups->{$rotamer_id} } );
                 if( ! defined $visited_rotamers{$unique_angle_key} &&
                     ! $visited_rotamers{$unique_angle_key} ) {
                     $visited_rotamers{$unique_angle_key} = 1;
