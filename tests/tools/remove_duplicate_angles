@@ -83,7 +83,7 @@ for my $cif_file ( @ARGV ) {
 
     for my $rotamer_id ( sort keys %{ $rotamer_angle_groups } ) {
         my @rotamer_angles = ();
-        for my $angle_id ( @{ $rotamer_angle_groups->{$rotamer_id} } ) {
+        for my $angle_id ( keys %{ $rotamer_angle_groups->{$rotamer_id} } ) {
             my $angle_data =
                 $rotamer_angle->{'_[local]_rotamer_angle'}{'data'}{$angle_id};
 
