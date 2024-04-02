@@ -1271,6 +1271,8 @@ sub split_by
 
     if( $append_dot ) {
         # Pre-determines position of attribute in unique key.
+        # HACK: might not work when the 'label_alt_id' does not align between
+        # ATOM and HETATM.
         my $alt_id_pos;
         for my $i ( 0..$#{ $attributes } ) {
             if( $attributes->[$i] eq 'label_alt_id' ) {
@@ -1297,8 +1299,9 @@ sub split_by
         # Appends origin atoms to alternative groups of atoms if necessary.
         for my $alt_key ( keys %unique_key_relations ) {
             if( exists $split_groups{$unique_key_relations{$alt_key}} ) {
-                push @{ $split_groups{$alt_key} },
-                     @{ $split_groups{$unique_key_relations{$alt_key}} };
+                $split_groups{$alt_key} =
+                    { %{ $split_groups{$alt_key} },
+                      %{ $split_groups{$unique_key_relations{$alt_key}} } };
             }
         }
 
