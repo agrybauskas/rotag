@@ -301,8 +301,12 @@ for my $pdbx_file ( @ARGV ) {
                           { 'id' =>
                                 [ keys %{ $atom_site_split_groups->{$residue_unique_key} } ] } } );
             my $residue_site =
-                filter_by_unique_residue_key( $current_target_atom_site,
-                                              $residue_unique_key, 1 );
+                filter_by_unique_residue_key(
+                    $current_target_atom_site,
+                    $residue_unique_key,
+                    1,
+                    $atom_site_split_groups->{$residue_unique_key}
+            );
 
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );

@@ -1013,13 +1013,19 @@ sub filter_new
 #     $unique_residue_key - a composite key that identifies residue uniquely.
 #     $include_dot - includes '.' alt id into the selection.
 #     Ex.: '18,A,1,.'.
+#     $attributes - attributes that are forming unique key.
 # Output:
 #     %filtered_atoms - filtered atom data structure.
 #
 
 sub filter_by_unique_residue_key
 {
-    my ( $atom_site, $unique_residue_key, $include_dot ) = @_;
+    my ( $atom_site, $unique_residue_key, $include_dot, $attributes ) = @_;
+
+    $attributes //= [
+        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
+    ];
+
     my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
         split /,/sxm, $unique_residue_key;
     my $filtered_atoms = filter( { 'atom_site' => $atom_site,
