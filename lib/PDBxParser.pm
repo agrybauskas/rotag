@@ -1026,16 +1026,18 @@ sub filter_by_unique_residue_key
         'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
     ];
 
-    my ( $residue_id, $residue_chain, $pdbx_model_num, $residue_alt ) =
-        split /,/sxm, $unique_residue_key;
+    my @attribute_values = split /,/sxm, $unique_residue_key;
+    my %include =
+        map { $attributes->[$_] => [ $attribute_values[$_] ] }
+            0..$#{ $attributes };
+
     my $filtered_atoms = filter( { 'atom_site' => $atom_site,
                                    'include' =>
-                                   { 'label_seq_id' => [ $residue_id ],
-                                     'label_asym_id' => [ $residue_chain ],
-                                     'pdbx_PDB_model_num' => [ $pdbx_model_num ],
+                                   { %include,
                                      'label_alt_id' =>
-                                         [ $residue_alt,
+                                         [ $attribute_values[3],
                                            ( $include_dot ? '.' : () ) ] } } );
+
     return $filtered_atoms;
 }
 
