@@ -633,13 +633,6 @@ sub energy
     my $interaction_atom_names =
         $parameters->{'_[local]_interaction_atom_names'};
 
-    # Splits atom site into groups by its uniqueness.
-    my $atom_site_groups = split_by( { 'atom_site' => $atom_site,
-                                       'attributes' => [ 'pdbx_PDB_model_num',
-                                                         'label_alt_id',
-                                                         'label_asym_id' ],
-                                       'append_dot' => 1 } );
-
     my $calculation_id = 1;
     my %energy = ();
 

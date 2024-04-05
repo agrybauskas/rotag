@@ -77,7 +77,8 @@ sub rotatable_bonds
         my $residue_site =
             filter_new( $atom_site,
                         { 'include' =>
-                          { 'id' => [ keys %{ $residue_groups->{$residue_unique_key} } ] } } );
+                          { 'id' => $residue_groups->{$residue_unique_key}
+                                                     {'atom_ids'} } } );
 
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
@@ -265,7 +266,8 @@ sub stretchable_bonds
         my $residue_site =
             filter_new( $atom_site,
                         { 'include' =>
-                          { 'id' => [ keys %{ $residue_groups->{$residue_unique_key} } ] } } );
+                          { 'id' => $residue_groups->{$residue_unique_key}
+                                                     {'atom_ids'} } } );
 
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
@@ -388,7 +390,8 @@ sub bendable_angles
         my $residue_site =
             filter_new( $atom_site,
                         { 'include' =>
-                          { 'id' => [ keys %{ $residue_groups->{$residue_unique_key} } ] } } );
+                          { 'id' => $residue_groups->{$residue_unique_key}
+                                                     {'atom_ids'} } } );
 
         if( $include_mainchain ) {
             my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
@@ -508,7 +511,7 @@ sub collect_dihedral_angles
         my $unique_rotatable_bonds = unique_bond_parameters(
             { map { ( $_ => $atom_site->{$_}{'rotatable_bonds'} ) }
               grep { defined $atom_site->{$_}{'rotatable_bonds'} }
-              keys %{ $residue_groups->{$residue_unique_key} } }
+                  @{ $residue_groups->{$residue_unique_key}{'atom_ids'} } }
         );
         $dihedral_angles{$residue_unique_key} = {
             map { ( $_ => $unique_rotatable_bonds->{$_} ) }
@@ -543,7 +546,7 @@ sub collect_bond_lengths
         my $unique_stretchable_bonds = unique_bond_parameters(
             { map { ( $_ => $atom_site->{$_}{'stretchable_bonds'} ) }
               grep { defined $atom_site->{$_}{'stretchable_bonds'} }
-              keys %{ $residue_groups->{$residue_unique_key} } }
+                  @{ $residue_groups->{$residue_unique_key}{'atom_ids'} } }
         );
         $bond_lengths{$residue_unique_key} = $unique_stretchable_bonds;
     }
@@ -573,7 +576,7 @@ sub collect_bond_angles
         my $unique_bendable_angles = unique_bond_parameters(
             { map { ( $_ => $atom_site->{$_}{'bendable_angles'} ) }
               grep { defined $atom_site->{$_}{'bendable_angles'} }
-              keys %{ $residue_groups->{$residue_unique_key} } }
+                  @{ $residue_groups->{$residue_unique_key}{'atom_ids'} } }
         );
         $bond_angles{$residue_unique_key} = $unique_bendable_angles;
     }

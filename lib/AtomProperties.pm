@@ -121,7 +121,8 @@ sub sort_atom_ids_by_name
     my @atom_names =
         uniq map { $atom_site->{$_}{'label_atom_id'} } @{ $atom_ids };
     @atom_names = @{ sort_atom_names( \@atom_names ) };
-    my @sorted_atom_ids = map { keys %{ $atom_names_to_ids->{$_}} } @atom_names;
+    my @sorted_atom_ids =
+        map { @{ $atom_names_to_ids->{$_}{'atom_ids'} } } @atom_names;
     return \@sorted_atom_ids;
 }
 
