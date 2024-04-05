@@ -1274,8 +1274,8 @@ sub split_by
         }
 
         my $group_key = join q{,}, @attribute_values;
-
-        $split_groups{$group_key}{$atom_id} = \@attribute_order;
+        $split_groups{$group_key}{'attributes'} = \@attribute_order;
+        push @{ $split_groups{$group_key}{'atom_ids'} }, $atom_id;
     }
 
     if( $append_dot ) {
@@ -1308,9 +1308,8 @@ sub split_by
         # Appends origin atoms to alternative groups of atoms if necessary.
         for my $alt_key ( keys %unique_key_relations ) {
             if( exists $split_groups{$unique_key_relations{$alt_key}} ) {
-                $split_groups{$alt_key} =
-                    { %{ $split_groups{$alt_key} },
-                      %{ $split_groups{$unique_key_relations{$alt_key}} } };
+                push @{ $split_groups{$alt_key}{'atom_ids'} },
+                    @{ $split_groups{$unique_key_relations{$alt_key}}{'atom_ids'} };
             }
         }
 
