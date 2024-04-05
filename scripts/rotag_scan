@@ -236,7 +236,8 @@ for my $pdbx_file ( @ARGV ) {
             filter( { 'atom_site' => $atom_site,
                       'include' =>
                           { 'id' =>
-                                [ keys %{ $atom_site_groups->{$atom_site_identifier} } ] } } );
+                                $atom_site_groups->{$atom_site_identifier}
+                                                   {'atom_ids'} } } );
         my $current_target_site =
             filter( { 'atom_site' => $current_atom_site,
                       'include' => { '[local]_selection_state' => [ 'T' ] } } );

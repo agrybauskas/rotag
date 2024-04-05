@@ -299,13 +299,14 @@ for my $pdbx_file ( @ARGV ) {
                 filter( { 'atom_site' => $atom_site,
                           'include' =>
                           { 'id' =>
-                                [ keys %{ $atom_site_split_groups->{$residue_unique_key} } ] } } );
+                                $atom_site_split_groups->{$residue_unique_key}
+                                                         {'atom_ids'} } } );
             my $residue_site =
                 filter_by_unique_residue_key(
                     $current_target_atom_site,
                     $residue_unique_key,
                     1,
-                    $atom_site_split_groups->{$residue_unique_key}
+                    $atom_site_split_groups->{$residue_unique_key}{'attributes'}
             );
 
             hybridization( $parameters, $residue_site );
@@ -436,7 +437,8 @@ for my $pdbx_file ( @ARGV ) {
                     ! defined $rotamer_angle_split_groups->{$residue_angle_key};
 
             for my $id ( sort { $a <=> $b }
-                         keys %{ $rotamer_angle_split_groups->{$residue_angle_key} } ) {
+                         @{ $rotamer_angle_split_groups->{$residue_angle_key}
+                                                         {'atom_ids'} } ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
                 my $angle_name = $rotamer_angle->{$id}{'type'};
                 my $angle_value;
@@ -525,14 +527,14 @@ for my $pdbx_file ( @ARGV ) {
                 filter( { 'atom_site' => $target_atom_site,
                           'include' =>
                               { 'id' =>
-                                    [ keys %{ $atom_site_split_groups->
-                                                  {$atom_site_identifier} } ] } } );
+                                    $atom_site_split_groups->
+                                        {$atom_site_identifier}{'atom_ids'} } } );
             my $reference_atom_site =
                 filter( { 'atom_site' => $selected_atom_site,
                           'include' =>
                               { 'id' =>
-                                    [ keys %{ $atom_site_split_groups->
-                                                  {$atom_site_identifier} } ] } } );
+                                    $atom_site_split_groups->
+                                        {$atom_site_identifier}{'atom_ids'} } } );
 
             connect_atoms( $parameters, $current_atom_site );
             hybridization( $parameters, $current_atom_site );

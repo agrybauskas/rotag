@@ -219,7 +219,7 @@ for my $pdbx_file ( @ARGV ) {
             my $bond_angle_id = 1;
             for my $first_group_key ( sort keys %{ $first_atom_groups } ) {
                 my $first_group_atom_ids =
-                    [ keys %{ $first_atom_groups->{$first_group_key} } ];
+                    $first_atom_groups->{$first_group_key}{'atom_ids'};
                 my $first_group_atom_site =
                     filter( { 'atom_site' =>
                                   $atom_site_groups{$comparison_group->[0]},
@@ -227,7 +227,7 @@ for my $pdbx_file ( @ARGV ) {
 
                 for my $second_group_key ( sort keys %{ $second_atom_groups } ) {
                     my $second_group_atom_ids =
-                        [ keys %{ $second_atom_groups->{$second_group_key} } ];
+                        $second_atom_groups->{$second_group_key}{'atom_ids'};
                     my $second_group_atom_site =
                         filter( { 'atom_site' =>
                                       $atom_site_groups{$comparison_group->[1]},
@@ -237,7 +237,7 @@ for my $pdbx_file ( @ARGV ) {
                     if( %{ $third_atom_groups } ) {
                         for my $third_group_key ( sort keys %{ $third_atom_groups } ) {
                             my $third_group_atom_ids =
-                                [ keys %{ $third_atom_groups->{$third_group_key} } ];
+                                $third_atom_groups->{$third_group_key}{'atom_ids'};
                             my $third_group_atom_site =
                                 filter( { 'atom_site' =>
                                               $atom_site_groups{$comparison_group->[2]},

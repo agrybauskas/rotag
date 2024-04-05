@@ -190,8 +190,8 @@ for my $pdbx_file ( @ARGV ) {
             clone( filter( { 'atom_site' => $atom_site,
                              'include' =>
                                  { 'id' =>
-                                       [ keys %{ $atom_site_groups->{$atom_site_identifier} } ]
-                                 } } ) );
+                                       $atom_site_groups->{$atom_site_identifier}
+                                                          {'atom_ids'} } } ) );
 
         # Replace every alt id to one in order to determine which calculation
         # calculated what atom.
