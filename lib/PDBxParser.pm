@@ -1035,7 +1035,7 @@ sub filter_by_unique_residue_key
                                    'include' =>
                                    { %include,
                                      'label_alt_id' =>
-                                         [ $attribute_values[3],
+                                         [ @{ $include{'label_alt_id'} },
                                            ( $include_dot ? '.' : () ) ] } } );
 
     return $filtered_atoms;
