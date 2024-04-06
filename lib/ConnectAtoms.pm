@@ -387,7 +387,7 @@ sub assign_hetatoms
         );
 
         my $connected_atom_site_2 = filter_new(
-            \%origin_atom_site,
+            $ref_atom_site,
             { 'include' => \%related_atom_selection_2 }
         );
 
@@ -396,16 +396,16 @@ sub assign_hetatoms
         my ( $connected_atom_id_1 ) = keys %{ $connected_atom_site_1 };
         my ( $connected_atom_id_2 ) = keys %{ $connected_atom_site_2 };
 
-        # # Especially important when there are heteroatoms connected to another
-        # # heteroatoms
-        # if( exists $track_renamed_atom_ids{$connected_atom_id_1} ) {
-        #     $connected_atom_id_1 =
-        #         $track_renamed_atom_ids{$connected_atom_id_1};
-        # }
-        # if( exists $track_renamed_atom_ids{$connected_atom_id_2} ) {
-        #     $connected_atom_id_2 =
-        #         $track_renamed_atom_ids{$connected_atom_id_2};
-        # }
+        # Especially important when there are heteroatoms connected to another
+        # heteroatoms
+        if( exists $track_renamed_atom_ids{$connected_atom_id_1} ) {
+            $connected_atom_id_1 =
+                $track_renamed_atom_ids{$connected_atom_id_1};
+        }
+        if( exists $track_renamed_atom_ids{$connected_atom_id_2} ) {
+            $connected_atom_id_2 =
+                $track_renamed_atom_ids{$connected_atom_id_2};
+        }
 
         for my $related_atom_id_1 ( sort keys %{ $related_atom_site_1 } ) {
             replace_atom_site_ids( $atom_site,
@@ -424,7 +424,7 @@ sub assign_hetatoms
             for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                                 'pdbx_PDB_model_num'  ) {
                 $atom_site->{$last_atom_id}{$attribute} =
-                    $origin_atom_site{$connected_atom_id_2}{$attribute};
+                    $ref_atom_site->{$connected_atom_id_2}{$attribute};
             }
 
             $last_atom_id++;
