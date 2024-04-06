@@ -421,12 +421,6 @@ sub assign_hetatoms
                                           [ $connected_atom_id_2 ] );
             }
 
-            for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
-                                'pdbx_PDB_model_num'  ) {
-                $atom_site->{$last_atom_id}{$attribute} =
-                    $ref_atom_site->{$connected_atom_id_2}{$attribute};
-            }
-
             $last_atom_id++;
         }
     }
