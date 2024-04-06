@@ -475,7 +475,7 @@ for my $pdbx_file ( @ARGV ) {
                                 # TODO: check if it is a good idea to have
                                 # $rotamer_id as 'label_alt_id'.
                                'alt_group_id' => $rotamer_id,
-                                   'selection_state' => 'T' } ) } );
+                               'selection_state' => 'T' } ) } );
                 $last_atom_id++;
             }
 
