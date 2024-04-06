@@ -387,7 +387,7 @@ sub assign_hetatoms
         );
 
         my $connected_atom_site_2 = filter_new(
-            \%origin_atom_site,
+            $ref_atom_site,
             { 'include' => \%related_atom_selection_2 }
         );
 
