@@ -268,6 +268,7 @@ sub connect_atoms
 #     $second_atom_id_list - second atom id list.
 #     $options->{'connection_type'} - connection type
 #     (connections|connections_hetatom).
+#     $options->{'ref_atom_site'} - reference atom site.
 # Output:
 #     none - connects atoms by adding "connection" key and values to atom site
 #     data structure.
@@ -275,7 +276,8 @@ sub connect_atoms
 sub connect_atoms_explicitly
 {
     my ( $atom_site, $first_atom_id_list, $second_atom_id_list, $options ) = @_;
-    my ( $connection_type ) = ( $options->{'connection_type'} );
+    my ( $connection_type, $ref_atom_site ) =
+        ( $options->{'connection_type'}, $options->{'ref_atom_site'} );
 
     for my $first_atom_id ( @{ $first_atom_id_list } ) {
         next if ! exists $atom_site->{$first_atom_id};
