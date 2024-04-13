@@ -279,6 +279,8 @@ sub connect_atoms_explicitly
     my ( $connection_type, $ref_atom_site ) =
         ( $options->{'connection_type'}, $options->{'ref_atom_site'} );
 
+    $ref_atom_site //= $atom_site;
+
     for my $first_atom_id ( @{ $first_atom_id_list } ) {
         next if ! exists $atom_site->{$first_atom_id};
 
