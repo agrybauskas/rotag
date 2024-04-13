@@ -286,10 +286,10 @@ sub connect_atoms_explicitly
 
         my $first_atom_group_PDB = $atom_site->{$first_atom_id}{'group_PDB'};
         for my $second_atom_id ( @{ $second_atom_id_list } ) {
-            next if ! exists $atom_site->{$second_atom_id};
+            next if ! exists $ref_atom_site->{$second_atom_id};
 
             my $second_atom_group_PDB =
-                $atom_site->{$second_atom_id}{'group_PDB'};
+                $ref_atom_site->{$second_atom_id}{'group_PDB'};
             if( ( $first_atom_group_PDB eq 'HETATM' ||
                   $second_atom_group_PDB eq 'HETATM' ) &&
                 ! defined $connection_type ) {
@@ -298,7 +298,7 @@ sub connect_atoms_explicitly
             $connection_type //= 'connections';
             push @{ $atom_site->{$first_atom_id}{$connection_type} },
                 "$second_atom_id";
-            push @{ $atom_site->{$second_atom_id}{$connection_type} },
+            push @{ $ref_atom_site->{$second_atom_id}{$connection_type} },
                 "$first_atom_id";
         }
     }
