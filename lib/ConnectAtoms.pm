@@ -418,7 +418,8 @@ sub assign_hetatoms
             if( $related_atom_id_1 eq $connected_atom_id_1 ) {
                 connect_atoms_explicitly( $atom_site,
                                           [ $last_atom_id ],
-                                          [ $connected_atom_id_2 ] );
+                                          [ $connected_atom_id_2 ],
+                                          $options );
             }
 
             for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
