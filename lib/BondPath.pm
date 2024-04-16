@@ -48,7 +48,7 @@ sub new
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
         my ( $atom_id ) = pop @next_atom_ids;
-        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+        my $atom_name = $ref_atom_site->{$atom_id}{'label_atom_id'};
 
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = $atom_order_idx;
@@ -56,25 +56,25 @@ sub new
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
-        if( defined $atom_site->{$atom_id}{'connections'} ) {
+        if( defined $ref_atom_site->{$atom_id}{'connections'} ) {
             push @neighbour_atom_ids,
-                grep { defined $atom_site->{$_} }
-                    @{ $atom_site->{$atom_id}{'connections'} };
+                grep { defined $ref_atom_site->{$_} }
+                    @{ $ref_atom_site->{$atom_id}{'connections'} };
         }
         if( $include_hetatoms &&
-            defined $atom_site->{$atom_id}{'connections_hetatom'} ) {
+            defined $ref_atom_site->{$atom_id}{'connections_hetatom'} ) {
             push @neighbour_atom_ids,
-                grep { defined $atom_site->{$_} }
-                    @{ $atom_site->{$atom_id}{'connections_hetatom'} };
+                grep { defined $ref_atom_site->{$_} }
+                    @{ $ref_atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
         my @sorted_neighbour_atom_ids =
-            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, $atom_site ) };
+            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, $ref_atom_site ) };
 
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
             my $sorted_neighbour_atom_name =
-                $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'};
+                $ref_atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'};
 
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
 
