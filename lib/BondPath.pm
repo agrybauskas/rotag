@@ -13,7 +13,7 @@ sub new
 {
     my ( $class, $args ) = @_;
     my ( $atom_site, $start_atom_ids, $start_atom_names, $include_hetatoms,
-         $ignore_connections, $include_visited ) =
+         $ignore_connections, $include_visited, $ref_atom_site ) =
         ( $args->{'atom_site'},
           $args->{'start_atom_ids'},
           $args->{'start_atom_names'},
@@ -33,6 +33,7 @@ sub new
     $include_hetatoms //= 0;
     $ignore_connections //= {};
     $include_visited //= 0;
+    $ref_atom_site //= $atom_site;
 
     my %visited_atom_ids = (); # Contains visited atom order.
     my @next_atom_ids =
