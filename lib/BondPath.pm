@@ -40,7 +40,7 @@ sub new
     my @next_atom_ids =
         grep { defined $_ }
              ( shift @{ sort_by_unique_residue_key( $start_atom_ids,
-                                                    $atom_site ) } );
+                                                    $ref_atom_site ) } );
 
     my %bond_paths = ();
     my $atom_order_idx = 1;
