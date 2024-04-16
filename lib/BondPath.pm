@@ -19,7 +19,8 @@ sub new
           $args->{'start_atom_names'},
           $args->{'include_hetatoms'},
           $args->{'ignore_connections'},
-          $args->{'include_visited'} );
+          $args->{'include_visited'},
+          $args->{'ref_atom_site'} );
 
     my $self = {};
 
