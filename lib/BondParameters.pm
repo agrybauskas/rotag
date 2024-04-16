@@ -102,6 +102,7 @@ sub rotatable_bonds
             'start_atom_names' => $start_atom_names,
             'include_hetatoms' => $include_hetatoms,
             'ignore_connections' => $ignore_connections,
+            'ref_atom_site' => $atom_site,
         } );
 
         my %rotatable_bonds_cache = ();
