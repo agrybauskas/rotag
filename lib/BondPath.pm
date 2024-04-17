@@ -98,16 +98,16 @@ sub new
                              $self->{'atom_order'}{$b} }
                       keys %{ $self->{'atom_order'} } ) {
 
-        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+        my $atom_name = $ref_atom_site->{$atom_id}{'label_atom_id'};
 
         my @atom_connections =
             map { [ $_, 'connections' ] }
                @{ $atom_site->{$atom_id}{'connections'} };
         if( $include_hetatoms &&
-            defined $atom_site->{$atom_id}{'connections_hetatom'} ){
+            defined $ref_atom_site->{$atom_id}{'connections_hetatom'} ){
             push @atom_connections,
                 map { [ $_, 'connections_hetatom' ] }
-                   @{ $atom_site->{$atom_id}{'connections_hetatom'} };
+                   @{ $ref_atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
         next if ! @atom_connections;
@@ -116,10 +116,10 @@ sub new
             my $neighbour_atom_id = $atom_connection->[0];
             my $connection_type = $atom_connection->[1];
 
-            next if ! exists $atom_site->{$neighbour_atom_id};
+            next if ! exists $ref_atom_site->{$neighbour_atom_id};
 
             my $neighbour_atom_name =
-                $atom_site->{$neighbour_atom_id}{'label_atom_id'};
+                $ref_atom_site->{$neighbour_atom_id}{'label_atom_id'};
 
             next if exists $ignore_connections->{'label_atom_id'}{$atom_name} &&
                 exists $ignore_connections->{'label_atom_id'}
