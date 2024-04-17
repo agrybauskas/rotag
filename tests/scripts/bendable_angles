@@ -11,7 +11,7 @@ use ForceField::Parameters;
 # Example: ./bendable_angles structure.dump
 #
 
-my ( $pdbx_dump_file, $include_mainchain ) = @ARGV;
+my ( $pdbx_dump_file, $include_mainchain, $include_hetatoms ) = @ARGV;
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -25,7 +25,8 @@ my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
 bendable_angles( $parameters, $atom_site,
-                 { 'include_mainchain' => $include_mainchain } );
+                 { 'include_mainchain' => $include_mainchain,
+                   'include_hetatoms' => $include_hetatoms } );
 
 for my $atom_id ( sort { $a cmp $b }
                   grep { defined $atom_site->{$_}{'bendable_angles'} }
