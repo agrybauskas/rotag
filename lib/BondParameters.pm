@@ -29,6 +29,7 @@ use Measure qw( bond_angle
                 dihedral_angle );
 use PDBxParser qw( expand
                    filter_new
+                   follow_hetatoms
                    split_by );
 
 #
@@ -81,7 +82,7 @@ sub rotatable_bonds
                                                      {'atom_ids'} } } );
 
         if( $include_mainchain ) {
-            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1 ) };
+            my @expanded_atom_ids = @{ expand( $residue_site, $atom_site, 1, 1)};
             my ( $residue_id, $chain_id, $pdbx_model_id, $alt_id ) =
                 split ',', $residue_unique_key;
             $start_atom_ids =

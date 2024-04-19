@@ -12,6 +12,7 @@ our @EXPORT_OK = qw( create_pdbx_entry
                      filter_by_unique_residue_key
                      filter_connected
                      filter_new
+                     follow_hetatoms
                      indexed2raw
                      mark_selection
                      obtain_pdbx_data
@@ -1175,6 +1176,40 @@ sub expand
         }
         $number--;
     }
+    return \@expanded_atom_ids;
+}
+
+
+#
+# Expands atom site by certain number of connected heteroatoms.
+# Input:
+#     $atom_site - atom data structure;
+#     $reference_atom_site - reference atom data structure;
+# Output:
+#     @expanded_atom_ids - atom ids that were added during the expansion;
+#
+
+sub follow_hetatoms
+{
+    my ( $atom_site, $reference_atom_site ) = @_;
+    my @expanded_atom_ids = ();
+    # while( $number > 0 ) {
+    #     for my $atom_id ( keys %{ $atom_site } ) {
+    #         my $neighbour_atom_ids =
+    #             $reference_atom_site->{$atom_id}{'connections'};
+    #         next if ! defined $neighbour_atom_ids || ! @{ $neighbour_atom_ids };
+
+    #         for my $neighbour_atom_id ( @{ $neighbour_atom_ids } ) {
+    #             next if exists $atom_site->{$neighbour_atom_id};
+
+    #             push @expanded_atom_ids, $neighbour_atom_id;
+
+    #             $atom_site->{$neighbour_atom_id} =
+    #                 $reference_atom_site->{$neighbour_atom_id};
+    #         }
+    #     }
+    #     $number--;
+    # }
     return \@expanded_atom_ids;
 }
 
