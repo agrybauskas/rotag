@@ -13,14 +13,13 @@ sub new
 {
     my ( $class, $args ) = @_;
     my ( $atom_site, $start_atom_ids, $start_atom_names, $include_hetatoms,
-         $ignore_connections, $include_visited, $ref_atom_site ) =
+         $ignore_connections, $include_visited ) =
         ( $args->{'atom_site'},
           $args->{'start_atom_ids'},
           $args->{'start_atom_names'},
           $args->{'include_hetatoms'},
           $args->{'ignore_connections'},
-          $args->{'include_visited'},
-          $args->{'ref_atom_site'} );
+          $args->{'include_visited'} );
 
     my $self = {};
 
@@ -34,13 +33,12 @@ sub new
     $include_hetatoms //= 0;
     $ignore_connections //= {};
     $include_visited //= 0;
-    $ref_atom_site //= $atom_site;
 
     my %visited_atom_ids = (); # Contains visited atom order.
     my @next_atom_ids =
         grep { defined $_ }
              ( shift @{ sort_by_unique_residue_key( $start_atom_ids,
-                                                    $ref_atom_site ) } );
+                                                    $atom_site ) } );
 
     my %bond_paths = ();
     my $atom_order_idx = 1;
@@ -48,7 +46,7 @@ sub new
     # Exists if there are no atoms that is not already visited.
     while( @next_atom_ids ) {
         my ( $atom_id ) = pop @next_atom_ids;
-        my $atom_name = $ref_atom_site->{$atom_id}{'label_atom_id'};
+        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 
         next if $visited_atom_ids{$atom_id};
         $visited_atom_ids{$atom_id} = $atom_order_idx;
@@ -56,25 +54,25 @@ sub new
 
         # Marks neighbouring atoms.
         my @neighbour_atom_ids = ();
-        if( defined $ref_atom_site->{$atom_id}{'connections'} ) {
+        if( defined $atom_site->{$atom_id}{'connections'} ) {
             push @neighbour_atom_ids,
-                grep { defined $ref_atom_site->{$_} }
-                    @{ $ref_atom_site->{$atom_id}{'connections'} };
+                grep { defined $atom_site->{$_} }
+                    @{ $atom_site->{$atom_id}{'connections'} };
         }
         if( $include_hetatoms &&
-            defined $ref_atom_site->{$atom_id}{'connections_hetatom'} ) {
+            defined $atom_site->{$atom_id}{'connections_hetatom'} ) {
             push @neighbour_atom_ids,
-                grep { defined $ref_atom_site->{$_} }
-                    @{ $ref_atom_site->{$atom_id}{'connections_hetatom'} };
+                grep { defined $atom_site->{$_} }
+                    @{ $atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
         my @sorted_neighbour_atom_ids =
-            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, $ref_atom_site ) };
+            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, $atom_site ) };
 
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
             my $sorted_neighbour_atom_name =
-                $ref_atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'};
+                $atom_site->{$sorted_neighbour_atom_id}{'label_atom_id'};
 
             next if $visited_atom_ids{$sorted_neighbour_atom_id};
 
@@ -98,16 +96,16 @@ sub new
                              $self->{'atom_order'}{$b} }
                       keys %{ $self->{'atom_order'} } ) {
 
-        my $atom_name = $ref_atom_site->{$atom_id}{'label_atom_id'};
+        my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 
         my @atom_connections =
             map { [ $_, 'connections' ] }
-               @{ $ref_atom_site->{$atom_id}{'connections'} };
+               @{ $atom_site->{$atom_id}{'connections'} };
         if( $include_hetatoms &&
-            defined $ref_atom_site->{$atom_id}{'connections_hetatom'} ){
+            defined $atom_site->{$atom_id}{'connections_hetatom'} ){
             push @atom_connections,
                 map { [ $_, 'connections_hetatom' ] }
-                   @{ $ref_atom_site->{$atom_id}{'connections_hetatom'} };
+                   @{ $atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
         next if ! @atom_connections;
@@ -116,10 +114,10 @@ sub new
             my $neighbour_atom_id = $atom_connection->[0];
             my $connection_type = $atom_connection->[1];
 
-            next if ! exists $ref_atom_site->{$neighbour_atom_id};
+            next if ! exists $atom_site->{$neighbour_atom_id};
 
             my $neighbour_atom_name =
-                $ref_atom_site->{$neighbour_atom_id}{'label_atom_id'};
+                $atom_site->{$neighbour_atom_id}{'label_atom_id'};
 
             next if exists $ignore_connections->{'label_atom_id'}{$atom_name} &&
                 exists $ignore_connections->{'label_atom_id'}

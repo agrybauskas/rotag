@@ -102,7 +102,6 @@ sub rotatable_bonds
             'start_atom_names' => $start_atom_names,
             'include_hetatoms' => $include_hetatoms,
             'ignore_connections' => $ignore_connections,
-            'ref_atom_site' => $atom_site,
         } );
 
         my %rotatable_bonds_cache = ();
@@ -291,7 +290,6 @@ sub stretchable_bonds
             'start_atom_ids' => $start_atom_ids,
             'include_hetatoms' => $include_hetatoms,
             'ignore_connections' => $ignore_connections,
-            'ref_atom_site' => $atom_site,
         } );
 
         for my $second_atom_id ( @{ $bond_paths->get_atom_order } ) {
@@ -416,7 +414,6 @@ sub bendable_angles
             'start_atom_ids' => $start_atom_ids,
             'start_atom_names' => $start_atom_names,
             'include_hetatoms' => $include_hetatoms,
-            'ref_atom_site' => $atom_site,
         } );
 
         for my $third_atom_id ( @{ $bond_paths->get_atom_order } ) {
