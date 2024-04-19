@@ -1201,7 +1201,7 @@ sub follow_hetatoms
     my %visited = ();
     while( @next_neighbour_atom_ids ) {
         for my $neighbour_atom_id ( @next_neighbour_atom_ids ) {
-        #     next if exists $atom_site->{$neighbour_atom_id};
+            next if exists $atom_site->{$neighbour_atom_id};
 
         #     push @expanded_atom_ids, $neighbour_atom_id;
 

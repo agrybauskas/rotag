@@ -100,8 +100,6 @@ sub rotatable_bonds
         if( $include_hetatoms ) {
             my @expanded_atom_ids =
                 @{ follow_hetatoms( $residue_site, $atom_site ) };
-            # use Data::Dumper;
-            # print STDERR Dumper \@expanded_atom_ids;
         }
 
         my $bond_paths = BondPath->new( {
