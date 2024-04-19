@@ -100,6 +100,12 @@ sub rotatable_bonds
         if( $include_hetatoms ) {
             my @expanded_atom_ids =
                 @{ follow_hetatoms( $residue_site, $atom_site ) };
+            $residue_site = {
+                %{ $residue_site },
+                %{ filter_new( $atom_site,
+                               { 'include' => { 'id' => \@expanded_atom_ids,
+                                                'group_PDB' => [ 'HETATM' ] } } ) }
+            };
         }
 
         my $bond_paths = BondPath->new( {
@@ -291,6 +297,17 @@ sub stretchable_bonds
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
         }
 
+        if( $include_hetatoms ) {
+            my @expanded_atom_ids =
+                @{ follow_hetatoms( $residue_site, $atom_site ) };
+            $residue_site = {
+                %{ $residue_site },
+                %{ filter_new( $atom_site,
+                               { 'include' => { 'id' => \@expanded_atom_ids,
+                                                'group_PDB' => [ 'HETATM' ] } } ) }
+            };
+        }
+
         my $bond_paths = BondPath->new( {
             'atom_site' => $residue_site,
             'start_atom_ids' => $start_atom_ids,
@@ -413,6 +430,17 @@ sub bendable_angles
                               'exclude' => { 'label_seq_id' => [ $residue_id ] },
                               'return_data' => 'id' } );
             $start_atom_ids = @{ $start_atom_ids } ? $start_atom_ids : undef;
+        }
+
+        if( $include_hetatoms ) {
+            my @expanded_atom_ids =
+                @{ follow_hetatoms( $residue_site, $atom_site ) };
+            $residue_site = {
+                %{ $residue_site },
+                %{ filter_new( $atom_site,
+                               { 'include' => { 'id' => \@expanded_atom_ids,
+                                                'group_PDB' => [ 'HETATM' ] } } ) }
+            };
         }
 
         my $bond_paths = BondPath->new( {
