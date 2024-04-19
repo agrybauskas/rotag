@@ -1193,15 +1193,15 @@ sub follow_hetatoms
 {
     my ( $atom_site, $reference_atom_site ) = @_;
     my @expanded_atom_ids = ();
-    my @next_neighbour_atom_ids = # Initial set of atom ids.
+    my @next_atom_ids = # Initial set of atom ids.
         map { @{ $_ } }
         grep { defined $_ }
         map { $reference_atom_site->{$_}{'connections_hetatom'} }
         keys %{ $atom_site };
     my %visited = ();
-    while( @next_neighbour_atom_ids ) {
-        for my $neighbour_atom_id ( @next_neighbour_atom_ids ) {
-            next if exists $atom_site->{$neighbour_atom_id};
+    while( @next_atom_ids ) {
+        for my $atom_id ( @next_atom_ids ) {
+            next if exists $atom_site->{$atom_id};
 
         #     push @expanded_atom_ids, $neighbour_atom_id;
 
@@ -1209,7 +1209,7 @@ sub follow_hetatoms
         #         $reference_atom_site->{$neighbour_atom_id};
         }
 
-        @next_neighbour_atom_ids = ();
+        @next_atom_ids = ();
     }
     return \@expanded_atom_ids;
 }
