@@ -102,7 +102,7 @@ sub new
 
         my @atom_connections =
             map { [ $_, 'connections' ] }
-               @{ $atom_site->{$atom_id}{'connections'} };
+               @{ $ref_atom_site->{$atom_id}{'connections'} };
         if( $include_hetatoms &&
             defined $ref_atom_site->{$atom_id}{'connections_hetatom'} ){
             push @atom_connections,
