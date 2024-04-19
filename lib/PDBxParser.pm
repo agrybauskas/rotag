@@ -794,6 +794,29 @@ sub obtain_struct_conn
 }
 
 #
+# From PDBx file, obtains data only from _struct_conn category and outputs
+# special data structure that represents atom data.
+# Input:
+#     $atom_site - _atom_site data structure.
+#     $struct_conn - _struct_conn data structure.
+#     $options->{'atom_ids'} - atom ids to retrieve from _struct_conn
+#     information.
+#     $options->{'follow'} - folow connections.
+# Output:
+#     \%retrieved_atom_site - retrieve structure connection-related atom site.
+#
+
+sub struct_conn_atom_site
+{
+    my ( $atom_site, $struct_conn, $options ) = @_;
+    my ( $atom_ids, $follow ) = ( $options->{'atom_ids'}, $options->{'follow'} );
+
+    my %retrieved_atom_site = ();
+
+    return \%retrieved_atom_site;
+}
+
+#
 # Filters atom data structure according to specified attributes with include,
 # exclude options.
 # Input:
