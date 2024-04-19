@@ -1200,16 +1200,24 @@ sub follow_hetatoms
         keys %{ $atom_site };
     my %visited = ();
     while( @next_atom_ids ) {
+        my @updated_next_atom_ids = ();
         for my $atom_id ( @next_atom_ids ) {
-            next if exists $atom_site->{$atom_id};
+            next if ! exists $reference_atom_site->{$atom_id};
 
-        #     push @expanded_atom_ids, $neighbour_atom_id;
+            push @expanded_atom_ids, $atom_id;
 
-        #     $atom_site->{$neighbour_atom_id} =
-        #         $reference_atom_site->{$neighbour_atom_id};
+            next if $visited{$atom_id};
+            $visited{$atom_id} = 1;
+
+            next if ! exists $reference_atom_site->{$atom_id}
+                                                   {'connections_hetatom'};
+
+            push @updated_next_atom_ids,
+                grep { ! $visited{$_} }
+                    @{ $reference_atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
-        @next_atom_ids = ();
+        @next_atom_ids = @updated_next_atom_ids;
     }
     return \@expanded_atom_ids;
 }
