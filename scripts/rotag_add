@@ -26,7 +26,9 @@ use Logging qw( error
                 warning );
 use PDBxParser qw( extract
                    filter
+                   filter_new
                    filter_by_unique_residue_key
+                   follow_hetatoms
                    mark_selection
                    obtain_pdbx_data
                    raw2indexed
@@ -315,6 +317,17 @@ for my $pdbx_file ( @ARGV ) {
             if( defined $struct_conn && %{ $struct_conn } ) {
                 assign_hetatoms( $parameters, $residue_site, $struct_conn,
                                  { 'ref_atom_site' => $target_atom_site } );
+            }
+
+            if( $include_hetatoms ) {
+                my $included_atom_ids =
+                    follow_hetatoms( $residue_site, $atom_site );
+                $residue_site = {
+                    %{ $residue_site },
+                    %{ filter_new( $atom_site,
+                                   { 'include' =>
+                                     { 'id' => $included_atom_ids } } ) }
+                };
             }
 
             # Updating the target's atom site as there more duplicated pseudo
