@@ -36,6 +36,7 @@ sub new
 
     my %visited_atom_ids = (); # Contains visited atom order.
     my @next_atom_ids =
+        grep { $atom_site->{$_}{'group_PDB'} ne 'HETATM' }
         grep { defined $_ }
              ( shift @{ sort_by_unique_residue_key( $start_atom_ids,
                                                     $atom_site ) } );
