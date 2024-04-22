@@ -322,12 +322,14 @@ for my $pdbx_file ( @ARGV ) {
             if( $include_hetatoms ) {
                 my $included_atom_ids =
                     follow_hetatoms( $residue_site, $atom_site );
-                $residue_site = {
-                    %{ $residue_site },
-                    %{ filter_new( $atom_site,
-                                   { 'include' =>
-                                     { 'id' => $included_atom_ids } } ) }
-                };
+                if( @{ $included_atom_ids } ) {
+                    $residue_site = {
+                        %{ $residue_site },
+                        %{ filter_new( $atom_site,
+                                       { 'include' =>
+                                         { 'id' => $included_atom_ids } } ) }
+                    };
+                }
             }
 
             # Updating the target's atom site as there more duplicated pseudo
