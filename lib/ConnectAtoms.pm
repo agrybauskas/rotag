@@ -363,9 +363,10 @@ sub assign_hetatoms
 
         # Related atom site is used as the connected molecule will inherit
         # some data items.
-        my $related_atom_site_1 =
-            filter_new( $ref_atom_site,
-                        { 'include' => \%related_atom_selection_1 } );
+        my $related_atom_site_1 = filter_new(
+            $ref_atom_site,
+            { 'include' => \%related_atom_selection_1 }
+        );
         my $connected_atom_site_1 = filter_new(
             $related_atom_site_1,
             { 'include' =>
