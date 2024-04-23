@@ -411,6 +411,9 @@ sub assign_hetatoms
         }
 
         for my $related_atom_id_1 ( sort keys %{ $related_atom_site_1 } ) {
+            $atom_site->{$related_atom_id_1} =
+                $ref_atom_site->{$related_atom_id_1};
+
             replace_atom_site_ids( $atom_site,
                                    [ { 'from' => $related_atom_id_1,
                                        'to' => $last_atom_id } ],
