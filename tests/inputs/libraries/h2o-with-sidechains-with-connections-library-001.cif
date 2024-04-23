@@ -13,6 +13,8 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 ATOM 148 N N . ASP A 1 27 -31.459 -9.382 -0.630 A 27 1 T
