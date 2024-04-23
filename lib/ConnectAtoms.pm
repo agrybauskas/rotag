@@ -346,7 +346,6 @@ sub assign_hetatoms
 
     return if ! %{ $struct_conn };
 
-    my %origin_atom_site = %{ clone $atom_site };
     my %track_renamed_atom_ids = ();
     my $last_atom_id = max( keys %{ $atom_site } ) + 1;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
@@ -365,7 +364,7 @@ sub assign_hetatoms
         # Related atom site is used as the connected molecule will inherit
         # some data items.
         my $related_atom_site_1 =
-            filter_new( \%origin_atom_site,
+            filter_new( $ref_atom_site,
                         { 'include' => \%related_atom_selection_1 } );
         my $connected_atom_site_1 = filter_new(
             $related_atom_site_1,
@@ -400,16 +399,16 @@ sub assign_hetatoms
         my ( $connected_atom_id_1 ) = keys %{ $connected_atom_site_1 };
         my ( $connected_atom_id_2 ) = keys %{ $connected_atom_site_2 };
 
-        # # Especially important when there are heteroatoms connected to another
-        # # heteroatoms
-        # if( exists $track_renamed_atom_ids{$connected_atom_id_1} ) {
-        #     $connected_atom_id_1 =
-        #         $track_renamed_atom_ids{$connected_atom_id_1};
-        # }
-        # if( exists $track_renamed_atom_ids{$connected_atom_id_2} ) {
-        #     $connected_atom_id_2 =
-        #         $track_renamed_atom_ids{$connected_atom_id_2};
-        # }
+        # Especially important when there are heteroatoms connected to another
+        # heteroatoms
+        if( exists $track_renamed_atom_ids{$connected_atom_id_1} ) {
+            $connected_atom_id_1 =
+                $track_renamed_atom_ids{$connected_atom_id_1};
+        }
+        if( exists $track_renamed_atom_ids{$connected_atom_id_2} ) {
+            $connected_atom_id_2 =
+                $track_renamed_atom_ids{$connected_atom_id_2};
+        }
 
         for my $related_atom_id_1 ( sort keys %{ $related_atom_site_1 } ) {
             replace_atom_site_ids( $atom_site,
@@ -417,7 +416,7 @@ sub assign_hetatoms
                                        'to' => $last_atom_id } ],
                                    $options );
 
-            # $track_renamed_atom_ids{$related_atom_id_1} = $last_atom_id;
+            $track_renamed_atom_ids{$related_atom_id_1} = $last_atom_id;
 
             if( $related_atom_id_1 eq $connected_atom_id_1 ) {
                 connect_atoms_explicitly( $atom_site,
