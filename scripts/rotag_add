@@ -323,9 +323,6 @@ for my $pdbx_file ( @ARGV ) {
                                  { 'ref_atom_site' => $atom_site } );
             }
 
-            use Data::Dumper;
-            print STDERR Dumper $residue_site;
-
             # # Updating the target's atom site as there more duplicated pseudo
             # # atoms.
             # for my $atom_id ( keys %{ $residue_site } ) {
