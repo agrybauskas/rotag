@@ -347,7 +347,7 @@ sub assign_hetatoms
     return if ! %{ $struct_conn };
 
     my %track_renamed_atom_ids = ();
-    my $last_atom_id = max( keys %{ $atom_site } ) + 1;
+    my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my %related_atom_selection_1 = (
             $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} eq '.' ?
