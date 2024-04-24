@@ -387,8 +387,6 @@ sub assign_hetatoms
                     $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
                 'label_asym_id' => [
                     $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ) ),
-            ( 'label_atom_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] )
         );
 
         my $related_atom_site_2 = filter_new(
