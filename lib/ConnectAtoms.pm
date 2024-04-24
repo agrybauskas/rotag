@@ -350,7 +350,7 @@ sub assign_hetatoms
     my %track_renamed_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
-        my %related_atom_selection_1 = (
+        my %connected_atom_selection_1 = (
             $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} eq '.' ?
             ( 'auth_seq_id' => [
                   $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} ],
@@ -359,25 +359,18 @@ sub assign_hetatoms
             ( 'label_seq_id' => [
                   $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} ],
               'label_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] )
-        );
-
-        # Related atom site is used as the connected molecule will inherit
-        # some data items.
-        my $related_atom_site_1 = filter_new(
-            \%origin_atom_site,
-            { 'include' => \%related_atom_selection_1 }
+                  $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] ),
+            'label_atom_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ],
         );
         my $connected_atom_site_1 = filter_new(
-            $related_atom_site_1,
-            { 'include' =>
-              { 'label_atom_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ] } }
+            \%origin_atom_site,
+            { 'include' => \%connected_atom_selection_1 }
         );
 
         next if ! %{ $connected_atom_site_1 };
 
-        my %related_atom_selection_2 = (
+        my %connected_atom_selection_2 = (
             ( $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} eq '.' ?
               ( 'auth_seq_id' => [
                     $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
@@ -387,17 +380,12 @@ sub assign_hetatoms
                     $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
                 'label_asym_id' => [
                     $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ) ),
-        );
-
-        my $related_atom_site_2 = filter_new(
-            \%origin_atom_site,
-            { 'include' => \%related_atom_selection_2 }
+            'label_atom_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ],
         );
         my $connected_atom_site_2 = filter_new(
-            $related_atom_site_2,
-            { 'include' =>
-              { 'label_atom_id' => [
-                    $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] } }
+            \%origin_atom_site,
+            { 'include' => \%connected_atom_selection_2 }
         );
 
         next if ! %{ $connected_atom_site_2 };
