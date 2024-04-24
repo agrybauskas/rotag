@@ -391,9 +391,15 @@ sub assign_hetatoms
                   $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] )
         );
 
-        my $connected_atom_site_2 = filter_new(
-            $ref_atom_site,
+        my $related_atom_site_2 = filter_new(
+            \%origin_atom_site,
             { 'include' => \%related_atom_selection_2 }
+        );
+        my $connected_atom_site_2 = filter_new(
+            $related_atom_site_2,
+            { 'include' =>
+              { 'label_atom_id' => [
+                    $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ] } }
         );
 
         next if ! %{ $connected_atom_site_2 };
