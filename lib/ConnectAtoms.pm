@@ -401,17 +401,6 @@ sub assign_hetatoms
         my ( $connected_atom_id_1 ) = keys %{ $connected_atom_site_1 };
         my ( $connected_atom_id_2 ) = keys %{ $connected_atom_site_2 };
 
-        # # Especially important when there are heteroatoms connected to another
-        # # heteroatoms
-        # if( exists $track_renamed_atom_ids{$connected_atom_id_1} ) {
-        #     $connected_atom_id_1 =
-        #         $track_renamed_atom_ids{$connected_atom_id_1};
-        # }
-        # if( exists $track_renamed_atom_ids{$connected_atom_id_2} ) {
-        #     $connected_atom_id_2 =
-        #         $track_renamed_atom_ids{$connected_atom_id_2};
-        # }
-
         for my $related_atom_id_1 ( sort keys %{ $related_atom_site_1 } ) {
             if( ! defined $atom_site->{$related_atom_id_1} ) {
                 $atom_site->{$related_atom_id_1} =
@@ -423,7 +412,7 @@ sub assign_hetatoms
                                        'to' => $last_atom_id } ],
                                    $options );
 
-            # $track_renamed_atom_ids{$related_atom_id_1} = $last_atom_id;
+            $track_renamed_atom_ids{$related_atom_id_1} = $last_atom_id;
 
             if( $related_atom_id_1 eq $connected_atom_id_1 ) {
                 connect_atoms_explicitly( $atom_site,
