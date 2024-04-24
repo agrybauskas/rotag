@@ -393,6 +393,16 @@ sub assign_hetatoms
         my ( $connected_atom_id_1 ) = keys %{ $connected_atom_site_1 };
         my ( $connected_atom_id_2 ) = keys %{ $connected_atom_site_2 };
 
+        # # Using tracked renamed atom ids.
+        # if( $track_renamed_atom_ids{$connected_atom_id_1} ) {
+        #     $connected_atom_id_2 =
+        #         $track_renamed_atom_ids{$connected_atom_id_1};
+        # }
+        # if( $track_renamed_atom_ids{$connected_atom_id_2} ) {
+        #     $connected_atom_id_2 =
+        #         $track_renamed_atom_ids{$connected_atom_id_2};
+        # }
+
         if( ! defined $atom_site->{$connected_atom_id_1} ) {
             $atom_site->{$connected_atom_id_1} =
                 $ref_atom_site->{$connected_atom_id_1};
