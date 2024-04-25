@@ -431,10 +431,19 @@ sub assign_hetatoms
 
         for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                             'pdbx_PDB_model_num' ) {
+            my $original_atom_id_1 =
+                defined $track_renamed_atom_ids{$connected_atom_id_1} ?
+                $track_renamed_atom_ids{$connected_atom_id_1} :
+                $connected_atom_id_1;
+            my $original_atom_id_2 =
+                defined $track_renamed_atom_ids{$connected_atom_id_2} ?
+                $track_renamed_atom_ids{$connected_atom_id_2} :
+                $connected_atom_id_2;
+
             $atom_site->{$connected_atom_id_1}{$attribute} =
-                $ref_atom_site->{$connected_atom_id_1}{$attribute};
+                $ref_atom_site->{$original_atom_id_1}{$attribute};
             $atom_site->{$connected_atom_id_2}{$attribute} =
-                $ref_atom_site->{$connected_atom_id_2}{$attribute};
+                $ref_atom_site->{$original_atom_id_2}{$attribute};
         }
     }
 
