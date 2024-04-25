@@ -393,40 +393,49 @@ sub assign_hetatoms
         my ( $connected_atom_id_1 ) = keys %{ $connected_atom_site_1 };
         my ( $connected_atom_id_2 ) = keys %{ $connected_atom_site_2 };
 
-        # # Using tracked renamed atom ids.
-        # if( $track_renamed_atom_ids{$connected_atom_id_1} ) {
-        #     $connected_atom_id_2 =
-        #         $track_renamed_atom_ids{$connected_atom_id_1};
-        # }
-        # if( $track_renamed_atom_ids{$connected_atom_id_2} ) {
-        #     $connected_atom_id_2 =
-        #         $track_renamed_atom_ids{$connected_atom_id_2};
-        # }
+        # Using tracked renamed atom ids.
+        if( $track_renamed_atom_ids{$connected_atom_id_1} ) {
+            $connected_atom_id_1 =
+                $track_renamed_atom_ids{$connected_atom_id_1};
+        }
+        if( $track_renamed_atom_ids{$connected_atom_id_2} ) {
+            $connected_atom_id_2 =
+                $track_renamed_atom_ids{$connected_atom_id_2};
+        }
 
         if( ! defined $atom_site->{$connected_atom_id_1} ) {
             $atom_site->{$connected_atom_id_1} =
                 $ref_atom_site->{$connected_atom_id_1};
+            replace_atom_site_ids( $atom_site,
+                                   [ { 'from' => $connected_atom_id_1,
+                                       'to' => $last_atom_id } ],
+                                   $options );
+            $track_renamed_atom_ids{$connected_atom_id_1} = $last_atom_id;
+            $last_atom_id++;
+        }
+        if( ! defined $atom_site->{$connected_atom_id_2} ) {
+            $atom_site->{$connected_atom_id_2} =
+                $ref_atom_site->{$connected_atom_id_2};
+            replace_atom_site_ids( $atom_site,
+                                   [ { 'from' => $connected_atom_id_2,
+                                       'to' => $last_atom_id } ],
+                                   $options );
+            $track_renamed_atom_ids{$connected_atom_id_2} = $last_atom_id;
+            $last_atom_id++;
         }
 
-        replace_atom_site_ids( $atom_site,
-                               [ { 'from' => $connected_atom_id_1,
-                                   'to' => $last_atom_id } ],
-                               $options );
-
-        $track_renamed_atom_ids{$connected_atom_id_1} = $last_atom_id;
-
         connect_atoms_explicitly( $atom_site,
-                                  [ $last_atom_id ],
+                                  [ $connected_atom_id_1 ],
                                   [ $connected_atom_id_2 ],
                                   $options );
 
         for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                             'pdbx_PDB_model_num' ) {
-            $atom_site->{$last_atom_id}{$attribute} =
+            $atom_site->{$connected_atom_id_1}{$attribute} =
+                $ref_atom_site->{$connected_atom_id_1}{$attribute};
+            $atom_site->{$connected_atom_id_2}{$attribute} =
                 $ref_atom_site->{$connected_atom_id_2}{$attribute};
         }
-
-        $last_atom_id++;
     }
 
     return;
