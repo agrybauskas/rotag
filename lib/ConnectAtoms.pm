@@ -347,7 +347,7 @@ sub assign_hetatoms
     return if ! %{ $struct_conn };
 
     my %origin_atom_site = %{ clone $ref_atom_site };
-    my %track_renamed_atom_ids = ();
+    my %track_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my %connected_atom_selection_1 = (
@@ -390,62 +390,58 @@ sub assign_hetatoms
 
         next if ! %{ $connected_atom_site_2 };
 
-        my ( $connected_atom_id_1 ) = keys %{ $connected_atom_site_1 };
-        my ( $connected_atom_id_2 ) = keys %{ $connected_atom_site_2 };
+        my ( $origin_atom_id_1 ) = keys %{ $connected_atom_site_1 };
+        my ( $origin_atom_id_2 ) = keys %{ $connected_atom_site_2 };
 
-        # Using tracked renamed atom ids.
-        if( $track_renamed_atom_ids{$connected_atom_id_1} ) {
-            $connected_atom_id_1 =
-                $track_renamed_atom_ids{$connected_atom_id_1};
+        my $atom_id_1 = $origin_atom_id_1;
+        my $atom_id_2 = $origin_atom_id_2;
+
+        if( $track_atom_ids{$origin_atom_id_1} ) {
+            $atom_id_1 = $track_atom_ids{$origin_atom_id_1};
         }
-        if( $track_renamed_atom_ids{$connected_atom_id_2} ) {
-            $connected_atom_id_2 =
-                $track_renamed_atom_ids{$connected_atom_id_2};
+        if( $track_atom_ids{$origin_atom_id_2} ) {
+            $atom_id_2 = $track_atom_ids{$origin_atom_id_2};
         }
 
-        if( ! defined $atom_site->{$connected_atom_id_1} ) {
-            $atom_site->{$connected_atom_id_1} =
-                $ref_atom_site->{$connected_atom_id_1};
+        if( ! defined $atom_site->{$atom_id_1} ) {
+            $atom_site->{$atom_id_1} = $ref_atom_site->{$origin_atom_id_1};
             replace_atom_site_ids( $atom_site,
-                                   [ { 'from' => $connected_atom_id_1,
+                                   [ { 'from' => $atom_id_1,
                                        'to' => $last_atom_id } ],
                                    $options );
-            $track_renamed_atom_ids{$connected_atom_id_1} = $last_atom_id;
+            $track_atom_ids{$origin_atom_id_1} = $last_atom_id;
             $last_atom_id++;
         }
-        if( ! defined $atom_site->{$connected_atom_id_2} ) {
-            $atom_site->{$connected_atom_id_2} =
-                $ref_atom_site->{$connected_atom_id_2};
+        if( ! defined $atom_site->{$atom_id_2} ) {
+            $atom_site->{$atom_id_2} = $ref_atom_site->{$origin_atom_id_2};
             replace_atom_site_ids( $atom_site,
-                                   [ { 'from' => $connected_atom_id_2,
+                                   [ { 'from' => $atom_id_2,
                                        'to' => $last_atom_id } ],
                                    $options );
-            $track_renamed_atom_ids{$connected_atom_id_2} = $last_atom_id;
+            $track_atom_ids{$origin_atom_id_2} = $last_atom_id;
             $last_atom_id++;
         }
 
         connect_atoms_explicitly( $atom_site,
-                                  [ $connected_atom_id_1 ],
-                                  [ $connected_atom_id_2 ],
+                                  [ $atom_id_1 ],
+                                  [ $atom_id_2 ],
                                   $options );
 
         for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                             'pdbx_PDB_model_num' ) {
-            my $original_atom_id_1 =
-                defined $track_renamed_atom_ids{$connected_atom_id_1} ?
-                $track_renamed_atom_ids{$connected_atom_id_1} :
-                $connected_atom_id_1;
-            my $original_atom_id_2 =
-                defined $track_renamed_atom_ids{$connected_atom_id_2} ?
-                $track_renamed_atom_ids{$connected_atom_id_2} :
-                $connected_atom_id_2;
-
-            $atom_site->{$connected_atom_id_1}{$attribute} =
-                $ref_atom_site->{$original_atom_id_1}{$attribute};
-            $atom_site->{$connected_atom_id_2}{$attribute} =
-                $ref_atom_site->{$original_atom_id_2}{$attribute};
+            $atom_site->{$atom_id_1}{$attribute} =
+                $ref_atom_site->{$origin_atom_id_1}{$attribute};
+            $atom_site->{$atom_id_2}{$attribute} =
+                $ref_atom_site->{$origin_atom_id_2}{$attribute};
         }
     }
+
+    # use Data::Dumper;
+    # print STDERR Dumper [ sort keys %{ $atom_site } ];
+    # print STDERR Dumper $atom_site->{154};
+    # print STDERR Dumper $atom_site->{1928};
+    # print STDERR Dumper $atom_site->{1929};
+    # print STDERR Dumper $atom_site->{1930};
 
     return;
 }
