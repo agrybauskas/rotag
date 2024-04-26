@@ -425,11 +425,6 @@ sub assign_hetatoms
             $last_atom_id++;
         }
 
-        connect_atoms_explicitly( $atom_site,
-                                  [ $atom_id_1 ],
-                                  [ $atom_id_2 ],
-                                  $options );
-
         for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
                             'pdbx_PDB_model_num' ) {
             $atom_site->{$atom_id_1}{$attribute} =
@@ -437,16 +432,11 @@ sub assign_hetatoms
             $atom_site->{$atom_id_2}{$attribute} =
                 $ref_atom_site->{$origin_atom_id_2}{$attribute};
         }
-    }
 
-    # use Data::Dumper;
-    # print STDERR Dumper [ sort keys %{ $atom_site } ];
-    # print STDERR Dumper [ map { $atom_site->{$_}{'label_atom_id'} }
-    #                       sort keys %{ $atom_site } ];
-    # print STDERR Dumper $atom_site->{154};
-    # print STDERR Dumper $atom_site->{1928};
-    # print STDERR Dumper $atom_site->{1929};
-    # print STDERR Dumper $atom_site->{1930};
+        connect_atoms_explicitly( $atom_site,
+                                  [ $atom_id_1 ],
+                                  [ $atom_id_2 ] );
+    }
 
     return;
 }
