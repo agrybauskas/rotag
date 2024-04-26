@@ -396,6 +396,7 @@ sub assign_hetatoms
         my $atom_id_1 = $origin_atom_id_1;
         my $atom_id_2 = $origin_atom_id_2;
 
+        # If the atom was created before, it looks in the lookup table.
         if( $track_atom_ids{$origin_atom_id_1} ) {
             $atom_id_1 = $track_atom_ids{$origin_atom_id_1};
         }
@@ -410,6 +411,7 @@ sub assign_hetatoms
                                        'to' => $last_atom_id } ],
                                    $options );
             $track_atom_ids{$origin_atom_id_1} = $last_atom_id;
+            $atom_id_1 = $last_atom_id;
             $last_atom_id++;
         }
         if( ! defined $atom_site->{$atom_id_2} ) {
@@ -419,6 +421,7 @@ sub assign_hetatoms
                                        'to' => $last_atom_id } ],
                                    $options );
             $track_atom_ids{$origin_atom_id_2} = $last_atom_id;
+            $atom_id_2 = $last_atom_id;
             $last_atom_id++;
         }
 
@@ -438,6 +441,8 @@ sub assign_hetatoms
 
     # use Data::Dumper;
     # print STDERR Dumper [ sort keys %{ $atom_site } ];
+    # print STDERR Dumper [ map { $atom_site->{$_}{'label_atom_id'} }
+    #                       sort keys %{ $atom_site } ];
     # print STDERR Dumper $atom_site->{154};
     # print STDERR Dumper $atom_site->{1928};
     # print STDERR Dumper $atom_site->{1929};
