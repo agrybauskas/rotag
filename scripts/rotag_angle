@@ -609,17 +609,6 @@ for my $pdbx_file ( @ARGV ) {
 
         my $bond_angle_id = 1;
         for my $residue_unique_key ( sort keys %{ $bond_angles } ) {
-            my $residue_site =
-                filter_by_unique_residue_key( $target_bond_angle_site,
-                                              $residue_unique_key );
-
-            next if ! %{ $residue_site };
-
-            my ( $residue_id ) = keys %{ $residue_site };
-            my ( $label_seq_id, $chain_id, $model_id, $alt_id ) =
-                split( /,/sxm, $residue_unique_key ),
-            my $residue_name = $residue_site->{$residue_id}{'label_comp_id'};
-
             for my $angle_name (
                 sort { $bond_angles->{$residue_unique_key}{$a}{'order'} <=>
                        $bond_angles->{$residue_unique_key}{$b}{'order'} }
