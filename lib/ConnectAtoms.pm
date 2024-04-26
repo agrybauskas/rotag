@@ -433,6 +433,15 @@ sub assign_hetatoms
                 $ref_atom_site->{$origin_atom_id_2}{$attribute};
         }
 
+        # HACK: 'origin_atom_id' key is used when determining which atom ids
+        # where assigned. However, more robust method should be used.
+        if( $atom_site->{$atom_id_1}{'group_PDB'} eq 'HETATM' ) {
+            $atom_site->{$atom_id_1}{'origin_atom_id'} = $origin_atom_id_1;
+        }
+        if( $atom_site->{$atom_id_2}{'group_PDB'} eq 'HETATM' ) {
+            $atom_site->{$atom_id_2}{'origin_atom_id'} = $origin_atom_id_2;
+        }
+
         connect_atoms_explicitly( $atom_site,
                                   [ $atom_id_1 ],
                                   [ $atom_id_2 ] );
