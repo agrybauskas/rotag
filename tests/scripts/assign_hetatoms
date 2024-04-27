@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use ConnectAtoms qw( assign_hetatoms );
+use ConnectAtoms qw( assign_hetatoms
+                     create_hetatom_struct_conn );
 use PDBxParser qw( split_by );
 use ForceField::Parameters;
 
@@ -29,15 +30,16 @@ my $struct_conn = $atom_site_struct_conn->{'_struct_conn'};
 my $atom_site_split_groups =
     split_by( { 'atom_site' => $atom_site,
                 'append_dot' => 1 } );
+if( ! %{ $struct_conn } && $assume_connections ) {
+    $struct_conn = create_hetatom_struct_conn( $parameters, $atom_site );
+}
 
 for my $unique_residue_key ( sort keys %{ $atom_site_split_groups } ) {
     my %residue_site =
         map { $_ => $atom_site->{$_} }
            @{ $atom_site_split_groups->{$unique_residue_key}{'atom_ids'} };
 
-    assign_hetatoms( $parameters,
-                     \%residue_site,
-                     ( %{ $struct_conn } ? $struct_conn : undef ),
+    assign_hetatoms( $parameters, \%residue_site, $struct_conn,
                      { 'ref_atom_site' => $atom_site } );
 
     my @atom_coord;
