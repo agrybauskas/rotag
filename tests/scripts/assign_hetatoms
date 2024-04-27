@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ConnectAtoms qw( assign_hetatoms );
+use PDBxParser qw( split_by );
 use ForceField::Parameters;
 
 #
@@ -25,18 +26,30 @@ my $parameters = Parameters->new();
 my $atom_site = $atom_site_struct_conn->{'_atom_site'};
 my $struct_conn = $atom_site_struct_conn->{'_struct_conn'};
 
-assign_hetatoms( $parameters, $atom_site,
-                 ( %{ $struct_conn } ? $struct_conn : undef ) );
+my $atom_site_split_groups =
+    split_by( { 'atom_site' => $atom_site,
+                'append_dot' => 1 } );
 
-my @atom_coord;
-my @parent_atom;
-my @child_atom;
+for my $unique_residue_key ( sort keys %{ $atom_site_split_groups } ) {
+    my %residue_site =
+        map { $_ => $atom_site->{$_} }
+           @{ $atom_site_split_groups->{$unique_residue_key}{'atom_ids'} };
 
-for my $parent_id ( keys %{ $atom_site } ) {
-    @parent_atom = ( $parent_id, $atom_site->{$parent_id}{"label_atom_id"} );
-    for my $child_id ( @{ $atom_site->{$parent_id}{"connections_hetatom"} } ) {
-        @child_atom = ( $child_id, $atom_site->{$child_id}{"label_atom_id"} );
-        print( "$parent_atom[0] $parent_atom[1]:" );
-        print( "$child_atom[0] $child_atom[1]\n" );
+    assign_hetatoms( $parameters,
+                     \%residue_site,
+                     ( %{ $struct_conn } ? $struct_conn : undef ),
+                     { 'ref_atom_site' => $atom_site } );
+
+    my @atom_coord;
+    my @parent_atom;
+    my @child_atom;
+
+    for my $parent_id ( keys %residue_site ) {
+        @parent_atom = ( $parent_id, $residue_site{$parent_id}{"label_atom_id"} );
+        for my $child_id ( @{ $residue_site{$parent_id}{"connections_hetatom"} } ) {
+            @child_atom = ( $child_id, $residue_site{$child_id}{"label_atom_id"} );
+            print( "$parent_atom[0] $parent_atom[1]:" );
+            print( "$child_atom[0] $child_atom[1]\n" );
+        }
     }
 }
