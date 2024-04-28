@@ -345,7 +345,8 @@ sub assign_hetatoms
     $ref_atom_site //= $atom_site;
 
     return if ! %{ $struct_conn };
-    return if ! any { $atom_site->{$_}{'group_PDB'} eq 'ATOM' } keys %{ $atom_site };
+    return if ! any { $atom_site->{$_}{'group_PDB'} eq 'ATOM' }
+              keys %{ $atom_site };
 
     my %origin_atom_site = %{ clone $ref_atom_site };
     my %track_atom_ids = ();
