@@ -408,23 +408,27 @@ sub assign_hetatoms
 
         if( ! defined $atom_site->{$atom_id_1} ) {
             $atom_site->{$atom_id_1} = $ref_atom_site->{$origin_atom_id_1};
-            replace_atom_site_ids( $atom_site,
-                                   [ { 'from' => $atom_id_1,
-                                       'to' => $last_atom_id } ],
-                                   $options );
-            $track_atom_ids{$origin_atom_id_1} = $last_atom_id;
-            $atom_id_1 = $last_atom_id;
-            $last_atom_id++;
+            if( $atom_site->{$atom_id_1}{'group_PDB'} eq 'HETATM' ) {
+                replace_atom_site_ids( $atom_site,
+                                       [ { 'from' => $atom_id_1,
+                                           'to' => $last_atom_id } ],
+                                       $options );
+                $track_atom_ids{$origin_atom_id_1} = $last_atom_id;
+                $atom_id_1 = $last_atom_id;
+                $last_atom_id++;
+            }
         }
         if( ! defined $atom_site->{$atom_id_2} ) {
             $atom_site->{$atom_id_2} = $ref_atom_site->{$origin_atom_id_2};
-            replace_atom_site_ids( $atom_site,
-                                   [ { 'from' => $atom_id_2,
-                                       'to' => $last_atom_id } ],
-                                   $options );
-            $track_atom_ids{$origin_atom_id_2} = $last_atom_id;
-            $atom_id_2 = $last_atom_id;
-            $last_atom_id++;
+            if( $atom_site->{$atom_id_2}{'group_PDB'} eq 'HETATM' ) {
+                replace_atom_site_ids( $atom_site,
+                                       [ { 'from' => $atom_id_2,
+                                           'to' => $last_atom_id } ],
+                                       $options );
+                $track_atom_ids{$origin_atom_id_2} = $last_atom_id;
+                $atom_id_2 = $last_atom_id;
+                $last_atom_id++;
+            }
         }
 
         for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',

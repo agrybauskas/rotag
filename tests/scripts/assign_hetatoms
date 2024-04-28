@@ -50,12 +50,12 @@ for my $unique_residue_key ( sort keys %{ $atom_site_split_groups } ) {
     for my $parent_id ( sort keys %residue_site ) {
         @parent_atom = ( $parent_id, $residue_site{$parent_id}{"label_atom_id"} );
         for my $child_id ( @{ $residue_site{$parent_id}{"connections_hetatom"} } ) {
-            next if $visited_pairs{$parent_id}{$child_id};
+            next if $visited_pairs{$parent_id}{$child_id} ||
+                $visited_pairs{$child_id}{$parent_id};
             @child_atom = ( $child_id, $residue_site{$child_id}{"label_atom_id"} );
             print( "$parent_atom[0] $parent_atom[1]:" );
             print( "$child_atom[0] $child_atom[1]\n" );
             $visited_pairs{$parent_id}{$child_id} = 1;
-            $visited_pairs{$child_id}{$parent_id} = 1;
         }
     }
 }
