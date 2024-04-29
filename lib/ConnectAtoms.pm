@@ -345,12 +345,15 @@ sub assign_hetatoms
     $ref_atom_site //= $atom_site;
 
     return if ! %{ $struct_conn };
-    return if ! any { $atom_site->{$_}{'group_PDB'} eq 'ATOM' }
-              keys %{ $atom_site };
 
     my %origin_atom_site = %{ clone $ref_atom_site };
     my %track_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
+
+    my $unique_residue_keys =
+        unique_from_struct_conn( $parameters, $struct_conn,
+                                 { 'ref_atom_site' => $ref_atom_site } );
+
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my %connected_atom_selection_1 = (
             $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} eq '.' ?
@@ -563,6 +566,30 @@ sub create_hetatom_struct_conn
     }
 
     return \%struct_conn;
+}
+
+#
+# Returns list of unique residue key objects from atom site and structure
+# connection data.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $struct_conn - reads 'struc_conn' and assings connections appropriately;
+#     $options->{'ref_atom_site'} - reference atom site.
+# Output:
+#     list of unique residue key objects.
+#
+
+sub unique_from_struct_conn
+{
+    my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+
+    $ref_atom_site //= $atom_site;
+
+    my @unique_residue_keys = ();
+
+    return \@unique_residue_keys;
 }
 
 1;
