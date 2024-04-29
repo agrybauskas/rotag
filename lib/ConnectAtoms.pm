@@ -581,6 +581,9 @@ sub create_hetatom_struct_conn
 sub unique_from_struct_conn
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
+    my ( $no_hetatoms ) = ( $options->{'no_hetatoms'} );
+
+    $no_hetatoms //= 1;
 
     my @unique_residue_keys = ();
 
