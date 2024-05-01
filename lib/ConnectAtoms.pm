@@ -663,6 +663,44 @@ sub unique_from_struct_conn
 sub connections_hetatom
 {
     my ( $atom_site, $struct_conn ) = @_;
+    my %heteroatom_connections = ();
+    for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
+        my %atom_selection_1 = (
+            $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} eq '.' ?
+            ( 'auth_seq_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
+              'auth_asym_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'} ] ) :
+            ( 'label_seq_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
+              'label_asym_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ),
+            'label_atom_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ],
+        );
+        my %atom_selection_2 = (
+            $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} eq '.' ?
+            ( 'auth_seq_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} ],
+              'auth_asym_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_auth_asym_id'} ] ) :
+            ( 'label_seq_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} ],
+              'label_asym_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] ),
+            'label_atom_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ],
+        );
+
+        my $atom_site_1 = filter_new(
+            $atom_site, { 'include' => \%atom_selection_1 }
+        );
+        my $atom_site_2 = filter_new(
+            $atom_site, { 'include' => \%atom_selection_2 }
+        );
+
+        next if ! %{ $atom_site_1 } && ! %{ $atom_site_2 };
+    }
 }
 
 1;
