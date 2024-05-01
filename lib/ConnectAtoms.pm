@@ -573,9 +573,10 @@ sub create_hetatom_struct_conn
 # Input:
 #     $parameters - general parameters (see Parameters.pm);
 #     $atom_site - atom site data structure (see PDBxParser.pm);
-#     $struct_conn - reads 'struc_conn' and assings connections appropriately.
+#     $struct_conn - reads 'struc_conn' and assings connections appropriately;
+#     $options->{'no_hetatoms'} - excludes heteroatoms.
 # Output:
-#     list of unique residue key objects.
+#     unique residue key objects.
 #
 
 sub unique_from_struct_conn
@@ -585,7 +586,7 @@ sub unique_from_struct_conn
 
     $no_hetatoms //= 1;
 
-    my @unique_residue_keys = ();
+    my %unique_residue_keys = ();
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my %atom_selection_1 = (
             $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} eq '.' ?
@@ -624,12 +625,25 @@ sub unique_from_struct_conn
                                ( $no_hetatoms ?
                                  ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) : () ) } ) } );
 
-        for my $atom_id ( keys %filtered_atom_site ) {
+        for my $atom_id ( sort keys %filtered_atom_site ) {
+            my $attributes =
+                $filtered_atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ?
+                [ 'auth_seq_id', 'auth_asym_id', 'pdbx_PDB_model_num',
+                  'label_alt_id' ] :
+                [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
+                  'label_alt_id' ];
+            my $unique_residue_key =
+                unique_residue_key( $filtered_atom_site{$atom_id}, $attributes );
 
+            next if exists $unique_residue_keys{$unique_residue_key};
+
+            $unique_residue_keys{$unique_residue_key}{'attributes'} =$attributes;
+            push @{ $unique_residue_keys{$unique_residue_key}{'atom_ids'} },
+                $atom_id;
         }
     }
 
-    return \@unique_residue_keys;
+    return \%unique_residue_keys;
 }
 
 1;
