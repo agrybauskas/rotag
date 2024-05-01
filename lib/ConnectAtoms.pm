@@ -352,6 +352,8 @@ sub assign_hetatoms
 
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
+    my $connections_hetatom =
+        connections_hetatom( $ref_atom_site, $struct_conn );
 
     # for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
 
@@ -663,6 +665,7 @@ sub unique_from_struct_conn
 sub connections_hetatom
 {
     my ( $atom_site, $struct_conn ) = @_;
+
     my %heteroatom_connections = ();
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my %atom_selection_1 = (
@@ -692,15 +695,24 @@ sub connections_hetatom
                 $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ],
         );
 
-        my $atom_site_1 = filter_new(
-            $atom_site, { 'include' => \%atom_selection_1 }
-        );
-        my $atom_site_2 = filter_new(
-            $atom_site, { 'include' => \%atom_selection_2 }
-        );
+        my ( $atom_id_1 ) = @{ filter_new(
+            $atom_site,
+            { 'include' => \%atom_selection_1,
+              'return_data' => 'id' },
+        ) };
+        my ( $atom_id_2 ) = @{ filter_new(
+            $atom_site,
+            { 'include' => \%atom_selection_2,
+              'return_data' => 'id' }
+        ) };
 
-        next if ! %{ $atom_site_1 } && ! %{ $atom_site_2 };
+        next if ! defined $atom_id_1 || ! defined $atom_id_2;
+
+        $heteroatom_connections{$atom_id_1}{$atom_id_2} = 1;
+        $heteroatom_connections{$atom_id_2}{$atom_id_1} = 1;
     }
+
+    return \%heteroatom_connections;
 }
 
 1;
