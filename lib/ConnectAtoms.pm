@@ -355,9 +355,12 @@ sub assign_hetatoms
     my $connections_hetatom =
         connections_hetatom( $ref_atom_site, $struct_conn );
 
-    # for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
-
-    # }
+    for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        my $residue_atom_ids =
+            $unique_residue_keys->{$unique_residue_key}{'atom_ids'};
+        for my $residue_atom_id ( @{ $residue_atom_ids } ) {
+        }
+    }
 
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my %connected_atom_selection_1 = (
@@ -641,9 +644,8 @@ sub unique_from_struct_conn
             my $unique_residue_key =
                 unique_residue_key( $filtered_atom_site{$atom_id}, $attributes );
 
-            next if exists $unique_residue_keys{$unique_residue_key};
-
-            $unique_residue_keys{$unique_residue_key}{'attributes'} =$attributes;
+            $unique_residue_keys{$unique_residue_key}{'attributes'} =
+                $attributes;
             push @{ $unique_residue_keys{$unique_residue_key}{'atom_ids'} },
                 $atom_id;
         }
