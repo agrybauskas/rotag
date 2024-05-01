@@ -362,7 +362,7 @@ sub assign_hetatoms
             my @next_atom_ids =
                 ( keys %{ $connections_hetatom->{$residue_atom_id} } );
             while( @next_atom_ids ) {
-                my $atom_id = shift @next_atom_ids;
+                my $atom_id = pop @next_atom_ids;
             }
             # if( ! defined $atom_site->{$atom_id_1} ) {
             #     $atom_site->{$atom_id_1} = $ref_atom_site->{$origin_atom_id_1};
