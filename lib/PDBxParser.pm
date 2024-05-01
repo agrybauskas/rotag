@@ -1073,20 +1073,21 @@ sub unique_residue_keys
 # '_atom_site.label_asym_id', '_atom_site.pdbx_PDB_model_num' and
 # '_atom_site.label_alt_id'.
 # Input:
-#     $atom - atom data structure.
+#     $atom - atom data structure;
+#     $attributes - attributes.
 # Output:
 #     $unique_residue_key - unique residue key.
 #
 
 sub unique_residue_key
 {
-    my ( $atom ) = @_;
+    my ( $atom, $attributes ) = @_;
+    $attributes //= [
+        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
+    ];
     return join q{,},
            map { $atom->{$_} }
-               ( 'label_seq_id',
-                 'label_asym_id',
-                 'pdbx_PDB_model_num',
-                 'label_alt_id', );
+              @{ $attributes };
 }
 
 #

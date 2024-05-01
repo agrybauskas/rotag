@@ -351,8 +351,7 @@ sub assign_hetatoms
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
 
     my $unique_residue_keys =
-        unique_from_struct_conn( $parameters, $ref_atom_site, $struct_conn,
-                                 { 'no_hetatoms' => 1 } );
+        unique_from_struct_conn( $parameters, $ref_atom_site, $struct_conn );
 
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
         my %connected_atom_selection_1 = (
@@ -624,6 +623,10 @@ sub unique_from_struct_conn
                              { 'include' => { %atom_selection_2 },
                                ( $no_hetatoms ?
                                  ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) : () ) } ) } );
+
+        for my $atom_id ( keys %filtered_atom_site ) {
+
+        }
     }
 
     return \@unique_residue_keys;
