@@ -352,7 +352,7 @@ sub assign_hetatoms
         connections_hetatom( $ref_atom_site, $struct_conn );
 
     my %origin_atom_site = %{ clone $ref_atom_site };
-    my %track_atom_ids = ();
+    my %visited_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
 
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
@@ -362,49 +362,18 @@ sub assign_hetatoms
             my @next_atom_ids =
                 ( keys %{ $connections_hetatom->{$residue_atom_id} } );
             while( @next_atom_ids ) {
-                my $atom_id = pop @next_atom_ids;
+                my ( $atom_id ) = pop @next_atom_ids;
+
+                next if $visited_atom_ids{$atom_id};
+                $visited_atom_ids{$atom_id} = 1;
+
+                push @next_atom_ids, keys %{ $connections_hetatom->{$atom_id} };
             }
-            # if( ! defined $atom_site->{$atom_id_1} ) {
-            #     $atom_site->{$atom_id_1} = $ref_atom_site->{$origin_atom_id_1};
-            #     if( $atom_site->{$atom_id_1}{'group_PDB'} eq 'HETATM' ) {
-            #         replace_atom_site_ids( $atom_site,
-            #                                [ { 'from' => $atom_id_1,
-            #                                    'to' => $last_atom_id } ],
-            #                                $options );
-            #         $track_atom_ids{$origin_atom_id_1} = $last_atom_id;
-            #         $atom_id_1 = $last_atom_id;
-            #         $last_atom_id++;
-            #     }
-            # }
-            # if( ! defined $atom_site->{$atom_id_2} ) {
-            #     $atom_site->{$atom_id_2} = $ref_atom_site->{$origin_atom_id_2};
-            #     if( $atom_site->{$atom_id_2}{'group_PDB'} eq 'HETATM' ) {
-            #         replace_atom_site_ids( $atom_site,
-            #                                [ { 'from' => $atom_id_2,
-            #                                    'to' => $last_atom_id } ],
-            #                                $options );
-            #         $track_atom_ids{$origin_atom_id_2} = $last_atom_id;
-            #         $atom_id_2 = $last_atom_id;
-            #         $last_atom_id++;
-            #     }
-            # }
 
-            # for my $attribute ( 'label_seq_id', 'label_asym_id', 'label_alt_id',
-            #                     'pdbx_PDB_model_num' ) {
-            #     $atom_site->{$atom_id_1}{$attribute} =
-            #         $ref_atom_site->{$origin_atom_id_1}{$attribute};
-            #     $atom_site->{$atom_id_2}{$attribute} =
-            #         $ref_atom_site->{$origin_atom_id_2}{$attribute};
-            # }
-
-            # # HACK: 'origin_atom_id' key is used when determining which atom ids
-            # # where assigned. However, more robust method should be used.
-            # if( $atom_site->{$atom_id_1}{'group_PDB'} eq 'HETATM' ) {
-            #     $atom_site->{$atom_id_1}{'origin_atom_id'} = $origin_atom_id_1;
-            # }
-            # if( $atom_site->{$atom_id_2}{'group_PDB'} eq 'HETATM' ) {
-            #     $atom_site->{$atom_id_2}{'origin_atom_id'} = $origin_atom_id_2;
-            # }
+            # replace_atom_site_ids( $atom_site,
+            #                        [ { 'from' => $atom_id_1,
+            #                            'to' => $last_atom_id } ],
+            #                        $options );
 
             # connect_atoms_explicitly( $atom_site,
             #                           [ $atom_id_1 ],
