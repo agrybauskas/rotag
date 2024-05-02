@@ -366,8 +366,11 @@ sub assign_hetatoms
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
 
-                my $unique_residue_key =
-                    unique_residue_key( $ref_atom_site->{$atom_id} );
+                my $unique_residue_key = unique_residue_key(
+                    $ref_atom_site->{$atom_id},
+                    [ 'auth_seq_id', 'auth_asym_id', 'pdbx_PDB_model_num',
+                      'label_alt_id' ]
+                );
                 my $related_atom_ids =
                     $all_unique_residue_keys->{$unique_residue_key}{'atom_ids'};
 
