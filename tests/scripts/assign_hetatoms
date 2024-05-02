@@ -34,28 +34,21 @@ if( ! %{ $struct_conn } && $assume_connections ) {
     $struct_conn = create_hetatom_struct_conn( $parameters, $atom_site );
 }
 
+assign_hetatoms( $parameters, $atom_site, $struct_conn );
+
+my @atom_coord;
+my @parent_atom;
+my @child_atom;
 my %visited_pairs = ();
-for my $unique_residue_key ( sort keys %{ $atom_site_split_groups } ) {
-    my %residue_site =
-        map { $_ => $atom_site->{$_} }
-           @{ $atom_site_split_groups->{$unique_residue_key}{'atom_ids'} };
 
-    assign_hetatoms( $parameters, \%residue_site, $struct_conn,
-                     { 'ref_atom_site' => $atom_site } );
-
-    my @atom_coord;
-    my @parent_atom;
-    my @child_atom;
-
-    for my $parent_id ( sort keys %residue_site ) {
-        @parent_atom = ( $parent_id, $residue_site{$parent_id}{"label_atom_id"} );
-        for my $child_id ( @{ $residue_site{$parent_id}{"connections_hetatom"} } ) {
-            next if $visited_pairs{$parent_id}{$child_id} ||
-                $visited_pairs{$child_id}{$parent_id};
-            @child_atom = ( $child_id, $residue_site{$child_id}{"label_atom_id"} );
-            print( "$parent_atom[0] $parent_atom[1]:" );
-            print( "$child_atom[0] $child_atom[1]\n" );
-            $visited_pairs{$parent_id}{$child_id} = 1;
-        }
+for my $parent_id ( sort keys %{ $atom_site } ) {
+    @parent_atom = ( $parent_id, $atom_site->{$parent_id}{"label_atom_id"} );
+    for my $child_id ( @{ $atom_site->{$parent_id}{"connections_hetatom"} } ) {
+        next if $visited_pairs{$parent_id}{$child_id} ||
+            $visited_pairs{$child_id}{$parent_id};
+        @child_atom = ( $child_id, $atom_site->{$child_id}{"label_atom_id"} );
+        print( "$parent_atom[0] $parent_atom[1]:" );
+        print( "$child_atom[0] $child_atom[1]\n" );
+        $visited_pairs{$parent_id}{$child_id} = 1;
     }
 }
