@@ -377,19 +377,32 @@ sub assign_hetatoms
                 my $related_atom_ids =
                     $all_unique_residue_keys->{$unique_residue_key}{'atom_ids'};
 
+                for my $related_atom_id ( @{ $related_atom_ids } ) {
+                    $atom_site->{$related_atom_id} =
+                        clone $ref_atom_site->{$related_atom_id};
+
+                    replace_atom_site_ids( $atom_site,
+                                           [ { 'from' => $related_atom_id,
+                                               'to' => $last_atom_id } ],
+                                           $options );
+
+                    $tracked_atom_ids{$related_atom_id} = $last_atom_id;
+
+                    if( $related_atom_id eq $atom_id ) {
+                        connect_atoms_explicitly(
+                            $atom_site,
+                            [ $residue_atom_id ],
+                            [ $tracked_atom_ids{$related_atom_id} ]
+                        );
+                    }
+
+                    $last_atom_id++;
+                }
+
                 push @next_atom_ids,
                     grep { ! $visited_atom_ids{$_} }
                         @{ $related_atom_ids };
             }
-
-            # replace_atom_site_ids( $atom_site,
-            #                        [ { 'from' => $atom_id_1,
-            #                            'to' => $last_atom_id } ],
-            #                        $options );
-
-            # connect_atoms_explicitly( $atom_site,
-            #                           [ $atom_id_1 ],
-            #                           [ $atom_id_2 ] );
         }
     }
 
