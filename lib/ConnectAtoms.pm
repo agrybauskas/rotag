@@ -355,6 +355,7 @@ sub assign_hetatoms
         connections_hetatom( $ref_atom_site, $struct_conn );
 
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
+    my $alt_id = 1;
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my $residue_atom_ids =
             $unique_residue_keys->{$unique_residue_key}{'atom_ids'};
@@ -386,6 +387,8 @@ sub assign_hetatoms
                                                'to' => $last_atom_id } ],
                                            $options );
 
+                    $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
+
                     $tracked_atom_ids{$related_atom_id} = $last_atom_id;
 
                     if( $related_atom_id eq $atom_id ) {
@@ -404,6 +407,8 @@ sub assign_hetatoms
                         @{ $related_atom_ids };
             }
         }
+
+        $alt_id++;
     }
 
     return;
