@@ -1096,6 +1096,8 @@ sub unique_residue_key
 # Generates a list of unique keys from the atom site.
 # Input:
 #     $atom_site - atom site data structure;
+#     $options->{'attributes'} - attribute list;
+#     $options->{'alt_attributes'} - alternative attribute list.
 #     $options->{'exclude_dot'} - excludes label atom ids with '.' value, but
 #     only if there are alternatives.
 # Output:
@@ -1105,7 +1107,17 @@ sub unique_residue_key
 sub determine_residue_keys
 {
     my ( $atom_site, $options ) = @_;
-    my ( $exclude_dot ) = $options->{'exclude_dot'};
+    my ( $attributes, $alt_attributes, $exclude_dot ) =
+        ( $options->{'attributes'},
+          $options->{'alt_attributes'},
+          $options->{'exclude_dot'} );
+
+    $attributes //= [
+        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
+    ];
+    $alt_attributes //= [
+        'alt_seq_id', 'alt_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
+    ];
 
     my @current_residue_unique_keys;
     for my $atom_id ( keys %{ $atom_site } ) {
