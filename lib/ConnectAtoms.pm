@@ -366,8 +366,6 @@ sub assign_hetatoms
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
 
-                # next if $visited_atom_ids{$atom_id};
-
                 $visited_atom_ids{$atom_id} = 1;
 
                 my $unique_residue_key = unique_residue_key(
