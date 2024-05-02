@@ -1097,7 +1097,9 @@ sub unique_residue_key
 # Input:
 #     $atom_site - atom site data structure;
 #     $options->{'attributes'} - attribute list;
-#     $options->{'alt_attributes'} - alternative attribute list.
+#     $options->{'alt_attributes'} - alternative attribute list;
+#     $options->{'alt_change_rule'} - rule where attributes are changed to
+#     alternative attributes;
 #     $options->{'exclude_dot'} - excludes label atom ids with '.' value, but
 #     only if there are alternatives.
 # Output:
@@ -1107,9 +1109,10 @@ sub unique_residue_key
 sub determine_residue_keys
 {
     my ( $atom_site, $options ) = @_;
-    my ( $attributes, $alt_attributes, $exclude_dot ) =
+    my ( $attributes, $alt_attributes, $alt_change_rule, $exclude_dot ) =
         ( $options->{'attributes'},
           $options->{'alt_attributes'},
+          $options->{'alt_change_rule'},
           $options->{'exclude_dot'} );
 
     $attributes //= [
@@ -1118,6 +1121,9 @@ sub determine_residue_keys
     $alt_attributes //= [
         'alt_seq_id', 'alt_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
     ];
+    $alt_change_rule //= {
+        'label_seq_id' => '.'
+    };
 
     my @current_residue_unique_keys;
     for my $atom_id ( keys %{ $atom_site } ) {
