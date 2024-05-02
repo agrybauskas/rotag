@@ -352,22 +352,22 @@ sub assign_hetatoms
         connections_hetatom( $ref_atom_site, $struct_conn );
 
     my %origin_atom_site = %{ clone $ref_atom_site };
-    my %visited_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
 
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my $residue_atom_ids =
             $unique_residue_keys->{$unique_residue_key}{'atom_ids'};
+        my %visited_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
             my @next_atom_ids =
                 ( keys %{ $connections_hetatom->{$residue_atom_id} } );
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
 
-                next if $visited_atom_ids{$atom_id};
-                $visited_atom_ids{$atom_id} = 1;
+                # next if $visited_atom_ids{$atom_id};
+                # $visited_atom_ids{$atom_id} = 1;
 
-                push @next_atom_ids, keys %{ $connections_hetatom->{$atom_id} };
+                # push @next_atom_ids, keys %{ $connections_hetatom->{$atom_id} };
             }
 
             # replace_atom_site_ids( $atom_site,
