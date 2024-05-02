@@ -360,6 +360,7 @@ sub assign_hetatoms
             $unique_residue_keys->{$unique_residue_key}{'atom_ids'};
 
         my %visited_atom_ids = ();
+        my %tracked_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
             my @next_atom_ids =
                 ( keys %{ $connections_hetatom->{$residue_atom_id} } );
