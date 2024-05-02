@@ -150,7 +150,7 @@ sub sort_by_unique_residue_key
         sort { $selected_atom_site->{$a}{'pdbx_PDB_model_num'} <=>
                $selected_atom_site->{$b}{'pdbx_PDB_model_num'} ||
                $selected_atom_site->{$a}{'label_asym_id'} cmp
-               $selected_atom_site->{$b}->{'label_asym_id'} ||
+               $selected_atom_site->{$b}{'label_asym_id'} ||
                $selected_atom_site->{$a}{'label_seq_id'} <=>
                $selected_atom_site->{$b}{'label_seq_id'} ||
                $selected_atom_site->{$a}{'label_alt_id'} cmp
