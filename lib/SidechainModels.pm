@@ -194,8 +194,7 @@ sub rotation_translation_new
 
 sub bond_torsion_matrices
 {
-    my ( $parameters, $atom_site, $atom_id, $rotatable_bonds,
-         $bendable_angles ) = @_;
+    my ( $parameters, $atom_site, $atom_id, $rotatable_bonds ) = @_;
 
     my @bond_torsion_matrices = ();
     for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
