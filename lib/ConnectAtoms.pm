@@ -348,15 +348,17 @@ sub assign_hetatoms
 
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
+    my $all_unique_residue_keys =
+        unique_from_struct_conn( $ref_atom_site, $struct_conn,
+                                 { 'no_hetatoms' => 0 } );
     my $connections_hetatom =
         connections_hetatom( $ref_atom_site, $struct_conn );
 
-    my %origin_atom_site = %{ clone $ref_atom_site };
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
-
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my $residue_atom_ids =
             $unique_residue_keys->{$unique_residue_key}{'atom_ids'};
+
         my %visited_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
             my @next_atom_ids =
@@ -364,8 +366,13 @@ sub assign_hetatoms
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
 
-                # next if $visited_atom_ids{$atom_id};
-                # $visited_atom_ids{$atom_id} = 1;
+                my $unique_residue_key =
+                    unique_residue_key( $ref_atom_site->{$atom_id} );
+                my $related_atom_ids =
+                    $all_unique_residue_keys->{$unique_residue_key}{'atom_ids'};
+
+                next if $visited_atom_ids{$atom_id};
+                $visited_atom_ids{$atom_id} = 1;
 
                 # push @next_atom_ids, keys %{ $connections_hetatom->{$atom_id} };
             }
@@ -563,8 +570,13 @@ sub unique_from_struct_conn
 
             $unique_residue_keys{$unique_residue_key}{'attributes'} =
                 $attributes;
-            push @{ $unique_residue_keys{$unique_residue_key}{'atom_ids'} },
-                $atom_id;
+            if( ! defined $unique_residue_keys{$unique_residue_key} ||
+                ! defined $unique_residue_keys{$unique_residue_key}{'atom_ids'} ||
+                ! any { $atom_id eq $_ }
+                     @{ $unique_residue_keys{$unique_residue_key}{'atom_ids'} } ) {
+                push @{ $unique_residue_keys{$unique_residue_key}{'atom_ids'} },
+                    $atom_id;
+            }
         }
     }
 
