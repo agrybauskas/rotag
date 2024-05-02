@@ -18,9 +18,9 @@ _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 ASP 27 A 1 . 150 C 149 CA 148 N 1925 MG C-CA-N.MG 85.760 degrees
-2 ASP 27 A 1 . 149 CA 148 N 156 H 1925 MG CA-N-H.MG -160.923 degrees
-3 ASP 27 A 1 . 152 CB 153 CG 154 OD1 1925 MG CB-CG-OD1.MG -0.791 degrees
-4 ASP 27 A 1 . 152 CB 153 CG 155 OD2 1925 MG CB-CG-OD2.MG -178.380 degrees
-5 LYS 72 A 1 . 884 CA 885 C 886 O 1925 MG CA-C-O.MG 97.676 degrees
+1 MG . B 1 1 150 C 149 CA 148 N 1925 MG C-CA-N.MG 85.760 degrees
+2 MG . B 1 1 149 CA 148 N 156 H 1925 MG CA-N-H.MG -160.923 degrees
+3 MG . B 1 1 152 CB 153 CG 154 OD1 1925 MG CB-CG-OD1.MG -0.791 degrees
+4 MG . B 1 1 152 CB 153 CG 155 OD2 1925 MG CB-CG-OD2.MG -178.380 degrees
+5 MG . B 1 2 884 CA 885 C 886 O 1925 MG CA-C-O.MG 97.676 degrees
 #
