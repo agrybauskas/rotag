@@ -1119,7 +1119,7 @@ sub determine_residue_keys
         'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
     ];
     $alt_attributes //= [
-        'alt_seq_id', 'alt_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
+        'auth_seq_id', 'auth_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
     ];
     $alt_change_rule //= {
         'label_seq_id' => '.'
@@ -1127,8 +1127,14 @@ sub determine_residue_keys
 
     my @current_residue_unique_keys;
     for my $atom_id ( keys %{ $atom_site } ) {
+        my $current_attributes = $attributes;
+        my ( $rule_attribute ) = keys %{ $alt_change_rule };
+        if( $atom_site->{$atom_id}{$rule_attribute} eq
+            $alt_change_rule->{$rule_attribute} ) {
+            $current_attributes = $alt_attributes;
+        }
         push @current_residue_unique_keys,
-            unique_residue_key( $atom_site->{$atom_id} );
+            unique_residue_key( $atom_site->{$atom_id}, $current_attributes );
     }
     @current_residue_unique_keys = uniq @current_residue_unique_keys;
 
