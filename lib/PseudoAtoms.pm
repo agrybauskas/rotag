@@ -462,9 +462,10 @@ sub generate_library
                                     'label_alt_id' => [ $alt_id, q{.} ],
                                     'label_seq_id' => [ $residue_id ],
                                     'label_asym_id' => [ $residue_chain ] } } );
-                my $residue_unique_key =
-                    determine_residue_keys( $residue_site,
-                                            { 'exclude_dot' => 1 } )->[0];
+                my $residue_unique_key = determine_residue_keys(
+                    $residue_site,
+                    { 'exclude_dot' => 1 }
+                )->[0]{'unique_residue_key'};
 
                 my @missing_atom_names =
                     @{ missing_atom_names( $parameters, $residue_site ) };
