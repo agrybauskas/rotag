@@ -1126,7 +1126,6 @@ sub determine_residue_keys
     };
 
     my @current_residue_unique_keys;
-    my @current_residue_attributes;
     my %visited_residue_unique_keys;
     for my $atom_id ( keys %{ $atom_site } ) {
         my $current_attributes = $attributes;
@@ -1137,39 +1136,45 @@ sub determine_residue_keys
         }
         my $current_residue_unique_key =
             unique_residue_key( $atom_site->{$atom_id}, $current_attributes );
-        if( ! $visited_residue_unique_keys{$current_residue_unique_key} ) {
-            push @current_residue_unique_keys, $current_residue_unique_key;
-            push @current_residue_attributes, $current_attributes;
-            $visited_residue_unique_keys{$current_residue_unique_key} = 1;
+        if( ! $visited_residue_unique_keys{$current_residue_unique_key} ||
+            ( $visited_residue_unique_keys{$current_residue_unique_key} &&
+              $visited_residue_unique_keys{$current_residue_unique_key} ne
+              join( ',', @{ $current_attributes } ) ) ) {
+            push @current_residue_unique_keys,
+            { 'attributes' => $current_attributes,
+              'attribute_key' => join( ',', @{ $current_attributes } ),
+              'unique_residue_key' => $current_residue_unique_key };
+            $visited_residue_unique_keys{$current_residue_unique_key} =
+                join( ',', @{ $current_attributes } );
         }
     }
 
-    my %residue_key_tree;
-    for my $residue_unique_key ( @current_residue_unique_keys ) {
-        my $reduced_unique_key = $residue_unique_key;
-        my $alt_id = $residue_unique_key;
-        $reduced_unique_key =~ s/^(.+,.+,.+),.+$/$1/g;
-        $alt_id =~ s/^.+,.+,.+,(.+)$/$1/g;
-        if( exists $residue_key_tree{$reduced_unique_key} ) {
-            push @{ $residue_key_tree{$reduced_unique_key} },$residue_unique_key;
-        } else {
-            $residue_key_tree{$reduced_unique_key} = [ $residue_unique_key ];
-        }
-    }
+    # my %residue_key_tree;
+    # for my $residue_unique_key ( @current_residue_unique_keys ) {
+    #     my $reduced_unique_key = $residue_unique_key;
+    #     my $alt_id = $residue_unique_key;
+    #     $reduced_unique_key =~ s/^(.+,.+,.+),.+$/$1/g;
+    #     $alt_id =~ s/^.+,.+,.+,(.+)$/$1/g;
+    #     if( exists $residue_key_tree{$reduced_unique_key} ) {
+    #         push @{ $residue_key_tree{$reduced_unique_key} },$residue_unique_key;
+    #     } else {
+    #         $residue_key_tree{$reduced_unique_key} = [ $residue_unique_key ];
+    #     }
+    # }
 
     my @residue_unique_keys;
-    for my $reduced_unique_key ( keys %residue_key_tree ) {
-        my $residue_unique_keys = $residue_key_tree{$reduced_unique_key};
-        if( scalar @{ $residue_unique_keys } > 1 ) {
-            for my $i ( 0..$#{ $residue_unique_keys } ) {
-                if( $exclude_dot && $residue_unique_keys->[$i] =~ m/\.$/ ) {
-                    splice @{ $residue_unique_keys }, $i, 1;
-                    last;
-                }
-            }
-        }
-        push @residue_unique_keys, @{ $residue_unique_keys };
-    }
+    # for my $reduced_unique_key ( keys %residue_key_tree ) {
+    #     my $residue_unique_keys = $residue_key_tree{$reduced_unique_key};
+    #     if( scalar @{ $residue_unique_keys } > 1 ) {
+    #         for my $i ( 0..$#{ $residue_unique_keys } ) {
+    #             if( $exclude_dot && $residue_unique_keys->[$i] =~ m/\.$/ ) {
+    #                 splice @{ $residue_unique_keys }, $i, 1;
+    #                 last;
+    #             }
+    #         }
+    #     }
+    #     push @residue_unique_keys, @{ $residue_unique_keys };
+    # }
 
     return \@residue_unique_keys;
 }
