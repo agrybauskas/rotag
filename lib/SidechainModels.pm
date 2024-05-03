@@ -93,7 +93,9 @@ sub rotation_translation
                     @{ bond_torsion_matrices( $parameters,
                                               $residue_site,
                                               $atom_id,
-                                              $rotatable_bonds ) };
+                                              $rotatable_bonds,
+                                              { 'ref_atom_site' =>
+                                                    $atom_site } ) };
             }
 
             if( %{ $stretchable_bonds } ) {
@@ -101,7 +103,9 @@ sub rotation_translation
                     @{ bond_stretching_matrices( $parameters,
                                                  $residue_site,
                                                  $atom_id,
-                                                 $stretchable_bonds ) };
+                                                 $stretchable_bonds,
+                                                 { 'ref_atom_site' =>
+                                                       $atom_site } ) };
             }
 
             if( %{ $bendable_angles } ) {
@@ -109,7 +113,9 @@ sub rotation_translation
                     @{ angle_bending_matrices( $parameters,
                                                $residue_site,
                                                $atom_id,
-                                               $bendable_angles ) };
+                                               $bendable_angles,
+                                               { 'ref_atom_site' =>
+                                                     $atom_site } ) };
             }
 
             $atom_site->{$atom_id}{'conformation'} =
@@ -177,7 +183,8 @@ sub rotation_translation_new
                                           $atom_id,
                                           $stretchable_bonds,
                                           $bendable_angles,
-                                          $rotatable_bonds ) };
+                                          $rotatable_bonds,
+                                          { 'ref_atom_site' => $atom_site } ) };
 
             $atom_site->{$atom_id}{'conformation'} =
                 mult_matrix_product(
@@ -202,7 +209,9 @@ sub rotation_translation_new
 
 sub bond_torsion_matrices
 {
-    my ( $parameters, $atom_site, $atom_id, $rotatable_bonds ) = @_;
+    my ( $parameters, $atom_site, $atom_id, $rotatable_bonds, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+    $ref_atom_site //= $atom_site;
 
     my @bond_torsion_matrices = ();
     for my $angle_name ( sort { $rotatable_bonds->{$atom_id}{$a}{'order'} <=>
@@ -242,7 +251,9 @@ sub bond_torsion_matrices
 
 sub bond_stretching_matrices
 {
-    my ( $parameters, $atom_site, $atom_id, $stretchable_bonds ) = @_;
+    my ( $parameters, $atom_site, $atom_id, $stretchable_bonds, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+    $ref_atom_site //= $atom_site;
 
     # TODO: it is possible to cache here.
     my @bond_stretching_matrices = ();
@@ -289,7 +300,9 @@ sub bond_stretching_matrices
 
 sub angle_bending_matrices
 {
-    my ( $parameters, $atom_site, $atom_id, $bendable_angles ) = @_;
+    my ( $parameters, $atom_site, $atom_id, $bendable_angles, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+    $ref_atom_site //= $atom_site;
 
     my @angle_bending_matrices = ();
     for my $angle_name ( sort { $bendable_angles->{$atom_id}{$a}{'order'} <=>
@@ -335,7 +348,9 @@ sub angle_bending_matrices
 sub conformation_matrices
 {
     my ( $parameters, $atom_site, $atom_id, $stretchable_bonds, $bendable_angles,
-         $rotatable_bonds ) = @_;
+         $rotatable_bonds, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+    $ref_atom_site //= $atom_site;
 
     my $bond_lengths =
         collect_bond_lengths( { $atom_id => $atom_site->{$atom_id} } );
