@@ -222,9 +222,9 @@ sub bond_torsion_matrices
             map { $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
                 ( 2, 1, 0 );
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-            map { [ $atom_site->{$_}{'Cartn_x'},
-                    $atom_site->{$_}{'Cartn_y'},
-                    $atom_site->{$_}{'Cartn_z'} ] }
+            map { [ $ref_atom_site->{$_}{'Cartn_x'},
+                    $ref_atom_site->{$_}{'Cartn_y'},
+                    $ref_atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
         push @bond_torsion_matrices,
@@ -271,9 +271,9 @@ sub bond_stretching_matrices
             @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-            map { [ $atom_site->{$_}{'Cartn_x'},
-                    $atom_site->{$_}{'Cartn_y'},
-                    $atom_site->{$_}{'Cartn_z'} ] }
+            map { [ $ref_atom_site->{$_}{'Cartn_x'},
+                    $ref_atom_site->{$_}{'Cartn_y'},
+                    $ref_atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
         push @bond_stretching_matrices,
@@ -314,9 +314,9 @@ sub angle_bending_matrices
                 ( 2, 1, 0 );
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-            map { [ $atom_site->{$_}{'Cartn_x'},
-                    $atom_site->{$_}{'Cartn_y'},
-                    $atom_site->{$_}{'Cartn_z'} ] }
+            map { [ $ref_atom_site->{$_}{'Cartn_x'},
+                    $ref_atom_site->{$_}{'Cartn_y'},
+                    $ref_atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
         push @angle_bending_matrices,
@@ -394,9 +394,9 @@ sub conformation_matrices
         }
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
-            map { [ $atom_site->{$_}{'Cartn_x'},
-                    $atom_site->{$_}{'Cartn_y'},
-                    $atom_site->{$_}{'Cartn_z'} ] }
+            map { [ $ref_atom_site->{$_}{'Cartn_x'},
+                    $ref_atom_site->{$_}{'Cartn_y'},
+                    $ref_atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
 
         my $bond_name =
