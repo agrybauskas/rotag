@@ -59,27 +59,29 @@ _[local]_rotamer_bond_parameter.rotamer_id
 _[local]_rotamer_bond_parameter.label_seq_id
 _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
 _[local]_rotamer_bond_parameter.label_alt_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 27 ASP A 1 . 0.001792 CB-CG-OD1.MG -180.000 degrees
-2 1 27 ASP A 1 . 0.001792 chi1 -108.000 degrees
-3 1 27 ASP A 1 . 0.001792 chi2 -180.000 degrees
-4 2 27 ASP A 1 . 0.001792 CB-CG-OD1.MG -144.000 degrees
-5 2 27 ASP A 1 . 0.001792 chi1 -108.000 degrees
-6 2 27 ASP A 1 . 0.001792 chi2 -180.000 degrees
-7 3 27 ASP A 1 . 0.001792 CB-CG-OD1.MG -108.000 degrees
-8 3 27 ASP A 1 . 0.001792 chi1 -108.000 degrees
-9 3 27 ASP A 1 . 0.001792 chi2 -180.000 degrees
-10 4 27 ASP A 1 . 0.001792 CB-CG-OD1.MG -72.000 degrees
-11 4 27 ASP A 1 . 0.001792 chi1 -108.000 degrees
-12 4 27 ASP A 1 . 0.001792 chi2 -180.000 degrees
-13 5 27 ASP A 1 . 0.001792 CB-CG-OD1.MG -36.000 degrees
-14 5 27 ASP A 1 . 0.001792 chi1 -108.000 degrees
-15 5 27 ASP A 1 . 0.001792 chi2 -180.000 degrees
+1  1 .  MG  B 101 A 1 . 0.001792 CB-CG-OD1.MG -180.000 degrees
+2  1 27 ASP A 27  A 1 . 0.001792 chi1 -108.000 degrees
+3  1 27 ASP A 27  A 1 . 0.001792 chi2 -180.000 degrees
+4  2 .  MG  B 101 A 1 . 0.001792 CB-CG-OD1.MG -144.000 degrees
+5  2 27 ASP A 27  A 1 . 0.001792 chi1 -108.000 degrees
+6  2 27 ASP A 27  A 1 . 0.001792 chi2 -180.000 degrees
+7  3 .  MG  B 101 A 1 . 0.001792 CB-CG-OD1.MG -108.000 degrees
+8  3 27 ASP A 27  A 1 . 0.001792 chi1 -108.000 degrees
+9  3 27 ASP A 27  A 1 . 0.001792 chi2 -180.000 degrees
+10 4 .  MG  B 101 A 1 . 0.001792 CB-CG-OD1.MG -72.000 degrees
+11 4 27 ASP A 27  A 1 . 0.001792 chi1 -108.000 degrees
+12 4 27 ASP A 27  A 1 . 0.001792 chi2 -180.000 degrees
+13 5 .  MG  A 101 A 1 . 0.001792 CB-CG-OD1.MG -36.000 degrees
+14 5 27 ASP A 27  A 1 . 0.001792 chi1 -108.000 degrees
+15 5 27 ASP A 27  A 1 . 0.001792 chi2 -180.000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
