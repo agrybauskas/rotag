@@ -1126,6 +1126,8 @@ sub determine_residue_keys
     };
 
     my @current_residue_unique_keys;
+    my @current_residue_attributes;
+    my %visited_residue_unique_keys;
     for my $atom_id ( keys %{ $atom_site } ) {
         my $current_attributes = $attributes;
         my ( $rule_attribute ) = keys %{ $alt_change_rule };
@@ -1133,10 +1135,14 @@ sub determine_residue_keys
             $alt_change_rule->{$rule_attribute} ) {
             $current_attributes = $alt_attributes;
         }
-        push @current_residue_unique_keys,
+        my $current_residue_unique_key =
             unique_residue_key( $atom_site->{$atom_id}, $current_attributes );
+        if( ! $visited_residue_unique_keys{$current_residue_unique_key} ) {
+            push @current_residue_unique_keys, $current_residue_unique_key;
+            push @current_residue_attributes, $current_attributes;
+            $visited_residue_unique_keys{$current_residue_unique_key} = 1;
+        }
     }
-    @current_residue_unique_keys = uniq @current_residue_unique_keys;
 
     my %residue_key_tree;
     for my $residue_unique_key ( @current_residue_unique_keys ) {
