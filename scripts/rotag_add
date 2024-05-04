@@ -242,10 +242,14 @@ for my $pdbx_file ( @ARGV ) {
         if( defined $rotamer_angle_data_json ) {
             $rotamer_angle_split_groups =
                 $rotamer_angle_data_json->{'rotamer_angle_grouped'};
-        } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
-            exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
-            exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
-            exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ) {
+        } elsif( ( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
+                   exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
+                   exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
+                   exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ) ||
+                 ( exists $rotamer_angle->{$rotamer_ids[0]}{'auth_seq_id'} &&
+                   exists $rotamer_angle->{$rotamer_ids[0]}{'auth_asym_id'} &&
+                   exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
+                   exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ) ) {
             $rotamer_angle_split_groups =
                 # TODO: 'atom_site' should be changed to 'loop_site' in the future.
                 split_by( { 'atom_site' => $rotamer_angle } );

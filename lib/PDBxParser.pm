@@ -1338,10 +1338,12 @@ sub split_by
     # NOTE: maybe should be standardized with determine_residue_keys().
     $alt_change_rule //= {
         'label_seq_id' => {
+            'attribute' => 'label_seq_id',
             'value' => '.',
             'alt_attribute' => 'auth_seq_id'
         },
         'label_asym_id' => {
+            'attribute' => 'label_seq_id',
             'value' => '.',
             'alt_attribute' => 'auth_asym_id'
         },
@@ -1354,7 +1356,8 @@ sub split_by
         my @attribute_values;
         for my $attribute ( @{ $attributes } ) {
             if( exists $alt_change_rule->{$attribute} &&
-                $atom_site->{$atom_id}{$attribute} eq
+                exists $atom_site->{$atom_id}{$alt_change_rule->{$attribute}{'attribute'}} &&
+                $atom_site->{$atom_id}{$alt_change_rule->{$attribute}{'attribute'}} eq
                 $alt_change_rule->{$attribute}{'value'} ) {
                 my $alt_attribute =
                     $alt_change_rule->{$attribute}{'alt_attribute'};
