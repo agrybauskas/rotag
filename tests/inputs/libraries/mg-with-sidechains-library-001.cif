@@ -79,7 +79,7 @@ _[local]_rotamer_bond_parameter.units
 10 4 .  MG  B 101 A 1 . 0.001792 CB-CG-OD1.MG -72.000 degrees
 11 4 27 ASP A 27  A 1 . 0.001792 chi1 -108.000 degrees
 12 4 27 ASP A 27  A 1 . 0.001792 chi2 -180.000 degrees
-13 5 .  MG  A 101 A 1 . 0.001792 CB-CG-OD1.MG -36.000 degrees
+13 5 .  MG  B 101 A 1 . 0.001792 CB-CG-OD1.MG -36.000 degrees
 14 5 27 ASP A 27  A 1 . 0.001792 chi1 -108.000 degrees
 15 5 27 ASP A 27  A 1 . 0.001792 chi2 -180.000 degrees
 #
