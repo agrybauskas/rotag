@@ -1327,12 +1327,25 @@ sub extract
 sub split_by
 {
     my ( $args ) = @_;
-    my ( $atom_site, $attributes, $append_dot, $alt_attributes ) =
-        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'} );
+    my ( $atom_site, $attributes, $append_dot, $alt_attributes,
+         $alt_change_rule ) =
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'},
+          $args->{'alt_change_rule'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
     $append_dot //= 0;
+    # NOTE: maybe should be standardized with determine_residue_keys().
+    $alt_change_rule //= {
+        'label_seq_id' => {
+            'value' => '.',
+            'alt_attribute' => 'auth_seq_id'
+        },
+        'label_asym_id' => {
+            'value' => '.',
+            'alt_attribute' => 'auth_asym_id'
+        },
+    };
 
     my %split_groups;
     for my $atom_id ( sort keys %{ $atom_site } ) {
@@ -1340,16 +1353,13 @@ sub split_by
         my @attribute_order;
         my @attribute_values;
         for my $attribute ( @{ $attributes } ) {
-            if( $attribute eq 'label_seq_id' &&
-                $atom_site->{$atom_id}{$attribute} eq '.' &&
-                $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
-                push @attribute_order, 'auth_seq_id';
-                push @attribute_values, $atom_site->{$atom_id}{'auth_seq_id'};
-            } elsif( $attribute eq 'label_asym_id' &&
-                     $atom_site->{$atom_id}{'label_seq_id'} eq '.' &&
-                     $atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
-                push @attribute_order, 'auth_asym_id';
-                push @attribute_values, $atom_site->{$atom_id}{'auth_asym_id'};
+            if( exists $alt_change_rule->{$attribute} &&
+                $atom_site->{$atom_id}{$attribute} eq
+                $alt_change_rule->{$attribute}{'value'} ) {
+                my $alt_attribute =
+                    $alt_change_rule->{$attribute}{'alt_attribute'};
+                push @attribute_order, $alt_attribute;
+                push @attribute_values, $atom_site->{$atom_id}{$alt_attribute};
             } else {
                 push @attribute_order, $attribute;
                 push @attribute_values, $atom_site->{$atom_id}{$attribute};
