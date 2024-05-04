@@ -1081,13 +1081,37 @@ sub unique_residue_keys
 
 sub unique_residue_key
 {
-    my ( $atom, $attributes ) = @_;
+    my ( $atom, $attributes, $options ) = @_;
+    my ( $alt_change_rule ) = $options->{'alt_change_rule'};
     $attributes //= [
         'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
     ];
-    return join q{,},
-           map { $atom->{$_} }
-              @{ $attributes };
+    $alt_change_rule //= {
+        'label_seq_id' => {
+            'attribute' => 'label_seq_id',
+            'value' => '.',
+            'alt_attribute' => 'auth_seq_id'
+        },
+        'label_asym_id' => {
+            'attribute' => 'label_seq_id',
+            'value' => '.',
+            'alt_attribute' => 'auth_asym_id'
+        },
+    };
+    my @attributes = ();
+    for my $attribute ( @{ $attributes } ) {
+        if( exists $alt_change_rule->{$attribute} &&
+            exists $atom->{$alt_change_rule->{$attribute}{'attribute'}} &&
+            $atom->{$alt_change_rule->{$attribute}{'attribute'}} eq
+            $alt_change_rule->{$attribute}{'value'} ) {
+            my $alt_attribute = $alt_change_rule->{$attribute}{'alt_attribute'};
+            push @attributes, $alt_attribute;
+        } else {
+            push @attributes, $attribute;
+        }
+    }
+
+    return join q{,}, map { $atom->{$_} } @attributes;
 }
 
 #
