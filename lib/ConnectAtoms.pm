@@ -333,7 +333,8 @@ sub original_atom_id
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $struct_conn - reads 'struc_conn' and assings connections appropriately.
 # Output:
-#     atom site with assigned heteroatoms.
+#     atom site with assigned heteroatoms;
+#     \@assigned_atom_ids - assigned atom ids.
 #
 
 sub assign_hetatoms
@@ -354,6 +355,7 @@ sub assign_hetatoms
     my $connections_hetatom =
         connections_hetatom( $ref_atom_site, $struct_conn );
 
+    my @assigned_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
     my $alt_id = 1;
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
@@ -391,6 +393,8 @@ sub assign_hetatoms
 
                     $tracked_atom_ids{$related_atom_id} = $last_atom_id;
 
+                    push @assigned_atom_ids, $last_atom_id;
+
                     if( $related_atom_id eq $atom_id ) {
                         connect_atoms_explicitly(
                             $atom_site,
@@ -411,7 +415,7 @@ sub assign_hetatoms
         $alt_id++;
     }
 
-    return;
+    return \@assigned_atom_ids;
 }
 
 #

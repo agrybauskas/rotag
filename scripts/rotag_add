@@ -322,9 +322,14 @@ for my $pdbx_file ( @ARGV ) {
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
 
+            my @related_unique_residue_keys = ();
             if( defined $struct_conn && %{ $struct_conn } ) {
-                assign_hetatoms( $parameters, $residue_site, $struct_conn,
-                                 { 'ref_atom_site' => $atom_site } );
+                my @assigned_atom_ids =
+                    @{ assign_hetatoms( $parameters, $residue_site, $struct_conn,
+                                        { 'ref_atom_site' => $atom_site } ) };
+                push @related_unique_residue_keys,
+                    map { unique_residue_key( $residue_site->{$_} ) }
+                    @assigned_atom_ids;
             }
 
             # Updating the target's atom site as there more duplicated pseudo
