@@ -352,6 +352,7 @@ sub assign_hetatoms
     my $all_unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn,
                                  { 'no_hetatoms' => 0 } );
+
     my $connections_hetatom =
         connections_hetatom( $ref_atom_site, $struct_conn );
 
@@ -547,62 +548,45 @@ sub unique_from_struct_conn
     $no_hetatoms //= 1;
 
     my %unique_residue_keys = ();
+    my %visited_atom_ids = ();
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
-        my %atom_selection_1 = (
-            $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} eq '.' ?
-            ( 'auth_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
-              'auth_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'} ] ) :
-            ( 'label_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
-              'label_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ),
+        my %atom_selection = (
+            'label_seq_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'},
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'}
+            ],
+            'label_asym_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'},
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'}
+            ],
             'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ],
-        );
-        my %atom_selection_2 = (
-            $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} eq '.' ?
-            ( 'auth_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} ],
-              'auth_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_auth_asym_id'} ] ) :
-            ( 'label_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} ],
-              'label_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] ),
-            'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ],
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'},
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'}
+            ],
+            'auth_seq_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'},
+                $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'}
+            ],
+            'auth_asym_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'},
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'}
+            ],
         );
 
-        my %filtered_atom_site =
-            ( %{ filter_new( $atom_site,
-                             { 'include' => { %atom_selection_1 },
-                               ( $no_hetatoms ?
-                                 ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) : () ) } ) },
-              %{ filter_new( $atom_site,
-                             { 'include' => { %atom_selection_2 },
-                               ( $no_hetatoms ?
-                                 ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) : () ) } ) } );
+        my $filtered_atom_site =
+            filter_new( $atom_site,
+                        { 'include' => { %atom_selection },
+                          ( $no_hetatoms ?
+                            ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) :
+                            () ) } );
 
-        for my $atom_id ( sort keys %filtered_atom_site ) {
-            my $attributes =
-                $filtered_atom_site{$atom_id}{'group_PDB'} eq 'HETATM' ?
-                [ 'auth_seq_id', 'auth_asym_id', 'pdbx_PDB_model_num',
-                  'label_alt_id' ] :
-                [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
-                  'label_alt_id' ];
+        for my $atom_id ( sort keys %{ $filtered_atom_site } ) {
             my $unique_residue_key =
-                unique_residue_key( $filtered_atom_site{$atom_id}, $attributes );
+                unique_residue_key( $filtered_atom_site->{$atom_id} );
 
-            $unique_residue_keys{$unique_residue_key}{'attributes'} =
-                $attributes;
-            if( ! defined $unique_residue_keys{$unique_residue_key} ||
-                ! defined $unique_residue_keys{$unique_residue_key}{'atom_ids'} ||
-                ! any { $atom_id eq $_ }
-                     @{ $unique_residue_keys{$unique_residue_key}{'atom_ids'} } ) {
-                push @{ $unique_residue_keys{$unique_residue_key}{'atom_ids'} },
-                    $atom_id;
+            if( ! $visited_atom_ids{$atom_id} ) {
+                push @{ $unique_residue_keys{$unique_residue_key} }, $atom_id;
+                $visited_atom_ids{$atom_id} = 1;
             }
         }
     }
