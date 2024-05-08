@@ -1022,14 +1022,14 @@ sub filter_by_unique_residue_key
 {
     my ( $atom_site, $unique_residue_key, $include_dot ) = @_;
 
-    my $attributes = [
+    my @attributes = (
         'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
         'auth_seq_id', 'auth_asym_id'
-    ];
+    );
     my @attribute_values = split /,/sxm, $unique_residue_key;
 
     my %include =
-        map { $attributes->[$_] => [ $attribute_values[$_] ] }
+        map { $attributes[$_] => [ $attribute_values[$_] ] }
             0..$#attribute_values;
 
     my $filtered_atoms = filter(
