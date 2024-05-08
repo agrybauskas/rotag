@@ -1288,8 +1288,6 @@ sub extract
 #     $args->{atom_site} - atom site data structure;
 #     $args->{attributes} - list of attributes that atom site will be split by;
 #     $args->{append_dot} - atoms that has 'label_alt_id' eq '.' to
-#     $args->{alt_attributes} - alternative list of attributes that atom site
-#     will be split by;
 #     corresponding groups.
 # Output:
 #     %split_groups - hash of atom site data structures.
@@ -1303,27 +1301,12 @@ sub extract
 sub split_by
 {
     my ( $args ) = @_;
-    my ( $atom_site, $attributes, $append_dot, $alt_attributes,
-         $alt_change_rule ) =
-        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'},
-          $args->{'alt_change_rule'} );
+    my ( $atom_site, $attributes, $append_dot ) =
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
     $append_dot //= 0;
-    # NOTE: maybe should be standardized with determine_residue_keys().
-    $alt_change_rule //= {
-        'label_seq_id' => {
-            'attribute' => 'label_seq_id',
-            'value' => '.',
-            'alt_attribute' => 'auth_seq_id'
-        },
-        'label_asym_id' => {
-            'attribute' => 'label_seq_id',
-            'value' => '.',
-            'alt_attribute' => 'auth_asym_id'
-        },
-    };
 
     my %split_groups;
     for my $atom_id ( sort keys %{ $atom_site } ) {
@@ -1331,18 +1314,8 @@ sub split_by
         my @attribute_order;
         my @attribute_values;
         for my $attribute ( @{ $attributes } ) {
-            if( exists $alt_change_rule->{$attribute} &&
-                exists $atom_site->{$atom_id}{$alt_change_rule->{$attribute}{'attribute'}} &&
-                $atom_site->{$atom_id}{$alt_change_rule->{$attribute}{'attribute'}} eq
-                $alt_change_rule->{$attribute}{'value'} ) {
-                my $alt_attribute =
-                    $alt_change_rule->{$attribute}{'alt_attribute'};
-                push @attribute_order, $alt_attribute;
-                push @attribute_values, $atom_site->{$atom_id}{$alt_attribute};
-            } else {
-                push @attribute_order, $attribute;
-                push @attribute_values, $atom_site->{$atom_id}{$attribute};
-            }
+            push @attribute_order, $attribute;
+            push @attribute_values, $atom_site->{$atom_id}{$attribute};
         }
 
         my $group_key = join q{,}, @attribute_values;
@@ -1381,7 +1354,8 @@ sub split_by
         for my $alt_key ( keys %unique_key_relations ) {
             if( exists $split_groups{$unique_key_relations{$alt_key}} ) {
                 push @{ $split_groups{$alt_key}{'atom_ids'} },
-                    @{ $split_groups{$unique_key_relations{$alt_key}}{'atom_ids'} };
+                     @{ $split_groups{$unique_key_relations{$alt_key}}
+                                     {'atom_ids'} };
             }
         }
 
