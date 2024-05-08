@@ -1087,7 +1087,9 @@ sub unique_residue_key
     my @attributes =
         ( 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
           'label_alt_id', 'auth_seq_id', 'auth_asym_id' );
-    return join q{,}, map { $atom->{$_} } @attributes;
+    return join q{,},
+           map { defined $atom->{$_} ? $atom->{$_} : '?' }
+               @attributes;
 }
 
 #
@@ -1115,8 +1117,8 @@ sub determine_residue_keys
     my @current_residue_unique_keys = ();
     my %visited_residue_unique_keys = ();
     for my $atom_id ( keys %{ $atom_site } ) {
-        my $residue_unique_key =
-            unique_residue_key( $atom_site->{$atom_id}, \@attributes );
+        my $residue_unique_key = unique_residue_key( $atom_site->{$atom_id} );
+
         if( ! $visited_residue_unique_keys{$residue_unique_key} ) {
             push @current_residue_unique_keys, $residue_unique_key;
             $visited_residue_unique_keys{$residue_unique_key} = 1;
@@ -1126,7 +1128,7 @@ sub determine_residue_keys
     my %residue_key_tree;
     for my $residue_unique_key ( @current_residue_unique_keys ) {
         my $reduced_unique_key = $residue_unique_key;
-        $reduced_unique_key =~ s/^(.+,.+,.+),.+$/$1/g;
+        $reduced_unique_key =~ s/^(.+,.+,.+),.+,(.+,.+,.+)$/$1,.,$2/g;
         # TODO: check if there will be problems regarding the changed data
         # structure.
         if( exists $residue_key_tree{$reduced_unique_key} ) {
