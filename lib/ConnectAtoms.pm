@@ -333,7 +333,7 @@ sub original_atom_id
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $struct_conn - reads 'struc_conn' and assings connections appropriately.
 # Output:
-#     atom site with assigned heteroatoms;
+#     heteroatoms are assigned to the atom site;
 #     \@assigned_atom_ids - assigned atom ids.
 #
 
@@ -360,26 +360,22 @@ sub assign_hetatoms
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
     my $alt_id = 1;
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
-        my $residue_atom_ids =
-            $unique_residue_keys->{$unique_residue_key}{'atom_ids'};
+        my $residue_atom_ids = $unique_residue_keys->{$unique_residue_key};
 
         my %visited_atom_ids = ();
         my %tracked_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
             my @next_atom_ids =
                 ( keys %{ $connections_hetatom->{$residue_atom_id} } );
+
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
-
                 $visited_atom_ids{$atom_id} = 1;
 
-                my $unique_residue_key = unique_residue_key(
-                    $ref_atom_site->{$atom_id},
-                    [ 'auth_seq_id', 'auth_asym_id', 'pdbx_PDB_model_num',
-                      'label_alt_id' ]
-                );
+                my $unique_residue_key =
+                    unique_residue_key( $ref_atom_site->{$atom_id} );
                 my $related_atom_ids =
-                    $all_unique_residue_keys->{$unique_residue_key}{'atom_ids'};
+                    $all_unique_residue_keys->{$unique_residue_key};
 
                 for my $related_atom_id ( @{ $related_atom_ids } ) {
                     $atom_site->{$related_atom_id} =
