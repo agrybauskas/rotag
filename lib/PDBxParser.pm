@@ -1070,11 +1070,11 @@ sub unique_residue_keys
 
 #
 # Create unique residue key that consists of '_atom_site.label_seq_id',
-# '_atom_site.label_asym_id', '_atom_site.pdbx_PDB_model_num' and
-# '_atom_site.label_alt_id'.
+# '_atom_site.label_asym_id', '_atom_site.pdbx_PDB_model_num',
+# '_atom_site.label_alt_id', '_atom_site.auth_seq_id' and
+# '_atom_site.auth_asym_id'.
 # Input:
 #     $atom - atom data structure;
-#     $attributes - attributes.
 # Output:
 #     $unique_residue_key - unique residue key.
 #
@@ -1082,36 +1082,11 @@ sub unique_residue_keys
 sub unique_residue_key
 {
     my ( $atom, $attributes, $options ) = @_;
-    my ( $alt_change_rule ) = $options->{'alt_change_rule'};
-    $attributes //= [
-        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
-    ];
-    $alt_change_rule //= {
-        'label_seq_id' => {
-            'attribute' => 'label_seq_id',
-            'value' => '.',
-            'alt_attribute' => 'auth_seq_id'
-        },
-        'label_asym_id' => {
-            'attribute' => 'label_seq_id',
-            'value' => '.',
-            'alt_attribute' => 'auth_asym_id'
-        },
-    };
-    my @attributes = ();
-    for my $attribute ( @{ $attributes } ) {
-        if( exists $alt_change_rule->{$attribute} &&
-            exists $atom->{$alt_change_rule->{$attribute}{'attribute'}} &&
-            $atom->{$alt_change_rule->{$attribute}{'attribute'}} eq
-            $alt_change_rule->{$attribute}{'value'} ) {
-            my $alt_attribute = $alt_change_rule->{$attribute}{'alt_attribute'};
-            push @attributes, $alt_attribute;
-        } else {
-            push @attributes, $attribute;
-        }
-    }
 
-    return join q{,}, map { $atom->{$_} } @attributes;
+    return join q{,},
+           map { defined $atom->{$_} ? $atom->{$_} : "?" }
+               ( 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
+                 'label_alt_id', 'auth_seq_id', 'auth_asym_id' ) ;
 }
 
 #
