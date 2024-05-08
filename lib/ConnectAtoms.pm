@@ -306,24 +306,6 @@ sub connect_atoms_explicitly
     return;
 }
 
-# Returns original atom id.
-# Input:
-#     $atom_site - atom data structure;
-#     $atom_id - atom id.
-# Output:
-#     $original_atom_id - return original atom id.
-
-sub original_atom_id
-{
-    my ( $atom_site, $atom_id ) = @_;
-    my $original_atom_id = $atom_site->{$atom_id}{'original_atom_id'};
-    if( defined $original_atom_id ) {
-        return $original_atom_id;
-    } else {
-        return $atom_id;
-    }
-}
-
 #
 # Assigns heteroatoms to specific residues according to "_struct_conn" -- either
 # creating the new one or assigning to the existing one. Duplicated heteroatoms
