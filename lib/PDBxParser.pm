@@ -1083,12 +1083,14 @@ sub unique_residue_keys
 
 sub unique_residue_key
 {
-    my ( $atom, $attributes, $options ) = @_;
-
-    return join q{,},
-           map { defined $atom->{$_} ? $atom->{$_} : "?" }
-               ( 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
-                 'label_alt_id', 'auth_seq_id', 'auth_asym_id' ) ;
+    my ( $atom ) = @_;
+    my @attributes =
+        $atom->{'group_PDB'} eq 'HETATM' ?
+        ( 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
+          'label_alt_id', 'auth_seq_id', 'auth_asym_id' ) :
+        ( 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
+          'label_alt_id' );
+    return join q{,}, map { $atom->{$_} } @attributes;
 }
 
 #
