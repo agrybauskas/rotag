@@ -1305,7 +1305,8 @@ sub split_by
         ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'} );
 
     $attributes //=
-        [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'];
+        [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
+          'auth_seq_id', 'auth_asym_id' ];
     $append_dot //= 0;
 
     my %split_groups;
