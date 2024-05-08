@@ -23,7 +23,6 @@ $atom_site = eval( $atom_site );
 my $residue_unique_keys =
     determine_residue_keys( $atom_site, { 'exclude_dot' => 1 } );
 
-foreach( sort { $a->{'unique_residue_key'} cmp $b->{'unique_residue_key'} }
-             @{ $residue_unique_keys } ) {
-    print $_->{'unique_residue_key'}, "\n";
+foreach( sort { $a cmp $b } @{ $residue_unique_keys } ) {
+    print $_, "\n";
 }

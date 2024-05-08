@@ -1099,10 +1099,6 @@ sub unique_residue_key
 # Generates a list of unique keys from the atom site.
 # Input:
 #     $atom_site - atom site data structure;
-#     $options->{'attributes'} - attribute list;
-#     $options->{'alt_attributes'} - alternative attribute list;
-#     $options->{'alt_change_rule'} - rule where attributes are changed to
-#     alternative attributes;
 #     $options->{'exclude_dot'} - excludes label atom ids with '.' value, but
 #     only if there are alternatives.
 # Output:
@@ -1112,49 +1108,27 @@ sub unique_residue_key
 sub determine_residue_keys
 {
     my ( $atom_site, $options ) = @_;
-    my ( $attributes, $alt_attributes, $alt_change_rule, $exclude_dot ) =
-        ( $options->{'attributes'},
-          $options->{'alt_attributes'},
-          $options->{'alt_change_rule'},
-          $options->{'exclude_dot'} );
+    my ( $exclude_dot ) = ( $options->{'exclude_dot'} );
 
-    $attributes //= [
-        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
-    ];
-    $alt_attributes //= [
-        'auth_seq_id', 'auth_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
-    ];
-    $alt_change_rule //= {
-        'label_seq_id' => '.'
-    };
+    my @attributes = (
+        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
+        'auth_seq_id', 'auth_asym_id'
+    );
 
-    my @current_residue_unique_keys;
-    my %visited_residue_unique_keys;
+    my @current_residue_unique_keys = ();
+    my %visited_residue_unique_keys = ();
     for my $atom_id ( keys %{ $atom_site } ) {
-        my $current_attributes = $attributes;
-        my ( $rule_attribute ) = keys %{ $alt_change_rule };
-        if( $atom_site->{$atom_id}{$rule_attribute} eq
-            $alt_change_rule->{$rule_attribute} ) {
-            $current_attributes = $alt_attributes;
-        }
-        my $current_residue_unique_key =
-            unique_residue_key( $atom_site->{$atom_id}, $current_attributes );
-        if( ! $visited_residue_unique_keys{$current_residue_unique_key} ||
-            ( $visited_residue_unique_keys{$current_residue_unique_key} &&
-              $visited_residue_unique_keys{$current_residue_unique_key} ne
-              join( ',', @{ $current_attributes } ) ) ) {
-            push @current_residue_unique_keys,
-            { 'attributes' => $current_attributes,
-              'attribute_key' => join( ',', @{ $current_attributes } ),
-              'unique_residue_key' => $current_residue_unique_key };
-            $visited_residue_unique_keys{$current_residue_unique_key} =
-                join( ',', @{ $current_attributes } );
+        my $residue_unique_key =
+            unique_residue_key( $atom_site->{$atom_id}, \@attributes );
+        if( ! $visited_residue_unique_keys{$residue_unique_key} ) {
+            push @current_residue_unique_keys, $residue_unique_key;
+            $visited_residue_unique_keys{$residue_unique_key} = 1;
         }
     }
 
     my %residue_key_tree;
     for my $residue_unique_key ( @current_residue_unique_keys ) {
-        my $reduced_unique_key = $residue_unique_key->{'unique_residue_key'};
+        my $reduced_unique_key = $residue_unique_key;
         $reduced_unique_key =~ s/^(.+,.+,.+),.+$/$1/g;
         # TODO: check if there will be problems regarding the changed data
         # structure.
@@ -1172,8 +1146,7 @@ sub determine_residue_keys
         my $residue_unique_keys = $residue_key_tree{$reduced_unique_key};
         if( scalar @{ $residue_unique_keys } > 1 ) {
             for my $i ( 0..$#{ $residue_unique_keys } ) {
-                if( $exclude_dot &&
-                    $residue_unique_keys->[$i]{'unique_residue_key'} =~ m/\.$/ ) {
+                if( $exclude_dot && $residue_unique_keys->[$i] =~ m/\.$/ ) {
                     splice @{ $residue_unique_keys }, $i, 1;
                     last;
                 }
