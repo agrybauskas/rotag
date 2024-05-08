@@ -1145,7 +1145,8 @@ sub determine_residue_keys
         my $residue_unique_keys = $residue_key_tree{$reduced_unique_key};
         if( scalar @{ $residue_unique_keys } > 1 ) {
             for my $i ( 0..$#{ $residue_unique_keys } ) {
-                if( $exclude_dot && $residue_unique_keys->[$i] =~ m/\.$/ ) {
+                if( $exclude_dot &&
+                    $residue_unique_keys->[$i] =~ m/^(.+,.+,.+),\.,(.+,.+)$/ ) {
                     splice @{ $residue_unique_keys }, $i, 1;
                     last;
                 }
