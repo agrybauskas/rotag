@@ -8,7 +8,7 @@ use PDBxParser qw( filter_by_unique_residue_key
 
 #
 # Unit test: PDBxParser::filter_by_unique_residue_key.
-# Example: ./filter '18,1,A,.' structure.dump
+# Example: ./filter_by_unique_residue_key '18,1,A,.,18,A' structure.dump
 #
 
 @ARGV = ( "-" ) unless @ARGV;

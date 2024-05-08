@@ -1013,31 +1013,33 @@ sub filter_new
 #     $atom_site - atom data structure.
 #     $unique_residue_key - a composite key that identifies residue uniquely.
 #     $include_dot - includes '.' alt id into the selection.
-#     Ex.: '18,A,1,.'.
-#     $attributes - attributes that are forming unique key.
+#     Ex.: '18,A,1,.,18,A' or '18,A,1,.'.
 # Output:
 #     %filtered_atoms - filtered atom data structure.
 #
 
 sub filter_by_unique_residue_key
 {
-    my ( $atom_site, $unique_residue_key, $include_dot, $attributes ) = @_;
+    my ( $atom_site, $unique_residue_key, $include_dot ) = @_;
 
-    $attributes //= [
-        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id'
+    my $attributes = [
+        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
+        'auth_seq_id', 'auth_asym_id'
     ];
-
     my @attribute_values = split /,/sxm, $unique_residue_key;
+
     my %include =
         map { $attributes->[$_] => [ $attribute_values[$_] ] }
-            0..$#{ $attributes };
+            0..$#attribute_values;
 
-    my $filtered_atoms = filter( { 'atom_site' => $atom_site,
-                                   'include' =>
-                                   { %include,
-                                     'label_alt_id' =>
-                                         [ @{ $include{'label_alt_id'} },
-                                           ( $include_dot ? '.' : () ) ] } } );
+    my $filtered_atoms = filter(
+        { 'atom_site' => $atom_site,
+          'include' =>
+          { %include,
+            'label_alt_id' => [
+                @{ $include{'label_alt_id'} }, ( $include_dot ? '.' : () )
+                ] } }
+    );
 
     return $filtered_atoms;
 }
