@@ -1128,7 +1128,7 @@ sub determine_residue_keys
     my %residue_key_tree;
     for my $residue_unique_key ( @current_residue_unique_keys ) {
         my $reduced_unique_key = $residue_unique_key;
-        $reduced_unique_key =~ s/^(.+,.+,.+),.+,(.+,.+,.+)$/$1,.,$2/g;
+        $reduced_unique_key =~ s/^(.+,.+,.+),.+,(.+,.+)$/$1,.,$2/g;
         # TODO: check if there will be problems regarding the changed data
         # structure.
         if( exists $residue_key_tree{$reduced_unique_key} ) {
