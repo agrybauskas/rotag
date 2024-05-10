@@ -423,7 +423,7 @@ sub generate_library
         for my $residue_unique_key ( @{ $residue_unique_keys } ) {
             my $residue_site = filter_by_unique_residue_key(
                 $current_atom_site,
-                $residue_unique_key->{'unique_residue_key'},
+                $residue_unique_key,
                 1
             );
             my $atom_ca_id =

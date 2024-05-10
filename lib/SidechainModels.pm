@@ -49,7 +49,7 @@ sub rotation_translation
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_unique_key ( @residue_unique_keys ) {
         my $residue_site = filter_by_unique_residue_key(
-            $atom_site, $residue_unique_key->{'unique_residue_key'}, 1,
+            $atom_site, $residue_unique_key, 1,
         );
 
         next if ! %{ $residue_site };
@@ -139,7 +139,7 @@ sub rotation_translation_new
     # conformational equations which can produce pseudo-atoms later.
     for my $residue_unique_key ( @residue_unique_keys ) {
         my $residue_site = filter_by_unique_residue_key(
-            $atom_site, $residue_unique_key->{'unique_residue_key'}, 1,
+            $atom_site, $residue_unique_key, 1,
         );
 
         next if ! %{ $residue_site };
