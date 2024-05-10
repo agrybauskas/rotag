@@ -52,7 +52,8 @@ my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
 my $residue_unique_key =
-    "${residue_id},${residue_chain},${pdbx_model},${residue_alt}";
+    "${residue_id},${residue_chain},${pdbx_model},${residue_alt}," .
+    "${residue_id},${residue_chain}";
 my %bond_parameters =
     %{ collect_bond_parameters( $atom_site )->{$residue_unique_key} };
 my @bond_parameter_names =
