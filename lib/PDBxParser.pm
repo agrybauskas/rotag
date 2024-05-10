@@ -1316,7 +1316,11 @@ sub split_by
         my @attribute_values;
         for my $attribute ( @{ $attributes } ) {
             push @attribute_order, $attribute;
-            push @attribute_values, $atom_site->{$atom_id}{$attribute};
+            if( defined $atom_site->{$atom_id}{$attribute} ){
+                push @attribute_values, $atom_site->{$atom_id}{$attribute};
+            } else {
+                push @attribute_values, "?";
+            }
         }
 
         my $group_key = join q{,}, @attribute_values;
