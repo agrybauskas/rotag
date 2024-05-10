@@ -48,7 +48,8 @@ my $interaction_site = filter( { 'atom_site' => $atom_site,
                                  'include' => \%interaction_specifier } );
 
 my $residue_unique_key =
-    "${residue_id},${residue_chain},${pdbx_model},${residue_alt}";
+    "${residue_id},${residue_chain},${pdbx_model},${residue_alt}," .
+    "${residue_id},$residue_chain";
 my $favourable_bond_parameters =
     calc_favourable_angles( { 'parameters' => $parameters,
                               'atom_site' => $atom_site,
