@@ -1030,6 +1030,7 @@ sub filter_by_unique_residue_key
 
     my %include =
         map { $attributes[$_] => [ $attribute_values[$_] ] }
+        grep { $attribute_values[$_] ne '?' }
             0..$#attribute_values;
 
     my $filtered_atoms = filter(
