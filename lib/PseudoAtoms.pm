@@ -467,7 +467,7 @@ sub generate_library
                 my $residue_unique_key = determine_residue_keys(
                     $residue_site,
                     { 'exclude_dot' => 1 }
-                )->[0]{'unique_residue_key'};
+                )->[0];
 
                 my @missing_atom_names =
                     @{ missing_atom_names( $parameters, $residue_site ) };
