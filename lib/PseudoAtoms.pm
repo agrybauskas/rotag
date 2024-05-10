@@ -424,8 +424,8 @@ sub generate_library
             my $residue_site = filter_by_unique_residue_key(
                 $current_atom_site,
                 $residue_unique_key->{'unique_residue_key'},
-                1,
-                $residue_unique_key->{'attributes'} );
+                1
+            );
             my $atom_ca_id =
                 filter_new( $residue_site,
                             { 'include' => { 'label_atom_id' => [ 'CA' ] },

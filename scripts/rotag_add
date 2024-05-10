@@ -310,8 +310,7 @@ for my $pdbx_file ( @ARGV ) {
                 filter_by_unique_residue_key(
                     $current_target_atom_site,
                     $residue_unique_key,
-                    1,
-                    $atom_site_split_groups->{$residue_unique_key}{'attributes'}
+                    1
             );
 
             # HACK: maybe there is more robust way to skip residues consisting
