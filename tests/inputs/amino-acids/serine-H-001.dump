@@ -715,6 +715,8 @@
     'pdbx_PDB_ins_code' => '.',
     'pdbx_PDB_model_num' => '1',
     'pdbx_formal_charge' => '.',
-    'type_symbol' => 'H'
+    'type_symbol' => 'H',
+    'auth_seq_id' => '18',
+    'auth_asym_id' => 'A'
   }
 }
