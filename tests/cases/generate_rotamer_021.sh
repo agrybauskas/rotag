@@ -3,7 +3,7 @@
 export PERL5LIB=$(dirname "$0")/../../lib
 
 pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/alanine-H-rotation-only-001.dump
-residue_unique_key="22,A,1,."
+residue_unique_key="22,A,1,.,67,A"
 angle_values="chi1 0"
 
 $(dirname "$0")/../scripts/generate_rotamer "${residue_unique_key}" \

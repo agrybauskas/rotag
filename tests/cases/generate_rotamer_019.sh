@@ -3,7 +3,7 @@
 export PERL5LIB=$(dirname "$0")/../../lib
 
 pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/tyrosine-rotation-only-001.dump
-residue_unique_key="536,B,1,."
+residue_unique_key="536,B,1,.,581,B"
 angle_values="chi1 0 & chi2 pi"
 
 $(dirname "$0")/../scripts/generate_rotamer "${residue_unique_key}" \

@@ -3,7 +3,7 @@
 export PERL5LIB=$(dirname "$0")/../../lib
 
 pdbx_dump_file=$(dirname "$0")/../inputs/amino-acids/serine-008.dump
-residue_unique_key="18,A,1,."
+residue_unique_key="18,A,1,.,?,?"
 angle_values="N-CA-CB 0.25*pi"
 do_angle_bending=1
 do_bond_torsion=1
