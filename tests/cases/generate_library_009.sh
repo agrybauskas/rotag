@@ -12,6 +12,8 @@ residue_alt="."
 angles="180.0"
 threads="1"
 parameters='lj_k=1.0,c_k=1.0,h_k=1.0,t_k=1.0,cutoff_atom=100.0,cutoff_start=2.5,cutoff_end=5.0'
+auth_residue_id="617"
+auth_residue_chain="B"
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
                                             ${residue_chain} \
@@ -22,4 +24,6 @@ $(dirname "$0")/../scripts/generate_library ${residue_id} \
 	                                        ${potential} \
 					                        ${pdbx_dump_file} \
                                             ${parameters} \
-					                        ${threads}
+					                        ${threads} \
+                                            ${auth_residue_id} \
+                                            ${auth_residue_chain}
