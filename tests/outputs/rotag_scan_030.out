@@ -74,45 +74,47 @@ _[local]_rotamer_bond_parameter.label_seq_id
 _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 340 THR A 1 . 0.027778 chi1 -180.000 degrees
-2 2 340 THR A 1 . 0.027778 chi1 -170.000 degrees
-3 3 340 THR A 1 . 0.027778 chi1 -160.000 degrees
-4 4 340 THR A 1 . 0.027778 chi1 -150.000 degrees
-5 5 340 THR A 1 . 0.027778 chi1 -140.000 degrees
-6 6 340 THR A 1 . 0.027778 chi1 -130.000 degrees
-7 7 340 THR A 1 . 0.027778 chi1 -120.000 degrees
-8 8 340 THR A 1 . 0.027778 chi1 -110.000 degrees
-9 9 340 THR A 1 . 0.027778 chi1 -100.000 degrees
-10 10 340 THR A 1 . 0.027778 chi1 -90.000 degrees
-11 11 340 THR A 1 . 0.027778 chi1 -80.000 degrees
-12 12 340 THR A 1 . 0.027778 chi1 -70.000 degrees
-13 13 340 THR A 1 . 0.027778 chi1 -60.000 degrees
-14 14 340 THR A 1 . 0.027778 chi1 -50.000 degrees
-15 15 340 THR A 1 . 0.027778 chi1 -40.000 degrees
-16 16 340 THR A 1 . 0.027778 chi1 -30.000 degrees
-17 17 340 THR A 1 . 0.027778 chi1 -20.000 degrees
-18 18 340 THR A 1 . 0.027778 chi1 -10.000 degrees
-19 19 340 THR A 1 . 0.027778 chi1 0.000 degrees
-20 20 340 THR A 1 . 0.027778 chi1 10.000 degrees
-21 21 340 THR A 1 . 0.027778 chi1 20.000 degrees
-22 22 340 THR A 1 . 0.027778 chi1 30.000 degrees
-23 23 340 THR A 1 . 0.027778 chi1 40.000 degrees
-24 24 340 THR A 1 . 0.027778 chi1 50.000 degrees
-25 25 340 THR A 1 . 0.027778 chi1 60.000 degrees
-26 26 340 THR A 1 . 0.027778 chi1 70.000 degrees
-27 27 340 THR A 1 . 0.027778 chi1 80.000 degrees
-28 28 340 THR A 1 . 0.027778 chi1 90.000 degrees
-29 29 340 THR A 1 . 0.027778 chi1 100.000 degrees
-30 30 340 THR A 1 . 0.027778 chi1 110.000 degrees
-31 31 340 THR A 1 . 0.027778 chi1 120.000 degrees
-32 32 340 THR A 1 . 0.027778 chi1 130.000 degrees
-33 33 340 THR A 1 . 0.027778 chi1 140.000 degrees
-34 34 340 THR A 1 . 0.027778 chi1 150.000 degrees
-35 35 340 THR A 1 . 0.027778 chi1 160.000 degrees
-36 36 340 THR A 1 . 0.027778 chi1 170.000 degrees
+1 1 340 THR A 1 385 A . 0.027778 chi1 -180.000 degrees
+2 2 340 THR A 1 385 A . 0.027778 chi1 -170.000 degrees
+3 3 340 THR A 1 385 A . 0.027778 chi1 -160.000 degrees
+4 4 340 THR A 1 385 A . 0.027778 chi1 -150.000 degrees
+5 5 340 THR A 1 385 A . 0.027778 chi1 -140.000 degrees
+6 6 340 THR A 1 385 A . 0.027778 chi1 -130.000 degrees
+7 7 340 THR A 1 385 A . 0.027778 chi1 -120.000 degrees
+8 8 340 THR A 1 385 A . 0.027778 chi1 -110.000 degrees
+9 9 340 THR A 1 385 A . 0.027778 chi1 -100.000 degrees
+10 10 340 THR A 1 385 A . 0.027778 chi1 -90.000 degrees
+11 11 340 THR A 1 385 A . 0.027778 chi1 -80.000 degrees
+12 12 340 THR A 1 385 A . 0.027778 chi1 -70.000 degrees
+13 13 340 THR A 1 385 A . 0.027778 chi1 -60.000 degrees
+14 14 340 THR A 1 385 A . 0.027778 chi1 -50.000 degrees
+15 15 340 THR A 1 385 A . 0.027778 chi1 -40.000 degrees
+16 16 340 THR A 1 385 A . 0.027778 chi1 -30.000 degrees
+17 17 340 THR A 1 385 A . 0.027778 chi1 -20.000 degrees
+18 18 340 THR A 1 385 A . 0.027778 chi1 -10.000 degrees
+19 19 340 THR A 1 385 A . 0.027778 chi1 0.000 degrees
+20 20 340 THR A 1 385 A . 0.027778 chi1 10.000 degrees
+21 21 340 THR A 1 385 A . 0.027778 chi1 20.000 degrees
+22 22 340 THR A 1 385 A . 0.027778 chi1 30.000 degrees
+23 23 340 THR A 1 385 A . 0.027778 chi1 40.000 degrees
+24 24 340 THR A 1 385 A . 0.027778 chi1 50.000 degrees
+25 25 340 THR A 1 385 A . 0.027778 chi1 60.000 degrees
+26 26 340 THR A 1 385 A . 0.027778 chi1 70.000 degrees
+27 27 340 THR A 1 385 A . 0.027778 chi1 80.000 degrees
+28 28 340 THR A 1 385 A . 0.027778 chi1 90.000 degrees
+29 29 340 THR A 1 385 A . 0.027778 chi1 100.000 degrees
+30 30 340 THR A 1 385 A . 0.027778 chi1 110.000 degrees
+31 31 340 THR A 1 385 A . 0.027778 chi1 120.000 degrees
+32 32 340 THR A 1 385 A . 0.027778 chi1 130.000 degrees
+33 33 340 THR A 1 385 A . 0.027778 chi1 140.000 degrees
+34 34 340 THR A 1 385 A . 0.027778 chi1 150.000 degrees
+35 35 340 THR A 1 385 A . 0.027778 chi1 160.000 degrees
+36 36 340 THR A 1 385 A . 0.027778 chi1 170.000 degrees
 #

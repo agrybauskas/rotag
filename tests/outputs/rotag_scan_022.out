@@ -96,117 +96,119 @@ _[local]_rotamer_bond_parameter.label_seq_id
 _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 246 PHE A 1 . 0.018519 chi1 -108.000 degrees
-2 1 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
-3 2 246 PHE A 1 . 0.018519 chi1 -108.000 degrees
-4 2 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
-5 3 246 PHE A 1 . 0.018519 chi1 -108.000 degrees
-6 3 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
-7 4 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-8 4 246 PHE A 1 . 0.018519 chi2 -180.000 degrees
-9 5 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-10 5 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
-11 6 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-12 6 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
-13 7 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-14 7 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
-15 8 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-16 8 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
-17 9 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-18 9 246 PHE A 1 . 0.018519 chi2 0.000 degrees
-19 10 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-20 10 246 PHE A 1 . 0.018519 chi2 36.000 degrees
-21 11 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-22 11 246 PHE A 1 . 0.018519 chi2 72.000 degrees
-23 12 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-24 12 246 PHE A 1 . 0.018519 chi2 108.000 degrees
-25 13 246 PHE A 1 . 0.018519 chi1 -72.000 degrees
-26 13 246 PHE A 1 . 0.018519 chi2 144.000 degrees
-27 14 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-28 14 246 PHE A 1 . 0.018519 chi2 -180.000 degrees
-29 15 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-30 15 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
-31 16 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-32 16 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
-33 17 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-34 17 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
-35 18 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-36 18 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
-37 19 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-38 19 246 PHE A 1 . 0.018519 chi2 0.000 degrees
-39 20 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-40 20 246 PHE A 1 . 0.018519 chi2 36.000 degrees
-41 21 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-42 21 246 PHE A 1 . 0.018519 chi2 72.000 degrees
-43 22 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-44 22 246 PHE A 1 . 0.018519 chi2 108.000 degrees
-45 23 246 PHE A 1 . 0.018519 chi1 -36.000 degrees
-46 23 246 PHE A 1 . 0.018519 chi2 144.000 degrees
-47 24 246 PHE A 1 . 0.018519 chi1 0.000 degrees
-48 24 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
-49 25 246 PHE A 1 . 0.018519 chi1 0.000 degrees
-50 25 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
-51 26 246 PHE A 1 . 0.018519 chi1 0.000 degrees
-52 26 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
-53 27 246 PHE A 1 . 0.018519 chi1 0.000 degrees
-54 27 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
-55 28 246 PHE A 1 . 0.018519 chi1 0.000 degrees
-56 28 246 PHE A 1 . 0.018519 chi2 36.000 degrees
-57 29 246 PHE A 1 . 0.018519 chi1 0.000 degrees
-58 29 246 PHE A 1 . 0.018519 chi2 72.000 degrees
-59 30 246 PHE A 1 . 0.018519 chi1 0.000 degrees
-60 30 246 PHE A 1 . 0.018519 chi2 108.000 degrees
-61 31 246 PHE A 1 . 0.018519 chi1 0.000 degrees
-62 31 246 PHE A 1 . 0.018519 chi2 144.000 degrees
-63 32 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-64 32 246 PHE A 1 . 0.018519 chi2 -180.000 degrees
-65 33 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-66 33 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
-67 34 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-68 34 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
-69 35 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-70 35 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
-71 36 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-72 36 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
-73 37 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-74 37 246 PHE A 1 . 0.018519 chi2 0.000 degrees
-75 38 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-76 38 246 PHE A 1 . 0.018519 chi2 36.000 degrees
-77 39 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-78 39 246 PHE A 1 . 0.018519 chi2 72.000 degrees
-79 40 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-80 40 246 PHE A 1 . 0.018519 chi2 108.000 degrees
-81 41 246 PHE A 1 . 0.018519 chi1 36.000 degrees
-82 41 246 PHE A 1 . 0.018519 chi2 144.000 degrees
-83 42 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-84 42 246 PHE A 1 . 0.018519 chi2 -180.000 degrees
-85 43 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-86 43 246 PHE A 1 . 0.018519 chi2 -144.000 degrees
-87 44 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-88 44 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
-89 45 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-90 45 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
-91 46 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-92 46 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
-93 47 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-94 47 246 PHE A 1 . 0.018519 chi2 0.000 degrees
-95 48 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-96 48 246 PHE A 1 . 0.018519 chi2 36.000 degrees
-97 49 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-98 49 246 PHE A 1 . 0.018519 chi2 72.000 degrees
-99 50 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-100 50 246 PHE A 1 . 0.018519 chi2 108.000 degrees
-101 51 246 PHE A 1 . 0.018519 chi1 72.000 degrees
-102 51 246 PHE A 1 . 0.018519 chi2 144.000 degrees
-103 52 246 PHE A 1 . 0.018519 chi1 108.000 degrees
-104 52 246 PHE A 1 . 0.018519 chi2 -108.000 degrees
-105 53 246 PHE A 1 . 0.018519 chi1 108.000 degrees
-106 53 246 PHE A 1 . 0.018519 chi2 -72.000 degrees
-107 54 246 PHE A 1 . 0.018519 chi1 108.000 degrees
-108 54 246 PHE A 1 . 0.018519 chi2 -36.000 degrees
+1 1 246 PHE A 1 291 A . 0.018519 chi1 -108.000 degrees
+2 1 246 PHE A 1 291 A . 0.018519 chi2 -144.000 degrees
+3 2 246 PHE A 1 291 A . 0.018519 chi1 -108.000 degrees
+4 2 246 PHE A 1 291 A . 0.018519 chi2 -72.000 degrees
+5 3 246 PHE A 1 291 A . 0.018519 chi1 -108.000 degrees
+6 3 246 PHE A 1 291 A . 0.018519 chi2 -36.000 degrees
+7 4 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+8 4 246 PHE A 1 291 A . 0.018519 chi2 -180.000 degrees
+9 5 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+10 5 246 PHE A 1 291 A . 0.018519 chi2 -144.000 degrees
+11 6 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+12 6 246 PHE A 1 291 A . 0.018519 chi2 -108.000 degrees
+13 7 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+14 7 246 PHE A 1 291 A . 0.018519 chi2 -72.000 degrees
+15 8 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+16 8 246 PHE A 1 291 A . 0.018519 chi2 -36.000 degrees
+17 9 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+18 9 246 PHE A 1 291 A . 0.018519 chi2 0.000 degrees
+19 10 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+20 10 246 PHE A 1 291 A . 0.018519 chi2 36.000 degrees
+21 11 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+22 11 246 PHE A 1 291 A . 0.018519 chi2 72.000 degrees
+23 12 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+24 12 246 PHE A 1 291 A . 0.018519 chi2 108.000 degrees
+25 13 246 PHE A 1 291 A . 0.018519 chi1 -72.000 degrees
+26 13 246 PHE A 1 291 A . 0.018519 chi2 144.000 degrees
+27 14 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+28 14 246 PHE A 1 291 A . 0.018519 chi2 -180.000 degrees
+29 15 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+30 15 246 PHE A 1 291 A . 0.018519 chi2 -144.000 degrees
+31 16 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+32 16 246 PHE A 1 291 A . 0.018519 chi2 -108.000 degrees
+33 17 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+34 17 246 PHE A 1 291 A . 0.018519 chi2 -72.000 degrees
+35 18 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+36 18 246 PHE A 1 291 A . 0.018519 chi2 -36.000 degrees
+37 19 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+38 19 246 PHE A 1 291 A . 0.018519 chi2 0.000 degrees
+39 20 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+40 20 246 PHE A 1 291 A . 0.018519 chi2 36.000 degrees
+41 21 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+42 21 246 PHE A 1 291 A . 0.018519 chi2 72.000 degrees
+43 22 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+44 22 246 PHE A 1 291 A . 0.018519 chi2 108.000 degrees
+45 23 246 PHE A 1 291 A . 0.018519 chi1 -36.000 degrees
+46 23 246 PHE A 1 291 A . 0.018519 chi2 144.000 degrees
+47 24 246 PHE A 1 291 A . 0.018519 chi1 0.000 degrees
+48 24 246 PHE A 1 291 A . 0.018519 chi2 -144.000 degrees
+49 25 246 PHE A 1 291 A . 0.018519 chi1 0.000 degrees
+50 25 246 PHE A 1 291 A . 0.018519 chi2 -108.000 degrees
+51 26 246 PHE A 1 291 A . 0.018519 chi1 0.000 degrees
+52 26 246 PHE A 1 291 A . 0.018519 chi2 -72.000 degrees
+53 27 246 PHE A 1 291 A . 0.018519 chi1 0.000 degrees
+54 27 246 PHE A 1 291 A . 0.018519 chi2 -36.000 degrees
+55 28 246 PHE A 1 291 A . 0.018519 chi1 0.000 degrees
+56 28 246 PHE A 1 291 A . 0.018519 chi2 36.000 degrees
+57 29 246 PHE A 1 291 A . 0.018519 chi1 0.000 degrees
+58 29 246 PHE A 1 291 A . 0.018519 chi2 72.000 degrees
+59 30 246 PHE A 1 291 A . 0.018519 chi1 0.000 degrees
+60 30 246 PHE A 1 291 A . 0.018519 chi2 108.000 degrees
+61 31 246 PHE A 1 291 A . 0.018519 chi1 0.000 degrees
+62 31 246 PHE A 1 291 A . 0.018519 chi2 144.000 degrees
+63 32 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+64 32 246 PHE A 1 291 A . 0.018519 chi2 -180.000 degrees
+65 33 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+66 33 246 PHE A 1 291 A . 0.018519 chi2 -144.000 degrees
+67 34 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+68 34 246 PHE A 1 291 A . 0.018519 chi2 -108.000 degrees
+69 35 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+70 35 246 PHE A 1 291 A . 0.018519 chi2 -72.000 degrees
+71 36 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+72 36 246 PHE A 1 291 A . 0.018519 chi2 -36.000 degrees
+73 37 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+74 37 246 PHE A 1 291 A . 0.018519 chi2 0.000 degrees
+75 38 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+76 38 246 PHE A 1 291 A . 0.018519 chi2 36.000 degrees
+77 39 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+78 39 246 PHE A 1 291 A . 0.018519 chi2 72.000 degrees
+79 40 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+80 40 246 PHE A 1 291 A . 0.018519 chi2 108.000 degrees
+81 41 246 PHE A 1 291 A . 0.018519 chi1 36.000 degrees
+82 41 246 PHE A 1 291 A . 0.018519 chi2 144.000 degrees
+83 42 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+84 42 246 PHE A 1 291 A . 0.018519 chi2 -180.000 degrees
+85 43 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+86 43 246 PHE A 1 291 A . 0.018519 chi2 -144.000 degrees
+87 44 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+88 44 246 PHE A 1 291 A . 0.018519 chi2 -108.000 degrees
+89 45 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+90 45 246 PHE A 1 291 A . 0.018519 chi2 -72.000 degrees
+91 46 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+92 46 246 PHE A 1 291 A . 0.018519 chi2 -36.000 degrees
+93 47 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+94 47 246 PHE A 1 291 A . 0.018519 chi2 0.000 degrees
+95 48 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+96 48 246 PHE A 1 291 A . 0.018519 chi2 36.000 degrees
+97 49 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+98 49 246 PHE A 1 291 A . 0.018519 chi2 72.000 degrees
+99 50 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+100 50 246 PHE A 1 291 A . 0.018519 chi2 108.000 degrees
+101 51 246 PHE A 1 291 A . 0.018519 chi1 72.000 degrees
+102 51 246 PHE A 1 291 A . 0.018519 chi2 144.000 degrees
+103 52 246 PHE A 1 291 A . 0.018519 chi1 108.000 degrees
+104 52 246 PHE A 1 291 A . 0.018519 chi2 -108.000 degrees
+105 53 246 PHE A 1 291 A . 0.018519 chi1 108.000 degrees
+106 53 246 PHE A 1 291 A . 0.018519 chi2 -72.000 degrees
+107 54 246 PHE A 1 291 A . 0.018519 chi1 108.000 degrees
+108 54 246 PHE A 1 291 A . 0.018519 chi2 -36.000 degrees
 #

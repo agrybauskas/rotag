@@ -279,8 +279,8 @@ for my $pdbx_file ( @ARGV ) {
     # Collects residue angle and energy data.
     $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'metadata'}{'attributes'} = [
         'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-        'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
-        'units'
+        'pdbx_PDB_model_num', 'auth_seq_id', 'auth_asym_id', 'label_alt_id',
+        'frequency', 'type', 'value', 'units'
     ];
     $pdbx_data->{'_[local]_rotamer_energy'}{'metadata'}{'attributes'} = [
         'id', 'rotamer_id', 'calculation_method', 'value'
@@ -294,7 +294,8 @@ for my $pdbx_file ( @ARGV ) {
     my $energy_id = 1;
     my $rotamer_id = 1;
     for my $residue_unique_key ( sort { $a cmp $b } keys %rotamer_library ){
-        my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
+        my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt,
+             $auth_residue_id, $auth_residue_chain ) =
             split /,/sxm, $residue_unique_key;
         my @residue_name =
             uniq( @{ filter( { 'atom_site' => $selected_atom_site,
@@ -330,6 +331,8 @@ for my $pdbx_file ( @ARGV ) {
                       'label_seq_id' => $residue_id,
                       'label_comp_id' => $residue_name[0],
                       'label_asym_id' => $residue_chain,
+                      'auth_seq_id' => $auth_residue_id,
+                      'auth_asym_id' => $auth_residue_chain,
                       'pdbx_PDB_model_num' => $pdbx_model,
                       'label_alt_id' => $residue_alt,
                       'frequency' => sprintf($sig_figs_max, $rotamer_frequency),

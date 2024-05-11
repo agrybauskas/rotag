@@ -47,19 +47,21 @@ _[local]_rotamer_bond_parameter.label_seq_id
 _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 18 XAA A 1 . 0.100000 chi1 -180.000 degrees
-2 2 18 XAA A 1 . 0.100000 chi1 -144.000 degrees
-3 3 18 XAA A 1 . 0.100000 chi1 -108.000 degrees
-4 4 18 XAA A 1 . 0.100000 chi1 -72.000 degrees
-5 5 18 XAA A 1 . 0.100000 chi1 -36.000 degrees
-6 6 18 XAA A 1 . 0.100000 chi1 0.000 degrees
-7 7 18 XAA A 1 . 0.100000 chi1 36.000 degrees
-8 8 18 XAA A 1 . 0.100000 chi1 72.000 degrees
-9 9 18 XAA A 1 . 0.100000 chi1 108.000 degrees
-10 10 18 XAA A 1 . 0.100000 chi1 144.000 degrees
+1 1 18 XAA A 1 18 A . 0.100000 chi1 -180.000 degrees
+2 2 18 XAA A 1 18 A . 0.100000 chi1 -144.000 degrees
+3 3 18 XAA A 1 18 A . 0.100000 chi1 -108.000 degrees
+4 4 18 XAA A 1 18 A . 0.100000 chi1 -72.000 degrees
+5 5 18 XAA A 1 18 A . 0.100000 chi1 -36.000 degrees
+6 6 18 XAA A 1 18 A . 0.100000 chi1 0.000 degrees
+7 7 18 XAA A 1 18 A . 0.100000 chi1 36.000 degrees
+8 8 18 XAA A 1 18 A . 0.100000 chi1 72.000 degrees
+9 9 18 XAA A 1 18 A . 0.100000 chi1 108.000 degrees
+10 10 18 XAA A 1 18 A . 0.100000 chi1 144.000 degrees
 #

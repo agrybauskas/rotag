@@ -138,209 +138,211 @@ _[local]_rotamer_bond_parameter.label_seq_id
 _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-2 1 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-3 2 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-4 2 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-5 3 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-6 3 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-7 4 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-8 4 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-9 5 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-10 5 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-11 6 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-12 6 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-13 7 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-14 7 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-15 8 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-16 8 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-17 9 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-18 9 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-19 10 18 XAA A 1 . 0.010000 chi1 -180.000 degrees
-20 10 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-21 11 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-22 11 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-23 12 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-24 12 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-25 13 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-26 13 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-27 14 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-28 14 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-29 15 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-30 15 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-31 16 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-32 16 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-33 17 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-34 17 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-35 18 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-36 18 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-37 19 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-38 19 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-39 20 18 XAA A 1 . 0.010000 chi1 -144.000 degrees
-40 20 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-41 21 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-42 21 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-43 22 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-44 22 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-45 23 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-46 23 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-47 24 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-48 24 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-49 25 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-50 25 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-51 26 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-52 26 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-53 27 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-54 27 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-55 28 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-56 28 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-57 29 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-58 29 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-59 30 18 XAA A 1 . 0.010000 chi1 -108.000 degrees
-60 30 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-61 31 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-62 31 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-63 32 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-64 32 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-65 33 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-66 33 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-67 34 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-68 34 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-69 35 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-70 35 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-71 36 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-72 36 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-73 37 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-74 37 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-75 38 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-76 38 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-77 39 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-78 39 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-79 40 18 XAA A 1 . 0.010000 chi1 -72.000 degrees
-80 40 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-81 41 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-82 41 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-83 42 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-84 42 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-85 43 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-86 43 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-87 44 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-88 44 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-89 45 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-90 45 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-91 46 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-92 46 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-93 47 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-94 47 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-95 48 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-96 48 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-97 49 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-98 49 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-99 50 18 XAA A 1 . 0.010000 chi1 -36.000 degrees
-100 50 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-101 51 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-102 51 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-103 52 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-104 52 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-105 53 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-106 53 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-107 54 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-108 54 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-109 55 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-110 55 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-111 56 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-112 56 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-113 57 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-114 57 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-115 58 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-116 58 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-117 59 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-118 59 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-119 60 18 XAA A 1 . 0.010000 chi1 0.000 degrees
-120 60 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-121 61 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-122 61 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-123 62 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-124 62 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-125 63 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-126 63 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-127 64 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-128 64 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-129 65 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-130 65 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-131 66 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-132 66 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-133 67 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-134 67 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-135 68 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-136 68 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-137 69 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-138 69 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-139 70 18 XAA A 1 . 0.010000 chi1 36.000 degrees
-140 70 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-141 71 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-142 71 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-143 72 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-144 72 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-145 73 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-146 73 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-147 74 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-148 74 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-149 75 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-150 75 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-151 76 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-152 76 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-153 77 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-154 77 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-155 78 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-156 78 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-157 79 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-158 79 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-159 80 18 XAA A 1 . 0.010000 chi1 72.000 degrees
-160 80 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-161 81 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-162 81 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-163 82 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-164 82 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-165 83 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-166 83 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-167 84 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-168 84 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-169 85 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-170 85 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-171 86 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-172 86 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-173 87 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-174 87 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-175 88 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-176 88 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-177 89 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-178 89 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-179 90 18 XAA A 1 . 0.010000 chi1 108.000 degrees
-180 90 18 XAA A 1 . 0.010000 chi2 144.000 degrees
-181 91 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-182 91 18 XAA A 1 . 0.010000 chi2 -180.000 degrees
-183 92 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-184 92 18 XAA A 1 . 0.010000 chi2 -144.000 degrees
-185 93 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-186 93 18 XAA A 1 . 0.010000 chi2 -108.000 degrees
-187 94 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-188 94 18 XAA A 1 . 0.010000 chi2 -72.000 degrees
-189 95 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-190 95 18 XAA A 1 . 0.010000 chi2 -36.000 degrees
-191 96 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-192 96 18 XAA A 1 . 0.010000 chi2 0.000 degrees
-193 97 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-194 97 18 XAA A 1 . 0.010000 chi2 36.000 degrees
-195 98 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-196 98 18 XAA A 1 . 0.010000 chi2 72.000 degrees
-197 99 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-198 99 18 XAA A 1 . 0.010000 chi2 108.000 degrees
-199 100 18 XAA A 1 . 0.010000 chi1 144.000 degrees
-200 100 18 XAA A 1 . 0.010000 chi2 144.000 degrees
+1 1 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+2 1 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+3 2 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+4 2 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+5 3 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+6 3 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+7 4 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+8 4 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+9 5 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+10 5 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+11 6 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+12 6 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+13 7 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+14 7 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+15 8 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+16 8 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+17 9 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+18 9 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+19 10 18 XAA A 1 18 A . 0.010000 chi1 -180.000 degrees
+20 10 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+21 11 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+22 11 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+23 12 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+24 12 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+25 13 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+26 13 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+27 14 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+28 14 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+29 15 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+30 15 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+31 16 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+32 16 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+33 17 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+34 17 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+35 18 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+36 18 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+37 19 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+38 19 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+39 20 18 XAA A 1 18 A . 0.010000 chi1 -144.000 degrees
+40 20 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+41 21 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+42 21 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+43 22 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+44 22 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+45 23 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+46 23 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+47 24 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+48 24 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+49 25 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+50 25 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+51 26 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+52 26 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+53 27 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+54 27 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+55 28 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+56 28 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+57 29 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+58 29 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+59 30 18 XAA A 1 18 A . 0.010000 chi1 -108.000 degrees
+60 30 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+61 31 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+62 31 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+63 32 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+64 32 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+65 33 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+66 33 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+67 34 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+68 34 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+69 35 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+70 35 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+71 36 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+72 36 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+73 37 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+74 37 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+75 38 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+76 38 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+77 39 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+78 39 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+79 40 18 XAA A 1 18 A . 0.010000 chi1 -72.000 degrees
+80 40 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+81 41 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+82 41 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+83 42 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+84 42 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+85 43 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+86 43 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+87 44 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+88 44 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+89 45 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+90 45 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+91 46 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+92 46 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+93 47 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+94 47 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+95 48 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+96 48 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+97 49 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+98 49 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+99 50 18 XAA A 1 18 A . 0.010000 chi1 -36.000 degrees
+100 50 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+101 51 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+102 51 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+103 52 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+104 52 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+105 53 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+106 53 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+107 54 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+108 54 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+109 55 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+110 55 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+111 56 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+112 56 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+113 57 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+114 57 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+115 58 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+116 58 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+117 59 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+118 59 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+119 60 18 XAA A 1 18 A . 0.010000 chi1 0.000 degrees
+120 60 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+121 61 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+122 61 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+123 62 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+124 62 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+125 63 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+126 63 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+127 64 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+128 64 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+129 65 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+130 65 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+131 66 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+132 66 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+133 67 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+134 67 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+135 68 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+136 68 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+137 69 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+138 69 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+139 70 18 XAA A 1 18 A . 0.010000 chi1 36.000 degrees
+140 70 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+141 71 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+142 71 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+143 72 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+144 72 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+145 73 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+146 73 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+147 74 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+148 74 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+149 75 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+150 75 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+151 76 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+152 76 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+153 77 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+154 77 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+155 78 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+156 78 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+157 79 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+158 79 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+159 80 18 XAA A 1 18 A . 0.010000 chi1 72.000 degrees
+160 80 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+161 81 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+162 81 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+163 82 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+164 82 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+165 83 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+166 83 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+167 84 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+168 84 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+169 85 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+170 85 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+171 86 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+172 86 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+173 87 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+174 87 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+175 88 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+176 88 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+177 89 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+178 89 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+179 90 18 XAA A 1 18 A . 0.010000 chi1 108.000 degrees
+180 90 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
+181 91 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+182 91 18 XAA A 1 18 A . 0.010000 chi2 -180.000 degrees
+183 92 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+184 92 18 XAA A 1 18 A . 0.010000 chi2 -144.000 degrees
+185 93 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+186 93 18 XAA A 1 18 A . 0.010000 chi2 -108.000 degrees
+187 94 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+188 94 18 XAA A 1 18 A . 0.010000 chi2 -72.000 degrees
+189 95 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+190 95 18 XAA A 1 18 A . 0.010000 chi2 -36.000 degrees
+191 96 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+192 96 18 XAA A 1 18 A . 0.010000 chi2 0.000 degrees
+193 97 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+194 97 18 XAA A 1 18 A . 0.010000 chi2 36.000 degrees
+195 98 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+196 98 18 XAA A 1 18 A . 0.010000 chi2 72.000 degrees
+197 99 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+198 99 18 XAA A 1 18 A . 0.010000 chi2 108.000 degrees
+199 100 18 XAA A 1 18 A . 0.010000 chi1 144.000 degrees
+200 100 18 XAA A 1 18 A . 0.010000 chi2 144.000 degrees
 #

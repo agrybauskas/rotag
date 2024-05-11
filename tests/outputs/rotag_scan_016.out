@@ -55,17 +55,19 @@ _[local]_rotamer_bond_parameter.label_seq_id
 _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
-2 1 97 ASP A 1 B 0.250000 chi2 -180.000 degrees
-3 2 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
-4 2 97 ASP A 1 B 0.250000 chi2 -90.000 degrees
-5 3 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
-6 3 97 ASP A 1 B 0.250000 chi2 0.000 degrees
-7 4 97 ASP A 1 B 0.250000 chi1 -180.000 degrees
-8 4 97 ASP A 1 B 0.250000 chi2 90.000 degrees
+1 1 97 ASP A 1 ? ? B 0.250000 chi1 -180.000 degrees
+2 1 97 ASP A 1 ? ? B 0.250000 chi2 -180.000 degrees
+3 2 97 ASP A 1 ? ? B 0.250000 chi1 -180.000 degrees
+4 2 97 ASP A 1 ? ? B 0.250000 chi2 -90.000 degrees
+5 3 97 ASP A 1 ? ? B 0.250000 chi1 -180.000 degrees
+6 3 97 ASP A 1 ? ? B 0.250000 chi2 0.000 degrees
+7 4 97 ASP A 1 ? ? B 0.250000 chi1 -180.000 degrees
+8 4 97 ASP A 1 ? ? B 0.250000 chi2 90.000 degrees
 #
