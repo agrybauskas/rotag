@@ -542,7 +542,7 @@ sub unique_from_struct_conn
                 $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'},
             ],
             'auth_asym_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'},
+                $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'},
             ],
         );
         my %atom_selection_2 = (
@@ -559,7 +559,7 @@ sub unique_from_struct_conn
                 $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'},
             ],
             'auth_asym_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'},
+                $struct_conn->{$struct_conn_id}{'ptnr2_auth_asym_id'},
             ],
         );
 
