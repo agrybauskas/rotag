@@ -323,15 +323,14 @@ for my $pdbx_file ( @ARGV ) {
             connect_atoms( $parameters, $residue_site );
 
             if( defined $struct_conn && %{ $struct_conn } ) {
-                my @assigned_atom_ids =
-                    @{ assign_hetatoms( $parameters, $residue_site, $struct_conn,
-                                        { 'ref_atom_site' => $atom_site } ) };
-                foreach( @assigned_atom_ids ) {
-                    my $assigned_residue_unique_key =
-                        unique_residue_key( $residue_site->{$_} );
-                    $related_unique_residue_keys{$residue_unique_key}
-                                                {$assigned_residue_unique_key} =
-                        1;
+                my @assigned_residue_unique_keys =
+                    map { unique_residue_key( $residue_site->{$_} ) }
+                       @{ assign_hetatoms( $parameters,
+                                           $residue_site,
+                                           $struct_conn,
+                                           { 'ref_atom_site' => $atom_site } ) };
+                foreach( @assigned_residue_unique_keys ) {
+                    $related_unique_residue_keys{$residue_unique_key}{$_} = 1;
                 }
             }
 
