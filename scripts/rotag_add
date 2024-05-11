@@ -299,6 +299,7 @@ for my $pdbx_file ( @ARGV ) {
                         'append_dot' => 1 } );
 
         my %rotamer_angles;
+        my %related_unique_residue_keys = ();
         for my $residue_unique_key ( sort keys %{ $atom_site_split_groups } ) {
             my $current_target_atom_site =
                 filter( { 'atom_site' => $atom_site,
@@ -321,7 +322,6 @@ for my $pdbx_file ( @ARGV ) {
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
 
-            my %related_unique_residue_keys = ();
             if( defined $struct_conn && %{ $struct_conn } ) {
                 my @assigned_atom_ids =
                     @{ assign_hetatoms( $parameters, $residue_site, $struct_conn,
