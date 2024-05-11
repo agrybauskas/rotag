@@ -314,10 +314,10 @@ for my $pdbx_file ( @ARGV ) {
                     1
             );
 
-            # HACK: maybe there is more robust way to skip residues consisting
-            # of only HETATMs.
-            next if ! any { $current_target_atom_site->{$_}{'group_PDB'} eq 'ATOM' }
-                    keys %{ $current_target_atom_site };
+            # # HACK: maybe there is more robust way to skip residues consisting
+            # # of only HETATMs.
+            # next if ! any { $current_target_atom_site->{$_}{'group_PDB'} eq 'ATOM' }
+            #         keys %{ $current_target_atom_site };
 
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
