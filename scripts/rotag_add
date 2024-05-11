@@ -484,7 +484,8 @@ for my $pdbx_file ( @ARGV ) {
             my @rotamer_ids =
                 sort { $a <=> $b }
                 map  { keys %{ $rotamer_angles{$_} } }
-                     ( $residue_unique_key, @related_residue_unique_keys );
+                     ( $residue_unique_key );
+
             for my $rotamer_id ( @rotamer_ids ){
                 my $rotamer_angles =
                     $rotamer_angles{$residue_unique_key}{$rotamer_id};
