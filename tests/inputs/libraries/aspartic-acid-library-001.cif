@@ -32,64 +32,66 @@ _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
 _[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-2 1 219 ASP A 1 . 0.037037 chi2 -3.141593 radians
-3 2 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-4 2 219 ASP A 1 . 0.037037 chi2 -2.513274 radians
-5 3 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-6 3 219 ASP A 1 . 0.037037 chi2 -1.884956 radians
-7 4 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-8 4 219 ASP A 1 . 0.037037 chi2 -1.256637 radians
-9 5 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-10 5 219 ASP A 1 . 0.037037 chi2 -0.628319 radians
-11 6 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-12 6 219 ASP A 1 . 0.037037 chi2 0.628319 radians
-13 7 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-14 7 219 ASP A 1 . 0.037037 chi2 1.256637 radians
-15 8 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-16 8 219 ASP A 1 . 0.037037 chi2 1.884956 radians
-17 9 219 ASP A 1 . 0.037037 chi1 -2.513274 radians
-18 9 219 ASP A 1 . 0.037037 chi2 2.513274 radians
-19 10 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-20 10 219 ASP A 1 . 0.037037 chi2 -3.141593 radians
-21 11 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-22 11 219 ASP A 1 . 0.037037 chi2 -2.513274 radians
-23 12 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-24 12 219 ASP A 1 . 0.037037 chi2 -1.884956 radians
-25 13 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-26 13 219 ASP A 1 . 0.037037 chi2 -1.256637 radians
-27 14 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-28 14 219 ASP A 1 . 0.037037 chi2 -0.628319 radians
-29 15 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-30 15 219 ASP A 1 . 0.037037 chi2 0.628319 radians
-31 16 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-32 16 219 ASP A 1 . 0.037037 chi2 1.256637 radians
-33 17 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-34 17 219 ASP A 1 . 0.037037 chi2 1.884956 radians
-35 18 219 ASP A 1 . 0.037037 chi1 -1.884956 radians
-36 18 219 ASP A 1 . 0.037037 chi2 2.513274 radians
-37 19 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-38 19 219 ASP A 1 . 0.037037 chi2 -3.141593 radians
-39 20 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-40 20 219 ASP A 1 . 0.037037 chi2 -2.513274 radians
-41 21 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-42 21 219 ASP A 1 . 0.037037 chi2 -1.884956 radians
-43 22 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-44 22 219 ASP A 1 . 0.037037 chi2 -1.256637 radians
-45 23 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-46 23 219 ASP A 1 . 0.037037 chi2 -0.628319 radians
-47 24 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-48 24 219 ASP A 1 . 0.037037 chi2 0.628319 radians
-49 25 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-50 25 219 ASP A 1 . 0.037037 chi2 1.256637 radians
-51 26 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-52 26 219 ASP A 1 . 0.037037 chi2 1.884956 radians
-53 27 219 ASP A 1 . 0.037037 chi1 -1.256637 radians
-54 27 219 ASP A 1 . 0.037037 chi2 2.513274 radians
+1 1 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+2 1 219 ASP A 1 . 264 A 0.037037 chi2 -3.141593 radians
+3 2 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+4 2 219 ASP A 1 . 264 A 0.037037 chi2 -2.513274 radians
+5 3 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+6 3 219 ASP A 1 . 264 A 0.037037 chi2 -1.884956 radians
+7 4 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+8 4 219 ASP A 1 . 264 A 0.037037 chi2 -1.256637 radians
+9 5 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+10 5 219 ASP A 1 . 264 A 0.037037 chi2 -0.628319 radians
+11 6 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+12 6 219 ASP A 1 . 264 A 0.037037 chi2 0.628319 radians
+13 7 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+14 7 219 ASP A 1 . 264 A 0.037037 chi2 1.256637 radians
+15 8 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+16 8 219 ASP A 1 . 264 A 0.037037 chi2 1.884956 radians
+17 9 219 ASP A 1 . 264 A 0.037037 chi1 -2.513274 radians
+18 9 219 ASP A 1 . 264 A 0.037037 chi2 2.513274 radians
+19 10 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+20 10 219 ASP A 1 . 264 A 0.037037 chi2 -3.141593 radians
+21 11 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+22 11 219 ASP A 1 . 264 A 0.037037 chi2 -2.513274 radians
+23 12 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+24 12 219 ASP A 1 . 264 A 0.037037 chi2 -1.884956 radians
+25 13 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+26 13 219 ASP A 1 . 264 A 0.037037 chi2 -1.256637 radians
+27 14 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+28 14 219 ASP A 1 . 264 A 0.037037 chi2 -0.628319 radians
+29 15 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+30 15 219 ASP A 1 . 264 A 0.037037 chi2 0.628319 radians
+31 16 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+32 16 219 ASP A 1 . 264 A 0.037037 chi2 1.256637 radians
+33 17 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+34 17 219 ASP A 1 . 264 A 0.037037 chi2 1.884956 radians
+35 18 219 ASP A 1 . 264 A 0.037037 chi1 -1.884956 radians
+36 18 219 ASP A 1 . 264 A 0.037037 chi2 2.513274 radians
+37 19 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+38 19 219 ASP A 1 . 264 A 0.037037 chi2 -3.141593 radians
+39 20 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+40 20 219 ASP A 1 . 264 A 0.037037 chi2 -2.513274 radians
+41 21 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+42 21 219 ASP A 1 . 264 A 0.037037 chi2 -1.884956 radians
+43 22 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+44 22 219 ASP A 1 . 264 A 0.037037 chi2 -1.256637 radians
+45 23 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+46 23 219 ASP A 1 . 264 A 0.037037 chi2 -0.628319 radians
+47 24 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+48 24 219 ASP A 1 . 264 A 0.037037 chi2 0.628319 radians
+49 25 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+50 25 219 ASP A 1 . 264 A 0.037037 chi2 1.256637 radians
+51 26 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+52 26 219 ASP A 1 . 264 A 0.037037 chi2 1.884956 radians
+53 27 219 ASP A 1 . 264 A 0.037037 chi1 -1.256637 radians
+54 27 219 ASP A 1 . 264 A 0.037037 chi2 2.513274 radians
 #
 loop_
 _[local]_rotamer_energy.id
