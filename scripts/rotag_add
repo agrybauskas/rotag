@@ -479,11 +479,18 @@ for my $pdbx_file ( @ARGV ) {
                           keys %{ $target_atom_site_only } ) {
             my $residue_unique_key =
                 unique_residue_key( $selected_atom_site->{$atom_id} );
+            my @related_residue_unique_keys =
+                keys %{ $related_unique_residue_keys{$residue_unique_key} };
 
             for my $rotamer_id ( sort { $a <=> $b }
-                                 keys %{ $rotamer_angles{$residue_unique_key}}){
+                                 keys %{ $rotamer_angles{$residue_unique_key} } ) {
                 my $rotamer_angles =
                     $rotamer_angles{$residue_unique_key}{$rotamer_id};
+
+                # Adds missing rotamer angles.
+                for my $related_unique_residue_key ( @related_residue_unique_keys ) {
+                }
+
                 %rotamer_atom_site =
                     ( %rotamer_atom_site,
                       %{ generate_pseudo(
