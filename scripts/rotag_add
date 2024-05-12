@@ -489,6 +489,10 @@ for my $pdbx_file ( @ARGV ) {
 
                 # Adds missing rotamer angles.
                 for my $related_unique_residue_key ( @related_residue_unique_keys ) {
+                    $rotamer_angles = {
+                        %{ $rotamer_angles },
+                        %{ $rotamer_angles{$related_unique_residue_key}{$rotamer_id} }
+                    };
                 }
 
                 %rotamer_atom_site =
