@@ -327,7 +327,9 @@ for my $pdbx_file ( @ARGV ) {
                                            $struct_conn,
                                            { 'ref_atom_site' => $atom_site } ) };
                 foreach( @assigned_residue_unique_keys ) {
+                    next if $_ eq $residue_unique_key;
                     $related_unique_residue_keys{$residue_unique_key}{$_} = 1;
+                    $related_unique_residue_keys{$_}{$residue_unique_key} = 1;
                 }
             }
 
