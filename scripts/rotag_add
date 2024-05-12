@@ -24,7 +24,8 @@ use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
                 warning );
-use PDBxParser qw( extract
+use PDBxParser qw( change_unique_residue_key
+                   extract
                    filter
                    filter_new
                    filter_by_unique_residue_key
@@ -324,6 +325,7 @@ for my $pdbx_file ( @ARGV ) {
 
             if( defined $struct_conn && %{ $struct_conn } ) {
                 my @assigned_residue_unique_keys =
+                    map { change_unique_residue_key( $_, { 'label_alt_id' => '.' } ) }
                     map { unique_residue_key( $residue_site->{$_} ) }
                        @{ assign_hetatoms( $parameters,
                                            $residue_site,

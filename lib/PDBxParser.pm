@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( create_pdbx_entry
+our @EXPORT_OK = qw( change_unique_residue_key
+                     create_pdbx_entry
                      determine_residue_keys
                      expand
                      extract
@@ -1157,6 +1158,33 @@ sub determine_residue_keys
     }
 
     return \@residue_unique_keys;
+}
+
+#
+# Changes unique residue key parts.
+# Input:
+#     $unique_residue_key - unique residue key;
+#     $change_rule - hash that changes the key values;
+# Output:
+#     changed unique residue key.
+#
+
+sub change_unique_residue_key
+{
+    my ( $unique_residue_key, $change_rule ) = @_;
+    my %key_pos = (
+        'label_seq_id' => 0,
+        'label_asym_id' => 1,
+        'pdbx_PDB_model_num' => 2,
+        'label_alt_id' => 3,
+        'auth_seq_id' => 4,
+        'auth_asym_id' => 5
+    );
+    my @unique_residue_key_parts = split /,/, $unique_residue_key;
+    for my $key ( keys %{ $change_rule } ) {
+        $unique_residue_key_parts[$key_pos{$key}] = $change_rule->{$key};
+    }
+    return join ',', @unique_residue_key_parts;
 }
 
 #
