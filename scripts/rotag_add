@@ -476,6 +476,14 @@ for my $pdbx_file ( @ARGV ) {
                           keys %{ $target_atom_site_only } ) {
             my $residue_unique_key =
                 unique_residue_key( $selected_atom_site->{$atom_id} );
+
+            if( $include_hetatoms &&
+                $target_atom_site_only->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
+                $residue_unique_key =
+                    change_unique_residue_key( $residue_unique_key,
+                                               { 'label_alt_id' => '.' } );
+            }
+
             my @related_residue_unique_keys =
                 keys %{ $related_unique_residue_keys{$residue_unique_key} };
 
