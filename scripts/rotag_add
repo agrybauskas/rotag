@@ -379,6 +379,12 @@ for my $pdbx_file ( @ARGV ) {
             # Generates rotational model.
             rotation_translation( $parameters, $residue_site );
 
+
+            # HACK: probably should be refactored. Copied already twice.
+            for my $atom_id ( keys %{ $residue_site } ) {
+                $selected_atom_site->{$atom_id} = $residue_site->{$atom_id};
+            }
+
             # Determines the key that will connect 'atom_site' and
             # '_[local]_rotamer_bond_parameter' data.
             my $residue_angle_key;
