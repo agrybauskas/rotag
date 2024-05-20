@@ -608,6 +608,7 @@ sub connections_hetatom
 
     my %heteroatom_connections = ();
     for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
+        my $conn_type = $struct_conn->{$struct_conn_id}{'conn_type_id'};
         my %atom_selection_1 = (
             $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} eq '.' ?
             ( 'auth_seq_id' => [
@@ -648,8 +649,8 @@ sub connections_hetatom
 
         next if ! defined $atom_id_1 || ! defined $atom_id_2;
 
-        $heteroatom_connections{$atom_id_1}{$atom_id_2} = 1;
-        $heteroatom_connections{$atom_id_2}{$atom_id_1} = 1;
+        $heteroatom_connections{$atom_id_1}{$atom_id_2} = $conn_type;
+        $heteroatom_connections{$atom_id_2}{$atom_id_1} = $conn_type;
     }
 
     return \%heteroatom_connections;
