@@ -363,6 +363,9 @@ sub assign_hetatoms
                     $atom_site->{$related_atom_id} =
                         clone $ref_atom_site->{$related_atom_id};
 
+                    my $connection_type =
+                        $connections_hetatom->{$atom_id}{$related_atom_id};
+
                     replace_atom_site_ids( $atom_site,
                                            [ { 'from' => $related_atom_id,
                                                'to' => $last_atom_id } ],
