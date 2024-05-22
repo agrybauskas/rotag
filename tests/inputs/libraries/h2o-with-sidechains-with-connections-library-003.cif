@@ -53,6 +53,7 @@ ATOM 903 H HZ2 . LYS A 1 72 -35.440 -4.376 -0.258 A 72 1 S
 ATOM 904 H HZ3 . LYS A 1 72 -34.764 -4.021 0.974 A 72 1 S
 HETATM 1925 O O . HOH B 1 . -31.184 -6.586 -1.238 A 101 1 T
 HETATM 1926 H H1 . HOH B 1 . -31.654 -5.773 -1.481 A 101 1 T
+HETATM 1927 H H2 . HOH B 1 . -31.654 -7.399 -1.481 A 101 1 T
 #
 loop_
 _[local]_rotamer_energy.id
@@ -94,4 +95,5 @@ _struct_conn.ptnr2_auth_seq_id
 _struct_conn.ptnr2_auth_asym_id
 hydrog1 hydrog 27 A OD1  27 A . B H1 101 A
 covale1 covale  . B  H1 101 A . B  O 101 A
+covale2 covale  . B   O 101 A . B H2 101 A
 #
