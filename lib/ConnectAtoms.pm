@@ -612,7 +612,7 @@ sub connections_from_struct_conn
     my ( $atom_site, $struct_conn, $options ) = @_;
     my ( $no_hetatoms ) = ( $options->{'no_hetatoms'} );
 
-    $no_hetatoms //= 1;
+    $no_hetatoms //= 0;
 
     # TODO: should be refactored as code is closely related to
     # unique_from_struct_conn().
