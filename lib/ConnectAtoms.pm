@@ -335,8 +335,7 @@ sub assign_hetatoms
         unique_from_struct_conn( $ref_atom_site, $struct_conn,
                                  { 'no_hetatoms' => 0 } );
     my $all_connections =
-        connections_from_struct_conn( $ref_atom_site, $struct_conn,
-                                      { 'no_hetatoms' => 0 } );
+        connections_from_struct_conn( $ref_atom_site, $struct_conn );
 
     my $connections_hetatom =
         connections_hetatom( $ref_atom_site, $struct_conn );
@@ -380,7 +379,7 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    if( $related_atom_id eq $atom_id ) {
+                    if( $all_connections->{$residue_atom_id}{$related_atom_id} ) {
                         connect_atoms_explicitly(
                             $atom_site,
                             [ $residue_atom_id ],
