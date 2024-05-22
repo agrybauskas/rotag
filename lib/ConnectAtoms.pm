@@ -380,7 +380,11 @@ sub assign_hetatoms
                         connect_atoms_explicitly(
                             $atom_site,
                             [ $residue_atom_id ],
-                            [ $tracked_atom_ids{$related_atom_id} ]
+                            [ $tracked_atom_ids{$related_atom_id} ],
+                            ( defined $connection_type &&
+                              $connection_type eq 'covale' ?
+                              { 'connection_type' => 'connections' } :
+                              { 'connection_type' => 'connections_hetatom' } ),
                         );
                     }
 
