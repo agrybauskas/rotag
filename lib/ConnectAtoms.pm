@@ -612,7 +612,68 @@ sub connections_from_struct_conn
 {
     my ( $atom_site, $struct_conn, $options ) = @_;
     my ( $no_hetatoms ) = ( $options->{'no_hetatoms'} );
-    return;
+
+    $no_hetatoms //= 1;
+
+    # TODO: should be refactored as code is closely related to
+    # unique_from_struct_conn().
+    my %connections = ();
+    for my $struct_conn_id ( sort keys %{ $struct_conn } ) {
+        my %atom_selection_1 = (
+            'label_seq_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'},
+            ],
+            'label_asym_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'},
+            ],
+            'label_atom_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'},
+            ],
+            'auth_seq_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'},
+            ],
+            'auth_asym_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'},
+            ],
+        );
+        my %atom_selection_2 = (
+            'label_seq_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'},
+            ],
+            'label_asym_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'},
+            ],
+            'label_atom_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'},
+            ],
+            'auth_seq_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'},
+            ],
+            'auth_asym_id' => [
+                $struct_conn->{$struct_conn_id}{'ptnr2_auth_asym_id'},
+            ],
+        );
+
+        my ( $atom_id_1 ) =
+            @{ filter_new( $atom_site,
+                           { 'include' => \%atom_selection_1,
+                             ( $no_hetatoms ?
+                               ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) :
+                               () ),
+                             'return_data' => 'id' } ) };
+        my ( $atom_id_2 ) =
+            @{ filter_new( $atom_site,
+                           { 'include' => \%atom_selection_2,
+                             ( $no_hetatoms ?
+                               ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) :
+                               () ),
+                                 'return_data' => 'id' } ) };
+
+        $connections{$atom_id_1}{$atom_id_2} = $struct_conn_id;
+        $connections{$atom_id_2}{$atom_id_1} = $struct_conn_id;
+    }
+
+    return \%connections;
 }
 
 #
