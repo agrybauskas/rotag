@@ -335,8 +335,8 @@ sub assign_hetatoms
         unique_from_struct_conn( $ref_atom_site, $struct_conn,
                                  { 'no_hetatoms' => 0 } );
 
-    my $connections_hetatom =
-        connections_hetatom( $ref_atom_site, $struct_conn );
+    my $connections =
+        connections_from_struct_conn( $ref_atom_site, $struct_conn );
 
     my @assigned_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
@@ -347,8 +347,7 @@ sub assign_hetatoms
         my %visited_atom_ids = ();
         my %tracked_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
-            my @next_atom_ids =
-                ( keys %{ $connections_hetatom->{$residue_atom_id} } );
+            my @next_atom_ids = ( keys %{ $connections->{$residue_atom_id} } );
 
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
@@ -364,7 +363,7 @@ sub assign_hetatoms
                         clone $ref_atom_site->{$related_atom_id};
 
                     my $connection_type =
-                        $connections_hetatom->{$atom_id}{$related_atom_id};
+                        $connections->{$atom_id}{$related_atom_id};
 
                     replace_atom_site_ids( $atom_site,
                                            [ { 'from' => $related_atom_id,
@@ -377,7 +376,7 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    if( $connections_hetatom->{$residue_atom_id}{$related_atom_id} ) {
+                    if( $connections->{$residue_atom_id}{$related_atom_id} ) {
                         connect_atoms_explicitly(
                             $atom_site,
                             [ $residue_atom_id ],
@@ -604,7 +603,7 @@ sub unique_from_struct_conn
 #     heteroatoms.
 #
 
-sub connections_hetatom
+sub connections_from_struct_conn
 {
     my ( $atom_site, $struct_conn ) = @_;
 
