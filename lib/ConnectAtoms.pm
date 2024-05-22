@@ -660,13 +660,18 @@ sub connections_from_struct_conn
                                ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) :
                                () ),
                              'return_data' => 'id' } ) };
+
+        next if ! defined $atom_id_1;
+
         my ( $atom_id_2 ) =
             @{ filter_new( $atom_site,
                            { 'include' => \%atom_selection_2,
                              ( $no_hetatoms ?
                                ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) :
                                () ),
-                                 'return_data' => 'id' } ) };
+                             'return_data' => 'id' } ) };
+
+        next if ! defined $atom_id_2;
 
         $connections{$atom_id_1}{$atom_id_2} = $struct_conn_id;
         $connections{$atom_id_2}{$atom_id_1} = $struct_conn_id;
