@@ -334,6 +334,9 @@ sub assign_hetatoms
     my $all_unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn,
                                  { 'no_hetatoms' => 0 } );
+    my $all_connections =
+        connections_from_struct_conn( $ref_atom_site, $struct_conn,
+                                      { 'no_hetatoms' => 0 } );
 
     my $connections_hetatom =
         connections_hetatom( $ref_atom_site, $struct_conn );
@@ -513,7 +516,6 @@ sub create_hetatom_struct_conn
 # Returns list of unique residue key objects from atom site and structure
 # connection data.
 # Input:
-#     $parameters - general parameters (see Parameters.pm);
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $struct_conn - reads 'struc_conn' and assings connections appropriately;
 #     $options->{'no_hetatoms'} - excludes heteroatoms.
@@ -593,6 +595,24 @@ sub unique_from_struct_conn
     }
 
     return \%unique_residue_keys;
+}
+
+#
+# Returns connection hash of unique atom ids objects from atom site and
+# structure connection data.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $struct_conn - reads 'struc_conn' and assings connections appropriately;
+#     $options->{'no_hetatoms'} - excludes heteroatoms.
+# Output:
+#     $connections - hash of atom connections.
+#
+
+sub connections_from_struct_conn
+{
+    my ( $atom_site, $struct_conn, $options ) = @_;
+    my ( $no_hetatoms ) = ( $options->{'no_hetatoms'} );
+    return;
 }
 
 #
