@@ -1248,12 +1248,12 @@ sub follow_hetatoms
         for my $atom_id ( @next_atom_ids ) {
             next if ! exists $reference_atom_site->{$atom_id};
 
-            push @expanded_atom_ids, $atom_id;
-
             next if $visited{$atom_id};
             $visited{$atom_id} = 1;
 
             next if $reference_atom_site->{$atom_id}{'group_PDB'} ne 'HETATM';
+
+            push @expanded_atom_ids, $atom_id;
 
             next if ! exists $reference_atom_site->{$atom_id}
                                                    {'connections_hetatom'} &&
