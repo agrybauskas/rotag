@@ -1253,12 +1253,17 @@ sub follow_hetatoms
             next if $visited{$atom_id};
             $visited{$atom_id} = 1;
 
+            next if $reference_atom_site->{$atom_id}{'group_PDB'} ne 'HETATM';
+
             next if ! exists $reference_atom_site->{$atom_id}
-                                                   {'connections_hetatom'};
+                                                   {'connections_hetatom'} &&
+                    ! exists $reference_atom_site->{$atom_id}
+                                                   {'connections'};
 
             push @updated_next_atom_ids,
                 grep { ! $visited{$_} }
-                    @{ $reference_atom_site->{$atom_id}{'connections_hetatom'} };
+                     ( @{ $reference_atom_site->{$atom_id}{'connections_hetatom'} },
+                       @{ $reference_atom_site->{$atom_id}{'connections'} } );
         }
 
         @next_atom_ids = @updated_next_atom_ids;
