@@ -390,10 +390,6 @@ sub assign_hetatoms
 
                     $last_atom_id++;
                 }
-
-                push @next_atom_ids,
-                    grep { ! $visited_atom_ids{$_} }
-                        @{ $related_atom_ids };
             }
         }
 
