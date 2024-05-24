@@ -347,10 +347,14 @@ sub assign_hetatoms
         my %visited = ();
         my %tracked_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
+            # print STDERR "RESIDUE ATOM ID: $residue_atom_id\n";
+
             my @next_atom_ids = ( keys %{ $connections->{$residue_atom_id} } );
 
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
+
+                # print STDERR "    ATOM ID: $residue_atom_id\n";
 
                 my $unique_residue_key =
                     unique_residue_key( $ref_atom_site->{$atom_id} );
@@ -360,6 +364,8 @@ sub assign_hetatoms
                 for my $related_atom_id ( @{ $related_atom_ids } ) {
                     next if $visited{$residue_atom_id}{$related_atom_id} ||
                         $visited{$related_atom_id}{$residue_atom_id};
+
+                    # print STDERR "        RELATED ATOM ID: $related_atom_id\n";
 
                     $visited{$residue_atom_id}{$related_atom_id} = 1;
                     $visited{$related_atom_id}{$residue_atom_id} = 1;
@@ -381,7 +387,10 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
+                    # print STDERR "            ASSIGNED ATOM ID: $last_atom_id\n";
+
                     if( $connections->{$residue_atom_id}{$related_atom_id} ) {
+                        # print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
                         connect_atoms_explicitly(
                             $atom_site,
                             [ $residue_atom_id ],
