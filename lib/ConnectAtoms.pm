@@ -344,14 +344,13 @@ sub assign_hetatoms
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my $residue_atom_ids = $unique_residue_keys->{$unique_residue_key};
 
-        my %visited_atom_ids = ();
+        my %visited = ();
         my %tracked_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
             my @next_atom_ids = ( keys %{ $connections->{$residue_atom_id} } );
 
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
-                $visited_atom_ids{$atom_id} = 1;
 
                 my $unique_residue_key =
                     unique_residue_key( $ref_atom_site->{$atom_id} );
@@ -359,6 +358,12 @@ sub assign_hetatoms
                     $all_unique_residue_keys->{$unique_residue_key};
 
                 for my $related_atom_id ( @{ $related_atom_ids } ) {
+                    next if $visited{$residue_atom_id}{$related_atom_id} ||
+                        $visited{$related_atom_id}{$residue_atom_id};
+
+                    $visited{$residue_atom_id}{$related_atom_id} = 1;
+                    $visited{$related_atom_id}{$residue_atom_id} = 1;
+
                     $atom_site->{$related_atom_id} =
                         clone $ref_atom_site->{$related_atom_id};
 
