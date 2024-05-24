@@ -358,10 +358,11 @@ sub assign_hetatoms
 
                 my $unique_residue_key =
                     unique_residue_key( $ref_atom_site->{$atom_id} );
-                my $related_atom_ids =
-                    $all_unique_residue_keys->{$unique_residue_key};
+                my %related_atom_ids =
+                    map { $_ => 1 }
+                       @{ $all_unique_residue_keys->{$unique_residue_key} };
 
-                for my $related_atom_id ( @{ $related_atom_ids } ) {
+                for my $related_atom_id ( sort keys %related_atom_ids ) {
                     next if $visited{$residue_atom_id}{$related_atom_id} ||
                         $visited{$related_atom_id}{$residue_atom_id};
 
@@ -390,7 +391,7 @@ sub assign_hetatoms
                     # print STDERR "            ASSIGNED ATOM ID: $last_atom_id\n";
 
                     if( $connections->{$residue_atom_id}{$related_atom_id} ) {
-                        # print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
+                        print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
                         connect_atoms_explicitly(
                             $atom_site,
                             [ $residue_atom_id ],
@@ -401,6 +402,14 @@ sub assign_hetatoms
                               { 'connection_type' => 'connections_hetatom' } ),
                         );
                     }
+
+                    # print STDERR "            NEXT ATOM IDS: " .
+                    #     join( ", ",
+                    #           grep { ! $visited{$_}{$related_atom_id} }
+                    #           grep { ! $visited{$related_atom_id}{$_} }
+                    #           grep { ! $related_atom_ids{$_} }
+                    #           keys %{ $connections->{$related_atom_id} } ) .
+                    #     "\n";
 
                     $last_atom_id++;
                 }
