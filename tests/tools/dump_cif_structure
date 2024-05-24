@@ -32,6 +32,7 @@ my %options;
 my $is_connected = 0;
 my $is_hybridized = 0;
 my $include_heteroatoms = 0;
+my $include_struct_conn = 0;
 my $apply_rotation_only = 0;
 my $apply_length_translation_only = 0;
 my $apply_angle_bending_only = 0;
@@ -40,6 +41,7 @@ GetOptions(
     "c" => sub { $is_connected = 1 },
     "h" => sub { $is_hybridized = 1 },
     "H" => sub { $include_heteroatoms = 1 },
+    "S" => sub { $include_struct_conn = 1 },
     "r" => sub { $apply_rotation_only = 1 },
     "l" => sub { $apply_length_translation_only = 1 },
     "a" => sub { $apply_angle_bending_only = 1 }
@@ -83,8 +85,17 @@ foreach my $pdbx_file ( @ARGV ) {
         rotation_translation( $parameters, $atom_site );
     }
 
-    my $cif_dump_structure = Dumper( $atom_site );
-    $cif_dump_structure =~ s/\$VAR[0..9]*.*=\s*//g;
-    $cif_dump_structure =~ s/};/}/g;
-    print( $cif_dump_structure );
+    if( $include_struct_conn ) {
+        my $cif_dump =
+            Dumper( { '_atom_site' => $atom_site,
+                      '_struct_conn' => $struct_conn } );
+        $cif_dump =~ s/\$VAR[0..9]*.*=\s*//g;
+        $cif_dump =~ s/};/}/g;
+        print( $cif_dump );
+    } else {
+        my $cif_dump_structure = Dumper( $atom_site );
+        $cif_dump_structure =~ s/\$VAR[0..9]*.*=\s*//g;
+        $cif_dump_structure =~ s/};/}/g;
+        print( $cif_dump_structure );
+    }
 }
