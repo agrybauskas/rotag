@@ -348,7 +348,7 @@ sub assign_hetatoms
         my %visited_bonds = ();
         my %tracked_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
-            print STDERR "RESIDUE ATOM ID: $residue_atom_id\n";
+            # print STDERR "RESIDUE ATOM ID: $residue_atom_id\n";
 
             my @next_atom_ids = ( keys %{ $connections->{$residue_atom_id} } );
 
@@ -358,7 +358,7 @@ sub assign_hetatoms
                 next if $visited_atoms{$atom_id};
                 $visited_atoms{$atom_id} = 1;
 
-                print STDERR "    ATOM ID: $atom_id\n";
+                # print STDERR "    ATOM ID: $atom_id\n";
 
                 my $unique_residue_key =
                     unique_residue_key( $ref_atom_site->{$atom_id} );
@@ -367,12 +367,10 @@ sub assign_hetatoms
                        @{ $all_unique_residue_keys->{$unique_residue_key} };
 
                 for my $related_atom_id ( sort keys %related_atom_ids ) {
-                    next if $related_atom_id eq $atom_id;
-
                     next if $visited_bonds{$residue_atom_id}{$related_atom_id} ||
                         $visited_bonds{$related_atom_id}{$residue_atom_id};
 
-                    print STDERR "        RELATED ATOM ID: $related_atom_id\n";
+                    # print STDERR "        RELATED ATOM ID: $related_atom_id\n";
 
                     $visited_bonds{$residue_atom_id}{$related_atom_id} = 1;
                     $visited_bonds{$related_atom_id}{$residue_atom_id} = 1;
@@ -394,10 +392,10 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    print STDERR "            ASSIGNED ATOM ID: $last_atom_id\n";
+                    # print STDERR "            ASSIGNED ATOM ID: $last_atom_id\n";
 
                     if( $connections->{$residue_atom_id}{$related_atom_id} ) {
-                        print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
+                        # print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
 
                         connect_atoms_explicitly(
                             $atom_site,
@@ -416,13 +414,13 @@ sub assign_hetatoms
                         grep { ! $related_atom_ids{$_} }
                         keys %{ $connections->{$related_atom_id} };
 
-                    print STDERR "            NEXT ATOM IDS: " .
-                        join( ", ",
-                              grep { ! $visited_bonds{$_}{$related_atom_id} }
-                              grep { ! $visited_bonds{$related_atom_id}{$_} }
-                              grep { ! $related_atom_ids{$_} }
-                              keys %{ $connections->{$related_atom_id} } ) .
-                        "\n";
+                    # print STDERR "            NEXT ATOM IDS: " .
+                    #     join( ", ",
+                    #           grep { ! $visited_bonds{$_}{$related_atom_id} }
+                    #           grep { ! $visited_bonds{$related_atom_id}{$_} }
+                    #           grep { ! $related_atom_ids{$_} }
+                    #           keys %{ $connections->{$related_atom_id} } ) .
+                    #     "\n";
 
                     $last_atom_id++;
                 }
