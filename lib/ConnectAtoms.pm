@@ -348,7 +348,7 @@ sub assign_hetatoms
         my %visited_bonds = ();
         my %tracked_atom_ids = ();
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
-            # print STDERR "RESIDUE ATOM ID: $residue_atom_id\n";
+            print STDERR "RESIDUE ATOM ID: $residue_atom_id\n";
 
             my @next_atom_ids = ( keys %{ $connections->{$residue_atom_id} } );
 
@@ -358,7 +358,7 @@ sub assign_hetatoms
                 next if $visited_atoms{$atom_id};
                 $visited_atoms{$atom_id} = 1;
 
-                # print STDERR "    ATOM ID: $atom_id\n";
+                print STDERR "    ATOM ID: $atom_id\n";
 
                 my $unique_residue_key =
                     unique_residue_key( $ref_atom_site->{$atom_id} );
@@ -410,7 +410,6 @@ sub assign_hetatoms
 
                     push @next_atom_ids,
                         grep { ! $visited_bonds{$_}{$related_atom_id} }
-                        grep { ! $visited_bonds{$related_atom_id}{$_} }
                         grep { ! $related_atom_ids{$_} }
                         keys %{ $connections->{$related_atom_id} };
 
