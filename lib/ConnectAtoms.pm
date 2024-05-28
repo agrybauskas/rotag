@@ -370,7 +370,7 @@ sub assign_hetatoms
                     next if $visited_bonds{$residue_atom_id}{$related_atom_id} ||
                         $visited_bonds{$related_atom_id}{$residue_atom_id};
 
-                    # print STDERR "        RELATED ATOM ID: $related_atom_id\n";
+                    print STDERR "        RELATED ATOM ID: $related_atom_id\n";
 
                     $visited_bonds{$residue_atom_id}{$related_atom_id} = 1;
                     $visited_bonds{$related_atom_id}{$residue_atom_id} = 1;
@@ -392,10 +392,10 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    # print STDERR "            ASSIGNED ATOM ID: $last_atom_id\n";
+                    print STDERR "            ASSIGNED ATOM ID: $last_atom_id\n";
 
                     if( $connections->{$residue_atom_id}{$related_atom_id} ) {
-                        # print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
+                        print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
 
                         connect_atoms_explicitly(
                             $atom_site,
@@ -413,13 +413,12 @@ sub assign_hetatoms
                         grep { ! $related_atom_ids{$_} }
                         keys %{ $connections->{$related_atom_id} };
 
-                    # print STDERR "            NEXT ATOM IDS: " .
-                    #     join( ", ",
-                    #           grep { ! $visited_bonds{$_}{$related_atom_id} }
-                    #           grep { ! $visited_bonds{$related_atom_id}{$_} }
-                    #           grep { ! $related_atom_ids{$_} }
-                    #           keys %{ $connections->{$related_atom_id} } ) .
-                    #     "\n";
+                    print STDERR "            NEXT ATOM IDS: " .
+                        join( ", ",
+                              grep { ! $visited_bonds{$_}{$related_atom_id} }
+                              grep { ! $related_atom_ids{$_} }
+                              keys %{ $connections->{$related_atom_id} } ) .
+                        "\n";
 
                     $last_atom_id++;
                 }
