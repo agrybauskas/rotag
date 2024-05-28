@@ -370,6 +370,29 @@ sub assign_hetatoms
                     grep  { ! $visited_atoms{$_} }
                     grep  { ! $related_atom_ids{$_} }
                     keys %{ $connections->{$related_atom_id} };
+
+                next if $seed_atoms{$related_atom_id};
+
+                $atom_site->{$related_atom_id} =
+                    clone $ref_atom_site->{$related_atom_id};
+
+                my $connection_type =
+                    $connections->{$atom_id}{$related_atom_id};
+
+                replace_atom_site_ids( $atom_site,
+                                       [ { 'from' => $related_atom_id,
+                                           'to' => $last_atom_id } ],
+                                       $options );
+
+                $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
+
+                $tracked_atom_ids{$related_atom_id} = $last_atom_id;
+
+                push @assigned_atom_ids, $last_atom_id;
+
+                print STDERR "        ASSIGNED ATOM ID: $last_atom_id\n";
+
+                $last_atom_id++
             }
         }
 
