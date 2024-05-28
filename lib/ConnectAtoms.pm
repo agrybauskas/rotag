@@ -350,7 +350,7 @@ sub assign_hetatoms
         for my $residue_atom_id ( @{ $residue_atom_ids } ) {
             print STDERR "RESIDUE ATOM ID: $residue_atom_id\n";
 
-            my @next_atom_ids = ( keys %{ $connections->{$residue_atom_id} } );
+            my @next_atom_ids = ( $residue_atom_id );
 
             while( @next_atom_ids ) {
                 my ( $atom_id ) = pop @next_atom_ids;
