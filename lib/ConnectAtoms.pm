@@ -342,90 +342,117 @@ sub assign_hetatoms
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
     my $alt_id = 1;
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
-        my $residue_atom_ids = $unique_residue_keys->{$unique_residue_key};
+        my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
+        my %seed_atoms = map { $_ => 1 } @next_atom_ids;
 
         my %visited_atoms = ();
-        my %visited_bonds = ();
         my %tracked_atom_ids = ();
-        for my $residue_atom_id ( @{ $residue_atom_ids } ) {
-            print STDERR "RESIDUE ATOM ID: $residue_atom_id\n";
+        while( @next_atom_ids ) {
+            my ( $atom_id ) = pop @next_atom_ids;
 
-            my @next_atom_ids = ( $residue_atom_id );
+            next if $visited_atoms{$atom_id};
+            $visited_atoms{$atom_id} = 1;
 
-            while( @next_atom_ids ) {
-                my ( $atom_id ) = pop @next_atom_ids;
+            print STDERR "ATOM ID: $atom_id\n";
 
-                next if $visited_atoms{$atom_id};
-                $visited_atoms{$atom_id} = 1;
+            my $unique_residue_key =
+                unique_residue_key( $ref_atom_site->{$atom_id} );
+            my %related_atom_ids =
+                map { $_ => 1 }
+                   @{ $all_unique_residue_keys->{$unique_residue_key} };
 
-                print STDERR "    ATOM ID: $atom_id\n";
+            for my $related_atom_id ( sort keys %related_atom_ids ) {
+                $visited_atoms{$related_atom_id} = 1;
 
-                my $unique_residue_key =
-                    unique_residue_key( $ref_atom_site->{$atom_id} );
-                my %related_atom_ids =
-                    map { $_ => 1 }
-                       @{ $all_unique_residue_keys->{$unique_residue_key} };
+                print STDERR "    RELATED ATOM ID: $related_atom_id\n";
 
-                for my $related_atom_id ( sort keys %related_atom_ids ) {
-                    next if $visited_bonds{$residue_atom_id}{$related_atom_id} ||
-                        $visited_bonds{$related_atom_id}{$residue_atom_id};
-
-                    print STDERR "        RELATED ATOM ID: $related_atom_id\n";
-
-                    $visited_bonds{$residue_atom_id}{$related_atom_id} = 1;
-                    $visited_bonds{$related_atom_id}{$residue_atom_id} = 1;
-
-                    $atom_site->{$related_atom_id} =
-                        clone $ref_atom_site->{$related_atom_id};
-
-                    my $connection_type =
-                        $connections->{$atom_id}{$related_atom_id};
-
-                    replace_atom_site_ids( $atom_site,
-                                           [ { 'from' => $related_atom_id,
-                                               'to' => $last_atom_id } ],
-                                           $options );
-
-                    $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
-
-                    $tracked_atom_ids{$related_atom_id} = $last_atom_id;
-
-                    push @assigned_atom_ids, $last_atom_id;
-
-                    print STDERR "            ASSIGNED ATOM ID: $last_atom_id\n";
-
-                    if( $connections->{$residue_atom_id}{$related_atom_id} ) {
-                        print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
-
-                        connect_atoms_explicitly(
-                            $atom_site,
-                            [ $residue_atom_id ],
-                            [ $tracked_atom_ids{$related_atom_id} ],
-                            ( defined $connection_type &&
-                              $connection_type eq 'covale' ?
-                              { 'connection_type' => 'connections' } :
-                              { 'connection_type' => 'connections_hetatom' } ),
-                        );
-                    }
-
-                    push @next_atom_ids,
-                        grep { ! $visited_bonds{$_}{$related_atom_id} }
-                        grep { ! $related_atom_ids{$_} }
-                        keys %{ $connections->{$related_atom_id} };
-
-                    print STDERR "            NEXT ATOM IDS: " .
-                        join( ", ",
-                              grep { ! $visited_bonds{$_}{$related_atom_id} }
-                              grep { ! $related_atom_ids{$_} }
-                              keys %{ $connections->{$related_atom_id} } ) .
-                        "\n";
-
-                    $last_atom_id++;
-                }
+                push @next_atom_ids,
+                    grep  { ! $visited_atoms{$_} }
+                    grep  { ! $related_atom_ids{$_} }
+                    keys %{ $connections->{$related_atom_id} };
             }
         }
 
-        $alt_id++;
+        # my %visited_atoms = ();
+        # my %visited_bonds = ();
+        # my %tracked_atom_ids = ();
+        # for my $residue_atom_id ( @{ $residue_atom_ids } ) {
+        #     print STDERR "RESIDUE ATOM ID: $residue_atom_id\n";
+
+        #     my @next_atom_ids = ( $residue_atom_id );
+
+        #     while( @next_atom_ids ) {
+        #         my ( $atom_id ) = pop @next_atom_ids;
+
+
+        #         print STDERR "    ATOM ID: $atom_id\n";
+
+        #         my $unique_residue_key =
+        #             unique_residue_key( $ref_atom_site->{$atom_id} );
+        #         my %related_atom_ids =
+        #             map { $_ => 1 }
+        #                @{ $all_unique_residue_keys->{$unique_residue_key} };
+
+        #         for my $related_atom_id ( sort keys %related_atom_ids ) {
+        #             next if $visited_bonds{$residue_atom_id}{$related_atom_id} ||
+        #                 $visited_bonds{$related_atom_id}{$residue_atom_id};
+
+        #             print STDERR "        RELATED ATOM ID: $related_atom_id\n";
+
+        #             $visited_bonds{$residue_atom_id}{$related_atom_id} = 1;
+        #             $visited_bonds{$related_atom_id}{$residue_atom_id} = 1;
+
+        #             $atom_site->{$related_atom_id} =
+        #                 clone $ref_atom_site->{$related_atom_id};
+
+        #             my $connection_type =
+        #                 $connections->{$atom_id}{$related_atom_id};
+
+        #             replace_atom_site_ids( $atom_site,
+        #                                    [ { 'from' => $related_atom_id,
+        #                                        'to' => $last_atom_id } ],
+        #                                    $options );
+
+        #             $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
+
+        #             $tracked_atom_ids{$related_atom_id} = $last_atom_id;
+
+        #             push @assigned_atom_ids, $last_atom_id;
+
+        #             print STDERR "            ASSIGNED ATOM ID: $last_atom_id\n";
+
+        #             if( $connections->{$residue_atom_id}{$related_atom_id} ) {
+        #                 print STDERR "            CONNECTED ATOM ID: $last_atom_id\n";
+
+        #                 connect_atoms_explicitly(
+        #                     $atom_site,
+        #                     [ $residue_atom_id ],
+        #                     [ $tracked_atom_ids{$related_atom_id} ],
+        #                     ( defined $connection_type &&
+        #                       $connection_type eq 'covale' ?
+        #                       { 'connection_type' => 'connections' } :
+        #                       { 'connection_type' => 'connections_hetatom' } ),
+        #                 );
+        #             }
+
+        #             push @next_atom_ids,
+        #                 grep { ! $visited_bonds{$_}{$related_atom_id} }
+        #                 grep { ! $related_atom_ids{$_} }
+        #                 keys %{ $connections->{$related_atom_id} };
+
+        #             print STDERR "            NEXT ATOM IDS: " .
+        #                 join( ", ",
+        #                       grep { ! $visited_bonds{$_}{$related_atom_id} }
+        #                       grep { ! $related_atom_ids{$_} }
+        #                       keys %{ $connections->{$related_atom_id} } ) .
+        #                 "\n";
+
+        #             $last_atom_id++;
+        #         }
+        #     }
+        # }
+
+        # $alt_id++;
     }
 
     return \@assigned_atom_ids;
