@@ -392,6 +392,12 @@ sub assign_hetatoms
 
                 print STDERR "        ASSIGNED ATOM ID: $last_atom_id\n";
 
+                for my $next_atom_id ( @next_atom_ids ) {
+                    next if ! $connections->{$related_atom_id}{$next_atom_id};
+
+                    print STDERR "        CONNECTION: $related_atom_id <-> $next_atom_id\n";
+                }
+
                 $last_atom_id++
             }
         }
