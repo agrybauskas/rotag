@@ -396,6 +396,13 @@ sub assign_hetatoms
                     next if ! $connections->{$related_atom_id}{$next_atom_id};
 
                     # print STDERR "        CONNECTION: $related_atom_id <-> $next_atom_id\n";
+                    # print STDERR "            ASSIGNED CONNECTION: " .
+                    #     ( exists $tracked_atom_ids{$related_atom_id} ?
+                    #       $tracked_atom_ids{$related_atom_id} :
+                    #       $related_atom_id ) . ' <-> ' .
+                    #     ( exists $tracked_atom_ids{$next_atom_id} ?
+                    #       $tracked_atom_ids{$next_atom_id} :
+                    #       $next_atom_id ) . "\n";
 
                     connect_atoms_explicitly(
                         $atom_site,
