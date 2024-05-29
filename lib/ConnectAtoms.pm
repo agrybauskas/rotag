@@ -380,31 +380,30 @@ sub assign_hetatoms
 
                 push @assigned_atom_ids, $last_atom_id;
 
+                my $connection_type =
+                    $connections->{$atom_id}{$related_atom_id};
+
+                for my $next_atom_id ( @next_atom_ids ) {
+                    # next if ! $connections->{$related_atom_id}{$next_atom_id};
+
+                    # connect_atoms_explicitly(
+                    #     $atom_site,
+                    #     [ $tracked_atom_ids{$related_atom_id} ],
+                    #     [ exists $tracked_atom_ids{$next_atom_id} ?
+                    #       $tracked_atom_ids{$next_atom_id} :
+                    #       $next_atom_id ],
+                    #     ( defined $connection_type &&
+                    #       $connection_type eq 'covale' ?
+                    #       { 'connection_type' => 'connections' } :
+                    #       { 'connection_type' => 'connections_hetatom' } ),
+                    # );
+                }
+
                 $last_atom_id++
             }
 
             $alt_id++;
         }
-
-        # my $connection_type =
-        #     $connections->{$atom_id}{$related_atom_id};
-
-
-        # for my $next_atom_id ( @next_atom_ids ) {
-        #     next if ! $connections->{$related_atom_id}{$next_atom_id};
-
-        #     connect_atoms_explicitly(
-        #         $atom_site,
-        #         [ $tracked_atom_ids{$related_atom_id} ],
-        #         [ exists $tracked_atom_ids{$next_atom_id} ?
-        #           $tracked_atom_ids{$next_atom_id} :
-        #           $next_atom_id ],
-        #         ( defined $connection_type &&
-        #           $connection_type eq 'covale' ?
-        #           { 'connection_type' => 'connections' } :
-        #           { 'connection_type' => 'connections_hetatom' } ),
-        #     );
-        # }
     }
 
     return \@assigned_atom_ids;
