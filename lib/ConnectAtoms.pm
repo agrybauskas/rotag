@@ -344,7 +344,6 @@ sub assign_hetatoms
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
         my %seed_atoms = map { $_ => 1 } @next_atom_ids;
-
         my %visited_atoms = ();
         my %tracked_atom_ids = ();
         my %rev_tracked_atom_ids = ();
@@ -409,7 +408,6 @@ sub assign_hetatoms
         #           { 'connection_type' => 'connections_hetatom' } ),
         #     );
         # }
-
     }
 
     return \@assigned_atom_ids;
