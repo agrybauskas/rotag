@@ -384,7 +384,8 @@ sub assign_hetatoms
                     $connections->{$atom_id}{$related_atom_id};
 
                 for my $next_atom_id ( @next_atom_ids ) {
-                    # next if ! $connections->{$related_atom_id}{$next_atom_id};
+                    next if ! $connections->{$related_atom_id}{$next_atom_id} ||
+                        ! $connections->{$next_atom_id}{$related_atom_id};
 
                     # connect_atoms_explicitly(
                     #     $atom_site,
