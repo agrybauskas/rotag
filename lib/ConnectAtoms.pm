@@ -345,8 +345,7 @@ sub assign_hetatoms
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
         my %seed_atoms = map { $_ => 1 } @next_atom_ids;
         my %visited_atoms = ();
-        my %tracked_atom_ids = ();
-        my %rev_tracked_atom_ids = ();
+        my %tracked_connections = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = pop @next_atom_ids;
 
@@ -372,18 +371,12 @@ sub assign_hetatoms
                 $atom_site->{$related_atom_id} =
                     clone $ref_atom_site->{$related_atom_id};
 
-                my $connection_type =
-                    $connections->{$atom_id}{$related_atom_id};
-
                 replace_atom_site_ids( $atom_site,
                                        [ { 'from' => $related_atom_id,
                                            'to' => $last_atom_id } ],
                                        $options );
 
                 $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
-
-                $tracked_atom_ids{$last_atom_id} = $related_atom_id;
-                $rev_tracked_atom_ids{$related_atom_id}{$last_atom_id} = 1;
 
                 push @assigned_atom_ids, $last_atom_id;
 
@@ -392,6 +385,10 @@ sub assign_hetatoms
 
             $alt_id++;
         }
+
+        # my $connection_type =
+        #     $connections->{$atom_id}{$related_atom_id};
+
 
         # for my $next_atom_id ( @next_atom_ids ) {
         #     next if ! $connections->{$related_atom_id}{$next_atom_id};
