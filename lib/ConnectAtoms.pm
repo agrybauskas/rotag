@@ -347,13 +347,14 @@ sub assign_hetatoms
 
         my %visited_atoms = ();
         my %tracked_atom_ids = ();
+        my %rev_tracked_atom_ids = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = pop @next_atom_ids;
 
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
-            print STDERR "ATOM ID: $atom_id\n";
+            # print STDERR "ATOM ID: $atom_id\n";
 
             my $unique_residue_key =
                 unique_residue_key( $ref_atom_site->{$atom_id} );
@@ -364,7 +365,7 @@ sub assign_hetatoms
             for my $related_atom_id ( sort keys %related_atom_ids ) {
                 $visited_atoms{$related_atom_id} = 1;
 
-                print STDERR "    RELATED ATOM ID: $related_atom_id\n";
+                # print STDERR "    RELATED ATOM ID: $related_atom_id\n";
 
                 push @next_atom_ids,
                     grep  { ! $visited_atoms{$_} }
@@ -386,36 +387,37 @@ sub assign_hetatoms
 
                 $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
 
-                $tracked_atom_ids{$related_atom_id} = $last_atom_id;
+                $tracked_atom_ids{$last_atom_id} = $related_atom_id;
+                $rev_tracked_atom_ids{$related_atom_id}{$last_atom_id} = 1;
 
                 push @assigned_atom_ids, $last_atom_id;
 
-                print STDERR "        ASSIGNED ATOM ID: $last_atom_id\n";
+                # print STDERR "        ASSIGNED ATOM ID: $last_atom_id\n";
 
-                for my $next_atom_id ( @next_atom_ids ) {
-                    next if ! $connections->{$related_atom_id}{$next_atom_id};
+                # for my $next_atom_id ( @next_atom_ids ) {
+                #     next if ! $connections->{$related_atom_id}{$next_atom_id};
 
-                    print STDERR "        CONNECTION: $related_atom_id <-> $next_atom_id\n";
-                    print STDERR "        ASSIGNED CONNECTION: " .
-                        ( exists $tracked_atom_ids{$related_atom_id} ?
-                          $tracked_atom_ids{$related_atom_id} :
-                          $related_atom_id ) . ' <-> ' .
-                        ( exists $tracked_atom_ids{$next_atom_id} ?
-                          $tracked_atom_ids{$next_atom_id} :
-                          $next_atom_id ) . "\n";
+                #     # print STDERR "        CONNECTION: $related_atom_id <-> $next_atom_id\n";
+                #     # print STDERR "        ASSIGNED CONNECTION: " .
+                #     #     ( exists $tracked_atom_ids{$related_atom_id} ?
+                #     #       $tracked_atom_ids{$related_atom_id} :
+                #     #       $related_atom_id ) . ' <-> ' .
+                #     #     ( exists $tracked_atom_ids{$next_atom_id} ?
+                #     #       $tracked_atom_ids{$next_atom_id} :
+                #     #       $next_atom_id ) . "\n";
 
-                    connect_atoms_explicitly(
-                        $atom_site,
-                        [ $tracked_atom_ids{$related_atom_id} ],
-                        [ exists $tracked_atom_ids{$next_atom_id} ?
-                          $tracked_atom_ids{$next_atom_id} :
-                          $next_atom_id ],
-                        ( defined $connection_type &&
-                          $connection_type eq 'covale' ?
-                          { 'connection_type' => 'connections' } :
-                          { 'connection_type' => 'connections_hetatom' } ),
-                    );
-                }
+                #     # connect_atoms_explicitly(
+                #     #     $atom_site,
+                #     #     [ $tracked_atom_ids{$related_atom_id} ],
+                #     #     [ exists $tracked_atom_ids{$next_atom_id} ?
+                #     #       $tracked_atom_ids{$next_atom_id} :
+                #     #       $next_atom_id ],
+                #     #     ( defined $connection_type &&
+                #     #       $connection_type eq 'covale' ?
+                #     #       { 'connection_type' => 'connections' } :
+                #     #       { 'connection_type' => 'connections_hetatom' } ),
+                #     # );
+                # }
 
                 $last_atom_id++
             }
