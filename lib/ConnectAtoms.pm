@@ -343,11 +343,15 @@ sub assign_hetatoms
     my $alt_id = 1;
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
+
+        my %tracked_atom_ids = ();
+        for my $next_atom_id ( @next_atom_ids ) {
+            $tracked_atom_ids{$next_atom_id} = $next_atom_id;
+        }
+
         my %seed_atoms = map { $_ => 1 } @next_atom_ids;
         my %visited_atoms = ();
         my %visited_bonds = ();
-        my %tracked_atom_ids = ();
-        my %tracked_connections = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = pop @next_atom_ids;
 
@@ -387,27 +391,17 @@ sub assign_hetatoms
                 my $connection_type =
                     $connections->{$atom_id}{$related_atom_id};
 
-                for my $next_atom_id ( @next_atom_ids ) {
-                    next if ! $connections->{$related_atom_id}{$next_atom_id} ||
-                        ! $connections->{$next_atom_id}{$related_atom_id};
-
-                    next if $visited_bonds{$related_atom_id}{$next_atom_id} ||
-                        $visited_bonds{$next_atom_id}{$related_atom_id};
-
-                    $visited_bonds{$related_atom_id}{$next_atom_id} = 1;
-
-                    # connect_atoms_explicitly(
-                    #     $atom_site,
-                    #     [ $tracked_atom_ids{$related_atom_id} ],
-                    #     [ exists $tracked_atom_ids{$next_atom_id} ?
-                    #       $tracked_atom_ids{$next_atom_id} :
-                    #       $next_atom_id ],
-                    #     ( defined $connection_type &&
-                    #       $connection_type eq 'covale' ?
-                    #       { 'connection_type' => 'connections' } :
-                    #       { 'connection_type' => 'connections_hetatom' } ),
-                    # );
-                }
+                # connect_atoms_explicitly(
+                #     $atom_site,
+                #     [ $tracked_atom_ids{$related_atom_id} ],
+                #     [ exists $tracked_atom_ids{$next_atom_id} ?
+                #       $tracked_atom_ids{$next_atom_id} :
+                #       $next_atom_id ],
+                #     ( defined $connection_type &&
+                #       $connection_type eq 'covale' ?
+                #       { 'connection_type' => 'connections' } :
+                #       { 'connection_type' => 'connections_hetatom' } ),
+                # );
 
                 $last_atom_id++
             }
