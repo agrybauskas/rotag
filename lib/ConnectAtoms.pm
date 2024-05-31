@@ -345,6 +345,7 @@ sub assign_hetatoms
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
         my %seed_atoms = map { $_ => 1 } @next_atom_ids;
         my %visited_atoms = ();
+        my %visited_bonds = ();
         my %tracked_connections = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = pop @next_atom_ids;
@@ -386,6 +387,11 @@ sub assign_hetatoms
                 for my $next_atom_id ( @next_atom_ids ) {
                     next if ! $connections->{$related_atom_id}{$next_atom_id} ||
                         ! $connections->{$next_atom_id}{$related_atom_id};
+
+                    next if $visited_bonds{$related_atom_id}{$next_atom_id} ||
+                        $visited_bonds{$next_atom_id}{$related_atom_id};
+
+                    $visited_bonds{$related_atom_id}{$next_atom_id} = 1;
 
                     # connect_atoms_explicitly(
                     #     $atom_site,
