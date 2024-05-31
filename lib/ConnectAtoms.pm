@@ -346,6 +346,7 @@ sub assign_hetatoms
         my %seed_atoms = map { $_ => 1 } @next_atom_ids;
         my %visited_atoms = ();
         my %visited_bonds = ();
+        my %tracked_atom_ids = ();
         my %tracked_connections = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = pop @next_atom_ids;
@@ -376,6 +377,8 @@ sub assign_hetatoms
                                        [ { 'from' => $related_atom_id,
                                            'to' => $last_atom_id } ],
                                        $options );
+
+                $tracked_atom_ids{$related_atom_id} = $last_atom_id;
 
                 $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
 
