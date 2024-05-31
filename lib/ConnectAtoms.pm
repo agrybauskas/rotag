@@ -388,20 +388,25 @@ sub assign_hetatoms
 
                 push @assigned_atom_ids, $last_atom_id;
 
-                my $connection_type =
-                    $connections->{$atom_id}{$related_atom_id};
+                for my $connected_atom_id ( keys %{ $connections->{$related_atom_id} } ) {
+                    next if $visited_bonds{$related_atom_id}{$connected_atom_id} ||
+                        $visited_bonds{$connected_atom_id}{$related_atom_id};
 
-                # connect_atoms_explicitly(
-                #     $atom_site,
-                #     [ $tracked_atom_ids{$related_atom_id} ],
-                #     [ exists $tracked_atom_ids{$next_atom_id} ?
-                #       $tracked_atom_ids{$next_atom_id} :
-                #       $next_atom_id ],
-                #     ( defined $connection_type &&
-                #       $connection_type eq 'covale' ?
-                #       { 'connection_type' => 'connections' } :
-                #       { 'connection_type' => 'connections_hetatom' } ),
-                # );
+                    $visited_bonds{$related_atom_id}{$connected_atom_id} = 1;
+
+                    my $connection_type =
+                        $connections->{$related_atom_id}{$connected_atom_id};
+
+                    connect_atoms_explicitly(
+                        $atom_site,
+                        [ $tracked_atom_ids{$related_atom_id} ],
+                        [ $tracked_atom_ids{$connected_atom_id} ],
+                        ( defined $connection_type &&
+                          $connection_type eq 'covale' ?
+                          { 'connection_type' => 'connections' } :
+                          { 'connection_type' => 'connections_hetatom' } ),
+                    );
+                }
 
                 $last_atom_id++
             }
