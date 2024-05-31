@@ -392,6 +392,9 @@ sub assign_hetatoms
                     next if $visited_bonds{$related_atom_id}{$connected_atom_id} ||
                         $visited_bonds{$connected_atom_id}{$related_atom_id};
 
+                    next if ! exists $tracked_atom_ids{$related_atom_id} ||
+                        ! exists $tracked_atom_ids{$connected_atom_id};
+
                     $visited_bonds{$related_atom_id}{$connected_atom_id} = 1;
 
                     my $connection_type =
