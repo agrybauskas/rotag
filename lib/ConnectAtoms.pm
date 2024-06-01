@@ -345,6 +345,10 @@ sub assign_hetatoms
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
         my %tracked_atom_ids = ();
+        foreach( @next_atom_ids ) {
+            $tracked_atom_ids{$_} = $_;
+        }
+
         my %visited_bonds = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = pop @next_atom_ids;
@@ -356,6 +360,7 @@ sub assign_hetatoms
                     map { $_ => 1 }
                        @{ $all_unique_residue_keys->{$connection_unique_key} };
 
+                # Clones and assigns proper atom ids.
                 for my $connection_related_atom_id (
                     sort keys %connection_related_atom_ids ) {
 
@@ -372,42 +377,31 @@ sub assign_hetatoms
                     $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
 
                     push @assigned_atom_ids, $last_atom_id;
+
+                    $last_atom_id++
                 }
 
-                $last_atom_id++
+                # Connects disjoint moieties first.
+                my $connection_type =
+                    $connections->{$atom_id}{$connection_atom_id};
+
+                connect_atoms_explicitly(
+                    $atom_site,
+                    [ $tracked_atom_ids{$atom_id} ],
+                    [ $tracked_atom_ids{$connection_atom_id} ],
+                    ( defined $connection_type &&
+                      $connection_type eq 'covale' ?
+                      { 'connection_type' => 'connections' } :
+                      { 'connection_type' => 'connections_hetatom' } ),
+                );
+
+                # Connects atoms in the ligand.
             }
 
-            # for my $related_atom_id ( sort keys %related_atom_ids ) {
-        #         push @next_atom_ids,
-        #             grep  { ! $visited_atoms{$_} }
-        #             grep  { ! $related_atom_ids{$_} }
-        #             keys %{ $connections->{$related_atom_id} };
-
-        #         for my $connected_atom_id ( keys %{ $connections->{$related_atom_id} } ) {
-        #             next if $visited_bonds{$related_atom_id}{$connected_atom_id} ||
-        #                 $visited_bonds{$connected_atom_id}{$related_atom_id};
-
-        #             next if ! exists $tracked_atom_ids{$related_atom_id} ||
-        #                 ! exists $tracked_atom_ids{$connected_atom_id};
-
-        #             $visited_bonds{$related_atom_id}{$connected_atom_id} = 1;
-
-        #             my $connection_type =
-        #                 $connections->{$related_atom_id}{$connected_atom_id};
-
-        #             connect_atoms_explicitly(
-        #                 $atom_site,
-        #                 [ $tracked_atom_ids{$related_atom_id} ],
-        #                 [ $tracked_atom_ids{$connected_atom_id} ],
-        #                 ( defined $connection_type &&
-        #                   $connection_type eq 'covale' ?
-        #                   { 'connection_type' => 'connections' } :
-        #                   { 'connection_type' => 'connections_hetatom' } ),
-        #             );
-        #         }
-
-        #         $last_atom_id++
-            # }
+            # push @next_atom_ids,
+            #     grep  { ! $visited_atoms{$_} }
+            #     grep  { ! $related_atom_ids{$_} }
+            #     keys %{ $connections->{$related_atom_id} };
 
             $alt_id++;
         }
