@@ -344,8 +344,8 @@ sub assign_hetatoms
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
-        # my %tracked_atom_ids = ();
-        # my %visited_bonds = ();
+        my %tracked_atom_ids = ();
+        my %visited_bonds = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = pop @next_atom_ids;
 
@@ -358,29 +358,30 @@ sub assign_hetatoms
 
                 for my $connection_related_atom_id (
                     sort keys %connection_related_atom_ids ) {
-                }
-            }
 
+                    $atom_site->{$connection_related_atom_id} =
+                        clone $ref_atom_site->{$connection_related_atom_id};
+
+                    replace_atom_site_ids( $atom_site,
+                                           [ { 'from' => $connection_related_atom_id,
+                                               'to' => $last_atom_id } ],
+                                           $options );
+
+                    $tracked_atom_ids{$connection_related_atom_id} = $last_atom_id;
+
+                    $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
+
+                    push @assigned_atom_ids, $last_atom_id;
+                }
+
+                $last_atom_id++
+            }
 
             # for my $related_atom_id ( sort keys %related_atom_ids ) {
         #         push @next_atom_ids,
         #             grep  { ! $visited_atoms{$_} }
         #             grep  { ! $related_atom_ids{$_} }
         #             keys %{ $connections->{$related_atom_id} };
-
-        #         $atom_site->{$related_atom_id} =
-        #             clone $ref_atom_site->{$related_atom_id};
-
-        #         replace_atom_site_ids( $atom_site,
-        #                                [ { 'from' => $related_atom_id,
-        #                                    'to' => $last_atom_id } ],
-        #                                $options );
-
-        #         $tracked_atom_ids{$related_atom_id} = $last_atom_id;
-
-        #         $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
-
-        #         push @assigned_atom_ids, $last_atom_id;
 
         #         for my $connected_atom_id ( keys %{ $connections->{$related_atom_id} } ) {
         #             next if $visited_bonds{$related_atom_id}{$connected_atom_id} ||
@@ -408,7 +409,7 @@ sub assign_hetatoms
         #         $last_atom_id++
             # }
 
-        #     $alt_id++;
+            $alt_id++;
         }
     }
 
