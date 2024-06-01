@@ -395,7 +395,11 @@ sub assign_hetatoms
                       { 'connection_type' => 'connections_hetatom' } ),
                 );
 
-                # Connects atoms in the ligand.
+                # Connects atoms inside the ligand.
+                for my $connection_related_atom_id (
+                    sort keys %connection_related_atom_ids ) {
+                }
+
             }
 
             # push @next_atom_ids,
