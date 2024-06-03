@@ -359,13 +359,14 @@ sub assign_hetatoms
             $visited_atoms{$atom_id} = 1;
 
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
+                next if $visited_bonds{$atom_id}{$connection_atom_id};
+
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
 
                 # Clones and assigns proper atom ids.
                 for my $connection_related_atom_id (
                     sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
-
                     $atom_site->{$connection_related_atom_id} =
                         clone $ref_atom_site->{$connection_related_atom_id};
 
@@ -413,6 +414,11 @@ sub assign_hetatoms
                             [ $tracked_atom_ids{$neighbour_related_atom_id} ],
                             ( { 'connection_type' => 'connections' } ),
                         );
+
+                        $visited_bonds{$connection_related_atom_id}
+                                      {$neighbour_related_atom_id} = 1;
+                        $visited_bonds{$neighbour_related_atom_id}
+                                      {$connection_related_atom_id} = 1;
                     }
                 }
 
@@ -427,9 +433,6 @@ sub assign_hetatoms
 
                     push @next_atom_ids, $connection_related_atom_id;
                 }
-
-                $visited_bonds{$atom_id}{$connection_atom_id} = 1;
-                $visited_bonds{$connection_atom_id}{$atom_id} = 1;
             }
 
             $alt_id++;
