@@ -338,6 +338,7 @@ sub assign_hetatoms
     my $connections =
         connections_from_struct_conn( $ref_atom_site, $struct_conn );
 
+    # TODO: has to be refactored.
     my @assigned_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
     my $alt_id = 1;
