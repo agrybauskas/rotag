@@ -358,13 +358,13 @@ sub assign_hetatoms
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
-            for my $connection_atom_id ( keys %{ $connections->{$atom_id} } ) {
+            for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
 
                 # Clones and assigns proper atom ids.
                 for my $connection_related_atom_id (
-                    @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
+                    sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
 
                     $atom_site->{$connection_related_atom_id} =
                         clone $ref_atom_site->{$connection_related_atom_id};
@@ -398,9 +398,9 @@ sub assign_hetatoms
 
                 # Connects atoms inside the ligand.
                 for my $connection_related_atom_id (
-                    @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
+                    sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
                     for my $neighbour_related_atom_id (
-                        keys %{ $connections->{$connection_related_atom_id} } ) {
+                        sort keys %{ $connections->{$connection_related_atom_id} } ) {
                         my $neighbour_connection_type =
                             $connections->{$connection_related_atom_id}
                                           {$neighbour_related_atom_id};
@@ -418,7 +418,7 @@ sub assign_hetatoms
 
                 # Adds atom ids that should be searched next.
                 for my $connection_related_atom_id (
-                    @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
+                    sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
                     next if $connection_atom_id eq $connection_related_atom_id;
 
                     next if ! grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
