@@ -360,7 +360,7 @@ sub assign_hetatoms
                     map { $_ => 1 }
                        @{ $all_unique_residue_keys->{$connection_unique_key} };
 
-                # Clones and assigns proper atom ids.
+                # Clones and assigns proper atom ids and adds next .
                 for my $connection_related_atom_id (
                     sort keys %connection_related_atom_ids ) {
 
@@ -426,6 +426,26 @@ sub assign_hetatoms
                                       {$neighbour_related_atom_id} = 1;
                         $visited_bonds{$neighbour_related_atom_id}
                                       {$connection_related_atom_id}= 1;
+                    }
+                }
+
+                # Adds atom ids that should be searched next.
+                for my $connection_related_atom_id (
+                    sort keys %connection_related_atom_ids ) {
+                    for my $neighbour_related_atom_id (
+                        keys %{ $connections->{$connection_related_atom_id} } ) {
+                        my $neighbour_connection_type =
+                            $connections->{$connection_related_atom_id}
+                                          {$neighbour_related_atom_id};
+
+                        next if $neighbour_connection_type eq 'covale';
+
+                        next if $visited_bonds{$connection_related_atom_id}
+                                              {$neighbour_related_atom_id} ||
+                                $visited_bonds{$neighbour_related_atom_id}
+                                              {$connection_related_atom_id};
+
+                        push @next_atom_ids, $neighbour_related_atom_id;
                     }
                 }
             }
