@@ -413,14 +413,13 @@ sub assign_hetatoms
                             $connections->{$connection_related_atom_id}
                                           {$neighbour_related_atom_id};
 
+                        next if $neighbour_connection_type ne 'covale';
+
                         connect_atoms_explicitly(
                             $atom_site,
                             [ $tracked_atom_ids{$connection_related_atom_id} ],
                             [ $tracked_atom_ids{$neighbour_related_atom_id} ],
-                            ( defined $neighbour_connection_type &&
-                              $neighbour_connection_type eq 'covale' ?
-                              { 'connection_type' => 'connections' } :
-                              { 'connection_type' => 'connections_hetatom' } ),
+                            ( { 'connection_type' => 'connections' } ),
                         );
 
                         $visited_bonds{$connection_related_atom_id}
@@ -430,11 +429,6 @@ sub assign_hetatoms
                     }
                 }
             }
-
-            # push @next_atom_ids,
-            #     grep  { ! $visited_atoms{$_} }
-            #     grep  { ! $related_atom_ids{$_} }
-            #     keys %{ $connections->{$related_atom_id} };
 
             $alt_id++;
         }
