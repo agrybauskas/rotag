@@ -391,36 +391,25 @@ sub assign_hetatoms
                     );
                 }
 
-                # # Connects atoms inside the ligand.
-                # for my $connection_related_atom_id (
-                #     sort keys %connection_related_atom_ids ) {
-                #     for my $neighbour_related_atom_id (
-                #         keys %{ $connections->{$connection_related_atom_id} } ) {
-                #         next if ! exists $tracked_atom_ids{$connection_related_atom_id} ||
-                #             ! exists $tracked_atom_ids{$neighbour_related_atom_id};
+                # Connects atoms inside the ligand.
+                for my $connection_related_atom_id (
+                    @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
+                    for my $neighbour_related_atom_id (
+                        keys %{ $connections->{$connection_related_atom_id} } ) {
+                        my $neighbour_connection_type =
+                            $connections->{$connection_related_atom_id}
+                                          {$neighbour_related_atom_id};
 
-                #         next if $visited_bonds{$connection_related_atom_id}
-                #                               {$neighbour_related_atom_id};
+                        next if $neighbour_connection_type ne 'covale';
 
-                #         my $neighbour_connection_type =
-                #             $connections->{$connection_related_atom_id}
-                #                           {$neighbour_related_atom_id};
-
-                #         next if $neighbour_connection_type ne 'covale';
-
-                #         connect_atoms_explicitly(
-                #             $atom_site,
-                #             [ $tracked_atom_ids{$connection_related_atom_id} ],
-                #             [ $tracked_atom_ids{$neighbour_related_atom_id} ],
-                #             ( { 'connection_type' => 'connections' } ),
-                #         );
-
-                #         $visited_bonds{$connection_related_atom_id}
-                #                       {$neighbour_related_atom_id} = 1;
-                #         $visited_bonds{$neighbour_related_atom_id}
-                #                       {$connection_related_atom_id}= 1;
-                #     }
-                # }
+                        connect_atoms_explicitly(
+                            $atom_site,
+                            [ $tracked_atom_ids{$connection_related_atom_id} ],
+                            [ $tracked_atom_ids{$neighbour_related_atom_id} ],
+                            ( { 'connection_type' => 'connections' } ),
+                        );
+                    }
+                }
 
                 # # Adds atom ids that should be searched next.
                 # for my $connection_related_atom_id (
