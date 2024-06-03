@@ -364,6 +364,11 @@ for my $pdbx_file ( @ARGV ) {
                       'pdbx_PDB_model_num' =>
                           $bond_length_site->{$residue_atom_id}{'pdbx_PDB_model_num'},
                       'label_alt_id' =>
+                          ( $calc_hetatoms &&
+                            defined $bond_length_site->{$residue_atom_id}
+                                                       {'origin_atom_id'} ) ?
+                          $bond_length_site->{$bond_length_site->{$residue_atom_id}{'origin_atom_id'}}
+                                             {'label_alt_id'} :
                           $bond_length_site->{$residue_atom_id}{'label_alt_id'},
                       'atom_1_id' =>
                           ( $calc_hetatoms &&
