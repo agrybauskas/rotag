@@ -378,7 +378,7 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    $last_atom_id++
+                    $last_atom_id++;
                 }
 
                 # Connects disjoint moieties first.
