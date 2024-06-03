@@ -231,6 +231,11 @@ for my $pdbx_file ( @ARGV ) {
                       'pdbx_PDB_model_num' =>
                           $dihedral_site->{$residue_atom_id}{'pdbx_PDB_model_num'},
                       'label_alt_id' =>
+                          ( $calc_hetatoms &&
+                            defined $dihedral_site->{$residue_atom_id}
+                                                    {'origin_atom_id'} ) ?
+                          $dihedral_site->{$dihedral_site->{$residue_atom_id}{'origin_atom_id'}}
+                                          {'label_alt_id'} :
                           $dihedral_site->{$residue_atom_id}{'label_alt_id'},
                       'atom_1_id' =>
                           ( $calc_hetatoms &&
