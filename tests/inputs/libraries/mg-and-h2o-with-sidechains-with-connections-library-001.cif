@@ -96,7 +96,7 @@ _struct_conn.ptnr2_label_atom_id
 _struct_conn.ptnr2_auth_seq_id
 _struct_conn.ptnr2_auth_asym_id
 metalc1 metalc 27 A OD1  27 A . C MG 201 A
-covale1 covale  . B  H1 101 A . B  O 101 A
-covale2 covale  . B   O 101 A . B H2 101 A
 metalc2 metalc  . C  MG 201 A . B  O 101 A
+covale1 covale  . B   O 101 A . B H1 101 A
+covale2 covale  . B   O 101 A . B H2 101 A
 #
