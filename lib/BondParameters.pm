@@ -30,7 +30,8 @@ use Measure qw( bond_angle
 use PDBxParser qw( expand
                    filter_new
                    follow_hetatoms
-                   split_by );
+                   split_by
+                   unique_residue_key );
 
 #
 # Identifies bonds that can be rotated by torsional angle.
@@ -799,12 +800,20 @@ sub bond_parameter_name_key
             $add_any_trailing_atoms && ( $i == 0 || $i == $#{ $bond_atom_ids })?
             '.' :
             $atom_site->{$bond_atom_ids->[$i]}{'label_atom_id'};
+        my $first_unique_residue_key =
+            unique_residue_key( $atom_site->{$bond_atom_ids->[$i]} );
+        my $second_unique_residue_key =
+            defined $bond_atom_ids->[$i+1] ?
+            unique_residue_key( $atom_site->{$bond_atom_ids->[$i+1]} ) : undef;
         my $bond_symbol =
             $i == $#{ $bond_atom_ids } ?
             '':
             ( $atom_site->{$bond_atom_ids->[$i]}{'group_PDB'} eq 'HETATM' &&
               $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'ATOM' ) ||
             ( $atom_site->{$bond_atom_ids->[$i]}{'group_PDB'} eq 'ATOM' &&
+              $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'HETATM' ) ||
+            ( $first_unique_residue_key ne $second_unique_residue_key &&
+              $atom_site->{$bond_atom_ids->[$i]}{'group_PDB'} eq 'HETATM' &&
               $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'HETATM' ) ?
             '.' : '-';
         push @bond_parameter_name_key_parts, $atom_symbol, $bond_symbol;
