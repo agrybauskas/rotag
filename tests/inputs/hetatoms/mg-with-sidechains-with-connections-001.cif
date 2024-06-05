@@ -4,8 +4,8 @@ loop_
 _struct_conn.id
 _struct_conn.conn_type_id
 _struct_conn.ptnr1_label_seq_id
-_struct_conn.pdbx_ptnr1_label_alt_id
 _struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
 _struct_conn.ptnr1_auth_seq_id
 _struct_conn.ptnr1_auth_asym_id
 _struct_conn.ptnr1_label_atom_id
