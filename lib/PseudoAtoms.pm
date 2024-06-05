@@ -402,7 +402,7 @@ sub generate_library
         hybridization( $parameters, $current_atom_site );
 
         assign_hetatoms( $parameters, $current_atom_site, $struct_conn,
-                         { 'keep_original' => 0 } );
+                         { 'ref_atom_site' => $ref_atom_site } );
 
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,
