@@ -343,6 +343,7 @@ sub generate_library
     my ( $args ) = @_;
     my $parameters = $args->{'parameters'};
     my $atom_site = $args->{'atom_site'};
+    my $ref_atom_site = $args->{'ref_atom_site'};
     my $struct_conn = $args->{'struct_conn'};
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
@@ -360,6 +361,7 @@ sub generate_library
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
     my $cutoff_atom = $parameters->{'_[local]_constants'}{'cutoff_atom'};
 
+    $ref_atom_site //= $atom_site;
     $struct_conn //= {};
     $conf_model //= 'rotation_only';
     $threads //= 1;
@@ -384,14 +386,14 @@ sub generate_library
     my %rotamer_library;
 
     my $atom_site_groups =
-        split_by( { 'atom_site' => $atom_site,
+        split_by( { 'atom_site' => $ref_atom_site,
                     'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
                     'append_dot' => 1  } );
 
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my ( $pdbx_model_num, $alt_id ) = split /,/, $atom_site_identifier;
         my $current_atom_site =
-            filter_new( $atom_site,
+            filter_new( $ref_atom_site,
                     { 'include' =>
                           {'id' => $atom_site_groups->{$atom_site_identifier}
                                                       {'atom_ids'} } } );
