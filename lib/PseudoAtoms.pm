@@ -401,8 +401,9 @@ sub generate_library
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
-        assign_hetatoms( $parameters, $current_atom_site, $struct_conn,
-                         { 'ref_atom_site' => $ref_atom_site } );
+        my $assigned_hetatom_ids =
+            assign_hetatoms( $parameters, $current_atom_site, $struct_conn,
+                             { 'ref_atom_site' => $ref_atom_site } );
 
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,
@@ -470,6 +471,11 @@ sub generate_library
                     $residue_site,
                     { 'exclude_dot' => 1 }
                 )->[0];
+
+                for my $hetatom_id ( @{ $assigned_hetatom_ids } ) {
+                    $residue_site->{$hetatom_id} =
+                        $current_atom_site->{$hetatom_id};
+                }
 
                 my @missing_atom_names =
                     @{ missing_atom_names( $parameters, $residue_site ) };
