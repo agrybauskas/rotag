@@ -509,7 +509,7 @@ sub generate_library
                     @{ calc_favourable_angles(
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
-                             'residue_unique_key' => $residue_unique_key,
+                             'residue_unique_key' => [ $residue_unique_key ],
                              'interaction_site' => \%interaction_site,
                              'bond_parameters' => $bond_parameters,
                              'include_hetatoms' => $include_hetatoms,
@@ -620,7 +620,7 @@ sub calc_favourable_angles
 {
     my ( $args ) = @_;
 
-    my ( $parameters, $atom_site, $residue_unique_key, $interaction_site,
+    my ( $parameters, $atom_site, $residue_unique_keys, $interaction_site,
          $bond_parameters, $include_hetatoms, $bond_parameter_count,
          $non_bonded_potential, $bonded_potential, $threads, $rand_count,
          $rand_seed, $program_called_by, $verbose ) = (
@@ -644,8 +644,10 @@ sub calc_favourable_angles
     $rand_seed //= 23;
     $include_hetatoms //= 0;
 
-    my $residue_site =
-        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
+    my $residue_site = {
+        map { %{ filter_by_unique_residue_key( $atom_site, $_, 1 ) } }
+           @{ $residue_unique_keys }
+    };
 
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
@@ -677,8 +679,8 @@ sub calc_favourable_angles
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
             my %bond_parameters =
-                %{ collect_bond_parameters( $residue_site, $atom_id )
-                       ->{$residue_unique_key} };
+                map { %{ collect_bond_parameters( $residue_site, $atom_id )->{$_} } }
+                   @{ $residue_unique_keys };
             %bond_parameters =
                 %{ filter_bond_parameters( $parameters,
                                            \%bond_parameters,
