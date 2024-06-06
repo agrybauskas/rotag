@@ -472,9 +472,14 @@ sub generate_library
                     { 'exclude_dot' => 1 }
                 )->[0];
 
+                my @assigned_unique_keys = ();
                 for my $hetatom_id ( @{ $assigned_hetatom_ids } ) {
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};
+                    push @assigned_unique_keys,
+                        determine_residue_keys(
+                            { $hetatom_id => $residue_site->{$hetatom_id} }
+                        )->[0];
                 }
 
                 my @missing_atom_names =
