@@ -593,6 +593,8 @@ sub generate_library
                               ( $bond_parameter_names[$_] => $allowed_angles->[$i][$_] ) }
                             ( 0..$#{ $allowed_angles->[$i] } );
                     my $rotamer_energy_sum = $energy_sums->[$i];
+                    # HACK: check if the energy sums are correct after the
+                    # addition of additional residue unique keys.
                     if( defined $rotamer_energy_sum ) {
                         push @{ $rotamer_library{"$residue_unique_key"} },
                             { 'angles' => \%angles,
