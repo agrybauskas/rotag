@@ -69,8 +69,8 @@ my @bond_parameter_names =
 my ( $favourable_angles, $favourable_energies, $rmsds ) =
     @{ calc_full_atom_energy( { 'parameters' => $parameters,
                                 'atom_site' => $atom_site,
-                                'residue_unique_key' =>
-                                    $residue_unique_key,
+                                'residue_unique_keys' =>
+                                    [ $residue_unique_key ],
                                 'bond_parameter_names' => \@bond_parameter_names,
                                 'interaction_site' => $interaction_site,
                                 'non_bonded_potential' => \&hard_sphere,

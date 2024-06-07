@@ -532,9 +532,12 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
+                my $all_bond_paramters =
+                    collect_bond_parameters( $residue_site );
                 my %bond_parameters =
-                    %{ collect_bond_parameters( $residue_site )
-                           ->{$residue_unique_key} };
+                    map  { %{ $all_bond_paramters->{$_} } }
+                    grep { exists $all_bond_paramters->{$_} }
+                         ( $residue_unique_key, @assigned_unique_keys );
                 %bond_parameters =
                     %{ filter_bond_parameters( $parameters,
                                                \%bond_parameters,
