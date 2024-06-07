@@ -552,7 +552,10 @@ sub generate_library
                            \&calc_full_atom_energy,
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
-                             'residue_unique_key' => $residue_unique_key,
+                             'residue_unique_keys' => [
+                                 $residue_unique_key,
+                                 @assigned_unique_keys
+                             ],
                              'bond_parameter_names' => \@bond_parameter_names,
                              'interaction_site' => \%interaction_site,
                              'non_bonded_potential' =>
@@ -957,12 +960,12 @@ sub calc_full_atom_energy
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $parameters, $atom_site, $residue_unique_key, $bond_parameter_names,
+    my ( $parameters, $atom_site, $residue_unique_keys, $bond_parameter_names,
          $interaction_site, $non_bonded_potential, $bonded_potential, $rmsd,
          $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
-        $args->{'residue_unique_key'},
+        $args->{'residue_unique_keys'},
         $args->{'bond_parameter_names'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
@@ -974,8 +977,10 @@ sub calc_full_atom_energy
     my $energy_cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
-    my $residue_site =
-        filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
+    my $residue_site = {
+        map { %{ filter_by_unique_residue_key( $atom_site, $_, 1 ) } }
+           @{ $residue_unique_keys }
+    };
 
     # Checks for inter-atom interactions and determines if energies
     # comply with cutoffs.
@@ -990,8 +995,12 @@ sub calc_full_atom_energy
         my %angles =
             map { ( $bond_parameter_names->[$_] => $checkable_angles[$i][$_] ) }
                 ( 0..$#{ $checkable_angles[$i] } );
-        replace_with_rotamer( $parameters, \%rotamer_site, $residue_unique_key,
-                              \%angles );
+        for my $residue_unique_key ( @{ $residue_unique_keys } ) {
+            replace_with_rotamer( $parameters,
+                                  \%rotamer_site,
+                                  $residue_unique_key,
+                                  \%angles );
+        }
 
         my @rotamer_atom_ids =
             sort keys %{ filter_new( \%rotamer_site,
