@@ -481,6 +481,7 @@ sub generate_library
                             { $hetatom_id => $residue_site->{$hetatom_id} }
                         )->[0];
                 }
+                @assigned_unique_keys = uniq @assigned_unique_keys;
 
                 my @missing_atom_names =
                     @{ missing_atom_names( $parameters, $residue_site ) };
