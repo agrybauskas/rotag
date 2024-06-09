@@ -592,12 +592,18 @@ sub generate_library
                         map { my $angle_id = $_ + 1;
                               ( $bond_parameter_names[$_] => $allowed_angles->[$i][$_] ) }
                             ( 0..$#{ $allowed_angles->[$i] } );
+                    my %atom_ids = ();
+                    for my $angle_name ( keys %angles ) {
+                        $atom_ids{$angle_name} =
+                            $all_bond_parameters->{$angle_name}{'atom_ids'};
+                    }
                     my $rotamer_energy_sum = $energy_sums->[$i];
                     # HACK: check if the energy sums are correct after the
                     # addition of additional residue unique keys.
                     if( defined $rotamer_energy_sum ) {
                         push @{ $rotamer_library{"$residue_unique_key"} },
                             { 'angles' => \%angles,
+                              'atom_ids' => \%atom_ids,
                               'potential' => $interactions,
                               'potential_energy_value' => $energy_sums->[$i],
                               ( $rmsd ? ( 'rmsd' => $rmsds->[$i][-1] ) : () ) };
