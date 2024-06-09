@@ -600,6 +600,9 @@ sub generate_library
                             { 'angles' => \%angles,
                               'potential' => $interactions,
                               'potential_energy_value' => $energy_sums->[$i],
+                              'terminal_residue_unique_key' => [
+                                  $residue_unique_key, @assigned_unique_keys,
+                              ],
                               ( $rmsd ? ( 'rmsd' => $rmsds->[$i][-1] ) : () ) };
                     }
                 }
