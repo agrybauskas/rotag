@@ -51,7 +51,7 @@ for my $bond_parameter_value ( keys %bond_parameter_values ) {
         eval( $bond_parameter_values{$bond_parameter_value} );
 }
 
-my ( $generated_rotamers ) =
+my $generated_rotamers =
     generate_rotamer( { 'parameters' => $parameters,
                         'atom_site' => $atom_site,
                         'bond_parameter_values' =>

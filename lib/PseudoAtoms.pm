@@ -244,7 +244,6 @@ sub generate_rotamer
 
     my %atom_site = %{ clone( $atom_site ) };
     my %rotamer_atom_site;
-    my %rotamer_bond_parameters;
 
     for my $residue_unique_key ( keys %{ $bond_parameter_values } ) {
         my ( undef, undef, undef, $residue_alt_id ) =
@@ -283,8 +282,6 @@ sub generate_rotamer
                 }
             }
 
-            $rotamer_bond_parameters{$atom_id} = \%bond_parameters;
-
             %rotamer_atom_site =
                 ( %rotamer_atom_site,
                   %{ generate_pseudo( {
@@ -308,7 +305,7 @@ sub generate_rotamer
         return \%rotamer_atom_site_old_ids;
     }
 
-    return \%rotamer_atom_site, \%rotamer_bond_parameters;
+    return \%rotamer_atom_site;
 }
 
 #
@@ -1003,15 +1000,11 @@ sub calc_full_atom_energy
         my %angles =
             map { ( $bond_parameter_names->[$_] => $checkable_angles[$i][$_] ) }
                 ( 0..$#{ $checkable_angles[$i] } );
-        my %all_bond_parameters = ();
         for my $residue_unique_key ( @{ $residue_unique_keys } ) {
-            my $current_residue_bond_parameters =
-                replace_with_rotamer( $parameters,
-                                      \%rotamer_site,
-                                      $residue_unique_key,
-                                      \%angles );
-            %all_bond_parameters =
-                ( %all_bond_parameters, %{ $current_residue_bond_parameters } );
+            replace_with_rotamer( $parameters,
+                                  \%rotamer_site,
+                                  $residue_unique_key,
+                                  \%angles );
         }
 
         my @rotamer_atom_ids =
@@ -1127,7 +1120,7 @@ sub replace_with_rotamer
          $bond_parameter_values ) = @_;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
-    my ( $residue_site, $residue_bond_parameters ) =
+    my $residue_site =
         generate_rotamer( { 'parameters' => $parameters,
                             'atom_site' => $atom_site,
                             'bond_parameter_values' =>
@@ -1147,7 +1140,7 @@ sub replace_with_rotamer
             $residue_site->{$residue_atom_id};
     }
 
-    return $residue_bond_parameters;
+    return;
 }
 
 #
