@@ -244,6 +244,7 @@ sub generate_rotamer
 
     my %atom_site = %{ clone( $atom_site ) };
     my %rotamer_atom_site;
+    my %rotamer_bond_parameters;
 
     for my $residue_unique_key ( keys %{ $bond_parameter_values } ) {
         my ( undef, undef, undef, $residue_alt_id ) =
@@ -282,6 +283,8 @@ sub generate_rotamer
                 }
             }
 
+            $rotamer_bond_parameters{$atom_id} = \%bond_parameters;
+
             %rotamer_atom_site =
                 ( %rotamer_atom_site,
                   %{ generate_pseudo( {
@@ -305,7 +308,7 @@ sub generate_rotamer
         return \%rotamer_atom_site_old_ids;
     }
 
-    return \%rotamer_atom_site;
+    return \%rotamer_atom_site, \%rotamer_bond_parameters;
 }
 
 #
@@ -1120,7 +1123,7 @@ sub replace_with_rotamer
          $bond_parameter_values ) = @_;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
-    my $residue_site =
+    my ( $residue_site ) =
         generate_rotamer( { 'parameters' => $parameters,
                             'atom_site' => $atom_site,
                             'bond_parameter_values' =>
