@@ -329,12 +329,18 @@ for my $pdbx_file ( @ARGV ) {
                 push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'}},
                     { 'id' => $angle_id,
                       'rotamer_id' => $rotamer_id,
-                      'label_seq_id' => $residue_id,
-                      'label_comp_id' => $residue_name[0],
-                      'label_asym_id' => $residue_chain,
-                      'auth_seq_id' => $auth_residue_id,
-                      'auth_asym_id' => $auth_residue_chain,
-                      'pdbx_PDB_model_num' => $pdbx_model,
+                      'label_seq_id' =>
+                          $rotamer->{'terminal_atom_data'}{$angle_name}{'label_seq_id'},
+                      'label_comp_id' =>
+                          $rotamer->{'terminal_atom_data'}{$angle_name}{'label_comp_id'},
+                      'label_asym_id' =>
+                          $rotamer->{'terminal_atom_data'}{$angle_name}{'label_asym_id'},
+                      'auth_seq_id' =>
+                          $rotamer->{'terminal_atom_data'}{$angle_name}{'auth_seq_id'},
+                      'auth_asym_id' =>
+                          $rotamer->{'terminal_atom_data'}{$angle_name}{'auth_asym_id'},
+                      'pdbx_PDB_model_num' =>
+                          $rotamer->{'terminal_atom_data'}{$angle_name}{'pdbx_PDB_model_num'},
                       'label_alt_id' => $residue_alt,
                       'frequency' => sprintf($sig_figs_max, $rotamer_frequency),
                       'type' => $angle_name,

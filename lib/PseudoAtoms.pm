@@ -543,6 +543,7 @@ sub generate_library
                                                \%bond_parameters,
                                                $bond_parameters,
                                                $residue_name ) };
+
                 my @bond_parameter_names =
                     sort { $bond_parameters{$a}{'order'} <=>
                            $bond_parameters{$b}{'order'} ||
@@ -592,18 +593,25 @@ sub generate_library
                         map { my $angle_id = $_ + 1;
                               ( $bond_parameter_names[$_] => $allowed_angles->[$i][$_] ) }
                             ( 0..$#{ $allowed_angles->[$i] } );
-                    my %atom_ids = ();
+                    my %terminal_atom_data = ();
                     for my $angle_name ( keys %angles ) {
-                        $atom_ids{$angle_name} =
-                            $all_bond_parameters->{$angle_name}{'atom_ids'};
+                        my ( $terminal_atom_id ) =
+                            reverse @{ $bond_parameters{$angle_name}{'atom_ids'} };
+                        $terminal_atom_data{$angle_name} =
+                            { map { $_ => $residue_site->{$terminal_atom_id}{$_} }
+                                  ( 'id', 'label_comp_id', 'label_atom_id',
+                                    'label_seq_id', 'label_asym_id', 'label_alt_id',
+                                    'pdbx_PDB_model_num', 'auth_seq_id',
+                                    'auth_asym_id' ) };
                     }
+
                     my $rotamer_energy_sum = $energy_sums->[$i];
                     # HACK: check if the energy sums are correct after the
                     # addition of additional residue unique keys.
                     if( defined $rotamer_energy_sum ) {
-                        push @{ $rotamer_library{"$residue_unique_key"} },
+                        push @{ $rotamer_library{$residue_unique_key} },
                             { 'angles' => \%angles,
-                              'atom_ids' => \%atom_ids,
+                              'terminal_atom_data' => \%terminal_atom_data,
                               'potential' => $interactions,
                               'potential_energy_value' => $energy_sums->[$i],
                               ( $rmsd ? ( 'rmsd' => $rmsds->[$i][-1] ) : () ) };
