@@ -993,7 +993,6 @@ sub calc_full_atom_energy
     my @allowed_angles;
     my @energy_sums;
     my @rmsd_averages;
-    my @atom_ids;
 
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
@@ -1066,7 +1065,7 @@ sub calc_full_atom_energy
         }
     }
 
-    return [ \@allowed_angles, \@energy_sums, \@rmsd_averages, \@atom_ids ] ;
+    return [ \@allowed_angles, \@energy_sums, \@rmsd_averages ] ;
 }
 
 #
