@@ -1123,7 +1123,7 @@ sub replace_with_rotamer
          $bond_parameter_values ) = @_;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
-    my ( $residue_site ) =
+    my ( $residue_site, $residue_bond_parameters ) =
         generate_rotamer( { 'parameters' => $parameters,
                             'atom_site' => $atom_site,
                             'bond_parameter_values' =>
@@ -1143,7 +1143,7 @@ sub replace_with_rotamer
             $residue_site->{$residue_atom_id};
     }
 
-    return;
+    return $residue_bond_parameters;
 }
 
 #
