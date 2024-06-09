@@ -532,11 +532,11 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
-                my $all_bond_paramters =
+                my $all_bond_parameters =
                     collect_bond_parameters( $residue_site );
                 my %bond_parameters =
-                    map  { %{ $all_bond_paramters->{$_} } }
-                    grep { exists $all_bond_paramters->{$_} }
+                    map  { %{ $all_bond_parameters->{$_} } }
+                    grep { exists $all_bond_parameters->{$_} }
                          ( $residue_unique_key, @assigned_unique_keys );
                 %bond_parameters =
                     %{ filter_bond_parameters( $parameters,
@@ -694,11 +694,11 @@ sub calc_favourable_angles
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
-            my $all_bond_paramters =
+            my $all_bond_parameters =
                 collect_bond_parameters( $residue_site, $atom_id );
             my %bond_parameters =
-                map  { %{ $all_bond_paramters->{$_} } }
-                grep { exists $all_bond_paramters->{$_} }
+                map  { %{ $all_bond_parameters->{$_} } }
+                grep { exists $all_bond_parameters->{$_} }
                     @{ $residue_unique_keys };
             %bond_parameters =
                 %{ filter_bond_parameters( $parameters,
