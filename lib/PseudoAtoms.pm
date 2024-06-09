@@ -1003,11 +1003,15 @@ sub calc_full_atom_energy
         my %angles =
             map { ( $bond_parameter_names->[$_] => $checkable_angles[$i][$_] ) }
                 ( 0..$#{ $checkable_angles[$i] } );
+        my %all_bond_parameters = ();
         for my $residue_unique_key ( @{ $residue_unique_keys } ) {
-            replace_with_rotamer( $parameters,
-                                  \%rotamer_site,
-                                  $residue_unique_key,
-                                  \%angles );
+            my $current_residue_bond_parameters =
+                replace_with_rotamer( $parameters,
+                                      \%rotamer_site,
+                                      $residue_unique_key,
+                                      \%angles );
+            %all_bond_parameters =
+                ( %all_bond_parameters, %{ $current_residue_bond_parameters } );
         }
 
         my @rotamer_atom_ids =
