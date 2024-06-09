@@ -260,9 +260,9 @@ sub bond_stretching_matrices
                 ( 1, 0 );
         my @mid_connections = # Excludes up atom.
             grep { $_ ne $up_atom_id }
-                @{ $atom_site->{$mid_atom_id}{'connections'} };
+                @{ $ref_atom_site->{$mid_atom_id}{'connections'} };
         my ( $side_atom_id ) =
-            @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
+            @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $ref_atom_site->{$_}{'Cartn_x'},
