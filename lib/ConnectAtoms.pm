@@ -322,10 +322,12 @@ sub connect_atoms_explicitly
 sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
-    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+    my ( $ref_atom_site, $keep_original ) =
+        ( $options->{'ref_atom_site'}, $options->{'keep_original'} );
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
     $ref_atom_site //= $atom_site;
+    $keep_original //= 0;
 
     return if ! %{ $struct_conn };
 
