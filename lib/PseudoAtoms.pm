@@ -403,7 +403,8 @@ sub generate_library
 
         my $assigned_hetatom_ids =
             assign_hetatoms( $parameters, $current_atom_site, $struct_conn,
-                             { 'ref_atom_site' => $ref_atom_site } );
+                             { 'ref_atom_site' => $ref_atom_site,
+                               'keep_original' => 0 } );
 
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,

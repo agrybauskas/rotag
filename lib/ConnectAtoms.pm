@@ -327,7 +327,8 @@ sub assign_hetatoms
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
     $ref_atom_site //= $atom_site;
-    $keep_original //= 0;
+    # HACK: the default should be 0 as it is more intuitive.
+    $keep_original //= 1;
 
     return if ! %{ $struct_conn };
 
@@ -438,6 +439,14 @@ sub assign_hetatoms
             }
 
             $alt_id++;
+        }
+
+        if( ! $keep_original ) {
+            for my $original_atom_id ( keys %tracked_atom_ids ) {
+                next if $tracked_atom_ids{$original_atom_id} eq $original_atom_id;
+
+                delete $atom_site->{$original_atom_id};
+            }
         }
     }
 
