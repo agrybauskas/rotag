@@ -77,7 +77,7 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1  1 .  HOH B 101 A 1 . 0.142857 CB-CG-OD1.H1 -90.000 degree
+1  1 .  HOH B 101 A 1 . 0.142857 CB-CG-OD1.H1 -90.000 degrees
 2  1 .  MG  C 201 A 1 . 0.142857 OD1.H1-O.MG -90.000 degrees
 3  1 27 ASP A 27  A 1 . 0.142857 chi1 60.000 degrees
 4  1 27 ASP A 27  A 1 . 0.142857 chi2 -180.000 degrees
