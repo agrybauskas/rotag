@@ -424,18 +424,6 @@ sub assign_hetatoms
                                       {$connection_related_atom_id} = 1;
                     }
                 }
-
-                # Adds atom ids that should be searched next.
-                for my $connection_related_atom_id (
-                    sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
-                    next if $connection_atom_id eq $connection_related_atom_id;
-
-                    next if ! grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
-                              grep { ! $visited_atoms{$_} }
-                              keys %{ $connections->{$connection_related_atom_id} };
-
-                    push @next_atom_ids, $connection_related_atom_id;
-                }
             }
 
             $alt_id++;
