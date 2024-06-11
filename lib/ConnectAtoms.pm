@@ -408,20 +408,20 @@ sub assign_hetatoms
                         my $neighbour_connection_type =
                             $connections->{$connection_related_atom_id}
                                           {$neighbour_related_atom_id};
+                        if( $neighbour_connection_type eq 'covale' ) {
+                            connect_atoms_explicitly(
+                                $atom_site,
+                                [ $tracked_atom_ids{$connection_related_atom_id} ],
+                                [ $tracked_atom_ids{$neighbour_related_atom_id} ],
+                                ( { 'connection_type' => 'connections' } ),
+                            );
 
-                        next if $neighbour_connection_type ne 'covale';
-
-                        connect_atoms_explicitly(
-                            $atom_site,
-                            [ $tracked_atom_ids{$connection_related_atom_id} ],
-                            [ $tracked_atom_ids{$neighbour_related_atom_id} ],
-                            ( { 'connection_type' => 'connections' } ),
-                        );
-
-                        $visited_bonds{$connection_related_atom_id}
-                                      {$neighbour_related_atom_id} = 1;
-                        $visited_bonds{$neighbour_related_atom_id}
-                                      {$connection_related_atom_id} = 1;
+                            $visited_bonds{$connection_related_atom_id}
+                                          {$neighbour_related_atom_id} = 1;
+                            $visited_bonds{$neighbour_related_atom_id}
+                                          {$connection_related_atom_id} = 1;
+                        } else {
+                        }
                     }
                 }
             }
