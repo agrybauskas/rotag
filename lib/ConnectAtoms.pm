@@ -349,10 +349,8 @@ sub assign_hetatoms
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
         my %tracked_atom_ids = ();
-        my %seed_atom_ids = ();
         foreach( @next_atom_ids ) {
             $tracked_atom_ids{$_} = $_;
-            $seed_atom_ids{$_} = $_;
         }
 
         my %visited_atoms = ();
