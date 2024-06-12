@@ -367,7 +367,7 @@ sub assign_hetatoms
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
 
-                # Clones and assigns proper atom ids.
+                # Clones, assigns proper and next atom ids.
                 for my $connection_related_atom_id (
                     sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
                     $atom_site->{$connection_related_atom_id} =
@@ -383,6 +383,8 @@ sub assign_hetatoms
                     $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
 
                     push @assigned_atom_ids, $last_atom_id;
+
+                    push @next_atom_ids, $connection_related_atom_id;
 
                     $last_atom_id++;
                 }
@@ -427,9 +429,6 @@ sub assign_hetatoms
                                       {$connection_related_atom_id} = 1;
                     }
                 }
-
-                push @next_atom_ids,
-                    @{ $all_unique_residue_keys->{$connection_unique_key} };
             }
 
             $alt_id++;
