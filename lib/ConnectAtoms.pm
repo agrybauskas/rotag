@@ -384,7 +384,8 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    if( any { ! $visited_atoms{$_} }
+                    if( grep { ! $visited_atoms{$_} }
+                        grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
                         keys %{ $connections->{$connection_related_atom_id} } ) {
                         push @next_atom_ids, $connection_related_atom_id;
                     }
