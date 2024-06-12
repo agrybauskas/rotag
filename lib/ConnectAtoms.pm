@@ -356,7 +356,7 @@ sub assign_hetatoms
         my %visited_atoms = ();
         my %visited_bonds = ();
         while( @next_atom_ids ) {
-            my ( $atom_id ) = pop @next_atom_ids;
+            my ( $atom_id ) = shift @next_atom_ids;
 
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
