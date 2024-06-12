@@ -384,7 +384,10 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    push @next_atom_ids, $connection_related_atom_id;
+                    if( any { ! $visited_atoms{$_} }
+                        keys %{ $connections->{$connection_related_atom_id} } ) {
+                        push @next_atom_ids, $connection_related_atom_id;
+                    }
 
                     $last_atom_id++;
                 }
