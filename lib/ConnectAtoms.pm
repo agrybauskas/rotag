@@ -349,8 +349,10 @@ sub assign_hetatoms
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
         my %tracked_atom_ids = ();
+        my %seed_atom_ids = ();
         foreach( @next_atom_ids ) {
             $tracked_atom_ids{$_} = $_;
+            $seed_atom_ids{$_} = $_;
         }
 
         my %visited_atoms = ();
@@ -428,15 +430,8 @@ sub assign_hetatoms
                     }
                 }
 
-                # Adds next atom ids -- those are these atoms that have
-                # non-covalent connections.
-                for my $connection_related_atom_id (
-                    sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
-                    next if ! grep  { ! $visited_atoms{$_} }
-                              grep  { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
-                              keys %{ $connections->{$connection_related_atom_id} };
-                    push @next_atom_ids, $connection_related_atom_id;
-                }
+                push @next_atom_ids,
+                    @{ $all_unique_residue_keys->{$connection_unique_key} };
             }
 
             $alt_id++;
