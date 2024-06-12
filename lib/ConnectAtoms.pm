@@ -432,11 +432,9 @@ sub assign_hetatoms
                 # non-covalent connections.
                 for my $connection_related_atom_id (
                     sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
-
-                    next if ! grep { ! $visited_atoms{$_} }
-                              grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
+                    next if ! grep  { ! $visited_atoms{$_} }
+                              grep  { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
                               keys %{ $connections->{$connection_related_atom_id} };
-
                     push @next_atom_ids, $connection_related_atom_id;
                 }
             }
