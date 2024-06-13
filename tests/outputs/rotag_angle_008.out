@@ -16,9 +16,9 @@ _[local]_bond_angle.label_atom_3_id
 _[local]_bond_angle.type
 _[local]_bond_angle.value
 _[local]_bond_angle.units
-1 MG . B 1 . 148 N 156 H 1925 MG N-H.MG 154.959 degrees
-2 MG . B 1 . 153 CG 155 OD2 1925 MG CG-OD2.MG 12.446 degrees
-3 MG . B 1 . 153 CG 154 OD1 1925 MG CG-OD1.MG 121.890 degrees
-4 MG . B 1 . 149 CA 148 N 1925 MG CA-N.MG 128.953 degrees
+1 MG . B 1 . 149 CA 148 N 1925 MG CA-N.MG 128.953 degrees
+2 MG . B 1 . 153 CG 154 OD1 1925 MG CG-OD1.MG 121.890 degrees
+3 MG . B 1 . 153 CG 155 OD2 1925 MG CG-OD2.MG 12.446 degrees
+4 MG . B 1 . 148 N 156 H 1925 MG N-H.MG 154.959 degrees
 5 MG . B 1 . 885 C 886 O 1925 MG C-O.MG 152.409 degrees
 #

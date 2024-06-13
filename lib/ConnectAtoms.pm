@@ -345,13 +345,18 @@ sub assign_hetatoms
     my @assigned_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
     my $alt_id = 1;
+
+    my %tracked_atom_ids = ();
+    my %seed_atom_ids = ();
+    for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        foreach( @{ $unique_residue_keys->{$unique_residue_key} } ) {
+            $tracked_atom_ids{$_} = $_;
+            $seed_atom_ids{$_} = 1;
+        }
+    }
+
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
-
-        my %tracked_atom_ids = ();
-        foreach( @next_atom_ids ) {
-            $tracked_atom_ids{$_} = $_;
-        }
 
         my %visited_atoms = ();
         my %visited_bonds = ();
@@ -363,6 +368,7 @@ sub assign_hetatoms
 
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
+                next if $seed_atom_ids{$connection_atom_id};
 
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
