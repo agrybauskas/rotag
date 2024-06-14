@@ -60,15 +60,15 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 8.253658
-2 2 composite 6.807949
-3 3 composite 7.689919
-4 4 composite 0.467667
-5 5 composite 1.138617
-6 6 composite 6.970227
-7 7 composite 4.702787
-8 8 composite 3.562198
-9 9 composite 4.999012
+1 1 composite 8.253694
+2 2 composite 6.809114
+3 3 composite 7.699511
+4 4 composite 0.468832
+5 5 composite 1.148209
+6 6 composite 6.970267
+7 7 composite 4.702823
+8 8 composite 3.563363
+9 9 composite 5.008604
 #
 loop_
 _[local]_rotamer_bond_parameter.id

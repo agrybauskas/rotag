@@ -296,10 +296,17 @@ sub connect_atoms_explicitly
                 $connection_type = 'connections_hetatom'
             }
             $connection_type //= 'connections';
-            push @{ $atom_site->{$first_atom_id}{$connection_type} },
-                "$second_atom_id";
-            push @{ $ref_atom_site->{$second_atom_id}{$connection_type} },
-                "$first_atom_id";
+
+            if( ! any { $_ eq $second_atom_id }
+                     @{ $atom_site->{$first_atom_id}{$connection_type} } ) {
+                push @{ $atom_site->{$first_atom_id}{$connection_type} },
+                    "$second_atom_id";
+            }
+            if( ! any { $_ eq $first_atom_id }
+                     @{ $atom_site->{$second_atom_id}{$connection_type} } ) {
+                push @{ $ref_atom_site->{$second_atom_id}{$connection_type} },
+                    "$first_atom_id";
+            }
         }
     }
 
