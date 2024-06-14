@@ -74,7 +74,7 @@ _struct_conn.ptnr2_auth_asym_id
 hydrog1 hydrog 27 A OD1  27 A . B H1 101 A
 covale1 covale  . B  H1 101 A . B  O 101 A
 covale2 covale  . B   O 101 A . B H2 101 A
-hydrog2 hydrog  . B  H1 101 A . C  O 102 A
+hydrog2 hydrog  . B   O 101 A . C H1 102 A
 covale3 covale  . C  H1 102 A . C  O 102 A
 covale4 covale  . C   O 102 A . C H2 102 A
 #
