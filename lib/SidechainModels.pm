@@ -39,7 +39,9 @@ our $VERSION = $VERSION;
 
 sub rotation_translation
 {
-    my ( $parameters, $atom_site ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
+
+    $options //= { 'ref_atom_site' => $atom_site };
 
     # Determines all residue ids present in atom site.
     my @residue_unique_keys =
@@ -91,8 +93,7 @@ sub rotation_translation
                                               $residue_site,
                                               $atom_id,
                                               $rotatable_bonds,
-                                              { 'ref_atom_site' =>
-                                                    $atom_site } ) };
+                                              $options ) };
             }
 
             if( %{ $stretchable_bonds } ) {
@@ -101,8 +102,7 @@ sub rotation_translation
                                                  $residue_site,
                                                  $atom_id,
                                                  $stretchable_bonds,
-                                                 { 'ref_atom_site' =>
-                                                       $atom_site } ) };
+                                                 $options ) };
             }
 
             if( %{ $bendable_angles } ) {
@@ -111,8 +111,7 @@ sub rotation_translation
                                                $residue_site,
                                                $atom_id,
                                                $bendable_angles,
-                                               { 'ref_atom_site' =>
-                                                     $atom_site } ) };
+                                               $options ) };
             }
 
             $atom_site->{$atom_id}{'conformation'} =
