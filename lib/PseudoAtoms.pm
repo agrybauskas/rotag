@@ -497,7 +497,9 @@ sub generate_library
                 # Generates conformational models before checking for
                 # clashes/interactions for given residues.
                 if( $conf_model eq 'rotation_only' ) {
-                    rotation_translation( $parameters, $residue_site );
+                    rotation_translation( $parameters, $residue_site,
+                                          { 'ref_atom_site' =>
+                                                $current_atom_site } );
                 } else {
                     confess 'conformational model was not defined.';
                 }
