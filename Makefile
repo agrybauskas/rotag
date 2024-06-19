@@ -24,10 +24,10 @@ BIN_DIR=bin
 SRC_DIR=src
 LIB_DIR=${SRC_DIR}/lib
 OBJ_DIR=${SRC_DIR}/lib
-LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc ${LIB_DIR}/Grammar/*.cc}
+LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc #${LIB_DIR}/Grammar/*.cc}
 BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
-PARSER=$(wildcard ${LIB_DIR}/Grammar/*.y)
-LEXER=$(wildcard ${LIB_DIR}/Grammar/*.l)
+PARSER= # $(wildcard ${LIB_DIR}/Grammar/*.y)
+LEXER= # $(wildcard ${LIB_DIR}/Grammar/*.l)
 PARSER_SRC=$(PARSER:%.y=%.cc)
 LEXER_SRC=$(LEXER:%.l=%.cc)
 HEADERS=${LIB_SRC:%.cc=%.h}
@@ -90,7 +90,7 @@ endef
 
 .PHONY: test listdiff
 
-test: ${GRAMMAR_MODULES} | ${TEST_DIFF}
+test: ${TEST_DIFF} #| ${GRAMMAR_MODULES}
 
 check: test
 
@@ -161,9 +161,9 @@ testclean:
 	rm -f ${TEST_DIFF}
 
 cleanAll cleanall distclean: clean
-	rm -f ${GRAMMAR_MODULES}
+	# rm -f ${GRAMMAR_MODULES}
 	rm -f ${CC_OBJS}
 	rm -f ${CC_BIN}
-	rm -f ${LIB_DIR}/Grammar/*.cc
-	rm -f ${LIB_DIR}/Grammar/*.h
-	rm -f ${LIB_DIR}/Grammar/*.o
+	# rm -f ${LIB_DIR}/Grammar/*.cc
+	# rm -f ${LIB_DIR}/Grammar/*.h
+	# rm -f ${LIB_DIR}/Grammar/*.o
