@@ -477,10 +477,11 @@ sub generate_library
                 for my $hetatom_id ( @{ $assigned_hetatom_ids } ) {
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};
-                    push @assigned_unique_keys,
+                    my $assigned_residue_key =
                         determine_residue_keys(
                             { $hetatom_id => $residue_site->{$hetatom_id} }
                         )->[0];
+                    push @assigned_unique_keys, $assigned_residue_key;
                 }
                 @assigned_unique_keys = uniq @assigned_unique_keys;
 
