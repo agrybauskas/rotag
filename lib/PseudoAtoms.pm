@@ -52,7 +52,8 @@ use Measure qw( around_distance
                 rmsd_sidechains );
 use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
-use PDBxParser qw( create_pdbx_entry
+use PDBxParser qw( change_unique_residue_key
+                   create_pdbx_entry
                    determine_residue_keys
                    filter_new
                    filter_by_unique_residue_key
@@ -474,6 +475,7 @@ sub generate_library
                 )->[0];
 
                 my @assigned_unique_keys = ();
+                my %visited_assigned_unique_keys = ();
                 for my $hetatom_id ( @{ $assigned_hetatom_ids } ) {
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};
@@ -481,9 +483,12 @@ sub generate_library
                         determine_residue_keys(
                             { $hetatom_id => $residue_site->{$hetatom_id} }
                         )->[0];
+
+                    next if $visited_assigned_unique_keys{$assigned_residue_key};
+                    $visited_assigned_unique_keys{$assigned_residue_key} = 1;
+
                     push @assigned_unique_keys, $assigned_residue_key;
                 }
-                @assigned_unique_keys = uniq @assigned_unique_keys;
 
                 my @missing_atom_names =
                     @{ missing_atom_names( $parameters, $residue_site ) };
