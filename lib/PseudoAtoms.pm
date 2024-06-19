@@ -483,9 +483,12 @@ sub generate_library
                         determine_residue_keys(
                             { $hetatom_id => $residue_site->{$hetatom_id} }
                         )->[0];
+                    my $simplified_residue_key = change_unique_residue_key(
+                        $assigned_residue_key, { 'label_alt_id' => '?' }
+                    );
 
-                    next if $visited_assigned_unique_keys{$assigned_residue_key};
-                    $visited_assigned_unique_keys{$assigned_residue_key} = 1;
+                    next if $visited_assigned_unique_keys{$simplified_residue_key};
+                    $visited_assigned_unique_keys{$simplified_residue_key} = 1;
 
                     push @assigned_unique_keys, $assigned_residue_key;
                 }
