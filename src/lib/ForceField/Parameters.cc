@@ -28,8 +28,8 @@ Parameters::Parameters(char* program_file_path) {
 
     // Parsing tags per case basis.
     // "_rotag_force_field" category.
-    this->lj_k = datablock_cifvalue(
-      datablock, cif_tag_index_lookup["_rotag_force_field.lj_k"], 0);
+    // this->lj_k = datablock_cifvalue(
+    //   datablock, cif_tag_index_lookup["_rotag_force_field.lj_k"], 0);
     // this->c_k = cifvalue_to_double(
     //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.c_k");
     // this->h_k = cifvalue_to_double(
@@ -43,7 +43,7 @@ Parameters::Parameters(char* program_file_path) {
     // this->cutoff_end = cifvalue_to_double(
     //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_end");
 
-    std::cout << this->lj_k << std::endl;
+    // std::cout << this->lj_k << std::endl;
 
   //   /* NOTE: "codcif" parser should catch errors if the length of tag values
   //      does not have the same size in the loop so, it is enough to choose any
