@@ -1,9 +1,23 @@
 #ifndef SRC_LIB_FORCEFIELD_PARAMETERS_H_
 #define SRC_LIB_FORCEFIELD_PARAMETERS_H_
 
+#include "../PDBxParser.h"
+// #include "../CIFTag.h"
+// #include "../Combinatorics.h"
+
+#include <cmath>
 #include <map>
+#include <memory>
+#include <iostream>
 #include <string>
 #include <vector>
+
+#include <boost/filesystem.hpp>
+
+extern "C" {
+  #include "cif.h"
+  #include "cif_compiler.h"
+}
 
 extern "C" {
   #include "datablock.h"

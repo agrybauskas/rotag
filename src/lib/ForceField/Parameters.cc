@@ -1,19 +1,5 @@
 #include "Parameters.h"
 
-#include <cmath>
-#include <memory>
-
-#include <boost/filesystem.hpp>
-
-extern "C" {
-  #include "cif.h"
-  #include "cif_compiler.h"
-}
-
-// #include "../CIFTag.h"
-// #include "../Combinatorics.h"
-// #include "../PDBxParser.h"
-
 Parameters::Parameters(char* program_file_path) {
   boost::filesystem::path parameter_file =
     boost::filesystem::canonical(program_file_path).parent_path().parent_path()/
