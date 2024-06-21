@@ -26,6 +26,9 @@ Parameters::Parameters(char* program_file_path) {
         datablock_value_lengths(datablock)[cif_tag_index_lookup[CIF_TAG]];
     }
 
+    // std::cout << datablock_cifvalue(datablock, cif_tag_index_lookup["_rotag_force_field.lj_k"], 0) << std::endl;
+    // std::cout << list_get(value_list(datablock_cifvalue(datablock, cif_tag_index_lookup["_rotag_force_field.lj_k"], 0)) << std::endl;
+
     // Parsing tags per case basis.
     // "_rotag_force_field" category.
     // this->lj_k = datablock_cifvalue(
