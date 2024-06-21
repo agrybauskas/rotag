@@ -11,84 +11,23 @@ extern "C" {
 
 #include "../CIFTag.h"
 #include "../Combinatorics.h"
+#include "../PDBxParser.h"
 
 Parameters::Parameters(char* program_file_path) {
   boost::filesystem::path parameter_file =
     boost::filesystem::canonical(program_file_path).parent_path().parent_path()/
     boost::filesystem::path(__FILE__).parent_path() /
     "Parameters.cif";
+
   cif_option_t compiler_options = cif_option_default();
   cexception_t inner;
-
   CIF* parameters =
     new_cif_from_cif_file((char*) parameter_file.c_str(),
                           compiler_options,
                           &inner);
 
-  const std::vector<std::string> cif_tags = {
-    "_rotag_force_field.lj_k",
-    "_rotag_force_field.c_k",
-    "_rotag_force_field.h_k",
-    "_rotag_force_field.t_k",
-    "_rotag_force_field.cutoff_atom",
-    "_rotag_force_field.cutoff_start",
-    "_rotag_force_field.cutoff_end",
-    "_rotag_atom_properties.type_symbol",
-    "_rotag_atom_properties.hybridization",
-    "_rotag_atom_properties.covalent_radius_value",
-    "_rotag_atom_properties.covalent_radius_error",
-    "_rotag_atom_properties.vdw_radius",
-    "_rotag_atom_properties.lone_pair_count",
-    "_rotag_atom_properties.valence",
-    "_rotag_lennard_jones.type_symbol_1",
-    "_rotag_lennard_jones.type_symbol_2",
-    "_rotag_lennard_jones.sigma",
-    "_rotag_lennard_jones.epsilon",
-    "_rotag_partial_charge.label_comp_id",
-    "_rotag_partial_charge.label_atom_id",
-    "_rotag_partial_charge.value",
-    "_rotag_torsional_atom_names.label_comp_id",
-    "_rotag_torsional_atom_names.label_atom_id",
-    "_rotag_torsional_atom_names.alt_atom_name",
-    "_rotag_torsional.label_atom_1_id",
-    "_rotag_torsional.label_atom_2_id",
-    "_rotag_torsional.label_atom_3_id",
-    "_rotag_torsional.label_atom_4_id",
-    "_rotag_torsional.epsilon",
-    "_rotag_torsional.phase",
-    "_rotag_torsional.gamma",
-    "_rotag_h_bond.type_symbol",
-    "_rotag_h_bond.sigma",
-    "_rotag_h_bond.epsilon",
-    "_rotag_residue_atom_necessity.label_comp_id",
-    "_rotag_residue_atom_necessity.label_atom_id",
-    "_rotag_residue_atom_necessity.value",
-    "_rotag_clear_hybridization.label_comp_id",
-    "_rotag_clear_hybridization.label_atom_id",
-    "_rotag_clear_hybridization.type",
-    "_rotag_connectivity.label_comp_id",
-    "_rotag_connectivity.label_atom_1_id",
-    "_rotag_connectivity.label_atom_2_id",
-    "_rotag_hydrogen_names.label_comp_id",
-    "_rotag_hydrogen_names.label_atom_id",
-    "_rotag_hydrogen_names.label_hydrogen_atom_id",
-    "_rotag_symmetrical_atom_names.label_comp_id",
-    "_rotag_symmetrical_atom_names.label_atom_1_id",
-    "_rotag_symmetrical_atom_names.label_atom_2_id",
-    "_rotag_dihedral_angle.label_comp_id",
-    "_rotag_dihedral_angle.angle",
-    "_rotag_dihedral_angle.range_from",
-    "_rotag_dihedral_angle.range_to",
-    "_rotag_dihedral_angle.step",
-    "_rotag_dihedral_angle.type",
-    "_rotag_interaction_atom_names.label_atom_id",
-    "_rotag_mainchain_atom_names.label_atom_id",
-    "_rotag_sidechain_atom_names.label_atom_id",
-    "_rotag_rotatable_residue_names.label_comp_id"
-  };
-
-  // DATABLOCK* datablock;
-  // foreach_datablock(datablock, cif_datablock_list(parameters)) {
+  DATABLOCK* datablock;
+  foreach_datablock(datablock, cif_datablock_list(parameters)) {
   //   std::map<std::string, ssize_t> cif_tag_index_lookup_table;
   //   std::map<std::string, ssize_t> cif_value_length_lookup_table;
 
@@ -650,7 +589,7 @@ Parameters::Parameters(char* program_file_path) {
   //     this->COVALENT_BOND_COMBINATIONS[first_atom_symbol][second_atom_symbol].errors =
   //       error_combinations;
   //   }
-  // }
+  }
 }
 
 Parameters::~Parameters() {}
