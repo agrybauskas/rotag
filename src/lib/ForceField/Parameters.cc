@@ -15,21 +15,21 @@ Parameters::Parameters(char* program_file_path) {
 
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(parameters)) {
-  //   std::map<std::string, ssize_t> cif_tag_index_lookup_table;
-  //   std::map<std::string, ssize_t> cif_value_length_lookup_table;
+    std::map<std::string, ssize_t> cif_tag_index_lookup_table;
+    std::map<std::string, ssize_t> cif_value_length_lookup_table;
 
-  //   // Generating lookup tables first.
-  //   for (const std::string &cif_tag : cif_tags) {
-  //     cif_tag_index_lookup_table[cif_tag] =
-  //       datablock_tag_index(datablock, (char*) cif_tag.c_str());
-  //     cif_value_length_lookup_table[cif_tag] =
-  //       datablock_value_lengths(datablock)[cif_tag_index_lookup_table[cif_tag]];
-  //   }
+    // Generating lookup tables first.
+    for (const std::string &CIF_TAG : PARAMETERS_TAGS) {
+      cif_tag_index_lookup_table[CIF_TAG] =
+        datablock_tag_index(datablock, (char*) CIF_TAG.c_str());
+      cif_value_length_lookup_table[CIF_TAG] =
+        datablock_value_lengths(datablock)[cif_tag_index_lookup_table[CIF_TAG]];
+    }
 
-  //   // Parsing tags per case basis.
-  //   // "_rotag_force_field" category.
-  //   this->lj_k = cifvalue_to_double(
-  //     datablock, cif_tag_index_lookup_table, "_rotag_force_field.lj_k");
+    // Parsing tags per case basis.
+    // "_rotag_force_field" category.
+    // this->lj_k = cifvalue_to_double(
+    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.lj_k");
   //   this->c_k = cifvalue_to_double(
   //     datablock, cif_tag_index_lookup_table, "_rotag_force_field.c_k");
   //   this->h_k = cifvalue_to_double(
