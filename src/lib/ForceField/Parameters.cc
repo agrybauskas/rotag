@@ -15,33 +15,34 @@ Parameters::Parameters(char* program_file_path) {
 
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(parameters)) {
-    std::map<std::string, ssize_t> cif_tag_index_lookup_table;
-    std::map<std::string, ssize_t> cif_value_length_lookup_table;
+    std::map<std::string, ssize_t> cif_tag_index_lookup;
+    std::map<std::string, ssize_t> cif_value_length_lookup;
 
     // Generating lookup tables first.
     for (const std::string &CIF_TAG : PARAMETERS_TAGS) {
-      cif_tag_index_lookup_table[CIF_TAG] =
+      cif_tag_index_lookup[CIF_TAG] =
         datablock_tag_index(datablock, (char*) CIF_TAG.c_str());
-      cif_value_length_lookup_table[CIF_TAG] =
-        datablock_value_lengths(datablock)[cif_tag_index_lookup_table[CIF_TAG]];
+      cif_value_length_lookup[CIF_TAG] =
+        datablock_value_lengths(datablock)[cif_tag_index_lookup[CIF_TAG]];
     }
 
     // Parsing tags per case basis.
     // "_rotag_force_field" category.
-    // this->lj_k = cifvalue_to_double(
-    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.lj_k");
-  //   this->c_k = cifvalue_to_double(
-  //     datablock, cif_tag_index_lookup_table, "_rotag_force_field.c_k");
-  //   this->h_k = cifvalue_to_double(
-  //     datablock, cif_tag_index_lookup_table, "_rotag_force_field.h_k");
-  //   this->t_k = cifvalue_to_double(
-  //     datablock, cif_tag_index_lookup_table, "_rotag_force_field.t_k");
-  //   this->cutoff_atom = cifvalue_to_double(
-  //     datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_atom");
-  //   this->cutoff_start = cifvalue_to_double(
-  //     datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_start");
-  //   this->cutoff_end = cifvalue_to_double(
-  //     datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_end");
+    this->lj_k = atof(value_scalar(datablock_cifvalue(datablock, cif_tag_index_lookup["_rotag_force_field.lj_k"], 0)));
+    // this->c_k = cifvalue_to_double(
+    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.c_k");
+    // this->h_k = cifvalue_to_double(
+    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.h_k");
+    // this->t_k = cifvalue_to_double(
+    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.t_k");
+    // this->cutoff_atom = cifvalue_to_double(
+    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_atom");
+    // this->cutoff_start = cifvalue_to_double(
+    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_start");
+    // this->cutoff_end = cifvalue_to_double(
+    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_end");
+
+    std::cout << this->lj_k << std::endl;
 
   //   /* NOTE: "codcif" parser should catch errors if the length of tag values
   //      does not have the same size in the loop so, it is enough to choose any
