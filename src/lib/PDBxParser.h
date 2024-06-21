@@ -32,20 +32,20 @@ const std::vector<std::string> ATOM_SITE_TAGS = {
   "_atom_site.rotag_selection_group"   // Selection group id.
 };
 
-typedef std::map<std::string, std::map<std::string, std::string>> AtomSite;
-typedef std::map<std::string, std::map<std::string, bool>> Selector;
+// typedef std::map<std::string, std::map<std::string, std::string>> AtomSite;
+// typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
-AtomSite mmcif_to_atom_site(char* mmcif_file_path);
+// AtomSite mmcif_to_atom_site(char* mmcif_file_path);
 
-AtomSite
-filter(AtomSite atom_site, Selector include = {{}}, Selector exclude = {{}});
+// AtomSite
+// filter(AtomSite atom_site, Selector include = {{}}, Selector exclude = {{}});
 
-std::vector<std::vector<std::string>>
-extract(AtomSite atom_site, std::vector<std::string> cif_tags);
+// std::vector<std::vector<std::string>>
+// extract(AtomSite atom_site, std::vector<std::string> cif_tags);
 
-void mark_selection(
-  AtomSite* atom_site,
-  std::vector<std::string> target_atom_ids = {},
-  std::vector<std::string> selected_atom_ids = {});
+// void mark_selection(
+//   AtomSite* atom_site,
+//   std::vector<std::string> target_atom_ids = {},
+//   std::vector<std::string> selected_atom_ids = {});
 
 #endif  // SRC_LIB_PDBXPARSER_H_
