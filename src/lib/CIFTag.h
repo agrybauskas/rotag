@@ -1,6 +1,7 @@
 #ifndef SRC_LIB_CIFTAG_H_
 #define SRC_LIB_CIFTAG_H_
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
