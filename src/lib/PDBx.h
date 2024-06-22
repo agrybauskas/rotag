@@ -52,9 +52,8 @@ struct PDBXVALUE {
 class PDBx {
  private:
     std::map<std::string, std::vector<PDBXVALUE>> data;
-    std::map<std::string, std::vector<std::string>> categories;
-    std::map<std::string, std::vector<double>> category_order;
-    std::map<std::string, bool> loops;
+    // std::map<std::string, std::vector<std::string>> categories;
+    // std::map<std::string, int64_t> category_order;
 
  public:
     explicit PDBx(CIF* cif, std::vector<std::string> select_tags = {});

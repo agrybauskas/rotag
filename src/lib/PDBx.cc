@@ -26,9 +26,6 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
             }
         }
     }
-
-    double lj_k = this->data["_rotag_force_field.lj_k"][0];
-    std::cout << lj_k  << std::endl;
 }
 
 PDBx::~PDBx() {}
