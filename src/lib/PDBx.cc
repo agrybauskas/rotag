@@ -6,7 +6,7 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
     cif_tags = select_tags;
   } else {
     char** tags = datablock_tags(cif_datablock_list(cif));
-    for(int i = 0; i < sizeof(tags); i++ ) {
+    for(int i = 0; i < (int) sizeof(tags); i++ ) {
       std::string cif_tag = tags[i];
       cif_tags.push_back(cif_tag);
     }
