@@ -22,9 +22,13 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
             for (ssize_t i = 0; i < cif_value_lengths[cif_tag_index]; i++) {
                 PDBXVALUE pdbx_value(datablock_cifvalue(datablock,
                                                         cif_tag_index, i));
+                this->data[cif_tag].push_back(pdbx_value);
             }
         }
     }
+
+    double lj_k = this->data["_rotag_force_field.lj_k"][0];
+    std::cout << lj_k  << std::endl;
 }
 
 PDBx::~PDBx() {}

@@ -7,7 +7,7 @@
 #include <map>
 
 extern "C" {
-    #include "cif.h"
+    #include "cifvalue.h"
     #include "datablock.h"
 }
 
@@ -22,10 +22,28 @@ struct PDBXVALUE {
     operator double () const { return value_float; }
     operator int64_t () const { return value_int; }
 
-    explicit PDBXVALUE(CIFVALUE* x) {
-        this->value_str = "A";
-        this->value_float = 1.0;
-        this->value_int = 2;
+    explicit PDBXVALUE(CIFVALUE* cif_value) {
+        cif_value_type_t type = value_type(cif_value);
+        switch (type) {
+            case CIF_INT:
+                this->value_int = atoi(value_scalar(cif_value));
+                break;
+            case CIF_FLOAT:
+                this->value_float = atof(value_scalar(cif_value));
+                break;
+            case CIF_UQSTRING:
+            case CIF_SQSTRING:
+            case CIF_DQSTRING:
+            case CIF_SQ3STRING:
+            case CIF_DQ3STRING:
+            case CIF_TEXT:
+                this->value_str = value_scalar(cif_value);
+                break;
+            // HACK: look at these cases: CIF_UNKNOWN, CIF_NON_EXISTANT,
+            // CIF_LIST, CIF_TABLE, last_CIF_VALUE.
+            default:
+                break;
+        }
     }
 
     ~PDBXVALUE() {};
