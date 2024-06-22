@@ -15,71 +15,71 @@
 #include <boost/filesystem.hpp>
 
 extern "C" {
-  #include "cif.h"
-  #include "cif_compiler.h"
-  #include "cifvalue.h"
+    #include "cif.h"
+    #include "cif_compiler.h"
+    #include "cifvalue.h"
 }
 
 extern "C" {
-  #include "datablock.h"
+    #include "datablock.h"
 }
 
 struct AltName {
-  std::string alt_name;
+    std::string alt_name;
 };
 
 struct BondType {
-  double min_length;
-  double max_length;
+    double min_length;
+    double max_length;
 };
 
 struct ClearHybridization {
-  std::string type;
+    std::string type;
 };
 
 struct CovalentBondCombinations {
-  std::vector<std::vector<double>> values;
-  std::vector<std::vector<double>> errors;
+    std::vector<std::vector<double>> values;
+    std::vector<std::vector<double>> errors;
 };
 
 struct CovalentRadius {
-  double value;
-  double error;
+    double value;
+    double error;
 };
 
 struct DihedralAngleRestraint {
-  double range_from;
-  double range_to;
-  double step;
-  std::string type;
+    double range_from;
+    double range_to;
+    double step;
+    std::string type;
 };
 
 struct HBond {
-  double epsilon;
-  double phase;
-  double gamma;
+    double epsilon;
+    double phase;
+    double gamma;
 };
 
 struct LennardJones {
-  double sigma;
-  double epsilon;
+    double sigma;
+    double epsilon;
 };
 
 struct PartialCharge {
-  double value;
+    double value;
 };
 
 struct Torsional {
-  double epsilon;
-  double phase;
-  double gamma;
+    double epsilon;
+    double phase;
+    double gamma;
 };
 
 struct AtomProperties {
-  std::map<std::string, CovalentRadius> covalent_radius;
-  double vdw_radius;
-  int lone_pair_count;
-  int valence;
+    std::map<std::string, CovalentRadius> covalent_radius;
+    double vdw_radius;
+    int lone_pair_count;
+    int valence;
 };
 
 class Parameters {

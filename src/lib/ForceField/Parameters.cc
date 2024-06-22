@@ -1,39 +1,19 @@
 #include "Parameters.h"
 
 Parameters::Parameters(char* program_file_path) {
-  boost::filesystem::path parameter_file =
-    boost::filesystem::canonical(program_file_path).parent_path().parent_path()/
-    boost::filesystem::path(__FILE__).parent_path() /
-    "Parameters.cif";
+    boost::filesystem::path parameter_file =
+        boost::filesystem::canonical(program_file_path).parent_path().parent_path() /
+        boost::filesystem::path(__FILE__).parent_path() /
+        "Parameters.cif";
 
-  cif_option_t compiler_options = cif_option_default();
-  cexception_t inner;
-  CIF* parameters =
-    new_cif_from_cif_file((char*) parameter_file.c_str(),
-                          compiler_options,
-                          &inner);
+    cif_option_t compiler_options = cif_option_default();
+    cexception_t inner;
+    CIF* parameters =
+        new_cif_from_cif_file((char*) parameter_file.c_str(),
+                              compiler_options,
+                              &inner);
 
-  PDBx parameters_pdbx(parameters, PARAMETER_TAGS);
-
-  parameters_pdbx.values("_rotag_force_field.lj_k");
-
-  // DATABLOCK* datablock;
-  // foreach_datablock(datablock, cif_datablock_list(parameters)) {
-    // std::map<std::string, ssize_t> cif_tag_index_lookup;
-    // std::map<std::string, ssize_t> cif_value_length_lookup;
-
-    // // Generating lookup tables first.
-    // for (const std::string &CIF_TAG : PARAMETERS_TAGS) {
-    //   cif_tag_index_lookup[CIF_TAG] =
-    //     datablock_tag_index(datablock, (char*) CIF_TAG.c_str());
-    //   cif_value_length_lookup[CIF_TAG] =
-    //     datablock_value_lengths(datablock)[cif_tag_index_lookup[CIF_TAG]];
-    // }
-
-    // std::string cif_tag = "_rotag_force_field.lj_k";
-    // std::cout << value_scalar(datablock_cifvalue(datablock, datablock_tag_index(datablock, (char*) cif_tag.c_str()), 0)) << std::endl;
-    // std::cout << value_type(datablock_cifvalue(datablock, cif_tag_index_lookup["_rotag_force_field.lj_k"], 0)) << std::endl;
-    // std::cout << list_get(value_list(datablock_cifvalue(datablock, cif_tag_index_lookup["_rotag_force_field.lj_k"], 0)) << std::endl;
+    PDBx parameters_pdbx(parameters, PARAMETER_TAGS);
 
     // Parsing tags per case basis.
     // "_rotag_force_field" category.
