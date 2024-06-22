@@ -28,7 +28,7 @@ Parameters::Parameters(char* program_file_path) {
     this->cutoff_end =
         parameters_pdbx.values("_rotag_force_field.cutoff_end")[0];
 
-  //   // "_rotag_atom_properties" category.
+    // "_rotag_atom_properties" category.
   //   for (int i = 0;
   //        i <cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"];
   //        i++) {
