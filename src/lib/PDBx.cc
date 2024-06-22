@@ -14,6 +14,14 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
 
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(cif)) {
+    const ssize_t* cif_value_lengths = datablock_value_lengths(datablock);
+    for (const std::string &cif_tag : cif_tags) {
+      const ssize_t cif_tag_index =
+        datablock_tag_index(datablock, (char*) cif_tag.c_str());
+      const ssize_t cif_value_length =
+        cif_value_lengths[cif_tag_index];
+
+    }
   }
 }
 
