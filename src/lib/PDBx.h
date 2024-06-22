@@ -14,8 +14,11 @@ extern "C" {
 
 #include "PDBxParser.h"
 
-struct PDBXVALUE {
-
+union PDBXVALUE {
+  std::string value_str;
+  double value_float;
+  long int value_int;
+  ~PDBXVALUE() {};
 };
 
 class PDBx {
