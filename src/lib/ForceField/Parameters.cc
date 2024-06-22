@@ -9,7 +9,7 @@ Parameters::Parameters(char* program_file_path) {
     cif_option_t compiler_options = cif_option_default();
     cexception_t inner;
     CIF* parameters =
-        new_cif_from_cif_file((char*) parameter_file.c_str(),
+        new_cif_from_cif_file(const_cast<char*>(parameter_file.c_str()),
                               compiler_options,
                               &inner);
 
@@ -29,6 +29,9 @@ Parameters::Parameters(char* program_file_path) {
         parameters_pdbx.values("_rotag_force_field.cutoff_end")[0];
 
     // "_rotag_atom_properties" category.
+    for (const std::string &cif_tag :
+             parameters_pdbx.values("_rotag_atom_properties.type_symbol")) {
+    }
   //   for (int i = 0;
   //        i <cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"];
   //        i++) {

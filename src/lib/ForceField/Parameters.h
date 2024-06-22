@@ -1,10 +1,6 @@
 #ifndef SRC_LIB_FORCEFIELD_PARAMETERS_H_
 #define SRC_LIB_FORCEFIELD_PARAMETERS_H_
 
-#include "../PDBx.h"
-// #include "../CIFTag.h"
-// #include "../Combinatorics.h"
-
 #include <cmath>
 #include <map>
 #include <memory>
@@ -20,6 +16,10 @@ extern "C" {
     #include "cifvalue.h"
     #include "datablock.h"
 }
+
+#include "../PDBx.h"
+// #include "../CIFTag.h"
+// #include "../Combinatorics.h"
 
 struct AltName {
     std::string alt_name;
