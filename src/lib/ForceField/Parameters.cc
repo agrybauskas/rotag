@@ -15,7 +15,7 @@ Parameters::Parameters(char* program_file_path) {
 
   PDBx parameters_pdbx(parameters, PARAMETER_TAGS);
 
-  this->lj_k = parameters_pdbx->values("_rotag_force_field.lj_k")[0];
+  parameters_pdbx.values("_rotag_force_field.lj_k");
 
   // DATABLOCK* datablock;
   // foreach_datablock(datablock, cif_datablock_list(parameters)) {

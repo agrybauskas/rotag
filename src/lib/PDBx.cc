@@ -20,11 +20,13 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
         datablock_tag_index(datablock, (char*) cif_tag.c_str());
 
       for(ssize_t i = 0; i < cif_value_lengths[cif_tag_index]; i++) {
-        std::cout << value_scalar(datablock_cifvalue(datablock, cif_tag_index, i)) << std::endl;
       }
-      std::cout << "-----------------------------------" << std::endl;
     }
   }
 }
 
 PDBx::~PDBx(){}
+
+void PDBx::values(std::string cif_tag){
+
+}
