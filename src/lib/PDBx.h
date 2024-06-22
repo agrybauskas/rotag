@@ -22,7 +22,12 @@ struct PDBXVALUE {
   operator std::string () const { return value_str; }
   operator double () const { return value_float; }
   operator long int () const { return value_int; }
-  PDBXVALUE operator= (CIFVALUE& x) { return *this; }
+
+  PDBXVALUE (CIFVALUE* x) {
+    this->value_str = "A";
+    this->value_float = 1.0;
+    this->value_int = 2;
+  }
 
   ~PDBXVALUE() {};
 };
