@@ -11,6 +11,10 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
       cif_tags.push_back(cif_tag);
     }
   }
+
+  DATABLOCK* datablock;
+  foreach_datablock(datablock, cif_datablock_list(cif)) {
+  }
 }
 
 PDBx::~PDBx(){}

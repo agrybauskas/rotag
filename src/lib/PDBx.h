@@ -22,7 +22,7 @@ class PDBx {
     std::map<std::string, std::string> id;
 
   public:
-    PDBx(CIF* cif, std::vector<std::string> select_tags);
+    PDBx(CIF* cif, std::vector<std::string> select_tags={});
     ~PDBx();
 };
 
