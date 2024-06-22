@@ -36,7 +36,7 @@ const std::vector<std::string> ATOM_SITE_TAGS = {
   "_atom_site.rotag_selection_group"   // Selection group id.
 };
 
-const std::vector<std::string> PARAMETERS_TAGS = {
+const std::vector<std::string> PARAMETER_TAGS = {
   // "_rotag_parameters" category-related.
   "_rotag_force_field.lj_k",
   "_rotag_force_field.c_k",

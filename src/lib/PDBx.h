@@ -10,6 +10,8 @@ extern "C" {
   #include "cif_compiler.h"
 }
 
+#include "PDBxParser.h"
+
 class PDBx {
   private:
     CIF* data;
@@ -18,7 +20,7 @@ class PDBx {
     std::map<std::string, std::string> id;
 
   public:
-    PDBx(CIF* cif);
+    PDBx(CIF* cif, std::vector<std::string> tags);
     ~PDBx();
 };
 

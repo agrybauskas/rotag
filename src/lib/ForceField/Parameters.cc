@@ -13,7 +13,7 @@ Parameters::Parameters(char* program_file_path) {
                           compiler_options,
                           &inner);
 
-  PDBx parameters_pdbx(parameters);
+  PDBx parameters_pdbx(parameters, PARAMETER_TAGS);
 
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(parameters)) {
