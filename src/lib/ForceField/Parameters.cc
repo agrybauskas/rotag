@@ -17,26 +17,16 @@ Parameters::Parameters(char* program_file_path) {
 
     // Parsing tags per case basis.
     // "_rotag_force_field" category.
-    // this->lj_k = datablock_cifvalue(
-    //   datablock, cif_tag_index_lookup["_rotag_force_field.lj_k"], 0);
-    // this->c_k = cifvalue_to_double(
-    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.c_k");
-    // this->h_k = cifvalue_to_double(
-    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.h_k");
-    // this->t_k = cifvalue_to_double(
-    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.t_k");
-    // this->cutoff_atom = cifvalue_to_double(
-    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_atom");
-    // this->cutoff_start = cifvalue_to_double(
-    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_start");
-    // this->cutoff_end = cifvalue_to_double(
-    //   datablock, cif_tag_index_lookup_table, "_rotag_force_field.cutoff_end");
-
-    // std::cout << this->lj_k << std::endl;
-
-  //   /* NOTE: "codcif" parser should catch errors if the length of tag values
-  //      does not have the same size in the loop so, it is enough to choose any
-  //      column for iterating. */
+    this->lj_k = parameters_pdbx.values("_rotag_force_field.lj_k")[0];
+    this->c_k = parameters_pdbx.values("_rotag_force_field.c_k")[0];
+    this->h_k = parameters_pdbx.values("_rotag_force_field.h_k")[0];
+    this->t_k = parameters_pdbx.values("_rotag_force_field.t_k")[0];
+    this->cutoff_atom =
+        parameters_pdbx.values("_rotag_force_field.cutoff_atom")[0];
+    this->cutoff_start =
+        parameters_pdbx.values("_rotag_force_field.cutoff_start")[0];;
+    this->cutoff_end =
+        parameters_pdbx.values("_rotag_force_field.cutoff_end")[0];
 
   //   // "_rotag_atom_properties" category.
   //   for (int i = 0;

@@ -38,4 +38,6 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
 
 PDBx::~PDBx() {}
 
-void PDBx::values(std::string cif_tag) {}
+std::vector<PDBXVALUE> PDBx::values(std::string cif_tag) {
+    return this->data[cif_tag];
+}

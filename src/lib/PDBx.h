@@ -58,7 +58,7 @@ class PDBx {
  public:
     explicit PDBx(CIF* cif, std::vector<std::string> select_tags = {});
     ~PDBx();
-    void values(std::string cif_tag);
+    std::vector<PDBXVALUE> values(std::string cif_tag);
 };
 
 #endif  // SRC_LIB_PDBX_H_
