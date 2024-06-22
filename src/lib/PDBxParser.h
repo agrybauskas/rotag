@@ -99,13 +99,6 @@ const std::vector<std::string> PARAMETERS_TAGS = {
   "_rotag_rotatable_residue_names.label_comp_id"
 };
 
-struct PDBX {
-  CIF* data;
-  std::vector<double> order;
-  std::map<std::string, std::vector<std::string>> group;
-  std::map<std::string, std::string> id;
-};
-
 // typedef std::map<std::string, std::map<std::string, std::string>> AtomSite;
 // typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
