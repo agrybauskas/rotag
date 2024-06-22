@@ -15,8 +15,8 @@ Parameters::Parameters(char* program_file_path) {
 
   PDBx parameters_pdbx(parameters, PARAMETER_TAGS);
 
-  DATABLOCK* datablock;
-  foreach_datablock(datablock, cif_datablock_list(parameters)) {
+  // DATABLOCK* datablock;
+  // foreach_datablock(datablock, cif_datablock_list(parameters)) {
     // std::map<std::string, ssize_t> cif_tag_index_lookup;
     // std::map<std::string, ssize_t> cif_value_length_lookup;
 
@@ -585,7 +585,7 @@ Parameters::Parameters(char* program_file_path) {
   //     this->COVALENT_BOND_COMBINATIONS[first_atom_symbol][second_atom_symbol].errors =
   //       error_combinations;
   //   }
-  }
+  // }
 }
 
 Parameters::~Parameters() {}

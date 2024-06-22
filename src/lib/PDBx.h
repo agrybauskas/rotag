@@ -8,6 +8,7 @@
 
 extern "C" {
   #include "cif_compiler.h"
+  #include "datablock.h"
 }
 
 #include "PDBxParser.h"
