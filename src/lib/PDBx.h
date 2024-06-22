@@ -20,10 +20,9 @@ struct PDBXVALUE {
 
 class PDBx {
   private:
-    CIF* data;
-    std::vector<double> order;
-    std::map<std::string, std::vector<std::string>> group;
-    std::map<std::string, std::string> id;
+    std::map<std::string, std::vector<PDBXVALUE>> data;
+    std::map<std::string, std::vector<std::string>> categories;
+    std::map<std::string, std::vector<double>> category_order;
 
   public:
     PDBx(CIF* cif, std::vector<std::string> select_tags={});
