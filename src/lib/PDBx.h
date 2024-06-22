@@ -23,6 +23,7 @@ class PDBx {
     std::map<std::string, std::vector<PDBXVALUE>> data;
     std::map<std::string, std::vector<std::string>> categories;
     std::map<std::string, std::vector<double>> category_order;
+    std::map<std::string, bool> loops;
 
   public:
     PDBx(CIF* cif, std::vector<std::string> select_tags={});
