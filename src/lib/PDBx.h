@@ -7,6 +7,7 @@
 #include <map>
 
 extern "C" {
+  #include "cif.h"
   #include "cif_compiler.h"
   #include "datablock.h"
 }
@@ -21,7 +22,7 @@ class PDBx {
     std::map<std::string, std::string> id;
 
   public:
-    PDBx(CIF* cif, std::vector<std::string> tags);
+    PDBx(CIF* cif, std::vector<std::string> select_tags);
     ~PDBx();
 };
 
