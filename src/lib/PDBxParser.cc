@@ -6,8 +6,6 @@ extern "C" {
   #include "cif_compiler.h"
 }
 
-#include "CIFTag.h"
-
 // AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
 //   AtomSite atom_site = {};
 
