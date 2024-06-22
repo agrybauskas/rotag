@@ -18,7 +18,8 @@ class PDBx {
     std::map<std::string, std::string> id;
 
   public:
-    PDBx();
+    PDBx(CIF* cif);
+    ~PDBx();
 };
 
 #endif  // SRC_LIB_PDBX_H_

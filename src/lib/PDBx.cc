@@ -1,3 +1,7 @@
 #include "PDBx.h"
 
-PDBx::PDBx() {}
+PDBx::PDBx(CIF* cif) {
+  this->data = cif;
+}
+
+PDBx::~PDBx(){}

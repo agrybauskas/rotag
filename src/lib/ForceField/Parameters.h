@@ -1,7 +1,7 @@
 #ifndef SRC_LIB_FORCEFIELD_PARAMETERS_H_
 #define SRC_LIB_FORCEFIELD_PARAMETERS_H_
 
-#include "../PDBxParser.h"
+#include "../PDBx.h"
 // #include "../CIFTag.h"
 // #include "../Combinatorics.h"
 

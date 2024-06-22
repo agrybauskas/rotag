@@ -13,6 +13,8 @@ Parameters::Parameters(char* program_file_path) {
                           compiler_options,
                           &inner);
 
+  PDBx parameters_pdbx(parameters);
+
   DATABLOCK* datablock;
   foreach_datablock(datablock, cif_datablock_list(parameters)) {
     // std::map<std::string, ssize_t> cif_tag_index_lookup;
