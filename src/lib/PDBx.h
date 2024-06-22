@@ -23,6 +23,7 @@ struct PDBXVALUE {
   operator int64_t () const { return value_int; }
 
   explicit PDBXVALUE(CIFVALUE* x) {
+
     this->value_str = "A";
     this->value_float = 1.0;
     this->value_int = 2;

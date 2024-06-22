@@ -22,67 +22,67 @@ extern int optind, opterr, optopt;
 char* progname;
 
 int main(int argc, char *argv[]) {
-  progname = argv[0];
+    progname = argv[0];
 
-  // Defaults.
-  std::string target_cmd = "all";
-  std::string select_cmd = "target";
-  std::string tags =
-    "_atom_site,_rotag_rotamer_angle,_rotag_dihedral_angle,"
-    "_rotag_rotamer_energy,_rotag_pairwise_energy,_rotag_energy,"
-    "_rotag_rmsd";
-  bool is_related = false;
-  bool is_pdb = false;
-  bool keep_ignored = false;
-  int random_seed = 23;
-  std::vector<std::string> category_list = {
-    "_atom_site", "_rotag_rotamer_angle", "_rotag_dihedral_angle",
-    "_rotag_rotamer_energy", "_rotag_pairwise_energy", "_rotag_energy",
-    "_rotag_rmsd"
-  };
+    // Defaults.
+    std::string target_cmd = "all";
+    std::string select_cmd = "target";
+    std::string tags =
+        "_atom_site,_rotag_rotamer_angle,_rotag_dihedral_angle,"
+        "_rotag_rotamer_energy,_rotag_pairwise_energy,_rotag_energy,"
+        "_rotag_rmsd";
+    bool is_related = false;
+    bool is_pdb = false;
+    bool keep_ignored = false;
+    int random_seed = 23;
+    std::vector<std::string> category_list = {
+        "_atom_site", "_rotag_rotamer_angle", "_rotag_dihedral_angle",
+        "_rotag_rotamer_energy", "_rotag_pairwise_energy", "_rotag_energy",
+        "_rotag_rmsd"
+    };
 
-  const struct option longopts[] = {
-    {"target",         1, 0, 't'},
-    {"select",         1, 0, 's'},
-    {"tags",           1, 0, 0  },
-    {"related-data",   0, 0, 'r'},
-    {"pdb",            0, 0, 'p'},
-    {"keep-ignored",   0, 0, 'k'},
-    {"random-seed",    1, 0, 'x'},
-    {"help",           0, 0, 'h'},
-    {"version",        0, 0, 'v'},
-    {0,                0, 0, 0  },
-  };
+    const struct option longopts[] = {
+        {"target",       1, 0, 't'},
+        {"select",       1, 0, 's'},
+        {"tags",         1, 0, 0  },
+        {"related-data", 0, 0, 'r'},
+        {"pdb",          0, 0, 'p'},
+        {"keep-ignored", 0, 0, 'k'},
+        {"random-seed",  1, 0, 'x'},
+        {"help",         0, 0, 'h'},
+        {"version",      0, 0, 'v'},
+        {0,              0, 0, 0  },
+    };
 
-  int index;
-  int iarg = 0;
+    int index;
+    int iarg = 0;
 
-  while (iarg != -1) {
-    iarg = getopt_long(argc, argv, "t:s:0:rpkx:hv", longopts, &index);
-    switch (iarg) {
-      case 't':
-        target_cmd = optarg;
-        break;
-      case 's':
-        select_cmd = optarg;
-        break;
-      case 0:
-        tags = optarg;
-        break;
-      case 'r':
-        is_related = true;
-        break;
-      case 'p':
-        is_pdb = true;
-        break;
-      case 'k':
-        keep_ignored = true;
-        break;
-      case 'x':
-        random_seed = atoi(optarg);
-        break;
-      case 'h':
-        std::cout <<
+    while (iarg != -1) {
+        iarg = getopt_long(argc, argv, "t:s:0:rpkx:hv", longopts, &index);
+        switch (iarg) {
+            case 't':
+                target_cmd = optarg;
+                break;
+            case 's':
+                select_cmd = optarg;
+                break;
+            case 0:
+                tags = optarg;
+                break;
+            case 'r':
+                is_related = true;
+                break;
+            case 'p':
+                is_pdb = true;
+                break;
+            case 'k':
+                keep_ignored = true;
+                break;
+            case 'x':
+                random_seed = atoi(optarg);
+                break;
+            case 'h':
+                std::cout <<
 "rotag_select [options] [--] <cif-file>...\n"
 "    select and mark atoms of interest by adding selection state [T|S|I] to\n"
 "    _atom_site category in PDBx.\n"
@@ -167,29 +167,28 @@ int main(int argc, char *argv[]) {
 "        set a seed for random (rand) selection.\n"
 "    -v, --version\n"
 "        print version" << std::endl;
-        break;
-      case 'v':
-        std::cout << version() << std::endl;
-        break;
+                break;
+            case 'v':
+                std::cout << version() << std::endl;
+                break;
+        }
     }
-  }
 
-  std::vector<std::string> tags_list;
-  boost::replace_all(tags, " ", "");
-  boost::split(tags_list, tags, boost::is_any_of(","));
+    std::vector<std::string> tags_list;
+    boost::replace_all(tags, " ", "");
+    boost::split(tags_list, tags, boost::is_any_of(","));
 
-  Parameters parameters(progname);
+    Parameters parameters(progname);
 
-  // for (int index = optind; index < argc; index++) {
-  //   AtomSite atom_site;
-  //   if (is_pdb) {
-  //   } else {
-  //     atom_site = mmcif_to_atom_site(argv[index]);
-  //   }
+    // for (int index = optind; index < argc; index++) {
+    //     AtomSite atom_site;
+    //     if (is_pdb) {
+    //     } else {
+    //         atom_site = mmcif_to_atom_site(argv[index]);
+    //     }
+    // }
+    // std::vector<std::string> target_atom_ids =
+    //     selection_parser(atom_site, target_cmd)
 
-  //   // std::vector<std::string> target_atom_ids =
-  //   // selection_parser(atom_site, target_cmd);
-  // }
-
-  return 0;
+    return 0;
 }
