@@ -14,14 +14,14 @@ extern "C" {
 
 #include "PDBxParser.h"
 
-union PDBXVALUE {
+struct PDBXVALUE {
   std::string value_str;
   double value_float;
   int64_t value_int;
 
   operator std::string () const { return value_str; }
   operator double () const { return value_float; }
-  operator int64_t () const { return value_int; }
+  operator long int () const { return value_int; }
 
   ~PDBXVALUE() {};
 };
