@@ -18,6 +18,11 @@ union PDBXVALUE {
   std::string value_str;
   double value_float;
   long int value_int;
+
+  operator std::string () const { return value_str; }
+  operator double () const { return value_float; }
+  operator long int () const { return value_int; }
+
   ~PDBXVALUE() {};
 };
 
