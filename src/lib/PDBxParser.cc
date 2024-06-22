@@ -3,7 +3,7 @@
 #include <iostream>
 
 extern "C" {
-  #include "cif_compiler.h"
+    #include "cif_compiler.h"
 }
 
 // AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
