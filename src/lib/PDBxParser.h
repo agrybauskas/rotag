@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+extern "C" {
+  #include "cif_compiler.h"
+}
+
 const std::vector<std::string> ATOM_SITE_TAGS = {
   // "_atom_site" category-related.
   "_atom_site.group_pdb",              // "ATOM" or "HETATM".
@@ -93,6 +97,13 @@ const std::vector<std::string> PARAMETERS_TAGS = {
   "_rotag_mainchain_atom_names.label_atom_id",
   "_rotag_sidechain_atom_names.label_atom_id",
   "_rotag_rotatable_residue_names.label_comp_id"
+};
+
+struct PDBX {
+  CIF* data;
+  std::vector<double> order;
+  std::map<std::string, std::vector<std::string>> group;
+  std::map<std::string, std::string> id;
 };
 
 // typedef std::map<std::string, std::map<std::string, std::string>> AtomSite;
