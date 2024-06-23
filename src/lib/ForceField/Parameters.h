@@ -18,7 +18,7 @@ extern "C" {
 }
 
 #include "../PDBx.h"
-// #include "../Combinatorics.h"
+#include "../Combinatorics.h"
 
 struct AltName {
     std::string alt_name;
