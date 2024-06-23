@@ -2,7 +2,8 @@
 
 Parameters::Parameters(char* program_file_path) {
     boost::filesystem::path parameter_file =
-        boost::filesystem::canonical(program_file_path).parent_path().parent_path() /
+        boost::filesystem::canonical(program_file_path)
+            .parent_path().parent_path() /
         boost::filesystem::path(__FILE__).parent_path() /
         "Parameters.cif";
 
@@ -13,91 +14,69 @@ Parameters::Parameters(char* program_file_path) {
                               compiler_options,
                               &inner);
 
-    PDBx parameters_pdbx(parameters, PARAMETER_TAGS);
+    PDBx pdbx(parameters, PARAMETER_TAGS);
 
-    // Parsing tags per case basis.
-    // "_rotag_force_field" category.
-    this->lj_k = parameters_pdbx.values("_rotag_force_field.lj_k")[0];
-    this->c_k = parameters_pdbx.values("_rotag_force_field.c_k")[0];
-    this->h_k = parameters_pdbx.values("_rotag_force_field.h_k")[0];
-    this->t_k = parameters_pdbx.values("_rotag_force_field.t_k")[0];
-    this->cutoff_atom =
-        parameters_pdbx.values("_rotag_force_field.cutoff_atom")[0];
-    this->cutoff_start =
-        parameters_pdbx.values("_rotag_force_field.cutoff_start")[0];;
-    this->cutoff_end =
-        parameters_pdbx.values("_rotag_force_field.cutoff_end")[0];
+    /* Parsing tags per case basis.
+       "_rotag_force_field" category.*/
+    this->lj_k = pdbx.values("_rotag_force_field.lj_k")[0];
+    this->c_k = pdbx.values("_rotag_force_field.c_k")[0];
+    this->h_k = pdbx.values("_rotag_force_field.h_k")[0];
+    this->t_k = pdbx.values("_rotag_force_field.t_k")[0];
+    this->cutoff_atom = pdbx.values("_rotag_force_field.cutoff_atom")[0];
+    this->cutoff_start = pdbx.values("_rotag_force_field.cutoff_start")[0];
+    this->cutoff_end = pdbx.values("_rotag_force_field.cutoff_end")[0];
 
     // "_rotag_atom_properties" category.
-  //   for (int i = 0;
-  //        i <cif_value_length_lookup_table["_rotag_atom_properties.type_symbol"];
-  //        i++) {
-  //     std::string type_symbol = cifvalue_to_string(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_atom_properties.type_symbol",
-  //       i);
-  //     std::string hybridization = cifvalue_to_string(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_atom_properties.hybridization",
-  //       i);
+    for (size_t i = 0;
+         i < pdbx.values("_rotag_force_field.cutoff_end").size();
+         i++) {
+        std::string type_symbol =
+            pdbx.values("_rotag_force_field.cutoff_end")[i];
+        std::string hybridization =
+            pdbx.values("_rotag_atom_properties.hybridization")[i];
 
-  //     this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value =
-  //       cifvalue_to_double(
-  //         datablock,
-  //         cif_tag_index_lookup_table,
-  //         "_rotag_atom_properties.covalent_radius_value",
-  //         i);
-  //     this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error =
-  //       cifvalue_to_double(
-  //         datablock,
-  //         cif_tag_index_lookup_table,
-  //         "_rotag_atom_properties.covalent_radius_error",
-  //         i);
-  //     this->ATOM_PROPERTIES[type_symbol].vdw_radius =
-  //       cifvalue_to_double(
-  //         datablock,
-  //         cif_tag_index_lookup_table,
-  //         "_rotag_atom_properties.vdw_radius",
-  //         i);
-  //     this->ATOM_PROPERTIES[type_symbol].lone_pair_count =
-  //       std::stoi(cifvalue_to_string(
-  //         datablock,
-  //         cif_tag_index_lookup_table,
-  //         "_rotag_atom_properties.lone_pair_count",
-  //         i));
-  //     this->ATOM_PROPERTIES[type_symbol].valence =
-  //       std::stoi(cifvalue_to_string(
-  //         datablock,
-  //         cif_tag_index_lookup_table,
-  //         "_rotag_atom_properties.valence",
-  //         i));
+        this->ATOM_PROPERTIES[type_symbol]
+            .covalent_radius[hybridization].value =
+            pdbx.values("_rotag_atom_properties.covalent_radius_value")[i];
+        this->ATOM_PROPERTIES[type_symbol]
+            .covalent_radius[hybridization].error =
+            pdbx.values("_rotag_atom_properties.covalent_radius_error")[i];
+        this->ATOM_PROPERTIES[type_symbol].vdw_radius =
+            pdbx.values("_rotag_atom_properties.vdw_radius")[i];
+        this->ATOM_PROPERTIES[type_symbol].lone_pair_count =
+            pdbx.values("_rotag_atom_properties.lone_pair_count")[i];
+        this->ATOM_PROPERTIES[type_symbol].valence =
+            pdbx.values("_rotag_atom_properties.valence")[i];
 
-  //     // Used for edge length of the grid during cubing procedure algorithm.
-  //     if (this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value >
-  //         this->max_connection_length) {
-  //       this->max_connection_length =
-  //         this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value;
-  //     }
+        // Used for edge length of the grid during cubing procedure algorithm.
+        if (this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value >
+            this->max_connection_length) {
+            this->max_connection_length =
+                this->ATOM_PROPERTIES[type_symbol]
+                    .covalent_radius[hybridization].value;
+        }
 
-  //     /* Covalent radii are stored in list as it will be much more easier and
-  //        cleaner to calculate bond length combinations. */
-  //     // NOTE: values and errors should have the count in list.
-  //     if (this->COVALENT_RADII_VALUES.count(type_symbol) > 0) {
-  //       this->COVALENT_RADII_VALUES[type_symbol].push_back(
-  //         this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value);
-  //       this->COVALENT_RADII_ERRORS[type_symbol].push_back(
-  //         this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error);
-  //     } else {
-  //       this->COVALENT_RADII_VALUES[type_symbol] = std::vector<double>{
-  //         this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value
-  //       };
-  //       this->COVALENT_RADII_ERRORS[type_symbol] = std::vector<double>{
-  //         this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error
-  //       };
-  //     }
-  //   }
+        /* Covalent radii are stored in list as it will be much more easier and
+           cleaner to calculate bond length combinations.
+           NOTE: values and errors should have the count in list. */
+        if (this->COVALENT_RADII_VALUES.count(type_symbol) > 0) {
+            this->COVALENT_RADII_VALUES[type_symbol].push_back(
+                this->ATOM_PROPERTIES[type_symbol]
+                    .covalent_radius[hybridization].value);
+            this->COVALENT_RADII_ERRORS[type_symbol].push_back(
+                this->ATOM_PROPERTIES[type_symbol]
+                    .covalent_radius[hybridization].error);
+        } else {
+            this->COVALENT_RADII_VALUES[type_symbol] = std::vector<double>{
+                this->ATOM_PROPERTIES[type_symbol]
+                    .covalent_radius[hybridization].value
+            };
+            this->COVALENT_RADII_ERRORS[type_symbol] = std::vector<double>{
+                this->ATOM_PROPERTIES[type_symbol]
+                    .covalent_radius[hybridization].error
+            };
+        }
+    }
 
   //   // "_rotag_partial_charge" category.
   //   for (int i = 0;

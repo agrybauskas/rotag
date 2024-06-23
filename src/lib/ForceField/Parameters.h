@@ -18,7 +18,6 @@ extern "C" {
 }
 
 #include "../PDBx.h"
-// #include "../CIFTag.h"
 // #include "../Combinatorics.h"
 
 struct AltName {
@@ -75,8 +74,8 @@ struct Torsional {
 struct AtomProperties {
     std::map<std::string, CovalentRadius> covalent_radius;
     double vdw_radius;
-    int lone_pair_count;
-    int valence;
+    int64_t lone_pair_count;
+    int64_t valence;
 };
 
 class Parameters {
