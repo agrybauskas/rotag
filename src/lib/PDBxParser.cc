@@ -2,12 +2,8 @@
 
 #include <iostream>
 
-extern "C" {
-    #include "cif_compiler.h"
-}
-
-// AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
-//   AtomSite atom_site = {};
+AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
+    AtomSite atom_site = {};
 
 //   cif_option_t compiler_options = cif_option_default();
 //   cexception_t inner;
@@ -33,7 +29,7 @@ extern "C" {
 //   }
 
 //   return atom_site;
-// }
+}
 
 // AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
 //   if (atom_site.empty()) {
