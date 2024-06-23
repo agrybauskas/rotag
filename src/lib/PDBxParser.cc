@@ -11,12 +11,10 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
               ATOM_SITE_TAGS);
 
     for (size_t i = 0; i < pdbx.values("_atom_site.id").size(); i++) {
-        std::string id = pdbx.values("_atom_site.id")[i];
+        int64_t id = pdbx.values("_atom_site.id")[i];
         for (const std::string &cif_tag : ATOM_SITE_TAGS) {
             if (pdbx.values(cif_tag).size() > 0) {
-                // std::cout << cif_tag << std::endl;
-                // atom_site[id][cif_tag] = value_scalar(datablock_cifvalue(
-                //     datablock, cif_tag_index_lookup_table[cif_tag], i));
+                atom_site[id][cif_tag] = &pdbx.values(cif_tag)[i];
             }
         }
     }
