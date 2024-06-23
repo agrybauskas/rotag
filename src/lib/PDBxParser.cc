@@ -1,7 +1,5 @@
 #include "PDBxParser.h"
 
-#include <iostream>
-
 AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
     AtomSite atom_site = {};
 
@@ -22,37 +20,39 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
     return atom_site;
 }
 
-// AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
-//   if (atom_site.empty()) {
-//     // TODO: Error or warning. Message: no atoms were loaded from "_atom_site".
-//   }
+AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
+    if (atom_site.empty()) {
+        /* TODO(algirdas): Error or warning. Message: no atoms were loaded from
+           "_atom_site".*/
+    }
 
-//   AtomSite filtered_atom_site = {};
-//   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
-//     std::string id = it->first;
-//     bool keep_atom = true;
-//     for (const std::string &cif_tag : ATOM_SITE_TAGS) {
-//       std::string value = atom_site[id][cif_tag];
-//       if (!include[cif_tag].empty() && !include[cif_tag][value]) {
-//         keep_atom = false;
-//         break;
-//       }
+    AtomSite filtered_atom_site = {};
+    for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
+        int64_t id = it->first;
+        bool keep_atom = true;
+        for (const std::string &cif_tag : ATOM_SITE_TAGS) {
+            PDBXVALUE* value = atom_site[id][cif_tag];
+            std::cout << value << std::endl;
+            // if (!include[cif_tag].empty() && !include[cif_tag][value]) {
+            //     keep_atom = false;
+            //     break;
+            // }
 
-//       if (!exclude[cif_tag].empty() && exclude[cif_tag][value]) {
-//         keep_atom = false;
-//         break;
-//       }
-//     }
+            // if (!exclude[cif_tag].empty() && exclude[cif_tag][value]) {
+            //     keep_atom = false;
+            //     break;
+            // }
+        }
 
-//     if (!keep_atom) {
-//       continue;
-//     }
+        if (!keep_atom) {
+            continue;
+        }
 
-//     filtered_atom_site[id] = atom_site[id];
-//   }
+        filtered_atom_site[id] = atom_site[id];
+    }
 
-//   return filtered_atom_site;
-// }
+    return filtered_atom_site;
+}
 
 // std::vector<std::vector<std::string>>
 // extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {

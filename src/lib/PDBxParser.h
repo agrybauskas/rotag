@@ -1,6 +1,7 @@
 #ifndef SRC_LIB_PDBXPARSER_H_
 #define SRC_LIB_PDBXPARSER_H_
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -39,12 +40,12 @@ const std::vector<std::string> ATOM_SITE_TAGS = {
 };
 
 typedef std::map<int64_t, std::map<std::string, PDBXVALUE*>> AtomSite;
-// typedef std::map<std::string, std::map<std::string, bool>> Selector;
+typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
 AtomSite pdbx_to_atom_site(char* pdbx_file_path);
 
-// AtomSite
-// filter(AtomSite atom_site, Selector include = {{}}, Selector exclude = {{}});
+AtomSite
+filter(AtomSite atom_site, Selector include = {{}}, Selector exclude = {{}});
 
 // std::vector<std::vector<std::string>>
 // extract(AtomSite atom_site, std::vector<std::string> cif_tags);

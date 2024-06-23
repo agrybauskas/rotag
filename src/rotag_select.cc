@@ -186,7 +186,11 @@ int main(int argc, char *argv[]) {
         } else {
             atom_site = pdbx_to_atom_site(argv[index]);
         }
+
+        // NOTE(algirdas): just testing.
+        filter(atom_site);
     }
+
     // std::vector<std::string> target_atom_ids =
     //     selection_parser(atom_site, target_cmd)
 
