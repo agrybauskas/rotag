@@ -181,12 +181,11 @@ int main(int argc, char *argv[]) {
     Parameters parameters(progname);
 
     for (int index = optind; index < argc; index++) {
-        AtomSite atom_site = pdbx_to_atom_site(argv[index]);
-    //     AtomSite atom_site;
-    //     if (is_pdb) {
-    //     } else {
-    //         atom_site = pdbx_to_atom_site(argv[index]);
-    //     }
+        AtomSite atom_site;
+        if (is_pdb) {
+        } else {
+            atom_site = pdbx_to_atom_site(argv[index]);
+        }
     }
     // std::vector<std::string> target_atom_ids =
     //     selection_parser(atom_site, target_cmd)

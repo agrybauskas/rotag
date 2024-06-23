@@ -22,6 +22,10 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
                 datablock_tag_index(datablock,
                                     const_cast<char*>(cif_tag.c_str()));
 
+            if (cif_tag_index < 0) {
+                continue;
+            }
+
             this->cif_tag_order[cif_tag] = cif_tag_counter;
             this->in_loop[cif_tag] = are_in_loops[cif_tag_index];
 
