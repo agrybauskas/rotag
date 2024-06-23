@@ -74,8 +74,6 @@ Parameters::Parameters(char* program_file_path) {
                     .covalent_radius[hybridization].error
             };
         }
-
-
     }
 
     // "_rotag_partial_charge" category.
