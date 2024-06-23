@@ -103,8 +103,8 @@ transpose(std::vector< std::vector<double>> matrix) {
     std::vector<std::vector<double>>
         transposed_matrix(row_count, std::vector<double>(col_count));
 
-    for (int row = 0; row < transposed_matrix.size(); row++) {
-        for (int col = 0; col < transposed_matrix[row].size(); col++) {
+    for (size_t row = 0; row < transposed_matrix.size(); row++) {
+        for (size_t col = 0; col < transposed_matrix[row].size(); col++) {
             transposed_matrix[col][row] = matrix[row][col];
         }
     }
@@ -141,11 +141,11 @@ AlgebraicMatrix matrix_product(AlgebraicMatrix left_matrix,
         local_left_matrix.size(),
         std::vector<double>(local_right_matrix[0].size()));
 
-    for (int left_row = 0; left_row < local_left_matrix.size(); left_row++) {
-    for (int right_col = 0;
+    for (size_t left_row = 0; left_row < local_left_matrix.size(); left_row++) {
+    for (size_t right_col = 0;
          right_col < local_right_matrix[0].size();
          right_col++) {
-    for (int right_row = 0;
+    for (size_t right_row = 0;
          right_row < local_right_matrix.size();
          right_row++) {
         local_matrix_product[left_row][right_col] +=
@@ -172,7 +172,7 @@ mult_matrix_product(std::vector<AlgebraicMatrix> matrices,
 
         mult_matrix_product.push_back(matrix);
     } else {
-        for (int i = matrices.size() - 1; i >= 1; i--) {
+        for (size_t i = matrices.size() - 1; i >= 1; i--) {
             if (i == matrices.size() - 1) {
                 mult_matrix_product.push_back(matrix_product(matrices[i-1],
                                                              matrices[i],
