@@ -7,11 +7,10 @@
 #include <map>
 
 extern "C" {
+    #include "cif_compiler.h"
     #include "cifvalue.h"
     #include "datablock.h"
 }
-
-#include "PDBxParser.h"
 
 struct PDBXVALUE {
     std::string value_str;

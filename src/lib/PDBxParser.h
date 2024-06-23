@@ -38,7 +38,7 @@ const std::vector<std::string> ATOM_SITE_TAGS = {
     "_atom_site.rotag_selection_group"   // Selection group id.
 };
 
-typedef std::map<std::string, std::map<std::string, std::string>> AtomSite;
+typedef std::map<int64_t, std::map<std::string, PDBXVALUE>> AtomSite;
 // typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
 AtomSite pdbx_to_atom_site(char* pdbx_file_path);

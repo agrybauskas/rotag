@@ -12,12 +12,13 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
 
     for (size_t i = 0; i < pdbx.values("_atom_site.id").size(); i++) {
         std::string id = pdbx.values("_atom_site.id")[i];
+        for (const std::string &cif_tag : ATOM_SITE_TAGS) {
+            // if (cif_tag_index_lookup_table[cif_tag] > 0) {
+            //     atom_site[id][cif_tag] = value_scalar(datablock_cifvalue(
+            //         datablock, cif_tag_index_lookup_table[cif_tag], i));
+            // }
+        }
     }
-
-    // if (cif_tag_index_lookup_table[cif_tag] > 0) {
-    //     atom_site[id][cif_tag] = value_scalar(datablock_cifvalue(
-    //         datablock, cif_tag_index_lookup_table[cif_tag], i));
-    // }
 
     return atom_site;
 }
