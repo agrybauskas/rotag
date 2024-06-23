@@ -3,5 +3,5 @@
 #include <string>
 
 std::string version() {
-  return "rotag: 0.1.0";
+    return "rotag: 0.1.0";
 }
