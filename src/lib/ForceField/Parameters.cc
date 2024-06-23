@@ -27,9 +27,7 @@ Parameters::Parameters(char* program_file_path) {
     this->cutoff_end = pdbx.values("_rotag_force_field.cutoff_end")[0];
 
     // "_rotag_atom_properties" category.
-    for (size_t i = 0;
-         i < pdbx.values("_rotag_force_field.cutoff_end").size();
-         i++) {
+    for (size_t i = 0; i < pdbx.values("_rotag_force_field.cutoff_end").size(); i++) {
         std::string type_symbol =
             pdbx.values("_rotag_force_field.cutoff_end")[i];
         std::string hybridization =
@@ -76,62 +74,37 @@ Parameters::Parameters(char* program_file_path) {
                     .covalent_radius[hybridization].error
             };
         }
+
+
     }
 
-  //   // "_rotag_partial_charge" category.
-  //   for (int i = 0;
-  //        i < cif_value_length_lookup_table["_rotag_lennard_jones.type_symbol_1"];
-  //        i++) {
-  //     std::string type_symbol_1 = cifvalue_to_string(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_lennard_jones.type_symbol_1",
-  //       i);
-  //     std::string type_symbol_2 = cifvalue_to_string(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_lennard_jones.type_symbol_2",
-  //       i);
-  //     double sigma = cifvalue_to_double(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_lennard_jones.sigma",
-  //       i);
-  //     double epsilon = cifvalue_to_double(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_lennard_jones.epsilon",
-  //       i);
+    // "_rotag_partial_charge" category.
+    for (size_t i = 0; i < pdbx.values("_rotag_lennard_jones.type_symbol_1").size(); i++) {
+        std::string type_symbol_1 =
+            pdbx.values("_rotag_lennard_jones.type_symbol_1")[i];
+        std::string type_symbol_2 =
+            pdbx.values("_rotag_lennard_jones.type_symbol_2")[i];
+        double sigma = pdbx.values("_rotag_lennard_jones.sigma")[i];
+        double epsilon = pdbx.values("_rotag_lennard_jones.epsilon")[i];
 
-  //     this->LENNARD_JONES[type_symbol_1][type_symbol_2] = {sigma, epsilon};
-  //     this->LENNARD_JONES[type_symbol_2][type_symbol_1] = {sigma, epsilon};
-  //   }
+        this->LENNARD_JONES[type_symbol_1][type_symbol_2] = {sigma, epsilon};
+        this->LENNARD_JONES[type_symbol_2][type_symbol_1] = {sigma, epsilon};
+    }
 
-  //   // "_rotag_partial_charge" category.
-  //   for (int i = 0;
-  //        i < cif_value_length_lookup_table["_rotag_partial_charge.label_comp_id"];
-  //        i++) {
-  //     std::string residue_name = cifvalue_to_string(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_partial_charge.label_comp_id",
-  //       i);
-  //     std::string atom_name = cifvalue_to_string(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_partial_charge.label_atom_id",
-  //       i);
-  //     double partial_charge_value = cifvalue_to_double(
-  //       datablock,
-  //       cif_tag_index_lookup_table,
-  //       "_rotag_partial_charge.value",
-  //       i);
+    // "_rotag_partial_charge" category.
+    for (size_t i = 0; i < pdbx.values("_rotag_partial_charge.label_comp_id").size(); i++) {
+        std::string residue_name =
+            pdbx.values("_rotag_partial_charge.label_comp_id")[i];
+        std::string atom_name =
+            pdbx.values("_rotag_partial_charge.label_atom_id")[i];
+        double partial_charge_value =
+            pdbx.values("_rotag_partial_charge.value")[i];
 
-  //     this->PARTIAL_CHARGE[residue_name][atom_name].value =
-  //       partial_charge_value;
-  //   }
+        this->PARTIAL_CHARGE[residue_name][atom_name].value =
+            partial_charge_value;
+    }
 
-  //   // "_rotag_torsional_atom_names" category.
+    // "_rotag_torsional_atom_names" category.
   //   for (int i = 0;
   //        i < cif_value_length_lookup_table["_rotag_torsional_atom_names.label_comp_id"];
   //        i++) {
