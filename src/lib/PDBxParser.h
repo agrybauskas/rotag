@@ -9,6 +9,8 @@ extern "C" {
     #include "cif_compiler.h"
 }
 
+#include "PDBx.h"
+
 const std::vector<std::string> ATOM_SITE_TAGS = {
     // "_atom_site" category-related.
     "_atom_site.group_pdb",              // "ATOM" or "HETATM".
@@ -39,7 +41,7 @@ const std::vector<std::string> ATOM_SITE_TAGS = {
 typedef std::map<std::string, std::map<std::string, std::string>> AtomSite;
 // typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
-AtomSite mmcif_to_atom_site(char* mmcif_file_path);
+AtomSite pdbx_to_atom_site(char* pdbx_file_path);
 
 // AtomSite
 // filter(AtomSite atom_site, Selector include = {{}}, Selector exclude = {{}});

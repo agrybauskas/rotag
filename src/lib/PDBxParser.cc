@@ -2,33 +2,24 @@
 
 #include <iostream>
 
-AtomSite mmcif_to_atom_site(char* mmcif_file_path) {
+AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
     AtomSite atom_site = {};
 
-//   cif_option_t compiler_options = cif_option_default();
-//   cexception_t inner;
-//   CIF* mmcif = new_cif_from_cif_file(mmcif_file_path, compiler_options, &inner);
+    cif_option_t compiler_options = cif_option_default();
+    cexception_t inner;
+    PDBx pdbx(new_cif_from_cif_file(pdbx_file_path, compiler_options, &inner),
+              ATOM_SITE_TAGS);
 
-//   DATABLOCK* datablock;
-//   foreach_datablock(datablock, cif_datablock_list(mmcif)) {
-//     std::map<std::string, ssize_t> cif_tag_index_lookup_table =
-//       cif_tag_index_lookup(datablock, ATOM_SITE_TAGS);
-//     std::map<std::string, ssize_t> cif_value_length_lookup_table =
-//       cif_value_length_lookup(datablock, ATOM_SITE_TAGS);
+    for (size_t i = 0; i < pdbx.values("_atom_site.id").size(); i++) {
+        std::string id = pdbx.values("_atom_site.id")[i];
+    }
 
-//     for (const std::string &cif_tag : ATOM_SITE_TAGS) {
-//       for (int i = 0; i < cif_value_length_lookup_table["_atom_site.id"]; i++) {
-//         std::string id = value_scalar(datablock_cifvalue(
-//           datablock, cif_tag_index_lookup_table["_atom_site.id"], i));
-//         if (cif_tag_index_lookup_table[cif_tag] > 0) {
-//           atom_site[id][cif_tag] = value_scalar(datablock_cifvalue(
-//             datablock, cif_tag_index_lookup_table[cif_tag], i));
-//         }
-//       }
-//     }
-//   }
+    // if (cif_tag_index_lookup_table[cif_tag] > 0) {
+    //     atom_site[id][cif_tag] = value_scalar(datablock_cifvalue(
+    //         datablock, cif_tag_index_lookup_table[cif_tag], i));
+    // }
 
-//   return atom_site;
+    return atom_site;
 }
 
 // AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {

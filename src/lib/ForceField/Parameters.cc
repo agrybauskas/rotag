@@ -9,12 +9,10 @@ Parameters::Parameters(char* program_file_path) {
 
     cif_option_t compiler_options = cif_option_default();
     cexception_t inner;
-    CIF* parameters =
-        new_cif_from_cif_file(const_cast<char*>(parameter_file.c_str()),
-                              compiler_options,
-                              &inner);
-
-    PDBx pdbx(parameters, PARAMETER_TAGS);
+    PDBx pdbx(new_cif_from_cif_file(const_cast<char*>(parameter_file.c_str()),
+                                    compiler_options,
+                                    &inner),
+              PARAMETER_TAGS);
 
     /* Parsing tags per case basis.
        "_rotag_force_field" category.*/
