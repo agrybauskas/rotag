@@ -26,9 +26,11 @@ struct PDBXVALUE {
         switch (type) {
             case CIF_INT:
                 this->value_int = atoi(value_scalar(cif_value));
+                this->value_str = value_scalar(cif_value);
                 break;
             case CIF_FLOAT:
                 this->value_float = atof(value_scalar(cif_value));
+                this->value_str = value_scalar(cif_value);
                 break;
             case CIF_UQSTRING:
             case CIF_SQSTRING:
@@ -41,6 +43,7 @@ struct PDBXVALUE {
             // HACK: look at these cases: CIF_UNKNOWN, CIF_NON_EXISTANT,
             // CIF_LIST, CIF_TABLE, last_CIF_VALUE.
             default:
+                this->value_str = "";
                 break;
         }
     }
