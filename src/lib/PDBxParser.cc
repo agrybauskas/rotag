@@ -19,9 +19,6 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
         atom_site.insert(std::make_pair(id, atom));
     }
 
-    std::cout << (int64_t) atom_site[1]["atom_site.id"] << std::endl;
-    std::cout << (int64_t) atom_site[2]["atom_site.id"] << std::endl;
-
     return atom_site;
 }
 
@@ -36,8 +33,8 @@ AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
         int64_t id = it->first;
         bool keep_atom = true;
         for (const std::string &cif_tag : ATOM_SITE_TAGS) {
-            // PDBXVALUE value = atom_site[id][cif_tag];
-            // std::cout << (std::string) atom_site[id][cif_tag] << std::endl;
+            PDBXVALUE value = atom_site.at(id).at(cif_tag);
+            std::cout << (std::string) value << std::endl;
             // if (!include[cif_tag].empty() && !include[cif_tag][value]) {
             //     keep_atom = false;
             //     break;
@@ -53,7 +50,7 @@ AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
             continue;
         }
 
-        filtered_atom_site[id] = atom_site[id];
+        // filtered_atom_site[id] = atom_site[id];
     }
 
     return filtered_atom_site;
