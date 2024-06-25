@@ -29,28 +29,30 @@ AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
     }
 
     AtomSite filtered_atom_site = {};
-    for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
-        int64_t id = it->first;
+    for (AtomSite::iterator it_i = atom_site.begin(); it_i != atom_site.end(); ++it_i) {
+        int64_t id = it_i->first;
+        Atom atom = atom_site.at(id);
         bool keep_atom = true;
-        for (const std::string &cif_tag : ATOM_SITE_TAGS) {
-            PDBXVALUE value = atom_site.at(id).at(cif_tag);
-            std::cout << (std::string) value << std::endl;
-            // if (!include[cif_tag].empty() && !include[cif_tag][value]) {
-            //     keep_atom = false;
-            //     break;
-            // }
+        for (Atom::iterator it_j = atom.begin(); it_j != atom.end(); ++it_j) {
+            std::string cif_tag = it_j->first;
+            std::string value = atom.at(cif_tag);
 
-            // if (!exclude[cif_tag].empty() && exclude[cif_tag][value]) {
-            //     keep_atom = false;
-            //     break;
-            // }
+            if (!include[cif_tag].empty() && !include[cif_tag][value]) {
+                keep_atom = false;
+                break;
+            }
+
+            if (!exclude[cif_tag].empty() && exclude[cif_tag][value]) {
+                keep_atom = false;
+                break;
+            }
         }
 
         if (!keep_atom) {
             continue;
         }
 
-        // filtered_atom_site[id] = atom_site[id];
+        filtered_atom_site[id] = atom_site[id];
     }
 
     return filtered_atom_site;
