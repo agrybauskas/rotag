@@ -19,7 +19,8 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
         atom_site.insert(std::make_pair(id, atom));
     }
 
-    std::cout << (std::string) atom_site[1]["atom_site.id"] << std::endl;
+    std::cout << (int64_t) atom_site[1]["atom_site.id"] << std::endl;
+    std::cout << (int64_t) atom_site[2]["atom_site.id"] << std::endl;
 
     return atom_site;
 }
