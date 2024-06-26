@@ -65,14 +65,17 @@ extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {
         int64_t id = it->first;
         std::vector<PDBXVALUE> atom_data = {};
         for (const std::string &cif_tag : cif_tags) {
-            // atom_data.push_back(atom_site[id][cif_tag]);
+            if (atom_site.count(id) > 0) {continue;}
+            if (atom_site[id].count(cif_tag) > 0) {continue;}
+
+            atom_data.push_back(atom_site.at(id).at(cif_tag));
         }
-    //     atoms_data.push_back(atom_data);
+        atoms_data.push_back(atom_data);
     }
     return atoms_data;
 }
 
-void mark_selection(AtomSite &atom_site,
+void mark_selection(AtomSite atom_site,
                     std::vector<int64_t> target_atom_ids,
                     std::vector<int64_t> selected_atom_ids) {
     // for (AtomSite::iterator it = atom_site->begin(); it != atom_site->end(); ++it) {
