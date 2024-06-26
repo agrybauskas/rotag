@@ -5,8 +5,11 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
 
     cif_option_t compiler_options = cif_option_default();
     cexception_t inner;
-    PDBx pdbx(new_cif_from_cif_file(pdbx_file_path, compiler_options, &inner),
-              ATOM_SITE_TAGS);
+    CIF* cif = new_cif_from_cif_file(pdbx_file_path, compiler_options, &inner);
+
+    PDBx pdbx(cif, ATOM_SITE_TAGS);
+
+    delete_cif(cif);
 
     for (size_t i = 0; i < pdbx.values("_atom_site.id").size(); i++) {
         int64_t id = pdbx.values("_atom_site.id")[i];

@@ -8,6 +8,7 @@
 #include <vector>
 
 extern "C" {
+    #include "cif.h"
     #include "cif_compiler.h"
 }
 
