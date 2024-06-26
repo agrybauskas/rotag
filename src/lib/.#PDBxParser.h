@@ -1,1 +1,0 @@
-algirdas@algirdas-Z87-HD3.6260:1719377279
