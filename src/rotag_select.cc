@@ -189,7 +189,8 @@ int main(int argc, char *argv[]) {
 
         // NOTE(algirdas): just testing.
         filter(atom_site);
-        extract(atom_site, {"_atom_site.ids2"});
+        extract(atom_site, {"_atom_site.ids"});
+        mark_selection(atom_site, {1});
     }
 
     // std::vector<std::string> target_atom_ids =
