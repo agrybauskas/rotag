@@ -58,38 +58,31 @@ AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
     return filtered_atom_site;
 }
 
-// std::vector<std::vector<std::string>>
-// extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {
-//   std::vector<std::vector<std::string>> atoms_data = {};
-//   for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
-//     std::string id = it->first;
-//     std::vector<std::string> atom_data = {};
-//     for (const std::string &cif_tag : cif_tags) {
-//       atom_data.push_back(atom_site[id][cif_tag]);
-//     }
-//     atoms_data.push_back(atom_data);
-//   }
-//   return atoms_data;
-// }
+std::vector<std::vector<PDBXVALUE>>
+extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {
+    std::vector<std::vector<PDBXVALUE>> atoms_data = {};
+    for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
+        int64_t id = it->first;
+        std::vector<PDBXVALUE> atom_data = {};
+        for (const std::string &cif_tag : cif_tags) {
+            // atom_data.push_back(atom_site[id][cif_tag]);
+        }
+    //     atoms_data.push_back(atom_data);
+    }
+    return atoms_data;
+}
 
-// void mark_selection(
-//   AtomSite* atom_site,
-//   std::vector<std::string> target_atom_ids,
-//   std::vector<std::string> selected_atom_ids) {
-//   for (AtomSite::iterator it = atom_site->begin();
-//        it != atom_site->end();
-//        ++it) {
-//     std::string id = it->first;
-//     (*atom_site)[id]["_atom_site.rotag_selection_state"] = "I";
-//   }
-
-//   for (const std::string &selected_atom_id : selected_atom_ids) {
-//     (*atom_site)[selected_atom_id]["_atom_site.rotag_selection_state"] = "S";
-//   }
-
-//   for (const std::string &target_atom_id : target_atom_ids) {
-//     (*atom_site)[target_atom_id]["_atom_site.rotag_selection_state"] = "T";
-//   }
-
-//   return;
-// }
+void mark_selection(AtomSite &atom_site,
+                    std::vector<int64_t> target_atom_ids,
+                    std::vector<int64_t> selected_atom_ids) {
+    // for (AtomSite::iterator it = atom_site->begin(); it != atom_site->end(); ++it) {
+    //     std::string id = it->first;
+    //     // (*atom_site)[id]["_atom_site.rotag_selection_state"] = "I";
+    // }
+    for (const int64_t &selected_atom_id : selected_atom_ids) {
+        // (*atom_site)[selected_atom_id]["_atom_site.rotag_selection_state"] = "S";
+    }
+    for (const int64_t &target_atom_id : target_atom_ids) {
+        // (*atom_site)[target_atom_id]["_atom_site.rotag_selection_state"] = "T";
+    }
+}
