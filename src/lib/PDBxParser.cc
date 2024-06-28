@@ -62,7 +62,7 @@ AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
 }
 
 std::vector<std::vector<PDBXVALUE>>
-extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {
+extract(AtomSite atom_site, std::vector<std::string> cif_tags={} ) {
     std::vector<std::vector<PDBXVALUE>> atoms_data = {};
     for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
         int64_t id = it->first;
@@ -78,17 +78,17 @@ extract(AtomSite atom_site, std::vector<std::string> cif_tags ) {
     return atoms_data;
 }
 
-void mark_selection(AtomSite& atom_site,
+void mark_selection(AtomSite atom_site,
                     std::vector<int64_t> target_atom_ids,
                     std::vector<int64_t> selected_atom_ids) {
     for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
         int64_t id = it->first;
-        // (*atom_site)[id]["_atom_site.rotag_selection_state"] = "I";
+        std::make_pair(atom_site[id], PDBXVALUE("_atom_site.rotag_selection_state", "I"));
     }
     for (const int64_t &selected_atom_id : selected_atom_ids) {
-        // (*atom_site)[selected_atom_id]["_atom_site.rotag_selection_state"] = "S";
+        /* atom_site[selected_atom_id] = PDBXVALUE("_atom_site.rotag_selection_state", "S"); */
     }
     for (const int64_t &target_atom_id : target_atom_ids) {
-        // (*atom_site)[target_atom_id]["_atom_site.rotag_selection_state"] = "T";
+        /* atom_site[target_atom_id] = PDBXVALUE("_atom_site.rotag_selection_state", "T"); */
     }
 }
