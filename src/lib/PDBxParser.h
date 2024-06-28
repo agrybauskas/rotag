@@ -47,11 +47,9 @@ typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
 AtomSite pdbx_to_atom_site(char* pdbx_file_path);
 
-AtomSite
-filter(AtomSite atom_site, Selector include = {{}}, Selector exclude = {{}});
-
-std::vector<std::vector<PDBXVALUE>>
-extract(AtomSite atom_site, std::vector<std::string> cif_tags);
+AtomSite filter(AtomSite atom_site,
+                Selector include = {{}},
+                Selector exclude = {{}});
 
 void mark_selection(AtomSite atom_site,
                     std::vector<int64_t> target_atom_ids={},
