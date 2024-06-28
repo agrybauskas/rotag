@@ -188,9 +188,15 @@ int main(int argc, char *argv[]) {
         }
 
         // NOTE(algirdas): just testing.
-        filter(atom_site);
-        extract(atom_site, {"_atom_site.id"});
-        mark_selection(atom_site, {1});
+        // filter(atom_site);
+        std::vector<std::vector<PDBXVALUE>> atoms_data =
+          extract(atom_site, {"_atom_site.id"});
+        for (const std::vector<PDBXVALUE>& atom_data : atoms_data ) {
+            for (const PDBXVALUE& value : atom_data ) {
+              std::cout << (std::string) value << std::endl;
+            }
+        }
+        // mark_selection(atom_site, {1});
     }
 
     // std::vector<std::string> target_atom_ids =
