@@ -51,7 +51,7 @@ AtomSite filter(AtomSite atom_site,
                 Selector include = {{}},
                 Selector exclude = {{}});
 
-void mark_selection(AtomSite atom_site,
+void mark_selection(AtomSite& atom_site,
                     std::vector<int64_t> target_atom_ids={},
                     std::vector<int64_t> selected_atom_ids={});
 
