@@ -21,16 +21,16 @@ struct PDBXVALUE {
     operator double () const { return value_float; }
     operator int64_t () const { return value_int; }
 
-    explicit PDBXVALUE(std::string, std::string value) {
+    explicit PDBXVALUE(std::string value) {
         this->value_str = value;
     }
 
-    explicit PDBXVALUE(std::string, double value) {
+    explicit PDBXVALUE(double value) {
         this->value_float = value;
         this->value_str = std::to_string(value);
     }
 
-    explicit PDBXVALUE(std::string, int64_t value) {
+    explicit PDBXVALUE(int64_t value) {
         this->value_int = value;
         this->value_str = std::to_string(value);
     }

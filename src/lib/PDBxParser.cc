@@ -66,12 +66,15 @@ void mark_selection(AtomSite& atom_site,
                     std::vector<int64_t> selected_atom_ids) {
     for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
         int64_t id = it->first;
-        std::make_pair(atom_site[id], PDBXVALUE("_atom_site.rotag_selection_state", "I"));
+        atom_site.at(id).emplace(
+            "_atom_site.rotag_selection_state", PDBXVALUE("I"));
     }
     for (const int64_t &selected_atom_id : selected_atom_ids) {
-        /* atom_site[selected_atom_id] = PDBXVALUE("_atom_site.rotag_selection_state", "S"); */
+        atom_site.at(selected_atom_id).emplace(
+            "_atom_site.rotag_selection_state", PDBXVALUE("S"));
     }
     for (const int64_t &target_atom_id : target_atom_ids) {
-        /* atom_site[target_atom_id] = PDBXVALUE("_atom_site.rotag_selection_state", "T"); */
+        atom_site.at(target_atom_id).emplace(
+            "_atom_site.rotag_selection_state", PDBXVALUE("T"));
     }
 }

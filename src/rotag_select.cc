@@ -189,9 +189,10 @@ int main(int argc, char *argv[]) {
 
         // NOTE(algirdas): just testing.
         // filter(atom_site);
-        mark_selection(atom_site, {1});
+        mark_selection(atom_site, {1}, {2});
 
-        std::cout << (std::string) atom_site.at(1).at("_atom_site.id") << std::endl;
+        std::cout << (std::string) atom_site.at(1).at("_atom_site.rotag_selection_state") << std::endl;
+        std::cout << (std::string) atom_site.at(2).at("_atom_site.rotag_selection_state") << std::endl;
     }
 
     // std::vector<std::string> target_atom_ids =
