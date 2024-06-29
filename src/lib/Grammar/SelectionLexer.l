@@ -1,14 +1,18 @@
+;; %option yylineno
+%option noyywrap
+
 %{
-#include "SelectionParser.h"
+    #include "SelectionParser.h"
+
+    extern int yyparse();
 %}
 
-%option yylineno
-%option noyywrap
+;; COMMA ","
+NUM [0-9]+
+;; STR [A-Za-z]+
 
 %%
 
-;; ","       {return COMMA;}
-;; [0-9]+    {return NUM;}
-;; [A-Za-z]+ {return STR;}
+{COMMA}
 
 %%

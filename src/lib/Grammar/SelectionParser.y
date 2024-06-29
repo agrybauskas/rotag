@@ -1,27 +1,17 @@
-%code requires{
-  /* #include <string> */
-  /* #include <vector> */
+%defines
 
-  /* #include "../PDBxParser.h" */
+%{
+    #include <string>
 
-  /* void selection_parser(AtomSite atom_site, std::string query); */
-}
+    extern int yylex();
 
-/* %{ */
-/* #include <stdio.h> */
-/* #include <stdlib.h> */
+    extern void yyerror(char const* msg);
+%}
 
-/* #include "SelectionLexer.h" */
-
-/* int yyparse(); */
-/* int yylex(void); */
-/* void yyerror(std::string message){} */
-/* %} */
-
-/* %token NUM STR COMMA */
-
-%token NUM FLOAT STR
-%left COMMA
+/* %token<std::string> COMMA */
+%token<int64_t> NUM
+/* %token<std::string> STR */
+/* %left COMMA */
 /* %left NUM STR */
 /* %left ".." "=" */
 /* %left 'around' 'rand' 'angles' */
@@ -32,25 +22,33 @@
 
 %%
 
-exp
-    : any_ope
-;
+exp:
+exp:
+    | NUM {std::cout << $1 << std::endl;}
 
-any_ope
-    : any_ope COMMA any_ope
-    | num_ope
-    | str_ope
-;
+/* exp */
+/*     : any_ope */
+/* ; */
 
-num_ope
-    : NUM
-;
+/* any_ope */
+/*     /\* : any_ope COMMA any_ope *\/ */
+/*     : num_ope */
+/*     | str_ope */
+/* ; */
 
-str_ope
-    : STR
-;
+/* num_ope */
+/*     : NUM */
+/* ; */
+
+/* str_ope */
+/*     : STR */
+/* ; */
 
 %%
 
-void selection_parser(AtomSite& atom_site, std::string query) {
+void yyerror(char const* msg) {
+    std::cout << "Syntax Error: " << msg << std::endl;
 }
+
+/* void selection_parser(AtomSite& atom_site, std::string query) { */
+/* } */
