@@ -25,6 +25,7 @@
 exp:
 exp:
     | NUM {std::cout << $1 << std::endl;}
+    ;
 
 /* exp */
 /*     : any_ope */
