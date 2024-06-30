@@ -1,18 +1,19 @@
-;; %option yylineno
 %option noyywrap
 
 %{
+    #include <cstdlib>
     #include "SelectionParser.h"
 
     extern int yyparse();
 %}
 
-;; COMMA ","
-NUM [0-9]+
-;; STR [A-Za-z]+
+digits [0-9]+
 
 %%
 
-{COMMA}
+{digits} {
+             yyval = atoi(yytext);
+             return NUM;
+         }
 
 %%
