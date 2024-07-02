@@ -30,7 +30,7 @@ CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
 CC_LIB=-lboost_filesystem
 
 C_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/getoptions
-C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o ${LIB_DIR}/Grammar/*.o
+C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o
 
 .PHONY: all
 .PRECIOUS: ${CC_OBJS} ${PARSER_SRC} ${LEXER_SRC} ${PARSER_HEADERS} ${LEXER_HEADERS}
