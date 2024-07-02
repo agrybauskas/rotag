@@ -34,6 +34,8 @@ HEADERS=${LIB_SRC:%.cc=%.h}
 PARSER_HEADERS=${PARSER_SRC:%.cc=%.h}
 LEXER_HEADERS=${LEXER_SRC:%.cc=%.h}
 CC_OBJS=${LIB_SRC:%.cc=%.o}
+CC_OBJS+=${PARSER_SRC:%.cc=%.o}
+CC_OBJS+=${LEXER_SRC:%.cc=%.o}
 PARSER_OBJS=$(PARSER:%.y=%.o)
 LEXER_OBJS=$(LEXER:%.l=%.o)
 CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
@@ -53,12 +55,12 @@ TAGS=${SRC_DIR}/TAGS
 %.o: %.cc %.h
 	g++ -c -Wall -std=c++11 -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
 
-${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS} ${LEXER_SRC} ${PARSER_SRC}
+${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
 	g++ -Wall -std=c++11 -g -o $@ $< ${CC_OBJS} ${C_OBJS} ${CC_LIB} ${C_LIBDIR}
 
 .PHONY: all
 
-all: build-externals ${CC_BIN}
+all: build-externals | ${CC_BIN}
 
 build-externals:
 	make -C src/externals/cexceptions
