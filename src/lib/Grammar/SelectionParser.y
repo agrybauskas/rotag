@@ -42,9 +42,9 @@ cmd: /* empty */
    ;
 
 expr:
-    | SPACE NUM SPACE { std::cout << $2 << std::endl; }
-    | SPACE NUM { std::cout << $2 << std::endl; }
     | NUM SPACE { std::cout << $1 << std::endl; }
+    | SPACE NUM { std::cout << $2 << std::endl; }
+    | SPACE NUM SPACE { std::cout << $2 << std::endl; }
     | NUM { std::cout << $1 << std::endl; }
     ;
 
