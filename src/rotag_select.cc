@@ -187,12 +187,12 @@ int main(int argc, char *argv[]) {
             atom_site = pdbx_to_atom_site(argv[index]);
         }
 
-        std::vector<int64_t> target_atom_ids =
-            selection_parser(atom_site, target_cmd);
+        // std::vector<int64_t> target_atom_ids =
+        //     selection_parser(atom_site, target_cmd);
 
-        for (const int64_t& target_atom_id : target_atom_ids) {
-            std::cout << target_atom_id << std::endl;
-        }
+        // for (const int64_t& target_atom_id : target_atom_ids) {
+        //     std::cout << target_atom_id << std::endl;
+        // }
     }
 
     return 0;

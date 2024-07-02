@@ -11,16 +11,16 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
 
     delete_cif(cif);
 
-    for (size_t i = 0; i < pdbx.values("_atom_site.id").size(); i++) {
-        int64_t id = pdbx.values("_atom_site.id")[i];
-        Atom atom = {};
-        for (const std::string &cif_tag : ATOM_SITE_TAGS) {
-            if (pdbx.values(cif_tag).size() > 0) {
-                atom.insert(std::make_pair(cif_tag, pdbx.values(cif_tag)[i]));
-            }
-        }
-        atom_site.insert(std::make_pair(id, atom));
-    }
+    // for (size_t i = 0; i < pdbx.values("_atom_site.id").size(); i++) {
+    //     int64_t id = pdbx.values("_atom_site.id")[i];
+    //     Atom atom = {};
+    //     for (const std::string &cif_tag : ATOM_SITE_TAGS) {
+    //         if (pdbx.values(cif_tag).size() > 0) {
+    //             atom.insert(std::make_pair(cif_tag, pdbx.values(cif_tag)[i]));
+    //         }
+    //     }
+    //     atom_site.insert(std::make_pair(id, atom));
+    // }
 
     return atom_site;
 }
