@@ -22,17 +22,17 @@
 
 %union
 {
-    int integer;
+    int64_t num;
 }
 
-%token<integer> DIGIT
+%token<num> NUM
 
 %start cmd
 
 %%
 
 cmd: /* empty */
-    | DIGIT { std::cout << $1 << std::endl; }
+    | NUM { std::cout << $1 << std::endl; }
     ;
 
 %%
@@ -42,6 +42,6 @@ void select_error(std::vector<int64_t>& atom_ids, char const* msg) {
 }
 
 std::vector<int64_t> selection_parser(AtomSite& atom_site, std::string cmd) {
-    std::vector<int64_t> atom_ids = {1, 2, 3};
+    std::vector<int64_t> atom_ids = {};
     return atom_ids;
 }

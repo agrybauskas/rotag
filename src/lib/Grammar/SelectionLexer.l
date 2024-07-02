@@ -7,13 +7,13 @@
     #include "SelectionParser.h"
 %}
 
-digits [0-9]+
+NUM [0-9]+
 
 %%
 
-{digits} {
-             select_lval.integer = atoi(select_text);
-             return DIGIT;
-         }
+{NUM} {
+          select_lval.num = atoi(select_text);
+          return NUM;
+      }
 
 %%
