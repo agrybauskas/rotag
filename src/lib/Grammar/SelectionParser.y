@@ -53,7 +53,7 @@ expr:
     /* | SPACE STR { std::cout << $2 << std::endl; } */
     /* | SPACE STR SPACE { std::cout << $2 << std::endl; } */
     | NUM    { std::cout << $1 << std::endl; }
-    | DOUBLE { std::cout << $1 << std::endl; }
+    | DOUBLE { std::printf( "%f", $1 ); }
     | STR    { std::cout << $1 << std::endl; }
     ;
 
