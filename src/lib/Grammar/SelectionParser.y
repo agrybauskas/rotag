@@ -15,6 +15,9 @@
     #include <string>
     #include <vector>
 
+    void set_lex_input(const char* input);
+    void end_lex_scan(void);
+
     extern int select_lex();
 
     extern void select_error(std::vector<int64_t>&, char const*);
@@ -43,5 +46,8 @@ void select_error(std::vector<int64_t>& atom_ids, char const* msg) {
 
 std::vector<int64_t> selection_parser(AtomSite& atom_site, std::string cmd) {
     std::vector<int64_t> atom_ids = {};
+    set_lex_input(cmd.c_str());
+    int rv = select_parse(atom_ids);
+    end_lex_scan();
     return atom_ids;
 }
