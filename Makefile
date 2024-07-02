@@ -1,50 +1,46 @@
-# Environmental variables.
-
-export PERL5LIB:=${PWD}/lib:${PERL5LIB}
-export PATH:=${PWD}/scripts:${PATH}
-
-all:
-
 #
-# Grammar compilation.
-#
-
-YAPP_DIR=lib/Grammar
-YAPP_FILES=${wildcard ${YAPP_DIR}/*.yp}
-GRAMMAR_MODULES=${YAPP_FILES:%.yp=%.pm}
-
-${YAPP_DIR}/%.pm: ${YAPP_DIR}/%.yp
-	yapp -o $@ $<
-
-#
-# C++ library and program compilation.
+# C++ and C libraries and programs.
 #
 
 BIN_DIR=bin
 SRC_DIR=src
+
 LIB_DIR=${SRC_DIR}/lib
-OBJ_DIR=${SRC_DIR}/lib
 LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc ${LIB_DIR}/Grammar/*.cc}
+OBJ_DIR=${SRC_DIR}/lib
+
 BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
-PARSER=$(wildcard ${LIB_DIR}/Grammar/*.y)
-LEXER=$(wildcard ${LIB_DIR}/Grammar/*.l)
-PARSER_SRC=$(PARSER:%.y=%.cc)
-LEXER_SRC=$(LEXER:%.l=%.cc)
 HEADERS=${LIB_SRC:%.cc=%.h}
+
+PARSER=$(wildcard ${LIB_DIR}/Grammar/*.y)
+PARSER_SRC=$(PARSER:%.y=%.cc)
 PARSER_HEADERS=${PARSER_SRC:%.cc=%.h}
+PARSER_OBJS=$(PARSER:%.y=%.o)
+
+LEXER=$(wildcard ${LIB_DIR}/Grammar/*.l)
+LEXER_SRC=$(LEXER:%.l=%.cc)
 LEXER_HEADERS=${LEXER_SRC:%.cc=%.h}
+LEXER_OBJS=$(LEXER:%.l=%.o)
+
 CC_OBJS=${LIB_SRC:%.cc=%.o}
 CC_OBJS+=${PARSER_SRC:%.cc=%.o}
 CC_OBJS+=${LEXER_SRC:%.cc=%.o}
-PARSER_OBJS=$(PARSER:%.y=%.o)
-LEXER_OBJS=$(LEXER:%.l=%.o)
+
 CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
 CC_LIB=-lboost_filesystem
+
 C_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/getoptions
 C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o ${LIB_DIR}/Grammar/*.o
-TAGS=${SRC_DIR}/TAGS
 
+.PHONY: all
 .PRECIOUS: ${CC_OBJS} ${PARSER_SRC} ${LEXER_SRC} ${PARSER_HEADERS} ${LEXER_HEADERS}
+
+all: build-externals | ${CC_BIN}
+
+build-externals:
+	make -C src/externals/cexceptions
+	make -C src/externals/codcif
+	make -C src/externals/getoptions
 
 %.cc %.h: %.l
 	flex --header-file=$(basename $@).h -o $@ $<
@@ -57,23 +53,6 @@ TAGS=${SRC_DIR}/TAGS
 
 ${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
 	g++ -Wall -std=c++11 -g -o $@ $< ${CC_OBJS} ${C_OBJS} ${CC_LIB} ${C_LIBDIR}
-
-.PHONY: all
-
-all: build-externals | ${CC_BIN}
-
-build-externals:
-	make -C src/externals/cexceptions
-	make -C src/externals/codcif
-	make -C src/externals/getoptions
-
-#
-# Build rule.
-#
-
-.PHONY: build
-
-build: all
 
 #
 # Unit tests.
@@ -123,47 +102,18 @@ ${TEST_OUT_DIR}/%.diff: ${TEST_CASES_DIR}/%.sh ${TEST_OUT_DIR}/%.out
 # Coverage.
 #
 
-COVERAGE_CASES_DIR=tests/coverage
-COVERAGE_CASES=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${COVERAGE_CASES_DIR}/%.sh}
-COVERAGE_OUTS=${TEST_CASES:${TEST_CASES_DIR}/%.sh=${COVERAGE_CASES_DIR}/%.out}
-
-.PHONY: coverage
-
-coverage: ${COVERAGE_CASES_DIR}/cover_db/coverage.html
-
-${COVERAGE_CASES_DIR}/cover_db/coverage.html: ${COVERAGE_OUTS}
-	cover
-	mv cover_db ${COVERAGE_CASES_DIR}
-
-${COVERAGE_CASES_DIR}/%.out: ${COVERAGE_CASES_DIR}/%.sh
-	./$< 2>&1 > $@ || true
-
-${COVERAGE_CASES_DIR}/%.sh: ${TEST_CASES_DIR}/%.sh
-	cp $^ $@
-	sed -i '4i export PERL5OPT=-MDevel::Cover make test' $@
-
 #
 # Utilities.
 #
 
 .PHONY: clean cleanAll distclean
 
-tags: ${TAGS}
-
-${SRC_DIR}/TAGS: ${LIB_SRC} ${BIN_SRC} ${HEADERS}
-	rm -rf $@
-	find src/ -name '*.cc' -or -name '*.c' -or -name '*.h' | xargs etags -a -o $@
-
 clean: testclean
-	rm -f ${COVERAGE_CASES}
-	rm -f ${COVERAGE_OUTS}
-	rm -fr ${COVERAGE_CASES_DIR}/cover_db
 
 testclean:
 	rm -f ${TEST_DIFF}
 
 cleanAll cleanall distclean: clean
-	# rm -f ${GRAMMAR_MODULES}
 	rm -f ${CC_OBJS}
 	rm -f ${CC_BIN}
 	rm -f ${LIB_DIR}/Grammar/*.cc
