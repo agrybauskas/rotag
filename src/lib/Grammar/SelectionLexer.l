@@ -7,14 +7,18 @@
     #include "SelectionParser.h"
 %}
 
-NUM [0-9]+
+num   [0-9]+
+space [ \t\n]+
+separator [\;]
 
 %%
 
-{NUM} {
-          select_lval.num = atoi(select_text);
-          return NUM;
-      }
+{num}       {
+                select_lval.num = atoi(select_text);
+                return NUM;
+            }
+{space}     { return SPACE; }
+{separator} { return SEPARATOR; }
 
 %%
 

@@ -30,13 +30,21 @@
     int64_t num;
 }
 
-%token<num> NUM
+%token<num> NUM SPACE SEPARATOR
 
 %start cmd
 
 %%
 
 cmd: /* empty */
+   | cmd SEPARATOR expr
+   | expr
+   ;
+
+expr:
+    | SPACE NUM SPACE { std::cout << $2 << std::endl; }
+    | SPACE NUM { std::cout << $2 << std::endl; }
+    | NUM SPACE { std::cout << $1 << std::endl; }
     | NUM { std::cout << $1 << std::endl; }
     ;
 
