@@ -7,8 +7,8 @@
     #include "SelectionParser.h"
 %}
 
-num   [0-9]+
-space [ \t\n]+
+num       [0-9]+
+space     [ \t\n]+
 separator [\;]
 
 %%
