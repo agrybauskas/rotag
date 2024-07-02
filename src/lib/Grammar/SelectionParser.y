@@ -34,7 +34,7 @@
 
 %token<num> NUM
 %token<dbl> DOUBLE
-%token<str> STR SPACE SEP
+%token<str> STR SEP
 
 %start cmd
 
@@ -46,15 +46,9 @@ cmd: /* empty */
     ;
 
 expr:
-    /* | NUM SPACE { std::cout << $1 << std::endl; } */
-    /* | SPACE NUM { std::cout << $2 << std::endl; } */
-    /* | SPACE NUM SPACE { std::cout << $2 << std::endl; } */
-    /* | STR SPACE { std::cout << $1 << std::endl; } */
-    /* | SPACE STR { std::cout << $2 << std::endl; } */
-    /* | SPACE STR SPACE { std::cout << $2 << std::endl; } */
-    | NUM    { std::printf( "%li", $1 ); }
-    | DOUBLE { std::printf( "%f", $1 ); }
-    | STR    { std::printf( "%s", $1 ); }
+    | NUM    { std::printf( "%li\n", $1 ); }
+    | DOUBLE { std::printf( "%f\n", $1 ); }
+    | STR    { std::printf( "%s\n", $1 ); }
     ;
 
 %%

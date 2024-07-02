@@ -8,7 +8,7 @@
 num       [0-9]+
 double    (?:\-)?([0-9]+)*\.(?:[0-9])*
 str       [A-Za-z\.]+
-space     [ \t\n]*
+space     [ \t]+
 separator [\;]
 
 %%
@@ -25,7 +25,7 @@ separator [\;]
                 select_lval.str = select_text;
                 return STR;
             }
-{space}     { return SPACE; }
+{space}     { /* ignore */ }
 {separator} { return SEP; }
 
 %%
