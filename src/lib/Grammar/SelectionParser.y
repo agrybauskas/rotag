@@ -1,5 +1,13 @@
 %define api.prefix select_
-%parse-param {std::vector<int>& atom_ids}
+%parse-param {std::vector<int64_t>& atom_ids}
+
+%code requires{
+    #include <vector>
+
+    #include "../PDBxParser.h"
+
+    std::vector<int64_t> selection_parser(AtomSite&, std::string);
+}
 
 %{
     #include <cmath>
@@ -7,13 +15,9 @@
     #include <string>
     #include <vector>
 
-    #include "../PDBxParser.h"
-
     extern int select_lex();
 
-    extern void select_error(std::vector<int>&, char const*);
-
-    std::vector<int> selection_parser(AtomSite&, std::string);
+    extern void select_error(std::vector<int64_t>&, char const*);
 %}
 
 %union
@@ -33,10 +37,11 @@ cmd: /* empty */
 
 %%
 
-void select_error(std::vector<int>& atom_ids, char const* msg) {
+void select_error(std::vector<int64_t>& atom_ids, char const* msg) {
     std::cout << "Syntax Error: " << msg << std::endl;
 }
 
-std::vector<int> selection_parser(AtomSite& atom_site, std::string cmd) {
-
+std::vector<int64_t> selection_parser(AtomSite& atom_site, std::string cmd) {
+    std::vector<int64_t> atom_ids = {1, 2, 3};
+    return atom_ids;
 }
