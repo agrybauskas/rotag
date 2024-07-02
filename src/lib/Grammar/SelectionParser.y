@@ -34,7 +34,7 @@
 
 %token<num> NUM
 %token<dbl> DOUBLE
-%token<str> STR SEP ALL
+%token<str> STR SEP ALL MAINCHAIN
 
 %start cmd
 
@@ -46,14 +46,18 @@ cmd: /* empty */
     ;
 
 expr:
-    | NUM    { std::printf("%li\n", $1); }
-    | DOUBLE { std::printf("%f\n", $1); }
-    | STR    { std::printf("%s\n", $1); }
-    | ALL    {
-                 for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
-                     atom_ids.push_back(it->first);
-                 }
-             }
+    | NUM       { std::printf("%li\n", $1); }
+    | DOUBLE    { std::printf("%f\n", $1); }
+    | STR       { std::printf("%s\n", $1); }
+    | ALL       {
+                    for (AtomSite::iterator it = atom_site.begin();
+                         it != atom_site.end();
+                         ++it) {
+                        atom_ids.push_back(it->first);
+                    }
+                }
+    | MAINCHAIN {
+                }
     ;
 
 %%
