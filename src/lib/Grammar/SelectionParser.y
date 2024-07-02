@@ -49,7 +49,7 @@ expr:
     | NUM    { std::printf("%li\n", $1); }
     | DOUBLE { std::printf("%f\n", $1); }
     | STR    { std::printf("%s\n", $1); }
-    | ALL  { std::printf("all\n"); }
+    | ALL    { atom_ids.push_back(1); }
     ;
 
 %%
