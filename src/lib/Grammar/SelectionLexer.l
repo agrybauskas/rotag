@@ -8,7 +8,8 @@
 %}
 
 num       [0-9]+
-space     [ \t\n]+
+str       [A-Za-z]+
+space     [ \t\n]*
 separator [\;]
 
 %%
@@ -16,6 +17,10 @@ separator [\;]
 {num}       {
                 select_lval.num = atoi(select_text);
                 return NUM;
+            }
+{str}       {
+                select_lval.str = select_text;
+                return STR;
             }
 {space}     { return SPACE; }
 {separator} { return SEPARATOR; }

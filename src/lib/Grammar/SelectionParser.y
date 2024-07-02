@@ -2,6 +2,7 @@
 %parse-param {AtomSite& atom_site} {std::vector<int64_t>& atom_ids}
 
 %code requires{
+    #include <string>
     #include <vector>
 
     #include "../PDBxParser.h"
@@ -28,9 +29,11 @@
 %union
 {
     int64_t num;
+    char* str;
 }
 
-%token<num> NUM SPACE SEPARATOR
+%token<num> NUM
+%token<str> STR SPACE SEPARATOR
 
 %start cmd
 
@@ -45,7 +48,11 @@ expr:
     | NUM SPACE { std::cout << $1 << std::endl; }
     | SPACE NUM { std::cout << $2 << std::endl; }
     | SPACE NUM SPACE { std::cout << $2 << std::endl; }
+    | STR SPACE { std::cout << $1 << std::endl; }
+    | SPACE STR { std::cout << $2 << std::endl; }
+    | SPACE STR SPACE { std::cout << $2 << std::endl; }
     | NUM { std::cout << $1 << std::endl; }
+    | STR { std::cout << $1 << std::endl; }
     ;
 
 %%
