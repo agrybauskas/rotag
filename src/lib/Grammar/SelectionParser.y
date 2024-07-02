@@ -1,8 +1,10 @@
 %{
+    #define YY_DECL int select_lex()
+
     #include <cmath>
     #include <iostream>
 
-    extern int yylex();
+    extern int select_lex();
 
     extern void yyerror(char const* msg);
 %}
