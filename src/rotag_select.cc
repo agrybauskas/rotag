@@ -187,13 +187,8 @@ int main(int argc, char *argv[]) {
             atom_site = pdbx_to_atom_site(argv[index]);
         }
 
-        // NOTE(algirdas): just testing.
-        // filter(atom_site);
-        // mark_selection(atom_site, {1}, {2});
-
-        // std::vector<std::string> target_atom_ids =
-        //     select_parse(atom_site, target_cmd);
-        select_parse();
+        std::vector<std::string> target_atom_ids =
+            selection_parser(atom_site, target_cmd);
     }
 
     return 0;
