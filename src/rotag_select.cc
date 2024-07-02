@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
             atom_site = pdbx_to_atom_site(argv[index]);
         }
 
-        std::vector<std::string> target_atom_ids =
+        std::vector<int64_t> target_atom_ids =
             selection_parser(atom_site, target_cmd);
     }
 
