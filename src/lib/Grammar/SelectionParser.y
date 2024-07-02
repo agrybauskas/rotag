@@ -52,9 +52,9 @@ expr:
     /* | STR SPACE { std::cout << $1 << std::endl; } */
     /* | SPACE STR { std::cout << $2 << std::endl; } */
     /* | SPACE STR SPACE { std::cout << $2 << std::endl; } */
-    | NUM    { std::cout << $1 << std::endl; }
+    | NUM    { std::printf( "%li", $1 ); }
     | DOUBLE { std::printf( "%f", $1 ); }
-    | STR    { std::cout << $1 << std::endl; }
+    | STR    { std::printf( "%s", $1 ); }
     ;
 
 %%

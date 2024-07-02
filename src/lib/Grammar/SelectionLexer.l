@@ -14,7 +14,7 @@ separator [\;]
 %%
 
 {num}       {
-                select_lval.num = std::stoi(select_text);
+                select_lval.num = std::stoll(select_text);
                 return NUM;
             }
 {double}    {
