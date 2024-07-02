@@ -3,12 +3,8 @@
 
 %{
     #include <cstdlib>
-    #include <string>
-    #include <vector>
 
     #include "SelectionParser.h"
-
-    extern std::vector<int64_t> select_parse(std::string);
 %}
 
 digits [0-9]+

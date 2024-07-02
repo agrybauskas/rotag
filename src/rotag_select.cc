@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
 
         // std::vector<std::string> target_atom_ids =
         //     select_parse(atom_site, target_cmd);
-        select_parse("555");
+        select_parse();
     }
 
     return 0;

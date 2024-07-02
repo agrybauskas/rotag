@@ -3,8 +3,6 @@
 %{
     #include <cmath>
     #include <iostream>
-    #include <string>
-    #include <vector>
 
     extern int select_lex();
 
@@ -27,10 +25,6 @@ cmd: /* empty */
     ;
 
 %%
-
-std::vector<int64_t> select_parse(std::string cmd) {
-    return std::vector<int64_t>({1, 2, 3});
-}
 
 void select_error(char const* msg) {
     std::cout << "Syntax Error: " << msg << std::endl;
