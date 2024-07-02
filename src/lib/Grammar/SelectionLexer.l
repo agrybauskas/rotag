@@ -5,15 +5,16 @@
     #include "SelectionParser.h"
 %}
 
+all       (all|\*)
 num       [0-9]+
 double    [-+]?([0-9]*[\.])?[0-9]+([eE][-+]?[0-9]+)?
 str       [A-Za-z\.]+
 space     [ \t]+
 separator [\;]
-all       all
 
 %%
 
+{all}       { return ALL; }
 {num}       {
                 select_lval.num = std::stoll(select_text);
                 return NUM;
@@ -28,7 +29,6 @@ all       all
             }
 {space}     { /* ignore */ }
 {separator} { return SEP; }
-{all}       { return ALL; }
 
 %%
 
