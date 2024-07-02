@@ -1,5 +1,3 @@
-%defines
-
 %{
     #include <cmath>
     #include <iostream>
