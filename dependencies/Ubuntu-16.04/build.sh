@@ -8,6 +8,7 @@ sudo apt-get install -y \
      liblist-allutils-perl \
      libparse-yapp-perl \
      libboost-all-dev \
+     libfl-dev \
      swig \
      libreadonly-perl \
      libsort-naturally-perl \
