@@ -192,7 +192,8 @@ int main(int argc, char *argv[]) {
         // mark_selection(atom_site, {1}, {2});
 
         // std::vector<std::string> target_atom_ids =
-        //     selection_parser(atom_site, target_cmd)
+        //     select_parse(atom_site, target_cmd);
+        select_parse();
     }
 
     return 0;
