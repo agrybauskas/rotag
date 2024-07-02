@@ -17,7 +17,7 @@
 
     #include "../PDBxParser.h"
 
-    void set_lex_input(std::string);
+    void set_lex_input(const char*);
     void end_lex_scan();
 
     extern int select_lex();
@@ -64,7 +64,7 @@ void select_error(AtomSite&, std::vector<int64_t>& atom_ids, char const* msg) {
 
 std::vector<int64_t> selection_parser(AtomSite& atom_site, std::string cmd) {
     std::vector<int64_t> atom_ids = {};
-    set_lex_input(cmd);
+    set_lex_input(cmd.c_str());
     int retval = select_parse(atom_site, atom_ids);
     end_lex_scan();
     return atom_ids;
