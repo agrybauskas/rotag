@@ -44,7 +44,8 @@ build-externals:
 	flex --header-file=$(basename $@).h -o $@ $<
 
 %.cc: %.y
-	bison --header=$(basename $@).h -o $@ $<
+	bison --defines=$(basename $@).h -o $@ $<
+	# bison --header=$(basename $@).h -o $@ $<
 
 %.o: %.cc %.h
 	g++ -c -Wall -std=c++11 -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
