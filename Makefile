@@ -6,7 +6,7 @@ BIN_DIR=bin
 SRC_DIR=src
 
 LIB_DIR=${SRC_DIR}/lib
-LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc ${LIB_DIR}/Grammar/*.cc}
+LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc}
 OBJ_DIR=${SRC_DIR}/lib
 
 BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
@@ -15,12 +15,10 @@ HEADERS=${LIB_SRC:%.cc=%.h}
 PARSER=$(wildcard ${LIB_DIR}/Grammar/*.y)
 PARSER_SRC=$(PARSER:%.y=%.cc)
 PARSER_HEADERS=${PARSER_SRC:%.cc=%.h}
-PARSER_OBJS=$(PARSER:%.y=%.o)
 
 LEXER=$(wildcard ${LIB_DIR}/Grammar/*.l)
 LEXER_SRC=$(LEXER:%.l=%.cc)
 LEXER_HEADERS=${LEXER_SRC:%.cc=%.h}
-LEXER_OBJS=$(LEXER:%.l=%.o)
 
 CC_OBJS=${LIB_SRC:%.cc=%.o}
 CC_OBJS+=${PARSER_SRC:%.cc=%.o}
@@ -42,10 +40,10 @@ build-externals:
 	make -C src/externals/codcif
 	make -C src/externals/getoptions
 
-%.cc %.h: %.l
+%.cc: %.l
 	flex --header-file=$(basename $@).h -o $@ $<
 
-%.cc %.h: %.y
+%.cc: %.y
 	bison --header=$(basename $@).h -o $@ $<
 
 %.o: %.cc %.h
