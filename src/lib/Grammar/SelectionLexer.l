@@ -8,7 +8,8 @@
 %}
 
 num       [0-9]+
-str       [A-Za-z]+
+float     (?:\-)?[0-9]+\.[0-9]+
+str       [A-Za-z\.]+
 space     [ \t\n]*
 separator [\;]
 
@@ -18,12 +19,16 @@ separator [\;]
                 select_lval.num = atoi(select_text);
                 return NUM;
             }
+{float}     {
+                select_lval.dbl = atof(select_text);
+                return FLOAT;
+            }
 {str}       {
                 select_lval.str = select_text;
                 return STR;
             }
 {space}     { return SPACE; }
-{separator} { return SEPARATOR; }
+{separator} { return SEP; }
 
 %%
 

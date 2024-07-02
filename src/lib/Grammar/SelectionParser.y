@@ -30,29 +30,32 @@
 {
     int64_t num;
     char* str;
+    double dbl;
 }
 
 %token<num> NUM
-%token<str> STR SPACE SEPARATOR
+%token<dbl> FLOAT
+%token<str> STR SPACE SEP
 
 %start cmd
 
 %%
 
 cmd: /* empty */
-    | cmd SEPARATOR expr
+    | cmd SEP expr
     | expr
     ;
 
 expr:
-    | NUM SPACE { std::cout << $1 << std::endl; }
-    | SPACE NUM { std::cout << $2 << std::endl; }
-    | SPACE NUM SPACE { std::cout << $2 << std::endl; }
-    | STR SPACE { std::cout << $1 << std::endl; }
-    | SPACE STR { std::cout << $2 << std::endl; }
-    | SPACE STR SPACE { std::cout << $2 << std::endl; }
-    | NUM { std::cout << $1 << std::endl; }
-    | STR { std::cout << $1 << std::endl; }
+    /* | NUM SPACE { std::cout << $1 << std::endl; } */
+    /* | SPACE NUM { std::cout << $2 << std::endl; } */
+    /* | SPACE NUM SPACE { std::cout << $2 << std::endl; } */
+    /* | STR SPACE { std::cout << $1 << std::endl; } */
+    /* | SPACE STR { std::cout << $2 << std::endl; } */
+    /* | SPACE STR SPACE { std::cout << $2 << std::endl; } */
+    | NUM   { std::cout << $1 << std::endl; }
+    | FLOAT { std::cout << $1 << std::endl; }
+    | STR   { std::cout << $1 << std::endl; }
     ;
 
 %%
