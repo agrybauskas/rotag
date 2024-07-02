@@ -1,12 +1,11 @@
 %option noyywrap
+%option prefix="select_"
 
 %{
-    #define YY_DECL int select_lex()
-
     #include <cstdlib>
     #include "SelectionParser.h"
 
-    extern int yyparse();
+    extern int select_parse();
 %}
 
 digits [0-9]+
@@ -14,7 +13,7 @@ digits [0-9]+
 %%
 
 {digits} {
-             yylval.integer = atoi(yytext);
+             select_lval.integer = atoi(select_text);
              return DIGIT;
          }
 

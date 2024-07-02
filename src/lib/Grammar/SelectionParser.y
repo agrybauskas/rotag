@@ -1,12 +1,12 @@
-%{
-    #define YY_DECL int select_lex()
+%define api.prefix select_
 
+%{
     #include <cmath>
     #include <iostream>
 
     extern int select_lex();
 
-    extern void yyerror(char const* msg);
+    extern void select_error(char const* msg);
 %}
 
 %union
@@ -26,6 +26,6 @@ expr: /* empty */
 
 %%
 
-void yyerror(char const* msg) {
+void select_error(char const* msg) {
     std::cout << "Syntax Error: " << msg << std::endl;
 }
