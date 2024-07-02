@@ -3,19 +3,25 @@
 %{
     #include <cmath>
     #include <iostream>
-    #include <string>
 
     extern int yylex();
 
     extern void yyerror(char const* msg);
 %}
 
-%token<int> NUM
+%union
+{
+    int integer;
+}
+
+%token<int> DIGIT
+
+%start expr
 
 %%
 
 exp: /* empty */
-    | NUM {std::cout << $1 << std::endl;}
+    | DIGIT {std::cout << $1 << std::endl;}
     ;
 
 %%
@@ -23,6 +29,3 @@ exp: /* empty */
 void yyerror(char const* msg) {
     std::cout << "Syntax Error: " << msg << std::endl;
 }
-
-/* void selection_parser(AtomSite& atom_site, std::string query) { */
-/* } */

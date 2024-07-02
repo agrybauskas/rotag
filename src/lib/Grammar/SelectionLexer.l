@@ -12,8 +12,8 @@ digits [0-9]+
 %%
 
 {digits} {
-             yyval = atoi(yytext);
-             return NUM;
+             yyval.integer = atoi(yytext);
+             return DIGIT;
          }
 
 %%
