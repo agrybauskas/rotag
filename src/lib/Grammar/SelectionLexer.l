@@ -2,13 +2,11 @@
 %option prefix="select_"
 
 %{
-    #include <cstdlib>
-
     #include "SelectionParser.h"
 %}
 
 num       [0-9]+
-float     (?:\-)?[0-9]+\.[0-9]+
+double    (?:\-)?(?:[0-9]+)\.[0-9]+
 str       [A-Za-z\.]+
 space     [ \t\n]*
 separator [\;]
@@ -16,12 +14,12 @@ separator [\;]
 %%
 
 {num}       {
-                select_lval.num = atoi(select_text);
+                select_lval.num = std::stoi(select_text);
                 return NUM;
             }
-{float}     {
-                select_lval.dbl = atof(select_text);
-                return FLOAT;
+{double}    {
+                select_lval.dbl = std::stod(select_text);
+                return DOUBLE;
             }
 {str}       {
                 select_lval.str = select_text;

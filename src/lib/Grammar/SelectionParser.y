@@ -11,7 +11,6 @@
 }
 
 %{
-    #include <cmath>
     #include <iostream>
     #include <string>
     #include <vector>
@@ -34,7 +33,7 @@
 }
 
 %token<num> NUM
-%token<dbl> FLOAT
+%token<dbl> DOUBLE
 %token<str> STR SPACE SEP
 
 %start cmd
@@ -53,9 +52,9 @@ expr:
     /* | STR SPACE { std::cout << $1 << std::endl; } */
     /* | SPACE STR { std::cout << $2 << std::endl; } */
     /* | SPACE STR SPACE { std::cout << $2 << std::endl; } */
-    | NUM   { std::cout << $1 << std::endl; }
-    | FLOAT { std::cout << $1 << std::endl; }
-    | STR   { std::cout << $1 << std::endl; }
+    | NUM    { std::cout << $1 << std::endl; }
+    | DOUBLE { std::cout << $1 << std::endl; }
+    | STR    { std::cout << $1 << std::endl; }
     ;
 
 %%
