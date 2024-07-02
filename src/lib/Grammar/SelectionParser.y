@@ -12,14 +12,14 @@
     int integer;
 }
 
-%token<int> DIGIT
+%token<integer> DIGIT
 
 %start expr
 
 %%
 
-exp: /* empty */
-    | DIGIT {std::cout << $1 << std::endl;}
+expr: /* empty */
+    | DIGIT { std::cout << $1 << std::endl; }
     ;
 
 %%

@@ -12,7 +12,7 @@ digits [0-9]+
 %%
 
 {digits} {
-             yyval.integer = atoi(yytext);
+             yylval.integer = atoi(yytext);
              return DIGIT;
          }
 
