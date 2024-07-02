@@ -16,11 +16,11 @@
 
 %token<integer> DIGIT
 
-%start expr
+%start cmd
 
 %%
 
-expr: /* empty */
+cmd: /* empty */
     | DIGIT { std::cout << $1 << std::endl; }
     ;
 
