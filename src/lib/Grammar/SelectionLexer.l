@@ -10,6 +10,7 @@ double    [-+]?([0-9]*[\.])?[0-9]+([eE][-+]?[0-9]+)?
 str       [A-Za-z\.]+
 space     [ \t]+
 separator [\;]
+all       all
 
 %%
 
@@ -27,6 +28,7 @@ separator [\;]
             }
 {space}     { /* ignore */ }
 {separator} { return SEP; }
+{all}       { return ALL; }
 
 %%
 

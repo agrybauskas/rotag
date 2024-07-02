@@ -34,7 +34,7 @@
 
 %token<num> NUM
 %token<dbl> DOUBLE
-%token<str> STR SEP
+%token<str> STR SEP ALL
 
 %start cmd
 
@@ -46,9 +46,10 @@ cmd: /* empty */
     ;
 
 expr:
-    | NUM    { std::printf( "%li\n", $1 ); }
-    | DOUBLE { std::printf( "%f\n", $1 ); }
-    | STR    { std::printf( "%s\n", $1 ); }
+    /* | NUM    { std::printf("%li\n", $1); } */
+    /* | DOUBLE { std::printf("%f\n", $1); } */
+    /* | STR    { std::printf("%s\n", $1); } */
+    | ALL  { std::printf("all\n"); }
     ;
 
 %%
