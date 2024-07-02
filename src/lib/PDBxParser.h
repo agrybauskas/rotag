@@ -42,6 +42,7 @@ const std::vector<std::string> ATOM_SITE_TAGS = {
 };
 
 typedef std::map<std::string, PDBXVALUE> Atom;
+typedef std::vector<PDBXVALUE> PDBXVALUES;
 typedef std::map<int64_t, Atom> AtomSite;
 typedef std::map<std::string, std::map<std::string, bool>> Selector;
 

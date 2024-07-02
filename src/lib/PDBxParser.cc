@@ -11,16 +11,54 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
 
     delete_cif(cif);
 
-    // for (size_t i = 0; i < pdbx.values("_atom_site.id").size(); i++) {
-    //     int64_t id = pdbx.values("_atom_site.id")[i];
-    //     Atom atom = {};
-    //     for (const std::string &cif_tag : ATOM_SITE_TAGS) {
-    //         if (pdbx.values(cif_tag).size() > 0) {
-    //             atom.insert(std::make_pair(cif_tag, pdbx.values(cif_tag)[i]));
-    //         }
-    //     }
-    //     atom_site.insert(std::make_pair(id, atom));
-    // }
+    // TODO: refactor with enums or similar.
+    PDBXVALUES group_pdbs = pdbx.values("_atom_site.group_pdb");
+    PDBXVALUES atom_ids = pdbx.values("_atom_site.id");
+    PDBXVALUES type_symbols = pdbx.values("_atom_site.type_symbol");
+    PDBXVALUES label_atom_ids = pdbx.values("_atom_site.label_atom_id");
+    PDBXVALUES label_alt_ids = pdbx.values("_atom_site.label_alt_id");
+    PDBXVALUES label_comp_ids = pdbx.values("_atom_site.label_comp_id");
+    PDBXVALUES label_asym_ids = pdbx.values("_atom_site.label_asym_id");
+    PDBXVALUES label_entity_ids = pdbx.values("_atom_site.label_entity_id");
+    PDBXVALUES label_seq_ids = pdbx.values("_atom_site.label_seq_id");
+    PDBXVALUES cartn_xs = pdbx.values("_atom_site.cartn_x");
+    PDBXVALUES cartn_ys = pdbx.values("_atom_site.cartn_y");
+    PDBXVALUES cartn_zs = pdbx.values("_atom_site.cartn_z");
+    PDBXVALUES occupancies = pdbx.values("_atom_site.occupancy");
+    PDBXVALUES b_iso_or_equivs = pdbx.values("_atom_site.b_iso_or_equiv");
+    PDBXVALUES auth_seq_ids = pdbx.values("_atom_site.auth_seq_id");
+    PDBXVALUES auth_comp_ids = pdbx.values("_atom_site.auth_comp_id");
+    PDBXVALUES auth_asym_ids = pdbx.values("_atom_site.auth_asym_id");
+    PDBXVALUES auth_atom_ids = pdbx.values("_atom_site.auth_atom_id");
+    PDBXVALUES pdbx_pdb_model_nums =
+        pdbx.values("_atom_site.pdbx_pdb_model_num");
+    PDBXVALUES rotag_selection_states =
+        pdbx.values("_atom_site.rotag_selection_state");
+    PDBXVALUES rotag_selection_groups =
+        pdbx.values("_atom_site.rotag_selection_group");
+
+    for (size_t i = 0; i < atom_ids.size(); i++) {
+        Atom atom = {
+            {"_atom_site.group_pdb", group_pdbs[i]},
+            {"_atom_site.id", atom_ids[i]},
+            {"_atom_site.type_symbol", type_symbols[i]},
+            {"_atom_site.label_atom_id", label_atom_ids[i]},
+            {"_atom_site.label_alt_id", label_alt_ids[i]},
+            {"_atom_site.label_comp_id", label_comp_ids[i]},
+            {"_atom_site.label_asym_id", label_asym_ids[i]},
+            {"_atom_site.label_entity_id", label_entity_ids[i]},
+            {"_atom_site.label_seq_id", label_seq_ids[i]},
+            {"_atom_site.cartn_x", cartn_xs[i]},
+            {"_atom_site.cartn_y", cartn_ys[i]},
+            {"_atom_site.cartn_z", cartn_zs[i]},
+            {"_atom_site.occupancy", occupancies[i]},
+            {"_atom_site.b_iso_or_equiv", b_iso_or_equivs[i]},
+            {"_atom_site.auth_seq_id", auth_seq_ids[i]},
+            {"_atom_site.auth_comp_id", auth_comp_ids[i]},
+            {"_atom_site.auth_asym_id", auth_asym_ids[i]}
+        };
+        atom_site.insert(std::make_pair(atom_ids[i], atom));
+    }
 
     return atom_site;
 }
