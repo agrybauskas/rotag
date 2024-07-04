@@ -1,5 +1,5 @@
-#ifndef SRC_LIB_ATOM_SITE_H_
-#define SRC_LIB_ATOM_SITE_H_
+#ifndef SRC_LIB_ATOMSITE_H_
+#define SRC_LIB_ATOMSITE_H_
 
 #include <iostream>
 #include <map>
@@ -19,27 +19,27 @@ class AtomSite {
     typedef std::map<std::string, PDBXVALUE> Atom;
 
     enum M_TAG_INDEX {
-        GROUP_PDB,             // "ATOM" or "HETATM".
-        ID,                    // Atom id.
-        TYPE_SYMBOL,           // Chemical element.
-        LABEL_ATOM_ID,         // Atom label.
-        LABEL_ALT_ID,          // Related to alt. atom position.
-        LABEL_COMP_ID,         // Residue name.
-        LABEL_ASYM_ID,         // Chain name.
-        LABEL_ENTITY_ID,       // Molecular entity.
-        LABEL_SEQ_ID,          // Residue id.
-        CARTN_X,               // Cartesian x coordinates of the atom.
-        CARTN_Y,               // Cartesian y coordinates of the atom.
-        CARTN_Z,               // Cartesian z coordinates of the atom.
-        OCCUPANCY,             // The fraction present in the site.
-        B_ISO_OR_EQUIV,        // Isotropic displacement.
-        AUTH_SEQ_ID,           // Author's residue id.
-        AUTH_COMP_ID,          // Author's residue name.
-        AUTH_ASYM_ID,          // Author's chain name.
-        AUTH_ATOM_ID,          // Author's atom label.
-        PDBX_PDB_MODEL_NUM,    // Model id.
-        ROTAG_SELECTION_STATE, // Marks selection state: T, S ir H.
-        ROTAG_SELECTION_GROUP  // Selection group id.
+        GROUP_PDB,              // "ATOM" or "HETATM".
+        ID,                     // Atom id.
+        TYPE_SYMBOL,            // Chemical element.
+        LABEL_ATOM_ID,          // Atom label.
+        LABEL_ALT_ID,           // Related to alt. atom position.
+        LABEL_COMP_ID,          // Residue name.
+        LABEL_ASYM_ID,          // Chain name.
+        LABEL_ENTITY_ID,        // Molecular entity.
+        LABEL_SEQ_ID,           // Residue id.
+        CARTN_X,                // Cartesian x coordinates of the atom.
+        CARTN_Y,                // Cartesian y coordinates of the atom.
+        CARTN_Z,                // Cartesian z coordinates of the atom.
+        OCCUPANCY,              // The fraction present in the site.
+        B_ISO_OR_EQUIV,         // Isotropic displacement.
+        AUTH_SEQ_ID,            // Author's residue id.
+        AUTH_COMP_ID,           // Author's residue name.
+        AUTH_ASYM_ID,           // Author's chain name.
+        AUTH_ATOM_ID,           // Author's atom label.
+        PDBX_PDB_MODEL_NUM,     // Model id.
+        ROTAG_SELECTION_STATE,  // Marks selection state: T, S ir H.
+        ROTAG_SELECTION_GROUP   // Selection group id.
     };
 
     const std::vector<std::string> M_TAGS = {
@@ -69,7 +69,7 @@ class AtomSite {
     std::map<int64_t, Atom> Atoms = {};
 
  public:
-    AtomSite(char*);
+    explicit AtomSite(char*);
 
     const std::vector<std::string> names();
 };
@@ -93,4 +93,4 @@ class AtomSite {
 
 // void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
 
-#endif  // SRC_LIB_ATOM_SITE_H_
+#endif  // SRC_LIB_ATOMSITE_H_
