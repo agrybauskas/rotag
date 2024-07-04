@@ -68,7 +68,7 @@ class AtomSite {
         "_atom_site.rotag_selection_group"
     };
 
-    std::map<int64_t, m_Atom> m_Atoms = {};
+    std::map<int64_t, m_Atom> m_atoms = {};
 
  public:
     explicit AtomSite(char*);

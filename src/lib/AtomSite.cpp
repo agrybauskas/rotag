@@ -14,7 +14,7 @@ AtomSite::AtomSite(char* pdbx_file_path) {
          m_tag_index <= ROTAG_SELECTION_GROUP;
          m_tag_index++) {
         for (size_t i = 0; i < id_values.size(); i++) {
-            this->m_Atoms[id_values[i]].insert(
+            this->m_atoms[id_values[i]].insert(
                 std::make_pair(this->name(m_tag_index),
                                pdbx.value(this->M_TAGS[m_tag_index], i)));
         }
