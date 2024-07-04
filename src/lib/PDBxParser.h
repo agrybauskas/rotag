@@ -18,7 +18,7 @@ class AtomSite {
  private:
 
  public:
-    AtomSite(char*) {};
+    AtomSite(char*);
 };
 
 // enum ATOM_SITE_INDEX {

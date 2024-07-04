@@ -1,5 +1,9 @@
 #include "PDBxParser.h"
 
+AtomSite::AtomSite(char* pdbx_file_path) {
+
+}
+
 // AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
 //     AtomSite atom_site = {};
 
