@@ -1,5 +1,5 @@
-#ifndef SRC_LIB_PDBXPARSER_H_
-#define SRC_LIB_PDBXPARSER_H_
+#ifndef SRC_LIB_ATOM_SITE_H_
+#define SRC_LIB_ATOM_SITE_H_
 
 #include <iostream>
 #include <map>
@@ -16,7 +16,9 @@ extern "C" {
 
 class AtomSite {
  private:
-    enum INDEX {
+    typedef std::map<std::string, PDBXVALUE> Atom;
+
+    enum M_TAG_INDEX {
         GROUP_PDB,             // "ATOM" or "HETATM".
         ID,                    // Atom id.
         TYPE_SYMBOL,           // Chemical element.
@@ -40,7 +42,7 @@ class AtomSite {
         ROTAG_SELECTION_GROUP  // Selection group id.
     };
 
-    const std::vector<std::string> NAME = {
+    const std::vector<std::string> M_TAGS = {
         "_atom_site.group_pdb",
         "_atom_site.id",
         "_atom_site.type_symbol",
@@ -64,8 +66,12 @@ class AtomSite {
         "_atom_site.rotag_selection_group"
     };
 
+    std::map<int64_t, Atom> Atoms = {};
+
  public:
     AtomSite(char*);
+
+    const std::vector<std::string> names();
 };
 
 
@@ -78,8 +84,6 @@ class AtomSite {
 //     }
 // };
 
-// typedef std::map<std::string, PDBXVALUE> Atom;
-// typedef std::vector<PDBXVALUE> PDBXVALUES;
 // typedef std::map<int64_t, Atom> AtomSite;
 // typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
@@ -89,4 +93,4 @@ class AtomSite {
 
 // void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
 
-#endif  // SRC_LIB_PDBXPARSER_H_
+#endif  // SRC_LIB_ATOM_SITE_H_

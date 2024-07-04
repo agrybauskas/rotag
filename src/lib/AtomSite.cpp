@@ -1,20 +1,20 @@
-#include "PDBxParser.h"
+#include "AtomSite.h"
 
 AtomSite::AtomSite(char* pdbx_file_path) {
+    cif_option_t compiler_options = cif_option_default();
+    cexception_t inner;
+    CIF* cif = new_cif_from_cif_file(pdbx_file_path, compiler_options, &inner);
 
+    PDBx pdbx(cif, this->M_TAGS);
+
+    delete_cif(cif);
+}
+
+const std::vector<std::string> AtomSite::names() {
+    return this->M_TAGS;
 }
 
 // AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
-//     AtomSite atom_site = {};
-
-//     cif_option_t compiler_options = cif_option_default();
-//     cexception_t inner;
-//     CIF* cif = new_cif_from_cif_file(pdbx_file_path, compiler_options, &inner);
-
-//     PDBx pdbx(cif, ATOM_SITE_TAGS().names());
-
-//     delete_cif(cif);
-
 //     ATOM_SITE_TAGS TAGS;
 //     PDBXVALUES group_pdbs = pdbx.values(TAGS.name(GROUP_PDB));
 //     PDBXVALUES atom_ids = pdbx.values(TAGS.name(ID));

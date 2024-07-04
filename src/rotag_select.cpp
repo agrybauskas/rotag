@@ -10,10 +10,10 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/filesystem.hpp>
 
+#include "lib/AtomSite.h"
 #include "lib/Combinatorics.h"
 #include "lib/ForceField/Parameters.h"
 #include "lib/Grammar/SelectionParser.h"
-#include "lib/PDBxParser.h"
 #include "lib/Version.h"
 
 extern char *optarg;

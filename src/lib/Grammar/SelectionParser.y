@@ -5,7 +5,7 @@
     #include <string>
     #include <vector>
 
-    #include "../PDBxParser.h"
+    #include "../AtomSite.h"
 
     std::vector<int64_t> selection_parser(AtomSite&, std::string);
 }
@@ -15,7 +15,7 @@
     #include <string>
     #include <vector>
 
-    #include "../PDBxParser.h"
+    #include "../AtomSite.h"
 
     void set_lex_input(const char*);
     void end_lex_scan();
