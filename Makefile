@@ -6,51 +6,51 @@ BIN_DIR=bin
 SRC_DIR=src
 
 LIB_DIR=${SRC_DIR}/lib
-LIB_SRC=${wildcard ${LIB_DIR}/*.cc ${LIB_DIR}/ForceField/*.cc}
+LIB_SRC=${wildcard ${LIB_DIR}/*.cpp ${LIB_DIR}/ForceField/*.cpp}
 OBJ_DIR=${SRC_DIR}/lib
 
-BIN_SRC=$(wildcard ${SRC_DIR}/*.cc)
-HEADERS=${LIB_SRC:%.cc=%.h}
+BIN_SRC=$(wildcard ${SRC_DIR}/*.cpp)
+HEADERS=${LIB_SRC:%.cpp=%.h}
 
 PARSER=$(wildcard ${LIB_DIR}/Grammar/*.y)
-PARSER_SRC=$(PARSER:%.y=%.cc)
-PARSER_HEADERS=${PARSER_SRC:%.cc=%.h}
+PARSER_SRC=$(PARSER:%.y=%.cpp)
+PARSER_HEADERS=${PARSER_SRC:%.cpp=%.h}
 
 LEXER=$(wildcard ${LIB_DIR}/Grammar/*.l)
-LEXER_SRC=$(LEXER:%.l=%.cc)
-LEXER_HEADERS=${LEXER_SRC:%.cc=%.h}
+LEXER_SRC=$(LEXER:%.l=%.cpp)
+LEXER_HEADERS=${LEXER_SRC:%.cpp=%.h}
 
-CC_OBJS=${LIB_SRC:%.cc=%.o}
-CC_OBJS+=${PARSER_SRC:%.cc=%.o}
-CC_OBJS+=${LEXER_SRC:%.cc=%.o}
+CPP_OBJS=${LIB_SRC:%.cpp=%.o}
+CPP_OBJS+=${PARSER_SRC:%.cpp=%.o}
+CPP_OBJS+=${LEXER_SRC:%.cpp=%.o}
 
-CC_BIN=${BIN_SRC:${SRC_DIR}/%.cc=${BIN_DIR}/%}
-CC_LIB=-lboost_filesystem
+CPP_BIN=${BIN_SRC:${SRC_DIR}/%.cpp=${BIN_DIR}/%}
+CPP_LIB=-lboost_filesystem
 
 C_LIBDIR=-Isrc/externals/cexceptions -Isrc/externals/codcif -Isrc/externals/getoptions
 C_OBJS=${SRC_DIR}/externals/codcif/obj/*.o ${SRC_DIR}/externals/cexceptions/obj/*.o ${SRC_DIR}/externals/getoptions/obj/*.o
 
 .PHONY: all
-.PRECIOUS: ${CC_OBJS} ${PARSER_SRC} ${LEXER_SRC} ${PARSER_HEADERS} ${LEXER_HEADERS}
+.PRECIOUS: ${CPP_OBJS} ${PARSER_SRC} ${LEXER_SRC} ${PARSER_HEADERS} ${LEXER_HEADERS}
 
-all: build-externals | ${CC_BIN}
+all: build-externals | ${CPP_BIN}
 
 build-externals:
 	make -C src/externals/cexceptions
 	make -C src/externals/codcif
 	make -C src/externals/getoptions
 
-%.cc: %.l
+%.cpp: %.l
 	flex --header-file=$(basename $@).h -o $@ $<
 
-%.cc: %.y
+%.cpp: %.y
 	bison --defines=$(basename $@).h -o $@ $<
 
-%.o: %.cc %.h
-	g++ -c -Wall -std=c++11 -g -o $@ $< ${CC_LIB} ${C_LIBDIR}
+%.o: %.cpp %.h
+	g++ -c -Wall -std=c++11 -g -o $@ $< ${CPP_LIB} ${C_LIBDIR}
 
-${BIN_DIR}/%: ${SRC_DIR}/%.cc ${CC_OBJS}
-	g++ -Wall -std=c++11 -g -o $@ $< ${CC_OBJS} ${C_OBJS} ${CC_LIB} ${C_LIBDIR}
+${BIN_DIR}/%: ${SRC_DIR}/%.cpp ${CPP_OBJS}
+	g++ -Wall -std=c++11 -g -o $@ $< ${CPP_OBJS} ${C_OBJS} ${CPP_LIB} ${C_LIBDIR}
 
 #
 # Unit tests.
@@ -112,8 +112,8 @@ testclean:
 	rm -f ${TEST_DIFF}
 
 cleanAll cleanall distclean: clean
-	rm -f ${CC_OBJS}
-	rm -f ${CC_BIN}
-	rm -f ${LIB_DIR}/Grammar/*.cc
+	rm -f ${CPP_OBJS}
+	rm -f ${CPP_BIN}
+	rm -f ${LIB_DIR}/Grammar/*.cpp
 	rm -f ${LIB_DIR}/Grammar/*.h
 	rm -f ${LIB_DIR}/Grammar/*.o
