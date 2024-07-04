@@ -8,67 +8,26 @@ AtomSite::AtomSite(char* pdbx_file_path) {
     PDBx pdbx(cif, this->M_TAGS);
 
     delete_cif(cif);
+
+    m_PDBXVALUES id_values = pdbx.values(this->name(ID));
+    for (int m_tag_index = GROUP_PDB;
+         m_tag_index <= ROTAG_SELECTION_GROUP;
+         m_tag_index++) {
+        for (size_t i = 0; i < id_values.size(); i++) {
+            this->m_Atoms[id_values[i]].insert(
+                std::make_pair(this->name(m_tag_index),
+                               pdbx.value(this->M_TAGS[m_tag_index], i)));
+        }
+    }
 }
 
 const std::vector<std::string> AtomSite::names() {
     return this->M_TAGS;
 }
 
-// AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
-//     ATOM_SITE_TAGS TAGS;
-//     PDBXVALUES group_pdbs = pdbx.values(TAGS.name(GROUP_PDB));
-//     PDBXVALUES atom_ids = pdbx.values(TAGS.name(ID));
-//     PDBXVALUES type_symbols = pdbx.values(TAGS.name(TYPE_SYMBOL));
-//     PDBXVALUES label_atom_ids = pdbx.values(TAGS.name(LABEL_ATOM_ID));
-//     PDBXVALUES label_alt_ids = pdbx.values(TAGS.name(LABEL_ALT_ID));
-//     PDBXVALUES label_comp_ids = pdbx.values(TAGS.name(LABEL_COMP_ID));
-//     PDBXVALUES label_asym_ids = pdbx.values(TAGS.name(LABEL_ASYM_ID));
-//     PDBXVALUES label_entity_ids = pdbx.values(TAGS.name(LABEL_ENTITY_ID));
-//     PDBXVALUES label_seq_ids = pdbx.values(TAGS.name(LABEL_SEQ_ID));
-//     PDBXVALUES cartn_xs = pdbx.values(TAGS.name(CARTN_X));
-//     PDBXVALUES cartn_ys = pdbx.values(TAGS.name(CARTN_Y));
-//     PDBXVALUES cartn_zs = pdbx.values(TAGS.name(CARTN_Z));
-//     PDBXVALUES occupancies = pdbx.values(TAGS.name(OCCUPANCY));
-//     PDBXVALUES b_iso_or_equivs = pdbx.values(TAGS.name(B_ISO_OR_EQUIV));
-//     PDBXVALUES auth_seq_ids = pdbx.values(TAGS.name(AUTH_SEQ_ID));
-//     PDBXVALUES auth_comp_ids = pdbx.values(TAGS.name(AUTH_COMP_ID));
-//     PDBXVALUES auth_asym_ids = pdbx.values(TAGS.name(AUTH_ASYM_ID));
-//     PDBXVALUES auth_atom_ids = pdbx.values(TAGS.name(AUTH_ATOM_ID));
-//     PDBXVALUES pdbx_pdb_model_nums = pdbx.values(TAGS.name(PDBX_PDB_MODEL_NUM));
-//     PDBXVALUES rotag_selection_states =
-//         pdbx.values(TAGS.name(ROTAG_SELECTION_STATE));
-//     PDBXVALUES rotag_selection_groups =
-//         pdbx.values(TAGS.name(ROTAG_SELECTION_GROUP));
-
-//     for (size_t i = 0; i < atom_ids.size(); i++) {
-//         Atom atom = {
-//             {TAGS.name(GROUP_PDB), group_pdbs[i]},
-//             {TAGS.name(ID), atom_ids[i]},
-//             {TAGS.name(TYPE_SYMBOL), type_symbols[i]},
-//             {TAGS.name(LABEL_ATOM_ID), label_atom_ids[i]},
-//             {TAGS.name(LABEL_ALT_ID), label_alt_ids[i]},
-//             {TAGS.name(LABEL_COMP_ID), label_comp_ids[i]},
-//             {TAGS.name(LABEL_ASYM_ID), label_asym_ids[i]},
-//             {TAGS.name(LABEL_ENTITY_ID), label_entity_ids[i]},
-//             {TAGS.name(LABEL_SEQ_ID), label_seq_ids[i]},
-//             {TAGS.name(CARTN_X), cartn_xs[i]},
-//             {TAGS.name(CARTN_Y), cartn_ys[i]},
-//             {TAGS.name(CARTN_Z), cartn_zs[i]},
-//             {TAGS.name(OCCUPANCY), occupancies[i]},
-//             {TAGS.name(B_ISO_OR_EQUIV), b_iso_or_equivs[i]},
-//             {TAGS.name(AUTH_SEQ_ID), auth_seq_ids[i]},
-//             {TAGS.name(AUTH_COMP_ID), auth_comp_ids[i]},
-//             {TAGS.name(AUTH_ASYM_ID), auth_asym_ids[i]},
-//             {TAGS.name(AUTH_ATOM_ID), auth_atom_ids[i]},
-//             {TAGS.name(PDBX_PDB_MODEL_NUM), pdbx_pdb_model_nums[i]},
-//             // {TAGS.name(ROTAG_SELECTION_STATE), rotag_selection_states[i]},
-//             // {TAGS.name(ROTAG_SELECTION_GROUP), rotag_selection_groups[i]}
-//         };
-//         atom_site.insert(std::make_pair(atom_ids[i], atom));
-//     }
-
-//     return atom_site;
-// }
+const std::string AtomSite::name(int index) {
+    return this->M_TAGS[index];
+}
 
 // AtomSite filter(AtomSite atom_site,
 //                 Selector include = {{}},

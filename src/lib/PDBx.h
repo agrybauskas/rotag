@@ -61,8 +61,6 @@ struct PDBXVALUE {
                 break;
         }
     }
-
-    ~PDBXVALUE() {};
 };
 
 class PDBx {
@@ -72,9 +70,10 @@ class PDBx {
     std::map<std::string, int64_t> in_loop;
 
  public:
-    explicit PDBx(CIF* cif, std::vector<std::string> select_tags = {});
-    ~PDBx();
+    explicit PDBx(CIF* cif, std::vector<std::string> select_tags);
+
     std::vector<PDBXVALUE> values(std::string cif_tag);
+    PDBXVALUE value(std::string, size_t);
 };
 
 #endif  // SRC_LIB_PDBX_H_

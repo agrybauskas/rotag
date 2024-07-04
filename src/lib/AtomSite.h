@@ -16,7 +16,9 @@ extern "C" {
 
 class AtomSite {
  private:
-    typedef std::map<std::string, PDBXVALUE> Atom;
+    typedef std::vector<PDBXVALUE> m_PDBXVALUES;
+    typedef std::map<std::string, PDBXVALUE> m_Atom;
+    typedef std::map<std::string, std::map<std::string, bool>> m_Selector;
 
     enum M_TAG_INDEX {
         GROUP_PDB,              // "ATOM" or "HETATM".
@@ -66,31 +68,15 @@ class AtomSite {
         "_atom_site.rotag_selection_group"
     };
 
-    std::map<int64_t, Atom> Atoms = {};
+    std::map<int64_t, m_Atom> m_Atoms = {};
 
  public:
     explicit AtomSite(char*);
 
     const std::vector<std::string> names();
+    const std::string name(int);
+    void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
+    AtomSite filter(AtomSite, m_Selector, m_Selector);
 };
-
-
-//     const std::string name(int index) {
-//         return NAMES[index];
-//     }
-
-//     const std::vector<std::string> names() {
-//         return NAMES;
-//     }
-// };
-
-// typedef std::map<int64_t, Atom> AtomSite;
-// typedef std::map<std::string, std::map<std::string, bool>> Selector;
-
-// AtomSite pdbx_to_atom_site(char*);
-
-// AtomSite filter(AtomSite, Selector, Selector);
-
-// void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
 
 #endif  // SRC_LIB_ATOMSITE_H_

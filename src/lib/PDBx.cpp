@@ -1,6 +1,6 @@
 #include "PDBx.h"
 
-PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
+PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags={}) {
     std::vector<std::string> cif_tags = {};
     if (select_tags.size() > 0) {
         cif_tags = select_tags;
@@ -40,8 +40,14 @@ PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags) {
     }
 }
 
-PDBx::~PDBx() {}
-
 std::vector<PDBXVALUE> PDBx::values(std::string cif_tag) {
     return this->data[cif_tag];
+}
+
+PDBXVALUE PDBx::value(std::string cif_tag, size_t index) {
+    if (this->data[cif_tag].size() > 0) {
+        return this->data[cif_tag][index];
+    } else {
+        return PDBXVALUE(".");
+    }
 }
