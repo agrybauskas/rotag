@@ -16,7 +16,7 @@ AtomSite::AtomSite(char* pdbx_file_path) {
         for (size_t i = 0; i < id_values.size(); i++) {
             this->m_atoms[id_values[i]].insert(
                 std::make_pair(this->name(m_tag_index),
-                               pdbx.value(this->M_TAGS[m_tag_index], i)));
+                               pdbx.value(this->name(m_tag_index), i)));
         }
     }
 }
@@ -34,7 +34,11 @@ std::map<int64_t, m_Atom> AtomSite::atoms() {
 }
 
 m_Atom AtomSite::atom(int64_t id) {
-    return this->atom(id);
+    return this->m_atoms[id];
+}
+
+PDBXVALUE AtomSite::value(int64_t id, int index) {
+    // return this->m_atoms[id][this->M_TAGS[index]];
 }
 
 // AtomSite filter(AtomSite atom_site,

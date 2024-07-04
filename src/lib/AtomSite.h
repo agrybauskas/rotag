@@ -80,6 +80,7 @@ class AtomSite {
     AtomSite filter(AtomSite, m_Selector, m_Selector);
     std::map<int64_t, m_Atom> atoms();
     m_Atom atom(int64_t);
+    PDBXVALUE value(int64_t, int);
 };
 
 #endif  // SRC_LIB_ATOMSITE_H_
