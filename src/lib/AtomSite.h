@@ -14,10 +14,11 @@ extern "C" {
 
 #include "PDBx.h"
 
+typedef std::map<std::string, PDBXVALUE> m_Atom;
+
 class AtomSite {
  private:
     typedef std::vector<PDBXVALUE> m_PDBXVALUES;
-    typedef std::map<std::string, PDBXVALUE> m_Atom;
     typedef std::map<std::string, std::map<std::string, bool>> m_Selector;
 
     enum M_TAG_INDEX {
@@ -77,6 +78,8 @@ class AtomSite {
     const std::string name(int);
     void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
     AtomSite filter(AtomSite, m_Selector, m_Selector);
+    std::map<int64_t, m_Atom> atoms();
+    m_Atom atom(int64_t);
 };
 
 #endif  // SRC_LIB_ATOMSITE_H_

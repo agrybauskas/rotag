@@ -29,6 +29,14 @@ const std::string AtomSite::name(int index) {
     return this->M_TAGS[index];
 }
 
+std::map<int64_t, m_Atom> AtomSite::atoms() {
+    return this->m_atoms;
+}
+
+m_Atom AtomSite::atom(int64_t id) {
+    return this->atom(id);
+}
+
 // AtomSite filter(AtomSite atom_site,
 //                 Selector include = {{}},
 //                 Selector exclude = {{}}) {
