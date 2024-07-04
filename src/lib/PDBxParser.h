@@ -14,6 +14,28 @@ extern "C" {
 
 #include "PDBx.h"
 
+enum ATOM_SITE_TAG {
+    GROUP_PDB,
+    ID,
+    TYPE_SYMBOL,
+    LABEL_ATOM_ID,
+    LABEL_ALT_ID,
+    LABEL_COMP_ID,
+    LABEL_ASYM_ID,
+    LABEL_ENTITY_ID,
+    LABEL_SEQ_ID,
+    CARTN_X,
+    CARTN_Y,
+    CARTN_Z,
+    OCCUPANCY,
+    B_ISO_OR_EQUIV,
+    AUTH_SEQ_ID,
+    AUTH_COMP_ID,
+    AUTH_ASYM_ID,
+    AUTH_ATOM_ID,
+    PDBX_PDB_MODEL_NUM
+};
+
 const std::vector<std::string> ATOM_SITE_TAGS = {
     // "_atom_site" category-related.
     "_atom_site.group_pdb",              // "ATOM" or "HETATM".
