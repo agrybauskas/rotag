@@ -14,11 +14,7 @@ extern "C" {
 
 #include "PDBx.h"
 
-struct ATOM_SITE_TAGS {
-
-};
-
-enum ATOM_SITE_TAG {
+enum ATOM_SITE_INDEX {
     GROUP_PDB,             // "ATOM" or "HETATM".
     ID,                    // Atom id.
     TYPE_SYMBOL,           // Chemical element.
@@ -42,28 +38,38 @@ enum ATOM_SITE_TAG {
     ROTAG_SELECTION_GROUP  // Selection group id.
 };
 
-const std::vector<std::string> ATOM_SITE_TAGS = {
-    "_atom_site.group_pdb",
-    "_atom_site.id",
-    "_atom_site.type_symbol",
-    "_atom_site.label_atom_id",
-    "_atom_site.label_alt_id",
-    "_atom_site.label_comp_id",
-    "_atom_site.label_asym_id",
-    "_atom_site.label_entity_id",
-    "_atom_site.label_seq_id",
-    "_atom_site.cartn_x",
-    "_atom_site.cartn_y",
-    "_atom_site.cartn_z",
-    "_atom_site.occupancy",
-    "_atom_site.b_iso_or_equiv",
-    "_atom_site.auth_seq_id",
-    "_atom_site.auth_comp_id",
-    "_atom_site.auth_asym_id",
-    "_atom_site.auth_atom_id",
-    "_atom_site.pdbx_pdb_model_num",
-    "_atom_site.rotag_selection_state",
-    "_atom_site.rotag_selection_group"
+struct ATOM_SITE_TAGS {
+    const std::vector<std::string> NAMES = {
+        "_atom_site.group_pdb",
+        "_atom_site.id",
+        "_atom_site.type_symbol",
+        "_atom_site.label_atom_id",
+        "_atom_site.label_alt_id",
+        "_atom_site.label_comp_id",
+        "_atom_site.label_asym_id",
+        "_atom_site.label_entity_id",
+        "_atom_site.label_seq_id",
+        "_atom_site.cartn_x",
+        "_atom_site.cartn_y",
+        "_atom_site.cartn_z",
+        "_atom_site.occupancy",
+        "_atom_site.b_iso_or_equiv",
+        "_atom_site.auth_seq_id",
+        "_atom_site.auth_comp_id",
+        "_atom_site.auth_asym_id",
+        "_atom_site.auth_atom_id",
+        "_atom_site.pdbx_pdb_model_num",
+        "_atom_site.rotag_selection_state",
+        "_atom_site.rotag_selection_group"
+    };
+
+    const std::string name(int index) {
+        return NAMES[index];
+    }
+
+    const std::vector<std::string> names() {
+        return NAMES;
+    }
 };
 
 typedef std::map<std::string, PDBXVALUE> Atom;
@@ -71,14 +77,10 @@ typedef std::vector<PDBXVALUE> PDBXVALUES;
 typedef std::map<int64_t, Atom> AtomSite;
 typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
-AtomSite pdbx_to_atom_site(char* pdbx_file_path);
+AtomSite pdbx_to_atom_site(char*);
 
-AtomSite filter(AtomSite atom_site,
-                Selector include = {{}},
-                Selector exclude = {{}});
+AtomSite filter(AtomSite, Selector, Selector);
 
-void mark_selection(AtomSite& atom_site,
-                    std::vector<int64_t> target_atom_ids={},
-                    std::vector<int64_t> selected_atom_ids={});
+void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
 
 #endif  // SRC_LIB_PDBXPARSER_H_

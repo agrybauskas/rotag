@@ -7,55 +7,58 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
     cexception_t inner;
     CIF* cif = new_cif_from_cif_file(pdbx_file_path, compiler_options, &inner);
 
-    PDBx pdbx(cif, ATOM_SITE_TAGS);
+    PDBx pdbx(cif, ATOM_SITE_TAGS().names());
 
     delete_cif(cif);
 
-    // TODO: refactor with enums or similar.
-    PDBXVALUES group_pdbs = pdbx.values("_atom_site.group_pdb");
-    PDBXVALUES atom_ids = pdbx.values("_atom_site.id");
-    PDBXVALUES type_symbols = pdbx.values("_atom_site.type_symbol");
-    PDBXVALUES label_atom_ids = pdbx.values("_atom_site.label_atom_id");
-    PDBXVALUES label_alt_ids = pdbx.values("_atom_site.label_alt_id");
-    PDBXVALUES label_comp_ids = pdbx.values("_atom_site.label_comp_id");
-    PDBXVALUES label_asym_ids = pdbx.values("_atom_site.label_asym_id");
-    PDBXVALUES label_entity_ids = pdbx.values("_atom_site.label_entity_id");
-    PDBXVALUES label_seq_ids = pdbx.values("_atom_site.label_seq_id");
-    PDBXVALUES cartn_xs = pdbx.values("_atom_site.cartn_x");
-    PDBXVALUES cartn_ys = pdbx.values("_atom_site.cartn_y");
-    PDBXVALUES cartn_zs = pdbx.values("_atom_site.cartn_z");
-    PDBXVALUES occupancies = pdbx.values("_atom_site.occupancy");
-    PDBXVALUES b_iso_or_equivs = pdbx.values("_atom_site.b_iso_or_equiv");
-    PDBXVALUES auth_seq_ids = pdbx.values("_atom_site.auth_seq_id");
-    PDBXVALUES auth_comp_ids = pdbx.values("_atom_site.auth_comp_id");
-    PDBXVALUES auth_asym_ids = pdbx.values("_atom_site.auth_asym_id");
-    PDBXVALUES auth_atom_ids = pdbx.values("_atom_site.auth_atom_id");
-    PDBXVALUES pdbx_pdb_model_nums =
-        pdbx.values("_atom_site.pdbx_pdb_model_num");
+    ATOM_SITE_TAGS TAGS;
+    PDBXVALUES group_pdbs = pdbx.values(TAGS.name(GROUP_PDB));
+    PDBXVALUES atom_ids = pdbx.values(TAGS.name(ID));
+    PDBXVALUES type_symbols = pdbx.values(TAGS.name(TYPE_SYMBOL));
+    PDBXVALUES label_atom_ids = pdbx.values(TAGS.name(LABEL_ATOM_ID));
+    PDBXVALUES label_alt_ids = pdbx.values(TAGS.name(LABEL_ALT_ID));
+    PDBXVALUES label_comp_ids = pdbx.values(TAGS.name(LABEL_COMP_ID));
+    PDBXVALUES label_asym_ids = pdbx.values(TAGS.name(LABEL_ASYM_ID));
+    PDBXVALUES label_entity_ids = pdbx.values(TAGS.name(LABEL_ENTITY_ID));
+    PDBXVALUES label_seq_ids = pdbx.values(TAGS.name(LABEL_SEQ_ID));
+    PDBXVALUES cartn_xs = pdbx.values(TAGS.name(CARTN_X));
+    PDBXVALUES cartn_ys = pdbx.values(TAGS.name(CARTN_Y));
+    PDBXVALUES cartn_zs = pdbx.values(TAGS.name(CARTN_Z));
+    PDBXVALUES occupancies = pdbx.values(TAGS.name(OCCUPANCY));
+    PDBXVALUES b_iso_or_equivs = pdbx.values(TAGS.name(B_ISO_OR_EQUIV));
+    PDBXVALUES auth_seq_ids = pdbx.values(TAGS.name(AUTH_SEQ_ID));
+    PDBXVALUES auth_comp_ids = pdbx.values(TAGS.name(AUTH_COMP_ID));
+    PDBXVALUES auth_asym_ids = pdbx.values(TAGS.name(AUTH_ASYM_ID));
+    PDBXVALUES auth_atom_ids = pdbx.values(TAGS.name(AUTH_ATOM_ID));
+    PDBXVALUES pdbx_pdb_model_nums = pdbx.values(TAGS.name(PDBX_PDB_MODEL_NUM));
     PDBXVALUES rotag_selection_states =
-        pdbx.values("_atom_site.rotag_selection_state");
+        pdbx.values(TAGS.name(ROTAG_SELECTION_STATE));
     PDBXVALUES rotag_selection_groups =
-        pdbx.values("_atom_site.rotag_selection_group");
+        pdbx.values(TAGS.name(ROTAG_SELECTION_GROUP));
 
     for (size_t i = 0; i < atom_ids.size(); i++) {
         Atom atom = {
-            {"_atom_site.group_pdb", group_pdbs[i]},
-            {"_atom_site.id", atom_ids[i]},
-            {"_atom_site.type_symbol", type_symbols[i]},
-            {"_atom_site.label_atom_id", label_atom_ids[i]},
-            {"_atom_site.label_alt_id", label_alt_ids[i]},
-            {"_atom_site.label_comp_id", label_comp_ids[i]},
-            {"_atom_site.label_asym_id", label_asym_ids[i]},
-            {"_atom_site.label_entity_id", label_entity_ids[i]},
-            {"_atom_site.label_seq_id", label_seq_ids[i]},
-            {"_atom_site.cartn_x", cartn_xs[i]},
-            {"_atom_site.cartn_y", cartn_ys[i]},
-            {"_atom_site.cartn_z", cartn_zs[i]},
-            {"_atom_site.occupancy", occupancies[i]},
-            {"_atom_site.b_iso_or_equiv", b_iso_or_equivs[i]},
-            {"_atom_site.auth_seq_id", auth_seq_ids[i]},
-            {"_atom_site.auth_comp_id", auth_comp_ids[i]},
-            {"_atom_site.auth_asym_id", auth_asym_ids[i]}
+            {TAGS.name(GROUP_PDB), group_pdbs[i]},
+            {TAGS.name(ID), atom_ids[i]},
+            {TAGS.name(TYPE_SYMBOL), type_symbols[i]},
+            {TAGS.name(LABEL_ATOM_ID), label_atom_ids[i]},
+            {TAGS.name(LABEL_ALT_ID), label_alt_ids[i]},
+            {TAGS.name(LABEL_COMP_ID), label_comp_ids[i]},
+            {TAGS.name(LABEL_ASYM_ID), label_asym_ids[i]},
+            {TAGS.name(LABEL_ENTITY_ID), label_entity_ids[i]},
+            {TAGS.name(LABEL_SEQ_ID), label_seq_ids[i]},
+            {TAGS.name(CARTN_X), cartn_xs[i]},
+            {TAGS.name(CARTN_Y), cartn_ys[i]},
+            {TAGS.name(CARTN_Z), cartn_zs[i]},
+            {TAGS.name(OCCUPANCY), occupancies[i]},
+            {TAGS.name(B_ISO_OR_EQUIV), b_iso_or_equivs[i]},
+            {TAGS.name(AUTH_SEQ_ID), auth_seq_ids[i]},
+            {TAGS.name(AUTH_COMP_ID), auth_comp_ids[i]},
+            {TAGS.name(AUTH_ASYM_ID), auth_asym_ids[i]},
+            {TAGS.name(AUTH_ATOM_ID), auth_atom_ids[i]},
+            {TAGS.name(PDBX_PDB_MODEL_NUM), pdbx_pdb_model_nums[i]},
+            // {TAGS.name(ROTAG_SELECTION_STATE), rotag_selection_states[i]},
+            // {TAGS.name(ROTAG_SELECTION_GROUP), rotag_selection_groups[i]}
         };
         atom_site.insert(std::make_pair(atom_ids[i], atom));
     }
@@ -63,7 +66,9 @@ AtomSite pdbx_to_atom_site(char* pdbx_file_path) {
     return atom_site;
 }
 
-AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
+AtomSite filter(AtomSite atom_site,
+                Selector include = {{}},
+                Selector exclude = {{}}) {
     if (atom_site.empty()) {
         /* TODO(algirdas): Error or warning. Message: no atoms were loaded from
            "_atom_site".*/
@@ -100,8 +105,8 @@ AtomSite filter(AtomSite atom_site, Selector include, Selector exclude) {
 }
 
 void mark_selection(AtomSite& atom_site,
-                    std::vector<int64_t> target_atom_ids,
-                    std::vector<int64_t> selected_atom_ids) {
+                    std::vector<int64_t> target_atom_ids = {},
+                    std::vector<int64_t> selected_atom_ids = {}) {
     for (AtomSite::iterator it = atom_site.begin(); it != atom_site.end(); ++it) {
         int64_t id = it->first;
         atom_site.at(id).erase("_atom_site.rotag_selection_state");
