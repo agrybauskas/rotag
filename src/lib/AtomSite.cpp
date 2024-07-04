@@ -38,7 +38,7 @@ m_Atom AtomSite::atom(int64_t id) {
 }
 
 PDBXVALUE AtomSite::value(int64_t id, int index) {
-    // return this->m_atoms[id][this->M_TAGS[index]];
+    return this->atom(id)[this->name(index)];
 }
 
 // AtomSite filter(AtomSite atom_site,
