@@ -10,8 +10,6 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/filesystem.hpp>
 
-// #include <gemmi/cif.hpp>
-
 #include "lib/AtomSite.h"
 #include "lib/Combinatorics.h"
 #include "lib/ForceField/Parameters.h"
@@ -180,25 +178,17 @@ int main(int argc, char *argv[]) {
     boost::replace_all(tags, " ", "");
     boost::split(tags_list, tags, boost::is_any_of(","));
 
-    Parameters parameters(progname);
+    // Parameters parameters(progname);
 
     for (int index = optind; index < argc; index++) {
-        // NOTE: format will be added as soon as PDB parser will be implemented.
-        // gemmi::cif::Document doc = gemmi::cif::read_file(argv[index]);
-        // for (gemmi::cif::Block& block : doc.blocks) {
-        //     for (auto cc : block.find("_atom_site.", {"id", "label_atom_id"})) {
-        //         std::cout << cc[0] << "\t"<< cc[1] << std::endl;
-        //     }
-        // }
-
         AtomSite atom_site(argv[index]);
 
-        std::vector<int64_t> target_atom_ids =
-            selection_parser(atom_site, target_cmd);
+        // std::vector<int64_t> target_atom_ids =
+        //     selection_parser(atom_site, target_cmd);
 
-        for (const int64_t& target_atom_id : target_atom_ids) {
-            std::cout << target_atom_id << std::endl;
-        }
+        // for (const int64_t& target_atom_id : target_atom_ids) {
+        //     std::cout << target_atom_id << std::endl;
+        // }
     }
 
     return 0;
