@@ -5,5 +5,6 @@ sudo apt-get install -y \
      flex \
      libboost-all-dev \
      libfl-dev \
+     libopenbabel-dev \
      make \
      zip
