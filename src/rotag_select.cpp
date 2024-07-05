@@ -181,7 +181,7 @@ int main(int argc, char *argv[]) {
     // Parameters parameters(progname);
 
     for (int index = optind; index < argc; index++) {
-        AtomSite atom_site(argv[index]);
+        AtomSite atom_site(argv[index], is_pdb);
 
         std::vector<int64_t> target_atom_ids =
             selection_parser(atom_site, target_cmd);

@@ -18,11 +18,6 @@ extern "C" {
 
 typedef std::map<std::string, PDBXVALUE> m_Atom;
 
-enum M_FORMAT {
-    PDBX,
-    PDB
-};
-
 class AtomSite {
  private:
     typedef std::vector<PDBXVALUE> m_PDBXVALUES;
@@ -81,7 +76,7 @@ class AtomSite {
     std::map<int64_t, m_Atom> m_atoms = {};
 
  public:
-    explicit AtomSite(char*, M_FORMAT = PDBX);
+    explicit AtomSite(char*, bool);
 
     const std::vector<std::string> names();
     const std::string name(int64_t);

@@ -1,7 +1,9 @@
 #include "AtomSite.h"
 
-AtomSite::AtomSite(char* file_path, M_FORMAT format) {
-    if (format == PDBX) {
+AtomSite::AtomSite(char* file_path, bool is_pdb=false) {
+    if (is_pdb) {
+
+    } else {
         cif_option_t compiler_options = cif_option_default();
         cexception_t inner;
         CIF* cif = new_cif_from_cif_file(file_path, compiler_options, &inner);
@@ -20,10 +22,6 @@ AtomSite::AtomSite(char* file_path, M_FORMAT format) {
                                    pdbx.value(this->name(m_tag_index), i)));
             }
         }
-    }
-
-    if (format == PDB) {
-
     }
 }
 
