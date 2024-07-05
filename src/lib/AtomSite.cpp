@@ -1,6 +1,6 @@
 #include "AtomSite.h"
 
-AtomSite::AtomSite(char* pdbx_file_path) {
+AtomSite::AtomSite(char* pdbx_file_path, M_FORMAT format) {
     cif_option_t compiler_options = cif_option_default();
     cexception_t inner;
     CIF* cif = new_cif_from_cif_file(pdbx_file_path, compiler_options, &inner);
