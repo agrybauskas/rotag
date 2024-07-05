@@ -50,11 +50,11 @@ expr:
     | DOUBLE    { std::printf("%f\n", $1); }
     | STR       { std::printf("%s\n", $1); }
     | ALL       {
-                    /* for (m_Atom::iterator it = atoms.begin(); */
-                    /*      it != atoms.end(); */
-                    /*      ++it) { */
-                    /*     /\* atom_ids.push_back(it->first); *\/ */
-                    /* } */
+                    std::map<int64_t, m_Atom> atoms = atom_site.atoms();
+                    std::map<int64_t, m_Atom>::iterator it;
+                    for ( it = atoms.begin(); it != atoms.end(); ++it) {
+                        atom_ids.push_back(it->first);
+                    }
                 }
     | MAINCHAIN {
                 }
