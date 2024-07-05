@@ -1,8 +1,8 @@
 #include "AtomSite.h"
 
-AtomSite::AtomSite(char* file_path, bool is_pdb=false) {
+AtomSite::AtomSite(char* file_path, bool is_pdb = false) {
     if (is_pdb) {
-
+        gemmi::Structure structure = gemmi::read_pdb_file(file_path);
     } else {
         cif_option_t compiler_options = cif_option_default();
         cexception_t inner;
