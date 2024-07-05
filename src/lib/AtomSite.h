@@ -79,7 +79,7 @@ class AtomSite {
     std::map<int64_t, m_Atom> m_atoms = {};
 
  public:
-    explicit AtomSite(char*, M_FORMAT=PDBX);
+    explicit AtomSite(char*, M_FORMAT = PDBX);
 
     const std::vector<std::string> names();
     const std::string name(int64_t);
