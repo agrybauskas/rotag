@@ -75,12 +75,12 @@ class AtomSite {
     explicit AtomSite(char*);
 
     const std::vector<std::string> names();
-    const std::string name(int);
+    const std::string name(int64_t);
     void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
     AtomSite filter(AtomSite, m_Selector, m_Selector);
     std::map<int64_t, m_Atom> atoms();
     m_Atom atom(int64_t);
-    PDBXVALUE value(int64_t, int);
+    PDBXVALUE value(int64_t, int64_t);
 };
 
 #endif  // SRC_LIB_ATOMSITE_H_

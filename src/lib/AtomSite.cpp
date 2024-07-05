@@ -25,7 +25,7 @@ const std::vector<std::string> AtomSite::names() {
     return this->M_TAGS;
 }
 
-const std::string AtomSite::name(int index) {
+const std::string AtomSite::name(int64_t index) {
     return this->M_TAGS[index];
 }
 
@@ -37,8 +37,8 @@ m_Atom AtomSite::atom(int64_t id) {
     return this->m_atoms.at(id);
 }
 
-PDBXVALUE AtomSite::value(int64_t id, int index) {
-    return this->atom(id).at(index);
+PDBXVALUE AtomSite::value(int64_t id, int64_t index) {
+    return this->atom(id).at(this->name(index));
 }
 
 // AtomSite filter(AtomSite atom_site,
