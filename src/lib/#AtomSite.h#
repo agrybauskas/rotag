@@ -1,0 +1,91 @@
+#ifndef SRC_LIB_ATOMSITE_H_
+#define SRC_LIB_ATOMSITE_H_
+
+#include <iostream>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
+
+extern "C" {
+    #include "cif.h"
+    #include "cif_compiler.h"
+}
+
+#include "PDBx.h"
+
+typedef std::map<std::string, PDBXVALUE> m_Atom;
+
+class AtomSite {
+ private:
+    typedef std::vector<PDBXVALUE> m_PDBXVALUES;
+    typedef std::map<std::string, std::map<std::string, bool>> m_Selector;
+
+    enum M_TAG_INDEX {
+        GROUP_PDB,              // "ATOM" or "HETATM".
+        ID,                     // Atom id.
+        TYPE_SYMBOL,            // Chemical element.
+        LABEL_ATOM_ID,          // Atom label.
+        LABEL_ALT_ID,           // Related to alt. atom position.
+        LABEL_COMP_ID,          // Residue name.
+        LABEL_ASYM_ID,          // Chain name.
+        LABEL_ENTITY_ID,        // Molecular entity.
+        LABEL_SEQ_ID,           // Residue id.
+        CARTN_X,                // Cartesian x coordinates of the atom.
+        CARTN_Y,                // Cartesian y coordinates of the atom.
+        CARTN_Z,                // Cartesian z coordinates of the atom.
+        OCCUPANCY,              // The fraction present in the site.
+        B_ISO_OR_EQUIV,         // Isotropic displacement.
+        AUTH_SEQ_ID,            // Author's residue id.
+        AUTH_COMP_ID,           // Author's residue name.
+        AUTH_ASYM_ID,           // Author's chain name.
+        AUTH_ATOM_ID,           // Author's atom label.
+        PDBX_PDB_MODEL_NUM,     // Model id.
+        ROTAG_SELECTION_STATE,  // Marks selection state: T, S ir H.
+        ROTAG_SELECTION_GROUP   // Selection group id.
+    };
+
+    typedef std::map<int, std::string> M_MAP;
+
+    M_MAP M_TAGS;
+    M_TAGS[GROUP_PDB] = "_atom_site.group_pdb";
+
+    // const M_MAP M_TAGS = {
+    //     (GROUP_PDB, "_atom_site.group_pdb"),
+    //     (ID, "_atom_site.id"),
+    //     (TYPE_SYMBOL, "_atom_site.type_symbol"),
+    //     (LABEL_ATOM_ID, "_atom_site.label_atom_id"),
+    //     (LABEL_ALT_ID, "_atom_site.label_alt_id"),
+    //     (LABEL_COMP_ID, "_atom_site.label_comp_id"),
+    //     (LABEL_ASYM_ID, "_atom_site.label_asym_id"),
+    //     (LABEL_ENTITY_ID, "_atom_site.label_entity_id"),
+    //     (LABEL_SEQ_ID, "_atom_site.label_seq_id"),
+    //     (CARTN_X, "_atom_site.cartn_x"),
+    //     (CARTN_Y, "_atom_site.cartn_y"),
+    //     (CARTN_Z, "_atom_site.cartn_z"),
+    //     (OCCUPANCY, "_atom_site.occupancy"),
+    //     (B_ISO_OR_EQUIV, "_atom_site.b_iso_or_equiv"),
+    //     (AUTH_SEQ_ID, "_atom_site.auth_seq_id"),
+    //     (AUTH_COMP_ID, "_atom_site.auth_comp_id"),
+    //     (AUTH_ASYM_ID, "_atom_site.auth_asym_id"),
+    //     (AUTH_ATOM_ID, "_atom_site.auth_atom_id"),
+    //     (PDBX_PDB_MODEL_NUM, "_atom_site.pdbx_pdb_model_num"),
+    //     (ROTAG_SELECTION_STATE, "_atom_site.rotag_selection_state"),
+    //     (ROTAG_SELECTION_GROUP, "_atom_site.rotag_selection_group")
+    // };
+
+    std::map<int64_t, m_Atom> m_atoms = {};
+
+ public:
+    explicit AtomSite(char*);
+
+    // const std::vector<std::string> names();
+    // const std::string name(int);
+    // void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
+    // AtomSite filter(AtomSite, m_Selector, m_Selector);
+    // std::map<int64_t, m_Atom> atoms();
+    // m_Atom atom(int64_t);
+    // PDBXVALUE value(int64_t, int);
+};
+
+#endif  // SRC_LIB_ATOMSITE_H_

@@ -34,11 +34,11 @@ std::map<int64_t, m_Atom> AtomSite::atoms() {
 }
 
 m_Atom AtomSite::atom(int64_t id) {
-    return this->m_atoms[id];
+    return this->m_atoms.at(id);
 }
 
 PDBXVALUE AtomSite::value(int64_t id, int index) {
-    return this->atom(id)[this->name(index)];
+    return this->atom(id).at(index);
 }
 
 // AtomSite filter(AtomSite atom_site,
