@@ -9,7 +9,7 @@ AtomSite::AtomSite(char* pdbx_file_path) {
 
     delete_cif(cif);
 
-    m_PDBXVALUES id_values = pdbx.values(this->name(ID));
+    m_PDBXVALUES id_values = pdbx.values(this->name(M_ID));
     for (int m_tag_index = GROUP_PDB;
          m_tag_index <= ROTAG_SELECTION_GROUP;
          m_tag_index++) {

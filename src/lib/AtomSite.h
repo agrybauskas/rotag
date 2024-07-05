@@ -69,6 +69,8 @@ class AtomSite {
         "_atom_site.rotag_selection_group"
     };
 
+    const M_TAG_INDEX M_ID = ID;  // Declares UNIQUE ID for the class object.
+
     std::map<int64_t, m_Atom> m_atoms = {};
 
  public:
