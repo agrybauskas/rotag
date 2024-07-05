@@ -2,9 +2,22 @@
 
 AtomSite::AtomSite(char* file_path, M_FORMAT format) {
     if (format == PDBX) {
-        gemmi::cif::Document doc = gemmi::cif::read_file(file_path);
-        for (gemmi::cif::Block& block : doc.blocks) {
-            for (gemmi::cif::Table::Row cc : block.find("_atom_site.", {"id"})) {
+        cif_option_t compiler_options = cif_option_default();
+        cexception_t inner;
+        CIF* cif = new_cif_from_cif_file(file_path, compiler_options, &inner);
+
+        PDBx pdbx(cif, this->M_TAGS);
+
+        delete_cif(cif);
+
+        m_PDBXVALUES id_values = pdbx.values(this->name(M_ID));
+        for (int m_tag_index = GROUP_PDB;
+             m_tag_index <= ROTAG_SELECTION_GROUP;
+             m_tag_index++) {
+            for (size_t i = 0; i < id_values.size(); i++) {
+                this->m_atoms[id_values[i]].insert(
+                    std::make_pair(this->name(m_tag_index),
+                                   pdbx.value(this->name(m_tag_index), i)));
             }
         }
     }
@@ -12,25 +25,6 @@ AtomSite::AtomSite(char* file_path, M_FORMAT format) {
     if (format == PDB) {
 
     }
-
-    // cif_option_t compiler_options = cif_option_default();
-    // cexception_t inner;
-    // CIF* cif = new_cif_from_cif_file(pdbx_file_path, compiler_options, &inner);
-
-    // PDBx pdbx(cif, this->M_TAGS);
-
-    // delete_cif(cif);
-
-    // m_PDBXVALUES id_values = pdbx.values(this->name(M_ID));
-    // for (int m_tag_index = GROUP_PDB;
-    //      m_tag_index <= ROTAG_SELECTION_GROUP;
-    //      m_tag_index++) {
-    //     for (size_t i = 0; i < id_values.size(); i++) {
-    //         this->m_atoms[id_values[i]].insert(
-    //             std::make_pair(this->name(m_tag_index),
-    //                            pdbx.value(this->name(m_tag_index), i)));
-    //     }
-    // }
 }
 
 const std::vector<std::string> AtomSite::names() {

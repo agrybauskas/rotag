@@ -7,12 +7,12 @@
 #include <utility>
 #include <vector>
 
-#include <gemmi/cif.hpp>
-
 extern "C" {
     #include "cif.h"
     #include "cif_compiler.h"
 }
+
+#include <gemmi/pdb.hpp>
 
 #include "PDBx.h"
 
@@ -53,27 +53,27 @@ class AtomSite {
     };
 
     const std::vector<std::string> M_TAGS = {
-        "group_pdb",
-        "id",
-        "type_symbol",
-        "label_atom_id",
-        "label_alt_id",
-        "label_comp_id",
-        "label_asym_id",
-        "label_entity_id",
-        "label_seq_id",
-        "cartn_x",
-        "cartn_y",
-        "cartn_z",
-        "occupancy",
-        "b_iso_or_equiv",
-        "auth_seq_id",
-        "auth_comp_id",
-        "auth_asym_id",
-        "auth_atom_id",
-        "pdbx_pdb_model_num",
-        "rotag_selection_state",
-        "rotag_selection_group"
+        "_atom_site.group_pdb",
+        "_atom_site.id",
+        "_atom_site.type_symbol",
+        "_atom_site.label_atom_id",
+        "_atom_site.label_alt_id",
+        "_atom_site.label_comp_id",
+        "_atom_site.label_asym_id",
+        "_atom_site.label_entity_id",
+        "_atom_site.label_seq_id",
+        "_atom_site.cartn_x",
+        "_atom_site.cartn_y",
+        "_atom_site.cartn_z",
+        "_atom_site.occupancy",
+        "_atom_site.b_iso_or_equiv",
+        "_atom_site.auth_seq_id",
+        "_atom_site.auth_comp_id",
+        "_atom_site.auth_asym_id",
+        "_atom_site.auth_atom_id",
+        "_atom_site.pdbx_pdb_model_num",
+        "_atom_site.rotag_selection_state",
+        "_atom_site.rotag_selection_group"
     };
 
     const M_TAG_INDEX M_ID = ID;  // Declares UNIQUE ID for the class object.
