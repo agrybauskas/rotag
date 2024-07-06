@@ -52,10 +52,10 @@ PDBXVALUE AtomSite::value(int64_t id, int64_t index) {
 AtomSite filter(AtomSite& atom_site,
                 Selector include = {{}},
                 Selector exclude = {{}}) {
-    // if (atom_site.empty()) {
-    //     /* TODO(algirdas): Error or warning. Message: no atoms were loaded from
-    //        "_atom_site".*/
-    // }
+    if (atom_site.atoms().empty()) {
+        /* TODO(algirdas): Error or warning. Message: no atoms were loaded from
+           "_atom_site".*/
+    }
 
     AtomSite filtered_atom_site;
     // for (AtomSite::iterator it_i = atom_site.begin(); it_i != atom_site.end(); ++it_i) {
