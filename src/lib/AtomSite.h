@@ -17,11 +17,11 @@ extern "C" {
 #include "PDBx.h"
 
 typedef std::map<std::string, PDBXVALUE> m_Atom;
+typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
 class AtomSite {
  private:
     typedef std::vector<PDBXVALUE> m_PDBXVALUES;
-    typedef std::map<std::string, std::map<std::string, bool>> m_Selector;
 
     enum M_TAG_INDEX {
         GROUP_PDB,              // "ATOM" or "HETATM".
@@ -76,12 +76,13 @@ class AtomSite {
     std::map<int64_t, m_Atom> m_atoms = {};
 
  public:
+    explicit AtomSite();
     explicit AtomSite(char*, bool);
 
     const std::vector<std::string> names();
     const std::string name(int64_t);
     void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
-    AtomSite filter(AtomSite, m_Selector, m_Selector);
+    AtomSite filter(AtomSite&, Selector, Selector);
     std::map<int64_t, m_Atom> atoms();
     m_Atom atom(int64_t);
     PDBXVALUE value(int64_t, int64_t);
