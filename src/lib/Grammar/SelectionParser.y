@@ -51,9 +51,9 @@ expr:
     | STR       { std::printf("%s\n", $1); }
     | ALL       {
                     std::map<int64_t, m_Atom> atoms = atom_site.atoms();
-                    std::map<int64_t, m_Atom>::iterator it;
-                    for (it = atoms.begin(); it != atoms.end(); ++it) {
-                        atom_ids.push_back(it->first);
+                    std::map<int64_t, m_Atom>::iterator atom_it;
+                    for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
+                        atom_ids.push_back(atom_it->first);
                     }
                 }
     | MAINCHAIN {
