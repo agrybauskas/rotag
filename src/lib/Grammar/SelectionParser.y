@@ -34,7 +34,7 @@
 
 %token<num> NUM
 %token<dbl> DOUBLE
-%token<str> STR SEP ALL MAINCHAIN SIDECHAIN
+%token<str> STR SEP ALL MAINCHAIN SIDECHAIN HETATOMS
 
 %start cmd
 
@@ -59,6 +59,8 @@ expr:
     | MAINCHAIN {
                 }
     | SIDECHAIN {
+                }
+    | HETATOMS  {
                 }
     ;
 
