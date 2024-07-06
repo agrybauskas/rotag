@@ -1,8 +1,6 @@
 #include "AtomSite.h"
 
-AtomSite::AtomSite() {
-
-}
+AtomSite::AtomSite() {}
 
 AtomSite::AtomSite(char* file_path, bool is_pdb = false) {
     if (is_pdb) {
@@ -45,8 +43,16 @@ m_Atom AtomSite::atom(int64_t id) {
     return this->m_atoms.at(id);
 }
 
+PDBXVALUE AtomSite::value(int64_t id, std::string cif_tag) {
+    return this->atom(id).at(cif_tag);
+}
+
 PDBXVALUE AtomSite::value(int64_t id, int64_t index) {
     return this->atom(id).at(this->name(index));
+}
+
+void AtomSite::add_atom(int64_t id, m_Atom atom) {
+    this->m_atoms.insert(std::make_pair(id, atom));
 }
 
 AtomSite filter(AtomSite& atom_site,
@@ -58,31 +64,35 @@ AtomSite filter(AtomSite& atom_site,
     }
 
     AtomSite filtered_atom_site;
-    // for (AtomSite::iterator it_i = atom_site.begin(); it_i != atom_site.end(); ++it_i) {
-    //     int64_t id = it_i->first;
-    //     Atom atom = atom_site.at(id);
-    //     bool keep_atom = true;
-    //     for (Atom::iterator it_j = atom.begin(); it_j != atom.end(); ++it_j) {
-    //         std::string cif_tag = it_j->first;
-    //         std::string value = atom.at(cif_tag);
+    std::map<int64_t, m_Atom> atoms = atom_site.atoms();
+    std::map<int64_t, m_Atom>::iterator atom_it;
+    for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
+        int64_t id = atom_it->first;
+        m_Atom atom = atom_site.atom(id);
+        bool keep_atom = true;
+        for (m_Atom::iterator tag_it = atom.begin();
+             tag_it != atom.end();
+             ++tag_it) {
+            std::string cif_tag = tag_it->first;
+            std::string value = atom_site.value(id, cif_tag);
 
-    //         if (!include[cif_tag].empty() && !include[cif_tag][value]) {
-    //             keep_atom = false;
-    //             break;
-    //         }
+            if (!include[cif_tag].empty() && !include[cif_tag][value]) {
+                keep_atom = false;
+                break;
+            }
 
-    //         if (!exclude[cif_tag].empty() && exclude[cif_tag][value]) {
-    //             keep_atom = false;
-    //             break;
-    //         }
-    //     }
+            if (!exclude[cif_tag].empty() && exclude[cif_tag][value]) {
+                keep_atom = false;
+                break;
+            }
+        }
 
-    //     if (!keep_atom) {
-    //         continue;
-    //     }
+        if (!keep_atom) {
+            continue;
+        }
 
-    //     filtered_atom_site[id] = atom_site[id];
-    // }
+        filtered_atom_site.add_atom(id, atom_site.atom(id));
+    }
 
     return filtered_atom_site;
 }

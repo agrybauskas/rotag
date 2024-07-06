@@ -52,7 +52,7 @@ expr:
     | ALL       {
                     std::map<int64_t, m_Atom> atoms = atom_site.atoms();
                     std::map<int64_t, m_Atom>::iterator it;
-                    for ( it = atoms.begin(); it != atoms.end(); ++it) {
+                    for (it = atoms.begin(); it != atoms.end(); ++it) {
                         atom_ids.push_back(it->first);
                     }
                 }
