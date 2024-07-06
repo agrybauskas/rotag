@@ -1,4 +1,4 @@
-%define api.prefix select_
+%define api.prefix {select_}
 %parse-param {AtomSite& atom_site} {std::vector<int64_t>& atom_ids}
 
 %code requires{
@@ -34,7 +34,7 @@
 
 %token<num> NUM
 %token<dbl> DOUBLE
-%token<str> STR SEP ALL MAINCHAIN
+%token<str> STR SEP ALL MAINCHAIN SIDECHAIN
 
 %start cmd
 
@@ -57,6 +57,8 @@ expr:
                     }
                 }
     | MAINCHAIN {
+                }
+    | SIDECHAIN {
                 }
     ;
 
