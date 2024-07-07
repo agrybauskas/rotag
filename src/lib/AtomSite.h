@@ -16,7 +16,7 @@ extern "C" {
 
 #include "PDBx.h"
 
-typedef std::map<std::string, PDBXVALUE> m_Atom;
+typedef std::map<std::string, PDBXVALUE> Atom;
 typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
 class AtomSite {
@@ -73,7 +73,7 @@ class AtomSite {
 
     const M_TAG_INDEX M_ID = ID;  // Declares UNIQUE ID for the class object.
 
-    std::map<int64_t, m_Atom> m_atoms = {};
+    std::map<int64_t, Atom> m_atoms = {};
 
  public:
     AtomSite();
@@ -81,11 +81,11 @@ class AtomSite {
 
     const std::vector<std::string> names();
     const std::string name(int64_t);
-    std::map<int64_t, m_Atom> atoms();
-    m_Atom atom(int64_t);
+    std::map<int64_t, Atom> atoms();
+    Atom atom(int64_t);
     PDBXVALUE value(int64_t, std::string);
     PDBXVALUE value(int64_t, int64_t);
-    void add_atom(int64_t, m_Atom);
+    void add_atom(int64_t, Atom);
     void mark_selection(AtomSite&,
                         std::vector<int64_t> = {},
                         std::vector<int64_t> = {});

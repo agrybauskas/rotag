@@ -35,11 +35,11 @@ const std::string AtomSite::name(int64_t index) {
     return this->M_TAGS[index];
 }
 
-std::map<int64_t, m_Atom> AtomSite::atoms() {
+std::map<int64_t, Atom> AtomSite::atoms() {
     return this->m_atoms;
 }
 
-m_Atom AtomSite::atom(int64_t id) {
+Atom AtomSite::atom(int64_t id) {
     return this->m_atoms.at(id);
 }
 
@@ -51,15 +51,15 @@ PDBXVALUE AtomSite::value(int64_t id, int64_t index) {
     return this->atom(id).at(this->name(index));
 }
 
-void AtomSite::add_atom(int64_t id, m_Atom atom) {
+void AtomSite::add_atom(int64_t id, Atom atom) {
     this->m_atoms.insert(std::make_pair(id, atom));
 }
 
 void AtomSite::mark_selection(AtomSite& atom_site,
                               std::vector<int64_t> target_atom_ids,
                               std::vector<int64_t> selected_atom_ids) {
-    std::map<int64_t, m_Atom> atoms = atom_site.atoms();
-    std::map<int64_t, m_Atom>::iterator atom_it;
+    std::map<int64_t, Atom> atoms = atom_site.atoms();
+    std::map<int64_t, Atom>::iterator atom_it;
     for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
         int64_t id = atom_it->first;
         atom_site.m_atoms.at(id).erase("_atom_site.rotag_selection_state");
@@ -89,13 +89,13 @@ AtomSite filter(AtomSite& atom_site,
     }
 
     AtomSite filtered_atom_site;
-    std::map<int64_t, m_Atom> atoms = atom_site.atoms();
-    std::map<int64_t, m_Atom>::iterator atom_it;
+    std::map<int64_t, Atom> atoms = atom_site.atoms();
+    std::map<int64_t, Atom>::iterator atom_it;
     for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
         int64_t id = atom_it->first;
-        m_Atom atom = atom_site.atom(id);
+        Atom atom = atom_site.atom(id);
         bool keep_atom = true;
-        for (m_Atom::iterator tag_it = atom.begin();
+        for (Atom::iterator tag_it = atom.begin();
              tag_it != atom.end();
              ++tag_it) {
             std::string cif_tag = tag_it->first;
