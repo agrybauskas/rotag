@@ -56,8 +56,8 @@ void AtomSite::add_atom(int64_t id, m_Atom atom) {
 }
 
 AtomSite filter(AtomSite& atom_site,
-                Selector include = {{}},
-                Selector exclude = {{}}) {
+                Selector include,
+                Selector exclude) {
     if (atom_site.atoms().empty()) {
         /* TODO(algirdas): Error or warning. Message: no atoms were loaded from
            "_atom_site".*/

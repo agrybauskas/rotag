@@ -86,9 +86,9 @@ class AtomSite {
     PDBXVALUE value(int64_t, std::string);
     PDBXVALUE value(int64_t, int64_t);
     void add_atom(int64_t, m_Atom);
-
-    AtomSite filter(AtomSite&, Selector, Selector);
-    void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
 };
+
+AtomSite filter(AtomSite&, Selector = {{}}, Selector = {{}});
+void mark_selection(AtomSite&, std::vector<int64_t>, std::vector<int64_t>);
 
 #endif  // SRC_LIB_ATOMSITE_H_
