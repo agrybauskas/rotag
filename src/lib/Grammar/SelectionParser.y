@@ -74,6 +74,9 @@ expr:
     | SIDECHAIN {
                 }
     | HETATOMS  {
+                    Selector selector;
+                    selector["_atom_site.group_PDB"]["HETATOM"] = true;
+                    filter(atom_site, selector).ids();
                 }
     ;
 
