@@ -183,12 +183,14 @@ int main(int argc, char *argv[]) {
     for (int index = optind; index < argc; index++) {
         AtomSite atom_site(argv[index], is_pdb);
 
-        std::vector<int64_t> target_atom_ids =
-            selection_parser(atom_site, target_cmd);
+        // std::vector<int64_t> target_atom_ids =
+        //     selection_parser(atom_site, target_cmd);
 
-        for (const int64_t& target_atom_id : target_atom_ids) {
-            std::cout << target_atom_id << std::endl;
-        }
+        atom_site.mark_selection(atom_site, {1});
+
+        // for (const int64_t& target_atom_id : target_atom_ids) {
+        //     std::cout << target_atom_id << std::endl;
+        // }
     }
 
     return 0;
