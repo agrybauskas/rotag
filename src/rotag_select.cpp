@@ -178,17 +178,17 @@ int main(int argc, char *argv[]) {
     boost::replace_all(tags, " ", "");
     boost::split(tags_list, tags, boost::is_any_of(","));
 
-    // Parameters parameters(progname);
+    Parameters parameters(progname);
 
     for (int index = optind; index < argc; index++) {
         AtomSite atom_site(argv[index], is_pdb);
 
         std::vector<int64_t> target_atom_ids =
-            selection_parser(atom_site, target_cmd);
+            selection_parser(parameters, atom_site, target_cmd);
 
-        for (const int64_t& target_atom_id : target_atom_ids) {
-            std::cout << target_atom_id << std::endl;
-        }
+        // for (const int64_t& target_atom_id : target_atom_ids) {
+        //     std::cout << target_atom_id << std::endl;
+        // }
     }
 
     return 0;
