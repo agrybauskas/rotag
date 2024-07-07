@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     bool is_related = false;
     bool is_pdb = false;
     bool keep_ignored = false;
-    int random_seed = 23;
+    int64_t random_seed = 23;
     std::vector<std::string> category_list = {
         "_atom_site", "_rotag_rotamer_angle", "_rotag_dihedral_angle",
         "_rotag_rotamer_energy", "_rotag_pairwise_energy", "_rotag_energy",
@@ -183,8 +183,9 @@ int main(int argc, char *argv[]) {
     for (int index = optind; index < argc; index++) {
         AtomSite atom_site(argv[index], is_pdb);
 
-        std::vector<int64_t> target_atom_ids =
-            selection_parser(parameters, atom_site, target_cmd);
+        std::vector<int64_t> target_atom_ids = selection_parser(
+            parameters, atom_site, target_cmd, random_seed, 1
+        );
 
         // for (const int64_t& target_atom_id : target_atom_ids) {
         //     std::cout << target_atom_id << std::endl;

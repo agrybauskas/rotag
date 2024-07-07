@@ -1,5 +1,5 @@
 %define api.prefix {select_}
-%parse-param {Parameters& parameters} {AtomSite& atom_site} {std::vector<int64_t>& atom_ids}
+%parse-param {Parameters& parameters} {AtomSite& atom_site} {std::vector<int64_t>& atom_ids} {int64_t seed} {int64_t group_id}
 
 %code requires{
     #include <string>
@@ -10,7 +10,9 @@
 
     std::vector<int64_t> selection_parser(Parameters&,
                                           AtomSite&,
-                                          std::string);
+                                          std::string,
+                                          int64_t,
+                                          int64_t);
 }
 
 %{
@@ -29,6 +31,8 @@
     extern void select_error(Parameters&,
                              AtomSite&,
                              std::vector<int64_t>&,
+                             int64_t,
+                             int64_t,
                              char const*);
 %}
 
@@ -76,16 +80,20 @@ expr:
 void select_error(Parameters& parameters,
                   AtomSite&,
                   std::vector<int64_t>& atom_ids,
+                  int64_t seed,
+                  int64_t group_id,
                   char const* msg) {
     std::cout << "Syntax Error: " << msg << std::endl;
 }
 
 std::vector<int64_t> selection_parser(Parameters& parameters,
                                       AtomSite& atom_site,
-                                      std::string cmd) {
+                                      std::string cmd,
+                                      int64_t seed,
+                                      int64_t group_id) {
     std::vector<int64_t> atom_ids = {};
     set_lex_input(cmd.c_str());
-    int retval = select_parse(parameters, atom_site, atom_ids);
+    int retval = select_parse(parameters, atom_site, atom_ids, seed, group_id);
     end_lex_scan();
     return atom_ids;
 }
