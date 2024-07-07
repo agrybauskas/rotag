@@ -187,9 +187,9 @@ int main(int argc, char *argv[]) {
             parameters, atom_site, target_cmd, random_seed, 1
         );
 
-        // for (const int64_t& target_atom_id : target_atom_ids) {
-        //     std::cout << target_atom_id << std::endl;
-        // }
+        for (const int64_t& target_atom_id : target_atom_ids) {
+            std::cout << target_atom_id << std::endl;
+        }
     }
 
     return 0;

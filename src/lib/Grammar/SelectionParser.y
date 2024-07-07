@@ -76,7 +76,11 @@ expr:
     | HETATOMS  {
                     Selector selector;
                     selector["_atom_site.group_PDB"]["HETATOM"] = true;
-                    filter(atom_site, selector).ids();
+                    std::vector<PDBXVALUE> hetatom_ids =
+                        filter(atom_site, selector).ids();
+                    for (PDBXVALUE& hetatom_id : hetatom_ids) {
+                        atom_ids.push_back((int64_t) hetatom_id);
+                    }
                 }
     ;
 
