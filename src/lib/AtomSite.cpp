@@ -43,6 +43,10 @@ Atom AtomSite::atom(int64_t id) {
     return this->m_atoms.at(id);
 }
 
+std::vector<PDBXVALUE> AtomSite::values(std::string cif_tag) {
+
+}
+
 PDBXVALUE AtomSite::value(int64_t id, std::string cif_tag) {
     return this->atom(id).at(cif_tag);
 }
@@ -53,6 +57,10 @@ PDBXVALUE AtomSite::value(int64_t id, int64_t index) {
 
 void AtomSite::add_atom(int64_t id, Atom atom) {
     this->m_atoms.insert(std::make_pair(id, atom));
+}
+
+std::vector<PDBXVALUE> AtomSite::ids() {
+    // this->values(M_ID);
 }
 
 void AtomSite::mark_selection(AtomSite& atom_site,
