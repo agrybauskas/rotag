@@ -44,7 +44,14 @@ Atom AtomSite::atom(int64_t id) {
 }
 
 std::vector<PDBXVALUE> AtomSite::values(std::string cif_tag) {
-
+    std::vector<PDBXVALUE> values;
+    std::map<int64_t, Atom> atoms = this->atoms();
+    std::map<int64_t, Atom>::iterator atom_it;
+    for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
+        int64_t id = atom_it->first;
+        values.push_back(this->value(id, cif_tag));
+    }
+    return values;
 }
 
 PDBXVALUE AtomSite::value(int64_t id, std::string cif_tag) {
@@ -60,7 +67,7 @@ void AtomSite::add_atom(int64_t id, Atom atom) {
 }
 
 std::vector<PDBXVALUE> AtomSite::ids() {
-    // this->values(M_ID);
+    return this->values(this->name(M_ID));
 }
 
 void AtomSite::mark_selection(AtomSite& atom_site,
