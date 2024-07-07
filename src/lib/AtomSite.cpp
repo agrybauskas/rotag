@@ -61,21 +61,23 @@ void AtomSite::mark_selection(AtomSite& atom_site,
     std::map<int64_t, m_Atom> atoms = atom_site.atoms();
     std::map<int64_t, m_Atom>::iterator atom_it;
     for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
-        // int64_t id = atom_it->first;
-        // atom_site.at(id).erase("_atom_site.rotag_selection_state");
-        // atom_site.at(id).emplace(
-        //     "_atom_site.rotag_selection_state", PDBXVALUE("I"));
+        int64_t id = atom_it->first;
+        atom_site.m_atoms.at(id).erase("_atom_site.rotag_selection_state");
+        atom_site.m_atoms.at(id).emplace(
+            "_atom_site.rotag_selection_state", PDBXVALUE("I"));
     }
-    // for (const int64_t &selected_atom_id : selected_atom_ids) {
-    //     atom_site.at(selected_atom_id).erase("_atom_site.rotag_selection_state");
-    //     atom_site.at(selected_atom_id).emplace(
-    //         "_atom_site.rotag_selection_state", PDBXVALUE("S"));
-    // }
-    // for (const int64_t &target_atom_id : target_atom_ids) {
-    //     atom_site.at(target_atom_id).erase("_atom_site.rotag_selection_state");
-    //     atom_site.at(target_atom_id).emplace(
-    //         "_atom_site.rotag_selection_state", PDBXVALUE("T"));
-    // }
+    for (const int64_t &selected_atom_id : selected_atom_ids) {
+        atom_site.m_atoms.at(selected_atom_id).erase(
+            "_atom_site.rotag_selection_state");
+        atom_site.m_atoms.at(selected_atom_id).emplace(
+            "_atom_site.rotag_selection_state", PDBXVALUE("S"));
+    }
+    for (const int64_t &target_atom_id : target_atom_ids) {
+        atom_site.m_atoms.at(target_atom_id).erase(
+            "_atom_site.rotag_selection_state");
+        atom_site.m_atoms.at(target_atom_id).emplace(
+            "_atom_site.rotag_selection_state", PDBXVALUE("T"));
+    }
 }
 
 AtomSite filter(AtomSite& atom_site,
