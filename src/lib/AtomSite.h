@@ -21,8 +21,6 @@ typedef std::map<std::string, std::map<std::string, bool>> Selector;
 
 class AtomSite {
  private:
-    typedef std::vector<PDBXVALUE> m_PDBXVALUES;
-
     enum M_TAG_INDEX {
         GROUP_PDB,              // "ATOM" or "HETATM".
         ID,                     // Atom id.

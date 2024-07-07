@@ -14,7 +14,7 @@ AtomSite::AtomSite(char* file_path, bool is_pdb = false) {
 
         delete_cif(cif);
 
-        m_PDBXVALUES id_values = pdbx.values(this->name(M_ID));
+        std::vector<PDBXVALUE> id_values = pdbx.values(this->name(M_ID));
         for (int m_tag_index = GROUP_PDB;
              m_tag_index <= ROTAG_SELECTION_GROUP;
              m_tag_index++) {
