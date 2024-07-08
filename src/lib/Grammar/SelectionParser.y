@@ -43,11 +43,11 @@
     int64_t num;
     char* str;
     double dbl;
-    std::vector<int64_t>* list;
+    std::set<int64_t>* set;
 }
 
 %start cmd
-%type<list> cmd expr
+%type<set> cmd expr
 %token<num> NUM
 %token<dbl> DOUBLE
 %token<str> STR SEP ALL MAINCHAIN SIDECHAIN HETATOMS
