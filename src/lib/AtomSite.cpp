@@ -109,15 +109,15 @@ AtomSite filter(AtomSite& atom_site,
     for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
         int64_t id = atom_it->first;
         Atom atom = atom_site.atom(id);
-        bool keep_atom = true;
+        bool keep_atom = false;
         for (Atom::iterator tag_it = atom.begin();
              tag_it != atom.end();
              ++tag_it) {
             std::string cif_tag = tag_it->first;
             std::string value = atom_site.value(id, cif_tag);
 
-            if (!include[cif_tag].empty() && !include[cif_tag][value]) {
-                keep_atom = false;
+            if (!include[cif_tag].empty() && include[cif_tag][value]) {
+                keep_atom = true;
                 break;
             }
 

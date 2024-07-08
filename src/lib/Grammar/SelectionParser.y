@@ -75,7 +75,7 @@ expr:
                 }
     | HETATOMS  {
                     Selector selector;
-                    selector["_atom_site.group_PDB"]["HETATOM"] = true;
+                    selector["_atom_site.group_pdb"]["HETATM"] = true;
                     std::vector<PDBXVALUE> hetatom_ids =
                         filter(atom_site, selector).ids();
                     for (PDBXVALUE& hetatom_id : hetatom_ids) {
