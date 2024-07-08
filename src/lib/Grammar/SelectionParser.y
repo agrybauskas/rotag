@@ -51,6 +51,8 @@
 
 %%
 
+%nterm <std::set<int64_t>> expr;
+
 cmd: /* empty */
     | cmd SEP expr
     | expr
