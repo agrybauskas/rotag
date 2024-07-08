@@ -74,8 +74,8 @@ expr:
     | SIDECHAIN {
                 }
     | HETATOMS  {
-                    Selector selector;
-                    selector["_atom_site.group_pdb"]["HETATM"] = true;
+                    Selector selector =
+                        {{"_atom_site.group_pdb", {{"HETATM", true}}}};
                     std::vector<PDBXVALUE> hetatom_ids =
                         filter(atom_site, selector).ids();
                     for (PDBXVALUE& hetatom_id : hetatom_ids) {
