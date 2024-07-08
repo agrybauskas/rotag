@@ -4,6 +4,7 @@
 %code requires{
     #include <string>
     #include <set>
+    #include <vector>
 
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
@@ -19,6 +20,7 @@
     #include <iostream>
     #include <string>
     #include <set>
+    #include <vector>
 
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
@@ -51,7 +53,7 @@
 
 %%
 
-%nterm <std::set<int64_t>> expr;
+/* %nterm <std::set<int64_t>> expr; */
 
 cmd: /* empty */
     | cmd SEP expr
@@ -63,12 +65,8 @@ expr:
     | DOUBLE    { std::printf("%f\n", $1); }
     | STR       { std::printf("%s\n", $1); }
     | ALL       {
-                    std::map<int64_t, Atom> atoms = atom_site.atoms();
-                    std::map<int64_t, Atom>::iterator atom_it;
-                    for (atom_it = atoms.begin();
-                         atom_it != atoms.end();
-                         ++atom_it) {
-                        atom_ids.insert(atom_it->first);
+                    for (PDBXVALUE& id : atom_site.ids()) {
+                        atom_ids.insert((int64_t) id);
                     }
                 }
     | MAINCHAIN {
