@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <iostream>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -183,7 +184,7 @@ int main(int argc, char *argv[]) {
     for (int index = optind; index < argc; index++) {
         AtomSite atom_site(argv[index], is_pdb);
 
-        std::vector<int64_t> target_atom_ids = selection_parser(
+        std::set<int64_t> target_atom_ids = selection_parser(
             parameters, atom_site, target_cmd, random_seed, 1
         );
 

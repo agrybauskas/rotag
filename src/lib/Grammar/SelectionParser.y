@@ -1,24 +1,24 @@
 %define api.prefix {select_}
-%parse-param {Parameters& parameters} {AtomSite& atom_site} {std::vector<int64_t>& atom_ids} {int64_t seed} {int64_t group_id}
+%parse-param {Parameters& parameters} {AtomSite& atom_site} {std::set<int64_t>& atom_ids} {int64_t seed} {int64_t group_id}
 
 %code requires{
     #include <string>
-    #include <vector>
+    #include <set>
 
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
 
-    std::vector<int64_t> selection_parser(Parameters&,
-                                          AtomSite&,
-                                          std::string,
-                                          int64_t,
-                                          int64_t);
+    std::set<int64_t> selection_parser(Parameters&,
+                                       AtomSite&,
+                                       std::string,
+                                       int64_t,
+                                       int64_t);
 }
 
 %{
     #include <iostream>
     #include <string>
-    #include <vector>
+    #include <set>
 
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
@@ -30,7 +30,7 @@
 
     extern void select_error(Parameters&,
                              AtomSite&,
-                             std::vector<int64_t>&,
+                             std::set<int64_t>&,
                              int64_t,
                              int64_t,
                              char const*);
@@ -66,7 +66,7 @@ expr:
                     for (atom_it = atoms.begin();
                          atom_it != atoms.end();
                          ++atom_it) {
-                        atom_ids.push_back(atom_it->first);
+                        atom_ids.insert(atom_it->first);
                     }
                 }
     | MAINCHAIN {
@@ -79,7 +79,7 @@ expr:
                     std::vector<PDBXVALUE> hetatom_ids =
                         filter(atom_site, selector).ids();
                     for (PDBXVALUE& hetatom_id : hetatom_ids) {
-                        atom_ids.push_back((int64_t) hetatom_id);
+                        atom_ids.insert((int64_t) hetatom_id);
                     }
                 }
     ;
@@ -88,19 +88,19 @@ expr:
 
 void select_error(Parameters& parameters,
                   AtomSite&,
-                  std::vector<int64_t>& atom_ids,
+                  std::set<int64_t>& atom_ids,
                   int64_t seed,
                   int64_t group_id,
                   char const* msg) {
     std::cout << "Syntax Error: " << msg << std::endl;
 }
 
-std::vector<int64_t> selection_parser(Parameters& parameters,
-                                      AtomSite& atom_site,
-                                      std::string cmd,
-                                      int64_t seed,
-                                      int64_t group_id) {
-    std::vector<int64_t> atom_ids = {};
+std::set<int64_t> selection_parser(Parameters& parameters,
+                                   AtomSite& atom_site,
+                                   std::string cmd,
+                                   int64_t seed,
+                                   int64_t group_id) {
+    std::set<int64_t> atom_ids = {};
     set_lex_input(cmd.c_str());
     int retval = select_parse(parameters, atom_site, atom_ids, seed, group_id);
     end_lex_scan();
