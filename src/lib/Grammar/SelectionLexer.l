@@ -22,15 +22,15 @@ separator [\;]
 {sidechain} { return SIDECHAIN; }
 {hetatoms}  { return HETATOMS; }
 {num}       {
-                select_lval.num = std::stoll(select_text);
+                ;; select_lval.num = std::stoll(select_text);
                 return NUM;
             }
 {double}    {
-                select_lval.dbl = std::stod(select_text);
+                ;; select_lval.dbl = std::stod(select_text);
                 return DOUBLE;
             }
 {str}       {
-                select_lval.str = select_text;
+                ;; select_lval.str = select_text;
                 return STR;
             }
 {space}     { /* ignore */ }

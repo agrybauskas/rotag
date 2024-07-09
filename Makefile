@@ -44,7 +44,7 @@ build-externals:
 	flex --header-file=$(basename $@).h -o $@ $<
 
 %.cpp: %.y
-	bison --defines=$(basename $@).h -o $@ $<
+	bison --language=c++ --defines=$(basename $@).h -o $@ $<
 
 %.o: %.cpp %.h
 	g++ -c -Wall -std=c++11 -g -o $@ $< ${CPP_LIB} ${C_LIBDIR}
