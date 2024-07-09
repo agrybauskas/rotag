@@ -59,7 +59,6 @@
 
 %start cmd
 
-%type<set> expr
 %token<num> NUM
 %token<dbl> DOUBLE
 %token<str> STR SEP ALL MAINCHAIN SIDECHAIN HETATOMS
@@ -71,7 +70,7 @@ cmd:
     | expr
     ;
 
-expr:           { $$ = new Set(); std::cout << "????" << std::endl; }
+expr:
     | NUM       { std::printf("%li\n", $1); }
     | DOUBLE    { std::printf("%f\n", $1); }
     | STR       { std::printf("%s\n", $1); }
