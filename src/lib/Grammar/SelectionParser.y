@@ -34,6 +34,9 @@
      public:
         std::set<int64_t> data;
         Set() { data = {}; }
+        void add(int64_t atom_id) {
+            this->data.insert(atom_id);
+        }
     };
 
     extern int select_lex();
@@ -68,12 +71,13 @@ cmd:
     | expr
     ;
 
-expr:           { $$ = new Set(); }
+expr:           { $$ = new Set(); std::cout << "????" << std::endl; }
     | NUM       { std::printf("%li\n", $1); }
     | DOUBLE    { std::printf("%f\n", $1); }
     | STR       { std::printf("%s\n", $1); }
     | ALL       {
                     for (PDBXVALUE& id : atom_site.ids()) {
+                        /* $$->add((int64_t) id); */
                         atom_ids.insert((int64_t) id);
                     }
                 }
@@ -87,6 +91,7 @@ expr:           { $$ = new Set(); }
                     std::vector<PDBXVALUE> hetatom_ids =
                         filter(atom_site, selector).ids();
                     for (PDBXVALUE& hetatom_id : hetatom_ids) {
+                        /* $$->add((int64_t) hetatom_id); */
                         atom_ids.insert((int64_t) hetatom_id);
                     }
                 }
