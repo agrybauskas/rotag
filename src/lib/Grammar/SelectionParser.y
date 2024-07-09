@@ -43,18 +43,17 @@
     int64_t num;
     char* str;
     double dbl;
-    std::set<int64_t>* set;
 }
 
 %start cmd
-%type<set> cmd expr
+
 %token<num> NUM
 %token<dbl> DOUBLE
 %token<str> STR SEP ALL MAINCHAIN SIDECHAIN HETATOMS
 
 %%
 
-cmd: { $$ = {}; }
+cmd:
     | cmd SEP expr
     | expr
     ;
