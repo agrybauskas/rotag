@@ -9,6 +9,8 @@
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
 
+    class Set;
+
     std::set<int64_t> selection_parser(Parameters&,
                                        AtomSite&,
                                        std::string,
@@ -28,6 +30,12 @@
     void set_lex_input(const char*);
     void end_lex_scan();
 
+    class Set {
+     public:
+        std::set<int64_t> data;
+        Set() { data = {}; }
+    };
+
     extern int select_lex();
 
     extern void select_error(Parameters&,
@@ -43,6 +51,7 @@
     int64_t num;
     char* str;
     double dbl;
+    Set* set;
 }
 
 %start cmd
