@@ -51,7 +51,7 @@
 
 %start cmd
 
-%token<data> ALL MAINCHAIN SIDECHAIN HETATOMS AND
+%token<data> AND ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
 %type<data> cmd expr
 %left AND
@@ -63,8 +63,8 @@ cmd:
     | expr
         {
             $$ = $1;
-            for (int64_t id : $$->list) {
-                atom_ids.emplace(id);
+            for (int64_t atom_id : $$->list) {
+                atom_ids.emplace(atom_id);
             }
             delete $$;
         }
@@ -73,8 +73,8 @@ cmd:
 expr:
     | ALL
         {
-            for (PDBXVALUE& id : atom_site.ids()) {
-                $$->list.emplace((int64_t) id);
+            for (PDBXVALUE& atom_id : atom_site.ids()) {
+                $$->list.emplace((int64_t) atom_id);
             }
         }
     | MAINCHAIN
@@ -97,7 +97,13 @@ expr:
         }
     | expr AND expr
         {
-
+            std::set<int64_t> atom_ids_1 = $1->list;
+            for (int64_t atom_id_1 : atom_ids_1) {
+                std::set<int64_t> atom_ids_2 = $2->list;
+                if (auto search = atom_ids_2.find(atom_id_1); search != atom_ids_2.end()) {
+                    $$->list.emplace(atom_id_1);
+                }
+            }
         }
     /* | NUM       {} */
     /* | DOUBLE    {} */
