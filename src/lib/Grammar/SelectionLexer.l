@@ -9,6 +9,7 @@ all       (all|\*)
 mainchain (mainchain|mc)
 sidechain (sidechain|sc)
 hetatoms  (hetatoms|het)
+and       [\&]{2}
 num       [0-9]+
 double    [-+]?([0-9]*[\.])?[0-9]+([eE][-+]?[0-9]+)?
 str       [A-Za-z\.]+
@@ -31,7 +32,12 @@ separator [\;]
             }
 {hetatoms}  {
                 select_lval.data = new Data();
-                return HETATOMS; }
+                return HETATOMS;
+            }
+{and}       {
+                select_lval.data = new Data();
+                return AND;
+            }
 {num}       {
                 select_lval.str = select_text;
                 return NUM;

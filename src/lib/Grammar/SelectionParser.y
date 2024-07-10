@@ -51,9 +51,10 @@
 
 %start cmd
 
+%token<data> ALL MAINCHAIN SIDECHAIN HETATOMS AND
 %token<str> NUM DOUBLE STR SEP
-%token<data> ALL MAINCHAIN SIDECHAIN HETATOMS
 %type<data> cmd expr
+%left AND
 
 %%
 
@@ -69,9 +70,6 @@ cmd:
     ;
 
 expr:
-    /* | NUM       { /\* std::printf("%li\n", $1);*\/ } */
-    /* | DOUBLE    { /\* std::printf("%f\n", $1);*\/ } */
-    /* | STR       { /\* std::printf("%s\n", $1);*\/ } */
     | ALL       {
                     for (PDBXVALUE& id : atom_site.ids()) {
                         $$->list.emplace((int64_t) id);
@@ -90,6 +88,12 @@ expr:
                         $$->list.emplace((int64_t) hetatom_id);
                     }
                 }
+    | expr AND expr
+                {
+                }
+    /* | NUM       { /\* std::printf("%li\n", $1);*\/ } */
+    /* | DOUBLE    { /\* std::printf("%f\n", $1);*\/ } */
+    /* | STR       { /\* std::printf("%s\n", $1);*\/ } */
     ;
 
 %%
