@@ -11,7 +11,9 @@
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
 
-    class Data;
+    struct Data {
+        std::set<int64_t> list;
+    };
 
     std::set<int64_t> selection_parser(Parameters&,
                                        AtomSite&,
@@ -31,13 +33,6 @@
     void set_lex_input(const char*);
     void end_lex_scan();
 
-    class Data {
-     public:
-        int data;
-        Data() { data = 0; }
-        ~Data() {}
-    };
-
     extern int select_lex();
 
     extern void select_error(Parameters&,
@@ -50,27 +45,23 @@
 
 %union
 {
-    int64_t num;
     char* str;
-    double dbl;
-    Data* count;
+    Data* data;
 }
 
 %start cmd
 
-%token<num> NUM
-%token<dbl> DOUBLE
-%token<str> STR SEP ALL MAINCHAIN SIDECHAIN HETATOMS
-%type<count> cmd expr
+%token<str> NUM DOUBLE STR SEP
+%token<data> ALL MAINCHAIN SIDECHAIN HETATOMS
 
 %%
 
-cmd: { $$ = new Data(); }
+cmd:
     | cmd SEP expr
     | expr
     ;
 
-expr: { $$ = new Data(); }
+expr:
     | NUM       { /* std::printf("%li\n", $1);*/ }
     | DOUBLE    { /* std::printf("%f\n", $1);*/ }
     | STR       { /* std::printf("%s\n", $1);*/ }
