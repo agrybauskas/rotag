@@ -168,10 +168,10 @@ int main(int argc, char *argv[]) {
 "        set a seed for random (rand) selection.\n"
 "    -v, --version\n"
 "        print version" << std::endl;
-                break;
+                exit(1);
             case 'v':
                 std::cout << version() << std::endl;
-                break;
+                exit(1);
         }
     }
 

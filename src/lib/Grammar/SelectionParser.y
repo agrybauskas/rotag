@@ -82,14 +82,13 @@ expr:
     | SIDECHAIN {
                 }
     | HETATOMS  {
-                    /* Selector selector = */
-                    /*     {{"_atom_site.group_pdb", {{"HETATM", true}}}}; */
-                    /* std::vector<PDBXVALUE> hetatom_ids = */
-                    /*     filter(atom_site, selector).ids(); */
-                    /* for (PDBXVALUE& hetatom_id : hetatom_ids) { */
-                    /*     /\* $$->add((int64_t) hetatom_id); *\/ */
-                    /*     atom_ids.insert((int64_t) hetatom_id); */
-                    /* } */
+                    Selector selector =
+                        {{"_atom_site.group_pdb", {{"HETATM", true}}}};
+                    std::vector<PDBXVALUE> hetatom_ids =
+                        filter(atom_site, selector).ids();
+                    for (PDBXVALUE& hetatom_id : hetatom_ids) {
+                        $$->list.emplace((int64_t) hetatom_id);
+                    }
                 }
     ;
 

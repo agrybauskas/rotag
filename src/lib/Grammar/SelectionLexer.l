@@ -21,9 +21,17 @@ separator [\;]
                 select_lval.data = new Data();
                 return ALL;
             }
-{mainchain} { return MAINCHAIN; }
-{sidechain} { return SIDECHAIN; }
-{hetatoms}  { return HETATOMS; }
+{mainchain} {
+                select_lval.data = new Data();
+                return MAINCHAIN;
+            }
+{sidechain} {
+                select_lval.data = new Data();
+                return SIDECHAIN;
+            }
+{hetatoms}  {
+                select_lval.data = new Data();
+                return HETATOMS; }
 {num}       {
                 select_lval.str = select_text;
                 return NUM;
