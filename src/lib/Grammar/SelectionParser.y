@@ -53,25 +53,29 @@
 
 %token<str> NUM DOUBLE STR SEP
 %token<data> ALL MAINCHAIN SIDECHAIN HETATOMS
+%type<data> cmd expr
 
 %%
 
 cmd:
     | cmd SEP expr
-    | expr
+    | expr      {
+                    $$ = $1;
+                    for (int64_t id : $$->list) {
+                        atom_ids.emplace(id);
+                    }
+                    delete $$;
+                }
     ;
 
 expr:
-    | NUM       { /* std::printf("%li\n", $1);*/ }
-    | DOUBLE    { /* std::printf("%f\n", $1);*/ }
-    | STR       { /* std::printf("%s\n", $1);*/ }
+    /* | NUM       { /\* std::printf("%li\n", $1);*\/ } */
+    /* | DOUBLE    { /\* std::printf("%f\n", $1);*\/ } */
+    /* | STR       { /\* std::printf("%s\n", $1);*\/ } */
     | ALL       {
-        std::cout << $1->list.size() << std::endl;
-        delete $1;
-                    /* for (PDBXVALUE& id : atom_site.ids()) { */
-                    /*     /\* $$->add((int64_t) id); *\/ */
-                    /*     atom_ids.insert((int64_t) id); */
-                    /* } */
+                    for (PDBXVALUE& id : atom_site.ids()) {
+                        $$->list.emplace((int64_t) id);
+                    }
                 }
     | MAINCHAIN {
                 }
