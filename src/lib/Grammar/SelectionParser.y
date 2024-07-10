@@ -60,40 +60,48 @@
 
 cmd:
     | cmd SEP expr
-    | expr      {
-                    $$ = $1;
-                    for (int64_t id : $$->list) {
-                        atom_ids.emplace(id);
-                    }
-                    delete $$;
-                }
+    | expr
+        {
+            $$ = $1;
+            for (int64_t id : $$->list) {
+                atom_ids.emplace(id);
+            }
+            delete $$;
+        }
     ;
 
 expr:
-    | ALL       {
-                    for (PDBXVALUE& id : atom_site.ids()) {
-                        $$->list.emplace((int64_t) id);
-                    }
-                }
-    | MAINCHAIN {
-                }
-    | SIDECHAIN {
-                }
-    | HETATOMS  {
-                    Selector selector =
-                        {{"_atom_site.group_pdb", {{"HETATM", true}}}};
-                    std::vector<PDBXVALUE> hetatom_ids =
-                        filter(atom_site, selector).ids();
-                    for (PDBXVALUE& hetatom_id : hetatom_ids) {
-                        $$->list.emplace((int64_t) hetatom_id);
-                    }
-                }
+    | ALL
+        {
+            for (PDBXVALUE& id : atom_site.ids()) {
+                $$->list.emplace((int64_t) id);
+            }
+        }
+    | MAINCHAIN
+        {
+
+        }
+    | SIDECHAIN
+        {
+
+        }
+    | HETATOMS
+        {
+            Selector selector =
+                {{"_atom_site.group_pdb", {{"HETATM", true}}}};
+            std::vector<PDBXVALUE> hetatom_ids =
+                filter(atom_site, selector).ids();
+            for (PDBXVALUE& hetatom_id : hetatom_ids) {
+                $$->list.emplace((int64_t) hetatom_id);
+            }
+        }
     | expr AND expr
-                {
-                }
-    /* | NUM       { /\* std::printf("%li\n", $1);*\/ } */
-    /* | DOUBLE    { /\* std::printf("%f\n", $1);*\/ } */
-    /* | STR       { /\* std::printf("%s\n", $1);*\/ } */
+        {
+
+        }
+    /* | NUM       {} */
+    /* | DOUBLE    {} */
+    /* | STR       {} */
     ;
 
 %%
