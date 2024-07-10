@@ -56,9 +56,9 @@ cmd:
     ;
 
 expr:
-    | NUM       { std::printf("%li\n", $1); }
-    | DOUBLE    { std::printf("%f\n", $1); }
-    | STR       { std::printf("%s\n", $1); }
+    | NUM       { /* std::printf("%li\n", $1); */ }
+    | DOUBLE    { /* std::printf("%f\n", $1); */ }
+    | STR       { /* std::printf("%s\n", $1); */ }
     | ALL       {
                     /* for (PDBXVALUE& id : atom_site.ids()) { */
                     /*     /\* $$->add((int64_t) id); *\/ */
