@@ -54,12 +54,11 @@
 %token<data> AND ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
 %type<data> cmd expr
-%left AND
 
 %%
 
 cmd:
-    | cmd SEP expr
+    | cmd SEP cmd
     | expr
         {
             $$ = $1;
@@ -100,7 +99,8 @@ expr:
             std::set<int64_t> atom_ids_1 = $1->list;
             for (int64_t atom_id_1 : atom_ids_1) {
                 std::set<int64_t> atom_ids_2 = $3->list;
-                if (auto search = atom_ids_2.find(atom_id_1); search != atom_ids_2.end()) {
+                if (auto search = atom_ids_2.find(atom_id_1);
+                    search != atom_ids_2.end()) {
                     $$->list.emplace(atom_id_1);
                 }
             }
