@@ -66,6 +66,8 @@ expr:
     | DOUBLE    { /* std::printf("%f\n", $1);*/ }
     | STR       { /* std::printf("%s\n", $1);*/ }
     | ALL       {
+        std::cout << $1->list.size() << std::endl;
+        delete $1;
                     /* for (PDBXVALUE& id : atom_site.ids()) { */
                     /*     /\* $$->add((int64_t) id); *\/ */
                     /*     atom_ids.insert((int64_t) id); */

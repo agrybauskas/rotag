@@ -17,7 +17,10 @@ separator [\;]
 
 %%
 
-{all}       { return ALL; }
+{all}       {
+                select_lval.data = new Data();
+                return ALL;
+            }
 {mainchain} { return MAINCHAIN; }
 {sidechain} { return SIDECHAIN; }
 {hetatoms}  { return HETATOMS; }
