@@ -1,6 +1,7 @@
 %require "3.2"
 
 %define api.prefix {select_}
+%define api.namespace {Select}
 %define api.value.type variant
 
 %parse-param {Parameters& parameters} {AtomSite& atom_site} {std::set<int64_t>& atom_ids} {int64_t seed} {int64_t group_id}
