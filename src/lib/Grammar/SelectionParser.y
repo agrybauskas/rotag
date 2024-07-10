@@ -1,3 +1,5 @@
+%require "3.2"
+
 %define api.prefix {select_}
 %define api.value.type variant
 
@@ -6,12 +8,9 @@
 %code requires{
     #include <string>
     #include <set>
-    #include <vector>
 
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
-
-    class Set;
 
     std::set<int64_t> selection_parser(Parameters&,
                                        AtomSite&,
@@ -24,22 +23,12 @@
     #include <iostream>
     #include <string>
     #include <set>
-    #include <vector>
 
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
 
     void set_lex_input(const char*);
     void end_lex_scan();
-
-    /* class Set { */
-    /*  public: */
-    /*     std::set<int64_t> data; */
-    /*     Set() { data = {}; } */
-    /*     void add(int64_t atom_id) { */
-    /*         this->data.insert(atom_id); */
-    /*     } */
-    /* }; */
 
     extern int select_lex();
 
@@ -51,16 +40,9 @@
                              char const*);
 %}
 
-/* %union */
-/* { */
-/*     int64_t num; */
-/*     char* str; */
-/*     double dbl; */
-/*     Set* set; */
-/* } */
-
 %start cmd
 
+%type<std::set<int64_t>> expr
 %token<int64_t> NUM
 %token<double> DOUBLE
 %token<std::string> STR SEP ALL MAINCHAIN SIDECHAIN HETATOMS
