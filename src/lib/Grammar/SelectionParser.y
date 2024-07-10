@@ -57,10 +57,11 @@
 
 %%
 
-cmd:
+cmd: { std::cout << "cmd" << std::endl; }
     | cmd SEP cmd
     | expr
         {
+            std::cout << "expr" << std::endl;
             $$ = $1;
             for (int64_t atom_id : $$->list) {
                 atom_ids.emplace(atom_id);
@@ -72,6 +73,7 @@ cmd:
 expr:
     | ALL
         {
+            std::cout << "ALL" << std::endl;
             for (PDBXVALUE& atom_id : atom_site.ids()) {
                 $$->list.emplace((int64_t) atom_id);
             }
@@ -86,6 +88,7 @@ expr:
         }
     | HETATOMS
         {
+            std::cout << "HETATOMS" << std::endl;
             Selector selector =
                 {{"_atom_site.group_pdb", {{"HETATM", true}}}};
             std::vector<PDBXVALUE> hetatom_ids =
@@ -96,6 +99,9 @@ expr:
         }
     | expr AND expr
         {
+            std::cout << "EXPR AND EXPR" << std::endl;
+            std::cout << "SIZE LEFT: " << $1->list.size()  << std::endl;
+            std::cout << "SIZE RIGHT: " << $3->list.size() << std::endl;
             std::set<int64_t> atom_ids_1 = $1->list;
             for (int64_t atom_id_1 : atom_ids_1) {
                 std::set<int64_t> atom_ids_2 = $3->list;
