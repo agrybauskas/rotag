@@ -78,11 +78,21 @@ expr:
         }
     | MAINCHAIN
         {
-            /* $$ = new Data(); */
+            $$ = new Data();
+            std::vector<PDBXVALUE> mainchain_atom_ids =
+                filter(atom_site, parameters.MAINCHAIN_ATOM_NAMES).ids();
+            for (PDBXVALUE& mainchain_atom_id : mainchain_atom_ids) {
+                $$->list.emplace((int64_t) mainchain_atom_id);
+            }
         }
     | SIDECHAIN
         {
-
+            $$ = new Data();
+            std::vector<PDBXVALUE> sidechain_atom_ids =
+                filter(atom_site, parameters.SIDECHAIN_ATOM_NAMES).ids();
+            for (PDBXVALUE& sidechain_atom_id : sidechain_atom_ids) {
+                $$->list.emplace((int64_t) sidechain_atom_id);
+            }
         }
     | HETATOMS
         {
