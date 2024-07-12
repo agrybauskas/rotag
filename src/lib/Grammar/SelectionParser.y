@@ -136,6 +136,10 @@ expr:
                 $$->list.emplace(atom_id);
             }
         }
+    | NOT expr
+        {
+            /* $$ = new Data(); */
+        }
     /* | NUM       {} */
     /* | DOUBLE    {} */
     /* | STR       {} */
