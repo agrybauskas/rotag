@@ -51,7 +51,7 @@
 
 %start cmd
 
-%token<data> AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
+%token<data> NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
 %type<data> cmd expr
 
@@ -129,7 +129,7 @@ expr:
                 $$->list.emplace(atom_id_2);
             }
         }
-    | '(' expr ')'
+    | LEFT_P expr RIGHT_P
         {
             $$ = new Data();
             for (int64_t atom_id : $2->list) {

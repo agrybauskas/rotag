@@ -11,6 +11,9 @@ sidechain (sidechain|sc)
 hetatoms  (hetatoms|het)
 and       \&\&
 or        \|\|
+left_p    \(
+right_p   \)
+not       \!
 num       [0-9]+
 double    [-+]?([0-9]*[\.])?[0-9]+([eE][-+]?[0-9]+)?
 str       [A-Za-z\.]+
@@ -37,11 +40,14 @@ separator [\;]
 {or}        {
                 return OR;
             }
-\(          {
-                return '(';
+{left_p}    {
+                return LEFT_P;
             }
-\)          {
-                return ')';
+{right_p}   {
+                return RIGHT_P;
+            }
+{not}       {
+                return NOT;
             }
 {num}       {
                 select_lval.str = select_text;
