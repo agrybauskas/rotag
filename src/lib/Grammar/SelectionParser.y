@@ -61,17 +61,17 @@ cmd:
     | cmd SEP cmd
     | expr
         {
-            $$ = $1;
-            for (int64_t atom_id : $$->list) {
+            for (int64_t atom_id : $1->list) {
                 atom_ids.emplace(atom_id);
             }
-            delete $$;
+            delete $1;
         }
     ;
 
 expr:
     | ALL
         {
+            $$ = new Data();
             for (PDBXVALUE& atom_id : atom_site.ids()) {
                 $$->list.emplace((int64_t) atom_id);
             }
@@ -86,6 +86,7 @@ expr:
         }
     | HETATOMS
         {
+            $$ = new Data();
             Selector selector =
                 {{"_atom_site.group_pdb", {{"HETATM", true}}}};
             std::vector<PDBXVALUE> hetatom_ids =
@@ -96,7 +97,7 @@ expr:
         }
     | expr AND expr
         {
-            $$ = $2;
+            $$ = new Data();
             std::set<int64_t> atom_ids_1 = $1->list;
             for (int64_t atom_id_1 : atom_ids_1) {
                 std::set<int64_t> atom_ids_2 = $3->list;

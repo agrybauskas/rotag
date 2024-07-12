@@ -19,23 +19,18 @@ separator [\;]
 %%
 
 {all}       {
-                select_lval.data = new Data();
                 return ALL;
             }
 {mainchain} {
-                select_lval.data = new Data();
                 return MAINCHAIN;
             }
 {sidechain} {
-                select_lval.data = new Data();
                 return SIDECHAIN;
             }
 {hetatoms}  {
-                select_lval.data = new Data();
                 return HETATOMS;
             }
 {and}       {
-                select_lval.data = new Data();
                 return AND;
             }
 {num}       {
