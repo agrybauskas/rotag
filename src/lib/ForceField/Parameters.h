@@ -16,6 +16,7 @@ extern "C" {
     #include "datablock.h"
 }
 
+#include "../AtomSite.h"
 #include "../PDBx.h"
 #include "../Combinatorics.h"
 
@@ -179,9 +180,9 @@ class Parameters {
                       std::vector<std::string>>> SYMMETRICAL_ATOM_NAMES;
     std::map<std::string, std::map<std::string,
                                    DihedralAngleRestraint>> DIHEDRAL_ANGLE;
-    std::vector<std::string> INTERACTION_ATOM_NAMES;
-    std::vector<std::string> MAINCHAIN_ATOM_NAMES;
-    std::vector<std::string> SIDECHAIN_ATOM_NAMES;
+    Selector INTERACTION_ATOM_NAMES;
+    Selector MAINCHAIN_ATOM_NAMES;
+    Selector SIDECHAIN_ATOM_NAMES;
     std::vector<std::string> ROTATABLE_RESIDUE_NAMES;
     std::map<std::string, std::map<std::string, std::map<std::string,
                                                          BondType>>> BOND_TYPE;

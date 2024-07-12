@@ -242,7 +242,7 @@ Parameters::Parameters(char* program_file_path) {
         std::string atom_name =
             pdbx.values("_rotag_interaction_atom_names.label_atom_id")[i];
 
-        this->INTERACTION_ATOM_NAMES.push_back(atom_name);
+        this->INTERACTION_ATOM_NAMES["_atom_site.label_atom_id"][atom_name] = true;
     }
 
     // "_rotag_mainchain_atom_names" category.
@@ -250,7 +250,7 @@ Parameters::Parameters(char* program_file_path) {
         std::string atom_name =
             pdbx.values("_rotag_mainchain_atom_names.label_atom_id")[i];
 
-        this->MAINCHAIN_ATOM_NAMES.push_back(atom_name);
+        this->MAINCHAIN_ATOM_NAMES["_atom_site.label_atom_id"][atom_name] = true;
     }
 
     // "_rotag_sidechain_atom_names" category.
@@ -258,7 +258,7 @@ Parameters::Parameters(char* program_file_path) {
         std::string atom_name =
             pdbx.values("_rotag_sidechain_atom_names.label_atom_id")[i];
 
-        this->SIDECHAIN_ATOM_NAMES.push_back(atom_name);
+        this->SIDECHAIN_ATOM_NAMES["_atom_site.label_atom_id"][atom_name] = true;
     }
 
     // "_rotag_rotatable_residue_names" category.

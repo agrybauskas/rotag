@@ -78,7 +78,7 @@ expr:
         }
     | MAINCHAIN
         {
-
+            /* $$ = new Data(); */
         }
     | SIDECHAIN
         {
