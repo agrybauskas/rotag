@@ -14,6 +14,8 @@ or        \|\|
 left_p    \(
 right_p   \)
 not       \!
+comma     \,
+range     \.\.
 num       [0-9]+
 double    [-+]?([0-9]*[\.])?[0-9]+([eE][-+]?[0-9]+)?
 str       [A-Za-z\.]+
@@ -48,6 +50,12 @@ separator [\;]
             }
 {not}       {
                 return NOT;
+            }
+{comma}     {
+                return COMMA;
+            }
+{range}     {
+                return RANGE;
             }
 {num}       {
                 select_lval.str = select_text;

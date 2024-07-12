@@ -51,7 +51,7 @@
 
 %start cmd
 
-%token<data> NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
+%token<data> RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
 %type<data> cmd expr
 
@@ -140,11 +140,25 @@ expr:
         {
             /* $$ = new Data(); */
         }
-    /* | NUM       {} */
-    /* | DOUBLE    {} */
-    /* | STR       {} */
     ;
 
+any_oper:
+    | any_oper COMMA any_oper
+    | num_oper
+    | str_oper
+
+num_oper:
+    | num_oper COMMA num_oper
+    | num_oper RANGE num_oper
+    | NUM
+    ;
+
+str_oper:
+    | str_oper COMMA str_oper
+    | STR
+    ;
+
+    /* | DOUBLE    {} */
 %%
 
 void select_error(Parameters& parameters,
