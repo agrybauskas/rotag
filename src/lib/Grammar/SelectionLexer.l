@@ -37,6 +37,12 @@ separator [\;]
 {or}        {
                 return OR;
             }
+\(          {
+                return '(';
+            }
+\)          {
+                return ')';
+            }
 {num}       {
                 select_lval.str = select_text;
                 return NUM;

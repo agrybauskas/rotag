@@ -129,6 +129,13 @@ expr:
                 $$->list.emplace(atom_id_2);
             }
         }
+    | '(' expr ')'
+        {
+            $$ = new Data();
+            for (int64_t atom_id : $2->list) {
+                $$->list.emplace(atom_id);
+            }
+        }
     /* | NUM       {} */
     /* | DOUBLE    {} */
     /* | STR       {} */
