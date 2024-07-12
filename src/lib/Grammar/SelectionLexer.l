@@ -10,6 +10,7 @@ mainchain (mainchain|mc)
 sidechain (sidechain|sc)
 hetatoms  (hetatoms|het)
 and       \&\&
+or        \|\|
 num       [0-9]+
 double    [-+]?([0-9]*[\.])?[0-9]+([eE][-+]?[0-9]+)?
 str       [A-Za-z\.]+
@@ -32,6 +33,9 @@ separator [\;]
             }
 {and}       {
                 return AND;
+            }
+{or}        {
+                return OR;
             }
 {num}       {
                 select_lval.str = select_text;

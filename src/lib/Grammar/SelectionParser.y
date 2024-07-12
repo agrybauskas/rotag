@@ -51,7 +51,7 @@
 
 %start cmd
 
-%token<data> AND ALL MAINCHAIN SIDECHAIN HETATOMS
+%token<data> AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
 %type<data> cmd expr
 
@@ -115,6 +115,18 @@ expr:
                     search != atom_ids_2.end()) {
                     $$->list.emplace(atom_id_1);
                 }
+            }
+        }
+    | expr OR expr
+        {
+            $$ = new Data();
+            std::set<int64_t> atom_ids_1 = $1->list;
+            for (int64_t atom_id_1 : atom_ids_1) {
+                $$->list.emplace(atom_id_1);
+            }
+            std::set<int64_t> atom_ids_2 = $3->list;
+            for (int64_t atom_id_2 : atom_ids_2) {
+                $$->list.emplace(atom_id_2);
             }
         }
     /* | NUM       {} */
