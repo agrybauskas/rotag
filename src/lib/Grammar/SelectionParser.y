@@ -12,6 +12,7 @@
     #include "../ForceField/Parameters.h"
 
     struct Data {
+        bool negation = false;
         std::set<int64_t> list;
     };
 
