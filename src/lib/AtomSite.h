@@ -12,8 +12,6 @@ extern "C" {
     #include "cif_compiler.h"
 }
 
-#include <gemmi/pdb.hpp>
-
 #include "PDBx.h"
 
 typedef std::map<std::string, PDBXVALUE> Atom;
