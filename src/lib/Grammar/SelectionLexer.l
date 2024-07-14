@@ -16,6 +16,7 @@ right_p   \)
 not       \!
 comma     \,
 range     \.\.
+model     model
 num       [0-9]+
 double    [-+]?([0-9]*[\.])?[0-9]+([eE][-+]?[0-9]+)?
 str       [A-Za-z\.]+
@@ -56,6 +57,9 @@ separator [\;]
             }
 {range}     {
                 return RANGE;
+            }
+{model}     {
+                return MODEL;
             }
 {num}       {
                 select_lval.str = select_text;

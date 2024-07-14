@@ -52,7 +52,7 @@
 
 %start cmd
 
-%token<data> RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
+%token<data> MODEL RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
 %type<data> cmd expr
 
@@ -144,6 +144,16 @@ expr:
             for (int64_t atom_id : $2->list) {
                 $$->list.emplace(atom_id);
             }
+        }
+    | MODEL num_oper
+        {
+            $$ = new Data();
+            // Selector selector =
+            //     {{"_atom_site.pdbx_PDB_model_num", {{"HETATM", true}}}};
+            // std::vector<PDBXVALUE> hetatom_ids =
+            //     filter(atom_site, selector).ids();
+            // for (PDBXVALUE& hetatom_id : hetatom_ids) {
+            //     $$->list.emplace((int64_t) hetatom_id);
         }
     ;
 
