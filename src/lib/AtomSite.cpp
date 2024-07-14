@@ -116,12 +116,14 @@ AtomSite filter(AtomSite& atom_site,
             std::string cif_tag = tag_it->first;
             std::string value = atom_site.value(id, cif_tag);
 
-            if (!include[cif_tag].empty() && include[cif_tag][value]) {
+            if (!include.selection[cif_tag].empty() && 
+                include.selection[cif_tag][value]) {
                 keep_atom = true;
                 break;
             }
 
-            if (!exclude[cif_tag].empty() && exclude[cif_tag][value]) {
+            if (!exclude.selection[cif_tag].empty() && 
+                exclude.selection[cif_tag][value]) {
                 keep_atom = false;
                 break;
             }

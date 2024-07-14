@@ -15,7 +15,16 @@ extern "C" {
 #include "PDBx.h"
 
 typedef std::map<std::string, PDBXVALUE> Atom;
-typedef std::map<std::string, std::map<std::string, bool>> Selector;
+
+struct Selector {
+    std::map<std::string, std::map<std::string, bool>> selection;
+    
+    Selector(std::map<std::string, std::vector<std::string>> tag_selection) {
+        for (std::string& tag : tag_selection) {
+        
+        }
+    }
+};
 
 class AtomSite {
  private:
