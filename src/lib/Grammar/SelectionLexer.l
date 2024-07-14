@@ -49,8 +49,6 @@ separator [\;]
                 return RIGHT_P;
             }
 {not}       {
-                select_lval.data->negation = true;
-                std::cout << "!!!" << std::endl;
                 return NOT;
             }
 {comma}     {
