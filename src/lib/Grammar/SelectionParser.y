@@ -139,7 +139,10 @@ expr:
         }
     | NOT expr
         {
-            /* $$ = new Data(); */
+            $$ = new Data();
+            for (int64_t atom_id : $2->list) {
+                $$->list.emplace(atom_id);
+            }
         }
     ;
 
