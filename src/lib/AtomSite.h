@@ -26,7 +26,7 @@ struct Selector {
             std::string tag_name = tag_it->first;
             std::vector<std::string> tag_values = tag_selection[tag_name];
             for (std::string& tag_value : tag_values) {
-                
+                this->selection[tag_name][tag_value] = true;
             }
         }
     }
