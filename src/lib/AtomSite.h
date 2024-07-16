@@ -24,6 +24,10 @@ struct Selector {
              tag_it != tag_selection.end();
              ++tag_it) {
             std::string tag_name = tag_it->first;
+            std::vector<std::string> tag_values = tag_selection[tag_name];
+            for (std::string& tag_value : tag_values) {
+                
+            }
         }
     }
 };
