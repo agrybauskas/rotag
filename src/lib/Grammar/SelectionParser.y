@@ -98,13 +98,12 @@ expr:
     | HETATOMS
         {
             $$ = new Data();
-            // Selector selector =
-            //    {{"_atom_site.group_pdb", {{"HETATM", true}}}};
-            // std::vector<PDBXVALUE> hetatom_ids =
-            //     filter(atom_site, selector).ids();
-            // for (PDBXVALUE& hetatom_id : hetatom_ids) {
-            //     $$->list.emplace((int64_t) hetatom_id);
-            // }
+            Selector selector = {{{"_atom_site.group_pdb", {"HETATM"}}}};
+            std::vector<PDBXVALUE> hetatom_ids =
+                filter(atom_site, selector).ids();
+            for (PDBXVALUE& hetatom_id : hetatom_ids) {
+                $$->list.emplace((int64_t) hetatom_id);
+            }
         }
     | expr AND expr
         {
@@ -148,12 +147,12 @@ expr:
     | MODEL num_oper
         {
             $$ = new Data();
-            // Selector selector =
-            //     {{"_atom_site.pdbx_PDB_model_num", {{"HETATM", true}}}};
-            // std::vector<PDBXVALUE> hetatom_ids =
-            //     filter(atom_site, selector).ids();
-            // for (PDBXVALUE& hetatom_id : hetatom_ids) {
-            //     $$->list.emplace((int64_t) hetatom_id);
+            //Selector selector = {{{"_atom_site.pdbx_PDB_model_num", {"HETATM"}}}};
+            //std::vector<PDBXVALUE> hetatom_ids =
+            //    filter(atom_site, selector).ids();
+            //for (PDBXVALUE& hetatom_id : hetatom_ids) {
+            //    $$->list.emplace((int64_t) hetatom_id);
+            //}
         }
     ;
 
