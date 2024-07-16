@@ -80,20 +80,20 @@ expr:
     | MAINCHAIN
         {
             $$ = new Data();
-            // std::vector<PDBXVALUE> mainchain_atom_ids =
-            //     filter(atom_site, parameters.MAINCHAIN_ATOM_NAMES).ids();
-            // for (PDBXVALUE& mainchain_atom_id : mainchain_atom_ids) {
-            //     $$->list.emplace((int64_t) mainchain_atom_id);
-            // }
+            std::vector<PDBXVALUE> mainchain_atom_ids =
+                filter(atom_site, parameters.MAINCHAIN_ATOM_NAMES).ids();
+            for (PDBXVALUE& mainchain_atom_id : mainchain_atom_ids) {
+                $$->list.emplace((int64_t) mainchain_atom_id);
+            }
         }
     | SIDECHAIN
         {
             $$ = new Data();
-            // std::vector<PDBXVALUE> sidechain_atom_ids =
-            //     filter(atom_site, parameters.SIDECHAIN_ATOM_NAMES).ids();
-            // for (PDBXVALUE& sidechain_atom_id : sidechain_atom_ids) {
-            //     $$->list.emplace((int64_t) sidechain_atom_id);
-            // }
+            std::vector<PDBXVALUE> sidechain_atom_ids =
+                filter(atom_site, parameters.SIDECHAIN_ATOM_NAMES).ids();
+            for (PDBXVALUE& sidechain_atom_id : sidechain_atom_ids) {
+                $$->list.emplace((int64_t) sidechain_atom_id);
+            }
         }
     | HETATOMS
         {
@@ -147,11 +147,9 @@ expr:
     | MODEL num_oper
         {
             $$ = new Data();
-            //Selector selector = {{{"_atom_site.pdbx_PDB_model_num", {"HETATM"}}}};
-            //std::vector<PDBXVALUE> hetatom_ids =
-            //    filter(atom_site, selector).ids();
+            //Selector selector = {{{"_atom_site.pdbx_PDB_model_num", }}};
             //for (PDBXVALUE& hetatom_id : hetatom_ids) {
-            //    $$->list.emplace((int64_t) hetatom_id);
+                //$$->list.emplace((int64_t) hetatom_id);
             //}
         }
     ;
