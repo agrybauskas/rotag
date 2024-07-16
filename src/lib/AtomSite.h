@@ -20,8 +20,10 @@ struct Selector {
     std::map<std::string, std::map<std::string, bool>> selection;
     
     Selector(std::map<std::string, std::vector<std::string>> tag_selection) {
-        for (std::string& tag : tag_selection) {
-        
+        for (auto tag_it = tag_selection.begin();
+             tag_it != tag_selection.end();
+             ++tag_it) {
+            std::string tag_name = tag_it->first;
         }
     }
 };
