@@ -11,7 +11,7 @@
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
 
-    struct Data {
+    struct AtomIDs {
         bool negation = false;
         std::set<int64_t> list;
     };
@@ -47,14 +47,14 @@
 %union
 {
     char* str;
-    Data* data;
+    AtomIDs* atom_ids;
 }
 
 %start cmd
 
-%token<data> MODEL RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
+%type<atom_ids> cmd expr
+%token<atom_ids> MODEL RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
-%type<data> cmd expr
 
 %%
 
@@ -72,14 +72,14 @@ cmd:
 expr:
     | ALL
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             for (PDBXVALUE& atom_id : atom_site.ids()) {
                 $$->list.emplace((int64_t) atom_id);
             }
         }
     | MAINCHAIN
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             std::vector<PDBXVALUE> mainchain_atom_ids =
                 filter(atom_site, parameters.MAINCHAIN_ATOM_NAMES).ids();
             for (PDBXVALUE& mainchain_atom_id : mainchain_atom_ids) {
@@ -88,7 +88,7 @@ expr:
         }
     | SIDECHAIN
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             std::vector<PDBXVALUE> sidechain_atom_ids =
                 filter(atom_site, parameters.SIDECHAIN_ATOM_NAMES).ids();
             for (PDBXVALUE& sidechain_atom_id : sidechain_atom_ids) {
@@ -97,7 +97,7 @@ expr:
         }
     | HETATOMS
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             Selector selector = {{{"_atom_site.group_pdb", {"HETATM"}}}};
             std::vector<PDBXVALUE> hetatom_ids =
                 filter(atom_site, selector).ids();
@@ -107,7 +107,7 @@ expr:
         }
     | expr AND expr
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             std::set<int64_t> atom_ids_1 = $1->list;
             for (int64_t atom_id_1 : atom_ids_1) {
                 std::set<int64_t> atom_ids_2 = $3->list;
@@ -119,7 +119,7 @@ expr:
         }
     | expr OR expr
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             std::set<int64_t> atom_ids_1 = $1->list;
             for (int64_t atom_id_1 : atom_ids_1) {
                 $$->list.emplace(atom_id_1);
@@ -131,14 +131,14 @@ expr:
         }
     | LEFT_P expr RIGHT_P
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             for (int64_t atom_id : $2->list) {
                 $$->list.emplace(atom_id);
             }
         }
     | NOT expr
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             $2->negation = true;
             for (int64_t atom_id : $2->list) {
                 $$->list.emplace(atom_id);
@@ -146,18 +146,22 @@ expr:
         }
     | MODEL num_oper
         {
-            $$ = new Data();
+            $$ = new AtomIDs();
             Selector selector;
+            //for () {
+            //
+            //}
             //for (PDBXVALUE& atom_id : atom_ids) {
                 //$$->list.emplace((int64_t) atom_id);
             //}
         }
     ;
 
-any_oper:
-    | any_oper COMMA any_oper
-    | num_oper
-    | str_oper
+//any_oper:
+//    | any_oper COMMA any_oper
+//    | num_oper
+//    | str_oper
+//    ;
 
 num_oper:
     | num_oper COMMA num_oper
@@ -165,10 +169,10 @@ num_oper:
     | NUM
     ;
 
-str_oper:
-    | str_oper COMMA str_oper
-    | STR
-    ;
+//str_oper:
+//    | str_oper COMMA str_oper
+//    | STR
+//    ;
 
     /* | DOUBLE    {} */
 %%
