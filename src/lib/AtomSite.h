@@ -19,6 +19,8 @@ typedef std::map<std::string, PDBXVALUE> Atom;
 struct Selector {
     std::map<std::string, std::map<std::string, bool>> selection;
     
+    Selector() {}
+    
     Selector(std::map<std::string, std::vector<std::string>> tag_selection) {
         for (std::map<std::string, std::vector<std::string>>::iterator tag_it = 
                  tag_selection.begin();
@@ -30,6 +32,10 @@ struct Selector {
                 this->selection[tag_name][tag_value] = true;
             }
         }
+    }
+    
+    void add(std::string tag_name, std::string tag_value) {
+        this->selection[tag_name][tag_value] = true;
     }
 };
 
