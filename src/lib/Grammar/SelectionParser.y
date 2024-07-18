@@ -147,9 +147,9 @@ expr:
     | MODEL num_oper
         {
             $$ = new Data();
-            //Selector selector = {{{"_atom_site.pdbx_PDB_model_num", }}};
-            //for (PDBXVALUE& hetatom_id : hetatom_ids) {
-                //$$->list.emplace((int64_t) hetatom_id);
+            Selector selector;
+            //for (PDBXVALUE& atom_id : atom_ids) {
+                //$$->list.emplace((int64_t) atom_id);
             //}
         }
     ;
