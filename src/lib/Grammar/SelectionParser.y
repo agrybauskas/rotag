@@ -15,6 +15,10 @@
         bool negation = false;
         std::set<int64_t> list;
     };
+    
+    struct List {
+        std::vector<std::string> list;
+    };
 
     std::set<int64_t> selection_parser(Parameters&,
                                        AtomSite&,
@@ -47,16 +51,16 @@
 %union
 {
     char* str;
-    std::vector<int64_t> num_list;
+    List* list;
     AtomIDs* atom_ids;
 }
 
 %start cmd
 
 %type<atom_ids> cmd expr
+%type<list> num_oper;
 %token<atom_ids> MODEL RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
-%token<num_list> num_oper;
 
 %%
 
@@ -149,13 +153,15 @@ expr:
     | MODEL num_oper
         {
             $$ = new AtomIDs();
-            Selector selector;
-            //for () {
-            //
-            //}
-            //for (PDBXVALUE& atom_id : atom_ids) {
-                //$$->list.emplace((int64_t) atom_id);
-            //}
+//            Selector selector;
+//            for (std::string& model_id : $2->list) {
+//                selector.add("pdbx_pdb_model_num", model_id);
+//            }
+//            std::vector<PDBXVALUE> model_atom_ids = 
+//                filter(atom_site, selector).ids();
+//            for (PDBXVALUE& model_atom_id : model_atom_ids) {
+//                $$->list.emplace((int64_t) model_atom_id);
+//            }
         }
     ;
 
@@ -167,8 +173,17 @@ expr:
 
 num_oper:
     | num_oper COMMA num_oper
+        {
+            //$$ = std::vector<std::string>();
+        }
     | num_oper RANGE num_oper
-    | NUM
+        {
+            //$$ = std::vector<std::string>();
+        }
+    | NUM 
+        { 
+            $$->list.push_back((std::string) $1); 
+        }
     ;
 
 //str_oper:
