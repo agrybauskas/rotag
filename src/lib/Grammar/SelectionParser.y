@@ -47,6 +47,7 @@
 %union
 {
     char* str;
+    std::vector<int64_t> num_list;
     AtomIDs* atom_ids;
 }
 
@@ -55,6 +56,7 @@
 %type<atom_ids> cmd expr
 %token<atom_ids> MODEL RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
+%token<num_list> num_oper;
 
 %%
 
