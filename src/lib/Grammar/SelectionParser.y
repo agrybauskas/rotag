@@ -184,7 +184,8 @@ num_oper:
         }
     | NUM 
         { 
-            $$->list.push_back("1");
+            $$ = new Values();
+            $$->list.push_back($1);
         }
     ;
 
