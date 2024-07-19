@@ -9,6 +9,7 @@ all       (all|\*)
 mainchain (mainchain|mc)
 sidechain (sidechain|sc)
 hetatoms  (hetatoms|het)
+chain     (chain|c)
 and       \&\&
 or        \|\|
 left_p    \(
@@ -36,6 +37,9 @@ separator [\;]
             }
 {hetatoms}  {
                 return HETATOMS;
+            }
+{chain}     {
+                return CHAIN;
             }
 {and}       {
                 return AND;

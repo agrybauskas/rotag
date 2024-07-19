@@ -60,8 +60,8 @@
 %start cmd
 
 %type<atom_ids> cmd expr
-%type<values> num_oper;
-%token<atom_ids> MODEL RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
+%type<values> num_oper str_oper;
+%token<atom_ids> CHAIN MODEL RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
 
 %left COMMA RANGE NOT OR AND
@@ -154,6 +154,22 @@ expr:
                 $$->list.emplace(atom_id);
             }
         }
+    | CHAIN str_oper
+        {
+            $$ = new AtomIDs();
+            Selector selector = {};
+            for (std::string& chain_id : $2->list) {
+                selector.add("_atom_site.label_asym_id", chain_id);
+            }
+
+            delete $2;
+
+            std::vector<PDBXVALUE> chain_atom_ids =
+                filter(atom_site, selector).ids();
+            for (PDBXVALUE& chain_atom_id : chain_atom_ids) {
+                $$->list.emplace((int64_t) chain_atom_id);
+            }
+        }
     | MODEL num_oper
         {
             $$ = new AtomIDs();
@@ -199,10 +215,23 @@ num_oper:
         }
     ;
 
-//str_oper:
-//    | str_oper COMMA str_oper
-//    | STR
-//    ;
+str_oper:
+    | str_oper COMMA str_oper
+        {
+            $$ = new Values();
+            for (std::string& value1 : $1->list) {
+                $$->list.push_back(value1);
+            }
+            for (std::string& value2 : $3->list) {
+                $$->list.push_back(value2);
+            }            
+        }
+    | STR
+        {
+            $$ = new Values();
+            $$->list.push_back($1);
+        }
+    ;
 
 %%
 
