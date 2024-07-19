@@ -155,15 +155,16 @@ expr:
     | MODEL num_oper
         {
             $$ = new AtomIDs();
-//            Selector selector;
-//            for (std::string& model_id : $2->list) {
-//                selector.add("pdbx_pdb_model_num", model_id);
-//            }
-//            std::vector<PDBXVALUE> model_atom_ids = 
-//                filter(atom_site, selector).ids();
-//            for (PDBXVALUE& model_atom_id : model_atom_ids) {
-//                $$->list.emplace((int64_t) model_atom_id);
-//            }
+            Selector selector = {};
+            for (std::string& model_id : $2->list) {
+                selector.add("pdbx_pdb_model_num", model_id);
+            }
+            delete $2;
+            std::vector<PDBXVALUE> model_atom_ids =
+                filter(atom_site, selector).ids();
+            for (PDBXVALUE& model_atom_id : model_atom_ids) {
+                $$->list.emplace((int64_t) model_atom_id);
+            }
         }
     ;
 

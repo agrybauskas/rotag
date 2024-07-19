@@ -35,7 +35,7 @@ struct Selector {
     }
     
     void add(std::string tag_name, std::string tag_value) {
-        this->selection[tag_name][tag_value] = true;
+        selection[tag_name][tag_value] = true;
     }
 };
 
