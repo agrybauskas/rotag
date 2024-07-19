@@ -157,7 +157,7 @@ expr:
             $$ = new AtomIDs();
             Selector selector = {};
             for (std::string& model_id : $2->list) {
-                selector.add("pdbx_pdb_model_num", model_id);
+                selector.add("_atom_site.pdbx_pdb_model_num", model_id);
             }
             delete $2;
             std::vector<PDBXVALUE> model_atom_ids =
