@@ -159,7 +159,9 @@ expr:
             for (std::string& model_id : $2->list) {
                 selector.add("_atom_site.pdbx_pdb_model_num", model_id);
             }
+
             delete $2;
+
             std::vector<PDBXVALUE> model_atom_ids =
                 filter(atom_site, selector).ids();
             for (PDBXVALUE& model_atom_id : model_atom_ids) {
@@ -177,11 +179,17 @@ expr:
 num_oper:
     | num_oper COMMA num_oper
         {
-            //$$ = std::vector<std::string>();
+            $$ = new Values();
+            for (std::string& value1 : $1->list) {
+                $$->list.push_back(value1);
+            }
+            for (std::string& value2 : $3->list) {
+                $$->list.push_back(value2);
+            }
         }
     | num_oper RANGE num_oper
         {
-            //$$ = std::vector<std::string>();
+            $$ = new Values();
         }
     | NUM 
         { 
