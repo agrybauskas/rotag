@@ -170,12 +170,6 @@ expr:
         }
     ;
 
-//any_oper:
-//    | any_oper COMMA any_oper
-//    | num_oper
-//    | str_oper
-//    ;
-
 num_oper:
     | num_oper COMMA num_oper
         {
@@ -190,11 +184,16 @@ num_oper:
     | num_oper RANGE num_oper
         {
             $$ = new Values();
+            int64_t range_start = std::stoi($1->list.at(0));
+            int64_t range_end = std::stoi($3->list.at(0));
+            for (size_t num = range_start; num <= range_end; num++) {
+                
+            }
         }
     | NUM 
         { 
             $$ = new Values();
-            $$->list.push_back($1);
+            
         }
     ;
 
@@ -203,7 +202,6 @@ num_oper:
 //    | STR
 //    ;
 
-    /* | DOUBLE    {} */
 %%
 
 void select_error(Parameters& parameters,
