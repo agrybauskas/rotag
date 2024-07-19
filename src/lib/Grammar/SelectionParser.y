@@ -7,6 +7,7 @@
 %code requires{
     #include <string>
     #include <set>
+    #include <vector>
 
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
@@ -16,7 +17,7 @@
         std::set<int64_t> list;
     };
     
-    struct List {
+    struct Values {
         std::vector<std::string> list;
     };
 
@@ -31,6 +32,7 @@
     #include <iostream>
     #include <string>
     #include <set>
+    #include <vector>
 
     #include "../AtomSite.h"
     #include "../ForceField/Parameters.h"
@@ -51,14 +53,14 @@
 %union
 {
     char* str;
-    List* list;
+    Values* values;
     AtomIDs* atom_ids;
 }
 
 %start cmd
 
 %type<atom_ids> cmd expr
-%type<list> num_oper;
+%type<values> num_oper;
 %token<atom_ids> MODEL RANGE COMMA NOT LEFT_P RIGHT_P AND OR ALL MAINCHAIN SIDECHAIN HETATOMS
 %token<str> NUM DOUBLE STR SEP
 
@@ -182,7 +184,7 @@ num_oper:
         }
     | NUM 
         { 
-            $$->list.push_back((std::string) $1); 
+            $$->list.push_back("1");
         }
     ;
 
