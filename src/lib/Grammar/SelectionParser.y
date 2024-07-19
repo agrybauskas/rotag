@@ -187,13 +187,13 @@ num_oper:
             int64_t range_start = std::stoi($1->list.at(0));
             int64_t range_end = std::stoi($3->list.at(0));
             for (size_t num = range_start; num <= range_end; num++) {
-                
+                $$->list.push_back(std::to_string(num));
             }
         }
     | NUM 
         { 
             $$ = new Values();
-            
+            $$->list.push_back($1);
         }
     ;
 
