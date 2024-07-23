@@ -709,8 +709,9 @@ sub calc_favourable_angles
 
     my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
     my @next_atom_ids =
-        grep { $_ ne $ca_atom_id }
-             ( @{ $residue_site->{$cb_atom_id}{'connections'} } );
+        grep { $_ ne $ca_atom_id && $_ ne $cb_atom_id }
+             ( @{ $residue_site->{$cb_atom_id}{'connections'} },
+               @{ $residue_site->{$ca_atom_id}{'connections'} } );
 
     my @allowed_bond_parameters;
     my @allowed_energies;
