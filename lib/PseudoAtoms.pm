@@ -711,6 +711,7 @@ sub calc_favourable_angles
     my @next_atom_ids =
         grep { $_ ne $ca_atom_id }
              ( @{ $residue_site->{$cb_atom_id}{'connections'} },
+               @{ $residue_site->{$ca_atom_id}{'connections'} },
                @{ $include_hetatoms &&
                   defined $residue_site->{$cb_atom_id}{'connections_hetatom'} ?
                   $residue_site->{$cb_atom_id}{'connections_hetatom'} :
