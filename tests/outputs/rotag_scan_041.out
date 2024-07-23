@@ -54,22 +54,23 @@ ATOM 904 H HZ3 . LYS A 1 72 -34.764 -4.021 0.974 A 72 1 S
 HETATM 1925 O O . HOH B 1 . -31.184 -6.586 -1.238 A 101 1 T
 HETATM 1926 H H1 . HOH B 1 . -31.654 -5.773 -1.481 A 101 1 T
 HETATM 1927 H H2 . HOH B 1 . -31.654 -7.399 -1.481 A 101 1 T
-HETATM 1928 MG MG . MG C 1 . -27.883 -6.590 1.226 A 201 1 T
+HETATM 1928 O O . HOH C 1 . -27.960 -4.688 -3.581 A 102 1 T
+HETATM 1929 H H1 . HOH C 1 . -28.678 -4.465 -4.178 A 102 1 T
+HETATM 1930 H H2 . HOH C 1 . -27.666 -5.585 -3.754 A 102 1 T
 #
 loop_
 _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 3.520423
-2 2 composite -10.347653
-3 3 composite -5.214012
-4 4 composite -5.261246
-5 5 composite -13.830529
-6 6 composite -19.575942
-7 7 composite -5.642689
-8 8 composite -16.750990
-9 9 composite -14.668362
+1 1 composite 7.022346
+2 2 composite 8.810488
+3 3 composite 10.155688
+4 4 composite 0.500119
+5 5 composite 5.449874
+6 6 composite 2.167018
+7 7 composite 2.490995
+8 8 composite 4.581706
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -85,33 +86,30 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG C 1 201 A . 0.111111 OD1.H1-O.MG -180.000 degrees
-2 1 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-3 1 27 ASP A 1 27 A . 0.111111 chi2 -180.000 degrees
-4 2 . MG C 1 201 A . 0.111111 OD1.H1-O.MG -90.000 degrees
-5 2 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-6 2 27 ASP A 1 27 A . 0.111111 chi2 -180.000 degrees
-7 3 . MG C 1 201 A . 0.111111 OD1.H1-O.MG 90.000 degrees
-8 3 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-9 3 27 ASP A 1 27 A . 0.111111 chi2 -180.000 degrees
-10 4 . MG C 1 201 A . 0.111111 OD1.H1-O.MG -180.000 degrees
-11 4 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-12 4 27 ASP A 1 27 A . 0.111111 chi2 -60.000 degrees
-13 5 . MG C 1 201 A . 0.111111 OD1.H1-O.MG -90.000 degrees
-14 5 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-15 5 27 ASP A 1 27 A . 0.111111 chi2 -60.000 degrees
-16 6 . MG C 1 201 A . 0.111111 OD1.H1-O.MG 90.000 degrees
-17 6 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-18 6 27 ASP A 1 27 A . 0.111111 chi2 -60.000 degrees
-19 7 . MG C 1 201 A . 0.111111 OD1.H1-O.MG -180.000 degrees
-20 7 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-21 7 27 ASP A 1 27 A . 0.111111 chi2 60.000 degrees
-22 8 . MG C 1 201 A . 0.111111 OD1.H1-O.MG -90.000 degrees
-23 8 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-24 8 27 ASP A 1 27 A . 0.111111 chi2 60.000 degrees
-25 9 . MG C 1 201 A . 0.111111 OD1.H1-O.MG 90.000 degrees
-26 9 27 ASP A 1 27 A . 0.111111 chi1 60.000 degrees
-27 9 27 ASP A 1 27 A . 0.111111 chi2 60.000 degrees
+1 1 . HOH C 1 102 A . 0.125000 OD1.H1-O.H1 -180.000 degrees
+2 1 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+3 1 27 ASP A 1 27 A . 0.125000 chi2 -180.000 degrees
+4 2 . HOH C 1 102 A . 0.125000 OD1.H1-O.H1 -90.000 degrees
+5 2 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+6 2 27 ASP A 1 27 A . 0.125000 chi2 -180.000 degrees
+7 3 . HOH C 1 102 A . 0.125000 OD1.H1-O.H1 90.000 degrees
+8 3 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+9 3 27 ASP A 1 27 A . 0.125000 chi2 -180.000 degrees
+10 4 . HOH C 1 102 A . 0.125000 OD1.H1-O.H1 -180.000 degrees
+11 4 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+12 4 27 ASP A 1 27 A . 0.125000 chi2 -60.000 degrees
+13 5 . HOH C 1 102 A . 0.125000 OD1.H1-O.H1 -90.000 degrees
+14 5 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+15 5 27 ASP A 1 27 A . 0.125000 chi2 -60.000 degrees
+16 6 . HOH C 1 102 A . 0.125000 OD1.H1-O.H1 90.000 degrees
+17 6 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+18 6 27 ASP A 1 27 A . 0.125000 chi2 -60.000 degrees
+19 7 . HOH C 1 102 A . 0.125000 OD1.H1-O.H1 -180.000 degrees
+20 7 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+21 7 27 ASP A 1 27 A . 0.125000 chi2 60.000 degrees
+22 8 . HOH C 1 102 A . 0.125000 OD1.H1-O.H1 -90.000 degrees
+23 8 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+24 8 27 ASP A 1 27 A . 0.125000 chi2 60.000 degrees
 #
 loop_
 _struct_conn.id
@@ -128,6 +126,8 @@ _struct_conn.ptnr2_auth_seq_id
 _struct_conn.ptnr2_auth_asym_id
 covale1 covale . B H1 101 A . B O 101 A
 covale2 covale . B O 101 A . B H2 101 A
+covale3 covale . C H1 102 A . C O 102 A
+covale4 covale . C O 102 A . C H2 102 A
 hydrog1 hydrog 27 A OD1 27 A . B H1 101 A
-metalc1 metalc . B O 101 A . C MG 201 A
+hydrog2 hydrog . B O 101 A . C H1 102 A
 #
