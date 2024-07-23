@@ -16,8 +16,7 @@ _struct_conn.pdbx_ptnr2_label_alt_id
 _struct_conn.ptnr2_auth_asym_id
 _struct_conn.ptnr2_label_atom_id
 metalc1 metalc 27 A . 27 A N . B 101 . A MG
-metalc2 metalc 27 A . 27 A O . B 101 . A MG
-metalc3 metalc 27 A . 27 A OD1 . B 101 . A MG
+metalc2 metalc 27 A . 27 A OD1 . B 101 . A MG
 #
 loop_
 _atom_site.group_PDB
