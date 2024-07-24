@@ -262,12 +262,6 @@ sub stretchable_bonds
     $include_mainchain //= 0;
     $include_hetatoms //= 0;
 
-    my $ignore_connections = {
-        'label_atom_id' => {
-            'N' => { 'C' => 1 }, # Pseudo connection for heteroatoms.
-        },
-    };
-
     my $residue_groups =
         split_by( { 'atom_site' => $atom_site, 'append_dot' => 1 } );
 
@@ -313,7 +307,6 @@ sub stretchable_bonds
             'atom_site' => $residue_site,
             'start_atom_ids' => $start_atom_ids,
             'include_hetatoms' => $include_hetatoms,
-            'ignore_connections' => $ignore_connections,
         } );
 
         for my $second_atom_id ( @{ $bond_paths->get_atom_order } ) {
