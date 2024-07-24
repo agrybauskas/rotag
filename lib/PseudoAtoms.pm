@@ -415,13 +415,13 @@ sub generate_library
         if( $do_bond_stretching ) {
             stretchable_bonds( $parameters,
                                $current_atom_site,
-                               { 'include_hetatoms' => $include_hetatoms } );
+                               { 'include_hetatoms' => $include_hetatoms,
+                                 'include_mainchain' => 1 } );
         }
         if( $do_angle_bending ) {
             bendable_angles( $parameters,
                              $current_atom_site,
-                             { 'include_hetatoms' => $include_hetatoms,
-                               'include_mainchain' => 1 } );
+                             { 'include_hetatoms' => $include_hetatoms } );
         }
 
         # Finds where CA of target residues are.
