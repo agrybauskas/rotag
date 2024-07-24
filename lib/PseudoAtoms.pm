@@ -420,7 +420,8 @@ sub generate_library
         if( $do_angle_bending ) {
             bendable_angles( $parameters,
                              $current_atom_site,
-                             { 'include_hetatoms' => $include_hetatoms } );
+                             { 'include_hetatoms' => $include_hetatoms,
+                               'include_mainchain' => 1 } );
         }
 
         # Finds where CA of target residues are.
