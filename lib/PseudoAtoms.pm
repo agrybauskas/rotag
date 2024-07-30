@@ -708,7 +708,7 @@ sub calc_favourable_angles
                 { 'include' => { 'label_atom_id' => [ 'CB' ] },
                   'return_data' => 'id' } )->[0];
 
-    my @visited_atom_ids = ( $ca_atom_id, $cb_atom_id );
+    my %visited_atom_ids = ( $ca_atom_id => 1, $cb_atom_id => 1 );
     my @next_atom_ids =
         grep { $_ ne $ca_atom_id && $_ ne $cb_atom_id }
              ( @{ $residue_site->{$cb_atom_id}{'connections'} },
@@ -791,7 +791,7 @@ sub calc_favourable_angles
             }
 
             # Marks visited atoms.
-            push @visited_atom_ids, $atom_id;
+            $visited_atom_ids{$atom_id} = 1;
 
             # Marks neighbouring atoms.
             push @neighbour_atom_ids,
@@ -852,9 +852,8 @@ sub calc_favourable_angles
         @next_atom_ids = (); # Resets value for the new ones to be
                              # appended.
         for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
-            if( ( ! any { $neighbour_atom_id eq $_ } @visited_atom_ids ) ) {
-                push @next_atom_ids, $neighbour_atom_id;
-            }
+            next if $visited_atom_ids{$neighbour_atom_id};
+            push @next_atom_ids, $neighbour_atom_id;
         }
     }
 
