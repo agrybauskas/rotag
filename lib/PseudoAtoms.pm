@@ -696,23 +696,16 @@ sub calc_favourable_angles
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
-    # Goes through each atom in side chain and calculates interaction
-    # potential with surrounding atoms. CA and CB are non-movable atoms
-    # so, they are marked as starting atoms.
-    my $ca_atom_id =
+    my $start_atom_ids =
         filter_new( $residue_site,
-                { 'include' => { 'label_atom_id' => [ 'CA' ] },
-                  'return_data' => 'id' } )->[0];
-    my $cb_atom_id =
-        filter_new( $residue_site,
-                { 'include' => { 'label_atom_id' => [ 'CB' ] },
-                  'return_data' => 'id' } )->[0];
+                    { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] },
+                      'return_data' => 'id' } );
 
-    my %visited_atom_ids = ( $ca_atom_id => 1, $cb_atom_id => 1 );
+    my %visited_atom_ids = map { $_ => 1 } @{ $start_atom_ids };
     my @next_atom_ids =
-        grep { $_ ne $ca_atom_id && $_ ne $cb_atom_id }
-             ( @{ $residue_site->{$cb_atom_id}{'connections'} },
-               @{ $residue_site->{$ca_atom_id}{'connections'} } );
+        grep { ! $visited_atom_ids{$_} }
+        map  { @{ $residue_site->{$_}{'connections'} } }
+            @{ $start_atom_ids };
 
     my @allowed_bond_parameters;
     my @allowed_energies;
