@@ -13,7 +13,7 @@ Parameters::Parameters(char* program_file_path) {
                                      compiler_options,
                                      &inner);
 
-    PDBx pdbx(cif , PARAMETER_TAGS);
+    PDBx pdbx(cif, PARAMETER_TAGS);
 
     delete_cif(cif);
 

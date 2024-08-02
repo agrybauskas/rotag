@@ -66,8 +66,8 @@ extern "C" {
 class PDBx {
  private:
     // std::map<std::string, std::vector<PDBXVALUE>> data;
-    std::map<std::string, int64_t> cif_tag_order;
-    std::map<std::string, int64_t> in_loop;
+    // std::map<std::string, int64_t> cif_tag_order;
+    // std::map<std::string, int64_t> in_loop;
 
  public:
     explicit PDBx(CIF* cif, std::vector<std::string> select_tags);
