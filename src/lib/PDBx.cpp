@@ -44,6 +44,10 @@ std::vector<PDBXVALUE> PDBx::values(std::string cif_tag) {
     return this->data[cif_tag];
 }
 
+PDBXVALUE PDBx::value(std::string cif_tag) {
+    return this->value(cif_tag, 0);
+}
+
 PDBXVALUE PDBx::value(std::string cif_tag, size_t index) {
     if (this->data[cif_tag].size() > 0) {
         return this->data[cif_tag][index];

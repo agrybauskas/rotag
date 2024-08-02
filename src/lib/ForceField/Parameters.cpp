@@ -17,15 +17,16 @@ Parameters::Parameters(char* program_file_path) {
 
     delete_cif(cif);
 
-    // /* Parsing tags per case basis.
-    //    "_rotag_force_field" category.*/
-    // this->lj_k = pdbx.values("_rotag_force_field.lj_k")[0];
-    // this->c_k = pdbx.values("_rotag_force_field.c_k")[0];
-    // this->h_k = pdbx.values("_rotag_force_field.h_k")[0];
-    // this->t_k = pdbx.values("_rotag_force_field.t_k")[0];
-    // this->cutoff_atom = pdbx.values("_rotag_force_field.cutoff_atom")[0];
-    // this->cutoff_start = pdbx.values("_rotag_force_field.cutoff_start")[0];
-    // this->cutoff_end = pdbx.values("_rotag_force_field.cutoff_end")[0];
+    // Parsing tags per case basis.
+
+    // "_rotag_force_field" category.
+    this->lj_k = pdbx.value("_rotag_force_field.lj_k");
+    this->c_k = pdbx.value("_rotag_force_field.c_k");
+    this->h_k = pdbx.value("_rotag_force_field.h_k");
+    this->t_k = pdbx.value("_rotag_force_field.t_k");
+    this->cutoff_atom = pdbx.value("_rotag_force_field.cutoff_atom");
+    this->cutoff_start = pdbx.value("_rotag_force_field.cutoff_start");
+    this->cutoff_end = pdbx.value("_rotag_force_field.cutoff_end");
 
     // // "_rotag_atom_properties" category.
     // for (size_t i = 0; i < pdbx.values("_rotag_force_field.cutoff_end").size(); i++) {

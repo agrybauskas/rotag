@@ -70,9 +70,10 @@ class PDBx {
     std::map<std::string, int64_t> in_loop;
 
  public:
-    explicit PDBx(CIF* cif, std::vector<std::string> select_tags);
+    explicit PDBx(CIF*, std::vector<std::string>);
 
-    std::vector<PDBXVALUE> values(std::string cif_tag);
+    std::vector<PDBXVALUE> values(std::string);
+    PDBXVALUE value(std::string);
     PDBXVALUE value(std::string, size_t);
 };
 
