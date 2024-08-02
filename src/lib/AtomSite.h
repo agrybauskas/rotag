@@ -14,15 +14,15 @@ extern "C" {
 
 #include "PDBx.h"
 
-typedef std::map<std::string, PDBXVALUE> Atom;
+// typedef std::map<std::string, PDBXVALUE> Atom;
 
 struct Selector {
     std::map<std::string, std::map<std::string, bool>> selection;
-    
+
     Selector() {}
-    
+
     Selector(std::map<std::string, std::vector<std::string>> tag_selection) {
-        for (std::map<std::string, std::vector<std::string>>::iterator tag_it = 
+        for (std::map<std::string, std::vector<std::string>>::iterator tag_it =
                  tag_selection.begin();
              tag_it != tag_selection.end();
              ++tag_it) {
@@ -33,7 +33,7 @@ struct Selector {
             }
         }
     }
-    
+
     void add(std::string tag_name, std::string tag_value) {
         selection[tag_name][tag_value] = true;
     }
@@ -91,26 +91,26 @@ class AtomSite {
 
     const M_TAG_INDEX M_ID = ID;  // Declares UNIQUE ID for the class object.
 
-    std::map<int64_t, Atom> m_atoms = {};
+    // std::map<int64_t, Atom> m_atoms = {};
 
  public:
     AtomSite();
     explicit AtomSite(char*, bool);
 
-    const std::vector<std::string> names();
-    const std::string name(int64_t);
-    std::map<int64_t, Atom> atoms();
-    Atom atom(int64_t);
-    std::vector<PDBXVALUE> values(std::string);
-    PDBXVALUE value(int64_t, std::string);
-    PDBXVALUE value(int64_t, int64_t);
-    void add_atom(int64_t, Atom);
-    std::vector<PDBXVALUE> ids();
-    void mark_selection(AtomSite&,
-                        std::vector<int64_t> = {},
-                        std::vector<int64_t> = {});
+    // const std::vector<std::string> names();
+    // const std::string name(int64_t);
+    // std::map<int64_t, Atom> atoms();
+    // Atom atom(int64_t);
+    // std::vector<PDBXVALUE> values(std::string);
+    // PDBXVALUE value(int64_t, std::string);
+    // PDBXVALUE value(int64_t, int64_t);
+    // void add_atom(int64_t, Atom);
+    // std::vector<PDBXVALUE> ids();
+    // void mark_selection(AtomSite&,
+    //                     std::vector<int64_t> = {},
+    //                     std::vector<int64_t> = {});
 };
 
-AtomSite filter(AtomSite&, Selector = {{}}, Selector = {{}});
+// AtomSite filter(AtomSite&, Selector = {{}}, Selector = {{}});
 
 #endif  // SRC_LIB_ATOMSITE_H_

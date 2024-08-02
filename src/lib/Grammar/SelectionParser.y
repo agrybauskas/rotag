@@ -2,7 +2,7 @@
 
 %define api.prefix {select_}
 
-%parse-param {Parameters& parameters} {AtomSite& atom_site} {std::set<int64_t>& atom_ids} {int64_t seed} {int64_t group_id}
+/* %parse-param {Parameters& parameters} {AtomSite& atom_site} {std::set<int64_t>& atom_ids} {int64_t seed} {int64_t group_id} */
 
 %code requires{
     #include <string>
@@ -16,16 +16,16 @@
         bool negation = false;
         std::set<int64_t> list;
     };
-    
+
     struct Values {
         std::vector<std::string> list;
     };
 
-    std::set<int64_t> selection_parser(Parameters&,
-                                       AtomSite&,
-                                       std::string,
-                                       int64_t,
-                                       int64_t);
+    /* std::set<int64_t> selection_parser(Parameters&, */
+    /*                                    AtomSite&, */
+    /*                                    std::string, */
+    /*                                    int64_t, */
+    /*                                    int64_t); */
 }
 
 %{
@@ -42,12 +42,14 @@
 
     extern int select_lex();
 
-    extern void select_error(Parameters&,
-                             AtomSite&,
-                             std::set<int64_t>&,
-                             int64_t,
-                             int64_t,
-                             char const*);
+    extern void select_error(char const*); // NOTE: debug print.
+
+    /* extern void select_error(Parameters&, */
+    /*                          AtomSite&, */
+    /*                          std::set<int64_t>&, */
+    /*                          int64_t, */
+    /*                          int64_t, */
+    /*                          char const*); */
 %}
 
 %union
@@ -72,186 +74,191 @@ cmd:
     | cmd SEP cmd
     | expr
         {
-            for (int64_t atom_id : $1->list) {
-                atom_ids.emplace(atom_id);
-            }
-            delete $1;
+            /* for (int64_t atom_id : $1->list) { */
+            /*     atom_ids.emplace(atom_id); */
+            /* } */
+            /* delete $1; */
         }
     ;
 
 expr:
     | ALL
         {
-            $$ = new AtomIDs();
-            for (PDBXVALUE& atom_id : atom_site.ids()) {
-                $$->list.emplace((int64_t) atom_id);
-            }
+            /* $$ = new AtomIDs(); */
+            /* for (PDBXVALUE& atom_id : atom_site.ids()) { */
+            /*     $$->list.emplace((int64_t) atom_id); */
+            /* } */
         }
     | MAINCHAIN
         {
-            $$ = new AtomIDs();
-            std::vector<PDBXVALUE> mainchain_atom_ids =
-                filter(atom_site, parameters.MAINCHAIN_ATOM_NAMES).ids();
-            for (PDBXVALUE& mainchain_atom_id : mainchain_atom_ids) {
-                $$->list.emplace((int64_t) mainchain_atom_id);
-            }
+            /* $$ = new AtomIDs(); */
+            /* std::vector<PDBXVALUE> mainchain_atom_ids = */
+            /*     filter(atom_site, parameters.MAINCHAIN_ATOM_NAMES).ids(); */
+            /* for (PDBXVALUE& mainchain_atom_id : mainchain_atom_ids) { */
+            /*     $$->list.emplace((int64_t) mainchain_atom_id); */
+            /* } */
         }
     | SIDECHAIN
         {
-            $$ = new AtomIDs();
-            std::vector<PDBXVALUE> sidechain_atom_ids =
-                filter(atom_site, parameters.SIDECHAIN_ATOM_NAMES).ids();
-            for (PDBXVALUE& sidechain_atom_id : sidechain_atom_ids) {
-                $$->list.emplace((int64_t) sidechain_atom_id);
-            }
+            /* $$ = new AtomIDs(); */
+            /* std::vector<PDBXVALUE> sidechain_atom_ids = */
+            /*     filter(atom_site, parameters.SIDECHAIN_ATOM_NAMES).ids(); */
+            /* for (PDBXVALUE& sidechain_atom_id : sidechain_atom_ids) { */
+            /*     $$->list.emplace((int64_t) sidechain_atom_id); */
+            /* } */
         }
     | HETATOMS
         {
-            $$ = new AtomIDs();
-            Selector selector = {{{"_atom_site.group_pdb", {"HETATM"}}}};
-            std::vector<PDBXVALUE> hetatom_ids =
-                filter(atom_site, selector).ids();
-            for (PDBXVALUE& hetatom_id : hetatom_ids) {
-                $$->list.emplace((int64_t) hetatom_id);
-            }
+            /* $$ = new AtomIDs(); */
+            /* Selector selector = {{{"_atom_site.group_pdb", {"HETATM"}}}}; */
+            /* std::vector<PDBXVALUE> hetatom_ids = */
+            /*     filter(atom_site, selector).ids(); */
+            /* for (PDBXVALUE& hetatom_id : hetatom_ids) { */
+            /*     $$->list.emplace((int64_t) hetatom_id); */
+            /* } */
         }
     | expr AND expr
         {
-            $$ = new AtomIDs();
-            std::set<int64_t> atom_ids_1 = $1->list;
-            for (int64_t atom_id_1 : atom_ids_1) {
-                std::set<int64_t> atom_ids_2 = $3->list;
-                if (auto search = atom_ids_2.find(atom_id_1);
-                    search != atom_ids_2.end()) {
-                    $$->list.emplace(atom_id_1);
-                }
-            }
+            /* $$ = new AtomIDs(); */
+            /* std::set<int64_t> atom_ids_1 = $1->list; */
+            /* for (int64_t atom_id_1 : atom_ids_1) { */
+            /*     std::set<int64_t> atom_ids_2 = $3->list; */
+            /*     if (auto search = atom_ids_2.find(atom_id_1); */
+            /*         search != atom_ids_2.end()) { */
+            /*         $$->list.emplace(atom_id_1); */
+            /*     } */
+            /* } */
         }
     | expr OR expr
         {
-            $$ = new AtomIDs();
-            std::set<int64_t> atom_ids_1 = $1->list;
-            for (int64_t atom_id_1 : atom_ids_1) {
-                $$->list.emplace(atom_id_1);
-            }
-            std::set<int64_t> atom_ids_2 = $3->list;
-            for (int64_t atom_id_2 : atom_ids_2) {
-                $$->list.emplace(atom_id_2);
-            }
+            /* $$ = new AtomIDs(); */
+            /* std::set<int64_t> atom_ids_1 = $1->list; */
+            /* for (int64_t atom_id_1 : atom_ids_1) { */
+            /*     $$->list.emplace(atom_id_1); */
+            /* } */
+            /* std::set<int64_t> atom_ids_2 = $3->list; */
+            /* for (int64_t atom_id_2 : atom_ids_2) { */
+            /*     $$->list.emplace(atom_id_2); */
+            /* } */
         }
     | LEFT_P expr RIGHT_P
         {
-            $$ = new AtomIDs();
-            for (int64_t atom_id : $2->list) {
-                $$->list.emplace(atom_id);
-            }
+            /* $$ = new AtomIDs(); */
+            /* for (int64_t atom_id : $2->list) { */
+            /*     $$->list.emplace(atom_id); */
+            /* } */
         }
     | NOT expr
         {
-            $$ = new AtomIDs();
-            $2->negation = true;
-            for (int64_t atom_id : $2->list) {
-                $$->list.emplace(atom_id);
-            }
+            /* $$ = new AtomIDs(); */
+            /* $2->negation = true; */
+            /* for (int64_t atom_id : $2->list) { */
+            /*     $$->list.emplace(atom_id); */
+            /* } */
         }
     | CHAIN str_oper
         {
-            $$ = new AtomIDs();
-            Selector selector = {};
-            for (std::string& chain_id : $2->list) {
-                selector.add("_atom_site.label_asym_id", chain_id);
-            }
+            /* $$ = new AtomIDs(); */
+            /* Selector selector = {}; */
+            /* for (std::string& chain_id : $2->list) { */
+            /*     selector.add("_atom_site.label_asym_id", chain_id); */
+            /* } */
 
-            delete $2;
+            /* delete $2; */
 
-            std::vector<PDBXVALUE> chain_atom_ids =
-                filter(atom_site, selector).ids();
-            for (PDBXVALUE& chain_atom_id : chain_atom_ids) {
-                $$->list.emplace((int64_t) chain_atom_id);
-            }
+            /* std::vector<PDBXVALUE> chain_atom_ids = */
+            /*     filter(atom_site, selector).ids(); */
+            /* for (PDBXVALUE& chain_atom_id : chain_atom_ids) { */
+            /*     $$->list.emplace((int64_t) chain_atom_id); */
+            /* } */
         }
     | MODEL num_oper
         {
-            $$ = new AtomIDs();
-            Selector selector = {};
-            for (std::string& model_id : $2->list) {
-                selector.add("_atom_site.pdbx_pdb_model_num", model_id);
-            }
+            /* $$ = new AtomIDs(); */
+            /* Selector selector = {}; */
+            /* for (std::string& model_id : $2->list) { */
+            /*     selector.add("_atom_site.pdbx_pdb_model_num", model_id); */
+            /* } */
 
-            delete $2;
+            /* delete $2; */
 
-            std::vector<PDBXVALUE> model_atom_ids =
-                filter(atom_site, selector).ids();
-            for (PDBXVALUE& model_atom_id : model_atom_ids) {
-                $$->list.emplace((int64_t) model_atom_id);
-            }
+            /* std::vector<PDBXVALUE> model_atom_ids = */
+            /*     filter(atom_site, selector).ids(); */
+            /* for (PDBXVALUE& model_atom_id : model_atom_ids) { */
+            /*     $$->list.emplace((int64_t) model_atom_id); */
+            /* } */
         }
     ;
 
 num_oper:
     | num_oper COMMA num_oper
         {
-            $$ = new Values();
-            for (std::string& value1 : $1->list) {
-                $$->list.push_back(value1);
-            }
-            for (std::string& value2 : $3->list) {
-                $$->list.push_back(value2);
-            }
+            /* $$ = new Values(); */
+            /* for (std::string& value1 : $1->list) { */
+            /*     $$->list.push_back(value1); */
+            /* } */
+            /* for (std::string& value2 : $3->list) { */
+            /*     $$->list.push_back(value2); */
+            /* } */
         }
     | num_oper RANGE num_oper
         {
-            $$ = new Values();
-            int64_t range_start = std::stoi($1->list.at(0));
-            int64_t range_end = std::stoi($3->list.at(0));
-            for (size_t num = range_start; num <= range_end; num++) {
-                $$->list.push_back(std::to_string(num));
-            }
+            /* $$ = new Values(); */
+            /* int64_t range_start = std::stoi($1->list.at(0)); */
+            /* int64_t range_end = std::stoi($3->list.at(0)); */
+            /* for (size_t num = range_start; num <= range_end; num++) { */
+            /*     $$->list.push_back(std::to_string(num)); */
+            /* } */
         }
-    | NUM 
-        { 
-            $$ = new Values();
-            $$->list.push_back($1);
+    | NUM
+        {
+            /* $$ = new Values(); */
+            /* $$->list.push_back($1); */
         }
     ;
 
 str_oper:
     | str_oper COMMA str_oper
         {
-            $$ = new Values();
-            for (std::string& value1 : $1->list) {
-                $$->list.push_back(value1);
-            }
-            for (std::string& value2 : $3->list) {
-                $$->list.push_back(value2);
-            }            
+            /* $$ = new Values(); */
+            /* for (std::string& value1 : $1->list) { */
+            /*     $$->list.push_back(value1); */
+            /* } */
+            /* for (std::string& value2 : $3->list) { */
+            /*     $$->list.push_back(value2); */
+            /* } */
         }
     | STR
         {
-            $$ = new Values();
-            $$->list.push_back($1);
+            /* $$ = new Values(); */
+            /* $$->list.push_back($1); */
         }
     ;
 
 %%
 
-void select_error(Parameters& parameters,
-                  AtomSite&,
-                  std::set<int64_t>& atom_ids,
-                  int64_t seed,
-                  int64_t group_id,
-                  char const* msg) {
+/* NOTE: debug print. */
+void select_error(char const* msg) {
     std::cout << "Syntax Error: " << msg << std::endl;
 }
 
-std::set<int64_t> selection_parser(Parameters& parameters,
-                                   AtomSite& atom_site,
-                                   std::string cmd,
-                                   int64_t seed,
-                                   int64_t group_id) {
-    std::set<int64_t> atom_ids = {};
-    set_lex_input(cmd.c_str());
-    int retval = select_parse(parameters, atom_site, atom_ids, seed, group_id);
-    end_lex_scan();
-    return atom_ids;
-}
+/* void select_error(Parameters& parameters, */
+/*                   AtomSite&, */
+/*                   std::set<int64_t>& atom_ids, */
+/*                   int64_t seed, */
+/*                   int64_t group_id, */
+/*                   char const* msg) { */
+/*     std::cout << "Syntax Error: " << msg << std::endl; */
+/* } */
+
+/* std::set<int64_t> selection_parser(Parameters& parameters, */
+/*                                    AtomSite& atom_site, */
+/*                                    std::string cmd, */
+/*                                    int64_t seed, */
+/*                                    int64_t group_id) { */
+/*     std::set<int64_t> atom_ids = {}; */
+/*     set_lex_input(cmd.c_str()); */
+/*     int retval = select_parse(parameters, atom_site, atom_ids, seed, group_id); */
+/*     end_lex_scan(); */
+/*     return atom_ids; */
+/* } */
