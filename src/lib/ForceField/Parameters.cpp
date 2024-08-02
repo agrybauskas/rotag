@@ -28,8 +28,8 @@ Parameters::Parameters(char* program_file_path) {
     this->cutoff_start = pdbx.value("_rotag_force_field.cutoff_start");
     this->cutoff_end = pdbx.value("_rotag_force_field.cutoff_end");
 
-    // // "_rotag_atom_properties" category.
-    // for (size_t i = 0; i < pdbx.values("_rotag_force_field.cutoff_end").size(); i++) {
+    // "_rotag_atom_properties" category.
+    for (size_t i = 0; i < pdbx.length("_rotag_force_field.cutoff_end"); i++) {
     //     std::string type_symbol =
     //         pdbx.values("_rotag_force_field.cutoff_end")[i];
     //     std::string hybridization =
@@ -76,7 +76,7 @@ Parameters::Parameters(char* program_file_path) {
     //                 .covalent_radius[hybridization].error
     //         };
     //     }
-    // }
+    }
 
     // // "_rotag_partial_charge" category.
     // for (size_t i = 0; i < pdbx.values("_rotag_lennard_jones.type_symbol_1").size(); i++) {
