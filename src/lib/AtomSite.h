@@ -90,6 +90,7 @@ class AtomSite {
     const M_TAG_INDEX M_ID = ID;  // Declares UNIQUE ID for the class object.
 
     PDBx m_data;
+    std::map<int64_t,size_t> m_id_to_index;
 
  public:
     AtomSite();
