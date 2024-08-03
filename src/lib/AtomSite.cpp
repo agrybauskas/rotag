@@ -25,16 +25,9 @@ const std::string AtomSite::name(int64_t index) {
     return this->M_TAGS[index];
 }
 
-// std::vector<PDBXVALUE> AtomSite::values(std::string cif_tag) {
-//     std::vector<PDBXVALUE> values;
-//     std::map<int64_t, Atom> atoms = this->atoms();
-//     std::map<int64_t, Atom>::iterator atom_it;
-//     for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
-//         int64_t id = atom_it->first;
-//         values.push_back(this->value(id, cif_tag));
-//     }
-//     return values;
-// }
+std::vector<PDBXVALUE> AtomSite::values(std::string cif_tag) {
+    return this->m_data.values(cif_tag);
+}
 
 // PDBXVALUE AtomSite::value(int64_t id, std::string cif_tag) {
 //     return this->atom(id).at(cif_tag);

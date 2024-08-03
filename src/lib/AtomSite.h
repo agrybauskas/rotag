@@ -98,8 +98,8 @@ class AtomSite {
     const std::vector<std::string> names();
     const std::string name(int64_t);
     std::vector<PDBXVALUE> values(std::string);
-    PDBXVALUE value(int64_t, std::string);
-    PDBXVALUE value(int64_t, int64_t);
+    // PDBXVALUE value(int64_t, std::string);
+    // PDBXVALUE value(int64_t, int64_t);
     // void add_atom(int64_t, Atom);
     // std::vector<PDBXVALUE> ids();
     // void mark_selection(AtomSite&,
