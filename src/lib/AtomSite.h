@@ -14,8 +14,6 @@ extern "C" {
 
 #include "PDBx.h"
 
-// typedef std::map<std::string, PDBXVALUE> Atom;
-
 struct Selector {
     std::map<std::string, std::map<std::string, bool>> selection;
 
@@ -91,7 +89,7 @@ class AtomSite {
 
     const M_TAG_INDEX M_ID = ID;  // Declares UNIQUE ID for the class object.
 
-    // std::map<int64_t, Atom> m_atoms = {};
+    PDBx data;
 
  public:
     AtomSite();

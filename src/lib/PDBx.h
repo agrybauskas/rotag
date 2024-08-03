@@ -70,6 +70,7 @@ class PDBx {
     std::map<std::string, int64_t> in_loop;
 
  public:
+    PDBx();
     explicit PDBx(CIF*, std::vector<std::string>);
 
     std::vector<PDBXVALUE> values(std::string);

@@ -10,20 +10,10 @@ AtomSite::AtomSite(char* file_path, bool is_pdb = false) {
         cexception_t inner;
         CIF* cif = new_cif_from_cif_file(file_path, compiler_options, &inner);
 
-        PDBx pdbx(cif, this->M_TAGS);
+        // PDBx pdbx(cif, this->M_TAGS);
+        // this->data = pdbx;
 
         delete_cif(cif);
-
-        // std::vector<PDBXVALUE> id_values = pdbx.values(this->name(M_ID));
-        // for (int m_tag_index = GROUP_PDB;
-        //      m_tag_index <= ROTAG_SELECTION_GROUP;
-        //      m_tag_index++) {
-        //     for (size_t i = 0; i < id_values.size(); i++) {
-        //         this->m_atoms[id_values[i]].insert(
-        //             std::make_pair(this->name(m_tag_index),
-        //                            pdbx.value(this->name(m_tag_index), i)));
-        //     }
-        // }
     }
 }
 

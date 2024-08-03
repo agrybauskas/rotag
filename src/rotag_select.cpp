@@ -181,8 +181,8 @@ int main(int argc, char *argv[]) {
 
     Parameters parameters(progname);
 
-    // for (int index = optind; index < argc; index++) {
-    //     AtomSite atom_site(argv[index], is_pdb);
+    for (int index = optind; index < argc; index++) {
+        AtomSite atom_site(argv[index], is_pdb);
 
     //     std::set<int64_t> target_atom_ids = selection_parser(
     //         parameters, atom_site, target_cmd, random_seed, 1
@@ -191,7 +191,7 @@ int main(int argc, char *argv[]) {
     //     for (const int64_t& target_atom_id : target_atom_ids) {
     //         std::cout << target_atom_id << std::endl;
     //     }
-    // }
+    }
 
     return 0;
 }

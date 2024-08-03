@@ -1,5 +1,7 @@
 #include "PDBx.h"
 
+PDBx::PDBx() {}
+
 PDBx::PDBx(CIF* cif, std::vector<std::string> select_tags={}) {
     std::vector<std::string> cif_tags = {};
     if (select_tags.size() > 0) {
