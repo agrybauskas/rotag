@@ -30,31 +30,30 @@ Parameters::Parameters(char* program_file_path) {
 
     // "_rotag_atom_properties" category.
     for (size_t i = 0; i < pdbx.length("_rotag_force_field.cutoff_end"); i++) {
-    //     std::string type_symbol =
-    //         pdbx.values("_rotag_force_field.cutoff_end")[i];
-    //     std::string hybridization =
-    //         pdbx.values("_rotag_atom_properties.hybridization")[i];
+        std::string type_symbol =
+            pdbx.value("_rotag_force_field.cutoff_end", i);
+        std::string hybridization =
+            pdbx.value("_rotag_atom_properties.hybridization", i);
 
-    //     this->ATOM_PROPERTIES[type_symbol]
-    //         .covalent_radius[hybridization].value =
-    //         pdbx.values("_rotag_atom_properties.covalent_radius_value")[i];
-    //     this->ATOM_PROPERTIES[type_symbol]
-    //         .covalent_radius[hybridization].error =
-    //         pdbx.values("_rotag_atom_properties.covalent_radius_error")[i];
-    //     this->ATOM_PROPERTIES[type_symbol].vdw_radius =
-    //         pdbx.values("_rotag_atom_properties.vdw_radius")[i];
-    //     this->ATOM_PROPERTIES[type_symbol].lone_pair_count =
-    //         pdbx.values("_rotag_atom_properties.lone_pair_count")[i];
-    //     this->ATOM_PROPERTIES[type_symbol].valence =
-    //         pdbx.values("_rotag_atom_properties.valence")[i];
+        this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value=
+            pdbx.value("_rotag_atom_properties.covalent_radius_value", i);
+        this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].error=
+            pdbx.value("_rotag_atom_properties.covalent_radius_error", i);
+        this->ATOM_PROPERTIES[type_symbol].vdw_radius =
+            pdbx.value("_rotag_atom_properties.vdw_radius", i);
+        this->ATOM_PROPERTIES[type_symbol].lone_pair_count =
+            pdbx.value("_rotag_atom_properties.lone_pair_count", i);
+        this->ATOM_PROPERTIES[type_symbol].valence =
+            pdbx.value("_rotag_atom_properties.valence", i);
 
-    //     // Used for edge length of the grid during cubing procedure algorithm.
-    //     if (this->ATOM_PROPERTIES[type_symbol].covalent_radius[hybridization].value >
-    //         this->max_connection_length) {
-    //         this->max_connection_length =
-    //             this->ATOM_PROPERTIES[type_symbol]
-    //                 .covalent_radius[hybridization].value;
-    //     }
+        // Used for edge length of the grid during cubing procedure algorithm.
+        if (this->ATOM_PROPERTIES[type_symbol]
+                .covalent_radius[hybridization].value >
+            this->max_connection_length) {
+            this->max_connection_length =
+                this->ATOM_PROPERTIES[type_symbol]
+                    .covalent_radius[hybridization].value;
+        }
 
     //     /* Covalent radii are stored in list as it will be much more easier and
     //        cleaner to calculate bond length combinations.

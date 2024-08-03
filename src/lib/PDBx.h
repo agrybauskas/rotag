@@ -75,6 +75,7 @@ class PDBx {
     std::vector<PDBXVALUE> values(std::string);
     PDBXVALUE value(std::string);
     PDBXVALUE value(std::string, size_t);
+    size_t length(std::string);
 };
 
 #endif  // SRC_LIB_PDBX_H_

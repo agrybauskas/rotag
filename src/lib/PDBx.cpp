@@ -55,3 +55,7 @@ PDBXVALUE PDBx::value(std::string cif_tag, size_t index) {
         return PDBXVALUE(".");
     }
 }
+
+size_t PDBx::length(std::string cif_tag) {
+    return this->data[cif_tag].size();
+}
