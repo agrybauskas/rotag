@@ -2,38 +2,38 @@
 
 AtomSite::AtomSite() {}
 
-// AtomSite::AtomSite(char* file_path, bool is_pdb = false) {
-//     if (is_pdb) {
-//         /* gemmi::Structure structure = gemmi::read_pdb_file(file_path); */
-//     } else {
-//         cif_option_t compiler_options = cif_option_default();
-//         cexception_t inner;
-//         CIF* cif = new_cif_from_cif_file(file_path, compiler_options, &inner);
+AtomSite::AtomSite(char* file_path, bool is_pdb = false) {
+    if (is_pdb) {
+        /* gemmi::Structure structure = gemmi::read_pdb_file(file_path); */
+    } else {
+        cif_option_t compiler_options = cif_option_default();
+        cexception_t inner;
+        CIF* cif = new_cif_from_cif_file(file_path, compiler_options, &inner);
 
-//         PDBx pdbx(cif, this->M_TAGS);
+        PDBx pdbx(cif, this->M_TAGS);
 
-//         delete_cif(cif);
+        delete_cif(cif);
 
-//         std::vector<PDBXVALUE> id_values = pdbx.values(this->name(M_ID));
-//         for (int m_tag_index = GROUP_PDB;
-//              m_tag_index <= ROTAG_SELECTION_GROUP;
-//              m_tag_index++) {
-//             for (size_t i = 0; i < id_values.size(); i++) {
-//                 this->m_atoms[id_values[i]].insert(
-//                     std::make_pair(this->name(m_tag_index),
-//                                    pdbx.value(this->name(m_tag_index), i)));
-//             }
-//         }
-//     }
-// }
+        // std::vector<PDBXVALUE> id_values = pdbx.values(this->name(M_ID));
+        // for (int m_tag_index = GROUP_PDB;
+        //      m_tag_index <= ROTAG_SELECTION_GROUP;
+        //      m_tag_index++) {
+        //     for (size_t i = 0; i < id_values.size(); i++) {
+        //         this->m_atoms[id_values[i]].insert(
+        //             std::make_pair(this->name(m_tag_index),
+        //                            pdbx.value(this->name(m_tag_index), i)));
+        //     }
+        // }
+    }
+}
 
-// const std::vector<std::string> AtomSite::names() {
-//     return this->M_TAGS;
-// }
+const std::vector<std::string> AtomSite::names() {
+    return this->M_TAGS;
+}
 
-// const std::string AtomSite::name(int64_t index) {
-//     return this->M_TAGS[index];
-// }
+const std::string AtomSite::name(int64_t index) {
+    return this->M_TAGS[index];
+}
 
 // std::map<int64_t, Atom> AtomSite::atoms() {
 //     return this->m_atoms;

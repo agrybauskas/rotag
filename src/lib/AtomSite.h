@@ -97,8 +97,8 @@ class AtomSite {
     AtomSite();
     explicit AtomSite(char*, bool);
 
-    // const std::vector<std::string> names();
-    // const std::string name(int64_t);
+    const std::vector<std::string> names();
+    const std::string name(int64_t);
     // std::map<int64_t, Atom> atoms();
     // Atom atom(int64_t);
     // std::vector<PDBXVALUE> values(std::string);
