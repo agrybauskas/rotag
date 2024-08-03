@@ -10,8 +10,8 @@ AtomSite::AtomSite(char* file_path, bool is_pdb = false) {
         cexception_t inner;
         CIF* cif = new_cif_from_cif_file(file_path, compiler_options, &inner);
 
-        // PDBx pdbx(cif, this->M_TAGS);
-        // this->data = pdbx;
+        PDBx pdbx(cif, this->M_TAGS);
+        this->m_data = pdbx;
 
         delete_cif(cif);
     }
@@ -24,14 +24,6 @@ const std::vector<std::string> AtomSite::names() {
 const std::string AtomSite::name(int64_t index) {
     return this->M_TAGS[index];
 }
-
-// std::map<int64_t, Atom> AtomSite::atoms() {
-//     return this->m_atoms;
-// }
-
-// Atom AtomSite::atom(int64_t id) {
-//     return this->m_atoms.at(id);
-// }
 
 // std::vector<PDBXVALUE> AtomSite::values(std::string cif_tag) {
 //     std::vector<PDBXVALUE> values;
