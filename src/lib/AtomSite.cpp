@@ -34,13 +34,13 @@ std::vector<PDBXVALUE> AtomSite::values(std::string cif_tag) {
     return this->m_data.values(cif_tag);
 }
 
-// PDBXVALUE AtomSite::value(int64_t id, std::string cif_tag) {
-//     return this->atom(id).at(cif_tag);
-// }
+PDBXVALUE AtomSite::value(int64_t id, std::string cif_tag) {
+    return this->m_data.values(cif_tag).at(this->m_id_to_index[id]);
+}
 
-// PDBXVALUE AtomSite::value(int64_t id, int64_t index) {
-//     return this->atom(id).at(this->name(index));
-// }
+PDBXVALUE AtomSite::value(int64_t id, int64_t index) {
+    return this->m_data.values(this->name(index)).at(this->m_id_to_index[id]);
+}
 
 // void AtomSite::add_atom(int64_t id, Atom atom) {
 //     this->m_atoms.insert(std::make_pair(id, atom));
