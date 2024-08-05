@@ -46,9 +46,9 @@ PDBXVALUE AtomSite::value(int64_t id, int64_t index) {
 //     this->m_atoms.insert(std::make_pair(id, atom));
 // }
 
-// std::vector<PDBXVALUE> AtomSite::ids() {
-//     return this->values(this->name(M_ID));
-// }
+std::vector<PDBXVALUE> AtomSite::ids() {
+    return this->m_data.values(this->name(M_ID));
+}
 
 // void AtomSite::mark_selection(AtomSite& atom_site,
 //                               std::vector<int64_t> target_atom_ids,
