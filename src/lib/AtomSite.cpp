@@ -14,7 +14,7 @@ AtomSite::AtomSite(char* file_path, bool is_pdb = false) {
         this->m_data = pdbx;
 
         // NOTE: needs to be refactored and ID standardised.
-        for (size_t i = 0; i <= this->m_data.length(this->name(ID)); i++) {
+        for (size_t i = 0; i < this->m_data.length(this->name(ID)); i++) {
             m_id_to_index[this->m_data.value(this->name(ID), i)] = i;
         }
 
