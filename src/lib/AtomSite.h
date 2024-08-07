@@ -108,6 +108,6 @@ class AtomSite {
     //                     std::vector<int64_t> = {});
 };
 
-// AtomSite filter(AtomSite&, Selector = {{}}, Selector = {{}});
+AtomSite filter(AtomSite&, Selector = {{}}, Selector = {{}});
 
 #endif  // SRC_LIB_ATOMSITE_H_

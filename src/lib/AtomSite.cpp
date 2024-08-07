@@ -75,15 +75,15 @@ std::vector<PDBXVALUE> AtomSite::ids() {
 //     }
 // }
 
-// AtomSite filter(AtomSite& atom_site,
-//                 Selector include,
-//                 Selector exclude) {
-//     if (atom_site.atoms().empty()) {
-//         /* TODO(algirdas): Error or warning. Message: no atoms were loaded from
-//            "_atom_site".*/
-//     }
+AtomSite filter(AtomSite& atom_site,
+                Selector include,
+                Selector exclude) {
+    if (atom_site.ids().empty()) {
+        /* TODO(algirdas): Error or warning. Message: no atoms were loaded from
+           "_atom_site".*/
+    }
 
-//     AtomSite filtered_atom_site;
+    AtomSite filtered_atom_site;
 //     std::map<int64_t, Atom> atoms = atom_site.atoms();
 //     std::map<int64_t, Atom>::iterator atom_it;
 //     for (atom_it = atoms.begin(); atom_it != atoms.end(); ++atom_it) {
@@ -116,5 +116,5 @@ std::vector<PDBXVALUE> AtomSite::ids() {
 //         filtered_atom_site.add_atom(id, atom_site.atom(id));
 //     }
 
-//     return filtered_atom_site;
-// }
+    return filtered_atom_site;
+}
