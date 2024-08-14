@@ -12,6 +12,7 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      generate_pseudo
                      generate_rotamer
                      lowest_energy_state
+                     pairwise_rotamer_energy
                      replace_with_rotamer );
 }
 
@@ -1269,6 +1270,69 @@ sub default_bond_parameter_values
                     1,
                     ( $bond_parameter_type eq 'dihedral_angle' ? 0 : 1 )
                 ) } ];
+}
+
+#
+# Checks pairwise energies between rotamer and interaction site.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $rotamer_site - atom site data structure (see PDBxParser) for the rotamer;
+#     $interaction_site - atom site data structure (see PDBxParser) for the
+#     rotamer-interacting atoms;
+#     $non_bonded_potential - non-bonded potential.
+# Output:
+#     $rotamer_energy_sum - sum of rotamer energies between interacting atoms.
+#
+
+sub pairwise_rotamer_energy
+{
+    # NOTE: bonded potential could be added for disulfide bridge.
+    my ( $parameters, $rotamer_site, $interaction_site,
+         $non_bonded_potential ) = @_;
+
+    my $energy_cutoff_atom =
+        $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    my $interaction_atom_names =
+        $parameters->{'_[local]_interaction_atom_names'};
+
+    my @rotamer_atom_ids =
+        sort keys %{ filter_new( $rotamer_site,
+                                 { 'exclude' =>
+                                       { 'label_atom_id' =>
+                                             $interaction_atom_names } } ) };
+    my @interaction_atom_ids =
+        sort keys %{ filter_new( $interaction_site,
+                                 { 'exclude' =>
+                                       { 'label_atom_id' =>
+                                             $interaction_atom_names } } ) };
+
+    # HACK: make sure that $interaction_site atom ids are updated by
+    # %rotamer_site.
+    my %rotamer_interaction_site =
+        ( %{ $interaction_site }, %{ $rotamer_site } );
+
+    my $rotamer_energy_sum = 0;
+    for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+        for my $neighbour_atom_id ( @interaction_atom_ids ) {
+            if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
+                ( ! is_neighbour( \%rotamer_interaction_site,
+                                  $rotamer_atom_id,
+                                  $neighbour_atom_id ) ) &&
+                ( ! is_second_neighbour( \%rotamer_interaction_site,
+                                         $rotamer_atom_id,
+                                         $neighbour_atom_id ) ) ){
+                $rotamer_energy_sum +=
+                    $non_bonded_potential->(
+                        $parameters,
+                        $rotamer_interaction_site{$rotamer_atom_id},
+                        $rotamer_interaction_site{$neighbour_atom_id},
+                        { 'atom_site' => \%rotamer_interaction_site }
+                    );
+            }
+        }
+    }
+
+    return $rotamer_energy_sum;
 }
 
 1;
