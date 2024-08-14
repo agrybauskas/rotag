@@ -35,6 +35,11 @@ Options:
                             soft_n       - soft sphere n.
  
                         Example: 'lj_k=0.01, c_k=0.4'.
+    --pairwise
+                        additionally calculates pairwise non-bonded energies
+                        between side-chain atoms and removes those rotamers
+                        that do not have possible conformations to keep total
+                        energy below the threshold.
     -a, -b, --angles, --bond-parameters <bond-parameters>
                         bond parameters that each bond parameter is changed by
                         and expressed in special grammar:
