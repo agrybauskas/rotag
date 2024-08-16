@@ -391,13 +391,13 @@ for my $pdbx_file ( @ARGV ) {
 
         if( exists $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}
                                                {'data'} ) {
-            # $pdbx_data->{'_[local]_pairwise_energy'} =
-            #     $pairwise_rotamer_energies->{'_[local]_pairwise_energy'};
-            # for my $pair_energy_entry (
-            #     @{ $pdbx_data->{'_[local]_pairwise_energy'}{'data'} } ) {
-            #     $pair_energy_entry->{'value'} =
-            #         sprintf $sig_figs_max, $pair_energy_entry->{'value'};
-            # }
+            $pdbx_data->{'_[local]_pairwise_energy'} =
+                $pairwise_rotamer_energies->{'_[local]_pairwise_energy'};
+            for my $pair_energy_entry (
+                @{ $pdbx_data->{'_[local]_pairwise_energy'}{'data'} } ) {
+                $pair_energy_entry->{'value'} =
+                    sprintf $sig_figs_max, $pair_energy_entry->{'value'};
+            }
         }
     }
 
