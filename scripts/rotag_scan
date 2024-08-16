@@ -378,27 +378,27 @@ for my $pdbx_file ( @ARGV ) {
         my $rotamer_energies =
             $pdbx_data->{'_[local]_rotamer_energy'}{'data'};
 
-        # my $sidechain_interactions = SidechainInteractions->new(
-        #     $parameters, $atom_site, $rotamer_bond_parameters, $rotamer_energies
-        # );
-        # $sidechain_interactions->predict( {
-        #     'non_bonded_potential' => \&ForceField::NonBonded::general,
-        #     'program_called_by' => $0,
-        #     'verbose' => $verbose,
-        # } );
-        # my $pairwise_rotamer_energies =
-        #     $sidechain_interactions->get_pairwise_rotamer_energies();
+        my $sidechain_interactions = SidechainInteractions->new(
+            $parameters, $atom_site, $rotamer_bond_parameters, $rotamer_energies
+        );
+        $sidechain_interactions->predict( {
+            'non_bonded_potential' => \&ForceField::NonBonded::general,
+            'program_called_by' => $0,
+            'verbose' => $verbose,
+        } );
+        my $pairwise_rotamer_energies =
+            $sidechain_interactions->get_pairwise_rotamer_energies();
 
-        # if( exists $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}
-        #                                        {'data'} ) {
-        #     $pdbx_data->{'_[local]_pairwise_energy'} =
-        #         $pairwise_rotamer_energies->{'_[local]_pairwise_energy'};
-        #     for my $pair_energy_entry (
-        #         @{ $pdbx_data->{'_[local]_pairwise_energy'}{'data'} } ) {
-        #         $pair_energy_entry->{'value'} =
-        #             sprintf $sig_figs_max, $pair_energy_entry->{'value'};
-        #     }
-        # }
+        if( exists $pairwise_rotamer_energies->{'_[local]_pairwise_energy'}
+                                               {'data'} ) {
+            # $pdbx_data->{'_[local]_pairwise_energy'} =
+            #     $pairwise_rotamer_energies->{'_[local]_pairwise_energy'};
+            # for my $pair_energy_entry (
+            #     @{ $pdbx_data->{'_[local]_pairwise_energy'}{'data'} } ) {
+            #     $pair_energy_entry->{'value'} =
+            #         sprintf $sig_figs_max, $pair_energy_entry->{'value'};
+            # }
+        }
     }
 
     if( $output_format eq 'pdbx' ) {
