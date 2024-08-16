@@ -53,118 +53,120 @@ sub new
                  'rotamer_angles' => undef,
                  'rotamer_energies' => undef };
 
-    # my %residue_to_rotamers = ();
-    # for my $rotamer_angle_id ( keys %{ $rotamer_angles } ) {
-    #     my $rotamer_angle = $rotamer_angles->{$rotamer_angle_id};
-    #     my $rotamer_id = $rotamer_angle->{'rotamer_id'};
-    #     my $unique_residue_key =
-    #         sprintf '%s,%s,%s,%s',
-    #         $rotamer_angle->{'label_seq_id'},
-    #         $rotamer_angle->{'label_asym_id'},
-    #         $rotamer_angle->{'pdbx_PDB_model_num'},
-    #         $rotamer_angle->{'label_alt_id'};
+    my %residue_to_rotamers = ();
+    for my $rotamer_angle ( @{ $rotamer_angles } ) {
+        my $rotamer_angle_id = $rotamer_angle->{'id'};
+        my $rotamer_id = $rotamer_angle->{'rotamer_id'};
+        my $unique_residue_key =
+            sprintf '%s,%s,%s,%s,%s,%s',
+            $rotamer_angle->{'label_seq_id'},
+            $rotamer_angle->{'label_asym_id'},
+            $rotamer_angle->{'pdbx_PDB_model_num'},
+            $rotamer_angle->{'label_alt_id'},
+            $rotamer_angle->{'auth_seq_id'},
+            $rotamer_angle->{'auth_asym_id'};
 
-    #     $residue_to_rotamers{$unique_residue_key}{$rotamer_id} = 1;
-    #     $self->{'rotamer_angles'}{$rotamer_id}{$rotamer_angle_id} =
-    #         $rotamer_angle;
-    # }
+        $residue_to_rotamers{$unique_residue_key}{$rotamer_id} = 1;
+        $self->{'rotamer_angles'}{$rotamer_id}{$rotamer_angle_id} =
+            $rotamer_angle;
+    }
 
-    # # Determining interaction grid.
-    # my $edge_length_interaction =
-    #     $parameters->{'_[local]_constants'}{'edge_length_interaction'};
+    # Determining interaction grid.
+    my $edge_length_interaction =
+        $parameters->{'_[local]_constants'}{'edge_length_interaction'};
 
-    # # Chooses only CA atoms, because from them, boundary interaction conditions
-    # # are measured.
-    # my $atom_site_cas =
-    #     filter_new( $atom_site,
-    #                 { 'include' =>
-    #                   { 'label_atom_id' => [ 'CA' ] } } );
-    # my ( $grid_box_cas, $grid_ca_atom_pos ) =
-    #     grid_box( $parameters, $atom_site_cas, $edge_length_interaction,
-    #               extract( $atom_site_cas,
-    #                        { 'data' => [ 'id' ], 'is_list' => 1 } ) );
-    # my $neighbouring_cells_cas =
-    #     identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
+    # Chooses only CA atoms, because from them, boundary interaction conditions
+    # are measured.
+    my $atom_site_cas =
+        filter_new( $atom_site,
+                    { 'include' =>
+                      { 'label_atom_id' => [ 'CA' ] } } );
+    my ( $grid_box_cas, $grid_ca_atom_pos ) =
+        grid_box( $parameters, $atom_site_cas, $edge_length_interaction,
+                  extract( $atom_site_cas,
+                           { 'data' => [ 'id' ], 'is_list' => 1 } ) );
+    my $neighbouring_cells_cas =
+        identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
 
-    # for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
-    #     for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
-    #         my $unique_residue_key =
-    #             unique_residue_key( $atom_site->{$atom_id} );
+    for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
+        for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
+            my $unique_residue_key =
+                unique_residue_key( $atom_site->{$atom_id} );
 
-    #         if( ! exists $self->{'residue_atom_site'}{$unique_residue_key} ) {
-    #             my $residue_site =
-    #                 filter_by_unique_residue_key( $atom_site,
-    #                                               $unique_residue_key,
-    #                                               1 );
+            if( ! exists $self->{'residue_atom_site'}{$unique_residue_key} ) {
+                my $residue_site =
+                    filter_by_unique_residue_key( $atom_site,
+                                                  $unique_residue_key,
+                                                  1 );
 
-    #             connect_atoms( $parameters, $residue_site );
-    #             hybridization( $parameters, $residue_site );
-    #             rotation_translation( $parameters, $residue_site );
+                connect_atoms( $parameters, $residue_site );
+                hybridization( $parameters, $residue_site );
+                rotation_translation( $parameters, $residue_site );
 
-    #             $self->{'residue_atom_site'}{$unique_residue_key} =
-    #                 $residue_site;
-    #         }
+                $self->{'residue_atom_site'}{$unique_residue_key} =
+                    $residue_site;
+            }
 
-    #         my @rotamer_ids =
-    #             keys %{ $residue_to_rotamers{$unique_residue_key} };
+            my @rotamer_ids =
+                keys %{ $residue_to_rotamers{$unique_residue_key} };
 
-    #         for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
-    #             my $neighbour_unique_residue_key =
-    #                 unique_residue_key( $atom_site->{$neighbour_atom_id} );
+            for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
+                my $neighbour_unique_residue_key =
+                    unique_residue_key( $atom_site->{$neighbour_atom_id} );
 
-    #             next if $unique_residue_key eq $neighbour_unique_residue_key;
+                next if $unique_residue_key eq $neighbour_unique_residue_key;
 
-    #             $self->{'residue_pairs'}{$unique_residue_key}
-    #                                     {$neighbour_unique_residue_key} = 1;
-    #             $self->{'residue_pairs'}{$neighbour_unique_residue_key}
-    #                                     {$unique_residue_key} = 1;
+                $self->{'residue_pairs'}{$unique_residue_key}
+                                        {$neighbour_unique_residue_key} = 1;
+                $self->{'residue_pairs'}{$neighbour_unique_residue_key}
+                                        {$unique_residue_key} = 1;
 
-    #             if( ! exists $self->{'residue_atom_site'}
-    #                                 {$neighbour_unique_residue_key} ) {
-    #                 my $neighbour_residue_site =
-    #                     filter_by_unique_residue_key(
-    #                         $atom_site,
-    #                         $neighbour_unique_residue_key,
-    #                         1
-    #                     );
+                if( ! exists $self->{'residue_atom_site'}
+                                    {$neighbour_unique_residue_key} ) {
+                    my $neighbour_residue_site =
+                        filter_by_unique_residue_key(
+                            $atom_site,
+                            $neighbour_unique_residue_key,
+                            1
+                        );
 
-    #                 connect_atoms( $parameters, $neighbour_residue_site );
-    #                 hybridization( $parameters, $neighbour_residue_site );
-    #                 rotation_translation( $parameters, $neighbour_residue_site );
+                    connect_atoms( $parameters, $neighbour_residue_site );
+                    hybridization( $parameters, $neighbour_residue_site );
+                    rotation_translation( $parameters, $neighbour_residue_site );
 
-    #                 $self->{'residue_atom_site'}{$neighbour_unique_residue_key}=
-    #                     $neighbour_residue_site;
-    #             }
+                    $self->{'residue_atom_site'}{$neighbour_unique_residue_key}=
+                        $neighbour_residue_site;
+                }
 
-    #             my $bond_length = bond_length(
-    #                 [ [ map { $atom_site->{$atom_id}{$_} }
-    #                         ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
-    #                   [ map { $atom_site->{$neighbour_atom_id}{$_} }
-    #                         ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
-    #             );
+                my $bond_length = bond_length(
+                    [ [ map { $atom_site->{$atom_id}{$_} }
+                            ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ],
+                      [ map { $atom_site->{$neighbour_atom_id}{$_} }
+                            ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ] ]
+                );
 
-    #             next if $bond_length > $edge_length_interaction;
+                next if $bond_length > $edge_length_interaction;
 
-    #             my @neighbour_rotamer_ids =
-    #                 keys %{$residue_to_rotamers{$neighbour_unique_residue_key}};
+                my @neighbour_rotamer_ids =
+                    keys %{$residue_to_rotamers{$neighbour_unique_residue_key}};
 
-    #             for my $rotamer_id ( @rotamer_ids ) {
-    #                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
-    #                     $self->{'rotamer_pairs'}
-    #                            {$unique_residue_key}
-    #                            {$rotamer_id}
-    #                            {$neighbour_rotamer_id} =
-    #                         1;
-    #                     $self->{'rotamer_pairs'}
-    #                            {$neighbour_unique_residue_key}
-    #                            {$neighbour_rotamer_id}
-    #                            {$rotamer_id} =
-    #                         1;
-    #                 }
-    #             }
-    #         }
-    #     }
-    # }
+                for my $rotamer_id ( @rotamer_ids ) {
+                    for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
+                        $self->{'rotamer_pairs'}
+                               {$unique_residue_key}
+                               {$rotamer_id}
+                               {$neighbour_rotamer_id} =
+                            1;
+                        $self->{'rotamer_pairs'}
+                               {$neighbour_unique_residue_key}
+                               {$neighbour_rotamer_id}
+                               {$rotamer_id} =
+                            1;
+                    }
+                }
+            }
+        }
+    }
 
     return bless $self, $class;
 }
