@@ -23,7 +23,7 @@ use PseudoAtoms qw( pairwise_rotamer_energy
                     replace_with_rotamer );
 use Grid qw( grid_box
              identify_neighbour_cells );
-use SidechainModels qw( rotation_only );
+use SidechainModels qw( rotation_translation );
 
 use Version qw( $VERSION );
 
@@ -99,7 +99,7 @@ sub new
 
                 connect_atoms( $parameters, $residue_site );
                 hybridization( $parameters, $residue_site );
-                rotation_only( $parameters, $residue_site );
+                rotation_translation( $parameters, $residue_site );
 
                 $self->{'residue_atom_site'}{$unique_residue_key} =
                     $residue_site;
@@ -130,7 +130,7 @@ sub new
 
                     connect_atoms( $parameters, $neighbour_residue_site );
                     hybridization( $parameters, $neighbour_residue_site );
-                    rotation_only( $parameters, $neighbour_residue_site );
+                    rotation_translation( $parameters, $neighbour_residue_site );
 
                     $self->{'residue_atom_site'}{$neighbour_unique_residue_key}=
                         $neighbour_residue_site;
