@@ -373,11 +373,13 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     if( $calc_pairwise ) {
-        my $rotamer_angles = $pdbx_data->{'_[local]_rotamer_angle'}{'data'};
-        my $rotamer_energies = $pdbx_data->{'_[local]_rotamer_energy'}{'data'};
+        my $rotamer_bond_parameters =
+            $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'};
+        my $rotamer_energies =
+            $pdbx_data->{'_[local]_rotamer_energy'}{'data'};
 
         # my $sidechain_interactions = SidechainInteractions->new(
-        #     $parameters, $atom_site, $rotamer_angles, $rotamer_energies
+        #     $parameters, $atom_site, $rotamer_bond_parameters, $rotamer_energies
         # );
         # $sidechain_interactions->predict( {
         #     'non_bonded_potential' => \&ForceField::NonBonded::general,
