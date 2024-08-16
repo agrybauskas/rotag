@@ -370,6 +370,11 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
+    if( $calc_pairwise ) {
+        my $rotamer_angles = $pdbx_data->{'_[local]_rotamer_angle'}{'data'};
+        my $rotamer_energies = $pdbx_data->{'_[local]_rotamer_energy'}{'data'};
+    }
+
     if( $output_format eq 'pdbx' ) {
         to_pdbx( $pdbx_data,
                  { 'add_attributes' =>
