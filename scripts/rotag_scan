@@ -110,6 +110,7 @@ our $VERSION = $VERSION;
 
 my $interactions = 'composite';
 my $calc_hetatoms = 0;
+my $calc_pairwise = 0;
 my $bond_parameters_qs = '';
 my $in_radians = 0;
 my $rand_seed;
@@ -138,6 +139,7 @@ GetOptions(
     'potential|u=s' => \$interactions,
     'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
     'parameters|p=s' => \$parameters_cmd,
+    'pairwise' => sub { $calc_pairwise = 1 },
     'json-parameters|j=s' => \$parameters_json_cmd,
     'bond-parameters|angles|b|a=s' => \$bond_parameters_qs,
     'rand-seed|x=s' => \$rand_seed,
