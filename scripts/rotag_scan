@@ -407,7 +407,6 @@ for my $pdbx_file ( @ARGV ) {
                        { '_atom_site' => [ '[local]_selection_state' ] },
                    'tags' => [ @tags,
                                ( defined $pdbx_data->{'_[local]_pairwise_energy'}
-                                                     {'_[local]_pairwise_energy'}
                                                      {'data'} ?
                                  ( '_[local]_pairwise_energy' ) : () ),
                                ( defined $struct_conn ?
