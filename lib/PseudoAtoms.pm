@@ -700,6 +700,7 @@ sub calc_favourable_angles
     my $start_atom_ids =
         filter_new( $residue_site,
                     { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] },
+                      'exclude' => { 'group_PDB' => [ 'HETATM' ] },
                       'return_data' => 'id' } );
 
     my %visited_atom_ids = map { $_ => 1 } @{ $start_atom_ids };
