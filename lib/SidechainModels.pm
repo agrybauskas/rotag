@@ -259,7 +259,8 @@ sub bond_stretching_matrices
                 ( 1, 0 );
         my @mid_connections = # Excludes up atom.
             grep { $_ ne $up_atom_id }
-                @{ $ref_atom_site->{$mid_atom_id}{'connections'} };
+                 ( @{ $ref_atom_site->{$mid_atom_id}{'connections'} },
+                   @{ $ref_atom_site->{$mid_atom_id}{'connections_hetatom'} } );
         my ( $side_atom_id ) =
             @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
 
