@@ -138,8 +138,8 @@ sub torsion_components
                         "$alt_second_atom_name,$alt_third_atom_name",
                         "$alt_third_atom_name,$alt_second_atom_name," .
                         "$alt_neighbour_atom_name,$alt_atom_name",
-                        "?,$alt_neighbour_atom_name,$alt_second_atom_name,?",
-                        "?,$alt_second_atom_name,$alt_neighbour_atom_name,?",
+                        "*,$alt_neighbour_atom_name,$alt_second_atom_name,*",
+                        "*,$alt_second_atom_name,$alt_neighbour_atom_name,*",
                     );
                     for my $torsion_angle_key ( @torsion_angle_keys ) {
                         if( defined $torsional->{$torsion_angle_key} ) {
