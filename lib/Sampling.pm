@@ -114,12 +114,6 @@ sub sample_angles_qs_parsing
     my %angles;
     for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
         for my $angle_name ( sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
-            if( $residue_name eq '.' ) {
-                $residue_name = '*'
-            }
-            if( $angle_name eq '.' ) {
-                $angle_name = '*'
-            }
             my ( $angle_start, $angle_step, $angle_end ) =
                 retrieve_dihedral_angle_params( $dihedral_angle_restraints,
                                                 $residue_name,
@@ -238,10 +232,7 @@ sub sample_bond_parameters_qs_parsing
     for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
         for my $dihedral_angle_name (
             sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
-            if( $residue_name eq '.' ) {
-                $residue_name = '*';
-            }
-            if( $dihedral_angle_name eq '.' ) {
+            if( $dihedral_angle_name eq '*' ) {
                 $dihedral_angle_name = '*-*-*-*';
             }
             my ( $dihedral_angle_start,
@@ -392,11 +383,11 @@ sub retrieve_dihedral_angle_params
         my $residue_specific =
             $dihedral_angle_restraints->{$residue_name}{'.'}{$param};
         my $nonspecific =
-            $dihedral_angle_restraints->{'.'}{'.'}{$param};
+            $dihedral_angle_restraints->{'*'}{'*'}{$param};
 
-        if( defined $angle_specific && $angle_specific ne '.' ) {
+        if( defined $angle_specific && $angle_specific ne '*' ) {
             $params{$param} = $angle_specific;
-        } elsif( defined $residue_specific && $residue_specific ne '.' ) {
+        } elsif( defined $residue_specific && $residue_specific ne '*' ) {
             $params{$param} = $residue_specific;
         } else {
             $params{$param} = $nonspecific;
