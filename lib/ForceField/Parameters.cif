@@ -11,7 +11,7 @@ _[local]_force_field.cutoff_start       2.50
 _[local]_force_field.cutoff_end         5.00
 _[local]_force_field.cutoff_metalc      2.50
 _[local]_force_field.cutoff_hydrog      1.50
-_[local]_force_field.description  'Parameter weights were optimized using particle swarm optimization algorithm.'
+_[local]_force_field.description 'Parameter weights were optimized using particle swarm optimization algorithm.'
 #
 loop_
 _[local]_atom_properties.type_symbol
@@ -32,7 +32,7 @@ N sp2  0.60 0.06 1.66 1    3 'Pyykko et al., 2005, Cordero et al., 2008, Pyykko 
 O sp3  0.66 0.02 1.50 2    2 'Pyykko et al., 2005, Cordero et al., 2008, Pyykko and Atsumi et al., 2009 for covalent radius; Bondi et al., 1964 for vdW radius.'
 O sp2  0.57 0.07 1.50 2    2 'Pyykko et al., 2005, Cordero et al., 2008, Pyykko and Atsumi et al., 2009 for covalent radius; Bondi et al., 1964 for vdW radius.'
 S sp3  1.05 0.03 1.89 2    2 'Pyykko et al., 2005, Cordero et al., 2008, Pyykko and Atsumi et al., 2009 for covalent radius; Bondi et al., 1964 for vdW radius.'
-P .    1.07 0.03 1.90 0    5 'Pyykko et al., 2005, Cordero et al., 2008, Pyykko and Atsumi et al., 2009 for covalent radius; Bondi et al., 1964 for vdW radius.'
+P ?    1.07 0.03 1.90 0    5 'Pyykko et al., 2005, Cordero et al., 2008, Pyykko and Atsumi et al., 2009 for covalent radius; Bondi et al., 1964 for vdW radius.'
 BR sp3 1.20 0.05 1.85 3    1 'Pyykko et al., 2005, Cordero et al., 2008, Pyykko and Atsumi et al., 2009 for covalent radius; Bondi et al., 1964 for vdW radius.'
 MG .   1.39 0    1.73 0    0 'Pyykko and Atsumi et al., 2009 for covalent radius; Bondi et al., 1964 for vdW radius.'
 CA .   1.71 0    2.31 0    0 'Pyykko and Atsumi et al., 2009 for covalent radius; Mantina et al., 2009 for vdW radius.'
