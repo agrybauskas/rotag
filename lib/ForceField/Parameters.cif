@@ -49,7 +49,7 @@ _[local]_lennard_jones.type_symbol
 _[local]_lennard_jones.sigma
 _[local]_lennard_jones.epsilon
 _[local]_lennard_jones.description
-.  0.00  0.000 'Dummy points'
+*  0.00  0.000 'Dummy points'
 C  4.00  0.150 'Huey et al., 2007'
 H  2.00  0.020 'Huey et al., 2007'
 N  3.50  0.160 'Huey et al., 2007'
@@ -68,7 +68,7 @@ _[local]_partial_charge.label_comp_id
 _[local]_partial_charge.label_atom_id
 _[local]_partial_charge.value
 _[local]_partial_charge.description
-.   .    0.00    'Partial charge between two dummy points.'
+*   *    0.00    'Partial charge between two dummy points.'
 ALA C    0.57    'Duan et al., 2003'
 ALA CA   -0.028  'Duan et al., 2003'
 ALA CB   -0.23   'Duan et al., 2003'
