@@ -7853,56 +7853,56 @@ $VAR1 = bless( {
     }
   },
   '_[local]_dihedral_angle_name' => {
-    '.' => {
-      '.-CA-CB-.' => 'chi1',
-      '.-CB-CG-.' => 'chi2',
-      '.-CB-CG1-.' => 'chi2',
-      '.-CB-CG2-.' => 'chi3',
-      '.-CG-CD-.' => 'chi3',
+    '*' => {
+      '*-CA-CB-*' => 'chi1',
+      '*-CB-CG-*' => 'chi2',
+      '*-CB-CG1-*' => 'chi2',
+      '*-CB-CG2-*' => 'chi3',
+      '*-CG-CD-*' => 'chi3',
       'C-N-CA-C' => 'phi',
       'CA-C-N-CA' => 'omega',
       'N-CA-C-N' => 'psi'
     },
     'ARG' => {
-      '.-CD-NE-.' => 'chi4'
+      '*-CD-NE-*' => 'chi4'
     },
     'CYS' => {
-      '.-CB-SG-.' => 'chi2'
+      '*-CB-SG-*' => 'chi2'
     },
     'ILE' => {
-      '.-CG1-CD1-.' => 'chi4'
+      '*-CG1-CD1-*' => 'chi4'
     },
     'LEU' => {
-      '.-CG-CD1-.' => 'chi3',
-      '.-CG-CD2-.' => 'chi4'
+      '*-CG-CD1-*' => 'chi3',
+      '*-CG-CD2-*' => 'chi4'
     },
     'LYS' => {
-      '.-CD-CE-.' => 'chi4',
-      '.-CE-NZ-.' => 'chi5'
+      '*-CD-CE-*' => 'chi4',
+      '*-CE-NZ-*' => 'chi5'
     },
     'MET' => {
-      '.-CG-SD-.' => 'chi3',
-      '.-SD-CE-.' => 'chi4'
+      '*-CG-SD-*' => 'chi3',
+      '*-SD-CE-*' => 'chi4'
     },
     'SER' => {
-      '.-CB-OG-.' => 'chi2'
+      '*-CB-OG-*' => 'chi2'
     },
     'THR' => {
-      '.-CB-CG2-.' => 'chi3',
-      '.-CB-OG1-.' => 'chi2'
+      '*-CB-CG2-*' => 'chi3',
+      '*-CB-OG1-*' => 'chi2'
     },
     'TYR' => {
-      '.-CZ-OH-.' => 'chi3'
+      '*-CZ-OH-*' => 'chi3'
     },
     'XAA' => {
-      '.-CB-OG-.' => 'chi2'
+      '*-CB-OG-*' => 'chi2'
     }
   },
   '_[local]_dihedral_angle_restraints' => {
-    '.' => {
-      '.' => {
-        'angle' => '.',
-        'label_comp_id' => '.',
+    '*' => {
+      '*' => {
+        'angle' => '*',
+        'label_comp_id' => '*',
         'range_from' => '-180.0',
         'range_to' => '180.0',
         'step' => '10.0',
@@ -7910,11 +7910,11 @@ $VAR1 = bless( {
       }
     },
     'ARG' => {
-      '.' => {
-        'angle' => '.',
+      '*' => {
+        'angle' => '*',
         'label_comp_id' => 'ARG',
-        'range_from' => '.',
-        'range_to' => '.',
+        'range_from' => '*',
+        'range_to' => '*',
         'step' => '36.0',
         'type' => 'degrees'
       }
@@ -7925,7 +7925,7 @@ $VAR1 = bless( {
         'label_comp_id' => 'ASN',
         'range_from' => '-90.0',
         'range_to' => '90.0',
-        'step' => '.',
+        'step' => '*',
         'type' => 'degrees'
       }
     },
@@ -7935,26 +7935,26 @@ $VAR1 = bless( {
         'label_comp_id' => 'ASP',
         'range_from' => '-90.0',
         'range_to' => '90.0',
-        'step' => '.',
+        'step' => '*',
         'type' => 'degrees'
       }
     },
     'GLN' => {
-      '.' => {
-        'angle' => '.',
+      '*' => {
+        'angle' => '*',
         'label_comp_id' => 'GLN',
-        'range_from' => '.',
-        'range_to' => '.',
+        'range_from' => '*',
+        'range_to' => '*',
         'step' => '18.0',
         'type' => 'degrees'
       }
     },
     'GLU' => {
-      '.' => {
-        'angle' => '.',
+      '*' => {
+        'angle' => '*',
         'label_comp_id' => 'GLU',
-        'range_from' => '.',
-        'range_to' => '.',
+        'range_from' => '*',
+        'range_to' => '*',
         'step' => '18.0',
         'type' => 'degrees'
       },
@@ -7963,26 +7963,26 @@ $VAR1 = bless( {
         'label_comp_id' => 'GLU',
         'range_from' => '-90.0',
         'range_to' => '90.0',
-        'step' => '.',
+        'step' => '*',
         'type' => 'degrees'
       }
     },
     'LYS' => {
-      '.' => {
-        'angle' => '.',
+      '*' => {
+        'angle' => '*',
         'label_comp_id' => 'LYS',
-        'range_from' => '.',
-        'range_to' => '.',
+        'range_from' => '*',
+        'range_to' => '*',
         'step' => '36.0',
         'type' => 'degrees'
       }
     },
     'MET' => {
-      '.' => {
-        'angle' => '.',
+      '*' => {
+        'angle' => '*',
         'label_comp_id' => 'MET',
-        'range_from' => '.',
-        'range_to' => '.',
+        'range_from' => '*',
+        'range_to' => '*',
         'step' => '18.0',
         'type' => 'degrees'
       }
@@ -7993,16 +7993,16 @@ $VAR1 = bless( {
         'label_comp_id' => 'PHE',
         'range_from' => '-90',
         'range_to' => '90.0',
-        'step' => '.',
+        'step' => '*',
         'type' => 'degrees'
       }
     },
     'PRO' => {
-      '.' => {
-        'angle' => '.',
+      '*' => {
+        'angle' => '*',
         'label_comp_id' => 'PRO',
-        'range_from' => '.',
-        'range_to' => '.',
+        'range_from' => '*',
+        'range_to' => '*',
         'step' => '18.0',
         'type' => 'degrees'
       }
@@ -8013,7 +8013,7 @@ $VAR1 = bless( {
         'label_comp_id' => 'TYR',
         'range_from' => '-90',
         'range_to' => '90.0',
-        'step' => '.',
+        'step' => '*',
         'type' => 'degrees'
       }
     }
