@@ -53,7 +53,7 @@ Options:
                                  'chi1=90.0..90.0, chi2=0.0..10.0..360.0',
                                  'LYS,LEU,ILE:-180.0..20.0..180.0',
                                  'SER: 10.0; CYS,THR: 20.0',
-                                 'OD1-MG: 0.5..0.1..1.0'.
+                                 'OD1-MG=0.5..0.1..1.0'.
     -r, --radians
                         angle value is in radians.
     -x, --rand-seed <int>
