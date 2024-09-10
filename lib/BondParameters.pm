@@ -210,7 +210,7 @@ sub rotatable_bonds
                 grep { defined $_ }
                      ( ( map { $explicit_dihedral_names->{$residue_name}{$_} }
                              @rotatable_bond_name_keys ),
-                       ( map { $explicit_dihedral_names->{'.'}{$_} }
+                       ( map { $explicit_dihedral_names->{'*'}{$_} }
                              @rotatable_bond_name_keys ),
                        $rotatable_bond_name_keys[0] );
 
@@ -791,7 +791,7 @@ sub bond_parameter_name_key
     for my $i ( 0..$#{ $bond_atom_ids } ) {
         my $atom_symbol =
             $add_any_trailing_atoms && ( $i == 0 || $i == $#{ $bond_atom_ids })?
-            '.' :
+            '*' :
             $atom_site->{$bond_atom_ids->[$i]}{'label_atom_id'};
         my $first_unique_residue_key =
             unique_residue_key( $atom_site->{$bond_atom_ids->[$i]} );
@@ -808,7 +808,7 @@ sub bond_parameter_name_key
             ( $first_unique_residue_key ne $second_unique_residue_key &&
               $atom_site->{$bond_atom_ids->[$i]}{'group_PDB'} eq 'HETATM' &&
               $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'HETATM' ) ?
-            '.' : '-';
+            '*' : '-';
         push @bond_parameter_name_key_parts, $atom_symbol, $bond_symbol;
     }
     return join '', @bond_parameter_name_key_parts;
