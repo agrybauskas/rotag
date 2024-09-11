@@ -276,11 +276,12 @@ sub sample_bond_parameters_qs_parsing
         undef %bond_parameters;
     }
 
+    my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
+
     for my $query_string ( split /;/, $query_strings ) {
         my $residue_names;
         my $bond_parameter_string;
 
-        my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
         my @query_string_decomposed = split /:/, $query_string;
         if( scalar @query_string_decomposed == 2 ) {
             if( $query_string =~ m/^((?:${residue_names_regexp})(?:,(?:${residue_names_regexp}))*):(.+)$/i ) {
