@@ -9,7 +9,7 @@ residue_id="315"
 residue_chain="A"
 pdbx_model="1"
 residue_alt="B"
-angles="180.0"
+angles="..180.0.."
 parameters='lj_k=1.0,c_k=1.0,h_k=1.0,t_k=1.0,cutoff_atom=70.0,cutoff_start=2.5,cutoff_end=5.0'
 threads="1"
 auth_residue_id="360"

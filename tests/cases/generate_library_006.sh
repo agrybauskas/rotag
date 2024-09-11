@@ -9,7 +9,7 @@ residue_id="14"
 residue_chain="A"
 residue_entity="1"
 residue_alt="."
-angles="90.0"
+angles="..90.0.."
 parameters='lj_k=1.0,c_k=1.0,h_k=1.0,t_k=1.0,cutoff_atom=2.0,cutoff_start=2.5,cutoff_end=5.0'
 threads="1"
 auth_residue_id="?"

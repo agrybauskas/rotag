@@ -9,7 +9,7 @@ residue_id="18"
 residue_chain="A"
 residue_entity="1"
 residue_alt="."
-angles="18.0"
+angles="..18.0.."
 parameters='cutoff_atom=7.0'
 
 $(dirname "$0")/../scripts/generate_library ${residue_id} \
