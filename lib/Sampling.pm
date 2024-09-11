@@ -284,7 +284,7 @@ sub sample_bond_parameters_qs_parsing
     my $float_regexp = '-?\d+(?:\.\d+)?';
     my $float_pos_regexp = '\d+(?:\.\d+)?';
     my $step_only_regexp =
-        $legacy_grammar ? ${float_pos_regexp} : "\.\.${float_pos_regexp}\.\.";
+        $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
 
     for my $query_string ( split /;/, $query_strings ) {
         my $residue_names;
@@ -322,7 +322,7 @@ sub sample_bond_parameters_qs_parsing
                 ( $bond_parameter_name,
                   $bond_parameter_start,
                   $bond_parameter_end ) = ( $1, $2, $3 );
-            } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp})$/ ) {
+            } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=${step_only_regexp}$/ ) {
                 ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
             } elsif( $bond_parameter =~ m/^(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
                 ( $bond_parameter_start,
@@ -330,7 +330,7 @@ sub sample_bond_parameters_qs_parsing
                   $bond_parameter_end ) = ( $1, $2, $3 );
             } elsif( $bond_parameter =~ m/^(${float_regexp})\.\.(${float_regexp})$/ ) {
                 ( $bond_parameter_start, $bond_parameter_end ) = ( $1, $2 );
-            }  elsif( $bond_parameter =~ m/^(${float_regexp})$/ ) {
+            }  elsif( $bond_parameter =~ m/^${step_only_regexp}$/ ) {
                 ( $bond_parameter_step ) = ( $1 );
             } else {
                 die "Syntax '$bond_parameter' is incorrect\n";
