@@ -88,6 +88,12 @@ our $VERSION = $VERSION;
 #*                                 'LYS,LEU,ILE:-180.0..20.0..180.0',
 #*                                 'SER: 10.0; CYS,THR: 20.0',
 #*                                 'OD1-MG=0.5..0.1..1.0'.
+#*    --legacy-grammar
+#*                        supports the old grammar as the new default range
+#*                        was changed.
+#*
+#*                        Example: 'SER:10.0' to SER: ..10.0..,
+#*                                 'chi1=10.0' to 'chi1=..10.0..'.
 #*    -r, --radians
 #*                        angle value is in radians.
 #*    -x, --rand-seed <int>
@@ -114,6 +120,7 @@ my $interactions = 'composite';
 my $calc_hetatoms = 0;
 my $calc_pairwise = 0;
 my $bond_parameters_qs = '';
+my $legacy_grammar = 0;
 my $in_radians = 0;
 my $rand_seed;
 my $rand_count;
@@ -144,6 +151,7 @@ GetOptions(
     'pairwise' => sub { $calc_pairwise = 1 },
     'json-parameters|j=s' => \$parameters_json_cmd,
     'bond-parameters|angles|b|a=s' => \$bond_parameters_qs,
+    'legacy-grammar' => sub { $legacy_grammar = 1 },
     'rand-seed|x=s' => \$rand_seed,
     'rand-count|X=s' => \$rand_count,
     'radians|r' => sub { $in_radians = 1 },
@@ -189,7 +197,9 @@ if( defined $rand_seed ) {
 # Parses string describing bond parameters: dihedral angles, bond angles and
 # bond lengths.
 my $bond_parameters =
-    sample_bond_parameters_qs_parsing( $parameters, $bond_parameters_qs );
+    sample_bond_parameters_qs_parsing( $parameters,
+                                       $bond_parameters_qs,
+                                       { 'legacy_grammar' => $legacy_grammar } );
 
 # Parses parameter string.
 $parameters_cmd =~ s/\s//g;

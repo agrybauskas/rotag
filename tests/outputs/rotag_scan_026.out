@@ -54,6 +54,12 @@ Options:
                                  'LYS,LEU,ILE:-180.0..20.0..180.0',
                                  'SER: 10.0; CYS,THR: 20.0',
                                  'OD1-MG=0.5..0.1..1.0'.
+    --legacy-grammar
+                        supports the old grammar as the new default range
+                        was changed.
+ 
+                        Example: 'SER:10.0' to SER: ..10.0..,
+                                 'chi1=10.0' to 'chi1=..10.0..'.
     -r, --radians
                         angle value is in radians.
     -x, --rand-seed <int>
