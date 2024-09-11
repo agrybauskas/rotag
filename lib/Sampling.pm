@@ -278,6 +278,8 @@ sub sample_bond_parameters_qs_parsing
 
     my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
     my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
+    my $float_regexp = '-?\d+(?:\.\d+)?';
+    my $float_pos_regexp = '\d+(?:\.\d+)?';
 
     for my $query_string ( split /;/, $query_strings ) {
         my $residue_names;
@@ -306,30 +308,30 @@ sub sample_bond_parameters_qs_parsing
             my $bond_parameter_step;
             my $bond_parameter_end;
 
-            if( $bond_parameter =~ m/^(${bond_parameter_regexp})=(-?\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            if( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
                 ( $bond_parameter_name,
                   $bond_parameter_start,
                   $bond_parameter_step,
                   $bond_parameter_end ) = ( $1, $2, $3, $4 );
-            } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp})\.\.(${float_regexp})$/ ) {
                 ( $bond_parameter_name,
                   $bond_parameter_start,
                   $bond_parameter_end ) = ( $1, $2, $3 );
-            } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(-?\d+(?:\.\d+)?)$/ ) {
+            } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp})$/ ) {
                 ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
-            } elsif( $bond_parameter =~ m/^(-?\d+(?:\.\d+)?)$/ ) {
-                ( $bond_parameter_step ) = ( $1 );
-            } elsif( $bond_parameter =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            } elsif( $bond_parameter =~ m/^(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
                 ( $bond_parameter_start,
                   $bond_parameter_step,
                   $bond_parameter_end ) = ( $1, $2, $3 );
-            } elsif( $bond_parameter =~ m/^(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)$/ ) {
+            } elsif( $bond_parameter =~ m/^(${float_regexp})\.\.(${float_regexp})$/ ) {
                 ( $bond_parameter_start, $bond_parameter_end ) = ( $1, $2 );
+            }  elsif( $bond_parameter =~ m/^(${float_regexp})$/ ) {
+                ( $bond_parameter_step ) = ( $1 );
             } else {
                 die "Syntax '$bond_parameter' is incorrect\n";
             }
 
-            $bond_parameter_start //= - 180.0;
+            $bond_parameter_start //= -180.0;
             $bond_parameter_step //= 36.0;
             $bond_parameter_end //= 180.0;
             $bond_parameter_name //= '*-*-*-*';
