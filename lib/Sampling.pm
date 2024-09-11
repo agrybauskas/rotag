@@ -214,7 +214,10 @@ sub sample_bond_parameters_qs_parsing
 {
     my ( $parameters, $query_strings, $options ) = @_;
 
-    my ( $in_radians ) = ( $options->{'in_radians'} );
+    my ( $in_radians, $legacy_grammar ) =
+        ( $options->{'in_radians'}, $options->{'legacy_grammar'} );
+
+    $legacy_grammar //= 0;
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $dihedral_angle_restraints =
