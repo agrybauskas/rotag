@@ -283,6 +283,8 @@ sub sample_bond_parameters_qs_parsing
     my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
     my $float_regexp = '-?\d+(?:\.\d+)?';
     my $float_pos_regexp = '\d+(?:\.\d+)?';
+    my $step_only_regexp =
+        $legacy_grammar ? ${float_pos_regexp} : "\.\.${float_pos_regexp}\.\.";
 
     for my $query_string ( split /;/, $query_strings ) {
         my $residue_names;
