@@ -2,6 +2,7 @@ rotag (unreleased)
 
   * Fixed the absence of cutoff function when calculating with 'rotag_energy'
     script.
+  * Added the option to calculate pairwise interactions between side-chinas.
 
 rotag (0.1.2)
 
