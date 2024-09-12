@@ -1,0 +1,55 @@
+#\#CIF_2.0
+################################################################################
+#                                                                              #
+#  CIF ROTAG DICTIONARY                                                        #
+#                                                                              #
+################################################################################
+
+data_CIF_ROTAG
+
+    _dictionary.title             CIF_ROTAG
+    _dictionary.class             Instance
+    _dictionary.version           0.0.1
+    _dictionary.date              2024-09-12
+    _dictionary.uri
+        https://raw.githubusercontent.com/agrybauskas/rotag/main/dic/cif_rotag/cif_rotag.dic
+    _dictionary.ddl_conformance   4.2.0
+    _dictionary.namespace         CifRotag
+    _description.text
+;
+    The CIF_ROTAG dictionary defines data items that are produced by
+    the rotag software package [1,2].
+
+    [1] Grybauskas, A. & Gražulis, S. (2023). Building protein
+        structure-specific rotamer libraries. Bioinformatics, 39(7), btad429.
+        https://doi.org/10.1093/bioinformatics/btad429
+    [2] https://github.com/agrybauskas/rotag
+;
+
+save_CIF_ROTAG_HEAD
+
+    _definition.id                CIF_ROTAG_HEAD
+    _definition.scope             Category
+    _definition.class             Head
+    _definition.update            2024-09-12
+    _description.text
+;
+    The CIF_ROTAG_HEAD category is the top-level category for all categories in
+    the CIF_ROTAG dictionary.
+;
+    _name.category_id             CIF_ROTAG
+    _name.object_id               CIF_ROTAG_HEAD
+
+save_
+
+    loop_
+      _dictionary_audit.version
+      _dictionary_audit.date
+      _dictionary_audit.revision
+         0.0.1                    2024-09-12
+;
+       # Please update the date above and describe the change below until
+       # ready for the next release
+
+       Initial release of the dictionary.
+;
