@@ -42,6 +42,512 @@ save_CIF_ROTAG_HEAD
 
 save_
 
+save_ROTAG_ROTAMER_BOND_PARAMETER
+
+    _definition.id                ROTAG_ROTAMER_BOND_PARAMETER
+    _definition.scope             Category
+    _definition.class             Loop
+    _definition.update            2024-09-12
+    _description.text
+;
+    The CATEGORY of data items used to describe rotamer bond parameters.
+;
+    _name.category_id             CIF_ROTAG_HEAD
+    _name.object_id               ROTAG_ROTAMER_BOND_PARAMETER
+    _category_key.name            '_rotag_rotamer_bond_parameter.id'
+    # TODO: add a proper example description in _description_example.detail
+    #       or even add a different example altogether.
+    _description_example.case
+;
+    loop_
+    _rotag_rotamer_bond_parameter.id
+    _rotag_rotamer_bond_parameter.rotamer_id
+    _rotag_rotamer_bond_parameter.label_seq_id
+    _rotag_rotamer_bond_parameter.label_comp_id
+    _rotag_rotamer_bond_parameter.label_asym_id
+    _rotag_rotamer_bond_parameter.pdbx_PDB_model_num
+    _rotag_rotamer_bond_parameter.auth_seq_id
+    _rotag_rotamer_bond_parameter.auth_asym_id
+    _rotag_rotamer_bond_parameter.label_alt_id
+    _rotag_rotamer_bond_parameter.frequency
+    _rotag_rotamer_bond_parameter.type
+    _rotag_rotamer_bond_parameter.value
+    _rotag_rotamer_bond_parameter.units
+    1 1  .  MG B 1 101 A . 0.021739 CB-CG-OD1.MG -180.000  degrees
+    2 1  .  MG B 1 101 A . 0.021739    CG-OD1.MG -180.000  degrees
+    3 1  .  MG B 1 101 A . 0.021739       OD1.MG 1.500000 angstrom
+    4 1 27 ASP A 1  54 A . 0.021739         chi1   60.000  degrees
+    5 1 27 ASP A 1  54 A . 0.021739         chi2 -180.000  degrees
+    # ...
+;
+    _description_example.detail
+;
+    TODO: add a description of the example.
+;
+
+save_
+
+save_rotag_rotamer_bond_parameter.auth_asym_id
+
+    _definition.id                '_rotag_rotamer_bond_parameter.auth_asym_id'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An identifier that links to the _atom_site.auth_asym_id data item
+    from the PDBx/mmCIF dictionary.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               auth_asym_id
+    _name.linked_item_id          '_atom_site.auth_asym_id'
+    _type.purpose                 Link
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Word
+
+save_
+
+save_rotag_rotamer_bond_parameter.auth_seq_id
+
+    _definition.id                '_rotag_rotamer_bond_parameter.auth_seq_id'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An identifier that links to the _atom_site.auth_seq_id data item
+    from the PDBx/mmCIF dictionary.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               auth_seq_id
+    _name.linked_item_id          '_atom_site.auth_seq_id'
+    _type.purpose                 Link
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Word
+
+save_
+
+# TODO: rename to _rotag_rotamer_bond_parameter.relative_frequency
+#       or add _rotag_rotamer_bond_parameter.relative_frequency as
+#       an alias?
+save_rotag_rotamer_bond_parameter.frequency
+
+    _definition.id                '_rotag_rotamer_bond_parameter.frequency'
+    _definition.update            2024-09-12
+    _description.text
+;
+    The fraction of occurrences of the rotamer.
+
+    This relative frequency could also be used as a probability estimate,
+    however, the rotag software package currently does not interpret it in
+    this way.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               frequency
+    _type.purpose                 Number
+    _type.source                  Derived
+    _type.container               Single
+    _type.contents                Real
+    _enumeration.range            0.0:1.0
+    _units.code                   none
+
+save_
+
+save_rotag_rotamer_bond_parameter.id
+
+    _definition.id                '_rotag_rotamer_bond_parameter.id'
+
+    _definition.update            2024-09-12
+    _description.text
+;
+    An arbitrary, unique identifier assigned to each bond parameter entry.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               id
+    _type.purpose                 Key
+    _type.source                  Assigned
+    _type.container               Single
+    _type.contents                Integer
+    _enumeration.range            1:
+    _units.code                   none
+
+save_
+
+save_rotag_rotamer_bond_parameter.label_alt_id
+
+    _definition.id                '_rotag_rotamer_bond_parameter.label_alt_id'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An identifier that links to the _atom_site.label_alt_id data item
+    from the PDBx/mmCIF dictionary.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               label_alt_id
+    _name.linked_item_id          '_atom_site.label_alt_id'
+    _type.purpose                 Link
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Word
+
+save_
+
+save_rotag_rotamer_bond_parameter.label_asym_id
+
+    _definition.id                '_rotag_rotamer_bond_parameter.label_asym_id'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An identifier that links to the _atom_site.label_asym_id data item
+    from the PDBx/mmCIF dictionary.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               label_asym_id
+    _name.linked_item_id          '_atom_site.label_asym_id'
+    _type.purpose                 Link
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Word
+
+save_
+
+save_rotag_rotamer_bond_parameter.label_comp_id
+
+    _definition.id                '_rotag_rotamer_bond_parameter.label_comp_id'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An identifier that links to the _atom_site.label_comp_id data item
+    from the PDBx/mmCIF dictionary.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               label_comp_id
+    _name.linked_item_id          '_atom_site.label_comp_id'
+    _type.purpose                 Link
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Code
+
+save_
+
+save_rotag_rotamer_bond_parameter.label_seq_id
+
+    _definition.id                '_rotag_rotamer_bond_parameter.label_seq_id'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An identifier that links to the _atom_site.label_seq_id data item
+    from the PDBx/mmCIF dictionary.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               label_seq_id
+    _name.linked_item_id          '_atom_site.label_seq_id'
+    _type.purpose                 Link
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Code
+
+save_
+
+save_rotag_rotamer_bond_parameter.pdbx_pdb_model_num
+
+    _definition.id
+        '_rotag_rotamer_bond_parameter.pdbx_PDB_model_num'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An identifier that links to the _atom_site.pdbx_PDB_model_num data item
+    from the PDBx/mmCIF dictionary.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               pdbx_PDB_model_num
+    _name.linked_item_id          '_atom_site.pdbx_PDB_model_num'
+    _type.purpose                 Link
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Integer
+    _enumeration.range            1:
+    _units.code                   none
+
+save_
+
+save_rotag_rotamer_bond_parameter.rotamer_id
+
+    _definition.id                '_rotag_rotamer_bond_parameter.rotamer_id'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An arbitrary identifier of the rotamer to which the bond belongs to.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               rotamer_id
+    _type.purpose                 Key
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Integer
+    _enumeration.range            1:
+    _units.code                   none
+
+save_
+
+save_rotag_rotamer_bond_parameter.type
+
+    _definition.id                '_rotag_rotamer_bond_parameter.type'
+    _definition.update            2024-09-12
+    # TODO: Add a more detailed description of the syntax used for the type
+    #       notation (or a reference to where it is described in detail).
+    _description.text
+;
+    Bond parameter type encoded as string.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               type
+    _type.purpose                 Encode
+    _type.source                  Derived
+    _type.container               Single
+    _type.contents                Text
+    # TODO: add several examples of the codes with explanations, e.g.
+#
+#    loop_
+#      _description_example.case
+#      _description_example.detail
+#         CB-CG-OD1.MG
+#;
+#         Dihedral angle between two intersecting planes X and Y formed by atoms
+#         CB, CG, OD1 and CG, OD1, MG respectively. The CB, CG and OD1 atoms
+#         belong to the amino acid and the MG atom belongs to the ligand ion.
+#;
+#         CG-OD1.MG
+#;
+#         Angle formed by the CG, OD1 and MG atoms. The CG and OD1 atoms belong
+#         to the amino acid and the MG atom belongs to the ligand ion.
+#;
+#         OD1.MG
+#;
+#         Distance between the OD1 and MG atoms. The OD1 atom belongs to the
+#         amino acid and the MG atom belongs to the ligand ion.
+#;
+#         chi1
+#;
+#         The chi1 angle formed by the atoms of the amino acid.
+#;
+
+save_
+
+save_rotag_rotamer_bond_parameter.units
+
+    _definition.id                '_rotag_rotamer_bond_parameter.units'
+    _definition.update            2024-09-12
+    _description.text
+;
+    Unit of measurement of the corresponding _rotag_rotamer_bond_parameter.value
+    data item value.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               units
+    _type.purpose                 State
+    _type.source                  Assigned
+    _type.container               Single
+    _type.contents                Word
+
+    loop_
+      _enumeration_set.state
+      _enumeration_set.detail
+         angstroms
+;
+         Non-SI unit of distance. Equivalent to metres * 10^(-10)'
+;
+         degrees
+;
+         Non-SI unit of angle. Also known as degree of arc, arc degree,
+         or arcdegree.
+;
+         radians
+;
+         SI unit of angle.
+;
+
+save_
+
+save_rotag_rotamer_bond_parameter.value
+
+    _definition.id                '_rotag_rotamer_bond_parameter.value'
+    _definition.update            2024-09-12
+    _description.text
+;
+    Numeric value of the corresponding bond parameter.
+
+    Units of measurement are specified separately for each data value using
+    the _rotag_rotamer_bond_parameter.units data item.
+;
+    _name.category_id             rotag_rotamer_bond_parameter
+    _name.object_id               value
+    _type.purpose                 Number
+    _type.source                  Derived
+    _type.container               Single
+    _type.contents                Real
+    _units.code                   unspecified
+
+save_
+
+save_ROTAG_ROTAMER_ENERGY
+
+    _definition.id                ROTAG_ROTAMER_ENERGY
+    _definition.scope             Category
+    _definition.class             Loop
+    _definition.update            2024-09-12
+    _description.text
+;
+    The CATEGORY of data items used to describe rotamer energy.
+;
+    _name.category_id             CIF_ROTAG_HEAD
+    _name.object_id               ROTAG_ROTAMER_ENERGY
+    _category_key.name            '_rotag_rotamer_energy.id'
+    # TODO: add a proper example description in _description_example.detail
+    #       or even add a different example altogether.
+    _description_example.case
+;
+    loop_
+    _rotag_rotamer_energy.id
+    _rotag_rotamer_energy.rotamer_id
+    _rotag_rotamer_energy.calculation_method
+    _rotag_rotamer_energy.value
+    1 1 composite -61.760849
+    2 2 composite -62.307482
+    3 3 composite -54.939207
+    4 4 composite -61.760849
+    5 5 composite -61.760849
+    # ...
+;
+    _description_example.detail
+;
+    TODO: add a description of the example.
+;
+
+save_
+
+save_rotag_rotamer_energy.calculation_method
+
+    _definition.id                '_rotag_rotamer_energy.calculation_method'
+
+    _definition.update            2024-09-12
+    _description.text
+;
+    The typo of method used to calculate the energy.
+;
+    _name.category_id             rotag_rotamer_energy
+    _name.object_id               calculation_method
+    _type.purpose                 State
+    _type.source                  Assigned
+    _type.container               Single
+    _type.contents                Word
+
+    loop_
+      _enumeration_set.state
+      _enumeration_set.detail
+         composite
+;
+         TODO: add short description.
+;
+         hard_sphere
+;
+         TODO: add short description.
+;
+         soft_sphere
+;
+         TODO: add short description.
+;
+         lennard_jones
+;
+         TODO: add short description.
+;
+         coulomb
+;
+         TODO: add short description.
+;
+         h_bond
+;
+         TODO: add short description.
+;
+         torsion
+;
+         TODO: add short description.
+;
+
+    _enumeration.default          composite
+
+save_
+
+save_rotag_rotamer_energy.id
+
+    _definition.id                '_rotag_rotamer_energy.id'
+
+    _definition.update            2024-09-12
+    _description.text
+;
+    An arbitrary, unique identifier that separates rotamer energy calculations
+    for target side-chains.
+;
+    _name.category_id             rotag_rotamer_energy
+    _name.object_id               id
+    _type.purpose                 Key
+    _type.source                  Assigned
+    _type.container               Single
+    _type.contents                Integer
+    _enumeration.range            1:
+    _units.code                   none
+
+save_
+
+save_rotag_rotamer_energy.rotamer_id
+
+    _definition.id                '_rotag_rotamer_energy.rotamer_id'
+    _definition.update            2024-09-12
+    _description.text
+;
+    An arbitrary identifier of the rotamer that was used in the calculations.
+;
+    _name.category_id             rotag_rotamer_energy
+    _name.object_id               rotamer_id
+    _name.linked_item_id          '_rotag_rotamer_bond_parameter.rotamer_id'
+    _type.purpose                 Link
+    _type.source                  Related
+    _type.container               Single
+    _type.contents                Integer
+    _enumeration.range            1:
+    _units.code                   none
+
+save_
+
+save_rotag_rotamer_energy.value
+
+    _definition.id                '_rotag_rotamer_energy.value'
+    _definition.update            2024-09-12
+    _description.text
+;
+    Value of the calculated potential in arbitrary units for target side-chains.
+;
+    _name.category_id             rotag_rotamer_energy
+    _name.object_id               value
+    _type.purpose                 Number
+    _type.source                  Derived
+    _type.container               Single
+    _type.contents                Real
+    _units.code                   arbitrary
+# TODO: add at least two examples -- one with positive values and one with
+#       negative values. Provide a meaningful description if possible.
+#    loop_
+#      _description_example.case
+#      _description_example.detail
+#         -10.13
+#;
+#         ...
+#;
+#         42
+#;
+#         ...
+#;
+
+save_
+
     loop_
       _dictionary_audit.version
       _dictionary_audit.date
