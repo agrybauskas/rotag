@@ -312,7 +312,6 @@ sub sample_bond_parameters_qs_parsing
             my $bond_parameter_start;
             my $bond_parameter_step;
             my $bond_parameter_end;
-            my $bond_parameter_fixed;
 
             if( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
                 ( $bond_parameter_name,
@@ -326,7 +325,10 @@ sub sample_bond_parameters_qs_parsing
             } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=${step_only_regexp}$/ ) {
                 ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
             } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp})$/ ) {
-                ( $bond_parameter_name, $bond_parameter_fixed ) = ( $1, $2 );
+                ( $bond_parameter_name,
+                  $bond_parameter_start,
+                  $bond_parameter_step,
+                  $bond_parameter_end ) = ( $1, $2, 1.0, $2 + 1.0 );
             } elsif( $bond_parameter =~ m/^(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
                 ( $bond_parameter_start,
                   $bond_parameter_step,
@@ -336,7 +338,9 @@ sub sample_bond_parameters_qs_parsing
             } elsif( $bond_parameter =~ m/^${step_only_regexp}$/ ) {
                 ( $bond_parameter_step ) = ( $1 );
             } elsif( $bond_parameter =~ m/^(${float_regexp})$/ ) {
-                ( $bond_parameter_fixed ) = ( $1 );
+                ( $bond_parameter_start,
+                  $bond_parameter_step,
+                  $bond_parameter_end ) = ( $1, 1.0, $1 + 1.0 );
             } else {
                 die "Syntax '$bond_parameter' is incorrect\n";
             }
