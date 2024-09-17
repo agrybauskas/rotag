@@ -324,7 +324,7 @@ sub sample_bond_parameters_qs_parsing
                   $bond_parameter_end ) = ( $1, $2, $3 );
             } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=${step_only_regexp}$/ ) {
                 ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
-            } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp})$/ ) {
+            } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp}|\!)$/ ) {
                 ( $bond_parameter_name,
                   $bond_parameter_start,
                   $bond_parameter_step,
@@ -337,7 +337,7 @@ sub sample_bond_parameters_qs_parsing
                 ( $bond_parameter_start, $bond_parameter_end ) = ( $1, $2 );
             } elsif( $bond_parameter =~ m/^${step_only_regexp}$/ ) {
                 ( $bond_parameter_step ) = ( $1 );
-            } elsif( $bond_parameter =~ m/^(${float_regexp})$/ ) {
+            } elsif( $bond_parameter =~ m/^(${float_regexp}|\!)$/ ) {
                 ( $bond_parameter_start,
                   $bond_parameter_step,
                   $bond_parameter_end ) = ( $1, 1.0, $1 + 1.0 );
