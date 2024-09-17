@@ -325,11 +325,11 @@ sub sample_bond_parameters_qs_parsing
             } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=${step_only_regexp}$/ ) {
                 ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
             } elsif( $bond_parameter =~ m/^(${bond_parameter_regexp})=(${float_regexp}|\!)$/ ) {
-                if( $1 =~ m/^\!$/ ) {
+                if( $2 =~ m/^\!$/ ) {
                     # HACK: special value as all the steps have to be positive
                     # integer. It is set to -1 in order to make default values
                     # later.
-                    $bond_parameter_step = -1;
+                    ( $bond_parameter_name, $bond_parameter_step ) = ( $1, -1 );
                 } else {
                     ( $bond_parameter_name,
                       $bond_parameter_start,
