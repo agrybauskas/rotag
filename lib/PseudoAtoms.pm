@@ -752,7 +752,8 @@ sub calc_favourable_angles
                         $parameter_name,
                         $bond_parameter_count,
                         { 'rand_seed' => $rand_seed,
-                          'rand_count' => $rand_count } ) };
+                          'rand_count' => $rand_count,
+                          'original_bond_parameters' => \%bond_parameters } ) };
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
 
@@ -1203,8 +1204,10 @@ sub default_bond_parameter_values
 {
     my ( $parameters, $bond_parameters, $residue_name, $bond_parameter_name,
          $bond_parameter_count, $options ) = @_;
-    my ( $rand_seed, $rand_count ) =
-        ( $options->{'rand_seed'}, $options->{'rand_count'} );
+    my ( $rand_seed, $rand_count, $original_bond_parameters ) =
+        ( $options->{'rand_seed'},
+          $options->{'rand_count'},
+          $options->{'original_bond_parameters'} );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
