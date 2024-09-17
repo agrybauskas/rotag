@@ -1255,13 +1255,26 @@ sub default_bond_parameter_values
                          @shuffled_idxs[0..$rand_count-1] ];
         }
 
+        # TODO: optimise here as there are too many conditionals and checks
+        # here.
         if( exists $bond_parameters->{$current_residue_name} &&
             exists $bond_parameters->{$current_residue_name}
                                      {$current_bond_parameter_name} ) {
-            return [ map { [ $_ ] }
-                        @{ $bond_parameters->{$current_residue_name}
-                                             {$current_bond_parameter_name}
-                                             {'values'} } ];
+            if( defined $bond_parameters->{$current_residue_name}
+                                          {$current_bond_parameter_name}
+                                          {'values'} &&
+                scalar @{ $bond_parameters->{$current_residue_name}
+                                            {$current_bond_parameter_name}
+                                            {'values'} } == 0 &&
+                exists $original_bond_parameters->{$bond_parameter_name} ) {
+                return [ [ $original_bond_parameters->{$bond_parameter_name}
+                                                      {'value'} ] ];
+            } else {
+                return [ map { [ $_ ] }
+                            @{ $bond_parameters->{$current_residue_name}
+                                                 {$current_bond_parameter_name}
+                                                 {'values'} } ];
+            }
         }
     }
 
