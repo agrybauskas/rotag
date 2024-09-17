@@ -387,16 +387,26 @@ sub sample_bond_parameters_qs_parsing
             }
 
             for my $residue_name ( @{ $residue_names } ) {
-                $bond_parameters{$residue_name}{$bond_parameter_name} = {
-                    'values' => sample_bond_parameters(
-                        [ [ $bond_parameter_start, $bond_parameter_end ] ],
-                        $bond_parameter_count,
-                        1,
-                        $do_inclusive_end
-                    ),
-                    'type' => $bond_parameter_type,
-                    'units' => $bond_parameter_units
-                };
+                # HACK: not sure if the calculations above should be done if the
+                # step value is -1.
+                if( $bond_parameter_step < 0 ) {
+                    $bond_parameters{$residue_name}{$bond_parameter_name} = {
+                        'values' => [],
+                        'type' => $bond_parameter_type,
+                        'units' => $bond_parameter_units
+                    };
+                } else {
+                    $bond_parameters{$residue_name}{$bond_parameter_name} = {
+                        'values' => sample_bond_parameters(
+                            [ [ $bond_parameter_start, $bond_parameter_end ] ],
+                            $bond_parameter_count,
+                            1,
+                            $do_inclusive_end
+                        ),
+                        'type' => $bond_parameter_type,
+                        'units' => $bond_parameter_units
+                    };
+                }
             }
         }
     }
