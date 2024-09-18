@@ -253,8 +253,10 @@ sub rotatable_bonds
 sub stretchable_bonds
 {
     my ( $parameters, $atom_site, $options  ) = @_;
-    my ( $start_atom_ids, $include_mainchain, $include_hetatoms ) = (
+    my ( $start_atom_ids, $start_atom_names, $include_mainchain,
+         $include_hetatoms ) = (
         $options->{'start_atom_ids'},
+        $options->{'start_atom_names'},
         $options->{'include_mainchain'},
         $options->{'include_hetatoms'}
     );
@@ -306,6 +308,7 @@ sub stretchable_bonds
         my $bond_paths = BondPath->new( {
             'atom_site' => $residue_site,
             'start_atom_ids' => $start_atom_ids,
+            'start_atom_names' => $start_atom_names,
             'include_hetatoms' => $include_hetatoms,
         } );
 
