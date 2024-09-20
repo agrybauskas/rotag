@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+
+use ForceField::Parameters;
+use Sampling qw( sample_bond_parameters_qs_parsing );
+
+$Data::Dumper::Indent = 1;
+$Data::Dumper::Sortkeys = 1;
+
+#
+# Unit test: Sampling::sample_bond_parameters_qs_parsing
+# Example: ./sample_bond_parameters_qs_parsing '0.0..36.0..360.0'
+#
+
+my $parameters = Parameters->new();
+
+my ( $bond_parameters_qs ) = @ARGV;
+
+print Dumper sample_bond_parameters_qs_parsing( $parameters, $bond_parameters_qs );
