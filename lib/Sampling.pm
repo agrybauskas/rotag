@@ -6,7 +6,6 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( sample_angles
                      sample_bond_parameters
-                     sample_angles_qs_parsing
                      sample_bond_parameters_qs_parsing );
 
 use POSIX;
