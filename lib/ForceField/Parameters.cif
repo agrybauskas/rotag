@@ -2567,12 +2567,12 @@ TYR HD1  HD2
 TYR HE1  HE2
 #
 loop_
-_[local]_dihedral_angle.label_comp_id
-_[local]_dihedral_angle.angle
-_[local]_dihedral_angle.range_from
-_[local]_dihedral_angle.range_to
-_[local]_dihedral_angle.step
-_[local]_dihedral_angle.type
+_[local]_bond_parameter.label_comp_id
+_[local]_bond_parameter.angle
+_[local]_bond_parameter.range_from
+_[local]_bond_parameter.range_to
+_[local]_bond_parameter.step
+_[local]_bond_parameter.type
 *   *    -180.0 180.0 10.0 degrees
 ARG *    *      *     36.0 degrees
 ASN chi2 -90.0  90.0  *    degrees

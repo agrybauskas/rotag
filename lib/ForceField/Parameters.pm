@@ -26,10 +26,10 @@ sub new
     my $constants = constants( $force_field );
     my $bond_types = bond_types( $force_field );
     my $covalent_bond_combinations = covalent_bond_combinations( $force_field );
-    my $dihedral_angle_restraints = dihedral_angle_restraints( $force_field );
+    my $bond_parameter_restraints = bond_parameter_restraints( $force_field );
     my $self = { %{ $constants }, %{ $bond_types }, %{ $force_field },
                  %{ $covalent_bond_combinations },
-                 %{ $dihedral_angle_restraints } };
+                 %{ $bond_parameter_restraints } };
 
     return bless $self, $class;
 }
@@ -365,16 +365,16 @@ sub force_field
     }
 
     # Restructuring parameters of Lennard-Jones.
-    my $dihedral_angle_restraints =
-        pdbx_loop_to_array( $force_field_data, '_[local]_dihedral_angle' );
+    my $bond_parameter_restraints =
+        pdbx_loop_to_array( $force_field_data, '_[local]_bond_parameter' );
 
-    for my $dihedral_angle_restraint ( @{ $dihedral_angle_restraints } ) {
-        my $residue_name = $dihedral_angle_restraint->{'label_comp_id'};
-        my $angle_name = $dihedral_angle_restraint->{'angle'};
+    for my $bond_parameter_restraint ( @{ $bond_parameter_restraints } ) {
+        my $residue_name = $bond_parameter_restraint->{'label_comp_id'};
+        my $angle_name = $bond_parameter_restraint->{'angle'};
 
-        $force_field_parameters{'_[local]_dihedral_angle_restraints'}
+        $force_field_parameters{'_[local]_bond_parameter_restraints'}
                                {$residue_name}{$angle_name} =
-            $dihedral_angle_restraint;
+            $bond_parameter_restraint;
     }
 
     # Restructuring parameters of dihedral angle names.
@@ -542,11 +542,11 @@ sub covalent_bond_combinations
     return \%covalent_bond_combinations;
 }
 
-sub dihedral_angle_restraints
+sub bond_parameter_restraints
 {
     my ( $force_field ) = @_;
-    return { '_[local]_dihedral_angle_restraints' =>
-                 $force_field->{'_[local]_dihedral_angle_restraints'} };
+    return { '_[local]_bond_parameter_restraints' =>
+                 $force_field->{'_[local]_bond_parameter_restraints'} };
 }
 
 sub set_parameter_values
