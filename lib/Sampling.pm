@@ -108,7 +108,7 @@ sub sample_bond_parameters_qs_parsing
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $dihedral_angle_restraints =
-        $parameters->{'_[local]_dihedral_angle_restraints'};
+        $parameters->{'_[local]_bond_parameter_restraints'};
     my $rotatable_residue_names =
         $parameters->{'_[local]_rotatable_residue_names'};
 
