@@ -33,7 +33,6 @@ use Energy;
 use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
-                   filter_by_unique_residue_key
                    split_by
                    unique_residue_key
                    unique_residue_keys );
