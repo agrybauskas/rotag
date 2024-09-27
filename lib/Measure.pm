@@ -18,7 +18,6 @@ BEGIN {
 }
 
 use Carp;
-use Clone qw( clone );
 use Math::Trig;
 use List::MoreUtils qw( any
                         uniq );

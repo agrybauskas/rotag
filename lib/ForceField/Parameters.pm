@@ -3,7 +3,6 @@ package Parameters;
 use strict;
 use warnings;
 
-use Clone qw( clone );
 use File::Basename qw( dirname );
 use List::Util qw( max
                    uniq );
