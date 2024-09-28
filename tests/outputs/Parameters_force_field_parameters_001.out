@@ -225,8 +225,8 @@ $VAR1 = bless( {
   },
   '_[local]_bond_parameter_restraints' => {
     '*' => {
-      '*' => {
-        'angle' => '*',
+      '*-*-*-*' => {
+        'angle' => '*-*-*-*',
         'label_comp_id' => '*',
         'range_from' => '-180.0',
         'range_to' => '180.0',
@@ -235,8 +235,8 @@ $VAR1 = bless( {
       }
     },
     'ARG' => {
-      '*' => {
-        'angle' => '*',
+      '*-*-*-*' => {
+        'angle' => '*-*-*-*',
         'label_comp_id' => 'ARG',
         'range_from' => '*',
         'range_to' => '*',
@@ -265,8 +265,8 @@ $VAR1 = bless( {
       }
     },
     'GLN' => {
-      '*' => {
-        'angle' => '*',
+      '*-*-*-*' => {
+        'angle' => '*-*-*-*',
         'label_comp_id' => 'GLN',
         'range_from' => '*',
         'range_to' => '*',
@@ -275,8 +275,8 @@ $VAR1 = bless( {
       }
     },
     'GLU' => {
-      '*' => {
-        'angle' => '*',
+      '*-*-*-*' => {
+        'angle' => '*-*-*-*',
         'label_comp_id' => 'GLU',
         'range_from' => '*',
         'range_to' => '*',
@@ -293,8 +293,8 @@ $VAR1 = bless( {
       }
     },
     'LYS' => {
-      '*' => {
-        'angle' => '*',
+      '*-*-*-*' => {
+        'angle' => '*-*-*-*',
         'label_comp_id' => 'LYS',
         'range_from' => '*',
         'range_to' => '*',
@@ -303,8 +303,8 @@ $VAR1 = bless( {
       }
     },
     'MET' => {
-      '*' => {
-        'angle' => '*',
+      '*-*-*-*' => {
+        'angle' => '*-*-*-*',
         'label_comp_id' => 'MET',
         'range_from' => '*',
         'range_to' => '*',
@@ -323,8 +323,8 @@ $VAR1 = bless( {
       }
     },
     'PRO' => {
-      '*' => {
-        'angle' => '*',
+      '*-*-*-*' => {
+        'angle' => '*-*-*-*',
         'label_comp_id' => 'PRO',
         'range_from' => '*',
         'range_to' => '*',
