@@ -14,20 +14,17 @@ our @EXPORT_OK = qw( calc_favourable_angle
                      lowest_energy_state
                      replace_with_rotamer );
 
-use B qw( svref_2object );
 use Carp;
 use Clone qw( clone );
 use List::Util qw( max
                    shuffle );
 use List::MoreUtils qw( any
                         uniq );
-use Logging qw( info
-                warning );
+use Logging qw( info );
 use threads;
 
 use Combinatorics qw( permutation );
-use ConnectAtoms qw( append_connections
-                     connect_atoms
+use ConnectAtoms qw( connect_atoms
                      is_neighbour
                      is_second_neighbour
                      retains_connections );
@@ -42,8 +39,7 @@ use LinearAlgebra qw( mult_matrix_product );
 use Measure qw( all_dihedral
                 rmsd_sidechains );
 use BondProperties qw( hybridization
-                       rotatable_bonds
-                       unique_rotatables );
+                       rotatable_bonds );
 use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
 use PDBxParser qw( create_pdbx_entry

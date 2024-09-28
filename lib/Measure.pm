@@ -18,7 +18,6 @@ BEGIN {
 }
 
 use Carp;
-use Clone qw( clone );
 use Math::Trig;
 use List::MoreUtils qw( any
                         uniq );
@@ -33,9 +32,7 @@ use Energy;
 use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
-                   filter_by_unique_residue_key
                    split_by
-                   unique_residue_key
                    unique_residue_keys );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );
@@ -572,7 +569,7 @@ sub rmsd
 
 sub rmsd_sidechains
 {
-    my ( $parameters, $first_atom_site, $second_atom_site, #$unique_residue_key,
+    my ( $parameters, $first_atom_site, $second_atom_site,
          $options ) = @_;
     my ( $average, $best_case, $include_atoms, $exclude_atoms, $strict ) = (
         $options->{'average'},

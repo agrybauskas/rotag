@@ -15,14 +15,12 @@ our @EXPORT_OK = qw( append_connections
 }
 
 use Carp qw( confess );
-use Digest::MD5 qw( md5_hex );
 use List::Util qw( any );
 
 use Grid qw( identify_neighbour_cells
              grid_box );
 use Measure qw( distance_squared );
-use PDBxParser qw( filter
-                   unique_residue_key );
+use PDBxParser qw( unique_residue_key );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;

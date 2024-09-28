@@ -6,8 +6,6 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( rotation_only );
 
-use List::MoreUtils qw( uniq );
-
 use AlterMolecule qw( bond_torsion );
 use AtomProperties qw( sort_atom_names );
 use BondProperties qw( rotatable_bonds );
