@@ -20,8 +20,7 @@ use List::Util qw( max
                    shuffle );
 use List::MoreUtils qw( any
                         uniq );
-use Logging qw( info
-                warning );
+use Logging qw( info );
 use threads;
 
 use Combinatorics qw( permutation );

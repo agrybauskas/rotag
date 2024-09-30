@@ -7,7 +7,6 @@ use autodie;
 use Getopt::Long;
 use JSON;
 use List::MoreUtils qw( uniq );
-use List::Util qw( any );
 use Try::Tiny;
 
 use ForceField::Parameters;
