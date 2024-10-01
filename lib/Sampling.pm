@@ -303,6 +303,7 @@ sub retrieve_dihedral_angle_params
     my ( $dihedral_angle_restraints, $residue_name, $angle_name, $params ) = @_;
 
     my %params = ();
+    my ( undef, undef, $any_angle_name ) =detect_bond_parameter_type( $angle_name );
     for my $param ( @{ $params } ) {
         if( exists $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param} &&
             $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param} ne '*' ) {
@@ -310,7 +311,7 @@ sub retrieve_dihedral_angle_params
                 $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
         } else {
             $params{$param} =
-                $dihedral_angle_restraints->{'*'}{'*-*-*-*'}{$param};
+                $dihedral_angle_restraints->{'*'}{$any_angle_name}{$param};
         }
     }
 

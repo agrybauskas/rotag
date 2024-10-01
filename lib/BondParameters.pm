@@ -764,7 +764,7 @@ sub filter_bond_parameters
     return \%filtered_bond_parameters;
 }
 
-# TODO: think if it should not be split into two functions.
+# TODO: think if it should not be split into three functions.
 sub detect_bond_parameter_type
 {
     my ( $bond_parameter_name ) = @_;
@@ -772,17 +772,21 @@ sub detect_bond_parameter_type
     my @bond_parameter_name_parts = split /-|\./, $bond_parameter_name;
 
     my $bond_parameter_type;
+    my $bond_parameter_default;
     if( scalar @bond_parameter_name_parts == 3 ) {
         $bond_parameter_type = 'bond_angle';
+        $bond_parameter_default = '*-*-*';
     } elsif( scalar @bond_parameter_name_parts == 2 ) {
         $bond_parameter_type = 'bond_length';
+        $bond_parameter_default = '*-*';
     } else {
         $bond_parameter_type = 'dihedral_angle';
+        $bond_parameter_default = '*-*-*-*';
     }
 
     my $contains_hetatom = ( $bond_parameter_name =~ m/\./g ) ? 1 : 0;
 
-    return $bond_parameter_type, $contains_hetatom;
+    return $bond_parameter_type, $contains_hetatom, $bond_parameter_default;
 }
 
 sub bond_parameter_name_key
