@@ -304,27 +304,10 @@ sub retrieve_dihedral_angle_params
 
     my %params = ();
     for my $param ( @{ $params } ) {
-        if( exists $dihedral_angle_restraints->{$residue_name}
-                                               {$angle_name}
-                                               {$param} &&
-            $residue_name ne '*' &&
-            $angle_name ne '*-*-*-*' &&
-            $dihedral_angle_restraints->{$residue_name}
-                                        {$angle_name}
-                                        {$param} ne '*' ) {
+        if( exists $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param} &&
+            $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param} ne '*' ) {
             $params{$param} =
-                $dihedral_angle_restraints->{$residue_name}
-                                            {$angle_name}
-                                            {$param};
-        } elsif( exists $dihedral_angle_restraints->{$residue_name}
-                                                    {'*-*-*-*'}
-                                                    {$param} &&
-                 $residue_name ne '*' &&
-                 $dihedral_angle_restraints->{$residue_name}
-                                             {'*-*-*-*'}
-                                             {$param} ne '*' ) {
-            $params{$param} =
-                $dihedral_angle_restraints->{$residue_name}{'*-*-*-*'}{$param};
+                $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
         } else {
             $params{$param} =
                 $dihedral_angle_restraints->{'*'}{'*-*-*-*'}{$param};
