@@ -304,19 +304,24 @@ sub retrieve_dihedral_angle_params
 
     my %params = ();
     for my $param ( @{ $params } ) {
-        my $angle_specific =
-            $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
-        my $residue_specific =
-            $dihedral_angle_restraints->{$residue_name}{'.'}{$param};
-        my $nonspecific =
-            $dihedral_angle_restraints->{'*'}{'*-*-*-*'}{$param};
-
-        if( defined $angle_specific && $angle_specific ne '*-*-*-*' ) {
-            $params{$param} = $angle_specific;
-        } elsif( defined $residue_specific && $residue_specific ne '*' ) {
-            $params{$param} = $residue_specific;
+        if( exists $dihedral_angle_restraints->{$residue_name}
+                                               {$angle_name}
+                                               {$param} &&
+            $residue_name ne '*' &&
+            $angle_name ne '*-*-*-*' ) {
+            $params{$param} =
+                $dihedral_angle_restraints->{$residue_name}
+                                            {$angle_name}
+                                            {$param};
+        } elsif( exists $dihedral_angle_restraints->{$residue_name}
+                                                    {'*-*-*-*'}
+                                                    {$param} &&
+            $residue_name ne '*' ) {
+            $params{$param} =
+                $dihedral_angle_restraints->{$residue_name}{'*-*-*-*'}{$param};
         } else {
-            $params{$param} = $nonspecific;
+            $params{$param} =
+                $dihedral_angle_restraints->{'*'}{'*-*-*-*'}{$param};
         }
     }
 
