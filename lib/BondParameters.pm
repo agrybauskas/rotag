@@ -749,7 +749,7 @@ sub filter_bond_parameters
     my %filtered_bond_parameters = ();
     for my $bond_parameter_name ( keys %{ $bond_parameters } ) {
         my ( $bond_parameter_type, $contains_hetatom ) =
-            detect_bond_parameter_type( $parameters, $bond_parameter_name );
+            detect_bond_parameter_type( $bond_parameter_name );
 
         next if $contains_hetatom &&
             ! exists $bond_parameters_in_residue{$bond_parameter_name};
@@ -767,7 +767,7 @@ sub filter_bond_parameters
 # TODO: think if it should not be split into two functions.
 sub detect_bond_parameter_type
 {
-    my ( $parameters, $bond_parameter_name ) = @_;
+    my ( $bond_parameter_name ) = @_;
 
     my @bond_parameter_name_parts = split /-|\./, $bond_parameter_name;
 

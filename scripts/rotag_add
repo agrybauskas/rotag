@@ -281,7 +281,7 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         my @bond_parameter_types =
-            map { [ detect_bond_parameter_type( $parameters, $_ ) ] }
+            map { [ detect_bond_parameter_type( $_ ) ] }
             uniq sort
             map { $rotamer_angle->{$_}{'type'} }
             keys %{ $rotamer_angle };

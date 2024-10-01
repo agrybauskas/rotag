@@ -335,8 +335,7 @@ for my $pdbx_file ( @ARGV ) {
             for my $angle_name ( sort { $a cmp $b }
                                  keys %{ $rotamer->{'angles'} } ) {
                 my $angle_value = $rotamer->{'angles'}{$angle_name};
-                my ( $angle_type ) =
-                    detect_bond_parameter_type( $parameters, $angle_name );
+                my ( $angle_type ) = detect_bond_parameter_type( $angle_name );
                 my $value =
                     ( $in_radians || $angle_type eq 'bond_length' ?
                       sprintf( $sig_figs_max, $angle_value ) :
