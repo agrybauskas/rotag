@@ -225,6 +225,15 @@ $VAR1 = bless( {
   },
   '_[local]_bond_parameter_restraints' => {
     '*' => {
+      '*-*' => {
+        'angle' => '*-*',
+        'description' => '.',
+        'label_comp_id' => '*',
+        'range_from' => '2.5',
+        'range_to' => '4.0',
+        'step' => '0.5',
+        'type' => 'angstroms'
+      },
       '*-*-*' => {
         'angle' => '*-*-*',
         'description' => '.',
