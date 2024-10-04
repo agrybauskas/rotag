@@ -60,8 +60,7 @@ use PDBxParser qw( change_unique_residue_key
                    filter_by_unique_residue_key
                    split_by
                    unique_residue_key );
-use Sampling qw( sample_angles
-                 sample_bond_parameters );
+use Sampling qw( sample_bond_parameters );
 use SidechainModels qw( rotation_translation );
 use Version qw( $VERSION );
 
