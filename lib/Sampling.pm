@@ -304,35 +304,38 @@ sub sample_bond_parameters_qs_parsing
     return \%bond_parameters;
 }
 
-sub retrieve_dihedral_angle_params
-{
-    my ( $dihedral_angle_restraints, $residue_name, $angle_name, $params ) = @_;
+# sub retrieve_dihedral_angle_params
+# {
+#     my ( $dihedral_angle_restraints, $residue_name, $angle_name, $params ) = @_;
 
-    my %params = ();
-    my ( undef, undef, $any_angle_name ) =
-        detect_bond_parameter_type( $angle_name );
-    for my $param ( @{ $params } ) {
-        if( exists $dihedral_angle_restraints->{$residue_name}
-                                               {$angle_name}
-                                               {$param} &&
-            $dihedral_angle_restraints->{$residue_name}
-                                        {$angle_name}
-                                        {$param} ne '*' ) {
-            $params{$param} =
-                $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
-        } else {
-            $params{$param} =
-                $dihedral_angle_restraints->{'*'}{$any_angle_name}{$param};
-        }
-    }
+#     my %params = ();
+#     my ( undef, undef, $any_angle_name ) =
+#         detect_bond_parameter_type( $angle_name );
+#     for my $param ( @{ $params } ) {
+#         if( exists $dihedral_angle_restraints->{$residue_name}
+#                                                {$angle_name}
+#                                                {$param} &&
+#             $dihedral_angle_restraints->{$residue_name}
+#                                         {$angle_name}
+#                                         {$param} ne '*' ) {
+#             $params{$param} =
+#                 $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
+#         } else {
+#             $params{$param} =
+#                 $dihedral_angle_restraints->{'*'}{$any_angle_name}{$param};
+#         }
+#     }
 
-    return map { $params{$_} } @{ $params };
-}
+#     return map { $params{$_} } @{ $params };
+# }
 
 sub match_bond_parameter_name
 {
     my ( $dihedral_angle_restraints, $residue_name, $bond_parameter_name ) = @_;
-    my $parameter_name = '';
+    my $parameter_name;
+    if( exists $dihedral_angle_restraints->{$residue_name}{$bond_parameter_name} ) {
+        $parameter_name = $bond_parameter_name;
+    }
     return $parameter_name;
 }
 
