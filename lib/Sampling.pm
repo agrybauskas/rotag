@@ -89,6 +89,8 @@ sub sample_bond_parameters_qs_parsing
 
     $legacy_grammar //= 0;
 
+    my $rotatable_residue_names =
+        $parameters->{'_[local]_rotatable_residue_names'};
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     $query_strings =~ s/\s//g;
@@ -101,12 +103,13 @@ sub sample_bond_parameters_qs_parsing
 
     default_bond_parameters( $parameters, \%bond_parameters );
 
-    # my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
-    # my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
-    # my $float_regexp = '-?\d+(?:\.\d+)?';
-    # my $float_pos_regexp = '\d+(?:\.\d+)?';
-    # my $step_only_regexp =
-    #     $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
+    # Overwrites the parameters if it was declared.
+    my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
+    my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
+    my $float_regexp = '-?\d+(?:\.\d+)?';
+    my $float_pos_regexp = '\d+(?:\.\d+)?';
+    my $step_only_regexp =
+        $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
 
     # for my $query_string ( split /;/, $query_strings ) {
     #     my $residue_names;
@@ -238,16 +241,14 @@ sub sample_bond_parameters_qs_parsing
 
 sub default_bond_parameters
 {
-    my ( $parameters, $residue_name, $angle_name, $params ) = @_;
+    my ( $parameters, $bond_parameters ) = @_;
 
     my $dihedral_angle_restraints =
         $parameters->{'_[local]_bond_parameter_restraints'};
-    my $rotatable_residue_names =
-        $parameters->{'_[local]_rotatable_residue_names'};
 
-    # for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
-    #     for my $dihedral_angle_name (
-    #         sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
+    for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
+        for my $dihedral_angle_name (
+            sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
     # #         my $matched_bond_parameter_name =
     # #             match_bond_parameter_name( $dihedral_angle_restraints,
     # #                                        $residue_name,
@@ -287,33 +288,33 @@ sub default_bond_parameters
     #                 'units' => 'degrees'
     #             };
     #         }
-    #     }
-    # }
+        }
+    }
 
     # # Query overwrites on top.
     # if( $query_strings ) {
     #     undef %bond_parameters;
     # }
 
-    my %params = ();
-    my ( undef, undef, $any_angle_name ) =
-        detect_bond_parameter_type( $angle_name );
-    for my $param ( @{ $params } ) {
-        if( exists $dihedral_angle_restraints->{$residue_name}
-                                               {$angle_name}
-                                               {$param} &&
-            $dihedral_angle_restraints->{$residue_name}
-                                        {$angle_name}
-                                        {$param} ne '*' ) {
-            $params{$param} =
-                $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
-        } else {
-            $params{$param} =
-                $dihedral_angle_restraints->{'*'}{$any_angle_name}{$param};
-        }
-    }
+    # my %params = ();
+    # my ( undef, undef, $any_angle_name ) =
+    #     detect_bond_parameter_type( $angle_name );
+    # for my $param ( @{ $params } ) {
+    #     if( exists $dihedral_angle_restraints->{$residue_name}
+    #                                            {$angle_name}
+    #                                            {$param} &&
+    #         $dihedral_angle_restraints->{$residue_name}
+    #                                     {$angle_name}
+    #                                     {$param} ne '*' ) {
+    #         $params{$param} =
+    #             $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
+    #     } else {
+    #         $params{$param} =
+    #             $dihedral_angle_restraints->{'*'}{$any_angle_name}{$param};
+    #     }
+    # }
 
-    return map { $params{$_} } @{ $params };
+    # return map { $params{$_} } @{ $params };
 }
 
 sub match_bond_parameter_name
