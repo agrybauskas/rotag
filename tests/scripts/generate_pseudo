@@ -6,7 +6,7 @@ use warnings;
 use BondParameters qw( rotatable_bonds );
 use ForceField::Parameters;
 use PseudoAtoms qw( generate_pseudo );
-use Sampling qw( sample_angles );
+use Sampling qw( sample_bond_parameters );
 use PDBxParser qw( to_pdbx );
 
 #
@@ -51,7 +51,9 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     $max_angle = eval( $max_angle );
     $num_angle_values{"$dihedral_angle"} =
         sample_angles( [ [ $min_angle, $max_angle ] ],
-                       $num_of_angles{$dihedral_angle} );
+                       $num_of_angles{$dihedral_angle},
+                       1,
+                       0 );
 }
 
 %{ $atom_site } =

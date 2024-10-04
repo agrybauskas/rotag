@@ -4,8 +4,7 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( sample_angles
-                     sample_bond_parameters
+our @EXPORT_OK = qw( sample_bond_parameters
                      sample_bond_parameters_qs_parsing );
 
 use POSIX;
@@ -16,22 +15,6 @@ use Version qw( $VERSION );
 our $VERSION = $VERSION;
 
 # --------------------------------- Sampling ---------------------------------- #
-
-#
-# Produces angle values that are separated by even intervals.
-# Input:
-#     $angle_ranges - boundary between which angles can be sampled;
-#     $angle_count - sampling count.
-# Output:
-#     sampled angles.
-#
-#
-
-sub sample_angles
-{
-    my ( $angle_ranges, $angle_count ) = @_;
-    return sample_bond_parameters( $angle_ranges, $angle_count, 1, 0 );
-}
 
 #
 # Produces bond parameter values that are separated by even intervals.
@@ -288,18 +271,18 @@ sub default_bond_parameters
     #         if( $in_radians ) {
     #             $bond_parameters{$residue_name}{$dihedral_angle_name} = {
     #                 'values' =>
-    #                     sample_angles( [ [ $dihedral_angle_start,
+    #                     sample_bond_parameters( [ [ $dihedral_angle_start,
     #                                        $dihedral_angle_end ] ],
-    #                                    $dihedral_angle_count ),
+    #                                    $dihedral_angle_count, 1, 0 ),
     #                 'type' => 'dihedral_angle',
     #                 'units' => 'radians'
     #             };
     #         } else {
     #             $bond_parameters{$residue_name}{$dihedral_angle_name} = {
     #                 'values' =>
-    #                     sample_angles( [ [ $dihedral_angle_start * $pi / 180.0,
+    #                     sample_bond_parameters( [ [ $dihedral_angle_start * $pi / 180.0,
     #                                        $dihedral_angle_end * $pi / 180.0 ] ],
-    #                                    $dihedral_angle_count ),
+    #                                    $dihedral_angle_count, 1, 0 ),
     #                 'type' => 'dihedral_angle',
     #                 'units' => 'degrees'
     #             };
