@@ -318,4 +318,9 @@ sub retrieve_dihedral_angle_params
     return map { $params{$_} } @{ $params };
 }
 
+sub match_bond_parameter_name
+{
+
+}
+
 1;
