@@ -331,7 +331,7 @@ sub retrieve_dihedral_angle_params
 
 sub match_bond_parameter_name
 {
-    my ( $dihedral_angle_restraints, $residue_name, $angle_name ) = @_;
+    my ( $dihedral_angle_restraints, $residue_name, $bond_parameter_name ) = @_;
     my $parameter_name = '';
     return $parameter_name;
 }
