@@ -119,55 +119,55 @@ sub sample_bond_parameters_qs_parsing
     # have to be declared as it is not desirable to calculate each bond angle
     # and bond length changes.
     my %bond_parameters;
-    # for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
-    #     for my $dihedral_angle_name (
-    #         sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
+    for my $residue_name ( sort keys %{ $dihedral_angle_restraints } ) {
+        for my $dihedral_angle_name (
+            sort keys %{ $dihedral_angle_restraints->{$residue_name} } ) {
     #         my $matched_bond_parameter_name =
     #             match_bond_parameter_name( $dihedral_angle_restraints,
     #                                        $residue_name,
     #                                        $dihedral_angle_name );
     #     }
     # }
-    #         my ( $dihedral_angle_start,
-    #              $dihedral_angle_step,
-    #              $dihedral_angle_end ) =
-    #             retrieve_dihedral_angle_params( $dihedral_angle_restraints,
-    #                                             $residue_name,
-    #                                             $dihedral_angle_name,
-    #                                             [ 'range_from',
-    #                                               'step',
-    #                                               'range_to' ] );
+            my ( $dihedral_angle_start,
+                 $dihedral_angle_step,
+                 $dihedral_angle_end ) =
+                retrieve_dihedral_angle_params( $dihedral_angle_restraints,
+                                                $residue_name,
+                                                $dihedral_angle_name,
+                                                [ 'range_from',
+                                                  'step',
+                                                  'range_to' ] );
 
-    #         my $dihedral_angle_count =
-    #             int( ( $dihedral_angle_end - $dihedral_angle_start ) /
-    #                  $dihedral_angle_step );
+            my $dihedral_angle_count =
+                int( ( $dihedral_angle_end - $dihedral_angle_start ) /
+                     $dihedral_angle_step );
 
-    #         if( $in_radians ) {
-    #             $bond_parameters{$residue_name}{$dihedral_angle_name} = {
-    #                 'values' =>
-    #                     sample_angles( [ [ $dihedral_angle_start,
-    #                                        $dihedral_angle_end ] ],
-    #                                    $dihedral_angle_count ),
-    #                 'type' => 'dihedral_angle',
-    #                 'units' => 'radians'
-    #             };
-    #         } else {
-    #             $bond_parameters{$residue_name}{$dihedral_angle_name} = {
-    #                 'values' =>
-    #                     sample_angles( [ [ $dihedral_angle_start * $pi / 180.0,
-    #                                        $dihedral_angle_end * $pi / 180.0 ] ],
-    #                                    $dihedral_angle_count ),
-    #                 'type' => 'dihedral_angle',
-    #                 'units' => 'degrees'
-    #             };
-    #         }
-    #     }
-    # }
+            if( $in_radians ) {
+                $bond_parameters{$residue_name}{$dihedral_angle_name} = {
+                    'values' =>
+                        sample_angles( [ [ $dihedral_angle_start,
+                                           $dihedral_angle_end ] ],
+                                       $dihedral_angle_count ),
+                    'type' => 'dihedral_angle',
+                    'units' => 'radians'
+                };
+            } else {
+                $bond_parameters{$residue_name}{$dihedral_angle_name} = {
+                    'values' =>
+                        sample_angles( [ [ $dihedral_angle_start * $pi / 180.0,
+                                           $dihedral_angle_end * $pi / 180.0 ] ],
+                                       $dihedral_angle_count ),
+                    'type' => 'dihedral_angle',
+                    'units' => 'degrees'
+                };
+            }
+        }
+    }
 
-    # # Query overwrites on top.
-    # if( $query_strings ) {
-    #     undef %bond_parameters;
-    # }
+    # Query overwrites on top.
+    if( $query_strings ) {
+        undef %bond_parameters;
+    }
 
     my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
     my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
@@ -304,30 +304,30 @@ sub sample_bond_parameters_qs_parsing
     return \%bond_parameters;
 }
 
-# sub retrieve_dihedral_angle_params
-# {
-#     my ( $dihedral_angle_restraints, $residue_name, $angle_name, $params ) = @_;
+sub retrieve_dihedral_angle_params
+{
+    my ( $dihedral_angle_restraints, $residue_name, $angle_name, $params ) = @_;
 
-#     my %params = ();
-#     my ( undef, undef, $any_angle_name ) =
-#         detect_bond_parameter_type( $angle_name );
-#     for my $param ( @{ $params } ) {
-#         if( exists $dihedral_angle_restraints->{$residue_name}
-#                                                {$angle_name}
-#                                                {$param} &&
-#             $dihedral_angle_restraints->{$residue_name}
-#                                         {$angle_name}
-#                                         {$param} ne '*' ) {
-#             $params{$param} =
-#                 $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
-#         } else {
-#             $params{$param} =
-#                 $dihedral_angle_restraints->{'*'}{$any_angle_name}{$param};
-#         }
-#     }
+    my %params = ();
+    my ( undef, undef, $any_angle_name ) =
+        detect_bond_parameter_type( $angle_name );
+    for my $param ( @{ $params } ) {
+        if( exists $dihedral_angle_restraints->{$residue_name}
+                                               {$angle_name}
+                                               {$param} &&
+            $dihedral_angle_restraints->{$residue_name}
+                                        {$angle_name}
+                                        {$param} ne '*' ) {
+            $params{$param} =
+                $dihedral_angle_restraints->{$residue_name}{$angle_name}{$param};
+        } else {
+            $params{$param} =
+                $dihedral_angle_restraints->{'*'}{$any_angle_name}{$param};
+        }
+    }
 
-#     return map { $params{$_} } @{ $params };
-# }
+    return map { $params{$_} } @{ $params };
+}
 
 sub match_bond_parameter_name
 {
