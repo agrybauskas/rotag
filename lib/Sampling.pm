@@ -91,25 +91,51 @@ sub sample_bond_parameters_qs_parsing
 
     my $rotatable_residue_names =
         $parameters->{'_[local]_rotatable_residue_names'};
+    my $bond_parameter_restraints =
+        $parameters->{'_[local]_bond_parameter_restraints'};
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     $query_strings =~ s/\s//g;
 
-    # Dihedral angle calculations are first preditermined and then updated. For
-    # bond angle and bond length parameters, there are no defaults and they
-    # have to be declared as it is not desirable to calculate each bond angle
-    # and bond length changes.
+    # Dihedral angle calculations are first preditermined and then updated.
     my %bond_parameters;
 
-    default_bond_parameters( $parameters, \%bond_parameters );
+    # Default bond parameters.
+    for my $residue_name ( sort keys %{ $bond_parameter_restraints } ) {
+        for my $bond_parameter_name (
+            sort keys %{ $bond_parameter_restraints->{$residue_name} } ) {
+            my ( $bond_parameter_start,
+                 $bond_parameter_step,
+                 $bond_parameter_end ) =
+                map { $bond_parameter_restraints->{$residue_name}
+                                                  {$bond_parameter_name}{$_} }
+                    ( 'range_from', 'step', 'range_to' );
+            $bond_parameters{$residue_name}{$bond_parameter_name} = {
+                'from' => $bond_parameter_start,
+                'step' => $bond_parameter_step,
+                'to' => $bond_parameter_end,
+                # 'values' => sample_bond_parameters(
+                #     [ [ $bond_parameter_start, $bond_parameter_end ] ],
+                #     $bond_parameter_count,
+                #     1,
+                #     $do_inclusive_end
+                # ),
+                'type' => $bond_parameter_name,
+                'units' => ( $in_radians ? 'radians' : 'degrees' )
+            };
+        }
+    }
 
-    # Overwrites the parameters if it was declared.
-    my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
-    my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
-    my $float_regexp = '-?\d+(?:\.\d+)?';
-    my $float_pos_regexp = '\d+(?:\.\d+)?';
-    my $step_only_regexp =
-        $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
+    use Data::Dumper;
+    print STDERR Dumper \%bond_parameters;
+
+    # # Overwrites the parameters if it was declared.
+    # my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
+    # my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
+    # my $float_regexp = '-?\d+(?:\.\d+)?';
+    # my $float_pos_regexp = '\d+(?:\.\d+)?';
+    # my $step_only_regexp =
+    #     $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
 
     # for my $query_string ( split /;/, $query_strings ) {
     #     my $residue_names;
@@ -239,58 +265,7 @@ sub sample_bond_parameters_qs_parsing
     return \%bond_parameters;
 }
 
-sub default_bond_parameters
-{
-    my ( $parameters, $bond_parameters, $options ) = @_;
-    my ( $in_radians ) = ( $options->{'in_radians'} );
-
-    $in_radians //= 1;
-
-    my $bond_parameter_restraints =
-        $parameters->{'_[local]_bond_parameter_restraints'};
-
-    for my $residue_name ( sort keys %{ $bond_parameter_restraints } ) {
-        for my $bond_parameter_name (
-            sort keys %{ $bond_parameter_restraints->{$residue_name} } ) {
-            my ( $bond_parameter_start,
-                 $bond_parameter_step,
-                 $bond_parameter_end ) =
-                map { $bond_parameter_restraints->{$residue_name}
-                                                  {$bond_parameter_name}{$_} }
-                    ( 'range_from', 'step', 'range_to' );
-
-            # match_bond_parameter_name();
-
-            my $bond_parameter_count =
-                int( ( $bond_parameter_end - $bond_parameter_start ) /
-                     $bond_parameter_step );
-
-            if( $in_radians ) {
-                # $bond_parameters->{$residue_name}{$dihedral_angle_name} = {
-                #     'values' => sample_bond_parameters(
-                #         [ [ $dihedral_angle_start,
-                #             $dihedral_angle_end ] ],
-                #         $dihedral_angle_count, 1, 0 ),
-                #     'type' => 'dihedral_angle',
-                #     'units' => 'radians'
-                # };
-            } else {
-                # $bond_parameters{$residue_name}{$dihedral_angle_name} = {
-                #     'values' => sample_bond_parameters(
-                #         [ [ $dihedral_angle_start * $pi / 180.0,
-                #             $dihedral_angle_end * $pi / 180.0 ] ],
-                #         $dihedral_angle_count, 1, 0 ),
-                #     'type' => 'dihedral_angle',
-                #     'units' => 'degrees'
-                # };
-            }
-        }
-    }
-
-    return;
-}
-
-sub match_bond_parameter_name
+sub resolve_bond_parameter
 {
     my ( $dihedral_angle_restraints, $residue_name, $bond_parameter_name ) = @_;
     my $parameter_name;
