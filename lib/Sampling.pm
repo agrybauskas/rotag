@@ -156,86 +156,86 @@ sub sample_bond_parameters_qs_parsing
         }
     }
 
-    # # Overwrites the parameters if it was declared.
-    # my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
-    # my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
-    # my $float_regexp = '-?\d+(?:\.\d+)?';
-    # my $float_pos_regexp = '\d+(?:\.\d+)?';
-    # my $step_only_regexp =
-    #     $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
+    # Overwrites the parameters if it was declared.
+    my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
+    my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
+    my $float_regexp = '-?\d+(?:\.\d+)?';
+    my $float_pos_regexp = '\d+(?:\.\d+)?';
+    my $step_only_regexp =
+        $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
 
-    # for my $query_string ( split /;/, $query_strings ) {
-    #     my $residue_names;
-    #     my $bond_parameter_string;
+    for my $query_string ( split /;/, $query_strings ) {
+        my $residue_names;
+        my $bond_parameter_string;
 
-    #     my @query_string_decomposed = split /:/, $query_string;
-    #     if( scalar @query_string_decomposed == 2 ) {
-    #         if( $query_string =~ m/^((?:${residue_names_regexp})(?:,(?:${residue_names_regexp}))*):(.+)$/i ) {
-    #             $residue_names = [ split /,/, uc( $1 ) ];
-    #             $bond_parameter_string = $2;
-    #         } else {
-    #             die "Syntax '$query_string' is incorrect\n";
-    #         }
-    #     } elsif( scalar @query_string_decomposed == 1 ) {
-    #         $bond_parameter_string = $query_string;
-    #     } else {
-    #         die "Syntax '$query_string' is incorrect\n";
-    #     }
+        my @query_string_decomposed = split /:/, $query_string;
+        if( scalar @query_string_decomposed == 2 ) {
+            if( $query_string =~ m/^((?:${residue_names_regexp})(?:,(?:${residue_names_regexp}))*):(.+)$/i ) {
+                $residue_names = [ split /,/, uc( $1 ) ];
+                $bond_parameter_string = $2;
+            } else {
+                die "Syntax '$query_string' is incorrect\n";
+            }
+        } elsif( scalar @query_string_decomposed == 1 ) {
+            $bond_parameter_string = $query_string;
+        } else {
+            die "Syntax '$query_string' is incorrect\n";
+        }
 
-    #     $residue_names //= [ "*" ];
-    #     $bond_parameter_string //= "";
+        $residue_names //= [ "*" ];
+        $bond_parameter_string //= "";
 
-    #     for my $bond_parameter_query ( split /,/, $bond_parameter_string ) {
-    #         my $bond_parameter_name;
-    #         my $bond_parameter_start;
-    #         my $bond_parameter_step;
-    #         my $bond_parameter_end;
+        for my $bond_parameter_query ( split /,/, $bond_parameter_string ) {
+            my $bond_parameter_name;
+            my $bond_parameter_start;
+            my $bond_parameter_step;
+            my $bond_parameter_end;
 
-    #         if( $bond_parameter_query =~ m/^(${bond_parameter_regexp})=(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
-    #             ( $bond_parameter_name,
-    #               $bond_parameter_start,
-    #               $bond_parameter_step,
-    #               $bond_parameter_end ) = ( $1, $2, $3, $4 );
-    #         } elsif( $bond_parameter_query =~ m/^(${bond_parameter_regexp})=(${float_regexp})\.\.(${float_regexp})$/ ) {
-    #             ( $bond_parameter_name,
-    #               $bond_parameter_start,
-    #               $bond_parameter_end ) = ( $1, $2, $3 );
-    #         } elsif( $bond_parameter_query =~ m/^(${bond_parameter_regexp})=${step_only_regexp}$/ ) {
-    #             ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
-    #         } elsif( $bond_parameter_query =~ m/^(${bond_parameter_regexp})=(${float_regexp}|\!)$/ ) {
-    #             if( $2 =~ m/^\!$/ ) {
-    #                 # HACK: special value as all the steps have to be positive
-    #                 # integer. It is set to -1 in order to make default values
-    #                 # later.
-    #                 ( $bond_parameter_name, $bond_parameter_step ) = ( $1, -1 );
-    #             } else {
-    #                 ( $bond_parameter_name,
-    #                   $bond_parameter_start,
-    #                   $bond_parameter_step,
-    #                   $bond_parameter_end ) = ( $1, $2, 1.0, $2 + 1.0 );
-    #             }
-    #         } elsif( $bond_parameter_query =~ m/^(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
-    #             ( $bond_parameter_start,
-    #               $bond_parameter_step,
-    #               $bond_parameter_end ) = ( $1, $2, $3 );
-    #         } elsif( $bond_parameter_query =~ m/^(${float_regexp})\.\.(${float_regexp})$/ ) {
-    #             ( $bond_parameter_start, $bond_parameter_end ) = ( $1, $2 );
-    #         } elsif( $bond_parameter_query =~ m/^${step_only_regexp}$/ ) {
-    #             ( $bond_parameter_step ) = ( $1 );
-    #         } elsif( $bond_parameter_query =~ m/^(${float_regexp}|\!)$/ ) {
-    #             if( $1 =~ m/^\!$/ ) {
-    #                 # HACK: special value as all the steps have to be positive
-    #                 # integer. It is set to -1 in order to make default values
-    #                 # later.
-    #                 $bond_parameter_step = -1;
-    #             } else {
-    #                 ( $bond_parameter_start,
-    #                   $bond_parameter_step,
-    #                   $bond_parameter_end ) = ( $1, 1.0, $1 + 1.0 );
-    #             }
-    #         } else {
-    #             die "Syntax '$bond_parameter_query' is incorrect\n";
-    #         }
+            if( $bond_parameter_query =~ m/^(${bond_parameter_regexp})=(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
+                ( $bond_parameter_name,
+                  $bond_parameter_start,
+                  $bond_parameter_step,
+                  $bond_parameter_end ) = ( $1, $2, $3, $4 );
+            } elsif( $bond_parameter_query =~ m/^(${bond_parameter_regexp})=(${float_regexp})\.\.(${float_regexp})$/ ) {
+                ( $bond_parameter_name,
+                  $bond_parameter_start,
+                  $bond_parameter_end ) = ( $1, $2, $3 );
+            } elsif( $bond_parameter_query =~ m/^(${bond_parameter_regexp})=${step_only_regexp}$/ ) {
+                ( $bond_parameter_name, $bond_parameter_step ) = ( $1, $2 );
+            } elsif( $bond_parameter_query =~ m/^(${bond_parameter_regexp})=(${float_regexp}|\!)$/ ) {
+                if( $2 =~ m/^\!$/ ) {
+                    # HACK: special value as all the steps have to be positive
+                    # integer. It is set to -1 in order to make default values
+                    # later.
+                    ( $bond_parameter_name, $bond_parameter_step ) = ( $1, -1 );
+                } else {
+                    ( $bond_parameter_name,
+                      $bond_parameter_start,
+                      $bond_parameter_step,
+                      $bond_parameter_end ) = ( $1, $2, 1.0, $2 + 1.0 );
+                }
+            } elsif( $bond_parameter_query =~ m/^(${float_regexp})\.\.(${float_pos_regexp})\.\.(${float_regexp})$/ ) {
+                ( $bond_parameter_start,
+                  $bond_parameter_step,
+                  $bond_parameter_end ) = ( $1, $2, $3 );
+            } elsif( $bond_parameter_query =~ m/^(${float_regexp})\.\.(${float_regexp})$/ ) {
+                ( $bond_parameter_start, $bond_parameter_end ) = ( $1, $2 );
+            } elsif( $bond_parameter_query =~ m/^${step_only_regexp}$/ ) {
+                ( $bond_parameter_step ) = ( $1 );
+            } elsif( $bond_parameter_query =~ m/^(${float_regexp}|\!)$/ ) {
+                if( $1 =~ m/^\!$/ ) {
+                    # HACK: special value as all the steps have to be positive
+                    # integer. It is set to -1 in order to make default values
+                    # later.
+                    $bond_parameter_step = -1;
+                } else {
+                    ( $bond_parameter_start,
+                      $bond_parameter_step,
+                      $bond_parameter_end ) = ( $1, 1.0, $1 + 1.0 );
+                }
+            } else {
+                die "Syntax '$bond_parameter_query' is incorrect\n";
+            }
 
     #         $bond_parameter_start //= -180.0;
     #         $bond_parameter_step //= 36.0;
@@ -285,9 +285,9 @@ sub sample_bond_parameters_qs_parsing
     #                     'units' => $bond_parameter_units
     #                 };
     #             }
-    #         }
-    #     }
-    # }
+            # }
+        }
+    }
 
     return \%bond_parameters;
 }
