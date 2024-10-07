@@ -110,24 +110,51 @@ sub sample_bond_parameters_qs_parsing
                 map { $bond_parameter_restraints->{$residue_name}
                                                   {$bond_parameter_name}{$_} }
                     ( 'range_from', 'step', 'range_to' );
+
+            my $bond_parameter_type =
+                detect_bond_parameter_type( $bond_parameter_name );
+
+            my $bond_parameter_count;
+            my $values;
+            if( $bond_parameter_start ne '*' &&
+                $bond_parameter_step ne '*' &&
+                $bond_parameter_end ne '*' ) {
+
+                $bond_parameter_count =
+                    int( ( $bond_parameter_end - $bond_parameter_start ) /
+                         $bond_parameter_step );
+
+                if( $bond_parameter_type eq 'dihedral_angle' && $in_radians ) {
+                    $values = sample_bond_parameters(
+                        [ [ $bond_parameter_start,
+                            $bond_parameter_end ] ],
+                        $bond_parameter_count, 1, 0
+                    );
+                } elsif( $bond_parameter_type eq 'dihedral_angle' ) {
+                    $values = sample_bond_parameters(
+                        [ [ $bond_parameter_start * $pi / 180.0,
+                            $bond_parameter_end * $pi / 180.0 ] ],
+                        $bond_parameter_count, 1, 0
+                    );
+                } else {
+                    $values = sample_bond_parameters(
+                        [ [ $bond_parameter_start,
+                            $bond_parameter_end ] ],
+                        $bond_parameter_count, 1, 1
+                    );
+                }
+            }
+
             $bond_parameters{$residue_name}{$bond_parameter_name} = {
                 'from' => $bond_parameter_start,
                 'step' => $bond_parameter_step,
                 'to' => $bond_parameter_end,
-                # 'values' => sample_bond_parameters(
-                #     [ [ $bond_parameter_start, $bond_parameter_end ] ],
-                #     $bond_parameter_count,
-                #     1,
-                #     $do_inclusive_end
-                # ),
-                'type' => $bond_parameter_name,
+                'values' => $values,
+                'type' => $bond_parameter_type,
                 'units' => ( $in_radians ? 'radians' : 'degrees' )
             };
         }
     }
-
-    use Data::Dumper;
-    print STDERR Dumper \%bond_parameters;
 
     # # Overwrites the parameters if it was declared.
     # my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
