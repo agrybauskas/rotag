@@ -237,10 +237,7 @@ sub sample_bond_parameters_qs_parsing
                 die "Syntax '$bond_parameter_query' is incorrect\n";
             }
 
-    #         $bond_parameter_start //= -180.0;
-    #         $bond_parameter_step //= 36.0;
-    #         $bond_parameter_end //= 180.0;
-    #         $bond_parameter_name //= '*-*-*-*';
+            $bond_parameter_name //= '*-*-*-*';
 
             my ( $bond_parameter_type ) =
                 detect_bond_parameter_type( $bond_parameter_name );
