@@ -93,7 +93,6 @@ sub sample_bond_parameters_qs_parsing
         $parameters->{'_[local]_rotatable_residue_names'};
     my $bond_parameter_restraints =
         $parameters->{'_[local]_bond_parameter_restraints'};
-    my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     $query_strings =~ s/\s//g;
 
@@ -110,47 +109,20 @@ sub sample_bond_parameters_qs_parsing
                 map { $bond_parameter_restraints->{$residue_name}
                                                   {$bond_parameter_name}{$_} }
                     ( 'range_from', 'step', 'range_to' );
-
-            my $bond_parameter_type =
-                detect_bond_parameter_type( $bond_parameter_name );
-
-            my $bond_parameter_count;
-            my $values;
-            if( $bond_parameter_start ne '*' &&
-                $bond_parameter_step ne '*' &&
-                $bond_parameter_end ne '*' ) {
-
-                $bond_parameter_count =
-                    int( ( $bond_parameter_end - $bond_parameter_start ) /
-                         $bond_parameter_step );
-
-                if( $bond_parameter_type eq 'dihedral_angle' && $in_radians ) {
-                    $values = sample_bond_parameters(
-                        [ [ $bond_parameter_start,
-                            $bond_parameter_end ] ],
-                        $bond_parameter_count, 1, 0
-                    );
-                } elsif( $bond_parameter_type eq 'dihedral_angle' ) {
-                    $values = sample_bond_parameters(
-                        [ [ $bond_parameter_start * $pi / 180.0,
-                            $bond_parameter_end * $pi / 180.0 ] ],
-                        $bond_parameter_count, 1, 0
-                    );
-                } else {
-                    $values = sample_bond_parameters(
-                        [ [ $bond_parameter_start,
-                            $bond_parameter_end ] ],
-                        $bond_parameter_count, 1, 1
-                    );
-                }
-            }
-
+            my $bond_parameter_values = determine_bond_parameter_values(
+                $parameters,
+                $bond_parameter_name,
+                $bond_parameter_start,
+                $bond_parameter_step,
+                $bond_parameter_end,
+                { 'in_radians' => $in_radians }
+            );
             $bond_parameters{$residue_name}{$bond_parameter_name} = {
                 'from' => $bond_parameter_start,
                 'step' => $bond_parameter_step,
                 'to' => $bond_parameter_end,
-                'values' => $values,
-                'type' => $bond_parameter_type,
+                'values' => $bond_parameter_values,
+                'type' => detect_bond_parameter_type( $bond_parameter_name ),
                 'units' => ( $in_radians ? 'radians' : 'degrees' )
             };
         }
@@ -261,7 +233,7 @@ sub sample_bond_parameters_qs_parsing
     #             $bond_parameter_end = $bond_parameter_end * $pi / 180.0;
     #         }
 
-    #         for my $residue_name ( @{ $residue_names } ) {
+            for my $residue_name ( @{ $residue_names } ) {
     #             # HACK: not sure if the calculations above should be done if the
     #             # step value is -1.
     #             if( $bond_parameter_step < 0 ) {
@@ -282,11 +254,53 @@ sub sample_bond_parameters_qs_parsing
     #                     'units' => $bond_parameter_units
     #                 };
     #             }
-    #         }
+            }
         }
     }
 
     return \%bond_parameters;
+}
+
+sub determine_bond_parameter_values
+{
+    my ( $parameters, $bond_parameter_name, $bond_parameter_start,
+         $bond_parameter_step, $bond_parameter_end, $options ) = @_;
+
+    return if $bond_parameter_start eq '*' ||
+              $bond_parameter_step eq '*' ||
+              $bond_parameter_end eq '*';
+
+    my ( $in_radians ) = ( $options->{'in_radians'} );
+
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
+    my $bond_parameter_type =
+        detect_bond_parameter_type( $bond_parameter_name );
+    my $bond_parameter_count =
+        int( ( $bond_parameter_end - $bond_parameter_start ) /
+             $bond_parameter_step );
+
+    my $values;
+    if( $bond_parameter_type eq 'dihedral_angle' && $in_radians ) {
+        $values = sample_bond_parameters(
+            [ [ $bond_parameter_start,
+                $bond_parameter_end ] ],
+            $bond_parameter_count, 1, 0
+        );
+    } elsif( $bond_parameter_type eq 'dihedral_angle' ) {
+        $values = sample_bond_parameters(
+            [ [ $bond_parameter_start * $pi / 180.0,
+                $bond_parameter_end * $pi / 180.0 ] ],
+            $bond_parameter_count, 1, 0
+        );
+    } else {
+        $values = sample_bond_parameters(
+            [ [ $bond_parameter_start,
+                $bond_parameter_end ] ],
+            $bond_parameter_count, 1, 1
+        );
+    }
+    return $values;
 }
 
 sub resolve_bond_parameter
