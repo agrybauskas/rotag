@@ -109,6 +109,8 @@ sub sample_bond_parameters_qs_parsing
                 map { $bond_parameter_restraints->{$residue_name}
                                                   {$bond_parameter_name}{$_} }
                     ( 'range_from', 'step', 'range_to' );
+            my ( $bond_parameter_type ) =
+                detect_bond_parameter_type( $bond_parameter_name );
             my $bond_parameter_values = determine_bond_parameter_values(
                 $parameters,
                 $bond_parameter_name,
@@ -122,8 +124,12 @@ sub sample_bond_parameters_qs_parsing
                 'step' => $bond_parameter_step,
                 'to' => $bond_parameter_end,
                 'values' => $bond_parameter_values,
-                'type' => detect_bond_parameter_type( $bond_parameter_name ),
-                'units' => ( $in_radians ? 'radians' : 'degrees' )
+                'type' => $bond_parameter_type,
+                'units' => (
+                    $bond_parameter_type eq 'bond_length' ?
+                    'angstroms' :
+                    ( $in_radians ? 'radians' : 'degrees' )
+                )
             };
         }
     }
@@ -251,7 +257,7 @@ sub determine_bond_parameter_values
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    my $bond_parameter_type =
+    my ( $bond_parameter_type ) =
         detect_bond_parameter_type( $bond_parameter_name );
     my $bond_parameter_count =
         int( ( $bond_parameter_end - $bond_parameter_start ) /
