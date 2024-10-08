@@ -211,49 +211,26 @@ sub sample_bond_parameters_qs_parsing
 
             $bond_parameter_name //= '*-*-*-*';
 
-            my ( $bond_parameter_type ) =
-                detect_bond_parameter_type( $bond_parameter_name );
-
-    #         my $bond_parameter_count =
-    #             int( ( $bond_parameter_end - $bond_parameter_start ) /
-    #                  $bond_parameter_step );
-    #         my $do_inclusive_end = 0;
-    #         if( $bond_parameter_type eq 'bond_length' ||
-    #             $bond_parameter_type eq 'bond_angle' ) {
-    #             $bond_parameter_count++;
-    #             $do_inclusive_end = 1;
-    #         }
-
-    #         my $bond_parameter_units = 'radians';
-    #         if( $bond_parameter_type eq 'bond_length' ) {
-    #             $bond_parameter_units = 'angstrom';
-    #         } elsif( ! $in_radians ) {
-    #             $bond_parameter_units = 'degrees';
-    #             $bond_parameter_start = $bond_parameter_start * $pi / 180.0;
-    #             $bond_parameter_end = $bond_parameter_end * $pi / 180.0;
-    #         }
+            my $bond_parameter_values = determine_bond_parameter_values(
+                $parameters,
+                $bond_parameter_name,
+                $bond_parameter_start,
+                $bond_parameter_step,
+                $bond_parameter_end,
+                { 'in_radians' => $in_radians }
+            );
 
             for my $residue_name ( @{ $residue_names } ) {
-    #             # HACK: not sure if the calculations above should be done if the
-    #             # step value is -1.
-    #             if( $bond_parameter_step < 0 ) {
-    #                 $bond_parameters{$residue_name}{$bond_parameter_name} = {
-    #                     'values' => [],
-    #                     'type' => $bond_parameter_type,
-    #                     'units' => $bond_parameter_units
-    #                 };
-    #             } else {
-    #                 $bond_parameters{$residue_name}{$bond_parameter_name} = {
-    #                     'values' => sample_bond_parameters(
-    #                         [ [ $bond_parameter_start, $bond_parameter_end ] ],
-    #                         $bond_parameter_count,
-    #                         1,
-    #                         $do_inclusive_end
-    #                     ),
-    #                     'type' => $bond_parameter_type,
-    #                     'units' => $bond_parameter_units
-    #                 };
-    #             }
+                $bond_parameters{$residue_name}{$bond_parameter_name} = {
+                    'from' => $bond_parameter_start,
+                    'step' => $bond_parameter_step,
+                    'to' => $bond_parameter_end,
+                    'values' => (
+                        $bond_parameter_step < 0 ? [] : $bond_parameter_values
+                    ),
+                    'type' => detect_bond_parameter_type( $bond_parameter_name ),
+                    'units' => ( $in_radians ? 'radians' : 'degrees' )
+                };
             }
         }
     }
