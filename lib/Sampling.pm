@@ -241,6 +241,8 @@ sub sample_bond_parameters_qs_parsing
         }
     }
 
+    resolve_bond_parameters( \%bond_parameters );
+
     return \%bond_parameters;
 }
 
@@ -286,14 +288,16 @@ sub determine_bond_parameter_values
     return $values;
 }
 
-sub resolve_bond_parameter
+sub resolve_bond_parameters
 {
-    my ( $dihedral_angle_restraints, $residue_name, $bond_parameter_name ) = @_;
-    my $parameter_name;
-    if( exists $dihedral_angle_restraints->{$residue_name}{$bond_parameter_name} ) {
-        $parameter_name = $bond_parameter_name;
+    my ( $bond_parameters ) = @_;
+    my %resolved_bond_parameters;
+    for my $residue_name ( keys %{ $bond_parameters } ) {
+        for my $bond_parameter ( keys %{ $bond_parameters->{$residue_name} } ) {
+        }
     }
-    return $parameter_name;
+
+    return;
 }
 
 1;
