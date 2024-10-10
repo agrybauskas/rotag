@@ -227,6 +227,8 @@ sub sample_bond_parameters_qs_parsing
             );
 
             for my $residue_name ( @{ $residue_names } ) {
+                my $bond_parameter_type =
+                    detect_bond_parameter_type( $bond_parameter_name );
                 $bond_parameters{$residue_name}{$bond_parameter_name} = {
                     'from' => $bond_parameter_start,
                     'step' => $bond_parameter_step,
@@ -234,8 +236,12 @@ sub sample_bond_parameters_qs_parsing
                     'values' => (
                         $bond_parameter_step < 0 ? [] : $bond_parameter_values
                     ),
-                    'type' => detect_bond_parameter_type( $bond_parameter_name ),
-                    'units' => ( $in_radians ? 'radians' : 'degrees' )
+                    'type' => $bond_parameter_type,
+                    'units' => (
+                        $bond_parameter_type eq 'bond_length' ?
+                        'angstroms' :
+                        ( $in_radians ? 'radians' : 'degrees' )
+                    )
                 };
             }
         }
