@@ -393,6 +393,10 @@ sub force_field
                                {$residue_name}
                                {"${atom_name_1}-${atom_name_2}-${atom_name_3}-${atom_name_4}"} =
             $angle_name;
+        $force_field_parameters{'_[local]_dihedral_angle_name'}
+                               {$residue_name}
+                               {$angle_name} =
+            "${atom_name_1}-${atom_name_2}-${atom_name_3}-${atom_name_4}";
     }
 
     # Restructuring parameters of interaction atom names.
