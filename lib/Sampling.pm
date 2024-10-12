@@ -247,7 +247,7 @@ sub sample_bond_parameters_qs_parsing
         }
     }
 
-    resolve_bond_parameters( \%bond_parameters );
+    resolve_bond_parameters( $parameters, \%bond_parameters );
 
     return \%bond_parameters;
 }
@@ -297,7 +297,7 @@ sub determine_bond_parameter_values
 # TODO: should be refactored.
 sub resolve_bond_parameters
 {
-    my ( $bond_parameters ) = @_;
+    my ( $parameters, $bond_parameters ) = @_;
 
     my %resolved_bond_parameters;
     for my $residue_name ( keys %{ $bond_parameters } ) {
