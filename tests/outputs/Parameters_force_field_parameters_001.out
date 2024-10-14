@@ -10343,6 +10343,50 @@ $VAR1 = bless( {
       }
     }
   },
+  '_[local]_riverse_dihedral_angle_name' => {
+    '*' => {
+      'chi1' => '*-CA-CB-*',
+      'chi2' => '*-CB-CG1-*',
+      'chi3' => '*-CB-CG2-*',
+      'omega' => 'CA-C-N-CA',
+      'phi' => 'C-N-CA-C',
+      'psi' => 'N-CA-C-N'
+    },
+    'ARG' => {
+      'chi4' => '*-CD-NE-*'
+    },
+    'CYS' => {
+      'chi2' => '*-CB-SG-*'
+    },
+    'ILE' => {
+      'chi4' => '*-CG1-CD1-*'
+    },
+    'LEU' => {
+      'chi3' => '*-CG-CD1-*',
+      'chi4' => '*-CG-CD2-*'
+    },
+    'LYS' => {
+      'chi4' => '*-CD-CE-*',
+      'chi5' => '*-CE-NZ-*'
+    },
+    'MET' => {
+      'chi3' => '*-CG-SD-*',
+      'chi4' => '*-SD-CE-*'
+    },
+    'SER' => {
+      'chi2' => '*-CB-OG-*'
+    },
+    'THR' => {
+      'chi2' => '*-CB-OG1-*',
+      'chi3' => '*-CB-CG2-*'
+    },
+    'TYR' => {
+      'chi3' => '*-CZ-OH-*'
+    },
+    'XAA' => {
+      'chi2' => '*-CB-OG-*'
+    }
+  },
   '_[local]_rotatable_residue_names' => [
     'XAA',
     'SER',
