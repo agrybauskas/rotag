@@ -307,12 +307,15 @@ sub resolve_bond_parameters
         my $bond_parameters_sorted =
             sort_bond_parameter_names( [ keys %{ $residue_bond_parameters } ] );
         for my $bond_parameter_name ( keys %{ $residue_bond_parameters } ) {
-            my @name_parts = split /-/, $bond_parameter_name;
-            if( scalar @name_parts < 2 &&
+            my @name_parts = ();
+            if( scalar split /-/, $bond_parameter_name < 2 &&
                 exists $reverse_dihedral_angle_name->{$residue_name} &&
                 exists $reverse_dihedral_angle_name->{$residue_name}
                                                      {$bond_parameter_name} ) {
-                @name_parts = split /-/, $alt_parameter_name;
+                push @name_parts,
+                    split /-/,
+                    $reverse_dihedral_angle_name->{$residue_name}
+                                                  {$bond_parameter_name};
             }
 
             my ( $bond_parameter_type ) =
