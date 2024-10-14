@@ -10343,7 +10343,7 @@ $VAR1 = bless( {
       }
     }
   },
-  '_[local]_riverse_dihedral_angle_name' => {
+  '_[local]_reverse_dihedral_angle_name' => {
     '*' => {
       'chi1' => '*-CA-CB-*',
       'chi2' => '*-CB-CG1-*',
