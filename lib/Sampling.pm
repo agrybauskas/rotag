@@ -294,7 +294,6 @@ sub determine_bond_parameter_values
     return $values;
 }
 
-# TODO: should be refactored.
 sub resolve_bond_parameters
 {
     my ( $parameters, $bond_parameters ) = @_;
@@ -309,14 +308,10 @@ sub resolve_bond_parameters
             sort_bond_parameter_names( [ keys %{ $residue_bond_parameters } ] );
         for my $bond_parameter_name ( keys %{ $residue_bond_parameters } ) {
             my @name_parts = split /-/, $bond_parameter_name;
-            my $alt_parameter_name;
             if( scalar @name_parts < 2 &&
                 exists $reverse_dihedral_angle_name->{$residue_name} &&
                 exists $reverse_dihedral_angle_name->{$residue_name}
                                                      {$bond_parameter_name} ) {
-                $alt_parameter_name =
-                    $reverse_dihedral_angle_name->{$residue_name}
-                                                  {$bond_parameter_name};
                 @name_parts = split /-/, $alt_parameter_name;
             }
 
