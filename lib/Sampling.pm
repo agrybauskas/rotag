@@ -299,13 +299,27 @@ sub resolve_bond_parameters
 {
     my ( $parameters, $bond_parameters ) = @_;
 
+    my $reverse_dihedral_angle_name =
+        $parameters->{'_[local]_reverse_dihedral_angle_name'};
+
     my %resolved_bond_parameters;
     for my $residue_name ( keys %{ $bond_parameters } ) {
         my $residue_bond_parameters = $bond_parameters->{$residue_name};
         my $bond_parameters_sorted =
             sort_bond_parameter_names( [ keys %{ $residue_bond_parameters } ] );
         for my $bond_parameter_name ( keys %{ $residue_bond_parameters } ) {
-            my ( $alt_bond_parameter_name );
+            my @name_parts = split /-/, $bond_parameter_name;
+            my $alt_parameter_name;
+            if( scalar @name_parts < 2 &&
+                exists $reverse_dihedral_angle_name->{$residue_name} &&
+                exists $reverse_dihedral_angle_name->{$residue_name}
+                                                     {$bond_parameter_name} ) {
+                $alt_parameter_name =
+                    $reverse_dihedral_angle_name->{$residue_name}
+                                                  {$bond_parameter_name};
+                @name_parts = split /-/, $alt_parameter_name;
+            }
+
             my ( $bond_parameter_type ) =
                 detect_bond_parameter_type( $bond_parameter_name );
             for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
