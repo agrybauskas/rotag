@@ -304,12 +304,13 @@ sub resolve_bond_parameters
         my $residue_bond_parameters = $bond_parameters->{$residue_name};
         my $bond_parameters_sorted =
             sort_bond_parameter_names( [ keys %{ $residue_bond_parameters } ] );
-        for my $bond_parameter ( keys %{ $residue_bond_parameters } ) {
+        for my $bond_parameter_name ( keys %{ $residue_bond_parameters } ) {
+            my ( $alt_bond_parameter_name );
             my ( $bond_parameter_type ) =
-                detect_bond_parameter_type( $bond_parameter );
+                detect_bond_parameter_type( $bond_parameter_name );
             for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
-                next if exists $residue_bond_parameters->{$bond_parameter}{$parameter_key} &&
-                    $residue_bond_parameters->{$bond_parameter}{$parameter_key} ne '*';
+                next if exists $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} &&
+                    $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} ne '*';
 
                 # Look for possible candidates to fill in the values.
 
