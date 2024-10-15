@@ -98,10 +98,8 @@ sub sample_bond_parameters_qs_parsing
 
     $query_strings =~ s/\s//g;
 
-    # Dihedral angle calculations are first preditermined and then updated.
-    my %bond_parameters;
-
-    # Default bond parameters.
+    # Dihedral angle calculations are first preditermined from Parameters.cif.
+    my %default_bond_parameters;
     for my $residue_name ( sort keys %{ $bond_parameter_restraints } ) {
         for my $bond_parameter_name (
             sort keys %{ $bond_parameter_restraints->{$residue_name} } ) {
@@ -121,7 +119,7 @@ sub sample_bond_parameters_qs_parsing
                 $bond_parameter_end,
                 { 'in_radians' => $in_radians }
             );
-            $bond_parameters{$residue_name}{$bond_parameter_name} = {
+            $default_bond_parameters{$residue_name}{$bond_parameter_name} = {
                 'from' => $bond_parameter_start,
                 'step' => $bond_parameter_step,
                 'to' => $bond_parameter_end,
@@ -136,7 +134,7 @@ sub sample_bond_parameters_qs_parsing
         }
     }
 
-    # Overwrites the parameters if it was declared.
+    # Defines the parameters from the query.
     my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
     my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
     my $float_regexp = '-?\d+(?:\.\d+)?';
@@ -144,6 +142,7 @@ sub sample_bond_parameters_qs_parsing
     my $step_only_regexp =
         $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
 
+    my %bond_parameters = ();
     for my $query_string ( split /;/, $query_strings ) {
         my $residue_names;
         my $bond_parameter_string;
@@ -229,7 +228,7 @@ sub sample_bond_parameters_qs_parsing
             );
 
             for my $residue_name ( @{ $residue_names } ) {
-                my $bond_parameter_type =
+                my ( $bond_parameter_type ) =
                     detect_bond_parameter_type( $bond_parameter_name );
                 $bond_parameters{$residue_name}{$bond_parameter_name} = {
                     'from' => $bond_parameter_start,
@@ -249,27 +248,29 @@ sub sample_bond_parameters_qs_parsing
         }
     }
 
-    resolve_bond_parameters( $parameters, \%bond_parameters );
+    # # Resolves the rest of the missing parameters according to those that are
+    # # resolved.
+    # resolve_bond_parameters( $parameters, \%bond_parameters );
 
-    for my $residue_name ( keys %bond_parameters ) {
-        for my $bond_parameter_name ( keys %{ $bond_parameters{$residue_name} } ) {
-            my ( $bond_parameter_start,
-                 $bond_parameter_step,
-                 $bond_parameter_end ) =
-                map { $bond_parameters{$residue_name}{$bond_parameter_name}{$_} }
-                    ( 'from', 'step', 'to' );
-            my $bond_parameter_values = determine_bond_parameter_values(
-                $parameters,
-                $bond_parameter_name,
-                $bond_parameter_start,
-                $bond_parameter_step,
-                $bond_parameter_end,
-                { 'in_radians' => $in_radians }
-            );
-            $bond_parameters{$residue_name}{$bond_parameter_name}{'values'} =
-                $bond_parameter_values;
-        }
-    }
+    # for my $residue_name ( keys %bond_parameters ) {
+    #     for my $bond_parameter_name ( keys %{ $bond_parameters{$residue_name} } ) {
+    #         my ( $bond_parameter_start,
+    #              $bond_parameter_step,
+    #              $bond_parameter_end ) =
+    #             map { $bond_parameters{$residue_name}{$bond_parameter_name}{$_} }
+    #                 ( 'from', 'step', 'to' );
+    #         my $bond_parameter_values = determine_bond_parameter_values(
+    #             $parameters,
+    #             $bond_parameter_name,
+    #             $bond_parameter_start,
+    #             $bond_parameter_step,
+    #             $bond_parameter_end,
+    #             { 'in_radians' => $in_radians }
+    #         );
+    #         $bond_parameters{$residue_name}{$bond_parameter_name}{'values'} =
+    #             $bond_parameter_values;
+    #     }
+    # }
 
     return \%bond_parameters;
 }

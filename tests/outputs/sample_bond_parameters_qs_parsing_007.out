@@ -1,6 +1,9 @@
 $VAR1 = {
   'TYR' => {
     'chi1' => {
+      'from' => '-180.0',
+      'step' => '36.0',
+      'to' => '180.0',
       'type' => 'dihedral_angle',
       'units' => 'degrees',
       'values' => [
@@ -17,6 +20,9 @@ $VAR1 = {
       ]
     },
     'chi2' => {
+      'from' => '-180.0',
+      'step' => '36.0',
+      'to' => '180.0',
       'type' => 'dihedral_angle',
       'units' => 'degrees',
       'values' => [
