@@ -330,7 +330,8 @@ sub resolve_bond_parameters
             # TODO: needs to be refactored.
             my $stop_early = 0;
             foreach( uniq ( $residue_name, '*' ) ) {
-                for my $alt_bond_parameter_name ( @{ $alt_bond_parameter_names } ) {
+                for my $alt_bond_parameter_name (
+                    uniq( $bond_parameter_name, @{ $alt_bond_parameter_names } ) ) {
                     for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
                         next if exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
                             $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*';
