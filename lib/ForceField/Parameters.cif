@@ -2569,8 +2569,8 @@ TYR HE1  HE2
 loop_
 _[local]_bond_parameter.label_comp_id
 _[local]_bond_parameter.angle
-_[local]_bond_parameter.range_from
-_[local]_bond_parameter.range_to
+_[local]_bond_parameter.from
+_[local]_bond_parameter.to
 _[local]_bond_parameter.step
 _[local]_bond_parameter.type
 _[local]_bond_parameter.description

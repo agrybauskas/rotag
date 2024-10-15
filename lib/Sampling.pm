@@ -110,7 +110,7 @@ sub sample_bond_parameters_qs_parsing
                  $bond_parameter_end ) =
                 map { $bond_parameter_restraints->{$residue_name}
                                                   {$bond_parameter_name}{$_} }
-                    ( 'range_from', 'step', 'range_to' );
+                    ( 'from', 'step', 'to' );
             my ( $bond_parameter_type ) =
                 detect_bond_parameter_type( $bond_parameter_name );
             my $bond_parameter_values = determine_bond_parameter_values(
@@ -332,7 +332,7 @@ sub resolve_bond_parameters
             foreach( uniq ( $residue_name, '*' ) ) {
                 for my $alt_bond_parameter_name (
                     uniq( $bond_parameter_name, @{ $alt_bond_parameter_names } ) ) {
-                    for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
+                    for my $parameter_key ( 'from', 'step', 'to' ) {
                         next if exists $bond_parameters->{$_} &&
                                 exists $bond_parameters->{$_}{$alt_bond_parameter_name} &&
                                 exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
@@ -342,12 +342,12 @@ sub resolve_bond_parameters
                     }
 
                     if( exists $bond_parameters->{$_} &&
-                        exists $bond_parameters->{$_}{'range_from'} &&
+                        exists $bond_parameters->{$_}{'from'} &&
                         exists $bond_parameters->{$_}{'step'} &&
-                        exists $bond_parameters->{$_}{'range_to'} &&
-                        $bond_parameters->{$_}{'range_from'} ne '*' &&
+                        exists $bond_parameters->{$_}{'to'} &&
+                        $bond_parameters->{$_}{'from'} ne '*' &&
                         $bond_parameters->{$_}{'step'} ne '*' &&
-                        $bond_parameters->{$_}{'range_to'} ne '*' ) {
+                        $bond_parameters->{$_}{'to'} ne '*' ) {
                         $stop_early = 1;
                         last;
                     }
@@ -357,6 +357,9 @@ sub resolve_bond_parameters
             }
         }
     }
+
+    use Data::Dumper;
+    print STDERR Dumper $bond_parameters;
 
     return;
 }

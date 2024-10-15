@@ -228,28 +228,28 @@ $VAR1 = bless( {
       '*-*' => {
         'angle' => '*-*',
         'description' => '.',
+        'from' => '2.5',
         'label_comp_id' => '*',
-        'range_from' => '2.5',
-        'range_to' => '4.0',
         'step' => '0.5',
+        'to' => '4.0',
         'type' => 'angstroms'
       },
       '*-*-*' => {
         'angle' => '*-*-*',
         'description' => '.',
+        'from' => '67.5',
         'label_comp_id' => '*',
-        'range_from' => '67.5',
-        'range_to' => '157.5',
         'step' => '15.0',
+        'to' => '157.5',
         'type' => 'degrees'
       },
       '*-*-*-*' => {
         'angle' => '*-*-*-*',
         'description' => '.',
+        'from' => '-180.0',
         'label_comp_id' => '*',
-        'range_from' => '-180.0',
-        'range_to' => '180.0',
         'step' => '10.0',
+        'to' => '180.0',
         'type' => 'degrees'
       }
     },
@@ -257,10 +257,10 @@ $VAR1 = bless( {
       '*-*-*-*' => {
         'angle' => '*-*-*-*',
         'description' => '.',
+        'from' => '*',
         'label_comp_id' => 'ARG',
-        'range_from' => '*',
-        'range_to' => '*',
         'step' => '36.0',
+        'to' => '*',
         'type' => 'degrees'
       }
     },
@@ -268,10 +268,10 @@ $VAR1 = bless( {
       'chi2' => {
         'angle' => 'chi2',
         'description' => '.',
+        'from' => '-90.0',
         'label_comp_id' => 'ASN',
-        'range_from' => '-90.0',
-        'range_to' => '90.0',
         'step' => '*',
+        'to' => '90.0',
         'type' => 'degrees'
       }
     },
@@ -279,10 +279,10 @@ $VAR1 = bless( {
       'chi2' => {
         'angle' => 'chi2',
         'description' => '.',
+        'from' => '-90.0',
         'label_comp_id' => 'ASP',
-        'range_from' => '-90.0',
-        'range_to' => '90.0',
         'step' => '*',
+        'to' => '90.0',
         'type' => 'degrees'
       }
     },
@@ -290,10 +290,10 @@ $VAR1 = bless( {
       '*-*-*-*' => {
         'angle' => '*-*-*-*',
         'description' => '.',
+        'from' => '*',
         'label_comp_id' => 'GLN',
-        'range_from' => '*',
-        'range_to' => '*',
         'step' => '18.0',
+        'to' => '*',
         'type' => 'degrees'
       }
     },
@@ -301,19 +301,19 @@ $VAR1 = bless( {
       '*-*-*-*' => {
         'angle' => '*-*-*-*',
         'description' => '.',
+        'from' => '*',
         'label_comp_id' => 'GLU',
-        'range_from' => '*',
-        'range_to' => '*',
         'step' => '18.0',
+        'to' => '*',
         'type' => 'degrees'
       },
       'chi3' => {
         'angle' => 'chi3',
         'description' => '.',
+        'from' => '-90.0',
         'label_comp_id' => 'GLU',
-        'range_from' => '-90.0',
-        'range_to' => '90.0',
         'step' => '*',
+        'to' => '90.0',
         'type' => 'degrees'
       }
     },
@@ -321,10 +321,10 @@ $VAR1 = bless( {
       '*-*-*-*' => {
         'angle' => '*-*-*-*',
         'description' => '.',
+        'from' => '*',
         'label_comp_id' => 'LYS',
-        'range_from' => '*',
-        'range_to' => '*',
         'step' => '36.0',
+        'to' => '*',
         'type' => 'degrees'
       }
     },
@@ -332,10 +332,10 @@ $VAR1 = bless( {
       '*-*-*-*' => {
         'angle' => '*-*-*-*',
         'description' => '.',
+        'from' => '*',
         'label_comp_id' => 'MET',
-        'range_from' => '*',
-        'range_to' => '*',
         'step' => '18.0',
+        'to' => '*',
         'type' => 'degrees'
       }
     },
@@ -343,10 +343,10 @@ $VAR1 = bless( {
       'chi2' => {
         'angle' => 'chi2',
         'description' => '.',
+        'from' => '-90',
         'label_comp_id' => 'PHE',
-        'range_from' => '-90',
-        'range_to' => '90.0',
         'step' => '*',
+        'to' => '90.0',
         'type' => 'degrees'
       }
     },
@@ -354,10 +354,10 @@ $VAR1 = bless( {
       '*-*-*-*' => {
         'angle' => '*-*-*-*',
         'description' => '.',
+        'from' => '*',
         'label_comp_id' => 'PRO',
-        'range_from' => '*',
-        'range_to' => '*',
         'step' => '18.0',
+        'to' => '*',
         'type' => 'degrees'
       }
     },
@@ -365,10 +365,10 @@ $VAR1 = bless( {
       'chi2' => {
         'angle' => 'chi2',
         'description' => '.',
+        'from' => '-90',
         'label_comp_id' => 'TYR',
-        'range_from' => '-90',
-        'range_to' => '90.0',
         'step' => '*',
+        'to' => '90.0',
         'type' => 'degrees'
       }
     }
