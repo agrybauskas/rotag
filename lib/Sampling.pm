@@ -350,21 +350,49 @@ sub alt_bond_parameter_names
     my ( $bond_name_parts ) = @_;
 
     my @sorted_bond_parameter_names = ();
+    my $permutated_bond_parameter_names = [];
     if( scalar @{ $bond_name_parts } == 4 ) {
-        my $first_part;
-        my $second_part;
-        my $third_part;
-        my $fourth_part;
+        my @first_parts =
+            $bond_name_parts->[0] eq '*' ? ( '*' ) : ( $bond_name_parts->[0], '*' );
+        my @second_parts =
+            $bond_name_parts->[1] eq '*' ? ( '*' ) : ( $bond_name_parts->[1], '*' );
+        my @third_parts =
+            $bond_name_parts->[2] eq '*' ? ( '*' ) : ( $bond_name_parts->[2], '*' );
+        my @fourth_parts =
+            $bond_name_parts->[3] eq '*' ? ( '*' ) : ( $bond_name_parts->[3], '*' );
+        $permutated_bond_parameter_names =
+            permutation( 4, [], [ \@first_parts, \@second_parts,
+                                  \@third_parts, \@fourth_parts ], [] );
     } elsif( scalar @{ $bond_name_parts } == 3 ) {
-        my $first_part;
-        my $second_part;
-        my $third_part;
+        my @first_parts =
+            $bond_name_parts->[0] eq '*' ? ( '*' ) : ( $bond_name_parts->[0], '*' );
+        my @second_parts =
+            $bond_name_parts->[1] eq '*' ? ( '*' ) : ( $bond_name_parts->[1], '*' );
+        my @third_parts =
+            $bond_name_parts->[2] eq '*' ? ( '*' ) : ( $bond_name_parts->[2], '*' );
+        $permutated_bond_parameter_names =
+            permutation( 3, [], [ \@first_parts, \@second_parts, \@third_parts ], [] );
     } elsif( scalar @{ $bond_name_parts } == 2 ) {
-        my $first_part;
-        my $second_part;
+        my @first_parts =
+            $bond_name_parts->[0] eq '*' ? ( '*' ) : ( $bond_name_parts->[0], '*' );
+        my @second_parts =
+            $bond_name_parts->[1] eq '*' ? ( '*' ) : ( $bond_name_parts->[1], '*' );
+        $permutated_bond_parameter_names =
+            permutation( 2, [], [ \@first_parts, \@second_parts ], [] );
     }
 
+    @sorted_bond_parameter_names =
+        map { join( '-', $_ ) }
+        sort { score_bond_parameter_name( join( '-', $a ) ) <->
+               score_bond_parameter_name( join( '-', $b ) ) }
+        @{ $permutated_bond_parameter_names };
+
     return \@sorted_bond_parameter_names;
+}
+
+sub score_bond_parameter_name
+{
+    my $bond_parameter_name = @_;
 }
 
 1;
