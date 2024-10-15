@@ -7,9 +7,11 @@ use Exporter qw( import );
 our @EXPORT_OK = qw( sample_bond_parameters
                      sample_bond_parameters_qs_parsing );
 
+use List::Util qw( uniq );
 use POSIX;
 
 use BondParameters qw( detect_bond_parameter_type );
+use Combinatorics qw( permutation );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -307,19 +309,23 @@ sub resolve_bond_parameters
         my $bond_parameters_sorted =
             sort_bond_parameter_names( [ keys %{ $residue_bond_parameters } ] );
         for my $bond_parameter_name ( keys %{ $residue_bond_parameters } ) {
-            my @name_parts = ();
-            if( scalar split /-/, $bond_parameter_name < 2 &&
-                exists $reverse_dihedral_angle_name->{$residue_name} &&
-                exists $reverse_dihedral_angle_name->{$residue_name}
-                                                     {$bond_parameter_name} ) {
-                push @name_parts,
-                    split /-/,
-                    $reverse_dihedral_angle_name->{$residue_name}
-                                                  {$bond_parameter_name};
-            }
-
             my ( $bond_parameter_type ) =
                 detect_bond_parameter_type( $bond_parameter_name );
+
+            # Any residue name has to be also checked.
+            my @name_parts = split /-/, $bond_parameter_name;
+            foreach( uniq ( $residue_name, '*' ) ) {
+                next if scalar @name_parts > 1;
+                next if ! exists $reverse_dihedral_angle_name->{$_};
+                next if ! exists $reverse_dihedral_angle_name->{$_}{$bond_parameter_name};
+
+                @name_parts =
+                    split /-/,
+                    $reverse_dihedral_angle_name->{$_}{$bond_parameter_name};
+
+                last;
+            }
+
             for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
                 next if exists $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} &&
                     $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} ne '*';
