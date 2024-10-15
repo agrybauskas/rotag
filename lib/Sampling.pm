@@ -248,9 +248,11 @@ sub sample_bond_parameters_qs_parsing
         }
     }
 
-    # # Resolves the rest of the missing parameters according to those that are
-    # # resolved.
-    # resolve_bond_parameters( $parameters, \%bond_parameters );
+    # Resolves the rest of the missing parameters according to those that are
+    # resolved.
+    resolve_bond_parameters( $parameters,
+                             \%bond_parameters,
+                             \%default_bond_parameters );
 
     # for my $residue_name ( keys %bond_parameters ) {
     #     for my $bond_parameter_name ( keys %{ $bond_parameters{$residue_name} } ) {
@@ -319,7 +321,9 @@ sub determine_bond_parameter_values
 
 sub resolve_bond_parameters
 {
-    my ( $parameters, $bond_parameters ) = @_;
+    my ( $parameters, $bond_parameters, $default_bond_parameters ) = @_;
+
+    $default_bond_parameters //= {};
 
     my $reverse_dihedral_angle_name =
         $parameters->{'_[local]_reverse_dihedral_angle_name'};
