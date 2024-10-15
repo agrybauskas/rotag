@@ -306,8 +306,6 @@ sub resolve_bond_parameters
     my %resolved_bond_parameters;
     for my $residue_name ( keys %{ $bond_parameters } ) {
         my $residue_bond_parameters = $bond_parameters->{$residue_name};
-        my $bond_parameters_sorted =
-            sort_bond_parameter_names( [ keys %{ $residue_bond_parameters } ] );
         for my $bond_parameter_name ( keys %{ $residue_bond_parameters } ) {
             my ( $bond_parameter_type ) =
                 detect_bond_parameter_type( $bond_parameter_name );
@@ -325,6 +323,9 @@ sub resolve_bond_parameters
 
                 last;
             }
+
+            my $alt_bond_parameter_names =
+                alt_bond_parameter_names( \@name_parts );
 
             for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
                 next if exists $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} &&
@@ -344,7 +345,7 @@ sub resolve_bond_parameters
     return;
 }
 
-sub  sort_bond_parameter_names
+sub alt_bond_parameter_names
 {
     my $bond_parameter_names = @_;
     my @sorted_bond_parameter_names = ();
