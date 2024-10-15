@@ -251,6 +251,26 @@ sub sample_bond_parameters_qs_parsing
 
     resolve_bond_parameters( $parameters, \%bond_parameters );
 
+    for my $residue_name ( keys %bond_parameters ) {
+        for my $bond_parameter_name ( keys %{ $bond_parameters{$residue_name} } ) {
+            my ( $bond_parameter_start,
+                 $bond_parameter_step,
+                 $bond_parameter_end ) =
+                map { $bond_parameters{$residue_name}{$bond_parameter_name}{$_} }
+                    ( 'from', 'step', 'to' );
+            my $bond_parameter_values = determine_bond_parameter_values(
+                $parameters,
+                $bond_parameter_name,
+                $bond_parameter_start,
+                $bond_parameter_step,
+                $bond_parameter_end,
+                { 'in_radians' => $in_radians }
+            );
+            $bond_parameters{$residue_name}{$bond_parameter_name}{'values'} =
+                $bond_parameter_values;
+        }
+    }
+
     return \%bond_parameters;
 }
 
