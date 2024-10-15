@@ -334,14 +334,8 @@ sub resolve_bond_parameters
                     for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
                         next if exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
                             $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*';
-
-                        # Look for possible candidates to fill in the values.
-
-                        # Dihedral angle.
-
-                        # Bond angle.
-
-                        # Bond length.
+                        $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} =
+                            $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
                     }
 
                     if( exists $bond_parameters->{$_}{'range_from'} &&
