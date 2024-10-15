@@ -333,13 +333,16 @@ sub resolve_bond_parameters
                 for my $alt_bond_parameter_name (
                     uniq( $bond_parameter_name, @{ $alt_bond_parameter_names } ) ) {
                     for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
-                        next if exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
-                            $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*';
+                        next if exists $bond_parameters->{$_} &&
+                                exists $bond_parameters->{$_}{$alt_bond_parameter_name} &&
+                                exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
+                                $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*';
                         $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} =
                             $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
                     }
 
-                    if( exists $bond_parameters->{$_}{'range_from'} &&
+                    if( exists $bond_parameters->{$_} &&
+                        exists $bond_parameters->{$_}{'range_from'} &&
                         exists $bond_parameters->{$_}{'step'} &&
                         exists $bond_parameters->{$_}{'range_to'} &&
                         $bond_parameters->{$_}{'range_from'} ne '*' &&
