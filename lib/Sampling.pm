@@ -327,17 +327,21 @@ sub resolve_bond_parameters
             my $alt_bond_parameter_names =
                 alt_bond_parameter_names( \@name_parts );
 
-            for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
-                next if exists $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} &&
-                    $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} ne '*';
+            foreach( uniq ( $residue_name, '*' ) ) {
+                for my $alt_bond_parameter_name ( @$alt_bond_parameter_name ) {
+                    # for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
+                    # #     next if exists $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} &&
+                    # #         $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} ne '*';
 
-                # Look for possible candidates to fill in the values.
+                    # #     # Look for possible candidates to fill in the values.
 
-                # Dihedral angle.
+                    # #     # Dihedral angle.
 
-                # Bond angle.
+                    # #     # Bond angle.
 
-                # Bond length.
+                    # #     # Bond length.
+                    # }
+                }
             }
         }
     }
