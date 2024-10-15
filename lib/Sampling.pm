@@ -347,7 +347,7 @@ sub resolve_bond_parameters
 
 sub alt_bond_parameter_names
 {
-    my $bond_parameter_names = @_;
+    my $bond_name_parts = @_;
     my @sorted_bond_parameter_names = ();
     return \@sorted_bond_parameter_names;
 }
