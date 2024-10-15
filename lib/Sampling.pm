@@ -347,8 +347,23 @@ sub resolve_bond_parameters
 
 sub alt_bond_parameter_names
 {
-    my $bond_name_parts = @_;
+    my ( $bond_name_parts ) = @_;
+
     my @sorted_bond_parameter_names = ();
+    if( scalar @{ $bond_name_parts } == 4 ) {
+        my $first_part;
+        my $second_part;
+        my $third_part;
+        my $fourth_part;
+    } elsif( scalar @{ $bond_name_parts } == 3 ) {
+        my $first_part;
+        my $second_part;
+        my $third_part;
+    } elsif( scalar @{ $bond_name_parts } == 2 ) {
+        my $first_part;
+        my $second_part;
+    }
+
     return \@sorted_bond_parameter_names;
 }
 
