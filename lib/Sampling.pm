@@ -336,7 +336,8 @@ sub resolve_bond_parameters
                         next if ! exists $bond_parameters->{$_} ||
                                 ! exists $bond_parameters->{$_}{$alt_bond_parameter_name} ||
                                 ! exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ||
-                                $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*';
+                                $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} ne '*' ||
+                                $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} eq '*';
                         $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} =
                             $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
                     }
