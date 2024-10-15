@@ -382,17 +382,30 @@ sub alt_bond_parameter_names
     }
 
     @sorted_bond_parameter_names =
-        map { join( '-', $_ ) }
-        sort { score_bond_parameter_name( join( '-', $a ) ) <->
-               score_bond_parameter_name( join( '-', $b ) ) }
-        @{ $permutated_bond_parameter_names };
+        map { join( '-', @{ $_ } ) }
+       sort { score_bond_parameter_name( join( '-', @{ $b } ) ) <=>
+              score_bond_parameter_name( join( '-', @{ $a } ) ) }
+           @{ $permutated_bond_parameter_names };
 
     return \@sorted_bond_parameter_names;
 }
 
 sub score_bond_parameter_name
 {
-    my $bond_parameter_name = @_;
+    my ( $bond_parameter_name ) = @_;
+    my %positional_score = (
+        0 => 1,
+        1 => 2,
+        2 => 4,
+        3 => 8
+    );
+    my $score = 0;
+    my @bond_name_parts = split '-', $bond_parameter_name;
+    for my $i ( 0..$#bond_name_parts ) {
+        next if $bond_name_parts[$i] eq '*';
+        $score += $positional_score{$i};
+    }
+    return $score;
 }
 
 1;
