@@ -337,8 +337,8 @@ sub resolve_bond_parameters
                                 exists $bond_parameters->{$_}{$alt_bond_parameter_name} &&
                                 exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
                                 $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*';
-                        $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} =
-                            $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
+                        # $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} =
+                        #     $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
                     }
 
                     if( exists $bond_parameters->{$_} &&
@@ -357,9 +357,6 @@ sub resolve_bond_parameters
             }
         }
     }
-
-    use Data::Dumper;
-    print STDERR Dumper $bond_parameters;
 
     return;
 }
