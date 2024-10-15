@@ -327,21 +327,35 @@ sub resolve_bond_parameters
             my $alt_bond_parameter_names =
                 alt_bond_parameter_names( \@name_parts );
 
+            # TODO: needs to be refactored.
+            my $stop_early = 0;
             foreach( uniq ( $residue_name, '*' ) ) {
-                for my $alt_bond_parameter_name ( @$alt_bond_parameter_name ) {
-                    # for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
-                    # #     next if exists $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} &&
-                    # #         $residue_bond_parameters->{$bond_parameter_name}{$parameter_key} ne '*';
+                for my $alt_bond_parameter_name ( @{ $alt_bond_parameter_names } ) {
+                    for my $parameter_key ( 'range_from', 'step', 'range_to' ) {
+                        next if exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
+                            $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*';
 
-                    # #     # Look for possible candidates to fill in the values.
+                        # Look for possible candidates to fill in the values.
 
-                    # #     # Dihedral angle.
+                        # Dihedral angle.
 
-                    # #     # Bond angle.
+                        # Bond angle.
 
-                    # #     # Bond length.
-                    # }
+                        # Bond length.
+                    }
+
+                    if( exists $bond_parameters->{$_}{'range_from'} &&
+                        exists $bond_parameters->{$_}{'step'} &&
+                        exists $bond_parameters->{$_}{'range_to'} &&
+                        $bond_parameters->{$_}{'range_from'} ne '*' &&
+                        $bond_parameters->{$_}{'step'} ne '*' &&
+                        $bond_parameters->{$_}{'range_to'} ne '*' ) {
+                        $stop_early = 1;
+                        last;
+                    }
                 }
+
+                last if $stop_early;
             }
         }
     }
