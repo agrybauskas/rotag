@@ -237,9 +237,7 @@ sub sample_bond_parameters_qs_parsing
                     'from' => $bond_parameter_start,
                     'step' => $bond_parameter_step,
                     'to' => $bond_parameter_end,
-                    'values' => (
-                        $bond_parameter_step < 0 ? [] : $bond_parameter_values
-                    ),
+                    'values' => $bond_parameter_values,
                     'type' => $bond_parameter_type,
                     'units' => (
                         $bond_parameter_type eq 'bond_length' ?
@@ -284,6 +282,8 @@ sub determine_bond_parameter_values
 {
     my ( $parameters, $bond_parameter_name, $bond_parameter_start,
          $bond_parameter_step, $bond_parameter_end, $options ) = @_;
+
+    return [] if $bond_parameter_step =~ m/^-\d+$/g;
 
     return if $bond_parameter_start eq '*' ||
               $bond_parameter_step eq '*' ||
