@@ -361,13 +361,26 @@ sub resolve_bond_parameters
                 for my $alt_bond_parameter_name (
                     uniq( $bond_parameter_name, @{ $alt_bond_parameter_names } ) ) {
                     for my $parameter_key ( 'from', 'step', 'to' ) {
-                        next if ! exists $bond_parameters->{$_} ||
-                                ! exists $bond_parameters->{$_}{$alt_bond_parameter_name} ||
-                                ! exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ||
-                                $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} ne '*' ||
-                                $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} eq '*';
-                        $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} =
-                            $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
+                        if( exists $bond_parameters->{$_} &&
+                            exists $bond_parameters->{$_}{$alt_bond_parameter_name} &&
+                            exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
+                            $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*' &&
+                            $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} eq '*' ) {
+                            $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} =
+                                $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
+                            next;
+                        }
+
+                        if( exists $default_bond_parameters{$_} &&
+                            exists $default_bond_parameters{$_}{$alt_bond_parameter_name} &&
+                            exists $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key} &&
+                            $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*' &&
+                            $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} eq '*' ) {
+                            $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} =
+                                $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key};
+                            next;
+                        }
+
                     }
 
                     if( exists $bond_parameters->{$_} &&
