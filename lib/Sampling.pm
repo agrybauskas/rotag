@@ -93,46 +93,8 @@ sub sample_bond_parameters_qs_parsing
 
     my $rotatable_residue_names =
         $parameters->{'_[local]_rotatable_residue_names'};
-    my $bond_parameter_restraints =
-        $parameters->{'_[local]_bond_parameter_restraints'};
 
     $query_strings =~ s/\s//g;
-
-    # Dihedral angle calculations are first preditermined from Parameters.cif.
-    my %default_bond_parameters;
-    for my $residue_name ( sort keys %{ $bond_parameter_restraints } ) {
-        for my $bond_parameter_name (
-            sort keys %{ $bond_parameter_restraints->{$residue_name} } ) {
-            my ( $bond_parameter_start,
-                 $bond_parameter_step,
-                 $bond_parameter_end ) =
-                map { $bond_parameter_restraints->{$residue_name}
-                                                  {$bond_parameter_name}{$_} }
-                    ( 'from', 'step', 'to' );
-            my ( $bond_parameter_type ) =
-                detect_bond_parameter_type( $bond_parameter_name );
-            my $bond_parameter_values = determine_bond_parameter_values(
-                $parameters,
-                $bond_parameter_name,
-                $bond_parameter_start,
-                $bond_parameter_step,
-                $bond_parameter_end,
-                { 'in_radians' => $in_radians }
-            );
-            $default_bond_parameters{$residue_name}{$bond_parameter_name} = {
-                'from' => $bond_parameter_start,
-                'step' => $bond_parameter_step,
-                'to' => $bond_parameter_end,
-                'values' => $bond_parameter_values,
-                'type' => $bond_parameter_type,
-                'units' => (
-                    $bond_parameter_type eq 'bond_length' ?
-                    'angstroms' :
-                    ( $in_radians ? 'radians' : 'degrees' )
-                )
-            };
-        }
-    }
 
     # Defines the parameters from the query.
     my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
@@ -253,7 +215,7 @@ sub sample_bond_parameters_qs_parsing
     # resolved.
     resolve_bond_parameters( $parameters,
                              \%bond_parameters,
-                             \%default_bond_parameters );
+                             { 'in_radians' => $in_radians } );
 
     for my $residue_name ( keys %bond_parameters ) {
         for my $bond_parameter_name ( keys %{ $bond_parameters{$residue_name} } ) {
@@ -324,9 +286,47 @@ sub determine_bond_parameter_values
 
 sub resolve_bond_parameters
 {
-    my ( $parameters, $bond_parameters, $default_bond_parameters ) = @_;
+    my ( $parameters, $bond_parameters, $options ) = @_;
 
-    $default_bond_parameters //= {};
+    my ( $in_radians ) = ( $options->{'in_radians'} );
+
+    my $bond_parameter_restraints =
+        $parameters->{'_[local]_bond_parameter_restraints'};
+
+    my %default_bond_parameters;
+    for my $residue_name ( sort keys %{ $bond_parameter_restraints } ) {
+        for my $bond_parameter_name (
+            sort keys %{ $bond_parameter_restraints->{$residue_name} } ) {
+            my ( $bond_parameter_start,
+                 $bond_parameter_step,
+                 $bond_parameter_end ) =
+                map { $bond_parameter_restraints->{$residue_name}
+                                                  {$bond_parameter_name}{$_} }
+                    ( 'from', 'step', 'to' );
+            my ( $bond_parameter_type ) =
+                detect_bond_parameter_type( $bond_parameter_name );
+            my $bond_parameter_values = determine_bond_parameter_values(
+                $parameters,
+                $bond_parameter_name,
+                $bond_parameter_start,
+                $bond_parameter_step,
+                $bond_parameter_end,
+                { 'in_radians' => $in_radians }
+            );
+            $default_bond_parameters{$residue_name}{$bond_parameter_name} = {
+                'from' => $bond_parameter_start,
+                'step' => $bond_parameter_step,
+                'to' => $bond_parameter_end,
+                'values' => $bond_parameter_values,
+                'type' => $bond_parameter_type,
+                'units' => (
+                    $bond_parameter_type eq 'bond_length' ?
+                    'angstroms' :
+                    ( $in_radians ? 'radians' : 'degrees' )
+                )
+            };
+        }
+    }
 
     my $reverse_dihedral_angle_name =
         $parameters->{'_[local]_reverse_dihedral_angle_name'};
