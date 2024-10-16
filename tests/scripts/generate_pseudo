@@ -50,10 +50,10 @@ for my $dihedral_angle ( sort keys %angle_ranges ) {
     $min_angle = eval( $min_angle );
     $max_angle = eval( $max_angle );
     $num_angle_values{"$dihedral_angle"} =
-        sample_angles( [ [ $min_angle, $max_angle ] ],
-                       $num_of_angles{$dihedral_angle},
-                       1,
-                       0 );
+        sample_bond_parameters( [ [ $min_angle, $max_angle ] ],
+                                $num_of_angles{$dihedral_angle},
+                                1,
+                                0 );
 }
 
 %{ $atom_site } =
