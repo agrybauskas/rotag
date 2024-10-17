@@ -365,6 +365,8 @@ sub resolve_bond_parameters
                             exists $bond_parameters->{$_}{$alt_bond_parameter_name} &&
                             exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
                             $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*' &&
+                            exists $bond_parameters->{$_}{$bond_parameter_name} &&
+                            exists $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} &&
                             $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} eq '*' ) {
                             $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} =
                                 $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
@@ -375,12 +377,14 @@ sub resolve_bond_parameters
                             exists $default_bond_parameters{$_}{$alt_bond_parameter_name} &&
                             exists $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key} &&
                             $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*' &&
+                            exists $bond_parameters->{$_} &&
+                            exists $bond_parameters->{$_}{$bond_parameter_name} &&
+                            exists $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} &&
                             $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} eq '*' ) {
                             $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} =
                                 $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key};
                             next;
                         }
-
                     }
 
                     if( exists $bond_parameters->{$_} &&
