@@ -370,9 +370,9 @@ sub resolve_bond_parameters
                             exists $bond_parameters->{$_}{$alt_bond_parameter_name} &&
                             exists $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} &&
                             $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*' &&
-                            exists $bond_parameters->{$_}{$bond_parameter_name} &&
-                            exists $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} &&
-                            $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} eq '*' ) {
+                            exists $bond_parameters->{$residue_name}{$bond_parameter_name} &&
+                            exists $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} &&
+                            $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} eq '*' ) {
                             $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} =
                                 $bond_parameters->{$_}{$alt_bond_parameter_name}{$parameter_key};
                             next;
@@ -382,11 +382,11 @@ sub resolve_bond_parameters
                             exists $default_bond_parameters{$_}{$alt_bond_parameter_name} &&
                             exists $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key} &&
                             $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key} ne '*' &&
-                            exists $bond_parameters->{$_} &&
-                            exists $bond_parameters->{$_}{$bond_parameter_name} &&
-                            exists $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} &&
-                            $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} eq '*' ) {
-                            $bond_parameters->{$_}{$bond_parameter_name}{$parameter_key} =
+                            exists $bond_parameters->{$residue_name} &&
+                            exists $bond_parameters->{$residue_name}{$bond_parameter_name} &&
+                            exists $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} &&
+                            $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} eq '*' ) {
+                            $bond_parameters->{$residue_name}{$bond_parameter_name}{$parameter_key} =
                                 $default_bond_parameters{$_}{$alt_bond_parameter_name}{$parameter_key};
                             next;
                         }
