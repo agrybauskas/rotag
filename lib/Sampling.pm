@@ -11,6 +11,7 @@ use List::Util qw( uniq );
 use POSIX;
 
 use BondParameters qw( detect_bond_parameter_type );
+use Clone qw( clone );
 use Combinatorics qw( permutation );
 use Version qw( $VERSION );
 
@@ -326,6 +327,10 @@ sub resolve_bond_parameters
                 )
             };
         }
+    }
+
+    if( ! %{ $bond_parameters } ) {
+        $bond_parameters = clone \%default_bond_parameters;
     }
 
     my $reverse_dihedral_angle_name =
