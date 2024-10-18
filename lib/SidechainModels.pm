@@ -264,6 +264,8 @@ sub bond_stretching_matrices
         my ( $side_atom_id ) =
             @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
 
+        next if ! defined $side_atom_id;
+
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $ref_atom_site->{$_}{'Cartn_x'},
                     $ref_atom_site->{$_}{'Cartn_y'},
