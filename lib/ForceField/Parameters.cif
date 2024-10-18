@@ -2574,9 +2574,10 @@ _[local]_bond_parameter.to
 _[local]_bond_parameter.step
 _[local]_bond_parameter.type
 _[local]_bond_parameter.description
-*   *-*     2.5    4.0   0.5  angstroms .
-*   *-*-*   67.5   157.5 15.0 degrees   .
 *   *-*-*-* -180.0 180.0 10.0 degrees   .
+*   *.*     2.5    4.0   0.5  angstroms .
+*   *-*.*   67.5   157.5 15.0 degrees   .
+*   *-*-*.* -180.0 180.0 10.0 degrees   .
 ARG *-*-*-* *      *     36.0 degrees   .
 ASN chi2    -90.0  90.0  *    degrees   .
 ASP chi2    -90.0  90.0  *    degrees   .
