@@ -268,11 +268,23 @@ sub determine_bond_parameter_values
                 $bond_parameter_end ] ],
             $bond_parameter_count, 1, 0
         );
+    } elsif( $bond_parameter_type eq 'bond_angle' && $in_radians ) {
+        $values = sample_bond_parameters(
+            [ [ $bond_parameter_start,
+                $bond_parameter_end ] ],
+            $bond_parameter_count, 1, 1
+        );
     } elsif( $bond_parameter_type eq 'dihedral_angle' ) {
         $values = sample_bond_parameters(
             [ [ $bond_parameter_start * $pi / 180.0,
                 $bond_parameter_end * $pi / 180.0 ] ],
             $bond_parameter_count, 1, 0
+        );
+    } elsif( $bond_parameter_type eq 'bond_angle' ) {
+        $values = sample_bond_parameters(
+            [ [ $bond_parameter_start * $pi / 180.0,
+                $bond_parameter_end * $pi / 180.0 ] ],
+            $bond_parameter_count, 1, 1
         );
     } else {
         $values = sample_bond_parameters(
