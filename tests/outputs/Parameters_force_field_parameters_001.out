@@ -252,6 +252,24 @@ $VAR1 = bless( {
         'to' => '157.5',
         'type' => 'degrees'
       },
+      '*-*.*-*' => {
+        'angle' => '*-*.*-*',
+        'description' => '.',
+        'from' => '-180.0',
+        'label_comp_id' => '*',
+        'step' => '10.0',
+        'to' => '180.0',
+        'type' => 'degrees'
+      },
+      '*-*.*.*' => {
+        'angle' => '*-*.*.*',
+        'description' => '.',
+        'from' => '-180.0',
+        'label_comp_id' => '*',
+        'step' => '10.0',
+        'to' => '180.0',
+        'type' => 'degrees'
+      },
       '*.*' => {
         'angle' => '*.*',
         'description' => '.',
@@ -260,6 +278,60 @@ $VAR1 = bless( {
         'step' => '0.5',
         'to' => '4.0',
         'type' => 'angstroms'
+      },
+      '*.*-*' => {
+        'angle' => '*.*-*',
+        'description' => '.',
+        'from' => '67.5',
+        'label_comp_id' => '*',
+        'step' => '15.0',
+        'to' => '157.5',
+        'type' => 'degrees'
+      },
+      '*.*-*-*' => {
+        'angle' => '*.*-*-*',
+        'description' => '.',
+        'from' => '-180.0',
+        'label_comp_id' => '*',
+        'step' => '10.0',
+        'to' => '180.0',
+        'type' => 'degrees'
+      },
+      '*.*-*.*' => {
+        'angle' => '*.*-*.*',
+        'description' => '.',
+        'from' => '-180.0',
+        'label_comp_id' => '*',
+        'step' => '10.0',
+        'to' => '180.0',
+        'type' => 'degrees'
+      },
+      '*.*.*' => {
+        'angle' => '*.*.*',
+        'description' => '.',
+        'from' => '67.5',
+        'label_comp_id' => '*',
+        'step' => '15.0',
+        'to' => '157.5',
+        'type' => 'degrees'
+      },
+      '*.*.*-*' => {
+        'angle' => '*.*.*-*',
+        'description' => '.',
+        'from' => '-180.0',
+        'label_comp_id' => '*',
+        'step' => '10.0',
+        'to' => '180.0',
+        'type' => 'degrees'
+      },
+      '*.*.*.*' => {
+        'angle' => '*.*.*.*',
+        'description' => '.',
+        'from' => '-180.0',
+        'label_comp_id' => '*',
+        'step' => '10.0',
+        'to' => '180.0',
+        'type' => 'degrees'
       }
     },
     'ARG' => {
