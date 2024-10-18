@@ -470,7 +470,7 @@ sub score_bond_parameter_name
         3 => 8
     );
     my $score = 0;
-    my @bond_name_parts = split '-', $bond_parameter_name;
+    my @bond_name_parts = split /-/, $bond_parameter_name;
     for my $i ( 0..$#bond_name_parts ) {
         next if $bond_name_parts[$i] eq '*';
         $score += $positional_score{$i};
