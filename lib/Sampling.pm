@@ -442,7 +442,7 @@ sub alt_bond_parameter_names
         $permutated_bond_parameter_parts =
             permutation( 4, [], [ \@first_parts, \@second_parts,
                                   \@third_parts, \@fourth_parts ], [] );
-    } elsif( scalar @{ $bond_name_parts } == 3 ) {
+    } elsif( scalar @atom_name_parts == 3 ) {
         my @first_parts =
             $atom_name_parts[0] eq '*' ? ( '*' ) : ( $atom_name_parts[0], '*' );
         my @second_parts =
@@ -451,7 +451,7 @@ sub alt_bond_parameter_names
             $atom_name_parts[2] eq '*' ? ( '*' ) : ( $atom_name_parts[2], '*' );
         $permutated_bond_parameter_parts =
             permutation( 3, [], [ \@first_parts, \@second_parts, \@third_parts ], [] );
-    } elsif( scalar @{ $bond_name_parts } == 2 ) {
+    } elsif( scalar @atom_name_parts == 2 ) {
         my @first_parts =
             $atom_name_parts[0] eq '*' ? ( '*' ) : ( $atom_name_parts[0], '*' );
         my @second_parts =
@@ -492,7 +492,7 @@ sub score_bond_parameter_name
         3 => 8
     );
     my $score = 0;
-    my @bond_name_parts = split /-/, $bond_parameter_name;
+    my @bond_name_parts = split /-|\./, $bond_parameter_name;
     for my $i ( 0..$#bond_name_parts ) {
         next if $bond_name_parts[$i] eq '*';
         $score += $positional_score{$i};
