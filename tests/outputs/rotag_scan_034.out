@@ -58,9 +58,11 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -37.965174
-2 2 composite -53.131406
-3 3 composite -44.619445
+1 1 composite -40.852076
+2 2 composite -37.965174
+3 3 composite -50.072723
+4 4 composite -53.131406
+5 5 composite -44.619445
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -76,15 +78,21 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG B 1 101 A . 0.333333 CG-OD1.MG 157.500 degrees
-2 1 27 ASP A 1 27 A . 0.333333 chi1 60.000 degrees
-3 1 27 ASP A 1 27 A . 0.333333 chi2 -180.000 degrees
-4 2 . MG B 1 101 A . 0.333333 CG-OD1.MG 157.500 degrees
-5 2 27 ASP A 1 27 A . 0.333333 chi1 60.000 degrees
-6 2 27 ASP A 1 27 A . 0.333333 chi2 -60.000 degrees
-7 3 . MG B 1 101 A . 0.333333 CG-OD1.MG 157.500 degrees
-8 3 27 ASP A 1 27 A . 0.333333 chi1 60.000 degrees
-9 3 27 ASP A 1 27 A . 0.333333 chi2 60.000 degrees
+1 1 . MG B 1 101 A . 0.200000 CG-OD1.MG 112.500 degrees
+2 1 27 ASP A 1 27 A . 0.200000 chi1 60.000 degrees
+3 1 27 ASP A 1 27 A . 0.200000 chi2 -180.000 degrees
+4 2 . MG B 1 101 A . 0.200000 CG-OD1.MG 157.500 degrees
+5 2 27 ASP A 1 27 A . 0.200000 chi1 60.000 degrees
+6 2 27 ASP A 1 27 A . 0.200000 chi2 -180.000 degrees
+7 3 . MG B 1 101 A . 0.200000 CG-OD1.MG 112.500 degrees
+8 3 27 ASP A 1 27 A . 0.200000 chi1 60.000 degrees
+9 3 27 ASP A 1 27 A . 0.200000 chi2 -60.000 degrees
+10 4 . MG B 1 101 A . 0.200000 CG-OD1.MG 157.500 degrees
+11 4 27 ASP A 1 27 A . 0.200000 chi1 60.000 degrees
+12 4 27 ASP A 1 27 A . 0.200000 chi2 -60.000 degrees
+13 5 . MG B 1 101 A . 0.200000 CG-OD1.MG 157.500 degrees
+14 5 27 ASP A 1 27 A . 0.200000 chi1 60.000 degrees
+15 5 27 ASP A 1 27 A . 0.200000 chi2 60.000 degrees
 #
 loop_
 _struct_conn.id
