@@ -58,12 +58,14 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -60.731931
-2 2 composite -63.271363
-3 3 composite -69.034748
-4 4 composite -78.034970
-5 5 composite -45.013349
-6 6 composite -68.068019
+1 1 composite -56.141228
+2 2 composite -62.749914
+3 3 composite -63.271363
+4 4 composite -63.615980
+5 5 composite -72.696091
+6 6 composite -78.034970
+7 7 composite -63.820732
+8 8 composite -68.068019
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -79,30 +81,38 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG B 1 101 A . 0.166667 CG-OD1.MG 112.500 degrees
-2 1 . MG B 1 101 A . 0.166667 OD1.MG 1.500000 angstrom
-3 1 27 ASP A 1 27 A . 0.166667 chi1 60.000 degrees
-4 1 27 ASP A 1 27 A . 0.166667 chi2 -180.000 degrees
-5 2 . MG B 1 101 A . 0.166667 CG-OD1.MG 157.500 degrees
-6 2 . MG B 1 101 A . 0.166667 OD1.MG 1.500000 angstrom
-7 2 27 ASP A 1 27 A . 0.166667 chi1 60.000 degrees
-8 2 27 ASP A 1 27 A . 0.166667 chi2 -180.000 degrees
-9 3 . MG B 1 101 A . 0.166667 CG-OD1.MG 112.500 degrees
-10 3 . MG B 1 101 A . 0.166667 OD1.MG 1.500000 angstrom
-11 3 27 ASP A 1 27 A . 0.166667 chi1 60.000 degrees
-12 3 27 ASP A 1 27 A . 0.166667 chi2 -60.000 degrees
-13 4 . MG B 1 101 A . 0.166667 CG-OD1.MG 157.500 degrees
-14 4 . MG B 1 101 A . 0.166667 OD1.MG 1.500000 angstrom
-15 4 27 ASP A 1 27 A . 0.166667 chi1 60.000 degrees
-16 4 27 ASP A 1 27 A . 0.166667 chi2 -60.000 degrees
-17 5 . MG B 1 101 A . 0.166667 CG-OD1.MG 112.500 degrees
-18 5 . MG B 1 101 A . 0.166667 OD1.MG 1.500000 angstrom
-19 5 27 ASP A 1 27 A . 0.166667 chi1 60.000 degrees
-20 5 27 ASP A 1 27 A . 0.166667 chi2 60.000 degrees
-21 6 . MG B 1 101 A . 0.166667 CG-OD1.MG 157.500 degrees
-22 6 . MG B 1 101 A . 0.166667 OD1.MG 1.500000 angstrom
-23 6 27 ASP A 1 27 A . 0.166667 chi1 60.000 degrees
-24 6 27 ASP A 1 27 A . 0.166667 chi2 60.000 degrees
+1 1 . MG B 1 101 A . 0.125000 CG-OD1.MG 97.500 degrees
+2 1 . MG B 1 101 A . 0.125000 OD1.MG 1.500000 angstrom
+3 1 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+4 1 27 ASP A 1 27 A . 0.125000 chi2 -180.000 degrees
+5 2 . MG B 1 101 A . 0.125000 CG-OD1.MG 127.500 degrees
+6 2 . MG B 1 101 A . 0.125000 OD1.MG 1.500000 angstrom
+7 2 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+8 2 27 ASP A 1 27 A . 0.125000 chi2 -180.000 degrees
+9 3 . MG B 1 101 A . 0.125000 CG-OD1.MG 157.500 degrees
+10 3 . MG B 1 101 A . 0.125000 OD1.MG 1.500000 angstrom
+11 3 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+12 3 27 ASP A 1 27 A . 0.125000 chi2 -180.000 degrees
+13 4 . MG B 1 101 A . 0.125000 CG-OD1.MG 97.500 degrees
+14 4 . MG B 1 101 A . 0.125000 OD1.MG 1.500000 angstrom
+15 4 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+16 4 27 ASP A 1 27 A . 0.125000 chi2 -60.000 degrees
+17 5 . MG B 1 101 A . 0.125000 CG-OD1.MG 127.500 degrees
+18 5 . MG B 1 101 A . 0.125000 OD1.MG 1.500000 angstrom
+19 5 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+20 5 27 ASP A 1 27 A . 0.125000 chi2 -60.000 degrees
+21 6 . MG B 1 101 A . 0.125000 CG-OD1.MG 157.500 degrees
+22 6 . MG B 1 101 A . 0.125000 OD1.MG 1.500000 angstrom
+23 6 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+24 6 27 ASP A 1 27 A . 0.125000 chi2 -60.000 degrees
+25 7 . MG B 1 101 A . 0.125000 CG-OD1.MG 127.500 degrees
+26 7 . MG B 1 101 A . 0.125000 OD1.MG 1.500000 angstrom
+27 7 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+28 7 27 ASP A 1 27 A . 0.125000 chi2 60.000 degrees
+29 8 . MG B 1 101 A . 0.125000 CG-OD1.MG 157.500 degrees
+30 8 . MG B 1 101 A . 0.125000 OD1.MG 1.500000 angstrom
+31 8 27 ASP A 1 27 A . 0.125000 chi1 60.000 degrees
+32 8 27 ASP A 1 27 A . 0.125000 chi2 60.000 degrees
 #
 loop_
 _struct_conn.id
