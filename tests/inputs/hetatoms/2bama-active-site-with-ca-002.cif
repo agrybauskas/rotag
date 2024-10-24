@@ -1,0 +1,81 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 507 N N . TYR C 2 65 73.062 27.995 30.075 A 65 1 T 1
+ATOM 508 C CA . TYR C 2 65 72.791 26.590 30.344 A 65 1 T 1
+ATOM 509 C C . TYR C 2 65 74.060 25.781 30.636 A 65 1 T 1
+ATOM 510 O O . TYR C 2 65 74.031 24.823 31.406 A 65 1 T 1
+ATOM 511 C CB . TYR C 2 65 72.026 25.967 29.183 A 65 1 T 1
+ATOM 512 C CG . TYR C 2 65 70.563 26.296 29.163 A 65 1 T 1
+ATOM 513 C CD1 . TYR C 2 65 69.806 26.229 30.321 A 65 1 T 1
+ATOM 514 C CD2 . TYR C 2 65 69.921 26.635 27.974 A 65 1 T 1
+ATOM 515 C CE1 . TYR C 2 65 68.439 26.489 30.297 A 65 1 T 1
+ATOM 516 C CE2 . TYR C 2 65 68.549 26.894 27.947 A 65 1 T 1
+ATOM 517 C CZ . TYR C 2 65 67.822 26.815 29.112 A 65 1 T 1
+ATOM 518 O OH . TYR C 2 65 66.474 27.035 29.080 A 65 1 T 1
+ATOM 623 N N . GLU C 2 77 65.590 20.483 31.450 A 77 1 S 1
+ATOM 624 C CA . GLU C 2 77 64.328 19.856 31.097 A 77 1 S 1
+ATOM 625 C C . GLU C 2 77 63.800 18.893 32.146 A 77 1 S 1
+ATOM 626 O O . GLU C 2 77 63.653 17.699 31.902 A 77 1 S 1
+ATOM 627 C CB . GLU C 2 77 64.456 19.161 29.748 A 77 1 S 1
+ATOM 628 C CG . GLU C 2 77 64.741 20.135 28.614 A 77 1 S 1
+ATOM 629 C CD . GLU C 2 77 63.669 21.207 28.507 A 77 1 S 1
+ATOM 630 O OE1 . GLU C 2 77 63.962 22.369 28.833 A 77 1 S 1
+ATOM 631 O OE2 . GLU C 2 77 62.526 20.880 28.111 A 77 1 S 1
+ATOM 899 N N . GLU C 2 111 62.986 29.067 34.447 A 111 1 T 1
+ATOM 900 C CA . GLU C 2 111 62.680 29.099 33.045 A 111 1 T 1
+ATOM 901 C C . GLU C 2 111 63.431 30.276 32.457 A 111 1 T 1
+ATOM 902 O O . GLU C 2 111 63.409 31.376 33.012 A 111 1 T 1
+ATOM 903 C CB . GLU C 2 111 61.179 29.300 32.865 A 111 1 T 1
+ATOM 904 C CG . GLU C 2 111 60.731 29.388 31.436 A 111 1 T 1
+ATOM 905 C CD . GLU C 2 111 60.710 28.049 30.749 A 111 1 T 1
+ATOM 906 O OE1 . GLU C 2 111 60.619 27.015 31.450 A 111 1 T 1
+ATOM 907 O OE2 . GLU C 2 111 60.772 28.042 29.496 A 111 1 T 1
+ATOM 919 N N . GLU C 2 113 63.657 32.613 29.223 A 113 1 S 1
+ATOM 920 C CA . GLU C 2 113 62.797 32.923 28.093 A 113 1 S 1
+ATOM 921 C C . GLU C 2 113 63.270 33.816 26.962 A 113 1 S 1
+ATOM 922 O O . GLU C 2 113 63.552 34.982 27.145 A 113 1 S 1
+ATOM 923 C CB . GLU C 2 113 61.447 33.449 28.588 A 113 1 S 1
+ATOM 924 C CG . GLU C 2 113 60.397 32.380 28.931 A 113 1 S 1
+ATOM 925 C CD . GLU C 2 113 59.756 31.728 27.711 A 113 1 S 1
+ATOM 926 O OE1 . GLU C 2 113 58.871 30.887 27.909 A 113 1 S 1
+ATOM 927 O OE2 . GLU C 2 113 60.133 32.015 26.550 A 113 1 S 1
+HETATM 1679 CA CA . CA E 2 . 62.820 28.480 27.626 A 601 1 T 1
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 65 C . 65 A OH . E . 601 A CA
+metalc2 metalc 77 C . 77 A OE1 . E . 601 A CA
+metalc3 metalc 111 C . 111 A OE1 . E . 601 A CA
+metalc4 metalc 113 C . 113 A OE1 . E . 601 A CA
+#

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-pdbx_file=$(dirname "$0")/../inputs/hetatoms/ca-with-sidechains-with-connections-001.cif
+pdbx_file=$(dirname "$0")/../inputs/hetatoms/2bama-active-site-with-ca-002.cif
 
-rotag_scan -H -a 'chi1=!;chi2=..120.0..;CB-CG-OD1.CA=90.0' ${pdbx_file}
+rotag_scan -H -a '..120.0..;OH.CA=3.0..1.0..4.0;OE1.CA=3.0..1.0..4.0' ${pdbx_file}
