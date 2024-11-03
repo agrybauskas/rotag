@@ -36,11 +36,13 @@ _[local]_rotamer_bond_parameter.label_seq_id
 _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 246 PHE A 1 . 1.000000 chi1 -108.000000 degrees
-2 1 246 PHE A 1 . 1.000000 chi2 -72.000000 degrees
+1 1 246 PHE A 1 ? ? . 1.000000 chi1 -108.000000 degrees
+2 1 246 PHE A 1 ? ? . 1.000000 chi2 -72.000000 degrees
 #

@@ -141,8 +141,8 @@ for my $pdbx_file ( @ARGV ) {
 
     my @attributes =
         ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
-          'pdbx_PDB_model_num', 'label_alt_id', 'frequency', 'type', 'value',
-          'units' );
+          'pdbx_PDB_model_num', 'auth_seq_id', 'auth_asym_id', 'label_alt_id',
+          'frequency', 'type', 'value', 'units' );
 
     my @rotamers;
     my %frequencies = ();
@@ -244,11 +244,13 @@ for my $pdbx_file ( @ARGV ) {
                   'label_comp_id' => $rotamer_data[3],
                   'label_asym_id' => $rotamer_data[4],
                   'pdbx_PDB_model_num' => $rotamer_data[5],
-                  'label_alt_id' => $rotamer_data[6],
+                  'auth_seq_id' => $rotamer_data[6],
+                  'auth_asym_id' => $rotamer_data[7],
+                  'label_alt_id' => $rotamer_data[8],
                   'frequency' => $frequencies{$rotamer_id},
-                  'type' => $rotamer_data[8],
-                  'value' => $rotamer_data[9],
-                  'units' => $rotamer_data[10] };
+                  'type' => $rotamer_data[10],
+                  'value' => $rotamer_data[11],
+                  'units' => $rotamer_data[12] };
         }
     }
 
