@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ForceField::Bonded qw( resolve_torsion_constants );
+use ForceField::Parameters;
+
+my ( $atom_ids_str, $pdbx_dump_file ) = @ARGV;
+my ( $first_atom_id, $second_atom_id, $third_atom_id, $fourth_atom_id ) =
+    split /,/, $atom_ids_str;
+
+my $atom_site;
+open( my $fh, "<", $pdbx_dump_file );
+while( <$fh> ) {
+    $atom_site .= "$_" ;
+}
+close( $fh );
+$atom_site = eval( $atom_site );
+
+my $parameters = Parameters->new();
+
+resolve_torsion_constants(
+    $parameters,
+    $atom_site,
+    $first_atom_id,
+    $second_atom_id,
+    $third_atom_id,
+    $fourth_atom_id,
+    { 'debug' => 1 }
+);
+
+print "\n";

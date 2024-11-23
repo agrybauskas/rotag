@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( general
+                     resolve_torsion_constants
                      torsion_components
                      torsion );
 
