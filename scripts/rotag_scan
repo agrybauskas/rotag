@@ -11,6 +11,7 @@ use List::Util qw( any );
 use Try::Tiny;
 
 use BondParameters qw( detect_bond_parameter_type );
+use ConnectAtoms qw( filter_struct_conn );
 use ForceField::Parameters;
 use ForceField::NonBonded qw( general );
 use Logging qw( error
@@ -264,6 +265,8 @@ for my $pdbx_file ( @ARGV ) {
         my $residue_unique_keys =
             determine_residue_keys( $current_target_site,
                                     { 'exclude_dot' => 1 } );
+
+        filter_struct_conn( $struct_conn, $current_atom_site );
 
         # Starts generating rotamer library.
         my $rotamer_library =
