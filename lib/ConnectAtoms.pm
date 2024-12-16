@@ -721,4 +721,20 @@ sub connections_from_struct_conn
     return \%heteroatom_connections;
 }
 
+#
+# Filter "_struct_conn" tag by "_atom_site".
+# Input:
+#     $struct_conn - reads 'struc_conn' and assings connections appropriately;
+#     $atom_site - atom site data structure (see PDBxParser.pm).
+# Output:
+#     %filtered_struct_conn - filtered struct conn data structure.
+#
+
+sub filter_struct_conn
+{
+    my ( $struct_conn, $atom_site ) = @_;
+    my %filtered_struct_conn = ();
+    return \%filtered_struct_conn;
+}
+
 1;
