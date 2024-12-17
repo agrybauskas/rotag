@@ -735,6 +735,7 @@ sub filter_struct_conn
 {
     my ( $struct_conn, $atom_site ) = @_;
     my %filtered_struct_conn = ();
+    my $connections = connections_from_struct_conn( $atom_site, $struct_conn );
     for my $struct_conn_id ( keys %{ $struct_conn } ) {
         my %atom_selection_1 = (
             $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} eq '.' ?
