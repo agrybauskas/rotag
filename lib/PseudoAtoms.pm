@@ -397,8 +397,8 @@ sub generate_library
         my $current_atom_site =
             filter_new( $ref_atom_site,
                     { 'include' =>
-                          {'id' => $atom_site_groups->{$atom_site_identifier}
-                                                      {'atom_ids'} } } );
+                          { 'id' => $atom_site_groups->{$atom_site_identifier}
+                                                       {'atom_ids'} } } );
 
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
