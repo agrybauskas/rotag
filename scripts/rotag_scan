@@ -11,7 +11,6 @@ use List::Util qw( any );
 use Try::Tiny;
 
 use BondParameters qw( detect_bond_parameter_type );
-use ConnectAtoms qw( filter_struct_conn );
 use ForceField::Parameters;
 use ForceField::NonBonded qw( general );
 use Logging qw( error
@@ -261,8 +260,6 @@ for my $pdbx_file ( @ARGV ) {
         my $current_target_site =
             filter( { 'atom_site' => $current_atom_site,
                       'include' => { '[local]_selection_state' => [ 'T' ] } } );
-        my $current_target_struct_conn =
-            filter_struct_conn( $struct_conn, $current_target_site );
 
         my $residue_unique_keys =
             determine_residue_keys( $current_target_site,
@@ -274,7 +271,7 @@ for my $pdbx_file ( @ARGV ) {
                 { 'parameters' => $parameters,
                   'atom_site' => $current_atom_site,
                   'ref_atom_site' => $atom_site,
-                  'struct_conn' => $current_target_struct_conn,
+                  'struct_conn' => $struct_conn,
                   'residue_unique_keys' => $residue_unique_keys,
                   'include_interactions' =>
                       { 'id' => [ keys %{ $current_atom_site } ] },
