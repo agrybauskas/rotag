@@ -9,7 +9,6 @@ our @EXPORT_OK = qw( assign_hetatoms
                      connect_atoms
                      connect_atoms_explicitly
                      create_hetatom_struct_conn
-                     filter_struct_conn
                      is_connected
                      is_neighbour
                      is_second_neighbour );
@@ -720,68 +719,6 @@ sub connections_from_struct_conn
     }
 
     return \%heteroatom_connections;
-}
-
-#
-# Filter "_struct_conn" tag by "_atom_site".
-# Input:
-#     $struct_conn - reads 'struc_conn' and assings connections appropriately;
-#     $atom_site - atom site data structure (see PDBxParser.pm).
-# Output:
-#     %filtered_struct_conn - filtered struct conn data structure.
-#
-
-sub filter_struct_conn
-{
-    my ( $struct_conn, $atom_site ) = @_;
-    my %filtered_struct_conn = ();
-    my $connections = connections_from_struct_conn( $atom_site, $struct_conn );
-    for my $struct_conn_id ( keys %{ $struct_conn } ) {
-        my %atom_selection_1 = (
-            $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} eq '.' ?
-            ( 'auth_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'} ],
-              'auth_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_auth_asym_id'} ] ) :
-            ( 'label_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
-              'label_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ),
-            'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ],
-        );
-        my %atom_selection_2 = (
-            $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} eq '.' ?
-            ( 'auth_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'} ],
-              'auth_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_auth_asym_id'} ] ) :
-            ( 'label_seq_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} ],
-              'label_asym_id' => [
-                  $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] ),
-            'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ],
-        );
-
-        my ( $atom_id_1 ) = @{ filter_new(
-            $atom_site,
-            { 'include' => \%atom_selection_1,
-              'return_data' => 'id' },
-        ) };
-        my ( $atom_id_2 ) = @{ filter_new(
-            $atom_site,
-            { 'include' => \%atom_selection_2,
-              'return_data' => 'id' }
-        ) };
-
-        # HACK: not sure if it will be enough to get rid of non-relevant
-        # connections.
-        next if ! defined $atom_id_1 && ! defined $atom_id_2;
-
-        $filtered_struct_conn{$struct_conn_id} = $struct_conn->{$struct_conn_id};
-    }
-    return \%filtered_struct_conn;
 }
 
 1;
