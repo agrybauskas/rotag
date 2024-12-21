@@ -329,11 +329,14 @@ sub connect_atoms_explicitly
 sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
-    my ( $ref_atom_site, $keep_original ) =
-        ( $options->{'ref_atom_site'}, $options->{'keep_original'} );
+    my ( $ref_atom_site, $filter_unique_keys, $keep_original ) =
+        ( $options->{'ref_atom_site'},
+          $options->{'filter_unique_keys'},
+          $options->{'keep_original'} );
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
     $ref_atom_site //= $atom_site;
+    $filter_unique_keys //= [];
     # HACK: the default should be 0 as it is more intuitive.
     $keep_original //= 1;
 
@@ -344,6 +347,15 @@ sub assign_hetatoms
     my $all_unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn,
                                  { 'no_hetatoms' => 0 } );
+
+    if( @{ $filter_unique_keys } ) {
+        my %filter_unique_keys = map { $_ => 1 } @{ $filter_unique_keys };
+        $unique_residue_keys = {
+            map { $_ => $unique_residue_keys->{$_} }
+            grep { exists $filter_unique_keys{$_} }
+            keys %{ $unique_residue_keys }
+        };
+    }
 
     my $connections =
         connections_from_struct_conn( $ref_atom_site, $struct_conn );
