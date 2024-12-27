@@ -392,12 +392,13 @@ sub assign_hetatoms
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
 
-                next if $ref_atom_site->{$connection_atom_id}{'group_PDB'} eq 'ATOM' &&
-                    ! exists $unique_residue_keys->{$connection_unique_key};
+                next if $ref_atom_site->{$connection_atom_id}{'group_PDB'} eq 'ATOM';
 
                 # Clones, assigns proper and next atom ids.
                 for my $connection_related_atom_id (
                     sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
+                    next if $ref_atom_site->{$connection_related_atom_id}{'group_PDB'} eq 'ATOM';
+
                     $atom_site->{$connection_related_atom_id} =
                         clone $ref_atom_site->{$connection_related_atom_id};
 
