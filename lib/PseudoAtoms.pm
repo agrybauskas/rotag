@@ -614,7 +614,7 @@ sub generate_library
                         my ( $terminal_atom_id ) =
                             reverse @{ $bond_parameters{$angle_name}{'atom_ids'} };
                         $terminal_atom_data{$angle_name} =
-                            { map { $_ => $residue_site->{$terminal_atom_id}{$_} }
+                            { map { $_ => $current_atom_site->{$terminal_atom_id}{$_} }
                                   ( 'id', 'label_comp_id', 'label_atom_id',
                                     'label_seq_id', 'label_asym_id', 'label_alt_id',
                                     'pdbx_PDB_model_num', 'auth_seq_id',
