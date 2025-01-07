@@ -258,8 +258,8 @@ sub determine_bond_parameter_values
     my ( $bond_parameter_type ) =
         detect_bond_parameter_type( $bond_parameter_name );
     my $bond_parameter_count_remainder =
-        ( $bond_parameter_end / $bond_parameter_start ) -
-        int( $bond_parameter_end / $bond_parameter_start );
+        ( ( $bond_parameter_end - $bond_parameter_start ) / $bond_parameter_step ) -
+        int( ( $bond_parameter_end - $bond_parameter_start ) / $bond_parameter_step );
     my $bond_parameter_count =
         int( ( $bond_parameter_end - $bond_parameter_start ) /
              $bond_parameter_step );
@@ -275,7 +275,8 @@ sub determine_bond_parameter_values
     my $inclusive_start = 1;
     my $inclusive_end = 1;
 
-    if( $bond_parameter_type eq 'dihedral_angle' ) {
+    if( $bond_parameter_type eq 'dihedral_angle' ||
+        $bond_parameter_count_remainder > 0 ) {
         $inclusive_end = 0;
     }
 
