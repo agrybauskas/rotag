@@ -269,6 +269,9 @@ sub determine_bond_parameter_values
 
     if( $bond_parameter_type eq 'dihedral_angle' ||
         $bond_parameter_count_ceil > $bond_parameter_count ) {
+        $bond_parameter_end =
+            $bond_parameter_start +
+            $bond_parameter_count_ceil * $bond_parameter_step;
         $inclusive_end = 0;
     }
 
