@@ -257,12 +257,20 @@ sub determine_bond_parameter_values
 
     my ( $bond_parameter_type ) =
         detect_bond_parameter_type( $bond_parameter_name );
-    my $bond_parameter_count_remainder =
-        ( ( $bond_parameter_end - $bond_parameter_start ) / $bond_parameter_step ) -
-        int( ( $bond_parameter_end - $bond_parameter_start ) / $bond_parameter_step );
     my $bond_parameter_count =
         int( ( $bond_parameter_end - $bond_parameter_start ) /
              $bond_parameter_step );
+    my $bond_parameter_count_ceil =
+        ceil( ( $bond_parameter_end - $bond_parameter_start ) /
+              $bond_parameter_step );
+
+    my $inclusive_start = 1;
+    my $inclusive_end = 1;
+
+    if( $bond_parameter_type eq 'dihedral_angle' ||
+        $bond_parameter_count_ceil > $bond_parameter_count ) {
+        $inclusive_end = 0;
+    }
 
     # The changed bond parameter count is related to inclusive range ends for
     # bond angle and bond length changes. It has to be changed in order to get
@@ -270,14 +278,6 @@ sub determine_bond_parameter_values
     if( $bond_parameter_type ne 'dihedral_angle' &&
         $bond_parameter_count > 1 ) {
         $bond_parameter_count++;
-    }
-
-    my $inclusive_start = 1;
-    my $inclusive_end = 1;
-
-    if( $bond_parameter_type eq 'dihedral_angle' ||
-        $bond_parameter_count_remainder > 0 ) {
-        $inclusive_end = 0;
     }
 
     my $start_value;
