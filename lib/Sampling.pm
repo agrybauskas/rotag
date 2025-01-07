@@ -257,9 +257,12 @@ sub determine_bond_parameter_values
 
     my ( $bond_parameter_type ) =
         detect_bond_parameter_type( $bond_parameter_name );
-    my $bond_parameter_count_float =
-        ( $bond_parameter_end - $bond_parameter_start ) / $bond_parameter_step;
-    my $bond_parameter_count = int( $bond_parameter_count_float );
+    my $bond_parameter_count_remainder =
+        ( $bond_parameter_end / $bond_parameter_start ) -
+        int( $bond_parameter_end / $bond_parameter_start );
+    my $bond_parameter_count =
+        int( ( $bond_parameter_end - $bond_parameter_start ) /
+             $bond_parameter_step );
 
     # The changed bond parameter count is related to inclusive range ends for
     # bond angle and bond length changes. It has to be changed in order to get
