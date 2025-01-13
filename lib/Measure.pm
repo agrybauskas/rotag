@@ -345,12 +345,14 @@ sub rmsd_sidechains
 {
     my ( $parameters, $first_atom_site, $second_atom_site, #$unique_residue_key,
          $options ) = @_;
-    my ( $average, $best_case, $include_atoms, $exclude_atoms, $strict ) = (
+    my ( $average, $best_case, $include_atoms, $exclude_atoms, $strict,
+         $include_heteroatoms ) = (
         $options->{'average'},
         $options->{'best_case'},
         $options->{'include_atoms'},
         $options->{'exclude_atoms'},
-        $options->{'strict'}
+        $options->{'strict'},
+        $options->{'include_heteroatoms'}
     );
 
     $average //= 0;
@@ -368,6 +370,12 @@ sub rmsd_sidechains
     # mandatory.
     my $symmetrical_atom_names =$parameters->{'_[local]_symmetrical_atom_names'};
 
+    my @atom_names_include = [];
+    push @atom_names_include, @{ $include_atoms } if $include_atoms;
+
+    my @atom_names_exclude;
+    push @atom_names_exclude, @{ $exclude_atoms } if $exclude_atoms;
+
     my @first_unique_residue_keys  = unique_residue_keys( $first_atom_site );
     my @second_unique_residue_keys = unique_residue_keys( $second_atom_site );
 
@@ -383,11 +391,11 @@ sub rmsd_sidechains
                             'label_asym_id' => [ $first_chain ],
                             'pdbx_PDB_model_num' => [ $first_pdbx_model_num ],
                             'label_alt_id' => [ $first_alt_id ],
-                            ( $include_atoms ?
-                              ( 'label_atom_id' => $include_atoms ): () ) },
+                            ( @atom_names_include ?
+                              ( 'label_atom_id' => \@atom_names_include ): () ) },
                       'exclude' =>
-                          { ( $exclude_atoms ?
-                              ( 'label_atom_id' => $exclude_atoms ): () ) },
+                          { ( @atom_names_exclude ?
+                              ( 'label_atom_id' => \@atom_names_exclude ): () ) },
                       'data' =>
                           [ '[local]_selection_group', 'id',
                             'label_atom_id', 'label_seq_id',
@@ -418,11 +426,11 @@ sub rmsd_sidechains
                                 'label_asym_id' => [ $second_chain ],
                                 'pdbx_PDB_model_num' => [ $second_pdbx_model_num ],
                                 'label_alt_id' => [ $second_alt_id ],
-                                ( $include_atoms ?
-                                  ( 'label_atom_id' => $include_atoms ): () ) },
+                                ( @atom_names_include ?
+                                  ( 'label_atom_id' => \@atom_names_include ): () ) },
                           'exclude' =>
-                              { ( $exclude_atoms ?
-                                    ( 'label_atom_id' => $exclude_atoms ): () )},
+                              { ( @atom_names_exclude ?
+                                  ( 'label_atom_id' => \@atom_names_exclude ): () ) },
                           'data' =>
                               [ 'id', '[local]_selection_group', 'label_atom_id',
                                 'label_seq_id', 'label_comp_id', 'label_asym_id',
