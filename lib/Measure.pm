@@ -358,6 +358,8 @@ sub rmsd_sidechains
     $average //= 0;
     $best_case //= 0;
     $include_atoms //= $parameters->{'_[local]_sidechain_atom_names'};
+    $include_heteroatoms //= [];
+        # [ keys %{ $parameters->{'_[local]_sidechain_hetatom_extension'} } ];
     # HACK: grep'ing by first symbol is not robust, because the first symbol of
     # atom name sometimes can differ from the type symbol.
     $exclude_atoms //=
@@ -372,6 +374,7 @@ sub rmsd_sidechains
 
     my @atom_names_include = [];
     push @atom_names_include, @{ $include_atoms } if $include_atoms;
+    push @atom_names_include, @{ $include_heteroatoms } if $include_heteroatoms;
 
     my @atom_names_exclude;
     push @atom_names_exclude, @{ $exclude_atoms } if $exclude_atoms;
