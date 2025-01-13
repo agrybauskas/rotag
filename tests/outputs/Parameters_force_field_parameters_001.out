@@ -10631,18 +10631,7 @@ $VAR1 = bless( {
     'OG1',
     'OH',
     'SD',
-    'SG',
-    'MG',
-    'CA',
-    'NA',
-    'ZN',
-    'K',
-    'MN',
-    'FE',
-    'CU',
-    'NI',
-    'CO',
-    'CD'
+    'SG'
   ],
   '_[local]_sidechain_hetatom_extension' => {
     'CA' => 1,
