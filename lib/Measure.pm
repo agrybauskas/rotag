@@ -410,7 +410,8 @@ sub rmsd_sidechains
                       'data' => \@data_tags,
                       'is_hash' => 1 } );
         $first_sidechain_data =
-            [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
+            [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} ||
+                     $a->{'label_seq_id'} cmp $b->{'label_seq_id'} }
                   @{ $first_sidechain_data } ];
 
         my $residue_name = $first_sidechain_data->[0]{'label_comp_id'};
@@ -445,7 +446,8 @@ sub rmsd_sidechains
             next if ! @{ $second_sidechain_data };
 
             $second_sidechain_data =
-                [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
+                [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} ||
+                         $a->{'label_seq_id'} cmp $b->{'label_seq_id'} }
                       @{ $second_sidechain_data } ];
 
             my %second_sidechain = ();
