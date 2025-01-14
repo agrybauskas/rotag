@@ -358,8 +358,7 @@ sub rmsd_sidechains
     $average //= 0;
     $best_case //= 0;
     $include_atoms //= $parameters->{'_[local]_sidechain_atom_names'};
-    $include_heteroatoms //=
-        [ keys %{ $parameters->{'_[local]_sidechain_hetatom_extension'} } ];
+    $include_heteroatoms //= $parameters->{'_[local]_heteroatom_names'};
     # HACK: grep'ing by first symbol is not robust, because the first symbol of
     # atom name sometimes can differ from the type symbol.
     $exclude_atoms //=
