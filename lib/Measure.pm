@@ -457,7 +457,7 @@ sub rmsd_sidechains
                                         \@atom_names_exclude ): () ) },
                           'data' => \@data_tags,
                           'is_hash' => 1 } );
-            push @{ $first_sidechain_data },
+            push @{ $second_sidechain_data },
                 @{ filter( { 'atom_site' => $second_atom_site,
                              'include' =>
                                  { 'group_PDB' => [ 'HETATM' ],
