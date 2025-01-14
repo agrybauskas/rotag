@@ -424,6 +424,10 @@ sub force_field
           @{ $force_field_data->{'_[local]_sidechain_hetatom_extension'}
                                 {'data'} } };
 
+    # Restructuring parameters of heteroatom names.
+    $force_field_parameters{'_[local]_heteroatom_names'} =
+        $force_field_data->{'_[local]_heteroatom_names'}{'data'};
+
     return \%force_field_parameters;
 }
 

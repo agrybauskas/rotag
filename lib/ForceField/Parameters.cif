@@ -2652,6 +2652,10 @@ HG2 HG21 HG22 HG23 HG3 HH HH11 HH12 HH2 HH21 HH22 HZ HZ1 HZ2 HZ3 ND1 ND2 NE NE1
 NE2 NH1 NH2 NZ OD1 OD2 OE1 OE2 OG OG1 OH SD SG
 #
 loop_
+_[local]_heteroatom_names.label_atom_id
+MG CA NA ZN K MN FE CU NI CO CD H1 O H2
+#
+loop_
 _[local]_rotatable_residue_names.label_comp_id
 XAA SER ARG HIS LYS ASP GLU CYS VAL ILE LEU MET PHE TYR TRP THR ASN GLN
 #
