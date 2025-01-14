@@ -409,6 +409,19 @@ sub rmsd_sidechains
                               ( 'label_atom_id' => \@atom_names_exclude ): () ) },
                       'data' => \@data_tags,
                       'is_hash' => 1 } );
+        push @{ $first_sidechain_data },
+            @{ filter( { 'atom_site' => $first_atom_site,
+                         'include' =>
+                             { 'group_PDB' => [ 'HETATM' ],
+                               'label_seq_id' => [ $first_residue_id ],
+                               'label_asym_id' => [ $first_chain ],
+                               'pdbx_PDB_model_num' => [ $first_pdbx_model_num ],
+                               'label_alt_id' => [ $first_alt_id ],
+                               ( @hetatom_names_include ?
+                                 ( 'label_atom_id' =>
+                                       \@hetatom_names_include ): () ) },
+                         'data' => \@data_tags,
+                         'is_hash' => 1 } ) };
         $first_sidechain_data =
             [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} ||
                      $a->{'label_seq_id'} cmp $b->{'label_seq_id'} }
@@ -432,15 +445,32 @@ sub rmsd_sidechains
                               { 'group_PDB' => [ 'ATOM' ],
                                 'label_seq_id' => [ $second_residue_id ],
                                 'label_asym_id' => [ $second_chain ],
-                                'pdbx_PDB_model_num' => [ $second_pdbx_model_num ],
+                                'pdbx_PDB_model_num' =>
+                                        [ $second_pdbx_model_num ],
                                 'label_alt_id' => [ $second_alt_id ],
                                 ( @atom_names_include ?
-                                  ( 'label_atom_id' => \@atom_names_include ): () ) },
+                                  ( 'label_atom_id' =>
+                                        \@atom_names_include ): () ) },
                           'exclude' =>
                               { ( @atom_names_exclude ?
-                                  ( 'label_atom_id' => \@atom_names_exclude ): () ) },
+                                  ( 'label_atom_id' =>
+                                        \@atom_names_exclude ): () ) },
                           'data' => \@data_tags,
                           'is_hash' => 1 } );
+            push @{ $first_sidechain_data },
+                @{ filter( { 'atom_site' => $second_atom_site,
+                             'include' =>
+                                 { 'group_PDB' => [ 'HETATM' ],
+                                   'label_seq_id' => [ $second_residue_id ],
+                                   'label_asym_id' => [ $second_chain ],
+                                   'pdbx_PDB_model_num' =>
+                                       [ $second_pdbx_model_num ],
+                                   'label_alt_id' => [ $second_alt_id ],
+                                   ( @hetatom_names_include ?
+                                     ( 'label_atom_id' =>
+                                           \@hetatom_names_include ): () ) },
+                             'data' => \@data_tags,
+                             'is_hash' => 1 } ) };
 
             # HACK: there should be a way to avoid this check.
             next if ! @{ $second_sidechain_data };
@@ -452,7 +482,8 @@ sub rmsd_sidechains
 
             my %second_sidechain = ();
             for my $second_atom_data ( @{ $second_sidechain_data } ) {
-                $second_sidechain{$second_atom_data->{'label_atom_id'}} = $second_atom_data;
+                $second_sidechain{$second_atom_data->{'label_atom_id'}} =
+                    $second_atom_data;
             }
 
             # Checks the length of the atom sets.
