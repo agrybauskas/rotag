@@ -385,6 +385,11 @@ sub rmsd_sidechains
     my @second_unique_residue_keys = unique_residue_keys( $second_atom_site );
 
     my @sidechain_comparison_data = ();
+    my @data_tags = (
+        '[local]_selection_group', 'id', 'label_atom_id', 'label_seq_id',
+        'label_comp_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
+        'Cartn_x', 'Cartn_y', 'Cartn_z'
+    );
     for my $first_unique_residue_key ( @first_unique_residue_keys ) {
         my ( $first_residue_id, $first_chain, $first_pdbx_model_num,
              $first_alt_id ) =
@@ -402,12 +407,7 @@ sub rmsd_sidechains
                       'exclude' =>
                           { ( @atom_names_exclude ?
                               ( 'label_atom_id' => \@atom_names_exclude ): () ) },
-                      'data' =>
-                          [ '[local]_selection_group', 'id',
-                            'label_atom_id', 'label_seq_id',
-                            'label_comp_id', 'label_asym_id',
-                            'pdbx_PDB_model_num', 'label_alt_id',
-                            'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                      'data' => \@data_tags,
                       'is_hash' => 1 } );
         $first_sidechain_data =
             [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
@@ -438,11 +438,7 @@ sub rmsd_sidechains
                           'exclude' =>
                               { ( @atom_names_exclude ?
                                   ( 'label_atom_id' => \@atom_names_exclude ): () ) },
-                          'data' =>
-                              [ 'id', '[local]_selection_group', 'label_atom_id',
-                                'label_seq_id', 'label_comp_id', 'label_asym_id',
-                                'pdbx_PDB_model_num', 'label_alt_id',
-                                'Cartn_x', 'Cartn_y', 'Cartn_z' ],
+                          'data' => \@data_tags,
                           'is_hash' => 1 } );
 
             # HACK: there should be a way to avoid this check.
