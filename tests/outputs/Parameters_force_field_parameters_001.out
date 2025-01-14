@@ -8229,6 +8229,22 @@ $VAR1 = bless( {
       'sigma' => '2.50'
     }
   },
+  '_[local]_heteroatom_names' => [
+    'MG',
+    'CA',
+    'NA',
+    'ZN',
+    'K',
+    'MN',
+    'FE',
+    'CU',
+    'NI',
+    'CO',
+    'CD',
+    'H1',
+    'O',
+    'H2'
+  ],
   '_[local]_hydrogen_names' => {
     'ALA' => {
       'CA' => [
