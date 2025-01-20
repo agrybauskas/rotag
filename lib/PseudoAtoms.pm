@@ -708,6 +708,8 @@ sub calc_favourable_angles
     $rand_seed //= 23;
     $include_hetatoms //= 0;
 
+    my $heteroatom_names = $parameters->{'_[local]_heteroatom_names'};
+
     my $residue_site = {
         map { %{ filter_by_unique_residue_key( $atom_site, $_, 1 ) } }
            @{ $residue_unique_keys }
@@ -721,6 +723,17 @@ sub calc_favourable_angles
                     { 'include' => { 'label_atom_id' => [ 'CA', 'CB' ] },
                       'exclude' => { 'group_PDB' => [ 'HETATM' ] },
                       'return_data' => 'id' } );
+
+    if( ( ! defined $start_atom_ids || ! @{ $start_atom_ids } ) &&
+        $include_hetatoms ) {
+        $start_atom_ids =
+            filter_new( $residue_site,
+                        { 'include' => {
+                            'group_PDB' => [ 'HETATM' ],
+                            'label_atom_id' => $heteroatom_names,
+                          },
+                          'return_data' => 'id' } );
+    }
 
     my %visited_atom_ids = map { $_ => 1 } @{ $start_atom_ids };
     my @next_atom_ids =
