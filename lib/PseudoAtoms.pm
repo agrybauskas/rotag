@@ -426,7 +426,7 @@ sub generate_library
         }
 
         # Finds where CA of target residues are.
-        my @target_ca_ids;
+        my @target_atom_ids;
         for my $residue_unique_key ( @{ $residue_unique_keys } ) {
             my $residue_site = filter_by_unique_residue_key(
                 $current_atom_site,
@@ -438,9 +438,10 @@ sub generate_library
                             { 'include' => { 'label_atom_id' => [ 'CA' ] },
                               'return_data' => 'id' } )->[0];
 
-            if( ! defined $atom_ca_id ) { next; }
-
-            push @target_ca_ids, $atom_ca_id;
+            if( defined $atom_ca_id ) {
+                push @target_atom_ids, $atom_ca_id;
+                next;
+            }
         }
 
         # Creates the grid box that has edge length of sum of all bonds of the
@@ -451,7 +452,7 @@ sub generate_library
         # time.
         my ( $grid_box, $target_cell_idxs ) =
             grid_box( $parameters, $current_atom_site, $edge_length_interaction,
-                      \@target_ca_ids );
+                      \@target_atom_ids );
 
         my $neighbour_cells =
             identify_neighbour_cells( $grid_box, $target_cell_idxs );
