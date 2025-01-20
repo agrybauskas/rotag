@@ -435,13 +435,26 @@ sub generate_library
             );
             my $atom_ca_id =
                 filter_new( $residue_site,
-                            { 'include' => { 'label_atom_id' => [ 'CA' ] },
+                            { 'include' => {
+                                'group_PDB' => [ 'ATOM' ],
+                                'label_atom_id' => [ 'CA' ]
+                              },
                               'return_data' => 'id' } )->[0];
 
             if( defined $atom_ca_id ) {
                 push @target_atom_ids, $atom_ca_id;
                 next;
             }
+
+            next if ! $include_hetatoms;
+
+            # my $hetatom_id =
+            #     filter_new( $residue_site,
+            #                 { 'include' => {
+            #                     'group' => [ 'HETATM' ],
+            #                     'label_atom_id' =>
+            #                   },
+            #                   'return_data' => 'id' } )->[0];
         }
 
         # Creates the grid box that has edge length of sum of all bonds of the
