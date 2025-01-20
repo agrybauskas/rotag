@@ -361,6 +361,7 @@ sub generate_library
     my $edge_length_interaction =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+    my $heteroatom_names = $parameters->{'_[local]_heteroatom_names'};
     my $cutoff_atom = $parameters->{'_[local]_constants'}{'cutoff_atom'};
 
     $ref_atom_site //= $atom_site;
@@ -448,13 +449,17 @@ sub generate_library
 
             next if ! $include_hetatoms;
 
-            # my $hetatom_id =
-            #     filter_new( $residue_site,
-            #                 { 'include' => {
-            #                     'group' => [ 'HETATM' ],
-            #                     'label_atom_id' =>
-            #                   },
-            #                   'return_data' => 'id' } )->[0];
+            my $hetatom_ids =
+                filter_new( $residue_site,
+                            { 'include' => {
+                                'group' => [ 'HETATM' ],
+                                'label_atom_id' => $heteroatom_names
+                              },
+                              'return_data' => 'id' } );
+
+            next if ! defined $hetatom_ids || ! @{ $hetatom_ids };
+
+            push @target_atom_ids, @{ $hetatom_ids };
         }
 
         # Creates the grid box that has edge length of sum of all bonds of the
