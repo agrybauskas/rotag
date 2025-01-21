@@ -736,10 +736,19 @@ sub calc_favourable_angles
     }
 
     my %visited_atom_ids = map { $_ => 1 } @{ $start_atom_ids };
-    my @next_atom_ids =
-        grep { ! $visited_atom_ids{$_} }
-        map  { @{ $residue_site->{$_}{'connections'} } }
-            @{ $start_atom_ids };
+    my @next_atom_ids = ();
+    for my $start_atom_id ( @{ $start_atom_ids } ) {
+        if( defined $residue_site->{$start_atom_id}{'connections'}  ) {
+            push @next_atom_ids,
+                grep { ! $visited_atom_ids{$_} }
+                    @{ $residue_site->{$start_atom_id}{'connections'} };
+        }
+        if( defined $residue_site->{$start_atom_id}{'connections_hetatom'} ) {
+            push @next_atom_ids,
+                grep { ! $visited_atom_ids{$_} }
+                    @{ $residue_site->{$start_atom_id}{'connections_hetatom'} };
+        }
+    }
 
     my @allowed_bond_parameters;
     my @allowed_energies;
