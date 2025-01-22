@@ -382,11 +382,21 @@ sub assign_hetatoms
 
         my %visited_atoms = ();
         my %visited_bonds = ();
+        my $started_as_hetatom = -1;
         while( @next_atom_ids ) {
             my ( $atom_id ) = shift @next_atom_ids;
 
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
+
+            # Have to determine if the first starting atom was heteroatom.
+            # Acoording to that fact, proper bond parameters will be selected.
+            if( $started_as_hetatom < 0 &&
+                $ref_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
+                $started_as_hetatom = 1;
+            } else {
+                $started_as_hetatom = 0;
+            }
 
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
