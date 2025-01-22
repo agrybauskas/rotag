@@ -342,6 +342,9 @@ sub assign_hetatoms
 
     return if ! %{ $struct_conn };
 
+    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
+    my $interaction_atom_symbols = [ 'H', 'N', 'O', 'P', 'S' ];
+
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
     my $all_unique_residue_keys =
