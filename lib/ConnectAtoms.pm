@@ -354,9 +354,11 @@ sub assign_hetatoms
     if( @{ $filter_unique_keys } ) {
         my %filter_unique_keys = map { $_ => 1 } @{ $filter_unique_keys };
         $unique_residue_keys = {
-            map { $_ => $all_unique_residue_keys->{$_} }
+            map { $_ => $unique_residue_keys->{$_} }
+            # map { $_ => $all_unique_residue_keys->{$_} }
             grep { exists $filter_unique_keys{$_} }
-            keys %{ $all_unique_residue_keys }
+            # keys %{ $all_unique_residue_keys }
+            keys %{ $unique_residue_keys }
         };
     }
 
