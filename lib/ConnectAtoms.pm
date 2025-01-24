@@ -392,7 +392,7 @@ sub assign_hetatoms
             $visited_atoms{$atom_id} = 1;
 
             my $atom_type = $ref_atom_site->{$atom_id}{'group_PDB'};
-            my $atom_name = $ref_atom_site->{$atom_id}{'label_comp_id'};
+            my $atom_name = $ref_atom_site->{$atom_id}{'label_atom_id'};
 
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
@@ -401,11 +401,15 @@ sub assign_hetatoms
                 my $connection_atom_type =
                     $ref_atom_site->{$connection_atom_id}{'group_PDB'};
                 my $connection_atom_name =
-                    $ref_atom_site->{$connection_atom_id}{'label_comp_id'};
+                    $ref_atom_site->{$connection_atom_id}{'label_atom_id'};
                 my $connection_atom_symbol =
                     $ref_atom_site->{$connection_atom_id}{'type_symbol'};
 
                 next if $connection_atom_type eq 'ATOM';
+
+                # next if $atom_type eq 'ATOM' &&
+                #     $connection_atom_type eq 'HETATM' &&
+                #     exists $mainchain_atom_names{$atom_name};
 
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
@@ -416,9 +420,13 @@ sub assign_hetatoms
                     my $connection_related_atom_type =
                         $ref_atom_site->{$connection_related_atom_id}{'group_PDB'};
                     my $connection_related_atom_name =
-                        $ref_atom_site->{$connection_related_atom_id}{'label_comp_id'};
+                        $ref_atom_site->{$connection_related_atom_id}{'label_atom_id'};
+
 
                     next if $connection_related_atom_type eq 'ATOM';
+
+                    # next if $connection_related_atom_id ne $connection_atom_id &&
+                    #     $connection_related_atom_type eq 'ATOM';
 
                     $atom_site->{$connection_related_atom_id} =
                         clone $ref_atom_site->{$connection_related_atom_id};
