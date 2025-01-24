@@ -391,15 +391,6 @@ sub assign_hetatoms
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
-            # Have to determine if the first starting atom was heteroatom.
-            # Acoording to that fact, proper bond parameters will be selected.
-            if( $started_as_hetatom < 0 &&
-                $ref_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
-                $started_as_hetatom = 1;
-            } else {
-                $started_as_hetatom = 0;
-            }
-
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
                 next if $seed_atom_ids{$connection_atom_id};
@@ -411,10 +402,7 @@ sub assign_hetatoms
                 my $connection_atom_symbol =
                     $ref_atom_site->{$connection_atom_id}{'type_symbol'};
 
-                next if $started_as_hetatom &&
-                    $connection_atom_type eq 'ATOM' &&
-                    ! exists $mainchain_atom_names{$connection_atom_name} &&
-                    ! exists $interaction_atom_symbols{$connection_atom_symbol};
+                next if $connection_atom_type eq 'ATOM';
 
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
@@ -426,8 +414,6 @@ sub assign_hetatoms
                         $ref_atom_site->{$connection_related_atom_id}{'group_PDB'};
                     my $connection_related_atom_name =
                         $ref_atom_site->{$connection_related_atom_id}{'label_comp_id'};
-                    my $connection_related_atom_symbol =
-                        $ref_atom_site->{$connection_related_atom_id}{'type_symbol'};
 
                     next if $connection_related_atom_type eq 'ATOM';
 
