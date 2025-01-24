@@ -342,8 +342,10 @@ sub assign_hetatoms
 
     return if ! %{ $struct_conn };
 
-    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
-    my $interaction_atom_symbols = [ 'H', 'N', 'O', 'P', 'S' ];
+    my %mainchain_atom_names =
+        map { $_ => 1 } @{ $parameters->{'_[local]_mainchain_atom_names'} };
+    my %interaction_atom_symbols =
+        map { $_ => 1 } ( 'H', 'N', 'O', 'P', 'S' );
 
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
@@ -354,11 +356,9 @@ sub assign_hetatoms
     if( @{ $filter_unique_keys } ) {
         my %filter_unique_keys = map { $_ => 1 } @{ $filter_unique_keys };
         $unique_residue_keys = {
-            map { $_ => $unique_residue_keys->{$_} }
-            # map { $_ => $all_unique_residue_keys->{$_} }
+            map { $_ => $all_unique_residue_keys->{$_} }
             grep { exists $filter_unique_keys{$_} }
-            # keys %{ $all_unique_residue_keys }
-            keys %{ $unique_residue_keys }
+            keys %{ $all_unique_residue_keys }
         };
     }
 
@@ -403,7 +403,18 @@ sub assign_hetatoms
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
                 next if $seed_atom_ids{$connection_atom_id};
-                next if $ref_atom_site->{$connection_atom_id}{'group_PDB'} eq 'ATOM';
+
+                my $connection_atom_type =
+                    $ref_atom_site->{$connection_atom_id}{'group_PDB'};
+                my $connection_atom_name =
+                    $ref_atom_site->{$connection_atom_id}{'label_comp_id'};
+                my $connection_atom_symbol =
+                    $ref_atom_site->{$connection_atom_id}{'type_symbol'};
+
+                next if $started_as_hetatom &&
+                    $connection_atom_type eq 'ATOM' &&
+                    ! exists $mainchain_atom_names{$connection_atom_name} &&
+                    ! exists $interaction_atom_symbols{$connection_atom_symbol};
 
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
@@ -411,7 +422,14 @@ sub assign_hetatoms
                 # Clones, assigns proper and next atom ids.
                 for my $connection_related_atom_id (
                     sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
-                    next if $ref_atom_site->{$connection_related_atom_id}{'group_PDB'} eq 'ATOM';
+                    my $connection_related_atom_type =
+                        $ref_atom_site->{$connection_related_atom_id}{'group_PDB'};
+                    my $connection_related_atom_name =
+                        $ref_atom_site->{$connection_related_atom_id}{'label_comp_id'};
+                    my $connection_related_atom_symbol =
+                        $ref_atom_site->{$connection_related_atom_id}{'type_symbol'};
+
+                    next if $connection_related_atom_type eq 'ATOM';
 
                     $atom_site->{$connection_related_atom_id} =
                         clone $ref_atom_site->{$connection_related_atom_id};
