@@ -391,6 +391,9 @@ sub assign_hetatoms
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
+            my $atom_type = $ref_atom_site->{$atom_id}{'group_PDB'};
+            my $atom_name = $ref_atom_site->{$atom_id}{'label_comp_id'};
+
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
                 next if $seed_atom_ids{$connection_atom_id};
