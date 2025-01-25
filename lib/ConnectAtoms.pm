@@ -422,7 +422,6 @@ sub assign_hetatoms
                     my $connection_related_atom_name =
                         $ref_atom_site->{$connection_related_atom_id}{'label_atom_id'};
 
-
                     next if $connection_related_atom_type eq 'ATOM';
 
                     # next if $connection_related_atom_id ne $connection_atom_id &&
