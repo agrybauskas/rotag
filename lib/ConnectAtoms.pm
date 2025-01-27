@@ -521,8 +521,57 @@ sub assign_hetatoms_mainchain
 
     return if ! %{ $struct_conn };
 
-    # my $unique_residue_keys =
-    #     unique_from_struct_conn( $ref_atom_site, $struct_conn );
+    my $unique_residue_keys =
+        unique_from_struct_conn( $ref_atom_site, $struct_conn );
+    my $all_unique_residue_keys =
+        unique_from_struct_conn( $ref_atom_site, $struct_conn,
+                                 { 'no_hetatoms' => 0 } );
+
+    if( @{ $filter_unique_keys } ) {
+        my %filter_unique_keys = map { $_ => 1 } @{ $filter_unique_keys };
+        $unique_residue_keys = {
+            map { $_ => $all_unique_residue_keys->{$_} }
+            grep { exists $filter_unique_keys{$_} }
+            keys %{ $all_unique_residue_keys }
+        };
+    }
+
+    my $connections =
+        connections_from_struct_conn( $ref_atom_site, $struct_conn );
+
+    # TODO: has to be refactored.
+    my @assigned_atom_ids = ();
+    my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
+    my $alt_id = 1;
+
+    my %tracked_atom_ids = ();
+    my %seed_atom_ids = ();
+    for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        foreach( @{ $unique_residue_keys->{$unique_residue_key} } ) {
+            $tracked_atom_ids{$_} = $_;
+            $seed_atom_ids{$_} = 1;
+        }
+    }
+
+    for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
+
+        my %visited_atoms = ();
+        my %visited_bonds = ();
+        my $started_as_hetatom = -1;
+        while( @next_atom_ids ) {
+            my ( $atom_id ) = shift @next_atom_ids;
+
+            next if $visited_atoms{$atom_id};
+            next if $ref_atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
+            $visited_atoms{$atom_id} = 1;
+        }
+    }
+
+    use Data::Dumper;
+    print STDERR Dumper \@assigned_atom_ids;
+
+    return \@assigned_atom_ids;
 }
 
 #
