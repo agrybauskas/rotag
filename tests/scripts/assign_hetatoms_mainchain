@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ConnectAtoms qw( assign_hetatoms_mainchain
+                     create_hetatom_struct_conn );
+use PDBxParser qw( split_by );
+use ForceField::Parameters;
+
+#
+# Unit test: ConnectAtoms::assign_hetatoms_mainchain
+# Example: ./assign_hetatoms_mainchain structure-and-struct-conn.dump 1
+#
+
+my ( $atom_site_struct_conn_dump_file, $assume_connections ) = @ARGV;
+
+my $atom_site_struct_conn;
+open( my $fh, "<", $atom_site_struct_conn_dump_file );
+while( <$fh> ) {
+    $atom_site_struct_conn .= "$_" ;
+}
+close( $fh );
+$atom_site_struct_conn = eval( $atom_site_struct_conn );
+
+my $parameters = Parameters->new();
+my $atom_site = $atom_site_struct_conn->{'_atom_site'};
+my $struct_conn = $atom_site_struct_conn->{'_struct_conn'};
+
+my $atom_site_split_groups =
+    split_by( { 'atom_site' => $atom_site,
+                'append_dot' => 1 } );
+if( ! %{ $struct_conn } && $assume_connections ) {
+    $struct_conn = create_hetatom_struct_conn( $parameters, $atom_site );
+}
+
+assign_hetatoms_mainchain( $parameters, $atom_site, $struct_conn );
+
+my @atom_coord;
+my @parent_atom;
+my @child_atom;
+my %visited_pairs = ();
+
+for my $parent_id ( sort keys %{ $atom_site } ) {
+    @parent_atom = ( $parent_id, $atom_site->{$parent_id}{"label_atom_id"} );
+    for my $child_id ( @{ $atom_site->{$parent_id}{"connections_hetatom"} } ) {
+        @child_atom = ( $child_id, $atom_site->{$child_id}{"label_atom_id"} );
+        print( "$parent_atom[0] $parent_atom[1]:" );
+        print( "$child_atom[0] $child_atom[1]\n" );
+    }
+}
