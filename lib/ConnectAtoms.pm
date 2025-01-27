@@ -342,11 +342,6 @@ sub assign_hetatoms
 
     return if ! %{ $struct_conn };
 
-    my %mainchain_atom_names =
-        map { $_ => 1 } @{ $parameters->{'_[local]_mainchain_atom_names'} };
-    my %interaction_atom_symbols =
-        map { $_ => 1 } ( 'H', 'N', 'O', 'P', 'S' );
-
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
     my $all_unique_residue_keys =
@@ -391,19 +386,12 @@ sub assign_hetatoms
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
-            my $atom_type = $ref_atom_site->{$atom_id}{'group_PDB'};
-            my $atom_name = $ref_atom_site->{$atom_id}{'label_atom_id'};
-
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
                 next if $seed_atom_ids{$connection_atom_id};
 
                 my $connection_atom_type =
                     $ref_atom_site->{$connection_atom_id}{'group_PDB'};
-                my $connection_atom_name =
-                    $ref_atom_site->{$connection_atom_id}{'label_atom_id'};
-                my $connection_atom_symbol =
-                    $ref_atom_site->{$connection_atom_id}{'type_symbol'};
 
                 next if $connection_atom_type eq 'ATOM';
 
@@ -415,8 +403,6 @@ sub assign_hetatoms
                     sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
                     my $connection_related_atom_type =
                         $ref_atom_site->{$connection_related_atom_id}{'group_PDB'};
-                    my $connection_related_atom_name =
-                        $ref_atom_site->{$connection_related_atom_id}{'label_atom_id'};
 
                     next if $connection_related_atom_type eq 'ATOM';
 
