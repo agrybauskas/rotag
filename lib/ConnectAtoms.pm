@@ -380,7 +380,6 @@ sub assign_hetatoms
 
         my %visited_atoms = ();
         my %visited_bonds = ();
-        my $started_as_hetatom = -1;
         while( @next_atom_ids ) {
             my ( $atom_id ) = shift @next_atom_ids;
 
@@ -558,18 +557,21 @@ sub assign_hetatoms_mainchain
 
         my %visited_atoms = ();
         my %visited_bonds = ();
-        my $started_as_hetatom = -1;
         while( @next_atom_ids ) {
             my ( $atom_id ) = shift @next_atom_ids;
 
             next if $visited_atoms{$atom_id};
             next if $ref_atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
             $visited_atoms{$atom_id} = 1;
+
+            for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
+                next if $visited_bonds{$atom_id}{$connection_atom_id};
+                next if $seed_atom_ids{$connection_atom_id};
+
+                next if $connection_atom_type eq 'ATOM';
+            }
         }
     }
-
-    use Data::Dumper;
-    print STDERR Dumper \@assigned_atom_ids;
 
     return \@assigned_atom_ids;
 }
