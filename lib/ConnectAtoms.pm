@@ -356,9 +356,9 @@ sub assign_hetatoms
     if( @{ $filter_unique_keys } ) {
         my %filter_unique_keys = map { $_ => 1 } @{ $filter_unique_keys };
         $unique_residue_keys = {
-            map { $_ => $all_unique_residue_keys->{$_} }
+            map { $_ => $unique_residue_keys->{$_} }
             grep { exists $filter_unique_keys{$_} }
-            keys %{ $all_unique_residue_keys }
+            keys %{ $unique_residue_keys }
         };
     }
 
@@ -407,10 +407,6 @@ sub assign_hetatoms
 
                 next if $connection_atom_type eq 'ATOM';
 
-                # next if $atom_type eq 'ATOM' &&
-                #     $connection_atom_type eq 'HETATM' &&
-                #     exists $mainchain_atom_names{$atom_name};
-
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
 
@@ -423,9 +419,6 @@ sub assign_hetatoms
                         $ref_atom_site->{$connection_related_atom_id}{'label_atom_id'};
 
                     next if $connection_related_atom_type eq 'ATOM';
-
-                    # next if $connection_related_atom_id ne $connection_atom_id &&
-                    #     $connection_related_atom_type eq 'ATOM';
 
                     $atom_site->{$connection_related_atom_id} =
                         clone $ref_atom_site->{$connection_related_atom_id};
