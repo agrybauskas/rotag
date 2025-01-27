@@ -503,6 +503,19 @@ sub assign_hetatoms
 
 sub assign_hetatoms_mainchain
 {
+    my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
+    my ( $ref_atom_site, $filter_unique_keys, $keep_original ) =
+        ( $options->{'ref_atom_site'},
+          $options->{'filter_unique_keys'},
+          $options->{'keep_original'} );
+
+    $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
+    $ref_atom_site //= $atom_site;
+    $filter_unique_keys //= [];
+    # HACK: the default should be 0 as it is more intuitive.
+    $keep_original //= 1;
+
+    return if ! %{ $struct_conn };
 }
 
 #
