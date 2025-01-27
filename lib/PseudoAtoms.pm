@@ -38,6 +38,7 @@ use BondParameters qw( collect_bond_lengths
 use BondProperties qw( hybridization );
 use Combinatorics qw( permutation );
 use ConnectAtoms qw( assign_hetatoms
+                     assign_hetatoms_mainchain
                      connect_atoms
                      is_neighbour
                      is_second_neighbour );
@@ -405,10 +406,19 @@ sub generate_library
         hybridization( $parameters, $current_atom_site );
 
         my $assigned_hetatom_ids =
-            assign_hetatoms( $parameters, $current_atom_site, $struct_conn,
-                             { 'filter_unique_keys' => $residue_unique_keys,
-                               'ref_atom_site' => $ref_atom_site,
-                               'keep_original' => 0 } );
+            assign_hetatoms(
+                $parameters, $current_atom_site, $struct_conn,
+                { 'filter_unique_keys' => $residue_unique_keys,
+                  'ref_atom_site' => $ref_atom_site,
+                  'keep_original' => 0 }
+        );
+        my $assigned_hetatom_mainchain_ids =
+            assign_hetatoms_mainchain(
+                $parameters, $current_atom_site, $struct_conn,
+                { 'filter_unique_keys' => $residue_unique_keys,
+                  'ref_atom_site' => $ref_atom_site,
+                  'keep_original' => 0 }
+        );
 
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,

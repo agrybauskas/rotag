@@ -520,6 +520,9 @@ sub assign_hetatoms_mainchain
     $keep_original //= 1;
 
     return if ! %{ $struct_conn };
+
+    # my $unique_residue_keys =
+    #     unique_from_struct_conn( $ref_atom_site, $struct_conn );
 }
 
 #
