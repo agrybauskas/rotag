@@ -6,6 +6,7 @@ use warnings;
 BEGIN{
 use Exporter qw( import );
 our @EXPORT_OK = qw( assign_hetatoms
+                     assign_hetatoms_mainchain
                      connect_atoms
                      connect_atoms_explicitly
                      create_hetatom_struct_conn
@@ -484,6 +485,24 @@ sub assign_hetatoms
     }
 
     return \@assigned_atom_ids;
+}
+
+
+#
+# Assigns heteroatoms to specific residues in the mainchain according to
+# "_struct_conn" -- either creating the new one or assigning to the existing
+# one. Duplicated heteroatoms are to be expected.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $struct_conn - reads 'struc_conn' and assings connections appropriately.
+# Output:
+#     heteroatoms are assigned to the atom site;
+#     \@assigned_atom_ids - assigned atom ids.
+#
+
+sub assign_hetatoms_mainchain
+{
 }
 
 #
