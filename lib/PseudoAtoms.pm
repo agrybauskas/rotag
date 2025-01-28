@@ -454,7 +454,6 @@ sub generate_library
 
             if( defined $atom_ca_id ) {
                 push @target_atom_ids, $atom_ca_id;
-                next;
             }
 
             next if ! $include_hetatoms;
@@ -462,7 +461,7 @@ sub generate_library
             my $hetatom_ids =
                 filter_new( $residue_site,
                             { 'include' => {
-                                'group' => [ 'HETATM' ],
+                                'group_PDB' => [ 'HETATM' ],
                                 'label_atom_id' => $heteroatom_names
                               },
                               'return_data' => 'id' } );
