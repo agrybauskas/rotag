@@ -412,13 +412,13 @@ sub generate_library
                   'ref_atom_site' => $ref_atom_site,
                   'keep_original' => 0 }
         );
-        my $assigned_hetatom_mainchain_ids =
-            assign_hetatoms_mainchain(
-                $parameters, $current_atom_site, $struct_conn,
-                { 'filter_unique_keys' => $residue_unique_keys,
-                  'ref_atom_site' => $ref_atom_site,
-                  'keep_original' => 0 }
-        );
+        # my $assigned_hetatom_mainchain_ids =
+        #     assign_hetatoms_mainchain(
+        #         $parameters, $current_atom_site, $struct_conn,
+        #         { 'filter_unique_keys' => $residue_unique_keys,
+        #           'ref_atom_site' => $ref_atom_site,
+        #           'keep_original' => 0 }
+        # );
 
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,
