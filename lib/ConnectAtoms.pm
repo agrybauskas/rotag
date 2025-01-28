@@ -600,6 +600,30 @@ sub assign_hetatoms_mainchain
                 $last_atom_id++;
             }
 
+            # Connects atoms inside the ligand.
+            for my $related_atom_id (
+                sort @{ $all_unique_residue_keys->{$unique_key} } ) {
+                for my $neighbour_related_atom_id (
+                    sort keys %{ $connections->{$related_atom_id} } ) {
+                    my $neighbour_connection_type =
+                        $connections->{$related_atom_id}
+                                      {$neighbour_related_atom_id};
+
+                    next if $neighbour_connection_type ne 'covale';
+
+                    connect_atoms_explicitly(
+                        $atom_site,
+                        [ $tracked_atom_ids{$related_atom_id} ],
+                        [ $tracked_atom_ids{$neighbour_related_atom_id} ],
+                        ( { 'connection_type' => 'connections' } ),
+                    );
+
+                    $visited_bonds{$related_atom_id}
+                                  {$neighbour_related_atom_id} = 1;
+                    $visited_bonds{$neighbour_related_atom_id}
+                                  {$related_atom_id} = 1;
+                }
+            }
         }
     }
 
