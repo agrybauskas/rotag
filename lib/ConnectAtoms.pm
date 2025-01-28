@@ -486,7 +486,6 @@ sub assign_hetatoms
     return \@assigned_atom_ids;
 }
 
-
 #
 # Assigns heteroatoms to specific residues in the mainchain according to
 # "_struct_conn" -- either creating the new one or assigning to the existing
@@ -567,61 +566,87 @@ sub assign_hetatoms_mainchain
             next if $ref_atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
             $visited_atoms{$atom_id} = 1;
 
-            my $unique_key = unique_residue_key( $ref_atom_site->{$atom_id} );
+            for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
+                next if $visited_bonds{$atom_id}{$connection_atom_id};
+                next if $seed_atom_ids{$connection_atom_id};
 
-            # Clones, assigns proper and next atom ids.
-            for my $related_atom_id (
-                sort @{ $all_unique_residue_keys->{$unique_key} } ) {
-                my $related_atom_type =
-                    $ref_atom_site->{$related_atom_id}{'group_PDB'};
+                my $connection_atom_type =
+                    $ref_atom_site->{$connection_atom_id}{'group_PDB'};
 
-                next if $related_atom_type eq 'ATOM';
+                next if $connection_atom_type eq 'HETATM';
 
-                $atom_site->{$related_atom_id} =
-                    clone $ref_atom_site->{$related_atom_id};
+                my $unique_key = unique_residue_key( $ref_atom_site->{$atom_id} );
 
-                replace_atom_site_ids( $atom_site,
-                                       [ { 'from' => $related_atom_id,
-                                           'to' => $last_atom_id } ],
-                                       $options );
+                # Clones, assigns proper and next atom ids.
+                for my $related_atom_id (
+                    sort @{ $all_unique_residue_keys->{$unique_key} } ) {
+                    my $related_atom_type =
+                        $ref_atom_site->{$related_atom_id}{'group_PDB'};
 
-                $tracked_atom_ids{$related_atom_id} = $last_atom_id;
+                    next if $related_atom_type eq 'ATOM';
 
-                $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
+                    $atom_site->{$related_atom_id} =
+                        clone $ref_atom_site->{$related_atom_id};
 
-                push @assigned_atom_ids, $last_atom_id;
+                    replace_atom_site_ids( $atom_site,
+                                           [ { 'from' => $related_atom_id,
+                                               'to' => $last_atom_id } ],
+                                           $options );
 
-                if( grep { ! $visited_atoms{$_} }
-                    grep { $connections->{$related_atom_id}{$_} ne 'covale' }
-                    keys %{ $connections->{$related_atom_id} } ) {
-                    push @next_atom_ids, $related_atom_id;
+                    $tracked_atom_ids{$related_atom_id} = $last_atom_id;
+
+                    $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
+
+                    push @assigned_atom_ids, $last_atom_id;
+
+                    if( grep { ! $visited_atoms{$_} }
+                        grep { $connections->{$related_atom_id}{$_} ne 'covale' }
+                        keys %{ $connections->{$related_atom_id} } ) {
+                        push @next_atom_ids, $related_atom_id;
+                    }
+
+                    $last_atom_id++;
                 }
 
-                $last_atom_id++;
-            }
+                # Connects disjoint moieties first.
+                my $connection_type =
+                    $connections->{$atom_id}{$connection_atom_id};
 
-            # Connects atoms inside the ligand.
-            for my $related_atom_id (
-                sort @{ $all_unique_residue_keys->{$unique_key} } ) {
-                for my $neighbour_related_atom_id (
-                    sort keys %{ $connections->{$related_atom_id} } ) {
-                    my $neighbour_connection_type =
-                        $connections->{$related_atom_id}
-                                      {$neighbour_related_atom_id};
-
-                    next if $neighbour_connection_type ne 'covale';
-
+                if( $connection_type ne 'covale' ) {
                     connect_atoms_explicitly(
                         $atom_site,
-                        [ $tracked_atom_ids{$related_atom_id} ],
-                        [ $tracked_atom_ids{$neighbour_related_atom_id} ],
-                        ( { 'connection_type' => 'connections' } ),
+                        [ $tracked_atom_ids{$atom_id} ],
+                        [ $connection_atom_id ],
+                        ( { 'connection_type' => 'connections_hetatom' } ),
                     );
 
-                    $visited_bonds{$related_atom_id}
-                                  {$neighbour_related_atom_id} = 1;
-                    $visited_bonds{$neighbour_related_atom_id}
-                                  {$related_atom_id} = 1;
+                    $visited_bonds{$atom_id}{$connection_atom_id} = 1;
+                    $visited_bonds{$connection_atom_id}{$atom_id} = 1;
+                }
+
+                # Connects atoms inside the ligand.
+                for my $related_atom_id (
+                    sort @{ $all_unique_residue_keys->{$unique_key} } ) {
+                    for my $neighbour_related_atom_id (
+                        sort keys %{ $connections->{$related_atom_id} } ) {
+                        my $neighbour_connection_type =
+                            $connections->{$related_atom_id}
+                                          {$neighbour_related_atom_id};
+
+                        next if $neighbour_connection_type ne 'covale';
+
+                        connect_atoms_explicitly(
+                            $atom_site,
+                            [ $tracked_atom_ids{$related_atom_id} ],
+                            [ $tracked_atom_ids{$neighbour_related_atom_id} ],
+                            ( { 'connection_type' => 'connections' } ),
+                        );
+
+                        $visited_bonds{$related_atom_id}
+                                      {$neighbour_related_atom_id} = 1;
+                        $visited_bonds{$neighbour_related_atom_id}
+                                      {$related_atom_id} = 1;
+                    }
                 }
             }
         }
