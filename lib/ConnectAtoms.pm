@@ -679,7 +679,12 @@ sub assign_hetatoms_mainchain
 
 sub create_hetatom_struct_conn
 {
-    my ( $parameters, $atom_site ) = @_;
+    my ( $parameters, $atom_site, $options ) = @_;
+
+    my ( $only_mainchain ) = ( $options->{'only_mainchain'} );
+    $only_mainchain //= 0;
+
+    my $mainchain_atom_names = $parameters->{'_[local]_mainchain_atom_names'};
 
     my $hetatom_site =
         filter_new( $atom_site,
@@ -687,7 +692,11 @@ sub create_hetatom_struct_conn
     my $interaction_atom_site =
         filter_new( $atom_site,
                     { 'include' =>
-                      { 'type_symbol' => [ 'H', 'N', 'O', 'S' ] } } );
+                      { 'group_PDB' => [ 'ATOM' ],
+                        'type_symbol' => [ 'H', 'N', 'O', 'S' ],
+                        ( $only_mainchain ?
+                          ( 'label_atom_id' => $mainchain_atom_names ) :
+                          () ) } } );
 
     my %struct_conn = ();
     my $metalc_counter = 1;
