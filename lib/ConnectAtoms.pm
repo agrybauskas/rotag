@@ -546,7 +546,6 @@ sub assign_hetatoms_mainchain
     # TODO: has to be refactored.
     my @assigned_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
-    my $alt_id = 1;
 
     my %tracked_atom_ids = ();
     my %seed_atom_ids = ();
@@ -597,8 +596,6 @@ sub assign_hetatoms_mainchain
                                            $options );
 
                     $tracked_atom_ids{$related_atom_id} = $last_atom_id;
-
-                    $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
 
                     push @assigned_atom_ids, $last_atom_id;
 
@@ -652,8 +649,6 @@ sub assign_hetatoms_mainchain
                     }
                 }
             }
-
-            $alt_id++;
         }
 
         if( ! $keep_original ) {
