@@ -568,6 +568,9 @@ sub assign_hetatoms_mainchain
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
                 next if $seed_atom_ids{$connection_atom_id};
 
+                my $connection_atom_type =
+                    $ref_atom_site->{$connection_atom_id}{'group_PDB'};
+
                 next if $connection_atom_type eq 'ATOM';
             }
         }
