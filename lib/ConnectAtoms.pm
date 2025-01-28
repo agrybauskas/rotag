@@ -649,6 +649,16 @@ sub assign_hetatoms_mainchain
                     }
                 }
             }
+
+            $alt_id++;
+        }
+
+        if( ! $keep_original ) {
+            for my $original_atom_id ( keys %tracked_atom_ids ) {
+                next if $tracked_atom_ids{$original_atom_id} eq $original_atom_id;
+
+                delete $atom_site->{$original_atom_id};
+            }
         }
     }
 
