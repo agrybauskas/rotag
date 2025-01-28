@@ -520,6 +520,9 @@ sub assign_hetatoms_mainchain
 
     return if ! %{ $struct_conn };
 
+    my %mainchain_atom_names =
+        map { $_ => 1 } @{ $parameters->{'_[local]_mainchain_atom_names'} };
+
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
     my $all_unique_residue_keys =
@@ -570,8 +573,11 @@ sub assign_hetatoms_mainchain
 
                 my $connection_atom_type =
                     $ref_atom_site->{$connection_atom_id}{'group_PDB'};
+                my $connection_atom_name =
+                    $ref_atom_site->{$connection_atom_id}{'label_atom_id'};
 
-                next if $connection_atom_type eq 'ATOM';
+                next if $connection_atom_type eq 'ATOM' &&
+                    ! exists $mainchain_atom_names{$connection_atom_name};
             }
         }
     }
