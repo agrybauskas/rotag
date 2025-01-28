@@ -486,13 +486,13 @@ sub generate_library
             identify_neighbour_cells( $grid_box, $target_cell_idxs );
 
         for my $cell ( sort { $a cmp $b } keys %{ $target_cell_idxs } ) {
-            for my $ca_atom_id ( @{ $target_cell_idxs->{$cell} } ) {
+            for my $target_atom_id ( @{ $target_cell_idxs->{$cell} } ) {
                 my $residue_id =
-                    $current_atom_site->{$ca_atom_id}{'label_seq_id'};
+                    $current_atom_site->{$target_atom_id}{'label_seq_id'};
                 my $residue_name =
-                    $current_atom_site->{$ca_atom_id}{'label_comp_id'};
+                    $current_atom_site->{$target_atom_id}{'label_comp_id'};
                 my $residue_chain =
-                    $current_atom_site->{$ca_atom_id}{'label_asym_id'};
+                    $current_atom_site->{$target_atom_id}{'label_asym_id'};
                 my $residue_site =
                     filter_new( $current_atom_site,
                                 { 'include' =>
