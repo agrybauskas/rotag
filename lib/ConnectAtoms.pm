@@ -578,6 +578,40 @@ sub assign_hetatoms_mainchain
 
                 next if $connection_atom_type eq 'ATOM' &&
                     ! exists $mainchain_atom_names{$connection_atom_name};
+
+                my $connection_unique_key =
+                    unique_residue_key( $ref_atom_site->{$connection_atom_id} );
+
+                for my $connection_related_atom_id (
+                    sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
+                    my $connection_related_atom_type =
+                        $ref_atom_site->{$connection_related_atom_id}{'group_PDB'};
+
+                    next if $connection_related_atom_type eq 'ATOM';
+
+                    $atom_site->{$connection_related_atom_id} =
+                        clone $ref_atom_site->{$connection_related_atom_id};
+
+                    # NOTE: switch connection with atom ids.
+                    # replace_atom_site_ids( $atom_site,
+                    #                        [ { 'from' => $connection_related_atom_id,
+                    #                            'to' => $last_atom_id } ],
+                    #                        $options );
+
+                    $tracked_atom_ids{$connection_related_atom_id} = $last_atom_id;
+
+                    $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
+
+                    push @assigned_atom_ids, $last_atom_id;
+
+                    if( grep { ! $visited_atoms{$_} }
+                        grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
+                        keys %{ $connections->{$connection_related_atom_id} } ) {
+                        push @next_atom_ids, $connection_related_atom_id;
+                    }
+
+                    $last_atom_id++;
+                }
             }
         }
     }
