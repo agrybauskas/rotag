@@ -525,7 +525,8 @@ sub assign_hetatoms_mainchain
         map { $_ => 1 } @{ $parameters->{'_[local]_mainchain_atom_names'} };
 
     my $unique_residue_keys =
-        unique_from_struct_conn( $ref_atom_site, $struct_conn );
+        unique_from_struct_conn( $ref_atom_site, $struct_conn,
+                                 { 'no_atoms' => 1 } );
     my $all_unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn,
                                  { 'no_hetatoms' => 0 } );
@@ -791,7 +792,9 @@ sub create_hetatom_struct_conn
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $struct_conn - reads 'struc_conn' and assings connections appropriately;
-#     $options->{'no_hetatoms'} - excludes heteroatoms.
+#     $options->{'no_hetatoms'} - excludes heteroatoms;
+#     $options->{'no_atoms'} - excludes atoms with '_atom_site.group_PDB' value
+#     of 'ATOM'.
 # Output:
 #     unique residue key objects.
 #
@@ -799,9 +802,11 @@ sub create_hetatom_struct_conn
 sub unique_from_struct_conn
 {
     my ( $atom_site, $struct_conn, $options ) = @_;
-    my ( $no_hetatoms ) = ( $options->{'no_hetatoms'} );
+    my ( $no_hetatoms, $no_atoms ) =
+        ( $options->{'no_hetatoms'}, $options->{'no_atoms'} );
 
     $no_hetatoms //= 1;
+    $no_atoms //= 0;
 
     my %unique_residue_keys = ();
     my %visited_atom_ids = ();
@@ -846,12 +851,18 @@ sub unique_from_struct_conn
                         { 'include' => \%atom_selection_1,
                           ( $no_hetatoms ?
                             ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) :
+                            () ),
+                          ( $no_atoms ?
+                            ( 'exclude' => { 'group_PDB' => [ 'ATOM' ] } ) :
                             () ) } );
         my $filtered_atom_site_2 =
             filter_new( $atom_site,
                         { 'include' => \%atom_selection_2,
                           ( $no_hetatoms ?
                             ( 'exclude' => { 'group_PDB' => [ 'HETATM' ] } ) :
+                            () ),
+                          ( $no_atoms ?
+                            ( 'exclude' => { 'group_PDB' => [ 'ATOM' ] } ) :
                             () ) } );
         my $filtered_atom_site =
             { %{ $filtered_atom_site_1 }, %{ $filtered_atom_site_2 } };
