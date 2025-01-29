@@ -86,10 +86,13 @@ sub sample_bond_parameters_qs_parsing
 {
     my ( $parameters, $query_strings, $options ) = @_;
 
-    my ( $in_radians, $legacy_grammar ) =
-        ( $options->{'in_radians'}, $options->{'legacy_grammar'} );
+    my ( $in_radians, $legacy_grammar, $include_hetatoms ) =
+        ( $options->{'in_radians'},
+          $options->{'legacy_grammar'},
+          $options->{'include_hetatoms'} );
 
     $legacy_grammar //= 0;
+    $include_hetatoms //= 0;
 
     my $rotatable_residue_names =
         $parameters->{'_[local]_rotatable_residue_names'};
