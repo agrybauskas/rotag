@@ -26,7 +26,8 @@ use Logging qw( info
                 warning );
 use threads;
 
-use BondParameters qw( collect_bond_lengths
+use BondParameters qw( alt_bond_parameter_names
+                       collect_bond_lengths
                        collect_bond_angles
                        collect_bond_parameters
                        collect_dihedral_angles
@@ -1249,6 +1250,7 @@ sub is_bond_parameter_present
 #     \@values - values of the bond parameters.
 #
 
+# TODO: needs to refactored.
 sub default_bond_parameter_values
 {
     my ( $parameters, $bond_parameters, $residue_name, $bond_parameter_name,
@@ -1265,14 +1267,10 @@ sub default_bond_parameter_values
         [ $residue_name, $bond_parameter_name ],
         # Only residue name is defined.
         [ $residue_name, '*-*-*-*' ],
-        [ $residue_name, '*-*-*' ],
-        [ $residue_name, '*-*' ],
         # Only bond parameter name is defined.
         [ '*', $bond_parameter_name ],
         # Neither residue nor parameter names are defined.
         [ '*', '*-*-*-*' ],
-        [ '*', '*-*-*' ],
-        [ '*', '*-*' ],
     ];
 
     for my $residue_and_bond_name_pair ( @{ $residue_and_bond_name_pairs } ) {
