@@ -757,10 +757,12 @@ sub filter_bond_parameters
             alt_bond_parameter_names( [ split( /(-|\.)/, $bond_parameter_name ) ] );
 
         next if $contains_hetatom &&
-            ! exists $bond_parameters_in_residue{$bond_parameter_name};
+            ! any { exists $bond_parameters_in_residue{$_} }
+                 @{ $alt_bond_parameter_names };
         next if ( $bond_parameter_type eq 'bond_length' ||
                   $bond_parameter_type eq 'bond_angle' ) &&
-            ! exists $bond_parameters_in_residue{$bond_parameter_name};
+            ! any { exists $bond_parameters_in_residue{$_} }
+                 @{ $alt_bond_parameter_names };
 
         $filtered_bond_parameters{$bond_parameter_name} =
             $bond_parameters->{$bond_parameter_name};
