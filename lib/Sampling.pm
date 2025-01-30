@@ -101,7 +101,7 @@ sub sample_bond_parameters_qs_parsing
 
     # Defines the parameters from the query.
     my $residue_names_regexp = join '|', @{ $rotatable_residue_names };
-    my $bond_parameter_regexp = '[A-Za-z0-9\-\.]+';
+    my $bond_parameter_regexp = '[A-Za-z0-9\-\.\*]+';
     my $float_regexp = '-?\d+(?:\.\d+)?';
     my $float_pos_regexp = '\d+(?:\.\d+)?';
     my $step_only_regexp =
