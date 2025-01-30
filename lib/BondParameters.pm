@@ -753,6 +753,8 @@ sub filter_bond_parameters
     for my $bond_parameter_name ( keys %{ $bond_parameters } ) {
         my ( $bond_parameter_type, $contains_hetatom ) =
             detect_bond_parameter_type( $bond_parameter_name );
+        my $alt_bond_parameter_names =
+            alt_bond_parameter_names( [ split( /(-|\.)/, $bond_parameter_name ) ] );
 
         next if $contains_hetatom &&
             ! exists $bond_parameters_in_residue{$bond_parameter_name};
