@@ -10,8 +10,8 @@ our @EXPORT_OK = qw( sample_bond_parameters
 use List::Util qw( uniq );
 use POSIX;
 
-use BondParameters qw( detect_bond_parameter_type );
-use Combinatorics qw( permutation );
+use BondParameters qw( alt_bond_parameter_names
+                       detect_bond_parameter_type );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -435,91 +435,6 @@ sub resolve_bond_parameters
     }
 
     return;
-}
-
-sub alt_bond_parameter_names
-{
-    my ( $bond_name_parts ) = @_;
-
-    my @atom_name_parts =
-        map { $bond_name_parts->[$_] }
-        grep { $_ % 2 == 0 }
-        ( 0..$#{ $bond_name_parts } );
-    my @sep_name_parts =
-        map { $bond_name_parts->[$_] }
-        grep { $_ % 2 == 1 }
-        ( 0..$#{ $bond_name_parts } );
-
-    my @sorted_bond_parameter_names = ();
-    my $permutated_bond_parameter_parts = [];
-    if( scalar @atom_name_parts == 4 ) {
-        my @first_parts =
-            $atom_name_parts[0] eq '*' ? ( '*' ) : ( $atom_name_parts[0], '*' );
-        my @second_parts =
-            $atom_name_parts[1] eq '*' ? ( '*' ) : ( $atom_name_parts[1], '*' );
-        my @third_parts =
-            $atom_name_parts[2] eq '*' ? ( '*' ) : ( $atom_name_parts[2], '*' );
-        my @fourth_parts =
-            $atom_name_parts[3] eq '*' ? ( '*' ) : ( $atom_name_parts[3], '*' );
-        $permutated_bond_parameter_parts =
-            permutation( 4, [], [ \@first_parts, \@second_parts,
-                                  \@third_parts, \@fourth_parts ], [] );
-    } elsif( scalar @atom_name_parts == 3 ) {
-        my @first_parts =
-            $atom_name_parts[0] eq '*' ? ( '*' ) : ( $atom_name_parts[0], '*' );
-        my @second_parts =
-            $atom_name_parts[1] eq '*' ? ( '*' ) : ( $atom_name_parts[1], '*' );
-        my @third_parts =
-            $atom_name_parts[2] eq '*' ? ( '*' ) : ( $atom_name_parts[2], '*' );
-        $permutated_bond_parameter_parts =
-            permutation( 3, [], [ \@first_parts, \@second_parts, \@third_parts ], [] );
-    } elsif( scalar @atom_name_parts == 2 ) {
-        my @first_parts =
-            $atom_name_parts[0] eq '*' ? ( '*' ) : ( $atom_name_parts[0], '*' );
-        my @second_parts =
-            $atom_name_parts[1] eq '*' ? ( '*' ) : ( $atom_name_parts[1], '*' );
-        $permutated_bond_parameter_parts =
-            permutation( 2, [], [ \@first_parts, \@second_parts ], [] );
-    }
-
-    # For the bond parameter join, '-' is used as for now it does not matter if
-    # the bond uses '-' or '.' separator for scoring function.
-    my @sorted_permutated_bond_parameter_parts =
-        sort { score_bond_parameter_name( join( '-', @{ $b } ) ) <=>
-               score_bond_parameter_name( join( '-', @{ $a } ) ) }
-            @{ $permutated_bond_parameter_parts };
-
-    for my $permutated_bond_parameter_parts (
-        @sorted_permutated_bond_parameter_parts ) {
-        my @bond_parameter_parts = ();
-        for my $i ( 0..$#{ $permutated_bond_parameter_parts } ) {
-            push @bond_parameter_parts, $permutated_bond_parameter_parts->[$i];
-            if( $i < $#{ $permutated_bond_parameter_parts } ) {
-                push @bond_parameter_parts, $sep_name_parts[$i];
-            }
-        }
-        push @sorted_bond_parameter_names, join( '', @bond_parameter_parts );
-    }
-
-    return \@sorted_bond_parameter_names;
-}
-
-sub score_bond_parameter_name
-{
-    my ( $bond_parameter_name ) = @_;
-    my %positional_score = (
-        0 => 1,
-        1 => 2,
-        2 => 4,
-        3 => 8
-    );
-    my $score = 0;
-    my @bond_name_parts = split /-|\./, $bond_parameter_name;
-    for my $i ( 0..$#bond_name_parts ) {
-        next if $bond_name_parts[$i] eq '*';
-        $score += $positional_score{$i};
-    }
-    return $score;
 }
 
 1;
