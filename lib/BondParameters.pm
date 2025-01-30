@@ -843,6 +843,10 @@ sub alt_bond_parameter_names
         grep { $_ % 2 == 1 }
         ( 0..$#{ $bond_name_parts } );
 
+    if( scalar @atom_name_parts == 1 ) {
+        return [ $bond_parameter_name ];
+    }
+
     my @sorted_bond_parameter_names = ();
     my $permutated_bond_parameter_parts = [];
     if( scalar @atom_name_parts == 4 ) {
