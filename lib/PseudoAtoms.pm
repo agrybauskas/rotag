@@ -1275,53 +1275,60 @@ sub default_bond_parameter_values
 
     for my $residue_and_bond_name_pair ( @{ $residue_and_bond_name_pairs } ) {
         my $current_residue_name = $residue_and_bond_name_pair->[0];
-        my $current_bond_parameter_name = $residue_and_bond_name_pair->[1];
 
-        next if ! defined $current_residue_name ||
-                ! defined $current_bond_parameter_name;
+        next if ! defined $current_residue_name;
 
-        if( defined $rand_count &&
-            defined $rand_seed &&
-            exists $bond_parameters->{$current_residue_name} &&
-            exists $bond_parameters->{$current_residue_name}
-                                     {$current_bond_parameter_name} ) {
-            if( $rand_count >
-                scalar @{ $bond_parameters->{$current_residue_name}
-                                            {$current_bond_parameter_name}
-                                            {'values'} } ){
-                die 'number of randomly bond parameter values is greater than '.
-                    "possible values.\n";
+        my $current_bond_parameter_names =
+            alt_bond_parameter_names( $residue_and_bond_name_pair->[1] );
+
+        for my $current_bond_parameter_name ( @{ $current_bond_parameter_names } ) {
+            next if ! defined $current_bond_parameter_name;
+
+            if( defined $rand_count &&
+                defined $rand_seed &&
+                exists $bond_parameters->{$current_residue_name} &&
+                exists $bond_parameters->{$current_residue_name}
+                                         {$current_bond_parameter_name} ) {
+                if( $rand_count >
+                    scalar @{ $bond_parameters->{$current_residue_name}
+                                                {$current_bond_parameter_name}
+                                                {'values'} } ){
+                    die 'number of randomly bond parameter values is greater than '.
+                        "possible values.\n";
+                }
+                my @shuffled_idxs =
+                    shuffle( 0..$#{ $bond_parameters->{$current_residue_name}
+                                                      {$current_bond_parameter_name}
+                                                      {'values'} } );
+                return [ map { [ $bond_parameters->{$current_residue_name}
+                                                   {$current_bond_parameter_name}
+                                                   {'values'}[$_] ] }
+                             @shuffled_idxs[0..$rand_count-1] ];
             }
-            my @shuffled_idxs =
-                shuffle( 0..$#{ $bond_parameters->{$current_residue_name}
-                                                  {$current_bond_parameter_name}
-                                                  {'values'} } );
-            return [ map { [ $bond_parameters->{$current_residue_name}
-                                               {$current_bond_parameter_name}
-                                               {'values'}[$_] ] }
-                         @shuffled_idxs[0..$rand_count-1] ];
-        }
 
-        # TODO: optimise here as there are too many conditionals and checks
-        # here.
-        if( exists $bond_parameters->{$current_residue_name} &&
-            exists $bond_parameters->{$current_residue_name}
-                                     {$current_bond_parameter_name} ) {
-            if( defined $bond_parameters->{$current_residue_name}
-                                          {$current_bond_parameter_name}
-                                          {'values'} &&
-                scalar @{ $bond_parameters->{$current_residue_name}
-                                            {$current_bond_parameter_name}
-                                            {'values'} } == 0 &&
-                exists $original_bond_parameters->{$bond_parameter_name} ) {
-                return [ [ $original_bond_parameters->{$bond_parameter_name}
-                                                      {'value'} ] ];
-            } else {
-                return [ map { [ $_ ] }
-                            @{ $bond_parameters->{$current_residue_name}
-                                                 {$current_bond_parameter_name}
-                                                 {'values'} } ];
+            # TODO: optimise here as there are too many conditionals and checks
+            # here.
+            if( exists $bond_parameters->{$current_residue_name} &&
+                exists $bond_parameters->{$current_residue_name}
+                                         {$current_bond_parameter_name} ) {
+                if( defined $bond_parameters->{$current_residue_name}
+                                              {$current_bond_parameter_name}
+                                              {'values'} &&
+                    scalar @{ $bond_parameters->{$current_residue_name}
+                                                {$current_bond_parameter_name}
+                                                {'values'} } == 0 &&
+                    exists $original_bond_parameters->{$bond_parameter_name} ) {
+                    return [ [ $original_bond_parameters->{$bond_parameter_name}
+                                                          {'value'} ] ];
+                } else {
+                    return [ map { [ $_ ] }
+                                @{ $bond_parameters->{$current_residue_name}
+                                                     {$current_bond_parameter_name}
+                                                     {'values'} } ];
+                }
             }
+
+
         }
     }
 
