@@ -384,7 +384,7 @@ sub resolve_bond_parameters
             }
 
             my $alt_bond_parameter_names =
-                alt_bond_parameter_names( \@name_parts );
+                alt_bond_parameter_names( join( '', @name_parts ) );
 
             my $stop_early = 0;
             foreach( uniq ( $residue_name, '*' ) ) {

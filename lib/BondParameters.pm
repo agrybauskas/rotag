@@ -754,7 +754,7 @@ sub filter_bond_parameters
         my ( $bond_parameter_type, $contains_hetatom ) =
             detect_bond_parameter_type( $bond_parameter_name );
         my $alt_bond_parameter_names =
-            alt_bond_parameter_names( [ split( /(-|\.)/, $bond_parameter_name ) ] );
+            alt_bond_parameter_names( $bond_parameter_name );
 
         next if $contains_hetatom &&
             ! any { exists $bond_parameters_in_residue{$_} }
@@ -830,7 +830,9 @@ sub bond_parameter_name_key
 
 sub alt_bond_parameter_names
 {
-    my ( $bond_name_parts ) = @_;
+    my ( $bond_parameter_name ) = @_;
+
+    my $bond_name_parts = [ split( /(-|\.)/, $bond_parameter_name ) ];
 
     my @atom_name_parts =
         map { $bond_name_parts->[$_] }
