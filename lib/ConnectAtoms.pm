@@ -341,7 +341,9 @@ sub assign_hetatoms
     # HACK: the default should be 0 as it is more intuitive.
     $keep_original //= 1;
 
-    return if ! %{ $struct_conn };
+    return [] if ! %{ $struct_conn };
+
+    # return [] if ! %{ unique_from_struct_conn( $atom_site, $struct_conn ) };
 
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
