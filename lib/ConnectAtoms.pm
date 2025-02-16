@@ -666,6 +666,22 @@ sub assign_hetatoms_mainchain
 }
 
 #
+# Checks if the atom site has interaction paths with other heteroatoms given
+# structure connection data.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $struct_conn - "_struct_conn" data structure.
+# Output:
+#     true or false depending if the given .
+#
+
+sub has_hetatom_interaction_path
+{
+
+}
+
+#
 # Creates "_struct_conn" data structure that shows explicit interactions between
 # heteroatoms  specific residues connecting them to N, O, P, S atoms -- either
 # creating the new one or assigning to the existing one.
