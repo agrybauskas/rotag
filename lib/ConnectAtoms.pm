@@ -343,6 +343,8 @@ sub assign_hetatoms
 
     return [] if ! %{ $struct_conn };
 
+    has_hetatom_interaction_path( $parameters, $atom_site, $struct_conn,
+                                  { 'ref_atom_site' => $ref_atom_site } );
     # return [] if ! %{ unique_from_struct_conn( $atom_site, $struct_conn ) };
 
     my $unique_residue_keys =
