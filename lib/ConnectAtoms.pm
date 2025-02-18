@@ -683,7 +683,25 @@ sub has_hetatom_interaction_path
 
     $ref_atom_site //= $atom_site;
 
-    return if ! %{ $struct_conn };
+    return [] if ! %{ $struct_conn };
+
+    my $unique_residue_keys =
+        unique_from_struct_conn( $atom_site, $struct_conn,
+                                 { 'no_hetatoms' => 1 } );
+
+    for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
+
+        my %visited_atoms = ();
+        my %visited_bonds = ();
+        while( @next_atom_ids ) {
+            my ( $atom_id ) = shift @next_atom_ids;
+
+            next if $visited_atoms{$atom_id};
+            next if $ref_atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
+            $visited_atoms{$atom_id} = 1;
+        }
+    }
 }
 
 #
