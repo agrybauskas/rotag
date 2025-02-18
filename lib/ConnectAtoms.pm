@@ -678,7 +678,12 @@ sub assign_hetatoms_mainchain
 
 sub has_hetatom_interaction_path
 {
+    my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
 
+    $ref_atom_site //= $atom_site;
+
+    return if ! %{ $struct_conn };
 }
 
 #
