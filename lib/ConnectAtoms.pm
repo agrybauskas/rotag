@@ -712,6 +712,17 @@ sub has_hetatom_interaction_path
 
                 for my $related_connection_atom_id (
                     sort @{ $unique_residue_keys->{$unique_key} } ) {
+                    next if $visited_atoms{$related_connection_atom_id};
+                    $visited_atoms{$related_connection_atom_id} = 1;
+
+                    my $related_connections =
+                        $ref_atom_site->{$related_connection_atom_id}{'connections'};
+                    if( defined $related_connections  ) {
+                        push @next_atom_ids,
+                            grep { ! exists $atom_site->{$_} }
+                            grep { ! $visited_atoms{$_} }
+                            @{ $related_connections };
+                    }
                 }
             }
         }
