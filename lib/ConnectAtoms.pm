@@ -704,6 +704,16 @@ sub has_hetatom_interaction_path
 
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
+
+            for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
+                next if $visited_bonds{$atom_id}{$connection_atom_id};
+
+                my $unique_key = unique_residue_key( $ref_atom_site->{$atom_id} );
+
+                for my $related_connection_atom_id (
+                    sort @{ $unique_residue_keys->{$unique_key} } ) {
+                }
+            }
         }
     }
 }
