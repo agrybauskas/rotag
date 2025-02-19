@@ -689,7 +689,7 @@ sub has_hetatom_interaction_path
 
     my $unique_residue_keys =
         unique_from_struct_conn( $atom_site, $struct_conn,
-                                 { 'no_hetatoms' => 1 } );
+                                 { 'no_atoms' => 1 } );
 
     my $connections =
         connections_from_struct_conn( $ref_atom_site, $struct_conn );
