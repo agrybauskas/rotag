@@ -19,7 +19,8 @@ use Carp qw( confess );
 use Clone qw( clone );
 use Digest::MD5 qw( md5_hex );
 use List::Util qw( any
-                   max );
+                   max
+                   uniq );
 
 use Grid qw( identify_neighbour_cells
              grid_box );
@@ -346,6 +347,9 @@ sub assign_hetatoms
     my $struct_conn_atom_ids =
         struct_conn_atom_ids( $parameters, $atom_site, $struct_conn,
                               { 'ref_atom_site' => $ref_atom_site } );
+
+    my $hetatom_site =
+        { map { $_ => $ref_atom_site->{$_} } @{ $struct_conn_atom_ids } };
 
     # return [] if ! @{ unique_from_struct_conn( $atom_site, $struct_conn ) };
 
@@ -687,7 +691,7 @@ sub struct_conn_atom_ids
 
     $ref_atom_site //= $atom_site;
 
-    my @atom_ids = ();
+    my @atom_ids = keys %{ $atom_site };
 
     return \@atom_ids if ! %{ $struct_conn };
 
@@ -733,6 +737,8 @@ sub struct_conn_atom_ids
             }
         }
     }
+
+    @atom_ids = uniq @atom_ids;
 
     return \@atom_ids;
 }
