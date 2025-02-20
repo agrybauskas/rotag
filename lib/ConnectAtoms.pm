@@ -685,7 +685,9 @@ sub has_hetatom_interaction_path
 
     $ref_atom_site //= $atom_site;
 
-    return [] if ! %{ $struct_conn };
+    my @hetatom_ids = ();
+
+    return \@hetatom_ids if ! %{ $struct_conn };
 
     my $unique_residue_keys =
         unique_from_struct_conn( $atom_site, $struct_conn,
@@ -704,6 +706,8 @@ sub has_hetatom_interaction_path
 
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
+
+            push @hetatom_ids, $atom_id;
 
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
@@ -727,6 +731,8 @@ sub has_hetatom_interaction_path
             }
         }
     }
+
+    return \@hetatom_ids;
 }
 
 #
