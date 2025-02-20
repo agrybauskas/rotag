@@ -343,9 +343,9 @@ sub assign_hetatoms
 
     return [] if ! %{ $struct_conn };
 
-    my $struct_conn_hetatom_ids =
-        struct_conn_hetatom_ids( $parameters, $atom_site, $struct_conn,
-                                 { 'ref_atom_site' => $ref_atom_site } );
+    my $struct_conn_atom_ids =
+        struct_conn_atom_ids( $parameters, $atom_site, $struct_conn,
+                              { 'ref_atom_site' => $ref_atom_site } );
 
     # return [] if ! @{ unique_from_struct_conn( $atom_site, $struct_conn ) };
 
@@ -677,10 +677,10 @@ sub assign_hetatoms_mainchain
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $struct_conn - "_struct_conn" data structure.
 # Output:
-#     true or false depending if the given .
+#     atom ids.
 #
 
-sub struct_conn_hetatom_ids
+sub struct_conn_atom_ids
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
     my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
