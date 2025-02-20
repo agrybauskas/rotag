@@ -343,9 +343,11 @@ sub assign_hetatoms
 
     return [] if ! %{ $struct_conn };
 
-    struct_conn_hetatom_ids( $parameters, $atom_site, $struct_conn,
-                             { 'ref_atom_site' => $ref_atom_site } );
-    # return [] if ! %{ unique_from_struct_conn( $atom_site, $struct_conn ) };
+    my $struct_conn_hetatom_ids =
+        struct_conn_hetatom_ids( $parameters, $atom_site, $struct_conn,
+                                 { 'ref_atom_site' => $ref_atom_site } );
+
+    # return [] if ! @{ unique_from_struct_conn( $atom_site, $struct_conn ) };
 
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
