@@ -727,7 +727,7 @@ sub struct_conn_atom_ids
 
                     my $related_connections =
                         $ref_atom_site->{$related_connection_atom_id}{'connections'};
-                    if( defined $related_connections  ) {
+                    if( defined $related_connections ) {
                         push @next_atom_ids,
                             grep { ! exists $atom_site->{$_} }
                             grep { ! $visited_atoms{$_} }
