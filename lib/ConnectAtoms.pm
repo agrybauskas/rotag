@@ -697,10 +697,10 @@ sub struct_conn_atom_ids
 
     my $unique_residue_keys =
         unique_from_struct_conn( $atom_site, $struct_conn,
-                                 { 'no_atoms' => 1 } );
+                                 { 'no_hetatoms' => 1 } );
 
     my $connections =
-        connections_from_struct_conn( $atom_site, $struct_conn );
+        connections_from_struct_conn( $ref_atom_site, $struct_conn );
 
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
