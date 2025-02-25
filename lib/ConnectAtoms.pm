@@ -737,7 +737,7 @@ sub struct_conn_atom_ids
         }
     }
 
-    @atom_ids = uniq @atom_ids;
+    @atom_ids = uniq( keys %{ $atom_site }, @atom_ids );
 
     return \@atom_ids;
 }
