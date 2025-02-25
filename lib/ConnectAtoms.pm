@@ -348,10 +348,10 @@ sub assign_hetatoms
         struct_conn_atom_ids( $parameters, $atom_site, $struct_conn,
                               { 'ref_atom_site' => $ref_atom_site } );
 
+    # return [] if ! @{ $struct_conn_atom_ids };
+
     my $hetatom_site =
         { map { $_ => $ref_atom_site->{$_} } @{ $struct_conn_atom_ids } };
-
-    # return [] if ! @{ unique_from_struct_conn( $atom_site, $struct_conn ) };
 
     my $unique_residue_keys =
         unique_from_struct_conn( $ref_atom_site, $struct_conn );
