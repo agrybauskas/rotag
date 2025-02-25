@@ -320,6 +320,7 @@ for my $pdbx_file ( @ARGV ) {
 
             if( defined $struct_conn && %{ $struct_conn } ) {
                 my @assigned_residue_unique_keys =
+                    uniq
                     map { change_unique_residue_key( $_, { 'label_alt_id' => '.' } ) }
                     map { unique_residue_key( $residue_site->{$_} ) }
                        @{ assign_hetatoms( $parameters,
