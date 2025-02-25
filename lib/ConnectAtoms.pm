@@ -691,8 +691,6 @@ sub struct_conn_atom_ids
 
     $ref_atom_site //= $atom_site;
 
-    # my @atom_ids = keys %{ $atom_site };
-
     my @atom_ids = ();
 
     return \@atom_ids if ! %{ $struct_conn };
@@ -703,11 +701,17 @@ sub struct_conn_atom_ids
 
     return \@atom_ids if ! %{ $unique_residue_keys };
 
+    my $hetatom_unique_residue_keys =
+        unique_from_struct_conn( $ref_atom_site, $struct_conn,
+                                 { 'no_atoms' => 1 } );
+    my %all_unique_residue_keys =
+        ( %{ $unique_residue_keys }, %{ $hetatom_unique_residue_keys } );
+
     my $connections =
         connections_from_struct_conn( $ref_atom_site, $struct_conn );
 
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
-        my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
+        my @next_atom_ids = @{ $all_unique_residue_keys{$unique_residue_key} };
 
         my %visited_atoms = ();
         my %visited_bonds = ();
@@ -720,12 +724,11 @@ sub struct_conn_atom_ids
             push @atom_ids, $atom_id;
 
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
-                next if $visited_bonds{$atom_id}{$connection_atom_id};
-
-                my $unique_key = unique_residue_key( $ref_atom_site->{$atom_id} );
+                my $connection_unique_key =
+                    unique_residue_key( $ref_atom_site->{$connection_atom_id} );
 
                 for my $related_connection_atom_id (
-                    sort @{ $unique_residue_keys->{$unique_key} } ) {
+                    sort @{ $all_unique_residue_keys{$connection_unique_key} } ) {
                     next if $visited_atoms{$related_connection_atom_id};
                     $visited_atoms{$related_connection_atom_id} = 1;
 
