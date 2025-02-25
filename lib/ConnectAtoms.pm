@@ -691,13 +691,17 @@ sub struct_conn_atom_ids
 
     $ref_atom_site //= $atom_site;
 
-    my @atom_ids = keys %{ $atom_site };
+    # my @atom_ids = keys %{ $atom_site };
+
+    my @atom_ids = ();
 
     return \@atom_ids if ! %{ $struct_conn };
 
     my $unique_residue_keys =
         unique_from_struct_conn( $atom_site, $struct_conn,
                                  { 'no_hetatoms' => 1 } );
+
+    return \@atom_ids if ! %{ $unique_residue_keys };
 
     my $connections =
         connections_from_struct_conn( $ref_atom_site, $struct_conn );
