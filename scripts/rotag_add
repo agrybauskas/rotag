@@ -355,6 +355,7 @@ for my $pdbx_file ( @ARGV ) {
 
                 delete $target_atom_site_only->{$origin_atom_id};
                 delete $selected_atom_site->{$origin_atom_id};
+                delete $residue_site->{$origin_atom_id};
             }
 
             if( $do_rotable_bonds ) {
