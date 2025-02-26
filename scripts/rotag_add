@@ -480,8 +480,11 @@ for my $pdbx_file ( @ARGV ) {
                     $angle_value = $rotamer_angle->{$id}{'value'};
                 }
 
-                foreach( $residue_unique_key,
-                         keys %{ $related_unique_residue_keys{$residue_unique_key} } ) {
+                $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name}=
+                    [ $angle_value ];
+
+                # Angle values for the related residues are being sorted out.
+                foreach( keys %{ $related_unique_residue_keys{$residue_unique_key} } ) {
                     $rotamer_angles{$_}{"$rotamer_id"}{$angle_name} =
                         [ $angle_value ];
                 }
