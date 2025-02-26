@@ -19,7 +19,8 @@ use BondParameters qw( bendable_angles
                        rotatable_bonds );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( assign_hetatoms
-                     connect_atoms );
+                     connect_atoms
+                     struct_conn_atom_ids );
 use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
@@ -318,7 +319,9 @@ for my $pdbx_file ( @ARGV ) {
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
 
-            if( defined $struct_conn && %{ $struct_conn } ) {
+            my $struct_conn_atom_ids =
+                struct_conn_atom_ids( $parameters, $residue_site, $struct_conn );
+            if( @{ $struct_conn_atom_ids } ) {
                 my @assigned_residue_unique_keys =
                     uniq
                     map { change_unique_residue_key( $_, { 'label_alt_id' => '.' } ) }

@@ -12,7 +12,8 @@ our @EXPORT_OK = qw( assign_hetatoms
                      create_hetatom_struct_conn
                      is_connected
                      is_neighbour
-                     is_second_neighbour );
+                     is_second_neighbour
+                     struct_conn_atom_ids );
 }
 
 use Carp qw( confess );
@@ -693,7 +694,7 @@ sub struct_conn_atom_ids
 
     my @atom_ids = ();
 
-    return \@atom_ids if ! %{ $struct_conn };
+    return \@atom_ids if ! defined $struct_conn || ! %{ $struct_conn };
 
     my $unique_residue_keys =
         unique_from_struct_conn( $atom_site, $struct_conn,
