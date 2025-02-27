@@ -505,6 +505,13 @@ for my $pdbx_file ( @ARGV ) {
                 for my $related_unique_residue_key (
                     keys %{ $related_unique_residue_keys{$residue_unique_key} } ) {
                     $related_residue_unique_keys{$related_unique_residue_key} = 1;
+
+                    next if ! exists $related_unique_residue_keys{$related_unique_residue_key};
+
+                    for my $reverse_unique_residue_key (
+                        keys %{ $related_unique_residue_keys{$related_unique_residue_key} } ) {
+                        $related_residue_unique_keys{$reverse_unique_residue_key} = 1;
+                    }
                 }
             }
 
