@@ -500,8 +500,13 @@ for my $pdbx_file ( @ARGV ) {
                                                { 'label_alt_id' => '.' } );
             }
 
-            my @related_residue_unique_keys =
-                keys %{ $related_unique_residue_keys{$residue_unique_key} };
+            my @related_residue_unique_keys = ();
+            if( exists $related_unique_residue_keys{$residue_unique_key} ) {
+                for my $related_unique_residue_key (
+                    keys %{ $related_unique_residue_keys{$residue_unique_key} } ) {
+                    push @related_residue_unique_keys, $related_unique_residue_key;
+                }
+            }
 
             for my $rotamer_id ( sort { $a <=> $b }
                                  keys %{ $rotamer_angles{$residue_unique_key} } ) {
