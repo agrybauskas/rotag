@@ -1,0 +1,113 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 168 N N . GLU A 1 25 28.635 -8.663 7.603 A 25 1 T 1
+ATOM 169 C CA . GLU A 1 25 27.843 -9.196 6.488 A 25 1 T 1
+ATOM 170 C C . GLU A 1 25 28.102 -10.707 6.352 A 25 1 T 1
+ATOM 171 O O . GLU A 1 25 29.246 -11.162 6.378 A 25 1 T 1
+ATOM 172 C CB . GLU A 1 25 28.090 -8.492 5.140 A 25 1 T 1
+ATOM 173 C CG . GLU A 1 25 26.982 -8.863 4.086 A 25 1 T 1
+ATOM 174 C CD . GLU A 1 25 27.082 -8.101 2.751 A 25 1 T 1
+ATOM 175 O OE1 . GLU A 1 25 28.141 -7.447 2.466 A 25 1 T 1
+ATOM 176 O OE2 . GLU A 1 25 26.088 -8.166 1.968 A 25 1 T 1
+ATOM 364 N N . THR A 1 60 29.311 0.194 1.122 A 60 1 T 1
+ATOM 365 C CA . THR A 1 60 29.314 -0.918 0.180 A 60 1 T 1
+ATOM 366 C C . THR A 1 60 28.376 -0.618 -0.982 A 60 1 T 1
+ATOM 367 O O . THR A 1 60 28.022 0.547 -1.248 A 60 1 T 1
+ATOM 368 C CB . THR A 1 60 28.959 -2.271 0.876 A 60 1 T 1
+ATOM 369 O OG1 . THR A 1 60 27.542 -2.333 1.105 A 60 1 T 1
+ATOM 370 C CG2 . THR A 1 60 29.724 -2.442 2.222 A 60 1 T 1
+ATOM 371 N N . ASP A 1 61 28.024 -1.670 -1.718 A 61 1 T 1
+ATOM 372 C CA . ASP A 1 61 27.082 -1.564 -2.823 A 61 1 T 1
+ATOM 373 C C . ASP A 1 61 25.787 -0.878 -2.470 A 61 1 T 1
+ATOM 374 O O . ASP A 1 61 25.188 -0.237 -3.319 A 61 1 T 1
+ATOM 375 C CB . ASP A 1 61 26.740 -2.949 -3.395 A 61 1 T 1
+ATOM 376 C CG . ASP A 1 61 26.174 -3.910 -2.372 A 61 1 T 1
+ATOM 377 O OD1 . ASP A 1 61 26.686 -3.953 -1.237 A 61 1 T 1
+ATOM 378 O OD2 . ASP A 1 61 25.203 -4.656 -2.694 A 61 1 T 1
+ATOM 379 N N . ASP A 1 62 25.295 -1.062 -1.235 A 62 1 T 1
+ATOM 380 C CA . ASP A 1 62 24.021 -0.489 -0.854 A 62 1 T 1
+ATOM 381 C C . ASP A 1 62 24.026 1.027 -1.032 A 62 1 T 1
+ATOM 382 O O . ASP A 1 62 23.090 1.618 -1.638 A 62 1 T 1
+ATOM 383 C CB . ASP A 1 62 23.694 -0.833 0.594 A 62 1 T 1
+ATOM 384 C CG . ASP A 1 62 23.708 -2.348 0.877 A 62 1 T 1
+ATOM 385 O OD1 . ASP A 1 62 22.701 -2.882 1.400 A 62 1 T 1
+ATOM 386 O OD2 . ASP A 1 62 24.719 -2.980 0.662 A 62 1 T 1
+HETATM 5175 MG MG . MG C 2 . 26.349 -4.216 0.717 A 348 1 T 1
+HETATM 5176 MG MG . MG D 2 . 24.214 -6.942 2.127 A 349 1 T 1
+ATOM 5228 H H . GLU A 1 25 29.213 -7.974 7.463 A 25 1 T 1
+ATOM 5229 H HA . GLU A 1 25 26.810 -9.064 6.732 A 25 1 T 1
+ATOM 5230 H HB2 . GLU A 1 25 28.081 -7.434 5.299 A 25 1 T 1
+ATOM 5231 H HB3 . GLU A 1 25 29.045 -8.795 4.765 A 25 1 T 1
+ATOM 5232 H HG2 . GLU A 1 25 27.070 -9.910 3.885 A 25 1 T 1
+ATOM 5233 H HG3 . GLU A 1 25 26.033 -8.645 4.530 A 25 1 T 1
+ATOM 5281 H H . THR A 1 60 28.536 0.427 1.538 A 60 1 T 1
+ATOM 5282 H HA . THR A 1 60 30.304 -1.004 -0.216 A 60 1 T 1
+ATOM 5283 H HB . THR A 1 60 29.235 -3.074 0.225 A 60 1 T 1
+ATOM 5284 H H . ASP A 1 61 28.384 -2.483 -1.524 A 61 1 T 1
+ATOM 5285 H HA . ASP A 1 61 27.566 -1.000 -3.593 A 61 1 T 1
+ATOM 5286 H HB2 . ASP A 1 61 26.017 -2.811 -4.171 A 61 1 T 1
+ATOM 5287 H HB3 . ASP A 1 61 27.640 -3.367 -3.796 A 61 1 T 1
+ATOM 5288 H H . ASP A 1 62 25.767 -1.552 -0.631 A 62 1 T 1
+ATOM 5289 H HA . ASP A 1 62 23.263 -0.906 -1.483 A 62 1 T 1
+ATOM 5290 H HB2 . ASP A 1 62 24.423 -0.360 1.218 A 62 1 T 1
+ATOM 5291 H HB3 . ASP A 1 62 22.718 -0.452 0.812 A 62 1 T 1
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.pdbx_leaving_atom_flag
+_struct_conn.pdbx_PDB_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.ptnr1_label_comp_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.pdbx_ptnr1_PDB_ins_code
+_struct_conn.pdbx_ptnr1_standard_comp_id
+_struct_conn.ptnr1_symmetry
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_label_comp_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_atom_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.pdbx_ptnr2_PDB_ins_code
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_auth_comp_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_auth_comp_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.ptnr2_symmetry
+_struct_conn.pdbx_ptnr3_label_atom_id
+_struct_conn.pdbx_ptnr3_label_seq_id
+_struct_conn.pdbx_ptnr3_label_comp_id
+_struct_conn.pdbx_ptnr3_label_asym_id
+_struct_conn.pdbx_ptnr3_label_alt_id
+_struct_conn.pdbx_ptnr3_PDB_ins_code
+_struct_conn.details
+_struct_conn.pdbx_dist_value
+_struct_conn.pdbx_value_order
+_struct_conn.pdbx_role
+metalc1 metalc ? ? A GLU 25 OE2 ? ? ? 1_555 D MG . MG ? ? A GLU 25 A MG 349 1_555 ? ? ? ? ? ? ? 2.244 ? ?
+metalc2 metalc ? ? A THR 60 OG1 ? ? ? 1_555 C MG . MG ? ? A THR 60 A MG 348 1_555 ? ? ? ? ? ? ? 2.263 ? ?
+metalc3 metalc ? ? A ASP 61 OD1 ? ? ? 1_555 C MG . MG ? ? A ASP 61 A MG 348 1_555 ? ? ? ? ? ? ? 2.000 ? ?
+metalc4 metalc ? ? A ASP 62 OD2 ? ? ? 1_555 C MG . MG ? ? A ASP 62 A MG 348 1_555 ? ? ? ? ? ? ? 2.046 ? ?
+#
