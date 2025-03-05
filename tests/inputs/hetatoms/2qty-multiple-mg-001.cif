@@ -50,6 +50,29 @@ ATOM 383 C CB . ASP A 1 62 23.694 -0.833 0.594 A 62 1 T 1
 ATOM 384 C CG . ASP A 1 62 23.708 -2.348 0.877 A 62 1 T 1
 ATOM 385 O OD1 . ASP A 1 62 22.701 -2.882 1.400 A 62 1 T 1
 ATOM 386 O OD2 . ASP A 1 62 24.719 -2.980 0.662 A 62 1 T 1
+ATOM 2204 N N . ASP A 1 298 22.380 -10.885 6.581 A 298 1 T 1
+ATOM 2205 C CA . ASP A 1 298 22.648 -9.793 5.639 A 298 1 T 1
+ATOM 2206 C C . ASP A 1 298 22.623 -8.450 6.386 A 298 1 T 1
+ATOM 2207 O O . ASP A 1 298 21.737 -7.616 6.184 A 298 1 T 1
+ATOM 2208 C CB . ASP A 1 298 21.675 -9.769 4.488 A 298 1 T 1
+ATOM 2209 C CG . ASP A 1 298 22.141 -8.926 3.363 A 298 1 T 1
+ATOM 2210 O OD1 . ASP A 1 298 23.201 -8.272 3.492 A 298 1 T 1
+ATOM 2211 O OD2 . ASP A 1 298 21.405 -8.854 2.352 A 298 1 T 1
+ATOM 2219 N N . ASP A 1 300 24.533 -5.644 6.576 A 300 1 T 1
+ATOM 2220 C CA . ASP A 1 300 24.675 -4.291 6.013 A 300 1 T 1
+ATOM 2221 C C . ASP A 1 300 23.346 -3.895 5.411 A 300 1 T 1
+ATOM 2222 O O . ASP A 1 300 22.898 -2.752 5.550 A 300 1 T 1
+ATOM 2223 C CB . ASP A 1 300 25.848 -4.128 5.016 A 300 1 T 1
+ATOM 2224 C CG . ASP A 1 300 25.695 -4.950 3.793 A 300 1 T 1
+ATOM 2225 O OD1 . ASP A 1 300 25.166 -6.054 3.904 A 300 1 T 1
+ATOM 2226 O OD2 . ASP A 1 300 26.128 -4.496 2.706 A 300 1 T 1
+ATOM 2227 N N . THR A 1 301 22.673 -4.845 4.781 A 301 1 T 1
+ATOM 2228 C CA . THR A 1 301 21.486 -4.496 4.031 A 301 1 T 1
+ATOM 2229 C C . THR A 1 301 20.247 -4.381 4.912 A 301 1 T 1
+ATOM 2230 O O . THR A 1 301 19.414 -3.468 4.721 A 301 1 T 1
+ATOM 2231 C CB . THR A 1 301 21.266 -5.452 2.852 A 301 1 T 1
+ATOM 2232 O OG1 . THR A 1 301 22.443 -5.422 2.032 A 301 1 T 1
+ATOM 2233 C CG2 . THR A 1 301 20.091 -4.954 1.984 A 301 1 T 1
 HETATM 5175 MG MG . MG C 2 . 26.349 -4.216 0.717 A 348 1 T 1
 HETATM 5176 MG MG . MG D 2 . 24.214 -6.942 2.127 A 349 1 T 1
 ATOM 5228 H H . GLU A 1 25 29.213 -7.974 7.463 A 25 1 T 1
@@ -69,6 +92,17 @@ ATOM 5288 H H . ASP A 1 62 25.767 -1.552 -0.631 A 62 1 T 1
 ATOM 5289 H HA . ASP A 1 62 23.263 -0.906 -1.483 A 62 1 T 1
 ATOM 5290 H HB2 . ASP A 1 62 24.423 -0.360 1.218 A 62 1 T 1
 ATOM 5291 H HB3 . ASP A 1 62 22.718 -0.452 0.812 A 62 1 T 1
+ATOM 5782 H H . ASP A 1 298 21.539 -11.231 6.622 A 298 1 T 1
+ATOM 5783 H HA . ASP A 1 298 23.630 -9.944 5.242 A 298 1 T 1
+ATOM 5784 H HB2 . ASP A 1 298 21.547 -10.772 4.138 A 298 1 T 1
+ATOM 5785 H HB3 . ASP A 1 298 20.744 -9.383 4.846 A 298 1 T 1
+ATOM 5788 H H . ASP A 1 300 24.993 -6.347 6.227 A 300 1 T 1
+ATOM 5789 H HA . ASP A 1 300 24.893 -3.629 6.825 A 300 1 T 1
+ATOM 5790 H HB2 . ASP A 1 300 26.755 -4.424 5.501 A 300 1 T 1
+ATOM 5791 H HB3 . ASP A 1 300 25.906 -3.102 4.719 A 300 1 T 1
+ATOM 5792 H H . THR A 1 301 22.954 -5.710 4.819 A 301 1 T 1
+ATOM 5793 H HA . THR A 1 301 21.657 -3.524 3.617 A 301 1 T 1
+ATOM 5794 H HB . THR A 1 301 21.073 -6.439 3.216 A 301 1 T 1
 #
 loop_
 _struct_conn.id
@@ -110,4 +144,24 @@ metalc1 metalc ? ? A GLU 25 OE2 ? ? ? 1_555 D MG . MG ? ? A GLU 25 A MG 349 1_55
 metalc2 metalc ? ? A THR 60 OG1 ? ? ? 1_555 C MG . MG ? ? A THR 60 A MG 348 1_555 ? ? ? ? ? ? ? 2.263 ? ?
 metalc3 metalc ? ? A ASP 61 OD1 ? ? ? 1_555 C MG . MG ? ? A ASP 61 A MG 348 1_555 ? ? ? ? ? ? ? 2.000 ? ?
 metalc4 metalc ? ? A ASP 62 OD2 ? ? ? 1_555 C MG . MG ? ? A ASP 62 A MG 348 1_555 ? ? ? ? ? ? ? 2.046 ? ?
+metalc5 metalc ? ? A ASP 298 OD1 ? ? ? 1_555 D MG . MG ? ? A ASP 298 A MG 349 1_555 ? ? ? ? ? ? ? 2.158 ? ?
+metalc6 metalc ? ? A ASP 300 OD2 ? ? ? 1_555 C MG . MG ? ? A ASP 300 A MG 348 1_555 ? ? ? ? ? ? ? 2.021 ? ?
+metalc7 metalc ? ? A ASP 300 OD1 ? ? ? 1_555 D MG . MG ? ? A ASP 300 A MG 349 1_555 ? ? ? ? ? ? ? 2.203 ? ?
+metalc8 metalc ? ? A THR 301 OG1 ? ? ? 1_555 D MG . MG ? ? A THR 301 A MG 349 1_555 ? ? ? ? ? ? ? 2.336 ? ?
+metalc9 metalc ? ? C MG . MG ? ? ? 1_555 G HOH . O ? ? A MG 348 A HOH 359 1_555 ? ? ? ? ? ? ? 1.989 ? ?
+metalc10 metalc ? ? C MG . MG ? ? ? 1_555 G HOH . O ? ? A MG 348 A HOH 382 1_555 ? ? ? ? ? ? ? 2.125 ? ?
+metalc11 metalc ? ? D MG . MG ? ? ? 1_555 G HOH . O ? ? A MG 349 A HOH 371 1_555 ? ? ? ? ? ? ? 2.244 ? ?
+metalc12 metalc ? ? D MG . MG ? ? ? 1_555 G HOH . O ? ? A MG 349 A HOH 382 1_555 ? ? ? ? ? ? ? 2.231 ? ?
+metalc13 metalc ? ? B GLU 25 OE2 ? ? ? 1_555 F MG . MG ? ? B GLU 25 B MG 349 1_555 ? ? ? ? ? ? ? 2.182 ? ?
+metalc14 metalc ? ? B THR 60 OG1 ? ? ? 1_555 E MG . MG ? ? B THR 60 B MG 348 1_555 ? ? ? ? ? ? ? 2.146 ? ?
+metalc15 metalc ? ? B ASP 61 OD1 ? ? ? 1_555 E MG . MG ? ? B ASP 61 B MG 348 1_555 ? ? ? ? ? ? ? 2.022 ? ?
+metalc16 metalc ? ? B ASP 62 OD2 ? ? ? 1_555 E MG . MG ? ? B ASP 62 B MG 348 1_555 ? ? ? ? ? ? ? 2.048 ? ?
+metalc17 metalc ? ? B ASP 298 OD1 ? ? ? 1_555 F MG . MG ? ? B ASP 298 B MG 349 1_555 ? ? ? ? ? ? ? 2.062 ? ?
+metalc18 metalc ? ? B ASP 300 OD2 ? ? ? 1_555 E MG . MG ? ? B ASP 300 B MG 348 1_555 ? ? ? ? ? ? ? 1.998 ? ?
+metalc19 metalc ? ? B ASP 300 OD1 ? ? ? 1_555 F MG . MG ? ? B ASP 300 B MG 349 1_555 ? ? ? ? ? ? ? 2.211 ? ?
+metalc20 metalc ? ? B THR 301 OG1 ? ? ? 1_555 F MG . MG ? ? B THR 301 B MG 349 1_555 ? ? ? ? ? ? ? 2.246 ? ?
+metalc21 metalc ? ? E MG . MG ? ? ? 1_555 H HOH . O ? ? B MG 348 B HOH 367 1_555 ? ? ? ? ? ? ? 2.189 ? ?
+metalc22 metalc ? ? E MG . MG ? ? ? 1_555 H HOH . O ? ? B MG 348 B HOH 371 1_555 ? ? ? ? ? ? ? 2.132 ? ?
+metalc23 metalc ? ? F MG . MG ? ? ? 1_555 H HOH . O ? ? B MG 349 B HOH 367 1_555 ? ? ? ? ? ? ? 2.220 ? ?
+metalc24 metalc ? ? F MG . MG ? ? ? 1_555 H HOH . O ? ? B MG 349 B HOH 423 1_555 ? ? ? ? ? ? ? 2.242 ? ?
 #
