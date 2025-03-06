@@ -20,7 +20,7 @@ use Carp;
 use Clone qw( clone );
 use List::Util qw( max
                    shuffle );
-use List::MoreUtils qw( any
+use List::MoreUtils qw( all
                         uniq );
 use Logging qw( info
                 warning );
@@ -576,12 +576,20 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
+                # my %residue_unique_keys_tbl =
+                #     map { $_ => 1 }
+                #         ( $residue_unique_key, @assigned_unique_keys );
                 my $all_bond_parameters =
                     collect_bond_parameters( $residue_site );
                 my %bond_parameters =
                     map  { %{ $all_bond_parameters->{$_} } }
                     grep { exists $all_bond_parameters->{$_} }
                          ( $residue_unique_key, @assigned_unique_keys );
+               # %bond_parameters =
+               #     map { $_ => $bond_parameters{$_} }
+               #     grep { all { defined $residue_unique_keys_tbl{unique_residue_key( $residue_site->{$_} )} }
+               #               @{ $bond_parameters{$_}{'atom_ids'} } }
+               #     keys %bond_parameters;
                 %bond_parameters =
                     %{ filter_bond_parameters( $parameters,
                                                \%bond_parameters,
@@ -727,6 +735,8 @@ sub calc_favourable_angles
 
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
+    # my %residue_unique_keys_tbl =
+    #     map { $_ => 1 } @{ $residue_unique_keys };
 
     my $start_atom_ids =
         filter_new( $residue_site,
@@ -771,6 +781,11 @@ sub calc_favourable_angles
                 map  { %{ $all_bond_parameters->{$_} } }
                 grep { exists $all_bond_parameters->{$_} }
                     @{ $residue_unique_keys };
+            # %bond_parameters =
+            #     map { $_ => $bond_parameters{$_} }
+            #     grep { all { defined $residue_unique_keys_tbl{unique_residue_key( $residue_site->{$_} )} }
+            #               @{ $bond_parameters{$_}{'atom_ids'} } }
+            #     keys %bond_parameters;
             %bond_parameters =
                 %{ filter_bond_parameters( $parameters,
                                            \%bond_parameters,
@@ -778,13 +793,6 @@ sub calc_favourable_angles
                                            $residue_name ) };
 
             next if ! %bond_parameters;
-
-            # use Data::Dumper;
-            # print STDERR Dumper unique_residue_key( $atom_site->{$atom_id} );
-            # print STDERR Dumper $atom_site->{$atom_id}{'label_atom_id'};
-            # print STDERR Dumper $bond_parameters;
-            # print STDERR Dumper \%bond_parameters;
-            # print STDERR Dumper "-------------------------------";
 
             my $parameter_count_diff =
                 scalar( keys %bond_parameters ) -
