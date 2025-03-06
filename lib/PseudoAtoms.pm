@@ -775,9 +775,18 @@ sub calc_favourable_angles
                 %{ filter_bond_parameters( $parameters,
                                            \%bond_parameters,
                                            $bond_parameters,
-                                           $residue_name ) };
+                                           $residue_name,
+                                           { 'residue_unique_keys' =>
+                                                 $residue_unique_keys } ) };
 
             next if ! %bond_parameters;
+
+            # use Data::Dumper;
+            # print STDERR Dumper unique_residue_key( $atom_site->{$atom_id} );
+            # print STDERR Dumper $atom_site->{$atom_id}{'label_atom_id'};
+            # print STDERR Dumper $bond_parameters;
+            # print STDERR Dumper \%bond_parameters;
+            # print STDERR Dumper "-------------------------------";
 
             my $parameter_count_diff =
                 scalar( keys %bond_parameters ) -
