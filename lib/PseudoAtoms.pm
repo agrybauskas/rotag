@@ -775,9 +775,7 @@ sub calc_favourable_angles
                 %{ filter_bond_parameters( $parameters,
                                            \%bond_parameters,
                                            $bond_parameters,
-                                           $residue_name,
-                                           { 'residue_unique_keys' =>
-                                                 $residue_unique_keys } ) };
+                                           $residue_name ) };
 
             next if ! %bond_parameters;
 
