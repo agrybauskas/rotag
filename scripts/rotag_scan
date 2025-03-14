@@ -350,7 +350,7 @@ for my $pdbx_file ( @ARGV ) {
                 my @atom_id_values =
                     map { defined $rotamer->{'atom_ids'}{$angle_name}[$_] ?
                           $rotamer->{'atom_ids'}{$angle_name}[$_] : '.' }
-                        (0, 1, 2, 3);
+                        ( 0, 1, 2, 3 );
                 push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'}},
                     { 'id' => $angle_id,
                       'rotamer_id' => $rotamer_id,
