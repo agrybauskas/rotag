@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( change_unique_residue_key
                      create_pdbx_entry
+                     determine_ligand_sites
                      determine_residue_keys
                      expand
                      extract
@@ -1158,6 +1159,19 @@ sub determine_residue_keys
     }
 
     return \@residue_unique_keys;
+}
+
+#
+# Generates a list of ligand site ids from the atom site.
+# Input:
+#     $atom_site - atom site data structure;
+# Output:
+#     @ligand_site_ids - list of determined ligand site ids.
+#
+
+sub determine_ligand_sites
+{
+
 }
 
 #

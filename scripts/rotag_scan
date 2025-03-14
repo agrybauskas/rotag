@@ -15,7 +15,8 @@ use ForceField::Parameters;
 use ForceField::NonBonded qw( general );
 use Logging qw( error
                 warning );
-use PDBxParser qw( determine_residue_keys
+use PDBxParser qw( determine_ligand_sites
+                   determine_residue_keys
                    filter
                    mark_selection
                    obtain_pdbx_data
