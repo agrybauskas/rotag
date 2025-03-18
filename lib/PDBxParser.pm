@@ -1173,6 +1173,9 @@ sub determine_ligand_sites
 {
     my ( $atom_site ) = @_;
     my %ligand_sites = ();
+    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
+        next if $atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
+    }
     return \%ligand_sites;
 }
 
