@@ -352,6 +352,10 @@ for my $pdbx_file ( @ARGV ) {
                     map { defined $rotamer->{'atom_ids'}{$angle_name}[$_] ?
                           $rotamer->{'atom_ids'}{$angle_name}[$_] : '.' }
                         ( 0, 1, 2, 3 );
+                my @site_id_values =
+                    map { defined $rotamer->{'site_ids'}{$angle_name}[$_] ?
+                          $rotamer->{'site_ids'}{$angle_name}[$_] : '.' }
+                        ( 0, 1, 2, 3 );
                 push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'}},
                     { 'id' => $angle_id,
                       'rotamer_id' => $rotamer_id,
@@ -372,6 +376,10 @@ for my $pdbx_file ( @ARGV ) {
                       'atom_2_id' => $atom_id_values[1],
                       'atom_3_id' => $atom_id_values[2],
                       'atom_4_id' => $atom_id_values[3],
+                      'site_1_id' => $site_id_values[0],
+                      'site_2_id' => $site_id_values[1],
+                      'site_3_id' => $site_id_values[2],
+                      'site_4_id' => $site_id_values[3],
                       'frequency' => sprintf($sig_figs_max, $rotamer_frequency),
                       'type' => $angle_name,
                       'value' => $value,
