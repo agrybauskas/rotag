@@ -1173,7 +1173,6 @@ sub determine_ligand_sites
 {
     my ( $atom_site ) = @_;
 
-    my %residue_key_to_ligand_site = ();
     my %ligand_sites = ();
     my $ligand_id = 1;
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
@@ -1181,12 +1180,8 @@ sub determine_ligand_sites
 
         my $residue_unique_key = unique_residue_key( $atom_site->{$atom_id} );
 
-        if( exists $residue_key_to_ligand_site{$residue_unique_key} ) {
-            $ligand_sites{$atom_id} =
-                $residue_key_to_ligand_site{$residue_unique_key};
-        } else {
-            $residue_key_to_ligand_site{$residue_unique_key} = $ligand_id;
-            $ligand_sites{$atom_id} = $ligand_id;
+        if( ! exists $ligand_sites{$residue_unique_key} ) {
+            $ligand_sites{$residue_unique_key} = $ligand_id;
             $ligand_id++;
         }
     }

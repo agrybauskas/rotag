@@ -23,7 +23,8 @@ use PDBxParser qw( determine_ligand_sites
                    raw2indexed
                    split_by
                    to_csv
-                   to_pdbx );
+                   to_pdbx
+                   unique_residue_key );
 use PseudoAtoms qw( generate_library );
 use Sampling qw( sample_bond_parameters_qs_parsing );
 use SidechainInteractions;
@@ -355,9 +356,8 @@ for my $pdbx_file ( @ARGV ) {
                           $rotamer->{'atom_ids'}{$angle_name}[$_] : '.' }
                         ( 0, 1, 2, 3 );
                 my @site_id_values =
-                    map { defined $atom_id_values[$_] &&
-                          defined $ligand_sites->{$atom_id_values[$_]} ?
-                          $ligand_sites->{$atom_id_values[$_]} : '.' }
+                    map { exists $ligand_sites->{$_} ?  $ligand_sites->{$_} : '.' }
+                    map { unique_residue_key( $atom_site->{$atom_id_values[$_]} ) }
                         ( 0, 1, 2, 3 );
                 push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'}},
                     { 'id' => $angle_id,
