@@ -1171,7 +1171,9 @@ sub determine_residue_keys
 
 sub determine_ligand_sites
 {
-
+    my ( $atom_site ) = @_;
+    my %ligand_sites = ();
+    return \%ligand_sites;
 }
 
 #

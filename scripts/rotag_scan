@@ -233,6 +233,8 @@ for my $pdbx_file ( @ARGV ) {
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
 
+    my $ligand_sites = determine_ligand_sites( $atom_site );
+
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
                   'include' => { '[local]_selection_state' => [ 'T', 'S' ] } } );
@@ -353,8 +355,9 @@ for my $pdbx_file ( @ARGV ) {
                           $rotamer->{'atom_ids'}{$angle_name}[$_] : '.' }
                         ( 0, 1, 2, 3 );
                 my @site_id_values =
-                    map { defined $rotamer->{'site_ids'}{$angle_name}[$_] ?
-                          $rotamer->{'site_ids'}{$angle_name}[$_] : '.' }
+                    map { defined $atom_id_values[$_] &&
+                          defined $ligand_sites->{$atom_id_values[$_]} ?
+                          $ligand_sites->{$atom_id_values[$_]} : '.' }
                         ( 0, 1, 2, 3 );
                 push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'}},
                     { 'id' => $angle_id,
