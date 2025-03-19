@@ -57,6 +57,7 @@ use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
 use PDBxParser qw( change_unique_residue_key
                    create_pdbx_entry
+                   determine_ligand_sites
                    determine_residue_keys
                    filter_new
                    filter_by_unique_residue_key
@@ -403,6 +404,8 @@ sub generate_library
                           { 'id' => $atom_site_groups->{$atom_site_identifier}
                                                        {'atom_ids'} } } );
 
+        my $ligand_site = determine_ligand_sites( $current_atom_site );
+
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
@@ -576,20 +579,12 @@ sub generate_library
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
-                # my %residue_unique_keys_tbl =
-                #     map { $_ => 1 }
-                #         ( $residue_unique_key, @assigned_unique_keys );
                 my $all_bond_parameters =
                     collect_bond_parameters( $residue_site );
                 my %bond_parameters =
                     map  { %{ $all_bond_parameters->{$_} } }
                     grep { exists $all_bond_parameters->{$_} }
                          ( $residue_unique_key, @assigned_unique_keys );
-               # %bond_parameters =
-               #     map { $_ => $bond_parameters{$_} }
-               #     grep { all { defined $residue_unique_keys_tbl{unique_residue_key( $residue_site->{$_} )} }
-               #               @{ $bond_parameters{$_}{'atom_ids'} } }
-               #     keys %bond_parameters;
                 %bond_parameters =
                     %{ filter_bond_parameters( $parameters,
                                                \%bond_parameters,
@@ -646,18 +641,27 @@ sub generate_library
                               ( $bond_parameter_names[$_] => $allowed_angles->[$i][$_] ) }
                             ( 0..$#{ $allowed_angles->[$i] } );
                     my %atom_ids = ();
+                    my %site_ids = ();
                     my %terminal_atom_data = ();
                     for my $angle_name ( keys %angles ) {
                         $atom_ids{$angle_name} =
                             $bond_parameters{$angle_name}{'atom_ids'};
+
+                        $site_ids{$angle_name} = [
+                            map { $ligand_site->{$_} }
+                            map { unique_residue_key( $current_atom_site->{$_} ) }
+                            @{ $bond_parameters{$angle_name}{'atom_ids'} }
+                        ];
+
                         my ( $terminal_atom_id ) =
                             reverse @{ $bond_parameters{$angle_name}{'atom_ids'} };
-                        $terminal_atom_data{$angle_name} =
-                            { map { $_ => $current_atom_site->{$terminal_atom_id}{$_} }
-                                  ( 'id', 'label_comp_id', 'label_atom_id',
-                                    'label_seq_id', 'label_asym_id', 'label_alt_id',
-                                    'pdbx_PDB_model_num', 'auth_seq_id',
-                                    'auth_asym_id' ) };
+                        $terminal_atom_data{$angle_name} = {
+                            map { $_ => $current_atom_site->{$terminal_atom_id}{$_} }
+                                ( 'id', 'label_comp_id', 'label_atom_id',
+                                  'label_seq_id', 'label_asym_id',
+                                  'label_alt_id', 'pdbx_PDB_model_num',
+                                  'auth_seq_id', 'auth_asym_id' )
+                        };
                     }
 
                     my $rotamer_energy_sum = $energy_sums->[$i];
@@ -667,6 +671,7 @@ sub generate_library
                         push @{ $rotamer_library{$residue_unique_key} },
                             { 'angles' => \%angles,
                               'atom_ids' => \%atom_ids,
+                              'site_ids' => \%site_ids,
                               'terminal_atom_data' => \%terminal_atom_data,
                               'potential' => $interactions,
                               'potential_energy_value' => $energy_sums->[$i],
