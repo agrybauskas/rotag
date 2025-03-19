@@ -359,7 +359,7 @@ for my $pdbx_file ( @ARGV ) {
                     map { exists $ligand_sites->{$_} ?  $ligand_sites->{$_} : '.' }
                     map { unique_residue_key( $atom_site->{$atom_id_values[$_]} ) }
                         ( 0, 1, 2, 3 );
-                push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'}},
+                push @{ $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'} },
                     { 'id' => $angle_id,
                       'rotamer_id' => $rotamer_id,
                       'label_seq_id' =>
