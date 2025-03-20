@@ -124,9 +124,10 @@ for my $pdbx_file ( @ARGV ) {
     if( $calc_sidechain ) {
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
-              'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'label_atom_1_id',
-              'atom_2_id', 'label_atom_2_id', 'atom_3_id', 'label_atom_3_id',
-              'atom_4_id', 'label_atom_4_id', 'type', 'value', 'units' ];
+              'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id', 'site_1_id',
+              'label_atom_1_id', 'atom_2_id', 'site_2_id', 'label_atom_2_id',
+              'atom_3_id', 'site_3_id', 'label_atom_3_id', 'atom_4_id',
+              'site_4_id', 'label_atom_4_id', 'type', 'value', 'units' ];
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'type'} = 'record';
 
