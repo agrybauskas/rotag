@@ -647,11 +647,18 @@ sub generate_library
                         $atom_ids{$angle_name} =
                             $bond_parameters{$angle_name}{'atom_ids'};
 
-                        $site_ids{$angle_name} = [
-                            map { $ligand_site->{$_} }
-                            map { unique_residue_key( $current_atom_site->{$_} ) }
-                            @{ $bond_parameters{$angle_name}{'atom_ids'} }
-                        ];
+                        my @origin_atom_ids =
+                            map { $current_atom_site->{$_}{'origin_atom_id'} }
+                               @{ $bond_parameters{$angle_name}{'atom_ids'} };
+                        for my $origin_atom_id ( @origin_atom_ids ) {
+                            if( defined $origin_atom_id ) {
+                                push @{ $site_ids{$angle_name} },
+                                    $ligand_site->{unique_residue_key( $ref_atom_site->{$origin_atom_id} )};
+                            } else {
+                                push @{ $site_ids{$angle_name} },
+                                    $origin_atom_id;
+                            }
+                        }
 
                         my ( $terminal_atom_id ) =
                             reverse @{ $bond_parameters{$angle_name}{'atom_ids'} };
