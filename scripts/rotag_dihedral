@@ -19,7 +19,8 @@ use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use Measure qw( dihedral_angle );
-use PDBxParser qw( filter
+use PDBxParser qw( determine_ligand_sites
+                   filter
                    filter_new
                    filter_by_unique_residue_key
                    mark_selection
@@ -120,6 +121,8 @@ for my $pdbx_file ( @ARGV ) {
         next;
     }
 
+    my $ligand_site_ids = determine_ligand_sites( $atom_site );
+
     # Calculates dihedral angles
     if( $calc_sidechain ) {
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
@@ -201,6 +204,8 @@ for my $pdbx_file ( @ARGV ) {
                 sort keys %{ $dihedral_angles->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $dihedral_angles->{$residue_unique_key}
                                                     {$angle_name}{'atom_ids'} };
+                my @unique_residue_keys =
+                    map { unique_residue_key( $atom_site->{$_} ) } @atom_ids;
                 my $angle_key = join ',', @atom_ids;
 
                 next if $visited_dihedral_angles{$angle_key};
@@ -243,6 +248,10 @@ for my $pdbx_file ( @ARGV ) {
                             defined $dihedral_site->{$atom_ids[0]}{'origin_atom_id'} ) ?
                           $dihedral_site->{$atom_ids[0]}{'origin_atom_id'} :
                           $atom_ids[0],
+                      'site_1_id' =>
+                          ( defined $unique_residue_keys[0] &&
+                            exists $ligand_site_ids->{$unique_residue_keys[0]} ?
+                            $ligand_site_ids->{$unique_residue_keys[0]} : '.'),
                       'label_atom_1_id' =>
                           $dihedral_site->{$atom_ids[0]}{'label_atom_id'},
                       'atom_2_id' =>
@@ -250,6 +259,10 @@ for my $pdbx_file ( @ARGV ) {
                             defined $dihedral_site->{$atom_ids[1]}{'origin_atom_id'} ) ?
                           $dihedral_site->{$atom_ids[1]}{'origin_atom_id'} :
                           $atom_ids[1],
+                      'site_2_id' =>
+                          ( defined $unique_residue_keys[1] &&
+                            exists $ligand_site_ids->{$unique_residue_keys[1]} ?
+                            $ligand_site_ids->{$unique_residue_keys[1]} : '.'),
                       'label_atom_2_id' =>
                           $dihedral_site->{$atom_ids[1]}{'label_atom_id'},
                       'atom_3_id' =>
@@ -257,6 +270,10 @@ for my $pdbx_file ( @ARGV ) {
                             defined $dihedral_site->{$atom_ids[2]}{'origin_atom_id'} ) ?
                           $dihedral_site->{$atom_ids[2]}{'origin_atom_id'} :
                           $atom_ids[2],
+                      'site_3_id' =>
+                          ( defined $unique_residue_keys[2] &&
+                            exists $ligand_site_ids->{$unique_residue_keys[2]} ?
+                            $ligand_site_ids->{$unique_residue_keys[2]} : '.'),
                       'label_atom_3_id' =>
                           $dihedral_site->{$atom_ids[2]}{'label_atom_id'},
                       'atom_4_id' =>
@@ -264,6 +281,10 @@ for my $pdbx_file ( @ARGV ) {
                             defined $dihedral_site->{$atom_ids[3]}{'origin_atom_id'} ) ?
                           $dihedral_site->{$atom_ids[3]}{'origin_atom_id'} :
                           $atom_ids[3],
+                      'site_4_id' =>
+                          ( defined $unique_residue_keys[3] &&
+                            exists $ligand_site_ids->{$unique_residue_keys[3]} ?
+                            $ligand_site_ids->{$unique_residue_keys[3]} : '.'),
                       'label_atom_4_id' =>
                           $dihedral_site->{$atom_ids[3]}{'label_atom_id'},
                       'type' => $angle_name,
