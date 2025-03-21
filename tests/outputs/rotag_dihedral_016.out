@@ -9,6 +9,7 @@ _[local]_dihedral_angle.label_seq_1_id
 _[local]_dihedral_angle.label_asym_1_id
 _[local]_dihedral_angle.pdbx_PDB_model_num_1
 _[local]_dihedral_angle.label_alt_1_id
+_[local]_dihedral_angle.site_1_id
 _[local]_dihedral_angle.label_atom_2_id
 _[local]_dihedral_angle.atom_2_id
 _[local]_dihedral_angle.label_comp_2_id
@@ -16,6 +17,7 @@ _[local]_dihedral_angle.label_seq_2_id
 _[local]_dihedral_angle.label_asym_2_id
 _[local]_dihedral_angle.pdbx_PDB_model_num_2
 _[local]_dihedral_angle.label_alt_2_id
+_[local]_dihedral_angle.site_2_id
 _[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.atom_3_id
 _[local]_dihedral_angle.label_comp_3_id
@@ -23,6 +25,7 @@ _[local]_dihedral_angle.label_seq_3_id
 _[local]_dihedral_angle.label_asym_3_id
 _[local]_dihedral_angle.pdbx_PDB_model_num_3
 _[local]_dihedral_angle.label_alt_3_id
+_[local]_dihedral_angle.site_3_id
 _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.atom_4_id
 _[local]_dihedral_angle.label_comp_4_id
@@ -30,18 +33,19 @@ _[local]_dihedral_angle.label_seq_4_id
 _[local]_dihedral_angle.label_asym_4_id
 _[local]_dihedral_angle.pdbx_PDB_model_num_4
 _[local]_dihedral_angle.label_alt_4_id
+_[local]_dihedral_angle.site_4_id
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 N 40 GLY 9 A 1 . CA 41 GLY 9 A 1 . C 42 GLY 9 A 1 . O 43 GLY 9 A 1 . -0.246180 radians
-2 N 40 GLY 9 A 1 . CA 41 GLY 9 A 1 . O 43 GLY 9 A 1 . C 42 GLY 9 A 1 . 2.915223 radians
-3 N 40 GLY 9 A 1 . C 42 GLY 9 A 1 . CA 41 GLY 9 A 1 . O 43 GLY 9 A 1 . 0.246180 radians
-4 N 40 GLY 9 A 1 . C 42 GLY 9 A 1 . O 43 GLY 9 A 1 . CA 41 GLY 9 A 1 . -0.131929 radians
-5 N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . CA 41 GLY 9 A 1 . C 42 GLY 9 A 1 . -2.915223 radians
-6 N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . C 42 GLY 9 A 1 . CA 41 GLY 9 A 1 . 0.131929 radians
-7 CA 41 GLY 9 A 1 . N 40 GLY 9 A 1 . C 42 GLY 9 A 1 . O 43 GLY 9 A 1 . 2.933574 radians
-8 CA 41 GLY 9 A 1 . N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . C 42 GLY 9 A 1 . -0.134499 radians
-9 CA 41 GLY 9 A 1 . C 42 GLY 9 A 1 . N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . -2.933574 radians
-10 CA 41 GLY 9 A 1 . O 43 GLY 9 A 1 . N 40 GLY 9 A 1 . C 42 GLY 9 A 1 . 0.134499 radians
-11 C 42 GLY 9 A 1 . N 40 GLY 9 A 1 . CA 41 GLY 9 A 1 . O 43 GLY 9 A 1 . -0.105591 radians
-12 C 42 GLY 9 A 1 . CA 41 GLY 9 A 1 . N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . 0.105591 radians
+1 N 40 GLY 9 A 1 . . CA 41 GLY 9 A 1 . . C 42 GLY 9 A 1 . . O 43 GLY 9 A 1 . . -0.246180 radians
+2 N 40 GLY 9 A 1 . . CA 41 GLY 9 A 1 . . O 43 GLY 9 A 1 . . C 42 GLY 9 A 1 . . 2.915223 radians
+3 N 40 GLY 9 A 1 . . C 42 GLY 9 A 1 . . CA 41 GLY 9 A 1 . . O 43 GLY 9 A 1 . . 0.246180 radians
+4 N 40 GLY 9 A 1 . . C 42 GLY 9 A 1 . . O 43 GLY 9 A 1 . . CA 41 GLY 9 A 1 . . -0.131929 radians
+5 N 40 GLY 9 A 1 . . O 43 GLY 9 A 1 . . CA 41 GLY 9 A 1 . . C 42 GLY 9 A 1 . . -2.915223 radians
+6 N 40 GLY 9 A 1 . . O 43 GLY 9 A 1 . . C 42 GLY 9 A 1 . . CA 41 GLY 9 A 1 . . 0.131929 radians
+7 CA 41 GLY 9 A 1 . . N 40 GLY 9 A 1 . . C 42 GLY 9 A 1 . . O 43 GLY 9 A 1 . . 2.933574 radians
+8 CA 41 GLY 9 A 1 . . N 40 GLY 9 A 1 . . O 43 GLY 9 A 1 . . C 42 GLY 9 A 1 . . -0.134499 radians
+9 CA 41 GLY 9 A 1 . . C 42 GLY 9 A 1 . . N 40 GLY 9 A 1 . . O 43 GLY 9 A 1 . . -2.933574 radians
+10 CA 41 GLY 9 A 1 . . O 43 GLY 9 A 1 . . N 40 GLY 9 A 1 . . C 42 GLY 9 A 1 . . 0.134499 radians
+11 C 42 GLY 9 A 1 . . N 40 GLY 9 A 1 . . CA 41 GLY 9 A 1 . . O 43 GLY 9 A 1 . . -0.105591 radians
+12 C 42 GLY 9 A 1 . . CA 41 GLY 9 A 1 . . N 40 GLY 9 A 1 . . O 43 GLY 9 A 1 . . 0.105591 radians
 #

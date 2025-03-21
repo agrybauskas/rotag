@@ -312,13 +312,15 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'attributes'} =
             [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_comp_1_id',
               'label_seq_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
-              'label_alt_1_id', 'label_atom_2_id', 'atom_2_id', 'label_comp_2_id',
-              'label_seq_2_id', 'label_asym_2_id', 'pdbx_PDB_model_num_2',
-              'label_alt_2_id', 'label_atom_3_id', 'atom_3_id', 'label_comp_3_id',
+              'label_alt_1_id', 'site_1_id', 'label_atom_2_id', 'atom_2_id',
+              'label_comp_2_id', 'label_seq_2_id', 'label_asym_2_id',
+              'pdbx_PDB_model_num_2', 'label_alt_2_id', 'site_2_id',
+              'label_atom_3_id', 'atom_3_id', 'label_comp_3_id',
               'label_seq_3_id', 'label_asym_3_id', 'pdbx_PDB_model_num_3',
-              'label_alt_3_id', 'label_atom_4_id', 'atom_4_id', 'label_comp_4_id',
-              'label_seq_4_id', 'label_asym_4_id', 'pdbx_PDB_model_num_4',
-              'label_alt_4_id', 'value', 'units' ];
+              'label_alt_3_id', 'site_3_id', 'label_atom_4_id', 'atom_4_id',
+              'label_comp_4_id', 'label_seq_4_id', 'label_asym_4_id',
+              'pdbx_PDB_model_num_4', 'label_alt_4_id', 'site_4_id', 'value',
+              'units' ];
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_dihedral_angle'}{'metadata'}{'type'} = 'record';
 
