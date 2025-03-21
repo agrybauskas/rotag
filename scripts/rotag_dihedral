@@ -365,6 +365,27 @@ for my $pdbx_file ( @ARGV ) {
             $visited_comparisons{$fourth_atom_id}{$third_atom_id}
                                 {$second_atom_id}{$first_atom_id} = 1;
 
+            my @site_ids = ();
+            for my $atom_id ( $first_atom_id, $second_atom_id, $third_atom_id,
+                              $fourth_atom_id ) {
+                my $origin_atom_id =
+                    $dihedral_site->{$atom_id}{'origin_atom_id'};
+
+                if( ! defined $origin_atom_id) {
+                    push @site_ids, '.';
+                    next;
+                }
+
+                my $unique_residue_key =
+                    unique_residue_key( $atom_site->{$origin_atom_id} );
+                if( exists $ligand_site_ids->{$unique_residue_key} ) {
+                    push @site_ids,
+                        $ligand_site_ids->{$unique_residue_key};
+                } else {
+                    push @site_ids, '.';
+                }
+            }
+
             my $dihedral_angle =
                 dihedral_angle(
                     [ map { [ $dihedral_site->{$_}{'Cartn_x'},
@@ -388,6 +409,7 @@ for my $pdbx_file ( @ARGV ) {
                         $dihedral_site->{$first_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_1_id' =>
                         $dihedral_site->{$first_atom_id}{'label_alt_id'},
+                    'site_1_id' => $site_ids[0],
                     'atom_2_id' => $second_atom_id,
                     'label_atom_2_id' =>
                         $dihedral_site->{$second_atom_id}{'label_atom_id'},
@@ -401,6 +423,7 @@ for my $pdbx_file ( @ARGV ) {
                         $dihedral_site->{$second_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_2_id' =>
                         $dihedral_site->{$second_atom_id}{'label_alt_id'},
+                    'site_2_id' => $site_ids[1],
                     'atom_3_id' => $third_atom_id,
                     'label_atom_3_id' =>
                         $dihedral_site->{$third_atom_id}{'label_atom_id'},
@@ -414,6 +437,7 @@ for my $pdbx_file ( @ARGV ) {
                         $dihedral_site->{$third_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_3_id' =>
                         $dihedral_site->{$third_atom_id}{'label_alt_id'},
+                    'site_3_id' => $site_ids[2],
                     'atom_4_id' => $fourth_atom_id,
                     'label_atom_4_id' =>
                         $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
@@ -427,6 +451,7 @@ for my $pdbx_file ( @ARGV ) {
                         $dihedral_site->{$fourth_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_4_id' =>
                         $dihedral_site->{$fourth_atom_id}{'label_alt_id'},
+                    'site_4_id' => $site_ids[3],
                     'value' =>
                         ( $in_radians ? sprintf $sig_figs_max, $dihedral_angle :
                           sprintf $sig_figs_min, $dihedral_angle * 180 / $pi ),
