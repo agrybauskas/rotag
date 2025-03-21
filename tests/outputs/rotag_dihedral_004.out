@@ -8,16 +8,20 @@ _[local]_dihedral_angle.label_asym_id
 _[local]_dihedral_angle.pdbx_PDB_model_num
 _[local]_dihedral_angle.label_alt_id
 _[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.site_1_id
 _[local]_dihedral_angle.label_atom_1_id
 _[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.site_2_id
 _[local]_dihedral_angle.label_atom_2_id
 _[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.site_3_id
 _[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.site_4_id
 _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 LEU 546 B 1 . 8409 N 8410 CA 8413 CB 8414 CG chi1 3.092570 radians
-2 LEU 546 B 1 . 8410 CA 8413 CB 8414 CG 8415 CD1 chi2 1.210109 radians
+1 LEU 546 B 1 . 8409 . N 8410 . CA 8413 . CB 8414 . CG chi1 3.092570 radians
+2 LEU 546 B 1 . 8410 . CA 8413 . CB 8414 . CG 8415 . CD1 chi2 1.210109 radians
 #

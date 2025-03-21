@@ -8,17 +8,21 @@ _[local]_dihedral_angle.label_asym_id
 _[local]_dihedral_angle.pdbx_PDB_model_num
 _[local]_dihedral_angle.label_alt_id
 _[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.site_1_id
 _[local]_dihedral_angle.label_atom_1_id
 _[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.site_2_id
 _[local]_dihedral_angle.label_atom_2_id
 _[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.site_3_id
 _[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.site_4_id
 _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 XAA 18 A 1 A 3 XA 1 CA 2 CB 6 CG chi1 -112.802 degrees
-2 XAA 18 A 1 B 3 XA 1 CA 2 CB 7 CG chi1 -112.802 degrees
-3 XAA 18 A 2 . 11 XA 8 CA 9 CB 10 CG chi1 -112.802 degrees
+1 XAA 18 A 1 A 3 . XA 1 . CA 2 . CB 6 . CG chi1 -112.802 degrees
+2 XAA 18 A 1 B 3 . XA 1 . CA 2 . CB 7 . CG chi1 -112.802 degrees
+3 XAA 18 A 2 . 11 . XA 8 . CA 9 . CB 10 . CG chi1 -112.802 degrees
 #

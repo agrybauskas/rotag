@@ -8,15 +8,19 @@ _[local]_dihedral_angle.label_asym_id
 _[local]_dihedral_angle.pdbx_PDB_model_num
 _[local]_dihedral_angle.label_alt_id
 _[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.site_1_id
 _[local]_dihedral_angle.label_atom_1_id
 _[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.site_2_id
 _[local]_dihedral_angle.label_atom_2_id
 _[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.site_3_id
 _[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.site_4_id
 _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 THR 340 A 1 . 2391 N 2392 CA 2395 CB 2396 OG1 chi1 0.988794 radians
+1 THR 340 A 1 . 2391 . N 2392 . CA 2395 . CB 2396 . OG1 chi1 0.988794 radians
 #

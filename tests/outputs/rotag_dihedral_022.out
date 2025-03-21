@@ -8,19 +8,23 @@ _[local]_dihedral_angle.label_asym_id
 _[local]_dihedral_angle.pdbx_PDB_model_num
 _[local]_dihedral_angle.label_alt_id
 _[local]_dihedral_angle.atom_1_id
+_[local]_dihedral_angle.site_1_id
 _[local]_dihedral_angle.label_atom_1_id
 _[local]_dihedral_angle.atom_2_id
+_[local]_dihedral_angle.site_2_id
 _[local]_dihedral_angle.label_atom_2_id
 _[local]_dihedral_angle.atom_3_id
+_[local]_dihedral_angle.site_3_id
 _[local]_dihedral_angle.label_atom_3_id
 _[local]_dihedral_angle.atom_4_id
+_[local]_dihedral_angle.site_4_id
 _[local]_dihedral_angle.label_atom_4_id
 _[local]_dihedral_angle.type
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 MG . B 1 . 150 C 149 CA 148 N 1925 MG C-CA-N.MG 89.522 degrees
-2 MG . B 1 . 152 CB 153 CG 154 OD1 1925 MG CB-CG-OD1.MG -23.115 degrees
-3 MG . B 1 . 149 CA 148 N 156 H 1925 MG CA-N-H.MG -165.650 degrees
-4 MG . B 1 . 884 CA 885 C 886 O 1925 MG CA-C-O.MG 76.683 degrees
-5 MG . B 1 . 884 CA 883 N 892 H 1925 MG CA-N-H.MG -51.627 degrees
+1 MG . B 1 . 150 . C 149 . CA 148 . N 1925 1 MG C-CA-N.MG 89.522 degrees
+2 MG . B 1 . 152 . CB 153 . CG 154 . OD1 1925 1 MG CB-CG-OD1.MG -23.115 degrees
+3 MG . B 1 . 149 . CA 148 . N 156 . H 1925 1 MG CA-N-H.MG -165.650 degrees
+4 MG . B 1 . 884 . CA 885 . C 886 . O 1925 1 MG CA-C-O.MG 76.683 degrees
+5 MG . B 1 . 884 . CA 883 . N 892 . H 1925 1 MG CA-N-H.MG -51.627 degrees
 #

@@ -32,16 +32,16 @@ _[local]_dihedral_angle.pdbx_PDB_model_num_4
 _[local]_dihedral_angle.label_alt_4_id
 _[local]_dihedral_angle.value
 _[local]_dihedral_angle.units
-1 40 N GLY 9 A 1 . 41 CA GLY 9 A 1 . 42 C GLY 9 A 1 . 43 O GLY 9 A 1 . -0.246180 radians
-2 40 N GLY 9 A 1 . 41 CA GLY 9 A 1 . 43 O GLY 9 A 1 . 42 C GLY 9 A 1 . 2.915223 radians
-3 40 N GLY 9 A 1 . 42 C GLY 9 A 1 . 41 CA GLY 9 A 1 . 43 O GLY 9 A 1 . 0.246180 radians
-4 40 N GLY 9 A 1 . 42 C GLY 9 A 1 . 43 O GLY 9 A 1 . 41 CA GLY 9 A 1 . -0.131929 radians
-5 40 N GLY 9 A 1 . 43 O GLY 9 A 1 . 41 CA GLY 9 A 1 . 42 C GLY 9 A 1 . -2.915223 radians
-6 40 N GLY 9 A 1 . 43 O GLY 9 A 1 . 42 C GLY 9 A 1 . 41 CA GLY 9 A 1 . 0.131929 radians
-7 41 CA GLY 9 A 1 . 40 N GLY 9 A 1 . 42 C GLY 9 A 1 . 43 O GLY 9 A 1 . 2.933574 radians
-8 41 CA GLY 9 A 1 . 40 N GLY 9 A 1 . 43 O GLY 9 A 1 . 42 C GLY 9 A 1 . -0.134499 radians
-9 41 CA GLY 9 A 1 . 42 C GLY 9 A 1 . 40 N GLY 9 A 1 . 43 O GLY 9 A 1 . -2.933574 radians
-10 41 CA GLY 9 A 1 . 43 O GLY 9 A 1 . 40 N GLY 9 A 1 . 42 C GLY 9 A 1 . 0.134499 radians
-11 42 C GLY 9 A 1 . 40 N GLY 9 A 1 . 41 CA GLY 9 A 1 . 43 O GLY 9 A 1 . -0.105591 radians
-12 42 C GLY 9 A 1 . 41 CA GLY 9 A 1 . 40 N GLY 9 A 1 . 43 O GLY 9 A 1 . 0.105591 radians
+1 N 40 GLY 9 A 1 . CA 41 GLY 9 A 1 . C 42 GLY 9 A 1 . O 43 GLY 9 A 1 . -0.246180 radians
+2 N 40 GLY 9 A 1 . CA 41 GLY 9 A 1 . O 43 GLY 9 A 1 . C 42 GLY 9 A 1 . 2.915223 radians
+3 N 40 GLY 9 A 1 . C 42 GLY 9 A 1 . CA 41 GLY 9 A 1 . O 43 GLY 9 A 1 . 0.246180 radians
+4 N 40 GLY 9 A 1 . C 42 GLY 9 A 1 . O 43 GLY 9 A 1 . CA 41 GLY 9 A 1 . -0.131929 radians
+5 N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . CA 41 GLY 9 A 1 . C 42 GLY 9 A 1 . -2.915223 radians
+6 N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . C 42 GLY 9 A 1 . CA 41 GLY 9 A 1 . 0.131929 radians
+7 CA 41 GLY 9 A 1 . N 40 GLY 9 A 1 . C 42 GLY 9 A 1 . O 43 GLY 9 A 1 . 2.933574 radians
+8 CA 41 GLY 9 A 1 . N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . C 42 GLY 9 A 1 . -0.134499 radians
+9 CA 41 GLY 9 A 1 . C 42 GLY 9 A 1 . N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . -2.933574 radians
+10 CA 41 GLY 9 A 1 . O 43 GLY 9 A 1 . N 40 GLY 9 A 1 . C 42 GLY 9 A 1 . 0.134499 radians
+11 C 42 GLY 9 A 1 . N 40 GLY 9 A 1 . CA 41 GLY 9 A 1 . O 43 GLY 9 A 1 . -0.105591 radians
+12 C 42 GLY 9 A 1 . CA 41 GLY 9 A 1 . N 40 GLY 9 A 1 . O 43 GLY 9 A 1 . 0.105591 radians
 #
