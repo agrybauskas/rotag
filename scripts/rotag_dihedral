@@ -375,8 +375,8 @@ for my $pdbx_file ( @ARGV ) {
 
             push @{ $pdbx->{'_[local]_dihedral_angle'}{'data'} },
                   { 'id' => $dihedral_id,
-                    'label_atom_1_id' => $first_atom_id,
-                    'atom_1_id' =>
+                    'atom_1_id' => $first_atom_id,
+                    'label_atom_1_id' =>
                         $dihedral_site->{$first_atom_id}{'label_atom_id'},
                     'label_comp_1_id' =>
                         $dihedral_site->{$first_atom_id}{'label_comp_id'},
@@ -388,8 +388,8 @@ for my $pdbx_file ( @ARGV ) {
                         $dihedral_site->{$first_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_1_id' =>
                         $dihedral_site->{$first_atom_id}{'label_alt_id'},
-                    'label_atom_2_id' => $second_atom_id,
-                    'atom_2_id' =>
+                    'atom_2_id' => $second_atom_id,
+                    'label_atom_2_id' =>
                         $dihedral_site->{$second_atom_id}{'label_atom_id'},
                     'label_comp_2_id' =>
                         $dihedral_site->{$second_atom_id}{'label_comp_id'},
@@ -401,8 +401,8 @@ for my $pdbx_file ( @ARGV ) {
                         $dihedral_site->{$second_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_2_id' =>
                         $dihedral_site->{$second_atom_id}{'label_alt_id'},
-                    'label_atom_3_id' => $third_atom_id,
-                    'atom_3_id' =>
+                    'atom_3_id' => $third_atom_id,
+                    'label_atom_3_id' =>
                         $dihedral_site->{$third_atom_id}{'label_atom_id'},
                     'label_comp_3_id' =>
                         $dihedral_site->{$third_atom_id}{'label_comp_id'},
@@ -414,8 +414,8 @@ for my $pdbx_file ( @ARGV ) {
                         $dihedral_site->{$third_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_3_id' =>
                         $dihedral_site->{$third_atom_id}{'label_alt_id'},
-                    'label_atom_4_id' => $fourth_atom_id,
-                    'atom_4_id' =>
+                    'atom_4_id' => $fourth_atom_id,
+                    'label_atom_4_id' =>
                         $dihedral_site->{$fourth_atom_id}{'label_atom_id'},
                     'label_comp_4_id' =>
                         $dihedral_site->{$fourth_atom_id}{'label_comp_id'},
