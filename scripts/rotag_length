@@ -17,14 +17,16 @@ use ForceField::Parameters;
 use Logging qw( error
                 warning );
 use Measure qw( bond_length );
-use PDBxParser qw( filter
+use PDBxParser qw( determine_ligand_sites
+                   filter
                    filter_by_unique_residue_key
                    mark_selection
                    obtain_pdbx_data
                    raw2indexed
                    split_by
                    to_csv
-                   to_pdbx );
+                   to_pdbx
+                   unique_residue_key );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -128,11 +130,12 @@ for my $pdbx_file ( @ARGV ) {
     # Calculates distance between side-chain bonds.
     if( $comparison ) {
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'attributes'} =
-            [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id', 'label_seq_1_id',
-              'label_comp_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
-              'label_alt_1_id', 'group_2_id', 'atom_2_id', 'label_atom_2_id',
-              'label_seq_2_id', 'label_comp_2_id', 'label_asym_2_id',
-              'pdbx_PDB_model_num_2', 'label_alt_2_id', 'type', 'value'];
+            [ 'id', 'group_1_id', 'atom_1_id', 'label_atom_1_id',
+              'label_seq_1_id', 'label_comp_1_id', 'label_asym_1_id',
+              'pdbx_PDB_model_num_1', 'label_alt_1_id', 'site_1_id',
+              'group_2_id', 'atom_2_id', 'label_atom_2_id', 'label_seq_2_id',
+              'label_comp_2_id', 'label_asym_2_id', 'pdbx_PDB_model_num_2',
+              'label_alt_2_id', 'site_2_id', 'type', 'value'];
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'type'} = 'record';
 
@@ -287,8 +290,8 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'attributes'} =
             [ 'id', 'label_comp_id', 'label_seq_id', 'label_asym_id',
               'pdbx_PDB_model_num', 'label_alt_id', 'atom_1_id',
-              'label_atom_1_id', 'atom_2_id', 'label_atom_2_id', 'type',
-              'value' ];
+              'label_atom_1_id', 'site_1_id', 'atom_2_id', 'label_atom_2_id',
+              'site_2_id', 'type', 'value' ];
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'type'} = 'record';
 
@@ -398,9 +401,9 @@ for my $pdbx_file ( @ARGV ) {
         $pdbx->{'_[local]_length'}{'metadata'}{'attributes'} =
             [ 'id', 'label_atom_1_id', 'atom_1_id', 'label_comp_1_id',
               'label_seq_1_id', 'label_asym_1_id', 'pdbx_PDB_model_num_1',
-              'label_alt_1_id', 'label_atom_2_id', 'atom_2_id', 'label_comp_2_id',
-              'label_seq_2_id', 'label_asym_2_id', 'pdbx_PDB_model_num_2',
-              'label_alt_2_id', 'value' ];
+              'label_alt_1_id', 'site_1_id', 'label_atom_2_id', 'atom_2_id',
+              'label_comp_2_id', 'label_seq_2_id', 'label_asym_2_id',
+              'pdbx_PDB_model_num_2', 'label_alt_2_id', 'site_2_id', 'value' ];
         $pdbx->{'_[local]_length'}{'metadata'}{'is_loop'} = 1;
         $pdbx->{'_[local]_length'}{'metadata'}{'type'} = 'record';
 
