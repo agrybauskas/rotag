@@ -127,6 +127,8 @@ for my $pdbx_file ( @ARGV ) {
         next;
     }
 
+    my $ligand_site_ids = determine_ligand_sites( $atom_site );
+
     # Calculates distance between side-chain bonds.
     if( $comparison ) {
         $pdbx->{'_[local]_bond_length'}{'metadata'}{'attributes'} =
@@ -212,6 +214,27 @@ for my $pdbx_file ( @ARGV ) {
 
                     for my $first_group_atom_id ( @{ $first_group_atom_ids } ) {
                         for my $second_group_atom_id ( @{ $second_group_atom_ids } ) {
+                            # TODO: needs to be refactored.
+                            my ( $origin_first_atom_id,
+                                 $origin_second_atom_id ) =
+                                ( $first_group_atom_site->{$first_group_atom_id}
+                                                          {'origin_atom_id'},
+                                  $second_group_atom_site->{$second_group_atom_id}
+                                                           {'origin_atom_id'} );
+                            my ( $first_unique_residue_key,
+                                 $second_unique_residue_key ) =
+                                ( ( defined $origin_first_atom_id ?
+                                    unique_residue_key( $first_group_atom_site->{$origin_first_atom_id} )
+                                    : undef ),
+                                  ( defined $origin_second_atom_id ?
+                                    unique_residue_key( $second_group_atom_site->{$origin_second_atom_id} )
+                                    : undef ) );
+                            my @site_ids =
+                                map { exists $ligand_site_ids->{$_} ?
+                                      $ligand_site_ids->{$_} : '.'}
+                                    ( $first_unique_residue_key,
+                                      $second_unique_residue_key );
+
                             push @{ $pdbx->{'_[local]_bond_length'}{'data'} },
                                  { 'id' => $bond_length_id,
                                    'group_1_id' =>
@@ -238,6 +261,7 @@ for my $pdbx_file ( @ARGV ) {
                                    'label_alt_1_id' =>
                                        $first_group_atom_site->{$first_group_atom_id}
                                                                {'label_alt_id'},
+                                   'site_1_id' => $site_ids[0],
                                    'group_2_id' =>
                                        $second_group_atom_site->{$second_group_atom_id}
                                                                {'[local]_selection_group'},
@@ -262,6 +286,7 @@ for my $pdbx_file ( @ARGV ) {
                                    'label_alt_2_id' =>
                                        $second_group_atom_site->{$second_group_atom_id}
                                                                 {'label_alt_id'},
+                                   'site_2_id' => $site_ids[1],
                                    'type' => '.',
                                    'value' =>
                                        sprintf $sig_figs_min,
@@ -342,6 +367,26 @@ for my $pdbx_file ( @ARGV ) {
                 my @atom_ids = @{ $bond_lengths->{$residue_unique_key}
                                                  {$bond_name}{'atom_ids'} };
 
+                my @site_ids = ();
+                for my $atom_id ( @atom_ids ) {
+                    my $origin_atom_id =
+                        $bond_length_site->{$atom_id}{'origin_atom_id'};
+
+                    if( ! defined $origin_atom_id) {
+                        push @site_ids, '.';
+                        next;
+                    }
+
+                    my $unique_residue_key =
+                        unique_residue_key( $atom_site->{$origin_atom_id} );
+                    if( exists $ligand_site_ids->{$unique_residue_key} ) {
+                        push @site_ids,
+                            $ligand_site_ids->{$unique_residue_key};
+                    } else {
+                        push @site_ids, '.';
+                    }
+                }
+
                 # The destinction between main-chain and side-chain dihedral
                 # angles is that different from side-chain, main-chain dihedral
                 # angles span multiple residues. So, it has to be dealt with.
@@ -378,6 +423,7 @@ for my $pdbx_file ( @ARGV ) {
                             defined $bond_length_site->{$atom_ids[0]}{'origin_atom_id'} ) ?
                             $bond_length_site->{$atom_ids[0]}{'origin_atom_id'} :
                             $atom_ids[0],
+                      'site_1_id' => $site_ids[0],
                       'label_atom_1_id' =>
                           $bond_length_site->{$atom_ids[0]}{'label_atom_id'},
                       'atom_2_id' =>
@@ -387,6 +433,7 @@ for my $pdbx_file ( @ARGV ) {
                             $atom_ids[1],
                       'label_atom_2_id' =>
                           $bond_length_site->{$atom_ids[1]}{'label_atom_id'},
+                      'site_2_id' => $site_ids[1],
                       'type' => $bond_name,
                       'value' =>
                           sprintf $sig_figs_max,
