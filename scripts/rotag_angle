@@ -826,6 +826,24 @@ for my $pdbx_file ( @ARGV ) {
             $visited_comparisons{$first_atom_id}{$second_atom_id}{$third_atom_id} = 1;
             $visited_comparisons{$third_atom_id}{$second_atom_id}{$first_atom_id} = 1;
 
+            my @site_ids = ();
+            for my $atom_id ( $first_atom_id, $second_atom_id, $third_atom_id ) {
+                my $origin_atom_id = $angle_site->{$atom_id}{'origin_atom_id'};
+
+                if( ! defined $origin_atom_id) {
+                    push @site_ids, '.';
+                    next;
+                }
+
+                my $unique_residue_key =
+                    unique_residue_key( $atom_site->{$origin_atom_id} );
+                if( exists $ligand_site_ids->{$unique_residue_key} ) {
+                    push @site_ids, $ligand_site_ids->{$unique_residue_key};
+                } else {
+                    push @site_ids, '.';
+                }
+            }
+
             my $angle =
                 bond_angle(
                     [ map { [ $angle_site->{$_}{'Cartn_x'},
@@ -848,6 +866,7 @@ for my $pdbx_file ( @ARGV ) {
                         $angle_site->{$first_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_1_id' =>
                         $angle_site->{$first_atom_id}{'label_alt_id'},
+                    'site_1_id' => $site_ids[0],
                     'label_atom_2_id' => $second_atom_id,
                     'atom_2_id' =>
                         $angle_site->{$second_atom_id}{'label_atom_id'},
@@ -861,6 +880,7 @@ for my $pdbx_file ( @ARGV ) {
                         $angle_site->{$second_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_2_id' =>
                         $angle_site->{$second_atom_id}{'label_alt_id'},
+                    'site_2_id' => $site_ids[1],
                     'label_atom_3_id' => $third_atom_id,
                     'atom_3_id' =>
                         $angle_site->{$third_atom_id}{'label_atom_id'},
@@ -874,6 +894,7 @@ for my $pdbx_file ( @ARGV ) {
                         $angle_site->{$third_atom_id}{'pdbx_PDB_model_num'},
                     'label_alt_3_id' =>
                         $angle_site->{$third_atom_id}{'label_alt_id'},
+                    'site_3_id' => $site_ids[2],
                     'value' => ( $in_radians ?
                                  sprintf $sig_figs_max, $angle :
                                  sprintf $sig_figs_min, 180 * $angle / $pi ),
