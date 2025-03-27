@@ -27,7 +27,8 @@ use Grid qw( identify_neighbour_cells
              grid_box );
 use Measure qw( around_distance
                 distance_squared );
-use PDBxParser qw( filter
+use PDBxParser qw( determine_ligand_sites
+                   filter
                    filter_by_unique_residue_key
                    filter_new
                    replace_atom_site_ids
@@ -354,6 +355,8 @@ sub assign_hetatoms
     my $hetatom_site =
         { map { $_ => $ref_atom_site->{$_} } @{ $struct_conn_atom_ids } };
 
+    my $ligand_sites = determine_ligand_sites( $hetatom_site );
+
     my $unique_residue_keys =
         unique_from_struct_conn( $hetatom_site, $struct_conn );
     my $all_unique_residue_keys =
@@ -430,6 +433,8 @@ sub assign_hetatoms
                     $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
                     $atom_site->{$last_atom_id}{'origin_atom_id'} =
                         $connection_related_atom_id;
+                    $atom_site->{$last_atom_id}{'ligand_site_id'} =
+                        $ligand_sites->{unique_residue_key( $ref_atom_site->{$connection_related_atom_id} )};
 
                     push @assigned_atom_ids, $last_atom_id;
 
