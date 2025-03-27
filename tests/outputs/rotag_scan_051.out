@@ -70,15 +70,23 @@ _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
 _[local]_rotamer_bond_parameter.auth_seq_id
 _[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG B 1 101 A . 1.000000 N.MG 3.018913 angstrom
-2 1 72 LYS A 1 72 A . 1.000000 chi1 -166.216 degrees
-3 1 72 LYS A 1 72 A . 1.000000 chi2 173.835 degrees
-4 1 72 LYS A 1 72 A . 1.000000 chi3 -75.908 degrees
-5 1 72 LYS A 1 72 A . 1.000000 chi4 -179.975 degrees
+1 1 . MG B 1 101 A . 148 1926 . . . 1 . . 1.000000 N.MG 3.018913 angstrom
+2 1 72 LYS A 1 72 A . 883 884 887 888 . . . . 1.000000 chi1 -166.216 degrees
+3 1 72 LYS A 1 72 A . 884 887 888 889 . . . . 1.000000 chi2 173.835 degrees
+4 1 72 LYS A 1 72 A . 887 888 889 890 . . . . 1.000000 chi3 -75.908 degrees
+5 1 72 LYS A 1 72 A . 888 889 890 891 . . . . 1.000000 chi4 -179.975 degrees
 #
 loop_
 _struct_conn.id

@@ -79,60 +79,68 @@ _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
 _[local]_rotamer_bond_parameter.auth_seq_id
 _[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 72 LYS A 1 72 A . 0.100000 chi1 -180.000 degrees
-2 1 72 LYS A 1 72 A . 0.100000 chi2 -180.000 degrees
-3 1 72 LYS A 1 72 A . 0.100000 chi3 -180.000 degrees
-4 1 72 LYS A 1 72 A . 0.100000 chi4 0.000 degrees
-5 1 72 LYS A 1 72 A . 0.100000 chi5 -180.000 degrees
-6 2 72 LYS A 1 72 A . 0.100000 chi1 -180.000 degrees
-7 2 72 LYS A 1 72 A . 0.100000 chi2 -180.000 degrees
-8 2 72 LYS A 1 72 A . 0.100000 chi3 -180.000 degrees
-9 2 72 LYS A 1 72 A . 0.100000 chi4 0.000 degrees
-10 2 72 LYS A 1 72 A . 0.100000 chi5 0.000 degrees
-11 3 72 LYS A 1 72 A . 0.100000 chi1 -180.000 degrees
-12 3 72 LYS A 1 72 A . 0.100000 chi2 -180.000 degrees
-13 3 72 LYS A 1 72 A . 0.100000 chi3 0.000 degrees
-14 3 72 LYS A 1 72 A . 0.100000 chi4 -180.000 degrees
-15 3 72 LYS A 1 72 A . 0.100000 chi5 -180.000 degrees
-16 4 72 LYS A 1 72 A . 0.100000 chi1 -180.000 degrees
-17 4 72 LYS A 1 72 A . 0.100000 chi2 -180.000 degrees
-18 4 72 LYS A 1 72 A . 0.100000 chi3 0.000 degrees
-19 4 72 LYS A 1 72 A . 0.100000 chi4 -180.000 degrees
-20 4 72 LYS A 1 72 A . 0.100000 chi5 0.000 degrees
-21 5 72 LYS A 1 72 A . 0.100000 chi1 -180.000 degrees
-22 5 72 LYS A 1 72 A . 0.100000 chi2 0.000 degrees
-23 5 72 LYS A 1 72 A . 0.100000 chi3 -180.000 degrees
-24 5 72 LYS A 1 72 A . 0.100000 chi4 -180.000 degrees
-25 5 72 LYS A 1 72 A . 0.100000 chi5 -180.000 degrees
-26 6 72 LYS A 1 72 A . 0.100000 chi1 -180.000 degrees
-27 6 72 LYS A 1 72 A . 0.100000 chi2 0.000 degrees
-28 6 72 LYS A 1 72 A . 0.100000 chi3 -180.000 degrees
-29 6 72 LYS A 1 72 A . 0.100000 chi4 -180.000 degrees
-30 6 72 LYS A 1 72 A . 0.100000 chi5 0.000 degrees
-31 7 72 LYS A 1 72 A . 0.100000 chi1 0.000 degrees
-32 7 72 LYS A 1 72 A . 0.100000 chi2 -180.000 degrees
-33 7 72 LYS A 1 72 A . 0.100000 chi3 -180.000 degrees
-34 7 72 LYS A 1 72 A . 0.100000 chi4 -180.000 degrees
-35 7 72 LYS A 1 72 A . 0.100000 chi5 -180.000 degrees
-36 8 72 LYS A 1 72 A . 0.100000 chi1 0.000 degrees
-37 8 72 LYS A 1 72 A . 0.100000 chi2 -180.000 degrees
-38 8 72 LYS A 1 72 A . 0.100000 chi3 -180.000 degrees
-39 8 72 LYS A 1 72 A . 0.100000 chi4 -180.000 degrees
-40 8 72 LYS A 1 72 A . 0.100000 chi5 0.000 degrees
-41 9 72 LYS A 1 72 A . 0.100000 chi1 0.000 degrees
-42 9 72 LYS A 1 72 A . 0.100000 chi2 -180.000 degrees
-43 9 72 LYS A 1 72 A . 0.100000 chi3 -180.000 degrees
-44 9 72 LYS A 1 72 A . 0.100000 chi4 0.000 degrees
-45 9 72 LYS A 1 72 A . 0.100000 chi5 -180.000 degrees
-46 10 72 LYS A 1 72 A . 0.100000 chi1 0.000 degrees
-47 10 72 LYS A 1 72 A . 0.100000 chi2 -180.000 degrees
-48 10 72 LYS A 1 72 A . 0.100000 chi3 -180.000 degrees
-49 10 72 LYS A 1 72 A . 0.100000 chi4 0.000 degrees
-50 10 72 LYS A 1 72 A . 0.100000 chi5 0.000 degrees
+1 1 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 -180.000 degrees
+2 1 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 -180.000 degrees
+3 1 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 -180.000 degrees
+4 1 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 0.000 degrees
+5 1 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 -180.000 degrees
+6 2 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 -180.000 degrees
+7 2 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 -180.000 degrees
+8 2 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 -180.000 degrees
+9 2 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 0.000 degrees
+10 2 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 0.000 degrees
+11 3 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 -180.000 degrees
+12 3 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 -180.000 degrees
+13 3 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 0.000 degrees
+14 3 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 -180.000 degrees
+15 3 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 -180.000 degrees
+16 4 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 -180.000 degrees
+17 4 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 -180.000 degrees
+18 4 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 0.000 degrees
+19 4 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 -180.000 degrees
+20 4 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 0.000 degrees
+21 5 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 -180.000 degrees
+22 5 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 0.000 degrees
+23 5 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 -180.000 degrees
+24 5 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 -180.000 degrees
+25 5 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 -180.000 degrees
+26 6 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 -180.000 degrees
+27 6 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 0.000 degrees
+28 6 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 -180.000 degrees
+29 6 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 -180.000 degrees
+30 6 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 0.000 degrees
+31 7 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 0.000 degrees
+32 7 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 -180.000 degrees
+33 7 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 -180.000 degrees
+34 7 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 -180.000 degrees
+35 7 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 -180.000 degrees
+36 8 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 0.000 degrees
+37 8 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 -180.000 degrees
+38 8 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 -180.000 degrees
+39 8 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 -180.000 degrees
+40 8 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 0.000 degrees
+41 9 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 0.000 degrees
+42 9 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 -180.000 degrees
+43 9 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 -180.000 degrees
+44 9 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 0.000 degrees
+45 9 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 -180.000 degrees
+46 10 72 LYS A 1 72 A . 883 884 887 888 . . . . 0.100000 chi1 0.000 degrees
+47 10 72 LYS A 1 72 A . 884 887 888 889 . . . . 0.100000 chi2 -180.000 degrees
+48 10 72 LYS A 1 72 A . 887 888 889 890 . . . . 0.100000 chi3 -180.000 degrees
+49 10 72 LYS A 1 72 A . 888 889 890 891 . . . . 0.100000 chi4 0.000 degrees
+50 10 72 LYS A 1 72 A . 889 890 891 902 . . . . 0.100000 chi5 0.000 degrees
 #
 loop_
 _struct_conn.id

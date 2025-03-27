@@ -70,13 +70,21 @@ _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
 _[local]_rotamer_bond_parameter.auth_seq_id
 _[local]_rotamer_bond_parameter.auth_asym_id
 _[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . CA B 1 101 A . 1.000000 CB-CG-OD1.CA 90.000 degrees
-2 1 27 ASP A 1 27 A . 1.000000 chi1 77.904 degrees
-3 1 27 ASP A 1 27 A . 1.000000 chi2 -54.657 degrees
+1 1 . CA B 1 101 A . 152 153 154 1926 . . . 1 1.000000 CB-CG-OD1.CA 90.000 degrees
+2 1 27 ASP A 1 27 A . 148 149 152 153 . . . . 1.000000 chi1 77.904 degrees
+3 1 27 ASP A 1 27 A . 149 152 153 154 . . . . 1.000000 chi2 -54.657 degrees
 #
 loop_
 _struct_conn.id
