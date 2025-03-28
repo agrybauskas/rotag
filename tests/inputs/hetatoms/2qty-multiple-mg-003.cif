@@ -27,7 +27,6 @@ ATOM 2224 C CG . ASP A 1 300 25.695 -4.950 3.793 A 300 1 T 1
 ATOM 2225 O OD1 . ASP A 1 300 25.166 -6.054 3.904 A 300 1 T 1
 ATOM 2226 O OD2 . ASP A 1 300 26.128 -4.496 2.706 A 300 1 T 1
 HETATM 5175 MG MG . MG C 2 . 26.349 -4.216 0.717 A 348 1 T 1
-HETATM 5176 MG MG . MG D 2 . 24.214 -6.942 2.127 A 349 1 T 1
 ATOM 5788 H H . ASP A 1 300 24.993 -6.347 6.227 A 300 1 T 1
 ATOM 5789 H HA . ASP A 1 300 24.893 -3.629 6.825 A 300 1 T 1
 ATOM 5790 H HB2 . ASP A 1 300 26.755 -4.424 5.501 A 300 1 T 1
@@ -70,5 +69,5 @@ _struct_conn.pdbx_dist_value
 _struct_conn.pdbx_value_order
 _struct_conn.pdbx_role
 metalc1 metalc ? ? A ASP 300 OD1 ? ? ? 1_555 C MG . MG ? ? A ASP 300 A MG 348 1_555 ? ? ? ? ? ? ? 2.021 ? ?
-metalc2 metalc ? ? A ASP 300 OD2 ? ? ? 1_555 D MG . MG ? ? A ASP 300 A MG 349 1_555 ? ? ? ? ? ? ? 2.203 ? ?
+metalc2 metalc ? ? A ASP 300 OD2 ? ? ? 1_555 C MG . MG ? ? A ASP 300 A MG 348 1_555 ? ? ? ? ? ? ? 2.203 ? ?
 #
