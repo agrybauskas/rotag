@@ -1162,31 +1162,28 @@ sub determine_residue_keys
 }
 
 #
-# Generates a list of ligand site ids from the atom site.
+# Generates ligand site ids for the atom site entries.
 # Input:
 #     $atom_site - atom site data structure;
 # Output:
-#     %ligand_site_ids - mapping of the determined ligand site ids.
+#     adds 'ligand_site_id' tag with the value.
 #
 
 sub determine_ligand_sites
 {
     my ( $atom_site ) = @_;
 
-    my %ligand_sites = ();
     my $ligand_id = 1;
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
         next if $atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
 
-        my $residue_unique_key = unique_residue_key( $atom_site->{$atom_id} );
-
-        if( ! exists $ligand_sites{$residue_unique_key} ) {
-            $ligand_sites{$residue_unique_key} = $ligand_id;
+        if( ! exists $atom_site->{$atom_id}{'ligand_site_id'} ) {
+            $atom_site->{$atom_id}{'ligand_site_id'} = $ligand_id;
             $ligand_id++;
         }
     }
 
-    return \%ligand_sites;
+    return;
 }
 
 #
