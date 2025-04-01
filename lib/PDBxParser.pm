@@ -1165,13 +1165,16 @@ sub determine_residue_keys
 # Generates ligand site ids for the atom site entries.
 # Input:
 #     $atom_site - atom site data structure;
+#     $struct_conn - struct conn data structure;
 # Output:
 #     adds 'ligand_site_id' tag with the value.
 #
 
 sub determine_ligand_sites
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $struct_conn ) = @_;
+
+    $struct_conn //= {};
 
     my $ligand_id = 1;
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
