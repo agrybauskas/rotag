@@ -771,7 +771,7 @@ sub filter_bond_parameters
     return \%filtered_bond_parameters;
 }
 
-# TODO: think if it should not be split into three functions.
+# TODO: should be refactored.
 sub detect_bond_parameter_type
 {
     my ( $bond_parameter_name ) = @_;
