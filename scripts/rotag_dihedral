@@ -121,7 +121,7 @@ for my $pdbx_file ( @ARGV ) {
         next;
     }
 
-    determine_ligand_sites( $atom_site );
+    determine_ligand_sites( $atom_site, $struct_conn );
 
     # Calculates dihedral angles
     if( $calc_sidechain ) {
