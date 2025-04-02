@@ -57,7 +57,6 @@ use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
 use PDBxParser qw( change_unique_residue_key
                    create_pdbx_entry
-                   determine_ligand_sites
                    determine_residue_keys
                    filter_new
                    filter_by_unique_residue_key
@@ -403,8 +402,6 @@ sub generate_library
                     { 'include' =>
                           { 'id' => $atom_site_groups->{$atom_site_identifier}
                                                        {'atom_ids'} } } );
-
-        determine_ligand_sites( $current_atom_site, $struct_conn );
 
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
