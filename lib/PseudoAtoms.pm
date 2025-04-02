@@ -404,7 +404,7 @@ sub generate_library
                           { 'id' => $atom_site_groups->{$atom_site_identifier}
                                                        {'atom_ids'} } } );
 
-        my $ligand_site = determine_ligand_sites( $current_atom_site );
+        determine_ligand_sites( $current_atom_site, $struct_conn );
 
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
@@ -647,16 +647,20 @@ sub generate_library
                         $atom_ids{$angle_name} =
                             $bond_parameters{$angle_name}{'atom_ids'};
 
-                        my @origin_atom_ids =
-                            map { $current_atom_site->{$_}{'origin_atom_id'} }
-                               @{ $bond_parameters{$angle_name}{'atom_ids'} };
-                        for my $origin_atom_id ( @origin_atom_ids ) {
-                            if( defined $origin_atom_id ) {
+                        for my $atom_id ( @{ $atom_ids{$angle_name} } ) {
+                            my $origin_atom_id =
+                                $current_atom_site->{$atom_id}{'origin_atom_id'};
+
+                            if( ! defined $origin_atom_id) {
+                                push @{ $site_ids{$angle_name} }, undef;
+                                next;
+                            }
+
+                            if( exists $ref_atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
                                 push @{ $site_ids{$angle_name} },
-                                    $ligand_site->{unique_residue_key( $ref_atom_site->{$origin_atom_id} )};
+                                    $ref_atom_site->{$origin_atom_id}{'ligand_site_id'};
                             } else {
-                                push @{ $site_ids{$angle_name} },
-                                    $origin_atom_id;
+                                push @{ $site_ids{$angle_name} }, undef;
                             }
                         }
 
