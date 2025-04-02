@@ -139,7 +139,7 @@ for my $pdbx_file ( @ARGV ) {
         next;
     }
 
-    my $ligand_site_ids = determine_ligand_sites( $atom_site );
+    determine_ligand_sites( $atom_site, $struct_conn );
 
     # Calculates distance between side-chain bonds.
     if( $comparison ) {
@@ -250,6 +250,18 @@ for my $pdbx_file ( @ARGV ) {
                                               { 'id' => $third_group_atom_ids } } );
 
                             for my $first_group_atom_id ( @{ $first_group_atom_ids } ) {
+                                my $origin_first_atom_id =
+                                    $first_group_atom_site->{$first_group_atom_id}
+                                                            {'origin_atom_id'};
+                                my $first_site_id = '.';
+                                if( defined $origin_first_atom_id &&
+                                    exists $atom_site->{$origin_first_atom_id}
+                                                       {'ligand_site_id'} ) {
+                                    $first_site_id =
+                                        $atom_site->{$origin_first_atom_id}
+                                                    {'ligand_site_id'};
+                                }
+
                                 for my $second_group_atom_id ( @{ $second_group_atom_ids } ) {
                                     if( defined $cutoff ) {
                                         my $first_second_bond_length =
@@ -269,37 +281,19 @@ for my $pdbx_file ( @ARGV ) {
                                         next if $first_second_bond_length > $cutoff;
                                     }
 
-                                    for my $third_group_atom_id ( @{ $third_group_atom_ids } ) {
-                                        # TODO: needs to be refactored.
-                                        my ( $origin_first_atom_id,
-                                             $origin_second_atom_id,
-                                             $origin_third_atom_id ) =
-                                            ( $first_group_atom_site->{$first_group_atom_id}
-                                                                      {'origin_atom_id'},
-                                              $second_group_atom_site->{$second_group_atom_id}
-                                                                       {'origin_atom_id'},
-                                              $third_group_atom_site->{$third_group_atom_id}
-                                                                      {'origin_atom_id'} );
-                                        my ( $first_unique_residue_key,
-                                             $second_unique_residue_key,
-                                             $third_unique_residue_key ) =
-                                            ( ( defined $origin_first_atom_id ?
-                                                unique_residue_key( $first_group_atom_site->{$origin_first_atom_id} )
-                                                : undef ),
-                                              ( defined $origin_second_atom_id ?
-                                                unique_residue_key( $second_group_atom_site->{$origin_second_atom_id} )
-                                                : undef ),
-                                              ( defined $origin_third_atom_id ?
-                                                unique_residue_key( $third_group_atom_site->{$origin_third_atom_id} )
-                                                : undef )
-                                            );
-                                        my @site_ids =
-                                            map { exists $ligand_site_ids->{$_} ?
-                                                  $ligand_site_ids->{$_} : '.'}
-                                                ( $first_unique_residue_key,
-                                                  $second_unique_residue_key,
-                                                  $third_unique_residue_key );
+                                    my $origin_second_atom_id =
+                                        $second_group_atom_site->{$second_group_atom_id}
+                                                                 {'origin_atom_id'};
+                                    my $second_site_id = '.';
+                                    if( defined $origin_second_atom_id &&
+                                        exists $atom_site->{$origin_second_atom_id}
+                                                           {'ligand_site_id'} ) {
+                                        $second_site_id =
+                                            $atom_site->{$origin_second_atom_id}
+                                                        {'ligand_site_id'};
+                                    }
 
+                                    for my $third_group_atom_id ( @{ $third_group_atom_ids } ) {
                                         if( defined $cutoff ) {
                                             my $second_third_bond_length =
                                                 bond_length( [
@@ -316,6 +310,18 @@ for my $pdbx_file ( @ARGV ) {
                                                      $third_group_atom_site->{$third_group_atom_id}
                                                                               {'Cartn_z'} ] ] );
                                             next if $second_third_bond_length > $cutoff;
+                                        }
+
+                                        my $origin_third_atom_id =
+                                            $second_group_atom_site->{$third_group_atom_id}
+                                                                     {'origin_atom_id'};
+                                        my $third_site_id = '.';
+                                        if( defined $origin_third_atom_id &&
+                                            exists $atom_site->{$origin_third_atom_id}
+                                                               {'ligand_site_id'} ) {
+                                            $third_site_id =
+                                                $atom_site->{$origin_third_atom_id}
+                                                            {'ligand_site_id'};
                                         }
 
                                         my $angle = bond_angle(
@@ -364,7 +370,7 @@ for my $pdbx_file ( @ARGV ) {
                                           'label_alt_1_id' =>
                                               $first_group_atom_site->{$first_group_atom_id}
                                                                       {'label_alt_id'},
-                                          'site_1_id' => $site_ids[0],
+                                          'site_1_id' => $first_site_id,
                                           'group_2_id' =>
                                               $second_group_atom_site->{$second_group_atom_id}
                                                                       {'[local]_selection_group'},
@@ -389,7 +395,7 @@ for my $pdbx_file ( @ARGV ) {
                                           'label_alt_2_id' =>
                                               $second_group_atom_site->{$first_group_atom_id}
                                                                       {'label_alt_id'},
-                                          'site_2_id' => $site_ids[1],
+                                          'site_2_id' => $second_site_id,
                                           'group_3_id' =>
                                               $third_group_atom_site->{$third_group_atom_id}
                                                                       {'[local]_selection_group'},
@@ -414,7 +420,7 @@ for my $pdbx_file ( @ARGV ) {
                                           'label_alt_3_id' =>
                                               $third_group_atom_site->{$third_group_atom_id}
                                                                       {'label_alt_id'},
-                                          'site_3_id' => $site_ids[2],
+                                          'site_3_id' => $third_site_id,
                                           'value' =>
                                               ( $in_radians ?
                                                 sprintf $sig_figs_max, $angle :
@@ -430,6 +436,18 @@ for my $pdbx_file ( @ARGV ) {
                         }
                     } else {
                         for my $first_group_atom_id ( @{ $first_group_atom_ids } ) {
+                            my $origin_first_atom_id =
+                                $first_group_atom_site->{$first_group_atom_id}
+                                                        {'origin_atom_id'};
+                            my $first_site_id = '.';
+                            if( defined $origin_first_atom_id &&
+                                exists $atom_site->{$origin_first_atom_id}
+                                                   {'ligand_site_id'} ) {
+                                $first_site_id =
+                                    $atom_site->{$origin_first_atom_id}
+                                                {'ligand_site_id'};
+                            }
+
                             my %visited_second_and_third = ();
                             for my $second_group_atom_id ( @{ $second_group_atom_ids } ) {
                                 if( defined $cutoff ) {
@@ -451,6 +469,19 @@ for my $pdbx_file ( @ARGV ) {
                                     next if $first_second_bond_length > $cutoff;
                                 }
 
+
+                                my $origin_second_atom_id =
+                                    $second_group_atom_site->{$second_group_atom_id}
+                                                             {'origin_atom_id'};
+                                my $second_site_id = '.';
+                                if( defined $origin_second_atom_id &&
+                                    exists $atom_site->{$origin_second_atom_id}
+                                                       {'ligand_site_id'} ) {
+                                    $second_site_id =
+                                        $atom_site->{$origin_second_atom_id}
+                                                    {'ligand_site_id'};
+                                }
+
                                 # NOTE: not sure how to do with a cutoff. In one
                                 # hand it should work in both cases, however, the
                                 # second and third atoms are connected. For now,
@@ -463,37 +494,6 @@ for my $pdbx_file ( @ARGV ) {
                                         next if $third_group_atom_id eq $first_group_atom_id ||
                                                 $visited_second_and_third{$second_group_atom_id}
                                                                          {$third_group_atom_id};
-
-                                        # TODO: needs to be refactored.
-                                        my ( $origin_first_atom_id,
-                                             $origin_second_atom_id,
-                                             $origin_third_atom_id ) =
-                                            ( $first_group_atom_site->{$first_group_atom_id}
-                                                                      {'origin_atom_id'},
-                                              $second_group_atom_site->{$second_group_atom_id}
-                                                                       {'origin_atom_id'},
-                                              $second_group_atom_site->{$third_group_atom_id}
-                                                                       {'origin_atom_id'} );
-                                        my ( $first_unique_residue_key,
-                                             $second_unique_residue_key,
-                                             $third_unique_residue_key ) =
-                                            ( ( defined $origin_first_atom_id ?
-                                                unique_residue_key( $first_group_atom_site->{$origin_first_atom_id} )
-                                                : undef ),
-                                              ( defined $origin_second_atom_id ?
-                                                unique_residue_key( $second_group_atom_site->{$origin_second_atom_id} )
-                                                : undef ),
-                                              ( defined $origin_third_atom_id ?
-                                                unique_residue_key( $second_group_atom_site->{$origin_third_atom_id} )
-                                                : undef )
-                                            );
-                                        my @site_ids =
-                                            map { exists $ligand_site_ids->{$_} ?
-                                                  $ligand_site_ids->{$_} : '.'}
-                                                ( $first_unique_residue_key,
-                                                  $second_unique_residue_key,
-                                                  $third_unique_residue_key );
-
                                         # NOTE: the third atom cannot be already
                                         # visited, because there will be too
                                         # much duplications. For now, this
@@ -503,6 +503,18 @@ for my $pdbx_file ( @ARGV ) {
                                                                  {$third_group_atom_id} = 1;
                                         $visited_second_and_third{$third_group_atom_id}
                                                                  {$second_group_atom_id} = 1;
+
+                                        my $origin_third_atom_id =
+                                            $second_group_atom_site->{$third_group_atom_id}
+                                                                     {'origin_atom_id'};
+                                        my $third_site_id = '.';
+                                        if( defined $origin_third_atom_id &&
+                                            exists $atom_site->{$origin_third_atom_id}
+                                                               {'ligand_site_id'} ) {
+                                            $third_site_id =
+                                                $atom_site->{$origin_third_atom_id}
+                                                            {'ligand_site_id'};
+                                        }
 
                                         # TODO: needs to be refactored, because
                                         # the code is almost repeated.
@@ -553,7 +565,7 @@ for my $pdbx_file ( @ARGV ) {
                                           'label_alt_1_id' =>
                                               $first_group_atom_site->{$first_group_atom_id}
                                                                       {'label_alt_id'},
-                                          'site_1_id' => $site_ids[0],
+                                          'site_1_id' => $first_site_id,
                                           'group_2_id' =>
                                               $second_group_atom_site->{$second_group_atom_id}
                                                                        {'[local]_selection_group'},
@@ -578,7 +590,7 @@ for my $pdbx_file ( @ARGV ) {
                                           'label_alt_2_id' =>
                                               $second_group_atom_site->{$first_group_atom_id}
                                                                        {'label_alt_id'},
-                                          'site_2_id' => $site_ids[1],
+                                          'site_2_id' => $second_site_id,
                                           'group_3_id' =>
                                               $second_group_atom_site->{$third_group_atom_id}
                                                                        {'[local]_selection_group'},
@@ -603,7 +615,7 @@ for my $pdbx_file ( @ARGV ) {
                                           'label_alt_3_id' =>
                                               $second_group_atom_site->{$third_group_atom_id}
                                                                        {'label_alt_id'},
-                                          'site_3_id' => $site_ids[2],
+                                          'site_3_id' => $third_site_id,
                                           'value' =>
                                               ( $in_radians ?
                                                 sprintf $sig_figs_max, $angle :
@@ -698,11 +710,9 @@ for my $pdbx_file ( @ARGV ) {
                         next;
                     }
 
-                    my $unique_residue_key =
-                        unique_residue_key( $atom_site->{$origin_atom_id} );
-                    if( exists $ligand_site_ids->{$unique_residue_key} ) {
+                    if( exists $atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
                         push @site_ids,
-                            $ligand_site_ids->{$unique_residue_key};
+                            $atom_site->{$origin_atom_id}{'ligand_site_id'};
                     } else {
                         push @site_ids, '.';
                     }
@@ -835,10 +845,9 @@ for my $pdbx_file ( @ARGV ) {
                     next;
                 }
 
-                my $unique_residue_key =
-                    unique_residue_key( $atom_site->{$origin_atom_id} );
-                if( exists $ligand_site_ids->{$unique_residue_key} ) {
-                    push @site_ids, $ligand_site_ids->{$unique_residue_key};
+                if( exists $atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
+                    push @site_ids,
+                        $atom_site->{$origin_atom_id}{'ligand_site_id'};
                 } else {
                     push @site_ids, '.';
                 }
