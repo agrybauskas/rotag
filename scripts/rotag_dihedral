@@ -215,11 +215,9 @@ for my $pdbx_file ( @ARGV ) {
                         next;
                     }
 
-                    my $unique_residue_key =
-                        unique_residue_key( $atom_site->{$origin_atom_id} );
-                    if( exists $ligand_site_ids->{$unique_residue_key} ) {
+                    if( exists $atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
                         push @site_ids,
-                            $ligand_site_ids->{$unique_residue_key};
+                            $atom_site->{$origin_atom_id}{'ligand_site_id'};
                     } else {
                         push @site_ids, '.';
                     }
@@ -379,11 +377,9 @@ for my $pdbx_file ( @ARGV ) {
                     next;
                 }
 
-                my $unique_residue_key =
-                    unique_residue_key( $atom_site->{$origin_atom_id} );
-                if( exists $ligand_site_ids->{$unique_residue_key} ) {
+                if( exists $atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
                     push @site_ids,
-                        $ligand_site_ids->{$unique_residue_key};
+                        $atom_site->{$origin_atom_id}{'ligand_site_id'};
                 } else {
                     push @site_ids, '.';
                 }
