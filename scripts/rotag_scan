@@ -15,7 +15,8 @@ use ForceField::Parameters;
 use ForceField::NonBonded qw( general );
 use Logging qw( error
                 warning );
-use PDBxParser qw( determine_residue_keys
+use PDBxParser qw( determine_ligand_sites
+                   determine_residue_keys
                    filter
                    mark_selection
                    obtain_pdbx_data
@@ -232,6 +233,8 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
+
+    determine_ligand_sites( $atom_site, $struct_conn );
 
     my $selected_atom_site =
         filter( { 'atom_site' => $atom_site,
