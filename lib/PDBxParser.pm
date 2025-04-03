@@ -1176,13 +1176,22 @@ sub determine_ligand_sites
 
     $struct_conn //= {};
 
+    my %ligand_tracking = ();
     my $ligand_id = 1;
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
         next if $atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
 
+        my $residue_unique_key = unique_residue_key( $atom_site->{$atom_id} );
+
         if( ! exists $atom_site->{$atom_id}{'ligand_site_id'} ) {
-            $atom_site->{$atom_id}{'ligand_site_id'} = $ligand_id;
-            $ligand_id++;
+            if( exists $ligand_tracking{$residue_unique_key} ) {
+                $atom_site->{$atom_id}{'ligand_site_id'} =
+                    $ligand_tracking{$residue_unique_key};
+            } else {
+                $ligand_tracking{$residue_unique_key} = $ligand_id;
+                $atom_site->{$atom_id}{'ligand_site_id'} = $ligand_id;
+                $ligand_id++;
+            }
         }
     }
 
