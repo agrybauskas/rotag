@@ -356,6 +356,9 @@ sub stretchable_bonds
                 ( bond_parameter_name_key( $atom_site,
                                            $bond_atom_ids ) );
 
+            my $alt_stretchable_bond_name = $stretchable_bond_name;
+            $alt_stretchable_bond_name =~ s/\{[A-Za-z0-9]*\}//g;
+
             # Calculates bond length if it is not already calculated.
             my $bond_length_key = join ",", @{ $bond_atom_ids };
             if( ! defined $bond_lengths_cache{$bond_length_key} ) {
@@ -371,7 +374,8 @@ sub stretchable_bonds
                 'order' => $bond_order{$bond_atom_ids->[0]}{$bond_atom_ids->[1]},
                 'rank' => 3,
                 'atom_ids' => $bond_atom_ids,
-                'value' => $bond_lengths_cache{$bond_length_key}
+                'value' => $bond_lengths_cache{$bond_length_key},
+                'alt_name' => $alt_stretchable_bond_name
             };
         }
     }
@@ -497,6 +501,9 @@ sub bendable_angles
                 ( bond_parameter_name_key( $atom_site,
                                            $bond_atom_ids ) );
 
+            my $alt_bendable_angle_name = $bendable_angle_name;
+            $alt_bendable_angle_name =~ s/\{[A-Za-z0-9]*\}//g;
+
             # Calculates bond angle if it is not already calculated.
             my $bond_angle_key = join ",", @{ $bond_atom_ids };
             if( ! defined $bond_angles_cache{$bond_angle_key} ) {
@@ -514,7 +521,8 @@ sub bendable_angles
                                       {$bond_atom_ids->[2]},
                 'rank' => 2,
                 'atom_ids' => $bond_atom_ids,
-                'value' => $bond_angles_cache{$bond_angle_key}
+                'value' => $bond_angles_cache{$bond_angle_key},
+                'alt_name' => $alt_bendable_angle_name
             };
         }
     }
