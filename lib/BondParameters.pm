@@ -217,6 +217,9 @@ sub rotatable_bonds
                              @rotatable_bond_name_keys ),
                        $rotatable_bond_name_keys[0] );
 
+            my $alt_rotatable_bond_name = $rotatable_bond_name;
+            $alt_rotatable_bond_name =~ s/\{[A-Za-z0-9]*\}//g;
+
             # Calculates dihedral angle if it is not already calculated.
             my $dihedral_angle_key = join ",", @{ $bond_atom_ids };
             if( ! defined $dihedral_angles_cache{$dihedral_angle_key} ) {
@@ -233,6 +236,7 @@ sub rotatable_bonds
                 'rank' => 1,
                 'atom_ids' => $bond_atom_ids,
                 'value' => $dihedral_angles_cache{$dihedral_angle_key},
+                'alt_name' => $alt_rotatable_bond_name
             };
         }
     }
@@ -807,6 +811,8 @@ sub bond_parameter_name_key
             $add_any_trailing_atoms && ( $i == 0 || $i == $#{ $bond_atom_ids })?
             '*' :
             $atom_site->{$bond_atom_ids->[$i]}{'label_atom_id'};
+        my $ligand_site_id =
+            $atom_site->{$bond_atom_ids->[$i]}{'ligand_site_id'};
         my $first_unique_residue_key =
             unique_residue_key( $atom_site->{$bond_atom_ids->[$i]} );
         my $second_unique_residue_key =
@@ -823,7 +829,9 @@ sub bond_parameter_name_key
               $atom_site->{$bond_atom_ids->[$i]}{'group_PDB'} eq 'HETATM' &&
               $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'HETATM' ) ?
             '.' : '-';
-        push @bond_parameter_name_key_parts, $atom_symbol, $bond_symbol;
+        my $ligand_symbol = defined $ligand_site_id ? "{$ligand_site_id}": '';
+        push @bond_parameter_name_key_parts,
+            $atom_symbol, $ligand_symbol, $bond_symbol;
     }
     return join '', @bond_parameter_name_key_parts;
 }
