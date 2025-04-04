@@ -44,6 +44,7 @@ use Clone qw( clone );
 use List::MoreUtils qw( any
                         uniq );
 use Sort::Naturally;
+
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -1175,6 +1176,11 @@ sub determine_ligand_sites
     my ( $atom_site, $struct_conn ) = @_;
 
     $struct_conn //= {};
+
+    my %struct_conn_atom_ids =
+        map { $_ => 1 }
+        map { unique_residue_key( $atom_site->{$_} ) }
+           @{ ConnectAtoms::struct_conn_atom_ids( $atom_site, $struct_conn ) };
 
     my %ligand_tracking = ();
     my $ligand_id = 1;
