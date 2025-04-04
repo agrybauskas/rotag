@@ -1189,6 +1189,12 @@ sub determine_ligand_sites
 
         my $residue_unique_key = unique_residue_key( $atom_site->{$atom_id} );
 
+        # Special behaviour for water as there are a lot of them in the
+        # structure. So, only these water that interact are included to the
+        # site.
+        next if $atom_site->{$atom_id}{'label_atom_id'} eq 'HOH' &&
+            ! $struct_conn_atom_ids{$residue_unique_key};
+
         if( ! exists $atom_site->{$atom_id}{'ligand_site_id'} ) {
             if( exists $ligand_tracking{$residue_unique_key} ) {
                 $atom_site->{$atom_id}{'ligand_site_id'} =
