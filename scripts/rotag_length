@@ -435,7 +435,7 @@ for my $pdbx_file ( @ARGV ) {
                       'label_atom_2_id' =>
                           $bond_length_site->{$atom_ids[1]}{'label_atom_id'},
                       'site_2_id' => $site_ids[1],
-                      'type' => $bond_name,
+                      'type' => $bond_lengths->{$residue_unique_key}{$bond_name}{'alt_name'},
                       'value' =>
                           sprintf $sig_figs_max,
                                   $bond_lengths->{$residue_unique_key}

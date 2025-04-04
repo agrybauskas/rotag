@@ -292,7 +292,8 @@ for my $pdbx_file ( @ARGV ) {
                       'site_4_id' => $site_ids[3],
                       'label_atom_4_id' =>
                           $dihedral_site->{$atom_ids[3]}{'label_atom_id'},
-                      'type' => $angle_name,
+                      'type' =>
+                          $dihedral_angles->{$residue_unique_key}{$angle_name}{'alt_name'},
                       'value' => ( $in_radians ?
                                    sprintf $sig_figs_max,
                                            $dihedral_angles->{$residue_unique_key}

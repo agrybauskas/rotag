@@ -773,7 +773,7 @@ for my $pdbx_file ( @ARGV ) {
                       'site_3_id' => $site_ids[2],
                       'label_atom_3_id' =>
                           $bond_angle_site->{$atom_ids[2]}{'label_atom_id'},
-                      'type' => $angle_name,
+                      'type' => $bond_angles->{$residue_unique_key}{$angle_name}{'alt_name'},
                       'value' => ( $in_radians ?
                                    sprintf $sig_figs_max,
                                            $bond_angles->{$residue_unique_key}
