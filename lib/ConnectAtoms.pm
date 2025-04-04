@@ -346,7 +346,7 @@ sub assign_hetatoms
     return [] if ! %{ $struct_conn };
 
     my $struct_conn_atom_ids =
-        struct_conn_atom_ids( $parameters, $atom_site, $struct_conn,
+        struct_conn_atom_ids( $atom_site, $struct_conn,
                               { 'ref_atom_site' => $ref_atom_site } );
 
     return [] if ! @{ $struct_conn_atom_ids };
@@ -680,7 +680,6 @@ sub assign_hetatoms_mainchain
 # Checks if the atom site has interaction paths with other heteroatoms given
 # structure connection data.
 # Input:
-#     $parameters - general parameters (see Parameters.pm);
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $struct_conn - "_struct_conn" data structure.
 # Output:
@@ -689,7 +688,7 @@ sub assign_hetatoms_mainchain
 
 sub struct_conn_atom_ids
 {
-    my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
+    my ( $atom_site, $struct_conn, $options ) = @_;
     my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
 
     $ref_atom_site //= $atom_site;

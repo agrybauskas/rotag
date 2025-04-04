@@ -320,7 +320,7 @@ for my $pdbx_file ( @ARGV ) {
             connect_atoms( $parameters, $residue_site );
 
             my $struct_conn_atom_ids =
-                struct_conn_atom_ids( $parameters, $residue_site, $struct_conn );
+                struct_conn_atom_ids( $residue_site, $struct_conn );
             if( @{ $struct_conn_atom_ids } ) {
                 my @assigned_residue_unique_keys =
                     uniq
