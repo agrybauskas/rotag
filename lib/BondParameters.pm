@@ -848,6 +848,9 @@ sub alt_bond_parameter_names
 {
     my ( $bond_parameter_name ) = @_;
 
+    my $alt_bond_parameter_name = $bond_parameter_name;
+    $alt_bond_parameter_name =~ s/\{[A-Za-z0-9]*\}//g;
+
     my $bond_name_parts = [ split( /(-|\.)/, $bond_parameter_name ) ];
 
     my @atom_name_parts =
@@ -860,10 +863,10 @@ sub alt_bond_parameter_names
         ( 0..$#{ $bond_name_parts } );
 
     if( scalar @atom_name_parts == 1 ) {
-        return [ $bond_parameter_name ];
+        return [ $bond_parameter_name, $alt_bond_parameter_name ];
     }
 
-    my @sorted_bond_parameter_names = ();
+    my @sorted_bond_parameter_names = ( $alt_bond_parameter_name );
     my $permutated_bond_parameter_parts = [];
     if( scalar @atom_name_parts == 4 ) {
         my @first_parts =
