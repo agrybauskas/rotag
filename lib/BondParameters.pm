@@ -170,7 +170,10 @@ sub rotatable_bonds
                 $atom_site->{$third_atom_id}{'hybridization'} eq 'sp3' ||
                 ( $include_hetatoms &&
                   $atom_site->{$fourth_atom_id}{'group_PDB'} eq 'HETATM' ) ) {
-                if( exists $rotatable_bonds_cache{$second_atom_id}{$third_atom_id} ) {
+                if( exists $rotatable_bonds_cache{$second_atom_id}{$third_atom_id} &&
+                    ! ( $include_hetatoms &&
+                        $bond_paths->get_connection_type( $third_atom_id,
+                                                          $fourth_atom_id ) eq 'connections_hetatom' ) ) {
                     push @{ $rotatable_bonds{$fourth_atom_id} },
                         $rotatable_bonds_cache{$second_atom_id}{$third_atom_id};
                 } else {
