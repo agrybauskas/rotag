@@ -389,6 +389,12 @@ sub assign_hetatoms
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
+        my $alt_id =
+            max( map { $_ eq '.' ? 1 : $_ }
+                 map { $ref_atom_site->{$_}{'label_alt_id'} }
+                 keys %{ filter_by_unique_residue_key( $ref_atom_site,
+                                                       $unique_residue_key ) } );
+
         my %visited_atoms = ();
         my %visited_bonds = ();
         while( @next_atom_ids ) {
