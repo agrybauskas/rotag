@@ -16,8 +16,8 @@ _[local]_bond_length.site_2_id
 _[local]_bond_length.type
 _[local]_bond_length.value
 1 MG . B 1 . 148 N . 1925 MG 1 N.MG 2.874527
-2 MG . B 1 . 154 OD1 . 1925 MG 1 OD1.MG 2.428874
-3 MG . B 1 . 156 H . 1925 MG 1 H.MG 2.023655
-4 MG . B 1 . 886 O . 1925 MG 1 O.MG 2.708876
-5 MG . B 1 . 892 H . 1925 MG 1 H.MG 4.405379
+2 MG . B 1 . 886 O . 1925 MG 1 O.MG 2.708876
+3 MG . B 1 . 892 H . 1925 MG 1 H.MG 4.405379
+4 MG . B 1 . 154 OD1 . 1925 MG 1 OD1.MG 2.428874
+5 MG . B 1 . 156 H . 1925 MG 1 H.MG 2.023655
 #
