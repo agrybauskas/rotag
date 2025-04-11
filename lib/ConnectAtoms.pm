@@ -385,14 +385,9 @@ sub assign_hetatoms
         }
     }
 
+    my %tracked_alt_ids = ();
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
-
-        my $alt_id =
-            max( map { $_ eq '.' ? 1 : $_ }
-                 map { $ref_atom_site->{$_}{'label_alt_id'} }
-                 keys %{ filter_by_unique_residue_key( $ref_atom_site,
-                                                       $unique_residue_key ) } );
 
         my %visited_atoms = ();
         my %visited_bonds = ();
@@ -414,6 +409,15 @@ sub assign_hetatoms
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
 
+                if( ! exists $tracked_alt_ids{$connection_unique_key} ) {
+                    ( $tracked_alt_ids{$connection_unique_key} ) =
+                        max( grep { $_ ne '.' }
+                             map { $ref_atom_site->{$_}{'label_alt_id'} }
+                             keys %{ filter_by_unique_residue_key( $ref_atom_site,
+                                                                   $connection_unique_key ) } );
+                    $tracked_alt_ids{$connection_unique_key} //= 1;
+                }
+
                 # Clones, assigns proper and next atom ids.
                 for my $connection_related_atom_id (
                     sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
@@ -432,7 +436,8 @@ sub assign_hetatoms
 
                     $tracked_atom_ids{$connection_related_atom_id} = $last_atom_id;
 
-                    $atom_site->{$last_atom_id}{'label_alt_id'} = $alt_id;
+                    $atom_site->{$last_atom_id}{'label_alt_id'} =
+                        $tracked_alt_ids{$connection_unique_key};
                     $atom_site->{$last_atom_id}{'origin_atom_id'} =
                         $connection_related_atom_id;
 
@@ -487,9 +492,9 @@ sub assign_hetatoms
                                       {$connection_related_atom_id} = 1;
                     }
                 }
-            }
 
-            $alt_id++;
+                $tracked_alt_ids{$connection_unique_key}++;
+            }
         }
 
         if( ! $keep_original ) {
