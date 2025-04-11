@@ -756,8 +756,8 @@ sub combine_bond_parameters
 
 sub filter_bond_parameters
 {
-    my ( $parameters, $bond_parameters, $bond_parameters_filtered_by,
-         $residue_name ) = @_;
+    my ( $parameters, $atom_site, $bond_parameters,
+         $bond_parameters_filtered_by, $residue_name ) = @_;
 
     my %bond_parameters_in_residue =
         defined $bond_parameters_filtered_by->{$residue_name} ?
@@ -778,6 +778,9 @@ sub filter_bond_parameters
                   $bond_parameter_type eq 'bond_angle' ) &&
             ! any { exists $bond_parameters_in_residue{$_} }
                  @{ $alt_bond_parameter_names };
+
+        next if ! any { exists $atom_site->{$_} }
+                     @{ $bond_parameters->{$bond_parameter_name}{'atom_ids'} };
 
         $filtered_bond_parameters{$bond_parameter_name} =
             $bond_parameters->{$bond_parameter_name};

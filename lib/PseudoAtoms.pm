@@ -584,6 +584,7 @@ sub generate_library
                          ( $residue_unique_key, @assigned_unique_keys );
                 %bond_parameters =
                     %{ filter_bond_parameters( $parameters,
+                                               $residue_site,
                                                \%bond_parameters,
                                                $bond_parameters,
                                                $residue_name ) };
@@ -798,6 +799,7 @@ sub calc_favourable_angles
                     @{ $residue_unique_keys };
             %bond_parameters =
                 %{ filter_bond_parameters( $parameters,
+                                           $residue_site,
                                            \%bond_parameters,
                                            $bond_parameters,
                                            $residue_name ) };
