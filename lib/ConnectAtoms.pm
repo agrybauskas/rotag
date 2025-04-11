@@ -375,7 +375,6 @@ sub assign_hetatoms
     # TODO: has to be refactored.
     my @assigned_atom_ids = ();
     my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
-    my $alt_id = 1;
 
     my %tracked_atom_ids = ();
     my %seed_atom_ids = ();
