@@ -752,8 +752,6 @@ sub calc_favourable_angles
 
     my ( $any_key ) = keys %{ $residue_site };
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
-    # my %residue_unique_keys_tbl =
-    #     map { $_ => 1 } @{ $residue_unique_keys };
 
     my $start_atom_ids =
         filter_new( $residue_site,
@@ -798,11 +796,6 @@ sub calc_favourable_angles
                 map  { %{ $all_bond_parameters->{$_} } }
                 grep { exists $all_bond_parameters->{$_} }
                     @{ $residue_unique_keys };
-            # %bond_parameters =
-            #     map { $_ => $bond_parameters{$_} }
-            #     grep { all { defined $residue_unique_keys_tbl{unique_residue_key( $residue_site->{$_} )} }
-            #               @{ $bond_parameters{$_}{'atom_ids'} } }
-            #     keys %bond_parameters;
             %bond_parameters =
                 %{ filter_bond_parameters( $parameters,
                                            \%bond_parameters,
