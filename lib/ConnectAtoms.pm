@@ -13,7 +13,8 @@ our @EXPORT_OK = qw( assign_hetatoms
                      is_connected
                      is_neighbour
                      is_second_neighbour
-                     struct_conn_atom_ids );
+                     struct_conn_atom_ids
+                     struct_conn_residue_keys );
 }
 
 use Carp qw( confess );
@@ -752,6 +753,23 @@ sub struct_conn_atom_ids
     @atom_ids = uniq( keys %{ $atom_site }, @atom_ids );
 
     return \@atom_ids;
+}
+
+#
+# Check all the interaction paths for given atom site in residue unique key form.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $struct_conn - "_struct_conn" data structure.
+# Output:
+#     %related_unique_residue_keys - related residue keys that has interaction
+#     paths from "_struct_conn".
+#
+
+sub struct_conn_residue_keys
+{
+    my ( $atom_site, $struct_conn ) = @_;
+    my %related_unique_residue_keys = ();
+    return \%related_unique_residue_keys;
 }
 
 #

@@ -42,7 +42,8 @@ use ConnectAtoms qw( assign_hetatoms
                      assign_hetatoms_mainchain
                      connect_atoms
                      is_neighbour
-                     is_second_neighbour );
+                     is_second_neighbour
+                     struct_conn_residue_keys );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
 use ForceField::NonBonded qw( general
@@ -421,6 +422,8 @@ sub generate_library
         #           'keep_original' => 0 }
         # );
 
+        my $related_unique_residue_keys = struct_conn_residue_keys();
+
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,
                              $current_atom_site,
@@ -445,6 +448,8 @@ sub generate_library
                 $residue_unique_key,
                 1
             );
+
+            # Retrieves CA atoms as they are atoms where side-chains start of.
             my $atom_ca_id =
                 filter_new( $residue_site,
                             { 'include' => {
@@ -457,6 +462,7 @@ sub generate_library
                 push @target_atom_ids, $atom_ca_id;
             }
 
+            # Adds hetero atom ids as target atoms if declared.
             next if ! $include_hetatoms;
 
             my $hetatom_ids =
