@@ -740,6 +740,8 @@ sub struct_conn_atom_ids
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );
 
+                next if ! exists $all_unique_residue_keys{$connection_unique_key};
+
                 for my $related_connection_atom_id (
                     sort @{ $all_unique_residue_keys{$connection_unique_key} } ) {
                     next if $visited_atoms{$related_connection_atom_id};
@@ -767,8 +769,32 @@ sub struct_conn_atom_ids
 
 sub struct_conn_residue_keys
 {
-    my ( $atom_site, $struct_conn ) = @_;
+    my ( $atom_site, $struct_conn, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+    $ref_atom_site //= $atom_site;
+
+    my $residue_unique_keys =
+        unique_from_struct_conn( $atom_site, $struct_conn );
     my %related_unique_residue_keys = ();
+    for my $residue_unique_key ( keys %{ $residue_unique_keys } ) {
+        my $residue_site =
+            filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
+        my $struct_conn_atom_ids =
+            struct_conn_atom_ids( $residue_site, $struct_conn,
+                                  { 'ref_atom_site' => $ref_atom_site } );
+        for my $struct_conn_atom_id ( @{ $struct_conn_atom_ids } ) {
+            my $struct_unique_key =
+                unique_residue_key( $ref_atom_site->{$struct_conn_atom_id} );
+
+            next if $residue_unique_key eq $struct_unique_key;
+
+            $related_unique_residue_keys{$residue_unique_key}
+                                        {$struct_unique_key} = 1;
+            $related_unique_residue_keys{$struct_unique_key}
+                                        {$residue_unique_key} = 1;
+        }
+    }
+
     return \%related_unique_residue_keys;
 }
 

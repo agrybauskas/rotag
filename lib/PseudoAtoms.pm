@@ -422,7 +422,8 @@ sub generate_library
         #           'keep_original' => 0 }
         # );
 
-        my $related_unique_residue_keys = struct_conn_residue_keys();
+        my $related_unique_residue_keys =
+            struct_conn_residue_keys( $current_atom_site, $struct_conn );
 
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,
