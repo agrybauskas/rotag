@@ -18,7 +18,8 @@ our @EXPORT_OK = qw( calc_favourable_angle
 
 use Carp;
 use Clone qw( clone );
-use List::Util qw( max
+use List::Util qw( any
+                   max
                    shuffle );
 use List::MoreUtils qw( all
                         uniq );
@@ -517,8 +518,18 @@ sub generate_library
                     my $hetatom_unique_key =
                         unique_residue_key( $current_atom_site->{$hetatom_id} );
 
+                    # Checks connections in "_struct_conn".
                     next if ! exists $related_unique_residue_keys->{$residue_unique_key}
                                                                    {$hetatom_unique_key};
+
+                    # Checks connections in "_atom_site".
+                    if( exists $current_atom_site->{$hetatom_id}{'connections_hetatom'} ) {
+                        next if ! any { $_ eq $residue_unique_key }
+                                  map { unique_residue_key( $current_atom_site->{$_} ) }
+                                 grep { exists $current_atom_site->{$_} }
+                                     @{ $current_atom_site->{$hetatom_id}
+                                                            {'connections_hetatom'} };
+                    }
 
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};
