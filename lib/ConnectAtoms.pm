@@ -1038,8 +1038,8 @@ sub connections_from_struct_conn
                   $struct_conn->{$struct_conn_id}{'ptnr1_label_seq_id'} ],
               'label_asym_id' => [
                   $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'} ] ),
-            'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ],
+              'label_atom_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'} ],
         );
         my %atom_selection_2 = (
             $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} eq '.' ?
@@ -1051,25 +1051,27 @@ sub connections_from_struct_conn
                   $struct_conn->{$struct_conn_id}{'ptnr2_label_seq_id'} ],
               'label_asym_id' => [
                   $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'} ] ),
-            'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ],
+              'label_atom_id' => [
+                  $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'} ],
         );
 
-        my ( $atom_id_1 ) = @{ filter_new(
+        my $atom_ids_1 = filter_new(
             $atom_site,
             { 'include' => \%atom_selection_1,
               'return_data' => 'id' },
-        ) };
-        my ( $atom_id_2 ) = @{ filter_new(
+        );
+        my $atom_ids_2 = filter_new(
             $atom_site,
             { 'include' => \%atom_selection_2,
-              'return_data' => 'id' }
-        ) };
+              'return_data' => 'id' },
+        );
 
-        next if ! defined $atom_id_1 || ! defined $atom_id_2;
-
-        $heteroatom_connections{$atom_id_1}{$atom_id_2} = $conn_type;
-        $heteroatom_connections{$atom_id_2}{$atom_id_1} = $conn_type;
+        for my $atom_id_1 ( @{ $atom_ids_1 } ) {
+            for my $atom_id_2 ( @{ $atom_ids_2 } ) {
+                $heteroatom_connections{$atom_id_1}{$atom_id_2} = $conn_type;
+                $heteroatom_connections{$atom_id_2}{$atom_id_1} = $conn_type;
+            }
+        }
     }
 
     return \%heteroatom_connections;
