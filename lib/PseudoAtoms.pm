@@ -518,9 +518,7 @@ sub generate_library
                         unique_residue_key( $current_atom_site->{$hetatom_id} );
 
                     next if ! exists $related_unique_residue_keys->{$residue_unique_key}
-                                                                   {$hetatom_unique_key} ||
-                            ! exists $related_unique_residue_keys->{$hetatom_unique_key}
-                                                                   {$residue_unique_key};
+                                                                   {$hetatom_unique_key};
 
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};
