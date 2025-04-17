@@ -513,7 +513,7 @@ sub generate_library
                 )->[0];
 
                 my @assigned_unique_keys = ();
-                for my $hetatom_id ( @{ $assigned_hetatom_ids } ) {
+                for my $hetatom_id ( sort @{ $assigned_hetatom_ids } ) {
                     my $hetatom_unique_key =
                         unique_residue_key( $current_atom_site->{$hetatom_id} );
 
