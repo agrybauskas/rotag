@@ -513,6 +513,11 @@ sub generate_library
                 )->[0];
 
                 my @assigned_unique_keys = ();
+                # if( exists $related_unique_residue_keys->{$residue_unique_key} ) {
+                #     @assigned_unique_keys =
+                #         keys %{ $related_unique_residue_keys->{$residue_unique_key} };
+                # }
+
                 my %visited_assigned_unique_keys = ();
                 for my $hetatom_id ( @{ $assigned_hetatom_ids } ) {
                     $residue_site->{$hetatom_id} =
