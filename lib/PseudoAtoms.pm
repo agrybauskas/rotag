@@ -513,27 +513,19 @@ sub generate_library
                 )->[0];
 
                 my @assigned_unique_keys = ();
-                # if( exists $related_unique_residue_keys->{$residue_unique_key} ) {
-                #     @assigned_unique_keys =
-                #         keys %{ $related_unique_residue_keys->{$residue_unique_key} };
-                # }
-
-                my %visited_assigned_unique_keys = ();
                 for my $hetatom_id ( @{ $assigned_hetatom_ids } ) {
+                    my $hetatom_unique_key =
+                        unique_residue_key( $current_atom_site->{$hetatom_id} );
+
+                    next if ! exists $related_unique_residue_keys->{$residue_unique_key}
+                                                                   {$hetatom_unique_key} ||
+                            ! exists $related_unique_residue_keys->{$hetatom_unique_key}
+                                                                   {$residue_unique_key};
+
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};
-                    my $assigned_residue_key =
-                        determine_residue_keys(
-                            { $hetatom_id => $residue_site->{$hetatom_id} }
-                        )->[0];
-                    my $simplified_residue_key = change_unique_residue_key(
-                        $assigned_residue_key, { 'label_alt_id' => '?' }
-                    );
 
-                    next if $visited_assigned_unique_keys{$simplified_residue_key};
-                    $visited_assigned_unique_keys{$simplified_residue_key} = 1;
-
-                    push @assigned_unique_keys, $assigned_residue_key;
+                    push @assigned_unique_keys, $hetatom_unique_key;
                 }
 
                 my @missing_atom_names =
