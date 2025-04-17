@@ -727,7 +727,6 @@ sub struct_conn_atom_ids
         my @next_atom_ids = @{ $all_unique_residue_keys{$unique_residue_key} };
 
         my %visited_atoms = ();
-        my %visited_bonds = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = shift @next_atom_ids;
 
@@ -771,6 +770,7 @@ sub struct_conn_residue_keys
 {
     my ( $atom_site, $struct_conn, $options ) = @_;
     my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+
     $ref_atom_site //= $atom_site;
 
     my $residue_unique_keys =
