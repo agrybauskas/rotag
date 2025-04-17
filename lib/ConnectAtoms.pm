@@ -776,13 +776,13 @@ sub struct_conn_residue_keys
     my $residue_unique_keys =
         unique_from_struct_conn( $atom_site, $struct_conn );
     my %related_unique_residue_keys = ();
-    for my $residue_unique_key ( keys %{ $residue_unique_keys } ) {
+    for my $residue_unique_key ( sort keys %{ $residue_unique_keys } ) {
         my $residue_site =
             filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
         my $struct_conn_atom_ids =
             struct_conn_atom_ids( $residue_site, $struct_conn,
                                   { 'ref_atom_site' => $ref_atom_site } );
-        for my $struct_conn_atom_id ( @{ $struct_conn_atom_ids } ) {
+        for my $struct_conn_atom_id ( sort @{ $struct_conn_atom_ids } ) {
             my $struct_unique_key =
                 unique_residue_key( $ref_atom_site->{$struct_conn_atom_id} );
 
