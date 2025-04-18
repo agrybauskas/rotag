@@ -723,6 +723,12 @@ sub struct_conn_atom_ids
     my $connections =
         connections_from_struct_conn( $ref_atom_site, $struct_conn );
 
+    connections_from_atom_site(
+        $atom_site,
+        { 'struct_conn' => $struct_conn,
+          'ref_atom_site' => $ref_atom_site }
+    );
+
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $all_unique_residue_keys{$unique_residue_key} };
 
@@ -1076,5 +1082,22 @@ sub connections_from_struct_conn
 
     return \%heteroatom_connections;
 }
+
+#
+# Returns connections validated with atom_site.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $options{struct_conn} - reads 'struc_conn' and assings connections
+#     appropriately;
+#     $options{ref_atom_site} - reference atom site.
+# Output:
+#     %connections - connections where there are connections.
+#
+
+sub connections_from_atom_site
+{
+
+}
+
 
 1;
