@@ -14,6 +14,7 @@ our @EXPORT_OK = qw( assign_hetatoms
                      is_neighbour
                      is_second_neighbour
                      struct_conn_atom_ids
+                     struct_conn_atom_ids_new
                      struct_conn_residue_keys );
 }
 
@@ -754,6 +755,21 @@ sub struct_conn_atom_ids
     @atom_ids = uniq( keys %{ $atom_site }, @atom_ids );
 
     return \@atom_ids;
+}
+
+
+#
+# Checks if the atom site has interaction paths with other heteroatoms given
+# structure connection data.
+# Input:
+#     $atom_site - atom site data structure (see PDBxParser.pm);
+#     $struct_conn - "_struct_conn" data structure.
+# Output:
+#     %struct_conn_table -- related atom ids.
+#
+
+sub struct_conn_atom_ids_new
+{
 }
 
 #
