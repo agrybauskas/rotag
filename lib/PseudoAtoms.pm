@@ -45,6 +45,7 @@ use ConnectAtoms qw( assign_hetatoms
                      is_neighbour
                      is_second_neighbour
                      struct_conn_atom_ids
+                     struct_conn_atom_ids_new
                      struct_conn_residue_keys );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
@@ -516,6 +517,12 @@ sub generate_library
 
                 my $struct_conn_atom_ids =
                     struct_conn_atom_ids(
+                        $residue_site, $struct_conn,
+                        { 'ref_atom_site' => $current_atom_site }
+                );
+
+                my $struct_conn_atom_ids_new =
+                    struct_conn_atom_ids_new(
                         $residue_site, $struct_conn,
                         { 'ref_atom_site' => $current_atom_site }
                 );

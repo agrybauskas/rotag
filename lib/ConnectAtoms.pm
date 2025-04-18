@@ -770,6 +770,22 @@ sub struct_conn_atom_ids
 
 sub struct_conn_atom_ids_new
 {
+    my ( $atom_site, $struct_conn, $options ) = @_;
+    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
+
+    $ref_atom_site //= $atom_site;
+
+    my %struct_conn_table = ();
+
+    return \%struct_conn_table if ! defined $struct_conn || ! %{ $struct_conn };
+
+    my $unique_residue_keys =
+        unique_from_struct_conn( $atom_site, $struct_conn,
+                                 { 'no_hetatoms' => 1 } );
+
+    return \%struct_conn_table if ! %{ $unique_residue_keys };
+
+    return \%struct_conn_table;
 }
 
 #
