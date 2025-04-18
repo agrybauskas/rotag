@@ -1096,7 +1096,11 @@ sub connections_from_struct_conn
 
 sub connections_from_atom_site
 {
+    my ( $atom_site, $options ) = @_;
+    my ( $struct_conn, $ref_atom_site ) =
+        ( $options->{'struct_conn'}, $options->{'ref_atom_site'} );
 
+    $ref_atom_site //= $atom_site;
 }
 
 
