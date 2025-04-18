@@ -44,6 +44,7 @@ use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
                      is_neighbour
                      is_second_neighbour
+                     struct_conn_atom_ids
                      struct_conn_residue_keys );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
@@ -513,6 +514,12 @@ sub generate_library
                     { 'exclude_dot' => 1 }
                 )->[0];
 
+                my $struct_conn_atom_ids =
+                    struct_conn_atom_ids(
+                        $residue_site, $struct_conn,
+                        { 'ref_atom_site' => $current_atom_site }
+                );
+
                 my @assigned_unique_keys = ();
                 for my $hetatom_id ( sort @{ $assigned_hetatom_ids } ) {
                     my $hetatom_unique_key =
@@ -523,13 +530,7 @@ sub generate_library
                                                                    {$hetatom_unique_key};
 
                     # Checks connections in "_atom_site".
-                    if( exists $current_atom_site->{$hetatom_id}{'connections_hetatom'} ) {
-                        next if ! any { $_ eq $residue_unique_key }
-                                  map { unique_residue_key( $current_atom_site->{$_} ) }
-                                 grep { exists $current_atom_site->{$_} }
-                                     @{ $current_atom_site->{$hetatom_id}
-                                                            {'connections_hetatom'} };
-                    }
+                    next if ! any { $_ eq $hetatom_id } @{ $struct_conn_atom_ids };
 
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};
