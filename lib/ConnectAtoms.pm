@@ -1101,6 +1101,30 @@ sub connections_from_atom_site
         ( $options->{'struct_conn'}, $options->{'ref_atom_site'} );
 
     $ref_atom_site //= $atom_site;
+    $struct_conn //= {};
+
+    my $unique_residue_keys =
+        unique_from_struct_conn( $atom_site, $struct_conn,
+                                 { 'no_hetatoms' => 1 } );
+
+    # use Data::Dumper;
+    # print STDERR Dumper "Call";
+    for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        # print STDERR Dumper $unique_residue_key;
+        my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
+
+        my %visited_atoms = ();
+        while( @next_atom_ids ) {
+            my ( $atom_id ) = shift @next_atom_ids;
+
+            next if $visited_atoms{$atom_id};
+            $visited_atoms{$atom_id} = 1;
+
+            # print STDERR Dumper $atom_site->{$atom_id}{'label_atom_id'};
+        }
+
+        # print STDERR Dumper "-----------------------";
+    }
 }
 
 
