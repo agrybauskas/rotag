@@ -162,6 +162,12 @@ sub get_atom_id_to
     return $self->{'to'}{$atom_id};
 }
 
+sub get_all_connections
+{
+    my ( $self ) = @_;
+    return $self->{'connection_type'};
+}
+
 sub get_connection_type
 {
     my ( $self, $atom_id_from, $atom_id_to ) = @_;

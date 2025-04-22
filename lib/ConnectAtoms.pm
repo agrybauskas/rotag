@@ -1115,6 +1115,7 @@ sub connections_from_atom_site
     my $bond_paths = BondPath->new( { 'atom_site' => $ref_atom_site,
                                       'start_atom_ids' => \@start_atom_ids,
                                       'include_hetatoms' => 1 } );
+    my $connections = $bond_paths->get_all_connections();
 
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
