@@ -159,7 +159,7 @@ sub get_atom_order
 sub get_atom_id_to
 {
     my ( $self, $atom_id ) = @_;
-    return $self->{'to'}{$atom_id}
+    return $self->{'to'}{$atom_id};
 }
 
 sub get_connection_type
