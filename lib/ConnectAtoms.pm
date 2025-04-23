@@ -32,6 +32,7 @@ use Measure qw( around_distance
 use PDBxParser qw( filter
                    filter_by_unique_residue_key
                    filter_new
+                   follow_hetatoms
                    replace_atom_site_ids
                    unique_residue_key );
 use Version qw( $VERSION );
@@ -775,17 +776,16 @@ sub struct_conn_residue_keys
         unique_from_struct_conn( $atom_site, $struct_conn,
                                  { 'no_hetatoms' => 1 } );
 
-    my @start_atom_ids =
-        uniq map { @{ $unique_residue_keys->{$_} } }
-        keys %{ $unique_residue_keys };
-
-    my $bond_paths = BondPath->new( { 'atom_site' => $atom_site,
-                                      'start_atom_ids' => \@start_atom_ids,
-                                      'include_hetatoms' => 1 } );
-    my $connections = $bond_paths->get_all_connections();
-
     my %related_unique_residue_keys = ();
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        my $bond_paths =
+            BondPath->new( { 'atom_site' => $atom_site,
+                             'start_atom_ids' =>
+                                 $unique_residue_keys->{$unique_residue_key},
+                             'include_hetatoms' => 1 } );
+
+        my $connections = $bond_paths->get_all_connections();
+
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
         my %visited_atoms = ();
