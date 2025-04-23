@@ -769,10 +769,7 @@ sub struct_conn_atom_ids
 
 sub struct_conn_residue_keys
 {
-    my ( $atom_site, $struct_conn, $options ) = @_;
-    my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
-
-    $ref_atom_site //= $atom_site;
+    my ( $atom_site, $struct_conn ) = @_;
 
     my $unique_residue_keys =
         unique_from_struct_conn( $atom_site, $struct_conn,
@@ -782,7 +779,7 @@ sub struct_conn_residue_keys
         uniq map { @{ $unique_residue_keys->{$_} } }
         keys %{ $unique_residue_keys };
 
-    my $bond_paths = BondPath->new( { 'atom_site' => $ref_atom_site,
+    my $bond_paths = BondPath->new( { 'atom_site' => $atom_site,
                                       'start_atom_ids' => \@start_atom_ids,
                                       'include_hetatoms' => 1 } );
     my $connections = $bond_paths->get_all_connections();
@@ -799,12 +796,13 @@ sub struct_conn_residue_keys
             $visited_atoms{$atom_id} = 1;
 
             my @related_atom_ids =
+                grep { $atom_site->{$_}{'group_PDB'} ne 'ATOM' }
                 grep { ! exists $visited_atoms{$_} }
                 keys %{ $connections->{$atom_id} };
 
             for my $related_atom_id ( @related_atom_ids ) {
                 my $related_unique_residue_key =
-                    unique_residue_key( $ref_atom_site->{$related_atom_id} );
+                    unique_residue_key( $atom_site->{$related_atom_id} );
 
                 next if $related_unique_residue_key eq $unique_residue_key;
 
