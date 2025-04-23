@@ -525,12 +525,8 @@ sub generate_library
                     my $hetatom_unique_key =
                         unique_residue_key( $current_atom_site->{$hetatom_id} );
 
-                    # Checks connections in "_struct_conn".
                     next if ! exists $related_unique_residue_keys->{$residue_unique_key}
                                                                    {$hetatom_unique_key};
-
-                    # Checks connections in "_atom_site".
-                    next if ! any { $_ eq $hetatom_id } @{ $struct_conn_atom_ids };
 
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};
