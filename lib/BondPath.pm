@@ -3,6 +3,8 @@ package BondPath;
 use strict;
 use warnings;
 
+use Clone qw( clone );
+
 use AtomProperties qw( sort_atom_ids_by_name
                        sort_by_unique_residue_key );
 use PDBxParser qw( filter_new );
@@ -12,14 +14,15 @@ use PDBxParser qw( filter_new );
 sub new
 {
     my ( $class, $args ) = @_;
-    my ( $atom_site, $start_atom_ids, $start_atom_names, $include_hetatoms,
-         $ignore_connections, $include_visited ) =
+    my ( $atom_site, $start_atom_names, $include_hetatoms, $ignore_connections,
+         $include_visited ) =
         ( $args->{'atom_site'},
-          $args->{'start_atom_ids'},
           $args->{'start_atom_names'},
           $args->{'include_hetatoms'},
           $args->{'ignore_connections'},
           $args->{'include_visited'} );
+
+    my $start_atom_ids = clone $args->{'start_atom_ids'};
 
     my $self = {};
 
