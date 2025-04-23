@@ -769,79 +769,48 @@ sub struct_conn_atom_ids
 
 sub struct_conn_residue_keys
 {
-    # my ( $atom_site, $options ) = @_;
-    # my ( $struct_conn, $ref_atom_site ) =
-    #     ( $options->{'struct_conn'}, $options->{'ref_atom_site'} );
-
-    # $ref_atom_site //= $atom_site;
-    # $struct_conn //= {};
-
-    # my $unique_residue_keys =
-    #     unique_from_struct_conn( $atom_site, $struct_conn,
-    #                              { 'no_hetatoms' => 1 } );
-
-    # my @start_atom_ids =
-    #     uniq map { @{ $unique_residue_keys->{$_} } }
-    #     keys %{ $unique_residue_keys };
-
-    # my $bond_paths = BondPath->new( { 'atom_site' => $ref_atom_site,
-    #                                   'start_atom_ids' => \@start_atom_ids,
-    #                                   'include_hetatoms' => 1 } );
-    # my $connections = $bond_paths->get_all_connections();
-
-    # my %related_unique_residue_keys = ();
-    # for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
-    #     my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
-
-    #     my %visited_atoms = ();
-    #     while( @next_atom_ids ) {
-    #         my ( $atom_id ) = shift @next_atom_ids;
-
-    #         next if $visited_atoms{$atom_id};
-    #         $visited_atoms{$atom_id} = 1;
-
-    #         my $related_unique_residue_key =
-    #             unique_residue_key( $ref_atom_site->{$atom_id} );
-
-    #         push @next_atom_ids,
-    #             grep { ! exists $visited_atoms{$_} }
-    #             keys %{ $connections->{$atom_id} };
-
-    #         next if $related_unique_residue_key eq $unique_residue_key;
-
-    #         $related_unique_residue_keys{$unique_residue_key}
-    #                                     {$related_unique_residue_key} = 1;
-    #         $related_unique_residue_keys{$related_unique_residue_key}
-    #                                     {$unique_residue_key} = 1;
-    #     }
-    # }
-
-    # return \%related_unique_residue_keys;
-
     my ( $atom_site, $struct_conn, $options ) = @_;
     my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
 
     $ref_atom_site //= $atom_site;
 
-    my $residue_unique_keys =
-        unique_from_struct_conn( $atom_site, $struct_conn );
+    my $unique_residue_keys =
+        unique_from_struct_conn( $atom_site, $struct_conn,
+                                 { 'no_hetatoms' => 1 } );
+
+    my @start_atom_ids =
+        uniq map { @{ $unique_residue_keys->{$_} } }
+        keys %{ $unique_residue_keys };
+
+    my $bond_paths = BondPath->new( { 'atom_site' => $ref_atom_site,
+                                      'start_atom_ids' => \@start_atom_ids,
+                                      'include_hetatoms' => 1 } );
+    my $connections = $bond_paths->get_all_connections();
+
     my %related_unique_residue_keys = ();
-    for my $residue_unique_key ( sort keys %{ $residue_unique_keys } ) {
-        my $residue_site =
-            filter_by_unique_residue_key( $atom_site, $residue_unique_key, 1 );
-        my $struct_conn_atom_ids =
-            struct_conn_atom_ids( $residue_site, $struct_conn,
-                                  { 'ref_atom_site' => $ref_atom_site } );
-        for my $struct_conn_atom_id ( sort @{ $struct_conn_atom_ids } ) {
-            my $struct_unique_key =
-                unique_residue_key( $ref_atom_site->{$struct_conn_atom_id} );
+    for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
-            next if $residue_unique_key eq $struct_unique_key;
+        my %visited_atoms = ();
+        while( @next_atom_ids ) {
+            my ( $atom_id ) = shift @next_atom_ids;
 
-            $related_unique_residue_keys{$residue_unique_key}
-                                        {$struct_unique_key} = 1;
-            $related_unique_residue_keys{$struct_unique_key}
-                                        {$residue_unique_key} = 1;
+            next if $visited_atoms{$atom_id};
+            $visited_atoms{$atom_id} = 1;
+
+            my $related_unique_residue_key =
+                unique_residue_key( $ref_atom_site->{$atom_id} );
+
+            push @next_atom_ids,
+                grep { ! exists $visited_atoms{$_} }
+                keys %{ $connections->{$atom_id} };
+
+            next if $related_unique_residue_key eq $unique_residue_key;
+
+            $related_unique_residue_keys{$unique_residue_key}
+                                        {$related_unique_residue_key} = 1;
+            $related_unique_residue_keys{$related_unique_residue_key}
+                                        {$unique_residue_key} = 1;
         }
     }
 
