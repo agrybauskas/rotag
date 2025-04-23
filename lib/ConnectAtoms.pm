@@ -724,7 +724,7 @@ sub struct_conn_atom_ids
     my $connections =
         connections_from_struct_conn( $ref_atom_site, $struct_conn );
 
-    connections_from_atom_site(
+    connection_path_from_atom_site(
         $atom_site,
         { 'struct_conn' => $struct_conn,
           'ref_atom_site' => $ref_atom_site }
@@ -1085,7 +1085,8 @@ sub connections_from_struct_conn
 }
 
 #
-# Returns connections validated with atom_site.
+# Returns connection path (if start atom id is related to the specific) path
+# validated with atom_site.
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $options{struct_conn} - reads 'struc_conn' and assings connections
@@ -1095,7 +1096,7 @@ sub connections_from_struct_conn
 #     %connections - connections where there are connections.
 #
 
-sub connections_from_atom_site
+sub connection_path_from_atom_site
 {
     my ( $atom_site, $options ) = @_;
     my ( $struct_conn, $ref_atom_site ) =
@@ -1117,6 +1118,7 @@ sub connections_from_atom_site
                                       'include_hetatoms' => 1 } );
     my $connections = $bond_paths->get_all_connections();
 
+    my %related_unique_residue_keys = ();
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
@@ -1126,8 +1128,24 @@ sub connections_from_atom_site
 
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
+
+            my $related_unique_residue_key =
+                unique_residue_key( $ref_atom_site->{$atom_id} );
+
+            push @next_atom_ids,
+                grep { ! exists $visited_atoms{$_} }
+                keys %{ $connections->{$atom_id} };
+
+            next if $related_unique_residue_key eq $unique_residue_key;
+
+            $related_unique_residue_keys{$unique_residue_key}
+                                        {$related_unique_residue_key} = 1;
+            $related_unique_residue_keys{$related_unique_residue_key}
+                                        {$unique_residue_key} = 1;
         }
     }
+
+    return \%related_unique_residue_keys;
 }
 
 
