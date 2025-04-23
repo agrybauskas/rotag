@@ -38,7 +38,8 @@ sub new
     my @next_atom_ids =
         grep { $atom_site->{$_}{'group_PDB'} ne 'HETATM' }
         grep { defined $_ }
-             ( @{ sort_by_unique_residue_key( $start_atom_ids, $atom_site ) } );
+             ( shift @{ sort_by_unique_residue_key( $start_atom_ids,
+                                                    $atom_site ) } );
 
     my %bond_paths = ();
     my $atom_order_idx = 1;
