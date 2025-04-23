@@ -798,19 +798,23 @@ sub struct_conn_residue_keys
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
-            my $related_unique_residue_key =
-                unique_residue_key( $ref_atom_site->{$atom_id} );
-
-            push @next_atom_ids,
+            my @related_atom_ids =
                 grep { ! exists $visited_atoms{$_} }
                 keys %{ $connections->{$atom_id} };
 
-            next if $related_unique_residue_key eq $unique_residue_key;
+            for my $related_atom_id ( @related_atom_ids ) {
+                my $related_unique_residue_key =
+                    unique_residue_key( $ref_atom_site->{$related_atom_id} );
 
-            $related_unique_residue_keys{$unique_residue_key}
-                                        {$related_unique_residue_key} = 1;
-            $related_unique_residue_keys{$related_unique_residue_key}
-                                        {$unique_residue_key} = 1;
+                next if $related_unique_residue_key eq $unique_residue_key;
+
+                $related_unique_residue_keys{$unique_residue_key}
+                                            {$related_unique_residue_key} = 1;
+                $related_unique_residue_keys{$related_unique_residue_key}
+                                            {$unique_residue_key} = 1;
+
+                push @next_atom_ids, $related_atom_id;
+            }
         }
     }
 
