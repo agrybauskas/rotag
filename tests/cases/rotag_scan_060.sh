@@ -2,4 +2,4 @@
 
 pdbx_file=$(dirname "$0")/../inputs/hetatoms/2bama-active-site-with-ca-002.cif
 
-rotag_scan -H -a '..120.0..;OH.CA=3.0..1.0..4.0;OE1.CA=3.0..1.0..4.0' ${pdbx_file}
+rotag_scan -H -a '..120.0..;OH.CA=3.0..1.0..4.0;OE1.CA=4.0..1.0..5.0' ${pdbx_file}
