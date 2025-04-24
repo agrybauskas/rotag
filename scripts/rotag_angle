@@ -695,7 +695,8 @@ for my $pdbx_file ( @ARGV ) {
         for my $residue_unique_key ( sort keys %{ $bond_angles } ) {
             for my $angle_name (
                 sort { $bond_angles->{$residue_unique_key}{$a}{'order'} <=>
-                       $bond_angles->{$residue_unique_key}{$b}{'order'} }
+                       $bond_angles->{$residue_unique_key}{$b}{'order'} ||
+                       $a cmp $b }
                 keys %{ $bond_angles->{$residue_unique_key} } ) {
                 my @atom_ids = @{ $bond_angles->{$residue_unique_key}
                                                 {$angle_name}{'atom_ids'} };

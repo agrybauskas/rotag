@@ -599,11 +599,13 @@ sub generate_library
                                                $bond_parameters,
                                                $residue_name ) };
 
+                # TODO: a good place to make an parameter name sorting function.
                 my @bond_parameter_names =
                     sort { $bond_parameters{$a}{'order'} <=>
                            $bond_parameters{$b}{'order'} ||
                            $bond_parameters{$a}{'rank'} <=>
-                           $bond_parameters{$b}{'rank'} }
+                           $bond_parameters{$b}{'rank'} ||
+                           $a cmp $b }
                     keys %bond_parameters;
 
                 my ( $allowed_angles, $energy_sums, $rmsds ) =
@@ -825,7 +827,8 @@ sub calc_favourable_angles
                 sort { $bond_parameters{$a}{'order'} <=>
                        $bond_parameters{$b}{'order'} ||
                        $bond_parameters{$a}{'rank'} <=>
-                       $bond_parameters{$b}{'rank'} }
+                       $bond_parameters{$b}{'rank'} ||
+                       $a cmp $b }
                 keys %bond_parameters;
             @parameter_names_sorted =
                 @parameter_names_sorted[$#parameter_names_sorted-$parameter_count_diff+1..$#parameter_names_sorted];
@@ -985,11 +988,13 @@ sub calc_favourable_angle
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
 
+    # TODO: a good place to make an parameter name sorting function.
     my @bond_parameter_names =
         sort { $bond_parameters->{$a}{'order'} <=>
                $bond_parameters->{$b}{'order'} ||
                $bond_parameters->{$a}{'rank'} <=>
-               $bond_parameters->{$b}{'rank'} }
+               $bond_parameters->{$b}{'rank'} ||
+               $a cmp $b }
         keys %{ $bond_parameters };
 
     my @allowed_bond_parameters;
