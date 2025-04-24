@@ -28,10 +28,7 @@ use Logging qw( info
 use threads;
 
 use BondParameters qw( alt_bond_parameter_names
-                       collect_bond_lengths
-                       collect_bond_angles
                        collect_bond_parameters
-                       collect_dihedral_angles
                        detect_bond_parameter_type
                        bendable_angles
                        filter_bond_parameters
