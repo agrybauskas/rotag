@@ -422,7 +422,9 @@ sub generate_library
         # );
 
         my $related_unique_residue_keys =
-            struct_conn_residue_keys( $current_atom_site, $struct_conn );
+            struct_conn_residue_keys( $parameters,
+                                      $current_atom_site,
+                                      $struct_conn );
 
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,
@@ -523,7 +525,11 @@ sub generate_library
                         unique_residue_key( $current_atom_site->{$hetatom_id} );
 
                     next if ! exists $related_unique_residue_keys->{$residue_unique_key}
-                                                                   {$hetatom_unique_key};
+                                                                   {$hetatom_unique_key}
+                                                                   {'related'};
+                    next if $related_unique_residue_keys->{$residue_unique_key}
+                                                          {$hetatom_unique_key}
+                                                          {'mainchain'};
 
                     $residue_site->{$hetatom_id} =
                         $current_atom_site->{$hetatom_id};

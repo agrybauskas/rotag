@@ -770,7 +770,10 @@ sub struct_conn_atom_ids
 
 sub struct_conn_residue_keys
 {
-    my ( $atom_site, $struct_conn ) = @_;
+    my ( $parameters, $atom_site, $struct_conn ) = @_;
+
+    my %mainchain_atom_names =
+        map { $_ => 1 } @{ $parameters->{'_[local]_mainchain_atom_names'} };
 
     my $unique_residue_keys =
         unique_from_struct_conn( $atom_site, $struct_conn,
@@ -795,6 +798,10 @@ sub struct_conn_residue_keys
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
+            my $is_atom_mainchain =
+                exists $mainchain_atom_names{$atom_site->{$atom_id}{'label_atom_id'}} ?
+                1 : 0;
+
             my @related_atom_ids =
                 grep { $atom_site->{$_}{'group_PDB'} ne 'ATOM' }
                 grep { ! exists $visited_atoms{$_} }
@@ -806,10 +813,27 @@ sub struct_conn_residue_keys
 
                 next if $related_unique_residue_key eq $unique_residue_key;
 
+                my $is_related_atom_mainchain =
+                    exists $mainchain_atom_names{$atom_site->{$related_atom_id}{'label_atom_id'}} ?
+                    1 : 0;
+
+                my $is_connection_in_mainchain =
+                    ( $is_atom_mainchain || $is_related_atom_mainchain ) ? 1 : 0;
+
                 $related_unique_residue_keys{$unique_residue_key}
-                                            {$related_unique_residue_key} = 1;
+                                            {$related_unique_residue_key}
+                                            {'related'} = 1;
                 $related_unique_residue_keys{$related_unique_residue_key}
-                                            {$unique_residue_key} = 1;
+                                            {$unique_residue_key}
+                                            {'related'} = 1;
+                $related_unique_residue_keys{$unique_residue_key}
+                                            {$related_unique_residue_key}
+                                            {'mainchain'} =
+                    $is_connection_in_mainchain;
+                $related_unique_residue_keys{$related_unique_residue_key}
+                                            {$unique_residue_key}
+                                            {'mainchain'} =
+                    $is_connection_in_mainchain;
 
                 push @next_atom_ids, $related_atom_id;
             }
