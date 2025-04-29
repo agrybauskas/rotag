@@ -798,9 +798,12 @@ sub struct_conn_residue_keys
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
+            my $atom_group = $atom_site->{$atom_id}{'group_PDB'};
+            my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
+
             my $is_atom_mainchain =
-                exists $mainchain_atom_names{$atom_site->{$atom_id}{'label_atom_id'}} ?
-                1 : 0;
+                ( exists $mainchain_atom_names{$atom_name} &&
+                  $atom_group ne 'HETATM' )  ? 1 : 0;
 
             my @related_atom_ids =
                 grep { $atom_site->{$_}{'group_PDB'} ne 'ATOM' }
@@ -813,9 +816,14 @@ sub struct_conn_residue_keys
 
                 next if $related_unique_residue_key eq $unique_residue_key;
 
+                my $related_atom_group =
+                    $atom_site->{$related_atom_id}{'group_PDB'};
+                my $related_atom_name =
+                    $atom_site->{$related_atom_id}{'label_atom_id'};
+
                 my $is_related_atom_mainchain =
-                    exists $mainchain_atom_names{$atom_site->{$related_atom_id}{'label_atom_id'}} ?
-                    1 : 0;
+                    ( exists $mainchain_atom_names{$related_atom_name} &&
+                      $related_atom_group ne 'HETATM' ) ? 1 : 0;
 
                 my $is_connection_in_mainchain =
                     ( $is_atom_mainchain || $is_related_atom_mainchain ) ? 1 : 0;
