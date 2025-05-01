@@ -837,8 +837,14 @@ sub calc_favourable_angles
                 keys %bond_parameters;
 
             my $joint_bond_parameter_names = join ',', @parameter_names_sorted;
-            $allowed_bond_parameters{$joint_bond_parameter_names}{'names'} =
-                { map { $_ => 1 } @parameter_names_sorted };
+            foreach( keys %bond_parameters ) {
+                $allowed_bond_parameters{$joint_bond_parameter_names}{'types'}
+                                        {$_}{'order'} =
+                    $bond_parameters{$_}{'order'};
+                $allowed_bond_parameters{$joint_bond_parameter_names}{'types'}
+                                        {$_}{'rank'} =
+                    $bond_parameters{$_}{'rank'};
+            }
 
             @parameter_names_sorted =
                 grep { ! exists $visited_bond_parameters{$_} }
