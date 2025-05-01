@@ -801,6 +801,7 @@ sub calc_favourable_angles
         }
     }
 
+    my @allowed_names;
     my @allowed_bond_parameters;
     my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
@@ -833,6 +834,9 @@ sub calc_favourable_angles
                        $bond_parameters{$b}{'rank'} ||
                        $a cmp $b }
                 keys %bond_parameters;
+
+            push @allowed_names, clone \@parameter_names_sorted;
+
             @parameter_names_sorted =
                 @parameter_names_sorted[$#parameter_names_sorted-$parameter_count_diff+1..$#parameter_names_sorted];
 
