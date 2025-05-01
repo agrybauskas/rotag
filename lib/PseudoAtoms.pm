@@ -802,6 +802,7 @@ sub calc_favourable_angles
     }
 
     my %visited_bond_parameters;
+    my %bond_parameter_tracker;
     my @allowed_bond_parameters;
     my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
@@ -830,7 +831,7 @@ sub calc_favourable_angles
                        $a cmp $b }
                 keys %bond_parameters;
 
-            my @parameter_names_sorted_all = @{ clone \@parameter_names_sorted };
+            my $parameter_name_comb = join ',', @parameter_names_sorted;
 
             @parameter_names_sorted =
                 grep { ! exists $visited_bond_parameters{$_} }
