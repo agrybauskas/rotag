@@ -802,7 +802,6 @@ sub calc_favourable_angles
     }
 
     my %visited_bond_parameters;
-    my %allowed_bond_parameters;
     my @allowed_bond_parameters;
     my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
@@ -924,15 +923,6 @@ sub calc_favourable_angles
             if( scalar @{ $next_allowed_bond_parameters } > 0 ) {
                 @allowed_bond_parameters = @{ $next_allowed_bond_parameters };
                 @allowed_energies = @{ $next_allowed_energies };
-
-                for my $i ( 0..$#parameter_names_sorted_all ) {
-                    my $parameter_name = $parameter_names_sorted_all[$i];
-                    for my $parameter_values ( @allowed_bond_parameters ) {
-                        push @{ $allowed_bond_parameters{$parameter_name} },
-                            $parameter_values->[$i];
-                    }
-                }
-
                 print info(
                     { message =>
                           $residue_site->{$atom_id}{'pdbx_PDB_model_num'} . " " .
