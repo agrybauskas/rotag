@@ -802,6 +802,7 @@ sub calc_favourable_angles
     }
 
     my %visited_bond_parameters;
+    my %allowed_bond_parameters;
     my @allowed_bond_parameters;
     my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
@@ -834,6 +835,11 @@ sub calc_favourable_angles
                        $bond_parameters{$b}{'rank'} ||
                        $a cmp $b }
                 keys %bond_parameters;
+
+            my $joint_bond_parameter_names = join ',', @parameter_names_sorted;
+            $allowed_bond_parameters{$joint_bond_parameter_names}{'names'} =
+                { map { $_ => 1 } @parameter_names_sorted };
+
             @parameter_names_sorted =
                 grep { ! exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
@@ -883,6 +889,10 @@ sub calc_favourable_angles
                         @default_allowed_energies;
                 }
             }
+
+            # Marks bond parameter combinations.
+            $allowed_bond_parameters{$joint_bond_parameter_names}{'values'} =
+                clone \@allowed_bond_parameters;
 
             # Marks visited atoms.
             $visited_atom_ids{$atom_id} = 1;
