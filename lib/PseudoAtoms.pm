@@ -823,11 +823,6 @@ sub calc_favourable_angles
 
             next if ! %bond_parameters;
 
-            my $parameter_count_diff =
-                scalar( keys %bond_parameters ) -
-                ( defined $allowed_bond_parameters[0] ?
-                  scalar( @{ $allowed_bond_parameters[0] } ) : 0 );
-
             my @parameter_names_sorted =
                 sort { $bond_parameters{$a}{'order'} <=>
                        $bond_parameters{$b}{'order'} ||
