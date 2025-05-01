@@ -836,6 +836,7 @@ sub calc_favourable_angles
                        $a cmp $b }
                 keys %bond_parameters;
 
+            # TODO: make it an object.
             my $joint_bond_parameter_names = join ',', @parameter_names_sorted;
             foreach( keys %bond_parameters ) {
                 $allowed_bond_parameters{$joint_bond_parameter_names}{'types'}
@@ -851,8 +852,6 @@ sub calc_favourable_angles
                 @parameter_names_sorted;
 
             for my $parameter_name ( @parameter_names_sorted ) {
-                $visited_bond_parameters{$parameter_name} = 1;
-
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
                         $parameters,
@@ -894,6 +893,8 @@ sub calc_favourable_angles
                     @allowed_energies =
                         @default_allowed_energies;
                 }
+
+                $visited_bond_parameters{$parameter_name} = 1;
             }
 
             # Marks bond parameter combinations.
