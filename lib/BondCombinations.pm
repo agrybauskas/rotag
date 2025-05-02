@@ -3,7 +3,7 @@ package BondCombinations;
 use strict;
 use warnings;
 
-use Clone qw( clone );
+use Combinatorics qw( permutation );
 
 # ------------------------- Constructors/Destructors -------------------------- #
 
@@ -49,9 +49,13 @@ sub get_all_names
 sub get_all_values
 {
     my ( $self, $names ) = @_;
-    my @permuted_values = ();
-
-    return \%permuted_values;
+    my $permuted_values = permutation(
+        scalar( @{ $self->{'order'} } ),
+        [],
+        [ map { $self->{'collection'}{$_} } @{ $self->{'order'} } ],
+        []
+    );
+    return $permuted_values;
 }
 
 1;
