@@ -832,6 +832,9 @@ sub calc_favourable_angles
                        $bond_parameters{$b}{'rank'} ||
                        $a cmp $b }
                 keys %bond_parameters;
+
+            my @parameter_names_all = @{ clone \@parameter_names_sorted };
+
             @parameter_names_sorted =
                 grep { ! exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
@@ -897,6 +900,10 @@ sub calc_favourable_angles
                 @{ $atom_site->{$atom_id}{'connections_hetatom'} }
             if $include_hetatoms &&
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
+
+            $bond_combinations->get_values(
+                \@parameter_names_all, { 'cache' => 1 }
+            );
 
             # Starts calculating potential energy.
             my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
