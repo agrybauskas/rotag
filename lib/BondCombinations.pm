@@ -25,7 +25,9 @@ sub add
 {
     my ( $self, $bond_parameters ) = @_;
     for my $bond_parameter ( @{ $bond_parameters } ) {
-        # $self->{'collection'}{$bond_parameter} = clone $bond_parameters->{$_};
+        my ( $name ) = keys %{ $bond_parameter };
+        $self->{'collection'}{$name} = $bond_parameter->{$name};
+        push @{ $self->{'order'} }, $name;
     }
     return;
 }
@@ -39,7 +41,8 @@ sub remove
 
 sub get_all_names
 {
-
+    my ( $self ) = @_;
+    return $self->{'order'};
 }
 
 sub get_all_values
