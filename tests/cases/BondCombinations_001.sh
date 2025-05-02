@@ -38,3 +38,7 @@ print Dumper $bond_comb->get_values();
 
 $bond_comb->remove( [ { 'chi2' => [ ] } ] );
 print Dumper $bond_comb->get_values();
+
+$bond_comb->get_values( undef, { 'cache' => 1 } );
+print Dumper $bond_comb->get_cache();
+print Dumper $bond_comb->get_cache( [ 'chi3' ] );
