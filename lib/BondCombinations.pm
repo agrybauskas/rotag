@@ -44,6 +44,20 @@ sub add
 sub remove
 {
     my ( $self, $bond_parameters ) = @_;
+    for my $bond_parameter ( @{ $bond_parameters } ) {
+        my ( $name ) = keys %{ $bond_parameter };
+        my @values = @{ $bond_parameter->{$name} };
+        while( @values ) {
+            my ( $value ) = shift @values;
+            my @del_indexes =
+                grep { $self->{'collection'}{$name}[$_] eq $value }
+                     ( 0..$#{ $self->{'collection'}{$name} } );
+            for my $del_index ( @del_indexes ) {
+                splice @{ $self->{'collection'}{$name} }, $del_index, 1;
+            }
+        }
+    }
+    return;
 }
 
 # --------------------------------- Methods ----------------------------------- #
