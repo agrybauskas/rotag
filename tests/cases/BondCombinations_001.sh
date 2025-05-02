@@ -24,3 +24,5 @@ $bond_comb->add( [ { 'chi2' => [ 3.0, 4.0, 5.0 ] } ] );
 
 print Dumper $bond_comb->get_names();
 print Dumper $bond_comb->get_values();
+
+print Dumper $bond_comb->get_values( [ 'chi2' ] );
