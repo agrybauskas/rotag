@@ -40,19 +40,20 @@ sub remove
 
 # --------------------------------- Methods ----------------------------------- #
 
-sub get_all_names
+sub get_names
 {
     my ( $self ) = @_;
     return $self->{'order'};
 }
 
-sub get_all_values
+sub get_values
 {
     my ( $self, $names ) = @_;
+    $names //= $self->{'order'};
     my $permuted_values = permutation(
-        scalar( @{ $self->{'order'} } ),
+        scalar( @{ $names } ),
         [],
-        [ map { $self->{'collection'}{$_} } @{ $self->{'order'} } ],
+        [ map { $self->{'collection'}{$_} } @{ $names } ],
         []
     );
     return $permuted_values;

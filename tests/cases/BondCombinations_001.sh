@@ -17,10 +17,10 @@ my $bond_comb = BondCombinations->new( {
     },
 } );
 
-print Dumper $bond_comb->get_all_names();
-print Dumper $bond_comb->get_all_values();
+print Dumper $bond_comb->get_names();
+print Dumper $bond_comb->get_values();
 
 $bond_comb->add( [ { 'chi2' => [ 3.0, 4.0, 5.0 ] } ] );
 
-print Dumper $bond_comb->get_all_names();
-print Dumper $bond_comb->get_all_values();
+print Dumper $bond_comb->get_names();
+print Dumper $bond_comb->get_values();
