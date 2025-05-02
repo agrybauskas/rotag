@@ -1,4 +1,4 @@
-package BondCombIter;
+package BondCombinations;
 
 use strict;
 use warnings;

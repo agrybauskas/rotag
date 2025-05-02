@@ -5,12 +5,12 @@ use warnings;
 
 use Data::Dumper;
 
-use BondCombIter;
+use BondCombinations;
 
 $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Indent = 1;
 
-my $bond_comb = BondCombIter->new( {
+my $bond_comb = BondCombinations->new( {
     'order' => [ 'chi1' ],
     'collection' => {
         'chi1' => [ 1.0, 2.0 ]
