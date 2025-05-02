@@ -9,12 +9,25 @@ sub new
 {
     my ( $class, $args ) = @_;
 
-    my $self = {};
+    my $self = {
+        'order' => undef,
+        ''
+    };
 
     return bless $self, $class;
 }
 
 # ----------------------------- Setters/Getters ------------------------------- #
+
+sub add()
+{
+
+}
+
+sub remove()
+{
+
+}
 
 # --------------------------------- Methods ----------------------------------- #
 
