@@ -93,6 +93,7 @@ sub get_cache
     $names //= $self->{'order'};
     my $names_key = join ',', @{ $names };
     return $self->{'cache'}{$names_key} if exists $self->{'cache'}{$names_key};
+    return [];
 }
 
 sub exists
