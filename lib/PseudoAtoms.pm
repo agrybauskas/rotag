@@ -802,8 +802,9 @@ sub calc_favourable_angles
         }
     }
 
+    my $bond_combinations = BondCombinations->new();
+
     my %visited_bond_parameters;
-    my %bond_parameter_tracker;
     my @allowed_bond_parameters;
     my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
