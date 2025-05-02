@@ -11,7 +11,7 @@ sub new
 
     my $self = {
         'order' => undef,
-        ''
+        'collection' => $args->{'collection'},
     };
 
     return bless $self, $class;
@@ -19,44 +19,44 @@ sub new
 
 # ----------------------------- Setters/Getters ------------------------------- #
 
-sub add()
+sub add
 {
-
+    my ( $self, $bond_parameters ) = @_;
 }
 
-sub remove()
+sub remove
 {
 
 }
 
 # --------------------------------- Methods ----------------------------------- #
 
-sub next()
+sub next
 {
 
 }
 
-sub prev()
+sub prev
 {
 
 }
 
-sub reset()
+sub reset
 {
 
 }
 
-sub is_end()
+sub is_end
 {
 
 }
 
-sub get_all_names()
+sub get_all_names
 {
 
 }
 
-sub get_all_values()
+sub get_all_values
 {
 
 }
