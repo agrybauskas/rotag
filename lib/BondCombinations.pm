@@ -95,4 +95,11 @@ sub get_cache
     return $self->{'cache'}{$names_key} if exists $self->{'cache'}{$names_key};
 }
 
+sub exists
+{
+    my ( $self, $name ) = @_;
+    return 1 if defined $name && exists $self->{'collection'}{$name};
+    return 0;
+}
+
 1;

@@ -42,3 +42,6 @@ print Dumper $bond_comb->get_values();
 $bond_comb->get_values( undef, { 'cache' => 1 } );
 print Dumper $bond_comb->get_cache();
 print Dumper $bond_comb->get_cache( [ 'chi3' ] );
+
+print Dumper $bond_comb->exists( 'chi2' );
+print Dumper $bond_comb->exists( 'chi3' );
