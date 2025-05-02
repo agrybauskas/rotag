@@ -47,7 +47,9 @@ sub get_all_names
 
 sub get_all_values
 {
-
+    my ( $self, $names ) = @_;
+    my @permuted_values = ();
+    return \%permuted_values;
 }
 
 1;
