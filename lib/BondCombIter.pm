@@ -3,6 +3,8 @@ package BondCombIter;
 use strict;
 use warnings;
 
+use Clone qw( clone );
+
 # ------------------------- Constructors/Destructors -------------------------- #
 
 sub new
@@ -10,7 +12,7 @@ sub new
     my ( $class, $args ) = @_;
 
     my $self = {
-        'order' => undef,
+        'order' => $args->{'order'},
         'collection' => $args->{'collection'},
     };
 
@@ -22,6 +24,10 @@ sub new
 sub add
 {
     my ( $self, $bond_parameters ) = @_;
+    for my $bond_parameter ( @{ $bond_parameters } ) {
+        # $self->{'collection'}{$bond_parameter} = clone $bond_parameters->{$_};
+    }
+    return;
 }
 
 sub remove
@@ -30,26 +36,6 @@ sub remove
 }
 
 # --------------------------------- Methods ----------------------------------- #
-
-sub next
-{
-
-}
-
-sub prev
-{
-
-}
-
-sub reset
-{
-
-}
-
-sub is_end
-{
-
-}
 
 sub get_all_names
 {
