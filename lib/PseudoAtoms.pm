@@ -27,6 +27,7 @@ use Logging qw( info
                 warning );
 use threads;
 
+use BondCombinations;
 use BondParameters qw( alt_bond_parameter_names
                        collect_bond_parameters
                        detect_bond_parameter_type
@@ -830,9 +831,6 @@ sub calc_favourable_angles
                        $bond_parameters{$b}{'rank'} ||
                        $a cmp $b }
                 keys %bond_parameters;
-
-            my $parameter_name_comb = join ',', @parameter_names_sorted;
-
             @parameter_names_sorted =
                 grep { ! exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
