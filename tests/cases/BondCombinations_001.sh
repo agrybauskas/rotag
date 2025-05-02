@@ -26,3 +26,7 @@ print Dumper $bond_comb->get_names();
 print Dumper $bond_comb->get_values();
 
 print Dumper $bond_comb->get_values( [ 'chi2' ] );
+
+$bond_comb->add( [ { 'chi2' => [ 6.0 ] } ] );
+# $bond_comb->remove( [ { 'chi2' => [ 5.0 ] } ] );
+print Dumper $bond_comb->get_values();

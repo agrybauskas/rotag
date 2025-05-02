@@ -3,6 +3,8 @@ package BondCombinations;
 use strict;
 use warnings;
 
+use List::Util qw( any );
+
 use Combinatorics qw( permutation );
 
 # ------------------------- Constructors/Destructors -------------------------- #
@@ -10,13 +12,11 @@ use Combinatorics qw( permutation );
 sub new
 {
     my ( $class, $args ) = @_;
-
     my $self = {
         'order' => $args->{'order'},
         'collection' => $args->{'collection'},
         'cache' => undef,
     };
-
     return bless $self, $class;
 }
 
@@ -27,15 +27,23 @@ sub add
     my ( $self, $bond_parameters ) = @_;
     for my $bond_parameter ( @{ $bond_parameters } ) {
         my ( $name ) = keys %{ $bond_parameter };
-        $self->{'collection'}{$name} = $bond_parameter->{$name};
-        push @{ $self->{'order'} }, $name;
+        if( ! any { $_ eq $name } @{ $self->{'order'} }  ) {
+            push @{ $self->{'order'} }, $name;
+        }
+        for my $value ( @{ $bond_parameter->{$name} } ) {
+            if( ! any { $_ eq $value } @{ $self->{'collection'}{$name} }  ) {
+                push @{ $self->{'collection'}{$name} }, $value;
+            }
+        }
+        $self->{'collection'}{$name} =
+            [ sort { $a <=> $b } @{ $self->{'collection'}{$name} } ];
     }
     return;
 }
 
 sub remove
 {
-
+    my ( $self, $bond_parameters ) = @_;
 }
 
 # --------------------------------- Methods ----------------------------------- #
