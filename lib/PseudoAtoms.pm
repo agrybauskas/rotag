@@ -891,6 +891,8 @@ sub calc_favourable_angles
                 $visited_bond_parameters{$parameter_name} = 1;
             }
 
+            $bond_combinations->get_values( \@parameter_names_all );
+
             # Marks visited atoms.
             $visited_atom_ids{$atom_id} = 1;
 
@@ -901,10 +903,6 @@ sub calc_favourable_angles
                 @{ $atom_site->{$atom_id}{'connections_hetatom'} }
             if $include_hetatoms &&
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
-
-            $bond_combinations->get_values(
-                \@parameter_names_all, { 'cache' => 1 }
-            );
 
             # Starts calculating potential energy.
             my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
