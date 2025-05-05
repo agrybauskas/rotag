@@ -20,23 +20,23 @@ my $bond_comb = BondCombinations->new( {
 print Dumper $bond_comb->get_names();
 print Dumper $bond_comb->get_values();
 
-$bond_comb->add( [ { 'chi2' => [ 3.0, 4.0, 5.0 ] } ] );
+$bond_comb->add_values( [ { 'chi2' => [ 3.0, 4.0, 5.0 ] } ] );
 
 print Dumper $bond_comb->get_names();
 print Dumper $bond_comb->get_values();
 
 print Dumper $bond_comb->get_values( [ 'chi2' ] );
 
-$bond_comb->add( [ { 'chi2' => [ 6.0 ] } ] );
+$bond_comb->add_values( [ { 'chi2' => [ 6.0 ] } ] );
 print Dumper $bond_comb->get_values();
 
-$bond_comb->remove( [ { 'chi2' => [ 4.0 ] } ] );
+$bond_comb->remove_values( [ { 'chi2' => [ 4.0 ] } ] );
 print Dumper $bond_comb->get_values();
 
-$bond_comb->remove( [ { 'chi2' => [ 5.0, 6.0 ] } ] );
+$bond_comb->remove_values( [ { 'chi2' => [ 5.0, 6.0 ] } ] );
 print Dumper $bond_comb->get_values();
 
-$bond_comb->remove( [ { 'chi2' => [ ] } ] );
+$bond_comb->remove_values( [ { 'chi2' => [ ] } ] );
 print Dumper $bond_comb->get_values();
 
 print Dumper $bond_comb->get_values();

@@ -22,7 +22,7 @@ sub new
 
 # ----------------------------- Setters/Getters ------------------------------- #
 
-sub add
+sub add_values
 {
     my ( $self, $bond_parameters ) = @_;
     for my $bond_parameter ( @{ $bond_parameters } ) {
@@ -41,7 +41,7 @@ sub add
     return;
 }
 
-sub remove
+sub remove_values
 {
     my ( $self, $bond_parameters ) = @_;
     for my $bond_parameter ( @{ $bond_parameters } ) {
@@ -78,8 +78,8 @@ sub get_values
 
     my $names_key = join ',', @{ $names };
     my $permuted_values;
-    if( exists $self->{'cache'}{$names_key} ) {
-        $permuted_values = $self->{'cache'}{$names_key};
+    if( exists $self->{'cache'}{'values'}{$names_key} ) {
+        $permuted_values = $self->{'cache'}{'values'}{$names_key};
     } else {
         $permuted_values = permutation(
             scalar( @{ $names } ),
@@ -89,7 +89,7 @@ sub get_values
             );
         if( $cache ) {
             my $names_key = join ',', @{ $names };
-            $self->{'cache'}{$names_key} = $permuted_values;
+            $self->{'cache'}{'values'}{$names_key} = $permuted_values;
         }
     }
     return $permuted_values;

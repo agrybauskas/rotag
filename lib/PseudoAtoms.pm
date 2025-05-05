@@ -853,7 +853,7 @@ sub calc_favourable_angles
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
 
-                $bond_combinations->add(
+                $bond_combinations->add_values(
                     [ { $parameter_name =>
                             [ map { @{ $_ } }
                               @default_allowed_bond_parameters ] } ]
