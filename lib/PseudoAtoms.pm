@@ -855,7 +855,8 @@ sub calc_favourable_angles
 
                 $bond_combinations->add(
                     [ { $parameter_name =>
-                            [ map { @{ $_ } } @default_allowed_bond_parameters ] } ]
+                            [ map { @{ $_ } }
+                              @default_allowed_bond_parameters ] } ]
                 );
 
                 # Adds more bond parameter combinations if there are more than

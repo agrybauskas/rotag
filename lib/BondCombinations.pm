@@ -72,28 +72,27 @@ sub get_values
 {
     my ( $self, $names, $options ) = @_;
     my $cache = ( $options->{'cache'} );
+
     $names //= $self->{'order'};
-    $cache //= 0;
-    my $permuted_values = permutation(
-        scalar( @{ $names } ),
-        [],
-        [ map { $self->{'collection'}{$_} } @{ $names } ],
-        []
-        );
-    if( $cache ) {
-        my $names_key = join ',', @{ $names };
-        $self->{'cache'}{$names_key} = $permuted_values;
+    $cache //= 1;
+
+    my $names_key = join ',', @{ $names };
+    my $permuted_values;
+    if( exists $self->{'cache'}{$names_key} ) {
+        $permuted_values = $self->{'cache'}{$names_key};
+    } else {
+        $permuted_values = permutation(
+            scalar( @{ $names } ),
+            [],
+            [ map { $self->{'collection'}{$_} } @{ $names } ],
+            []
+            );
+        if( $cache ) {
+            my $names_key = join ',', @{ $names };
+            $self->{'cache'}{$names_key} = $permuted_values;
+        }
     }
     return $permuted_values;
-}
-
-sub get_cache
-{
-    my ( $self, $names ) = @_;
-    $names //= $self->{'order'};
-    my $names_key = join ',', @{ $names };
-    return $self->{'cache'}{$names_key} if exists $self->{'cache'}{$names_key};
-    return [];
 }
 
 sub exists
