@@ -43,7 +43,19 @@ sub add_values
 
 sub add_energies
 {
-    my ( $self, $energies ) = @_;
+    my ( $self, $bond_names, $energies ) = @_;
+    return;
+}
+
+sub update_values
+{
+    my ( $self, $bond_names, $values ) = @_;
+    return;
+}
+
+sub update_energies
+{
+    my ( $self, $bond_names, $energies ) = @_;
     return;
 }
 
