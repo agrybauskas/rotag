@@ -892,6 +892,7 @@ sub calc_favourable_angles
             }
 
             $bond_combinations->get_values( \@parameter_names_all );
+            $bond_combinations->get_energies( \@parameter_names_all );
 
             # Marks visited atoms.
             $visited_atom_ids{$atom_id} = 1;
