@@ -802,8 +802,7 @@ sub calc_favourable_angles
         }
     }
 
-    my $bond_combinations = BondCombinations->new();
-
+    my %bond_combinations = ();
     my %visited_bond_parameters;
     my @allowed_bond_parameters;
     my @allowed_energies;
@@ -853,12 +852,6 @@ sub calc_favourable_angles
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
 
-                $bond_combinations->add_values(
-                    [ { $parameter_name =>
-                            [ map { @{ $_ } }
-                              @default_allowed_bond_parameters ] } ]
-                );
-
                 # Adds more bond parameter combinations if there are more than
                 # one bond parameter.
                 if( @allowed_bond_parameters &&
@@ -890,9 +883,6 @@ sub calc_favourable_angles
 
                 $visited_bond_parameters{$parameter_name} = 1;
             }
-
-            $bond_combinations->get_values( \@parameter_names_all );
-            $bond_combinations->get_energies( \@parameter_names_all );
 
             # Marks visited atoms.
             $visited_atom_ids{$atom_id} = 1;
