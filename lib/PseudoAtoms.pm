@@ -803,6 +803,7 @@ sub calc_favourable_angles
     }
 
     my %bond_combinations = ();
+    my %energy_combinations = ();
     my %visited_bond_parameters;
     my @allowed_bond_parameters;
     my @allowed_energies;
@@ -832,7 +833,8 @@ sub calc_favourable_angles
                        $a cmp $b }
                 keys %bond_parameters;
 
-            my @parameter_names_all = @{ clone \@parameter_names_sorted };
+            my $parameter_names_key =
+                join ',', @{ clone \@parameter_names_sorted };
 
             @parameter_names_sorted =
                 grep { ! exists $visited_bond_parameters{$_} }
