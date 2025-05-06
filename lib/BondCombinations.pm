@@ -109,6 +109,29 @@ sub get_values
 
 sub get_energies
 {
+    my ( $self, $names, $options ) = @_;
+    my $cache = ( $options->{'cache'} );
+
+    $names //= $self->{'order'};
+    $cache //= 1;
+
+    my $names_key = join ',', @{ $names };
+    my $permuted_energies;
+    if( exists $self->{'cache'}{'energies'}{$names_key} ) {
+        $permuted_energies = $self->{'cache'}{'energies'}{$names_key};
+    } else {
+        # $permuted_energies = permutation(
+        #     scalar( @{ $names } ),
+        #     [],
+        #     [ map { $self->{'collection'}{$_} } @{ $names } ],
+        #     []
+        #     );
+        # if( $cache ) {
+        #     my $names_key = join ',', @{ $names };
+        #     $self->{'cache'}{'energies'}{$names_key} = $permuted_energies;
+        # }
+    }
+    return $permuted_energies;
 }
 
 sub exists
