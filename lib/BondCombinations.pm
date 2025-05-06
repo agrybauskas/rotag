@@ -41,6 +41,12 @@ sub add_values
     return;
 }
 
+sub add_energies
+{
+    my ( $self, $energies ) = @_;
+    return;
+}
+
 sub remove_values
 {
     my ( $self, $bond_parameters ) = @_;
@@ -93,6 +99,10 @@ sub get_values
         }
     }
     return $permuted_values;
+}
+
+sub get_energies
+{
 }
 
 sub exists
