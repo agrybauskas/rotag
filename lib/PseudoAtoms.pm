@@ -826,7 +826,8 @@ sub calc_favourable_angles
             next if ! %bond_parameters;
 
             foreach( keys %bond_parameters ) {
-                $all_bond_parameters{$_} = $bond_parameters{$_};
+                next if exists $all_bond_parameters{$_};
+                $all_bond_parameters{$_} = clone $bond_parameters{$_};
             }
 
             my @parameter_names_sorted =
