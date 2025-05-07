@@ -836,11 +836,13 @@ sub calc_favourable_angles
             my @parameter_names_visited =
                 grep { exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
-            my @parameter_names_unvisited =
-                grep { ! exists $visited_bond_parameters{$_} }
-                @parameter_names_sorted;
 
-            for my $parameter_name ( @parameter_names_unvisited ) {
+            for my $parameter_name ( @parameter_names_sorted ) {
+                next if exists $visited_bond_parameters{$parameter_name};
+
+                $visited_bond_parameters{$parameter_name} = 1;
+                push @parameter_names_visited, $parameter_name;
+
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
                         $parameters,
@@ -854,43 +856,41 @@ sub calc_favourable_angles
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
 
-                # Adds more bond parameter combinations if there are more than
-                # one bond parameter.
-                if( @allowed_bond_parameters &&
-                    scalar( @{ $allowed_bond_parameters[0] } ) <
-                    scalar( keys %bond_parameters ) ) {
-                    @allowed_bond_parameters =
-                        @{ permutation(
-                               2, [],
-                               [ \@allowed_bond_parameters,
-                                 \@default_allowed_bond_parameters ], [] ) };
-                    @allowed_energies =
-                        @{ permutation(
-                               2, [],
-                               [ \@allowed_energies,
-                                 \@default_allowed_energies ], [] ) };
-                    # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-                    @allowed_bond_parameters =
-                        map { [ @{ $_->[0] }, @{ $_->[1] } ] }
-                        @allowed_bond_parameters;
-                    @allowed_energies =
-                        map { [ $_->[0][0] ] }
-                        @allowed_energies;
-                } elsif( ! @allowed_bond_parameters ) {
-                    @allowed_bond_parameters =
-                        @default_allowed_bond_parameters;
-                    @allowed_energies =
-                        @default_allowed_energies;
-                }
-
-                $visited_bond_parameters{$parameter_name} = 1;
+                # # Adds more bond parameter combinations if there are more than
+                # # one bond parameter.
+                # if( @allowed_bond_parameters &&
+                #     scalar( @{ $allowed_bond_parameters[0] } ) <
+                #     scalar( keys %bond_parameters ) ) {
+                #     @allowed_bond_parameters =
+                #         @{ permutation(
+                #                2, [],
+                #                [ \@allowed_bond_parameters,
+                #                  \@default_allowed_bond_parameters ], [] ) };
+                #     @allowed_energies =
+                #         @{ permutation(
+                #                2, [],
+                #                [ \@allowed_energies,
+                #                  \@default_allowed_energies ], [] ) };
+                #     # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+                #     @allowed_bond_parameters =
+                #         map { [ @{ $_->[0] }, @{ $_->[1] } ] }
+                #         @allowed_bond_parameters;
+                #     @allowed_energies =
+                #         map { [ $_->[0][0] ] }
+                #         @allowed_energies;
+                # } elsif( ! @allowed_bond_parameters ) {
+                #     @allowed_bond_parameters =
+                #         @default_allowed_bond_parameters;
+                #     @allowed_energies =
+                #         @default_allowed_energies;
+                # }
             }
 
-            my $parameter_names_key = parameter_key( \@parameter_names_sorted );
-            $bond_combinations{$parameter_names_key} =
-                clone \@allowed_bond_parameters;
-            $energy_combinations{$parameter_names_key} =
-                clone \@allowed_energies;
+            # my $parameter_names_key = parameter_key( \@parameter_names_sorted );
+            # $bond_combinations{$parameter_names_key} =
+            #     clone \@allowed_bond_parameters;
+            # $energy_combinations{$parameter_names_key} =
+            #     clone \@allowed_energies;
 
             # Marks visited atoms.
             $visited_atom_ids{$atom_id} = 1;
@@ -914,8 +914,9 @@ sub calc_favourable_angles
                          'interaction_site' => $interaction_site,
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential },
-                       [ $bond_combinations{$parameter_names_key},
-                         $energy_combinations{$parameter_names_key} ],
+                       [ \@allowed_bond_parameters, \@allowed_energies ],
+                       # [ $bond_combinations{$parameter_names_key},
+                       #   $energy_combinations{$parameter_names_key} ],
                        $threads ) };
 
             # NOTE: Keeping commented code for coverage tests as
@@ -942,7 +943,7 @@ sub calc_favourable_angles
                           $residue_site->{$atom_id}{'label_alt_id'} . " " .
                           "${residue_name} " .
                           $residue_site->{$atom_id}{'label_atom_id'} . " " .
-                          join( ',', @parameter_names_unvisited ) . " " .
+                          join( ',', @parameter_names_sorted ) . " " .
                           scalar( @allowed_bond_parameters ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
