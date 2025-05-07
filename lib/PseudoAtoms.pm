@@ -939,8 +939,9 @@ sub calc_favourable_angles
                           $residue_site->{$atom_id}{'label_alt_id'} . " " .
                           "${residue_name} " .
                           $residue_site->{$atom_id}{'label_atom_id'} . " " .
-                          join( ',', @parameter_names_sorted ) . " " .
-                          scalar( @allowed_bond_parameters ) . "\n",
+                          join( ',', grep { ! exists $visited_bond_parameters{$_} }
+                                     @parameter_names_sorted ) . " " .
+                          scalar( @{ $energy_combinations{$parameter_key_sorted} } ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
             } else {
