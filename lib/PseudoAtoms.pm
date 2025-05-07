@@ -856,6 +856,9 @@ sub calc_favourable_angles
 
                 # Adds more bond parameter combinations if there are more than
                 # one bond parameter.
+                my $parameter_names_key_visited =
+                    join ',', @parameter_names_visited;
+
                 if( @allowed_bond_parameters &&
                     scalar( @{ $allowed_bond_parameters[0] } ) <
                     scalar( keys %bond_parameters ) ) {
@@ -882,6 +885,8 @@ sub calc_favourable_angles
                     @allowed_energies =
                         @default_allowed_energies;
                 }
+
+                push @parameter_names_visited, $parameter_name;
 
                 $visited_bond_parameters{$parameter_name} = 1;
             }
