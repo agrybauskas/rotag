@@ -839,8 +839,6 @@ sub calc_favourable_angles
                 grep { ! exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
 
-            my $parameter_names_key = join ',', @parameter_names_sorted;
-
             for my $parameter_name ( @parameter_names_unvisited ) {
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
@@ -886,6 +884,13 @@ sub calc_favourable_angles
 
                 $visited_bond_parameters{$parameter_name} = 1;
             }
+
+            my $parameter_names_key = join ',', @parameter_names_sorted;
+
+            $bond_combinations{$parameter_names_key} =
+                clone \@allowed_bond_parameters;
+            $energy_combinations{$parameter_names_key} =
+                clone \@allowed_energies;
 
             # Marks visited atoms.
             $visited_atom_ids{$atom_id} = 1;
