@@ -806,7 +806,7 @@ sub calc_favourable_angles
     my %all_bond_parameters = ();
     my %bond_combinations = ();
     my %energy_combinations = ();
-    my %visited_bond_parameters;
+    my %visited_bond_parameters = ();
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
