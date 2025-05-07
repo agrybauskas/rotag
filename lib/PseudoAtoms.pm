@@ -923,7 +923,8 @@ sub calc_favourable_angles
             #              'interaction_site' => $interaction_site,
             #              'non_bonded_potential' => $non_bonded_potential,
             #              'bonded_potential' => $bonded_potential },
-            #            [ \@allowed_bond_parameters, \@allowed_energies ] ) };
+            #            [ $bond_combinations{$parameter_key_sorted},
+            #              $energy_combinations{$parameter_key_sorted} ] ) };
 
             if( scalar @{ $next_allowed_bond_parameters } > 0 ) {
                 $bond_combinations{$parameter_key_sorted} =
