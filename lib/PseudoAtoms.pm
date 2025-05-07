@@ -840,6 +840,9 @@ sub calc_favourable_angles
             for my $parameter_name ( @parameter_names_sorted ) {
                 next if exists $visited_bond_parameters{$parameter_name};
 
+                my $parameter_key_prev =
+                    parameter_key( \@parameter_names_visited );
+
                 $visited_bond_parameters{$parameter_name} = 1;
                 push @parameter_names_visited, $parameter_name;
 
@@ -856,41 +859,31 @@ sub calc_favourable_angles
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
 
-                # # Adds more bond parameter combinations if there are more than
-                # # one bond parameter.
-                # if( @allowed_bond_parameters &&
-                #     scalar( @{ $allowed_bond_parameters[0] } ) <
-                #     scalar( keys %bond_parameters ) ) {
-                #     @allowed_bond_parameters =
-                #         @{ permutation(
-                #                2, [],
-                #                [ \@allowed_bond_parameters,
-                #                  \@default_allowed_bond_parameters ], [] ) };
-                #     @allowed_energies =
-                #         @{ permutation(
-                #                2, [],
-                #                [ \@allowed_energies,
-                #                  \@default_allowed_energies ], [] ) };
-                #     # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
-                #     @allowed_bond_parameters =
-                #         map { [ @{ $_->[0] }, @{ $_->[1] } ] }
-                #         @allowed_bond_parameters;
-                #     @allowed_energies =
-                #         map { [ $_->[0][0] ] }
-                #         @allowed_energies;
-                # } elsif( ! @allowed_bond_parameters ) {
-                #     @allowed_bond_parameters =
-                #         @default_allowed_bond_parameters;
-                #     @allowed_energies =
-                #         @default_allowed_energies;
-                # }
-            }
+                my $parameter_key = parameter_key( \@parameter_names_visited );
+                if( ! $parameter_key_prev ) {
+                    $bond_combinations{$parameter_key} =
+                        clone \@default_allowed_bond_parameters;
+                    $energy_combinations{$parameter_key} =
+                        clone \@default_allowed_energies;
+                } else {
+                    $bond_combinations{$parameter_key} =
+                        permutation( 2, [],
+                                     [ $bond_combinations{$parameter_key_prev},
+                                       \@default_allowed_bond_parameters ], [] );
+                    $energy_combinations{$parameter_key} =
+                        permutation( 2, [],
+                                     [ $bond_combinations{$parameter_key_prev},
+                                       \@default_allowed_energies ], [] );
 
-            # my $parameter_names_key = parameter_key( \@parameter_names_sorted );
-            # $bond_combinations{$parameter_names_key} =
-            #     clone \@allowed_bond_parameters;
-            # $energy_combinations{$parameter_names_key} =
-            #     clone \@allowed_energies;
+                    # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
+                    $bond_combinations{$parameter_key} =
+                        [ map { [ @{ $_->[0] }, @{ $_->[1] } ] }
+                             @{ $bond_combinations{$parameter_key} } ];
+                    $energy_combinations{$parameter_key} =
+                        [ map { [ $_->[0][0] ] }
+                             @{ $energy_combinations{$parameter_key} } ];
+                }
+            }
 
             # Marks visited atoms.
             $visited_atom_ids{$atom_id} = 1;
@@ -904,6 +897,7 @@ sub calc_favourable_angles
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
 
             # Starts calculating potential energy.
+            my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
             my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
                 @{ threading(
                        \&calc_favourable_angle,
@@ -914,9 +908,8 @@ sub calc_favourable_angles
                          'interaction_site' => $interaction_site,
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential },
-                       [ \@allowed_bond_parameters, \@allowed_energies ],
-                       # [ $bond_combinations{$parameter_names_key},
-                       #   $energy_combinations{$parameter_names_key} ],
+                       [ $bond_combinations{$parameter_key_sorted},
+                         $energy_combinations{$parameter_key_sorted} ],
                        $threads ) };
 
             # NOTE: Keeping commented code for coverage tests as
