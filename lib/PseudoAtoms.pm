@@ -926,8 +926,10 @@ sub calc_favourable_angles
             #            [ \@allowed_bond_parameters, \@allowed_energies ] ) };
 
             if( scalar @{ $next_allowed_bond_parameters } > 0 ) {
-                @allowed_bond_parameters = @{ $next_allowed_bond_parameters };
-                @allowed_energies = @{ $next_allowed_energies };
+                $bond_combinations{$parameter_key_sorted} =
+                    $next_allowed_bond_parameters;
+                $energy_combinations{$parameter_key_sorted} =
+                    $next_allowed_energies;
                 print info(
                     { message =>
                           $residue_site->{$atom_id}{'pdbx_PDB_model_num'} . " " .
