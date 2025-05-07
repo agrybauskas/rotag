@@ -27,7 +27,8 @@ use Logging qw( info
                 warning );
 use threads;
 
-use BondCombinations;
+use BondCombinations qw( combine_permuted_values
+                         parameter_key );
 use BondParameters qw( alt_bond_parameter_names
                        collect_bond_parameters
                        detect_bond_parameter_type
