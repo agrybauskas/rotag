@@ -886,15 +886,15 @@ sub calc_favourable_angles
                         @default_allowed_energies;
                 }
 
+                $bond_combinations{$parameter_names_key} =
+                    clone \@allowed_bond_parameters;
+                $energy_combinations{$parameter_names_key} =
+                    clone \@allowed_energies;
+
                 push @parameter_names_visited, $parameter_name;
 
                 $visited_bond_parameters{$parameter_name} = 1;
             }
-
-            $bond_combinations{$parameter_names_key} =
-                clone \@allowed_bond_parameters;
-            $energy_combinations{$parameter_names_key} =
-                clone \@allowed_energies;
 
             # Marks visited atoms.
             $visited_atom_ids{$atom_id} = 1;
