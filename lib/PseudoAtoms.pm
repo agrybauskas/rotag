@@ -803,11 +803,10 @@ sub calc_favourable_angles
         }
     }
 
+    my %all_bond_parameters = ();
     my %bond_combinations = ();
     my %energy_combinations = ();
     my %visited_bond_parameters;
-    my @allowed_bond_parameters;
-    my @allowed_energies;
     while( scalar( @next_atom_ids ) != 0 ) {
         my @neighbour_atom_ids;
         for my $atom_id ( @next_atom_ids ) {
@@ -825,6 +824,10 @@ sub calc_favourable_angles
                                            $residue_name ) };
 
             next if ! %bond_parameters;
+
+            foreach( keys %bond_parameters ) {
+                $all_bond_parameters{$_} = $bond_parameters{$_};
+            }
 
             my @parameter_names_sorted =
                 sort { $bond_parameters{$a}{'order'} <=>
@@ -958,7 +961,18 @@ sub calc_favourable_angles
         }
     }
 
-    return \@allowed_bond_parameters;
+    # Collecting all the allowed bond parameters.
+    my @parameter_names_all =
+        sort { $all_bond_parameters{$a}{'order'} <=>
+               $all_bond_parameters{$b}{'order'} ||
+               $all_bond_parameters{$a}{'rank'} <=>
+               $all_bond_parameters{$b}{'rank'} ||
+               $a cmp $b }
+        keys %all_bond_parameters;
+    my $allowed_bond_parameters =
+        combine_permuted_values( \%bond_combinations, \@parameter_names_all );
+
+    return $allowed_bond_parameters;
 }
 
 #

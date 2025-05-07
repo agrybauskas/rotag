@@ -19,7 +19,9 @@ sub parameter_key
 
 sub combine_permuted_values
 {
-    return;
+    my ( $permuted_values, $names ) = @_;
+    my @combined_values;
+    return \@combined_values;
 }
 
 1;
