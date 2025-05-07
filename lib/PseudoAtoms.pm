@@ -833,12 +833,13 @@ sub calc_favourable_angles
                        $a cmp $b }
                 keys %bond_parameters;
             my @parameter_names_visited =
-                grep { ! exists $visited_bond_parameters{$_} }
+                grep { exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
             my @parameter_names_unvisited =
                 grep { ! exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
 
+            my $parameter_names_key = join ',', @parameter_names_sorted;
             for my $parameter_name ( @parameter_names_unvisited ) {
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
@@ -884,8 +885,6 @@ sub calc_favourable_angles
 
                 $visited_bond_parameters{$parameter_name} = 1;
             }
-
-            my $parameter_names_key = join ',', @parameter_names_sorted;
 
             $bond_combinations{$parameter_names_key} =
                 clone \@allowed_bond_parameters;
