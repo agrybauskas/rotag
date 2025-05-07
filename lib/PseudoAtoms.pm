@@ -913,7 +913,8 @@ sub calc_favourable_angles
                          'interaction_site' => $interaction_site,
                          'non_bonded_potential' => $non_bonded_potential,
                          'bonded_potential' => $bonded_potential },
-                       [ \@allowed_bond_parameters, \@allowed_energies ],
+                       [ $bond_combinations{$parameter_names_key},
+                         $energy_combinations{$parameter_names_key} ],
                        $threads ) };
 
             # NOTE: Keeping commented code for coverage tests as
