@@ -832,15 +832,16 @@ sub calc_favourable_angles
                        $bond_parameters{$b}{'rank'} ||
                        $a cmp $b }
                 keys %bond_parameters;
-
-            my $parameter_names_key =
-                join ',', @{ clone \@parameter_names_sorted };
-
-            @parameter_names_sorted =
+            my @parameter_names_visited =
+                grep { ! exists $visited_bond_parameters{$_} }
+                @parameter_names_sorted;
+            my @parameter_names_unvisited =
                 grep { ! exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
 
-            for my $parameter_name ( @parameter_names_sorted ) {
+            my $parameter_names_key = join ',', @parameter_names_sorted;
+
+            for my $parameter_name ( @parameter_names_unvisited ) {
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
                         $parameters,
@@ -935,7 +936,7 @@ sub calc_favourable_angles
                           $residue_site->{$atom_id}{'label_alt_id'} . " " .
                           "${residue_name} " .
                           $residue_site->{$atom_id}{'label_atom_id'} . " " .
-                          join( ',', @parameter_names_sorted) . " " .
+                          join( ',', @parameter_names_unvisited ) . " " .
                           scalar( @allowed_bond_parameters ) . "\n",
                       program => $program_called_by }
                     ) if $verbose;
