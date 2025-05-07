@@ -20,6 +20,11 @@ sub parameter_key
 sub combine_permuted_values
 {
     my ( $permuted_values, $names ) = @_;
+    my $parameter_key = parameter_key( $names );
+
+    return $permuted_values->{$parameter_key}
+        if exists $permuted_values->{$parameter_key};
+
     my @combined_values;
     return \@combined_values;
 }
