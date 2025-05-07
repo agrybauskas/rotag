@@ -883,8 +883,6 @@ sub calc_favourable_angles
                         @default_allowed_energies;
                 }
 
-                push @parameter_names_visited, $parameter_name;
-
                 $visited_bond_parameters{$parameter_name} = 1;
             }
 
