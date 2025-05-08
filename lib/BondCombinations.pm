@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( combine_permuted_values
 }
 
 use Clone qw( clone );
+use Combinatorics qw( permutation );
 use List::Util qw( uniq );
 
 sub parameter_key
@@ -26,9 +27,7 @@ sub combine_permuted_values
     return $permuted_values->{$parameter_key}
         if exists $permuted_values->{$parameter_key};
 
-    my @combined_values;
-
-    # Find the longest bond parameter chain.
+    # Finds the longest bond parameter chain.
     my %parameter_keys =
         map { $_ => [ split /,/, $_ ]  } keys %{ $permuted_values };
     my @parameter_keys_sorted =
@@ -37,6 +36,7 @@ sub combine_permuted_values
                $a cmp $b }
         keys %parameter_keys;
 
+    # Finds unique values for each parameter.
     my %visited_parameters = ();
     my %unique_parameter_values = ();
     while( @parameter_keys_sorted ) {
@@ -54,9 +54,14 @@ sub combine_permuted_values
             my @unique_parameter_values =
                 uniq map { $_->[$i] } @{ $parameter_values };
             if( exists $unique_parameter_values{$parameter_name} ) {
+                my %set1 =
+                    map { $_ => 1 }
+                    @{ $unique_parameter_values{$parameter_name} };
+                my %set2 =
+                    map { $_ => 1 }
+                    @unique_parameter_values;
                 $unique_parameter_values{$parameter_name} =
-                    [ grep { $unique_parameter_values{$_} }
-                      @unique_parameter_values ];
+                    [ map { $_ } grep { $set1{$_} } keys %set2 ];
             } else {
                 $unique_parameter_values{$parameter_name} =
                     clone \@unique_parameter_values;
@@ -67,7 +72,22 @@ sub combine_permuted_values
                 scalar( @{ $names } );
     }
 
-    return \@combined_values;
+    # Generates permuted list from unique parameter values.
+    my $combined_values = [];
+    for my $parameter_name ( @{ $names } ) {
+        if( @{ $combined_values } ) {
+            # $combined_values =
+            #     permutation( 2, [],
+            #                  [ @{ $combined_values },
+            #                    $unique_parameter_values{$parameter_name} ], [] );
+            # $combined_values =
+            #     [ map { [ @{ $_->[0] }, @{ $_->[1] } ] } @{ $combined_values } ];
+        } else {
+            $combined_values = [ $unique_parameter_values{$parameter_name} ];
+        }
+    }
+
+    return $combined_values;
 }
 
 1;
