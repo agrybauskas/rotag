@@ -36,6 +36,7 @@ sub combine_permuted_values
 
     # Iterate through parameter name chains and retrieve values.
     my %visited_parameters = ();
+    my %unique_parameter_values = ();
     while( @parameter_keys_sorted ) {
         my $parameter_key_sorted = shift @parameter_keys_sorted;
         my $parameter_names = $parameter_keys{$parameter_key_sorted};
