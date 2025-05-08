@@ -768,7 +768,12 @@ sub calc_favourable_angles
            @{ $residue_unique_keys }
     };
 
-    my ( $any_key ) = keys %{ $residue_site };
+    my ( $any_key ) =
+        grep { $residue_site->{$_}{'group_PDB'} ne 'HETATM' }
+        keys %{ $residue_site };
+
+    return [] if ! defined $any_key;
+
     my $residue_name = $residue_site->{$any_key}{'label_comp_id'};
 
     my $start_atom_ids =
