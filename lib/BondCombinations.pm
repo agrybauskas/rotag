@@ -9,8 +9,6 @@ our @EXPORT_OK = qw( combine_permuted_values
                      parameter_key )
 }
 
-use List::Util qw( any );
-
 sub parameter_key
 {
     my ( $names ) = @_;
@@ -36,6 +34,13 @@ sub combine_permuted_values
                $a cmp $b }
         keys %parameter_keys;
 
+    my %visited_parameters = ();
+    while( @parameter_keys_sorted ) {
+        my $parameter_key_sorted = shift @parameter_keys_sorted;
+
+        last if scalar( grep { exists $visited_parameters{$_} } @{ $names } ) ==
+                scalar( @{ $names } );
+    }
     return \@combined_values;
 }
 
