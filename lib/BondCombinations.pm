@@ -34,12 +34,14 @@ sub combine_permuted_values
                $a cmp $b }
         keys %parameter_keys;
 
-    # Iterate through parameter name chains and retrieve values.
     my %visited_parameters = ();
     my %unique_parameter_values = ();
     while( @parameter_keys_sorted ) {
         my $parameter_key_sorted = shift @parameter_keys_sorted;
         my $parameter_names = $parameter_keys{$parameter_key_sorted};
+
+        next if ! grep { ! exists $visited_parameters{$_} } @{ $parameter_names };
+
         for my $parameter_name ( @{ $parameter_names } ) {
             $visited_parameters{$parameter_name} = 1;
         }
