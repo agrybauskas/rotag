@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( combine_permuted_values
                      parameter_key )
 }
 
+use Clone qw( clone );
 use List::Util qw( uniq );
 
 sub parameter_key
@@ -50,11 +51,15 @@ sub combine_permuted_values
 
             $visited_parameters{$parameter_name} = 1;
 
+            my @unique_parameter_values =
+                uniq map { $_->[$i] } @{ $parameter_values };
             if( exists $unique_parameter_values{$parameter_name} ) {
-
+                $unique_parameter_values{$parameter_name} =
+                    [ grep { $unique_parameter_values{$_} }
+                      @unique_parameter_values ];
             } else {
                 $unique_parameter_values{$parameter_name} =
-                    [ uniq map { $_->[$i] } @{ $parameter_values } ];
+                    clone \@unique_parameter_values;
             }
         }
 
