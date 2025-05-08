@@ -52,7 +52,7 @@ sub combine_permuted_values
             $visited_parameters{$parameter_name} = 1;
 
             my @unique_parameter_values =
-                uniq map { $_->[$i] } @{ $parameter_values };
+                sort { $a <=> $b } uniq map { $_->[$i] } @{ $parameter_values };
             if( exists $unique_parameter_values{$parameter_name} ) {
                 my %set1 =
                     map { $_ => 1 }
@@ -61,7 +61,10 @@ sub combine_permuted_values
                     map { $_ => 1 }
                     @unique_parameter_values;
                 $unique_parameter_values{$parameter_name} =
-                    [ map { $_ } grep { $set1{$_} } keys %set2 ];
+                    [ sort { $a <=> $b }
+                      map { $_ }
+                      grep { $set1{$_} }
+                      keys %set2 ];
             } else {
                 $unique_parameter_values{$parameter_name} =
                     clone \@unique_parameter_values;
