@@ -9,6 +9,8 @@ our @EXPORT_OK = qw( combine_permuted_values
                      parameter_key )
 }
 
+use List::Util qw( uniq );
+
 sub parameter_key
 {
     my ( $names ) = @_;
@@ -48,16 +50,18 @@ sub combine_permuted_values
 
             $visited_parameters{$parameter_name} = 1;
 
-            if( ! exists $unique_parameter_values{$parameter_name} ) {
+            if( exists $unique_parameter_values{$parameter_name} ) {
 
             } else {
-
+                $unique_parameter_values{$parameter_name} =
+                    [ uniq map { $_->[$i] } @{ $parameter_values } ];
             }
         }
 
         last if scalar( grep { exists $visited_parameters{$_} } @{ $names } ) ==
                 scalar( @{ $names } );
     }
+
     return \@combined_values;
 }
 
