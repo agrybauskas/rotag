@@ -26,6 +26,16 @@ sub combine_permuted_values
         if exists $permuted_values->{$parameter_key};
 
     my @combined_values;
+
+    # Find the longest bond parameter chain.
+    my %parameter_keys =
+        map { $_ => [ split /,/, $_ ]  } keys %{ $permuted_values };
+    my @parameter_keys_sorted =
+        sort { scalar( @{ $parameter_keys{$b} } ) <=>
+               scalar( @{ $parameter_keys{$a} } ) ||
+               $a cmp $b }
+        keys %parameter_keys;
+
     return \@combined_values;
 }
 
