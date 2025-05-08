@@ -43,8 +43,16 @@ sub combine_permuted_values
 
         next if ! grep { ! exists $visited_parameters{$_} } @{ $parameter_names };
 
-        for my $parameter_name ( @{ $parameter_names } ) {
+        for my $i ( 0..$#{ $parameter_names } ) {
+            my $parameter_name = $parameter_names->[$i];
+
             $visited_parameters{$parameter_name} = 1;
+
+            if( ! exists $unique_parameter_values{$parameter_name} ) {
+
+            } else {
+
+            }
         }
 
         last if scalar( grep { exists $visited_parameters{$_} } @{ $names } ) ==
