@@ -39,6 +39,7 @@ sub combine_permuted_values
     while( @parameter_keys_sorted ) {
         my $parameter_key_sorted = shift @parameter_keys_sorted;
         my $parameter_names = $parameter_keys{$parameter_key_sorted};
+        my $parameter_values = $permuted_values->{$parameter_key_sorted};
 
         next if ! grep { ! exists $visited_parameters{$_} } @{ $parameter_names };
 
