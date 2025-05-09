@@ -205,6 +205,7 @@ sub coulomb
 
     my $c_k = $parameters->{'_[local]_force_field'}{'c_k'};
     my $partial_charge = $parameters->{'_[local]_partial_charge'};
+    my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
 
@@ -271,6 +272,8 @@ sub coulomb
 
     # TODO: must change $r_squared to simple distance due to more effective
     # calculations.
+    # TODO: check the return regarding if the distance is 0.
+    return "Inf" if $r_squared <= $epsilon;
     return $c_k * $partial_charge_i * $partial_charge_j / sqrt( $r_squared );
 }
 
