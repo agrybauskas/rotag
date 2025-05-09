@@ -273,7 +273,10 @@ sub coulomb
     # TODO: must change $r_squared to simple distance due to more effective
     # calculations.
     # TODO: check the return regarding if the distance is 0.
-    return "Inf" if $r_squared <= $epsilon;
+    return "Inf"
+        if $r_squared <= $epsilon && $partial_charge_i * $partial_charge_j > 0;
+    return "-Inf"
+        if $r_squared <= $epsilon && $partial_charge_i * $partial_charge_j < 0;
     return $c_k * $partial_charge_i * $partial_charge_j / sqrt( $r_squared );
 }
 
