@@ -133,6 +133,7 @@ sub lennard_jones
 
     my $lj_k = $parameters->{'_[local]_force_field'}{'lj_k'};
     my $lennard_jones = $parameters->{'_[local]_lennard_jones'};
+    my $epsilon = $parameters->{'_[local]_constants'}{'epsilon'};
 
     my $lj_epsilon;
     if( defined $lennard_jones->{$atom_i->{'type_symbol'}} ) {
@@ -155,6 +156,8 @@ sub lennard_jones
     }
 
     $r_squared //= distance_squared( $atom_i, $atom_j );
+
+    return "Inf" if $r_squared <= $epsilon;
 
     my $sigma;
     if( defined $lennard_jones->{$atom_i->{'type_symbol'}} ) {
