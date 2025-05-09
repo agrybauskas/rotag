@@ -561,7 +561,7 @@ sub generate_library
 
                 my %interaction_site =
                     %{ filter_new( $current_atom_site,
-                               { 'include' =>
+                                   { 'include' =>
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
