@@ -1024,12 +1024,14 @@ sub filter_struct_conn
             ],
         );
 
-        my $filtered_atom_site_1 =
-            filter_new( $atom_site,
-                        { 'include' => \%atom_selection_1 } );
-        my $filtered_atom_site_2 =
-            filter_new( $atom_site,
-                        { 'include' => \%atom_selection_2 } );
+        my ( $residue_name_1 ) =
+            @{ filter_new( $atom_site,
+                           { 'include' => \%atom_selection_1,
+                             'return_data' => 'label_comp_id' } ) };
+        my ( $residue_name_2 ) =
+            @{ filter_new( $atom_site,
+                           { 'include' => \%atom_selection_2,
+                             'return_data' => 'label_comp_id' } ) };
     }
     return $struct_conn;
 }
