@@ -234,7 +234,7 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
-    $struct_conn = filter_struct_conn( $parameters, $struct_conn );
+    $struct_conn = filter_struct_conn( $parameters, $struct_conn, $atom_site );
 
     determine_ligand_sites( $atom_site, $struct_conn );
 
