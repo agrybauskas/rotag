@@ -982,6 +982,9 @@ sub create_hetatom_struct_conn
 sub filter_struct_conn
 {
     my ( $parameters, $struct_conn, $atom_site ) = @_;
+    $struct_conn //= {};
+
+    return $struct_conn if ! %{ $struct_conn };
 
     my $heteroatom_names =
         { map { $_ => 1 } @{ $parameters->{'_[local]_heteroatom_names'} } };
