@@ -1030,9 +1030,6 @@ sub filter_struct_conn
         my $filtered_atom_site_2 =
             filter_new( $atom_site,
                         { 'include' => \%atom_selection_2 } );
-        my $filtered_atom_site =
-            { %{ $filtered_atom_site_1 }, %{ $filtered_atom_site_2 } };
-
     }
     return $struct_conn;
 }
