@@ -1032,7 +1032,22 @@ sub filter_struct_conn
             @{ filter_new( $atom_site,
                            { 'include' => \%atom_selection_2,
                              'return_data' => 'label_comp_id' } ) };
+
+        next if ! exists $residue_names->{$residue_name_1} &&
+            ! exists $residue_names->{$residue_name_2};
+
+        my $atom_name_1 =
+            $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'};
+        my $atom_name_2 =
+            $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'};
+
+        next if ! exists $heteroatom_names->{$atom_name_1} &&
+            ! exists $heteroatom_names->{$atom_name_2};
+
+        $filtered_struct_conn{$struct_conn_id} =
+            clone $struct_conn->{$struct_conn_id};
     }
+
     return $struct_conn;
 }
 
