@@ -11,6 +11,7 @@ use List::Util qw( any );
 use Try::Tiny;
 
 use BondParameters qw( detect_bond_parameter_type );
+use ConnectAtoms qw( filter_struct_conn );
 use ForceField::Parameters;
 use ForceField::NonBonded qw( general );
 use Logging qw( error
@@ -233,6 +234,7 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
+    $struct_conn = filter_struct_conn( $parameters, $struct_conn );
 
     determine_ligand_sites( $atom_site, $struct_conn );
 

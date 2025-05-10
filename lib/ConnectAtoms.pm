@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( assign_hetatoms
                      connect_atoms
                      connect_atoms_explicitly
                      create_hetatom_struct_conn
+                     filter_struct_conn
                      is_connected
                      is_neighbour
                      is_second_neighbour
@@ -967,6 +968,22 @@ sub create_hetatom_struct_conn
     }
 
     return \%struct_conn;
+}
+
+#
+# Filters "_struct_conn" data structure according to general parameters.
+# Input:
+#     $parameters - general parameters (see Parameters.pm);
+#     $struct_conn - "_struct_conn" data structure;
+# Output:
+#     \%filtered_struct_conn - "_struct_conn" data structure.
+#
+
+sub filter_struct_conn
+{
+    my ( $parameters, $struct_conn ) = @_;
+    my %filtered_struct_conn = ();
+    return $struct_conn;
 }
 
 #
