@@ -344,11 +344,13 @@ sub assign_hetatoms
           $options->{'keep_original'} );
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
-    $heteroatom_depth //= 2;
     $ref_atom_site //= $atom_site;
     $filter_unique_keys //= [];
     # HACK: the default should be 0 as it is more intuitive.
     $keep_original //= 1;
+
+    my $depth = $heteroatom_depth;
+    $depth //= 2;
 
     return [] if ! %{ $struct_conn };
 
