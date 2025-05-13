@@ -49,11 +49,8 @@ our $VERSION = $VERSION;
 #*                        interactions between selected residues and atoms that
 #*                        are reachable or described (default: composite |
 #*                        hard_sphere | soft_sphere).
-#*    -H, --include-heteroatoms
+#*    -H, --heteroatoms
 #*                        includes selected heteroatoms in the scanning process.
-#*    --heteroatoms
-#*                        includes specificied heteroatoms (default:
-#*                        'MG,CA,NA,ZN,K,MN,FE,CU,NI,CO,CD,HOH').
 #*    --heteroatom-depth
 #*                        depth of heteroatom connections that will be followed
 #*                        and included in the scanning calculations (default: 2).
@@ -127,7 +124,6 @@ our $VERSION = $VERSION;
 
 my $interactions = 'composite';
 my $calc_hetatoms = 0;
-my $heteroatoms = 'MG,CA,NA,ZN,K,MN,FE,CU,NI,CO,CD,HOH';
 my $heteroatom_depth = 2;
 my $calc_pairwise = 0;
 my $bond_parameters_qs = '';
@@ -157,8 +153,7 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'potential|u=s' => \$interactions,
-    'inlcude-heteroatoms|H' => sub { $calc_hetatoms = 1 },
-    'heteroatoms=s' => \$heteroatoms,
+    'heteroatoms|H' => sub { $calc_hetatoms = 1 },
     'heteroatom-depth=s' => \$heteroatom_depth,
     'parameters|p=s' => \$parameters_cmd,
     'pairwise' => sub { $calc_pairwise = 1 },
@@ -247,7 +242,8 @@ for my $pdbx_file ( @ARGV ) {
 
     if( defined $struct_conn ) {
         $struct_conn =
-            filter_struct_conn( $parameters, $struct_conn, $atom_site );
+            filter_struct_conn( $parameters, $struct_conn, $atom_site,
+                                { 'depth' => $heteroatom_depth } );
     }
 
     determine_ligand_sites( $atom_site, $struct_conn );
