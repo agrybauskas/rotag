@@ -242,8 +242,7 @@ for my $pdbx_file ( @ARGV ) {
 
     if( defined $struct_conn ) {
         $struct_conn =
-            filter_struct_conn( $parameters, $struct_conn, $atom_site,
-                                { 'depth' => $heteroatom_depth } );
+            filter_struct_conn( $parameters, $struct_conn, $atom_site );
     }
 
     determine_ligand_sites( $atom_site, $struct_conn );
@@ -293,6 +292,7 @@ for my $pdbx_file ( @ARGV ) {
                   'include_interactions' =>
                       { 'id' => [ keys %{ $current_atom_site } ] },
                   'include_hetatoms' => $calc_hetatoms,
+                  'heteroatom_depth' => $heteroatom_depth,
                   'bond_parameters' => $bond_parameters,
                   'interactions' => $interactions,
                   'threads' => $threads,

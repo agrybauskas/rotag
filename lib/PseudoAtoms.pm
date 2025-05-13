@@ -354,6 +354,7 @@ sub generate_library
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
     my $include_hetatoms = $args->{'include_hetatoms'};
+    my $heteroatom_depth = $args->{'heteroatom_depth'};
     my $bond_parameters = $args->{'bond_parameters'};
     my $rmsd = $args->{'rmsd'};
     my $conf_model = $args->{'conf_model'};
@@ -412,6 +413,7 @@ sub generate_library
             assign_hetatoms(
                 $parameters, $current_atom_site, $struct_conn,
                 { 'filter_unique_keys' => $residue_unique_keys,
+                  'heteroatom_depth' => $heteroatom_depth,
                   'ref_atom_site' => $ref_atom_site,
                   'keep_original' => 0 }
         );
