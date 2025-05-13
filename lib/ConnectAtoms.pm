@@ -982,10 +982,10 @@ sub create_hetatom_struct_conn
 sub filter_struct_conn
 {
     my ( $parameters, $struct_conn, $atom_site, $options ) = @_;
-    my $exclude = ( $options->{'exclude'} );
+    my $depth = ( $options->{'depth'} );
 
     $struct_conn //= {};
-    $exclude //= {};
+    $depth //= 2;
 
     return $struct_conn if ! %{ $struct_conn };
 
