@@ -349,9 +349,6 @@ sub assign_hetatoms
     # HACK: the default should be 0 as it is more intuitive.
     $keep_original //= 1;
 
-    my $depth = $heteroatom_depth;
-    $depth //= 2;
-
     return [] if ! %{ $struct_conn };
 
     my $struct_conn_atom_ids =
@@ -396,6 +393,9 @@ sub assign_hetatoms
 
     my %tracked_alt_ids = ();
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
+        my $depth = $heteroatom_depth;
+        $depth //= 2;
+
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
         my %visited_atoms = ();
@@ -405,6 +405,8 @@ sub assign_hetatoms
 
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
+
+            next if $depth < 1;
 
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
@@ -504,6 +506,8 @@ sub assign_hetatoms
 
                 $tracked_alt_ids{$connection_unique_key}++;
             }
+
+            $depth--;
         }
 
         if( ! $keep_original ) {
