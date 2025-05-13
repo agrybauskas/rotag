@@ -49,8 +49,14 @@ our $VERSION = $VERSION;
 #*                        interactions between selected residues and atoms that
 #*                        are reachable or described (default: composite |
 #*                        hard_sphere | soft_sphere).
-#*    -H, --hetero-atoms
+#*    -H, --include-heteroatoms
 #*                        includes selected heteroatoms in the scanning process.
+#*    --heteroatoms
+#*                        includes specificied heteroatoms (default:
+#*                        'MG,CA,NA,ZN,K,MN,FE,CU,NI,CO,CD,HOH').
+#*    --heteroatom-depth
+#*                        depth of heteroatom connections that will be followed
+#*                        and included in the scanning calculations (default: 2).
 #*    -p, --parameters <parameter>=<float>[,<parameter>=<float>...]
 #*                        parameter values.
 #*
@@ -149,7 +155,7 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'potential|u=s' => \$interactions,
-    'hetero-atoms|H' => sub { $calc_hetatoms = 1 },
+    'inlcude-heteroatoms|H' => sub { $calc_hetatoms = 1 },
     'parameters|p=s' => \$parameters_cmd,
     'pairwise' => sub { $calc_pairwise = 1 },
     'json-parameters|j=s' => \$parameters_json_cmd,
