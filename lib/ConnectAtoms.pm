@@ -344,7 +344,7 @@ sub assign_hetatoms
           $options->{'keep_original'} );
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
-    $heteroatom_depth_limit //= 2;
+    $heteroatom_depth_limit = 2;
     $ref_atom_site //= $atom_site;
     $filter_unique_keys //= [];
     # HACK: the default should be 0 as it is more intuitive.
@@ -458,6 +458,13 @@ sub assign_hetatoms
                         grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
                         keys %{ $connections->{$connection_related_atom_id} } ) {
                         push @next_atom_ids, $connection_related_atom_id;
+                    }
+
+                    if( ! exists $heteroatom_depth{$atom_id} ) {
+                        $heteroatom_depth{$connection_related_atom_id} = 1
+                    } else {
+                        $heteroatom_depth{$connection_related_atom_id} =
+                            $heteroatom_depth{$atom_id} + 1
                     }
 
                     $last_atom_id++;
