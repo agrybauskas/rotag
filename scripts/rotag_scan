@@ -54,6 +54,9 @@ our $VERSION = $VERSION;
 #*    --heteroatom-depth
 #*                        depth of heteroatom connections that will be followed
 #*                        and included in the scanning calculations (default: 2).
+#*    --exclude-heteroatom-conn
+#*                        excludes heteroatom connections. Order is important
+#*                        (default: 'MG.HOH,CA.HOH,NA.HOH,ZN.HOH,K.HOH,MN.HOH,FE.HOH,CU.HOH,NI.HOH,CO.HOH,CD.HOH').
 #*    -p, --parameters <parameter>=<float>[,<parameter>=<float>...]
 #*                        parameter values.
 #*
@@ -125,6 +128,8 @@ our $VERSION = $VERSION;
 my $interactions = 'composite';
 my $calc_hetatoms = 0;
 my $heteroatom_depth = 2;
+my $exclude_heteroatom_conn =
+    'MG.HOH,CA.HOH,NA.HOH,ZN.HOH,K.HOH,MN.HOH,FE.HOH,CU.HOH,NI.HOH,CO.HOH,CD.HOH';
 my $calc_pairwise = 0;
 my $bond_parameters_qs = '';
 my $legacy_grammar = 0;
@@ -155,6 +160,7 @@ GetOptions(
     'potential|u=s' => \$interactions,
     'heteroatoms|H' => sub { $calc_hetatoms = 1 },
     'heteroatom-depth=s' => \$heteroatom_depth,
+    'exclude_heteroatom_conn=s' => \$exclude_heteroatom_conn,
     'parameters|p=s' => \$parameters_cmd,
     'pairwise' => sub { $calc_pairwise = 1 },
     'json-parameters|j=s' => \$parameters_json_cmd,
