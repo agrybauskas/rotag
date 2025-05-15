@@ -346,7 +346,7 @@ sub assign_hetatoms
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
     $heteroatom_depth_limit = 2;
-    $exclude_hetatom_connections = {};
+    $exclude_hetatom_connections //= {};
     $ref_atom_site //= $atom_site;
     $filter_unique_keys //= [];
     # HACK: the default should be 0 as it is more intuitive.
@@ -410,14 +410,19 @@ sub assign_hetatoms
             next if exists $heteroatom_depth{$atom_id} &&
                 $heteroatom_depth{$atom_id} >= $heteroatom_depth_limit;
 
+            my $residue_name = $ref_atom_site->{$atom_id}{'label_comp_id'};
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
                 next if $visited_bonds{$atom_id}{$connection_atom_id};
                 next if $seed_atom_ids{$connection_atom_id};
 
                 my $connection_atom_type =
                     $ref_atom_site->{$connection_atom_id}{'group_PDB'};
+                my $connection_residue_name =
+                    $ref_atom_site->{$connection_atom_id}{'label_comp_id'};
 
                 next if $connection_atom_type eq 'ATOM';
+                next if exists $exclude_hetatom_connections->{$residue_name}
+                                                             {$connection_residue_name};
 
                 my $connection_unique_key =
                     unique_residue_key( $ref_atom_site->{$connection_atom_id} );

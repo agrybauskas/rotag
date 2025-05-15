@@ -129,7 +129,7 @@ my $interactions = 'composite';
 my $calc_hetatoms = 0;
 my $heteroatom_depth = 2;
 my $exclude_hetatom_connections =
-    'MG.HOH,CA.HOH,NA.HOH,ZN.HOH,K.HOH,MN.HOH,FE.HOH,CU.HOH,NI.HOH,CO.HOH,CD.HOH';
+    'MG.HOH,CA.HOH,NA.HOH,ZN.HOH,K.HOH,MN.HOH,FE.HOH,CU.HOH,NI.HOH,CO.HOH,CD.HOH,HOH.HOH';
 my $calc_pairwise = 0;
 my $bond_parameters_qs = '';
 my $legacy_grammar = 0;

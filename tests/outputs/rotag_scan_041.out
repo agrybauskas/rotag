@@ -63,14 +63,9 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 7.022346
-2 2 composite 8.810488
-3 3 composite 10.155688
-4 4 composite 0.500119
-5 5 composite 5.449874
-6 6 composite 2.167018
-7 7 composite 2.490995
-8 8 composite 4.581706
+1 1 composite 7.241318
+2 2 composite 1.473198
+3 3 composite 3.973184
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -94,30 +89,12 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . HOH C 1 102 A . 154 1932 1931 1935 . 1 1 2 0.125000 OD1.H1-O.H1 -180.000 degrees
-2 1 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.125000 chi1 60.000 degrees
-3 1 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.125000 chi2 -180.000 degrees
-4 2 . HOH C 1 102 A . 154 1932 1931 1935 . 1 1 2 0.125000 OD1.H1-O.H1 -90.000 degrees
-5 2 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.125000 chi1 60.000 degrees
-6 2 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.125000 chi2 -180.000 degrees
-7 3 . HOH C 1 102 A . 154 1932 1931 1935 . 1 1 2 0.125000 OD1.H1-O.H1 90.000 degrees
-8 3 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.125000 chi1 60.000 degrees
-9 3 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.125000 chi2 -180.000 degrees
-10 4 . HOH C 1 102 A . 154 1932 1931 1935 . 1 1 2 0.125000 OD1.H1-O.H1 -180.000 degrees
-11 4 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.125000 chi1 60.000 degrees
-12 4 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.125000 chi2 -60.000 degrees
-13 5 . HOH C 1 102 A . 154 1932 1931 1935 . 1 1 2 0.125000 OD1.H1-O.H1 -90.000 degrees
-14 5 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.125000 chi1 60.000 degrees
-15 5 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.125000 chi2 -60.000 degrees
-16 6 . HOH C 1 102 A . 154 1932 1931 1935 . 1 1 2 0.125000 OD1.H1-O.H1 90.000 degrees
-17 6 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.125000 chi1 60.000 degrees
-18 6 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.125000 chi2 -60.000 degrees
-19 7 . HOH C 1 102 A . 154 1932 1931 1935 . 1 1 2 0.125000 OD1.H1-O.H1 -180.000 degrees
-20 7 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.125000 chi1 60.000 degrees
-21 7 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.125000 chi2 60.000 degrees
-22 8 . HOH C 1 102 A . 154 1932 1931 1935 . 1 1 2 0.125000 OD1.H1-O.H1 -90.000 degrees
-23 8 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.125000 chi1 60.000 degrees
-24 8 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.125000 chi2 60.000 degrees
+1 1 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.333333 chi1 60.000 degrees
+2 1 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.333333 chi2 -180.000 degrees
+3 2 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.333333 chi1 60.000 degrees
+4 2 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.333333 chi2 -60.000 degrees
+5 3 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.333333 chi1 60.000 degrees
+6 3 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.333333 chi2 60.000 degrees
 #
 loop_
 _struct_conn.id
