@@ -17,7 +17,7 @@ Options:
     --heteroatom-depth
                         depth of heteroatom connections that will be followed
                         and included in the scanning calculations (default: 2).
-    --exclude-heteroatom-conn
+    --exclude-hetatom-connections
                         excludes heteroatom connections. Order is important
                         (default: 'MG.HOH,CA.HOH,NA.HOH,ZN.HOH,K.HOH,MN.HOH,FE.HOH,CU.HOH,NI.HOH,CO.HOH,CD.HOH').
     -p, --parameters <parameter>=<float>[,<parameter>=<float>...]

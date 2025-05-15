@@ -355,6 +355,7 @@ sub generate_library
     my $include_interactions = $args->{'include_interactions'};
     my $include_hetatoms = $args->{'include_hetatoms'};
     my $heteroatom_depth = $args->{'heteroatom_depth'};
+    my $exclude_hetatom_connections = $args->{'exclude_hetatom_connections'};
     my $bond_parameters = $args->{'bond_parameters'};
     my $rmsd = $args->{'rmsd'};
     my $conf_model = $args->{'conf_model'};
@@ -375,6 +376,8 @@ sub generate_library
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => $interaction_atom_names };
     $include_hetatoms //= 0;
+    $heteroatom_depth //= "Inf";
+    $exclude_hetatom_connections //= {};
     $options //= {};
 
     my $do_bond_torsion =
@@ -414,6 +417,7 @@ sub generate_library
                 $parameters, $current_atom_site, $struct_conn,
                 { 'filter_unique_keys' => $residue_unique_keys,
                   'heteroatom_depth' => $heteroatom_depth,
+                  'exclude_hetatom_connections' => $exclude_hetatom_connections,
                   'ref_atom_site' => $ref_atom_site,
                   'keep_original' => 0 }
         );

@@ -336,15 +336,17 @@ sub connect_atoms_explicitly
 sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
-    my ( $heteroatom_depth_limit, $ref_atom_site, $filter_unique_keys,
-         $keep_original ) =
+    my ( $heteroatom_depth_limit, $exclude_hetatom_connections, $ref_atom_site,
+         $filter_unique_keys, $keep_original ) =
         ( $options->{'heteroatom_depth'},
+          $options->{'exclude_hetatom_connections'},
           $options->{'ref_atom_site'},
           $options->{'filter_unique_keys'},
           $options->{'keep_original'} );
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
     $heteroatom_depth_limit = 2;
+    $exclude_hetatom_connections = {};
     $ref_atom_site //= $atom_site;
     $filter_unique_keys //= [];
     # HACK: the default should be 0 as it is more intuitive.

@@ -54,7 +54,7 @@ our $VERSION = $VERSION;
 #*    --heteroatom-depth
 #*                        depth of heteroatom connections that will be followed
 #*                        and included in the scanning calculations (default: 2).
-#*    --exclude-heteroatom-conn
+#*    --exclude-hetatom-connections
 #*                        excludes heteroatom connections. Order is important
 #*                        (default: 'MG.HOH,CA.HOH,NA.HOH,ZN.HOH,K.HOH,MN.HOH,FE.HOH,CU.HOH,NI.HOH,CO.HOH,CD.HOH').
 #*    -p, --parameters <parameter>=<float>[,<parameter>=<float>...]
@@ -128,7 +128,7 @@ our $VERSION = $VERSION;
 my $interactions = 'composite';
 my $calc_hetatoms = 0;
 my $heteroatom_depth = 2;
-my $exclude_heteroatom_conn =
+my $exclude_hetatom_connections =
     'MG.HOH,CA.HOH,NA.HOH,ZN.HOH,K.HOH,MN.HOH,FE.HOH,CU.HOH,NI.HOH,CO.HOH,CD.HOH';
 my $calc_pairwise = 0;
 my $bond_parameters_qs = '';
@@ -160,7 +160,7 @@ GetOptions(
     'potential|u=s' => \$interactions,
     'heteroatoms|H' => sub { $calc_hetatoms = 1 },
     'heteroatom-depth=s' => \$heteroatom_depth,
-    'exclude_heteroatom_conn=s' => \$exclude_heteroatom_conn,
+    'exclude-hetatom-connections=s' => \$exclude_hetatom_connections,
     'parameters|p=s' => \$parameters_cmd,
     'pairwise' => sub { $calc_pairwise = 1 },
     'json-parameters|j=s' => \$parameters_json_cmd,
@@ -206,6 +206,13 @@ my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 # Set random seed.
 if( defined $rand_seed ) {
     srand( $rand_seed );
+}
+
+# Parse heteroatom exclusion string.
+my %exclude_hetatom_connections = ();
+for my $hetatom_connection ( split /,/, $exclude_hetatom_connections ) {
+    my ( $first_hetatom, $second_hetatom ) = split /\./, $hetatom_connection;
+    $exclude_hetatom_connections{$first_hetatom}{$second_hetatom} = 1;
 }
 
 # Parses string describing bond parameters: dihedral angles, bond angles and
@@ -299,6 +306,7 @@ for my $pdbx_file ( @ARGV ) {
                       { 'id' => [ keys %{ $current_atom_site } ] },
                   'include_hetatoms' => $calc_hetatoms,
                   'heteroatom_depth' => $heteroatom_depth,
+                  'exclude_hetatom_connections' => \%exclude_hetatom_connections,
                   'bond_parameters' => $bond_parameters,
                   'interactions' => $interactions,
                   'threads' => $threads,
