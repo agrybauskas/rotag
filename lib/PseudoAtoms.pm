@@ -374,6 +374,8 @@ sub generate_library
 
     $ref_atom_site //= $atom_site;
     $struct_conn //= {};
+    $existing_bond_parameters //= {};
+    $existing_bond_energies //= {};
     $conf_model //= 'rotation_only';
     $threads //= 1;
     $include_interactions //= { 'label_atom_id' => $interaction_atom_names };
@@ -587,6 +589,10 @@ sub generate_library
                              ],
                              'interaction_site' => \%interaction_site,
                              'bond_parameters' => $bond_parameters,
+                             'existing_bond_parameters' =>
+                                 $existing_bond_parameters,
+                             'existing_bond_energies' =>
+                                 $existing_bond_energies,
                              'include_hetatoms' => $include_hetatoms,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
@@ -746,14 +752,17 @@ sub calc_favourable_angles
     my ( $args ) = @_;
 
     my ( $parameters, $atom_site, $residue_unique_keys, $interaction_site,
-         $bond_parameters, $include_hetatoms, $bond_parameter_count,
-         $non_bonded_potential, $bonded_potential, $threads, $rand_count,
-         $rand_seed, $program_called_by, $verbose ) = (
+         $bond_parameters, $existing_bond_parameters, $existing_bond_energies,
+         $include_hetatoms, $bond_parameter_count, $non_bonded_potential,
+         $bonded_potential, $threads, $rand_count, $rand_seed,
+         $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_keys'},
         $args->{'interaction_site'},
         $args->{'bond_parameters'},
+        $args->{'existing_bond_parameters'},
+        $args->{'existing_bond_energies'},
         $args->{'include_hetatoms'},
         $args->{'bond_parameter_count'},
         $args->{'non_bonded_potential'},
@@ -765,6 +774,8 @@ sub calc_favourable_angles
         $args->{'options'}{'verbose'},
     );
 
+    $existing_bond_parameters //= {};
+    $existing_bond_energies //= {};
     $bond_parameter_count //= 20;
     $rand_seed //= 23;
     $include_hetatoms //= 0;
