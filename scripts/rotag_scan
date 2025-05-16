@@ -49,6 +49,11 @@ our $VERSION = $VERSION;
 #*                        interactions between selected residues and atoms that
 #*                        are reachable or described (default: composite |
 #*                        hard_sphere | soft_sphere).
+#*    --use-library
+#*                        uses existing bond parameter angles (rotamer library)
+#*                        in the file. Searches for tags
+#*                        "_[local]_rotamer_bond_parameter" and
+#*                        "_[local]_rotamer_energy".
 #*    -H, --heteroatoms
 #*                        includes selected heteroatoms in the scanning process.
 #*    --heteroatom-depth
@@ -126,6 +131,7 @@ our $VERSION = $VERSION;
 # --------------------------------- Options ----------------------------------- #
 
 my $interactions = 'composite';
+my $use_existing_library = 0;
 my $calc_hetatoms = 0;
 my $heteroatom_depth = 2;
 my $exclude_hetatom_connections =
@@ -158,6 +164,7 @@ local $SIG{__DIE__} = sub {
 
 GetOptions(
     'potential|u=s' => \$interactions,
+    'use-library' => sub { $use_existing_library = 1 },
     'heteroatoms|H' => sub { $calc_hetatoms = 1 },
     'heteroatom-depth=s' => \$heteroatom_depth,
     'exclude-hetatom-connections=s' => \$exclude_hetatom_connections,
@@ -193,6 +200,10 @@ GetOptions(
 # Parses tag string.
 $tags =~ s/\s//g;
 my @tags = split /,/sxm, $tags;
+
+push @category_list,
+    ( '_[local]_rotamer_bond_parameter',
+      '_[local]_rotamer_energy' ) if $use_existing_library;
 
 # ----------------------------------- Main ------------------------------------ #
 
@@ -247,11 +258,24 @@ for my $pdbx_file ( @ARGV ) {
     }
 
     raw2indexed( $pdbx_data,
-                 { 'attributes' => { '_atom_site' => [ 'id' ],
-                                     '_struct_conn' => [ 'id' ] } } );
+                 { 'attributes' =>
+                   { '_atom_site' => [ 'id' ],
+                     '_struct_conn' => [ 'id' ],
+                     ( $use_existing_library ?
+                       ( '_[local]_rotamer_bond_parameter' => [ 'id' ],
+                         '_[local]_rotamer_energy' => [ 'id' ] ) : () ) } } );
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
+
+    my $existing_bond_parameters;
+    my $existing_bond_energies;
+    if( $use_existing_library ) {
+        $existing_bond_parameters =
+            $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'};
+        $existing_bond_energies =
+            $pdbx_data->{'_[local]_rotamer_energy'}{'data'};
+    }
 
     if( defined $struct_conn ) {
         $struct_conn =
@@ -301,6 +325,8 @@ for my $pdbx_file ( @ARGV ) {
                   'atom_site' => $current_atom_site,
                   'ref_atom_site' => $atom_site,
                   'struct_conn' => $struct_conn,
+                  'existing_bond_parameters' => $existing_bond_parameters,
+                  'existing_bond_energies' => $existing_bond_energies,
                   'residue_unique_keys' => $residue_unique_keys,
                   'include_interactions' =>
                       { 'id' => [ keys %{ $current_atom_site } ] },

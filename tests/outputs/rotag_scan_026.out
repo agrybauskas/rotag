@@ -12,6 +12,11 @@ Options:
                         interactions between selected residues and atoms that
                         are reachable or described (default: composite |
                         hard_sphere | soft_sphere).
+    --use-library
+                        uses existing bond parameter angles (rotamer library)
+                        in the file. Searches for tags
+                        "_[local]_rotamer_bond_parameter" and
+                        "_[local]_rotamer_energy".
     -H, --heteroatoms
                         includes selected heteroatoms in the scanning process.
     --heteroatom-depth
