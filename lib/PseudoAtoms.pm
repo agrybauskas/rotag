@@ -351,6 +351,8 @@ sub generate_library
     my $atom_site = $args->{'atom_site'};
     my $ref_atom_site = $args->{'ref_atom_site'};
     my $struct_conn = $args->{'struct_conn'};
+    my $existing_bond_parameters = $args->{'existing_bond_parameters'};
+    my $existing_bond_energies = $args->{'existing_bond_energies'};
     my $residue_unique_keys = $args->{'residue_unique_keys'};
     my $include_interactions = $args->{'include_interactions'};
     my $include_hetatoms = $args->{'include_hetatoms'};
