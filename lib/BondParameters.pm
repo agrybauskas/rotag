@@ -947,10 +947,18 @@ sub score_bond_parameter_name
 sub combine_bond_and_energy
 {
     my ( $bond_parameters, $bond_energy ) = @_;
+    # TODO: split_by() should be generalised.
+    my $bond_parameter_groups =
+        split_by( { 'atom_site' => $bond_parameters,
+                    'attributes' => [ 'rotamer_id' ] }  );
     my %combined_parameters = ();
-    for my $rotamer_id ( sort { $a <=> $b } keys %{ $bond_parameters } ) {
+    for my $rotamer_id ( sort { $a <=> $b } keys %{ $bond_parameter_groups } ) {
+        my $first_atom_id = $bond_parameter_groups->{$rotamer_id}{'atom_ids'}[0];
         my $unique_residue_key =
-            unique_residue_key( $bond_parameters->{$rotamer_id} );
+            unique_residue_key( $bond_parameters->{$first_atom_id} );
+        for my $bond_parameter_id (
+            @{ $bond_parameter_groups->{$rotamer_id}{'atom_ids'} } ) {
+        }
     }
     return \%combined_parameters;
 }
