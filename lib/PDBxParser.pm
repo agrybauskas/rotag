@@ -1394,7 +1394,7 @@ sub split_by
     $append_dot //= 0;
 
     my %split_groups;
-    for my $atom_id ( sort keys %{ $atom_site } ) {
+    for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
         # Creates group determining key that is used to sort atoms.
         my @attribute_order;
         my @attribute_values;
