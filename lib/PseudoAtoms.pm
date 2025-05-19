@@ -869,6 +869,8 @@ sub calc_favourable_angles
                 $visited_bond_parameters{$parameter_name} = 1;
                 push @parameter_names_visited, $parameter_name;
 
+                # TODO: can be optimised by analysing previous bond parameter
+                # combinations.
                 my $parameter_key = parameter_key( \@parameter_names_visited );
                 if( exists $existing_bond_parameters->{$unique_residue_key}
                                                       {$parameter_key} ) {
