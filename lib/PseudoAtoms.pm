@@ -858,6 +858,8 @@ sub calc_favourable_angles
                 grep { exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
 
+            my $unique_residue_key =
+                unique_residue_key( $residue_site->{$atom_id} );
             for my $parameter_name ( @parameter_names_sorted ) {
                 next if exists $visited_bond_parameters{$parameter_name};
 
@@ -866,6 +868,20 @@ sub calc_favourable_angles
 
                 $visited_bond_parameters{$parameter_name} = 1;
                 push @parameter_names_visited, $parameter_name;
+
+                my $parameter_key = parameter_key( \@parameter_names_visited );
+                if( exists $existing_bond_parameters->{$unique_residue_key}
+                                                      {$parameter_key} ) {
+                    $bond_combinations{$parameter_key} =
+                        clone $existing_bond_parameters->{$unique_residue_key}
+                                                         {$parameter_key}
+                                                         {'bond_combinations'};
+                    $energy_combinations{$parameter_key} =
+                        clone $existing_bond_parameters->{$unique_residue_key}
+                                                         {$parameter_key}
+                                                         {'energy_combinations'};
+                    next;
+                }
 
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
@@ -880,7 +896,6 @@ sub calc_favourable_angles
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
 
-                my $parameter_key = parameter_key( \@parameter_names_visited );
                 if( ! $parameter_key_prev ) {
                     $bond_combinations{$parameter_key} =
                         clone \@default_allowed_bond_parameters;
