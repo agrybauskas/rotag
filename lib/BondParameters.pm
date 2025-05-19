@@ -948,6 +948,10 @@ sub combine_bond_and_energy
 {
     my ( $bond_parameters, $bond_energy ) = @_;
     my %combined_parameters = ();
+    for my $rotamer_id ( sort { $a <=> $b } keys %{ $bond_parameters } ) {
+        my $unique_residue_key =
+            unique_residue_key( $bond_parameters->{$rotamer_id} );
+    }
     return \%combined_parameters;
 }
 
