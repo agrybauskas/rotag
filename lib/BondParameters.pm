@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( alt_bond_parameter_names
                      bendable_angles
+                     combine_bond_and_energy
                      collect_bond_angles
                      collect_bond_lengths
                      collect_bond_parameters
@@ -941,6 +942,13 @@ sub score_bond_parameter_name
         $score += $positional_score{$i};
     }
     return $score;
+}
+
+sub combine_bond_and_energy
+{
+    my ( $bond_parameters, $bond_energy ) = @_;
+    my %combined_parameters = ();
+    return \%combined_parameters;
 }
 
 1;

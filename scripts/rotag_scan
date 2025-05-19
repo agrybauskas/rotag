@@ -10,7 +10,8 @@ use List::MoreUtils qw( uniq );
 use List::Util qw( any );
 use Try::Tiny;
 
-use BondParameters qw( detect_bond_parameter_type );
+use BondParameters qw( combine_bond_and_energy
+                       detect_bond_parameter_type );
 use ConnectAtoms qw( filter_struct_conn );
 use ForceField::Parameters;
 use ForceField::NonBonded qw( general );
@@ -269,12 +270,11 @@ for my $pdbx_file ( @ARGV ) {
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
 
     my $existing_bond_parameters;
-    my $existing_bond_energies;
     if( $use_existing_library ) {
-        $existing_bond_parameters =
-            $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'};
-        $existing_bond_energies =
-            $pdbx_data->{'_[local]_rotamer_energy'}{'data'};
+        $existing_bond_parameters = combine_bond_and_energy(
+            $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'},
+            $pdbx_data->{'_[local]_rotamer_energy'}{'data'}
+        );
     }
 
     if( defined $struct_conn ) {
