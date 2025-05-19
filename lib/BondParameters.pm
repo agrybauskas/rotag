@@ -956,9 +956,22 @@ sub combine_bond_and_energy
         my $first_atom_id = $bond_parameter_groups->{$rotamer_id}{'atom_ids'}[0];
         my $unique_residue_key =
             unique_residue_key( $bond_parameters->{$first_atom_id} );
+        my @rotamer_names = ();
+        my @rotamer_values = ();
         for my $bond_parameter_id (
             @{ $bond_parameter_groups->{$rotamer_id}{'atom_ids'} } ) {
+            push @rotamer_names, $bond_parameters->{$bond_parameter_id}{'type'};
+            push @rotamer_values, $bond_parameters->{$bond_parameter_id}{'value'};
         }
+        my $parameter_comb = join ',', @rotamer_names;
+        push @{ $combined_parameters{$unique_residue_key}
+                                    {$parameter_comb}
+                                    {'bond_combinations'} },
+            [ @rotamer_values ];
+        push @{ $combined_parameters{$unique_residue_key}
+                                    {$parameter_comb}
+                                    {'energy_combinations'} },
+            [ $bond_energy->{$rotamer_id}{'value'} ];
     }
     return \%combined_parameters;
 }
