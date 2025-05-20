@@ -276,6 +276,8 @@ for my $pdbx_file ( @ARGV ) {
             $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'},
             $pdbx_data->{'_[local]_rotamer_energy'}{'data'}
         );
+        delete $pdbx_data->{'_[local]_rotamer_bond_parameter'};
+        delete $pdbx_data->{'_[local]_rotamer_energy'};
     }
 
     if( defined $struct_conn ) {
