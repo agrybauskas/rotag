@@ -272,6 +272,7 @@ for my $pdbx_file ( @ARGV ) {
     my $existing_bond_parameters;
     if( $use_existing_library ) {
         $existing_bond_parameters = combine_bond_and_energy(
+            $parameters,
             $pdbx_data->{'_[local]_rotamer_bond_parameter'}{'data'},
             $pdbx_data->{'_[local]_rotamer_energy'}{'data'}
         );
