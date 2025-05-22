@@ -54,6 +54,13 @@ ATOM 904 H HZ3 . LYS A 1 72 -34.764 -4.021 0.974 A 72 1 S
 HETATM 1925 MG MG . MG B 1 . -31.184 -6.586 -1.238 A 101 1 T
 #
 loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite -30.781264
+#
+loop_
 _[local]_rotamer_bond_parameter.id
 _[local]_rotamer_bond_parameter.rotamer_id
 _[local]_rotamer_bond_parameter.label_seq_id
@@ -69,10 +76,6 @@ _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
 1 1 27 ASP A 1 27 A . 0.333333 chi1 -108.000 degrees
 2 1 27 ASP A 1 27 A . 0.333333 chi2 -180.000 degrees
-3 2 27 ASP A 1 27 A . 0.333333 chi1 -108.000 degrees
-4 2 27 ASP A 1 27 A . 0.333333 chi2 -180.000 degrees
-5 3 27 ASP A 1 27 A . 0.333333 chi1 -108.000 degrees
-6 3 27 ASP A 1 27 A . 0.333333 chi2 -180.000 degrees
 #
 loop_
 _struct_conn.id
