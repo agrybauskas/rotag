@@ -979,7 +979,8 @@ sub combine_bond_and_energy
         push @{ $combined_parameters{$unique_residue_key}
                                     {$parameter_comb}
                                     {'energy_combinations'} },
-            [ $bond_energy->{$rotamer_id}{'value'} ];
+            [ ( defined $bond_energy->{$rotamer_id}{'value'} ?
+                $bond_energy->{$rotamer_id}{'value'} : 0.0 ) ];
     }
     return \%combined_parameters;
 }
