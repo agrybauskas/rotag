@@ -22,7 +22,7 @@ our @EXPORT_OK = qw( alt_bond_parameter_names
 use Carp;
 use Clone qw( clone );
 use List::Util qw( any
-                   none );
+                   uniq );
 
 use BondPath;
 use AtomProperties qw( contains_hetatoms
@@ -760,10 +760,24 @@ sub filter_bond_parameters
     my ( $parameters, $atom_site, $bond_parameters,
          $bond_parameters_filtered_by, $residue_name ) = @_;
 
-    my %bond_parameters_in_residue =
-        defined $bond_parameters_filtered_by->{$residue_name} ?
-        %{ $bond_parameters_filtered_by->{$residue_name} } :
-        %{ $bond_parameters_filtered_by->{'*'} };
+    my @residue_names =
+        sort { $a cmp $b }
+        uniq
+        map { $atom_site->{$_}{'label_comp_id'} }
+        keys %{ $atom_site };
+
+    my %bond_parameters_in_residue = ();
+    for my $resname ( @residue_names ) {
+        if( defined $bond_parameters_filtered_by->{$resname} ) {
+            %bond_parameters_in_residue =
+                ( %bond_parameters_in_residue,
+                  %{ $bond_parameters_filtered_by->{$resname} } );
+        } else {
+            %bond_parameters_in_residue =
+                ( %bond_parameters_in_residue,
+                  %{ $bond_parameters_filtered_by->{'*'} } );
+        }
+    }
 
     my %filtered_bond_parameters = ();
     for my $bond_parameter_name ( keys %{ $bond_parameters } ) {
