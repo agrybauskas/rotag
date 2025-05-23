@@ -611,8 +611,7 @@ sub generate_library
                     %{ filter_bond_parameters( $parameters,
                                                $residue_site,
                                                \%bond_parameters,
-                                               $bond_parameters,
-                                               $residue_name ) };
+                                               $bond_parameters ) };
 
                 # TODO: a good place to make an parameter name sorting function.
                 my @bond_parameter_names =
@@ -837,8 +836,7 @@ sub calc_favourable_angles
                 %{ filter_bond_parameters( $parameters,
                                            $residue_site,
                                            \%bond_parameters,
-                                           $bond_parameters,
-                                           $residue_name ) };
+                                           $bond_parameters ) };
 
             next if ! %bond_parameters;
 

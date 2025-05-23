@@ -760,11 +760,16 @@ sub filter_bond_parameters
     my ( $parameters, $atom_site, $bond_parameters,
          $bond_parameters_filtered_by, $residue_name ) = @_;
 
-    my @residue_names =
-        sort { $a cmp $b }
-        uniq
-        map { $atom_site->{$_}{'label_comp_id'} }
-        keys %{ $atom_site };
+    my @residue_names = ();
+    if( defined $residue_name ) {
+        @residue_names = ( $residue_name );
+    } else {
+        @residue_names =
+            sort { $a cmp $b }
+            uniq
+            map { $atom_site->{$_}{'label_comp_id'} }
+            keys %{ $atom_site };
+    }
 
     my %bond_parameters_in_residue = ();
     for my $resname ( @residue_names ) {
@@ -772,7 +777,7 @@ sub filter_bond_parameters
             %bond_parameters_in_residue =
                 ( %bond_parameters_in_residue,
                   %{ $bond_parameters_filtered_by->{$resname} } );
-        } else {
+        } elsif( defined $bond_parameters_filtered_by->{'*'} ) {
             %bond_parameters_in_residue =
                 ( %bond_parameters_in_residue,
                   %{ $bond_parameters_filtered_by->{'*'} } );
