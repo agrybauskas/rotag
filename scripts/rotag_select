@@ -16,6 +16,7 @@ use PDBxParser qw( filter_new
                    raw2indexed
                    related_category_data
                    obtain_pdbx_data
+                   to_csv
                    to_pdbx );
 use Grammar::SelectionParser;
 use Logging qw( error );
@@ -300,7 +301,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                           'tags' => \@tags } );
     } elsif( $output_format eq 'csv' ) {
         if( scalar @tags == 1 ) {
-            # to_csv( \%pdbx_data, { 'category' => $tags[0] } );
+            to_csv( $pdbx, { 'category' => $tags[0] } );
         } else {
             warning( { 'message' => "only one tag has to be chosen for " .
                            "CSV format.\n" } );
