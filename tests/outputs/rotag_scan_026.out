@@ -73,6 +73,9 @@ Options:
                                  'chi1=10.0' to 'chi1=..10.0..'.
     -r, --radians
                         angle value is in radians.
+    -M, --min-max-ratio <float>
+                        ratio of the lowest energies in the range of min/max
+                        energy values.
     -x, --rand-seed <int>
                         set a seed for random bond parameter selection.
     -X, --rand-count <int>

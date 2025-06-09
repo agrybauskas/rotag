@@ -111,6 +111,9 @@ our $VERSION = $VERSION;
 #*                                 'chi1=10.0' to 'chi1=..10.0..'.
 #*    -r, --radians
 #*                        angle value is in radians.
+#*    -M, --min-max-ratio <float>
+#*                        ratio of the lowest energies in the range of min/max
+#*                        energy values.
 #*    -x, --rand-seed <int>
 #*                        set a seed for random bond parameter selection.
 #*    -X, --rand-count <int>
@@ -141,6 +144,7 @@ my $calc_pairwise = 0;
 my $bond_parameters_qs = '';
 my $legacy_grammar = 0;
 my $in_radians = 0;
+my $min_max_ratio;
 my $rand_seed;
 my $rand_count;
 my $threads = 1;
@@ -177,6 +181,7 @@ GetOptions(
     'rand-seed|x=s' => \$rand_seed,
     'rand-count|X=s' => \$rand_count,
     'radians|r' => sub { $in_radians = 1 },
+    'min-max-ratio|M=s' => \$min_max_ratio,
     'tags=s' => \$tags,
     'format|F=s' => \$output_format,
     'threads|n=s' => \$threads,
