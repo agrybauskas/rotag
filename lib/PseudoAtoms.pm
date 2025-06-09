@@ -595,6 +595,7 @@ sub generate_library
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
                                  $potential_functions{$interactions}{'bonded'},
+                             'min_max_ratio' => $min_max_ratio,
                              'threads' => $threads,
                              'options' => $options } ) };
 
@@ -750,7 +751,8 @@ sub calc_favourable_angles
     my ( $parameters, $atom_site, $residue_unique_keys, $interaction_site,
          $bond_parameters, $existing_bond_parameters, $include_hetatoms,
          $bond_parameter_count, $non_bonded_potential, $bonded_potential,
-         $threads, $rand_count, $rand_seed, $program_called_by, $verbose ) = (
+         $min_max_ratio, $threads, $rand_count, $rand_seed, $program_called_by,
+         $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_keys'},
@@ -761,6 +763,7 @@ sub calc_favourable_angles
         $args->{'bond_parameter_count'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
+        $args->{'min_max_ratio'},
         $args->{'threads'},
         $args->{'options'}{'rand_count'},
         $args->{'options'}{'rand_seed'},
@@ -770,6 +773,7 @@ sub calc_favourable_angles
 
     $existing_bond_parameters //= {};
     $bond_parameter_count //= 20;
+    $min_max_ratio //= 1.0;
     $rand_seed //= 23;
     $include_hetatoms //= 0;
 
