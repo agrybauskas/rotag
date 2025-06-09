@@ -361,6 +361,7 @@ sub generate_library
     my $rmsd = $args->{'rmsd'};
     my $conf_model = $args->{'conf_model'};
     my $interactions = $args->{'interactions'};
+    my $min_max_ratio = $args->{'min_max_ratio'};
     my $threads = $args->{'threads'};
     my $program_called_by = $args->{'program_called_by'};
     my $options = $args->{'options'};

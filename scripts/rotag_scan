@@ -342,6 +342,7 @@ for my $pdbx_file ( @ARGV ) {
                   'exclude_hetatom_connections' => \%exclude_hetatom_connections,
                   'bond_parameters' => $bond_parameters,
                   'interactions' => $interactions,
+                  'min_max_ratio' => $min_max_ratio,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
                                  'rand_count' => $rand_count,
