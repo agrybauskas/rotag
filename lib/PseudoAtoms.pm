@@ -953,7 +953,13 @@ sub calc_favourable_angles
                        $threads ) };
 
             if( defined $min_max_ratio ) {
-
+                my @energy_values_sorted =
+                    sort { $a->[0] <=> $b->[0] } @{ $next_allowed_energies };
+                my $min_energy_value = $energy_values_sorted[0][0];
+                my $max_energy_value = $energy_values_sorted[-1][0];
+                my $min_max_energy_cutoff =
+                    $min_energy_value +
+                    ( $max_energy_value - $min_energy_value ) * $min_max_ratio;
             }
 
             # NOTE: Keeping commented code for coverage tests as
