@@ -862,6 +862,7 @@ sub calc_favourable_angles
 
             my $unique_residue_key =
                 unique_residue_key( $residue_site->{$atom_id} );
+            my %no_used_existing_library = ();
             for my $parameter_name ( @parameter_names_sorted ) {
                 next if exists $visited_bond_parameters{$parameter_name};
 
@@ -885,6 +886,8 @@ sub calc_favourable_angles
                                                          {$parameter_key}
                                                          {'energy_combinations'};
                     next;
+                } else {
+                    $no_used_existing_library{$parameter_name} = 1;
                 }
 
                 my @default_allowed_bond_parameters =
@@ -952,7 +955,10 @@ sub calc_favourable_angles
                          $energy_combinations{$parameter_key_sorted} ],
                        $threads ) };
 
-            if( defined $min_max_ratio && @{ $next_allowed_bond_parameters } ) {
+            if( defined $min_max_ratio &&
+                @{ $next_allowed_bond_parameters } &&
+                any { exists $no_used_existing_library{$_} }
+                    @parameter_names_sorted ) {
                 my @energy_values_sorted =
                     sort { $a->[0] <=> $b->[0] } @{ $next_allowed_energies };
 
