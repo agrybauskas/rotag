@@ -952,7 +952,7 @@ sub calc_favourable_angles
                          $energy_combinations{$parameter_key_sorted} ],
                        $threads ) };
 
-            if( defined $min_max_ratio ) {
+            if( defined $min_max_ratio && @{ $next_allowed_bond_parameters } ) {
                 my @energy_values_sorted =
                     sort { $a->[0] <=> $b->[0] } @{ $next_allowed_energies };
 
