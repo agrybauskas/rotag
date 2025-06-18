@@ -773,7 +773,6 @@ sub calc_favourable_angles
 
     $existing_bond_parameters //= {};
     $bond_parameter_count //= 20;
-    $min_max_ratio //= 1.0;
     $rand_seed //= 23;
     $include_hetatoms //= 0;
 
@@ -952,6 +951,10 @@ sub calc_favourable_angles
                        [ $bond_combinations{$parameter_key_sorted},
                          $energy_combinations{$parameter_key_sorted} ],
                        $threads ) };
+
+            if( defined $min_max_ratio ) {
+
+            }
 
             # NOTE: Keeping commented code for coverage tests as
             # multi-threading cannot be processed.
