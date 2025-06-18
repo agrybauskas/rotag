@@ -955,11 +955,29 @@ sub calc_favourable_angles
             if( defined $min_max_ratio ) {
                 my @energy_values_sorted =
                     sort { $a->[0] <=> $b->[0] } @{ $next_allowed_energies };
+
                 my $min_energy_value = $energy_values_sorted[0][0];
                 my $max_energy_value = $energy_values_sorted[-1][0];
                 my $min_max_energy_cutoff =
                     $min_energy_value +
                     ( $max_energy_value - $min_energy_value ) * $min_max_ratio;
+
+                my @updated_next_allowed_bond_parameters = ();
+                my @updated_next_allowed_energies = ();
+                for my $i ( 0..$#{ $next_allowed_bond_parameters } ) {
+                    next if $next_allowed_energies->[$i][0] >=
+                        $min_max_energy_cutoff;
+
+                    push @updated_next_allowed_bond_parameters,
+                        $next_allowed_bond_parameters->[$i];
+                    push @updated_next_allowed_energies,
+                        $next_allowed_energies->[$i];
+                }
+
+                $next_allowed_bond_parameters =
+                    \@updated_next_allowed_bond_parameters;
+                $next_allowed_energies =
+                    \@updated_next_allowed_energies;
             }
 
             # NOTE: Keeping commented code for coverage tests as
