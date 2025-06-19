@@ -992,19 +992,14 @@ sub combine_bond_and_energy
         }
         my $parameter_comb = join ',', @rotamer_names;
         push @{ $combined_parameters{$unique_residue_key}
-                                    {'parameter'}
                                     {$parameter_comb}
                                     {'bond_combinations'} },
             [ @rotamer_values ];
         push @{ $combined_parameters{$unique_residue_key}
-                                    {'parameter'}
                                     {$parameter_comb}
                                     {'energy_combinations'} },
             [ ( defined $bond_energy->{$rotamer_id}{'value'} ?
                 $bond_energy->{$rotamer_id}{'value'} : 0.0 ) ];
-
-        # Skip all the combinations that will lead up to the current parameter
-        # combination as the energy values are not accurate.
     }
     return \%combined_parameters;
 }
