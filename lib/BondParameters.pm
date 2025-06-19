@@ -1002,6 +1002,9 @@ sub combine_bond_and_energy
                                     {'energy_combinations'} },
             [ ( defined $bond_energy->{$rotamer_id}{'value'} ?
                 $bond_energy->{$rotamer_id}{'value'} : 0.0 ) ];
+
+        # Skip all the combinations that will lead up to the current parameter
+        # combination as the energy values are not accurate.
     }
     return \%combined_parameters;
 }
