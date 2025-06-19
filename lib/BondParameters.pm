@@ -990,16 +990,21 @@ sub combine_bond_and_energy
                     $bond_parameters->{$bond_parameter_id}{'value'};
             }
         }
-        my $parameter_comb = join ',', @rotamer_names;
-        push @{ $combined_parameters{$unique_residue_key}
-                                    {$parameter_comb}
-                                    {'bond_combinations'} },
-            [ @rotamer_values ];
-        push @{ $combined_parameters{$unique_residue_key}
-                                    {$parameter_comb}
-                                    {'energy_combinations'} },
-            [ ( defined $bond_energy->{$rotamer_id}{'value'} ?
-                $bond_energy->{$rotamer_id}{'value'} : 0.0 ) ];
+
+        # As only final parameter combinations have calculated values, the
+        # intermediate combinations will get 0.0 value energies.
+        for my $reading_frame ( 1..scalar( @rotamer_names ) ) {
+            # my $parameter_comb = join ',', @rotamer_names;
+            # push @{ $combined_parameters{$unique_residue_key}
+            #                             {$parameter_comb}
+            #                             {'bond_combinations'} },
+            #     [ @rotamer_values ];
+            # push @{ $combined_parameters{$unique_residue_key}
+            #                             {$parameter_comb}
+            #                             {'energy_combinations'} },
+            #     [ ( defined $bond_energy->{$rotamer_id}{'value'} ?
+            #         $bond_energy->{$rotamer_id}{'value'} : 0.0 ) ];
+        }
     }
     return \%combined_parameters;
 }
