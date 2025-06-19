@@ -875,13 +875,16 @@ sub calc_favourable_angles
                 # combinations.
                 my $parameter_key = parameter_key( \@parameter_names_visited );
                 if( exists $existing_bond_parameters->{$unique_residue_key}
+                                                      {'parameter'}
                                                       {$parameter_key} ) {
                     $bond_combinations{$parameter_key} =
                         clone $existing_bond_parameters->{$unique_residue_key}
+                                                         {'parameter'}
                                                          {$parameter_key}
                                                          {'bond_combinations'};
                     $energy_combinations{$parameter_key} =
                         clone $existing_bond_parameters->{$unique_residue_key}
+                                                         {'parameter'}
                                                          {$parameter_key}
                                                          {'energy_combinations'};
                     next;
@@ -955,6 +958,7 @@ sub calc_favourable_angles
             if( defined $min_max_ratio &&
                 @{ $next_allowed_bond_parameters } &&
                 exists $existing_bond_parameters->{$unique_residue_key}
+                                                  {'parameter'}
                                                   {$parameter_key_sorted} ) {
                 my @energy_values_sorted =
                     sort { $a->[0] <=> $b->[0] } @{ $next_allowed_energies };
