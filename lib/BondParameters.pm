@@ -994,7 +994,7 @@ sub combine_bond_and_energy
         # As only final parameter combinations have calculated values, the
         # intermediate combinations will get 0.0 value energies.
         for my $reading_frame ( 1..scalar( @rotamer_names ) ) {
-            for( my $i = 0; $i < scalar( @rotamer_names ); $i = $i + $reading_frame ) {
+            for( my $i = 0; $i <= $#rotamer_names - $reading_frame + 1; $i++ ) {
                 my $parameter_comb =
                     join ',', @rotamer_names[$i..$i+$reading_frame-1];
                 push @{ $combined_parameters{$unique_residue_key}
