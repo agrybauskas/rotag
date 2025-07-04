@@ -394,6 +394,9 @@ sub assign_hetatoms
         }
     }
 
+    my %sidechain_atom_names =
+        map { $_ => 1 } @{ $parameters->{'_[local]_sidechain_atom_names'} };
+
     my %tracked_alt_ids = ();
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
@@ -409,6 +412,12 @@ sub assign_hetatoms
 
             next if exists $heteroatom_depth{$atom_id} &&
                 $heteroatom_depth{$atom_id} >= $heteroatom_depth_limit;
+
+            my $atom_name = $ref_atom_site->{$atom_id}{'label_atom_id'};
+            my $atom_type = $ref_atom_site->{$atom_id}{'group_PDB'};
+
+            next if $atom_type eq 'ATOM' &&
+                ! exists $sidechain_atom_names{$atom_name};
 
             my $residue_name = $ref_atom_site->{$atom_id}{'label_comp_id'};
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
