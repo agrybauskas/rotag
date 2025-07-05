@@ -336,15 +336,17 @@ sub connect_atoms_explicitly
 sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
-    my ( $heteroatom_depth_limit, $exclude_hetatom_connections, $ref_atom_site,
+    my ( $sidechains_only, $heteroatom_depth_limit, $exclude_hetatom_connections, $ref_atom_site,
          $filter_unique_keys, $keep_original ) =
-        ( $options->{'heteroatom_depth'},
+        ( $options->{'sidechains_depth'},
+          $options->{'heteroatom_depth'},
           $options->{'exclude_hetatom_connections'},
           $options->{'ref_atom_site'},
           $options->{'filter_unique_keys'},
           $options->{'keep_original'} );
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
+    $sidechains_only //= 0;
     $heteroatom_depth_limit = 2;
     $exclude_hetatom_connections //= {};
     $ref_atom_site //= $atom_site;
@@ -416,8 +418,9 @@ sub assign_hetatoms
             my $atom_name = $ref_atom_site->{$atom_id}{'label_atom_id'};
             my $atom_type = $ref_atom_site->{$atom_id}{'group_PDB'};
 
-            next if $atom_type eq 'ATOM' &&
-                ! exists $sidechain_atom_names{$atom_name};
+            next if $sidechains_only &&
+                    $atom_type eq 'ATOM' &&
+                    ! exists $sidechain_atom_names{$atom_name};
 
             my $residue_name = $ref_atom_site->{$atom_id}{'label_comp_id'};
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
