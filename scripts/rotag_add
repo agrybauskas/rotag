@@ -330,7 +330,8 @@ for my $pdbx_file ( @ARGV ) {
                        @{ assign_hetatoms( $parameters,
                                            $residue_site,
                                            $struct_conn,
-                                           { 'ref_atom_site' => $atom_site } ) };
+                                           { 'sidechains_only' => 1,
+                                             'ref_atom_site' => $atom_site } ) };
                 foreach( @assigned_residue_unique_keys ) {
                     next if $_ eq $residue_unique_key;
                     $related_unique_residue_keys{$residue_unique_key}{$_} = 1;
